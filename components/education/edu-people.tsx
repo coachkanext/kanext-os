@@ -1,11 +1,11 @@
 /**
  * Education People — Directory, Org Structure, Roles & Coverage, Permissions.
  * 4-view pill toggle at the top. RBAC:
- *   E1 — All views, full org chart, permissions management
- *   E2 — All views, limited permissions view
- *   E3 — Directory + Org Structure, limited coverage view
- *   E4 — Directory only (limited to public info)
- *   E5 — "Directory Not Available" lock screen
+ *   E0/E1 — All views, full org chart, permissions management (System Owner / President)
+ *   E2–E5 — All views, limited permissions view (Provost → Dean)
+ *   E6–E7 — Directory + Org Structure, limited coverage view (Dept Chair / Faculty)
+ *   E8–E11 — Directory only, limited to public info (Advisor / Admissions / FinAid / Student)
+ *   E12–E13 — "Directory Not Available" lock screen (Alumni / Board)
  */
 
 import React, { useState, useMemo } from 'react';
@@ -51,19 +51,16 @@ interface ViewOption {
 }
 
 const VIEWS: ViewOption[] = [
-  { id: 'directory', label: 'Directory', minRole: 'E4' },
-  { id: 'org-structure', label: 'Org Structure', minRole: 'E3' },
-  { id: 'coverage', label: 'Roles & Coverage', minRole: 'E3' },
+  { id: 'directory', label: 'Directory', minRole: 'E11' },
+  { id: 'org-structure', label: 'Org Structure', minRole: 'E7' },
+  { id: 'coverage', label: 'Roles & Coverage', minRole: 'E7' },
   { id: 'permissions', label: 'Permissions', minRole: 'E1' },
 ];
 
 // Numeric level mapping for easy comparison
 const ROLE_LEVEL: Record<EducationRoleLens, number> = {
-  E1: 1,
-  E2: 2,
-  E3: 3,
-  E4: 4,
-  E5: 5,
+  E0: 0, E1: 1, E2: 2, E3: 3, E4: 4, E5: 5, E6: 6, E7: 7,
+  E8: 8, E9: 9, E10: 10, E11: 11, E12: 12, E13: 13,
 };
 
 function canAccessView(view: ViewOption, role: EducationRoleLens): boolean {
@@ -423,27 +420,27 @@ const PERMISSION_PACKAGES: PermissionPackage[] = [
     restrictions: [],
   },
   {
-    id: 'perm-2', roleName: 'Provost / Dean', level: 'E2', description: 'Academic and departmental administration',
+    id: 'perm-2', roleName: 'Provost / VP Academic / Dean', level: 'E2', description: 'Academic and departmental administration',
     seatCount: 12,
     capabilities: ['Department org charts', 'Faculty hiring workflows', 'Curriculum approval', 'Budget viewing (department)', 'Research grant oversight', 'Limited permissions viewing'],
     restrictions: ['Cannot modify system-wide permissions', 'No budget override'],
   },
   {
-    id: 'perm-3', roleName: 'Faculty / Staff', level: 'E3', description: 'Teaching, research, and operational access',
+    id: 'perm-3', roleName: 'Faculty / Department Chair', level: 'E7', description: 'Teaching, research, and operational access',
     seatCount: 472,
     capabilities: ['Directory access', 'Org structure viewing', 'Own course management', 'Grading tools', 'Limited coverage dashboard'],
     restrictions: ['No personnel records', 'No budget data', 'No permissions management'],
   },
   {
-    id: 'perm-4', roleName: 'Student', level: 'E4', description: 'Student-facing services only',
+    id: 'perm-4', roleName: 'Student', level: 'E11', description: 'Student-facing services only',
     seatCount: 12847,
     capabilities: ['Public directory (names, offices, hours)', 'Course registration', 'Grade viewing (own)', 'Financial aid portal'],
     restrictions: ['No org structure', 'No coverage data', 'No permissions data', 'Limited contact info'],
   },
   {
-    id: 'perm-5', roleName: 'Public / Visitor', level: 'E5', description: 'No authenticated access',
+    id: 'perm-5', roleName: 'Alumni / External', level: 'E12', description: 'No authenticated access',
     seatCount: 0,
-    capabilities: ['Apply Now portal', 'Visit scheduling', 'Program catalog (public)'],
+    capabilities: ['Alumni network', 'Event attendance', 'Giving portal'],
     restrictions: ['No directory access', 'No authenticated services'],
   },
 ];
@@ -451,22 +448,22 @@ const PERMISSION_PACKAGES: PermissionPackage[] = [
 interface AccessLevel {
   resource: string;
   E1: string;
-  E2: string;
-  E3: string;
-  E4: string;
   E5: string;
+  E7: string;
+  E11: string;
+  E12: string;
 }
 
 const ACCESS_MATRIX: AccessLevel[] = [
-  { resource: 'People Directory', E1: 'Full', E2: 'Full', E3: 'Full', E4: 'Public', E5: 'None' },
-  { resource: 'Org Chart', E1: 'Full', E2: 'Full', E3: 'View', E4: 'None', E5: 'None' },
-  { resource: 'Personnel Records', E1: 'Full', E2: 'Dept', E3: 'Own', E4: 'None', E5: 'None' },
-  { resource: 'Budget Data', E1: 'Full', E2: 'Dept', E3: 'None', E4: 'None', E5: 'None' },
-  { resource: 'Grades / Transcripts', E1: 'Full', E2: 'Dept', E3: 'Course', E4: 'Own', E5: 'None' },
-  { resource: 'Course Management', E1: 'Full', E2: 'Full', E3: 'Own', E4: 'Enroll', E5: 'None' },
-  { resource: 'Research Portal', E1: 'Full', E2: 'Full', E3: 'Full', E4: 'View', E5: 'None' },
-  { resource: 'System Settings', E1: 'Full', E2: 'None', E3: 'None', E4: 'None', E5: 'None' },
-  { resource: 'Accreditation', E1: 'Full', E2: 'View', E3: 'None', E4: 'None', E5: 'None' },
+  { resource: 'People Directory', E1: 'Full', E5: 'Full', E7: 'Full', E11: 'Public', E12: 'None' },
+  { resource: 'Org Chart', E1: 'Full', E5: 'Full', E7: 'View', E11: 'None', E12: 'None' },
+  { resource: 'Personnel Records', E1: 'Full', E5: 'Dept', E7: 'Own', E11: 'None', E12: 'None' },
+  { resource: 'Budget Data', E1: 'Full', E5: 'Dept', E7: 'None', E11: 'None', E12: 'None' },
+  { resource: 'Grades / Transcripts', E1: 'Full', E5: 'Dept', E7: 'Course', E11: 'Own', E12: 'None' },
+  { resource: 'Course Management', E1: 'Full', E5: 'Full', E7: 'Own', E11: 'Enroll', E12: 'None' },
+  { resource: 'Research Portal', E1: 'Full', E5: 'Full', E7: 'Full', E11: 'View', E12: 'None' },
+  { resource: 'System Settings', E1: 'Full', E5: 'None', E7: 'None', E11: 'None', E12: 'None' },
+  { resource: 'Accreditation', E1: 'Full', E5: 'View', E7: 'None', E11: 'None', E12: 'None' },
 ];
 
 // =============================================================================
@@ -1092,8 +1089,8 @@ function PermissionsView({ colors, role }: { colors: typeof Colors.light; role: 
           const levelColor =
             pkg.level === 'E1' ? '#EF4444' :
             pkg.level === 'E2' ? '#F59E0B' :
-            pkg.level === 'E3' ? ACCENT :
-            pkg.level === 'E4' ? '#22C55E' : colors.textTertiary;
+            pkg.level === 'E7' ? ACCENT :
+            pkg.level === 'E11' ? '#22C55E' : colors.textTertiary;
 
           return (
             <Pressable
@@ -1172,7 +1169,7 @@ function PermissionsView({ colors, role }: { colors: typeof Colors.light; role: 
             <View style={s.matrixResourceCell}>
               <ThemedText style={[s.matrixHeaderText, { color: colors.textSecondary }]}>Resource</ThemedText>
             </View>
-            {['E1', 'E2', 'E3', 'E4', 'E5'].map((lvl) => (
+            {['E1', 'E5', 'E7', 'E11', 'E12'].map((lvl) => (
               <View key={lvl} style={s.matrixLevelCell}>
                 <ThemedText style={[s.matrixHeaderText, { color: colors.textSecondary }]}>{lvl}</ThemedText>
               </View>
@@ -1193,7 +1190,7 @@ function PermissionsView({ colors, role }: { colors: typeof Colors.light; role: 
                   {row.resource}
                 </ThemedText>
               </View>
-              {(['E1', 'E2', 'E3', 'E4', 'E5'] as const).map((lvl) => {
+              {(['E1', 'E5', 'E7', 'E11', 'E12'] as const).map((lvl) => {
                 const value = row[lvl];
                 const cellColor =
                   value === 'Full' ? '#22C55E' :
@@ -1219,7 +1216,7 @@ function PermissionsView({ colors, role }: { colors: typeof Colors.light; role: 
           <SectionHeader title="RBAC OVERVIEW" colors={colors} />
           <Card colors={colors}>
             <View style={s.summaryGrid}>
-              {[{ v: '5', l: 'Role Levels', c: colors.text }, { v: '9', l: 'Resources', c: colors.text }, { v: '13,332', l: 'Total Seats', c: colors.text }, { v: '98.2%', l: 'Compliant', c: '#22C55E' }].map((item) => (
+              {[{ v: '14', l: 'Role Levels', c: colors.text }, { v: '9', l: 'Resources', c: colors.text }, { v: '13,332', l: 'Total Seats', c: colors.text }, { v: '98.2%', l: 'Compliant', c: '#22C55E' }].map((item) => (
                 <View key={item.l} style={s.summaryStat}>
                   <ThemedText style={[s.summaryValue, { color: item.c }]}>{item.v}</ThemedText>
                   <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>{item.l}</ThemedText>
@@ -1281,8 +1278,8 @@ function HiddenNotice({ colors }: { colors: typeof Colors.light }) {
 export function EduPeople({ colors, role = 'E1', onSwitchTab }: Props) {
   const [activeView, setActiveView] = useState<PeopleView>('directory');
 
-  // E5 sees nothing
-  if (role === 'E5') {
+  // External roles (E12 Alumni, E13 Board) see nothing
+  if (!isEnrolled(role)) {
     return (
       <ScrollView
         style={[s.container, { backgroundColor: colors.background }]}

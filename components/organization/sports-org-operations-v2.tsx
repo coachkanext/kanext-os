@@ -11,6 +11,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
+import { canSeeSensitive, canSeeCoachActions, canSeeAdminActions } from '@/utils/sports-rbac';
 import {
   OPS_SUB_TABS,
   OPS_TASKS,
@@ -1227,17 +1228,15 @@ function ApprovalDetailSheet({
 // MAIN COMPONENT
 // =============================================================================
 
-export function SportsOrgOperationsV2({ colors, accentColor, role = 'R1' }: Props) {
-  // === RBAC Gate: R4/R5 locked ===
-  if (role === 'R4' || role === 'R5') {
+export function SportsOrgOperationsV2({ colors, accentColor, role = 'R3' }: Props) {
+  // === RBAC Gate: non-coaching roles locked ===
+  if (!canSeeCoachActions(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
         <ThemedText style={[s.lockedTitle, { color: colors.text }]}>Operations</ThemedText>
         <ThemedText style={[s.lockedMessage, { color: colors.textSecondary }]}>
-          {role === 'R4'
-            ? 'Scouts cannot access Operations'
-            : 'Fans cannot access Operations'}
+          Operations information is not available for your role
         </ThemedText>
       </View>
     );
@@ -1283,15 +1282,9 @@ export function SportsOrgOperationsV2({ colors, accentColor, role = 'R1' }: Prop
 
   // === RBAC-aware sub-tabs ===
   const visibleSubTabs = useMemo(() => {
-    if (role === 'R1') return SUB_TABS; // Full 10 tabs
-    if (role === 'R2') {
-      // Player: Overview + Announcements (comms) + Player Services
-      return SUB_TABS.filter(
-        (t) => t.id === 'overview' || t.id === 'comms' || t.id === 'player-services',
-      );
-    }
-    if (role === 'R3') {
-      // Assistant Coach: all except Admin (settings) and Approvals
+    if (canSeeSensitive(role)) return SUB_TABS; // R0-R3: full 10 tabs
+    if (role === 'R4') {
+      // R4 (Assistant Coach/RC): all except Admin (settings) and Approvals
       return SUB_TABS.filter((t) => t.id !== 'settings' && t.id !== 'approvals');
     }
     return SUB_TABS;
@@ -1303,7 +1296,6 @@ export function SportsOrgOperationsV2({ colors, accentColor, role = 'R1' }: Prop
       case 'overview':
         return <OverviewTab colors={colors} accentColor={accentColor} />;
       case 'calendar-ops':
-        if (role === 'R2') return null;
         return (
           <TasksTab
             colors={colors}
@@ -1312,7 +1304,6 @@ export function SportsOrgOperationsV2({ colors, accentColor, role = 'R1' }: Prop
           />
         );
       case 'travel':
-        if (role === 'R2') return null;
         return (
           <TravelTab
             colors={colors}
@@ -1321,20 +1312,17 @@ export function SportsOrgOperationsV2({ colors, accentColor, role = 'R1' }: Prop
           />
         );
       case 'facilities-ops':
-        if (role === 'R2') return null;
         return <BookingsTab colors={colors} accentColor={accentColor} />;
       case 'equipment':
-        if (role === 'R2') return null;
         return <EquipmentTab colors={colors} accentColor={accentColor} />;
       case 'vendors':
-        if (role === 'R2') return null;
         return <VendorsTab colors={colors} accentColor={accentColor} />;
       case 'player-services':
         return <PlayerServicesTab colors={colors} accentColor={accentColor} />;
       case 'comms':
         return <AnnouncementsTab colors={colors} accentColor={accentColor} />;
       case 'approvals':
-        if (role !== 'R1') return null;
+        if (!canSeeAdminActions(role)) return null;
         return (
           <ApprovalsTab
             colors={colors}
@@ -1343,7 +1331,7 @@ export function SportsOrgOperationsV2({ colors, accentColor, role = 'R1' }: Prop
           />
         );
       case 'settings':
-        if (role !== 'R1') return null;
+        if (!canSeeAdminActions(role)) return null;
         return <AdminTab colors={colors} accentColor={accentColor} />;
       default:
         return null;

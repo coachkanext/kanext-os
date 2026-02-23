@@ -3,10 +3,11 @@
  * Views: Pipeline | Inbox | Cohorts | Analytics
  *
  * RBAC:
- *   E1/E2 — All views, full pipeline access, analytics, yield data
- *   E3    — Pipeline (read-only) + limited analytics
- *   E4    — No access (show "Admissions Portal" CTA to apply)
- *   E5    — Limited Pipeline (public-facing stats only) + "Apply Now" CTA
+ *   E0–E5 — All views, full pipeline access, analytics, yield data (System Owner → Dean)
+ *   E6–E7 — Pipeline (read-only) + limited analytics (Dept Chair / Faculty)
+ *   E8–E10 — Pipeline (read-only) + analytics (Advisor / Admissions / FinAid)
+ *   E11   — No access (show "Admissions Portal" CTA for Student)
+ *   E12–E13 — Limited Pipeline (public-facing stats only) + "Apply Now" CTA (Alumni / Board)
  */
 
 import React, { useState } from 'react';
@@ -440,8 +441,8 @@ const sh = StyleSheet.create({
 function PipelineView({ colors, role }: { colors: typeof Colors.light; role: EducationRoleLens }) {
   const [expandedStage, setExpandedStage] = useState<string | null>(null);
 
-  // E5 sees public-facing stats only
-  if (role === 'E5') {
+  // External roles (Alumni / Board) see public-facing stats only
+  if (!isEnrolled(role)) {
     return (
       <View style={s.viewContainer}>
         <SectionHeader title="ADMISSIONS AT A GLANCE" colors={colors} />
@@ -1252,7 +1253,7 @@ function StudentPortalCTA({ colors }: { colors: typeof Colors.light }) {
 export function EduAdmissions({ colors, role = 'E1', onSwitchTab }: Props) {
   const [activeView, setActiveView] = useState<AdmissionsView>('pipeline');
 
-  // E4 students see the portal CTA, no view toggle
+  // Students (E11) see the portal CTA, no view toggle
   if (isStudent(role)) {
     return (
       <ScrollView
@@ -1267,7 +1268,7 @@ export function EduAdmissions({ colors, role = 'E1', onSwitchTab }: Props) {
   }
 
   // Determine which pills to show based on role
-  const visiblePills = role === 'E5'
+  const visiblePills = !isEnrolled(role)
     ? ADMISSIONS_PILLS.filter((p) => p.key === 'pipeline')
     : isFacultyLevel(role) && !isDeanLevel(role)
       ? ADMISSIONS_PILLS.filter((p) => p.key === 'pipeline' || p.key === 'analytics')

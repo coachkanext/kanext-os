@@ -1065,7 +1065,7 @@ function RoomDetailSheet({
 // =============================================================================
 
 export function BizOrgRoomsV2({ colors, accentColor, role = 'B1' }: Props) {
-  // === RBAC Gate: B3+ and B2a locked (rooms are internal) ===
+  // === RBAC Gate: non-board roles locked (rooms are internal) ===
   if (!isBoardLevel(role)) {
     return <BizEmptyLock title="Rooms" message="This section is restricted. Contact the Founder for access." />;
   }

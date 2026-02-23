@@ -29,6 +29,7 @@ import { OrgSwitcherSheet } from '@/components/organization/org-switcher-sheet';
 import { EntityScopeBar } from '@/components/business/entity-scope-bar';
 import { EntitySwitcherSheet } from '@/components/business/entity-switcher-sheet';
 import type { Mode } from '@/types';
+import { ThemedText } from '@/components/themed-text';
 import { EmptyModeShell, type ShellTab } from '@/components/ui/empty-mode-shell';
 
 // =============================================================================
@@ -390,8 +391,16 @@ export default function OrganizationScreen() {
       case 'church':
       case 'business':
         return <EmptyModeShell tabs={ORG_TABS_EMPTY} />;
-      case 'education': return <EducationOrganization />;
-      case 'competition': return <CommunityOrganization />;
+      case 'education':
+      case 'competition':
+        return (
+          <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ThemedText style={{ fontSize: 32, fontWeight: '800', lineHeight: 40 }}>Coming Soon</ThemedText>
+            <ThemedText style={{ fontSize: 15, opacity: 0.5, textAlign: 'center', marginTop: 8 }}>
+              This mode is under development.{'\n'}Stay tuned for updates.
+            </ThemedText>
+          </ThemedView>
+        );
       default: return null;
     }
   };

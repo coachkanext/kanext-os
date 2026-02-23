@@ -343,7 +343,7 @@ function CompanyHeader({
       {/* Action icons */}
       <View style={styles.actionRow}>
         <ActionIcon icon="square.and.arrow.up" label="Share" colors={colors} />
-        {(roleLens === 'B1' || roleLens === 'B2a' || roleLens === 'B2b') && onOpenDataRoom && (
+        {(isFounder(roleLens) || isInvestor(roleLens) || isBoardLevel(roleLens)) && onOpenDataRoom && (
           <Pressable style={styles.actionIconWrap} onPress={onOpenDataRoom}>
             <View style={[styles.actionIconCircle, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <IconSymbol name="folder.fill" size={16} color={colors.textSecondary} />
@@ -353,7 +353,7 @@ function CompanyHeader({
             </ThemedText>
           </Pressable>
         )}
-        {(roleLens === 'B1' || roleLens === 'B2b') && (
+        {(isFounder(roleLens) || isBoardLevel(roleLens)) && (
           <ActionIcon icon="bubble.left.fill" label="Message" colors={colors} />
         )}
       </View>
@@ -387,7 +387,7 @@ function ActionIcon({
 // =============================================================================
 
 function OverviewTab({ colors, roleLens }: { colors: typeof Colors.light; roleLens: BusinessRoleLens }) {
-  const showLinks = roleLens === 'B1' || roleLens === 'B2a' || roleLens === 'B2b' || roleLens === 'B3';
+  const showLinks = isFounder(roleLens) || isInvestor(roleLens) || isBoardLevel(roleLens) || roleLens === 'B12';
 
   return (
     <View>
@@ -1201,10 +1201,10 @@ function CommsTab({
       <SectionCard title="Investor Updates" colors={colors}>
         {INVESTOR_UPDATES.map((update) => {
           const canSee =
-            roleLens === 'B1' ||
+            isFounder(roleLens) ||
             (update.tier === 'public') ||
-            (update.tier === 'retail' && (roleLens === 'B2a' || roleLens === 'B2b' || roleLens === 'B3')) ||
-            (update.tier === 'board' && (roleLens === 'B2b'));
+            (update.tier === 'retail' && (isInvestor(roleLens) || isBoardLevel(roleLens) || roleLens === 'B12')) ||
+            (update.tier === 'board' && isBoardLevel(roleLens));
 
           if (!canSee) return null;
 

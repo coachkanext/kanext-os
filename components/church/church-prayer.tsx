@@ -58,15 +58,15 @@ const ALL_PRAYER_PILLS: ViewDef[] = [
 ];
 
 function getAvailableViews(role: ChurchRoleLens): ViewDef[] {
-  // C1: all 5 views (pastor sees everything including private queue)
-  if (role === 'C1') return ALL_PRAYER_PILLS;
-  // C2: all 5 views (elder/board — pastoral care role)
+  // C0/C1: all 5 views (system owner / senior pastor — full access including private queue & teams)
+  if (role === 'C0' || role === 'C1') return ALL_PRAYER_PILLS;
+  // C2: all 5 views (executive pastor — pastoral care role)
   if (role === 'C2') return ALL_PRAYER_PILLS;
-  // C3: feed, my-requests, queue, praise (staff — can process prayer queue)
-  if (role === 'C3') return ALL_PRAYER_PILLS.filter((v) => v.key !== 'teams');
-  // C4: feed, my-requests, praise (member — submit & browse public prayers)
-  if (role === 'C4') return ALL_PRAYER_PILLS.filter((v) => v.key === 'feed' || v.key === 'my-requests' || v.key === 'praise');
-  // C5: feed only (public prayer wall — only public prayers)
+  // C3-C6: feed, my-requests, queue, praise (ministry/staff level — can process prayer queue)
+  if (role === 'C3' || role === 'C4' || role === 'C5' || role === 'C6') return ALL_PRAYER_PILLS.filter((v) => v.key !== 'teams');
+  // C7-C8: feed, my-requests, praise (volunteer/member — submit & browse public prayers)
+  if (role === 'C7' || role === 'C8') return ALL_PRAYER_PILLS.filter((v) => v.key === 'feed' || v.key === 'my-requests' || v.key === 'praise');
+  // C9-C11: feed only (attendee/new believer/visitor — public prayer wall only)
   return ALL_PRAYER_PILLS.filter((v) => v.key === 'feed');
 }
 
@@ -976,8 +976,8 @@ function QueueView({ colors, role }: { colors: typeof Colors.light; role: Church
               </View>
             )}
 
-            {/* C3 staff sees limited action buttons */}
-            {role === 'C3' && item.followUpStatus !== 'resolved' && (
+            {/* C3-C6 staff sees limited action buttons */}
+            {isStaffLevel(role) && !isElderLevel(role) && item.followUpStatus !== 'resolved' && (
               <View style={s.queueActions}>
                 <Pressable
                   style={[s.queueActionBtn, { borderColor: colors.border }]}

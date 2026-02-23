@@ -1433,8 +1433,8 @@ function PackDetailSheet({
 // =============================================================================
 
 export function ChurchOrgResourcesV2({ colors, accentColor, role = 'C1' }: Props) {
-  // === RBAC Gate: C5 locked ===
-  if (role === 'C5') {
+  // === RBAC Gate: C9-C11 locked (hidden per RBAC matrix) ===
+  if (role === 'C9' || role === 'C10' || role === 'C11') {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />

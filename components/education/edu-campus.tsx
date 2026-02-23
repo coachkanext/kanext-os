@@ -3,10 +3,10 @@
  * Views: Overview | Services | Facilities | Safety | Student Life
  *
  * RBAC:
- *   E1/E2 — All views, full operational data, work order management, incident details
- *   E3    — All views, can submit work orders, see safety reports
- *   E4    — Overview / Services / Safety / Student Life, limited facilities view
- *   E5    — Overview / Services only
+ *   E0–E5 — All views, full operational data, work order management (System Owner → Dean)
+ *   E6–E7 — All views, can submit work orders, see safety reports (Dept Chair / Faculty)
+ *   E8–E11 — Overview / Services / Safety / Student Life, limited facilities (Advisor → Student)
+ *   E12–E13 — Overview / Services only (Alumni / Board)
  */
 
 import React, { useState } from 'react';
@@ -58,11 +58,11 @@ const ALL_VIEWS: ViewTab[] = [
 ];
 
 function getAvailableViews(role: EducationRoleLens): ViewTab[] {
-  // E5: Overview / Services only
-  if (role === 'E5') return ALL_VIEWS.filter((v) => v.id === 'overview' || v.id === 'services');
-  // E4: Overview / Services / Safety / Student Life (limited facilities)
-  if (role === 'E4') return ALL_VIEWS.filter((v) => v.id !== 'facilities');
-  // E1/E2/E3: All views
+  // External (Alumni / Board): Overview / Services only
+  if (!isEnrolled(role)) return ALL_VIEWS.filter((v) => v.id === 'overview' || v.id === 'services');
+  // Non-faculty enrolled (Advisor → Student): No facilities
+  if (!isFacultyLevel(role)) return ALL_VIEWS.filter((v) => v.id !== 'facilities');
+  // Faculty and above (E0–E7): All views
   return ALL_VIEWS;
 }
 

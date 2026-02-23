@@ -3,10 +3,10 @@
  * 5 view pills: Agenda | Week | Month | Rooms | Deadlines
  *
  * RBAC:
- *   E1/E2 — All views, admin events, room management controls
- *   E3    — All views, can book rooms, faculty-specific events
- *   E4    — Agenda/Week/Month/Deadlines, limited room booking
- *   E5    — Agenda/Deadlines only (public calendar)
+ *   E0–E5 — All views, admin events, room management controls (System Owner → Dean)
+ *   E6–E7 — All views, can book rooms, faculty-specific events (Dept Chair / Faculty)
+ *   E8–E11 — Agenda/Week/Month/Deadlines, limited room booking (Advisor → Student)
+ *   E12–E13 — Agenda/Deadlines only (Alumni / Board — public calendar)
  */
 
 import React, { useState } from 'react';
@@ -57,11 +57,11 @@ const ALL_VIEWS: { key: CalendarView; label: string }[] = [
 ];
 
 function getVisibleViews(role: EducationRoleLens): { key: CalendarView; label: string }[] {
-  // E5: Agenda + Deadlines only
-  if (role === 'E5') return ALL_VIEWS.filter((v) => v.key === 'agenda' || v.key === 'deadlines');
-  // E4: All except Rooms
-  if (role === 'E4') return ALL_VIEWS.filter((v) => v.key !== 'rooms');
-  // E1/E2/E3: All views
+  // External (Alumni / Board): Agenda + Deadlines only
+  if (!isEnrolled(role)) return ALL_VIEWS.filter((v) => v.key === 'agenda' || v.key === 'deadlines');
+  // Non-faculty enrolled (Advisor / Admissions / FinAid / Student): All except Rooms
+  if (!isFacultyLevel(role)) return ALL_VIEWS.filter((v) => v.key !== 'rooms');
+  // Faculty and above (E0–E7): All views
   return ALL_VIEWS;
 }
 
@@ -1023,7 +1023,7 @@ function DeadlinesView({ colors, role }: { colors: typeof Colors.light; role: Ed
       if (dl.adminOnly && !isDeanLevel(role)) return false;
       // Filter by target audience
       if (isStudent(role) && !dl.appliesTo.includes('students') && !dl.appliesTo.includes('all')) return false;
-      if (role === 'E5' && !dl.appliesTo.includes('all')) return false;
+      if (!isEnrolled(role) && !dl.appliesTo.includes('all')) return false;
       return true;
     })
     .filter((dl) => categoryFilter === 'all' || dl.category === categoryFilter);

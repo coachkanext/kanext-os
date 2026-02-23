@@ -422,7 +422,7 @@ const FEED_TYPE_COLOR: Record<string, string> = {
 function filterFeedByRole(posts: FeedPost[], role: ChurchRoleLens): FeedPost[] {
   return posts.filter((p) => {
     if (p.visibility === 'all') return true;
-    if (p.visibility === 'members' && role !== 'C5') return true;
+    if (p.visibility === 'members' && isMember(role)) return true;
     if (p.visibility === 'staff' && isStaffLevel(role)) return true;
     if (p.visibility === 'leadership' && isElderLevel(role)) return true;
     return false;
@@ -524,10 +524,12 @@ function HeroVideoBlock({ colors, role }: { colors: typeof Colors.light; role: C
   // Role-differentiated tap behavior
   let ctaLabel = 'Open Media Center';
   let ctaSecondary = 'Watch This Week\'s Sermon';
-  if (role === 'C4') {
+  if (role === 'C7' || role === 'C8') {
+    // Volunteer/Member: simplified sermon access
     ctaLabel = 'Watch This Week\'s Sermon';
     ctaSecondary = '';
-  } else if (role === 'C5') {
+  } else if (role === 'C9' || role === 'C10' || role === 'C11') {
+    // Attendee/New Believer/Visitor: featured content only
     ctaLabel = 'Watch Featured Sermon';
     ctaSecondary = '';
   }
@@ -803,11 +805,11 @@ function TodayNextBlock({ colors, role }: { colors: typeof Colors.light; role: C
 // =============================================================================
 
 function ServiceReadinessBlock({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
-  // C5: hidden entirely. C4: service times + "how to serve" CTA. C3: team-scoped.
-  // C1/C2: full view with score + volunteer coverage + critical assets.
+  // C9-C11: service times only. C7-C8: service times + "how to serve" CTA. C3-C6: team-scoped.
+  // C0/C1/C2: full view with score + volunteer coverage + critical assets.
 
-  if (role === 'C5') {
-    // C5: service times + livestream link
+  if (role === 'C9' || role === 'C10' || role === 'C11') {
+    // Attendee/New Believer/Visitor: service times + livestream link
     return (
       <View style={s.moduleContainer}>
         <SectionHeader title="SERVICE TIMES" colors={colors} />
@@ -834,8 +836,8 @@ function ServiceReadinessBlock({ colors, role }: { colors: typeof Colors.light; 
     );
   }
 
-  if (role === 'C4') {
-    // C4: service times + "how to serve" CTA
+  if (role === 'C7' || role === 'C8') {
+    // Volunteer/Member: service times + "how to serve" CTA
     return (
       <View style={s.moduleContainer}>
         <SectionHeader title="SERVICE TIMES" colors={colors} />
@@ -862,11 +864,11 @@ function ServiceReadinessBlock({ colors, role }: { colors: typeof Colors.light; 
     );
   }
 
-  // C1/C2/C3 — full readiness view
+  // C0-C6 — full readiness view (staff level)
   const scoreColor = READINESS_SCORE >= 80 ? '#22C55E' : READINESS_SCORE >= 60 ? '#F59E0B' : '#EF4444';
 
-  // C3: only show teams they're assigned to (filter mock — show first 3)
-  const visibleTeams = role === 'C3' ? VOLUNTEER_COVERAGE.slice(0, 3) : VOLUNTEER_COVERAGE;
+  // C3-C6: only show teams they're assigned to (filter mock — show first 3)
+  const visibleTeams = (isStaffLevel(role) && !isElderLevel(role)) ? VOLUNTEER_COVERAGE.slice(0, 3) : VOLUNTEER_COVERAGE;
 
   return (
     <View style={s.moduleContainer}>
@@ -974,8 +976,8 @@ function ServiceReadinessBlock({ colors, role }: { colors: typeof Colors.light; 
 // =============================================================================
 
 function MinistryPulseBlock({ colors, role, onSwitchTab }: { colors: typeof Colors.light; role: ChurchRoleLens; onSwitchTab?: (index: number) => void }) {
-  // C5: "Get connected" CTA
-  if (role === 'C5') {
+  // C9-C11 (Attendee/New Believer/Visitor): "Get connected" CTA
+  if (role === 'C9' || role === 'C10' || role === 'C11') {
     return (
       <View style={s.moduleContainer}>
         <SectionHeader title="GET CONNECTED" colors={colors} />
@@ -996,8 +998,8 @@ function MinistryPulseBlock({ colors, role, onSwitchTab }: { colors: typeof Colo
     );
   }
 
-  // C4: joined groups
-  if (role === 'C4') {
+  // C7-C8 (Volunteer/Member): joined groups
+  if (role === 'C7' || role === 'C8') {
     return (
       <View style={s.moduleContainer}>
         <SectionHeader title="MY GROUPS" colors={colors} />
@@ -1032,8 +1034,8 @@ function MinistryPulseBlock({ colors, role, onSwitchTab }: { colors: typeof Colo
     );
   }
 
-  // C3: assigned teams
-  if (role === 'C3') {
+  // C3-C6 (staff/ministry level): assigned teams
+  if (isStaffLevel(role) && !isElderLevel(role)) {
     return (
       <View style={s.moduleContainer}>
         <SectionHeader title="MY TEAMS" colors={colors} />
@@ -1064,7 +1066,7 @@ function MinistryPulseBlock({ colors, role, onSwitchTab }: { colors: typeof Colo
     );
   }
 
-  // C1/C2: full KPIs + top ministries
+  // C0/C1/C2: full KPIs + top ministries (pastoral level)
   return (
     <View style={s.moduleContainer}>
       <SectionHeader title="MINISTRY PULSE" colors={colors} />

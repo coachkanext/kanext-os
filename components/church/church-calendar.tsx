@@ -3,9 +3,9 @@
  * 4 view pills: Agenda | Services | News | Calendar
  *
  * RBAC:
- *   C1/C2/C3 — All 4 views, full detail
- *   C4       — Agenda, Services, News (no calendar grid)
- *   C5       — Services + News only
+ *   C0-C6    — All 4 views, full detail (staff level)
+ *   C7-C8    — Agenda, Services, News (no calendar grid)
+ *   C9-C11   — Services + News only (attendee through visitor)
  */
 
 import React, { useState } from 'react';
@@ -54,11 +54,11 @@ const ALL_VIEWS: ViewDef[] = [
 ];
 
 function getAvailableViews(role: ChurchRoleLens): ViewDef[] {
-  // C5: Services + News only
-  if (role === 'C5') return ALL_VIEWS.filter((v) => v.id === 'services' || v.id === 'news');
-  // C4: Agenda, Services, News (no calendar grid)
-  if (role === 'C4') return ALL_VIEWS.filter((v) => v.id !== 'calendar');
-  // C1/C2/C3: All 4 views
+  // C9-C11 (Attendee, New Believer, Visitor): Services + News only
+  if (role === 'C9' || role === 'C10' || role === 'C11') return ALL_VIEWS.filter((v) => v.id === 'services' || v.id === 'news');
+  // C7-C8 (Volunteer, Member): Agenda, Services, News (no calendar grid)
+  if (role === 'C7' || role === 'C8') return ALL_VIEWS.filter((v) => v.id !== 'calendar');
+  // C0-C6 (staff level): All 4 views
   return ALL_VIEWS;
 }
 

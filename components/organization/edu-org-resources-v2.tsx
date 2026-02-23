@@ -1,7 +1,7 @@
 /**
  * Education Organization Resources v2 — 10-view sub-tab hub.
  * Sub-tabs: Overview | Library | Packs | Templates | SOPs / Playbooks | Policies | Role Kits | Requests | Updates | Admin
- * RBAC: E1/E2 full, E3 all except Admin, E4 limited, E5 locked.
+ * RBAC: E0–E5 full, E6/E7 all except Admin, E8–E11 limited, E12/E13 locked.
  */
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, ScrollView, FlatList, Pressable, StyleSheet } from 'react-native';
@@ -11,7 +11,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
-import { isDeanLevel, isFacultyLevel, isPresident } from '@/utils/education-rbac';
+import { isDeanLevel, isFacultyLevel, isPresident, isStudent, isEnrolled } from '@/utils/education-rbac';
 import {
   getEduResourcesData,
   RESOURCE_TYPE_LABELS,
@@ -208,10 +208,10 @@ function OverviewTab({
 
   // Find the role kit matching the current user role
   const roleKitForUser = useMemo(() => {
-    if (role === 'E1') return data.roleKits.find((k) => k.type === 'admissions_counselor') || data.roleKits[0]; // president-level sees top kit
-    if (role === 'E2') return data.roleKits.find((k) => k.type === 'registrar') || data.roleKits[1];
-    if (role === 'E3') return data.roleKits.find((k) => k.type === 'faculty') || data.roleKits[4];
-    if (role === 'E4') return data.roleKits.find((k) => k.type === 'faculty') || data.roleKits[4]; // students see faculty kit preview
+    if (isPresident(role)) return data.roleKits.find((k) => k.type === 'admissions_counselor') || data.roleKits[0]; // president-level sees top kit
+    if (isDeanLevel(role)) return data.roleKits.find((k) => k.type === 'registrar') || data.roleKits[1];
+    if (isFacultyLevel(role)) return data.roleKits.find((k) => k.type === 'faculty') || data.roleKits[4];
+    if (isStudent(role)) return data.roleKits.find((k) => k.type === 'faculty') || data.roleKits[4]; // students see faculty kit preview
     return data.roleKits[0];
   }, [role, data.roleKits]);
 
@@ -440,8 +440,8 @@ function LibraryTab({
 }) {
   const filtered = useMemo(() => {
     let list = resources;
-    // E4 (Student): filter to only 'students' or 'public' audience resources
-    if (role === 'E4') {
+    // Student (E11): filter to only 'students' or 'public' audience resources
+    if (isStudent(role)) {
       list = list.filter((r) => r.audience === 'students' || r.audience === 'public');
     }
     if (filterTag === 'all') return list;
@@ -1780,8 +1780,8 @@ function RoleKitDetailSheet({
 // =============================================================================
 
 export function EduOrgResourcesV2({ colors, accentColor, role = 'E1' }: Props) {
-  // === RBAC Gate: E5 locked ===
-  if (role === 'E5') {
+  // === RBAC Gate: External (E12/E13) locked ===
+  if (!isEnrolled(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />

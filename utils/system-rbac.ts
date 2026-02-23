@@ -21,11 +21,11 @@ import type { AnyRoleLens } from '@/utils/unified-rbac';
 
 /** All membership IDs belonging to the founder account (one per mode). */
 const SYSTEM_OWNER_MEMBERSHIP_IDS: Set<string> = new Set([
-  'mem_sports_kx',   // Sports  → R1
-  'mem_biz_kx',      // Business → B1
-  'mem_church_kx',   // Church  → C1
-  'mem_edu_kx',      // Education → E1
-  'mem_comp_kx',     // Competition → CO1
+  'mem_sports_kx',   // Sports  → R0
+  'mem_biz_kx',      // Business → B0
+  'mem_church_kx',   // Church  → C0
+  'mem_edu_kx',      // Education → E0
+  'mem_comp_kx',     // Competition → CO0
 ]);
 
 /** Returns true if the membership belongs to the system owner. */
@@ -66,14 +66,14 @@ export type SystemOwnerCapabilities = typeof SYSTEM_OWNER_CAPABILITIES;
 export function getSystemOwnerLensForMode(mode: Mode): AnyRoleLens {
   switch (mode) {
     case 'sports':
-      return { mode, lens: 'R1' };
+      return { mode, lens: 'R0' };
     case 'church':
-      return { mode, lens: 'C1' };
+      return { mode, lens: 'C0' };
     case 'business':
-      return { mode, lens: 'B1' };
+      return { mode, lens: 'B0' };
     case 'education':
-      return { mode, lens: 'E1' };
+      return { mode, lens: 'E0' };
     case 'competition':
-      return { mode, lens: 'CO1' };
+      return { mode, lens: 'CO0' };
   }
 }

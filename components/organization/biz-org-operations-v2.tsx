@@ -1919,7 +1919,7 @@ export function BizOrgOperationsV2({ colors, accentColor, role = 'B1' }: Props) 
   // TODO: Filter initiatives, projects, tasks, blockers, decisions, and ops feed
   // by selectedEntityId when entity-scoped data layer is implemented.
 
-  // === RBAC Gate: B3+ and B2a locked (operations are internal) ===
+  // === RBAC Gate: non-board roles locked (operations are internal) ===
   if (!isBoardLevel(role)) {
     return <BizEmptyLock title="Operations" message="This section is restricted. Contact the Founder for access." />;
   }

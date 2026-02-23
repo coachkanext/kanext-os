@@ -19,7 +19,7 @@ import {
   type PinnedItem,
 } from '@/data/mock-sports-messages';
 
-const DEFAULT_ROLE: SportsRoleLens = 'R1';
+const DEFAULT_ROLE: SportsRoleLens = 'R3';
 
 export function SportsPinned() {
   const colorScheme = useColorScheme() ?? 'light';

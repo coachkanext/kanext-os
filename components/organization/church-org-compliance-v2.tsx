@@ -1221,8 +1221,8 @@ function ControlDetailSheet({
 // =============================================================================
 
 export function ChurchOrgCompliance({ colors, accentColor, role = 'C1' }: Props) {
-  // === RBAC Gate: C5 locked ===
-  if (role === 'C5') {
+  // === RBAC Gate: C5-C11 locked (hidden per RBAC matrix) ===
+  if (role !== 'C0' && role !== 'C1' && role !== 'C2' && role !== 'C3' && role !== 'C4') {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
@@ -1235,7 +1235,7 @@ export function ChurchOrgCompliance({ colors, accentColor, role = 'C1' }: Props)
   }
 
   // === State ===
-  const [activeSubTab, setActiveSubTab] = useState(role === 'C4' ? 'policies' : 'overview');
+  const [activeSubTab, setActiveSubTab] = useState((role === 'C3' || role === 'C4') ? 'policies' : 'overview');
   const [selectedPolicy, setSelectedPolicy] = useState<CompliancePolicy | null>(null);
   const [policySheetVisible, setPolicySheetVisible] = useState(false);
   const [selectedControl, setSelectedControl] = useState<ComplianceControl | null>(null);
@@ -1280,7 +1280,7 @@ export function ChurchOrgCompliance({ colors, accentColor, role = 'C1' }: Props)
   const renderContent = () => {
     switch (activeSubTab) {
       case 'overview':
-        if (role === 'C4') return null;
+        if (!isElderLevel(role)) return null;
         return <OverviewTab colors={colors} accentColor={accentColor} data={data} />;
       case 'policies':
         return (
@@ -1289,7 +1289,7 @@ export function ChurchOrgCompliance({ colors, accentColor, role = 'C1' }: Props)
             accentColor={accentColor}
             policies={data.policies}
             onSelectPolicy={handleSelectPolicy}
-            readOnly={role === 'C4'}
+            readOnly={!isElderLevel(role)}
           />
         );
       case 'legal-docs':
@@ -1303,7 +1303,7 @@ export function ChurchOrgCompliance({ colors, accentColor, role = 'C1' }: Props)
           />
         );
       case 'controls':
-        if (role === 'C4') return null;
+        if (!isElderLevel(role)) return null;
         return (
           <ControlsTab
             colors={colors}
@@ -1320,7 +1320,7 @@ export function ChurchOrgCompliance({ colors, accentColor, role = 'C1' }: Props)
         if (!isElderLevel(role)) return null;
         return <RiskRegisterTab colors={colors} accentColor={accentColor} risks={data.risks} />;
       case 'incidents':
-        if (role === 'C4') return null;
+        if (!isElderLevel(role)) return null;
         return (
           <IncidentsTab
             colors={colors}

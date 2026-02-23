@@ -1251,7 +1251,7 @@ export function BizOrgFinanceV2({ colors, accentColor, role = 'B1' }: Props) {
     const all = BIZ_FINANCE_V2_TABS.map((t) => ({ id: t.id, label: t.label }));
     if (isFounder(role)) return all;
     if (isBoardLevel(role)) return all; // Board sees all tabs
-    // B2a: overview only (banded values)
+    // Investor (non-board): overview only (banded values)
     return all.filter((t) => t.id === 'overview');
   }, [role]);
 

@@ -2,10 +2,10 @@
  * Education Academics — 5-view tabbed academic hub.
  * Views: Overview | Courses | Students | Advising | Risk & Interventions
  * RBAC:
- *   E1/E2 — All views, full data
- *   E3    — All views, limited financial data
- *   E4    — Overview + Courses only (student perspective)
- *   E5    — Overview only
+ *   E0–E5 — All views, full data (System Owner → Dean)
+ *   E6–E7 — All views, limited financial data (Dept Chair / Faculty)
+ *   E8–E11 — Overview + Courses only (Advisor / Admissions / FinAid / Student)
+ *   E12–E13 — Overview only (Alumni / Board)
  */
 
 import React, { useState } from 'react';
@@ -62,9 +62,11 @@ const ALL_VIEWS: ViewOption[] = [
 ];
 
 function getVisibleViews(role: EducationRoleLens): ViewOption[] {
-  if (role === 'E5') return ALL_VIEWS.filter((v) => v.id === 'overview');
-  if (role === 'E4') return ALL_VIEWS.filter((v) => v.id === 'overview' || v.id === 'courses');
-  // E1, E2, E3 — all views
+  // External roles (Alumni / Board) — overview only
+  if (!isEnrolled(role)) return ALL_VIEWS.filter((v) => v.id === 'overview');
+  // Student / Advisor / Admissions / FinAid — overview + courses
+  if (isStudent(role) || !isFacultyLevel(role)) return ALL_VIEWS.filter((v) => v.id === 'overview' || v.id === 'courses');
+  // E0–E7 — all views
   return ALL_VIEWS;
 }
 

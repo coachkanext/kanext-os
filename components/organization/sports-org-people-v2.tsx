@@ -11,6 +11,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
+import { canSeeSensitive, canSeeCoachActions, canSeeAdminActions } from '@/utils/sports-rbac';
 import {
   PEOPLE_SUB_TABS,
   DIRECTORY,
@@ -1275,9 +1276,9 @@ function MedicalDetailSheet({
 // MAIN EXPORT
 // =============================================================================
 
-export function SportsOrgPeopleV2({ colors, accentColor, role = 'R1' }: Props) {
-  // === RBAC Gate: R4/R5 locked ===
-  if (role === 'R4' || role === 'R5') {
+export function SportsOrgPeopleV2({ colors, accentColor, role = 'R3' }: Props) {
+  // === RBAC Gate: non-coaching roles locked ===
+  if (!canSeeCoachActions(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
@@ -1329,20 +1330,14 @@ export function SportsOrgPeopleV2({ colors, accentColor, role = 'R1' }: Props) {
 
   // === RBAC-aware sub-tabs ===
   const visibleSubTabs = useMemo(() => {
-    if (role === 'R1') return SUB_TABS; // R1 (AD/HC): full 10 tabs
-    if (role === 'R2') {
-      // R2 (Player): Overview + Directory + Players
-      return SUB_TABS.filter(
-        (t) => t.id === 'overview' || t.id === 'directory' || t.id === 'players',
-      );
-    }
-    if (role === 'R3') {
-      // R3 (Asst Coach): all except Admin, Roles & Access
+    if (canSeeSensitive(role)) return SUB_TABS; // R0-R3: full 10 tabs
+    if (role === 'R4') {
+      // R4 (Assistant Coach/RC): all except Admin, Roles & Access
       return SUB_TABS.filter(
         (t) => t.id !== 'admin' && t.id !== 'roles-access',
       );
     }
-    // R4/R5 already handled by locked gate above
+    // Non-coaching roles already handled by locked gate above
     return SUB_TABS;
   }, [role]);
 

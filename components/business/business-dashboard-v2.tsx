@@ -297,8 +297,8 @@ const QUICK_ACTIONS_PUBLIC: QuickActionItem[] = [
 
 function getQuickActions(role: BusinessRoleLens): QuickActionItem[] {
   if (isFounder(role)) return QUICK_ACTIONS_FOUNDER;
-  if (role === 'B2b') return QUICK_ACTIONS_BOARD;
-  if (role === 'B2a') return QUICK_ACTIONS_RETAIL;
+  if (isBoardLevel(role) && !isFounder(role)) return QUICK_ACTIONS_BOARD;
+  if (isInvestor(role)) return QUICK_ACTIONS_RETAIL;
   return QUICK_ACTIONS_PUBLIC;
 }
 
@@ -325,13 +325,13 @@ const FEED_ITEMS: FeedItem[] = [
 ];
 
 const FEED_CATEGORY_VISIBILITY: Record<string, BusinessRoleLens[]> = {
-  approval: ['B1'],
-  board: ['B1', 'B2b'],
-  media: ['B1', 'B2a', 'B2b', 'B3', 'B4'],
-  compliance: ['B1'],
-  milestone: ['B1', 'B2a', 'B2b'],
-  investor_update: ['B1', 'B2a', 'B2b'],
-  public: ['B1', 'B2a', 'B2b', 'B3', 'B4', 'B5'],
+  approval: ['B0', 'B1'],
+  board: ['B0', 'B1', 'B2', 'B6', 'B9', 'B13'],
+  media: ['B0', 'B1', 'B2', 'B6', 'B7', 'B8', 'B9', 'B10', 'B11', 'B12', 'B13'],
+  compliance: ['B0', 'B1'],
+  milestone: ['B0', 'B1', 'B2', 'B6', 'B7', 'B8', 'B9', 'B13'],
+  investor_update: ['B0', 'B1', 'B2', 'B6', 'B7', 'B8', 'B9', 'B13'],
+  public: ['B0', 'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9', 'B10', 'B11', 'B12', 'B13'],
 };
 
 function getVisibleFeed(role: BusinessRoleLens): FeedItem[] {

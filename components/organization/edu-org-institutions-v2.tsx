@@ -1,7 +1,7 @@
 /**
  * Education Organization Institutions v2 — 10-view sub-tab hub.
  * Sub-tabs: Overview | Directory | Pipeline | Coverage | Admissions | Academics | Housing | Compliance | Deadlines | Reports
- * RBAC: E1/E2 full, E3 partial (Overview+Directory+Admissions+Academics+Housing), E4 limited (Overview+Directory), E5 locked.
+ * RBAC: E0–E5 full, E6/E7 partial (Overview+Directory+Admissions+Academics+Housing), E8–E11 limited (Overview+Directory), E12/E13 locked.
  */
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, ScrollView, FlatList, Pressable, StyleSheet } from 'react-native';
@@ -11,7 +11,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
-import { isDeanLevel, isFacultyLevel, isStudent } from '@/utils/education-rbac';
+import { isDeanLevel, isFacultyLevel, isStudent, isEnrolled } from '@/utils/education-rbac';
 import {
   getEduInstitutionsV2Data,
   INSTITUTION_STATUS_LABELS,
@@ -951,8 +951,8 @@ function InstitutionDetailSheet({
 // =============================================================================
 
 export function EduOrgInstitutionsV2({ colors, accentColor, role = 'E1' }: Props) {
-  // === RBAC Gate: E5 locked ===
-  if (role === 'E5') {
+  // === RBAC Gate: External (E12/E13) locked ===
+  if (!isEnrolled(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />

@@ -960,8 +960,8 @@ function MinistrySeatSheet({
 // =============================================================================
 
 export function ChurchOrgMinistries({ colors, accentColor, role = 'C1' }: Props) {
-  // === RBAC Gate: C5 locked ===
-  if (role === 'C5') {
+  // === RBAC Gate: C11 (Visitor) locked ===
+  if (role === 'C11') {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />

@@ -12,6 +12,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
+import { canSeeSensitive, canSeeCoachActions, canSeeAdminActions } from '@/utils/sports-rbac';
 import {
   getResourcesOverview,
   getResourcePacks,
@@ -694,9 +695,9 @@ function KBItemDetailSheet({
 // MAIN EXPORT
 // =============================================================================
 
-export function SportsOrgResourcesV2({ colors, accentColor, role = 'R1' }: Props) {
-  // === RBAC Gate: R4/R5 locked ===
-  if (role === 'R4' || role === 'R5') {
+export function SportsOrgResourcesV2({ colors, accentColor, role = 'R3' }: Props) {
+  // === RBAC Gate: non-coaching roles locked ===
+  if (!canSeeCoachActions(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
@@ -744,16 +745,10 @@ export function SportsOrgResourcesV2({ colors, accentColor, role = 'R1' }: Props
 
   // === RBAC-aware sub-tabs ===
   const visibleSubTabs = useMemo(() => {
-    if (role === 'R1') return SUB_TABS; // R1: full 6 tabs
-    if (role === 'R3') {
-      // R3 (Asst Coach): all except Review Flags
+    if (canSeeSensitive(role)) return SUB_TABS; // R0-R3: full 6 tabs
+    if (role === 'R4') {
+      // R4 (Assistant Coach/RC): all except Review Flags
       return SUB_TABS.filter((t) => t.id !== 'review-flags');
-    }
-    if (role === 'R2') {
-      // R2 (Player): Overview + Packs + Knowledge Base
-      return SUB_TABS.filter(
-        (t) => t.id === 'overview' || t.id === 'packs' || t.id === 'knowledge-base',
-      );
     }
     return SUB_TABS;
   }, [role]);
@@ -773,7 +768,6 @@ export function SportsOrgResourcesV2({ colors, accentColor, role = 'R1' }: Props
           />
         );
       case 'role-kits':
-        if (role === 'R2') return null;
         return (
           <RoleKitsTab
             colors={colors}
@@ -782,7 +776,6 @@ export function SportsOrgResourcesV2({ colors, accentColor, role = 'R1' }: Props
           />
         );
       case 'templates':
-        if (role === 'R2') return null;
         return (
           <TemplatesTab
             colors={colors}
@@ -800,7 +793,7 @@ export function SportsOrgResourcesV2({ colors, accentColor, role = 'R1' }: Props
           />
         );
       case 'review-flags':
-        if (role !== 'R1') return null;
+        if (!canSeeAdminActions(role)) return null;
         return (
           <ReviewFlagsTab
             colors={colors}

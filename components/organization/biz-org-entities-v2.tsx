@@ -2,7 +2,7 @@
  * Business Organization Entities V2 — Health-centric entity management.
  * New layout: Fixed header + Filter chips + View toggle (Cards/List) +
  * Enhanced entity cards + Triage-first sorting + Entity detail bottom sheet.
- * RBAC: B1 full, B2b read-only exact, B2a curated, B3/B4 public profiles only.
+ * RBAC: Founder full, Board read-only exact, Investor curated, Public profiles only.
  */
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, ScrollView, FlatList, Pressable, StyleSheet } from 'react-native';
@@ -205,14 +205,14 @@ function filterByChip(entities: BizEntity[], chip: FilterChipId): BizEntity[] {
   return entities.filter((e) => e.entityStatus === chip);
 }
 
-/** RBAC: can view snapshot metrics? B1 and B2b yes, B2a no, B3/B4 no */
+/** RBAC: can view snapshot metrics? Board-level yes, others no */
 function canSeeMetrics(role: BusinessRoleLens): boolean {
   return isBoardLevel(role);
 }
 
-/** RBAC: can see health strip? B1, B2b, B2a yes, B3/B4 no */
+/** RBAC: can see health strip? Board-level + investors yes, others no */
 function canSeeHealth(role: BusinessRoleLens): boolean {
-  return role === 'B1' || role === 'B2b' || role === 'B2a';
+  return isBoardLevel(role) || isInvestor(role);
 }
 
 /** RBAC: can create/edit entities? B1 only */
@@ -428,7 +428,7 @@ function EntityCardView({
           <IconSymbol name="chevron.right" size={14} color={BP.ash} />
         </View>
 
-        {/* Owner + Last Updated (visible to B1, B2b, B2a) */}
+        {/* Owner + Last Updated (visible to board + investor roles) */}
         {!isPublic && (
           <View style={s.cardMetaRow}>
             <View style={s.cardMetaItem}>
@@ -453,7 +453,7 @@ function EntityCardView({
           </View>
         )}
 
-        {/* C) Snapshot metrics — hidden for B2a, B3, B4 */}
+        {/* C) Snapshot metrics — hidden for non-board roles */}
         {showMetrics && (
           <View style={s.cardSnapshotSection}>
             <SnapshotStrip snapshot={entity.snapshot} />
@@ -805,18 +805,18 @@ export function BizOrgEntitiesV2({ colors, accentColor, role = 'B1' }: Props) {
 
   // === RBAC: determine visible entities ===
   const rbacEntities = useMemo(() => {
-    const isPublic = role === 'B3' || role === 'B4';
-    const isRetail = role === 'B2a';
+    const isPublicRole = !isBoardLevel(role) && !isInvestor(role);
+    const isRetailRole = isInvestor(role) && !isBoardLevel(role);
 
-    if (isPublic) {
-      // B3/B4: public entity profiles only (active entities, name/type/status)
+    if (isPublicRole) {
+      // Public roles: public entity profiles only (active entities, name/type/status)
       return data.entities.filter((e) => e.entityStatus === 'active');
     }
-    if (isRetail) {
-      // B2a: curated list — active entities only, no snapshot metrics
+    if (isRetailRole) {
+      // Investor (non-board): curated list — active entities only, no snapshot metrics
       return data.entities.filter((e) => e.entityStatus === 'active');
     }
-    // B1/B2b: all entities
+    // Board-level: all entities
     return data.entities;
   }, [data.entities, role]);
 

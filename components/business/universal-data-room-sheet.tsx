@@ -31,7 +31,6 @@ import {
 
 import {
   type BusinessRoleLens,
-  type InvestorTier,
   type DataRoomTab,
   getDataRoomTabs,
   getMetricVisibility,
@@ -49,7 +48,6 @@ const ACCENT = MODE_ACCENT.business;
 
 interface UniversalDataRoomSheetProps {
   roleLens: BusinessRoleLens;
-  investorTier?: InvestorTier;
   onClose: () => void;
   onRequestUpgrade?: () => void;
 }
@@ -132,7 +130,6 @@ const RISK_SEVERITY_COLORS: Record<string, string> = {
 
 export function UniversalDataRoomSheet({
   roleLens,
-  investorTier,
   onClose,
   onRequestUpgrade,
 }: UniversalDataRoomSheetProps) {
@@ -148,8 +145,8 @@ export function UniversalDataRoomSheet({
   const metricVis = getMetricVisibility(roleLens);
 
   const accessibleDocs = useMemo(
-    () => getDocsByAccessLevel(roleLens, investorTier),
-    [roleLens, investorTier],
+    () => getDocsByAccessLevel(roleLens),
+    [roleLens],
   );
 
   return (
@@ -159,7 +156,6 @@ export function UniversalDataRoomSheet({
       {/* ================================================================== */}
       <DataRoomHeader
         roleLens={roleLens}
-        investorTier={investorTier}
         colors={colors}
         founder={founder}
         investor={investor}
@@ -210,10 +206,10 @@ export function UniversalDataRoomSheet({
         showsVerticalScrollIndicator={false}
       >
         {activeTab === 'start_here' && <StartHereTab colors={colors} />}
-        {activeTab === 'pitch_pack' && <PitchPackTab colors={colors} roleLens={roleLens} investorTier={investorTier} accessibleDocs={accessibleDocs} />}
+        {activeTab === 'pitch_pack' && <PitchPackTab colors={colors} roleLens={roleLens} accessibleDocs={accessibleDocs} />}
         {activeTab === 'product_demo' && <ProductDemoTab colors={colors} />}
-        {activeTab === 'financials' && <FinancialsTab colors={colors} roleLens={roleLens} investorTier={investorTier} metricVis={metricVis} board={board} accessibleDocs={accessibleDocs} />}
-        {activeTab === 'legal' && <LegalTab colors={colors} roleLens={roleLens} investorTier={investorTier} board={board} accessibleDocs={accessibleDocs} />}
+        {activeTab === 'financials' && <FinancialsTab colors={colors} roleLens={roleLens} metricVis={metricVis} board={board} accessibleDocs={accessibleDocs} />}
+        {activeTab === 'legal' && <LegalTab colors={colors} roleLens={roleLens} board={board} accessibleDocs={accessibleDocs} />}
         {activeTab === 'board_pack' && <BoardPackTab colors={colors} />}
         {activeTab === 'decision_log' && <DecisionLogTab colors={colors} />}
       </ScrollView>
@@ -227,7 +223,6 @@ export function UniversalDataRoomSheet({
 
 function DataRoomHeader({
   roleLens,
-  investorTier,
   colors,
   founder,
   investor,
@@ -235,15 +230,15 @@ function DataRoomHeader({
   onRequestUpgrade,
 }: {
   roleLens: BusinessRoleLens;
-  investorTier?: InvestorTier;
   colors: typeof Colors.light;
   founder: boolean;
   investor: boolean;
   onClose: () => void;
   onRequestUpgrade?: () => void;
 }) {
-  const tierLabel = investorTier === 'board' ? 'Board' : investor ? 'Retail' : founder ? 'Founder' : 'Viewer';
-  const tierColor = investorTier === 'board' ? '#F59E0B' : investor ? ACCENT : founder ? '#EF4444' : '#A1A1AA';
+  const board = isBoardLevel(roleLens);
+  const tierLabel = board ? 'Board' : investor ? 'Retail' : founder ? 'Founder' : 'Viewer';
+  const tierColor = board ? '#F59E0B' : investor ? ACCENT : founder ? '#EF4444' : '#A1A1AA';
 
   return (
     <View style={[styles.header, { borderBottomColor: colors.border }]}>
@@ -281,7 +276,7 @@ function DataRoomHeader({
 
       {/* Action buttons */}
       <View style={styles.actionRow}>
-        {investor && !investorTier && onRequestUpgrade && (
+        {investor && onRequestUpgrade && (
           <Pressable style={styles.actionIconWrap} onPress={onRequestUpgrade}>
             <View style={[styles.actionIconCircle, { backgroundColor: `${ACCENT}22`, borderColor: `${ACCENT}44` }]}>
               <IconSymbol name="arrow.up.circle.fill" size={16} color={ACCENT} />
@@ -291,7 +286,7 @@ function DataRoomHeader({
             </ThemedText>
           </Pressable>
         )}
-        {(founder || (roleLens === 'B2b')) && (
+        {(founder || board) && (
           <ActionIcon icon="arrow.down.doc.fill" label="Download" colors={colors} />
         )}
         {founder && (
@@ -403,12 +398,10 @@ function StartHereTab({ colors }: { colors: typeof Colors.light }) {
 function PitchPackTab({
   colors,
   roleLens,
-  investorTier,
   accessibleDocs,
 }: {
   colors: typeof Colors.light;
   roleLens: BusinessRoleLens;
-  investorTier?: InvestorTier;
   accessibleDocs: DataRoomDoc[];
 }) {
   const decks = accessibleDocs.filter((d) => d.type === 'deck' || d.type === 'board_deck');
@@ -438,7 +431,7 @@ function PitchPackTab({
           </ThemedText>
         ) : (
           decks.map((doc) => (
-            <DocRow key={doc.id} doc={doc} roleLens={roleLens} investorTier={investorTier} colors={colors} />
+            <DocRow key={doc.id} doc={doc} roleLens={roleLens} colors={colors} />
           ))
         )}
       </SectionCard>
@@ -450,7 +443,7 @@ function PitchPackTab({
           </ThemedText>
         ) : (
           memos.map((doc) => (
-            <DocRow key={doc.id} doc={doc} roleLens={roleLens} investorTier={investorTier} colors={colors} />
+            <DocRow key={doc.id} doc={doc} roleLens={roleLens} colors={colors} />
           ))
         )}
       </SectionCard>
@@ -606,14 +599,12 @@ function ProductDemoTab({ colors }: { colors: typeof Colors.light }) {
 function FinancialsTab({
   colors,
   roleLens,
-  investorTier,
   metricVis,
   board,
   accessibleDocs,
 }: {
   colors: typeof Colors.light;
   roleLens: BusinessRoleLens;
-  investorTier?: InvestorTier;
   metricVis: string;
   board: boolean;
   accessibleDocs: DataRoomDoc[];
@@ -756,7 +747,7 @@ function FinancialsTab({
           </ThemedText>
         ) : (
           financialDocs.map((doc) => (
-            <DocRow key={doc.id} doc={doc} roleLens={roleLens} investorTier={investorTier} colors={colors} />
+            <DocRow key={doc.id} doc={doc} roleLens={roleLens} colors={colors} />
           ))
         )}
       </SectionCard>
@@ -771,13 +762,11 @@ function FinancialsTab({
 function LegalTab({
   colors,
   roleLens,
-  investorTier,
   board,
   accessibleDocs,
 }: {
   colors: typeof Colors.light;
   roleLens: BusinessRoleLens;
-  investorTier?: InvestorTier;
   board: boolean;
   accessibleDocs: DataRoomDoc[];
 }) {
@@ -891,7 +880,7 @@ function LegalTab({
       {legalDocs.length > 0 && (
         <SectionCard title="Legal Documents" colors={colors}>
           {legalDocs.map((doc) => (
-            <DocRow key={doc.id} doc={doc} roleLens={roleLens} investorTier={investorTier} colors={colors} />
+            <DocRow key={doc.id} doc={doc} roleLens={roleLens} colors={colors} />
           ))}
         </SectionCard>
       )}
@@ -1135,15 +1124,13 @@ function BulletItem({ text, colors }: { text: string; colors: typeof Colors.ligh
 function DocRow({
   doc,
   roleLens,
-  investorTier,
   colors,
 }: {
   doc: DataRoomDoc;
   roleLens: BusinessRoleLens;
-  investorTier?: InvestorTier;
   colors: typeof Colors.light;
 }) {
-  const hasAccess = canAccessDoc(doc.accessTag, roleLens, investorTier);
+  const hasAccess = canAccessDoc(doc.accessTag, roleLens);
   const accessColor = ACCESS_TAG_COLORS[doc.accessTag] ?? '#A1A1AA';
 
   return (

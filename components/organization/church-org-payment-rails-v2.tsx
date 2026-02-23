@@ -1498,8 +1498,8 @@ function TransactionDetailSheet({
 // =============================================================================
 
 export function ChurchOrgPaymentRails({ colors, accentColor, role = 'C1' }: Props) {
-  // === RBAC Gate: C5 + C4 locked ===
-  if (role === 'C5') {
+  // === RBAC Gate: C3-C11 locked (hidden per RBAC matrix — pastoral only) ===
+  if (!isElderLevel(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
@@ -1511,7 +1511,7 @@ export function ChurchOrgPaymentRails({ colors, accentColor, role = 'C1' }: Prop
     );
   }
 
-  if (role === 'C4') {
+  if (role === 'C3' || role === 'C4') {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />

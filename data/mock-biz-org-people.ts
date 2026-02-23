@@ -56,7 +56,7 @@ export const DEPARTMENT_CHIPS = [
 // =============================================================================
 
 export type SignatureAuthority = 'approve' | 'release' | 'both' | 'none';
-export type RBACLevel = 'B1' | 'B2a' | 'B2b' | 'B3' | 'B4' | 'B5';
+export type RBACLevel = 'B0' | 'B1' | 'B2' | 'B3' | 'B4' | 'B5' | 'B6' | 'B7' | 'B8' | 'B9' | 'B10' | 'B11' | 'B12' | 'B13';
 
 export type CoverageCategory = 'exec' | 'finance' | 'rails' | 'compliance' | 'ops' | 'media';
 
@@ -153,21 +153,37 @@ export const SIGNATURE_AUTHORITY_LABEL: Record<SignatureAuthority, string> = {
 };
 
 export const RBAC_LEVEL_COLOR: Record<RBACLevel, string> = {
+  B0: '#22C55E',
   B1: '#22C55E',
-  B2a: '#1D9BF0',
-  B2b: '#1D9BF0',
+  B2: '#1D9BF0',
   B3: '#F59E0B',
   B4: '#A1A1AA',
-  B5: '#EF4444',
+  B5: '#A1A1AA',
+  B6: '#1D9BF0',
+  B7: '#1D9BF0',
+  B8: '#F59E0B',
+  B9: '#1D9BF0',
+  B10: '#EF4444',
+  B11: '#A1A1AA',
+  B12: '#A1A1AA',
+  B13: '#22C55E',
 };
 
 export const RBAC_LEVEL_LABEL: Record<RBACLevel, string> = {
+  B0: 'System Owner',
   B1: 'Founder / CEO',
-  B2a: 'Investor (Retail)',
-  B2b: 'Investor (Board)',
-  B3: 'Public',
-  B4: 'Subscriber',
-  B5: 'Acquirer',
+  B2: 'Co-Founder / C-Suite',
+  B3: 'Department Head / VP',
+  B4: 'Team Lead / Manager',
+  B5: 'Employee / Contributor',
+  B6: 'Strategic Investor',
+  B7: 'Retail / Minority Investor',
+  B8: 'Advisor',
+  B9: 'Board Member',
+  B10: 'Acquirer / Strategic Partner',
+  B11: 'Subscriber / Customer',
+  B12: 'Public',
+  B13: 'Holding Company',
 };
 
 export const ORG_LEVEL_ORDER: OrgChartLevel[] = ['C-Suite', 'VP', 'Director', 'Manager', 'IC'];
@@ -295,7 +311,7 @@ const PEOPLE: BizPerson[] = [
     entityId: KANEXT_OPSCO,
     entityName: SEEDED_ENTITY_NAMES[KANEXT_OPSCO],
     role: 'VP Engineering',
-    rbacLevel: 'B2b',
+    rbacLevel: 'B9',
     signatureAuthority: 'none',
     reportsTo: 'ppl-001',
     directReports: [],
@@ -320,7 +336,7 @@ const PEOPLE: BizPerson[] = [
     entityId: KANEXT_OPSCO,
     entityName: SEEDED_ENTITY_NAMES[KANEXT_OPSCO],
     role: 'Head of Partnerships',
-    rbacLevel: 'B2b',
+    rbacLevel: 'B9',
     signatureAuthority: 'none',
     reportsTo: 'ppl-003',
     directReports: [],
@@ -345,7 +361,7 @@ const PEOPLE: BizPerson[] = [
     entityId: KANEXT_HOLDCO,
     entityName: SEEDED_ENTITY_NAMES[KANEXT_HOLDCO],
     role: 'Compliance Officer',
-    rbacLevel: 'B2b',
+    rbacLevel: 'B9',
     signatureAuthority: 'approve',
     reportsTo: 'ppl-001',
     directReports: [],
@@ -370,7 +386,7 @@ const PEOPLE: BizPerson[] = [
     entityId: KANEXT_IP,
     entityName: SEEDED_ENTITY_NAMES[KANEXT_IP],
     role: 'Director of Product',
-    rbacLevel: 'B2b',
+    rbacLevel: 'B9',
     signatureAuthority: 'none',
     reportsTo: 'ppl-005',
     directReports: [],
@@ -395,7 +411,7 @@ const PEOPLE: BizPerson[] = [
     entityId: KANEXT_HOLDCO,
     entityName: SEEDED_ENTITY_NAMES[KANEXT_HOLDCO],
     role: 'Finance Manager',
-    rbacLevel: 'B2b',
+    rbacLevel: 'B9',
     signatureAuthority: 'none',
     reportsTo: 'ppl-002',
     directReports: [],
@@ -420,7 +436,7 @@ const PEOPLE: BizPerson[] = [
     entityId: KANEXT_OPSCO,
     entityName: SEEDED_ENTITY_NAMES[KANEXT_OPSCO],
     role: 'Senior Engineer',
-    rbacLevel: 'B2b',
+    rbacLevel: 'B9',
     signatureAuthority: 'none',
     reportsTo: 'ppl-005',
     directReports: [],
@@ -663,7 +679,7 @@ const PERMISSION_PACKAGES: PermissionPackage[] = [
   {
     id: 'pkg-vp',
     name: 'VP / Department Head',
-    rbacLevel: 'B2b',
+    rbacLevel: 'B9',
     description: 'Department-scoped access with visibility into cross-functional tabs. Read-only on financials outside own department budget.',
     tabAccess: [
       'People', 'Rooms', 'Operations', 'Reports',
@@ -677,7 +693,7 @@ const PERMISSION_PACKAGES: PermissionPackage[] = [
   {
     id: 'pkg-compliance',
     name: 'Compliance Officer',
-    rbacLevel: 'B2b',
+    rbacLevel: 'B9',
     description: 'Full compliance and audit access. Approve authority for compliance-related sign-offs. Read access to legal, finance, and entities for regulatory review.',
     tabAccess: [
       'Entities', 'People', 'Finance', 'Legal', 'Compliance', 'Reports',
@@ -691,7 +707,7 @@ const PERMISSION_PACKAGES: PermissionPackage[] = [
   {
     id: 'pkg-director',
     name: 'Director / Manager',
-    rbacLevel: 'B2b',
+    rbacLevel: 'B9',
     description: 'Team-level access with read visibility into people directory and operations. Cannot approve transactions or access financial details.',
     tabAccess: [
       'People', 'Operations', 'Reports',

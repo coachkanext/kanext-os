@@ -9,11 +9,11 @@
  *   4 — Requests (inbound access requests with status chips)
  *   5 — Audit (access/download/share event log)
  *
- * RBAC:
- *   B1  — All 6 sub-tabs, sees all documents
- *   B2b — Overview, Library (board+retail+public), Packets, Audit (4 tabs)
- *   B2a — Overview, Library (retail+public only), Packets (filtered view)
- *   B3  — Locked
+ * RBAC (14-level: B0-B13):
+ *   Founder (B0/B1) — All 6 sub-tabs, sees all documents
+ *   Board (B2/B6/B8/B9/B13) — Overview, Library (board+retail+public), Packets, Audit (4 tabs)
+ *   Investor (B7) — Overview, Library (retail+public only), Packets (filtered view)
+ *   Public — Locked
  */
 
 import React, { useState, useMemo } from 'react';
@@ -78,10 +78,10 @@ function getVisibleSubTabs(role: BusinessRoleLens): DataRoomSubTab[] {
   if (isFounder(role)) {
     return ['overview', 'library', 'versioning', 'packets', 'requests', 'audit', 'builder'];
   }
-  if (role === 'B2b') {
+  if (isBoardLevel(role)) {
     return ['overview', 'library', 'packets', 'audit'];
   }
-  if (role === 'B2a') {
+  if (isInvestor(role)) {
     return ['overview', 'library', 'packets'];
   }
   return [];
@@ -92,10 +92,10 @@ function getAllowedAccessLevels(role: BusinessRoleLens): string[] {
   if (isFounder(role)) {
     return ['public', 'retail', 'board', 'founder'];
   }
-  if (role === 'B2b') {
+  if (isBoardLevel(role)) {
     return ['public', 'retail', 'board'];
   }
-  if (role === 'B2a') {
+  if (isInvestor(role)) {
     return ['public', 'retail'];
   }
   return ['public'];
@@ -645,11 +645,10 @@ const SPEC_PACKET_TYPES = [
 ];
 
 function PacketsSection({ role }: { role: BusinessRoleLens }) {
-  // B2a only sees retail/partner audience packets
+  // Retail investor only sees retail/partner audience packets
   const visiblePackets = useMemo(() => {
-    if (isFounder(role)) return DATA_PACKETS;
-    if (role === 'B2b') return DATA_PACKETS;
-    // B2a: retail and partner only
+    if (isFounder(role) || isBoardLevel(role)) return DATA_PACKETS;
+    // Retail investor: retail and partner only
     return DATA_PACKETS.filter(
       (p) => p.audience === 'retail' || p.audience === 'partner',
     );

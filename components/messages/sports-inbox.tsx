@@ -20,7 +20,7 @@ import {
   type SportsInboxThread,
 } from '@/data/mock-sports-messages';
 
-const DEFAULT_ROLE: SportsRoleLens = 'R1';
+const DEFAULT_ROLE: SportsRoleLens = 'R3';
 
 interface SportsInboxProps {
   search?: string;

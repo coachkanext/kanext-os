@@ -19,7 +19,7 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius, BusinessPalette , MODE_ACCENT } from '@/constants/theme';
 import { BizCard, BizSubTabBar, BizStatusChip, BizAlertCard, BizEmptyLock, statusVariant } from '@/components/business/business-shared';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
-import { isFounder, isBoardLevel } from '@/utils/business-rbac';
+import { isFounder, isBoardLevel, isInvestor } from '@/utils/business-rbac';
 import { useBusiness } from '@/context/business-context';
 import { formatCurrency, KANEXT_HOLDCO, KANEXT_OPSCO, KANEXT_IP, TARGET_BANK, SLIEMA_WANDERERS, SEEDED_ENTITY_NAMES } from '@/data/biz-org-shared-types';
 import type { CrossTabLink } from '@/data/biz-org-shared-types';
@@ -376,8 +376,8 @@ function StatCard({
 // =============================================================================
 
 export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
-  // === RBAC Gate: B3+ locked, B2a sees limited, B2b sees all ===
-  if (!isFounder(role) && !isBoardLevel(role) && role !== 'B2a' && role !== 'B5') {
+  // === RBAC Gate: non-founder/board/investor/B5 locked ===
+  if (!isFounder(role) && !isBoardLevel(role) && !isInvestor(role) && role !== 'B5') {
     return <BizEmptyLock title="Assets" message="This section is restricted. Contact the Founder for access." />;
   }
 
@@ -2178,11 +2178,11 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
   // MAIN RENDER
   // ===================================================================
 
-  // RBAC-aware sub-tabs: B2a/B5 see overview only
+  // RBAC-aware sub-tabs: investor/B5 see overview only
   const subTabs = useMemo(() => {
     const all = BIZ_ASSETS_TABS.map((t) => ({ id: t.id, label: t.label }));
     if (isFounder(role) || isBoardLevel(role)) return all;
-    // B2a / B5: overview + registry only
+    // Investor / B5: overview + registry only
     return all.filter((t) => t.id === 'overview' || t.id === 'registry');
   }, [role]);
 

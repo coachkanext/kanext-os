@@ -67,8 +67,8 @@ import { EmptyModeShell, type ShellTab } from '@/components/ui/empty-mode-shell'
 
 const SPORTS_HOME_TABS: ShellTab[] = [
   { id: 'dashboard', label: 'Dashboard', icon: 'sportscourt', emptyTitle: 'No Data Yet', emptyDescription: 'Your dashboard will populate as games and events are added.' },
-  { id: 'roster', label: 'Roster', icon: 'person.2.fill', emptyTitle: 'No Players', emptyDescription: 'Add players to build your roster.' },
   { id: 'calendar', label: 'Calendar', icon: 'calendar', emptyTitle: 'No Events', emptyDescription: 'Schedule games and events to get started.' },
+  { id: 'roster', label: 'Roster', icon: 'person.2.fill', emptyTitle: 'No Players', emptyDescription: 'Add players to build your roster.' },
   { id: 'recruiting', label: 'Recruiting', icon: 'star.circle.fill', emptyTitle: 'No Prospects', emptyDescription: 'Start scouting to build your recruiting board.' },
 ];
 
@@ -131,11 +131,20 @@ const DOMAIN_CARD_DEFS: { id: DrillDownId; title: string; icon: IconSymbolName }
 
 /** RBAC: which domain cards are hidden per role */
 const DOMAIN_HIDDEN: Record<SportsRoleLens, Set<DrillDownId>> = {
+  R0: new Set(),
   R1: new Set(),
-  R2: new Set(['game-plan', 'simulation', 'development']),
+  R2: new Set(),
   R3: new Set(),
-  R4: new Set(['game-plan', 'simulation', 'development']),
-  R5: new Set(['game-plan', 'simulation', 'development']),
+  R4: new Set(),
+  R5: new Set(['game-plan', 'simulation']),
+  R6: new Set(['game-plan', 'simulation', 'development']),
+  R7: new Set(['game-plan', 'simulation', 'development', 'stats']),
+  R8: new Set(['game-plan', 'simulation']),
+  R9: new Set(['game-plan', 'simulation', 'development', 'stats']),
+  R10: new Set(['game-plan', 'simulation', 'development', 'stats']),
+  R11: new Set(['game-plan', 'simulation', 'development']),
+  R12: new Set(['game-plan', 'simulation', 'development']),
+  R13: new Set(['game-plan', 'simulation', 'development']),
 };
 
 // KaNeXT logo

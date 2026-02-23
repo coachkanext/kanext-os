@@ -61,13 +61,13 @@ interface ViewDef {
 }
 
 const VIEW_DEFS: ViewDef[] = [
-  { id: 'browse',       label: 'Browse',              roles: ['C1', 'C2', 'C3', 'C4', 'C5'] },
-  { id: 'my-events',    label: 'My Events',           roles: ['C1', 'C2', 'C3', 'C4'] },
-  { id: 'ministries',   label: 'Ministries',          roles: ['C1', 'C2', 'C3'] },
-  { id: 'service-plan', label: 'Service Plan',        roles: ['C1', 'C2', 'C3'] },
-  { id: 'volunteers',   label: 'Volunteers',          roles: ['C1', 'C2', 'C3'] },
-  { id: 'check-in',     label: 'Check-In',            roles: ['C1', 'C2', 'C3'] },
-  { id: 'attendance',   label: 'Attendance & Follow-Up', roles: ['C1', 'C2'] },
+  { id: 'browse',       label: 'Browse',              roles: ['C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11'] },
+  { id: 'my-events',    label: 'My Events',           roles: ['C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8'] },
+  { id: 'ministries',   label: 'Ministries',          roles: ['C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6'] },
+  { id: 'service-plan', label: 'Service Plan',        roles: ['C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6'] },
+  { id: 'volunteers',   label: 'Volunteers',          roles: ['C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6'] },
+  { id: 'check-in',     label: 'Check-In',            roles: ['C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6'] },
+  { id: 'attendance',   label: 'Attendance & Follow-Up', roles: ['C0', 'C1', 'C2'] },
 ];
 
 function getAvailableViews(role: ChurchRoleLens): ViewDef[] {

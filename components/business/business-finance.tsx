@@ -4,11 +4,11 @@
  * Approvals | Splits | Revenue | Costs/Burn | Entities | Risk/Controls |
  * Audit | Board Pack Builder
  *
- * RBAC:
- *   B1  — all 14 sub-tabs (exact values)
- *   B2b — 5 sub-tabs: overview, budgets, revenue, entities, board_pack
- *   B2a — overview only (banded values)
- *   B3  — locked
+ * RBAC (14-level: B0-B13):
+ *   Founder (B0/B1) — all 14 sub-tabs (exact values)
+ *   Board (B2/B6/B8/B9/B13) — 5 sub-tabs: overview, budgets, revenue, entities, board_pack
+ *   Investor (B7) — overview only (banded values)
+ *   Public — locked
  */
 
 import React, { useState } from 'react';
@@ -91,9 +91,9 @@ interface Props {
 // HELPERS
 // =============================================================================
 
-/** Return display value: exact for B1/B2b, banded for B2a */
+/** Return display value: exact for founder/board, banded for others */
 function kpiDisplayValue(kpi: FinanceKPI, role: BusinessRoleLens): string {
-  if (isFounder(role) || role === 'B2b') return kpi.value;
+  if (isFounder(role) || isBoardLevel(role)) return kpi.value;
   return kpi.bandedValue;
 }
 
@@ -234,7 +234,7 @@ function OverviewSection({ role }: { role: BusinessRoleLens }) {
           <View style={s.summaryItem}>
             <ThemedText style={s.summaryLabel}>Total Revenue</ThemedText>
             <ThemedText style={s.summaryValue}>
-              {isFounder(role) || role === 'B2b'
+              {isFounder(role) || isBoardLevel(role)
                 ? '$21,300/mo'
                 : '$15K\u2013$25K/mo'}
             </ThemedText>
@@ -242,7 +242,7 @@ function OverviewSection({ role }: { role: BusinessRoleLens }) {
           <View style={[s.summaryItem, s.summaryDivider]}>
             <ThemedText style={s.summaryLabel}>Total Costs</ThemedText>
             <ThemedText style={s.summaryValue}>
-              {isFounder(role) || role === 'B2b'
+              {isFounder(role) || isBoardLevel(role)
                 ? '$19,800/mo'
                 : '<$25K/mo'}
             </ThemedText>
@@ -250,7 +250,7 @@ function OverviewSection({ role }: { role: BusinessRoleLens }) {
           <View style={[s.summaryItem, s.summaryDivider]}>
             <ThemedText style={s.summaryLabel}>Net</ThemedText>
             <ThemedText style={[s.summaryValue, { color: BP.emerald }]}>
-              {isFounder(role) || role === 'B2b' ? '+$1,500/mo' : 'Positive'}
+              {isFounder(role) || isBoardLevel(role) ? '+$1,500/mo' : 'Positive'}
             </ThemedText>
           </View>
         </View>

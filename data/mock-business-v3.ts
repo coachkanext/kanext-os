@@ -93,10 +93,10 @@ export const FINANCIAL_SNAPSHOT: FinancialMetric[] = [
 // ROLE FILTERING HELPERS
 // =============================================================================
 
-/** Get the financial display value based on role (exact for B1/B2b, banded for B2a, hidden for B3) */
+/** Get the financial display value based on role (exact for founder/board, banded for retail investor, hidden for others) */
 export function getFinancialValue(metric: FinancialMetric, role: BusinessRoleLens): string | null {
-  if (isFounder(role) || role === 'B2b') return metric.exactValue;
-  if (role === 'B2a') return metric.bandedValue;
+  if (isFounder(role) || isBoardLevel(role)) return metric.exactValue;
+  if (isInvestor(role)) return metric.bandedValue;
   return null;
 }
 
@@ -113,15 +113,15 @@ export type BizTabId =
   | 'data_room';
 
 const TAB_VISIBILITY: Record<BizTabId, BusinessRoleLens[]> = {
-  dashboard: ['B1', 'B2a', 'B2b', 'B3'],
-  calendar: ['B1', 'B2b'],
-  operations: ['B1', 'B2b'],
-  finance: ['B1', 'B2b'],
-  payment_rails: ['B1'],
-  board_investors: ['B1', 'B2a', 'B2b'],
-  compliance_legal: ['B1', 'B2b'],
-  media_proof: ['B1', 'B2a', 'B2b', 'B3'],
-  data_room: ['B1', 'B2a', 'B2b'],
+  dashboard: ['B0', 'B1', 'B2', 'B6', 'B7', 'B8', 'B9', 'B12', 'B13'],
+  calendar: ['B0', 'B1', 'B2', 'B6', 'B8', 'B9', 'B13'],
+  operations: ['B0', 'B1', 'B2', 'B6', 'B8', 'B9', 'B13'],
+  finance: ['B0', 'B1', 'B2', 'B6', 'B8', 'B9', 'B13'],
+  payment_rails: ['B0', 'B1', 'B13'],
+  board_investors: ['B0', 'B1', 'B2', 'B6', 'B7', 'B8', 'B9', 'B13'],
+  compliance_legal: ['B0', 'B1', 'B2', 'B6', 'B8', 'B9', 'B13'],
+  media_proof: ['B0', 'B1', 'B2', 'B6', 'B7', 'B8', 'B9', 'B12', 'B13'],
+  data_room: ['B0', 'B1', 'B2', 'B6', 'B7', 'B8', 'B9', 'B13'],
 };
 
 export function canAccessTab(tabId: BizTabId, role: BusinessRoleLens): boolean {

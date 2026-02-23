@@ -1,7 +1,7 @@
 /**
  * Education Organization Finance v2 — Institutional finance hub.
  * Sub-tabs: Overview | Ledger Truth | Budgets | Receivables | Payables | Aid & Awards | Approvals | Audit
- * RBAC: E4/E5 locked; E3 limited (Overview + Budgets + Receivables only); E1/E2 full 8-tab access.
+ * RBAC: External (E12/E13) + Student (E11) locked; E6/E7 limited (Overview + Budgets + Receivables only); E0–E5 full 8-tab access.
  */
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, ScrollView, FlatList, Pressable, StyleSheet } from 'react-native';
@@ -11,7 +11,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
-import { isDeanLevel, isFacultyLevel } from '@/utils/education-rbac';
+import { isDeanLevel, isFacultyLevel, isStudent, isEnrolled } from '@/utils/education-rbac';
 import {
   getEduFinanceData,
   getReceivableById,
@@ -634,8 +634,8 @@ function BudgetsTab({
 }) {
   const filtered = useMemo(() => {
     let list = budgets;
-    // E3 sees only their department budgets (simulated: first 2 budgets)
-    if (role === 'E3') {
+    // Non-dean faculty (E6/E7) see only their department budgets (simulated: first 2 budgets)
+    if (isFacultyLevel(role) && !isDeanLevel(role)) {
       list = list.slice(0, 2);
     }
     return list;
@@ -787,8 +787,8 @@ function ReceivablesTab({
 }) {
   const filtered = useMemo(() => {
     let list = receivables;
-    // E3 sees a subset (simulated: first 5)
-    if (role === 'E3') {
+    // Non-dean faculty (E6/E7) see a subset (simulated: first 5)
+    if (isFacultyLevel(role) && !isDeanLevel(role)) {
       list = list.slice(0, 5);
     }
     return list;
@@ -1841,8 +1841,8 @@ function AidAwardDetailSheet({
 // =============================================================================
 
 export function EduOrgFinanceV2({ colors, accentColor, role = 'E1' }: Props) {
-  // === RBAC Gate: E4 (Student) and E5 (Public) locked ===
-  if (role === 'E4' || role === 'E5') {
+  // === RBAC Gate: Student (E11) and External (E12/E13) locked ===
+  if (isStudent(role) || !isEnrolled(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />

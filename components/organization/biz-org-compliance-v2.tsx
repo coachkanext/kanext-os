@@ -280,7 +280,7 @@ const POLICY_CATEGORIES: Array<{ key: CompliancePolicy['category'] | 'all'; labe
 // =============================================================================
 
 export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) {
-  // === RBAC Gate: Only B1 and B2b (board, limited view) can access compliance ===
+  // === RBAC Gate: Only board-level roles can access compliance ===
   if (!isBoardLevel(role)) {
     return <BizEmptyLock title="Compliance" message="This section is restricted. Contact the Founder for access." />;
   }
@@ -467,11 +467,11 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
   // RENDER — TAB CONTENT
   // ===================================================================
 
-  // === RBAC-aware sub-tabs: B2b hides incidents detail ===
+  // === RBAC-aware sub-tabs: non-founder board hides incidents detail ===
   const visibleSubTabs = useMemo(() => {
     const all = COMPLIANCE_SUB_TABS.map((t) => ({ id: t.id, label: t.label }));
     if (isFounder(role)) return all;
-    // B2b: hide incidents (sensitive detail)
+    // Board (non-founder): hide incidents (sensitive detail)
     return all.filter((t) => t.id !== 'incidents');
   }, [role]);
 

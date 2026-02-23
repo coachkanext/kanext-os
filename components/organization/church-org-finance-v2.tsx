@@ -378,8 +378,8 @@ function BudgetsTab({
     if (periodFilter !== 'all') {
       list = list.filter((b) => b.period === periodFilter);
     }
-    // C3 sees only their ministry budgets (simulated: show first 2 budgets)
-    if (role === 'C3') {
+    // C3/C4 (limited) see only their ministry budgets (simulated: show first 2 budgets)
+    if (role === 'C3' || role === 'C4') {
       list = list.slice(0, 2);
     }
     return list;
@@ -750,8 +750,8 @@ function ExpensesTab({
 }) {
   const filtered = useMemo(() => {
     let list = expenses;
-    // C3 sees only their own/ministry expenses (simulated: first 4)
-    if (role === 'C3') {
+    // C3/C4 (limited) see only their own/ministry expenses (simulated: first 4)
+    if (role === 'C3' || role === 'C4') {
       list = list.slice(0, 4);
     }
     return list;
@@ -1371,8 +1371,8 @@ function ExpenseDetailSheet({
 // =============================================================================
 
 export function ChurchOrgFinance({ colors, accentColor, role = 'C1' }: Props) {
-  // === RBAC Gate: C5 (Visitor/Public) and C4 (Member) locked ===
-  if (role === 'C5' || role === 'C4') {
+  // === RBAC Gate: C5-C11 locked (hidden per RBAC matrix) ===
+  if (role !== 'C0' && role !== 'C1' && role !== 'C2' && role !== 'C3' && role !== 'C4') {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />

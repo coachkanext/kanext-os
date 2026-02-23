@@ -3,11 +3,12 @@
  * 5-view pill toggle: Overview, People, Groups, Care, Serve.
  *
  * RBAC:
- *   C1 (Senior Pastor) — All 5 views, full detail
- *   C2 (Elder / Board) — All 5 views, full detail
- *   C3 (Staff)         — Overview, People, Groups, Care (no Serve analytics)
- *   C4 (Member)        — Overview, Groups (member-level community access)
- *   C5 (Visitor)       — Overview only (public community info)
+ *   C0 (System Owner)      — All 5 views, full detail
+ *   C1 (Senior Pastor)     — All 5 views, full detail
+ *   C2 (Executive Pastor)  — All 5 views, full detail
+ *   C3-C6 (Staff/Ministry) — Overview, People, Groups, Care (no Serve analytics)
+ *   C7-C8 (Vol/Member)     — Overview, Groups (member-level community access)
+ *   C9-C11 (Attendee+)     — Overview only (public community info)
  */
 
 import React, { useState, useMemo } from 'react';
@@ -60,16 +61,23 @@ const ALL_VIEWS: ViewDef[] = [
 
 function getAvailableViews(role: ChurchRoleLens): ViewDef[] {
   switch (role) {
+    case 'C0':
     case 'C1':
     case 'C2':
-      return ALL_VIEWS; // all 5
+      return ALL_VIEWS; // all 5 — pastoral level
     case 'C3':
-      return ALL_VIEWS.filter((v) => v.id !== 'serve'); // overview, people, groups, care
     case 'C4':
-      return ALL_VIEWS.filter((v) => v.id === 'overview' || v.id === 'groups'); // overview, groups
     case 'C5':
+    case 'C6':
+      return ALL_VIEWS.filter((v) => v.id !== 'serve'); // overview, people, groups, care — staff/ministry level
+    case 'C7':
+    case 'C8':
+      return ALL_VIEWS.filter((v) => v.id === 'overview' || v.id === 'groups'); // overview, groups — volunteer/member
+    case 'C9':
+    case 'C10':
+    case 'C11':
     default:
-      return ALL_VIEWS.filter((v) => v.id === 'overview'); // overview only
+      return ALL_VIEWS.filter((v) => v.id === 'overview'); // overview only — attendee/visitor
   }
 }
 

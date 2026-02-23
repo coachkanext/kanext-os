@@ -3,11 +3,10 @@
  * Sub-tabs: Overview | Buildings | Rooms | Assets | Work Orders |
  *           Maintenance | Inspections | Vendors | Safety & Access | Projects
  * RBAC:
- *   E5 (Public): Locked
- *   E4 (Student): Overview + Buildings + Rooms (read-only)
- *   E3 (Faculty/Staff): All except restricted admin areas
- *   E2 (Provost/Dean): Full 10 sub-tabs
- *   E1 (President/Chancellor): Full 10 sub-tabs
+ *   E12–E13 (Alumni/Board): Locked
+ *   E8–E11 (Advisor → Student): Overview + Buildings + Rooms (read-only)
+ *   E6–E7 (Dept Chair/Faculty): All except restricted admin areas
+ *   E0–E5 (System Owner → Dean): Full 10 sub-tabs
  */
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, ScrollView, FlatList, Pressable, StyleSheet } from 'react-native';
@@ -1785,8 +1784,8 @@ function InspectionDetailSheet({
 // =============================================================================
 
 export function EduOrgFacilitiesV2({ colors, accentColor, role = 'E1' }: Props) {
-  // === RBAC Gate: E5 locked ===
-  if (role === 'E5') {
+  // === RBAC Gate: External (E12/E13) locked ===
+  if (!isEnrolled(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />

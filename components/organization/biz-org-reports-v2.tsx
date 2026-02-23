@@ -1811,7 +1811,7 @@ export function BizOrgReportsV2({ colors, accentColor, role = 'B1' }: Props) {
     const all = BIZ_REPORTS_V2_TABS.map((t) => ({ id: t.id, label: t.label }));
     if (isFounder(role)) return all;
     if (isBoardLevel(role)) return all; // Board: full access
-    // B2a / B5: overview + data_room only
+    // Investor / B5: overview + data_room only
     return all.filter((t) => t.id === 'overview' || t.id === 'data_room');
   }, [role]);
 

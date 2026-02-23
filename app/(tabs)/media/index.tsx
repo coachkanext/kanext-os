@@ -42,7 +42,7 @@ import { ModeFilmRoomV2 } from '@/components/film-room/mode-film-room-v2';
 import { LibraryHub } from '@/components/library/library-hub';
 import { EmptyState } from '@/components/ui/empty-state';
 
-const EMPTY_MODES = new Set<Mode>(['sports', 'business', 'church']);
+const EMPTY_MODES = new Set<Mode>(['sports', 'business', 'church', 'education', 'competition']);
 
 const ACCENT_GOLD = '#FFFFFF';
 
@@ -342,11 +342,24 @@ function LibraryPage({ mode }: { mode: Mode }) {
 // MAIN SCREEN
 // =============================================================================
 
+const COMING_SOON_MODES = new Set<Mode>(['education', 'competition']);
+
 export default function VideoHomeScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const accent = useAccentColor();
   const mode = useMode();
+
+  if (COMING_SOON_MODES.has(mode)) {
+    return (
+      <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ThemedText style={{ fontSize: 32, fontWeight: '800', lineHeight: 40 }}>Coming Soon</ThemedText>
+        <ThemedText style={{ fontSize: 15, opacity: 0.5, textAlign: 'center', marginTop: 8 }}>
+          This mode is under development.{'\n'}Stay tuned for updates.
+        </ThemedText>
+      </ThemedView>
+    );
+  }
   const [activeIndex, setActiveIndex] = useState(0);
   const pagerRef = useRef<PagerView>(null);
 

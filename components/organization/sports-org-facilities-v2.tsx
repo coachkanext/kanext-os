@@ -12,6 +12,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
+import { canSeeSensitive, canSeeCoachActions, canSeeAdminActions } from '@/utils/sports-rbac';
 import {
   getFacilitiesOverview,
   getFacilities,
@@ -707,9 +708,9 @@ function WorkOrderDetailSheet({
 // MAIN EXPORT
 // =============================================================================
 
-export function SportsOrgFacilitiesV2({ colors, accentColor, role = 'R1' }: Props) {
-  // === RBAC Gate: R4/R5 locked ===
-  if (role === 'R4' || role === 'R5') {
+export function SportsOrgFacilitiesV2({ colors, accentColor, role = 'R3' }: Props) {
+  // === RBAC Gate: non-coaching roles locked ===
+  if (!canSeeCoachActions(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
@@ -757,16 +758,10 @@ export function SportsOrgFacilitiesV2({ colors, accentColor, role = 'R1' }: Prop
 
   // === RBAC-aware sub-tabs ===
   const visibleSubTabs = useMemo(() => {
-    if (role === 'R1') return SUB_TABS; // R1: full 6 tabs
-    if (role === 'R3') {
-      // R3 (Asst Coach): all except Access
+    if (canSeeSensitive(role)) return SUB_TABS; // R0-R3: full 6 tabs
+    if (role === 'R4') {
+      // R4 (Assistant Coach/RC): all except Access
       return SUB_TABS.filter((t) => t.id !== 'access');
-    }
-    if (role === 'R2') {
-      // R2 (Player): Overview + Schedule + Game Day
-      return SUB_TABS.filter(
-        (t) => t.id === 'overview' || t.id === 'schedule' || t.id === 'game-day',
-      );
     }
     return SUB_TABS;
   }, [role]);
@@ -777,7 +772,6 @@ export function SportsOrgFacilitiesV2({ colors, accentColor, role = 'R1' }: Prop
       case 'overview':
         return <OverviewTab colors={colors} accentColor={accentColor} />;
       case 'spaces':
-        if (role === 'R2') return null;
         return (
           <SpacesTab
             colors={colors}
@@ -795,7 +789,6 @@ export function SportsOrgFacilitiesV2({ colors, accentColor, role = 'R1' }: Prop
           />
         );
       case 'work-orders':
-        if (role === 'R2') return null;
         return (
           <WorkOrdersTab
             colors={colors}
@@ -813,7 +806,7 @@ export function SportsOrgFacilitiesV2({ colors, accentColor, role = 'R1' }: Prop
           />
         );
       case 'access':
-        if (role !== 'R1') return null;
+        if (!canSeeAdminActions(role)) return null;
         return (
           <AccessTab
             colors={colors}

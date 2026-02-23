@@ -1,7 +1,7 @@
 /**
  * Education Organization Rooms v2 — 3-view sub-tab hub.
  * Sub-tabs: Directory | Domain Map | Governance Rooms
- * RBAC: E1/E2 full, E3 Directory+Domain Map, E4 Directory only (filtered), E5 locked.
+ * RBAC: E0–E5 full, E6/E7 Directory+Domain Map, E8–E11 Directory only (filtered), E12/E13 locked.
  */
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, ScrollView, FlatList, Pressable, StyleSheet } from 'react-native';
@@ -11,7 +11,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
-import { isDeanLevel, isFacultyLevel } from '@/utils/education-rbac';
+import { isDeanLevel, isFacultyLevel, isStudent, isEnrolled } from '@/utils/education-rbac';
 import {
   getEduRoomsV2Data,
   ROOM_TYPE_LABELS,
@@ -214,8 +214,8 @@ function DirectoryTab({
 }) {
   const filteredRooms = useMemo(() => {
     let list = rooms;
-    // E4: filter out incident, governance, committee types and confidential access
-    if (role === 'E4') {
+    // Student (E11): filter out incident, governance, committee types and confidential access
+    if (isStudent(role)) {
       list = list.filter(
         (r) => r.type !== 'incident' && r.type !== 'governance' && r.type !== 'committee' && r.access !== 'confidential',
       );
@@ -697,8 +697,8 @@ function RoomDetailSheet({
 // =============================================================================
 
 export function EduOrgRoomsV2({ colors, accentColor, role = 'E1' }: Props) {
-  // === RBAC Gate: E5 locked ===
-  if (role === 'E5') {
+  // === RBAC Gate: External (E12/E13) locked ===
+  if (!isEnrolled(role)) {
     return (
       <View style={s.lockContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />

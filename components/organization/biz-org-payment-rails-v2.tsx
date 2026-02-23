@@ -807,7 +807,7 @@ function ApprovalsTab({
           </Pressable>
         </View>
         <ReceiptNote />
-        <RoleIndicator roles="B1 / B2b" />
+        <RoleIndicator roles="Founder / Board" />
       </BizCard>
     ),
     [colors, onApprove, onReject]
@@ -1933,7 +1933,7 @@ function ReconcileSheet({
 // =============================================================================
 
 export function BizOrgPaymentRailsV2({ colors, accentColor, role = 'B1' }: Props) {
-  // === RBAC Gate: Only B1 and B2b (board) can access payment rails ===
+  // === RBAC Gate: Only board-level roles can access payment rails ===
   if (!isBoardLevel(role)) {
     return <BizEmptyLock title="Payment Rails" message="This section is restricted. Contact the Founder for access." />;
   }

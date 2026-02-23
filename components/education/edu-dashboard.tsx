@@ -1,6 +1,6 @@
 /**
  * Education Dashboard — 10-block RBAC-gated dashboard for Education Mode.
- * Default demo role: E1 (President / Chancellor) — full access.
+ * Default demo role: E1 (President) — full access.
  *
  * Blocks:
  *   0 — Hero Video (campus montage — video-first, matches business-dashboard-v2 pattern)

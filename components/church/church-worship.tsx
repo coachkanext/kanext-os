@@ -8,11 +8,12 @@
  *   3 -- Library (song catalog grouped by category, usage analytics)
  *
  * RBAC:
- *   C1 (Senior Pastor): All 4 views, full edit/approve access
- *   C2 (Elder/Board):   All 4 views, review access
- *   C3 (Staff/Worker):  Sets, Rehearsals, Team -- no Library management
- *   C4 (Member):        Sets only (upcoming worship sets for congregation)
- *   C5 (Visitor):       Sets only (limited, just upcoming songs)
+ *   C0 (System Owner):         All 4 views, full edit/approve access
+ *   C1 (Senior Pastor):        All 4 views, full edit/approve access
+ *   C2 (Executive Pastor):     All 4 views, review access
+ *   C3-C5 (Ministry/Worship):  Sets, Rehearsals, Team
+ *   C6-C7 (Vol Coord/Vol):     Sets, Rehearsals
+ *   C8-C11 (Member→Visitor):   Sets only
  */
 
 import React, { useState } from 'react';
@@ -55,11 +56,11 @@ interface ViewDef {
 }
 
 const ROLE_RANK: Record<ChurchRoleLens, number> = {
-  C1: 1, C2: 2, C3: 3, C4: 4, C5: 5,
+  C0: 0, C1: 1, C2: 2, C3: 3, C4: 4, C5: 5, C6: 6, C7: 7, C8: 8, C9: 9, C10: 10, C11: 11,
 };
 
 function getAvailableViews(role: ChurchRoleLens): ViewDef[] {
-  // C1/C2: all 4 views (full worship management)
+  // C0/C1/C2: all 4 views (full worship management — pastoral level)
   if (ROLE_RANK[role] <= 2) {
     return [
       { id: 'sets', label: 'Sets' },
@@ -68,15 +69,22 @@ function getAvailableViews(role: ChurchRoleLens): ViewDef[] {
       { id: 'library', label: 'Library' },
     ];
   }
-  // C3: sets, rehearsals, team (worship team worker level)
-  if (role === 'C3') {
+  // C3 (Ministry Director) / C4 (Ministry Leader) / C5 (Worship Leader): sets, rehearsals, team
+  if (role === 'C3' || role === 'C4' || role === 'C5') {
     return [
       { id: 'sets', label: 'Sets' },
       { id: 'rehearsals', label: 'Rehearsals' },
       { id: 'team', label: 'Team' },
     ];
   }
-  // C4/C5: sets only
+  // C6 (Volunteer Coordinator) / C7 (Volunteer): sets, rehearsals
+  if (role === 'C6' || role === 'C7') {
+    return [
+      { id: 'sets', label: 'Sets' },
+      { id: 'rehearsals', label: 'Rehearsals' },
+    ];
+  }
+  // C8-C11 (Member, Attendee, New Believer, Visitor): sets only
   return [
     { id: 'sets', label: 'Sets' },
   ];

@@ -21,7 +21,7 @@ import {
   type RoomCategory,
 } from '@/data/mock-sports-messages';
 
-const DEFAULT_ROLE: SportsRoleLens = 'R1';
+const DEFAULT_ROLE: SportsRoleLens = 'R3';
 
 interface SportsRoomsProps {
   search?: string;

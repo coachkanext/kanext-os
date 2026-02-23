@@ -1581,7 +1581,7 @@ function AgreementDetailSheet({
 // =============================================================================
 
 export function BizOrgLegalV2({ colors, accentColor, role = 'B1' }: Props) {
-  // === RBAC Gate: Only B1 and B2b (board) can access legal ===
+  // === RBAC Gate: Only board-level roles can access legal ===
   if (!isBoardLevel(role)) {
     return <BizEmptyLock title="Legal" message="This section is restricted. Contact the Founder for access." />;
   }

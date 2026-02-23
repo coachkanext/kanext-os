@@ -1,7 +1,7 @@
 /**
  * BusinessBoardInvestors — Board & Investors tab for Business Mode.
  * 6 sub-tabs: Board, Investors, Updates, Dataroom, Resolutions, Distributions.
- * RBAC-gated via BusinessRoleLens: B1 (full), B2b (4 tabs), B2a (2 tabs), B3 (locked).
+ * RBAC-gated via BusinessRoleLens (14-level): Founder (full), Board (4 tabs), Investor (2 tabs), Public (locked).
  */
 
 import React, { useState, useCallback } from 'react';

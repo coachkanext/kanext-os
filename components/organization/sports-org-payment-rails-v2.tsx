@@ -15,6 +15,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
+import { canSeeSensitive, canSeeCoachActions, canSeeAdminActions } from '@/utils/sports-rbac';
 import {
   PAYMENT_RAILS_SUB_TABS,
   getRailsHealth,
@@ -777,9 +778,9 @@ function PaymentOverviewTab({
 // MAIN COMPONENT
 // =============================================================================
 
-export function SportsOrgPaymentRailsV2({ colors, accentColor, role = 'R1' }: Props) {
+export function SportsOrgPaymentRailsV2({ colors, accentColor, role = 'R3' }: Props) {
   // ----- RBAC gate -----
-  if (role === 'R5') return <LockedState colors={colors} />;
+  if (!canSeeCoachActions(role)) return <LockedState colors={colors} />;
 
   // ----- state -----
   const [activeSubTab, setActiveSubTab] = useState<string>('overview');
@@ -793,13 +794,9 @@ export function SportsOrgPaymentRailsV2({ colors, accentColor, role = 'R1' }: Pr
 
   // ----- visible sub-tabs by role -----
   const visibleSubTabs = useMemo(() => {
-    switch (role) {
-      case 'R1': return SUB_TABS; // full 8
-      case 'R2': return SUB_TABS.filter((t) => ['overview', 'now', 'streams', 'approvals'].includes(t.id));
-      case 'R3': return SUB_TABS.filter((t) => ['overview', 'now', 'streams'].includes(t.id));
-      case 'R4': return SUB_TABS.filter((t) => t.id === 'disbursements');
-      default: return SUB_TABS;
-    }
+    if (canSeeSensitive(role)) return SUB_TABS; // R0-R3: full 8
+    if (role === 'R4') return SUB_TABS.filter((t) => ['overview', 'now', 'streams'].includes(t.id)); // R4 (Asst Coach/RC)
+    return SUB_TABS;
   }, [role]);
 
   // Clamp active tab if role changed

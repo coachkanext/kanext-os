@@ -898,8 +898,8 @@ function FacilityDetailSheet({
 // =============================================================================
 
 export function ChurchOrgFacilities({ colors, accentColor, role = 'C1' }: Props) {
-  // === RBAC Gate: C5 hidden, C4 limited (overview only) ===
-  if (role === 'C5') {
+  // === RBAC Gate: C9-C11 hidden, C5-C8 limited (overview only) ===
+  if (role === 'C9' || role === 'C10' || role === 'C11') {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />

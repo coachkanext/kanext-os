@@ -3,10 +3,10 @@
  * Sub-tabs: Overview, Legal Docs, Policies, Risk Register, Controls, Audits,
  * Incidents, Exceptions, Exports.
  *
- * RBAC:
- *   B1  — all 9 sub-tabs
- *   B2b — overview, risk_register, audits, controls, exports (5 tabs)
- *   B2a / B3 — locked
+ * RBAC (14-level: B0-B13):
+ *   Founder (B0/B1) — all 9 sub-tabs
+ *   Board (B2/B6/B8/B9/B13) — overview, risk_register, audits, controls, exports (5 tabs)
+ *   Investor / Public — locked
  */
 
 import React, { useState } from 'react';
@@ -73,7 +73,7 @@ const B2B_TABS: ComplianceSubTab[] = ['overview', 'risk_register', 'audits', 'co
 
 function getAllowedTabs(role: BusinessRoleLens) {
   if (isFounder(role)) return COMPLIANCE_SUB_TABS;
-  if (role === 'B2b') return COMPLIANCE_SUB_TABS.filter((t) => B2B_TABS.includes(t.id));
+  if (isBoardLevel(role) && !isFounder(role)) return COMPLIANCE_SUB_TABS.filter((t) => B2B_TABS.includes(t.id));
   return [];
 }
 
@@ -1029,7 +1029,7 @@ export function BusinessComplianceLegal({ colors, role = 'B1' }: Props) {
     allowedTabs.length > 0 ? allowedTabs[0].id : 'overview',
   );
 
-  // B2a / B3+ — locked out
+  // Investor / Public — locked out
   if (allowedTabs.length === 0) {
     return (
       <ScrollView

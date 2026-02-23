@@ -11,6 +11,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
+import { canSeeSensitive, canSeeCoachActions, canSeeAdminActions } from '@/utils/sports-rbac';
 import {
   PROGRAM_SUB_TABS,
   PROGRAM_IDENTITY,
@@ -1131,17 +1132,15 @@ function PartnerDetailSheet({
 // MAIN COMPONENT
 // =============================================================================
 
-export function SportsOrgProgramV2({ colors, accentColor, role = 'R1' }: Props) {
-  // === RBAC Gate: R4/R5 locked ===
-  if (role === 'R4' || role === 'R5') {
+export function SportsOrgProgramV2({ colors, accentColor, role = 'R3' }: Props) {
+  // === RBAC Gate: non-coaching roles locked ===
+  if (!canSeeCoachActions(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
         <ThemedText style={[s.lockedTitle, { color: colors.text }]}>Program</ThemedText>
         <ThemedText style={[s.lockedMessage, { color: colors.textSecondary }]}>
-          {role === 'R4'
-            ? 'Scouts cannot access Program'
-            : 'Fans cannot access Program'}
+          Program information is not available for your role
         </ThemedText>
       </View>
     );
@@ -1187,15 +1186,9 @@ export function SportsOrgProgramV2({ colors, accentColor, role = 'R1' }: Props) 
 
   // === RBAC-aware sub-tabs ===
   const visibleSubTabs = useMemo(() => {
-    if (role === 'R1') return SUB_TABS; // Full 10 tabs
-    if (role === 'R2') {
-      // Player: Overview + Identity + Context + Calendar
-      return SUB_TABS.filter(
-        (t) => t.id === 'overview' || t.id === 'identity' || t.id === 'context' || t.id === 'calendar',
-      );
-    }
-    if (role === 'R3') {
-      // Assistant Coach: all except Admin (settings)
+    if (canSeeSensitive(role)) return SUB_TABS; // R0-R3: full 10 tabs
+    if (role === 'R4') {
+      // R4 (Assistant Coach/RC): all except Admin (settings)
       return SUB_TABS.filter((t) => t.id !== 'settings');
     }
     return SUB_TABS;
@@ -1209,17 +1202,14 @@ export function SportsOrgProgramV2({ colors, accentColor, role = 'R1' }: Props) 
       case 'identity':
         return <IdentityTab colors={colors} accentColor={accentColor} />;
       case 'leadership':
-        if (role === 'R2') return null;
         return <LeadershipTab colors={colors} accentColor={accentColor} />;
       case 'context':
         return <ContextTab colors={colors} accentColor={accentColor} />;
       case 'rules':
-        if (role === 'R2') return null;
         return <RulesTab colors={colors} accentColor={accentColor} />;
       case 'calendar':
         return <CalendarTab colors={colors} accentColor={accentColor} />;
       case 'decisions':
-        if (role === 'R2') return null;
         return (
           <DecisionsTab
             colors={colors}
@@ -1228,7 +1218,6 @@ export function SportsOrgProgramV2({ colors, accentColor, role = 'R1' }: Props) 
           />
         );
       case 'assets':
-        if (role === 'R2') return null;
         return (
           <AssetsTab
             colors={colors}
@@ -1237,7 +1226,6 @@ export function SportsOrgProgramV2({ colors, accentColor, role = 'R1' }: Props) 
           />
         );
       case 'partners':
-        if (role === 'R2') return null;
         return (
           <PartnersTab
             colors={colors}
@@ -1246,7 +1234,7 @@ export function SportsOrgProgramV2({ colors, accentColor, role = 'R1' }: Props) 
           />
         );
       case 'settings':
-        if (role !== 'R1') return null;
+        if (!canSeeAdminActions(role)) return null;
         return <AdminTab colors={colors} accentColor={accentColor} />;
       default:
         return null;

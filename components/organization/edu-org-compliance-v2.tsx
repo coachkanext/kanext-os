@@ -1,7 +1,7 @@
 /**
  * Education Organization Compliance v2 — 10-view sub-tab hub.
  * Sub-tabs: Overview | Policies | Controls | Evidence | Risk Register | Audits | Findings | Incidents | Exceptions | Exports
- * RBAC: E1/E2 full 10-tab, E3 limited (Overview + Policies + Controls + Evidence submit), E4/E5 locked.
+ * RBAC: E0–E5 full 10-tab, E6/E7 limited (Overview + Policies + Controls + Evidence submit), E8–E13 locked.
  */
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, ScrollView, FlatList, Pressable, StyleSheet } from 'react-native';
@@ -11,7 +11,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
-import { isDeanLevel, isFacultyLevel } from '@/utils/education-rbac';
+import { isDeanLevel, isFacultyLevel, isEnrolled } from '@/utils/education-rbac';
 import {
   getEduComplianceData,
   POLICY_STATUS_LABELS,
@@ -1803,8 +1803,8 @@ function FindingDetailSheet({
 // =============================================================================
 
 export function EduOrgComplianceV2({ colors, accentColor, role = 'E1' }: Props) {
-  // === RBAC Gate: E4/E5 locked ===
-  if (role === 'E4' || role === 'E5') {
+  // === RBAC Gate: Non-faculty roles (E8–E13) locked ===
+  if (!isFacultyLevel(role) && role !== 'E13') {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />

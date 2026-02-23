@@ -10,7 +10,7 @@
  *  3. Action Row — Deck / Data Room / Invest (per-card RBAC)
  *  4. Pipeline — 4 metrics with exact/banded/hidden per role
  *  5. Proof — Institutions, Active Views, IP Docs
- *  6. Top Deals (RBAC, B2b anonymized)
+ *  6. Top Deals (RBAC, Board anonymized)
  *  7. Domain Cards — Cap Table, Metrics, Updates (per-card RBAC)
  */
 
@@ -43,6 +43,8 @@ import {
   isActionCardVisible,
   getPipelineMetricVisibility,
   isBizDomainCardVisible,
+  isFounder,
+  isBoardLevel,
   type BusinessRoleLens,
 } from '@/utils/business-rbac';
 import { openPersonCard } from '@/utils/global-entity-sheets';
@@ -246,7 +248,7 @@ export function BizDashboardV2({ colors, accent }: Props) {
             <View style={[styles.cardAccentStripe, { backgroundColor: '#F59E0B' }]} />
             <ThemedText style={[styles.sectionLabel, { color: accent }]}>TOP DEALS</ThemedText>
             {DEALS.filter((d) => d.priority === 'high').slice(0, 3).map((deal, i, arr) => {
-              const isAnonymized = viewAsRole === 'B2b';
+              const isAnonymized = isBoardLevel(viewAsRole) && !isFounder(viewAsRole);
               const stageColor = STAGE_COLORS[deal.stage] ?? '#A1A1AA';
               const stageLabel = DEAL_STAGE_LABELS[deal.stage] ?? deal.stage;
               return (

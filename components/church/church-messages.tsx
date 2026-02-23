@@ -9,10 +9,10 @@
  *   Pinned  → Auto-pin concept (emergency / service-change / manual)
  *
  * RBAC:
- *   C1/C2 — All 4 views, full admin (approve requests, manage rooms)
- *   C3    — Inbox, Rooms, Requests (staff comms management)
- *   C4    — Inbox, Rooms, Pinned (member access)
- *   C5    — Inbox only (limited thread view)
+ *   C0/C1/C2 — All 4 views, full admin (approve requests, manage rooms)
+ *   C3-C6    — Inbox, Rooms, Requests (staff/ministry comms management)
+ *   C7-C8    — Inbox, Rooms, Pinned (volunteer/member access)
+ *   C9-C11   — Inbox only (limited thread view — attendee through visitor)
  */
 
 import React, { useState } from 'react';
@@ -31,6 +31,7 @@ import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 // RBAC
 import type { ChurchRoleLens } from '@/utils/church-rbac';
 import {
+  isSeniorPastor,
   isElderLevel,
   isStaffLevel,
   isMember,
@@ -63,9 +64,13 @@ const ALL_VIEWS: ViewTab[] = [
 ];
 
 function getAvailableViews(role: ChurchRoleLens): ViewTab[] {
+  // C0/C1/C2: all 4 views (pastoral level)
   if (isElderLevel(role)) return ALL_VIEWS;
-  if (role === 'C3') return ALL_VIEWS.filter((v) => v.id !== 'pinned');
-  if (role === 'C4') return ALL_VIEWS.filter((v) => v.id !== 'requests');
+  // C3-C6: Inbox, Rooms, Requests (staff/ministry level — comms management)
+  if (isStaffLevel(role)) return ALL_VIEWS.filter((v) => v.id !== 'pinned');
+  // C7-C8: Inbox, Rooms, Pinned (volunteer/member access)
+  if (role === 'C7' || role === 'C8') return ALL_VIEWS.filter((v) => v.id !== 'requests');
+  // C9-C11: Inbox only (attendee through visitor)
   return ALL_VIEWS.filter((v) => v.id === 'inbox');
 }
 
@@ -120,7 +125,7 @@ const CATEGORY_ICON: Record<ThreadCategory, string> = {
 function filterThreadsByRole(threads: MessageThread[], role: ChurchRoleLens): MessageThread[] {
   return threads.filter((t) => {
     if (t.visibleTo === 'all') return true;
-    if (t.visibleTo === 'members' && role !== 'C5') return true;
+    if (t.visibleTo === 'members' && isMember(role)) return true;
     if (t.visibleTo === 'staff' && isStaffLevel(role)) return true;
     if (t.visibleTo === 'leadership' && isElderLevel(role)) return true;
     return false;
@@ -456,11 +461,14 @@ function InboxView({ colors, role }: { colors: typeof Colors.light; role: Church
 
 function RoomsView({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
   let visibleRooms = CHAT_ROOMS;
-  if (role === 'C3') {
+  if (isStaffLevel(role) && !isElderLevel(role)) {
+    // C3-C6 (staff/ministry level): assigned rooms only
     visibleRooms = CHAT_ROOMS.filter((r) => r.isAssigned);
-  } else if (role === 'C4') {
+  } else if (role === 'C7' || role === 'C8') {
+    // Volunteer/Member: public, church-wide, or assigned
     visibleRooms = CHAT_ROOMS.filter((r) => r.audienceScope === 'Public' || r.audienceScope === 'Church-wide' || r.isAssigned);
-  } else if (role === 'C5') {
+  } else if (role === 'C9' || role === 'C10' || role === 'C11') {
+    // Attendee/New Believer/Visitor: public only
     visibleRooms = CHAT_ROOMS.filter((r) => r.audienceScope === 'Public');
   }
 
@@ -580,7 +588,7 @@ function RequestsView({ colors, role }: { colors: typeof Colors.light; role: Chu
 
   // Privacy filtering: counseling only visible to pastor-level
   const roleFiltered = PASTORAL_REQUESTS.filter((r) => {
-    if (r.privacy === 'pastor-only' && role !== 'C1') return false;
+    if (r.privacy === 'pastor-only' && !isSeniorPastor(role)) return false;
     if (r.privacy === 'leaders-only' && !isElderLevel(role)) return false;
     return true;
   });

@@ -19,7 +19,7 @@ import {
   type RequestType,
 } from '@/data/mock-sports-messages';
 
-const DEFAULT_ROLE: SportsRoleLens = 'R1';
+const DEFAULT_ROLE: SportsRoleLens = 'R3';
 
 const REQUEST_TYPE_ORDER: RequestType[] = [
   'approval', 'roster', 'schedule', 'recruiting', 'eligibility', 'finance', 'incident',

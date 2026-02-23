@@ -2,10 +2,10 @@
  * Education Organization People V2 — 10-view sub-tab hub.
  * Sub-tabs: Overview | Directory | Org Chart | Seats & Coverage | Permissions |
  *           Domains | Risk | Invites | Audit | Reports
- * RBAC: E1 (President) full 10 tabs, E2 (Provost/Dean) full except Audit,
- *       E3 (Faculty) Overview + Directory + Org Chart + Seats + Domains,
- *       E4 (Student) Overview (limited) + Directory (staff listing only),
- *       E5 (Public) locked screen.
+ * RBAC: E0/E1 (System Owner/President) full 10 tabs, E2–E5 (Provost → Dean) full except Audit,
+ *       E6/E7 (Dept Chair/Faculty) Overview + Directory + Org Chart + Seats + Domains,
+ *       E8–E11 (Advisor → Student) Overview (limited) + Directory (staff listing only),
+ *       E12/E13 (Alumni/Board) locked screen.
  */
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, ScrollView, FlatList, Pressable, StyleSheet } from 'react-native';
@@ -1578,7 +1578,7 @@ function SeatDetailSheet({
 // =============================================================================
 
 export function EduOrgPeopleV2({ colors, accentColor, role = 'E1' }: Props) {
-  // === RBAC Gate: E5 locked ===
+  // === RBAC Gate: External (E12/E13) locked ===
   if (!isEnrolled(role)) {
     return <LockedState colors={colors} />;
   }

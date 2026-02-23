@@ -493,7 +493,7 @@ export function UniversalEventSheet({
   // ─────────────────────────────────────────────────────────────────────────
 
   const renderOps = () => {
-    const isReadOnly = roleLens === 'CO3';
+    const isReadOnly = roleLens === 'CO6';
     return (
       <View style={styles.tabContent}>
         <SectionLabel label="OPS CHECKLISTS" colors={colors} />
@@ -675,7 +675,7 @@ export function UniversalEventSheet({
   // ─────────────────────────────────────────────────────────────────────────
 
   const renderIncidents = () => {
-    const isReadOnly = roleLens === 'CO3';
+    const isReadOnly = roleLens === 'CO6';
     return (
       <View style={styles.tabContent}>
         <SectionLabel label="INCIDENTS" colors={colors} />

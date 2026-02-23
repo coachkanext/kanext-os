@@ -3,10 +3,9 @@
  * Views: Give Now | Funds | History | Pledges | Finance Console | Settings
  *
  * RBAC:
- *   C1/C2 — All 6 views, full financial governance
- *   C3    — Give Now, Funds, History, Pledges (staff can give + see history)
- *   C4    — Give Now, Funds, History, Pledges (member default = Give Now)
- *   C5    — Give Now only (visitor one-time gift)
+ *   C0/C1/C2 — All 6 views, full financial governance (pastoral level)
+ *   C3-C10   — Give Now, Funds, History, Pledges (staff/member — can give + see history)
+ *   C11      — Give Now only (visitor one-time gift)
  */
 
 import React, { useState } from 'react';
@@ -57,11 +56,11 @@ function getAvailableViews(role: ChurchRoleLens): ViewDef[] {
     { id: 'finance-console', label: 'Finance Console' },
     { id: 'settings', label: 'Settings' },
   ];
-  // C1/C2: all 6 views
+  // C0/C1/C2: all 6 views (pastoral level)
   if (isElderLevel(role)) return all;
-  // C3/C4: give-now, funds, history, pledges
+  // C3-C10: give-now, funds, history, pledges (staff through member)
   if (isStaffLevel(role) || isMember(role)) return all.filter(v => ['give-now', 'funds', 'history', 'pledges'].includes(v.id));
-  // C5: give-now only
+  // C11: give-now only (visitor one-time gift)
   return [all[0]];
 }
 
@@ -465,7 +464,7 @@ function GiveNowView({ colors, role }: { colors: typeof Colors.light; role: Chur
   const [selectedFrequency, setSelectedFrequency] = useState<Frequency>('one-time');
   const [coverFees, setCoverFees] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const isVisitor = role === 'C5';
+  const isVisitor = role === 'C11';
 
   const activeAmount = selectedAmount ?? (customAmount ? parseFloat(customAmount) : 0);
   const fundLabel = GIVING_FUNDS_QUICK.find(f => f.id === selectedFund)?.name ?? 'General';

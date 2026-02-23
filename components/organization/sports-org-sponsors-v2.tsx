@@ -12,6 +12,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
+import { canSeeSensitive, canSeeCoachActions, canSeeAdminActions } from '@/utils/sports-rbac';
 import {
   getSponsorsOverview,
   getSponsors,
@@ -822,9 +823,9 @@ function InvoiceDetailSheet({ visible, onClose, invoice, colors, accentColor }: 
 // MAIN EXPORT
 // =============================================================================
 
-export function SportsOrgSponsorsV2({ colors, accentColor, role = 'R1' }: Props) {
-  // === RBAC Gate: R4/R5 locked ===
-  if (role === 'R4' || role === 'R5') {
+export function SportsOrgSponsorsV2({ colors, accentColor, role = 'R3' }: Props) {
+  // === RBAC Gate: non-coaching roles locked ===
+  if (!canSeeCoachActions(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
@@ -884,16 +885,12 @@ export function SportsOrgSponsorsV2({ colors, accentColor, role = 'R1' }: Props)
 
   // === RBAC-aware sub-tabs ===
   const visibleSubTabs = useMemo(() => {
-    if (role === 'R1') return SUB_TABS; // R1: full 7 tabs
-    if (role === 'R3') {
-      // R3 (Asst Coach): Overview + Sponsors + Deliverables
+    if (canSeeSensitive(role)) return SUB_TABS; // R0-R3: full 7 tabs
+    if (role === 'R4') {
+      // R4 (Assistant Coach/RC): Overview + Sponsors + Deliverables
       return SUB_TABS.filter(
         (t) => t.id === 'overview' || t.id === 'sponsors' || t.id === 'deliverables',
       );
-    }
-    if (role === 'R2') {
-      // R2 (Player): Overview only
-      return SUB_TABS.filter((t) => t.id === 'overview');
     }
     return SUB_TABS;
   }, [role]);
@@ -904,7 +901,6 @@ export function SportsOrgSponsorsV2({ colors, accentColor, role = 'R1' }: Props)
       case 'overview':
         return <OverviewTab colors={colors} accentColor={accentColor} />;
       case 'sponsors':
-        if (role === 'R2') return null;
         return (
           <SponsorsTab
             colors={colors}
@@ -914,7 +910,7 @@ export function SportsOrgSponsorsV2({ colors, accentColor, role = 'R1' }: Props)
           />
         );
       case 'pipeline':
-        if (role !== 'R1') return null;
+        if (!canSeeAdminActions(role)) return null;
         return (
           <PipelineTab
             colors={colors}
@@ -923,7 +919,6 @@ export function SportsOrgSponsorsV2({ colors, accentColor, role = 'R1' }: Props)
           />
         );
       case 'deliverables':
-        if (role === 'R2') return null;
         return (
           <DeliverablesTab
             colors={colors}
@@ -933,7 +928,7 @@ export function SportsOrgSponsorsV2({ colors, accentColor, role = 'R1' }: Props)
           />
         );
       case 'proof':
-        if (role !== 'R1') return null;
+        if (!canSeeAdminActions(role)) return null;
         return (
           <ProofTab
             colors={colors}
@@ -942,7 +937,7 @@ export function SportsOrgSponsorsV2({ colors, accentColor, role = 'R1' }: Props)
           />
         );
       case 'invoices':
-        if (role !== 'R1') return null;
+        if (!canSeeAdminActions(role)) return null;
         return (
           <InvoicesTab
             colors={colors}
@@ -952,7 +947,7 @@ export function SportsOrgSponsorsV2({ colors, accentColor, role = 'R1' }: Props)
           />
         );
       case 'renewals':
-        if (role !== 'R1') return null;
+        if (!canSeeAdminActions(role)) return null;
         return (
           <RenewalsTab
             colors={colors}

@@ -4,17 +4,17 @@
  * Sections:
  *   0 — EntityScopeBar (active entity)
  *   1 — Command Header (status strip)
- *   2 — Top Blockers (B1/B2b only; B2b sees critical/high only)
+ *   2 — Top Blockers (Founder/Board only; Board sees critical/high only)
  *   3 — Initiatives Board
  *   4 — Projects
- *   5 — Decision Queue (B1 full; B2b review-only)
+ *   5 — Decision Queue (Founder full; Board review-only)
  *   6 — Ops Feed (reverse-chronological)
  *
- * RBAC:
- *   B1  — Full access
- *   B2b — Blockers (critical/high), Initiatives, Projects, Decisions (review)
- *   B2a — Summary card only (initiative count + project count)
- *   B3  — Locked
+ * RBAC (14-level: B0-B13):
+ *   Founder (B0/B1) — Full access
+ *   Board (B2/B6/B8/B9/B13) — Blockers (critical/high), Initiatives, Projects, Decisions (review)
+ *   Investor (B6/B7) — Summary card only (initiative count + project count)
+ *   Public — Locked
  */
 
 import React, { useState } from 'react';
@@ -645,9 +645,9 @@ export function BusinessOperations({ colors, role = 'B1' }: Props) {
   };
 
   // ---------------------------------------------------------------------------
-  // RBAC: B3/B4/B5 — fully locked
+  // RBAC: non-founder, non-board, non-investor — fully locked
   // ---------------------------------------------------------------------------
-  if (role === 'B3' || role === 'B4' || role === 'B5') {
+  if (!isFounder(role) && !isBoardLevel(role) && !isInvestor(role)) {
     return (
       <ScrollView
         style={[s.root, { backgroundColor: colors.background }]}
@@ -671,9 +671,9 @@ export function BusinessOperations({ colors, role = 'B1' }: Props) {
   }
 
   // ---------------------------------------------------------------------------
-  // RBAC: B2a — retail summary only
+  // RBAC: Retail investor — summary only
   // ---------------------------------------------------------------------------
-  if (role === 'B2a') {
+  if (isInvestor(role) && !isBoardLevel(role)) {
     return (
       <ScrollView
         style={[s.root, { backgroundColor: colors.background }]}
@@ -695,19 +695,19 @@ export function BusinessOperations({ colors, role = 'B1' }: Props) {
   }
 
   // ---------------------------------------------------------------------------
-  // RBAC: B1 (Founder) + B2b (Board) — full operations view
+  // RBAC: Founder + Board-level — full operations view
   // ---------------------------------------------------------------------------
 
   const founderAccess = isFounder(role);
 
-  // Blockers — B2b sees only critical/high
+  // Blockers — non-founder board sees only critical/high
   const visibleBlockers = founderAccess
     ? TOP_BLOCKERS
     : TOP_BLOCKERS.filter(
         (b) => b.severity === 'critical' || b.severity === 'high',
       );
 
-  // Decisions — B2b sees only review type
+  // Decisions — non-founder board sees only review type
   const visibleDecisions = founderAccess
     ? DECISION_QUEUE
     : DECISION_QUEUE.filter((d) => d.type === 'review');

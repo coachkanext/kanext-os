@@ -2,10 +2,9 @@
  * Church Discipleship — 5-view pill-toggled discipleship tab.
  * Views: My Path | Pathways | Groups | Resources | Leader Tools
  * RBAC:
- *   C1/C2 — All 5 views (full discipleship management + leader tools)
- *   C3    — My Path, Pathways, Groups, Resources (staff — manage groups & resources)
- *   C4    — My Path, Pathways, Groups, Resources (member — personal growth)
- *   C5    — Pathways only (explore what the church offers)
+ *   C0/C1/C2 — All 5 views (full discipleship management + leader tools)
+ *   C3-C8    — My Path, Pathways, Groups, Resources (staff through member)
+ *   C9-C11   — Pathways only (attendee through visitor — explore what the church offers)
  */
 
 import React, { useState } from 'react';
@@ -60,15 +59,16 @@ const ALL_VIEWS: ViewOption[] = [
 ];
 
 function getAvailableViews(role: ChurchRoleLens): ViewOption[] {
-  if (role === 'C5') return ALL_VIEWS.filter((v) => v.id === 'pathways');
-  if (role === 'C4' || role === 'C3') return ALL_VIEWS.filter((v) => v.id !== 'leader-tools');
-  // C1, C2 — all 5 views
+  // C9-C11 (Attendee, New Believer, Visitor): Pathways only
+  if (role === 'C9' || role === 'C10' || role === 'C11') return ALL_VIEWS.filter((v) => v.id === 'pathways');
+  // C3-C8 (Ministry Director through Member): all except leader tools
+  if (!isElderLevel(role)) return ALL_VIEWS.filter((v) => v.id !== 'leader-tools');
+  // C0/C1/C2 — all 5 views (pastoral level)
   return ALL_VIEWS;
 }
 
 function getDefaultView(role: ChurchRoleLens): DiscipleshipView {
-  if (role === 'C5') return 'pathways';
-  if (role === 'C1' || role === 'C2') return 'my-path';
+  if (role === 'C9' || role === 'C10' || role === 'C11') return 'pathways';
   return 'my-path';
 }
 
@@ -818,7 +818,7 @@ function MyPathView({ colors, role }: { colors: typeof Colors.light; role: Churc
 // =============================================================================
 
 function PathwaysView({ colors, role }: { colors: typeof Colors.light; role: ChurchRoleLens }) {
-  const isPublic = role === 'C5';
+  const isPublic = role === 'C9' || role === 'C10' || role === 'C11';
 
   return (
     <>

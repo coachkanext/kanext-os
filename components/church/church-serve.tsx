@@ -3,10 +3,10 @@
  * Views: Overview | Teams | Schedule | Volunteers | Training | Requests
  *
  * RBAC:
- *   C1/C2 — All 6 views, full admin
- *   C3    — Overview, Teams, Schedule, Volunteers, Requests (5 views)
- *   C4    — Overview, Schedule (own), Requests (own) (3 views)
- *   C5    — Overview only (public volunteer info page)
+ *   C0/C1/C2    — All 6 views, full admin (pastoral level)
+ *   C3-C5       — Overview, Teams, Schedule, Volunteers, Requests (5 views)
+ *   C6-C7       — Overview, Schedule (own), Requests (own) (3 views)
+ *   C8-C11      — Overview only (member through visitor)
  */
 
 import React, { useState } from 'react';
@@ -59,17 +59,17 @@ const ALL_VIEWS: ViewDef[] = [
 ];
 
 function getAvailableViews(role: ChurchRoleLens): ViewDef[] {
-  // C1/C2: all 6 views
+  // C0/C1/C2: all 6 views (pastoral level — full admin)
   if (isElderLevel(role)) return ALL_VIEWS;
-  // C3: overview, teams, schedule, volunteers, requests
-  if (role === 'C3') return ALL_VIEWS.filter((v) =>
+  // C3-C5: overview, teams, schedule, volunteers, requests (ministry/worship level)
+  if (role === 'C3' || role === 'C4' || role === 'C5') return ALL_VIEWS.filter((v) =>
     ['overview', 'teams', 'schedule', 'volunteers', 'requests'].includes(v.id),
   );
-  // C4: overview, schedule, requests (member sees their serve + swap requests)
-  if (role === 'C4') return ALL_VIEWS.filter((v) =>
+  // C6-C7: overview, schedule, requests (volunteer coordinator / volunteer — own serve + swap requests)
+  if (role === 'C6' || role === 'C7') return ALL_VIEWS.filter((v) =>
     ['overview', 'schedule', 'requests'].includes(v.id),
   );
-  // C5: overview only
+  // C8-C11: overview only (member through visitor)
   return ALL_VIEWS.filter((v) => v.id === 'overview');
 }
 
@@ -1264,8 +1264,8 @@ function RequestsView({ colors, role }: { colors: typeof Colors.light; role: Chu
           })}
         </Card>
 
-        {/* Submit request CTA for C4 members */}
-        {role === 'C4' && (
+        {/* Submit request CTA for volunteers/members (C6-C7) */}
+        {(role === 'C6' || role === 'C7') && (
           <Pressable
             style={[s.submitRequestBtn, { borderColor: colors.border }]}
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}

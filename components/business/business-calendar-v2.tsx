@@ -1016,7 +1016,7 @@ function AgendaRow({
   isLast: boolean;
   role: BusinessRoleLens;
 }) {
-  const showRSVP = event.isPublic && (role === 'B2a' || role === 'B3');
+  const showRSVP = event.isPublic && (isInvestor(role) || role === 'B12');
   return (
     <View
       style={[
@@ -1460,8 +1460,8 @@ export function BusinessCalendarV2({ colors, role = 'B1' }: Props) {
         colors={colors}
       />
 
-      {/* Board: Request Agenda Item CTA (B2b only) */}
-      {role === 'B2b' && <BoardRequestAgendaCTA colors={colors} />}
+      {/* Board: Request Agenda Item CTA (board member only) */}
+      {isBoardLevel(role) && !isFounder(role) && <BoardRequestAgendaCTA colors={colors} />}
 
       {/* Header: View toggle, search, date selector, category filters */}
       <CalendarHeader

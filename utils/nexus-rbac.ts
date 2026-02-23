@@ -108,54 +108,93 @@ export function requiresAuditNote(actionType: string): boolean {
 // =============================================================================
 
 export function mapRoleToRBAC(role: string, mode: Mode): RBACLevel {
-  // Sports mode
+  // Sports mode (R0-R13 → Nexus R1-R9)
   if (mode === 'sports') {
     switch (role) {
       case 'admin':
+      case 'athletic_director':
       case 'head_coach':
       case 'gm': return 'R1';
-      case 'assistant_coach': return 'R4';
-      case 'scout': return 'R4';
-      case 'student_athlete': return 'R6';
-      case 'fan': return 'R9';
-      case 'donor': return 'R5';
-      case 'media': return 'R4';
+      case 'assistant_coach': return 'R3';
+      case 'medical':
+      case 'academic': return 'R4';
+      case 'student_athlete':
+      case 'player': return 'R6';
+      case 'family': return 'R7';
+      case 'scout':
       case 'agent': return 'R5';
+      case 'donor':
+      case 'booster': return 'R5';
+      case 'fan': return 'R9';
       default: return 'R9';
     }
   }
-  // Competition mode
+  // Competition mode (CO0-CO11 → Nexus R1-R9)
   if (mode === 'competition') {
     switch (role) {
-      case 'league_admin': return 'R1';
-      case 'team_owner': return 'R2';
-      case 'driver': return 'R6';
+      case 'league_admin':
+      case 'commissioner': return 'R1';
+      case 'deputy_commissioner':
+      case 'event_director': return 'R2';
+      case 'head_official': return 'R3';
+      case 'team_manager':
+      case 'team_owner': return 'R4';
+      case 'driver':
+      case 'player': return 'R6';
+      case 'media': return 'R5';
+      case 'sponsor': return 'R5';
+      case 'fan': return 'R9';
       default: return 'R9';
     }
   }
-  // Church mode
+  // Church mode (C0-C11 → Nexus R1-R9)
   if (mode === 'church') {
     switch (role) {
-      case 'leadership': return 'R1';
-      case 'staff': return 'R3';
+      case 'leadership':
+      case 'senior_pastor': return 'R1';
+      case 'executive_pastor': return 'R2';
+      case 'ministry_director': return 'R3';
+      case 'ministry_leader': return 'R4';
+      case 'staff':
+      case 'worship_leader': return 'R4';
+      case 'volunteer': return 'R6';
       case 'member': return 'R7';
+      case 'attendee': return 'R8';
+      case 'visitor': return 'R9';
       default: return 'R9';
     }
   }
-  // Business mode
+  // Business mode (B0-B13 → Nexus R1-R9)
   if (mode === 'business') {
     switch (role) {
-      case 'founder': return 'R1';
+      case 'founder':
+      case 'ceo': return 'R1';
+      case 'co_founder':
+      case 'c_suite': return 'R2';
+      case 'department_head':
+      case 'vp': return 'R3';
+      case 'team_lead':
+      case 'manager': return 'R4';
+      case 'employee': return 'R6';
       case 'investor': return 'R5';
-      case 'viewer': return 'R9';
+      case 'board_member': return 'R5';
+      case 'viewer':
+      case 'public': return 'R9';
       default: return 'R9';
     }
   }
-  // Education mode
+  // Education mode (E0-E13 → Nexus R1-R9)
   if (mode === 'education') {
     switch (role) {
-      case 'faculty': return 'R2';
+      case 'president': return 'R1';
+      case 'provost':
+      case 'dean': return 'R2';
+      case 'department_chair': return 'R3';
+      case 'faculty': return 'R4';
+      case 'advisor': return 'R5';
       case 'student': return 'R7';
+      case 'alumni': return 'R8';
+      case 'trustee': return 'R5';
       default: return 'R9';
     }
   }

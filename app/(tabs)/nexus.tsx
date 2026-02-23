@@ -392,10 +392,23 @@ function NexusScreenContent() {
 
 export default function NexusScreen() {
   const { state: authState } = useAuth();
+  const mode = useMode();
 
   // Show locked state if not authenticated
   if (!authState.isAuthenticated) {
     return <NexusLockedState />;
+  }
+
+  // Coming soon for unreleased modes
+  if (mode === 'education' || mode === 'competition') {
+    return (
+      <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ fontSize: 32, fontWeight: '800', lineHeight: 40, color: '#fff' }}>Coming Soon</Text>
+        <Text style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', textAlign: 'center', marginTop: 8 }}>
+          This mode is under development.{'\n'}Stay tuned for updates.
+        </Text>
+      </ThemedView>
+    );
   }
 
   return (

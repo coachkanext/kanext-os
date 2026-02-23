@@ -5,11 +5,11 @@
  * Sub-tabs: Now | Wallets | Batches | Approvals | Release Queue | Exceptions |
  *           Disputes & Returns | Receipts | Admin
  *
- * RBAC:
- *   B1 (Founder): Full access to all 9 sections.
- *   B2b (Board): Board Rails Health — health strip, major exceptions, governance receipts, monthly summaries.
- *   B2a (Retail): Curated proof — health indicator, monthly flows, compliance proof.
- *   B3 (Public): Locked with optional branding.
+ * RBAC (14-level: B0-B13):
+ *   Founder (B0/B1): Full access to all 9 sections.
+ *   Board (B2/B6/B8/B9/B13): Board Rails Health — health strip, major exceptions, governance receipts, monthly summaries.
+ *   Investor (B7): Curated proof — health indicator, monthly flows, compliance proof.
+ *   Public (B12): Locked with optional branding.
  */
 
 import React, { useState } from 'react';
@@ -34,7 +34,7 @@ import {
   statusColor,
   statusVariant,
 } from '@/components/business/business-shared';
-import { isFounder } from '@/utils/business-rbac';
+import { isFounder, isBoardLevel, isInvestor } from '@/utils/business-rbac';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
 import { DEFAULT_ENTITY } from '@/data/mock-business-v3';
 
@@ -1072,8 +1072,8 @@ export function BusinessPaymentRails({ colors, role = 'B1' }: Props) {
     );
   }
 
-  // B2a (Retail Investor): Curated proof — health indicator, monthly flows, compliance proof
-  if (role === 'B2a') {
+  // Retail Investor: Curated proof — health indicator, monthly flows, compliance proof
+  if (isInvestor(role) && !isBoardLevel(role)) {
     const statusClr = overallStatusColor(RAILS_OVERALL_STATUS);
     const majorExceptions = EXCEPTIONS.filter((e) => e.severity === 'critical' && e.status !== 'resolved');
     const settledBatches = PAYOUT_BATCHES.filter((b) => b.status === 'settled');
@@ -1162,8 +1162,8 @@ export function BusinessPaymentRails({ colors, role = 'B1' }: Props) {
     );
   }
 
-  // B2b (Board/Strategic Investor): Board Rails Health — health strip, major exceptions, governance receipts, monthly summaries
-  if (role === 'B2b') {
+  // Board-level: Board Rails Health — health strip, major exceptions, governance receipts, monthly summaries
+  if (isBoardLevel(role) && !isFounder(role)) {
     const statusClr = overallStatusColor(RAILS_OVERALL_STATUS);
     const majorExceptions = EXCEPTIONS.filter((e) => e.severity === 'critical' || e.severity === 'high');
     const governanceReceipts = RECEIPTS.filter((r) => ['Partnership', 'Donations', 'Banking'].includes(r.category));
@@ -2026,7 +2026,7 @@ const s = StyleSheet.create({
     letterSpacing: 0.3,
   },
 
-  // ---- B2a Retail View ----
+  // ---- Retail Investor View ----
   retailHealthRow: {
     flexDirection: 'row',
     gap: Spacing.md,
@@ -2078,7 +2078,7 @@ const s = StyleSheet.create({
     fontWeight: '600',
   },
 
-  // ---- B2b Board View ----
+  // ---- Board-level View ----
   boardExceptionRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',

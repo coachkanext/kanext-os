@@ -3,10 +3,10 @@
  * Sub-tabs: Overview | Sponsors | Pipeline | Agreements | Deliverables |
  *           Proof | Payments | Risk / Compliance | Contacts | Reports
  * RBAC:
- *   E5 (Public): limited — only curated "Partners" view if enabled
- *   E4 (Student): locked
- *   E3 (Faculty/Staff): limited — view dept sponsors + own deliverables (Sponsors read-only + Deliverables)
- *   E1/E2 (President/Dean): full access
+ *   E12–E13 (Alumni/Board): limited — only curated "Partners" view if enabled
+ *   E8–E11 (Advisor → Student): locked
+ *   E6–E7 (Dept Chair/Faculty): limited — view dept sponsors + own deliverables (Sponsors read-only)
+ *   E0–E5 (System Owner → Dean): full access
  */
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, ScrollView, FlatList, Pressable, StyleSheet } from 'react-native';
@@ -16,7 +16,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
-import { isDeanLevel, isFacultyLevel } from '@/utils/education-rbac';
+import { isDeanLevel, isFacultyLevel, isStudent, isEnrolled } from '@/utils/education-rbac';
 import {
   getEduSponsorsData,
   SPONSOR_TYPE_LABELS,
@@ -1722,8 +1722,8 @@ function PipelineDetailSheet({
 // =============================================================================
 
 export function EduOrgSponsorsV2({ colors, accentColor, role = 'E1' }: Props) {
-  // === RBAC Gate: E4 locked ===
-  if (role === 'E4') {
+  // === RBAC Gate: Non-faculty enrolled (E8–E11) locked ===
+  if (isEnrolled(role) && !isFacultyLevel(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
@@ -1735,8 +1735,8 @@ export function EduOrgSponsorsV2({ colors, accentColor, role = 'E1' }: Props) {
     );
   }
 
-  // === RBAC Gate: E5 limited — only curated "Partners" view ===
-  if (role === 'E5') {
+  // === RBAC Gate: External (E12/E13) limited — only curated "Partners" view ===
+  if (!isEnrolled(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="building.2.fill" size={40} color={colors.textTertiary} />
@@ -1811,9 +1811,9 @@ export function EduOrgSponsorsV2({ colors, accentColor, role = 'E1' }: Props) {
     return SUB_TABS;
   }, [role]);
 
-  // Set default active tab for E3 if needed
+  // Set default active tab for non-dean faculty (E6/E7) if needed
   const effectiveActiveTab = useMemo(() => {
-    if (role === 'E3' && activeSubTab === 'overview') return 'sponsors';
+    if (isFacultyLevel(role) && !isDeanLevel(role) && activeSubTab === 'overview') return 'sponsors';
     return activeSubTab;
   }, [role, activeSubTab]);
 
@@ -1830,7 +1830,7 @@ export function EduOrgSponsorsV2({ colors, accentColor, role = 'E1' }: Props) {
             accentColor={accentColor}
             sponsors={data.sponsors}
             onSelectSponsor={handleSelectSponsor}
-            readOnly={role === 'E3'}
+            readOnly={isFacultyLevel(role) && !isDeanLevel(role)}
           />
         );
       case 'pipeline':

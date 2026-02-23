@@ -10,10 +10,10 @@
  *   5 — Budget & Resources (budget breakdown, revenue by sport, facilities, equipment, travel)
  *
  * RBAC:
- *   E1/E2 — All views, full budget/compliance data
- *   E3    — Overview / Teams / Athlete Support / Compliance, limited budget
- *   E4    — Overview / Teams only (student/fan view)
- *   E5    — Overview only (public scoreboard)
+ *   E0/E1/E2 — All views, full budget/compliance data (System Owner / President / Provost)
+ *   E3–E7    — Overview / Teams / Athlete Support / Compliance, limited budget (VP → Faculty)
+ *   E8–E11   — Overview / Teams only (Advisor / Admissions / FinAid / Student)
+ *   E12–E13  — Overview only (Alumni / Board — public scoreboard)
  */
 
 import React, { useState } from 'react';
@@ -64,21 +64,22 @@ interface ViewDef {
 }
 
 const ALL_VIEWS: ViewDef[] = [
-  { id: 'overview', label: 'Overview', minRole: 'E5' },
-  { id: 'teams', label: 'Teams', minRole: 'E4' },
-  { id: 'athlete-support', label: 'Athlete Support', minRole: 'E3' },
-  { id: 'compliance', label: 'Compliance & Eligibility', minRole: 'E3' },
-  { id: 'recruiting', label: 'Recruiting Bridge', minRole: 'E2' },
-  { id: 'budget', label: 'Budget & Resources', minRole: 'E2' },
+  { id: 'overview', label: 'Overview', minRole: 'E13' },
+  { id: 'teams', label: 'Teams', minRole: 'E11' },
+  { id: 'athlete-support', label: 'Athlete Support', minRole: 'E7' },
+  { id: 'compliance', label: 'Compliance & Eligibility', minRole: 'E7' },
+  { id: 'recruiting', label: 'Recruiting Bridge', minRole: 'E5' },
+  { id: 'budget', label: 'Budget & Resources', minRole: 'E5' },
 ];
 
 const ROLE_RANK: Record<EducationRoleLens, number> = {
-  E1: 1, E2: 2, E3: 3, E4: 4, E5: 5,
+  E0: 0, E1: 1, E2: 2, E3: 3, E4: 4, E5: 5, E6: 6, E7: 7,
+  E8: 8, E9: 9, E10: 10, E11: 11, E12: 12, E13: 13,
 };
 
 function getVisibleViews(role: EducationRoleLens): ViewDef[] {
-  // E3 gets limited budget (we show it) but not full recruiting
-  if (role === 'E3') {
+  // Faculty-level (E3–E7) gets limited views — no recruiting or budget
+  if (isFacultyLevel(role) && !isDeanLevel(role)) {
     return ALL_VIEWS.filter((v) =>
       v.id === 'overview' || v.id === 'teams' || v.id === 'athlete-support' || v.id === 'compliance'
     );

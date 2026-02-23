@@ -990,8 +990,8 @@ export const TRUTH_STRIP_KPIS: TruthStripKPI[] = [
 // RBAC HELPERS — Sub-tab filtering by role
 // =============================================================================
 
-/** B2b sees a subset: overview, budgets, revenue, entities, board_pack */
-const B2B_FINANCE_TABS: FinanceSubTab[] = [
+/** Board-level sees a subset: overview, budgets, revenue, entities, board_pack */
+const BOARD_FINANCE_TABS: FinanceSubTab[] = [
   'overview',
   'budgets',
   'revenue',
@@ -999,26 +999,31 @@ const B2B_FINANCE_TABS: FinanceSubTab[] = [
   'board_pack',
 ];
 
-/** B2a sees overview only */
-const B2A_FINANCE_TABS: FinanceSubTab[] = ['overview'];
+/** Retail investor sees overview only */
+const RETAIL_FINANCE_TABS: FinanceSubTab[] = ['overview'];
 
 /**
  * Returns the list of finance sub-tabs visible for a given role.
- * B1: all 14 sub-tabs
- * B2b: 5 sub-tabs (overview, budgets, revenue, entities, board_pack)
- * B2a: 1 sub-tab (overview — with banded values)
- * B3/B4/B5: empty (finance tab is locked)
+ * B0/B1/B13: all 14 sub-tabs (founder / system owner / holdco)
+ * B2/B6/B8/B9: 5 sub-tabs (board-level)
+ * B7: 1 sub-tab (retail investor — overview with banded values)
+ * Others: empty (finance tab is locked)
  */
 export function getFinanceSubTabs(
   role: string,
 ): { id: FinanceSubTab; label: string }[] {
   switch (role) {
+    case 'B0':
     case 'B1':
+    case 'B13':
       return FINANCE_SUB_TABS;
-    case 'B2b':
-      return FINANCE_SUB_TABS.filter((t) => B2B_FINANCE_TABS.includes(t.id));
-    case 'B2a':
-      return FINANCE_SUB_TABS.filter((t) => B2A_FINANCE_TABS.includes(t.id));
+    case 'B2':
+    case 'B6':
+    case 'B8':
+    case 'B9':
+      return FINANCE_SUB_TABS.filter((t) => BOARD_FINANCE_TABS.includes(t.id));
+    case 'B7':
+      return FINANCE_SUB_TABS.filter((t) => RETAIL_FINANCE_TABS.includes(t.id));
     default:
       return [];
   }

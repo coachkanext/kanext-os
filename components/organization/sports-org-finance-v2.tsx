@@ -11,6 +11,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
+import { canSeeSensitive, canSeeCoachActions, canSeeAdminActions } from '@/utils/sports-rbac';
 import {
   FINANCE_SUB_TABS,
   BUDGET_BUCKETS,
@@ -1160,9 +1161,9 @@ function VendorDetailSheet({
 // MAIN EXPORT
 // =============================================================================
 
-export function SportsOrgFinanceV2({ colors, accentColor, role = 'R1' }: Props) {
-  // === RBAC Gate: R4/R5 locked ===
-  if (role === 'R4' || role === 'R5') {
+export function SportsOrgFinanceV2({ colors, accentColor, role = 'R3' }: Props) {
+  // === RBAC Gate: non-coaching roles locked ===
+  if (!canSeeCoachActions(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
@@ -1214,13 +1215,9 @@ export function SportsOrgFinanceV2({ colors, accentColor, role = 'R1' }: Props) 
 
   // === RBAC-aware sub-tabs ===
   const visibleSubTabs = useMemo(() => {
-    if (role === 'R1') return SUB_TABS; // R1 (AD/HC): full 10 tabs
-    if (role === 'R2') {
-      // R2 (Player): Overview only
-      return SUB_TABS.filter((t) => t.id === 'overview');
-    }
-    if (role === 'R3') {
-      // R3 (Asst Coach): Overview + Budget + Travel Spend + Purchasing
+    if (canSeeSensitive(role)) return SUB_TABS; // R0-R3: full 10 tabs
+    if (role === 'R4') {
+      // R4 (Assistant Coach/RC): Overview + Budget + Travel Spend + Purchasing
       return SUB_TABS.filter(
         (t) =>
           t.id === 'overview' ||
@@ -1229,7 +1226,7 @@ export function SportsOrgFinanceV2({ colors, accentColor, role = 'R1' }: Props) 
           t.id === 'purchasing',
       );
     }
-    // R4/R5 already handled by locked gate above
+    // Non-coaching roles already handled by locked gate above
     return SUB_TABS;
   }, [role]);
 

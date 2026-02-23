@@ -12,6 +12,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
+import { canSeeSensitive, canSeeCoachActions, canSeeAdminActions } from '@/utils/sports-rbac';
 import {
   getComplianceOverview,
   getComplianceControls,
@@ -1123,9 +1124,9 @@ function DeadlineDetailSheet({
 // MAIN EXPORT
 // =============================================================================
 
-export function SportsOrgComplianceV2({ colors, accentColor, role = 'R1' }: Props) {
-  // === RBAC Gate: R4/R5 locked ===
-  if (role === 'R4' || role === 'R5') {
+export function SportsOrgComplianceV2({ colors, accentColor, role = 'R3' }: Props) {
+  // === RBAC Gate: non-coaching roles locked ===
+  if (!canSeeCoachActions(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
@@ -1184,20 +1185,14 @@ export function SportsOrgComplianceV2({ colors, accentColor, role = 'R1' }: Prop
 
   // === RBAC-aware sub-tabs ===
   const visibleSubTabs = useMemo(() => {
-    if (role === 'R1') return SUB_TABS; // R1: full 7 tabs
-    if (role === 'R2') {
-      // R2 (Player): Overview + Deadlines (their own)
-      return SUB_TABS.filter(
-        (t) => t.id === 'overview' || t.id === 'deadlines',
-      );
-    }
-    if (role === 'R3') {
-      // R3 (Asst Coach): all except Admin + Exceptions
+    if (canSeeSensitive(role)) return SUB_TABS; // R0-R3: full 7 tabs
+    if (role === 'R4') {
+      // R4 (Assistant Coach/RC): all except Admin + Exceptions
       return SUB_TABS.filter(
         (t) => t.id !== 'admin' && t.id !== 'exceptions',
       );
     }
-    // R4/R5 already handled by locked gate above
+    // Non-coaching roles already handled by locked gate above
     return SUB_TABS;
   }, [role]);
 
@@ -1207,7 +1202,6 @@ export function SportsOrgComplianceV2({ colors, accentColor, role = 'R1' }: Prop
       case 'overview':
         return <OverviewTab colors={colors} accentColor={accentColor} />;
       case 'controls':
-        if (role === 'R2') return null;
         return (
           <ControlsTab
             colors={colors}
@@ -1217,7 +1211,6 @@ export function SportsOrgComplianceV2({ colors, accentColor, role = 'R1' }: Prop
           />
         );
       case 'holds':
-        if (role === 'R2') return null;
         return (
           <HoldsTab
             colors={colors}
@@ -1236,7 +1229,6 @@ export function SportsOrgComplianceV2({ colors, accentColor, role = 'R1' }: Prop
           />
         );
       case 'evidence':
-        if (role === 'R2') return null;
         return (
           <EvidenceTab
             colors={colors}
@@ -1246,10 +1238,10 @@ export function SportsOrgComplianceV2({ colors, accentColor, role = 'R1' }: Prop
           />
         );
       case 'exceptions':
-        if (role !== 'R1') return null;
+        if (!canSeeAdminActions(role)) return null;
         return <ExceptionsTab colors={colors} accentColor={accentColor} exceptions={exceptions} />;
       case 'admin':
-        if (role !== 'R1') return null;
+        if (!canSeeAdminActions(role)) return null;
         return <AdminTab colors={colors} accentColor={accentColor} />;
       default:
         return null;

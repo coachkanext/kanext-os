@@ -12,6 +12,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import type { SportsRoleLens } from '@/utils/sports-rbac';
+import { canSeeSensitive, canSeeCoachActions, canSeeAdminActions } from '@/utils/sports-rbac';
 import {
   OFFICIAL_ROOMS,
   ANNOUNCEMENTS,
@@ -796,9 +797,9 @@ function EscalationDetailSheet({
 // MAIN EXPORT
 // =============================================================================
 
-export function SportsOrgRoomsV2({ colors, accentColor, role = 'R1' }: Props) {
-  // === RBAC Gate: R4/R5 locked ===
-  if (role === 'R4' || role === 'R5') {
+export function SportsOrgRoomsV2({ colors, accentColor, role = 'R3' }: Props) {
+  // === RBAC Gate: non-coaching roles locked ===
+  if (!canSeeCoachActions(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
@@ -839,18 +840,12 @@ export function SportsOrgRoomsV2({ colors, accentColor, role = 'R1' }: Props) {
 
   // === RBAC-aware sub-tabs ===
   const visibleSubTabs = useMemo(() => {
-    if (role === 'R1') return SUB_TABS; // R1: full 6 tabs
-    if (role === 'R2') {
-      // R2 (Player): Overview + Official Rooms + Announcements
-      return SUB_TABS.filter(
-        (t) => t.id === 'overview' || t.id === 'official' || t.id === 'announcements',
-      );
-    }
-    if (role === 'R3') {
-      // R3 (Asst Coach): all except Settings
+    if (canSeeSensitive(role)) return SUB_TABS; // R0-R3: full 6 tabs
+    if (role === 'R4') {
+      // R4 (Assistant Coach/RC): all except Settings
       return SUB_TABS.filter((t) => t.id !== 'settings');
     }
-    // R4/R5 already handled by locked gate above
+    // Non-coaching roles already handled by locked gate above
     return SUB_TABS;
   }, [role]);
 
@@ -877,7 +872,6 @@ export function SportsOrgRoomsV2({ colors, accentColor, role = 'R1' }: Props) {
           />
         );
       case 'unit-rooms':
-        if (role === 'R2') return null;
         return (
           <UnitRoomsTab
             colors={colors}
@@ -886,7 +880,6 @@ export function SportsOrgRoomsV2({ colors, accentColor, role = 'R1' }: Props) {
           />
         );
       case 'escalations':
-        if (role === 'R2') return null;
         return (
           <EscalationsTab
             colors={colors}
@@ -896,7 +889,7 @@ export function SportsOrgRoomsV2({ colors, accentColor, role = 'R1' }: Props) {
           />
         );
       case 'settings':
-        if (role !== 'R1') return null;
+        if (!canSeeAdminActions(role)) return null;
         return <SettingsTab colors={colors} accentColor={accentColor} />;
       default:
         return null;

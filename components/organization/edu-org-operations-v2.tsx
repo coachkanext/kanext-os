@@ -1,7 +1,7 @@
 /**
  * Education Organization Operations v2 — 5-view sub-tab hub.
  * Sub-tabs: Ops Dashboard | Initiatives | Workflows | Queue | Scorecards
- * RBAC: E1/E2 full, E3 Dashboard+Queue+Scorecards, E4 Scorecards (summary), E5 locked.
+ * RBAC: E0–E5 full (System Owner → Dean), E6/E7 Dashboard+Queue+Scorecards, E8–E11 Scorecards (summary), E12/E13 locked.
  */
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, ScrollView, FlatList, Pressable, StyleSheet } from 'react-native';
@@ -11,7 +11,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
-import { isDeanLevel, isFacultyLevel } from '@/utils/education-rbac';
+import { isDeanLevel, isFacultyLevel, isStudent, isEnrolled } from '@/utils/education-rbac';
 import {
   getEduOpsV2Data,
   INITIATIVE_STATUS_LABELS,
@@ -1169,8 +1169,8 @@ function GateDetailSheet({
 // =============================================================================
 
 export function EduOrgOperationsV2({ colors, accentColor, role = 'E1' }: Props) {
-  // === RBAC Gate: E5 locked ===
-  if (role === 'E5') {
+  // === RBAC Gate: External (E12/E13) locked ===
+  if (!isEnrolled(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
@@ -1282,7 +1282,7 @@ export function EduOrgOperationsV2({ colors, accentColor, role = 'E1' }: Props) 
             colors={colors}
             accentColor={accentColor}
             scorecards={data.scorecards}
-            simplified={role === 'E4'}
+            simplified={isStudent(role)}
           />
         );
       default:

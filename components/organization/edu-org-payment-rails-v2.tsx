@@ -1,7 +1,7 @@
 /**
  * Education Organization Payment Rails V2 — Money-movement execution layer.
  * Sub-tabs: Now | Wallets | Batches | Approvals | Releases | Exceptions | Returns | Receipts | Admin
- * RBAC: E3/E4/E5 locked; E1/E2 full 9-tab access.
+ * RBAC: E6–E12 locked; E0–E5 (System Owner → Dean) + E13 (Board) full 9-tab access.
  */
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, ScrollView, FlatList, Pressable, StyleSheet } from 'react-native';
@@ -11,7 +11,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
 import type { EducationRoleLens } from '@/utils/education-rbac';
-import { isDeanLevel } from '@/utils/education-rbac';
+import { isDeanLevel, isFacultyLevel, isStudent, isEnrolled } from '@/utils/education-rbac';
 import {
   getEduPaymentRailsData,
   getEduWalletById,
@@ -1729,8 +1729,8 @@ function TransactionDetailSheet({
 // =============================================================================
 
 export function EduOrgPaymentRailsV2({ colors, accentColor, role = 'E1' }: Props) {
-  // === RBAC Gate: E3/E4/E5 locked ===
-  if (role === 'E3') {
+  // === RBAC Gate: Non-dean faculty (E6/E7) locked ===
+  if (isFacultyLevel(role) && !isDeanLevel(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
@@ -1742,7 +1742,8 @@ export function EduOrgPaymentRailsV2({ colors, accentColor, role = 'E1' }: Props
     );
   }
 
-  if (role === 'E4') {
+  // === RBAC Gate: Student (E11) locked ===
+  if (isStudent(role)) {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
@@ -1754,13 +1755,14 @@ export function EduOrgPaymentRailsV2({ colors, accentColor, role = 'E1' }: Props
     );
   }
 
-  if (role === 'E5') {
+  // === RBAC Gate: External / non-enrolled (E8–E10, E12) locked ===
+  if (!isDeanLevel(role) && role !== 'E13') {
     return (
       <View style={s.lockedContainer}>
         <IconSymbol name="lock.fill" size={40} color={colors.textTertiary} />
         <ThemedText style={[s.lockedTitle, { color: colors.text }]}>Payment Rails</ThemedText>
         <ThemedText style={[s.lockedMessage, { color: colors.textSecondary }]}>
-          Payment Rails is not available for public access
+          Payment Rails is not available for your access level
         </ThemedText>
       </View>
     );

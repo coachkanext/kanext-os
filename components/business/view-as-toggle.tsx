@@ -17,9 +17,9 @@ const ACCENT_GOLD = '#FFFFFF';
 
 const ROLES: { id: BusinessRoleLens; label: string }[] = [
   { id: 'B1', label: 'Founder' },
-  { id: 'B2a', label: 'Retail' },
-  { id: 'B2b', label: 'Board' },
-  { id: 'B3', label: 'Public' },
+  { id: 'B7', label: 'Retail' },
+  { id: 'B9', label: 'Board' },
+  { id: 'B12', label: 'Public' },
   { id: 'B8', label: 'Advisor' },
   { id: 'B13', label: 'HoldCo' },
 ];

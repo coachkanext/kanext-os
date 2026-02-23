@@ -1,6 +1,6 @@
 /**
  * Education Context — Education Mode state
- * 13-level RBAC via EducationRoleLens (E1–E13).
+ * 14-level RBAC via EducationRoleLens (E0–E13).
  */
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
@@ -8,7 +8,7 @@ import * as Haptics from 'expo-haptics';
 import type { EducationRoleLens } from '@/utils/education-rbac';
 
 interface EducationContextValue {
-  /** 13-level RBAC: E1 (President) through E13 (Board of Trustees) */
+  /** 14-level RBAC: E0 (System Owner) through E13 (Board of Trustees) */
   viewAsRole: EducationRoleLens;
   setViewAsRole: (role: EducationRoleLens) => void;
 }

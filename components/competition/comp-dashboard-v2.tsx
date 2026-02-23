@@ -46,7 +46,7 @@ interface Props {
   role?: CompetitionRoleLens;
 }
 
-export function CompDashboardV2({ colors, accent, role = 'CO10' }: Props) {
+export function CompDashboardV2({ colors, accent, role = 'CO6' }: Props) {
   const nextRound = RACE_ROUNDS.find((r) => r.status === 'next');
   const topDrivers = DRIVER_STANDINGS.slice(0, 5);
   const topTeams = CONSTRUCTOR_STANDINGS.slice(0, 5);

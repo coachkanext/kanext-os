@@ -408,18 +408,23 @@ import type { BusinessRoleLens } from '@/utils/business-rbac';
 
 /**
  * Which sub-tabs each role can see:
- *   B1  → all 6
- *   B2b → board, updates, dataroom, resolutions (no investors details, no distributions)
- *   B2a → updates, dataroom (curated view)
- *   B3+ → locked (empty array)
+ *   B0/B1 → all 6 (founder)
+ *   B2     → all 6 (c-suite)
+ *   B6/B9  → board, updates, dataroom, resolutions (board-level investors)
+ *   B7     → updates, dataroom (retail investor — curated view)
+ *   B8     → board, updates, dataroom, resolutions (advisor)
+ *   B13    → all 6 (holding company)
+ *   Others → locked (empty array)
  */
-const SUB_TAB_ACCESS: Record<BusinessRoleLens, BoardSubTab[]> = {
+const SUB_TAB_ACCESS: Partial<Record<BusinessRoleLens, BoardSubTab[]>> = {
+  B0: ['board', 'investors', 'updates', 'dataroom', 'resolutions', 'distributions'],
   B1: ['board', 'investors', 'updates', 'dataroom', 'resolutions', 'distributions'],
-  B2b: ['board', 'updates', 'dataroom', 'resolutions'],
-  B2a: ['updates', 'dataroom'],
-  B3: [],
-  B4: [],
-  B5: [],
+  B2: ['board', 'investors', 'updates', 'dataroom', 'resolutions', 'distributions'],
+  B6: ['board', 'updates', 'dataroom', 'resolutions'],
+  B7: ['updates', 'dataroom'],
+  B8: ['board', 'updates', 'dataroom', 'resolutions'],
+  B9: ['board', 'updates', 'dataroom', 'resolutions'],
+  B13: ['board', 'investors', 'updates', 'dataroom', 'resolutions', 'distributions'],
 };
 
 export function getVisibleBoardSubTabs(role: BusinessRoleLens): { id: BoardSubTab; label: string }[] {
@@ -432,16 +437,18 @@ export function getVisibleBoardSubTabs(role: BusinessRoleLens): { id: BoardSubTa
 // =============================================================================
 
 export function getVisibleDataroomDocs(role: BusinessRoleLens): DataroomDoc[] {
-  switch (role) {
-    case 'B1':
-      return DATAROOM_DOCS; // Founder sees all
-    case 'B2b':
-      return DATAROOM_DOCS.filter((d) => d.accessLevel !== 'founder'); // Board sees all except founder-only
-    case 'B2a':
-      return DATAROOM_DOCS.filter((d) => d.accessLevel === 'public' || d.accessLevel === 'retail'); // Retail sees public + retail
-    default:
-      return DATAROOM_DOCS.filter((d) => d.accessLevel === 'public'); // Public sees public only
+  // Founder / system owner / holding company sees all
+  if (role === 'B0' || role === 'B1' || role === 'B13') return DATAROOM_DOCS;
+  // Board-level (C-Suite, Strategic Investor, Advisor, Board Member) sees all except founder-only
+  if (role === 'B2' || role === 'B6' || role === 'B8' || role === 'B9') {
+    return DATAROOM_DOCS.filter((d) => d.accessLevel !== 'founder');
   }
+  // Retail investor sees public + retail
+  if (role === 'B7') {
+    return DATAROOM_DOCS.filter((d) => d.accessLevel === 'public' || d.accessLevel === 'retail');
+  }
+  // Everyone else sees public only
+  return DATAROOM_DOCS.filter((d) => d.accessLevel === 'public');
 }
 
 // =============================================================================
@@ -449,16 +456,17 @@ export function getVisibleDataroomDocs(role: BusinessRoleLens): DataroomDoc[] {
 // =============================================================================
 
 export function getVisibleUpdates(role: BusinessRoleLens): InvestorUpdate[] {
-  switch (role) {
-    case 'B1':
-      return INVESTOR_UPDATES; // Founder sees all
-    case 'B2b':
-      return INVESTOR_UPDATES.filter((u) => u.tier === 'all' || u.tier === 'board'); // Board sees all + board
-    case 'B2a':
-      return INVESTOR_UPDATES.filter((u) => u.tier === 'all'); // Retail sees all-tier only
-    default:
-      return [];
+  // Founder / system owner / holding company sees all
+  if (role === 'B0' || role === 'B1' || role === 'B13') return INVESTOR_UPDATES;
+  // Board-level sees all + board tier
+  if (role === 'B2' || role === 'B6' || role === 'B8' || role === 'B9') {
+    return INVESTOR_UPDATES.filter((u) => u.tier === 'all' || u.tier === 'board');
   }
+  // Retail investor sees all-tier only
+  if (role === 'B7') {
+    return INVESTOR_UPDATES.filter((u) => u.tier === 'all');
+  }
+  return [];
 }
 
 // =============================================================================

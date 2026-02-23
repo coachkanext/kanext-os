@@ -80,13 +80,14 @@ function selectHeroVideo(): HeroVideo {
 
 function getHeroCTA(role: SportsRoleLens): string {
   switch (role) {
+    case 'R0':
     case 'R1':
-    case 'R3':
-      return 'Open Film Room';
     case 'R2':
-      return 'Watch Team Film';
+    case 'R3':
     case 'R4':
-    case 'R5':
+      return 'Open Film Room';
+    case 'R8':
+      return 'Watch Team Film';
     default:
       return 'Watch Latest';
   }

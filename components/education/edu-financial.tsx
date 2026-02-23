@@ -3,10 +3,10 @@
  * Views: Overview | Student Accounts | Aid & Awards | Tuition & Fees | Revenue & Expenses | Audit & Controls
  *
  * RBAC:
- *   E1/E2 — All 6 views, full budget detail, audit, revenue, expenses
- *   E3    — Overview, Tuition & Fees, Aid & Awards (limited)
- *   E4    — Overview (student-focused), Student Accounts, Tuition & Fees
- *   E5    — Hidden (lock screen)
+ *   E0–E5 — All 6 views, full budget detail, audit, revenue, expenses (System Owner → Dean)
+ *   E6–E7 — Overview, Tuition & Fees, Aid & Awards (Dept Chair / Faculty — limited)
+ *   E8–E11 — Overview (student-focused), Student Accounts, Tuition & Fees (Advisor → Student)
+ *   E12–E13 — Hidden (lock screen — Alumni / Board)
  */
 
 import React, { useState } from 'react';
@@ -1006,7 +1006,7 @@ export function EduFinancial({ colors, role = 'E1', onSwitchTab }: Props) {
   const currentViewValid = availableViews.some(v => v.id === activeView);
   const resolvedView = currentViewValid ? activeView : availableViews[0]?.id ?? 'overview';
 
-  if (role === 'E5') {
+  if (!isEnrolled(role)) {
     return (
       <ScrollView
         style={[s.container, { backgroundColor: colors.background }]}

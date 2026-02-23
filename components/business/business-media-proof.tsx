@@ -3,11 +3,11 @@
  * 8 sub-tabs: Overview, Library, Proof Packs, Playlists,
  * Case Studies, Press, Rights, Share Links.
  *
- * RBAC:
- *   B1 — all 8 sub-tabs
- *   B2b — overview, proof_packs, case_studies, press
- *   B2a — overview, proof_packs, case_studies
- *   B3 — overview, case_studies
+ * RBAC (14-level: B0-B13):
+ *   Founder (B0/B1) — all 8 sub-tabs
+ *   Board (B2/B6/B8/B9/B13) — overview, proof_packs, case_studies, press
+ *   Investor (B7) — overview, proof_packs, case_studies
+ *   Public (B12) — overview, case_studies
  */
 
 import React, { useState } from 'react';
@@ -64,17 +64,20 @@ const BP = BusinessPalette;
 // RBAC — sub-tab visibility per role
 // =============================================================================
 
-const SUB_TAB_ACCESS: Record<BusinessRoleLens, MediaSubTab[]> = {
+const SUB_TAB_ACCESS: Partial<Record<BusinessRoleLens, MediaSubTab[]>> = {
+  B0: ['overview', 'library', 'proof_packs', 'playlists', 'case_studies', 'press', 'rights', 'share_links'],
   B1: ['overview', 'library', 'proof_packs', 'playlists', 'case_studies', 'press', 'rights', 'share_links'],
-  B2b: ['overview', 'proof_packs', 'case_studies', 'press'],
-  B2a: ['overview', 'proof_packs', 'case_studies'],
-  B3: ['overview', 'case_studies'],
-  B4: ['overview', 'case_studies'],
-  B5: ['overview', 'case_studies'],
+  B2: ['overview', 'proof_packs', 'case_studies', 'press'],
+  B6: ['overview', 'proof_packs', 'case_studies', 'press'],
+  B7: ['overview', 'proof_packs', 'case_studies'],
+  B8: ['overview', 'proof_packs', 'case_studies', 'press'],
+  B9: ['overview', 'proof_packs', 'case_studies', 'press'],
+  B12: ['overview', 'case_studies'],
+  B13: ['overview', 'library', 'proof_packs', 'playlists', 'case_studies', 'press', 'rights', 'share_links'],
 };
 
 function getAllowedTabs(role: BusinessRoleLens) {
-  const allowed = SUB_TAB_ACCESS[role] ?? SUB_TAB_ACCESS.B3;
+  const allowed = SUB_TAB_ACCESS[role] ?? ['overview', 'case_studies'];
   return MEDIA_SUB_TABS.filter((t) => allowed.includes(t.id));
 }
 
@@ -291,7 +294,7 @@ function OverviewContent({ role }: { role: BusinessRoleLens }) {
     { label: 'Share Links', value: `${stats.shareLinksActive}`, icon: 'link' },
   ];
 
-  // Filter stats by role — B3/B2a don't see share links count
+  // Filter stats by role — public/retail don't see share links count
   const visibleStats = isFounder(role) || isBoardLevel(role)
     ? statItems
     : statItems.filter((s) => s.label !== 'Share Links');
@@ -518,7 +521,7 @@ const PROOF_PACK_SECTIONS: Record<string, { narrative: string; sections: string[
 function ProofPacksContent({ role }: { role: BusinessRoleLens }) {
   const [expandedPack, setExpandedPack] = useState<string | null>(null);
 
-  // B2a sees only investor/public packs; B2b sees all except draft
+  // Retail investor sees only investor/public packs; board sees all except draft
   const visiblePacks = isFounder(role)
     ? PROOF_PACKS
     : isBoardLevel(role)

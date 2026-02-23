@@ -23,8 +23,8 @@ import {
   type TrendingItem,
 } from '@/data/mock-sports-explore-v2';
 
-// Default to R1 for now — will wire to context later
-const DEFAULT_ROLE: SportsRoleLens = 'R1';
+// Default to R3 for now — will wire to context later
+const DEFAULT_ROLE: SportsRoleLens = 'R3';
 
 export function SportsExplorePageV2() {
   const colorScheme = useColorScheme() ?? 'light';

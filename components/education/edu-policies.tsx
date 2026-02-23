@@ -3,10 +3,10 @@
  * Compliance Dashboard, Policy Packs.
  *
  * 6-view pill toggle. RBAC:
- *   E1/E2 — All 6 views, full enforcement/compliance data
- *   E3    — Policy Library + Acknowledgements + Compliance Dashboard (limited)
- *   E4    — Policy Library + Acknowledgements + Policy Packs (student pack)
- *   E5    — Policy Library only (public policies)
+ *   E0–E5 — All 6 views, full enforcement/compliance data (System Owner → Dean)
+ *   E6–E7 — Policy Library + Acknowledgements + Compliance Dashboard (Dept Chair / Faculty — limited)
+ *   E8–E11 — Policy Library + Acknowledgements + Policy Packs (Advisor → Student)
+ *   E12–E13 — Policy Library only (Alumni / Board — public policies)
  */
 
 import React, { useState } from 'react';
@@ -58,12 +58,12 @@ interface ViewDef {
 }
 
 const VIEW_DEFS: ViewDef[] = [
-  { id: 'library',          label: 'Policy Library',       roles: ['E1', 'E2', 'E3', 'E4', 'E5'] },
-  { id: 'acknowledgements', label: 'Acknowledgements',     roles: ['E1', 'E2', 'E3', 'E4'] },
-  { id: 'updates',          label: 'Policy Updates',       roles: ['E1', 'E2'] },
-  { id: 'enforcement',      label: 'Enforcement',          roles: ['E1', 'E2'] },
-  { id: 'compliance',       label: 'Compliance Dashboard', roles: ['E1', 'E2', 'E3'] },
-  { id: 'packs',            label: 'Policy Packs',         roles: ['E1', 'E2', 'E4'] },
+  { id: 'library',          label: 'Policy Library',       roles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'E10', 'E11', 'E12', 'E13'] },
+  { id: 'acknowledgements', label: 'Acknowledgements',     roles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'E10', 'E11'] },
+  { id: 'updates',          label: 'Policy Updates',       roles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5'] },
+  { id: 'enforcement',      label: 'Enforcement',          roles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5'] },
+  { id: 'compliance',       label: 'Compliance Dashboard', roles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7'] },
+  { id: 'packs',            label: 'Policy Packs',         roles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E8', 'E9', 'E10', 'E11'] },
 ];
 
 function getVisibleViews(role: EducationRoleLens): ViewDef[] {
@@ -110,7 +110,7 @@ const ACADEMIC_POLICIES: LibraryPolicy[] = [
       'Faculty must report attendance through the early alert system',
       'University-sponsored activities count as excused absences',
     ],
-    appliesToRoles: ['E1', 'E2', 'E3', 'E4', 'E5'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'E10', 'E11', 'E12', 'E13'],
     versionHistory: [
       { version: '3.1', date: 'Aug 2025', change: 'Added early alert system requirement' },
       { version: '3.0', date: 'Aug 2024', change: 'Revised excused absence categories' },
@@ -132,7 +132,7 @@ const ACADEMIC_POLICIES: LibraryPolicy[] = [
       'Grade appeals must be filed within 30 days of grade posting',
       'Pass/Fail option available for up to 2 elective courses per year',
     ],
-    appliesToRoles: ['E1', 'E2', 'E3', 'E4', 'E5'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'E10', 'E11', 'E12', 'E13'],
     versionHistory: [
       { version: '4.0', date: 'Aug 2025', change: 'Updated pass/fail policy limits' },
       { version: '3.2', date: 'Jan 2024', change: 'Added incomplete grade timeline' },
@@ -155,7 +155,7 @@ const ACADEMIC_POLICIES: LibraryPolicy[] = [
       'Third offense: suspension or expulsion hearing',
       'AI-generated content policy addendum under review',
     ],
-    appliesToRoles: ['E1', 'E2', 'E3', 'E4', 'E5'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'E10', 'E11', 'E12', 'E13'],
     versionHistory: [
       { version: '5.0-rc', date: 'Jan 2026', change: 'AI-generated content addendum drafted' },
       { version: '4.2', date: 'Aug 2024', change: 'Clarified self-plagiarism rules' },
@@ -177,7 +177,7 @@ const ACADEMIC_POLICIES: LibraryPolicy[] = [
       'Minimum 12 credits for full-time undergraduate status',
       'Academic advisor hold clearance required for registration',
     ],
-    appliesToRoles: ['E1', 'E2', 'E3', 'E4', 'E5'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'E10', 'E11', 'E12', 'E13'],
     versionHistory: [
       { version: '2.4', date: 'Aug 2025', change: 'Clarified advisor hold process' },
     ],
@@ -198,7 +198,7 @@ const ACADEMIC_POLICIES: LibraryPolicy[] = [
       'Academic probation: GPA below 2.0 for two consecutive semesters',
       'Academic suspension: GPA below 1.5 or probation for 2+ semesters',
     ],
-    appliesToRoles: ['E1', 'E2', 'E3', 'E4'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'E10', 'E11'],
     versionHistory: [
       { version: '3.0', date: 'Aug 2025', change: 'Restructured probation tiers' },
     ],
@@ -219,7 +219,7 @@ const ACADEMIC_POLICIES: LibraryPolicy[] = [
       'Maximum 60 credits transferable toward undergraduate degree',
       'Evaluation completed within 4\u20136 weeks of transcript receipt',
     ],
-    appliesToRoles: ['E1', 'E2', 'E3', 'E4', 'E5'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'E10', 'E11', 'E12', 'E13'],
     versionHistory: [
       { version: '2.1', date: 'Jun 2025', change: 'Expanded accepted accreditation bodies' },
     ],
@@ -240,7 +240,7 @@ const ACADEMIC_POLICIES: LibraryPolicy[] = [
       'Minimum 32 credits in residency at Howard',
       'Graduation application due one semester before expected completion',
     ],
-    appliesToRoles: ['E1', 'E2', 'E3', 'E4', 'E5'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'E10', 'E11', 'E12', 'E13'],
     versionHistory: [
       { version: '4.1', date: 'Aug 2025', change: 'Updated residency credit requirements' },
     ],
@@ -261,7 +261,7 @@ const ACADEMIC_POLICIES: LibraryPolicy[] = [
       'Service committee expectations: minimum 2 per year',
       'Draft pending Faculty Senate review',
     ],
-    appliesToRoles: ['E1', 'E2'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5'],
     versionHistory: [
       { version: '1.0-draft', date: 'Feb 2026', change: 'Initial draft for Faculty Senate review' },
     ],
@@ -300,7 +300,7 @@ const CONDUCT_POLICIES: LibraryPolicy[] = STUDENT_CONDUCT.map((c) => ({
   status: 'active' as const,
   summary: c.description,
   keyPoints: [`Severity: ${c.severity.toUpperCase()}`, `Consequences: ${c.consequences}`],
-  appliesToRoles: ['E1', 'E2', 'E3', 'E4', 'E5'] as EducationRoleLens[],
+  appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'E10', 'E11', 'E12', 'E13'] as EducationRoleLens[],
   versionHistory: [{ version: '2.0', date: 'Aug 2025', change: 'Annual handbook update' }],
 }));
 
@@ -323,7 +323,7 @@ const SAFETY_POLICIES: LibraryPolicy[] = [
       'Emergency notification via text, email, and outdoor sirens',
       'Building marshals assigned per floor',
     ],
-    appliesToRoles: ['E1', 'E2', 'E3', 'E4', 'E5'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'E10', 'E11', 'E12', 'E13'],
     versionHistory: [
       { version: '6.2', date: 'Jan 2026', change: 'Updated building marshal assignments' },
       { version: '6.1', date: 'Aug 2025', change: 'Added chemical spill protocol' },
@@ -345,7 +345,7 @@ const SAFETY_POLICIES: LibraryPolicy[] = [
       'Timely warnings issued for Clery-reportable crimes',
       'Daily crime log maintained and publicly available',
     ],
-    appliesToRoles: ['E1', 'E2', 'E3', 'E4', 'E5'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'E10', 'E11', 'E12', 'E13'],
     versionHistory: [
       { version: '4.0', date: 'Oct 2025', change: 'Updated CSA reporting procedures' },
     ],
@@ -365,7 +365,7 @@ const SAFETY_POLICIES: LibraryPolicy[] = [
       'Exceptions: campus police, authorized security, ROTC with approval',
       'Violations subject to immediate suspension and criminal charges',
     ],
-    appliesToRoles: ['E1', 'E2', 'E3', 'E4', 'E5'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'E10', 'E11', 'E12', 'E13'],
     versionHistory: [
       { version: '2.0', date: 'Aug 2025', change: 'Clarified ROTC exception language' },
     ],
@@ -391,7 +391,7 @@ const IT_POLICIES: LibraryPolicy[] = [
       'Suspicious activity must be reported to IT Security within 24 hours',
       'Personal devices on campus network must register via portal',
     ],
-    appliesToRoles: ['E1', 'E2', 'E3', 'E4', 'E5'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'E10', 'E11', 'E12', 'E13'],
     versionHistory: [
       { version: '5.1', date: 'Jan 2026', change: 'Added MFA requirement for all accounts' },
     ],
@@ -412,7 +412,7 @@ const IT_POLICIES: LibraryPolicy[] = [
       'Encryption required for Confidential and Restricted data at rest and in transit',
       'Annual data handling training required for all staff',
     ],
-    appliesToRoles: ['E1', 'E2', 'E3'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7'],
     versionHistory: [
       { version: '3.0', date: 'Nov 2025', change: 'Added encryption requirements' },
     ],
@@ -433,7 +433,7 @@ const IT_POLICIES: LibraryPolicy[] = [
       'Breach notification within 72 hours per state law',
       'Quarterly tabletop exercises for incident response team',
     ],
-    appliesToRoles: ['E1', 'E2'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5'],
     versionHistory: [
       { version: '2.3', date: 'Dec 2025', change: 'Updated breach notification timeline' },
     ],
@@ -459,7 +459,7 @@ const FINANCIAL_POLICIES: LibraryPolicy[] = [
       'Housing refund separate from tuition refund',
       'Appeals for medical withdrawal processed by Bursar',
     ],
-    appliesToRoles: ['E1', 'E2', 'E3', 'E4', 'E5'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'E10', 'E11', 'E12', 'E13'],
     versionHistory: [
       { version: '3.2', date: 'Aug 2025', change: 'Added medical withdrawal appeal process' },
     ],
@@ -480,7 +480,7 @@ const FINANCIAL_POLICIES: LibraryPolicy[] = [
       'Sole-source justification requires VP approval',
       'P-Card monthly limit: $5,000 per cardholder',
     ],
-    appliesToRoles: ['E1', 'E2', 'E3'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7'],
     versionHistory: [
       { version: '4.1', date: 'Sep 2025', change: 'Raised P-Card limit from $3,000 to $5,000' },
     ],
@@ -506,7 +506,7 @@ const HR_POLICIES: LibraryPolicy[] = [
       'Reasonable accommodations provided per ADA',
       'Complaints filed with HR or Title IX office',
     ],
-    appliesToRoles: ['E1', 'E2', 'E3'],
+    appliesToRoles: ['E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7'],
     versionHistory: [
       { version: '5.0', date: 'Aug 2025', change: 'Updated protected class language' },
     ],

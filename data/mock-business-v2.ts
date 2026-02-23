@@ -710,29 +710,29 @@ export function getCompanyById(id: string): CompanyObject | undefined {
   return undefined;
 }
 
-export function getDocsByAccessLevel(role: string, tier?: string): DataRoomDoc[] {
+export function getDocsByAccessLevel(role: string): DataRoomDoc[] {
   // Import-free filtering based on access tag string matching
   return DATA_ROOM_DOCS.filter((doc) => {
-    // Founder sees everything
-    if (role === 'B1') return true;
+    // System owner, founder, and holding company see everything
+    if (role === 'B0' || role === 'B1' || role === 'B13') return true;
 
     // Public docs are visible to all
     if (doc.accessTag === 'public') return true;
 
-    // Founder-only restricted to B1 (already handled)
+    // Founder-only restricted to B0/B1/B13 (already handled)
     if (doc.accessTag === 'founder_only') return false;
 
-    // Workspace-only restricted to B5
-    if (doc.accessTag === 'workspace_only') return role === 'B5';
+    // Workspace-only restricted to B10 (acquirer)
+    if (doc.accessTag === 'workspace_only') return role === 'B10';
 
-    // Retail docs: B2a, B2b, B5
+    // Retail docs: investors, advisor, board, c-suite, employee
     if (doc.accessTag === 'retail') {
-      return role === 'B2a' || role === 'B2b' || role === 'B5';
+      return role === 'B2' || role === 'B5' || role === 'B6' || role === 'B7' || role === 'B8' || role === 'B9' || role === 'B10';
     }
 
-    // Board docs: B2b only
+    // Board docs: c-suite, strategic investor, advisor, board
     if (doc.accessTag === 'board') {
-      return role === 'B2b';
+      return role === 'B2' || role === 'B6' || role === 'B8' || role === 'B9';
     }
 
     return false;

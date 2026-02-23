@@ -4,10 +4,10 @@
  *        Work Orders | Inspections | Resident Support
  *
  * RBAC:
- *   E1/E2 — All 8 views, full data
- *   E3    — Overview + Assignments + Work Orders + Resident Support
- *   E4    — Overview (own hall) + Assignments (own) + Work Orders (submit) + Resident Support
- *   E5    — Overview only (public-facing hall info + meal plans)
+ *   E0–E5 — All 8 views, full data (System Owner → Dean)
+ *   E6–E7 — Overview + Assignments + Work Orders + Resident Support (Dept Chair / Faculty)
+ *   E8–E11 — Overview + Assignments + Work Orders + Resident Support (Advisor → Student)
+ *   E12–E13 — Overview only (Alumni / Board — public-facing hall info + meal plans)
  */
 
 import React, { useState } from 'react';
@@ -70,14 +70,13 @@ const ALL_VIEWS: ViewDef[] = [
 ];
 
 function getVisibleViews(role: EducationRoleLens): ViewDef[] {
-  if (role === 'E1' || role === 'E2') return ALL_VIEWS;
-  if (role === 'E3') return ALL_VIEWS.filter((v) =>
+  // Dean-level and above — all views
+  if (isDeanLevel(role)) return ALL_VIEWS;
+  // Faculty through Student — limited views
+  if (isEnrolled(role)) return ALL_VIEWS.filter((v) =>
     ['overview', 'assignments', 'work-orders', 'support'].includes(v.id),
   );
-  if (role === 'E4') return ALL_VIEWS.filter((v) =>
-    ['overview', 'assignments', 'work-orders', 'support'].includes(v.id),
-  );
-  // E5
+  // External (Alumni / Board) — overview only
   return ALL_VIEWS.filter((v) => v.id === 'overview');
 }
 

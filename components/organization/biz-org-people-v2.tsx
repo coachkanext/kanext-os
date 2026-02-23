@@ -19,7 +19,7 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing, BorderRadius, BusinessPalette } from '@/constants/theme';
 import { BizCard, BizSubTabBar, BizStatusChip, BizEmptyLock, statusVariant } from '@/components/business/business-shared';
 import type { BusinessRoleLens } from '@/utils/business-rbac';
-import { isFounder, isBoardLevel } from '@/utils/business-rbac';
+import { isFounder, isBoardLevel, isInvestor } from '@/utils/business-rbac';
 import { useBusiness } from '@/context/business-context';
 import type { CrossTabLink } from '@/data/biz-org-shared-types';
 import {
@@ -228,8 +228,8 @@ function EmptyState({ icon, text, colors }: { icon: string; text: string; colors
 // =============================================================================
 
 export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
-  // === RBAC Gate: B3+ locked ===
-  if (!isFounder(role) && !isBoardLevel(role) && role !== 'B2a') {
+  // === RBAC Gate: non-founder/board/investor locked ===
+  if (!isFounder(role) && !isBoardLevel(role) && !isInvestor(role)) {
     return <BizEmptyLock title="People" message="This section is restricted. Contact the Founder for access." />;
   }
 
@@ -411,7 +411,7 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
   const subTabs = useMemo(() => {
     if (isFounder(role)) return allSubTabs;
     if (isBoardLevel(role)) return allSubTabs; // Board: all tabs, read-only
-    // B2a: directory only (limited view)
+    // Investor (non-board): directory only (limited view)
     return allSubTabs.filter((t) => t.id === 'directory');
   }, [role, allSubTabs]);
 
