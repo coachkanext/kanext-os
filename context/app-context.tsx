@@ -55,27 +55,27 @@ interface ExtendedAppState extends AppContextState {
 const DEMO_ORGANIZATIONS: Record<Mode, Organization> = {
   sports: {
     id: 'sports_kx',
-    name: 'Carroll College',
+    name: 'Lincoln University',
     mode: 'sports',
     type: 'college_athletics',
-    location: 'Helena, MT',
-    description: 'Carroll College — Fighting Saints Athletics',
+    location: 'Oakland, CA',
+    description: 'Lincoln University — Oaklanders Athletics',
   },
   business: {
     id: 'biz_kx',
-    name: 'Valuetainment',
+    name: 'KaNeXT',
     mode: 'business',
     type: 'platform',
-    location: 'Fort Lauderdale, FL',
-    description: 'Valuetainment — Media & Education',
+    location: 'Atlanta, GA',
+    description: 'KaNeXT — Command Center',
   },
   church: {
     id: 'church_kx',
-    name: '2819 Church',
+    name: 'ICC',
     mode: 'church',
     type: 'faith',
-    location: 'Atlanta, GA',
-    description: '2819 Church — Faith Community',
+    location: 'Los Angeles, CA',
+    description: 'ICC — International Christian Center',
   },
   education: {
     id: 'edu_kx',
@@ -150,27 +150,22 @@ const DEMO_PROGRAM: Program = {
 // Programs for sports mode
 const SPORTS_PROGRAMS: Record<string, Program> = {
   "Men's Basketball": { id: 'kx_mbb', name: "Men's Basketball", level: 'varsity' },
-  "Women's Basketball": { id: 'kx_wbb', name: "Women's Basketball", level: 'varsity' },
-  'Football': { id: 'kx_football', name: 'Football', level: 'varsity' },
-  'Development I': { id: 'kx_dev1', name: 'Development I', level: 'development_1' },
-  'Development II': { id: 'kx_dev2', name: 'Development II', level: 'development_2' },
 };
 
 // Seasons for sports mode
 const SPORTS_SEASONS: Record<string, Cycle> = {
   '2025-26': { id: 'kx_2025_26', name: '2025-26', startDate: new Date('2025-10-01'), endDate: new Date('2026-04-01'), isCurrent: true },
-  '2024-25': { id: 'kx_2024_25', name: '2024-25', startDate: new Date('2024-10-01'), endDate: new Date('2025-04-01'), isCurrent: false },
 };
 
 // Organizations for sports mode (static for now)
 const SPORTS_ORGANIZATIONS: Record<string, Organization> = {
-  'Carroll College': {
+  'Lincoln University': {
     id: 'sports_kx',
-    name: 'Carroll College',
+    name: 'Lincoln University',
     mode: 'sports',
     type: 'college_athletics',
-    location: 'Helena, MT',
-    description: 'Carroll College — Fighting Saints Athletics',
+    location: 'Oakland, CA',
+    description: 'Lincoln University — Oaklanders Athletics',
   },
 };
 

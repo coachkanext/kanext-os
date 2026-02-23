@@ -58,7 +58,7 @@ const MODE_OPTIONS: ModeOption[] = [
   {
     mode: 'competition',
     label: 'Competition',
-    icon: 'flag.checkered',
+    icon: 'trophy.fill',
     defaultRole: 'league_admin',
   },
 ];

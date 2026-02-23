@@ -29,6 +29,20 @@ import { OrgSwitcherSheet } from '@/components/organization/org-switcher-sheet';
 import { EntityScopeBar } from '@/components/business/entity-scope-bar';
 import { EntitySwitcherSheet } from '@/components/business/entity-switcher-sheet';
 import type { Mode } from '@/types';
+import { EmptyModeShell, type ShellTab } from '@/components/ui/empty-mode-shell';
+
+// =============================================================================
+// EMPTY MODE SHELL TAB CONFIG (Organization)
+// =============================================================================
+
+const ORG_TABS_EMPTY: ShellTab[] = [
+  { id: 'program', label: 'Program', icon: 'building.2', emptyTitle: 'No Program Data', emptyDescription: 'Program details will appear here.' },
+  { id: 'people', label: 'People', icon: 'person.2.fill', emptyTitle: 'No People', emptyDescription: 'Add team members and staff.' },
+  { id: 'finance', label: 'Finance', icon: 'dollarsign.circle.fill', emptyTitle: 'No Financial Data', emptyDescription: 'Financial records will appear here.' },
+  { id: 'compliance', label: 'Compliance', icon: 'shield.checkmark.fill', emptyTitle: 'No Compliance Data', emptyDescription: 'Compliance records will appear here.' },
+  { id: 'facilities', label: 'Facilities', icon: 'mappin.and.ellipse', emptyTitle: 'No Facilities', emptyDescription: 'Add facilities and venues.' },
+  { id: 'ledger', label: 'Ledger', icon: 'doc.text', emptyTitle: 'No Ledger Entries', emptyDescription: 'Transaction history will appear here.' },
+];
 
 // ── Sports V3 ────────────────────────────────────────────────────────────────
 import { SportsProgram } from '@/components/organization/sports-program-v3';
@@ -372,11 +386,12 @@ export default function OrganizationScreen() {
 
   const renderModeContent = () => {
     switch (mode) {
-      case 'sports': return <SportsOrganization />;
-      case 'church': return <ChurchOrganization />;
+      case 'sports':
+      case 'church':
+      case 'business':
+        return <EmptyModeShell tabs={ORG_TABS_EMPTY} />;
       case 'education': return <EducationOrganization />;
       case 'competition': return <CommunityOrganization />;
-      case 'business': return <BusinessOrganization />;
       default: return null;
     }
   };

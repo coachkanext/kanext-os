@@ -188,6 +188,7 @@ const MAPPING = {
 
   // Avatar Drawer V3
   'flag.checkered': 'flag',
+  'trophy.fill': 'emoji-events',
   'rectangle.portrait.and.arrow.right': 'logout',
   'shield.fill': 'shield',
   'doc.text': 'article',

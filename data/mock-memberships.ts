@@ -18,13 +18,13 @@ import type {
 
 export const V2_ORGANIZATIONS: V2Organization[] = [
   // ── Sports ──
-  { org_id: 'sports_kx', org_name: 'Carroll College', mode: 'sports', location: 'Helena, MT', org_type: 'college_athletics' },
+  { org_id: 'sports_kx', org_name: 'Lincoln University', mode: 'sports', location: 'Oakland, CA', org_type: 'college_athletics' },
 
   // ── Business ──
-  { org_id: 'biz_kx', org_name: 'Valuetainment', mode: 'business', location: 'Fort Lauderdale, FL', org_type: 'platform', view_variant: 'Founder' },
+  { org_id: 'biz_kx', org_name: 'KaNeXT', mode: 'business', location: 'Atlanta, GA', org_type: 'platform', view_variant: 'Founder' },
 
   // ── Church ──
-  { org_id: 'church_kx', org_name: '2819 Church', mode: 'church', location: 'Atlanta, GA', org_type: 'faith' },
+  { org_id: 'church_kx', org_name: 'ICC', mode: 'church', location: 'Los Angeles, CA', org_type: 'faith' },
 
   // ── Education ──
   { org_id: 'edu_kx', org_name: 'Howard University', mode: 'education', location: 'Washington, DC', org_type: 'university' },
@@ -94,33 +94,14 @@ export const V2_MEMBERSHIPS: V2Membership[] = [
 // =============================================================================
 
 export const V2_PROGRAMS: V2Program[] = [
-  // ── Carroll College Fighting Saints (NAIA — 17 varsity sports) ──
+  // ── Lincoln University Oaklanders ──
   { program_id: 'kx_mbb', org_id: 'sports_kx', mode: 'sports', program_name: "Men's Basketball", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_wbb', org_id: 'sports_kx', mode: 'sports', program_name: "Women's Basketball", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_football', org_id: 'sports_kx', mode: 'sports', program_name: 'Football', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_msoc', org_id: 'sports_kx', mode: 'sports', program_name: "Men's Soccer", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_wsoc', org_id: 'sports_kx', mode: 'sports', program_name: "Women's Soccer", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_wvb', org_id: 'sports_kx', mode: 'sports', program_name: "Women's Volleyball", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_mtf', org_id: 'sports_kx', mode: 'sports', program_name: "Men's Track & Field", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_wtf', org_id: 'sports_kx', mode: 'sports', program_name: "Women's Track & Field", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_mgolf', org_id: 'sports_kx', mode: 'sports', program_name: "Men's Golf", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_wgolf', org_id: 'sports_kx', mode: 'sports', program_name: "Women's Golf", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_softball', org_id: 'sports_kx', mode: 'sports', program_name: 'Softball', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_swim', org_id: 'sports_kx', mode: 'sports', program_name: 'Swimming', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_cheer', org_id: 'sports_kx', mode: 'sports', program_name: 'Competitive Cheer', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
-  { program_id: 'kx_esports', org_id: 'sports_kx', mode: 'sports', program_name: 'Esports', program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
 
-  // ── Valuetainment (3 programs) ──
-  { program_id: 'biz_kx_ops', org_id: 'biz_kx', mode: 'business', program_name: 'Valuetainment Media', program_type: 'Platform', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'biz_kx_product', org_id: 'biz_kx', mode: 'business', program_name: 'Bet-David Consulting', program_type: 'Consulting', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'biz_kx_growth', org_id: 'biz_kx', mode: 'business', program_name: 'Minnect', program_type: 'Technology', source_tag: 'OFFICIAL', status: 'Active' },
+  // ── KaNeXT ──
+  { program_id: 'biz_kx_ops', org_id: 'biz_kx', mode: 'business', program_name: 'KaNeXT Operations', program_type: 'Platform', source_tag: 'OFFICIAL', status: 'Active' },
 
-  // ── 2819 Church (5 programs) ──
+  // ── ICC ──
   { program_id: 'church_kx_main', org_id: 'church_kx', mode: 'church', program_name: 'Sunday Worship', program_type: 'Campus', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'church_kx_youth', org_id: 'church_kx', mode: 'church', program_name: 'Youth Ministry', program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'church_kx_kids', org_id: 'church_kx', mode: 'church', program_name: 'Formation Kids', program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'church_kx_groups', org_id: 'church_kx', mode: 'church', program_name: 'Squads', program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
-  { program_id: 'church_kx_outreach', org_id: 'church_kx', mode: 'church', program_name: '2819 Ministries', program_type: 'Ministry', source_tag: 'OFFICIAL', status: 'Active' },
 
   // ── Howard University (4 programs) ──
   { program_id: 'edu_kx_main', org_id: 'edu_kx', mode: 'education', program_name: 'Academic Programs', program_type: 'Institution', source_tag: 'OFFICIAL', status: 'Active' },
@@ -139,14 +120,13 @@ export const V2_PROGRAMS: V2Program[] = [
 // =============================================================================
 
 export const V2_SEASONS: V2Season[] = [
-  // Carroll College Fighting Saints
+  // Lincoln University
   { season_id: 'kx_2025_26', org_id: 'sports_kx', mode: 'sports', season_name: '2025\u201326', start_date: '2025-10-01', end_date: '2026-04-01', is_current: true },
-  { season_id: 'kx_2024_25', org_id: 'sports_kx', mode: 'sports', season_name: '2024\u201325', start_date: '2024-10-01', end_date: '2025-04-01', is_current: false },
 
-  // Valuetainment
+  // KaNeXT
   { season_id: 'biz_kx_fy2026', org_id: 'biz_kx', mode: 'business', season_name: 'FY 2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
 
-  // 2819 Church
+  // ICC
   { season_id: 'church_kx_2026', org_id: 'church_kx', mode: 'church', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
 
   // Howard University

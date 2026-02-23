@@ -26,7 +26,7 @@ const MODE_ICONS: Record<Mode, import('@/components/ui/icon-symbol').IconSymbolN
   business: 'briefcase.fill',
   church: 'building.columns.fill',
   education: 'graduationcap.fill',
-  competition: 'flag.checkered',
+  competition: 'trophy.fill',
 };
 
 interface NexusTopBarProps {

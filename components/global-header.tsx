@@ -36,7 +36,7 @@ const MODE_ICONS: Record<Mode, IconSymbolName> = {
   business: 'briefcase.fill',
   church: 'building.columns.fill',
   education: 'graduationcap.fill',
-  competition: 'flag.checkered',
+  competition: 'trophy.fill',
 };
 
 interface GlobalHeaderProps {

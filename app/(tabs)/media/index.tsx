@@ -40,6 +40,9 @@ import { SportsFilmRoomV2 } from '@/components/film-room/sports-film-room-v2';
 import { ModeExplorePageV2 } from '@/components/explore/mode-explore-page-v2';
 import { ModeFilmRoomV2 } from '@/components/film-room/mode-film-room-v2';
 import { LibraryHub } from '@/components/library/library-hub';
+import { EmptyState } from '@/components/ui/empty-state';
+
+const EMPTY_MODES = new Set<Mode>(['sports', 'business', 'church']);
 
 const ACCENT_GOLD = '#FFFFFF';
 
@@ -288,6 +291,10 @@ function FeedPost({ post, colors }: { post: VideoFeedPost; colors: typeof Colors
 // =============================================================================
 
 function FeedPage({ colors, mode }: { colors: typeof Colors.light; mode: Mode }) {
+  if (EMPTY_MODES.has(mode)) {
+    return <EmptyState icon="play.rectangle" title="No Content" description="Media content will appear here." />;
+  }
+
   const stories = MODE_STORIES[mode] ?? STORY_CIRCLES;
   const posts = MODE_POSTS[mode] ?? VIDEO_FEED_POSTS;
 
@@ -309,16 +316,25 @@ function FeedPage({ colors, mode }: { colors: typeof Colors.light; mode: Mode })
 }
 
 function ExplorePage({ colors, mode }: { colors: typeof Colors.light; mode: Mode }) {
+  if (EMPTY_MODES.has(mode)) {
+    return <EmptyState icon="magnifyingglass" title="Nothing to Explore" description="Explore content will appear here." />;
+  }
   if (mode === 'sports') return <SportsExplorePageV2 />;
   return <ModeExplorePageV2 mode={mode} />;
 }
 
 function RoomPage({ colors, mode }: { colors: typeof Colors.light; mode: Mode }) {
+  if (EMPTY_MODES.has(mode)) {
+    return <EmptyState icon="play.rectangle.fill" title="No Rooms" description="Rooms will appear here." />;
+  }
   if (mode === 'sports') return <SportsFilmRoomV2 />;
   return <ModeFilmRoomV2 mode={mode} />;
 }
 
-function LibraryPage() {
+function LibraryPage({ mode }: { mode: Mode }) {
+  if (EMPTY_MODES.has(mode)) {
+    return <EmptyState icon="books.vertical.fill" title="No Library Items" description="Saved content will appear here." />;
+  }
   return <LibraryHub />;
 }
 
@@ -363,7 +379,7 @@ export default function VideoHomeScreen() {
             <RoomPage colors={colors} mode={mode} />
           </View>
           <View key="library" style={{ flex: 1 }}>
-            <LibraryPage />
+            <LibraryPage mode={mode} />
           </View>
         </PagerView>
       </EdgeHoldAdvance>

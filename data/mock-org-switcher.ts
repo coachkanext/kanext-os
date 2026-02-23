@@ -14,7 +14,7 @@ export interface SwitcherOrg {
 
 const MODE_ICONS: Record<Mode, string> = {
   sports: 'sportscourt.fill',
-  competition: 'flag.checkered',
+  competition: 'trophy.fill',
   church: 'building.columns.fill',
   education: 'graduationcap.fill',
   business: 'briefcase.fill',

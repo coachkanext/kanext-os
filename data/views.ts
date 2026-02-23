@@ -49,7 +49,7 @@ export const MODE_CHIP_CONFIG: { mode: DrawerMode; label: string; icon: string }
 // =============================================================================
 
 export const CANONICAL_VIEWS: ViewDefinition[] = [
-  // ── SPORTS: Carroll College Fighting Saints ──
+  // ── SPORTS: Lincoln University Oaklanders ──
   {
     view_id: 'v_sports_kx',
     mode: 'sports',
@@ -58,14 +58,14 @@ export const CANONICAL_VIEWS: ViewDefinition[] = [
     season_id: 'kx_2025_26',
     membership_id: 'mem_sports_kx',
     derived_role_badge: 'System Owner',
-    org_display_name: 'Carroll College',
+    org_display_name: 'Lincoln University',
     role_title: 'System Owner',
     scope_line: 'Full Access',
     rbca_tier: 5,
     season_chip: '2025\u201326',
   },
 
-  // ── BUSINESS: Valuetainment ──
+  // ── BUSINESS: KaNeXT ──
   {
     view_id: 'v_biz_kx',
     mode: 'business',
@@ -74,14 +74,14 @@ export const CANONICAL_VIEWS: ViewDefinition[] = [
     season_id: 'biz_kx_fy2026',
     membership_id: 'mem_biz_kx',
     derived_role_badge: 'System Owner',
-    org_display_name: 'Valuetainment',
+    org_display_name: 'KaNeXT',
     role_title: 'System Owner',
     scope_line: 'Full Access',
     rbca_tier: 5,
     season_chip: 'FY2026',
   },
 
-  // ── CHURCH: 2819 Church ──
+  // ── CHURCH: ICC ──
   {
     view_id: 'v_church_kx',
     mode: 'church',
@@ -90,7 +90,7 @@ export const CANONICAL_VIEWS: ViewDefinition[] = [
     season_id: 'church_kx_2026',
     membership_id: 'mem_church_kx',
     derived_role_badge: 'System Owner',
-    org_display_name: '2819 Church',
+    org_display_name: 'ICC',
     role_title: 'System Owner',
     scope_line: 'Full Access',
     rbca_tier: 5,

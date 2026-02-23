@@ -31,7 +31,10 @@ import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
 import { getUnansweredCount, formatMessageTime } from '@/data/mock-messages-v3';
-import type { InboxThreadV3, NexusEscalationV3, ConversationMessageV3 } from '@/types';
+import type { Mode, InboxThreadV3, NexusEscalationV3, ConversationMessageV3 } from '@/types';
+import { EmptyState } from '@/components/ui/empty-state';
+
+const EMPTY_MODES = new Set<Mode>(['sports', 'business', 'church']);
 
 // =============================================================================
 // CONSTANTS
@@ -124,31 +127,33 @@ export default function MessagesScreen() {
         tabWidth={TAB_WIDTH_3}
       />
 
-      {/* ===== SEARCH BAR + COMPOSE ===== */}
-      <View style={styles.topRow}>
-        <View style={[styles.searchBar, { backgroundColor: colors.backgroundSecondary }]}>
-          <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
-          <TextInput
-            style={[styles.searchInput, { color: colors.text }]}
-            placeholder="Search..."
-            placeholderTextColor={colors.textTertiary}
-            value={search}
-            onChangeText={setSearch}
-          />
+      {/* ===== SEARCH BAR + COMPOSE (hidden for empty modes) ===== */}
+      {!EMPTY_MODES.has(mode) && (
+        <View style={styles.topRow}>
+          <View style={[styles.searchBar, { backgroundColor: colors.backgroundSecondary }]}>
+            <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
+            <TextInput
+              style={[styles.searchInput, { color: colors.text }]}
+              placeholder="Search..."
+              placeholderTextColor={colors.textTertiary}
+              value={search}
+              onChangeText={setSearch}
+            />
+          </View>
+          <Pressable
+            style={({ pressed }) => [
+              styles.newBtn,
+              { backgroundColor: colors.backgroundSecondary, opacity: pressed ? 0.7 : 1 },
+            ]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              setNewThreadVisible(true);
+            }}
+          >
+            <IconSymbol name="square.and.pencil" size={20} color={colors.text} />
+          </Pressable>
         </View>
-        <Pressable
-          style={({ pressed }) => [
-            styles.newBtn,
-            { backgroundColor: colors.backgroundSecondary, opacity: pressed ? 0.7 : 1 },
-          ]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            setNewThreadVisible(true);
-          }}
-        >
-          <IconSymbol name="square.and.pencil" size={20} color={colors.text} />
-        </Pressable>
-      </View>
+      )}
 
       {/* ===== SWIPEABLE 3-PAGE CONTENT ===== */}
       <EdgeHoldAdvance activeIndex={activeIndex} tabCount={MESSAGES_TABS.length} onAdvance={handleTabPress} wrap>
@@ -159,13 +164,25 @@ export default function MessagesScreen() {
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
           <View key="inbox" style={{ flex: 1 }}>
-            <InboxListV3 mode={mode} search={search} onSelectThread={handleSelectThread} />
+            {EMPTY_MODES.has(mode) ? (
+              <EmptyState icon="bubble.left.fill" title="No Messages" description="Your inbox will appear here." />
+            ) : (
+              <InboxListV3 mode={mode} search={search} onSelectThread={handleSelectThread} />
+            )}
           </View>
           <View key="rooms" style={{ flex: 1 }}>
-            <RoomsListV3 mode={mode} search={search} />
+            {EMPTY_MODES.has(mode) ? (
+              <EmptyState icon="bubble.left.and.bubble.right.fill" title="No Rooms" description="Create rooms to collaborate with your team." />
+            ) : (
+              <RoomsListV3 mode={mode} search={search} />
+            )}
           </View>
           <View key="nexus" style={{ flex: 1 }}>
-            <NexusQueueV3 mode={mode} onSelectEscalation={handleSelectEscalation} />
+            {EMPTY_MODES.has(mode) ? (
+              <EmptyState icon="sparkles" title="No Escalations" description="Nexus escalations will appear here." />
+            ) : (
+              <NexusQueueV3 mode={mode} onSelectEscalation={handleSelectEscalation} />
+            )}
           </View>
         </PagerView>
       </EdgeHoldAdvance>

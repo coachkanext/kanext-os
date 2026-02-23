@@ -59,9 +59,9 @@ export const ModeColors: Record<Mode, { primary: string; secondary: string; nexu
 // =============================================================================
 
 export const MODE_ACCENT: Record<Mode, string> = {
-  sports:      '#332A86',   // Carroll Purple
-  business:    '#EA2127',   // Valuetainment Red
-  church:      '#00D0D4',   // 2819 Teal
+  sports:      '#990000',   // Lincoln University Maroon
+  business:    '#1D9BF0',   // KaNeXT Blue
+  church:      '#0081CA',   // ICC Blue
   education:   '#003A63',   // Howard Navy
   competition: '#BFFF00',   // Adidas 3SSB Electric Lime
 };
@@ -71,9 +71,9 @@ export const MODE_ACCENT: Record<Mode, string> = {
 // =============================================================================
 
 export const MODE_ACCENT_SECONDARY: Record<Mode, string> = {
-  sports:      '#E8D3A2',   // Carroll Gold
-  business:    '#34495E',   // Dark Gray
-  church:      '#00D0D4',   // Teal (same)
+  sports:      '#DFA414',   // Lincoln University Gold
+  business:    '#1D9BF0',   // KaNeXT Blue (same)
+  church:      '#004C7A',   // ICC Navy
   education:   '#E51937',   // Howard Crimson
   competition: '#000000',   // Black
 };

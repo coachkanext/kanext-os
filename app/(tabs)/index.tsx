@@ -59,20 +59,42 @@ import { EducationHome as EducationHomeComponent } from '@/components/education/
 import { BusinessProvider } from '@/context/business-context';
 import { ChurchProvider } from '@/context/church-context';
 import { EducationProvider } from '@/context/education-context';
+import { EmptyModeShell, type ShellTab } from '@/components/ui/empty-mode-shell';
+
+// =============================================================================
+// EMPTY MODE SHELL TAB CONFIGS
+// =============================================================================
+
+const SPORTS_HOME_TABS: ShellTab[] = [
+  { id: 'dashboard', label: 'Dashboard', icon: 'sportscourt', emptyTitle: 'No Data Yet', emptyDescription: 'Your dashboard will populate as games and events are added.' },
+  { id: 'roster', label: 'Roster', icon: 'person.2.fill', emptyTitle: 'No Players', emptyDescription: 'Add players to build your roster.' },
+  { id: 'calendar', label: 'Calendar', icon: 'calendar', emptyTitle: 'No Events', emptyDescription: 'Schedule games and events to get started.' },
+  { id: 'recruiting', label: 'Recruiting', icon: 'star.circle.fill', emptyTitle: 'No Prospects', emptyDescription: 'Start scouting to build your recruiting board.' },
+];
+
+const BUSINESS_HOME_TABS: ShellTab[] = [
+  { id: 'dashboard', label: 'Dashboard', icon: 'chart.bar', emptyTitle: 'No Data Yet', emptyDescription: 'Your dashboard will populate as your business grows.' },
+  { id: 'calendar', label: 'Calendar', icon: 'calendar', emptyTitle: 'No Events', emptyDescription: 'Schedule meetings and milestones to get started.' },
+  { id: 'vault', label: 'Vault', icon: 'lock.fill', emptyTitle: 'No Documents', emptyDescription: 'Upload documents to build your data room.' },
+  { id: 'deals', label: 'Deals', icon: 'briefcase.fill', emptyTitle: 'No Deals', emptyDescription: 'Add deals to build your pipeline.' },
+];
+
+const CHURCH_HOME_TABS: ShellTab[] = [
+  { id: 'dashboard', label: 'Dashboard', icon: 'house.fill', emptyTitle: 'No Data Yet', emptyDescription: 'Your dashboard will populate as your church grows.' },
+  { id: 'calendar', label: 'Calendar', icon: 'calendar', emptyTitle: 'No Events', emptyDescription: 'Schedule services and events to get started.' },
+  { id: 'ministries', label: 'Ministries', icon: 'person.3', emptyTitle: 'No Ministries', emptyDescription: 'Create ministries to organize your church.' },
+  { id: 'connect', label: 'Connect', icon: 'heart', emptyTitle: 'No Connections', emptyDescription: 'Start connecting with your community.' },
+];
 
 // =============================================================================
 // COMING SOON — placeholder for modes not yet launched
 // =============================================================================
 
-function ComingSoonPage({ mode, label }: { mode: Mode; label: string }) {
-  const accent = MODE_ACCENT[mode];
+function ComingSoonPage({ mode }: { mode: Mode }) {
   const insets = useSafeAreaInsets();
 
   return (
     <ThemedView style={[styles.container, { justifyContent: 'center', alignItems: 'center', paddingBottom: insets.bottom + 80 }]}>
-      <View style={[styles.comingSoonBadge, { backgroundColor: accent + '18' }]}>
-        <ThemedText style={[styles.comingSoonLabel, { color: accent }]}>{label}</ThemedText>
-      </View>
       <ThemedText style={styles.comingSoonTitle}>Coming Soon</ThemedText>
       <ThemedText style={styles.comingSoonSubtitle}>
         This mode is under development.{'\n'}Stay tuned for updates.
@@ -1162,48 +1184,48 @@ export default function HomeScreen() {
   const { state } = useAppContext();
   const mode = useMode();
 
-  // Sports mode handles its own scroll (sticky header)
+  // Sports — empty shell
   if (mode === 'sports') {
     return (
       <ThemedView style={styles.container}>
-        <SportsHome />
+        <EmptyModeShell tabs={SPORTS_HOME_TABS} />
       </ThemedView>
     );
   }
 
   // Competition — coming soon
   if (mode === 'competition') {
-    return <ComingSoonPage mode="competition" label="Competition" />;
+    return <ComingSoonPage mode="competition" />;
   }
 
-  // Business mode handles its own scroll (9-tab pager + RBAC)
+  // Business — empty shell
   if (mode === 'business') {
     return (
-      <BusinessProvider>
-        <BusinessHome />
-      </BusinessProvider>
+      <ThemedView style={styles.container}>
+        <EmptyModeShell tabs={BUSINESS_HOME_TABS} />
+      </ThemedView>
     );
   }
 
-  // Church mode handles its own scroll (hub tabs + RBAC)
+  // Church — empty shell
   if (mode === 'church') {
     return (
-      <ChurchProvider>
-        <ChurchHomeComponent />
-      </ChurchProvider>
+      <ThemedView style={styles.container}>
+        <EmptyModeShell tabs={CHURCH_HOME_TABS} />
+      </ThemedView>
     );
   }
 
   // Education — coming soon
   if (mode === 'education') {
-    return <ComingSoonPage mode="education" label="Education" />;
+    return <ComingSoonPage mode="education" />;
   }
 
-  // Fallback
+  // Fallback — empty shell
   return (
-    <ChurchProvider>
-      <ChurchHomeComponent />
-    </ChurchProvider>
+    <ThemedView style={styles.container}>
+      <EmptyModeShell tabs={SPORTS_HOME_TABS} />
+    </ThemedView>
   );
 }
 
@@ -2262,6 +2284,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: '800',
     color: '#FFFFFF',
+    lineHeight: 40,
     marginBottom: 12,
   },
   comingSoonSubtitle: {

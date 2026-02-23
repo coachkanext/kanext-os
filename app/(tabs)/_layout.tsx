@@ -193,7 +193,7 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <Image
               source={NEXUS_ICON}
-              style={[tabStyles.nexusIcon, { opacity: focused ? 1 : 0.45 }]}
+              style={[tabStyles.nexusIcon, { opacity: focused ? 1 : 0.65 }]}
               resizeMode="contain"
             />
           ),
@@ -239,7 +239,7 @@ export default function TabLayout() {
 
 const tabStyles = StyleSheet.create({
   nexusIcon: {
-    width: 36,
-    height: 36,
+    width: 44,
+    height: 44,
   },
 });
