@@ -134,7 +134,7 @@ export const COMP_SERIES_TABS: CompSeriesTab[] = [
   { id: 'seasons', label: 'Seasons', icon: 'calendar' },
   { id: 'entrants', label: 'Entrants', icon: 'person.3.fill' },
   { id: 'standings', label: 'Standings', icon: 'tablecells.fill' },
-  { id: 'calendar', label: 'Calendar', icon: 'calendar.badge.clock' },
+  { id: 'calendar', label: 'Schedule', icon: 'calendar.badge.clock' },
   { id: 'awards', label: 'Awards', icon: 'crown.fill' },
   { id: 'history', label: 'History', icon: 'clock.fill' },
   { id: 'settings', label: 'Settings', icon: 'gear' },

@@ -1,6 +1,6 @@
 /**
  * Education Home — KaNeXT 4-tab PagerView layout
- * Dashboard | Calendar | Faculty | Admissions
+ * Dashboard | Schedule | Faculty | Admissions
  *
  * Uses PagerView + PagedTabBar + EdgeHoldAdvance for swipeable tabs.
  */
@@ -31,7 +31,7 @@ import { EduAdmissionsV2 } from '@/components/edu-home/edu-admissions-v2';
 
 const ALL_TABS: { id: string; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
-  { id: 'calendar', label: 'Calendar' },
+  { id: 'calendar', label: 'Schedule' },
   { id: 'faculty', label: 'Faculty' },
   { id: 'admissions', label: 'Admissions' },
 ];

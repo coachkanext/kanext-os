@@ -75,7 +75,7 @@ const SERIES_TAB_MATRIX: Record<SeriesTab, Record<CompetitionRoleLens, CV>> = {
 
 export function getSeriesSheetTabs(role: CompetitionRoleLens): { id: SeriesTab; label: string; visibility: Visibility }[] {
   const labels: Record<SeriesTab, string> = {
-    dashboard: 'Dashboard', standings: 'Standings', calendar: 'Calendar',
+    dashboard: 'Dashboard', standings: 'Standings', calendar: 'Schedule',
     events: 'Events', ops: 'Ops', rules: 'Rules', tech_compliance: 'Tech + Compliance',
     finance: 'Finance', payment_rails: 'Payment Rails', venues: 'Venues',
     sponsors: 'Sponsors', media: 'Media',

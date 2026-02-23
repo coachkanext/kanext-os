@@ -67,21 +67,21 @@ import { EmptyModeShell, type ShellTab } from '@/components/ui/empty-mode-shell'
 
 const SPORTS_HOME_TABS: ShellTab[] = [
   { id: 'dashboard', label: 'Dashboard', icon: 'sportscourt', emptyTitle: 'No Data Yet', emptyDescription: 'Your dashboard will populate as games and events are added.' },
-  { id: 'calendar', label: 'Calendar', icon: 'calendar', emptyTitle: 'No Events', emptyDescription: 'Schedule games and events to get started.' },
+  { id: 'calendar', label: 'Schedule', icon: 'calendar', emptyTitle: 'No Events', emptyDescription: 'Schedule games and events to get started.' },
   { id: 'roster', label: 'Roster', icon: 'person.2.fill', emptyTitle: 'No Players', emptyDescription: 'Add players to build your roster.' },
   { id: 'recruiting', label: 'Recruiting', icon: 'star.circle.fill', emptyTitle: 'No Prospects', emptyDescription: 'Start scouting to build your recruiting board.' },
 ];
 
 const BUSINESS_HOME_TABS: ShellTab[] = [
   { id: 'dashboard', label: 'Dashboard', icon: 'chart.bar', emptyTitle: 'No Data Yet', emptyDescription: 'Your dashboard will populate as your business grows.' },
-  { id: 'calendar', label: 'Calendar', icon: 'calendar', emptyTitle: 'No Events', emptyDescription: 'Schedule meetings and milestones to get started.' },
+  { id: 'calendar', label: 'Schedule', icon: 'calendar', emptyTitle: 'No Events', emptyDescription: 'Schedule meetings and milestones to get started.' },
   { id: 'vault', label: 'Vault', icon: 'lock.fill', emptyTitle: 'No Documents', emptyDescription: 'Upload documents to build your data room.' },
   { id: 'deals', label: 'Deals', icon: 'briefcase.fill', emptyTitle: 'No Deals', emptyDescription: 'Add deals to build your pipeline.' },
 ];
 
 const CHURCH_HOME_TABS: ShellTab[] = [
   { id: 'dashboard', label: 'Dashboard', icon: 'house.fill', emptyTitle: 'No Data Yet', emptyDescription: 'Your dashboard will populate as your church grows.' },
-  { id: 'calendar', label: 'Calendar', icon: 'calendar', emptyTitle: 'No Events', emptyDescription: 'Schedule services and events to get started.' },
+  { id: 'calendar', label: 'Schedule', icon: 'calendar', emptyTitle: 'No Events', emptyDescription: 'Schedule services and events to get started.' },
   { id: 'ministries', label: 'Ministries', icon: 'person.3', emptyTitle: 'No Ministries', emptyDescription: 'Create ministries to organize your church.' },
   { id: 'connect', label: 'Connect', icon: 'heart', emptyTitle: 'No Connections', emptyDescription: 'Start connecting with your community.' },
 ];
@@ -116,7 +116,7 @@ type DrillDownId = 'stats' | 'game-plan' | 'simulation' | 'development' | 'alert
 const HOME_TABS: { id: string; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'roster', label: 'Roster' },
-  { id: 'calendar', label: 'Calendar' },
+  { id: 'calendar', label: 'Schedule' },
   { id: 'recruiting', label: 'Recruiting' },
 ];
 

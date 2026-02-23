@@ -1,6 +1,6 @@
 /**
  * Business Home — KaNeXT 4-tab PagerView layout
- * Dashboard | Calendar | Vault | Deals
+ * Dashboard | Schedule | Vault | Deals
  *
  * Uses PagerView + PagedTabBar + EdgeHoldAdvance for swipeable tabs.
  */
@@ -30,7 +30,7 @@ import { BizDealsV2 } from '@/components/biz-home/biz-deals-v2';
 
 const ALL_TABS: { id: string; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
-  { id: 'calendar', label: 'Calendar' },
+  { id: 'calendar', label: 'Schedule' },
   { id: 'vault', label: 'Vault' },
   { id: 'deals', label: 'Deals' },
 ];

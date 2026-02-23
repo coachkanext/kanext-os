@@ -50,7 +50,7 @@ const ALL_VIEWS: ViewDef[] = [
   { id: 'agenda', label: 'Agenda' },
   { id: 'services', label: 'Services' },
   { id: 'news', label: 'News' },
-  { id: 'calendar', label: 'Calendar' },
+  { id: 'calendar', label: 'Schedule' },
 ];
 
 function getAvailableViews(role: ChurchRoleLens): ViewDef[] {

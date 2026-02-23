@@ -1,6 +1,6 @@
 /**
  * Competition Home — KaNeXT 4-tab PagerView layout
- * Dashboard | Calendar | Grid | Entries
+ * Dashboard | Schedule | Grid | Entries
  *
  * Uses PagerView + PagedTabBar + EdgeHoldAdvance for swipeable tabs.
  */
@@ -30,7 +30,7 @@ import { CompEntriesV2 } from '@/components/competition/comp-entries-v2';
 
 const ALL_TABS: { id: string; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
-  { id: 'calendar', label: 'Calendar' },
+  { id: 'calendar', label: 'Schedule' },
   { id: 'grid', label: 'Grid' },
   { id: 'entries', label: 'Entries' },
 ];

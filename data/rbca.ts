@@ -88,7 +88,7 @@ export const FAST_ACTIONS: Record<string, FastAction[]> = {
   // ── Church ──
   mem_church_kx: [
     { icon: 'sparkles', label: 'Open Nexus', route: '/(tabs)/nexus' },
-    { icon: 'calendar', label: 'Calendar', route: '/(tabs)' },
+    { icon: 'calendar', label: 'Schedule', route: '/(tabs)' },
     { icon: 'person.3.fill', label: 'Members', route: '/(tabs)' },
     { icon: 'dollarsign.circle.fill', label: 'Finance', route: '/(tabs)/organization' },
   ],
@@ -98,7 +98,7 @@ export const FAST_ACTIONS: Record<string, FastAction[]> = {
     { icon: 'sparkles', label: 'Open Nexus', route: '/(tabs)/nexus' },
     { icon: 'person.3.fill', label: 'Students', route: '/(tabs)' },
     { icon: 'doc.fill', label: 'Reports', route: '/(tabs)/organization' },
-    { icon: 'calendar', label: 'Calendar', route: '/(tabs)' },
+    { icon: 'calendar', label: 'Schedule', route: '/(tabs)' },
   ],
 
   // ── Competition ──

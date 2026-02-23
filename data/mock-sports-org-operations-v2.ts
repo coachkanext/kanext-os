@@ -245,7 +245,7 @@ export const APPROVAL_STATUS_COLORS: Record<OpsApproval['status'], string> = {
 
 export const OPS_SUB_TABS: OpsSubTab[] = [
   { id: 'overview', label: 'Overview', icon: 'square.grid.2x2.fill' },
-  { id: 'calendar-ops', label: 'Calendar', icon: 'calendar' },
+  { id: 'calendar-ops', label: 'Schedule', icon: 'calendar' },
   { id: 'travel', label: 'Travel', icon: 'airplane' },
   { id: 'facilities-ops', label: 'Facilities', icon: 'building.2.fill' },
   { id: 'equipment', label: 'Equipment', icon: 'archivebox.fill' },

@@ -1,6 +1,6 @@
 /**
  * Church Home — 2819 Church 4-tab PagerView layout
- * Dashboard | Calendar | Ministries | Connect
+ * Dashboard | Schedule | Ministries | Connect
  *
  * Uses PagerView + PagedTabBar + EdgeHoldAdvance for swipeable tabs.
  */
@@ -26,7 +26,7 @@ import { ChurchConnectV2 } from '@/components/church-home/church-connect-v2';
 
 const ALL_TABS: { id: string; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
-  { id: 'calendar', label: 'Calendar' },
+  { id: 'calendar', label: 'Schedule' },
   { id: 'ministries', label: 'Ministries' },
   { id: 'connect', label: 'Connect' },
 ];

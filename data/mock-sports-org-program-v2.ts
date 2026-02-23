@@ -284,7 +284,7 @@ export const PROGRAM_SUB_TABS: ProgramSubTab[] = [
   { id: 'leadership', label: 'Leadership', icon: 'person.3.fill' },
   { id: 'context', label: 'Context', icon: 'brain.fill' },
   { id: 'rules', label: 'Rules', icon: 'checklist' },
-  { id: 'calendar', label: 'Calendar', icon: 'calendar' },
+  { id: 'calendar', label: 'Schedule', icon: 'calendar' },
   { id: 'decisions', label: 'Decisions', icon: 'arrow.triangle.branch' },
   { id: 'assets', label: 'Assets', icon: 'archivebox.fill' },
   { id: 'partners', label: 'Partners', icon: 'handshake.fill' },

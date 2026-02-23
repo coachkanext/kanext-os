@@ -31,6 +31,7 @@ import { triggerKXTransition } from '@/utils/global-transition';
 import { requestHomeReset } from '@/utils/global-home';
 import { requestOrgReset } from '@/utils/global-org';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
+import { startGlobalVoice } from '@/utils/global-voice';
 
 // Tab icon component
 function TabIcon({
@@ -86,13 +87,16 @@ export default function TabLayout() {
     []
   );
 
-  // Nexus tab button: long-press → search overlay, double-tap → split Nexus
+  // Nexus tab button: long-press → search overlay + voice, double-tap → split Nexus
   const lastNexusTapRef = useRef(0);
   const NexusTabButton = useCallback(
     (props: any) => (
       <HapticTab
         {...props}
-        onLongPress={openSearchOverlay}
+        onLongPress={() => {
+          openSearchOverlay();
+          startGlobalVoice();
+        }}
         onPress={(e: any) => {
           const now = Date.now();
           if (now - lastNexusTapRef.current < 350) {

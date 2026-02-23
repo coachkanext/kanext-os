@@ -37,7 +37,7 @@ import type {
 const SUB_TABS = [
   { id: 'directory', label: 'Directory' },
   { id: 'coverage', label: 'Coverage' },
-  { id: 'calendar', label: 'Calendar' },
+  { id: 'calendar', label: 'Schedule' },
   { id: 'health', label: 'Health' },
 ];
 

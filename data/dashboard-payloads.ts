@@ -219,7 +219,7 @@ export function buildEducationDashboard(): DashboardTruthPayload {
         : []),
     ],
     quickActions: [
-      { id: 'qa-calendar', label: 'Calendar', icon: 'calendar' },
+      { id: 'qa-calendar', label: 'Schedule', icon: 'calendar' },
       { id: 'qa-academics', label: 'Academics', icon: 'graduationcap.fill' },
       { id: 'qa-people', label: 'People', icon: 'person.2.fill' },
     ],
@@ -364,7 +364,7 @@ export function buildCompetitionDashboard(): DashboardTruthPayload {
       { id: 'qa-revenue', label: 'Revenue', icon: 'dollarsign.circle.fill' },
       { id: 'qa-compliance', label: 'Compliance', icon: 'shield.checkered' },
       { id: 'qa-teams', label: 'Teams', icon: 'person.3.fill' },
-      { id: 'qa-calendar', label: 'Calendar', icon: 'calendar' },
+      { id: 'qa-calendar', label: 'Schedule', icon: 'calendar' },
       { id: 'qa-broadcast', label: 'Broadcast', icon: 'video.fill' },
       { id: 'qa-reports', label: 'Reports', icon: 'chart.bar.fill' },
     ],
