@@ -1,98 +1,126 @@
 /**
- * Sports Facilities V3 — 3-pill ViewBar (Spaces | Bookings | Equipment)
- * Carroll Men's Basketball · NAIA Frontier Conference
- * Head Coach / GM perspective. Inline mock data, no DrillMode.
+ * Sports Facilities V3 — A2 (Assistant Coach) Room Directory
+ * 3 blocks: Rooms Grid, Equipment Highlights, Issues Placeholder
+ * + Room Detail Sheet on tap.
+ *
+ * Facilities = Physical Space Directory (read-only).
+ * No booking. No maintenance. No asset values.
  */
-import React, { useState, useCallback } from 'react';
-import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
+import React, { useState, useCallback, useMemo } from 'react';
+import { View, ScrollView, StyleSheet, Pressable, TextInput, Linking } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
-
-const ACCENT = MODE_ACCENT.sports;
+import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 
 // =============================================================================
-// TYPES & MOCK DATA
+// TYPES
 // =============================================================================
 
+type RoomStatus = 'Open' | 'Limited' | 'Closed';
 
-type ViewId = 'spaces' | 'bookings' | 'equipment';
-
-const VIEWS: { id: ViewId; label: string }[] = [
-  { id: 'spaces', label: 'Spaces' },
-  { id: 'bookings', label: 'Bookings' },
-  { id: 'equipment', label: 'Equipment' },
-];
-
-type SpaceStatus = 'Open' | 'In Use' | 'Closed';
-
-const SPACE_STATUS_COLOR: Record<SpaceStatus, string> = {
-  Open: '#22C55E',
-  'In Use': '#F59E0B',
-  Closed: '#EF4444',
-};
-
-interface Facility {
+interface Room {
   id: string;
   name: string;
-  status: SpaceStatus;
-  capacity: number;
+  building: string;
+  icon: string;
+  status: RoomStatus;
+  capacity?: number;
+  surface?: string;
+  hours?: string;
+  usageNotes?: string;
+  address?: string;
+}
+
+interface EquipmentHighlight {
+  id: string;
+  name: string;
   icon: string;
 }
 
-const FACILITIES: Facility[] = [
-  { id: 'f1', name: 'PE Center', status: 'Open', capacity: 2000, icon: 'building.2.fill' },
-  { id: 'f2', name: 'Weight Room', status: 'In Use', capacity: 30, icon: 'figure.mind.and.body' },
-  { id: 'f3', name: 'Film Room', status: 'Open', capacity: 25, icon: 'play.rectangle.fill' },
-  { id: 'f4', name: 'Practice Court', status: 'Open', capacity: 50, icon: 'sportscourt.fill' },
-  { id: 'f5', name: 'Locker Room', status: 'Open', capacity: 40, icon: 'lock.fill' },
+// =============================================================================
+// MOCK DATA
+// =============================================================================
+
+const ROOMS: Room[] = [
+  {
+    id: 'r1', name: 'Arena / Main Gym', building: 'PE Center', icon: 'sportscourt.fill',
+    status: 'Open', capacity: 2000, surface: 'Hardwood', hours: '6:00 AM – 10:00 PM',
+    usageNotes: 'Home games, team practice, community events',
+    address: '1601 N Benton Ave, Helena, MT 59625',
+  },
+  {
+    id: 'r2', name: 'Practice Gym', building: 'PE Center', icon: 'figure.basketball',
+    status: 'Open', capacity: 50, surface: 'Hardwood', hours: '6:00 AM – 9:00 PM',
+    usageNotes: 'Daily practice, individual workouts, skill sessions',
+    address: '1601 N Benton Ave, Helena, MT 59625',
+  },
+  {
+    id: 'r3', name: 'Weight Room', building: 'PE Center', icon: 'dumbbell.fill',
+    status: 'Open', capacity: 30, hours: '5:30 AM – 9:00 PM',
+    usageNotes: 'Team lifts, individual strength training',
+    address: '1601 N Benton Ave, Helena, MT 59625',
+  },
+  {
+    id: 'r4', name: 'Training Room', building: 'PE Center', icon: 'cross.case.fill',
+    status: 'Open', capacity: 15, hours: '7:00 AM – 6:00 PM',
+    usageNotes: 'Athletic training, treatment, rehab, taping',
+    address: '1601 N Benton Ave, Helena, MT 59625',
+  },
+  {
+    id: 'r5', name: 'Film Room', building: 'PE Center', icon: 'play.rectangle.fill',
+    status: 'Open', capacity: 25, hours: '8:00 AM – 8:00 PM',
+    usageNotes: 'Game film review, scouting prep, team meetings',
+    address: '1601 N Benton Ave, Helena, MT 59625',
+  },
+  {
+    id: 'r6', name: 'Locker Room', building: 'PE Center', icon: 'lock.fill',
+    status: 'Open', capacity: 40,
+    usageNotes: 'Pre/post game, daily use',
+    address: '1601 N Benton Ave, Helena, MT 59625',
+  },
+  {
+    id: 'r7', name: 'Coaches Offices', building: 'PE Center', icon: 'person.2.fill',
+    status: 'Open', hours: '8:00 AM – 6:00 PM',
+    usageNotes: 'Staff offices, recruiting meetings, player meetings',
+    address: '1601 N Benton Ave, Helena, MT 59625',
+  },
+  {
+    id: 'r8', name: 'Team Lounge', building: 'PE Center', icon: 'sofa.fill',
+    status: 'Open', capacity: 20,
+    usageNotes: 'Player lounge, study area, team bonding',
+    address: '1601 N Benton Ave, Helena, MT 59625',
+  },
+  {
+    id: 'r9', name: 'Academic Center', building: 'Simperman Hall', icon: 'book.fill',
+    status: 'Limited', hours: '8:00 AM – 5:00 PM (shared)',
+    usageNotes: 'Tutoring, study hall, academic advising',
+    address: '1601 N Benton Ave, Helena, MT 59625',
+  },
+  {
+    id: 'r10', name: 'Equipment Storage', building: 'PE Center', icon: 'shippingbox.fill',
+    status: 'Open',
+    usageNotes: 'Gear storage, practice equipment, game-day kits',
+    address: '1601 N Benton Ave, Helena, MT 59625',
+  },
 ];
 
-interface Booking {
-  id: string;
-  date: string;
-  time: string;
-  space: string;
-  team: string;
-  purpose: string;
-  recurring: boolean;
-}
-
-const BOOKINGS: Booking[] = [
-  { id: 'b1', date: 'Jan 18', time: '6:00 AM - 8:00 AM', space: 'Weight Room', team: 'Varsity', purpose: 'Morning Lift', recurring: true },
-  { id: 'b2', date: 'Jan 18', time: '3:00 PM - 5:30 PM', space: 'Practice Court', team: 'Varsity', purpose: 'Team Practice', recurring: true },
-  { id: 'b3', date: 'Jan 19', time: '9:00 AM - 10:30 AM', space: 'Film Room', team: 'Varsity', purpose: 'Game Film Review', recurring: false },
-  { id: 'b4', date: 'Jan 19', time: '2:00 PM - 4:00 PM', space: 'Practice Court', team: 'Dev 1', purpose: 'Team Practice', recurring: true },
-  { id: 'b5', date: 'Jan 20', time: '6:00 AM - 8:00 AM', space: 'Weight Room', team: 'Dev 1', purpose: 'Morning Lift', recurring: true },
-  { id: 'b6', date: 'Jan 20', time: '4:00 PM - 6:00 PM', space: 'Practice Court', team: 'Dev 2', purpose: 'Team Practice', recurring: true },
+const EQUIPMENT_HIGHLIGHTS: EquipmentHighlight[] = [
+  { id: 'eq1', name: 'Shooting Machine (Dr. Dish)', icon: 'target' },
+  { id: 'eq2', name: 'Cold Tub', icon: 'snowflake' },
+  { id: 'eq3', name: 'Film System (Hudl)', icon: 'video.fill' },
+  { id: 'eq4', name: 'VertiMax', icon: 'arrow.up.circle.fill' },
+  { id: 'eq5', name: 'GPS Tracking System', icon: 'location.fill' },
+  { id: 'eq6', name: 'Recovery Pool', icon: 'drop.fill' },
 ];
 
-type EquipmentCondition = 'Good' | 'Fair' | 'Maintenance needed';
-
-const CONDITION_COLOR: Record<EquipmentCondition, string> = {
-  Good: '#22C55E',
-  Fair: '#F59E0B',
-  'Maintenance needed': '#EF4444',
+const ROOM_STATUS_COLOR: Record<RoomStatus, string> = {
+  Open: '#22C55E',
+  Limited: '#F59E0B',
+  Closed: '#EF4444',
 };
-
-interface EquipmentItem {
-  id: string;
-  name: string;
-  quantity: number;
-  condition: EquipmentCondition;
-}
-
-const EQUIPMENT: EquipmentItem[] = [
-  { id: 'eq1', name: 'Home Jerseys', quantity: 18, condition: 'Good' },
-  { id: 'eq2', name: 'Away Jerseys', quantity: 18, condition: 'Fair' },
-  { id: 'eq3', name: 'Practice Jerseys', quantity: 36, condition: 'Good' },
-  { id: 'eq4', name: 'Basketballs', quantity: 24, condition: 'Good' },
-  { id: 'eq5', name: 'Training Cones', quantity: 50, condition: 'Good' },
-  { id: 'eq6', name: 'Resistance Bands', quantity: 20, condition: 'Fair' },
-  { id: 'eq7', name: 'Medicine Balls', quantity: 12, condition: 'Good' },
-  { id: 'eq8', name: 'Shooting Machine', quantity: 1, condition: 'Maintenance needed' },
-];
 
 // =============================================================================
 // PROPS
@@ -108,114 +136,198 @@ interface Props {
 // HELPERS
 // =============================================================================
 
-function StatusBadge({ label, color }: { label: string; color: string }) {
+function SectionHeader({ label, colors }: { label: string; colors: typeof Colors.light }) {
   return (
-    <View style={[s.badge, { backgroundColor: color + '20' }]}>
-      <ThemedText style={[s.badgeText, { color }]}>{label}</ThemedText>
+    <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>
+      {label}
+    </ThemedText>
+  );
+}
+
+function StatusChip({ label, color }: { label: string; color: string }) {
+  return (
+    <View style={[s.chip, { backgroundColor: color + '18' }]}>
+      <ThemedText style={[s.chipText, { color }]}>{label}</ThemedText>
     </View>
   );
 }
 
 // =============================================================================
-// VIEW: SPACES
+// BLOCK 1 — ROOMS GRID
 // =============================================================================
 
-function SpacesView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+function RoomsGrid({ colors, accentColor, search, onSelectRoom }: {
+  colors: typeof Colors.light;
+  accentColor: string;
+  search: string;
+  onSelectRoom: (room: Room) => void;
+}) {
+  const filtered = useMemo(() => {
+    if (!search.trim()) return ROOMS;
+    const q = search.toLowerCase();
+    return ROOMS.filter((r) => r.name.toLowerCase().includes(q));
+  }, [search]);
+
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>FACILITIES</ThemedText>
-      {FACILITIES.map((facility) => (
-        <Pressable
-          key={facility.id}
-          style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}
-          onPress={() => Haptics.selectionAsync()}
-        >
-          <View style={s.spaceHeader}>
-            <IconSymbol name={facility.icon as any} size={20} color={accentColor} />
-            <View style={s.spaceInfo}>
-              <ThemedText style={[s.spaceName, { color: colors.text }]}>{facility.name}</ThemedText>
-              <ThemedText style={[s.spaceCap, { color: colors.textSecondary }]}>
-                Capacity: {facility.capacity}
-              </ThemedText>
+    <>
+      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary, marginTop: 0 }]}>
+        ROOMS · {filtered.length}
+      </ThemedText>
+      <View style={s.grid}>
+        {filtered.map((room) => (
+          <Pressable
+            key={room.id}
+            style={({ pressed }) => [s.roomCard, { backgroundColor: colors.card, borderColor: colors.border }, pressed && { opacity: 0.7 }]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onSelectRoom(room);
+            }}
+          >
+            <View style={s.roomIconRow}>
+              <IconSymbol name={room.icon as any} size={22} color={accentColor} />
+              <StatusChip label={room.status} color={ROOM_STATUS_COLOR[room.status]} />
             </View>
-            <StatusBadge
-              label={facility.status.toUpperCase()}
-              color={SPACE_STATUS_COLOR[facility.status]}
-            />
-          </View>
-        </Pressable>
-      ))}
-    </ScrollView>
+            <ThemedText style={[s.roomName, { color: colors.text }]} numberOfLines={2}>{room.name}</ThemedText>
+            <ThemedText style={[s.roomBuilding, { color: colors.textSecondary }]} numberOfLines={1}>{room.building}</ThemedText>
+          </Pressable>
+        ))}
+      </View>
+      {filtered.length === 0 && (
+        <ThemedText style={[s.emptyText, { color: colors.textTertiary }]}>No rooms match your search.</ThemedText>
+      )}
+    </>
   );
 }
 
 // =============================================================================
-// VIEW: BOOKINGS
+// BLOCK 2 — EQUIPMENT HIGHLIGHTS
 // =============================================================================
 
-function BookingsView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+function EquipmentBlock({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+  if (EQUIPMENT_HIGHLIGHTS.length === 0) return null;
+
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>UPCOMING BOOKINGS</ThemedText>
-      {BOOKINGS.map((booking) => (
-        <View
-          key={booking.id}
-          style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}
-        >
-          <View style={s.bookingHeader}>
-            <View style={s.bookingDateBadge}>
-              <ThemedText style={[s.bookingDate, { color: accentColor }]}>{booking.date}</ThemedText>
-            </View>
-            <View style={s.bookingInfo}>
-              <ThemedText style={[s.bookingPurpose, { color: colors.text }]}>{booking.purpose}</ThemedText>
-              <ThemedText style={[s.bookingTime, { color: colors.textSecondary }]}>{booking.time}</ThemedText>
-            </View>
-            {booking.recurring && (
-              <StatusBadge label="RECURRING" color={ACCENT} />
-            )}
-          </View>
-          <View style={[s.bookingMeta, { borderTopColor: colors.border }]}>
-            <View style={s.bookingMetaItem}>
-              <IconSymbol name="building.2.fill" size={12} color={colors.textTertiary} />
-              <ThemedText style={[s.bookingMetaText, { color: colors.textSecondary }]}>{booking.space}</ThemedText>
-            </View>
-            <View style={s.bookingMetaItem}>
-              <IconSymbol name="person.3.fill" size={12} color={colors.textTertiary} />
-              <ThemedText style={[s.bookingMetaText, { color: colors.textSecondary }]}>{booking.team}</ThemedText>
-            </View>
-          </View>
-        </View>
-      ))}
-    </ScrollView>
-  );
-}
-
-// =============================================================================
-// VIEW: EQUIPMENT
-// =============================================================================
-
-function EquipmentView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
-  return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>INVENTORY</ThemedText>
-      {EQUIPMENT.map((item) => (
-        <View
-          key={item.id}
-          style={[s.listRow, { borderBottomColor: colors.border }]}
-        >
-          <View style={s.eqInfo}>
+    <>
+      <SectionHeader label="EQUIPMENT HIGHLIGHTS" colors={colors} />
+      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        {EQUIPMENT_HIGHLIGHTS.map((item, idx) => (
+          <View
+            key={item.id}
+            style={[
+              s.eqRow,
+              idx < EQUIPMENT_HIGHLIGHTS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+            ]}
+          >
+            <IconSymbol name={item.icon as any} size={16} color={accentColor} />
             <ThemedText style={[s.eqName, { color: colors.text }]}>{item.name}</ThemedText>
-            <ThemedText style={[s.eqQty, { color: colors.textSecondary }]}>
-              Qty: {item.quantity} {item.quantity === 1 ? 'unit' : 'sets'}
-            </ThemedText>
           </View>
-          <StatusBadge
-            label={item.condition.toUpperCase()}
-            color={CONDITION_COLOR[item.condition]}
-          />
+        ))}
+      </View>
+    </>
+  );
+}
+
+// =============================================================================
+// BLOCK 3 — ISSUES / REQUESTS
+// =============================================================================
+
+function IssuesBlock({ colors }: { colors: typeof Colors.light }) {
+  return (
+    <>
+      <SectionHeader label="ISSUES / REQUESTS" colors={colors} />
+      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={s.issueRow}>
+          <IconSymbol name="checkmark.seal.fill" size={16} color="#22C55E" />
+          <ThemedText style={[s.issueText, { color: colors.textSecondary }]}>No issues logged.</ThemedText>
         </View>
-      ))}
-    </ScrollView>
+      </View>
+    </>
+  );
+}
+
+// =============================================================================
+// ROOM DETAIL SHEET
+// =============================================================================
+
+function RoomDetailSheet({ visible, onClose, room, colors, accentColor }: {
+  visible: boolean;
+  onClose: () => void;
+  room: Room | null;
+  colors: typeof Colors.light;
+  accentColor: string;
+}) {
+  if (!room) return null;
+
+  const handleOpenMaps = () => {
+    if (!room.address) return;
+    const encoded = encodeURIComponent(room.address);
+    Linking.openURL(`https://maps.apple.com/?q=${encoded}`);
+  };
+
+  return (
+    <BottomSheet visible={visible} onClose={onClose} title={room.name} useModal>
+      <BottomSheetScrollView contentContainerStyle={s.sheetScroll}>
+        {/* Status + Building */}
+        <View style={s.sheetHeaderRow}>
+          <View style={s.sheetHeaderInfo}>
+            <ThemedText style={[s.sheetBuilding, { color: colors.textSecondary }]}>{room.building}</ThemedText>
+          </View>
+          <StatusChip label={room.status} color={ROOM_STATUS_COLOR[room.status]} />
+        </View>
+
+        {/* Details card */}
+        <View style={[s.sheetCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          {room.hours && (
+            <View style={s.sheetDetailRow}>
+              <IconSymbol name="clock.fill" size={14} color={colors.textTertiary} />
+              <View style={s.sheetDetailInfo}>
+                <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Hours</ThemedText>
+                <ThemedText style={[s.sheetDetailValue, { color: colors.text }]}>{room.hours}</ThemedText>
+              </View>
+            </View>
+          )}
+          {room.capacity && (
+            <View style={s.sheetDetailRow}>
+              <IconSymbol name="person.2.fill" size={14} color={colors.textTertiary} />
+              <View style={s.sheetDetailInfo}>
+                <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Capacity</ThemedText>
+                <ThemedText style={[s.sheetDetailValue, { color: colors.text }]}>{room.capacity}</ThemedText>
+              </View>
+            </View>
+          )}
+          {room.surface && (
+            <View style={s.sheetDetailRow}>
+              <IconSymbol name="square.grid.3x3.fill" size={14} color={colors.textTertiary} />
+              <View style={s.sheetDetailInfo}>
+                <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Surface</ThemedText>
+                <ThemedText style={[s.sheetDetailValue, { color: colors.text }]}>{room.surface}</ThemedText>
+              </View>
+            </View>
+          )}
+        </View>
+
+        {/* Usage notes */}
+        {room.usageNotes && (
+          <>
+            <ThemedText style={[s.sheetSectionLabel, { color: colors.textSecondary }]}>USAGE</ThemedText>
+            <View style={[s.sheetCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <ThemedText style={[s.sheetUsage, { color: colors.text }]}>{room.usageNotes}</ThemedText>
+            </View>
+          </>
+        )}
+
+        {/* Open in Maps */}
+        {room.address && (
+          <Pressable
+            style={({ pressed }) => [s.mapsButton, { backgroundColor: accentColor }, pressed && { opacity: 0.7 }]}
+            onPress={handleOpenMaps}
+          >
+            <IconSymbol name="map.fill" size={16} color="#000" />
+            <ThemedText style={s.mapsButtonText}>Open in Maps</ThemedText>
+          </Pressable>
+        )}
+      </BottomSheetScrollView>
+    </BottomSheet>
   );
 }
 
@@ -224,55 +336,51 @@ function EquipmentView({ colors, accentColor }: { colors: typeof Colors.light; a
 // =============================================================================
 
 export function SportsFacilities({ colors, accentColor, role }: Props) {
-  const [activeView, setActiveView] = useState<ViewId>('spaces');
+  const [search, setSearch] = useState('');
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [sheetVisible, setSheetVisible] = useState(false);
 
-  const handlePillPress = useCallback((id: ViewId) => {
-    Haptics.selectionAsync();
-    setActiveView(id);
+  const handleSelectRoom = useCallback((room: Room) => {
+    setSelectedRoom(room);
+    setSheetVisible(true);
   }, []);
 
-  const renderContent = () => {
-    switch (activeView) {
-      case 'spaces':
-        return <SpacesView colors={colors} accentColor={accentColor} />;
-      case 'bookings':
-        return <BookingsView colors={colors} accentColor={accentColor} />;
-      case 'equipment':
-        return <EquipmentView colors={colors} accentColor={accentColor} />;
-    }
-  };
+  const handleCloseSheet = useCallback(() => {
+    setSheetVisible(false);
+  }, []);
 
   return (
-    <View style={s.container}>
-      {/* ViewBar */}
-      <View style={s.viewBar}>
-        {VIEWS.map((v) => {
-          const isActive = v.id === activeView;
-          return (
-            <Pressable
-              key={v.id}
-              style={[
-                s.pill,
-                { backgroundColor: isActive ? accentColor : '#2F3336' },
-              ]}
-              onPress={() => handlePillPress(v.id)}
-            >
-              <ThemedText
-                style={[
-                  s.pillText,
-                  { color: isActive ? '#000' : colors.textSecondary },
-                ]}
-              >
-                {v.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </View>
+    <>
+      <ScrollView
+        style={s.container}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={s.scroll}
+      >
+        {/* Search */}
+        <View style={[s.searchBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
+          <TextInput
+            style={[s.searchInput, { color: colors.text }]}
+            placeholder="Search rooms..."
+            placeholderTextColor={colors.textTertiary}
+            value={search}
+            onChangeText={setSearch}
+          />
+        </View>
 
-      {/* Content */}
-      {renderContent()}
-    </View>
+        <RoomsGrid colors={colors} accentColor={accentColor} search={search} onSelectRoom={handleSelectRoom} />
+        <EquipmentBlock colors={colors} accentColor={accentColor} />
+        <IssuesBlock colors={colors} />
+      </ScrollView>
+
+      <RoomDetailSheet
+        visible={sheetVisible}
+        onClose={handleCloseSheet}
+        room={selectedRoom}
+        colors={colors}
+        accentColor={accentColor}
+      />
+    </>
   );
 }
 
@@ -281,140 +389,180 @@ export function SportsFacilities({ colors, accentColor, role }: Props) {
 // =============================================================================
 
 const s = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
+  scroll: { padding: Spacing.md, paddingTop: 4, paddingBottom: 120 },
 
-  // -- ViewBar --
-  viewBar: {
-    flexDirection: 'row',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    gap: Spacing.sm,
-  },
-  pill: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: BorderRadius.full,
-  },
-  pillText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-
-  // -- Scroll --
-  scroll: {
-    padding: Spacing.md,
-    paddingBottom: 120,
-  },
-
-  // -- Section Header --
+  // ── Section Header ──
   sectionHeader: {
     fontSize: 12,
     fontWeight: '600',
     letterSpacing: 0.5,
     marginBottom: 8,
+    marginTop: 20,
     textTransform: 'uppercase',
   },
 
-  // -- Card --
+  // ── Card ──
   card: {
     borderWidth: 1,
-    borderRadius: 12,
+    borderRadius: BorderRadius.lg,
     padding: 14,
     marginBottom: 12,
   },
 
-  // -- Badge --
-  badge: {
+  // ── Status Chip ──
+  chip: {
     paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingVertical: 3,
     borderRadius: BorderRadius.full,
   },
-  badgeText: {
-    fontSize: 9,
+  chipText: {
+    fontSize: 10,
     fontWeight: '700',
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
   },
 
-  // -- Spaces --
-  spaceHeader: {
+  // ── Search ──
+  searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
+    borderWidth: 1,
+    borderRadius: BorderRadius.md,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginBottom: 10,
   },
-  spaceInfo: {
+  searchInput: {
     flex: 1,
-  },
-  spaceName: {
     fontSize: 14,
-    fontWeight: '700',
-  },
-  spaceCap: {
-    fontSize: 12,
-    marginTop: 2,
+    padding: 0,
   },
 
-  // -- Bookings --
-  bookingHeader: {
+  // ── Rooms Grid ──
+  grid: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexWrap: 'wrap',
     gap: 10,
+    marginBottom: 12,
   },
-  bookingDateBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    backgroundColor: '#2F3336',
-    borderRadius: 6,
+  roomCard: {
+    width: '47.5%',
+    borderWidth: 1,
+    borderRadius: BorderRadius.lg,
+    padding: 14,
   },
-  bookingDate: {
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  bookingInfo: {
-    flex: 1,
-  },
-  bookingPurpose: {
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  bookingTime: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-  bookingMeta: {
+  roomIconRow: {
     flexDirection: 'row',
-    gap: 16,
-    marginTop: 10,
-    paddingTop: 10,
-    borderTopWidth: StyleSheet.hairlineWidth,
-  },
-  bookingMetaItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  bookingMetaText: {
-    fontSize: 12,
-  },
-
-  // -- Equipment list rows --
-  listRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    alignItems: 'center',
+    marginBottom: 10,
   },
-  eqInfo: {
-    flex: 1,
+  roomName: {
+    fontSize: 13,
+    fontWeight: '700',
+    lineHeight: 17,
+  },
+  roomBuilding: {
+    fontSize: 11,
+    marginTop: 4,
+  },
+  emptyText: {
+    fontSize: 13,
+    textAlign: 'center',
+    paddingVertical: 20,
+  },
+
+  // ── Equipment ──
+  eqRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 9,
   },
   eqName: {
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '500',
+    flex: 1,
   },
-  eqQty: {
+
+  // ── Issues ──
+  issueRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  issueText: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+
+  // ── Room Detail Sheet ──
+  sheetScroll: {
+    padding: Spacing.md,
+    paddingBottom: 40,
+  },
+  sheetHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  sheetHeaderInfo: {
+    flex: 1,
+  },
+  sheetBuilding: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  sheetCard: {
+    borderWidth: 1,
+    borderRadius: BorderRadius.lg,
+    padding: 12,
+    marginBottom: 16,
+  },
+  sheetDetailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 6,
+  },
+  sheetDetailInfo: {
+    flex: 1,
+  },
+  sheetDetailLabel: {
     fontSize: 11,
-    marginTop: 2,
+    fontWeight: '500',
+    textTransform: 'uppercase',
+  },
+  sheetDetailValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginTop: 1,
+  },
+  sheetSectionLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    marginBottom: 8,
+  },
+  sheetUsage: {
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  mapsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 12,
+    borderRadius: BorderRadius.lg,
+    marginTop: 4,
+  },
+  mapsButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#000',
   },
 });
