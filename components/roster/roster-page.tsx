@@ -41,6 +41,7 @@ import {
   computeDefKR,
 } from '@/data/roster-data';
 import type { PlayerStatus } from '@/data/roster-data';
+import { SYSTEM_IDENTITY } from '@/data/mock-stats-v2';
 import { getKRColor } from '@/utils/kr-display';
 import { openPlayerCard } from '@/utils/global-entity-sheets';
 import type { PlayerCardData } from '@/utils/global-entity-sheets';
@@ -169,6 +170,63 @@ const CLASS_SORT_ORDER: Record<string, number> = {
   'Fr.': 0, 'So.': 1, 'Jr.': 2, 'Sr.': 3,
   'R-Fr.': 0.5, 'R-So.': 1.5, 'R-Jr.': 2.5, 'R-Sr.': 3.5,
 };
+
+// =============================================================================
+// DEPTH CHART DATA
+// =============================================================================
+
+type DepthSlot = 'PG' | 'CG' | 'Wing' | 'Forward' | 'Big';
+type RotationGroup = 'Guards' | 'Wings' | 'Frontcourt';
+type UnitName = 'Small' | 'Standard' | 'Big';
+
+interface DepthEntry {
+  jersey: string;    // jersey number key
+  slot: DepthSlot;   // canonical position slot
+}
+
+interface RotationEntry {
+  jersey: string;
+  group: RotationGroup;
+}
+
+interface UnitEntry {
+  name: UnitName;
+  jerseys: string[]; // 5 players
+}
+
+// Starters — 5 canonical slots
+const DEPTH_STARTERS: DepthEntry[] = [
+  { jersey: '11', slot: 'PG' },       // Mentor — floor general
+  { jersey: '4',  slot: 'CG' },       // Carter — scoring guard
+  { jersey: '13', slot: 'Wing' },     // Noel — dynamic wing scorer
+  { jersey: '41', slot: 'Forward' },  // Brewer — physical forward
+  { jersey: '5',  slot: 'Big' },      // Selden — versatile big
+];
+
+// Rotation — grouped by bucket
+const DEPTH_ROTATION: RotationEntry[] = [
+  // Guards
+  { jersey: '15', group: 'Guards' },     // Morgan — backup PG
+  { jersey: '9',  group: 'Guards' },     // Benbo — developing PG
+  // Wings
+  { jersey: '0',  group: 'Wings' },      // Thomas — defensive wing
+  { jersey: '55', group: 'Wings' },      // Munir-Jones — athletic
+  { jersey: '22', group: 'Wings' },      // Laird — SG depth
+  // Frontcourt
+  { jersey: '7',  group: 'Frontcourt' }, // Moratinos — PF
+  { jersey: '1',  group: 'Frontcourt' }, // Asceric — center
+  { jersey: '3',  group: 'Frontcourt' }, // Thompson — depth
+];
+
+// Predefined units
+const DEPTH_UNITS: UnitEntry[] = [
+  { name: 'Small',    jerseys: ['11', '4', '13', '55', '41'] },
+  { name: 'Standard', jerseys: ['11', '4', '13', '41', '5'] },
+  { name: 'Big',      jerseys: ['11', '4', '41', '5', '7'] },
+];
+
+// Depth status: PROVISIONAL or LOCKED
+const DEPTH_STATUS: 'PROVISIONAL' | 'LOCKED' = 'PROVISIONAL';
 
 // =============================================================================
 // DATA BRIDGE
@@ -517,6 +575,42 @@ export function RosterPage({ colors: propColors }: RosterPageProps) {
         </View>
       )}
 
+      {/* ═══════ ROW 2 — Team System Bar (Depth) ═══════ */}
+      {view === 'depth' && (
+        <View style={[s.systemBar, { backgroundColor: colors.card, borderBottomColor: colors.border }]}>
+          <View style={s.systemRow}>
+            <View style={s.systemItem}>
+              <Text style={[s.systemLabel, { color: colors.textTertiary }]}>OFF</Text>
+              <Text style={[s.systemValue, { color: colors.text }]}>{SYSTEM_IDENTITY.offenseLabel}</Text>
+            </View>
+            <View style={[s.systemDivider, { backgroundColor: colors.border }]} />
+            <View style={s.systemItem}>
+              <Text style={[s.systemLabel, { color: colors.textTertiary }]}>DEF</Text>
+              <Text style={[s.systemValue, { color: colors.text }]}>{SYSTEM_IDENTITY.defenseLabel}</Text>
+            </View>
+            <View style={[s.systemDivider, { backgroundColor: colors.border }]} />
+            <View style={s.systemItem}>
+              <Text style={[s.systemLabel, { color: colors.textTertiary }]}>TEMPO</Text>
+              <Text style={[s.systemValue, { color: colors.text }]}>{SYSTEM_IDENTITY.tempoLabel}</Text>
+            </View>
+            <View style={[
+              s.depthStatusChip,
+              { backgroundColor: DEPTH_STATUS === 'LOCKED' ? '#EF4444' + '18' : '#F59E0B' + '18' },
+            ]}>
+              <Text style={[
+                s.depthStatusText,
+                { color: DEPTH_STATUS === 'LOCKED' ? '#EF4444' : '#F59E0B' },
+              ]}>
+                {DEPTH_STATUS}
+              </Text>
+            </View>
+          </View>
+          <Text style={[s.systemHelper, { color: colors.textTertiary }]}>
+            Double-tap for Split Nexus to request system or depth changes.
+          </Text>
+        </View>
+      )}
+
       {/* ═══════ CONTENT ═══════ */}
       {view === 'cards' ? (
         <FlatList
@@ -544,12 +638,12 @@ export function RosterPage({ colors: propColors }: RosterPageProps) {
           bottomInset={insets.bottom}
         />
       ) : (
-        <View style={s.placeholder}>
-          <Text style={[s.placeholderTitle, { color: colors.text }]}>Coming Soon</Text>
-          <Text style={[s.placeholderSub, { color: colors.textSecondary }]}>
-            Depth chart is under development.
-          </Text>
-        </View>
+        <DepthChart
+          rosterPlayers={ROSTER_PLAYERS}
+          colors={colors}
+          accent={accent}
+          bottomInset={insets.bottom}
+        />
       )}
     </View>
   );
@@ -730,6 +824,162 @@ function ListRow({
         </Text>
       </View>
     </Pressable>
+  );
+}
+
+// =============================================================================
+// DEPTH CHART VIEW
+// =============================================================================
+
+function DepthChart({
+  rosterPlayers,
+  colors,
+  accent,
+  bottomInset,
+}: {
+  rosterPlayers: RosterPlayer[];
+  colors: typeof Colors.light;
+  accent: string;
+  bottomInset: number;
+}) {
+  const playerByJersey = useMemo(() => {
+    const map = new Map<string, RosterPlayer>();
+    for (const p of rosterPlayers) map.set(p.jerseyNumber, p);
+    return map;
+  }, [rosterPlayers]);
+
+  const rotationGroups = useMemo(() => {
+    const groups: Record<RotationGroup, RotationEntry[]> = {
+      Guards: [],
+      Wings: [],
+      Frontcourt: [],
+    };
+    for (const entry of DEPTH_ROTATION) {
+      groups[entry.group].push(entry);
+    }
+    return groups;
+  }, []);
+
+  function renderPlayerRow(jersey: string, label?: string) {
+    const player = playerByJersey.get(jersey);
+    if (!player) {
+      return (
+        <View style={ds.slotRow}>
+          {label && <Text style={[ds.slotLabel, { color: colors.textTertiary }]}>{label}</Text>}
+          <Text style={[ds.emptySlot, { color: colors.textTertiary }]}>{'—'}</Text>
+        </View>
+      );
+    }
+    const kr = player.scores.overallKR;
+    const krColor = getKRColor(kr);
+    const statusColor = STATUS_COLORS[player.status];
+    const statusLabel = STATUS_LABELS[player.status];
+
+    return (
+      <Pressable
+        style={[ds.slotRow, { borderBottomColor: colors.border }]}
+        onPress={() => {
+          openPlayerCard(toPlayerCardData(player));
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }}
+      >
+        {label && <Text style={[ds.slotLabel, { color: colors.textTertiary }]}>{label}</Text>}
+        <View style={ds.playerInfo}>
+          <Text style={[ds.playerName, { color: colors.text }]}>
+            {player.firstName} {player.lastName}
+          </Text>
+          <Text style={[ds.playerJersey, { color: colors.textTertiary }]}>
+            #{player.displayJersey}
+          </Text>
+        </View>
+        <View style={ds.rightSide}>
+          <View style={[ds.statusDot, { backgroundColor: statusColor }]} />
+          {player.status !== 'available' && (
+            <Text style={[ds.statusTag, { color: statusColor }]}>{statusLabel}</Text>
+          )}
+          <View style={[ds.krBadge, { backgroundColor: krColor + '18' }]}>
+            <Text style={[ds.krText, { color: krColor }]}>{kr}</Text>
+          </View>
+        </View>
+      </Pressable>
+    );
+  }
+
+  // Compute unit average KR
+  function unitAvgKR(jerseys: string[]): number {
+    let sum = 0;
+    let count = 0;
+    for (const j of jerseys) {
+      const p = playerByJersey.get(j);
+      if (p) { sum += p.scores.overallKR; count++; }
+    }
+    return count > 0 ? Math.round(sum / count) : 0;
+  }
+
+  return (
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: bottomInset + 40 }}
+    >
+      {/* ═══════ SECTION A — STARTERS ═══════ */}
+      <View style={ds.section}>
+        <Text style={[ds.sectionTitle, { color: colors.textTertiary }]}>STARTERS</Text>
+        <View style={[ds.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          {DEPTH_STARTERS.map((entry) => (
+            <React.Fragment key={entry.slot}>
+              {renderPlayerRow(entry.jersey, entry.slot)}
+            </React.Fragment>
+          ))}
+        </View>
+      </View>
+
+      {/* ═══════ SECTION B — ROTATION ═══════ */}
+      <View style={ds.section}>
+        <Text style={[ds.sectionTitle, { color: colors.textTertiary }]}>ROTATION</Text>
+        {(['Guards', 'Wings', 'Frontcourt'] as RotationGroup[]).map(group => {
+          const entries = rotationGroups[group];
+          if (entries.length === 0) return null;
+          const groupLabel = group === 'Guards' ? 'Guards (PG / CG)' :
+                             group === 'Wings' ? 'Wings' :
+                             'Frontcourt (Forward / Big)';
+          return (
+            <View key={group} style={[ds.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <Text style={[ds.groupLabel, { color: colors.textSecondary }]}>{groupLabel}</Text>
+              {entries.map(entry => (
+                <React.Fragment key={entry.jersey}>
+                  {renderPlayerRow(entry.jersey)}
+                </React.Fragment>
+              ))}
+            </View>
+          );
+        })}
+      </View>
+
+      {/* ═══════ SECTION C — UNITS ═══════ */}
+      <View style={ds.section}>
+        <Text style={[ds.sectionTitle, { color: colors.textTertiary }]}>UNITS</Text>
+        {DEPTH_UNITS.map(unit => {
+          const avg = unitAvgKR(unit.jerseys);
+          const avgColor = getKRColor(avg);
+          return (
+            <View key={unit.name} style={[ds.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <View style={ds.unitHeader}>
+                <Text style={[ds.unitName, { color: colors.text }]}>{unit.name}</Text>
+                <View style={[ds.krBadge, { backgroundColor: avgColor + '18' }]}>
+                  <Text style={[ds.krText, { color: avgColor }]}>{avg}</Text>
+                  <Text style={[ds.krSuffix, { color: avgColor }]}>AVG</Text>
+                </View>
+              </View>
+              {unit.jerseys.map(jersey => (
+                <React.Fragment key={jersey}>
+                  {renderPlayerRow(jersey)}
+                </React.Fragment>
+              ))}
+            </View>
+          );
+        })}
+      </View>
+    </ScrollView>
   );
 }
 
@@ -961,6 +1211,30 @@ const s = StyleSheet.create({
   nilChip: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: BorderRadius.sm },
   nilText: { fontSize: 10, fontWeight: '700' },
 
+  // ── System Bar (Depth) ──
+  systemBar: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: 6,
+  },
+  systemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  systemItem: { flex: 1 },
+  systemLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 0.8, textTransform: 'uppercase' },
+  systemValue: { fontSize: 12, fontWeight: '700', marginTop: 1 },
+  systemDivider: { width: 1, height: 28, opacity: 0.4 },
+  depthStatusChip: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  depthStatusText: { fontSize: 9, fontWeight: '800', letterSpacing: 0.8 },
+  systemHelper: { fontSize: 10, fontWeight: '500', fontStyle: 'italic' },
+
   // ── Placeholder ──
   placeholder: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   placeholderTitle: { fontSize: 20, fontWeight: '700', marginBottom: 8 },
@@ -1006,4 +1280,90 @@ const ls = StyleSheet.create({
   },
   statusDot: { width: 5, height: 5, borderRadius: 2.5 },
   statusLabel: { fontSize: 10, fontWeight: '700' },
+});
+
+// ── Depth Chart Styles ──
+const ds = StyleSheet.create({
+  section: {
+    paddingHorizontal: Spacing.md,
+    paddingTop: 16,
+    gap: 8,
+  },
+  sectionTitle: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+    marginBottom: 2,
+  },
+  card: {
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+    marginBottom: 4,
+  },
+  groupLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+    paddingHorizontal: 14,
+    paddingTop: 10,
+    paddingBottom: 4,
+  },
+
+  // Slot rows
+  slotRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: 10,
+  },
+  slotLabel: {
+    width: 56,
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
+  emptySlot: { fontSize: 13, fontWeight: '600' },
+  playerInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  playerName: { fontSize: 14, fontWeight: '700' },
+  playerJersey: { fontSize: 12, fontWeight: '600' },
+  rightSide: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  statusDot: { width: 6, height: 6, borderRadius: 3 },
+  statusTag: { fontSize: 10, fontWeight: '700' },
+
+  // KR badge
+  krBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+  },
+  krText: { fontSize: 13, fontWeight: '800' },
+  krSuffix: { fontSize: 8, fontWeight: '700', letterSpacing: 0.3 },
+
+  // Units
+  unitHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 14,
+    paddingTop: 10,
+    paddingBottom: 4,
+  },
+  unitName: { fontSize: 14, fontWeight: '800' },
 });
