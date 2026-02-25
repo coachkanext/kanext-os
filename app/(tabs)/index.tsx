@@ -48,6 +48,7 @@ import { SimulationPage } from '@/components/simulation/simulation-page';
 import { DevelopmentPage } from '@/components/development/development-page';
 import { StatisticsPage } from '@/components/stats/statistics-page';
 import { AlertsPage } from '@/components/alerts/alerts-page';
+import { SchedulePage } from '@/components/schedule/schedule-page';
 import { SportsDevelopmentV2 } from '@/components/development/sports-development-v2';
 import { getKRColor } from '@/utils/kr-display';
 import { TicketsSheet } from '@/components/commerce/tickets-sheet';
@@ -708,10 +709,9 @@ function SportsHome() {
                 <Text style={{ fontSize: 14, color: '#A1A1AA', textAlign: 'center', paddingHorizontal: 40 }}>Roster is under development.</Text>
               </View>
 
-              {/* Calendar */}
-              <View key="calendar" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ fontSize: 20, fontWeight: '700', color: '#fff', marginBottom: 8 }}>Coming Soon</Text>
-                <Text style={{ fontSize: 14, color: '#A1A1AA', textAlign: 'center', paddingHorizontal: 40 }}>Schedule is under development.</Text>
+              {/* Schedule */}
+              <View key="calendar" style={{ flex: 1 }}>
+                <SchedulePage colors={colors} />
               </View>
 
               {/* Recruiting */}
