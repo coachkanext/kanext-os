@@ -1,124 +1,184 @@
 /**
- * NexusAnswerSheet — BottomSheet for answering a Nexus escalation.
- * Shows question + context at top, TextInput for answer,
- * two buttons: "Add to Nexus" (primary) / "Private Reply" (secondary).
+ * NexusAnswerSheet — Q&A Thread view.
+ * Shows: resolved banner, original question, Nexus attempt, human replies,
+ * and bottom input for follow-up / "Mark resolved" button.
  */
 
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, Pressable } from 'react-native';
+import { View, StyleSheet, TextInput, Pressable, ScrollView } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { formatMessageTime } from '@/data/mock-messages-v3';
 import type { NexusEscalationV3 } from '@/types';
 
 interface NexusAnswerSheetProps {
   escalation: NexusEscalationV3 | null;
   onClose: () => void;
-  onAddToNexus?: (answer: string) => void;
-  onPrivateReply?: (answer: string) => void;
 }
 
-export function NexusAnswerSheet({ escalation, onClose, onAddToNexus, onPrivateReply }: NexusAnswerSheetProps) {
+export function NexusAnswerSheet({ escalation, onClose }: NexusAnswerSheetProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const accent = useAccentColor();
-  const [answer, setAnswer] = useState('');
+  const [followUp, setFollowUp] = useState('');
 
-  const handleAddToNexus = () => {
-    if (!answer.trim()) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    onAddToNexus?.(answer.trim());
-    setAnswer('');
-    onClose();
-  };
-
-  const handlePrivateReply = () => {
-    if (!answer.trim()) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    onPrivateReply?.(answer.trim());
-    setAnswer('');
-    onClose();
-  };
+  const isResolved = escalation?.status === 'answered_by_nexus' || escalation?.status === 'answered_by_coach';
 
   return (
     <BottomSheet
       visible={escalation !== null}
       onClose={() => {
-        setAnswer('');
+        setFollowUp('');
         onClose();
       }}
-      title="Answer Question"
+      title="Q&A Thread"
       useModal
     >
       {escalation && (
         <View style={styles.container}>
-          {/* Question context */}
-          <View style={[styles.questionCard, { backgroundColor: colors.backgroundTertiary }]}>
-            <View style={styles.askerRow}>
-              <View style={[styles.askerAvatar, { backgroundColor: `${accent}20` }]}>
-                <ThemedText style={[styles.askerInitials, { color: accent }]}>
-                  {escalation.askerInitials}
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+            {/* Resolved banner */}
+            {isResolved && escalation.resolvedAnswer && (
+              <View style={[styles.resolvedBanner, { backgroundColor: '#22C55E15' }]}>
+                <View style={styles.resolvedHeader}>
+                  <IconSymbol name="checkmark.seal.fill" size={16} color="#22C55E" />
+                  <ThemedText style={styles.resolvedTitle}>Resolved Answer</ThemedText>
+                  {escalation.answeredBy && (
+                    <ThemedText style={[styles.resolvedBy, { color: colors.textTertiary }]}>
+                      by {escalation.answeredBy}
+                    </ThemedText>
+                  )}
+                </View>
+                <ThemedText style={[styles.resolvedText, { color: colors.text }]}>
+                  {escalation.resolvedAnswer}
                 </ThemedText>
               </View>
-              <View style={styles.askerInfo}>
-                <ThemedText style={[styles.askerName, { color: colors.text }]}>
-                  {escalation.askerName}
-                </ThemedText>
-                <ThemedText style={[styles.askerRole, { color: colors.textTertiary }]}>
-                  {escalation.askerRole}
-                </ThemedText>
+            )}
+
+            {/* Original question card */}
+            <View style={[styles.questionCard, { backgroundColor: colors.backgroundTertiary }]}>
+              <View style={styles.askerRow}>
+                <View style={[styles.askerAvatar, { backgroundColor: `${accent}20` }]}>
+                  <ThemedText style={[styles.askerInitials, { color: accent }]}>
+                    {escalation.askerInitials}
+                  </ThemedText>
+                </View>
+                <View style={styles.askerInfo}>
+                  <ThemedText style={[styles.askerName, { color: colors.text }]}>
+                    {escalation.askerName}
+                  </ThemedText>
+                  <ThemedText style={[styles.askerMeta, { color: colors.textTertiary }]}>
+                    {escalation.askerRole} · {formatMessageTime(escalation.timestamp)}
+                  </ThemedText>
+                </View>
               </View>
+
+              <ThemedText style={[styles.questionText, { color: colors.text }]}>
+                {escalation.question}
+              </ThemedText>
+
+              {/* Context chips */}
+              {escalation.contextChips && escalation.contextChips.length > 0 && (
+                <View style={styles.chipsRow}>
+                  {escalation.contextChips.map((chip, i) => (
+                    <View key={i} style={[styles.chip, { backgroundColor: colors.backgroundSecondary }]}>
+                      <ThemedText style={[styles.chipText, { color: colors.textSecondary }]}>
+                        {chip.label}
+                      </ThemedText>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+              <ThemedText style={[styles.contextLabel, { color: colors.textTertiary }]}>
+                Viewing: {escalation.viewingContext}
+              </ThemedText>
             </View>
 
-            <ThemedText style={[styles.questionText, { color: colors.text }]}>
-              {escalation.question}
-            </ThemedText>
+            {/* Nexus attempt */}
+            {escalation.nexusAttempt && (
+              <View style={styles.replyBlock}>
+                <View style={styles.replyHeader}>
+                  <View style={[styles.nexusIcon, { backgroundColor: '#8B5CF620' }]}>
+                    <IconSymbol name="sparkles" size={14} color="#8B5CF6" />
+                  </View>
+                  <View style={styles.replyHeaderInfo}>
+                    <ThemedText style={[styles.replyName, { color: colors.text }]}>
+                      Nexus
+                    </ThemedText>
+                    <ThemedText style={[styles.replyRole, { color: colors.textTertiary }]}>
+                      AI Assistant
+                    </ThemedText>
+                  </View>
+                </View>
+                <ThemedText style={[styles.replyContent, { color: colors.text }]}>
+                  {escalation.nexusAttempt}
+                </ThemedText>
+                {escalation.escalationTarget && escalation.status === 'escalated' && (
+                  <View style={[styles.escalationNote, { backgroundColor: '#F59E0B15' }]}>
+                    <IconSymbol name="arrow.up.right" size={12} color="#F59E0B" />
+                    <ThemedText style={[styles.escalationText, { color: '#F59E0B' }]}>
+                      Escalated to {escalation.escalationTarget}
+                    </ThemedText>
+                  </View>
+                )}
+              </View>
+            )}
 
-            <ThemedText style={[styles.contextLabel, { color: colors.textTertiary }]}>
-              Viewing: {escalation.viewingContext}
-            </ThemedText>
-          </View>
+            {/* Human replies */}
+            {escalation.humanReplies && escalation.humanReplies.map((reply, i) => (
+              <View key={i} style={styles.replyBlock}>
+                <View style={styles.replyHeader}>
+                  <View style={[styles.humanAvatar, { backgroundColor: `${accent}20` }]}>
+                    <ThemedText style={[styles.humanAvatarText, { color: accent }]}>
+                      {reply.initials}
+                    </ThemedText>
+                  </View>
+                  <View style={styles.replyHeaderInfo}>
+                    <ThemedText style={[styles.replyName, { color: colors.text }]}>
+                      {reply.name}
+                    </ThemedText>
+                    <ThemedText style={[styles.replyRole, { color: colors.textTertiary }]}>
+                      {reply.role} · {formatMessageTime(reply.timestamp)}
+                    </ThemedText>
+                  </View>
+                </View>
+                <ThemedText style={[styles.replyContent, { color: colors.text }]}>
+                  {reply.content}
+                </ThemedText>
+              </View>
+            ))}
+          </ScrollView>
 
-          {/* Answer input */}
-          <TextInput
-            style={[styles.input, { backgroundColor: colors.backgroundSecondary, color: colors.text, borderColor: colors.border }]}
-            placeholder="Type your answer..."
-            placeholderTextColor={colors.textTertiary}
-            value={answer}
-            onChangeText={setAnswer}
-            multiline
-            textAlignVertical="top"
-          />
-
-          {/* Action buttons */}
-          <View style={styles.actions}>
-            <Pressable
-              style={({ pressed }) => [
-                styles.primaryBtn,
-                { opacity: pressed ? 0.8 : 1, backgroundColor: answer.trim() ? accent : `${accent}40` },
-              ]}
-              onPress={handleAddToNexus}
-              disabled={!answer.trim()}
-            >
-              <ThemedText style={styles.primaryBtnText}>Add to Nexus</ThemedText>
-            </Pressable>
-
-            <Pressable
-              style={({ pressed }) => [
-                styles.secondaryBtn,
-                { borderColor: colors.border, opacity: pressed ? 0.7 : 1 },
-              ]}
-              onPress={handlePrivateReply}
-              disabled={!answer.trim()}
-            >
-              <ThemedText style={[styles.secondaryBtnText, { color: colors.textSecondary }]}>
-                Private Reply
-              </ThemedText>
-            </Pressable>
+          {/* Bottom actions */}
+          <View style={[styles.bottomBar, { borderTopColor: colors.border }]}>
+            <TextInput
+              style={[styles.input, { backgroundColor: colors.backgroundSecondary, color: colors.text }]}
+              placeholder="Ask a follow-up..."
+              placeholderTextColor={colors.textTertiary}
+              value={followUp}
+              onChangeText={setFollowUp}
+            />
+            {!isResolved && (
+              <Pressable
+                style={({ pressed }) => [
+                  styles.resolveBtn,
+                  { backgroundColor: '#22C55E', opacity: pressed ? 0.8 : 1 },
+                ]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  onClose();
+                }}
+              >
+                <ThemedText style={styles.resolveBtnText}>Mark Resolved</ThemedText>
+              </Pressable>
+            )}
           </View>
         </View>
       )}
@@ -128,8 +188,40 @@ export function NexusAnswerSheet({ escalation, onClose, onAddToNexus, onPrivateR
 
 const styles = StyleSheet.create({
   container: {
-    gap: Spacing.md,
+    flex: 1,
   },
+  scrollContent: {
+    gap: Spacing.md,
+    paddingBottom: Spacing.md,
+  },
+
+  // Resolved banner
+  resolvedBanner: {
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    gap: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: '#22C55E',
+  },
+  resolvedHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  resolvedTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#22C55E',
+  },
+  resolvedBy: {
+    fontSize: 12,
+  },
+  resolvedText: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+
+  // Question card
   questionCard: {
     borderRadius: BorderRadius.lg,
     padding: Spacing.md,
@@ -158,7 +250,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  askerRole: {
+  askerMeta: {
     fontSize: 12,
   },
   questionText: {
@@ -166,41 +258,105 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     fontWeight: '500',
   },
+  chipsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  chip: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 10,
+  },
+  chipText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
   contextLabel: {
     fontSize: 12,
   },
-  input: {
-    borderWidth: 1,
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.md,
-    fontSize: 15,
-    lineHeight: 21,
-    minHeight: 100,
+
+  // Reply blocks
+  replyBlock: {
+    gap: 8,
+    paddingLeft: 4,
   },
-  actions: {
+  replyHeader: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: 10,
   },
-  primaryBtn: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: BorderRadius.lg,
+  nexusIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  primaryBtnText: {
-    fontSize: 15,
+  humanAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  humanAvatarText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  replyHeaderInfo: {
+    flex: 1,
+  },
+  replyName: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  replyRole: {
+    fontSize: 12,
+  },
+  replyContent: {
+    fontSize: 14,
+    lineHeight: 20,
+    paddingLeft: 42,
+  },
+  escalationNote: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.sm,
+    marginLeft: 42,
+    alignSelf: 'flex-start',
+  },
+  escalationText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+
+  // Bottom bar
+  bottomBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingTop: Spacing.sm,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  input: {
+    flex: 1,
+    borderRadius: BorderRadius.lg,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    fontSize: 14,
+  },
+  resolveBtn: {
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: BorderRadius.lg,
+  },
+  resolveBtnText: {
+    fontSize: 13,
     fontWeight: '600',
     color: '#fff',
-  },
-  secondaryBtn: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: BorderRadius.lg,
-    alignItems: 'center',
-    borderWidth: 1,
-  },
-  secondaryBtnText: {
-    fontSize: 15,
-    fontWeight: '600',
   },
 });

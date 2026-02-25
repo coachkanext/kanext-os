@@ -976,7 +976,7 @@ export type RecruitingPipelineStage = 'Prospect' | 'Contact Made' | 'Eval Sent' 
 // MESSAGES V3
 // =============================================================================
 
-export type NexusEscalationStatus = 'unanswered' | 'answered';
+export type NexusEscalationStatus = 'unanswered' | 'escalated' | 'answered_by_nexus' | 'answered_by_coach';
 
 export interface InboxThreadV3 {
   id: string;
@@ -1025,6 +1025,19 @@ export interface RoomMessageV3 {
   mentions?: string[];
 }
 
+export interface NexusHumanReply {
+  name: string;
+  initials: string;
+  role: string;
+  content: string;
+  timestamp: Date;
+}
+
+export interface NexusContextChip {
+  type: 'event' | 'media' | 'person';
+  label: string;
+}
+
 export interface NexusEscalationV3 {
   id: string;
   mode: Mode;
@@ -1036,6 +1049,12 @@ export interface NexusEscalationV3 {
   timestamp: Date;
   status: NexusEscalationStatus;
   answer?: string;
+  nexusAttempt?: string;
+  humanReplies?: NexusHumanReply[];
+  resolvedAnswer?: string;
+  answeredBy?: string;
+  contextChips?: NexusContextChip[];
+  escalationTarget?: string;
 }
 
 export interface ConversationMessageV3 {

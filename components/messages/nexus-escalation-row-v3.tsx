@@ -1,6 +1,6 @@
 /**
- * NexusEscalationRowV3 — Single escalation row.
- * Avatar · Asker name/role · Question text · Viewing context · Timestamp · Status chip.
+ * NexusEscalationRowV3 — Single escalation row with context chips + rich status.
+ * Avatar · Asker name/role · Question text · Context chips · Timestamp · Status chip.
  */
 
 import React from 'react';
@@ -8,22 +8,44 @@ import { View, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { formatMessageTime } from '@/data/mock-messages-v3';
-import type { NexusEscalationV3 } from '@/types';
+import type { NexusEscalationV3, NexusEscalationStatus } from '@/types';
 
 interface NexusEscalationRowV3Props {
   escalation: NexusEscalationV3;
   onPress: () => void;
 }
 
+function getStatusConfig(status: NexusEscalationStatus, accent: string) {
+  switch (status) {
+    case 'answered_by_nexus':
+      return { label: 'Answered by Nexus', color: '#22C55E', bg: '#22C55E20' };
+    case 'answered_by_coach':
+      return { label: 'Answered by Coach', color: accent, bg: `${accent}20` };
+    case 'escalated':
+      return { label: 'Escalated', color: '#F59E0B', bg: '#F59E0B20' };
+    case 'unanswered':
+    default:
+      return { label: 'Unanswered', color: '#F59E0B', bg: '#F59E0B20' };
+  }
+}
+
+const CHIP_ICONS: Record<string, string> = {
+  event: 'calendar',
+  media: 'play.rectangle',
+  person: 'person',
+};
+
 export function NexusEscalationRowV3({ escalation, onPress }: NexusEscalationRowV3Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const accent = useAccentColor();
-  const isUnanswered = escalation.status === 'unanswered';
+  const isOpen = escalation.status === 'unanswered' || escalation.status === 'escalated';
+  const statusConfig = getStatusConfig(escalation.status, accent);
 
   return (
     <Pressable
@@ -37,8 +59,8 @@ export function NexusEscalationRowV3({ escalation, onPress }: NexusEscalationRow
       }}
     >
       {/* Avatar */}
-      <View style={[styles.avatar, { backgroundColor: isUnanswered ? `${accent}20` : colors.backgroundTertiary }]}>
-        <ThemedText style={[styles.avatarText, { color: isUnanswered ? accent : colors.textSecondary }]}>
+      <View style={[styles.avatar, { backgroundColor: isOpen ? `${accent}20` : colors.backgroundTertiary }]}>
+        <ThemedText style={[styles.avatarText, { color: isOpen ? accent : colors.textSecondary }]}>
           {escalation.askerInitials}
         </ThemedText>
       </View>
@@ -59,19 +81,37 @@ export function NexusEscalationRowV3({ escalation, onPress }: NexusEscalationRow
         </ThemedText>
 
         <ThemedText
-          style={[styles.question, { color: colors.text }, isUnanswered && styles.questionBold]}
+          style={[styles.question, { color: colors.text }, isOpen && styles.questionBold]}
           numberOfLines={2}
         >
           {escalation.question}
         </ThemedText>
 
+        {/* Context chips */}
+        {escalation.contextChips && escalation.contextChips.length > 0 && (
+          <View style={styles.chipsRow}>
+            {escalation.contextChips.map((chip, i) => (
+              <View key={i} style={[styles.chip, { backgroundColor: colors.backgroundTertiary }]}>
+                <IconSymbol
+                  name={CHIP_ICONS[chip.type] as any}
+                  size={11}
+                  color={colors.textTertiary}
+                />
+                <ThemedText style={[styles.chipText, { color: colors.textSecondary }]}>
+                  {chip.label}
+                </ThemedText>
+              </View>
+            ))}
+          </View>
+        )}
+
         <View style={styles.bottomRow}>
           <ThemedText style={[styles.context, { color: colors.textTertiary }]} numberOfLines={1}>
             {escalation.viewingContext}
           </ThemedText>
-          <View style={[styles.statusChip, { backgroundColor: isUnanswered ? '#F59E0B20' : '#22C55E20' }]}>
-            <ThemedText style={[styles.statusText, { color: isUnanswered ? '#F59E0B' : '#22C55E' }]}>
-              {isUnanswered ? 'Unanswered' : 'Answered'}
+          <View style={[styles.statusChip, { backgroundColor: statusConfig.bg }]}>
+            <ThemedText style={[styles.statusText, { color: statusConfig.color }]}>
+              {statusConfig.label}
             </ThemedText>
           </View>
         </View>
@@ -129,6 +169,24 @@ const styles = StyleSheet.create({
   },
   questionBold: {
     fontWeight: '600',
+  },
+  chipsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 6,
+  },
+  chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
+  },
+  chipText: {
+    fontSize: 11,
+    fontWeight: '500',
   },
   bottomRow: {
     flexDirection: 'row',

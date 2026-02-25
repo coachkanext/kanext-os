@@ -49,9 +49,101 @@ const SPORTS_ROOMS: RoomV3[] = [
 ];
 
 const SPORTS_NEXUS: NexusEscalationV3[] = [
-  { id: 'sn1', mode: 'sports', askerName: 'Marcus Davis', askerInitials: 'MD', askerRole: 'Video Coordinator', question: 'What\'s the optimal rotation if we rest Thomas in the first half?', viewingContext: 'Game Plan vs Bethel', timestamp: hoursAgo(1), status: 'unanswered' },
-  { id: 'sn2', mode: 'sports', askerName: 'Jaylen Thomas', askerInitials: 'JT', askerRole: 'Student Athlete', question: 'How do I improve my defensive KR rating?', viewingContext: 'Player Card', timestamp: hoursAgo(4), status: 'unanswered' },
-  { id: 'sn3', mode: 'sports', askerName: 'Patricia Moore', askerInitials: 'PM', askerRole: 'Parent', question: 'What academic support resources are available for student athletes?', viewingContext: 'Program Overview', timestamp: daysAgo(1), status: 'answered', answer: 'Lincoln University provides tutoring, study hall, and academic counseling for all student athletes.' },
+  // ── Unanswered (in queue) ──
+  {
+    id: 'sn1', mode: 'sports', askerName: 'Marcus Davis', askerInitials: 'MD', askerRole: 'Video Coordinator',
+    question: 'What\'s the optimal rotation if we rest Thomas in the first half?',
+    viewingContext: 'Game Plan vs Bethel', timestamp: hoursAgo(1), status: 'unanswered',
+    contextChips: [{ type: 'event', label: 'vs Bethel (Sat)' }, { type: 'person', label: 'Jaylen Thomas' }],
+  },
+  {
+    id: 'sn2', mode: 'sports', askerName: 'Tyree Williams', askerInitials: 'TW', askerRole: 'Student Athlete',
+    question: 'When is the next individual film session available?',
+    viewingContext: 'Calendar', timestamp: hoursAgo(3), status: 'unanswered',
+    contextChips: [{ type: 'event', label: 'Film Session' }],
+  },
+  // ── Answered by Nexus (instant) ──
+  {
+    id: 'sn3', mode: 'sports', askerName: 'Jaylen Thomas', askerInitials: 'JT', askerRole: 'Student Athlete',
+    question: 'How do I improve my defensive KR rating?',
+    viewingContext: 'Player Card', timestamp: hoursAgo(4), status: 'answered_by_nexus',
+    nexusAttempt: 'Your defensive KR is driven by three clusters: On-Ball Defense, Team Defense, and Rebounding. Focus on closeout drills, help-side positioning, and contesting shots at the rim. Your perimeter defense cluster is at 58 — improving that to 65+ would raise your overall KR by ~4 points.',
+    resolvedAnswer: 'Your defensive KR is driven by three clusters: On-Ball Defense, Team Defense, and Rebounding. Focus on closeout drills, help-side positioning, and contesting shots at the rim. Your perimeter defense cluster is at 58 — improving that to 65+ would raise your overall KR by ~4 points.',
+    answeredBy: 'Nexus',
+    contextChips: [{ type: 'person', label: 'Jaylen Thomas' }, { type: 'media', label: 'Player Card' }],
+  },
+  {
+    id: 'sn4', mode: 'sports', askerName: 'DeShawn Mitchell', askerInitials: 'DM', askerRole: 'Recruit',
+    question: 'What are the academic eligibility requirements to play?',
+    viewingContext: 'Recruiting Portal', timestamp: hoursAgo(6), status: 'answered_by_nexus',
+    nexusAttempt: 'To maintain NAIA eligibility you need a minimum 2.0 GPA and must be enrolled as a full-time student (12+ credits). Transfer students must have a minimum 2.0 cumulative GPA from all prior institutions.',
+    resolvedAnswer: 'To maintain NAIA eligibility you need a minimum 2.0 GPA and must be enrolled as a full-time student (12+ credits). Transfer students must have a minimum 2.0 cumulative GPA from all prior institutions.',
+    answeredBy: 'Nexus',
+    contextChips: [{ type: 'person', label: 'DeShawn Mitchell' }],
+  },
+  {
+    id: 'sn5', mode: 'sports', askerName: 'Patricia Moore', askerInitials: 'PM', askerRole: 'Parent',
+    question: 'What time does the bus leave for Saturday\'s game?',
+    viewingContext: 'Travel Schedule', timestamp: hoursAgo(8), status: 'answered_by_nexus',
+    nexusAttempt: 'The team bus departs at 1:00 PM sharp from the main gym parking lot. Players should arrive by 12:30 PM in dress code.',
+    resolvedAnswer: 'The team bus departs at 1:00 PM sharp from the main gym parking lot. Players should arrive by 12:30 PM in dress code.',
+    answeredBy: 'Nexus',
+    contextChips: [{ type: 'event', label: 'vs Bethel (Sat)' }],
+  },
+  // ── Escalated (waiting on human) ──
+  {
+    id: 'sn6', mode: 'sports', askerName: 'AD Johnson', askerInitials: 'AJ', askerRole: 'Athletic Director',
+    question: 'Can we get a projected budget impact if we add a third assistant coach next season?',
+    viewingContext: 'Program Finance', timestamp: hoursAgo(2), status: 'escalated',
+    nexusAttempt: 'Based on current staff budget allocation, adding a third assistant coach would increase the coaching line item by approximately $35-45K. However, specific budget approval and funding sources need to be confirmed by the Head Coach and Finance.',
+    escalationTarget: 'HC Miles',
+    contextChips: [{ type: 'person', label: 'HC Miles' }],
+  },
+  {
+    id: 'sn7', mode: 'sports', askerName: 'Medical Staff', askerInitials: 'MS', askerRole: 'Medical',
+    question: 'What\'s the return-to-play protocol for Thomas after his ankle sprain?',
+    viewingContext: 'Player Health', timestamp: hoursAgo(5), status: 'escalated',
+    nexusAttempt: 'Standard ankle sprain protocol: 1) Pain-free ROM, 2) Full weight-bearing without limp, 3) Sport-specific agility test, 4) Coach clearance. However, final medical clearance must come from the team physician.',
+    escalationTarget: 'Coach Reed',
+    contextChips: [{ type: 'person', label: 'Jaylen Thomas' }, { type: 'event', label: 'Medical Clearance' }],
+  },
+  // ── Answered by Coach (resolved by human) ──
+  {
+    id: 'sn8', mode: 'sports', askerName: 'Patricia Moore', askerInitials: 'PM', askerRole: 'Parent',
+    question: 'What academic support resources are available for student athletes?',
+    viewingContext: 'Program Overview', timestamp: daysAgo(1), status: 'answered_by_coach',
+    nexusAttempt: 'Carroll College provides tutoring services, mandatory study hall for freshmen, and academic counseling through the athletics department.',
+    humanReplies: [
+      { name: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Great question. In addition to what\'s listed, we also have a peer mentoring program where upperclassmen help freshmen with time management. I\'ll have our academic coordinator reach out to you directly.', timestamp: daysAgo(0.5) },
+    ],
+    resolvedAnswer: 'Carroll College provides tutoring services, mandatory study hall for freshmen, academic counseling, and a peer mentoring program. Our academic coordinator will reach out with specific details.',
+    answeredBy: 'HC Miles',
+    contextChips: [{ type: 'person', label: 'Jaylen Thomas' }],
+  },
+  {
+    id: 'sn9', mode: 'sports', askerName: 'Jaylen Thomas', askerInitials: 'JT', askerRole: 'Student Athlete',
+    question: 'What\'s my projected role for the conference tournament?',
+    viewingContext: 'Player Card', timestamp: daysAgo(2), status: 'answered_by_coach',
+    nexusAttempt: 'Based on current rotation data, you\'re averaging 28.4 minutes per game as a starter. Your usage rate and efficiency metrics suggest a primary scoring role.',
+    humanReplies: [
+      { name: 'You', initials: 'CP', role: 'Assistant Coach', content: 'JT — you\'re locked in as a starter. We need you to be our primary ball handler in the half-court and run the PNR action. Keep working on your shot selection in transition.', timestamp: daysAgo(1.5) },
+    ],
+    resolvedAnswer: 'Starter role with primary ball-handling duties in half-court sets and PNR action. Focus area: shot selection in transition.',
+    answeredBy: 'Coach Pearson',
+    contextChips: [{ type: 'person', label: 'Jaylen Thomas' }, { type: 'event', label: 'Conference Tournament' }],
+  },
+  {
+    id: 'sn10', mode: 'sports', askerName: 'Marcus Davis', askerInitials: 'MD', askerRole: 'Video Coordinator',
+    question: 'Which defensive sets should I tag for the Bethel scout report?',
+    viewingContext: 'Film Room', timestamp: daysAgo(1), status: 'answered_by_coach',
+    nexusAttempt: 'Bethel primarily runs man-to-man defense with occasional 1-3-1 zone in the second half. Key sets to tag: half-court man, 1-3-1 zone, press break, and late-game switching.',
+    humanReplies: [
+      { name: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Tag all their zone possessions (1-3-1 and 2-3), plus any switching man sequences. Also flag their inbound plays — they ran 3 different sets last game.', timestamp: daysAgo(0.8) },
+    ],
+    resolvedAnswer: 'Tag: 1-3-1 zone, 2-3 zone, switching man sequences, and all inbound plays (3 different sets). Focus on second-half defensive adjustments.',
+    answeredBy: 'Coach Pearson',
+    contextChips: [{ type: 'event', label: 'vs Bethel (Sat)' }, { type: 'media', label: 'Game Film' }],
+  },
 ];
 
 const SPORTS_MENTIONS: MentionV3[] = [
@@ -93,7 +185,7 @@ const CHURCH_ROOMS: RoomV3[] = [
 const CHURCH_NEXUS: NexusEscalationV3[] = [
   { id: 'cn1', mode: 'church', askerName: 'Funmi Adeyemi', askerInitials: 'FA', askerRole: 'Worship Leader', question: 'What songs have we done most in the last 3 months?', viewingContext: 'Worship Planning', timestamp: hoursAgo(2), status: 'unanswered' },
   { id: 'cn2', mode: 'church', askerName: 'Brother Thompson', askerInitials: 'BT', askerRole: 'Youth Ministry', question: 'What\'s our average youth attendance this quarter?', viewingContext: 'Ministry Dashboard', timestamp: hoursAgo(6), status: 'unanswered' },
-  { id: 'cn3', mode: 'church', askerName: 'Sister Davis', askerInitials: 'SD', askerRole: 'Outreach', question: 'How many community meals have we served this year?', viewingContext: 'Outreach Report', timestamp: daysAgo(2), status: 'answered', answer: 'We\'ve served 1,247 meals across 18 community events this year.' },
+  { id: 'cn3', mode: 'church', askerName: 'Sister Davis', askerInitials: 'SD', askerRole: 'Outreach', question: 'How many community meals have we served this year?', viewingContext: 'Outreach Report', timestamp: daysAgo(2), status: 'answered_by_nexus', answer: 'We\'ve served 1,247 meals across 18 community events this year.', resolvedAnswer: 'We\'ve served 1,247 meals across 18 community events this year.', answeredBy: 'Nexus' },
 ];
 
 // =============================================================================
@@ -123,7 +215,7 @@ const BUSINESS_ROOMS: RoomV3[] = [
 const BUSINESS_NEXUS: NexusEscalationV3[] = [
   { id: 'bn1', mode: 'business', askerName: 'Sarah Kim', askerInitials: 'SK', askerRole: 'Product Lead', question: 'What\'s the current DAU trend for the last 30 days?', viewingContext: 'Analytics Dashboard', timestamp: hoursAgo(2), status: 'unanswered' },
   { id: 'bn2', mode: 'business', askerName: 'James Park', askerInitials: 'JP', askerRole: 'Design Lead', question: 'Which component has the most usage across all modes?', viewingContext: 'Design System', timestamp: hoursAgo(8), status: 'unanswered' },
-  { id: 'bn3', mode: 'business', askerName: 'Kofi Achebe', askerInitials: 'KA', askerRole: 'CTO', question: 'What\'s our current server cost per active user?', viewingContext: 'Infrastructure', timestamp: daysAgo(1), status: 'answered', answer: 'Current cost is $0.012 per active user per month, down from $0.018 after CDN migration.' },
+  { id: 'bn3', mode: 'business', askerName: 'Kofi Achebe', askerInitials: 'KA', askerRole: 'CTO', question: 'What\'s our current server cost per active user?', viewingContext: 'Infrastructure', timestamp: daysAgo(1), status: 'answered_by_nexus', answer: 'Current cost is $0.012 per active user per month, down from $0.018 after CDN migration.', resolvedAnswer: 'Current cost is $0.012 per active user per month, down from $0.018 after CDN migration.', answeredBy: 'Nexus' },
 ];
 
 // =============================================================================
@@ -153,7 +245,7 @@ const EDUCATION_ROOMS: RoomV3[] = [
 const EDUCATION_NEXUS: NexusEscalationV3[] = [
   { id: 'en1', mode: 'education', askerName: 'Dean Clark', askerInitials: 'DC', askerRole: 'Dean of Students', question: 'What\'s the current first-year retention rate compared to last year?', viewingContext: 'Institutional Dashboard', timestamp: hoursAgo(3), status: 'unanswered' },
   { id: 'en2', mode: 'education', askerName: 'Dr. Harris', askerInitials: 'DH', askerRole: 'Provost', question: 'How many programs are due for review this cycle?', viewingContext: 'Academic Programs', timestamp: hoursAgo(6), status: 'unanswered' },
-  { id: 'en3', mode: 'education', askerName: 'Prof. Washington', askerInitials: 'PW', askerRole: 'Faculty Senate', question: 'What\'s the average class size across all departments?', viewingContext: 'Faculty Dashboard', timestamp: daysAgo(2), status: 'answered', answer: 'Average class size is 18.4 students, down from 21.2 last year. STEM courses average 16.1.' },
+  { id: 'en3', mode: 'education', askerName: 'Prof. Washington', askerInitials: 'PW', askerRole: 'Faculty Senate', question: 'What\'s the average class size across all departments?', viewingContext: 'Faculty Dashboard', timestamp: daysAgo(2), status: 'answered_by_nexus', answer: 'Average class size is 18.4 students, down from 21.2 last year. STEM courses average 16.1.', resolvedAnswer: 'Average class size is 18.4 students, down from 21.2 last year. STEM courses average 16.1.', answeredBy: 'Nexus' },
 ];
 
 // =============================================================================
@@ -183,7 +275,7 @@ const COMPETITION_ROOMS: RoomV3[] = [
 const COMPETITION_NEXUS: NexusEscalationV3[] = [
   { id: 'kn1', mode: 'competition', askerName: 'Takeshi Yamamoto', askerInitials: 'TY', askerRole: 'Team Principal', question: 'How does the new aero package compare to last season\'s downforce numbers?', viewingContext: 'Technical Regulations', timestamp: hoursAgo(2), status: 'unanswered' },
   { id: 'kn2', mode: 'competition', askerName: 'Marco Rossi', askerInitials: 'MR', askerRole: 'Chief Steward', question: 'What\'s the average penalty points per driver this season?', viewingContext: 'Steward Dashboard', timestamp: hoursAgo(8), status: 'unanswered' },
-  { id: 'kn3', mode: 'competition', askerName: 'Sophie Laurent', askerInitials: 'SL', askerRole: 'Media Director', question: 'Which races had the highest viewership last season?', viewingContext: 'Broadcast Analytics', timestamp: daysAgo(1), status: 'answered', answer: 'Monaco led with 12.4M viewers, followed by the season finale at 11.8M and the night race at 10.2M.' },
+  { id: 'kn3', mode: 'competition', askerName: 'Sophie Laurent', askerInitials: 'SL', askerRole: 'Media Director', question: 'Which races had the highest viewership last season?', viewingContext: 'Broadcast Analytics', timestamp: daysAgo(1), status: 'answered_by_nexus', answer: 'Monaco led with 12.4M viewers, followed by the season finale at 11.8M and the night race at 10.2M.', resolvedAnswer: 'Monaco led with 12.4M viewers, followed by the season finale at 11.8M and the night race at 10.2M.', answeredBy: 'Nexus' },
 ];
 
 // =============================================================================
@@ -294,7 +386,7 @@ export function getRoomMessages(roomId: string): RoomMessageV3[] {
 }
 
 export function getUnansweredCount(mode: Mode): number {
-  return getNexusEscalations(mode).filter((e) => e.status === 'unanswered').length;
+  return getNexusEscalations(mode).filter((e) => e.status === 'unanswered' || e.status === 'escalated').length;
 }
 
 export function formatMessageTime(date: Date): string {

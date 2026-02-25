@@ -29,6 +29,8 @@ import { ChatComposer } from '@/components/messages/chat-composer';
 import { NewThreadSheet } from '@/components/messages/new-thread-sheet';
 import { InboxRowV3 } from '@/components/messages/inbox-row-v3';
 import { RoomsListV3 } from '@/components/messages/rooms-list-v3';
+import { NexusQueueV3 } from '@/components/messages/nexus-queue-v3';
+import { NexusAnswerSheet } from '@/components/messages/nexus-answer-sheet';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -44,6 +46,7 @@ import type {
   InboxThreadV3,
   RoomV3,
   ConversationMessageV3,
+  NexusEscalationV3,
 } from '@/types';
 
 // =============================================================================
@@ -95,6 +98,7 @@ export default function MessagesScreen() {
   const [inputText, setInputText] = useState('');
   const [roomInputText, setRoomInputText] = useState('');
   const [newThreadVisible, setNewThreadVisible] = useState(false);
+  const [selectedEscalation, setSelectedEscalation] = useState<NexusEscalationV3 | null>(null);
 
   // ── Data ──
 
@@ -307,12 +311,14 @@ export default function MessagesScreen() {
             />
           </View>
 
-          {/* ===== NEXUS (Coming Soon) ===== */}
+          {/* ===== NEXUS ===== */}
           <View key="nexus" style={{ flex: 1 }}>
-            <EmptyState
-              icon="sparkles"
-              title="Nexus"
-              description="AI-governed intelligence queue coming soon."
+            <NexusQueueV3
+              mode={mode}
+              onSelectEscalation={(esc) => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setSelectedEscalation(esc);
+              }}
             />
           </View>
         </PagerView>
@@ -504,6 +510,12 @@ export default function MessagesScreen() {
           </View>
         )}
       </BottomSheet>
+
+      {/* ===== Nexus Q&A Thread Sheet ===== */}
+      <NexusAnswerSheet
+        escalation={selectedEscalation}
+        onClose={() => setSelectedEscalation(null)}
+      />
 
       {/* ===== New Thread Sheet ===== */}
       <BottomSheet
