@@ -117,8 +117,8 @@ type DrillDownId = 'stats' | 'game-plan' | 'simulation' | 'development' | 'alert
 
 const HOME_TABS: { id: string; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
-  { id: 'roster', label: 'Roster' },
   { id: 'calendar', label: 'Schedule' },
+  { id: 'roster', label: 'Roster' },
   { id: 'recruiting', label: 'Recruiting' },
 ];
 
@@ -703,15 +703,15 @@ function SportsHome() {
                 </ScrollView>
               </View>
 
+              {/* Schedule */}
+              <View key="calendar" style={{ flex: 1 }}>
+                <SchedulePage colors={colors} />
+              </View>
+
               {/* Roster */}
               <View key="roster" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ fontSize: 20, fontWeight: '700', color: '#fff', marginBottom: 8 }}>Coming Soon</Text>
                 <Text style={{ fontSize: 14, color: '#A1A1AA', textAlign: 'center', paddingHorizontal: 40 }}>Roster is under development.</Text>
-              </View>
-
-              {/* Schedule */}
-              <View key="calendar" style={{ flex: 1 }}>
-                <SchedulePage colors={colors} />
               </View>
 
               {/* Recruiting */}
