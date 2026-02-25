@@ -115,15 +115,8 @@ function ProgressBar({ value, max, color, colors }: { value: number; max: number
 // BLOCK 0 — HEADER
 // =============================================================================
 
-function HeaderBlock({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
-  return (
-    <View style={s.headerBlock}>
-      <ThemedText style={[s.headerTitle, { color: colors.text }]}>Finance</ThemedText>
-      <View style={[s.seasonChip, { backgroundColor: accentColor + '20' }]}>
-        <ThemedText style={[s.seasonChipText, { color: accentColor }]}>{SEASON}</ThemedText>
-      </View>
-    </View>
-  );
+function HeaderBlock() {
+  return null;
 }
 
 // =============================================================================
@@ -138,7 +131,9 @@ function BudgetSummaryBlock({ colors }: { colors: typeof Colors.light }) {
 
   return (
     <>
-      <SectionHeader label="PROGRAM BUDGET" colors={colors} />
+      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary, marginTop: 0 }]}>
+        PROGRAM BUDGET
+      </ThemedText>
       <Card colors={colors}>
         <View style={s.restrictedRow}>
           <IconSymbol name="lock.fill" size={16} color={colors.textTertiary} />
@@ -383,7 +378,6 @@ export function SportsFinance({ colors, accentColor, role }: Props) {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={s.scroll}
       >
-        <HeaderBlock colors={colors} accentColor={accentColor} />
         <BudgetSummaryBlock colors={colors} />
         <ScholarshipsBlock colors={colors} accentColor={accentColor} />
         <NILBudgetBlock colors={colors} accentColor={accentColor} onOpenSheet={openNilSheet} />
@@ -407,7 +401,7 @@ export function SportsFinance({ colors, accentColor, role }: Props) {
 
 const s = StyleSheet.create({
   container: { flex: 1 },
-  scroll: { padding: Spacing.md, paddingBottom: 120 },
+  scroll: { padding: Spacing.md, paddingTop: 4, paddingBottom: 120 },
 
   // ── Section Header ──
   sectionHeader: {

@@ -143,9 +143,9 @@ interface Props {
 // HELPERS
 // =============================================================================
 
-function SectionHeader({ label, colors, count }: { label: string; colors: typeof Colors.light; count?: number }) {
+function SectionHeader({ label, colors, count, isFirst }: { label: string; colors: typeof Colors.light; count?: number; isFirst?: boolean }) {
   return (
-    <View style={s.sectionHeaderRow}>
+    <View style={[s.sectionHeaderRow, isFirst && { marginTop: 0 }]}>
       <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>
         {label}
       </ThemedText>
@@ -177,7 +177,7 @@ function RoleTag({ label, color }: { label: string; color: string }) {
 // SECTION 1 — LEADERSHIP
 // =============================================================================
 
-function LeadershipSection({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+function LeadershipSection({ colors, accentColor, isFirst }: { colors: typeof Colors.light; accentColor: string; isFirst?: boolean }) {
   const handleTap = (leader: LeaderEntry) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     openCoachCard({
@@ -189,7 +189,7 @@ function LeadershipSection({ colors, accentColor }: { colors: typeof Colors.ligh
 
   return (
     <>
-      <SectionHeader label="LEADERSHIP" colors={colors} count={LEADERSHIP.length} />
+      <SectionHeader label="LEADERSHIP" colors={colors} count={LEADERSHIP.length} isFirst={isFirst} />
       {LEADERSHIP.map((leader) => (
         <Pressable
           key={leader.id}
@@ -409,7 +409,7 @@ export function SportsPeople({ colors, accentColor, role }: Props) {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={s.scroll}
     >
-      <LeadershipSection colors={colors} accentColor={accentColor} />
+      <LeadershipSection colors={colors} accentColor={accentColor} isFirst />
       <CoachingStaffSection colors={colors} accentColor={accentColor} />
       <SupportStaffSection colors={colors} accentColor={accentColor} />
       <PlayersSection colors={colors} accentColor={accentColor} />
@@ -423,7 +423,7 @@ export function SportsPeople({ colors, accentColor, role }: Props) {
 
 const s = StyleSheet.create({
   container: { flex: 1 },
-  scroll: { padding: Spacing.md, paddingBottom: 120 },
+  scroll: { padding: Spacing.md, paddingTop: 4, paddingBottom: 120 },
 
   // ── Section Header ──
   sectionHeaderRow: {

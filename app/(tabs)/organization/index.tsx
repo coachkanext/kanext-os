@@ -164,6 +164,8 @@ function SportsOrganization() {
                 return <View key="people" style={PAGE_STYLE}><SportsPeople {...p} /></View>;
               case 'finance':
                 return <View key="finance" style={PAGE_STYLE}><SportsFinance {...p} /></View>;
+              case 'compliance':
+                return <View key="compliance" style={PAGE_STYLE}><SportsCompliance {...p} /></View>;
               default:
                 return (
                   <View key={tab.id} style={[PAGE_STYLE, { justifyContent: 'center', alignItems: 'center' }]}>
