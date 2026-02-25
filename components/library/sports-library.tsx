@@ -1,222 +1,692 @@
 /**
- * SportsLibrary — 3-tab layout: Saved | Downloads | History
- * Simplified from the old 4-section RBAC-gated collapsible layout.
+ * SportsLibrary — Structured archive with 5 folder drill-in.
+ * Folders: Games (by season), Practice (by date), Clips (by tag),
+ * Playlists, Saved.
+ * Rendering context: Assistant Coach / Recruiting Coordinator (A2, V3).
  */
 
-import React, { useState, useMemo } from 'react';
-import { View, StyleSheet, ScrollView, Pressable, FlatList } from 'react-native';
+import React, { useState, useCallback, useMemo } from 'react';
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  FlatList,
+  SectionList,
+  TextInput,
+  Share,
+} from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme'
-import { useAccentColor } from '@/hooks/use-accent-color';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
-  SPORTS_LIBRARY_RECORDS,
-  getAccessLevelColor,
-  getAccessLevelLabel,
-  getRecordTypeLabel,
-  type LibraryRecord,
-} from '@/data/mock-sports-library';
-import {
-  WATCH_HISTORY_BY_MODE,
-  formatDuration,
-  type WatchHistoryItem,
-} from '@/data/mock-video';
+  LIBRARY_FOLDERS,
+  GAME_ENTRIES,
+  PRACTICE_ENTRIES,
+  CLIP_ENTRIES,
+  PLAYLIST_ENTRIES,
+  SAVED_ENTRIES,
+  getGameSeasons,
+  getGamesBySeason,
+  getFilteredPractice,
+  getClipTagGroups,
+  getClipsByTag,
+  getFilteredSaved,
+  type LibraryFolderId,
+  type LibraryFolder,
+  type GameEntry,
+  type PracticeEntry,
+  type ClipEntry,
+  type PlaylistEntry,
+  type SavedEntry,
+} from '@/data/mock-library-sports';
 
-type SportsLibraryTab = 'saved' | 'downloads' | 'history';
+// Mock RBAC
+const MOCK_USER_VISIBILITY = 3;
 
-const TABS: { key: SportsLibraryTab; label: string }[] = [
-  { key: 'saved', label: 'Saved' },
-  { key: 'downloads', label: 'Downloads' },
-  { key: 'history', label: 'History' },
-];
+// =============================================================================
+// FOLDER CARD (List View)
+// =============================================================================
 
-export function SportsLibrary() {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
-  const accent = useAccentColor();
-  const [activeTab, setActiveTab] = useState<SportsLibraryTab>('saved');
-
-  const savedRecords = useMemo(() => SPORTS_LIBRARY_RECORDS, []);
-  const downloadedRecords = useMemo(() => SPORTS_LIBRARY_RECORDS.filter((r) => r.downloaded), []);
-  const history = WATCH_HISTORY_BY_MODE.sports ?? [];
-
-  const handleTabPress = (tab: SportsLibraryTab) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setActiveTab(tab);
-  };
-
+function FolderCard({
+  folder,
+  colors,
+  onPress,
+}: {
+  folder: LibraryFolder;
+  colors: typeof Colors.light;
+  onPress: () => void;
+}) {
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Pill Nav */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.pillRow}
-        style={styles.pillScroll}
-      >
-        {TABS.map((tab) => {
-          const isActive = activeTab === tab.key;
-          return (
-            <Pressable
-              key={tab.key}
-              onPress={() => handleTabPress(tab.key)}
-              style={[
-                styles.pill,
-                { backgroundColor: isActive ? '#fff' : colors.backgroundTertiary },
-              ]}
-            >
-              <ThemedText
-                style={[styles.pillText, { color: isActive ? '#000' : colors.textSecondary }]}
-              >
-                {tab.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
+    <Pressable
+      style={({ pressed }) => [
+        folderStyles.card,
+        { backgroundColor: pressed ? colors.cardElevated : colors.card },
+      ]}
+      onPress={onPress}
+    >
+      <View style={[folderStyles.strip, { backgroundColor: folder.colorStrip }]} />
+      <View style={[folderStyles.iconCircle, { backgroundColor: folder.colorStrip + '1A' }]}>
+        <IconSymbol name={folder.icon as any} size={20} color={folder.colorStrip} />
+      </View>
+      <View style={folderStyles.info}>
+        <ThemedText style={[folderStyles.name, { color: colors.text }]}>
+          {folder.name}
+        </ThemedText>
+        <ThemedText style={[folderStyles.desc, { color: colors.textSecondary }]} numberOfLines={1}>
+          {folder.description}
+        </ThemedText>
+        <ThemedText style={[folderStyles.count, { color: colors.textTertiary }]}>
+          {folder.itemCount} items
+        </ThemedText>
+      </View>
+      <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
+    </Pressable>
+  );
+}
 
-      {/* Content */}
-      {activeTab === 'saved' && (
-        <FlatList
-          data={savedRecords}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <RecordRow record={item} colors={colors} />}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={<EmptyState colors={colors} label="No saved items" icon="bookmark" />}
-        />
+const folderStyles = StyleSheet.create({
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+    paddingRight: Spacing.md,
+  },
+  strip: { width: 4, alignSelf: 'stretch' },
+  iconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: Spacing.sm + 4,
+  },
+  info: {
+    flex: 1,
+    paddingVertical: Spacing.sm + 4,
+    paddingHorizontal: Spacing.sm + 4,
+    gap: 3,
+  },
+  name: { fontSize: 15, fontWeight: '600' },
+  desc: { fontSize: 12 },
+  count: { fontSize: 11, marginTop: 1 },
+});
+
+// =============================================================================
+// ENTRY ROW — shared row component for most item types
+// =============================================================================
+
+function EntryRow({
+  colors,
+  thumbnailColor,
+  title,
+  meta,
+  badge,
+  badgeColor,
+  onPress,
+  onLongPress,
+}: {
+  colors: typeof Colors.light;
+  thumbnailColor: string;
+  title: string;
+  meta: string;
+  badge?: string;
+  badgeColor?: string;
+  onPress: () => void;
+  onLongPress: () => void;
+}) {
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        rowStyles.card,
+        { backgroundColor: pressed ? colors.cardElevated : colors.card },
+      ]}
+      onPress={onPress}
+      onLongPress={onLongPress}
+      delayLongPress={400}
+    >
+      <View style={[rowStyles.thumb, { backgroundColor: thumbnailColor }]}>
+        <IconSymbol name="play.fill" size={12} color="#fff" />
+      </View>
+      <View style={rowStyles.info}>
+        <ThemedText style={[rowStyles.title, { color: colors.text }]} numberOfLines={1}>
+          {title}
+        </ThemedText>
+        <ThemedText style={[rowStyles.meta, { color: colors.textSecondary }]} numberOfLines={1}>
+          {meta}
+        </ThemedText>
+      </View>
+      {badge && badgeColor && (
+        <View style={[rowStyles.badge, { backgroundColor: badgeColor + '1A' }]}>
+          <ThemedText style={[rowStyles.badgeText, { color: badgeColor }]}>{badge}</ThemedText>
+        </View>
       )}
-      {activeTab === 'downloads' && (
-        <FlatList
-          data={downloadedRecords}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <RecordRow record={item} colors={colors} showDownloadSize />}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={<EmptyState colors={colors} label="No downloads" icon="arrow.down.circle" />}
-        />
-      )}
-      {activeTab === 'history' && (
-        <FlatList
-          data={history}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <HistoryRow item={item} colors={colors} />}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={<EmptyState colors={colors} label="No watch history" icon="clock" />}
-        />
-      )}
+    </Pressable>
+  );
+}
+
+const rowStyles = StyleSheet.create({
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+  },
+  thumb: {
+    width: 56,
+    height: 42,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopLeftRadius: BorderRadius.lg,
+    borderBottomLeftRadius: BorderRadius.lg,
+  },
+  info: {
+    flex: 1,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.sm + 2,
+    gap: 2,
+  },
+  title: { fontSize: 13, fontWeight: '600' },
+  meta: { fontSize: 11 },
+  badge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.sm,
+    marginRight: Spacing.sm + 2,
+  },
+  badgeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
+});
+
+// =============================================================================
+// SECTION HEADER
+// =============================================================================
+
+function SectionHeader({ title, colors }: { title: string; colors: typeof Colors.light }) {
+  return (
+    <View style={sectionStyles.header}>
+      <ThemedText style={[sectionStyles.text, { color: colors.textTertiary }]}>
+        {title}
+      </ThemedText>
     </View>
   );
 }
 
-// =============================================================================
-// RECORD ROW
-// =============================================================================
-
-function RecordRow({ record, colors, showDownloadSize }: { record: LibraryRecord; colors: typeof Colors.dark; showDownloadSize?: boolean }) {
-  const accessColor = getAccessLevelColor(record.accessLevel);
-  return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.recordCard,
-        { backgroundColor: pressed ? colors.cardElevated : colors.card },
-      ]}
-      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-    >
-      <View style={[styles.recordStrip, { backgroundColor: record.thumbnailColor }]} />
-      <View style={styles.recordContent}>
-        <View style={styles.recordHeader}>
-          <ThemedText style={[styles.recordTitle, { color: colors.text }]} numberOfLines={1}>
-            {record.title}
-          </ThemedText>
-          <View style={[styles.accessBadge, { backgroundColor: accessColor + '1A' }]}>
-            <ThemedText style={[styles.accessText, { color: accessColor }]}>
-              {getAccessLevelLabel(record.accessLevel)}
-            </ThemedText>
-          </View>
-        </View>
-        <View style={styles.recordMeta}>
-          <ThemedText style={[styles.metaText, { color: colors.textSecondary }]}>
-            {getRecordTypeLabel(record.type)}
-          </ThemedText>
-          <View style={styles.metaDot} />
-          <ThemedText style={[styles.metaText, { color: colors.textSecondary }]}>{record.duration}</ThemedText>
-          <View style={styles.metaDot} />
-          <ThemedText style={[styles.metaText, { color: colors.textSecondary }]}>{record.date}</ThemedText>
-        </View>
-        {showDownloadSize && record.downloadSize && (
-          <View style={styles.downloadInfo}>
-            <IconSymbol name="checkmark.circle.fill" size={12} color="#22C55E" />
-            <ThemedText style={[styles.downloadSize, { color: colors.textTertiary }]}>
-              {record.downloadSize}
-            </ThemedText>
-          </View>
-        )}
-        <View style={styles.tagRow}>
-          {record.tags.slice(0, 3).map((tag) => (
-            <View key={tag} style={[styles.tagChip, { backgroundColor: colors.backgroundTertiary }]}>
-              <ThemedText style={[styles.tagText, { color: colors.textSecondary }]}>{tag}</ThemedText>
-            </View>
-          ))}
-        </View>
-      </View>
-    </Pressable>
-  );
-}
-
-// =============================================================================
-// HISTORY ROW
-// =============================================================================
-
-function HistoryRow({ item, colors }: { item: WatchHistoryItem; colors: typeof Colors.dark }) {
-  const typeColor = item.contentType === 'game' ? accent : item.contentType === 'reel' ? accent : '#22C55E';
-  return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.recordCard,
-        { backgroundColor: pressed ? colors.cardElevated : colors.card },
-      ]}
-      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-    >
-      <View style={[styles.recordStrip, { backgroundColor: item.thumbnailColor }]} />
-      <View style={styles.recordContent}>
-        <View style={styles.recordHeader}>
-          <ThemedText style={[styles.recordTitle, { color: colors.text }]} numberOfLines={1}>
-            {item.title}
-          </ThemedText>
-          <View style={[styles.accessBadge, { backgroundColor: typeColor + '1A' }]}>
-            <ThemedText style={[styles.accessText, { color: typeColor }]}>
-              {item.contentType.toUpperCase()}
-            </ThemedText>
-          </View>
-        </View>
-        <View style={styles.recordMeta}>
-          <ThemedText style={[styles.metaText, { color: colors.textSecondary }]}>{formatDuration(item.duration)}</ThemedText>
-          <View style={styles.metaDot} />
-          <ThemedText style={[styles.metaText, { color: colors.textSecondary }]}>{item.watchedAt}</ThemedText>
-        </View>
-        <View style={[styles.progressTrack, { backgroundColor: colors.backgroundTertiary }]}>
-          <View style={[styles.progressFill, { width: `${item.progress}%`, backgroundColor: item.progress === 100 ? '#22C55E' : accent }]} />
-        </View>
-      </View>
-    </Pressable>
-  );
-}
+const sectionStyles = StyleSheet.create({
+  header: {
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.xs,
+  },
+  text: { fontSize: 13, fontWeight: '700', letterSpacing: 0.3 },
+});
 
 // =============================================================================
 // EMPTY STATE
 // =============================================================================
 
-function EmptyState({ colors, label, icon }: { colors: typeof Colors.dark; label: string; icon: string }) {
+function EmptyFolder({ colors, label }: { colors: typeof Colors.light; label: string }) {
   return (
     <View style={styles.emptyState}>
-      <IconSymbol name={icon as any} size={28} color={colors.textTertiary} />
+      <IconSymbol name="tray" size={28} color={colors.textTertiary} />
       <ThemedText style={[styles.emptyText, { color: colors.textTertiary }]}>{label}</ThemedText>
     </View>
+  );
+}
+
+// =============================================================================
+// RESULT HELPERS
+// =============================================================================
+
+function getResultColor(result?: 'W' | 'L'): string {
+  if (result === 'W') return '#22C55E';
+  if (result === 'L') return '#EF4444';
+  return '#A1A1AA';
+}
+
+const TAG_COLORS: Record<string, string> = {
+  Shooting: '#F59E0B',
+  Install: '#A855F7',
+  Scrimmage: '#22C55E',
+  'Pre-game': '#1D9BF0',
+};
+
+const SAVED_TYPE_COLORS: Record<string, string> = {
+  game: '#22C55E',
+  clip: '#1D9BF0',
+  practice: '#F59E0B',
+  reel: '#A855F7',
+};
+
+// =============================================================================
+// MAIN COMPONENT
+// =============================================================================
+
+export function SportsLibrary() {
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
+
+  // Drill-in state
+  const [selectedFolder, setSelectedFolder] = useState<LibraryFolderId | null>(null);
+  const [search, setSearch] = useState('');
+
+  // Quick Actions sheet
+  const [sheetVisible, setSheetVisible] = useState(false);
+  const [sheetTitle, setSheetTitle] = useState('');
+
+  const selectedFolderData = useMemo(
+    () => LIBRARY_FOLDERS.find((f) => f.id === selectedFolder),
+    [selectedFolder],
+  );
+
+  const handleFolderPress = useCallback((id: LibraryFolderId) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSelectedFolder(id);
+  }, []);
+
+  const handleBack = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSelectedFolder(null);
+    setSearch('');
+  }, []);
+
+  const handleLongPress = useCallback((title: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setSheetTitle(title);
+    setSheetVisible(true);
+  }, []);
+
+  const handleSheetAction = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSheetVisible(false);
+  }, []);
+
+  const handleShareAction = useCallback(async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    try {
+      await Share.share({ message: sheetTitle });
+    } catch {}
+    setSheetVisible(false);
+  }, [sheetTitle]);
+
+  const tapHaptic = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  }, []);
+
+  // ─── Folder List View ───
+  if (selectedFolder === null) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        {/* Search Bar */}
+        <View style={styles.searchRow}>
+          <View style={[styles.searchBar, { backgroundColor: colors.backgroundSecondary, borderColor: colors.border }]}>
+            <IconSymbol name="magnifyingglass" size={14} color={colors.textTertiary} />
+            <TextInput
+              style={[styles.searchInput, { color: colors.text }]}
+              placeholder="Search videos"
+              placeholderTextColor={colors.textTertiary}
+              value={search}
+              onChangeText={setSearch}
+              returnKeyType="search"
+            />
+            {search.length > 0 && (
+              <Pressable onPress={() => setSearch('')} hitSlop={8}>
+                <IconSymbol name="xmark.circle.fill" size={14} color={colors.textTertiary} />
+              </Pressable>
+            )}
+          </View>
+        </View>
+
+        <FlatList
+          data={LIBRARY_FOLDERS}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <FolderCard folder={item} colors={colors} onPress={() => handleFolderPress(item.id)} />
+          )}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+    );
+  }
+
+  // ─── Folder Content View ───
+  return (
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {/* Back Header */}
+      <Pressable style={styles.backHeader} onPress={handleBack}>
+        <IconSymbol name="chevron.left" size={18} color={colors.text} />
+        <ThemedText style={[styles.backTitle, { color: colors.text }]}>
+          {selectedFolderData?.name ?? 'Folder'}
+        </ThemedText>
+      </Pressable>
+
+      {/* Search Bar */}
+      <View style={styles.searchRow}>
+        <View style={[styles.searchBar, { backgroundColor: colors.backgroundSecondary, borderColor: colors.border }]}>
+          <IconSymbol name="magnifyingglass" size={14} color={colors.textTertiary} />
+          <TextInput
+            style={[styles.searchInput, { color: colors.text }]}
+            placeholder="Search..."
+            placeholderTextColor={colors.textTertiary}
+            value={search}
+            onChangeText={setSearch}
+            returnKeyType="search"
+          />
+          {search.length > 0 && (
+            <Pressable onPress={() => setSearch('')} hitSlop={8}>
+              <IconSymbol name="xmark.circle.fill" size={14} color={colors.textTertiary} />
+            </Pressable>
+          )}
+        </View>
+      </View>
+
+      {/* Folder-specific content */}
+      {selectedFolder === 'games' && (
+        <GamesContent colors={colors} search={search} onLongPress={handleLongPress} onTap={tapHaptic} />
+      )}
+      {selectedFolder === 'practice' && (
+        <PracticeContent colors={colors} search={search} onLongPress={handleLongPress} onTap={tapHaptic} />
+      )}
+      {selectedFolder === 'clips' && (
+        <ClipsContent colors={colors} search={search} onLongPress={handleLongPress} onTap={tapHaptic} />
+      )}
+      {selectedFolder === 'playlists' && (
+        <PlaylistsContent colors={colors} search={search} onTap={tapHaptic} />
+      )}
+      {selectedFolder === 'saved' && (
+        <SavedContent colors={colors} search={search} onLongPress={handleLongPress} onTap={tapHaptic} />
+      )}
+
+      {/* Quick Actions BottomSheet */}
+      <BottomSheet
+        visible={sheetVisible}
+        onClose={() => setSheetVisible(false)}
+        title={sheetTitle}
+        useModal
+      >
+        <View style={styles.sheetActions}>
+          <Pressable style={styles.sheetAction} onPress={handleSheetAction}>
+            <IconSymbol name="text.badge.plus" size={20} color={colors.text} />
+            <ThemedText style={[styles.sheetActionText, { color: colors.text }]}>Add to Playlist</ThemedText>
+          </Pressable>
+          <Pressable style={styles.sheetAction} onPress={handleSheetAction}>
+            <IconSymbol name="bookmark" size={20} color={colors.text} />
+            <ThemedText style={[styles.sheetActionText, { color: colors.text }]}>Save</ThemedText>
+          </Pressable>
+          <Pressable style={styles.sheetAction} onPress={handleShareAction}>
+            <IconSymbol name="paperplane" size={20} color={colors.text} />
+            <ThemedText style={[styles.sheetActionText, { color: colors.text }]}>Share</ThemedText>
+          </Pressable>
+        </View>
+      </BottomSheet>
+    </View>
+  );
+}
+
+// =============================================================================
+// GAMES CONTENT — SectionList grouped by season
+// =============================================================================
+
+function GamesContent({
+  colors,
+  search,
+  onLongPress,
+  onTap,
+}: {
+  colors: typeof Colors.light;
+  search: string;
+  onLongPress: (title: string) => void;
+  onTap: () => void;
+}) {
+  const q = search.toLowerCase().trim();
+  const sections = useMemo(() => {
+    const seasons = getGameSeasons();
+    return seasons
+      .map((season) => {
+        let games = getGamesBySeason(season, MOCK_USER_VISIBILITY);
+        if (q) {
+          games = games.filter((g) =>
+            `${g.opponent} ${g.date}`.toLowerCase().includes(q),
+          );
+        }
+        return { title: season, data: games };
+      })
+      .filter((s) => s.data.length > 0);
+  }, [q]);
+
+  return (
+    <SectionList
+      sections={sections}
+      keyExtractor={(item) => item.id}
+      renderSectionHeader={({ section }) => (
+        <SectionHeader title={section.title} colors={colors} />
+      )}
+      renderItem={({ item }) => (
+        <EntryRow
+          colors={colors}
+          thumbnailColor={item.thumbnailColor}
+          title={`vs ${item.opponent}`}
+          meta={`${item.date} · ${item.duration}`}
+          badge={item.result ? `${item.result} ${item.score ?? ''}`.trim() : undefined}
+          badgeColor={item.result ? getResultColor(item.result) : undefined}
+          onPress={onTap}
+          onLongPress={() => onLongPress(`vs ${item.opponent}`)}
+        />
+      )}
+      contentContainerStyle={styles.sectionListContent}
+      showsVerticalScrollIndicator={false}
+      ListEmptyComponent={<EmptyFolder colors={colors} label="No games found" />}
+      stickySectionHeadersEnabled={false}
+    />
+  );
+}
+
+// =============================================================================
+// PRACTICE CONTENT — flat list
+// =============================================================================
+
+function PracticeContent({
+  colors,
+  search,
+  onLongPress,
+  onTap,
+}: {
+  colors: typeof Colors.light;
+  search: string;
+  onLongPress: (title: string) => void;
+  onTap: () => void;
+}) {
+  const q = search.toLowerCase().trim();
+  const items = useMemo(() => {
+    let entries = getFilteredPractice(MOCK_USER_VISIBILITY);
+    if (q) {
+      entries = entries.filter((p) =>
+        `${p.title} ${p.date} ${p.tag ?? ''}`.toLowerCase().includes(q),
+      );
+    }
+    return entries;
+  }, [q]);
+
+  return (
+    <FlatList
+      data={items}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <EntryRow
+          colors={colors}
+          thumbnailColor={item.thumbnailColor}
+          title={item.title}
+          meta={`${item.date} · ${item.duration}`}
+          badge={item.tag}
+          badgeColor={item.tag ? (TAG_COLORS[item.tag] ?? '#A1A1AA') : undefined}
+          onPress={onTap}
+          onLongPress={() => onLongPress(item.title)}
+        />
+      )}
+      contentContainerStyle={styles.listContent}
+      showsVerticalScrollIndicator={false}
+      ListEmptyComponent={<EmptyFolder colors={colors} label="No practice sessions found" />}
+    />
+  );
+}
+
+// =============================================================================
+// CLIPS CONTENT — SectionList grouped by tag
+// =============================================================================
+
+function ClipsContent({
+  colors,
+  search,
+  onLongPress,
+  onTap,
+}: {
+  colors: typeof Colors.light;
+  search: string;
+  onLongPress: (title: string) => void;
+  onTap: () => void;
+}) {
+  const q = search.toLowerCase().trim();
+  const sections = useMemo(() => {
+    const tags = getClipTagGroups();
+    return tags
+      .map((tag) => {
+        let clips = getClipsByTag(tag, MOCK_USER_VISIBILITY);
+        if (q) {
+          clips = clips.filter((c) =>
+            `${c.title} ${c.tagGroup}`.toLowerCase().includes(q),
+          );
+        }
+        return { title: tag, data: clips };
+      })
+      .filter((s) => s.data.length > 0);
+  }, [q]);
+
+  return (
+    <SectionList
+      sections={sections}
+      keyExtractor={(item) => item.id}
+      renderSectionHeader={({ section }) => (
+        <SectionHeader title={section.title} colors={colors} />
+      )}
+      renderItem={({ item }) => (
+        <EntryRow
+          colors={colors}
+          thumbnailColor={item.thumbnailColor}
+          title={item.title}
+          meta={`${item.date} · ${item.duration}`}
+          onPress={onTap}
+          onLongPress={() => onLongPress(item.title)}
+        />
+      )}
+      contentContainerStyle={styles.sectionListContent}
+      showsVerticalScrollIndicator={false}
+      ListEmptyComponent={<EmptyFolder colors={colors} label="No clips found" />}
+      stickySectionHeadersEnabled={false}
+    />
+  );
+}
+
+// =============================================================================
+// PLAYLISTS CONTENT — flat list of playlists
+// =============================================================================
+
+function PlaylistsContent({
+  colors,
+  search,
+  onTap,
+}: {
+  colors: typeof Colors.light;
+  search: string;
+  onTap: () => void;
+}) {
+  const q = search.toLowerCase().trim();
+  const items = useMemo(() => {
+    if (!q) return PLAYLIST_ENTRIES;
+    return PLAYLIST_ENTRIES.filter((p) => p.name.toLowerCase().includes(q));
+  }, [q]);
+
+  return (
+    <FlatList
+      data={items}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <Pressable
+          style={({ pressed }) => [
+            rowStyles.card,
+            { backgroundColor: pressed ? colors.cardElevated : colors.card },
+          ]}
+          onPress={onTap}
+        >
+          <View style={[rowStyles.thumb, { backgroundColor: item.thumbnailColor }]}>
+            <IconSymbol name="list.bullet" size={14} color="#fff" />
+          </View>
+          <View style={rowStyles.info}>
+            <ThemedText style={[rowStyles.title, { color: colors.text }]} numberOfLines={1}>
+              {item.name}
+            </ThemedText>
+            <ThemedText style={[rowStyles.meta, { color: colors.textSecondary }]}>
+              {item.clipCount} clips · {item.lastUpdated}
+            </ThemedText>
+          </View>
+          <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} style={{ marginRight: Spacing.sm + 2 }} />
+        </Pressable>
+      )}
+      contentContainerStyle={styles.listContent}
+      showsVerticalScrollIndicator={false}
+      ListEmptyComponent={<EmptyFolder colors={colors} label="No playlists found" />}
+    />
+  );
+}
+
+// =============================================================================
+// SAVED CONTENT — flat list
+// =============================================================================
+
+function SavedContent({
+  colors,
+  search,
+  onLongPress,
+  onTap,
+}: {
+  colors: typeof Colors.light;
+  search: string;
+  onLongPress: (title: string) => void;
+  onTap: () => void;
+}) {
+  const q = search.toLowerCase().trim();
+  const items = useMemo(() => {
+    let entries = getFilteredSaved(MOCK_USER_VISIBILITY);
+    if (q) {
+      entries = entries.filter((s) =>
+        `${s.title} ${s.source}`.toLowerCase().includes(q),
+      );
+    }
+    return entries;
+  }, [q]);
+
+  return (
+    <FlatList
+      data={items}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <EntryRow
+          colors={colors}
+          thumbnailColor={item.thumbnailColor}
+          title={item.title}
+          meta={`${item.source} · ${item.date} · ${item.duration}`}
+          badge={item.type.toUpperCase()}
+          badgeColor={SAVED_TYPE_COLORS[item.type] ?? '#A1A1AA'}
+          onPress={onTap}
+          onLongPress={() => onLongPress(item.title)}
+        />
+      )}
+      contentContainerStyle={styles.listContent}
+      showsVerticalScrollIndicator={false}
+      ListEmptyComponent={<EmptyFolder colors={colors} label="No saved items" />}
+    />
   );
 }
 
@@ -228,113 +698,50 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  pillScroll: {
-    flexGrow: 0,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#2F3336',
-  },
-  pillRow: {
-    flexDirection: 'row',
-    gap: Spacing.sm,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm + 2,
-  },
-  pill: {
-    borderRadius: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-  },
-  pillText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
   listContent: {
     paddingHorizontal: Spacing.md,
     paddingBottom: Spacing.xxl,
     gap: Spacing.sm,
-    paddingTop: Spacing.sm,
   },
-  recordCard: {
+  sectionListContent: {
+    paddingHorizontal: Spacing.md,
+    paddingBottom: Spacing.xxl,
+  },
+
+  // Back header
+  backHeader: {
     flexDirection: 'row',
-    borderRadius: BorderRadius.lg,
-    overflow: 'hidden',
-  },
-  recordStrip: {
-    width: 4,
-  },
-  recordContent: {
-    flex: 1,
-    padding: Spacing.sm + 4,
-    gap: 6,
-  },
-  recordHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm + 2,
   },
-  recordTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    flex: 1,
-    marginRight: Spacing.sm,
-  },
-  accessBadge: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: BorderRadius.sm,
-  },
-  accessText: {
-    fontSize: 9,
+  backTitle: {
+    fontSize: 16,
     fontWeight: '700',
-    letterSpacing: 0.5,
   },
-  recordMeta: {
+
+  // Search
+  searchRow: {
+    paddingHorizontal: Spacing.md,
+    paddingBottom: Spacing.sm,
+  },
+  searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
+    borderRadius: BorderRadius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: Spacing.sm + 2,
+    height: 36,
     gap: 6,
   },
-  metaText: {
-    fontSize: 12,
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    paddingVertical: 0,
   },
-  metaDot: {
-    width: 3,
-    height: 3,
-    borderRadius: 1.5,
-    backgroundColor: '#52525B',
-  },
-  downloadInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  downloadSize: {
-    fontSize: 11,
-    fontWeight: '600',
-  },
-  tagRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 4,
-    marginTop: 2,
-  },
-  tagChip: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: BorderRadius.sm,
-  },
-  tagText: {
-    fontSize: 10,
-    fontWeight: '500',
-  },
-  progressTrack: {
-    height: 3,
-    borderRadius: 1.5,
-    marginTop: 2,
-  },
-  progressFill: {
-    height: 3,
-    borderRadius: 1.5,
-  },
+
+  // Empty
   emptyState: {
     alignItems: 'center',
     paddingTop: Spacing.xxl * 2,
@@ -342,5 +749,22 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
+  },
+
+  // Quick Actions Sheet
+  sheetActions: {
+    paddingHorizontal: Spacing.md,
+    paddingTop: Spacing.sm,
+    gap: 4,
+  },
+  sheetAction: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    paddingVertical: 14,
+  },
+  sheetActionText: {
+    fontSize: 16,
+    fontWeight: '500',
   },
 });

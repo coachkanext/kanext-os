@@ -484,6 +484,7 @@ function RoomPage({ colors, mode }: { colors: typeof Colors.light; mode: Mode })
 }
 
 function LibraryPage({ mode }: { mode: Mode }) {
+  if (mode === 'sports') return <LibraryHub />;
   if (EMPTY_MODES.has(mode)) {
     return <EmptyState icon="books.vertical.fill" title="No Library Items" description="Saved content will appear here." />;
   }
