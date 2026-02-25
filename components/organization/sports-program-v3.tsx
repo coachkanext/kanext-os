@@ -1,94 +1,50 @@
 /**
- * Sports Program V3 — 3-pill ViewBar (Identity | Teams | Operations)
- * Carroll Men's Basketball · NAIA Frontier Conference
- * Head Coach / GM perspective. Inline mock data, no DrillMode.
+ * Sports Program V3 — A2 (Assistant Coach) Single-Scroll Page
+ * 8 blocks: Header, Team Rating, Team System, Recruiting Constraints,
+ *           Availability, Schedule, Coach Ops, Data Coverage
+ *
+ * Interactive: Coach Ops drill into domain pages, events open Event Sheet,
+ * Next Game taps into Game Plan, players open Player Sheet.
  */
 import React, { useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { PROGRAM_IDENTITY } from '@/data/mock-sports-org-program-v2';
+import { KaNeXT_NEXT_GAME, KaNeXT_SEASON_COMPLETE } from '@/data/fmu';
+import { getKRColor } from '@/utils/kr-display';
+import { openPlayerCard, openEventSheet } from '@/utils/global-entity-sheets';
+import { StatisticsPage } from '@/components/stats/statistics-page';
+import { GamePlanPage } from '@/components/game-plan/game-plan-page';
+import { SimulationPage } from '@/components/simulation/simulation-page';
+import { DevelopmentPage } from '@/components/development/development-page';
+import {
+  TEAM_RATING,
+  TEAM_SYSTEM,
+  RECRUITING_CONSTRAINTS,
+  AVAILABILITY,
+  UPCOMING_EVENTS,
+  COACH_OPS_SHORTCUTS,
+  DATA_COVERAGE,
+  AVAILABILITY_STATUS_COLORS,
+  EVENT_TYPE_ICONS,
+} from '@/data/mock-program-page';
+import type { RotationPlayer, UpcomingEvent } from '@/data/mock-program-page';
 
 // =============================================================================
-// TYPES & MOCK DATA
+// TYPES
 // =============================================================================
 
+type DrillTarget = 'stats' | 'game-plan' | 'simulation' | 'development' | null;
 
-const ACCENT = MODE_ACCENT.sports;
-type ViewId = 'identity' | 'teams' | 'operations';
-
-const VIEWS: { id: ViewId; label: string }[] = [
-  { id: 'identity', label: 'Identity' },
-  { id: 'teams', label: 'Teams' },
-  { id: 'operations', label: 'Operations' },
-];
-
-const SYSTEM_IDENTITY = {
-  offense: { label: 'Motion Spread', code: 'OSIE-03' },
-  defense: { label: 'Pack Line', code: 'DSIE-07' },
-};
-
-const TEAMS = [
-  {
-    id: 't1',
-    name: 'Varsity',
-    coach: 'Coach Dan Pearson',
-    players: 18,
-    record: '12-8',
-    icon: 'sportscourt.fill' as const,
-  },
-  {
-    id: 't2',
-    name: 'Development Team 1',
-    coach: 'Coach Darius Hill',
-    players: 14,
-    record: '8-4',
-    icon: 'sportscourt' as const,
-  },
-  {
-    id: 't3',
-    name: 'Development Team 2',
-    coach: 'Coach Terrence Williams',
-    players: 12,
-    record: '6-6',
-    icon: 'sportscourt' as const,
-  },
-];
-
-type TaskStatus = 'due_tomorrow' | 'overdue' | 'in_progress' | 'upcoming';
-
-const TASKS: { id: string; title: string; status: TaskStatus; detail: string }[] = [
-  { id: 'op1', title: 'Update travel roster for Jan 25 game', status: 'due_tomorrow', detail: 'Due tomorrow' },
-  { id: 'op2', title: 'Order replacement jerseys — Home set', status: 'upcoming', detail: 'Due Jan 20' },
-  { id: 'op3', title: 'Submit compliance report Q2', status: 'overdue', detail: 'Overdue' },
-  { id: 'op4', title: 'Schedule recruiting calls — Jan batch', status: 'in_progress', detail: 'In progress' },
-  { id: 'op5', title: 'Arrange hotel for Savannah road trip', status: 'upcoming', detail: 'Due Jan 22' },
-];
-
-const APPROVALS = [
-  { id: 'ap1', title: 'Equipment purchase', amount: '$1,200' },
-  { id: 'ap2', title: 'Road trip meal budget', amount: '$800' },
-  { id: 'ap3', title: 'Transfer release request — James Cole', amount: '' },
-];
-
-const TRIPS = [
-  { id: 'tr1', destination: '@ Savannah', date: 'Jan 25', transport: 'Bus', hotel: 'Holiday Inn' },
-  { id: 'tr2', destination: '@ Tampa', date: 'Feb 1', transport: 'Bus', hotel: 'Marriott' },
-];
-
-const TASK_STATUS_COLOR: Record<TaskStatus, string> = {
-  due_tomorrow: '#F59E0B',
-  overdue: '#EF4444',
-  in_progress: ACCENT,
-  upcoming: '#22C55E',
-};
-
-const TASK_STATUS_LABEL: Record<TaskStatus, string> = {
-  due_tomorrow: 'DUE TOMORROW',
-  overdue: 'OVERDUE',
-  in_progress: 'IN PROGRESS',
-  upcoming: 'UPCOMING',
+/** Maps Coach Ops shortcut labels → drill-down targets */
+const OPS_DRILL_MAP: Record<string, DrillTarget> = {
+  Statistics: 'stats',
+  'Game Plan': 'game-plan',
+  Simulation: 'simulation',
+  Development: 'development',
 };
 
 // =============================================================================
@@ -105,204 +61,465 @@ interface Props {
 // HELPERS
 // =============================================================================
 
-function StatusBadge({ label, color }: { label: string; color: string }) {
+function SectionHeader({ label, colors }: { label: string; colors: typeof Colors.light }) {
   return (
-    <View style={[s.badge, { backgroundColor: color + '20' }]}>
-      <ThemedText style={[s.badgeText, { color }]}>{label}</ThemedText>
+    <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>
+      {label}
+    </ThemedText>
+  );
+}
+
+function Card({ colors, children, style }: { colors: typeof Colors.light; children: React.ReactNode; style?: object }) {
+  return (
+    <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }, style]}>
+      {children}
+    </View>
+  );
+}
+
+function ProgressBar({ value, max, color, colors }: { value: number; max: number; color: string; colors: typeof Colors.light }) {
+  const pct = Math.min((value / max) * 100, 100);
+  return (
+    <View style={[s.progressTrack, { backgroundColor: colors.border }]}>
+      <View style={[s.progressFill, { width: `${pct}%`, backgroundColor: color }]} />
     </View>
   );
 }
 
 // =============================================================================
-// VIEW: IDENTITY
+// BLOCK 0 — HEADER
 // =============================================================================
 
-function IdentityView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+function HeaderBlock({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Program Info */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>PROGRAM</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <ThemedText style={[s.cardTitle, { color: colors.text }]}>KaNeXT Men's Basketball</ThemedText>
-        <ThemedText style={[s.cardSub, { color: colors.textSecondary }]}>
-          Carroll College
+    <View style={s.headerBlock}>
+      <ThemedText style={[s.headerTitle, { color: colors.text }]}>
+        {PROGRAM_IDENTITY.programName}
+      </ThemedText>
+      <ThemedText style={[s.headerSub, { color: colors.textSecondary }]}>
+        {PROGRAM_IDENTITY.orgName} · {PROGRAM_IDENTITY.level} · {PROGRAM_IDENTITY.conference}
+      </ThemedText>
+      <View style={[s.seasonChip, { backgroundColor: accentColor + '20' }]}>
+        <ThemedText style={[s.seasonChipText, { color: accentColor }]}>
+          {PROGRAM_IDENTITY.season}
         </ThemedText>
       </View>
+    </View>
+  );
+}
 
-      {/* Colors */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>PROGRAM COLORS</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={s.colorRow}>
-          <View style={[s.colorSwatch, { backgroundColor: ACCENT }]} />
-          <View style={s.colorInfo}>
-            <ThemedText style={[s.colorName, { color: colors.text }]}>Carroll Purple</ThemedText>
-            <ThemedText style={[s.colorHex, { color: colors.textSecondary }]}>{ACCENT}</ThemedText>
+// =============================================================================
+// BLOCK 1 — TEAM RATING
+// =============================================================================
+
+function TeamRatingBlock({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+  const krColor = getKRColor(TEAM_RATING.teamKR);
+  const rankings = [
+    { label: 'Conference', rank: TEAM_RATING.rankings.conference.rank, total: TEAM_RATING.rankings.conference.total },
+    { label: 'Division', rank: TEAM_RATING.rankings.division.rank, total: TEAM_RATING.rankings.division.total },
+    { label: 'Universal', rank: TEAM_RATING.rankings.universal.rank, total: TEAM_RATING.rankings.universal.total },
+  ];
+
+  return (
+    <>
+      <SectionHeader label="TEAM RATING" colors={colors} />
+      <Card colors={colors}>
+        {/* 3-column KR display */}
+        <View style={s.krRow}>
+          <View style={s.krMain}>
+            <ThemedText style={[s.krValue, { color: krColor }]}>
+              {TEAM_RATING.teamKR}
+            </ThemedText>
+            <ThemedText style={[s.krLabel, { color: colors.textSecondary }]}>Team KR</ThemedText>
+          </View>
+          <View style={s.krSub}>
+            <ThemedText style={[s.krSubValue, { color: getKRColor(TEAM_RATING.offKR) }]}>
+              {TEAM_RATING.offKR}
+            </ThemedText>
+            <ThemedText style={[s.krSubLabel, { color: colors.textSecondary }]}>Off</ThemedText>
+          </View>
+          <View style={s.krSub}>
+            <ThemedText style={[s.krSubValue, { color: getKRColor(TEAM_RATING.defKR) }]}>
+              {TEAM_RATING.defKR}
+            </ThemedText>
+            <ThemedText style={[s.krSubLabel, { color: colors.textSecondary }]}>Def</ThemedText>
           </View>
         </View>
-        <View style={[s.colorRow, { marginTop: 10 }]}>
-          <View style={[s.colorSwatch, { backgroundColor: '#F59E0B' }]} />
-          <View style={s.colorInfo}>
-            <ThemedText style={[s.colorName, { color: colors.text }]}>Gold</ThemedText>
-            <ThemedText style={[s.colorHex, { color: colors.textSecondary }]}>#F59E0B</ThemedText>
+
+        {/* Fit & Confidence mini bars */}
+        <View style={s.miniBarsRow}>
+          <View style={s.miniBarCol}>
+            <View style={s.miniBarHeader}>
+              <ThemedText style={[s.miniBarLabel, { color: colors.textSecondary }]}>Fit</ThemedText>
+              <ThemedText style={[s.miniBarPct, { color: colors.text }]}>{TEAM_RATING.fitPct}%</ThemedText>
+            </View>
+            <ProgressBar value={TEAM_RATING.fitPct} max={100} color="#22C55E" colors={colors} />
+          </View>
+          <View style={s.miniBarCol}>
+            <View style={s.miniBarHeader}>
+              <ThemedText style={[s.miniBarLabel, { color: colors.textSecondary }]}>Confidence</ThemedText>
+              <ThemedText style={[s.miniBarPct, { color: colors.text }]}>{TEAM_RATING.confidencePct}%</ThemedText>
+            </View>
+            <ProgressBar value={TEAM_RATING.confidencePct} max={100} color={accentColor} colors={colors} />
           </View>
         </View>
-      </View>
 
-      {/* Mission */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>MISSION</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <ThemedText style={[s.missionText, { color: colors.text }]}>
-          "Building champions on and off the court through discipline, faith, and excellence."
-        </ThemedText>
-      </View>
-
-      {/* Conference & Governing Body */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>AFFILIATION</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={s.detailRow}>
-          <ThemedText style={[s.detailLabel, { color: colors.textSecondary }]}>Conference</ThemedText>
-          <ThemedText style={[s.detailValue, { color: colors.text }]}>NAIA · Frontier Conference</ThemedText>
+        {/* Where We Rank */}
+        <View style={[s.rankSection, { borderTopColor: colors.border }]}>
+          <ThemedText style={[s.rankTitle, { color: colors.textSecondary }]}>WHERE WE RANK</ThemedText>
+          {rankings.map((r) => (
+            <Pressable
+              key={r.label}
+              style={({ pressed }) => [s.rankRow, pressed && { opacity: 0.7 }]}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <ThemedText style={[s.rankLabel, { color: colors.text }]}>{r.label}</ThemedText>
+              <View style={s.rankRight}>
+                <ThemedText style={[s.rankValue, { color: accentColor }]}>
+                  #{r.rank}
+                </ThemedText>
+                <ThemedText style={[s.rankTotal, { color: colors.textSecondary }]}>
+                  /{r.total}
+                </ThemedText>
+                <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+              </View>
+            </Pressable>
+          ))}
         </View>
-        <View style={[s.detailRow, { borderBottomWidth: 0 }]}>
-          <ThemedText style={[s.detailLabel, { color: colors.textSecondary }]}>Governing Body</ThemedText>
-          <ThemedText style={[s.detailValue, { color: colors.text }]}>NAIA</ThemedText>
-        </View>
-      </View>
+      </Card>
+    </>
+  );
+}
 
-      {/* System Identity */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>SYSTEM IDENTITY</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+// =============================================================================
+// BLOCK 2 — TEAM SYSTEM
+// =============================================================================
+
+function TeamSystemBlock({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+  const statusColor = TEAM_SYSTEM.status === 'PROVISIONAL' ? '#F59E0B' : '#22C55E';
+
+  return (
+    <>
+      <SectionHeader label="TEAM SYSTEM" colors={colors} />
+      <Card colors={colors}>
         <View style={s.systemRow}>
           <IconSymbol name="sportscourt.fill" size={16} color={accentColor} />
           <View style={s.systemInfo}>
             <ThemedText style={[s.systemLabel, { color: colors.textSecondary }]}>Offense</ThemedText>
-            <ThemedText style={[s.systemValue, { color: colors.text }]}>
-              {SYSTEM_IDENTITY.offense.label}
-            </ThemedText>
-            <ThemedText style={[s.systemCode, { color: colors.textTertiary }]}>
-              {SYSTEM_IDENTITY.offense.code}
-            </ThemedText>
+            <ThemedText style={[s.systemValue, { color: colors.text }]}>{TEAM_SYSTEM.offense}</ThemedText>
           </View>
         </View>
         <View style={[s.systemRow, { marginTop: 12 }]}>
           <IconSymbol name="shield.fill" size={16} color={accentColor} />
           <View style={s.systemInfo}>
             <ThemedText style={[s.systemLabel, { color: colors.textSecondary }]}>Defense</ThemedText>
-            <ThemedText style={[s.systemValue, { color: colors.text }]}>
-              {SYSTEM_IDENTITY.defense.label}
-            </ThemedText>
-            <ThemedText style={[s.systemCode, { color: colors.textTertiary }]}>
-              {SYSTEM_IDENTITY.defense.code}
-            </ThemedText>
+            <ThemedText style={[s.systemValue, { color: colors.text }]}>{TEAM_SYSTEM.defense}</ThemedText>
           </View>
         </View>
-      </View>
-    </ScrollView>
+
+        <View style={[s.systemMeta, { borderTopColor: colors.border }]}>
+          <View style={s.tempoRow}>
+            <IconSymbol name="gauge.medium" size={14} color={colors.textSecondary} />
+            <ThemedText style={[s.tempoText, { color: colors.text }]}>{TEAM_SYSTEM.tempo}</ThemedText>
+          </View>
+          <View style={[s.statusChip, { backgroundColor: statusColor + '20' }]}>
+            <ThemedText style={[s.statusChipText, { color: statusColor }]}>{TEAM_SYSTEM.status}</ThemedText>
+          </View>
+        </View>
+
+        <ThemedText style={[s.helperText, { color: colors.textTertiary }]}>
+          Ask Nexus to suggest system changes
+        </ThemedText>
+      </Card>
+    </>
   );
 }
 
 // =============================================================================
-// VIEW: TEAMS
+// BLOCK 3 — RECRUITING CONSTRAINTS
 // =============================================================================
 
-function TeamsView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+function RecruitingConstraintsBlock({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+  const rc = RECRUITING_CONSTRAINTS;
+  const nilRemaining = rc.nilBudget - rc.nilSpent;
+  const scholarshipPct = rc.scholarshipsUsed / rc.scholarshipsTotal;
+  const scholarshipColor = scholarshipPct >= 0.9 ? '#F59E0B' : '#22C55E';
+
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>TEAMS</ThemedText>
-      {TEAMS.map((team) => (
-        <Pressable
-          key={team.id}
-          style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}
-          onPress={() => Haptics.selectionAsync()}
-        >
-          <View style={s.teamHeader}>
-            <IconSymbol name={team.icon} size={20} color={accentColor} />
-            <ThemedText style={[s.teamName, { color: colors.text }]}>{team.name}</ThemedText>
-            <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
-          </View>
-          <View style={[s.teamMeta, { borderTopColor: colors.border }]}>
-            <View style={s.teamMetaItem}>
-              <IconSymbol name="person.fill" size={12} color={colors.textTertiary} />
-              <ThemedText style={[s.teamMetaText, { color: colors.textSecondary }]}>{team.coach}</ThemedText>
-            </View>
-            <View style={s.teamMetaItem}>
-              <IconSymbol name="person.3.fill" size={12} color={colors.textTertiary} />
-              <ThemedText style={[s.teamMetaText, { color: colors.textSecondary }]}>{team.players} players</ThemedText>
-            </View>
-            <View style={s.teamMetaItem}>
-              <IconSymbol name="chart.bar.fill" size={12} color={colors.textTertiary} />
-              <ThemedText style={[s.teamMetaText, { color: colors.textSecondary }]}>{team.record}</ThemedText>
-            </View>
-          </View>
-        </Pressable>
-      ))}
-    </ScrollView>
-  );
-}
-
-// =============================================================================
-// VIEW: OPERATIONS
-// =============================================================================
-
-function OperationsView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
-  return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Tasks */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>TASKS</ThemedText>
-      {TASKS.map((task) => (
-        <View
-          key={task.id}
-          style={[s.listRow, { borderBottomColor: colors.border }]}
-        >
-          <View style={s.listRowContent}>
-            <ThemedText style={[s.listRowTitle, { color: colors.text }]}>{task.title}</ThemedText>
-            <StatusBadge label={TASK_STATUS_LABEL[task.status]} color={TASK_STATUS_COLOR[task.status]} />
-          </View>
-        </View>
-      ))}
-
-      {/* Approvals */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary, marginTop: 20 }]}>
-        APPROVALS PENDING
-      </ThemedText>
-      {APPROVALS.map((item) => (
-        <View
-          key={item.id}
-          style={[s.listRow, { borderBottomColor: colors.border }]}
-        >
-          <View style={s.listRowContent}>
-            <ThemedText style={[s.listRowTitle, { color: colors.text }]} numberOfLines={1}>
-              {item.title}
+    <>
+      <SectionHeader label="RECRUITING CONSTRAINTS" colors={colors} />
+      <Card colors={colors}>
+        {/* Scholarships */}
+        <View style={s.constraintRow}>
+          <View style={s.constraintHeader}>
+            <ThemedText style={[s.constraintLabel, { color: colors.text }]}>Scholarships</ThemedText>
+            <ThemedText style={[s.constraintValue, { color: colors.textSecondary }]}>
+              {rc.scholarshipsUsed}/{rc.scholarshipsTotal}
             </ThemedText>
-            {item.amount ? (
-              <ThemedText style={[s.amountText, { color: accentColor }]}>{item.amount}</ThemedText>
-            ) : (
-              <StatusBadge label="PENDING" color="#F59E0B" />
-            )}
           </View>
+          <ProgressBar value={rc.scholarshipsUsed} max={rc.scholarshipsTotal} color={scholarshipColor} colors={colors} />
         </View>
-      ))}
 
-      {/* Upcoming Trips */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary, marginTop: 20 }]}>
-        UPCOMING TRIPS
-      </ThemedText>
-      {TRIPS.map((trip) => (
-        <View
-          key={trip.id}
-          style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}
-        >
-          <View style={s.tripHeader}>
-            <IconSymbol name="airplane" size={16} color={accentColor} />
-            <ThemedText style={[s.tripDest, { color: colors.text }]}>{trip.destination}</ThemedText>
-            <ThemedText style={[s.tripDate, { color: colors.textSecondary }]}>{trip.date}</ThemedText>
+        {/* NIL Budget */}
+        <View style={[s.constraintRow, { marginTop: 14 }]}>
+          <View style={s.constraintHeader}>
+            <ThemedText style={[s.constraintLabel, { color: colors.text }]}>NIL Budget</ThemedText>
+            <ThemedText style={[s.constraintValue, { color: colors.textSecondary }]}>
+              ${(rc.nilSpent / 1000).toFixed(1)}K / ${(rc.nilBudget / 1000).toFixed(0)}K
+            </ThemedText>
           </View>
-          <ThemedText style={[s.tripDetail, { color: colors.textSecondary }]}>
-            {trip.transport} · {trip.hotel}
+          <ProgressBar value={rc.nilSpent} max={rc.nilBudget} color={accentColor} colors={colors} />
+          <ThemedText style={[s.remainingText, { color: colors.textTertiary }]}>
+            ${(nilRemaining / 1000).toFixed(1)}K remaining
           </ThemedText>
         </View>
-      ))}
-    </ScrollView>
+      </Card>
+    </>
+  );
+}
+
+// =============================================================================
+// BLOCK 4 — AVAILABILITY
+// =============================================================================
+
+function AvailabilityBlock({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+  const counts = [
+    { label: 'Available', value: AVAILABILITY.available, color: '#22C55E' },
+    { label: 'Injured', value: AVAILABILITY.injured, color: '#EF4444' },
+    { label: 'Out', value: AVAILABILITY.out, color: '#F59E0B' },
+    { label: 'Redshirt', value: AVAILABILITY.redshirt, color: '#A1A1AA' },
+  ];
+
+  const handlePlayerTap = (player: RotationPlayer) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    openPlayerCard({
+      name: player.name,
+      number: player.number,
+      position: player.position,
+      height: '',
+      weight: 0,
+      classYear: '',
+      kr: player.kr,
+      teamColor: accentColor,
+    });
+  };
+
+  return (
+    <>
+      <SectionHeader label="AVAILABILITY" colors={colors} />
+      <Card colors={colors}>
+        {/* Count row */}
+        <View style={s.countRow}>
+          {counts.map((c) => (
+            <View key={c.label} style={s.countItem}>
+              <ThemedText style={[s.countValue, { color: c.color }]}>{c.value}</ThemedText>
+              <ThemedText style={[s.countLabel, { color: colors.textSecondary }]}>{c.label}</ThemedText>
+            </View>
+          ))}
+        </View>
+
+        {/* Rotation list */}
+        <View style={[s.rotationSection, { borderTopColor: colors.border }]}>
+          <ThemedText style={[s.rotationTitle, { color: colors.textSecondary }]}>ROTATION</ThemedText>
+          {AVAILABILITY.rotation.map((player) => (
+            <Pressable
+              key={player.id}
+              style={({ pressed }) => [s.playerRow, pressed && { opacity: 0.7 }]}
+              onPress={() => handlePlayerTap(player)}
+            >
+              <ThemedText style={[s.playerNumber, { color: colors.textTertiary }]}>
+                #{player.number}
+              </ThemedText>
+              <ThemedText style={[s.playerName, { color: colors.text }]} numberOfLines={1}>
+                {player.name}
+              </ThemedText>
+              <ThemedText style={[s.playerPos, { color: colors.textSecondary }]}>
+                {player.position}
+              </ThemedText>
+              <ThemedText style={[s.playerKR, { color: getKRColor(player.kr) }]}>
+                {player.kr}
+              </ThemedText>
+              <View
+                style={[
+                  s.statusDot,
+                  { backgroundColor: AVAILABILITY_STATUS_COLORS[player.status] },
+                ]}
+              />
+            </Pressable>
+          ))}
+        </View>
+      </Card>
+    </>
+  );
+}
+
+// =============================================================================
+// BLOCK 5 — SCHEDULE
+// =============================================================================
+
+function ScheduleBlock({ colors, accentColor, onDrill }: { colors: typeof Colors.light; accentColor: string; onDrill: (t: DrillTarget) => void }) {
+  const handleEventTap = (event: UpcomingEvent) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    openEventSheet({
+      title: event.title,
+      time: event.time,
+      type: event.type === 'game' ? 'game' : event.type === 'practice' ? 'practice' : 'other',
+    });
+  };
+
+  const handleNextGameTap = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onDrill('game-plan');
+  };
+
+  return (
+    <>
+      <SectionHeader label="SCHEDULE" colors={colors} />
+      {/* Next Game */}
+      {KaNeXT_SEASON_COMPLETE ? (
+        <Card colors={colors}>
+          <View style={s.nextGameRow}>
+            <IconSymbol name="trophy.fill" size={18} color={accentColor} />
+            <ThemedText style={[s.nextGameTitle, { color: colors.text }]}>Season Complete</ThemedText>
+          </View>
+        </Card>
+      ) : KaNeXT_NEXT_GAME ? (
+        <Pressable
+          onPress={handleNextGameTap}
+          style={({ pressed }) => pressed && { opacity: 0.7 }}
+        >
+          <Card colors={colors}>
+            <ThemedText style={[s.nextGameLabel, { color: colors.textSecondary }]}>NEXT GAME</ThemedText>
+            <View style={s.nextGameRow}>
+              <IconSymbol name="sportscourt.fill" size={18} color={accentColor} />
+              <View style={s.nextGameInfo}>
+                <ThemedText style={[s.nextGameTitle, { color: colors.text }]}>
+                  vs. {KaNeXT_NEXT_GAME.opponent}
+                </ThemedText>
+                <ThemedText style={[s.nextGameDetail, { color: colors.textSecondary }]}>
+                  {KaNeXT_NEXT_GAME.date} · {KaNeXT_NEXT_GAME.location}
+                </ThemedText>
+              </View>
+              <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
+            </View>
+          </Card>
+        </Pressable>
+      ) : null}
+
+      {/* Upcoming Events */}
+      <Card colors={colors} style={{ marginTop: 0 }}>
+        <ThemedText style={[s.upcomingLabel, { color: colors.textSecondary }]}>UPCOMING</ThemedText>
+        {UPCOMING_EVENTS.map((event, idx) => (
+          <Pressable
+            key={event.id}
+            onPress={() => handleEventTap(event)}
+            style={({ pressed }) => [
+              s.eventRow,
+              idx < UPCOMING_EVENTS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+              pressed && { opacity: 0.7 },
+            ]}
+          >
+            <IconSymbol
+              name={EVENT_TYPE_ICONS[event.type] as any}
+              size={14}
+              color={colors.textTertiary}
+            />
+            <View style={s.eventInfo}>
+              <ThemedText style={[s.eventTitle, { color: colors.text }]} numberOfLines={1}>
+                {event.title}
+              </ThemedText>
+              <ThemedText style={[s.eventTime, { color: colors.textSecondary }]}>
+                {event.time}
+              </ThemedText>
+            </View>
+            <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+          </Pressable>
+        ))}
+      </Card>
+    </>
+  );
+}
+
+// =============================================================================
+// BLOCK 6 — COACH OPS
+// =============================================================================
+
+function CoachOpsBlock({ colors, accentColor, onDrill }: { colors: typeof Colors.light; accentColor: string; onDrill: (t: DrillTarget) => void }) {
+  const handlePress = (label: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const target = OPS_DRILL_MAP[label];
+    if (target) onDrill(target);
+  };
+
+  return (
+    <>
+      <SectionHeader label="COACH OPS" colors={colors} />
+      <View style={s.opsGrid}>
+        {COACH_OPS_SHORTCUTS.map((shortcut) => {
+          const hasDrill = !!OPS_DRILL_MAP[shortcut.label];
+          return (
+            <Pressable
+              key={shortcut.id}
+              style={({ pressed }) => [
+                s.opsButton,
+                { backgroundColor: colors.card, borderColor: colors.border },
+                pressed && { opacity: 0.7 },
+              ]}
+              onPress={() => handlePress(shortcut.label)}
+            >
+              <IconSymbol name={shortcut.icon as any} size={22} color={accentColor} />
+              <ThemedText style={[s.opsLabel, { color: colors.text }]}>{shortcut.label}</ThemedText>
+              {hasDrill && (
+                <IconSymbol name="chevron.right" size={10} color={colors.textTertiary} />
+              )}
+            </Pressable>
+          );
+        })}
+      </View>
+    </>
+  );
+}
+
+// =============================================================================
+// BLOCK 7 — DATA COVERAGE
+// =============================================================================
+
+function DataCoverageBlock({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+  return (
+    <>
+      <SectionHeader label="DATA COVERAGE" colors={colors} />
+      <Card colors={colors}>
+        {/* Tier badge */}
+        <View style={s.tierRow}>
+          <View style={[s.tierBadge, { backgroundColor: accentColor + '20' }]}>
+            <ThemedText style={[s.tierBadgeText, { color: accentColor }]}>
+              {DATA_COVERAGE.tier}
+            </ThemedText>
+          </View>
+          <ThemedText style={[s.tierHelp, { color: colors.textTertiary }]}>Coverage Tier</ThemedText>
+        </View>
+
+        {/* Timestamps */}
+        {DATA_COVERAGE.timestamps.map((ts) => (
+          <View key={ts.label} style={s.tsRow}>
+            <ThemedText style={[s.tsLabel, { color: colors.textSecondary }]}>{ts.label}</ThemedText>
+            <ThemedText style={[s.tsDate, { color: colors.text }]}>{ts.date}</ThemedText>
+          </View>
+        ))}
+
+        {/* Missing data notes */}
+        {DATA_COVERAGE.missingNotes.length > 0 && (
+          <View style={[s.missingSection, { borderTopColor: colors.border }]}>
+            {DATA_COVERAGE.missingNotes.map((note, idx) => (
+              <View key={idx} style={s.missingRow}>
+                <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#F59E0B" />
+                <ThemedText style={[s.missingText, { color: '#F59E0B' }]}>{note}</ThemedText>
+              </View>
+            ))}
+          </View>
+        )}
+      </Card>
+    </>
   );
 }
 
@@ -311,55 +528,46 @@ function OperationsView({ colors, accentColor }: { colors: typeof Colors.light; 
 // =============================================================================
 
 export function SportsProgram({ colors, accentColor, role }: Props) {
-  const [activeView, setActiveView] = useState<ViewId>('identity');
+  const [drillDown, setDrillDown] = useState<DrillTarget>(null);
 
-  const handlePillPress = useCallback((id: ViewId) => {
-    Haptics.selectionAsync();
-    setActiveView(id);
+  const handleDrill = useCallback((target: DrillTarget) => {
+    setDrillDown(target);
   }, []);
 
-  const renderContent = () => {
-    switch (activeView) {
-      case 'identity':
-        return <IdentityView colors={colors} accentColor={accentColor} />;
-      case 'teams':
-        return <TeamsView colors={colors} accentColor={accentColor} />;
-      case 'operations':
-        return <OperationsView colors={colors} accentColor={accentColor} />;
+  const handleBack = useCallback(() => {
+    setDrillDown(null);
+  }, []);
+
+  // ── Drill-down: render full-screen domain page ──
+  if (drillDown) {
+    switch (drillDown) {
+      case 'stats':
+        return <StatisticsPage onBack={handleBack} />;
+      case 'game-plan':
+        return <GamePlanPage onBack={handleBack} />;
+      case 'simulation':
+        return <SimulationPage onBack={handleBack} />;
+      case 'development':
+        return <DevelopmentPage onBack={handleBack} />;
     }
-  };
+  }
 
+  // ── Default: 8-block scroll ──
   return (
-    <View style={s.container}>
-      {/* ViewBar */}
-      <View style={s.viewBar}>
-        {VIEWS.map((v) => {
-          const isActive = v.id === activeView;
-          return (
-            <Pressable
-              key={v.id}
-              style={[
-                s.pill,
-                { backgroundColor: isActive ? accentColor : '#2F3336' },
-              ]}
-              onPress={() => handlePillPress(v.id)}
-            >
-              <ThemedText
-                style={[
-                  s.pillText,
-                  { color: isActive ? '#000' : colors.textSecondary },
-                ]}
-              >
-                {v.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </View>
-
-      {/* Content */}
-      {renderContent()}
-    </View>
+    <ScrollView
+      style={s.container}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={s.scroll}
+    >
+      <HeaderBlock colors={colors} accentColor={accentColor} />
+      <TeamRatingBlock colors={colors} accentColor={accentColor} />
+      <TeamSystemBlock colors={colors} accentColor={accentColor} />
+      <RecruitingConstraintsBlock colors={colors} accentColor={accentColor} />
+      <AvailabilityBlock colors={colors} accentColor={accentColor} />
+      <ScheduleBlock colors={colors} accentColor={accentColor} onDrill={handleDrill} />
+      <CoachOpsBlock colors={colors} accentColor={accentColor} onDrill={handleDrill} />
+      <DataCoverageBlock colors={colors} accentColor={accentColor} />
+    </ScrollView>
   );
 }
 
@@ -368,116 +576,169 @@ export function SportsProgram({ colors, accentColor, role }: Props) {
 // =============================================================================
 
 const s = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
+  scroll: { padding: Spacing.md, paddingBottom: 120 },
 
-  // -- ViewBar --
-  viewBar: {
-    flexDirection: 'row',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    gap: Spacing.sm,
-  },
-  pill: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: BorderRadius.full,
-  },
-  pillText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-
-  // -- Scroll --
-  scroll: {
-    padding: Spacing.md,
-    paddingBottom: 120,
-  },
-
-  // -- Section Header --
+  // ── Section Header ──
   sectionHeader: {
     fontSize: 12,
     fontWeight: '600',
     letterSpacing: 0.5,
     marginBottom: 8,
+    marginTop: 20,
     textTransform: 'uppercase',
   },
 
-  // -- Card --
+  // ── Card ──
   card: {
-    backgroundColor: '#0B0F14',
-    borderColor: '#2F3336',
     borderWidth: 1,
-    borderRadius: 12,
+    borderRadius: BorderRadius.lg,
     padding: 14,
     marginBottom: 12,
   },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    marginBottom: 4,
+
+  // ── Block 0 — Header ──
+  headerBlock: {
+    paddingBottom: 4,
   },
-  cardSub: {
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    lineHeight: 26,
+  },
+  headerSub: {
     fontSize: 13,
+    marginTop: 4,
+    lineHeight: 18,
+  },
+  seasonChip: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.full,
+    marginTop: 8,
+  },
+  seasonChipText: {
+    fontSize: 12,
+    fontWeight: '700',
   },
 
-  // -- Colors --
-  colorRow: {
+  // ── Block 1 — Team Rating ──
+  krRow: {
     flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 16,
+    marginBottom: 16,
+  },
+  krMain: {
     alignItems: 'center',
-    gap: 12,
-  },
-  colorSwatch: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-  },
-  colorInfo: {
     flex: 1,
   },
-  colorName: {
-    fontSize: 14,
+  krValue: {
+    fontSize: 44,
+    fontWeight: '800',
+    fontVariant: ['tabular-nums'],
+    lineHeight: 48,
+  },
+  krLabel: {
+    fontSize: 11,
     fontWeight: '600',
-  },
-  colorHex: {
-    fontSize: 12,
     marginTop: 2,
+    textTransform: 'uppercase',
+  },
+  krSub: {
+    alignItems: 'center',
+    flex: 0.6,
+  },
+  krSubValue: {
+    fontSize: 24,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+  krSubLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    marginTop: 2,
+    textTransform: 'uppercase',
   },
 
-  // -- Mission --
-  missionText: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontStyle: 'italic',
+  // Mini bars (Fit / Confidence)
+  miniBarsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 14,
   },
-
-  // -- Detail rows --
-  detailRow: {
+  miniBarCol: { flex: 1 },
+  miniBarHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#2F3336',
+    marginBottom: 4,
   },
-  detailLabel: {
-    fontSize: 13,
-  },
-  detailValue: {
-    fontSize: 13,
+  miniBarLabel: {
+    fontSize: 11,
     fontWeight: '600',
+    textTransform: 'uppercase',
+  },
+  miniBarPct: {
+    fontSize: 12,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+  progressTrack: {
+    height: 6,
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 3,
   },
 
-  // -- System Identity --
+  // Rankings
+  rankSection: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    paddingTop: 12,
+  },
+  rankTitle: {
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
+    marginBottom: 8,
+  },
+  rankRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 6,
+  },
+  rankLabel: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  rankRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+  },
+  rankValue: {
+    fontSize: 14,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+  rankTotal: {
+    fontSize: 12,
+    fontVariant: ['tabular-nums'],
+  },
+
+  // ── Block 2 — Team System ──
   systemRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: 12,
   },
-  systemInfo: {
-    flex: 1,
-  },
+  systemInfo: { flex: 1 },
   systemLabel: {
     fontSize: 11,
     fontWeight: '600',
@@ -489,90 +750,240 @@ const s = StyleSheet.create({
     fontWeight: '700',
     marginTop: 2,
   },
-  systemCode: {
-    fontSize: 11,
-    marginTop: 2,
+  systemMeta: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    marginTop: 12,
+    paddingTop: 12,
+  },
+  tempoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  tempoText: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  statusChip: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.full,
+  },
+  statusChipText: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+  helperText: {
+    fontSize: 12,
+    marginTop: 10,
+    fontStyle: 'italic',
   },
 
-  // -- Teams --
-  teamHeader: {
+  // ── Block 3 — Recruiting Constraints ──
+  constraintRow: {},
+  constraintHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  constraintLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  constraintValue: {
+    fontSize: 13,
+    fontWeight: '600',
+    fontVariant: ['tabular-nums'],
+  },
+  remainingText: {
+    fontSize: 11,
+    marginTop: 4,
+  },
+
+  // ── Block 4 — Availability ──
+  countRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 12,
+  },
+  countItem: { alignItems: 'center' },
+  countValue: {
+    fontSize: 22,
+    fontWeight: '800',
+    fontVariant: ['tabular-nums'],
+  },
+  countLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    marginTop: 2,
+  },
+  rotationSection: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    paddingTop: 10,
+  },
+  rotationTitle: {
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
+    marginBottom: 8,
+  },
+  playerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 7,
+    gap: 8,
+  },
+  playerNumber: {
+    fontSize: 12,
+    fontWeight: '600',
+    width: 28,
+    fontVariant: ['tabular-nums'],
+  },
+  playerName: {
+    fontSize: 13,
+    fontWeight: '600',
+    flex: 1,
+  },
+  playerPos: {
+    fontSize: 12,
+    fontWeight: '500',
+    width: 28,
+    textAlign: 'center',
+  },
+  playerKR: {
+    fontSize: 13,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+    width: 28,
+    textAlign: 'right',
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+
+  // ── Block 5 — Schedule ──
+  nextGameLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
+    marginBottom: 8,
+  },
+  nextGameRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
   },
-  teamName: {
+  nextGameInfo: { flex: 1 },
+  nextGameTitle: {
     fontSize: 15,
     fontWeight: '700',
-    flex: 1,
   },
-  teamMeta: {
-    marginTop: 10,
-    paddingTop: 10,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    gap: 6,
+  nextGameDetail: {
+    fontSize: 12,
+    marginTop: 2,
   },
-  teamMetaItem: {
+  upcomingLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
+    marginBottom: 8,
+  },
+  eventRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 10,
+    paddingVertical: 8,
+  },
+  eventInfo: { flex: 1 },
+  eventTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  eventTime: {
+    fontSize: 11,
+    marginTop: 2,
+  },
+
+  // ── Block 6 — Coach Ops ──
+  opsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    marginBottom: 12,
+  },
+  opsButton: {
+    width: '31%',
+    aspectRatio: 1.1,
+    borderWidth: 1,
+    borderRadius: BorderRadius.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: 6,
   },
-  teamMetaText: {
-    fontSize: 13,
+  opsLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 
-  // -- List rows --
-  listRow: {
-    paddingVertical: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  listRowContent: {
+  // ── Block 7 — Data Coverage ──
+  tierRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 8,
+    gap: 10,
+    marginBottom: 12,
   },
-  listRowTitle: {
-    fontSize: 13,
-    fontWeight: '500',
-    flex: 1,
-  },
-
-  // -- Badge --
-  badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+  tierBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     borderRadius: BorderRadius.full,
   },
-  badgeText: {
-    fontSize: 9,
+  tierBadgeText: {
+    fontSize: 12,
     fontWeight: '700',
-    letterSpacing: 0.3,
   },
-
-  // -- Amounts --
-  amountText: {
-    fontSize: 13,
-    fontWeight: '700',
+  tierHelp: {
+    fontSize: 11,
+  },
+  tsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  tsLabel: {
+    fontSize: 12,
+  },
+  tsDate: {
+    fontSize: 12,
+    fontWeight: '600',
     fontVariant: ['tabular-nums'],
   },
-
-  // -- Trips --
-  tripHeader: {
+  missingSection: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    marginTop: 10,
+    paddingTop: 10,
+    gap: 6,
+  },
+  missingRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    alignItems: 'flex-start',
+    gap: 6,
   },
-  tripDest: {
-    fontSize: 14,
-    fontWeight: '700',
+  missingText: {
+    fontSize: 12,
     flex: 1,
-  },
-  tripDate: {
-    fontSize: 12,
-  },
-  tripDetail: {
-    fontSize: 12,
-    marginTop: 6,
-    marginLeft: 24,
+    lineHeight: 16,
   },
 });

@@ -156,16 +156,17 @@ function SportsOrganization() {
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
           {ORG_TABS.map((tab) => {
-            const p = { colors, accentColor: accent, role };
-            switch (tab.id) {
-              case 'program': return <View key="program" style={PAGE_STYLE}><SportsProgram {...p} /></View>;
-              case 'people': return <View key="people" style={PAGE_STYLE}><SportsPeople {...p} /></View>;
-              case 'finance': return <View key="finance" style={PAGE_STYLE}><SportsFinance {...p} /></View>;
-              case 'compliance': return <View key="compliance" style={PAGE_STYLE}><SportsCompliance {...p} /></View>;
-              case 'facilities': return <View key="facilities" style={PAGE_STYLE}><SportsFacilities {...p} /></View>;
-              case 'ledger': return <View key="ledger" style={PAGE_STYLE}><SportsLedger {...p} /></View>;
-              default: return <View key={tab.id} style={PAGE_STYLE} />;
+            if (tab.id === 'program') {
+              return <View key="program" style={PAGE_STYLE}><SportsProgram colors={colors} accentColor={accent} role={role} /></View>;
             }
+            return (
+              <View key={tab.id} style={[PAGE_STYLE, { justifyContent: 'center', alignItems: 'center' }]}>
+                <ThemedText style={{ fontSize: 28, fontWeight: '800', lineHeight: 34 }}>Coming Soon</ThemedText>
+                <ThemedText style={{ fontSize: 14, opacity: 0.5, textAlign: 'center', marginTop: 6 }}>
+                  {tab.label} is under development.
+                </ThemedText>
+              </View>
+            );
           })}
         </PagerView>
       </EdgeHoldAdvance>
@@ -388,6 +389,7 @@ export default function OrganizationScreen() {
   const renderModeContent = () => {
     switch (mode) {
       case 'sports':
+        return <SportsOrganization />;
       case 'church':
       case 'business':
         return <EmptyModeShell tabs={ORG_TABS_EMPTY} />;
