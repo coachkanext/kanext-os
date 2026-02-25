@@ -34,6 +34,7 @@ import {
   gamesToCalendarEvents,
   formatEventTime,
   isSameDay,
+  getWeekDates,
 } from '@/data/calendar-utils';
 import type { ProgramCalendarEvent, ProgramCalendarEventType } from '@/types';
 import { KaNeXTCastPage } from '@/components/kanextcast/kanextcast-page';
@@ -358,13 +359,13 @@ export function SchedulePage({ colors: propColors }: SchedulePageProps) {
           onSelectGame={setSelectedGame}
         />
       ) : (
-        /* Team placeholder */
-        <View style={styles.placeholderContainer}>
-          <Text style={[styles.placeholderTitle, { color: colors.text }]}>Coming Soon</Text>
-          <Text style={[styles.placeholderSub, { color: colors.textSecondary }]}>
-            Team tab is under development.
-          </Text>
-        </View>
+        <TeamTab
+          colors={colors}
+          accent={accent}
+          insets={insets}
+          allEvents={allEvents}
+          onSelectEvent={setSelectedEvent}
+        />
       )}
     </View>
   );
@@ -797,6 +798,318 @@ function GameCard({
 }
 
 // =============================================================================
+// TEAM TAB
+// =============================================================================
+
+const TEAM_EVENT_TYPES: ProgramCalendarEventType[] = [
+  'practice', 'lift', 'meeting', 'travel', 'recruiting',
+];
+
+function TeamTab({
+  colors, accent, insets, allEvents, onSelectEvent,
+}: {
+  colors: typeof Colors.light;
+  accent: string;
+  insets: { bottom: number };
+  allEvents: ProgramCalendarEvent[];
+  onSelectEvent: (ev: ProgramCalendarEvent) => void;
+}) {
+  const [expandedDay, setExpandedDay] = useState<string | null>(null);
+  const today = useMemo(() => new Date(), []);
+  const todayStart = useMemo(
+    () => new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+    [today],
+  );
+
+  // Operational (non-game) events only
+  const teamEvents = useMemo(
+    () => allEvents.filter(ev => TEAM_EVENT_TYPES.includes(ev.type)),
+    [allEvents],
+  );
+
+  // Section 1 — Today
+  const todayEvents = useMemo(
+    () => teamEvents
+      .filter(ev => isSameDay(ev.startDatetime, todayStart))
+      .sort((a, b) => a.startDatetime.getTime() - b.startDatetime.getTime()),
+    [teamEvents, todayStart],
+  );
+
+  // Section 2 — This Week (Mon–Sun)
+  const weekDates = useMemo(() => getWeekDates(todayStart), [todayStart]);
+  const weekRows = useMemo(
+    () => weekDates.map(date => ({
+      date,
+      events: teamEvents
+        .filter(ev => isSameDay(ev.startDatetime, date))
+        .sort((a, b) => a.startDatetime.getTime() - b.startDatetime.getTime()),
+    })),
+    [weekDates, teamEvents],
+  );
+
+  // Section 3 — Upcoming Travel
+  const upcomingTravel = useMemo(
+    () => teamEvents
+      .filter(ev => ev.type === 'travel' && ev.startDatetime > todayStart)
+      .sort((a, b) => a.startDatetime.getTime() - b.startDatetime.getTime())
+      .slice(0, 5),
+    [teamEvents, todayStart],
+  );
+
+  // Section 4 — Upcoming Practices
+  const upcomingPractices = useMemo(
+    () => teamEvents
+      .filter(ev => ev.type === 'practice' && ev.startDatetime > todayStart)
+      .sort((a, b) => a.startDatetime.getTime() - b.startDatetime.getTime())
+      .slice(0, 5),
+    [teamEvents, todayStart],
+  );
+
+  // Section 5 — Upcoming Recruiting
+  const upcomingRecruiting = useMemo(
+    () => teamEvents
+      .filter(ev => ev.type === 'recruiting' && ev.startDatetime > todayStart)
+      .sort((a, b) => a.startDatetime.getTime() - b.startDatetime.getTime())
+      .slice(0, 5),
+    [teamEvents, todayStart],
+  );
+
+  return (
+    <ScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* ═══════ Section 1 — Today ═══════ */}
+      <View style={tStyles.sectionHeader}>
+        <Text style={[tStyles.sectionTitle, { color: colors.text }]}>Today</Text>
+      </View>
+      {todayEvents.length === 0 ? (
+        <View style={tStyles.emptySection}>
+          <Text style={[tStyles.emptyText, { color: colors.textTertiary }]}>
+            No team activities scheduled today.
+          </Text>
+        </View>
+      ) : (
+        todayEvents.map(ev => (
+          <Pressable
+            key={ev.id}
+            style={[tStyles.todayCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+            onPress={() => {
+              onSelectEvent(ev);
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            }}
+          >
+            <View style={[tStyles.todayDot, { backgroundColor: EVENT_TYPE_COLORS[ev.type] }]} />
+            <View style={tStyles.todayBody}>
+              <Text style={[tStyles.todayTitle, { color: colors.text }]}>
+                {TYPE_CHIP_LABELS[ev.type]}
+              </Text>
+              <Text style={[tStyles.todaySub, { color: colors.textTertiary }]} numberOfLines={1}>
+                {formatEventTime(ev.startDatetime)} · {ev.location ?? 'TBD'}
+              </Text>
+              {ev.description && (
+                <Text style={[tStyles.todayNote, { color: colors.textSecondary }]} numberOfLines={1}>
+                  {ev.description}
+                </Text>
+              )}
+            </View>
+            <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+          </Pressable>
+        ))
+      )}
+
+      {/* ═══════ Section 2 — This Week ═══════ */}
+      <View style={tStyles.sectionHeader}>
+        <Text style={[tStyles.sectionTitle, { color: colors.text }]}>This Week</Text>
+      </View>
+      {weekRows.map(({ date, events }) => {
+        const dayKey = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+        const isExpanded = expandedDay === dayKey;
+        const isToday = isSameDay(date, todayStart);
+        const visibleChips = events.slice(0, 4);
+        const overflow = events.length - 4;
+
+        return (
+          <View key={dayKey}>
+            <Pressable
+              style={[
+                tStyles.weekRow,
+                {
+                  backgroundColor: isToday ? accent + '08' : 'transparent',
+                  borderBottomColor: colors.border,
+                },
+              ]}
+              onPress={() => {
+                if (events.length > 0) {
+                  setExpandedDay(isExpanded ? null : dayKey);
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                }
+              }}
+            >
+              <View style={tStyles.weekDayCol}>
+                <Text
+                  style={[
+                    tStyles.weekDayName,
+                    { color: isToday ? accent : colors.textSecondary },
+                    isToday && { fontWeight: '800' },
+                  ]}
+                >
+                  {DAY_NAMES[date.getDay()]}
+                </Text>
+                <Text style={[tStyles.weekDayDate, { color: isToday ? accent : colors.textTertiary }]}>
+                  {MONTH_NAMES[date.getMonth()]} {date.getDate()}
+                </Text>
+              </View>
+              <View style={tStyles.weekChips}>
+                {visibleChips.map((ev, idx) => (
+                  <View
+                    key={idx}
+                    style={[tStyles.weekChip, { backgroundColor: EVENT_TYPE_COLORS[ev.type] + '18' }]}
+                  >
+                    <Text style={[tStyles.weekChipText, { color: EVENT_TYPE_COLORS[ev.type] }]}>
+                      {TYPE_CHIP_LABELS[ev.type]}
+                    </Text>
+                  </View>
+                ))}
+                {overflow > 0 && (
+                  <Text style={[tStyles.overflowLabel, { color: colors.textTertiary }]}>
+                    +{overflow} more
+                  </Text>
+                )}
+                {events.length === 0 && (
+                  <Text style={[tStyles.noEvents, { color: colors.textTertiary }]}>—</Text>
+                )}
+              </View>
+              {events.length > 0 && (
+                <IconSymbol
+                  name={isExpanded ? 'chevron.down' : 'chevron.right'}
+                  size={10}
+                  color={colors.textTertiary}
+                />
+              )}
+            </Pressable>
+
+            {/* Expanded inline detail */}
+            {isExpanded && events.length > 0 && (
+              <View style={[tStyles.expandedWrap, { backgroundColor: colors.card }]}>
+                {events.map(ev => (
+                  <Pressable
+                    key={ev.id}
+                    style={[tStyles.expandedRow, { borderBottomColor: colors.border }]}
+                    onPress={() => {
+                      onSelectEvent(ev);
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    }}
+                  >
+                    <View style={[tStyles.expandedDot, { backgroundColor: EVENT_TYPE_COLORS[ev.type] }]} />
+                    <Text style={[tStyles.expandedTime, { color: colors.textSecondary }]}>
+                      {formatEventTime(ev.startDatetime)}
+                    </Text>
+                    <Text style={[tStyles.expandedTitle, { color: colors.text }]} numberOfLines={1}>
+                      {ev.title}
+                    </Text>
+                    <IconSymbol name="chevron.right" size={10} color={colors.textTertiary} />
+                  </Pressable>
+                ))}
+              </View>
+            )}
+          </View>
+        );
+      })}
+
+      {/* ═══════ Section 3 — Travel ═══════ */}
+      {upcomingTravel.length > 0 && (
+        <>
+          <View style={tStyles.sectionHeader}>
+            <Text style={[tStyles.sectionTitle, { color: colors.text }]}>Travel</Text>
+          </View>
+          {upcomingTravel.map(ev => (
+            <Pressable
+              key={ev.id}
+              style={[tStyles.listRow, { backgroundColor: colors.card, borderColor: colors.border }]}
+              onPress={() => {
+                onSelectEvent(ev);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              }}
+            >
+              <IconSymbol name="airplane" size={14} color={EVENT_TYPE_COLORS.travel} />
+              <View style={tStyles.listRowBody}>
+                <Text style={[tStyles.listRowTitle, { color: colors.text }]}>{ev.title}</Text>
+                <Text style={[tStyles.listRowSub, { color: colors.textTertiary }]}>
+                  {formatDayHeader(ev.startDatetime)} · {formatEventTime(ev.startDatetime)}–{formatEventTime(ev.endDatetime)}
+                </Text>
+                {ev.location && (
+                  <Text style={[tStyles.listRowDetail, { color: colors.textSecondary }]}>{ev.location}</Text>
+                )}
+              </View>
+              <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+            </Pressable>
+          ))}
+        </>
+      )}
+
+      {/* ═══════ Section 4 — Practice ═══════ */}
+      {upcomingPractices.length > 0 && (
+        <>
+          <View style={tStyles.sectionHeader}>
+            <Text style={[tStyles.sectionTitle, { color: colors.text }]}>Practice</Text>
+          </View>
+          {upcomingPractices.map(ev => (
+            <Pressable
+              key={ev.id}
+              style={[tStyles.listRow, { backgroundColor: colors.card, borderColor: colors.border }]}
+              onPress={() => {
+                onSelectEvent(ev);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              }}
+            >
+              <View style={tStyles.listRowBody}>
+                <Text style={[tStyles.listRowTitle, { color: colors.text }]}>
+                  {formatDayHeader(ev.startDatetime)}
+                </Text>
+                <Text style={[tStyles.listRowSub, { color: colors.textTertiary }]}>
+                  {formatEventTime(ev.startDatetime)}–{formatEventTime(ev.endDatetime)} · {ev.location ?? 'TBD'}
+                </Text>
+              </View>
+              <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+            </Pressable>
+          ))}
+        </>
+      )}
+
+      {/* ═══════ Section 5 — Recruiting ═══════ */}
+      {upcomingRecruiting.length > 0 && (
+        <>
+          <View style={tStyles.sectionHeader}>
+            <Text style={[tStyles.sectionTitle, { color: colors.text }]}>Recruiting</Text>
+          </View>
+          {upcomingRecruiting.map(ev => (
+            <Pressable
+              key={ev.id}
+              style={[tStyles.listRow, { backgroundColor: colors.card, borderColor: colors.border }]}
+              onPress={() => {
+                onSelectEvent(ev);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              }}
+            >
+              <IconSymbol name="person.badge.plus" size={14} color={EVENT_TYPE_COLORS.recruiting} />
+              <View style={tStyles.listRowBody}>
+                <Text style={[tStyles.listRowTitle, { color: colors.text }]}>{ev.title}</Text>
+                <Text style={[tStyles.listRowSub, { color: colors.textTertiary }]}>
+                  {formatDayHeader(ev.startDatetime)} · {formatEventTime(ev.startDatetime)}
+                </Text>
+              </View>
+              <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+            </Pressable>
+          ))}
+        </>
+      )}
+    </ScrollView>
+  );
+}
+
+// =============================================================================
 // STYLES
 // =============================================================================
 
@@ -1141,4 +1454,106 @@ const gStyles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyText: { fontSize: 13, fontWeight: '500' },
+});
+
+// =============================================================================
+// TEAM TAB STYLES
+// =============================================================================
+
+const tStyles = StyleSheet.create({
+  // ── Section Header ──
+  sectionHeader: {
+    paddingHorizontal: Spacing.md,
+    paddingTop: 18,
+    paddingBottom: 8,
+  },
+  sectionTitle: { fontSize: 15, fontWeight: '800' },
+
+  // ── Empty State ──
+  emptySection: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 20,
+    alignItems: 'center',
+  },
+  emptyText: { fontSize: 13, fontWeight: '500', fontStyle: 'italic' },
+
+  // ── Today Cards ──
+  todayCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: Spacing.md,
+    marginBottom: 6,
+    padding: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 12,
+  },
+  todayDot: { width: 8, height: 8, borderRadius: 4 },
+  todayBody: { flex: 1, minWidth: 0 },
+  todayTitle: { fontSize: 14, fontWeight: '700' },
+  todaySub: { fontSize: 11, marginTop: 2 },
+  todayNote: { fontSize: 11, marginTop: 2 },
+
+  // ── This Week ──
+  weekRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: 10,
+  },
+  weekDayCol: { width: 56 },
+  weekDayName: { fontSize: 11, fontWeight: '700' },
+  weekDayDate: { fontSize: 10, marginTop: 1 },
+  weekChips: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    alignItems: 'center',
+  },
+  weekChip: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.sm,
+  },
+  weekChipText: { fontSize: 10, fontWeight: '700' },
+  overflowLabel: { fontSize: 10, fontWeight: '600' },
+  noEvents: { fontSize: 11 },
+
+  // ── Expanded inline ──
+  expandedWrap: {
+    marginHorizontal: Spacing.md,
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginBottom: 2,
+  },
+  expandedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: 10,
+  },
+  expandedDot: { width: 6, height: 6, borderRadius: 3 },
+  expandedTime: { fontSize: 11, fontWeight: '600', width: 55 },
+  expandedTitle: { fontSize: 13, fontWeight: '600', flex: 1 },
+
+  // ── Shared List Rows (Travel, Practice, Recruiting) ──
+  listRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: Spacing.md,
+    marginBottom: 6,
+    padding: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 12,
+  },
+  listRowBody: { flex: 1, minWidth: 0 },
+  listRowTitle: { fontSize: 13, fontWeight: '700' },
+  listRowSub: { fontSize: 11, marginTop: 2 },
+  listRowDetail: { fontSize: 11, marginTop: 2 },
 });
