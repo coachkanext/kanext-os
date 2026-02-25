@@ -18,6 +18,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import { RosterContent, DepthChartView, DEPTH_CHART_BY_SEASON, CURRENT_SEASON } from '@/components/roster-content';
+import { RosterPage } from '@/components/roster/roster-page';
 import { UnitsView } from '@/components/depth-chart/depth-chart-units';
 import { KRDetailsSheet } from '@/components/kr-details-sheet';
 import { PlayerPoolContent, PlayerPoolContentV2 } from '@/app/coach/recruiting';
@@ -709,9 +710,8 @@ function SportsHome() {
               </View>
 
               {/* Roster */}
-              <View key="roster" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ fontSize: 20, fontWeight: '700', color: '#fff', marginBottom: 8 }}>Coming Soon</Text>
-                <Text style={{ fontSize: 14, color: '#A1A1AA', textAlign: 'center', paddingHorizontal: 40 }}>Roster is under development.</Text>
+              <View key="roster" style={{ flex: 1 }}>
+                <RosterPage colors={colors} />
               </View>
 
               {/* Recruiting */}
