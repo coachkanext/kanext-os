@@ -13,6 +13,10 @@ import {
   FlatList,
   ScrollView,
   Pressable,
+  Share,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { PagedTabBar } from '@/components/ui/paged-tab-bar';
 import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
@@ -41,6 +45,8 @@ import { ModeExplorePageV2 } from '@/components/explore/mode-explore-page-v2';
 import { ModeFilmRoomV2 } from '@/components/film-room/mode-film-room-v2';
 import { LibraryHub } from '@/components/library/library-hub';
 import { EmptyState } from '@/components/ui/empty-state';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { StoryViewer } from '@/components/media/story-viewer';
 
 const EMPTY_MODES = new Set<Mode>(['sports', 'business', 'church', 'education', 'competition']);
 
@@ -94,7 +100,7 @@ function formatViews(views: number): string {
 
 const GRADIENT_COLORS: [string, string, string] = ['#FFFFFF', '#1D9BF0', '#1D9BF0'];
 
-function StoryAvatar({ story, colors }: { story: StoryCircle; colors: typeof Colors.light }) {
+function StoryAvatar({ story, colors, onPress }: { story: StoryCircle; colors: typeof Colors.light; onPress?: () => void }) {
   const ringColors: [string, string, ...string[]] = story.hasNew
     ? (story.ringColor ? [story.ringColor, story.ringColor] : GRADIENT_COLORS)
     : [colors.border, colors.border];
@@ -102,7 +108,10 @@ function StoryAvatar({ story, colors }: { story: StoryCircle; colors: typeof Col
   return (
     <Pressable
       style={styles.storyItem}
-      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+      onPress={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onPress?.();
+      }}
     >
       <LinearGradient
         colors={ringColors}
@@ -126,7 +135,7 @@ function StoryAvatar({ story, colors }: { story: StoryCircle; colors: typeof Col
   );
 }
 
-function StoriesRow({ colors, stories }: { colors: typeof Colors.light; stories: StoryCircle[] }) {
+function StoriesRow({ colors, stories, onStoryPress }: { colors: typeof Colors.light; stories: StoryCircle[]; onStoryPress?: (index: number) => void }) {
   return (
     <View style={[styles.storiesContainer, { borderBottomColor: colors.border }]}>
       <ScrollView
@@ -134,8 +143,8 @@ function StoriesRow({ colors, stories }: { colors: typeof Colors.light; stories:
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.storiesScroll}
       >
-        {stories.map((story) => (
-          <StoryAvatar key={story.id} story={story} colors={colors} />
+        {stories.map((story, index) => (
+          <StoryAvatar key={story.id} story={story} colors={colors} onPress={() => onStoryPress?.(index)} />
         ))}
       </ScrollView>
     </View>
@@ -146,9 +155,30 @@ function StoriesRow({ colors, stories }: { colors: typeof Colors.light; stories:
 // FEED POST (Premium media cards)
 // =============================================================================
 
+// ── Mock comments per post ──
+const MOCK_COMMENTS: Record<string, { author: string; initials: string; text: string; time: string }[]> = {
+  'vfp-1': [
+    { author: 'Coach Miller', initials: 'CM', text: 'Great breakdown. Need to drill this before Saturday.', time: '12m' },
+    { author: 'E. Carter', initials: 'EC', text: 'Weak-side recovery was the issue all game', time: '10m' },
+    { author: 'K. Mentor', initials: 'KM', text: 'Got it coach, working on it', time: '8m' },
+    { author: 'Coach Turner', initials: 'CT', text: 'Film session tomorrow at 2pm — be there', time: '5m' },
+  ],
+  'vfp-3': [
+    { author: 'Coach Brooks', initials: 'CB', text: 'Love the energy. Keep grinding.', time: '1h' },
+    { author: 'K. Mentor', initials: 'KM', text: 'Lets go bro', time: '55m' },
+    { author: 'A. Noel', initials: 'AN', text: 'Saturday is ours', time: '45m' },
+  ],
+  'vfp-4': [
+    { author: 'Coach Miller', initials: 'CM', text: 'Proud of this team. 19 assists is elite.', time: '2h' },
+    { author: 'E. Carter', initials: 'EC', text: 'Best game of the season', time: '2h' },
+  ],
+};
+
 function FeedPost({ post, colors }: { post: VideoFeedPost; colors: typeof Colors.light }) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [commentsOpen, setCommentsOpen] = useState(false);
+  const [commentText, setCommentText] = useState('');
 
   const handleLike = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -160,8 +190,23 @@ function FeedPost({ post, colors }: { post: VideoFeedPost; colors: typeof Colors
     setSaved(!saved);
   };
 
+  const handleComment = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setCommentsOpen(true);
+  };
+
+  const handleShare = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    try {
+      await Share.share({
+        message: `${post.authorName}: ${post.caption}`,
+      });
+    } catch {}
+  };
+
   const timeAgo = formatTimeAgo(post.timestamp);
   const isSystem = post.authorRole === 'System';
+  const comments = MOCK_COMMENTS[post.id] ?? [];
 
   return (
     <View style={[styles.postContainer, { borderBottomColor: colors.border }]}>
@@ -239,13 +284,23 @@ function FeedPost({ post, colors }: { post: VideoFeedPost; colors: typeof Colors
         </Pressable>
       )}
 
-      {/* Caption */}
+      {/* Caption Block */}
       <View style={styles.captionArea}>
-        <ThemedText style={[styles.captionText, { color: colors.textSecondary }]}>
+        <ThemedText style={[styles.captionText, { color: colors.textSecondary }]} numberOfLines={2}>
           <ThemedText style={[styles.captionAuthor, { color: colors.text }]}>
             {post.authorName}
           </ThemedText>
           {'  '}{post.caption}
+        </ThemedText>
+        {post.comments > 0 && (
+          <Pressable style={styles.viewAllComments} onPress={handleComment}>
+            <ThemedText style={[styles.viewAllCommentsText, { color: colors.textTertiary }]}>
+              View all {post.comments} comments
+            </ThemedText>
+          </Pressable>
+        )}
+        <ThemedText style={[styles.captionTimestamp, { color: colors.textTertiary }]}>
+          {timeAgo}
         </ThemedText>
       </View>
 
@@ -262,7 +317,7 @@ function FeedPost({ post, colors }: { post: VideoFeedPost; colors: typeof Colors
               {liked ? post.likes + 1 : post.likes}
             </ThemedText>
           </Pressable>
-          <Pressable style={styles.actionBtn} hitSlop={6}>
+          <Pressable onPress={handleComment} style={styles.actionBtn} hitSlop={6}>
             <IconSymbol name="bubble.right" size={20} color={colors.textSecondary} />
             {post.comments > 0 && (
               <ThemedText style={[styles.actionCount, { color: colors.textTertiary }]}>
@@ -270,7 +325,7 @@ function FeedPost({ post, colors }: { post: VideoFeedPost; colors: typeof Colors
               </ThemedText>
             )}
           </Pressable>
-          <Pressable style={styles.actionBtn} hitSlop={6}>
+          <Pressable onPress={handleShare} style={styles.actionBtn} hitSlop={6}>
             <IconSymbol name="paperplane" size={20} color={colors.textSecondary} />
           </Pressable>
         </View>
@@ -282,8 +337,88 @@ function FeedPost({ post, colors }: { post: VideoFeedPost; colors: typeof Colors
           />
         </Pressable>
       </View>
+
+      {/* Comments Sheet (50% → 100%) */}
+      <BottomSheet
+        visible={commentsOpen}
+        onClose={() => setCommentsOpen(false)}
+        title="Comments"
+        useModal
+        footer={
+          <View style={[styles.commentInputRow, { borderTopColor: colors.border, backgroundColor: colors.background }]}>
+            <View style={[styles.commentInputAvatar, { backgroundColor: colors.backgroundTertiary }]}>
+              <ThemedText style={[styles.commentInputInitials, { color: colors.text }]}>AM</ThemedText>
+            </View>
+            <TextInput
+              style={[styles.commentInput, { color: colors.text, backgroundColor: colors.backgroundSecondary, borderColor: colors.border }]}
+              placeholder="Add a comment..."
+              placeholderTextColor={colors.textTertiary}
+              value={commentText}
+              onChangeText={setCommentText}
+            />
+            <Pressable
+              hitSlop={8}
+              onPress={() => {
+                if (commentText.trim()) {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setCommentText('');
+                }
+              }}
+            >
+              <ThemedText style={[styles.commentPostBtn, { opacity: commentText.trim() ? 1 : 0.35 }]}>Post</ThemedText>
+            </Pressable>
+          </View>
+        }
+      >
+        <View style={styles.commentsList}>
+          {comments.length === 0 && (
+            <ThemedText style={[styles.noComments, { color: colors.textTertiary }]}>
+              No comments yet. Be the first.
+            </ThemedText>
+          )}
+          {comments.map((c, i) => (
+            <View key={i} style={styles.commentItem}>
+              <View style={[styles.commentAvatar, { backgroundColor: colors.backgroundTertiary }]}>
+                <ThemedText style={[styles.commentAvatarText, { color: colors.text }]}>{c.initials}</ThemedText>
+              </View>
+              <View style={styles.commentBody}>
+                <ThemedText style={[styles.commentText, { color: colors.textSecondary }]}>
+                  <ThemedText style={[styles.commentAuthor, { color: colors.text }]}>{c.author}</ThemedText>
+                  {'  '}{c.text}
+                </ThemedText>
+                <ThemedText style={[styles.commentTime, { color: colors.textTertiary }]}>{c.time}</ThemedText>
+              </View>
+            </View>
+          ))}
+        </View>
+      </BottomSheet>
     </View>
   );
+}
+
+// =============================================================================
+// VISIBILITY — Mock user context (Assistant Coach, A2, V3, program-level)
+// media.visibility_class <= user.visibility_class to render
+// Recruiting-tagged stories only visible within same program at V3
+// =============================================================================
+
+const MOCK_USER_VISIBILITY = 3; // V3 — program-private
+const MOCK_USER_CAN_UPLOAD = true; // A2+ within program scope
+
+function filterVisibleStories(stories: StoryCircle[]): StoryCircle[] {
+  return stories.filter((s) => {
+    if (s.isYou) return MOCK_USER_CAN_UPLOAD;
+    const vc = s.visibilityClass ?? 0;
+    if (vc > MOCK_USER_VISIBILITY) return false;
+    return true;
+  });
+}
+
+function filterVisiblePosts(posts: VideoFeedPost[]): VideoFeedPost[] {
+  return posts.filter((p) => {
+    const vc = p.visibilityClass ?? 0;
+    return vc <= MOCK_USER_VISIBILITY;
+  });
 }
 
 // =============================================================================
@@ -291,12 +426,21 @@ function FeedPost({ post, colors }: { post: VideoFeedPost; colors: typeof Colors
 // =============================================================================
 
 function FeedPage({ colors, mode }: { colors: typeof Colors.light; mode: Mode }) {
-  if (EMPTY_MODES.has(mode)) {
-    return <EmptyState icon="play.rectangle" title="No Content" description="Media content will appear here." />;
-  }
+  const [viewerVisible, setViewerVisible] = useState(false);
+  const [viewerIndex, setViewerIndex] = useState(0);
 
-  const stories = MODE_STORIES[mode] ?? STORY_CIRCLES;
-  const posts = MODE_POSTS[mode] ?? VIDEO_FEED_POSTS;
+  const allStories = MODE_STORIES[mode] ?? STORY_CIRCLES;
+  const allPosts = MODE_POSTS[mode] ?? VIDEO_FEED_POSTS;
+
+  const stories = filterVisibleStories(allStories);
+  const posts = filterVisiblePosts(allPosts);
+
+  const handleStoryPress = useCallback((index: number) => {
+    const story = stories[index];
+    if (story?.isYou) return; // upload flow not in scope
+    setViewerIndex(index);
+    setViewerVisible(true);
+  }, [stories]);
 
   const renderPost = useCallback(
     ({ item }: { item: VideoFeedPost }) => <FeedPost post={item} colors={colors} />,
@@ -304,22 +448,30 @@ function FeedPage({ colors, mode }: { colors: typeof Colors.light; mode: Mode })
   );
 
   return (
-    <FlatList
-      data={posts}
-      keyExtractor={(item) => item.id}
-      renderItem={renderPost}
-      ListHeaderComponent={<StoriesRow colors={colors} stories={stories} />}
-      contentContainerStyle={styles.listContent}
-      showsVerticalScrollIndicator={false}
-    />
+    <>
+      <FlatList
+        data={posts}
+        keyExtractor={(item) => item.id}
+        renderItem={renderPost}
+        ListHeaderComponent={<StoriesRow colors={colors} stories={stories} onStoryPress={handleStoryPress} />}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+      />
+      <StoryViewer
+        visible={viewerVisible}
+        onClose={() => setViewerVisible(false)}
+        stories={stories}
+        initialIndex={viewerIndex}
+      />
+    </>
   );
 }
 
 function ExplorePage({ colors, mode }: { colors: typeof Colors.light; mode: Mode }) {
+  if (mode === 'sports') return <SportsExplorePageV2 />;
   if (EMPTY_MODES.has(mode)) {
     return <EmptyState icon="magnifyingglass" title="Nothing to Explore" description="Explore content will appear here." />;
   }
-  if (mode === 'sports') return <SportsExplorePageV2 />;
   return <ModeExplorePageV2 mode={mode} />;
 }
 
@@ -546,7 +698,7 @@ const styles = StyleSheet.create({
   // Media Card
   mediaCard: {
     width: '100%',
-    aspectRatio: 16 / 9,
+    aspectRatio: 1,
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
@@ -639,6 +791,16 @@ const styles = StyleSheet.create({
   captionAuthor: {
     fontWeight: '700',
   },
+  viewAllComments: {
+    marginTop: 4,
+  },
+  viewAllCommentsText: {
+    fontSize: 13,
+  },
+  captionTimestamp: {
+    fontSize: 11,
+    marginTop: 4,
+  },
 
   // Actions
   actionRow: {
@@ -661,5 +823,78 @@ const styles = StyleSheet.create({
   actionCount: {
     fontSize: 13,
     fontWeight: '600',
+  },
+
+  // Comments Sheet
+  commentsList: {
+    paddingHorizontal: Spacing.md,
+    paddingTop: 8,
+    gap: 16,
+  },
+  noComments: {
+    fontSize: 14,
+    textAlign: 'center',
+    paddingTop: 24,
+  },
+  commentItem: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  commentAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  commentAvatarText: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  commentBody: {
+    flex: 1,
+  },
+  commentText: {
+    fontSize: 14,
+    lineHeight: 19,
+  },
+  commentAuthor: {
+    fontWeight: '700',
+  },
+  commentTime: {
+    fontSize: 11,
+    marginTop: 3,
+  },
+  commentInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 10,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    gap: 10,
+  },
+  commentInputAvatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  commentInputInitials: {
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  commentInput: {
+    flex: 1,
+    height: 36,
+    borderRadius: 18,
+    paddingHorizontal: 14,
+    fontSize: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  commentPostBtn: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1D9BF0',
   },
 });
