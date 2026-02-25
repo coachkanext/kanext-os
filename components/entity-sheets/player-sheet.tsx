@@ -1,13 +1,14 @@
 /**
- * Player Card Sheet — Full intelligence player preview bottom sheet.
- * Shows KR (level-aware), archetype, badges, clusters, stats, system fit.
+ * Player Sheet — Full intelligence player profile bottom sheet.
+ * Shows KR (level-aware), archetype, badges, clusters, stats, system fit, notes.
+ * Renamed from player-card-sheet.tsx for v2 universal sheet system.
  */
 
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { PlayerCardData } from '@/utils/global-entity-sheets';
 import {
@@ -36,7 +37,7 @@ interface Props {
   data: PlayerCardData | null;
 }
 
-export function PlayerCardSheet({ visible, onClose, data }: Props) {
+export function PlayerSheet({ visible, onClose, data }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
 
@@ -263,6 +264,14 @@ export function PlayerCardSheet({ visible, onClose, data }: Props) {
             </View>
           )}
 
+          {/* ── NOTES / EVIDENCE ── */}
+          <View style={[styles.sectionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>NOTES & EVIDENCE</Text>
+            <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
+              No scouting notes yet. Attach film clips, game notes, or evaluation tags here.
+            </Text>
+          </View>
+
         </View>
       </ScrollView>
     </BottomSheet>
@@ -359,4 +368,6 @@ const styles = StyleSheet.create({
   infoLabel: { fontSize: 12, fontWeight: '700', letterSpacing: 0.5 },
   infoValue: { fontSize: 13, fontWeight: '700' },
 
+  // Notes placeholder
+  placeholderText: { fontSize: 13, fontWeight: '500', fontStyle: 'italic' },
 });

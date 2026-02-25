@@ -48,9 +48,14 @@ import type {
   TeamCardData, PlayerCardData, CoachCardData,
   DriverCardData, CrewCardData, PersonCardData, MinistryCardData, LeaderCardData,
 } from '@/utils/global-entity-sheets';
-import { TeamCardSheet } from '@/components/entity-sheets/team-card-sheet';
-import { PlayerCardSheet } from '@/components/entity-sheets/player-card-sheet';
-import { CoachCardSheet } from '@/components/entity-sheets/coach-card-sheet';
+// v2 Universal 6-sheet sports system
+import { TeamQuickSheet } from '@/components/entity-sheets/team-quick-sheet';
+import { TeamSheet } from '@/components/entity-sheets/team-sheet';
+import { CoachQuickSheet } from '@/components/entity-sheets/coach-quick-sheet';
+import { CoachSheet } from '@/components/entity-sheets/coach-sheet';
+import { PlayerQuickSheet } from '@/components/entity-sheets/player-quick-sheet';
+import { PlayerSheet } from '@/components/entity-sheets/player-sheet';
+// Non-sports entity sheets (unchanged)
 import { DriverCardSheet } from '@/components/entity-sheets/driver-card-sheet';
 import { CrewCardSheet } from '@/components/entity-sheets/crew-card-sheet';
 import { PersonCardSheet } from '@/components/entity-sheets/person-card-sheet';
@@ -99,13 +104,20 @@ function AppShell() {
     return unsub;
   }, []);
 
-  // Entity card sheets — global open/close for team/player/coach/driver/crew/person/ministry/leader cards
-  const [teamCardData, setTeamCardData] = useState<TeamCardData | null>(null);
-  const [teamCardVisible, setTeamCardVisible] = useState(false);
-  const [playerCardData, setPlayerCardData] = useState<PlayerCardData | null>(null);
-  const [playerCardVisible, setPlayerCardVisible] = useState(false);
-  const [coachCardData, setCoachCardData] = useState<CoachCardData | null>(null);
-  const [coachCardVisible, setCoachCardVisible] = useState(false);
+  // v2 Universal 6-sheet sports system
+  const [teamQuickData, setTeamQuickData] = useState<TeamCardData | null>(null);
+  const [teamQuickVisible, setTeamQuickVisible] = useState(false);
+  const [teamSheetData, setTeamSheetData] = useState<TeamCardData | null>(null);
+  const [teamSheetVisible, setTeamSheetVisible] = useState(false);
+  const [coachQuickData, setCoachQuickData] = useState<CoachCardData | null>(null);
+  const [coachQuickVisible, setCoachQuickVisible] = useState(false);
+  const [coachSheetData, setCoachSheetData] = useState<CoachCardData | null>(null);
+  const [coachSheetVisible, setCoachSheetVisible] = useState(false);
+  const [playerQuickData, setPlayerQuickData] = useState<PlayerCardData | null>(null);
+  const [playerQuickVisible, setPlayerQuickVisible] = useState(false);
+  const [playerSheetData, setPlayerSheetData] = useState<PlayerCardData | null>(null);
+  const [playerSheetVisible, setPlayerSheetVisible] = useState(false);
+  // Non-sports entity sheets
   const [driverCardData, setDriverCardData] = useState<DriverCardData | null>(null);
   const [driverCardVisible, setDriverCardVisible] = useState(false);
   const [crewCardData, setCrewCardData] = useState<CrewCardData | null>(null);
@@ -119,12 +131,20 @@ function AppShell() {
 
   useEffect(() => {
     registerEntitySheetHandlers({
-      openTeamCard: (data) => { setTeamCardData(data); setTeamCardVisible(true); },
-      closeTeamCard: () => setTeamCardVisible(false),
-      openPlayerCard: (data) => { setPlayerCardData(data); setPlayerCardVisible(true); },
-      closePlayerCard: () => setPlayerCardVisible(false),
-      openCoachCard: (data) => { setCoachCardData(data); setCoachCardVisible(true); },
-      closeCoachCard: () => setCoachCardVisible(false),
+      // v2 sports sheets
+      openTeamQuickSheet: (data) => { setTeamQuickData(data); setTeamQuickVisible(true); },
+      closeTeamQuickSheet: () => setTeamQuickVisible(false),
+      openTeamSheet: (data) => { setTeamSheetData(data); setTeamSheetVisible(true); },
+      closeTeamSheet: () => setTeamSheetVisible(false),
+      openCoachQuickSheet: (data) => { setCoachQuickData(data); setCoachQuickVisible(true); },
+      closeCoachQuickSheet: () => setCoachQuickVisible(false),
+      openCoachSheet: (data) => { setCoachSheetData(data); setCoachSheetVisible(true); },
+      closeCoachSheet: () => setCoachSheetVisible(false),
+      openPlayerQuickSheet: (data) => { setPlayerQuickData(data); setPlayerQuickVisible(true); },
+      closePlayerQuickSheet: () => setPlayerQuickVisible(false),
+      openPlayerSheet: (data) => { setPlayerSheetData(data); setPlayerSheetVisible(true); },
+      closePlayerSheet: () => setPlayerSheetVisible(false),
+      // Non-sports
       openDriverCard: (data) => { setDriverCardData(data); setDriverCardVisible(true); },
       closeDriverCard: () => setDriverCardVisible(false),
       openCrewCard: (data) => { setCrewCardData(data); setCrewCardVisible(true); },
@@ -195,22 +215,38 @@ function AppShell() {
         contentSlideAnim={contentSlideAnim}
       />
 
-      {/* Entity Card Sheets — lightweight entity previews */}
-      <TeamCardSheet
-        visible={teamCardVisible}
-        onClose={() => setTeamCardVisible(false)}
-        data={teamCardData}
+      {/* v2 Universal 6-sheet sports system */}
+      <TeamQuickSheet
+        visible={teamQuickVisible}
+        onClose={() => setTeamQuickVisible(false)}
+        data={teamQuickData}
       />
-      <PlayerCardSheet
-        visible={playerCardVisible}
-        onClose={() => setPlayerCardVisible(false)}
-        data={playerCardData}
+      <TeamSheet
+        visible={teamSheetVisible}
+        onClose={() => setTeamSheetVisible(false)}
+        data={teamSheetData}
       />
-      <CoachCardSheet
-        visible={coachCardVisible}
-        onClose={() => setCoachCardVisible(false)}
-        data={coachCardData}
+      <CoachQuickSheet
+        visible={coachQuickVisible}
+        onClose={() => setCoachQuickVisible(false)}
+        data={coachQuickData}
       />
+      <CoachSheet
+        visible={coachSheetVisible}
+        onClose={() => setCoachSheetVisible(false)}
+        data={coachSheetData}
+      />
+      <PlayerQuickSheet
+        visible={playerQuickVisible}
+        onClose={() => setPlayerQuickVisible(false)}
+        data={playerQuickData}
+      />
+      <PlayerSheet
+        visible={playerSheetVisible}
+        onClose={() => setPlayerSheetVisible(false)}
+        data={playerSheetData}
+      />
+      {/* Non-sports entity sheets */}
       <DriverCardSheet
         visible={driverCardVisible}
         onClose={() => setDriverCardVisible(false)}

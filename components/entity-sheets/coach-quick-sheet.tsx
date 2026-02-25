@@ -1,14 +1,18 @@
 /**
- * Coach Card Sheet — lightweight coach preview bottom sheet.
- * Quick preview with identity and details card.
+ * Coach Quick Sheet — lightweight coach preview (tap trigger).
+ * 50% bottom sheet with avatar, name, title, tendency chips.
+ * CTA escalates to Coach Sheet.
  */
 
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
+import * as Haptics from 'expo-haptics';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Colors, Spacing } from '@/constants/theme';
+import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { openCoachSheet } from '@/utils/global-entity-sheets';
 import type { CoachCardData } from '@/utils/global-entity-sheets';
 
 function nameToHue(name: string): number {
@@ -23,9 +27,10 @@ interface Props {
   data: CoachCardData | null;
 }
 
-export function CoachCardSheet({ visible, onClose, data }: Props) {
+export function CoachQuickSheet({ visible, onClose, data }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const accent = useAccentColor();
 
   if (!data) return null;
 
@@ -36,6 +41,11 @@ export function CoachCardSheet({ visible, onClose, data }: Props) {
     .join('')
     .slice(0, 2)
     .toUpperCase();
+
+  // Parse tendencies into chips
+  const tendencyChips = data.tendencies
+    ? data.tendencies.split(',').map((t) => t.trim()).filter(Boolean)
+    : [];
 
   return (
     <BottomSheet visible={visible} onClose={onClose} useModal>
@@ -59,13 +69,36 @@ export function CoachCardSheet({ visible, onClose, data }: Props) {
               <Text style={[styles.detailValue, { color: colors.text }]}>{data.recordAtInstitution}</Text>
             </View>
           )}
-          {data.bio && (
-            <Text style={[styles.bioText, { color: colors.textSecondary }]} numberOfLines={4}>
-              {data.bio}
-            </Text>
+          {data.tenure && (
+            <View style={styles.detailRow}>
+              <Text style={[styles.detailLabel, { color: colors.textTertiary }]}>Tenure</Text>
+              <Text style={[styles.detailValue, { color: colors.text }]}>{data.tenure}</Text>
+            </View>
           )}
         </View>
 
+        {/* Tendency chips */}
+        {tendencyChips.length > 0 && (
+          <View style={styles.chipRow}>
+            {tendencyChips.map((chip, i) => (
+              <View key={i} style={[styles.chip, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.chipText, { color: colors.text }]}>{chip}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* CTA */}
+        <Pressable
+          style={[styles.ctaButton, { backgroundColor: accent }]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            onClose();
+            setTimeout(() => openCoachSheet(data), 300);
+          }}
+        >
+          <Text style={styles.ctaText}>Open Coach Sheet</Text>
+        </Pressable>
       </View>
     </BottomSheet>
   );
@@ -126,9 +159,30 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: -0.3,
   },
-  bioText: {
-    fontSize: 13,
-    fontWeight: '500',
-    lineHeight: 18,
+  chipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  chip: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  chipText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  ctaButton: {
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  ctaText: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#fff',
+    letterSpacing: -0.3,
   },
 });

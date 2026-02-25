@@ -35,7 +35,7 @@ import { openTeamCard } from '@/utils/global-entity-sheets';
 
 // Carroll College data
 import { KaNeXT_GAMES, KaNeXT_GAMES_BY_ID, KaNeXT_LEADERS, KaNeXT_STANDINGS, KaNeXT_NEWS, KaNeXT_RECORD, KaNeXT_LAST_GAME, KaNeXT_LAST_GAME_ID, KaNeXT_NEXT_GAME, KaNeXT_NEXT_GAME_ID, KaNeXT_SEASON_COMPLETE, KaNeXT_GAME_BPR, getBPRColor, KaNeXT_GAME_IMPACT, getPGISColor, getTGISColor, tgisToDisplay, KaNeXT_PREGAME, ROSTER_KR, DNA_OFFENSE_POOL, DNA_DEFENSE_POOL, DNA_TEMPO_POOL, jerseyArchetypeMap, POSITIVE_IMPACT, NEGATIVE_IMPACT, type PregameSnapshot, type ClusterRating } from '@/data/fmu';
-import { TeamQuickSheet } from '@/components/team-quick-sheet';
+import { TeamSheet as LocalTeamSheet } from '@/components/entity-sheets/team-sheet';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 import { getSportsRole, type SportsRoleLens } from '@/utils/sports-rbac';
 import { registerTeamSheetHandlers } from '@/utils/global-team-sheet';
@@ -1080,15 +1080,22 @@ function SportsHome() {
         })()}
       </BottomSheet>
 
-      {/* ===== TEAM QUICK SHEET ===== */}
-      <TeamQuickSheet
+      {/* ===== TEAM SHEET (universal) ===== */}
+      <LocalTeamSheet
         visible={teamSheetOpen}
         onClose={closeTeamSheet}
-        teamKR={liveTeamKR}
-        offKR={liveOffKR}
-        defKR={liveDefKR}
-        offSystemName={selectedOffSystem}
-        defSystemName={selectedDefSystem}
+        data={{
+          name: 'Carroll College',
+          conference: 'Frontier Conference',
+          level: 'NAIA',
+          teamKR: liveTeamKR,
+          offKR: liveOffKR,
+          defKR: liveDefKR,
+          record: KaNeXT_RECORD.overall,
+          confRecord: KaNeXT_RECORD.conference,
+          osie: selectedOffSystem,
+          dsie: selectedDefSystem,
+        }}
       />
 
       {/* ===== COMMERCE SHEETS ===== */}

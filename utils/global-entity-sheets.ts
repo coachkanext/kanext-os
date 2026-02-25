@@ -2,6 +2,10 @@
  * Global Entity Sheet Controller
  * Module-level register/open/close for entity card sheets.
  * Follows the same pattern as global-team-sheet.ts.
+ *
+ * v2 — Universal 6-sheet system:
+ *   Team Quick Sheet / Team Sheet / Coach Quick Sheet / Coach Sheet
+ *   Player Quick Sheet / Player Sheet
  */
 
 export interface TeamCardData {
@@ -12,6 +16,19 @@ export interface TeamCardData {
   teamKR?: number;
   logoUri?: string;
   category?: string;
+  // v2 — extended fields for Team Sheet
+  offKR?: number;
+  defKR?: number;
+  level?: string;
+  osie?: string;
+  osieScore?: number;
+  dsie?: string;
+  dsieScore?: number;
+  coaches?: { name: string; title: string; tendencies?: string }[];
+  topContributors?: { name: string; position: string; kr?: number }[];
+  strengths?: string[];
+  risks?: string[];
+  coverageTag?: string;
 }
 
 export interface PlayerCardData {
@@ -59,6 +76,12 @@ export interface CoachCardData {
   title: string;
   bio?: string;
   recordAtInstitution?: string;
+  // v2 — extended fields for Coach Sheet
+  tenure?: string;
+  offSystem?: string;
+  defSystem?: string;
+  knownLevers?: string[];
+  tendencies?: string;
 }
 
 export interface DriverCardData {
@@ -100,6 +123,8 @@ export interface LeaderCardData {
   bio?: string;
 }
 
+// ── Handler types ──
+
 type OpenTeamCard = (data: TeamCardData) => void;
 type OpenPlayerCard = (data: PlayerCardData) => void;
 type OpenCoachCard = (data: CoachCardData) => void;
@@ -110,12 +135,23 @@ type OpenMinistryCard = (data: MinistryCardData) => void;
 type OpenLeaderCard = (data: LeaderCardData) => void;
 type CloseHandler = () => void;
 
-let _openTeamCard: OpenTeamCard | null = null;
-let _closeTeamCard: CloseHandler | null = null;
-let _openPlayerCard: OpenPlayerCard | null = null;
-let _closePlayerCard: CloseHandler | null = null;
-let _openCoachCard: OpenCoachCard | null = null;
-let _closeCoachCard: CloseHandler | null = null;
+// ── Module-level handler slots ──
+
+// v2 sports sheets (6)
+let _openTeamQuickSheet: OpenTeamCard | null = null;
+let _closeTeamQuickSheet: CloseHandler | null = null;
+let _openTeamSheet: OpenTeamCard | null = null;
+let _closeTeamSheet: CloseHandler | null = null;
+let _openCoachQuickSheet: OpenCoachCard | null = null;
+let _closeCoachQuickSheet: CloseHandler | null = null;
+let _openCoachSheet: OpenCoachCard | null = null;
+let _closeCoachSheet: CloseHandler | null = null;
+let _openPlayerQuickSheet: OpenPlayerCard | null = null;
+let _closePlayerQuickSheet: CloseHandler | null = null;
+let _openPlayerSheet: OpenPlayerCard | null = null;
+let _closePlayerSheet: CloseHandler | null = null;
+
+// Non-sports entity sheets (unchanged)
 let _openDriverCard: OpenDriverCard | null = null;
 let _closeDriverCard: CloseHandler | null = null;
 let _openCrewCard: OpenCrewCard | null = null;
@@ -128,12 +164,20 @@ let _openLeaderCard: OpenLeaderCard | null = null;
 let _closeLeaderCard: CloseHandler | null = null;
 
 export function registerEntitySheetHandlers(handlers: {
-  openTeamCard: OpenTeamCard;
-  closeTeamCard: CloseHandler;
-  openPlayerCard: OpenPlayerCard;
-  closePlayerCard: CloseHandler;
-  openCoachCard: OpenCoachCard;
-  closeCoachCard: CloseHandler;
+  // v2 sports sheets
+  openTeamQuickSheet: OpenTeamCard;
+  closeTeamQuickSheet: CloseHandler;
+  openTeamSheet: OpenTeamCard;
+  closeTeamSheet: CloseHandler;
+  openCoachQuickSheet: OpenCoachCard;
+  closeCoachQuickSheet: CloseHandler;
+  openCoachSheet: OpenCoachCard;
+  closeCoachSheet: CloseHandler;
+  openPlayerQuickSheet: OpenPlayerCard;
+  closePlayerQuickSheet: CloseHandler;
+  openPlayerSheet: OpenPlayerCard;
+  closePlayerSheet: CloseHandler;
+  // Non-sports (optional)
   openDriverCard?: OpenDriverCard;
   closeDriverCard?: CloseHandler;
   openCrewCard?: OpenCrewCard;
@@ -145,12 +189,19 @@ export function registerEntitySheetHandlers(handlers: {
   openLeaderCard?: OpenLeaderCard;
   closeLeaderCard?: CloseHandler;
 }) {
-  _openTeamCard = handlers.openTeamCard;
-  _closeTeamCard = handlers.closeTeamCard;
-  _openPlayerCard = handlers.openPlayerCard;
-  _closePlayerCard = handlers.closePlayerCard;
-  _openCoachCard = handlers.openCoachCard;
-  _closeCoachCard = handlers.closeCoachCard;
+  _openTeamQuickSheet = handlers.openTeamQuickSheet;
+  _closeTeamQuickSheet = handlers.closeTeamQuickSheet;
+  _openTeamSheet = handlers.openTeamSheet;
+  _closeTeamSheet = handlers.closeTeamSheet;
+  _openCoachQuickSheet = handlers.openCoachQuickSheet;
+  _closeCoachQuickSheet = handlers.closeCoachQuickSheet;
+  _openCoachSheet = handlers.openCoachSheet;
+  _closeCoachSheet = handlers.closeCoachSheet;
+  _openPlayerQuickSheet = handlers.openPlayerQuickSheet;
+  _closePlayerQuickSheet = handlers.closePlayerQuickSheet;
+  _openPlayerSheet = handlers.openPlayerSheet;
+  _closePlayerSheet = handlers.closePlayerSheet;
+
   _openDriverCard = handlers.openDriverCard ?? null;
   _closeDriverCard = handlers.closeDriverCard ?? null;
   _openCrewCard = handlers.openCrewCard ?? null;
@@ -163,29 +214,85 @@ export function registerEntitySheetHandlers(handlers: {
   _closeLeaderCard = handlers.closeLeaderCard ?? null;
 }
 
+// ── v2 Sports Sheet API ──
+
+export function openTeamQuickSheet(data: TeamCardData) {
+  _openTeamQuickSheet?.(data);
+}
+
+export function closeTeamQuickSheet() {
+  _closeTeamQuickSheet?.();
+}
+
+export function openTeamSheet(data: TeamCardData) {
+  _openTeamSheet?.(data);
+}
+
+export function closeTeamSheet() {
+  _closeTeamSheet?.();
+}
+
+export function openCoachQuickSheet(data: CoachCardData) {
+  _openCoachQuickSheet?.(data);
+}
+
+export function closeCoachQuickSheet() {
+  _closeCoachQuickSheet?.();
+}
+
+export function openCoachSheet(data: CoachCardData) {
+  _openCoachSheet?.(data);
+}
+
+export function closeCoachSheet() {
+  _closeCoachSheet?.();
+}
+
+export function openPlayerQuickSheet(data: PlayerCardData) {
+  _openPlayerQuickSheet?.(data);
+}
+
+export function closePlayerQuickSheet() {
+  _closePlayerQuickSheet?.();
+}
+
+export function openPlayerSheet(data: PlayerCardData) {
+  _openPlayerSheet?.(data);
+}
+
+export function closePlayerSheet() {
+  _closePlayerSheet?.();
+}
+
+// ── Backward-compatible aliases ──
+// Existing consumers call openTeamCard / openPlayerCard / openCoachCard —
+// rewire to the v2 sheet that matches the spec trigger.
+
 export function openTeamCard(data: TeamCardData) {
-  _openTeamCard?.(data);
+  _openTeamSheet?.(data);
 }
 
 export function closeTeamCard() {
-  _closeTeamCard?.();
+  _closeTeamSheet?.();
 }
 
 export function openPlayerCard(data: PlayerCardData) {
-  _openPlayerCard?.(data);
+  _openPlayerSheet?.(data);
 }
 
 export function closePlayerCard() {
-  _closePlayerCard?.();
+  _closePlayerSheet?.();
 }
 
 export function openCoachCard(data: CoachCardData) {
-  _openCoachCard?.(data);
+  _openCoachQuickSheet?.(data);
 }
 
 export function closeCoachCard() {
-  _closeCoachCard?.();
+  _closeCoachQuickSheet?.();
 }
+
+// ── Non-sports entity sheets (unchanged) ──
 
 export function openDriverCard(data: DriverCardData) {
   _openDriverCard?.(data);
