@@ -168,15 +168,10 @@ function SportsOrganization() {
                 return <View key="compliance" style={PAGE_STYLE}><SportsCompliance {...p} /></View>;
               case 'facilities':
                 return <View key="facilities" style={PAGE_STYLE}><SportsFacilities {...p} /></View>;
+              case 'ledger':
+                return <View key="ledger" style={PAGE_STYLE}><SportsLedger {...p} /></View>;
               default:
-                return (
-                  <View key={tab.id} style={[PAGE_STYLE, { justifyContent: 'center', alignItems: 'center' }]}>
-                    <ThemedText style={{ fontSize: 28, fontWeight: '800', lineHeight: 34 }}>Coming Soon</ThemedText>
-                    <ThemedText style={{ fontSize: 14, opacity: 0.5, textAlign: 'center', marginTop: 6 }}>
-                      {tab.label} is under development.
-                    </ThemedText>
-                  </View>
-                );
+                return <View key={tab.id} style={PAGE_STYLE} />;
             }
           })}
         </PagerView>
