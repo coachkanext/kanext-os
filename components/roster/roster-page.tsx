@@ -272,16 +272,20 @@ export function RosterPage({ colors: propColors }: RosterPageProps) {
 
   const filteredPlayers = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return ROSTER_PLAYERS;
-    return ROSTER_PLAYERS.filter(p =>
-      `${p.firstName} ${p.lastName}`.toLowerCase().includes(q) ||
-      p.jerseyNumber.includes(q) ||
-      p.displayJersey.includes(q) ||
-      p.position.toLowerCase().includes(q) ||
-      p.classYear.toLowerCase().includes(q) ||
-      STATUS_LABELS[p.status].toLowerCase().includes(q),
-    );
-  }, [search]);
+    let list = ROSTER_PLAYERS;
+    if (q) {
+      list = list.filter(p =>
+        `${p.firstName} ${p.lastName}`.toLowerCase().includes(q) ||
+        p.jerseyNumber.includes(q) ||
+        p.displayJersey.includes(q) ||
+        p.position.toLowerCase().includes(q) ||
+        p.classYear.toLowerCase().includes(q) ||
+        STATUS_LABELS[p.status].toLowerCase().includes(q),
+      );
+    }
+    // Sort by active lens score — highest first
+    return [...list].sort((a, b) => getScoreForLens(b, lens) - getScoreForLens(a, lens));
+  }, [search, lens]);
 
   return (
     <View style={[s.root, { backgroundColor: colors.background }]}>
