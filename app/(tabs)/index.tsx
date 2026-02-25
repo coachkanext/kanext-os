@@ -40,14 +40,11 @@ import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home
 import { getSportsRole, type SportsRoleLens } from '@/utils/sports-rbac';
 import { registerTeamSheetHandlers } from '@/utils/global-team-sheet';
 import { SportsGamePlanV2 } from '@/components/game-plan/sports-game-plan-v2';
+import { GamePlanPage } from '@/components/game-plan/game-plan-page';
 import { SportsCalendarV2 } from '@/components/calendar/sports-calendar-v2';
 import { SportsStatsV2 } from '@/components/stats/sports-stats-v2';
-import { TEAM_IDENTITY as STATS_TEAM_IDENTITY, TEAM_AVERAGES as STATS_TEAM_AVERAGES, LAST_5 as STATS_LAST_5 } from '@/data/mock-stats-v2';
 import { SportsSimulationV2 } from '@/components/simulation/sports-simulation-v2';
 import { SportsDevelopmentV2 } from '@/components/development/sports-development-v2';
-import { GAME_PLANS } from '@/data/mock-game-plan-v2';
-import { MOCK_KEISER_GAME } from '@/data/mock-simulation-v2';
-import { PROGRESS_SNAPSHOT, PLAYER_PLANS, WEEKLY_PLANS, EVIDENCE_QUEUE_EXTENDED, TRANSFER_METRICS } from '@/data/mock-development-v2';
 import { getKRColor } from '@/utils/kr-display';
 import { TicketsSheet } from '@/components/commerce/tickets-sheet';
 import { StoreSheet } from '@/components/commerce/store-sheet';
@@ -111,7 +108,7 @@ function ComingSoonPage({ mode }: { mode: Mode }) {
 // =============================================================================
 
 // Sports Home — 4-tab PagerView layout (Dashboard + Roster + Calendar + Recruiting)
-type DrillDownId = 'stats' | 'game-plan' | 'simulation' | 'development' | 'alerts';
+type DrillDownId = 'stats' | 'game-plan' | 'simulation' | 'development' | 'alerts' | 'recruiting';
 
 const HOME_TABS: { id: string; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
@@ -127,6 +124,7 @@ const DOMAIN_CARD_DEFS: { id: DrillDownId; title: string; icon: IconSymbolName }
   { id: 'simulation', title: 'Simulation', icon: 'play.circle.fill' },
   { id: 'development', title: 'Development', icon: 'arrow.up.right.circle.fill' },
   { id: 'alerts', title: 'Alerts & Decisions', icon: 'bell.badge.fill' },
+  { id: 'recruiting', title: 'Recruiting', icon: 'star.circle.fill' },
 ];
 
 /** RBAC: which domain cards are hidden per role */
@@ -136,14 +134,14 @@ const DOMAIN_HIDDEN: Record<SportsRoleLens, Set<DrillDownId>> = {
   R2: new Set(),
   R3: new Set(),
   R4: new Set(),
-  R5: new Set(['game-plan', 'simulation']),
-  R6: new Set(['game-plan', 'simulation', 'development']),
-  R7: new Set(['game-plan', 'simulation', 'development', 'stats']),
-  R8: new Set(['game-plan', 'simulation']),
-  R9: new Set(['game-plan', 'simulation', 'development', 'stats']),
-  R10: new Set(['game-plan', 'simulation', 'development', 'stats']),
-  R11: new Set(['game-plan', 'simulation', 'development']),
-  R12: new Set(['game-plan', 'simulation', 'development']),
+  R5: new Set(['game-plan', 'simulation', 'recruiting']),
+  R6: new Set(['game-plan', 'simulation', 'development', 'recruiting']),
+  R7: new Set(['game-plan', 'simulation', 'development', 'stats', 'recruiting']),
+  R8: new Set(['game-plan', 'simulation', 'recruiting']),
+  R9: new Set(['game-plan', 'simulation', 'development', 'stats', 'recruiting']),
+  R10: new Set(['game-plan', 'simulation', 'development', 'stats', 'recruiting']),
+  R11: new Set(['game-plan', 'simulation', 'development', 'recruiting']),
+  R12: new Set(['game-plan', 'simulation', 'development', 'recruiting']),
   R13: new Set(['game-plan', 'simulation', 'development']),
 };
 
@@ -370,61 +368,37 @@ function SportsHome() {
   const liveDefKR = systemKRModifier(selectedDefSystem, baseDefKRHome);
   const liveTeamKR = Math.round((liveOffKR * 53 + liveDefKR * 47) / 100);
 
-  // Computed card previews
-  const previews = useMemo((): Record<DrillDownId, string> => {
-    const topScorer = KaNeXT_LEADERS[0];
-    const topReb = [...KaNeXT_LEADERS].sort((a, b) => b.rpg - a.rpg)[0];
-    const nextOpp = KaNeXT_NEXT_GAME?.opponent ?? 'TBD';
-    const nextPre = KaNeXT_NEXT_GAME_ID ? KaNeXT_PREGAME[KaNeXT_NEXT_GAME_ID] : null;
-    return {
-      stats: `${topScorer?.name.split(' ').pop()} ${topScorer?.ppg} PPG · ${topReb?.name.split(' ').pop()} ${topReb?.rpg} RPG · #${KaNeXT_CONF_POSITION} Frontier`,
-      'game-plan': `vs ${nextOpp}${nextPre ? ` · KR ${nextPre.oppKR}` : ''}`,
-      simulation: 'Season Projection: 22-8 · Tournament: 74% advance',
-      development: '2 practice plans · 4 drill assignments · 3 evidence items pending',
-      alerts: 'Recruiting: 2 responses due · Compliance: 1 form overdue',
-    };
-  }, [liveTeamKR]);
-
   // Drill-down back label
   const drillLabel = drillDown ? DOMAIN_CARD_DEFS.find(c => c.id === drillDown)?.title ?? '' : '';
 
   return (
     <View style={styles.sportsHomeContainer}>
       {drillDown ? (
-        <>
-          {/* ===== DRILL-DOWN BACK BAR ===== */}
-          <Pressable
-            style={styles.drillBackBar}
-            onPress={() => setDrillDown(null)}
-            accessibilityRole="button"
-            accessibilityLabel={`Back to Dashboard`}
-          >
-            <IconSymbol name="chevron.left" size={18} color={accent} />
-            <Text style={[styles.drillBackText, { color: accent }]}>Dashboard</Text>
-            <Text style={[styles.drillBackTitle, { color: colors.text }]}>{drillLabel}</Text>
-          </Pressable>
+        drillDown === 'game-plan' ? (
+          <GamePlanPage onBack={() => setDrillDown(null)} />
+        ) : (
+          <>
+            {/* ===== DRILL-DOWN BACK BAR ===== */}
+            <Pressable
+              style={styles.drillBackBar}
+              onPress={() => setDrillDown(null)}
+              accessibilityRole="button"
+              accessibilityLabel={`Back to Dashboard`}
+            >
+              <IconSymbol name="chevron.left" size={18} color={accent} />
+              <Text style={[styles.drillBackText, { color: accent }]}>Dashboard</Text>
+              <Text style={[styles.drillBackTitle, { color: colors.text }]}>{drillLabel}</Text>
+            </Pressable>
 
-          {/* ===== DRILL-DOWN DETAIL ===== */}
-          <View style={{ flex: 1 }}>
-            {drillDown === 'stats' && <SportsStatsV2 />}
-            {drillDown === 'game-plan' && <SportsGamePlanV2 />}
-            {drillDown === 'simulation' && <SportsSimulationV2 />}
-            {drillDown === 'development' && <SportsDevelopmentV2 />}
-            {drillDown === 'alerts' && (
-              <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: Spacing.md, gap: Spacing.sm }}>
-                <View style={[styles.domainCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <Text style={[styles.domainCardTitle, { color: colors.text }]}>Alerts & Decisions Queue</Text>
-                  <Text style={[styles.domainCardPreview, { color: colors.textSecondary, marginTop: 8 }]}>
-                    Recruiting: 2 recruit responses due{'\n'}
-                    Compliance: 1 eligibility form overdue{'\n'}
-                    Travel: Away game booking approval needed{'\n'}
-                    Finance: Equipment purchase request pending
-                  </Text>
-                </View>
-              </ScrollView>
-            )}
-          </View>
-        </>
+            {/* ===== DRILL-DOWN DETAIL ===== */}
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ fontSize: 20, fontWeight: '700', color: '#fff', marginBottom: 8 }}>Coming Soon</Text>
+              <Text style={{ fontSize: 14, color: '#A1A1AA', textAlign: 'center', paddingHorizontal: 40 }}>
+                {drillLabel} is under development.
+              </Text>
+            </View>
+          </>
+        )
       ) : (
         <>
           {/* ===== TAB BAR ===== */}
@@ -654,243 +628,84 @@ function SportsHome() {
                     </Pressable>
                   </View>
 
-                  {/* ===== REMAINING DOMAIN CARDS ===== */}
-                  <View style={{ paddingHorizontal: Spacing.md, gap: Spacing.sm }}>
-                    {visibleCards.map(card => {
-                      // Rich Statistics card
-                      if (card.id === 'stats') {
-                        const netRtg = STATS_TEAM_AVERAGES.netRtg;
-                        return (
-                          <Pressable
-                            key={card.id}
-                            onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
-                            style={({ pressed }) => [
-                              styles.domainCard,
-                              { backgroundColor: '#0B0F14', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
-                              pressed && { opacity: 0.7 },
-                            ]}
-                          >
-                            <View style={styles.domainCardHeader}>
-                              <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
-                              <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
-                            </View>
-                            {/* Record */}
-                            <View style={{ paddingLeft: 40 }}>
-                              <Text style={[styles.statsRichRecord, { color: colors.text }]}>{STATS_TEAM_IDENTITY.record}</Text>
-                              <Text style={[styles.statsRichConf, { color: colors.textSecondary }]}>{STATS_TEAM_IDENTITY.confRecord} {STATS_TEAM_IDENTITY.conference}</Text>
-                              {/* 3 Stat Pills */}
-                              <View style={[styles.statsPreviewRow]}>
-                                <View style={styles.statsPreviewPill}>
-                                  <Text style={styles.statsPreviewPillLabel}>PPG</Text>
-                                  <Text style={[styles.statsPreviewPillValue, { color: colors.text }]}>{STATS_TEAM_AVERAGES.ppg}</Text>
-                                </View>
-                                <View style={styles.statsPreviewPill}>
-                                  <Text style={styles.statsPreviewPillLabel}>OPP</Text>
-                                  <Text style={[styles.statsPreviewPillValue, { color: colors.text }]}>{STATS_TEAM_AVERAGES.oppPpg}</Text>
-                                </View>
-                                <View style={styles.statsPreviewPill}>
-                                  <Text style={styles.statsPreviewPillLabel}>NET</Text>
-                                  <Text style={[styles.statsPreviewPillValue, { color: netRtg >= 0 ? '#22c55e' : '#ef4444' }]}>
-                                    {netRtg > 0 ? '+' : ''}{netRtg.toFixed(1)}
-                                  </Text>
-                                </View>
-                              </View>
-                              {/* Last 5 Dots */}
-                              <View style={styles.statsLast5Row}>
-                                <Text style={[styles.statsLast5Label, { color: colors.textTertiary }]}>L5</Text>
-                                {STATS_LAST_5.map((g, i) => (
-                                  <View key={i} style={[styles.statsLast5Dot, { backgroundColor: g.result === 'W' ? '#22c55e' : '#ef4444' }]} />
-                                ))}
-                              </View>
-                            </View>
-                          </Pressable>
-                        );
-                      }
-
-                      // Rich Game Plan card
-                      if (card.id === 'game-plan') {
-                        const activePlan = GAME_PLANS.find((gp) => gp.header.status === 'in-review') ?? GAME_PLANS[0];
-                        const gph = activePlan.header;
-                        const wpRaw = gph.simWinPct;
-                        const wpColor = wpRaw >= 60 ? '#22c55e' : wpRaw >= 45 ? '#F59E0B' : '#ef4444';
-                        const tendencyNote = activePlan.scoutNotes.find((n) => n.category === 'tendency');
-                        const oppSystem = tendencyNote?.title ?? 'Man Defense';
-                        return (
-                          <Pressable
-                            key={card.id}
-                            onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
-                            style={({ pressed }) => [
-                              styles.domainCard,
-                              { backgroundColor: '#0B0F14', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
-                              pressed && { opacity: 0.7 },
-                            ]}
-                          >
-                            <View style={styles.domainCardHeader}>
-                              <View style={[styles.domainCardIconWrap, { backgroundColor: `${accent}18` }]}>
-                                <IconSymbol name={card.icon} size={16} color={accent} />
-                              </View>
-                              <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
-                              <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
-                            </View>
-                            <View style={{ paddingLeft: 40 }}>
-                              <Text style={[styles.richCardHeadline, { color: colors.text }]}>vs {gph.opponent}</Text>
-                              <Text style={[styles.richCardSubline, { color: colors.textSecondary }]}>{gph.date} · {gph.location} · {gph.status}</Text>
-                              <View style={styles.statsPreviewRow}>
-                                <View style={styles.statsPreviewPill}>
-                                  <Text style={styles.statsPreviewPillLabel}>WIN%</Text>
-                                  <Text style={[styles.statsPreviewPillValue, { color: wpColor }]}>{wpRaw}%</Text>
-                                </View>
-                                <View style={styles.statsPreviewPill}>
-                                  <Text style={styles.statsPreviewPillLabel}>CONF</Text>
-                                  <Text style={[styles.statsPreviewPillValue, { color: colors.text }]}>{gph.simConfidence}%</Text>
-                                </View>
-                              </View>
-                              <Text style={[styles.richCardSystemLine, { color: colors.textTertiary }]}>
-                                OPP: {oppSystem}
-                              </Text>
-                            </View>
-                          </Pressable>
-                        );
-                      }
-
-                      // Rich Simulation card
-                      if (card.id === 'simulation') {
-                        const sim = MOCK_KEISER_GAME;
-                        const wpMid = sim.win_pct.mid;
-                        const wpColor = wpMid >= 60 ? '#22c55e' : wpMid >= 45 ? '#F59E0B' : '#ef4444';
-                        return (
-                          <Pressable
-                            key={card.id}
-                            onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
-                            style={({ pressed }) => [
-                              styles.domainCard,
-                              { backgroundColor: '#0B0F14', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
-                              pressed && { opacity: 0.7 },
-                            ]}
-                          >
-                            <View style={styles.domainCardHeader}>
-                              <View style={[styles.domainCardIconWrap, { backgroundColor: `${accent}18` }]}>
-                                <IconSymbol name={card.icon} size={16} color={accent} />
-                              </View>
-                              <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
-                              <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
-                            </View>
-                            <View style={{ paddingLeft: 40 }}>
-                              <Text style={[styles.richCardHeadline, { color: colors.text }]}>vs {sim.team_b}</Text>
-                              <View style={styles.statsPreviewRow}>
-                                <View style={styles.statsPreviewPill}>
-                                  <Text style={styles.statsPreviewPillLabel}>WIN%</Text>
-                                  <Text style={[styles.statsPreviewPillValue, { color: wpColor }]}>{wpMid}%</Text>
-                                </View>
-                                <View style={styles.statsPreviewPill}>
-                                  <Text style={styles.statsPreviewPillLabel}>MARGIN</Text>
-                                  <Text style={[styles.statsPreviewPillValue, { color: colors.text }]}>+{sim.margin.mid}</Text>
-                                </View>
-                                <View style={styles.statsPreviewPill}>
-                                  <Text style={styles.statsPreviewPillLabel}>CONF</Text>
-                                  <Text style={[styles.statsPreviewPillValue, { color: colors.text }]}>{sim.sim_confidence_pct}%</Text>
-                                </View>
-                              </View>
-                              <Text style={[styles.richCardSystemLine, { color: colors.textTertiary }]}>
-                                {sim.sim_version} · Pace {sim.projected_pace}
-                              </Text>
-                            </View>
-                          </Pressable>
-                        );
-                      }
-
-                      // Rich Development card
-                      if (card.id === 'development') {
-                        const snap = PROGRESS_SNAPSHOT;
-                        const activePlans = PLAYER_PLANS.length;
-                        const pendingEvidence = EVIDENCE_QUEUE_EXTENDED.filter((e) => e.status === 'pending').length;
-                        const negativeTransfers = TRANSFER_METRICS.filter((t) => t.transferLabel === 'negative').length;
-                        return (
-                          <Pressable
-                            key={card.id}
-                            onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
-                            style={({ pressed }) => [
-                              styles.domainCard,
-                              { backgroundColor: '#0B0F14', borderColor: colors.border, borderTopWidth: 2, borderTopColor: MODE_ACCENT.sports },
-                              pressed && { opacity: 0.7 },
-                            ]}
-                          >
-                            <View style={styles.domainCardHeader}>
-                              <View style={[styles.domainCardIconWrap, { backgroundColor: `${accent}18` }]}>
-                                <IconSymbol name={card.icon} size={16} color={accent} />
-                              </View>
-                              <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
-                              <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
-                            </View>
-                            <View style={{ paddingLeft: 40 }}>
-                              <View style={styles.statsPreviewRow}>
-                                <View style={styles.statsPreviewPill}>
-                                  <Text style={styles.statsPreviewPillLabel}>PLANS</Text>
-                                  <Text style={[styles.statsPreviewPillValue, { color: colors.text }]}>{activePlans}</Text>
-                                </View>
-                                <View style={styles.statsPreviewPill}>
-                                  <Text style={styles.statsPreviewPillLabel}>SCORE</Text>
-                                  <Text style={[styles.statsPreviewPillValue, { color: MODE_ACCENT.sports }]}>{snap.overallScore}</Text>
-                                </View>
-                                <View style={styles.statsPreviewPill}>
-                                  <Text style={styles.statsPreviewPillLabel}>Δ WEEK</Text>
-                                  <Text style={[styles.statsPreviewPillValue, { color: '#22c55e' }]}>+{snap.deltaFromLastWeek}</Text>
-                                </View>
-                              </View>
-                              <Text style={[styles.richCardSubline, { color: colors.textSecondary, marginTop: 6 }]}>
-                                {WEEKLY_PLANS[0].weekLabel} active · {pendingEvidence} evidence pending
-                              </Text>
-                              {negativeTransfers > 0 && (
-                                <Text style={[styles.richCardAlert, { color: '#EF4444' }]}>
-                                  {negativeTransfers} negative transfer{negativeTransfers !== 1 ? 's' : ''} flagged
-                                </Text>
-                              )}
-                            </View>
-                          </Pressable>
-                        );
-                      }
-
-                      // Default domain card (alerts, etc.)
-                      return (
-                        <Pressable
-                          key={card.id}
-                          onPress={() => { setDrillDown(card.id); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
-                          style={({ pressed }) => [
-                            styles.domainCard,
-                            { backgroundColor: colors.card, borderColor: colors.border },
-                            pressed && { opacity: 0.7 },
-                          ]}
-                        >
-                          <View style={styles.domainCardHeader}>
-                            <View style={[styles.domainCardIconWrap, { backgroundColor: `${accent}18` }]}>
-                              <IconSymbol name={card.icon} size={16} color={accent} />
-                            </View>
-                            <Text style={[styles.domainCardTitle, { color: colors.text }]}>{card.title}</Text>
-                            <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
+                  {/* ===== BLOCK 4 — TEAM SNAPSHOT ===== */}
+                  <Pressable
+                    onPress={() => { openTeamSheet(); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
+                    style={({ pressed }) => [styles.snapshotCard, pressed && { opacity: 0.85 }]}
+                  >
+                    <View style={styles.snapshotRow}>
+                      <View style={styles.snapshotKRBlock}>
+                        <Text style={styles.snapshotKRLabel}>TEAM KR</Text>
+                        <Text style={[styles.snapshotKRValue, { color: getKRColor(liveTeamKR) }]}>{liveTeamKR}</Text>
+                      </View>
+                      <View style={{ flex: 1, gap: 6 }}>
+                        <View style={{ flexDirection: 'row', gap: 8 }}>
+                          <View style={styles.snapshotPill}>
+                            <Text style={styles.snapshotPillLabel}>OFF</Text>
+                            <Text style={[styles.snapshotPillValue, { color: getKRColor(liveOffKR) }]}>{liveOffKR}</Text>
                           </View>
-                          <Text style={[styles.domainCardPreview, { color: colors.textSecondary }]}>
-                            {previews[card.id]}
-                          </Text>
-                        </Pressable>
-                      );
-                    })}
+                          <View style={styles.snapshotPill}>
+                            <Text style={styles.snapshotPillLabel}>DEF</Text>
+                            <Text style={[styles.snapshotPillValue, { color: getKRColor(liveDefKR) }]}>{liveDefKR}</Text>
+                          </View>
+                        </View>
+                        <Text style={styles.snapshotSystem} numberOfLines={1}>
+                          {selectedOffSystem} / {selectedDefSystem}
+                        </Text>
+                        <Text style={styles.snapshotRecord}>
+                          {KaNeXT_RECORD.overall} · {KaNeXT_RECORD.conference} conf
+                        </Text>
+                      </View>
+                      <IconSymbol name="chevron.right" size={14} color="rgba(255,255,255,0.4)" />
+                    </View>
+                  </Pressable>
+
+                  {/* ===== BLOCK 5 — DOMAIN GRID (2×3) ===== */}
+                  <View style={styles.domainGrid}>
+                    {visibleCards.map(card => (
+                      <Pressable
+                        key={card.id}
+                        onPress={() => {
+                          if (card.id === 'recruiting') {
+                            pagerRef.current?.setPage(3);
+                          } else {
+                            setDrillDown(card.id);
+                          }
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        }}
+                        style={({ pressed }) => [
+                          styles.domainGridCard,
+                          { backgroundColor: colors.card, borderColor: colors.border, width: (Dimensions.get('window').width - Spacing.md * 2 - 10) / 2 },
+                          pressed && { opacity: 0.7 },
+                        ]}
+                      >
+                        <View style={[styles.domainGridIcon, { backgroundColor: `${accent}18` }]}>
+                          <IconSymbol name={card.icon} size={16} color={accent} />
+                        </View>
+                        <Text style={[styles.domainGridTitle, { color: colors.text }]} numberOfLines={1}>{card.title}</Text>
+                        <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+                      </Pressable>
+                    ))}
                   </View>
                 </ScrollView>
               </View>
 
               {/* Roster */}
-              <View key="roster" style={{ flex: 1 }}>
-                <RosterContent teamKR={liveTeamKR} offKR={liveOffKR} defKR={liveDefKR} onLogoLongPress={openTeamSheet} onOpenStatistics={() => { setActiveIndex(0); pagerRef.current?.setPage(0); setDrillDown('stats'); }} onKRPress={() => setKrSheetVisible(true)} />
+              <View key="roster" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ fontSize: 20, fontWeight: '700', color: '#fff', marginBottom: 8 }}>Coming Soon</Text>
+                <Text style={{ fontSize: 14, color: '#A1A1AA', textAlign: 'center', paddingHorizontal: 40 }}>Roster is under development.</Text>
               </View>
 
               {/* Calendar */}
-              <View key="calendar" style={{ flex: 1 }}>
-                <SportsCalendarV2 colors={colors} />
+              <View key="calendar" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ fontSize: 20, fontWeight: '700', color: '#fff', marginBottom: 8 }}>Coming Soon</Text>
+                <Text style={{ fontSize: 14, color: '#A1A1AA', textAlign: 'center', paddingHorizontal: 40 }}>Schedule is under development.</Text>
               </View>
 
               {/* Recruiting */}
-              <View key="recruiting" style={{ flex: 1 }}>
-                <PlayerPoolContentV2 colors={colors} />
+              <View key="recruiting" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ fontSize: 20, fontWeight: '700', color: '#fff', marginBottom: 8 }}>Coming Soon</Text>
+                <Text style={{ fontSize: 14, color: '#A1A1AA', textAlign: 'center', paddingHorizontal: 40 }}>Recruiting is under development.</Text>
               </View>
             </PagerView>
           </EdgeHoldAdvance>
@@ -1200,13 +1015,9 @@ export default function HomeScreen() {
   const { state } = useAppContext();
   const mode = useMode();
 
-  // Sports — empty shell
+  // Sports — full dashboard
   if (mode === 'sports') {
-    return (
-      <ThemedView style={styles.container}>
-        <EmptyModeShell tabs={SPORTS_HOME_TABS} />
-      </ThemedView>
-    );
+    return <SportsHome />;
   }
 
   // Competition — coming soon
@@ -2281,6 +2092,97 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     marginTop: 4,
+  },
+
+  // Team Snapshot Card (Block 4)
+  snapshotCard: {
+    backgroundColor: '#0B0F14',
+    borderRadius: 14,
+    marginHorizontal: Spacing.md,
+    marginBottom: Spacing.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.08)',
+  },
+  snapshotRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 14,
+    gap: 14,
+  },
+  snapshotKRBlock: {
+    alignItems: 'center',
+    gap: 2,
+  },
+  snapshotKRLabel: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#888',
+    letterSpacing: 0.5,
+  },
+  snapshotKRValue: {
+    fontSize: 36,
+    fontWeight: '800',
+    letterSpacing: -1.5,
+    lineHeight: 40,
+  },
+  snapshotPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#2F3336',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  snapshotPillLabel: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#888',
+    letterSpacing: 0.3,
+  },
+  snapshotPillValue: {
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  snapshotSystem: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: 'rgba(255,255,255,0.5)',
+  },
+  snapshotRecord: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: 'rgba(255,255,255,0.7)',
+  },
+
+  // Domain Grid (Block 5 — 2×3)
+  domainGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    paddingHorizontal: Spacing.md,
+    marginBottom: Spacing.md,
+  },
+  domainGridCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  domainGridIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 7,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  domainGridTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    flex: 1,
   },
 
   // Coming Soon
