@@ -1,10 +1,10 @@
 /**
  * Team Sheet — Universal 4-tab team profile bottom sheet.
  * Tabs: Overview | Roster | Stats | Video
- * Header (team name, record, KR chip) always visible above tabs.
+ * Header (team name, record, level/conf) + Sticky Rating Strip always visible.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
@@ -12,8 +12,10 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Colors, Spacing } from '@/constants/theme';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { getKRColor } from '@/utils/kr-display';
+import { getKRColor, CLUSTER_ORDER, CLUSTER_LABELS } from '@/utils/kr-display';
 import type { TeamCardData } from '@/utils/global-entity-sheets';
+import { openPlayerSheet, openCoachSheet } from '@/utils/global-entity-sheets';
+import { nationalPool, toGlobalPlayerCard } from '@/data/national-pool';
 
 function nameToHue(name: string): number {
   let h = 0;
@@ -30,6 +32,24 @@ const TABS: { key: Tab; label: string }[] = [
   { key: 'video', label: 'Video' },
 ];
 
+type LensKey = 'overall' | 'shooting' | 'finishing' | 'playmaking' | 'on_ball_defense' | 'team_defense' | 'rebounding' | 'physical';
+
+const LENS_OPTIONS: { key: LensKey; label: string }[] = [
+  { key: 'overall', label: 'Overall' },
+  { key: 'shooting', label: 'Shooting' },
+  { key: 'finishing', label: 'Finishing' },
+  { key: 'playmaking', label: 'Playmaking' },
+  { key: 'on_ball_defense', label: 'On-Ball D' },
+  { key: 'team_defense', label: 'Team D' },
+  { key: 'rebounding', label: 'Rebound' },
+  { key: 'physical', label: 'Frame' },
+];
+
+function getLensScore(player: any, lens: LensKey): number | undefined {
+  if (lens === 'overall') return player.kr;
+  return player.clusters?.[lens];
+}
+
 interface Props {
   visible: boolean;
   onClose: () => void;
@@ -41,11 +61,57 @@ export function TeamSheet({ visible, onClose, data }: Props) {
   const colors = Colors[colorScheme];
   const accent = useAccentColor();
   const [activeTab, setActiveTab] = useState<Tab>('overview');
+  const [lens, setLens] = useState<LensKey>('overall');
 
   // Reset tab when sheet reopens
   React.useEffect(() => {
-    if (visible) setActiveTab('overview');
+    if (visible) {
+      setActiveTab('overview');
+      setLens('overall');
+    }
   }, [visible]);
+
+  // Get team roster from nationalPool
+  const roster = useMemo(() => {
+    if (!data?.name) return [];
+    return nationalPool.getTeamRoster(data.name);
+  }, [data?.name]);
+
+  // Get team system
+  const teamSystem = useMemo(() => {
+    if (!data?.name) return null;
+    return nationalPool.getTeamSystem(data.name);
+  }, [data?.name]);
+
+  // Rotation snapshot (top 5-8 by KR)
+  const rotationSnapshot = useMemo(() => {
+    return [...roster]
+      .filter(p => p.kr != null)
+      .sort((a, b) => (b.kr ?? 0) - (a.kr ?? 0))
+      .slice(0, 8);
+  }, [roster]);
+
+  // Stat leaders
+  const statLeaders = useMemo(() => {
+    if (roster.length === 0) return null;
+    const byPpg = [...roster].sort((a, b) => (b.ppg ?? 0) - (a.ppg ?? 0));
+    const byRpg = [...roster].sort((a, b) => (b.rpg ?? 0) - (a.rpg ?? 0));
+    const byApg = [...roster].sort((a, b) => (b.apg ?? 0) - (a.apg ?? 0));
+    return {
+      ppg: byPpg[0],
+      rpg: byRpg[0],
+      apg: byApg[0],
+    };
+  }, [roster]);
+
+  // Sort roster by active lens
+  const sortedRoster = useMemo(() => {
+    return [...roster].sort((a, b) => {
+      const sa = getLensScore(a, lens) ?? -1;
+      const sb = getLensScore(b, lens) ?? -1;
+      return sb - sa;
+    });
+  }, [roster, lens]);
 
   if (!data) return null;
 
@@ -75,11 +141,48 @@ export function TeamSheet({ visible, onClose, data }: Props) {
               <Text style={[styles.recordText, { color: colors.textSecondary }]}>{data.record}</Text>
             )}
           </View>
-          {data.teamKR != null && (
-            <View style={[styles.krChip, { backgroundColor: krColor + '20' }]}>
-              <Text style={[styles.krChipVal, { color: krColor }]}>{Math.round(data.teamKR)}</Text>
-            </View>
-          )}
+        </View>
+
+        {/* ── STICKY TEAM RATING STRIP ── */}
+        <View style={[styles.ratingStrip, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={styles.ratingStripMain}>
+            {data.teamKR != null && (
+              <View style={[styles.ratingBadge, { backgroundColor: krColor + '20' }]}>
+                <Text style={[styles.ratingBadgeVal, { color: krColor }]}>{Math.round(data.teamKR)}</Text>
+                <Text style={[styles.ratingBadgeLabel, { color: colors.textTertiary }]}>KR</Text>
+              </View>
+            )}
+            {data.offKR != null && (
+              <View style={styles.ratingMini}>
+                <Text style={[styles.ratingMiniVal, { color: getKRColor(data.offKR) }]}>{Math.round(data.offKR)}</Text>
+                <Text style={[styles.ratingMiniLabel, { color: colors.textTertiary }]}>OFF</Text>
+              </View>
+            )}
+            {data.defKR != null && (
+              <View style={styles.ratingMini}>
+                <Text style={[styles.ratingMiniVal, { color: getKRColor(data.defKR) }]}>{Math.round(data.defKR)}</Text>
+                <Text style={[styles.ratingMiniLabel, { color: colors.textTertiary }]}>DEF</Text>
+              </View>
+            )}
+          </View>
+          {/* Systems summary */}
+          <View style={styles.systemsSummaryRow}>
+            {(data.osie || teamSystem?.offSystem) && (
+              <Text style={[styles.systemsTag, { color: colors.textTertiary }]}>
+                OFF: {data.osie || teamSystem?.offSystem || '—'}
+              </Text>
+            )}
+            {(data.dsie || teamSystem?.defSystem) && (
+              <Text style={[styles.systemsTag, { color: colors.textTertiary }]}>
+                DEF: {data.dsie || teamSystem?.defSystem || '—'}
+              </Text>
+            )}
+            {teamSystem?.paceBand && (
+              <Text style={[styles.systemsTag, { color: colors.textTertiary }]}>
+                TEMPO: {teamSystem.paceBand}
+              </Text>
+            )}
+          </View>
         </View>
 
         {/* ── TAB PILLS ── */}
@@ -114,20 +217,24 @@ export function TeamSheet({ visible, onClose, data }: Props) {
             <>
               {/* System Identity */}
               <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>SYSTEM</Text>
+                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>SYSTEM IDENTITY</Text>
                 <View style={styles.systemPair}>
                   <View style={styles.systemHalf}>
                     <Text style={[styles.systemLabel, { color: colors.textTertiary }]}>OFFENSE</Text>
-                    <Text style={[styles.systemValue, { color: colors.text }]}>{data.osie || '—'}</Text>
-                    {data.osieScore != null && (
-                      <Text style={[styles.systemScore, { color: getKRColor(data.osieScore) }]}>{Math.round(data.osieScore)}</Text>
+                    <Text style={[styles.systemValue, { color: colors.text }]}>{data.osie || teamSystem?.offSystem || '—'}</Text>
+                    {(data.osieScore ?? teamSystem?.offSystemScore) != null && (
+                      <Text style={[styles.systemScore, { color: getKRColor(data.osieScore ?? teamSystem?.offSystemScore) }]}>
+                        {Math.round((data.osieScore ?? teamSystem?.offSystemScore)!)}
+                      </Text>
                     )}
                   </View>
                   <View style={styles.systemHalf}>
                     <Text style={[styles.systemLabel, { color: colors.textTertiary }]}>DEFENSE</Text>
-                    <Text style={[styles.systemValue, { color: colors.text }]}>{data.dsie || '—'}</Text>
-                    {data.dsieScore != null && (
-                      <Text style={[styles.systemScore, { color: getKRColor(data.dsieScore) }]}>{Math.round(data.dsieScore)}</Text>
+                    <Text style={[styles.systemValue, { color: colors.text }]}>{data.dsie || teamSystem?.defSystem || '—'}</Text>
+                    {(data.dsieScore ?? teamSystem?.defSystemScore) != null && (
+                      <Text style={[styles.systemScore, { color: getKRColor(data.dsieScore ?? teamSystem?.defSystemScore) }]}>
+                        {Math.round((data.dsieScore ?? teamSystem?.defSystemScore)!)}
+                      </Text>
                     )}
                   </View>
                 </View>
@@ -150,7 +257,40 @@ export function TeamSheet({ visible, onClose, data }: Props) {
                 </View>
               </View>
 
-              {/* Strengths */}
+              {/* Rotation Snapshot */}
+              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>ROTATION SNAPSHOT</Text>
+                {rotationSnapshot.length > 0 ? (
+                  rotationSnapshot.map((p, i) => {
+                    const pKrColor = getKRColor(p.kr);
+                    return (
+                      <Pressable
+                        key={p.id || i}
+                        style={styles.rotationRow}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          openPlayerSheet(toGlobalPlayerCard(p));
+                        }}
+                      >
+                        <Text style={[styles.rotationRank, { color: colors.textTertiary }]}>{i + 1}</Text>
+                        <View style={{ flex: 1 }}>
+                          <Text style={[styles.rotationName, { color: colors.text }]}>{p.name}</Text>
+                          <Text style={[styles.rotationPos, { color: colors.textSecondary }]}>{p.position}</Text>
+                        </View>
+                        {p.kr != null && (
+                          <Text style={[styles.rotationKR, { color: pKrColor }]}>{Math.round(p.kr)}</Text>
+                        )}
+                      </Pressable>
+                    );
+                  })
+                ) : (
+                  <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
+                    No roster data available for rotation snapshot.
+                  </Text>
+                )}
+              </View>
+
+              {/* Strengths / Risks */}
               {data.strengths && data.strengths.length > 0 && (
                 <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
                   <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>STRENGTHS</Text>
@@ -162,8 +302,6 @@ export function TeamSheet({ visible, onClose, data }: Props) {
                   ))}
                 </View>
               )}
-
-              {/* Risks */}
               {data.risks && data.risks.length > 0 && (
                 <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
                   <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>RISKS</Text>
@@ -175,13 +313,6 @@ export function TeamSheet({ visible, onClose, data }: Props) {
                   ))}
                 </View>
               )}
-
-              {/* Coverage tag */}
-              {data.coverageTag && (
-                <View style={[styles.tagChip, { backgroundColor: accent + '15', borderColor: accent + '40' }]}>
-                  <Text style={[styles.tagText, { color: accent }]}>{data.coverageTag}</Text>
-                </View>
-              )}
             </>
           )}
 
@@ -190,12 +321,42 @@ export function TeamSheet({ visible, onClose, data }: Props) {
               ════════════════════════════════════════════ */}
           {activeTab === 'roster' && (
             <>
+              {/* Lens toggle */}
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.lensScroll}>
+                <View style={styles.lensRow}>
+                  {LENS_OPTIONS.map(opt => {
+                    const active = lens === opt.key;
+                    return (
+                      <Pressable
+                        key={opt.key}
+                        style={[styles.lensPill, active && { backgroundColor: accent + '20' }]}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          setLens(opt.key);
+                        }}
+                      >
+                        <Text style={[styles.lensPillText, { color: active ? accent : colors.textSecondary }]}>
+                          {opt.label}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </ScrollView>
+
               {/* Coaching staff */}
-              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>COACHING STAFF</Text>
-                {data.coaches && data.coaches.length > 0 ? (
-                  data.coaches.map((coach, i) => (
-                    <View key={i} style={styles.personRow}>
+              {data.coaches && data.coaches.length > 0 && (
+                <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                  <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>COACHING STAFF</Text>
+                  {data.coaches.map((coach, i) => (
+                    <Pressable
+                      key={i}
+                      style={styles.personRow}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        openCoachSheet({ name: coach.name, title: coach.title, tendencies: coach.tendencies });
+                      }}
+                    >
                       <View style={[styles.personAvatar, { backgroundColor: `hsl(${nameToHue(coach.name)}, 40%, 30%)` }]}>
                         <Text style={styles.personInitials}>
                           {coach.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
@@ -204,32 +365,48 @@ export function TeamSheet({ visible, onClose, data }: Props) {
                       <View style={{ flex: 1 }}>
                         <Text style={[styles.personName, { color: colors.text }]}>{coach.name}</Text>
                         <Text style={[styles.personRole, { color: colors.textSecondary }]}>{coach.title}</Text>
-                        {coach.tendencies && (
-                          <Text style={[styles.personDetail, { color: colors.textTertiary }]}>{coach.tendencies}</Text>
-                        )}
                       </View>
-                    </View>
-                  ))
-                ) : (
-                  <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>No coaching data available.</Text>
-                )}
-              </View>
+                    </Pressable>
+                  ))}
+                </View>
+              )}
 
-              {/* Top contributors */}
+              {/* Player roster */}
               <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>TOP CONTRIBUTORS</Text>
-                {data.topContributors && data.topContributors.length > 0 ? (
-                  data.topContributors.map((p, i) => (
-                    <View key={i} style={styles.contributorRow}>
-                      <Text style={[styles.contributorName, { color: colors.text }]}>{p.name}</Text>
-                      <Text style={[styles.contributorPos, { color: colors.textSecondary }]}>{p.position}</Text>
-                      {p.kr != null && (
-                        <Text style={[styles.contributorKR, { color: getKRColor(p.kr) }]}>{Math.round(p.kr)}</Text>
-                      )}
-                    </View>
-                  ))
+                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>
+                  ROSTER ({sortedRoster.length})
+                </Text>
+                {sortedRoster.length > 0 ? (
+                  sortedRoster.map((p, i) => {
+                    const score = getLensScore(p, lens);
+                    const scoreColor = getKRColor(score);
+                    return (
+                      <Pressable
+                        key={p.id || i}
+                        style={styles.rosterRow}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          openPlayerSheet(toGlobalPlayerCard(p));
+                        }}
+                      >
+                        <View style={{ flex: 1 }}>
+                          <Text style={[styles.rosterName, { color: colors.text }]}>{p.name}</Text>
+                          <Text style={[styles.rosterMeta, { color: colors.textSecondary }]}>
+                            {p.position} · {p.height}{p.weight ? ` · ${p.weight}` : ''} · {p.classYear}
+                          </Text>
+                        </View>
+                        {score != null ? (
+                          <Text style={[styles.rosterScore, { color: scoreColor }]}>{Math.round(score)}</Text>
+                        ) : (
+                          <Text style={[styles.rosterScore, { color: colors.textTertiary }]}>—</Text>
+                        )}
+                      </Pressable>
+                    );
+                  })
                 ) : (
-                  <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>No contributor data available.</Text>
+                  <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
+                    No roster data available.
+                  </Text>
                 )}
               </View>
             </>
@@ -242,7 +419,7 @@ export function TeamSheet({ visible, onClose, data }: Props) {
             <>
               {/* KR Breakdown */}
               <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>KR BREAKDOWN</Text>
+                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>TEAM KR</Text>
                 <View style={styles.krBreakdownRow}>
                   <View style={styles.krBreakdownItem}>
                     <Text style={[styles.krBreakdownLabel, { color: colors.textTertiary }]}>OFF KR</Text>
@@ -265,12 +442,56 @@ export function TeamSheet({ visible, onClose, data }: Props) {
                 </View>
               </View>
 
-              {/* Placeholder for stat leaders */}
+              {/* Stat Leaders */}
               <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
                 <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>STAT LEADERS</Text>
-                <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
-                  Stat leaders not yet available for this team.
-                </Text>
+                {statLeaders ? (
+                  <>
+                    {statLeaders.ppg && statLeaders.ppg.ppg != null && (
+                      <Pressable
+                        style={styles.leaderRow}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          openPlayerSheet(toGlobalPlayerCard(statLeaders.ppg));
+                        }}
+                      >
+                        <Text style={[styles.leaderCategory, { color: colors.textTertiary }]}>PPG</Text>
+                        <Text style={[styles.leaderName, { color: colors.text }]}>{statLeaders.ppg.name}</Text>
+                        <Text style={[styles.leaderValue, { color: accent }]}>{statLeaders.ppg.ppg?.toFixed(1)}</Text>
+                      </Pressable>
+                    )}
+                    {statLeaders.rpg && statLeaders.rpg.rpg != null && (
+                      <Pressable
+                        style={styles.leaderRow}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          openPlayerSheet(toGlobalPlayerCard(statLeaders.rpg));
+                        }}
+                      >
+                        <Text style={[styles.leaderCategory, { color: colors.textTertiary }]}>RPG</Text>
+                        <Text style={[styles.leaderName, { color: colors.text }]}>{statLeaders.rpg.name}</Text>
+                        <Text style={[styles.leaderValue, { color: accent }]}>{statLeaders.rpg.rpg?.toFixed(1)}</Text>
+                      </Pressable>
+                    )}
+                    {statLeaders.apg && statLeaders.apg.apg != null && (
+                      <Pressable
+                        style={styles.leaderRow}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          openPlayerSheet(toGlobalPlayerCard(statLeaders.apg));
+                        }}
+                      >
+                        <Text style={[styles.leaderCategory, { color: colors.textTertiary }]}>APG</Text>
+                        <Text style={[styles.leaderName, { color: colors.text }]}>{statLeaders.apg.name}</Text>
+                        <Text style={[styles.leaderValue, { color: accent }]}>{statLeaders.apg.apg?.toFixed(1)}</Text>
+                      </Pressable>
+                    )}
+                  </>
+                ) : (
+                  <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
+                    No stat data available.
+                  </Text>
+                )}
               </View>
             </>
           )}
@@ -281,10 +502,26 @@ export function TeamSheet({ visible, onClose, data }: Props) {
           {activeTab === 'video' && (
             <>
               <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>VIDEO SHORTCUTS</Text>
+                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>RECENT VIDEOS</Text>
                 <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
-                  No video clips available. Film review will appear here when available.
+                  No video clips available yet.
                 </Text>
+              </View>
+
+              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>SHORTCUTS</Text>
+                <Pressable
+                  style={[styles.shortcutBtn, { backgroundColor: accent + '10', borderColor: accent + '30' }]}
+                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                >
+                  <Text style={[styles.shortcutBtnText, { color: accent }]}>Game Room</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.shortcutBtn, { backgroundColor: accent + '10', borderColor: accent + '30' }]}
+                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                >
+                  <Text style={[styles.shortcutBtnText, { color: accent }]}>Scout Room</Text>
+                </Pressable>
               </View>
             </>
           )}
@@ -307,8 +544,18 @@ const styles = StyleSheet.create({
   teamName: { fontSize: 18, fontWeight: '800', letterSpacing: -0.5 },
   subline: { fontSize: 13, fontWeight: '700', letterSpacing: 0.5, marginTop: 2 },
   recordText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3, marginTop: 2 },
-  krChip: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 12, alignItems: 'center' },
-  krChipVal: { fontSize: 22, fontWeight: '800', letterSpacing: -0.3 },
+
+  // Sticky Rating Strip
+  ratingStrip: { borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, padding: Spacing.sm, gap: 6 },
+  ratingStripMain: { flexDirection: 'row', alignItems: 'center', gap: 16, justifyContent: 'center' },
+  ratingBadge: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 10, alignItems: 'center' },
+  ratingBadgeVal: { fontSize: 24, fontWeight: '900', letterSpacing: -0.5 },
+  ratingBadgeLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 1 },
+  ratingMini: { alignItems: 'center' },
+  ratingMiniVal: { fontSize: 16, fontWeight: '800', letterSpacing: -0.3 },
+  ratingMiniLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 0.5 },
+  systemsSummaryRow: { flexDirection: 'row', justifyContent: 'center', gap: 10 },
+  systemsTag: { fontSize: 10, fontWeight: '600', letterSpacing: 0.3 },
 
   // Tab pills
   tabRow: { flexDirection: 'row', borderRadius: 10, padding: 3, gap: 4 },
@@ -333,20 +580,41 @@ const styles = StyleSheet.create({
   recordLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase' },
   recordValue: { fontSize: 17, fontWeight: '800', letterSpacing: -0.3 },
 
+  // Rotation snapshot
+  rotationRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 4 },
+  rotationRank: { width: 20, fontSize: 12, fontWeight: '700', textAlign: 'center' },
+  rotationName: { fontSize: 13, fontWeight: '700' },
+  rotationPos: { fontSize: 11, fontWeight: '600', marginTop: 1 },
+  rotationKR: { fontSize: 14, fontWeight: '800', width: 30, textAlign: 'right' },
+
   // KR breakdown
   krBreakdownRow: { flexDirection: 'row', justifyContent: 'space-around' },
   krBreakdownItem: { alignItems: 'center', gap: 2 },
   krBreakdownLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase' },
   krBreakdownValue: { fontSize: 18, fontWeight: '800', letterSpacing: -0.3 },
 
+  // Lens
+  lensScroll: { marginBottom: 4 },
+  lensRow: { flexDirection: 'row', gap: 6, paddingHorizontal: 2 },
+  lensPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16 },
+  lensPillText: { fontSize: 12, fontWeight: '700' },
+
+  // Roster
+  rosterRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(255,255,255,0.05)' },
+  rosterName: { fontSize: 14, fontWeight: '700' },
+  rosterMeta: { fontSize: 11, fontWeight: '600', marginTop: 1 },
+  rosterScore: { fontSize: 16, fontWeight: '800', width: 34, textAlign: 'right' },
+
+  // Stat Leaders
+  leaderRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 },
+  leaderCategory: { width: 30, fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  leaderName: { fontSize: 13, fontWeight: '700', flex: 1 },
+  leaderValue: { fontSize: 14, fontWeight: '800', width: 36, textAlign: 'right' },
+
   // Lists
   listRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 6 },
   bullet: { fontSize: 13, lineHeight: 18 },
   listText: { fontSize: 13, fontWeight: '600', lineHeight: 18, flex: 1 },
-
-  // Tag
-  tagChip: { alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, borderWidth: StyleSheet.hairlineWidth },
-  tagText: { fontSize: 12, fontWeight: '700', letterSpacing: 0.3 },
 
   // People
   personRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
@@ -354,13 +622,10 @@ const styles = StyleSheet.create({
   personInitials: { fontSize: 14, fontWeight: '800', color: '#fff' },
   personName: { fontSize: 14, fontWeight: '700' },
   personRole: { fontSize: 12, fontWeight: '600', marginTop: 1 },
-  personDetail: { fontSize: 11, fontWeight: '500', marginTop: 2 },
 
-  // Contributors
-  contributorRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  contributorName: { fontSize: 13, fontWeight: '700', flex: 1 },
-  contributorPos: { fontSize: 12, fontWeight: '600' },
-  contributorKR: { fontSize: 14, fontWeight: '800', width: 30, textAlign: 'right' },
+  // Video shortcuts
+  shortcutBtn: { paddingVertical: 10, borderRadius: 10, borderWidth: StyleSheet.hairlineWidth, alignItems: 'center' },
+  shortcutBtnText: { fontSize: 14, fontWeight: '700' },
 
   placeholderText: { fontSize: 13, fontWeight: '500', fontStyle: 'italic' },
 });

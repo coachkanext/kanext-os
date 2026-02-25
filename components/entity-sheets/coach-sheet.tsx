@@ -1,7 +1,7 @@
 /**
  * Coach Sheet — Universal 3-tab coach profile bottom sheet.
- * Tabs: Overview | History | Notes
- * Header (name, title, avatar) always visible above tabs.
+ * Tabs: Bio | Systems | Notes
+ * Header (name, title, team) always visible above tabs.
  */
 
 import React, { useState } from 'react';
@@ -20,11 +20,11 @@ function nameToHue(name: string): number {
   return Math.abs(h) % 360;
 }
 
-type Tab = 'overview' | 'history' | 'notes';
+type Tab = 'bio' | 'systems' | 'notes';
 
 const TABS: { key: Tab; label: string }[] = [
-  { key: 'overview', label: 'Overview' },
-  { key: 'history', label: 'History' },
+  { key: 'bio', label: 'Bio' },
+  { key: 'systems', label: 'Systems' },
   { key: 'notes', label: 'Notes' },
 ];
 
@@ -38,11 +38,11 @@ export function CoachSheet({ visible, onClose, data }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const accent = useAccentColor();
-  const [activeTab, setActiveTab] = useState<Tab>('overview');
+  const [activeTab, setActiveTab] = useState<Tab>('bio');
 
   // Reset tab when sheet reopens
   React.useEffect(() => {
-    if (visible) setActiveTab('overview');
+    if (visible) setActiveTab('bio');
   }, [visible]);
 
   if (!data) return null;
@@ -66,9 +66,6 @@ export function CoachSheet({ visible, onClose, data }: Props) {
           <View style={{ flex: 1 }}>
             <Text style={[styles.coachName, { color: colors.text }]}>{data.name}</Text>
             <Text style={[styles.coachTitle, { color: colors.textSecondary }]}>{data.title}</Text>
-            {data.tenure && (
-              <Text style={[styles.tenure, { color: colors.textTertiary }]}>{data.tenure}</Text>
-            )}
           </View>
         </View>
 
@@ -98,34 +95,55 @@ export function CoachSheet({ visible, onClose, data }: Props) {
         <View style={styles.tabContent}>
 
           {/* ════════════════════════════════════════════
-              TAB 1 — OVERVIEW
+              TAB 1 — BIO
               ════════════════════════════════════════════ */}
-          {activeTab === 'overview' && (
+          {activeTab === 'bio' && (
             <>
+              {/* Role & Tenure */}
+              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>ROLE & TENURE</Text>
+                <InfoRow label="Title" value={data.title} colors={colors} />
+                {data.tenure && <InfoRow label="Tenure" value={data.tenure} colors={colors} />}
+                {data.recordAtInstitution && (
+                  <InfoRow label="Record" value={data.recordAtInstitution} colors={colors} />
+                )}
+              </View>
+
               {/* Bio */}
-              {data.bio && (
+              {data.bio ? (
                 <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
                   <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>BIO</Text>
                   <Text style={[styles.bioText, { color: colors.textSecondary }]}>{data.bio}</Text>
                 </View>
+              ) : (
+                <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                  <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>BIO</Text>
+                  <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
+                    Full coaching biography not yet available.
+                  </Text>
+                </View>
               )}
+            </>
+          )}
 
+          {/* ════════════════════════════════════════════
+              TAB 2 — SYSTEMS
+              ════════════════════════════════════════════ */}
+          {activeTab === 'systems' && (
+            <>
               {/* System profile */}
-              {(data.offSystem || data.defSystem) && (
+              {(data.offSystem || data.defSystem) ? (
                 <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
                   <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>SYSTEM PROFILE</Text>
-                  {data.offSystem && (
-                    <View style={styles.infoRow}>
-                      <Text style={[styles.infoLabel, { color: colors.textTertiary }]}>Offensive System</Text>
-                      <Text style={[styles.infoValue, { color: colors.text }]}>{data.offSystem}</Text>
-                    </View>
-                  )}
-                  {data.defSystem && (
-                    <View style={styles.infoRow}>
-                      <Text style={[styles.infoLabel, { color: colors.textTertiary }]}>Defensive System</Text>
-                      <Text style={[styles.infoValue, { color: colors.text }]}>{data.defSystem}</Text>
-                    </View>
-                  )}
+                  {data.offSystem && <InfoRow label="Offensive System" value={data.offSystem} colors={colors} />}
+                  {data.defSystem && <InfoRow label="Defensive System" value={data.defSystem} colors={colors} />}
+                </View>
+              ) : (
+                <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                  <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>SYSTEM PROFILE</Text>
+                  <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
+                    System data not yet available.
+                  </Text>
                 </View>
               )}
 
@@ -149,55 +167,6 @@ export function CoachSheet({ visible, onClose, data }: Props) {
                   ))}
                 </View>
               )}
-
-              {/* Empty state */}
-              {!data.bio && !data.offSystem && !data.defSystem && !data.tendencies && (!data.knownLevers || data.knownLevers.length === 0) && (
-                <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
-                    Full coaching profile not yet available.
-                  </Text>
-                </View>
-              )}
-            </>
-          )}
-
-          {/* ════════════════════════════════════════════
-              TAB 2 — HISTORY
-              ════════════════════════════════════════════ */}
-          {activeTab === 'history' && (
-            <>
-              {/* Record at institution */}
-              {data.recordAtInstitution ? (
-                <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>RECORD AT INSTITUTION</Text>
-                  <Text style={[styles.recordValue, { color: colors.text }]}>{data.recordAtInstitution}</Text>
-                </View>
-              ) : (
-                <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>RECORD AT INSTITUTION</Text>
-                  <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
-                    Coaching record not yet available.
-                  </Text>
-                </View>
-              )}
-
-              {/* Tenure */}
-              {data.tenure && (
-                <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <View style={styles.infoRow}>
-                    <Text style={[styles.infoLabel, { color: colors.textTertiary }]}>Tenure</Text>
-                    <Text style={[styles.infoValue, { color: colors.text }]}>{data.tenure}</Text>
-                  </View>
-                </View>
-              )}
-
-              {/* Previous stops placeholder */}
-              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>PREVIOUS STOPS</Text>
-                <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
-                  Coaching history not yet available.
-                </Text>
-              </View>
             </>
           )}
 
@@ -221,6 +190,17 @@ export function CoachSheet({ visible, onClose, data }: Props) {
   );
 }
 
+// ── Helper Components ──
+
+function InfoRow({ label, value, colors }: { label: string; value: string; colors: typeof Colors.light }) {
+  return (
+    <View style={styles.infoRow}>
+      <Text style={[styles.infoLabel, { color: colors.textTertiary }]}>{label}</Text>
+      <Text style={[styles.infoValue, { color: colors.text }]}>{value}</Text>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   headerSection: { padding: Spacing.md, paddingBottom: 0, gap: Spacing.sm },
   scroll: { maxHeight: '100%' },
@@ -232,7 +212,6 @@ const styles = StyleSheet.create({
   avatarText: { fontSize: 20, fontWeight: '800', color: '#fff', letterSpacing: 1 },
   coachName: { fontSize: 18, fontWeight: '800', letterSpacing: -0.5 },
   coachTitle: { fontSize: 13, fontWeight: '700', letterSpacing: 0.5, marginTop: 2 },
-  tenure: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3, marginTop: 2 },
 
   // Tab pills
   tabRow: { flexDirection: 'row', borderRadius: 10, padding: 3, gap: 4 },
@@ -249,9 +228,6 @@ const styles = StyleSheet.create({
   infoRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   infoLabel: { fontSize: 12, fontWeight: '700', letterSpacing: 0.5 },
   infoValue: { fontSize: 13, fontWeight: '700' },
-
-  // Record
-  recordValue: { fontSize: 17, fontWeight: '800', letterSpacing: -0.3 },
 
   // Levers
   leverRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 6 },

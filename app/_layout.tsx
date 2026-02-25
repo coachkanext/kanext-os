@@ -45,13 +45,14 @@ import { SplitNexusOverlay } from '@/components/nexus/split-nexus-overlay';
 
 import { registerEntitySheetHandlers } from '@/utils/global-entity-sheets';
 import type {
-  TeamCardData, PlayerCardData, CoachCardData,
+  TeamCardData, PlayerCardData, CoachCardData, EventCardData,
   DriverCardData, CrewCardData, PersonCardData, MinistryCardData, LeaderCardData,
 } from '@/utils/global-entity-sheets';
 // Universal entity sheets (single sheet per entity type)
 import { TeamSheet } from '@/components/entity-sheets/team-sheet';
 import { CoachSheet } from '@/components/entity-sheets/coach-sheet';
 import { PlayerSheet } from '@/components/entity-sheets/player-sheet';
+import { EventSheet } from '@/components/entity-sheets/event-sheet';
 // Non-sports entity sheets (unchanged)
 import { DriverCardSheet } from '@/components/entity-sheets/driver-card-sheet';
 import { CrewCardSheet } from '@/components/entity-sheets/crew-card-sheet';
@@ -108,6 +109,8 @@ function AppShell() {
   const [coachSheetVisible, setCoachSheetVisible] = useState(false);
   const [playerSheetData, setPlayerSheetData] = useState<PlayerCardData | null>(null);
   const [playerSheetVisible, setPlayerSheetVisible] = useState(false);
+  const [eventSheetData, setEventSheetData] = useState<EventCardData | null>(null);
+  const [eventSheetVisible, setEventSheetVisible] = useState(false);
   // Non-sports entity sheets
   const [driverCardData, setDriverCardData] = useState<DriverCardData | null>(null);
   const [driverCardVisible, setDriverCardVisible] = useState(false);
@@ -129,6 +132,8 @@ function AppShell() {
       closeCoachSheet: () => setCoachSheetVisible(false),
       openPlayerSheet: (data) => { setPlayerSheetData(data); setPlayerSheetVisible(true); },
       closePlayerSheet: () => setPlayerSheetVisible(false),
+      openEventSheet: (data) => { setEventSheetData(data); setEventSheetVisible(true); },
+      closeEventSheet: () => setEventSheetVisible(false),
       // Non-sports
       openDriverCard: (data) => { setDriverCardData(data); setDriverCardVisible(true); },
       closeDriverCard: () => setDriverCardVisible(false),
@@ -215,6 +220,11 @@ function AppShell() {
         visible={playerSheetVisible}
         onClose={() => setPlayerSheetVisible(false)}
         data={playerSheetData}
+      />
+      <EventSheet
+        visible={eventSheetVisible}
+        onClose={() => setEventSheetVisible(false)}
+        data={eventSheetData}
       />
       {/* Non-sports entity sheets */}
       <DriverCardSheet

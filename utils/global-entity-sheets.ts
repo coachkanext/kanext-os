@@ -120,6 +120,18 @@ export interface LeaderCardData {
   bio?: string;
 }
 
+export interface EventCardData {
+  title: string;
+  date?: string;
+  time?: string;
+  location?: string;
+  notes?: string;
+  type?: string; // 'game' | 'practice' | 'meeting' | 'other'
+  linkedGamePlan?: string;
+  linkedSimulation?: string;
+  linkedVideo?: string;
+}
+
 // ── Handler types ──
 
 type OpenTeamCard = (data: TeamCardData) => void;
@@ -130,6 +142,7 @@ type OpenCrewCard = (data: CrewCardData) => void;
 type OpenPersonCard = (data: PersonCardData) => void;
 type OpenMinistryCard = (data: MinistryCardData) => void;
 type OpenLeaderCard = (data: LeaderCardData) => void;
+type OpenEventCard = (data: EventCardData) => void;
 type CloseHandler = () => void;
 
 // ── Module-level handler slots ──
@@ -153,6 +166,8 @@ let _openMinistryCard: OpenMinistryCard | null = null;
 let _closeMinistryCard: CloseHandler | null = null;
 let _openLeaderCard: OpenLeaderCard | null = null;
 let _closeLeaderCard: CloseHandler | null = null;
+let _openEventSheet: OpenEventCard | null = null;
+let _closeEventSheet: CloseHandler | null = null;
 
 export function registerEntitySheetHandlers(handlers: {
   // Sports sheets (single sheet per entity)
@@ -173,6 +188,8 @@ export function registerEntitySheetHandlers(handlers: {
   closeMinistryCard?: CloseHandler;
   openLeaderCard?: OpenLeaderCard;
   closeLeaderCard?: CloseHandler;
+  openEventSheet?: OpenEventCard;
+  closeEventSheet?: CloseHandler;
 }) {
   _openTeamSheet = handlers.openTeamSheet;
   _closeTeamSheet = handlers.closeTeamSheet;
@@ -191,6 +208,8 @@ export function registerEntitySheetHandlers(handlers: {
   _closeMinistryCard = handlers.closeMinistryCard ?? null;
   _openLeaderCard = handlers.openLeaderCard ?? null;
   _closeLeaderCard = handlers.closeLeaderCard ?? null;
+  _openEventSheet = handlers.openEventSheet ?? null;
+  _closeEventSheet = handlers.closeEventSheet ?? null;
 }
 
 // ── Sports Sheet API ──
@@ -285,4 +304,14 @@ export function openLeaderCard(data: LeaderCardData) {
 
 export function closeLeaderCard() {
   _closeLeaderCard?.();
+}
+
+// ── Event Sheet ──
+
+export function openEventSheet(data: EventCardData) {
+  _openEventSheet?.(data);
+}
+
+export function closeEventSheet() {
+  _closeEventSheet?.();
 }
