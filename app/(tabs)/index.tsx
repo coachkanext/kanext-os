@@ -45,6 +45,7 @@ import { SportsCalendarV2 } from '@/components/calendar/sports-calendar-v2';
 import { SportsStatsV2 } from '@/components/stats/sports-stats-v2';
 import { SportsSimulationV2 } from '@/components/simulation/sports-simulation-v2';
 import { SimulationPage } from '@/components/simulation/simulation-page';
+import { DevelopmentPage } from '@/components/development/development-page';
 import { SportsDevelopmentV2 } from '@/components/development/sports-development-v2';
 import { getKRColor } from '@/utils/kr-display';
 import { TicketsSheet } from '@/components/commerce/tickets-sheet';
@@ -379,6 +380,8 @@ function SportsHome() {
           <GamePlanPage onBack={() => setDrillDown(null)} />
         ) : drillDown === 'simulation' ? (
           <SimulationPage onBack={() => setDrillDown(null)} />
+        ) : drillDown === 'development' ? (
+          <DevelopmentPage onBack={() => setDrillDown(null)} />
         ) : (
           <>
             {/* ===== DRILL-DOWN BACK BAR ===== */}
