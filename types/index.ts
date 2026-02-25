@@ -1007,6 +1007,22 @@ export interface RoomV3 {
   isAnnouncement: boolean;
   readCount?: number;
   totalCount?: number;
+  /** 'program' = seeded channel, 'direct' = small-group room */
+  category?: 'program' | 'direct';
+  /** One pinned message visible at top of room thread */
+  pinnedMessage?: string;
+}
+
+export interface RoomMessageV3 {
+  id: string;
+  sender: string;
+  initials: string;
+  role: string;
+  content: string;
+  timestamp: Date;
+  isMe: boolean;
+  /** @mention targets in the message */
+  mentions?: string[];
 }
 
 export interface NexusEscalationV3 {
@@ -1029,4 +1045,25 @@ export interface ConversationMessageV3 {
   content: string;
   timestamp: Date;
   isMe: boolean;
+}
+
+export interface MentionV3 {
+  id: string;
+  mode: Mode;
+  roomName: string;
+  senderName: string;
+  senderInitials: string;
+  preview: string;
+  timestamp: Date;
+}
+
+export interface InboxEscalationV3 {
+  id: string;
+  mode: Mode;
+  requesterName: string;
+  requesterInitials: string;
+  questionPreview: string;
+  linkedContext?: string;
+  status: 'needs_reply' | 'replied';
+  timestamp: Date;
 }

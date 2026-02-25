@@ -3,7 +3,7 @@
  * 40 inbox threads (8/mode), 30 rooms (6/mode), 15 nexus escalations (3/mode).
  */
 
-import type { Mode, InboxThreadV3, RoomV3, NexusEscalationV3 } from '@/types';
+import type { Mode, InboxThreadV3, RoomV3, NexusEscalationV3, MentionV3, InboxEscalationV3, RoomMessageV3 } from '@/types';
 
 // =============================================================================
 // HELPERS
@@ -23,29 +23,47 @@ function daysAgo(d: number): Date {
 // =============================================================================
 
 const SPORTS_INBOX: InboxThreadV3[] = [
-  { id: 'si1', mode: 'sports', name: 'Marcus Webb', initials: 'MW', role: 'Assistant Coach', preview: 'Film breakdown for Saturday is ready. Check the shared folder.', timestamp: hoursAgo(1), unread: true, pinned: true, isRequest: false },
-  { id: 'si2', mode: 'sports', name: 'Compliance Office', initials: 'CO', role: 'Compliance', preview: 'Reminder: NAIA eligibility forms due Friday.', timestamp: hoursAgo(3), unread: false, pinned: true, isRequest: false },
-  { id: 'si3', mode: 'sports', name: 'Jaylen Thomas', initials: 'JT', role: 'Student Athlete', preview: 'Coach, can we talk about my minutes situation?', timestamp: hoursAgo(2), unread: true, pinned: false, isRequest: false },
-  { id: 'si4', mode: 'sports', name: 'Alex Chen', initials: 'AC', role: 'Recruit', preview: 'Thank you for the offer! I have some questions about the program.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
-  { id: 'si5', mode: 'sports', name: 'Patricia Moore', initials: 'PM', role: 'Parent', preview: 'Hi Coach, wanted to discuss Jaylen\'s academic support options.', timestamp: hoursAgo(8), unread: true, pinned: false, isRequest: false },
-  { id: 'si6', mode: 'sports', name: 'DeShawn Mitchell', initials: 'DM', role: 'Transfer Portal', preview: 'Interested in Carroll College. Can we set up a visit?', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
-  { id: 'si7', mode: 'sports', name: 'Athletic Director', initials: 'AD', role: 'Administration', preview: 'Budget meeting moved to Thursday 2pm.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
-  { id: 'si8', mode: 'sports', name: 'Sports Medicine', initials: 'SM', role: 'Medical Staff', preview: 'Injury report updated for this week.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'si1', mode: 'sports', name: 'HC Miles', initials: 'HM', role: 'Head Coach', preview: 'Need your scouting report on Mitchell before Thursday.', timestamp: hoursAgo(1), unread: true, pinned: false, isRequest: false },
+  { id: 'si2', mode: 'sports', name: 'Jaylen Thomas', initials: 'JT', role: 'Student Athlete', preview: 'Coach Pearson, can we go over film from Tuesday?', timestamp: hoursAgo(2), unread: true, pinned: false, isRequest: false },
+  { id: 'si3', mode: 'sports', name: 'Marcus Davis', initials: 'MD', role: 'Video Coordinator', preview: 'Defensive clips for Saturday uploaded to shared folder.', timestamp: hoursAgo(3), unread: true, pinned: false, isRequest: false },
+  { id: 'si4', mode: 'sports', name: 'DeShawn Mitchell', initials: 'DM', role: 'Recruit', preview: 'Thanks for reaching out, Coach. I\'d love to set up a visit.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
+  { id: 'si5', mode: 'sports', name: 'AD Johnson', initials: 'AJ', role: 'Athletic Director', preview: 'Spring recruiting trip budget approved. Details attached.', timestamp: hoursAgo(8), unread: false, pinned: true, isRequest: false },
+  { id: 'si6', mode: 'sports', name: 'Medical Staff', initials: 'MS', role: 'Medical', preview: 'Thomas cleared for full contact practice tomorrow.', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: false },
+  { id: 'si7', mode: 'sports', name: 'Tyree Williams', initials: 'TW', role: 'Student Athlete', preview: 'Can I get extra film time this week?', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'si8', mode: 'sports', name: 'Patricia Moore', initials: 'PM', role: 'Parent', preview: 'Coach Pearson, wanted to discuss Jaylen\'s academic plan.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
 ];
 
 const SPORTS_ROOMS: RoomV3[] = [
-  { id: 'sr1', mode: 'sports', name: 'Leadership Council', initials: 'LC', color: '#1D9BF0', memberCount: 8, lastMessage: 'Meeting agenda posted for Friday.', timestamp: hoursAgo(2), unread: true, pinned: false, locked: true, isAnnouncement: false },
-  { id: 'sr2', mode: 'sports', name: 'Medical & Training', initials: 'MT', color: '#EF4444', memberCount: 6, lastMessage: 'Updated return-to-play protocol attached.', timestamp: hoursAgo(4), unread: false, pinned: false, locked: true, isAnnouncement: false },
-  { id: 'sr3', mode: 'sports', name: 'Practice 4pm Today', initials: 'PR', color: '#22C55E', memberCount: 25, lastMessage: 'Bring your playbooks. Full walkthrough.', timestamp: hoursAgo(1), unread: true, pinned: true, locked: false, isAnnouncement: true, readCount: 2, totalCount: 3 },
-  { id: 'sr4', mode: 'sports', name: 'Compliance Friday', initials: 'CF', color: '#1D9BF0', memberCount: 15, lastMessage: 'All forms must be submitted before the deadline.', timestamp: hoursAgo(6), unread: false, pinned: true, locked: false, isAnnouncement: true, readCount: 11, totalCount: 15 },
-  { id: 'sr5', mode: 'sports', name: 'Recruiting War Room', initials: 'RW', color: '#F59E0B', memberCount: 5, lastMessage: 'New eval on Mitchell posted.', timestamp: hoursAgo(3), unread: true, pinned: false, locked: false, isAnnouncement: false },
-  { id: 'sr6', mode: 'sports', name: 'Game Day Ops', initials: 'GD', color: '#1D9BF0', memberCount: 12, lastMessage: 'Bus departs at 1pm sharp Saturday.', timestamp: daysAgo(1), unread: false, pinned: false, locked: false, isAnnouncement: false },
+  // ── Program Rooms (seeded, program-scoped) ──
+  { id: 'sr-ann', mode: 'sports', name: '#team-announcements', initials: 'TA', color: '#EF4444', memberCount: 28, lastMessage: 'Practice moved to 3pm today. Check your email for updated schedule.', timestamp: hoursAgo(1), unread: true, pinned: true, locked: false, isAnnouncement: true, readCount: 18, totalCount: 28, category: 'program', pinnedMessage: 'Season schedule PDF — updated Feb 24' },
+  { id: 'sr-staff', mode: 'sports', name: '#staff-room', initials: 'SR', color: '#1D9BF0', memberCount: 8, lastMessage: 'Film review at 2pm. Bring your scouting notes from last game.', timestamp: hoursAgo(2), unread: true, pinned: true, locked: true, isAnnouncement: false, category: 'program', pinnedMessage: 'Staff meeting every Tuesday & Thursday 2pm' },
+  { id: 'sr-practice', mode: 'sports', name: '#practice-plan', initials: 'PP', color: '#22C55E', memberCount: 25, lastMessage: 'Wednesday: full-court press drill + PNR reads. Bring playbooks.', timestamp: hoursAgo(3), unread: true, pinned: false, locked: false, isAnnouncement: false, category: 'program', pinnedMessage: 'Practice plan template — use this for all submissions' },
+  { id: 'sr-scout', mode: 'sports', name: '#scout-room', initials: 'SC', color: '#F59E0B', memberCount: 6, lastMessage: 'Mitchell eval posted. Strong PNR reads, needs work on transition D.', timestamp: hoursAgo(4), unread: true, pinned: false, locked: true, isAnnouncement: false, category: 'program' },
+  { id: 'sr-travel', mode: 'sports', name: '#travel', initials: 'TR', color: '#8B5CF6', memberCount: 25, lastMessage: 'Bus departs 1pm sharp Saturday for Bethel. Pack dress code.', timestamp: hoursAgo(6), unread: false, pinned: false, locked: false, isAnnouncement: false, category: 'program' },
+  { id: 'sr-recruit', mode: 'sports', name: '#recruiting', initials: 'RC', color: '#F59E0B', memberCount: 5, lastMessage: 'New prospect list updated. 3 guards, 2 wings match our needs profile.', timestamp: hoursAgo(5), unread: false, pinned: false, locked: true, isAnnouncement: false, category: 'program' },
+  // ── Direct Rooms (small-group, RBAC-gated) ──
+  { id: 'sr-coaches', mode: 'sports', name: 'Coaches Only', initials: 'CO', color: '#1D9BF0', memberCount: 4, lastMessage: 'Rotation adjustments for Saturday — Thomas back in starting 5.', timestamp: hoursAgo(1), unread: true, pinned: false, locked: true, isAnnouncement: false, category: 'direct' },
+  { id: 'sr-guards', mode: 'sports', name: 'Guards', initials: 'GD', color: '#22C55E', memberCount: 6, lastMessage: 'PNR film cuts ready in shared folder. Watch before Thursday practice.', timestamp: hoursAgo(3), unread: false, pinned: false, locked: false, isAnnouncement: false, category: 'direct' },
+  { id: 'sr-bigs', mode: 'sports', name: 'Bigs', initials: 'BG', color: '#EF4444', memberCount: 5, lastMessage: 'Post footwork session added for Wednesday morning. 7am.', timestamp: hoursAgo(8), unread: false, pinned: false, locked: false, isAnnouncement: false, category: 'direct' },
+  { id: 'sr-reccore', mode: 'sports', name: 'Recruiting Core', initials: 'RK', color: '#F59E0B', memberCount: 3, lastMessage: 'Mitchell visit confirmed for next Tuesday. Campus tour + film session.', timestamp: hoursAgo(2), unread: true, pinned: false, locked: true, isAnnouncement: false, category: 'direct' },
 ];
 
 const SPORTS_NEXUS: NexusEscalationV3[] = [
-  { id: 'sn1', mode: 'sports', askerName: 'Marcus Webb', askerInitials: 'MW', askerRole: 'Assistant Coach', question: 'What\'s the optimal rotation if we rest Thomas in the first half?', viewingContext: 'Game Plan vs Bethel', timestamp: hoursAgo(1), status: 'unanswered' },
+  { id: 'sn1', mode: 'sports', askerName: 'Marcus Davis', askerInitials: 'MD', askerRole: 'Video Coordinator', question: 'What\'s the optimal rotation if we rest Thomas in the first half?', viewingContext: 'Game Plan vs Bethel', timestamp: hoursAgo(1), status: 'unanswered' },
   { id: 'sn2', mode: 'sports', askerName: 'Jaylen Thomas', askerInitials: 'JT', askerRole: 'Student Athlete', question: 'How do I improve my defensive KR rating?', viewingContext: 'Player Card', timestamp: hoursAgo(4), status: 'unanswered' },
-  { id: 'sn3', mode: 'sports', askerName: 'Patricia Moore', askerInitials: 'PM', askerRole: 'Parent', question: 'What academic support resources are available for student athletes?', viewingContext: 'Program Overview', timestamp: daysAgo(1), status: 'answered', answer: 'Carroll College provides tutoring, study hall, and academic counseling for all student athletes.' },
+  { id: 'sn3', mode: 'sports', askerName: 'Patricia Moore', askerInitials: 'PM', askerRole: 'Parent', question: 'What academic support resources are available for student athletes?', viewingContext: 'Program Overview', timestamp: daysAgo(1), status: 'answered', answer: 'Lincoln University provides tutoring, study hall, and academic counseling for all student athletes.' },
+];
+
+const SPORTS_MENTIONS: MentionV3[] = [
+  { id: 'sm1', mode: 'sports', roomName: 'Staff Room', senderName: 'HC Miles', senderInitials: 'HM', preview: '@Pearson defensive film clips needed by Friday EOD', timestamp: hoursAgo(1) },
+  { id: 'sm2', mode: 'sports', roomName: 'Recruiting Room', senderName: 'HC Miles', senderInitials: 'HM', preview: '@Pearson get me Mitchell\'s updated eval before the meeting', timestamp: hoursAgo(3) },
+  { id: 'sm3', mode: 'sports', roomName: 'Practice Room', senderName: 'Marcus Davis', senderInitials: 'MD', preview: '@Pearson clips are in the folder, let me know if you need edits', timestamp: hoursAgo(4) },
+];
+
+const SPORTS_INBOX_ESCALATIONS: InboxEscalationV3[] = [
+  { id: 'se1', mode: 'sports', requesterName: 'Jaylen Thomas', requesterInitials: 'JT', questionPreview: 'What\'s my projected role for the conference tournament?', linkedContext: 'Player Card', status: 'needs_reply', timestamp: hoursAgo(2) },
+  { id: 'se2', mode: 'sports', requesterName: 'Patricia Moore', requesterInitials: 'PM', questionPreview: 'What academic support options are available for Jaylen?', linkedContext: 'Program Overview', status: 'needs_reply', timestamp: hoursAgo(6) },
+  { id: 'se3', mode: 'sports', requesterName: 'HC Miles', requesterInitials: 'HM', questionPreview: 'Approve travel reimbursement REQ-1043', linkedContext: 'Finance', status: 'replied', timestamp: daysAgo(1) },
 ];
 
 // =============================================================================
@@ -169,6 +187,41 @@ const COMPETITION_NEXUS: NexusEscalationV3[] = [
 ];
 
 // =============================================================================
+// ROOM THREAD MESSAGES (Sports)
+// =============================================================================
+
+const SPORTS_ROOM_MESSAGES: Record<string, RoomMessageV3[]> = {
+  'sr-staff': [
+    { id: 'rm1', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Film review at 2pm today. Everyone bring scouting notes from the Bethel game.', timestamp: hoursAgo(2), isMe: false },
+    { id: 'rm2', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Got it. I have the defensive breakdowns ready — they ran a 1-3-1 zone in the second half that gave us trouble.', timestamp: hoursAgo(2), isMe: true },
+    { id: 'rm3', sender: 'Marcus Davis', initials: 'MD', role: 'Video Coordinator', content: 'Clips are uploaded. Folder: "Bethel Game Film" — 14 possessions tagged for zone offense.', timestamp: hoursAgo(1.5), isMe: false },
+    { id: 'rm4', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: '@Pearson can you prep 3 zone attack sets before the meeting?', timestamp: hoursAgo(1), isMe: false, mentions: ['Pearson'] },
+    { id: 'rm5', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'On it. Will have the motion reads diagrammed by 1:30.', timestamp: hoursAgo(0.5), isMe: true },
+  ],
+  'sr-ann': [
+    { id: 'rm-a1', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Practice moved to 3pm today due to facility maintenance. Check your email for the updated schedule.', timestamp: hoursAgo(1), isMe: false },
+    { id: 'rm-a2', sender: 'Jaylen Thomas', initials: 'JT', role: 'Student Athlete', content: 'Copy that, Coach.', timestamp: hoursAgo(0.8), isMe: false },
+    { id: 'rm-a3', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Guards — still bring your film notebooks. We\'re doing PNR reads first.', timestamp: hoursAgo(0.5), isMe: true },
+  ],
+  'sr-scout': [
+    { id: 'rm-s1', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Just posted the Mitchell eval. Strong PNR reads, solid mid-range. Needs work on transition D and closeouts.', timestamp: hoursAgo(4), isMe: true },
+    { id: 'rm-s2', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Good work. What\'s his KR projection looking like?', timestamp: hoursAgo(3.5), isMe: false },
+    { id: 'rm-s3', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'KR 72 overall. Shooting cluster 81, Playmaking 74, Perimeter D 58. The defensive upside is there but raw.', timestamp: hoursAgo(3), isMe: true },
+    { id: 'rm-s4', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Let\'s schedule the campus visit. @Recruiting get the paperwork started.', timestamp: hoursAgo(2.5), isMe: false, mentions: ['Recruiting'] },
+  ],
+  'sr-coaches': [
+    { id: 'rm-c1', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Thomas is cleared for full contact. Moving him back to starting 5 for Saturday.', timestamp: hoursAgo(1.5), isMe: false },
+    { id: 'rm-c2', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Good to hear. That changes our rotation — Williams back to 6th man role. I\'ll adjust the sub patterns.', timestamp: hoursAgo(1), isMe: true },
+    { id: 'rm-c3', sender: 'Coach Reed', initials: 'CR', role: 'Strength Coach', content: 'Thomas looked strong in the agility test today. No issues.', timestamp: hoursAgo(0.5), isMe: false },
+  ],
+  'sr-reccore': [
+    { id: 'rm-r1', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Mitchell visit confirmed for next Tuesday. Campus tour in the morning, film session after lunch.', timestamp: hoursAgo(2), isMe: true },
+    { id: 'rm-r2', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Perfect. I\'ll clear my schedule for the 1pm sit-down. Make sure we have the scholarship packet ready.', timestamp: hoursAgo(1.5), isMe: false },
+    { id: 'rm-r3', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Already prepped. Also have 2 backup targets if Mitchell doesn\'t commit — both guards with similar profiles.', timestamp: hoursAgo(1), isMe: true },
+  ],
+};
+
+// =============================================================================
 // LOOKUP MAPS
 // =============================================================================
 
@@ -196,6 +249,22 @@ const NEXUS_MAP: Record<Mode, NexusEscalationV3[]> = {
   competition: COMPETITION_NEXUS,
 };
 
+const MENTIONS_MAP: Record<Mode, MentionV3[]> = {
+  sports: SPORTS_MENTIONS,
+  church: [],
+  business: [],
+  education: [],
+  competition: [],
+};
+
+const INBOX_ESCALATIONS_MAP: Record<Mode, InboxEscalationV3[]> = {
+  sports: SPORTS_INBOX_ESCALATIONS,
+  church: [],
+  business: [],
+  education: [],
+  competition: [],
+};
+
 // =============================================================================
 // PUBLIC API
 // =============================================================================
@@ -210,6 +279,18 @@ export function getRooms(mode: Mode): RoomV3[] {
 
 export function getNexusEscalations(mode: Mode): NexusEscalationV3[] {
   return NEXUS_MAP[mode] ?? [];
+}
+
+export function getInboxMentions(mode: Mode): MentionV3[] {
+  return MENTIONS_MAP[mode] ?? [];
+}
+
+export function getInboxEscalations(mode: Mode): InboxEscalationV3[] {
+  return INBOX_ESCALATIONS_MAP[mode] ?? [];
+}
+
+export function getRoomMessages(roomId: string): RoomMessageV3[] {
+  return SPORTS_ROOM_MESSAGES[roomId] ?? [];
 }
 
 export function getUnansweredCount(mode: Mode): number {

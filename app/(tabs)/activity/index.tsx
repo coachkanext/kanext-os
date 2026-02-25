@@ -1,40 +1,50 @@
 /**
- * Messages Screen V3 — 3-tab universal PagerView: Inbox | Rooms | Nexus
- * Identical structure across all 5 modes — only seeded data changes per mode.
- * Requests fold inline into Inbox (Accept/Decline), pinned threads sort to top.
- * Nexus intelligence queue replaces old Requests + Pinned tabs.
+ * Messages Screen — 3-tab: Inbox | Rooms | Nexus
+ * Inbox: Unread + Mentions sections.
+ * Rooms: Sectioned list (Pinned / Program / Direct) with Slack-style thread.
+ * Nexus: Coming Soon.
+ * Rendering context: Assistant Coach / Recruiting Coordinator (A2).
  */
 
 import React, { useState, useMemo, useCallback, useRef } from 'react';
 import {
   View,
+  Text,
   StyleSheet,
   Pressable,
   TextInput,
+  ScrollView,
   Dimensions,
 } from 'react-native';
 import { PagedTabBar } from '@/components/ui/paged-tab-bar';
 import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
 import PagerView from 'react-native-pager-view';
 import * as Haptics from 'expo-haptics';
+
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { ChatComposer } from '@/components/messages/chat-composer';
 import { NewThreadSheet } from '@/components/messages/new-thread-sheet';
-import { InboxListV3 } from '@/components/messages/inbox-list-v3';
+import { InboxRowV3 } from '@/components/messages/inbox-row-v3';
 import { RoomsListV3 } from '@/components/messages/rooms-list-v3';
-import { NexusQueueV3 } from '@/components/messages/nexus-queue-v3';
-import { NexusAnswerSheet } from '@/components/messages/nexus-answer-sheet';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
-import { getUnansweredCount, formatMessageTime } from '@/data/mock-messages-v3';
-import type { Mode, InboxThreadV3, NexusEscalationV3, ConversationMessageV3 } from '@/types';
-import { EmptyState } from '@/components/ui/empty-state';
-
-const EMPTY_MODES = new Set<Mode>(['sports', 'business', 'church', 'education', 'competition']);
+import {
+  getInboxThreads,
+  getInboxMentions,
+  getRoomMessages,
+  formatMessageTime,
+} from '@/data/mock-messages-v3';
+import type {
+  Mode,
+  InboxThreadV3,
+  RoomV3,
+  ConversationMessageV3,
+} from '@/types';
 
 // =============================================================================
 // CONSTANTS
@@ -43,10 +53,15 @@ const EMPTY_MODES = new Set<Mode>(['sports', 'business', 'church', 'education', 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const TAB_WIDTH_3 = SCREEN_WIDTH / 3;
 
-// =============================================================================
-// MOCK CONVERSATION (reusable bubble pattern)
-// =============================================================================
+const COMING_SOON_MODES = new Set<Mode>(['education', 'competition']);
 
+const MESSAGES_TABS = [
+  { id: 'inbox', label: 'Inbox' },
+  { id: 'rooms', label: 'Rooms' },
+  { id: 'nexus', label: 'Nexus' },
+];
+
+// Mock conversation for DM thread detail
 const MOCK_THREAD_MESSAGES: ConversationMessageV3[] = [
   { id: 'm1', sender: 'You', initials: 'ME', content: 'Got it, thanks for the update.', timestamp: new Date(Date.now() - 3600000), isMe: true },
   { id: 'm2', sender: 'Them', initials: '??', content: 'Let me know if you have any questions.', timestamp: new Date(Date.now() - 1800000), isMe: false },
@@ -55,8 +70,6 @@ const MOCK_THREAD_MESSAGES: ConversationMessageV3[] = [
 // =============================================================================
 // MAIN SCREEN
 // =============================================================================
-
-const COMING_SOON_MODES = new Set<Mode>(['education', 'competition']);
 
 export default function MessagesScreen() {
   const colorScheme = useColorScheme() ?? 'light';
@@ -73,41 +86,63 @@ export default function MessagesScreen() {
       </ThemedView>
     );
   }
+
   const [activeIndex, setActiveIndex] = useState(0);
   const pagerRef = useRef<PagerView>(null);
-
-  // Search state
   const [search, setSearch] = useState('');
-
-  // Thread detail state
   const [selectedThread, setSelectedThread] = useState<InboxThreadV3 | null>(null);
+  const [selectedRoom, setSelectedRoom] = useState<RoomV3 | null>(null);
   const [inputText, setInputText] = useState('');
+  const [roomInputText, setRoomInputText] = useState('');
   const [newThreadVisible, setNewThreadVisible] = useState(false);
 
-  // Nexus answer state
-  const [selectedEscalation, setSelectedEscalation] = useState<NexusEscalationV3 | null>(null);
+  // ── Data ──
 
-  // Build tabs with unanswered count badge
-  const unansweredCount = getUnansweredCount(mode);
-  const MESSAGES_TABS = useMemo(() => [
-    { id: 'inbox', label: 'Inbox' },
-    { id: 'rooms', label: 'Rooms' },
-    { id: 'nexus', label: unansweredCount > 0 ? `Nexus (${unansweredCount})` : 'Nexus' },
-  ], [unansweredCount]);
+  const threads = useMemo(() => {
+    let items = getInboxThreads(mode);
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      items = items.filter(
+        (t) => t.name.toLowerCase().includes(q) || t.preview.toLowerCase().includes(q),
+      );
+    }
+    return [...items].sort((a, b) => {
+      if (a.unread !== b.unread) return a.unread ? -1 : 1;
+      return b.timestamp.getTime() - a.timestamp.getTime();
+    });
+  }, [mode, search]);
+
+  const mentions = useMemo(() => {
+    let items = getInboxMentions(mode);
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      items = items.filter(
+        (m) =>
+          m.roomName.toLowerCase().includes(q) ||
+          m.senderName.toLowerCase().includes(q) ||
+          m.preview.toLowerCase().includes(q),
+      );
+    }
+    return items;
+  }, [mode, search]);
+
+  const unreadThreads = useMemo(() => threads.filter((t) => t.unread), [threads]);
+
+  // Room thread messages
+  const roomMessages = useMemo(() => {
+    if (!selectedRoom) return [];
+    return getRoomMessages(selectedRoom.id);
+  }, [selectedRoom]);
+
+  // ── Handlers ──
 
   const handleTabPress = useCallback((index: number) => {
     pagerRef.current?.setPage(index);
   }, []);
 
-  const handleSelectThread = useCallback((thread: InboxThreadV3) => {
-    setSelectedThread(thread);
-  }, []);
+  const searchPlaceholder = activeIndex === 1 ? 'Search rooms' : 'Search people / messages';
 
-  const handleSelectEscalation = useCallback((escalation: NexusEscalationV3) => {
-    setSelectedEscalation(escalation);
-  }, []);
-
-  // Group mock messages by day for thread detail
+  // Group mock messages for thread detail
   const groupedMessages = useMemo(() => {
     if (!selectedThread) return [];
     const messages = MOCK_THREAD_MESSAGES.map((m) => ({
@@ -129,9 +164,11 @@ export default function MessagesScreen() {
     return groups;
   }, [selectedThread]);
 
+  // ── Render ──
+
   return (
     <ThemedView style={styles.container}>
-      {/* ===== MESSAGES HUB TAB BAR (3 tabs, full width) ===== */}
+      {/* Tab bar */}
       <PagedTabBar
         tabs={MESSAGES_TABS}
         activeIndex={activeIndex}
@@ -140,62 +177,143 @@ export default function MessagesScreen() {
         tabWidth={TAB_WIDTH_3}
       />
 
-      {/* ===== SEARCH BAR + COMPOSE (hidden for empty modes) ===== */}
-      {!EMPTY_MODES.has(mode) && (
-        <View style={styles.topRow}>
-          <View style={[styles.searchBar, { backgroundColor: colors.backgroundSecondary }]}>
-            <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
-            <TextInput
-              style={[styles.searchInput, { color: colors.text }]}
-              placeholder="Search..."
-              placeholderTextColor={colors.textTertiary}
-              value={search}
-              onChangeText={setSearch}
-            />
-          </View>
-          <Pressable
-            style={({ pressed }) => [
-              styles.newBtn,
-              { backgroundColor: colors.backgroundSecondary, opacity: pressed ? 0.7 : 1 },
-            ]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              setNewThreadVisible(true);
-            }}
-          >
-            <IconSymbol name="square.and.pencil" size={20} color={colors.text} />
-          </Pressable>
+      {/* Search bar + compose */}
+      <View style={styles.topRow}>
+        <View style={[styles.searchBar, { backgroundColor: colors.backgroundSecondary }]}>
+          <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
+          <TextInput
+            style={[styles.searchInput, { color: colors.text }]}
+            placeholder={searchPlaceholder}
+            placeholderTextColor={colors.textTertiary}
+            value={search}
+            onChangeText={setSearch}
+          />
         </View>
-      )}
+        <Pressable
+          style={({ pressed }) => [
+            styles.newBtn,
+            { backgroundColor: colors.backgroundSecondary, opacity: pressed ? 0.7 : 1 },
+          ]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            setNewThreadVisible(true);
+          }}
+        >
+          <IconSymbol name="square.and.pencil" size={20} color={colors.text} />
+        </Pressable>
+      </View>
 
-      {/* ===== SWIPEABLE 3-PAGE CONTENT ===== */}
-      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={MESSAGES_TABS.length} onAdvance={handleTabPress} wrap>
+      {/* ===== 3-PAGE CONTENT ===== */}
+      <EdgeHoldAdvance activeIndex={activeIndex} tabCount={3} onAdvance={handleTabPress} wrap>
         <PagerView
           ref={pagerRef}
           style={{ flex: 1 }}
           initialPage={0}
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
+          {/* ===== INBOX ===== */}
           <View key="inbox" style={{ flex: 1 }}>
-            {EMPTY_MODES.has(mode) ? (
-              <EmptyState icon="bubble.left.fill" title="No Messages" description="Your inbox will appear here." />
-            ) : (
-              <InboxListV3 mode={mode} search={search} onSelectThread={handleSelectThread} />
-            )}
+            <ScrollView contentContainerStyle={styles.sectionList} showsVerticalScrollIndicator={false}>
+              {/* Section: Unread */}
+              {unreadThreads.length > 0 && (
+                <>
+                  <View style={styles.sectionHeader}>
+                    <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>UNREAD</Text>
+                    <View style={[styles.countBadge, { backgroundColor: MODE_ACCENT[mode] }]}>
+                      <Text style={styles.countText}>{unreadThreads.length}</Text>
+                    </View>
+                  </View>
+                  {unreadThreads.map((thread) => (
+                    <InboxRowV3
+                      key={thread.id}
+                      thread={thread}
+                      onPress={() => setSelectedThread(thread)}
+                    />
+                  ))}
+                </>
+              )}
+
+              {/* Section: Mentions */}
+              {mentions.length > 0 && (
+                <>
+                  <View style={styles.sectionHeader}>
+                    <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>MENTIONS</Text>
+                  </View>
+                  {mentions.map((mention) => (
+                    <Pressable
+                      key={mention.id}
+                      style={({ pressed }) => [
+                        styles.mentionRow,
+                        {
+                          backgroundColor: pressed ? colors.backgroundSecondary : 'transparent',
+                          borderBottomColor: colors.border,
+                        },
+                      ]}
+                      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                    >
+                      <View style={[styles.mentionIcon, { backgroundColor: colors.backgroundTertiary }]}>
+                        <IconSymbol name="at" size={18} color={colors.textSecondary} />
+                      </View>
+                      <View style={styles.mentionContent}>
+                        <View style={styles.mentionTopLine}>
+                          <Text
+                            style={[styles.mentionRoom, { color: MODE_ACCENT[mode] }]}
+                            numberOfLines={1}
+                          >
+                            {mention.roomName}
+                          </Text>
+                          <Text style={[styles.mentionTime, { color: colors.textTertiary }]}>
+                            {formatMessageTime(mention.timestamp)}
+                          </Text>
+                        </View>
+                        <Text
+                          style={[styles.mentionSender, { color: colors.textTertiary }]}
+                          numberOfLines={1}
+                        >
+                          {mention.senderName}
+                        </Text>
+                        <Text
+                          style={[styles.mentionPreview, { color: colors.textSecondary }]}
+                          numberOfLines={2}
+                        >
+                          {mention.preview}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  ))}
+                </>
+              )}
+
+              {/* Empty state */}
+              {unreadThreads.length === 0 && mentions.length === 0 && (
+                <EmptyState
+                  icon="bubble.left.fill"
+                  title="No Messages"
+                  description="Your inbox will appear here."
+                />
+              )}
+            </ScrollView>
           </View>
+
+          {/* ===== ROOMS ===== */}
           <View key="rooms" style={{ flex: 1 }}>
-            {EMPTY_MODES.has(mode) ? (
-              <EmptyState icon="bubble.left.and.bubble.right.fill" title="No Rooms" description="Create rooms to collaborate with your team." />
-            ) : (
-              <RoomsListV3 mode={mode} search={search} />
-            )}
+            <RoomsListV3
+              mode={mode}
+              search={search}
+              onRoomPress={(room) => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setSelectedRoom(room);
+              }}
+            />
           </View>
+
+          {/* ===== NEXUS (Coming Soon) ===== */}
           <View key="nexus" style={{ flex: 1 }}>
-            {EMPTY_MODES.has(mode) ? (
-              <EmptyState icon="sparkles" title="No Escalations" description="Nexus escalations will appear here." />
-            ) : (
-              <NexusQueueV3 mode={mode} onSelectEscalation={handleSelectEscalation} />
-            )}
+            <EmptyState
+              icon="sparkles"
+              title="Nexus"
+              description="AI-governed intelligence queue coming soon."
+            />
           </View>
         </PagerView>
       </EdgeHoldAdvance>
@@ -235,8 +353,15 @@ export default function MessagesScreen() {
                       ]}
                     >
                       {!msg.isMe && (
-                        <View style={[styles.msgAvatar, { backgroundColor: colors.backgroundTertiary }]}>
-                          <ThemedText style={[styles.msgAvatarText, { color: colors.textTertiary }]}>
+                        <View
+                          style={[
+                            styles.msgAvatar,
+                            { backgroundColor: colors.backgroundTertiary },
+                          ]}
+                        >
+                          <ThemedText
+                            style={[styles.msgAvatarText, { color: colors.textTertiary }]}
+                          >
                             {msg.initials}
                           </ThemedText>
                         </View>
@@ -255,14 +380,19 @@ export default function MessagesScreen() {
                           </ThemedText>
                         )}
                         <ThemedText
-                          style={[styles.msgContent, { color: msg.isMe ? '#000' : colors.text }]}
+                          style={[
+                            styles.msgContent,
+                            { color: msg.isMe ? '#000' : colors.text },
+                          ]}
                         >
                           {msg.content}
                         </ThemedText>
                         <ThemedText
                           style={[
                             styles.msgTime,
-                            { color: msg.isMe ? 'rgba(0,0,0,0.5)' : colors.textTertiary },
+                            {
+                              color: msg.isMe ? 'rgba(0,0,0,0.5)' : colors.textTertiary,
+                            },
                           ]}
                         >
                           {formatMessageTime(msg.timestamp)}
@@ -283,11 +413,97 @@ export default function MessagesScreen() {
         )}
       </BottomSheet>
 
-      {/* ===== Nexus Answer Sheet ===== */}
-      <NexusAnswerSheet
-        escalation={selectedEscalation}
-        onClose={() => setSelectedEscalation(null)}
-      />
+      {/* ===== Room Thread Sheet ===== */}
+      <BottomSheet
+        visible={selectedRoom !== null}
+        onClose={() => {
+          setSelectedRoom(null);
+          setRoomInputText('');
+        }}
+        title={selectedRoom?.name}
+        useModal
+      >
+        {selectedRoom && (
+          <View style={styles.threadDetail}>
+            {/* Pinned message banner */}
+            {selectedRoom.pinnedMessage && (
+              <View style={[styles.pinnedBanner, { backgroundColor: colors.backgroundSecondary }]}>
+                <IconSymbol name="pin.fill" size={12} color={colors.textTertiary} />
+                <ThemedText
+                  style={[styles.pinnedText, { color: colors.textSecondary }]}
+                  numberOfLines={1}
+                >
+                  {selectedRoom.pinnedMessage}
+                </ThemedText>
+              </View>
+            )}
+
+            {/* Room meta */}
+            <View style={styles.roomMeta}>
+              <ThemedText style={[styles.roomMetaText, { color: colors.textTertiary }]}>
+                {selectedRoom.memberCount} members
+                {selectedRoom.locked ? ' · Restricted' : ''}
+                {selectedRoom.category === 'program' ? ' · Program' : selectedRoom.category === 'direct' ? ' · Direct' : ''}
+              </ThemedText>
+            </View>
+
+            {/* Messages */}
+            <ScrollView style={styles.roomMessages} showsVerticalScrollIndicator={false}>
+              {roomMessages.map((msg) => (
+                <View key={msg.id} style={styles.roomMsgRow}>
+                  {!msg.isMe && (
+                    <View style={[styles.msgAvatar, { backgroundColor: colors.backgroundTertiary }]}>
+                      <ThemedText style={[styles.msgAvatarText, { color: colors.textTertiary }]}>
+                        {msg.initials}
+                      </ThemedText>
+                    </View>
+                  )}
+                  <View style={[styles.roomMsgBubble, { flex: 1 }]}>
+                    {!msg.isMe && (
+                      <View style={styles.roomMsgHeader}>
+                        <ThemedText style={[styles.roomMsgSender, { color: colors.text }]}>
+                          {msg.sender}
+                        </ThemedText>
+                        <ThemedText style={[styles.roomMsgRole, { color: colors.textTertiary }]}>
+                          {msg.role}
+                        </ThemedText>
+                      </View>
+                    )}
+                    {msg.isMe && (
+                      <View style={styles.roomMsgHeader}>
+                        <ThemedText style={[styles.roomMsgSender, { color: colors.text }]}>
+                          You
+                        </ThemedText>
+                      </View>
+                    )}
+                    <ThemedText style={[styles.roomMsgContent, { color: colors.text }]}>
+                      {msg.content}
+                    </ThemedText>
+                    <ThemedText style={[styles.roomMsgTime, { color: colors.textTertiary }]}>
+                      {formatMessageTime(msg.timestamp)}
+                    </ThemedText>
+                  </View>
+                </View>
+              ))}
+
+              {roomMessages.length === 0 && (
+                <View style={styles.roomEmpty}>
+                  <ThemedText style={[styles.roomEmptyText, { color: colors.textTertiary }]}>
+                    No messages yet. Start the conversation.
+                  </ThemedText>
+                </View>
+              )}
+            </ScrollView>
+
+            {/* Input */}
+            <ChatComposer
+              value={roomInputText}
+              onChangeText={setRoomInputText}
+              onSend={() => setRoomInputText('')}
+            />
+          </View>
+        )}
+      </BottomSheet>
 
       {/* ===== New Thread Sheet ===== */}
       <BottomSheet
@@ -339,6 +555,78 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  // Section list
+  sectionList: {
+    paddingBottom: 100,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: Spacing.md,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.sm,
+  },
+  sectionTitle: {
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  countBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 8,
+  },
+  countText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#fff',
+  },
+
+  // Mention rows
+  mentionRow: {
+    flexDirection: 'row',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: 12,
+    alignItems: 'flex-start',
+  },
+  mentionIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  mentionContent: {
+    flex: 1,
+    minWidth: 0,
+  },
+  mentionTopLine: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  mentionRoom: {
+    fontSize: 15,
+    fontWeight: '600',
+    flex: 1,
+  },
+  mentionTime: {
+    fontSize: 12,
+    marginLeft: 8,
+  },
+  mentionSender: {
+    fontSize: 12,
+    marginTop: 1,
+  },
+  mentionPreview: {
+    fontSize: 14,
+    lineHeight: 19,
+    marginTop: 3,
   },
 
   // Thread detail
@@ -408,5 +696,67 @@ const styles = StyleSheet.create({
     fontSize: 11,
     marginTop: 4,
     alignSelf: 'flex-end',
+  },
+
+  // Room thread
+  pinnedBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: BorderRadius.sm,
+    marginBottom: Spacing.sm,
+  },
+  pinnedText: {
+    fontSize: 13,
+    flex: 1,
+  },
+  roomMeta: {
+    marginBottom: Spacing.sm,
+  },
+  roomMetaText: {
+    fontSize: 12,
+  },
+  roomMessages: {
+    flex: 1,
+    marginBottom: Spacing.sm,
+  },
+  roomMsgRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 14,
+    alignItems: 'flex-start',
+  },
+  roomMsgBubble: {
+    minWidth: 0,
+  },
+  roomMsgHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 2,
+  },
+  roomMsgSender: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  roomMsgRole: {
+    fontSize: 11,
+  },
+  roomMsgContent: {
+    fontSize: 15,
+    lineHeight: 20,
+  },
+  roomMsgTime: {
+    fontSize: 11,
+    marginTop: 2,
+  },
+  roomEmpty: {
+    alignItems: 'center',
+    paddingTop: Spacing.xl * 2,
+  },
+  roomEmptyText: {
+    fontSize: 14,
   },
 });
