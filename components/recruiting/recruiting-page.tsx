@@ -471,7 +471,7 @@ export function RecruitingPage({ colors }: Props) {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* ── Header ── */}
-      <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
+      <View style={styles.header}>
         {/* Sub-tab pills */}
         <View style={styles.subTabRow}>
           {(['database', 'portal', 'board'] as SubTab[]).map(tab => {
@@ -1428,6 +1428,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.sm,
     paddingBottom: Spacing.sm,
   },
   subTabRow: {
