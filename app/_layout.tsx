@@ -48,12 +48,9 @@ import type {
   TeamCardData, PlayerCardData, CoachCardData,
   DriverCardData, CrewCardData, PersonCardData, MinistryCardData, LeaderCardData,
 } from '@/utils/global-entity-sheets';
-// v2 Universal 6-sheet sports system
-import { TeamQuickSheet } from '@/components/entity-sheets/team-quick-sheet';
+// Universal entity sheets (single sheet per entity type)
 import { TeamSheet } from '@/components/entity-sheets/team-sheet';
-import { CoachQuickSheet } from '@/components/entity-sheets/coach-quick-sheet';
 import { CoachSheet } from '@/components/entity-sheets/coach-sheet';
-import { PlayerQuickSheet } from '@/components/entity-sheets/player-quick-sheet';
 import { PlayerSheet } from '@/components/entity-sheets/player-sheet';
 // Non-sports entity sheets (unchanged)
 import { DriverCardSheet } from '@/components/entity-sheets/driver-card-sheet';
@@ -104,17 +101,11 @@ function AppShell() {
     return unsub;
   }, []);
 
-  // v2 Universal 6-sheet sports system
-  const [teamQuickData, setTeamQuickData] = useState<TeamCardData | null>(null);
-  const [teamQuickVisible, setTeamQuickVisible] = useState(false);
+  // Universal entity sheets (single sheet per entity type)
   const [teamSheetData, setTeamSheetData] = useState<TeamCardData | null>(null);
   const [teamSheetVisible, setTeamSheetVisible] = useState(false);
-  const [coachQuickData, setCoachQuickData] = useState<CoachCardData | null>(null);
-  const [coachQuickVisible, setCoachQuickVisible] = useState(false);
   const [coachSheetData, setCoachSheetData] = useState<CoachCardData | null>(null);
   const [coachSheetVisible, setCoachSheetVisible] = useState(false);
-  const [playerQuickData, setPlayerQuickData] = useState<PlayerCardData | null>(null);
-  const [playerQuickVisible, setPlayerQuickVisible] = useState(false);
   const [playerSheetData, setPlayerSheetData] = useState<PlayerCardData | null>(null);
   const [playerSheetVisible, setPlayerSheetVisible] = useState(false);
   // Non-sports entity sheets
@@ -131,17 +122,11 @@ function AppShell() {
 
   useEffect(() => {
     registerEntitySheetHandlers({
-      // v2 sports sheets
-      openTeamQuickSheet: (data) => { setTeamQuickData(data); setTeamQuickVisible(true); },
-      closeTeamQuickSheet: () => setTeamQuickVisible(false),
+      // Sports sheets (single sheet per entity)
       openTeamSheet: (data) => { setTeamSheetData(data); setTeamSheetVisible(true); },
       closeTeamSheet: () => setTeamSheetVisible(false),
-      openCoachQuickSheet: (data) => { setCoachQuickData(data); setCoachQuickVisible(true); },
-      closeCoachQuickSheet: () => setCoachQuickVisible(false),
       openCoachSheet: (data) => { setCoachSheetData(data); setCoachSheetVisible(true); },
       closeCoachSheet: () => setCoachSheetVisible(false),
-      openPlayerQuickSheet: (data) => { setPlayerQuickData(data); setPlayerQuickVisible(true); },
-      closePlayerQuickSheet: () => setPlayerQuickVisible(false),
       openPlayerSheet: (data) => { setPlayerSheetData(data); setPlayerSheetVisible(true); },
       closePlayerSheet: () => setPlayerSheetVisible(false),
       // Non-sports
@@ -215,31 +200,16 @@ function AppShell() {
         contentSlideAnim={contentSlideAnim}
       />
 
-      {/* v2 Universal 6-sheet sports system */}
-      <TeamQuickSheet
-        visible={teamQuickVisible}
-        onClose={() => setTeamQuickVisible(false)}
-        data={teamQuickData}
-      />
+      {/* Universal entity sheets (single sheet per entity type) */}
       <TeamSheet
         visible={teamSheetVisible}
         onClose={() => setTeamSheetVisible(false)}
         data={teamSheetData}
       />
-      <CoachQuickSheet
-        visible={coachQuickVisible}
-        onClose={() => setCoachQuickVisible(false)}
-        data={coachQuickData}
-      />
       <CoachSheet
         visible={coachSheetVisible}
         onClose={() => setCoachSheetVisible(false)}
         data={coachSheetData}
-      />
-      <PlayerQuickSheet
-        visible={playerQuickVisible}
-        onClose={() => setPlayerQuickVisible(false)}
-        data={playerQuickData}
       />
       <PlayerSheet
         visible={playerSheetVisible}

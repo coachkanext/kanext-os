@@ -1,11 +1,11 @@
 /**
- * Team Sheet — Full 3-tab team profile bottom sheet.
- * Tabs: Identity | Intelligence | People
- * All data-driven from TeamCardData props — placeholders when missing.
+ * Team Sheet — Universal 4-tab team profile bottom sheet.
+ * Tabs: Overview | Roster | Stats | Video
+ * Header (team name, record, KR chip) always visible above tabs.
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
@@ -21,12 +21,13 @@ function nameToHue(name: string): number {
   return Math.abs(h) % 360;
 }
 
-type Tab = 'identity' | 'intelligence' | 'people';
+type Tab = 'overview' | 'roster' | 'stats' | 'video';
 
 const TABS: { key: Tab; label: string }[] = [
-  { key: 'identity', label: 'Identity' },
-  { key: 'intelligence', label: 'Intelligence' },
-  { key: 'people', label: 'People' },
+  { key: 'overview', label: 'Overview' },
+  { key: 'roster', label: 'Roster' },
+  { key: 'stats', label: 'Stats' },
+  { key: 'video', label: 'Video' },
 ];
 
 interface Props {
@@ -39,11 +40,11 @@ export function TeamSheet({ visible, onClose, data }: Props) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const accent = useAccentColor();
-  const [activeTab, setActiveTab] = useState<Tab>('identity');
+  const [activeTab, setActiveTab] = useState<Tab>('overview');
 
   // Reset tab when sheet reopens
   React.useEffect(() => {
-    if (visible) setActiveTab('identity');
+    if (visible) setActiveTab('overview');
   }, [visible]);
 
   if (!data) return null;
@@ -59,8 +60,8 @@ export function TeamSheet({ visible, onClose, data }: Props) {
 
   return (
     <BottomSheet visible={visible} onClose={onClose} useModal>
-      <View style={styles.container}>
-        {/* Header */}
+      <View style={styles.headerSection}>
+        {/* ── HEADER — always visible ── */}
         <View style={styles.identityRow}>
           <View style={[styles.initialsCircle, { backgroundColor: `hsl(${hue}, 50%, 35%)` }]}>
             <Text style={styles.initialsText}>{initials}</Text>
@@ -70,6 +71,9 @@ export function TeamSheet({ visible, onClose, data }: Props) {
             <Text style={[styles.subline, { color: colors.textSecondary }]}>
               {[data.level, data.conference].filter(Boolean).join(' · ') || '—'}
             </Text>
+            {data.record && (
+              <Text style={[styles.recordText, { color: colors.textSecondary }]}>{data.record}</Text>
+            )}
           </View>
           {data.teamKR != null && (
             <View style={[styles.krChip, { backgroundColor: krColor + '20' }]}>
@@ -78,7 +82,7 @@ export function TeamSheet({ visible, onClose, data }: Props) {
           )}
         </View>
 
-        {/* Tab pills */}
+        {/* ── TAB PILLS ── */}
         <View style={[styles.tabRow, { backgroundColor: colors.card }]}>
           {TABS.map((tab) => {
             const active = activeTab === tab.key;
@@ -98,181 +102,211 @@ export function TeamSheet({ visible, onClose, data }: Props) {
             );
           })}
         </View>
+      </View>
 
-        {/* ── IDENTITY TAB ── */}
-        {activeTab === 'identity' && (
-          <View style={styles.tabContent}>
-            {/* System labels */}
-            <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>SYSTEM</Text>
-              <View style={styles.systemPair}>
-                <View style={styles.systemHalf}>
-                  <Text style={[styles.systemLabel, { color: colors.textTertiary }]}>OFFENSE</Text>
-                  <Text style={[styles.systemValue, { color: colors.text }]}>{data.osie || '—'}</Text>
-                  {data.osieScore != null && (
-                    <Text style={[styles.systemScore, { color: getKRColor(data.osieScore) }]}>{Math.round(data.osieScore)}</Text>
-                  )}
-                </View>
-                <View style={styles.systemHalf}>
-                  <Text style={[styles.systemLabel, { color: colors.textTertiary }]}>DEFENSE</Text>
-                  <Text style={[styles.systemValue, { color: colors.text }]}>{data.dsie || '—'}</Text>
-                  {data.dsieScore != null && (
-                    <Text style={[styles.systemScore, { color: getKRColor(data.dsieScore) }]}>{Math.round(data.dsieScore)}</Text>
-                  )}
-                </View>
-              </View>
-            </View>
+      <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
+        <View style={styles.tabContent}>
 
-            {/* Record */}
-            <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>RECORD</Text>
-              <View style={styles.recordRow}>
-                <View style={styles.recordItem}>
-                  <Text style={[styles.recordLabel, { color: colors.textTertiary }]}>OVERALL</Text>
-                  <Text style={[styles.recordValue, { color: colors.text }]}>{data.record || '—'}</Text>
-                </View>
-                {data.confRecord && (
-                  <View style={styles.recordItem}>
-                    <Text style={[styles.recordLabel, { color: colors.textTertiary }]}>CONF</Text>
-                    <Text style={[styles.recordValue, { color: colors.text }]}>{data.confRecord}</Text>
-                  </View>
-                )}
-              </View>
-            </View>
-
-            {/* Coverage tag */}
-            {data.coverageTag && (
-              <View style={[styles.tagChip, { backgroundColor: accent + '15', borderColor: accent + '40' }]}>
-                <Text style={[styles.tagText, { color: accent }]}>{data.coverageTag}</Text>
-              </View>
-            )}
-          </View>
-        )}
-
-        {/* ── INTELLIGENCE TAB ── */}
-        {activeTab === 'intelligence' && (
-          <View style={styles.tabContent}>
-            {/* Off / Def KR breakdown */}
-            <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>KR BREAKDOWN</Text>
-              <View style={styles.krBreakdownRow}>
-                <View style={styles.krBreakdownItem}>
-                  <Text style={[styles.krBreakdownLabel, { color: colors.textTertiary }]}>OFF KR</Text>
-                  <Text style={[styles.krBreakdownValue, { color: getKRColor(data.offKR) }]}>
-                    {data.offKR != null ? Math.round(data.offKR) : '—'}
-                  </Text>
-                </View>
-                <View style={styles.krBreakdownItem}>
-                  <Text style={[styles.krBreakdownLabel, { color: colors.textTertiary }]}>DEF KR</Text>
-                  <Text style={[styles.krBreakdownValue, { color: getKRColor(data.defKR) }]}>
-                    {data.defKR != null ? Math.round(data.defKR) : '—'}
-                  </Text>
-                </View>
-                <View style={styles.krBreakdownItem}>
-                  <Text style={[styles.krBreakdownLabel, { color: colors.textTertiary }]}>TEAM KR</Text>
-                  <Text style={[styles.krBreakdownValue, { color: krColor }]}>
-                    {data.teamKR != null ? Math.round(data.teamKR) : '—'}
-                  </Text>
-                </View>
-              </View>
-            </View>
-
-            {/* Strengths */}
-            {data.strengths && data.strengths.length > 0 && (
+          {/* ════════════════════════════════════════════
+              TAB 1 — OVERVIEW
+              ════════════════════════════════════════════ */}
+          {activeTab === 'overview' && (
+            <>
+              {/* System Identity */}
               <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>STRENGTHS</Text>
-                {data.strengths.map((s, i) => (
-                  <View key={i} style={styles.listRow}>
-                    <Text style={[styles.bullet, { color: '#22C55E' }]}>{'\u2022'}</Text>
-                    <Text style={[styles.listText, { color: colors.text }]}>{s}</Text>
-                  </View>
-                ))}
-              </View>
-            )}
-
-            {/* Risks */}
-            {data.risks && data.risks.length > 0 && (
-              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>RISKS</Text>
-                {data.risks.map((r, i) => (
-                  <View key={i} style={styles.listRow}>
-                    <Text style={[styles.bullet, { color: '#EF4444' }]}>{'\u2022'}</Text>
-                    <Text style={[styles.listText, { color: colors.text }]}>{r}</Text>
-                  </View>
-                ))}
-              </View>
-            )}
-
-            {/* Placeholder if no intelligence data */}
-            {data.offKR == null && data.defKR == null && (!data.strengths || data.strengths.length === 0) && (
-              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
-                  Intelligence data not yet available for this team.
-                </Text>
-              </View>
-            )}
-          </View>
-        )}
-
-        {/* ── PEOPLE TAB ── */}
-        {activeTab === 'people' && (
-          <View style={styles.tabContent}>
-            {/* Coaching staff */}
-            <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>COACHING STAFF</Text>
-              {data.coaches && data.coaches.length > 0 ? (
-                data.coaches.map((coach, i) => (
-                  <View key={i} style={styles.personRow}>
-                    <View style={[styles.personAvatar, { backgroundColor: `hsl(${nameToHue(coach.name)}, 40%, 30%)` }]}>
-                      <Text style={styles.personInitials}>
-                        {coach.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
-                      </Text>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Text style={[styles.personName, { color: colors.text }]}>{coach.name}</Text>
-                      <Text style={[styles.personRole, { color: colors.textSecondary }]}>{coach.title}</Text>
-                      {coach.tendencies && (
-                        <Text style={[styles.personDetail, { color: colors.textTertiary }]}>{coach.tendencies}</Text>
-                      )}
-                    </View>
-                  </View>
-                ))
-              ) : (
-                <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>No coaching data available.</Text>
-              )}
-            </View>
-
-            {/* Top contributors */}
-            <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>TOP CONTRIBUTORS</Text>
-              {data.topContributors && data.topContributors.length > 0 ? (
-                data.topContributors.map((p, i) => (
-                  <View key={i} style={styles.contributorRow}>
-                    <Text style={[styles.contributorName, { color: colors.text }]}>{p.name}</Text>
-                    <Text style={[styles.contributorPos, { color: colors.textSecondary }]}>{p.position}</Text>
-                    {p.kr != null && (
-                      <Text style={[styles.contributorKR, { color: getKRColor(p.kr) }]}>{Math.round(p.kr)}</Text>
+                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>SYSTEM</Text>
+                <View style={styles.systemPair}>
+                  <View style={styles.systemHalf}>
+                    <Text style={[styles.systemLabel, { color: colors.textTertiary }]}>OFFENSE</Text>
+                    <Text style={[styles.systemValue, { color: colors.text }]}>{data.osie || '—'}</Text>
+                    {data.osieScore != null && (
+                      <Text style={[styles.systemScore, { color: getKRColor(data.osieScore) }]}>{Math.round(data.osieScore)}</Text>
                     )}
                   </View>
-                ))
-              ) : (
-                <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>No contributor data available.</Text>
+                  <View style={styles.systemHalf}>
+                    <Text style={[styles.systemLabel, { color: colors.textTertiary }]}>DEFENSE</Text>
+                    <Text style={[styles.systemValue, { color: colors.text }]}>{data.dsie || '—'}</Text>
+                    {data.dsieScore != null && (
+                      <Text style={[styles.systemScore, { color: getKRColor(data.dsieScore) }]}>{Math.round(data.dsieScore)}</Text>
+                    )}
+                  </View>
+                </View>
+              </View>
+
+              {/* Record */}
+              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>RECORD</Text>
+                <View style={styles.recordRow}>
+                  <View style={styles.recordItem}>
+                    <Text style={[styles.recordLabel, { color: colors.textTertiary }]}>OVERALL</Text>
+                    <Text style={[styles.recordValue, { color: colors.text }]}>{data.record || '—'}</Text>
+                  </View>
+                  {data.confRecord && (
+                    <View style={styles.recordItem}>
+                      <Text style={[styles.recordLabel, { color: colors.textTertiary }]}>CONF</Text>
+                      <Text style={[styles.recordValue, { color: colors.text }]}>{data.confRecord}</Text>
+                    </View>
+                  )}
+                </View>
+              </View>
+
+              {/* Strengths */}
+              {data.strengths && data.strengths.length > 0 && (
+                <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                  <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>STRENGTHS</Text>
+                  {data.strengths.map((s, i) => (
+                    <View key={i} style={styles.listRow}>
+                      <Text style={[styles.bullet, { color: '#22C55E' }]}>{'\u2022'}</Text>
+                      <Text style={[styles.listText, { color: colors.text }]}>{s}</Text>
+                    </View>
+                  ))}
+                </View>
               )}
-            </View>
-          </View>
-        )}
-      </View>
+
+              {/* Risks */}
+              {data.risks && data.risks.length > 0 && (
+                <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                  <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>RISKS</Text>
+                  {data.risks.map((r, i) => (
+                    <View key={i} style={styles.listRow}>
+                      <Text style={[styles.bullet, { color: '#EF4444' }]}>{'\u2022'}</Text>
+                      <Text style={[styles.listText, { color: colors.text }]}>{r}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+              {/* Coverage tag */}
+              {data.coverageTag && (
+                <View style={[styles.tagChip, { backgroundColor: accent + '15', borderColor: accent + '40' }]}>
+                  <Text style={[styles.tagText, { color: accent }]}>{data.coverageTag}</Text>
+                </View>
+              )}
+            </>
+          )}
+
+          {/* ════════════════════════════════════════════
+              TAB 2 — ROSTER
+              ════════════════════════════════════════════ */}
+          {activeTab === 'roster' && (
+            <>
+              {/* Coaching staff */}
+              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>COACHING STAFF</Text>
+                {data.coaches && data.coaches.length > 0 ? (
+                  data.coaches.map((coach, i) => (
+                    <View key={i} style={styles.personRow}>
+                      <View style={[styles.personAvatar, { backgroundColor: `hsl(${nameToHue(coach.name)}, 40%, 30%)` }]}>
+                        <Text style={styles.personInitials}>
+                          {coach.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+                        </Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={[styles.personName, { color: colors.text }]}>{coach.name}</Text>
+                        <Text style={[styles.personRole, { color: colors.textSecondary }]}>{coach.title}</Text>
+                        {coach.tendencies && (
+                          <Text style={[styles.personDetail, { color: colors.textTertiary }]}>{coach.tendencies}</Text>
+                        )}
+                      </View>
+                    </View>
+                  ))
+                ) : (
+                  <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>No coaching data available.</Text>
+                )}
+              </View>
+
+              {/* Top contributors */}
+              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>TOP CONTRIBUTORS</Text>
+                {data.topContributors && data.topContributors.length > 0 ? (
+                  data.topContributors.map((p, i) => (
+                    <View key={i} style={styles.contributorRow}>
+                      <Text style={[styles.contributorName, { color: colors.text }]}>{p.name}</Text>
+                      <Text style={[styles.contributorPos, { color: colors.textSecondary }]}>{p.position}</Text>
+                      {p.kr != null && (
+                        <Text style={[styles.contributorKR, { color: getKRColor(p.kr) }]}>{Math.round(p.kr)}</Text>
+                      )}
+                    </View>
+                  ))
+                ) : (
+                  <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>No contributor data available.</Text>
+                )}
+              </View>
+            </>
+          )}
+
+          {/* ════════════════════════════════════════════
+              TAB 3 — STATS
+              ════════════════════════════════════════════ */}
+          {activeTab === 'stats' && (
+            <>
+              {/* KR Breakdown */}
+              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>KR BREAKDOWN</Text>
+                <View style={styles.krBreakdownRow}>
+                  <View style={styles.krBreakdownItem}>
+                    <Text style={[styles.krBreakdownLabel, { color: colors.textTertiary }]}>OFF KR</Text>
+                    <Text style={[styles.krBreakdownValue, { color: getKRColor(data.offKR) }]}>
+                      {data.offKR != null ? Math.round(data.offKR) : '—'}
+                    </Text>
+                  </View>
+                  <View style={styles.krBreakdownItem}>
+                    <Text style={[styles.krBreakdownLabel, { color: colors.textTertiary }]}>DEF KR</Text>
+                    <Text style={[styles.krBreakdownValue, { color: getKRColor(data.defKR) }]}>
+                      {data.defKR != null ? Math.round(data.defKR) : '—'}
+                    </Text>
+                  </View>
+                  <View style={styles.krBreakdownItem}>
+                    <Text style={[styles.krBreakdownLabel, { color: colors.textTertiary }]}>TEAM KR</Text>
+                    <Text style={[styles.krBreakdownValue, { color: krColor }]}>
+                      {data.teamKR != null ? Math.round(data.teamKR) : '—'}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* Placeholder for stat leaders */}
+              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>STAT LEADERS</Text>
+                <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
+                  Stat leaders not yet available for this team.
+                </Text>
+              </View>
+            </>
+          )}
+
+          {/* ════════════════════════════════════════════
+              TAB 4 — VIDEO
+              ════════════════════════════════════════════ */}
+          {activeTab === 'video' && (
+            <>
+              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>VIDEO SHORTCUTS</Text>
+                <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
+                  No video clips available. Film review will appear here when available.
+                </Text>
+              </View>
+            </>
+          )}
+
+        </View>
+      </ScrollView>
     </BottomSheet>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: Spacing.md, gap: Spacing.sm, paddingBottom: 30 },
+  headerSection: { padding: Spacing.md, paddingBottom: 0, gap: Spacing.sm },
+  scroll: { maxHeight: '100%' },
+  tabContent: { padding: Spacing.md, paddingTop: Spacing.sm, gap: Spacing.sm, paddingBottom: 30 },
+
+  // Identity
   identityRow: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   initialsCircle: { width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
   initialsText: { fontSize: 20, fontWeight: '800', color: '#fff', letterSpacing: 1 },
   teamName: { fontSize: 18, fontWeight: '800', letterSpacing: -0.5 },
   subline: { fontSize: 13, fontWeight: '700', letterSpacing: 0.5, marginTop: 2 },
+  recordText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3, marginTop: 2 },
   krChip: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 12, alignItems: 'center' },
   krChipVal: { fontSize: 22, fontWeight: '800', letterSpacing: -0.3 },
 
@@ -281,9 +315,6 @@ const styles = StyleSheet.create({
   tabPill: { flex: 1, paddingVertical: 7, borderRadius: 8, alignItems: 'center' },
   tabPillActive: {},
   tabText: { fontSize: 13, fontWeight: '700' },
-
-  // Tab content
-  tabContent: { gap: Spacing.sm },
 
   // Cards
   card: { borderRadius: 14, borderWidth: StyleSheet.hairlineWidth, padding: Spacing.md, gap: 8 },

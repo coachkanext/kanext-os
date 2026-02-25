@@ -32,14 +32,18 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAccentColor } from '@/hooks/use-accent-color';
-import { ROSTER_KR } from '@/data/fmu';
+import { ROSTER_KR, KaNeXT_LEADERS, jerseyArchetypeMap } from '@/data/fmu';
 import {
   PLAYER_CLUSTERS,
   PLAYER_PHYSICALS,
   ROSTER_META,
+  computeOffKR,
+  computeDefKR,
 } from '@/data/roster-data';
 import type { PlayerStatus } from '@/data/roster-data';
 import { getKRColor } from '@/utils/kr-display';
+import { openPlayerCard } from '@/utils/global-entity-sheets';
+import type { PlayerCardData } from '@/utils/global-entity-sheets';
 import {
   players,
   rosterEntries,
@@ -183,6 +187,48 @@ function buildRosterPlayers(): RosterPlayer[] {
 
 const ROSTER_PLAYERS = buildRosterPlayers();
 
+// Stats lookup by jersey number
+const leadersByJersey = new Map(KaNeXT_LEADERS.map(l => [l.number, l]));
+
+function toPlayerCardData(p: RosterPlayer): PlayerCardData {
+  const stats = leadersByJersey.get(p.jerseyNumber);
+  const clusters = PLAYER_CLUSTERS[p.jerseyNumber];
+  const offKR = clusters ? computeOffKR(clusters) : undefined;
+  const defKR = clusters ? computeDefKR(clusters) : undefined;
+  return {
+    name: `${p.firstName} ${p.lastName}`,
+    number: p.displayJersey,
+    position: p.position,
+    height: p.height,
+    weight: p.weight,
+    classYear: p.classYear,
+    playerId: p.playerId,
+    kr: p.scores.overallKR || undefined,
+    offKR,
+    defKR,
+    archetype: jerseyArchetypeMap.get(p.jerseyNumber),
+    nilAmount: p.nil || undefined,
+    clusters: clusters ? {
+      shooting: clusters.shooting,
+      finishing: clusters.finishing,
+      playmaking: clusters.playmaking,
+      onBallDefense: clusters.on_ball_defense,
+      teamDefense: clusters.team_defense,
+      rebounding: clusters.rebounding,
+      frame: clusters.physical,
+    } : undefined,
+    ppg: stats?.ppg,
+    rpg: stats?.rpg,
+    apg: stats?.apg,
+    spg: stats?.spg,
+    bpg: stats?.bpg,
+    fgPct: stats?.fgPct,
+    threePct: stats?.threePct,
+    ftPct: stats?.ftPct,
+    gp: stats?.gamesPlayed,
+  };
+}
+
 // =============================================================================
 // HELPERS
 // =============================================================================
@@ -295,36 +341,37 @@ export function RosterPage({ colors: propColors }: RosterPageProps) {
 
       {/* ═══════ ROW 2 — Lens Pills (Cards only) ═══════ */}
       {view === 'cards' && (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={s.lensRow}
-          style={[s.lensScroll, { borderBottomColor: colors.border }]}
-        >
-          {LENS_OPTIONS.map(l => {
-            const isActive = lens === l.key;
-            return (
-              <Pressable
-                key={l.key}
-                style={[
-                  s.lensPill,
-                  {
-                    backgroundColor: isActive ? accent + '20' : colors.card,
-                    borderColor: isActive ? accent : colors.border,
-                  },
-                ]}
-                onPress={() => {
-                  setLens(l.key);
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                }}
-              >
-                <Text style={[s.lensPillText, { color: isActive ? accent : colors.textSecondary }]}>
-                  {l.label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
+        <View style={[s.lensWrap, { borderBottomColor: colors.border }]}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={s.lensRow}
+          >
+            {LENS_OPTIONS.map(l => {
+              const isActive = lens === l.key;
+              return (
+                <Pressable
+                  key={l.key}
+                  style={[
+                    s.lensPill,
+                    {
+                      backgroundColor: isActive ? accent + '20' : colors.card,
+                      borderColor: isActive ? accent : colors.border,
+                    },
+                  ]}
+                  onPress={() => {
+                    setLens(l.key);
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }}
+                >
+                  <Text style={[s.lensPillText, { color: isActive ? accent : colors.textSecondary }]}>
+                    {l.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </View>
       )}
 
       {/* ═══════ CONTENT ═══════ */}
@@ -335,7 +382,13 @@ export function RosterPage({ colors: propColors }: RosterPageProps) {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: insets.bottom + 40, paddingTop: 8 }}
           renderItem={({ item }) => (
-            <PlayerCard player={item} lens={lens} colors={colors} accent={accent} />
+            <PlayerCard
+              player={item}
+              lens={lens}
+              colors={colors}
+              accent={accent}
+              onSelect={() => openPlayerCard(toPlayerCardData(item))}
+            />
           )}
         />
       ) : (
@@ -357,12 +410,13 @@ export function RosterPage({ colors: propColors }: RosterPageProps) {
 const CARD_IMAGE_HEIGHT = 300;
 
 function PlayerCard({
-  player, lens, colors, accent,
+  player, lens, colors, accent, onSelect,
 }: {
   player: RosterPlayer;
   lens: LensKey;
   colors: typeof Colors.light;
   accent: string;
+  onSelect: () => void;
 }) {
   const score = getScoreForLens(player, lens);
   const scoreLabel = getLensLabel(lens);
@@ -374,7 +428,10 @@ function PlayerCard({
   return (
     <Pressable
       style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}
-      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+      onPress={() => {
+        onSelect();
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }}
     >
       {/* ── Image area ── */}
       <View style={s.cardImageArea}>
@@ -477,10 +534,10 @@ const s = StyleSheet.create({
   viewBtn: { padding: 7, borderRadius: 8, borderWidth: 1 },
 
   // ── Row 2 — Lens Pills ──
-  lensScroll: { borderBottomWidth: StyleSheet.hairlineWidth, maxHeight: 52 },
-  lensRow: { paddingHorizontal: Spacing.md, paddingVertical: 8, gap: 8 },
-  lensPill: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1 },
-  lensPillText: { fontSize: 12, fontWeight: '600' },
+  lensWrap: { borderBottomWidth: StyleSheet.hairlineWidth },
+  lensRow: { paddingHorizontal: Spacing.md, paddingVertical: 10, gap: 8 },
+  lensPill: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20, borderWidth: 1 },
+  lensPillText: { fontSize: 13, fontWeight: '600' },
 
   // ── Card ──
   card: {
