@@ -597,6 +597,69 @@ export const DEMO_V2_MESSAGES: MessageV2[] = [
       CHIP_STAFF_ROOM,
     ],
   },
+
+  // ── D2 Operational Proposal: Propose → Validate → Confirm → Commit ──
+
+  // 11. User proposes schedule edit (D2 — allowed with confirm)
+  {
+    id: 'mv2-011',
+    conversationId: CONV_ID,
+    role: 'user',
+    content: 'Move Wednesday practice to 3:00 PM — there\'s a facility conflict at the normal time',
+    timestamp: new Date('2025-02-17T14:05:00Z'),
+    messageType: 'text',
+  },
+  // 12. Nexus confirmation card (D2 operational proposal requires confirm)
+  {
+    id: 'mv2-012',
+    conversationId: CONV_ID,
+    role: 'assistant',
+    content: '',
+    timestamp: new Date('2025-02-17T14:05:02Z'),
+    messageType: 'confirmation',
+    confirmation: {
+      state: 'pending',
+      action_summary: 'Propose Schedule Change: Move Wednesday practice to 3:00 PM',
+      target_context: "Sports \u00B7 Lincoln University \u00B7 Men's Basketball \u00B7 2025\u201326",
+      impact_line: 'This will notify all rostered players and coaching staff of the time change.',
+      requires_audit_note: false,
+    },
+  },
+
+  // ── A2 Hard Boundary: Scholarship Modification (Blocked) ──
+
+  // 13. User attempts scholarship change (A2 cannot)
+  {
+    id: 'mv2-013',
+    conversationId: CONV_ID,
+    role: 'user',
+    content: 'Change Carter\'s scholarship to a full athletic scholarship',
+    timestamp: new Date('2025-02-17T14:06:00Z'),
+    messageType: 'text',
+  },
+  // 14. Nexus refusal — A2 cannot modify scholarship packages
+  {
+    id: 'mv2-014',
+    conversationId: CONV_ID,
+    role: 'assistant',
+    content: 'Insufficient Authority (A2). Scholarship modifications require Head Coach (A3) or Athletic Director (A4) authority.',
+    timestamp: new Date('2025-02-17T14:06:03Z'),
+    messageType: 'escalation',
+    escalation: {
+      reason: 'Scholarship package changes are restricted to A3 (Tactical) authority or higher. This involves institutional financial commitments and compliance verification.',
+      target_room: 'AD Command — Lincoln',
+      target_room_id: 'rm-ad',
+      target_owner: 'Athletic Director Johnson',
+      options: [
+        { label: 'Route to Head Coach (A3)', action: 'create_request' },
+        { label: 'Route to AD (A4)', action: 'create_request' },
+      ],
+    },
+    linkChips: [
+      CHIP_PLAYER_CARTER,
+      { id: 'lc-compliance-2', objectType: 'room', objectId: 'rm-compliance', label: 'Compliance Desk', icon: 'shield.checkered' },
+    ],
+  },
 ];
 
 // =============================================================================
@@ -610,12 +673,13 @@ export const DEMO_V2_CONVERSATION = {
     { id: 'ac-pearson', name: 'Coach Pearson', role: 'owner' as const },
     { id: 'nexus', name: 'Nexus', role: 'member' as const },
   ],
-  updatedAt: new Date('2025-02-17T14:04:05Z'),
+  updatedAt: new Date('2025-02-17T14:06:03Z'),
   createdAt: new Date('2025-02-17T14:00:00Z'),
   isGroup: false,
   unreadCount: 0,
   type: 'chat' as const,
   isPinned: true,
+  mode: 'sports' as const,
 };
 
 // =============================================================================

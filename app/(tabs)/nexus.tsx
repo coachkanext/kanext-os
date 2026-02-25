@@ -1,12 +1,19 @@
 /**
- * Nexus Screen
- * Universal reasoning surface - the primary intelligence interface.
- * Per spec: Nexus answers "What does this mean?" - reasoning only, no state mutation.
+ * Nexus Screen — Sports Mode v1
+ * Program-scoped intelligence layer (A2 | Single Program | V3 | D2).
+ * Conversational only — recommends, analyzes, compares, evaluates, presents.
+ * Does NOT execute actions directly. All writes follow: Propose → Validate → Confirm → Commit.
+ *
+ * Layout: Single screen, 3 zones:
+ *   Zone 1 — Top Bar (sticky): Hamburger → Sidebar, "Nexus" title, Context Chip
+ *   Zone 2 — Thread Area: Active conversation with inline embeds
+ *   Zone 3 — Input Bar (sticky bottom): Text | Attach | Mic
  *
  * States:
  * - Locked: Not authenticated → dimmed background, no input
  * - Onboarding: Authenticated + new user → onboarding conversation
- * - Unlocked: Authenticated → full Nexus
+ * - Landing: No active conversation → Nexus orb + mode quote + input bar
+ * - Chat: Active conversation → thread + input bar
  */
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';

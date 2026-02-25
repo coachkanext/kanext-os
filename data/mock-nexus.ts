@@ -20,7 +20,81 @@ export const MOCK_PARTICIPANTS: ConversationParticipant[] = [
 // CONVERSATIONS
 // =============================================================================
 
-export const MOCK_CONVERSATIONS: Conversation[] = [DEMO_V2_CONVERSATION];
+export const MOCK_CONVERSATIONS: Conversation[] = [
+  DEMO_V2_CONVERSATION,
+  {
+    id: 'conv-recruiting-eval',
+    title: 'Recruiting — Darius Thompson Eval',
+    participants: MOCK_PARTICIPANTS,
+    lastMessage: {
+      id: 'msg-re-1',
+      conversationId: 'conv-recruiting-eval',
+      role: 'assistant' as const,
+      content: 'Thompson projects as an A-tier prospect with strong perimeter defense and transition scoring.',
+      timestamp: new Date('2026-02-24T11:30:00'),
+    },
+    updatedAt: new Date('2026-02-24T11:30:00'),
+    createdAt: new Date('2026-02-22T09:00:00'),
+    isGroup: false,
+    unreadCount: 0,
+    type: 'chat' as const,
+    mode: 'sports' as const,
+  },
+  {
+    id: 'conv-game-plan',
+    title: 'Game Plan — vs Summit',
+    participants: MOCK_PARTICIPANTS,
+    lastMessage: {
+      id: 'msg-gp-1',
+      conversationId: 'conv-game-plan',
+      role: 'assistant' as const,
+      content: 'Recommended: pressure their PG in transition, force right. Turnover rate climbs 12% under press.',
+      timestamp: new Date('2026-02-23T16:00:00'),
+    },
+    updatedAt: new Date('2026-02-23T16:00:00'),
+    createdAt: new Date('2026-02-21T10:00:00'),
+    isGroup: false,
+    unreadCount: 0,
+    type: 'chat' as const,
+    mode: 'sports' as const,
+  },
+  {
+    id: 'conv-practice-dev',
+    title: 'Guard Development — Week 8',
+    participants: MOCK_PARTICIPANTS,
+    lastMessage: {
+      id: 'msg-pd-1',
+      conversationId: 'conv-practice-dev',
+      role: 'assistant' as const,
+      content: 'Film review complete. Carter showing improved PNR reads — assist rate up 15% in last 3 games.',
+      timestamp: new Date('2026-02-22T14:00:00'),
+    },
+    updatedAt: new Date('2026-02-22T14:00:00'),
+    createdAt: new Date('2026-02-20T08:00:00'),
+    isGroup: false,
+    unreadCount: 0,
+    type: 'chat' as const,
+    mode: 'sports' as const,
+  },
+  {
+    id: 'conv-church-sermon',
+    title: 'Sermon Series Planning — March',
+    participants: MOCK_PARTICIPANTS,
+    lastMessage: {
+      id: 'msg-cs-1',
+      conversationId: 'conv-church-sermon',
+      role: 'assistant' as const,
+      content: 'Here are 4 sermon topic options for the "Building Foundations" series...',
+      timestamp: new Date('2026-02-21T10:00:00'),
+    },
+    updatedAt: new Date('2026-02-21T10:00:00'),
+    createdAt: new Date('2026-02-19T09:00:00'),
+    isGroup: false,
+    unreadCount: 0,
+    type: 'chat' as const,
+    mode: 'church' as const,
+  },
+];
 
 // =============================================================================
 // MESSAGES

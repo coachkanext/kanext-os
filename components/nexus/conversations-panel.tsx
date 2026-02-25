@@ -35,8 +35,6 @@ const MODE_FILTER_PILLS: Array<{ key: Mode | 'all'; label: string }> = [
   { key: 'sports', label: 'Sports' },
   { key: 'church', label: 'Church' },
   { key: 'business', label: 'Business' },
-  { key: 'education', label: 'Education' },
-  { key: 'competition', label: 'Comp' },
 ];
 
 const MODE_DOT_COLORS: Record<Mode, string> = {
@@ -302,7 +300,7 @@ export function ConversationsPanel({
       >
         <IconSymbol name="plus" size={16} color={accent} />
         <ThemedText style={[styles.newWorkspaceText, { color: accent }]}>
-          New Workspace
+          New Conversation
         </ThemedText>
       </Pressable>
 
