@@ -156,17 +156,22 @@ function SportsOrganization() {
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
           {ORG_TABS.map((tab) => {
-            if (tab.id === 'program') {
-              return <View key="program" style={PAGE_STYLE}><SportsProgram colors={colors} accentColor={accent} role={role} /></View>;
+            const p = { colors, accentColor: accent, role };
+            switch (tab.id) {
+              case 'program':
+                return <View key="program" style={PAGE_STYLE}><SportsProgram {...p} /></View>;
+              case 'people':
+                return <View key="people" style={PAGE_STYLE}><SportsPeople {...p} /></View>;
+              default:
+                return (
+                  <View key={tab.id} style={[PAGE_STYLE, { justifyContent: 'center', alignItems: 'center' }]}>
+                    <ThemedText style={{ fontSize: 28, fontWeight: '800', lineHeight: 34 }}>Coming Soon</ThemedText>
+                    <ThemedText style={{ fontSize: 14, opacity: 0.5, textAlign: 'center', marginTop: 6 }}>
+                      {tab.label} is under development.
+                    </ThemedText>
+                  </View>
+                );
             }
-            return (
-              <View key={tab.id} style={[PAGE_STYLE, { justifyContent: 'center', alignItems: 'center' }]}>
-                <ThemedText style={{ fontSize: 28, fontWeight: '800', lineHeight: 34 }}>Coming Soon</ThemedText>
-                <ThemedText style={{ fontSize: 14, opacity: 0.5, textAlign: 'center', marginTop: 6 }}>
-                  {tab.label} is under development.
-                </ThemedText>
-              </View>
-            );
           })}
         </PagerView>
       </EdgeHoldAdvance>
