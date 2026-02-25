@@ -1,192 +1,355 @@
 /**
- * SportsFilmRoomV2 — 3-tab pill nav: Game Film | Practice Film | Scouting
- * Game Film: recorded games, most recent first
- * Practice Film: practice recordings by date
- * Scouting: opponent film organized by team
+ * SportsFilmRoomV2 — Room List → Room Feed drill-in
+ * 5 rooms: Game, Scout, Practice, Player Dev, Recruit
+ * useState<RoomId | null> for drill-in (not navigation — lives inside PagerView).
  */
 
-import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Pressable, FlatList } from 'react-native';
+import React, { useState, useCallback, useMemo } from 'react';
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  FlatList,
+  TextInput,
+  Share,
+} from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme'
-import { useAccentColor } from '@/hooks/use-accent-color';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
-  VIDEO_GAMES_BY_MODE,
-  SCOUT_PACKS_BY_MODE,
-  formatDuration,
-  getResultColor,
-  type VideoGame,
-  type ScoutPack,
-} from '@/data/mock-video';
-import { MOCK_PRACTICE_FILM, type PracticeFilmItem } from '@/data/mock-sports-workspaces';
+  SPORTS_ROOMS,
+  ROOM_FEED_ITEMS,
+  ROOM_FEED_TYPE_FILTERS,
+  ROOM_FEED_DATE_FILTERS,
+  getVisibleRooms,
+  filterFeedItems,
+  type RoomId,
+  type Room,
+  type RoomFeedItem,
+  type FeedTypeFilter,
+  type FeedDateFilter,
+} from '@/data/mock-rooms';
 
-type FilmTab = 'game_film' | 'practice_film' | 'scouting';
-
-interface TabDef {
-  key: FilmTab;
-  label: string;
-}
-
-const TABS: TabDef[] = [
-  { key: 'game_film', label: 'Game Film' },
-  { key: 'practice_film', label: 'Practice Film' },
-  { key: 'scouting', label: 'Scouting' },
-];
+// Mock user context — Assistant Coach / Recruiting Coordinator (A2, V3)
+const MOCK_USER_AUTHORITY = 2;
+const MOCK_USER_VISIBILITY = 3;
 
 // =============================================================================
-// CARD COMPONENTS
+// ROOM CARD (List View)
 // =============================================================================
 
-function GameFilmRow({ game, colors }: { game: VideoGame; colors: typeof Colors.light }) {
+function RoomCard({
+  room,
+  colors,
+  onPress,
+}: {
+  room: Room;
+  colors: typeof Colors.light;
+  onPress: () => void;
+}) {
   return (
     <Pressable
       style={({ pressed }) => [
-        cardStyles.card,
+        cardStyles.roomCard,
         { backgroundColor: pressed ? colors.cardElevated : colors.card },
       ]}
-      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+      onPress={onPress}
     >
-      <View style={[cardStyles.colorStrip, { backgroundColor: game.thumbnailColor }]} />
-      <View style={cardStyles.cardContent}>
-        <View style={cardStyles.cardHeader}>
-          <ThemedText style={[cardStyles.cardTitle, { color: colors.text }]} numberOfLines={1}>
-            {game.opponent}
+      <View style={[cardStyles.roomStrip, { backgroundColor: room.colorStrip }]} />
+      <View style={[cardStyles.roomIconCircle, { backgroundColor: room.colorStrip + '1A' }]}>
+        <IconSymbol name={room.icon as any} size={20} color={room.colorStrip} />
+      </View>
+      <View style={cardStyles.roomInfo}>
+        <ThemedText style={[cardStyles.roomName, { color: colors.text }]}>
+          {room.name}
+        </ThemedText>
+        <ThemedText style={[cardStyles.roomDesc, { color: colors.textSecondary }]} numberOfLines={1}>
+          {room.description}
+        </ThemedText>
+        <View style={cardStyles.roomMeta}>
+          <ThemedText style={[cardStyles.roomMetaText, { color: colors.textTertiary }]}>
+            {room.lastUpdated}
           </ThemedText>
-          <View style={[cardStyles.resultBadge, { backgroundColor: getResultColor(game.result) + '1A' }]}>
-            <ThemedText style={[cardStyles.resultText, { color: getResultColor(game.result) }]}>
-              {game.result} {game.score}
-            </ThemedText>
-          </View>
-        </View>
-        <View style={cardStyles.metaRow}>
-          <ThemedText style={[cardStyles.metaText, { color: colors.textSecondary }]}>{game.date}</ThemedText>
-          <View style={cardStyles.metaDot} />
-          <ThemedText style={[cardStyles.metaText, { color: colors.textSecondary }]}>{formatDuration(game.duration)}</ThemedText>
-          <View style={cardStyles.metaDot} />
-          <ThemedText style={[cardStyles.metaText, { color: colors.textSecondary }]}>{game.clipCount} clips</ThemedText>
-        </View>
-        <View style={cardStyles.tagRow}>
-          {game.tags.map((tag) => (
-            <View key={tag} style={[cardStyles.tagChip, { backgroundColor: colors.backgroundTertiary }]}>
-              <ThemedText style={[cardStyles.tagText, { color: colors.textSecondary }]}>{tag}</ThemedText>
-            </View>
-          ))}
+          <View style={cardStyles.roomMetaDot} />
+          <ThemedText style={[cardStyles.roomMetaText, { color: colors.textTertiary }]}>
+            {room.itemCount} items
+          </ThemedText>
         </View>
       </View>
+      <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
     </Pressable>
   );
 }
 
-function PracticeFilmRow({ item, colors }: { item: PracticeFilmItem; colors: typeof Colors.light }) {
-  const typeColor = item.practiceType === 'Full Practice' ? accent
-    : item.practiceType === 'Walkthrough' ? '#22C55E'
-    : item.practiceType === 'Shootaround' ? '#F59E0B'
-    : item.practiceType === 'Film Session' ? accent
-    : accent;
+const cardStyles = StyleSheet.create({
+  roomCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+    paddingRight: Spacing.md,
+  },
+  roomStrip: { width: 4, alignSelf: 'stretch' },
+  roomIconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: Spacing.sm + 4,
+  },
+  roomInfo: {
+    flex: 1,
+    paddingVertical: Spacing.sm + 4,
+    paddingHorizontal: Spacing.sm + 4,
+    gap: 3,
+  },
+  roomName: { fontSize: 15, fontWeight: '600' },
+  roomDesc: { fontSize: 12 },
+  roomMeta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 },
+  roomMetaText: { fontSize: 11 },
+  roomMetaDot: { width: 3, height: 3, borderRadius: 1.5, backgroundColor: '#52525B' },
+});
+
+// =============================================================================
+// ROOM FEED CARD
+// =============================================================================
+
+function formatDate(d: Date): string {
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+const TYPE_BADGE_COLORS: Record<RoomFeedItem['type'], string> = {
+  game: '#22C55E',
+  clip: '#1D9BF0',
+  practice: '#F59E0B',
+  recruit_clip: '#EF4444',
+};
+
+const TYPE_BADGE_LABELS: Record<RoomFeedItem['type'], string> = {
+  game: 'GAME',
+  clip: 'CLIP',
+  practice: 'PRACTICE',
+  recruit_clip: 'RECRUIT',
+};
+
+function RoomFeedCard({
+  item,
+  colors,
+  onLongPress,
+}: {
+  item: RoomFeedItem;
+  colors: typeof Colors.light;
+  onLongPress: () => void;
+}) {
+  const badgeColor = TYPE_BADGE_COLORS[item.type];
+
   return (
     <Pressable
       style={({ pressed }) => [
-        cardStyles.card,
+        feedStyles.card,
         { backgroundColor: pressed ? colors.cardElevated : colors.card },
       ]}
       onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+      onLongPress={onLongPress}
+      delayLongPress={400}
     >
-      <View style={[cardStyles.colorStrip, { backgroundColor: item.thumbnailColor }]} />
-      <View style={cardStyles.cardContent}>
-        <View style={cardStyles.cardHeader}>
-          <ThemedText style={[cardStyles.cardTitle, { color: colors.text }]} numberOfLines={1}>
-            {item.date}
+      {/* 16:9 Thumbnail */}
+      <View style={[feedStyles.thumbnail, { backgroundColor: item.thumbnailColor }]}>
+        <View style={feedStyles.playBtn}>
+          <IconSymbol name="play.fill" size={20} color="#fff" />
+        </View>
+        {/* Type badge — top left */}
+        <View style={[feedStyles.typeBadge, { backgroundColor: badgeColor }]}>
+          <ThemedText style={feedStyles.typeBadgeText}>
+            {TYPE_BADGE_LABELS[item.type]}
           </ThemedText>
-          <View style={[cardStyles.typeBadge, { backgroundColor: typeColor + '1A' }]}>
-            <ThemedText style={[cardStyles.typeText, { color: typeColor }]}>
-              {item.practiceType.toUpperCase()}
+        </View>
+        {/* Duration badge — top right */}
+        <View style={feedStyles.durationBadge}>
+          <ThemedText style={feedStyles.durationText}>{item.duration}</ThemedText>
+        </View>
+        {/* Result badge — bottom left (games only) */}
+        {item.result && (
+          <View
+            style={[
+              feedStyles.resultBadge,
+              { backgroundColor: item.result === 'W' ? '#22C55E' : '#EF4444' },
+            ]}
+          >
+            <ThemedText style={feedStyles.resultText}>
+              {item.result} {item.score}
             </ThemedText>
           </View>
-        </View>
-        <View style={cardStyles.metaRow}>
-          <ThemedText style={[cardStyles.metaText, { color: colors.textSecondary }]}>{item.duration}</ThemedText>
-        </View>
-        {item.notes && (
-          <ThemedText style={[cardStyles.noteText, { color: colors.textTertiary }]} numberOfLines={1}>
-            {item.notes}
+        )}
+      </View>
+
+      {/* Info area */}
+      <View style={feedStyles.infoArea}>
+        <ThemedText style={[feedStyles.title, { color: colors.text }]} numberOfLines={1}>
+          {item.title}
+        </ThemedText>
+        <View style={feedStyles.subtitleRow}>
+          <ThemedText style={[feedStyles.subtitle, { color: colors.textSecondary }]} numberOfLines={1}>
+            {item.subtitle}
           </ThemedText>
+          <View style={feedStyles.metaDot} />
+          <ThemedText style={[feedStyles.dateText, { color: colors.textTertiary }]}>
+            {formatDate(item.date)}
+          </ThemedText>
+        </View>
+        {item.tags.length > 0 && (
+          <View style={feedStyles.tagRow}>
+            {item.tags.map((tag) => (
+              <View key={tag} style={[feedStyles.tagChip, { backgroundColor: colors.backgroundTertiary }]}>
+                <ThemedText style={[feedStyles.tagText, { color: colors.textSecondary }]}>
+                  {tag}
+                </ThemedText>
+              </View>
+            ))}
+          </View>
         )}
       </View>
     </Pressable>
   );
 }
 
-function ScoutPackRow({ pack, colors }: { pack: ScoutPack; colors: typeof Colors.light }) {
+const feedStyles = StyleSheet.create({
+  card: {
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+  },
+  thumbnail: {
+    width: '100%',
+    aspectRatio: 16 / 9,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  playBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.25)',
+  },
+  typeBadge: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.sm,
+  },
+  typeBadgeText: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#fff',
+    letterSpacing: 0.5,
+  },
+  durationBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.sm,
+  },
+  durationText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  resultBadge: {
+    position: 'absolute',
+    bottom: 8,
+    left: 8,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.sm,
+  },
+  resultText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#fff',
+    letterSpacing: 0.3,
+  },
+  infoArea: {
+    padding: Spacing.sm + 4,
+    gap: 4,
+  },
+  title: { fontSize: 14, fontWeight: '600' },
+  subtitleRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  subtitle: { fontSize: 12, flex: 1 },
+  metaDot: { width: 3, height: 3, borderRadius: 1.5, backgroundColor: '#52525B' },
+  dateText: { fontSize: 11 },
+  tagRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 2 },
+  tagChip: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
+  tagText: { fontSize: 10, fontWeight: '500' },
+});
+
+// =============================================================================
+// FILTER PILLS
+// =============================================================================
+
+function FilterPills<T extends string>({
+  filters,
+  active,
+  onSelect,
+  colors,
+}: {
+  filters: { key: T; label: string }[];
+  active: T;
+  onSelect: (key: T) => void;
+  colors: typeof Colors.light;
+}) {
   return (
-    <Pressable
-      style={({ pressed }) => [
-        cardStyles.card,
-        { backgroundColor: pressed ? colors.cardElevated : colors.card },
-      ]}
-      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-    >
-      <View style={[cardStyles.colorStrip, { backgroundColor: pack.coverColor }]} />
-      <View style={cardStyles.cardContent}>
-        <View style={cardStyles.cardHeader}>
-          <ThemedText style={[cardStyles.cardTitle, { color: colors.text }]} numberOfLines={1}>
-            {pack.opponent}
-          </ThemedText>
-          {pack.tags[0] && (
-            <View style={[cardStyles.typeBadge, { backgroundColor: '#F59E0B1A' }]}>
-              <ThemedText style={[cardStyles.typeText, { color: '#F59E0B' }]}>
-                {pack.tags[0].toUpperCase()}
-              </ThemedText>
-            </View>
-          )}
-        </View>
-        <View style={cardStyles.metaRow}>
-          <ThemedText style={[cardStyles.metaText, { color: colors.textSecondary }]}>{pack.date}</ThemedText>
-          <View style={cardStyles.metaDot} />
-          <ThemedText style={[cardStyles.metaText, { color: colors.textSecondary }]}>{pack.clipCount} clips</ThemedText>
-        </View>
-        <View style={cardStyles.tagRow}>
-          {pack.tags.slice(1).map((tag) => (
-            <View key={tag} style={[cardStyles.tagChip, { backgroundColor: colors.backgroundTertiary }]}>
-              <ThemedText style={[cardStyles.tagText, { color: colors.textSecondary }]}>{tag}</ThemedText>
-            </View>
-          ))}
-        </View>
-      </View>
-    </Pressable>
+    <>
+      {filters.map((f) => {
+        const isActive = active === f.key;
+        return (
+          <Pressable
+            key={f.key}
+            style={[
+              styles.pill,
+              { backgroundColor: isActive ? '#fff' : colors.backgroundTertiary },
+            ]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onSelect(f.key);
+            }}
+          >
+            <ThemedText
+              style={[styles.pillText, { color: isActive ? '#000' : colors.textSecondary }]}
+            >
+              {f.label}
+            </ThemedText>
+          </Pressable>
+        );
+      })}
+    </>
   );
 }
 
-function EmptyState({ colors, label, icon }: { colors: typeof Colors.light; label: string; icon: string }) {
+// =============================================================================
+// EMPTY STATE
+// =============================================================================
+
+function EmptyFeed({ colors, label }: { colors: typeof Colors.light; label: string }) {
   return (
     <View style={styles.emptyState}>
-      <IconSymbol name={icon as any} size={28} color={colors.textTertiary} />
+      <IconSymbol name="film.stack" size={28} color={colors.textTertiary} />
       <ThemedText style={[styles.emptyText, { color: colors.textTertiary }]}>{label}</ThemedText>
     </View>
   );
 }
-
-const cardStyles = StyleSheet.create({
-  card: { flexDirection: 'row', borderRadius: BorderRadius.lg, overflow: 'hidden' },
-  colorStrip: { width: 4 },
-  cardContent: { flex: 1, padding: Spacing.sm + 4, gap: 6 },
-  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  cardTitle: { fontSize: 14, fontWeight: '600', flex: 1, marginRight: Spacing.sm },
-  resultBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
-  resultText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.3 },
-  typeBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
-  typeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.5 },
-  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  metaText: { fontSize: 12 },
-  metaDot: { width: 3, height: 3, borderRadius: 1.5, backgroundColor: '#52525B' },
-  tagRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 2 },
-  tagChip: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: BorderRadius.sm },
-  tagText: { fontSize: 10, fontWeight: '500' },
-  noteText: { fontSize: 12, fontStyle: 'italic' },
-});
 
 // =============================================================================
 // MAIN COMPONENT
@@ -195,104 +358,252 @@ const cardStyles = StyleSheet.create({
 export function SportsFilmRoomV2() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const accent = useAccentColor();
-  const [activeTab, setActiveTab] = useState<FilmTab>('game_film');
 
-  const games = VIDEO_GAMES_BY_MODE.sports;
-  const practiceFilm = MOCK_PRACTICE_FILM;
-  const scoutPacks = SCOUT_PACKS_BY_MODE.sports;
+  // Drill-in state
+  const [selectedRoom, setSelectedRoom] = useState<RoomId | null>(null);
 
-  const handleTabPress = (tab: FilmTab) => {
+  // Feed state
+  const [typeFilter, setTypeFilter] = useState<FeedTypeFilter>('all');
+  const [dateFilter, setDateFilter] = useState<FeedDateFilter>('all');
+  const [search, setSearch] = useState('');
+
+  // Quick Actions sheet
+  const [sheetVisible, setSheetVisible] = useState(false);
+  const [sheetItem, setSheetItem] = useState<RoomFeedItem | null>(null);
+
+  const visibleRooms = useMemo(
+    () => getVisibleRooms(MOCK_USER_AUTHORITY, MOCK_USER_VISIBILITY),
+    [],
+  );
+
+  const feedItems = useMemo(() => {
+    if (!selectedRoom) return [];
+    const items = ROOM_FEED_ITEMS[selectedRoom] ?? [];
+    return filterFeedItems(items, MOCK_USER_VISIBILITY, typeFilter, dateFilter, search);
+  }, [selectedRoom, typeFilter, dateFilter, search]);
+
+  const selectedRoomData = useMemo(
+    () => SPORTS_ROOMS.find((r) => r.id === selectedRoom),
+    [selectedRoom],
+  );
+
+  const handleRoomPress = useCallback((id: RoomId) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setActiveTab(tab);
-  };
+    setSelectedRoom(id);
+  }, []);
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'game_film':
-        return (
-          <FlatList
-            data={games}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <GameFilmRow game={item} colors={colors} />}
-            contentContainerStyle={styles.listContent}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={<EmptyState colors={colors} label="No game film" icon="play.rectangle.fill" />}
-          />
-        );
-      case 'practice_film':
-        return (
-          <FlatList
-            data={practiceFilm}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <PracticeFilmRow item={item} colors={colors} />}
-            contentContainerStyle={styles.listContent}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={<EmptyState colors={colors} label="No practice film" icon="figure.run" />}
-          />
-        );
-      case 'scouting':
-        return (
-          <FlatList
-            data={scoutPacks}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <ScoutPackRow pack={item} colors={colors} />}
-            contentContainerStyle={styles.listContent}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={<EmptyState colors={colors} label="No scouting packs" icon="binoculars.fill" />}
-          />
-        );
+  const handleBack = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSelectedRoom(null);
+    setTypeFilter('all');
+    setDateFilter('all');
+    setSearch('');
+  }, []);
+
+  const handleLongPress = useCallback((item: RoomFeedItem) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setSheetItem(item);
+    setSheetVisible(true);
+  }, []);
+
+  const handleSave = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSheetVisible(false);
+  }, []);
+
+  const handleShareAction = useCallback(async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (sheetItem) {
+      try {
+        await Share.share({ message: `${sheetItem.title} — ${sheetItem.subtitle}` });
+      } catch {}
     }
-  };
+    setSheetVisible(false);
+  }, [sheetItem]);
 
+  const handleAddToPlaylist = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSheetVisible(false);
+  }, []);
+
+  const renderRoomCard = useCallback(
+    ({ item }: { item: Room }) => (
+      <RoomCard room={item} colors={colors} onPress={() => handleRoomPress(item.id)} />
+    ),
+    [colors, handleRoomPress],
+  );
+
+  const renderFeedCard = useCallback(
+    ({ item }: { item: RoomFeedItem }) => (
+      <RoomFeedCard
+        item={item}
+        colors={colors}
+        onLongPress={() => handleLongPress(item)}
+      />
+    ),
+    [colors, handleLongPress],
+  );
+
+  // ─── Room List View ───
+  if (selectedRoom === null) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <FlatList
+          data={visibleRooms}
+          keyExtractor={(item) => item.id}
+          renderItem={renderRoomCard}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={<EmptyFeed colors={colors} label="No rooms available" />}
+        />
+      </View>
+    );
+  }
+
+  // ─── Room Feed View ───
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Pill Nav */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.pillRow}
-        style={styles.pillScroll}
-      >
-        {TABS.map((tab) => {
-          const active = activeTab === tab.key;
-          return (
-            <Pressable
-              key={tab.key}
-              style={[
-                styles.pill,
-                { backgroundColor: active ? '#fff' : colors.backgroundTertiary },
-              ]}
-              onPress={() => handleTabPress(tab.key)}
-            >
-              <ThemedText
-                style={[styles.pillText, { color: active ? '#000' : colors.textSecondary }]}
-              >
-                {tab.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
+      {/* Back Header */}
+      <Pressable style={styles.backHeader} onPress={handleBack}>
+        <IconSymbol name="chevron.left" size={18} color={colors.text} />
+        <ThemedText style={[styles.backTitle, { color: colors.text }]}>
+          {selectedRoomData?.name ?? 'Room'}
+        </ThemedText>
+      </Pressable>
 
-      {/* Content */}
-      <View style={styles.contentArea}>{renderContent()}</View>
+      {/* Search Bar */}
+      <View style={styles.searchRow}>
+        <View style={[styles.searchBar, { backgroundColor: colors.backgroundSecondary, borderColor: colors.border }]}>
+          <IconSymbol name="magnifyingglass" size={14} color={colors.textTertiary} />
+          <TextInput
+            style={[styles.searchInput, { color: colors.text }]}
+            placeholder="Search..."
+            placeholderTextColor={colors.textTertiary}
+            value={search}
+            onChangeText={setSearch}
+            returnKeyType="search"
+          />
+          {search.length > 0 && (
+            <Pressable onPress={() => setSearch('')} hitSlop={8}>
+              <IconSymbol name="xmark.circle.fill" size={14} color={colors.textTertiary} />
+            </Pressable>
+          )}
+        </View>
+      </View>
+
+      {/* Filter Pills */}
+      <View style={styles.filterRow}>
+        <FilterPills
+          filters={ROOM_FEED_TYPE_FILTERS}
+          active={typeFilter}
+          onSelect={setTypeFilter}
+          colors={colors}
+        />
+        <View style={[styles.filterDivider, { backgroundColor: colors.border }]} />
+        <FilterPills
+          filters={ROOM_FEED_DATE_FILTERS}
+          active={dateFilter}
+          onSelect={setDateFilter}
+          colors={colors}
+        />
+      </View>
+
+      {/* Feed List */}
+      <FlatList
+        data={feedItems}
+        keyExtractor={(item) => item.id}
+        renderItem={renderFeedCard}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={<EmptyFeed colors={colors} label="No items match filters" />}
+      />
+
+      {/* Quick Actions BottomSheet */}
+      <BottomSheet
+        visible={sheetVisible}
+        onClose={() => setSheetVisible(false)}
+        title={sheetItem?.title ?? 'Actions'}
+        useModal
+      >
+        <View style={styles.sheetActions}>
+          <Pressable style={styles.sheetAction} onPress={handleSave}>
+            <IconSymbol name="bookmark" size={20} color={colors.text} />
+            <ThemedText style={[styles.sheetActionText, { color: colors.text }]}>Save</ThemedText>
+          </Pressable>
+          <Pressable style={styles.sheetAction} onPress={handleShareAction}>
+            <IconSymbol name="paperplane" size={20} color={colors.text} />
+            <ThemedText style={[styles.sheetActionText, { color: colors.text }]}>Share</ThemedText>
+          </Pressable>
+          <Pressable style={styles.sheetAction} onPress={handleAddToPlaylist}>
+            <IconSymbol name="text.badge.plus" size={20} color={colors.text} />
+            <ThemedText style={[styles.sheetActionText, { color: colors.text }]}>Add to Playlist</ThemedText>
+          </Pressable>
+        </View>
+      </BottomSheet>
     </View>
   );
 }
+
+// =============================================================================
+// STYLES
+// =============================================================================
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  pillScroll: {
-    flexGrow: 0,
-    paddingVertical: Spacing.sm,
+  listContent: {
+    paddingHorizontal: Spacing.md,
+    paddingBottom: Spacing.xxl,
+    gap: Spacing.sm,
   },
-  pillRow: {
+
+  // Back header
+  backHeader: {
     flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm + 2,
+  },
+  backTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+
+  // Search
+  searchRow: {
+    paddingHorizontal: Spacing.md,
+    paddingBottom: Spacing.sm,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: BorderRadius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: Spacing.sm + 2,
+    height: 36,
+    gap: 6,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    paddingVertical: 0,
+  },
+
+  // Filters
+  filterRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
     gap: Spacing.sm,
     paddingHorizontal: Spacing.md,
+    paddingBottom: Spacing.sm,
+  },
+  filterDivider: {
+    width: 1,
+    height: 20,
+    marginHorizontal: 2,
   },
   pill: {
     borderRadius: 16,
@@ -303,14 +614,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
   },
-  contentArea: {
-    flex: 1,
-  },
-  listContent: {
-    paddingHorizontal: Spacing.md,
-    paddingBottom: Spacing.xxl,
-    gap: Spacing.sm,
-  },
+
+  // Empty
   emptyState: {
     alignItems: 'center',
     paddingTop: Spacing.xxl * 2,
@@ -318,5 +623,22 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
+  },
+
+  // Quick Actions Sheet
+  sheetActions: {
+    paddingHorizontal: Spacing.md,
+    paddingTop: Spacing.sm,
+    gap: 4,
+  },
+  sheetAction: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    paddingVertical: 14,
+  },
+  sheetActionText: {
+    fontSize: 16,
+    fontWeight: '500',
   },
 });

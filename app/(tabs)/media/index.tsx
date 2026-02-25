@@ -476,10 +476,10 @@ function ExplorePage({ colors, mode }: { colors: typeof Colors.light; mode: Mode
 }
 
 function RoomPage({ colors, mode }: { colors: typeof Colors.light; mode: Mode }) {
+  if (mode === 'sports') return <SportsFilmRoomV2 />;
   if (EMPTY_MODES.has(mode)) {
     return <EmptyState icon="play.rectangle.fill" title="No Rooms" description="Rooms will appear here." />;
   }
-  if (mode === 'sports') return <SportsFilmRoomV2 />;
   return <ModeFilmRoomV2 mode={mode} />;
 }
 
