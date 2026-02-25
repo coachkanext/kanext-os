@@ -1,109 +1,67 @@
 /**
- * Sports Finance V3 — 3-pill ViewBar (Budget | Scholarships | NIL)
- * Carroll Men's Basketball · NAIA Frontier Conference
- * Head Coach / GM perspective. Inline mock data, no DrillMode.
+ * Sports Finance V3 — A2 (Assistant Coach) Constraint Surface
+ * 6 blocks: Header, Budget Summary (restricted), Scholarships, NIL Budget,
+ *           Operating Budgets (RBAC-gated), Quick Links
+ *
+ * Finance = Budgets + Constraints (read-only summary)
+ * Ledger  = Transactions + Audit (separate tab)
+ *
+ * RBAC: A2/R4 — no transaction detail, no contracts, no booster data.
  */
 import React, { useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 
 // =============================================================================
-// TYPES & MOCK DATA
+// MOCK DATA
 // =============================================================================
 
+const SEASON = '2025–26';
 
-const ACCENT = MODE_ACCENT.sports;
-type ViewId = 'budget' | 'scholarships' | 'nil';
-
-const VIEWS: { id: ViewId; label: string }[] = [
-  { id: 'budget', label: 'Budget' },
-  { id: 'scholarships', label: 'Scholarships' },
-  { id: 'nil', label: 'NIL' },
-];
-
-// -- Budget data --
-
-const BUDGET_SUMMARY = {
-  total: 250000,
-  spent: 162500,
+/** Scholarship allocation summary (visible to R4) */
+const SCHOLARSHIP_DATA = {
+  equivalencies: 13,
+  used: 12,
+  remaining: 1,
+  playersOnAid: 12,
 };
 
-const REVENUE_ITEMS = [
-  { id: 'r1', label: 'Tickets', amount: 45000 },
-  { id: 'r2', label: 'Merch', amount: 12000 },
-  { id: 'r3', label: 'Donations', amount: 35000 },
-  { id: 'r4', label: 'Sponsorships', amount: 20000 },
-  { id: 'r5', label: 'Camp Fees', amount: 8000 },
-  { id: 'r6', label: 'Fundraising', amount: 15000 },
-];
-
-const EXPENSE_ITEMS = [
-  { id: 'e1', label: 'Travel', amount: 48000 },
-  { id: 'e2', label: 'Equipment', amount: 22000 },
-  { id: 'e3', label: 'Meals', amount: 18000 },
-  { id: 'e4', label: 'Officials', amount: 8000 },
-  { id: 'e5', label: 'Facility Costs', amount: 15000 },
-  { id: 'e6', label: 'Gear', amount: 12000 },
-  { id: 'e7', label: 'Recruiting', amount: 10000 },
-];
-
-const SPONSORS = [
-  { id: 'sp1', name: 'Sun Coast Auto', amount: 15000 },
-  { id: 'sp2', name: 'Blue Wave Sports', amount: 8000 },
-  { id: 'sp3', name: 'Helena Chamber', amount: 5000 },
-];
-
-// -- Scholarship data --
-
-const SCHOLARSHIP_SUMMARY = {
-  totalBudget: 180000,
-  allocated: 156000,
-  remaining: 24000,
-  slotsRemaining: 4,
+/** NIL pool summary (visible to R4) */
+const NIL_DATA = {
+  poolTotal: 45000,
+  allocated: 32500,
+  remaining: 12500,
+  topAllocations: [
+    { name: 'Marcus Johnson', amount: 8500 },
+    { name: 'Andre Mitchell Jr.', amount: 7000 },
+    { name: 'DeShawn Carter', amount: 6500 },
+    { name: 'Jamal Williams', amount: 5500 },
+    { name: 'Tyler Brooks', amount: 5000 },
+  ],
 };
 
-interface ScholarshipRow {
-  id: string;
-  player: string;
-  team: string;
-  amount: number;
-  type: 'Full' | 'Partial' | 'Walk-on';
-  status: 'Active';
-}
+/** Operating budget totals (RBAC-gated, shown if permitted) */
+const OPERATING_DATA = {
+  travel: 48000,
+  gearEquipment: 22000,
+  staffOps: 35000,
+};
 
-const SCHOLARSHIPS: ScholarshipRow[] = [
-  { id: 'sc1', player: 'Jaylen Thompson', team: 'Varsity', amount: 18000, type: 'Full', status: 'Active' },
-  { id: 'sc2', player: 'DeShawn Carter', team: 'Varsity', amount: 18000, type: 'Full', status: 'Active' },
-  { id: 'sc3', player: 'Marcus Lane', team: 'Varsity', amount: 15000, type: 'Full', status: 'Active' },
-  { id: 'sc4', player: 'Terrell Davis', team: 'Varsity', amount: 12000, type: 'Partial', status: 'Active' },
-  { id: 'sc5', player: 'Brandon Ellis', team: 'Dev 1', amount: 10000, type: 'Partial', status: 'Active' },
-  { id: 'sc6', player: 'Andre Johnson', team: 'Dev 1', amount: 10000, type: 'Partial', status: 'Active' },
-  { id: 'sc7', player: 'Corey Mitchell', team: 'Dev 2', amount: 8000, type: 'Partial', status: 'Active' },
-  { id: 'sc8', player: 'Damon Wright', team: 'Varsity', amount: 8000, type: 'Walk-on', status: 'Active' },
-];
-
-// -- NIL data --
-
-const NIL_TOTAL = 42000;
-
-interface NILDeal {
-  id: string;
-  player: string;
-  sponsor: string;
-  value: number;
-  term: string;
-  status: 'Active';
-}
-
-const NIL_DEALS: NILDeal[] = [
-  { id: 'nil1', player: 'Jaylen Thompson', sponsor: 'Sun Coast Auto', value: 15000, term: '12 months', status: 'Active' },
-  { id: 'nil2', player: 'DeShawn Carter', sponsor: 'Blue Wave Sports', value: 12000, term: '6 months', status: 'Active' },
-  { id: 'nil3', player: 'Marcus Lane', sponsor: 'Helena Barbershop', value: 8000, term: '12 months', status: 'Active' },
-  { id: 'nil4', player: 'Terrell Davis', sponsor: 'Helena Chamber', value: 7000, term: '8 months', status: 'Active' },
-];
+/**
+ * R4 permission flags.
+ * In production these come from RBAC context. For now, A2 defaults:
+ * - Budget detail: restricted (cannot see total program budget)
+ * - Operating budgets: visible (totals only)
+ */
+const R4_PERMISSIONS = {
+  canSeeBudgetDetail: false,
+  canSeeOperatingBudgets: true,
+};
 
 // =============================================================================
 // PROPS
@@ -119,240 +77,292 @@ interface Props {
 // HELPERS
 // =============================================================================
 
-function formatCurrency(amount: number): string {
+function fmt(amount: number): string {
+  if (amount >= 1000) return '$' + (amount / 1000).toFixed(amount % 1000 === 0 ? 0 : 1) + 'K';
   return '$' + amount.toLocaleString('en-US');
 }
 
-function StatusBadge({ label, color }: { label: string; color: string }) {
+function fmtFull(amount: number): string {
+  return '$' + amount.toLocaleString('en-US');
+}
+
+function SectionHeader({ label, colors }: { label: string; colors: typeof Colors.light }) {
   return (
-    <View style={[s.badge, { backgroundColor: color + '20' }]}>
-      <ThemedText style={[s.badgeText, { color }]}>{label}</ThemedText>
+    <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>
+      {label}
+    </ThemedText>
+  );
+}
+
+function Card({ colors, children, style }: { colors: typeof Colors.light; children: React.ReactNode; style?: object }) {
+  return (
+    <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }, style]}>
+      {children}
     </View>
   );
 }
 
-function ProgressBar({ percent, color }: { percent: number; color: string }) {
-  const clamped = Math.min(Math.max(percent, 0), 100);
+function ProgressBar({ value, max, color, colors }: { value: number; max: number; color: string; colors: typeof Colors.light }) {
+  const pct = Math.min((value / max) * 100, 100);
   return (
-    <View style={s.progressTrack}>
-      <View style={[s.progressFill, { width: `${clamped}%`, backgroundColor: color }]} />
+    <View style={[s.progressTrack, { backgroundColor: colors.border }]}>
+      <View style={[s.progressFill, { width: `${pct}%`, backgroundColor: color }]} />
     </View>
   );
 }
 
 // =============================================================================
-// VIEW: BUDGET
+// BLOCK 0 — HEADER
 // =============================================================================
 
-function BudgetView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
-  const pct = Math.round((BUDGET_SUMMARY.spent / BUDGET_SUMMARY.total) * 100);
-
+function HeaderBlock({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Summary */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>BUDGET OVERVIEW</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={s.summaryRow}>
-          <View style={s.summaryItem}>
-            <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Total</ThemedText>
-            <ThemedText style={[s.summaryValue, { color: accentColor }]}>
-              {formatCurrency(BUDGET_SUMMARY.total)}
-            </ThemedText>
-          </View>
-          <View style={s.summaryItem}>
-            <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Spent</ThemedText>
-            <ThemedText style={[s.summaryValue, { color: colors.text }]}>
-              {formatCurrency(BUDGET_SUMMARY.spent)}
-            </ThemedText>
-          </View>
-          <View style={s.summaryItem}>
-            <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Used</ThemedText>
-            <ThemedText style={[s.summaryValue, { color: pct > 80 ? '#F59E0B' : '#22C55E' }]}>
-              {pct}%
-            </ThemedText>
-          </View>
-        </View>
-        <ProgressBar percent={pct} color={accentColor} />
+    <View style={s.headerBlock}>
+      <ThemedText style={[s.headerTitle, { color: colors.text }]}>Finance</ThemedText>
+      <View style={[s.seasonChip, { backgroundColor: accentColor + '20' }]}>
+        <ThemedText style={[s.seasonChipText, { color: accentColor }]}>{SEASON}</ThemedText>
       </View>
-
-      {/* Revenue */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>REVENUE</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {REVENUE_ITEMS.map((item, i) => (
-          <View
-            key={item.id}
-            style={[
-              s.lineItem,
-              { borderBottomColor: colors.border },
-              i === REVENUE_ITEMS.length - 1 && { borderBottomWidth: 0 },
-            ]}
-          >
-            <ThemedText style={[s.lineLabel, { color: colors.text }]}>{item.label}</ThemedText>
-            <ThemedText style={[s.lineAmount, { color: '#22C55E' }]}>{formatCurrency(item.amount)}</ThemedText>
-          </View>
-        ))}
-      </View>
-
-      {/* Expenses */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>EXPENSES</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {EXPENSE_ITEMS.map((item, i) => (
-          <View
-            key={item.id}
-            style={[
-              s.lineItem,
-              { borderBottomColor: colors.border },
-              i === EXPENSE_ITEMS.length - 1 && { borderBottomWidth: 0 },
-            ]}
-          >
-            <ThemedText style={[s.lineLabel, { color: colors.text }]}>{item.label}</ThemedText>
-            <ThemedText style={[s.lineAmount, { color: '#EF4444' }]}>{formatCurrency(item.amount)}</ThemedText>
-          </View>
-        ))}
-      </View>
-
-      {/* Sponsors */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>SPONSORS</ThemedText>
-      {SPONSORS.map((sp) => (
-        <View
-          key={sp.id}
-          style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}
-        >
-          <View style={s.sponsorRow}>
-            <IconSymbol name="star.fill" size={14} color={accentColor} />
-            <ThemedText style={[s.sponsorName, { color: colors.text }]}>{sp.name}</ThemedText>
-            <ThemedText style={[s.sponsorAmount, { color: accentColor }]}>
-              {formatCurrency(sp.amount)}/yr
-            </ThemedText>
-          </View>
-        </View>
-      ))}
-    </ScrollView>
+    </View>
   );
 }
 
 // =============================================================================
-// VIEW: SCHOLARSHIPS
+// BLOCK 1 — BUDGET SUMMARY (RBAC-gated)
 // =============================================================================
 
-function ScholarshipsView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
-  const allocatedPct = Math.round((SCHOLARSHIP_SUMMARY.allocated / SCHOLARSHIP_SUMMARY.totalBudget) * 100);
+function BudgetSummaryBlock({ colors }: { colors: typeof Colors.light }) {
+  if (R4_PERMISSIONS.canSeeBudgetDetail) {
+    // A3/A4+ view — not shown for A2
+    return null;
+  }
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Summary */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>SCHOLARSHIP OVERVIEW</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={s.summaryRow}>
-          <View style={s.summaryItem}>
-            <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Total</ThemedText>
-            <ThemedText style={[s.summaryValue, { color: accentColor }]}>
-              {formatCurrency(SCHOLARSHIP_SUMMARY.totalBudget)}
-            </ThemedText>
-          </View>
-          <View style={s.summaryItem}>
-            <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Allocated</ThemedText>
-            <ThemedText style={[s.summaryValue, { color: colors.text }]}>
-              {formatCurrency(SCHOLARSHIP_SUMMARY.allocated)}
-            </ThemedText>
-          </View>
-          <View style={s.summaryItem}>
-            <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Remaining</ThemedText>
-            <ThemedText style={[s.summaryValue, { color: '#22C55E' }]}>
-              {formatCurrency(SCHOLARSHIP_SUMMARY.remaining)}
-            </ThemedText>
-          </View>
-        </View>
-        <ProgressBar percent={allocatedPct} color={accentColor} />
-        <View style={s.slotsRow}>
-          <IconSymbol name="person.badge.plus" size={14} color={colors.textTertiary} />
-          <ThemedText style={[s.slotsText, { color: colors.textSecondary }]}>
-            {SCHOLARSHIP_SUMMARY.slotsRemaining} aid slots remaining
+    <>
+      <SectionHeader label="PROGRAM BUDGET" colors={colors} />
+      <Card colors={colors}>
+        <View style={s.restrictedRow}>
+          <IconSymbol name="lock.fill" size={16} color={colors.textTertiary} />
+          <ThemedText style={[s.restrictedText, { color: colors.textSecondary }]}>
+            Program budget details restricted.
           </ThemedText>
         </View>
-      </View>
-
-      {/* Scholarship List */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>ALLOCATIONS</ThemedText>
-      {SCHOLARSHIPS.map((row) => (
-        <View
-          key={row.id}
-          style={[s.listRow, { borderBottomColor: colors.border }]}
-        >
-          <View style={s.listRowLeft}>
-            <ThemedText style={[s.listRowName, { color: colors.text }]}>{row.player}</ThemedText>
-            <ThemedText style={[s.listRowSub, { color: colors.textSecondary }]}>{row.team}</ThemedText>
-          </View>
-          <View style={s.listRowRight}>
-            <ThemedText style={[s.listRowAmount, { color: accentColor }]}>
-              {formatCurrency(row.amount)}
-            </ThemedText>
-            <View style={s.listRowBadges}>
-              <StatusBadge
-                label={row.type.toUpperCase()}
-                color={row.type === 'Full' ? '#22C55E' : row.type === 'Partial' ? ACCENT : '#A1A1AA'}
-              />
-              <StatusBadge label="ACTIVE" color="#22C55E" />
-            </View>
-          </View>
-        </View>
-      ))}
-    </ScrollView>
+      </Card>
+    </>
   );
 }
 
 // =============================================================================
-// VIEW: NIL
+// BLOCK 2 — SCHOLARSHIPS
 // =============================================================================
 
-function NILView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
-  return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Summary */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>NIL OVERVIEW</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={s.nilSummary}>
-          <ThemedText style={[s.nilLabel, { color: colors.textSecondary }]}>Total NIL Flowing</ThemedText>
-          <ThemedText style={[s.nilValue, { color: accentColor }]}>{formatCurrency(NIL_TOTAL)}</ThemedText>
-        </View>
-        <View style={s.nilStats}>
-          <View style={s.nilStatItem}>
-            <ThemedText style={[s.nilStatValue, { color: colors.text }]}>{NIL_DEALS.length}</ThemedText>
-            <ThemedText style={[s.nilStatLabel, { color: colors.textSecondary }]}>Active Deals</ThemedText>
-          </View>
-          <View style={s.nilStatItem}>
-            <ThemedText style={[s.nilStatValue, { color: colors.text }]}>
-              {formatCurrency(Math.round(NIL_TOTAL / NIL_DEALS.length))}
-            </ThemedText>
-            <ThemedText style={[s.nilStatLabel, { color: colors.textSecondary }]}>Avg per Deal</ThemedText>
-          </View>
-        </View>
-      </View>
+function ScholarshipsBlock({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+  const d = SCHOLARSHIP_DATA;
+  const pct = d.used / d.equivalencies;
+  const barColor = pct >= 0.9 ? '#F59E0B' : '#22C55E';
 
-      {/* Active Deals */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>ACTIVE DEALS</ThemedText>
-      {NIL_DEALS.map((deal) => (
-        <View
-          key={deal.id}
-          style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}
-        >
-          <View style={s.nilDealHeader}>
-            <View style={s.nilDealInfo}>
-              <ThemedText style={[s.nilDealPlayer, { color: colors.text }]}>{deal.player}</ThemedText>
-              <ThemedText style={[s.nilDealSponsor, { color: colors.textSecondary }]}>{deal.sponsor}</ThemedText>
-            </View>
-            <ThemedText style={[s.nilDealValue, { color: accentColor }]}>{formatCurrency(deal.value)}</ThemedText>
+  return (
+    <>
+      <SectionHeader label="SCHOLARSHIPS" colors={colors} />
+      <Card colors={colors}>
+        {/* Summary row */}
+        <View style={s.metricRow}>
+          <View style={s.metricItem}>
+            <ThemedText style={[s.metricValue, { color: accentColor }]}>{d.equivalencies}</ThemedText>
+            <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Equivalencies</ThemedText>
           </View>
-          <View style={[s.nilDealMeta, { borderTopColor: colors.border }]}>
-            <View style={s.nilDealMetaItem}>
-              <IconSymbol name="calendar" size={12} color={colors.textTertiary} />
-              <ThemedText style={[s.nilDealMetaText, { color: colors.textSecondary }]}>{deal.term}</ThemedText>
-            </View>
-            <StatusBadge label="ACTIVE" color="#22C55E" />
+          <View style={s.metricItem}>
+            <ThemedText style={[s.metricValue, { color: colors.text }]}>{d.used}</ThemedText>
+            <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Used</ThemedText>
+          </View>
+          <View style={s.metricItem}>
+            <ThemedText style={[s.metricValue, { color: d.remaining > 0 ? '#22C55E' : '#EF4444' }]}>{d.remaining}</ThemedText>
+            <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Remaining</ThemedText>
           </View>
         </View>
+
+        <ProgressBar value={d.used} max={d.equivalencies} color={barColor} colors={colors} />
+
+        {/* Players on aid */}
+        <View style={[s.aidRow, { borderTopColor: colors.border }]}>
+          <IconSymbol name="person.2.fill" size={14} color={colors.textTertiary} />
+          <ThemedText style={[s.aidText, { color: colors.textSecondary }]}>
+            {d.playersOnAid} players on athletic aid
+          </ThemedText>
+        </View>
+
+        {/* Helper note */}
+        <ThemedText style={[s.helperText, { color: colors.textTertiary }]}>
+          Aid details per player shown in Roster (read-only).
+        </ThemedText>
+      </Card>
+    </>
+  );
+}
+
+// =============================================================================
+// BLOCK 3 — NIL BUDGET
+// =============================================================================
+
+function NILBudgetBlock({ colors, accentColor, onOpenSheet }: { colors: typeof Colors.light; accentColor: string; onOpenSheet: () => void }) {
+  const d = NIL_DATA;
+  const allocatedPct = d.allocated / d.poolTotal;
+  const barColor = allocatedPct >= 0.85 ? '#F59E0B' : accentColor;
+
+  return (
+    <>
+      <SectionHeader label="NIL BUDGET" colors={colors} />
+      <Pressable
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          onOpenSheet();
+        }}
+        style={({ pressed }) => pressed && { opacity: 0.7 }}
+      >
+        <Card colors={colors}>
+          <View style={s.metricRow}>
+            <View style={s.metricItem}>
+              <ThemedText style={[s.metricValue, { color: accentColor }]}>{fmt(d.poolTotal)}</ThemedText>
+              <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Pool Total</ThemedText>
+            </View>
+            <View style={s.metricItem}>
+              <ThemedText style={[s.metricValue, { color: colors.text }]}>{fmt(d.allocated)}</ThemedText>
+              <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Allocated</ThemedText>
+            </View>
+            <View style={s.metricItem}>
+              <ThemedText style={[s.metricValue, { color: d.remaining > 5000 ? '#22C55E' : '#F59E0B' }]}>{fmt(d.remaining)}</ThemedText>
+              <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Remaining</ThemedText>
+            </View>
+          </View>
+          <ProgressBar value={d.allocated} max={d.poolTotal} color={barColor} colors={colors} />
+
+          <View style={[s.tapHintRow, { borderTopColor: colors.border }]}>
+            <ThemedText style={[s.tapHintText, { color: colors.textSecondary }]}>View NIL Summary</ThemedText>
+            <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+          </View>
+        </Card>
+      </Pressable>
+    </>
+  );
+}
+
+// =============================================================================
+// NIL SUMMARY SHEET (v1 Minimal)
+// =============================================================================
+
+function NILSummarySheet({ visible, onClose, colors, accentColor }: { visible: boolean; onClose: () => void; colors: typeof Colors.light; accentColor: string }) {
+  const d = NIL_DATA;
+
+  return (
+    <BottomSheet visible={visible} onClose={onClose} title="NIL Summary" useModal>
+      <BottomSheetScrollView contentContainerStyle={s.sheetScroll}>
+        {/* Pool overview */}
+        <View style={s.sheetMetrics}>
+          <View style={s.sheetMetricItem}>
+            <ThemedText style={[s.sheetMetricValue, { color: accentColor }]}>{fmtFull(d.poolTotal)}</ThemedText>
+            <ThemedText style={[s.sheetMetricLabel, { color: colors.textSecondary }]}>Total NIL Pool</ThemedText>
+          </View>
+          <View style={s.sheetMetricItem}>
+            <ThemedText style={[s.sheetMetricValue, { color: colors.text }]}>{fmtFull(d.allocated)}</ThemedText>
+            <ThemedText style={[s.sheetMetricLabel, { color: colors.textSecondary }]}>Allocated Total</ThemedText>
+          </View>
+          <View style={s.sheetMetricItem}>
+            <ThemedText style={[s.sheetMetricValue, { color: d.remaining > 5000 ? '#22C55E' : '#F59E0B' }]}>{fmtFull(d.remaining)}</ThemedText>
+            <ThemedText style={[s.sheetMetricLabel, { color: colors.textSecondary }]}>Remaining Available</ThemedText>
+          </View>
+        </View>
+
+        <ProgressBar value={d.allocated} max={d.poolTotal} color={accentColor} colors={colors} />
+
+        {/* Top allocations */}
+        <ThemedText style={[s.sheetSectionHeader, { color: colors.textSecondary }]}>
+          TOP ALLOCATIONS
+        </ThemedText>
+        {d.topAllocations.map((alloc, idx) => (
+          <View
+            key={alloc.name}
+            style={[
+              s.allocRow,
+              idx < d.topAllocations.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+            ]}
+          >
+            <ThemedText style={[s.allocRank, { color: colors.textTertiary }]}>{idx + 1}</ThemedText>
+            <ThemedText style={[s.allocName, { color: colors.text }]}>{alloc.name}</ThemedText>
+            <ThemedText style={[s.allocAmount, { color: accentColor }]}>{fmtFull(alloc.amount)}</ThemedText>
+          </View>
+        ))}
+
+        {/* Bottom note */}
+        <View style={[s.sheetNote, { borderTopColor: colors.border }]}>
+          <IconSymbol name="info.circle.fill" size={14} color={colors.textTertiary} />
+          <ThemedText style={[s.sheetNoteText, { color: colors.textTertiary }]}>
+            Detailed NIL transactions available in Ledger (restricted).
+          </ThemedText>
+        </View>
+      </BottomSheetScrollView>
+    </BottomSheet>
+  );
+}
+
+// =============================================================================
+// BLOCK 4 — OPERATING BUDGETS (RBAC-gated)
+// =============================================================================
+
+function OperatingBudgetsBlock({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+  if (!R4_PERMISSIONS.canSeeOperatingBudgets) return null;
+
+  const items = [
+    { label: 'Travel', amount: OPERATING_DATA.travel, icon: 'airplane' },
+    { label: 'Gear / Equipment', amount: OPERATING_DATA.gearEquipment, icon: 'tshirt.fill' },
+    { label: 'Staff / Ops', amount: OPERATING_DATA.staffOps, icon: 'person.3.fill' },
+  ];
+
+  return (
+    <>
+      <SectionHeader label="OPERATING BUDGETS" colors={colors} />
+      <View style={s.opsGrid}>
+        {items.map((item) => (
+          <View key={item.label} style={[s.opsCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <IconSymbol name={item.icon as any} size={20} color={accentColor} />
+            <ThemedText style={[s.opsAmount, { color: colors.text }]}>{fmt(item.amount)}</ThemedText>
+            <ThemedText style={[s.opsLabel, { color: colors.textSecondary }]}>{item.label}</ThemedText>
+          </View>
+        ))}
+      </View>
+      <ThemedText style={[s.opsTotalsOnly, { color: colors.textTertiary }]}>
+        Totals only. Breakdown available at higher authority level.
+      </ThemedText>
+    </>
+  );
+}
+
+// =============================================================================
+// BLOCK 5 — QUICK LINKS
+// =============================================================================
+
+function QuickLinksBlock({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+  const links = [
+    { label: 'Open Ledger', icon: 'doc.text', description: 'Transaction & audit trail' },
+    { label: 'Open Compliance', icon: 'shield.checkmark.fill', description: 'Compliance records' },
+  ];
+
+  return (
+    <>
+      <SectionHeader label="QUICK LINKS" colors={colors} />
+      {links.map((link) => (
+        <Pressable
+          key={link.label}
+          style={({ pressed }) => [s.linkCard, { backgroundColor: colors.card, borderColor: colors.border }, pressed && { opacity: 0.7 }]}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        >
+          <IconSymbol name={link.icon as any} size={18} color={accentColor} />
+          <View style={s.linkInfo}>
+            <ThemedText style={[s.linkLabel, { color: colors.text }]}>{link.label}</ThemedText>
+            <ThemedText style={[s.linkDescription, { color: colors.textSecondary }]}>{link.description}</ThemedText>
+          </View>
+          <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+        </Pressable>
       ))}
-    </ScrollView>
+    </>
   );
 }
 
@@ -361,55 +371,33 @@ function NILView({ colors, accentColor }: { colors: typeof Colors.light; accentC
 // =============================================================================
 
 export function SportsFinance({ colors, accentColor, role }: Props) {
-  const [activeView, setActiveView] = useState<ViewId>('budget');
+  const [nilSheetVisible, setNilSheetVisible] = useState(false);
 
-  const handlePillPress = useCallback((id: ViewId) => {
-    Haptics.selectionAsync();
-    setActiveView(id);
-  }, []);
-
-  const renderContent = () => {
-    switch (activeView) {
-      case 'budget':
-        return <BudgetView colors={colors} accentColor={accentColor} />;
-      case 'scholarships':
-        return <ScholarshipsView colors={colors} accentColor={accentColor} />;
-      case 'nil':
-        return <NILView colors={colors} accentColor={accentColor} />;
-    }
-  };
+  const openNilSheet = useCallback(() => setNilSheetVisible(true), []);
+  const closeNilSheet = useCallback(() => setNilSheetVisible(false), []);
 
   return (
-    <View style={s.container}>
-      {/* ViewBar */}
-      <View style={s.viewBar}>
-        {VIEWS.map((v) => {
-          const isActive = v.id === activeView;
-          return (
-            <Pressable
-              key={v.id}
-              style={[
-                s.pill,
-                { backgroundColor: isActive ? accentColor : '#2F3336' },
-              ]}
-              onPress={() => handlePillPress(v.id)}
-            >
-              <ThemedText
-                style={[
-                  s.pillText,
-                  { color: isActive ? '#000' : colors.textSecondary },
-                ]}
-              >
-                {v.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </View>
+    <>
+      <ScrollView
+        style={s.container}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={s.scroll}
+      >
+        <HeaderBlock colors={colors} accentColor={accentColor} />
+        <BudgetSummaryBlock colors={colors} />
+        <ScholarshipsBlock colors={colors} accentColor={accentColor} />
+        <NILBudgetBlock colors={colors} accentColor={accentColor} onOpenSheet={openNilSheet} />
+        <OperatingBudgetsBlock colors={colors} accentColor={accentColor} />
+        <QuickLinksBlock colors={colors} accentColor={accentColor} />
+      </ScrollView>
 
-      {/* Content */}
-      {renderContent()}
-    </View>
+      <NILSummarySheet
+        visible={nilSheetVisible}
+        onClose={closeNilSheet}
+        colors={colors}
+        accentColor={accentColor}
+      />
+    </>
   );
 }
 
@@ -418,237 +406,248 @@ export function SportsFinance({ colors, accentColor, role }: Props) {
 // =============================================================================
 
 const s = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
+  scroll: { padding: Spacing.md, paddingBottom: 120 },
 
-  // -- ViewBar --
-  viewBar: {
-    flexDirection: 'row',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    gap: Spacing.sm,
-  },
-  pill: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: BorderRadius.full,
-  },
-  pillText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-
-  // -- Scroll --
-  scroll: {
-    padding: Spacing.md,
-    paddingBottom: 120,
-  },
-
-  // -- Section Header --
+  // ── Section Header ──
   sectionHeader: {
     fontSize: 12,
     fontWeight: '600',
     letterSpacing: 0.5,
     marginBottom: 8,
+    marginTop: 20,
     textTransform: 'uppercase',
   },
 
-  // -- Card --
+  // ── Card ──
   card: {
     borderWidth: 1,
-    borderRadius: 12,
+    borderRadius: BorderRadius.lg,
     padding: 14,
     marginBottom: 12,
   },
 
-  // -- Badge --
-  badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+  // ── Header ──
+  headerBlock: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 4,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    lineHeight: 26,
+  },
+  seasonChip: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     borderRadius: BorderRadius.full,
   },
-  badgeText: {
-    fontSize: 9,
+  seasonChipText: {
+    fontSize: 12,
     fontWeight: '700',
-    letterSpacing: 0.3,
   },
 
-  // -- Progress bar --
+  // ── Restricted ──
+  restrictedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 4,
+  },
+  restrictedText: {
+    fontSize: 13,
+    fontWeight: '500',
+    flex: 1,
+  },
+
+  // ── Progress Bar ──
   progressTrack: {
-    height: 4,
-    backgroundColor: '#2F3336',
-    borderRadius: 2,
+    height: 6,
+    borderRadius: 3,
     overflow: 'hidden',
-    marginTop: 8,
+    marginTop: 10,
   },
   progressFill: {
-    height: 4,
-    borderRadius: 2,
+    height: '100%',
+    borderRadius: 3,
   },
 
-  // -- Summary --
-  summaryRow: {
+  // ── Metric Row ──
+  metricRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  summaryItem: {
+  metricItem: {
     alignItems: 'center',
-  },
-  summaryLabel: {
-    fontSize: 11,
-    marginBottom: 2,
-  },
-  summaryValue: {
-    fontSize: 18,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-  },
-
-  // -- Line items --
-  lineItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  lineLabel: {
-    fontSize: 13,
-  },
-  lineAmount: {
-    fontSize: 13,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-  },
-
-  // -- Sponsors --
-  sponsorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  sponsorName: {
-    fontSize: 14,
-    fontWeight: '600',
     flex: 1,
   },
-  sponsorAmount: {
-    fontSize: 13,
-    fontWeight: '700',
+  metricValue: {
+    fontSize: 20,
+    fontWeight: '800',
     fontVariant: ['tabular-nums'],
   },
+  metricLabel: {
+    fontSize: 11,
+    fontWeight: '500',
+    marginTop: 2,
+    textTransform: 'uppercase',
+  },
 
-  // -- Scholarship slots --
-  slotsRow: {
+  // ── Scholarships ──
+  aidRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    marginTop: 10,
-  },
-  slotsText: {
-    fontSize: 12,
-  },
-
-  // -- List row --
-  listRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  listRowLeft: {
-    flex: 1,
-  },
-  listRowName: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  listRowSub: {
-    fontSize: 11,
-    marginTop: 2,
-  },
-  listRowRight: {
-    alignItems: 'flex-end',
-    gap: 4,
-  },
-  listRowAmount: {
-    fontSize: 14,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-  },
-  listRowBadges: {
-    flexDirection: 'row',
-    gap: 4,
-  },
-
-  // -- NIL --
-  nilSummary: {
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  nilLabel: {
-    fontSize: 12,
-    marginBottom: 4,
-  },
-  nilValue: {
-    fontSize: 28,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-  },
-  nilStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  nilStatItem: {
-    alignItems: 'center',
-  },
-  nilStatValue: {
-    fontSize: 16,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-  },
-  nilStatLabel: {
-    fontSize: 11,
-    marginTop: 2,
-  },
-  nilDealHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    gap: 8,
-  },
-  nilDealInfo: {
-    flex: 1,
-  },
-  nilDealPlayer: {
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  nilDealSponsor: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-  nilDealValue: {
-    fontSize: 15,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-  },
-  nilDealMeta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 10,
-    paddingTop: 10,
+    marginTop: 12,
+    paddingTop: 12,
     borderTopWidth: StyleSheet.hairlineWidth,
   },
-  nilDealMetaItem: {
+  aidText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  helperText: {
+    fontSize: 11,
+    fontStyle: 'italic',
+    marginTop: 8,
+  },
+
+  // ── NIL tap hint ──
+  tapHintRow: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  tapHintText: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+
+  // ── Operating Budgets ──
+  opsGrid: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 8,
+  },
+  opsCard: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: BorderRadius.lg,
+    padding: 14,
     alignItems: 'center',
     gap: 6,
   },
-  nilDealMetaText: {
+  opsAmount: {
+    fontSize: 16,
+    fontWeight: '800',
+    fontVariant: ['tabular-nums'],
+  },
+  opsLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    textAlign: 'center',
+    textTransform: 'uppercase',
+  },
+  opsTotalsOnly: {
+    fontSize: 11,
+    fontStyle: 'italic',
+    marginBottom: 12,
+  },
+
+  // ── Quick Links ──
+  linkCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    borderWidth: 1,
+    borderRadius: BorderRadius.lg,
+    padding: 14,
+    marginBottom: 10,
+  },
+  linkInfo: {
+    flex: 1,
+  },
+  linkLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  linkDescription: {
+    fontSize: 11,
+    marginTop: 2,
+  },
+
+  // ── NIL Summary Sheet ──
+  sheetScroll: {
+    padding: Spacing.md,
+    paddingBottom: 40,
+  },
+  sheetMetrics: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  sheetMetricItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  sheetMetricValue: {
+    fontSize: 18,
+    fontWeight: '800',
+    fontVariant: ['tabular-nums'],
+  },
+  sheetMetricLabel: {
+    fontSize: 10,
+    fontWeight: '500',
+    marginTop: 2,
+    textTransform: 'uppercase',
+    textAlign: 'center',
+  },
+  sheetSectionHeader: {
     fontSize: 12,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  allocRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    gap: 10,
+  },
+  allocRank: {
+    fontSize: 12,
+    fontWeight: '600',
+    fontVariant: ['tabular-nums'],
+    width: 18,
+  },
+  allocName: {
+    fontSize: 13,
+    fontWeight: '600',
+    flex: 1,
+  },
+  allocAmount: {
+    fontSize: 14,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+  sheetNote: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  sheetNoteText: {
+    fontSize: 12,
+    flex: 1,
+    lineHeight: 16,
   },
 });
