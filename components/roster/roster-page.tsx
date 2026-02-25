@@ -4,7 +4,7 @@
  * Route: SportsHome → Roster tab (PagerView page)
  *
  * Views: Cards (default) | List | Depth Chart
- * Only Cards is implemented in this spec.
+ * Cards = intelligence surface. List = roster administration. Depth = competitive deployment.
  *
  * RBAC: Assistant Coach / Recruiting Coordinator (execution-level).
  * Full roster visibility (program-scoped).
@@ -94,6 +94,28 @@ const LENS_OPTIONS: { key: LensKey; label: string }[] = [
   { key: 'frame', label: 'Frame' },
 ];
 
+type StatusFilter = 'all' | PlayerStatus;
+type ListSortKey = 'jersey' | 'name' | 'position' | 'class' | 'height' | 'weight' | 'status' | 'aid';
+
+const STATUS_FILTER_OPTIONS: { key: StatusFilter; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'available', label: 'Available' },
+  { key: 'injured', label: 'Injured' },
+  { key: 'out', label: 'Out' },
+  { key: 'redshirt', label: 'Redshirt' },
+];
+
+const LIST_SORT_OPTIONS: { key: ListSortKey; label: string }[] = [
+  { key: 'jersey', label: '#' },
+  { key: 'name', label: 'Name' },
+  { key: 'position', label: 'Pos' },
+  { key: 'class', label: 'Class' },
+  { key: 'height', label: 'Ht' },
+  { key: 'weight', label: 'Wt' },
+  { key: 'status', label: 'Status' },
+  { key: 'aid', label: 'Aid' },
+];
+
 interface RosterPlayer {
   playerId: string;
   jerseyNumber: string;
@@ -106,6 +128,8 @@ interface RosterPlayer {
   classYear: string;
   status: PlayerStatus;
   nil: number;
+  aidPct: number;
+  notes: string;
   scores: {
     overallKR: number;
     shooting: number;
@@ -132,9 +156,35 @@ const STATUS_COLORS: Record<PlayerStatus, string> = {
   redshirt: '#A1A1AA',
 };
 
+// Status sort priority: injured/out first
+const STATUS_SORT_ORDER: Record<PlayerStatus, number> = {
+  injured: 0,
+  out: 1,
+  redshirt: 2,
+  available: 3,
+};
+
+// Class sort order
+const CLASS_SORT_ORDER: Record<string, number> = {
+  'Fr.': 0, 'So.': 1, 'Jr.': 2, 'Sr.': 3,
+  'R-Fr.': 0.5, 'R-So.': 1.5, 'R-Jr.': 2.5, 'R-Sr.': 3.5,
+};
+
 // =============================================================================
 // DATA BRIDGE
 // =============================================================================
+
+function normClass(c: string | null): string {
+  if (!c) return '—';
+  const low = c.toLowerCase().replace(/\./g, '').trim();
+  if (low === 'freshman' || low === 'fr') return 'Fr.';
+  if (low === 'sophomore' || low === 'so') return 'So.';
+  if (low === 'junior' || low === 'jr') return 'Jr.';
+  if (low === 'senior' || low === 'sr') return 'Sr.';
+  if (low === 'graduate student' || low === 'gr' || low === 'graduate') return 'Gr.';
+  if (low.startsWith('r-')) return 'R-' + normClass(low.slice(2));
+  return c;
+}
 
 function normJersey(j: string | null): string {
   if (!j) return '0';
@@ -168,9 +218,11 @@ function buildRosterPlayers(): RosterPlayer[] {
         position: r.position ?? '—',
         height: physicals?.height ?? r.height ?? '—',
         weight: physicals?.weight ?? r.weight ?? 0,
-        classYear: r.class_year ?? '—',
+        classYear: normClass(r.class_year),
         status: meta?.status ?? 'available',
         nil: meta?.nilAmount ?? 0,
+        aidPct: meta?.aidPct ?? 0,
+        notes: meta?.rosterNotes ?? '',
         scores: {
           overallKR: kr ?? 0,
           shooting: clusters?.shooting ?? 0,
@@ -252,6 +304,37 @@ function getLensLabel(lens: LensKey): string {
   return LENS_OPTIONS.find(l => l.key === lens)?.label ?? 'KR';
 }
 
+function parseHeight(h: string): number {
+  // "6'2" → 74 inches
+  const m = h.match(/(\d+)'(\d+)/);
+  if (!m) return 0;
+  return parseInt(m[1], 10) * 12 + parseInt(m[2], 10);
+}
+
+function sortListPlayers(list: RosterPlayer[], sortKey: ListSortKey): RosterPlayer[] {
+  const sorted = [...list];
+  switch (sortKey) {
+    case 'jersey':
+      return sorted.sort((a, b) => parseInt(a.jerseyNumber, 10) - parseInt(b.jerseyNumber, 10));
+    case 'name':
+      return sorted.sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName));
+    case 'position':
+      return sorted.sort((a, b) => a.position.localeCompare(b.position));
+    case 'class':
+      return sorted.sort((a, b) => (CLASS_SORT_ORDER[a.classYear] ?? 9) - (CLASS_SORT_ORDER[b.classYear] ?? 9));
+    case 'height':
+      return sorted.sort((a, b) => parseHeight(b.height) - parseHeight(a.height));
+    case 'weight':
+      return sorted.sort((a, b) => b.weight - a.weight);
+    case 'status':
+      return sorted.sort((a, b) => STATUS_SORT_ORDER[a.status] - STATUS_SORT_ORDER[b.status]);
+    case 'aid':
+      return sorted.sort((a, b) => b.aidPct - a.aidPct);
+    default:
+      return sorted;
+  }
+}
+
 // =============================================================================
 // COMPONENT
 // =============================================================================
@@ -269,8 +352,11 @@ export function RosterPage({ colors: propColors }: RosterPageProps) {
   const [view, setView] = useState<RosterView>('cards');
   const [lens, setLens] = useState<LensKey>('overall');
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [listSort, setListSort] = useState<ListSortKey>('jersey');
 
-  const filteredPlayers = useMemo(() => {
+  // Cards view: filter by search, sort by lens
+  const cardPlayers = useMemo(() => {
     const q = search.trim().toLowerCase();
     let list = ROSTER_PLAYERS;
     if (q) {
@@ -283,9 +369,28 @@ export function RosterPage({ colors: propColors }: RosterPageProps) {
         STATUS_LABELS[p.status].toLowerCase().includes(q),
       );
     }
-    // Sort by active lens score — highest first
     return [...list].sort((a, b) => getScoreForLens(b, lens) - getScoreForLens(a, lens));
   }, [search, lens]);
+
+  // List view: filter by search + status, sort by listSort
+  const listPlayers = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    let list = ROSTER_PLAYERS;
+    if (statusFilter !== 'all') {
+      list = list.filter(p => p.status === statusFilter);
+    }
+    if (q) {
+      list = list.filter(p =>
+        `${p.firstName} ${p.lastName}`.toLowerCase().includes(q) ||
+        p.jerseyNumber.includes(q) ||
+        p.displayJersey.includes(q) ||
+        p.position.toLowerCase().includes(q) ||
+        p.classYear.toLowerCase().includes(q) ||
+        STATUS_LABELS[p.status].toLowerCase().includes(q),
+      );
+    }
+    return sortListPlayers(list, listSort);
+  }, [search, statusFilter, listSort]);
 
   return (
     <View style={[s.root, { backgroundColor: colors.background }]}>
@@ -343,7 +448,7 @@ export function RosterPage({ colors: propColors }: RosterPageProps) {
         </View>
       </View>
 
-      {/* ═══════ ROW 2 — Lens Pills (Cards only) ═══════ */}
+      {/* ═══════ ROW 2 — Lens Pills (Cards) / Status Filters (List) ═══════ */}
       {view === 'cards' && (
         <View style={[s.lensWrap, { borderBottomColor: colors.border }]}>
           <ScrollView
@@ -378,10 +483,44 @@ export function RosterPage({ colors: propColors }: RosterPageProps) {
         </View>
       )}
 
+      {view === 'list' && (
+        <View style={[s.lensWrap, { borderBottomColor: colors.border }]}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={s.lensRow}
+          >
+            {STATUS_FILTER_OPTIONS.map(f => {
+              const isActive = statusFilter === f.key;
+              return (
+                <Pressable
+                  key={f.key}
+                  style={[
+                    s.lensPill,
+                    {
+                      backgroundColor: isActive ? accent + '20' : colors.card,
+                      borderColor: isActive ? accent : colors.border,
+                    },
+                  ]}
+                  onPress={() => {
+                    setStatusFilter(f.key);
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }}
+                >
+                  <Text style={[s.lensPillText, { color: isActive ? accent : colors.textSecondary }]}>
+                    {f.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </View>
+      )}
+
       {/* ═══════ CONTENT ═══════ */}
       {view === 'cards' ? (
         <FlatList
-          data={filteredPlayers}
+          data={cardPlayers}
           keyExtractor={p => p.playerId}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: insets.bottom + 40, paddingTop: 8 }}
@@ -395,11 +534,20 @@ export function RosterPage({ colors: propColors }: RosterPageProps) {
             />
           )}
         />
+      ) : view === 'list' ? (
+        <RosterList
+          players={listPlayers}
+          colors={colors}
+          accent={accent}
+          sortKey={listSort}
+          onSort={setListSort}
+          bottomInset={insets.bottom}
+        />
       ) : (
         <View style={s.placeholder}>
           <Text style={[s.placeholderTitle, { color: colors.text }]}>Coming Soon</Text>
           <Text style={[s.placeholderSub, { color: colors.textSecondary }]}>
-            {view === 'list' ? 'List view' : 'Depth chart'} is under development.
+            Depth chart is under development.
           </Text>
         </View>
       )}
@@ -408,7 +556,185 @@ export function RosterPage({ colors: propColors }: RosterPageProps) {
 }
 
 // =============================================================================
-// PLAYER CARD
+// ROSTER LIST VIEW — Horizontally scrollable table with fixed-width columns
+// =============================================================================
+
+// Column definitions with fixed widths
+const COLUMNS: { key: ListSortKey | 'nil' | 'notes'; label: string; width: number }[] = [
+  { key: 'jersey', label: '#',      width: 40 },
+  { key: 'name',   label: 'Name',   width: 140 },
+  { key: 'position', label: 'Pos',  width: 44 },
+  { key: 'height', label: 'Ht',     width: 48 },
+  { key: 'weight', label: 'Wt',     width: 44 },
+  { key: 'class',  label: 'Class',  width: 48 },
+  { key: 'status', label: 'Status', width: 80 },
+  { key: 'aid',    label: 'Aid',    width: 48 },
+  { key: 'nil',    label: 'NIL',    width: 60 },
+  { key: 'notes',  label: 'Notes',  width: 180 },
+];
+
+const TABLE_ROW_WIDTH = COLUMNS.reduce((sum, c) => sum + c.width, 0) + 24; // + padding
+
+function RosterList({
+  players: data,
+  colors,
+  accent,
+  sortKey,
+  onSort,
+  bottomInset,
+}: {
+  players: RosterPlayer[];
+  colors: typeof Colors.light;
+  accent: string;
+  sortKey: ListSortKey;
+  onSort: (key: ListSortKey) => void;
+  bottomInset: number;
+}) {
+  if (data.length === 0) {
+    return (
+      <View style={s.placeholder}>
+        <Text style={[s.placeholderTitle, { color: colors.text }]}>No Players</Text>
+        <Text style={[s.placeholderSub, { color: colors.textSecondary }]}>
+          No players in roster for selected season.
+        </Text>
+      </View>
+    );
+  }
+
+  return (
+    <ScrollView horizontal showsHorizontalScrollIndicator={true} style={{ flex: 1 }}>
+      <View style={{ width: TABLE_ROW_WIDTH }}>
+        {/* Sticky header */}
+        <View style={[ls.headerRow, { backgroundColor: colors.background, borderBottomColor: colors.border }]}>
+          {COLUMNS.map(col => {
+            const sortable = col.key !== 'nil' && col.key !== 'notes';
+            const isActive = sortable && sortKey === col.key;
+            return (
+              <Pressable
+                key={col.key}
+                style={[ls.headerCell, { width: col.width }]}
+                onPress={() => {
+                  if (!sortable) return;
+                  onSort(col.key as ListSortKey);
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                }}
+                disabled={!sortable}
+              >
+                <Text style={[ls.headerText, { color: isActive ? accent : colors.textTertiary }]}>
+                  {col.label}
+                </Text>
+                {isActive && (
+                  <IconSymbol name="chevron.down" size={8} color={accent} />
+                )}
+              </Pressable>
+            );
+          })}
+        </View>
+
+        {/* Rows — vertical scroll */}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: bottomInset + 40 }}
+        >
+          {data.map((player, index) => (
+            <ListRow
+              key={player.playerId}
+              player={player}
+              colors={colors}
+              isOdd={index % 2 === 1}
+              onSelect={() => openPlayerCard(toPlayerCardData(player))}
+            />
+          ))}
+        </ScrollView>
+      </View>
+    </ScrollView>
+  );
+}
+
+function ListRow({
+  player,
+  colors,
+  isOdd,
+  onSelect,
+}: {
+  player: RosterPlayer;
+  colors: typeof Colors.light;
+  isOdd: boolean;
+  onSelect: () => void;
+}) {
+  const statusColor = STATUS_COLORS[player.status];
+  const statusLabel = STATUS_LABELS[player.status];
+
+  return (
+    <Pressable
+      style={[
+        ls.row,
+        { backgroundColor: isOdd ? colors.card + '60' : 'transparent', borderBottomColor: colors.border },
+      ]}
+      onPress={() => {
+        onSelect();
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }}
+    >
+      {/* # */}
+      <View style={[ls.cell, { width: 40 }]}>
+        <Text style={[ls.cellText, { color: colors.textSecondary }]}>#{player.displayJersey}</Text>
+      </View>
+      {/* Name */}
+      <View style={[ls.cell, { width: 140 }]}>
+        <Text style={[ls.nameText, { color: colors.text }]} numberOfLines={1}>
+          {player.lastName}, {player.firstName}
+        </Text>
+      </View>
+      {/* Pos */}
+      <View style={[ls.cell, { width: 44 }]}>
+        <Text style={[ls.cellText, { color: colors.textSecondary }]}>{player.position}</Text>
+      </View>
+      {/* Ht */}
+      <View style={[ls.cell, { width: 48 }]}>
+        <Text style={[ls.cellText, { color: colors.textSecondary }]}>{player.height}</Text>
+      </View>
+      {/* Wt */}
+      <View style={[ls.cell, { width: 44 }]}>
+        <Text style={[ls.cellText, { color: colors.textSecondary }]}>
+          {player.weight > 0 ? player.weight : '—'}
+        </Text>
+      </View>
+      {/* Class */}
+      <View style={[ls.cell, { width: 48 }]}>
+        <Text style={[ls.cellText, { color: colors.textSecondary }]}>{player.classYear}</Text>
+      </View>
+      {/* Status */}
+      <View style={[ls.cell, { width: 80 }]}>
+        <View style={[ls.statusChip, { backgroundColor: statusColor + '18' }]}>
+          <View style={[ls.statusDot, { backgroundColor: statusColor }]} />
+          <Text style={[ls.statusLabel, { color: statusColor }]}>{statusLabel}</Text>
+        </View>
+      </View>
+      {/* Aid */}
+      <View style={[ls.cell, { width: 48 }]}>
+        <Text style={[ls.cellText, { color: colors.textSecondary }]}>
+          {player.aidPct > 0 ? `${player.aidPct}%` : '—'}
+        </Text>
+      </View>
+      {/* NIL */}
+      <View style={[ls.cell, { width: 60 }]}>
+        <Text style={[ls.cellText, { color: colors.textSecondary }]}>
+          {player.nil > 0 ? `$${(player.nil / 1000).toFixed(1)}K` : '—'}
+        </Text>
+      </View>
+      {/* Notes */}
+      <View style={[ls.cell, { width: 180 }]}>
+        <Text style={[ls.notesText, { color: player.notes ? colors.textSecondary : colors.textTertiary }]} numberOfLines={2}>
+          {player.notes || '—'}
+        </Text>
+      </View>
+    </Pressable>
+  );
+}
+
+// =============================================================================
+// PLAYER CARD (Cards View)
 // =============================================================================
 
 const CARD_IMAGE_HEIGHT = 300;
@@ -537,7 +863,7 @@ const s = StyleSheet.create({
   viewToggle: { flexDirection: 'row', gap: 2 },
   viewBtn: { padding: 7, borderRadius: 8, borderWidth: 1 },
 
-  // ── Row 2 — Lens Pills ──
+  // ── Row 2 — Lens / Filter Pills ──
   lensWrap: { borderBottomWidth: StyleSheet.hairlineWidth },
   lensRow: { paddingHorizontal: Spacing.md, paddingVertical: 10, gap: 8 },
   lensPill: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20, borderWidth: 1 },
@@ -639,4 +965,45 @@ const s = StyleSheet.create({
   placeholder: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   placeholderTitle: { fontSize: 20, fontWeight: '700', marginBottom: 8 },
   placeholderSub: { fontSize: 14, textAlign: 'center', paddingHorizontal: 40 },
+});
+
+// ── List View Styles ──
+const ls = StyleSheet.create({
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  headerCell: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 3,
+  },
+  headerText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5, textTransform: 'uppercase' },
+
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  cell: { alignItems: 'center', justifyContent: 'center' },
+  cellText: { fontSize: 12, fontWeight: '600' },
+  nameText: { fontSize: 12, fontWeight: '700' },
+  notesText: { fontSize: 11, fontWeight: '500', lineHeight: 15 },
+
+  statusChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  statusDot: { width: 5, height: 5, borderRadius: 2.5 },
+  statusLabel: { fontSize: 10, fontWeight: '700' },
 });
