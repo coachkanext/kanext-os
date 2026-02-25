@@ -1,14 +1,14 @@
 /**
- * Recruiting Page — Database sub-tab
+ * Recruiting Page — Database + Portal + Board sub-tabs
  *
  * Route: SportsHome → Recruiting tab (PagerView page)
  *
- * Team-centric player browsing: Level → Conference → Team → Roster.
- * NIL/Scholarship constraints visible at program level only.
- * All intelligence via KR lens pills.
+ * Database: Team-centric player browsing (Level → Conference → Team → Roster).
+ * Portal: Transfer portal player universe, filtered by status/level/position.
+ * Board: Internal pipeline (Coming Soon).
  *
  * RBAC: Assistant Coach / Recruiting Coordinator. Read-only.
- * Player Sheet opens on tap.
+ * Player Sheet opens on tap. Long-press on Portal → Add to Board.
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
@@ -87,6 +87,34 @@ function expandLevel(key: string): string[] {
 type PickerTarget = 'level' | 'conference' | 'team' | null;
 
 // =============================================================================
+// PORTAL CONSTANTS
+// =============================================================================
+
+type PortalStatus = 'available' | 'committed' | 'withdrawn';
+
+const PORTAL_STATUS_OPTIONS: { key: PortalStatus; label: string }[] = [
+  { key: 'available', label: 'Available' },
+  { key: 'committed', label: 'Committed' },
+  { key: 'withdrawn', label: 'Withdrawn' },
+];
+
+const PORTAL_STATUS_COLORS: Record<PortalStatus, string> = {
+  available: '#22C55E',
+  committed: '#F59E0B',
+  withdrawn: '#A1A1AA',
+};
+
+const POS_OPTIONS: { key: string; label: string }[] = [
+  { key: 'PG', label: 'PG' },
+  { key: 'CG', label: 'CG' },
+  { key: 'W', label: 'Wing' },
+  { key: 'F', label: 'Forward' },
+  { key: 'B', label: 'Big' },
+];
+
+type PortalPickerTarget = 'level' | 'position' | null;
+
+// =============================================================================
 // COMPONENT
 // =============================================================================
 
@@ -108,8 +136,16 @@ export function RecruitingPage({ colors }: Props) {
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
   const [activePicker, setActivePicker] = useState<PickerTarget>(null);
 
-  // Lens state
+  // Lens state (shared across Database + Portal)
   const [lens, setLens] = useState<LensKey>('overall');
+
+  // Portal state
+  const [portalSearch, setPortalSearch] = useState('');
+  const [portalStatus, setPortalStatus] = useState<PortalStatus>('available');
+  const [portalLevel, setPortalLevel] = useState<string | null>(null);
+  const [portalPosition, setPortalPosition] = useState<string | null>(null);
+  const [portalPicker, setPortalPicker] = useState<PortalPickerTarget>(null);
+  const [longPressPlayer, setLongPressPlayer] = useState<NationalPlayer | null>(null);
 
   // ── Derived: all players at selected level ──
   const allPlayers = useMemo(() => nationalPool.getAll(), []);
@@ -170,6 +206,43 @@ export function RecruitingPage({ colors }: Props) {
     [selectedTeam],
   );
 
+  // ── Derived: portal players ──
+  const allPortalPlayers = useMemo(
+    () => allPlayers.filter(p => p.portalEntryDate != null),
+    [allPlayers],
+  );
+
+  const portalResults = useMemo(() => {
+    let pool = allPortalPlayers;
+
+    // Search filter
+    if (portalSearch && portalSearch.length >= 2) {
+      const q = portalSearch.toLowerCase();
+      pool = pool.filter(p =>
+        p.fullName.toLowerCase().includes(q) ||
+        p.school.toLowerCase().includes(q),
+      );
+    }
+
+    // Level filter
+    if (portalLevel) {
+      pool = pool.filter(p => p.levelKey === portalLevel);
+    }
+
+    // Position filter
+    if (portalPosition) {
+      pool = pool.filter(p => p.position === portalPosition);
+    }
+
+    // Sort by active lens score descending, tie-break by overall KR
+    return [...pool].sort((a, b) => {
+      const sa = getLensScore(a, lens) ?? -1;
+      const sb = getLensScore(b, lens) ?? -1;
+      if (sb !== sa) return sb - sa;
+      return (b.kr ?? 0) - (a.kr ?? 0);
+    });
+  }, [allPortalPlayers, portalSearch, portalLevel, portalPosition, lens]);
+
   // ── Handlers ──
   const handleLevelSelect = useCallback((key: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -227,6 +300,28 @@ export function RecruitingPage({ colors }: Props) {
     setActivePicker(prev => prev === target ? null : target);
   }, []);
 
+  // Portal handlers
+  const clearPortalFilters = useCallback(() => {
+    setPortalSearch('');
+    setPortalLevel(null);
+    setPortalPosition(null);
+    setPortalPicker(null);
+  }, []);
+
+  const togglePortalPicker = useCallback((target: PortalPickerTarget) => {
+    setPortalPicker(prev => prev === target ? null : target);
+  }, []);
+
+  const handleLongPress = useCallback((player: NationalPlayer) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setLongPressPlayer(player);
+  }, []);
+
+  const handleAddToBoard = useCallback(() => {
+    // TODO: integrate with Board data when Board tab is implemented
+    setLongPressPlayer(null);
+  }, []);
+
   // ── Render helpers ──
   const isSearchMode = searchResults !== null;
   const displayPlayers = isSearchMode ? searchResults : teamRoster;
@@ -267,14 +362,253 @@ export function RecruitingPage({ colors }: Props) {
         </View>
       </View>
 
-      {/* ── Portal / Board placeholders ── */}
-      {activeTab !== 'database' && (
+      {/* ── Board placeholder ── */}
+      {activeTab === 'board' && (
         <View style={styles.comingSoon}>
           <Text style={[styles.comingSoonTitle, { color: colors.text }]}>Coming Soon</Text>
           <Text style={[styles.comingSoonSub, { color: colors.textSecondary }]}>
-            {activeTab === 'portal' ? 'Transfer Portal tracking' : 'Recruiting Board'} is under development.
+            Recruiting Board is under development.
           </Text>
         </View>
+      )}
+
+      {/* ── Portal Tab ── */}
+      {activeTab === 'portal' && (
+        <FlatList
+          data={portalResults}
+          keyExtractor={item => item.id}
+          contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
+          keyboardShouldPersistTaps="handled"
+          ListHeaderComponent={
+            <>
+              {/* Search bar */}
+              <View style={[styles.searchRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <IconSymbol name="magnifyingglass" size={16} color={colors.textSecondary} />
+                <TextInput
+                  style={[styles.searchInput, { color: colors.text }]}
+                  placeholder="Search player / school"
+                  placeholderTextColor={colors.textTertiary}
+                  value={portalSearch}
+                  onChangeText={setPortalSearch}
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                />
+                {portalSearch.length > 0 && (
+                  <Pressable onPress={() => setPortalSearch('')} hitSlop={8}>
+                    <IconSymbol name="xmark.circle.fill" size={18} color={colors.textTertiary} />
+                  </Pressable>
+                )}
+              </View>
+
+              {/* Status pills */}
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                keyboardShouldPersistTaps="always"
+                contentContainerStyle={styles.portalStatusRow}
+              >
+                {PORTAL_STATUS_OPTIONS.map(opt => {
+                  const isActive = portalStatus === opt.key;
+                  return (
+                    <Pressable
+                      key={opt.key}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        setPortalStatus(opt.key);
+                      }}
+                      style={[
+                        styles.statusPill,
+                        {
+                          backgroundColor: isActive ? PORTAL_STATUS_COLORS[opt.key] + '20' : colors.card,
+                          borderColor: isActive ? PORTAL_STATUS_COLORS[opt.key] : colors.border,
+                        },
+                      ]}
+                    >
+                      <Text style={[styles.statusPillText, { color: isActive ? PORTAL_STATUS_COLORS[opt.key] : colors.textSecondary }]}>
+                        {opt.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+
+              {/* Level + Position filters */}
+              <View style={styles.filterSection}>
+                <View style={styles.filterRow}>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} keyboardShouldPersistTaps="always" contentContainerStyle={styles.filterScrollContent}>
+                    {/* Level */}
+                    <Pressable
+                      onPress={() => togglePortalPicker('level')}
+                      style={[
+                        styles.filterPill,
+                        {
+                          backgroundColor: portalLevel ? accent + '20' : colors.card,
+                          borderColor: portalLevel ? accent : colors.border,
+                        },
+                      ]}
+                    >
+                      <Text style={[styles.filterPillText, { color: portalLevel ? accent : colors.textSecondary }]}>
+                        {portalLevel ? LEVEL_OPTIONS.find(l => l.key === portalLevel)?.label ?? portalLevel : 'Level'}
+                      </Text>
+                      <IconSymbol name="chevron.down" size={10} color={portalLevel ? accent : colors.textTertiary} />
+                    </Pressable>
+
+                    {/* Position */}
+                    <Pressable
+                      onPress={() => togglePortalPicker('position')}
+                      style={[
+                        styles.filterPill,
+                        {
+                          backgroundColor: portalPosition ? accent + '20' : colors.card,
+                          borderColor: portalPosition ? accent : colors.border,
+                        },
+                      ]}
+                    >
+                      <Text style={[styles.filterPillText, { color: portalPosition ? accent : colors.textSecondary }]}>
+                        {portalPosition ? POS_OPTIONS.find(p => p.key === portalPosition)?.label ?? portalPosition : 'Position'}
+                      </Text>
+                      <IconSymbol name="chevron.down" size={10} color={portalPosition ? accent : colors.textTertiary} />
+                    </Pressable>
+                  </ScrollView>
+
+                  {/* Clear */}
+                  {(portalLevel || portalPosition) && (
+                    <Pressable onPress={clearPortalFilters} hitSlop={8} style={[styles.filterPill, { borderColor: colors.border, backgroundColor: colors.card, marginLeft: 8 }]}>
+                      <Text style={[styles.filterPillText, { color: '#EF4444' }]}>Clear</Text>
+                    </Pressable>
+                  )}
+                </View>
+
+                {/* Picker dropdowns */}
+                {portalPicker === 'level' && (
+                  <PickerDropdown
+                    items={LEVEL_OPTIONS}
+                    selected={portalLevel}
+                    onSelect={(key) => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setPortalLevel(key);
+                      setPortalPicker(null);
+                    }}
+                    colors={colors}
+                    accent={accent}
+                  />
+                )}
+                {portalPicker === 'position' && (
+                  <PickerDropdown
+                    items={POS_OPTIONS}
+                    selected={portalPosition}
+                    onSelect={(key) => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setPortalPosition(key);
+                      setPortalPicker(null);
+                    }}
+                    colors={colors}
+                    accent={accent}
+                  />
+                )}
+              </View>
+
+              {/* Lens toggle */}
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.lensRow}
+              >
+                {LENS_OPTIONS.map(opt => {
+                  const isActive = lens === opt.key;
+                  return (
+                    <Pressable
+                      key={opt.key}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        setLens(opt.key);
+                      }}
+                      style={[
+                        styles.lensPill,
+                        {
+                          backgroundColor: isActive ? accent : colors.card,
+                          borderColor: isActive ? accent : colors.border,
+                        },
+                      ]}
+                    >
+                      <Text style={[styles.lensPillText, { color: isActive ? '#fff' : colors.textSecondary }]}>
+                        {opt.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+
+              {/* Results count */}
+              {portalResults.length > 0 && (
+                <View style={styles.sectionHeader}>
+                  <Text style={[styles.sectionHeaderText, { color: colors.textSecondary }]}>
+                    {portalResults.length} player{portalResults.length !== 1 ? 's' : ''}
+                  </Text>
+                </View>
+              )}
+
+              {/* Empty states */}
+              {allPortalPlayers.length === 0 && (
+                <View style={styles.emptyState}>
+                  <IconSymbol name="arrow.left.arrow.right" size={32} color={colors.textTertiary} />
+                  <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>
+                    Portal data not available.
+                  </Text>
+                </View>
+              )}
+              {allPortalPlayers.length > 0 && portalResults.length === 0 && (
+                <View style={styles.emptyState}>
+                  <IconSymbol name="magnifyingglass" size={32} color={colors.textTertiary} />
+                  <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>
+                    No portal matches.
+                  </Text>
+                  <Pressable onPress={clearPortalFilters} style={[styles.clearBtn, { borderColor: colors.border }]}>
+                    <Text style={{ fontSize: 13, color: accent }}>Clear Filters</Text>
+                  </Pressable>
+                </View>
+              )}
+            </>
+          }
+          renderItem={({ item }) => (
+            <PortalPlayerRow
+              player={item}
+              lens={lens}
+              colors={colors}
+              onPress={() => handlePlayerTap(item)}
+              onLongPress={() => handleLongPress(item)}
+            />
+          )}
+        />
+      )}
+
+      {/* ── Long-press Quick Action Sheet ── */}
+      {longPressPlayer && (
+        <Pressable
+          style={styles.actionOverlay}
+          onPress={() => setLongPressPlayer(null)}
+        >
+          <View style={[styles.actionSheet, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Text style={[styles.actionSheetTitle, { color: colors.text }]} numberOfLines={1}>
+              {longPressPlayer.fullName}
+            </Text>
+            <Pressable
+              onPress={handleAddToBoard}
+              style={[styles.actionItem, { borderBottomColor: colors.border }]}
+            >
+              <IconSymbol name="plus.circle.fill" size={18} color={accent} />
+              <Text style={[styles.actionItemText, { color: colors.text }]}>Add to Board</Text>
+              <Text style={[styles.actionItemSub, { color: colors.textTertiary }]}>Watchlist</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => setLongPressPlayer(null)}
+              style={styles.actionItem}
+            >
+              <IconSymbol name="xmark" size={16} color={colors.textTertiary} />
+              <Text style={[styles.actionItemText, { color: colors.textSecondary }]}>Cancel</Text>
+            </Pressable>
+          </View>
+        </Pressable>
       )}
 
       {/* ── Database Tab ── */}
@@ -655,6 +989,61 @@ function PlayerRow({
 }
 
 // =============================================================================
+// PORTAL PLAYER ROW
+// =============================================================================
+
+function PortalPlayerRow({
+  player,
+  lens,
+  colors,
+  onPress,
+  onLongPress,
+}: {
+  player: NationalPlayer;
+  lens: LensKey;
+  colors: typeof Colors.light;
+  onPress: () => void;
+  onLongPress: () => void;
+}) {
+  const score = getLensScore(player, lens);
+  const scoreColor = getKRColor(score);
+  // Derive portal status — all current portal entries are "Available"
+  const status: PortalStatus = 'available';
+  const statusColor = PORTAL_STATUS_COLORS[status];
+
+  return (
+    <Pressable
+      onPress={onPress}
+      onLongPress={onLongPress}
+      delayLongPress={400}
+      style={[styles.playerRow, { borderBottomColor: colors.border }]}
+    >
+      <View style={styles.playerInfo}>
+        <Text style={[styles.playerName, { color: colors.text }]}>{player.fullName}</Text>
+        <Text style={[styles.playerPos, { color: colors.textSecondary }]}>{player.position}</Text>
+        <Text style={[styles.playerSub, { color: colors.textTertiary }]}>
+          {player.height}{player.weight ? ` / ${player.weight} lbs` : ''}
+          {player.classYear ? ` · ${player.classYear}` : ''}
+        </Text>
+        <Text style={[styles.playerSub, { color: colors.textTertiary }]}>{player.school}</Text>
+      </View>
+      <View style={styles.portalRight}>
+        {score != null ? (
+          <Text style={[styles.scoreValue, { color: scoreColor }]}>{Math.round(score)}</Text>
+        ) : (
+          <Text style={[styles.scoreDash, { color: colors.textTertiary }]}>—</Text>
+        )}
+        <View style={[styles.statusChip, { backgroundColor: statusColor + '18' }]}>
+          <Text style={[styles.statusChipText, { color: statusColor }]}>
+            {status.charAt(0).toUpperCase() + status.slice(1)}
+          </Text>
+        </View>
+      </View>
+    </Pressable>
+  );
+}
+
+// =============================================================================
 // STYLES
 // =============================================================================
 
@@ -665,12 +1054,6 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.sm,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '800',
-    letterSpacing: -0.5,
-    marginBottom: Spacing.sm,
   },
   subTabRow: {
     flexDirection: 'row',
@@ -966,5 +1349,72 @@ const styles = StyleSheet.create({
   scoreDash: {
     fontSize: 20,
     fontWeight: '700',
+  },
+
+  // Portal-specific
+  portalStatusRow: {
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.sm,
+    gap: 8,
+  },
+  statusPill: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  statusPillText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  portalRight: {
+    alignItems: 'flex-end',
+    gap: 4,
+  },
+  statusChip: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+  },
+  statusChipText: {
+    fontSize: 10,
+    fontWeight: '700',
+  },
+
+  // Quick action sheet
+  actionOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+    zIndex: 100,
+  },
+  actionSheet: {
+    marginHorizontal: Spacing.lg,
+    marginBottom: 40,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  actionSheetTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  actionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  actionItemText: {
+    fontSize: 15,
+    fontWeight: '500',
+    flex: 1,
+  },
+  actionItemSub: {
+    fontSize: 12,
   },
 });
