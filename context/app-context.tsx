@@ -134,7 +134,7 @@ const DEMO_CYCLES: Record<Mode, Cycle> = {
 };
 
 const DEMO_ROLES: Record<Mode, Role> = {
-  sports: 'head_coach',
+  sports: 'assistant_coach',
   church: 'member',
   education: 'faculty',
   business: 'founder',

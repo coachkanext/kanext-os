@@ -716,9 +716,10 @@ export function NexusProvider({ children }: NexusProviderProps) {
     }
 
     if (intent.type !== 'none') {
-      const rbacLevel = mapRoleToRBAC(appState.operatingRole || 'head_coach', mode);
+      const currentRole = appState.operatingRole || 'head_coach';
+      const rbacLevel = mapRoleToRBAC(currentRole, mode);
       const nexusScope = buildNexusScope();
-      const result = processAction(intent, nexusScope, rbacLevel, conversationId);
+      const result = processAction(intent, nexusScope, rbacLevel, conversationId, currentRole);
 
       if (result.handled) {
         dispatch({ type: 'ADD_V2_MESSAGES', payload: result.messages });

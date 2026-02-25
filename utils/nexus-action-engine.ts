@@ -4,7 +4,7 @@
  */
 
 import type { MessageV2, ActionIntent, RBACLevel, NexusContext, LinkChip } from '@/types/nexus-v2';
-import { canPerform, getRequiredCapability, getRefusalMessage, isHighImpactAction, requiresAuditNote } from './nexus-rbac';
+import { canPerform, getRequiredCapability, getRefusalMessage, isHighImpactAction, requiresAuditNote, getAuthorityLabel } from './nexus-rbac';
 import { autoRoute } from './nexus-room-routing';
 
 // =============================================================================
@@ -31,6 +31,7 @@ export function processAction(
   context: NexusContext,
   role: RBACLevel,
   conversationId: string,
+  operatingRole?: string,
 ): ActionResult {
   if (intent.type === 'none') {
     return { handled: false, messages: [], needsConfirmation: false };
@@ -39,7 +40,7 @@ export function processAction(
   // 1. Validate — check RBAC
   const requiredCapability = getRequiredCapability(intent.type);
   if (requiredCapability && !canPerform(role, requiredCapability)) {
-    const refusalMsg = createRefusalMessage(intent, context, conversationId, requiredCapability);
+    const refusalMsg = createRefusalMessage(intent, context, conversationId, requiredCapability, operatingRole);
     return { handled: true, messages: [refusalMsg], needsConfirmation: false };
   }
 
@@ -524,7 +525,13 @@ function createRefusalMessage(
   context: NexusContext,
   conversationId: string,
   capability: string,
+  operatingRole?: string,
 ): MessageV2 {
+  // Derive authority label for display
+  const authorityLabel = operatingRole
+    ? getAuthorityLabel(operatingRole, context.mode as any)
+    : undefined;
+
   // Route to the right escalation room based on the action's topic
   const topicHint = intent.type === 'approve' || intent.type === 'deny' ? 'compliance'
     : intent.type === 'generate_packet' ? 'ops'
@@ -535,20 +542,23 @@ function createRefusalMessage(
   const targetRoomId = routed?.room_id || 'rm-ad';
   const targetOwner = routed?.owner.owner_label || 'AD / Head Coach';
 
+  const authorityTag = authorityLabel ? ` (${authorityLabel})` : '';
+
   return {
     id: `refusal-${Date.now()}`,
     conversationId,
     role: 'assistant',
-    content: getRefusalMessage(capability as any),
+    content: getRefusalMessage(capability as any, authorityLabel),
     timestamp: new Date(),
     messageType: 'escalation',
     escalation: {
-      reason: 'This action requires a higher access level.',
+      reason: `Insufficient Authority${authorityTag}. This action requires Head Coach (A3) or higher.`,
       target_room: targetRoom,
       target_room_id: targetRoomId,
       target_owner: targetOwner,
       options: [
-        { label: 'Create a Request to the owner', action: 'create_request' },
+        { label: 'Route to Head Coach (A3)', action: 'create_request' },
+        { label: 'Route to AD (A4)', action: 'create_request' },
         { label: 'Save as Open Question', action: 'save_question' },
       ],
     },

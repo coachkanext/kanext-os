@@ -87,9 +87,39 @@ const CAPABILITY_LABELS: Record<NexusCapability, string> = {
   C9_cross_context: 'search across all contexts',
 };
 
-export function getRefusalMessage(capability: NexusCapability): string {
+export function getRefusalMessage(capability: NexusCapability, authorityLabel?: string): string {
   const label = CAPABILITY_LABELS[capability];
-  return `I can't ${label} at your current access level.\nI can:\n1. Create a request to the right owner\n2. Save as open question\nReply 1 or 2.`;
+  const tag = authorityLabel ? ` (${authorityLabel})` : '';
+  return `Insufficient Authority${tag}. I can't ${label}.`;
+}
+
+/**
+ * Derives a display authority label (A0-A5) from a role string + mode.
+ * Uses the backward-compat role → constitutional authority mapping.
+ */
+export function getAuthorityLabel(role: string, mode: Mode): string {
+  if (mode === 'sports') {
+    switch (role) {
+      case 'admin': return 'A5';
+      case 'athletic_director': return 'A4';
+      case 'head_coach':
+      case 'gm': return 'A3';
+      case 'assistant_coach': return 'A2';
+      case 'medical':
+      case 'academic': return 'A2';
+      case 'student_athlete':
+      case 'player':
+      case 'family': return 'A1';
+      case 'scout':
+      case 'agent':
+      case 'donor':
+      case 'booster': return 'A1';
+      case 'fan': return 'A0';
+      default: return 'A0';
+    }
+  }
+  // Fallback: derive from RBAC level
+  return 'A0';
 }
 
 // =============================================================================

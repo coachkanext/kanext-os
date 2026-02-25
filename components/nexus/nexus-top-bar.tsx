@@ -108,6 +108,13 @@ export function NexusTopBar({
           {/* Right: spacer to keep mode pill centered */}
           <View style={styles.iconButton} />
         </View>
+
+        {/* Context Chip — program scope */}
+        <Text style={[styles.contextChip, { color: colors.textTertiary }]} numberOfLines={1}>
+          {MODE_LABELS[state.mode]}
+          {state.organization?.name ? ` · ${state.organization.name}` : ''}
+          {state.program?.name ? ` · ${state.program.name}` : ''}
+        </Text>
       </View>
 
       {/* Mode Dropdown */}
@@ -197,6 +204,11 @@ const styles = StyleSheet.create({
   modeLabel: {
     fontSize: 14,
     fontWeight: '500',
+  },
+  contextChip: {
+    fontSize: 11,
+    textAlign: 'center',
+    paddingBottom: 6,
   },
   rightActions: {
     flexDirection: 'row',
