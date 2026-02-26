@@ -17,6 +17,7 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { BizEventDetailSheet, type EventDetailData } from '@/components/biz-home/biz-event-detail-sheet';
 
 const ACCENT = MODE_ACCENT.business;
 
@@ -146,6 +147,107 @@ const TYPE_OPTIONS: TypeFilter[] = ['All', 'BOARD', 'INVESTOR', 'CAPITAL', 'COMP
 const STATUS_OPTIONS: StatusFilter[] = ['All', 'Scheduled', 'Pending', 'Completed', 'Overdue'];
 
 // =============================================================================
+// EVENT DETAIL ENRICHMENT
+// =============================================================================
+
+const EVENT_DETAIL: Record<string, Omit<EventDetailData, 'id' | 'title' | 'type' | 'status'>> = {
+  ev1: {
+    date: 'Feb 26, 2026', time: '2:00 PM', location: 'Virtual — Zoom', domain: 'Finance',
+    linkedObjects: [{ type: 'Program', id: 'PRG-001', label: 'Q1 Financial Review' }],
+    participants: [
+      { role: 'Founder' }, { role: 'CFO' }, { role: 'COO' },
+      { role: 'Board Member', external: true, counterparty: 'Apex Capital' },
+      { role: 'Board Member', external: true, counterparty: 'Meridian Advisory' },
+    ],
+  },
+  ev2: {
+    date: 'Feb 26, 2026', time: '5:00 PM', domain: 'Operations',
+    linkedObjects: [],
+    participants: [{ role: 'CFO' }, { role: 'HR Director' }],
+  },
+  ev3: {
+    date: 'Feb 27, 2026', time: '10:00 AM', location: 'Office — Conference Room A', domain: 'Finance',
+    linkedEntity: 'Apex Capital',
+    linkedObjects: [{ type: 'Deal', id: 'DEAL-001', label: 'Apex Capital — Seed Round' }],
+    participants: [
+      { role: 'Founder' }, { role: 'CFO' },
+      { role: 'Managing Partner', external: true, counterparty: 'Apex Capital' },
+    ],
+  },
+  ev4: {
+    date: 'Feb 28, 2026', time: '11:59 PM', domain: 'Compliance',
+    linkedObjects: [{ type: 'Compliance Filing', id: 'CMP-2026-001', label: 'Annual Report — Delaware' }],
+    participants: [{ role: 'Compliance Officer' }, { role: 'Legal Counsel' }],
+  },
+  ev5: {
+    date: 'Mar 5, 2026', time: '12:00 PM', domain: 'Finance',
+    linkedEntity: 'Apex Capital',
+    linkedObjects: [
+      { type: 'Deal', id: 'DEAL-001', label: 'Apex Capital — Seed Round' },
+      { type: 'Contract', id: 'CTR-004', label: 'SAFE Note Agreement' },
+    ],
+    participants: [
+      { role: 'Founder' }, { role: 'CFO' }, { role: 'Legal Counsel' },
+      { role: 'Managing Partner', external: true, counterparty: 'Apex Capital' },
+    ],
+  },
+  ev6: {
+    date: 'Mar 10, 2026', time: '—', domain: 'Operations',
+    linkedObjects: [{ type: 'Contract', id: 'CTR-002', label: 'AWS Service Agreement' }],
+    participants: [{ role: 'CTO' }, { role: 'CFO' }],
+  },
+  ev7: {
+    date: 'Mar 12, 2026', time: '9:00 AM', location: 'Virtual — Email + Deck', domain: 'Finance',
+    linkedObjects: [],
+    participants: [{ role: 'Founder' }, { role: 'CFO' }],
+  },
+  ev8: {
+    date: 'Apr 2, 2026', time: '2:00 PM', location: 'Office — Boardroom', domain: 'Multi-domain',
+    linkedObjects: [{ type: 'Program', id: 'PRG-002', label: 'Q2 Strategic Plan' }],
+    participants: [
+      { role: 'Founder' }, { role: 'CFO' }, { role: 'COO' },
+      { role: 'Board Member', external: true, counterparty: 'Apex Capital' },
+      { role: 'Board Member', external: true, counterparty: 'Meridian Advisory' },
+    ],
+  },
+  ev9: {
+    date: 'Apr 15, 2026', time: '—', domain: 'Compliance',
+    linkedObjects: [{ type: 'Obligation', id: 'OBL-002', label: 'D&O Insurance Renewal' }],
+    participants: [{ role: 'CFO' }, { role: 'Compliance Officer' }],
+  },
+  ev10: {
+    date: 'May 1, 2026', time: '—', domain: 'Operations',
+    linkedObjects: [
+      { type: 'Contract', id: 'CTR-005', label: 'WeWork Lease — DTLA' },
+      { type: 'Obligation', id: 'OBL-007', label: 'Office Lease — WeWork DTLA' },
+    ],
+    participants: [{ role: 'COO' }, { role: 'CFO' }],
+  },
+  ev11: {
+    date: 'May 15, 2026', time: '—', domain: 'Operations',
+    linkedObjects: [{ type: 'Program', id: 'PRG-003', label: 'Product v2 Launch' }],
+    participants: [{ role: 'Founder' }, { role: 'CTO' }, { role: 'VP Engineering' }],
+  },
+};
+
+function buildEventDetail(event: AgendaEvent): EventDetailData {
+  const enrichment = EVENT_DETAIL[event.id];
+  return {
+    id: event.id,
+    title: event.title,
+    type: event.type,
+    status: event.status,
+    date: enrichment?.date ?? event.date,
+    time: enrichment?.time ?? event.time,
+    location: enrichment?.location,
+    domain: enrichment?.domain ?? 'Operations',
+    linkedEntity: enrichment?.linkedEntity,
+    linkedObjects: enrichment?.linkedObjects ?? [],
+    participants: enrichment?.participants ?? [],
+  };
+}
+
+// =============================================================================
 // ADD EVENT SHEET
 // =============================================================================
 
@@ -247,6 +349,7 @@ export function BizAgendaView({ colors, accent }: Props) {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('All');
   const [showFilters, setShowFilters] = useState(false);
   const [addVisible, setAddVisible] = useState(false);
+  const [detailData, setDetailData] = useState<EventDetailData | null>(null);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
   // Filter pipeline
@@ -362,7 +465,11 @@ export function BizAgendaView({ colors, accent }: Props) {
                   const typeColor = TYPE_COLORS[event.type];
                   const statusColor = STATUS_COLORS[event.status];
                   return (
-                    <View key={event.id} style={[s.eventCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                    <Pressable
+                      key={event.id}
+                      style={[s.eventCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+                      onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setDetailData(buildEventDetail(event)); }}
+                    >
                       {/* Top Row */}
                       <View style={s.eventTopRow}>
                         <ThemedText style={[s.eventTitle, { color: colors.text }]} numberOfLines={1}>{event.title}</ThemedText>
@@ -390,7 +497,7 @@ export function BizAgendaView({ colors, accent }: Props) {
                         </View>
                         <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
                       </View>
-                    </View>
+                    </Pressable>
                   );
                 })}
               </View>
@@ -398,6 +505,9 @@ export function BizAgendaView({ colors, accent }: Props) {
           })
         )}
       </ScrollView>
+
+      {/* ── Event Detail Sheet ──────────────────────────────────────── */}
+      <BizEventDetailSheet event={detailData} visible={!!detailData} onClose={() => setDetailData(null)} colors={colors} />
 
       {/* ── Add Event Sheet ─────────────────────────────────────────── */}
       <AddEventSheet visible={addVisible} onClose={() => setAddVisible(false)} colors={colors} />

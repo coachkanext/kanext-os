@@ -204,7 +204,113 @@ type TypeFilter = 'All' | ObligationType;
 const TYPE_OPTIONS: TypeFilter[] = ['All', 'COMPLIANCE', 'CONTRACT', 'DEBT', 'LEASE', 'INSURANCE', 'TAX', 'CAPITAL'];
 
 // =============================================================================
-// OBLIGATION DETAIL SHEET
+// OBLIGATION DETAIL — ENRICHMENT DATA
+// =============================================================================
+
+interface LinkedObject {
+  type: string;
+  id: string;
+  label: string;
+}
+
+interface ObligationEnrichment {
+  effectiveDate?: string;
+  linkedEntity?: string;
+  responsibleRole: string;
+  remainingExposure?: string;
+  linkedObjects: LinkedObject[];
+}
+
+const OBLIGATION_ENRICHMENT: Record<string, ObligationEnrichment> = {
+  ob1: {
+    effectiveDate: 'Jan 1, 2026', linkedEntity: 'State of Delaware',
+    responsibleRole: 'Compliance Officer',
+    linkedObjects: [{ type: 'Compliance Filing', id: 'CMP-2026-001', label: 'Annual Report — Delaware' }],
+  },
+  ob2: {
+    linkedEntity: 'Hartford Financial',
+    responsibleRole: 'CFO',
+    linkedObjects: [{ type: 'Contract', id: 'CTR-008', label: 'D&O Policy — Hartford' }],
+  },
+  ob3: {
+    effectiveDate: 'Jan 1, 2026',
+    responsibleRole: 'CFO',
+    remainingExposure: '$42,000',
+    linkedObjects: [{ type: 'Finance Bucket', id: 'FIN-TAX-Q4', label: 'Q4 2025 Tax Reserve' }],
+  },
+  ob4: {
+    effectiveDate: 'Mar 15, 2025', linkedEntity: 'Amazon Web Services',
+    responsibleRole: 'CTO',
+    remainingExposure: '$86,400',
+    linkedObjects: [{ type: 'Contract', id: 'CTR-002', label: 'AWS Service Agreement' }],
+  },
+  ob5: {
+    linkedEntity: 'Apex Capital',
+    responsibleRole: 'Founder',
+    remainingExposure: '$2,000,000',
+    linkedObjects: [
+      { type: 'Deal', id: 'DEAL-001', label: 'Apex Capital — Seed Round' },
+      { type: 'Contract', id: 'CTR-004', label: 'SAFE Note Agreement' },
+    ],
+  },
+  ob6: {
+    linkedEntity: 'Hartford Financial',
+    responsibleRole: 'CFO',
+    linkedObjects: [],
+  },
+  ob7: {
+    effectiveDate: 'May 1, 2024', linkedEntity: 'WeWork',
+    responsibleRole: 'COO',
+    remainingExposure: '$144,000',
+    linkedObjects: [
+      { type: 'Contract', id: 'CTR-005', label: 'WeWork Lease — DTLA' },
+      { type: 'Facility', id: 'FAC-001', label: 'WeWork Downtown LA, Suite 400' },
+    ],
+  },
+  ob8: {
+    effectiveDate: 'Nov 15, 2024',
+    responsibleRole: 'CFO',
+    remainingExposure: '$250,000',
+    linkedObjects: [{ type: 'Deal', id: 'DEAL-002', label: 'Angel Bridge Note' }],
+  },
+  ob9: {
+    effectiveDate: 'Jan 1, 2026', linkedEntity: 'State of Delaware',
+    responsibleRole: 'Compliance Officer',
+    remainingExposure: '$400',
+    linkedObjects: [{ type: 'Compliance Filing', id: 'CMP-2026-005', label: 'Franchise Tax — Delaware' }],
+  },
+  ob10: {
+    effectiveDate: 'Aug 1, 2025',
+    responsibleRole: 'Compliance Officer',
+    linkedObjects: [{ type: 'Compliance Filing', id: 'CMP-2026-008', label: 'SOC 2 Type II Audit' }],
+  },
+  ob11: {
+    effectiveDate: 'Sep 1, 2024', linkedEntity: 'Equinix',
+    responsibleRole: 'CTO',
+    remainingExposure: '$36,000',
+    linkedObjects: [
+      { type: 'Contract', id: 'CTR-009', label: 'Equinix Rack Lease' },
+      { type: 'Facility', id: 'FAC-002', label: 'Equinix LA1 — Rack 14B' },
+    ],
+  },
+  ob12: {
+    responsibleRole: 'Founder',
+    remainingExposure: '$8,000,000',
+    linkedObjects: [{ type: 'Deal', id: 'DEAL-003', label: 'Series A Target' }],
+  },
+};
+
+const LINKED_OBJ_ICONS: Record<string, string> = {
+  Deal: 'briefcase.fill',
+  'Compliance Filing': 'doc.text.fill',
+  Contract: 'signature',
+  'Finance Bucket': 'dollarsign.circle.fill',
+  Facility: 'building.fill',
+  Program: 'building.2.fill',
+};
+
+// =============================================================================
+// OBLIGATION DETAIL SHEET (5-Section)
 // =============================================================================
 
 function ObligationDetailSheet({
@@ -216,51 +322,212 @@ function ObligationDetailSheet({
   onClose: () => void;
   colors: typeof Colors.light;
 }) {
+  const [confirmAction, setConfirmAction] = useState<string | null>(null);
+
+  const handleAction = useCallback((action: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setConfirmAction(action);
+  }, []);
+
+  const handleConfirm = useCallback(() => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    setConfirmAction(null);
+  }, []);
+
+  const handleCloseSheet = useCallback(() => {
+    setConfirmAction(null);
+    onClose();
+  }, [onClose]);
+
   if (!obligation) return null;
+
   const isOverdue = obligation.status === 'Overdue';
   const statusColor = STATUS_COLORS[obligation.status];
+  const enrichment = OBLIGATION_ENRICHMENT[obligation.id];
+  const hasLinkedObjects = (enrichment?.linkedObjects.length ?? 0) > 0;
 
   return (
-    <BottomSheet visible={!!obligation} onClose={onClose}>
+    <BottomSheet visible={!!obligation} onClose={handleCloseSheet}>
       <View style={s.sheetContent}>
-        <View style={s.detailHeader}>
-          <ThemedText style={[s.detailTitle, { color: colors.text }]}>{obligation.title}</ThemedText>
-          <View style={[s.typePill, { backgroundColor: '#78716C15' }]}>
-            <ThemedText style={[s.typePillText, { color: '#78716C' }]}>{obligation.type}</ThemedText>
+        {/* ── SECTION 1 — Obligation Header ──────────────────────── */}
+        {isOverdue && <View style={s.overdueBar} />}
+        <View style={s.detailSection}>
+          <View style={s.detailHeader}>
+            <ThemedText style={[s.detailTitle, { color: colors.text }]}>{obligation.title}</ThemedText>
+          </View>
+          <View style={s.detailPillRow}>
+            <View style={[s.typePill, { backgroundColor: '#78716C15' }]}>
+              <ThemedText style={[s.typePillText, { color: '#78716C' }]}>{obligation.type}</ThemedText>
+            </View>
+            <View style={[s.detailStatusPill, { backgroundColor: statusColor + '15' }]}>
+              <View style={[s.statusDot, { backgroundColor: statusColor }]} />
+              <ThemedText style={[s.detailStatusText, { color: statusColor }]}>{obligation.status}</ThemedText>
+            </View>
+          </View>
+
+          <View style={s.detailDateBlock}>
+            <View style={s.detailDateRow}>
+              <ThemedText style={[s.detailDateLabel, { color: colors.textTertiary }]}>Due Date</ThemedText>
+              <View style={s.detailDateValueRow}>
+                {isOverdue && <View style={s.overdueIndicator} />}
+                <ThemedText style={[s.detailDateValue, { color: isOverdue ? '#EF4444' : colors.text }]}>
+                  {obligation.dueDate}
+                </ThemedText>
+              </View>
+            </View>
+            {enrichment?.effectiveDate && (
+              <View style={s.detailDateRow}>
+                <ThemedText style={[s.detailDateLabel, { color: colors.textTertiary }]}>Effective Date</ThemedText>
+                <ThemedText style={[s.detailDateValue, { color: colors.textSecondary }]}>
+                  {enrichment.effectiveDate}
+                </ThemedText>
+              </View>
+            )}
+            {enrichment?.linkedEntity && (
+              <View style={s.detailDateRow}>
+                <ThemedText style={[s.detailDateLabel, { color: colors.textTertiary }]}>Linked Entity</ThemedText>
+                <ThemedText style={[s.detailDateValue, { color: colors.text }]}>
+                  {enrichment.linkedEntity}
+                </ThemedText>
+              </View>
+            )}
           </View>
         </View>
 
-        <View style={[s.detailDueRow, isOverdue && { backgroundColor: '#EF444410' }]}>
-          <ThemedText style={[s.detailDueLabel, { color: colors.textTertiary }]}>Due Date</ThemedText>
-          <View style={s.detailDueValue}>
-            {isOverdue && <View style={s.overdueIndicator} />}
-            <ThemedText style={[s.detailDueText, { color: isOverdue ? '#EF4444' : colors.text }]}>
-              {obligation.dueDate}
-            </ThemedText>
-          </View>
+        <View style={[s.detailDivider, { backgroundColor: colors.border }]} />
+
+        {/* ── SECTION 2 — Core Terms ─────────────────────────────── */}
+        <View style={s.detailSection}>
+          <ThemedText style={[s.detailSectionLabel, { color: colors.textTertiary }]}>CORE TERMS</ThemedText>
+          {obligation.meta.slice(0, 6).map((m, i) => (
+            <View key={i} style={s.detailTermRow}>
+              <ThemedText style={[s.detailTermLabel, { color: colors.textTertiary }]}>{m.label}</ThemedText>
+              <ThemedText style={[s.detailTermValue, { color: colors.text }]}>{m.value}</ThemedText>
+            </View>
+          ))}
         </View>
 
+        {/* ── SECTION 3 — Financial Exposure ─────────────────────── */}
         {obligation.exposure && (
-          <View style={s.detailRow}>
-            <ThemedText style={[s.detailRowLabel, { color: colors.textTertiary }]}>Exposure Amount</ThemedText>
-            <ThemedText style={[s.detailRowValue, { color: colors.text }]}>{obligation.exposure}</ThemedText>
-          </View>
+          <>
+            <View style={[s.detailDivider, { backgroundColor: colors.border }]} />
+            <View style={s.detailSection}>
+              <ThemedText style={[s.detailSectionLabel, { color: colors.textTertiary }]}>FINANCIAL EXPOSURE</ThemedText>
+              <View style={s.detailTermRow}>
+                <ThemedText style={[s.detailTermLabel, { color: colors.textTertiary }]}>Total Exposure</ThemedText>
+                <ThemedText style={[s.detailExposureValue, { color: colors.text }]}>{obligation.exposure}</ThemedText>
+              </View>
+              {enrichment?.remainingExposure && (
+                <View style={s.detailTermRow}>
+                  <ThemedText style={[s.detailTermLabel, { color: colors.textTertiary }]}>Remaining Exposure</ThemedText>
+                  <ThemedText style={[s.detailExposureValue, { color: colors.text }]}>{enrichment.remainingExposure}</ThemedText>
+                </View>
+              )}
+            </View>
+          </>
         )}
 
-        {obligation.meta.map((m, i) => (
-          <View key={i} style={s.detailRow}>
-            <ThemedText style={[s.detailRowLabel, { color: colors.textTertiary }]}>{m.label}</ThemedText>
-            <ThemedText style={[s.detailRowValue, { color: colors.text }]}>{m.value}</ThemedText>
-          </View>
-        ))}
+        {/* ── SECTION 4 — Linked Objects ─────────────────────────── */}
+        {hasLinkedObjects && (
+          <>
+            <View style={[s.detailDivider, { backgroundColor: colors.border }]} />
+            <View style={s.detailSection}>
+              <ThemedText style={[s.detailSectionLabel, { color: colors.textTertiary }]}>LINKED OBJECTS</ThemedText>
+              {enrichment!.linkedObjects.map((obj, i) => {
+                const icon = LINKED_OBJ_ICONS[obj.type] ?? 'link';
+                return (
+                  <Pressable
+                    key={i}
+                    style={[s.linkedRow, { backgroundColor: colors.card, borderColor: colors.border }]}
+                    onPress={() => Haptics.selectionAsync()}
+                  >
+                    <IconSymbol name={icon as any} size={14} color={colors.textSecondary} />
+                    <View style={{ flex: 1 }}>
+                      <ThemedText style={[s.linkedType, { color: colors.textTertiary }]}>{obj.type}</ThemedText>
+                      <ThemedText style={[s.linkedLabel, { color: colors.text }]}>{obj.label}</ThemedText>
+                    </View>
+                    <ThemedText style={[s.linkedId, { color: colors.textTertiary }]}>{obj.id}</ThemedText>
+                    <IconSymbol name="chevron.right" size={10} color={colors.textTertiary} />
+                  </Pressable>
+                );
+              })}
+            </View>
+          </>
+        )}
 
-        <View style={[s.detailStatusRow, { borderColor: colors.border }]}>
-          <ThemedText style={[s.detailRowLabel, { color: colors.textTertiary }]}>Status</ThemedText>
-          <View style={[s.statusChip, { backgroundColor: statusColor + '15' }]}>
-            <View style={[s.statusDot, { backgroundColor: statusColor }]} />
-            <ThemedText style={[s.statusText, { color: statusColor }]}>{obligation.status}</ThemedText>
-          </View>
+        <View style={[s.detailDivider, { backgroundColor: colors.border }]} />
+
+        {/* ── SECTION 5 — Authority & Controls ───────────────────── */}
+        <View style={s.detailSection}>
+          <ThemedText style={[s.detailSectionLabel, { color: colors.textTertiary }]}>AUTHORITY & CONTROLS</ThemedText>
+
+          {enrichment?.responsibleRole && (
+            <View style={[s.detailTermRow, { marginBottom: 12 }]}>
+              <ThemedText style={[s.detailTermLabel, { color: colors.textTertiary }]}>Responsible Role</ThemedText>
+              <ThemedText style={[s.detailTermValue, { color: colors.text }]}>{enrichment.responsibleRole}</ThemedText>
+            </View>
+          )}
+
+          {confirmAction ? (
+            <View style={[s.confirmBlock, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <ThemedText style={[s.confirmText, { color: colors.text }]}>
+                Confirm: {confirmAction}?
+              </ThemedText>
+              <ThemedText style={[s.confirmSubtext, { color: colors.textTertiary }]}>
+                Propose → Validate → Confirm → Commit
+              </ThemedText>
+              <View style={s.confirmActions}>
+                <Pressable
+                  style={[s.confirmBtn, { borderColor: colors.border }]}
+                  onPress={() => setConfirmAction(null)}
+                >
+                  <ThemedText style={[s.confirmBtnText, { color: colors.textSecondary }]}>Cancel</ThemedText>
+                </Pressable>
+                <Pressable
+                  style={[s.confirmBtn, { backgroundColor: ACCENT }]}
+                  onPress={handleConfirm}
+                >
+                  <ThemedText style={s.confirmBtnCommit}>Commit</ThemedText>
+                </Pressable>
+              </View>
+            </View>
+          ) : (
+            <View style={s.actionRow}>
+              <Pressable
+                style={[s.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+                onPress={() => handleAction('Propose Amendment')}
+              >
+                <IconSymbol name="pencil" size={13} color={colors.textSecondary} />
+                <ThemedText style={[s.actionBtnText, { color: colors.textSecondary }]}>Propose Amendment</ThemedText>
+              </Pressable>
+              {obligation.status !== 'Fulfilled' && (
+                <Pressable
+                  style={[s.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+                  onPress={() => handleAction('Mark Fulfilled')}
+                >
+                  <IconSymbol name="checkmark" size={13} color="#22C55E" />
+                  <ThemedText style={[s.actionBtnText, { color: '#22C55E' }]}>Mark Fulfilled</ThemedText>
+                </Pressable>
+              )}
+              <Pressable
+                style={[s.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+                onPress={() => handleAction('Initiate Termination')}
+              >
+                <IconSymbol name="xmark" size={13} color="#EF4444" />
+                <ThemedText style={[s.actionBtnText, { color: '#EF4444' }]}>Initiate Termination</ThemedText>
+              </Pressable>
+              <Pressable
+                style={[s.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+                onPress={() => handleAction('Escalate Review')}
+              >
+                <IconSymbol name="arrow.up.right" size={13} color={colors.textSecondary} />
+                <ThemedText style={[s.actionBtnText, { color: colors.textSecondary }]}>Escalate Review</ThemedText>
+              </Pressable>
+            </View>
+          )}
         </View>
+
+        <View style={{ height: 20 }} />
       </View>
     </BottomSheet>
   );
@@ -650,16 +917,38 @@ const s = StyleSheet.create({
 
   // -- Detail Sheet --
   sheetContent: { padding: Spacing.md, paddingBottom: 40 },
-  detailHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10, marginBottom: 16 },
-  detailTitle: { fontSize: 18, fontWeight: '800', flex: 1 },
-  detailDueRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10, paddingHorizontal: 10, borderRadius: 8, marginBottom: 12 },
-  detailDueLabel: { fontSize: 11 },
-  detailDueValue: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  detailDueText: { fontSize: 13, fontWeight: '700' },
-  detailRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 8 },
-  detailRowLabel: { fontSize: 12 },
-  detailRowValue: { fontSize: 12, fontWeight: '600' },
-  detailStatusRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 12, marginTop: 12, borderTopWidth: StyleSheet.hairlineWidth },
+  overdueBar: { height: 3, backgroundColor: '#EF4444', borderRadius: 2, marginBottom: 12 },
+  detailSection: { paddingVertical: 8 },
+  detailSectionLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 0.6, marginBottom: 10 },
+  detailDivider: { height: StyleSheet.hairlineWidth },
+  detailHeader: { marginBottom: 8 },
+  detailTitle: { fontSize: 20, fontWeight: '800', letterSpacing: -0.3 },
+  detailPillRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
+  detailStatusPill: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10, paddingVertical: 3, borderRadius: BorderRadius.full },
+  detailStatusText: { fontSize: 10, fontWeight: '700' },
+  detailDateBlock: { gap: 6 },
+  detailDateRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 4 },
+  detailDateLabel: { fontSize: 12 },
+  detailDateValueRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  detailDateValue: { fontSize: 13, fontWeight: '600' },
+  detailTermRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 6 },
+  detailTermLabel: { fontSize: 12 },
+  detailTermValue: { fontSize: 12, fontWeight: '600' },
+  detailExposureValue: { fontSize: 14, fontWeight: '800', fontVariant: ['tabular-nums'] as any },
+  linkedRow: { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 12, borderRadius: 10, borderWidth: 1, marginBottom: 6 },
+  linkedType: { fontSize: 9, fontWeight: '600', letterSpacing: 0.3 },
+  linkedLabel: { fontSize: 13, fontWeight: '600' },
+  linkedId: { fontSize: 10 },
+  actionRow: { gap: 8 },
+  actionBtn: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 10, borderWidth: 1 },
+  actionBtnText: { fontSize: 13, fontWeight: '600' },
+  confirmBlock: { borderRadius: 12, borderWidth: 1, padding: 16 },
+  confirmText: { fontSize: 15, fontWeight: '700', marginBottom: 4 },
+  confirmSubtext: { fontSize: 11, marginBottom: 14 },
+  confirmActions: { flexDirection: 'row', gap: 10 },
+  confirmBtn: { flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: 8, borderWidth: 1 },
+  confirmBtnText: { fontSize: 13, fontWeight: '600' },
+  confirmBtnCommit: { color: '#fff', fontSize: 13, fontWeight: '700' },
 
   // -- Add Sheet --
   sheetTitle: { fontSize: 20, fontWeight: '800', marginBottom: 4 },

@@ -17,6 +17,7 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { BizEventDetailSheet, type EventDetailData } from '@/components/biz-home/biz-event-detail-sheet';
 
 const ACCENT = MODE_ACCENT.business;
 
@@ -91,55 +92,94 @@ const EVENTS: CalendarEvent[] = [
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 // =============================================================================
-// EVENT DETAIL SHEET
+// EVENT DETAIL ENRICHMENT
 // =============================================================================
 
-function EventDetailSheet({
-  event,
-  visible,
-  onClose,
-  colors,
-}: {
-  event: CalendarEvent | null;
-  visible: boolean;
-  onClose: () => void;
-  colors: typeof Colors.light;
-}) {
-  if (!event) return null;
-  const typeColor = TYPE_COLORS[event.type];
-  const statusColor = STATUS_COLORS[event.status];
+const CAL_EVENT_DETAIL: Record<string, Omit<EventDetailData, 'id' | 'title' | 'type' | 'status'>> = {
+  c1: {
+    date: 'Feb 4, 2026', time: '2:00 PM', location: 'Virtual', domain: 'Finance',
+    linkedObjects: [{ type: 'Program', id: 'PRG-001', label: 'Q1 Financial Review' }],
+    participants: [
+      { role: 'Founder' }, { role: 'CFO' }, { role: 'COO' },
+      { role: 'Board Member', external: true, counterparty: 'Apex Capital' },
+      { role: 'Board Member', external: true, counterparty: 'Meridian Advisory' },
+    ],
+  },
+  c2: {
+    date: 'Feb 6, 2026', time: 'All Day', domain: 'Operations',
+    linkedObjects: [],
+    participants: [{ role: 'CFO' }, { role: 'HR Director' }],
+  },
+  c3: {
+    date: 'Feb 10, 2026', time: '10:00 AM', location: 'Office', domain: 'Finance',
+    linkedEntity: 'Apex Capital',
+    linkedObjects: [{ type: 'Deal', id: 'DEAL-001', label: 'Apex Capital — Seed Round' }],
+    participants: [
+      { role: 'Founder' }, { role: 'CFO' },
+      { role: 'Managing Partner', external: true, counterparty: 'Apex Capital' },
+    ],
+  },
+  c4: {
+    date: 'Feb 15, 2026', time: 'All Day', domain: 'Compliance',
+    linkedObjects: [{ type: 'Compliance Filing', id: 'CMP-2026-001', label: 'Annual Report — Delaware' }],
+    participants: [{ role: 'Compliance Officer' }, { role: 'Legal Counsel' }],
+  },
+  c5: {
+    date: 'Feb 18, 2026', time: '12:00 PM', domain: 'Finance',
+    linkedEntity: 'Apex Capital',
+    linkedObjects: [{ type: 'Deal', id: 'DEAL-001', label: 'Apex Capital — Seed Round' }],
+    participants: [
+      { role: 'Founder' }, { role: 'CFO' }, { role: 'Legal Counsel' },
+      { role: 'Managing Partner', external: true, counterparty: 'Apex Capital' },
+    ],
+  },
+  c6: {
+    date: 'Feb 20, 2026', time: 'All Day', domain: 'Operations',
+    linkedObjects: [{ type: 'Contract', id: 'CTR-002', label: 'AWS Service Agreement' }],
+    participants: [{ role: 'CTO' }, { role: 'CFO' }],
+  },
+  c7: {
+    date: 'Feb 22, 2026', time: '9:00 AM', location: 'Virtual', domain: 'Finance',
+    linkedObjects: [],
+    participants: [{ role: 'Founder' }, { role: 'CFO' }],
+  },
+  c8: {
+    date: 'Feb 20, 2026', time: 'All Day', domain: 'Operations',
+    linkedObjects: [],
+    participants: [{ role: 'CFO' }, { role: 'HR Director' }],
+  },
+  c9: {
+    date: 'Feb 26, 2026', time: '3:00 PM', location: 'Office', domain: 'Multi-domain',
+    linkedObjects: [{ type: 'Program', id: 'PRG-002', label: 'Q2 Strategic Plan' }],
+    participants: [{ role: 'Founder' }, { role: 'CFO' }],
+  },
+  c10: {
+    date: 'Feb 26, 2026', time: 'All Day', domain: 'Compliance',
+    linkedObjects: [{ type: 'Obligation', id: 'OBL-002', label: 'D&O Insurance Renewal' }],
+    participants: [{ role: 'CFO' }, { role: 'Compliance Officer' }],
+  },
+  c11: {
+    date: 'Feb 28, 2026', time: 'All Day', domain: 'Operations',
+    linkedObjects: [{ type: 'Program', id: 'PRG-003', label: 'Product v2 Launch' }],
+    participants: [{ role: 'Founder' }, { role: 'CTO' }, { role: 'VP Engineering' }],
+  },
+};
 
-  return (
-    <BottomSheet visible={visible} onClose={onClose}>
-      <View style={s.sheetContent}>
-        <View style={s.sheetHeaderRow}>
-          <ThemedText style={[s.sheetTitle, { color: colors.text }]}>{event.title}</ThemedText>
-          <View style={[s.typePill, { backgroundColor: typeColor + '15' }]}>
-            <ThemedText style={[s.typePillText, { color: typeColor }]}>{event.type}</ThemedText>
-          </View>
-        </View>
-
-        <ThemedText style={[s.sheetDate, { color: colors.textSecondary }]}>
-          {CURRENT_MONTH} {event.date}, {CURRENT_YEAR}{event.time ? ` · ${event.time}` : ' · All Day'}
-        </ThemedText>
-
-        {event.meta.map((m, i) => (
-          <View key={i} style={s.detailRow}>
-            <ThemedText style={[s.detailLabel, { color: colors.textTertiary }]}>{m.label}</ThemedText>
-            <ThemedText style={[s.detailValue, { color: colors.text }]}>{m.value}</ThemedText>
-          </View>
-        ))}
-
-        <View style={[s.detailRow, { borderBottomWidth: 0 }]}>
-          <ThemedText style={[s.detailLabel, { color: colors.textTertiary }]}>Status</ThemedText>
-          <View style={[s.statusChip, { backgroundColor: statusColor + '15' }]}>
-            <View style={[s.statusDot, { backgroundColor: statusColor }]} />
-            <ThemedText style={[s.statusChipText, { color: statusColor }]}>{event.status}</ThemedText>
-          </View>
-        </View>
-      </View>
-    </BottomSheet>
-  );
+function buildCalEventDetail(event: CalendarEvent): EventDetailData {
+  const enrichment = CAL_EVENT_DETAIL[event.id];
+  return {
+    id: event.id,
+    title: event.title,
+    type: event.type,
+    status: event.status,
+    date: enrichment?.date ?? `${CURRENT_MONTH} ${event.date}, ${CURRENT_YEAR}`,
+    time: enrichment?.time ?? event.time ?? 'All Day',
+    location: enrichment?.location,
+    domain: enrichment?.domain ?? 'Operations',
+    linkedEntity: enrichment?.linkedEntity,
+    linkedObjects: enrichment?.linkedObjects ?? [],
+    participants: enrichment?.participants ?? [],
+  };
 }
 
 // =============================================================================
@@ -295,8 +335,7 @@ export function BizMonthCalendar({ colors, accent }: Props) {
   const [typeFilter, setTypeFilter] = useState<'All' | EventType>('All');
   const [statusFilter, setStatusFilter] = useState<'All' | EventStatus>('All');
   const [addVisible, setAddVisible] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
-  const [detailVisible, setDetailVisible] = useState(false);
+  const [detailData, setDetailData] = useState<EventDetailData | null>(null);
   const [dayOverlay, setDayOverlay] = useState<{ day: number; events: CalendarEvent[] } | null>(null);
   const [dayOverlayVisible, setDayOverlayVisible] = useState(false);
 
@@ -316,8 +355,7 @@ export function BizMonthCalendar({ colors, accent }: Props) {
 
   const openEvent = useCallback((ev: CalendarEvent) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setSelectedEvent(ev);
-    setDetailVisible(true);
+    setDetailData(buildCalEventDetail(ev));
   }, []);
 
   const openDayOverlay = useCallback((day: number, events: CalendarEvent[]) => {
@@ -559,7 +597,7 @@ export function BizMonthCalendar({ colors, accent }: Props) {
       </ScrollView>
 
       {/* Sheets */}
-      <EventDetailSheet event={selectedEvent} visible={detailVisible} onClose={() => setDetailVisible(false)} colors={colors} />
+      <BizEventDetailSheet event={detailData} visible={!!detailData} onClose={() => setDetailData(null)} colors={colors} />
       {dayOverlay && (
         <DayOverlaySheet
           day={dayOverlay.day}
@@ -634,17 +672,11 @@ const s = StyleSheet.create({
   typePillText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
   statusChip: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 8, paddingVertical: 3, borderRadius: BorderRadius.full },
   statusDot: { width: 5, height: 5, borderRadius: 2.5 },
-  statusChipText: { fontSize: 10, fontWeight: '700' },
-
   // -- Sheet --
   sheetContent: { padding: Spacing.md, paddingBottom: 40 },
   sheetHeaderRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 6 },
   sheetTitle: { fontSize: 20, fontWeight: '800' },
   sheetSubtitle: { fontSize: 12, marginBottom: 12 },
-  sheetDate: { fontSize: 13, marginBottom: 12 },
-  detailRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(255,255,255,0.06)' },
-  detailLabel: { fontSize: 12 },
-  detailValue: { fontSize: 13, fontWeight: '600' },
 
   // -- Day Overlay --
   dayEventRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth },
