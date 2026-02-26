@@ -190,9 +190,101 @@ const CHURCH_ROOMS: RoomV3[] = [
 ];
 
 const CHURCH_NEXUS: NexusEscalationV3[] = [
-  { id: 'cn1', mode: 'church', askerName: 'Funmi Adeyemi', askerInitials: 'FA', askerRole: 'Worship Leader', question: 'What songs have we done most in the last 3 months?', viewingContext: 'Worship Planning', timestamp: hoursAgo(2), status: 'unanswered' },
-  { id: 'cn2', mode: 'church', askerName: 'Brother Thompson', askerInitials: 'BT', askerRole: 'Youth Ministry', question: 'What\'s our average youth attendance this quarter?', viewingContext: 'Ministry Dashboard', timestamp: hoursAgo(6), status: 'unanswered' },
-  { id: 'cn3', mode: 'church', askerName: 'Sister Davis', askerInitials: 'SD', askerRole: 'Outreach', question: 'How many community meals have we served this year?', viewingContext: 'Outreach Report', timestamp: daysAgo(2), status: 'answered_by_nexus', answer: 'We\'ve served 1,247 meals across 18 community events this year.', resolvedAnswer: 'We\'ve served 1,247 meals across 18 community events this year.', answeredBy: 'Nexus' },
+  // ── Unanswered (in queue) ──
+  {
+    id: 'cn1', mode: 'church', askerName: 'Funmi Adeyemi', askerInitials: 'FA', askerRole: 'Worship Leader',
+    question: 'What songs have we done most in the last 3 months?',
+    viewingContext: 'Worship Planning', timestamp: hoursAgo(2), status: 'unanswered',
+    contextChips: [{ type: 'media', label: 'Worship Setlists' }],
+  },
+  {
+    id: 'cn2', mode: 'church', askerName: 'Brother Thompson', askerInitials: 'BT', askerRole: 'Youth Ministry Lead',
+    question: 'What\'s our average youth attendance this quarter?',
+    viewingContext: 'Ministry Dashboard', timestamp: hoursAgo(6), status: 'unanswered',
+    contextChips: [{ type: 'event', label: 'Youth Services' }],
+  },
+  // ── Answered by Nexus (instant) ──
+  {
+    id: 'cn3', mode: 'church', askerName: 'Sister Davis', askerInitials: 'SD', askerRole: 'Outreach',
+    question: 'How many community meals have we served this year?',
+    viewingContext: 'Outreach Report', timestamp: daysAgo(2), status: 'answered_by_nexus',
+    nexusAttempt: 'We\'ve served 1,247 meals across 18 community events this year, up 15% from last year.',
+    resolvedAnswer: 'We\'ve served 1,247 meals across 18 community events this year, up 15% from last year.',
+    answeredBy: 'Nexus',
+    contextChips: [{ type: 'event', label: 'Community Meals' }],
+  },
+  {
+    id: 'cn4', mode: 'church', askerName: 'Michael Chen', askerInitials: 'MC', askerRole: 'New Member',
+    question: 'What time is the Easter sunrise service?',
+    viewingContext: 'Events Calendar', timestamp: hoursAgo(4), status: 'answered_by_nexus',
+    nexusAttempt: 'The Easter sunrise service is at 6:30 AM on Sunday, April 20th at the main campus courtyard. Doors open at 6:00 AM.',
+    resolvedAnswer: 'The Easter sunrise service is at 6:30 AM on Sunday, April 20th at the main campus courtyard. Doors open at 6:00 AM.',
+    answeredBy: 'Nexus',
+    contextChips: [{ type: 'event', label: 'Easter Sunrise Service' }],
+  },
+  {
+    id: 'cn5', mode: 'church', askerName: 'Sister Nkechi', askerInitials: 'SN', askerRole: 'Children\'s Teacher',
+    question: 'Where can I find the children\'s curriculum materials?',
+    viewingContext: 'Ministry Resources', timestamp: daysAgo(1), status: 'answered_by_nexus',
+    nexusAttempt: 'Curriculum materials are in the #childrens-lesson-plan room. The current quarter\'s resources are pinned at the top. Physical copies are available in the resource closet (Room 204).',
+    resolvedAnswer: 'Curriculum materials are in the #childrens-lesson-plan room. The current quarter\'s resources are pinned at the top. Physical copies are available in the resource closet (Room 204).',
+    answeredBy: 'Nexus',
+    contextChips: [{ type: 'media', label: 'Curriculum' }],
+  },
+  // ── Escalated (waiting on human) ──
+  {
+    id: 'cn6', mode: 'church', askerName: 'Deacon Williams', askerInitials: 'DW', askerRole: 'Deacon Board',
+    question: 'Can we allocate building fund reserves for the parking lot expansion?',
+    viewingContext: 'Facilities', timestamp: hoursAgo(3), status: 'escalated',
+    nexusAttempt: 'Building fund reserves currently stand at $142,000. However, allocation decisions for capital expenditures require Finance Committee and Elder Board approval.',
+    escalationTarget: 'Pastor Philip',
+    contextChips: [{ type: 'event', label: 'Building Fund' }],
+  },
+  {
+    id: 'cn7', mode: 'church', askerName: 'Sister Davis', askerInitials: 'SD', askerRole: 'Outreach',
+    question: 'Can we change the community meal from Saturday to Sunday after service?',
+    viewingContext: 'Outreach Events', timestamp: hoursAgo(5), status: 'escalated',
+    nexusAttempt: 'Schedule changes for campus events require approval from the Campus Admin or Pastor. The current Saturday time has been in place for 6 months.',
+    escalationTarget: 'Chioma Okonkwo',
+    contextChips: [{ type: 'event', label: 'Community Meal' }, { type: 'person', label: 'Sister Davis' }],
+  },
+  // ── Answered by Leader (resolved by human) ──
+  {
+    id: 'cn8', mode: 'church', askerName: 'Michael Chen', askerInitials: 'MC', askerRole: 'New Member',
+    question: 'How do I join the men\'s fellowship group?',
+    viewingContext: 'Ministry Directory', timestamp: daysAgo(1), status: 'answered_by_coach',
+    nexusAttempt: 'The Men\'s Fellowship meets every other Saturday at 8 AM. To join, you can sign up through the Ministry Directory or contact the group leader directly.',
+    humanReplies: [
+      { name: 'Pastor Philip', initials: 'PP', role: 'Senior Pastor', content: 'Welcome, Michael! The men\'s group meets every other Saturday at 8 AM in the fellowship hall. I\'ll have Brother James reach out to you personally. We\'d love to have you.', timestamp: daysAgo(0.5) },
+    ],
+    resolvedAnswer: 'Men\'s Fellowship meets every other Saturday at 8 AM in the fellowship hall. Contact Brother James or sign up through the Ministry Directory.',
+    answeredBy: 'Pastor Philip',
+    contextChips: [{ type: 'person', label: 'Michael Chen' }],
+  },
+  {
+    id: 'cn9', mode: 'church', askerName: 'Brother Thompson', askerInitials: 'BT', askerRole: 'Youth Ministry Lead',
+    question: 'Do we have budget approval for the youth retreat bus rental?',
+    viewingContext: 'Youth Ministry Budget', timestamp: daysAgo(2), status: 'answered_by_coach',
+    nexusAttempt: 'The youth ministry budget for Q1 includes $2,400 for transportation. Current spend is $800, leaving $1,600 available. However, bus rental approval requires Finance Committee sign-off.',
+    humanReplies: [
+      { name: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', content: 'Approved. The bus rental is within budget. Please submit the vendor invoice to the church office by next Friday for processing.', timestamp: daysAgo(1.5) },
+    ],
+    resolvedAnswer: 'Approved — within Q1 youth ministry transportation budget ($1,600 remaining). Submit vendor invoice to church office by Friday.',
+    answeredBy: 'Chioma Okonkwo',
+    contextChips: [{ type: 'event', label: 'Youth Retreat' }],
+  },
+  {
+    id: 'cn10', mode: 'church', askerName: 'Funmi Adeyemi', askerInitials: 'FA', askerRole: 'Worship Leader',
+    question: 'Can we add a second rehearsal slot for the Easter choir?',
+    viewingContext: 'Worship Calendar', timestamp: daysAgo(3), status: 'answered_by_coach',
+    nexusAttempt: 'Current worship rehearsal is Thursday 6 PM. Adding a second slot would need facility availability confirmation and Pastor approval for scheduling.',
+    humanReplies: [
+      { name: 'Pastor Philip', initials: 'PP', role: 'Senior Pastor', content: 'Yes — let\'s add Saturday 10 AM for the Easter choir. The sanctuary is available. Please coordinate with the A/V team for sound check.', timestamp: daysAgo(2.5) },
+    ],
+    resolvedAnswer: 'Approved — second Easter choir rehearsal added: Saturday 10 AM in the sanctuary. Coordinate A/V sound check.',
+    answeredBy: 'Pastor Philip',
+    contextChips: [{ type: 'event', label: 'Easter Choir' }, { type: 'media', label: 'Worship Calendar' }],
+  },
 ];
 
 // =============================================================================

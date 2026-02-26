@@ -12,20 +12,29 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useMode } from '@/context/app-context';
 import { formatMessageTime } from '@/data/mock-messages-v3';
-import type { NexusEscalationV3, NexusEscalationStatus } from '@/types';
+import type { Mode, NexusEscalationV3, NexusEscalationStatus } from '@/types';
 
 interface NexusEscalationRowV3Props {
   escalation: NexusEscalationV3;
   onPress: () => void;
 }
 
-function getStatusConfig(status: NexusEscalationStatus, accent: string) {
+const HUMAN_ANSWER_LABEL: Record<Mode, string> = {
+  sports: 'Answered by Coach',
+  church: 'Answered by Leader',
+  business: 'Answered',
+  education: 'Answered',
+  competition: 'Answered',
+};
+
+function getStatusConfig(status: NexusEscalationStatus, accent: string, mode: Mode) {
   switch (status) {
     case 'answered_by_nexus':
       return { label: 'Answered by Nexus', color: '#22C55E', bg: '#22C55E20' };
     case 'answered_by_coach':
-      return { label: 'Answered by Coach', color: accent, bg: `${accent}20` };
+      return { label: HUMAN_ANSWER_LABEL[mode], color: accent, bg: `${accent}20` };
     case 'escalated':
       return { label: 'Escalated', color: '#F59E0B', bg: '#F59E0B20' };
     case 'unanswered':
@@ -44,8 +53,9 @@ export function NexusEscalationRowV3({ escalation, onPress }: NexusEscalationRow
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const accent = useAccentColor();
+  const mode = useMode();
   const isOpen = escalation.status === 'unanswered' || escalation.status === 'escalated';
-  const statusConfig = getStatusConfig(escalation.status, accent);
+  const statusConfig = getStatusConfig(escalation.status, accent, mode);
 
   return (
     <Pressable
