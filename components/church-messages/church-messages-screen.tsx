@@ -1,9 +1,9 @@
 /**
  * ChurchMessagesScreen — 3-tab Messages for church mode.
- * Tabs: Inbox | Rooms | Business
+ * Tabs: Inbox | Rooms | Nexus
  * Inbox: Unread threads + Mentions + Escalations (from Nexus).
- * Rooms: Shared group discussion (reuses RoomsListV3).
- * Business: Operational/admin layer (placeholder v1).
+ * Rooms: Campus-scoped, ministry-structured collaboration channels.
+ * Nexus: Coming Soon.
  */
 
 import React, { useState, useMemo, useCallback, useRef } from 'react';
@@ -27,7 +27,7 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { ChatComposer } from '@/components/messages/chat-composer';
 import { NewThreadSheet } from '@/components/messages/new-thread-sheet';
 import { InboxRowV3 } from '@/components/messages/inbox-row-v3';
-import { RoomsListV3 } from '@/components/messages/rooms-list-v3';
+import { ChurchRoomsList } from '@/components/church-messages/church-rooms-list';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -56,7 +56,7 @@ const ACCENT = MODE_ACCENT.church;
 const CHURCH_TABS = [
   { id: 'inbox', label: 'Inbox' },
   { id: 'rooms', label: 'Rooms' },
-  { id: 'business', label: 'Business' },
+  { id: 'nexus', label: 'Nexus' },
 ];
 
 // Mock conversation for DM thread detail
@@ -366,8 +366,7 @@ export function ChurchMessagesScreen() {
 
           {/* ===== ROOMS ===== */}
           <View key="rooms" style={{ flex: 1 }}>
-            <RoomsListV3
-              mode="church"
+            <ChurchRoomsList
               search={search}
               onRoomPress={(room) => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -376,12 +375,12 @@ export function ChurchMessagesScreen() {
             />
           </View>
 
-          {/* ===== BUSINESS ===== */}
-          <View key="business" style={{ flex: 1 }}>
+          {/* ===== NEXUS ===== */}
+          <View key="nexus" style={{ flex: 1 }}>
             <EmptyState
-              icon="briefcase.fill"
-              title="Business"
-              description="Operational and admin threads will appear here."
+              icon="brain.head.profile"
+              title="Coming Soon"
+              description="Nexus AI assistant will appear here."
             />
           </View>
         </PagerView>

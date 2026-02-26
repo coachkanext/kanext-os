@@ -1007,8 +1007,8 @@ export interface RoomV3 {
   isAnnouncement: boolean;
   readCount?: number;
   totalCount?: number;
-  /** 'program' = seeded channel, 'direct' = small-group room */
-  category?: 'program' | 'direct';
+  /** 'program' = seeded channel, 'direct' = small-group room, 'campus' = campus-scoped, 'ministry' = ministry-scoped */
+  category?: 'program' | 'direct' | 'campus' | 'ministry';
   /** One pinned message visible at top of room thread */
   pinnedMessage?: string;
 }

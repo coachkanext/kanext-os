@@ -174,12 +174,19 @@ const CHURCH_INBOX: InboxThreadV3[] = [
 ];
 
 const CHURCH_ROOMS: RoomV3[] = [
-  { id: 'cr1', mode: 'church', name: 'Elder Board', initials: 'EB', color: '#1D9BF0', memberCount: 7, lastMessage: 'Strategic planning session confirmed for next Tuesday.', timestamp: hoursAgo(2), unread: true, pinned: false, locked: true, isAnnouncement: false },
-  { id: 'cr2', mode: 'church', name: 'Pastoral Team', initials: 'PT', color: '#1D9BF0', memberCount: 5, lastMessage: 'Visitation schedule updated.', timestamp: hoursAgo(4), unread: false, pinned: false, locked: false, isAnnouncement: false },
-  { id: 'cr3', mode: 'church', name: 'Good Friday Service', initials: 'GF', color: '#EF4444', memberCount: 120, lastMessage: 'Service times: 12pm and 7pm. All volunteers report at 11am.', timestamp: hoursAgo(1), unread: true, pinned: true, locked: false, isAnnouncement: true, readCount: 3, totalCount: 4 },
-  { id: 'cr4', mode: 'church', name: 'Volunteer Dinner', initials: 'VD', color: '#22C55E', memberCount: 45, lastMessage: 'RSVP deadline extended to Sunday.', timestamp: hoursAgo(6), unread: false, pinned: true, locked: false, isAnnouncement: true, readCount: 14, totalCount: 20 },
-  { id: 'cr5', mode: 'church', name: 'Worship Team', initials: 'WT', color: '#1D9BF0', memberCount: 15, lastMessage: 'Rehearsal moved to Thursday 6pm.', timestamp: hoursAgo(3), unread: true, pinned: false, locked: false, isAnnouncement: false },
-  { id: 'cr6', mode: 'church', name: 'Youth Ministry', initials: 'YM', color: '#F59E0B', memberCount: 20, lastMessage: 'Retreat itinerary finalized.', timestamp: daysAgo(1), unread: false, pinned: false, locked: false, isAnnouncement: false },
+  // ── Campus Rooms (seeded, campus-scoped, V1–V2) ──
+  { id: 'cr-ann', mode: 'church', name: '#campus-announcements', initials: 'CA', color: '#EF4444', memberCount: 340, lastMessage: 'Good Friday services at 12pm and 7pm. All volunteers report at 11am.', timestamp: hoursAgo(1), unread: true, pinned: true, locked: false, isAnnouncement: true, readCount: 210, totalCount: 340, category: 'campus', pinnedMessage: 'Easter Week Schedule — updated Feb 25' },
+  { id: 'cr-prayer', mode: 'church', name: '#prayer-requests', initials: 'PR', color: '#8B5CF6', memberCount: 285, lastMessage: 'Please keep Sister Johnson in prayer as she recovers from surgery.', timestamp: hoursAgo(2), unread: true, pinned: true, locked: false, isAnnouncement: false, category: 'campus' },
+  { id: 'cr-events', mode: 'church', name: '#events', initials: 'EV', color: '#22C55E', memberCount: 310, lastMessage: 'Community meal this Saturday 10am — volunteers needed for setup.', timestamp: hoursAgo(3), unread: true, pinned: false, locked: false, isAnnouncement: false, category: 'campus' },
+  { id: 'cr-vol', mode: 'church', name: '#volunteer-updates', initials: 'VU', color: '#F59E0B', memberCount: 120, lastMessage: 'Volunteer appreciation dinner RSVP deadline extended to Sunday.', timestamp: hoursAgo(5), unread: false, pinned: false, locked: false, isAnnouncement: false, category: 'campus' },
+  { id: 'cr-svc', mode: 'church', name: '#service-coordination', initials: 'SC', color: '#1D9BF0', memberCount: 45, lastMessage: 'A/V team please test livestream equipment by Thursday EOD.', timestamp: hoursAgo(4), unread: false, pinned: false, locked: true, isAnnouncement: false, category: 'campus' },
+  // ── Ministry Rooms (V3, ministry-scoped) ──
+  { id: 'cr-child', mode: 'church', name: '#childrens-team', initials: 'CT', color: '#F59E0B', memberCount: 18, lastMessage: 'Lesson plan for Palm Sunday uploaded. Review before Saturday.', timestamp: hoursAgo(2), unread: true, pinned: false, locked: false, isAnnouncement: false, category: 'ministry' },
+  { id: 'cr-lesson', mode: 'church', name: '#childrens-lesson-plan', initials: 'LP', color: '#F59E0B', memberCount: 12, lastMessage: 'New curriculum materials for Easter week added to shared folder.', timestamp: hoursAgo(6), unread: false, pinned: false, locked: false, isAnnouncement: false, category: 'ministry', pinnedMessage: 'Curriculum template — use for all lesson submissions' },
+  { id: 'cr-singles', mode: 'church', name: '#singles-ministry', initials: 'SM', color: '#EC4899', memberCount: 32, lastMessage: 'Game night this Friday 7pm at the fellowship hall. Bring snacks!', timestamp: hoursAgo(3), unread: true, pinned: false, locked: false, isAnnouncement: false, category: 'ministry' },
+  // ── Direct Rooms (small-group, RBAC-gated) ──
+  { id: 'cr-cteach', mode: 'church', name: 'Children Teachers Only', initials: 'TO', color: '#F59E0B', memberCount: 6, lastMessage: 'Background check renewals due by March 15 — see pinned link.', timestamp: hoursAgo(4), unread: true, pinned: false, locked: true, isAnnouncement: false, category: 'direct', pinnedMessage: 'Background check form — submit to office' },
+  { id: 'cr-score', mode: 'church', name: 'Singles Core Team', initials: 'SK', color: '#EC4899', memberCount: 4, lastMessage: 'Planning meeting for spring retreat moved to Wednesday 8pm.', timestamp: hoursAgo(8), unread: false, pinned: false, locked: true, isAnnouncement: false, category: 'direct' },
 ];
 
 const CHURCH_NEXUS: NexusEscalationV3[] = [
@@ -346,9 +353,9 @@ const NEXUS_MAP: Record<Mode, NexusEscalationV3[]> = {
 // =============================================================================
 
 const CHURCH_MENTIONS: MentionV3[] = [
-  { id: 'cm1', mode: 'church', roomName: 'Worship Team', senderName: 'Funmi Adeyemi', senderInitials: 'FA', preview: '@You song list for Sunday is updated — can you review the order?', timestamp: hoursAgo(2) },
-  { id: 'cm2', mode: 'church', roomName: 'Youth Ministry', senderName: 'Brother Thompson', senderInitials: 'BT', preview: '@You we need a volunteer for the Friday night session, can you cover?', timestamp: hoursAgo(5) },
-  { id: 'cm3', mode: 'church', roomName: 'Good Friday Service', senderName: 'Chioma Okonkwo', senderInitials: 'CO', preview: '@You please confirm your arrival time for volunteer setup', timestamp: hoursAgo(8) },
+  { id: 'cm1', mode: 'church', roomName: '#childrens-team', senderName: 'Brother Thompson', senderInitials: 'BT', preview: '@You lesson plan for Palm Sunday is uploaded — can you review?', timestamp: hoursAgo(2) },
+  { id: 'cm2', mode: 'church', roomName: '#singles-ministry', senderName: 'Michael Chen', senderInitials: 'MC', preview: '@You can you bring the board games for Friday game night?', timestamp: hoursAgo(5) },
+  { id: 'cm3', mode: 'church', roomName: '#campus-announcements', senderName: 'Chioma Okonkwo', senderInitials: 'CO', preview: '@You please confirm your arrival time for Good Friday volunteer setup', timestamp: hoursAgo(8) },
 ];
 
 const CHURCH_INBOX_ESCALATIONS: InboxEscalationV3[] = [
@@ -362,19 +369,28 @@ const CHURCH_INBOX_ESCALATIONS: InboxEscalationV3[] = [
 // =============================================================================
 
 const CHURCH_ROOM_MESSAGES: Record<string, RoomMessageV3[]> = {
-  'cr1': [
-    { id: 'crm1', sender: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', content: 'Strategic planning session confirmed for next Tuesday at 7pm.', timestamp: hoursAgo(2), isMe: false },
-    { id: 'crm2', sender: 'You', initials: 'ME', role: 'Member', content: 'I\'ll prepare the ministry growth report for the meeting.', timestamp: hoursAgo(1.5), isMe: true },
-    { id: 'crm3', sender: 'Deacon Williams', initials: 'DW', role: 'Deacon Board', content: 'I\'ll bring the building fund update as well.', timestamp: hoursAgo(1), isMe: false },
+  'cr-ann': [
+    { id: 'crm1', sender: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', content: 'Good Friday services at 12pm and 7pm. All volunteers report at 11am.', timestamp: hoursAgo(1), isMe: false },
+    { id: 'crm2', sender: 'You', initials: 'ME', role: 'Member', content: 'I\'ll be there at 11. Do we need extra chairs for overflow?', timestamp: hoursAgo(0.8), isMe: true },
+    { id: 'crm3', sender: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', content: 'Yes please — set up 50 extra chairs in the overflow area. Thank you!', timestamp: hoursAgo(0.5), isMe: false },
   ],
-  'cr3': [
-    { id: 'crm4', sender: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', content: 'Service times: 12pm and 7pm. All volunteers report at 11am.', timestamp: hoursAgo(1), isMe: false },
-    { id: 'crm5', sender: 'You', initials: 'ME', role: 'Member', content: 'I\'ll be there at 11. Do we need extra chairs set up?', timestamp: hoursAgo(0.8), isMe: true },
-    { id: 'crm6', sender: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', content: 'Yes, please set up 50 extra chairs in the overflow area. Thank you!', timestamp: hoursAgo(0.5), isMe: false },
+  'cr-prayer': [
+    { id: 'crm4', sender: 'Sister Davis', initials: 'SD', role: 'Outreach', content: 'Please keep Sister Johnson in prayer as she recovers from surgery.', timestamp: hoursAgo(2), isMe: false },
+    { id: 'crm5', sender: 'Deacon Williams', initials: 'DW', role: 'Deacon Board', content: 'Praying for a full recovery. The care team will visit her tomorrow.', timestamp: hoursAgo(1.5), isMe: false },
+    { id: 'crm6', sender: 'You', initials: 'ME', role: 'Member', content: 'Lifting her up in prayer. Let us know if the family needs meals.', timestamp: hoursAgo(1), isMe: true },
   ],
-  'cr5': [
-    { id: 'crm7', sender: 'Funmi Adeyemi', initials: 'FA', role: 'Worship Leader', content: 'Rehearsal moved to Thursday 6pm. Updated song list in the shared folder.', timestamp: hoursAgo(3), isMe: false },
-    { id: 'crm8', sender: 'You', initials: 'ME', role: 'Member', content: 'Got it. I\'ll review the new songs before rehearsal.', timestamp: hoursAgo(2.5), isMe: true },
+  'cr-child': [
+    { id: 'crm7', sender: 'Brother Thompson', initials: 'BT', role: 'Children\'s Ministry Lead', content: 'Lesson plan for Palm Sunday uploaded. Please review before Saturday.', timestamp: hoursAgo(2), isMe: false },
+    { id: 'crm8', sender: 'You', initials: 'ME', role: 'Teacher', content: 'Reviewed — looks great. I\'ll prep the craft supplies for the activity.', timestamp: hoursAgo(1.5), isMe: true },
+    { id: 'crm9', sender: 'Sister Nkechi', initials: 'SN', role: 'Teacher', content: 'I can bring extra construction paper and glue sticks.', timestamp: hoursAgo(1), isMe: false },
+  ],
+  'cr-singles': [
+    { id: 'crm10', sender: 'Michael Chen', initials: 'MC', role: 'Singles Ministry', content: 'Game night this Friday 7pm at the fellowship hall. Bring snacks!', timestamp: hoursAgo(3), isMe: false },
+    { id: 'crm11', sender: 'You', initials: 'ME', role: 'Member', content: 'Count me in! I\'ll bring the board games.', timestamp: hoursAgo(2.5), isMe: true },
+  ],
+  'cr-cteach': [
+    { id: 'crm12', sender: 'Brother Thompson', initials: 'BT', role: 'Children\'s Ministry Lead', content: 'Background check renewals due by March 15. Link in the pinned message.', timestamp: hoursAgo(4), isMe: false },
+    { id: 'crm13', sender: 'You', initials: 'ME', role: 'Teacher', content: 'Just submitted mine. Takes about 3 business days to process.', timestamp: hoursAgo(3), isMe: true },
   ],
 };
 
