@@ -220,6 +220,7 @@ function ChurchOrganizationInner() {
               case 'finance': return <View key="finance" style={PAGE_STYLE}><ChurchFinance {...p} /></View>;
               case 'compliance': return <View key="compliance" style={PAGE_STYLE}><ChurchCompliance {...p} /></View>;
               case 'facilities': return <View key="facilities" style={PAGE_STYLE}><ChurchFacilities {...p} /></View>;
+              case 'ledger': return <View key="ledger" style={PAGE_STYLE}><ChurchLedger {...p} /></View>;
               default:
                 return (
                   <View key={tab.id} style={[PAGE_STYLE, { justifyContent: 'center', alignItems: 'center' }]}>

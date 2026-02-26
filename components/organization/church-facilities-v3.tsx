@@ -33,17 +33,7 @@ const ACCENT = MODE_ACCENT.church;
 // MOCK CONTEXT
 // =============================================================================
 
-/** A2 = Teacher in Children's Ministry — can see assigned classroom highlighted */
-const MOCK_CHURCH_ROLE: ChurchRoleLens = {
-  roleId: 'C7',
-  label: "Children's Teacher",
-  authority: 'Execution',
-  scope: 'Ministry',
-  visibility: 'MinistryInternal',
-  decision: 'Recommend',
-};
-
-const USER_ASSIGNED_ROOM = 'rm3'; // Children's Wing
+const USER_ASSIGNED_ROOM = 'rm3'; // Youth Room — A2 Teacher's assigned classroom
 
 // =============================================================================
 // MOCK DATA
@@ -394,7 +384,7 @@ function IssueReportSheet({
 // =============================================================================
 
 export function ChurchFacilities({ colors, accentColor, role }: Props) {
-  const churchRole = MOCK_CHURCH_ROLE;
+  const churchRole = (role ?? 'C8') as ChurchRoleLens;
   const isA2 = isStaffLevel(churchRole);
 
   const [search, setSearch] = useState('');
