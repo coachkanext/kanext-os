@@ -28,6 +28,8 @@ import {
 } from '@/data/mock-church-home';
 import { type ChurchRoleLens } from '@/utils/church-rbac';
 import { ChurchGiveSheet } from '@/components/commerce/church-give-sheet';
+import { ChurchEventDetailSheet } from '@/components/church/church-event-detail-sheet';
+import { getEnrichedEvent, fromCalendarEvent, type ChurchEvent } from '@/data/mock-church-events';
 
 const ACCENT = MODE_ACCENT.church;
 
@@ -94,6 +96,8 @@ function formatEventTime(d: Date): string {
 
 export function ChurchDashboardV2({ colors, accent, role = 'C8' }: Props) {
   const [giveVisible, setGiveVisible] = useState(false);
+  const [eventSheetVisible, setEventSheetVisible] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<ChurchEvent | null>(null);
 
   // ── Hero badge logic ──
   const liveService = CHURCH_SERVICES.find((s) => s.isLive);
@@ -177,7 +181,12 @@ export function ChurchDashboardV2({ colors, accent, role = 'C8' }: Props) {
               { backgroundColor: colors.card, borderColor: colors.border },
               pressed && { opacity: 0.7 },
             ]}
-            onPress={() => Haptics.impactAsync(ImpactFeedbackStyle.Light)}
+            onPress={() => {
+              Haptics.impactAsync(ImpactFeedbackStyle.Light);
+              const enriched = getEnrichedEvent(nextEvent.id) || fromCalendarEvent(nextEvent);
+              setSelectedEvent(enriched);
+              setEventSheetVisible(true);
+            }}
           >
             <View style={s.nextEventHeader}>
               <ThemedText style={[s.nextEventLabel, { color: accent }]}>NEXT EVENT</ThemedText>
@@ -329,6 +338,13 @@ export function ChurchDashboardV2({ colors, accent, role = 'C8' }: Props) {
 
       {/* ── Bottom Sheets ── */}
       <ChurchGiveSheet visible={giveVisible} onClose={() => setGiveVisible(false)} colors={colors as any} />
+      <ChurchEventDetailSheet
+        visible={eventSheetVisible}
+        onClose={() => setEventSheetVisible(false)}
+        event={selectedEvent}
+        colors={colors}
+        accent={accent}
+      />
     </>
   );
 }
