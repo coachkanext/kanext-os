@@ -280,7 +280,6 @@ export function BizAgendaView({ colors, accent }: Props) {
         {/* ── Sticky Header ──────────────────────────────────────────── */}
         <View style={s.headerRow}>
           <View style={{ flex: 1 }}>
-            <ThemedText style={[s.title, { color: colors.text }]}>Agenda</ThemedText>
             <View style={[s.entityChip, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <ThemedText style={[s.entityText, { color: colors.textSecondary }]}>Meridian Ventures LLC</ThemedText>
             </View>

@@ -1,9 +1,10 @@
 /**
  * Biz Calendar V2 — Schedule Tab Wrapper
  *
- * Sub-pills: Agenda | Calendar
+ * Sub-pills: Agenda | Calendar | Obligations
  * Agenda = chronological stream (day-level detail)
  * Calendar = month/week grid (visual time control)
+ * Obligations = enterprise liability register (institutional risk surface)
  */
 
 import React, { useState } from 'react';
@@ -14,11 +15,12 @@ import { ThemedText } from '@/components/themed-text';
 import { Colors, MODE_ACCENT } from '@/constants/theme';
 import { BizAgendaView } from '@/components/biz-home/biz-agenda-view';
 import { BizMonthCalendar } from '@/components/biz-home/biz-month-calendar';
+import { BizObligationsView } from '@/components/biz-home/biz-obligations-view';
 
 const ACCENT = MODE_ACCENT.business;
 
-type SubTab = 'Agenda' | 'Calendar';
-const PILLS: SubTab[] = ['Agenda', 'Calendar'];
+type SubTab = 'Agenda' | 'Calendar' | 'Obligations';
+const PILLS: SubTab[] = ['Agenda', 'Calendar', 'Obligations'];
 
 interface Props {
   colors: typeof Colors.light;
@@ -46,6 +48,7 @@ export function BizCalendarV2({ colors, accent }: Props) {
 
       {activeTab === 'Agenda' && <BizAgendaView colors={colors} accent={accent} />}
       {activeTab === 'Calendar' && <BizMonthCalendar colors={colors} accent={accent} />}
+      {activeTab === 'Obligations' && <BizObligationsView colors={colors} accent={accent} />}
     </View>
   );
 }
