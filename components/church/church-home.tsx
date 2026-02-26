@@ -2,7 +2,7 @@
  * Church Home — 2819 Church 4-tab PagerView layout
  * Dashboard | Schedule | Ministries | Connect
  *
- * Dashboard + Schedule + Ministries are live. Connect is Coming Soon.
+ * All 4 tabs are live: Dashboard | Schedule | Ministries | Connect.
  * Uses PagerView + PagedTabBar + EdgeHoldAdvance for swipeable tabs.
  */
 
@@ -14,9 +14,7 @@ import { PagedTabBar } from '@/components/ui/paged-tab-bar';
 import { EdgeHoldAdvance } from '@/components/ui/edge-hold-advance';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 
-import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMembershipId } from '@/context/app-context';
@@ -25,6 +23,7 @@ import { getChurchRole } from '@/utils/church-rbac';
 import { ChurchDashboardV2 } from '@/components/church-home/church-dashboard-v2';
 import { ChurchSchedule } from '@/components/church/church-schedule';
 import { ChurchMinistries } from '@/components/church/church-ministries';
+import { ChurchConnect } from '@/components/church/church-connect';
 
 const ALL_TABS: { id: string; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
@@ -34,22 +33,6 @@ const ALL_TABS: { id: string; label: string }[] = [
 ];
 
 const ACCENT = MODE_ACCENT.church;
-
-// =============================================================================
-// COMING SOON PLACEHOLDER
-// =============================================================================
-
-function ComingSoonTab({ label, colors }: { label: string; colors: typeof Colors.light }) {
-  return (
-    <View style={styles.comingSoon}>
-      <IconSymbol name="hammer.fill" size={32} color="#A1A1AA" />
-      <ThemedText style={[styles.comingSoonTitle, { color: colors.text }]}>Coming Soon</ThemedText>
-      <ThemedText style={[styles.comingSoonDesc, { color: colors.textSecondary }]}>
-        {label} will be available in a future update.
-      </ThemedText>
-    </View>
-  );
-}
 
 // =============================================================================
 // MAIN COMPONENT
@@ -114,7 +97,7 @@ export function ChurchHome() {
             <ChurchMinistries colors={colors} accent={ACCENT} role={churchRole} />
           </View>
           <View key="connect" style={{ flex: 1 }}>
-            <ComingSoonTab label="Connect" colors={colors} />
+            <ChurchConnect colors={colors} accent={ACCENT} role={churchRole} onSwitchTab={handleTabPress} />
           </View>
         </PagerView>
       </EdgeHoldAdvance>
@@ -129,21 +112,5 @@ export function ChurchHome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  comingSoon: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 40,
-  },
-  comingSoonTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginTop: 12,
-  },
-  comingSoonDesc: {
-    fontSize: 13,
-    textAlign: 'center',
-    marginTop: 6,
   },
 });
