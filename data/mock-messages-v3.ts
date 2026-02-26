@@ -341,9 +341,46 @@ const NEXUS_MAP: Record<Mode, NexusEscalationV3[]> = {
   competition: COMPETITION_NEXUS,
 };
 
+// =============================================================================
+// CHURCH — Mentions + Inbox Escalations
+// =============================================================================
+
+const CHURCH_MENTIONS: MentionV3[] = [
+  { id: 'cm1', mode: 'church', roomName: 'Worship Team', senderName: 'Funmi Adeyemi', senderInitials: 'FA', preview: '@You song list for Sunday is updated — can you review the order?', timestamp: hoursAgo(2) },
+  { id: 'cm2', mode: 'church', roomName: 'Youth Ministry', senderName: 'Brother Thompson', senderInitials: 'BT', preview: '@You we need a volunteer for the Friday night session, can you cover?', timestamp: hoursAgo(5) },
+  { id: 'cm3', mode: 'church', roomName: 'Good Friday Service', senderName: 'Chioma Okonkwo', senderInitials: 'CO', preview: '@You please confirm your arrival time for volunteer setup', timestamp: hoursAgo(8) },
+];
+
+const CHURCH_INBOX_ESCALATIONS: InboxEscalationV3[] = [
+  { id: 'ce1', mode: 'church', requesterName: 'Michael Chen', requesterInitials: 'MC', questionPreview: 'How do I sign up for the men\'s fellowship group?', linkedContext: 'Ministry Directory', status: 'needs_reply', timestamp: hoursAgo(3) },
+  { id: 'ce2', mode: 'church', requesterName: 'Sister Davis', requesterInitials: 'SD', questionPreview: 'Can volunteers bring children to the community meal prep?', linkedContext: 'Outreach Event', status: 'needs_reply', timestamp: hoursAgo(6) },
+  { id: 'ce3', mode: 'church', requesterName: 'Deacon Williams', requesterInitials: 'DW', questionPreview: 'Approve facility booking for deacon board retreat', linkedContext: 'Facilities', status: 'replied', timestamp: daysAgo(1) },
+];
+
+// =============================================================================
+// CHURCH — Room Messages
+// =============================================================================
+
+const CHURCH_ROOM_MESSAGES: Record<string, RoomMessageV3[]> = {
+  'cr1': [
+    { id: 'crm1', sender: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', content: 'Strategic planning session confirmed for next Tuesday at 7pm.', timestamp: hoursAgo(2), isMe: false },
+    { id: 'crm2', sender: 'You', initials: 'ME', role: 'Member', content: 'I\'ll prepare the ministry growth report for the meeting.', timestamp: hoursAgo(1.5), isMe: true },
+    { id: 'crm3', sender: 'Deacon Williams', initials: 'DW', role: 'Deacon Board', content: 'I\'ll bring the building fund update as well.', timestamp: hoursAgo(1), isMe: false },
+  ],
+  'cr3': [
+    { id: 'crm4', sender: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', content: 'Service times: 12pm and 7pm. All volunteers report at 11am.', timestamp: hoursAgo(1), isMe: false },
+    { id: 'crm5', sender: 'You', initials: 'ME', role: 'Member', content: 'I\'ll be there at 11. Do we need extra chairs set up?', timestamp: hoursAgo(0.8), isMe: true },
+    { id: 'crm6', sender: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', content: 'Yes, please set up 50 extra chairs in the overflow area. Thank you!', timestamp: hoursAgo(0.5), isMe: false },
+  ],
+  'cr5': [
+    { id: 'crm7', sender: 'Funmi Adeyemi', initials: 'FA', role: 'Worship Leader', content: 'Rehearsal moved to Thursday 6pm. Updated song list in the shared folder.', timestamp: hoursAgo(3), isMe: false },
+    { id: 'crm8', sender: 'You', initials: 'ME', role: 'Member', content: 'Got it. I\'ll review the new songs before rehearsal.', timestamp: hoursAgo(2.5), isMe: true },
+  ],
+};
+
 const MENTIONS_MAP: Record<Mode, MentionV3[]> = {
   sports: SPORTS_MENTIONS,
-  church: [],
+  church: CHURCH_MENTIONS,
   business: [],
   education: [],
   competition: [],
@@ -351,7 +388,7 @@ const MENTIONS_MAP: Record<Mode, MentionV3[]> = {
 
 const INBOX_ESCALATIONS_MAP: Record<Mode, InboxEscalationV3[]> = {
   sports: SPORTS_INBOX_ESCALATIONS,
-  church: [],
+  church: CHURCH_INBOX_ESCALATIONS,
   business: [],
   education: [],
   competition: [],
@@ -382,7 +419,7 @@ export function getInboxEscalations(mode: Mode): InboxEscalationV3[] {
 }
 
 export function getRoomMessages(roomId: string): RoomMessageV3[] {
-  return SPORTS_ROOM_MESSAGES[roomId] ?? [];
+  return SPORTS_ROOM_MESSAGES[roomId] ?? CHURCH_ROOM_MESSAGES[roomId] ?? [];
 }
 
 export function getUnansweredCount(mode: Mode): number {

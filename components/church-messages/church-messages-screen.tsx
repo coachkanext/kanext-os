@@ -1,9 +1,9 @@
 /**
- * Messages Screen — 3-tab: Inbox | Rooms | Nexus
- * Inbox: Unread + Mentions sections.
- * Rooms: Sectioned list (Pinned / Program / Direct) with Slack-style thread.
- * Nexus: Coming Soon.
- * Rendering context: Assistant Coach / Recruiting Coordinator (A2).
+ * ChurchMessagesScreen — 3-tab Messages for church mode.
+ * Tabs: Inbox | Rooms | Business
+ * Inbox: Unread threads + Mentions + Escalations (from Nexus).
+ * Rooms: Shared group discussion (reuses RoomsListV3).
+ * Business: Operational/admin layer (placeholder v1).
  */
 
 import React, { useState, useMemo, useCallback, useRef } from 'react';
@@ -22,32 +22,27 @@ import PagerView from 'react-native-pager-view';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { ChatComposer } from '@/components/messages/chat-composer';
 import { NewThreadSheet } from '@/components/messages/new-thread-sheet';
 import { InboxRowV3 } from '@/components/messages/inbox-row-v3';
 import { RoomsListV3 } from '@/components/messages/rooms-list-v3';
-import { NexusQueueV3 } from '@/components/messages/nexus-queue-v3';
-import { NexusAnswerSheet } from '@/components/messages/nexus-answer-sheet';
 import { EmptyState } from '@/components/ui/empty-state';
-import { ChurchMessagesScreen } from '@/components/church-messages/church-messages-screen';
 import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useMode } from '@/context/app-context';
 import {
   getInboxThreads,
   getInboxMentions,
+  getInboxEscalations,
   getRoomMessages,
   formatMessageTime,
 } from '@/data/mock-messages-v3';
 import type {
-  Mode,
   InboxThreadV3,
   RoomV3,
   ConversationMessageV3,
-  NexusEscalationV3,
+  InboxEscalationV3,
 } from '@/types';
 
 // =============================================================================
@@ -56,42 +51,27 @@ import type {
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const TAB_WIDTH_3 = SCREEN_WIDTH / 3;
+const ACCENT = MODE_ACCENT.church;
 
-const COMING_SOON_MODES = new Set<Mode>(['education', 'competition']);
-
-const MESSAGES_TABS = [
+const CHURCH_TABS = [
   { id: 'inbox', label: 'Inbox' },
   { id: 'rooms', label: 'Rooms' },
-  { id: 'nexus', label: 'Nexus' },
+  { id: 'business', label: 'Business' },
 ];
 
 // Mock conversation for DM thread detail
 const MOCK_THREAD_MESSAGES: ConversationMessageV3[] = [
-  { id: 'm1', sender: 'You', initials: 'ME', content: 'Got it, thanks for the update.', timestamp: new Date(Date.now() - 3600000), isMe: true },
-  { id: 'm2', sender: 'Them', initials: '??', content: 'Let me know if you have any questions.', timestamp: new Date(Date.now() - 1800000), isMe: false },
+  { id: 'm1', sender: 'You', initials: 'ME', content: 'Thank you for the update. I\'ll review it before Sunday.', timestamp: new Date(Date.now() - 3600000), isMe: true },
+  { id: 'm2', sender: 'Them', initials: '??', content: 'Sounds good. Let me know if you have any questions.', timestamp: new Date(Date.now() - 1800000), isMe: false },
 ];
 
 // =============================================================================
-// MAIN SCREEN
+// MAIN COMPONENT
 // =============================================================================
 
-export default function MessagesScreen() {
+export function ChurchMessagesScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const mode = useMode();
-
-  if (mode === 'church') return <ChurchMessagesScreen />;
-
-  if (COMING_SOON_MODES.has(mode)) {
-    return (
-      <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ThemedText style={{ fontSize: 32, fontWeight: '800', lineHeight: 40 }}>Coming Soon</ThemedText>
-        <ThemedText style={{ fontSize: 15, opacity: 0.5, textAlign: 'center', marginTop: 8 }}>
-          This mode is under development.{'\n'}Stay tuned for updates.
-        </ThemedText>
-      </ThemedView>
-    );
-  }
 
   const [activeIndex, setActiveIndex] = useState(0);
   const pagerRef = useRef<PagerView>(null);
@@ -101,12 +81,13 @@ export default function MessagesScreen() {
   const [inputText, setInputText] = useState('');
   const [roomInputText, setRoomInputText] = useState('');
   const [newThreadVisible, setNewThreadVisible] = useState(false);
-  const [selectedEscalation, setSelectedEscalation] = useState<NexusEscalationV3 | null>(null);
+  const [selectedEscalation, setSelectedEscalation] = useState<InboxEscalationV3 | null>(null);
+  const [escalationReply, setEscalationReply] = useState('');
 
   // ── Data ──
 
   const threads = useMemo(() => {
-    let items = getInboxThreads(mode);
+    let items = getInboxThreads('church');
     if (search.trim()) {
       const q = search.toLowerCase();
       items = items.filter(
@@ -117,10 +98,10 @@ export default function MessagesScreen() {
       if (a.unread !== b.unread) return a.unread ? -1 : 1;
       return b.timestamp.getTime() - a.timestamp.getTime();
     });
-  }, [mode, search]);
+  }, [search]);
 
   const mentions = useMemo(() => {
-    let items = getInboxMentions(mode);
+    let items = getInboxMentions('church');
     if (search.trim()) {
       const q = search.toLowerCase();
       items = items.filter(
@@ -131,7 +112,20 @@ export default function MessagesScreen() {
       );
     }
     return items;
-  }, [mode, search]);
+  }, [search]);
+
+  const escalations = useMemo(() => {
+    let items = getInboxEscalations('church');
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      items = items.filter(
+        (e) =>
+          e.requesterName.toLowerCase().includes(q) ||
+          e.questionPreview.toLowerCase().includes(q),
+      );
+    }
+    return items;
+  }, [search]);
 
   const unreadThreads = useMemo(() => threads.filter((t) => t.unread), [threads]);
 
@@ -174,13 +168,13 @@ export default function MessagesScreen() {
   // ── Render ──
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Tab bar */}
       <PagedTabBar
-        tabs={MESSAGES_TABS}
+        tabs={CHURCH_TABS}
         activeIndex={activeIndex}
         onTabPress={handleTabPress}
-        accentColor={MODE_ACCENT[mode]}
+        accentColor={ACCENT}
         tabWidth={TAB_WIDTH_3}
       />
 
@@ -195,6 +189,11 @@ export default function MessagesScreen() {
             value={search}
             onChangeText={setSearch}
           />
+          {search.length > 0 && (
+            <Pressable onPress={() => setSearch('')} hitSlop={8}>
+              <IconSymbol name="xmark.circle.fill" size={16} color={colors.textTertiary} />
+            </Pressable>
+          )}
         </View>
         <Pressable
           style={({ pressed }) => [
@@ -226,7 +225,7 @@ export default function MessagesScreen() {
                 <>
                   <View style={styles.sectionHeader}>
                     <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>UNREAD</Text>
-                    <View style={[styles.countBadge, { backgroundColor: MODE_ACCENT[mode] }]}>
+                    <View style={[styles.countBadge, { backgroundColor: ACCENT }]}>
                       <Text style={styles.countText}>{unreadThreads.length}</Text>
                     </View>
                   </View>
@@ -264,7 +263,7 @@ export default function MessagesScreen() {
                       <View style={styles.mentionContent}>
                         <View style={styles.mentionTopLine}>
                           <Text
-                            style={[styles.mentionRoom, { color: MODE_ACCENT[mode] }]}
+                            style={[styles.mentionRoom, { color: ACCENT }]}
                             numberOfLines={1}
                           >
                             {mention.roomName}
@@ -291,8 +290,71 @@ export default function MessagesScreen() {
                 </>
               )}
 
+              {/* Section: Escalations */}
+              {escalations.length > 0 && (
+                <>
+                  <View style={styles.sectionHeader}>
+                    <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>ESCALATIONS</Text>
+                    <View style={[styles.countBadge, { backgroundColor: '#F59E0B' }]}>
+                      <Text style={styles.countText}>
+                        {escalations.filter((e) => e.status === 'needs_reply').length}
+                      </Text>
+                    </View>
+                  </View>
+                  {escalations.map((esc) => (
+                    <Pressable
+                      key={esc.id}
+                      style={({ pressed }) => [
+                        styles.escalationRow,
+                        {
+                          backgroundColor: pressed ? colors.backgroundSecondary : 'transparent',
+                          borderBottomColor: colors.border,
+                        },
+                      ]}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        setSelectedEscalation(esc);
+                      }}
+                    >
+                      <View style={[styles.escalationIcon, { backgroundColor: '#F59E0B1A' }]}>
+                        <IconSymbol name="exclamationmark.bubble.fill" size={18} color="#F59E0B" />
+                      </View>
+                      <View style={styles.escalationContent}>
+                        <View style={styles.escalationTopLine}>
+                          <Text
+                            style={[styles.escalationName, { color: colors.text }]}
+                            numberOfLines={1}
+                          >
+                            {esc.requesterName}
+                          </Text>
+                          <View style={[
+                            styles.statusChip,
+                            { backgroundColor: esc.status === 'needs_reply' ? '#F59E0B' : '#22C55E' },
+                          ]}>
+                            <Text style={styles.statusChipText}>
+                              {esc.status === 'needs_reply' ? 'Needs Reply' : 'Replied'}
+                            </Text>
+                          </View>
+                        </View>
+                        <Text
+                          style={[styles.escalationPreview, { color: colors.textSecondary }]}
+                          numberOfLines={2}
+                        >
+                          {esc.questionPreview}
+                        </Text>
+                        {esc.linkedContext && (
+                          <Text style={[styles.escalationContext, { color: colors.textTertiary }]}>
+                            {esc.linkedContext} · {formatMessageTime(esc.timestamp)}
+                          </Text>
+                        )}
+                      </View>
+                    </Pressable>
+                  ))}
+                </>
+              )}
+
               {/* Empty state */}
-              {unreadThreads.length === 0 && mentions.length === 0 && (
+              {unreadThreads.length === 0 && mentions.length === 0 && escalations.length === 0 && (
                 <EmptyState
                   icon="bubble.left.fill"
                   title="No Messages"
@@ -305,7 +367,7 @@ export default function MessagesScreen() {
           {/* ===== ROOMS ===== */}
           <View key="rooms" style={{ flex: 1 }}>
             <RoomsListV3
-              mode={mode}
+              mode="church"
               search={search}
               onRoomPress={(room) => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -314,14 +376,12 @@ export default function MessagesScreen() {
             />
           </View>
 
-          {/* ===== NEXUS ===== */}
-          <View key="nexus" style={{ flex: 1 }}>
-            <NexusQueueV3
-              mode={mode}
-              onSelectEscalation={(esc) => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setSelectedEscalation(esc);
-              }}
+          {/* ===== BUSINESS ===== */}
+          <View key="business" style={{ flex: 1 }}>
+            <EmptyState
+              icon="briefcase.fill"
+              title="Business"
+              description="Operational and admin threads will appear here."
             />
           </View>
         </PagerView>
@@ -452,7 +512,6 @@ export default function MessagesScreen() {
               <ThemedText style={[styles.roomMetaText, { color: colors.textTertiary }]}>
                 {selectedRoom.memberCount} members
                 {selectedRoom.locked ? ' · Restricted' : ''}
-                {selectedRoom.category === 'program' ? ' · Program' : selectedRoom.category === 'direct' ? ' · Direct' : ''}
               </ThemedText>
             </View>
 
@@ -514,11 +573,85 @@ export default function MessagesScreen() {
         )}
       </BottomSheet>
 
-      {/* ===== Nexus Q&A Thread Sheet ===== */}
-      <NexusAnswerSheet
-        escalation={selectedEscalation}
-        onClose={() => setSelectedEscalation(null)}
-      />
+      {/* ===== Escalation Thread Sheet ===== */}
+      <BottomSheet
+        visible={selectedEscalation !== null}
+        onClose={() => {
+          setSelectedEscalation(null);
+          setEscalationReply('');
+        }}
+        title="Escalation"
+        useModal
+      >
+        {selectedEscalation && (
+          <View style={styles.escalationDetail}>
+            {/* Requester info */}
+            <View style={styles.escalationDetailHeader}>
+              <View style={[styles.escalationDetailAvatar, { backgroundColor: colors.backgroundTertiary }]}>
+                <ThemedText style={[styles.escalationDetailInitials, { color: colors.textSecondary }]}>
+                  {selectedEscalation.requesterInitials}
+                </ThemedText>
+              </View>
+              <View style={styles.escalationDetailInfo}>
+                <ThemedText style={[styles.escalationDetailName, { color: colors.text }]}>
+                  {selectedEscalation.requesterName}
+                </ThemedText>
+                <ThemedText style={[styles.escalationDetailTime, { color: colors.textTertiary }]}>
+                  {formatMessageTime(selectedEscalation.timestamp)}
+                  {selectedEscalation.linkedContext ? ` · ${selectedEscalation.linkedContext}` : ''}
+                </ThemedText>
+              </View>
+              <View style={[
+                styles.statusChip,
+                { backgroundColor: selectedEscalation.status === 'needs_reply' ? '#F59E0B' : '#22C55E' },
+              ]}>
+                <Text style={styles.statusChipText}>
+                  {selectedEscalation.status === 'needs_reply' ? 'Needs Reply' : 'Replied'}
+                </Text>
+              </View>
+            </View>
+
+            {/* Question */}
+            <View style={[styles.escalationQuestion, { backgroundColor: colors.backgroundSecondary, borderColor: colors.border }]}>
+              <ThemedText style={[styles.escalationQuestionText, { color: colors.text }]}>
+                {selectedEscalation.questionPreview}
+              </ThemedText>
+            </View>
+
+            {/* Reply input */}
+            <ThemedText style={[styles.replyLabel, { color: colors.textSecondary }]}>
+              Your Reply
+            </ThemedText>
+            <View style={[styles.replyInputContainer, { backgroundColor: colors.backgroundSecondary, borderColor: colors.border }]}>
+              <TextInput
+                style={[styles.replyInput, { color: colors.text }]}
+                placeholder="Type your response..."
+                placeholderTextColor={colors.textTertiary}
+                value={escalationReply}
+                onChangeText={setEscalationReply}
+                multiline
+              />
+            </View>
+            <Pressable
+              style={({ pressed }) => [
+                styles.replyBtn,
+                { opacity: pressed ? 0.7 : 1, backgroundColor: escalationReply.trim() ? ACCENT : colors.backgroundTertiary },
+              ]}
+              onPress={() => {
+                if (escalationReply.trim()) {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  setSelectedEscalation(null);
+                  setEscalationReply('');
+                }
+              }}
+            >
+              <ThemedText style={[styles.replyBtnText, { color: escalationReply.trim() ? '#fff' : colors.textTertiary }]}>
+                Send Reply
+              </ThemedText>
+            </Pressable>
+          </View>
+        )}
+      </BottomSheet>
 
       {/* ===== New Thread Sheet ===== */}
       <BottomSheet
@@ -529,7 +662,7 @@ export default function MessagesScreen() {
       >
         <NewThreadSheet onClose={() => setNewThreadVisible(false)} />
       </BottomSheet>
-    </ThemedView>
+    </View>
   );
 }
 
@@ -642,6 +775,56 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 19,
     marginTop: 3,
+  },
+
+  // Escalation rows
+  escalationRow: {
+    flexDirection: 'row',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: 12,
+    alignItems: 'flex-start',
+  },
+  escalationIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  escalationContent: {
+    flex: 1,
+    minWidth: 0,
+  },
+  escalationTopLine: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  escalationName: {
+    fontSize: 15,
+    fontWeight: '600',
+    flex: 1,
+  },
+  escalationPreview: {
+    fontSize: 14,
+    lineHeight: 19,
+    marginTop: 3,
+  },
+  escalationContext: {
+    fontSize: 11,
+    marginTop: 3,
+  },
+  statusChip: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 4,
+  },
+  statusChipText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#fff',
   },
 
   // Thread detail
@@ -773,5 +956,73 @@ const styles = StyleSheet.create({
   },
   roomEmptyText: {
     fontSize: 14,
+  },
+
+  // Escalation detail
+  escalationDetail: {
+    paddingHorizontal: Spacing.md,
+    paddingTop: Spacing.sm,
+    gap: Spacing.md,
+  },
+  escalationDetailHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  escalationDetailAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  escalationDetailInitials: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  escalationDetailInfo: {
+    flex: 1,
+    gap: 2,
+  },
+  escalationDetailName: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  escalationDetailTime: {
+    fontSize: 12,
+  },
+  escalationQuestion: {
+    padding: Spacing.md,
+    borderRadius: BorderRadius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  escalationQuestionText: {
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  replyLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  replyInputContainer: {
+    borderRadius: BorderRadius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: Spacing.sm + 2,
+    minHeight: 80,
+  },
+  replyInput: {
+    fontSize: 15,
+    lineHeight: 20,
+    padding: 0,
+  },
+  replyBtn: {
+    paddingVertical: 12,
+    borderRadius: BorderRadius.md,
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+  },
+  replyBtnText: {
+    fontSize: 15,
+    fontWeight: '600',
   },
 });
