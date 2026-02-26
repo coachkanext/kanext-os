@@ -56,7 +56,7 @@ import type {
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const TAB_WIDTH_3 = SCREEN_WIDTH / 3;
 
-const COMING_SOON_MODES = new Set<Mode>(['education', 'competition']);
+const COMING_SOON_MODES = new Set<Mode>(['church', 'education', 'competition']);
 
 const MESSAGES_TABS = [
   { id: 'inbox', label: 'Inbox' },

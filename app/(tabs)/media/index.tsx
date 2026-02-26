@@ -495,7 +495,7 @@ function LibraryPage({ mode }: { mode: Mode }) {
 // MAIN SCREEN
 // =============================================================================
 
-const COMING_SOON_MODES = new Set<Mode>(['education', 'competition']);
+const COMING_SOON_MODES = new Set<Mode>(['church', 'education', 'competition']);
 
 export default function VideoHomeScreen() {
   const colorScheme = useColorScheme() ?? 'light';
