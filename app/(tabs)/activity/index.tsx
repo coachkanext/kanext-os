@@ -33,6 +33,7 @@ import { NexusQueueV3 } from '@/components/messages/nexus-queue-v3';
 import { NexusAnswerSheet } from '@/components/messages/nexus-answer-sheet';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ChurchMessagesScreen } from '@/components/church-messages/church-messages-screen';
+import { BusinessInboxV2 } from '@/components/business-inbox/business-inbox-v2';
 import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
@@ -147,7 +148,10 @@ export default function MessagesScreen() {
     pagerRef.current?.setPage(index);
   }, []);
 
-  const searchPlaceholder = activeIndex === 1 ? 'Search rooms' : 'Search people / messages';
+  const searchPlaceholder =
+    activeIndex === 1 ? 'Search rooms' :
+    mode === 'business' && activeIndex === 0 ? 'Search people / threads / approvals' :
+    'Search people / messages';
 
   // Group mock messages for thread detail
   const groupedMessages = useMemo(() => {
@@ -220,6 +224,9 @@ export default function MessagesScreen() {
         >
           {/* ===== INBOX ===== */}
           <View key="inbox" style={{ flex: 1 }}>
+            {mode === 'business' ? (
+              <BusinessInboxV2 search={search} />
+            ) : (
             <ScrollView contentContainerStyle={styles.sectionList} showsVerticalScrollIndicator={false}>
               {/* Section: Unread */}
               {unreadThreads.length > 0 && (
@@ -300,6 +307,7 @@ export default function MessagesScreen() {
                 />
               )}
             </ScrollView>
+            )}
           </View>
 
           {/* ===== ROOMS ===== */}
