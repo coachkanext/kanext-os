@@ -217,11 +217,13 @@ function ChurchOrganizationInner() {
             switch (tab.id) {
               case 'program': return <View key="program" style={PAGE_STYLE}><ChurchProgram {...p} /></View>;
               case 'people': return <View key="people" style={PAGE_STYLE}><ChurchPeople {...p} /></View>;
-              case 'finance': return <View key="finance" style={PAGE_STYLE}><ChurchFinance {...p} /></View>;
-              case 'compliance': return <View key="compliance" style={PAGE_STYLE}><ChurchCompliance {...p} /></View>;
-              case 'facilities': return <View key="facilities" style={PAGE_STYLE}><ChurchFacilities {...p} /></View>;
-              case 'ledger': return <View key="ledger" style={PAGE_STYLE}><ChurchLedger {...p} /></View>;
-              default: return <View key={tab.id} style={PAGE_STYLE} />;
+              default:
+                return (
+                  <View key={tab.id} style={[PAGE_STYLE, { justifyContent: 'center', alignItems: 'center' }]}>
+                    <ThemedText style={{ fontSize: 28, fontWeight: '800' }}>Coming Soon</ThemedText>
+                    <ThemedText style={{ fontSize: 14, opacity: 0.5, marginTop: 6 }}>{tab.label} is under development.</ThemedText>
+                  </View>
+                );
             }
           })}
         </PagerView>
@@ -397,6 +399,7 @@ export default function OrganizationScreen() {
       case 'sports':
         return <SportsOrganization />;
       case 'church':
+        return <ChurchOrganization />;
       case 'business':
         return <EmptyModeShell tabs={ORG_TABS_EMPTY} />;
       case 'education':
