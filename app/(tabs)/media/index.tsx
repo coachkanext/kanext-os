@@ -45,6 +45,7 @@ import { BusinessExplorePageV2 } from '@/components/business-explore/business-ex
 import { BusinessRoomsV2 } from '@/components/business-rooms/business-rooms-v2';
 import { ChurchRoomsV2 } from '@/components/church-rooms/church-rooms-v2';
 import { ChurchLibraryV2 } from '@/components/church-library/church-library-v2';
+import { BusinessLibraryV2 } from '@/components/business-library/business-library-v2';
 import { SportsFilmRoomV2 } from '@/components/film-room/sports-film-room-v2';
 import { ModeExplorePageV2 } from '@/components/explore/mode-explore-page-v2';
 import { ModeFilmRoomV2 } from '@/components/film-room/mode-film-room-v2';
@@ -512,6 +513,7 @@ function RoomPage({ colors, mode }: { colors: typeof Colors.light; mode: Mode })
 function LibraryPage({ mode }: { mode: Mode }) {
   if (mode === 'sports') return <LibraryHub />;
   if (mode === 'church') return <ChurchLibraryV2 />;
+  if (mode === 'business') return <BusinessLibraryV2 />;
   if (EMPTY_MODES.has(mode)) {
     return <EmptyState icon="books.vertical.fill" title="No Library Items" description="Saved content will appear here." />;
   }
