@@ -3,7 +3,6 @@
  *
  * Sub-pills: Agenda (default) | Services | Ministry
  * Each pill renders a full-height child view.
- * Ministry pill is Coming Soon in v1.
  */
 
 import React, { useState, useCallback } from 'react';
@@ -13,10 +12,10 @@ import { ImpactFeedbackStyle } from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { ChurchScheduleAgenda } from '@/components/church/church-schedule-agenda';
 import { ChurchScheduleServices } from '@/components/church/church-schedule-services';
+import { ChurchScheduleMinistry } from '@/components/church/church-schedule-ministry';
 
 // =============================================================================
 // TYPES
@@ -72,15 +71,7 @@ export function ChurchSchedule({ colors, accent }: Props) {
       {/* ── Active view ── */}
       {activePill === 'agenda' && <ChurchScheduleAgenda colors={colors} accent={accent} />}
       {activePill === 'services' && <ChurchScheduleServices colors={colors} accent={accent} />}
-      {activePill === 'ministry' && (
-        <View style={s.comingSoon}>
-          <IconSymbol name="hammer.fill" size={32} color="#A1A1AA" />
-          <ThemedText style={[s.comingSoonTitle, { color: colors.text }]}>Coming Soon</ThemedText>
-          <ThemedText style={[s.comingSoonDesc, { color: colors.textSecondary }]}>
-            Ministry schedule will be available in a future update.
-          </ThemedText>
-        </View>
-      )}
+      {activePill === 'ministry' && <ChurchScheduleMinistry colors={colors} accent={accent} />}
     </ThemedView>
   );
 }
@@ -109,23 +100,5 @@ const s = StyleSheet.create({
   pillText: {
     fontSize: 13,
     fontWeight: '600',
-  },
-
-  // Coming soon
-  comingSoon: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 40,
-  },
-  comingSoonTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginTop: 12,
-  },
-  comingSoonDesc: {
-    fontSize: 13,
-    textAlign: 'center',
-    marginTop: 6,
   },
 });
