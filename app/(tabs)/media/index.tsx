@@ -172,6 +172,23 @@ const MOCK_COMMENTS: Record<string, { author: string; initials: string; text: st
     { author: 'Coach Miller', initials: 'CM', text: 'Proud of this team. 19 assists is elite.', time: '2h' },
     { author: 'E. Carter', initials: 'EC', text: 'Best game of the season', time: '2h' },
   ],
+  // Church posts
+  'cfp-1': [
+    { author: 'Sis. Johnson', initials: 'SJ', text: 'That word hit different today. "Walk by faith, not by sight." Needed that.', time: '25m' },
+    { author: 'Deacon Williams', initials: 'DW', text: 'Powerful message, Pastor. The altar call was everything.', time: '20m' },
+    { author: 'Bro. Adeyemi', initials: 'BA', text: 'Sharing this with my small group. Thank you for this word.', time: '15m' },
+  ],
+  'cfp-2': [
+    { author: 'Sis. Grace', initials: 'SG', text: 'The Spirit was MOVING during that hymn. Goosebumps.', time: '1h' },
+    { author: 'Minister Davis', initials: 'MD', text: 'Worship team was on another level today. Glory to God.', time: '50m' },
+    { author: 'Bro. Thompson', initials: 'BT', text: 'I cried through the whole set. God is so faithful.', time: '40m' },
+  ],
+  'cfp-4': [
+    { author: 'Deacon Williams', initials: 'DW', text: 'Welcome to the family! So proud of each one of you.', time: '3h' },
+    { author: 'Sis. Johnson', initials: 'SJ', text: 'Congratulations! Best Sunday of the year.', time: '3h' },
+    { author: 'Pastor Philip', initials: 'PM', text: 'Heaven is rejoicing. What a beautiful day.', time: '2h' },
+    { author: 'Youth Dir.', initials: 'YD', text: 'Two of our youth took the step today. So moving.', time: '2h' },
+  ],
 };
 
 function FeedPost({ post, colors }: { post: VideoFeedPost; colors: typeof Colors.light }) {
@@ -495,7 +512,7 @@ function LibraryPage({ mode }: { mode: Mode }) {
 // MAIN SCREEN
 // =============================================================================
 
-const COMING_SOON_MODES = new Set<Mode>(['church', 'education', 'competition']);
+const COMING_SOON_MODES = new Set<Mode>(['education', 'competition']);
 
 export default function VideoHomeScreen() {
   const colorScheme = useColorScheme() ?? 'light';

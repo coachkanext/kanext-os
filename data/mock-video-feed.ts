@@ -5,6 +5,20 @@
 
 import type { Mode } from '@/types';
 
+export type StoryTag = 'Game' | 'Practice' | 'Clip' | 'Recruiting' | 'Service' | 'Sermon' | 'Worship' | 'Event' | 'Training' | 'Announcement';
+
+export interface StoryClip {
+  clipId: string;
+  thumbnailColor: string;
+  thumbnailUrl?: string;
+  videoUrl?: string;
+  durationSeconds: number;
+  tag: StoryTag;
+  caption?: string;
+  gameId?: string;
+  playerId?: string;
+}
+
 export interface StoryCircle {
   id: string;
   name: string;
@@ -12,6 +26,13 @@ export interface StoryCircle {
   hasNew: boolean;
   isYou?: boolean;
   ringColor?: string;
+  tag?: StoryTag;
+  clips?: StoryClip[];
+  visibilityClass?: 0 | 2 | 3;
+  orgId?: string;
+  programId?: string;
+  publishedAt?: Date;
+  expiresAt?: Date;
 }
 
 export interface FeedPostMedia {
@@ -34,25 +55,102 @@ export interface VideoFeedPost {
   comments: number;
   liked?: boolean;
   saved?: boolean;
+  visibilityClass?: 0 | 2 | 3;
 }
 
 const now = new Date();
 const ago = (minutes: number) => new Date(now.getTime() - minutes * 60000);
+const hoursAgo = (h: number) => new Date(now.getTime() - h * 3600000);
+const expires = (published: Date) => new Date(published.getTime() + 24 * 3600000);
+
+const MOCK_ORG = 'org-carroll';
+const MOCK_PROGRAM = 'prog-mbb';
 
 // =============================================================================
 // SPORTS — Story Circles + Feed Posts
+// Ordered: "Your Story" first, then newest publishedAt → oldest
 // =============================================================================
 
 export const STORY_CIRCLES: StoryCircle[] = [
-  { id: 'st-you', name: 'Your Story', initials: 'AM', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
-  { id: 'st-1', name: 'Coach Miller', initials: 'CM', hasNew: true, ringColor: '#1D9BF0' },
-  { id: 'st-2', name: 'Coach Brooks', initials: 'CB', hasNew: true, ringColor: '#1D9BF0' },
-  { id: 'st-3', name: 'E. Carter', initials: 'EC', hasNew: true, ringColor: '#22C55E' },
-  { id: 'st-4', name: 'E. Selden', initials: 'ES', hasNew: false },
-  { id: 'st-5', name: 'K. Mentor', initials: 'KM', hasNew: true, ringColor: '#1D9BF0' },
-  { id: 'st-6', name: 'A. Noel', initials: 'AN', hasNew: false },
-  { id: 'st-7', name: 'Staff Room', initials: 'SR', hasNew: true, ringColor: '#F59E0B' },
-  { id: 'st-8', name: 'Game Ops', initials: 'GO', hasNew: false },
+  { id: 'st-you', name: 'Your Story', initials: 'AM', hasNew: false, isYou: true, ringColor: '#FFFFFF',
+    orgId: MOCK_ORG, programId: MOCK_PROGRAM },
+  {
+    id: 'st-2', name: 'Coach Brooks', initials: 'CB', hasNew: true, ringColor: '#1D9BF0',
+    tag: 'Game', visibilityClass: 0,
+    orgId: MOCK_ORG, programId: MOCK_PROGRAM,
+    publishedAt: hoursAgo(1), expiresAt: expires(hoursAgo(1)),
+    clips: [
+      { clipId: 'st2-c1', thumbnailColor: '#0F172A', durationSeconds: 12, tag: 'Game', caption: 'Transition D highlights vs Coastal' },
+      { clipId: 'st2-c2', thumbnailColor: '#1A2332', durationSeconds: 18, tag: 'Game', caption: 'Key 4th quarter possessions' },
+      { clipId: 'st2-c3', thumbnailColor: '#1E293B', durationSeconds: 10, tag: 'Game', caption: 'Post-game locker room' },
+    ],
+  },
+  {
+    id: 'st-1', name: 'Coach Miller', initials: 'CM', hasNew: true, ringColor: '#1D9BF0',
+    tag: 'Practice', visibilityClass: 3,
+    orgId: MOCK_ORG, programId: MOCK_PROGRAM,
+    publishedAt: hoursAgo(2), expiresAt: expires(hoursAgo(2)),
+    clips: [
+      { clipId: 'st1-c1', thumbnailColor: '#1A2332', durationSeconds: 15, tag: 'Practice', caption: 'Half-court sets walkthrough' },
+      { clipId: 'st1-c2', thumbnailColor: '#1E293B', durationSeconds: 20, tag: 'Practice', caption: 'Zone offense reps — looking sharp' },
+    ],
+  },
+  {
+    id: 'st-7', name: 'Staff Room', initials: 'SR', hasNew: true, ringColor: '#F59E0B',
+    tag: 'Recruiting', visibilityClass: 3,
+    orgId: MOCK_ORG, programId: MOCK_PROGRAM,
+    publishedAt: hoursAgo(3), expiresAt: expires(hoursAgo(3)),
+    clips: [
+      { clipId: 'st7-c1', thumbnailColor: '#422006', durationSeconds: 22, tag: 'Recruiting', caption: 'Top 5 portal targets — scouting notes' },
+    ],
+  },
+  {
+    id: 'st-3', name: 'E. Carter', initials: 'EC', hasNew: true, ringColor: '#22C55E',
+    tag: 'Clip', visibilityClass: 0,
+    orgId: MOCK_ORG, programId: MOCK_PROGRAM,
+    publishedAt: hoursAgo(5), expiresAt: expires(hoursAgo(5)),
+    clips: [
+      { clipId: 'st3-c1', thumbnailColor: '#14532D', durationSeconds: 25, tag: 'Clip', caption: 'Pre-game workout session' },
+    ],
+  },
+  {
+    id: 'st-5', name: 'K. Mentor', initials: 'KM', hasNew: true, ringColor: '#1D9BF0',
+    tag: 'Practice', visibilityClass: 3,
+    orgId: MOCK_ORG, programId: MOCK_PROGRAM,
+    publishedAt: hoursAgo(8), expiresAt: expires(hoursAgo(8)),
+    clips: [
+      { clipId: 'st5-c1', thumbnailColor: '#172554', durationSeconds: 18, tag: 'Practice', caption: 'Ball screen reads — film room cut' },
+      { clipId: 'st5-c2', thumbnailColor: '#1E3A5F', durationSeconds: 14, tag: 'Clip', caption: 'Pregame warmup vibes' },
+    ],
+  },
+  {
+    id: 'st-4', name: 'E. Selden', initials: 'ES', hasNew: false,
+    visibilityClass: 0,
+    orgId: MOCK_ORG, programId: MOCK_PROGRAM,
+    publishedAt: hoursAgo(14), expiresAt: expires(hoursAgo(14)),
+    clips: [
+      { clipId: 'st4-c1', thumbnailColor: '#1E293B', durationSeconds: 8, tag: 'Clip' },
+    ],
+  },
+  {
+    id: 'st-6', name: 'A. Noel', initials: 'AN', hasNew: false,
+    visibilityClass: 0,
+    orgId: MOCK_ORG, programId: MOCK_PROGRAM,
+    publishedAt: hoursAgo(18), expiresAt: expires(hoursAgo(18)),
+    clips: [
+      { clipId: 'st6-c1', thumbnailColor: '#1E293B', durationSeconds: 10, tag: 'Clip' },
+    ],
+  },
+  {
+    id: 'st-8', name: 'Game Ops', initials: 'GO', hasNew: false,
+    tag: 'Game', visibilityClass: 0,
+    orgId: MOCK_ORG, programId: MOCK_PROGRAM,
+    publishedAt: hoursAgo(22), expiresAt: expires(hoursAgo(22)),
+    clips: [
+      { clipId: 'st8-c1', thumbnailColor: '#1A1A2E', durationSeconds: 15, tag: 'Game', caption: 'Arena setup timelapse' },
+      { clipId: 'st8-c2', thumbnailColor: '#16213E', durationSeconds: 12, tag: 'Game', caption: 'Halftime show prep' },
+    ],
+  },
 ];
 
 export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
@@ -66,6 +164,7 @@ export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
     media: { type: 'clip', title: 'Transition Defense — Coastal Carolina', thumbnailColor: '#0B0F14', duration: '4:12', views: 248 },
     likes: 12,
     comments: 4,
+    visibilityClass: 3,
   },
   {
     id: 'vfp-2',
@@ -77,6 +176,7 @@ export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
     media: { type: 'clip', title: 'Campbell Zone Press Breakdown', thumbnailColor: '#0B0F14', duration: '6:45', views: 184 },
     likes: 8,
     comments: 2,
+    visibilityClass: 3,
   },
   {
     id: 'vfp-3',
@@ -89,6 +189,7 @@ export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
     likes: 24,
     comments: 7,
     liked: true,
+    visibilityClass: 0,
   },
   {
     id: 'vfp-4',
@@ -100,6 +201,7 @@ export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
     media: { type: 'clip', title: 'Game Highlights — vs Coastal Carolina', thumbnailColor: '#0B0F14', duration: '8:22', views: 3420 },
     likes: 31,
     comments: 9,
+    visibilityClass: 0,
   },
   {
     id: 'vfp-5',
@@ -110,6 +212,7 @@ export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
     caption: 'Marcus Johnson 3PT shooting — 7-day rolling avg up from 34.1% to 38.3%. Extra reps are paying off. Keep pushing.',
     likes: 15,
     comments: 3,
+    visibilityClass: 3,
   },
   {
     id: 'vfp-6',
@@ -122,6 +225,7 @@ export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
     likes: 18,
     comments: 5,
     liked: true,
+    visibilityClass: 0,
   },
   {
     id: 'vfp-7',
@@ -134,6 +238,7 @@ export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
     likes: 22,
     comments: 6,
     saved: true,
+    visibilityClass: 0,
   },
 ];
 
@@ -141,16 +246,88 @@ export const VIDEO_FEED_POSTS: VideoFeedPost[] = [
 // CHURCH — Story Circles + Feed Posts
 // =============================================================================
 
+const CHURCH_ORG = 'org-2819church';
+const CHURCH_CAMPUS = 'campus-main';
+
 const CHURCH_STORY_CIRCLES: StoryCircle[] = [
-  { id: 'cs-you', name: 'Your Story', initials: 'AM', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
-  { id: 'cs-1', name: 'Pastor Philip', initials: 'PM', hasNew: true, ringColor: '#1D9BF0' },
-  { id: 'cs-2', name: 'Worship Team', initials: 'WT', hasNew: true, ringColor: '#1D9BF0' },
-  { id: 'cs-3', name: 'Youth Dir.', initials: 'YD', hasNew: true, ringColor: '#22C55E' },
-  { id: 'cs-4', name: 'Deacon Board', initials: 'DB', hasNew: false },
-  { id: 'cs-5', name: 'Outreach', initials: 'OR', hasNew: true, ringColor: '#F59E0B' },
-  { id: 'cs-6', name: 'Women Min.', initials: 'WM', hasNew: true, ringColor: '#1D9BF0' },
-  { id: 'cs-7', name: 'Media Team', initials: 'MT', hasNew: false },
-  { id: 'cs-8', name: '2819 Church Live', initials: 'IC', hasNew: true, ringColor: '#1D9BF0' },
+  { id: 'cs-you', name: 'Your Story', initials: 'AM', hasNew: false, isYou: true, ringColor: '#FFFFFF',
+    orgId: CHURCH_ORG, programId: CHURCH_CAMPUS },
+  {
+    id: 'cs-1', name: 'Pastor Philip', initials: 'PM', hasNew: true, ringColor: '#1D9BF0',
+    tag: 'Sermon', visibilityClass: 0,
+    orgId: CHURCH_ORG, programId: CHURCH_CAMPUS,
+    publishedAt: hoursAgo(1), expiresAt: expires(hoursAgo(1)),
+    clips: [
+      { clipId: 'cs1-c1', thumbnailColor: '#1A1040', durationSeconds: 15, tag: 'Sermon', caption: 'Faith Forward Pt. 4 — key moment' },
+      { clipId: 'cs1-c2', thumbnailColor: '#1E1248', durationSeconds: 20, tag: 'Sermon', caption: 'Altar call — powerful response' },
+    ],
+  },
+  {
+    id: 'cs-2', name: 'Worship Team', initials: 'WT', hasNew: true, ringColor: '#1D9BF0',
+    tag: 'Worship', visibilityClass: 0,
+    orgId: CHURCH_ORG, programId: CHURCH_CAMPUS,
+    publishedAt: hoursAgo(2), expiresAt: expires(hoursAgo(2)),
+    clips: [
+      { clipId: 'cs2-c1', thumbnailColor: '#1A0F3A', durationSeconds: 18, tag: 'Worship', caption: 'Great Is Thy Faithfulness — live' },
+      { clipId: 'cs2-c2', thumbnailColor: '#221450', durationSeconds: 14, tag: 'Worship', caption: 'Spontaneous worship moment' },
+    ],
+  },
+  {
+    id: 'cs-3', name: 'Youth Dir.', initials: 'YD', hasNew: true, ringColor: '#22C55E',
+    tag: 'Event', visibilityClass: 3,
+    orgId: CHURCH_ORG, programId: CHURCH_CAMPUS,
+    publishedAt: hoursAgo(4), expiresAt: expires(hoursAgo(4)),
+    clips: [
+      { clipId: 'cs3-c1', thumbnailColor: '#0F2818', durationSeconds: 22, tag: 'Event', caption: 'Youth retreat bonfire night' },
+    ],
+  },
+  {
+    id: 'cs-4', name: 'Deacon Board', initials: 'DB', hasNew: false,
+    tag: 'Announcement', visibilityClass: 2,
+    orgId: CHURCH_ORG, programId: CHURCH_CAMPUS,
+    publishedAt: hoursAgo(6), expiresAt: expires(hoursAgo(6)),
+    clips: [
+      { clipId: 'cs4-c1', thumbnailColor: '#1A1A2E', durationSeconds: 12, tag: 'Announcement', caption: 'Building fund update — March milestone' },
+    ],
+  },
+  {
+    id: 'cs-5', name: 'Outreach', initials: 'OR', hasNew: true, ringColor: '#F59E0B',
+    tag: 'Event', visibilityClass: 0,
+    orgId: CHURCH_ORG, programId: CHURCH_CAMPUS,
+    publishedAt: hoursAgo(8), expiresAt: expires(hoursAgo(8)),
+    clips: [
+      { clipId: 'cs5-c1', thumbnailColor: '#2A1A08', durationSeconds: 16, tag: 'Event', caption: 'Saturday outreach — 200 families served' },
+      { clipId: 'cs5-c2', thumbnailColor: '#331E0A', durationSeconds: 12, tag: 'Event', caption: 'Prayer stations in the community' },
+    ],
+  },
+  {
+    id: 'cs-6', name: 'Women Min.', initials: 'WM', hasNew: true, ringColor: '#1D9BF0',
+    tag: 'Event', visibilityClass: 2,
+    orgId: CHURCH_ORG, programId: CHURCH_CAMPUS,
+    publishedAt: hoursAgo(10), expiresAt: expires(hoursAgo(10)),
+    clips: [
+      { clipId: 'cs6-c1', thumbnailColor: '#1A1040', durationSeconds: 20, tag: 'Event', caption: 'Women\'s fellowship brunch highlights' },
+    ],
+  },
+  {
+    id: 'cs-7', name: 'Media Team', initials: 'MT', hasNew: false,
+    tag: 'Announcement', visibilityClass: 2,
+    orgId: CHURCH_ORG, programId: CHURCH_CAMPUS,
+    publishedAt: hoursAgo(14), expiresAt: expires(hoursAgo(14)),
+    clips: [
+      { clipId: 'cs7-c1', thumbnailColor: '#16213E', durationSeconds: 10, tag: 'Announcement', caption: 'New camera setup — live stream upgrade' },
+    ],
+  },
+  {
+    id: 'cs-8', name: '2819 Church Live', initials: 'IC', hasNew: true, ringColor: '#1D9BF0',
+    tag: 'Service', visibilityClass: 0,
+    orgId: CHURCH_ORG, programId: CHURCH_CAMPUS,
+    publishedAt: hoursAgo(3), expiresAt: expires(hoursAgo(3)),
+    clips: [
+      { clipId: 'cs8-c1', thumbnailColor: '#0F172A', durationSeconds: 25, tag: 'Service', caption: 'Sunday service opening — full house' },
+      { clipId: 'cs8-c2', thumbnailColor: '#1A2332', durationSeconds: 18, tag: 'Service', caption: 'Praise break — the Spirit moved' },
+    ],
+  },
 ];
 
 const CHURCH_FEED_POSTS: VideoFeedPost[] = [
@@ -164,6 +341,7 @@ const CHURCH_FEED_POSTS: VideoFeedPost[] = [
     media: { type: 'clip', title: 'Walking in Faith — Faith Forward Pt. 4', thumbnailColor: '#0B0F14', duration: '42:18', views: 1840 },
     likes: 89,
     comments: 14,
+    visibilityClass: 0,
   },
   {
     id: 'cfp-2',
@@ -176,6 +354,7 @@ const CHURCH_FEED_POSTS: VideoFeedPost[] = [
     likes: 156,
     comments: 23,
     liked: true,
+    visibilityClass: 0,
   },
   {
     id: 'cfp-3',
@@ -187,6 +366,7 @@ const CHURCH_FEED_POSTS: VideoFeedPost[] = [
     media: { type: 'clip', title: 'Youth Retreat 2026 — Full Recap', thumbnailColor: '#0B0F14', duration: '5:44', views: 987 },
     likes: 201,
     comments: 45,
+    visibilityClass: 2,
   },
   {
     id: 'cfp-4',
@@ -198,6 +378,7 @@ const CHURCH_FEED_POSTS: VideoFeedPost[] = [
     media: { type: 'clip', title: 'Baptism Sunday — February 2026', thumbnailColor: '#0B0F14', duration: '12:35', views: 3120 },
     likes: 287,
     comments: 52,
+    visibilityClass: 0,
   },
   {
     id: 'cfp-5',
@@ -209,6 +390,7 @@ const CHURCH_FEED_POSTS: VideoFeedPost[] = [
     media: { type: 'photo', title: 'Outreach Saturday — Feb 14', thumbnailColor: '#0B0F14' },
     likes: 134,
     comments: 18,
+    visibilityClass: 0,
   },
   {
     id: 'cfp-6',
@@ -221,6 +403,7 @@ const CHURCH_FEED_POSTS: VideoFeedPost[] = [
     likes: 67,
     comments: 11,
     saved: true,
+    visibilityClass: 2,
   },
   {
     id: 'cfp-7',
@@ -232,6 +415,7 @@ const CHURCH_FEED_POSTS: VideoFeedPost[] = [
     media: { type: 'reel', title: 'BTS — Stream Setup', thumbnailColor: '#0B0F14', duration: '1:15', views: 478 },
     likes: 45,
     comments: 8,
+    visibilityClass: 2,
   },
 ];
 
