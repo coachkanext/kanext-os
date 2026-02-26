@@ -1,22 +1,25 @@
 /**
- * Church Facilities V3 — 2819 Church · Senior Pastor
- * ViewBar: Spaces | Bookings | Maintenance
- * Self-contained with inline mock data.
+ * Church Facilities V3 — Where Ministry Happens (Single-Scroll)
+ * 5 blocks: Header + Search, Rooms Grid, Ministry Space Mapping,
+ *           Facility Status Summary, Issue Reporting
+ *
+ * Campus-scoped, RBAC-aware.
+ * A1 (Member): View rooms, details, upcoming events. No issue logging, no editing.
+ * A2 (Teacher): Same as A1 + assigned classroom highlighted, room capacity visible.
+ *               No editing authority.
  */
 import React, { useState, useCallback } from 'react';
-import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { View, ScrollView, StyleSheet, Pressable, TextInput } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { isStaffLevel, type ChurchRoleLens } from '@/utils/rbac/church-registry';
 
 // =============================================================================
-// TYPES
+// PROPS
 // =============================================================================
-
-
-const ACCENT = MODE_ACCENT.church;
-type ViewId = 'spaces' | 'bookings' | 'maintenance';
 
 interface Props {
   colors: typeof Colors.light;
@@ -24,345 +27,365 @@ interface Props {
   role?: string;
 }
 
+const ACCENT = MODE_ACCENT.church;
+
 // =============================================================================
-// VIEWS
+// MOCK CONTEXT
 // =============================================================================
 
-const VIEWS: { id: ViewId; label: string }[] = [
-  { id: 'spaces', label: 'Spaces' },
-  { id: 'bookings', label: 'Bookings' },
-  { id: 'maintenance', label: 'Maintenance' },
-];
+/** A2 = Teacher in Children's Ministry — can see assigned classroom highlighted */
+const MOCK_CHURCH_ROLE: ChurchRoleLens = {
+  roleId: 'C7',
+  label: "Children's Teacher",
+  authority: 'Execution',
+  scope: 'Ministry',
+  visibility: 'MinistryInternal',
+  decision: 'Recommend',
+};
+
+const USER_ASSIGNED_ROOM = 'rm3'; // Children's Wing
 
 // =============================================================================
 // MOCK DATA
 // =============================================================================
 
-type SpaceStatus = 'Available' | 'In Use' | 'Reserved';
+type RoomStatus = 'Open' | 'Limited' | 'Closed';
 
-interface Space {
+interface Room {
   id: string;
   name: string;
-  capacity: number;
-  status: SpaceStatus;
-  icon: string;
+  building: string;
+  status: RoomStatus;
+  capacity?: number;
+  primaryUse: string;
+  address?: string;
+  upcomingEvents: { title: string; date: string; time: string }[];
 }
 
-const SPACES: Space[] = [
-  { id: 'sp1', name: 'Sanctuary', capacity: 500, status: 'Available', icon: 'building.columns.fill' },
-  { id: 'sp2', name: 'Fellowship Hall', capacity: 200, status: 'Available', icon: 'person.3.fill' },
-  { id: 'sp3', name: 'Classroom A', capacity: 30, status: 'In Use', icon: 'book.fill' },
-  { id: 'sp4', name: 'Classroom B', capacity: 30, status: 'Available', icon: 'book.fill' },
-  { id: 'sp5', name: 'Offices', capacity: 10, status: 'Available', icon: 'briefcase.fill' },
-  { id: 'sp6', name: 'Kitchen', capacity: 15, status: 'Available', icon: 'hands.sparkles.fill' },
-  { id: 'sp7', name: 'Nursery', capacity: 20, status: 'Available', icon: 'figure.and.child.holdinghands' },
-  { id: 'sp8', name: 'Youth Room', capacity: 40, status: 'Available', icon: 'person.3.fill' },
+const ROOMS: Room[] = [
+  {
+    id: 'rm1', name: 'Sanctuary', building: 'Main Building', status: 'Open',
+    capacity: 500, primaryUse: 'Worship Services',
+    address: '2819 W 8th St, Los Angeles, CA 90005',
+    upcomingEvents: [
+      { title: 'Sunday Worship Service', date: 'Mar 2', time: '10:00 AM' },
+      { title: 'Sunday Evening Service', date: 'Mar 2', time: '6:00 PM' },
+      { title: 'Wednesday Bible Study', date: 'Mar 5', time: '7:00 PM' },
+    ],
+  },
+  {
+    id: 'rm2', name: "Children's Wing", building: 'Main Building', status: 'Open',
+    capacity: 60, primaryUse: "Children's Ministry Classes",
+    upcomingEvents: [
+      { title: '2819 Kids Sunday', date: 'Mar 2', time: '10:00 AM' },
+      { title: 'Midweek Kids Club', date: 'Mar 5', time: '6:30 PM' },
+    ],
+  },
+  {
+    id: 'rm3', name: 'Youth Room', building: 'Annex', status: 'Open',
+    capacity: 40, primaryUse: 'Catalyst Youth Ministry',
+    upcomingEvents: [
+      { title: 'Catalyst Friday', date: 'Feb 28', time: '7:00 PM' },
+    ],
+  },
+  {
+    id: 'rm4', name: 'Fellowship Hall', building: 'Main Building', status: 'Open',
+    capacity: 200, primaryUse: 'Events & Gatherings',
+    upcomingEvents: [
+      { title: 'Singles Ministry Mixer', date: 'Mar 1', time: '6:00 PM' },
+      { title: 'Connect Group 5', date: 'Mar 1', time: '10:00 AM' },
+    ],
+  },
+  {
+    id: 'rm5', name: 'Prayer Room', building: 'Main Building', status: 'Open',
+    capacity: 15, primaryUse: 'Prayer & Meditation',
+    upcomingEvents: [
+      { title: 'Morning Prayer', date: 'Mar 3', time: '6:00 AM' },
+    ],
+  },
+  {
+    id: 'rm6', name: 'Pastor Office', building: 'Main Building', status: 'Limited',
+    primaryUse: 'Pastoral Meetings',
+    upcomingEvents: [],
+  },
+  {
+    id: 'rm7', name: 'Admin Office', building: 'Main Building', status: 'Open',
+    primaryUse: 'Church Administration',
+    upcomingEvents: [],
+  },
+  {
+    id: 'rm8', name: 'Storage', building: 'Annex', status: 'Open',
+    primaryUse: 'Equipment & Supply Storage',
+    upcomingEvents: [],
+  },
+  {
+    id: 'rm9', name: 'Lobby', building: 'Main Building', status: 'Open',
+    capacity: 80, primaryUse: 'Welcome & Fellowship',
+    upcomingEvents: [],
+  },
 ];
 
-interface Booking {
-  id: string;
-  title: string;
-  space: string;
-  schedule: string;
-  recurring: boolean;
+interface MinistryMapping {
   ministry: string;
+  room: string;
 }
 
-const BOOKINGS: Booking[] = [
-  { id: 'bk1', title: 'Sunday Morning Service', space: 'Sanctuary', schedule: 'Sundays 10:00 AM', recurring: true, ministry: 'Worship' },
-  { id: 'bk2', title: 'Sunday Evening Service', space: 'Sanctuary', schedule: 'Sundays 6:00 PM', recurring: true, ministry: 'Worship' },
-  { id: 'bk3', title: 'Wednesday Bible Study', space: 'Fellowship Hall', schedule: 'Wednesdays 7:00 PM', recurring: true, ministry: 'Rooted' },
-  { id: 'bk4', title: 'Catalyst Friday', space: 'Youth Room', schedule: 'Fridays 7:00 PM', recurring: true, ministry: 'Catalyst' },
-  { id: 'bk5', title: 'Connect Group 1', space: 'Classroom A', schedule: 'Tuesdays 7:00 PM', recurring: true, ministry: 'Connect Groups' },
-  { id: 'bk6', title: 'Connect Group 3', space: 'Classroom B', schedule: 'Thursdays 7:00 PM', recurring: true, ministry: 'Connect Groups' },
-  { id: 'bk7', title: 'Connect Group 5', space: 'Fellowship Hall', schedule: 'Saturdays 10:00 AM', recurring: true, ministry: 'Connect Groups' },
-  { id: 'bk8', title: 'Leadership Retreat Planning', space: 'Offices', schedule: 'Feb 28, 2025 2:00 PM', recurring: false, ministry: 'Leadership' },
+const MINISTRY_MAPPINGS: MinistryMapping[] = [
+  { ministry: "Children's Ministry", room: "Children's Wing" },
+  { ministry: 'Singles Ministry', room: 'Fellowship Hall' },
+  { ministry: 'Catalyst Youth', room: 'Youth Room' },
+  { ministry: 'Worship Team', room: 'Sanctuary' },
+  { ministry: 'Prayer Ministry', room: 'Prayer Room' },
+  { ministry: 'Connect Groups', room: 'Fellowship Hall / Classrooms' },
 ];
 
-type WorkOrderPriority = 'Urgent' | 'Normal' | 'Low';
-type WorkOrderStatus = 'Open' | 'In Progress' | 'Scheduled';
+type FacilityStatus = 'Operational' | 'Needs Attention' | 'Under Review';
 
-interface WorkOrder {
-  id: string;
-  title: string;
-  priority: WorkOrderPriority;
-  status: WorkOrderStatus;
-  description: string;
-  reportedDate: string;
+interface StatusItem {
+  label: string;
+  status: FacilityStatus;
 }
 
-const WORK_ORDERS: WorkOrder[] = [
-  { id: 'wo1', title: 'Sound system speaker replacement', priority: 'Urgent', status: 'In Progress', description: 'Left channel speaker crackling during worship. Need replacement unit.', reportedDate: 'Feb 10, 2025' },
-  { id: 'wo2', title: 'Parking lot restriping', priority: 'Normal', status: 'Scheduled', description: 'Lines faded and ADA spaces need repainting. Vendor scheduled.', reportedDate: 'Jan 28, 2025' },
-  { id: 'wo3', title: 'Fellowship Hall AC maintenance', priority: 'Normal', status: 'Open', description: 'Annual HVAC maintenance due. Getting quotes from 2 vendors.', reportedDate: 'Feb 5, 2025' },
-  { id: 'wo4', title: 'Nursery carpet cleaning', priority: 'Low', status: 'Scheduled', description: 'Deep clean scheduled for next Saturday. Nursery will relocate to Classroom B.', reportedDate: 'Feb 12, 2025' },
-];
-
-type EquipmentCondition = 'Good' | 'Fair' | 'Needs Repair';
-
-interface Equipment {
-  id: string;
-  name: string;
-  condition: EquipmentCondition;
-  quantity?: number;
-  lastServiced: string;
-}
-
-const EQUIPMENT: Equipment[] = [
-  { id: 'eq1', name: 'Sound System', condition: 'Good', lastServiced: 'Jan 2025' },
-  { id: 'eq2', name: 'Projector (Sanctuary)', condition: 'Good', lastServiced: 'Dec 2024' },
-  { id: 'eq3', name: 'Projector (Fellowship Hall)', condition: 'Fair', lastServiced: 'Oct 2024' },
-  { id: 'eq4', name: 'Musical Instruments', condition: 'Good', lastServiced: 'Nov 2024' },
-  { id: 'eq5', name: 'Chairs', condition: 'Good', quantity: 500, lastServiced: 'Sep 2024' },
+const FACILITY_STATUSES: StatusItem[] = [
+  { label: 'Overall Facility Status', status: 'Operational' },
+  { label: 'Maintenance Status', status: 'Operational' },
+  { label: 'Safety Inspection Status', status: 'Operational' },
 ];
 
 // =============================================================================
 // HELPERS
 // =============================================================================
 
-const SPACE_STATUS_COLORS: Record<SpaceStatus, string> = {
-  Available: '#22C55E',
-  'In Use': '#F59E0B',
-  Reserved: ACCENT,
-};
-
-const PRIORITY_COLORS: Record<WorkOrderPriority, string> = {
-  Urgent: '#EF4444',
-  Normal: '#F59E0B',
-  Low: '#A1A1AA',
-};
-
-const WO_STATUS_COLORS: Record<WorkOrderStatus, string> = {
-  Open: '#EF4444',
-  'In Progress': ACCENT,
-  Scheduled: '#22C55E',
-};
-
-const CONDITION_COLORS: Record<EquipmentCondition, string> = {
-  Good: '#22C55E',
-  Fair: '#F59E0B',
-  'Needs Repair': '#EF4444',
-};
-
-// =============================================================================
-// VIEW BAR
-// =============================================================================
-
-function ViewBar({
-  views,
-  activeId,
-  onSelect,
-  accentColor,
-  colors,
-}: {
-  views: typeof VIEWS;
-  activeId: ViewId;
-  onSelect: (id: ViewId) => void;
-  accentColor: string;
-  colors: typeof Colors.light;
-}) {
+function SectionLabel({ label, colors }: { label: string; colors: typeof Colors.light }) {
   return (
-    <View style={s.viewBar}>
-      {views.map((v) => {
-        const isActive = v.id === activeId;
-        return (
-          <Pressable
-            key={v.id}
-            style={[
-              s.viewPill,
-              {
-                backgroundColor: isActive ? accentColor : '#2F3336',
-              },
-            ]}
-            onPress={() => {
-              Haptics.selectionAsync();
-              onSelect(v.id);
-            }}
-          >
-            <ThemedText
-              style={[
-                s.viewPillText,
-                { color: isActive ? '#000' : colors.textSecondary },
-              ]}
-            >
-              {v.label}
-            </ThemedText>
-          </Pressable>
-        );
-      })}
+    <ThemedText style={[s.sectionLabel, { color: colors.textSecondary }]}>
+      {label}
+    </ThemedText>
+  );
+}
+
+function Card({ colors, children }: { colors: typeof Colors.light; children: React.ReactNode }) {
+  return (
+    <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      {children}
+    </View>
+  );
+}
+
+const ROOM_STATUS_COLOR: Record<RoomStatus, string> = {
+  Open: '#22C55E',
+  Limited: '#F59E0B',
+  Closed: '#EF4444',
+};
+
+const FAC_STATUS_COLOR: Record<FacilityStatus, string> = {
+  Operational: '#22C55E',
+  'Needs Attention': '#F59E0B',
+  'Under Review': '#EF4444',
+};
+
+function StatusChip({ status, colorMap }: { status: string; colorMap: Record<string, string> }) {
+  const color = colorMap[status] ?? '#A1A1AA';
+  return (
+    <View style={[s.chip, { backgroundColor: color + '18' }]}>
+      <ThemedText style={[s.chipText, { color }]}>{status}</ThemedText>
     </View>
   );
 }
 
 // =============================================================================
-// SPACES VIEW
+// ROOM DETAIL SHEET
 // =============================================================================
 
-function SpacesView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
-  const available = SPACES.filter((s) => s.status === 'Available').length;
-  const totalCapacity = SPACES.reduce((sum, s) => sum + s.capacity, 0);
-
+function RoomDetailSheet({
+  room,
+  visible,
+  onClose,
+  colors,
+  isA2,
+}: {
+  room: Room | null;
+  visible: boolean;
+  onClose: () => void;
+  colors: typeof Colors.light;
+  isA2: boolean;
+}) {
+  if (!room) return null;
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Summary */}
-      <View style={s.summaryRow}>
-        <View style={[s.summaryTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.summaryValue, { color: accentColor }]}>{SPACES.length}</ThemedText>
-          <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Total Spaces</ThemedText>
+    <BottomSheet visible={visible} onClose={onClose}>
+      <View style={s.sheetContent}>
+        {/* Room Name + Status */}
+        <View style={s.sheetHeader}>
+          <ThemedText style={[s.sheetTitle, { color: colors.text }]}>{room.name}</ThemedText>
+          <StatusChip status={room.status} colorMap={ROOM_STATUS_COLOR} />
         </View>
-        <View style={[s.summaryTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.summaryValue, { color: '#22C55E' }]}>{available}</ThemedText>
-          <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Available</ThemedText>
-        </View>
-        <View style={[s.summaryTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.summaryValue, { color: ACCENT }]}>{totalCapacity}</ThemedText>
-          <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Total Capacity</ThemedText>
-        </View>
-      </View>
 
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>ALL SPACES</ThemedText>
-      {SPACES.map((space) => (
-        <View
-          key={space.id}
-          style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}
-        >
-          <View style={s.spaceRow}>
-            <IconSymbol name={space.icon as any} size={20} color={accentColor} />
-            <View style={{ flex: 1 }}>
-              <ThemedText style={[s.spaceName, { color: colors.text }]}>{space.name}</ThemedText>
-              <ThemedText style={[s.spaceCapacity, { color: colors.textSecondary }]}>Capacity: {space.capacity}</ThemedText>
-            </View>
-            <View style={[s.statusBadge, { backgroundColor: SPACE_STATUS_COLORS[space.status] + '20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: SPACE_STATUS_COLORS[space.status] }]}>
-                {space.status}
-              </ThemedText>
-            </View>
+        {/* Building */}
+        <View style={s.sheetRow}>
+          <IconSymbol name="building.2.fill" size={14} color={colors.textSecondary} />
+          <ThemedText style={[s.sheetMeta, { color: colors.textSecondary }]}>{room.building}</ThemedText>
+        </View>
+
+        {/* Address */}
+        {room.address && (
+          <View style={s.sheetRow}>
+            <IconSymbol name="mappin.circle.fill" size={14} color={colors.textSecondary} />
+            <ThemedText style={[s.sheetMeta, { color: colors.textSecondary }]}>{room.address}</ThemedText>
           </View>
-        </View>
-      ))}
-    </ScrollView>
-  );
-}
+        )}
 
-// =============================================================================
-// BOOKINGS VIEW
-// =============================================================================
-
-function BookingsView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
-  const recurringBookings = BOOKINGS.filter((b) => b.recurring);
-  const specialBookings = BOOKINGS.filter((b) => !b.recurring);
-
-  return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>RECURRING BOOKINGS</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {recurringBookings.map((booking, idx) => (
-          <View
-            key={booking.id}
-            style={[
-              s.bookingRow,
-              idx < recurringBookings.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <View style={[s.recurringDot, { backgroundColor: accentColor }]} />
-            <View style={{ flex: 1 }}>
-              <ThemedText style={[s.bookingTitle, { color: colors.text }]}>{booking.title}</ThemedText>
-              <ThemedText style={[s.bookingMeta, { color: colors.textSecondary }]}>
-                {booking.space} · {booking.schedule}
-              </ThemedText>
-              <ThemedText style={[s.bookingMinistry, { color: colors.textTertiary }]}>{booking.ministry}</ThemedText>
-            </View>
-            <View style={[s.statusBadge, { backgroundColor: `${ACCENT}20` }]}>
-              <ThemedText style={[s.statusBadgeText, { color: ACCENT }]}>Recurring</ThemedText>
-            </View>
+        {/* Capacity (A2 sees this) */}
+        {isA2 && room.capacity && (
+          <View style={s.sheetRow}>
+            <IconSymbol name="person.2.fill" size={14} color={colors.textSecondary} />
+            <ThemedText style={[s.sheetMeta, { color: colors.textSecondary }]}>Capacity: {room.capacity}</ThemedText>
           </View>
-        ))}
-      </View>
+        )}
 
-      {specialBookings.length > 0 && (
-        <>
-          <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>SPECIAL BOOKINGS</ThemedText>
-          {specialBookings.map((booking) => (
-            <View
-              key={booking.id}
-              style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}
-            >
-              <View style={s.bookingRow}>
-                <IconSymbol name="calendar.badge.plus" size={16} color={accentColor} />
+        {/* Primary Use */}
+        <View style={s.sheetRow}>
+          <IconSymbol name="tag.fill" size={14} color={colors.textSecondary} />
+          <ThemedText style={[s.sheetMeta, { color: colors.textSecondary }]}>{room.primaryUse}</ThemedText>
+        </View>
+
+        {/* Upcoming Events */}
+        {room.upcomingEvents.length > 0 && (
+          <>
+            <ThemedText style={[s.sheetSectionLabel, { color: colors.textSecondary }]}>
+              UPCOMING EVENTS
+            </ThemedText>
+            {room.upcomingEvents.slice(0, 3).map((ev, i) => (
+              <View key={i} style={[s.eventRow, { borderColor: colors.border }]}>
+                <IconSymbol name="calendar" size={13} color={ACCENT} />
                 <View style={{ flex: 1 }}>
-                  <ThemedText style={[s.bookingTitle, { color: colors.text }]}>{booking.title}</ThemedText>
-                  <ThemedText style={[s.bookingMeta, { color: colors.textSecondary }]}>
-                    {booking.space} · {booking.schedule}
+                  <ThemedText style={[s.eventTitle, { color: colors.text }]}>{ev.title}</ThemedText>
+                  <ThemedText style={[s.eventDate, { color: colors.textSecondary }]}>
+                    {ev.date} · {ev.time}
                   </ThemedText>
-                  <ThemedText style={[s.bookingMinistry, { color: colors.textTertiary }]}>{booking.ministry}</ThemedText>
-                </View>
-                <View style={[s.statusBadge, { backgroundColor: '#F59E0B20' }]}>
-                  <ThemedText style={[s.statusBadgeText, { color: '#F59E0B' }]}>One-time</ThemedText>
                 </View>
               </View>
-            </View>
-          ))}
-        </>
-      )}
-    </ScrollView>
+            ))}
+          </>
+        )}
+
+        {/* Open in Maps */}
+        {room.address && (
+          <Pressable
+            style={[s.mapsButton, { backgroundColor: ACCENT }]}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
+          >
+            <IconSymbol name="map.fill" size={15} color="#fff" />
+            <ThemedText style={s.mapsButtonText}>Open in Maps</ThemedText>
+          </Pressable>
+        )}
+      </View>
+    </BottomSheet>
   );
 }
 
 // =============================================================================
-// MAINTENANCE VIEW
+// ISSUE REPORT SHEET
 // =============================================================================
 
-function MaintenanceView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
-  return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Work Orders */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>WORK ORDERS</ThemedText>
-      {WORK_ORDERS.map((wo) => (
-        <View
-          key={wo.id}
-          style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}
-        >
-          <View style={s.woHeader}>
-            <View style={[s.priorityDot, { backgroundColor: PRIORITY_COLORS[wo.priority] }]} />
-            <ThemedText style={[s.woTitle, { color: colors.text }]}>{wo.title}</ThemedText>
-            <View style={[s.statusBadge, { backgroundColor: WO_STATUS_COLORS[wo.status] + '20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: WO_STATUS_COLORS[wo.status] }]}>{wo.status}</ThemedText>
-            </View>
-          </View>
-          <ThemedText style={[s.woDesc, { color: colors.textSecondary }]}>{wo.description}</ThemedText>
-          <View style={s.woFooter}>
-            <View style={[s.statusBadge, { backgroundColor: PRIORITY_COLORS[wo.priority] + '20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: PRIORITY_COLORS[wo.priority] }]}>{wo.priority}</ThemedText>
-            </View>
-            <ThemedText style={[s.woDate, { color: colors.textTertiary }]}>Reported: {wo.reportedDate}</ThemedText>
-          </View>
-        </View>
-      ))}
+function IssueReportSheet({
+  visible,
+  onClose,
+  colors,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  colors: typeof Colors.light;
+}) {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [selectedRoom, setSelectedRoom] = useState('');
+  const [urgency, setUrgency] = useState<'Low' | 'Medium' | 'High'>('Medium');
 
-      {/* Equipment */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>EQUIPMENT INVENTORY</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {EQUIPMENT.map((eq, idx) => (
-          <View
-            key={eq.id}
-            style={[
-              s.equipRow,
-              idx < EQUIPMENT.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <View style={{ flex: 1 }}>
-              <ThemedText style={[s.equipName, { color: colors.text }]}>
-                {eq.name}{eq.quantity ? ` (x${eq.quantity})` : ''}
-              </ThemedText>
-              <ThemedText style={[s.equipServiced, { color: colors.textSecondary }]}>Last serviced: {eq.lastServiced}</ThemedText>
-            </View>
-            <View style={[s.statusBadge, { backgroundColor: CONDITION_COLORS[eq.condition] + '20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: CONDITION_COLORS[eq.condition] }]}>{eq.condition}</ThemedText>
-            </View>
-          </View>
-        ))}
+  const urgencies: ('Low' | 'Medium' | 'High')[] = ['Low', 'Medium', 'High'];
+  const urgencyColor: Record<string, string> = { Low: '#A1A1AA', Medium: '#F59E0B', High: '#EF4444' };
+
+  const handleSubmit = useCallback(() => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    setTitle('');
+    setDescription('');
+    setSelectedRoom('');
+    setUrgency('Medium');
+    onClose();
+  }, [onClose]);
+
+  return (
+    <BottomSheet visible={visible} onClose={onClose}>
+      <View style={s.sheetContent}>
+        <ThemedText style={[s.sheetTitle, { color: colors.text }]}>Report Facility Issue</ThemedText>
+        <ThemedText style={[s.sheetSubtitle, { color: colors.textSecondary }]}>
+          Routes to leadership via Messages → Escalation
+        </ThemedText>
+
+        {/* Title */}
+        <ThemedText style={[s.fieldLabel, { color: colors.textSecondary }]}>Title</ThemedText>
+        <TextInput
+          style={[s.textInput, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text }]}
+          placeholder="Brief issue title"
+          placeholderTextColor={colors.textTertiary}
+          value={title}
+          onChangeText={setTitle}
+        />
+
+        {/* Description */}
+        <ThemedText style={[s.fieldLabel, { color: colors.textSecondary }]}>Description</ThemedText>
+        <TextInput
+          style={[s.textInput, s.textArea, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text }]}
+          placeholder="Describe the issue"
+          placeholderTextColor={colors.textTertiary}
+          value={description}
+          onChangeText={setDescription}
+          multiline
+          numberOfLines={3}
+        />
+
+        {/* Room selector */}
+        <ThemedText style={[s.fieldLabel, { color: colors.textSecondary }]}>Room</ThemedText>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.roomPillRow}>
+          {ROOMS.map((rm) => {
+            const sel = selectedRoom === rm.id;
+            return (
+              <Pressable
+                key={rm.id}
+                style={[s.roomPill, { backgroundColor: sel ? ACCENT : colors.card, borderColor: sel ? ACCENT : colors.border }]}
+                onPress={() => { Haptics.selectionAsync(); setSelectedRoom(rm.id); }}
+              >
+                <ThemedText style={[s.roomPillText, { color: sel ? '#fff' : colors.text }]}>{rm.name}</ThemedText>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+
+        {/* Urgency */}
+        <ThemedText style={[s.fieldLabel, { color: colors.textSecondary }]}>Urgency</ThemedText>
+        <View style={s.urgencyRow}>
+          {urgencies.map((u) => {
+            const sel = urgency === u;
+            return (
+              <Pressable
+                key={u}
+                style={[s.urgencyPill, { backgroundColor: sel ? urgencyColor[u] + '25' : colors.card, borderColor: sel ? urgencyColor[u] : colors.border }]}
+                onPress={() => { Haptics.selectionAsync(); setUrgency(u); }}
+              >
+                <ThemedText style={[s.urgencyText, { color: sel ? urgencyColor[u] : colors.textSecondary }]}>{u}</ThemedText>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        {/* Submit */}
+        <Pressable
+          style={[s.submitBtn, { backgroundColor: ACCENT, opacity: title.trim() ? 1 : 0.4 }]}
+          onPress={title.trim() ? handleSubmit : undefined}
+        >
+          <ThemedText style={s.submitText}>Submit Report</ThemedText>
+        </Pressable>
       </View>
-    </ScrollView>
+    </BottomSheet>
   );
 }
 
@@ -371,35 +394,168 @@ function MaintenanceView({ colors, accentColor }: { colors: typeof Colors.light;
 // =============================================================================
 
 export function ChurchFacilities({ colors, accentColor, role }: Props) {
-  const [activeView, setActiveView] = useState<ViewId>('spaces');
+  const churchRole = MOCK_CHURCH_ROLE;
+  const isA2 = isStaffLevel(churchRole);
 
-  const handleViewChange = useCallback((id: ViewId) => {
-    setActiveView(id);
+  const [search, setSearch] = useState('');
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [detailVisible, setDetailVisible] = useState(false);
+  const [issueVisible, setIssueVisible] = useState(false);
+
+  // Filtered rooms
+  const filteredRooms = search.trim()
+    ? ROOMS.filter((r) =>
+        r.name.toLowerCase().includes(search.toLowerCase()) ||
+        r.building.toLowerCase().includes(search.toLowerCase()) ||
+        r.primaryUse.toLowerCase().includes(search.toLowerCase())
+      )
+    : ROOMS;
+
+  const openRoom = useCallback((room: Room) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSelectedRoom(room);
+    setDetailVisible(true);
   }, []);
-
-  const renderContent = () => {
-    switch (activeView) {
-      case 'spaces':
-        return <SpacesView colors={colors} accentColor={accentColor} />;
-      case 'bookings':
-        return <BookingsView colors={colors} accentColor={accentColor} />;
-      case 'maintenance':
-        return <MaintenanceView colors={colors} accentColor={accentColor} />;
-      default:
-        return null;
-    }
-  };
 
   return (
     <View style={s.container}>
-      <ViewBar
-        views={VIEWS}
-        activeId={activeView}
-        onSelect={handleViewChange}
-        accentColor={accentColor}
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
+        {/* ── Block 0 — Header + Search ─────────────────────────────── */}
+        <ThemedText style={[s.title, { color: colors.text }]}>Facilities</ThemedText>
+
+        <View style={[s.searchBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <IconSymbol name="magnifyingglass" size={15} color={colors.textSecondary} />
+          <TextInput
+            style={[s.searchInput, { color: colors.text }]}
+            placeholder="Search rooms"
+            placeholderTextColor={colors.textTertiary}
+            value={search}
+            onChangeText={setSearch}
+          />
+          {search.length > 0 && (
+            <Pressable onPress={() => setSearch('')}>
+              <IconSymbol name="xmark.circle.fill" size={15} color={colors.textSecondary} />
+            </Pressable>
+          )}
+        </View>
+
+        {/* ── Block 1 — Rooms Grid ──────────────────────────────────── */}
+        <SectionLabel label="ROOMS" colors={colors} />
+
+        {filteredRooms.length === 0 ? (
+          <Card colors={colors}>
+            <ThemedText style={[s.emptyText, { color: colors.textSecondary }]}>
+              No rooms match "{search}"
+            </ThemedText>
+          </Card>
+        ) : (
+          <View style={s.roomsGrid}>
+            {filteredRooms.map((room) => {
+              const isAssigned = isA2 && room.id === USER_ASSIGNED_ROOM;
+              return (
+                <Pressable
+                  key={room.id}
+                  style={[
+                    s.roomCard,
+                    {
+                      backgroundColor: colors.card,
+                      borderColor: isAssigned ? ACCENT : colors.border,
+                      borderWidth: isAssigned ? 2 : 1,
+                    },
+                  ]}
+                  onPress={() => openRoom(room)}
+                >
+                  <View style={s.roomCardHeader}>
+                    <StatusChip status={room.status} colorMap={ROOM_STATUS_COLOR} />
+                  </View>
+                  <ThemedText style={[s.roomName, { color: colors.text }]} numberOfLines={1}>
+                    {room.name}
+                  </ThemedText>
+                  <ThemedText style={[s.roomBuilding, { color: colors.textSecondary }]} numberOfLines={1}>
+                    {room.building}
+                  </ThemedText>
+                  {isA2 && room.capacity && (
+                    <ThemedText style={[s.roomCapacity, { color: colors.textTertiary }]}>
+                      Cap: {room.capacity}
+                    </ThemedText>
+                  )}
+                  {isAssigned && (
+                    <View style={[s.assignedBadge, { backgroundColor: ACCENT + '18' }]}>
+                      <ThemedText style={[s.assignedText, { color: ACCENT }]}>Assigned</ThemedText>
+                    </View>
+                  )}
+                </Pressable>
+              );
+            })}
+          </View>
+        )}
+
+        {/* ── Block 2 — Ministry Space Mapping ──────────────────────── */}
+        <SectionLabel label="MINISTRY SPACE MAPPING" colors={colors} />
+        <Card colors={colors}>
+          {MINISTRY_MAPPINGS.map((m, i) => (
+            <View
+              key={i}
+              style={[
+                s.mappingRow,
+                i < MINISTRY_MAPPINGS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+              ]}
+            >
+              <ThemedText style={[s.mappingMinistry, { color: colors.text }]}>{m.ministry}</ThemedText>
+              <View style={s.mappingArrow}>
+                <IconSymbol name="arrow.right" size={11} color={colors.textTertiary} />
+              </View>
+              <ThemedText style={[s.mappingRoom, { color: colors.textSecondary }]}>{m.room}</ThemedText>
+            </View>
+          ))}
+        </Card>
+
+        {/* ── Block 3 — Facility Status Summary ─────────────────────── */}
+        <SectionLabel label="FACILITY STATUS" colors={colors} />
+        <Card colors={colors}>
+          {FACILITY_STATUSES.map((item, i) => (
+            <View
+              key={i}
+              style={[
+                s.statusRow,
+                i < FACILITY_STATUSES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+              ]}
+            >
+              <ThemedText style={[s.statusLabel, { color: colors.text }]}>{item.label}</ThemedText>
+              <StatusChip status={item.status} colorMap={FAC_STATUS_COLOR} />
+            </View>
+          ))}
+        </Card>
+
+        {/* ── Block 4 — Issue Reporting ──────────────────────────────── */}
+        <SectionLabel label="REPORTING" colors={colors} />
+        <Pressable
+          style={[s.issueBtn, { backgroundColor: ACCENT }]}
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setIssueVisible(true); }}
+        >
+          <IconSymbol name="exclamationmark.bubble.fill" size={16} color="#fff" />
+          <ThemedText style={s.issueBtnText}>Report Facility Issue</ThemedText>
+        </Pressable>
+        <ThemedText style={[s.issueHint, { color: colors.textTertiary }]}>
+          Routes to leadership via Messages → Escalation. No public feed.
+        </ThemedText>
+      </ScrollView>
+
+      {/* ── Room Detail Sheet ──────────────────────────────────────── */}
+      <RoomDetailSheet
+        room={selectedRoom}
+        visible={detailVisible}
+        onClose={() => setDetailVisible(false)}
+        colors={colors}
+        isA2={isA2}
+      />
+
+      {/* ── Issue Report Sheet ─────────────────────────────────────── */}
+      <IssueReportSheet
+        visible={issueVisible}
+        onClose={() => setIssueVisible(false)}
         colors={colors}
       />
-      {renderContent()}
     </View>
   );
 }
@@ -409,170 +565,108 @@ export function ChurchFacilities({ colors, accentColor, role }: Props) {
 // =============================================================================
 
 const s = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
+  scroll: { padding: Spacing.md, paddingBottom: 120 },
 
-  // -- View Bar --
-  viewBar: {
+  // -- Header --
+  title: { fontSize: 22, fontWeight: '800', marginBottom: 12 },
+
+  // -- Search --
+  searchBar: {
     flexDirection: 'row',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    gap: Spacing.sm,
-  },
-  viewPill: {
-    flex: 1,
     alignItems: 'center',
-    paddingVertical: 8,
-    borderRadius: BorderRadius.full,
+    gap: 8,
+    borderRadius: 10,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 16,
   },
-  viewPillText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
+  searchInput: { flex: 1, fontSize: 14, padding: 0 },
 
-  // -- Scroll --
-  scroll: {
-    padding: Spacing.md,
-    paddingBottom: 120,
-  },
-
-  // -- Section Header --
-  sectionHeader: {
-    fontSize: 12,
-    fontWeight: '600',
-    letterSpacing: 0.5,
-    marginBottom: 8,
-    marginTop: Spacing.lg,
-    textTransform: 'uppercase',
-  },
+  // -- Section --
+  sectionLabel: { fontSize: 11, fontWeight: '700', letterSpacing: 0.6, marginBottom: 8, marginTop: 20 },
 
   // -- Card --
-  card: {
+  card: { borderRadius: 12, borderWidth: 1, padding: 14, marginBottom: 10 },
+
+  // -- Chip --
+  chip: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: BorderRadius.full },
+  chipText: { fontSize: 10, fontWeight: '700' },
+
+  // -- Rooms Grid --
+  roomsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  roomCard: {
+    width: '48%',
     borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
-    marginBottom: Spacing.sm,
+    padding: 12,
+    minHeight: 100,
   },
+  roomCardHeader: { flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 8 },
+  roomName: { fontSize: 15, fontWeight: '700' },
+  roomBuilding: { fontSize: 11, marginTop: 2 },
+  roomCapacity: { fontSize: 10, marginTop: 2 },
+  assignedBadge: { marginTop: 6, alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 2, borderRadius: BorderRadius.full },
+  assignedText: { fontSize: 9, fontWeight: '700' },
 
-  // -- Status Badge --
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: BorderRadius.full,
-  },
-  statusBadgeText: {
-    fontSize: 10,
-    fontWeight: '700',
-  },
+  // -- Ministry Mapping --
+  mappingRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, gap: 8 },
+  mappingMinistry: { flex: 1, fontSize: 13, fontWeight: '600' },
+  mappingArrow: { opacity: 0.4 },
+  mappingRoom: { fontSize: 12 },
 
-  // -- Summary --
-  summaryRow: {
+  // -- Facility Status --
+  statusRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10 },
+  statusLabel: { fontSize: 13, fontWeight: '500' },
+
+  // -- Issue Button --
+  issueBtn: {
     flexDirection: 'row',
-    gap: Spacing.sm,
-  },
-  summaryTile: {
-    flex: 1,
     alignItems: 'center',
-    paddingVertical: Spacing.md,
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 14,
     borderRadius: 12,
-    borderWidth: 1,
+    marginTop: 4,
   },
-  summaryValue: {
-    fontSize: 20,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-  },
-  summaryLabel: {
-    fontSize: 10,
-    marginTop: 2,
-    textAlign: 'center',
-  },
+  issueBtnText: { color: '#fff', fontSize: 15, fontWeight: '700' },
+  issueHint: { fontSize: 11, textAlign: 'center', marginTop: 8 },
 
-  // -- Space --
-  spaceRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  spaceName: {
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  spaceCapacity: {
-    fontSize: 12,
-    marginTop: 2,
-  },
+  // -- Empty --
+  emptyText: { fontSize: 13, textAlign: 'center', paddingVertical: 20 },
 
-  // -- Booking --
-  bookingRow: {
+  // -- Sheet --
+  sheetContent: { padding: Spacing.md, paddingBottom: 40 },
+  sheetHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
+  sheetTitle: { fontSize: 20, fontWeight: '800' },
+  sheetSubtitle: { fontSize: 12, marginBottom: 16 },
+  sheetRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
+  sheetMeta: { fontSize: 13 },
+  sheetSectionLabel: { fontSize: 11, fontWeight: '700', letterSpacing: 0.6, marginTop: 16, marginBottom: 8 },
+  eventRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth },
+  eventTitle: { fontSize: 13, fontWeight: '600' },
+  eventDate: { fontSize: 11 },
+  mapsButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.sm,
-    paddingVertical: 10,
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 12,
+    borderRadius: 10,
+    marginTop: 20,
   },
-  recurringDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  bookingTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  bookingMeta: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-  bookingMinistry: {
-    fontSize: 11,
-    marginTop: 1,
-  },
+  mapsButtonText: { color: '#fff', fontSize: 14, fontWeight: '700' },
 
-  // -- Work Order --
-  woHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-    marginBottom: 6,
-  },
-  priorityDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  woTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    flex: 1,
-  },
-  woDesc: {
-    fontSize: 12,
-    lineHeight: 17,
-    marginBottom: Spacing.sm,
-  },
-  woFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  woDate: {
-    fontSize: 11,
-  },
-
-  // -- Equipment --
-  equipRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    gap: Spacing.sm,
-  },
-  equipName: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  equipServiced: {
-    fontSize: 11,
-    marginTop: 2,
-  },
+  // -- Issue Sheet --
+  fieldLabel: { fontSize: 11, fontWeight: '600', letterSpacing: 0.3, marginBottom: 6, marginTop: 12 },
+  textInput: { borderWidth: 1, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14 },
+  textArea: { minHeight: 70, textAlignVertical: 'top' },
+  roomPillRow: { marginBottom: 4 },
+  roomPill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: BorderRadius.full, borderWidth: 1, marginRight: 8 },
+  roomPillText: { fontSize: 12, fontWeight: '600' },
+  urgencyRow: { flexDirection: 'row', gap: 10 },
+  urgencyPill: { flex: 1, alignItems: 'center', paddingVertical: 8, borderRadius: 8, borderWidth: 1 },
+  urgencyText: { fontSize: 12, fontWeight: '600' },
+  submitBtn: { alignItems: 'center', paddingVertical: 14, borderRadius: 12, marginTop: 20 },
+  submitText: { color: '#fff', fontSize: 15, fontWeight: '700' },
 });
