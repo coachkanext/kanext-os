@@ -1037,12 +1037,12 @@ export default function HomeScreen() {
     return <ComingSoonPage mode="competition" />;
   }
 
-  // Business — empty shell
+  // Business — 4-tab PagerView (Dashboard live, rest coming soon)
   if (mode === 'business') {
     return (
-      <ThemedView style={styles.container}>
-        <EmptyModeShell tabs={BUSINESS_HOME_TABS} />
-      </ThemedView>
+      <BusinessProvider>
+        <BusinessHome />
+      </BusinessProvider>
     );
   }
 

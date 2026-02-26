@@ -23,10 +23,8 @@ import {
   type BusinessHomePill,
 } from '@/utils/business-rbac';
 
+import { ThemedText } from '@/components/themed-text';
 import { BizDashboardV2 } from '@/components/biz-home/biz-dashboard-v2';
-import { BizCalendarV2 } from '@/components/biz-home/biz-calendar-v2';
-import { BizVaultV2 } from '@/components/biz-home/biz-vault-v2';
-import { BizDealsV2 } from '@/components/biz-home/biz-deals-v2';
 
 const ALL_TABS: { id: string; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
@@ -92,14 +90,17 @@ export function BusinessHome() {
           <View key="dashboard" style={{ flex: 1 }}>
             <BizDashboardV2 colors={colors} accent={ACCENT} />
           </View>
-          <View key="calendar" style={{ flex: 1 }}>
-            <BizCalendarV2 colors={colors} accent={ACCENT} />
+          <View key="calendar" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ThemedText style={{ fontSize: 28, fontWeight: '800' }}>Coming Soon</ThemedText>
+            <ThemedText style={{ fontSize: 14, opacity: 0.5, marginTop: 6 }}>Schedule is under development.</ThemedText>
           </View>
-          <View key="vault" style={{ flex: 1 }}>
-            <BizVaultV2 colors={colors} accent={ACCENT} />
+          <View key="vault" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ThemedText style={{ fontSize: 28, fontWeight: '800' }}>Coming Soon</ThemedText>
+            <ThemedText style={{ fontSize: 14, opacity: 0.5, marginTop: 6 }}>Vault is under development.</ThemedText>
           </View>
-          <View key="deals" style={{ flex: 1 }}>
-            <BizDealsV2 colors={colors} accent={ACCENT} />
+          <View key="deals" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ThemedText style={{ fontSize: 28, fontWeight: '800' }}>Coming Soon</ThemedText>
+            <ThemedText style={{ fontSize: 14, opacity: 0.5, marginTop: 6 }}>Deals is under development.</ThemedText>
           </View>
         </PagerView>
       </EdgeHoldAdvance>
