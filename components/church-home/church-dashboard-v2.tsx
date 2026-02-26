@@ -41,6 +41,7 @@ interface Props {
   colors: typeof Colors.light;
   accent: string;
   role?: ChurchRoleLens;
+  onSwitchTab?: (index: number) => void;
 }
 
 // =============================================================================
@@ -94,7 +95,7 @@ function formatEventTime(d: Date): string {
 // COMPONENT
 // =============================================================================
 
-export function ChurchDashboardV2({ colors, accent, role = 'C8' }: Props) {
+export function ChurchDashboardV2({ colors, accent, role = 'C8', onSwitchTab }: Props) {
   const [giveVisible, setGiveVisible] = useState(false);
   const [eventSheetVisible, setEventSheetVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<ChurchEvent | null>(null);
@@ -242,7 +243,10 @@ export function ChurchDashboardV2({ colors, accent, role = 'C8' }: Props) {
 
           <Pressable
             style={({ pressed }) => [s.engagementCard, pressed && { opacity: 0.7 }]}
-            onPress={() => Haptics.impactAsync(ImpactFeedbackStyle.Light)}
+            onPress={() => {
+              Haptics.impactAsync(ImpactFeedbackStyle.Light);
+              onSwitchTab?.(1);
+            }}
           >
             <View style={[s.engagementIcon, { backgroundColor: 'rgba(29,155,240,0.15)' }]}>
               <IconSymbol name="calendar" size={20} color="#1D9BF0" />
@@ -252,7 +256,10 @@ export function ChurchDashboardV2({ colors, accent, role = 'C8' }: Props) {
 
           <Pressable
             style={({ pressed }) => [s.engagementCard, pressed && { opacity: 0.7 }]}
-            onPress={() => Haptics.impactAsync(ImpactFeedbackStyle.Light)}
+            onPress={() => {
+              Haptics.impactAsync(ImpactFeedbackStyle.Light);
+              onSwitchTab?.(2);
+            }}
           >
             <View style={[s.engagementIcon, { backgroundColor: 'rgba(34,197,94,0.15)' }]}>
               <IconSymbol name="hand.raised.fill" size={20} color="#22C55E" />

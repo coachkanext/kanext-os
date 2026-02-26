@@ -103,7 +103,7 @@ export function ChurchHome() {
           onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
         >
           <View key="dashboard" style={{ flex: 1 }}>
-            <ChurchDashboardV2 colors={colors} accent={ACCENT} role={churchRole} />
+            <ChurchDashboardV2 colors={colors} accent={ACCENT} role={churchRole} onSwitchTab={handleTabPress} />
           </View>
           <View key="calendar" style={{ flex: 1 }}>
             <ComingSoonTab label="Schedule" colors={colors} />
