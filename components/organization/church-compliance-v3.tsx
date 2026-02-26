@@ -1,22 +1,24 @@
 /**
- * Church Compliance V3 — 2819 Church · Senior Pastor
- * ViewBar: Governance | Legal | Safety
- * Self-contained with inline mock data.
+ * Church Compliance V3 — Governance + Risk (Single-Scroll)
+ * 6 blocks: Header, Campus Compliance Snapshot, Volunteer Clearance,
+ *           At-Risk Items, Required Documents, Reporting / Safety
+ *
+ * Campus-scoped, RBAC-aware. A2 sees own clearance + ministry safety.
+ * A1 sees high-level posture only. No other volunteers' private data,
+ * no legal cases, no insurance docs, no staff HR records.
  */
 import React, { useState, useCallback } from 'react';
-import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { View, ScrollView, StyleSheet, Pressable, TextInput } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { isStaffLevel, type ChurchRoleLens } from '@/utils/rbac/church-registry';
 
 // =============================================================================
-// TYPES
+// PROPS
 // =============================================================================
-
-
-const ACCENT = MODE_ACCENT.church;
-type ViewId = 'governance' | 'legal' | 'safety';
 
 interface Props {
   colors: typeof Colors.light;
@@ -24,489 +26,356 @@ interface Props {
   role?: string;
 }
 
-// =============================================================================
-// VIEWS
-// =============================================================================
-
-const VIEWS: { id: ViewId; label: string }[] = [
-  { id: 'governance', label: 'Governance' },
-  { id: 'legal', label: 'Legal' },
-  { id: 'safety', label: 'Safety' },
-];
-
-// =============================================================================
-// MOCK DATA
-// =============================================================================
-
-interface BoardMinutes {
-  id: string;
-  title: string;
-  date: string;
-  attendees: number;
-  status: 'Approved' | 'Draft';
-}
-
-const BOARD_MINUTES: BoardMinutes[] = [
-  { id: 'bm1', title: 'Q4 2024 Board Meeting', date: 'Dec 15, 2024', attendees: 7, status: 'Approved' },
-  { id: 'bm2', title: 'Q3 2024 Board Meeting', date: 'Sep 22, 2024', attendees: 8, status: 'Approved' },
-  { id: 'bm3', title: 'Q2 2024 Board Meeting', date: 'Jun 18, 2024', attendees: 6, status: 'Approved' },
-  { id: 'bm4', title: 'Q1 2024 Board Meeting', date: 'Mar 20, 2024', attendees: 7, status: 'Approved' },
-];
-
-interface LeadershipTerm {
-  id: string;
-  name: string;
-  position: string;
-  termStart: string;
-  termEnd: string;
-  renewable: boolean;
-}
-
-const LEADERSHIP_TERMS: LeadershipTerm[] = [
-  { id: 'lt1', name: 'Deacon Robert Davis', position: 'Deacon Board Chair', termStart: 'Jan 2023', termEnd: 'Dec 2025', renewable: true },
-  { id: 'lt2', name: 'Elder Mary Thompson', position: 'Elder', termStart: 'Jun 2022', termEnd: 'Jun 2025', renewable: true },
-  { id: 'lt3', name: 'Bro. Michael Scott', position: 'Catalyst Leader', termStart: 'Sep 2024', termEnd: 'Aug 2026', renewable: false },
-];
-
-interface ChecklistItem {
-  id: string;
-  item: string;
-  completed: boolean;
-}
-
-const DENOMINATIONAL_CHECKLIST: ChecklistItem[] = [
-  { id: 'dc1', item: 'Annual financial audit completed', completed: true },
-  { id: 'dc2', item: 'Background checks for all youth workers', completed: true },
-  { id: 'dc3', item: 'Bylaws reviewed within 2 years', completed: true },
-  { id: 'dc4', item: 'Annual business meeting held', completed: false },
-  { id: 'dc5', item: 'Ministry reports submitted', completed: true },
-];
-
-interface InsurancePolicy {
-  id: string;
-  type: string;
-  provider: string;
-  coverage: string;
-  expiration: string;
-  status: 'Active' | 'Expiring Soon';
-}
-
-const INSURANCE_POLICIES: InsurancePolicy[] = [
-  { id: 'ip1', type: 'General Liability', provider: 'Brotherhood Mutual', coverage: '$2,000,000', expiration: 'Sep 30, 2025', status: 'Active' },
-  { id: 'ip2', type: 'Property Insurance', provider: 'Brotherhood Mutual', coverage: '$1,500,000', expiration: 'Sep 30, 2025', status: 'Active' },
-  { id: 'ip3', type: 'Workers Compensation', provider: 'State Fund', coverage: 'Statutory', expiration: 'Mar 31, 2025', status: 'Expiring Soon' },
-];
-
-interface EmploymentAgreement {
-  id: string;
-  name: string;
-  position: string;
-  startDate: string;
-  status: 'Active';
-}
-
-const EMPLOYMENT_AGREEMENTS: EmploymentAgreement[] = [
-  { id: 'ea1', name: 'Pastor Philip Anthony Mitchell', position: 'Senior Pastor', startDate: 'Jan 2015', status: 'Active' },
-  { id: 'ea2', name: 'Pastor Ryan Mitchell', position: 'Youth Pastor', startDate: 'Aug 2020', status: 'Active' },
-];
-
-interface BackgroundCheck {
-  id: string;
-  name: string;
-  role: string;
-  status: 'Cleared' | 'Pending' | 'Expired';
-  lastChecked: string;
-}
-
-const BACKGROUND_CHECKS: BackgroundCheck[] = [
-  { id: 'bg1', name: 'Pastor Ryan Mitchell', role: 'Youth Pastor', status: 'Cleared', lastChecked: 'Oct 2024' },
-  { id: 'bg2', name: 'Sister Angela Davis', role: '2819 Kids Director', status: 'Cleared', lastChecked: 'Nov 2024' },
-  { id: 'bg3', name: 'Bro. Michael Scott', role: 'Catalyst Leader', status: 'Cleared', lastChecked: 'Sep 2024' },
-  { id: 'bg4', name: 'Chioma Eze', role: 'Children\'s Volunteer', status: 'Cleared', lastChecked: 'Oct 2024' },
-  { id: 'bg5', name: 'Henry Okafor', role: 'Youth Volunteer', status: 'Cleared', lastChecked: 'Nov 2024' },
-  { id: 'bg6', name: 'Esther Nwankwo', role: 'Connect Group Leader', status: 'Cleared', lastChecked: 'Aug 2024' },
-  { id: 'bg7', name: 'Nnamdi Ugochukwu', role: 'Youth Mentor', status: 'Cleared', lastChecked: 'Oct 2024' },
-  { id: 'bg8', name: 'Grace Amponsah', role: 'Children\'s Helper', status: 'Cleared', lastChecked: 'Nov 2024' },
-  { id: 'bg9', name: 'Francis Adjei', role: 'Youth Volunteer', status: 'Cleared', lastChecked: 'Sep 2024' },
-  { id: 'bg10', name: 'Kezia Boateng', role: 'Children\'s Volunteer', status: 'Cleared', lastChecked: 'Oct 2024' },
-  { id: 'bg11', name: 'Joseph Davis', role: 'Media/Youth', status: 'Cleared', lastChecked: 'Nov 2024' },
-  { id: 'bg12', name: 'Adebayo Oluwaseun', role: 'Youth Volunteer', status: 'Cleared', lastChecked: 'Oct 2024' },
-];
-
-interface SecurityMember {
-  id: string;
-  name: string;
-  role: string;
-}
-
-const SECURITY_TEAM: SecurityMember[] = [
-  { id: 'st1', name: 'Deacon Robert Davis', role: 'Security Lead' },
-  { id: 'st2', name: 'Henry Okafor', role: 'Entrance Monitor' },
-  { id: 'st3', name: 'Nnamdi Ugochukwu', role: 'Parking Lot' },
-  { id: 'st4', name: 'Francis Adjei', role: 'Interior Patrol' },
-  { id: 'st5', name: 'Daniel Kwame', role: 'Camera Monitor' },
-  { id: 'st6', name: 'Adebayo Oluwaseun', role: 'Emergency Response' },
-];
+const ACCENT = MODE_ACCENT.church;
 
 // =============================================================================
 // HELPERS
 // =============================================================================
 
-const STATUS_COLORS: Record<string, string> = {
+function SectionLabel({ label, colors }: { label: string; colors: typeof Colors.light }) {
+  return (
+    <ThemedText style={[s.sectionLabel, { color: colors.textSecondary }]}>
+      {label}
+    </ThemedText>
+  );
+}
+
+function Card({ colors, children }: { colors: typeof Colors.light; children: React.ReactNode }) {
+  return (
+    <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      {children}
+    </View>
+  );
+}
+
+type CompStatus = 'Good' | 'Review' | 'Action Needed' | 'Active' | 'Current' | 'Cleared' | 'Pending' | 'Expired';
+const STATUS_COLOR: Record<CompStatus, string> = {
+  Good: '#22C55E',
   Active: '#22C55E',
-  Approved: '#22C55E',
-  Draft: '#F59E0B',
+  Current: '#22C55E',
   Cleared: '#22C55E',
+  Review: '#F59E0B',
   Pending: '#F59E0B',
+  'Action Needed': '#EF4444',
   Expired: '#EF4444',
-  'Expiring Soon': '#F59E0B',
-  Updated: '#22C55E',
 };
 
 // =============================================================================
-// VIEW BAR
+// MOCK DATA — ICCLA
 // =============================================================================
 
-function ViewBar({
-  views,
-  activeId,
-  onSelect,
-  accentColor,
-  colors,
-}: {
-  views: typeof VIEWS;
-  activeId: ViewId;
-  onSelect: (id: ViewId) => void;
-  accentColor: string;
-  colors: typeof Colors.light;
-}) {
+const CAMPUS_STATUS: CompStatus = 'Good';
+
+const COMPLIANCE_SNAPSHOT = [
+  { id: 'cs-1', label: 'Child Safety', status: 'Good' as CompStatus, icon: 'shield.checkmark.fill' },
+  { id: 'cs-2', label: 'Insurance', status: 'Active' as CompStatus, icon: 'doc.text.fill' },
+  { id: 'cs-3', label: 'Facility Inspection', status: 'Current' as CompStatus, icon: 'building.2.fill' },
+  { id: 'cs-4', label: 'Legal', status: 'Good' as CompStatus, icon: 'building.columns.fill' },
+];
+
+// A2 (Children's Teacher) personal clearance
+const MY_CLEARANCE = {
+  backgroundCheck: 'Cleared' as CompStatus,
+  trainingCompleted: true,
+  expirationDate: 'Oct 2025',
+  nextAction: 'Renewal due Oct 2025',
+};
+
+const AT_RISK = {
+  pendingClearances: 2,
+  expiringBackgroundChecks: 1,
+  openRiskReports: 0,
+};
+
+const DOCUMENTS = {
+  required: 14,
+  submitted: 12,
+  verified: 11,
+};
+
+// =============================================================================
+// BLOCK 0 — HEADER
+// =============================================================================
+
+function HeaderBlock({ colors }: { colors: typeof Colors.light }) {
+  const statusColor = STATUS_COLOR[CAMPUS_STATUS];
   return (
-    <View style={s.viewBar}>
-      {views.map((v) => {
-        const isActive = v.id === activeId;
-        return (
-          <Pressable
-            key={v.id}
-            style={[
-              s.viewPill,
-              {
-                backgroundColor: isActive ? accentColor : '#2F3336',
-              },
-            ]}
-            onPress={() => {
-              Haptics.selectionAsync();
-              onSelect(v.id);
-            }}
-          >
-            <ThemedText
-              style={[
-                s.viewPillText,
-                { color: isActive ? '#000' : colors.textSecondary },
-              ]}
-            >
-              {v.label}
-            </ThemedText>
-          </Pressable>
-        );
-      })}
+    <View style={s.headerBlock}>
+      <View style={{ flex: 1 }}>
+        <ThemedText style={[s.headerTitle, { color: colors.text }]}>Compliance</ThemedText>
+        <ThemedText style={[s.headerCampus, { color: colors.textTertiary }]}>ICC Los Angeles</ThemedText>
+      </View>
+      <View style={[s.statusChip, { backgroundColor: statusColor + '20' }]}>
+        <View style={[s.statusDot, { backgroundColor: statusColor }]} />
+        <ThemedText style={[s.statusChipText, { color: statusColor }]}>{CAMPUS_STATUS}</ThemedText>
+      </View>
     </View>
   );
 }
 
 // =============================================================================
-// GOVERNANCE VIEW
+// BLOCK 1 — CAMPUS COMPLIANCE SNAPSHOT
 // =============================================================================
 
-function GovernanceView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
-  const completedCount = DENOMINATIONAL_CHECKLIST.filter((c) => c.completed).length;
+function SnapshotBlock({ colors }: { colors: typeof Colors.light }) {
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Bylaws */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>BYLAWS</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={s.bylawsRow}>
-          <IconSymbol name="doc.text.fill" size={20} color={accentColor} />
-          <View style={{ flex: 1 }}>
-            <ThemedText style={[s.bylawsTitle, { color: colors.text }]}>2819 Church Bylaws & Constitution</ThemedText>
-            <ThemedText style={[s.bylawsDate, { color: colors.textSecondary }]}>Last updated: 2023</ThemedText>
-          </View>
-          <View style={[s.statusBadge, { backgroundColor: '#22C55E20' }]}>
-            <ThemedText style={[s.statusBadgeText, { color: '#22C55E' }]}>Current</ThemedText>
-          </View>
-        </View>
-      </View>
-
-      {/* Board Meetings */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>BOARD MEETING MINUTES</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {BOARD_MINUTES.map((minutes, idx) => (
-          <View
-            key={minutes.id}
-            style={[
-              s.listRow,
-              idx < BOARD_MINUTES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <View style={{ flex: 1 }}>
-              <ThemedText style={[s.listTitle, { color: colors.text }]}>{minutes.title}</ThemedText>
-              <ThemedText style={[s.listSubtitle, { color: colors.textSecondary }]}>
-                {minutes.date} · {minutes.attendees} attendees
-              </ThemedText>
-            </View>
-            <View style={[s.statusBadge, { backgroundColor: STATUS_COLORS[minutes.status] + '20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: STATUS_COLORS[minutes.status] }]}>{minutes.status}</ThemedText>
-            </View>
-          </View>
-        ))}
-      </View>
-
-      {/* Requirements Checklist */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>REQUIREMENTS CHECKLIST</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <ThemedText style={[s.checklistSummary, { color: colors.textSecondary }]}>
-          {completedCount}/{DENOMINATIONAL_CHECKLIST.length} completed
-        </ThemedText>
-        {DENOMINATIONAL_CHECKLIST.map((item, idx) => (
-          <View
-            key={item.id}
-            style={[
-              s.checkRow,
-              idx < DENOMINATIONAL_CHECKLIST.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <IconSymbol
-              name={item.completed ? 'checkmark.circle.fill' : 'circle.fill'}
-              size={18}
-              color={item.completed ? '#22C55E' : colors.textTertiary}
-            />
-            <ThemedText style={[s.checkLabel, { color: item.completed ? colors.text : colors.textSecondary }]}>
-              {item.item}
-            </ThemedText>
-          </View>
-        ))}
-      </View>
-
-      {/* Annual Business Meeting */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>ANNUAL BUSINESS MEETING</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={s.meetingRow}>
-          <IconSymbol name="calendar" size={16} color={accentColor} />
-          <ThemedText style={[s.meetingText, { color: colors.text }]}>Next: March 2025</ThemedText>
-          <View style={[s.statusBadge, { backgroundColor: '#F59E0B20' }]}>
-            <ThemedText style={[s.statusBadgeText, { color: '#F59E0B' }]}>Upcoming</ThemedText>
-          </View>
-        </View>
-      </View>
-
-      {/* Leadership Terms */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>LEADERSHIP TERMS</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {LEADERSHIP_TERMS.map((term, idx) => (
-          <View
-            key={term.id}
-            style={[
-              s.listRow,
-              idx < LEADERSHIP_TERMS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <View style={{ flex: 1 }}>
-              <ThemedText style={[s.listTitle, { color: colors.text }]}>{term.name}</ThemedText>
-              <ThemedText style={[s.listSubtitle, { color: colors.textSecondary }]}>
-                {term.position} · {term.termStart} - {term.termEnd}
-              </ThemedText>
-            </View>
-            {term.renewable && (
-              <View style={[s.statusBadge, { backgroundColor: `${ACCENT}20` }]}>
-                <ThemedText style={[s.statusBadgeText, { color: ACCENT }]}>Renewable</ThemedText>
+    <>
+      <SectionLabel label="CAMPUS COMPLIANCE SNAPSHOT" colors={colors} />
+      <Card colors={colors}>
+        {COMPLIANCE_SNAPSHOT.map((item, idx) => {
+          const color = STATUS_COLOR[item.status];
+          return (
+            <View
+              key={item.id}
+              style={[
+                s.snapshotRow,
+                idx < COMPLIANCE_SNAPSHOT.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+              ]}
+            >
+              <IconSymbol name={item.icon as any} size={16} color={color} />
+              <ThemedText style={[s.snapshotLabel, { color: colors.text }]}>{item.label}</ThemedText>
+              <View style={[s.snapshotChip, { backgroundColor: color + '20' }]}>
+                <ThemedText style={[s.snapshotChipText, { color }]}>{item.status}</ThemedText>
               </View>
-            )}
-          </View>
-        ))}
-      </View>
-    </ScrollView>
+            </View>
+          );
+        })}
+      </Card>
+    </>
   );
 }
 
 // =============================================================================
-// LEGAL VIEW
+// BLOCK 2 — VOLUNTEER CLEARANCE (Role-Aware)
 // =============================================================================
 
-function LegalView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
-  const allCleared = BACKGROUND_CHECKS.every((bg) => bg.status === 'Cleared');
-  return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* 501(c)(3) Status */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>TAX-EXEMPT STATUS</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={s.taxRow}>
-          <IconSymbol name="building.columns.fill" size={20} color={accentColor} />
-          <View style={{ flex: 1 }}>
-            <ThemedText style={[s.taxTitle, { color: colors.text }]}>501(c)(3) Status</ThemedText>
-            <ThemedText style={[s.taxSubtitle, { color: colors.textSecondary }]}>IRS Form 990 due: May 15, 2025</ThemedText>
-          </View>
-          <View style={[s.statusBadge, { backgroundColor: '#22C55E20' }]}>
-            <ThemedText style={[s.statusBadgeText, { color: '#22C55E' }]}>Active</ThemedText>
-          </View>
-        </View>
-      </View>
+function VolunteerClearanceBlock({ colors, isA2 }: { colors: typeof Colors.light; isA2: boolean }) {
+  if (!isA2) return null;
 
-      {/* Insurance */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>INSURANCE POLICIES</ThemedText>
-      {INSURANCE_POLICIES.map((policy) => (
-        <View
-          key={policy.id}
-          style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}
-        >
-          <View style={s.policyHeader}>
-            <ThemedText style={[s.policyType, { color: colors.text }]}>{policy.type}</ThemedText>
-            <View style={[s.statusBadge, { backgroundColor: STATUS_COLORS[policy.status] + '20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: STATUS_COLORS[policy.status] }]}>{policy.status}</ThemedText>
+  const bgColor = STATUS_COLOR[MY_CLEARANCE.backgroundCheck];
+
+  return (
+    <>
+      <SectionLabel label="YOUR VOLUNTEER CLEARANCE" colors={colors} />
+      <Card colors={colors}>
+        <View style={s.clearanceGrid}>
+          <View style={s.clearanceItem}>
+            <ThemedText style={[s.clearanceLabel, { color: colors.textTertiary }]}>Background Check</ThemedText>
+            <View style={[s.clearanceBadge, { backgroundColor: bgColor + '20' }]}>
+              <ThemedText style={[s.clearanceBadgeText, { color: bgColor }]}>{MY_CLEARANCE.backgroundCheck}</ThemedText>
             </View>
           </View>
-          <View style={s.policyDetails}>
-            <View style={s.policyDetailItem}>
-              <ThemedText style={[s.policyDetailLabel, { color: colors.textTertiary }]}>Provider</ThemedText>
-              <ThemedText style={[s.policyDetailValue, { color: colors.textSecondary }]}>{policy.provider}</ThemedText>
-            </View>
-            <View style={s.policyDetailItem}>
-              <ThemedText style={[s.policyDetailLabel, { color: colors.textTertiary }]}>Coverage</ThemedText>
-              <ThemedText style={[s.policyDetailValue, { color: colors.textSecondary }]}>{policy.coverage}</ThemedText>
-            </View>
-            <View style={s.policyDetailItem}>
-              <ThemedText style={[s.policyDetailLabel, { color: colors.textTertiary }]}>Expires</ThemedText>
-              <ThemedText style={[s.policyDetailValue, { color: policy.status === 'Expiring Soon' ? '#F59E0B' : colors.textSecondary }]}>
-                {policy.expiration}
+          <View style={s.clearanceItem}>
+            <ThemedText style={[s.clearanceLabel, { color: colors.textTertiary }]}>Training Completed</ThemedText>
+            <View style={[s.clearanceBadge, { backgroundColor: MY_CLEARANCE.trainingCompleted ? '#22C55E20' : '#F59E0B20' }]}>
+              <ThemedText style={[s.clearanceBadgeText, { color: MY_CLEARANCE.trainingCompleted ? '#22C55E' : '#F59E0B' }]}>
+                {MY_CLEARANCE.trainingCompleted ? 'Yes' : 'No'}
               </ThemedText>
             </View>
           </View>
-        </View>
-      ))}
-
-      {/* Employment Agreements */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>EMPLOYMENT AGREEMENTS</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {EMPLOYMENT_AGREEMENTS.map((ea, idx) => (
-          <View
-            key={ea.id}
-            style={[
-              s.listRow,
-              idx < EMPLOYMENT_AGREEMENTS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <View style={{ flex: 1 }}>
-              <ThemedText style={[s.listTitle, { color: colors.text }]}>{ea.name}</ThemedText>
-              <ThemedText style={[s.listSubtitle, { color: colors.textSecondary }]}>{ea.position} · Since {ea.startDate}</ThemedText>
-            </View>
-            <View style={[s.statusBadge, { backgroundColor: '#22C55E20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: '#22C55E' }]}>{ea.status}</ThemedText>
-            </View>
+          <View style={s.clearanceItem}>
+            <ThemedText style={[s.clearanceLabel, { color: colors.textTertiary }]}>Expiration Date</ThemedText>
+            <ThemedText style={[s.clearanceValue, { color: colors.text }]}>{MY_CLEARANCE.expirationDate}</ThemedText>
           </View>
-        ))}
-      </View>
-
-      {/* Background Checks */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>
-        BACKGROUND CHECKS — MINORS VOLUNTEERS
-      </ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={s.bgSummary}>
-          <IconSymbol name="shield.checkmark.fill" size={16} color={allCleared ? '#22C55E' : '#F59E0B'} />
-          <ThemedText style={[s.bgSummaryText, { color: allCleared ? '#22C55E' : '#F59E0B' }]}>
-            {allCleared ? 'All 12 volunteers cleared' : 'Action required'}
+          <View style={s.clearanceItem}>
+            <ThemedText style={[s.clearanceLabel, { color: colors.textTertiary }]}>Next Required Action</ThemedText>
+            <ThemedText style={[s.clearanceValue, { color: colors.text }]}>{MY_CLEARANCE.nextAction}</ThemedText>
+          </View>
+        </View>
+        <View style={s.clearanceNote}>
+          <IconSymbol name="info.circle" size={12} color={colors.textTertiary} />
+          <ThemedText style={[s.clearanceNoteText, { color: colors.textTertiary }]}>
+            Updates managed by admin or via Nexus.
           </ThemedText>
         </View>
-        {BACKGROUND_CHECKS.map((bg, idx) => (
-          <View
-            key={bg.id}
-            style={[
-              s.bgRow,
-              idx < BACKGROUND_CHECKS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <View style={{ flex: 1 }}>
-              <ThemedText style={[s.bgName, { color: colors.text }]}>{bg.name}</ThemedText>
-              <ThemedText style={[s.bgRole, { color: colors.textSecondary }]}>{bg.role} · {bg.lastChecked}</ThemedText>
-            </View>
-            <View style={[s.statusBadge, { backgroundColor: STATUS_COLORS[bg.status] + '20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: STATUS_COLORS[bg.status] }]}>{bg.status}</ThemedText>
-            </View>
-          </View>
-        ))}
-      </View>
-    </ScrollView>
+      </Card>
+    </>
   );
 }
 
 // =============================================================================
-// SAFETY VIEW
+// BLOCK 3 — AT-RISK ITEMS (Aggregate Only)
 // =============================================================================
 
-function SafetyView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+function AtRiskBlock({ colors }: { colors: typeof Colors.light }) {
+  const items = [
+    { label: 'Pending Clearances', count: AT_RISK.pendingClearances, color: AT_RISK.pendingClearances > 0 ? '#F59E0B' : '#22C55E' },
+    { label: 'Expiring Background Checks', count: AT_RISK.expiringBackgroundChecks, color: AT_RISK.expiringBackgroundChecks > 0 ? '#F59E0B' : '#22C55E' },
+    { label: 'Open Risk Reports', count: AT_RISK.openRiskReports, color: AT_RISK.openRiskReports > 0 ? '#EF4444' : '#22C55E' },
+  ];
+
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Child Protection */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>CHILD PROTECTION POLICY</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={s.policyStatusRow}>
-          <IconSymbol name="shield.checkmark.fill" size={20} color="#22C55E" />
-          <View style={{ flex: 1 }}>
-            <ThemedText style={[s.policyStatusTitle, { color: colors.text }]}>Child Protection Policy</ThemedText>
-            <ThemedText style={[s.policyStatusSub, { color: colors.textSecondary }]}>Board approved · Reviewed annually</ThemedText>
+    <>
+      <SectionLabel label="AT-RISK ITEMS" colors={colors} />
+      <Card colors={colors}>
+        {items.map((item, idx) => (
+          <View
+            key={item.label}
+            style={[
+              s.riskRow,
+              idx < items.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+            ]}
+          >
+            <ThemedText style={[s.riskLabel, { color: colors.text }]}>{item.label}</ThemedText>
+            <View style={[s.riskBadge, { backgroundColor: item.color + '20' }]}>
+              <ThemedText style={[s.riskBadgeText, { color: item.color }]}>{item.count}</ThemedText>
+            </View>
           </View>
-          <View style={[s.statusBadge, { backgroundColor: '#22C55E20' }]}>
-            <ThemedText style={[s.statusBadgeText, { color: '#22C55E' }]}>Approved</ThemedText>
+        ))}
+        <View style={s.restrictedNote}>
+          <IconSymbol name="lock.fill" size={11} color={colors.textTertiary} />
+          <ThemedText style={[s.restrictedNoteText, { color: colors.textTertiary }]}>
+            Names not visible at your access level.
+          </ThemedText>
+        </View>
+      </Card>
+    </>
+  );
+}
+
+// =============================================================================
+// BLOCK 4 — REQUIRED DOCUMENTS (Tracker Only)
+// =============================================================================
+
+function DocumentsBlock({ colors }: { colors: typeof Colors.light }) {
+  return (
+    <>
+      <SectionLabel label="REQUIRED DOCUMENTS" colors={colors} />
+      <Card colors={colors}>
+        <View style={s.docGrid}>
+          <View style={s.docCell}>
+            <ThemedText style={[s.docValue, { color: colors.text }]}>{DOCUMENTS.required}</ThemedText>
+            <ThemedText style={[s.docLabel, { color: colors.textTertiary }]}>Required</ThemedText>
+          </View>
+          <View style={[s.docDivider, { backgroundColor: colors.border }]} />
+          <View style={s.docCell}>
+            <ThemedText style={[s.docValue, { color: '#F59E0B' }]}>{DOCUMENTS.submitted}</ThemedText>
+            <ThemedText style={[s.docLabel, { color: colors.textTertiary }]}>Submitted</ThemedText>
+          </View>
+          <View style={[s.docDivider, { backgroundColor: colors.border }]} />
+          <View style={s.docCell}>
+            <ThemedText style={[s.docValue, { color: '#22C55E' }]}>{DOCUMENTS.verified}</ThemedText>
+            <ThemedText style={[s.docLabel, { color: colors.textTertiary }]}>Verified</ThemedText>
           </View>
         </View>
-      </View>
+        <View style={s.restrictedNote}>
+          <IconSymbol name="lock.fill" size={11} color={colors.textTertiary} />
+          <ThemedText style={[s.restrictedNoteText, { color: colors.textTertiary }]}>
+            No file download links at your access level.
+          </ThemedText>
+        </View>
+      </Card>
+    </>
+  );
+}
 
-      {/* Security Team */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>SECURITY TEAM</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {SECURITY_TEAM.map((member, idx) => (
-          <View
-            key={member.id}
-            style={[
-              s.listRow,
-              idx < SECURITY_TEAM.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <IconSymbol name="shield.fill" size={14} color={accentColor} />
-            <View style={{ flex: 1 }}>
-              <ThemedText style={[s.listTitle, { color: colors.text }]}>{member.name}</ThemedText>
-              <ThemedText style={[s.listSubtitle, { color: colors.textSecondary }]}>{member.role}</ThemedText>
-            </View>
-          </View>
-        ))}
-      </View>
+// =============================================================================
+// BLOCK 5 — REPORTING / SAFETY
+// =============================================================================
 
-      {/* Emergency Plan */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>EMERGENCY PREPAREDNESS</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {[
-          { label: 'Emergency Action Plan', value: 'Updated 2024', status: 'Updated', icon: 'doc.text.fill' },
-          { label: 'Fire Evacuation Plan', value: 'Posted at all exits', status: 'Active', icon: 'exclamationmark.triangle.fill' },
-          { label: 'First Aid Kits', value: '3 locations (Sanctuary, Kitchen, Nursery)', status: 'Stocked', icon: 'heart.fill' },
-          { label: 'Incident Reports (2025)', value: '0 incidents', status: 'Clear', icon: 'checkmark.seal.fill' },
-        ].map((item, idx) => (
-          <View
-            key={idx}
-            style={[
-              s.safetyRow,
-              idx < 3 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <IconSymbol name={item.icon as any} size={16} color={accentColor} />
-            <View style={{ flex: 1 }}>
-              <ThemedText style={[s.safetyLabel, { color: colors.text }]}>{item.label}</ThemedText>
-              <ThemedText style={[s.safetyValue, { color: colors.textSecondary }]}>{item.value}</ThemedText>
-            </View>
-            <View style={[s.statusBadge, { backgroundColor: '#22C55E20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: '#22C55E' }]}>{item.status}</ThemedText>
-            </View>
-          </View>
-        ))}
+function ReportingBlock({ colors, onReport }: { colors: typeof Colors.light; onReport: () => void }) {
+  return (
+    <>
+      <SectionLabel label="REPORTING / SAFETY" colors={colors} />
+      <Card colors={colors}>
+        <ThemedText style={[s.reportDesc, { color: colors.textSecondary }]}>
+          Submit an incident report confidentially. Routed to campus leadership via escalation. Not visible in feed.
+        </ThemedText>
+        <Pressable
+          style={({ pressed }) => [s.reportBtn, { backgroundColor: ACCENT }, pressed && { opacity: 0.8 }]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            onReport();
+          }}
+        >
+          <IconSymbol name="exclamationmark.bubble.fill" size={16} color="#fff" />
+          <ThemedText style={s.reportBtnText}>Report Incident</ThemedText>
+        </Pressable>
+      </Card>
+    </>
+  );
+}
+
+// =============================================================================
+// INCIDENT REPORT SHEET
+// =============================================================================
+
+function IncidentReportSheet({ visible, onClose, colors }: { visible: boolean; onClose: () => void; colors: typeof Colors.light }) {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [location, setLocation] = useState('');
+  const [anonymous, setAnonymous] = useState(false);
+
+  const handleSubmit = useCallback(() => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    setTitle('');
+    setDescription('');
+    setLocation('');
+    setAnonymous(false);
+    onClose();
+  }, [onClose]);
+
+  return (
+    <BottomSheet visible={visible} onClose={onClose}>
+      <View style={s.sheetContent}>
+        <ThemedText style={[s.sheetTitle, { color: colors.text }]}>Report Incident</ThemedText>
+        <ThemedText style={[s.sheetSubtitle, { color: colors.textTertiary }]}>
+          Routed to leadership via Messages escalation. Not public.
+        </ThemedText>
+
+        <ThemedText style={[s.fieldLabel, { color: colors.textSecondary }]}>Title</ThemedText>
+        <TextInput
+          style={[s.textInput, { backgroundColor: colors.backgroundSecondary, color: colors.text, borderColor: colors.border }]}
+          value={title}
+          onChangeText={setTitle}
+          placeholder="Brief summary"
+          placeholderTextColor={colors.textTertiary}
+        />
+
+        <ThemedText style={[s.fieldLabel, { color: colors.textSecondary }]}>Description</ThemedText>
+        <TextInput
+          style={[s.textArea, { backgroundColor: colors.backgroundSecondary, color: colors.text, borderColor: colors.border }]}
+          value={description}
+          onChangeText={setDescription}
+          placeholder="What happened?"
+          placeholderTextColor={colors.textTertiary}
+          multiline
+          numberOfLines={4}
+          textAlignVertical="top"
+        />
+
+        <ThemedText style={[s.fieldLabel, { color: colors.textSecondary }]}>Location</ThemedText>
+        <TextInput
+          style={[s.textInput, { backgroundColor: colors.backgroundSecondary, color: colors.text, borderColor: colors.border }]}
+          value={location}
+          onChangeText={setLocation}
+          placeholder="Where did it happen?"
+          placeholderTextColor={colors.textTertiary}
+        />
+
+        <Pressable
+          style={s.anonRow}
+          onPress={() => {
+            Haptics.selectionAsync();
+            setAnonymous(!anonymous);
+          }}
+        >
+          <IconSymbol
+            name={anonymous ? 'checkmark.square.fill' : 'square'}
+            size={20}
+            color={anonymous ? ACCENT : colors.textTertiary}
+          />
+          <ThemedText style={[s.anonLabel, { color: colors.text }]}>Submit anonymously</ThemedText>
+        </Pressable>
+
+        <Pressable
+          style={({ pressed }) => [s.submitBtn, { backgroundColor: ACCENT }, pressed && { opacity: 0.8 }]}
+          onPress={handleSubmit}
+        >
+          <ThemedText style={s.submitBtnText}>Submit Report</ThemedText>
+        </Pressable>
       </View>
-    </ScrollView>
+    </BottomSheet>
   );
 }
 
@@ -515,36 +384,25 @@ function SafetyView({ colors, accentColor }: { colors: typeof Colors.light; acce
 // =============================================================================
 
 export function ChurchCompliance({ colors, accentColor, role }: Props) {
-  const [activeView, setActiveView] = useState<ViewId>('governance');
-
-  const handleViewChange = useCallback((id: ViewId) => {
-    setActiveView(id);
-  }, []);
-
-  const renderContent = () => {
-    switch (activeView) {
-      case 'governance':
-        return <GovernanceView colors={colors} accentColor={accentColor} />;
-      case 'legal':
-        return <LegalView colors={colors} accentColor={accentColor} />;
-      case 'safety':
-        return <SafetyView colors={colors} accentColor={accentColor} />;
-      default:
-        return null;
-    }
-  };
+  const churchRole = (role ?? 'C8') as ChurchRoleLens;
+  const isA2 = isStaffLevel(churchRole);
+  const [reportVisible, setReportVisible] = useState(false);
 
   return (
-    <View style={s.container}>
-      <ViewBar
-        views={VIEWS}
-        activeId={activeView}
-        onSelect={handleViewChange}
-        accentColor={accentColor}
-        colors={colors}
-      />
-      {renderContent()}
-    </View>
+    <>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={s.scroll}
+      >
+        <HeaderBlock colors={colors} />
+        <SnapshotBlock colors={colors} />
+        <VolunteerClearanceBlock colors={colors} isA2={isA2} />
+        <AtRiskBlock colors={colors} />
+        <DocumentsBlock colors={colors} />
+        <ReportingBlock colors={colors} onReport={() => setReportVisible(true)} />
+      </ScrollView>
+      <IncidentReportSheet visible={reportVisible} onClose={() => setReportVisible(false)} colors={colors} />
+    </>
   );
 }
 
@@ -553,42 +411,19 @@ export function ChurchCompliance({ colors, accentColor, role }: Props) {
 // =============================================================================
 
 const s = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-
-  // -- View Bar --
-  viewBar: {
-    flexDirection: 'row',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    gap: Spacing.sm,
-  },
-  viewPill: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderRadius: BorderRadius.full,
-  },
-  viewPillText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-
-  // -- Scroll --
   scroll: {
     padding: Spacing.md,
     paddingBottom: 120,
   },
 
-  // -- Section Header --
-  sectionHeader: {
+  // -- Section Label --
+  sectionLabel: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
     letterSpacing: 0.5,
-    marginBottom: 8,
-    marginTop: Spacing.lg,
     textTransform: 'uppercase',
+    marginTop: Spacing.lg,
+    marginBottom: 8,
   },
 
   // -- Card --
@@ -596,174 +431,230 @@ const s = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     padding: 14,
-    marginBottom: Spacing.sm,
   },
 
-  // -- Status Badge --
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: BorderRadius.full,
+  // -- Block 0: Header --
+  headerBlock: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: Spacing.sm,
   },
-  statusBadgeText: {
-    fontSize: 10,
+  headerTitle: {
+    fontSize: 22,
     fontWeight: '700',
   },
-
-  // -- List Row --
-  listRow: {
+  headerCampus: {
+    fontSize: 13,
+    marginTop: 2,
+  },
+  statusChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.sm,
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  statusChipText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+
+  // -- Block 1: Snapshot --
+  snapshotRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
     paddingVertical: 10,
   },
-  listTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  listSubtitle: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-
-  // -- Bylaws --
-  bylawsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  bylawsTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  bylawsDate: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-
-  // -- Checklist --
-  checklistSummary: {
-    fontSize: 12,
-    marginBottom: Spacing.sm,
-  },
-  checkRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-    paddingVertical: 8,
-  },
-  checkLabel: {
-    fontSize: 13,
+  snapshotLabel: {
     flex: 1,
-  },
-
-  // -- Meeting --
-  meetingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  meetingText: {
     fontSize: 14,
+    fontWeight: '500',
+  },
+  snapshotChip: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  snapshotChipText: {
+    fontSize: 12,
     fontWeight: '600',
-    flex: 1,
   },
 
-  // -- Tax Status --
-  taxRow: {
+  // -- Block 2: Volunteer Clearance --
+  clearanceGrid: {
+    gap: 12,
+  },
+  clearanceItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  taxTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  taxSubtitle: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-
-  // -- Policy --
-  policyHeader: {
-    flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: Spacing.sm,
   },
-  policyType: {
-    fontSize: 15,
+  clearanceLabel: {
+    fontSize: 13,
+  },
+  clearanceValue: {
+    fontSize: 13,
     fontWeight: '600',
-    flex: 1,
   },
-  policyDetails: {
+  clearanceBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  clearanceBadgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  clearanceNote: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 6,
+    marginTop: 12,
+    paddingTop: 10,
   },
-  policyDetailItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  policyDetailLabel: {
-    fontSize: 12,
-  },
-  policyDetailValue: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-
-  // -- Background Check --
-  bgSummary: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-    marginBottom: Spacing.sm,
-  },
-  bgSummaryText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  bgRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    gap: Spacing.sm,
-  },
-  bgName: {
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  bgRole: {
+  clearanceNoteText: {
     fontSize: 11,
-    marginTop: 1,
   },
 
-  // -- Safety --
-  policyStatusRow: {
+  // -- Block 3: At-Risk --
+  riskRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  policyStatusTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  policyStatusSub: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-  safetyRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
+    justifyContent: 'space-between',
     paddingVertical: 10,
   },
-  safetyLabel: {
-    fontSize: 13,
+  riskLabel: {
+    fontSize: 14,
     fontWeight: '500',
   },
-  safetyValue: {
+  riskBadge: {
+    minWidth: 28,
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  riskBadgeText: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  restrictedNote: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 10,
+    paddingTop: 10,
+  },
+  restrictedNoteText: {
+    fontSize: 11,
+  },
+
+  // -- Block 4: Documents --
+  docGrid: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  docCell: {
+    alignItems: 'center',
+    flex: 1,
+    paddingVertical: 4,
+  },
+  docValue: {
+    fontSize: 22,
+    fontWeight: '700',
+  },
+  docLabel: {
     fontSize: 11,
     marginTop: 2,
+  },
+  docDivider: {
+    width: 1,
+    height: 28,
+  },
+
+  // -- Block 5: Reporting --
+  reportDesc: {
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: 12,
+  },
+  reportBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 12,
+    borderRadius: 10,
+  },
+  reportBtnText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#fff',
+  },
+
+  // -- Incident Report Sheet --
+  sheetContent: {
+    padding: Spacing.md,
+    paddingBottom: 40,
+  },
+  sheetTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  sheetSubtitle: {
+    fontSize: 13,
+    marginBottom: Spacing.md,
+  },
+  fieldLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 6,
+    marginTop: 12,
+  },
+  textInput: {
+    fontSize: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  textArea: {
+    fontSize: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    minHeight: 80,
+  },
+  anonRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 16,
+  },
+  anonLabel: {
+    fontSize: 14,
+  },
+  submitBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  submitBtnText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#fff',
   },
 });
