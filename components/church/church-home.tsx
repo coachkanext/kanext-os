@@ -2,7 +2,7 @@
  * Church Home — 2819 Church 4-tab PagerView layout
  * Dashboard | Schedule | Ministries | Connect
  *
- * Dashboard + Schedule are live. Ministries, Connect are Coming Soon.
+ * Dashboard + Schedule + Ministries are live. Connect is Coming Soon.
  * Uses PagerView + PagedTabBar + EdgeHoldAdvance for swipeable tabs.
  */
 
@@ -24,6 +24,7 @@ import { getChurchRole } from '@/utils/church-rbac';
 
 import { ChurchDashboardV2 } from '@/components/church-home/church-dashboard-v2';
 import { ChurchSchedule } from '@/components/church/church-schedule';
+import { ChurchMinistries } from '@/components/church/church-ministries';
 
 const ALL_TABS: { id: string; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' },
@@ -110,7 +111,7 @@ export function ChurchHome() {
             <ChurchSchedule colors={colors} accent={ACCENT} />
           </View>
           <View key="ministries" style={{ flex: 1 }}>
-            <ComingSoonTab label="Ministries" colors={colors} />
+            <ChurchMinistries colors={colors} accent={ACCENT} role={churchRole} />
           </View>
           <View key="connect" style={{ flex: 1 }}>
             <ComingSoonTab label="Connect" colors={colors} />
