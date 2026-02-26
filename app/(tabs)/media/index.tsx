@@ -42,6 +42,7 @@ import type { Mode } from '@/types';
 import { SportsExplorePageV2 } from '@/components/sports-explore/sports-explore-page-v2';
 import { ChurchExplorePageV2 } from '@/components/church-explore/church-explore-page-v2';
 import { BusinessExplorePageV2 } from '@/components/business-explore/business-explore-page-v2';
+import { BusinessRoomsV2 } from '@/components/business-rooms/business-rooms-v2';
 import { ChurchRoomsV2 } from '@/components/church-rooms/church-rooms-v2';
 import { ChurchLibraryV2 } from '@/components/church-library/church-library-v2';
 import { SportsFilmRoomV2 } from '@/components/film-room/sports-film-room-v2';
@@ -501,6 +502,7 @@ function ExplorePage({ colors, mode }: { colors: typeof Colors.light; mode: Mode
 function RoomPage({ colors, mode }: { colors: typeof Colors.light; mode: Mode }) {
   if (mode === 'sports') return <SportsFilmRoomV2 />;
   if (mode === 'church') return <ChurchRoomsV2 />;
+  if (mode === 'business') return <BusinessRoomsV2 />;
   if (EMPTY_MODES.has(mode)) {
     return <EmptyState icon="play.rectangle.fill" title="No Rooms" description="Rooms will appear here." />;
   }
