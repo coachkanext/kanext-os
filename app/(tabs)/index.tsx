@@ -1046,12 +1046,12 @@ export default function HomeScreen() {
     );
   }
 
-  // Church — empty shell
+  // Church — 4-tab PagerView (Dashboard live, rest coming soon)
   if (mode === 'church') {
     return (
-      <ThemedView style={styles.container}>
-        <EmptyModeShell tabs={CHURCH_HOME_TABS} />
-      </ThemedView>
+      <ChurchProvider>
+        <ChurchHomeComponent />
+      </ChurchProvider>
     );
   }
 
