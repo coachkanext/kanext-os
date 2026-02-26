@@ -1,22 +1,22 @@
 /**
- * Church Program V3 — 2819 Church · Senior Pastor
- * ViewBar: Identity | Ministries | Operations
- * Self-contained with inline mock data.
+ * Church Program V3 — Campus Control Plane (Single-Scroll)
+ * 7 blocks: Header, Campus Snapshot, Service Rhythm, Ministry Structure,
+ *           Volunteer Snapshot, Operational Health, Quick Links
+ *
+ * Campus-scoped, RBAC-aware, read-only. No inline editing.
+ * All edits go through Nexus (propose → confirm → commit).
  */
-import React, { useState, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
+import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
+import { isStaffLevel, isPastoralLevel, type ChurchRoleLens } from '@/utils/rbac/church-registry';
 
 // =============================================================================
-// TYPES
+// PROPS
 // =============================================================================
-
-
-const ACCENT = MODE_ACCENT.church;
-type ViewId = 'identity' | 'ministries' | 'operations';
 
 interface Props {
   colors: typeof Colors.light;
@@ -24,411 +24,356 @@ interface Props {
   role?: string;
 }
 
-// =============================================================================
-// VIEWS
-// =============================================================================
-
-const VIEWS: { id: ViewId; label: string }[] = [
-  { id: 'identity', label: 'Identity' },
-  { id: 'ministries', label: 'Ministries' },
-  { id: 'operations', label: 'Operations' },
-];
+const ACCENT = MODE_ACCENT.church;
 
 // =============================================================================
-// MOCK DATA
+// MOCK DATA — ICCLA (ICC Los Angeles)
 // =============================================================================
 
-const CHURCH_IDENTITY = {
-  name: '2819 Church',
-  abbreviation: '2819 Church',
-  mission: 'Raising a generation of leaders who will transform the world for Christ',
-  denomination: 'Non-denominational',
-  founded: '2015',
-  location: 'Atlanta, GA',
-  seniorPastor: 'Pastor Philip Anthony Mitchell',
-  services: [
-    { day: 'Sunday', time: '10:00 AM', type: 'Morning Service' },
-    { day: 'Sunday', time: '6:00 PM', type: 'Evening Service' },
-    { day: 'Wednesday', time: '7:00 PM', type: 'Bible Study' },
-  ],
-  coreValues: ['Faith', 'Excellence', 'Community', 'Service'],
+const CAMPUS = {
+  name: 'ICC Los Angeles',
+  abbreviation: 'ICCLA',
+  city: 'Los Angeles, CA',
+  status: 'Active' as const,
+  founded: '2003',
+  leadPastor: 'Pastor Philip Anthony Mitchell',
+  serviceSummary: 'Sun 10 AM · Sun 6 PM · Wed 7 PM',
 };
 
-interface Ministry {
+const SNAPSHOT = {
+  weeklyServices: 3,
+  activeMinistries: 9,
+  activeVolunteers: 85,
+  upcomingEvent: 'Kingdom Conference — Jun 14',
+};
+
+const SERVICES = [
+  { label: 'Sunday Morning Service', day: 'Sunday', time: '10:00 AM', type: 'recurring' as const },
+  { label: 'Sunday Evening Service', day: 'Sunday', time: '6:00 PM', type: 'recurring' as const },
+  { label: 'Midweek Bible Study', day: 'Wednesday', time: '7:00 PM', type: 'recurring' as const },
+];
+
+interface MinistryItem {
   id: string;
   name: string;
   category: string;
   memberCount: number;
   leader: string;
-  schedule: string;
-  status: 'Active' | 'Seasonal';
-  description: string;
+  yours: boolean;
+  yourRole?: string;
 }
 
-const MINISTRIES: Ministry[] = [
-  { id: 'm1', name: 'Catalyst', category: 'Young Adults', memberCount: 45, leader: 'Bro. Michael Scott', schedule: 'Fridays 7:00 PM', status: 'Active', description: 'Young adult fellowship and discipleship' },
-  { id: 'm2', name: '2819 Kids', category: 'Children', memberCount: 30, leader: 'Sis. Angela Davis', schedule: 'Sundays 10:00 AM', status: 'Active', description: 'Children\'s church and education' },
-  { id: 'm3', name: 'Ignite Youth', category: 'Teens', memberCount: 25, leader: 'Pastor Ryan Mitchell', schedule: 'Fridays 6:00 PM', status: 'Active', description: 'Teen youth group and mentorship' },
-  { id: 'm4', name: 'Rooted', category: 'Discipleship', memberCount: 60, leader: 'Elder Mary Thompson', schedule: 'Wednesdays', status: 'Active', description: 'Foundational discipleship program' },
-  { id: 'm5', name: 'Connect Groups', category: 'Small Groups', memberCount: 8, leader: 'Tatjuana Phillips', schedule: 'Various', status: 'Active', description: '8 home-based small groups across LA' },
-  { id: 'm6', name: 'Worship Team', category: 'Music/Worship', memberCount: 20, leader: 'Min. Lisa Brooks', schedule: 'Sundays & Rehearsals', status: 'Active', description: 'Worship team and choir' },
-  { id: 'm7', name: 'Single & Purposeful', category: 'Singles', memberCount: 35, leader: 'Deacon Robert Davis', schedule: 'Monthly gatherings', status: 'Active', description: 'Singles fellowship and service' },
-  { id: 'm8', name: 'Community Outreach', category: 'Evangelism', memberCount: 15, leader: 'Bro. Michael Scott', schedule: 'Saturdays', status: 'Seasonal', description: 'Street evangelism and community outreach' },
-  { id: 'm9', name: 'Morning Prayer Line', category: 'Radio', memberCount: 0, leader: 'Pastor Philip Anthony Mitchell', schedule: 'Weekly broadcast', status: 'Active', description: 'Radio ministry and podcast' },
+const MINISTRIES: MinistryItem[] = [
+  { id: 'm1', name: 'Catalyst', category: 'Young Adults', memberCount: 45, leader: 'Bro. Michael Scott', yours: false },
+  { id: 'm2', name: '2819 Kids', category: 'Children', memberCount: 30, leader: 'Sis. Angela Davis', yours: true, yourRole: 'Teacher' },
+  { id: 'm3', name: 'Ignite Youth', category: 'Teens', memberCount: 25, leader: 'Pastor Ryan Mitchell', yours: false },
+  { id: 'm4', name: 'Rooted', category: 'Discipleship', memberCount: 60, leader: 'Elder Mary Thompson', yours: false },
+  { id: 'm5', name: 'Connect Groups', category: 'Small Groups', memberCount: 8, leader: 'Tatjuana Phillips', yours: false },
+  { id: 'm6', name: 'Worship Team', category: 'Music/Worship', memberCount: 20, leader: 'Min. Lisa Brooks', yours: false },
+  { id: 'm7', name: 'Single & Purposeful', category: 'Singles', memberCount: 35, leader: 'Deacon Robert Davis', yours: true, yourRole: 'Member' },
+  { id: 'm8', name: 'Community Outreach', category: 'Evangelism', memberCount: 15, leader: 'Bro. Michael Scott', yours: false },
+  { id: 'm9', name: 'Morning Prayer Line', category: 'Radio', memberCount: 0, leader: 'Pastor Philip Anthony Mitchell', yours: false },
 ];
 
-interface Task {
-  id: string;
-  title: string;
-  assignee: string;
-  priority: 'High' | 'Normal' | 'Low';
-  status: 'Pending' | 'In Progress' | 'Done';
-}
+const VOLUNTEER_SNAPSHOT = {
+  total: 85,
+  childrenTeam: 12,
+  worshipTeam: 20,
+  openPositions: 4,
+};
 
-const OPS_TASKS: Task[] = [
-  { id: 't1', title: 'Update church website with new service times', assignee: 'Media Team', priority: 'High', status: 'In Progress' },
-  { id: 't2', title: 'Prepare Easter service program', assignee: 'Pastor Grace', priority: 'High', status: 'Pending' },
-  { id: 't3', title: 'Order communion supplies', assignee: 'Deacon Davis', priority: 'Normal', status: 'Pending' },
-  { id: 't4', title: 'Schedule building inspection', assignee: 'Operations', priority: 'Normal', status: 'In Progress' },
-  { id: 't5', title: 'Print new member welcome packets', assignee: 'Admin', priority: 'Low', status: 'Pending' },
+type HealthStatus = 'Healthy' | 'Review' | 'Restricted' | 'Good' | 'Pending Docs' | 'Risk' | 'Operational' | 'Issue Logged';
+
+const OPS_HEALTH: { label: string; status: HealthStatus; targetTab: number }[] = [
+  { label: 'Finance Status', status: 'Healthy', targetTab: 2 },
+  { label: 'Compliance Status', status: 'Good', targetTab: 3 },
+  { label: 'Facilities Status', status: 'Operational', targetTab: 4 },
 ];
 
-interface EventPlan {
-  id: string;
-  title: string;
-  date: string;
-  type: string;
-  status: 'Confirmed' | 'Planning' | 'Tentative';
-}
-
-const EVENT_PLANS: EventPlan[] = [
-  { id: 'e1', title: 'Sunday Worship Service', date: 'Weekly · Recurring', type: 'Service', status: 'Confirmed' },
-  { id: 'e2', title: 'Kingdom Conference 2025', date: 'Jun 14-16, 2025', type: 'Conference', status: 'Planning' },
-  { id: 'e3', title: 'Youth Summer Camp', date: 'Jul 20-25, 2025', type: 'Camp', status: 'Tentative' },
-];
-
-interface Approval {
-  id: string;
-  title: string;
-  requestedBy: string;
-  amount?: string;
-  status: 'Pending';
-}
-
-const APPROVALS: Approval[] = [
-  { id: 'a1', title: 'Sound system upgrade proposal', requestedBy: 'Min. Lisa Brooks', amount: '$4,500' },
-  { id: 'a2', title: 'Catalyst retreat venue booking', requestedBy: 'Bro. Michael Scott', amount: '$1,200' },
-  { id: 'a3', title: 'New volunteer background check batch', requestedBy: 'Admin', amount: '$350' },
-];
-
-interface VolunteerGap {
-  id: string;
-  role: string;
-  ministry: string;
-  urgency: 'Urgent' | 'Normal';
-}
-
-const VOLUNTEER_GAPS: VolunteerGap[] = [
-  { id: 'v1', role: 'Children\'s Church Teacher', ministry: '2819 Kids', urgency: 'Urgent' },
-  { id: 'v2', role: 'Sound Technician', ministry: 'Worship', urgency: 'Urgent' },
-  { id: 'v3', role: 'Parking Lot Attendant', ministry: 'Operations', urgency: 'Normal' },
-  { id: 'v4', role: 'Greeter (Sunday PM)', ministry: 'Hospitality', urgency: 'Normal' },
+const QUICK_LINKS: { label: string; icon: string; targetTab: number }[] = [
+  { label: 'People', icon: 'person.2.fill', targetTab: 1 },
+  { label: 'Finance', icon: 'dollarsign.circle.fill', targetTab: 2 },
+  { label: 'Compliance', icon: 'shield.checkmark.fill', targetTab: 3 },
+  { label: 'Facilities', icon: 'mappin.and.ellipse', targetTab: 4 },
+  { label: 'Ledger', icon: 'doc.text', targetTab: 5 },
 ];
 
 // =============================================================================
 // HELPERS
 // =============================================================================
 
-const PRIORITY_COLORS: Record<string, string> = {
-  High: '#EF4444',
-  Normal: '#F59E0B',
-  Low: '#A1A1AA',
+const HEALTH_COLOR: Record<HealthStatus, string> = {
+  Healthy: '#22C55E',
+  Good: '#22C55E',
+  Operational: '#22C55E',
+  Review: '#F59E0B',
+  'Pending Docs': '#F59E0B',
+  'Issue Logged': '#F59E0B',
+  Restricted: '#EF4444',
+  Risk: '#EF4444',
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  Active: '#22C55E',
-  Seasonal: '#F59E0B',
-  Pending: '#F59E0B',
-  'In Progress': ACCENT,
-  Done: '#22C55E',
-  Confirmed: '#22C55E',
-  Planning: ACCENT,
-  Tentative: '#F59E0B',
-  Urgent: '#EF4444',
-  Normal: '#A1A1AA',
-};
-
-// =============================================================================
-// VIEW BAR
-// =============================================================================
-
-function ViewBar({
-  views,
-  activeId,
-  onSelect,
-  accentColor,
-  colors,
-}: {
-  views: typeof VIEWS;
-  activeId: ViewId;
-  onSelect: (id: ViewId) => void;
-  accentColor: string;
-  colors: typeof Colors.light;
-}) {
+function SectionLabel({ label, colors }: { label: string; colors: typeof Colors.light }) {
   return (
-    <View style={s.viewBar}>
-      {views.map((v) => {
-        const isActive = v.id === activeId;
-        return (
-          <Pressable
-            key={v.id}
-            style={[
-              s.viewPill,
-              {
-                backgroundColor: isActive ? accentColor : '#2F3336',
-              },
-            ]}
-            onPress={() => {
-              Haptics.selectionAsync();
-              onSelect(v.id);
-            }}
-          >
-            <ThemedText
-              style={[
-                s.viewPillText,
-                { color: isActive ? '#000' : colors.textSecondary },
-              ]}
-            >
-              {v.label}
-            </ThemedText>
-          </Pressable>
-        );
-      })}
+    <ThemedText style={[s.sectionLabel, { color: colors.textSecondary }]}>
+      {label}
+    </ThemedText>
+  );
+}
+
+function Card({ colors, children }: { colors: typeof Colors.light; children: React.ReactNode }) {
+  return (
+    <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      {children}
+    </View>
+  );
+}
+
+function StatCell({ label, value, colors, accent }: { label: string; value: string | number; colors: typeof Colors.light; accent?: string }) {
+  return (
+    <View style={s.statCell}>
+      <ThemedText style={[s.statValue, { color: accent ?? colors.text }]}>{value}</ThemedText>
+      <ThemedText style={[s.statLabel, { color: colors.textTertiary }]}>{label}</ThemedText>
     </View>
   );
 }
 
 // =============================================================================
-// IDENTITY VIEW
+// BLOCK 0 — HEADER
 // =============================================================================
 
-function IdentityView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
-  const info = CHURCH_IDENTITY;
+function HeaderBlock({ colors }: { colors: typeof Colors.light }) {
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Church Name & Mission */}
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <ThemedText style={[s.churchName, { color: colors.text }]}>{info.abbreviation}</ThemedText>
-        <ThemedText style={[s.churchFullName, { color: colors.textSecondary }]}>{info.name}</ThemedText>
-        <ThemedText style={[s.missionText, { color: accentColor }]}>"{info.mission}"</ThemedText>
+    <View style={s.headerBlock}>
+      <View style={[s.campusIcon, { backgroundColor: ACCENT + '20' }]}>
+        <IconSymbol name="building.2.fill" size={28} color={ACCENT} />
       </View>
-
-      {/* Details */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>DETAILS</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {[
-          { label: 'Denomination', value: info.denomination },
-          { label: 'Founded', value: info.founded },
-          { label: 'Location', value: info.location },
-          { label: 'Senior Pastor', value: info.seniorPastor },
-        ].map((item, idx) => (
-          <View
-            key={idx}
-            style={[
-              s.detailRow,
-              idx < 3 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <ThemedText style={[s.detailLabel, { color: colors.textSecondary }]}>{item.label}</ThemedText>
-            <ThemedText style={[s.detailValue, { color: colors.text }]}>{item.value}</ThemedText>
-          </View>
-        ))}
+      <ThemedText style={[s.campusName, { color: colors.text }]}>{CAMPUS.name}</ThemedText>
+      <ThemedText style={[s.campusCity, { color: colors.textSecondary }]}>{CAMPUS.city}</ThemedText>
+      <ThemedText style={[s.campusServices, { color: colors.textTertiary }]}>{CAMPUS.serviceSummary}</ThemedText>
+      <View style={[s.statusPill, { backgroundColor: '#22C55E20' }]}>
+        <View style={[s.statusDot, { backgroundColor: '#22C55E' }]} />
+        <ThemedText style={[s.statusPillText, { color: '#22C55E' }]}>{CAMPUS.status}</ThemedText>
       </View>
-
-      {/* Services */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>SERVICE TIMES</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {info.services.map((svc, idx) => (
-          <View
-            key={idx}
-            style={[
-              s.detailRow,
-              idx < info.services.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <View style={{ flex: 1 }}>
-              <ThemedText style={[s.serviceType, { color: colors.text }]}>{svc.type}</ThemedText>
-              <ThemedText style={[s.serviceSchedule, { color: colors.textSecondary }]}>{svc.day} · {svc.time}</ThemedText>
-            </View>
-            <IconSymbol name="calendar" size={16} color={colors.textTertiary} />
-          </View>
-        ))}
+      <View style={s.headerMeta}>
+        <ThemedText style={[s.headerMetaText, { color: colors.textTertiary }]}>
+          Founded {CAMPUS.founded} · Lead Pastor: {CAMPUS.leadPastor}
+        </ThemedText>
       </View>
-
-      {/* Core Values */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>CORE VALUES</ThemedText>
-      <View style={s.valuesRow}>
-        {info.coreValues.map((val) => (
-          <View key={val} style={[s.valuePill, { backgroundColor: accentColor + '20' }]}>
-            <ThemedText style={[s.valuePillText, { color: accentColor }]}>{val}</ThemedText>
-          </View>
-        ))}
-      </View>
-    </ScrollView>
+    </View>
   );
 }
 
 // =============================================================================
-// MINISTRIES VIEW
+// BLOCK 1 — CAMPUS SNAPSHOT (Truth Card)
 // =============================================================================
 
-function MinistriesView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+function SnapshotBlock({ colors, canSeeVolunteers }: { colors: typeof Colors.light; canSeeVolunteers: boolean }) {
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>ACTIVE MINISTRIES</ThemedText>
-      {MINISTRIES.map((ministry) => (
-        <View
-          key={ministry.id}
-          style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}
-        >
-          <View style={s.ministryHeader}>
+    <>
+      <SectionLabel label="CAMPUS SNAPSHOT" colors={colors} />
+      <Card colors={colors}>
+        <View style={s.statRow}>
+          <StatCell label="Weekly Services" value={SNAPSHOT.weeklyServices} colors={colors} accent={ACCENT} />
+          <View style={[s.statDivider, { backgroundColor: colors.border }]} />
+          <StatCell label="Active Ministries" value={SNAPSHOT.activeMinistries} colors={colors} accent={ACCENT} />
+          {canSeeVolunteers && (
+            <>
+              <View style={[s.statDivider, { backgroundColor: colors.border }]} />
+              <StatCell label="Active Volunteers" value={SNAPSHOT.activeVolunteers} colors={colors} accent={ACCENT} />
+            </>
+          )}
+        </View>
+        <View style={[s.eventBanner, { backgroundColor: ACCENT + '10', borderColor: ACCENT + '30' }]}>
+          <IconSymbol name="calendar" size={14} color={ACCENT} />
+          <ThemedText style={[s.eventBannerText, { color: colors.text }]}>
+            {SNAPSHOT.upcomingEvent}
+          </ThemedText>
+        </View>
+      </Card>
+    </>
+  );
+}
+
+// =============================================================================
+// BLOCK 2 — SERVICE RHYTHM
+// =============================================================================
+
+function ServiceRhythmBlock({ colors }: { colors: typeof Colors.light }) {
+  return (
+    <>
+      <SectionLabel label="SERVICE RHYTHM" colors={colors} />
+      <Card colors={colors}>
+        {SERVICES.map((svc, idx) => (
+          <View
+            key={idx}
+            style={[
+              s.serviceRow,
+              idx < SERVICES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+            ]}
+          >
             <View style={{ flex: 1 }}>
-              <ThemedText style={[s.ministryName, { color: colors.text }]}>{ministry.name}</ThemedText>
-              <ThemedText style={[s.ministryCategory, { color: colors.textSecondary }]}>{ministry.category}</ThemedText>
+              <ThemedText style={[s.serviceLabel, { color: colors.text }]}>{svc.label}</ThemedText>
+              <ThemedText style={[s.serviceTime, { color: colors.textSecondary }]}>{svc.day} · {svc.time}</ThemedText>
             </View>
-            <View style={[s.statusBadge, { backgroundColor: STATUS_COLORS[ministry.status] + '20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: STATUS_COLORS[ministry.status] }]}>
-                {ministry.status}
-              </ThemedText>
-            </View>
+            <IconSymbol name="calendar" size={14} color={colors.textTertiary} />
           </View>
-          <ThemedText style={[s.ministryDesc, { color: colors.textSecondary }]}>{ministry.description}</ThemedText>
-          <View style={s.ministryMeta}>
-            <View style={s.metaItem}>
-              <IconSymbol name="person.fill" size={12} color={colors.textTertiary} />
-              <ThemedText style={[s.metaText, { color: colors.textSecondary }]}>{ministry.leader}</ThemedText>
-            </View>
-            {ministry.memberCount > 0 && (
-              <View style={s.metaItem}>
-                <IconSymbol name="person.3.fill" size={12} color={colors.textTertiary} />
-                <ThemedText style={[s.metaText, { color: colors.textSecondary }]}>
-                  {ministry.memberCount} {ministry.category === 'Small Groups' ? 'groups' : 'members'}
-                </ThemedText>
+        ))}
+        <View style={s.lockedRow}>
+          <View style={[s.lockedChip, { backgroundColor: colors.backgroundTertiary }]}>
+            <IconSymbol name="lock.fill" size={10} color={colors.textTertiary} />
+            <ThemedText style={[s.lockedText, { color: colors.textTertiary }]}>LOCKED</ThemedText>
+          </View>
+          <ThemedText style={[s.helperText, { color: colors.textTertiary }]}>
+            Use Nexus to propose service adjustments.
+          </ThemedText>
+        </View>
+      </Card>
+    </>
+  );
+}
+
+// =============================================================================
+// BLOCK 3 — MINISTRY STRUCTURE
+// =============================================================================
+
+function MinistryStructureBlock({ colors }: { colors: typeof Colors.light }) {
+  const yourMinistries = MINISTRIES.filter((m) => m.yours);
+  return (
+    <>
+      <SectionLabel label="MINISTRY STRUCTURE" colors={colors} />
+      <Card colors={colors}>
+        <View style={s.ministrySummary}>
+          <ThemedText style={[s.ministrySummaryText, { color: colors.textSecondary }]}>
+            {MINISTRIES.length} Total Ministries · {yourMinistries.length} Yours
+          </ThemedText>
+        </View>
+        {MINISTRIES.map((ministry, idx) => (
+          <Pressable
+            key={ministry.id}
+            style={({ pressed }) => [
+              s.ministryRow,
+              idx < MINISTRIES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+              pressed && { opacity: 0.7 },
+            ]}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <View style={[s.ministryDot, { backgroundColor: ministry.yours ? ACCENT : colors.textTertiary }]} />
+            <View style={{ flex: 1 }}>
+              <View style={s.ministryNameRow}>
+                <ThemedText style={[s.ministryName, { color: colors.text }]}>{ministry.name}</ThemedText>
+                {ministry.yours && (
+                  <View style={[s.yourBadge, { backgroundColor: ACCENT + '20' }]}>
+                    <ThemedText style={[s.yourBadgeText, { color: ACCENT }]}>You: {ministry.yourRole}</ThemedText>
+                  </View>
+                )}
               </View>
-            )}
-            <View style={s.metaItem}>
-              <IconSymbol name="calendar" size={12} color={colors.textTertiary} />
-              <ThemedText style={[s.metaText, { color: colors.textSecondary }]}>{ministry.schedule}</ThemedText>
+              <ThemedText style={[s.ministryMeta, { color: colors.textTertiary }]}>
+                {ministry.category} · {ministry.leader}
+              </ThemedText>
             </View>
-          </View>
-        </View>
-      ))}
-    </ScrollView>
+            <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+          </Pressable>
+        ))}
+      </Card>
+    </>
   );
 }
 
 // =============================================================================
-// OPERATIONS VIEW
+// BLOCK 4 — VOLUNTEER SNAPSHOT
 // =============================================================================
 
-function OperationsView({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
+function VolunteerSnapshotBlock({ colors, canSeeDetail }: { colors: typeof Colors.light; canSeeDetail: boolean }) {
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Tasks */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>TASKS</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {OPS_TASKS.map((task, idx) => (
-          <View
-            key={task.id}
-            style={[
-              s.taskRow,
-              idx < OPS_TASKS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <View style={[s.priorityDot, { backgroundColor: PRIORITY_COLORS[task.priority] }]} />
-            <View style={{ flex: 1 }}>
-              <ThemedText style={[s.taskTitle, { color: colors.text }]}>{task.title}</ThemedText>
-              <ThemedText style={[s.taskAssignee, { color: colors.textSecondary }]}>{task.assignee}</ThemedText>
-            </View>
-            <View style={[s.statusBadge, { backgroundColor: STATUS_COLORS[task.status] + '20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: STATUS_COLORS[task.status] }]}>
-                {task.status}
-              </ThemedText>
-            </View>
-          </View>
-        ))}
-      </View>
-
-      {/* Event Planning */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>EVENT PLANNING</ThemedText>
-      {EVENT_PLANS.map((event) => (
-        <View
-          key={event.id}
-          style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}
-        >
-          <View style={s.eventRow}>
-            <View style={{ flex: 1 }}>
-              <ThemedText style={[s.eventTitle, { color: colors.text }]}>{event.title}</ThemedText>
-              <ThemedText style={[s.eventDate, { color: colors.textSecondary }]}>{event.date} · {event.type}</ThemedText>
-            </View>
-            <View style={[s.statusBadge, { backgroundColor: STATUS_COLORS[event.status] + '20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: STATUS_COLORS[event.status] }]}>
-                {event.status}
-              </ThemedText>
-            </View>
-          </View>
+    <>
+      <SectionLabel label="VOLUNTEER SNAPSHOT" colors={colors} />
+      <Card colors={colors}>
+        <View style={s.statRow}>
+          <StatCell label="Total Volunteers" value={VOLUNTEER_SNAPSHOT.total} colors={colors} accent={ACCENT} />
+          <View style={[s.statDivider, { backgroundColor: colors.border }]} />
+          <StatCell label="Children's Team" value={VOLUNTEER_SNAPSHOT.childrenTeam} colors={colors} />
+          <View style={[s.statDivider, { backgroundColor: colors.border }]} />
+          <StatCell label="Worship Team" value={VOLUNTEER_SNAPSHOT.worshipTeam} colors={colors} />
         </View>
-      ))}
-
-      {/* Approvals */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>PENDING APPROVALS</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {APPROVALS.map((approval, idx) => (
-          <View
-            key={approval.id}
-            style={[
-              s.approvalRow,
-              idx < APPROVALS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <View style={{ flex: 1 }}>
-              <ThemedText style={[s.approvalTitle, { color: colors.text }]}>{approval.title}</ThemedText>
-              <ThemedText style={[s.approvalMeta, { color: colors.textSecondary }]}>
-                {approval.requestedBy}{approval.amount ? ` · ${approval.amount}` : ''}
+        {VOLUNTEER_SNAPSHOT.openPositions > 0 && (
+          <View style={[s.openPositions, { backgroundColor: '#F59E0B10', borderColor: '#F59E0B30' }]}>
+            <IconSymbol name="exclamationmark.triangle" size={13} color="#F59E0B" />
+            <ThemedText style={[s.openPositionsText, { color: colors.text }]}>
+              {VOLUNTEER_SNAPSHOT.openPositions} open positions
+            </ThemedText>
+            {canSeeDetail && (
+              <ThemedText style={[s.openPositionsHint, { color: colors.textTertiary }]}>
+                in your ministry
               </ThemedText>
-            </View>
-            <View style={[s.statusBadge, { backgroundColor: '#F59E0B20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: '#F59E0B' }]}>Pending</ThemedText>
-            </View>
+            )}
           </View>
+        )}
+      </Card>
+    </>
+  );
+}
+
+// =============================================================================
+// BLOCK 5 — OPERATIONAL HEALTH
+// =============================================================================
+
+function OperationalHealthBlock({ colors }: { colors: typeof Colors.light }) {
+  return (
+    <>
+      <SectionLabel label="OPERATIONAL HEALTH" colors={colors} />
+      <Card colors={colors}>
+        {OPS_HEALTH.map((item, idx) => {
+          const color = HEALTH_COLOR[item.status];
+          return (
+            <Pressable
+              key={idx}
+              style={({ pressed }) => [
+                s.healthRow,
+                idx < OPS_HEALTH.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+                pressed && { opacity: 0.7 },
+              ]}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <ThemedText style={[s.healthLabel, { color: colors.text }]}>{item.label}</ThemedText>
+              <View style={[s.healthChip, { backgroundColor: color + '20' }]}>
+                <View style={[s.healthDot, { backgroundColor: color }]} />
+                <ThemedText style={[s.healthChipText, { color }]}>{item.status}</ThemedText>
+              </View>
+              <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+            </Pressable>
+          );
+        })}
+      </Card>
+    </>
+  );
+}
+
+// =============================================================================
+// BLOCK 6 — QUICK LINKS
+// =============================================================================
+
+function QuickLinksBlock({ colors }: { colors: typeof Colors.light }) {
+  return (
+    <>
+      <SectionLabel label="QUICK LINKS" colors={colors} />
+      <View style={s.quickLinksGrid}>
+        {QUICK_LINKS.map((link) => (
+          <Pressable
+            key={link.label}
+            style={({ pressed }) => [
+              s.quickLinkCard,
+              { backgroundColor: colors.card, borderColor: colors.border },
+              pressed && { opacity: 0.7 },
+            ]}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <IconSymbol name={link.icon as any} size={20} color={ACCENT} />
+            <ThemedText style={[s.quickLinkLabel, { color: colors.text }]}>{link.label}</ThemedText>
+          </Pressable>
         ))}
       </View>
-
-      {/* Volunteer Gaps */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>VOLUNTEER GAPS THIS WEEK</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {VOLUNTEER_GAPS.map((gap, idx) => (
-          <View
-            key={gap.id}
-            style={[
-              s.gapRow,
-              idx < VOLUNTEER_GAPS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <View style={[s.priorityDot, { backgroundColor: STATUS_COLORS[gap.urgency] }]} />
-            <View style={{ flex: 1 }}>
-              <ThemedText style={[s.gapRole, { color: colors.text }]}>{gap.role}</ThemedText>
-              <ThemedText style={[s.gapMinistry, { color: colors.textSecondary }]}>{gap.ministry}</ThemedText>
-            </View>
-            <View style={[s.statusBadge, { backgroundColor: STATUS_COLORS[gap.urgency] + '20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: STATUS_COLORS[gap.urgency] }]}>
-                {gap.urgency}
-              </ThemedText>
-            </View>
-          </View>
-        ))}
-      </View>
-    </ScrollView>
+    </>
   );
 }
 
@@ -437,36 +382,23 @@ function OperationsView({ colors, accentColor }: { colors: typeof Colors.light; 
 // =============================================================================
 
 export function ChurchProgram({ colors, accentColor, role }: Props) {
-  const [activeView, setActiveView] = useState<ViewId>('identity');
-
-  const handleViewChange = useCallback((id: ViewId) => {
-    setActiveView(id);
-  }, []);
-
-  const renderContent = () => {
-    switch (activeView) {
-      case 'identity':
-        return <IdentityView colors={colors} accentColor={accentColor} />;
-      case 'ministries':
-        return <MinistriesView colors={colors} accentColor={accentColor} />;
-      case 'operations':
-        return <OperationsView colors={colors} accentColor={accentColor} />;
-      default:
-        return null;
-    }
-  };
+  const churchRole = (role ?? 'C8') as ChurchRoleLens;
+  const canSeeVolunteers = isStaffLevel(churchRole) || isPastoralLevel(churchRole);
+  const canSeeMinistryDetail = isStaffLevel(churchRole);
 
   return (
-    <View style={s.container}>
-      <ViewBar
-        views={VIEWS}
-        activeId={activeView}
-        onSelect={handleViewChange}
-        accentColor={accentColor}
-        colors={colors}
-      />
-      {renderContent()}
-    </View>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={s.scroll}
+    >
+      <HeaderBlock colors={colors} />
+      <SnapshotBlock colors={colors} canSeeVolunteers={canSeeVolunteers} />
+      <ServiceRhythmBlock colors={colors} />
+      <MinistryStructureBlock colors={colors} />
+      <VolunteerSnapshotBlock colors={colors} canSeeDetail={canSeeMinistryDetail} />
+      <OperationalHealthBlock colors={colors} />
+      <QuickLinksBlock colors={colors} />
+    </ScrollView>
   );
 }
 
@@ -475,42 +407,19 @@ export function ChurchProgram({ colors, accentColor, role }: Props) {
 // =============================================================================
 
 const s = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-
-  // -- View Bar --
-  viewBar: {
-    flexDirection: 'row',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    gap: Spacing.sm,
-  },
-  viewPill: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderRadius: BorderRadius.full,
-  },
-  viewPillText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-
-  // -- Scroll --
   scroll: {
     padding: Spacing.md,
     paddingBottom: 120,
   },
 
-  // -- Section Header --
-  sectionHeader: {
+  // -- Section Label --
+  sectionLabel: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
     letterSpacing: 0.5,
-    marginBottom: 8,
-    marginTop: Spacing.lg,
     textTransform: 'uppercase',
+    marginTop: Spacing.lg,
+    marginBottom: 8,
   },
 
   // -- Card --
@@ -518,160 +427,247 @@ const s = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     padding: 14,
-    marginBottom: Spacing.sm,
   },
 
-  // -- Identity --
-  churchName: {
-    fontSize: 24,
+  // -- Block 0: Header --
+  headerBlock: {
+    alignItems: 'center',
+    paddingVertical: Spacing.md,
+    gap: 4,
+  },
+  campusIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  campusName: {
+    fontSize: 22,
     fontWeight: '700',
+  },
+  campusCity: {
+    fontSize: 14,
+  },
+  campusServices: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  statusPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginTop: 8,
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  statusPillText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  headerMeta: {
+    marginTop: 4,
+  },
+  headerMetaText: {
+    fontSize: 12,
+    textAlign: 'center',
+  },
+
+  // -- Block 1: Campus Snapshot --
+  statRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  statCell: {
+    alignItems: 'center',
+    flex: 1,
+    paddingVertical: 4,
+  },
+  statValue: {
+    fontSize: 22,
+    fontWeight: '700',
+  },
+  statLabel: {
+    fontSize: 11,
+    marginTop: 2,
+    textAlign: 'center',
+  },
+  statDivider: {
+    width: 1,
+    height: 28,
+  },
+  eventBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  eventBannerText: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+
+  // -- Block 2: Service Rhythm --
+  serviceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  serviceLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  serviceTime: {
+    fontSize: 12,
+    marginTop: 1,
+  },
+  lockedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 10,
+    paddingTop: 10,
+  },
+  lockedChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  lockedText: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  helperText: {
+    fontSize: 11,
+    flex: 1,
+  },
+
+  // -- Block 3: Ministry Structure --
+  ministrySummary: {
+    paddingBottom: 10,
     marginBottom: 4,
   },
-  churchFullName: {
-    fontSize: 14,
-    marginBottom: Spacing.sm,
-  },
-  missionText: {
-    fontSize: 14,
-    fontStyle: 'italic',
-    lineHeight: 20,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  detailLabel: {
+  ministrySummaryText: {
     fontSize: 13,
+    fontWeight: '500',
   },
-  detailValue: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  serviceType: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  serviceSchedule: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-  valuesRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.sm,
-  },
-  valuePill: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: BorderRadius.full,
-  },
-  valuePillText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-
-  // -- Ministries --
-  ministryHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 6,
-  },
-  ministryName: {
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  ministryCategory: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-  ministryDesc: {
-    fontSize: 12,
-    lineHeight: 17,
-    marginBottom: Spacing.sm,
-  },
-  ministryMeta: {
-    gap: 6,
-  },
-  metaItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  metaText: {
-    fontSize: 12,
-  },
-
-  // -- Operations --
-  taskRow: {
+  ministryRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 10,
-    gap: Spacing.sm,
+    gap: 10,
   },
-  priorityDot: {
+  ministryDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
   },
-  taskTitle: {
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  taskAssignee: {
-    fontSize: 11,
-    marginTop: 2,
-  },
-  eventRow: {
+  ministryNameRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
   },
-  eventTitle: {
+  ministryName: {
     fontSize: 14,
     fontWeight: '600',
   },
-  eventDate: {
-    fontSize: 12,
-    marginTop: 2,
+  yourBadge: {
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 8,
   },
-  approvalRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    gap: Spacing.sm,
-  },
-  approvalTitle: {
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  approvalMeta: {
-    fontSize: 11,
-    marginTop: 2,
-  },
-  gapRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    gap: Spacing.sm,
-  },
-  gapRole: {
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  gapMinistry: {
-    fontSize: 11,
-    marginTop: 2,
-  },
-
-  // -- Status Badge --
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: BorderRadius.full,
-  },
-  statusBadgeText: {
+  yourBadgeText: {
     fontSize: 10,
     fontWeight: '700',
+  },
+  ministryMeta: {
+    fontSize: 12,
+    marginTop: 1,
+  },
+
+  // -- Block 4: Volunteer Snapshot --
+  openPositions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  openPositionsText: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  openPositionsHint: {
+    fontSize: 11,
+  },
+
+  // -- Block 5: Operational Health --
+  healthRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    gap: 8,
+  },
+  healthLabel: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  healthChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  healthDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  healthChipText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+
+  // -- Block 6: Quick Links --
+  quickLinksGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  quickLinkCard: {
+    width: '30%',
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 6,
+  },
+  quickLinkLabel: {
+    fontSize: 12,
+    fontWeight: '600',
   },
 });
