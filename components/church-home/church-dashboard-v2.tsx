@@ -245,9 +245,7 @@ export function ChurchDashboardV2({ colors, accent, role = 'C8', onSwitchTab }: 
             style={({ pressed }) => [s.engagementCard, pressed && { opacity: 0.7 }]}
             onPress={() => {
               Haptics.impactAsync(ImpactFeedbackStyle.Light);
-              const enriched = getEnrichedEvent(nextEvent.id) || fromCalendarEvent(nextEvent);
-              setSelectedEvent(enriched);
-              setEventSheetVisible(true);
+              onSwitchTab?.(1);
             }}
           >
             <View style={[s.engagementIcon, { backgroundColor: 'rgba(29,155,240,0.15)' }]}>
