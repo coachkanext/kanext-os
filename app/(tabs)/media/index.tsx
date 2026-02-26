@@ -41,6 +41,7 @@ import type { StoryCircle, VideoFeedPost } from '@/data/mock-video-feed';
 import type { Mode } from '@/types';
 import { SportsExplorePageV2 } from '@/components/sports-explore/sports-explore-page-v2';
 import { ChurchExplorePageV2 } from '@/components/church-explore/church-explore-page-v2';
+import { BusinessExplorePageV2 } from '@/components/business-explore/business-explore-page-v2';
 import { ChurchRoomsV2 } from '@/components/church-rooms/church-rooms-v2';
 import { ChurchLibraryV2 } from '@/components/church-library/church-library-v2';
 import { SportsFilmRoomV2 } from '@/components/film-room/sports-film-room-v2';
@@ -490,6 +491,7 @@ function FeedPage({ colors, mode }: { colors: typeof Colors.light; mode: Mode })
 function ExplorePage({ colors, mode }: { colors: typeof Colors.light; mode: Mode }) {
   if (mode === 'sports') return <SportsExplorePageV2 />;
   if (mode === 'church') return <ChurchExplorePageV2 />;
+  if (mode === 'business') return <BusinessExplorePageV2 />;
   if (EMPTY_MODES.has(mode)) {
     return <EmptyState icon="magnifyingglass" title="Nothing to Explore" description="Explore content will appear here." />;
   }
