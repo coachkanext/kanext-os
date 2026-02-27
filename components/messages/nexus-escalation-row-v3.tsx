@@ -24,7 +24,7 @@ interface NexusEscalationRowV3Props {
 const HUMAN_ANSWER_LABEL: Record<Mode, string> = {
   sports: 'Answered by Coach',
   church: 'Answered by Leader',
-  business: 'Answered',
+  business: 'Answered by Authority',
   education: 'Answered',
   competition: 'Answered',
 };
@@ -47,6 +47,12 @@ const CHIP_ICONS: Record<string, string> = {
   event: 'calendar',
   media: 'play.rectangle',
   person: 'person',
+  deal: 'doc.text',
+  finance: 'banknote',
+  compliance: 'shield',
+  facility: 'building.2',
+  policy: 'doc.plaintext',
+  capital: 'chart.bar',
 };
 
 export function NexusEscalationRowV3({ escalation, onPress }: NexusEscalationRowV3Props) {

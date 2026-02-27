@@ -312,9 +312,179 @@ const BUSINESS_ROOMS: RoomV3[] = [
 ];
 
 const BUSINESS_NEXUS: NexusEscalationV3[] = [
-  { id: 'bn1', mode: 'business', askerName: 'Sarah Kim', askerInitials: 'SK', askerRole: 'Product Lead', question: 'What\'s the current DAU trend for the last 30 days?', viewingContext: 'Analytics Dashboard', timestamp: hoursAgo(2), status: 'unanswered' },
-  { id: 'bn2', mode: 'business', askerName: 'James Park', askerInitials: 'JP', askerRole: 'Design Lead', question: 'Which component has the most usage across all modes?', viewingContext: 'Design System', timestamp: hoursAgo(8), status: 'unanswered' },
-  { id: 'bn3', mode: 'business', askerName: 'Kofi Achebe', askerInitials: 'KA', askerRole: 'CTO', question: 'What\'s our current server cost per active user?', viewingContext: 'Infrastructure', timestamp: daysAgo(1), status: 'answered_by_nexus', answer: 'Current cost is $0.012 per active user per month, down from $0.018 after CDN migration.', resolvedAnswer: 'Current cost is $0.012 per active user per month, down from $0.018 after CDN migration.', answeredBy: 'Nexus' },
+  // ── Unanswered ──
+  {
+    id: 'bn1', mode: 'business',
+    askerName: 'You', askerInitials: 'ME', askerRole: 'Founder / CEO',
+    question: 'What\'s the current runway if we approve the $420K engineering headcount increase?',
+    viewingContext: 'Finance',
+    timestamp: hoursAgo(1),
+    status: 'unanswered',
+    contextChips: [
+      { type: 'finance', label: 'Engineering Budget' },
+      { type: 'capital', label: 'Series B' },
+    ],
+  },
+  {
+    id: 'bn2', mode: 'business',
+    askerName: 'Rachel Torres', askerInitials: 'RT', askerRole: 'COO',
+    question: 'What are the terms on the Floor 3 lease draft? Is it below market rate?',
+    viewingContext: 'Facilities',
+    timestamp: hoursAgo(3),
+    status: 'unanswered',
+    contextChips: [
+      { type: 'facility', label: 'Office Expansion' },
+    ],
+  },
+  // ── Escalated ──
+  {
+    id: 'bn3', mode: 'business',
+    askerName: 'You', askerInitials: 'ME', askerRole: 'Founder / CEO',
+    question: 'Is the NovaTech liability cap at $2M sufficient for our exposure level? What should our counter-proposal be?',
+    viewingContext: 'Deals',
+    timestamp: hoursAgo(4),
+    status: 'escalated',
+    contextChips: [
+      { type: 'deal', label: 'NovaTech Partnership' },
+      { type: 'compliance', label: 'Liability Assessment' },
+    ],
+    nexusAttempt: 'Based on projected revenue flow through the partnership, estimated max liability exposure is $3.8M over 3 years. A $2M cap is below our standard minimum of $5M. However, contract-specific risk depends on indemnification clauses and insurance coverage — escalating to General Counsel for definitive assessment.',
+    escalationTarget: 'General Counsel',
+  },
+  {
+    id: 'bn4', mode: 'business',
+    askerName: 'James Park', askerInitials: 'JP', askerRole: 'CFO',
+    question: 'Do we need board approval for the option pool expansion from 12% to 15% before Series B close?',
+    viewingContext: 'Capital',
+    timestamp: hoursAgo(6),
+    status: 'escalated',
+    contextChips: [
+      { type: 'capital', label: 'Series B' },
+      { type: 'policy', label: 'Option Pool' },
+    ],
+    nexusAttempt: 'Option pool expansion typically requires board consent per company bylaws and existing investor agreements. The specific threshold and approval mechanism depend on your Certificate of Incorporation and existing shareholder agreements — escalating to General Counsel for confirmation.',
+    escalationTarget: 'General Counsel',
+  },
+  {
+    id: 'bn5', mode: 'business',
+    askerName: 'Elena Park', askerInitials: 'EP', askerRole: 'VP Product',
+    question: 'Can we offer a 60-day enterprise pilot to Meridian Partners without a signed MSA?',
+    viewingContext: 'Deals',
+    timestamp: hoursAgo(10),
+    status: 'escalated',
+    contextChips: [
+      { type: 'deal', label: 'Meridian Partners Pilot' },
+      { type: 'compliance', label: 'Contract Requirements' },
+    ],
+    nexusAttempt: 'Standard policy requires a signed MSA before providing production access. A pilot agreement (lighter than full MSA) may be acceptable with appropriate liability protections. Escalating to Legal for guidance on minimum contractual requirements for pilot engagements.',
+    escalationTarget: 'General Counsel',
+  },
+  // ── Answered by Nexus ──
+  {
+    id: 'bn6', mode: 'business',
+    askerName: 'Kofi Achebe', askerInitials: 'KA', askerRole: 'CTO',
+    question: 'What\'s our current server cost per active user after the CDN migration?',
+    viewingContext: 'Infrastructure',
+    timestamp: daysAgo(1),
+    status: 'answered_by_nexus',
+    contextChips: [
+      { type: 'finance', label: 'Infrastructure Costs' },
+    ],
+    nexusAttempt: 'Current cost is $0.012 per active user per month, down from $0.018 pre-migration. That\'s a 33% reduction. Monthly infrastructure spend: $24K (was $36K). Savings annualized: $144K.',
+    resolvedAnswer: 'Current cost is $0.012 per active user per month, down from $0.018 pre-migration. That\'s a 33% reduction. Monthly infrastructure spend: $24K (was $36K). Savings annualized: $144K.',
+    answeredBy: 'Nexus',
+  },
+  {
+    id: 'bn7', mode: 'business',
+    askerName: 'You', askerInitials: 'ME', askerRole: 'Founder / CEO',
+    question: 'What\'s the current monthly burn rate and cash position?',
+    viewingContext: 'Finance',
+    timestamp: daysAgo(2),
+    status: 'answered_by_nexus',
+    contextChips: [
+      { type: 'finance', label: 'Burn Rate' },
+      { type: 'capital', label: 'Cash Position' },
+    ],
+    nexusAttempt: 'Monthly burn: $455K (down from $512K). Cash on hand: $8.2M. Current runway: 18.0 months. Burn reduction driven by CDN migration savings ($57K/month).',
+    resolvedAnswer: 'Monthly burn: $455K (down from $512K). Cash on hand: $8.2M. Current runway: 18.0 months. Burn reduction driven by CDN migration savings ($57K/month).',
+    answeredBy: 'Nexus',
+  },
+  // ── Answered by Human ──
+  {
+    id: 'bn8', mode: 'business',
+    askerName: 'You', askerInitials: 'ME', askerRole: 'Founder / CEO',
+    question: 'Has the SOC 2 data governance attestation been board-approved, or do we need a separate board vote?',
+    viewingContext: 'Compliance',
+    timestamp: daysAgo(3),
+    status: 'answered_by_coach',
+    contextChips: [
+      { type: 'compliance', label: 'SOC 2 Audit' },
+      { type: 'policy', label: 'Data Governance' },
+    ],
+    nexusAttempt: 'The data governance policy was adopted by executive leadership. Board-level ratification status is unclear from available records — escalating to General Counsel for confirmation.',
+    escalationTarget: 'General Counsel',
+    humanReplies: [
+      {
+        name: 'Sarah Kim',
+        initials: 'SK',
+        role: 'General Counsel',
+        content: 'The data governance policy was ratified by the board in the January 2026 meeting (Resolution 2026-003). No separate vote is needed. You can sign the attestation referencing that resolution number.',
+        timestamp: daysAgo(2.5),
+      },
+    ],
+    resolvedAnswer: 'Board-approved. Ratified January 2026 (Resolution 2026-003). CEO can sign attestation referencing that resolution. Validated by General Counsel.',
+    answeredBy: 'Sarah Kim (General Counsel)',
+  },
+  {
+    id: 'bn9', mode: 'business',
+    askerName: 'James Park', askerInitials: 'JP', askerRole: 'CFO',
+    question: 'What is the maximum single-payment approval authority for VP-level executives?',
+    viewingContext: 'Finance',
+    timestamp: daysAgo(4),
+    status: 'answered_by_coach',
+    contextChips: [
+      { type: 'finance', label: 'Approval Thresholds' },
+      { type: 'policy', label: 'Authority Matrix' },
+    ],
+    nexusAttempt: 'Standard corporate governance frameworks typically set VP approval at $50K-$250K. Your specific threshold depends on the board-approved authority matrix — escalating to Founder for confirmation.',
+    escalationTarget: 'Founder / CEO',
+    humanReplies: [
+      {
+        name: 'You',
+        initials: 'ME',
+        role: 'Founder / CEO',
+        content: 'VP approval threshold is $250K for single payments. Anything above requires CEO sign-off. Anything above $1M requires board approval. This is in the authority matrix approved Q4 2025.',
+        timestamp: daysAgo(3.5),
+      },
+    ],
+    resolvedAnswer: 'VP: up to $250K single payment. CEO: $250K–$1M. Board: above $1M. Per authority matrix approved Q4 2025. Validated by Founder / CEO.',
+    answeredBy: 'Founder / CEO',
+  },
+  {
+    id: 'bn10', mode: 'business',
+    askerName: 'Rachel Torres', askerInitials: 'RT', askerRole: 'COO',
+    question: 'Does the EMEA partnership model require a separate legal entity, or can we operate through the US parent?',
+    viewingContext: 'Strategy',
+    timestamp: daysAgo(5),
+    status: 'answered_by_coach',
+    contextChips: [
+      { type: 'deal', label: 'EMEA Expansion' },
+      { type: 'compliance', label: 'Entity Structure' },
+    ],
+    nexusAttempt: 'Partnership model (Option B) typically does not require a separate legal entity for the first 12 months if the local partner handles in-country operations. Tax implications and regulatory requirements vary by target country — escalating to General Counsel.',
+    escalationTarget: 'General Counsel',
+    humanReplies: [
+      {
+        name: 'Sarah Kim',
+        initials: 'SK',
+        role: 'General Counsel',
+        content: 'For the UK partnership model, we can operate through the US parent for the first 12 months under the partnership agreement. If we establish a permanent establishment (office, employees, or billing), we\'ll need a UK subsidiary. I recommend revisiting at the 9-month mark.',
+        timestamp: daysAgo(4.5),
+      },
+    ],
+    resolvedAnswer: 'No separate entity needed for first 12 months under partnership model. Reassess at 9-month mark. UK subsidiary required only if permanent establishment is created. Validated by General Counsel.',
+    answeredBy: 'Sarah Kim (General Counsel)',
+  },
 ];
 
 // =============================================================================

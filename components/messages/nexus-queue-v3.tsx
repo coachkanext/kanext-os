@@ -104,7 +104,7 @@ export function NexusQueueV3({ mode, onSelectEscalation }: NexusQueueV3Props) {
       <View style={styles.contextRow}>
         <IconSymbol name="sparkles" size={14} color={accent} />
         <ThemedText style={[styles.contextLabel, { color: colors.textTertiary }]}>
-          {mode === 'church' ? 'Church · ICC · ICCLA · Member' : mode === 'business' ? 'Business · Org' : mode === 'education' ? 'Education · Institution' : mode === 'competition' ? 'Competition · League' : 'Sports · Org · Program'}
+          {mode === 'church' ? 'Church · ICC · ICCLA · Member' : mode === 'business' ? 'Business · Entity' : mode === 'education' ? 'Education · Institution' : mode === 'competition' ? 'Competition · League' : 'Sports · Org · Program'}
         </ThemedText>
       </View>
 

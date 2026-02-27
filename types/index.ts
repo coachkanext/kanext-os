@@ -1034,7 +1034,7 @@ export interface NexusHumanReply {
 }
 
 export interface NexusContextChip {
-  type: 'event' | 'media' | 'person';
+  type: 'event' | 'media' | 'person' | 'deal' | 'finance' | 'compliance' | 'facility' | 'policy' | 'capital';
   label: string;
 }
 
