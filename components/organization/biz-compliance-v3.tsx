@@ -1,411 +1,365 @@
 /**
- * Business Organization Compliance Tab -- V3
- * 3-pill ViewBar: Corporate | Legal | IP
- * Valuetainment founder view. All data inline.
+ * BizCompliance — Regulatory Status + Obligation Surface (Compliance Tab)
+ * Single vertical scroll. Status + Deadline visibility only.
+ * No legal case management. No document storage. No risk scoring.
+ * Compliance = Status + Deadline Surface.
  */
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
-
-// =============================================================================
-// TYPES
-// =============================================================================
-
-
-const ACCENT = MODE_ACCENT.business;
-type ViewMode = 'corporate' | 'legal' | 'ip';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
 
 interface Props {
   colors: typeof Colors.light;
   accentColor: string;
   role?: string;
+  onNavigateTab?: (tabIndex: number) => void;
 }
 
 // =============================================================================
-// INLINE DATA
+// INLINE DATA — Status + obligations only
 // =============================================================================
 
-const VIEWS: { id: ViewMode; label: string }[] = [
-  { id: 'corporate', label: 'Corporate' },
-  { id: 'legal', label: 'Legal' },
-  { id: 'ip', label: 'IP' },
-];
+const FISCAL_YEARS = ['FY 2025', 'FY 2024'];
 
-// Corporate
-const ANNUAL_FILINGS = [
-  { id: 'af1', entity: 'OSK Group LLC', state: 'Delaware', dueDate: 'Jun 1, 2025', status: 'upcoming' as const },
-  { id: 'af2', entity: 'Valuetainment Operations LLC', state: 'Tennessee', dueDate: 'May 1, 2025', status: 'upcoming' as const },
-  { id: 'af3', entity: 'Valuetainment IP Holdings LLC', state: 'Delaware', dueDate: 'Jun 1, 2025', status: 'upcoming' as const },
-];
+// Tab indices: 0=Program, 1=People, 2=Finance, 3=Compliance, 4=Facilities, 5=Ledger
+const TAB_LEDGER = 5;
 
-const INSURANCE_POLICIES = [
-  { id: 'ins1', type: 'General Liability', provider: 'Hiscox', annual: '$1,200', expiration: 'Dec 2025', status: 'active' as const },
-  { id: 'ins2', type: 'D&O Insurance', provider: 'Embroker', annual: '$2,800', expiration: 'Mar 2026', status: 'active' as const },
-];
-
-const OPERATING_AGREEMENTS = [
-  { id: 'oa1', entity: 'OSK Group LLC', status: 'executed' as const, lastUpdated: 'Mar 2024' },
-  { id: 'oa2', entity: 'Valuetainment Operations LLC', status: 'executed' as const, lastUpdated: 'Apr 2024' },
-  { id: 'oa3', entity: 'Valuetainment IP Holdings LLC', status: 'executed' as const, lastUpdated: 'Apr 2024' },
-];
-
-const BOARD_MINUTES = [
-  { id: 'bm1', title: 'Q4 2024 Board Meeting', date: 'Dec 15, 2024', status: 'approved' as const },
-  { id: 'bm2', title: 'Q1 2025 Board Meeting', date: 'Mar 20, 2025', status: 'draft' as const },
-  { id: 'bm3', title: 'Special Resolution: Pre-Seed', date: 'Jan 10, 2025', status: 'approved' as const },
-];
-
-// Legal
-const CONTRACTS = [
-  { id: 'ct1', title: 'NDA - Velocity Ventures', type: 'NDA', parties: 'OSK Group LLC / Velocity Ventures', effective: 'May 2024', expiration: 'May 2026', status: 'active' as const },
-  { id: 'ct2', title: 'NDA - Horizon Capital', type: 'NDA', parties: 'OSK Group LLC / Horizon Capital', effective: 'Aug 2024', expiration: 'Aug 2026', status: 'active' as const },
-  { id: 'ct3', title: 'NAA Beta Partnership', type: 'Partnership', parties: 'Valuetainment Ops / NAA Conference', effective: 'Jan 2025', expiration: 'Dec 2025', status: 'active' as const },
-  { id: 'ct4', title: 'AWS Enterprise Agreement', type: 'Vendor', parties: 'Valuetainment Ops / AWS', effective: 'Mar 2024', expiration: 'Mar 2025', status: 'renewal' as const },
-  { id: 'ct5', title: 'Employment - Marcus Chen', type: 'Employment', parties: 'Valuetainment Ops / Marcus Chen', effective: 'Jun 2024', expiration: 'N/A', status: 'active' as const },
-  { id: 'ct6', title: 'Employment - Aisha Williams', type: 'Employment', parties: 'Valuetainment Ops / Aisha Williams', effective: 'Aug 2024', expiration: 'N/A', status: 'active' as const },
-];
-
-// IP
-const TRADEMARKS = [
-  { id: 'tm1', title: 'Valuetainment', type: 'Trademark', filingDate: 'Sep 2024', status: 'pending' as const, serialNumber: '98/123456' },
-  { id: 'tm2', title: 'Nexus', type: 'Trademark', filingDate: 'Oct 2024', status: 'pending' as const, serialNumber: '98/234567' },
-];
-
-const PATENT = {
-  id: 'pt1', title: 'Institutional Operating System Architecture', type: 'Patent (Utility)', filingDate: 'Nov 2024', status: 'filed' as const, applicationNumber: '18/456,789',
+// Block 1 — Entity Registration Snapshot
+const REGISTRATION = {
+  jurisdictions: [
+    { state: 'Delaware', status: 'Active' as const },
+    { state: 'Tennessee', status: 'In Good Standing' as const },
+    { state: 'Florida', status: 'Active' as const },
+  ],
+  registeredAgent: 'Corporation Service Company',
+  nextAnnualFiling: 'Jun 1, 2025',
 };
 
-const STRATEGIC_DOCS = 26;
-const DOMAIN_NAMES = [
-  { id: 'dn1', name: 'kanext.io', registrar: 'Namecheap', expiration: 'Mar 2026' },
-  { id: 'dn2', name: 'kanextos.com', registrar: 'Namecheap', expiration: 'Mar 2026' },
-  { id: 'dn3', name: 'oskgroup.io', registrar: 'GoDaddy', expiration: 'Jun 2026' },
+// Block 2 — Filing & Deadline Queue (soonest first)
+type FilingStatus = 'Pending' | 'Submitted' | 'Accepted' | 'Overdue';
+const FILINGS: {
+  id: string;
+  name: string;
+  jurisdiction: string;
+  type: string;
+  status: FilingStatus;
+  dueDate: string;
+}[] = [
+  { id: 'f1', name: 'Annual Report — Delaware', jurisdiction: 'Delaware', type: 'Annual Report', status: 'Pending', dueDate: 'Mar 1, 2025' },
+  { id: 'f2', name: 'Franchise Tax — Delaware', jurisdiction: 'Delaware', type: 'Tax Filing', status: 'Pending', dueDate: 'Jun 1, 2025' },
+  { id: 'f3', name: 'Annual Report — Tennessee', jurisdiction: 'Tennessee', type: 'Annual Report', status: 'Submitted', dueDate: 'May 1, 2025' },
+  { id: 'f4', name: 'Business License Renewal', jurisdiction: 'Florida', type: 'License Renewal', status: 'Pending', dueDate: 'Sep 30, 2025' },
+  { id: 'f5', name: 'Q4 2024 Tax Filing', jurisdiction: 'Federal', type: 'Tax Filing', status: 'Accepted', dueDate: 'Jan 15, 2025' },
 ];
 
-const STATUS_COLORS: Record<string, string> = {
-  active: '#22C55E',
-  upcoming: '#F59E0B',
-  executed: '#22C55E',
-  approved: '#22C55E',
-  draft: ACCENT,
-  pending: '#F59E0B',
-  filed: ACCENT,
-  renewal: '#EF4444',
-};
+// Block 3 — Licenses & Permits
+type LicenseStatus = 'Active' | 'Expiring' | 'Expired' | 'Renewal Required';
+const LICENSES: {
+  id: string;
+  name: string;
+  issuingAuthority: string;
+  status: LicenseStatus;
+  expirationDate: string;
+}[] = [
+  { id: 'l1', name: 'Business License — Miami-Dade', issuingAuthority: 'Miami-Dade County', status: 'Active', expirationDate: 'Dec 31, 2025' },
+  { id: 'l2', name: 'State Business Registration', issuingAuthority: 'State of Florida', status: 'Active', expirationDate: 'Sep 30, 2025' },
+  { id: 'l3', name: 'Foreign LLC Registration', issuingAuthority: 'State of Tennessee', status: 'Active', expirationDate: 'Apr 1, 2026' },
+  { id: 'l4', name: 'Data Privacy Compliance Cert', issuingAuthority: 'TrustArc', status: 'Expiring', expirationDate: 'Mar 15, 2025' },
+];
 
-const STATUS_LABELS: Record<string, string> = {
-  active: 'ACTIVE',
-  upcoming: 'UPCOMING',
-  executed: 'EXECUTED',
-  approved: 'APPROVED',
-  draft: 'DRAFT',
-  pending: 'PENDING',
-  filed: 'FILED',
-  renewal: 'RENEWAL DUE',
-};
+// Block 4 — Insurance Coverage
+type InsuranceStatus = 'Active' | 'Expiring';
+const INSURANCE: {
+  id: string;
+  provider: string;
+  coverageType: string;
+  status: InsuranceStatus;
+  renewalDate: string;
+}[] = [
+  { id: 'i1', provider: 'Hiscox', coverageType: 'General Liability', status: 'Active', renewalDate: 'Dec 15, 2025' },
+  { id: 'i2', provider: 'Embroker', coverageType: 'Directors & Officers', status: 'Active', renewalDate: 'Mar 1, 2026' },
+  { id: 'i3', provider: 'Hartford', coverageType: 'Property', status: 'Active', renewalDate: 'Jun 1, 2026' },
+  { id: 'i4', provider: 'Hiscox', coverageType: 'Cyber Liability', status: 'Expiring', renewalDate: 'Apr 1, 2025' },
+];
 
-const TYPE_COLORS: Record<string, string> = {
-  NDA: ACCENT,
-  Partnership: ACCENT,
-  Vendor: '#F59E0B',
-  Employment: ACCENT,
-  Trademark: ACCENT,
-  'Patent (Utility)': ACCENT,
+// Block 5 — Legal Matters (Status Only)
+type LegalStatus = 'Open' | 'Under Review' | 'Resolved';
+const LEGAL_MATTERS: {
+  id: string;
+  caseName: string;
+  category: string;
+  status: LegalStatus;
+  courtDate?: string;
+}[] = [
+  { id: 'lm1', caseName: 'Vendor Contract Dispute — CloudOps', category: 'Contract', status: 'Under Review' },
+  { id: 'lm2', caseName: 'Trademark Opposition — KaNeXT', category: 'Regulatory', status: 'Open', courtDate: 'May 12, 2025' },
+  { id: 'lm3', caseName: 'Employment Separation — J. Rivera', category: 'Employment', status: 'Resolved' },
+];
+
+// Status color mapping
+const STATUS_COLOR: Record<string, string> = {
+  // Filing
+  Pending: '#F59E0B',
+  Submitted: '#3B82F6',
+  Accepted: '#22C55E',
+  Overdue: '#EF4444',
+  // License
+  Active: '#22C55E',
+  Expiring: '#F59E0B',
+  Expired: '#EF4444',
+  'Renewal Required': '#F59E0B',
+  // Insurance (reuses Active, Expiring)
+  // Legal
+  Open: '#F59E0B',
+  'Under Review': '#3B82F6',
+  Resolved: '#22C55E',
+  // Registration
+  'In Good Standing': '#22C55E',
 };
 
 // =============================================================================
 // COMPONENT
 // =============================================================================
 
-export function BizCompliance({ colors, accentColor, role }: Props) {
-  const [activeView, setActiveView] = useState<ViewMode>('corporate');
+export function BizCompliance({ colors, onNavigateTab }: Props) {
+  const [fiscalYear, setFiscalYear] = useState(FISCAL_YEARS[0]);
 
-  const handleViewPress = useCallback((id: ViewMode) => {
-    Haptics.selectionAsync();
-    setActiveView(id);
-  }, []);
+  const navigate = (tabIndex: number) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onNavigateTab?.(tabIndex);
+  };
 
-  // ---------------------------------------------------------------------------
-  // CORPORATE
-  // ---------------------------------------------------------------------------
-  const renderCorporate = () => (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Annual Filings */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>ANNUAL FILINGS</ThemedText>
-      {ANNUAL_FILINGS.map((filing) => {
-        const stColor = STATUS_COLORS[filing.status];
-        return (
-          <View key={filing.id} style={[s.card, { backgroundColor: colors.card, borderColor: colors.border, marginBottom: Spacing.sm }]}>
-            <View style={s.filingHeader}>
-              <View style={s.filingInfo}>
-                <ThemedText style={[s.filingEntity, { color: colors.text }]}>{filing.entity}</ThemedText>
-                <ThemedText style={[s.filingMeta, { color: colors.textSecondary }]}>
-                  {filing.state} · Due: {filing.dueDate}
-                </ThemedText>
-              </View>
-              <View style={[s.statusBadge, { backgroundColor: stColor + '20' }]}>
-                <ThemedText style={[s.statusBadgeText, { color: stColor }]}>{STATUS_LABELS[filing.status]}</ThemedText>
-              </View>
-            </View>
-          </View>
-        );
-      })}
+  const tap = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
-      {/* Insurance Policies */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary, marginTop: Spacing.md }]}>INSURANCE POLICIES</ThemedText>
-      {INSURANCE_POLICIES.map((policy) => {
-        const stColor = STATUS_COLORS[policy.status];
-        return (
-          <View key={policy.id} style={[s.card, { backgroundColor: colors.card, borderColor: colors.border, marginBottom: Spacing.sm }]}>
-            <View style={s.policyHeader}>
-              <View style={s.policyInfo}>
-                <ThemedText style={[s.policyType, { color: colors.text }]}>{policy.type}</ThemedText>
-                <ThemedText style={[s.policyProvider, { color: colors.textSecondary }]}>{policy.provider}</ThemedText>
-              </View>
-              <View style={[s.statusBadge, { backgroundColor: stColor + '20' }]}>
-                <ThemedText style={[s.statusBadgeText, { color: stColor }]}>{STATUS_LABELS[policy.status]}</ThemedText>
-              </View>
-            </View>
-            <View style={[s.policyDetailRow, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}>
-              <View style={s.policyDetailItem}>
-                <ThemedText style={[s.policyDetailLabel, { color: colors.textSecondary }]}>Annual</ThemedText>
-                <ThemedText style={[s.policyDetailValue, { color: colors.text }]}>{policy.annual}</ThemedText>
-              </View>
-              <View style={s.policyDetailItem}>
-                <ThemedText style={[s.policyDetailLabel, { color: colors.textSecondary }]}>Expires</ThemedText>
-                <ThemedText style={[s.policyDetailValue, { color: colors.text }]}>{policy.expiration}</ThemedText>
-              </View>
-            </View>
-          </View>
-        );
-      })}
-
-      {/* Operating Agreements */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary, marginTop: Spacing.md }]}>OPERATING AGREEMENTS</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {OPERATING_AGREEMENTS.map((oa, idx) => {
-          const stColor = STATUS_COLORS[oa.status];
-          return (
-            <View
-              key={oa.id}
-              style={[
-                s.oaRow,
-                idx < OPERATING_AGREEMENTS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-              ]}
-            >
-              <View style={s.oaInfo}>
-                <ThemedText style={[s.oaEntity, { color: colors.text }]}>{oa.entity}</ThemedText>
-                <ThemedText style={[s.oaDate, { color: colors.textSecondary }]}>Updated: {oa.lastUpdated}</ThemedText>
-              </View>
-              <View style={[s.statusBadge, { backgroundColor: stColor + '20' }]}>
-                <ThemedText style={[s.statusBadgeText, { color: stColor }]}>{STATUS_LABELS[oa.status]}</ThemedText>
-              </View>
-            </View>
-          );
-        })}
-      </View>
-
-      {/* Board Minutes */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary, marginTop: Spacing.md }]}>BOARD MINUTES</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {BOARD_MINUTES.map((bm, idx) => {
-          const stColor = STATUS_COLORS[bm.status];
-          return (
-            <View
-              key={bm.id}
-              style={[
-                s.minuteRow,
-                idx < BOARD_MINUTES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-              ]}
-            >
-              <IconSymbol name="doc.text.fill" size={16} color={colors.textTertiary} />
-              <View style={s.minuteInfo}>
-                <ThemedText style={[s.minuteTitle, { color: colors.text }]}>{bm.title}</ThemedText>
-                <ThemedText style={[s.minuteDate, { color: colors.textSecondary }]}>{bm.date}</ThemedText>
-              </View>
-              <View style={[s.statusBadge, { backgroundColor: stColor + '20' }]}>
-                <ThemedText style={[s.statusBadgeText, { color: stColor }]}>{STATUS_LABELS[bm.status]}</ThemedText>
-              </View>
-            </View>
-          );
-        })}
-      </View>
-    </ScrollView>
-  );
-
-  // ---------------------------------------------------------------------------
-  // LEGAL
-  // ---------------------------------------------------------------------------
-  const renderLegal = () => (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>CONTRACTS ({CONTRACTS.length})</ThemedText>
-      {CONTRACTS.map((contract) => {
-        const stColor = STATUS_COLORS[contract.status];
-        const typeColor = TYPE_COLORS[contract.type] ?? colors.textSecondary;
-        return (
-          <View key={contract.id} style={[s.card, { backgroundColor: colors.card, borderColor: colors.border, marginBottom: Spacing.sm }]}>
-            <View style={s.contractHeader}>
-              <ThemedText style={[s.contractTitle, { color: colors.text }]}>{contract.title}</ThemedText>
-              <View style={[s.statusBadge, { backgroundColor: stColor + '20' }]}>
-                <ThemedText style={[s.statusBadgeText, { color: stColor }]}>{STATUS_LABELS[contract.status]}</ThemedText>
-              </View>
-            </View>
-
-            <View style={s.contractBadges}>
-              <View style={[s.typeBadge, { backgroundColor: typeColor + '20' }]}>
-                <ThemedText style={[s.typeBadgeText, { color: typeColor }]}>{contract.type.toUpperCase()}</ThemedText>
-              </View>
-            </View>
-
-            <View style={[s.contractDetails, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}>
-              <View style={s.contractDetailRow}>
-                <ThemedText style={[s.contractDetailLabel, { color: colors.textSecondary }]}>Parties</ThemedText>
-                <ThemedText style={[s.contractDetailValue, { color: colors.text }]} numberOfLines={1}>{contract.parties}</ThemedText>
-              </View>
-              <View style={s.contractDetailRow}>
-                <ThemedText style={[s.contractDetailLabel, { color: colors.textSecondary }]}>Effective</ThemedText>
-                <ThemedText style={[s.contractDetailValue, { color: colors.text }]}>{contract.effective}</ThemedText>
-              </View>
-              <View style={s.contractDetailRow}>
-                <ThemedText style={[s.contractDetailLabel, { color: colors.textSecondary }]}>Expiration</ThemedText>
-                <ThemedText style={[s.contractDetailValue, { color: colors.text }]}>{contract.expiration}</ThemedText>
-              </View>
-            </View>
-          </View>
-        );
-      })}
-    </ScrollView>
-  );
-
-  // ---------------------------------------------------------------------------
-  // IP
-  // ---------------------------------------------------------------------------
-  const renderIP = () => (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Trademarks */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>TRADEMARKS</ThemedText>
-      {TRADEMARKS.map((tm) => {
-        const stColor = STATUS_COLORS[tm.status];
-        const typeColor = TYPE_COLORS[tm.type] ?? colors.textSecondary;
-        return (
-          <View key={tm.id} style={[s.card, { backgroundColor: colors.card, borderColor: colors.border, marginBottom: Spacing.sm }]}>
-            <View style={s.ipHeader}>
-              <View style={s.ipInfo}>
-                <ThemedText style={[s.ipTitle, { color: colors.text }]}>{tm.title}</ThemedText>
-                <View style={s.ipBadges}>
-                  <View style={[s.typeBadge, { backgroundColor: typeColor + '20' }]}>
-                    <ThemedText style={[s.typeBadgeText, { color: typeColor }]}>{tm.type.toUpperCase()}</ThemedText>
-                  </View>
-                  <View style={[s.statusBadge, { backgroundColor: stColor + '20' }]}>
-                    <ThemedText style={[s.statusBadgeText, { color: stColor }]}>{STATUS_LABELS[tm.status]}</ThemedText>
-                  </View>
-                </View>
-              </View>
-            </View>
-            <View style={[s.ipMeta, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}>
-              <ThemedText style={[s.ipMetaText, { color: colors.textSecondary }]}>Filed: {tm.filingDate}</ThemedText>
-              <ThemedText style={[s.ipMetaText, { color: colors.textSecondary }]}>Serial: {tm.serialNumber}</ThemedText>
-            </View>
-          </View>
-        );
-      })}
-
-      {/* Patent */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary, marginTop: Spacing.md }]}>PATENTS</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={s.ipHeader}>
-          <View style={s.ipInfo}>
-            <ThemedText style={[s.ipTitle, { color: colors.text }]}>{PATENT.title}</ThemedText>
-            <View style={s.ipBadges}>
-              <View style={[s.typeBadge, { backgroundColor: (TYPE_COLORS[PATENT.type] ?? ACCENT) + '20' }]}>
-                <ThemedText style={[s.typeBadgeText, { color: TYPE_COLORS[PATENT.type] ?? ACCENT }]}>{PATENT.type.toUpperCase()}</ThemedText>
-              </View>
-              <View style={[s.statusBadge, { backgroundColor: STATUS_COLORS[PATENT.status] + '20' }]}>
-                <ThemedText style={[s.statusBadgeText, { color: STATUS_COLORS[PATENT.status] }]}>{STATUS_LABELS[PATENT.status]}</ThemedText>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View style={[s.ipMeta, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}>
-          <ThemedText style={[s.ipMetaText, { color: colors.textSecondary }]}>Filed: {PATENT.filingDate}</ThemedText>
-          <ThemedText style={[s.ipMetaText, { color: colors.textSecondary }]}>App #: {PATENT.applicationNumber}</ThemedText>
-        </View>
-      </View>
-
-      {/* Strategic Documents */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary, marginTop: Spacing.md }]}>STRATEGIC DOCUMENTS</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={s.docsRow}>
-          <IconSymbol name="folder.fill" size={20} color={accentColor} />
-          <View style={s.docsInfo}>
-            <ThemedText style={[s.docsCount, { color: colors.text }]}>{STRATEGIC_DOCS} documents</ThemedText>
-            <ThemedText style={[s.docsDesc, { color: colors.textSecondary }]}>
-              Spec documents, architecture diagrams, competitive analyses, pitch materials
-            </ThemedText>
-          </View>
-        </View>
-      </View>
-
-      {/* Domain Names */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary, marginTop: Spacing.md }]}>DOMAIN NAMES</ThemedText>
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {DOMAIN_NAMES.map((domain, idx) => (
-          <View
-            key={domain.id}
-            style={[
-              s.domainRow,
-              idx < DOMAIN_NAMES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-            ]}
-          >
-            <IconSymbol name="globe" size={14} color={colors.textTertiary} />
-            <View style={s.domainInfo}>
-              <ThemedText style={[s.domainName, { color: colors.text }]}>{domain.name}</ThemedText>
-              <ThemedText style={[s.domainMeta, { color: colors.textSecondary }]}>
-                {domain.registrar} · Exp: {domain.expiration}
-              </ThemedText>
-            </View>
-            <View style={[s.statusBadge, { backgroundColor: '#22C55E20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: '#22C55E' }]}>ACTIVE</ThemedText>
-            </View>
-          </View>
-        ))}
-      </View>
-    </ScrollView>
-  );
-
-  // ---------------------------------------------------------------------------
-  // RENDER
-  // ---------------------------------------------------------------------------
   return (
-    <View style={s.container}>
-      {/* ViewBar */}
-      <View style={s.viewBar}>
-        {VIEWS.map((v) => {
-          const isActive = v.id === activeView;
-          return (
+    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
+      {/* Block 0 — Header */}
+      <View style={[s.block, { borderColor: colors.border }]}>
+        <ThemedText style={[s.pageTitle, { color: colors.text }]}>Compliance</ThemedText>
+        <View style={s.fyRow}>
+          {FISCAL_YEARS.map((fy) => (
             <Pressable
-              key={v.id}
+              key={fy}
               style={[
-                s.viewPill,
-                { backgroundColor: isActive ? accentColor : '#2F3336' },
+                s.fyPill,
+                { backgroundColor: fy === fiscalYear ? colors.text : colors.backgroundTertiary },
               ]}
-              onPress={() => handleViewPress(v.id)}
+              onPress={() => {
+                Haptics.selectionAsync();
+                setFiscalYear(fy);
+              }}
             >
-              <ThemedText style={[s.viewPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
-                {v.label}
+              <ThemedText
+                style={[
+                  s.fyText,
+                  { color: fy === fiscalYear ? colors.background : colors.textSecondary },
+                ]}
+              >
+                {fy}
               </ThemedText>
             </Pressable>
-          );
-        })}
+          ))}
+        </View>
       </View>
 
-      {/* Content */}
-      {activeView === 'corporate' && renderCorporate()}
-      {activeView === 'legal' && renderLegal()}
-      {activeView === 'ip' && renderIP()}
+      {/* Block 1 — Entity Registration Snapshot */}
+      <ThemedText style={[s.sectionLabel, { color: colors.textTertiary }]}>ENTITY REGISTRATION</ThemedText>
+      <Pressable
+        style={({ pressed }) => [
+          s.block,
+          { borderColor: colors.border, opacity: pressed ? 0.7 : 1 },
+        ]}
+        onPress={tap}
+      >
+        <ThemedText style={[s.subLabel, { color: colors.textSecondary }]}>Registered Jurisdictions</ThemedText>
+        {REGISTRATION.jurisdictions.map((j) => {
+          const color = STATUS_COLOR[j.status] ?? '#22C55E';
+          return (
+            <View key={j.state} style={s.jurisdictionRow}>
+              <ThemedText style={[s.fieldValue, { color: colors.text }]}>{j.state}</ThemedText>
+              <StatusChip label={j.status} color={color} />
+            </View>
+          );
+        })}
+        <View style={[s.divider, { backgroundColor: colors.border }]} />
+        <FieldRow label="Registered Agent" value={REGISTRATION.registeredAgent} colors={colors} />
+        <FieldRow label="Next Annual Filing" value={REGISTRATION.nextAnnualFiling} colors={colors} />
+        <View style={s.tapHintRow}>
+          <ThemedText style={[s.tapHint, { color: colors.textTertiary }]}>View Filing Queue</ThemedText>
+          <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+        </View>
+      </Pressable>
+
+      {/* Block 2 — Filing & Deadline Queue */}
+      <ThemedText style={[s.sectionLabel, { color: colors.textTertiary }]}>FILING & DEADLINE QUEUE</ThemedText>
+      {FILINGS.map((filing) => {
+        const color = STATUS_COLOR[filing.status] ?? '#F59E0B';
+        return (
+          <Pressable
+            key={filing.id}
+            style={({ pressed }) => [
+              s.block,
+              s.rowBlock,
+              { borderColor: colors.border, opacity: pressed ? 0.7 : 1 },
+            ]}
+            onPress={tap}
+          >
+            <View style={s.rowHeader}>
+              <View style={s.rowInfo}>
+                <ThemedText style={[s.rowTitle, { color: colors.text }]}>{filing.name}</ThemedText>
+                <ThemedText style={[s.rowMeta, { color: colors.textTertiary }]}>
+                  {filing.jurisdiction} · {filing.type}
+                </ThemedText>
+              </View>
+              <StatusChip label={filing.status} color={color} />
+            </View>
+            <View style={s.rowFooter}>
+              <ThemedText style={[s.dueDate, { color: colors.textSecondary }]}>
+                Due: {filing.dueDate}
+              </ThemedText>
+              <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+            </View>
+          </Pressable>
+        );
+      })}
+
+      {/* Block 3 — Licenses & Permits */}
+      <ThemedText style={[s.sectionLabel, { color: colors.textTertiary }]}>LICENSES & PERMITS</ThemedText>
+      {LICENSES.map((license) => {
+        const color = STATUS_COLOR[license.status] ?? '#22C55E';
+        return (
+          <Pressable
+            key={license.id}
+            style={({ pressed }) => [
+              s.block,
+              s.rowBlock,
+              { borderColor: colors.border, opacity: pressed ? 0.7 : 1 },
+            ]}
+            onPress={tap}
+          >
+            <View style={s.rowHeader}>
+              <View style={s.rowInfo}>
+                <ThemedText style={[s.rowTitle, { color: colors.text }]}>{license.name}</ThemedText>
+                <ThemedText style={[s.rowMeta, { color: colors.textTertiary }]}>
+                  {license.issuingAuthority}
+                </ThemedText>
+              </View>
+              <StatusChip label={license.status} color={color} />
+            </View>
+            <View style={s.rowFooter}>
+              <ThemedText style={[s.dueDate, { color: colors.textSecondary }]}>
+                Expires: {license.expirationDate}
+              </ThemedText>
+              <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+            </View>
+          </Pressable>
+        );
+      })}
+
+      {/* Block 4 — Insurance Coverage */}
+      <ThemedText style={[s.sectionLabel, { color: colors.textTertiary }]}>INSURANCE COVERAGE</ThemedText>
+      {INSURANCE.map((policy) => {
+        const color = STATUS_COLOR[policy.status] ?? '#22C55E';
+        return (
+          <Pressable
+            key={policy.id}
+            style={({ pressed }) => [
+              s.block,
+              s.rowBlock,
+              { borderColor: colors.border, opacity: pressed ? 0.7 : 1 },
+            ]}
+            onPress={tap}
+          >
+            <View style={s.rowHeader}>
+              <View style={s.rowInfo}>
+                <ThemedText style={[s.rowTitle, { color: colors.text }]}>{policy.coverageType}</ThemedText>
+                <ThemedText style={[s.rowMeta, { color: colors.textTertiary }]}>
+                  {policy.provider}
+                </ThemedText>
+              </View>
+              <StatusChip label={policy.status} color={color} />
+            </View>
+            <View style={s.rowFooter}>
+              <ThemedText style={[s.dueDate, { color: colors.textSecondary }]}>
+                Renewal: {policy.renewalDate}
+              </ThemedText>
+              <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+            </View>
+          </Pressable>
+        );
+      })}
+
+      {/* Block 5 — Legal Matters (Status Only) */}
+      <ThemedText style={[s.sectionLabel, { color: colors.textTertiary }]}>LEGAL MATTERS</ThemedText>
+      {LEGAL_MATTERS.map((matter) => {
+        const color = STATUS_COLOR[matter.status] ?? '#F59E0B';
+        return (
+          <Pressable
+            key={matter.id}
+            style={({ pressed }) => [
+              s.block,
+              s.rowBlock,
+              { borderColor: colors.border, opacity: pressed ? 0.7 : 1 },
+            ]}
+            onPress={tap}
+          >
+            <View style={s.rowHeader}>
+              <View style={s.rowInfo}>
+                <ThemedText style={[s.rowTitle, { color: colors.text }]}>{matter.caseName}</ThemedText>
+                <ThemedText style={[s.rowMeta, { color: colors.textTertiary }]}>
+                  {matter.category}
+                </ThemedText>
+              </View>
+              <StatusChip label={matter.status} color={color} />
+            </View>
+            {matter.courtDate && (
+              <View style={s.rowFooter}>
+                <ThemedText style={[s.dueDate, { color: colors.textSecondary }]}>
+                  Court Date: {matter.courtDate}
+                </ThemedText>
+                <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+              </View>
+            )}
+            {!matter.courtDate && (
+              <View style={s.rowFooterEnd}>
+                <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
+              </View>
+            )}
+          </Pressable>
+        );
+      })}
+    </ScrollView>
+  );
+}
+
+// =============================================================================
+// HELPER COMPONENTS
+// =============================================================================
+
+function StatusChip({ label, color }: { label: string; color: string }) {
+  return (
+    <View style={[s.statusChip, { backgroundColor: color + '20' }]}>
+      <ThemedText style={[s.statusChipText, { color }]}>{label}</ThemedText>
+    </View>
+  );
+}
+
+function FieldRow({
+  label,
+  value,
+  colors,
+}: {
+  label: string;
+  value: string;
+  colors: typeof Colors.light;
+}) {
+  return (
+    <View style={s.fieldRow}>
+      <ThemedText style={[s.fieldLabel, { color: colors.textSecondary }]}>{label}</ThemedText>
+      <ThemedText style={[s.fieldValue, { color: colors.text }]}>{value}</ThemedText>
     </View>
   );
 }
@@ -415,269 +369,144 @@ export function BizCompliance({ colors, accentColor, role }: Props) {
 // =============================================================================
 
 const s = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-
-  // ViewBar
-  viewBar: {
-    flexDirection: 'row',
-    gap: Spacing.sm,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-  },
-  viewPill: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderRadius: BorderRadius.full,
-  },
-  viewPillText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-
-  // Scroll
   scroll: {
     padding: Spacing.md,
     paddingBottom: 120,
   },
 
-  // Section Header
-  sectionHeader: {
-    fontSize: 12,
+  sectionLabel: {
+    fontSize: 11,
     fontWeight: '600',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-    marginBottom: 8,
+    letterSpacing: 0.8,
+    marginTop: Spacing.lg,
+    marginBottom: Spacing.sm,
   },
 
-  // Card
-  card: {
+  block: {
     borderRadius: 12,
     borderWidth: 1,
-    padding: 14,
+    padding: 16,
+  },
+
+  rowBlock: {
     marginBottom: Spacing.sm,
   },
 
-  // Status badge
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: BorderRadius.full,
-  },
-  statusBadgeText: {
-    fontSize: 9,
+  // Header
+  pageTitle: {
+    fontSize: 22,
     fontWeight: '700',
-    letterSpacing: 0.3,
+    marginBottom: 12,
   },
-
-  // Type badge
-  typeBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: BorderRadius.full,
-  },
-  typeBadgeText: {
-    fontSize: 9,
-    fontWeight: '700',
-    letterSpacing: 0.3,
-  },
-
-  // Filings
-  filingHeader: {
+  fyRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.sm,
+    gap: 8,
   },
-  filingInfo: {
-    flex: 1,
+  fyPill: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
-  filingEntity: {
-    fontSize: 14,
+  fyText: {
+    fontSize: 13,
     fontWeight: '600',
   },
-  filingMeta: {
+
+  // Sub-label
+  subLabel: {
     fontSize: 12,
-    marginTop: 2,
-  },
-
-  // Insurance
-  policyHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.sm,
-  },
-  policyInfo: {
-    flex: 1,
-  },
-  policyType: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  policyProvider: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-  policyDetailRow: {
-    flexDirection: 'row',
-    gap: Spacing.lg,
-    marginTop: Spacing.sm,
-    paddingTop: Spacing.sm,
-  },
-  policyDetailItem: {
-    gap: 2,
-  },
-  policyDetailLabel: {
-    fontSize: 11,
     fontWeight: '500',
-  },
-  policyDetailValue: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-
-  // Operating Agreements
-  oaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    gap: Spacing.sm,
-  },
-  oaInfo: {
-    flex: 1,
-  },
-  oaEntity: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  oaDate: {
-    fontSize: 11,
-    marginTop: 2,
-  },
-
-  // Board Minutes
-  minuteRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    gap: Spacing.sm,
-  },
-  minuteInfo: {
-    flex: 1,
-  },
-  minuteTitle: {
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  minuteDate: {
-    fontSize: 11,
-    marginTop: 2,
-  },
-
-  // Contracts
-  contractHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.sm,
     marginBottom: 6,
   },
-  contractTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    flex: 1,
-  },
-  contractBadges: {
-    flexDirection: 'row',
-    gap: 6,
-    marginBottom: Spacing.sm,
-  },
-  contractDetails: {
-    paddingTop: Spacing.sm,
-    gap: 6,
-  },
-  contractDetailRow: {
+
+  // Jurisdiction rows
+  jurisdictionRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingVertical: 6,
   },
-  contractDetailLabel: {
+
+  // Divider
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    marginVertical: 10,
+  },
+
+  // Tap hint
+  tapHintRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 4,
+    marginTop: 8,
+    paddingTop: 8,
+  },
+  tapHint: {
     fontSize: 12,
     fontWeight: '500',
   },
-  contractDetailValue: {
-    fontSize: 12,
-    fontWeight: '600',
-    flexShrink: 1,
-    textAlign: 'right',
-  },
 
-  // IP
-  ipHeader: {
+  // Row cards (filings, licenses, insurance, legal)
+  rowHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  ipInfo: {
-    flex: 1,
-    gap: 6,
-  },
-  ipTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  ipBadges: {
-    flexDirection: 'row',
-    gap: 6,
-  },
-  ipMeta: {
-    flexDirection: 'row',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
-    marginTop: Spacing.sm,
-    paddingTop: Spacing.sm,
+    gap: 10,
   },
-  ipMetaText: {
-    fontSize: 12,
-  },
-
-  // Docs
-  docsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  docsInfo: {
+  rowInfo: {
     flex: 1,
+    minWidth: 0,
   },
-  docsCount: {
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  docsDesc: {
-    fontSize: 12,
-    lineHeight: 17,
-    marginTop: 4,
-  },
-
-  // Domains
-  domainRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    gap: Spacing.sm,
-  },
-  domainInfo: {
-    flex: 1,
-  },
-  domainName: {
+  rowTitle: {
     fontSize: 14,
     fontWeight: '600',
   },
-  domainMeta: {
-    fontSize: 11,
+  rowMeta: {
+    fontSize: 12,
     marginTop: 2,
+  },
+  rowFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  rowFooterEnd: {
+    alignItems: 'flex-end',
+    marginTop: 8,
+  },
+  dueDate: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+
+  // Status chip
+  statusChip: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.sm,
+  },
+  statusChipText: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+
+  // Field rows
+  fieldRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  fieldLabel: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  fieldValue: {
+    fontSize: 13,
+    fontWeight: '600',
+    textAlign: 'right',
+    maxWidth: '55%',
   },
 });
