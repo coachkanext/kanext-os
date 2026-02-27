@@ -34,6 +34,7 @@ import { NexusAnswerSheet } from '@/components/messages/nexus-answer-sheet';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ChurchMessagesScreen } from '@/components/church-messages/church-messages-screen';
 import { BusinessInboxV2 } from '@/components/business-inbox/business-inbox-v2';
+import { BusinessRoomsV2 } from '@/components/business-rooms-msg/business-rooms-v2';
 import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useMode } from '@/context/app-context';
@@ -149,6 +150,7 @@ export default function MessagesScreen() {
   }, []);
 
   const searchPlaceholder =
+    mode === 'business' && activeIndex === 1 ? 'Search rooms / departments / projects' :
     activeIndex === 1 ? 'Search rooms' :
     mode === 'business' && activeIndex === 0 ? 'Search people / threads / approvals' :
     'Search people / messages';
@@ -312,14 +314,18 @@ export default function MessagesScreen() {
 
           {/* ===== ROOMS ===== */}
           <View key="rooms" style={{ flex: 1 }}>
-            <RoomsListV3
-              mode={mode}
-              search={search}
-              onRoomPress={(room) => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setSelectedRoom(room);
-              }}
-            />
+            {mode === 'business' ? (
+              <BusinessRoomsV2 search={search} />
+            ) : (
+              <RoomsListV3
+                mode={mode}
+                search={search}
+                onRoomPress={(room) => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setSelectedRoom(room);
+                }}
+              />
+            )}
           </View>
 
           {/* ===== NEXUS ===== */}
