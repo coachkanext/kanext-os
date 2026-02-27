@@ -1,23 +1,16 @@
 /**
- * Business Organization People Tab -- V3
- * 3-pill ViewBar: Team | Board | Contacts
- * Valuetainment founder view. All data inline.
+ * BizPeople — Company Directory + Structural Hierarchy
+ * Single vertical scroll. 5 sections. No metrics. No compensation.
+ * Directory and structure only.
  */
 import React, { useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
-
-// =============================================================================
-// TYPES
-// =============================================================================
-
-
-const ACCENT = MODE_ACCENT.business;
-type ViewMode = 'team' | 'board' | 'contacts';
-type ContactCategory = 'All' | 'Investors' | 'Partners' | 'Clients' | 'Press' | 'Vendors' | 'Legal';
+import { Colors, Spacing } from '@/constants/theme';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 interface Props {
   colors: typeof Colors.light;
@@ -26,288 +19,263 @@ interface Props {
 }
 
 // =============================================================================
-// INLINE DATA
+// DATA — Directory facts only. No compensation. No equity. No payroll.
 // =============================================================================
 
-const VIEWS: { id: ViewMode; label: string }[] = [
-  { id: 'team', label: 'Team' },
-  { id: 'board', label: 'Board' },
-  { id: 'contacts', label: 'Contacts' },
+interface Person {
+  id: string;
+  name: string;
+  initials: string;
+  title: string;
+  department: string;
+  authorityClass: string;
+  domainScope: string;
+  status: 'Active' | 'Advisory' | 'Board';
+  reportsTo: string | null;
+  startDate: string;
+  responsibilities: string[];
+}
+
+const EXECUTIVES: Person[] = [
+  { id: 'e1', name: 'Alex Morgan', initials: 'AM', title: 'Founder & CEO', department: 'Executive', authorityClass: 'A5', domainScope: 'Entity-wide', status: 'Active', reportsTo: null, startDate: 'Mar 2023', responsibilities: ['Corporate strategy', 'Capital allocation', 'Board governance', 'Executive hiring'] },
+  { id: 'e2', name: 'Jordan Ellis', initials: 'JE', title: 'Chief Operating Officer', department: 'Operations', authorityClass: 'A4', domainScope: 'Entity-wide', status: 'Active', reportsTo: 'Alex Morgan', startDate: 'Jun 2023', responsibilities: ['Day-to-day operations', 'Vendor management', 'Process design', 'Cross-department coordination'] },
+  { id: 'e3', name: 'Marcus Chen', initials: 'MC', title: 'Chief Technology Officer', department: 'Engineering', authorityClass: 'A4', domainScope: 'Engineering + Product', status: 'Active', reportsTo: 'Alex Morgan', startDate: 'Apr 2023', responsibilities: ['Technical architecture', 'Engineering roadmap', 'Infrastructure', 'Security posture'] },
+  { id: 'e4', name: 'Laura Mitchell', initials: 'LM', title: 'General Counsel', department: 'Legal', authorityClass: 'A4', domainScope: 'Entity-wide', status: 'Active', reportsTo: 'Alex Morgan', startDate: 'Sep 2023', responsibilities: ['Corporate governance', 'IP protection', 'Regulatory compliance', 'Contract review'] },
+  { id: 'e5', name: 'Nina Patel', initials: 'NP', title: 'Chief Financial Officer', department: 'Finance', authorityClass: 'A4', domainScope: 'Entity-wide', status: 'Active', reportsTo: 'Alex Morgan', startDate: 'Jan 2024', responsibilities: ['Financial reporting', 'Capital management', 'Budget oversight', 'Investor relations'] },
 ];
 
-const TEAM = [
-  { id: 'p1', name: 'Alex Morgan', role: 'Founder & CEO', type: 'Full-time', reportsTo: null, level: 0, initials: 'AM' },
-  { id: 'p2', name: 'Marcus Chen', role: 'CTO', type: 'Full-time', reportsTo: 'p1', level: 1, initials: 'MC' },
-  { id: 'p3', name: 'Aisha Williams', role: 'Head of Product', type: 'Full-time', reportsTo: 'p1', level: 1, initials: 'AW' },
-  { id: 'p4', name: 'David Park', role: 'Lead Engineer', type: 'Full-time', reportsTo: 'p2', level: 2, initials: 'DP' },
-  { id: 'p5', name: 'Sofia Reyes', role: 'Designer', type: 'Contract', reportsTo: 'p3', level: 2, initials: 'SR' },
-  { id: 'p6', name: 'Jordan Ellis', role: 'Operations Manager', type: 'Full-time', reportsTo: 'p1', level: 1, initials: 'JE' },
+interface DepartmentData {
+  name: string;
+  people: Person[];
+}
+
+const DEPARTMENTS: DepartmentData[] = [
+  { name: 'Engineering', people: [
+    { id: 'd1', name: 'David Park', initials: 'DP', title: 'Lead Engineer', department: 'Engineering', authorityClass: 'A2', domainScope: 'Engineering', status: 'Active', reportsTo: 'Marcus Chen', startDate: 'May 2023', responsibilities: ['Frontend architecture', 'Code review', 'Sprint planning'] },
+    { id: 'd2', name: 'Priya Sharma', initials: 'PS', title: 'Backend Engineer', department: 'Engineering', authorityClass: 'A1', domainScope: 'Engineering', status: 'Active', reportsTo: 'David Park', startDate: 'Aug 2023', responsibilities: ['API development', 'Database management', 'Service integration'] },
+    { id: 'd3', name: 'Ryan Torres', initials: 'RT', title: 'Mobile Engineer', department: 'Engineering', authorityClass: 'A1', domainScope: 'Engineering', status: 'Active', reportsTo: 'David Park', startDate: 'Oct 2023', responsibilities: ['React Native development', 'Platform-specific features'] },
+  ]},
+  { name: 'Product', people: [
+    { id: 'd4', name: 'Aisha Williams', initials: 'AW', title: 'Head of Product', department: 'Product', authorityClass: 'A3', domainScope: 'Product', status: 'Active', reportsTo: 'Alex Morgan', startDate: 'Jul 2023', responsibilities: ['Product roadmap', 'User research', 'Feature prioritization'] },
+    { id: 'd5', name: 'Sofia Reyes', initials: 'SR', title: 'Product Designer', department: 'Product', authorityClass: 'A1', domainScope: 'Product', status: 'Active', reportsTo: 'Aisha Williams', startDate: 'Nov 2023', responsibilities: ['UI/UX design', 'Design system', 'Prototyping'] },
+  ]},
+  { name: 'Operations', people: [
+    { id: 'd6', name: 'Kenji Yamamoto', initials: 'KY', title: 'Operations Coordinator', department: 'Operations', authorityClass: 'A1', domainScope: 'Operations', status: 'Active', reportsTo: 'Jordan Ellis', startDate: 'Jan 2024', responsibilities: ['Scheduling', 'Vendor coordination', 'Office management'] },
+  ]},
+  { name: 'Finance', people: [
+    { id: 'd7', name: 'Carla Mendez', initials: 'CM', title: 'Financial Analyst', department: 'Finance', authorityClass: 'A1', domainScope: 'Finance', status: 'Active', reportsTo: 'Nina Patel', startDate: 'Mar 2024', responsibilities: ['Financial modeling', 'Reporting', 'Budget tracking'] },
+  ]},
+  { name: 'Marketing', people: [
+    { id: 'd8', name: 'Ethan Brooks', initials: 'EB', title: 'Marketing Lead', department: 'Marketing', authorityClass: 'A2', domainScope: 'Marketing', status: 'Active', reportsTo: 'Jordan Ellis', startDate: 'Feb 2024', responsibilities: ['Brand strategy', 'Content marketing', 'Growth campaigns'] },
+  ]},
 ];
 
-const BOARD = [
-  { id: 'b1', name: 'Alex Morgan', title: 'Founder & CEO', seat: 'Founder Seat', term: 'Permanent' },
-  { id: 'b2', name: 'Dr. Patricia Moore', title: 'Angel Investor & Advisor', seat: 'Investor Seat', term: '2024-2027' },
-  { id: 'b3', name: 'James Bradford', title: 'Industry Advisor, ex-VP Google', seat: 'Advisor Seat', term: '2024-2026' },
+interface BoardMember {
+  id: string;
+  name: string;
+  initials: string;
+  role: string;
+  scope: 'Board' | 'Advisory';
+  votingRights: boolean;
+}
+
+const BOARD_ADVISORS: BoardMember[] = [
+  { id: 'b1', name: 'Alex Morgan', initials: 'AM', role: 'Board Chair / Founder', scope: 'Board', votingRights: true },
+  { id: 'b2', name: 'Dr. Patricia Moore', initials: 'PM', role: 'Board Member / Investor', scope: 'Board', votingRights: true },
+  { id: 'b3', name: 'James Bradford', initials: 'JB', role: 'Strategic Advisor', scope: 'Advisory', votingRights: false },
+  { id: 'b4', name: 'Diane Okafor', initials: 'DO', role: 'Industry Advisor', scope: 'Advisory', votingRights: false },
 ];
 
-const CONTACT_CATEGORIES: ContactCategory[] = ['All', 'Investors', 'Partners', 'Clients', 'Press', 'Vendors', 'Legal'];
+interface Contractor {
+  id: string;
+  name: string;
+  initials: string;
+  function: string;
+  status: 'Active' | 'Inactive';
+}
 
-const CONTACTS = [
-  { id: 'c1', name: 'Velocity Ventures', category: 'Investors' as ContactCategory, contact: 'Sarah Lin', email: 'sarah@velocityvc.com', note: 'Lead investor, pre-seed round' },
-  { id: 'c2', name: 'Horizon Capital', category: 'Investors' as ContactCategory, contact: 'Michael Torres', email: 'mt@horizoncap.io', note: 'Seed-stage interest' },
-  { id: 'c3', name: 'NAA Conference Partners', category: 'Partners' as ContactCategory, contact: 'Robert Hughes', email: 'rhughes@naia.org', note: 'Beta testing partnership' },
-  { id: 'c4', name: 'Faith Community Church', category: 'Clients' as ContactCategory, contact: 'Pastor David Brown', email: 'dbrown@fcc.org', note: 'Pilot church customer' },
-  { id: 'c5', name: 'TechCrunch', category: 'Press' as ContactCategory, contact: 'Amanda Wells', email: 'amanda@techcrunch.com', note: 'Journalist covering EdTech/SaaS' },
-  { id: 'c6', name: 'AWS', category: 'Vendors' as ContactCategory, contact: 'Cloud Team', email: 'enterprise@aws.amazon.com', note: 'Infrastructure provider' },
-  { id: 'c7', name: 'Vercel', category: 'Vendors' as ContactCategory, contact: 'Support', email: 'support@vercel.com', note: 'Hosting & deployment' },
-  { id: 'c8', name: 'Mitchell & Associates', category: 'Legal' as ContactCategory, contact: 'Laura Mitchell, Esq.', email: 'lmitchell@mitchelllaw.com', note: 'Corporate counsel, IP filings' },
+const CONTRACTORS: Contractor[] = [
+  { id: 'v1', name: 'Mitchell & Associates', initials: 'MA', function: 'Outside Counsel', status: 'Active' },
+  { id: 'v2', name: 'CloudOps Solutions', initials: 'CO', function: 'DevOps / Infrastructure', status: 'Active' },
+  { id: 'v3', name: 'BrandForge Studio', initials: 'BF', function: 'Brand Design', status: 'Active' },
 ];
-
-const TYPE_COLORS: Record<string, string> = {
-  'Full-time': '#22C55E',
-  'Contract': '#F59E0B',
-  'Part-time': ACCENT,
-};
-
-const SEAT_COLORS: Record<string, string> = {
-  'Founder Seat': ACCENT,
-  'Investor Seat': ACCENT,
-  'Advisor Seat': ACCENT,
-};
-
-const CATEGORY_COLORS: Record<string, string> = {
-  Investors: ACCENT,
-  Partners: ACCENT,
-  Clients: '#22C55E',
-  Press: ACCENT,
-  Vendors: '#F59E0B',
-  Legal: ACCENT,
-};
 
 // =============================================================================
 // COMPONENT
 // =============================================================================
 
-export function BizPeople({ colors, accentColor, role }: Props) {
-  const [activeView, setActiveView] = useState<ViewMode>('team');
-  const [activeCategory, setActiveCategory] = useState<ContactCategory>('All');
+export function BizPeople({ colors }: Props) {
+  const [expandedDepts, setExpandedDepts] = useState<Set<string>>(new Set());
+  const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
+  const [sheetVisible, setSheetVisible] = useState(false);
 
-  const handleViewPress = useCallback((id: ViewMode) => {
+  const toggleDept = useCallback((name: string) => {
     Haptics.selectionAsync();
-    setActiveView(id);
+    setExpandedDepts((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      return next;
+    });
   }, []);
 
-  const handleCategoryPress = useCallback((cat: ContactCategory) => {
-    Haptics.selectionAsync();
-    setActiveCategory(cat);
+  const openProfile = useCallback((person: Person) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSelectedPerson(person);
+    setSheetVisible(true);
   }, []);
 
-  const filteredContacts = activeCategory === 'All'
-    ? CONTACTS
-    : CONTACTS.filter((c) => c.category === activeCategory);
-
-  // ---------------------------------------------------------------------------
-  // TEAM
-  // ---------------------------------------------------------------------------
-  const renderTeam = () => {
-    // Group by level for org chart
-    const executives = TEAM.filter((p) => p.level === 0);
-    const directors = TEAM.filter((p) => p.level === 1);
-    const individual = TEAM.filter((p) => p.level === 2);
-
-    return (
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-        {/* Summary */}
-        <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <View style={s.summaryRow}>
-            <View style={s.summaryItem}>
-              <ThemedText style={[s.summaryValue, { color: colors.text }]}>{TEAM.length}</ThemedText>
-              <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Total</ThemedText>
-            </View>
-            <View style={s.summaryItem}>
-              <ThemedText style={[s.summaryValue, { color: '#22C55E' }]}>
-                {TEAM.filter((p) => p.type === 'Full-time').length}
-              </ThemedText>
-              <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Full-time</ThemedText>
-            </View>
-            <View style={s.summaryItem}>
-              <ThemedText style={[s.summaryValue, { color: '#F59E0B' }]}>
-                {TEAM.filter((p) => p.type === 'Contract').length}
-              </ThemedText>
-              <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Contract</ThemedText>
-            </View>
-          </View>
-        </View>
-
-        {/* Executive */}
-        <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>EXECUTIVE</ThemedText>
-        {executives.map((person) => renderPersonCard(person))}
-
-        {/* Directors / Leads */}
-        <ThemedText style={[s.sectionHeader, { color: colors.textSecondary, marginTop: Spacing.md }]}>DIRECTORS</ThemedText>
-        {directors.map((person) => renderPersonCard(person))}
-
-        {/* Individual Contributors */}
-        <ThemedText style={[s.sectionHeader, { color: colors.textSecondary, marginTop: Spacing.md }]}>INDIVIDUAL CONTRIBUTORS</ThemedText>
-        {individual.map((person) => renderPersonCard(person))}
-      </ScrollView>
-    );
-  };
-
-  const renderPersonCard = (person: typeof TEAM[0]) => {
-    const typeColor = TYPE_COLORS[person.type] ?? colors.textSecondary;
-    const reportsToName = person.reportsTo
-      ? TEAM.find((p) => p.id === person.reportsTo)?.name ?? 'N/A'
-      : 'None';
-    return (
-      <View key={person.id} style={[s.card, { backgroundColor: colors.card, borderColor: colors.border, marginBottom: Spacing.sm }]}>
-        <View style={s.personRow}>
-          <View style={[s.avatar, { backgroundColor: accentColor + '20' }]}>
-            <ThemedText style={[s.avatarText, { color: accentColor }]}>{person.initials}</ThemedText>
-          </View>
-          <View style={s.personInfo}>
-            <ThemedText style={[s.personName, { color: colors.text }]}>{person.name}</ThemedText>
-            <ThemedText style={[s.personRole, { color: colors.textSecondary }]}>{person.role}</ThemedText>
-            <View style={s.personMeta}>
-              <View style={[s.statusBadge, { backgroundColor: typeColor + '20' }]}>
-                <ThemedText style={[s.statusBadgeText, { color: typeColor }]}>{person.type.toUpperCase()}</ThemedText>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View style={[s.reportsToRow, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}>
-          <IconSymbol name="arrow.up" size={12} color={colors.textTertiary} />
-          <ThemedText style={[s.reportsToText, { color: colors.textSecondary }]}>Reports to: {reportsToName}</ThemedText>
-        </View>
-      </View>
-    );
-  };
-
-  // ---------------------------------------------------------------------------
-  // BOARD
-  // ---------------------------------------------------------------------------
-  const renderBoard = () => (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>BOARD MEMBERS & ADVISORS</ThemedText>
-      {BOARD.map((member) => {
-        const seatColor = SEAT_COLORS[member.seat] ?? colors.textSecondary;
-        return (
-          <View key={member.id} style={[s.card, { backgroundColor: colors.card, borderColor: colors.border, marginBottom: Spacing.sm }]}>
-            <View style={s.personRow}>
-              <View style={[s.avatar, { backgroundColor: seatColor + '20' }]}>
-                <ThemedText style={[s.avatarText, { color: seatColor }]}>
-                  {member.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
-                </ThemedText>
-              </View>
-              <View style={s.personInfo}>
-                <ThemedText style={[s.personName, { color: colors.text }]}>{member.name}</ThemedText>
-                <ThemedText style={[s.personRole, { color: colors.textSecondary }]}>{member.title}</ThemedText>
-              </View>
-            </View>
-            <View style={[s.boardDetailRow, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}>
-              <View style={s.boardDetailItem}>
-                <ThemedText style={[s.boardDetailLabel, { color: colors.textSecondary }]}>Seat</ThemedText>
-                <View style={[s.statusBadge, { backgroundColor: seatColor + '20' }]}>
-                  <ThemedText style={[s.statusBadgeText, { color: seatColor }]}>{member.seat.toUpperCase()}</ThemedText>
-                </View>
-              </View>
-              <View style={s.boardDetailItem}>
-                <ThemedText style={[s.boardDetailLabel, { color: colors.textSecondary }]}>Term</ThemedText>
-                <ThemedText style={[s.boardDetailValue, { color: colors.text }]}>{member.term}</ThemedText>
-              </View>
-            </View>
-          </View>
-        );
-      })}
-    </ScrollView>
-  );
-
-  // ---------------------------------------------------------------------------
-  // CONTACTS
-  // ---------------------------------------------------------------------------
-  const renderContacts = () => (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Filter pills */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0 }} contentContainerStyle={s.filterRow}>
-        {CONTACT_CATEGORIES.map((cat) => {
-          const isActive = cat === activeCategory;
-          return (
-            <Pressable
-              key={cat}
-              style={[s.filterPill, { backgroundColor: isActive ? accentColor : '#2F3336' }]}
-              onPress={() => handleCategoryPress(cat)}
-            >
-              <ThemedText style={[s.filterPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
-                {cat}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
-
-      {/* Contacts list */}
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary, marginTop: Spacing.md }]}>
-        {activeCategory === 'All' ? 'ALL CONTACTS' : activeCategory.toUpperCase()} ({filteredContacts.length})
-      </ThemedText>
-      {filteredContacts.map((contact) => {
-        const catColor = CATEGORY_COLORS[contact.category] ?? colors.textSecondary;
-        return (
-          <View key={contact.id} style={[s.card, { backgroundColor: colors.card, borderColor: colors.border, marginBottom: Spacing.sm }]}>
-            <View style={s.contactHeader}>
-              <View style={[s.contactIcon, { backgroundColor: catColor + '15' }]}>
-                <IconSymbol name="person.fill" size={16} color={catColor} />
-              </View>
-              <View style={s.contactHeaderInfo}>
-                <ThemedText style={[s.contactName, { color: colors.text }]}>{contact.name}</ThemedText>
-                <ThemedText style={[s.contactPerson, { color: colors.textSecondary }]}>{contact.contact}</ThemedText>
-              </View>
-              <View style={[s.statusBadge, { backgroundColor: catColor + '20' }]}>
-                <ThemedText style={[s.statusBadgeText, { color: catColor }]}>{contact.category.toUpperCase()}</ThemedText>
-              </View>
-            </View>
-            <View style={[s.contactDetail, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}>
-              <View style={s.contactDetailRow}>
-                <IconSymbol name="envelope.fill" size={12} color={colors.textTertiary} />
-                <ThemedText style={[s.contactEmail, { color: colors.textSecondary }]} numberOfLines={1}>{contact.email}</ThemedText>
-              </View>
-              <ThemedText style={[s.contactNote, { color: colors.textSecondary }]}>{contact.note}</ThemedText>
-            </View>
-          </View>
-        );
-      })}
-    </ScrollView>
-  );
-
-  // ---------------------------------------------------------------------------
-  // RENDER
-  // ---------------------------------------------------------------------------
   return (
     <View style={s.container}>
-      {/* ViewBar */}
-      <View style={s.viewBar}>
-        {VIEWS.map((v) => {
-          const isActive = v.id === activeView;
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
+
+        {/* SECTION 1 — Executive Leadership */}
+        <ThemedText style={[s.sectionLabel, { color: colors.textTertiary }]}>EXECUTIVE LEADERSHIP</ThemedText>
+        {EXECUTIVES.map((exec) => (
+          <PersonRow key={exec.id} person={exec} colors={colors} onPress={() => openProfile(exec)} />
+        ))}
+
+        {/* SECTION 2 — Departments */}
+        <ThemedText style={[s.sectionLabel, { color: colors.textTertiary, marginTop: Spacing.lg }]}>DEPARTMENTS</ThemedText>
+        {DEPARTMENTS.map((dept) => {
+          const isExpanded = expandedDepts.has(dept.name);
           return (
-            <Pressable
-              key={v.id}
-              style={[
-                s.viewPill,
-                { backgroundColor: isActive ? accentColor : '#2F3336' },
-              ]}
-              onPress={() => handleViewPress(v.id)}
-            >
-              <ThemedText style={[s.viewPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
-                {v.label}
-              </ThemedText>
-            </Pressable>
+            <View key={dept.name}>
+              <Pressable
+                style={[s.deptHeader, { borderColor: colors.border }]}
+                onPress={() => toggleDept(dept.name)}
+              >
+                <ThemedText style={[s.deptName, { color: colors.text }]}>{dept.name}</ThemedText>
+                <View style={s.deptRight}>
+                  <ThemedText style={[s.deptCount, { color: colors.textTertiary }]}>{dept.people.length}</ThemedText>
+                  <IconSymbol name={isExpanded ? 'chevron.up' : 'chevron.down'} size={14} color={colors.textTertiary} />
+                </View>
+              </Pressable>
+              {isExpanded && dept.people.map((person) => (
+                <PersonRow key={person.id} person={person} colors={colors} onPress={() => openProfile(person)} indent />
+              ))}
+            </View>
           );
         })}
-      </View>
 
-      {/* Content */}
-      {activeView === 'team' && renderTeam()}
-      {activeView === 'board' && renderBoard()}
-      {activeView === 'contacts' && renderContacts()}
+        {/* SECTION 3 — Board / Advisors */}
+        <ThemedText style={[s.sectionLabel, { color: colors.textTertiary, marginTop: Spacing.lg }]}>BOARD / ADVISORS</ThemedText>
+        {BOARD_ADVISORS.map((member) => (
+          <View key={member.id} style={[s.row, { borderColor: colors.border }]}>
+            <View style={[s.avatar, { backgroundColor: colors.backgroundTertiary }]}>
+              <ThemedText style={[s.avatarText, { color: colors.textSecondary }]}>{member.initials}</ThemedText>
+            </View>
+            <View style={s.rowContent}>
+              <ThemedText style={[s.rowName, { color: colors.text }]}>{member.name}</ThemedText>
+              <ThemedText style={[s.rowSub, { color: colors.textSecondary }]}>{member.role}</ThemedText>
+              <View style={s.metaRow}>
+                <ThemedText style={[s.metaTag, { color: colors.textTertiary }]}>{member.scope}</ThemedText>
+                <ThemedText style={[s.metaDivider, { color: colors.textTertiary }]}>{'\u00B7'}</ThemedText>
+                <ThemedText style={[s.metaTag, { color: colors.textTertiary }]}>
+                  Voting: {member.votingRights ? 'Yes' : 'No'}
+                </ThemedText>
+              </View>
+            </View>
+          </View>
+        ))}
+
+        {/* SECTION 4 — Contractors / Vendors */}
+        <ThemedText style={[s.sectionLabel, { color: colors.textTertiary, marginTop: Spacing.lg }]}>CONTRACTORS / VENDORS</ThemedText>
+        {CONTRACTORS.map((c) => (
+          <View key={c.id} style={[s.row, { borderColor: colors.border }]}>
+            <View style={[s.avatar, { backgroundColor: colors.backgroundTertiary }]}>
+              <ThemedText style={[s.avatarText, { color: colors.textSecondary }]}>{c.initials}</ThemedText>
+            </View>
+            <View style={s.rowContent}>
+              <ThemedText style={[s.rowName, { color: colors.text }]}>{c.name}</ThemedText>
+              <ThemedText style={[s.rowSub, { color: colors.textSecondary }]}>{c.function}</ThemedText>
+            </View>
+            <ThemedText style={[s.statusLabel, { color: colors.textTertiary }]}>{c.status}</ThemedText>
+          </View>
+        ))}
+      </ScrollView>
+
+      {/* Profile Sheet */}
+      <BottomSheet visible={sheetVisible} onClose={() => setSheetVisible(false)} useModal>
+        <BottomSheetScrollView contentContainerStyle={s.sheetContent}>
+          {selectedPerson && (
+            <>
+              <View style={s.sheetHeader}>
+                <View style={[s.sheetAvatar, { backgroundColor: colors.backgroundTertiary }]}>
+                  <ThemedText style={[s.sheetAvatarText, { color: colors.textSecondary }]}>{selectedPerson.initials}</ThemedText>
+                </View>
+                <ThemedText style={[s.sheetName, { color: colors.text }]}>{selectedPerson.name}</ThemedText>
+                <ThemedText style={[s.sheetTitle, { color: colors.textSecondary }]}>{selectedPerson.title}</ThemedText>
+              </View>
+
+              <View style={s.sheetFields}>
+                <SheetField label="Department" value={selectedPerson.department} colors={colors} />
+                <SheetField label="Authority Class" value={selectedPerson.authorityClass} colors={colors} />
+                <SheetField label="Domain Scope" value={selectedPerson.domainScope} colors={colors} />
+                <SheetField label="Status" value={selectedPerson.status} colors={colors} />
+                <SheetField label="Reports To" value={selectedPerson.reportsTo ?? 'None'} colors={colors} />
+                <SheetField label="Start Date" value={selectedPerson.startDate} colors={colors} />
+              </View>
+
+              <ThemedText style={[s.sheetSectionLabel, { color: colors.textTertiary }]}>ASSIGNED RESPONSIBILITIES</ThemedText>
+              {selectedPerson.responsibilities.map((r) => (
+                <ThemedText key={r} style={[s.sheetResponsibility, { color: colors.text }]}>
+                  {r}
+                </ThemedText>
+              ))}
+            </>
+          )}
+        </BottomSheetScrollView>
+      </BottomSheet>
+    </View>
+  );
+}
+
+// =============================================================================
+// HELPER COMPONENTS
+// =============================================================================
+
+function PersonRow({
+  person,
+  colors,
+  onPress,
+  indent,
+}: {
+  person: Person;
+  colors: typeof Colors.light;
+  onPress: () => void;
+  indent?: boolean;
+}) {
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        s.row,
+        { borderColor: colors.border, opacity: pressed ? 0.7 : 1 },
+        indent && s.rowIndented,
+      ]}
+      onPress={onPress}
+    >
+      <View style={[s.avatar, { backgroundColor: colors.backgroundTertiary }]}>
+        <ThemedText style={[s.avatarText, { color: colors.textSecondary }]}>{person.initials}</ThemedText>
+      </View>
+      <View style={s.rowContent}>
+        <ThemedText style={[s.rowName, { color: colors.text }]}>{person.name}</ThemedText>
+        <ThemedText style={[s.rowSub, { color: colors.textSecondary }]}>{person.title}</ThemedText>
+        <View style={s.metaRow}>
+          <ThemedText style={[s.metaTag, { color: colors.textTertiary }]}>{person.authorityClass}</ThemedText>
+          <ThemedText style={[s.metaDivider, { color: colors.textTertiary }]}>{'\u00B7'}</ThemedText>
+          <ThemedText style={[s.metaTag, { color: colors.textTertiary }]}>{person.status}</ThemedText>
+        </View>
+      </View>
+    </Pressable>
+  );
+}
+
+function SheetField({ label, value, colors }: { label: string; value: string; colors: typeof Colors.light }) {
+  return (
+    <View style={s.sheetFieldRow}>
+      <ThemedText style={[s.sheetFieldLabel, { color: colors.textSecondary }]}>{label}</ThemedText>
+      <ThemedText style={[s.sheetFieldValue, { color: colors.text }]}>{value}</ThemedText>
     </View>
   );
 }
@@ -317,202 +285,150 @@ export function BizPeople({ colors, accentColor, role }: Props) {
 // =============================================================================
 
 const s = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-
-  // ViewBar
-  viewBar: {
-    flexDirection: 'row',
-    gap: Spacing.sm,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-  },
-  viewPill: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderRadius: BorderRadius.full,
-  },
-  viewPillText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-
-  // Scroll
+  container: { flex: 1 },
   scroll: {
     padding: Spacing.md,
     paddingBottom: 120,
   },
 
-  // Section Header
-  sectionHeader: {
-    fontSize: 12,
+  sectionLabel: {
+    fontSize: 11,
     fontWeight: '600',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-    marginBottom: 8,
-  },
-
-  // Card
-  card: {
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
+    letterSpacing: 0.8,
     marginBottom: Spacing.sm,
   },
 
-  // Summary
-  summaryRow: {
+  // Person row
+  row: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  summaryItem: {
     alignItems: 'center',
+    gap: 12,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  summaryValue: {
-    fontSize: 22,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
+  rowIndented: {
+    paddingLeft: 16,
   },
-  summaryLabel: {
-    fontSize: 11,
+  rowContent: {
+    flex: 1,
+    gap: 2,
+  },
+  rowName: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  rowSub: {
+    fontSize: 12,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
     marginTop: 2,
   },
+  metaTag: {
+    fontSize: 11,
+    fontWeight: '500',
+  },
+  metaDivider: {
+    fontSize: 11,
+  },
+  statusLabel: {
+    fontSize: 11,
+    fontWeight: '500',
+  },
 
-  // Status badge
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: BorderRadius.full,
-  },
-  statusBadgeText: {
-    fontSize: 9,
-    fontWeight: '700',
-    letterSpacing: 0.3,
-  },
-
-  // Person card
-  personRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
+  // Avatar
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '700',
   },
-  personInfo: {
-    flex: 1,
-    gap: 2,
+
+  // Department header
+  deptHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  personName: {
+  deptName: {
     fontSize: 14,
     fontWeight: '600',
   },
-  personRole: {
-    fontSize: 12,
-  },
-  personMeta: {
-    flexDirection: 'row',
-    gap: 6,
-    marginTop: 4,
-  },
-
-  // Reports to
-  reportsToRow: {
+  deptRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    marginTop: Spacing.sm,
-    paddingTop: Spacing.sm,
+    gap: 8,
   },
-  reportsToText: {
-    fontSize: 12,
-  },
-
-  // Board
-  boardDetailRow: {
-    flexDirection: 'row',
-    gap: Spacing.lg,
-    marginTop: Spacing.sm,
-    paddingTop: Spacing.sm,
-  },
-  boardDetailItem: {
-    gap: 4,
-  },
-  boardDetailLabel: {
-    fontSize: 11,
-    fontWeight: '500',
-  },
-  boardDetailValue: {
+  deptCount: {
     fontSize: 13,
     fontWeight: '600',
   },
 
-  // Filters
-  filterRow: {
-    gap: Spacing.sm,
-    paddingBottom: Spacing.sm,
+  // Profile Sheet
+  sheetContent: {
+    padding: Spacing.md,
+    paddingBottom: 40,
   },
-  filterPill: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: BorderRadius.full,
-  },
-  filterPillText: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-
-  // Contacts
-  contactHeader: {
-    flexDirection: 'row',
+  sheetHeader: {
     alignItems: 'center',
-    gap: Spacing.sm,
+    marginBottom: Spacing.lg,
   },
-  contactIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+  sheetAvatar: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 12,
   },
-  contactHeaderInfo: {
-    flex: 1,
+  sheetAvatarText: {
+    fontSize: 22,
+    fontWeight: '700',
   },
-  contactName: {
+  sheetName: {
+    fontSize: 20,
+    fontWeight: '700',
+  },
+  sheetTitle: {
     fontSize: 14,
+    marginTop: 4,
+  },
+  sheetFields: {
+    marginBottom: Spacing.lg,
+  },
+  sheetFieldRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  sheetFieldLabel: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  sheetFieldValue: {
+    fontSize: 13,
     fontWeight: '600',
   },
-  contactPerson: {
-    fontSize: 12,
-    marginTop: 2,
+  sheetSectionLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 0.8,
+    marginBottom: Spacing.sm,
   },
-  contactDetail: {
-    marginTop: Spacing.sm,
-    paddingTop: Spacing.sm,
-    gap: 6,
-  },
-  contactDetailRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  contactEmail: {
-    fontSize: 12,
-    flex: 1,
-  },
-  contactNote: {
-    fontSize: 12,
-    fontStyle: 'italic',
-    lineHeight: 17,
+  sheetResponsibility: {
+    fontSize: 13,
+    lineHeight: 20,
+    paddingVertical: 4,
+    paddingLeft: 8,
   },
 });

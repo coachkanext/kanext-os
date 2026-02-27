@@ -405,7 +405,7 @@ export default function OrganizationScreen() {
       case 'church':
         return <ChurchOrganization />;
       case 'business':
-        return <EmptyModeShell tabs={ORG_TABS_EMPTY} />;
+        return <BusinessOrganization />;
       case 'education':
       case 'competition':
         return (
