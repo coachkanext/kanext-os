@@ -1,300 +1,359 @@
 /**
- * Business Organization Facilities Tab -- V3
- * 3-pill ViewBar: Spaces | Assets | Vendors
- * Valuetainment founder view. All data inline.
+ * BizFacilities — Physical Location Directory (Facilities Tab)
+ * Single vertical scroll. Structured location cards.
+ * No financial overlays. No operational dashboards.
+ * Facilities = structured location registry.
  */
-import React, { useState, useCallback } from 'react';
-import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
+import React, { useState, useMemo, useRef, useCallback } from 'react';
+import { View, ScrollView, StyleSheet, Pressable, TextInput, Linking, Platform } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius , MODE_ACCENT } from '@/constants/theme';
-
-// =============================================================================
-// TYPES
-// =============================================================================
-
-
-const ACCENT = MODE_ACCENT.business;
-type ViewMode = 'spaces' | 'assets' | 'vendors';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 interface Props {
   colors: typeof Colors.light;
   accentColor: string;
   role?: string;
+  onNavigateTab?: (tabIndex: number) => void;
 }
 
 // =============================================================================
-// INLINE DATA
+// TYPES
 // =============================================================================
 
-const VIEWS: { id: ViewMode; label: string }[] = [
-  { id: 'spaces', label: 'Spaces' },
-  { id: 'assets', label: 'Assets' },
-  { id: 'vendors', label: 'Vendors' },
-];
+type OwnershipType = 'Owned' | 'Leased' | 'Shared';
+type LocationStatus = 'Active' | 'Inactive' | 'Under Development';
+type LocationCategory = 'Headquarters' | 'Satellite Office' | 'Warehouse' | 'Training Facility' | 'Event Space';
 
-// Spaces
-const SPACES = [
+// =============================================================================
+// INLINE DATA — Location directory only
+// =============================================================================
+
+const LOCATIONS = [
   {
-    id: 'sp1',
-    name: 'WeWork Miami',
-    type: 'Co-working',
-    address: '1111 Brickell Ave, Miami, FL 33131',
-    monthly: '$800/mo',
-    status: 'active' as const,
-    lease: 'Month-to-month',
-    capacity: '4 desks',
-    notes: 'Hot desk membership, meeting room access included',
+    id: 'loc-1',
+    name: 'Valuetainment HQ',
+    city: 'Miami',
+    state: 'FL',
+    fullAddress: '1111 Brickell Ave, Suite 800, Miami, FL 33131',
+    ownership: 'Leased' as OwnershipType,
+    status: 'Active' as LocationStatus,
+    category: 'Headquarters' as LocationCategory,
+    primaryUse: 'Corporate headquarters and primary workspace',
+    sqft: '4,200 sq ft',
+    headcount: 8,
+    hours: 'Mon–Fri, 8:00 AM – 6:00 PM',
   },
   {
-    id: 'sp2',
-    name: 'Home Office',
-    type: 'Remote HQ',
-    address: 'Miami, FL',
-    monthly: '$0',
-    status: 'active' as const,
-    lease: 'N/A',
-    capacity: 'Primary workspace',
-    notes: 'Founder primary workspace, dedicated setup',
+    id: 'loc-2',
+    name: 'Nashville Office',
+    city: 'Nashville',
+    state: 'TN',
+    fullAddress: '505 Church St, Suite 300, Nashville, TN 37219',
+    ownership: 'Leased' as OwnershipType,
+    status: 'Active' as LocationStatus,
+    category: 'Satellite Office' as LocationCategory,
+    primaryUse: 'Operations and client services',
+    sqft: '1,800 sq ft',
+    headcount: 3,
+    hours: 'Mon–Fri, 9:00 AM – 5:00 PM',
+  },
+  {
+    id: 'loc-3',
+    name: 'Innovation Lab',
+    city: 'Miami',
+    state: 'FL',
+    fullAddress: '200 S Biscayne Blvd, Miami, FL 33131',
+    ownership: 'Shared' as OwnershipType,
+    status: 'Active' as LocationStatus,
+    category: 'Training Facility' as LocationCategory,
+    primaryUse: 'Product demos, workshops, and training sessions',
+    sqft: '1,200 sq ft',
+    headcount: 0,
+    hours: 'By appointment',
+  },
+  {
+    id: 'loc-4',
+    name: 'Doral Warehouse',
+    city: 'Doral',
+    state: 'FL',
+    fullAddress: '8200 NW 27th St, Doral, FL 33122',
+    ownership: 'Leased' as OwnershipType,
+    status: 'Inactive' as LocationStatus,
+    category: 'Warehouse' as LocationCategory,
+    primaryUse: 'Equipment storage and fulfillment',
+    sqft: '3,600 sq ft',
+    headcount: 0,
+    hours: 'N/A',
+  },
+  {
+    id: 'loc-5',
+    name: 'Wynwood Event Space',
+    city: 'Miami',
+    state: 'FL',
+    fullAddress: '318 NW 23rd St, Miami, FL 33127',
+    ownership: 'Shared' as OwnershipType,
+    status: 'Under Development' as LocationStatus,
+    category: 'Event Space' as LocationCategory,
+    primaryUse: 'Corporate events, investor meetings, launches',
+    sqft: '2,800 sq ft',
+    headcount: 0,
+    hours: 'TBD',
   },
 ];
 
-// Assets
-const ASSETS = [
-  { id: 'a1', name: 'MacBook Pro M3 Max', assignedTo: 'Alex Morgan', purchaseDate: 'Jan 2024', condition: 'Excellent', value: '$3,499' },
-  { id: 'a2', name: 'MacBook Pro M2 Pro', assignedTo: 'Marcus Chen', purchaseDate: 'Jun 2024', condition: 'Excellent', value: '$2,499' },
-  { id: 'a3', name: 'LG UltraFine 5K Display', assignedTo: 'Alex Morgan', purchaseDate: 'Jan 2024', condition: 'Good', value: '$1,299' },
-  { id: 'a4', name: 'Dell U2723QE Monitor', assignedTo: 'Marcus Chen', purchaseDate: 'Jun 2024', condition: 'Good', value: '$619' },
-  { id: 'a5', name: 'iPad Pro 12.9" M2', assignedTo: 'Aisha Williams', purchaseDate: 'Aug 2024', condition: 'Excellent', value: '$1,099' },
-  { id: 'a6', name: 'iPhone 15 Pro', assignedTo: 'Alex Morgan', purchaseDate: 'Sep 2024', condition: 'Excellent', value: '$999' },
-];
+const INFO_NOTE = 'Primary headquarters located in Miami, FL. Secondary operational footprint in Nashville, TN.';
 
-// Vendors
-const VENDORS = [
-  { id: 'v1', name: 'AWS', service: 'Cloud Infrastructure', monthly: '$1,200/mo', contract: '$14,400/yr', terms: 'On-demand', status: 'active' as const },
-  { id: 'v2', name: 'Vercel', service: 'Hosting & Deployment', monthly: '$20/mo', contract: '$240/yr', terms: 'Monthly', status: 'active' as const },
-  { id: 'v3', name: 'Figma', service: 'Design Tools', monthly: '$45/mo', contract: '$540/yr', terms: 'Annual', status: 'active' as const },
-  { id: 'v4', name: 'Linear', service: 'Project Management', monthly: '$40/mo', contract: '$480/yr', terms: 'Monthly', status: 'active' as const },
-  { id: 'v5', name: 'OpenAI', service: 'AI / LLM Services', monthly: '$200/mo', contract: '$2,400/yr', terms: 'Usage-based', status: 'active' as const },
-];
-
-const CONDITION_COLORS: Record<string, string> = {
-  Excellent: '#22C55E',
-  Good: ACCENT,
-  Fair: '#F59E0B',
-  Poor: '#EF4444',
+const STATUS_COLOR: Record<LocationStatus, string> = {
+  Active: '#22C55E',
+  Inactive: '#9CA3AF',
+  'Under Development': '#F59E0B',
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  active: '#22C55E',
+const OWNERSHIP_ICON: Record<OwnershipType, string> = {
+  Owned: 'house.fill',
+  Leased: 'key.fill',
+  Shared: 'person.2.fill',
 };
 
-// =============================================================================
-// HELPERS
-// =============================================================================
-
-function getTotalAssetValue(): string {
-  const total = ASSETS.reduce((sum, a) => {
-    const val = parseInt(a.value.replace(/[$,]/g, ''), 10);
-    return sum + val;
-  }, 0);
-  return `$${total.toLocaleString()}`;
-}
-
-function getTotalMonthlyVendor(): string {
-  const total = VENDORS.reduce((sum, v) => {
-    const val = parseInt(v.monthly.replace(/[$,/mo]/g, ''), 10);
-    return sum + val;
-  }, 0);
-  return `$${total.toLocaleString()}/mo`;
-}
+// Tab indices: 0=Program, 1=People, 2=Finance, 3=Compliance, 4=Facilities, 5=Ledger
+const TAB_LEDGER = 5;
 
 // =============================================================================
 // COMPONENT
 // =============================================================================
 
-export function BizFacilities({ colors, accentColor, role }: Props) {
-  const [activeView, setActiveView] = useState<ViewMode>('spaces');
+export function BizFacilities({ colors, accentColor, onNavigateTab }: Props) {
+  const [search, setSearch] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState<typeof LOCATIONS[0] | null>(null);
+  const [detailVisible, setDetailVisible] = useState(false);
 
-  const handleViewPress = useCallback((id: ViewMode) => {
-    Haptics.selectionAsync();
-    setActiveView(id);
-  }, []);
+  // Sort: Active first, then alphabetical
+  const filtered = useMemo(() => {
+    const term = search.toLowerCase().trim();
+    let list = [...LOCATIONS];
 
-  // ---------------------------------------------------------------------------
-  // SPACES
-  // ---------------------------------------------------------------------------
-  const renderSpaces = () => (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>WORKSPACES ({SPACES.length})</ThemedText>
-      {SPACES.map((space) => (
-        <View key={space.id} style={[s.card, { backgroundColor: colors.card, borderColor: colors.border, marginBottom: Spacing.sm }]}>
-          <View style={s.spaceHeader}>
-            <View style={[s.spaceIcon, { backgroundColor: accentColor + '15' }]}>
-              <IconSymbol name="mappin.and.ellipse" size={18} color={accentColor} />
-            </View>
-            <View style={s.spaceHeaderInfo}>
-              <ThemedText style={[s.spaceName, { color: colors.text }]}>{space.name}</ThemedText>
-              <ThemedText style={[s.spaceType, { color: colors.textSecondary }]}>{space.type}</ThemedText>
-            </View>
-            <View style={[s.statusBadge, { backgroundColor: '#22C55E20' }]}>
-              <ThemedText style={[s.statusBadgeText, { color: '#22C55E' }]}>ACTIVE</ThemedText>
-            </View>
-          </View>
+    if (term) {
+      list = list.filter((loc) => loc.name.toLowerCase().includes(term));
+    }
 
-          <View style={[s.spaceDetails, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}>
-            <View style={s.spaceDetailRow}>
-              <ThemedText style={[s.spaceDetailLabel, { color: colors.textSecondary }]}>Address</ThemedText>
-              <ThemedText style={[s.spaceDetailValue, { color: colors.text }]} numberOfLines={1}>{space.address}</ThemedText>
-            </View>
-            <View style={s.spaceDetailRow}>
-              <ThemedText style={[s.spaceDetailLabel, { color: colors.textSecondary }]}>Cost</ThemedText>
-              <ThemedText style={[s.spaceDetailValue, { color: colors.text }]}>{space.monthly}</ThemedText>
-            </View>
-            <View style={s.spaceDetailRow}>
-              <ThemedText style={[s.spaceDetailLabel, { color: colors.textSecondary }]}>Lease</ThemedText>
-              <ThemedText style={[s.spaceDetailValue, { color: colors.text }]}>{space.lease}</ThemedText>
-            </View>
-            <View style={s.spaceDetailRow}>
-              <ThemedText style={[s.spaceDetailLabel, { color: colors.textSecondary }]}>Capacity</ThemedText>
-              <ThemedText style={[s.spaceDetailValue, { color: colors.text }]}>{space.capacity}</ThemedText>
-            </View>
-          </View>
+    list.sort((a, b) => {
+      const statusOrder: Record<LocationStatus, number> = { Active: 0, 'Under Development': 1, Inactive: 2 };
+      const diff = statusOrder[a.status] - statusOrder[b.status];
+      if (diff !== 0) return diff;
+      return a.name.localeCompare(b.name);
+    });
 
-          <ThemedText style={[s.spaceNotes, { color: colors.textSecondary }]}>{space.notes}</ThemedText>
-        </View>
-      ))}
-    </ScrollView>
-  );
+    return list;
+  }, [search]);
 
-  // ---------------------------------------------------------------------------
-  // ASSETS
-  // ---------------------------------------------------------------------------
-  const renderAssets = () => (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Summary */}
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={s.assetSummaryRow}>
-          <View style={s.assetSummaryItem}>
-            <ThemedText style={[s.assetSummaryValue, { color: colors.text }]}>{ASSETS.length}</ThemedText>
-            <ThemedText style={[s.assetSummaryLabel, { color: colors.textSecondary }]}>Total Assets</ThemedText>
-          </View>
-          <View style={s.assetSummaryItem}>
-            <ThemedText style={[s.assetSummaryValue, { color: accentColor }]}>{getTotalAssetValue()}</ThemedText>
-            <ThemedText style={[s.assetSummaryLabel, { color: colors.textSecondary }]}>Total Value</ThemedText>
-          </View>
-        </View>
-      </View>
+  const openDetail = (loc: typeof LOCATIONS[0]) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSelectedLocation(loc);
+    setDetailVisible(true);
+  };
 
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>INVENTORY</ThemedText>
-      {ASSETS.map((asset) => {
-        const condColor = CONDITION_COLORS[asset.condition] ?? colors.textSecondary;
-        return (
-          <View key={asset.id} style={[s.card, { backgroundColor: colors.card, borderColor: colors.border, marginBottom: Spacing.sm }]}>
-            <View style={s.assetHeader}>
-              <View style={s.assetInfo}>
-                <ThemedText style={[s.assetName, { color: colors.text }]}>{asset.name}</ThemedText>
-                <ThemedText style={[s.assetAssigned, { color: colors.textSecondary }]}>Assigned: {asset.assignedTo}</ThemedText>
-              </View>
-              <ThemedText style={[s.assetValue, { color: colors.text }]}>{asset.value}</ThemedText>
-            </View>
-            <View style={[s.assetMeta, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}>
-              <ThemedText style={[s.assetMetaText, { color: colors.textSecondary }]}>Purchased: {asset.purchaseDate}</ThemedText>
-              <View style={[s.statusBadge, { backgroundColor: condColor + '20' }]}>
-                <ThemedText style={[s.statusBadgeText, { color: condColor }]}>{asset.condition.toUpperCase()}</ThemedText>
-              </View>
-            </View>
-          </View>
-        );
-      })}
-    </ScrollView>
-  );
+  const openInMaps = (address: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const encoded = encodeURIComponent(address);
+    const url = Platform.OS === 'ios'
+      ? `maps:?q=${encoded}`
+      : `geo:0,0?q=${encoded}`;
+    Linking.openURL(url);
+  };
 
-  // ---------------------------------------------------------------------------
-  // VENDORS
-  // ---------------------------------------------------------------------------
-  const renderVendors = () => (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
-      {/* Summary */}
-      <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={s.vendorSummaryRow}>
-          <View style={s.vendorSummaryItem}>
-            <ThemedText style={[s.vendorSummaryValue, { color: colors.text }]}>{VENDORS.length}</ThemedText>
-            <ThemedText style={[s.vendorSummaryLabel, { color: colors.textSecondary }]}>Vendors</ThemedText>
-          </View>
-          <View style={s.vendorSummaryItem}>
-            <ThemedText style={[s.vendorSummaryValue, { color: '#EF4444' }]}>{getTotalMonthlyVendor()}</ThemedText>
-            <ThemedText style={[s.vendorSummaryLabel, { color: colors.textSecondary }]}>Monthly Spend</ThemedText>
-          </View>
-        </View>
-      </View>
+  const navigate = (tabIndex: number) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onNavigateTab?.(tabIndex);
+  };
 
-      <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>ACTIVE VENDORS</ThemedText>
-      {VENDORS.map((vendor) => (
-        <View key={vendor.id} style={[s.card, { backgroundColor: colors.card, borderColor: colors.border, marginBottom: Spacing.sm }]}>
-          <View style={s.vendorHeader}>
-            <View style={[s.vendorIcon, { backgroundColor: accentColor + '15' }]}>
-              <IconSymbol name="briefcase.fill" size={16} color={accentColor} />
-            </View>
-            <View style={s.vendorHeaderInfo}>
-              <ThemedText style={[s.vendorName, { color: colors.text }]}>{vendor.name}</ThemedText>
-              <ThemedText style={[s.vendorService, { color: colors.textSecondary }]}>{vendor.service}</ThemedText>
-            </View>
-            <ThemedText style={[s.vendorMonthly, { color: '#EF4444' }]}>{vendor.monthly}</ThemedText>
-          </View>
-
-          <View style={[s.vendorDetails, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}>
-            <View style={s.vendorDetailRow}>
-              <ThemedText style={[s.vendorDetailLabel, { color: colors.textSecondary }]}>Annual Value</ThemedText>
-              <ThemedText style={[s.vendorDetailValue, { color: colors.text }]}>{vendor.contract}</ThemedText>
-            </View>
-            <View style={s.vendorDetailRow}>
-              <ThemedText style={[s.vendorDetailLabel, { color: colors.textSecondary }]}>Terms</ThemedText>
-              <ThemedText style={[s.vendorDetailValue, { color: colors.text }]}>{vendor.terms}</ThemedText>
-            </View>
-            <View style={s.vendorDetailRow}>
-              <ThemedText style={[s.vendorDetailLabel, { color: colors.textSecondary }]}>Status</ThemedText>
-              <View style={[s.statusBadge, { backgroundColor: '#22C55E20' }]}>
-                <ThemedText style={[s.statusBadgeText, { color: '#22C55E' }]}>ACTIVE</ThemedText>
-              </View>
-            </View>
-          </View>
-        </View>
-      ))}
-    </ScrollView>
-  );
-
-  // ---------------------------------------------------------------------------
-  // RENDER
-  // ---------------------------------------------------------------------------
   return (
-    <View style={s.container}>
-      {/* ViewBar */}
-      <View style={s.viewBar}>
-        {VIEWS.map((v) => {
-          const isActive = v.id === activeView;
-          return (
-            <Pressable
-              key={v.id}
-              style={[
-                s.viewPill,
-                { backgroundColor: isActive ? accentColor : '#2F3336' },
-              ]}
-              onPress={() => handleViewPress(v.id)}
-            >
-              <ThemedText style={[s.viewPillText, { color: isActive ? '#000' : colors.textSecondary }]}>
-                {v.label}
-              </ThemedText>
-            </Pressable>
-          );
-        })}
-      </View>
+    <>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
+        {/* Block 0 — Header */}
+        <View style={[s.block, { borderColor: colors.border }]}>
+          <ThemedText style={[s.pageTitle, { color: colors.text }]}>Facilities</ThemedText>
+          <View style={[s.searchBar, { backgroundColor: colors.backgroundTertiary }]}>
+            <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
+            <TextInput
+              style={[s.searchInput, { color: colors.text }]}
+              placeholder="Search locations"
+              placeholderTextColor={colors.textTertiary}
+              value={search}
+              onChangeText={setSearch}
+              returnKeyType="search"
+              autoCorrect={false}
+            />
+            {search.length > 0 && (
+              <Pressable onPress={() => setSearch('')}>
+                <IconSymbol name="xmark.circle.fill" size={16} color={colors.textTertiary} />
+              </Pressable>
+            )}
+          </View>
+        </View>
 
-      {/* Content */}
-      {activeView === 'spaces' && renderSpaces()}
-      {activeView === 'assets' && renderAssets()}
-      {activeView === 'vendors' && renderVendors()}
+        {/* Block 1 — Locations Grid */}
+        <ThemedText style={[s.sectionLabel, { color: colors.textTertiary }]}>
+          LOCATIONS ({filtered.length})
+        </ThemedText>
+        {filtered.length === 0 ? (
+          <View style={[s.block, { borderColor: colors.border }]}>
+            <ThemedText style={[s.emptyNote, { color: colors.textTertiary }]}>
+              No locations match your search.
+            </ThemedText>
+          </View>
+        ) : (
+          filtered.map((loc) => {
+            const statusColor = STATUS_COLOR[loc.status];
+            return (
+              <Pressable
+                key={loc.id}
+                style={({ pressed }) => [
+                  s.block,
+                  s.locationCard,
+                  { borderColor: colors.border, opacity: pressed ? 0.7 : 1 },
+                ]}
+                onPress={() => openDetail(loc)}
+              >
+                <View style={s.locationHeader}>
+                  <View style={[s.locationIcon, { backgroundColor: accentColor + '15' }]}>
+                    <IconSymbol
+                      name={OWNERSHIP_ICON[loc.ownership] as any}
+                      size={18}
+                      color={accentColor}
+                    />
+                  </View>
+                  <View style={s.locationInfo}>
+                    <ThemedText style={[s.locationName, { color: colors.text }]}>{loc.name}</ThemedText>
+                    <ThemedText style={[s.locationCity, { color: colors.textSecondary }]}>
+                      {loc.city}, {loc.state}
+                    </ThemedText>
+                  </View>
+                  <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
+                </View>
+
+                <View style={s.locationMeta}>
+                  <View style={[s.ownershipChip, { backgroundColor: colors.backgroundTertiary }]}>
+                    <ThemedText style={[s.ownershipText, { color: colors.textSecondary }]}>
+                      {loc.ownership}
+                    </ThemedText>
+                  </View>
+                  <View style={[s.statusChip, { backgroundColor: statusColor + '20' }]}>
+                    <View style={[s.statusDot, { backgroundColor: statusColor }]} />
+                    <ThemedText style={[s.statusText, { color: statusColor }]}>
+                      {loc.status}
+                    </ThemedText>
+                  </View>
+                </View>
+              </Pressable>
+            );
+          })
+        )}
+
+        {/* Block 3 — Informational Note */}
+        <ThemedText style={[s.sectionLabel, { color: colors.textTertiary }]}>NOTES</ThemedText>
+        <View style={[s.block, { borderColor: colors.border }]}>
+          <ThemedText style={[s.infoNote, { color: colors.textSecondary }]}>
+            {INFO_NOTE}
+          </ThemedText>
+        </View>
+      </ScrollView>
+
+      {/* Location Detail Sheet */}
+      <BottomSheet
+        visible={detailVisible}
+        onClose={() => setDetailVisible(false)}
+        title={selectedLocation?.name ?? 'Location'}
+      >
+        {selectedLocation && (
+          <BottomSheetScrollView contentContainerStyle={s.detailScroll}>
+            {/* Status + Ownership */}
+            <View style={s.detailChipsRow}>
+              <View style={[s.ownershipChip, { backgroundColor: colors.backgroundTertiary }]}>
+                <ThemedText style={[s.ownershipText, { color: colors.textSecondary }]}>
+                  {selectedLocation.ownership}
+                </ThemedText>
+              </View>
+              <View style={[s.statusChip, { backgroundColor: STATUS_COLOR[selectedLocation.status] + '20' }]}>
+                <View style={[s.statusDot, { backgroundColor: STATUS_COLOR[selectedLocation.status] }]} />
+                <ThemedText style={[s.statusText, { color: STATUS_COLOR[selectedLocation.status] }]}>
+                  {selectedLocation.status}
+                </ThemedText>
+              </View>
+            </View>
+
+            {/* Detail Fields */}
+            <View style={[s.detailBlock, { borderColor: colors.border }]}>
+              <DetailRow label="Full Address" value={selectedLocation.fullAddress} colors={colors} multiline />
+              <DetailRow label="Category" value={selectedLocation.category} colors={colors} />
+              <DetailRow label="Primary Use" value={selectedLocation.primaryUse} colors={colors} multiline />
+              <DetailRow label="Square Footage" value={selectedLocation.sqft} colors={colors} />
+              <DetailRow
+                label="Headcount Assigned"
+                value={selectedLocation.headcount === 0 ? 'None' : String(selectedLocation.headcount)}
+                colors={colors}
+              />
+              <DetailRow label="Hours of Operation" value={selectedLocation.hours} colors={colors} />
+            </View>
+
+            {/* Actions */}
+            <View style={s.detailActions}>
+              <Pressable
+                style={({ pressed }) => [
+                  s.actionButton,
+                  { backgroundColor: accentColor, opacity: pressed ? 0.7 : 1 },
+                ]}
+                onPress={() => openInMaps(selectedLocation.fullAddress)}
+              >
+                <IconSymbol name="map.fill" size={16} color="#FFFFFF" />
+                <ThemedText style={s.actionButtonText}>Open in Maps</ThemedText>
+              </Pressable>
+
+              <Pressable
+                style={({ pressed }) => [
+                  s.actionButton,
+                  { backgroundColor: colors.backgroundTertiary, opacity: pressed ? 0.7 : 1 },
+                ]}
+                onPress={() => {
+                  setDetailVisible(false);
+                  navigate(TAB_LEDGER);
+                }}
+              >
+                <IconSymbol name="doc.text.fill" size={16} color={colors.text} />
+                <ThemedText style={[s.actionButtonText, { color: colors.text }]}>Open in Vault</ThemedText>
+              </Pressable>
+            </View>
+          </BottomSheetScrollView>
+        )}
+      </BottomSheet>
+    </>
+  );
+}
+
+// =============================================================================
+// HELPER COMPONENTS
+// =============================================================================
+
+function DetailRow({
+  label,
+  value,
+  colors,
+  multiline,
+}: {
+  label: string;
+  value: string;
+  colors: typeof Colors.light;
+  multiline?: boolean;
+}) {
+  return (
+    <View style={[s.fieldRow, multiline && s.fieldRowMultiline]}>
+      <ThemedText style={[s.fieldLabel, { color: colors.textSecondary }]}>{label}</ThemedText>
+      <ThemedText style={[s.fieldValue, { color: colors.text }, multiline && s.fieldValueMultiline]}>
+        {value}
+      </ThemedText>
     </View>
   );
 }
@@ -304,224 +363,182 @@ export function BizFacilities({ colors, accentColor, role }: Props) {
 // =============================================================================
 
 const s = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-
-  // ViewBar
-  viewBar: {
-    flexDirection: 'row',
-    gap: Spacing.sm,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-  },
-  viewPill: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderRadius: BorderRadius.full,
-  },
-  viewPillText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-
-  // Scroll
   scroll: {
     padding: Spacing.md,
     paddingBottom: 120,
   },
 
-  // Section Header
-  sectionHeader: {
-    fontSize: 12,
+  sectionLabel: {
+    fontSize: 11,
     fontWeight: '600',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-    marginBottom: 8,
-  },
-
-  // Card
-  card: {
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 14,
+    letterSpacing: 0.8,
+    marginTop: Spacing.lg,
     marginBottom: Spacing.sm,
   },
 
-  // Status badge
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: BorderRadius.full,
-  },
-  statusBadgeText: {
-    fontSize: 9,
-    fontWeight: '700',
-    letterSpacing: 0.3,
+  block: {
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 16,
   },
 
-  // Spaces
-  spaceHeader: {
+  // Header
+  pageTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    marginBottom: 12,
+  },
+
+  // Search
+  searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.sm,
+    gap: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 10,
   },
-  spaceIcon: {
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: '500',
+    padding: 0,
+  },
+
+  // Location cards
+  locationCard: {
+    marginBottom: Spacing.sm,
+  },
+  locationHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  locationIcon: {
     width: 40,
     height: 40,
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  spaceHeaderInfo: {
+  locationInfo: {
     flex: 1,
   },
-  spaceName: {
+  locationName: {
     fontSize: 15,
     fontWeight: '600',
   },
-  spaceType: {
-    fontSize: 12,
+  locationCity: {
+    fontSize: 13,
     marginTop: 2,
   },
-  spaceDetails: {
-    marginTop: Spacing.sm,
-    paddingTop: Spacing.sm,
-    gap: 6,
-  },
-  spaceDetailRow: {
+  locationMeta: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    gap: 8,
+    marginTop: 10,
+    paddingTop: 10,
   },
-  spaceDetailLabel: {
-    fontSize: 12,
-    fontWeight: '500',
+
+  // Chips
+  ownershipChip: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
-  spaceDetailValue: {
-    fontSize: 12,
+  ownershipText: {
+    fontSize: 11,
     fontWeight: '600',
-    flexShrink: 1,
-    textAlign: 'right',
   },
-  spaceNotes: {
-    fontSize: 12,
+  statusChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  statusText: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+
+  // Info note
+  infoNote: {
+    fontSize: 13,
+    lineHeight: 19,
+  },
+
+  // Empty
+  emptyNote: {
+    fontSize: 13,
     fontStyle: 'italic',
-    lineHeight: 17,
-    marginTop: Spacing.sm,
   },
 
-  // Assets
-  assetSummaryRow: {
+  // Detail sheet
+  detailScroll: {
+    padding: Spacing.md,
+    paddingBottom: 40,
+  },
+  detailChipsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    gap: 8,
+    marginBottom: Spacing.md,
   },
-  assetSummaryItem: {
-    alignItems: 'center',
+  detailBlock: {
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 16,
   },
-  assetSummaryValue: {
-    fontSize: 20,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-  },
-  assetSummaryLabel: {
-    fontSize: 11,
-    marginTop: 2,
-  },
-  assetHeader: {
+  detailActions: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
+    gap: 10,
+    marginTop: Spacing.lg,
   },
-  assetInfo: {
+  actionButton: {
     flex: 1,
-  },
-  assetName: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  assetAssigned: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-  assetValue: {
-    fontSize: 15,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-  },
-  assetMeta: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: Spacing.sm,
-    paddingTop: Spacing.sm,
-  },
-  assetMetaText: {
-    fontSize: 12,
-  },
-
-  // Vendors
-  vendorSummaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  vendorSummaryItem: {
-    alignItems: 'center',
-  },
-  vendorSummaryValue: {
-    fontSize: 20,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-  },
-  vendorSummaryLabel: {
-    fontSize: 11,
-    marginTop: 2,
-  },
-  vendorHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  vendorIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 12,
+    borderRadius: 10,
   },
-  vendorHeaderInfo: {
-    flex: 1,
-  },
-  vendorName: {
+  actionButtonText: {
     fontSize: 14,
     fontWeight: '600',
+    color: '#FFFFFF',
   },
-  vendorService: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-  vendorMonthly: {
-    fontSize: 14,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-  },
-  vendorDetails: {
-    marginTop: Spacing.sm,
-    paddingTop: Spacing.sm,
-    gap: 6,
-  },
-  vendorDetailRow: {
+
+  // Field rows
+  fieldRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingVertical: 8,
   },
-  vendorDetailLabel: {
-    fontSize: 12,
+  fieldRowMultiline: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: 4,
+  },
+  fieldLabel: {
+    fontSize: 13,
     fontWeight: '500',
   },
-  vendorDetailValue: {
-    fontSize: 12,
+  fieldValue: {
+    fontSize: 13,
     fontWeight: '600',
+    textAlign: 'right',
+    maxWidth: '55%',
+  },
+  fieldValueMultiline: {
+    textAlign: 'left',
+    maxWidth: '100%',
+    lineHeight: 19,
   },
 });

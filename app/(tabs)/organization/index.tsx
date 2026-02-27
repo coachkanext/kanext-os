@@ -374,7 +374,7 @@ function BusinessOrganizationInner() {
               case 'people': return <View key="people" style={PAGE_STYLE}><BizPeople {...p} /></View>;
               case 'finance': return <View key="finance" style={PAGE_STYLE}><BizFinance {...p} onNavigateTab={handleTabPress} /></View>;
               case 'compliance': return <View key="compliance" style={PAGE_STYLE}><BizCompliance {...p} onNavigateTab={handleTabPress} /></View>;
-              case 'facilities': return <View key="facilities" style={PAGE_STYLE}><BizFacilities {...p} /></View>;
+              case 'facilities': return <View key="facilities" style={PAGE_STYLE}><BizFacilities {...p} onNavigateTab={handleTabPress} /></View>;
               case 'ledger': return <View key="ledger" style={PAGE_STYLE}><BizLedger {...p} /></View>;
               default: return <View key={tab.id} style={PAGE_STYLE} />;
             }
