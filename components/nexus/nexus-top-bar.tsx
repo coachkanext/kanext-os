@@ -1,33 +1,30 @@
 /**
  * Nexus Top Bar Component
- * Single header for Nexus screen with conversations, mode selector, and overlay controls.
+ * Single header for Nexus screen with conversations, mode selector dropdown, and overlay controls.
  */
 
-import React, { useState } from 'react';
-import { View, Text, Pressable, StyleSheet, Modal } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, Layout, BorderRadius, ModeColors } from '@/constants/theme';
+import { Colors, Spacing, Layout, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useAppContext } from '@/context/app-context';
+import { useAppContext, useMode } from '@/context/app-context';
 import type { Mode } from '@/types';
 
-const MODE_LABELS: Record<Mode, string> = {
-  sports: 'Sports',
-  business: 'Business',
-  church: 'Church',
-  education: 'Education',
-  competition: 'Competition',
-};
+const MODE_OPTIONS: { mode: Mode; label: string }[] = [
+  { mode: 'sports', label: 'Athletics' },
+  { mode: 'competition', label: 'Competition' },
+  { mode: 'church', label: 'Church' },
+  { mode: 'education', label: 'Education' },
+  { mode: 'business', label: 'Business' },
+];
 
-const MODE_ICONS: Record<Mode, import('@/components/ui/icon-symbol').IconSymbolName> = {
-  sports: 'basketball.fill',
-  business: 'briefcase.fill',
-  church: 'building.columns.fill',
-  education: 'graduationcap.fill',
-  competition: 'trophy.fill',
-};
+function getModeLabel(mode: Mode): string {
+  return MODE_OPTIONS.find((o) => o.mode === mode)?.label ?? mode;
+}
 
 interface NexusTopBarProps {
   onConversationsPress: () => void;
@@ -47,15 +44,17 @@ export function NexusTopBar({
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
-  const { state, switchMode } = useAppContext();
-  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const mode = useMode();
+  const { switchMode } = useAppContext();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const modeColor = ModeColors[state.mode].primary;
-
-  const handleModeSelect = (mode: Mode) => {
-    switchMode(mode);
-    setDropdownVisible(false);
-  };
+  const handleModeSelect = useCallback((selected: Mode) => {
+    if (selected !== mode) {
+      switchMode(selected);
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    setDropdownOpen(false);
+  }, [mode, switchMode]);
 
   return (
     <>
@@ -87,91 +86,59 @@ export function NexusTopBar({
           </Pressable>
 
           {/* Center: Mode Selector */}
-          <Pressable
-            style={({ pressed }) => [
-              styles.modePill,
-              {
-                backgroundColor: pressed ? colors.backgroundSecondary : colors.backgroundTertiary,
-              },
-            ]}
-            onPress={() => setDropdownVisible(true)}
-            accessibilityLabel="Switch mode"
-            accessibilityRole="button"
-          >
-            <IconSymbol name={MODE_ICONS[state.mode]} size={14} color={modeColor} />
-            <Text style={[styles.modeLabel, { color: colors.text }]}>
-              {MODE_LABELS[state.mode]}
-            </Text>
-            <IconSymbol name="chevron.down" size={12} color={colors.textSecondary} />
-          </Pressable>
+          <View style={styles.modeSelectorWrapper}>
+            <Pressable
+              style={styles.modeSelectorRow}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setDropdownOpen((v) => !v);
+              }}
+              accessibilityRole="button"
+              accessibilityLabel={`Current mode: ${getModeLabel(mode)}. Tap to change.`}
+            >
+              <Text style={[styles.modeSelectorText, { color: colors.text }]}>
+                {getModeLabel(mode)}
+              </Text>
+              <View style={styles.modeSelectorDot} />
+            </Pressable>
 
-          {/* Right: spacer to keep mode pill centered */}
+            {dropdownOpen && (
+              <>
+                <Pressable style={styles.dropdownBackdrop} onPress={() => setDropdownOpen(false)} />
+                <View style={[styles.dropdownCard, { backgroundColor: colors.card }]}>
+                  {MODE_OPTIONS.map((option) => {
+                    const isActive = option.mode === mode;
+                    return (
+                      <Pressable
+                        key={option.mode}
+                        style={({ pressed }) => [
+                          styles.dropdownOption,
+                          pressed && { opacity: 0.6 },
+                        ]}
+                        onPress={() => handleModeSelect(option.mode)}
+                      >
+                        <Text
+                          style={[
+                            styles.dropdownOptionText,
+                            { color: colors.text },
+                            isActive && styles.dropdownOptionTextActive,
+                          ]}
+                        >
+                          {option.label}
+                        </Text>
+                        {isActive && <View style={styles.dropdownActiveDot} />}
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </>
+            )}
+          </View>
+
+          {/* Right: spacer to keep mode selector centered */}
           <View style={styles.iconButton} />
         </View>
-
-        {/* Context Chip — program scope */}
-        <Text style={[styles.contextChip, { color: colors.textTertiary }]} numberOfLines={1}>
-          {MODE_LABELS[state.mode]}
-          {state.organization?.name ? ` · ${state.organization.name}` : ''}
-          {state.program?.name ? ` · ${state.program.name}` : ''}
-        </Text>
       </View>
-
-      {/* Mode Dropdown */}
-      <Modal
-        visible={dropdownVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setDropdownVisible(false)}
-      >
-        <Pressable
-          style={styles.dropdownOverlay}
-          onPress={() => setDropdownVisible(false)}
-        >
-          <View
-            style={[
-              styles.dropdown,
-              {
-                backgroundColor: colors.card,
-                top: insets.top + Layout.topBarHeight + 4,
-              },
-            ]}
-          >
-            {(Object.keys(MODE_LABELS) as Mode[]).map((mode) => {
-              const isSelected = mode === state.mode;
-              const itemColor = ModeColors[mode].primary;
-
-              return (
-                <Pressable
-                  key={mode}
-                  style={({ pressed }) => [
-                    styles.dropdownItem,
-                    {
-                      backgroundColor: pressed
-                        ? colors.backgroundSecondary
-                        : isSelected
-                        ? colors.backgroundSecondary
-                        : 'transparent',
-                    },
-                  ]}
-                  onPress={() => handleModeSelect(mode)}
-                >
-                  <IconSymbol name={MODE_ICONS[mode]} size={14} color={itemColor} />
-                  <Text
-                    style={[
-                      styles.dropdownLabel,
-                      { color: colors.text },
-                      isSelected && { fontWeight: '600' },
-                    ]}
-                  >
-                    {MODE_LABELS[mode]}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </Pressable>
-      </Modal>
     </>
   );
 }
@@ -193,50 +160,71 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  modePill: {
+
+  // Mode Selector
+  modeSelectorWrapper: {
+    zIndex: 100,
+    alignItems: 'center',
+  },
+  modeSelectorRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    gap: 6,
-  },
-  modeLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  contextChip: {
-    fontSize: 11,
-    textAlign: 'center',
-    paddingBottom: 6,
-  },
-  rightActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  dropdownOverlay: {
-    flex: 1,
-  },
-  dropdown: {
-    position: 'absolute',
-    alignSelf: 'center',
-    minWidth: 140,
-    borderRadius: BorderRadius.md,
-    paddingVertical: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  dropdownItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
     gap: 8,
   },
-  dropdownLabel: {
-    fontSize: 15,
+  modeSelectorText: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  modeSelectorDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#FFFFFF',
+  },
+
+  // Mode Dropdown
+  dropdownBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    top: -500,
+    bottom: -5000,
+    left: -500,
+    right: -500,
+    zIndex: 99,
+  },
+  dropdownCard: {
+    position: 'absolute',
+    top: 36,
+    zIndex: 100,
+    borderRadius: BorderRadius.lg,
+    paddingVertical: Spacing.xs,
+    minWidth: 200,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  dropdownOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: Spacing.lg,
+    gap: 8,
+  },
+  dropdownOptionText: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  dropdownOptionTextActive: {
+    fontWeight: '700',
+  },
+  dropdownActiveDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#FFFFFF',
   },
 });

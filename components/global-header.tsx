@@ -1,8 +1,7 @@
 /**
  * Global Header
  * Fixed at top of every page.
- * - Default: Mode Selector Pill (tap to open mode dropdown)
- * - Nexus: Hamburger | "Nexus" title | Context Chip (Sports · Org · Program)
+ * Mode Selector Pill (tap to open mode dropdown) — same on all screens.
  */
 
 import React, { useState } from 'react';
@@ -66,50 +65,7 @@ export function GlobalHeader({ leftIcon, rightIcon }: GlobalHeaderProps) {
     setDropdownVisible(false);
   };
 
-  // ── Nexus-specific header: Hamburger | "Nexus" | Context Chip ──
-  if (isNexus) {
-    return (
-      <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: colors.background,
-            paddingTop: insets.top,
-          },
-        ]}
-      >
-        <View style={styles.content}>
-          {/* Left: Hamburger → opens Sidebar */}
-          <Pressable
-            style={({ pressed }) => [
-              styles.slotSpacer,
-              { opacity: pressed ? 0.7 : 1, alignItems: 'center' as const, justifyContent: 'center' as const },
-            ]}
-            onPress={() => _leftActionHandler?.()}
-            accessibilityLabel="Open conversations"
-            accessibilityRole="button"
-          >
-            <IconSymbol name="line.horizontal.3" size={30} color={colors.text} />
-          </Pressable>
-
-          {/* Center: Title */}
-          <Text style={[styles.nexusTitle, { color: colors.text }]}>Nexus</Text>
-
-          {/* Right: spacer */}
-          <View style={styles.slotSpacer} />
-        </View>
-
-        {/* Context Chip — program scope (read-only) */}
-        <Text style={[styles.nexusContextChip, { color: colors.textTertiary }]} numberOfLines={1}>
-          {MODE_LABELS[state.mode]}
-          {state.organization?.name ? ` · ${state.organization.name}` : ''}
-          {state.program?.name ? ` · ${state.program.name}` : ''}
-        </Text>
-      </View>
-    );
-  }
-
-  // ── Default header: Mode Selector Pill ──
+  // ── Default header: Mode Selector Pill (all screens including Nexus) ──
   return (
     <>
       <View
@@ -122,8 +78,22 @@ export function GlobalHeader({ leftIcon, rightIcon }: GlobalHeaderProps) {
         ]}
       >
         <View style={styles.content}>
-          {/* Left slot */}
-          {leftIcon ?? <View style={styles.slotSpacer} />}
+          {/* Left slot — hamburger on Nexus, custom or spacer elsewhere */}
+          {isNexus ? (
+            <Pressable
+              style={({ pressed }) => [
+                styles.slotSpacer,
+                { opacity: pressed ? 0.7 : 1, alignItems: 'center' as const, justifyContent: 'center' as const },
+              ]}
+              onPress={() => _leftActionHandler?.()}
+              accessibilityLabel="Open conversations"
+              accessibilityRole="button"
+            >
+              <IconSymbol name="line.horizontal.3" size={24} color={colors.text} />
+            </Pressable>
+          ) : (
+            leftIcon ?? <View style={styles.slotSpacer} />
+          )}
 
           {/* Center: Mode Selector Pill */}
           <Pressable
@@ -233,15 +203,6 @@ const styles = StyleSheet.create({
   modeLabel: {
     fontSize: 14,
     fontWeight: '500',
-  },
-  nexusTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-  },
-  nexusContextChip: {
-    fontSize: 11,
-    textAlign: 'center',
-    paddingBottom: 6,
   },
   dropdownOverlay: {
     flex: 1,
