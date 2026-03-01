@@ -14,7 +14,8 @@
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSMicrophoneUsageDescription": "KaNeXT needs microphone access for voice input in Nexus.",
-        "NSSpeechRecognitionUsageDescription": "KaNeXT uses speech recognition to convert your voice to text in Nexus."
+        "NSSpeechRecognitionUsageDescription": "KaNeXT uses speech recognition to convert your voice to text in Nexus.",
+        "NSPhotoLibraryUsageDescription": "KaNeXT needs access to your photo library to upload images and media."
       }
     },
     "android": {
