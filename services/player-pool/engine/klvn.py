@@ -15,16 +15,15 @@ LEVEL_LAMBDA: dict[str, float] = {
     "ncaa_d1_low_major":  0.917,
     "ncaa_d2":            0.875,
     "njcaa_d1":           0.833,
-    "naia":               0.792,
+    "naia":               0.810,
+    "cccaa":              0.765,
     "njcaa_d2":           0.750,
-    "cccaa":              0.708,
     "ncaa_d3":            0.667,
     "njcaa_d3":           0.625,
     "uscaa":              0.583,
     "nccaa_d1":           0.542,
     "nccaa_d2":           0.500,
     "hs_prep_postgrad":   0.450,
-    "professional":       1.050,
 }
 
 # No silent fallback — hard error on missing key
