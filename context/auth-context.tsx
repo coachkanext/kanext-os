@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { AuthSession, AuthProvider as AuthProviderType, AccessTier } from '@/types';
 import { resolveTier } from '@/config/access';
 import { INVITE_CODES } from '@/config/invites';
+import { supabase, USE_SUPABASE } from '@/lib/supabase';
 
 const SESSION_KEY = 'kx:session';
 const ONBOARDING_KEY = 'kx:onboardingComplete';
@@ -98,6 +99,7 @@ interface AuthContextValue {
   state: AuthState;
   signIn: (provider: AuthProviderType) => Promise<void>;
   signInAsInvestor: () => Promise<void>;
+  signInWithSupabase: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   completeOnboarding: () => Promise<void>;
 }
@@ -147,6 +149,37 @@ export function AuthProvider({ children }: AuthProviderProps) {
     checkSession();
   }, []);
 
+  // Supabase auth state listener — syncs Supabase JWT session with app state
+  useEffect(() => {
+    if (!USE_SUPABASE) return;
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, sbSession) => {
+        if (event === 'SIGNED_IN' && sbSession?.user) {
+          // Supabase session exists — ensure our app-level session is synced
+          const email = sbSession.user.email ?? '';
+          const tier = resolveTier(email, null, INVITE_CODES);
+          const session: AuthSession = {
+            userId: sbSession.user.id,
+            displayName: sbSession.user.user_metadata?.display_name ?? email.split('@')[0],
+            email,
+            provider: 'email',
+            token: sbSession.access_token,
+            createdAt: new Date(sbSession.user.created_at),
+            tier,
+          };
+          await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(session));
+          await AsyncStorage.setItem(TIER_KEY, tier);
+          dispatch({ type: 'SIGN_IN', payload: session });
+        } else if (event === 'SIGNED_OUT') {
+          // Let the app-level signOut handle cleanup
+        }
+      },
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   const signIn = useCallback(async (provider: AuthProviderType) => {
     const email = 'coachk@kanext.io';
 
@@ -193,7 +226,37 @@ export function AuthProvider({ children }: AuthProviderProps) {
     dispatch({ type: 'SIGN_IN', payload: session });
   }, []);
 
+  const signInWithSupabase = useCallback(async (email: string, password: string) => {
+    if (!USE_SUPABASE) {
+      throw new Error('Supabase is not configured');
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+
+    // The onAuthStateChange listener will handle dispatching SIGN_IN
+    // But we also set it explicitly for immediate UI response
+    const tier = resolveTier(email, null, INVITE_CODES);
+    const session: AuthSession = {
+      userId: data.user.id,
+      displayName: data.user.user_metadata?.display_name ?? email.split('@')[0],
+      email,
+      provider: 'email',
+      token: data.session.access_token,
+      createdAt: new Date(data.user.created_at),
+      tier,
+    };
+
+    await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    await AsyncStorage.setItem(TIER_KEY, tier);
+    dispatch({ type: 'SIGN_IN', payload: session });
+  }, []);
+
   const signOut = useCallback(async () => {
+    // Sign out of Supabase if configured
+    if (USE_SUPABASE) {
+      await supabase.auth.signOut().catch(() => {});
+    }
     await AsyncStorage.multiRemove([SESSION_KEY, ONBOARDING_KEY]);
     dispatch({ type: 'SIGN_OUT' });
   }, []);
@@ -203,7 +266,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     dispatch({ type: 'COMPLETE_ONBOARDING' });
   }, []);
 
-  const value: AuthContextValue = { state, signIn, signInAsInvestor, signOut, completeOnboarding };
+  const value: AuthContextValue = { state, signIn, signInAsInvestor, signInWithSupabase, signOut, completeOnboarding };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

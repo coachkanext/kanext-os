@@ -5,10 +5,10 @@
  * Boot Sequence (v1 Locked):
  * 1. Cold launch → Splash screen (Nexus logo + "powered by Nexus")
  * 2. Splash fades → Silent session check
- * 3. If session valid → Resolve access tier → Route to Business Mode Home
- * 4. If no session → Auth modal → Sign in → Resolve tier → Route to Business Mode Home
+ * 3. If session valid → Resolve access tier → Route to Sports Mode Home
+ * 4. If no session → Auth modal → Sign in → Resolve tier → Route to Sports Mode Home
  *
- * Post-auth default route: Business Mode Home (not Sports).
+ * Post-auth default route: Sports Mode Home.
  * Only shows splash on cold start, not when resuming from background.
  */
 
@@ -26,9 +26,12 @@ import { SplashScreen } from '@/components/splash-screen';
 import { AuthModal } from '@/components/auth/auth-modal';
 import { SearchOverlay } from '@/components/nexus/search-overlay';
 import { ModeSwitcherOverlay } from '@/components/mode-switcher-overlay';
+import { NexusSemiCircle } from '@/components/nexus-semi-circle';
+import { MultitaskingOverlay } from '@/components/multitasking-overlay';
 import { KXTransition } from '@/components/kx-transition';
 import { AppProvider } from '@/context/app-context';
 import { AuthProvider, useAuth } from '@/context/auth-context';
+import { MultitaskingProvider } from '@/context/multitasking-context';
 import { QueryProvider } from '@/providers/query-provider';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { registerSearchOverlayHandlers } from '@/utils/global-search-overlay';
@@ -57,6 +60,17 @@ import { CrewCardSheet } from '@/components/entity-sheets/crew-card-sheet';
 import { PersonCardSheet } from '@/components/entity-sheets/person-card-sheet';
 import { MinistryCardSheet } from '@/components/entity-sheets/ministry-card-sheet';
 import { LeaderCardSheet } from '@/components/entity-sheets/leader-card-sheet';
+
+// Suppress EXVideo native view errors — expo-av fires async promise rejections
+// when the native view isn't registered on New Architecture. Videos still play
+// when the native module IS available; this just silences the red error banner.
+const _origHandler = (global as any).ErrorUtils?.getGlobalHandler?.();
+if ((global as any).ErrorUtils) {
+  (global as any).ErrorUtils.setGlobalHandler((error: any, isFatal: boolean) => {
+    if (error?.message?.includes?.('EXVideo')) return; // Swallow EXVideo errors
+    _origHandler?.(error, isFatal);
+  });
+}
 
 // Prevent the native splash screen from auto-hiding
 SplashScreenModule.preventAutoHideAsync();
@@ -167,7 +181,7 @@ function AppShell() {
         <Stack.Screen name="video" />
         <Stack.Screen name="settings" />
         <Stack.Screen name="profile" />
-        <Stack.Screen name="section" />
+        {/* section and messages are inside (tabs)/(home) Stack — tab bar stays visible */}
         <Stack.Screen
           name="modal"
           options={{ presentation: 'modal', title: 'Modal' }}
@@ -237,7 +251,13 @@ function AppShell() {
         onClose={() => setSearchOverlayVisible(false)}
       />
 
-      {/* Mode Switcher — triggered from Home tab long-press */}
+      {/* Nexus Semi-Circle — persistent bottom-center navigation anchor */}
+      <NexusSemiCircle />
+
+      {/* Multitasking Overlay — swipe-up from semi-circle */}
+      <MultitaskingOverlay />
+
+      {/* Mode Switcher — swipe-down from semi-circle */}
       <ModeSwitcherOverlay />
 
       {/* KX Micro-Transition — brief branded flash on tab switches */}
@@ -296,6 +316,7 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <AppProvider>
+        <MultitaskingProvider>
         <QueryProvider>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           <GestureHandlerRootView style={styles.container}>
@@ -314,6 +335,7 @@ export default function RootLayout() {
           <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
         </ThemeProvider>
         </QueryProvider>
+        </MultitaskingProvider>
       </AppProvider>
     </AuthProvider>
   );

@@ -36,6 +36,15 @@ const MOCK_PAGES: VideoPage[] = [
     route: '/section?title=Media',
     poster: require('@/assets/images/sammy-kalejaiye.jpg'),
   },
+  {
+    id: 'hype-program',
+    state: 'hype',
+    source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+    title: 'Program Highlights',
+    subtitle: '2025-26 Best Plays',
+    route: '/section?title=Media',
+    poster: require('@/assets/images/team-logo.png'),
+  },
 ];
 
 /** State priority — lower number = higher priority */

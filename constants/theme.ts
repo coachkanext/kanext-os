@@ -1,16 +1,13 @@
 /**
- * KaNeXT OS — Global Theme (LOCKED)
+ * KaNeXT OS — Global Theme
  *
- * Single dark palette. No light mode.
- * Per-org accent colors via MODE_ACCENT / MODE_ACCENT_SECONDARY.
+ * Light and dark palettes. Follows iOS system setting via useColorScheme().
+ * Per-org accent colors via MODE_ACCENT / MODE_ACCENT_SECONDARY (same in both themes).
  * KaNeXT Blue (#1D9BF0) is the system/infrastructure fallback only.
  *
- * Background:      #000000
- * Surface / Cards:  #0B0F14
- * Primary text:     #FFFFFF
- * Secondary text:   #A1A1AA
- * Dividers:         #2F3336
- * System accent:    #1D9BF0 (login, onboarding, Nexus)
+ * Dark:  Background #000000, Surface #0B0F14, Text #FFFFFF
+ * Light: Background #FFFFFF, Surface #F2F2F7, Text #000000
+ * System accent: #1D9BF0 (login, onboarding, Nexus)
  */
 
 import { Platform } from 'react-native';
@@ -79,10 +76,10 @@ export const MODE_ACCENT_SECONDARY: Record<Mode, string> = {
 };
 
 // =============================================================================
-// BASE COLORS — KaNeXT Dark (LOCKED)
+// BASE COLORS — Light & Dark Palettes
 // =============================================================================
 
-const palette = {
+const darkPalette = {
   // Text
   text: '#FFFFFF',
   textSecondary: '#A1A1AA',
@@ -122,9 +119,49 @@ const palette = {
   error: '#EF4444',
 };
 
+const lightPalette = {
+  // Text
+  text: '#000000',
+  textSecondary: '#636366',
+  textTertiary: '#AEAEB2',
+
+  // Backgrounds
+  background: '#FFFFFF',
+  backgroundSecondary: '#F2F2F7',
+  backgroundTertiary: '#E5E5EA',
+
+  // Borders & Dividers
+  border: '#D1D1D6',
+  borderStrong: '#C7C7CC',
+  divider: '#D1D1D6',
+
+  // Interactive
+  tint: '#1D9BF0',
+  icon: '#8E8E93',
+  iconActive: '#000000',
+
+  // Tab Bar
+  tabBar: '#FFFFFF',
+  tabIconDefault: '#8E8E93',
+  tabIconSelected: '#1D9BF0',
+
+  // Cards & Surfaces
+  card: '#F2F2F7',
+  cardElevated: '#FFFFFF',
+
+  // Overlays
+  overlay: 'rgba(0, 0, 0, 0.4)',
+  scrim: 'rgba(0, 0, 0, 0.3)',
+
+  // Status
+  success: '#22C55E',
+  warning: '#F59E0B',
+  error: '#EF4444',
+};
+
 export const Colors = {
-  light: { ...palette },
-  dark: { ...palette },
+  light: lightPalette,
+  dark: darkPalette,
 };
 
 // =============================================================================

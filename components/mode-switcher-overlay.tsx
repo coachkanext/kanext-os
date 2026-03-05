@@ -1,18 +1,19 @@
 /**
  * Mode Switcher Overlay
- * Floating popup that appears above the Ops tab on long-press.
- * Shows 4 mode icons (excluding current mode). Tap to switch.
+ * Full-screen dimmed overlay with bottom dock row of mode icons.
+ * Triggered by swipe-down on Nexus semi-circle.
+ * Shows 4 mode icons (excluding current mode) centered horizontally with labels.
+ * Spring animation on entry. Backdrop tap dismisses.
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Pressable, Modal, StyleSheet, Image, Platform } from 'react-native';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { View, Pressable, StyleSheet, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
 import { ThemedText } from '@/components/themed-text';
-import { Colors, Layout, ModeColors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { ModeColors, MODE_ACCENT } from '@/constants/theme';
 import { useAppContext } from '@/context/app-context';
 import { registerModeSwitcherHandlers } from '@/utils/global-mode-switcher';
 import type { Mode } from '@/types';
@@ -27,99 +28,135 @@ const ALL_MODES: { mode: Mode; icon: IconSymbolName; label: string }[] = [
 
 export function ModeSwitcherOverlay() {
   const [visible, setVisible] = useState(false);
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
   const { state, switchMode } = useAppContext();
+  const backdropOpacity = useRef(new Animated.Value(0)).current;
+  const dockTranslateY = useRef(new Animated.Value(100)).current;
 
   useEffect(() => {
     registerModeSwitcherHandlers(
-      () => setVisible(true),
-      () => setVisible(false),
+      () => {
+        setVisible(true);
+        // Animate in: backdrop fade + dock spring up
+        backdropOpacity.setValue(0);
+        dockTranslateY.setValue(100);
+        Animated.parallel([
+          Animated.timing(backdropOpacity, {
+            toValue: 1,
+            duration: 250,
+            useNativeDriver: true,
+          }),
+          Animated.spring(dockTranslateY, {
+            toValue: 0,
+            tension: 65,
+            friction: 11,
+            useNativeDriver: true,
+          }),
+        ]).start();
+      },
+      () => dismiss(),
     );
   }, []);
+
+  const dismiss = useCallback(() => {
+    Animated.parallel([
+      Animated.timing(backdropOpacity, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(dockTranslateY, {
+        toValue: 100,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setVisible(false);
+    });
+  }, [backdropOpacity, dockTranslateY]);
 
   const handleSelect = useCallback((mode: Mode) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     switchMode(mode);
-    setVisible(false);
-  }, [switchMode]);
+    dismiss();
+  }, [switchMode, dismiss]);
 
   const otherModes = ALL_MODES.filter((m) => m.mode !== state.mode);
-  const tabBarH = Platform.OS === 'ios' ? Layout.tabBarHeight : 60;
 
   if (!visible) return null;
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={() => setVisible(false)}
-    >
-      <Pressable style={styles.backdrop} onPress={() => setVisible(false)}>
-        <View
-          style={[
-            styles.popup,
-            {
-              backgroundColor: colors.card,
-              bottom: tabBarH + 12,
-              right: 12,
-            },
-          ]}
-        >
-          {otherModes.map((m) => {
-            const modeColor = ModeColors[m.mode].primary;
-            return (
-              <Pressable
-                key={m.mode}
-                style={({ pressed }) => [
-                  styles.modeButton,
-                  pressed && { backgroundColor: colors.backgroundSecondary },
-                ]}
-                onPress={() => handleSelect(m.mode)}
-              >
-                <View style={[styles.iconCircle, { backgroundColor: modeColor + '20' }]}>
-                  <IconSymbol name={m.icon} size={20} color={modeColor} />
-                </View>
-              </Pressable>
-            );
-          })}
-        </View>
-      </Pressable>
-    </Modal>
+    <View style={styles.container}>
+      {/* Dimmed backdrop */}
+      <Animated.View style={[styles.backdrop, { opacity: backdropOpacity }]}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={dismiss} />
+      </Animated.View>
+
+      {/* Bottom dock row */}
+      <Animated.View
+        style={[
+          styles.dock,
+          {
+            bottom: insets.bottom + 48,
+            transform: [{ translateY: dockTranslateY }],
+          },
+        ]}
+      >
+        {otherModes.map((m) => {
+          const modeColor = MODE_ACCENT[m.mode];
+          return (
+            <Pressable
+              key={m.mode}
+              style={({ pressed }) => [
+                styles.modeButton,
+                pressed && { opacity: 0.7 },
+              ]}
+              onPress={() => handleSelect(m.mode)}
+            >
+              <View style={[styles.iconCircle, { backgroundColor: modeColor + '30' }]}>
+                <IconSymbol name={m.icon} size={24} color={modeColor} />
+              </View>
+              <ThemedText style={styles.modeLabel}>{m.label}</ThemedText>
+            </Pressable>
+          );
+        })}
+      </Animated.View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 9998,
   },
-  popup: {
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  dock: {
     position: 'absolute',
+    left: 0,
+    right: 0,
     flexDirection: 'row',
-    borderRadius: 16,
-    paddingVertical: 8,
-    paddingHorizontal: 6,
-    gap: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
-    elevation: 12,
+    justifyContent: 'center',
+    gap: 20,
+    paddingHorizontal: 24,
   },
   modeButton: {
-    width: 48,
-    height: 48,
     alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 12,
+    gap: 6,
   },
   iconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  modeLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#A1A1AA',
   },
 });

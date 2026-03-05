@@ -3,14 +3,17 @@
  * Edge-to-edge, no margins, no borders, no rounded corners.
  * Text + dots overlaid on gradient. Tap → fullscreen with audio.
  * Swipeable if multiple pages. Max 4.
+ * Registers global pager handlers so horizontal swipes anywhere on
+ * the home screen can page through videos.
  */
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import { useRouter } from 'expo-router';
 
 import { getVideoPages } from '@/utils/home-widgets';
+import { registerVideoPagerHandlers } from '@/utils/global-video-pager';
 import { VideoSlide } from './video-slide';
 
 const C = {
@@ -22,6 +25,32 @@ export function VisualArea() {
   const [activeIndex, setActiveIndex] = useState(0);
   const router = useRouter();
   const pages = getVideoPages();
+  const pagerRef = useRef<PagerView>(null);
+  const activeRef = useRef(0);
+
+  // Keep a ref in sync for the global handlers
+  useEffect(() => {
+    activeRef.current = activeIndex;
+  }, [activeIndex]);
+
+  // Register global pager controls
+  useEffect(() => {
+    const maxIndex = Math.max(0, pages.length - 1);
+    registerVideoPagerHandlers(
+      () => {
+        const next = Math.min(activeRef.current + 1, maxIndex);
+        if (next !== activeRef.current) {
+          pagerRef.current?.setPage(next);
+        }
+      },
+      () => {
+        const prev = Math.max(activeRef.current - 1, 0);
+        if (prev !== activeRef.current) {
+          pagerRef.current?.setPage(prev);
+        }
+      },
+    );
+  }, [pages.length]);
 
   if (pages.length === 0) return null;
 
@@ -43,8 +72,11 @@ export function VisualArea() {
   return (
     <View style={styles.container}>
       <PagerView
+        ref={pagerRef}
         style={styles.pager}
         initialPage={0}
+        overdrag={false}
+        overScrollMode="never"
         onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}
       >
         {pages.map((page, i) => (
@@ -61,9 +93,9 @@ export function VisualArea() {
         ))}
       </PagerView>
 
-      {/* Dots overlaid at bottom of video */}
+      {/* 4 dots always shown */}
       <View style={styles.dots}>
-        {pages.map((_, i) => (
+        {[0, 1, 2, 3].map((i) => (
           <View
             key={i}
             style={[

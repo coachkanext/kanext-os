@@ -4,13 +4,40 @@
  * Three states: LIVE (red dot), RECAP (score), HYPE (branding).
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState, Component } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { Video, ResizeMode } from 'expo-av';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+// Graceful fallback if expo-av native module isn't linked
+let Video: any = null;
+let ResizeMode: any = {};
+try {
+  const av = require('expo-av');
+  Video = av.Video;
+  ResizeMode = av.ResizeMode;
+} catch {
+  // Native module unavailable — poster image only
+}
+
 import type { VideoPage } from './home-types';
+
+/** Catches native view registration errors (EXVideo not found) */
+class VideoBoundary extends Component<
+  { children: React.ReactNode; onError: () => void },
+  { failed: boolean }
+> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch() {
+    this.props.onError();
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
 
 const C = {
   text: '#FFFFFF',
@@ -31,16 +58,21 @@ interface VideoSlideProps {
 }
 
 export function VideoSlide({ page, isActive }: VideoSlideProps) {
-  const videoRef = useRef<Video>(null);
+  const videoRef = useRef<any>(null);
   const insets = useSafeAreaInsets();
+  const [videoFailed, setVideoFailed] = useState(!Video);
 
-  // Play/pause based on active page
+  // Play/pause based on active page — catch promise rejections from broken native module
   useEffect(() => {
     if (!videoRef.current) return;
-    if (isActive) {
-      videoRef.current.playAsync();
-    } else {
-      videoRef.current.pauseAsync();
+    try {
+      if (isActive) {
+        videoRef.current.playAsync?.()?.catch?.(() => setVideoFailed(true));
+      } else {
+        videoRef.current.pauseAsync?.()?.catch?.(() => {});
+      }
+    } catch {
+      setVideoFailed(true);
     }
   }, [isActive]);
 
@@ -55,18 +87,23 @@ export function VideoSlide({ page, isActive }: VideoSlideProps) {
         />
       )}
 
-      {/* Auto-playing video */}
-      <Video
-        ref={videoRef}
-        source={{ uri: page.source }}
-        style={styles.background}
-        resizeMode={ResizeMode.COVER}
-        shouldPlay={isActive}
-        isLooping
-        isMuted
-        posterSource={page.poster}
-        usePoster={!!page.poster}
-      />
+      {/* Auto-playing video (graceful fallback to poster if native module unavailable) */}
+      {!videoFailed && Video && (
+        <VideoBoundary onError={() => setVideoFailed(true)}>
+          <Video
+            ref={videoRef}
+            source={{ uri: page.source }}
+            style={styles.background}
+            resizeMode={ResizeMode.COVER}
+            shouldPlay={isActive}
+            isLooping
+            isMuted
+            posterSource={page.poster}
+            usePoster={!!page.poster}
+            onError={() => setVideoFailed(true)}
+          />
+        </VideoBoundary>
+      )}
 
       {/* Gradient overlay */}
       <LinearGradient

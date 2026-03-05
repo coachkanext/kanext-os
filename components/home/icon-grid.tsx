@@ -1,82 +1,154 @@
 /**
- * Home icon grid — 3x3, iPhone home screen style.
- * All 9 icons visible to ALL roles. No RBAC gating on visibility.
- * 3 columns always. Icons fill available space evenly.
- * White icons, gray labels, accent badges only.
+ * Home icon grid — 4 rows (11 icons + 1 center gap for semi-circle).
+ * All icons visible to ALL roles. No RBAC gating on visibility.
+ * 3 columns always. Deep navy rounded-square backgrounds with white glyphs.
+ * Row 4 has a null center cell where the Nexus semi-circle sits.
+ * Tap → scale 1.05 lift + soft glow, 150ms.
  */
 
-import React from 'react';
-import { View, Pressable, Text, StyleSheet, useWindowDimensions } from 'react-native';
+import React, { useRef, useCallback } from 'react';
+import { View, Text, Alert, StyleSheet, useWindowDimensions, Animated, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
+import { useMode } from '@/context/app-context';
+import { useMultitasking } from '@/context/multitasking-context';
 import type { GridIcon } from './home-types';
 
-// Always-dark palette
 const C = {
   icon: '#FFFFFF',
   label: '#A1A1AA',
   badgeText: '#FFFFFF',
+  tileBg: '#0B1220',
 };
 
-/**
- * 3x3 grid — same for ALL roles:
- *   Calendar    Messages    Roster
- *   Recruiting  Media       Feed
- *   Store       Program     Profile
- */
-const ROWS: GridIcon[][] = [
+const ROWS: (GridIcon | null)[][] = [
   [
-    { id: 'calendar',   icon: 'calendar',                     label: 'Calendar',   route: '/section?title=Calendar' },
-    { id: 'messages',   icon: 'bubble.left.and.bubble.right', label: 'Messages',   route: '/section?title=Messages' },
+    { id: 'messages',   icon: 'bubble.left.and.bubble.right', label: 'Messages',   route: '/messages' },
+    { id: 'season',     icon: 'calendar',                     label: 'Season',     route: '/section?title=Season' },
     { id: 'roster',     icon: 'person.3.fill',                label: 'Roster',     route: '/section?title=Roster' },
   ],
   [
-    { id: 'recruiting', icon: 'person.badge.plus',            label: 'Recruiting', route: '/section?title=Recruiting' },
-    { id: 'media',      icon: 'play.rectangle.fill',          label: 'Media',      route: '/section?title=Media' },
-    { id: 'feed',       icon: 'newspaper.fill',               label: 'Feed',       route: '/section?title=Feed' },
+    { id: 'athletes',   icon: 'person.badge.plus',            label: 'Athletes',   route: '/section?title=Athletes' },
+    { id: 'film',       icon: 'play.rectangle.fill',          label: 'Film',       route: '/section?title=Film' },
+    { id: 'social',     icon: 'newspaper.fill',               label: 'Social',     route: '/section?title=Social' },
   ],
   [
     { id: 'store',      icon: 'bag.fill',                     label: 'Store',      route: '/section?title=Store' },
+    { id: 'wallet',     icon: 'creditcard.fill',              label: 'Wallet',     route: '/section?title=Wallet' },
     { id: 'program',    icon: 'building.2.fill',              label: 'Program',    route: '/section?title=Program' },
+  ],
+  [
+    { id: 'gm',         icon: 'gamecontroller.fill',          label: 'GM',         route: '/section?title=GM' },
+    null,
     { id: 'profile',    icon: 'person.circle',                label: 'Profile',    route: '/section?title=Profile' },
   ],
 ];
 
+/** Single grid tile with scale-up glow on press */
+function GridTile({
+  item,
+  cellWidth,
+  accent,
+  onPress,
+}: {
+  item: GridIcon;
+  cellWidth: number;
+  accent: string;
+  onPress: (item: GridIcon) => void;
+}) {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = useCallback(() => {
+    Animated.timing(scale, {
+      toValue: 1.05,
+      duration: 150,
+      useNativeDriver: true,
+    }).start();
+  }, [scale]);
+
+  const handlePressOut = useCallback(() => {
+    Animated.timing(scale, {
+      toValue: 1,
+      duration: 150,
+      useNativeDriver: true,
+    }).start();
+  }, [scale]);
+
+  return (
+    <Pressable
+      style={[styles.cell, { width: cellWidth }]}
+      onPress={() => onPress(item)}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+    >
+      <Animated.View
+        style={[
+          styles.iconContainer,
+          {
+            transform: [{ scale }],
+            shadowColor: accent,
+            shadowOpacity: 0.0,
+          },
+        ]}
+      >
+        <IconSymbol name={item.icon} size={28} color={C.icon} />
+        {item.badgeCount != null && item.badgeCount > 0 && (
+          <View style={[styles.badge, { backgroundColor: accent }]}>
+            <Text style={styles.badgeText}>{item.badgeCount}</Text>
+          </View>
+        )}
+      </Animated.View>
+      <Text style={styles.label} numberOfLines={1}>
+        {item.label}
+      </Text>
+    </Pressable>
+  );
+}
+
 export function IconGrid() {
   const accent = useAccentColor();
   const router = useRouter();
+  const mode = useMode();
   const { width: screenWidth } = useWindowDimensions();
+  const { addScreen } = useMultitasking();
   const cellWidth = screenWidth / 3;
+
+  const handlePress = useCallback((item: GridIcon) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (mode !== 'sports') {
+      Alert.alert('Coming Soon', 'This feature is not yet available.');
+      return;
+    }
+    addScreen({
+      id: item.id,
+      route: item.route,
+      title: item.label,
+      icon: item.icon,
+    });
+    router.push(item.route as any);
+  }, [mode, addScreen, router]);
 
   return (
     <View style={styles.container}>
       {ROWS.map((row, rowIndex) => (
         <View key={rowIndex} style={styles.row}>
-          {row.map((item) => (
-            <Pressable
-              key={item.id}
-              style={[styles.cell, { width: cellWidth }]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                router.push(item.route as any);
-              }}
-            >
-              <View style={styles.iconContainer}>
-                <IconSymbol name={item.icon} size={32} color={C.icon} />
-                {item.badgeCount != null && item.badgeCount > 0 && (
-                  <View style={[styles.badge, { backgroundColor: accent }]}>
-                    <Text style={styles.badgeText}>{item.badgeCount}</Text>
-                  </View>
-                )}
-              </View>
-              <Text style={styles.label} numberOfLines={1}>
-                {item.label}
-              </Text>
-            </Pressable>
-          ))}
+          {row.map((item, colIndex) => {
+            if (item === null) {
+              return <View key={`gap-${colIndex}`} style={{ width: cellWidth }} />;
+            }
+            return (
+              <GridTile
+                key={item.id}
+                item={item}
+                cellWidth={cellWidth}
+                accent={accent}
+                onPress={handlePress}
+              />
+            );
+          })}
         </View>
       ))}
     </View>
@@ -87,9 +159,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-evenly',
+    marginTop: -32,
+    paddingBottom: 16,
   },
   row: {
     flexDirection: 'row',
+    marginBottom: 14,
   },
   cell: {
     alignItems: 'center',
@@ -99,8 +174,13 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 14,
+    backgroundColor: C.tileBg,
     alignItems: 'center',
     justifyContent: 'center',
+    // Glow on press (shadow animates with scale)
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 6,
   },
   badge: {
     position: 'absolute',
@@ -120,7 +200,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 11,
-    marginTop: 6,
+    marginTop: 12,
     textAlign: 'center',
     color: C.label,
   },

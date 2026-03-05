@@ -4,15 +4,37 @@
  * Falls back to a static poster image when no video source is provided.
  */
 
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState, Component } from 'react';
 import { View, Pressable, StyleSheet, Image, type ImageSourcePropType } from 'react-native';
-import { Video, ResizeMode } from 'expo-av';
 import { useFocusEffect } from '@react-navigation/core';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BorderRadius, Spacing } from '@/constants/theme';
+
+// Graceful fallback if expo-av native module isn't linked
+let Video: any = null;
+let ResizeMode: any = {};
+try {
+  const av = require('expo-av');
+  Video = av.Video;
+  ResizeMode = av.ResizeMode;
+} catch {}
+
+/** Catches native view registration errors (EXVideo not found) */
+class VideoBoundary extends Component<
+  { children: React.ReactNode; fallback: React.ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children;
+  }
+}
 
 interface VideoHeroCardProps {
   title: string;
@@ -27,13 +49,13 @@ interface VideoHeroCardProps {
 }
 
 export function VideoHeroCard({ title, subtitle, videoUri, posterSource, liveBadge, onPress }: VideoHeroCardProps) {
-  const videoRef = useRef<Video>(null);
+  const videoRef = useRef<any>(null);
 
   // Pause when screen loses focus, resume when it gains focus
   useFocusEffect(
     useCallback(() => {
-      if (videoUri) {
-        videoRef.current?.playAsync();
+      if (videoUri && videoRef.current) {
+        videoRef.current.playAsync();
       }
       return () => {
         videoRef.current?.pauseAsync();
@@ -54,18 +76,30 @@ export function VideoHeroCard({ title, subtitle, videoUri, posterSource, liveBad
     >
       {/* 16:9 video / poster area */}
       <View style={styles.mediaArea}>
-        {videoUri ? (
-          <Video
-            ref={videoRef}
-            source={{ uri: videoUri }}
-            style={StyleSheet.absoluteFill}
-            resizeMode={ResizeMode.COVER}
-            shouldPlay
-            isLooping
-            isMuted
-            // @ts-ignore – expo-av accepts this on iOS
-            videoStyle={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0 }}
-          />
+        {videoUri && Video ? (
+          <VideoBoundary
+            fallback={
+              posterSource ? (
+                <Image source={posterSource} style={StyleSheet.absoluteFill} resizeMode="cover" />
+              ) : (
+                <View style={[StyleSheet.absoluteFill, styles.posterFallback]}>
+                  <View style={styles.playButton}>
+                    <IconSymbol name="play.fill" size={28} color="#fff" />
+                  </View>
+                </View>
+              )
+            }
+          >
+            <Video
+              ref={videoRef}
+              source={{ uri: videoUri }}
+              style={StyleSheet.absoluteFill}
+              resizeMode={ResizeMode.COVER}
+              shouldPlay
+              isLooping
+              isMuted
+            />
+          </VideoBoundary>
         ) : posterSource ? (
           <Image source={posterSource} style={StyleSheet.absoluteFill} resizeMode="cover" />
         ) : (

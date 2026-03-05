@@ -1,1 +1,5 @@
-export function useColorScheme() { return 'dark' as const; }
+import { useColorScheme as useRNColorScheme } from 'react-native';
+
+export function useColorScheme() {
+  return useRNColorScheme() ?? 'dark';
+}

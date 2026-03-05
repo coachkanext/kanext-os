@@ -404,6 +404,8 @@ export function AppProvider({ children }: AppProviderProps) {
           try {
             const parsed = JSON.parse(savedActiveView) as ActiveView;
             if (parsed.view_id && parsed.mode && parsed.org_id) {
+              // Always boot into sports — other modes are Coming Soon
+              parsed.mode = 'sports' as any;
               dispatch({ type: 'SET_ACTIVE_VIEW', payload: parsed });
               dispatch({ type: 'SET_LOADING', payload: false });
               // Also restore auth
@@ -426,11 +428,12 @@ export function AppProvider({ children }: AppProviderProps) {
         if (lastMode) {
           // Migrate old mode names
           const resolvedMode = lastMode === 'community' ? 'competition' : lastMode;
-          // Mode exists - skip first run
+          // Always boot into sports mode — other modes are Coming Soon
+          const bootMode = 'sports';
           dispatch({
             type: 'RESTORE_STATE',
             payload: {
-              mode: resolvedMode as Mode,
+              mode: bootMode as Mode,
               authState: (auth as AuthState) || 'viewer',
               organization: organization || undefined,
               program: program || undefined,
