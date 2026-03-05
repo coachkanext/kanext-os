@@ -186,6 +186,10 @@ const MAPPING = {
   'shield.checkered': 'security',
   'doc.text.magnifyingglass': 'find-in-page',
 
+  // Wallet
+  'wallet.pass.fill': 'account-balance-wallet',
+  'creditcard.fill': 'credit-card',
+
   // Avatar Drawer V3
   'flag.checkered': 'flag',
   'trophy.fill': 'emoji-events',
@@ -193,6 +197,12 @@ const MAPPING = {
   'shield.fill': 'shield',
   'doc.text': 'article',
   'square.grid.2x2': 'grid-view',
+
+  // Home Grid
+  'newspaper.fill': 'article',
+  'person.circle': 'account-circle',
+  'bubble.left.and.bubble.right': 'forum',
+  'bag.fill': 'shopping-bag',
 } as const;
 
 export type IconSymbolName = keyof typeof MAPPING | SymbolViewProps['name'];

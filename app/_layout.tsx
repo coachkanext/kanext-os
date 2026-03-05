@@ -17,22 +17,20 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreenModule from 'expo-splash-screen';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import 'react-native-reanimated';
 
 import { SplashScreen } from '@/components/splash-screen';
-import { GlobalHeader } from '@/components/global-header';
-import { AvatarDrawer } from '@/components/avatar-drawer';
 import { AuthModal } from '@/components/auth/auth-modal';
 import { SearchOverlay } from '@/components/nexus/search-overlay';
 import { ModeSwitcherOverlay } from '@/components/mode-switcher-overlay';
 import { KXTransition } from '@/components/kx-transition';
 import { AppProvider } from '@/context/app-context';
 import { AuthProvider, useAuth } from '@/context/auth-context';
+import { QueryProvider } from '@/providers/query-provider';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { registerDrawerHandlers } from '@/utils/global-drawer';
 import { registerSearchOverlayHandlers } from '@/utils/global-search-overlay';
 import { registerSplitNexusHandlers } from '@/utils/global-split-nexus';
 
@@ -79,19 +77,7 @@ export const unstable_settings = {
  */
 function AppShell() {
   const colorScheme = useColorScheme();
-  const [avatarDrawerVisible, setAvatarDrawerVisible] = useState(false);
   const { state: authState } = useAuth();
-
-  // Animation value for content slide (Twitter/X style push)
-  const contentSlideAnim = useRef(new Animated.Value(0)).current;
-
-  // Register global drawer handlers
-  useEffect(() => {
-    registerDrawerHandlers(
-      () => setAvatarDrawerVisible(true),
-      () => setAvatarDrawerVisible(false)
-    );
-  }, []);
 
   // Register view-switch lifecycle callbacks — reset Home + Org tabs on view change
   useEffect(() => {
@@ -171,39 +157,22 @@ function AppShell() {
   // Show auth modal when not authenticated (and not still checking)
   const showAuthModal = !authState.isChecking && !authState.isAuthenticated;
 
-  // Normal navigation with tabs + global header
+  // Normal navigation with tabs — edge-to-edge, no header
   return (
     <View style={styles.container}>
-      {/* Main content - slides right when drawer opens */}
-      <Animated.View
-        style={[
-          styles.contentContainer,
-          { transform: [{ translateX: contentSlideAnim }] }
-        ]}
-      >
-        <GlobalHeader />
-        <View style={styles.stackContainer}>
-          <Stack screenOptions={{ headerShown: false, animation: 'none' }}>
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="coach" />
-            <Stack.Screen name="login" />
-            <Stack.Screen name="video" />
-            <Stack.Screen name="settings" />
-            <Stack.Screen name="profile" />
-            <Stack.Screen
-              name="modal"
-              options={{ presentation: 'modal', title: 'Modal' }}
-            />
-          </Stack>
-        </View>
-      </Animated.View>
-
-      {/* Global Avatar Drawer - accessible via long-press on Home tab */}
-      <AvatarDrawer
-        visible={avatarDrawerVisible}
-        onClose={() => setAvatarDrawerVisible(false)}
-        contentSlideAnim={contentSlideAnim}
-      />
+      <Stack screenOptions={{ headerShown: false, animation: 'none' }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="coach" />
+        <Stack.Screen name="login" />
+        <Stack.Screen name="video" />
+        <Stack.Screen name="settings" />
+        <Stack.Screen name="profile" />
+        <Stack.Screen name="section" />
+        <Stack.Screen
+          name="modal"
+          options={{ presentation: 'modal', title: 'Modal' }}
+        />
+      </Stack>
 
       {/* Universal entity sheets (single sheet per entity type) */}
       <TeamSheet
@@ -268,7 +237,7 @@ function AppShell() {
         onClose={() => setSearchOverlayVisible(false)}
       />
 
-      {/* Mode Switcher — triggered from Ops tab long-press */}
+      {/* Mode Switcher — triggered from Home tab long-press */}
       <ModeSwitcherOverlay />
 
       {/* KX Micro-Transition — brief branded flash on tab switches */}
@@ -327,7 +296,8 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <AppProvider>
-        <ThemeProvider value={DarkTheme}>
+        <QueryProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           <GestureHandlerRootView style={styles.container}>
             <BottomSheetModalProvider>
               <AppShell />
@@ -341,8 +311,9 @@ export default function RootLayout() {
               )}
             </BottomSheetModalProvider>
           </GestureHandlerRootView>
-          <StatusBar style="light" />
+          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
         </ThemeProvider>
+        </QueryProvider>
       </AppProvider>
     </AuthProvider>
   );
@@ -350,13 +321,6 @@ export default function RootLayout() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  contentContainer: {
-    flex: 1,
-    backgroundColor: '#0B0F14', // Prevents seeing through during animation
-  },
-  stackContainer: {
     flex: 1,
   },
 });
