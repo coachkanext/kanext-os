@@ -5,6 +5,7 @@
 
 let _open: (() => void) | null = null;
 let _close: (() => void) | null = null;
+let _isOpen = false;
 
 export function registerMultitaskingHandlers(open: () => void, close: () => void) {
   _open = open;
@@ -12,9 +13,15 @@ export function registerMultitaskingHandlers(open: () => void, close: () => void
 }
 
 export function openMultitasking() {
+  _isOpen = true;
   _open?.();
 }
 
 export function closeMultitasking() {
+  _isOpen = false;
   _close?.();
+}
+
+export function isMultitaskingOpen(): boolean {
+  return _isOpen;
 }

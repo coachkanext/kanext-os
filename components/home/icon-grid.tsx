@@ -159,7 +159,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-evenly',
-    marginTop: -32,
     paddingBottom: 16,
   },
   row: {

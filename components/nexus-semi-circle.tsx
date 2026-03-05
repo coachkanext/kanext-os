@@ -27,7 +27,7 @@ import { useAccentColor } from '@/hooks/use-accent-color';
 import { getCurrentTab } from '@/utils/global-semi-circle';
 import { openSearchOverlay } from '@/utils/global-search-overlay';
 import { openSplitNexus } from '@/utils/global-split-nexus';
-import { openMultitasking } from '@/utils/global-multitasking';
+import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils/global-multitasking';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
 import { startGlobalVoice } from '@/utils/global-voice';
 
@@ -43,6 +43,14 @@ export function NexusSemiCircle() {
 
   // ── Tap with double-tap detection ──────────────────────────────────
   const handlePress = () => {
+    // If multitasking is open, tap = close it and go home (like iOS home button)
+    if (isMultitaskingOpen()) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      closeMultitasking();
+      router.navigate('/(tabs)/(main)' as any);
+      return;
+    }
+
     const now = Date.now();
     if (now - lastTapRef.current < 350) {
       lastTapRef.current = 0;
@@ -125,7 +133,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: 'center',
-    zIndex: 9999,
+    zIndex: 10001,
   },
   circle: {
     width: DIAMETER,

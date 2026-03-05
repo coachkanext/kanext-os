@@ -1,19 +1,20 @@
 /**
- * Multitasking Overlay
- * Full-screen overlay with horizontal card row of open screens.
- * Triggered by swipe-up on Nexus semi-circle.
- * Tap card → navigate to that screen. Swipe card up → remove it.
- * Tap backdrop → close overlay → return to Home.
+ * Multitasking Overlay — iOS-style App Switcher
+ * Full-screen overlay with horizontally scrollable app preview cards.
+ * Cards are phone-screen-shaped, swipe up to dismiss.
+ * Tap anywhere outside cards → dismiss + go home.
+ * Nexus button stays visible at bottom — tap it to close + go home.
  */
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
   View,
   Text,
   Pressable,
-  FlatList,
+  ScrollView,
   StyleSheet,
   Animated,
+  PanResponder,
   useWindowDimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -22,69 +23,107 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useMultitasking, type MultitaskingScreen } from '@/context/multitasking-context';
-import { registerMultitaskingHandlers } from '@/utils/global-multitasking';
+import { registerMultitaskingHandlers, closeMultitasking } from '@/utils/global-multitasking';
 
-const CARD_WIDTH = 140;
-const CARD_HEIGHT = 200;
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-function MultitaskingCard({
+/** iOS-style app preview card with swipe-up to dismiss */
+function AppCard({
   screen,
+  cardWidth,
+  cardHeight,
   onTap,
   onRemove,
 }: {
   screen: MultitaskingScreen;
+  cardWidth: number;
+  cardHeight: number;
   onTap: () => void;
   onRemove: () => void;
 }) {
-  const panY = useRef(new Animated.Value(0)).current;
-  const opacity = useRef(new Animated.Value(1)).current;
+  const translateY = useRef(new Animated.Value(0)).current;
+  const scale = useRef(new Animated.Value(1)).current;
+  const cardOpacity = useRef(new Animated.Value(1)).current;
 
-  const handleSwipeUp = () => {
-    Animated.parallel([
-      Animated.timing(panY, { toValue: -300, duration: 200, useNativeDriver: true }),
-      Animated.timing(opacity, { toValue: 0, duration: 200, useNativeDriver: true }),
-    ]).start(() => {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      onRemove();
-    });
-  };
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_evt, gs) =>
+          gs.dy < -10 && Math.abs(gs.dy) > Math.abs(gs.dx),
+        onPanResponderMove: (_evt, gs) => {
+          if (gs.dy < 0) {
+            translateY.setValue(gs.dy);
+            const progress = Math.min(Math.abs(gs.dy) / 300, 1);
+            scale.setValue(1 - progress * 0.15);
+            cardOpacity.setValue(1 - progress * 0.5);
+          }
+        },
+        onPanResponderRelease: (_evt, gs) => {
+          if (gs.dy < -80 || gs.vy < -0.5) {
+            Animated.parallel([
+              Animated.timing(translateY, {
+                toValue: -600,
+                duration: 200,
+                useNativeDriver: true,
+              }),
+              Animated.timing(cardOpacity, {
+                toValue: 0,
+                duration: 200,
+                useNativeDriver: true,
+              }),
+            ]).start(() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onRemove();
+            });
+          } else {
+            Animated.spring(translateY, {
+              toValue: 0,
+              tension: 80,
+              friction: 10,
+              useNativeDriver: true,
+            }).start();
+            Animated.spring(scale, {
+              toValue: 1,
+              tension: 80,
+              friction: 10,
+              useNativeDriver: true,
+            }).start();
+            Animated.spring(cardOpacity, {
+              toValue: 1,
+              tension: 80,
+              friction: 10,
+              useNativeDriver: true,
+            }).start();
+          }
+        },
+      }),
+    [translateY, scale, cardOpacity, onRemove],
+  );
 
   return (
     <Animated.View
       style={[
         styles.card,
         {
-          transform: [
-            { translateY: panY },
-            { rotateY: '-3deg' },
-            { perspective: 1000 },
-          ],
-          opacity,
+          width: cardWidth,
+          height: cardHeight,
+          transform: [{ translateY }, { scale }],
+          opacity: cardOpacity,
         },
       ]}
+      {...panResponder.panHandlers}
     >
-      <Pressable
-        style={styles.cardInner}
-        onPress={onTap}
-        onLongPress={handleSwipeUp}
-      >
-        <View style={styles.cardIconCircle}>
-          <IconSymbol name={screen.icon} size={28} color="#FFFFFF" />
+      <Pressable style={styles.cardSurface} onPress={onTap}>
+        <View style={styles.cardPreview}>
+          <View style={styles.cardIconLarge}>
+            <IconSymbol name={screen.icon} size={44} color="#FFFFFF" />
+          </View>
         </View>
-        <Text style={styles.cardTitle} numberOfLines={1}>
-          {screen.title}
-        </Text>
-        <Pressable
-          style={styles.closeButton}
-          onPress={(e) => {
-            e.stopPropagation?.();
-            handleSwipeUp();
-          }}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <IconSymbol name="xmark.circle.fill" size={20} color="#52525B" />
-        </Pressable>
       </Pressable>
+
+      <Text style={styles.cardLabel} numberOfLines={1}>
+        {screen.title}
+      </Text>
     </Animated.View>
   );
 }
@@ -93,71 +132,128 @@ export function MultitaskingOverlay() {
   const [visible, setVisible] = useState(false);
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const { screens, removeScreen } = useMultitasking();
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(60)).current;
+
+  const cardWidth = width * 0.62;
+  const cardHeight = height * 0.48;
 
   useEffect(() => {
     registerMultitaskingHandlers(
       () => {
         setVisible(true);
-        Animated.timing(fadeAnim, { toValue: 1, duration: 250, useNativeDriver: true }).start();
+        Animated.parallel([
+          Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 250,
+            useNativeDriver: true,
+          }),
+          Animated.spring(slideAnim, {
+            toValue: 0,
+            tension: 65,
+            friction: 11,
+            useNativeDriver: true,
+          }),
+        ]).start();
       },
       () => dismiss(),
     );
   }, []);
 
   const dismiss = useCallback(() => {
-    Animated.timing(fadeAnim, { toValue: 0, duration: 200, useNativeDriver: true }).start(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 60,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
       setVisible(false);
     });
-  }, [fadeAnim]);
+  }, [fadeAnim, slideAnim]);
 
-  const handleCardTap = useCallback((screen: MultitaskingScreen) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    dismiss();
-    router.push(screen.route as any);
-  }, [dismiss, router]);
+  const handleDismissToHome = useCallback(() => {
+    closeMultitasking();
+    router.navigate('/(tabs)/(main)' as any);
+  }, [router]);
 
-  const handleRemove = useCallback((id: string) => {
-    removeScreen(id);
-  }, [removeScreen]);
+  const handleCardTap = useCallback(
+    (screen: MultitaskingScreen) => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      closeMultitasking();
+      router.push(screen.route as any);
+    },
+    [router],
+  );
+
+  const handleRemove = useCallback(
+    (id: string) => {
+      removeScreen(id);
+    },
+    [removeScreen],
+  );
 
   if (!visible) return null;
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-      <Pressable style={styles.backdrop} onPress={dismiss} />
+    <AnimatedPressable
+      style={[styles.container, { opacity: fadeAnim }]}
+      onPress={handleDismissToHome}
+    >
+      {/* Dark backdrop (visual only, not interactive) */}
+      <View style={styles.backdrop} pointerEvents="none" />
 
-      <View style={[styles.content, { paddingTop: insets.top + 60 }]}>
-        <Text style={styles.heading}>Open Screens</Text>
+      {/* Top dismiss zone */}
+      <View style={{ height: insets.top + 80 }} pointerEvents="none" />
 
+      {/* Cards row — only takes the height it needs */}
+      <Animated.View
+        style={[
+          styles.cardRow,
+          { transform: [{ translateY: slideAnim }] },
+        ]}
+        pointerEvents="box-none"
+      >
         {screens.length === 0 ? (
-          <View style={styles.emptyState}>
-            <IconSymbol name="rectangle.stack" size={40} color="#52525B" />
-            <Text style={styles.emptyText}>No open screens</Text>
-            <Text style={styles.emptySubtext}>
-              Tap icons on the Home grid to open screens
-            </Text>
+          <View style={styles.emptyState} pointerEvents="none">
+            <IconSymbol name="rectangle.stack" size={48} color="#3F3F46" />
+            <Text style={styles.emptyText}>No Recent Apps</Text>
           </View>
         ) : (
-          <FlatList
-            data={screens}
+          <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.cardList}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <MultitaskingCard
-                screen={item}
-                onTap={() => handleCardTap(item)}
-                onRemove={() => handleRemove(item.id)}
+            contentContainerStyle={[
+              styles.cardList,
+              screens.length === 1 && { flex: 1, justifyContent: 'center' },
+            ]}
+            snapToInterval={cardWidth + 16}
+            decelerationRate="fast"
+          >
+            {screens.map((screen) => (
+              <AppCard
+                key={screen.id}
+                screen={screen}
+                cardWidth={cardWidth}
+                cardHeight={cardHeight}
+                onTap={() => handleCardTap(screen)}
+                onRemove={() => handleRemove(screen.id)}
               />
-            )}
-          />
+            ))}
+          </ScrollView>
         )}
-      </View>
-    </Animated.View>
+      </Animated.View>
+
+      {/* Bottom dismiss zone */}
+      <View style={{ flex: 1 }} pointerEvents="none" />
+    </AnimatedPressable>
   );
 }
 
@@ -168,70 +264,57 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
   },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  heading: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    textAlign: 'center',
-    marginBottom: 24,
+  cardRow: {
+    alignItems: 'center',
   },
   cardList: {
     paddingHorizontal: 24,
     gap: 16,
+    alignItems: 'center',
   },
   card: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
+    alignItems: 'center',
   },
-  cardInner: {
+  cardSurface: {
     flex: 1,
-    backgroundColor: '#0B0F14',
-    borderRadius: 16,
+    width: '100%',
+    backgroundColor: '#1A1A2E',
+    borderRadius: 20,
+    overflow: 'hidden',
+    borderWidth: 0.5,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  cardPreview: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
   },
-  cardIconCircle: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  cardIconLarge: {
+    width: 80,
+    height: 80,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
   },
-  cardTitle: {
+  cardLabel: {
     fontSize: 13,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontWeight: '500',
+    color: '#A1A1AA',
+    marginTop: 10,
     textAlign: 'center',
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
   },
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 40,
+    paddingVertical: 80,
   },
   emptyText: {
     fontSize: 17,
-    fontWeight: '600',
-    color: '#A1A1AA',
-    marginTop: 12,
-  },
-  emptySubtext: {
-    fontSize: 14,
+    fontWeight: '500',
     color: '#52525B',
-    textAlign: 'center',
-    marginTop: 6,
+    marginTop: 16,
   },
 });
