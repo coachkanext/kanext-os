@@ -62,12 +62,20 @@ function RoomBubble({
 }) {
   const hasUnread = room.unread > 0;
   const ref = useRef<View>(null);
+  const longPressedRef = useRef(false);
   return (
     <Pressable
       ref={ref}
       style={s.roomCell}
-      onPress={onPress}
+      onPress={() => {
+        if (longPressedRef.current) {
+          longPressedRef.current = false;
+          return;
+        }
+        onPress();
+      }}
       onLongPress={() => {
+        longPressedRef.current = true;
         ref.current?.measureInWindow((_x, y) => onLongPress(y));
       }}
       delayLongPress={400}
@@ -311,6 +319,7 @@ function DMRow({
 }) {
   const swipeRef = useRef<Swipeable>(null);
   const rowRef = useRef<View>(null);
+  const longPressedRef = useRef(false);
   const hasUnread = thread.unreadCount > 0;
 
   const renderRightActions = () => (
@@ -328,6 +337,7 @@ function DMRow({
   );
 
   const handleLongPress = () => {
+    longPressedRef.current = true;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     const pinLabel = isPinned ? 'Unpin' : 'Pin';
     const readLabel = hasUnread ? 'Mark as Read' : 'Mark as Unread';
@@ -365,7 +375,13 @@ function DMRow({
       <Pressable
         ref={rowRef}
         style={s.dmRow}
-        onPress={onPress}
+        onPress={() => {
+          if (longPressedRef.current) {
+            longPressedRef.current = false;
+            return;
+          }
+          onPress();
+        }}
         onLongPress={handleLongPress}
         delayLongPress={400}
       >
@@ -604,13 +620,21 @@ export default function MessagesListScreen() {
             {pinnedThreads.map((thread) => {
               const hasUnread = thread.unreadCount > 0;
               const pinnedRef = React.createRef<View>();
+              const pinnedLongPressed = { current: false };
               return (
                 <Pressable
                   key={thread.id}
                   ref={pinnedRef}
                   style={s.pinnedCell}
-                  onPress={() => openDM(thread)}
+                  onPress={() => {
+                    if (pinnedLongPressed.current) {
+                      pinnedLongPressed.current = false;
+                      return;
+                    }
+                    openDM(thread);
+                  }}
                   onLongPress={() => {
+                    pinnedLongPressed.current = true;
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                     pinnedRef.current?.measureInWindow((_x, y) => {
                       setPreviewData({
