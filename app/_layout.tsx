@@ -16,8 +16,8 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreenModule from 'expo-splash-screen';
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { View, StyleSheet, Animated, Pressable, PanResponder } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import 'react-native-reanimated';
@@ -36,6 +36,8 @@ import { QueryProvider } from '@/providers/query-provider';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { registerSearchOverlayHandlers } from '@/utils/global-search-overlay';
 import { registerSplitNexusHandlers } from '@/utils/global-split-nexus';
+import { registerSettingsPanelHandlers, closeSettingsPanel } from '@/utils/global-settings-panel';
+import { SettingsPanel, SETTINGS_PANEL_WIDTH } from '@/components/settings-panel';
 
 import { registerViewSwitchCallback } from '@/utils/view-switch-lifecycle';
 import { requestHomeReset } from '@/utils/global-home';
@@ -168,27 +170,84 @@ function AppShell() {
     );
   }, []);
 
+  // Settings panel state (X/Twitter-style side panel)
+  const [settingsPanelVisible, setSettingsPanelVisible] = useState(false);
+  const contentTranslateX = useRef(new Animated.Value(0)).current;
+
+  const openPanel = useCallback(() => {
+    setSettingsPanelVisible(true);
+    Animated.spring(contentTranslateX, {
+      toValue: SETTINGS_PANEL_WIDTH,
+      tension: 65,
+      friction: 11,
+      useNativeDriver: true,
+    }).start();
+  }, [contentTranslateX]);
+
+  const dismissPanel = useCallback(() => {
+    Animated.timing(contentTranslateX, {
+      toValue: 0,
+      duration: 250,
+      useNativeDriver: true,
+    }).start(() => {
+      setSettingsPanelVisible(false);
+    });
+  }, [contentTranslateX]);
+
+  useEffect(() => {
+    registerSettingsPanelHandlers(openPanel, dismissPanel);
+  }, [openPanel, dismissPanel]);
+
+  // PanResponder for swipe-left dismiss on shifted content
+  const dismissPanResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_evt, gs) =>
+          gs.dx < -20 && Math.abs(gs.dx) > Math.abs(gs.dy) * 1.5,
+        onPanResponderRelease: (_evt, gs) => {
+          if (gs.dx < -60) {
+            closeSettingsPanel();
+          }
+        },
+      }),
+    [],
+  );
+
   // Show auth modal when not authenticated (and not still checking)
   const showAuthModal = !authState.isChecking && !authState.isAuthenticated;
 
   // Normal navigation with tabs — edge-to-edge, no header
   return (
     <View style={styles.container}>
-      <Stack screenOptions={{ headerShown: false, animation: 'none', contentStyle: { backgroundColor: '#000000' } }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="coach" />
-        <Stack.Screen name="login" />
-        <Stack.Screen name="nexus" options={{ animation: 'slide_from_right', gestureEnabled: true, fullScreenGestureEnabled: true }} />
-        <Stack.Screen name="wallet" options={{ animation: 'slide_from_right', gestureEnabled: true, fullScreenGestureEnabled: true, contentStyle: { backgroundColor: '#000000' } }} />
-        <Stack.Screen name="video" />
-        <Stack.Screen name="settings" />
-        <Stack.Screen name="profile" options={{ animation: 'slide_from_right', gestureEnabled: true, fullScreenGestureEnabled: true, contentStyle: { backgroundColor: '#000000' } }} />
-        {/* section and messages are inside (tabs)/(home) Stack — tab bar stays visible */}
-        <Stack.Screen
-          name="modal"
-          options={{ presentation: 'modal', title: 'Modal' }}
-        />
-      </Stack>
+      {/* Settings panel sits behind shifting content */}
+      <SettingsPanel visible={settingsPanelVisible} />
+
+      {/* Content wrapper — shifts right when settings panel opens */}
+      <Animated.View style={[styles.container, { transform: [{ translateX: contentTranslateX }] }]}>
+        <Stack screenOptions={{ headerShown: false, animation: 'none', contentStyle: { backgroundColor: '#000000' } }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="coach" />
+          <Stack.Screen name="login" />
+          <Stack.Screen name="nexus" options={{ animation: 'slide_from_right', gestureEnabled: true, fullScreenGestureEnabled: true }} />
+          <Stack.Screen name="wallet" options={{ animation: 'slide_from_right', gestureEnabled: true, fullScreenGestureEnabled: true, contentStyle: { backgroundColor: '#000000' } }} />
+          <Stack.Screen name="video" />
+          <Stack.Screen name="settings" />
+          <Stack.Screen name="profile" options={{ animation: 'slide_from_right', gestureEnabled: true, fullScreenGestureEnabled: true, contentStyle: { backgroundColor: '#000000' } }} />
+          {/* section and messages are inside (tabs)/(home) Stack — tab bar stays visible */}
+          <Stack.Screen
+            name="modal"
+            options={{ presentation: 'modal', title: 'Modal' }}
+          />
+        </Stack>
+        <UniversalFooter />
+
+        {/* Tap/swipe dismiss overlay when panel is open */}
+        {settingsPanelVisible && (
+          <View style={StyleSheet.absoluteFill} {...dismissPanResponder.panHandlers}>
+            <Pressable style={StyleSheet.absoluteFill} onPress={() => closeSettingsPanel()} />
+          </View>
+        )}
+      </Animated.View>
 
       {/* Universal entity sheets (single sheet per entity type) */}
       <TeamSheet
@@ -241,7 +300,6 @@ function AppShell() {
       <UniversalFinder />
       <SplitNexusOverlay visible={splitNexusVisible} onClose={() => setSplitNexusVisible(false)} />
       <SearchOverlay visible={searchOverlayVisible} onClose={() => setSearchOverlayVisible(false)} />
-      <UniversalFooter />
       <MultitaskingOverlay />
       <ModeSwitcherOverlay />
       <KXTransition />

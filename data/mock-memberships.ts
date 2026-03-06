@@ -19,12 +19,15 @@ import type {
 export const V2_ORGANIZATIONS: V2Organization[] = [
   // ── Sports ──
   { org_id: 'sports_kx', org_name: 'Lincoln University', mode: 'sports', location: 'Oakland, CA', org_type: 'college_athletics' },
+  { org_id: 'sports_chs', org_name: 'Cathedral HS', mode: 'sports', location: 'Los Angeles, CA', org_type: 'high_school' },
+  { org_id: 'sports_gsac', org_name: 'GSAC', mode: 'sports', location: 'Costa Mesa, CA', org_type: 'conference' },
 
   // ── Business ──
   { org_id: 'biz_kx', org_name: 'KaNeXT', mode: 'business', location: 'Atlanta, GA', org_type: 'platform', view_variant: 'Founder' },
 
   // ── Church ──
   { org_id: 'church_kx', org_name: 'ICC', mode: 'church', location: 'Los Angeles, CA', org_type: 'faith' },
+  { org_id: 'church_grace', org_name: 'Grace Community', mode: 'church', location: 'Sun Valley, CA', org_type: 'faith' },
 
   // ── Education ──
   { org_id: 'edu_kx', org_name: 'Howard University', mode: 'education', location: 'Washington, DC', org_type: 'university' },
@@ -43,8 +46,24 @@ export const V2_MEMBERSHIPS: V2Membership[] = [
     membership_id: 'mem_sports_kx',
     mode: 'sports',
     org_id: 'sports_kx',
-    role_titles: ['System Owner'],
+    role_titles: ['Head Coach', 'GM', 'Recruiting Coordinator'],
     permission_tier: 'Admin',
+    program_scopes: ['*'],
+  },
+  {
+    membership_id: 'mem_sports_chs',
+    mode: 'sports',
+    org_id: 'sports_chs',
+    role_titles: ['Parent'],
+    permission_tier: 'View',
+    program_scopes: ['*'],
+  },
+  {
+    membership_id: 'mem_sports_gsac',
+    mode: 'sports',
+    org_id: 'sports_gsac',
+    role_titles: ['Conference Admin'],
+    permission_tier: 'Full',
     program_scopes: ['*'],
   },
 
@@ -63,8 +82,16 @@ export const V2_MEMBERSHIPS: V2Membership[] = [
     membership_id: 'mem_church_kx',
     mode: 'church',
     org_id: 'church_kx',
-    role_titles: ['System Owner'],
+    role_titles: ['Ministry Leader'],
     permission_tier: 'Admin',
+    program_scopes: ['*'],
+  },
+  {
+    membership_id: 'mem_church_grace',
+    mode: 'church',
+    org_id: 'church_grace',
+    role_titles: ['Member'],
+    permission_tier: 'View',
     program_scopes: ['*'],
   },
 
@@ -97,11 +124,20 @@ export const V2_PROGRAMS: V2Program[] = [
   // ── Lincoln University Oaklanders ──
   { program_id: 'kx_mbb', org_id: 'sports_kx', mode: 'sports', program_name: "Men's Basketball", program_type: 'Varsity', source_tag: 'KX_OFFICIAL', status: 'Active' },
 
+  // ── Cathedral HS ──
+  { program_id: 'chs_bball', org_id: 'sports_chs', mode: 'sports', program_name: 'Boys Basketball', program_type: 'Varsity', source_tag: 'OFFICIAL', status: 'Active' },
+
+  // ── GSAC ──
+  { program_id: 'gsac_conf', org_id: 'sports_gsac', mode: 'sports', program_name: 'Conference Operations', program_type: 'Conference', source_tag: 'OFFICIAL', status: 'Active' },
+
   // ── KaNeXT ──
   { program_id: 'biz_kx_ops', org_id: 'biz_kx', mode: 'business', program_name: 'KaNeXT Operations', program_type: 'Platform', source_tag: 'OFFICIAL', status: 'Active' },
 
   // ── ICC ──
   { program_id: 'church_kx_main', org_id: 'church_kx', mode: 'church', program_name: 'Sunday Worship', program_type: 'Campus', source_tag: 'OFFICIAL', status: 'Active' },
+
+  // ── Grace Community ──
+  { program_id: 'church_grace_main', org_id: 'church_grace', mode: 'church', program_name: 'Main Campus', program_type: 'Campus', source_tag: 'OFFICIAL', status: 'Active' },
 
   // ── Howard University (4 programs) ──
   { program_id: 'edu_kx_main', org_id: 'edu_kx', mode: 'education', program_name: 'Academic Programs', program_type: 'Institution', source_tag: 'OFFICIAL', status: 'Active' },
@@ -123,11 +159,20 @@ export const V2_SEASONS: V2Season[] = [
   // Lincoln University
   { season_id: 'kx_2025_26', org_id: 'sports_kx', mode: 'sports', season_name: '2025\u201326', start_date: '2025-10-01', end_date: '2026-04-01', is_current: true },
 
+  // Cathedral HS
+  { season_id: 'chs_2025_26', org_id: 'sports_chs', mode: 'sports', season_name: '2025\u201326', start_date: '2025-11-01', end_date: '2026-03-15', is_current: true },
+
+  // GSAC
+  { season_id: 'gsac_2025_26', org_id: 'sports_gsac', mode: 'sports', season_name: '2025\u201326', start_date: '2025-10-01', end_date: '2026-04-01', is_current: true },
+
   // KaNeXT
   { season_id: 'biz_kx_fy2026', org_id: 'biz_kx', mode: 'business', season_name: 'FY 2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
 
   // ICC
   { season_id: 'church_kx_2026', org_id: 'church_kx', mode: 'church', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
+
+  // Grace Community
+  { season_id: 'church_grace_2026', org_id: 'church_grace', mode: 'church', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
 
   // Howard University
   { season_id: 'edu_kx_2025_26', org_id: 'edu_kx', mode: 'education', season_name: '2025\u201326 Academic Year', start_date: '2025-08-18', end_date: '2026-05-10', is_current: true },

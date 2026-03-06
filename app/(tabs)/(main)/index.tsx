@@ -6,19 +6,17 @@
  */
 
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, useWindowDimensions, PanResponder } from 'react-native';
+import { View, StyleSheet, useWindowDimensions, PanResponder } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { VisualArea } from '@/components/home/visual-area';
 import { IconGrid } from '@/components/home/icon-grid';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useMode } from '@/context/app-context';
-import { nextVideoPage, prevVideoPage } from '@/utils/global-video-pager';
+import { nextVideoPage, prevVideoPage, getVideoPage } from '@/utils/global-video-pager';
+import { openSettingsPanel } from '@/utils/global-settings-panel';
 
 export default function HomeScreen() {
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const mode = useMode();
 
   // Horizontal swipe → page through videos
   const panResponder = useMemo(
@@ -33,26 +31,17 @@ export default function HomeScreen() {
             // Swipe left → next video
             nextVideoPage();
           } else if (gs.dx > 60) {
-            // Swipe right → previous video
-            prevVideoPage();
+            // Swipe right → previous video, or open drawer at page 1
+            if (getVideoPage() === 0) {
+              openSettingsPanel();
+            } else {
+              prevVideoPage();
+            }
           }
         },
       }),
     [],
   );
-
-  // Non-Sports modes: full-screen Coming Soon
-  if (mode !== 'sports') {
-    return (
-      <View style={[styles.container, styles.comingSoonContainer, { paddingTop: insets.top }]}>
-        <View style={styles.comingSoonCircle}>
-          <IconSymbol name="sparkles" size={36} color="#A1A1AA" />
-        </View>
-        <Text style={styles.comingSoonTitle}>Coming Soon</Text>
-        <Text style={styles.comingSoonSub}>This mode is not yet available.</Text>
-      </View>
-    );
-  }
 
   // Usable height = screen minus status bar minus bottom safe area (no tab bar)
   const usableHeight = height - insets.top - insets.bottom;
@@ -80,28 +69,5 @@ const styles = StyleSheet.create({
   gridWrapper: {
     flex: 1,
     justifyContent: 'flex-start',
-  },
-  comingSoonContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  comingSoonCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: '#0B0F14',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
-  comingSoonTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    marginBottom: 6,
-  },
-  comingSoonSub: {
-    fontSize: 15,
-    color: '#52525B',
   },
 });
