@@ -1,8 +1,8 @@
 /**
- * Home icon grid — 4 rows (11 icons + 1 center gap for semi-circle).
+ * Home icon grid — 3×3 (9 icons).
  * All icons visible to ALL roles. No RBAC gating on visibility.
  * 3 columns always. Deep navy rounded-square backgrounds with white glyphs.
- * Row 4 has a null center cell where the Nexus semi-circle sits.
+ * Wallet and Profile moved to universal footer bar.
  * Tap → scale 1.05 lift + soft glow, 150ms.
  */
 
@@ -24,7 +24,7 @@ const C = {
   tileBg: '#0B1220',
 };
 
-const ROWS: (GridIcon | null)[][] = [
+const ROWS: GridIcon[][] = [
   [
     { id: 'messages',   icon: 'bubble.left.and.bubble.right', label: 'Messages',   route: '/messages' },
     { id: 'season',     icon: 'calendar',                     label: 'Season',     route: '/section?title=Season' },
@@ -37,13 +37,8 @@ const ROWS: (GridIcon | null)[][] = [
   ],
   [
     { id: 'store',      icon: 'bag.fill',                     label: 'Store',      route: '/section?title=Store' },
-    { id: 'wallet',     icon: 'creditcard.fill',              label: 'Wallet',     route: '/section?title=Wallet' },
-    { id: 'program',    icon: 'building.2.fill',              label: 'Program',    route: '/section?title=Program' },
-  ],
-  [
     { id: 'gm',         icon: 'gamecontroller.fill',          label: 'GM',         route: '/section?title=GM' },
-    null,
-    { id: 'profile',    icon: 'person.circle',                label: 'Profile',    route: '/section?title=Profile' },
+    { id: 'program',    icon: 'building.2.fill',              label: 'Program',    route: '/section?title=Program' },
   ],
 ];
 
@@ -135,20 +130,15 @@ export function IconGrid() {
     <View style={styles.container}>
       {ROWS.map((row, rowIndex) => (
         <View key={rowIndex} style={styles.row}>
-          {row.map((item, colIndex) => {
-            if (item === null) {
-              return <View key={`gap-${colIndex}`} style={{ width: cellWidth }} />;
-            }
-            return (
-              <GridTile
-                key={item.id}
-                item={item}
-                cellWidth={cellWidth}
-                accent={accent}
-                onPress={handlePress}
-              />
-            );
-          })}
+          {row.map((item) => (
+            <GridTile
+              key={item.id}
+              item={item}
+              cellWidth={cellWidth}
+              accent={accent}
+              onPress={handlePress}
+            />
+          ))}
         </View>
       ))}
     </View>

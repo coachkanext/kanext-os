@@ -1,5 +1,3 @@
-import { useColorScheme as useRNColorScheme } from 'react-native';
-
-export function useColorScheme() {
-  return useRNColorScheme() ?? 'dark';
+export function useColorScheme(): 'dark' {
+  return 'dark';
 }

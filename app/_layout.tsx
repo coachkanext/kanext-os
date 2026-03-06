@@ -26,7 +26,7 @@ import { SplashScreen } from '@/components/splash-screen';
 import { AuthModal } from '@/components/auth/auth-modal';
 import { SearchOverlay } from '@/components/nexus/search-overlay';
 import { ModeSwitcherOverlay } from '@/components/mode-switcher-overlay';
-import { NexusSemiCircle } from '@/components/nexus-semi-circle';
+import { UniversalFooter } from '@/components/universal-footer';
 import { MultitaskingOverlay } from '@/components/multitasking-overlay';
 import { KXTransition } from '@/components/kx-transition';
 import { AppProvider } from '@/context/app-context';
@@ -174,13 +174,15 @@ function AppShell() {
   // Normal navigation with tabs — edge-to-edge, no header
   return (
     <View style={styles.container}>
-      <Stack screenOptions={{ headerShown: false, animation: 'none' }}>
+      <Stack screenOptions={{ headerShown: false, animation: 'none', contentStyle: { backgroundColor: '#000000' } }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="coach" />
         <Stack.Screen name="login" />
+        <Stack.Screen name="nexus" options={{ animation: 'slide_from_right', gestureEnabled: true, fullScreenGestureEnabled: true }} />
+        <Stack.Screen name="wallet" options={{ animation: 'slide_from_right', gestureEnabled: true, fullScreenGestureEnabled: true, contentStyle: { backgroundColor: '#000000' } }} />
         <Stack.Screen name="video" />
         <Stack.Screen name="settings" />
-        <Stack.Screen name="profile" />
+        <Stack.Screen name="profile" options={{ animation: 'slide_from_right', gestureEnabled: true, fullScreenGestureEnabled: true, contentStyle: { backgroundColor: '#000000' } }} />
         {/* section and messages are inside (tabs)/(home) Stack — tab bar stays visible */}
         <Stack.Screen
           name="modal"
@@ -236,34 +238,13 @@ function AppShell() {
         data={leaderCardData}
       />
 
-      {/* Universal Finder — triggered from Nexus tab double-tap */}
       <UniversalFinder />
-
-      {/* Split Nexus — triggered from Nexus tab double-tap */}
-      <SplitNexusOverlay
-        visible={splitNexusVisible}
-        onClose={() => setSplitNexusVisible(false)}
-      />
-
-      {/* Search Overlay — triggered from Nexus tab long-press */}
-      <SearchOverlay
-        visible={searchOverlayVisible}
-        onClose={() => setSearchOverlayVisible(false)}
-      />
-
-      {/* Nexus Semi-Circle — persistent bottom-center navigation anchor */}
-      <NexusSemiCircle />
-
-      {/* Multitasking Overlay — swipe-up from semi-circle */}
+      <SplitNexusOverlay visible={splitNexusVisible} onClose={() => setSplitNexusVisible(false)} />
+      <SearchOverlay visible={searchOverlayVisible} onClose={() => setSearchOverlayVisible(false)} />
+      <UniversalFooter />
       <MultitaskingOverlay />
-
-      {/* Mode Switcher — swipe-down from semi-circle */}
       <ModeSwitcherOverlay />
-
-      {/* KX Micro-Transition — brief branded flash on tab switches */}
       <KXTransition />
-
-      {/* Auth Modal — blocks interaction until authenticated */}
       <AuthModal visible={showAuthModal} />
     </View>
   );

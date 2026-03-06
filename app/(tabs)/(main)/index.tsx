@@ -65,6 +65,8 @@ export default function HomeScreen() {
       </View>
       <View style={styles.gridWrapper}>
         <IconGrid />
+        {/* Space for the universal footer bar (49px + divider) */}
+        <View style={{ height: 50 }} />
       </View>
     </View>
   );

@@ -1,9 +1,9 @@
 /**
- * KaNeXT OS — Tab-less Navigation
+ * KaNeXT OS — Tab Navigation
  *
  * Tabs navigator is kept for state preservation (Nexus conversation, etc.)
  * but the tab bar is completely hidden. Navigation is handled by the
- * Nexus semi-circle component rendered in the root layout.
+ * universal footer bar rendered in the root layout.
  */
 
 import { Tabs, useRouter } from 'expo-router';
@@ -33,7 +33,9 @@ export default function TabLayout() {
       screenListeners={{
         focus: (e) => {
           const route = e.target?.split('-')[0];
-          if (route) setCurrentTab(route);
+          if (route) {
+            setCurrentTab(route);
+          }
         },
       }}
       screenOptions={{
@@ -42,10 +44,8 @@ export default function TabLayout() {
         headerShown: false,
       }}
     >
-      {/* Primary tabs — navigated via semi-circle */}
+      {/* Primary tab — home */}
       <Tabs.Screen name="(main)" options={{ title: 'Home' }} />
-      <Tabs.Screen name="nexus" options={{ title: 'Nexus' }} />
-      <Tabs.Screen name="wallet" options={{ title: 'Wallet' }} />
 
       {/* Hidden tabs — preserved but not visible */}
       <Tabs.Screen name="media" options={{ href: null }} />

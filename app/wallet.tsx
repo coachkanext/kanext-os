@@ -3,13 +3,13 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
-export default function ProfileScreen() {
+export default function WalletScreen() {
   const insets = useSafeAreaInsets();
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.body}>
-        <IconSymbol name="person.circle" size={36} color="#52525B" />
-        <Text style={styles.title}>Profile</Text>
+        <IconSymbol name="creditcard.fill" size={36} color="#52525B" />
+        <Text style={styles.title}>Wallet</Text>
         <Text style={styles.sub}>Coming Soon</Text>
       </View>
     </View>
