@@ -1,0 +1,8 @@
+225|Brown Bears
+171|Columbia Lions
+172|Cornell Big Red
+159|Dartmouth Big Green
+108|Harvard Crimson
+219|Pennsylvania Quakers
+163|Princeton Tigers
+43|Yale Bulldogs

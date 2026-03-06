@@ -1,0 +1,16 @@
+9|Arizona State Sun Devils
+12|Arizona Wildcats
+252|BYU Cougars
+239|Baylor Bears
+2132|Cincinnati Bearcats
+38|Colorado Buffaloes
+248|Houston Cougars
+66|Iowa State Cyclones
+2305|Kansas Jayhawks
+2306|Kansas State Wildcats
+197|Oklahoma State Cowboys
+2628|TCU Horned Frogs
+2641|Texas Tech Red Raiders
+2116|UCF Knights
+254|Utah Utes
+277|West Virginia Mountaineers

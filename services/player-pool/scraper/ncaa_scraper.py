@@ -257,6 +257,16 @@ def _safe_float(s: str) -> float:
         return 0.0
 
 
+def _parse_height(s: str) -> int | None:
+    """Parse height string like '6-7', '6'7\"', '6-07' → inches (79). Returns None on failure."""
+    if not s:
+        return None
+    m = re.match(r"(\d+)['\-](\d+)", s.strip())
+    if m:
+        return int(m.group(1)) * 12 + int(m.group(2))
+    return None
+
+
 def _parse_minutes(s: str) -> float:
     """Parse minutes string like '1031:54' (total) or '39:41' (per game) to decimal."""
     s = s.strip()
@@ -726,8 +736,12 @@ def load_player_stats(conn, merged_stats: dict[str, dict],
         team_season_id = team_info["team_season_id"]
         positions = _normalize_position(record.get("position", ""))
 
+        # Parse height (e.g. "6-7" or "6'7" → 79 inches)
+        height_inches = _parse_height(record.get("height", ""))
+
         # Upsert player
-        player_id = db.upsert_player(conn, full_name, positions=positions or None)
+        player_id = db.upsert_player(conn, full_name, positions=positions or None,
+                                     height_inches=height_inches)
 
         # Upsert player_team_season (roster entry)
         pts_id = db.upsert_player_team_season(

@@ -71,7 +71,7 @@ export interface FastAction {
 export const FAST_ACTIONS: Record<string, FastAction[]> = {
   // ── Sports ──
   mem_sports_kx: [
-    { icon: 'sparkles', label: 'Open Nexus', route: '/(tabs)/nexus' },
+    { icon: 'sparkles', label: 'Open Nexus', route: '/nexus' },
     { icon: 'person.3.fill', label: 'Roster', route: '/coach/roster' },
     { icon: 'sportscourt.fill', label: 'Schedule', route: '/(tabs)' },
     { icon: 'person.badge.plus', label: 'Recruiting', route: '/coach/recruiting' },
@@ -79,7 +79,7 @@ export const FAST_ACTIONS: Record<string, FastAction[]> = {
 
   // ── Business ──
   mem_biz_kx: [
-    { icon: 'sparkles', label: 'Open Nexus', route: '/(tabs)/nexus' },
+    { icon: 'sparkles', label: 'Open Nexus', route: '/nexus' },
     { icon: 'chart.bar.fill', label: 'Dashboard', route: '/(tabs)' },
     { icon: 'doc.fill', label: 'Documents', route: '/(tabs)/media' },
     { icon: 'dollarsign.circle.fill', label: 'Finance', route: '/(tabs)/organization' },
@@ -87,7 +87,7 @@ export const FAST_ACTIONS: Record<string, FastAction[]> = {
 
   // ── Church ──
   mem_church_kx: [
-    { icon: 'sparkles', label: 'Open Nexus', route: '/(tabs)/nexus' },
+    { icon: 'sparkles', label: 'Open Nexus', route: '/nexus' },
     { icon: 'calendar', label: 'Schedule', route: '/(tabs)' },
     { icon: 'person.3.fill', label: 'Members', route: '/(tabs)' },
     { icon: 'dollarsign.circle.fill', label: 'Finance', route: '/(tabs)/organization' },
@@ -95,7 +95,7 @@ export const FAST_ACTIONS: Record<string, FastAction[]> = {
 
   // ── Education ──
   mem_edu_kx: [
-    { icon: 'sparkles', label: 'Open Nexus', route: '/(tabs)/nexus' },
+    { icon: 'sparkles', label: 'Open Nexus', route: '/nexus' },
     { icon: 'person.3.fill', label: 'Students', route: '/(tabs)' },
     { icon: 'doc.fill', label: 'Reports', route: '/(tabs)/organization' },
     { icon: 'calendar', label: 'Schedule', route: '/(tabs)' },
@@ -103,7 +103,7 @@ export const FAST_ACTIONS: Record<string, FastAction[]> = {
 
   // ── Competition ──
   mem_comp_kx: [
-    { icon: 'sparkles', label: 'Open Nexus', route: '/(tabs)/nexus' },
+    { icon: 'sparkles', label: 'Open Nexus', route: '/nexus' },
     { icon: 'calendar', label: 'Race Cal', route: '/(tabs)' },
     { icon: 'person.3.fill', label: 'Teams', route: '/(tabs)' },
     { icon: 'chart.bar.fill', label: 'Standings', route: '/(tabs)' },

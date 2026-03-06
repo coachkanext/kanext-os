@@ -1,0 +1,20 @@
+anokaramseycommunitycollege|Anoka-Ramsey CC
+atlanticcapecommunitycollege|Atlantic Cape CC
+bergencommunitycollege|Bergen CC
+boroughofmanhattancommunitycollege|Borough of Manhattan CC
+bristolcommunitycollege|Bristol CC
+bronxcommunitycollege|Bronx CC
+brookdalecommunitycollege|Brookdale CC
+bunkerhillcommunitycollege|Bunker Hill CC
+butlercountycommunitycollegepa|Butler County CC - PA
+camdencountycollege|Camden County College
+campcommunitycollege|Camp CC
+cayugacommunitycollege|Cayuga CC
+ccofalleghenycounty|CC of Allegheny County
+centrallakescollegebrainerd|Central Lakes College-Brainerd
+clintoncommunitycollegeny|Clinton CC-NY
+columbiagreenecommunitycollege|Columbia-Greene CC
+communitycollegeofphiladelphia|CC of Philadelphia
+communitycollegeofrhodeisland|CC of Rhode Island
+corningcommunitycollege|Corning CC
+dallascollegebrookhaven|Dallas College Brookhaven

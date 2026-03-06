@@ -18,7 +18,7 @@ import { requestHomeReset } from '@/utils/global-home';
 const FOOTER_TABS: { name: string; icon: SymbolViewProps['name']; route: string }[] = [
   { name: 'Home', icon: 'house.fill', route: '/(tabs)' },
   { name: 'Media', icon: 'play.rectangle.fill', route: '/(tabs)/media' },
-  { name: 'Nexus', icon: 'sparkles', route: '/(tabs)/nexus' },
+  { name: 'Nexus', icon: 'sparkles', route: '/nexus' },
   { name: 'Activity', icon: 'bell.fill', route: '/(tabs)/activity' },
   { name: 'Organization', icon: 'building.2.fill', route: '/(tabs)/organization' },
 ];
@@ -61,7 +61,13 @@ export function TabFooter({ activeTab = 'Home' }: TabFooterProps) {
               if (router.canDismiss()) {
                 router.dismissAll();
               }
-              setTimeout(() => router.navigate(tab.route as any), 50);
+              setTimeout(() => {
+                if (tab.route === '/nexus') {
+                  router.push(tab.route as any);
+                } else {
+                  router.navigate(tab.route as any);
+                }
+              }, 50);
             }}
           >
             <IconSymbol

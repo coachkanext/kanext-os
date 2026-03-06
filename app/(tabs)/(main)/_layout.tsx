@@ -18,7 +18,7 @@ export default function HomeLayout() {
         contentStyle: { backgroundColor: '#000000' },
       }}
     >
-      <Stack.Screen name="index" options={{ gestureEnabled: false }} />
+      <Stack.Screen name="index" options={{ gestureEnabled: false, fullScreenGestureEnabled: false }} />
       <Stack.Screen name="messages/index" />
       <Stack.Screen name="messages/[threadId]" />
     </Stack>

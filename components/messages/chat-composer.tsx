@@ -1,98 +1,90 @@
 /**
- * Chat Composer — In-thread input bar with quick actions (Clip/Poll/Share Game).
+ * Chat Composer — iOS Messages-style input bar.
+ * + button, capsule text field, send button.
  */
 
 import React from 'react';
-import { View, StyleSheet, Pressable, TextInput } from 'react-native';
+import { View, TextInput, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Spacing, BorderRadius } from '@/constants/theme';
 
 interface ChatComposerProps {
   value: string;
   onChangeText: (text: string) => void;
   onSend: () => void;
+  accent?: string;
 }
 
-export function ChatComposer({ value, onChangeText, onSend }: ChatComposerProps) {
+export function ChatComposer({
+  value,
+  onChangeText,
+  onSend,
+  accent = '#0A84FF',
+}: ChatComposerProps) {
+  const hasText = value.trim().length > 0;
+
   const handleSend = () => {
-    if (!value.trim()) return;
+    if (!hasText) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onSend();
   };
 
-  const handleQuickAction = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-  };
-
   return (
-    <View style={styles.container}>
-      {/* Quick actions */}
-      <View style={styles.quickActions}>
-        <Pressable style={styles.quickBtn} onPress={handleQuickAction}>
-          <IconSymbol name="play.rectangle.fill" size={18} color="#555" />
-        </Pressable>
-        <Pressable style={styles.quickBtn} onPress={handleQuickAction}>
-          <IconSymbol name="chart.bar.fill" size={18} color="#555" />
-        </Pressable>
-        <Pressable style={styles.quickBtn} onPress={handleQuickAction}>
-          <IconSymbol name="sportscourt.fill" size={18} color="#555" />
-        </Pressable>
-      </View>
+    <View style={styles.bar}>
+      <Pressable style={styles.addBtn}>
+        <IconSymbol name="plus.circle.fill" size={30} color="#8E8E93" />
+      </Pressable>
 
-      {/* Input row */}
-      <View style={styles.inputRow}>
+      <View style={styles.inputWrap}>
         <TextInput
           style={styles.input}
-          placeholder="Type a message..."
-          placeholderTextColor="#555"
+          placeholder="Message"
+          placeholderTextColor="#8E8E93"
           value={value}
           onChangeText={onChangeText}
+          multiline
         />
-        <Pressable
-          style={({ pressed }) => [styles.sendBtn, { opacity: pressed ? 0.7 : 1 }]}
-          onPress={handleSend}
-        >
-          <IconSymbol
-            name="arrow.up.circle.fill"
-            size={28}
-            color={value.trim() ? '#FFFFFF' : '#333'}
-          />
-        </Pressable>
       </View>
+
+      {hasText && (
+        <Pressable onPress={handleSend} style={styles.sendBtn}>
+          <IconSymbol name="arrow.up.circle.fill" size={30} color={accent} />
+        </Pressable>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: Spacing.sm,
-  },
-  quickActions: {
+  bar: {
     flexDirection: 'row',
-    gap: 12,
-    marginBottom: 6,
+    alignItems: 'flex-end',
+    gap: 6,
+    paddingVertical: 6,
   },
-  quickBtn: {
-    padding: 4,
+  addBtn: {
+    paddingBottom: 2,
   },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#111',
-    borderRadius: BorderRadius.lg,
+  inputWrap: {
+    flex: 1,
+    backgroundColor: '#1C1C1E',
+    borderRadius: 20,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#38383A',
     paddingHorizontal: 14,
     paddingVertical: 6,
-    gap: 8,
+    minHeight: 36,
+    justifyContent: 'center',
   },
   input: {
-    flex: 1,
-    fontSize: 15,
+    fontSize: 16,
     color: '#FFFFFF',
-    paddingVertical: 4,
+    lineHeight: 20,
+    maxHeight: 100,
+    paddingVertical: 2,
   },
   sendBtn: {
-    padding: 2,
+    paddingBottom: 2,
   },
 });

@@ -1,0 +1,20 @@
+allencountycommunitycollege|Allen County CC
+alpenacommunitycollege|Alpena CC
+annearundelcommunitycollege|Anne Arundel CC
+arkansasstatemidsouth|Arkansas State Mid-South
+arkansasstatenewport|Arkansas State-Newport
+baycollege|Bay College
+bevillstatecommunitycollege|Bevill State CC
+blackhawkcollege|Black Hawk College
+blackhawktechnicalcollege|Blackhawk Technical College
+bryantstrattonohio|Bryant & Stratton (Ohio)
+bryantstrattoncollegeva|Bryant & Stratton College (VA)
+bryantandstrattoncollegewi|Bryant and Stratton College (WI)
+carlsandburgcollege|Carl Sandburg College
+catawbavalleycommunitycollege|Catawba Valley CC
+ccbccatonsville|CCBC Catonsville
+ccbcdundalk|CCBC Dundalk
+cecilcollege|Cecil College
+centralcarolinacommunitycollege|Central Carolina CC
+centralcommunitycollege|Central CC
+chandlergilbertcommunitycollege|Chandler-Gilbert CC

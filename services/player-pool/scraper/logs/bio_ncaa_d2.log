@@ -1,0 +1,569 @@
+11:54:10 [INFO] NCAA bio scrape: 186/298 teams need bio data for ncaa_d2
+11:54:10 [INFO] [1/186] Emporia St. (#610558)
+11:54:10 [INFO] Creating new curl_cffi session...
+11:54:14 [INFO] Got Akamai challenge, solving...
+11:54:14 [INFO] Akamai challenge solved
+11:54:17 [INFO]   Parsed: 15 players
+11:54:17 [INFO]   Matched: 15, Ht: +11, Wt: +0, Yr: +13, Town: +13, HS: +13, Prev: +0, Unmatched: 0
+11:54:17 [INFO] [2/186] Erskine (#610559)
+11:54:21 [INFO]   Parsed: 23 players
+11:54:21 [INFO]   Matched: 15, Ht: +1, Wt: +0, Yr: +13, Town: +9, HS: +9, Prev: +0, Unmatched: 8
+11:54:21 [INFO] [3/186] Fairmont St. (#609915)
+11:54:27 [INFO]   Parsed: 20 players
+11:54:27 [INFO]   Matched: 19, Ht: +11, Wt: +0, Yr: +12, Town: +17, HS: +19, Prev: +0, Unmatched: 1
+11:54:27 [INFO] [4/186] Fayetteville St. (#610293)
+11:54:31 [INFO]   Parsed: 16 players
+11:54:31 [INFO]   Matched: 15, Ht: +8, Wt: +0, Yr: +8, Town: +14, HS: +14, Prev: +0, Unmatched: 1
+11:54:31 [INFO] [5/186] Felician (#610044)
+11:54:36 [INFO]   Parsed: 18 players
+11:54:36 [INFO]   Matched: 15, Ht: +11, Wt: +0, Yr: +11, Town: +15, HS: +11, Prev: +0, Unmatched: 3
+11:54:36 [INFO] [6/186] Ferris St. (#610583)
+11:54:40 [INFO]   Parsed: 17 players
+11:54:40 [INFO]   Matched: 12, Ht: +9, Wt: +0, Yr: +9, Town: +12, HS: +11, Prev: +0, Unmatched: 5
+11:54:40 [INFO] [7/186] Ferrum (#611488)
+11:54:44 [INFO]   Parsed: 15 players
+11:54:44 [INFO]   Matched: 11, Ht: +1, Wt: +0, Yr: +7, Town: +3, HS: +3, Prev: +0, Unmatched: 4
+11:54:44 [INFO] [8/186] Findlay (#609917)
+11:54:48 [INFO]   Parsed: 18 players
+11:54:48 [INFO]   Matched: 14, Ht: +12, Wt: +0, Yr: +13, Town: +13, HS: +14, Prev: +0, Unmatched: 4
+11:54:48 [INFO] [9/186] Fla. Southern (#610301)
+11:54:52 [INFO]   Parsed: 16 players
+11:54:52 [INFO]   Matched: 14, Ht: +8, Wt: +0, Yr: +8, Town: +14, HS: +13, Prev: +0, Unmatched: 2
+11:54:52 [INFO] [10/186] Flagler (#610075)
+11:54:57 [INFO]   Parsed: 15 players
+11:54:57 [INFO]   Matched: 10, Ht: +9, Wt: +0, Yr: +10, Town: +9, HS: +9, Prev: +0, Unmatched: 5
+11:54:57 [INFO] [11/186] Florida Tech (#610296)
+11:55:01 [INFO]   Parsed: 15 players
+11:55:01 [INFO]   Matched: 14, Ht: +10, Wt: +0, Yr: +10, Town: +14, HS: +14, Prev: +0, Unmatched: 1
+11:55:01 [INFO] [12/186] Fort Hays St. (#609998)
+11:55:05 [INFO]   Parsed: 14 players
+11:55:05 [INFO]   Matched: 14, Ht: +9, Wt: +0, Yr: +11, Town: +12, HS: +13, Prev: +0, Unmatched: 0
+11:55:05 [INFO] [13/186] Fort Lewis (#610568)
+11:55:09 [INFO]   Parsed: 17 players
+11:55:09 [INFO]   Matched: 14, Ht: +9, Wt: +0, Yr: +9, Town: +14, HS: +14, Prev: +0, Unmatched: 3
+11:55:09 [INFO] [14/186] Fort Valley St. (#610304)
+11:55:14 [INFO]   Parsed: 15 players
+11:55:14 [INFO]   Matched: 12, Ht: +6, Wt: +0, Yr: +7, Town: +11, HS: +12, Prev: +0, Unmatched: 3
+11:55:14 [INFO] [15/186] Francis Marion (#609919)
+11:55:18 [INFO]   Parsed: 18 players
+11:55:18 [INFO]   Matched: 14, Ht: +9, Wt: +0, Yr: +9, Town: +14, HS: +14, Prev: +0, Unmatched: 4
+11:55:18 [INFO] [16/186] Franklin Pierce (#610306)
+11:55:22 [INFO]   Parsed: 20 players
+11:55:22 [INFO]   Matched: 19, Ht: +17, Wt: +0, Yr: +17, Town: +18, HS: +14, Prev: +0, Unmatched: 1
+11:55:22 [INFO] [17/186] Fresno Pacific (#610115)
+11:55:26 [INFO]   Parsed: 20 players
+11:55:26 [INFO]   Matched: 14, Ht: +10, Wt: +0, Yr: +11, Town: +13, HS: +14, Prev: +0, Unmatched: 6
+11:55:26 [INFO] [18/186] Frostburg St. (#610522)
+11:55:31 [INFO]   Parsed: 20 players
+11:55:31 [INFO]   Matched: 16, Ht: +8, Wt: +0, Yr: +12, Town: +16, HS: +15, Prev: +0, Unmatched: 4
+11:55:31 [INFO] [19/186] Gannon (#610584)
+11:55:35 [INFO]   Parsed: 14 players
+11:55:35 [INFO]   Matched: 14, Ht: +7, Wt: +0, Yr: +8, Town: +14, HS: +14, Prev: +0, Unmatched: 0
+11:55:35 [INFO] [20/186] Georgia College (#609921)
+11:55:39 [INFO]   Parsed: 17 players
+11:55:39 [INFO]   Matched: 16, Ht: +13, Wt: +0, Yr: +13, Town: +15, HS: +15, Prev: +0, Unmatched: 1
+11:55:39 [INFO] [21/186] Georgian Court (#609996)
+11:55:43 [INFO]   Parsed: 24 players
+11:55:43 [INFO]   Matched: 17, Ht: +13, Wt: +0, Yr: +13, Town: +17, HS: +17, Prev: +0, Unmatched: 7
+11:55:43 [INFO] [22/186] Grand Valley St. (#610310)
+11:55:47 [INFO]   Parsed: 17 players
+11:55:47 [INFO]   Matched: 17, Ht: +13, Wt: +0, Yr: +13, Town: +17, HS: +17, Prev: +0, Unmatched: 0
+11:55:47 [INFO] [23/186] Harding (#609927)
+11:55:51 [INFO]   Parsed: 18 players
+11:55:51 [INFO]   Matched: 16, Ht: +13, Wt: +0, Yr: +13, Town: +16, HS: +16, Prev: +0, Unmatched: 2
+11:55:51 [INFO] [24/186] Hawaii Hilo (#609964)
+11:55:56 [INFO]   Parsed: 14 players
+11:55:56 [INFO]   Matched: 14, Ht: +11, Wt: +0, Yr: +11, Town: +13, HS: +13, Prev: +0, Unmatched: 0
+11:55:56 [INFO] [25/186] Hawaii Pacific (#609961)
+11:56:00 [INFO]   Parsed: 17 players
+11:56:00 [INFO]   Matched: 12, Ht: +5, Wt: +0, Yr: +7, Town: +12, HS: +7, Prev: +0, Unmatched: 5
+11:56:00 [INFO] [26/186] Henderson St. (#609929)
+11:56:04 [INFO]   Parsed: 17 players
+11:56:04 [INFO]   Matched: 15, Ht: +12, Wt: +0, Yr: +12, Town: +15, HS: +13, Prev: +0, Unmatched: 2
+11:56:04 [INFO] [27/186] Hillsdale (#610313)
+11:56:08 [INFO]   Parsed: 15 players
+11:56:08 [INFO]   Matched: 14, Ht: +11, Wt: +0, Yr: +12, Town: +13, HS: +13, Prev: +0, Unmatched: 1
+11:56:08 [INFO] [28/186] Holy Family (#609932)
+11:56:12 [INFO]   Parsed: 20 players
+11:56:12 [INFO]   Matched: 11, Ht: +8, Wt: +0, Yr: +8, Town: +11, HS: +11, Prev: +0, Unmatched: 9
+11:56:12 [INFO] [29/186] Ill. Springfield (#610057)
+11:56:16 [INFO]   Parsed: 15 players
+11:56:16 [INFO]   Matched: 14, Ht: +11, Wt: +0, Yr: +11, Town: +14, HS: +14, Prev: +0, Unmatched: 1
+11:56:16 [INFO] [30/186] Indiana (PA) (#610319)
+11:56:20 [INFO]   Parsed: 14 players
+11:56:20 [INFO]   Matched: 13, Ht: +9, Wt: +0, Yr: +9, Town: +11, HS: +10, Prev: +0, Unmatched: 1
+11:56:20 [INFO] [31/186] Jamestown (#609913)
+11:56:24 [INFO]   Parsed: 18 players
+11:56:24 [INFO]   Matched: 0, Ht: +0, Wt: +0, Yr: +0, Town: +0, HS: +0, Prev: +0, Unmatched: 0
+11:56:24 [INFO] [32/186] Jefferson (#610598)
+11:56:28 [INFO]   Parsed: 21 players
+11:56:28 [INFO]   Matched: 16, Ht: +15, Wt: +0, Yr: +15, Town: +16, HS: +16, Prev: +0, Unmatched: 5
+11:56:28 [INFO] [33/186] Johnson C. Smith (#610327)
+11:56:32 [INFO]   Parsed: 16 players
+11:56:32 [INFO]   Matched: 13, Ht: +10, Wt: +0, Yr: +10, Town: +13, HS: +12, Prev: +0, Unmatched: 3
+11:56:32 [INFO] [34/186] Kentucky St. (#610330)
+11:56:36 [INFO]   Parsed: 15 players
+11:56:36 [INFO]   Matched: 8, Ht: +5, Wt: +0, Yr: +5, Town: +8, HS: +5, Prev: +0, Unmatched: 7
+11:56:36 [INFO] [35/186] King (TN) (#610058)
+11:56:40 [INFO]   Parsed: 17 players
+11:56:40 [INFO]   Matched: 13, Ht: +10, Wt: +0, Yr: +10, Town: +5, HS: +5, Prev: +0, Unmatched: 4
+11:56:40 [INFO] [36/186] Kutztown (#610337)
+11:56:44 [INFO]   Parsed: 14 players
+11:56:44 [INFO]   Matched: 13, Ht: +11, Wt: +0, Yr: +11, Town: +13, HS: +13, Prev: +0, Unmatched: 1
+11:56:44 [INFO] [37/186] Ky. Wesleyan (#610333)
+11:56:49 [INFO]   Parsed: 17 players
+11:56:49 [INFO]   Matched: 15, Ht: +10, Wt: +0, Yr: +11, Town: +15, HS: +14, Prev: +0, Unmatched: 2
+11:56:49 [INFO] [38/186] Lake Erie (#609970)
+11:56:53 [INFO]   Parsed: 25 players
+11:56:53 [INFO]   Matched: 13, Ht: +9, Wt: +0, Yr: +9, Town: +13, HS: +13, Prev: +0, Unmatched: 12
+11:56:53 [INFO] [39/186] Lake Superior St. (#610340)
+11:56:57 [INFO]   Parsed: 16 players
+11:56:57 [INFO]   Matched: 15, Ht: +8, Wt: +0, Yr: +10, Town: +14, HS: +15, Prev: +0, Unmatched: 1
+11:56:57 [INFO] [40/186] Lander (#609936)
+11:57:01 [INFO]   Parsed: 18 players
+11:57:01 [INFO]   Matched: 14, Ht: +9, Wt: +0, Yr: +10, Town: +13, HS: +12, Prev: +0, Unmatched: 4
+11:57:01 [INFO] [41/186] Lee (#610051)
+11:57:06 [INFO]   Parsed: 16 players
+11:57:06 [INFO]   Matched: 14, Ht: +7, Wt: +0, Yr: +9, Town: +14, HS: +14, Prev: +0, Unmatched: 2
+11:57:06 [INFO] [42/186] Lees-McRae (#610031)
+11:57:10 [INFO]   Parsed: 21 players
+11:57:10 [INFO]   Matched: 13, Ht: +10, Wt: +0, Yr: +10, Town: +13, HS: +12, Prev: +0, Unmatched: 8
+11:57:10 [INFO] [43/186] LeMoyne-Owen (#610346)
+11:57:14 [INFO]   Parsed: 17 players
+11:57:14 [INFO]   Matched: 9, Ht: +6, Wt: +0, Yr: +7, Town: +7, HS: +6, Prev: +0, Unmatched: 8
+11:57:14 [INFO] [44/186] Lewis (#610349)
+11:57:18 [INFO]   Parsed: 15 players
+11:57:18 [INFO]   Matched: 14, Ht: +10, Wt: +0, Yr: +10, Town: +14, HS: +14, Prev: +0, Unmatched: 1
+11:57:18 [INFO] [45/186] Lincoln (MO) (#610354)
+11:57:23 [INFO]   Parsed: 16 players
+11:57:23 [INFO]   Matched: 13, Ht: +8, Wt: +0, Yr: +8, Town: +13, HS: +13, Prev: +0, Unmatched: 3
+11:57:23 [INFO] [46/186] Lincoln (PA) (#610586)
+11:57:27 [INFO]   Parsed: 13 players
+11:57:27 [INFO]   Matched: 13, Ht: +10, Wt: +0, Yr: +10, Town: +13, HS: +13, Prev: +0, Unmatched: 0
+11:57:27 [INFO] [47/186] Lincoln Memorial (#609941)
+11:57:33 [INFO]   Parsed: 18 players
+11:57:33 [INFO]   Matched: 17, Ht: +11, Wt: +0, Yr: +11, Town: +16, HS: +15, Prev: +0, Unmatched: 1
+11:57:33 [INFO] [48/186] Livingstone (#610358)
+11:57:38 [INFO]   Parsed: 26 players
+11:57:38 [INFO]   Matched: 18, Ht: +9, Wt: +0, Yr: +17, Town: +11, HS: +10, Prev: +0, Unmatched: 8
+11:57:38 [INFO] [49/186] Lock Haven (#610362)
+11:57:42 [INFO]   Parsed: 16 players
+11:57:42 [INFO]   Matched: 12, Ht: +9, Wt: +0, Yr: +9, Town: +12, HS: +12, Prev: +0, Unmatched: 4
+11:57:42 [INFO] [50/186] Lubbock Christian (#610140)
+11:57:46 [INFO]   Parsed: 13 players
+11:57:46 [INFO]   Matched: 13, Ht: +9, Wt: +0, Yr: +9, Town: +13, HS: +12, Prev: +0, Unmatched: 0
+11:57:46 [INFO] [51/186] Lynn (#610040)
+11:57:50 [INFO]   Parsed: 17 players
+11:57:50 [INFO]   Matched: 16, Ht: +11, Wt: +0, Yr: +11, Town: +12, HS: +11, Prev: +0, Unmatched: 1
+11:57:50 [INFO] [52/186] Malone (#610107)
+11:57:54 [INFO]   Parsed: 17 players
+11:57:54 [INFO]   Matched: 12, Ht: +9, Wt: +0, Yr: +9, Town: +12, HS: +12, Prev: +0, Unmatched: 5
+11:57:54 [INFO] [53/186] Mansfield (#610365)
+11:57:59 [INFO]   Parsed: 14 players
+11:57:59 [INFO]   Matched: 13, Ht: +11, Wt: +0, Yr: +11, Town: +13, HS: +13, Prev: +0, Unmatched: 1
+11:57:59 [INFO] [54/186] Mary (#610068)
+11:58:04 [INFO]   Parsed: 16 players
+11:58:04 [INFO]   Matched: 13, Ht: +11, Wt: +0, Yr: +11, Town: +13, HS: +9, Prev: +0, Unmatched: 3
+11:58:04 [INFO] [55/186] Maryville (MO) (#610369)
+11:58:08 [INFO]   Parsed: 16 players
+11:58:08 [INFO]   Matched: 14, Ht: +12, Wt: +0, Yr: +12, Town: +14, HS: +14, Prev: +0, Unmatched: 2
+11:58:08 [INFO] [56/186] McKendree (#610109)
+11:58:12 [INFO]   Parsed: 15 players
+11:58:12 [INFO]   Matched: 14, Ht: +11, Wt: +0, Yr: +11, Town: +14, HS: +14, Prev: +0, Unmatched: 1
+11:58:12 [INFO] [57/186] Menlo (#610564)
+11:58:16 [INFO]   Parsed: 17 players
+11:58:16 [INFO]   Matched: 15, Ht: +15, Wt: +0, Yr: +15, Town: +15, HS: +15, Prev: +0, Unmatched: 2
+11:58:16 [INFO] [58/186] Mercy (#610372)
+11:58:21 [INFO]   Parsed: 12 players
+11:58:21 [INFO]   Matched: 12, Ht: +8, Wt: +0, Yr: +8, Town: +12, HS: +10, Prev: +0, Unmatched: 0
+11:58:21 [INFO] [59/186] Michigan Tech (#610377)
+11:58:25 [INFO]   Parsed: 18 players
+11:58:25 [INFO]   Matched: 15, Ht: +10, Wt: +0, Yr: +10, Town: +7, HS: +5, Prev: +0, Unmatched: 3
+11:58:25 [INFO] [60/186] Middle Georgia (#617105)
+11:58:30 [INFO]   Parsed: 13 players
+11:58:30 [INFO]   Matched: 0, Ht: +0, Wt: +0, Yr: +0, Town: +0, HS: +0, Prev: +0, Unmatched: 0
+11:58:30 [INFO] [61/186] Midwestern St. (#609945)
+11:58:34 [INFO]   Parsed: 14 players
+11:58:34 [INFO]   Matched: 13, Ht: +10, Wt: +0, Yr: +10, Town: +13, HS: +13, Prev: +0, Unmatched: 1
+11:58:34 [INFO] [62/186] Miles (#610379)
+11:58:38 [INFO]   Parsed: 20 players
+11:58:38 [INFO]   Matched: 2, Ht: +0, Wt: +0, Yr: +0, Town: +2, HS: +2, Prev: +0, Unmatched: 18
+11:58:38 [INFO] [63/186] Minn. Duluth (#610387)
+11:58:42 [INFO]   Parsed: 16 players
+11:58:42 [INFO]   Matched: 12, Ht: +8, Wt: +0, Yr: +8, Town: +12, HS: +12, Prev: +0, Unmatched: 4
+11:58:42 [INFO] [64/186] Minn.-Crookston (#610047)
+11:58:46 [INFO]   Parsed: 16 players
+11:58:46 [INFO]   Matched: 13, Ht: +11, Wt: +0, Yr: +11, Town: +13, HS: +8, Prev: +0, Unmatched: 3
+11:58:46 [INFO] [65/186] Minnesota St. (#610588)
+11:58:51 [INFO]   Parsed: 15 players
+11:58:51 [INFO]   Matched: 13, Ht: +8, Wt: +0, Yr: +8, Town: +13, HS: +13, Prev: +0, Unmatched: 2
+11:58:51 [INFO] [66/186] Minot St. (#610094)
+11:58:56 [INFO]   Parsed: 15 players
+11:58:56 [INFO]   Matched: 10, Ht: +7, Wt: +0, Yr: +7, Town: +7, HS: +7, Prev: +0, Unmatched: 5
+11:58:56 [INFO] [67/186] Mississippi Col. (#610390)
+11:59:00 [INFO]   Parsed: 18 players
+11:59:00 [INFO]   Matched: 17, Ht: +13, Wt: +0, Yr: +14, Town: +12, HS: +12, Prev: +0, Unmatched: 1
+11:59:00 [INFO] [68/186] Missouri S&T (#610393)
+11:59:04 [INFO]   Parsed: 16 players
+11:59:04 [INFO]   Matched: 16, Ht: +11, Wt: +0, Yr: +11, Town: +16, HS: +16, Prev: +0, Unmatched: 0
+11:59:04 [INFO] [69/186] Missouri Western (#610002)
+11:59:08 [INFO]   Parsed: 13 players
+11:59:08 [INFO]   Matched: 10, Ht: +7, Wt: +0, Yr: +7, Town: +10, HS: +10, Prev: +0, Unmatched: 3
+11:59:08 [INFO] [70/186] Mo. Southern St. (#610000)
+11:59:12 [INFO]   Parsed: 15 players
+11:59:12 [INFO]   Matched: 14, Ht: +9, Wt: +0, Yr: +9, Town: +7, HS: +6, Prev: +0, Unmatched: 1
+11:59:12 [INFO] [71/186] Mo.-St. Louis (#610397)
+11:59:17 [INFO]   Parsed: 15 players
+11:59:18 [INFO]   Matched: 14, Ht: +10, Wt: +0, Yr: +10, Town: +14, HS: +14, Prev: +0, Unmatched: 1
+11:59:18 [INFO] [72/186] Molloy (#610400)
+11:59:22 [INFO]   Parsed: 16 players
+11:59:22 [INFO]   Matched: 11, Ht: +3, Wt: +0, Yr: +7, Town: +5, HS: +4, Prev: +0, Unmatched: 5
+11:59:22 [INFO] [73/186] Mont. St. Billings (#610284)
+11:59:26 [INFO]   Parsed: 13 players
+11:59:26 [INFO]   Matched: 13, Ht: +7, Wt: +0, Yr: +7, Town: +13, HS: +12, Prev: +0, Unmatched: 0
+11:59:26 [INFO] [74/186] Montevallo (#609947)
+11:59:31 [INFO]   Parsed: 16 players
+11:59:31 [INFO]   Matched: 16, Ht: +11, Wt: +0, Yr: +12, Town: +15, HS: +15, Prev: +0, Unmatched: 0
+11:59:31 [INFO] [75/186] Morehouse (#610403)
+11:59:35 [INFO]   Parsed: 19 players
+11:59:35 [INFO]   Matched: 14, Ht: +10, Wt: +0, Yr: +11, Town: +13, HS: +13, Prev: +0, Unmatched: 5
+11:59:35 [INFO] [76/186] MSU Denver (#610374)
+11:59:39 [INFO]   Parsed: 15 players
+11:59:39 [INFO]   Matched: 14, Ht: +10, Wt: +0, Yr: +11, Town: +14, HS: +12, Prev: +0, Unmatched: 1
+11:59:39 [INFO] [77/186] MSU Moorhead (#609949)
+11:59:43 [INFO]   Parsed: 15 players
+11:59:43 [INFO]   Matched: 14, Ht: +12, Wt: +0, Yr: +12, Town: +11, HS: +10, Prev: +0, Unmatched: 1
+11:59:43 [INFO] [78/186] N.M. Highlands (#609983)
+11:59:47 [INFO]   Parsed: 23 players
+11:59:47 [INFO]   Matched: 17, Ht: +12, Wt: +0, Yr: +12, Town: +17, HS: +17, Prev: +0, Unmatched: 6
+11:59:47 [INFO] [79/186] Neb.-Kearney (#609934)
+11:59:51 [INFO]   Parsed: 14 players
+11:59:51 [INFO]   Matched: 13, Ht: +8, Wt: +0, Yr: +8, Town: +13, HS: +13, Prev: +0, Unmatched: 1
+11:59:51 [INFO] [80/186] Newberry (#609952)
+11:59:56 [INFO]   Parsed: 19 players
+11:59:56 [INFO]   Matched: 15, Ht: +10, Wt: +0, Yr: +11, Town: +15, HS: +4, Prev: +0, Unmatched: 4
+11:59:56 [INFO] [81/186] Newman (#610061)
+12:00:00 [INFO]   Parsed: 21 players
+12:00:00 [INFO]   Matched: 15, Ht: +12, Wt: +0, Yr: +12, Town: +15, HS: +15, Prev: +0, Unmatched: 6
+12:00:00 [INFO] [82/186] North Georgia (#610572)
+12:00:04 [INFO]   Parsed: 15 players
+12:00:04 [INFO]   Matched: 13, Ht: +11, Wt: +0, Yr: +11, Town: +13, HS: +13, Prev: +0, Unmatched: 2
+12:00:04 [INFO] [83/186] Northeastern St. (#610025)
+12:00:08 [INFO]   Parsed: 15 players
+12:00:08 [INFO]   Matched: 12, Ht: +10, Wt: +0, Yr: +10, Town: +12, HS: +12, Prev: +0, Unmatched: 3
+12:00:08 [INFO] [84/186] Northern Mich. (#610414)
+12:00:12 [INFO]   Parsed: 17 players
+12:00:12 [INFO]   Matched: 16, Ht: +13, Wt: +0, Yr: +13, Town: +16, HS: +13, Prev: +0, Unmatched: 1
+12:00:12 [INFO] [85/186] Northern St. (#609954)
+12:00:17 [INFO]   Parsed: 17 players
+12:00:17 [INFO]   Matched: 13, Ht: +10, Wt: +0, Yr: +10, Town: +8, HS: +8, Prev: +0, Unmatched: 4
+12:00:17 [INFO] [86/186] Northwest Mo. St. (#610593)
+12:00:22 [INFO]   Parsed: 14 players
+12:00:22 [INFO]   Matched: 13, Ht: +9, Wt: +0, Yr: +9, Town: +13, HS: +12, Prev: +0, Unmatched: 1
+12:00:22 [INFO] [87/186] Northwest Nazarene (#609957)
+12:00:26 [INFO]   Parsed: 18 players
+12:00:26 [INFO]   Matched: 16, Ht: +12, Wt: +0, Yr: +12, Town: +16, HS: +16, Prev: +0, Unmatched: 2
+12:00:26 [INFO] [88/186] Northwestern Okla. (#610142)
+12:00:30 [INFO]   Parsed: 21 players
+12:00:30 [INFO]   Matched: 10, Ht: +6, Wt: +0, Yr: +7, Town: +10, HS: +9, Prev: +0, Unmatched: 11
+12:00:30 [INFO] [89/186] Northwood (#610416)
+12:00:34 [INFO]   Parsed: 17 players
+12:00:34 [INFO]   Matched: 10, Ht: +6, Wt: +0, Yr: +6, Town: +10, HS: +10, Prev: +0, Unmatched: 7
+12:00:34 [INFO] [90/186] Nova Southeastern (#610570)
+12:00:39 [INFO]   Parsed: 15 players
+12:00:39 [INFO]   Matched: 13, Ht: +8, Wt: +0, Yr: +9, Town: +13, HS: +13, Prev: +0, Unmatched: 2
+12:00:39 [INFO] [91/186] Ohio Dominican (#610086)
+12:00:43 [INFO]   Parsed: 14 players
+12:00:43 [INFO]   Matched: 11, Ht: +7, Wt: +0, Yr: +7, Town: +11, HS: +11, Prev: +0, Unmatched: 3
+12:00:43 [INFO] [92/186] Okla. Baptist (#610486)
+12:00:47 [INFO]   Parsed: 16 players
+12:00:47 [INFO]   Matched: 16, Ht: +13, Wt: +0, Yr: +13, Town: +16, HS: +14, Prev: +0, Unmatched: 0
+12:00:47 [INFO] [93/186] Okla. Christian (#610145)
+12:00:51 [INFO]   Parsed: 16 players
+12:00:51 [INFO]   Matched: 14, Ht: +10, Wt: +0, Yr: +11, Town: +13, HS: +12, Prev: +0, Unmatched: 2
+12:00:51 [INFO] [94/186] Ouachita Baptist (#609959)
+12:00:56 [INFO]   Parsed: 15 players
+12:00:56 [INFO]   Matched: 15, Ht: +11, Wt: +0, Yr: +11, Town: +15, HS: +15, Prev: +0, Unmatched: 0
+12:00:56 [INFO] [95/186] P.R.-Bayamon (#610519)
+12:01:00 [INFO]   Parsed: 28 players
+12:01:00 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +15, Town: +0, HS: +0, Prev: +0, Unmatched: 13
+12:01:00 [INFO] [96/186] P.R.-Mayaguez (#610046)
+12:01:04 [INFO]   Parsed: 20 players
+12:01:04 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +13, Town: +0, HS: +0, Prev: +0, Unmatched: 7
+12:01:04 [INFO] [97/186] P.R.-Rio Piedras (#609966)
+12:01:08 [INFO]   Parsed: 45 players
+12:01:08 [INFO]   Matched: 28, Ht: +0, Wt: +0, Yr: +28, Town: +0, HS: +0, Prev: +0, Unmatched: 17
+12:01:08 [INFO] [98/186] Pace (#610420)
+12:01:12 [INFO]   Parsed: 15 players
+12:01:12 [INFO]   Matched: 12, Ht: +9, Wt: +0, Yr: +9, Town: +12, HS: +12, Prev: +0, Unmatched: 3
+12:01:12 [INFO] [99/186] Palm Beach Atl. (#610053)
+12:01:16 [INFO]   Parsed: 16 players
+12:01:16 [INFO]   Matched: 15, Ht: +10, Wt: +0, Yr: +10, Town: +11, HS: +11, Prev: +0, Unmatched: 1
+12:01:16 [INFO] [100/186] Pitt.-Johnstown (#610422)
+12:01:21 [INFO]   Parsed: 19 players
+12:01:21 [INFO]   Matched: 15, Ht: +12, Wt: +0, Yr: +12, Town: +15, HS: +15, Prev: +0, Unmatched: 4
+12:01:21 [INFO] [101/186] Pittsburg St. (#610494)
+12:01:25 [INFO]   Parsed: 18 players
+12:01:25 [INFO]   Matched: 16, Ht: +13, Wt: +0, Yr: +13, Town: +16, HS: +8, Prev: +0, Unmatched: 2
+12:01:25 [INFO] [102/186] Point Loma (#610118)
+12:01:29 [INFO]   Parsed: 18 players
+12:01:29 [INFO]   Matched: 14, Ht: +10, Wt: +0, Yr: +10, Town: +9, HS: +9, Prev: +0, Unmatched: 4
+12:01:29 [INFO] [103/186] Point Park (#610616)
+12:01:34 [INFO]   Parsed: 19 players
+12:01:34 [INFO]   Matched: 0, Ht: +0, Wt: +0, Yr: +0, Town: +0, HS: +0, Prev: +0, Unmatched: 0
+12:01:34 [INFO] [104/186] Post (#610495)
+12:01:38 [INFO]   Parsed: 17 players
+12:01:38 [INFO]   Matched: 12, Ht: +10, Wt: +0, Yr: +10, Town: +12, HS: +12, Prev: +0, Unmatched: 5
+12:01:38 [INFO] [105/186] Purdue Northwest (#610491)
+12:01:42 [INFO]   Parsed: 16 players
+12:01:42 [INFO]   Matched: 11, Ht: +10, Wt: +0, Yr: +10, Town: +10, HS: +10, Prev: +0, Unmatched: 5
+12:01:42 [INFO] [106/186] Queens (NY) (#610426)
+12:01:47 [INFO]   Parsed: 15 players
+12:01:47 [INFO]   Matched: 13, Ht: +9, Wt: +0, Yr: +10, Town: +11, HS: +11, Prev: +0, Unmatched: 2
+12:01:47 [INFO] [107/186] Quincy (#610429)
+12:01:51 [INFO]   Parsed: 13 players
+12:01:51 [INFO]   Matched: 11, Ht: +7, Wt: +0, Yr: +7, Town: +11, HS: +11, Prev: +0, Unmatched: 2
+12:01:51 [INFO] [108/186] Regis (CO) (#610431)
+12:01:55 [INFO]   Parsed: 17 players
+12:01:55 [INFO]   Matched: 9, Ht: +6, Wt: +0, Yr: +6, Town: +8, HS: +5, Prev: +0, Unmatched: 8
+12:01:55 [INFO] [109/186] Roberts Wesleyan (#610121)
+12:02:00 [INFO]   Parsed: 20 players
+12:02:00 [INFO]   Matched: 15, Ht: +12, Wt: +0, Yr: +12, Town: +14, HS: +14, Prev: +0, Unmatched: 5
+12:02:00 [INFO] [110/186] Rockhurst (#610497)
+12:02:04 [INFO]   Parsed: 17 players
+12:02:04 [INFO]   Matched: 15, Ht: +12, Wt: +0, Yr: +12, Town: +14, HS: +14, Prev: +0, Unmatched: 2
+12:02:04 [INFO] [111/186] Rogers St. (#610146)
+12:02:08 [INFO]   Parsed: 13 players
+12:02:08 [INFO]   Matched: 13, Ht: +8, Wt: +0, Yr: +8, Town: +13, HS: +13, Prev: +0, Unmatched: 0
+12:02:08 [INFO] [112/186] Rollins (#610434)
+12:02:12 [INFO]   Parsed: 15 players
+12:02:12 [INFO]   Matched: 14, Ht: +12, Wt: +0, Yr: +12, Town: +14, HS: +13, Prev: +0, Unmatched: 1
+12:02:12 [INFO] [113/186] Roosevelt (#610563)
+12:02:17 [INFO]   Parsed: 16 players
+12:02:17 [INFO]   Matched: 0, Ht: +0, Wt: +0, Yr: +0, Town: +0, HS: +0, Prev: +0, Unmatched: 0
+12:02:17 [INFO] [114/186] Saginaw Valley (#610436)
+12:02:21 [INFO]   Parsed: 16 players
+12:02:21 [INFO]   Matched: 12, Ht: +8, Wt: +0, Yr: +8, Town: +12, HS: +12, Prev: +0, Unmatched: 4
+12:02:21 [INFO] [115/186] Saint Anselm (#610438)
+12:02:25 [INFO]   Parsed: 15 players
+12:02:25 [INFO]   Matched: 14, Ht: +9, Wt: +0, Yr: +10, Town: +13, HS: +13, Prev: +0, Unmatched: 1
+12:02:25 [INFO] [116/186] Saint Leo (#610444)
+12:02:29 [INFO]   Parsed: 16 players
+12:02:29 [INFO]   Matched: 15, Ht: +10, Wt: +0, Yr: +11, Town: +14, HS: +15, Prev: +0, Unmatched: 1
+12:02:29 [INFO] [117/186] Saint Michael's (#610446)
+12:02:34 [INFO]   Parsed: 18 players
+12:02:34 [INFO]   Matched: 16, Ht: +13, Wt: +0, Yr: +13, Town: +15, HS: +16, Prev: +0, Unmatched: 2
+12:02:34 [INFO] [118/186] San Fran. St. (#610447)
+12:02:38 [INFO]   Parsed: 14 players
+12:02:38 [INFO]   Matched: 13, Ht: +10, Wt: +0, Yr: +11, Town: +12, HS: +12, Prev: +0, Unmatched: 1
+12:02:38 [INFO] [119/186] Simon Fraser (#610097)
+12:02:42 [INFO]   Parsed: 15 players
+12:02:42 [INFO]   Matched: 11, Ht: +9, Wt: +0, Yr: +9, Town: +11, HS: +11, Prev: +0, Unmatched: 4
+12:02:42 [INFO] [120/186] Sioux Falls (#610100)
+12:02:46 [INFO]   Parsed: 16 players
+12:02:46 [INFO]   Matched: 13, Ht: +9, Wt: +0, Yr: +9, Town: +13, HS: +13, Prev: +0, Unmatched: 3
+12:02:46 [INFO] [121/186] Slippery Rock (#610456)
+12:02:50 [INFO]   Parsed: 15 players
+12:02:50 [INFO]   Matched: 12, Ht: +6, Wt: +0, Yr: +6, Town: +11, HS: +12, Prev: +0, Unmatched: 3
+12:02:50 [INFO] [122/186] South Dakota Mines (#610112)
+12:02:54 [INFO]   Parsed: 15 players
+12:02:54 [INFO]   Matched: 15, Ht: +12, Wt: +0, Yr: +12, Town: +15, HS: +15, Prev: +0, Unmatched: 0
+12:02:54 [INFO] [123/186] Southeastern Okla. (#610503)
+12:02:58 [INFO]   Parsed: 17 players
+12:02:58 [INFO]   Matched: 16, Ht: +13, Wt: +0, Yr: +14, Town: +15, HS: +14, Prev: +0, Unmatched: 1
+12:02:58 [INFO] [124/186] Southern Ark. (#610504)
+12:03:02 [INFO]   Parsed: 18 players
+12:03:02 [INFO]   Matched: 17, Ht: +14, Wt: +0, Yr: +14, Town: +17, HS: +15, Prev: +0, Unmatched: 1
+12:03:02 [INFO] [125/186] Southern Conn. St. (#610461)
+12:03:07 [INFO]   Parsed: 14 players
+12:03:07 [INFO]   Matched: 11, Ht: +8, Wt: +0, Yr: +8, Town: +11, HS: +11, Prev: +0, Unmatched: 3
+12:03:07 [INFO] [126/186] Southern N.H. (#610591)
+12:03:11 [INFO]   Parsed: 15 players
+12:03:11 [INFO]   Matched: 15, Ht: +12, Wt: +0, Yr: +12, Town: +14, HS: +14, Prev: +0, Unmatched: 0
+12:03:11 [INFO] [127/186] Southern Nazarene (#610127)
+12:03:15 [INFO]   Parsed: 14 players
+12:03:15 [INFO]   Matched: 13, Ht: +11, Wt: +0, Yr: +11, Town: +13, HS: +12, Prev: +0, Unmatched: 1
+12:03:15 [INFO] [128/186] Southern Wesleyan (#610480)
+12:03:19 [INFO]   Parsed: 25 players
+12:03:19 [INFO]   Matched: 12, Ht: +7, Wt: +0, Yr: +7, Town: +12, HS: +10, Prev: +0, Unmatched: 13
+12:03:19 [INFO] [129/186] Southwest Baptist (#609972)
+12:03:24 [INFO]   Parsed: 15 players
+12:03:24 [INFO]   Matched: 10, Ht: +6, Wt: +0, Yr: +6, Town: +10, HS: +8, Prev: +0, Unmatched: 5
+12:03:24 [INFO] [130/186] Southwest Minn. St. (#609985)
+12:03:28 [INFO]   Parsed: 17 players
+12:03:28 [INFO]   Matched: 9, Ht: +5, Wt: +0, Yr: +6, Town: +9, HS: +2, Prev: +0, Unmatched: 8
+12:03:28 [INFO] [131/186] Southwestern Okla. (#609988)
+12:03:32 [INFO]   Parsed: 14 players
+12:03:32 [INFO]   Matched: 13, Ht: +10, Wt: +0, Yr: +10, Town: +13, HS: +4, Prev: +0, Unmatched: 1
+12:03:32 [INFO] [132/186] Spring Hill (#610478)
+12:03:37 [INFO]   Parsed: 12 players
+12:03:37 [INFO]   Matched: 11, Ht: +8, Wt: +0, Yr: +9, Town: +10, HS: +9, Prev: +0, Unmatched: 1
+12:03:37 [INFO] [133/186] St. Cloud St. (#610442)
+12:03:41 [INFO]   Parsed: 15 players
+12:03:41 [INFO]   Matched: 13, Ht: +10, Wt: +0, Yr: +10, Town: +13, HS: +13, Prev: +0, Unmatched: 2
+12:03:41 [INFO] [134/186] St. Edward's (#610498)
+12:03:46 [INFO]   Parsed: 17 players
+12:03:46 [INFO]   Matched: 15, Ht: +10, Wt: +0, Yr: +10, Town: +14, HS: +13, Prev: +0, Unmatched: 2
+12:03:46 [INFO] [135/186] St. Mary's (TX) (#610501)
+12:03:50 [INFO]   Parsed: 15 players
+12:03:50 [INFO]   Matched: 13, Ht: +9, Wt: +0, Yr: +9, Town: +13, HS: +13, Prev: +0, Unmatched: 2
+12:03:50 [INFO] [136/186] St. Thomas Aquinas (#610600)
+12:03:55 [INFO]   Parsed: 16 players
+12:03:55 [INFO]   Matched: 11, Ht: +8, Wt: +0, Yr: +8, Town: +11, HS: +11, Prev: +0, Unmatched: 5
+12:03:55 [INFO] [137/186] Stanislaus St. (#610242)
+12:03:59 [INFO]   Parsed: 16 players
+12:03:59 [INFO]   Matched: 15, Ht: +11, Wt: +0, Yr: +12, Town: +14, HS: +14, Prev: +0, Unmatched: 1
+12:03:59 [INFO] [138/186] Staten Island (#610163)
+12:04:03 [INFO]   Parsed: 13 players
+12:04:03 [INFO]   Matched: 13, Ht: +5, Wt: +0, Yr: +9, Town: +10, HS: +10, Prev: +0, Unmatched: 0
+12:04:03 [INFO] [139/186] Sul Ross St. (#610531)
+12:04:07 [INFO]   Parsed: 16 players
+12:04:07 [INFO]   Matched: 14, Ht: +12, Wt: +0, Yr: +12, Town: +14, HS: +12, Prev: +0, Unmatched: 2
+12:04:07 [INFO] [140/186] Tampa (#610463)
+12:04:12 [INFO]   Parsed: 17 players
+12:04:12 [INFO]   Matched: 16, Ht: +12, Wt: +0, Yr: +13, Town: +15, HS: +15, Prev: +0, Unmatched: 1
+12:04:12 [INFO] [141/186] Tex. A&M Int'l (#610072)
+12:04:16 [INFO]   Parsed: 14 players
+12:04:16 [INFO]   Matched: 12, Ht: +10, Wt: +0, Yr: +10, Town: +12, HS: +8, Prev: +0, Unmatched: 2
+12:04:16 [INFO] [142/186] Tex. A&M-Kingsville (#610466)
+12:04:20 [INFO]   Parsed: 17 players
+12:04:20 [INFO]   Matched: 16, Ht: +12, Wt: +0, Yr: +13, Town: +15, HS: +16, Prev: +0, Unmatched: 1
+12:04:20 [INFO] [143/186] Texas-Dallas (#610613)
+12:04:24 [INFO]   Parsed: 19 players
+12:04:24 [INFO]   Matched: 12, Ht: +10, Wt: +0, Yr: +10, Town: +5, HS: +5, Prev: +0, Unmatched: 7
+12:04:24 [INFO] [144/186] Thomas More (#610530)
+12:04:28 [INFO]   Parsed: 17 players
+12:04:28 [INFO]   Matched: 13, Ht: +10, Wt: +0, Yr: +11, Town: +12, HS: +13, Prev: +0, Unmatched: 4
+12:04:28 [INFO] [145/186] Tiffin (#610505)
+12:04:32 [INFO]   Parsed: 19 players
+12:04:32 [INFO]   Matched: 12, Ht: +8, Wt: +0, Yr: +8, Town: +3, HS: +3, Prev: +0, Unmatched: 7
+12:04:32 [INFO] [146/186] Trevecca Nazarene (#610049)
+12:04:37 [INFO]   Parsed: 15 players
+12:04:37 [INFO]   Matched: 10, Ht: +6, Wt: +0, Yr: +6, Town: +5, HS: +6, Prev: +0, Unmatched: 5
+12:04:37 [INFO] [147/186] Truman St. (#610411)
+12:04:41 [INFO]   Parsed: 13 players
+12:04:41 [INFO]   Matched: 11, Ht: +8, Wt: +0, Yr: +8, Town: +11, HS: +11, Prev: +0, Unmatched: 2
+12:04:41 [INFO] [148/186] Tusculum (#610026)
+12:04:46 [INFO]   Parsed: 19 players
+12:04:46 [INFO]   Matched: 16, Ht: +11, Wt: +0, Yr: +13, Town: +14, HS: +15, Prev: +0, Unmatched: 3
+12:04:46 [INFO] [149/186] Tuskegee (#610467)
+12:04:50 [INFO]   Parsed: 17 players
+12:04:50 [INFO]   Matched: 17, Ht: +13, Wt: +0, Yr: +13, Town: +17, HS: +17, Prev: +0, Unmatched: 0
+12:04:50 [INFO] [150/186] UAH (#610170)
+12:04:54 [INFO]   Parsed: 18 players
+12:04:54 [INFO]   Matched: 18, Ht: +14, Wt: +0, Yr: +14, Town: +18, HS: +18, Prev: +0, Unmatched: 0
+12:04:54 [INFO] [151/186] UC Merced (#609911)
+12:04:59 [INFO]   Parsed: 14 players
+12:04:59 [INFO]   Matched: 0, Ht: +0, Wt: +0, Yr: +0, Town: +0, HS: +0, Prev: +0, Unmatched: 0
+12:04:59 [INFO] [152/186] UCCS (#610011)
+12:05:03 [INFO]   Parsed: 18 players
+12:05:03 [INFO]   Matched: 14, Ht: +9, Wt: +0, Yr: +10, Town: +13, HS: +13, Prev: +0, Unmatched: 4
+12:05:03 [INFO] [153/186] UIndy (#610324)
+12:05:07 [INFO]   Parsed: 15 players
+12:05:07 [INFO]   Matched: 13, Ht: +10, Wt: +0, Yr: +10, Town: +13, HS: +12, Prev: +0, Unmatched: 2
+12:05:07 [INFO] [154/186] UNC Pembroke (#610596)
+12:05:11 [INFO]   Parsed: 19 players
+12:05:11 [INFO]   Matched: 12, Ht: +8, Wt: +0, Yr: +8, Town: +6, HS: +4, Prev: +0, Unmatched: 7
+12:05:11 [INFO] [155/186] Union (TN) (#610130)
+12:05:16 [INFO]   Parsed: 14 players
+12:05:16 [INFO]   Matched: 11, Ht: +9, Wt: +0, Yr: +10, Town: +10, HS: +10, Prev: +0, Unmatched: 3
+12:05:16 [INFO] [156/186] Upper Iowa (#610469)
+12:05:20 [INFO]   Parsed: 21 players
+12:05:20 [INFO]   Matched: 12, Ht: +9, Wt: +0, Yr: +9, Town: +11, HS: +12, Prev: +0, Unmatched: 9
+12:05:20 [INFO] [157/186] USC Aiken (#610015)
+12:05:24 [INFO]   Parsed: 14 players
+12:05:24 [INFO]   Matched: 14, Ht: +4, Wt: +0, Yr: +11, Town: +12, HS: +12, Prev: +0, Unmatched: 0
+12:05:24 [INFO] [158/186] UT Permian Basin (#610069)
+12:05:28 [INFO]   Parsed: 13 players
+12:05:28 [INFO]   Matched: 11, Ht: +8, Wt: +0, Yr: +8, Town: +11, HS: +6, Prev: +0, Unmatched: 2
+12:05:28 [INFO] [159/186] UT Tyler (#610277)
+12:05:33 [INFO]   Parsed: 16 players
+12:05:33 [INFO]   Matched: 15, Ht: +13, Wt: +0, Yr: +13, Town: +15, HS: +15, Prev: +0, Unmatched: 1
+12:05:33 [INFO] [160/186] UVA Wise (#610150)
+12:05:37 [INFO]   Parsed: 17 players
+12:05:37 [INFO]   Matched: 15, Ht: +11, Wt: +0, Yr: +11, Town: +15, HS: +14, Prev: +0, Unmatched: 2
+12:05:37 [INFO] [161/186] Valdosta St. (#610472)
+12:05:42 [INFO]   Parsed: 14 players
+12:05:42 [INFO]   Matched: 14, Ht: +11, Wt: +0, Yr: +12, Town: +14, HS: +14, Prev: +0, Unmatched: 0
+12:05:42 [INFO] [162/186] Virginia St. (#610474)
+12:05:46 [INFO]   Parsed: 18 players
+12:05:46 [INFO]   Matched: 17, Ht: +10, Wt: +0, Yr: +13, Town: +14, HS: +15, Prev: +0, Unmatched: 1
+12:05:46 [INFO] [163/186] Virginia Union (#610475)
+12:05:50 [INFO]   Parsed: 19 players
+12:05:50 [INFO]   Matched: 18, Ht: +11, Wt: +0, Yr: +15, Town: +3, HS: +2, Prev: +0, Unmatched: 1
+12:05:50 [INFO] [164/186] Walsh (#610576)
+12:05:55 [INFO]   Parsed: 18 players
+12:05:55 [INFO]   Matched: 11, Ht: +7, Wt: +0, Yr: +7, Town: +11, HS: +11, Prev: +0, Unmatched: 7
+12:05:55 [INFO] [165/186] Washburn (#609976)
+12:05:59 [INFO]   Parsed: 16 players
+12:05:59 [INFO]   Matched: 15, Ht: +9, Wt: +0, Yr: +10, Town: +8, HS: +8, Prev: +0, Unmatched: 1
+12:05:59 [INFO] [166/186] Wayne St. (MI) (#610477)
+12:06:03 [INFO]   Parsed: 17 players
+12:06:03 [INFO]   Matched: 17, Ht: +13, Wt: +0, Yr: +13, Town: +17, HS: +17, Prev: +0, Unmatched: 0
+12:06:03 [INFO] [167/186] Wayne St. (NE) (#610506)
+12:06:08 [INFO]   Parsed: 14 players
+12:06:08 [INFO]   Matched: 12, Ht: +9, Wt: +0, Yr: +9, Town: +6, HS: +4, Prev: +0, Unmatched: 2
+12:06:08 [INFO] [168/186] West Ala. (#610356)
+12:06:12 [INFO]   Parsed: 14 players
+12:06:12 [INFO]   Matched: 14, Ht: +11, Wt: +0, Yr: +11, Town: +12, HS: +11, Prev: +0, Unmatched: 0
+12:06:12 [INFO] [169/186] West Chester (#610532)
+12:06:16 [INFO]   Parsed: 17 players
+12:06:16 [INFO]   Matched: 14, Ht: +10, Wt: +0, Yr: +10, Town: +14, HS: +14, Prev: +0, Unmatched: 3
+12:06:16 [INFO] [170/186] West Florida (#610021)
+12:06:21 [INFO]   Parsed: 16 players
+12:06:21 [INFO]   Matched: 16, Ht: +12, Wt: +0, Yr: +12, Town: +15, HS: +15, Prev: +0, Unmatched: 0
+12:06:21 [INFO] [171/186] West Liberty (#610508)
+12:06:26 [INFO]   Parsed: 16 players
+12:06:26 [INFO]   Matched: 15, Ht: +11, Wt: +0, Yr: +11, Town: +14, HS: +15, Prev: +0, Unmatched: 1
+12:06:26 [INFO] [172/186] West Tex. A&M (#610534)
+12:06:30 [INFO]   Parsed: 15 players
+12:06:30 [INFO]   Matched: 15, Ht: +10, Wt: +0, Yr: +10, Town: +15, HS: +15, Prev: +0, Unmatched: 0
+12:06:30 [INFO] [173/186] West Va. Wesleyan (#610154)
+12:06:34 [INFO]   Parsed: 26 players
+12:06:34 [INFO]   Matched: 15, Ht: +13, Wt: +0, Yr: +13, Town: +8, HS: +2, Prev: +0, Unmatched: 11
+12:06:34 [INFO] [174/186] West Virginia St. (#610510)
+12:06:38 [INFO]   Parsed: 16 players
+12:06:38 [INFO]   Matched: 12, Ht: +7, Wt: +0, Yr: +8, Town: +11, HS: +10, Prev: +0, Unmatched: 4
+12:06:38 [INFO] [175/186] Western Colo. (#609974)
+12:06:42 [INFO]   Parsed: 12 players
+12:06:42 [INFO]   Matched: 11, Ht: +8, Wt: +0, Yr: +8, Town: +11, HS: +10, Prev: +0, Unmatched: 1
+12:06:42 [INFO] [176/186] Western N.M. (#610512)
+12:06:46 [INFO]   Parsed: 16 players
+12:06:46 [INFO]   Matched: 16, Ht: +10, Wt: +0, Yr: +11, Town: +15, HS: +15, Prev: +0, Unmatched: 0
+12:06:46 [INFO] [177/186] Western Ore. (#610513)
+12:06:51 [INFO]   Parsed: 15 players
+12:06:51 [INFO]   Matched: 11, Ht: +6, Wt: +0, Yr: +6, Town: +10, HS: +11, Prev: +0, Unmatched: 4
+12:06:51 [INFO] [178/186] Western Wash. (#610514)
+12:06:55 [INFO]   Parsed: 16 players
+12:06:55 [INFO]   Matched: 11, Ht: +6, Wt: +0, Yr: +6, Town: +11, HS: +11, Prev: +0, Unmatched: 5
+12:06:55 [INFO] [179/186] Westminster (UT) (#610488)
+12:06:59 [INFO]   Parsed: 16 players
+12:06:59 [INFO]   Matched: 12, Ht: +7, Wt: +0, Yr: +7, Town: +9, HS: +9, Prev: +0, Unmatched: 4
+12:06:59 [INFO] [180/186] Wheeling (#610023)
+12:07:04 [INFO]   Parsed: 24 players
+12:07:04 [INFO]   Matched: 15, Ht: +8, Wt: +0, Yr: +11, Town: +10, HS: +10, Prev: +0, Unmatched: 9
+12:07:04 [INFO] [181/186] William Jewell (#610574)
+12:07:08 [INFO]   Parsed: 16 players
+12:07:08 [INFO]   Matched: 16, Ht: +13, Wt: +0, Yr: +13, Town: +16, HS: +15, Prev: +0, Unmatched: 0
+12:07:08 [INFO] [182/186] Wingate (#610517)
+12:07:12 [INFO]   Parsed: 15 players
+12:07:12 [INFO]   Matched: 12, Ht: +7, Wt: +0, Yr: +8, Town: +10, HS: +10, Prev: +0, Unmatched: 3
+12:07:12 [INFO] [183/186] Winona St. (#610535)
+12:07:16 [INFO]   Parsed: 18 players
+12:07:16 [INFO]   Matched: 13, Ht: +9, Wt: +0, Yr: +9, Town: +12, HS: +8, Prev: +0, Unmatched: 5
+12:07:16 [INFO] [184/186] Winston-Salem (#610536)
+12:07:21 [INFO]   Parsed: 15 players
+12:07:21 [INFO]   Matched: 13, Ht: +9, Wt: +0, Yr: +10, Town: +12, HS: +9, Prev: +0, Unmatched: 2
+12:07:21 [INFO] [185/186] Wis.-Parkside (#610538)
+12:07:25 [INFO]   Parsed: 17 players
+12:07:25 [INFO]   Matched: 13, Ht: +9, Wt: +0, Yr: +9, Town: +10, HS: +10, Prev: +0, Unmatched: 4
+12:07:25 [INFO] [186/186] Young Harris (#610132)
+12:07:30 [INFO]   Parsed: 21 players
+12:07:30 [INFO]   Matched: 10, Ht: +5, Wt: +0, Yr: +6, Town: +7, HS: +8, Prev: +0, Unmatched: 11
+12:07:30 [INFO] 
+============================================================
+12:07:30 [INFO] DONE: ncaa_d2
+12:07:30 [INFO]   Teams: 186, Fetched: 186
+12:07:30 [INFO]   Players matched: 2469
+12:07:30 [INFO]   Height: 1695, Weight: 0, Year: 1856
+12:07:30 [INFO]   Hometown: 2190, HS: 2067, Prev School: 0

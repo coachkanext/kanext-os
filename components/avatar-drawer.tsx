@@ -219,8 +219,10 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
     setPermissionsExpanded((prev) => !prev);
   }, []);
 
+  if (!visible) return null;
+
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents={visible ? 'auto' : 'none'}>
+    <View style={StyleSheet.absoluteFill} pointerEvents="auto">
       {/* Scrim */}
       <Animated.View style={[styles.scrim, { opacity: fadeAnim }]} pointerEvents={visible ? 'auto' : 'none'}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />

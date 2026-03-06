@@ -1,0 +1,20 @@
+northernoklahomacollegeenid|Northern Oklahoma College-Enid
+northernoklahomacollegetonkawa|Northern Oklahoma College-Tonkawa
+northwestcollege|Northwest College
+northwestfloridastatecollege|Northwest Florida State College
+northwestmississippicommunitycollege|Northwest Mississippi CC
+odessacollege|Odessa College
+oliveharveycollege|Olive-Harvey College
+olneycentralcollege|Olney Central College
+oterocollege|Otero College
+panolacollege|Panola College
+parisjuniorcollege|Paris Junior College
+pearlrivercommunitycollege|Pearl River CC
+pellissippistatecommunitycollege|Pellissippi State CC
+pensacolastatecollege|Pensacola State College
+polkstatecollege|Polk State College
+prattcommunitycollege|Pratt CC
+rangercollege|Ranger College
+redlandscommunitycollege|Redlands CC
+richardblandcollege|Richard Bland College
+richardjdaleycollege|Richard J. Daley College

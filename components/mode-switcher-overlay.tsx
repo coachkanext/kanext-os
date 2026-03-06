@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Pressable, StyleSheet, Animated } from 'react-native';
+import { View, Pressable, Image, StyleSheet, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
@@ -18,12 +18,11 @@ import { useAppContext } from '@/context/app-context';
 import { registerModeSwitcherHandlers } from '@/utils/global-mode-switcher';
 import type { Mode } from '@/types';
 
-const ALL_MODES: { mode: Mode; icon: IconSymbolName; label: string }[] = [
-  { mode: 'education', icon: 'graduationcap.fill', label: 'Education' },
-  { mode: 'competition', icon: 'trophy.fill', label: 'Competition' },
-  { mode: 'sports', icon: 'basketball.fill', label: 'Sports' },
-  { mode: 'church', icon: 'building.columns.fill', label: 'Church' },
-  { mode: 'business', icon: 'briefcase.fill', label: 'Business' },
+const ALL_MODES: { mode: Mode; icon: IconSymbolName; label: string; image?: any }[] = [
+  { mode: 'education', icon: 'graduationcap.fill', label: 'Education', image: require('@/assets/images/mode-education.png') },
+  { mode: 'sports', icon: 'basketball.fill', label: 'Sports', image: require('@/assets/images/mode-sports.png') },
+  { mode: 'church', icon: 'building.columns.fill', label: 'Church', image: require('@/assets/images/mode-church.png') },
+  { mode: 'business', icon: 'briefcase.fill', label: 'Business', image: require('@/assets/images/mode-business.png') },
 ];
 
 export function ModeSwitcherOverlay() {
@@ -113,10 +112,13 @@ export function ModeSwitcherOverlay() {
               ]}
               onPress={() => handleSelect(m.mode)}
             >
-              <View style={[styles.iconCircle, { backgroundColor: modeColor + '30' }]}>
-                <IconSymbol name={m.icon} size={24} color={modeColor} />
-              </View>
-              <ThemedText style={styles.modeLabel}>{m.label}</ThemedText>
+              {m.image ? (
+                <Image source={m.image} style={styles.modeImage} />
+              ) : (
+                <View style={[styles.iconCircle, { backgroundColor: modeColor + '30' }]}>
+                  <IconSymbol name={m.icon} size={24} color={modeColor} />
+                </View>
+              )}
             </Pressable>
           );
         })}
@@ -153,6 +155,11 @@ const styles = StyleSheet.create({
     borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  modeImage: {
+    width: 52,
+    height: 52,
   },
   modeLabel: {
     fontSize: 11,

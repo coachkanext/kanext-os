@@ -1,0 +1,138 @@
+17:44:14 [INFO] Batch: 16 NCAA D1 teams via ESPN
+17:44:14 [INFO] 
+[1/16] Alabama Crimson Tide
+17:44:14 [INFO] Scraping team: Alabama Crimson Tide (ESPN #333)
+17:44:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/333/schedule?season=2026 "HTTP/1.1 200 OK"
+17:44:15 [INFO]   Schedule: 28 completed games
+17:44:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401812260 "HTTP/1.1 200 OK"
+17:44:39 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401812261 "HTTP/1.1 200 OK"
+17:45:12 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — EOF occurred in violation of protocol (_ssl.c:1129)
+17:45:27 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:45:37 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:45:47 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:45:57 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:46:07 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:46:17 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:46:27 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:46:37 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:46:47 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:46:57 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:47:07 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:47:17 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:47:27 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:47:37 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:47:47 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:47:57 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:48:07 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:48:17 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:48:27 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:48:37 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:48:47 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:48:57 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:49:07 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:49:17 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:49:27 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+17:49:27 [INFO]   Loaded: 2 games, 44 player-game-stat rows
+17:49:27 [INFO] 
+[2/16] Arkansas Razorbacks
+17:49:27 [INFO] Scraping team: Arkansas Razorbacks (ESPN #8)
+17:49:37 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/8/schedule — [Errno 8] nodename nor servname provided, or not known
+17:49:37 [INFO]   Schedule: 0 completed games
+17:49:37 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+17:49:37 [INFO] 
+[3/16] Auburn Tigers
+17:49:37 [INFO] Scraping team: Auburn Tigers (ESPN #2)
+17:49:47 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2/schedule — [Errno 8] nodename nor servname provided, or not known
+17:49:47 [INFO]   Schedule: 0 completed games
+17:49:47 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+17:49:47 [INFO] 
+[4/16] Florida Gators
+17:49:47 [INFO] Scraping team: Florida Gators (ESPN #57)
+17:49:57 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/57/schedule — [Errno 8] nodename nor servname provided, or not known
+17:49:57 [INFO]   Schedule: 0 completed games
+17:49:57 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+17:49:57 [INFO] 
+[5/16] Georgia Bulldogs
+17:49:57 [INFO] Scraping team: Georgia Bulldogs (ESPN #61)
+17:50:07 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/61/schedule — [Errno 8] nodename nor servname provided, or not known
+17:50:07 [INFO]   Schedule: 0 completed games
+17:50:07 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+17:50:07 [INFO] 
+[6/16] Kentucky Wildcats
+17:50:07 [INFO] Scraping team: Kentucky Wildcats (ESPN #96)
+17:50:17 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/96/schedule — [Errno 8] nodename nor servname provided, or not known
+17:50:17 [INFO]   Schedule: 0 completed games
+17:50:17 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+17:50:17 [INFO] 
+[7/16] LSU Tigers
+17:50:17 [INFO] Scraping team: LSU Tigers (ESPN #99)
+17:50:27 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/99/schedule — [Errno 8] nodename nor servname provided, or not known
+17:50:27 [INFO]   Schedule: 0 completed games
+17:50:27 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+17:50:27 [INFO] 
+[8/16] Mississippi State Bulldogs
+17:50:27 [INFO] Scraping team: Mississippi State Bulldogs (ESPN #344)
+17:50:37 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/344/schedule — [Errno 8] nodename nor servname provided, or not known
+17:50:37 [INFO]   Schedule: 0 completed games
+17:50:37 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+17:50:37 [INFO] 
+[9/16] Missouri Tigers
+17:50:37 [INFO] Scraping team: Missouri Tigers (ESPN #142)
+17:50:47 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/142/schedule — [Errno 8] nodename nor servname provided, or not known
+17:50:47 [INFO]   Schedule: 0 completed games
+17:50:47 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+17:50:47 [INFO] 
+[10/16] Oklahoma Sooners
+17:50:47 [INFO] Scraping team: Oklahoma Sooners (ESPN #201)
+17:50:57 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/201/schedule — [Errno 8] nodename nor servname provided, or not known
+17:50:57 [INFO]   Schedule: 0 completed games
+17:50:57 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+17:50:57 [INFO] 
+[11/16] Ole Miss Rebels
+17:50:57 [INFO] Scraping team: Ole Miss Rebels (ESPN #145)
+17:51:07 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/145/schedule — [Errno 8] nodename nor servname provided, or not known
+17:51:07 [INFO]   Schedule: 0 completed games
+17:51:07 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+17:51:07 [INFO] 
+[12/16] South Carolina Gamecocks
+17:51:07 [INFO] Scraping team: South Carolina Gamecocks (ESPN #2579)
+17:51:17 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2579/schedule — [Errno 8] nodename nor servname provided, or not known
+17:51:17 [INFO]   Schedule: 0 completed games
+17:51:17 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+17:51:17 [INFO] 
+[13/16] Tennessee Volunteers
+17:51:17 [INFO] Scraping team: Tennessee Volunteers (ESPN #2633)
+17:51:27 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2633/schedule — [Errno 8] nodename nor servname provided, or not known
+17:51:27 [INFO]   Schedule: 0 completed games
+17:51:27 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+17:51:27 [INFO] 
+[14/16] Texas A&M Aggies
+17:51:27 [INFO] Scraping team: Texas A&M Aggies (ESPN #245)
+17:51:37 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/245/schedule — [Errno 8] nodename nor servname provided, or not known
+17:51:37 [INFO]   Schedule: 0 completed games
+17:51:37 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+17:51:37 [INFO] 
+[15/16] Texas Longhorns
+17:51:37 [INFO] Scraping team: Texas Longhorns (ESPN #251)
+17:51:47 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/251/schedule — [Errno 8] nodename nor servname provided, or not known
+17:51:47 [INFO]   Schedule: 0 completed games
+17:51:47 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+17:51:47 [INFO] 
+[16/16] Vanderbilt Commodores
+17:51:47 [INFO] Scraping team: Vanderbilt Commodores (ESPN #238)
+17:51:57 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/238/schedule — [Errno 8] nodename nor servname provided, or not known
+17:51:57 [INFO]   Schedule: 0 completed games
+17:51:57 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+17:51:57 [INFO] 
+============================================================
+17:51:57 [INFO]   BATCH COMPLETE: 16 teams, 2 games, 44 PGS rows
+17:51:57 [INFO] ============================================================
+
+============================================================
+  ESPN BATCH — FINAL SUMMARY
+============================================================
+  Total teams:                2987
+  Total players:              29882
+  Total games:                16551
+  Total player_game_stats:    435379
+============================================================

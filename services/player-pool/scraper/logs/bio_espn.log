@@ -1,0 +1,1083 @@
+07:23:34 [INFO] ESPN bio scrape: 215 D1 teams
+07:23:34 [INFO] 
+[1/215] Abilene Christian Wildcats (ESPN #2000)
+07:23:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2000/roster "HTTP/1.1 200 OK"
+07:23:35 [INFO]   Roster: 13 players
+07:23:35 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 0
+07:23:35 [INFO] 
+[2/215] Air Force Falcons (ESPN #2005)
+07:23:44 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2005/roster "HTTP/1.1 200 OK"
+07:23:44 [INFO]   Roster: 17 players
+07:23:45 [INFO]   Matched: 17, Ht: +0, Wt: +0, Yr: +0, Town: +17, Unmatched: 0
+07:23:45 [INFO] 
+[3/215] Akron Zips (ESPN #2006)
+07:23:54 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2006/roster "HTTP/1.1 200 OK"
+07:23:54 [INFO]   Roster: 16 players
+07:23:54 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+07:23:54 [INFO] 
+[4/215] Alabama A&M Bulldogs (ESPN #2010)
+07:24:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2010/roster "HTTP/1.1 200 OK"
+07:24:05 [INFO]   Roster: 16 players
+07:24:05 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:24:05 [INFO] 
+[5/215] Alabama Crimson Tide (ESPN #333)
+07:24:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/333/roster "HTTP/1.1 200 OK"
+07:24:15 [INFO]   Roster: 17 players
+07:24:15 [INFO]   Matched: 17, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 0
+07:24:15 [INFO] 
+[6/215] Alabama State Hornets (ESPN #2011)
+07:24:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2011/roster "HTTP/1.1 200 OK"
+07:24:25 [INFO]   Roster: 16 players
+07:24:25 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:24:25 [INFO] 
+[7/215] Alcorn State Braves (ESPN #2016)
+07:24:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2016/roster "HTTP/1.1 200 OK"
+07:24:35 [INFO]   Roster: 13 players
+07:24:35 [INFO]   Matched: 11, Ht: +0, Wt: +0, Yr: +0, Town: +11, Unmatched: 2
+07:24:35 [INFO] 
+[8/215] American University Eagles (ESPN #44)
+07:24:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/44/roster "HTTP/1.1 200 OK"
+07:24:45 [INFO]   Roster: 19 players
+07:24:45 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 6
+07:24:45 [INFO] 
+[9/215] App State Mountaineers (ESPN #2026)
+07:24:56 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2026/roster "HTTP/1.1 200 OK"
+07:24:56 [INFO]   Roster: 16 players
+07:24:56 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+07:24:56 [INFO] 
+[10/215] Arizona State Sun Devils (ESPN #9)
+07:25:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/9/roster "HTTP/1.1 200 OK"
+07:25:05 [INFO]   Roster: 16 players
+07:25:05 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 4
+07:25:05 [INFO] 
+[11/215] Arizona Wildcats (ESPN #12)
+07:25:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/12/roster "HTTP/1.1 200 OK"
+07:25:15 [INFO]   Roster: 16 players
+07:25:15 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:25:15 [INFO] 
+[12/215] Arkansas Razorbacks (ESPN #8)
+07:25:26 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/8/roster "HTTP/1.1 200 OK"
+07:25:26 [INFO]   Roster: 15 players
+07:25:26 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:25:26 [INFO] 
+[13/215] Arkansas State Red Wolves (ESPN #2032)
+07:25:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2032/roster "HTTP/1.1 200 OK"
+07:25:35 [INFO]   Roster: 16 players
+07:25:35 [INFO]   Matched: 11, Ht: +0, Wt: +0, Yr: +0, Town: +11, Unmatched: 5
+07:25:35 [INFO] 
+[14/215] Arkansas-Pine Bluff Golden Lions (ESPN #2029)
+07:25:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2029/roster "HTTP/1.1 200 OK"
+07:25:45 [INFO]   Roster: 15 players
+07:25:45 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:25:45 [INFO] 
+[15/215] Army Black Knights (ESPN #349)
+07:25:55 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/349/roster "HTTP/1.1 200 OK"
+07:25:55 [INFO]   Roster: 18 players
+07:25:55 [INFO]   Matched: 18, Ht: +0, Wt: +0, Yr: +0, Town: +18, Unmatched: 0
+07:25:55 [INFO] 
+[16/215] Auburn Tigers (ESPN #2)
+07:26:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2/roster "HTTP/1.1 200 OK"
+07:26:05 [INFO]   Roster: 18 players
+07:26:05 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 3
+07:26:05 [INFO] 
+[17/215] Austin Peay Governors (ESPN #2046)
+07:26:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2046/roster "HTTP/1.1 200 OK"
+07:26:15 [INFO]   Roster: 13 players
+07:26:15 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 0
+07:26:15 [INFO] 
+[18/215] Ball State Cardinals (ESPN #2050)
+07:26:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2050/roster "HTTP/1.1 200 OK"
+07:26:25 [INFO]   Roster: 15 players
+07:26:25 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:26:25 [INFO] 
+[19/215] Baylor Bears (ESPN #239)
+07:26:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/239/roster "HTTP/1.1 200 OK"
+07:26:35 [INFO]   Roster: 16 players
+07:26:35 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 4
+07:26:35 [INFO] 
+[20/215] Bellarmine Knights (ESPN #91)
+07:26:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/91/roster "HTTP/1.1 200 OK"
+07:26:45 [INFO]   Roster: 16 players
+07:26:45 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:26:45 [INFO] 
+[21/215] Belmont Bruins (ESPN #2057)
+07:26:55 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2057/roster "HTTP/1.1 200 OK"
+07:26:55 [INFO]   Roster: 15 players
+07:26:55 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 0
+07:26:55 [INFO] 
+[22/215] Binghamton Bearcats (ESPN #2066)
+07:27:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2066/roster "HTTP/1.1 200 OK"
+07:27:05 [INFO]   Roster: 14 players
+07:27:05 [INFO]   Matched: 11, Ht: +0, Wt: +0, Yr: +0, Town: +11, Unmatched: 3
+07:27:05 [INFO] 
+[23/215] Boise State Broncos (ESPN #68)
+07:27:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/68/roster "HTTP/1.1 200 OK"
+07:27:15 [INFO]   Roster: 15 players
+07:27:15 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:27:15 [INFO] 
+[24/215] Boston College Eagles (ESPN #103)
+07:27:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/103/roster "HTTP/1.1 200 OK"
+07:27:25 [INFO]   Roster: 16 players
+07:27:25 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+07:27:25 [INFO] 
+[25/215] Boston University Terriers (ESPN #104)
+07:27:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/104/roster "HTTP/1.1 200 OK"
+07:27:35 [INFO]   Roster: 16 players
+07:27:35 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+07:27:35 [INFO] 
+[26/215] Bowling Green Falcons (ESPN #189)
+07:27:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/189/roster "HTTP/1.1 200 OK"
+07:27:45 [INFO]   Roster: 17 players
+07:27:45 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 2
+07:27:45 [INFO] 
+[27/215] Bradley Braves (ESPN #71)
+07:27:55 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/71/roster "HTTP/1.1 200 OK"
+07:27:55 [INFO]   Roster: 15 players
+07:27:55 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:27:55 [INFO] 
+[28/215] Brown Bears (ESPN #225)
+07:28:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/225/roster "HTTP/1.1 200 OK"
+07:28:05 [INFO]   Roster: 15 players
+07:28:05 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:28:05 [INFO] 
+[29/215] Bryant Bulldogs (ESPN #2803)
+07:28:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2803/roster "HTTP/1.1 200 OK"
+07:28:15 [INFO]   Roster: 19 players
+07:28:15 [INFO]   Matched: 18, Ht: +0, Wt: +0, Yr: +0, Town: +18, Unmatched: 1
+07:28:15 [INFO] 
+[30/215] Buffalo Bulls (ESPN #2084)
+07:28:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2084/roster "HTTP/1.1 200 OK"
+07:28:25 [INFO]   Roster: 14 players
+07:28:25 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 1
+07:28:25 [INFO] 
+[31/215] Butler Bulldogs (ESPN #2086)
+07:28:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2086/roster "HTTP/1.1 200 OK"
+07:28:35 [INFO]   Roster: 15 players
+07:28:35 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:28:35 [INFO] 
+[32/215] BYU Cougars (ESPN #252)
+07:28:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/252/roster "HTTP/1.1 200 OK"
+07:28:45 [INFO]   Roster: 17 players
+07:28:45 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 3
+07:28:45 [INFO] 
+[33/215] Cal Poly Mustangs (ESPN #13)
+07:28:55 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/13/roster "HTTP/1.1 200 OK"
+07:28:55 [INFO]   Roster: 16 players
+07:28:55 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 1
+07:28:55 [INFO] 
+[34/215] Cal State Bakersfield Roadrunners (ESPN #2934)
+07:29:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2934/roster "HTTP/1.1 200 OK"
+07:29:05 [INFO]   Roster: 14 players
+07:29:05 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 1
+07:29:05 [INFO] 
+[35/215] Cal State Fullerton Titans (ESPN #2239)
+07:29:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2239/roster "HTTP/1.1 200 OK"
+07:29:15 [INFO]   Roster: 17 players
+07:29:15 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 5
+07:29:15 [INFO] 
+[36/215] California Baptist Lancers (ESPN #2856)
+07:29:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2856/roster "HTTP/1.1 200 OK"
+07:29:25 [INFO]   Roster: 16 players
+07:29:25 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+07:29:25 [INFO] 
+[37/215] California Golden Bears (ESPN #25)
+07:29:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/25/roster "HTTP/1.1 200 OK"
+07:29:35 [INFO]   Roster: 18 players
+07:29:35 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +16, Unmatched: 2
+07:29:35 [INFO] 
+[38/215] Campbell Fighting Camels (ESPN #2097)
+07:29:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2097/roster "HTTP/1.1 200 OK"
+07:29:45 [INFO]   Roster: 14 players
+07:29:45 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 2
+07:29:45 [INFO] 
+[39/215] Canisius Golden Griffins (ESPN #2099)
+07:29:55 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2099/roster "HTTP/1.1 200 OK"
+07:29:55 [INFO]   Roster: 16 players
+07:29:55 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +16, Unmatched: 0
+07:29:55 [INFO] 
+[40/215] Central Arkansas Bears (ESPN #2110)
+07:30:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2110/roster "HTTP/1.1 200 OK"
+07:30:05 [INFO]   Roster: 17 players
+07:30:05 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 2
+07:30:05 [INFO] 
+[41/215] Central Connecticut Blue Devils (ESPN #2115)
+07:30:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2115/roster "HTTP/1.1 200 OK"
+07:30:15 [INFO]   Roster: 16 players
+07:30:15 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:30:15 [INFO] 
+[42/215] Central Michigan Chippewas (ESPN #2117)
+07:30:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2117/roster "HTTP/1.1 200 OK"
+07:30:25 [INFO]   Roster: 15 players
+07:30:25 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 3
+07:30:25 [INFO] 
+[43/215] Charleston Cougars (ESPN #232)
+07:30:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/232/roster "HTTP/1.1 200 OK"
+07:30:35 [INFO]   Roster: 16 players
+07:30:35 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +16, Unmatched: 0
+07:30:35 [INFO] 
+[44/215] Charleston Southern Buccaneers (ESPN #2127)
+07:30:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2127/roster "HTTP/1.1 200 OK"
+07:30:45 [INFO]   Roster: 16 players
+07:30:45 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 1
+07:30:45 [INFO] 
+[45/215] Charlotte 49ers (ESPN #2429)
+07:30:55 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2429/roster "HTTP/1.1 200 OK"
+07:30:55 [INFO]   Roster: 16 players
+07:30:55 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 1
+07:30:55 [INFO] 
+[46/215] Chattanooga Mocs (ESPN #236)
+07:31:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/236/roster "HTTP/1.1 200 OK"
+07:31:05 [INFO]   Roster: 17 players
+07:31:05 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 2
+07:31:05 [INFO] 
+[47/215] Chicago State Cougars (ESPN #2130)
+07:31:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2130/roster "HTTP/1.1 200 OK"
+07:31:15 [INFO]   Roster: 17 players
+07:31:15 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 2
+07:31:15 [INFO] 
+[48/215] Cincinnati Bearcats (ESPN #2132)
+07:31:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2132/roster "HTTP/1.1 200 OK"
+07:31:25 [INFO]   Roster: 16 players
+07:31:25 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+07:31:25 [INFO] 
+[49/215] Clemson Tigers (ESPN #228)
+07:31:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/228/roster "HTTP/1.1 200 OK"
+07:31:35 [INFO]   Roster: 13 players
+07:31:35 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 1
+07:31:35 [INFO] 
+[50/215] Cleveland State Vikings (ESPN #325)
+07:31:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/325/roster "HTTP/1.1 200 OK"
+07:31:45 [INFO]   Roster: 15 players
+07:31:45 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:31:45 [INFO] 
+[51/215] Coastal Carolina Chanticleers (ESPN #324)
+07:31:55 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/324/roster "HTTP/1.1 200 OK"
+07:31:55 [INFO]   Roster: 15 players
+07:31:55 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:31:55 [INFO] 
+[52/215] Colorado Buffaloes (ESPN #38)
+07:32:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/38/roster "HTTP/1.1 200 OK"
+07:32:05 [INFO]   Roster: 15 players
+07:32:05 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:32:05 [INFO] 
+[53/215] Colorado State Rams (ESPN #36)
+07:32:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/36/roster "HTTP/1.1 200 OK"
+07:32:15 [INFO]   Roster: 14 players
+07:32:15 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 1
+07:32:15 [INFO] 
+[54/215] Columbia Lions (ESPN #171)
+07:32:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/171/roster "HTTP/1.1 200 OK"
+07:32:25 [INFO]   Roster: 17 players
+07:32:25 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 3
+07:32:25 [INFO] 
+[55/215] Coppin State Eagles (ESPN #2154)
+07:32:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2154/roster "HTTP/1.1 200 OK"
+07:32:35 [INFO]   Roster: 17 players
+07:32:35 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 2
+07:32:35 [INFO] 
+[56/215] Cornell Big Red (ESPN #172)
+07:32:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/172/roster "HTTP/1.1 200 OK"
+07:32:45 [INFO]   Roster: 20 players
+07:32:45 [INFO]   Matched: 17, Ht: +0, Wt: +0, Yr: +0, Town: +17, Unmatched: 3
+07:32:45 [INFO] 
+[57/215] Creighton Bluejays (ESPN #156)
+07:32:56 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/156/roster "HTTP/1.1 200 OK"
+07:32:56 [INFO]   Roster: 16 players
+07:32:56 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:32:56 [INFO] 
+[58/215] Dartmouth Big Green (ESPN #159)
+07:33:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/159/roster "HTTP/1.1 200 OK"
+07:33:05 [INFO]   Roster: 14 players
+07:33:05 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 0
+07:33:05 [INFO] 
+[59/215] Davidson Wildcats (ESPN #2166)
+07:33:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2166/roster "HTTP/1.1 200 OK"
+07:33:15 [INFO]   Roster: 16 players
+07:33:15 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +16, Unmatched: 0
+07:33:15 [INFO] 
+[60/215] Dayton Flyers (ESPN #2168)
+07:33:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2168/roster "HTTP/1.1 200 OK"
+07:33:25 [INFO]   Roster: 15 players
+07:33:25 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:33:25 [INFO] 
+[61/215] Delaware Blue Hens (ESPN #48)
+07:33:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/48/roster "HTTP/1.1 200 OK"
+07:33:35 [INFO]   Roster: 15 players
+07:33:35 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:33:35 [INFO] 
+[62/215] Delaware State Hornets (ESPN #2169)
+07:33:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2169/roster "HTTP/1.1 200 OK"
+07:33:45 [INFO]   Roster: 16 players
+07:33:45 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:33:45 [INFO] 
+[63/215] Denver Pioneers (ESPN #2172)
+07:33:55 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2172/roster "HTTP/1.1 200 OK"
+07:33:55 [INFO]   Roster: 15 players
+07:33:55 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 3
+07:33:55 [INFO] 
+[64/215] DePaul Blue Demons (ESPN #305)
+07:34:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/305/roster "HTTP/1.1 200 OK"
+07:34:05 [INFO]   Roster: 16 players
+07:34:05 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+07:34:05 [INFO] 
+[65/215] Detroit Mercy Titans (ESPN #2174)
+07:34:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2174/roster "HTTP/1.1 200 OK"
+07:34:15 [INFO]   Roster: 14 players
+07:34:15 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 0
+07:34:15 [INFO] 
+[66/215] Drake Bulldogs (ESPN #2181)
+07:34:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2181/roster "HTTP/1.1 200 OK"
+07:34:25 [INFO]   Roster: 13 players
+07:34:25 [INFO]   Matched: 10, Ht: +0, Wt: +0, Yr: +0, Town: +10, Unmatched: 3
+07:34:25 [INFO] 
+[67/215] Drexel Dragons (ESPN #2182)
+07:34:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2182/roster "HTTP/1.1 200 OK"
+07:34:35 [INFO]   Roster: 15 players
+07:34:35 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:34:35 [INFO] 
+[68/215] Duke Blue Devils (ESPN #150)
+07:34:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/150/roster "HTTP/1.1 200 OK"
+07:34:45 [INFO]   Roster: 13 players
+07:34:45 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 1
+07:34:45 [INFO] 
+[69/215] Duquesne Dukes (ESPN #2184)
+07:34:55 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2184/roster "HTTP/1.1 200 OK"
+07:34:55 [INFO]   Roster: 18 players
+07:34:55 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +16, Unmatched: 2
+07:34:55 [INFO] 
+[70/215] East Carolina Pirates (ESPN #151)
+07:35:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/151/roster "HTTP/1.1 200 OK"
+07:35:05 [INFO]   Roster: 17 players
+07:35:05 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 4
+07:35:05 [INFO] 
+[71/215] East Tennessee State Buccaneers (ESPN #2193)
+07:35:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2193/roster "HTTP/1.1 200 OK"
+07:35:15 [INFO]   Roster: 15 players
+07:35:15 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:35:15 [INFO] 
+[72/215] East Texas A&M Lions (ESPN #2837)
+07:35:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2837/roster "HTTP/1.1 200 OK"
+07:35:25 [INFO]   Roster: 16 players
+07:35:25 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+07:35:25 [INFO] 
+[73/215] Eastern Illinois Panthers (ESPN #2197)
+07:35:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2197/roster "HTTP/1.1 200 OK"
+07:35:35 [INFO]   Roster: 14 players
+07:35:35 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 2
+07:35:35 [INFO] 
+[74/215] Eastern Kentucky Colonels (ESPN #2198)
+07:35:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2198/roster "HTTP/1.1 200 OK"
+07:35:45 [INFO]   Roster: 13 players
+07:35:45 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 1
+07:35:45 [INFO] 
+[75/215] Eastern Washington Eagles (ESPN #331)
+07:35:55 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/331/roster "HTTP/1.1 200 OK"
+07:35:55 [INFO]   Roster: 15 players
+07:35:55 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:35:55 [INFO] 
+[76/215] Elon Phoenix (ESPN #2210)
+07:36:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2210/roster "HTTP/1.1 200 OK"
+07:36:05 [INFO]   Roster: 16 players
+07:36:05 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+07:36:05 [INFO] 
+[77/215] Evansville Purple Aces (ESPN #339)
+07:36:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/339/roster "HTTP/1.1 200 OK"
+07:36:15 [INFO]   Roster: 15 players
+07:36:15 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:36:15 [INFO] 
+[78/215] Fairfield Stags (ESPN #2217)
+07:36:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2217/roster "HTTP/1.1 200 OK"
+07:36:25 [INFO]   Roster: 19 players
+07:36:25 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 4
+07:36:25 [INFO] 
+[79/215] Fairleigh Dickinson Knights (ESPN #161)
+07:36:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/161/roster "HTTP/1.1 200 OK"
+07:36:35 [INFO]   Roster: 16 players
+07:36:35 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:36:35 [INFO] 
+[80/215] Florida Atlantic Owls (ESPN #2226)
+07:36:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2226/roster "HTTP/1.1 200 OK"
+07:36:45 [INFO]   Roster: 15 players
+07:36:45 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:36:45 [INFO] 
+[81/215] Florida Gators (ESPN #57)
+07:36:55 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/57/roster "HTTP/1.1 200 OK"
+07:36:55 [INFO]   Roster: 15 players
+07:36:55 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:36:55 [INFO] 
+[82/215] Florida Gulf Coast Eagles (ESPN #526)
+07:37:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/526/roster "HTTP/1.1 200 OK"
+07:37:05 [INFO]   Roster: 16 players
+07:37:05 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+07:37:05 [INFO] 
+[83/215] Florida International Panthers (ESPN #2229)
+07:37:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2229/roster "HTTP/1.1 200 OK"
+07:37:15 [INFO]   Roster: 16 players
+07:37:15 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+07:37:15 [INFO] 
+[84/215] Florida State Seminoles (ESPN #52)
+07:37:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/52/roster "HTTP/1.1 200 OK"
+07:37:25 [INFO]   Roster: 15 players
+07:37:25 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 3
+07:37:25 [INFO] 
+[85/215] Fordham Rams (ESPN #2230)
+07:37:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2230/roster "HTTP/1.1 200 OK"
+07:37:35 [INFO]   Roster: 16 players
+07:37:35 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +16, Unmatched: 0
+07:37:35 [INFO] 
+[86/215] Fresno State Bulldogs (ESPN #278)
+07:37:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/278/roster "HTTP/1.1 200 OK"
+07:37:45 [INFO]   Roster: 15 players
+07:37:45 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:37:45 [INFO] 
+[87/215] Furman Paladins (ESPN #231)
+07:37:55 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/231/roster "HTTP/1.1 200 OK"
+07:37:55 [INFO]   Roster: 15 players
+07:37:55 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:37:55 [INFO] 
+[88/215] Gardner-Webb Runnin' Bulldogs (ESPN #2241)
+07:40:41 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2241/roster "HTTP/1.1 200 OK"
+07:40:41 [INFO]   Roster: 17 players
+07:40:41 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +16, Unmatched: 1
+07:40:41 [INFO] 
+[89/215] George Mason Patriots (ESPN #2244)
+07:40:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2244/roster "HTTP/1.1 200 OK"
+07:40:50 [INFO]   Roster: 16 players
+07:40:50 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:40:50 [INFO] 
+[90/215] George Washington Revolutionaries (ESPN #45)
+07:41:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/45/roster "HTTP/1.1 200 OK"
+07:41:00 [INFO]   Roster: 15 players
+07:41:00 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 3
+07:41:00 [INFO] 
+[91/215] Georgetown Hoyas (ESPN #46)
+07:41:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/46/roster "HTTP/1.1 200 OK"
+07:41:10 [INFO]   Roster: 17 players
+07:41:10 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 2
+07:41:10 [INFO] 
+[92/215] Georgia Bulldogs (ESPN #61)
+07:41:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/61/roster "HTTP/1.1 200 OK"
+07:41:21 [INFO]   Roster: 15 players
+07:41:21 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:41:21 [INFO] 
+[93/215] Georgia Tech Yellow Jackets (ESPN #59)
+07:41:30 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/59/roster "HTTP/1.1 200 OK"
+07:41:30 [INFO]   Roster: 14 players
+07:41:30 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 1
+07:41:30 [INFO] 
+[94/215] Gonzaga Bulldogs (ESPN #2250)
+07:41:40 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2250/roster "HTTP/1.1 200 OK"
+07:41:40 [INFO]   Roster: 16 players
+07:41:40 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:41:40 [INFO] 
+[95/215] Grand Canyon Lopes (ESPN #2253)
+07:41:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2253/roster "HTTP/1.1 200 OK"
+07:41:50 [INFO]   Roster: 15 players
+07:41:50 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 3
+07:41:50 [INFO] 
+[96/215] Green Bay Phoenix (ESPN #2739)
+07:42:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2739/roster "HTTP/1.1 200 OK"
+07:42:00 [INFO]   Roster: 16 players
+07:42:00 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 1
+07:42:00 [INFO] 
+[97/215] Hampton Pirates (ESPN #2261)
+07:42:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2261/roster "HTTP/1.1 200 OK"
+07:42:10 [INFO]   Roster: 15 players
+07:42:10 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 0
+07:42:10 [INFO] 
+[98/215] Harvard Crimson (ESPN #108)
+07:42:20 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/108/roster "HTTP/1.1 200 OK"
+07:42:20 [INFO]   Roster: 17 players
+07:42:20 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +16, Unmatched: 1
+07:42:20 [INFO] 
+[99/215] Hawai'i Rainbow Warriors (ESPN #62)
+07:42:30 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/62/roster "HTTP/1.1 200 OK"
+07:42:30 [INFO]   Roster: 13 players
+07:42:30 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 1
+07:42:30 [INFO] 
+[100/215] High Point Panthers (ESPN #2272)
+07:42:40 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2272/roster "HTTP/1.1 200 OK"
+07:42:40 [INFO]   Roster: 19 players
+07:42:40 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 4
+07:42:40 [INFO] 
+[101/215] Hofstra Pride (ESPN #2275)
+07:42:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2275/roster "HTTP/1.1 200 OK"
+07:42:50 [INFO]   Roster: 15 players
+07:42:50 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 3
+07:42:50 [INFO] 
+[102/215] Houston Christian Huskies (ESPN #2277)
+07:43:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2277/roster "HTTP/1.1 200 OK"
+07:43:00 [INFO]   Roster: 15 players
+07:43:00 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:43:00 [INFO] 
+[103/215] Houston Cougars (ESPN #248)
+07:43:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/248/roster "HTTP/1.1 200 OK"
+07:43:10 [INFO]   Roster: 14 players
+07:43:10 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 1
+07:43:10 [INFO] 
+[104/215] Howard Bison (ESPN #47)
+07:43:20 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/47/roster "HTTP/1.1 200 OK"
+07:43:20 [INFO]   Roster: 16 players
+07:43:20 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 0
+07:43:20 [INFO] 
+[105/215] Idaho State Bengals (ESPN #304)
+07:43:30 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/304/roster "HTTP/1.1 200 OK"
+07:43:30 [INFO]   Roster: 15 players
+07:43:30 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:43:30 [INFO] 
+[106/215] Idaho Vandals (ESPN #70)
+07:43:40 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/70/roster "HTTP/1.1 200 OK"
+07:43:40 [INFO]   Roster: 16 players
+07:43:40 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 4
+07:43:40 [INFO] 
+[107/215] Illinois Fighting Illini (ESPN #356)
+07:43:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/356/roster "HTTP/1.1 200 OK"
+07:43:50 [INFO]   Roster: 14 players
+07:43:50 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 1
+07:43:50 [INFO] 
+[108/215] Illinois State Redbirds (ESPN #2287)
+07:44:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2287/roster "HTTP/1.1 200 OK"
+07:44:00 [INFO]   Roster: 14 players
+07:44:00 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 2
+07:44:00 [INFO] 
+[109/215] Incarnate Word Cardinals (ESPN #2916)
+07:44:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2916/roster "HTTP/1.1 200 OK"
+07:44:10 [INFO]   Roster: 15 players
+07:44:10 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 1
+07:44:10 [INFO] 
+[110/215] Indiana Hoosiers (ESPN #84)
+07:44:20 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/84/roster "HTTP/1.1 200 OK"
+07:44:20 [INFO]   Roster: 17 players
+07:44:20 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 4
+07:44:20 [INFO] 
+[111/215] Iona Gaels (ESPN #314)
+07:44:30 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/314/roster "HTTP/1.1 200 OK"
+07:44:30 [INFO]   Roster: 16 players
+07:44:30 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+07:44:30 [INFO] 
+[112/215] Iowa Hawkeyes (ESPN #2294)
+07:44:40 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2294/roster "HTTP/1.1 200 OK"
+07:44:40 [INFO]   Roster: 14 players
+07:44:40 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 2
+07:44:40 [INFO] 
+[113/215] Iowa State Cyclones (ESPN #66)
+07:44:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/66/roster "HTTP/1.1 200 OK"
+07:44:50 [INFO]   Roster: 14 players
+07:44:50 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 1
+07:44:50 [INFO] 
+[114/215] IU Indianapolis Jaguars (ESPN #85)
+07:45:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/85/roster "HTTP/1.1 200 OK"
+07:45:00 [INFO]   Roster: 15 players
+07:45:00 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 0
+07:45:00 [INFO] 
+[115/215] Jacksonville Dolphins (ESPN #294)
+07:45:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/294/roster "HTTP/1.1 200 OK"
+07:45:10 [INFO]   Roster: 17 players
+07:45:10 [INFO]   Matched: 17, Ht: +0, Wt: +0, Yr: +0, Town: +17, Unmatched: 0
+07:45:10 [INFO] 
+[116/215] Jacksonville State Gamecocks (ESPN #55)
+07:45:20 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/55/roster "HTTP/1.1 200 OK"
+07:45:20 [INFO]   Roster: 15 players
+07:45:20 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:45:20 [INFO] 
+[117/215] Kansas City Roos (ESPN #140)
+07:45:30 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/140/roster "HTTP/1.1 200 OK"
+07:45:30 [INFO]   Roster: 15 players
+07:45:30 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 3
+07:45:30 [INFO] 
+[118/215] Kansas State Wildcats (ESPN #2306)
+07:45:40 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2306/roster "HTTP/1.1 200 OK"
+07:45:40 [INFO]   Roster: 14 players
+07:45:40 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 1
+07:45:40 [INFO] 
+[119/215] Kennesaw State Owls (ESPN #338)
+07:45:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/338/roster "HTTP/1.1 200 OK"
+07:45:50 [INFO]   Roster: 19 players
+07:45:50 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 4
+07:45:50 [INFO] 
+[120/215] Kentucky Wildcats (ESPN #96)
+07:46:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/96/roster "HTTP/1.1 200 OK"
+07:46:00 [INFO]   Roster: 16 players
+07:46:00 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:46:00 [INFO] 
+[121/215] La Salle Explorers (ESPN #2325)
+07:46:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2325/roster "HTTP/1.1 200 OK"
+07:46:10 [INFO]   Roster: 17 players
+07:46:10 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 1
+07:46:10 [INFO] 
+[122/215] Lamar Cardinals (ESPN #2320)
+07:46:20 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2320/roster "HTTP/1.1 200 OK"
+07:46:20 [INFO]   Roster: 15 players
+07:46:20 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 3
+07:46:20 [INFO] 
+[123/215] Liberty Flames (ESPN #2335)
+07:46:30 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2335/roster "HTTP/1.1 200 OK"
+07:46:30 [INFO]   Roster: 15 players
+07:46:30 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:46:30 [INFO] 
+[124/215] Lindenwood Lions (ESPN #2815)
+07:46:40 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2815/roster "HTTP/1.1 200 OK"
+07:46:40 [INFO]   Roster: 15 players
+07:46:40 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:46:40 [INFO] 
+[125/215] Lipscomb Bisons (ESPN #288)
+07:46:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/288/roster "HTTP/1.1 200 OK"
+07:46:50 [INFO]   Roster: 16 players
+07:46:50 [INFO]   Matched: 11, Ht: +0, Wt: +0, Yr: +0, Town: +11, Unmatched: 5
+07:46:50 [INFO] 
+[126/215] Little Rock Trojans (ESPN #2031)
+07:47:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2031/roster "HTTP/1.1 200 OK"
+07:47:00 [INFO]   Roster: 15 players
+07:47:00 [INFO]   Matched: 11, Ht: +0, Wt: +0, Yr: +0, Town: +11, Unmatched: 4
+07:47:00 [INFO] 
+[127/215] Long Beach State Beach (ESPN #299)
+07:47:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/299/roster "HTTP/1.1 200 OK"
+07:47:10 [INFO]   Roster: 15 players
+07:47:10 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 2
+07:47:10 [INFO] 
+[128/215] Longwood Lancers (ESPN #2344)
+07:47:20 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2344/roster "HTTP/1.1 200 OK"
+07:47:20 [INFO]   Roster: 15 players
+07:47:20 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:47:20 [INFO] 
+[129/215] Louisiana Tech Bulldogs (ESPN #2348)
+07:47:31 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2348/roster "HTTP/1.1 200 OK"
+07:47:31 [INFO]   Roster: 15 players
+07:47:31 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:47:31 [INFO] 
+[130/215] Louisville Cardinals (ESPN #97)
+07:47:40 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/97/roster "HTTP/1.1 200 OK"
+07:47:40 [INFO]   Roster: 16 players
+07:47:40 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:47:40 [INFO] 
+[131/215] Loyola Chicago Ramblers (ESPN #2350)
+07:47:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2350/roster "HTTP/1.1 200 OK"
+07:47:50 [INFO]   Roster: 16 players
+07:47:50 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 0
+07:47:50 [INFO] 
+[132/215] Loyola Marymount Lions (ESPN #2351)
+07:48:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2351/roster "HTTP/1.1 200 OK"
+07:48:00 [INFO]   Roster: 16 players
+07:48:00 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:48:00 [INFO] 
+[133/215] LSU Tigers (ESPN #99)
+07:48:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/99/roster "HTTP/1.1 200 OK"
+07:48:10 [INFO]   Roster: 15 players
+07:48:10 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:48:10 [INFO] 
+[134/215] Maine Black Bears (ESPN #311)
+07:48:20 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/311/roster "HTTP/1.1 200 OK"
+07:48:20 [INFO]   Roster: 16 players
+07:48:20 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+07:48:20 [INFO] 
+[135/215] Manhattan Jaspers (ESPN #2363)
+07:48:30 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2363/roster "HTTP/1.1 200 OK"
+07:48:30 [INFO]   Roster: 19 players
+07:48:30 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 5
+07:48:30 [INFO] 
+[136/215] Marist Red Foxes (ESPN #2368)
+07:48:40 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2368/roster "HTTP/1.1 200 OK"
+07:48:40 [INFO]   Roster: 14 players
+07:48:40 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 0
+07:48:40 [INFO] 
+[137/215] Marquette Golden Eagles (ESPN #269)
+07:48:51 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/269/roster "HTTP/1.1 200 OK"
+07:48:51 [INFO]   Roster: 17 players
+07:48:51 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 3
+07:48:51 [INFO] 
+[138/215] Maryland Terrapins (ESPN #120)
+07:49:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/120/roster "HTTP/1.1 200 OK"
+07:49:00 [INFO]   Roster: 16 players
+07:49:00 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 4
+07:49:00 [INFO] 
+[139/215] Memphis Tigers (ESPN #235)
+07:49:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/235/roster "HTTP/1.1 200 OK"
+07:49:10 [INFO]   Roster: 15 players
+07:49:10 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 0
+07:49:10 [INFO] 
+[140/215] Mercer Bears (ESPN #2382)
+07:49:20 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2382/roster "HTTP/1.1 200 OK"
+07:49:20 [INFO]   Roster: 16 players
+07:49:20 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:49:20 [INFO] 
+[141/215] Merrimack Warriors (ESPN #2771)
+07:49:30 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2771/roster "HTTP/1.1 200 OK"
+07:49:30 [INFO]   Roster: 15 players
+07:49:30 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 3
+07:49:30 [INFO] 
+[142/215] Miami Hurricanes (ESPN #2390)
+07:49:40 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2390/roster "HTTP/1.1 200 OK"
+07:49:40 [INFO]   Roster: 13 players
+07:49:40 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 1
+07:49:40 [INFO] 
+[143/215] Michigan State Spartans (ESPN #127)
+07:49:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/127/roster "HTTP/1.1 200 OK"
+07:49:50 [INFO]   Roster: 15 players
+07:49:50 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:49:50 [INFO] 
+[144/215] Michigan Wolverines (ESPN #130)
+07:50:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/130/roster "HTTP/1.1 200 OK"
+07:50:00 [INFO]   Roster: 16 players
+07:50:00 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:50:00 [INFO] 
+[145/215] Middle Tennessee Blue Raiders (ESPN #2393)
+07:50:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2393/roster "HTTP/1.1 200 OK"
+07:50:10 [INFO]   Roster: 15 players
+07:50:10 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 3
+07:50:10 [INFO] 
+[146/215] Milwaukee Panthers (ESPN #270)
+07:50:20 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/270/roster "HTTP/1.1 200 OK"
+07:50:20 [INFO]   Roster: 16 players
+07:50:20 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:50:20 [INFO] 
+[147/215] Minnesota Golden Gophers (ESPN #135)
+07:50:30 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/135/roster "HTTP/1.1 200 OK"
+07:50:30 [INFO]   Roster: 15 players
+07:50:30 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 3
+07:50:30 [INFO] 
+[148/215] Mississippi State Bulldogs (ESPN #344)
+07:50:40 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/344/roster "HTTP/1.1 200 OK"
+07:50:40 [INFO]   Roster: 15 players
+07:50:40 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 3
+07:50:40 [INFO] 
+[149/215] Missouri State Bears (ESPN #2623)
+07:50:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2623/roster "HTTP/1.1 200 OK"
+07:50:50 [INFO]   Roster: 14 players
+07:50:50 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 1
+07:50:50 [INFO] 
+[150/215] Missouri Tigers (ESPN #142)
+07:51:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/142/roster "HTTP/1.1 200 OK"
+07:51:00 [INFO]   Roster: 14 players
+07:51:00 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 1
+07:51:00 [INFO] 
+[151/215] Monmouth Hawks (ESPN #2405)
+07:51:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2405/roster "HTTP/1.1 200 OK"
+07:51:10 [INFO]   Roster: 16 players
+07:51:11 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +16, Unmatched: 0
+07:51:11 [INFO] 
+[152/215] Montana Grizzlies (ESPN #149)
+07:51:20 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/149/roster "HTTP/1.1 200 OK"
+07:51:20 [INFO]   Roster: 14 players
+07:51:20 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 1
+07:51:20 [INFO] 
+[153/215] Montana State Bobcats (ESPN #147)
+07:51:30 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/147/roster "HTTP/1.1 200 OK"
+07:51:30 [INFO]   Roster: 15 players
+07:51:30 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:51:30 [INFO] 
+[154/215] Morehead State Eagles (ESPN #2413)
+07:51:41 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2413/roster "HTTP/1.1 200 OK"
+07:51:41 [INFO]   Roster: 15 players
+07:51:41 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 3
+07:51:41 [INFO] 
+[155/215] Mount St. Mary's Mountaineers (ESPN #116)
+07:51:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/116/roster "HTTP/1.1 200 OK"
+07:51:50 [INFO]   Roster: 16 players
+07:51:50 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:51:50 [INFO] 
+[156/215] NC State Wolfpack (ESPN #152)
+07:52:01 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/152/roster "HTTP/1.1 200 OK"
+07:52:01 [INFO]   Roster: 15 players
+07:52:01 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:52:01 [INFO] 
+[157/215] Nebraska Cornhuskers (ESPN #158)
+07:52:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/158/roster "HTTP/1.1 200 OK"
+07:52:10 [INFO]   Roster: 16 players
+07:52:10 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+07:52:10 [INFO] 
+[158/215] New Hampshire Wildcats (ESPN #160)
+07:52:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/160/roster "HTTP/1.1 200 OK"
+07:52:21 [INFO]   Roster: 14 players
+07:52:21 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 0
+07:52:21 [INFO] 
+[159/215] New Orleans Privateers (ESPN #2443)
+07:52:30 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2443/roster "HTTP/1.1 200 OK"
+07:52:30 [INFO]   Roster: 16 players
+07:52:30 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 1
+07:52:30 [INFO] 
+[160/215] NJIT Highlanders (ESPN #2885)
+07:52:40 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2885/roster "HTTP/1.1 200 OK"
+07:52:40 [INFO]   Roster: 15 players
+07:52:40 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:52:40 [INFO] 
+[161/215] North Alabama Lions (ESPN #2453)
+07:52:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2453/roster "HTTP/1.1 200 OK"
+07:52:50 [INFO]   Roster: 14 players
+07:52:50 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 2
+07:52:50 [INFO] 
+[162/215] North Carolina A&T Aggies (ESPN #2448)
+07:53:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2448/roster "HTTP/1.1 200 OK"
+07:53:00 [INFO]   Roster: 16 players
+07:53:00 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 4
+07:53:00 [INFO] 
+[163/215] North Carolina Tar Heels (ESPN #153)
+07:53:11 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/153/roster "HTTP/1.1 200 OK"
+07:53:11 [INFO]   Roster: 16 players
+07:53:11 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +16, Unmatched: 0
+07:53:11 [INFO] 
+[164/215] North Dakota Fighting Hawks (ESPN #155)
+07:53:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/155/roster "HTTP/1.1 200 OK"
+07:53:21 [INFO]   Roster: 30 players
+07:53:21 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 15
+07:53:21 [INFO] 
+[165/215] North Dakota State Bison (ESPN #2449)
+07:53:30 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2449/roster "HTTP/1.1 200 OK"
+07:53:30 [INFO]   Roster: 14 players
+07:53:30 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 1
+07:53:30 [INFO] 
+[166/215] North Florida Ospreys (ESPN #2454)
+07:53:40 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2454/roster "HTTP/1.1 200 OK"
+07:53:40 [INFO]   Roster: 14 players
+07:53:40 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 2
+07:53:40 [INFO] 
+[167/215] North Texas Mean Green (ESPN #249)
+07:53:51 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/249/roster "HTTP/1.1 200 OK"
+07:53:51 [INFO]   Roster: 12 players
+07:53:51 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 0
+07:53:51 [INFO] 
+[168/215] Northern Arizona Lumberjacks (ESPN #2464)
+07:54:01 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2464/roster "HTTP/1.1 200 OK"
+07:54:01 [INFO]   Roster: 14 players
+07:54:01 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 0
+07:54:01 [INFO] 
+[169/215] Northern Colorado Bears (ESPN #2458)
+07:54:11 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2458/roster "HTTP/1.1 200 OK"
+07:54:11 [INFO]   Roster: 16 players
+07:54:11 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+07:54:11 [INFO] 
+[170/215] Northern Kentucky Norse (ESPN #94)
+07:54:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/94/roster "HTTP/1.1 200 OK"
+07:54:21 [INFO]   Roster: 14 players
+07:54:21 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 2
+07:54:21 [INFO] 
+[171/215] Notre Dame Fighting Irish (ESPN #87)
+07:54:31 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/87/roster "HTTP/1.1 200 OK"
+07:54:31 [INFO]   Roster: 16 players
+07:54:31 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:54:31 [INFO] 
+[172/215] Ohio State Buckeyes (ESPN #194)
+07:54:41 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/194/roster "HTTP/1.1 200 OK"
+07:54:41 [INFO]   Roster: 15 players
+07:54:41 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:54:41 [INFO] 
+[173/215] Oklahoma Sooners (ESPN #201)
+07:54:51 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/201/roster "HTTP/1.1 200 OK"
+07:54:51 [INFO]   Roster: 16 players
+07:54:51 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+07:54:51 [INFO] 
+[174/215] Oklahoma State Cowboys (ESPN #197)
+07:55:01 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/197/roster "HTTP/1.1 200 OK"
+07:55:01 [INFO]   Roster: 15 players
+07:55:01 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 0
+07:55:01 [INFO] 
+[175/215] Ole Miss Rebels (ESPN #145)
+07:55:11 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/145/roster "HTTP/1.1 200 OK"
+07:55:11 [INFO]   Roster: 16 players
+07:55:11 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 1
+07:55:11 [INFO] 
+[176/215] Omaha Mavericks (ESPN #2437)
+07:55:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2437/roster "HTTP/1.1 200 OK"
+07:55:21 [INFO]   Roster: 16 players
+07:55:21 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 4
+07:55:21 [INFO] 
+[177/215] Oregon Ducks (ESPN #2483)
+07:55:31 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2483/roster "HTTP/1.1 200 OK"
+07:55:31 [INFO]   Roster: 17 players
+07:55:31 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 2
+07:55:31 [INFO] 
+[178/215] Pittsburgh Panthers (ESPN #221)
+07:55:41 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/221/roster "HTTP/1.1 200 OK"
+07:55:41 [INFO]   Roster: 15 players
+07:55:41 [INFO]   Matched: 10, Ht: +0, Wt: +0, Yr: +0, Town: +10, Unmatched: 5
+07:55:41 [INFO] 
+[179/215] Presbyterian Blue Hose (ESPN #2506)
+07:55:51 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2506/roster "HTTP/1.1 200 OK"
+07:55:51 [INFO]   Roster: 13 players
+07:55:51 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 1
+07:55:51 [INFO] 
+[180/215] Princeton Tigers (ESPN #163)
+07:56:01 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/163/roster "HTTP/1.1 200 OK"
+07:56:01 [INFO]   Roster: 17 players
+07:56:01 [INFO]   Matched: 17, Ht: +0, Wt: +0, Yr: +0, Town: +17, Unmatched: 0
+07:56:01 [INFO] 
+[181/215] Providence Friars (ESPN #2507)
+07:56:11 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2507/roster "HTTP/1.1 200 OK"
+07:56:11 [INFO]   Roster: 15 players
+07:56:11 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:56:11 [INFO] 
+[182/215] Radford Highlanders (ESPN #2515)
+07:56:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2515/roster "HTTP/1.1 200 OK"
+07:56:21 [INFO]   Roster: 14 players
+07:56:21 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 2
+07:56:21 [INFO] 
+[183/215] Rice Owls (ESPN #242)
+07:56:31 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/242/roster "HTTP/1.1 200 OK"
+07:56:31 [INFO]   Roster: 17 players
+07:56:31 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +16, Unmatched: 1
+07:56:31 [INFO] 
+[184/215] Richmond Spiders (ESPN #257)
+07:56:41 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/257/roster "HTTP/1.1 200 OK"
+07:56:41 [INFO]   Roster: 16 players
+07:56:41 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:56:41 [INFO] 
+[185/215] Saint Joseph's Hawks (ESPN #2603)
+07:56:51 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2603/roster "HTTP/1.1 200 OK"
+07:56:51 [INFO]   Roster: 15 players
+07:56:51 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:56:51 [INFO] 
+[186/215] Samford Bulldogs (ESPN #2535)
+07:57:01 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2535/roster "HTTP/1.1 200 OK"
+07:57:01 [INFO]   Roster: 17 players
+07:57:01 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 4
+07:57:01 [INFO] 
+[187/215] Seton Hall Pirates (ESPN #2550)
+07:57:11 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2550/roster "HTTP/1.1 200 OK"
+07:57:11 [INFO]   Roster: 15 players
+07:57:11 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:57:11 [INFO] 
+[188/215] SIU Edwardsville Cougars (ESPN #2565)
+07:57:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2565/roster "HTTP/1.1 200 OK"
+07:57:21 [INFO]   Roster: 15 players
+07:57:21 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:57:21 [INFO] 
+[189/215] SMU Mustangs (ESPN #2567)
+07:57:31 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2567/roster "HTTP/1.1 200 OK"
+07:57:31 [INFO]   Roster: 15 players
+07:57:31 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:57:31 [INFO] 
+[190/215] South Carolina Gamecocks (ESPN #2579)
+07:57:41 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2579/roster "HTTP/1.1 200 OK"
+07:57:41 [INFO]   Roster: 15 players
+07:57:41 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:57:41 [INFO] 
+[191/215] South Carolina Upstate Spartans (ESPN #2908)
+07:57:51 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2908/roster "HTTP/1.1 200 OK"
+07:57:51 [INFO]   Roster: 14 players
+07:57:51 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 1
+07:57:51 [INFO] 
+[192/215] South Florida Bulls (ESPN #58)
+07:58:01 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/58/roster "HTTP/1.1 200 OK"
+07:58:01 [INFO]   Roster: 15 players
+07:58:01 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:58:01 [INFO] 
+[193/215] Southeast Missouri State Redhawks (ESPN #2546)
+07:58:11 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2546/roster "HTTP/1.1 200 OK"
+07:58:11 [INFO]   Roster: 14 players
+07:58:11 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 1
+07:58:11 [INFO] 
+[194/215] Southern Utah Thunderbirds (ESPN #253)
+07:58:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/253/roster "HTTP/1.1 200 OK"
+07:58:21 [INFO]   Roster: 16 players
+07:58:21 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 1
+07:58:21 [INFO] 
+[195/215] Stanford Cardinal (ESPN #24)
+07:58:31 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/24/roster "HTTP/1.1 200 OK"
+07:58:31 [INFO]   Roster: 17 players
+07:58:31 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 2
+07:58:31 [INFO] 
+[196/215] Syracuse Orange (ESPN #183)
+07:58:41 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/183/roster "HTTP/1.1 200 OK"
+07:58:41 [INFO]   Roster: 15 players
+07:58:41 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+07:58:41 [INFO] 
+[197/215] Tennessee Volunteers (ESPN #2633)
+07:58:51 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2633/roster "HTTP/1.1 200 OK"
+07:58:51 [INFO]   Roster: 16 players
+07:58:51 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +16, Unmatched: 0
+07:58:51 [INFO] 
+[198/215] Texas A&M Aggies (ESPN #245)
+07:59:01 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/245/roster "HTTP/1.1 200 OK"
+07:59:01 [INFO]   Roster: 15 players
+07:59:01 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 0
+07:59:01 [INFO] 
+[199/215] Texas Longhorns (ESPN #251)
+07:59:11 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/251/roster "HTTP/1.1 200 OK"
+07:59:11 [INFO]   Roster: 15 players
+07:59:11 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:59:11 [INFO] 
+[200/215] Texas Tech Red Raiders (ESPN #2641)
+07:59:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2641/roster "HTTP/1.1 200 OK"
+07:59:21 [INFO]   Roster: 14 players
+07:59:21 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 1
+07:59:21 [INFO] 
+[201/215] Tulane Green Wave (ESPN #2655)
+07:59:31 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2655/roster "HTTP/1.1 200 OK"
+07:59:31 [INFO]   Roster: 15 players
+07:59:31 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 0
+07:59:31 [INFO] 
+[202/215] Tulsa Golden Hurricane (ESPN #202)
+07:59:41 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/202/roster "HTTP/1.1 200 OK"
+07:59:41 [INFO]   Roster: 15 players
+07:59:41 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:59:41 [INFO] 
+[203/215] UAB Blazers (ESPN #5)
+07:59:51 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/5/roster "HTTP/1.1 200 OK"
+07:59:51 [INFO]   Roster: 15 players
+07:59:51 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 2
+07:59:51 [INFO] 
+[204/215] UAlbany Great Danes (ESPN #399)
+08:00:01 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/399/roster "HTTP/1.1 200 OK"
+08:00:01 [INFO]   Roster: 16 players
+08:00:01 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 3
+08:00:01 [INFO] 
+[205/215] UC Davis Aggies (ESPN #302)
+08:00:11 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/302/roster "HTTP/1.1 200 OK"
+08:00:11 [INFO]   Roster: 14 players
+08:00:11 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 1
+08:00:11 [INFO] 
+[206/215] UC Irvine Anteaters (ESPN #300)
+08:00:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/300/roster "HTTP/1.1 200 OK"
+08:00:21 [INFO]   Roster: 18 players
+08:00:21 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 6
+08:00:21 [INFO] 
+[207/215] UC Riverside Highlanders (ESPN #27)
+08:00:31 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/27/roster "HTTP/1.1 200 OK"
+08:00:31 [INFO]   Roster: 15 players
+08:00:31 [INFO]   Matched: 12, Ht: +0, Wt: +0, Yr: +0, Town: +12, Unmatched: 3
+08:00:31 [INFO] 
+[208/215] UC San Diego Tritons (ESPN #28)
+08:00:41 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/28/roster "HTTP/1.1 200 OK"
+08:00:41 [INFO]   Roster: 16 players
+08:00:41 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 2
+08:00:41 [INFO] 
+[209/215] UC Santa Barbara Gauchos (ESPN #2540)
+08:00:51 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2540/roster "HTTP/1.1 200 OK"
+08:00:51 [INFO]   Roster: 17 players
+08:00:51 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Town: +16, Unmatched: 1
+08:00:51 [INFO] 
+[210/215] UMass Lowell River Hawks (ESPN #2349)
+08:01:01 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2349/roster "HTTP/1.1 200 OK"
+08:01:01 [INFO]   Roster: 13 players
+08:01:01 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +0, Town: +13, Unmatched: 0
+08:01:01 [INFO] 
+[211/215] UMBC Retrievers (ESPN #2378)
+08:01:11 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2378/roster "HTTP/1.1 200 OK"
+08:01:11 [INFO]   Roster: 15 players
+08:01:11 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 1
+08:01:11 [INFO] 
+[212/215] Vanderbilt Commodores (ESPN #238)
+08:01:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/238/roster "HTTP/1.1 200 OK"
+08:01:21 [INFO]   Roster: 16 players
+08:01:21 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 1
+08:01:21 [INFO] 
+[213/215] Vermont Catamounts (ESPN #261)
+08:01:31 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/261/roster "HTTP/1.1 200 OK"
+08:01:31 [INFO]   Roster: 16 players
+08:01:31 [INFO]   Matched: 15, Ht: +0, Wt: +0, Yr: +0, Town: +15, Unmatched: 1
+08:01:31 [INFO] 
+[214/215] Virginia Tech Hokies (ESPN #259)
+08:01:41 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/259/roster "HTTP/1.1 200 OK"
+08:01:41 [INFO]   Roster: 14 players
+08:01:41 [INFO]   Matched: 11, Ht: +0, Wt: +0, Yr: +0, Town: +10, Unmatched: 3
+08:01:41 [INFO] 
+[215/215] Yale Bulldogs (ESPN #43)
+08:01:51 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/43/roster "HTTP/1.1 200 OK"
+08:01:51 [INFO]   Roster: 14 players
+08:01:51 [INFO]   Matched: 14, Ht: +0, Wt: +0, Yr: +0, Town: +14, Unmatched: 0
+08:01:51 [INFO] 
+============================================================
+08:01:51 [INFO] DONE: ESPN D1 bios
+08:01:51 [INFO]   Teams: 215
+08:01:51 [INFO]   Players matched: 2935
+08:01:51 [INFO]   Height: 0, Weight: 0, Year: 0
+08:01:51 [INFO]   Hometown: 2919

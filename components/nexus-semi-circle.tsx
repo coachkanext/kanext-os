@@ -7,12 +7,12 @@
  * Subtle accent glow on the curved top arc.
  *
  * 6 gestures (scoped to this element only):
- *   Tap         → toggle Home/Nexus
- *   Double-tap  → split Nexus
+ *   Tap         → always Nexus fullscreen
+ *   Double-tap  → mode switcher (3 icons, excludes current)
  *   Long-press  → search + voice
  *   Swipe UP    → multitasking overlay
- *   Swipe LEFT  → mode switcher (forward)
- *   Swipe RIGHT → mode switcher (backward)
+ *   Swipe RIGHT → toggle split Nexus on/off
+ *   Swipe LEFT  → nothing
  *   Swipe DOWN  → nothing (reserved for iOS system)
  */
 
@@ -24,9 +24,8 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
-import { getCurrentTab } from '@/utils/global-semi-circle';
 import { openSearchOverlay } from '@/utils/global-search-overlay';
-import { openSplitNexus } from '@/utils/global-split-nexus';
+import { openSplitNexus, closeSplitNexus, isSplitNexusOpen } from '@/utils/global-split-nexus';
 import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils/global-multitasking';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
 import { startGlobalVoice } from '@/utils/global-voice';
@@ -43,31 +42,23 @@ export function NexusSemiCircle() {
 
   // ── Tap with double-tap detection ──────────────────────────────────
   const handlePress = () => {
-    // If multitasking is open, tap = close it and go home (like iOS home button)
-    if (isMultitaskingOpen()) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      closeMultitasking();
-      router.navigate('/(tabs)/(main)' as any);
-      return;
-    }
-
     const now = Date.now();
     if (now - lastTapRef.current < 350) {
+      // Double tap → mode switcher
       lastTapRef.current = 0;
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      openSplitNexus();
+      openModeSwitcher();
       return;
     }
     lastTapRef.current = now;
     setTimeout(() => {
       if (lastTapRef.current !== now) return;
+      // Single tap → always navigate to Nexus fullscreen
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      const current = getCurrentTab();
-      if (current === 'nexus') {
-        router.navigate('/(tabs)/(main)' as any);
-      } else {
-        router.navigate('/(tabs)/nexus' as any);
-      }
+      // Close multitasking or split if open
+      if (isMultitaskingOpen()) closeMultitasking();
+      if (isSplitNexusOpen()) closeSplitNexus();
+      router.push('/nexus' as any);
     }, 350);
   };
 
@@ -78,12 +69,11 @@ export function NexusSemiCircle() {
     startGlobalVoice();
   };
 
-  // ── PanResponder: swipe-up, swipe-left, swipe-right ────────────────
+  // ── PanResponder: swipe-up, swipe-right (toggle split) ─────────────
   const panResponder = useMemo(
     () =>
       PanResponder.create({
         onMoveShouldSetPanResponder: (_evt, gs) => {
-          // Claim gesture if either axis exceeds threshold
           return Math.abs(gs.dx) > 15 || Math.abs(gs.dy) > 15;
         },
         onPanResponderRelease: (_evt, gs) => {
@@ -94,12 +84,17 @@ export function NexusSemiCircle() {
             // Swipe UP → multitasking
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             openMultitasking();
-          } else if (absX > absY && absX > 40) {
-            // Swipe LEFT or RIGHT → mode switcher
+          } else if (absX > absY && gs.dx > 40) {
+            // Swipe RIGHT only → toggle split Nexus
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            openModeSwitcher();
+            if (isSplitNexusOpen()) {
+              closeSplitNexus();
+            } else {
+              openSplitNexus();
+            }
           }
-          // Swipe DOWN → intentionally nothing (iOS system gesture)
+          // Swipe LEFT → nothing
+          // Swipe DOWN → nothing (iOS system gesture)
         },
       }),
     [],

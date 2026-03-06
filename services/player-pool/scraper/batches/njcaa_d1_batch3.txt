@@ -1,0 +1,20 @@
+dawsoncommunitycollege|Dawson CC
+daytonastatecollege|Daytona State College
+delgadocommunitycollege|Delgado CC
+denmarktechnicalcollege|Denmark Technical College
+dodgecitycommunitycollege|Dodge City CC
+dyersburgstatecommunitycollege|Dyersburg State CC
+eastcentralcommunitycollege|East Central CC
+eastgeorgiastatecollege|East Georgia State College
+eastmississippicommunitycollege|East Mississippi CC
+easternarizonacollege|Eastern Arizona College
+easternfloridastatecollege|Eastern Florida State College
+easternoklahomastatecollege|Eastern Oklahoma State College
+easternwyomingcollege|Eastern Wyoming College
+floridasouthwesternstatecollege|Florida SouthWestern State College
+forthaystechnorthwest|Fort Hays Tech Northwest
+frankphillipscollege|Frank Phillips College
+gadsdenstatecommunitycollege|Gadsden State CC
+gardencitycommunitycollege|Garden City CC
+gastoncollege|Gaston College
+georgiahighlandscollege|Georgia Highlands College

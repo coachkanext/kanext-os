@@ -1,0 +1,19 @@
+valleycitystate|Valley City State University
+viterbo|Viterbo University
+voorheesuniversity|Voorhees College
+waldorf|Waldorf University
+warnerpacificor|Warner Pacific University
+warnerfl|Warner University
+washingtonadventistmd|Washington Adventist University
+waylandbaptisttx|Wayland Baptist University
+webberinternationalfl|Webber International University
+wvutechwv|WVU Institute of Technology
+westcliffca|Westcliff University
+wilberforceoh|Wilberforce University
+wileytx|Wiley College
+williamcareyms|William Carey University
+williampennia|William Penn University
+williamwoodsmo|William Woods University
+williamsbaptistar|Williams Baptist University
+xavierla|Xavier University of Louisiana
+yorkne|York (NE)

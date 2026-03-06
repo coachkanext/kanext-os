@@ -1,0 +1,20 @@
+johnalogancollege|John A. Logan College
+jonescollege|Jones College
+kankakeecommunitycollege|Kankakee CC
+kaskaskiacollege|Kaskaskia College
+kennedykingcollege|Kennedy-King College
+kilgorecollege|Kilgore College
+lakelandcollege|Lake Land College
+lakeregionstatecollegend|Lake Region State College - ND
+lamarcommunitycollege|Lamar CC
+lamarstatecollegeportarthur|Lamar State College - Port Arthur
+laramiecountycommunitycollege|Laramie County CC
+lawsonstatecommunitycollege|Lawson State CC
+leecollege|Lee College
+lincolntrailcollege|Lincoln Trail College
+malcolmxcollege|Malcolm X College
+marshalltowncc|Marshalltown CC
+mccookcommunitycollege|McCook CC
+mclennancommunitycollege|McLennan CC
+meridiancommunitycollege|Meridian CC
+miamidadecollege|Miami Dade College

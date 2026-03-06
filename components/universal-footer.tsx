@@ -1,30 +1,30 @@
 /**
- * Universal Footer — 3-icon persistent footer bar
- * Replaces NexusLogo. Always visible on every page (hard wall).
+ * Universal Footer — 5-icon persistent footer bar
+ * Always visible on every page (hard wall).
  *
- * Layout: 1px divider + 3 icons (Wallet, Nexus, Profile) evenly spaced
+ * Layout: 1px divider + 5 icons evenly spaced
  * 49px height + safe area bottom padding
  *
- * Icons (all 24px, uniform like Instagram/X/WhatsApp):
- *   Wallet (left):  creditcard.fill — tap → push wallet screen
- *   Nexus (center): sparkles glyph — 6 gestures via PanResponder + Pressable
- *   Profile (right): person.circle — tap → push profile screen, long press → mode switcher
+ * Icons (all use existing image assets):
+ *   Home (1):         footer-home.png    — tap → navigate home
+ *   Messages (2):     icon-messages.png  — tap → push messages
+ *   Nexus (center):   footer-nexus.png   — 6 gestures via PanResponder + Pressable
+ *   Media (4):        icon-media.png     — tap → push media
+ *   Organization (5): icon-program.png   — tap → push organization
  */
 
 import React, { useRef, useMemo } from 'react';
-import { View, Pressable, PanResponder, StyleSheet } from 'react-native';
+import { View, Image, Pressable, PanResponder, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { openSearchOverlay } from '@/utils/global-search-overlay';
 import { openSplitNexus, closeSplitNexus, isSplitNexusOpen } from '@/utils/global-split-nexus';
 import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils/global-multitasking';
 import { startGlobalVoice } from '@/utils/global-voice';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
 
-const ICON_SIZE = 24;
 const FOOTER_HEIGHT = 49;
 
 export function UniversalFooter() {
@@ -54,7 +54,7 @@ export function UniversalFooter() {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       if (isMultitaskingOpen()) closeMultitasking();
       if (isSplitNexusOpen()) closeSplitNexus();
-      router.push('/nexus' as any);
+      router.navigate('/nexus' as any);
     }, 350);
   };
 
@@ -100,70 +100,106 @@ export function UniversalFooter() {
     router.navigate('/(tabs)/(main)' as any);
   };
 
-  // ── Profile tap → push profile screen ──
-  const handleProfilePress = () => {
+  // ── Messages tap → navigate (no-op if already there) ──
+  const handleMessagesPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/profile' as any);
+    router.navigate('/messages' as any);
   };
 
-  // ── Profile long press → mode switcher ──
-  const handleProfileLongPress = () => {
+  // ── Media tap → navigate (no-op if already there) ──
+  const handleMediaPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.navigate('/section?title=Media' as any);
+  };
+
+  // ── Organization tap → navigate (no-op if already there) ──
+  const handleOrgPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.navigate('/section?title=Organization' as any);
+  };
+
+  // ── Organization long press → mode switcher ──
+  const handleOrgLongPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     openModeSwitcher();
   };
 
   return (
-    <View style={[styles.wrapper, { paddingBottom: insets.bottom }]}>
+    <View style={styles.wrapper}>
       {/* 1px divider */}
       <View style={styles.divider} />
 
-      {/* 3-icon row */}
+      {/* 5-icon row */}
       <View style={styles.footer}>
-        {/* Home (left) */}
+        {/* 1. Home */}
         <Pressable
           style={styles.iconButton}
           onPress={handleHomePress}
-          hitSlop={{ top: 8, bottom: 8, left: 16, right: 16 }}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol
-            name="house.fill"
-            size={ICON_SIZE}
-            color="#FFFFFF"
+          <Image
+            source={require('@/assets/images/footer-home.png')}
+            style={styles.footerImage}
           />
         </Pressable>
 
-        {/* Nexus (center) — 6 gestures */}
+        {/* 2. Messages */}
+        <Pressable
+          style={styles.iconButton}
+          onPress={handleMessagesPress}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Image
+            source={require('@/assets/images/footer-messages.png')}
+            style={styles.footerImage}
+          />
+        </Pressable>
+
+        {/* 3. Nexus (center) — 6 gestures */}
         <View style={styles.iconButton} {...nexusPanResponder.panHandlers}>
           <Pressable
             style={styles.pressableInner}
             onPress={handleNexusPress}
             onLongPress={handleNexusLongPress}
             delayLongPress={400}
-            hitSlop={{ top: 8, bottom: 8, left: 16, right: 16 }}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <IconSymbol
-              name="sparkles"
-              size={ICON_SIZE}
-              color="#FFFFFF"
+            <Image
+              source={require('@/assets/images/footer-nexus.png')}
+              style={styles.footerImage}
             />
           </Pressable>
         </View>
 
-        {/* Profile (right) — tap = profile, long press = mode switcher */}
+        {/* 4. Media */}
         <Pressable
           style={styles.iconButton}
-          onPress={handleProfilePress}
-          onLongPress={handleProfileLongPress}
-          delayLongPress={400}
-          hitSlop={{ top: 8, bottom: 8, left: 16, right: 16 }}
+          onPress={handleMediaPress}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol
-            name="person.circle"
-            size={ICON_SIZE}
-            color="#FFFFFF"
+          <Image
+            source={require('@/assets/images/footer-media.png')}
+            style={styles.footerImage}
+          />
+        </Pressable>
+
+        {/* 5. Organization — long press → mode switcher */}
+        <Pressable
+          style={styles.iconButton}
+          onPress={handleOrgPress}
+          onLongPress={handleOrgLongPress}
+          delayLongPress={400}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Image
+            source={require('@/assets/images/footer-org.png')}
+            style={styles.footerImage}
           />
         </Pressable>
       </View>
+
+      {/* Safe area fill — extends black behind home indicator */}
+      <View style={{ height: insets.bottom, backgroundColor: '#000000' }} />
     </View>
   );
 }
@@ -175,12 +211,11 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     zIndex: 10001,
-    backgroundColor: '#000000',
   },
   divider: {
     width: '100%',
     height: 1,
-    backgroundColor: '#38383A',
+    backgroundColor: 'rgba(255,255,255,0.08)',
   },
   footer: {
     height: FOOTER_HEIGHT,
@@ -201,4 +236,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
   },
+  footerImage: {
+    width: '80%',
+    height: FOOTER_HEIGHT - 8,
+    resizeMode: 'contain',
+  } as any,
 });

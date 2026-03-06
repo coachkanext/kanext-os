@@ -1,0 +1,647 @@
+20:00:59 [INFO] Bio scrape: 105 teams for cccaa
+20:00:59 [INFO] 
+[1/105] Alameda
+20:01:05 [INFO] HTTP Request: HEAD https://alameda.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:01:10 [INFO] HTTP Request: HEAD https://alamedacollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:01:15 [INFO] HTTP Request: HEAD https://alamedacc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:01:21 [INFO] HTTP Request: HEAD https://alamedauniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:01:27 [INFO] HTTP Request: HEAD https://alamedastate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:01:32 [INFO] HTTP Request: HEAD https://goalameda.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:01:37 [INFO] HTTP Request: HEAD https://alamedaathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:01:37 [INFO]   No roster page found
+20:01:37 [INFO] 
+[2/105] Allan Hancock
+20:01:37 [INFO]   Roster: https://allanhancock.prestosports.com/sports/mbkb/2025-26/roster
+20:01:44 [INFO] HTTP Request: GET https://allanhancock.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:01:44 [INFO]   Parsed: 14 players
+20:01:44 [INFO]   Matched: 12, Ht: +12, Wt: +12, Yr: +12, Unmatched: 2
+20:01:44 [INFO] 
+[3/105] American River
+20:01:44 [INFO]   Roster: https://americanriver.prestosports.com/sports/mbkb/2025-26/roster
+20:01:54 [INFO] HTTP Request: GET https://americanriver.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:01:54 [INFO]   Parsed: 16 players
+20:01:54 [INFO]   Matched: 16, Ht: +0, Wt: +0, Yr: +0, Unmatched: 0
+20:01:54 [INFO] 
+[4/105] Antelope Valley
+20:01:58 [INFO] HTTP Request: HEAD https://antelopevalley.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:02:03 [INFO] HTTP Request: HEAD https://antelopevalleycollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:02:07 [INFO] HTTP Request: HEAD https://antelopevalleycc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:02:08 [INFO] HTTP Request: HEAD https://antelopevalleyuniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:02:08 [INFO] HTTP Request: HEAD https://antelopevalleystate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:02:10 [INFO] HTTP Request: HEAD https://goantelopevalley.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:02:11 [INFO] HTTP Request: HEAD https://antelopevalleyathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:02:11 [INFO]   No roster page found
+20:02:11 [INFO] 
+[5/105] Arizona Western
+20:02:12 [INFO] HTTP Request: HEAD https://arizonawestern.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:02:13 [INFO] HTTP Request: GET https://arizonawestern.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:02:14 [INFO]   Roster: https://arizonawestern.prestosports.com/sports/mbkb/2025-26/roster
+20:02:24 [INFO] HTTP Request: GET https://arizonawestern.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:02:24 [INFO]   Parsed: 14 players
+20:02:24 [INFO]   Matched: 9, Ht: +9, Wt: +6, Yr: +9, Unmatched: 5
+20:02:24 [INFO] 
+[6/105] Bakersfield
+20:02:24 [INFO] HTTP Request: HEAD https://bakersfield.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:02:24 [INFO] HTTP Request: HEAD https://bakersfieldcollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:02:25 [INFO] HTTP Request: HEAD https://bakersfieldcc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:02:28 [INFO] HTTP Request: HEAD https://bakersfielduniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:02:33 [INFO] HTTP Request: HEAD https://bakersfieldstate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:02:37 [INFO] HTTP Request: HEAD https://gobakersfield.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:02:38 [INFO] HTTP Request: HEAD https://bakersfieldathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:02:38 [INFO]   No roster page found
+20:02:38 [INFO] 
+[7/105] Barstow
+20:02:39 [INFO] HTTP Request: HEAD https://barstow.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:02:41 [INFO] HTTP Request: GET https://barstow.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:02:41 [INFO]   Roster: https://barstow.prestosports.com/sports/mbkb/2025-26/roster
+20:02:53 [INFO] HTTP Request: GET https://barstow.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:02:54 [INFO]   Parsed: 15 players
+20:02:54 [INFO]   Matched: 0, Ht: +0, Wt: +0, Yr: +0, Unmatched: 15
+20:02:54 [INFO] 
+[8/105] Butte
+20:02:57 [INFO] HTTP Request: HEAD https://butte.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:03:03 [INFO] HTTP Request: HEAD https://buttecollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:03:04 [INFO] HTTP Request: GET https://buttecollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:03:04 [INFO]   Roster: https://buttecollege.prestosports.com/sports/mbkb/2025-26/roster
+20:03:17 [INFO] HTTP Request: GET https://buttecollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:03:18 [INFO]   Parsed: 11 players
+20:03:18 [INFO]   Matched: 10, Ht: +10, Wt: +10, Yr: +10, Unmatched: 1
+20:03:18 [INFO] 
+[9/105] Cabrillo
+20:03:21 [INFO] HTTP Request: HEAD https://cabrillo.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:03:25 [INFO] HTTP Request: GET https://cabrillo.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:03:25 [INFO]   Roster: https://cabrillo.prestosports.com/sports/mbkb/2025-26/roster
+20:03:38 [INFO] HTTP Request: GET https://cabrillo.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:03:38 [INFO]   Parsed: 16 players
+20:03:38 [INFO]   Matched: 0, Ht: +0, Wt: +0, Yr: +0, Unmatched: 16
+20:03:38 [INFO] 
+[10/105] Cañada
+20:03:40 [INFO] HTTP Request: HEAD https://canada.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:03:45 [INFO] HTTP Request: HEAD https://caada.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:03:47 [INFO] HTTP Request: HEAD https://canadacollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:03:50 [INFO] HTTP Request: GET https://canadacollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:03:50 [INFO]   Roster: https://canadacollege.prestosports.com/sports/mbkb/2025-26/roster
+20:03:59 [INFO] HTTP Request: GET https://canadacollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:03:59 [INFO]   Parsed: 13 players
+20:03:59 [INFO]   Matched: 13, Ht: +13, Wt: +13, Yr: +13, Unmatched: 0
+20:03:59 [INFO] 
+[11/105] Canyons
+20:04:00 [INFO] HTTP Request: HEAD https://canyons.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:04:09 [INFO] HTTP Request: GET https://canyons.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:04:09 [INFO]   Roster: https://canyons.prestosports.com/sports/mbkb/2025-26/roster
+20:04:19 [INFO] HTTP Request: GET https://canyons.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:04:19 [INFO]   Parsed: 13 players
+20:04:19 [INFO]   Matched: 0, Ht: +0, Wt: +0, Yr: +0, Unmatched: 13
+20:04:19 [INFO] 
+[12/105] Cerritos
+20:04:20 [INFO] HTTP Request: HEAD https://cerritos.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:04:29 [INFO] HTTP Request: GET https://cerritos.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:04:29 [INFO]   Roster: https://cerritos.prestosports.com/sports/mbkb/2025-26/roster
+20:04:39 [INFO] HTTP Request: GET https://cerritos.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:04:39 [INFO]   Parsed: 16 players
+20:04:39 [INFO]   Matched: 0, Ht: +0, Wt: +0, Yr: +0, Unmatched: 16
+20:04:39 [INFO] 
+[13/105] Cerro Coso
+20:04:39 [INFO] HTTP Request: HEAD https://cerrocoso.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:04:48 [INFO] HTTP Request: GET https://cerrocoso.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:04:48 [INFO]   Roster: https://cerrocoso.prestosports.com/sports/mbkb/2025-26/roster
+20:04:58 [INFO] HTTP Request: GET https://cerrocoso.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:04:58 [INFO]   Parsed: 11 players
+20:04:58 [INFO]   Matched: 11, Ht: +11, Wt: +0, Yr: +11, Unmatched: 0
+20:04:58 [INFO] 
+[14/105] Chabot
+20:05:00 [INFO] HTTP Request: HEAD https://chabot.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:05:10 [INFO] HTTP Request: GET https://chabot.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:05:10 [INFO]   Roster: https://chabot.prestosports.com/sports/mbkb/2025-26/roster
+20:05:19 [INFO] HTTP Request: GET https://chabot.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:05:19 [INFO]   Parsed: 0 players
+20:05:19 [INFO] 
+[15/105] Chaffey
+20:05:21 [INFO] HTTP Request: HEAD https://chaffey.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:05:29 [INFO] HTTP Request: GET https://chaffey.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:05:29 [INFO]   Roster: https://chaffey.prestosports.com/sports/mbkb/2025-26/roster
+20:05:53 [INFO]   Failed to fetch
+20:05:53 [INFO] 
+[16/105] Citrus
+20:05:54 [INFO] HTTP Request: HEAD https://citrus.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:05:56 [INFO] HTTP Request: GET https://citrus.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:05:56 [INFO]   Roster: https://citrus.prestosports.com/sports/mbkb/2025-26/roster
+20:06:06 [INFO] HTTP Request: GET https://citrus.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:06:06 [INFO]   Parsed: 15 players
+20:06:06 [INFO]   Matched: 15, Ht: +15, Wt: +15, Yr: +15, Unmatched: 0
+20:06:06 [INFO] 
+[17/105] Coalinga
+20:06:07 [INFO] HTTP Request: HEAD https://coalinga.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:07 [INFO] HTTP Request: HEAD https://coalingacollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:07 [INFO] HTTP Request: HEAD https://coalingacc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:08 [INFO] HTTP Request: HEAD https://coalingauniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:08 [INFO] HTTP Request: HEAD https://coalingastate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:09 [INFO] HTTP Request: HEAD https://gocoalinga.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:09 [INFO] HTTP Request: HEAD https://coalingaathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:09 [INFO]   No roster page found
+20:06:09 [INFO] 
+[18/105] Columbia
+20:06:09 [INFO] HTTP Request: HEAD https://columbia.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:10 [INFO] HTTP Request: HEAD https://columbiacollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:10 [INFO] HTTP Request: HEAD https://columbiacc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:11 [INFO] HTTP Request: HEAD https://columbiauniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:11 [INFO] HTTP Request: HEAD https://columbiastate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:12 [INFO] HTTP Request: HEAD https://gocolumbia.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:12 [INFO] HTTP Request: HEAD https://columbiaathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:12 [INFO]   No roster page found
+20:06:12 [INFO] 
+[19/105] Compton
+20:06:13 [INFO] HTTP Request: HEAD https://compton.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:06:16 [INFO] HTTP Request: GET https://compton.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:06:16 [INFO]   Roster: https://compton.prestosports.com/sports/mbkb/2025-26/roster
+20:06:26 [INFO] HTTP Request: GET https://compton.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:06:26 [INFO]   Parsed: 16 players
+20:06:26 [INFO]   Matched: 0, Ht: +0, Wt: +0, Yr: +0, Unmatched: 16
+20:06:26 [INFO] 
+[20/105] Contra Costa
+20:06:27 [INFO] HTTP Request: HEAD https://contracosta.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:27 [INFO] HTTP Request: HEAD https://contracostacollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:28 [INFO] HTTP Request: HEAD https://contracostacc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:28 [INFO] HTTP Request: HEAD https://contracostauniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:29 [INFO] HTTP Request: HEAD https://contracostastate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:29 [INFO] HTTP Request: HEAD https://gocontracosta.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:30 [INFO] HTTP Request: HEAD https://contracostaathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:30 [INFO]   No roster page found
+20:06:30 [INFO] 
+[21/105] Copper Mountain
+20:06:31 [INFO] HTTP Request: HEAD https://coppermountain.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:06:36 [INFO] HTTP Request: GET https://coppermountain.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:06:36 [INFO]   Roster: https://coppermountain.prestosports.com/sports/mbkb/2025-26/roster
+20:06:46 [INFO] HTTP Request: GET https://coppermountain.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:06:46 [INFO]   Parsed: 16 players
+20:06:46 [INFO]   Matched: 15, Ht: +15, Wt: +0, Yr: +15, Unmatched: 1
+20:06:46 [INFO] 
+[22/105] Cosumnes River
+20:06:46 [INFO] HTTP Request: HEAD https://cosumnesriver.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:47 [INFO] HTTP Request: HEAD https://cosumnesrivercollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:48 [INFO] HTTP Request: HEAD https://cosumnesrivercc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:48 [INFO] HTTP Request: HEAD https://cosumnesriveruniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:48 [INFO] HTTP Request: HEAD https://cosumnesriverstate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:49 [INFO] HTTP Request: HEAD https://gocosumnesriver.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:49 [INFO] HTTP Request: HEAD https://cosumnesriverathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:49 [INFO]   No roster page found
+20:06:49 [INFO] 
+[23/105] Cuesta
+20:06:55 [INFO] HTTP Request: HEAD https://cuestacollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:55 [INFO] HTTP Request: HEAD https://cuestacc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:56 [INFO] HTTP Request: HEAD https://cuestauniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:56 [INFO] HTTP Request: HEAD https://cuestastate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:57 [INFO] HTTP Request: HEAD https://gocuesta.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:58 [INFO] HTTP Request: HEAD https://cuestaathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:06:58 [INFO]   No roster page found
+20:06:58 [INFO] 
+[24/105] Cuyamaca
+20:06:59 [INFO] HTTP Request: HEAD https://cuyamaca.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:07:01 [INFO] HTTP Request: GET https://cuyamaca.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:07:01 [INFO]   Roster: https://cuyamaca.prestosports.com/sports/mbkb/2025-26/roster
+20:07:10 [INFO] HTTP Request: GET https://cuyamaca.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:07:11 [INFO]   Parsed: 13 players
+20:07:11 [INFO]   Matched: 13, Ht: +13, Wt: +13, Yr: +13, Unmatched: 0
+20:07:11 [INFO] 
+[25/105] Cypress
+20:07:12 [INFO] HTTP Request: HEAD https://cypress.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:07:21 [INFO] HTTP Request: GET https://cypress.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:07:21 [INFO]   Roster: https://cypress.prestosports.com/sports/mbkb/2025-26/roster
+20:07:31 [INFO] HTTP Request: GET https://cypress.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:07:32 [INFO]   Parsed: 17 players
+20:07:32 [INFO]   Matched: 0, Ht: +0, Wt: +0, Yr: +0, Unmatched: 17
+20:07:32 [INFO] 
+[26/105] De Anza
+20:07:36 [INFO] HTTP Request: HEAD https://deanza.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:07:44 [INFO] HTTP Request: GET https://deanza.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:07:44 [INFO]   Roster: https://deanza.prestosports.com/sports/mbkb/2025-26/roster
+20:08:02 [INFO] HTTP Request: GET https://deanza.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:08:02 [INFO]   Parsed: 13 players
+20:08:02 [INFO]   Matched: 13, Ht: +13, Wt: +13, Yr: +13, Unmatched: 0
+20:08:02 [INFO] 
+[27/105] Desert
+20:08:11 [INFO] HTTP Request: HEAD https://desert.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:08:14 [INFO] HTTP Request: GET https://desert.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:08:14 [INFO]   Roster: https://desert.prestosports.com/sports/mbkb/2025-26/roster
+20:08:23 [INFO] HTTP Request: GET https://desert.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:08:23 [INFO]   Parsed: 15 players
+20:08:23 [INFO]   Matched: 0, Ht: +0, Wt: +0, Yr: +0, Unmatched: 15
+20:08:23 [INFO] 
+[28/105] Diablo Valley
+20:08:24 [INFO] HTTP Request: HEAD https://diablovalley.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:08:33 [INFO] HTTP Request: GET https://diablovalley.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:08:33 [INFO]   Roster: https://diablovalley.prestosports.com/sports/mbkb/2025-26/roster
+20:08:42 [INFO] HTTP Request: GET https://diablovalley.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:08:42 [INFO]   Parsed: 14 players
+20:08:42 [INFO]   Matched: 0, Ht: +0, Wt: +0, Yr: +0, Unmatched: 14
+20:08:42 [INFO] 
+[29/105] East Los Angeles
+20:08:43 [INFO] HTTP Request: HEAD https://eastlosangeles.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:08:43 [INFO] HTTP Request: HEAD https://eastlosangelescollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:08:44 [INFO] HTTP Request: HEAD https://eastlosangelescc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:08:44 [INFO] HTTP Request: HEAD https://eastlosangelesuniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:08:45 [INFO] HTTP Request: HEAD https://eastlosangelesstate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:08:45 [INFO] HTTP Request: HEAD https://goeastlosangeles.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:08:46 [INFO] HTTP Request: HEAD https://eastlosangelesathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:08:46 [INFO]   No roster page found
+20:08:46 [INFO] 
+[30/105] El Camino
+20:08:47 [INFO] HTTP Request: HEAD https://elcamino.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:08:53 [INFO] HTTP Request: GET https://elcamino.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:08:53 [INFO]   Roster: https://elcamino.prestosports.com/sports/mbkb/2025-26/roster
+20:09:03 [INFO] HTTP Request: GET https://elcamino.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:09:03 [INFO]   Parsed: 19 players
+20:09:03 [INFO]   Matched: 19, Ht: +19, Wt: +19, Yr: +19, Unmatched: 0
+20:09:03 [INFO] 
+[31/105] Feather River
+20:09:03 [INFO] HTTP Request: HEAD https://featherriver.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:04 [INFO] HTTP Request: HEAD https://featherrivercollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:04 [INFO] HTTP Request: HEAD https://featherrivercc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:05 [INFO] HTTP Request: HEAD https://featherriveruniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:05 [INFO] HTTP Request: HEAD https://featherriverstate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:06 [INFO] HTTP Request: HEAD https://gofeatherriver.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:06 [INFO] HTTP Request: HEAD https://featherriverathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:06 [INFO]   No roster page found
+20:09:06 [INFO] 
+[32/105] Folsom Lake
+20:09:11 [INFO] HTTP Request: HEAD https://folsomlake.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:12 [INFO] HTTP Request: HEAD https://folsomlakecollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:13 [INFO] HTTP Request: HEAD https://folsomlakecc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:14 [INFO] HTTP Request: HEAD https://folsomlakeuniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:14 [INFO] HTTP Request: HEAD https://folsomlakestate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:15 [INFO] HTTP Request: HEAD https://gofolsomlake.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:15 [INFO] HTTP Request: HEAD https://folsomlakeathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:15 [INFO]   No roster page found
+20:09:15 [INFO] 
+[33/105] Foothill
+20:09:16 [INFO] HTTP Request: HEAD https://foothill.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:09:17 [INFO] HTTP Request: GET https://foothill.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:09:17 [INFO]   Roster: https://foothill.prestosports.com/sports/mbkb/2025-26/roster
+20:09:28 [INFO] HTTP Request: GET https://foothill.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:09:28 [INFO]   Parsed: 13 players
+20:09:28 [INFO]   Matched: 13, Ht: +13, Wt: +13, Yr: +13, Unmatched: 0
+20:09:28 [INFO] 
+[34/105] Fresno City
+20:09:28 [INFO] HTTP Request: HEAD https://fresnocity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:29 [INFO] HTTP Request: HEAD https://fresnocitycollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:29 [INFO] HTTP Request: HEAD https://fresnocitycc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:29 [INFO] HTTP Request: HEAD https://fresnocityuniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:30 [INFO] HTTP Request: HEAD https://fresnocitystate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:30 [INFO] HTTP Request: HEAD https://gofresnocity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:31 [INFO] HTTP Request: HEAD https://fresnocityathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:09:31 [INFO]   No roster page found
+20:09:31 [INFO] 
+[35/105] Fullerton
+20:09:33 [INFO] HTTP Request: HEAD https://fullerton.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:09:38 [INFO] HTTP Request: GET https://fullerton.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:09:38 [INFO]   Roster: https://fullerton.prestosports.com/sports/mbkb/2025-26/roster
+20:09:48 [INFO] HTTP Request: GET https://fullerton.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:09:48 [INFO]   Parsed: 13 players
+20:09:48 [INFO]   Matched: 0, Ht: +0, Wt: +0, Yr: +0, Unmatched: 13
+20:09:48 [INFO] 
+[36/105] Gavilan
+20:09:49 [INFO] HTTP Request: HEAD https://gavilan.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:09:57 [INFO] HTTP Request: GET https://gavilan.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:09:57 [INFO]   Roster: https://gavilan.prestosports.com/sports/mbkb/2025-26/roster
+20:10:07 [INFO] HTTP Request: GET https://gavilan.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:10:08 [INFO]   Parsed: 12 players
+20:10:08 [INFO]   Matched: 11, Ht: +11, Wt: +11, Yr: +11, Unmatched: 1
+20:10:08 [INFO] 
+[37/105] Glendale
+20:10:08 [INFO] HTTP Request: HEAD https://glendale.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:10:08 [INFO] HTTP Request: HEAD https://glendalecollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:10:09 [INFO] HTTP Request: HEAD https://glendalecc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:10:18 [INFO] HTTP Request: GET https://glendalecc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:10:18 [INFO]   Roster: https://glendalecc.prestosports.com/sports/mbkb/2025-26/roster
+20:10:27 [INFO] HTTP Request: GET https://glendalecc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:10:27 [INFO]   Parsed: 15 players
+20:10:27 [INFO]   Matched: 15, Ht: +15, Wt: +15, Yr: +15, Unmatched: 0
+20:10:27 [INFO] 
+[38/105] Grossmont
+20:10:29 [INFO] HTTP Request: HEAD https://grossmont.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:10:38 [INFO] HTTP Request: GET https://grossmont.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:10:38 [INFO]   Roster: https://grossmont.prestosports.com/sports/mbkb/2025-26/roster
+20:10:47 [INFO] HTTP Request: GET https://grossmont.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:10:47 [INFO]   Parsed: 17 players
+20:10:47 [INFO]   Matched: 15, Ht: +14, Wt: +14, Yr: +14, Unmatched: 2
+20:10:47 [INFO] 
+[39/105] Hartnell
+20:10:49 [INFO] HTTP Request: HEAD https://hartnell.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:10:58 [INFO] HTTP Request: GET https://hartnell.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:10:58 [INFO]   Roster: https://hartnell.prestosports.com/sports/mbkb/2025-26/roster
+20:11:07 [INFO] HTTP Request: GET https://hartnell.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:11:07 [INFO]   Parsed: 16 players
+20:11:08 [INFO]   Matched: 14, Ht: +14, Wt: +14, Yr: +14, Unmatched: 2
+20:11:08 [INFO] 
+[40/105] Imperial Valley
+20:11:08 [INFO] HTTP Request: HEAD https://imperialvalley.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:09 [INFO] HTTP Request: HEAD https://imperialvalleycollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:09 [INFO] HTTP Request: HEAD https://imperialvalleycc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:09 [INFO] HTTP Request: HEAD https://imperialvalleyuniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:10 [INFO] HTTP Request: HEAD https://imperialvalleystate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:10 [INFO] HTTP Request: HEAD https://goimperialvalley.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:10 [INFO] HTTP Request: HEAD https://imperialvalleyathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:10 [INFO]   No roster page found
+20:11:10 [INFO] 
+[41/105] Irvine Valley
+20:11:11 [INFO] HTTP Request: HEAD https://irvinevalley.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:11:17 [INFO] HTTP Request: GET https://irvinevalley.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:11:17 [INFO]   Roster: https://irvinevalley.prestosports.com/sports/mbkb/2025-26/roster
+20:11:27 [INFO] HTTP Request: GET https://irvinevalley.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:11:27 [INFO]   Parsed: 16 players
+20:11:27 [INFO]   Matched: 0, Ht: +0, Wt: +0, Yr: +0, Unmatched: 16
+20:11:27 [INFO] 
+[42/105] LA Harbor
+20:11:28 [INFO] HTTP Request: HEAD https://laharbor.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:28 [INFO] HTTP Request: HEAD https://laharborcollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:28 [INFO] HTTP Request: HEAD https://laharborcc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:29 [INFO] HTTP Request: HEAD https://laharboruniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:29 [INFO] HTTP Request: HEAD https://laharborstate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:29 [INFO] HTTP Request: HEAD https://golaharbor.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:35 [INFO]   No roster page found
+20:11:35 [INFO] 
+[43/105] LA Pierce
+20:11:35 [INFO] HTTP Request: HEAD https://lapierce.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:35 [INFO] HTTP Request: HEAD https://lapiercecollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:36 [INFO] HTTP Request: HEAD https://lapiercecc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:36 [INFO] HTTP Request: HEAD https://lapierceuniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:37 [INFO] HTTP Request: HEAD https://lapiercestate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:37 [INFO] HTTP Request: HEAD https://golapierce.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:38 [INFO] HTTP Request: HEAD https://lapierceathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:38 [INFO]   No roster page found
+20:11:38 [INFO] 
+[44/105] LA Southwest
+20:11:39 [INFO] HTTP Request: HEAD https://lasouthwest.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:11:40 [INFO] HTTP Request: GET https://lasouthwest.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:11:40 [INFO]   Roster: https://lasouthwest.prestosports.com/sports/mbkb/2025-26/roster
+20:11:51 [INFO] HTTP Request: GET https://lasouthwest.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:11:51 [INFO]   Parsed: 13 players
+20:11:51 [INFO]   Matched: 13, Ht: +0, Wt: +0, Yr: +13, Unmatched: 0
+20:11:51 [INFO] 
+[45/105] LA Trade Tech
+20:11:51 [INFO] HTTP Request: HEAD https://latradetech.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:52 [INFO] HTTP Request: HEAD https://latradetechcollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:53 [INFO] HTTP Request: HEAD https://latradetechcc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:54 [INFO] HTTP Request: HEAD https://latradetechuniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:55 [INFO] HTTP Request: HEAD https://latradetechstate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:55 [INFO] HTTP Request: HEAD https://golatradetech.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:55 [INFO] HTTP Request: HEAD https://latradetechathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:55 [INFO]   No roster page found
+20:11:55 [INFO] 
+[46/105] LA Valley
+20:11:56 [INFO] HTTP Request: HEAD https://lavalley.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:56 [INFO] HTTP Request: HEAD https://lavalleycollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:56 [INFO] HTTP Request: HEAD https://lavalleycc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:57 [INFO] HTTP Request: HEAD https://lavalleyuniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:57 [INFO] HTTP Request: HEAD https://lavalleystate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:57 [INFO] HTTP Request: HEAD https://golavalley.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:58 [INFO] HTTP Request: HEAD https://lavalleyathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:11:58 [INFO]   No roster page found
+20:11:58 [INFO] 
+[47/105] Las Positas
+20:11:59 [INFO] HTTP Request: HEAD https://laspositas.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:12:01 [INFO] HTTP Request: GET https://laspositas.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:12:01 [INFO]   Roster: https://laspositas.prestosports.com/sports/mbkb/2025-26/roster
+20:12:11 [INFO] HTTP Request: GET https://laspositas.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:12:11 [INFO]   Parsed: 17 players
+20:12:11 [INFO]   Matched: 13, Ht: +8, Wt: +13, Yr: +13, Unmatched: 4
+20:12:11 [INFO] 
+[48/105] Lassen
+20:12:12 [INFO] HTTP Request: HEAD https://lassen.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:12:21 [INFO] HTTP Request: GET https://lassen.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:12:21 [INFO]   Roster: https://lassen.prestosports.com/sports/mbkb/2025-26/roster
+20:12:31 [INFO] HTTP Request: GET https://lassen.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:12:31 [INFO]   Parsed: 13 players
+20:12:31 [INFO]   Matched: 12, Ht: +12, Wt: +0, Yr: +12, Unmatched: 1
+20:12:31 [INFO] 
+[49/105] Lemoore
+20:12:31 [INFO] HTTP Request: HEAD https://lemoore.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:12:33 [INFO] HTTP Request: HEAD https://lemoorecollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:12:41 [INFO] HTTP Request: GET https://lemoorecollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:12:41 [INFO]   Roster: https://lemoorecollege.prestosports.com/sports/mbkb/2025-26/roster
+20:12:51 [INFO] HTTP Request: GET https://lemoorecollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:12:51 [INFO]   Parsed: 18 players
+20:12:51 [INFO]   Matched: 16, Ht: +16, Wt: +0, Yr: +16, Unmatched: 2
+20:12:51 [INFO] 
+[50/105] Long Beach
+20:12:52 [INFO] HTTP Request: HEAD https://longbeach.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:12:53 [INFO] HTTP Request: HEAD https://longbeachcollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:12:53 [INFO] HTTP Request: HEAD https://longbeachcc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:12:54 [INFO] HTTP Request: HEAD https://longbeachuniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:12:55 [INFO] HTTP Request: HEAD https://longbeachstate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:12:55 [INFO] HTTP Request: HEAD https://golongbeach.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:12:56 [INFO] HTTP Request: HEAD https://longbeachathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:12:56 [INFO]   No roster page found
+20:12:56 [INFO] 
+[51/105] Los Angeles City
+20:12:57 [INFO] HTTP Request: HEAD https://losangelescity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:12:57 [INFO] HTTP Request: HEAD https://losangelescitycollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:12:57 [INFO] HTTP Request: HEAD https://losangelescitycc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:12:58 [INFO] HTTP Request: HEAD https://losangelescityuniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:12:58 [INFO] HTTP Request: HEAD https://losangelescitystate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:12:59 [INFO] HTTP Request: HEAD https://golosangelescity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:12:59 [INFO] HTTP Request: HEAD https://losangelescityathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:12:59 [INFO]   No roster page found
+20:12:59 [INFO] 
+[52/105] Los Medanos
+20:13:00 [INFO] HTTP Request: HEAD https://losmedanos.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:00 [INFO] HTTP Request: HEAD https://losmedanoscollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:06 [INFO] HTTP Request: HEAD https://losmedanosuniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:06 [INFO] HTTP Request: HEAD https://losmedanosstate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:07 [INFO] HTTP Request: HEAD https://golosmedanos.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:07 [INFO] HTTP Request: HEAD https://losmedanosathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:07 [INFO]   No roster page found
+20:13:07 [INFO] 
+[53/105] Marin
+20:13:08 [INFO] HTTP Request: HEAD https://marin.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:13:09 [INFO] HTTP Request: GET https://marin.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:13:09 [INFO]   Roster: https://marin.prestosports.com/sports/mbkb/2025-26/roster
+20:13:19 [INFO] HTTP Request: GET https://marin.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:13:19 [INFO]   Parsed: 11 players
+20:13:19 [INFO]   Matched: 11, Ht: +11, Wt: +11, Yr: +11, Unmatched: 0
+20:13:19 [INFO] 
+[54/105] Mendocino
+20:13:20 [INFO] HTTP Request: HEAD https://mendocino.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:13:29 [INFO] HTTP Request: GET https://mendocino.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:13:29 [INFO]   Roster: https://mendocino.prestosports.com/sports/mbkb/2025-26/roster
+20:13:39 [INFO] HTTP Request: GET https://mendocino.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:13:39 [INFO]   Parsed: 12 players
+20:13:39 [INFO]   Matched: 12, Ht: +12, Wt: +12, Yr: +12, Unmatched: 0
+20:13:39 [INFO] 
+[55/105] Merced
+20:13:39 [INFO] HTTP Request: HEAD https://merced.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:40 [INFO] HTTP Request: HEAD https://mercedcollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:40 [INFO] HTTP Request: HEAD https://mercedcc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:41 [INFO] HTTP Request: HEAD https://merceduniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:41 [INFO] HTTP Request: HEAD https://mercedstate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:42 [INFO] HTTP Request: HEAD https://gomerced.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:42 [INFO] HTTP Request: HEAD https://mercedathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:42 [INFO]   No roster page found
+20:13:42 [INFO] 
+[56/105] Merritt
+20:13:42 [INFO] HTTP Request: HEAD https://merritt.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:43 [INFO] HTTP Request: HEAD https://merrittcollege.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:43 [INFO] HTTP Request: HEAD https://merrittcc.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:43 [INFO] HTTP Request: HEAD https://merrittuniversity.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:44 [INFO] HTTP Request: HEAD https://merrittstate.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:44 [INFO] HTTP Request: HEAD https://gomerritt.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:45 [INFO] HTTP Request: HEAD https://merrittathletics.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 404 Not Found"
+20:13:45 [INFO]   No roster page found
+20:13:45 [INFO] 
+[57/105] MiraCosta
+20:13:46 [INFO] HTTP Request: HEAD https://miracosta.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:13:49 [INFO] HTTP Request: GET https://miracosta.prestosports.com/sports/mbkb/2025-26/roster "HTTP/1.1 200 OK"
+20:13:49 [INFO]   Roster: https://miracosta.prestosports.com/sports/mbkb/2025-26/roster
+20:14:13 [INFO]   Failed to fetch
+20:14:13 [INFO] 
+[58/105] Modesto
+20:14:13 [INFO]   No roster page found
+20:14:13 [INFO] 
+[59/105] Monterey Peninsula
+20:14:13 [INFO]   No roster page found
+20:14:13 [INFO] 
+[60/105] Moorpark
+20:14:13 [INFO]   No roster page found
+20:14:13 [INFO] 
+[61/105] Mt. San Antonio
+20:14:13 [INFO]   No roster page found
+20:14:13 [INFO] 
+[62/105] Mt. San Jacinto
+20:14:13 [INFO]   No roster page found
+20:14:13 [INFO] 
+[63/105] Napa Valley
+20:14:13 [INFO]   No roster page found
+20:14:13 [INFO] 
+[64/105] Ohlone
+20:14:13 [INFO]   No roster page found
+20:14:13 [INFO] 
+[65/105] Orange Coast
+20:14:13 [INFO]   No roster page found
+20:14:13 [INFO] 
+[66/105] Oxnard
+20:14:13 [INFO]   No roster page found
+20:14:13 [INFO] 
+[67/105] Palo Verde
+20:14:13 [INFO]   No roster page found
+20:14:13 [INFO] 
+[68/105] Palomar
+20:14:13 [INFO]   No roster page found
+20:14:13 [INFO] 
+[69/105] Pasadena City
+20:14:13 [INFO]   No roster page found
+20:14:13 [INFO] 
+[70/105] Porterville
+20:14:13 [INFO]   No roster page found
+20:14:13 [INFO] 
+[71/105] Redwoods
+20:14:13 [INFO]   No roster page found
+20:14:13 [INFO] 
+[72/105] Reedley
+20:14:13 [INFO]   No roster page found
+20:14:13 [INFO] 
+[73/105] Rio Hondo
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[74/105] Riverside
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[75/105] Sacramento City
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[76/105] Saddleback
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[77/105] San Bernardino Valley
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[78/105] San Diego City
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[79/105] San Diego Mesa
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[80/105] San Diego Miramar
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[81/105] San Francisco
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[82/105] San Joaquin Delta
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[83/105] San Jose
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[84/105] San Mateo
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[85/105] Santa Ana
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[86/105] Santa Barbara
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[87/105] Santa Monica
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[88/105] Santa Rosa
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[89/105] Santiago Canyon
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[90/105] Sequoias
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[91/105] Shasta
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[92/105] Sierra
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[93/105] Simpson JV
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[94/105] Simpson University JV
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[95/105] Siskiyous
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[96/105] Skyline
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[97/105] Solano
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[98/105] Southwestern Oregon
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[99/105] Treasure Valley CC
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[100/105] Umpqua College
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[101/105] Ventura
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[102/105] Victor Valley
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[103/105] West LA
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[104/105] West Valley
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+[105/105] Yuba
+20:14:14 [INFO]   No roster page found
+20:14:14 [INFO] 
+============================================================
+20:14:14 [INFO] DONE: cccaa
+20:14:14 [INFO]   Teams: 105, Discovered: 35
+20:14:14 [INFO]   Players matched: 291
+20:14:14 [INFO]   Height set: 256
+20:14:14 [INFO]   Weight set: 204
+20:14:14 [INFO]   Class year set: 274

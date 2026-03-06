@@ -1,0 +1,12 @@
+2250|Gonzaga Bulldogs
+2351|Loyola Marymount Lions
+204|Oregon State Beavers
+279|Pacific Tigers
+2492|Pepperdine Waves
+2501|Portland Pilots
+2608|Saint Mary's Gaels
+301|San Diego Toreros
+2539|San Francisco Dons
+2541|Santa Clara Broncos
+2547|Seattle U Redhawks
+265|Washington State Cougars

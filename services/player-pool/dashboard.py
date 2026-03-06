@@ -14,7 +14,7 @@ import pandas as pd
 DB_DSN = "dbname=kanext_player_pool host=localhost port=5432"
 
 st.set_page_config(
-    page_title="KaNeXT Basketball Intelligence",
+    page_title="MBB Stats Explorer",
     page_icon="🏀",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -51,10 +51,11 @@ def q(sql, params=None):
 # SIDEBAR
 # ═══════════════════════════════════════════════════════════════════════════
 
-st.sidebar.title("KaNeXT Intelligence")
-st.sidebar.caption("Basketball Dashboard v1.0")
+st.sidebar.title("Men's Basketball")
+st.sidebar.caption("MBB Stats Explorer v1.0")
 
-page = st.sidebar.radio("Navigate", [
+# ── Navigation state ──
+NAV_OPTIONS = [
     "Overview",
     "Scrape Monitor",
     "Player Explorer",
@@ -62,11 +63,34 @@ page = st.sidebar.radio("Navigate", [
     "Badge Analytics",
     "Team Systems",
     "Scholarship & NIL",
-])
+]
+
+if "target_page" not in st.session_state:
+    st.session_state.target_page = None
+if "target_level" not in st.session_state:
+    st.session_state.target_level = None
+
+# Apply pending navigation
+_default_idx = 0
+if st.session_state.target_page:
+    try:
+        _default_idx = NAV_OPTIONS.index(st.session_state.target_page)
+    except ValueError:
+        pass
+    st.session_state.target_page = None
+
+page = st.sidebar.radio("Navigate", NAV_OPTIONS, index=_default_idx)
 
 st.sidebar.markdown("---")
 if st.sidebar.button("Refresh Data"):
     st.cache_data.clear()
+    st.rerun()
+
+
+def _navigate(page_name: str, level: str | None = None):
+    """Navigate to a page, optionally with a level filter."""
+    st.session_state.target_page = page_name
+    st.session_state.target_level = level
     st.rerun()
 
 
@@ -328,7 +352,7 @@ LEVEL_LABELS = {
 
 
 def page_overview():
-    st.title("KaNeXT Basketball Intelligence")
+    st.title("Men's Basketball — Stats Explorer")
     st.caption("Unified player intelligence across all competitive levels")
 
     stats = get_overview_stats()
@@ -338,26 +362,74 @@ def page_overview():
 
     r = stats.iloc[0]
 
-    # Top metrics
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Total Players", f"{int(r['total_players']):,}")
-    c2.metric("Total Teams", f"{int(r['total_teams']):,}")
-    c3.metric("Total Games", f"{int(r['total_games']):,}")
-    c4.metric("Game Stat Rows", f"{int(r['total_pgs']):,}")
+    # ── Big clickable cards: All Players / All Teams ──
+    card1, card2 = st.columns(2)
+    with card1:
+        st.markdown(
+            f"""<div style="background:#111;border:1px solid #333;border-radius:12px;
+            padding:24px;text-align:center;">
+            <div style="font-size:36px;font-weight:700;color:#fff;">
+            {int(r['total_players']):,}</div>
+            <div style="font-size:14px;color:#aaa;margin-top:4px;">players in pool</div>
+            </div>""",
+            unsafe_allow_html=True,
+        )
+        if st.button("All Players  →", use_container_width=True, key="nav_players"):
+            _navigate("Player Explorer")
 
-    c5, c6, c7, c8 = st.columns(4)
-    c5.metric("Player KRs", f"{int(r['total_kr']):,}")
-    c6.metric("Badges Awarded", f"{int(r['total_badges']):,}")
-    c7.metric("Teams with KR", f"{int(r['teams_with_kr']):,}")
-    c8.metric("Scholarship Allocs", f"{int(r['total_sna']):,}")
+    with card2:
+        st.markdown(
+            f"""<div style="background:#111;border:1px solid #333;border-radius:12px;
+            padding:24px;text-align:center;">
+            <div style="font-size:36px;font-weight:700;color:#fff;">
+            {int(r['total_teams']):,}</div>
+            <div style="font-size:14px;color:#aaa;margin-top:4px;">teams tracked</div>
+            </div>""",
+            unsafe_allow_html=True,
+        )
+        if st.button("All Teams  →", use_container_width=True, key="nav_teams"):
+            _navigate("Team Systems")
+
+    st.markdown("")
+
+    # Secondary metrics
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Total Games", f"{int(r['total_games']):,}")
+    c2.metric("Player KRs", f"{int(r['total_kr']):,}")
+    c3.metric("Badges Awarded", f"{int(r['total_badges']):,}")
+    c4.metric("Scholarship Allocs", f"{int(r['total_sna']):,}")
 
     st.markdown("---")
 
-    # Level breakdown
-    st.subheader("Data by Competitive Level")
+    # ── Level breakdown with clickable buttons ──
+    st.subheader("Browse by Level")
     levels = get_level_stats()
     if not levels.empty:
         levels["level_label"] = levels["level_key"].map(LEVEL_LABELS).fillna(levels["level_key"])
+
+        # Render level buttons in rows of 4
+        level_rows = [levels.iloc[i:i+4] for i in range(0, len(levels), 4)]
+        for row_df in level_rows:
+            cols = st.columns(4)
+            for idx, (_, lrow) in enumerate(row_df.iterrows()):
+                with cols[idx]:
+                    lbl = lrow["level_label"]
+                    players = int(lrow["players"])
+                    teams = int(lrow["teams"])
+                    st.markdown(
+                        f"""<div style="background:#0d1117;border:1px solid #333;
+                        border-radius:8px;padding:12px;text-align:center;">
+                        <div style="font-size:15px;font-weight:600;color:#fff;">{lbl}</div>
+                        <div style="font-size:12px;color:#888;">{players:,} players · {teams} teams</div>
+                        </div>""",
+                        unsafe_allow_html=True,
+                    )
+                    if st.button(f"View {lbl}", use_container_width=True, key=f"lvl_{lrow['level_key']}"):
+                        _navigate("Player Explorer", level=lrow["level_key"])
+
+        st.markdown("---")
+
+        # Chart
         fig = px.bar(
             levels.sort_values("players", ascending=True),
             x="players", y="level_label",
@@ -520,10 +592,17 @@ def page_scrape_monitor():
 def page_player_explorer():
     st.title("Player Explorer")
 
-    # Filters
+    # Filters — apply pending level navigation
     col1, col2, col3 = st.columns(3)
     levels = ["All"] + LEVEL_ORDER
-    level_filter = col1.selectbox("Level", levels, format_func=lambda x: LEVEL_LABELS.get(x, x))
+    default_level_idx = 0
+    if st.session_state.target_level:
+        try:
+            default_level_idx = levels.index(st.session_state.target_level)
+        except ValueError:
+            pass
+        st.session_state.target_level = None
+    level_filter = col1.selectbox("Level", levels, index=default_level_idx, format_func=lambda x: LEVEL_LABELS.get(x, x))
 
     kr_range = col2.slider("KR Range", 0, 100, (0, 100))
 

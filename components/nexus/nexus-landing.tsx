@@ -1,10 +1,10 @@
 /**
- * Nexus Landing — mode-specific quote + input bar.
+ * Nexus Landing — mode-specific quote.
  * Shown when no active conversation is selected.
  */
 
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Colors, Spacing } from '@/constants/theme';
@@ -46,11 +46,6 @@ export function NexusLanding({ mode }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.center}>
-        <Image
-          source={require('@/assets/images/nexus-logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
         <ThemedText style={[styles.quoteText, { color: colors.textSecondary }]}>
           {quote.text}
         </ThemedText>
@@ -71,12 +66,6 @@ const styles = StyleSheet.create({
   },
   center: {
     alignItems: 'center',
-  },
-  logo: {
-    width: 64,
-    height: 64,
-    marginBottom: 24,
-    opacity: 0.6,
   },
   quoteText: {
     fontSize: 22,

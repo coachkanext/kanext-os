@@ -1,0 +1,10 @@
+california-pa|California (Pennsylvania)
+charleston-wv|Charleston (West Virginia)
+east-stroudsburg|East Stroudsburg
+fairmont-st|Fairmont State
+fayetteville-st|Fayetteville State
+gannon|Gannon University
+indiana-pa|Indiana (Pennsylvania)
+virginia-union|Virginia Union
+west-chester|West Chester
+west-liberty|West Liberty

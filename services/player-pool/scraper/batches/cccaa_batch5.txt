@@ -1,0 +1,15 @@
+redwoods|Redwoods
+shasta|Shasta
+featherriver|Feather River
+butte|Butte
+siskiyous|Siskiyous
+lassen|Lassen
+chaffey|Chaffey
+sanbernardinovalley|San Bernardino Valley
+cerrocoso|Cerro Coso
+barstow|Barstow
+coppermountain|Copper Mountain
+victorvalley|Victor Valley
+mtsanjacinto|Mt. San Jacinto
+paloverde|Palo Verde
+desert|Desert

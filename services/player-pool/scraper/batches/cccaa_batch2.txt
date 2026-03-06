@@ -1,0 +1,9 @@
+modesto|Modesto
+santarosa|Santa Rosa
+cosumnesriver|Cosumnes River
+sierra|Sierra
+americanriver|American River
+diablovalley|Diablo Valley
+sacramentocity|Sacramento City
+sanjoaquindelta|San Joaquin Delta
+folsomlake|Folsom Lake

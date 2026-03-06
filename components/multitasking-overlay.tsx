@@ -1,9 +1,8 @@
 /**
- * Multitasking Overlay — iOS-style App Switcher
- * Full-screen overlay with horizontally scrollable app preview cards.
- * Cards are phone-screen-shaped, swipe up to dismiss.
- * Tap anywhere outside cards → dismiss + go home.
- * Nexus button stays visible at bottom — tap it to close + go home.
+ * Multitasking Overlay — iOS App Switcher style.
+ * Current screen on the right, older screens staggered to the left.
+ * Swipe up on a card to dismiss it. Tap card to switch. Tap outside to go home.
+ * Auto-scrolls to the rightmost (current) card on open.
  */
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
@@ -27,22 +26,25 @@ import { registerMultitaskingHandlers, closeMultitasking } from '@/utils/global-
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-/** iOS-style app preview card with swipe-up to dismiss */
+// ─── App Card ───────────────────────────────────────────────────────────────
+
 function AppCard({
   screen,
   cardWidth,
   cardHeight,
+  isCurrent,
   onTap,
   onRemove,
 }: {
   screen: MultitaskingScreen;
   cardWidth: number;
   cardHeight: number;
+  isCurrent: boolean;
   onTap: () => void;
   onRemove: () => void;
 }) {
   const translateY = useRef(new Animated.Value(0)).current;
-  const scale = useRef(new Animated.Value(1)).current;
+  const cardScale = useRef(new Animated.Value(1)).current;
   const cardOpacity = useRef(new Animated.Value(1)).current;
 
   const panResponder = useMemo(
@@ -54,12 +56,13 @@ function AppCard({
           if (gs.dy < 0) {
             translateY.setValue(gs.dy);
             const progress = Math.min(Math.abs(gs.dy) / 300, 1);
-            scale.setValue(1 - progress * 0.15);
-            cardOpacity.setValue(1 - progress * 0.5);
+            cardScale.setValue(1 - progress * 0.1);
+            cardOpacity.setValue(1 - progress * 0.6);
           }
         },
         onPanResponderRelease: (_evt, gs) => {
           if (gs.dy < -80 || gs.vy < -0.5) {
+            // Fling up → remove
             Animated.parallel([
               Animated.timing(translateY, {
                 toValue: -600,
@@ -76,13 +79,14 @@ function AppCard({
               onRemove();
             });
           } else {
+            // Snap back
             Animated.spring(translateY, {
               toValue: 0,
               tension: 80,
               friction: 10,
               useNativeDriver: true,
             }).start();
-            Animated.spring(scale, {
+            Animated.spring(cardScale, {
               toValue: 1,
               tension: 80,
               friction: 10,
@@ -97,36 +101,43 @@ function AppCard({
           }
         },
       }),
-    [translateY, scale, cardOpacity, onRemove],
+    [translateY, cardScale, cardOpacity, onRemove],
   );
 
   return (
     <Animated.View
       style={[
-        styles.card,
+        styles.cardWrap,
         {
           width: cardWidth,
-          height: cardHeight,
-          transform: [{ translateY }, { scale }],
+          transform: [{ translateY }, { scale: cardScale }],
           opacity: cardOpacity,
         },
       ]}
       {...panResponder.panHandlers}
     >
-      <Pressable style={styles.cardSurface} onPress={onTap}>
-        <View style={styles.cardPreview}>
-          <View style={styles.cardIconLarge}>
-            <IconSymbol name={screen.icon} size={44} color="#FFFFFF" />
-          </View>
-        </View>
-      </Pressable>
-
-      <Text style={styles.cardLabel} numberOfLines={1}>
+      {/* Label above the card */}
+      <Text style={[styles.cardLabel, isCurrent && styles.cardLabelCurrent]} numberOfLines={1}>
         {screen.title}
       </Text>
+
+      {/* Card surface */}
+      <Pressable
+        style={[styles.cardSurface, { height: cardHeight }]}
+        onPress={onTap}
+      >
+        <View style={styles.cardPreview}>
+          <View style={styles.cardIconCircle}>
+            <IconSymbol name={screen.icon} size={40} color="#FFFFFF" />
+          </View>
+          <Text style={styles.cardScreenTitle}>{screen.title}</Text>
+        </View>
+      </Pressable>
     </Animated.View>
   );
 }
+
+// ─── Overlay ────────────────────────────────────────────────────────────────
 
 export function MultitaskingOverlay() {
   const [visible, setVisible] = useState(false);
@@ -136,9 +147,11 @@ export function MultitaskingOverlay() {
   const { screens, removeScreen } = useMultitasking();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(60)).current;
+  const scrollRef = useRef<ScrollView>(null);
 
-  const cardWidth = width * 0.62;
-  const cardHeight = height * 0.48;
+  const cardWidth = width * 0.68;
+  const cardHeight = height * 0.55;
+  const cardGap = 14;
 
   useEffect(() => {
     registerMultitaskingHandlers(
@@ -156,7 +169,10 @@ export function MultitaskingOverlay() {
             friction: 11,
             useNativeDriver: true,
           }),
-        ]).start();
+        ]).start(() => {
+          // Auto-scroll to the rightmost card (current screen)
+          scrollRef.current?.scrollToEnd({ animated: false });
+        });
       },
       () => dismiss(),
     );
@@ -202,60 +218,63 @@ export function MultitaskingOverlay() {
 
   if (!visible) return null;
 
+  // Reverse so newest is on the RIGHT (iOS style)
+  const orderedScreens = [...screens].reverse();
+
   return (
     <AnimatedPressable
       style={[styles.container, { opacity: fadeAnim }]}
       onPress={handleDismissToHome}
     >
-      {/* Dark backdrop (visual only, not interactive) */}
+      {/* Dark backdrop */}
       <View style={styles.backdrop} pointerEvents="none" />
 
-      {/* Top dismiss zone */}
-      <View style={{ height: insets.top + 80 }} pointerEvents="none" />
-
-      {/* Cards row — only takes the height it needs */}
-      <Animated.View
-        style={[
-          styles.cardRow,
-          { transform: [{ translateY: slideAnim }] },
-        ]}
-        pointerEvents="box-none"
-      >
-        {screens.length === 0 ? (
+      {/* Cards area — vertically centered */}
+      <View style={[styles.cardArea, { paddingTop: insets.top + 40 }]} pointerEvents="box-none">
+        {orderedScreens.length === 0 ? (
           <View style={styles.emptyState} pointerEvents="none">
             <IconSymbol name="rectangle.stack" size={48} color="#3F3F46" />
             <Text style={styles.emptyText}>No Recent Apps</Text>
           </View>
         ) : (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={[
-              styles.cardList,
-              screens.length === 1 && { flex: 1, justifyContent: 'center' },
-            ]}
-            snapToInterval={cardWidth + 16}
-            decelerationRate="fast"
+          <Animated.View
+            style={{ transform: [{ translateY: slideAnim }] }}
+            pointerEvents="box-none"
           >
-            {screens.map((screen) => (
-              <AppCard
-                key={screen.id}
-                screen={screen}
-                cardWidth={cardWidth}
-                cardHeight={cardHeight}
-                onTap={() => handleCardTap(screen)}
-                onRemove={() => handleRemove(screen.id)}
-              />
-            ))}
-          </ScrollView>
+            <ScrollView
+              ref={scrollRef}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={[
+                styles.cardList,
+                { gap: cardGap, paddingHorizontal: (width - cardWidth) / 2 },
+              ]}
+              snapToInterval={cardWidth + cardGap}
+              decelerationRate="fast"
+              onContentSizeChange={() => {
+                scrollRef.current?.scrollToEnd({ animated: false });
+              }}
+            >
+              {orderedScreens.map((screen, idx) => (
+                <AppCard
+                  key={screen.id}
+                  screen={screen}
+                  cardWidth={cardWidth}
+                  cardHeight={cardHeight}
+                  isCurrent={idx === orderedScreens.length - 1}
+                  onTap={() => handleCardTap(screen)}
+                  onRemove={() => handleRemove(screen.id)}
+                />
+              ))}
+            </ScrollView>
+          </Animated.View>
         )}
-      </Animated.View>
-
-      {/* Bottom dismiss zone */}
-      <View style={{ flex: 1 }} pointerEvents="none" />
+      </View>
     </AnimatedPressable>
   );
 }
+
+// ─── Styles ─────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
   container: {
@@ -264,24 +283,35 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    backgroundColor: 'rgba(0, 0, 0, 0.88)',
   },
-  cardRow: {
-    alignItems: 'center',
+  cardArea: {
+    flex: 1,
+    justifyContent: 'center',
   },
   cardList: {
-    paddingHorizontal: 24,
-    gap: 16,
     alignItems: 'center',
   },
-  card: {
+
+  // Card
+  cardWrap: {
     alignItems: 'center',
+  },
+  cardLabel: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#8E8E93',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  cardLabelCurrent: {
+    color: '#FFFFFF',
+    fontWeight: '600',
   },
   cardSurface: {
-    flex: 1,
     width: '100%',
-    backgroundColor: '#1A1A2E',
-    borderRadius: 20,
+    backgroundColor: '#1C1C1E',
+    borderRadius: 40,
     overflow: 'hidden',
     borderWidth: 0.5,
     borderColor: 'rgba(255, 255, 255, 0.08)',
@@ -290,22 +320,23 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 16,
   },
-  cardIconLarge: {
-    width: 80,
-    height: 80,
-    borderRadius: 20,
+  cardIconCircle: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
     backgroundColor: 'rgba(255, 255, 255, 0.06)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cardLabel: {
-    fontSize: 13,
+  cardScreenTitle: {
+    fontSize: 15,
     fontWeight: '500',
-    color: '#A1A1AA',
-    marginTop: 10,
-    textAlign: 'center',
+    color: '#52525B',
   },
+
+  // Empty
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',

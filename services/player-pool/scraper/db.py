@@ -98,25 +98,41 @@ def upsert_team_season(conn, team_id: str, season: str) -> str:
     return str(row["id"])
 
 
-def upsert_player(conn, full_name: str, positions: list[str] | None = None) -> str:
+def upsert_player(conn, full_name: str, positions: list[str] | None = None,
+                   height_inches: int | None = None,
+                   weight_lbs: int | None = None) -> str:
     """Insert player if not exists (by full_name), return id.
     Simple dedup by exact name match for now."""
     row = conn.execute(
         "SELECT id FROM players WHERE full_name = %s", (full_name,)
     ).fetchone()
     if row:
+        pid = str(row["id"])
         # Update positions if provided and not yet set
         if positions:
             conn.execute(
                 """UPDATE players SET declared_positions = %s, updated_at = now()
                    WHERE id = %s AND (declared_positions IS NULL OR declared_positions = '{}')""",
-                (positions, str(row["id"])),
+                (positions, pid),
             )
-        return str(row["id"])
+        # Update height/weight if provided and not yet set
+        if height_inches:
+            conn.execute(
+                """UPDATE players SET height_inches = %s, updated_at = now()
+                   WHERE id = %s AND height_inches IS NULL""",
+                (height_inches, pid),
+            )
+        if weight_lbs:
+            conn.execute(
+                """UPDATE players SET weight_lbs = %s, updated_at = now()
+                   WHERE id = %s AND weight_lbs IS NULL""",
+                (weight_lbs, pid),
+            )
+        return pid
     row = conn.execute(
-        """INSERT INTO players (full_name, declared_positions)
-           VALUES (%s, %s) RETURNING id""",
-        (full_name, positions or []),
+        """INSERT INTO players (full_name, declared_positions, height_inches, weight_lbs)
+           VALUES (%s, %s, %s, %s) RETURNING id""",
+        (full_name, positions or [], height_inches, weight_lbs),
     ).fetchone()
     return str(row["id"])
 

@@ -154,7 +154,7 @@ def _infer_position(positions: list[str] | None, ppg, apg, rpg, bpg, stl,
 
 
 def export_players(conn) -> list[dict]:
-    """Export all players with KR, archetype, team, level info."""
+    """Export all players with stats, team, level info (no KR)."""
     cur = conn.cursor()
     cur.execute("""
         SELECT
@@ -174,18 +174,6 @@ def export_players(conn) -> list[dict]:
             c.name AS conference_name,
             cl.level_key,
             cl.display_name AS level_display,
-            kr.overall_kr,
-            kr.base_off_kr,
-            kr.base_def_kr,
-            kr.final_overall_kr,
-            kr.final_off_kr,
-            kr.final_def_kr,
-            kr.off_badge_boost,
-            kr.def_badge_boost,
-            kr.overall_badge_boost,
-            kr.primary_archetype,
-            kr.secondary_archetypes,
-            kr.confidence_pct,
             pss.games_played,
             pss.games_started,
             pss.minutes_per_game,
@@ -213,10 +201,9 @@ def export_players(conn) -> list[dict]:
         JOIN teams t ON t.id = ts.team_id
         LEFT JOIN conferences c ON c.id = t.conference_id
         LEFT JOIN competitive_levels cl ON cl.id = t.competitive_level_id
-        LEFT JOIN player_kr kr ON kr.player_team_season_id = pts.id
         LEFT JOIN player_season_stats pss ON pss.player_team_season_id = pts.id
         WHERE ts.season = '2025-26'
-        ORDER BY kr.overall_kr DESC NULLS LAST, p.full_name
+        ORDER BY pss.pts_per_game DESC NULLS LAST, p.full_name
     """)
 
     players = []
@@ -225,10 +212,6 @@ def export_players(conn) -> list[dict]:
             pid, full_name, height_in, weight, positions, state, country, city,
             high_school, class_year, jersey, portal_date,
             team, conference, level_key, level_display,
-            kr, off_kr, def_kr,
-            final_kr, final_off, final_def,
-            off_badge_boost, def_badge_boost, overall_badge_boost,
-            archetype, sec_archetypes, confidence,
             gp, gs, mpg, ppg, rpg, apg, spg, bpg, topg,
             fg_pct, three_pct, ft_pct, oreb, dreb, fga, threepa, fta, pf,
             usage, bpr_avg, bpr_trend
@@ -238,17 +221,9 @@ def export_players(conn) -> list[dict]:
         first_name = name_parts[0]
         last_name = name_parts[1] if len(name_parts) > 1 else ""
 
-        # Position mapping — canonical 5-position system only: PG, CG, W, F, B
-        pos = "W"  # default fallback
-        if positions and len(positions) > 0:
-            pm = {
-                "PG": "PG", "CG": "CG", "W": "W", "F": "F", "B": "B",
-                "SG": "CG", "SF": "W", "PF": "F", "C": "B",
-                "G": "PG", "G/F": "W", "F/C": "F", "W/F": "W",
-                "PF/C": "F", "SF/PF": "F", "C/F": "F", "G/W": "CG",
-                "WING": "W",
-            }
-            pos = pm.get(positions[0].upper(), "W") if positions[0] else "W"
+        pos = _infer_position(
+            positions, ppg, apg, rpg, bpg, spg, mpg, oreb, fga
+        )
 
         players.append({
             "id": str(pid),
@@ -259,7 +234,7 @@ def export_players(conn) -> list[dict]:
             "height": _fmt_height(height_in),
             "heightInches": _f(height_in),
             "weight": _f(weight),
-            "classYear": class_year or "",
+            "classYear": _normalize_class_year(class_year),
             "jerseyNumber": jersey or "",
             "school": team or "",
             "conference": conference or "",
@@ -270,18 +245,9 @@ def export_players(conn) -> list[dict]:
             "city": city or "",
             "highSchool": high_school or "",
             "portalEntryDate": str(portal_date) if portal_date else None,
-            "kr": _f(final_kr) or _f(kr),
-            "offKR": _f(final_off) or _f(off_kr),
-            "defKR": _f(final_def) or _f(def_kr),
-            "baseKR": _f(kr),
-            "baseOffKR": _f(off_kr),
-            "baseDefKR": _f(def_kr),
-            "offBadgeBoost": _f(off_badge_boost),
-            "defBadgeBoost": _f(def_badge_boost),
-            "overallBadgeBoost": _f(overall_badge_boost),
-            "archetype": archetype or "",
-            "secondaryArchetypes": sec_archetypes or [],
-            "confidence": _f(confidence),
+            "kr": None,
+            "archetype": "",
+            "confidence": None,
             "gp": _f(gp),
             "gs": _f(gs),
             "mpg": _f(mpg),
@@ -474,24 +440,6 @@ def main():
 
     print("Exporting data...")
     players = export_players(conn)
-    clusters = export_clusters(conn)
-    badges = export_badges(conn)
-    scholarship = export_scholarship_nil(conn)
-    team_systems = export_team_systems(conn)
-
-    # Merge clusters, badges, scholarship into players for a single file
-    for p in players:
-        pid = p["id"]
-        p["clusters"] = clusters.get(pid, {
-            "shooting": 50, "finishing": 50, "playmaking": 50,
-            "on_ball_defense": 50, "team_defense": 50,
-            "rebounding": 50, "physical": 50,
-            "perimeter_defense_lens": 50, "interior_defense_lens": 50,
-        })
-        p["badges"] = badges.get(pid, [])
-        sna = scholarship.get(pid)
-        if sna:
-            p["scholarship"] = sna
 
     # Write single combined file
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -499,21 +447,19 @@ def main():
     with open(out_path, "w") as f:
         json.dump({
             "players": players,
-            "teamSystems": team_systems,
             "exportedAt": __import__("datetime").datetime.now().isoformat(),
             "counts": {
                 "players": len(players),
-                "withKR": sum(1 for p in players if p["kr"] is not None),
                 "withStats": sum(1 for p in players if p["gp"] is not None),
-                "withBadges": sum(1 for p in players if len(p.get("badges", [])) > 0),
-                "withScholarship": len(scholarship),
-                "teamSystems": len(team_systems),
+                "withHeight": sum(1 for p in players if p["heightInches"] is not None),
+                "withWeight": sum(1 for p in players if p["weight"] is not None),
             },
         }, f, indent=None, default=str)
 
     size_mb = os.path.getsize(out_path) / (1024 * 1024)
     print(f"\nWrote {out_path} ({size_mb:.1f} MB)")
-    print(f"  {len(players)} players, {sum(1 for p in players if p['kr'])} with KR")
+    with_stats = sum(1 for p in players if p["gp"] is not None)
+    print(f"  {len(players)} players, {with_stats} with stats")
 
     conn.close()
     print("Done.")

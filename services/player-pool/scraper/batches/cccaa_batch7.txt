@@ -1,0 +1,12 @@
+eastlosangeles|East Los Angeles
+mtsanantonio|Mt. San Antonio
+pasadenacity|Pasadena City
+losangelescity|Los Angeles City
+latradetech|LA Trade Tech
+riohondo|Rio Hondo
+cerritos|Cerritos
+compton|Compton
+laharbor|LA Harbor
+longbeach|Long Beach
+lasouthwest|LA Southwest
+elcamino|El Camino

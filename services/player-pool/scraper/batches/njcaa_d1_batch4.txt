@@ -1,0 +1,20 @@
+gillettecollege|Gillette College
+gordonstatecollege|Gordon State College
+graysoncollege|Grayson College
+gulfcoaststatecollege|Gulf Coast State College
+hagerstowncommunitycollege|Hagerstown CC
+harcumcollege|Harcum College
+harfordcommunitycollege|Harford CC
+harrystrumancollege|Harry S. Truman College
+highlandcommunitycollege-illinois|Highland CC - Illinois
+hillcollege|Hill College
+hillsboroughcommunitycollege|Hillsborough CC
+hindscommunitycollege|Hinds CC
+holmescommunitycollege|Holmes CC
+howardcollege|Howard College
+hutchinsoncommunitycollege|Hutchinson CC
+independencecommunitycollege|Independence CC
+indianhillscommunitycollege|Indian Hills CC
+indianriverstatecollege|Indian River State College
+itawambacommunitycollege|Itawamba CC
+jacksonstatecommunitycollege|Jackson State CC

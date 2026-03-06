@@ -1,0 +1,15 @@
+sanfrancisco|San Francisco
+laspositas|Las Positas
+skyline|Skyline
+chabot|Chabot
+ohlone|Ohlone
+canada|Cañada
+sanmateo|San Mateo
+deanza|De Anza
+westvalley|West Valley
+sanjose|San Jose
+cabrillo|Cabrillo
+foothill|Foothill
+hartnell|Hartnell
+gavilan|Gavilan
+montereypeninsula|Monterey Peninsula

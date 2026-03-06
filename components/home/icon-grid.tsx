@@ -40,7 +40,8 @@ const C = {
 /** Mode-dependent labels for icons that change per mode (positions 2, 3, 6) */
 const MODE_LABELS: Record<string, Record<Mode, string>> = {
   season:  { sports: 'Season',   business: 'Office',  church: 'Parish',     education: 'Term',      competition: 'Season' },
-  roster:  { sports: 'Team',     business: 'Team',    church: 'Ministries', education: 'Community', competition: 'Team' },
+  roster:  { sports: 'Roster',   business: 'Team',    church: 'Ministries', education: 'Community', competition: 'Roster' },
+  recruits:{ sports: 'Recruits', business: 'Recruits',church: 'Outreach',   education: 'Admissions',competition: 'Recruits' },
   store:   { sports: 'Store',    business: 'Store',   church: 'Give',       education: 'Store',     competition: 'Store' },
 };
 
@@ -50,6 +51,15 @@ const MODE_IMAGES: Record<string, Partial<Record<Mode, any>>> = {
     church: require('@/assets/images/icon-parish.png'),
     business: require('@/assets/images/icon-office.png'),
     education: require('@/assets/images/icon-term.png'),
+  },
+  roster: {
+    sports: require('@/assets/images/icon-roster.png'),
+    competition: require('@/assets/images/icon-roster.png'),
+    education: require('@/assets/images/icon-community.png'),
+  },
+  recruits: {
+    church: require('@/assets/images/icon-outreach.png'),
+    education: require('@/assets/images/icon-admissions.png'),
   },
   store: {
     church: require('@/assets/images/icon-give.png'),
@@ -324,7 +334,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   iconContainerImage: {
-    backgroundColor: 'transparent',
+    backgroundColor: '#000000',
   },
   tileImage: {
     width: 56,

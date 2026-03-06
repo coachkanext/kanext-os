@@ -1,0 +1,20 @@
+loraincountycommunitycollege|Lorain County CC
+luzernecountycommunitycollege|Luzerne County CC
+massasoitcommunitycollege|Massasoit CC
+massbaycommunitycollege|MassBay CC
+minnesotanorthcollegehibbing|Minnesota North College-Hibbing
+minnesotanorthcollegeitasca|Minnesota North College-Itasca
+minnesotanorthcollegemesabirange|Minnesota North College-Mesabi Range
+minnesotanorthcollegerainyriver|Minnesota North College-Rainy River
+minnesotanorthcollegevermilion|Minnesota North College-Vermilion
+minnesotastatecommunityandtechnical|Minnesota State Community and Technical College
+minnesotawestcommunitytechnicalcol|Minnesota West Community & Technical College
+mohawkvalleycommunitycollege|Mohawk Valley CC
+monroeuniversitybronx|Monroe University - Bronx
+montgomerycountycommunitycollegepa|Montgomery County CC (PA)
+nassaucommunitycollege|Nassau CC
+northcountrycommunitycollege|North Country CC
+northamptoncommunitycollege|Northampton CC
+northernessexcommunitycollege|Northern Essex CC
+northlandcommunitytechnicalcollege|Northland Community & Technical College
+oceancountycollege|Ocean County College

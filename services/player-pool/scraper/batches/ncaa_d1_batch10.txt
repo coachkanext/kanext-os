@@ -1,0 +1,18 @@
+356|Illinois Fighting Illini
+84|Indiana Hoosiers
+2294|Iowa Hawkeyes
+120|Maryland Terrapins
+127|Michigan State Spartans
+130|Michigan Wolverines
+135|Minnesota Golden Gophers
+158|Nebraska Cornhuskers
+77|Northwestern Wildcats
+194|Ohio State Buckeyes
+2483|Oregon Ducks
+213|Penn State Nittany Lions
+2509|Purdue Boilermakers
+164|Rutgers Scarlet Knights
+26|UCLA Bruins
+30|USC Trojans
+264|Washington Huskies
+275|Wisconsin Badgers

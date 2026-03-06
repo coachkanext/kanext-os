@@ -1,0 +1,20 @@
+ala-huntsville|Alabama Huntsville
+fla-southern|Florida Southern
+montevallo|Montevallo
+nova-southeastern|Nova Southeastern
+palm-beach-atl|Palm Beach Atlantic
+trevecca-nazarene|Trevecca Nazarene
+tuskegee|Tuskegee
+valdosta-st|Valdosta State
+west-ala|West Alabama
+west-florida|West Florida
+black-hills-st|Black Hills State
+colorado-mesa|Colorado Mesa
+dallas-baptist|Dallas Baptist
+eastern-nm|Eastern New Mexico
+fort-lewis|Fort Lewis
+lubbock-christian|Lubbock Christian
+st-edwards|St. Edward's
+st-marys-tx|St. Mary's (Texas)
+west-tex-am|West Texas A&M
+western-nm|Western New Mexico

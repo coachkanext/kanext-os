@@ -108,10 +108,8 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
     signOut();
   }, [signOut]);
 
-  if (!visible) return null;
-
   return (
-    <View style={[styles.container, { width: SETTINGS_PANEL_WIDTH }]}>
+    <View style={[styles.container, { width: SETTINGS_PANEL_WIDTH }]} pointerEvents={visible ? 'auto' : 'none'}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={[

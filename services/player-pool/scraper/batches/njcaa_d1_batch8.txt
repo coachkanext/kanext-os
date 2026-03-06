@@ -1,0 +1,20 @@
+roanestatecommunitycollege|Roane State CC
+saltlakecommunitycollege|Salt Lake CC
+santafecollege|Santa Fe College
+saukvalleycommunitycollege|Sauk Valley CC
+seminolestatecollege|Seminole State College
+sewardcounty|Seward County
+shawneecommunitycollege|Shawnee CC
+sheltonstatecommunitycollege|Shelton State CC
+snowcollege|Snow College
+southgeorgiastatecollege|South Georgia State College
+southgeorgiatechnicalcollege|South Georgia Technical College
+southplainscollege|South Plains College
+southeastcommunitycollege|Southeast CC
+southeasterncommunitycollege|Southeastern CC
+southerncrescenttechnicalcollege|Southern Crescent Technical College
+southernunionstatecommunitycollege|Southern Union State CC
+southernuniversityshreveport|Southern University-Shreveport
+southwestmississippicommunitycollege|Southwest Mississippi CC
+southwesttennesseecommunitycollege|Southwest Tennessee CC
+southwesternchristiancollege|Southwestern Christian College

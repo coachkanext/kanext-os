@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, Pressable, StyleSheet, Modal } from 'react-native';
+import { View, Text, Image, Pressable, StyleSheet, Modal } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { usePathname } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -37,6 +37,14 @@ const MODE_ICONS: Record<Mode, IconSymbolName> = {
   church: 'building.columns.fill',
   education: 'graduationcap.fill',
   competition: 'trophy.fill',
+};
+
+const MODE_IMAGES: Record<Mode, any> = {
+  sports: require('@/assets/images/mode-sports.png'),
+  church: require('@/assets/images/mode-church.png'),
+  business: require('@/assets/images/mode-business.png'),
+  education: require('@/assets/images/mode-education.png'),
+  competition: null,
 };
 
 interface GlobalHeaderProps {
@@ -107,10 +115,11 @@ export function GlobalHeader({ leftIcon, rightIcon }: GlobalHeaderProps) {
             accessibilityLabel="Switch mode"
             accessibilityRole="button"
           >
-            <IconSymbol name={MODE_ICONS[state.mode]} size={14} color={modeColor} />
-            <Text style={[styles.modeLabel, { color: colors.text }]}>
-              {MODE_LABELS[state.mode]}
-            </Text>
+            {MODE_IMAGES[state.mode] ? (
+              <Image source={MODE_IMAGES[state.mode]} style={styles.modePillImage} />
+            ) : (
+              <IconSymbol name={MODE_ICONS[state.mode]} size={14} color={modeColor} />
+            )}
           </Pressable>
 
           {/* Right slot */}
@@ -157,16 +166,11 @@ export function GlobalHeader({ leftIcon, rightIcon }: GlobalHeaderProps) {
                   ]}
                   onPress={() => handleModeSelect(mode)}
                 >
-                  <IconSymbol name={MODE_ICONS[mode]} size={14} color={itemColor} />
-                  <Text
-                    style={[
-                      styles.dropdownLabel,
-                      { color: colors.text },
-                      isSelected && { fontWeight: '600' },
-                    ]}
-                  >
-                    {MODE_LABELS[mode]}
-                  </Text>
+                  {MODE_IMAGES[mode] ? (
+                    <Image source={MODE_IMAGES[mode]} style={styles.dropdownImage} />
+                  ) : (
+                    <IconSymbol name={MODE_ICONS[mode]} size={14} color={itemColor} />
+                  )}
                 </Pressable>
               );
             })}
@@ -225,6 +229,16 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 12,
     gap: 8,
+  },
+  modePillImage: {
+    width: 14,
+    height: 14,
+    borderRadius: 3,
+  },
+  dropdownImage: {
+    width: 14,
+    height: 14,
+    borderRadius: 3,
   },
   dropdownLabel: {
     fontSize: 15,

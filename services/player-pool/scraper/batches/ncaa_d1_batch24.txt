@@ -1,0 +1,16 @@
+333|Alabama Crimson Tide
+8|Arkansas Razorbacks
+2|Auburn Tigers
+57|Florida Gators
+61|Georgia Bulldogs
+96|Kentucky Wildcats
+99|LSU Tigers
+344|Mississippi State Bulldogs
+142|Missouri Tigers
+201|Oklahoma Sooners
+145|Ole Miss Rebels
+2579|South Carolina Gamecocks
+2633|Tennessee Volunteers
+245|Texas A&M Aggies
+251|Texas Longhorns
+238|Vanderbilt Commodores

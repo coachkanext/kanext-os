@@ -1,0 +1,18 @@
+northamerican|North American
+northernnewmexico|Northern New Mexico
+northwestwa|Northwest (WA)
+northwesterniowa|Northwestern (Iowa)
+oaklandcity|Oakland City (IN)
+ohiochristian|Ohio Christian
+oklahomacity|Oklahoma City
+oklahomapanhandlestate|Oklahoma Panhandle State
+oklahomawesleyan|Oklahoma Wesleyan
+olivetnazareneil|Olivet Nazarene (IL)
+oregontech|Oregon Tech
+ottawakan|Ottawa (Kan.)
+ourladyofthelake|Our Lady of the Lake
+pacificunionca|Pacific Union (CA)
+park|Park
+paulquinn|Paul Quinn
+perustate|Peru State
+point|Point

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 48, "column": 0}, "map": {"version":3,"sources":["file:///Users/sammy/Projects/kanext-os/services/player-pool/web/src/lib/db.ts"],"sourcesContent":["import { Pool } from \"pg\";\n\ndeclare const globalThis: { _pool?: Pool };\n\nfunction getPool(): Pool {\n  if (!globalThis._pool) {\n    globalThis._pool = new Pool({\n      host: \"localhost\",\n      port: 5432,\n      database: \"kanext_player_pool\",\n    });\n  }\n  return globalThis._pool;\n}\n\nexport const pool = getPool();\n"],"names":[],"mappings":";;;;AAAA;;;;;;AAIA,SAAS;IACP,IAAI,CAAC,WAAW,KAAK,EAAE;QACrB,WAAW,KAAK,GAAG,IAAI,qJAAI,CAAC;YAC1B,MAAM;YACN,MAAM;YACN,UAAU;QACZ;IACF;IACA,OAAO,WAAW,KAAK;AACzB;AAEO,MAAM,OAAO"}},
+    {"offset": {"line": 76, "column": 0}, "map": {"version":3,"sources":["file:///Users/sammy/Projects/kanext-os/services/player-pool/web/src/app/api/filters/levels/route.ts"],"sourcesContent":["import { NextResponse } from \"next/server\";\nimport { pool } from \"@/lib/db\";\n\nexport async function GET() {\n  const { rows } = await pool.query(\n    `SELECT id, level_key AS \"levelKey\", display_name AS \"displayName\"\n     FROM competitive_levels\n     WHERE level_key != 'uscaa'\n     ORDER BY level_tier DESC`\n  );\n  return NextResponse.json({ levels: rows });\n}\n"],"names":[],"mappings":";;;;AAAA;AACA;;;;;;;AAEO,eAAe;IACpB,MAAM,EAAE,IAAI,EAAE,GAAG,MAAM,0HAAI,CAAC,KAAK,CAC/B,CAAC;;;6BAGwB,CAAC;IAE5B,OAAO,gJAAY,CAAC,IAAI,CAAC;QAAE,QAAQ;IAAK;AAC1C"}}]
+}

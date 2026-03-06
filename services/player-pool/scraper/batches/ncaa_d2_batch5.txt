@@ -1,0 +1,20 @@
+anderson-sc|Anderson (SC)
+carson-newman|Carson-Newman
+catawba|Catawba
+columbus-st|Columbus St.
+lander|Lander
+lenoir-rhyne|Lenoir-Rhyne
+lincoln-memorial|Lincoln Memorial
+north-georgia|North Ga.
+usc-beaufort|USC Beaufort
+uva-wise|UVA Wise
+alas-anchorage|Alas. Anchorage
+cal-st-dom-hills|Cal St. Dom. Hills
+cal-st-east-bay|Cal St. East Bay
+cal-st-monterey-bay|Cal St. Monterey Bay
+hawaii-pacific|Hawaii Pacific
+mont-st-billings|Mont. St. Billings
+northwest-nazarene|Northwest Nazarene
+point-loma|Point Loma
+saint-martins|Saint Martin's
+westmont-college|Westmont College

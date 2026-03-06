@@ -1,0 +1,20 @@
+midlandcollege|Midland College
+milescommunitycollege|Miles CC
+mineralareacollege|Mineral Area College
+mississippideltacommunitycollege|Mississippi Delta CC
+mississippigulfcoastcommunitycollege|Mississippi Gulf Coast CC
+missouristateuniversitywestplains|Missouri State University - West Plains
+moberlyareacommunitycollege|Moberly Area CC
+monroeuniversity|Monroe University
+motlowstatecommunitycollege|Motlow State CC
+murraystatecollege|Murray State College
+navarrocollege|Navarro College
+newmexicojuniorcollege|New Mexico Junior College
+newmexicomilitaryinstitute|New Mexico Military Institute
+northdakotastatecollegeofscience|North Dakota State College of Science
+northidahocollege|North Idaho College
+northplattecommunitycollege|North Platte CC
+northeastcommunitycollege|Northeast CC
+northeastmississippicommunitycollege|Northeast Mississippi CC
+northeasternjuniorcollege|Northeastern Junior College
+northeasternoklahomaamcollege|Northeastern Oklahoma A&M College

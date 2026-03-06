@@ -1,0 +1,331 @@
+21:07:46 [INFO] Batch: 11 NCAA D1 teams via ESPN
+21:07:46 [INFO] 
+[1/11] Cal Poly Mustangs
+21:07:46 [INFO] Scraping team: Cal Poly Mustangs (ESPN #13)
+21:07:46 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/13/schedule?season=2026 "HTTP/1.1 200 OK"
+21:07:46 [INFO]   Schedule: 28 completed games
+21:07:57 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401827439 "HTTP/1.1 200 OK"
+21:08:07 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401830411 "HTTP/1.1 200 OK"
+21:08:18 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824126 "HTTP/1.1 200 OK"
+21:08:28 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823809 "HTTP/1.1 200 OK"
+21:08:39 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401828289 "HTTP/1.1 200 OK"
+21:08:49 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401819909 "HTTP/1.1 200 OK"
+21:09:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401825590 "HTTP/1.1 200 OK"
+21:09:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401829348 "HTTP/1.1 200 OK"
+21:09:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401830412 "HTTP/1.1 200 OK"
+21:09:31 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809153 "HTTP/1.1 200 OK"
+21:09:41 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809154 "HTTP/1.1 200 OK"
+21:09:52 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401825582 "HTTP/1.1 200 OK"
+21:10:02 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401813765 "HTTP/1.1 200 OK"
+21:10:12 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823571 "HTTP/1.1 200 OK"
+21:10:22 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809086 "HTTP/1.1 200 OK"
+21:10:33 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809155 "HTTP/1.1 200 OK"
+21:10:43 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809156 "HTTP/1.1 200 OK"
+21:10:53 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809127 "HTTP/1.1 200 OK"
+21:11:04 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809141 "HTTP/1.1 200 OK"
+21:11:14 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809157 "HTTP/1.1 200 OK"
+21:11:24 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809158 "HTTP/1.1 200 OK"
+21:11:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809159 "HTTP/1.1 200 OK"
+21:11:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809160 "HTTP/1.1 200 OK"
+21:11:55 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809161 "HTTP/1.1 200 OK"
+21:12:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809133 "HTTP/1.1 200 OK"
+21:12:16 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809116 "HTTP/1.1 200 OK"
+21:12:26 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809162 "HTTP/1.1 200 OK"
+21:45:05 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+21:45:05 [INFO]   Loaded: 27 games, 550 player-game-stat rows
+21:45:05 [INFO] 
+[2/11] Cal State Bakersfield Roadrunners
+21:45:05 [INFO] Scraping team: Cal State Bakersfield Roadrunners (ESPN #2934)
+22:10:40 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2934/schedule — [Errno 8] nodename nor servname provided, or not known
+22:10:40 [INFO]   Schedule: 0 completed games
+22:10:40 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+22:10:40 [INFO] 
+[3/11] Cal State Fullerton Titans
+22:10:40 [INFO] Scraping team: Cal State Fullerton Titans (ESPN #2239)
+22:26:47 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2239/schedule — [Errno 8] nodename nor servname provided, or not known
+22:26:47 [INFO]   Schedule: 0 completed games
+22:26:47 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+22:26:47 [INFO] 
+[4/11] Cal State Northridge Matadors
+22:26:47 [INFO] Scraping team: Cal State Northridge Matadors (ESPN #2463)
+22:26:58 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2463/schedule?season=2026 "HTTP/1.1 200 OK"
+22:26:58 [INFO]   Schedule: 28 completed games
+22:59:29 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 51] Network is unreachable
+23:30:04 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+23:54:23 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+23:54:34 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823257 "HTTP/1.1 200 OK"
+00:27:59 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+00:55:24 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+01:13:02 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+01:46:27 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+01:56:32 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809106 "HTTP/1.1 200 OK"
+01:56:42 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823262 "HTTP/1.1 200 OK"
+01:56:52 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+02:12:19 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+02:44:46 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+03:17:14 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+03:49:36 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+04:23:34 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+04:57:52 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+05:10:27 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823178 "HTTP/1.1 200 OK"
+05:27:50 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+05:42:18 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+05:42:28 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809144 "HTTP/1.1 200 OK"
+05:42:39 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809130 "HTTP/1.1 200 OK"
+05:42:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809095 "HTTP/1.1 200 OK"
+05:43:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809161 "HTTP/1.1 200 OK"
+05:43:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823267 "HTTP/1.1 200 OK"
+05:43:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809147 "HTTP/1.1 200 OK"
+05:43:31 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823268 "HTTP/1.1 200 OK"
+05:43:41 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823269 "HTTP/1.1 200 OK"
+05:43:41 [INFO]   Loaded: 12 games, 249 player-game-stat rows
+05:43:41 [INFO] 
+[5/11] Hawai'i Rainbow Warriors
+05:43:41 [INFO] Scraping team: Hawai'i Rainbow Warriors (ESPN #62)
+05:43:51 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/62/schedule?season=2026 "HTTP/1.1 200 OK"
+05:43:51 [INFO]   Schedule: 26 completed games
+05:44:02 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824895 "HTTP/1.1 200 OK"
+05:44:12 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824896 "HTTP/1.1 200 OK"
+05:44:22 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824848 "HTTP/1.1 200 OK"
+05:44:33 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824897 "HTTP/1.1 200 OK"
+05:44:43 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824898 "HTTP/1.1 200 OK"
+05:44:53 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401819817 "HTTP/1.1 200 OK"
+05:45:04 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824899 "HTTP/1.1 200 OK"
+05:45:14 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824900 "HTTP/1.1 200 OK"
+05:45:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809123 "HTTP/1.1 200 OK"
+05:45:36 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809139 "HTTP/1.1 200 OK"
+05:45:46 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824901 "HTTP/1.1 200 OK"
+05:45:57 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824902 "HTTP/1.1 200 OK"
+05:46:07 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809140 "HTTP/1.1 200 OK"
+05:46:17 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809087 "HTTP/1.1 200 OK"
+05:46:27 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809110 "HTTP/1.1 200 OK"
+05:46:37 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809141 "HTTP/1.1 200 OK"
+05:46:48 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809142 "HTTP/1.1 200 OK"
+05:46:58 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809143 "HTTP/1.1 200 OK"
+05:47:09 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809144 "HTTP/1.1 200 OK"
+05:47:19 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809113 "HTTP/1.1 200 OK"
+06:20:00 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+06:25:19 [ERROR] Request failed: https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary — [Errno 8] nodename nor servname provided, or not known
+06:25:29 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809146 "HTTP/1.1 200 OK"
+06:25:40 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809147 "HTTP/1.1 200 OK"
+06:25:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809148 "HTTP/1.1 200 OK"
+06:26:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809149 "HTTP/1.1 200 OK"
+06:26:00 [INFO]   Loaded: 24 games, 471 player-game-stat rows
+06:26:00 [INFO] 
+[6/11] Long Beach State Beach
+06:26:00 [INFO] Scraping team: Long Beach State Beach (ESPN #299)
+06:26:11 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/299/schedule?season=2026 "HTTP/1.1 200 OK"
+06:26:11 [INFO]   Schedule: 28 completed games
+06:26:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823304 "HTTP/1.1 200 OK"
+06:26:31 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823305 "HTTP/1.1 200 OK"
+06:26:42 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823306 "HTTP/1.1 200 OK"
+06:26:52 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401813256 "HTTP/1.1 200 OK"
+06:27:02 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823307 "HTTP/1.1 200 OK"
+06:27:13 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823308 "HTTP/1.1 200 OK"
+06:27:23 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823309 "HTTP/1.1 200 OK"
+06:27:34 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823310 "HTTP/1.1 200 OK"
+06:27:44 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823311 "HTTP/1.1 200 OK"
+06:27:54 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809085 "HTTP/1.1 200 OK"
+06:28:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823312 "HTTP/1.1 200 OK"
+06:28:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823333 "HTTP/1.1 200 OK"
+06:28:26 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401819880 "HTTP/1.1 200 OK"
+06:28:37 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823334 "HTTP/1.1 200 OK"
+06:28:47 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809155 "HTTP/1.1 200 OK"
+06:28:57 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809109 "HTTP/1.1 200 OK"
+06:29:08 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823335 "HTTP/1.1 200 OK"
+06:29:18 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823336 "HTTP/1.1 200 OK"
+06:29:28 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823266 "HTTP/1.1 200 OK"
+06:29:39 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823180 "HTTP/1.1 200 OK"
+06:29:49 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823337 "HTTP/1.1 200 OK"
+06:30:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823338 "HTTP/1.1 200 OK"
+06:30:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809145 "HTTP/1.1 200 OK"
+06:30:20 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809096 "HTTP/1.1 200 OK"
+06:30:30 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823184 "HTTP/1.1 200 OK"
+06:30:41 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809134 "HTTP/1.1 200 OK"
+06:30:51 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809118 "HTTP/1.1 200 OK"
+06:31:01 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823269 "HTTP/1.1 200 OK"
+06:31:01 [INFO]   Loaded: 28 games, 567 player-game-stat rows
+06:31:01 [INFO] 
+[7/11] UC Davis Aggies
+06:31:01 [INFO] Scraping team: UC Davis Aggies (ESPN #302)
+06:31:12 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/302/schedule?season=2026 "HTTP/1.1 200 OK"
+06:31:12 [INFO]   Schedule: 28 completed games
+06:31:22 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826085 "HTTP/1.1 200 OK"
+06:31:32 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826086 "HTTP/1.1 200 OK"
+06:31:42 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824089 "HTTP/1.1 200 OK"
+06:31:53 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826087 "HTTP/1.1 200 OK"
+06:32:03 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826088 "HTTP/1.1 200 OK"
+06:32:13 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401819864 "HTTP/1.1 200 OK"
+06:32:24 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826089 "HTTP/1.1 200 OK"
+06:32:34 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809123 "HTTP/1.1 200 OK"
+06:32:44 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826090 "HTTP/1.1 200 OK"
+06:32:55 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824131 "HTTP/1.1 200 OK"
+06:33:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824859 "HTTP/1.1 200 OK"
+06:33:16 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826091 "HTTP/1.1 200 OK"
+06:33:26 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809124 "HTTP/1.1 200 OK"
+06:33:36 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809125 "HTTP/1.1 200 OK"
+06:33:47 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809126 "HTTP/1.1 200 OK"
+06:33:57 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809127 "HTTP/1.1 200 OK"
+06:34:08 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809128 "HTTP/1.1 200 OK"
+06:34:18 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809111 "HTTP/1.1 200 OK"
+06:34:29 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809092 "HTTP/1.1 200 OK"
+06:34:39 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809129 "HTTP/1.1 200 OK"
+06:34:49 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809130 "HTTP/1.1 200 OK"
+06:35:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809131 "HTTP/1.1 200 OK"
+06:35:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809132 "HTTP/1.1 200 OK"
+06:35:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809133 "HTTP/1.1 200 OK"
+06:35:31 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809098 "HTTP/1.1 200 OK"
+06:35:41 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809134 "HTTP/1.1 200 OK"
+06:35:51 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809135 "HTTP/1.1 200 OK"
+06:36:02 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809136 "HTTP/1.1 200 OK"
+06:36:02 [INFO]   Loaded: 28 games, 562 player-game-stat rows
+06:36:02 [INFO] 
+[8/11] UC Irvine Anteaters
+06:36:02 [INFO] Scraping team: UC Irvine Anteaters (ESPN #300)
+06:48:52 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/300/schedule?season=2026 "HTTP/1.1 200 OK"
+06:48:52 [INFO]   Schedule: 28 completed games
+06:49:02 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401830113 "HTTP/1.1 200 OK"
+06:49:12 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823531 "HTTP/1.1 200 OK"
+06:49:22 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401830114 "HTTP/1.1 200 OK"
+06:49:32 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826932 "HTTP/1.1 200 OK"
+06:49:43 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826949 "HTTP/1.1 200 OK"
+06:49:53 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401820545 "HTTP/1.1 200 OK"
+06:50:04 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401820226 "HTTP/1.1 200 OK"
+06:50:14 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401829475 "HTTP/1.1 200 OK"
+06:50:24 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401829326 "HTTP/1.1 200 OK"
+06:50:34 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809105 "HTTP/1.1 200 OK"
+06:50:44 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809106 "HTTP/1.1 200 OK"
+07:02:12 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401811973 "HTTP/1.1 200 OK"
+07:02:22 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401829465 "HTTP/1.1 200 OK"
+07:02:33 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401831233 "HTTP/1.1 200 OK"
+07:02:43 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809107 "HTTP/1.1 200 OK"
+07:02:53 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809108 "HTTP/1.1 200 OK"
+07:03:04 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809109 "HTTP/1.1 200 OK"
+07:03:14 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809110 "HTTP/1.1 200 OK"
+07:03:24 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809111 "HTTP/1.1 200 OK"
+07:03:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809112 "HTTP/1.1 200 OK"
+07:03:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809093 "HTTP/1.1 200 OK"
+07:03:56 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809113 "HTTP/1.1 200 OK"
+07:04:06 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809114 "HTTP/1.1 200 OK"
+07:04:16 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809115 "HTTP/1.1 200 OK"
+07:04:26 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809116 "HTTP/1.1 200 OK"
+07:04:37 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809117 "HTTP/1.1 200 OK"
+07:04:47 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809118 "HTTP/1.1 200 OK"
+07:04:57 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809100 "HTTP/1.1 200 OK"
+07:04:57 [INFO]   Loaded: 28 games, 567 player-game-stat rows
+07:04:57 [INFO] 
+[9/11] UC Riverside Highlanders
+07:04:57 [INFO] Scraping team: UC Riverside Highlanders (ESPN #27)
+07:05:08 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/27/schedule?season=2026 "HTTP/1.1 200 OK"
+07:05:08 [INFO]   Schedule: 29 completed games
+07:05:18 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826041 "HTTP/1.1 200 OK"
+07:05:28 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826042 "HTTP/1.1 200 OK"
+07:05:39 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826043 "HTTP/1.1 200 OK"
+07:05:49 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826044 "HTTP/1.1 200 OK"
+07:05:59 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823533 "HTTP/1.1 200 OK"
+07:06:09 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824112 "HTTP/1.1 200 OK"
+07:06:20 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826045 "HTTP/1.1 200 OK"
+07:06:30 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824027 "HTTP/1.1 200 OK"
+07:06:40 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809105 "HTTP/1.1 200 OK"
+07:06:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809154 "HTTP/1.1 200 OK"
+07:07:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401819838 "HTTP/1.1 200 OK"
+07:07:11 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826046 "HTTP/1.1 200 OK"
+07:07:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826047 "HTTP/1.1 200 OK"
+07:07:32 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401813766 "HTTP/1.1 200 OK"
+07:07:42 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809140 "HTTP/1.1 200 OK"
+07:07:53 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823741 "HTTP/1.1 200 OK"
+07:08:03 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809089 "HTTP/1.1 200 OK"
+07:08:13 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823336 "HTTP/1.1 200 OK"
+07:08:24 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823179 "HTTP/1.1 200 OK"
+07:08:34 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809112 "HTTP/1.1 200 OK"
+07:08:45 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809129 "HTTP/1.1 200 OK"
+07:08:55 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823338 "HTTP/1.1 200 OK"
+07:09:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809160 "HTTP/1.1 200 OK"
+07:09:16 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823182 "HTTP/1.1 200 OK"
+07:09:26 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823267 "HTTP/1.1 200 OK"
+07:09:36 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826048 "HTTP/1.1 200 OK"
+07:09:47 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809099 "HTTP/1.1 200 OK"
+07:09:57 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823743 "HTTP/1.1 200 OK"
+07:10:08 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809136 "HTTP/1.1 200 OK"
+07:10:08 [INFO]   Loaded: 29 games, 559 player-game-stat rows
+07:10:08 [INFO] 
+[10/11] UC San Diego Tritons
+07:10:08 [INFO] Scraping team: UC San Diego Tritons (ESPN #28)
+07:10:18 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/28/schedule?season=2026 "HTTP/1.1 200 OK"
+07:10:18 [INFO]   Schedule: 28 completed games
+07:10:28 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826906 "HTTP/1.1 200 OK"
+07:10:38 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826907 "HTTP/1.1 200 OK"
+07:10:49 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826908 "HTTP/1.1 200 OK"
+07:10:59 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823511 "HTTP/1.1 200 OK"
+07:11:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809394 "HTTP/1.1 200 OK"
+07:11:20 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401830890 "HTTP/1.1 200 OK"
+07:11:31 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401830892 "HTTP/1.1 200 OK"
+07:11:41 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826909 "HTTP/1.1 200 OK"
+07:11:52 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809085 "HTTP/1.1 200 OK"
+07:12:02 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826847 "HTTP/1.1 200 OK"
+07:12:12 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824044 "HTTP/1.1 200 OK"
+07:12:23 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824116 "HTTP/1.1 200 OK"
+07:12:33 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826910 "HTTP/1.1 200 OK"
+07:12:43 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809086 "HTTP/1.1 200 OK"
+07:12:54 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809087 "HTTP/1.1 200 OK"
+07:13:04 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809088 "HTTP/1.1 200 OK"
+07:13:14 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809089 "HTTP/1.1 200 OK"
+07:13:25 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809090 "HTTP/1.1 200 OK"
+07:13:35 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809091 "HTTP/1.1 200 OK"
+07:13:46 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809092 "HTTP/1.1 200 OK"
+07:13:56 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809093 "HTTP/1.1 200 OK"
+07:14:06 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809094 "HTTP/1.1 200 OK"
+07:14:16 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809095 "HTTP/1.1 200 OK"
+07:14:27 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809096 "HTTP/1.1 200 OK"
+07:14:37 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809097 "HTTP/1.1 200 OK"
+07:14:47 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809098 "HTTP/1.1 200 OK"
+07:14:58 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809099 "HTTP/1.1 200 OK"
+07:15:08 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809100 "HTTP/1.1 200 OK"
+07:15:08 [INFO]   Loaded: 28 games, 569 player-game-stat rows
+07:15:08 [INFO] 
+[11/11] UC Santa Barbara Gauchos
+07:15:08 [INFO] Scraping team: UC Santa Barbara Gauchos (ESPN #2540)
+07:15:19 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/teams/2540/schedule?season=2026 "HTTP/1.1 200 OK"
+07:15:19 [INFO]   Schedule: 28 completed games
+07:15:29 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401830409 "HTTP/1.1 200 OK"
+07:15:40 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401829324 "HTTP/1.1 200 OK"
+07:15:50 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826928 "HTTP/1.1 200 OK"
+07:16:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824041 "HTTP/1.1 200 OK"
+07:16:11 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401829291 "HTTP/1.1 200 OK"
+07:16:21 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401830410 "HTTP/1.1 200 OK"
+07:16:31 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401829415 "HTTP/1.1 200 OK"
+07:16:42 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401831226 "HTTP/1.1 200 OK"
+07:16:52 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823311 "HTTP/1.1 200 OK"
+07:17:02 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823737 "HTTP/1.1 200 OK"
+07:17:13 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826952 "HTTP/1.1 200 OK"
+07:17:23 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401828479 "HTTP/1.1 200 OK"
+07:17:33 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401824094 "HTTP/1.1 200 OK"
+07:17:44 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823177 "HTTP/1.1 200 OK"
+07:17:54 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823265 "HTTP/1.1 200 OK"
+07:18:05 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809126 "HTTP/1.1 200 OK"
+07:18:15 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823742 "HTTP/1.1 200 OK"
+07:18:26 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809142 "HTTP/1.1 200 OK"
+07:18:36 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809157 "HTTP/1.1 200 OK"
+07:18:47 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823337 "HTTP/1.1 200 OK"
+07:18:57 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809094 "HTTP/1.1 200 OK"
+07:19:07 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823181 "HTTP/1.1 200 OK"
+07:19:18 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809132 "HTTP/1.1 200 OK"
+07:19:28 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809115 "HTTP/1.1 200 OK"
+07:19:39 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401826048 "HTTP/1.1 200 OK"
+07:19:49 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809162 "HTTP/1.1 200 OK"
+07:20:00 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401823268 "HTTP/1.1 200 OK"
+07:20:10 [INFO] HTTP Request: GET https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/summary?event=401809149 "HTTP/1.1 200 OK"
+07:20:10 [INFO]   Loaded: 28 games, 556 player-game-stat rows
+07:20:10 [INFO] 
+============================================================
+07:20:10 [INFO]   BATCH COMPLETE: 11 teams, 232 games, 4650 PGS rows
+07:20:10 [INFO] ============================================================
+
+============================================================
+  ESPN BATCH — FINAL SUMMARY
+============================================================
+  Total teams:                2323
+  Total players:              25409
+  Total games:                10779
+  Total player_game_stats:    261735
+============================================================

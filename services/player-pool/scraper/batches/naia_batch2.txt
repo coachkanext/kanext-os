@@ -1,0 +1,23 @@
+calmaritimeca|Cal State Maritime
+calumetin|Calumet College of St. Joseph
+campbellsvilleky|Campbellsville University
+carrollmt|Carroll College
+centralbaptistar|Central Baptist College
+centralchristianks|Central Christian College of Kansas
+centralmethodistmo|Central Methodist University
+clarkeia|Clarke University
+coastalgeorgiaga|College of Coastal Georgia
+columbiamo|Columbia College - Missouri
+columbiasc|Columbia International University
+concordiane|Concordia University - Nebraska
+corbanor|Corban University
+cornerstonemi|Cornerstone University
+crowleysridgear|Crowley's Ridge College
+culverstocktonmo|Culver-Stockton College
+cumberlandtn|Cumberland University
+dakotastatesd|Dakota State University
+dakotawesleyansd|Dakota Wesleyan University
+dickinsonstatend|Dickinson State University
+dillardla|Dillard University
+doanene|Doane University
+dordtia|Dordt University

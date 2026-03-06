@@ -1,0 +1,20 @@
+hockingcollege|Hocking College
+howardcommunitycollege|Howard CC
+illinoiscentralcollege|Illinois Central College
+illinoisvalleycommunitycollege|Illinois Valley CC
+iowacentralcommunitycollege|Iowa Central CC
+iowalakescommunitycollege|Iowa Lakes CC
+iowawesterncommunitycollege|Iowa Western CC
+jacksoncollege|Jackson College
+jamestowncommunitycollege|Jamestown CC
+jeffersoncollege|Jefferson College
+johnwoodcommunitycollege|John Wood CC
+johnsoncountycommunitycollege|Johnson County CC
+johnstoncommunitycollege|Johnston CC
+kalamazoovalleycommunitycollege|Kalamazoo Valley CC
+kansascitykansascommunitycollege|Kansas City Kansas CC
+kelloggcommunitycollege|Kellogg CC
+kirkwoodcommunitycollege|Kirkwood CC
+kirtlandcommunitycollege|Kirtland CC
+kishwaukeecollege|Kishwaukee College
+labettecommunitycollege|Labette CC

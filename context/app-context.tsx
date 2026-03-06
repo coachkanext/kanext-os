@@ -85,14 +85,6 @@ const DEMO_ORGANIZATIONS: Record<Mode, Organization> = {
     location: 'Washington, DC',
     description: 'Howard University — Academic Institution',
   },
-  competition: {
-    id: 'comp_kx',
-    name: 'Adidas 3SSB',
-    mode: 'competition',
-    type: 'grassroots_basketball',
-    location: 'Rock Hill, SC',
-    description: 'Adidas 3SSB — 3 Stripes Select Basketball',
-  },
 };
 
 const DEMO_CYCLES: Record<Mode, Cycle> = {
@@ -124,13 +116,6 @@ const DEMO_CYCLES: Record<Mode, Cycle> = {
     endDate: new Date('2026-05-10'),
     isCurrent: true,
   },
-  competition: {
-    id: 'comp_kx_s1_2026',
-    name: 'Season 1 \u00B7 2026',
-    startDate: new Date('2026-03-01'),
-    endDate: new Date('2026-11-30'),
-    isCurrent: true,
-  },
 };
 
 const DEMO_ROLES: Record<Mode, Role> = {
@@ -138,7 +123,6 @@ const DEMO_ROLES: Record<Mode, Role> = {
   church: 'member',
   education: 'faculty',
   business: 'founder',
-  competition: 'league_admin',
 };
 
 const DEMO_PROGRAM: Program = {
@@ -427,7 +411,7 @@ export function AppProvider({ children }: AppProviderProps) {
 
         if (lastMode) {
           // Migrate old mode names
-          const resolvedMode = lastMode === 'community' ? 'competition' : lastMode;
+          const resolvedMode = lastMode === 'community' ? 'sports' : lastMode;
           // Always boot into sports mode — other modes are Coming Soon
           const bootMode = 'sports';
           dispatch({

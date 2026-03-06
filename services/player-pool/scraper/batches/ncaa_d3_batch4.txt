@@ -1,0 +1,14 @@
+gust-adolphus|Gustavus Adolphus
+wis-stevens-point|Wis.-Stevens Point
+wis-la-crosse|Wis.-La Crosse
+wis-whitewater|Wis.-Whitewater
+wis-platteville|Wis.-Platteville
+wis-oshkosh|Wis.-Oshkosh
+grinnell|Grinnell
+st-thomas-tx|St. Thomas (TX)
+redlands|Redlands
+claremont-m-s|Claremont-M-S
+mary-hardin-baylor|Mary Hardin-Baylor
+concordia-tx|Concordia (TX)
+whitworth|Whitworth
+chapman|Chapman

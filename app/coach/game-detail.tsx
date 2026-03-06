@@ -623,7 +623,7 @@ export default function GameDetailScreen() {
                 await AsyncStorage.removeItem(`kx:gameOps:${gameId ?? ''}`);
                 setGameOpsData(null);
                 triggerGameOps(gameId ?? '', game.opponent);
-                router.navigate('/(tabs)/nexus' as any);
+                router.push('/nexus' as any);
               }}
             >
               <IconSymbol name="arrow.uturn.backward" size={18} color={colors.textSecondary} />
@@ -1757,7 +1757,7 @@ export default function GameDetailScreen() {
                   ]}
                   onPress={() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    router.navigate('/(tabs)/nexus' as any);
+                    router.push('/nexus' as any);
                   }}
                 >
                   <IconSymbol name="sparkles" size={20} color={colors.text} />

@@ -1,0 +1,21 @@
+farmingdale-st|Farmingdale State
+suny-cortland|SUNY Cortland
+union-ny|Union (NY)
+rensselaer|Rensselaer
+yeshiva|Yeshiva
+oswego-st|Oswego State
+vassar|Vassar
+montclair-st|Montclair State
+new-york-u|NYU
+tcnj|TCNJ
+lancaster-bible|Lancaster Bible
+richard-stockton|Stockton
+arcadia|Arcadia
+cairn|Cairn
+hood|Hood
+frank-marsh|Franklin & Marshall
+catholic|Catholic
+johns-hopkins|Johns Hopkins
+scranton|Scranton
+drew|Drew
+york-pa|York (PA)

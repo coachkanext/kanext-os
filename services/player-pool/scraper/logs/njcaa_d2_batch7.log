@@ -1,0 +1,714 @@
+21:22:08 [INFO] Batch: 20 teams, level=njcaa_d2, assoc=njcaa
+21:22:08 [INFO] 
+[1/20] Phoenix College
+21:22:08 [INFO] Scraping team: Phoenix College (phoenixcollege)
+21:22:11 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/phoenixcollege?view=roster "HTTP/1.1 200 OK"
+21:22:11 [INFO]   Roster: 11 players
+21:22:23 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/phoenixcollege?view=gamelog "HTTP/1.1 200 OK"
+21:22:23 [INFO]   Games: 29 with box scores
+21:22:34 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251031_c0kf.xml "HTTP/1.1 200 OK"
+21:22:45 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251101_k0ws.xml "HTTP/1.1 200 OK"
+21:22:57 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251102_ucos.xml "HTTP/1.1 200 OK"
+21:23:08 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251107_nvjd.xml "HTTP/1.1 200 OK"
+21:23:19 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251108_ywqw.xml "HTTP/1.1 200 OK"
+21:23:31 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251109_lneb.xml "HTTP/1.1 200 OK"
+21:23:42 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251113_o9rl.xml "HTTP/1.1 200 OK"
+21:23:52 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251117_zc3p.xml "HTTP/1.1 200 OK"
+21:24:04 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251125_1ssv.xml "HTTP/1.1 200 OK"
+21:24:15 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251130_9sm1.xml "HTTP/1.1 200 OK"
+21:24:26 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251203_pq7k.xml "HTTP/1.1 200 OK"
+21:24:37 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251206_9sed.xml "HTTP/1.1 200 OK"
+21:24:48 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251210_bd1o.xml "HTTP/1.1 200 OK"
+21:24:59 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251213_2w0e.xml "HTTP/1.1 200 OK"
+21:25:10 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251217_enrd.xml "HTTP/1.1 200 OK"
+21:25:22 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260103_gsyi.xml "HTTP/1.1 200 OK"
+21:25:33 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260105_ou7d.xml "HTTP/1.1 200 OK"
+21:25:44 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260110_kyyr.xml "HTTP/1.1 200 OK"
+21:25:55 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260114_rdqp.xml "HTTP/1.1 200 OK"
+21:26:07 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260117_fvi3.xml "HTTP/1.1 200 OK"
+21:26:18 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260121_kp92.xml "HTTP/1.1 200 OK"
+21:26:30 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260124_o42p.xml "HTTP/1.1 200 OK"
+21:26:41 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260128_raep.xml "HTTP/1.1 200 OK"
+21:26:52 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260204_9fir.xml "HTTP/1.1 200 OK"
+21:27:03 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260207_f10e.xml "HTTP/1.1 200 OK"
+21:27:14 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260211_upzu.xml "HTTP/1.1 200 OK"
+21:27:25 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260214_0ar7.xml "HTTP/1.1 200 OK"
+21:27:36 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260218_bp3c.xml "HTTP/1.1 200 OK"
+21:27:47 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260221_uqa4.xml "HTTP/1.1 200 OK"
+21:27:47 [INFO]   Loaded: 29 games, 560 player-game-stat rows
+21:27:47 [INFO] 
+[2/20] Pima CC
+21:27:47 [INFO] Scraping team: Pima CC (pimacommunitycollege)
+21:28:00 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/pimacommunitycollege?view=roster "HTTP/1.1 200 OK"
+21:28:00 [INFO]   Roster: 14 players
+21:28:12 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/pimacommunitycollege?view=gamelog "HTTP/1.1 200 OK"
+21:28:12 [INFO]   Games: 30 with box scores
+21:28:24 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251104_62be.xml "HTTP/1.1 200 OK"
+21:28:35 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251107_9q7r.xml "HTTP/1.1 200 OK"
+21:28:46 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251113_otox.xml "HTTP/1.1 200 OK"
+21:28:57 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251119_2xqs.xml "HTTP/1.1 200 OK"
+21:29:08 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251121_sc80.xml "HTTP/1.1 200 OK"
+21:29:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251122_n0cm.xml "HTTP/1.1 200 OK"
+21:29:32 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251203_pq7k.xml "HTTP/1.1 200 OK"
+21:29:43 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251206_qxi7.xml "HTTP/1.1 200 OK"
+21:29:55 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251210_90jh.xml "HTTP/1.1 200 OK"
+21:30:06 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251213_d0h1.xml "HTTP/1.1 200 OK"
+21:30:17 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251217_hfv2.xml "HTTP/1.1 200 OK"
+21:30:28 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251229_sti1.xml "HTTP/1.1 200 OK"
+21:30:40 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251230_jnbh.xml "HTTP/1.1 200 OK"
+21:30:51 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251231_rxbj.xml "HTTP/1.1 200 OK"
+21:31:02 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260103_odah.xml "HTTP/1.1 200 OK"
+21:31:13 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260107_t8xq.xml "HTTP/1.1 200 OK"
+21:31:24 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260110_yzcc.xml "HTTP/1.1 200 OK"
+21:31:35 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260114_soko.xml "HTTP/1.1 200 OK"
+21:31:46 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260117_fvi3.xml "HTTP/1.1 200 OK"
+21:31:57 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260121_atoh.xml "HTTP/1.1 200 OK"
+21:32:08 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260124_p43d.xml "HTTP/1.1 200 OK"
+21:32:19 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260128_23rn.xml "HTTP/1.1 200 OK"
+21:32:30 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260131_i4e0.xml "HTTP/1.1 200 OK"
+21:32:41 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260204_cgdc.xml "HTTP/1.1 200 OK"
+21:32:52 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260207_tuc2.xml "HTTP/1.1 200 OK"
+21:33:04 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260211_upzu.xml "HTTP/1.1 200 OK"
+21:33:15 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260214_ye9y.xml "HTTP/1.1 200 OK"
+21:33:28 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260218_bfor.xml "HTTP/1.1 200 OK"
+21:33:39 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260221_i5ts.xml "HTTP/1.1 200 OK"
+21:33:56 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260225_k3al.xml "HTTP/1.1 200 OK"
+21:33:56 [INFO]   Loaded: 30 games, 612 player-game-stat rows
+21:33:56 [INFO] 
+[3/20] Pitt CC
+21:33:56 [INFO] Scraping team: Pitt CC (pittcommunitycollege)
+21:34:09 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/pittcommunitycollege?view=roster "HTTP/1.1 200 OK"
+21:34:09 [INFO]   Roster: 14 players
+21:34:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/pittcommunitycollege?view=gamelog "HTTP/1.1 200 OK"
+21:34:21 [INFO]   Games: 30 with box scores
+21:34:33 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251101_dqvu.xml "HTTP/1.1 200 OK"
+21:34:45 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251102_u5gn.xml "HTTP/1.1 200 OK"
+21:34:56 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251109_u3pm.xml "HTTP/1.1 200 OK"
+21:35:07 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251115_g9qv.xml "HTTP/1.1 200 OK"
+21:35:18 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251120_n1a9.xml "HTTP/1.1 200 OK"
+21:35:29 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251122_dv2w.xml "HTTP/1.1 200 OK"
+21:35:40 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251123_wmbe.xml "HTTP/1.1 200 OK"
+21:35:51 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251130_eliw.xml "HTTP/1.1 200 OK"
+21:36:03 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251206_3znf.xml "HTTP/1.1 200 OK"
+21:36:14 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251207_9rsu.xml "HTTP/1.1 200 OK"
+21:36:25 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251211_z2yq.xml "HTTP/1.1 200 OK"
+21:36:36 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251213_vdiq.xml "HTTP/1.1 200 OK"
+21:36:48 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251217_0acg.xml "HTTP/1.1 200 OK"
+21:36:59 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251219_8hfw.xml "HTTP/1.1 200 OK"
+21:37:10 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260104_dlmm.xml "HTTP/1.1 200 OK"
+21:37:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260110_vbxb.xml "HTTP/1.1 200 OK"
+21:37:32 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260115_x0yz.xml "HTTP/1.1 200 OK"
+21:37:43 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260117_7dk8.xml "HTTP/1.1 200 OK"
+21:37:54 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260118_67kh.xml "HTTP/1.1 200 OK"
+21:38:06 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260122_h3nu.xml "HTTP/1.1 200 OK"
+21:38:18 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260129_ermu.xml "HTTP/1.1 200 OK"
+21:38:30 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260130_ld0s.xml "HTTP/1.1 200 OK"
+21:38:41 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260207_di2z.xml "HTTP/1.1 200 OK"
+21:38:52 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260211_won6.xml "HTTP/1.1 200 OK"
+21:39:03 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260212_atix.xml "HTTP/1.1 200 OK"
+21:39:14 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260214_sppb.xml "HTTP/1.1 200 OK"
+21:39:25 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260215_xpg7.xml "HTTP/1.1 200 OK"
+21:39:36 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260220_6c1k.xml "HTTP/1.1 200 OK"
+21:39:48 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260221_c5h1.xml "HTTP/1.1 200 OK"
+21:39:59 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260225_0ypr.xml "HTTP/1.1 200 OK"
+21:39:59 [INFO]   Loaded: 30 games, 605 player-game-stat rows
+21:39:59 [INFO] 
+[4/20] Prairie State College
+21:39:59 [INFO] Scraping team: Prairie State College (prairiestatecollege)
+21:40:12 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/prairiestatecollege?view=roster "HTTP/1.1 200 OK"
+21:40:12 [INFO]   Roster: 13 players
+21:40:24 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/prairiestatecollege?view=gamelog "HTTP/1.1 200 OK"
+21:40:24 [INFO]   Games: 31 with box scores
+21:40:35 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251101_15g8.xml "HTTP/1.1 200 OK"
+21:40:46 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251105_baep.xml "HTTP/1.1 200 OK"
+21:40:58 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251108_ocqh.xml "HTTP/1.1 200 OK"
+21:41:09 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251111_4rh0.xml "HTTP/1.1 200 OK"
+21:41:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251115_7mdu.xml "HTTP/1.1 200 OK"
+21:41:32 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251120_j75b.xml "HTTP/1.1 200 OK"
+21:41:43 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251125_i8m6.xml "HTTP/1.1 200 OK"
+21:41:54 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251202_gufx.xml "HTTP/1.1 200 OK"
+21:42:05 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251206_40zi.xml "HTTP/1.1 200 OK"
+21:42:17 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251209_3upw.xml "HTTP/1.1 200 OK"
+21:42:28 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251211_ew5o.xml "HTTP/1.1 200 OK"
+21:42:39 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251216_tlz7.xml "HTTP/1.1 200 OK"
+21:42:50 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251218_h191.xml "HTTP/1.1 200 OK"
+21:43:02 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251220_fl8x.xml "HTTP/1.1 200 OK"
+21:43:13 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260103_1q3r.xml "HTTP/1.1 200 OK"
+21:43:24 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260106_iuph.xml "HTTP/1.1 200 OK"
+21:43:35 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260108_3lu5.xml "HTTP/1.1 200 OK"
+21:43:46 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260110_z4fu.xml "HTTP/1.1 200 OK"
+21:43:59 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260113_dwkz.xml "HTTP/1.1 200 OK"
+21:44:10 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260115_lmwb.xml "HTTP/1.1 200 OK"
+21:44:22 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260120_rs3r.xml "HTTP/1.1 200 OK"
+21:44:32 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260122_jzsj.xml "HTTP/1.1 200 OK"
+21:44:44 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260127_v4ve.xml "HTTP/1.1 200 OK"
+21:44:54 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260129_69c7.xml "HTTP/1.1 200 OK"
+21:45:06 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260203_8omx.xml "HTTP/1.1 200 OK"
+21:45:17 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260205_rwgf.xml "HTTP/1.1 200 OK"
+21:45:28 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260210_66wh.xml "HTTP/1.1 200 OK"
+21:45:40 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260212_ic87.xml "HTTP/1.1 200 OK"
+21:45:51 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260217_zgim.xml "HTTP/1.1 200 OK"
+21:46:02 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260219_1xnp.xml "HTTP/1.1 200 OK"
+21:46:13 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260226_ugwm.xml "HTTP/1.1 200 OK"
+21:46:13 [INFO]   Loaded: 31 games, 675 player-game-stat rows
+21:46:13 [INFO] 
+[5/20] Prince George's CC
+21:46:13 [INFO] Scraping team: Prince George's CC (princegeorgescommunitycollege)
+21:46:37 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/princegeorgescommunitycollege?view=roster "HTTP/1.1 200 OK"
+21:46:37 [INFO]   Roster: 15 players
+21:46:49 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/princegeorgescommunitycollege?view=gamelog "HTTP/1.1 200 OK"
+21:46:49 [INFO]   Games: 27 with box scores
+21:47:00 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251101_9b3a.xml "HTTP/1.1 200 OK"
+21:47:11 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251102_l8gb.xml "HTTP/1.1 200 OK"
+21:47:24 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251105_qohc.xml "HTTP/1.1 200 OK"
+21:47:37 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251107_9ynk.xml "HTTP/1.1 200 OK"
+21:47:48 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251118_erps.xml "HTTP/1.1 200 OK"
+21:48:02 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251120_oc1i.xml "HTTP/1.1 200 OK"
+21:48:14 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251122_2gwi.xml "HTTP/1.1 200 OK"
+21:48:30 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251123_tmua.xml "HTTP/1.1 200 OK"
+21:48:47 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251125_u1n1.xml "HTTP/1.1 200 OK"
+21:49:00 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251206_sjuu.xml "HTTP/1.1 200 OK"
+21:49:13 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251207_xipy.xml "HTTP/1.1 200 OK"
+21:49:41 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251212_o5g3.xml "HTTP/1.1 200 OK"
+21:50:04 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251218_d0zn.xml "HTTP/1.1 200 OK"
+21:50:20 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260102_c865.xml "HTTP/1.1 200 OK"
+21:50:37 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260103_wdg8.xml "HTTP/1.1 200 OK"
+21:50:53 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260107_j9e2.xml "HTTP/1.1 200 OK"
+21:51:08 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260109_onl1.xml "HTTP/1.1 200 OK"
+21:51:23 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260111_sfoj.xml "HTTP/1.1 200 OK"
+21:51:36 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260114_x4k9.xml "HTTP/1.1 200 OK"
+21:51:54 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260117_wyx7.xml "HTTP/1.1 200 OK"
+21:52:11 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260121_7qkx.xml "HTTP/1.1 200 OK"
+21:52:22 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260204_i81u.xml "HTTP/1.1 200 OK"
+21:52:37 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260207_4k57.xml "HTTP/1.1 200 OK"
+21:52:53 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260211_6hg2.xml "HTTP/1.1 200 OK"
+21:53:11 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260214_oovm.xml "HTTP/1.1 200 OK"
+21:53:31 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260218_3zal.xml "HTTP/1.1 200 OK"
+21:53:43 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260221_su39.xml "HTTP/1.1 200 OK"
+21:53:43 [INFO]   Loaded: 27 games, 672 player-game-stat rows
+21:53:43 [INFO] 
+[6/20] Raritan Valley CC
+21:53:43 [INFO] Scraping team: Raritan Valley CC (raritanvalleycommunitycollege)
+21:54:00 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/raritanvalleycommunitycollege?view=roster "HTTP/1.1 200 OK"
+21:54:00 [INFO]   Roster: 14 players
+21:54:12 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/raritanvalleycommunitycollege?view=gamelog "HTTP/1.1 200 OK"
+21:54:12 [INFO]   Games: 29 with box scores
+21:54:23 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251101_bcil.xml "HTTP/1.1 200 OK"
+21:54:34 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251102_fcdz.xml "HTTP/1.1 200 OK"
+21:54:50 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251106_xevz.xml "HTTP/1.1 200 OK"
+21:55:01 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251115_ef63.xml "HTTP/1.1 200 OK"
+21:55:15 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251116_dd1a.xml "HTTP/1.1 200 OK"
+21:55:26 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251120_46lk.xml "HTTP/1.1 200 OK"
+21:55:37 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251204_39uy.xml "HTTP/1.1 200 OK"
+21:55:48 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251207_0fta.xml "HTTP/1.1 200 OK"
+21:55:59 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251209_4qew.xml "HTTP/1.1 200 OK"
+21:56:11 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251211_ni0l.xml "HTTP/1.1 200 OK"
+21:56:22 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251213_3c2u.xml "HTTP/1.1 200 OK"
+21:56:34 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251216_gfiq.xml "HTTP/1.1 200 OK"
+21:56:45 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251218_401g.xml "HTTP/1.1 200 OK"
+21:56:56 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260106_lx2k.xml "HTTP/1.1 200 OK"
+21:57:07 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260110_hyf5.xml "HTTP/1.1 200 OK"
+21:57:18 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260111_sfoj.xml "HTTP/1.1 200 OK"
+21:57:30 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260115_qzu3.xml "HTTP/1.1 200 OK"
+21:57:41 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260122_b6r0.xml "HTTP/1.1 200 OK"
+21:57:52 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260124_fqe9.xml "HTTP/1.1 200 OK"
+21:58:03 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260127_9tqh.xml "HTTP/1.1 200 OK"
+21:58:15 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260129_xq0n.xml "HTTP/1.1 200 OK"
+21:58:26 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260203_8e9z.xml "HTTP/1.1 200 OK"
+21:58:37 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260207_qr6s.xml "HTTP/1.1 200 OK"
+21:58:48 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260210_5xyk.xml "HTTP/1.1 200 OK"
+21:58:59 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260212_tk3m.xml "HTTP/1.1 200 OK"
+21:59:10 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260214_kzzz.xml "HTTP/1.1 200 OK"
+21:59:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260217_3qez.xml "HTTP/1.1 200 OK"
+21:59:32 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260219_zidp.xml "HTTP/1.1 200 OK"
+21:59:43 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260226_s6e0.xml "HTTP/1.1 200 OK"
+21:59:43 [INFO]   Loaded: 29 games, 650 player-game-stat rows
+21:59:43 [INFO] 
+[7/20] Reid State CC
+21:59:43 [INFO] Scraping team: Reid State CC (reidstatecommunitycollege)
+21:59:55 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/reidstatecommunitycollege?view=roster "HTTP/1.1 200 OK"
+21:59:55 [INFO]   Roster: 16 players
+22:00:07 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/reidstatecommunitycollege?view=gamelog "HTTP/1.1 200 OK"
+22:00:07 [INFO]   Games: 29 with box scores
+22:00:18 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251031_9x4g.xml "HTTP/1.1 200 OK"
+22:00:29 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251103_vtpo.xml "HTTP/1.1 200 OK"
+22:00:40 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251113_hxch.xml "HTTP/1.1 200 OK"
+22:00:52 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251115_n2wi.xml "HTTP/1.1 200 OK"
+22:01:03 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251119_1wth.xml "HTTP/1.1 200 OK"
+22:01:14 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251122_5ezd.xml "HTTP/1.1 200 OK"
+22:01:25 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251124_h6ih.xml "HTTP/1.1 200 OK"
+22:01:36 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251202_yi35.xml "HTTP/1.1 200 OK"
+22:01:47 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251204_8fhu.xml "HTTP/1.1 200 OK"
+22:01:59 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251206_g37a.xml "HTTP/1.1 200 OK"
+22:02:10 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251208_w312.xml "HTTP/1.1 200 OK"
+22:02:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251210_901o.xml "HTTP/1.1 200 OK"
+22:02:32 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251212_84j2.xml "HTTP/1.1 200 OK"
+22:02:44 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251230_z2mz.xml "HTTP/1.1 200 OK"
+22:02:55 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251231_kj3l.xml "HTTP/1.1 200 OK"
+22:03:06 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260103_4x92.xml "HTTP/1.1 200 OK"
+22:03:17 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260105_btsz.xml "HTTP/1.1 200 OK"
+22:03:30 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260108_39d1.xml "HTTP/1.1 200 OK"
+22:03:41 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260112_5mfu.xml "HTTP/1.1 200 OK"
+22:03:53 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260115_zuxx.xml "HTTP/1.1 200 OK"
+22:04:04 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260118_7bmz.xml "HTTP/1.1 200 OK"
+22:04:17 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260122_4s7c.xml "HTTP/1.1 200 OK"
+22:04:28 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260127_wywl.xml "HTTP/1.1 200 OK"
+22:04:40 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260129_2fk2.xml "HTTP/1.1 200 OK"
+22:04:51 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260202_bsmn.xml "HTTP/1.1 200 OK"
+22:05:02 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260205_d0ln.xml "HTTP/1.1 200 OK"
+22:05:13 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260209_25qa.xml "HTTP/1.1 200 OK"
+22:05:24 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260212_tn2b.xml "HTTP/1.1 200 OK"
+22:05:36 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260216_be7s.xml "HTTP/1.1 200 OK"
+22:05:36 [INFO]   Loaded: 29 games, 617 player-game-stat rows
+22:05:36 [INFO] 
+[8/20] Rend Lake College
+22:05:36 [INFO] Scraping team: Rend Lake College (rendlakecollege)
+22:05:48 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/rendlakecollege?view=roster "HTTP/1.1 200 OK"
+22:05:48 [INFO]   Roster: 16 players
+22:06:00 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/rendlakecollege?view=gamelog "HTTP/1.1 200 OK"
+22:06:00 [INFO]   Games: 28 with box scores
+22:06:11 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251104_75vt.xml "HTTP/1.1 200 OK"
+22:06:23 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251105_8qxv.xml "HTTP/1.1 200 OK"
+22:06:34 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251108_bbgt.xml "HTTP/1.1 200 OK"
+22:06:45 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251112_yvgd.xml "HTTP/1.1 200 OK"
+22:06:56 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251114_oq9o.xml "HTTP/1.1 200 OK"
+22:07:07 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251117_ygv8.xml "HTTP/1.1 200 OK"
+22:07:19 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251125_4iw5.xml "HTTP/1.1 200 OK"
+22:07:31 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251203_ptj8.xml "HTTP/1.1 200 OK"
+22:07:43 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251205_279r.xml "HTTP/1.1 200 OK"
+22:07:55 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251208_plr6.xml "HTTP/1.1 200 OK"
+22:08:06 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251210_4nw3.xml "HTTP/1.1 200 OK"
+22:08:17 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251213_cjze.xml "HTTP/1.1 200 OK"
+22:08:29 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251215_46za.xml "HTTP/1.1 200 OK"
+22:08:40 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260103_sprn.xml "HTTP/1.1 200 OK"
+22:08:51 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260107_91r7.xml "HTTP/1.1 200 OK"
+22:09:02 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260110_9zyk.xml "HTTP/1.1 200 OK"
+22:09:13 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260114_lfhj.xml "HTTP/1.1 200 OK"
+22:09:25 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260117_jdy7.xml "HTTP/1.1 200 OK"
+22:09:37 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260119_50z0.xml "HTTP/1.1 200 OK"
+22:09:48 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260123_sqhn.xml "HTTP/1.1 200 OK"
+22:10:00 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260128_mp3j.xml "HTTP/1.1 200 OK"
+22:10:11 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260131_dld0.xml "HTTP/1.1 200 OK"
+22:10:22 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260204_pcuo.xml "HTTP/1.1 200 OK"
+22:10:35 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260207_et7s.xml "HTTP/1.1 200 OK"
+22:10:47 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260211_ng8e.xml "HTTP/1.1 200 OK"
+22:10:58 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260214_romi.xml "HTTP/1.1 200 OK"
+22:11:10 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260218_ib9f.xml "HTTP/1.1 200 OK"
+22:11:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260221_zsms.xml "HTTP/1.1 200 OK"
+22:11:21 [INFO]   Loaded: 28 games, 655 player-game-stat rows
+22:11:21 [INFO] 
+[9/20] Rock Valley College
+22:11:21 [INFO] Scraping team: Rock Valley College (rockvalleycollege)
+22:11:33 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/rockvalleycollege?view=roster "HTTP/1.1 200 OK"
+22:11:33 [INFO]   Roster: 14 players
+22:11:45 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/rockvalleycollege?view=gamelog "HTTP/1.1 200 OK"
+22:11:45 [INFO]   Games: 31 with box scores
+22:11:57 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251031_id6w.xml "HTTP/1.1 200 OK"
+22:12:08 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251101_zgzi.xml "HTTP/1.1 200 OK"
+22:12:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251108_idlw.xml "HTTP/1.1 200 OK"
+22:12:33 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251111_agqj.xml "HTTP/1.1 200 OK"
+22:12:45 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251114_jdjq.xml "HTTP/1.1 200 OK"
+22:12:57 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251115_y7dv.xml "HTTP/1.1 200 OK"
+22:13:10 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251119_e2rj.xml "HTTP/1.1 200 OK"
+22:13:22 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251122_lrs3.xml "HTTP/1.1 200 OK"
+22:13:32 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251125_nik4.xml "HTTP/1.1 200 OK"
+22:13:43 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251129_fe4z.xml "HTTP/1.1 200 OK"
+22:13:54 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251130_bxeh.xml "HTTP/1.1 200 OK"
+22:14:06 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251202_zfzz.xml "HTTP/1.1 200 OK"
+22:14:16 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251204_c2qb.xml "HTTP/1.1 200 OK"
+22:14:27 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251206_tg2y.xml "HTTP/1.1 200 OK"
+22:14:39 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251212_7z0b.xml "HTTP/1.1 200 OK"
+22:14:50 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251213_7r9a.xml "HTTP/1.1 200 OK"
+22:15:03 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251213_wqlf.xml "HTTP/1.1 200 OK"
+22:15:14 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260103_1q3r.xml "HTTP/1.1 200 OK"
+22:15:25 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260110_6czi.xml "HTTP/1.1 200 OK"
+22:15:37 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260113_bnqw.xml "HTTP/1.1 200 OK"
+22:15:48 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260122_zlkf.xml "HTTP/1.1 200 OK"
+22:15:59 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260127_xug7.xml "HTTP/1.1 200 OK"
+22:16:10 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260203_ke3o.xml "HTTP/1.1 200 OK"
+22:16:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260205_8yeh.xml "HTTP/1.1 200 OK"
+22:16:33 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260207_kqxv.xml "HTTP/1.1 200 OK"
+22:16:45 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260210_0asy.xml "HTTP/1.1 200 OK"
+22:16:57 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260212_jlz8.xml "HTTP/1.1 200 OK"
+22:17:08 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260214_khih.xml "HTTP/1.1 200 OK"
+23:45:23 [ERROR] Request failed: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260217_w8po.xml — _ssl.c:1112: The handshake operation timed out
+23:49:13 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260219_1y6y.xml "HTTP/1.1 200 OK"
+00:00:24 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260226_240z.xml "HTTP/1.1 200 OK"
+00:00:24 [INFO]   Loaded: 30 games, 706 player-game-stat rows
+00:00:24 [INFO] 
+[10/20] Rockland CC
+00:00:24 [INFO] Scraping team: Rockland CC (rocklandcommunitycollege)
+00:18:17 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/rocklandcommunitycollege?view=roster "HTTP/1.1 200 OK"
+00:18:17 [INFO]   Roster: 15 players
+00:19:42 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/rocklandcommunitycollege?view=gamelog "HTTP/1.1 200 OK"
+00:19:42 [INFO]   Games: 27 with box scores
+00:36:06 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251101_158l.xml "HTTP/1.1 200 OK"
+01:08:40 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251102_48en.xml "HTTP/1.1 200 OK"
+01:19:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251106_xevz.xml "HTTP/1.1 200 OK"
+01:52:49 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251111_9p7w.xml "HTTP/1.1 200 OK"
+02:20:16 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251113_xl0h.xml "HTTP/1.1 200 OK"
+02:32:37 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251115_rwad.xml "HTTP/1.1 200 OK"
+02:40:29 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251120_0fd3.xml "HTTP/1.1 200 OK"
+03:14:05 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251125_1ppe.xml "HTTP/1.1 200 OK"
+03:21:20 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251203_rdkj.xml "HTTP/1.1 200 OK"
+03:55:39 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251204_o8j6.xml "HTTP/1.1 200 OK"
+04:22:15 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251209_ywfv.xml "HTTP/1.1 200 OK"
+04:30:16 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251211_eqn9.xml "HTTP/1.1 200 OK"
+04:45:38 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251213_u34a.xml "HTTP/1.1 200 OK"
+05:18:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260110_coua.xml "HTTP/1.1 200 OK"
+05:23:20 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260111_haw6.xml "HTTP/1.1 200 OK"
+05:55:22 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260113_c8vc.xml "HTTP/1.1 200 OK"
+06:24:15 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260115_dr8z.xml "HTTP/1.1 200 OK"
+06:39:26 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260117_tnti.xml "HTTP/1.1 200 OK"
+07:14:11 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260118_bl4d.xml "HTTP/1.1 200 OK"
+07:25:19 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260120_2tct.xml "HTTP/1.1 200 OK"
+07:54:05 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260122_mwyz.xml "HTTP/1.1 200 OK"
+08:04:00 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260129_xq0n.xml "HTTP/1.1 200 OK"
+08:04:11 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260203_81ep.xml "HTTP/1.1 200 OK"
+08:04:23 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260205_cqfn.xml "HTTP/1.1 200 OK"
+08:04:34 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260210_w3xo.xml "HTTP/1.1 200 OK"
+08:04:45 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260212_3430.xml "HTTP/1.1 200 OK"
+08:04:56 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260217_gwfv.xml "HTTP/1.1 200 OK"
+08:04:56 [INFO]   Loaded: 27 games, 657 player-game-stat rows
+08:04:56 [INFO] 
+[11/20] Schoolcraft College
+08:04:56 [INFO] Scraping team: Schoolcraft College (schoolcraftcollege)
+08:05:27 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/schoolcraftcollege?view=roster "HTTP/1.1 200 OK"
+08:05:27 [INFO]   Roster: 17 players
+08:05:41 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/schoolcraftcollege?view=gamelog "HTTP/1.1 200 OK"
+08:05:41 [INFO]   Games: 28 with box scores
+08:05:52 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251101_v0b2.xml "HTTP/1.1 200 OK"
+08:06:06 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251105_dr27.xml "HTTP/1.1 200 OK"
+08:06:18 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251108_hy3p.xml "HTTP/1.1 200 OK"
+08:06:29 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251115_2j92.xml "HTTP/1.1 200 OK"
+08:06:40 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251122_0y14.xml "HTTP/1.1 200 OK"
+08:07:19 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251124_0fp5.xml "HTTP/1.1 200 OK"
+08:07:32 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251125_31sn.xml "HTTP/1.1 200 OK"
+08:07:56 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251206_kcde.xml "HTTP/1.1 200 OK"
+08:08:07 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251208_ssy6.xml "HTTP/1.1 200 OK"
+08:08:19 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251213_bcgm.xml "HTTP/1.1 200 OK"
+08:08:30 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251214_mcuf.xml "HTTP/1.1 200 OK"
+08:08:41 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251217_kz47.xml "HTTP/1.1 200 OK"
+08:08:52 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251220_9a3k.xml "HTTP/1.1 200 OK"
+08:09:03 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260107_6pia.xml "HTTP/1.1 200 OK"
+08:09:15 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260110_vhwg.xml "HTTP/1.1 200 OK"
+08:09:27 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260114_i3nd.xml "HTTP/1.1 200 OK"
+08:09:59 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260117_961y.xml "HTTP/1.1 200 OK"
+08:10:11 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260121_j20x.xml "HTTP/1.1 200 OK"
+08:10:22 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260124_o2vc.xml "HTTP/1.1 200 OK"
+08:10:33 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260128_3584.xml "HTTP/1.1 200 OK"
+08:10:46 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260131_3c3l.xml "HTTP/1.1 200 OK"
+08:10:57 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260204_phju.xml "HTTP/1.1 200 OK"
+08:11:08 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260207_asy8.xml "HTTP/1.1 200 OK"
+08:11:24 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260211_1kav.xml "HTTP/1.1 200 OK"
+08:12:10 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260214_zkpx.xml "HTTP/1.1 200 OK"
+08:12:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260218_96v9.xml "HTTP/1.1 200 OK"
+08:13:28 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260221_721g.xml "HTTP/1.1 200 OK"
+08:13:39 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260224_vtij.xml "HTTP/1.1 200 OK"
+08:13:40 [INFO]   Loaded: 28 games, 717 player-game-stat rows
+08:13:40 [INFO] 
+[12/20] Scottsdale CC
+08:13:40 [INFO] Scraping team: Scottsdale CC (scottsdalecommunitycollege)
+08:14:50 [ERROR] Request failed: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/scottsdalecommunitycollege?view=roster — The read operation timed out
+08:14:50 [INFO]   Roster: 0 players
+08:15:02 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/scottsdalecommunitycollege?view=gamelog "HTTP/1.1 200 OK"
+08:15:02 [INFO]   Games: 28 with box scores
+08:15:13 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251031_4s49.xml "HTTP/1.1 200 OK"
+08:15:24 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251101_rd3u.xml "HTTP/1.1 200 OK"
+08:15:59 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251102_dxge.xml "HTTP/1.1 200 OK"
+08:16:20 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251108_rmbp.xml "HTTP/1.1 200 OK"
+08:16:32 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251112_r06z.xml "HTTP/1.1 200 OK"
+08:16:43 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251114_uyxn.xml "HTTP/1.1 200 OK"
+08:16:55 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251125_57op.xml "HTTP/1.1 200 OK"
+08:17:09 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251129_rw0m.xml "HTTP/1.1 200 OK"
+08:17:20 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251202_hmrz.xml "HTTP/1.1 200 OK"
+08:17:31 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251206_0p9c.xml "HTTP/1.1 200 OK"
+08:17:42 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251210_bd1o.xml "HTTP/1.1 200 OK"
+08:17:53 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251211_o7jo.xml "HTTP/1.1 200 OK"
+08:18:07 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251213_7ax3.xml "HTTP/1.1 200 OK"
+08:18:54 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251217_hfv2.xml "HTTP/1.1 200 OK"
+08:19:08 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260103_79vd.xml "HTTP/1.1 200 OK"
+08:19:19 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260107_lnpi.xml "HTTP/1.1 200 OK"
+08:19:30 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260110_8lr2.xml "HTTP/1.1 200 OK"
+08:19:41 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260114_soko.xml "HTTP/1.1 200 OK"
+08:19:52 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260121_8pyv.xml "HTTP/1.1 200 OK"
+08:20:03 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260124_o42p.xml "HTTP/1.1 200 OK"
+08:20:15 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260128_n30p.xml "HTTP/1.1 200 OK"
+08:20:26 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260131_u2n6.xml "HTTP/1.1 200 OK"
+08:20:37 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260204_e3jb.xml "HTTP/1.1 200 OK"
+08:20:48 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260207_tuc2.xml "HTTP/1.1 200 OK"
+08:20:59 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260214_se9z.xml "HTTP/1.1 200 OK"
+08:21:12 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260218_bp3c.xml "HTTP/1.1 200 OK"
+08:22:22 [ERROR] Request failed: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260221_ppce.xml — The read operation timed out
+08:23:24 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260225_wgcl.xml "HTTP/1.1 200 OK"
+08:23:24 [INFO]   Loaded: 27 games, 508 player-game-stat rows
+08:23:24 [INFO] 
+[13/20] Shorter College
+08:23:24 [INFO] Scraping team: Shorter College (shortercollege)
+08:23:36 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/shortercollege?view=roster "HTTP/1.1 200 OK"
+08:23:37 [INFO]   Roster: 13 players
+08:23:48 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/shortercollege?view=gamelog "HTTP/1.1 200 OK"
+08:23:48 [INFO]   Games: 26 with box scores
+08:23:59 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251101_3y5p.xml "HTTP/1.1 200 OK"
+08:24:10 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251105_zoy2.xml "HTTP/1.1 200 OK"
+08:24:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251108_omu0.xml "HTTP/1.1 200 OK"
+08:24:32 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251114_wdev.xml "HTTP/1.1 200 OK"
+08:24:43 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251125_kxha.xml "HTTP/1.1 200 OK"
+08:24:56 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251203_wrup.xml "HTTP/1.1 200 OK"
+08:25:07 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251204_o388.xml "HTTP/1.1 200 OK"
+08:25:18 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251206_nfyx.xml "HTTP/1.1 200 OK"
+08:25:29 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251210_jx5v.xml "HTTP/1.1 200 OK"
+08:25:40 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251213_6v4h.xml "HTTP/1.1 200 OK"
+08:25:51 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260105_nfpl.xml "HTTP/1.1 200 OK"
+08:26:02 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260107_14ja.xml "HTTP/1.1 200 OK"
+08:26:14 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260110_girr.xml "HTTP/1.1 200 OK"
+08:26:24 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260113_19jl.xml "HTTP/1.1 200 OK"
+08:26:35 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260117_q5in.xml "HTTP/1.1 200 OK"
+08:26:46 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260121_8sfy.xml "HTTP/1.1 200 OK"
+08:26:58 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260202_tuai.xml "HTTP/1.1 200 OK"
+08:27:09 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260204_2f4z.xml "HTTP/1.1 200 OK"
+08:27:20 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260207_g29l.xml "HTTP/1.1 200 OK"
+08:27:31 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260209_lx7u.xml "HTTP/1.1 200 OK"
+08:27:59 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260211_p4wh.xml "HTTP/1.1 200 OK"
+08:28:10 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260213_s7ac.xml "HTTP/1.1 200 OK"
+08:28:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260216_mwjk.xml "HTTP/1.1 200 OK"
+08:28:32 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260218_gby4.xml "HTTP/1.1 200 OK"
+08:28:43 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260221_f6ba.xml "HTTP/1.1 200 OK"
+08:28:54 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260225_lomq.xml "HTTP/1.1 200 OK"
+08:28:54 [INFO]   Loaded: 26 games, 446 player-game-stat rows
+08:28:54 [INFO] 
+[14/20] Snead State CC
+08:28:54 [INFO] Scraping team: Snead State CC (sneadstatecommunitycollege)
+08:29:26 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/sneadstatecommunitycollege?view=roster "HTTP/1.1 200 OK"
+08:29:26 [INFO]   Roster: 15 players
+08:30:05 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/sneadstatecommunitycollege?view=gamelog "HTTP/1.1 200 OK"
+08:30:06 [INFO]   Games: 28 with box scores
+08:30:16 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251031_k0bt.xml "HTTP/1.1 200 OK"
+08:30:27 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251101_edvd.xml "HTTP/1.1 200 OK"
+08:30:39 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251104_0zvr.xml "HTTP/1.1 200 OK"
+08:30:50 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251106_58nx.xml "HTTP/1.1 200 OK"
+08:31:01 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251110_1i9c.xml "HTTP/1.1 200 OK"
+08:31:12 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251113_3whd.xml "HTTP/1.1 200 OK"
+08:31:23 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251117_2edo.xml "HTTP/1.1 200 OK"
+08:31:34 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251120_j8pg.xml "HTTP/1.1 200 OK"
+08:31:46 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251124_5p5n.xml "HTTP/1.1 200 OK"
+08:31:57 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251202_uo3n.xml "HTTP/1.1 200 OK"
+08:32:09 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251204_is2l.xml "HTTP/1.1 200 OK"
+08:32:20 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251208_btxm.xml "HTTP/1.1 200 OK"
+08:32:32 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251212_84j2.xml "HTTP/1.1 200 OK"
+08:32:43 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251216_z9s9.xml "HTTP/1.1 200 OK"
+08:32:54 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251217_xp8w.xml "HTTP/1.1 200 OK"
+08:33:05 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260105_ddae.xml "HTTP/1.1 200 OK"
+08:33:16 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260108_tcoa.xml "HTTP/1.1 200 OK"
+08:33:27 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260112_51qs.xml "HTTP/1.1 200 OK"
+08:33:38 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260115_pf9o.xml "HTTP/1.1 200 OK"
+08:33:49 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260119_csrq.xml "HTTP/1.1 200 OK"
+08:34:00 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260122_srlx.xml "HTTP/1.1 200 OK"
+08:34:12 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260126_hcdj.xml "HTTP/1.1 200 OK"
+08:34:22 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260129_jx3i.xml "HTTP/1.1 200 OK"
+08:34:34 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260202_bsmn.xml "HTTP/1.1 200 OK"
+08:34:45 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260209_tvbw.xml "HTTP/1.1 200 OK"
+08:34:56 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260212_u702.xml "HTTP/1.1 200 OK"
+08:35:07 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260216_414s.xml "HTTP/1.1 200 OK"
+08:35:18 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260219_yrs3.xml "HTTP/1.1 200 OK"
+08:35:18 [INFO]   Loaded: 28 games, 647 player-game-stat rows
+08:35:18 [INFO] 
+[15/20] South Arkansas College
+08:35:18 [INFO] Scraping team: South Arkansas College (southarkansascollege)
+08:35:31 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/southarkansascollege?view=roster "HTTP/1.1 200 OK"
+08:35:31 [INFO]   Roster: 7 players
+08:35:43 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/southarkansascollege?view=gamelog "HTTP/1.1 200 OK"
+08:35:43 [INFO]   Games: 25 with box scores
+08:35:54 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251103_xkyn.xml "HTTP/1.1 200 OK"
+08:36:05 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251106_3qnt.xml "HTTP/1.1 200 OK"
+08:36:17 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251110_oza5.xml "HTTP/1.1 200 OK"
+08:36:28 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251113_6tgb.xml "HTTP/1.1 200 OK"
+08:36:39 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251120_63sd.xml "HTTP/1.1 200 OK"
+08:36:51 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251122_43gp.xml "HTTP/1.1 200 OK"
+08:37:02 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251203_wrup.xml "HTTP/1.1 200 OK"
+08:37:13 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251206_4rqa.xml "HTTP/1.1 200 OK"
+08:37:23 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251210_ge2d.xml "HTTP/1.1 200 OK"
+08:37:34 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251213_lezy.xml "HTTP/1.1 200 OK"
+08:37:46 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260107_wi63.xml "HTTP/1.1 200 OK"
+08:37:57 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260110_6nqn.xml "HTTP/1.1 200 OK"
+08:38:08 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260114_7og7.xml "HTTP/1.1 200 OK"
+08:38:19 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260117_7185.xml "HTTP/1.1 200 OK"
+08:38:30 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260121_9hgb.xml "HTTP/1.1 200 OK"
+08:38:41 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260202_tuai.xml "HTTP/1.1 200 OK"
+08:38:53 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260204_a5q4.xml "HTTP/1.1 200 OK"
+08:39:04 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260207_6b72.xml "HTTP/1.1 200 OK"
+08:39:15 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260209_5muq.xml "HTTP/1.1 200 OK"
+08:39:27 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260211_5nvd.xml "HTTP/1.1 200 OK"
+08:39:40 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260214_drca.xml "HTTP/1.1 200 OK"
+08:39:54 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260216_cs14.xml "HTTP/1.1 200 OK"
+08:40:06 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260217_gq9n.xml "HTTP/1.1 200 OK"
+08:40:17 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260221_0ydv.xml "HTTP/1.1 200 OK"
+08:40:30 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260226_dzrh.xml "HTTP/1.1 200 OK"
+08:40:30 [INFO]   Loaded: 25 games, 516 player-game-stat rows
+08:40:30 [INFO] 
+[16/20] South Mountain CC
+08:40:30 [INFO] Scraping team: South Mountain CC (southmountaincommunitycollege)
+08:40:43 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/southmountaincommunitycollege?view=roster "HTTP/1.1 200 OK"
+08:40:43 [INFO]   Roster: 13 players
+08:40:55 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/southmountaincommunitycollege?view=gamelog "HTTP/1.1 200 OK"
+08:40:55 [INFO]   Games: 29 with box scores
+08:41:06 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251031_q7ca.xml "HTTP/1.1 200 OK"
+08:41:17 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251101_0llb.xml "HTTP/1.1 200 OK"
+08:41:28 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251102_2s2l.xml "HTTP/1.1 200 OK"
+08:41:39 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251107_rtk6.xml "HTTP/1.1 200 OK"
+08:41:50 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251110_9u9d.xml "HTTP/1.1 200 OK"
+08:42:01 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251115_42ez.xml "HTTP/1.1 200 OK"
+08:42:12 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251121_212i.xml "HTTP/1.1 200 OK"
+08:42:23 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251122_rjj8.xml "HTTP/1.1 200 OK"
+08:42:35 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251126_q1nh.xml "HTTP/1.1 200 OK"
+08:42:45 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251203_yvcg.xml "HTTP/1.1 200 OK"
+08:42:56 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251206_9sed.xml "HTTP/1.1 200 OK"
+08:43:08 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251210_90jh.xml "HTTP/1.1 200 OK"
+08:43:18 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251213_qmcw.xml "HTTP/1.1 200 OK"
+08:43:30 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251231_kw18.xml "HTTP/1.1 200 OK"
+08:43:41 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260103_r3ga.xml "HTTP/1.1 200 OK"
+08:43:52 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260107_lnpi.xml "HTTP/1.1 200 OK"
+08:44:03 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260110_4puv.xml "HTTP/1.1 200 OK"
+08:44:14 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260114_gu7g.xml "HTTP/1.1 200 OK"
+08:44:25 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260117_2nvi.xml "HTTP/1.1 200 OK"
+08:44:37 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260121_kp92.xml "HTTP/1.1 200 OK"
+08:44:48 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260124_p43d.xml "HTTP/1.1 200 OK"
+08:44:59 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260128_e1xl.xml "HTTP/1.1 200 OK"
+08:45:10 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260131_u2n6.xml "HTTP/1.1 200 OK"
+08:45:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260204_f7d4.xml "HTTP/1.1 200 OK"
+08:45:33 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260207_etrt.xml "HTTP/1.1 200 OK"
+08:45:44 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260211_3v99.xml "HTTP/1.1 200 OK"
+08:45:56 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260214_0ar7.xml "HTTP/1.1 200 OK"
+08:46:07 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260218_bfor.xml "HTTP/1.1 200 OK"
+08:46:19 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260225_wgcl.xml "HTTP/1.1 200 OK"
+08:46:19 [INFO]   Loaded: 29 games, 591 player-game-stat rows
+08:46:19 [INFO] 
+[17/20] South Suburban College
+08:46:19 [INFO] Scraping team: South Suburban College (southsuburbancollege)
+08:46:32 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/southsuburbancollege?view=roster "HTTP/1.1 200 OK"
+08:46:32 [INFO]   Roster: 16 players
+08:46:45 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/southsuburbancollege?view=gamelog "HTTP/1.1 200 OK"
+08:46:46 [INFO]   Games: 31 with box scores
+08:46:56 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251108_ld2l.xml "HTTP/1.1 200 OK"
+08:47:07 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251112_vzfa.xml "HTTP/1.1 200 OK"
+08:47:18 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251115_6e17.xml "HTTP/1.1 200 OK"
+08:47:30 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251120_j75b.xml "HTTP/1.1 200 OK"
+08:47:43 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251122_zcuu.xml "HTTP/1.1 200 OK"
+08:47:54 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251125_ysxu.xml "HTTP/1.1 200 OK"
+08:48:05 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251202_khjh.xml "HTTP/1.1 200 OK"
+08:48:17 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251204_svn3.xml "HTTP/1.1 200 OK"
+08:48:28 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251206_8qpq.xml "HTTP/1.1 200 OK"
+08:48:39 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251212_52x3.xml "HTTP/1.1 200 OK"
+08:48:51 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251213_6sj1.xml "HTTP/1.1 200 OK"
+08:49:01 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251218_a9de.xml "HTTP/1.1 200 OK"
+08:49:13 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251220_6h6h.xml "HTTP/1.1 200 OK"
+08:49:24 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251222_f1d0.xml "HTTP/1.1 200 OK"
+08:49:53 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260106_txez.xml "HTTP/1.1 200 OK"
+08:50:04 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260113_ijzi.xml "HTTP/1.1 200 OK"
+08:50:15 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260115_9rvq.xml "HTTP/1.1 200 OK"
+08:50:27 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260117_im8i.xml "HTTP/1.1 200 OK"
+08:50:38 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260120_gsaz.xml "HTTP/1.1 200 OK"
+08:50:53 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260122_p6ue.xml "HTTP/1.1 200 OK"
+08:51:04 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260124_k6ol.xml "HTTP/1.1 200 OK"
+08:51:35 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260126_c2o5.xml "HTTP/1.1 200 OK"
+08:51:47 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260130_m49p.xml "HTTP/1.1 200 OK"
+08:51:58 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260203_xfuu.xml "HTTP/1.1 200 OK"
+08:52:14 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260205_1uor.xml "HTTP/1.1 200 OK"
+08:52:26 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260207_ouh7.xml "HTTP/1.1 200 OK"
+08:52:37 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260210_0asy.xml "HTTP/1.1 200 OK"
+08:52:51 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260214_1co0.xml "HTTP/1.1 200 OK"
+08:53:02 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260217_vxbz.xml "HTTP/1.1 200 OK"
+08:53:14 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260221_8inr.xml "HTTP/1.1 200 OK"
+08:53:25 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260226_wsmr.xml "HTTP/1.1 200 OK"
+08:53:25 [INFO]   Loaded: 31 games, 717 player-game-stat rows
+08:53:25 [INFO] 
+[18/20] Southeast Arkansas College
+08:53:25 [INFO] Scraping team: Southeast Arkansas College (southeastarkansascollege)
+08:54:23 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/southeastarkansascollege?view=roster "HTTP/1.1 200 OK"
+08:54:24 [INFO]   Roster: 15 players
+08:54:35 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/southeastarkansascollege?view=gamelog "HTTP/1.1 200 OK"
+08:54:36 [INFO]   Games: 27 with box scores
+08:54:47 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251104_ugri.xml "HTTP/1.1 200 OK"
+08:55:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251107_dhjw.xml "HTTP/1.1 200 OK"
+08:55:32 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251111_kb8a.xml "HTTP/1.1 200 OK"
+08:55:44 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251114_sh8k.xml "HTTP/1.1 200 OK"
+08:56:55 [ERROR] Request failed: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251122_pm1k.xml — The read operation timed out
+08:57:09 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251124_aytk.xml "HTTP/1.1 200 OK"
+08:57:19 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251128_n176.xml "HTTP/1.1 200 OK"
+08:58:30 [ERROR] Request failed: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251129_e1a1.xml — The read operation timed out
+08:58:41 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251203_no04.xml "HTTP/1.1 200 OK"
+08:58:52 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251206_yyly.xml "HTTP/1.1 200 OK"
+08:59:03 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251210_olkn.xml "HTTP/1.1 200 OK"
+08:59:14 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251213_hfww.xml "HTTP/1.1 200 OK"
+09:00:24 [ERROR] Request failed: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260107_m2tr.xml — The read operation timed out
+09:00:37 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260110_1yok.xml "HTTP/1.1 200 OK"
+09:01:47 [ERROR] Request failed: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260113_19jl.xml — The read operation timed out
+09:01:58 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260117_7185.xml "HTTP/1.1 200 OK"
+09:02:10 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260121_3hm3.xml "HTTP/1.1 200 OK"
+09:02:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260202_u8tk.xml "HTTP/1.1 200 OK"
+09:02:32 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260204_3tb3.xml "HTTP/1.1 200 OK"
+09:02:44 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260207_dq3x.xml "HTTP/1.1 200 OK"
+09:03:22 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260209_9wgs.xml "HTTP/1.1 200 OK"
+09:03:34 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260211_boku.xml "HTTP/1.1 200 OK"
+09:03:45 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260213_s7ac.xml "HTTP/1.1 200 OK"
+09:03:55 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260216_xecb.xml "HTTP/1.1 200 OK"
+09:04:13 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260217_gq9n.xml "HTTP/1.1 200 OK"
+09:04:24 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260221_2fpc.xml "HTTP/1.1 200 OK"
+09:04:35 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260227_y3wl.xml "HTTP/1.1 200 OK"
+09:04:35 [INFO]   Loaded: 23 games, 451 player-game-stat rows
+09:04:35 [INFO] 
+[19/20] Southern Arkansas University Tech
+09:04:35 [INFO] Scraping team: Southern Arkansas University Tech (southernarkansasuniversitytech)
+09:05:07 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/southernarkansasuniversitytech?view=roster "HTTP/1.1 200 OK"
+09:05:07 [INFO]   Roster: 16 players
+09:06:17 [ERROR] Request failed: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/southernarkansasuniversitytech?view=gamelog — The read operation timed out
+09:06:17 [INFO]   Games: 0 with box scores
+09:06:17 [INFO]   Loaded: 0 games, 0 player-game-stat rows
+09:06:17 [INFO] 
+[20/20] Southwest Virginia
+09:06:17 [INFO] Scraping team: Southwest Virginia (southwestvirginia)
+09:07:07 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/southwestvirginia?view=roster "HTTP/1.1 200 OK"
+09:07:08 [INFO]   Roster: 13 players
+09:07:20 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/teams/southwestvirginia?view=gamelog "HTTP/1.1 200 OK"
+09:07:21 [INFO]   Games: 23 with box scores
+09:07:33 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251101_p2by.xml "HTTP/1.1 200 OK"
+09:07:44 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251107_wg7v.xml "HTTP/1.1 200 OK"
+09:08:54 [ERROR] Request failed: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251109_8485.xml — The read operation timed out
+09:09:05 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251113_3qb5.xml "HTTP/1.1 200 OK"
+09:09:17 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251115_g9qv.xml "HTTP/1.1 200 OK"
+09:09:28 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251119_0vaw.xml "HTTP/1.1 200 OK"
+09:10:38 [ERROR] Request failed: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251122_dv2w.xml — The read operation timed out
+09:10:56 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251125_wycf.xml "HTTP/1.1 200 OK"
+09:11:17 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251204_h2vr.xml "HTTP/1.1 504 Gateway Time-out"
+09:11:17 [WARNING] HTTP 504: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251204_h2vr.xml
+09:11:28 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251206_jl80.xml "HTTP/1.1 200 OK"
+09:11:40 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251214_w24w.xml "HTTP/1.1 200 OK"
+09:11:51 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20251220_dsae.xml "HTTP/1.1 200 OK"
+09:12:02 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260103_rclx.xml "HTTP/1.1 200 OK"
+09:12:14 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260106_i219.xml "HTTP/1.1 200 OK"
+09:13:12 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260123_1jlh.xml "HTTP/1.1 200 OK"
+09:13:24 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260209_481q.xml "HTTP/1.1 200 OK"
+09:13:35 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260211_6541.xml "HTTP/1.1 200 OK"
+09:13:47 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260213_1ors.xml "HTTP/1.1 200 OK"
+09:13:58 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260214_ah1c.xml "HTTP/1.1 200 OK"
+09:14:09 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260215_pi01.xml "HTTP/1.1 200 OK"
+09:14:21 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260218_vx2k.xml "HTTP/1.1 200 OK"
+09:15:31 [ERROR] Request failed: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260221_pwlh.xml — The read operation timed out
+09:16:42 [ERROR] Request failed: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/boxscores/20260225_2kl1.xml — The read operation timed out
+09:16:42 [INFO]   Loaded: 18 games, 389 player-game-stat rows
+09:16:42 [INFO] 
+============================================================
+09:16:42 [INFO]   BATCH COMPLETE: 20 teams, 525 games, 11391 PGS rows
+09:16:42 [INFO] ============================================================
+
+============================================================
+  BATCH (njcaa_d2) — FINAL SUMMARY
+============================================================
+  Total teams discovered & scraped: 3119
+  Total players in database:        30497
+  Total games with box scores:      17544
+  Total player_game_stats rows:     466773
+  Total team_game_stats rows:       19588
+  Total HTTP requests:              25809
+  Failed URLs (in scrape_log):      431
+============================================================

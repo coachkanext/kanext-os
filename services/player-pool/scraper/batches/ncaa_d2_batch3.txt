@@ -1,0 +1,20 @@
+adelphi|Adelphi
+assumption|Assumption
+bentley|Bentley
+daemen|Daemen
+felician|Felician
+pace|Pace
+st-anselm|Saint Anselm
+saint-michaels|Saint Michael's
+st-thomas-aquinas|St. Thomas Aquinas
+staten-island|Staten Island
+ashland|Ashland
+grand-valley-st|Grand Valley State
+lake-erie|Lake Erie
+mckendree|McKendree
+michigan-tech|Michigan Tech
+missouri-snt|Missouri S&T
+northern-mich|Northern Michigan
+rockhurst|Rockhurst
+walsh|Walsh
+william-jewell|William Jewell

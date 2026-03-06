@@ -1,0 +1,20 @@
+elgincommunitycollege|Elgin CC
+ellsworthcommunitycollege|Ellsworth CC
+enterprisestatecommunitycollege|Enterprise State CC
+eriecommunitycollege|Erie CC
+essexcountycollege|Essex County College
+fayettevilletechnicalcc|Fayetteville Technical CC
+floridagatewaycollege|Florida Gateway College
+floridastatecollegeatjacksonville|Florida State College at Jacksonville
+forsythtechnicalcommunitycollege|Forsyth Technical CC
+fortscottcommunitycollege|Fort Scott CC
+frederickcommunitycollege|Frederick CC
+garrettcollege|Garrett College
+glenoakscommunitycollege|Glen Oaks CC
+glendalecommunitycollege|Glendale CC
+gogebiccommunitycollege|Gogebic CC
+grandrapidscommunitycollege|Grand Rapids CC
+guilfordtechnicalcommunitycollege|Guilford Technical CC
+harpercollege|Harper College
+henryfordcollege|Henry Ford College
+highlandcommunitycollegekansas|Highland CC - Kansas

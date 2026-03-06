@@ -1,0 +1,17 @@
+fullerton|Fullerton
+santiagocanyon|Santiago Canyon
+cypress|Cypress
+irvinevalley|Irvine Valley
+santaana|Santa Ana
+saddleback|Saddleback
+riverside|Riverside
+orangecoast|Orange Coast
+sandiegocity|San Diego City
+miracosta|MiraCosta
+southwestern|Southwestern
+palomar|Palomar
+sandiegomesa|San Diego Mesa
+sandiegomiramar|San Diego Miramar
+cuyamaca|Cuyamaca
+grossmont|Grossmont
+imperialvalley|Imperial Valley

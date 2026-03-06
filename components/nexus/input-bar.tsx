@@ -7,6 +7,7 @@
 import React, { useRef } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
 import type { TextInput as TextInputType } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Brand, Colors, Spacing } from '@/constants/theme';
@@ -41,6 +42,7 @@ export function InputBar({
   const accent = useAccentColor();
   const isDark = colorScheme === 'dark';
   const inputRef = useRef<TextInputType>(null);
+  const insets = useSafeAreaInsets();
 
   const hasText = value.trim().length > 0;
 
@@ -68,7 +70,7 @@ export function InputBar({
       <View
         style={[
           styles.container,
-          { backgroundColor: colors.background },
+          { backgroundColor: colors.background, paddingBottom: Math.max(insets.bottom, Spacing.sm) },
         ]}
       >
         <Pressable

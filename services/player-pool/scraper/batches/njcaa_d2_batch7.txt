@@ -1,0 +1,20 @@
+phoenixcollege|Phoenix College
+pimacommunitycollege|Pima CC
+pittcommunitycollege|Pitt CC
+prairiestatecollege|Prairie State College
+princegeorgescommunitycollege|Prince George's CC
+raritanvalleycommunitycollege|Raritan Valley CC
+reidstatecommunitycollege|Reid State CC
+rendlakecollege|Rend Lake College
+rockvalleycollege|Rock Valley College
+rocklandcommunitycollege|Rockland CC
+schoolcraftcollege|Schoolcraft College
+scottsdalecommunitycollege|Scottsdale CC
+shortercollege|Shorter College
+sneadstatecommunitycollege|Snead State CC
+southarkansascollege|South Arkansas College
+southmountaincommunitycollege|South Mountain CC
+southsuburbancollege|South Suburban College
+southeastarkansascollege|Southeast Arkansas College
+southernarkansasuniversitytech|Southern Arkansas University Tech
+southwestvirginia|Southwest Virginia

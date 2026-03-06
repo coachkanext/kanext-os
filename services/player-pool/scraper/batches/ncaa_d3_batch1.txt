@@ -1,0 +1,13 @@
+trinity-ct|Trinity (CT)
+tufts|Tufts
+wesleyan-ct|Wesleyan (CT)
+bates|Bates
+amherst|Amherst
+st-joseph-ct|St. Joseph (CT)
+colby|Colby
+endicott|Endicott
+wpi|WPI
+babson|Babson
+western-new-eng|Western New Eng.
+brandeis|Brandeis
+salve-regina|Salve Regina

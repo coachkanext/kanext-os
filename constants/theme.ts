@@ -48,7 +48,6 @@ export const ModeColors: Record<Mode, { primary: string; secondary: string; nexu
   church: { ...uniformMode },
   education: { ...uniformMode },
   business: { ...uniformMode },
-  competition: { ...uniformMode },
 };
 
 // =============================================================================
@@ -60,7 +59,6 @@ export const MODE_ACCENT: Record<Mode, string> = {
   business:    '#1D9BF0',   // KaNeXT Blue
   church:      '#0081CA',   // ICC Blue
   education:   '#003A63',   // Howard Navy
-  competition: '#BFFF00',   // Adidas 3SSB Electric Lime
 };
 
 // =============================================================================
@@ -72,7 +70,6 @@ export const MODE_ACCENT_SECONDARY: Record<Mode, string> = {
   business:    '#1D9BF0',   // KaNeXT Blue (same)
   church:      '#004C7A',   // ICC Navy
   education:   '#E51937',   // Howard Crimson
-  competition: '#000000',   // Black
 };
 
 // =============================================================================

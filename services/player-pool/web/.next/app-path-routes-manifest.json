@@ -1,0 +1,15 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/filters/conferences/route": "/api/filters/conferences",
+  "/api/filters/levels/route": "/api/filters/levels",
+  "/api/filters/teams/route": "/api/filters/teams",
+  "/api/players/[id]/route": "/api/players/[id]",
+  "/api/players/[id]/similar/route": "/api/players/[id]/similar",
+  "/api/players/route": "/api/players",
+  "/conferences/[id]/page": "/conferences/[id]",
+  "/page": "/",
+  "/players/[id]/page": "/players/[id]",
+  "/positions/[position]/page": "/positions/[position]",
+  "/teams/[id]/page": "/teams/[id]"
+}

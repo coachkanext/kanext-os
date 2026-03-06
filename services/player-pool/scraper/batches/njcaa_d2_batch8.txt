@@ -1,0 +1,17 @@
+southwesterncommunitycollege|Southwestern CC
+southwesternmichigan|Southwestern Michigan
+spoonrivercollege|Spoon River College
+stclaircountycommunitycollege|St. Clair County CC
+stlouiscommunitycollege|St. Louis CC
+sunyniagara|SUNY Niagara
+terrastate|Terra State
+ulstercountycommunitycollege|Ulster County CC
+unitedtribestechnicalcollege|United Tribes Technical College
+universityofarkansascossatot|University of Arkansas Cossatot
+wallacecommunitycollegeselma|Wallace CC-Selma
+waubonseecommunitycollege|Waubonsee CC
+waynecountycommunitycollege|Wayne County CC
+westchestercommunitycollege|Westchester CC
+westerniowatech|Western Iowa Tech
+westmorelandcountycommunitycollege|Westmoreland County CC
+wvupotomacstatecollege|WVU Potomac State College

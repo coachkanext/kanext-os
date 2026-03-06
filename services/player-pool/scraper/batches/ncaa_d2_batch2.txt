@@ -1,0 +1,10 @@
+ark-fort-smith|Arkansas-Fort Smith
+central-mo|Central Missouri
+fort-hays-st|Fort Hays State
+harding|Harding
+mo-western-st|Missouri Western
+okla-baptist|Oklahoma Baptist
+ouachita-baptist|Ouachita Baptist
+rogers-st|Rogers State
+st-cloud-st|St. Cloud State
+washburn|Washburn

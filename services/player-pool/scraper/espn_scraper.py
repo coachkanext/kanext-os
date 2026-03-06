@@ -237,6 +237,28 @@ def parse_box_score(conn, game_id: str) -> dict | None:
     return result
 
 
+# ── Roster (height/weight) ──
+
+def fetch_roster(conn, espn_id: str) -> dict[str, dict]:
+    """Fetch roster from ESPN API to get height/weight for each player.
+    Returns dict mapping display_name → {height_inches, weight_lbs, position}."""
+    data = fetch_json(f"{ESPN_API}/teams/{espn_id}/roster", conn)
+    if not data:
+        return {}
+    roster = {}
+    for athlete in data.get("athletes", []):
+        name = athlete.get("displayName", "")
+        if not name:
+            continue
+        h = athlete.get("height")
+        w = athlete.get("weight")
+        roster[name] = {
+            "height_inches": int(h) if h else None,
+            "weight_lbs": int(w) if w else None,
+        }
+    return roster
+
+
 # ── Database Loading ──
 
 def scrape_team(conn, team_info: dict, level_id: str, division_id: str) -> dict:
@@ -254,6 +276,10 @@ def scrape_team(conn, team_info: dict, level_id: str, division_id: str) -> dict:
     )
     team_season_id = db.upsert_team_season(conn, team_id, SEASON)
     conn.commit()
+
+    # Fetch roster for height/weight
+    roster_bio = fetch_roster(conn, espn_id)
+    log.info(f"  Roster bio: {len(roster_bio)} players with height/weight")
 
     # Get schedule
     schedule = get_schedule(conn, espn_id)
@@ -318,9 +344,12 @@ def scrape_team(conn, team_info: dict, level_id: str, division_id: str) -> dict:
             p_name = p["name"]
             pts_id = player_pts_map.get(p_name)
             if not pts_id:
+                bio = roster_bio.get(p_name, {})
                 player_id = db.upsert_player(
                     conn, p_name,
                     positions=[p["position"]] if p.get("position") else None,
+                    height_inches=bio.get("height_inches"),
+                    weight_lbs=bio.get("weight_lbs"),
                 )
                 pts_id = db.upsert_player_team_season(conn, player_id, team_season_id)
                 player_pts_map[p_name] = pts_id

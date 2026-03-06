@@ -1,0 +1,15 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/filters/conferences/route": "app/api/filters/conferences/route.js",
+  "/api/filters/levels/route": "app/api/filters/levels/route.js",
+  "/api/filters/teams/route": "app/api/filters/teams/route.js",
+  "/api/players/[id]/route": "app/api/players/[id]/route.js",
+  "/api/players/[id]/similar/route": "app/api/players/[id]/similar/route.js",
+  "/api/players/route": "app/api/players/route.js",
+  "/conferences/[id]/page": "app/conferences/[id]/page.js",
+  "/page": "app/page.js",
+  "/players/[id]/page": "app/players/[id]/page.js",
+  "/positions/[position]/page": "app/positions/[position]/page.js",
+  "/teams/[id]/page": "app/teams/[id]/page.js"
+}

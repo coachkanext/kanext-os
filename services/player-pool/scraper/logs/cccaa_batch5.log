@@ -1,0 +1,550 @@
+18:16:17 [INFO] Batch: 15 teams, level=cccaa, assoc=cccaa
+18:16:17 [INFO] 
+[1/15] Redwoods
+18:16:17 [INFO] Scraping team: Redwoods (redwoods)
+18:16:19 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/redwoods?view=roster "HTTP/1.1 200 OK"
+18:16:19 [INFO]   Roster: 0 players
+18:16:31 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/redwoods?view=gamelog "HTTP/1.1 200 OK"
+18:16:31 [INFO]   Games: 28 with box scores
+18:16:42 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_hjzh.xml "HTTP/1.1 200 OK"
+18:16:54 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251102_hjw9.xml "HTTP/1.1 200 OK"
+18:17:05 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_2yzi.xml "HTTP/1.1 200 OK"
+18:17:17 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_pual.xml "HTTP/1.1 200 OK"
+18:17:28 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251116_lzno.xml "HTTP/1.1 200 OK"
+18:17:39 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251120_5jki.xml "HTTP/1.1 200 OK"
+18:17:51 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_2xvc.xml "HTTP/1.1 200 OK"
+18:18:02 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_zyh2.xml "HTTP/1.1 200 OK"
+18:18:13 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251129_y4g6.xml "HTTP/1.1 200 OK"
+18:18:25 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251130_3hs9.xml "HTTP/1.1 200 OK"
+18:18:36 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_87y9.xml "HTTP/1.1 200 OK"
+18:18:47 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_elf3.xml "HTTP/1.1 200 OK"
+18:18:58 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251211_t6at.xml "HTTP/1.1 200 OK"
+18:19:10 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251212_5fi7.xml "HTTP/1.1 200 OK"
+18:19:21 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_wbla.xml "HTTP/1.1 200 OK"
+18:19:32 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251219_xc2l.xml "HTTP/1.1 200 OK"
+18:19:43 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_hj5o.xml "HTTP/1.1 200 OK"
+18:19:55 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_dd53.xml "HTTP/1.1 200 OK"
+18:20:06 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_rs9q.xml "HTTP/1.1 200 OK"
+18:20:17 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_bl1k.xml "HTTP/1.1 200 OK"
+18:20:28 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_b0n1.xml "HTTP/1.1 200 OK"
+18:20:39 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260122_oaus.xml "HTTP/1.1 200 OK"
+18:20:51 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_jwi9.xml "HTTP/1.1 200 OK"
+18:21:02 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_lbql.xml "HTTP/1.1 200 OK"
+18:21:13 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260205_8shv.xml "HTTP/1.1 200 OK"
+18:21:25 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_hu5w.xml "HTTP/1.1 200 OK"
+18:21:36 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_stot.xml "HTTP/1.1 200 OK"
+18:21:47 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260216_6qnk.xml "HTTP/1.1 200 OK"
+18:21:48 [INFO]   Loaded: 28 games, 602 player-game-stat rows
+18:21:48 [INFO] 
+[2/15] Shasta
+18:21:48 [INFO] Scraping team: Shasta (shasta)
+18:22:00 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/shasta?view=roster "HTTP/1.1 200 OK"
+18:22:00 [INFO]   Roster: 0 players
+18:22:12 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/shasta?view=gamelog "HTTP/1.1 200 OK"
+18:22:12 [INFO]   Games: 26 with box scores
+18:22:23 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_68r2.xml "HTTP/1.1 200 OK"
+18:22:35 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_hk1k.xml "HTTP/1.1 200 OK"
+18:22:46 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251106_3nwe.xml "HTTP/1.1 200 OK"
+18:22:57 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_ywox.xml "HTTP/1.1 200 OK"
+18:23:09 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_2jpl.xml "HTTP/1.1 200 OK"
+18:23:20 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251113_v6uu.xml "HTTP/1.1 200 OK"
+18:23:31 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251120_46si.xml "HTTP/1.1 200 OK"
+18:23:43 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_i8f5.xml "HTTP/1.1 200 OK"
+18:23:54 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_4z3s.xml "HTTP/1.1 200 OK"
+18:24:05 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251204_vcqm.xml "HTTP/1.1 200 OK"
+18:24:16 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_r3u0.xml "HTTP/1.1 200 OK"
+18:24:28 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_sxle.xml "HTTP/1.1 200 OK"
+18:24:39 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251212_ht29.xml "HTTP/1.1 200 OK"
+18:24:50 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251219_xll5.xml "HTTP/1.1 200 OK"
+18:25:02 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_rjqm.xml "HTTP/1.1 200 OK"
+18:25:13 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251221_97oy.xml "HTTP/1.1 200 OK"
+18:25:24 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_rs9q.xml "HTTP/1.1 200 OK"
+18:25:35 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_w3lk.xml "HTTP/1.1 200 OK"
+18:25:47 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_4y3u.xml "HTTP/1.1 200 OK"
+18:25:58 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_mqj3.xml "HTTP/1.1 200 OK"
+18:26:10 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_nylk.xml "HTTP/1.1 200 OK"
+18:26:21 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_lbql.xml "HTTP/1.1 200 OK"
+18:26:32 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_8zdf.xml "HTTP/1.1 200 OK"
+18:26:43 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_zex0.xml "HTTP/1.1 200 OK"
+18:26:54 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_p5xc.xml "HTTP/1.1 200 OK"
+18:27:05 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260216_m5ou.xml "HTTP/1.1 200 OK"
+18:27:05 [INFO]   Loaded: 26 games, 616 player-game-stat rows
+18:27:05 [INFO] 
+[3/15] Feather River
+18:27:05 [INFO] Scraping team: Feather River (featherriver)
+18:27:17 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/featherriver?view=roster "HTTP/1.1 200 OK"
+18:27:17 [INFO]   Roster: 0 players
+18:27:29 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/featherriver?view=gamelog "HTTP/1.1 200 OK"
+18:27:30 [INFO]   Games: 28 with box scores
+18:27:41 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_tkqk.xml "HTTP/1.1 200 OK"
+18:27:52 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251106_zsnh.xml "HTTP/1.1 200 OK"
+18:28:03 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_7cyv.xml "HTTP/1.1 200 OK"
+18:28:15 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_r28v.xml "HTTP/1.1 200 OK"
+18:28:26 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251113_jpt0.xml "HTTP/1.1 200 OK"
+18:28:37 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_5wpt.xml "HTTP/1.1 200 OK"
+18:28:48 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251116_rb0z.xml "HTTP/1.1 200 OK"
+18:29:00 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251120_b91d.xml "HTTP/1.1 200 OK"
+18:29:11 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_38cn.xml "HTTP/1.1 200 OK"
+18:29:22 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_dx4d.xml "HTTP/1.1 200 OK"
+18:29:33 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_jxii.xml "HTTP/1.1 200 OK"
+18:29:45 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_g9y3.xml "HTTP/1.1 200 OK"
+18:29:56 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251212_jovd.xml "HTTP/1.1 200 OK"
+18:30:07 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_dlxt.xml "HTTP/1.1 200 OK"
+18:30:19 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251219_oqpa.xml "HTTP/1.1 200 OK"
+18:30:30 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_juz4.xml "HTTP/1.1 200 OK"
+18:30:41 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260102_f27p.xml "HTTP/1.1 200 OK"
+18:30:53 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_8ii1.xml "HTTP/1.1 200 OK"
+18:31:04 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_5nox.xml "HTTP/1.1 200 OK"
+18:31:15 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_a23t.xml "HTTP/1.1 200 OK"
+18:31:27 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_4y3u.xml "HTTP/1.1 200 OK"
+18:31:38 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260122_oaus.xml "HTTP/1.1 200 OK"
+18:31:49 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_txpq.xml "HTTP/1.1 200 OK"
+18:32:01 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_h4wy.xml "HTTP/1.1 200 OK"
+18:32:12 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_8u8s.xml "HTTP/1.1 200 OK"
+18:32:23 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_zex0.xml "HTTP/1.1 200 OK"
+18:32:34 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_stot.xml "HTTP/1.1 200 OK"
+18:32:46 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260216_v34w.xml "HTTP/1.1 200 OK"
+18:32:46 [INFO]   Loaded: 28 games, 662 player-game-stat rows
+18:32:46 [INFO] 
+[4/15] Butte
+18:32:46 [INFO] Scraping team: Butte (butte)
+18:32:57 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/butte?view=roster "HTTP/1.1 200 OK"
+18:32:58 [INFO]   Roster: 0 players
+18:33:09 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/butte?view=gamelog "HTTP/1.1 200 OK"
+18:33:09 [INFO]   Games: 28 with box scores
+18:33:21 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_ba23.xml "HTTP/1.1 200 OK"
+18:33:32 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251102_mm6e.xml "HTTP/1.1 200 OK"
+18:33:43 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251106_cdf1.xml "HTTP/1.1 200 OK"
+18:33:55 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_fncm.xml "HTTP/1.1 200 OK"
+18:34:06 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_wges.xml "HTTP/1.1 200 OK"
+18:34:17 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_xdd9.xml "HTTP/1.1 200 OK"
+18:34:28 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251116_womp.xml "HTTP/1.1 200 OK"
+18:34:40 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_vv5l.xml "HTTP/1.1 200 OK"
+18:34:51 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_s6k4.xml "HTTP/1.1 200 OK"
+18:35:02 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_2ql8.xml "HTTP/1.1 200 OK"
+18:35:13 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_a1pi.xml "HTTP/1.1 200 OK"
+18:35:25 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251207_o65n.xml "HTTP/1.1 200 OK"
+18:35:36 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251210_qs3j.xml "HTTP/1.1 200 OK"
+18:35:47 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_jong.xml "HTTP/1.1 200 OK"
+18:35:59 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251216_ihtz.xml "HTTP/1.1 200 OK"
+18:36:10 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251219_wwpf.xml "HTTP/1.1 200 OK"
+18:36:21 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_fzxe.xml "HTTP/1.1 200 OK"
+18:36:33 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251230_2tbl.xml "HTTP/1.1 200 OK"
+18:36:44 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_5nox.xml "HTTP/1.1 200 OK"
+18:36:55 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_bl1k.xml "HTTP/1.1 200 OK"
+18:37:06 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_jpz6.xml "HTTP/1.1 200 OK"
+18:37:17 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_nylk.xml "HTTP/1.1 200 OK"
+18:37:28 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_ct87.xml "HTTP/1.1 200 OK"
+18:37:40 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_h4wy.xml "HTTP/1.1 200 OK"
+18:37:51 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260205_8shv.xml "HTTP/1.1 200 OK"
+18:38:02 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_ifdj.xml "HTTP/1.1 200 OK"
+18:38:14 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_ufs4.xml "HTTP/1.1 200 OK"
+18:38:25 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260216_m5ou.xml "HTTP/1.1 200 OK"
+18:38:25 [INFO]   Loaded: 28 games, 587 player-game-stat rows
+18:38:25 [INFO] 
+[5/15] Siskiyous
+18:38:25 [INFO] Scraping team: Siskiyous (siskiyous)
+18:38:37 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/siskiyous?view=roster "HTTP/1.1 200 OK"
+18:38:37 [INFO]   Roster: 0 players
+18:38:49 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/siskiyous?view=gamelog "HTTP/1.1 200 OK"
+18:38:50 [INFO]   Games: 28 with box scores
+18:39:01 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251106_u9ht.xml "HTTP/1.1 200 OK"
+18:39:12 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_fcoi.xml "HTTP/1.1 200 OK"
+18:39:23 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_d244.xml "HTTP/1.1 200 OK"
+18:39:34 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251113_7rz4.xml "HTTP/1.1 200 OK"
+18:39:46 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251114_28z5.xml "HTTP/1.1 200 OK"
+18:39:57 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251120_hpxa.xml "HTTP/1.1 200 OK"
+18:40:08 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_2xvc.xml "HTTP/1.1 200 OK"
+18:40:19 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_c64t.xml "HTTP/1.1 200 OK"
+18:40:30 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251124_dilk.xml "HTTP/1.1 200 OK"
+18:40:42 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251204_g6hx.xml "HTTP/1.1 200 OK"
+18:40:53 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_gysh.xml "HTTP/1.1 200 OK"
+18:41:04 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_sh9x.xml "HTTP/1.1 200 OK"
+18:41:15 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251211_0846.xml "HTTP/1.1 200 OK"
+18:41:26 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251212_qmd6.xml "HTTP/1.1 200 OK"
+18:41:38 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_6ryv.xml "HTTP/1.1 200 OK"
+18:41:49 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_cn79.xml "HTTP/1.1 200 OK"
+18:42:00 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251230_p4cl.xml "HTTP/1.1 200 OK"
+18:42:11 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251231_8rnf.xml "HTTP/1.1 200 OK"
+18:42:22 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_3z2w.xml "HTTP/1.1 200 OK"
+18:42:34 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_w3lk.xml "HTTP/1.1 200 OK"
+18:42:45 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_b0n1.xml "HTTP/1.1 200 OK"
+18:42:56 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_jpz6.xml "HTTP/1.1 200 OK"
+18:43:07 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_txpq.xml "HTTP/1.1 200 OK"
+18:43:18 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_jg24.xml "HTTP/1.1 200 OK"
+18:43:30 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_8zdf.xml "HTTP/1.1 200 OK"
+18:43:41 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_hu5w.xml "HTTP/1.1 200 OK"
+18:43:52 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_ufs4.xml "HTTP/1.1 200 OK"
+18:44:03 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260216_v34w.xml "HTTP/1.1 200 OK"
+18:44:04 [INFO]   Loaded: 28 games, 657 player-game-stat rows
+18:44:04 [INFO] 
+[6/15] Lassen
+18:44:04 [INFO] Scraping team: Lassen (lassen)
+18:44:15 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/lassen?view=roster "HTTP/1.1 200 OK"
+18:44:15 [INFO]   Roster: 0 players
+18:44:27 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/lassen?view=gamelog "HTTP/1.1 200 OK"
+18:44:27 [INFO]   Games: 27 with box scores
+18:44:39 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251106_hwiv.xml "HTTP/1.1 200 OK"
+18:44:50 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_715n.xml "HTTP/1.1 200 OK"
+18:45:01 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251111_5kcs.xml "HTTP/1.1 200 OK"
+18:45:12 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251113_lsh0.xml "HTTP/1.1 200 OK"
+18:45:24 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251114_lekf.xml "HTTP/1.1 200 OK"
+18:45:35 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_r2tm.xml "HTTP/1.1 200 OK"
+18:45:47 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251120_35br.xml "HTTP/1.1 200 OK"
+18:45:58 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_oye5.xml "HTTP/1.1 200 OK"
+18:46:09 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_a761.xml "HTTP/1.1 200 OK"
+18:46:21 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251204_2pyq.xml "HTTP/1.1 200 OK"
+18:46:32 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_mh1s.xml "HTTP/1.1 200 OK"
+18:46:43 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_oulu.xml "HTTP/1.1 200 OK"
+18:46:54 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251211_90ir.xml "HTTP/1.1 200 OK"
+18:47:06 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251212_1wzv.xml "HTTP/1.1 200 OK"
+18:47:17 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_srj5.xml "HTTP/1.1 200 OK"
+18:47:28 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251230_enqh.xml "HTTP/1.1 200 OK"
+18:47:40 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251231_21ht.xml "HTTP/1.1 200 OK"
+18:47:51 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_3z2w.xml "HTTP/1.1 200 OK"
+18:48:02 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_a23t.xml "HTTP/1.1 200 OK"
+18:48:13 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_mqj3.xml "HTTP/1.1 200 OK"
+18:48:25 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_jwi9.xml "HTTP/1.1 200 OK"
+18:48:36 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_ct87.xml "HTTP/1.1 200 OK"
+18:48:47 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_jg24.xml "HTTP/1.1 200 OK"
+18:48:58 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_8u8s.xml "HTTP/1.1 200 OK"
+18:49:10 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_ifdj.xml "HTTP/1.1 200 OK"
+18:49:21 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_p5xc.xml "HTTP/1.1 200 OK"
+18:49:32 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260216_6qnk.xml "HTTP/1.1 200 OK"
+18:49:32 [INFO]   Loaded: 27 games, 602 player-game-stat rows
+18:49:32 [INFO] 
+[7/15] Chaffey
+18:49:32 [INFO] Scraping team: Chaffey (chaffey)
+18:49:44 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/chaffey?view=roster "HTTP/1.1 200 OK"
+18:49:45 [INFO]   Roster: 0 players
+18:49:56 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/chaffey?view=gamelog "HTTP/1.1 200 OK"
+18:49:57 [INFO]   Games: 28 with box scores
+18:50:08 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_af2m.xml "HTTP/1.1 200 OK"
+18:50:19 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251105_yf55.xml "HTTP/1.1 200 OK"
+18:50:31 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_o61w.xml "HTTP/1.1 200 OK"
+18:50:43 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251112_9sku.xml "HTTP/1.1 200 OK"
+18:50:54 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_33t7.xml "HTTP/1.1 200 OK"
+18:51:05 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_9bi5.xml "HTTP/1.1 200 OK"
+18:51:16 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_y83n.xml "HTTP/1.1 200 OK"
+18:51:28 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_gbg1.xml "HTTP/1.1 200 OK"
+18:51:40 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251126_7s14.xml "HTTP/1.1 200 OK"
+18:51:51 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_913k.xml "HTTP/1.1 200 OK"
+18:52:02 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251209_zcjz.xml "HTTP/1.1 200 OK"
+18:52:14 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251211_oyex.xml "HTTP/1.1 200 OK"
+18:52:25 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_zl0x.xml "HTTP/1.1 200 OK"
+18:52:36 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_q8lz.xml "HTTP/1.1 200 OK"
+18:52:48 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_kyd7.xml "HTTP/1.1 200 OK"
+18:53:00 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_yzlp.xml "HTTP/1.1 200 OK"
+18:53:11 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_5vlm.xml "HTTP/1.1 200 OK"
+18:53:22 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_x2zj.xml "HTTP/1.1 200 OK"
+18:53:34 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_ud23.xml "HTTP/1.1 200 OK"
+18:53:45 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_mtdj.xml "HTTP/1.1 200 OK"
+18:53:57 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_fgv3.xml "HTTP/1.1 200 OK"
+18:54:08 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_9y8e.xml "HTTP/1.1 200 OK"
+18:54:20 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_m6cw.xml "HTTP/1.1 200 OK"
+18:54:31 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_jni7.xml "HTTP/1.1 200 OK"
+18:54:43 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_of3h.xml "HTTP/1.1 200 OK"
+18:54:55 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_eqd0.xml "HTTP/1.1 200 OK"
+18:55:06 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_h3p3.xml "HTTP/1.1 200 OK"
+18:55:18 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260220_9oiv.xml "HTTP/1.1 200 OK"
+18:55:18 [INFO]   Loaded: 28 games, 647 player-game-stat rows
+18:55:18 [INFO] 
+[8/15] San Bernardino Valley
+18:55:18 [INFO] Scraping team: San Bernardino Valley (sanbernardinovalley)
+18:55:30 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/sanbernardinovalley?view=roster "HTTP/1.1 200 OK"
+18:55:30 [INFO]   Roster: 0 players
+18:55:42 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/sanbernardinovalley?view=gamelog "HTTP/1.1 200 OK"
+18:55:42 [INFO]   Games: 27 with box scores
+18:55:53 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251104_99zy.xml "HTTP/1.1 200 OK"
+18:56:05 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_kos7.xml "HTTP/1.1 200 OK"
+18:56:16 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251114_acnm.xml "HTTP/1.1 200 OK"
+18:56:28 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_ysax.xml "HTTP/1.1 200 OK"
+18:56:39 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251116_zn9e.xml "HTTP/1.1 200 OK"
+18:56:50 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251120_17hn.xml "HTTP/1.1 200 OK"
+18:57:02 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_on63.xml "HTTP/1.1 200 OK"
+18:57:13 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251126_aqpz.xml "HTTP/1.1 200 OK"
+18:57:24 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251204_9usm.xml "HTTP/1.1 200 OK"
+18:57:35 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_0fgo.xml "HTTP/1.1 200 OK"
+18:57:47 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_mmw7.xml "HTTP/1.1 200 OK"
+18:57:58 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251210_6phf.xml "HTTP/1.1 200 OK"
+18:58:10 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_ftm9.xml "HTTP/1.1 200 OK"
+18:58:22 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_q8lz.xml "HTTP/1.1 200 OK"
+18:58:33 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_5k22.xml "HTTP/1.1 200 OK"
+18:58:45 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_kg68.xml "HTTP/1.1 200 OK"
+18:58:56 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_h623.xml "HTTP/1.1 200 OK"
+18:59:07 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_mbap.xml "HTTP/1.1 200 OK"
+18:59:19 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_taza.xml "HTTP/1.1 200 OK"
+18:59:31 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_6tnf.xml "HTTP/1.1 200 OK"
+18:59:42 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260123_ww1u.xml "HTTP/1.1 200 OK"
+18:59:53 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_9y8e.xml "HTTP/1.1 200 OK"
+19:00:05 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_2vcq.xml "HTTP/1.1 200 OK"
+19:00:16 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_eoyx.xml "HTTP/1.1 200 OK"
+19:00:27 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_fxb4.xml "HTTP/1.1 200 OK"
+19:00:39 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_lk2j.xml "HTTP/1.1 200 OK"
+19:00:51 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_zxzs.xml "HTTP/1.1 200 OK"
+19:00:51 [INFO]   Loaded: 27 games, 613 player-game-stat rows
+19:00:51 [INFO] 
+[9/15] Cerro Coso
+19:00:51 [INFO] Scraping team: Cerro Coso (cerrocoso)
+19:01:04 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/cerrocoso?view=roster "HTTP/1.1 200 OK"
+19:01:04 [INFO]   Roster: 0 players
+19:01:16 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/cerrocoso?view=gamelog "HTTP/1.1 200 OK"
+19:01:16 [INFO]   Games: 28 with box scores
+19:01:27 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_jh6q.xml "HTTP/1.1 200 OK"
+19:01:39 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251106_bybd.xml "HTTP/1.1 200 OK"
+19:01:50 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251113_vwv8.xml "HTTP/1.1 200 OK"
+19:02:02 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_stom.xml "HTTP/1.1 200 OK"
+19:02:13 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_1roo.xml "HTTP/1.1 200 OK"
+19:02:25 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_65oz.xml "HTTP/1.1 200 OK"
+19:02:36 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251129_d1ki.xml "HTTP/1.1 200 OK"
+19:02:47 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251130_evpm.xml "HTTP/1.1 200 OK"
+19:02:59 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251202_7pbp.xml "HTTP/1.1 200 OK"
+19:03:10 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_3l6a.xml "HTTP/1.1 200 OK"
+19:03:22 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_kluu.xml "HTTP/1.1 200 OK"
+19:03:33 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251210_ltws.xml "HTTP/1.1 200 OK"
+19:03:44 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251212_q997.xml "HTTP/1.1 200 OK"
+19:03:56 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_jbrd.xml "HTTP/1.1 200 OK"
+19:04:07 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_kyd7.xml "HTTP/1.1 200 OK"
+19:04:18 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_0zhm.xml "HTTP/1.1 200 OK"
+19:04:30 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_j4lz.xml "HTTP/1.1 200 OK"
+19:04:42 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_xms1.xml "HTTP/1.1 200 OK"
+19:04:53 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_taza.xml "HTTP/1.1 200 OK"
+19:05:04 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_r7gi.xml "HTTP/1.1 200 OK"
+19:05:15 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_nash.xml "HTTP/1.1 200 OK"
+19:05:27 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_goqd.xml "HTTP/1.1 200 OK"
+19:05:38 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_m6cw.xml "HTTP/1.1 200 OK"
+19:12:23 [ERROR] Request failed: https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_2mql.xml — [Errno 8] nodename nor servname provided, or not known
+19:12:36 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_3yj8.xml "HTTP/1.1 200 OK"
+19:12:47 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_66ue.xml "HTTP/1.1 200 OK"
+19:12:58 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_zxzs.xml "HTTP/1.1 200 OK"
+19:13:10 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260220_b94x.xml "HTTP/1.1 200 OK"
+19:13:10 [INFO]   Loaded: 27 games, 593 player-game-stat rows
+19:13:10 [INFO] 
+[10/15] Barstow
+19:13:10 [INFO] Scraping team: Barstow (barstow)
+19:13:22 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/barstow?view=roster "HTTP/1.1 200 OK"
+19:13:23 [INFO]   Roster: 0 players
+19:13:35 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/barstow?view=gamelog "HTTP/1.1 200 OK"
+19:13:35 [INFO]   Games: 28 with box scores
+19:13:46 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_7ona.xml "HTTP/1.1 200 OK"
+19:13:58 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_ucl1.xml "HTTP/1.1 200 OK"
+19:14:09 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251104_p7dq.xml "HTTP/1.1 200 OK"
+19:14:20 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_c7j6.xml "HTTP/1.1 200 OK"
+19:14:32 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_dof8.xml "HTTP/1.1 200 OK"
+19:14:43 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251123_lop8.xml "HTTP/1.1 200 OK"
+19:14:55 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251204_sxm3.xml "HTTP/1.1 200 OK"
+19:15:06 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_drs5.xml "HTTP/1.1 200 OK"
+19:15:17 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251211_s90y.xml "HTTP/1.1 200 OK"
+19:15:29 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251212_bg33.xml "HTTP/1.1 200 OK"
+19:15:40 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_llsr.xml "HTTP/1.1 200 OK"
+19:15:51 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251215_v4b0.xml "HTTP/1.1 200 OK"
+19:16:03 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_z999.xml "HTTP/1.1 200 OK"
+19:16:14 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_whcs.xml "HTTP/1.1 200 OK"
+19:16:25 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_3kdj.xml "HTTP/1.1 200 OK"
+19:16:37 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_5mgc.xml "HTTP/1.1 200 OK"
+19:16:48 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_x2zj.xml "HTTP/1.1 200 OK"
+19:17:00 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_mbap.xml "HTTP/1.1 200 OK"
+19:17:11 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_vpb8.xml "HTTP/1.1 200 OK"
+19:17:23 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_r7gi.xml "HTTP/1.1 200 OK"
+19:17:34 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_5cqx.xml "HTTP/1.1 200 OK"
+19:17:46 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_n5kk.xml "HTTP/1.1 200 OK"
+19:17:57 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_b58n.xml "HTTP/1.1 200 OK"
+19:18:09 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_pxuv.xml "HTTP/1.1 200 OK"
+19:18:20 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_eqd0.xml "HTTP/1.1 200 OK"
+19:18:32 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_lk2j.xml "HTTP/1.1 200 OK"
+19:18:43 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_lh3c.xml "HTTP/1.1 200 OK"
+19:18:54 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260220_b94x.xml "HTTP/1.1 200 OK"
+19:18:54 [INFO]   Loaded: 28 games, 637 player-game-stat rows
+19:18:54 [INFO] 
+[11/15] Copper Mountain
+19:18:54 [INFO] Scraping team: Copper Mountain (coppermountain)
+19:19:06 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/coppermountain?view=roster "HTTP/1.1 200 OK"
+19:19:06 [INFO]   Roster: 0 players
+19:19:19 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/coppermountain?view=gamelog "HTTP/1.1 200 OK"
+19:19:19 [INFO]   Games: 27 with box scores
+19:19:31 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_i35y.xml "HTTP/1.1 200 OK"
+19:19:42 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_nyec.xml "HTTP/1.1 200 OK"
+19:19:54 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251106_tv1q.xml "HTTP/1.1 200 OK"
+19:20:05 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_chub.xml "HTTP/1.1 200 OK"
+19:20:16 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_hsph.xml "HTTP/1.1 200 OK"
+19:20:28 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_ql4k.xml "HTTP/1.1 200 OK"
+19:20:39 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_cxk3.xml "HTTP/1.1 200 OK"
+19:20:50 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_dztz.xml "HTTP/1.1 200 OK"
+19:21:02 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_g841.xml "HTTP/1.1 200 OK"
+19:21:13 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251209_0riq.xml "HTTP/1.1 200 OK"
+19:21:25 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_4mr2.xml "HTTP/1.1 200 OK"
+19:21:37 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_r9ri.xml "HTTP/1.1 200 OK"
+19:21:48 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_5k22.xml "HTTP/1.1 200 OK"
+19:22:00 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251222_84g5.xml "HTTP/1.1 200 OK"
+19:22:11 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_0zhm.xml "HTTP/1.1 200 OK"
+19:22:23 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_not0.xml "HTTP/1.1 200 OK"
+19:38:24 [ERROR] Request failed: https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_wp3y.xml — [Errno 8] nodename nor servname provided, or not known
+20:12:54 [ERROR] Request failed: https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_ud23.xml — [Errno 8] nodename nor servname provided, or not known
+20:22:40 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_vpb8.xml "HTTP/1.1 200 OK"
+20:22:52 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_wmk3.xml "HTTP/1.1 200 OK"
+20:27:34 [ERROR] Request failed: https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_enj8.xml — The read operation timed out
+20:27:45 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_2vcq.xml "HTTP/1.1 200 OK"
+20:27:57 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_2mql.xml "HTTP/1.1 200 OK"
+20:28:09 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_hmx8.xml "HTTP/1.1 200 OK"
+20:28:20 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_qd32.xml "HTTP/1.1 200 OK"
+20:28:32 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_h3p3.xml "HTTP/1.1 200 OK"
+20:28:43 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_lh3c.xml "HTTP/1.1 200 OK"
+20:28:43 [INFO]   Loaded: 24 games, 589 player-game-stat rows
+20:28:43 [INFO] 
+[12/15] Victor Valley
+20:28:43 [INFO] Scraping team: Victor Valley (victorvalley)
+20:28:55 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/victorvalley?view=roster "HTTP/1.1 200 OK"
+20:28:55 [INFO]   Roster: 0 players
+20:29:07 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/victorvalley?view=gamelog "HTTP/1.1 200 OK"
+20:29:08 [INFO]   Games: 28 with box scores
+20:29:19 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_47oq.xml "HTTP/1.1 200 OK"
+20:29:31 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251104_ikda.xml "HTTP/1.1 200 OK"
+20:29:42 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251112_v27n.xml "HTTP/1.1 200 OK"
+20:29:53 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_6d8r.xml "HTTP/1.1 200 OK"
+20:30:04 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251121_q9q9.xml "HTTP/1.1 200 OK"
+20:30:16 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_h7s3.xml "HTTP/1.1 200 OK"
+20:30:27 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251129_0c2t.xml "HTTP/1.1 200 OK"
+20:30:38 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251130_expv.xml "HTTP/1.1 200 OK"
+20:30:50 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251202_ybd1.xml "HTTP/1.1 200 OK"
+20:31:01 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_9si1.xml "HTTP/1.1 200 OK"
+20:31:12 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_ios3.xml "HTTP/1.1 200 OK"
+20:31:24 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251207_6ji1.xml "HTTP/1.1 200 OK"
+20:31:35 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_ftm9.xml "HTTP/1.1 200 OK"
+20:31:47 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_jbrd.xml "HTTP/1.1 200 OK"
+20:31:58 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_rp41.xml "HTTP/1.1 200 OK"
+20:33:02 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_3kdj.xml "HTTP/1.1 200 OK"
+20:33:14 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_5vlm.xml "HTTP/1.1 200 OK"
+20:33:25 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_wp3y.xml "HTTP/1.1 200 OK"
+20:33:36 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_3lgc.xml "HTTP/1.1 200 OK"
+20:33:48 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_rflm.xml "HTTP/1.1 200 OK"
+20:33:59 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260123_ww1u.xml "HTTP/1.1 200 OK"
+20:34:11 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_goqd.xml "HTTP/1.1 200 OK"
+20:34:22 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_huww.xml "HTTP/1.1 200 OK"
+20:34:33 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_b58n.xml "HTTP/1.1 200 OK"
+20:34:44 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_of3h.xml "HTTP/1.1 200 OK"
+20:34:56 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_qd32.xml "HTTP/1.1 200 OK"
+20:35:07 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_3yuz.xml "HTTP/1.1 200 OK"
+20:35:19 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260220_awci.xml "HTTP/1.1 200 OK"
+20:35:19 [INFO]   Loaded: 28 games, 592 player-game-stat rows
+20:35:19 [INFO] 
+[13/15] Mt. San Jacinto
+20:35:19 [INFO] Scraping team: Mt. San Jacinto (mtsanjacinto)
+20:35:31 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/mtsanjacinto?view=roster "HTTP/1.1 200 OK"
+20:35:31 [INFO]   Roster: 0 players
+20:35:43 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/mtsanjacinto?view=gamelog "HTTP/1.1 200 OK"
+20:35:43 [INFO]   Games: 28 with box scores
+20:35:55 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251030_mme2.xml "HTTP/1.1 200 OK"
+20:36:06 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_7txh.xml "HTTP/1.1 200 OK"
+20:36:18 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_8il7.xml "HTTP/1.1 200 OK"
+20:36:30 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251112_3gyn.xml "HTTP/1.1 200 OK"
+20:36:41 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251115_iwbt.xml "HTTP/1.1 200 OK"
+20:36:52 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_lg1o.xml "HTTP/1.1 200 OK"
+20:37:04 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_vgnt.xml "HTTP/1.1 200 OK"
+20:37:15 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_ng6o.xml "HTTP/1.1 200 OK"
+20:37:27 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251203_oc8w.xml "HTTP/1.1 200 OK"
+20:37:38 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251204_5r6g.xml "HTTP/1.1 200 OK"
+20:37:50 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251210_176y.xml "HTTP/1.1 200 OK"
+20:38:01 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_zl0x.xml "HTTP/1.1 200 OK"
+20:38:12 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_r9ri.xml "HTTP/1.1 200 OK"
+20:38:24 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_iuwm.xml "HTTP/1.1 200 OK"
+20:38:35 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_w91v.xml "HTTP/1.1 200 OK"
+20:38:46 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_5mgc.xml "HTTP/1.1 200 OK"
+20:38:58 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_h623.xml "HTTP/1.1 200 OK"
+20:39:09 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_xms1.xml "HTTP/1.1 200 OK"
+20:39:20 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_7p9l.xml "HTTP/1.1 200 OK"
+20:39:31 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_rflm.xml "HTTP/1.1 200 OK"
+20:39:43 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_fgv3.xml "HTTP/1.1 200 OK"
+20:39:54 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_enj8.xml "HTTP/1.1 200 OK"
+20:40:05 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_4m9t.xml "HTTP/1.1 200 OK"
+20:40:16 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_pxuv.xml "HTTP/1.1 200 OK"
+20:40:27 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_fxb4.xml "HTTP/1.1 200 OK"
+20:40:39 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_66ue.xml "HTTP/1.1 200 OK"
+20:40:50 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_7cu9.xml "HTTP/1.1 200 OK"
+20:41:02 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260220_awci.xml "HTTP/1.1 200 OK"
+20:41:02 [INFO]   Loaded: 28 games, 659 player-game-stat rows
+20:41:02 [INFO] 
+[14/15] Palo Verde
+20:41:02 [INFO] Scraping team: Palo Verde (paloverde)
+20:41:14 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/paloverde?view=roster "HTTP/1.1 200 OK"
+20:41:15 [INFO]   Roster: 0 players
+20:41:26 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/paloverde?view=gamelog "HTTP/1.1 200 OK"
+20:41:26 [INFO]   Games: 26 with box scores
+20:41:38 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_lx4n.xml "HTTP/1.1 200 OK"
+20:41:49 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251101_7dgc.xml "HTTP/1.1 200 OK"
+20:42:00 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251106_j6jn.xml "HTTP/1.1 200 OK"
+20:42:12 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251107_7cyv.xml "HTTP/1.1 200 OK"
+20:42:23 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_664r.xml "HTTP/1.1 200 OK"
+20:42:35 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251117_3sr8.xml "HTTP/1.1 200 OK"
+20:42:46 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251120_92f9.xml "HTTP/1.1 200 OK"
+20:42:58 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251129_55ht.xml "HTTP/1.1 200 OK"
+20:43:09 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251130_exdw.xml "HTTP/1.1 200 OK"
+20:43:20 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251205_1vuk.xml "HTTP/1.1 200 OK"
+20:43:32 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_byjy.xml "HTTP/1.1 200 OK"
+20:43:43 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251212_q997.xml "HTTP/1.1 200 OK"
+20:43:55 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251217_z999.xml "HTTP/1.1 200 OK"
+20:44:06 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_rp41.xml "HTTP/1.1 200 OK"
+20:44:18 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_yzlp.xml "HTTP/1.1 200 OK"
+20:44:30 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_not0.xml "HTTP/1.1 200 OK"
+20:44:41 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_by49.xml "HTTP/1.1 200 OK"
+20:44:52 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_7p9l.xml "HTTP/1.1 200 OK"
+20:45:04 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_6tnf.xml "HTTP/1.1 200 OK"
+20:45:15 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_nash.xml "HTTP/1.1 200 OK"
+20:45:27 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260128_5cqx.xml "HTTP/1.1 200 OK"
+20:45:39 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_huww.xml "HTTP/1.1 200 OK"
+20:45:50 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_jni7.xml "HTTP/1.1 200 OK"
+20:46:02 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_hmx8.xml "HTTP/1.1 200 OK"
+20:46:13 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_qft4.xml "HTTP/1.1 200 OK"
+20:46:25 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_7cu9.xml "HTTP/1.1 200 OK"
+20:46:25 [INFO]   Loaded: 26 games, 565 player-game-stat rows
+20:46:25 [INFO] 
+[15/15] Desert
+20:46:25 [INFO] Scraping team: Desert (desert)
+20:46:38 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/desert?view=roster "HTTP/1.1 200 OK"
+20:46:38 [INFO]   Roster: 0 players
+20:46:50 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/teams/desert?view=gamelog "HTTP/1.1 200 OK"
+20:46:50 [INFO]   Games: 28 with box scores
+20:47:02 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251030_epo9.xml "HTTP/1.1 200 OK"
+20:47:13 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251031_oilc.xml "HTTP/1.1 200 OK"
+20:47:25 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251108_zzft.xml "HTTP/1.1 200 OK"
+20:47:36 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251113_o0rk.xml "HTTP/1.1 200 OK"
+20:47:48 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251114_qhiv.xml "HTTP/1.1 200 OK"
+20:47:59 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251119_cvut.xml "HTTP/1.1 200 OK"
+20:48:11 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251122_q161.xml "HTTP/1.1 200 OK"
+20:48:22 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251125_eytx.xml "HTTP/1.1 200 OK"
+20:48:34 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251202_vj8p.xml "HTTP/1.1 200 OK"
+20:48:45 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251206_o4s9.xml "HTTP/1.1 200 OK"
+20:48:56 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251209_9uyg.xml "HTTP/1.1 200 OK"
+20:49:08 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251213_4mr2.xml "HTTP/1.1 200 OK"
+20:49:20 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251216_1bg9.xml "HTTP/1.1 200 OK"
+20:49:32 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20251220_whcs.xml "HTTP/1.1 200 OK"
+20:49:43 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260103_w91v.xml "HTTP/1.1 200 OK"
+20:49:55 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260107_kg68.xml "HTTP/1.1 200 OK"
+20:50:06 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260110_j4lz.xml "HTTP/1.1 200 OK"
+20:50:18 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260114_by49.xml "HTTP/1.1 200 OK"
+20:50:29 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260117_3lgc.xml "HTTP/1.1 200 OK"
+20:50:41 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260121_mtdj.xml "HTTP/1.1 200 OK"
+20:50:53 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260124_wmk3.xml "HTTP/1.1 200 OK"
+20:51:05 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260131_n5kk.xml "HTTP/1.1 200 OK"
+20:51:16 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260204_4m9t.xml "HTTP/1.1 200 OK"
+20:51:27 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260207_eoyx.xml "HTTP/1.1 200 OK"
+20:51:39 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260211_3yj8.xml "HTTP/1.1 200 OK"
+20:51:51 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260214_qft4.xml "HTTP/1.1 200 OK"
+20:52:02 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260218_3yuz.xml "HTTP/1.1 200 OK"
+20:52:13 [INFO] HTTP Request: GET https://cccaa.prestosports.com/sports/mbkb/2025-26/boxscores/20260220_9oiv.xml "HTTP/1.1 200 OK"
+20:52:14 [INFO]   Loaded: 28 games, 658 player-game-stat rows
+20:52:14 [INFO] 
+============================================================
+20:52:14 [INFO]   BATCH COMPLETE: 15 teams, 409 games, 9279 PGS rows
+20:52:14 [INFO] ============================================================
+
+============================================================
+  BATCH (cccaa) — FINAL SUMMARY
+============================================================
+  Total teams discovered & scraped: 2275
+  Total players in database:        24960
+  Total games with box scores:      10207
+  Total player_game_stats rows:     246517
+  Total team_game_stats rows:       9185
+  Total HTTP requests:              10389
+  Failed URLs (in scrape_log):      74
+============================================================

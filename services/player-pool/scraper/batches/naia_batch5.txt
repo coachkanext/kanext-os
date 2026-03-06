@@ -1,0 +1,29 @@
+lasierra|La Sierra
+langston|Langston (Okla.)
+lawrencetech|Lawrence Tech
+lewisclarkstate|Lewis-Clark State (Idaho)
+lifepacific|Life Pacific
+lindseywilson|Lindsey Wilson (Ky.)
+louisianachristian|Louisiana Christian
+lsualexandria|LSU Alexandria (La.)
+lsushreveport|LSU Shreveport (La.)
+lourdes|Lourdes
+madonna|Madonna (Mich.)
+marianin|Marian
+mayvillestate|Mayville State
+mcpherson|McPherson (Kan.)
+midamericachristian|Mid-America Christian
+midamericanazarene|MidAmerica Nazarene
+midland|Midland
+midway|Midway
+milligantn|Milligan (TN)
+missouribaptist|Missouri Baptist
+missourivalley|Missouri Valley
+montanastatenorthernmt|Montana State-Northern (MT)
+montanatechmt|Montana Tech (MT)
+montreatnc|Montreat (NC)
+morningside|Morningside (Iowa)
+morris|Morris College
+mountmarty|Mount Marty
+mountmercy|Mount Mercy
+mountvernonnazareneoh|Mount Vernon Nazarene (OH)

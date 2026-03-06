@@ -1,0 +1,8 @@
+sequoias|Sequoias
+columbia|Columbia
+fresnocity|Fresno City
+merced|Merced
+lemoore|Lemoore
+reedley|Reedley
+porterville|Porterville
+coalinga|Coalinga

@@ -1,0 +1,20 @@
+southwesternillinoiscollege|Southwestern Illinois College
+stpetersburgcollege|St. Petersburg College
+statefaircommunitycollege|State Fair CC
+tallahasseestatecollege|Tallahassee State College
+templecollege|Temple College
+threeriverscollegemo|Three Rivers College - MO
+trinidadstatecollege|Trinidad State College
+trinityvalleycommunitycollege|Trinity Valley CC
+tritoncollege|Triton College
+tylerjuniorcollege|Tyler Junior College
+uscsalkehatchie|USC Salkehatchie
+utahstateeastern|Utah State Eastern
+vincennesuniversity|Vincennes University
+volunteerstatecommunitycollege|Volunteer State CC
+wabashvalleycollege|Wabash Valley College
+waketechnicalcommunitycollege|Wake Technical CC
+wallacestatecommunitycollegehanceville|Wallace State CC-Hanceville
+waltersstatecommunitycollege|Walters State CC
+weatherfordcollege|Weatherford College
+westernnebraskacommunitycollege|Western Nebraska CC

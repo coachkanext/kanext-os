@@ -1,0 +1,15 @@
+moorpark|Moorpark
+allanhancock|Allan Hancock
+cuesta|Cuesta
+oxnard|Oxnard
+lapierce|LA Pierce
+ventura|Ventura
+santabarbara|Santa Barbara
+citrus|Citrus
+westla|West LA
+santamonica|Santa Monica
+antelopevalley|Antelope Valley
+canyons|Canyons
+glendale|Glendale
+bakersfield|Bakersfield
+lavalley|LA Valley

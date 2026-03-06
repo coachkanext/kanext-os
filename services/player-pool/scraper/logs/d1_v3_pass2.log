@@ -1,0 +1,1475 @@
+14:58:18 [INFO] Fetching NCAA D1 directory...
+14:58:20 [INFO] HTTP Request: GET https://web3.ncaa.org/directory/api/directory/memberList?type=12&division=I "HTTP/1.1 200 OK"
+14:58:20 [INFO]   Got 365 schools from NCAA directory
+14:58:20 [INFO]   DB has 365 D1 teams
+14:58:20 [INFO]   Matched 365 of 365 NCAA schools to DB
+14:58:20 [INFO] 
+[1/365] UAB Blazers
+14:58:20 [INFO]   Skipping (HS coverage 92%)
+14:58:20 [INFO] 
+[2/365] UAlbany Great Danes
+14:58:20 [INFO]   Skipping (HS coverage 100%)
+14:58:20 [INFO] 
+[3/365] App State Mountaineers
+14:58:20 [INFO]   Skipping (HS coverage 100%)
+14:58:20 [INFO] 
+[4/365] Little Rock Trojans
+14:58:20 [INFO]   Athletics: https:////lrtrojans.com
+14:58:34 [INFO]   No roster page found
+14:58:34 [INFO] 
+[5/365] Austin Peay Governors
+14:58:34 [INFO]   Skipping (HS coverage 92%)
+14:58:34 [INFO] 
+[6/365] Bowling Green Falcons
+14:58:34 [INFO]   Skipping (HS coverage 100%)
+14:58:34 [INFO] 
+[7/365] BYU Cougars
+14:58:34 [INFO]   Athletics: https://byucougars.com
+14:58:37 [INFO] HTTP Request: GET https://byucougars.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:58:39 [INFO] HTTP Request: GET https://byucougars.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+14:58:41 [INFO] HTTP Request: GET https://byucougars.com/sports/mbball/roster "HTTP/1.1 404 Not Found"
+14:58:43 [INFO] HTTP Request: GET https://byucougars.com/sports/mbball/roster?view=list "HTTP/1.1 404 Not Found"
+14:58:45 [INFO] HTTP Request: GET https://byucougars.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 404 Not Found"
+14:58:47 [INFO] HTTP Request: GET https://byucougars.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+14:58:49 [INFO] HTTP Request: GET https://byucougars.com/sports/mbball/roster/2025-26 "HTTP/1.1 404 Not Found"
+14:58:51 [INFO] HTTP Request: GET https://byucougars.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+14:58:51 [INFO]   No roster page found
+14:58:51 [INFO] 
+[8/365] Cal Poly Mustangs
+14:58:51 [INFO]   Athletics: https://gopoly.com
+14:58:51 [INFO]   Roster: https://gopoly.com/sports/mens-basketball/roster
+14:58:53 [INFO] HTTP Request: GET https://gopoly.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:58:54 [INFO]   Table parser returned garbage (avg len 3.0, digit% 0%), trying v3
+14:58:54 [INFO]   Parsed (v3): 16 players
+14:58:54 [INFO]   Matched: 15, Town: +0, HS: +0, Prev: +0, Unmatched: 1
+14:58:54 [INFO] 
+[9/365] Cal State Bakersfield Roadrunners
+14:58:54 [INFO]   Athletics: https://www.gorunners.com
+14:58:54 [INFO]   Roster: https://www.gorunners.com/sports/mens-basketball/roster
+14:58:55 [INFO] HTTP Request: GET https://www.gorunners.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+14:58:56 [INFO] HTTP Request: GET https://gorunners.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:58:56 [INFO]   Table parser returned garbage (avg len 3.4, digit% 0%), trying v3
+14:58:56 [INFO]   No players parsed from page
+14:58:56 [INFO] 
+[10/365] Fresno State Bulldogs
+14:58:56 [INFO]   Skipping (HS coverage 100%)
+14:58:56 [INFO] 
+[11/365] Cal State Fullerton Titans
+14:58:56 [INFO]   Skipping (HS coverage 100%)
+14:58:56 [INFO] 
+[12/365] Cal State Northridge Matadors
+14:58:56 [INFO]   Skipping (HS coverage 100%)
+14:58:56 [INFO] 
+[13/365] Sacramento State Hornets
+14:58:56 [INFO]   Athletics: https://www.hornetsports.com
+14:58:56 [INFO]   Roster: https://www.hornetsports.com/sports/mens-basketball/roster
+14:58:57 [INFO] HTTP Request: GET https://www.hornetsports.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+14:58:57 [INFO] HTTP Request: GET https://hornetsports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:58:58 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+14:58:58 [INFO]   No players parsed from page
+14:58:58 [INFO] 
+[14/365] California Golden Bears
+14:58:58 [INFO]   Athletics: https://www.calbears.com
+14:58:58 [INFO]   Roster: https://www.calbears.com/sports/mens-basketball/roster
+14:58:59 [INFO] HTTP Request: GET https://www.calbears.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+14:59:00 [INFO] HTTP Request: GET https://calbears.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:59:00 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+14:59:00 [INFO]   No players parsed from page
+14:59:00 [INFO] 
+[15/365] UC Davis Aggies
+14:59:00 [INFO]   Athletics: https://www.ucdavisaggies.com
+14:59:00 [INFO]   Roster: https://www.ucdavisaggies.com/sports/mens-basketball/roster
+14:59:01 [INFO] HTTP Request: GET https://www.ucdavisaggies.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+14:59:02 [INFO] HTTP Request: GET https://ucdavisaggies.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:59:02 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+14:59:02 [INFO]   No players parsed from page
+14:59:02 [INFO] 
+[16/365] UC Irvine Anteaters
+14:59:02 [INFO]   Athletics: https://ucirvinesports.com
+14:59:02 [INFO]   Roster: https://ucirvinesports.com/sports/mens-basketball/roster
+14:59:03 [INFO] HTTP Request: GET https://ucirvinesports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:59:03 [INFO]   Table parser returned garbage (avg len 3.1, digit% 100%), trying v3
+14:59:03 [INFO]   No players parsed from page
+14:59:03 [INFO] 
+[17/365] UCLA Bruins
+14:59:03 [INFO]   Skipping (HS coverage 100%)
+14:59:03 [INFO] 
+[18/365] UC Riverside Highlanders
+14:59:03 [INFO]   Athletics: https://www.gohighlanders.com
+14:59:03 [INFO]   Roster: https://www.gohighlanders.com/sports/mens-basketball/roster
+14:59:05 [INFO] HTTP Request: GET https://www.gohighlanders.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+14:59:05 [INFO] HTTP Request: GET https://gohighlanders.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:59:06 [INFO]   Parsed (table): 15 players
+14:59:06 [INFO]   Matched: 12, Town: +0, HS: +0, Prev: +0, Unmatched: 3
+14:59:06 [INFO] 
+[19/365] UC San Diego Tritons
+14:59:06 [INFO]   Athletics: https://www.ucsdtritons.com
+14:59:06 [INFO]   Roster: https://www.ucsdtritons.com/sports/mens-basketball/roster
+14:59:07 [INFO] HTTP Request: GET https://www.ucsdtritons.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+14:59:07 [INFO] HTTP Request: GET https://ucsdtritons.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:59:07 [INFO]   Table parser returned garbage (avg len 1.2, digit% 0%), trying v3
+14:59:07 [INFO]   No players parsed from page
+14:59:07 [INFO] 
+[20/365] UC Santa Barbara Gauchos
+14:59:07 [INFO]   Athletics: https://ucsbgauchos.com
+14:59:07 [INFO]   Roster: https://ucsbgauchos.com/sports/mens-basketball/roster
+14:59:09 [INFO] HTTP Request: GET https://ucsbgauchos.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:59:09 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+14:59:09 [INFO]   No players parsed from page
+14:59:09 [INFO] 
+[21/365] Central Connecticut Blue Devils
+14:59:09 [INFO]   Athletics: https://www.ccsubluedevils.com
+14:59:11 [INFO] HTTP Request: GET https://www.ccsubluedevils.com/sports/mens-basketball/roster "HTTP/1.1 202 Accepted"
+14:59:13 [INFO] HTTP Request: GET https://www.ccsubluedevils.com/sports/mens-basketball/roster?view=list "HTTP/1.1 202 Accepted"
+14:59:15 [INFO] HTTP Request: GET https://www.ccsubluedevils.com/sports/mbball/roster "HTTP/1.1 202 Accepted"
+14:59:17 [INFO] HTTP Request: GET https://www.ccsubluedevils.com/sports/mbball/roster?view=list "HTTP/1.1 202 Accepted"
+14:59:19 [INFO] HTTP Request: GET https://www.ccsubluedevils.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 202 Accepted"
+14:59:21 [INFO] HTTP Request: GET https://www.ccsubluedevils.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 202 Accepted"
+14:59:24 [INFO] HTTP Request: GET https://www.ccsubluedevils.com/sports/mbball/roster/2025-26 "HTTP/1.1 202 Accepted"
+14:59:25 [INFO] HTTP Request: GET https://www.ccsubluedevils.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 202 Accepted"
+14:59:25 [INFO]   No roster page found
+14:59:25 [INFO] 
+[22/365] UCF Knights
+14:59:25 [INFO]   Athletics: https://www.ucfknights.com
+14:59:27 [INFO] HTTP Request: GET https://www.ucfknights.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+14:59:28 [INFO] HTTP Request: GET https://ucfknights.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:59:29 [INFO] HTTP Request: GET https://www.ucfknights.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+14:59:30 [INFO] HTTP Request: GET https://ucfknights.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+14:59:31 [INFO] HTTP Request: GET https://www.ucfknights.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+14:59:31 [INFO] HTTP Request: GET https://ucfknights.com/sports/mbball/roster "HTTP/1.1 404 Not Found"
+14:59:33 [INFO] HTTP Request: GET https://www.ucfknights.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+14:59:33 [INFO] HTTP Request: GET https://ucfknights.com/sports/mbball/roster?view=list "HTTP/1.1 404 Not Found"
+14:59:35 [INFO] HTTP Request: GET https://www.ucfknights.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+14:59:35 [INFO] HTTP Request: GET https://ucfknights.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 404 Not Found"
+14:59:37 [INFO] HTTP Request: GET https://www.ucfknights.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+14:59:37 [INFO] HTTP Request: GET https://ucfknights.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+14:59:39 [INFO] HTTP Request: GET https://www.ucfknights.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+14:59:39 [INFO] HTTP Request: GET https://ucfknights.com/sports/mbball/roster/2025-26 "HTTP/1.1 404 Not Found"
+14:59:41 [INFO] HTTP Request: GET https://www.ucfknights.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+14:59:41 [INFO] HTTP Request: GET https://ucfknights.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+14:59:41 [INFO]   No roster page found
+14:59:41 [INFO] 
+[23/365] Central Michigan Chippewas
+14:59:41 [INFO]   Skipping (HS coverage 92%)
+14:59:41 [INFO] 
+[24/365] Charleston Cougars
+14:59:41 [INFO]   Skipping (HS coverage 100%)
+14:59:41 [INFO] 
+[25/365] The Citadel Bulldogs
+14:59:41 [INFO]   Athletics: https://www.citadelsports.com
+14:59:41 [INFO]   Roster: https://www.citadelsports.com/sports/mens-basketball/roster
+14:59:43 [INFO] HTTP Request: GET https://www.citadelsports.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+14:59:44 [INFO] HTTP Request: GET https://citadelsports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:59:44 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+14:59:44 [INFO]   No players parsed from page
+14:59:44 [INFO] 
+[26/365] Colorado Buffaloes
+14:59:44 [INFO]   Skipping (HS coverage 92%)
+14:59:44 [INFO] 
+[27/365] Columbia Lions
+14:59:44 [INFO]   Skipping (HS coverage 100%)
+14:59:44 [INFO] 
+[28/365] UConn Huskies
+14:59:44 [INFO]   Skipping (HS coverage 86%)
+14:59:44 [INFO] 
+[29/365] East Texas A&M Lions
+14:59:44 [INFO]   Skipping (HS coverage 100%)
+14:59:44 [INFO] 
+[30/365] Eastern Michigan Eagles
+14:59:44 [INFO]   Skipping (HS coverage 93%)
+14:59:44 [INFO] 
+[31/365] Eastern Washington Eagles
+14:59:44 [INFO]   Athletics: https://goeags.com
+14:59:44 [INFO]   Roster: https://goeags.com/sports/mens-basketball/roster
+14:59:46 [INFO] HTTP Request: GET https://goeags.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:59:46 [INFO]   Parsed (table): 14 players
+14:59:46 [INFO]   Matched: 0, Town: +0, HS: +0, Prev: +0, Unmatched: 14
+14:59:46 [INFO] 
+[32/365] Florida Gators
+14:59:46 [INFO]   Skipping (HS coverage 93%)
+14:59:46 [INFO] 
+[33/365] Florida A&M Rattlers
+14:59:46 [INFO]   Athletics: https://www.famuathletics.com
+14:59:46 [INFO]   Roster: https://www.famuathletics.com/sports/mens-basketball/roster
+14:59:47 [INFO] HTTP Request: GET https://www.famuathletics.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+14:59:47 [INFO] HTTP Request: GET https://famuathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:59:48 [INFO]   Parsed (table): 14 players
+14:59:48 [INFO]   Matched: 13, Town: +0, HS: +0, Prev: +0, Unmatched: 1
+14:59:48 [INFO] 
+[34/365] Florida Atlantic Owls
+14:59:48 [INFO]   Athletics: https://www.fausports.com
+14:59:48 [INFO]   Roster: https://www.fausports.com/sports/mens-basketball/roster
+14:59:49 [INFO] HTTP Request: GET https://www.fausports.com/sports/mens-basketball/roster "HTTP/1.1 308 Permanent Redirect"
+14:59:50 [INFO] HTTP Request: GET https://fausports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:59:50 [INFO]   Table parser returned garbage (avg len 6.1, digit% 100%), trying v3
+14:59:50 [INFO]   Parsed (v3): 15 players
+14:59:50 [INFO]   Matched: 14, Town: +0, HS: +10, Prev: +5, Unmatched: 1
+14:59:50 [INFO] 
+[35/365] Florida Gulf Coast Eagles
+14:59:50 [INFO]   Athletics: https://fgcuathletics.com
+14:59:50 [INFO]   Roster: https://fgcuathletics.com/sports/mens-basketball/roster
+14:59:51 [INFO] HTTP Request: GET https://fgcuathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:59:51 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+14:59:51 [INFO]   No players parsed from page
+14:59:51 [INFO] 
+[36/365] Florida International Panthers
+14:59:51 [INFO]   Athletics: https://www.fiusports.com
+14:59:51 [INFO]   Roster: https://www.fiusports.com/sports/mens-basketball/roster
+14:59:53 [INFO] HTTP Request: GET https://www.fiusports.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+14:59:54 [INFO] HTTP Request: GET https://fiusports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+14:59:54 [INFO]   Table parser returned garbage (avg len 1.1, digit% 0%), trying v3
+14:59:54 [INFO]   No players parsed from page
+14:59:54 [INFO] 
+[37/365] George Washington Revolutionaries
+14:59:54 [INFO]   Athletics: https://www.gwsports.com/index.html
+14:59:55 [INFO] HTTP Request: GET https://www.gwsports.com/index.html/sports/mens-basketball/roster "HTTP/1.1 308 Permanent Redirect"
+14:59:55 [INFO] HTTP Request: GET https://gwsports.com/index.html/sports/mens-basketball/roster "HTTP/1.1 302 Found"
+14:59:56 [INFO] HTTP Request: GET https://gwsports.com/404 "HTTP/1.1 404 Page Not Found"
+14:59:57 [INFO] HTTP Request: GET https://www.gwsports.com/index.html/sports/mens-basketball/roster?view=list "HTTP/1.1 308 Permanent Redirect"
+14:59:57 [INFO] HTTP Request: GET https://gwsports.com/index.html/sports/mens-basketball/roster?view=list "HTTP/1.1 302 Found"
+14:59:58 [INFO] HTTP Request: GET https://gwsports.com/404?view=list "HTTP/1.1 404 Page Not Found"
+14:59:59 [INFO] HTTP Request: GET https://www.gwsports.com/index.html/sports/mbball/roster "HTTP/1.1 308 Permanent Redirect"
+14:59:59 [INFO] HTTP Request: GET https://gwsports.com/index.html/sports/mbball/roster "HTTP/1.1 302 Found"
+14:59:59 [INFO] HTTP Request: GET https://gwsports.com/404 "HTTP/1.1 404 Page Not Found"
+15:00:01 [INFO] HTTP Request: GET https://www.gwsports.com/index.html/sports/mbball/roster?view=list "HTTP/1.1 308 Permanent Redirect"
+15:00:02 [INFO] HTTP Request: GET https://gwsports.com/index.html/sports/mbball/roster?view=list "HTTP/1.1 302 Found"
+15:00:02 [INFO] HTTP Request: GET https://gwsports.com/404?view=list "HTTP/1.1 404 Page Not Found"
+15:00:03 [INFO] HTTP Request: GET https://www.gwsports.com/index.html/sports/mens-basketball/roster/2025-26 "HTTP/1.1 308 Permanent Redirect"
+15:00:03 [INFO] HTTP Request: GET https://gwsports.com/index.html/sports/mens-basketball/roster/2025-26 "HTTP/1.1 302 Found"
+15:00:03 [INFO] HTTP Request: GET https://gwsports.com/404 "HTTP/1.1 404 Page Not Found"
+15:00:05 [INFO] HTTP Request: GET https://www.gwsports.com/index.html/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 308 Permanent Redirect"
+15:00:05 [INFO] HTTP Request: GET https://gwsports.com/index.html/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 302 Found"
+15:00:05 [INFO] HTTP Request: GET https://gwsports.com/404?view=list "HTTP/1.1 404 Page Not Found"
+15:00:07 [INFO] HTTP Request: GET https://www.gwsports.com/index.html/sports/mbball/roster/2025-26 "HTTP/1.1 308 Permanent Redirect"
+15:00:07 [INFO] HTTP Request: GET https://gwsports.com/index.html/sports/mbball/roster/2025-26 "HTTP/1.1 302 Found"
+15:00:08 [INFO] HTTP Request: GET https://gwsports.com/404 "HTTP/1.1 404 Page Not Found"
+15:00:09 [INFO] HTTP Request: GET https://www.gwsports.com/index.html/sports/mbball/roster/2025-26?view=list "HTTP/1.1 308 Permanent Redirect"
+15:00:09 [INFO] HTTP Request: GET https://gwsports.com/index.html/sports/mbball/roster/2025-26?view=list "HTTP/1.1 302 Found"
+15:00:09 [INFO] HTTP Request: GET https://gwsports.com/404?view=list "HTTP/1.1 404 Page Not Found"
+15:00:09 [INFO]   No roster page found
+15:00:09 [INFO] 
+[38/365] Grambling Tigers
+15:00:09 [INFO]   Athletics: https://www.gsutigers.com
+15:00:09 [INFO]   Roster: https://www.gsutigers.com/sports/mens-basketball/roster
+15:00:12 [INFO] HTTP Request: GET https://www.gsutigers.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:00:13 [INFO] HTTP Request: GET https://gsutigers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:00:13 [INFO]   Table parser returned garbage (avg len 1.1, digit% 0%), trying v3
+15:00:13 [INFO]   No players parsed from page
+15:00:13 [INFO] 
+[39/365] Hawai'i Rainbow Warriors
+15:00:13 [INFO]   Athletics: https://hawaiiathletics.com
+15:00:14 [INFO] HTTP Request: GET https://hawaiiathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:00:15 [INFO] HTTP Request: GET https://hawaiiathletics.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:00:17 [INFO] HTTP Request: GET https://hawaiiathletics.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:00:19 [INFO] HTTP Request: GET https://hawaiiathletics.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:00:21 [INFO] HTTP Request: GET https://hawaiiathletics.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 302 Found"
+15:00:21 [INFO] HTTP Request: GET https://hawaiiathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:00:23 [INFO] HTTP Request: GET https://hawaiiathletics.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 302 Found"
+15:00:24 [INFO] HTTP Request: GET https://hawaiiathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:00:25 [INFO] HTTP Request: GET https://hawaiiathletics.com/sports/mbball/roster/2025-26 "HTTP/1.1 302 Found"
+15:00:26 [INFO] HTTP Request: GET https://hawaiiathletics.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:00:28 [INFO] HTTP Request: GET https://hawaiiathletics.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 302 Found"
+15:00:28 [INFO] HTTP Request: GET https://hawaiiathletics.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:00:28 [INFO]   No roster page found
+15:00:28 [INFO] 
+[40/365] Holy Cross Crusaders
+15:00:28 [INFO]   Skipping (HS coverage 100%)
+15:00:28 [INFO] 
+[41/365] UIC Flames
+15:00:28 [INFO]   Athletics: https://www.uicflames.com
+15:00:28 [INFO]   Roster: https://www.uicflames.com/sports/mens-basketball/roster
+15:00:30 [INFO] HTTP Request: GET https://www.uicflames.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:00:30 [INFO] HTTP Request: GET https://uicflames.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:00:31 [INFO]   Table parser returned garbage (avg len 3.2, digit% 100%), trying v3
+15:00:31 [INFO]   No players parsed from page
+15:00:31 [INFO] 
+[42/365] Illinois Fighting Illini
+15:00:31 [INFO]   Athletics: https://www.fightingillini.com
+15:00:31 [INFO]   Roster: https://www.fightingillini.com/sports/mens-basketball/roster
+15:00:31 [INFO] HTTP Request: GET https://www.fightingillini.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:00:32 [INFO] HTTP Request: GET https://fightingillini.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:00:32 [INFO]   Table parser returned garbage (avg len 1.3, digit% 0%), trying v3
+15:00:32 [INFO]   No players parsed from page
+15:00:32 [INFO] 
+[43/365] Incarnate Word Cardinals
+15:00:32 [INFO]   Skipping (HS coverage 93%)
+15:00:32 [INFO] 
+[44/365] IU Indianapolis Jaguars
+15:00:32 [INFO]   Athletics: https://iuindyjags.com
+15:00:32 [INFO]   Roster: https://iuindyjags.com/sports/mens-basketball/roster
+15:00:34 [INFO] HTTP Request: GET https://iuindyjags.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:00:34 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+15:00:34 [INFO]   No players parsed from page
+15:00:34 [INFO] 
+[45/365] Indiana State Sycamores
+15:00:34 [INFO]   Skipping (HS coverage 67%)
+15:00:34 [INFO] 
+[46/365] Indiana Hoosiers
+15:00:34 [INFO]   Athletics: https://www.iuhoosiers.com
+15:00:34 [INFO]   Roster: https://www.iuhoosiers.com/sports/mens-basketball/roster
+15:00:36 [INFO] HTTP Request: GET https://www.iuhoosiers.com/sports/mens-basketball/roster "HTTP/1.1 308 Permanent Redirect"
+15:00:36 [INFO] HTTP Request: GET https://iuhoosiers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:00:37 [INFO]   Table parser returned garbage (avg len 6.1, digit% 100%), trying v3
+15:00:37 [INFO]   Parsed (v3): 17 players
+15:00:37 [INFO]   Matched: 13, Town: +0, HS: +13, Prev: +8, Unmatched: 4
+15:00:37 [INFO] 
+[47/365] Iowa State Cyclones
+15:00:37 [INFO]   Skipping (HS coverage 100%)
+15:00:37 [INFO] 
+[48/365] Jackson State Tigers
+15:00:37 [INFO]   Skipping (HS coverage 73%)
+15:00:37 [INFO] 
+[49/365] Jacksonville State Gamecocks
+15:00:37 [INFO]   Skipping (HS coverage 100%)
+15:00:37 [INFO] 
+[50/365] Jacksonville Dolphins
+15:00:37 [INFO]   Skipping (HS coverage 76%)
+15:00:37 [INFO] 
+[51/365] Kansas State Wildcats
+15:00:37 [INFO]   Athletics: https://www.kstatesports.com
+15:00:37 [INFO]   Roster: https://www.kstatesports.com/sports/mens-basketball/roster
+15:00:38 [INFO] HTTP Request: GET https://www.kstatesports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:00:38 [INFO]   Table parser returned garbage (avg len 6.1, digit% 100%), trying v3
+15:00:39 [INFO]   Parsed (v3): 14 players
+15:00:39 [INFO]   Matched: 13, Town: +0, HS: +9, Prev: +11, Unmatched: 1
+15:00:39 [INFO] 
+[52/365] Kennesaw State Owls
+15:00:39 [INFO]   Athletics: https://www.ksuowls.com
+15:00:39 [INFO] HTTP Request: GET https://www.ksuowls.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:00:40 [INFO] HTTP Request: GET https://ksuowls.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:00:41 [INFO] HTTP Request: GET https://www.ksuowls.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:00:41 [INFO] HTTP Request: GET https://ksuowls.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:00:43 [INFO] HTTP Request: GET https://www.ksuowls.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:00:44 [INFO] HTTP Request: GET https://ksuowls.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:00:45 [INFO] HTTP Request: GET https://www.ksuowls.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:00:46 [INFO] HTTP Request: GET https://ksuowls.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:00:47 [INFO] HTTP Request: GET https://www.ksuowls.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:00:48 [INFO] HTTP Request: GET https://ksuowls.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:00:50 [INFO] HTTP Request: GET https://www.ksuowls.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:00:50 [INFO] HTTP Request: GET https://ksuowls.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:00:51 [INFO] HTTP Request: GET https://www.ksuowls.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:00:52 [INFO] HTTP Request: GET https://ksuowls.com/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:00:53 [INFO] HTTP Request: GET https://www.ksuowls.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:00:54 [INFO] HTTP Request: GET https://ksuowls.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:00:54 [INFO]   No roster page found
+15:00:54 [INFO] 
+[53/365] Kent State Golden Flashes
+15:00:54 [INFO]   Athletics: https://www.kentstatesports.com
+15:00:54 [INFO]   Roster: https://www.kentstatesports.com/sports/mens-basketball/roster
+15:00:56 [INFO] HTTP Request: GET https://www.kentstatesports.com/sports/mens-basketball/roster "HTTP/1.1 308 Permanent Redirect"
+15:00:57 [INFO] HTTP Request: GET https://kentstatesports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:00:57 [INFO]   Parsed (table): 17 players
+15:00:57 [INFO]   Matched: 16, Town: +0, HS: +0, Prev: +0, Unmatched: 1
+15:00:57 [INFO] 
+[54/365] Long Beach State Beach
+15:00:57 [INFO]   Athletics: https://longbeachstate.com
+15:00:57 [INFO]   Roster: https://longbeachstate.com/sports/mens-basketball/roster
+15:00:58 [INFO] HTTP Request: GET https://longbeachstate.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:00:58 [INFO]   Table parser returned garbage (avg len 6.2, digit% 100%), trying v3
+15:00:58 [INFO]   Parsed (v3): 14 players
+15:00:58 [INFO]   Matched: 13, Town: +0, HS: +12, Prev: +13, Unmatched: 1
+15:00:58 [INFO] 
+[55/365] Long Island University Sharks
+15:00:58 [INFO]   Skipping (HS coverage 100%)
+15:00:58 [INFO] 
+[56/365] LSU Tigers
+15:00:58 [INFO]   Athletics: https://www.lsusports.net
+15:00:59 [INFO] HTTP Request: GET https://www.lsusports.net/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:00:59 [INFO] HTTP Request: GET https://www.lsusports.net/sports/mb/roster/ "HTTP/1.1 301 Moved Permanently"
+15:01:00 [INFO] HTTP Request: GET https://lsusports.net/sports/mb/roster/ "HTTP/1.1 200 OK"
+15:01:01 [INFO] HTTP Request: GET https://www.lsusports.net/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:01:01 [INFO] HTTP Request: GET https://www.lsusports.net/sports/mb/roster/ "HTTP/1.1 301 Moved Permanently"
+15:01:02 [INFO] HTTP Request: GET https://lsusports.net/sports/mb/roster/ "HTTP/1.1 200 OK"
+15:01:03 [INFO] HTTP Request: GET https://www.lsusports.net/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:01:04 [INFO] HTTP Request: GET https://lsusports.net/sports/mbball/roster "HTTP/1.1 404 Not Found"
+15:01:05 [INFO] HTTP Request: GET https://www.lsusports.net/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:01:06 [INFO] HTTP Request: GET https://lsusports.net/sports/mbball/roster?view=list "HTTP/1.1 404 Not Found"
+15:01:07 [INFO] HTTP Request: GET https://www.lsusports.net/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:01:08 [INFO] HTTP Request: GET https://lsusports.net/2025-26-lsu-mens-basketball-game-notes/ "HTTP/1.1 200 OK"
+15:01:09 [INFO] HTTP Request: GET https://www.lsusports.net/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:01:09 [INFO] HTTP Request: GET https://lsusports.net/2025-26-lsu-mens-basketball-game-notes/?view=list "HTTP/1.1 200 OK"
+15:01:11 [INFO] HTTP Request: GET https://www.lsusports.net/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:01:12 [INFO] HTTP Request: GET https://lsusports.net/2025-26-lsu-mens-basketball-game-notes/ "HTTP/1.1 200 OK"
+15:01:13 [INFO] HTTP Request: GET https://www.lsusports.net/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:01:13 [INFO] HTTP Request: GET https://lsusports.net/2025-26-lsu-mens-basketball-game-notes/?view=list "HTTP/1.1 200 OK"
+15:01:14 [INFO]   No roster page found
+15:01:14 [INFO] 
+[57/365] Louisiana Tech Bulldogs
+15:01:14 [INFO]   Athletics: https://www.latechsports.com
+15:01:14 [INFO]   Roster: https://www.latechsports.com/sports/mens-basketball/roster
+15:01:16 [INFO] HTTP Request: GET https://www.latechsports.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:01:16 [INFO] HTTP Request: GET https://latechsports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:01:17 [INFO]   Parsed (table): 14 players
+15:01:17 [INFO]   Matched: 0, Town: +0, HS: +0, Prev: +0, Unmatched: 14
+15:01:17 [INFO] 
+[58/365] Louisiana Ragin' Cajuns
+15:01:17 [INFO]   Skipping (HS coverage 100%)
+15:01:17 [INFO] 
+[59/365] UL Monroe Warhawks
+15:01:17 [INFO]   Athletics: https://www.ulmwarhawks.com
+15:01:17 [INFO]   Roster: https://www.ulmwarhawks.com/sports/mens-basketball/roster
+15:01:18 [INFO] HTTP Request: GET https://www.ulmwarhawks.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:01:18 [INFO] HTTP Request: GET https://ulmwarhawks.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:01:18 [INFO]   Parsed (table): 14 players
+15:01:18 [INFO]   Matched: 13, Town: +0, HS: +0, Prev: +0, Unmatched: 1
+15:01:18 [INFO] 
+[60/365] Loyola Chicago Ramblers
+15:01:18 [INFO]   Skipping (HS coverage 88%)
+15:01:18 [INFO] 
+[61/365] Loyola Maryland Greyhounds
+15:01:18 [INFO]   Skipping (HS coverage 100%)
+15:01:18 [INFO] 
+[62/365] Maryland Eastern Shore Hawks
+15:01:18 [INFO]   Skipping (HS coverage 100%)
+15:01:18 [INFO] 
+[63/365] UMBC Retrievers
+15:01:18 [INFO]   Skipping (HS coverage 100%)
+15:01:18 [INFO] 
+[64/365] Maryland Terrapins
+15:01:18 [INFO]   Athletics: https://www.umterps.com
+15:01:18 [INFO]   Roster: https://www.umterps.com/sports/mens-basketball/roster
+15:01:20 [INFO] HTTP Request: GET https://www.umterps.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:01:20 [INFO] HTTP Request: GET https://umterps.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:01:21 [INFO]   Table parser returned garbage (avg len 1.4, digit% 0%), trying v3
+15:01:21 [INFO]   No players parsed from page
+15:01:21 [INFO] 
+[65/365] UMass Lowell River Hawks
+15:01:21 [INFO]   Athletics: https://www.goriverhawks.com
+15:01:22 [INFO] HTTP Request: GET https://www.goriverhawks.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:01:22 [INFO] HTTP Request: GET https://goriverhawks.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:01:23 [INFO] HTTP Request: GET https://www.goriverhawks.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:01:24 [INFO] HTTP Request: GET https://goriverhawks.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:01:25 [INFO] HTTP Request: GET https://www.goriverhawks.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:01:26 [INFO] HTTP Request: GET https://goriverhawks.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:01:27 [INFO] HTTP Request: GET https://www.goriverhawks.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:01:28 [INFO] HTTP Request: GET https://goriverhawks.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:01:29 [INFO] HTTP Request: GET https://www.goriverhawks.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:01:30 [INFO] HTTP Request: GET https://goriverhawks.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:01:31 [INFO] HTTP Request: GET https://www.goriverhawks.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:01:32 [INFO] HTTP Request: GET https://goriverhawks.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:01:33 [INFO] HTTP Request: GET https://www.goriverhawks.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:01:34 [INFO] HTTP Request: GET https://goriverhawks.com/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:01:35 [INFO] HTTP Request: GET https://www.goriverhawks.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:01:36 [INFO] HTTP Request: GET https://goriverhawks.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:01:36 [INFO]   No roster page found
+15:01:36 [INFO] 
+[66/365] McNeese Cowboys
+15:01:36 [INFO]   Athletics: https://www.mcneesesports.com
+15:01:36 [INFO]   Roster: https://www.mcneesesports.com/sports/mens-basketball/roster
+15:01:38 [INFO] HTTP Request: GET https://www.mcneesesports.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:01:38 [INFO] HTTP Request: GET https://mcneesesports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:01:38 [INFO]   Table parser returned garbage (avg len 1.1, digit% 0%), trying v3
+15:01:38 [INFO]   No players parsed from page
+15:01:38 [INFO] 
+[67/365] Miami Hurricanes
+15:01:38 [INFO]   Athletics: https://miamihurricanes.com
+15:01:39 [INFO] HTTP Request: GET https://miamihurricanes.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:01:39 [INFO] HTTP Request: GET https://miamihurricanes.com/sports/mbball/roster/ "HTTP/1.1 200 OK"
+15:01:42 [INFO] HTTP Request: GET https://miamihurricanes.com/sports/mens-basketball/roster?view=list "HTTP/1.1 404 Not Found"
+15:01:43 [INFO] HTTP Request: GET https://miamihurricanes.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:01:43 [INFO] HTTP Request: GET https://miamihurricanes.com/sports/mbball/roster/ "HTTP/1.1 200 OK"
+15:01:45 [INFO] HTTP Request: GET https://miamihurricanes.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:01:46 [INFO] HTTP Request: GET https://miamihurricanes.com/sports/mbball/roster/?view=list "HTTP/1.1 200 OK"
+15:01:47 [INFO] HTTP Request: GET https://miamihurricanes.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:01:48 [INFO] HTTP Request: GET https://miamihurricanes.com/2025-26-media-center/ "HTTP/1.1 200 OK"
+15:01:49 [INFO] HTTP Request: GET https://miamihurricanes.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:01:49 [INFO] HTTP Request: GET https://miamihurricanes.com/2025-26-media-center/?view=list "HTTP/1.1 200 OK"
+15:01:51 [INFO] HTTP Request: GET https://miamihurricanes.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:01:51 [INFO] HTTP Request: GET https://miamihurricanes.com/2025-26-media-center/ "HTTP/1.1 200 OK"
+15:01:53 [INFO] HTTP Request: GET https://miamihurricanes.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:01:53 [INFO] HTTP Request: GET https://miamihurricanes.com/2025-26-media-center/?view=list "HTTP/1.1 200 OK"
+15:01:54 [INFO]   No roster page found
+15:01:54 [INFO] 
+[68/365] Miami (OH) RedHawks
+15:01:54 [INFO]   Skipping (HS coverage 100%)
+15:01:54 [INFO] 
+[69/365] Michigan Wolverines
+15:01:54 [INFO]   Athletics: https://www.mgoblue.com
+15:01:54 [INFO]   Roster: https://www.mgoblue.com/sports/mens-basketball/roster
+15:01:56 [INFO] HTTP Request: GET https://www.mgoblue.com/sports/mens-basketball/roster "HTTP/1.1 308 Permanent Redirect"
+15:01:57 [INFO] HTTP Request: GET https://mgoblue.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:01:57 [INFO]   Parsed (table): 16 players
+15:01:57 [INFO]   Matched: 14, Town: +0, HS: +0, Prev: +0, Unmatched: 2
+15:01:57 [INFO] 
+[70/365] Michigan State Spartans
+15:01:57 [INFO]   Skipping (HS coverage 100%)
+15:01:57 [INFO] 
+[71/365] Middle Tennessee Blue Raiders
+15:01:57 [INFO]   Skipping (HS coverage 92%)
+15:01:57 [INFO] 
+[72/365] Ole Miss Rebels
+15:01:57 [INFO]   Skipping (HS coverage 93%)
+15:01:57 [INFO] 
+[73/365] Mississippi State Bulldogs
+15:01:57 [INFO]   Athletics: https://www.hailstate.com
+15:01:57 [INFO]   Roster: https://www.hailstate.com/sports/mens-basketball/roster
+15:01:58 [INFO] HTTP Request: GET https://www.hailstate.com/sports/mens-basketball/roster "HTTP/1.1 308 Permanent Redirect"
+15:01:59 [INFO] HTTP Request: GET https://hailstate.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:01:59 [INFO]   Parsed (table): 15 players
+15:01:59 [INFO]   Matched: 12, Town: +0, HS: +0, Prev: +0, Unmatched: 3
+15:01:59 [INFO] 
+[74/365] Mississippi Valley State Delta Devils
+15:01:59 [INFO]   Skipping (HS coverage 93%)
+15:01:59 [INFO] 
+[75/365] Missouri State Bears
+15:01:59 [INFO]   Skipping (HS coverage 92%)
+15:01:59 [INFO] 
+[76/365] Missouri Tigers
+15:01:59 [INFO]   Athletics: https://www.mutigers.com
+15:01:59 [INFO]   Roster: https://www.mutigers.com/sports/mens-basketball/roster
+15:02:00 [INFO] HTTP Request: GET https://www.mutigers.com/sports/mens-basketball/roster "HTTP/1.1 308 Permanent Redirect"
+15:02:01 [INFO] HTTP Request: GET https://mutigers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:02:02 [INFO]   Table parser returned garbage (avg len 3.1, digit% 0%), trying v3
+15:02:02 [INFO]   Parsed (v3): 14 players
+15:02:02 [INFO]   Matched: 13, Town: +0, HS: +0, Prev: +0, Unmatched: 1
+15:02:02 [INFO] 
+[77/365] Kansas City Roos
+15:02:02 [INFO]   Skipping (HS coverage 100%)
+15:02:02 [INFO] 
+[78/365] Montana State Bobcats
+15:02:02 [INFO]   Skipping (HS coverage 100%)
+15:02:02 [INFO] 
+[79/365] Morehead State Eagles
+15:02:02 [INFO]   Athletics: https://www.msueagles.com
+15:02:03 [INFO] HTTP Request: GET https://www.msueagles.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:02:03 [INFO] HTTP Request: GET https://msueagles.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:02:04 [INFO] HTTP Request: GET https://www.msueagles.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:02:05 [INFO] HTTP Request: GET https://msueagles.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:02:06 [INFO] HTTP Request: GET https://www.msueagles.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:02:06 [INFO] HTTP Request: GET https://msueagles.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:02:08 [INFO] HTTP Request: GET https://www.msueagles.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:02:08 [INFO] HTTP Request: GET https://msueagles.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:02:10 [INFO] HTTP Request: GET https://www.msueagles.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:02:11 [INFO] HTTP Request: GET https://msueagles.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:02:12 [INFO] HTTP Request: GET https://www.msueagles.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:02:12 [INFO] HTTP Request: GET https://msueagles.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:02:14 [INFO] HTTP Request: GET https://www.msueagles.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:02:15 [INFO] HTTP Request: GET https://msueagles.com/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:02:16 [INFO] HTTP Request: GET https://www.msueagles.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:02:17 [INFO] HTTP Request: GET https://msueagles.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:02:17 [INFO]   No roster page found
+15:02:17 [INFO] 
+[80/365] Morgan State Bears
+15:02:17 [INFO]   Skipping (HS coverage 100%)
+15:02:17 [INFO] 
+[81/365] Murray State Racers
+15:02:17 [INFO]   Skipping (HS coverage 91%)
+15:02:17 [INFO] 
+[82/365] Omaha Mavericks
+15:02:17 [INFO]   Athletics: https://www.omavs.com
+15:02:17 [INFO]   Roster: https://www.omavs.com/sports/mens-basketball/roster
+15:02:18 [INFO] HTTP Request: GET https://www.omavs.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:02:19 [INFO] HTTP Request: GET https://omavs.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:02:19 [INFO]   Table parser returned garbage (avg len 3.0, digit% 0%), trying v3
+15:02:19 [INFO]   No players parsed from page
+15:02:19 [INFO] 
+[83/365] Nebraska Cornhuskers
+15:02:19 [INFO]   Athletics: https://www.huskers.com
+15:02:20 [INFO] HTTP Request: GET https://www.huskers.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:02:21 [INFO] HTTP Request: GET https://huskers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:02:22 [INFO] HTTP Request: GET https://www.huskers.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:02:23 [INFO] HTTP Request: GET https://huskers.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:02:24 [INFO] HTTP Request: GET https://www.huskers.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:02:25 [INFO] HTTP Request: GET https://huskers.com/sports/mbball/roster "HTTP/1.1 404 Not Found"
+15:02:26 [INFO] HTTP Request: GET https://www.huskers.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:02:27 [INFO] HTTP Request: GET https://huskers.com/sports/mbball/roster?view=list "HTTP/1.1 404 Not Found"
+15:02:28 [INFO] HTTP Request: GET https://www.huskers.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:02:29 [INFO] HTTP Request: GET https://huskers.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:02:30 [INFO] HTTP Request: GET https://www.huskers.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:02:31 [INFO] HTTP Request: GET https://huskers.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:02:32 [INFO] HTTP Request: GET https://www.huskers.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:02:33 [INFO] HTTP Request: GET https://huskers.com/sports/mbball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:02:34 [INFO] HTTP Request: GET https://www.huskers.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:02:38 [INFO] HTTP Request: GET https://huskers.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:02:38 [INFO]   No roster page found
+15:02:38 [INFO] 
+[84/365] UNLV Rebels
+15:02:38 [INFO]   Athletics: https://unlvrebels.com
+15:02:38 [INFO]   Roster: https://unlvrebels.com/sports/mens-basketball/roster
+15:02:39 [INFO] HTTP Request: GET https://unlvrebels.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:02:39 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+15:02:39 [INFO]   No players parsed from page
+15:02:39 [INFO] 
+[85/365] Nevada Wolf Pack
+15:02:39 [INFO]   Skipping (HS coverage 100%)
+15:02:39 [INFO] 
+[86/365] NJIT Highlanders
+15:02:39 [INFO]   Athletics: https://www.njithighlanders.com
+15:02:41 [INFO] HTTP Request: GET https://www.njithighlanders.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:02:42 [INFO] HTTP Request: GET https://njithighlanders.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:02:43 [INFO] HTTP Request: GET https://www.njithighlanders.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:02:43 [INFO] HTTP Request: GET https://njithighlanders.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:02:45 [INFO] HTTP Request: GET https://www.njithighlanders.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:02:45 [INFO] HTTP Request: GET https://njithighlanders.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:02:47 [INFO] HTTP Request: GET https://www.njithighlanders.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:02:48 [INFO] HTTP Request: GET https://njithighlanders.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:02:49 [INFO] HTTP Request: GET https://www.njithighlanders.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:02:49 [INFO] HTTP Request: GET https://njithighlanders.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:02:51 [INFO] HTTP Request: GET https://www.njithighlanders.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:02:51 [INFO] HTTP Request: GET https://njithighlanders.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:02:53 [INFO] HTTP Request: GET https://www.njithighlanders.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:02:53 [INFO] HTTP Request: GET https://njithighlanders.com/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:02:55 [INFO] HTTP Request: GET https://www.njithighlanders.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:02:55 [INFO] HTTP Request: GET https://njithighlanders.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:02:55 [INFO]   No roster page found
+15:02:55 [INFO] 
+[87/365] New Mexico Lobos
+15:02:55 [INFO]   Athletics: https://www.golobos.com
+15:02:57 [INFO] HTTP Request: GET https://www.golobos.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:02:57 [INFO] HTTP Request: GET https://golobos.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:02:59 [INFO] HTTP Request: GET https://www.golobos.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:02:59 [INFO] HTTP Request: GET https://golobos.com/sports/mens-basketball/roster?view=list "HTTP/1.1 404 Not Found"
+15:03:01 [INFO] HTTP Request: GET https://www.golobos.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:03:02 [INFO] HTTP Request: GET https://golobos.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:03:03 [INFO] HTTP Request: GET https://www.golobos.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:03:03 [INFO] HTTP Request: GET https://golobos.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:03:05 [INFO] HTTP Request: GET https://www.golobos.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:03:05 [INFO] HTTP Request: GET https://golobos.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:03:07 [INFO] HTTP Request: GET https://www.golobos.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:03:07 [INFO] HTTP Request: GET https://golobos.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:03:09 [INFO] HTTP Request: GET https://www.golobos.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:03:09 [INFO] HTTP Request: GET https://golobos.com/sports/mbball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:03:11 [INFO] HTTP Request: GET https://www.golobos.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:03:12 [INFO] HTTP Request: GET https://golobos.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:03:12 [INFO]   No roster page found
+15:03:12 [INFO] 
+[88/365] New Mexico State Aggies
+15:03:12 [INFO]   Skipping (HS coverage 100%)
+15:03:12 [INFO] 
+[89/365] New Orleans Privateers
+15:03:12 [INFO]   Athletics: https://www.unoprivateers.com
+15:03:13 [INFO] HTTP Request: GET https://www.unoprivateers.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:03:15 [INFO] HTTP Request: GET https://unoprivateers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:03:16 [INFO] HTTP Request: GET https://www.unoprivateers.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:03:16 [INFO] HTTP Request: GET https://unoprivateers.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:03:18 [INFO] HTTP Request: GET https://www.unoprivateers.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:03:18 [INFO] HTTP Request: GET https://unoprivateers.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:03:20 [INFO] HTTP Request: GET https://www.unoprivateers.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:03:20 [INFO] HTTP Request: GET https://unoprivateers.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:03:22 [INFO] HTTP Request: GET https://www.unoprivateers.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:03:22 [INFO] HTTP Request: GET https://unoprivateers.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:03:24 [INFO] HTTP Request: GET https://www.unoprivateers.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:03:24 [INFO] HTTP Request: GET https://unoprivateers.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:03:26 [INFO] HTTP Request: GET https://www.unoprivateers.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:03:26 [INFO] HTTP Request: GET https://unoprivateers.com/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:03:28 [INFO] HTTP Request: GET https://www.unoprivateers.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:03:28 [INFO] HTTP Request: GET https://unoprivateers.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:03:29 [INFO]   No roster page found
+15:03:29 [INFO] 
+[90/365] Nicholls Colonels
+15:03:29 [INFO]   Skipping (HS coverage 100%)
+15:03:29 [INFO] 
+[91/365] Norfolk State Spartans
+15:03:29 [INFO]   Athletics: https://www.nsuspartans.com
+15:03:29 [INFO]   Roster: https://www.nsuspartans.com/sports/mens-basketball/roster
+15:03:30 [INFO] HTTP Request: GET https://www.nsuspartans.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:03:31 [INFO] HTTP Request: GET https://nsuspartans.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:03:31 [INFO]   Parsed (table): 13 players
+15:03:31 [INFO]   Matched: 13, Town: +0, HS: +0, Prev: +0, Unmatched: 0
+15:03:31 [INFO] 
+[92/365] North Alabama Lions
+15:03:31 [INFO]   Skipping (HS coverage 83%)
+15:03:31 [INFO] 
+[93/365] UNC Asheville Bulldogs
+15:03:31 [INFO]   Skipping (HS coverage 100%)
+15:03:31 [INFO] 
+[94/365] North Carolina A&T Aggies
+15:03:31 [INFO]   Athletics: https://www.ncataggies.com
+15:03:31 [INFO]   Roster: https://www.ncataggies.com/sports/mens-basketball/roster
+15:03:32 [INFO] HTTP Request: GET https://www.ncataggies.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:03:33 [INFO] HTTP Request: GET https://ncataggies.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:03:33 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+15:03:33 [INFO]   No players parsed from page
+15:03:33 [INFO] 
+[95/365] North Carolina Central Eagles
+15:03:33 [INFO]   Athletics: https://www.nccueaglepride.com
+15:03:34 [INFO] HTTP Request: GET https://www.nccueaglepride.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:03:34 [INFO] HTTP Request: GET https://nccueaglepride.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:03:36 [INFO] HTTP Request: GET https://www.nccueaglepride.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:03:36 [INFO] HTTP Request: GET https://nccueaglepride.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:03:38 [INFO] HTTP Request: GET https://www.nccueaglepride.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:03:38 [INFO] HTTP Request: GET https://nccueaglepride.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:03:40 [INFO] HTTP Request: GET https://www.nccueaglepride.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:03:40 [INFO] HTTP Request: GET https://nccueaglepride.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:03:42 [INFO] HTTP Request: GET https://www.nccueaglepride.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:03:42 [INFO] HTTP Request: GET https://nccueaglepride.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:03:44 [INFO] HTTP Request: GET https://www.nccueaglepride.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:03:44 [INFO] HTTP Request: GET https://nccueaglepride.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:03:46 [INFO] HTTP Request: GET https://www.nccueaglepride.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:03:46 [INFO] HTTP Request: GET https://nccueaglepride.com/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:03:48 [INFO] HTTP Request: GET https://www.nccueaglepride.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:03:48 [INFO] HTTP Request: GET https://nccueaglepride.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:03:48 [INFO]   No roster page found
+15:03:48 [INFO] 
+[96/365] NC State Wolfpack
+15:03:48 [INFO]   Athletics: https://www.gopack.com
+15:03:48 [INFO]   Roster: https://www.gopack.com/sports/mens-basketball/roster
+15:03:50 [INFO] HTTP Request: GET https://www.gopack.com/sports/mens-basketball/roster "HTTP/1.1 308 Permanent Redirect"
+15:03:51 [INFO] HTTP Request: GET https://gopack.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:03:51 [INFO]   Table parser returned garbage (avg len 6.1, digit% 100%), trying v3
+15:03:51 [INFO]   Parsed (v3): 15 players
+15:03:51 [INFO]   Matched: 13, Town: +0, HS: +12, Prev: +9, Unmatched: 2
+15:03:51 [INFO] 
+[97/365] UNC Wilmington Seahawks
+15:03:51 [INFO]   Skipping (HS coverage 100%)
+15:03:51 [INFO] 
+[98/365] North Carolina Tar Heels
+15:03:51 [INFO]   Skipping (HS coverage 94%)
+15:03:51 [INFO] 
+[99/365] Charlotte 49ers
+15:03:51 [INFO]   Skipping (HS coverage 93%)
+15:03:51 [INFO] 
+[100/365] UNC Greensboro Spartans
+15:03:51 [INFO]   Skipping (HS coverage 93%)
+15:03:51 [INFO] 
+[101/365] North Dakota Fighting Hawks
+15:03:51 [INFO]   Skipping (HS coverage 100%)
+15:03:51 [INFO] 
+[102/365] North Dakota State Bison
+15:03:51 [INFO]   Skipping (HS coverage 92%)
+15:03:51 [INFO] 
+[103/365] North Florida Ospreys
+15:03:51 [INFO]   Skipping (HS coverage 92%)
+15:03:51 [INFO] 
+[104/365] North Texas Mean Green
+15:03:51 [INFO]   Skipping (HS coverage 100%)
+15:03:51 [INFO] 
+[105/365] Northern Illinois Huskies
+15:03:51 [INFO]   Skipping (HS coverage 80%)
+15:03:51 [INFO] 
+[106/365] Northern Iowa Panthers
+15:03:51 [INFO]   Skipping (HS coverage 100%)
+15:03:51 [INFO] 
+[107/365] Northern Kentucky Norse
+15:03:51 [INFO]   Athletics: https://www.nkunorse.com
+15:03:52 [INFO] HTTP Request: GET https://www.nkunorse.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:03:53 [INFO] HTTP Request: GET https://nkunorse.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:03:54 [INFO] HTTP Request: GET https://www.nkunorse.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:03:55 [INFO] HTTP Request: GET https://nkunorse.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:03:56 [INFO] HTTP Request: GET https://www.nkunorse.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:03:56 [INFO] HTTP Request: GET https://nkunorse.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:03:58 [INFO] HTTP Request: GET https://www.nkunorse.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:03:59 [INFO] HTTP Request: GET https://nkunorse.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:04:00 [INFO] HTTP Request: GET https://www.nkunorse.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:04:01 [INFO] HTTP Request: GET https://nkunorse.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:04:02 [INFO] HTTP Request: GET https://www.nkunorse.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:04:03 [INFO] HTTP Request: GET https://nkunorse.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:04:04 [INFO] HTTP Request: GET https://www.nkunorse.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:04:05 [INFO] HTTP Request: GET https://nkunorse.com/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:04:06 [INFO] HTTP Request: GET https://www.nkunorse.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:04:07 [INFO] HTTP Request: GET https://nkunorse.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:04:07 [INFO]   No roster page found
+15:04:07 [INFO] 
+[108/365] Northwestern State Demons
+15:04:07 [INFO]   Athletics: https://www.nsudemons.com
+15:04:09 [INFO] HTTP Request: GET https://www.nsudemons.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:04:09 [INFO] HTTP Request: GET https://nsudemons.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:04:10 [INFO] HTTP Request: GET https://www.nsudemons.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:04:11 [INFO] HTTP Request: GET https://nsudemons.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:04:12 [INFO] HTTP Request: GET https://www.nsudemons.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:04:13 [INFO] HTTP Request: GET https://nsudemons.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:04:14 [INFO] HTTP Request: GET https://www.nsudemons.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:04:15 [INFO] HTTP Request: GET https://nsudemons.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:04:16 [INFO] HTTP Request: GET https://www.nsudemons.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:04:17 [INFO] HTTP Request: GET https://nsudemons.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:04:18 [INFO] HTTP Request: GET https://www.nsudemons.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:04:19 [INFO] HTTP Request: GET https://nsudemons.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:04:20 [INFO] HTTP Request: GET https://www.nsudemons.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:04:21 [INFO] HTTP Request: GET https://nsudemons.com/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:04:22 [INFO] HTTP Request: GET https://www.nsudemons.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:04:23 [INFO] HTTP Request: GET https://nsudemons.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:04:23 [INFO]   No roster page found
+15:04:23 [INFO] 
+[109/365] Northwestern Wildcats
+15:04:23 [INFO]   Skipping (HS coverage 100%)
+15:04:23 [INFO] 
+[110/365] Ohio State Buckeyes
+15:04:23 [INFO]   Skipping (HS coverage 100%)
+15:04:23 [INFO] 
+[111/365] Ohio Bobcats
+15:04:23 [INFO]   Athletics: https://www.ohiobobcats.com
+15:04:23 [INFO]   Roster: https://www.ohiobobcats.com/sports/mbball/roster
+15:04:25 [INFO] HTTP Request: GET https://www.ohiobobcats.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:04:26 [INFO] HTTP Request: GET https://ohiobobcats.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:04:26 [INFO]   Table parser returned garbage (avg len 3.6, digit% 0%), trying v3
+15:04:26 [INFO]   No players parsed from page
+15:04:26 [INFO] 
+[112/365] Oklahoma State Cowboys
+15:04:26 [INFO]   Skipping (HS coverage 80%)
+15:04:26 [INFO] 
+[113/365] Oregon State Beavers
+15:04:26 [INFO]   Athletics: https://osubeavers.com
+15:04:26 [INFO]   Roster: https://osubeavers.com/sports/mens-basketball/roster
+15:04:27 [INFO] HTTP Request: GET https://osubeavers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:04:27 [INFO]   Parsed (v3): 15 players
+15:04:27 [INFO]   Matched: 14, Town: +0, HS: +0, Prev: +0, Unmatched: 1
+15:04:27 [INFO] 
+[114/365] Pacific Tigers
+15:04:27 [INFO]   Athletics: https://www.pacifictigers.com
+15:04:27 [INFO]   Roster: https://www.pacifictigers.com/sports/mens-basketball/roster
+15:04:29 [INFO] HTTP Request: GET https://www.pacifictigers.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:04:29 [INFO] HTTP Request: GET https://pacifictigers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:04:29 [INFO]   Parsed (table): 18 players
+15:04:29 [INFO]   Matched: 13, Town: +0, HS: +0, Prev: +0, Unmatched: 5
+15:04:29 [INFO] 
+[115/365] Penn State Nittany Lions
+15:04:29 [INFO]   Athletics: https://goPSUsports.com
+15:04:32 [INFO] HTTP Request: GET https://gopsusports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:04:33 [INFO] HTTP Request: GET https://gopsusports.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:04:35 [INFO] HTTP Request: GET https://gopsusports.com/sports/mbball/roster "HTTP/1.1 404 Not Found"
+15:04:37 [INFO] HTTP Request: GET https://gopsusports.com/sports/mbball/roster?view=list "HTTP/1.1 404 Not Found"
+15:04:39 [INFO] HTTP Request: GET https://gopsusports.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:04:41 [INFO] HTTP Request: GET https://gopsusports.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:04:44 [INFO] HTTP Request: GET https://gopsusports.com/sports/mbball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:04:45 [INFO] HTTP Request: GET https://gopsusports.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:04:45 [INFO]   No roster page found
+15:04:45 [INFO] 
+[116/365] Portland State Vikings
+15:04:45 [INFO]   Athletics: https://goviks.com
+15:04:45 [INFO]   Roster: https://goviks.com/sports/mens-basketball/roster
+15:04:47 [INFO] HTTP Request: GET https://goviks.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:04:47 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+15:04:47 [INFO]   No players parsed from page
+15:04:47 [INFO] 
+[117/365] Prairie View A&M Panthers
+15:04:47 [INFO]   Athletics: https://www.pvpanthers.com
+15:04:48 [INFO] HTTP Request: GET https://www.pvpanthers.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:04:49 [INFO] HTTP Request: GET https://pvpanthers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:04:50 [INFO] HTTP Request: GET https://www.pvpanthers.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:04:51 [INFO] HTTP Request: GET https://pvpanthers.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:04:52 [INFO] HTTP Request: GET https://www.pvpanthers.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:04:53 [INFO] HTTP Request: GET https://pvpanthers.com/sports/mbball/roster "HTTP/1.1 302 Found"
+15:04:54 [INFO] HTTP Request: GET https://pvpanthers.com/404-1.aspx?url=%2froster.aspx%3fpath%3dgeneral%26 "HTTP/1.1 404 Not Found"
+15:04:54 [INFO] HTTP Request: GET https://www.pvpanthers.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:04:55 [INFO] HTTP Request: GET https://pvpanthers.com/sports/mbball/roster?view=list "HTTP/1.1 302 Found"
+15:04:55 [INFO] HTTP Request: GET https://pvpanthers.com/404-1.aspx?url=%2froster.aspx%3fpath%3dgeneral%26view%3dlist "HTTP/1.1 404 Not Found"
+15:04:56 [INFO] HTTP Request: GET https://www.pvpanthers.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:04:57 [INFO] HTTP Request: GET https://pvpanthers.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:04:58 [INFO] HTTP Request: GET https://www.pvpanthers.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:04:59 [INFO] HTTP Request: GET https://pvpanthers.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:05:01 [INFO] HTTP Request: GET https://www.pvpanthers.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:05:01 [INFO] HTTP Request: GET https://pvpanthers.com/sports/mbball/roster/2025-26 "HTTP/1.1 302 Found"
+15:05:01 [INFO] HTTP Request: GET https://pvpanthers.com/sports/mbball/roster "HTTP/1.1 302 Found"
+15:05:01 [INFO] HTTP Request: GET https://pvpanthers.com/404-1.aspx?url=%2froster.aspx%3fpath%3dgeneral%26 "HTTP/1.1 404 Not Found"
+15:05:02 [INFO] HTTP Request: GET https://www.pvpanthers.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:05:03 [INFO] HTTP Request: GET https://pvpanthers.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 302 Found"
+15:05:03 [INFO] HTTP Request: GET https://pvpanthers.com/sports/mbball/roster "HTTP/1.1 302 Found"
+15:05:03 [INFO] HTTP Request: GET https://pvpanthers.com/404-1.aspx?url=%2froster.aspx%3fpath%3dgeneral%26 "HTTP/1.1 404 Not Found"
+15:05:04 [INFO]   No roster page found
+15:05:04 [INFO] 
+[118/365] Purdue Fort Wayne Mastodons
+15:05:04 [INFO]   Skipping (HS coverage 91%)
+15:05:04 [INFO] 
+[119/365] Queens University Royals
+15:05:04 [INFO]   Athletics: https://www.queensathletics.com
+15:05:05 [INFO] HTTP Request: GET https://www.queensathletics.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:05:07 [INFO] HTTP Request: GET https://queensathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:05:07 [INFO] HTTP Request: GET https://www.queensathletics.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:05:08 [INFO] HTTP Request: GET https://queensathletics.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:05:09 [INFO] HTTP Request: GET https://www.queensathletics.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:05:09 [INFO] HTTP Request: GET https://queensathletics.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:05:11 [INFO] HTTP Request: GET https://www.queensathletics.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:05:11 [INFO] HTTP Request: GET https://queensathletics.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:05:13 [INFO] HTTP Request: GET https://www.queensathletics.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:05:14 [INFO] HTTP Request: GET https://queensathletics.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 302 Found"
+15:05:14 [INFO] HTTP Request: GET https://queensathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:05:15 [INFO] HTTP Request: GET https://www.queensathletics.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:05:15 [INFO] HTTP Request: GET https://queensathletics.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 302 Found"
+15:05:16 [INFO] HTTP Request: GET https://queensathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:05:17 [INFO] HTTP Request: GET https://www.queensathletics.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:05:17 [INFO] HTTP Request: GET https://queensathletics.com/sports/mbball/roster/2025-26 "HTTP/1.1 302 Found"
+15:05:18 [INFO] HTTP Request: GET https://queensathletics.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:05:19 [INFO] HTTP Request: GET https://www.queensathletics.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:05:19 [INFO] HTTP Request: GET https://queensathletics.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 302 Found"
+15:05:19 [INFO] HTTP Request: GET https://queensathletics.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:05:20 [INFO]   No roster page found
+15:05:20 [INFO] 
+[120/365] Rhode Island Rams
+15:05:20 [INFO]   Athletics: https://www.gorhody.com
+15:05:20 [INFO]   Roster: https://www.gorhody.com/sports/mens-basketball/roster
+15:05:22 [INFO] HTTP Request: GET https://www.gorhody.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:05:22 [INFO] HTTP Request: GET https://gorhody.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:05:22 [INFO]   Table parser returned garbage (avg len 3.7, digit% 0%), trying v3
+15:05:22 [INFO]   No players parsed from page
+15:05:22 [INFO] 
+[121/365] Sam Houston Bearkats
+15:05:22 [INFO]   Skipping (HS coverage 100%)
+15:05:22 [INFO] 
+[122/365] San Diego State Aztecs
+15:05:22 [INFO]   Athletics: https://goaztecs.com
+15:05:24 [INFO] HTTP Request: GET https://goaztecs.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:05:25 [INFO] HTTP Request: GET https://goaztecs.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:05:28 [INFO] HTTP Request: GET https://goaztecs.com/sports/mbball/roster "HTTP/1.1 404 Not Found"
+15:05:30 [INFO] HTTP Request: GET https://goaztecs.com/sports/mbball/roster?view=list "HTTP/1.1 404 Not Found"
+15:05:32 [INFO] HTTP Request: GET https://goaztecs.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:05:33 [INFO] HTTP Request: GET https://goaztecs.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:05:36 [INFO] HTTP Request: GET https://goaztecs.com/sports/mbball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:05:37 [INFO] HTTP Request: GET https://goaztecs.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:05:38 [INFO]   No roster page found
+15:05:38 [INFO] 
+[123/365] San Francisco Dons
+15:05:38 [INFO]   Athletics: https://usfdons.com/index.aspx
+15:05:39 [INFO] HTTP Request: GET https://usfdons.com/index.aspx/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:05:41 [INFO] HTTP Request: GET https://usfdons.com/index.aspx/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:05:43 [INFO] HTTP Request: GET https://usfdons.com/index.aspx/sports/mbball/roster "HTTP/1.1 200 OK"
+15:05:45 [INFO] HTTP Request: GET https://usfdons.com/index.aspx/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:05:47 [INFO] HTTP Request: GET https://usfdons.com/index.aspx/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:05:49 [INFO] HTTP Request: GET https://usfdons.com/index.aspx/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:05:51 [INFO] HTTP Request: GET https://usfdons.com/index.aspx/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:05:53 [INFO] HTTP Request: GET https://usfdons.com/index.aspx/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:05:53 [INFO]   No roster page found
+15:05:53 [INFO] 
+[124/365] San José State Spartans
+15:05:53 [INFO]   Athletics: https://www.sjsuspartans.com
+15:05:55 [INFO] HTTP Request: GET https://www.sjsuspartans.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:05:56 [INFO] HTTP Request: GET https://sjsuspartans.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:05:57 [INFO] HTTP Request: GET https://www.sjsuspartans.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:05:58 [INFO] HTTP Request: GET https://sjsuspartans.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:05:59 [INFO] HTTP Request: GET https://www.sjsuspartans.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:06:00 [INFO] HTTP Request: GET https://sjsuspartans.com/sports/mbball/roster "HTTP/1.1 404 Not Found"
+15:06:01 [INFO] HTTP Request: GET https://www.sjsuspartans.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:06:02 [INFO] HTTP Request: GET https://sjsuspartans.com/sports/mbball/roster?view=list "HTTP/1.1 404 Not Found"
+15:06:03 [INFO] HTTP Request: GET https://www.sjsuspartans.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:06:04 [INFO] HTTP Request: GET https://sjsuspartans.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:06:05 [INFO] HTTP Request: GET https://www.sjsuspartans.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:06:06 [INFO] HTTP Request: GET https://sjsuspartans.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:06:07 [INFO] HTTP Request: GET https://www.sjsuspartans.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:06:08 [INFO] HTTP Request: GET https://sjsuspartans.com/sports/mbball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:06:09 [INFO] HTTP Request: GET https://www.sjsuspartans.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:06:10 [INFO] HTTP Request: GET https://sjsuspartans.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:06:10 [INFO]   No roster page found
+15:06:10 [INFO] 
+[125/365] South Alabama Jaguars
+15:06:10 [INFO]   Athletics: https://www.usajaguars.com
+15:06:10 [INFO]   Roster: https://www.usajaguars.com/sports/mens-basketball/roster
+15:06:13 [INFO] HTTP Request: GET https://www.usajaguars.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:06:14 [INFO] HTTP Request: GET https://usajaguars.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:06:15 [INFO]   Parsed (table): 13 players
+15:06:15 [INFO]   Matched: 10, Town: +0, HS: +0, Prev: +0, Unmatched: 3
+15:06:15 [INFO] 
+[126/365] South Carolina Gamecocks
+15:06:15 [INFO]   Athletics: https://gamecocksonline.com
+15:06:15 [INFO]   Roster: https://gamecocksonline.com/sports/mbball/roster
+15:06:15 [INFO] HTTP Request: GET https://gamecocksonline.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:06:15 [INFO] HTTP Request: GET https://gamecocksonline.com/sports/mbball/roster/ "HTTP/1.1 200 OK"
+15:06:15 [INFO]   Parsed (table): 5 players
+15:06:15 [INFO]   Matched: 0, Town: +0, HS: +0, Prev: +0, Unmatched: 5
+15:06:15 [INFO] 
+[127/365] South Carolina State Bulldogs
+15:06:15 [INFO]   Athletics: https://www.scsuathletics.com/index.aspx
+15:06:17 [INFO] HTTP Request: GET https://www.scsuathletics.com/index.aspx/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:06:19 [INFO] HTTP Request: GET https://www.scsuathletics.com/index.aspx/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:06:21 [INFO] HTTP Request: GET https://www.scsuathletics.com/index.aspx/sports/mbball/roster "HTTP/1.1 200 OK"
+15:06:23 [INFO] HTTP Request: GET https://www.scsuathletics.com/index.aspx/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:06:25 [INFO] HTTP Request: GET https://www.scsuathletics.com/index.aspx/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:06:27 [INFO] HTTP Request: GET https://www.scsuathletics.com/index.aspx/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:06:29 [INFO] HTTP Request: GET https://www.scsuathletics.com/index.aspx/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:06:31 [INFO] HTTP Request: GET https://www.scsuathletics.com/index.aspx/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:06:31 [INFO]   No roster page found
+15:06:31 [INFO] 
+[128/365] South Carolina Upstate Spartans
+15:06:31 [INFO]   Skipping (HS coverage 100%)
+15:06:31 [INFO] 
+[129/365] South Dakota Coyotes
+15:06:31 [INFO]   Athletics: https://www.goyotes.com
+15:06:31 [INFO]   Roster: https://www.goyotes.com/sports/mens-basketball/roster
+15:06:33 [INFO] HTTP Request: GET https://www.goyotes.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:06:34 [INFO] HTTP Request: GET https://goyotes.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:06:34 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+15:06:34 [INFO]   No players parsed from page
+15:06:34 [INFO] 
+[130/365] South Dakota State Jackrabbits
+15:06:34 [INFO]   Skipping (HS coverage 100%)
+15:06:34 [INFO] 
+[131/365] South Florida Bulls
+15:06:34 [INFO]   Athletics: https://www.gousfbulls.com
+15:06:34 [INFO]   Roster: https://www.gousfbulls.com/sports/mens-basketball/roster
+15:06:35 [INFO] HTTP Request: GET https://www.gousfbulls.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:06:36 [INFO] HTTP Request: GET https://gousfbulls.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:06:36 [INFO]   Parsed (table): 15 players
+15:06:36 [INFO]   Matched: 0, Town: +0, HS: +0, Prev: +0, Unmatched: 15
+15:06:36 [INFO] 
+[132/365] Southeast Missouri State Redhawks
+15:06:36 [INFO]   Athletics: https://www.semoredhawks.com
+15:06:36 [INFO]   Roster: https://www.semoredhawks.com/sports/mens-basketball/roster
+15:06:37 [INFO] HTTP Request: GET https://www.semoredhawks.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:06:38 [INFO] HTTP Request: GET https://semoredhawks.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:06:38 [INFO]   Table parser returned garbage (avg len 3.0, digit% 100%), trying v3
+15:06:38 [INFO]   No players parsed from page
+15:06:38 [INFO] 
+[133/365] SE Louisiana Lions
+15:06:38 [INFO]   Skipping (HS coverage 69%)
+15:06:38 [INFO] 
+[134/365] USC Trojans
+15:06:38 [INFO]   Skipping (HS coverage 100%)
+15:06:38 [INFO] 
+[135/365] Southern Illinois Salukis
+15:06:38 [INFO]   Skipping (HS coverage 100%)
+15:06:38 [INFO] 
+[136/365] SIU Edwardsville Cougars
+15:06:38 [INFO]   Athletics: https://www.siuecougars.com
+15:06:38 [INFO]   Roster: https://www.siuecougars.com/sports/mens-basketball/roster
+15:06:39 [INFO] HTTP Request: GET https://www.siuecougars.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:06:39 [INFO] HTTP Request: GET https://siuecougars.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:06:40 [INFO]   Parsed (table): 15 players
+15:06:40 [INFO]   Matched: 13, Town: +0, HS: +0, Prev: +0, Unmatched: 2
+15:06:40 [INFO] 
+[137/365] Southern Indiana Screaming Eagles
+15:06:40 [INFO]   Skipping (HS coverage 100%)
+15:06:40 [INFO] 
+[138/365] SMU Mustangs
+15:06:40 [INFO]   Athletics: https://www.smumustangs.com
+15:06:40 [INFO]   Roster: https://www.smumustangs.com/sports/mens-basketball/roster
+15:06:41 [INFO] HTTP Request: GET https://www.smumustangs.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:06:42 [INFO] HTTP Request: GET https://smumustangs.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:06:42 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+15:06:42 [INFO]   No players parsed from page
+15:06:42 [INFO] 
+[139/365] Southern Miss Golden Eagles
+15:06:42 [INFO]   Skipping (HS coverage 100%)
+15:06:42 [INFO] 
+[140/365] Southern Jaguars
+15:06:42 [INFO]   Skipping (HS coverage 81%)
+15:06:42 [INFO] 
+[141/365] Southern Utah Thunderbirds
+15:06:42 [INFO]   Skipping (HS coverage 93%)
+15:06:42 [INFO] 
+[142/365] St. John's Red Storm
+15:06:42 [INFO]   Skipping (HS coverage 93%)
+15:06:42 [INFO] 
+[143/365] Saint Mary's Gaels
+15:06:42 [INFO]   Athletics: https://www.SMCGaels.com
+15:06:42 [INFO]   Roster: https://www.SMCGaels.com/sports/mens-basketball/roster
+15:06:43 [INFO] HTTP Request: GET https://www.smcgaels.com/sports/mens-basketball/roster "HTTP/1.1 308 Permanent Redirect"
+15:06:44 [INFO] HTTP Request: GET https://smcgaels.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:06:45 [INFO]   Parsed (table): 15 players
+15:06:45 [INFO]   Matched: 13, Town: +0, HS: +0, Prev: +0, Unmatched: 2
+15:06:45 [INFO] 
+[144/365] St. Thomas-Minnesota Tommies
+15:06:45 [INFO]   Skipping (HS coverage 100%)
+15:06:45 [INFO] 
+[145/365] Stephen F. Austin Lumberjacks
+15:06:45 [INFO]   Athletics: https://SFAjacks.com
+15:06:45 [INFO]   Roster: https://SFAjacks.com/sports/mens-basketball/roster
+15:06:46 [INFO] HTTP Request: GET https://sfajacks.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:06:47 [INFO]   Parsed (table): 15 players
+15:06:47 [INFO]   Matched: 14, Town: +0, HS: +0, Prev: +0, Unmatched: 1
+15:06:47 [INFO] 
+[146/365] Tarleton State Texans
+15:06:47 [INFO]   Athletics: https://tarletonsports.com
+15:06:48 [INFO] HTTP Request: GET https://tarletonsports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:06:49 [INFO] HTTP Request: GET https://tarletonsports.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:06:51 [INFO] HTTP Request: GET https://tarletonsports.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:06:53 [INFO] HTTP Request: GET https://tarletonsports.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:06:55 [INFO] HTTP Request: GET https://tarletonsports.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:06:57 [INFO] HTTP Request: GET https://tarletonsports.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:06:59 [INFO] HTTP Request: GET https://tarletonsports.com/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:07:01 [INFO] HTTP Request: GET https://tarletonsports.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:07:02 [INFO]   No roster page found
+15:07:02 [INFO] 
+[147/365] Tennessee State Tigers
+15:07:02 [INFO]   Skipping (HS coverage 93%)
+15:07:02 [INFO] 
+[148/365] Tennessee Tech Golden Eagles
+15:07:02 [INFO]   Athletics: https://www.TTUsports.com
+15:07:03 [INFO] HTTP Request: GET https://www.ttusports.com/sports/mens-basketball/roster "HTTP/1.1 202 Accepted"
+15:07:05 [INFO] HTTP Request: GET https://www.ttusports.com/sports/mens-basketball/roster?view=list "HTTP/1.1 202 Accepted"
+15:07:07 [INFO] HTTP Request: GET https://www.ttusports.com/sports/mbball/roster "HTTP/1.1 202 Accepted"
+15:07:09 [INFO] HTTP Request: GET https://www.ttusports.com/sports/mbball/roster?view=list "HTTP/1.1 202 Accepted"
+15:07:11 [INFO] HTTP Request: GET https://www.ttusports.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 202 Accepted"
+15:07:13 [INFO] HTTP Request: GET https://www.ttusports.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 202 Accepted"
+15:07:15 [INFO] HTTP Request: GET https://www.ttusports.com/sports/mbball/roster/2025-26 "HTTP/1.1 202 Accepted"
+15:07:17 [INFO] HTTP Request: GET https://www.ttusports.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 202 Accepted"
+15:07:17 [INFO]   No roster page found
+15:07:17 [INFO] 
+[149/365] Chattanooga Mocs
+15:07:17 [INFO]   Athletics: https://www.gomocs.com
+15:07:17 [INFO]   Roster: https://www.gomocs.com/sports/mens-basketball/roster
+15:07:19 [INFO] HTTP Request: GET https://www.gomocs.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:07:20 [INFO] HTTP Request: GET https://gomocs.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:07:20 [INFO]   Table parser returned garbage (avg len 1.5, digit% 0%), trying v3
+15:07:20 [INFO]   No players parsed from page
+15:07:20 [INFO] 
+[150/365] Tennessee Volunteers
+15:07:20 [INFO]   Athletics: https://www.utsports.com
+15:07:20 [INFO]   Roster: https://www.utsports.com/sports/mens-basketball/roster
+15:07:22 [INFO] HTTP Request: GET https://www.utsports.com/sports/mens-basketball/roster "HTTP/1.1 308 Permanent Redirect"
+15:07:23 [INFO] HTTP Request: GET https://utsports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:07:23 [INFO]   Parsed (table): 16 players
+15:07:23 [INFO]   Matched: 16, Town: +0, HS: +0, Prev: +0, Unmatched: 0
+15:07:23 [INFO] 
+[151/365] UT Martin Skyhawks
+15:07:23 [INFO]   Skipping (HS coverage 86%)
+15:07:23 [INFO] 
+[152/365] Texas A&M Aggies
+15:07:23 [INFO]   Athletics: https://www.12thman.com
+15:07:23 [INFO]   Roster: https://www.12thman.com/sports/mens-basketball/roster
+15:07:24 [INFO] HTTP Request: GET https://www.12thman.com/sports/mens-basketball/roster "HTTP/1.1 308 Permanent Redirect"
+15:07:25 [INFO] HTTP Request: GET https://12thman.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:07:25 [INFO]   Parsed (table): 16 players
+15:07:25 [INFO]   Matched: 15, Town: +0, HS: +0, Prev: +0, Unmatched: 1
+15:07:25 [INFO] 
+[153/365] Texas A&M-Corpus Christi Islanders
+15:07:25 [INFO]   Skipping (HS coverage 94%)
+15:07:25 [INFO] 
+[154/365] UT Arlington Mavericks
+15:07:25 [INFO]   Skipping (HS coverage 100%)
+15:07:25 [INFO] 
+[155/365] TCU Horned Frogs
+15:07:25 [INFO]   Athletics: https://www.gofrogs.com
+15:07:25 [INFO]   Roster: https://www.gofrogs.com/sports/mens-basketball/roster
+15:07:26 [INFO] HTTP Request: GET https://www.gofrogs.com/sports/mens-basketball/roster "HTTP/1.1 308 Permanent Redirect"
+15:07:27 [INFO] HTTP Request: GET https://gofrogs.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:07:27 [INFO]   Table parser returned garbage (avg len 6.1, digit% 100%), trying v3
+15:07:27 [INFO]   Parsed (v3): 16 players
+15:07:27 [INFO]   Matched: 16, Town: +0, HS: +14, Prev: +7, Unmatched: 0
+15:07:27 [INFO] 
+[156/365] UT Rio Grande Valley Vaqueros
+15:07:27 [INFO]   Athletics: https://goutrgv.com
+15:07:28 [INFO] HTTP Request: GET https://goutrgv.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:07:30 [INFO] HTTP Request: GET https://goutrgv.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:07:31 [INFO] HTTP Request: GET https://goutrgv.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:07:34 [INFO] HTTP Request: GET https://goutrgv.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:07:36 [INFO] HTTP Request: GET https://goutrgv.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:07:37 [INFO] HTTP Request: GET https://goutrgv.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:07:39 [INFO] HTTP Request: GET https://goutrgv.com/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:07:42 [INFO] HTTP Request: GET https://goutrgv.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:07:42 [INFO]   No roster page found
+15:07:42 [INFO] 
+[157/365] Texas Southern Tigers
+15:07:42 [INFO]   Athletics: https://www.tsusports.com
+15:07:44 [INFO] HTTP Request: GET https://www.tsusports.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:07:44 [INFO] HTTP Request: GET https://tsusports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:07:45 [INFO] HTTP Request: GET https://www.tsusports.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:07:46 [INFO] HTTP Request: GET https://tsusports.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:07:47 [INFO] HTTP Request: GET https://www.tsusports.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:07:48 [INFO] HTTP Request: GET https://tsusports.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:07:49 [INFO] HTTP Request: GET https://www.tsusports.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:07:50 [INFO] HTTP Request: GET https://tsusports.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:07:51 [INFO] HTTP Request: GET https://www.tsusports.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:07:52 [INFO] HTTP Request: GET https://tsusports.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:07:54 [INFO] HTTP Request: GET https://www.tsusports.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:07:54 [INFO] HTTP Request: GET https://tsusports.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:07:55 [INFO] HTTP Request: GET https://www.tsusports.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:07:56 [INFO] HTTP Request: GET https://tsusports.com/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:07:58 [INFO] HTTP Request: GET https://www.tsusports.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:07:58 [INFO] HTTP Request: GET https://tsusports.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:07:58 [INFO]   No roster page found
+15:07:58 [INFO] 
+[158/365] Texas State Bobcats
+15:07:58 [INFO]   Athletics: https://txstatebobcats.com
+15:07:58 [INFO]   Roster: https://txstatebobcats.com/sports/mens-basketball/roster
+15:08:00 [INFO] HTTP Request: GET https://txstatebobcats.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:08:01 [INFO] HTTP Request: GET https://txst.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:08:01 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+15:08:01 [INFO]   No players parsed from page
+15:08:01 [INFO] 
+[159/365] Texas Tech Red Raiders
+15:08:01 [INFO]   Skipping (HS coverage 62%)
+15:08:01 [INFO] 
+[160/365] Texas Longhorns
+15:08:01 [INFO]   Skipping (HS coverage 100%)
+15:08:01 [INFO] 
+[161/365] UTEP Miners
+15:08:01 [INFO]   Athletics: https://www.utepminers.com
+15:08:01 [INFO]   Roster: https://www.utepminers.com/sports/mens-basketball/roster
+15:08:03 [INFO] HTTP Request: GET https://www.utepminers.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:08:03 [INFO] HTTP Request: GET https://utepminers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:08:03 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+15:08:03 [INFO]   No players parsed from page
+15:08:03 [INFO] 
+[162/365] UTSA Roadrunners
+15:08:03 [INFO]   Athletics: https://www.goutsa.com
+15:08:04 [INFO] HTTP Request: GET https://www.goutsa.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:08:04 [INFO] HTTP Request: GET https://goutsa.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:08:05 [INFO] HTTP Request: GET https://www.goutsa.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:08:07 [INFO] HTTP Request: GET https://goutsa.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:08:07 [INFO] HTTP Request: GET https://www.goutsa.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:08:08 [INFO] HTTP Request: GET https://goutsa.com/sports/mbball/roster "HTTP/1.1 404 Not Found"
+15:08:09 [INFO] HTTP Request: GET https://www.goutsa.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:08:10 [INFO] HTTP Request: GET https://goutsa.com/sports/mbball/roster?view=list "HTTP/1.1 404 Not Found"
+15:08:11 [INFO] HTTP Request: GET https://www.goutsa.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:08:12 [INFO] HTTP Request: GET https://goutsa.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:08:14 [INFO] HTTP Request: GET https://www.goutsa.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:08:14 [INFO] HTTP Request: GET https://goutsa.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:08:15 [INFO] HTTP Request: GET https://www.goutsa.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:08:16 [INFO] HTTP Request: GET https://goutsa.com/sports/mbball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:08:17 [INFO] HTTP Request: GET https://www.goutsa.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:08:20 [INFO] HTTP Request: GET https://goutsa.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:08:20 [INFO]   No roster page found
+15:08:20 [INFO] 
+[163/365] Air Force Falcons
+15:08:20 [INFO]   Athletics: https://www.goairforcefalcons.com
+15:08:20 [INFO]   Roster: https://www.goairforcefalcons.com/sports/mens-basketball/roster
+15:08:20 [INFO] HTTP Request: GET https://www.goairforcefalcons.com/sports/mens-basketball/roster "HTTP/1.1 308 Permanent Redirect"
+15:08:21 [INFO] HTTP Request: GET https://goairforcefalcons.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:08:21 [INFO]   Table parser returned garbage (avg len 6.0, digit% 100%), trying v3
+15:08:21 [INFO]   Parsed (v3): 16 players
+15:08:21 [INFO]   Matched: 16, Town: +0, HS: +16, Prev: +10, Unmatched: 0
+15:08:21 [INFO] 
+[164/365] Army Black Knights
+15:08:21 [INFO]   Athletics: https://goarmywestpoint.com/index.aspx
+15:08:22 [INFO] HTTP Request: GET https://goarmywestpoint.com/index.aspx/sports/mens-basketball/roster "HTTP/1.1 302 Found"
+15:08:23 [INFO] HTTP Request: GET https://goarmywestpoint.com/404 "HTTP/1.1 404 Page Not Found"
+15:08:24 [INFO] HTTP Request: GET https://goarmywestpoint.com/index.aspx/sports/mens-basketball/roster?view=list "HTTP/1.1 302 Found"
+15:08:24 [INFO] HTTP Request: GET https://goarmywestpoint.com/404?view=list "HTTP/1.1 404 Page Not Found"
+15:08:26 [INFO] HTTP Request: GET https://goarmywestpoint.com/index.aspx/sports/mbball/roster "HTTP/1.1 302 Found"
+15:08:27 [INFO] HTTP Request: GET https://goarmywestpoint.com/404 "HTTP/1.1 404 Page Not Found"
+15:08:28 [INFO] HTTP Request: GET https://goarmywestpoint.com/index.aspx/sports/mbball/roster?view=list "HTTP/1.1 302 Found"
+15:08:29 [INFO] HTTP Request: GET https://goarmywestpoint.com/404?view=list "HTTP/1.1 404 Page Not Found"
+15:08:31 [INFO] HTTP Request: GET https://goarmywestpoint.com/index.aspx/sports/mens-basketball/roster/2025-26 "HTTP/1.1 302 Found"
+15:08:31 [INFO] HTTP Request: GET https://goarmywestpoint.com/404 "HTTP/1.1 404 Page Not Found"
+15:08:32 [INFO] HTTP Request: GET https://goarmywestpoint.com/index.aspx/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 302 Found"
+15:08:33 [INFO] HTTP Request: GET https://goarmywestpoint.com/404?view=list "HTTP/1.1 404 Page Not Found"
+15:08:35 [INFO] HTTP Request: GET https://goarmywestpoint.com/index.aspx/sports/mbball/roster/2025-26 "HTTP/1.1 302 Found"
+15:08:35 [INFO] HTTP Request: GET https://goarmywestpoint.com/404 "HTTP/1.1 404 Page Not Found"
+15:08:36 [INFO] HTTP Request: GET https://goarmywestpoint.com/index.aspx/sports/mbball/roster/2025-26?view=list "HTTP/1.1 302 Found"
+15:08:36 [INFO] HTTP Request: GET https://goarmywestpoint.com/404?view=list "HTTP/1.1 404 Page Not Found"
+15:08:36 [INFO]   No roster page found
+15:08:36 [INFO] 
+[165/365] Navy Midshipmen
+15:08:36 [INFO]   Skipping (HS coverage 100%)
+15:08:36 [INFO] 
+[166/365] Utah Utes
+15:08:36 [INFO]   Athletics: https://utahutes.com
+15:08:36 [INFO]   Roster: https://utahutes.com/sports/mens-basketball/roster
+15:08:39 [INFO] HTTP Request: GET https://utahutes.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:08:39 [INFO]   Table parser returned garbage (avg len 6.1, digit% 100%), trying v3
+15:08:39 [INFO]   Parsed (v3): 15 players
+15:08:39 [INFO]   Matched: 12, Town: +0, HS: +12, Prev: +6, Unmatched: 3
+15:08:39 [INFO] 
+[167/365] Utah State Aggies
+15:08:39 [INFO]   Athletics: https://www.utahstateaggies.com
+15:08:40 [INFO] HTTP Request: GET https://www.utahstateaggies.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:08:42 [INFO] HTTP Request: GET https://utahstateaggies.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:08:42 [INFO] HTTP Request: GET https://www.utahstateaggies.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:08:43 [INFO] HTTP Request: GET https://utahstateaggies.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:08:44 [INFO] HTTP Request: GET https://www.utahstateaggies.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:08:44 [INFO] HTTP Request: GET https://utahstateaggies.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:08:46 [INFO] HTTP Request: GET https://www.utahstateaggies.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:08:46 [INFO] HTTP Request: GET https://utahstateaggies.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:08:48 [INFO] HTTP Request: GET https://www.utahstateaggies.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:08:49 [INFO] HTTP Request: GET https://utahstateaggies.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:08:50 [INFO] HTTP Request: GET https://www.utahstateaggies.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:08:50 [INFO] HTTP Request: GET https://utahstateaggies.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:08:52 [INFO] HTTP Request: GET https://www.utahstateaggies.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:08:52 [INFO] HTTP Request: GET https://utahstateaggies.com/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:08:54 [INFO] HTTP Request: GET https://www.utahstateaggies.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:08:54 [INFO] HTTP Request: GET https://utahstateaggies.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:08:55 [INFO]   No roster page found
+15:08:55 [INFO] 
+[168/365] Utah Tech Trailblazers
+15:08:55 [INFO]   Athletics: https://utahtechtrailblazers.com
+15:08:56 [INFO] HTTP Request: GET https://utahtechtrailblazers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:08:58 [INFO] HTTP Request: GET https://utahtechtrailblazers.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:09:00 [INFO] HTTP Request: GET https://utahtechtrailblazers.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:09:02 [INFO] HTTP Request: GET https://utahtechtrailblazers.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:09:04 [INFO] HTTP Request: GET https://utahtechtrailblazers.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:09:06 [INFO] HTTP Request: GET https://utahtechtrailblazers.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:09:08 [INFO] HTTP Request: GET https://utahtechtrailblazers.com/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:09:10 [INFO] HTTP Request: GET https://utahtechtrailblazers.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:09:11 [INFO]   No roster page found
+15:09:11 [INFO] 
+[169/365] Utah Valley Wolverines
+15:09:11 [INFO]   Skipping (HS coverage 100%)
+15:09:11 [INFO] 
+[170/365] VCU Rams
+15:09:11 [INFO]   Athletics: https://www.vcuathletics.com
+15:09:11 [INFO]   Roster: https://www.vcuathletics.com/sports/mens-basketball/roster
+15:09:12 [INFO] HTTP Request: GET https://www.vcuathletics.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:09:13 [INFO] HTTP Request: GET https://vcuathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:09:13 [INFO]   Table parser returned garbage (avg len 1.1, digit% 0%), trying v3
+15:09:13 [INFO]   No players parsed from page
+15:09:13 [INFO] 
+[171/365] VMI Keydets
+15:09:13 [INFO]   Athletics: https://www.vmikeydets.com
+15:09:13 [INFO]   Roster: https://www.vmikeydets.com/sports/mens-basketball/roster
+15:09:14 [INFO] HTTP Request: GET https://www.vmikeydets.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:09:15 [INFO] HTTP Request: GET https://vmikeydets.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:09:15 [INFO]   Parsed (table): 15 players
+15:09:15 [INFO]   Matched: 12, Town: +0, HS: +0, Prev: +0, Unmatched: 3
+15:09:15 [INFO] 
+[172/365] Virginia Tech Hokies
+15:09:15 [INFO]   Athletics: https://www.hokiesports.com
+15:09:16 [INFO] HTTP Request: GET https://www.hokiesports.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:09:17 [INFO] HTTP Request: GET https://hokiesports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:09:18 [INFO] HTTP Request: GET https://www.hokiesports.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:09:19 [INFO] HTTP Request: GET https://hokiesports.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:09:20 [INFO] HTTP Request: GET https://www.hokiesports.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:09:21 [INFO] HTTP Request: GET https://hokiesports.com/sports/mbball/roster "HTTP/1.1 404 Not Found"
+15:09:22 [INFO] HTTP Request: GET https://www.hokiesports.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:09:23 [INFO] HTTP Request: GET https://hokiesports.com/sports/mbball/roster?view=list "HTTP/1.1 404 Not Found"
+15:09:24 [INFO] HTTP Request: GET https://www.hokiesports.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:09:25 [INFO] HTTP Request: GET https://hokiesports.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:09:26 [INFO] HTTP Request: GET https://www.hokiesports.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:09:27 [INFO] HTTP Request: GET https://hokiesports.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:09:28 [INFO] HTTP Request: GET https://www.hokiesports.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:09:29 [INFO] HTTP Request: GET https://hokiesports.com/sports/mbball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:09:30 [INFO] HTTP Request: GET https://www.hokiesports.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:09:32 [INFO] HTTP Request: GET https://hokiesports.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:09:32 [INFO]   No roster page found
+15:09:32 [INFO] 
+[173/365] Washington Huskies
+15:09:32 [INFO]   Athletics: https://www.gohuskies.com
+15:09:32 [INFO]   Roster: https://www.gohuskies.com/sports/mens-basketball/roster
+15:09:33 [INFO] HTTP Request: GET https://www.gohuskies.com/sports/mens-basketball/roster "HTTP/1.1 308 Permanent Redirect"
+15:09:34 [INFO] HTTP Request: GET https://gohuskies.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:09:34 [INFO]   Parsed (table): 16 players
+15:09:34 [INFO]   Matched: 0, Town: +0, HS: +0, Prev: +0, Unmatched: 16
+15:09:34 [INFO] 
+[174/365] Washington State Cougars
+15:09:34 [INFO]   Skipping (HS coverage 67%)
+15:09:34 [INFO] 
+[175/365] Weber State Wildcats
+15:09:34 [INFO]   Athletics: https://www.weberstatesports.com
+15:09:34 [INFO]   Roster: https://www.weberstatesports.com/sports/mens-basketball/roster
+15:09:35 [INFO] HTTP Request: GET https://www.weberstatesports.com/sports/mens-basketball/roster "HTTP/1.1 308 Permanent Redirect"
+15:09:36 [INFO] HTTP Request: GET https://weberstatesports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:09:36 [INFO]   Parsed (table): 15 players
+15:09:36 [INFO]   Matched: 0, Town: +0, HS: +0, Prev: +0, Unmatched: 15
+15:09:36 [INFO] 
+[176/365] West Virginia Mountaineers
+15:09:36 [INFO]   Skipping (HS coverage 100%)
+15:09:36 [INFO] 
+[177/365] Western Carolina Catamounts
+15:09:36 [INFO]   Skipping (HS coverage 93%)
+15:09:36 [INFO] 
+[178/365] Western Illinois Leathernecks
+15:09:36 [INFO]   Skipping (HS coverage 100%)
+15:09:36 [INFO] 
+[179/365] Western Kentucky Hilltoppers
+15:09:36 [INFO]   Skipping (HS coverage 100%)
+15:09:36 [INFO] 
+[180/365] Western Michigan Broncos
+15:09:36 [INFO]   Athletics: https://www.wmubroncos.com
+15:09:36 [INFO]   Roster: https://www.wmubroncos.com/sports/mens-basketball/roster
+15:09:37 [INFO] HTTP Request: GET https://www.wmubroncos.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:09:37 [INFO] HTTP Request: GET https://wmubroncos.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:09:38 [INFO]   Parsed (table): 14 players
+15:09:38 [INFO]   Matched: 14, Town: +0, HS: +0, Prev: +0, Unmatched: 0
+15:09:38 [INFO] 
+[181/365] Wichita State Shockers
+15:09:38 [INFO]   Athletics: https://www.goshockers.com
+15:09:38 [INFO]   Roster: https://www.goshockers.com/sports/mens-basketball/roster
+15:09:39 [INFO] HTTP Request: GET https://www.goshockers.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:09:40 [INFO] HTTP Request: GET https://goshockers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:09:40 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+15:09:40 [INFO]   No players parsed from page
+15:09:40 [INFO] 
+[182/365] Green Bay Phoenix
+15:09:40 [INFO]   Athletics: https://greenbayphoenix.com
+15:09:40 [INFO]   Roster: https://greenbayphoenix.com/sports/mens-basketball/roster
+15:09:41 [INFO] HTTP Request: GET https://greenbayphoenix.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:09:41 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+15:09:41 [INFO]   No players parsed from page
+15:09:41 [INFO] 
+[183/365] Wisconsin Badgers
+15:09:41 [INFO]   Skipping (HS coverage 79%)
+15:09:41 [INFO] 
+[184/365] Milwaukee Panthers
+15:09:41 [INFO]   Athletics: https://www.mkepanthers.com
+15:09:41 [INFO]   Roster: https://www.mkepanthers.com/sports/mens-basketball/roster
+15:09:44 [INFO] HTTP Request: GET https://www.mkepanthers.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:09:44 [INFO] HTTP Request: GET https://mkepanthers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:09:45 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+15:09:45 [INFO]   No players parsed from page
+15:09:45 [INFO] 
+[185/365] Wright State Raiders
+15:09:45 [INFO]   Skipping (HS coverage 100%)
+15:09:45 [INFO] 
+[186/365] Youngstown State Penguins
+15:09:45 [INFO]   Athletics: https://www.ysusports.com
+15:09:45 [INFO]   Roster: https://www.ysusports.com/sports/mens-basketball/roster
+15:09:45 [INFO] HTTP Request: GET https://www.ysusports.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:09:46 [INFO] HTTP Request: GET https://ysusports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:09:46 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+15:09:46 [INFO]   No players parsed from page
+15:09:46 [INFO] 
+[187/365] Abilene Christian Wildcats
+15:09:46 [INFO]   Skipping (HS coverage 100%)
+15:09:46 [INFO] 
+[188/365] Akron Zips
+15:09:46 [INFO]   Skipping (HS coverage 100%)
+15:09:46 [INFO] 
+[189/365] Alabama A&M Bulldogs
+15:09:46 [INFO]   Athletics: https://www.rolltide.com
+15:09:46 [INFO]   Roster: https://www.aamusports.com/sports/mens-basketball/roster
+15:09:47 [INFO] HTTP Request: GET https://www.aamusports.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:09:48 [INFO] HTTP Request: GET https://aamusports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:09:48 [INFO]   Parsed (table): 15 players
+15:09:48 [INFO]   Matched: 13, Town: +0, HS: +0, Prev: +0, Unmatched: 2
+15:09:48 [INFO] 
+[190/365] Alabama Crimson Tide
+15:09:48 [INFO]   Athletics: https://www.aamusports.com
+15:09:48 [INFO]   Roster: https://www.aamusports.com/sports/mens-basketball/roster
+15:09:49 [INFO] HTTP Request: GET https://www.aamusports.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:09:50 [INFO] HTTP Request: GET https://aamusports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:09:50 [INFO]   Parsed (table): 15 players
+15:09:50 [INFO]   Matched: 0, Town: +0, HS: +0, Prev: +0, Unmatched: 15
+15:09:50 [INFO] 
+[191/365] Alabama State Hornets
+15:09:50 [INFO]   Athletics: https://www.bamastatesports.com
+15:09:51 [INFO] HTTP Request: GET https://www.bamastatesports.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:09:52 [INFO] HTTP Request: GET https://bamastatesports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:09:53 [INFO] HTTP Request: GET https://www.bamastatesports.com/sports/mens-basketball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:09:53 [INFO] HTTP Request: GET https://bamastatesports.com/sports/mens-basketball/roster?view=list "HTTP/1.1 200 OK"
+15:09:55 [INFO] HTTP Request: GET https://www.bamastatesports.com/sports/mbball/roster "HTTP/1.1 301 Moved Permanently"
+15:09:55 [INFO] HTTP Request: GET https://bamastatesports.com/sports/mbball/roster "HTTP/1.1 200 OK"
+15:09:57 [INFO] HTTP Request: GET https://www.bamastatesports.com/sports/mbball/roster?view=list "HTTP/1.1 301 Moved Permanently"
+15:09:57 [INFO] HTTP Request: GET https://bamastatesports.com/sports/mbball/roster?view=list "HTTP/1.1 200 OK"
+15:09:59 [INFO] HTTP Request: GET https://www.bamastatesports.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:10:00 [INFO] HTTP Request: GET https://bamastatesports.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 200 OK"
+15:10:01 [INFO] HTTP Request: GET https://www.bamastatesports.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:10:01 [INFO] HTTP Request: GET https://bamastatesports.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:10:03 [INFO] HTTP Request: GET https://www.bamastatesports.com/sports/mbball/roster/2025-26 "HTTP/1.1 301 Moved Permanently"
+15:10:03 [INFO] HTTP Request: GET https://bamastatesports.com/sports/mbball/roster/2025-26 "HTTP/1.1 200 OK"
+15:10:05 [INFO] HTTP Request: GET https://www.bamastatesports.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 301 Moved Permanently"
+15:10:06 [INFO] HTTP Request: GET https://bamastatesports.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 200 OK"
+15:10:06 [INFO]   No roster page found
+15:10:06 [INFO] 
+[192/365] Alcorn State Braves
+15:10:06 [INFO]   Athletics: https://www.alcornsports.com
+15:10:06 [INFO]   Roster: https://www.alcornsports.com/sports/mens-basketball/roster
+15:10:07 [INFO] HTTP Request: GET https://www.alcornsports.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:10:08 [INFO] HTTP Request: GET https://alcornsports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:10:08 [INFO]   Parsed (table): 11 players
+15:10:08 [INFO]   Matched: 10, Town: +0, HS: +0, Prev: +0, Unmatched: 1
+15:10:08 [INFO] 
+[193/365] American University Eagles
+15:10:08 [INFO]   Skipping (HS coverage 100%)
+15:10:08 [INFO] 
+[194/365] Arizona State Sun Devils
+15:10:08 [INFO]   Athletics: https://www.arizonawildcats.com
+15:10:08 [INFO]   Roster: https://www.arizonawildcats.com/sports/mens-basketball/roster
+15:10:11 [INFO] HTTP Request: GET https://www.arizonawildcats.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:10:11 [INFO] HTTP Request: GET https://arizonawildcats.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:10:11 [INFO]   Table parser returned garbage (avg len 1.0, digit% 0%), trying v3
+15:10:11 [INFO]   No players parsed from page
+15:10:11 [INFO] 
+[195/365] Arizona Wildcats
+15:10:11 [INFO]   Athletics: https://sundevils.com
+15:10:12 [INFO] HTTP Request: GET https://sundevils.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:10:14 [INFO] HTTP Request: GET https://sundevils.com/sports/mens-basketball/roster?view=list "HTTP/1.1 404 Not Found"
+15:10:16 [INFO] HTTP Request: GET https://sundevils.com/sports/mbball/roster "HTTP/1.1 404 Not Found"
+15:10:18 [INFO] HTTP Request: GET https://sundevils.com/sports/mbball/roster?view=list "HTTP/1.1 404 Not Found"
+15:10:20 [INFO] HTTP Request: GET https://sundevils.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:10:22 [INFO] HTTP Request: GET https://sundevils.com/sports/mens-basketball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:10:24 [INFO] HTTP Request: GET https://sundevils.com/sports/mbball/roster/2025-26 "HTTP/1.1 404 Not Found"
+15:10:26 [INFO] HTTP Request: GET https://sundevils.com/sports/mbball/roster/2025-26?view=list "HTTP/1.1 404 Not Found"
+15:10:26 [INFO]   No roster page found
+15:10:26 [INFO] 
+[196/365] Arkansas State Red Wolves
+15:10:26 [INFO]   Athletics: https://www.astateredwolves.com
+15:10:26 [INFO]   Roster: https://www.astateredwolves.com/sports/mens-basketball/roster
+15:10:28 [INFO] HTTP Request: GET https://www.astateredwolves.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:10:28 [INFO] HTTP Request: GET https://astateredwolves.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:10:29 [INFO]   Table parser returned garbage (avg len 1.1, digit% 0%), trying v3
+15:10:29 [INFO]   No players parsed from page
+15:10:29 [INFO] 
+[197/365] Arkansas Razorbacks
+15:10:29 [INFO]   Athletics: https://arkansasrazorbacks.com
+15:10:31 [INFO] HTTP Request: GET https://arkansasrazorbacks.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:10:32 [INFO] HTTP Request: GET https://arkansasrazorbacks.com/sports/mens-basketball/roster?view=list "HTTP/1.1 404 Not Found"
+15:10:34 [INFO] HTTP Request: GET https://arkansasrazorbacks.com/sports/mbball/roster "HTTP/1.1 404 Not Found"
+15:10:36 [INFO] HTTP Request: GET https://arkansasrazorbacks.com/sports/mbball/roster?view=list "HTTP/1.1 404 Not Found"
+15:10:38 [INFO] HTTP Request: GET https://arkansasrazorbacks.com/sports/mens-basketball/roster/2025-26 "HTTP/1.1 404 Not Found"

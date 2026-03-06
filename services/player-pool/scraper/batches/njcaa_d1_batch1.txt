@@ -1,0 +1,20 @@
+albanytechnicalcollege|Albany Technical College
+alleganycollegeofmaryland|Allegany College of Maryland
+andrewcollege|Andrew College
+angelinacollege|Angelina College
+arizonawesterncollege|Arizona Western College
+baltimorecitycommunitycollege|Baltimore City CC
+bartoncommunitycollege|Barton CC
+batonrougecommunitycollege|Baton Rouge CC
+bishopstatecommunitycollege|Bishop State CC
+blinncollege|Blinn College
+bossierparishcommunitycollege|Bossier Parish CC
+brunswickcommunitycollege|Brunswick CC
+butlercommunitycollegeks|Butler CC - KS
+caldwellcommunitycollegetechnicali|Caldwell CC & Technical Institute
+calhouncommunitycollege|Calhoun CC
+capefearcommunitycollege|Cape Fear CC
+caspercollege|Casper College
+centralarizonacollege|Central Arizona College
+centralgeorgiatechnicalcollege|Central Georgia Technical College
+centralwyomingcollege|Central Wyoming College

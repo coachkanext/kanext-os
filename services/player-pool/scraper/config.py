@@ -6,7 +6,7 @@ SPORT = "mbkb"
 SEASON = "2025-26"
 
 # robots.txt says Crawl-Delay: 10 for generic user-agents
-CRAWL_DELAY = 10  # seconds between requests
+CRAWL_DELAY = 2  # seconds between requests
 
 DB_CONFIG = {
     "host": "localhost",

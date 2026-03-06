@@ -1,0 +1,21 @@
+emory|Emory
+randolph-macon|Randolph-Macon
+mary-washington|Mary Washington
+chris-newport|Chris. Newport
+trinity-tx|Trinity (TX)
+va-wesleyan|Va. Wesleyan
+roanoke|Roanoke
+mount-union|Mount Union
+otterbein|Otterbein
+john-carroll|John Carroll
+depauw|DePauw
+denison|Denison
+pitt-greensburg|Pitt.-Greensburg
+ohio-northern|Ohio Northern
+chicago|UChicago
+ill-wesleyan|Ill. Wesleyan
+washington-st-louis|WashU
+carthage|Carthage
+elmhurst|Elmhurst
+webster|Webster
+north-park|North Park

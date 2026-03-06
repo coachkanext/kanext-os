@@ -1,0 +1,29 @@
+tabor|Tabor College
+talladegaal|Talladega College
+taylorin|Taylor University
+tennesseewesleyan|Tennessee Wesleyan University
+texascollege|Texas College
+texaswesleyan|Texas Wesleyan University
+collegeofidaho|The College of Idaho
+themasters|The Master's University
+thomas|Thomas University
+tougalooms|Tougaloo College
+trinitychristianil|Trinity Christian College
+truettmcconnell|Truett-McConnell University
+unioncommonwealth|Union College (KY)
+antelopevalleyca|University of Antelope Valley
+uhsp|UHSP (St. Louis)
+michigandearborn|Michigan-Dearborn
+mobile|University of Mobile
+montanawesternmt|Montana Western
+untdallas|North Texas at Dallas
+northwesternohio|Northwestern Ohio
+pikevilleky|University of Pikeville
+providencemt|University of Providence
+riogrande|University of Rio Grande
+saintfrancisin|Saint Francis (IN)
+saintmary|University of Saint Mary
+scienceandarts|Science & Arts of Oklahoma
+stfrancisil|St. Francis (IL)
+cumberlandsky|University of the Cumberlands
+southwest|University of the Southwest

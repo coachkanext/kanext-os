@@ -1,0 +1,20 @@
+dallascollegecedarvalley|Dallas College Cedar Valley
+dallascollegeeastfield|Dallas College Eastfield
+dallascollegemountainview|Dallas College Mountain View
+dallascollegenorthlake|Dallas College North Lake
+dallascollegerichland|Dallas College Richland
+delawarecountycommunitycollege|Delaware County CC
+dutchesscommunitycollege|Dutchess CC
+fingerlakescommunitycollege|Finger Lakes CC
+fultonmontgomerycommunitycollege|Fulton-Montgomery CC
+gatewaycommunitycollegect|Gateway CC - CT
+geneseecommunitycollege|Genesee CC
+harrisburgareacommunitycollege|Harrisburg Area CC
+herkimercollege|Herkimer College
+holyokecommunitycollege|Holyoke CC
+hostoscommunitycollege|Hostos CC
+hudsonvalleycommunitycollege|Hudson Valley CC
+jeffersoncommunitycollege|Jefferson CC
+jolietjuniorcollege|Joliet Junior College
+kingsboroughcommunitycollege|Kingsborough CC
+laguardiacommunitycollege|LaGuardia CC

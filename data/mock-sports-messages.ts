@@ -485,6 +485,7 @@ export interface SportsDMThread {
   participantRole: string;
   lastMessagePreview: string;
   lastMessageTime: string;
+  lastMessageTimestamp: string;
   unreadCount: number;
   messages: SportsMessage[];
   /** Data provenance tag */
@@ -792,6 +793,7 @@ export const SPORTS_DM_THREADS: SportsDMThread[] = [
     participantRole: 'Assistant Coach',
     lastMessagePreview: 'Film will be tagged and ready by 3 PM.',
     lastMessageTime: '9:50 AM',
+    lastMessageTimestamp: '2026-02-16T09:50:00',
     unreadCount: 1,
     messages: dmThread1Messages,
     data_source: 'demo_seed',
@@ -804,6 +806,7 @@ export const SPORTS_DM_THREADS: SportsDMThread[] = [
     participantRole: 'Recruit (PG, 6\'1", Miami FL)',
     lastMessagePreview: 'Let me know if your parents have any questions.',
     lastMessageTime: 'Feb 15',
+    lastMessageTimestamp: '2026-02-15T09:02:00',
     unreadCount: 0,
     messages: dmThread2Messages,
     data_source: 'demo_seed',
@@ -816,6 +819,7 @@ export const SPORTS_DM_THREADS: SportsDMThread[] = [
     participantRole: 'Athletic Trainer',
     lastMessagePreview: 'Full status report after Thursday\'s practice.',
     lastMessageTime: '9:20 AM',
+    lastMessageTimestamp: '2026-02-17T09:20:00',
     unreadCount: 1,
     messages: dmThread3Messages,
     data_source: 'demo_seed',
@@ -828,6 +832,7 @@ export const SPORTS_DM_THREADS: SportsDMThread[] = [
     participantRole: 'Compliance Officer',
     lastMessagePreview: 'I can process the certification same day.',
     lastMessageTime: '2:00 PM',
+    lastMessageTimestamp: '2026-02-16T14:00:00',
     unreadCount: 1,
     messages: dmThread4Messages,
     data_source: 'demo_seed',
@@ -840,6 +845,7 @@ export const SPORTS_DM_THREADS: SportsDMThread[] = [
     participantRole: 'Parent of Recruit',
     lastMessagePreview: 'We\'re looking forward to seeing everything Carroll College has to offer.',
     lastMessageTime: 'Feb 15',
+    lastMessageTimestamp: '2026-02-15T09:20:00',
     unreadCount: 0,
     messages: dmThread5Messages,
     data_source: 'demo_seed',
@@ -852,6 +858,7 @@ export const SPORTS_DM_THREADS: SportsDMThread[] = [
     participantRole: 'Athletic Director',
     lastMessagePreview: 'Approved. Good luck on the road.',
     lastMessageTime: '4:30 PM',
+    lastMessageTimestamp: '2026-02-14T16:30:00',
     unreadCount: 1,
     messages: dmThread6Messages,
     data_source: 'demo_seed',
@@ -864,6 +871,7 @@ export const SPORTS_DM_THREADS: SportsDMThread[] = [
     participantRole: 'Head Coach, UM Western',
     lastMessagePreview: '3 PM it is. See you on the 22nd.',
     lastMessageTime: 'Feb 14',
+    lastMessageTimestamp: '2026-02-14T09:20:00',
     unreadCount: 1,
     messages: dmThread7Messages,
     data_source: 'demo_seed',
@@ -876,6 +884,7 @@ export const SPORTS_DM_THREADS: SportsDMThread[] = [
     participantRole: 'Academic Advisor',
     lastMessagePreview: 'I\'ll follow up with you next Monday.',
     lastMessageTime: '11:30 AM',
+    lastMessageTimestamp: '2026-02-17T11:30:00',
     unreadCount: 0,
     messages: dmThread8Messages,
     data_source: 'demo_seed',

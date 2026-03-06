@@ -1,0 +1,671 @@
+15:18:39 [INFO] Weight scrape: 150/298 teams need weight for ncaa_d2
+15:18:39 [INFO] 
+[1/150] Adams St.
+15:18:40 [INFO] HTTP Request: GET https://asugrizzlies.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:18:42 [INFO] HTTP Request: GET https://asugrizzlies.com/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:18:42 [INFO]   No roster found (tried 2 URLs)
+15:18:42 [INFO] 
+[2/150] Adelphi
+15:18:44 [INFO] HTTP Request: GET https://aupanthers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:18:45 [INFO]   Roster parsed (12 players) but no weight column/data
+15:18:45 [INFO] 
+[3/150] Alas. Fairbanks
+15:18:46 [INFO] HTTP Request: GET https://alaskananooks.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:18:47 [INFO]   Roster parsed (14 players) but no weight column/data
+15:18:47 [INFO] 
+[4/150] Albany St. (GA)
+15:18:48 [INFO] HTTP Request: GET https://asugoldenrams.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:18:50 [INFO] HTTP Request: GET https://asugoldenrams.com/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:18:50 [INFO]   No roster found (tried 2 URLs)
+15:18:50 [INFO] 
+[5/150] Allen
+15:18:53 [INFO]   No roster found (tried 2 URLs)
+15:18:53 [INFO] 
+[6/150] American Int'l
+15:18:56 [INFO] HTTP Request: GET https://aicyellowjackets.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:18:56 [INFO]   Roster parsed (15 players) but no weight column/data
+15:18:56 [INFO] 
+[7/150] Ark.-Fort Smith
+15:18:59 [INFO] HTTP Request: GET https://uafortsmithlions.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:18:59 [INFO]   Roster parsed (18 players) but no weight column/data
+15:18:59 [INFO] 
+[8/150] Ark.-Monticello
+15:19:00 [INFO] HTTP Request: GET https://uamsports.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:19:02 [INFO] HTTP Request: GET https://www.uamsports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:02 [INFO]   Roster parsed (14 players) but no weight column/data
+15:19:02 [INFO] 
+[9/150] Arkansas Tech
+15:19:02 [INFO] HTTP Request: GET https://arkansastechsports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:02 [INFO]   Roster parsed (18 players) but no weight column/data
+15:19:02 [INFO] 
+[10/150] Ashland
+15:19:04 [INFO] HTTP Request: GET https://goashlandeagles.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:05 [INFO]   Roster parsed (19 players) but no weight column/data
+15:19:05 [INFO] 
+[11/150] AUM
+15:19:06 [INFO] HTTP Request: GET https://aumathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:07 [INFO]   https://aumathletics.com
+15:19:07 [INFO]   Parsed: 12 players, Matched: 12, Wt: +12, Unmatched: 0
+15:19:07 [INFO] 
+[12/150] Azusa Pacific
+15:19:08 [INFO] HTTP Request: GET https://apu.edu/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:19:09 [INFO] HTTP Request: GET https://www.apu.edu/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:19:10 [INFO] HTTP Request: GET https://apu.edu/roster.aspx?path=mbball "HTTP/1.1 301 Moved Permanently"
+15:19:10 [INFO] HTTP Request: GET https://www.apu.edu/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:19:10 [INFO]   No roster found (tried 2 URLs)
+15:19:10 [INFO] 
+[13/150] Barton
+15:19:13 [INFO] HTTP Request: GET https://bartonbulldogs.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:13 [INFO]   Roster parsed (19 players) but no weight column/data
+15:19:13 [INFO] 
+[14/150] Benedict
+15:19:15 [INFO] HTTP Request: GET https://benedicttigers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:15 [INFO]   Roster parsed (13 players) but no weight column/data
+15:19:15 [INFO] 
+[15/150] Bluefield St.
+15:19:19 [INFO]   No roster found (tried 2 URLs)
+15:19:19 [INFO] 
+[16/150] Cal Poly Humboldt
+15:19:19 [INFO]   No athletics URL found
+15:19:19 [INFO] 
+[17/150] Cal Poly Pomona
+15:19:22 [INFO] HTTP Request: GET https://broncoathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:22 [INFO]   Roster parsed (14 players) but no weight column/data
+15:19:22 [INFO] 
+[18/150] Cal St. Dom. Hills
+15:19:23 [INFO] HTTP Request: GET https://gotoros.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:23 [INFO]   https://gotoros.com
+15:19:23 [INFO]   Parsed: 14 players, Matched: 0, Wt: +0, Unmatched: 14
+15:19:23 [INFO] 
+[19/150] Cal State LA
+15:19:25 [INFO] HTTP Request: GET https://lagoldeneagles.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:26 [INFO]   https://lagoldeneagles.com
+15:19:26 [INFO]   Parsed: 15 players, Matched: 10, Wt: +10, Unmatched: 5
+15:19:26 [INFO] 
+[20/150] Cameron
+15:19:27 [INFO] HTTP Request: GET https://cameronaggies.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:28 [INFO]   Roster parsed (14 players) but no weight column/data
+15:19:28 [INFO] 
+[21/150] Carson-Newman
+15:19:29 [INFO] HTTP Request: GET https://cneagles.com/sports/mens-basketball/roster "HTTP/1.1 403 Forbidden"
+15:19:31 [INFO] HTTP Request: GET https://cneagles.com/roster.aspx?path=mbball "HTTP/1.1 403 Forbidden"
+15:19:31 [INFO]   No roster found (tried 2 URLs)
+15:19:31 [INFO] 
+[22/150] Catawba
+15:19:35 [INFO]   No roster found (tried 2 URLs)
+15:19:35 [INFO] 
+[23/150] Central Okla.
+15:19:37 [INFO] HTTP Request: GET https://bronchosports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:38 [INFO]   Roster parsed (7 players) but no weight column/data
+15:19:38 [INFO] 
+[24/150] Central St. (OH)
+15:19:41 [INFO] HTTP Request: GET https://maraudersports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:42 [INFO]   Roster parsed (15 players) but no weight column/data
+15:19:42 [INFO] 
+[25/150] Chadron St.
+15:19:43 [INFO] HTTP Request: GET https://chadroneagles.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:19:44 [INFO] HTTP Request: GET https://chadroneagles.com/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:19:44 [INFO]   No roster found (tried 2 URLs)
+15:19:44 [INFO] 
+[26/150] Chaminade
+15:19:47 [INFO] HTTP Request: GET https://goswords.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:19:49 [INFO] HTTP Request: GET https://goswords.com/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:19:49 [INFO]   No roster found (tried 2 URLs)
+15:19:49 [INFO] 
+[27/150] Charleston (WV)
+15:19:50 [INFO] HTTP Request: GET https://ucgoldeneagles.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:51 [INFO]   Roster parsed (19 players) but no weight column/data
+15:19:51 [INFO] 
+[28/150] Chowan
+15:19:53 [INFO] HTTP Request: GET https://gocuhawks.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:53 [INFO]   Roster parsed (17 players) but no weight column/data
+15:19:53 [INFO] 
+[29/150] Claflin
+15:19:54 [INFO] HTTP Request: GET https://athletics.claflin.edu/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:54 [INFO]   Roster parsed (17 players) but no weight column/data
+15:19:54 [INFO] 
+[30/150] Clark Atlanta
+15:19:57 [INFO] HTTP Request: GET https://clarkatlantasports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:19:57 [INFO]   Roster parsed (15 players) but no weight column/data
+15:19:57 [INFO] 
+[31/150] Coker
+15:19:58 [INFO] HTTP Request: GET https://cokercobras.com/sports/mens-basketball/roster "HTTP/1.1 403 Forbidden"
+15:20:00 [INFO] HTTP Request: GET https://cokercobras.com/roster.aspx?path=mbball "HTTP/1.1 403 Forbidden"
+15:20:00 [INFO]   No roster found (tried 2 URLs)
+15:20:00 [INFO] 
+[32/150] Colo. Christian
+15:20:02 [INFO] HTTP Request: GET https://ccucougars.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:20:03 [INFO]   Roster parsed (17 players) but no weight column/data
+15:20:03 [INFO] 
+[33/150] Colo. Sch. of Mines
+15:20:06 [INFO]   No roster found (tried 2 URLs)
+15:20:06 [INFO] 
+[34/150] Colorado Mesa
+15:20:10 [INFO]   No roster found (tried 2 URLs)
+15:20:10 [INFO] 
+[35/150] Concordia-St. Paul
+15:20:14 [INFO] HTTP Request: GET https://cugoldenbears.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:20:17 [INFO] HTTP Request: GET https://cugoldenbears.com/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:20:17 [INFO]   No roster found (tried 2 URLs)
+15:20:17 [INFO] 
+[36/150] Converse
+15:20:19 [INFO] HTTP Request: GET https://converse.edu/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:20:22 [INFO] HTTP Request: GET https://www.converse.edu/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:20:22 [INFO] HTTP Request: GET https://converse.edu/roster.aspx?path=mbball "HTTP/1.1 301 Moved Permanently"
+15:20:24 [INFO] HTTP Request: GET https://www.converse.edu/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:20:24 [INFO]   No roster found (tried 2 URLs)
+15:20:24 [INFO] 
+[37/150] CSU Pueblo
+15:20:25 [INFO] HTTP Request: GET https://gothunderwolves.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:20:26 [INFO]   https://gothunderwolves.com
+15:20:26 [INFO]   Parsed: 16 players, Matched: 13, Wt: +13, Unmatched: 3
+15:20:26 [INFO] 
+[38/150] CSUSB
+15:20:27 [INFO] HTTP Request: GET https://csusbathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:20:27 [INFO]   https://csusbathletics.com
+15:20:27 [INFO]   Parsed: 15 players, Matched: 12, Wt: +12, Unmatched: 3
+15:20:27 [INFO] 
+[39/150] CUI
+15:20:29 [INFO] HTTP Request: GET https://cuigoldeneagles.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:20:29 [INFO]   https://cuigoldeneagles.com
+15:20:29 [INFO]   Parsed: 13 players, Matched: 0, Wt: +0, Unmatched: 13
+15:20:29 [INFO] 
+[40/150] D'Youville
+15:20:33 [INFO]   No roster found (tried 2 URLs)
+15:20:33 [INFO] 
+[41/150] Davenport
+15:20:36 [INFO]   No roster found (tried 2 URLs)
+15:20:36 [INFO] 
+[42/150] Davis & Elkins
+15:20:39 [INFO] HTTP Request: GET https://senatornation.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:20:39 [INFO]   https://senatornation.com
+15:20:39 [INFO]   Parsed: 16 players, Matched: 10, Wt: +0, Unmatched: 6
+15:20:39 [INFO] 
+[43/150] Dist. Columbia
+15:20:41 [INFO] HTTP Request: GET https://udcfirebirds.com/sports/mens-basketball/roster "HTTP/1.1 403 Forbidden"
+15:20:42 [INFO] HTTP Request: GET https://udcfirebirds.com/roster.aspx?path=mbball "HTTP/1.1 403 Forbidden"
+15:20:42 [INFO]   No roster found (tried 2 URLs)
+15:20:42 [INFO] 
+[44/150] Dominican (NY)
+15:20:47 [INFO] HTTP Request: GET https://chargerathletics.com/sports/mens-basketball/roster "HTTP/1.1 403 Forbidden"
+15:20:47 [INFO] HTTP Request: GET https://chargerathletics.com/roster.aspx?path=mbball "HTTP/1.1 403 Forbidden"
+15:20:47 [INFO]   No roster found (tried 2 URLs)
+15:20:47 [INFO] 
+[45/150] East Central
+15:20:50 [INFO] HTTP Request: GET https://ecutigers.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:20:52 [INFO] HTTP Request: GET https://ecutigers.com/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:20:52 [INFO]   No roster found (tried 2 URLs)
+15:20:52 [INFO] 
+[46/150] East Stroudsburg
+15:20:54 [INFO] HTTP Request: GET https://esuwarriors.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:20:54 [INFO]   Roster parsed (16 players) but no weight column/data
+15:20:54 [INFO] 
+[47/150] Edinboro
+15:20:56 [INFO] HTTP Request: GET https://gofightingscots.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:20:59 [INFO] HTTP Request: GET https://gofightingscots.com/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:20:59 [INFO]   No roster found (tried 2 URLs)
+15:20:59 [INFO] 
+[48/150] Edward Waters
+15:21:01 [INFO]   No roster found (tried 2 URLs)
+15:21:01 [INFO] 
+[49/150] Elizabeth City St.
+15:21:05 [INFO] HTTP Request: GET https://ecsuvikings.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:21:05 [INFO]   Roster parsed (19 players) but no weight column/data
+15:21:05 [INFO] 
+[50/150] Emmanuel (GA)
+15:21:06 [INFO] HTTP Request: GET https://goeclions.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:21:07 [INFO] HTTP Request: GET https://goeulions.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:21:08 [INFO]   Roster parsed (21 players) but no weight column/data
+15:21:08 [INFO] 
+[51/150] Fayetteville St.
+15:21:08 [INFO] HTTP Request: GET https://fsubroncos.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:21:10 [INFO] HTTP Request: GET https://fsubroncos.com/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:21:10 [INFO]   No roster found (tried 2 URLs)
+15:21:10 [INFO] 
+[52/150] Felician
+15:21:13 [INFO] HTTP Request: GET https://felicianathletics.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:21:14 [INFO] HTTP Request: GET https://felicianuathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:21:14 [INFO]   Roster parsed (18 players) but no weight column/data
+15:21:14 [INFO] 
+[53/150] Ferris St.
+15:21:14 [INFO] HTTP Request: GET https://ferrisstatebulldogs.com/sports/mens-basketball/roster "HTTP/1.1 403 Forbidden"
+15:21:16 [INFO] HTTP Request: GET https://ferrisstatebulldogs.com/roster.aspx?path=mbball "HTTP/1.1 403 Forbidden"
+15:21:16 [INFO]   No roster found (tried 2 URLs)
+15:21:16 [INFO] 
+[54/150] Findlay
+15:21:19 [INFO] HTTP Request: GET https://athletics.findlay.edu/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:21:19 [INFO] HTTP Request: GET https://findlayoilers.com/ "HTTP/1.1 404 Not Found"
+15:21:20 [INFO] HTTP Request: GET https://athletics.findlay.edu/roster.aspx?path=mbball "HTTP/1.1 301 Moved Permanently"
+15:21:22 [INFO] HTTP Request: GET https://findlayoilers.com/?path=mbball "HTTP/1.1 404 Not Found"
+15:21:22 [INFO]   No roster found (tried 2 URLs)
+15:21:22 [INFO] 
+[55/150] Fort Valley St.
+15:21:23 [INFO] HTTP Request: GET https://fvsusports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:21:24 [INFO]   Roster parsed (12 players) but no weight column/data
+15:21:24 [INFO] 
+[56/150] Franklin Pierce
+15:21:25 [INFO] HTTP Request: GET https://fpuravens.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:21:25 [INFO]   Roster parsed (31 players) but no weight column/data
+15:21:25 [INFO] 
+[57/150] Frostburg St.
+15:21:27 [INFO] HTTP Request: GET https://frostburgsports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:21:27 [INFO]   Roster parsed (20 players) but no weight column/data
+15:21:27 [INFO] 
+[58/150] Ga. Southwestern
+15:21:29 [INFO] HTTP Request: GET https://gswcanes.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:21:30 [INFO]   https://gswcanes.com
+15:21:30 [INFO]   Parsed: 13 players, Matched: 0, Wt: +0, Unmatched: 13
+15:21:30 [INFO] 
+[59/150] Georgia College
+15:21:31 [INFO] HTTP Request: GET https://gcsubobcats.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:21:31 [INFO]   Roster parsed (17 players) but no weight column/data
+15:21:31 [INFO] 
+[60/150] Georgian Court
+15:21:36 [INFO] HTTP Request: GET https://gculions.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:21:36 [INFO]   Roster parsed (24 players) but no weight column/data
+15:21:36 [INFO] 
+[61/150] Glenville St.
+15:21:38 [INFO] HTTP Request: GET https://glenville.edu/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:21:40 [INFO] HTTP Request: GET https://www.glenville.edu/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:21:40 [INFO] HTTP Request: GET https://glenville.edu/roster.aspx?path=mbball "HTTP/1.1 301 Moved Permanently"
+15:21:41 [INFO] HTTP Request: GET https://www.glenville.edu/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:21:41 [INFO]   No roster found (tried 2 URLs)
+15:21:41 [INFO] 
+[62/150] Hawaii Hilo
+15:21:43 [INFO] HTTP Request: GET https://hiloathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:21:43 [INFO]   Roster parsed (4 players) but no weight column/data
+15:21:43 [INFO] 
+[63/150] Hawaii Pacific
+15:21:45 [INFO] HTTP Request: GET https://hpusharks.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:21:45 [INFO]   Roster parsed (17 players) but no weight column/data
+15:21:45 [INFO] 
+[64/150] Henderson St.
+15:21:47 [INFO] HTTP Request: GET https://hsusports.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:21:48 [INFO] HTTP Request: GET https://hsusports.com/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:21:48 [INFO]   No roster found (tried 2 URLs)
+15:21:48 [INFO] 
+[65/150] Ill. Springfield
+15:21:51 [INFO] HTTP Request: GET https://uisprairiestars.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:21:51 [INFO]   https://uisprairiestars.com
+15:21:51 [INFO]   Parsed: 15 players, Matched: 14, Wt: +0, Unmatched: 1
+15:21:51 [INFO] 
+[66/150] Kentucky St.
+15:21:52 [INFO] HTTP Request: GET https://ksuthorobreds.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:21:53 [INFO]   Roster parsed (14 players) but no weight column/data
+15:21:53 [INFO] 
+[67/150] King (TN)
+15:21:55 [INFO] HTTP Request: GET https://kingtornado.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:21:56 [INFO] HTTP Request: GET https://kingtornado.com/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:21:56 [INFO]   No roster found (tried 2 URLs)
+15:21:56 [INFO] 
+[68/150] Lane
+15:21:59 [INFO] HTTP Request: GET https://golcdragons.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:21:59 [INFO]   Roster parsed (13 players) but no weight column/data
+15:21:59 [INFO] 
+[69/150] LeMoyne-Owen
+15:22:01 [INFO] HTTP Request: GET https://athletics.loc.edu/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:01 [INFO]   Roster parsed (12 players) but no weight column/data
+15:22:01 [INFO] 
+[70/150] Lewis
+15:22:03 [INFO] HTTP Request: GET https://lewisflyers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:03 [INFO]   Roster parsed (13 players) but no weight column/data
+15:22:03 [INFO] 
+[71/150] Lincoln (PA)
+15:22:05 [INFO] HTTP Request: GET https://lulions.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:06 [INFO]   Roster parsed (13 players) but no weight column/data
+15:22:06 [INFO] 
+[72/150] Livingstone
+15:22:08 [INFO] HTTP Request: GET https://bluebearathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:08 [INFO]   Roster parsed (23 players) but no weight column/data
+15:22:08 [INFO] 
+[73/150] Malone
+15:22:09 [INFO] HTTP Request: GET https://malonepioneers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:09 [INFO]   Roster parsed (18 players) but no weight column/data
+15:22:09 [INFO] 
+[74/150] Mansfield
+15:22:11 [INFO] HTTP Request: GET https://gomounties.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:11 [INFO]   Roster parsed (11 players) but no weight column/data
+15:22:11 [INFO] 
+[75/150] McKendree
+15:22:13 [INFO] HTTP Request: GET https://mckbearcats.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:13 [INFO]   Roster parsed (15 players) but no weight column/data
+15:22:13 [INFO] 
+[76/150] Menlo
+15:22:15 [INFO] HTTP Request: GET https://menloathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:15 [INFO]   Roster parsed (15 players) but no weight column/data
+15:22:15 [INFO] 
+[77/150] Mercy
+15:22:17 [INFO] HTTP Request: GET https://mercyathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:17 [INFO]   https://mercyathletics.com
+15:22:17 [INFO]   Parsed: 11 players, Matched: 0, Wt: +0, Unmatched: 11
+15:22:17 [INFO] 
+[78/150] Miles
+15:22:19 [INFO] HTTP Request: GET https://milesgoldenbears.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:19 [INFO]   https://milesgoldenbears.com/
+15:22:19 [INFO]   Parsed: 20 players, Matched: 2, Wt: +0, Unmatched: 18
+15:22:19 [INFO] 
+[79/150] Minn. Duluth
+15:22:21 [INFO] HTTP Request: GET https://umdbulldogs.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:21 [INFO]   Roster parsed (16 players) but no weight column/data
+15:22:21 [INFO] 
+[80/150] Minnesota St.
+15:22:23 [INFO] HTTP Request: GET https://msumavericks.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:23 [INFO]   https://msumavericks.com
+15:22:23 [INFO]   Parsed: 15 players, Matched: 13, Wt: +13, Unmatched: 2
+15:22:23 [INFO] 
+[81/150] Missouri S&T
+15:22:25 [INFO] HTTP Request: GET https://missouristatebears.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:25 [INFO]   https://missouristatebears.com
+15:22:25 [INFO]   Parsed: 13 players, Matched: 0, Wt: +0, Unmatched: 13
+15:22:25 [INFO] 
+[82/150] Missouri Western
+15:22:27 [INFO] HTTP Request: GET https://gogriffons.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:27 [INFO]   https://gogriffons.com
+15:22:27 [INFO]   Parsed: 13 players, Matched: 10, Wt: +10, Unmatched: 3
+15:22:27 [INFO] 
+[83/150] Molloy
+15:22:29 [INFO] HTTP Request: GET https://molloylions.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:22:31 [INFO] HTTP Request: GET https://molloylions.com/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:22:31 [INFO]   No roster found (tried 2 URLs)
+15:22:31 [INFO] 
+[84/150] Mont. St. Billings
+15:22:33 [INFO] HTTP Request: GET https://msubsports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:33 [INFO]   Roster parsed (13 players) but no weight column/data
+15:22:33 [INFO] 
+[85/150] Montevallo
+15:22:35 [INFO] HTTP Request: GET https://montevallofalcons.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:35 [INFO]   Roster parsed (16 players) but no weight column/data
+15:22:35 [INFO] 
+[86/150] Morehouse
+15:22:37 [INFO] HTTP Request: GET https://athletics.morehouse.edu/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:22:37 [INFO] HTTP Request: GET https://morehouseathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:37 [INFO]   Roster parsed (19 players) but no weight column/data
+15:22:37 [INFO] 
+[87/150] MSU Denver
+15:22:39 [INFO] HTTP Request: GET https://roadrunnersathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:39 [INFO]   https://roadrunnersathletics.com
+15:22:39 [INFO]   Parsed: 16 players, Matched: 14, Wt: +6, Unmatched: 2
+15:22:39 [INFO] 
+[88/150] MSU Moorhead
+15:22:40 [INFO] HTTP Request: GET https://msumdragons.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:22:41 [INFO] HTTP Request: GET https://www.msumdragons.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:41 [INFO]   Roster parsed (14 players) but no weight column/data
+15:22:41 [INFO] 
+[89/150] N.M. Highlands
+15:22:43 [INFO] HTTP Request: GET https://nmhucowboys.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:22:43 [INFO] HTTP Request: GET https://nmhuathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:44 [INFO]   Roster parsed (39 players) but no weight column/data
+15:22:44 [INFO] 
+[90/150] Newman
+15:22:45 [INFO] HTTP Request: GET https://newmanjets.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:45 [INFO]   Roster parsed (5 players) but no weight column/data
+15:22:45 [INFO] 
+[91/150] North Greenville
+15:22:48 [INFO]   No roster found (tried 2 URLs)
+15:22:48 [INFO] 
+[92/150] Northwestern Okla.
+15:22:51 [INFO] HTTP Request: GET https://riderangersride.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:51 [INFO]   Roster parsed (20 players) but no weight column/data
+15:22:51 [INFO] 
+[93/150] Northwood
+15:22:52 [INFO] HTTP Request: GET https://timberwolves.gonorthwood.com/sports/mens-basketball/roster "HTTP/1.1 403 Forbidden"
+15:22:54 [INFO] HTTP Request: GET https://timberwolves.gonorthwood.com/roster.aspx?path=mbball "HTTP/1.1 403 Forbidden"
+15:22:54 [INFO]   No roster found (tried 2 URLs)
+15:22:54 [INFO] 
+[94/150] Nova Southeastern
+15:22:57 [INFO] HTTP Request: GET https://nsusharks.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:57 [INFO]   Roster parsed (15 players) but no weight column/data
+15:22:57 [INFO] 
+[95/150] Okla. Christian
+15:22:59 [INFO] HTTP Request: GET https://oceagles.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:22:59 [INFO]   Roster parsed (16 players) but no weight column/data
+15:22:59 [INFO] 
+[96/150] P.R.-Bayamon
+15:22:59 [INFO]   No athletics URL found
+15:22:59 [INFO] 
+[97/150] P.R.-Mayaguez
+15:22:59 [INFO]   No athletics URL found
+15:22:59 [INFO] 
+[98/150] P.R.-Rio Piedras
+15:22:59 [INFO]   No athletics URL found
+15:22:59 [INFO] 
+[99/150] Purdue Northwest
+15:23:02 [INFO]   No roster found (tried 2 URLs)
+15:23:02 [INFO] 
+[100/150] Quincy
+15:23:05 [INFO] HTTP Request: GET https://quhawks.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:05 [INFO]   Roster parsed (13 players) but no weight column/data
+15:23:05 [INFO] 
+[101/150] Saginaw Valley
+15:23:07 [INFO] HTTP Request: GET https://svsucardinals.com/sports/mens-basketball/roster "HTTP/1.1 403 Forbidden"
+15:23:08 [INFO] HTTP Request: GET https://svsucardinals.com/roster.aspx?path=mbball "HTTP/1.1 403 Forbidden"
+15:23:08 [INFO]   No roster found (tried 2 URLs)
+15:23:08 [INFO] 
+[102/150] Saint Anselm
+15:23:11 [INFO] HTTP Request: GET https://saintanselmhawks.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:11 [INFO]   https://saintanselmhawks.com
+15:23:11 [INFO]   Parsed: 15 players, Matched: 13, Wt: +12, Unmatched: 2
+15:23:11 [INFO] 
+[103/150] Salem (WV)
+15:23:13 [INFO] HTTP Request: GET https://salemtigers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:13 [INFO]   Roster parsed (4 players) but no weight column/data
+15:23:13 [INFO] 
+[104/150] Savannah St.
+15:23:15 [INFO] HTTP Request: GET https://ssuathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:16 [INFO]   Roster parsed (18 players) but no weight column/data
+15:23:16 [INFO] 
+[105/150] Seattle Pacific
+15:23:17 [INFO] HTTP Request: GET https://spufalcons.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:17 [INFO]   https://spufalcons.com
+15:23:17 [INFO]   Parsed: 17 players, Matched: 0, Wt: +0, Unmatched: 17
+15:23:17 [INFO] 
+[106/150] Shaw
+15:23:19 [INFO] HTTP Request: GET https://www.shawbears.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:23:19 [INFO] HTTP Request: GET https://shawbears.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:20 [INFO]   Roster parsed (16 players) but no weight column/data
+15:23:20 [INFO] 
+[107/150] Shorter
+15:23:21 [INFO] HTTP Request: GET https://goshorterhawks.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:21 [INFO]   Roster parsed (12 players) but no weight column/data
+15:23:21 [INFO] 
+[108/150] Simon Fraser
+15:23:23 [INFO] HTTP Request: GET https://sfuathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:23 [INFO]   https://sfuathletics.com
+15:23:23 [INFO]   Parsed: 17 players, Matched: 0, Wt: +0, Unmatched: 17
+15:23:23 [INFO] 
+[109/150] Slippery Rock
+15:23:25 [INFO] HTTP Request: GET https://rockathletics.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:23:27 [INFO] HTTP Request: GET https://rockathletics.com/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:23:27 [INFO]   No roster found (tried 2 URLs)
+15:23:27 [INFO] 
+[110/150] South Dakota Mines
+15:23:29 [INFO] HTTP Request: GET https://sdsmt.edu/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:23:30 [INFO] HTTP Request: GET http://www.sdsmt.edu/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:23:30 [INFO] HTTP Request: GET https://www.sdsmt.edu/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:23:30 [INFO] HTTP Request: GET https://sdsmt.edu/roster.aspx?path=mbball "HTTP/1.1 301 Moved Permanently"
+15:23:30 [INFO] HTTP Request: GET http://www.sdsmt.edu/roster.aspx?path=mbball "HTTP/1.1 301 Moved Permanently"
+15:23:31 [INFO] HTTP Request: GET https://www.sdsmt.edu/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:23:31 [INFO]   No roster found (tried 2 URLs)
+15:23:31 [INFO] 
+[111/150] Southeastern Okla.
+15:23:33 [INFO] HTTP Request: GET https://gosoutheastern.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:33 [INFO]   https://gosoutheastern.com
+15:23:33 [INFO]   Parsed: 17 players, Matched: 16, Wt: +15, Unmatched: 1
+15:23:33 [INFO] 
+[112/150] Southern Ark.
+15:23:35 [INFO] HTTP Request: GET https://muleriderathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:36 [INFO]   Roster parsed (17 players) but no weight column/data
+15:23:36 [INFO] 
+[113/150] Southern Conn. St.
+15:23:38 [INFO] HTTP Request: GET https://southernctowls.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:23:39 [INFO] HTTP Request: GET https://scsuowls.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:39 [INFO]   Roster parsed (14 players) but no weight column/data
+15:23:39 [INFO] 
+[114/150] Southern Nazarene
+15:23:40 [INFO] HTTP Request: GET https://snuathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:40 [INFO]   Roster parsed (14 players) but no weight column/data
+15:23:40 [INFO] 
+[115/150] Southern Wesleyan
+15:23:42 [INFO] HTTP Request: GET https://swuathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:42 [INFO]   Roster parsed (15 players) but no weight column/data
+15:23:42 [INFO] 
+[116/150] Southwest Baptist
+15:23:44 [INFO] HTTP Request: GET https://sbubearcats.com/sports/mens-basketball/roster "HTTP/1.1 301 Moved Permanently"
+15:23:45 [INFO] HTTP Request: GET https://www.sbubearcats.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:45 [INFO]   Roster parsed (15 players) but no weight column/data
+15:23:45 [INFO] 
+[117/150] Spring Hill
+15:23:46 [INFO] HTTP Request: GET https://shcbadgers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:47 [INFO]   Roster parsed (12 players) but no weight column/data
+15:23:47 [INFO] 
+[118/150] St. Cloud St.
+15:23:48 [INFO] HTTP Request: GET https://scsuhuskies.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:23:49 [INFO]   Roster parsed (15 players) but no weight column/data
+15:23:49 [INFO] 
+[119/150] St. Edward's
+15:24:29 [INFO]   No roster found (tried 2 URLs)
+15:24:29 [INFO] 
+[120/150] St. Thomas Aquinas
+15:24:34 [INFO] HTTP Request: GET https://stacathletics.com/sports/mens-basketball/roster "HTTP/1.1 403 Forbidden"
+15:24:34 [INFO] HTTP Request: GET https://stacathletics.com/roster.aspx?path=mbball "HTTP/1.1 403 Forbidden"
+15:24:34 [INFO]   No roster found (tried 2 URLs)
+15:24:34 [INFO] 
+[121/150] Stanislaus St.
+15:24:34 [INFO]   No athletics URL found
+15:24:34 [INFO] 
+[122/150] Staten Island
+15:24:38 [INFO] HTTP Request: GET https://csidolphins.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:24:38 [INFO]   Roster parsed (11 players) but no weight column/data
+15:24:38 [INFO] 
+[123/150] Sul Ross St.
+15:24:39 [INFO] HTTP Request: GET https://srlobos.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:24:39 [INFO]   Roster parsed (13 players) but no weight column/data
+15:24:39 [INFO] 
+[124/150] Tampa
+15:24:41 [INFO] HTTP Request: GET https://tampaspartans.com/sports/mens-basketball/roster "HTTP/1.1 403 Forbidden"
+15:24:42 [INFO] HTTP Request: GET https://tampaspartans.com/roster.aspx?path=mbball "HTTP/1.1 403 Forbidden"
+15:24:42 [INFO]   No roster found (tried 2 URLs)
+15:24:42 [INFO] 
+[125/150] Tex. A&M Int'l
+15:24:50 [INFO] HTTP Request: GET https://godustdevils.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:24:50 [INFO]   Roster parsed (14 players) but no weight column/data
+15:24:50 [INFO] 
+[126/150] Trevecca Nazarene
+15:24:52 [INFO] HTTP Request: GET https://tnutrojans.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:24:52 [INFO]   Roster parsed (17 players) but no weight column/data
+15:24:52 [INFO] 
+[127/150] Truman St.
+15:24:54 [INFO] HTTP Request: GET https://trumanbulldogs.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:24:54 [INFO]   Roster parsed (13 players) but no weight column/data
+15:24:54 [INFO] 
+[128/150] Tusculum
+15:24:55 [INFO] HTTP Request: GET https://tusculumpioneers.com/sports/mens-basketball/roster "HTTP/1.1 403 Forbidden"
+15:24:57 [INFO] HTTP Request: GET https://tusculumpioneers.com/roster.aspx?path=mbball "HTTP/1.1 403 Forbidden"
+15:24:57 [INFO]   No roster found (tried 2 URLs)
+15:24:57 [INFO] 
+[129/150] UAH
+15:24:59 [INFO] HTTP Request: GET https://uahchargers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:24:59 [INFO]   https://uahchargers.com
+15:24:59 [INFO]   Parsed: 18 players, Matched: 18, Wt: +18, Unmatched: 0
+15:24:59 [INFO] 
+[130/150] UCCS
+15:25:01 [INFO] HTTP Request: GET https://gomountainlions.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:25:01 [INFO]   https://gomountainlions.com
+15:25:01 [INFO]   Parsed: 18 players, Matched: 14, Wt: +13, Unmatched: 4
+15:25:02 [INFO] 
+[131/150] UIndy
+15:25:08 [INFO]   No roster found (tried 2 URLs)
+15:25:08 [INFO] 
+[132/150] USC Aiken
+15:25:10 [INFO] HTTP Request: GET https://pacersports.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:25:11 [INFO]   https://pacersports.com
+15:25:11 [INFO]   Parsed: 13 players, Matched: 12, Wt: +12, Unmatched: 1
+15:25:11 [INFO] 
+[133/150] USC Beaufort
+15:25:11 [INFO] HTTP Request: GET https://uscbathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:25:12 [INFO]   Roster parsed (16 players) but no weight column/data
+15:25:12 [INFO] 
+[134/150] UT Permian Basin
+15:25:15 [INFO] HTTP Request: GET https://utpbfalcons.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:25:15 [INFO]   Roster parsed (10 players) but no weight column/data
+15:25:15 [INFO] 
+[135/150] UT Tyler
+15:25:21 [INFO] HTTP Request: GET https://uttylerpatriots.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:25:22 [INFO] HTTP Request: GET https://uttylerpatriots.com/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:25:22 [INFO]   No roster found (tried 2 URLs)
+15:25:22 [INFO] 
+[136/150] Vanguard
+15:25:23 [INFO] HTTP Request: GET https://vanguardlions.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:25:23 [INFO]   https://vanguardlions.com
+15:25:23 [INFO]   Parsed: 18 players, Matched: 3, Wt: +3, Unmatched: 15
+15:25:23 [INFO] 
+[137/150] Virginia St.
+15:25:26 [INFO] HTTP Request: GET https://govsutrojans.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:25:26 [INFO]   Roster parsed (17 players) but no weight column/data
+15:25:26 [INFO] 
+[138/150] West Ala.
+15:25:27 [INFO] HTTP Request: GET https://uwaathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:25:27 [INFO]   Roster parsed (14 players) but no weight column/data
+15:25:27 [INFO] 
+[139/150] West Tex. A&M
+15:25:30 [INFO] HTTP Request: GET https://gobuffsgo.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:25:31 [INFO] HTTP Request: GET https://gobuffsgo.com/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:25:31 [INFO]   No roster found (tried 2 URLs)
+15:25:31 [INFO] 
+[140/150] West Va. Wesleyan
+15:25:39 [INFO] HTTP Request: GET https://wesleyanbobcats.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:25:39 [INFO]   Roster parsed (26 players) but no weight column/data
+15:25:39 [INFO] 
+[141/150] Western Colo.
+15:25:44 [INFO] HTTP Request: GET https://gomountaineers.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:25:44 [INFO]   https://gomountaineers.com
+15:25:44 [INFO]   Parsed: 12 players, Matched: 11, Wt: +11, Unmatched: 1
+15:25:44 [INFO] 
+[142/150] Western N.M.
+15:25:50 [INFO] HTTP Request: GET https://wnmumustangs.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:25:50 [INFO]   Roster parsed (16 players) but no weight column/data
+15:25:50 [INFO] 
+[143/150] Western Wash.
+15:25:52 [INFO] HTTP Request: GET https://wwuvikings.com/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:25:55 [INFO] HTTP Request: GET https://wwuvikings.com/roster.aspx?path=mbball "HTTP/1.1 404 Not Found"
+15:25:55 [INFO]   No roster found (tried 2 URLs)
+15:25:55 [INFO] 
+[144/150] Westminster (UT)
+15:25:56 [INFO] HTTP Request: GET https://westminstergriffins.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:25:57 [INFO]   Roster parsed (16 players) but no weight column/data
+15:25:57 [INFO] 
+[145/150] Westmont
+15:25:58 [INFO] HTTP Request: GET https://athletics.westmont.edu/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:25:58 [INFO]   Roster parsed (16 players) but no weight column/data
+15:25:58 [INFO] 
+[146/150] Wheeling
+15:25:58 [INFO]   No athletics URL found
+15:25:58 [INFO] 
+[147/150] Wilmington (DE)
+15:26:00 [INFO] HTTP Request: GET https://wilmu.edu/sports/mens-basketball/roster "HTTP/1.1 302 Found"
+15:26:01 [INFO] HTTP Request: GET https://www.wilmu.edu/sports/mens-basketball/roster "HTTP/1.1 404 Not Found"
+15:26:07 [INFO] HTTP Request: GET https://wilmu.edu/roster.aspx?path=mbball "HTTP/1.1 302 Found"
+15:26:08 [INFO] HTTP Request: GET https://www.wilmu.edu/roster.aspx?path=mbball "HTTP/1.1 302 Found"
+15:26:08 [INFO] HTTP Request: GET https://www.wilmu.edu/errors/404.aspx?aspxerrorpath=/roster.aspx "HTTP/1.1 200 OK"
+15:26:08 [INFO]   No roster found (tried 2 URLs)
+15:26:08 [INFO] 
+[148/150] Winona St.
+15:26:09 [INFO] HTTP Request: GET https://winonastatewarriors.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:26:09 [INFO]   Roster parsed (18 players) but no weight column/data
+15:26:09 [INFO] 
+[149/150] Winston-Salem
+15:26:12 [INFO] HTTP Request: GET https://wssurams.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:26:12 [INFO]   Roster parsed (14 players) but no weight column/data
+15:26:12 [INFO] 
+[150/150] Young Harris
+15:26:15 [INFO] HTTP Request: GET https://yhcathletics.com/sports/mens-basketball/roster "HTTP/1.1 200 OK"
+15:26:15 [INFO]   Roster parsed (20 players) but no weight column/data
+15:26:15 [INFO] 
+============================================================
+15:26:15 [INFO] DONE: ncaa_d2 weight scrape
+15:26:15 [INFO]   Teams processed: 150
+15:26:15 [INFO]   URLs found: 144, No URL: 6
+15:26:15 [INFO]   Rosters with weight: 24, No roster: 43, No weight col: 77
+15:26:15 [INFO]   Players matched: 197
+15:26:15 [INFO]   Weight set: 160
+15:26:15 [INFO]   Also: Ht +7, Town +5, HS +4, Prev +67

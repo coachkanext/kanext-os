@@ -1,0 +1,135 @@
+{
+  "version": 3,
+  "pages404": true,
+  "appType": "app",
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/api/players/[id]",
+      "regex": "^/api/players/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/players/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/players/[id]/similar",
+      "regex": "^/api/players/([^/]+?)/similar(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/players/(?<nxtPid>[^/]+?)/similar(?:/)?$"
+    },
+    {
+      "page": "/conferences/[id]",
+      "regex": "^/conferences/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/conferences/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/players/[id]",
+      "regex": "^/players/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/players/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/positions/[position]",
+      "regex": "^/positions/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPposition": "nxtPposition"
+      },
+      "namedRegex": "^/positions/(?<nxtPposition>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/teams/[id]",
+      "regex": "^/teams/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/teams/(?<nxtPid>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/api/filters/conferences",
+      "regex": "^/api/filters/conferences(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/filters/conferences(?:/)?$"
+    },
+    {
+      "page": "/api/filters/levels",
+      "regex": "^/api/filters/levels(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/filters/levels(?:/)?$"
+    },
+    {
+      "page": "/api/filters/teams",
+      "regex": "^/api/filters/teams(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/filters/teams(?:/)?$"
+    },
+    {
+      "page": "/api/players",
+      "regex": "^/api/players(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/players(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

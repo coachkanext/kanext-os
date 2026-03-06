@@ -1,0 +1,53 @@
+08:58:39 [INFO] Batch: 9 teams, level=cccaa, assoc=cccaa
+08:58:39 [INFO] 
+[1/9] Yuba
+08:58:39 [INFO] Scraping team: Yuba (yuba)
+08:58:39 [ERROR] Error scraping Yuba: 'NoneType' object is not subscriptable
+08:58:39 [INFO] 
+[2/9] Contra Costa
+08:58:39 [INFO] Scraping team: Contra Costa (contracosta)
+08:58:39 [ERROR] Error scraping Contra Costa: 'NoneType' object is not subscriptable
+08:58:39 [INFO] 
+[3/9] Alameda
+08:58:39 [INFO] Scraping team: Alameda (alameda)
+08:58:39 [ERROR] Error scraping Alameda: 'NoneType' object is not subscriptable
+08:58:39 [INFO] 
+[4/9] Mendocino
+08:58:39 [INFO] Scraping team: Mendocino (mendocino)
+08:58:39 [ERROR] Error scraping Mendocino: 'NoneType' object is not subscriptable
+08:58:39 [INFO] 
+[5/9] Los Medanos
+08:58:39 [INFO] Scraping team: Los Medanos (losmedanos)
+08:58:39 [ERROR] Error scraping Los Medanos: 'NoneType' object is not subscriptable
+08:58:39 [INFO] 
+[6/9] Merritt
+08:58:39 [INFO] Scraping team: Merritt (merritt)
+08:58:39 [ERROR] Error scraping Merritt: 'NoneType' object is not subscriptable
+08:58:39 [INFO] 
+[7/9] Marin
+08:58:39 [INFO] Scraping team: Marin (marin)
+08:58:39 [ERROR] Error scraping Marin: 'NoneType' object is not subscriptable
+08:58:39 [INFO] 
+[8/9] Solano
+08:58:39 [INFO] Scraping team: Solano (solano)
+08:58:39 [ERROR] Error scraping Solano: 'NoneType' object is not subscriptable
+08:58:39 [INFO] 
+[9/9] Napa Valley
+08:58:39 [INFO] Scraping team: Napa Valley (napavalley)
+08:58:39 [ERROR] Error scraping Napa Valley: 'NoneType' object is not subscriptable
+08:58:39 [INFO] 
+============================================================
+08:58:39 [INFO]   BATCH COMPLETE: 0 teams, 0 games, 0 PGS rows
+08:58:39 [INFO] ============================================================
+
+============================================================
+  BATCH (cccaa) — FINAL SUMMARY
+============================================================
+  Total teams discovered & scraped: 764
+  Total players in database:        8345
+  Total games with box scores:      2504
+  Total player_game_stats rows:     63915
+  Total team_game_stats rows:       2648
+  Total HTTP requests:              3520
+  Failed URLs (in scrape_log):      22
+============================================================
