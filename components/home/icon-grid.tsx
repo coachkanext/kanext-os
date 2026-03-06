@@ -179,8 +179,6 @@ const styles = StyleSheet.create({
   },
   iconContainerImage: {
     backgroundColor: 'transparent',
-    borderRadius: 0,
-    overflow: 'visible',
   },
   tileImage: {
     width: 56,
