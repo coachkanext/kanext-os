@@ -571,7 +571,7 @@ export default function ThreadScreen() {
         )}
 
         {/* ── Composer ── */}
-        <View style={[styles.composerWrap, { paddingBottom: insets.bottom || 12 }]}>
+        <View style={[styles.composerWrap, { paddingBottom: (insets.bottom || 12) + 49 }]}>
           <ChatComposer
             value={inputText}
             onChangeText={setInputText}

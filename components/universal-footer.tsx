@@ -94,10 +94,10 @@ export function UniversalFooter() {
     [],
   );
 
-  // ── Wallet tap → push wallet screen ──
-  const handleWalletPress = () => {
+  // ── Home tap → go home ──
+  const handleHomePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push('/wallet' as any);
+    router.navigate('/(tabs)/(main)' as any);
   };
 
   // ── Profile tap → push profile screen ──
@@ -119,14 +119,14 @@ export function UniversalFooter() {
 
       {/* 3-icon row */}
       <View style={styles.footer}>
-        {/* Wallet (left) */}
+        {/* Home (left) */}
         <Pressable
           style={styles.iconButton}
-          onPress={handleWalletPress}
+          onPress={handleHomePress}
           hitSlop={{ top: 8, bottom: 8, left: 16, right: 16 }}
         >
           <IconSymbol
-            name="creditcard.fill"
+            name="house.fill"
             size={ICON_SIZE}
             color="#FFFFFF"
           />

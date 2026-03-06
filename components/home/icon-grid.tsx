@@ -26,19 +26,19 @@ const C = {
 
 const ROWS: GridIcon[][] = [
   [
-    { id: 'messages',   icon: 'bubble.left.and.bubble.right', label: 'Messages',   route: '/messages', image: require('@/assets/images/icon-messages.jpg') },
-    { id: 'season',     icon: 'calendar',                     label: 'Season',     route: '/section?title=Season' },
-    { id: 'roster',     icon: 'person.3.fill',                label: 'Roster',     route: '/section?title=Roster' },
+    { id: 'messages',   icon: 'bubble.left.and.bubble.right', label: 'Messages',   route: '/messages', image: require('@/assets/images/icon-messages.png') },
+    { id: 'season',     icon: 'calendar',                     label: 'Season',     route: '/section?title=Season', image: require('@/assets/images/icon-season.png') },
+    { id: 'roster',     icon: 'person.3.fill',                label: 'Roster',     route: '/section?title=Roster', image: require('@/assets/images/icon-roster.png') },
   ],
   [
-    { id: 'athletes',   icon: 'person.badge.plus',            label: 'Athletes',   route: '/section?title=Athletes' },
-    { id: 'film',       icon: 'play.rectangle.fill',          label: 'Film',       route: '/section?title=Film' },
-    { id: 'social',     icon: 'newspaper.fill',               label: 'Social',     route: '/section?title=Social' },
+    { id: 'media',      icon: 'play.rectangle.fill',          label: 'Media',      route: '/section?title=Media', image: require('@/assets/images/icon-media.png') },
+    { id: 'social',     icon: 'newspaper.fill',               label: 'Social',     route: '/section?title=Social', image: require('@/assets/images/icon-social.png') },
+    { id: 'store',      icon: 'bag.fill',                     label: 'Store',      route: '/section?title=Store', image: require('@/assets/images/icon-store.png') },
   ],
   [
-    { id: 'store',      icon: 'bag.fill',                     label: 'Store',      route: '/section?title=Store' },
-    { id: 'gm',         icon: 'gamecontroller.fill',          label: 'GM',         route: '/section?title=GM' },
-    { id: 'program',    icon: 'building.2.fill',              label: 'Program',    route: '/section?title=Program' },
+    { id: 'wallet',     icon: 'creditcard.fill',              label: 'Wallet',     route: '/wallet', image: require('@/assets/images/icon-wallet.png') },
+    { id: 'gm',         icon: 'gamecontroller.fill',          label: 'GM',         route: '/section?title=GM', image: require('@/assets/images/icon-gm.png') },
+    { id: 'program',    icon: 'building.2.fill',              label: 'Program',    route: '/section?title=Program', image: require('@/assets/images/icon-program.png') },
   ],
 ];
 
