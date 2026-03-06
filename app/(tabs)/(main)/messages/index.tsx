@@ -4,16 +4,15 @@
  * Layout: Room bubbles → Search → Pinned section → DM list → FAB compose.
  */
 
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
   Pressable,
   ScrollView,
-  FlatList,
   Alert,
-  ActionSheetIOS,
-  Platform,
+  Modal,
+  Animated,
   StyleSheet,
 } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -59,14 +58,18 @@ function RoomBubble({
   room: (typeof ROOMS)[0];
   accent: string;
   onPress: () => void;
-  onLongPress: () => void;
+  onLongPress: (pageY: number) => void;
 }) {
   const hasUnread = room.unread > 0;
+  const ref = useRef<View>(null);
   return (
     <Pressable
+      ref={ref}
       style={s.roomCell}
       onPress={onPress}
-      onLongPress={onLongPress}
+      onLongPress={() => {
+        ref.current?.measureInWindow((_x, y) => onLongPress(y));
+      }}
       delayLongPress={400}
     >
       <View
@@ -84,7 +87,204 @@ function RoomBubble({
   );
 }
 
-// ─── DM Row (swipe-left = delete, long press = context menu) ────────────────
+// ─── Preview Overlay (iOS-style long-press context menu) ─────────────────────
+
+type PreviewData = {
+  type: 'dm' | 'room' | 'pinned';
+  title: string;
+  subtitle: string;
+  initials: string;
+  pageY: number;
+  actions: { key: string; label: string; icon: string; destructive?: boolean }[];
+  onAction: (key: string) => void;
+};
+
+function PreviewOverlay({
+  data,
+  onClose,
+}: {
+  data: PreviewData;
+  onClose: () => void;
+}) {
+  const insets = useSafeAreaInsets();
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.95)).current;
+
+  React.useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        tension: 120,
+        friction: 10,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
+  const dismiss = useCallback(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 150,
+      useNativeDriver: true,
+    }).start(() => onClose());
+  }, [fadeAnim, onClose]);
+
+  const handleAction = useCallback(
+    (key: string) => {
+      data.onAction(key);
+      dismiss();
+    },
+    [data.onAction, dismiss],
+  );
+
+  const cardTop = Math.max(
+    insets.top + 40,
+    Math.min(data.pageY - 30, 340),
+  );
+
+  return (
+    <Modal transparent animationType="none" onRequestClose={dismiss}>
+      <Animated.View style={[pvS.overlay, { opacity: fadeAnim }]}>
+        <Pressable style={pvS.backdrop} onPress={dismiss} />
+
+        <Animated.View
+          style={[
+            pvS.content,
+            {
+              transform: [{ scale: scaleAnim }],
+              top: cardTop,
+            },
+          ]}
+        >
+          {/* ── Conversation preview card ── */}
+          <View style={pvS.previewCard}>
+            <View style={pvS.previewAvatar}>
+              <Text style={pvS.previewInitials}>{data.initials}</Text>
+            </View>
+            <View style={pvS.previewText}>
+              <Text style={pvS.previewName} numberOfLines={1}>
+                {data.title}
+              </Text>
+              <Text style={pvS.previewSub} numberOfLines={2}>
+                {data.subtitle}
+              </Text>
+            </View>
+          </View>
+
+          {/* ── Context menu ── */}
+          <View style={pvS.menu}>
+            {data.actions.map((action, idx) => (
+              <Pressable
+                key={action.key}
+                style={[
+                  pvS.menuItem,
+                  idx < data.actions.length - 1 && pvS.menuItemBorder,
+                ]}
+                onPress={() => handleAction(action.key)}
+              >
+                <Text
+                  style={[
+                    pvS.menuLabel,
+                    action.destructive && pvS.menuLabelDestructive,
+                  ]}
+                >
+                  {action.label}
+                </Text>
+                <IconSymbol
+                  name={action.icon as any}
+                  size={16}
+                  color={action.destructive ? '#FF3B30' : C.label}
+                />
+              </Pressable>
+            ))}
+          </View>
+        </Animated.View>
+      </Animated.View>
+    </Modal>
+  );
+}
+
+const pvS = StyleSheet.create({
+  overlay: { flex: 1 },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.60)',
+  },
+  content: {
+    position: 'absolute',
+    left: 24,
+    right: 24,
+    alignItems: 'center',
+  },
+  previewCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2C2C2E',
+    borderRadius: 14,
+    padding: 14,
+    width: '100%',
+    gap: 12,
+  },
+  previewAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: C.secondaryBg,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  previewInitials: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: C.label,
+  },
+  previewText: {
+    flex: 1,
+  },
+  previewName: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: C.label,
+    marginBottom: 2,
+  },
+  previewSub: {
+    fontSize: 14,
+    color: C.secondaryLabel,
+    lineHeight: 19,
+  },
+  menu: {
+    marginTop: 8,
+    backgroundColor: '#2C2C2E',
+    borderRadius: 14,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  menuItemBorder: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#48484A',
+  },
+  menuLabel: {
+    fontSize: 16,
+    color: C.label,
+  },
+  menuLabelDestructive: {
+    color: '#FF3B30',
+  },
+});
+
+// ─── DM Row (swipe-left = delete, long press = preview) ─────────────────────
 
 function DMRow({
   thread,
@@ -96,6 +296,7 @@ function DMRow({
   onToggleRead,
   onPin,
   onToggleMute,
+  onShowPreview,
 }: {
   thread: SportsDMThread;
   accent: string;
@@ -106,37 +307,20 @@ function DMRow({
   onToggleRead: () => void;
   onPin: () => void;
   onToggleMute: () => void;
+  onShowPreview: (data: PreviewData) => void;
 }) {
   const swipeRef = useRef<Swipeable>(null);
+  const rowRef = useRef<View>(null);
   const hasUnread = thread.unreadCount > 0;
-
-  const confirmDelete = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (Platform.OS === 'ios') {
-      ActionSheetIOS.showActionSheetWithOptions(
-        {
-          title: 'Delete this conversation?',
-          options: ['Delete', 'Cancel'],
-          destructiveButtonIndex: 0,
-          cancelButtonIndex: 1,
-        },
-        (idx) => {
-          if (idx === 0) onDeleteConfirmed();
-          swipeRef.current?.close();
-        },
-      );
-    } else {
-      Alert.alert('Delete conversation?', undefined, [
-        { text: 'Cancel', style: 'cancel', onPress: () => swipeRef.current?.close() },
-        { text: 'Delete', style: 'destructive', onPress: () => { onDeleteConfirmed(); swipeRef.current?.close(); } },
-      ]);
-    }
-  };
 
   const renderRightActions = () => (
     <Pressable
       style={[s.swipeAction, { backgroundColor: C.red }]}
-      onPress={confirmDelete}
+      onPress={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onDeleteConfirmed();
+        swipeRef.current?.close();
+      }}
     >
       <IconSymbol name="trash.fill" size={22} color="#FFF" />
       <Text style={s.swipeLabel}>Delete</Text>
@@ -148,32 +332,28 @@ function DMRow({
     const pinLabel = isPinned ? 'Unpin' : 'Pin';
     const readLabel = hasUnread ? 'Mark as Read' : 'Mark as Unread';
     const muteLabel = isMuted ? 'Show Alerts' : 'Hide Alerts';
-    const options = [pinLabel, readLabel, muteLabel, 'Delete', 'Cancel'];
 
-    if (Platform.OS === 'ios') {
-      ActionSheetIOS.showActionSheetWithOptions(
-        {
-          title: thread.participantName,
-          options,
-          destructiveButtonIndex: 3,
-          cancelButtonIndex: 4,
+    rowRef.current?.measureInWindow((_x, y) => {
+      onShowPreview({
+        type: 'dm',
+        title: thread.participantName,
+        subtitle: thread.lastMessagePreview,
+        initials: thread.participantInitials,
+        pageY: y,
+        actions: [
+          { key: 'pin', label: pinLabel, icon: 'pin.fill' },
+          { key: 'read', label: readLabel, icon: 'envelope.fill' },
+          { key: 'mute', label: muteLabel, icon: 'bell.slash.fill' },
+          { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
+        ],
+        onAction: (key) => {
+          if (key === 'pin') onPin();
+          else if (key === 'read') onToggleRead();
+          else if (key === 'mute') onToggleMute();
+          else if (key === 'delete') onDeleteConfirmed();
         },
-        (idx) => {
-          if (idx === 0) onPin();
-          else if (idx === 1) onToggleRead();
-          else if (idx === 2) onToggleMute();
-          else if (idx === 3) onDeleteConfirmed();
-        },
-      );
-    } else {
-      Alert.alert(thread.participantName, undefined, [
-        { text: pinLabel, onPress: onPin },
-        { text: readLabel, onPress: onToggleRead },
-        { text: muteLabel, onPress: onToggleMute },
-        { text: 'Delete', style: 'destructive', onPress: onDeleteConfirmed },
-        { text: 'Cancel', style: 'cancel' },
-      ]);
-    }
+      });
+    });
   };
 
   return (
@@ -183,6 +363,7 @@ function DMRow({
       overshootRight={false}
     >
       <Pressable
+        ref={rowRef}
         style={s.dmRow}
         onPress={onPress}
         onLongPress={handleLongPress}
@@ -242,6 +423,7 @@ export default function MessagesListScreen() {
     return init;
   });
   const [composeVisible, setComposeVisible] = useState(false);
+  const [previewData, setPreviewData] = useState<PreviewData | null>(null);
 
   if (mode !== 'sports') {
     return (
@@ -319,31 +501,30 @@ export default function MessagesListScreen() {
     });
   };
 
-  const handleRoomLongPress = (room: (typeof ROOMS)[0]) => {
+  const handleRoomLongPress = (room: (typeof ROOMS)[0], pageY: number) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     const isPinned = pinnedIds.has(room.id);
     const isMuted = mutedRoomIds.has(room.id);
     const pinLabel = isPinned ? 'Unpin' : 'Pin';
     const muteLabel = isMuted ? 'Show Alerts' : 'Mute';
-    const options = [pinLabel, muteLabel, 'Mark as Read', 'Cancel'];
 
-    if (Platform.OS === 'ios') {
-      ActionSheetIOS.showActionSheetWithOptions(
-        { title: room.title, options, cancelButtonIndex: 3 },
-        (idx) => {
-          if (idx === 0) togglePin(room.id);
-          else if (idx === 1) toggleRoomMute(room.id);
-          else if (idx === 2) markRoomRead(room.id);
-        },
-      );
-    } else {
-      Alert.alert(room.title, undefined, [
-        { text: pinLabel, onPress: () => togglePin(room.id) },
-        { text: muteLabel, onPress: () => toggleRoomMute(room.id) },
-        { text: 'Mark as Read', onPress: () => markRoomRead(room.id) },
-        { text: 'Cancel', style: 'cancel' },
-      ]);
-    }
+    setPreviewData({
+      type: 'room',
+      title: room.title,
+      subtitle: 'Group Room',
+      initials: room.initials,
+      pageY,
+      actions: [
+        { key: 'pin', label: pinLabel, icon: 'pin.fill' },
+        { key: 'mute', label: muteLabel, icon: 'bell.slash.fill' },
+        { key: 'read', label: 'Mark as Read', icon: 'envelope.open.fill' },
+      ],
+      onAction: (key) => {
+        if (key === 'pin') togglePin(room.id);
+        else if (key === 'mute') toggleRoomMute(room.id);
+        else if (key === 'read') markRoomRead(room.id);
+      },
+    });
   };
 
   // Split threads into pinned vs regular
@@ -379,6 +560,7 @@ export default function MessagesListScreen() {
       onToggleRead={() => handleToggleRead(item.id)}
       onPin={() => togglePin(item.id)}
       onToggleMute={() => toggleThreadMute(item.id)}
+      onShowPreview={setPreviewData}
     />
   );
 
@@ -398,7 +580,7 @@ export default function MessagesListScreen() {
               room={room}
               accent={accent}
               onPress={() => openRoom(room)}
-              onLongPress={() => handleRoomLongPress(room)}
+              onLongPress={(pageY) => handleRoomLongPress(room, pageY)}
             />
           ))}
         </ScrollView>
@@ -421,29 +603,32 @@ export default function MessagesListScreen() {
           >
             {pinnedThreads.map((thread) => {
               const hasUnread = thread.unreadCount > 0;
+              const pinnedRef = React.createRef<View>();
               return (
                 <Pressable
                   key={thread.id}
+                  ref={pinnedRef}
                   style={s.pinnedCell}
                   onPress={() => openDM(thread)}
                   onLongPress={() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                    const options = ['Unpin', 'Delete', 'Cancel'];
-                    if (Platform.OS === 'ios') {
-                      ActionSheetIOS.showActionSheetWithOptions(
-                        { title: thread.participantName, options, destructiveButtonIndex: 1, cancelButtonIndex: 2 },
-                        (idx) => {
-                          if (idx === 0) togglePin(thread.id);
-                          else if (idx === 1) handleDeleteThread(thread.id);
+                    pinnedRef.current?.measureInWindow((_x, y) => {
+                      setPreviewData({
+                        type: 'pinned',
+                        title: thread.participantName,
+                        subtitle: thread.lastMessagePreview,
+                        initials: thread.participantInitials,
+                        pageY: y,
+                        actions: [
+                          { key: 'unpin', label: 'Unpin', icon: 'pin.slash.fill' },
+                          { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
+                        ],
+                        onAction: (key) => {
+                          if (key === 'unpin') togglePin(thread.id);
+                          else if (key === 'delete') handleDeleteThread(thread.id);
                         },
-                      );
-                    } else {
-                      Alert.alert(thread.participantName, undefined, [
-                        { text: 'Unpin', onPress: () => togglePin(thread.id) },
-                        { text: 'Delete', style: 'destructive', onPress: () => handleDeleteThread(thread.id) },
-                        { text: 'Cancel', style: 'cancel' },
-                      ]);
-                    }
+                      });
+                    });
                   }}
                   delayLongPress={400}
                 >
@@ -491,6 +676,14 @@ export default function MessagesListScreen() {
         onSend={handleComposeSend}
         accent={accent}
       />
+
+      {/* ── iOS-style preview overlay on long press ── */}
+      {previewData && (
+        <PreviewOverlay
+          data={previewData}
+          onClose={() => setPreviewData(null)}
+        />
+      )}
     </View>
   );
 }
