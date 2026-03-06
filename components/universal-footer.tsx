@@ -166,7 +166,7 @@ export function UniversalFooter() {
           >
             <Image
               source={require('@/assets/images/footer-nexus.png')}
-              style={styles.footerImage}
+              style={styles.nexusImage}
             />
           </Pressable>
         </View>
@@ -237,6 +237,11 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   footerImage: {
+    width: 75,
+    height: 75,
+    resizeMode: 'contain',
+  } as any,
+  nexusImage: {
     width: '80%',
     height: FOOTER_HEIGHT - 8,
     resizeMode: 'contain',

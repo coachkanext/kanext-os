@@ -2,7 +2,7 @@
  * Full-bleed video area — auto-playing, muted, looping.
  * Edge-to-edge, no margins, no borders, no rounded corners.
  * Text + dots overlaid on gradient. Tap → fullscreen with audio.
- * Swipeable if multiple pages. Max 4.
+ * Swipeable if multiple pages. Max 2.
  * Registers global pager handlers so horizontal swipes anywhere on
  * the home screen can page through videos.
  */
@@ -52,6 +52,7 @@ export function VisualArea() {
           pagerRef.current?.setPage(prev);
         }
       },
+      maxIndex,
     );
   }, [pages.length]);
 
@@ -96,9 +97,9 @@ export function VisualArea() {
         ))}
       </PagerView>
 
-      {/* 4 dots always shown — pinned under the Dynamic Island */}
+      {/* 2 dots always shown — pinned under the Dynamic Island */}
       <View style={[styles.dots, { top: insets.top + 4 }]}>
-        {[0, 1, 2, 3].map((i) => (
+        {[0, 1].map((i) => (
           <View
             key={i}
             style={[

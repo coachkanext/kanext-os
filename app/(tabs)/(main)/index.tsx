@@ -8,15 +8,17 @@
 import React, { useMemo } from 'react';
 import { View, StyleSheet, useWindowDimensions, PanResponder } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 
 import { VisualArea } from '@/components/home/visual-area';
 import { IconGrid } from '@/components/home/icon-grid';
-import { nextVideoPage, prevVideoPage, getVideoPage } from '@/utils/global-video-pager';
+import { nextVideoPage, prevVideoPage, getVideoPage, getMaxVideoPage } from '@/utils/global-video-pager';
 import { openSettingsPanel } from '@/utils/global-settings-panel';
 
 export default function HomeScreen() {
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   // Horizontal swipe → page through videos
   const panResponder = useMemo(
@@ -28,8 +30,12 @@ export default function HomeScreen() {
         },
         onPanResponderRelease: (_evt, gs) => {
           if (gs.dx < -60) {
-            // Swipe left → next video
-            nextVideoPage();
+            // Swipe left → next video, or navigate to Nexus at last page
+            if (getVideoPage() >= getMaxVideoPage()) {
+              router.push('/nexus' as any);
+            } else {
+              nextVideoPage();
+            }
           } else if (gs.dx > 60) {
             // Swipe right → previous video, or open drawer at page 1
             if (getVideoPage() === 0) {

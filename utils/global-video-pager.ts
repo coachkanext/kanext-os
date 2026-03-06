@@ -6,10 +6,12 @@
 let _nextPage: (() => void) | null = null;
 let _prevPage: (() => void) | null = null;
 let _currentPage = 0;
+let _maxPage = 0;
 
-export function registerVideoPagerHandlers(next: () => void, prev: () => void) {
+export function registerVideoPagerHandlers(next: () => void, prev: () => void, maxIndex?: number) {
   _nextPage = next;
   _prevPage = prev;
+  if (maxIndex !== undefined) _maxPage = maxIndex;
 }
 
 export function setVideoPage(index: number) {
@@ -26,4 +28,8 @@ export function nextVideoPage() {
 
 export function prevVideoPage() {
   _prevPage?.();
+}
+
+export function getMaxVideoPage(): number {
+  return _maxPage;
 }
