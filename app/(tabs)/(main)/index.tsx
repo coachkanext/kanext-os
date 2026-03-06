@@ -1,6 +1,6 @@
 /**
  * Home — Auto-playing video area + 4-row icon grid.
- * Video = 35% of usable screen height (status bar to bottom safe area).
+ * Video = 42% of usable screen height (status bar to bottom safe area).
  * Grid centered in remaining space. Semi-circle sits at bottom center.
  * Horizontal swipes anywhere on the screen page through videos.
  */
@@ -45,7 +45,7 @@ export default function HomeScreen() {
 
   // Usable height = screen minus status bar minus bottom safe area (no tab bar)
   const usableHeight = height - insets.top - insets.bottom;
-  const videoHeight = usableHeight * 0.35;
+  const videoHeight = usableHeight * 0.42;
 
   return (
     <View style={styles.container} {...panResponder.panHandlers}>

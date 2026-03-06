@@ -10,10 +10,11 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import PagerView from 'react-native-pager-view';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 import { getVideoPages } from '@/utils/home-widgets';
-import { registerVideoPagerHandlers } from '@/utils/global-video-pager';
+import { registerVideoPagerHandlers, setVideoPage } from '@/utils/global-video-pager';
 import { VideoSlide } from './video-slide';
 
 const C = {
@@ -24,13 +25,15 @@ const C = {
 export function VisualArea() {
   const [activeIndex, setActiveIndex] = useState(0);
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const pages = getVideoPages();
   const pagerRef = useRef<PagerView>(null);
   const activeRef = useRef(0);
 
-  // Keep a ref in sync for the global handlers
+  // Keep a ref in sync for the global handlers + report to global pager
   useEffect(() => {
     activeRef.current = activeIndex;
+    setVideoPage(activeIndex);
   }, [activeIndex]);
 
   // Register global pager controls
@@ -93,8 +96,8 @@ export function VisualArea() {
         ))}
       </PagerView>
 
-      {/* 4 dots always shown */}
-      <View style={styles.dots}>
+      {/* 4 dots always shown — pinned under the Dynamic Island */}
+      <View style={[styles.dots, { top: insets.top + 4 }]}>
         {[0, 1, 2, 3].map((i) => (
           <View
             key={i}
@@ -124,7 +127,6 @@ const styles = StyleSheet.create({
   },
   dots: {
     position: 'absolute',
-    bottom: 10,
     left: 0,
     right: 0,
     flexDirection: 'row',
