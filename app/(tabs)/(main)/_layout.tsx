@@ -1,9 +1,8 @@
 /**
  * Home Stack — nested inside the Home tab.
- * Pushing icon screens (messages, section) within this Stack.
- * Full-screen swipe-back enabled — swipe left from anywhere to go back.
- * Gesture disabled on the stack root (home) to prevent swipe-left
- * from popping back to a non-existent previous screen.
+ * All screens (home, messages, threads, sections) live in one flat Stack.
+ * Swipe-right = back on every screen except home (root).
+ * No nested stacks — keeps gesture propagation simple.
  */
 
 import { Stack } from 'expo-router';
@@ -20,6 +19,8 @@ export default function HomeLayout() {
       }}
     >
       <Stack.Screen name="index" options={{ gestureEnabled: false }} />
+      <Stack.Screen name="messages/index" />
+      <Stack.Screen name="messages/[threadId]" />
     </Stack>
   );
 }

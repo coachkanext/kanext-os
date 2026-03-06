@@ -7,7 +7,7 @@
  */
 
 import React, { useRef, useCallback } from 'react';
-import { View, Text, Alert, StyleSheet, useWindowDimensions, Animated, Pressable } from 'react-native';
+import { View, Text, Alert, Image, StyleSheet, useWindowDimensions, Animated, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 
@@ -26,7 +26,7 @@ const C = {
 
 const ROWS: GridIcon[][] = [
   [
-    { id: 'messages',   icon: 'bubble.left.and.bubble.right', label: 'Messages',   route: '/messages' },
+    { id: 'messages',   icon: 'bubble.left.and.bubble.right', label: 'Messages',   route: '/messages', image: require('@/assets/images/icon-messages.jpg') },
     { id: 'season',     icon: 'calendar',                     label: 'Season',     route: '/section?title=Season' },
     { id: 'roster',     icon: 'person.3.fill',                label: 'Roster',     route: '/section?title=Roster' },
   ],
@@ -82,6 +82,7 @@ function GridTile({
       <Animated.View
         style={[
           styles.iconContainer,
+          item.image && styles.iconContainerImage,
           {
             transform: [{ scale }],
             shadowColor: accent,
@@ -89,7 +90,11 @@ function GridTile({
           },
         ]}
       >
-        <IconSymbol name={item.icon} size={28} color={C.icon} />
+        {item.image ? (
+          <Image source={item.image} style={styles.tileImage} />
+        ) : (
+          <IconSymbol name={item.icon} size={28} color={C.icon} />
+        )}
         {item.badgeCount != null && item.badgeCount > 0 && (
           <View style={[styles.badge, { backgroundColor: accent }]}>
             <Text style={styles.badgeText}>{item.badgeCount}</Text>
@@ -166,10 +171,20 @@ const styles = StyleSheet.create({
     backgroundColor: C.tileBg,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
     // Glow on press (shadow animates with scale)
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 6,
+  },
+  iconContainerImage: {
+    backgroundColor: 'transparent',
+    borderRadius: 0,
+    overflow: 'visible',
+  },
+  tileImage: {
+    width: 56,
+    height: 56,
   },
   badge: {
     position: 'absolute',

@@ -23,4 +23,6 @@ export interface GridIcon {
   label: string;
   route: string;
   badgeCount?: number;
+  /** Optional image source — when set, renders Image instead of SF Symbol glyph */
+  image?: any;
 }
