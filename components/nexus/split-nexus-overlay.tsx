@@ -2,14 +2,13 @@
  * Split Nexus Overlay — bottom-half Nexus chat over current screen.
  * Triggered from Nexus tab double-tap.
  *
- * Spec:
- * - Current screen stays in top ~50% (fully interactive)
- * - Nexus panel in bottom ~45% with conversation + chips + input
- * - Footer visible below everything
- * - Conversation persists across open/close cycles
- * - Contextual suggestion chips based on current screen
- * - Keyboard only opens when user taps the input bar
- * - Closes via: double-tap Nexus, tap other footer icon, drag down
+ * Keyboard behavior:
+ * - Hidden: top ~50% screen, bottom ~50% Nexus area + chips + input
+ * - Visible: top compresses to ~20-25%, chips + input rise with keyboard
+ * - Send/enter: keyboard auto-dismisses, screen expands back
+ * - Chip tap: sends immediately, no keyboard
+ * - NO dividers anywhere — seamless continuous surface
+ * - Everything moves together, fluid LayoutAnimation transitions
  */
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
@@ -24,6 +23,8 @@ import {
   Dimensions,
   FlatList,
   Keyboard,
+  LayoutAnimation,
+  Platform,
   ActivityIndicator,
   PanResponder,
 } from 'react-native';
@@ -50,7 +51,6 @@ const C = {
   inputBg: 'rgba(255,255,255,0.06)',
   text: '#FFFFFF',
   textDim: 'rgba(255,255,255,0.4)',
-  border: 'rgba(255,255,255,0.08)',
   userBubble: 'rgba(255,255,255,0.1)',
   assistantBubble: 'rgba(255,255,255,0.04)',
   handle: 'rgba(255,255,255,0.2)',
@@ -104,6 +104,7 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
   const [messages, setMessages] = useState<SplitMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [kbHeight, setKbHeight] = useState(0);
   const historyRef = useRef<ChatMessage[]>([]);
   const flatListRef = useRef<FlatList>(null);
   const inputRef = useRef<TextInput>(null);
@@ -116,6 +117,40 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
   const screenContext = title ?? pathname;
   const chips = useMemo(() => getChipsForScreen(screenContext), [screenContext]);
 
+  // ── Keyboard tracking ──
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      LayoutAnimation.configureNext(
+        LayoutAnimation.create(250, 'easeInEaseOut', 'opacity'),
+      );
+      setKbHeight(e.endCoordinates.height);
+    });
+
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      LayoutAnimation.configureNext(
+        LayoutAnimation.create(200, 'easeInEaseOut', 'opacity'),
+      );
+      setKbHeight(0);
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
+  // ── Computed layout dimensions ──
+  // Keyboard hidden: overlay takes ~45%, sits above footer
+  // Keyboard visible: overlay expands, top screen compresses to ~22%
+  const keyboardUp = kbHeight > 0;
+  const overlayBottom = keyboardUp ? kbHeight : footerTotal;
+  const overlayHeight = keyboardUp
+    ? SCREEN_HEIGHT - insets.top - Math.round(SCREEN_HEIGHT * 0.22) - kbHeight
+    : SPLIT_HEIGHT;
+
   // Slide up on open, slide down on close — conversation persists (no clearing)
   useEffect(() => {
     if (visible) {
@@ -126,6 +161,7 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
         useNativeDriver: true,
       }).start();
     } else {
+      Keyboard.dismiss();
       Animated.timing(slideAnim, {
         toValue: SPLIT_HEIGHT,
         duration: 200,
@@ -171,6 +207,9 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
     const trimmed = text.trim();
     if (!trimmed || isLoading) return;
 
+    // Dismiss keyboard immediately on send
+    Keyboard.dismiss();
+
     const userMsg: SplitMessage = { id: `u-${Date.now()}`, role: 'user', content: trimmed };
     setMessages((prev) => [...prev, userMsg]);
     setInputText('');
@@ -215,10 +254,14 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
     <Animated.View
       style={[
         styles.overlay,
-        { bottom: footerTotal, transform: [{ translateY: slideAnim }] },
+        {
+          bottom: overlayBottom,
+          height: overlayHeight,
+          transform: [{ translateY: slideAnim }],
+        },
       ]}
     >
-      {/* Drag handle */}
+      {/* Drag handle — seamless, no borders */}
       <View {...panResponder.panHandlers} style={styles.handleArea}>
         <View style={styles.handle} />
       </View>
@@ -231,6 +274,7 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
           renderItem={({ item }) => (
             <View style={[styles.msgRow, item.role === 'user' ? styles.userRow : styles.assistantRow]}>
               <View style={[styles.msgBubble, item.role === 'user' ? styles.userBubble : styles.assistantBubble]}>
@@ -252,12 +296,13 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
           }
         />
 
-        {/* Contextual suggestion chips */}
+        {/* Contextual suggestion chips — no divider above */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.chipsRow}
           style={styles.chipsScroll}
+          keyboardShouldPersistTaps="handled"
         >
           {chips.map((chip) => (
             <Pressable
@@ -270,7 +315,7 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
           ))}
         </ScrollView>
 
-        {/* Input bar — mic + text + send */}
+        {/* Input bar — no divider above */}
         <View style={styles.inputRow}>
           <Pressable style={styles.micBtn} onPress={handleMicPress}>
             <IconSymbol name="mic.fill" size={20} color={C.textDim} />
@@ -284,6 +329,7 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
             onChangeText={setInputText}
             onSubmitEditing={handleSend}
             returnKeyType="send"
+            blurOnSubmit
           />
           <Pressable
             style={({ pressed }) => [styles.sendBtn, { opacity: pressed ? 0.6 : 1 }]}
@@ -307,15 +353,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    height: SPLIT_HEIGHT,
     zIndex: 998,
   },
   handleArea: {
     alignItems: 'center',
     paddingVertical: 8,
     backgroundColor: C.bg,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
   },
   handle: {
     width: 36,
@@ -326,8 +369,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: C.bg,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: C.border,
     overflow: 'hidden',
   },
   listContent: {
@@ -379,8 +420,6 @@ const styles = StyleSheet.create({
   },
   chipsScroll: {
     maxHeight: 44,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: C.border,
   },
   chipsRow: {
     flexDirection: 'row',
@@ -408,8 +447,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
     paddingVertical: 8,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: C.border,
     gap: 8,
   },
   micBtn: {

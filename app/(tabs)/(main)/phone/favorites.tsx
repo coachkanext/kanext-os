@@ -1,0 +1,132 @@
+/**
+ * Favorites — Pinned contacts. Tap = call. Long press = remove.
+ */
+
+import React, { useState, useCallback } from 'react';
+import {
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
+
+import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useAccentColor } from '@/hooks/use-accent-color';
+import {
+  getFavoriteContacts,
+  MODE_BADGE_COLORS,
+  MODE_BADGE_LABELS,
+  type PhoneContact,
+} from '@/data/mock-phone';
+import { initiateCall } from '@/utils/global-call';
+
+const C = {
+  bg: '#000000',
+  surface: '#0B0F14',
+  label: '#FFFFFF',
+  secondary: '#A1A1AA',
+  muted: '#52525B',
+};
+
+export default function FavoritesScreen() {
+  const insets = useSafeAreaInsets();
+  const accent = useAccentColor();
+  const [favorites] = useState(getFavoriteContacts);
+
+  const handleCall = useCallback((contact: PhoneContact) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    initiateCall({
+      contactName: contact.name,
+      contactInitials: contact.initials,
+      mode: contact.mode,
+      type: 'audio',
+    });
+  }, []);
+
+  return (
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Favorites</Text>
+      </View>
+
+      <ScrollView style={styles.list} contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
+        {favorites.map((contact) => {
+          const badgeColor = MODE_BADGE_COLORS[contact.mode];
+          return (
+            <Pressable
+              key={contact.id}
+              style={({ pressed }) => [styles.row, pressed && { backgroundColor: 'rgba(255,255,255,0.04)' }]}
+              onPress={() => handleCall(contact)}
+              onLongPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                // Remove from favorites placeholder
+              }}
+              delayLongPress={400}
+            >
+              <View style={styles.avatar}>
+                <Text style={styles.initials}>{contact.initials}</Text>
+              </View>
+              <View style={styles.info}>
+                <Text style={styles.name} numberOfLines={1}>{contact.name}</Text>
+                <View style={styles.meta}>
+                  <Text style={styles.username}>{contact.username}</Text>
+                  <View style={[styles.badge, { backgroundColor: badgeColor + '22' }]}>
+                    <Text style={[styles.badgeText, { color: badgeColor }]}>{MODE_BADGE_LABELS[contact.mode]}</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.callBtns}>
+                <Pressable
+                  hitSlop={8}
+                  onPress={() => handleCall(contact)}
+                >
+                  <IconSymbol name="phone.fill" size={18} color={accent} />
+                </Pressable>
+                <Pressable
+                  hitSlop={8}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    initiateCall({ contactName: contact.name, contactInitials: contact.initials, mode: contact.mode, type: 'video' });
+                  }}
+                >
+                  <IconSymbol name="video.fill" size={18} color={accent} />
+                </Pressable>
+              </View>
+            </Pressable>
+          );
+        })}
+
+        {favorites.length === 0 && (
+          <View style={styles.empty}>
+            <IconSymbol name="star.fill" size={36} color={C.muted} />
+            <Text style={styles.emptyText}>No favorites yet</Text>
+            <Text style={styles.emptyHint}>Long press a contact to add them</Text>
+          </View>
+        )}
+      </ScrollView>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.bg },
+  header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
+  title: { fontSize: 28, fontWeight: '700', color: C.label },
+  list: { flex: 1 },
+  row: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 14, gap: 12 },
+  avatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' },
+  initials: { fontSize: 15, fontWeight: '700', color: C.secondary },
+  info: { flex: 1 },
+  name: { fontSize: 16, fontWeight: '600', color: C.label },
+  meta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 3 },
+  username: { fontSize: 13, color: C.muted },
+  badge: { paddingHorizontal: 5, paddingVertical: 1, borderRadius: 3 },
+  badgeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
+  callBtns: { flexDirection: 'row', gap: 16 },
+  empty: { alignItems: 'center', paddingTop: 120, gap: 10 },
+  emptyText: { fontSize: 16, color: C.muted },
+  emptyHint: { fontSize: 13, color: C.muted },
+});
