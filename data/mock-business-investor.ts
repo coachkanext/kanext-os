@@ -248,7 +248,7 @@ export const DOMAINS: Domain[] = [
   },
   {
     id: 'domain-church',
-    name: 'Church',
+    name: 'Faith',
     mode: 'church',
     description: 'Ministry management and congregation engagement',
     status: 'development',

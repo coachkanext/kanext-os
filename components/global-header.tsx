@@ -26,7 +26,7 @@ export function registerHeaderLeftAction(cb: (() => void) | null) {
 const MODE_LABELS: Record<Mode, string> = {
   sports: 'Sports',
   business: 'Business',
-  church: 'Church',
+  church: 'Faith',
   education: 'Education',
   competition: 'Competition',
 };

@@ -171,7 +171,7 @@ function formatTimestamp(ms: number): string {
 const MODE_LABELS: Record<Mode, string> = {
   sports: 'Sports',
   business: 'Business',
-  church: 'Church',
+  church: 'Faith',
   education: 'Education',
   competition: 'Competition',
 };

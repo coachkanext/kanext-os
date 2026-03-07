@@ -59,7 +59,7 @@ export const AVATAR_DRAWER_WIDTH = DRAWER_WIDTH;
 const MODE_LABELS: Record<string, string> = {
   sports: 'Sports',
   competition: 'Competition',
-  church: 'Church',
+  church: 'Faith',
   education: 'Education',
   business: 'Business',
 };

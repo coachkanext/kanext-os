@@ -60,7 +60,7 @@ const ACTIVE_DOMAINS: DomainItem[] = [
   },
   {
     id: 'domain-church',
-    name: 'Church',
+    name: 'Faith',
     icon: 'heart.fill',
     description: 'Ministry management and congregation engagement.',
     status: 'read-only',

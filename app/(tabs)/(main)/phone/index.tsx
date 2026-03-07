@@ -1,207 +1,277 @@
 /**
- * Phone — Contacts landing screen.
- * Searchable, organized by mode. Tap = popup, long press = add to favorites.
+ * Phone — Landing view mirroring Messages layout.
+ * Pinned favorite bubbles > Groups (squircle) > Contacts (circular).
+ * Tap row = audio call (default). Icons: message + video (cross-nav).
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useRef, useCallback } from 'react';
 import {
   View,
   Text,
-  TextInput,
   Pressable,
   ScrollView,
-  Modal,
   StyleSheet,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useAccentColor } from '@/hooks/use-accent-color';
+import { useMode } from '@/context/app-context';
 import {
   PHONE_CONTACTS,
-  MODE_BADGE_COLORS,
-  MODE_BADGE_LABELS,
+  PHONE_GROUPS,
+  getFavoriteContacts,
   type PhoneContact,
+  type PhoneGroup,
 } from '@/data/mock-phone';
 import { initiateCall } from '@/utils/global-call';
+import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const C = {
   bg: '#000000',
   surface: '#0B0F14',
+  channelIconBg: '#0B1220',
   label: '#FFFFFF',
   secondary: '#A1A1AA',
   muted: '#52525B',
+  separator: '#38383A',
+  green: '#34D399',
+  online: '#34C759',
 };
-
-function ContactPopup({
-  visible,
-  contact,
-  onClose,
-  accent,
-}: {
-  visible: boolean;
-  contact: PhoneContact | null;
-  onClose: () => void;
-  accent: string;
-}) {
-  if (!visible || !contact) return null;
-
-  return (
-    <Modal transparent animationType="fade" visible={visible} onRequestClose={onClose}>
-      <Pressable style={popupStyles.backdrop} onPress={onClose}>
-        <View style={popupStyles.card}>
-          <View style={popupStyles.header}>
-            <View style={popupStyles.avatar}>
-              <Text style={popupStyles.initials}>{contact.initials}</Text>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={popupStyles.name}>{contact.name}</Text>
-              <Text style={popupStyles.role}>{contact.role}</Text>
-            </View>
-          </View>
-          <View style={popupStyles.divider} />
-          {[
-            { icon: 'phone.fill', label: 'Audio Call', color: '#34D399', onPress: () => { initiateCall({ contactName: contact.name, contactInitials: contact.initials, mode: contact.mode, type: 'audio' }); onClose(); } },
-            { icon: 'video.fill', label: 'Video Call', color: '#34D399', onPress: () => { initiateCall({ contactName: contact.name, contactInitials: contact.initials, mode: contact.mode, type: 'video' }); onClose(); } },
-            { icon: 'bubble.left.fill', label: 'Message', color: accent, onPress: onClose },
-            { icon: 'person.circle', label: 'View Profile', color: C.secondary, onPress: onClose },
-          ].map((a) => (
-            <Pressable
-              key={a.label}
-              style={({ pressed }) => [popupStyles.row, pressed && { backgroundColor: 'rgba(255,255,255,0.05)' }]}
-              onPress={a.onPress}
-            >
-              <IconSymbol name={a.icon as any} size={18} color={a.color} />
-              <Text style={[popupStyles.rowLabel, { color: a.color }]}>{a.label}</Text>
-            </Pressable>
-          ))}
-        </View>
-      </Pressable>
-    </Modal>
-  );
-}
 
 export default function PhoneScreen() {
   const insets = useSafeAreaInsets();
-  const accent = useAccentColor();
-  const [search, setSearch] = useState('');
-  const [popup, setPopup] = useState<PhoneContact | null>(null);
+  const mode = useMode();
+  const router = useRouter();
 
-  const contacts = useMemo(() => {
-    if (!search.trim()) return PHONE_CONTACTS;
-    const q = search.toLowerCase();
-    return PHONE_CONTACTS.filter(
-      (c) => c.name.toLowerCase().includes(q) || c.username.toLowerCase().includes(q),
-    );
-  }, [search]);
+  const favorites = useMemo(() => getFavoriteContacts(), []);
+  const groups = useMemo(() => PHONE_GROUPS, []);
+  const contacts = useMemo(() => PHONE_CONTACTS, []);
+
+  const lastScrollY = useRef(0);
+  const handleScroll = useCallback((e: any) => {
+    const y = e.nativeEvent.contentOffset.y;
+    if (y > lastScrollY.current + 10) hideFooter();
+    else if (y < lastScrollY.current - 10) showFooter();
+    lastScrollY.current = y;
+    if (y <= 0) showFooter();
+  }, []);
+
+  const callAudio = (contact: PhoneContact) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    initiateCall({ contactName: contact.name, contactInitials: contact.initials, mode: contact.mode, type: 'audio' });
+  };
+
+  const callVideo = (contact: PhoneContact) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    initiateCall({ contactName: contact.name, contactInitials: contact.initials, mode: contact.mode, type: 'video' });
+  };
+
+  const openMessage = (name: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push({ pathname: '/messages/[threadId]', params: { threadId: name, type: 'dm', title: name } } as any);
+  };
+
+  const callGroupAudio = (group: PhoneGroup) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    initiateCall({ contactName: group.name, contactInitials: group.initials, mode: group.mode, type: 'audio' });
+  };
+
+  const callGroupVideo = (group: PhoneGroup) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    initiateCall({ contactName: group.name, contactInitials: group.initials, mode: group.mode, type: 'video' });
+  };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Phone</Text>
-      </View>
-
-      {/* Search */}
-      <View style={styles.searchWrap}>
-        <IconSymbol name="magnifyingglass" size={16} color={C.secondary} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search contacts"
-          placeholderTextColor={C.muted}
-          value={search}
-          onChangeText={setSearch}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        {search.length > 0 && (
-          <Pressable onPress={() => setSearch('')} hitSlop={8}>
-            <IconSymbol name="xmark.circle.fill" size={16} color={C.muted} />
-          </Pressable>
-        )}
-      </View>
-
-      <ScrollView style={styles.list} contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
-        {contacts.map((contact) => {
-          const badgeColor = MODE_BADGE_COLORS[contact.mode];
-          return (
-            <Pressable
-              key={contact.id}
-              style={({ pressed }) => [styles.row, pressed && { backgroundColor: 'rgba(255,255,255,0.04)' }]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setPopup(contact);
-              }}
-              onLongPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              }}
-              delayLongPress={400}
-            >
-              <View style={styles.avatar}>
-                <Text style={styles.initials}>{contact.initials}</Text>
-              </View>
-              <View style={styles.info}>
-                <View style={styles.nameRow}>
-                  <Text style={styles.name} numberOfLines={1}>{contact.name}</Text>
-                  {contact.isFavorite && <IconSymbol name="star.fill" size={10} color="#F59E0B" />}
+    <View style={[s.container, { paddingTop: insets.top }]}>
+      <ScrollView
+        style={s.scrollView}
+        contentContainerStyle={{ paddingTop: 28, paddingBottom: 100 }}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ── Favorite bubbles (horizontal) ── */}
+        {favorites.length > 0 && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={s.favRow}
+          >
+            {favorites.map((fav) => (
+              <Pressable
+                key={fav.id}
+                style={s.favCell}
+                onPress={() => callAudio(fav)}
+              >
+                <View style={s.favAvatar}>
+                  <Text style={s.favInitials}>{fav.initials}</Text>
+                  {fav.online && <View style={s.onlineDotBubble} />}
                 </View>
-                <View style={styles.meta}>
-                  <Text style={styles.username}>{contact.username}</Text>
-                  <View style={[styles.badge, { backgroundColor: badgeColor + '22' }]}>
-                    <Text style={[styles.badgeText, { color: badgeColor }]}>{MODE_BADGE_LABELS[contact.mode]}</Text>
+                <Text style={s.favName} numberOfLines={1}>
+                  {fav.name.split(' ')[0]}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        )}
+
+        {/* ── Groups ── */}
+        {groups.length > 0 && (
+          <>
+            <View style={s.sectionHeader}>
+              <Text style={s.sectionLabel}>Groups</Text>
+            </View>
+            {groups.map((group, i) => (
+              <View key={group.id}>
+                {i > 0 && <View style={s.separator} />}
+                <Pressable
+                  style={({ pressed }) => [s.row, pressed && { backgroundColor: 'rgba(255,255,255,0.04)' }]}
+                  onPress={() => callGroupAudio(group)}
+                >
+                  {/* Square squircle icon */}
+                  <View style={s.groupIcon}>
+                    <Text style={s.groupInitials}>{group.initials}</Text>
                   </View>
+                  {/* Info */}
+                  <View style={s.rowContent}>
+                    <Text style={s.rowName} numberOfLines={1}>{group.name}</Text>
+                    <Text style={s.rowSub}>{group.memberCount} members</Text>
+                  </View>
+                  {/* Cross-nav: message + video */}
+                  <Pressable
+                    style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]}
+                    onPress={() => openMessage(group.name)}
+                    hitSlop={6}
+                  >
+                    <IconSymbol name="bubble.left.fill" size={16} color={C.secondary} />
+                  </Pressable>
+                  <Pressable
+                    style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]}
+                    onPress={() => callGroupVideo(group)}
+                    hitSlop={6}
+                  >
+                    <IconSymbol name="video.fill" size={16} color={C.secondary} />
+                  </Pressable>
+                </Pressable>
+              </View>
+            ))}
+          </>
+        )}
+
+        {/* ── Contacts ── */}
+        <View style={s.sectionHeader}>
+          <Text style={s.sectionLabel}>Contacts</Text>
+        </View>
+        {contacts.map((contact, i) => (
+          <View key={contact.id}>
+            {i > 0 && <View style={s.separator} />}
+            <Pressable
+              style={({ pressed }) => [s.row, pressed && { backgroundColor: 'rgba(255,255,255,0.04)' }]}
+              onPress={() => callAudio(contact)}
+            >
+              {/* Circular avatar with online indicator */}
+              <View style={s.contactAvatar}>
+                <Text style={s.contactInitials}>{contact.initials}</Text>
+                {contact.online && <View style={s.onlineDot} />}
+              </View>
+              {/* Info */}
+              <View style={s.rowContent}>
+                <Text style={s.rowName} numberOfLines={1}>{contact.name}</Text>
+                <View style={s.contactMeta}>
+                  <Text style={s.rowSub}>{contact.username}</Text>
+                  <Text style={s.contactRole}>{contact.role}</Text>
                 </View>
               </View>
-              <Text style={styles.role}>{contact.role}</Text>
+              {/* Cross-nav: message + video */}
+              <Pressable
+                style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]}
+                onPress={() => openMessage(contact.name)}
+                hitSlop={6}
+              >
+                <IconSymbol name="bubble.left.fill" size={16} color={C.secondary} />
+              </Pressable>
+              <Pressable
+                style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]}
+                onPress={() => callVideo(contact)}
+                hitSlop={6}
+              >
+                <IconSymbol name="video.fill" size={16} color={C.secondary} />
+              </Pressable>
             </Pressable>
-          );
-        })}
-        {contacts.length === 0 && (
-          <View style={styles.empty}>
-            <Text style={styles.emptyText}>No contacts found</Text>
           </View>
-        )}
+        ))}
       </ScrollView>
-
-      <ContactPopup visible={popup !== null} contact={popup} onClose={() => setPopup(null)} accent={accent} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
-  header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8 },
-  title: { fontSize: 28, fontWeight: '700', color: C.label },
-  searchWrap: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface,
-    borderRadius: 10, marginHorizontal: 16, marginBottom: 12, paddingHorizontal: 12, height: 38, gap: 8,
-  },
-  searchInput: { flex: 1, fontSize: 15, color: C.label, padding: 0 },
-  list: { flex: 1 },
-  row: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 12, gap: 12 },
-  avatar: { width: 44, height: 44, borderRadius: 22, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' },
-  initials: { fontSize: 14, fontWeight: '700', color: C.secondary },
-  info: { flex: 1 },
-  nameRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  name: { fontSize: 16, fontWeight: '600', color: C.label, flexShrink: 1 },
-  meta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 },
-  username: { fontSize: 13, color: C.muted },
-  badge: { paddingHorizontal: 5, paddingVertical: 1, borderRadius: 3 },
-  badgeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
-  role: { fontSize: 12, color: C.muted },
-  empty: { alignItems: 'center', paddingTop: 80 },
-  emptyText: { fontSize: 16, color: C.muted },
-});
+  scrollView: { flex: 1 },
 
-const popupStyles = StyleSheet.create({
-  backdrop: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.6)' },
-  card: { width: '80%', maxWidth: 320, backgroundColor: '#0B0F14', borderRadius: 16, padding: 16 },
-  header: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 12 },
-  avatar: { width: 44, height: 44, borderRadius: 22, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' },
-  initials: { fontSize: 14, fontWeight: '700', color: C.secondary },
-  name: { fontSize: 16, fontWeight: '600', color: C.label },
-  role: { fontSize: 13, color: C.muted, marginTop: 2 },
-  divider: { height: 1, backgroundColor: 'rgba(255,255,255,0.08)', marginBottom: 4 },
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, paddingHorizontal: 4, borderRadius: 8 },
-  rowLabel: { fontSize: 15, fontWeight: '500' },
+  // Favorites row
+  favRow: { paddingHorizontal: 16, gap: 14, paddingBottom: 16 },
+  favCell: { alignItems: 'center', width: 64 },
+  favAvatar: {
+    width: 52, height: 52, borderRadius: 26, backgroundColor: '#1C1C1E',
+    alignItems: 'center', justifyContent: 'center',
+  },
+  favInitials: { fontSize: 15, fontWeight: '700', color: C.label },
+  favName: {
+    fontSize: 11, color: C.label, fontWeight: '500', textAlign: 'center', marginTop: 4,
+  },
+  onlineDotBubble: {
+    position: 'absolute', bottom: 1, right: 1,
+    width: 12, height: 12, borderRadius: 6,
+    backgroundColor: C.online,
+    borderWidth: 2, borderColor: C.bg,
+  },
+
+  // Section headers
+  sectionHeader: { paddingHorizontal: 16, paddingTop: 20, paddingBottom: 8 },
+  sectionLabel: {
+    fontSize: 13, fontWeight: '600', color: C.secondary,
+    textTransform: 'uppercase', letterSpacing: 0.5,
+  },
+
+  // Shared row
+  row: {
+    flexDirection: 'row', alignItems: 'center',
+    paddingVertical: 10, paddingLeft: 16, paddingRight: 12,
+    backgroundColor: C.bg,
+  },
+  rowContent: { flex: 1, marginLeft: 12, marginRight: 8 },
+  rowName: { fontSize: 16, fontWeight: '500', color: C.label },
+  rowSub: { fontSize: 13, color: C.muted },
+
+  // Group icon (square squircle — matches Messages channels)
+  groupIcon: {
+    width: 44, height: 44, borderRadius: 12, backgroundColor: C.channelIconBg,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  groupInitials: { fontSize: 14, fontWeight: '700', color: C.label },
+
+  // Contact avatar (circular)
+  contactAvatar: {
+    width: 44, height: 44, borderRadius: 22, backgroundColor: '#1C1C1E',
+    alignItems: 'center', justifyContent: 'center',
+  },
+  contactInitials: { fontSize: 14, fontWeight: '600', color: C.label },
+  contactMeta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 1 },
+  contactRole: { fontSize: 13, color: C.muted },
+  onlineDot: {
+    position: 'absolute', bottom: 0, right: 0,
+    width: 12, height: 12, borderRadius: 6,
+    backgroundColor: C.online,
+    borderWidth: 2, borderColor: C.bg,
+  },
+
+  // Cross-nav buttons
+  crossNavBtn: { padding: 6 },
+  crossNavPressed: { opacity: 0.5 },
+
+  // Separator
+  separator: { height: StyleSheet.hairlineWidth, backgroundColor: C.separator, marginLeft: 72 },
 });

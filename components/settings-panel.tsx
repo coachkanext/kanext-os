@@ -28,14 +28,14 @@ export const SETTINGS_PANEL_WIDTH = Math.min(300, SCREEN_WIDTH * 0.82);
 
 const MODE_ITEMS: { mode: Mode; label: string; image: any }[] = [
   { mode: 'sports', label: 'Sports', image: require('@/assets/images/mode-sports.png') },
-  { mode: 'church', label: 'Church', image: require('@/assets/images/mode-church.png') },
+  { mode: 'church', label: 'Faith', image: require('@/assets/images/mode-church.png') },
   { mode: 'business', label: 'Business', image: require('@/assets/images/mode-business.png') },
   { mode: 'education', label: 'Education', image: require('@/assets/images/mode-education.png') },
 ];
 
 const MODE_LABELS: Record<string, string> = {
   sports: 'Sports',
-  church: 'Church',
+  church: 'Faith',
   business: 'Business',
   education: 'Education',
   competition: 'Competition',

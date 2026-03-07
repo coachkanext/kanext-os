@@ -141,7 +141,7 @@ export const SCOPE_CHIPS: Record<Mode, ScopeChip[]> = {
     { key: 'term', label: 'Term/Semester' },
   ],
   church: [
-    { key: 'church', label: 'Church' },
+    { key: 'church', label: 'Faith' },
     { key: 'ministry', label: 'Ministry' },
     { key: 'season', label: 'Season' },
   ],

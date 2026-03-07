@@ -21,7 +21,7 @@ export const ICC_ORGANIZATION: ChurchOrganization = {
   id: 'icc-001',
   name: '2819 Church',
   mode: 'church',
-  type: 'Church',
+  type: 'Faith',
   location: 'Atlanta, GA',
   description:
     '2819 Church — named from the Great Commission of Matthew 28:19 — was founded on February 22, 2012 by Pastor Philip Anthony Mitchell with just 11 believers. Today the church serves over 6,000 weekly in-person and 75,000+ online from Atlanta, GA with one mandate: Until All Have Heard.',

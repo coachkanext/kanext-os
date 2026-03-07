@@ -17,7 +17,7 @@ import type { Mode } from '@/types';
 const MODE_OPTIONS: { mode: Mode; label: string }[] = [
   { mode: 'sports', label: 'Athletics' },
   { mode: 'competition', label: 'Competition' },
-  { mode: 'church', label: 'Church' },
+  { mode: 'church', label: 'Faith' },
   { mode: 'education', label: 'Education' },
   { mode: 'business', label: 'Business' },
 ];

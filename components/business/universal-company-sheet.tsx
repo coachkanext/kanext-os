@@ -433,7 +433,7 @@ function OverviewTab({ colors, roleLens }: { colors: typeof Colors.light; roleLe
 function ProductTab({ colors }: { colors: typeof Colors.light }) {
   const modes = [
     { name: 'Sports', icon: 'sportscourt.fill', desc: 'Athletics intelligence -- roster, film, recruiting, game ops, analytics' },
-    { name: 'Church', icon: 'heart.fill', desc: 'Ministry operations -- giving, connect groups, pastoral care, events' },
+    { name: 'Faith', icon: 'heart.fill', desc: 'Ministry operations -- giving, connect groups, pastoral care, events' },
     { name: 'Competition', icon: 'flag.checkered', desc: 'League/tournament ops -- standings, race control, compliance, payouts' },
     { name: 'Business', icon: 'briefcase.fill', desc: 'Founder OS -- data room, governance, deal workspaces, investor comms' },
     { name: 'Education', icon: 'graduationcap.fill', desc: 'Academic operations -- curriculum, student tracking, compliance' },

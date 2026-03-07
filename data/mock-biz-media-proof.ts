@@ -307,7 +307,7 @@ export const PLAYLISTS: Playlist[] = [
       'Multi-cam worship recordings from 2819 Church Sunday services, campus events, and special programs.',
     itemCount: 18,
     duration: '3h 30m',
-    category: 'Church',
+    category: 'Faith',
     visibility: 'private',
   },
 ];
@@ -336,7 +336,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     id: 'cs-2',
     title: '2819 Church Campus — Multi-Site Worship Technology',
     client: 'Int\u2019l Church of Christ LA',
-    category: 'Church',
+    category: 'Faith',
     status: 'published',
     publishedAt: 'Feb 5, 2026',
     summary:

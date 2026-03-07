@@ -988,6 +988,7 @@ export interface InboxThreadV3 {
   timestamp: Date;
   unread: boolean;
   pinned: boolean;
+  favorite?: boolean;
   isRequest: boolean;
   avatar?: string;
 }
@@ -1003,6 +1004,7 @@ export interface RoomV3 {
   timestamp: Date;
   unread: boolean;
   pinned: boolean;
+  favorite?: boolean;
   locked: boolean;
   isAnnouncement: boolean;
   readCount?: number;

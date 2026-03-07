@@ -43,7 +43,7 @@ const MODE_OPTIONS: ModeOption[] = [
   },
   {
     mode: 'church',
-    label: 'Church',
+    label: 'Faith',
     // TODO: Replace with custom Orthodox cross SVG asset
     icon: null,
     glyph: '☦',

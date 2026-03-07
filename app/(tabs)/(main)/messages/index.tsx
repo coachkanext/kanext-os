@@ -27,6 +27,7 @@ import { NewDMSheet } from '@/components/messages/new-dm-sheet';
 import { getRooms, getGlobalDMs, formatMessageTime } from '@/data/mock-messages-v3';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { subscribeMessageFilters, getMessageFilters, type MessageFilterKey } from '@/utils/global-message-filters';
+import { initiateCall } from '@/utils/global-call';
 import type { InboxThreadV3, RoomV3 } from '@/types';
 
 const C = {
@@ -189,6 +190,8 @@ function ChannelRow({
   onDelete,
   onToggleMute,
   onShowPreview,
+  onCall,
+  onVideoCall,
 }: {
   room: RoomV3;
   accent: string;
@@ -197,6 +200,8 @@ function ChannelRow({
   onDelete: () => void;
   onToggleMute: () => void;
   onShowPreview: (data: PreviewData) => void;
+  onCall: () => void;
+  onVideoCall: () => void;
 }) {
   const rowRef = useRef<View>(null);
   const swipeableRef = useRef<Swipeable>(null);
@@ -288,6 +293,14 @@ function ChannelRow({
           </View>
           <Text style={s.rowPreview} numberOfLines={2}>{room.lastMessage}</Text>
         </View>
+
+        {/* Cross-nav: call actions */}
+        <Pressable style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]} onPress={onCall} hitSlop={6}>
+          <IconSymbol name="phone.fill" size={16} color={C.secondaryLabel} />
+        </Pressable>
+        <Pressable style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]} onPress={onVideoCall} hitSlop={6}>
+          <IconSymbol name="video.fill" size={16} color={C.secondaryLabel} />
+        </Pressable>
       </Pressable>
     </Swipeable>
   );
@@ -303,6 +316,8 @@ function DMRow({
   onDelete,
   onToggleMute,
   onShowPreview,
+  onCall,
+  onVideoCall,
 }: {
   thread: InboxThreadV3;
   accent: string;
@@ -311,6 +326,8 @@ function DMRow({
   onDelete: () => void;
   onToggleMute: () => void;
   onShowPreview: (data: PreviewData) => void;
+  onCall: () => void;
+  onVideoCall: () => void;
 }) {
   const rowRef = useRef<View>(null);
   const swipeableRef = useRef<Swipeable>(null);
@@ -399,6 +416,14 @@ function DMRow({
           </View>
           <Text style={s.rowPreview} numberOfLines={2}>{thread.preview}</Text>
         </View>
+
+        {/* Cross-nav: call actions */}
+        <Pressable style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]} onPress={onCall} hitSlop={6}>
+          <IconSymbol name="phone.fill" size={16} color={C.secondaryLabel} />
+        </Pressable>
+        <Pressable style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]} onPress={onVideoCall} hitSlop={6}>
+          <IconSymbol name="video.fill" size={16} color={C.secondaryLabel} />
+        </Pressable>
       </Pressable>
     </Swipeable>
   );
@@ -545,6 +570,11 @@ export default function MessagesListScreen() {
         )}
 
         {/* ── Channels list ── */}
+        {channels.length > 0 && (
+          <View style={s.sectionDivider}>
+            <Text style={s.sectionLabel}>Channels</Text>
+          </View>
+        )}
         {channels.map((room, i) => (
           <View key={room.id}>
             {i > 0 && <View style={s.separator} />}
@@ -556,12 +586,14 @@ export default function MessagesListScreen() {
               onDelete={() => setDeletedIds((prev) => new Set(prev).add(room.id))}
               onToggleMute={() => toggleMute(room.id)}
               onShowPreview={setPreviewData}
+              onCall={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: room.name, contactInitials: room.initials, mode: room.mode, type: 'audio' }); }}
+              onVideoCall={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: room.name, contactInitials: room.initials, mode: room.mode, type: 'video' }); }}
             />
           </View>
         ))}
 
         {/* ── DMs list ── */}
-        {dms.length > 0 && channels.length > 0 && (
+        {dms.length > 0 && (
           <View style={s.sectionDivider}>
             <Text style={s.sectionLabel}>Direct Messages</Text>
           </View>
@@ -577,6 +609,8 @@ export default function MessagesListScreen() {
               onDelete={() => setDeletedIds((prev) => new Set(prev).add(thread.id))}
               onToggleMute={() => toggleMute(thread.id)}
               onShowPreview={setPreviewData}
+              onCall={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: thread.name, contactInitials: thread.initials, mode: thread.mode, type: 'audio' }); }}
+              onVideoCall={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: thread.name, contactInitials: thread.initials, mode: thread.mode, type: 'video' }); }}
             />
           </View>
         ))}
@@ -670,6 +704,10 @@ const s = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   dmAvatarText: { fontSize: 14, fontWeight: '600', color: C.label },
+
+  // Cross-nav call buttons
+  crossNavBtn: { padding: 6 },
+  crossNavPressed: { opacity: 0.5 },
 
   // Separator
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: C.separator, marginLeft: 80 },

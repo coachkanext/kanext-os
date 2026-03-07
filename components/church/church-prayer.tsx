@@ -107,14 +107,14 @@ const CATEGORY_LABELS: Record<PrayerCategory, string> = {
   financial: 'Financial',
   guidance: 'Guidance',
   gratitude: 'Gratitude',
-  church: 'Church',
+  church: 'Faith',
   world: 'World',
   other: 'Other',
 };
 
 const PRIVACY_LABELS: Record<PrayerPrivacy, string> = {
   public: 'Public',
-  church: 'Church',
+  church: 'Faith',
   leadership: 'Leadership',
   private: 'Private',
 };
