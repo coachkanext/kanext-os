@@ -5,7 +5,7 @@
  * Search is handled globally by Nexus hold — no per-screen search bar.
  */
 
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import {
   Animated,
   StyleSheet,
 } from 'react-native';
+import { Swipeable } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -25,6 +26,7 @@ import { useMode } from '@/context/app-context';
 import { NewDMSheet } from '@/components/messages/new-dm-sheet';
 import { getRooms, getGlobalDMs, formatMessageTime } from '@/data/mock-messages-v3';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { subscribeMessageFilters, getMessageFilters, type MessageFilterKey } from '@/utils/global-message-filters';
 import type { InboxThreadV3, RoomV3 } from '@/types';
 
 const C = {
@@ -184,6 +186,7 @@ function ChannelRow({
   accent,
   isMuted,
   onPress,
+  onDelete,
   onToggleMute,
   onShowPreview,
 }: {
@@ -191,10 +194,12 @@ function ChannelRow({
   accent: string;
   isMuted: boolean;
   onPress: () => void;
+  onDelete: () => void;
   onToggleMute: () => void;
   onShowPreview: (data: PreviewData) => void;
 }) {
   const rowRef = useRef<View>(null);
+  const swipeableRef = useRef<Swipeable>(null);
   const longPressedRef = useRef(false);
 
   const handleLongPress = () => {
@@ -222,43 +227,69 @@ function ChannelRow({
     });
   };
 
-  return (
+  const renderLeftActions = () => (
     <Pressable
-      ref={rowRef}
-      style={s.row}
+      style={s.swipeDelete}
       onPress={() => {
-        if (longPressedRef.current) { longPressedRef.current = false; return; }
-        onPress();
+        swipeableRef.current?.close();
+        onDelete();
       }}
-      onLongPress={handleLongPress}
-      delayLongPress={400}
     >
-      {/* Unread dot */}
-      <View style={s.unreadCol}>
-        {room.unread && <View style={[s.unreadDot, { backgroundColor: accent }]} />}
-      </View>
-
-      {/* Square channel icon */}
-      <View style={s.channelIcon}>
-        <Text style={s.channelInitials}>{room.initials}</Text>
-        {room.locked && (
-          <View style={s.lockBadge}>
-            <IconSymbol name="lock.fill" size={8} color="#A1A1AA" />
-          </View>
-        )}
-      </View>
-
-      {/* Content */}
-      <View style={s.rowContent}>
-        <View style={s.rowTopRow}>
-          <Text style={[s.rowName, room.unread && s.rowNameBold]} numberOfLines={1}>
-            {room.name}
-          </Text>
-          <Text style={s.rowTime}>{formatMessageTime(room.timestamp)}</Text>
-        </View>
-        <Text style={s.rowPreview} numberOfLines={2}>{room.lastMessage}</Text>
-      </View>
+      <IconSymbol name="trash.fill" size={20} color="#FFFFFF" />
+      <Text style={s.swipeDeleteText}>Delete</Text>
     </Pressable>
+  );
+
+  return (
+    <Swipeable
+      ref={swipeableRef}
+      renderLeftActions={renderLeftActions}
+      leftThreshold={80}
+      onSwipeableWillOpen={(direction) => {
+        if (direction === 'left') {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          onDelete();
+        }
+      }}
+      overshootLeft={false}
+    >
+      <Pressable
+        ref={rowRef}
+        style={s.row}
+        onPress={() => {
+          if (longPressedRef.current) { longPressedRef.current = false; return; }
+          onPress();
+        }}
+        onLongPress={handleLongPress}
+        delayLongPress={400}
+      >
+        {/* Unread dot */}
+        <View style={s.unreadCol}>
+          {room.unread && <View style={[s.unreadDot, { backgroundColor: accent }]} />}
+        </View>
+
+        {/* Square channel icon */}
+        <View style={s.channelIcon}>
+          <Text style={s.channelInitials}>{room.initials}</Text>
+          {room.locked && (
+            <View style={s.lockBadge}>
+              <IconSymbol name="lock.fill" size={8} color="#A1A1AA" />
+            </View>
+          )}
+        </View>
+
+        {/* Content */}
+        <View style={s.rowContent}>
+          <View style={s.rowTopRow}>
+            <Text style={[s.rowName, room.unread && s.rowNameBold]} numberOfLines={1}>
+              {room.name}
+            </Text>
+            <Text style={s.rowTime}>{formatMessageTime(room.timestamp)}</Text>
+          </View>
+          <Text style={s.rowPreview} numberOfLines={2}>{room.lastMessage}</Text>
+        </View>
+      </Pressable>
+    </Swipeable>
   );
 }
 
@@ -269,6 +300,7 @@ function DMRow({
   accent,
   isMuted,
   onPress,
+  onDelete,
   onToggleMute,
   onShowPreview,
 }: {
@@ -276,10 +308,12 @@ function DMRow({
   accent: string;
   isMuted: boolean;
   onPress: () => void;
+  onDelete: () => void;
   onToggleMute: () => void;
   onShowPreview: (data: PreviewData) => void;
 }) {
   const rowRef = useRef<View>(null);
+  const swipeableRef = useRef<Swipeable>(null);
   const longPressedRef = useRef(false);
 
   const handleLongPress = () => {
@@ -309,38 +343,64 @@ function DMRow({
     });
   };
 
-  return (
+  const renderLeftActions = () => (
     <Pressable
-      ref={rowRef}
-      style={s.row}
+      style={s.swipeDelete}
       onPress={() => {
-        if (longPressedRef.current) { longPressedRef.current = false; return; }
-        onPress();
+        swipeableRef.current?.close();
+        onDelete();
       }}
-      onLongPress={handleLongPress}
-      delayLongPress={400}
     >
-      {/* Unread dot */}
-      <View style={s.unreadCol}>
-        {thread.unread && <View style={[s.unreadDot, { backgroundColor: accent }]} />}
-      </View>
-
-      {/* Circular avatar */}
-      <View style={s.dmAvatar}>
-        <Text style={s.dmAvatarText}>{thread.initials}</Text>
-      </View>
-
-      {/* Content */}
-      <View style={s.rowContent}>
-        <View style={s.rowTopRow}>
-          <Text style={[s.rowName, thread.unread && s.rowNameBold]} numberOfLines={1}>
-            {thread.name}
-          </Text>
-          <Text style={s.rowTime}>{formatMessageTime(thread.timestamp)}</Text>
-        </View>
-        <Text style={s.rowPreview} numberOfLines={2}>{thread.preview}</Text>
-      </View>
+      <IconSymbol name="trash.fill" size={20} color="#FFFFFF" />
+      <Text style={s.swipeDeleteText}>Delete</Text>
     </Pressable>
+  );
+
+  return (
+    <Swipeable
+      ref={swipeableRef}
+      renderLeftActions={renderLeftActions}
+      leftThreshold={80}
+      onSwipeableWillOpen={(direction) => {
+        if (direction === 'left') {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          onDelete();
+        }
+      }}
+      overshootLeft={false}
+    >
+      <Pressable
+        ref={rowRef}
+        style={s.row}
+        onPress={() => {
+          if (longPressedRef.current) { longPressedRef.current = false; return; }
+          onPress();
+        }}
+        onLongPress={handleLongPress}
+        delayLongPress={400}
+      >
+        {/* Unread dot */}
+        <View style={s.unreadCol}>
+          {thread.unread && <View style={[s.unreadDot, { backgroundColor: accent }]} />}
+        </View>
+
+        {/* Circular avatar */}
+        <View style={s.dmAvatar}>
+          <Text style={s.dmAvatarText}>{thread.initials}</Text>
+        </View>
+
+        {/* Content */}
+        <View style={s.rowContent}>
+          <View style={s.rowTopRow}>
+            <Text style={[s.rowName, thread.unread && s.rowNameBold]} numberOfLines={1}>
+              {thread.name}
+            </Text>
+            <Text style={s.rowTime}>{formatMessageTime(thread.timestamp)}</Text>
+          </View>
+          <Text style={s.rowPreview} numberOfLines={2}>{thread.preview}</Text>
+        </View>
+      </Pressable>
+    </Swipeable>
   );
 }
 
@@ -356,6 +416,12 @@ export default function MessagesListScreen() {
   const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
   const [composeVisible, setComposeVisible] = useState(false);
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
+  const [activeFilters, setActiveFilters] = useState(getMessageFilters);
+
+  // Subscribe to side panel filter changes
+  useEffect(() => {
+    return subscribeMessageFilters((filters) => setActiveFilters(filters));
+  }, []);
 
   const lastScrollY = useRef(0);
   const handleScroll = useCallback((e: any) => {
@@ -374,19 +440,23 @@ export default function MessagesListScreen() {
     });
   };
 
-  // Mode-specific channels
+  // Mode-specific channels (with side panel filters applied)
   const channels = useMemo(() => {
-    return getRooms(mode)
-      .filter((r) => !deletedIds.has(r.id))
-      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-  }, [mode, deletedIds]);
+    if (activeFilters.dms_only) return []; // hide channels when DMs Only
+    let list = getRooms(mode).filter((r) => !deletedIds.has(r.id));
+    if (activeFilters.unread) list = list.filter((r) => r.unread);
+    if (activeFilters.pinned) list = list.filter((r) => r.pinned);
+    return list.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  }, [mode, deletedIds, activeFilters]);
 
-  // Cross-org DMs (persist across mode switches)
+  // Cross-org DMs (with side panel filters applied)
   const dms = useMemo(() => {
-    return getGlobalDMs()
-      .filter((t) => !deletedIds.has(t.id))
-      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-  }, [deletedIds]);
+    if (activeFilters.channels_only) return []; // hide DMs when Channels Only
+    let list = getGlobalDMs().filter((t) => !deletedIds.has(t.id));
+    if (activeFilters.unread) list = list.filter((t) => t.unread);
+    if (activeFilters.pinned) list = list.filter((t) => t.pinned);
+    return list.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  }, [deletedIds, activeFilters]);
 
   // Pinned items (channels + DMs)
   const pinnedItems = useMemo(() => {
@@ -426,6 +496,16 @@ export default function MessagesListScreen() {
   return (
     <View style={[s.container, { paddingTop: insets.top }]}>
       <ScrollView style={s.scrollView} contentContainerStyle={{ paddingTop: 28, paddingBottom: 100 }} onScroll={handleScroll} scrollEventThrottle={16}>
+        {/* ── Active filter indicator ── */}
+        {(activeFilters.unread || activeFilters.mentions || activeFilters.pinned || activeFilters.dms_only || activeFilters.channels_only) && (
+          <View style={s.filterBar}>
+            {activeFilters.unread && <View style={[s.filterChip, { backgroundColor: accent }]}><Text style={s.filterChipText}>Unread</Text></View>}
+            {activeFilters.mentions && <View style={[s.filterChip, { backgroundColor: accent }]}><Text style={s.filterChipText}>Mentions</Text></View>}
+            {activeFilters.pinned && <View style={[s.filterChip, { backgroundColor: accent }]}><Text style={s.filterChipText}>Pinned</Text></View>}
+            {activeFilters.dms_only && <View style={[s.filterChip, { backgroundColor: accent }]}><Text style={s.filterChipText}>DMs Only</Text></View>}
+            {activeFilters.channels_only && <View style={[s.filterChip, { backgroundColor: accent }]}><Text style={s.filterChipText}>Channels Only</Text></View>}
+          </View>
+        )}
         {/* ── Pinned row (horizontal scroll of circular avatars) ── */}
         {pinnedItems.length > 0 && (
           <ScrollView
@@ -473,6 +553,7 @@ export default function MessagesListScreen() {
               accent={accent}
               isMuted={mutedIds.has(room.id)}
               onPress={() => openChannel(room)}
+              onDelete={() => setDeletedIds((prev) => new Set(prev).add(room.id))}
               onToggleMute={() => toggleMute(room.id)}
               onShowPreview={setPreviewData}
             />
@@ -493,6 +574,7 @@ export default function MessagesListScreen() {
               accent={accent}
               isMuted={mutedIds.has(thread.id)}
               onPress={() => openDM(thread)}
+              onDelete={() => setDeletedIds((prev) => new Set(prev).add(thread.id))}
               onToggleMute={() => toggleMute(thread.id)}
               onShowPreview={setPreviewData}
             />
@@ -598,5 +680,30 @@ const s = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
     shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3, shadowRadius: 6, elevation: 8,
+  },
+
+  // Swipe-to-delete
+  swipeDelete: {
+    backgroundColor: '#FF3B30',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 80,
+    gap: 4,
+  },
+  swipeDeleteText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+
+  // Filter indicator
+  filterBar: {
+    flexDirection: 'row', paddingHorizontal: 16, gap: 8, marginBottom: 12,
+  },
+  filterChip: {
+    paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12,
+  },
+  filterChipText: {
+    fontSize: 12, fontWeight: '600', color: '#FFFFFF',
   },
 });

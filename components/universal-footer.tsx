@@ -97,18 +97,28 @@ export function UniversalFooter() {
     openSearchOverlay();
   };
 
-  // ── Nexus PanResponder: swipe-up only (multitasking) ──
+  // ── Nexus PanResponder: swipe-up (multitasking) + swipe-right (back) ──
   const nexusPanResponder = useMemo(
     () =>
       PanResponder.create({
         onMoveShouldSetPanResponder: (_evt, gs) => {
-          return Math.abs(gs.dy) > 15;
+          // Vertical swipe (up for multitasking)
+          if (Math.abs(gs.dy) > 15) return true;
+          // Horizontal right swipe (for back nav)
+          if (gs.dx > 20 && gs.dx > Math.abs(gs.dy) * 1.5) return true;
+          return false;
         },
         onPanResponderRelease: (_evt, gs) => {
           if (gs.dy < -50) {
             // Swipe UP → Multitasking
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             openMultitasking();
+          } else if (gs.dx > 60) {
+            // Swipe RIGHT → Go back
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            if (router.canGoBack()) {
+              router.back();
+            }
           }
         },
       }),
