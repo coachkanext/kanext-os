@@ -6,6 +6,7 @@
  */
 
 import { Stack } from 'expo-router';
+import { resetFooter } from '@/utils/global-footer-hide';
 
 export default function HomeLayout() {
   return (
@@ -16,6 +17,9 @@ export default function HomeLayout() {
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
         contentStyle: { backgroundColor: '#000000' },
+      }}
+      screenListeners={{
+        focus: () => resetFooter(),
       }}
     >
       <Stack.Screen name="index" options={{ gestureEnabled: false, fullScreenGestureEnabled: false }} />

@@ -13,8 +13,8 @@
  *   Organization (5): icon-program.png   — tap → push organization
  */
 
-import React, { useRef, useMemo } from 'react';
-import { View, Image, Pressable, PanResponder, StyleSheet } from 'react-native';
+import React, { useRef, useMemo, useEffect, useCallback } from 'react';
+import { View, Image, Pressable, PanResponder, Animated, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -24,6 +24,7 @@ import { openSplitNexus, closeSplitNexus, isSplitNexusOpen } from '@/utils/globa
 import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils/global-multitasking';
 import { startGlobalVoice } from '@/utils/global-voice';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
+import { subscribeFooterVisibility } from '@/utils/global-footer-hide';
 
 const FOOTER_HEIGHT = 49;
 
@@ -31,6 +32,26 @@ export function UniversalFooter() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const lastTapRef = useRef(0);
+  const translateY = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    return subscribeFooterVisibility((visible) => {
+      if (visible) {
+        Animated.spring(translateY, {
+          toValue: 0,
+          tension: 120,
+          friction: 14,
+          useNativeDriver: true,
+        }).start();
+      } else {
+        Animated.timing(translateY, {
+          toValue: FOOTER_HEIGHT + insets.bottom + 1,
+          duration: 250,
+          useNativeDriver: true,
+        }).start();
+      }
+    });
+  }, [insets.bottom]);
 
   // ── Nexus tap → navigate to Nexus fullscreen (with double-tap for split) ──
   const handleNexusPress = () => {
@@ -125,7 +146,7 @@ export function UniversalFooter() {
   };
 
   return (
-    <View style={styles.wrapper}>
+    <Animated.View style={[styles.wrapper, { transform: [{ translateY }] }]}>
       {/* 1px divider */}
       <View style={styles.divider} />
 
@@ -200,7 +221,7 @@ export function UniversalFooter() {
 
       {/* Safe area fill — extends black behind home indicator */}
       <View style={{ height: insets.bottom, backgroundColor: '#000000' }} />
-    </View>
+    </Animated.View>
   );
 }
 

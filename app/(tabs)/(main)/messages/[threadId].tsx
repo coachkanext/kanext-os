@@ -27,6 +27,7 @@ import { ChatComposer, VoiceNoteBubble } from '@/components/messages/chat-compos
 import type { VoiceNotePayload } from '@/components/messages/chat-composer';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useMode } from '@/context/app-context';
+import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import {
   getRoomMessages,
   getRooms,
@@ -726,6 +727,15 @@ export default function ThreadScreen() {
   const [threadPanel, setThreadPanel] = useState<RoomMessageV3 | null>(null);
   const [mentionQuery, setMentionQuery] = useState<string | null>(null);
 
+  const lastScrollY = useRef(0);
+  const handleScroll = useCallback((e: any) => {
+    const y = e.nativeEvent.contentOffset.y;
+    if (y > lastScrollY.current + 10) hideFooter();
+    else if (y < lastScrollY.current - 10) showFooter();
+    lastScrollY.current = y;
+    if (y <= 0) showFooter();
+  }, []);
+
   // Simulate typing indicator for DMs (show for 3s then hide, repeating)
   const [showTyping, setShowTyping] = useState(false);
   useEffect(() => {
@@ -841,6 +851,8 @@ export default function ThreadScreen() {
             data={displayItems}
             keyExtractor={(item) => item.key}
             inverted
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
             renderItem={({ item }) => {
               if (item.type === 'timestamp') {
                 return (

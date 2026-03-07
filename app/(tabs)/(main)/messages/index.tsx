@@ -1,7 +1,8 @@
 /**
  * Messages — Universal landing view.
- * Single ScrollView: Search > Pinned > Channels > DMs > FAB.
+ * Single ScrollView: Pinned > Channels > DMs > FAB.
  * Works across all modes. DMs persist cross-org.
+ * Search is handled globally by Nexus hold — no per-screen search bar.
  */
 
 import React, { useState, useRef, useMemo, useCallback } from 'react';
@@ -10,7 +11,6 @@ import {
   Text,
   Pressable,
   ScrollView,
-  Alert,
   Modal,
   Animated,
   StyleSheet,
@@ -25,6 +25,7 @@ import { useAccentColor } from '@/hooks/use-accent-color';
 import { useMode } from '@/context/app-context';
 import { NewDMSheet } from '@/components/messages/new-dm-sheet';
 import { getRooms, getGlobalDMs, formatMessageTime } from '@/data/mock-messages-v3';
+import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import type { InboxThreadV3, RoomV3 } from '@/types';
 
 const C = {
@@ -393,6 +394,15 @@ export default function MessagesListScreen() {
   const [composeVisible, setComposeVisible] = useState(false);
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
 
+  const lastScrollY = useRef(0);
+  const handleScroll = useCallback((e: any) => {
+    const y = e.nativeEvent.contentOffset.y;
+    if (y > lastScrollY.current + 10) hideFooter();
+    else if (y < lastScrollY.current - 10) showFooter();
+    lastScrollY.current = y;
+    if (y <= 0) showFooter();
+  }, []);
+
   const toggleMute = (id: string) => {
     setMutedIds((prev) => {
       const next = new Set(prev);
@@ -452,16 +462,7 @@ export default function MessagesListScreen() {
 
   return (
     <View style={[s.container, { paddingTop: insets.top }]}>
-      <ScrollView style={s.scrollView} contentContainerStyle={{ paddingBottom: 100 }}>
-        {/* ── Search bar ── */}
-        <Pressable
-          style={s.searchBar}
-          onPress={() => Alert.alert('Coming Soon', 'Search is not yet available.')}
-        >
-          <IconSymbol name="magnifyingglass" size={15} color={C.placeholder} />
-          <Text style={s.searchText}>Search messages...</Text>
-        </Pressable>
-
+      <ScrollView style={s.scrollView} contentContainerStyle={{ paddingTop: 28, paddingBottom: 100 }} onScroll={handleScroll} scrollEventThrottle={16}>
         {/* ── Pinned row (horizontal scroll of circular avatars) ── */}
         {pinnedItems.length > 0 && (
           <ScrollView
@@ -568,14 +569,6 @@ export default function MessagesListScreen() {
 const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   scrollView: { flex: 1 },
-
-  // Search
-  searchBar: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface,
-    borderRadius: 10, marginHorizontal: 16, paddingHorizontal: 10, paddingVertical: 8,
-    gap: 6, marginTop: 8, marginBottom: 12,
-  },
-  searchText: { fontSize: 16, color: C.placeholder },
 
   // Pinned
   pinnedRow: { paddingHorizontal: 16, gap: 14, paddingBottom: 16 },
