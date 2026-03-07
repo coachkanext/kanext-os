@@ -17,7 +17,7 @@ import { Stack, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreenModule from 'expo-splash-screen';
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { View, StyleSheet, Animated, Pressable, PanResponder } from 'react-native';
+import { View, StyleSheet, Animated, Pressable, PanResponder, Dimensions } from 'react-native';
 import { GestureHandlerRootView, FlingGestureHandler, Directions, State as GHState } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import 'react-native-reanimated';
@@ -253,12 +253,17 @@ function AppShell() {
 
   // Capture-phase PanResponder: intercepts horizontal right-swipes to open panels.
   // Swipe right from anywhere on any page opens the appropriate panel.
+  // Excludes footer zone (bottom 100px) — footer has its own PanResponder for back/forward.
   const panelOpenPanResponder = useMemo(
     () =>
       PanResponder.create({
         onStartShouldSetPanResponderCapture: () => false,
-        onMoveShouldSetPanResponderCapture: (_evt, gs) =>
-          gs.dx > 25 && gs.dx > Math.abs(gs.dy) * 2,
+        onMoveShouldSetPanResponderCapture: (evt, gs) => {
+          // Skip footer zone (bottom 100px) — footer has its own back/forward swipes
+          const screenH = Dimensions.get('window').height;
+          if (evt.nativeEvent.pageY > screenH - 100) return false;
+          return gs.dx > 25 && gs.dx > Math.abs(gs.dy) * 2;
+        },
         onPanResponderRelease: (_evt, gs) => {
           if (gs.dx > 60) {
             const p = pathnameRef.current;
@@ -280,6 +285,9 @@ function AppShell() {
   // Global fling-right handler: opens side panel on any page (settings panel on home)
   const handleFlingRight = useCallback(({ nativeEvent }: any) => {
     if (nativeEvent.state === GHState.ACTIVE) {
+      // Skip footer zone — footer handles its own back/forward swipes
+      const screenH = Dimensions.get('window').height;
+      if (nativeEvent.absoluteY > screenH - 100) return;
       if (isSidePanelOpen() || isSettingsPanelOpen()) return;
       const p = pathnameRef.current;
       const isHome = p === '/' || p === '/(tabs)' || p === '/(tabs)/(main)' || p === '/(main)';
@@ -324,9 +332,10 @@ function AppShell() {
                 options={{ presentation: 'modal', title: 'Modal' }}
               />
             </Stack>
-            <UniversalFooter />
           </View>
         </FlingGestureHandler>
+        {/* Footer outside FlingGestureHandler so its own PanResponder handles swipes */}
+        <UniversalFooter />
 
         {/* Tap/swipe dismiss overlay when either panel is open */}
         {(settingsPanelVisible || sidePanelVisible) && (
