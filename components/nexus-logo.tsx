@@ -14,7 +14,7 @@
  *   Long press  → Nexus voice + global search
  *   Double tap  → Split screen
  *   Swipe UP    → Multitasking
- *   Swipe RIGHT → Side panel (contextual)
+ *   Swipe RIGHT → Go back (universal previous screen)
  */
 
 import React, { useRef, useEffect, useMemo, useState } from 'react';
@@ -130,12 +130,10 @@ export function NexusLogo() {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             openMultitasking();
           } else if (absX > absY && gs.dx > 40) {
-            // Swipe RIGHT → Side panel
+            // Swipe RIGHT → Go back to previous screen
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            if (isSplitNexusOpen()) {
-              closeSplitNexus();
-            } else {
-              openSplitNexus();
+            if (router.canGoBack()) {
+              router.back();
             }
           }
         },
