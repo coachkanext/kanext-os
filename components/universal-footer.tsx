@@ -8,7 +8,7 @@
  * Icons (all use existing image assets):
  *   Home (1):         footer-home.png    — tap → navigate home
  *   Messages (2):     footer-messages.png — tap → push messages
- *   Nexus (center):   footer-nexus.png   — 4 gestures: tap, double-tap, hold, swipe-up
+ *   Nexus (center):   footer-nexus.png   — 6 gestures: tap, double-tap, hold, swipe-up, swipe-right, swipe-left
  *   Phone (4):        footer-phone.png   — tap → push phone
  *   Organization (5): footer-org.png     — tap → push organization
  */
@@ -16,7 +16,7 @@
 import React, { useRef, useMemo, useEffect, useCallback } from 'react';
 import { View, Text, Image, Pressable, PanResponder, Animated, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, usePathname } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { openSearchOverlay } from '@/utils/global-search-overlay';
@@ -25,12 +25,16 @@ import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils
 import { startGlobalVoice } from '@/utils/global-voice';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
 import { subscribeFooterVisibility, resetFooter } from '@/utils/global-footer-hide';
+import { pushForward, popForward } from '@/utils/global-nav-history';
 
 const FOOTER_HEIGHT = 49;
 
 export function UniversalFooter() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const pathname = usePathname();
+  const pathnameRef = useRef(pathname);
+  pathnameRef.current = pathname;
   const lastTapRef = useRef(0);
   const translateY = useRef(new Animated.Value(0)).current;
 
@@ -97,28 +101,41 @@ export function UniversalFooter() {
     openSearchOverlay();
   };
 
-  // ── Nexus PanResponder: swipe-up (multitasking) + swipe-right (back) ──
-  const nexusPanResponder = useMemo(
+  // ── Footer-wide PanResponder: swipe-right (back) + swipe-up on nexus (multitasking) ──
+  const footerPanResponder = useMemo(
     () =>
       PanResponder.create({
-        onMoveShouldSetPanResponder: (_evt, gs) => {
-          // Vertical swipe (up for multitasking)
-          if (Math.abs(gs.dy) > 15) return true;
-          // Horizontal right swipe (for back nav)
-          if (gs.dx > 20 && gs.dx > Math.abs(gs.dy) * 1.5) return true;
+        onStartShouldSetPanResponder: () => false,
+        onMoveShouldSetPanResponderCapture: (_evt, gs) => {
+          // Capture horizontal swipe anywhere on footer (right=back, left=forward)
+          if (Math.abs(gs.dx) > 20 && Math.abs(gs.dx) > Math.abs(gs.dy) * 1.5) return true;
+          // Capture vertical swipe up (for multitasking on nexus area)
+          if (gs.dy < -15 && Math.abs(gs.dy) > Math.abs(gs.dx)) return true;
           return false;
         },
         onPanResponderRelease: (_evt, gs) => {
-          if (gs.dy < -50) {
+          if (gs.dx > 40 && gs.dx > Math.abs(gs.dy)) {
+            // Swipe RIGHT → Go back to previous screen
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            if (router.canGoBack()) {
+              pushForward(pathnameRef.current);
+              router.back();
+            }
+          } else if (gs.dx < -40 && Math.abs(gs.dx) > Math.abs(gs.dy)) {
+            // Swipe LEFT → Forward one step, or Nexus page if no forward history
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            const fwd = popForward();
+            if (fwd) {
+              router.push(fwd as any);
+            } else {
+              if (isMultitaskingOpen()) closeMultitasking();
+              if (isSplitNexusOpen()) closeSplitNexus();
+              router.navigate('/nexus' as any);
+            }
+          } else if (gs.dy < -50) {
             // Swipe UP → Multitasking
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             openMultitasking();
-          } else if (gs.dx > 60) {
-            // Swipe RIGHT → Go back
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            if (router.canGoBack()) {
-              router.back();
-            }
           }
         },
       }),
@@ -149,8 +166,8 @@ export function UniversalFooter() {
       {/* 1px divider */}
       <View style={styles.divider} />
 
-      {/* 5-icon row */}
-      <View style={styles.footer}>
+      {/* 5-icon row — swipe right anywhere → go back */}
+      <View style={styles.footer} {...footerPanResponder.panHandlers}>
         {/* 1. Home */}
         <Pressable
           style={styles.iconButton}
@@ -176,7 +193,7 @@ export function UniversalFooter() {
         </Pressable>
 
         {/* 3. Nexus (center) — 6 gestures */}
-        <View style={styles.iconButton} {...nexusPanResponder.panHandlers}>
+        <View style={styles.iconButton}>
           <Pressable
             style={styles.pressableInner}
             onPress={handleNexusPress}

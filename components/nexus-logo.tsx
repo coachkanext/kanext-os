@@ -9,24 +9,26 @@
  *   nexus  → 72px, bottom-center above safe area
  *   hidden → not rendered
  *
- * 5 Gestures (all states):
+ * 6 Gestures (all states):
  *   Tap         → Nexus text (navigate to Nexus fullscreen)
  *   Long press  → Nexus voice + global search
  *   Double tap  → Split screen
  *   Swipe UP    → Multitasking
  *   Swipe RIGHT → Go back (universal previous screen)
+ *   Swipe LEFT  → Go forward one step
  */
 
 import React, { useRef, useEffect, useMemo, useState } from 'react';
 import { View, Image, Pressable, PanResponder, Animated, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, usePathname } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { openSearchOverlay } from '@/utils/global-search-overlay';
 import { openSplitNexus, closeSplitNexus, isSplitNexusOpen } from '@/utils/global-split-nexus';
 import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils/global-multitasking';
 import { startGlobalVoice } from '@/utils/global-voice';
+import { pushForward, popForward, canGoForward, clearForward } from '@/utils/global-nav-history';
 import {
   subscribeNexusLogoState,
   getNexusLogoState,
@@ -44,6 +46,9 @@ const COMPACT_BOTTOM_OFFSET = 8; // tight to safe area
 export function NexusLogo() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const pathname = usePathname();
+  const pathnameRef = useRef(pathname);
+  pathnameRef.current = pathname;
   const lastTapRef = useRef(0);
   const [logoState, setLogoState] = useState<NexusLogoState>(getNexusLogoState);
 
@@ -118,7 +123,7 @@ export function NexusLogo() {
   const panResponder = useMemo(
     () =>
       PanResponder.create({
-        onMoveShouldSetPanResponder: (_evt, gs) => {
+        onMoveShouldSetPanResponderCapture: (_evt, gs) => {
           return Math.abs(gs.dx) > 15 || Math.abs(gs.dy) > 15;
         },
         onPanResponderRelease: (_evt, gs) => {
@@ -133,7 +138,19 @@ export function NexusLogo() {
             // Swipe RIGHT → Go back to previous screen
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             if (router.canGoBack()) {
+              pushForward(pathnameRef.current);
               router.back();
+            }
+          } else if (absX > absY && gs.dx < -40) {
+            // Swipe LEFT → Forward one step, or Nexus page if no forward history
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            const fwd = popForward();
+            if (fwd) {
+              router.push(fwd as any);
+            } else {
+              if (isMultitaskingOpen()) closeMultitasking();
+              if (isSplitNexusOpen()) closeSplitNexus();
+              router.push('/nexus' as any);
             }
           }
         },
