@@ -48,6 +48,8 @@ import { resetFooter } from '@/utils/global-footer-hide';
 
 import { UniversalFinder } from '@/components/universal-finder';
 import { SplitNexusOverlay } from '@/components/nexus/split-nexus-overlay';
+import { CallOverlay } from '@/components/call/call-overlay';
+import { IncomingCallOverlay } from '@/components/call/incoming-call-overlay';
 
 import { registerEntitySheetHandlers } from '@/utils/global-entity-sheets';
 import type {
@@ -374,6 +376,8 @@ function AppShell() {
       <SearchOverlay visible={searchOverlayVisible} onClose={() => setSearchOverlayVisible(false)} />
       <MultitaskingOverlay />
       <ModeSwitcherOverlay />
+      <CallOverlay />
+      <IncomingCallOverlay />
       <KXTransition />
       <AuthModal visible={showAuthModal} />
     </View>

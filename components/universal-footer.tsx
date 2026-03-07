@@ -7,14 +7,14 @@
  *
  * Icons (all use existing image assets):
  *   Home (1):         footer-home.png    — tap → navigate home
- *   Messages (2):     icon-messages.png  — tap → push messages
+ *   Messages (2):     footer-messages.png — tap → push messages
  *   Nexus (center):   footer-nexus.png   — 4 gestures: tap, double-tap, hold, swipe-up
- *   Media (4):        icon-media.png     — tap → push media
- *   Organization (5): icon-program.png   — tap → push organization
+ *   Phone (4):        footer-phone.png   — tap → push phone
+ *   Organization (5): footer-org.png     — tap → push organization
  */
 
 import React, { useRef, useMemo, useEffect, useCallback } from 'react';
-import { View, Image, Pressable, PanResponder, Animated, StyleSheet } from 'react-native';
+import { View, Text, Image, Pressable, PanResponder, Animated, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -135,7 +135,7 @@ export function UniversalFooter() {
 
   const handleHomePress = () => { preNav(); router.navigate('/(tabs)/(main)' as any); };
   const handleMessagesPress = () => { preNav(); router.navigate('/(tabs)/(main)/messages' as any); };
-  const handleMediaPress = () => { preNav(); router.navigate('/(tabs)/(main)/section?title=Media' as any); };
+  const handlePhonePress = () => { preNav(); router.navigate('/(tabs)/(main)/phone' as any); };
   const handleOrgPress = () => { preNav(); router.navigate('/(tabs)/(main)/section?title=Organization' as any); };
 
   // ── Organization long press → mode switcher ──
@@ -191,16 +191,13 @@ export function UniversalFooter() {
           </Pressable>
         </View>
 
-        {/* 4. Media */}
+        {/* 4. Phone */}
         <Pressable
           style={styles.iconButton}
-          onPress={handleMediaPress}
+          onPress={handlePhonePress}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Image
-            source={require('@/assets/images/footer-media.png')}
-            style={styles.footerImage}
-          />
+          <Text style={styles.phoneEmoji}>📞</Text>
         </Pressable>
 
         {/* 5. Organization — long press → mode switcher */}
@@ -266,4 +263,7 @@ const styles = StyleSheet.create({
     height: FOOTER_HEIGHT - 8,
     resizeMode: 'contain',
   } as any,
+  phoneEmoji: {
+    fontSize: 28,
+  },
 });

@@ -29,6 +29,7 @@ const SECTION_ICONS: Record<string, IconSymbolName> = {
   Store: 'bag.fill',
   Program: 'building.2.fill',
   Profile: 'person.circle',
+  Phone: 'phone.fill',
   Schedule: 'calendar',
   Athletes: 'person.badge.plus',
   Film: 'play.rectangle.fill',

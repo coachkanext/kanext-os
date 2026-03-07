@@ -1,0 +1,165 @@
+/**
+ * Mock data for Phone screen — calls, contacts, voicemails.
+ * Mode-aware: each call/contact carries a mode badge.
+ */
+
+import type { Mode } from '@/types';
+
+// ── Types ──
+
+export type CallDirection = 'incoming' | 'outgoing' | 'missed' | 'video';
+
+export interface RecentCall {
+  id: string;
+  name: string;
+  username: string;
+  initials: string;
+  mode: Mode;
+  direction: CallDirection;
+  timestamp: string;
+  duration?: string;
+  hasVoicemail?: boolean;
+}
+
+export interface PhoneContact {
+  id: string;
+  name: string;
+  username: string;
+  initials: string;
+  role: string;
+  mode: Mode;
+  isFavorite?: boolean;
+}
+
+export interface Voicemail {
+  id: string;
+  callerName: string;
+  callerUsername: string;
+  callerInitials: string;
+  mode: Mode;
+  duration: string;
+  timestamp: string;
+  transcription: string;
+}
+
+export interface KanextNumber {
+  mode: Mode;
+  label: string;
+  number: string;
+}
+
+// ── Mode colors for badges ──
+
+export const MODE_BADGE_COLORS: Record<Mode, string> = {
+  sports: '#3B82F6',
+  business: '#8B5CF6',
+  church: '#F59E0B',
+  education: '#10B981',
+  competition: '#EF4444',
+};
+
+export const MODE_BADGE_LABELS: Record<Mode, string> = {
+  sports: 'Sports',
+  business: 'Business',
+  church: 'Church',
+  education: 'Education',
+  competition: 'Competition',
+};
+
+// ── Recent Calls ──
+
+export const RECENT_CALLS: RecentCall[] = [
+  { id: 'c1', name: 'Coach Williams', username: '@coachwilliams', initials: 'CW', mode: 'sports', direction: 'outgoing', timestamp: '2:34 PM', duration: '4:21' },
+  { id: 'c2', name: 'James Rodriguez', username: '@jrod23', initials: 'JR', mode: 'sports', direction: 'incoming', timestamp: '1:12 PM', duration: '12:05' },
+  { id: 'c3', name: 'Sarah Chen', username: '@schen', initials: 'SC', mode: 'business', direction: 'missed', timestamp: '11:45 AM' },
+  { id: 'c4', name: 'Pastor Davis', username: '@pastordavis', initials: 'PD', mode: 'church', direction: 'incoming', timestamp: '10:20 AM', duration: '8:33' },
+  { id: 'c5', name: 'Marcus Johnson', username: '@mjohnson', initials: 'MJ', mode: 'sports', direction: 'video', timestamp: '9:15 AM', duration: '22:17' },
+  { id: 'c6', name: 'Athletic Dept', username: '@athletics', initials: 'AD', mode: 'sports', direction: 'missed', timestamp: 'Yesterday', hasVoicemail: true },
+  { id: 'c7', name: 'Lisa Park', username: '@lisapark', initials: 'LP', mode: 'business', direction: 'outgoing', timestamp: 'Yesterday', duration: '3:45' },
+  { id: 'c8', name: 'Training Staff', username: '@trainstaff', initials: 'TS', mode: 'sports', direction: 'incoming', timestamp: 'Yesterday', duration: '1:33' },
+  { id: 'c9', name: 'Michael Torres', username: '@mtorres', initials: 'MT', mode: 'education', direction: 'missed', timestamp: 'Mar 5' },
+  { id: 'c10', name: 'Dr. Kim', username: '@drkim', initials: 'DK', mode: 'sports', direction: 'incoming', timestamp: 'Mar 5', duration: '6:12' },
+  { id: 'c11', name: 'Front Office', username: '@frontoffice', initials: 'FO', mode: 'sports', direction: 'outgoing', timestamp: 'Mar 4', duration: '0:45' },
+  { id: 'c12', name: 'Rachel Green', username: '@rgreen', initials: 'RG', mode: 'church', direction: 'video', timestamp: 'Mar 4', duration: '15:20' },
+  { id: 'c13', name: 'Alex Kim', username: '@akim', initials: 'AK', mode: 'business', direction: 'missed', timestamp: 'Mar 3', hasVoicemail: true },
+  { id: 'c14', name: 'Coach Thompson', username: '@cthompson', initials: 'CT', mode: 'sports', direction: 'incoming', timestamp: 'Mar 3', duration: '11:02' },
+];
+
+// ── Contacts ──
+
+export const PHONE_CONTACTS: PhoneContact[] = [
+  { id: 'p1', name: 'Alex Kim', username: '@akim', initials: 'AK', role: 'Analyst', mode: 'business', isFavorite: true },
+  { id: 'p2', name: 'Athletic Dept', username: '@athletics', initials: 'AD', role: 'Department', mode: 'sports' },
+  { id: 'p3', name: 'Coach Thompson', username: '@cthompson', initials: 'CT', role: 'Assistant Coach', mode: 'sports', isFavorite: true },
+  { id: 'p4', name: 'Coach Williams', username: '@coachwilliams', initials: 'CW', role: 'Head Coach', mode: 'sports', isFavorite: true },
+  { id: 'p5', name: 'Dr. Kim', username: '@drkim', initials: 'DK', role: 'Team Physician', mode: 'sports' },
+  { id: 'p6', name: 'Front Office', username: '@frontoffice', initials: 'FO', role: 'Administration', mode: 'sports' },
+  { id: 'p7', name: 'James Rodriguez', username: '@jrod23', initials: 'JR', role: 'Point Guard', mode: 'sports', isFavorite: true },
+  { id: 'p8', name: 'Lisa Park', username: '@lisapark', initials: 'LP', role: 'Operations Director', mode: 'business' },
+  { id: 'p9', name: 'Marcus Johnson', username: '@mjohnson', initials: 'MJ', role: 'Shooting Guard', mode: 'sports' },
+  { id: 'p10', name: 'Medical Team', username: '@medteam', initials: 'MT', role: 'Department', mode: 'sports' },
+  { id: 'p11', name: 'Michael Torres', username: '@mtorres', initials: 'MT', role: 'Professor', mode: 'education' },
+  { id: 'p12', name: 'Pastor Davis', username: '@pastordavis', initials: 'PD', role: 'Senior Pastor', mode: 'church' },
+  { id: 'p13', name: 'Rachel Green', username: '@rgreen', initials: 'RG', role: 'Worship Leader', mode: 'church' },
+  { id: 'p14', name: 'Sarah Chen', username: '@schen', initials: 'SC', role: 'CFO', mode: 'business' },
+  { id: 'p15', name: 'Training Staff', username: '@trainstaff', initials: 'TS', role: 'Department', mode: 'sports' },
+];
+
+// ── Voicemails ──
+
+export const VOICEMAILS: Voicemail[] = [
+  {
+    id: 'v1',
+    callerName: 'Athletic Dept',
+    callerUsername: '@athletics',
+    callerInitials: 'AD',
+    mode: 'sports',
+    duration: '0:42',
+    timestamp: 'Yesterday',
+    transcription: 'Hey, just calling about the schedule change for next week. The Tuesday practice is moving to 3 PM instead of 2. Let me know if that works for the team.',
+  },
+  {
+    id: 'v2',
+    callerName: 'Alex Kim',
+    callerUsername: '@akim',
+    callerInitials: 'AK',
+    mode: 'business',
+    duration: '0:28',
+    timestamp: 'Mar 3',
+    transcription: 'Hi, wanted to follow up on the Q1 report. I have the numbers ready whenever you want to review. Call me back when you get a chance.',
+  },
+  {
+    id: 'v3',
+    callerName: 'Pastor Davis',
+    callerUsername: '@pastordavis',
+    callerInitials: 'PD',
+    mode: 'church',
+    duration: '1:15',
+    timestamp: 'Mar 1',
+    transcription: 'Good morning! I wanted to talk about the upcoming service plans for Easter. We need to coordinate with the worship team and make sure we have volunteers lined up. Give me a call when you have a moment.',
+  },
+];
+
+// ── My KaNeXT Numbers ──
+
+export const MY_KANEXT_NUMBERS: KanextNumber[] = [
+  { mode: 'sports', label: 'Sports', number: '+1 (555) 247-8301' },
+  { mode: 'business', label: 'Business', number: '+1 (555) 247-8302' },
+  { mode: 'church', label: 'Church', number: '+1 (555) 247-8303' },
+  { mode: 'education', label: 'Education', number: '+1 (555) 247-8304' },
+];
+
+// ── Helpers ──
+
+export function getFavoriteContacts(): PhoneContact[] {
+  return PHONE_CONTACTS.filter((c) => c.isFavorite);
+}
+
+export function getContactsByMode(mode: Mode): PhoneContact[] {
+  return PHONE_CONTACTS.filter((c) => c.mode === mode);
+}
+
+export function getRecentCallsByMode(mode?: Mode): RecentCall[] {
+  if (!mode) return RECENT_CALLS;
+  return RECENT_CALLS.filter((c) => c.mode === mode);
+}

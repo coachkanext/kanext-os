@@ -26,6 +26,7 @@ export default function HomeLayout() {
       <Stack.Screen name="index" />
       <Stack.Screen name="messages/index" options={{ animation: 'slide_from_right' }} />
       <Stack.Screen name="messages/[threadId]" options={{ animation: 'slide_from_right' }} />
+      <Stack.Screen name="phone/index" options={{ animation: 'slide_from_right' }} />
     </Stack>
   );
 }

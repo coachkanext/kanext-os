@@ -78,6 +78,15 @@ const SCREEN_ITEMS: Record<string, { title: string; items: PanelItem[] }> = {
       { icon: 'clock.fill', label: 'Watch Later' },
     ],
   },
+  phone: {
+    title: 'Phone',
+    items: [
+      { icon: 'phone.fill', label: 'Voicemail' },
+      { icon: 'person.crop.circle.fill', label: 'KaNeXT Numbers' },
+      { icon: 'gearshape.fill', label: 'Call Settings' },
+      { icon: 'waveform', label: 'Audio Devices' },
+    ],
+  },
 };
 
 /** Resolve which item set to show based on pathname */
@@ -90,6 +99,7 @@ function resolveScreen(pathname: string): { title: string; items: PanelItem[] } 
   if (p.includes('store')) return SCREEN_ITEMS.store;
   if (p.includes('give') || p.includes('giving')) return SCREEN_ITEMS.give;
   if (p.includes('video')) return SCREEN_ITEMS.video;
+  if (p.includes('phone')) return SCREEN_ITEMS.phone;
   // Generic fallback
   return {
     title: 'Tools',

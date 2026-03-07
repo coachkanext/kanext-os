@@ -1,33 +1,23 @@
 /**
  * Home icon grid — 3×3 (9 icons).
- * Messages, Media, Organization in universal footer bar.
+ * Messages, Phone, Organization in universal footer bar.
  * All icons visible to ALL roles. No RBAC gating on visibility.
  * 3 columns always. Deep navy rounded-square backgrounds with white glyphs.
  * Positions 2, 3, 6 shift per mode; rest universal.
  * Tap → scale 1.05 lift + soft glow, 150ms.
- * Profile tile long-press → org picker popup.
+ * Media in grid position 9 (bottom right). Profile in settings side panel.
  */
 
-import React, { useRef, useCallback, useState, useMemo } from 'react';
-import { View, Text, Image, StyleSheet, useWindowDimensions, Animated, Pressable, Modal } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useRef, useCallback } from 'react';
+import { View, Text, Image, StyleSheet, useWindowDimensions, Animated, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
-import { useAppContext } from '@/context/app-context';
 import { useMode } from '@/context/app-context';
 import { useMultitasking } from '@/context/multitasking-context';
-import {
-  getOrgsForModeV2,
-  getMembershipsForOrg,
-  getOrgById,
-  getProgramsForOrg,
-  getCurrentSeasonForOrg,
-  getMembershipsForOrgProgram,
-} from '@/data/mock-memberships';
-import type { Mode, ActiveContext } from '@/types';
+import type { Mode } from '@/types';
 import type { GridIcon } from './home-types';
 
 const C = {
@@ -82,7 +72,7 @@ const ROWS: GridIcon[][] = [
   [
     { id: 'gm',       icon: 'gamecontroller.fill',  label: 'GM',       route: '/section?title=GM',       image: require('@/assets/images/icon-gm.png') },
     { id: 'wallet',   icon: 'creditcard.fill',      label: 'Wallet',   route: '/wallet',                 image: require('@/assets/images/icon-wallet.png') },
-    { id: 'profile',  icon: 'person.circle',        label: 'Profile',  route: '/profile',                image: require('@/assets/images/icon-profile.png') },
+    { id: 'media',    icon: 'play.rectangle.fill',  label: 'Media',    route: '/section?title=Media',    image: require('@/assets/images/icon-media.png') },
   ],
 ];
 
@@ -156,84 +146,13 @@ function GridTile({
   );
 }
 
-/** Org picker popup — shown on profile icon long-press */
-function OrgPickerPopup({
-  visible,
-  onClose,
-  onSelect,
-  activeOrgId,
-  mode,
-}: {
-  visible: boolean;
-  onClose: () => void;
-  onSelect: (orgId: string) => void;
-  activeOrgId: string;
-  mode: Mode;
-}) {
-  const insets = useSafeAreaInsets();
-
-  const orgRows = useMemo(() => {
-    const orgs = getOrgsForModeV2(mode);
-    return orgs.map((org) => {
-      const memberships = getMembershipsForOrg(org.org_id);
-      const roleLabel = memberships[0]?.role_titles.join(' · ') ?? '';
-      return { org, roleLabel };
-    });
-  }, [mode]);
-
-  if (!visible) return null;
-
-  return (
-    <Modal transparent animationType="fade" visible={visible} onRequestClose={onClose}>
-      <Pressable style={pickerStyles.backdrop} onPress={onClose}>
-        <View style={[pickerStyles.card, { marginBottom: insets.bottom + 80 }]}>
-          <Text style={pickerStyles.header}>Switch Organization</Text>
-          {orgRows.map(({ org, roleLabel }) => {
-            const isActive = org.org_id === activeOrgId;
-            return (
-              <Pressable
-                key={org.org_id}
-                style={({ pressed }) => [
-                  pickerStyles.row,
-                  isActive && pickerStyles.rowActive,
-                  pressed && !isActive && { backgroundColor: 'rgba(255,255,255,0.04)' },
-                ]}
-                onPress={() => {
-                  onSelect(org.org_id);
-                  onClose();
-                }}
-              >
-                <View style={pickerStyles.rowContent}>
-                  <Text
-                    style={[pickerStyles.orgName, isActive && pickerStyles.orgNameActive]}
-                    numberOfLines={1}
-                  >
-                    {org.org_name}
-                  </Text>
-                  <Text style={pickerStyles.roleLabel} numberOfLines={1}>{roleLabel}</Text>
-                </View>
-                {isActive && (
-                  <View style={pickerStyles.checkCircle} />
-                )}
-              </Pressable>
-            );
-          })}
-        </View>
-      </Pressable>
-    </Modal>
-  );
-}
-
 export function IconGrid() {
   const accent = useAccentColor();
   const router = useRouter();
   const mode = useMode();
-  const { state, switchContext } = useAppContext();
   const { width: screenWidth } = useWindowDimensions();
   const { addScreen } = useMultitasking();
   const cellWidth = screenWidth / 3;
-
-  const [orgPickerVisible, setOrgPickerVisible] = useState(false);
 
   const handlePress = useCallback((item: GridIcon) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -245,36 +164,6 @@ export function IconGrid() {
     });
     router.navigate(item.route as any);
   }, [addScreen, router]);
-
-  const handleLongPress = useCallback((item: GridIcon) => {
-    if (item.id === 'profile') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      setOrgPickerVisible(true);
-    }
-  }, []);
-
-  const handleOrgSelect = useCallback((orgId: string) => {
-    if (orgId === state.activeContext.org_id) return;
-    const org = getOrgById(orgId);
-    if (!org) return;
-    const programs = getProgramsForOrg(orgId);
-    const program = programs[0];
-    if (!program) return;
-    const season = getCurrentSeasonForOrg(orgId);
-    if (!season) return;
-    const memberships = getMembershipsForOrgProgram(orgId, program.program_id);
-    const membership = memberships[0];
-    if (!membership) return;
-    const ctx: ActiveContext = {
-      mode: org.mode,
-      org_id: orgId,
-      program_id: program.program_id,
-      season_id: season.season_id,
-      membership_id: membership.membership_id,
-      derived_role_badge: membership.role_titles.join(' · '),
-    };
-    switchContext(ctx);
-  }, [state.activeContext.org_id, switchContext]);
 
   return (
     <View style={styles.container}>
@@ -290,20 +179,11 @@ export function IconGrid() {
                 cellWidth={cellWidth}
                 accent={accent}
                 onPress={handlePress}
-                onLongPress={item.id === 'profile' ? handleLongPress : undefined}
               />
             );
           })}
         </View>
       ))}
-
-      <OrgPickerPopup
-        visible={orgPickerVisible}
-        onClose={() => setOrgPickerVisible(false)}
-        onSelect={handleOrgSelect}
-        activeOrgId={state.activeContext.org_id}
-        mode={mode}
-      />
     </View>
   );
 }
@@ -363,65 +243,5 @@ const styles = StyleSheet.create({
     marginTop: 12,
     textAlign: 'center',
     color: C.label,
-  },
-});
-
-const pickerStyles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  card: {
-    width: '85%',
-    backgroundColor: '#0B0F14',
-    borderRadius: 16,
-    padding: 16,
-    maxWidth: 340,
-  },
-  header: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: 'rgba(255,255,255,0.5)',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-    marginBottom: 12,
-    paddingHorizontal: 4,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderRadius: 10,
-    marginBottom: 2,
-  },
-  rowActive: {
-    backgroundColor: 'rgba(255,255,255,0.08)',
-  },
-  rowContent: {
-    flex: 1,
-  },
-  orgName: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: 'rgba(255,255,255,0.6)',
-    marginBottom: 2,
-  },
-  orgNameActive: {
-    color: '#FFFFFF',
-  },
-  roleLabel: {
-    fontSize: 12,
-    fontWeight: '400',
-    color: 'rgba(255,255,255,0.35)',
-  },
-  checkCircle: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#FFFFFF',
-    marginLeft: 12,
   },
 });

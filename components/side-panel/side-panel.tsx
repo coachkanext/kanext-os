@@ -10,6 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { usePathname } from 'expo-router';
 
 import { MessagesPanel } from './messages-panel';
+import { PhonePanel } from './phone-panel';
 import { DefaultPanel } from './default-panel';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -24,6 +25,13 @@ export function SidePanel({ visible }: SidePanelProps) {
   const pathname = usePathname();
 
   const isMessages = pathname.includes('messages');
+  const isPhone = pathname.includes('phone');
+
+  const content = isMessages
+    ? <MessagesPanel />
+    : isPhone
+      ? <PhonePanel />
+      : <DefaultPanel pathname={pathname} />;
 
   return (
     <View
@@ -31,11 +39,7 @@ export function SidePanel({ visible }: SidePanelProps) {
       pointerEvents={visible ? 'auto' : 'none'}
     >
       <View style={[styles.inner, { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24 }]}>
-        {isMessages ? (
-          <MessagesPanel />
-        ) : (
-          <DefaultPanel pathname={pathname} />
-        )}
+        {content}
       </View>
     </View>
   );
