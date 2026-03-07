@@ -26,6 +26,7 @@ import { startGlobalVoice } from '@/utils/global-voice';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
 import { subscribeFooterVisibility, resetFooter } from '@/utils/global-footer-hide';
 import { pushForward, popForward } from '@/utils/global-nav-history';
+import { fireSwipeBack, fireSwipeForward } from '@/utils/global-footer-swipe';
 
 const FOOTER_HEIGHT = 49;
 
@@ -86,7 +87,8 @@ export function UniversalFooter() {
     lastTapRef.current = now;
     setTimeout(() => {
       if (lastTapRef.current !== now) return;
-      // Single tap → Nexus fullscreen
+      // Single tap → Nexus fullscreen (dead tap if already on Nexus)
+      if (pathnameRef.current === '/nexus' || pathnameRef.current.startsWith('/nexus/')) return;
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       if (isMultitaskingOpen()) closeMultitasking();
       if (isSplitNexusOpen()) closeSplitNexus();
@@ -101,7 +103,8 @@ export function UniversalFooter() {
     openSearchOverlay();
   };
 
-  // ── Footer-wide PanResponder: swipe-right (back) + swipe-up on nexus (multitasking) ──
+  // ── Footer-wide PanResponder: swipe-right (back) + swipe-left (forward) + swipe-up (multitasking) ──
+  // No drag animation — swipe detection only. Native Stack animator handles the smooth slide.
   const footerPanResponder = useMemo(
     () =>
       PanResponder.create({
@@ -115,23 +118,15 @@ export function UniversalFooter() {
         },
         onPanResponderRelease: (_evt, gs) => {
           if (gs.dx > 40 && gs.dx > Math.abs(gs.dy)) {
-            // Swipe RIGHT → Go back to previous screen
+            // Swipe RIGHT → Go back with native slide animation
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             if (router.canGoBack()) {
-              pushForward(pathnameRef.current);
-              router.back();
+              fireSwipeBack();
             }
           } else if (gs.dx < -40 && Math.abs(gs.dx) > Math.abs(gs.dy)) {
-            // Swipe LEFT → Forward one step, or Nexus page if no forward history
+            // Swipe LEFT → Forward with native slide animation
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            const fwd = popForward();
-            if (fwd) {
-              router.push(fwd as any);
-            } else {
-              if (isMultitaskingOpen()) closeMultitasking();
-              if (isSplitNexusOpen()) closeSplitNexus();
-              router.navigate('/nexus' as any);
-            }
+            fireSwipeForward();
           } else if (gs.dy < -50) {
             // Swipe UP → Multitasking
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -150,10 +145,16 @@ export function UniversalFooter() {
     if (router.canDismiss()) router.dismissAll();
   }, [router]);
 
-  const handleHomePress = () => { preNav(); router.navigate('/(tabs)/(main)' as any); };
-  const handleMessagesPress = () => { preNav(); router.navigate('/(tabs)/(main)/messages' as any); };
-  const handlePhonePress = () => { preNav(); router.navigate('/(tabs)/(main)/phone' as any); };
-  const handleOrgPress = () => { preNav(); router.navigate('/(tabs)/(main)/section?title=Organization' as any); };
+  const pIncludes = (s: string) => pathnameRef.current.includes(s);
+  const pIs = (s: string) => pathnameRef.current === s;
+
+  const handleHomePress = () => {
+    if ((pIs('/') || pIs('/(tabs)') || pIs('/(tabs)/(main)') || pIs('/(main)')) && !pIncludes('messages') && !pIncludes('phone') && !pIncludes('section')) return;
+    preNav(); router.navigate('/(tabs)/(main)' as any);
+  };
+  const handleMessagesPress = () => { if (pIncludes('messages')) return; preNav(); router.navigate('/(tabs)/(main)/messages' as any); };
+  const handlePhonePress = () => { if (pIncludes('phone')) return; preNav(); router.navigate('/(tabs)/(main)/phone' as any); };
+  const handleOrgPress = () => { if (pIncludes('section') && pIncludes('Organization')) return; preNav(); router.navigate('/(tabs)/(main)/section?title=Organization' as any); };
 
   // ── Organization long press → mode switcher ──
   const handleOrgLongPress = () => {

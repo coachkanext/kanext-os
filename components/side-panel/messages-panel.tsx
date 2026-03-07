@@ -50,39 +50,42 @@ export function MessagesPanel() {
   };
 
   return (
-    <ScrollView
-      style={styles.scroll}
-      contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* ── MY NUMBERS ── */}
+    <View style={styles.container}>
+      {/* ── MY NUMBERS (pinned) ── */}
       <MyNumbersSection onFilter={handleFilter} />
 
       {/* ── DIVIDER ── */}
       <View style={styles.divider} />
 
-      {/* ── MENU ── */}
-      {MENU_ITEMS.map((item) => (
-        <Pressable
-          key={item.label}
-          style={({ pressed }) => [
-            styles.menuRow,
-            pressed && { backgroundColor: 'rgba(255,255,255,0.05)' },
-          ]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            navigateTo(item.route);
-          }}
-        >
-          <IconSymbol name={item.icon as any} size={20} color={C.secondary} />
-          <Text style={styles.menuLabel}>{item.label}</Text>
-        </Pressable>
-      ))}
-    </ScrollView>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ── MENU ── */}
+        {MENU_ITEMS.map((item) => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [
+              styles.menuRow,
+              pressed && { backgroundColor: 'rgba(255,255,255,0.05)' },
+            ]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              navigateTo(item.route);
+            }}
+          >
+            <IconSymbol name={item.icon as any} size={20} color={C.secondary} />
+            <Text style={styles.menuLabel}>{item.label}</Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: { flex: 1 },
   scroll: { flex: 1 },
   scrollContent: { paddingBottom: 32 },
   divider: {

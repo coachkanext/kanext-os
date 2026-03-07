@@ -86,43 +86,28 @@ export function MyNumbersSection({ onFilter }: { onFilter: (mode: Mode) => void 
 
   return (
     <View style={styles.container}>
-      {/* Section header */}
-      <Text style={styles.sectionLabel}>MY NUMBERS</Text>
-
-      {/* Number cards */}
-      <View style={styles.cardWrap}>
-        {MY_KANEXT_NUMBERS.map((num, i) => {
-          const isLast = i === MY_KANEXT_NUMBERS.length - 1;
-          return (
-            <Pressable
-              key={num.mode}
-              style={({ pressed }) => [
-                styles.numberRow,
-                pressed && { backgroundColor: 'rgba(255,255,255,0.08)' },
-                !isLast && styles.numberRowBorder,
-              ]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onFilter(num.mode);
-              }}
-              onLongPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                setPopupNumber(num);
-              }}
-              delayLongPress={400}
-            >
-              {/* Left: accent bar + number */}
-              <View style={styles.numberLeft}>
-                <View style={styles.accentBar} />
-                <Text style={styles.numberText}>{num.number}</Text>
-              </View>
-              {/* Right: pill */}
-              <View style={styles.pill}>
-                <Text style={styles.pillText}>{MODE_BADGE_LABELS[num.mode]}</Text>
-              </View>
-            </Pressable>
-          );
-        })}
+      <View style={styles.pillRow}>
+        {MY_KANEXT_NUMBERS.map((num) => (
+          <Pressable
+            key={num.mode}
+            style={({ pressed }) => [
+              styles.pill,
+              pressed && { opacity: 0.7 },
+            ]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onFilter(num.mode);
+            }}
+            onLongPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              setPopupNumber(num);
+            }}
+            delayLongPress={400}
+          >
+            <Text style={styles.pillNumber}>{num.number}</Text>
+            <Text style={styles.pillLabel}>{MODE_BADGE_LABELS[num.mode]}</Text>
+          </Pressable>
+        ))}
       </View>
 
       <NumberPopup
@@ -136,64 +121,34 @@ export function MyNumbersSection({ onFilter }: { onFilter: (mode: Mode) => void 
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 20,
-    paddingHorizontal: 16,
-    paddingBottom: 20,
+    paddingTop: 16,
+    paddingHorizontal: 12,
+    paddingBottom: 16,
   },
-  sectionLabel: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: C.secondary,
-    letterSpacing: 1.2,
-    marginBottom: 12,
-    marginLeft: 4,
+  pillRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
   },
-  cardWrap: {
-    backgroundColor: 'rgba(255,255,255,0.04)',
-    borderRadius: 14,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.06)',
-  },
-  numberRow: {
+  pill: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 14,
-    paddingRight: 14,
-    paddingLeft: 0,
+    gap: 6,
+    backgroundColor: 'rgba(255,255,255,0.10)',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
-  numberRowBorder: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.08)',
-  },
-  numberLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  accentBar: {
-    width: 3,
-    height: 28,
-    borderRadius: 2,
-    backgroundColor: '#FFFFFF',
-  },
-  numberText: {
-    fontSize: 16,
-    fontWeight: '500',
+  pillNumber: {
+    fontSize: 13,
+    fontWeight: '600',
     color: C.label,
     fontVariant: ['tabular-nums'],
   },
-  pill: {
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    backgroundColor: 'rgba(255,255,255,0.10)',
-  },
-  pillText: {
+  pillLabel: {
     fontSize: 11,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontWeight: '500',
+    color: C.secondary,
   },
 });
 

@@ -13,7 +13,7 @@
  */
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack, usePathname } from 'expo-router';
+import { Stack, usePathname, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreenModule from 'expo-splash-screen';
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
@@ -35,7 +35,8 @@ import { MultitaskingProvider } from '@/context/multitasking-context';
 import { QueryProvider } from '@/providers/query-provider';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { registerSearchOverlayHandlers } from '@/utils/global-search-overlay';
-import { registerSplitNexusHandlers } from '@/utils/global-split-nexus';
+import { registerSplitNexusHandlers, isSplitNexusOpen, closeSplitNexus } from '@/utils/global-split-nexus';
+import { isMultitaskingOpen, closeMultitasking } from '@/utils/global-multitasking';
 import { registerSettingsPanelHandlers, openSettingsPanel, closeSettingsPanel, isSettingsPanelOpen } from '@/utils/global-settings-panel';
 import { SettingsPanel, SETTINGS_PANEL_WIDTH } from '@/components/settings-panel';
 import { registerSidePanelHandlers, openSidePanel, closeSidePanel, isSidePanelOpen } from '@/utils/global-side-panel';
@@ -45,6 +46,8 @@ import { registerViewSwitchCallback } from '@/utils/view-switch-lifecycle';
 import { requestHomeReset } from '@/utils/global-home';
 import { requestOrgReset } from '@/utils/global-org';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { shouldUseSlideAnimation, setSwipeCallbacks } from '@/utils/global-footer-swipe';
+import { pushForward, popForward } from '@/utils/global-nav-history';
 
 import { UniversalFinder } from '@/components/universal-finder';
 import { SplitNexusOverlay } from '@/components/nexus/split-nexus-overlay';
@@ -230,6 +233,29 @@ function AppShell() {
     registerSidePanelHandlers(openSidePanelCb, dismissSidePanelCb);
   }, [openSidePanelCb, dismissSidePanelCb]);
 
+  // Register footer swipe navigation callbacks
+  const router = useRouter();
+  useEffect(() => {
+    setSwipeCallbacks({
+      onBack: () => {
+        if (router.canGoBack()) {
+          pushForward(pathnameRef.current);
+          router.back();
+        }
+      },
+      onForward: () => {
+        const fwd = popForward();
+        if (fwd) {
+          router.push(fwd as any);
+        } else {
+          if (isMultitaskingOpen()) closeMultitasking();
+          if (isSplitNexusOpen()) closeSplitNexus();
+          router.navigate('/nexus' as any);
+        }
+      },
+    });
+  }, [router]);
+
   // PanResponder for swipe-left dismiss on shifted content (both panels open from left)
   const dismissPanResponder = useMemo(
     () =>
@@ -307,7 +333,7 @@ function AppShell() {
       {/* Side panel sits behind shifting content (right side) */}
       <SidePanel visible={sidePanelVisible} />
 
-      {/* Content wrapper — shifts right when panels open, swipe-right opens panel */}
+      {/* Content wrapper — shifts right when panels open */}
       <Animated.View
         style={[styles.container, { transform: [{ translateX: contentTranslateX }] }]}
         {...(!settingsPanelVisible && !sidePanelVisible ? panelOpenPanResponder.panHandlers : {})}
@@ -317,7 +343,15 @@ function AppShell() {
           onHandlerStateChange={handleFlingRight}
         >
           <View style={styles.container}>
-            <Stack screenOptions={{ headerShown: false, animation: 'none', gestureEnabled: false, contentStyle: { backgroundColor: '#000000' } }} screenListeners={{ focus: () => resetFooter() }}>
+            <Stack
+              screenOptions={() => ({
+                headerShown: false,
+                animation: shouldUseSlideAnimation() ? 'slide_from_right' : 'none',
+                gestureEnabled: false,
+                contentStyle: { backgroundColor: '#000000' },
+              })}
+              screenListeners={{ focus: () => resetFooter() }}
+            >
               <Stack.Screen name="(tabs)" />
               <Stack.Screen name="coach" />
               <Stack.Screen name="login" />

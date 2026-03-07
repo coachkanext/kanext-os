@@ -88,17 +88,17 @@ export function PhonePanel() {
 
   return (
     <View style={styles.container}>
+      {/* ── MY NUMBERS (pinned) ── */}
+      <MyNumbersSection onFilter={handleFilter} />
+
+      {/* ── DIVIDER ── */}
+      <View style={styles.divider} />
+
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── SECTION 1: MY NUMBERS ── */}
-        <MyNumbersSection onFilter={handleFilter} />
-
-        {/* ── DIVIDER 1 ── */}
-        <View style={styles.divider} />
-
         {/* ── SECTION 2: ACTIVITY ── */}
         <View style={styles.menuSection}>
           {ACTIVITY_ITEMS.map((item) => (
