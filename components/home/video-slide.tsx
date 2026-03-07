@@ -5,9 +5,8 @@
  */
 
 import React, { useEffect, useRef, useState, Component } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Graceful fallback if expo-av native module isn't linked
 let Video: any = null;
@@ -40,16 +39,7 @@ class VideoBoundary extends Component<
 }
 
 const C = {
-  text: '#FFFFFF',
-  secondary: 'rgba(255,255,255,0.7)',
-  error: '#EF4444',
   surface: '#0B0F14',
-};
-
-const STATE_LABELS: Record<string, string> = {
-  live: 'LIVE',
-  recap: 'RECAP',
-  hype: 'HYPE',
 };
 
 interface VideoSlideProps {
@@ -59,7 +49,6 @@ interface VideoSlideProps {
 
 export function VideoSlide({ page, isActive }: VideoSlideProps) {
   const videoRef = useRef<any>(null);
-  const insets = useSafeAreaInsets();
   const [videoFailed, setVideoFailed] = useState(!Video);
 
   // Play/pause based on active page — catch promise rejections from broken native module
@@ -112,20 +101,6 @@ export function VideoSlide({ page, isActive }: VideoSlideProps) {
         style={styles.gradient}
       />
 
-      {/* Text overlay at bottom-left */}
-      <View style={[styles.content, { paddingTop: insets.top + 8 }]}>
-        {/* State label */}
-        <View style={styles.header}>
-          {page.state === 'live' && <View style={styles.liveDot} />}
-          <Text style={[styles.stateLabel, page.state === 'live' && styles.liveLabel]}>
-            {STATE_LABELS[page.state]}
-          </Text>
-        </View>
-
-        <Text style={styles.title}>{page.title}</Text>
-        {page.subtitle && <Text style={styles.subtitle}>{page.subtitle}</Text>}
-        {page.meta && <Text style={styles.meta}>{page.meta}</Text>}
-      </View>
     </View>
   );
 }
@@ -140,49 +115,5 @@ const styles = StyleSheet.create({
   },
   gradient: {
     ...StyleSheet.absoluteFillObject,
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    paddingHorizontal: 16,
-    paddingBottom: 28,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: 8,
-  },
-  stateLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-    letterSpacing: 1.2,
-    color: C.secondary,
-    textTransform: 'uppercase',
-  },
-  liveDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: C.error,
-  },
-  liveLabel: {
-    color: C.error,
-    fontWeight: '700',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: C.text,
-    marginBottom: 2,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: C.secondary,
-    marginBottom: 2,
-  },
-  meta: {
-    fontSize: 13,
-    color: C.secondary,
   },
 });

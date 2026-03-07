@@ -9,10 +9,25 @@
  */
 
 let _visible = true;
+let _locked = false;
 const _listeners = new Set<(visible: boolean, instant: boolean) => void>();
 
+/** Lock footer visible (e.g. split screen open). Scroll events are ignored. */
+export function lockFooter() {
+  _locked = true;
+  if (!_visible) {
+    _visible = true;
+    _listeners.forEach((cb) => cb(true, true));
+  }
+}
+
+/** Unlock footer so scroll events can hide it again. */
+export function unlockFooter() {
+  _locked = false;
+}
+
 export function hideFooter() {
-  if (!_visible) return;
+  if (_locked || !_visible) return;
   _visible = false;
   _listeners.forEach((cb) => cb(false, false));
 }

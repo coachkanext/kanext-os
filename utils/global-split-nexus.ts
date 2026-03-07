@@ -1,7 +1,10 @@
 /**
  * Global Split Nexus Controller — singleton open/close handlers.
- * Triggered from semi-circle swipe-right (toggle).
+ * Triggered from Nexus double-tap (toggle).
+ * Locks footer visible while split is open.
  */
+
+import { lockFooter, unlockFooter } from '@/utils/global-footer-hide';
 
 let _open: (() => void) | null = null;
 let _close: (() => void) | null = null;
@@ -17,11 +20,13 @@ export function registerSplitNexusHandlers(
 
 export function openSplitNexus() {
   _isOpen = true;
+  lockFooter();
   _open?.();
 }
 
 export function closeSplitNexus() {
   _isOpen = false;
+  unlockFooter();
   _close?.();
 }
 

@@ -23,8 +23,8 @@ export default function HomeLayout() {
       }}
     >
       <Stack.Screen name="index" options={{ gestureEnabled: false, fullScreenGestureEnabled: false }} />
-      <Stack.Screen name="messages/index" />
-      <Stack.Screen name="messages/[threadId]" />
+      <Stack.Screen name="messages/index" options={{ animation: 'slide_from_right' }} />
+      <Stack.Screen name="messages/[threadId]" options={{ animation: 'slide_from_right' }} />
     </Stack>
   );
 }

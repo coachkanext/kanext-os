@@ -1,8 +1,9 @@
 /**
  * Multitasking Overlay — iOS App Switcher style.
- * Current screen on the right, older screens staggered to the left.
- * Swipe up on a card to dismiss it. Tap card to switch. Tap outside to go home.
- * Auto-scrolls to the rightmost (current) card on open.
+ * Diagonal 3D cards fanning out, newest on the right.
+ * Swipe up on a card to dismiss it. Tap card to switch.
+ * Tap outside = close overlay and stay on current screen.
+ * Current screen is NOT shown in the card list.
  */
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
@@ -16,7 +17,7 @@ import {
   PanResponder,
   useWindowDimensions,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, usePathname } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
@@ -32,14 +33,12 @@ function AppCard({
   screen,
   cardWidth,
   cardHeight,
-  isCurrent,
   onTap,
   onRemove,
 }: {
   screen: MultitaskingScreen;
   cardWidth: number;
   cardHeight: number;
-  isCurrent: boolean;
   onTap: () => void;
   onRemove: () => void;
 }) {
@@ -110,14 +109,19 @@ function AppCard({
         styles.cardWrap,
         {
           width: cardWidth,
-          transform: [{ translateY }, { scale: cardScale }],
+          transform: [
+            { perspective: 800 },
+            { rotateY: '8deg' },
+            { translateY },
+            { scale: cardScale },
+          ],
           opacity: cardOpacity,
         },
       ]}
       {...panResponder.panHandlers}
     >
       {/* Label above the card */}
-      <Text style={[styles.cardLabel, isCurrent && styles.cardLabelCurrent]} numberOfLines={1}>
+      <Text style={styles.cardLabel} numberOfLines={1}>
         {screen.title}
       </Text>
 
@@ -142,6 +146,7 @@ function AppCard({
 export function MultitaskingOverlay() {
   const [visible, setVisible] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
   const { screens, removeScreen } = useMultitasking();
@@ -170,7 +175,6 @@ export function MultitaskingOverlay() {
             useNativeDriver: true,
           }),
         ]).start(() => {
-          // Auto-scroll to the rightmost card (current screen)
           scrollRef.current?.scrollToEnd({ animated: false });
         });
       },
@@ -195,16 +199,16 @@ export function MultitaskingOverlay() {
     });
   }, [fadeAnim, slideAnim]);
 
-  const handleDismissToHome = useCallback(() => {
+  /** Tap outside cards → just close overlay, stay on current screen */
+  const handleDismiss = useCallback(() => {
     closeMultitasking();
-    router.navigate('/(tabs)/(main)' as any);
-  }, [router]);
+  }, []);
 
   const handleCardTap = useCallback(
     (screen: MultitaskingScreen) => {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       closeMultitasking();
-      router.push(screen.route as any);
+      router.navigate(screen.route as any);
     },
     [router],
   );
@@ -218,13 +222,18 @@ export function MultitaskingOverlay() {
 
   if (!visible) return null;
 
-  // Reverse so newest is on the RIGHT (iOS style)
-  const orderedScreens = [...screens].reverse();
+  // Filter out the current screen, then reverse so newest is on the RIGHT
+  const currentPath = pathname.split('?')[0];
+  const otherScreens = screens.filter((s) => {
+    const routePath = s.route.split('?')[0];
+    return routePath !== currentPath;
+  });
+  const orderedScreens = [...otherScreens].reverse();
 
   return (
     <AnimatedPressable
       style={[styles.container, { opacity: fadeAnim }]}
-      onPress={handleDismissToHome}
+      onPress={handleDismiss}
     >
       {/* Dark backdrop */}
       <View style={styles.backdrop} pointerEvents="none" />
@@ -255,13 +264,12 @@ export function MultitaskingOverlay() {
                 scrollRef.current?.scrollToEnd({ animated: false });
               }}
             >
-              {orderedScreens.map((screen, idx) => (
+              {orderedScreens.map((screen) => (
                 <AppCard
                   key={screen.id}
                   screen={screen}
                   cardWidth={cardWidth}
                   cardHeight={cardHeight}
-                  isCurrent={idx === orderedScreens.length - 1}
                   onTap={() => handleCardTap(screen)}
                   onRemove={() => handleRemove(screen.id)}
                 />
@@ -303,10 +311,6 @@ const styles = StyleSheet.create({
     color: '#8E8E93',
     marginBottom: 8,
     textAlign: 'center',
-  },
-  cardLabelCurrent: {
-    color: '#FFFFFF',
-    fontWeight: '600',
   },
   cardSurface: {
     width: '100%',

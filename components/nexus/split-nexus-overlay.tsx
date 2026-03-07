@@ -1,15 +1,24 @@
 /**
  * Split Nexus Overlay — bottom-half Nexus chat over current screen.
  * Triggered from Nexus tab double-tap.
- * Ephemeral: conversations from split are NOT saved to sidebar.
- * Has its own local state (not connected to main NexusProvider).
+ *
+ * Spec:
+ * - Current screen stays in top ~50% (fully interactive)
+ * - Nexus panel in bottom ~45% with conversation + chips + input
+ * - Footer visible below everything
+ * - Conversation persists across open/close cycles
+ * - Contextual suggestion chips based on current screen
+ * - Keyboard only opens when user taps the input bar
+ * - Closes via: double-tap Nexus, tap other footer icon, drag down
  */
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
+  Text,
   TextInput,
   Pressable,
+  ScrollView,
   StyleSheet,
   Animated,
   Dimensions,
@@ -19,18 +28,59 @@ import {
   PanResponder,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { usePathname, useGlobalSearchParams } from 'expo-router';
 
-import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing, BorderRadius } from '@/constants/theme';
 import { useAccentColor } from '@/hooks/use-accent-color';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import { sendToGPT, type ChatMessage } from '@/utils/openai';
 import { useMode, useAppContext } from '@/context/app-context';
+import { startGlobalVoice } from '@/utils/global-voice';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
-const SPLIT_HEIGHT = SCREEN_HEIGHT * 0.5;
+const FOOTER_HEIGHT = 49;
+const SPLIT_HEIGHT = Math.round(SCREEN_HEIGHT * 0.45);
 const DISMISS_THRESHOLD = 80;
+
+/* ── Dark palette ── */
+const C = {
+  bg: '#0B0F14',
+  chipBg: 'rgba(255,255,255,0.08)',
+  chipText: 'rgba(255,255,255,0.7)',
+  inputBg: 'rgba(255,255,255,0.06)',
+  text: '#FFFFFF',
+  textDim: 'rgba(255,255,255,0.4)',
+  border: 'rgba(255,255,255,0.08)',
+  userBubble: 'rgba(255,255,255,0.1)',
+  assistantBubble: 'rgba(255,255,255,0.04)',
+  handle: 'rgba(255,255,255,0.2)',
+};
+
+/* ── Contextual suggestion chips by screen ── */
+const SCREEN_CHIPS: Record<string, string[]> = {
+  season:       ['Sim next game', 'Season stats', 'Compare records'],
+  roster:       ['Rate this player', 'Depth chart', 'Injury report'],
+  recruits:     ['Evaluate prospect', 'Compare to roster', 'Recruiting status'],
+  messages:     ['Summarize this channel', 'Find last message from...', 'Draft a reply'],
+  store:        ['Sales this week', 'Top selling merch', 'Revenue report'],
+  media:        ['Clip highlights', 'Share this', 'Tag players'],
+  gm:           ['Run simulation', 'Trade scenarios', 'Roster moves'],
+  organization: ['Team overview', 'Compliance check', 'Financial summary'],
+  home:         ['What can you help with?', 'Summarize my day', 'Quick stats'],
+};
+
+function getChipsForScreen(context: string): string[] {
+  const lower = context.toLowerCase();
+  if (lower.includes('message'))                         return SCREEN_CHIPS.messages;
+  if (lower.includes('season') || lower.includes('calendar') || lower.includes('agenda')) return SCREEN_CHIPS.season;
+  if (lower.includes('roster') || lower.includes('team')) return SCREEN_CHIPS.roster;
+  if (lower.includes('recruit') || lower.includes('prospect')) return SCREEN_CHIPS.recruits;
+  if (lower.includes('store') || lower.includes('give')) return SCREEN_CHIPS.store;
+  if (lower.includes('media'))                           return SCREEN_CHIPS.media;
+  if (lower.includes('gm'))                              return SCREEN_CHIPS.gm;
+  if (lower.includes('organization') || lower.includes('org')) return SCREEN_CHIPS.organization;
+  return SCREEN_CHIPS.home;
+}
 
 interface SplitMessage {
   id: string;
@@ -44,12 +94,12 @@ interface Props {
 }
 
 export function SplitNexusOverlay({ visible, onClose }: Props) {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
   const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const mode = useMode();
   const { state: appState } = useAppContext();
+  const pathname = usePathname();
+  const { title } = useGlobalSearchParams<{ title?: string }>();
 
   const [messages, setMessages] = useState<SplitMessage[]>([]);
   const [inputText, setInputText] = useState('');
@@ -60,20 +110,21 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
 
   const slideAnim = useRef(new Animated.Value(SPLIT_HEIGHT)).current;
 
-  // Slide up on open, slide down on close
+  const footerTotal = FOOTER_HEIGHT + insets.bottom + 1;
+
+  // Derive chips from current screen context
+  const screenContext = title ?? pathname;
+  const chips = useMemo(() => getChipsForScreen(screenContext), [screenContext]);
+
+  // Slide up on open, slide down on close — conversation persists (no clearing)
   useEffect(() => {
     if (visible) {
-      setMessages([]);
-      setInputText('');
-      historyRef.current = [];
       Animated.spring(slideAnim, {
         toValue: 0,
         tension: 65,
         friction: 11,
         useNativeDriver: true,
-      }).start(() => {
-        inputRef.current?.focus();
-      });
+      }).start();
     } else {
       Animated.timing(slideAnim, {
         toValue: SPLIT_HEIGHT,
@@ -83,15 +134,13 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
     }
   }, [visible, slideAnim]);
 
-  // Pan responder for drag-to-dismiss
+  // Drag-to-dismiss
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => false,
       onMoveShouldSetPanResponder: (_, gs) => gs.dy > 10 && Math.abs(gs.dx) < 20,
       onPanResponderMove: (_, gs) => {
-        if (gs.dy > 0) {
-          slideAnim.setValue(gs.dy);
-        }
+        if (gs.dy > 0) slideAnim.setValue(gs.dy);
       },
       onPanResponderRelease: (_, gs) => {
         if (gs.dy > DISMISS_THRESHOLD) {
@@ -114,21 +163,20 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
       toValue: SPLIT_HEIGHT,
       duration: 200,
       useNativeDriver: true,
-    }).start(() => {
-      onClose();
-    });
+    }).start(() => onClose());
   }, [onClose, slideAnim]);
 
-  const handleSend = useCallback(async () => {
-    const text = inputText.trim();
-    if (!text || isLoading) return;
+  // Send a query (from input or chip tap)
+  const sendQuery = useCallback(async (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed || isLoading) return;
 
-    const userMsg: SplitMessage = { id: `u-${Date.now()}`, role: 'user', content: text };
+    const userMsg: SplitMessage = { id: `u-${Date.now()}`, role: 'user', content: trimmed };
     setMessages((prev) => [...prev, userMsg]);
     setInputText('');
     setIsLoading(true);
 
-    historyRef.current.push({ role: 'user', content: text });
+    historyRef.current.push({ role: 'user', content: trimmed });
 
     try {
       const response = await sendToGPT({
@@ -141,19 +189,20 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
           cycleName: appState.cycle?.name ?? null,
         },
       });
-
       historyRef.current.push({ role: 'assistant', content: response });
-      const assistantMsg: SplitMessage = { id: `a-${Date.now()}`, role: 'assistant', content: response };
-      setMessages((prev) => [...prev, assistantMsg]);
+      setMessages((prev) => [...prev, { id: `a-${Date.now()}`, role: 'assistant', content: response }]);
     } catch {
-      const errMsg: SplitMessage = { id: `e-${Date.now()}`, role: 'assistant', content: 'Something went wrong.' };
-      setMessages((prev) => [...prev, errMsg]);
+      setMessages((prev) => [...prev, { id: `e-${Date.now()}`, role: 'assistant', content: 'Something went wrong.' }]);
     }
 
     setIsLoading(false);
-  }, [inputText, isLoading, mode, appState]);
+  }, [isLoading, mode, appState]);
 
-  // Auto-scroll
+  const handleSend = useCallback(() => sendQuery(inputText), [inputText, sendQuery]);
+  const handleChipPress = useCallback((chip: string) => sendQuery(chip), [sendQuery]);
+  const handleMicPress = useCallback(() => startGlobalVoice(), []);
+
+  // Auto-scroll on new messages
   useEffect(() => {
     if (messages.length > 0) {
       setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
@@ -166,16 +215,16 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
     <Animated.View
       style={[
         styles.overlay,
-        { transform: [{ translateY: slideAnim }] },
+        { bottom: footerTotal, transform: [{ translateY: slideAnim }] },
       ]}
     >
       {/* Drag handle */}
       <View {...panResponder.panHandlers} style={styles.handleArea}>
-        <View style={[styles.handle, { backgroundColor: colors.textTertiary }]} />
+        <View style={styles.handle} />
       </View>
 
-      <View style={[styles.container, { backgroundColor: colors.background, borderTopColor: colors.border }]}>
-        {/* Messages */}
+      <View style={styles.container}>
+        {/* Conversation */}
         <FlatList
           ref={flatListRef}
           data={messages}
@@ -184,41 +233,53 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <View style={[styles.msgRow, item.role === 'user' ? styles.userRow : styles.assistantRow]}>
-              <View
-                style={[
-                  styles.msgBubble,
-                  item.role === 'user'
-                    ? [styles.userBubble, { backgroundColor: colors.backgroundTertiary }]
-                    : [styles.assistantBubble, { backgroundColor: colors.backgroundSecondary }],
-                ]}
-              >
-                <ThemedText style={[styles.msgText, { color: colors.text }]}>{item.content}</ThemedText>
+              <View style={[styles.msgBubble, item.role === 'user' ? styles.userBubble : styles.assistantBubble]}>
+                <Text style={styles.msgText}>{item.content}</Text>
               </View>
             </View>
           )}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <ThemedText style={[styles.emptyText, { color: colors.textTertiary }]}>
-                Ask Nexus about what's on screen
-              </ThemedText>
+              <Text style={styles.emptyText}>Ask Nexus about what's on screen</Text>
             </View>
           }
           ListFooterComponent={
             isLoading ? (
               <View style={styles.loadingRow}>
-                <ActivityIndicator size="small" color={colors.textTertiary} />
+                <ActivityIndicator size="small" color={C.textDim} />
               </View>
             ) : null
           }
         />
 
-        {/* Input */}
-        <View style={[styles.inputRow, { borderTopColor: colors.border, paddingBottom: insets.bottom || Spacing.sm }]}>
+        {/* Contextual suggestion chips */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.chipsRow}
+          style={styles.chipsScroll}
+        >
+          {chips.map((chip) => (
+            <Pressable
+              key={chip}
+              style={({ pressed }) => [styles.chip, pressed && styles.chipPressed]}
+              onPress={() => handleChipPress(chip)}
+            >
+              <Text style={styles.chipText}>{chip}</Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+
+        {/* Input bar — mic + text + send */}
+        <View style={styles.inputRow}>
+          <Pressable style={styles.micBtn} onPress={handleMicPress}>
+            <IconSymbol name="mic.fill" size={20} color={C.textDim} />
+          </Pressable>
           <TextInput
             ref={inputRef}
-            style={[styles.input, { color: colors.text, backgroundColor: colors.backgroundSecondary }]}
+            style={styles.input}
             placeholder="Ask Nexus..."
-            placeholderTextColor={colors.textTertiary}
+            placeholderTextColor={C.textDim}
             value={inputText}
             onChangeText={setInputText}
             onSubmitEditing={handleSend}
@@ -232,7 +293,7 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
             <IconSymbol
               name="arrow.up.circle.fill"
               size={28}
-              color={inputText.trim() ? accent : colors.textTertiary}
+              color={inputText.trim() ? accent : C.textDim}
             />
           </Pressable>
         </View>
@@ -244,7 +305,6 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
 const styles = StyleSheet.create({
   overlay: {
     position: 'absolute',
-    bottom: 0,
     left: 0,
     right: 0,
     height: SPLIT_HEIGHT,
@@ -253,18 +313,21 @@ const styles = StyleSheet.create({
   handleArea: {
     alignItems: 'center',
     paddingVertical: 8,
+    backgroundColor: C.bg,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
   },
   handle: {
     width: 36,
     height: 4,
     borderRadius: 2,
-    opacity: 0.5,
+    backgroundColor: C.handle,
   },
   container: {
     flex: 1,
+    backgroundColor: C.bg,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
+    borderTopColor: C.border,
     overflow: 'hidden',
   },
   listContent: {
@@ -287,14 +350,17 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.lg,
   },
   userBubble: {
+    backgroundColor: C.userBubble,
     borderBottomRightRadius: 4,
   },
   assistantBubble: {
+    backgroundColor: C.assistantBubble,
     borderBottomLeftRadius: 4,
   },
   msgText: {
     fontSize: 14,
     lineHeight: 20,
+    color: C.text,
   },
   emptyContainer: {
     flex: 1,
@@ -305,25 +371,58 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 14,
     fontStyle: 'italic',
+    color: C.textDim,
   },
   loadingRow: {
     paddingVertical: 8,
     alignItems: 'center',
   },
+  chipsScroll: {
+    maxHeight: 44,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: C.border,
+  },
+  chipsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    gap: 8,
+  },
+  chip: {
+    backgroundColor: C.chipBg,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 16,
+  },
+  chipPressed: {
+    backgroundColor: 'rgba(255,255,255,0.15)',
+  },
+  chipText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: C.chipText,
+  },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: Spacing.sm,
-    paddingTop: Spacing.sm,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
     borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: C.border,
     gap: 8,
+  },
+  micBtn: {
+    padding: 6,
   },
   input: {
     flex: 1,
-    height: 40,
-    borderRadius: 20,
-    paddingHorizontal: 16,
+    height: 36,
+    borderRadius: 18,
+    paddingHorizontal: 14,
     fontSize: 15,
+    color: C.text,
+    backgroundColor: C.inputBg,
   },
   sendBtn: {
     padding: 2,

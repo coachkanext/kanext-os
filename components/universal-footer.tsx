@@ -8,7 +8,7 @@
  * Icons (all use existing image assets):
  *   Home (1):         footer-home.png    — tap → navigate home
  *   Messages (2):     icon-messages.png  — tap → push messages
- *   Nexus (center):   footer-nexus.png   — 6 gestures via PanResponder + Pressable
+ *   Nexus (center):   footer-nexus.png   — 4 gestures: tap, double-tap, hold, swipe-up
  *   Media (4):        icon-media.png     — tap → push media
  *   Organization (5): icon-program.png   — tap → push organization
  */
@@ -97,49 +97,36 @@ export function UniversalFooter() {
     openSearchOverlay();
   };
 
-  // ── Nexus PanResponder: swipe-up (multitasking), swipe-right (side panel) ──
+  // ── Nexus PanResponder: swipe-up only (multitasking) ──
   const nexusPanResponder = useMemo(
     () =>
       PanResponder.create({
         onMoveShouldSetPanResponder: (_evt, gs) => {
-          return Math.abs(gs.dx) > 15 || Math.abs(gs.dy) > 15;
+          return Math.abs(gs.dy) > 15;
         },
         onPanResponderRelease: (_evt, gs) => {
-          const absX = Math.abs(gs.dx);
-          const absY = Math.abs(gs.dy);
-
-          if (absY > absX && gs.dy < -50) {
+          if (gs.dy < -50) {
             // Swipe UP → Multitasking
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             openMultitasking();
-          } else if (absX > absY && gs.dx > 40) {
-            // Swipe RIGHT → Side panel
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            if (isSplitNexusOpen()) {
-              closeSplitNexus();
-            } else {
-              openSplitNexus();
-            }
           }
         },
       }),
     [],
   );
 
-  /** Navigate to a tab destination — dismiss any root-level screens first */
-  const goTo = useCallback((path: string) => {
+  /** Shared pre-nav: haptic + footer reset + close split + dismiss root screens */
+  const preNav = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     resetFooter();
-    // If we're on a root-level screen (nexus, wallet, profile, etc.),
-    // dismiss back to tabs first so we don't flash Home
+    if (isSplitNexusOpen()) closeSplitNexus();
     if (router.canDismiss()) router.dismissAll();
-    router.navigate(path as any);
   }, [router]);
 
-  const handleHomePress = () => goTo('/(tabs)/(main)');
-  const handleMessagesPress = () => goTo('/messages');
-  const handleMediaPress = () => goTo('/section?title=Media');
-  const handleOrgPress = () => goTo('/section?title=Organization');
+  const handleHomePress = () => { preNav(); router.navigate('/(tabs)/(main)' as any); };
+  const handleMessagesPress = () => { preNav(); router.navigate('/(tabs)/(main)/messages' as any); };
+  const handleMediaPress = () => { preNav(); router.navigate('/(tabs)/(main)/section?title=Media' as any); };
+  const handleOrgPress = () => { preNav(); router.navigate('/(tabs)/(main)/section?title=Organization' as any); };
 
   // ── Organization long press → mode switcher ──
   const handleOrgLongPress = () => {

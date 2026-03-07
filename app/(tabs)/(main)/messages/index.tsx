@@ -17,7 +17,6 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -177,38 +176,6 @@ const pvS = StyleSheet.create({
   menuLabelDestructive: { color: '#FF3B30' },
 });
 
-// ─── Swipeable Row wrapper (swipe left = mute) ──────────────────────────────
-
-function SwipeRow({
-  children,
-  isMuted,
-  onToggleMute,
-}: {
-  children: React.ReactNode;
-  isMuted: boolean;
-  onToggleMute: () => void;
-}) {
-  const swipeRef = useRef<Swipeable>(null);
-  const renderRightActions = () => (
-    <Pressable
-      style={[s.swipeAction, { backgroundColor: isMuted ? '#22C55E' : '#F59E0B' }]}
-      onPress={() => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        onToggleMute();
-        swipeRef.current?.close();
-      }}
-    >
-      <IconSymbol name={isMuted ? 'bell.fill' : 'bell.slash.fill'} size={22} color="#FFF" />
-      <Text style={s.swipeLabel}>{isMuted ? 'Unmute' : 'Mute'}</Text>
-    </Pressable>
-  );
-
-  return (
-    <Swipeable ref={swipeRef} renderRightActions={renderRightActions} overshootRight={false}>
-      {children}
-    </Swipeable>
-  );
-}
 
 // ─── Channel Row ─────────────────────────────────────────────────────────────
 
@@ -256,44 +223,42 @@ function ChannelRow({
   };
 
   return (
-    <SwipeRow isMuted={isMuted} onToggleMute={onToggleMute}>
-      <Pressable
-        ref={rowRef}
-        style={s.row}
-        onPress={() => {
-          if (longPressedRef.current) { longPressedRef.current = false; return; }
-          onPress();
-        }}
-        onLongPress={handleLongPress}
-        delayLongPress={400}
-      >
-        {/* Unread dot */}
-        <View style={s.unreadCol}>
-          {room.unread && <View style={[s.unreadDot, { backgroundColor: accent }]} />}
-        </View>
+    <Pressable
+      ref={rowRef}
+      style={s.row}
+      onPress={() => {
+        if (longPressedRef.current) { longPressedRef.current = false; return; }
+        onPress();
+      }}
+      onLongPress={handleLongPress}
+      delayLongPress={400}
+    >
+      {/* Unread dot */}
+      <View style={s.unreadCol}>
+        {room.unread && <View style={[s.unreadDot, { backgroundColor: accent }]} />}
+      </View>
 
-        {/* Square channel icon */}
-        <View style={s.channelIcon}>
-          <Text style={s.channelInitials}>{room.initials}</Text>
-          {room.locked && (
-            <View style={s.lockBadge}>
-              <IconSymbol name="lock.fill" size={8} color="#A1A1AA" />
-            </View>
-          )}
-        </View>
-
-        {/* Content */}
-        <View style={s.rowContent}>
-          <View style={s.rowTopRow}>
-            <Text style={[s.rowName, room.unread && s.rowNameBold]} numberOfLines={1}>
-              {room.name}
-            </Text>
-            <Text style={s.rowTime}>{formatMessageTime(room.timestamp)}</Text>
+      {/* Square channel icon */}
+      <View style={s.channelIcon}>
+        <Text style={s.channelInitials}>{room.initials}</Text>
+        {room.locked && (
+          <View style={s.lockBadge}>
+            <IconSymbol name="lock.fill" size={8} color="#A1A1AA" />
           </View>
-          <Text style={s.rowPreview} numberOfLines={2}>{room.lastMessage}</Text>
+        )}
+      </View>
+
+      {/* Content */}
+      <View style={s.rowContent}>
+        <View style={s.rowTopRow}>
+          <Text style={[s.rowName, room.unread && s.rowNameBold]} numberOfLines={1}>
+            {room.name}
+          </Text>
+          <Text style={s.rowTime}>{formatMessageTime(room.timestamp)}</Text>
         </View>
-      </Pressable>
-    </SwipeRow>
+        <Text style={s.rowPreview} numberOfLines={2}>{room.lastMessage}</Text>
+      </View>
+    </Pressable>
   );
 }
 
@@ -345,39 +310,37 @@ function DMRow({
   };
 
   return (
-    <SwipeRow isMuted={isMuted} onToggleMute={onToggleMute}>
-      <Pressable
-        ref={rowRef}
-        style={s.row}
-        onPress={() => {
-          if (longPressedRef.current) { longPressedRef.current = false; return; }
-          onPress();
-        }}
-        onLongPress={handleLongPress}
-        delayLongPress={400}
-      >
-        {/* Unread dot */}
-        <View style={s.unreadCol}>
-          {thread.unread && <View style={[s.unreadDot, { backgroundColor: accent }]} />}
-        </View>
+    <Pressable
+      ref={rowRef}
+      style={s.row}
+      onPress={() => {
+        if (longPressedRef.current) { longPressedRef.current = false; return; }
+        onPress();
+      }}
+      onLongPress={handleLongPress}
+      delayLongPress={400}
+    >
+      {/* Unread dot */}
+      <View style={s.unreadCol}>
+        {thread.unread && <View style={[s.unreadDot, { backgroundColor: accent }]} />}
+      </View>
 
-        {/* Circular avatar */}
-        <View style={s.dmAvatar}>
-          <Text style={s.dmAvatarText}>{thread.initials}</Text>
-        </View>
+      {/* Circular avatar */}
+      <View style={s.dmAvatar}>
+        <Text style={s.dmAvatarText}>{thread.initials}</Text>
+      </View>
 
-        {/* Content */}
-        <View style={s.rowContent}>
-          <View style={s.rowTopRow}>
-            <Text style={[s.rowName, thread.unread && s.rowNameBold]} numberOfLines={1}>
-              {thread.name}
-            </Text>
-            <Text style={s.rowTime}>{formatMessageTime(thread.timestamp)}</Text>
-          </View>
-          <Text style={s.rowPreview} numberOfLines={2}>{thread.preview}</Text>
+      {/* Content */}
+      <View style={s.rowContent}>
+        <View style={s.rowTopRow}>
+          <Text style={[s.rowName, thread.unread && s.rowNameBold]} numberOfLines={1}>
+            {thread.name}
+          </Text>
+          <Text style={s.rowTime}>{formatMessageTime(thread.timestamp)}</Text>
         </View>
-      </Pressable>
-    </SwipeRow>
+        <Text style={s.rowPreview} numberOfLines={2}>{thread.preview}</Text>
+      </View>
+    </Pressable>
   );
 }
 
@@ -625,10 +588,6 @@ const s = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   dmAvatarText: { fontSize: 14, fontWeight: '600', color: C.label },
-
-  // Swipe
-  swipeAction: { width: 80, alignItems: 'center', justifyContent: 'center' },
-  swipeLabel: { fontSize: 12, fontWeight: '600', color: '#FFF', marginTop: 4 },
 
   // Separator
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: C.separator, marginLeft: 80 },
