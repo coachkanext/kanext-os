@@ -12,6 +12,7 @@ import {
   Pressable,
   FlatList,
   KeyboardAvoidingView,
+  Keyboard,
   Modal,
   Animated,
   Platform,
@@ -727,6 +728,20 @@ export default function ThreadScreen() {
   const [threadPanel, setThreadPanel] = useState<RoomMessageV3 | null>(null);
   const [mentionQuery, setMentionQuery] = useState<string | null>(null);
 
+  // Track keyboard for composer padding — when keyboard is up, footer hides
+  const [keyboardUp, setKeyboardUp] = useState(false);
+  useEffect(() => {
+    const showSub = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      () => setKeyboardUp(true),
+    );
+    const hideSub = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => setKeyboardUp(false),
+    );
+    return () => { showSub.remove(); hideSub.remove(); };
+  }, []);
+
   const lastScrollY = useRef(0);
   const handleScroll = useCallback((e: any) => {
     const y = e.nativeEvent.contentOffset.y;
@@ -844,7 +859,7 @@ export default function ThreadScreen() {
       <KeyboardAvoidingView
         style={styles.flex1}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={insets.top + 44}
+        keyboardVerticalOffset={0}
       >
         {hasMessages ? (
           <FlatList
@@ -897,7 +912,7 @@ export default function ThreadScreen() {
         )}
 
         {/* ── Composer ── */}
-        <View style={[styles.composerWrap, { paddingBottom: (insets.bottom || 12) + 49 }]}>
+        <View style={[styles.composerWrap, { paddingBottom: keyboardUp ? 4 : (insets.bottom || 12) + 49 }]}>
           <ChatComposer
             value={inputText}
             onChangeText={setInputText}

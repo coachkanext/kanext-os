@@ -1,17 +1,17 @@
 /**
  * Full-bleed video area — auto-playing, muted, looping.
  * Edge-to-edge, no margins, no borders, no rounded corners.
- * Text + dots overlaid on gradient. Tap → fullscreen with audio.
+ * Text + dots overlaid on gradient. Tap → toggle mute/unmute.
  * Swipeable if multiple pages. Max 2.
  * Registers global pager handlers so horizontal swipes anywhere on
  * the home screen can page through videos.
  */
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import * as Haptics from 'expo-haptics';
 
 import { getVideoPages } from '@/utils/home-widgets';
 import { registerVideoPagerHandlers, setVideoPage } from '@/utils/global-video-pager';
@@ -24,7 +24,7 @@ const C = {
 
 export function VisualArea() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const router = useRouter();
+  const [muted, setMuted] = useState(true);
   const insets = useSafeAreaInsets();
   const pages = getVideoPages();
   const pagerRef = useRef<PagerView>(null);
@@ -58,17 +58,17 @@ export function VisualArea() {
 
   if (pages.length === 0) return null;
 
+  const toggleMute = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setMuted((m) => !m);
+  };
+
   // Single page — no PagerView needed
   if (pages.length === 1) {
     const page = pages[0];
     return (
-      <Pressable
-        style={styles.container}
-        onPress={() => {
-          if (page.route) router.push(page.route as any);
-        }}
-      >
-        <VideoSlide page={page} isActive />
+      <Pressable style={styles.container} onPress={toggleMute}>
+        <VideoSlide page={page} isActive muted={muted} />
       </Pressable>
     );
   }
@@ -87,12 +87,10 @@ export function VisualArea() {
         {pages.map((page, i) => (
           <Pressable
             key={page.id}
-            onPress={() => {
-              if (page.route) router.push(page.route as any);
-            }}
+            onPress={toggleMute}
           >
             <View style={styles.page}>
-              <VideoSlide page={page} isActive={i === activeIndex} />
+              <VideoSlide page={page} isActive={i === activeIndex} muted={muted} />
             </View>
           </Pressable>
         ))}

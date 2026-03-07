@@ -45,9 +45,10 @@ const C = {
 interface VideoSlideProps {
   page: VideoPage;
   isActive: boolean;
+  muted?: boolean;
 }
 
-export function VideoSlide({ page, isActive }: VideoSlideProps) {
+export function VideoSlide({ page, isActive, muted = true }: VideoSlideProps) {
   const videoRef = useRef<any>(null);
   const [videoFailed, setVideoFailed] = useState(!Video);
 
@@ -86,7 +87,7 @@ export function VideoSlide({ page, isActive }: VideoSlideProps) {
             resizeMode={ResizeMode.COVER}
             shouldPlay={isActive}
             isLooping
-            isMuted
+            isMuted={muted}
             posterSource={page.poster}
             usePoster={!!page.poster}
             onError={() => setVideoFailed(true)}
