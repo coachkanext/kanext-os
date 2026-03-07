@@ -5,7 +5,7 @@
  * Search is handled globally by Nexus hold — no per-screen search bar.
  */
 
-import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -21,15 +21,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useAccentColor } from '@/hooks/use-accent-color';
 import { useMode } from '@/context/app-context';
 import { NewDMSheet } from '@/components/messages/new-dm-sheet';
 import { getRooms, getGlobalDMs, formatMessageTime } from '@/data/mock-messages-v3';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
-import { subscribeMessageFilters, getMessageFilters, type MessageFilterKey } from '@/utils/global-message-filters';
 import { initiateCall } from '@/utils/global-call';
 import type { InboxThreadV3, RoomV3 } from '@/types';
+
+type FilterMode = 'all' | 'channels' | 'dms';
 
 const C = {
   bg: '#000000',
@@ -170,12 +170,15 @@ const pvS = StyleSheet.create({
   previewText: { flex: 1 },
   previewName: { fontSize: 17, fontWeight: '600', color: C.label, marginBottom: 2 },
   previewSub: { fontSize: 14, color: C.secondaryLabel, lineHeight: 19 },
-  menu: { marginTop: 8, backgroundColor: '#2C2C2E', borderRadius: 14, overflow: 'hidden', width: '100%' },
+  menu: {
+    marginTop: 8, backgroundColor: '#000000', borderRadius: 14, overflow: 'hidden', width: '100%',
+    borderWidth: 1, borderColor: '#2F3336',
+  },
   menuItem: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingVertical: 12, paddingHorizontal: 16,
+    minHeight: 48, paddingHorizontal: 16,
   },
-  menuItemBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#48484A' },
+  menuItemBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#2F3336' },
   menuLabel: { fontSize: 16, color: C.label },
   menuLabelDestructive: { color: '#FF3B30' },
 });
@@ -185,21 +188,21 @@ const pvS = StyleSheet.create({
 
 function ChannelRow({
   room,
-  accent,
   isMuted,
   onPress,
   onDelete,
   onToggleMute,
+  onTogglePin,
   onShowPreview,
   onCall,
   onVideoCall,
 }: {
   room: RoomV3;
-  accent: string;
   isMuted: boolean;
   onPress: () => void;
   onDelete: () => void;
   onToggleMute: () => void;
+  onTogglePin: () => void;
   onShowPreview: (data: PreviewData) => void;
   onCall: () => void;
   onVideoCall: () => void;
@@ -221,13 +224,17 @@ function ChannelRow({
         isChannel: true,
         pageY: y,
         actions: [
+          { key: 'call', label: 'Audio Call', icon: 'phone.fill' },
+          { key: 'video', label: 'Video Call', icon: 'video.fill' },
           { key: 'pin', label: room.pinned ? 'Unpin' : 'Pin', icon: 'pin.fill' },
           { key: 'mute', label: muteLabel, icon: 'bell.slash.fill' },
           { key: 'read', label: 'Mark as Read', icon: 'envelope.open.fill' },
           { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
         ],
         onAction: (key) => {
-          if (key === 'mute') onToggleMute();
+          if (key === 'call') onCall();
+          else if (key === 'video') onVideoCall();
+          else if (key === 'mute') onToggleMute();
         },
       });
     });
@@ -235,6 +242,16 @@ function ChannelRow({
 
   const renderRightActions = () => (
     <View style={s.swipeActions}>
+      <Pressable
+        style={s.swipePin}
+        onPress={() => {
+          swipeableRef.current?.close();
+          onTogglePin();
+        }}
+      >
+        <IconSymbol name={room.pinned ? 'pin.slash.fill' : 'pin.fill'} size={20} color="#FFFFFF" />
+        <Text style={s.swipeActionText}>{room.pinned ? 'Unpin' : 'Pin'}</Text>
+      </Pressable>
       <Pressable
         style={s.swipeMute}
         onPress={() => {
@@ -244,16 +261,6 @@ function ChannelRow({
       >
         <IconSymbol name={isMuted ? 'bell.fill' : 'bell.slash.fill'} size={20} color="#FFFFFF" />
         <Text style={s.swipeActionText}>{isMuted ? 'Unmute' : 'Mute'}</Text>
-      </Pressable>
-      <Pressable
-        style={s.swipeDelete}
-        onPress={() => {
-          swipeableRef.current?.close();
-          onDelete();
-        }}
-      >
-        <IconSymbol name="trash.fill" size={20} color="#FFFFFF" />
-        <Text style={s.swipeActionText}>Delete</Text>
       </Pressable>
     </View>
   );
@@ -265,18 +272,14 @@ function ChannelRow({
       leftThreshold={60}
       overshootLeft={false}
       renderRightActions={renderRightActions}
-      rightThreshold={140}
+      rightThreshold={40}
       onSwipeableWillOpen={(direction) => {
         if (direction === 'left') {
           swipeableRef.current?.close();
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           openSidePanel();
-        } else {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-          onDelete();
         }
       }}
-      overshootRight={false}
     >
       <Pressable
         ref={rowRef}
@@ -290,7 +293,7 @@ function ChannelRow({
       >
         {/* Unread dot */}
         <View style={s.unreadCol}>
-          {room.unread && <View style={[s.unreadDot, { backgroundColor: accent }]} />}
+          {room.unread && <View style={[s.unreadDot, { backgroundColor: '#FFFFFF' }]} />}
         </View>
 
         {/* Square channel icon */}
@@ -314,13 +317,6 @@ function ChannelRow({
           <Text style={s.rowPreview} numberOfLines={2}>{room.lastMessage}</Text>
         </View>
 
-        {/* Cross-nav: call actions */}
-        <Pressable style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]} onPress={onCall} hitSlop={6}>
-          <IconSymbol name="phone.fill" size={16} color={C.secondaryLabel} />
-        </Pressable>
-        <Pressable style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]} onPress={onVideoCall} hitSlop={6}>
-          <IconSymbol name="video.fill" size={16} color={C.secondaryLabel} />
-        </Pressable>
       </Pressable>
     </Swipeable>
   );
@@ -330,21 +326,21 @@ function ChannelRow({
 
 function DMRow({
   thread,
-  accent,
   isMuted,
   onPress,
   onDelete,
   onToggleMute,
+  onTogglePin,
   onShowPreview,
   onCall,
   onVideoCall,
 }: {
   thread: InboxThreadV3;
-  accent: string;
   isMuted: boolean;
   onPress: () => void;
   onDelete: () => void;
   onToggleMute: () => void;
+  onTogglePin: () => void;
   onShowPreview: (data: PreviewData) => void;
   onCall: () => void;
   onVideoCall: () => void;
@@ -368,13 +364,17 @@ function DMRow({
         isChannel: false,
         pageY: y,
         actions: [
+          { key: 'call', label: 'Audio Call', icon: 'phone.fill' },
+          { key: 'video', label: 'Video Call', icon: 'video.fill' },
           { key: 'pin', label: thread.pinned ? 'Unpin' : 'Pin', icon: 'pin.fill' },
-          { key: 'read', label: readLabel, icon: 'envelope.fill' },
           { key: 'mute', label: muteLabel, icon: 'bell.slash.fill' },
+          { key: 'read', label: readLabel, icon: 'envelope.fill' },
           { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
         ],
         onAction: (key) => {
-          if (key === 'mute') onToggleMute();
+          if (key === 'call') onCall();
+          else if (key === 'video') onVideoCall();
+          else if (key === 'mute') onToggleMute();
         },
       });
     });
@@ -382,6 +382,16 @@ function DMRow({
 
   const renderRightActions = () => (
     <View style={s.swipeActions}>
+      <Pressable
+        style={s.swipePin}
+        onPress={() => {
+          swipeableRef.current?.close();
+          onTogglePin();
+        }}
+      >
+        <IconSymbol name={thread.pinned ? 'pin.slash.fill' : 'pin.fill'} size={20} color="#FFFFFF" />
+        <Text style={s.swipeActionText}>{thread.pinned ? 'Unpin' : 'Pin'}</Text>
+      </Pressable>
       <Pressable
         style={s.swipeMute}
         onPress={() => {
@@ -391,16 +401,6 @@ function DMRow({
       >
         <IconSymbol name={isMuted ? 'bell.fill' : 'bell.slash.fill'} size={20} color="#FFFFFF" />
         <Text style={s.swipeActionText}>{isMuted ? 'Unmute' : 'Mute'}</Text>
-      </Pressable>
-      <Pressable
-        style={s.swipeDelete}
-        onPress={() => {
-          swipeableRef.current?.close();
-          onDelete();
-        }}
-      >
-        <IconSymbol name="trash.fill" size={20} color="#FFFFFF" />
-        <Text style={s.swipeActionText}>Delete</Text>
       </Pressable>
     </View>
   );
@@ -412,18 +412,14 @@ function DMRow({
       leftThreshold={60}
       overshootLeft={false}
       renderRightActions={renderRightActions}
-      rightThreshold={140}
+      rightThreshold={40}
       onSwipeableWillOpen={(direction) => {
         if (direction === 'left') {
           swipeableRef.current?.close();
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           openSidePanel();
-        } else {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-          onDelete();
         }
       }}
-      overshootRight={false}
     >
       <Pressable
         ref={rowRef}
@@ -437,7 +433,7 @@ function DMRow({
       >
         {/* Unread dot */}
         <View style={s.unreadCol}>
-          {thread.unread && <View style={[s.unreadDot, { backgroundColor: accent }]} />}
+          {thread.unread && <View style={[s.unreadDot, { backgroundColor: '#FFFFFF' }]} />}
         </View>
 
         {/* Circular avatar */}
@@ -456,13 +452,6 @@ function DMRow({
           <Text style={s.rowPreview} numberOfLines={2}>{thread.preview}</Text>
         </View>
 
-        {/* Cross-nav: call actions */}
-        <Pressable style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]} onPress={onCall} hitSlop={6}>
-          <IconSymbol name="phone.fill" size={16} color={C.secondaryLabel} />
-        </Pressable>
-        <Pressable style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]} onPress={onVideoCall} hitSlop={6}>
-          <IconSymbol name="video.fill" size={16} color={C.secondaryLabel} />
-        </Pressable>
       </Pressable>
     </Swipeable>
   );
@@ -472,7 +461,6 @@ function DMRow({
 
 export default function MessagesListScreen() {
   const insets = useSafeAreaInsets();
-  const accent = useAccentColor();
   const mode = useMode();
   const router = useRouter();
 
@@ -480,12 +468,7 @@ export default function MessagesListScreen() {
   const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
   const [composeVisible, setComposeVisible] = useState(false);
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
-  const [activeFilters, setActiveFilters] = useState(getMessageFilters);
-
-  // Subscribe to side panel filter changes
-  useEffect(() => {
-    return subscribeMessageFilters((filters) => setActiveFilters(filters));
-  }, []);
+  const [filter, setFilter] = useState<FilterMode>('all');
 
   const lastScrollY = useRef(0);
   const handleScroll = useCallback((e: any) => {
@@ -504,23 +487,19 @@ export default function MessagesListScreen() {
     });
   };
 
-  // Mode-specific channels (with side panel filters applied)
+  // Mode-specific channels
   const channels = useMemo(() => {
-    if (activeFilters.dms_only) return []; // hide channels when DMs Only
-    let list = getRooms(mode).filter((r) => !deletedIds.has(r.id));
-    if (activeFilters.unread) list = list.filter((r) => r.unread);
-    if (activeFilters.pinned) list = list.filter((r) => r.pinned);
+    if (filter === 'dms') return [];
+    const list = getRooms(mode).filter((r) => !deletedIds.has(r.id));
     return list.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-  }, [mode, deletedIds, activeFilters]);
+  }, [mode, deletedIds, filter]);
 
-  // Cross-org DMs (with side panel filters applied)
+  // Cross-org DMs
   const dms = useMemo(() => {
-    if (activeFilters.channels_only) return []; // hide DMs when Channels Only
-    let list = getGlobalDMs().filter((t) => !deletedIds.has(t.id));
-    if (activeFilters.unread) list = list.filter((t) => t.unread);
-    if (activeFilters.pinned) list = list.filter((t) => t.pinned);
+    if (filter === 'channels') return [];
+    const list = getGlobalDMs().filter((t) => !deletedIds.has(t.id));
     return list.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-  }, [deletedIds, activeFilters]);
+  }, [deletedIds, filter]);
 
   // Pinned items (channels + DMs)
   const pinnedItems = useMemo(() => {
@@ -560,16 +539,6 @@ export default function MessagesListScreen() {
   return (
     <View style={[s.container, { paddingTop: insets.top }]}>
       <ScrollView style={s.scrollView} contentContainerStyle={{ paddingTop: 28, paddingBottom: 100 }} onScroll={handleScroll} scrollEventThrottle={16}>
-        {/* ── Active filter indicator ── */}
-        {(activeFilters.unread || activeFilters.mentions || activeFilters.pinned || activeFilters.dms_only || activeFilters.channels_only) && (
-          <View style={s.filterBar}>
-            {activeFilters.unread && <View style={[s.filterChip, { backgroundColor: accent }]}><Text style={s.filterChipText}>Unread</Text></View>}
-            {activeFilters.mentions && <View style={[s.filterChip, { backgroundColor: accent }]}><Text style={s.filterChipText}>Mentions</Text></View>}
-            {activeFilters.pinned && <View style={[s.filterChip, { backgroundColor: accent }]}><Text style={s.filterChipText}>Pinned</Text></View>}
-            {activeFilters.dms_only && <View style={[s.filterChip, { backgroundColor: accent }]}><Text style={s.filterChipText}>DMs Only</Text></View>}
-            {activeFilters.channels_only && <View style={[s.filterChip, { backgroundColor: accent }]}><Text style={s.filterChipText}>Channels Only</Text></View>}
-          </View>
-        )}
         {/* ── Pinned row (horizontal scroll of circular avatars) ── */}
         {pinnedItems.length > 0 && (
           <ScrollView
@@ -595,7 +564,7 @@ export default function MessagesListScreen() {
                   style={[
                     s.pinnedAvatar,
                     item.isChannel && { borderRadius: 12, backgroundColor: C.channelIconBg },
-                    item.unread && { borderWidth: 2, borderColor: accent },
+                    item.unread && { borderWidth: 2, borderColor: '#FFFFFF' },
                   ]}
                 >
                   <Text style={s.pinnedInitials}>{item.initials}</Text>
@@ -608,8 +577,23 @@ export default function MessagesListScreen() {
           </ScrollView>
         )}
 
+        {/* ── Filter pills ── */}
+        <View style={s.filterPillRow}>
+          {(['all', 'channels', 'dms'] as const).map((f) => (
+            <Pressable
+              key={f}
+              style={[s.filterPill, filter === f && s.filterPillActive]}
+              onPress={() => setFilter(f)}
+            >
+              <Text style={[s.filterPillText, filter === f && s.filterPillTextActive]}>
+                {f === 'all' ? 'All' : f === 'channels' ? 'Channels' : 'DMs'}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+
         {/* ── Channels list ── */}
-        {channels.length > 0 && (
+        {channels.length > 0 && filter !== 'dms' && (
           <View style={s.sectionDivider}>
             <Text style={s.sectionLabel}>Channels</Text>
           </View>
@@ -619,11 +603,11 @@ export default function MessagesListScreen() {
             {i > 0 && <View style={s.separator} />}
             <ChannelRow
               room={room}
-              accent={accent}
               isMuted={mutedIds.has(room.id)}
               onPress={() => openChannel(room)}
               onDelete={() => setDeletedIds((prev) => new Set(prev).add(room.id))}
               onToggleMute={() => toggleMute(room.id)}
+              onTogglePin={() => { /* pin toggle — wired to backend */ }}
               onShowPreview={setPreviewData}
               onCall={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: room.name, contactInitials: room.initials, mode: room.mode, type: 'audio' }); }}
               onVideoCall={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: room.name, contactInitials: room.initials, mode: room.mode, type: 'video' }); }}
@@ -632,7 +616,7 @@ export default function MessagesListScreen() {
         ))}
 
         {/* ── DMs list ── */}
-        {dms.length > 0 && (
+        {dms.length > 0 && filter !== 'channels' && (
           <View style={s.sectionDivider}>
             <Text style={s.sectionLabel}>Direct Messages</Text>
           </View>
@@ -642,11 +626,11 @@ export default function MessagesListScreen() {
             {i > 0 && <View style={s.separator} />}
             <DMRow
               thread={thread}
-              accent={accent}
               isMuted={mutedIds.has(thread.id)}
               onPress={() => openDM(thread)}
               onDelete={() => setDeletedIds((prev) => new Set(prev).add(thread.id))}
               onToggleMute={() => toggleMute(thread.id)}
+              onTogglePin={() => { /* pin toggle — wired to backend */ }}
               onShowPreview={setPreviewData}
               onCall={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: thread.name, contactInitials: thread.initials, mode: thread.mode, type: 'audio' }); }}
               onVideoCall={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: thread.name, contactInitials: thread.initials, mode: thread.mode, type: 'video' }); }}
@@ -657,13 +641,13 @@ export default function MessagesListScreen() {
 
       {/* ── FAB compose button ── */}
       <Pressable
-        style={[s.fab, { backgroundColor: accent, bottom: insets.bottom + 60 }]}
+        style={[s.fab, { backgroundColor: '#FFFFFF', bottom: insets.bottom + 60 }]}
         onPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           setComposeVisible(true);
         }}
       >
-        <IconSymbol name="square.and.pencil" size={22} color="#FFFFFF" />
+        <IconSymbol name="square.and.pencil" size={22} color="#000000" />
       </Pressable>
 
       {/* ── Compose sheet ── */}
@@ -671,7 +655,7 @@ export default function MessagesListScreen() {
         visible={composeVisible}
         onClose={() => setComposeVisible(false)}
         onSend={handleComposeSend}
-        accent={accent}
+        accent="#FFFFFF"
       />
 
       {/* ── Preview overlay ── */}
@@ -744,10 +728,6 @@ const s = StyleSheet.create({
   },
   dmAvatarText: { fontSize: 14, fontWeight: '600', color: C.label },
 
-  // Cross-nav call buttons
-  crossNavBtn: { padding: 6 },
-  crossNavPressed: { opacity: 0.5 },
-
   // Separator
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: C.separator, marginLeft: 80 },
 
@@ -759,17 +739,17 @@ const s = StyleSheet.create({
     shadowOpacity: 0.3, shadowRadius: 6, elevation: 8,
   },
 
-  // Swipe actions (mute + delete)
+  // Swipe actions (pin + mute; full swipe = delete)
   swipeActions: { flexDirection: 'row' },
-  swipeMute: {
-    backgroundColor: '#FF9500',
+  swipePin: {
+    backgroundColor: '#007AFF',
     justifyContent: 'center',
     alignItems: 'center',
     width: 80,
     gap: 4,
   },
-  swipeDelete: {
-    backgroundColor: '#FF3B30',
+  swipeMute: {
+    backgroundColor: '#FF9500',
     justifyContent: 'center',
     alignItems: 'center',
     width: 80,
@@ -780,14 +760,21 @@ const s = StyleSheet.create({
     fontWeight: '600',
     color: '#FFFFFF',
   },
-  // Filter indicator
-  filterBar: {
+  // Filter pills
+  filterPillRow: {
     flexDirection: 'row', paddingHorizontal: 16, gap: 8, marginBottom: 12,
   },
-  filterChip: {
-    paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12,
+  filterPill: {
+    backgroundColor: '#0B0F14',
+    paddingHorizontal: 12, paddingVertical: 5, borderRadius: 14,
   },
-  filterChipText: {
-    fontSize: 12, fontWeight: '600', color: '#FFFFFF',
+  filterPillActive: {
+    backgroundColor: '#FFFFFF',
+  },
+  filterPillText: {
+    fontSize: 13, fontWeight: '600', color: '#FFFFFF',
+  },
+  filterPillTextActive: {
+    color: '#000000',
   },
 });

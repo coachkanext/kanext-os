@@ -74,9 +74,8 @@ export function MessagesPanel() {
             navigateTo(item.route);
           }}
         >
-          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
+          <IconSymbol name={item.icon as any} size={20} color={C.secondary} />
           <Text style={styles.menuLabel}>{item.label}</Text>
-          <IconSymbol name="chevron.right" size={14} color="rgba(255,255,255,0.25)" />
         </Pressable>
       ))}
     </ScrollView>
@@ -85,7 +84,7 @@ export function MessagesPanel() {
 
 const styles = StyleSheet.create({
   scroll: { flex: 1 },
-  scrollContent: { paddingBottom: 40 },
+  scrollContent: { paddingBottom: 32 },
   divider: {
     height: 1,
     backgroundColor: C.divider,
@@ -96,13 +95,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingVertical: 16,
     borderRadius: 8,
     marginHorizontal: 4,
   },
   menuLabel: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 16,
     color: C.label,
   },
 });

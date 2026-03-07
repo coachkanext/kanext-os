@@ -4,14 +4,17 @@
  * Tap row = audio call (default). Icons: message + video (cross-nav).
  */
 
-import React, { useMemo, useRef, useCallback } from 'react';
+import React, { useState, useMemo, useRef, useCallback } from 'react';
 import {
   View,
   Text,
   Pressable,
   ScrollView,
+  Modal,
+  Animated,
   StyleSheet,
 } from 'react-native';
+import { Swipeable } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -41,14 +44,273 @@ const C = {
   online: '#34C759',
 };
 
+// ─── Long-press context menu ─────────────────────────────────────────────────
+
+type PreviewData = {
+  title: string;
+  subtitle: string;
+  initials: string;
+  isGroup: boolean;
+  pageY: number;
+  actions: { key: string; label: string; icon: string; destructive?: boolean }[];
+  onAction: (key: string) => void;
+};
+
+function PreviewOverlay({ data, onClose }: { data: PreviewData; onClose: () => void }) {
+  const insets = useSafeAreaInsets();
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.95)).current;
+
+  React.useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+      Animated.spring(scaleAnim, { toValue: 1, tension: 120, friction: 10, useNativeDriver: true }),
+    ]).start();
+  }, []);
+
+  const dismiss = useCallback(() => {
+    Animated.timing(fadeAnim, { toValue: 0, duration: 150, useNativeDriver: true })
+      .start(() => onClose());
+  }, [fadeAnim, onClose]);
+
+  const handleAction = useCallback((key: string) => {
+    data.onAction(key);
+    dismiss();
+  }, [data.onAction, dismiss]);
+
+  const cardTop = Math.max(insets.top + 40, Math.min(data.pageY - 30, 340));
+
+  return (
+    <Modal transparent animationType="none" onRequestClose={dismiss}>
+      <Animated.View style={[pvS.overlay, { opacity: fadeAnim }]}>
+        <Pressable style={pvS.backdrop} onPress={dismiss} />
+        <Animated.View style={[pvS.content, { transform: [{ scale: scaleAnim }], top: cardTop }]}>
+          <View style={pvS.previewCard}>
+            <View style={[pvS.previewAvatar, data.isGroup ? { borderRadius: 12, backgroundColor: C.channelIconBg } : { borderRadius: 24 }]}>
+              <Text style={pvS.previewInitials}>{data.initials}</Text>
+            </View>
+            <View style={pvS.previewText}>
+              <Text style={pvS.previewName} numberOfLines={1}>{data.title}</Text>
+              <Text style={pvS.previewSub} numberOfLines={2}>{data.subtitle}</Text>
+            </View>
+          </View>
+          <View style={pvS.menu}>
+            {data.actions.map((action, idx) => (
+              <Pressable
+                key={action.key}
+                style={[pvS.menuItem, idx < data.actions.length - 1 && pvS.menuItemBorder]}
+                onPress={() => handleAction(action.key)}
+              >
+                <Text style={[pvS.menuLabel, action.destructive && pvS.menuLabelDestructive]}>
+                  {action.label}
+                </Text>
+                <IconSymbol
+                  name={action.icon as any}
+                  size={16}
+                  color={action.destructive ? '#FF3B30' : C.label}
+                />
+              </Pressable>
+            ))}
+          </View>
+        </Animated.View>
+      </Animated.View>
+    </Modal>
+  );
+}
+
+const pvS = StyleSheet.create({
+  overlay: { flex: 1 },
+  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.60)' },
+  content: { position: 'absolute', left: 24, right: 24, alignItems: 'center' },
+  previewCard: {
+    flexDirection: 'row', alignItems: 'center', backgroundColor: '#2C2C2E',
+    borderRadius: 14, padding: 14, width: '100%', gap: 12,
+  },
+  previewAvatar: {
+    width: 48, height: 48, borderRadius: 24, backgroundColor: '#1C1C1E',
+    alignItems: 'center', justifyContent: 'center',
+  },
+  previewInitials: { fontSize: 16, fontWeight: '700', color: C.label },
+  previewText: { flex: 1 },
+  previewName: { fontSize: 17, fontWeight: '600', color: C.label, marginBottom: 2 },
+  previewSub: { fontSize: 14, color: C.secondary, lineHeight: 19 },
+  menu: {
+    marginTop: 8, backgroundColor: '#000000', borderRadius: 14, overflow: 'hidden', width: '100%',
+    borderWidth: 1, borderColor: '#2F3336',
+  },
+  menuItem: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    minHeight: 48, paddingHorizontal: 16,
+  },
+  menuItemBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#2F3336' },
+  menuLabel: { fontSize: 16, color: C.label },
+  menuLabelDestructive: { color: '#FF3B30' },
+});
+
+// ─── Group Row (with swipe) ──────────────────────────────────────────────────
+
+function GroupRow({
+  group,
+  onPress,
+  onMessage,
+  onVideoCall,
+  onLongPress,
+}: {
+  group: PhoneGroup;
+  onPress: () => void;
+  onMessage: () => void;
+  onVideoCall: () => void;
+  onLongPress: (pageY: number) => void;
+}) {
+  const swipeableRef = useRef<Swipeable>(null);
+
+  const renderRightActions = () => (
+    <View style={s.swipeActions}>
+      <Pressable style={s.swipePin} onPress={() => { swipeableRef.current?.close(); }}>
+        <IconSymbol name="pin.fill" size={20} color="#FFFFFF" />
+        <Text style={s.swipeActionText}>Favorite</Text>
+      </Pressable>
+      <Pressable style={s.swipeMute} onPress={() => { swipeableRef.current?.close(); }}>
+        <IconSymbol name="bell.slash.fill" size={20} color="#FFFFFF" />
+        <Text style={s.swipeActionText}>Mute</Text>
+      </Pressable>
+    </View>
+  );
+
+  return (
+    <Swipeable
+      ref={swipeableRef}
+      renderLeftActions={() => <View style={{ width: 1 }} />}
+      leftThreshold={60}
+      overshootLeft={false}
+      renderRightActions={renderRightActions}
+      rightThreshold={40}
+      onSwipeableWillOpen={(direction) => {
+        if (direction === 'left') {
+          swipeableRef.current?.close();
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          openSidePanel();
+        }
+      }}
+    >
+      <Pressable
+        style={({ pressed }) => [s.row, pressed && { backgroundColor: 'rgba(255,255,255,0.04)' }]}
+        onPress={onPress}
+        onLongPress={(e) => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          onLongPress(e.nativeEvent.pageY);
+        }}
+        delayLongPress={400}
+      >
+        <View style={s.groupIcon}>
+          <Text style={s.groupInitials}>{group.initials}</Text>
+        </View>
+        <View style={s.rowContent}>
+          <Text style={s.rowName} numberOfLines={1}>{group.name}</Text>
+          <Text style={s.rowSub}>{group.memberCount} members</Text>
+        </View>
+      </Pressable>
+    </Swipeable>
+  );
+}
+
+// ─── Contact Row (with swipe) ────────────────────────────────────────────────
+
+function ContactRow({
+  contact,
+  onPress,
+  onMessage,
+  onVideoCall,
+  onLongPress,
+}: {
+  contact: PhoneContact;
+  onPress: () => void;
+  onMessage: () => void;
+  onVideoCall: () => void;
+  onLongPress: (pageY: number) => void;
+}) {
+  const swipeableRef = useRef<Swipeable>(null);
+
+  const renderRightActions = () => (
+    <View style={s.swipeActions}>
+      <Pressable style={s.swipePin} onPress={() => { swipeableRef.current?.close(); }}>
+        <IconSymbol name="pin.fill" size={20} color="#FFFFFF" />
+        <Text style={s.swipeActionText}>Favorite</Text>
+      </Pressable>
+      <Pressable style={s.swipeMute} onPress={() => { swipeableRef.current?.close(); }}>
+        <IconSymbol name="bell.slash.fill" size={20} color="#FFFFFF" />
+        <Text style={s.swipeActionText}>Mute</Text>
+      </Pressable>
+    </View>
+  );
+
+  return (
+    <Swipeable
+      ref={swipeableRef}
+      renderLeftActions={() => <View style={{ width: 1 }} />}
+      leftThreshold={60}
+      overshootLeft={false}
+      renderRightActions={renderRightActions}
+      rightThreshold={40}
+      onSwipeableWillOpen={(direction) => {
+        if (direction === 'left') {
+          swipeableRef.current?.close();
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          openSidePanel();
+        }
+      }}
+    >
+      <Pressable
+        style={({ pressed }) => [s.row, pressed && { backgroundColor: 'rgba(255,255,255,0.04)' }]}
+        onPress={onPress}
+        onLongPress={(e) => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          onLongPress(e.nativeEvent.pageY);
+        }}
+        delayLongPress={400}
+      >
+        <View style={s.contactAvatar}>
+          <Text style={s.contactInitials}>{contact.initials}</Text>
+          {contact.online && <View style={s.onlineDot} />}
+        </View>
+        <View style={s.rowContent}>
+          <Text style={s.rowName} numberOfLines={1}>{contact.name}</Text>
+          <View style={s.contactMeta}>
+            <Text style={s.rowSub}>{contact.username}</Text>
+            <Text style={s.contactRole}>{contact.role}</Text>
+          </View>
+        </View>
+      </Pressable>
+    </Swipeable>
+  );
+}
+
 export default function PhoneScreen() {
   const insets = useSafeAreaInsets();
   const mode = useMode();
   const router = useRouter();
 
+  const [previewData, setPreviewData] = useState<PreviewData | null>(null);
+
+  const scrollRef = useRef<ScrollView>(null);
+  const sectionOffsets = useRef<Record<string, number>>({});
+
   const favorites = useMemo(() => getFavoriteContacts(), []);
   const groups = useMemo(() => PHONE_GROUPS, []);
   const contacts = useMemo(() => PHONE_CONTACTS, []);
+
+  // Group contacts alphabetically
+  const groupedContacts = useMemo(() => {
+    const map: Record<string, PhoneContact[]> = {};
+    for (const c of contacts) {
+      const letter = c.name.charAt(0).toUpperCase();
+      if (!map[letter]) map[letter] = [];
+      map[letter].push(c);
+    }
+    return Object.entries(map).sort(([a], [b]) => a.localeCompare(b));
+  }, [contacts]);
+
+  const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('');
 
   // Right-swipe detection via raw touch events
   const touchRef = useRef({ x: 0, y: 0, t: 0, triggered: false });
@@ -100,6 +362,52 @@ export default function PhoneScreen() {
     initiateCall({ contactName: group.name, contactInitials: group.initials, mode: group.mode, type: 'video' });
   };
 
+  const longPressContact = (contact: PhoneContact, pageY: number) => {
+    setPreviewData({
+      title: contact.name,
+      subtitle: contact.role,
+      initials: contact.initials,
+      isGroup: false,
+      pageY,
+      actions: [
+        { key: 'message', label: 'Message', icon: 'bubble.left.fill' },
+        { key: 'video', label: 'Video Call', icon: 'video.fill' },
+        { key: 'copy', label: 'Copy Number', icon: 'doc.on.doc.fill' },
+        { key: 'share', label: 'Share Contact', icon: 'square.and.arrow.up' },
+        { key: 'profile', label: 'View Profile', icon: 'person.fill' },
+        { key: 'pin', label: 'Pin to Favorites', icon: 'pin.fill' },
+        { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
+      ],
+      onAction: (key) => {
+        if (key === 'message') openMessage(contact.name);
+        else if (key === 'video') callVideo(contact);
+      },
+    });
+  };
+
+  const longPressGroup = (group: PhoneGroup, pageY: number) => {
+    setPreviewData({
+      title: group.name,
+      subtitle: `${group.memberCount} members`,
+      initials: group.initials,
+      isGroup: true,
+      pageY,
+      actions: [
+        { key: 'message', label: 'Message', icon: 'bubble.left.fill' },
+        { key: 'video', label: 'Video Call', icon: 'video.fill' },
+        { key: 'copy', label: 'Copy Number', icon: 'doc.on.doc.fill' },
+        { key: 'share', label: 'Share Contact', icon: 'square.and.arrow.up' },
+        { key: 'profile', label: 'View Profile', icon: 'person.fill' },
+        { key: 'pin', label: 'Pin to Favorites', icon: 'pin.fill' },
+        { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
+      ],
+      onAction: (key) => {
+        if (key === 'message') openMessage(group.name);
+        else if (key === 'video') callGroupVideo(group);
+      },
+    });
+  };
+
   return (
     <View
       style={[s.container, { paddingTop: insets.top }]}
@@ -107,6 +415,7 @@ export default function PhoneScreen() {
       onTouchMove={onTouchMove}
     >
       <ScrollView
+        ref={scrollRef}
         style={s.scrollView}
         contentContainerStyle={{ paddingTop: 28, paddingBottom: 100 }}
         onScroll={handleScroll}
@@ -147,83 +456,69 @@ export default function PhoneScreen() {
             {groups.map((group, i) => (
               <View key={group.id}>
                 {i > 0 && <View style={s.separator} />}
-                <Pressable
-                  style={({ pressed }) => [s.row, pressed && { backgroundColor: 'rgba(255,255,255,0.04)' }]}
+                <GroupRow
+                  group={group}
                   onPress={() => callGroupAudio(group)}
-                >
-                  {/* Square squircle icon */}
-                  <View style={s.groupIcon}>
-                    <Text style={s.groupInitials}>{group.initials}</Text>
-                  </View>
-                  {/* Info */}
-                  <View style={s.rowContent}>
-                    <Text style={s.rowName} numberOfLines={1}>{group.name}</Text>
-                    <Text style={s.rowSub}>{group.memberCount} members</Text>
-                  </View>
-                  {/* Cross-nav: message + video */}
-                  <Pressable
-                    style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]}
-                    onPress={() => openMessage(group.name)}
-                    hitSlop={6}
-                  >
-                    <IconSymbol name="bubble.left.fill" size={16} color={C.secondary} />
-                  </Pressable>
-                  <Pressable
-                    style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]}
-                    onPress={() => callGroupVideo(group)}
-                    hitSlop={6}
-                  >
-                    <IconSymbol name="video.fill" size={16} color={C.secondary} />
-                  </Pressable>
-                </Pressable>
+                  onMessage={() => openMessage(group.name)}
+                  onVideoCall={() => callGroupVideo(group)}
+                  onLongPress={(pageY) => longPressGroup(group, pageY)}
+                />
               </View>
             ))}
           </>
         )}
 
-        {/* ── Contacts ── */}
-        <View style={s.sectionHeader}>
-          <Text style={s.sectionLabel}>Contacts</Text>
-        </View>
-        {contacts.map((contact, i) => (
-          <View key={contact.id}>
-            {i > 0 && <View style={s.separator} />}
-            <Pressable
-              style={({ pressed }) => [s.row, pressed && { backgroundColor: 'rgba(255,255,255,0.04)' }]}
-              onPress={() => callAudio(contact)}
-            >
-              {/* Circular avatar with online indicator */}
-              <View style={s.contactAvatar}>
-                <Text style={s.contactInitials}>{contact.initials}</Text>
-                {contact.online && <View style={s.onlineDot} />}
+        {/* ── Contacts (grouped by letter) ── */}
+        {groupedContacts.map(([letter, letterContacts]) => (
+          <View
+            key={letter}
+            onLayout={(e) => { sectionOffsets.current[letter] = e.nativeEvent.layout.y; }}
+          >
+            <View style={s.letterHeader}>
+              <Text style={s.letterHeaderText}>{letter}</Text>
+            </View>
+            {letterContacts.map((contact, i) => (
+              <View key={contact.id}>
+                {i > 0 && <View style={s.separator} />}
+                <ContactRow
+                  contact={contact}
+                  onPress={() => callAudio(contact)}
+                  onMessage={() => openMessage(contact.name)}
+                  onVideoCall={() => callVideo(contact)}
+                  onLongPress={(pageY) => longPressContact(contact, pageY)}
+                />
               </View>
-              {/* Info */}
-              <View style={s.rowContent}>
-                <Text style={s.rowName} numberOfLines={1}>{contact.name}</Text>
-                <View style={s.contactMeta}>
-                  <Text style={s.rowSub}>{contact.username}</Text>
-                  <Text style={s.contactRole}>{contact.role}</Text>
-                </View>
-              </View>
-              {/* Cross-nav: message + video */}
-              <Pressable
-                style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]}
-                onPress={() => openMessage(contact.name)}
-                hitSlop={6}
-              >
-                <IconSymbol name="bubble.left.fill" size={16} color={C.secondary} />
-              </Pressable>
-              <Pressable
-                style={({ pressed }) => [s.crossNavBtn, pressed && s.crossNavPressed]}
-                onPress={() => callVideo(contact)}
-                hitSlop={6}
-              >
-                <IconSymbol name="video.fill" size={16} color={C.secondary} />
-              </Pressable>
-            </Pressable>
+            ))}
           </View>
         ))}
       </ScrollView>
+
+      {/* ── Alphabet scrubber (right edge) ── */}
+      <View style={s.scrubber} pointerEvents="box-only">
+        {ALPHA.map((letter) => {
+          const hasSection = sectionOffsets.current[letter] != null;
+          return (
+            <Pressable
+              key={letter}
+              onPress={() => {
+                const y = sectionOffsets.current[letter];
+                if (y != null) {
+                  Haptics.selectionAsync();
+                  scrollRef.current?.scrollTo({ y, animated: true });
+                }
+              }}
+              hitSlop={{ left: 10, right: 10 }}
+            >
+              <Text style={[s.scrubberLetter, hasSection && s.scrubberLetterActive]}>{letter}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+
+      {/* ── Long-press context menu ── */}
+      {previewData && (
+        <PreviewOverlay data={previewData} onClose={() => setPreviewData(null)} />
+      )}
     </View>
   );
 }
@@ -289,10 +584,51 @@ const s = StyleSheet.create({
     borderWidth: 2, borderColor: C.bg,
   },
 
-  // Cross-nav buttons
-  crossNavBtn: { padding: 6 },
-  crossNavPressed: { opacity: 0.5 },
+  // Letter section headers
+  letterHeader: {
+    paddingHorizontal: 16, paddingTop: 18, paddingBottom: 4,
+    backgroundColor: C.bg,
+  },
+  letterHeaderText: {
+    fontSize: 14, fontWeight: '700', color: C.secondary,
+  },
+
+  // Alphabet scrubber (right edge)
+  scrubber: {
+    position: 'absolute', right: 2, top: 0, bottom: 0,
+    justifyContent: 'center', alignItems: 'center',
+    paddingVertical: 60,
+  },
+  scrubberLetter: {
+    fontSize: 10, fontWeight: '600', color: '#52525B',
+    paddingVertical: 1, paddingHorizontal: 4,
+  },
+  scrubberLetterActive: {
+    color: '#007AFF',
+  },
 
   // Separator
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: C.separator, marginLeft: 72 },
+
+  // Swipe actions (pin + mute; stays open on release)
+  swipeActions: { flexDirection: 'row' },
+  swipePin: {
+    backgroundColor: '#007AFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 80,
+    gap: 4,
+  },
+  swipeMute: {
+    backgroundColor: '#FF9500',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 80,
+    gap: 4,
+  },
+  swipeActionText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
 });

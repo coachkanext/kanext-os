@@ -489,6 +489,8 @@ function ContextMenu({
     ? [
         { key: 'thread', label: 'Reply in Thread', icon: 'arrowshape.turn.up.left.fill' },
         { key: 'react', label: 'React', icon: 'face.smiling.fill' },
+        { key: 'call', label: 'Audio Call', icon: 'phone.fill' },
+        { key: 'video', label: 'Video Call', icon: 'video.fill' },
         { key: 'pin', label: 'Pin', icon: 'pin.fill' },
         { key: 'copy', label: 'Copy', icon: 'doc.on.doc.fill' },
         ...(data.isSent ? [{ key: 'edit', label: 'Edit', icon: 'pencil' }] : []),
@@ -496,6 +498,8 @@ function ContextMenu({
       ]
     : [
         { key: 'react', label: 'React', icon: 'face.smiling.fill' },
+        { key: 'call', label: 'Audio Call', icon: 'phone.fill' },
+        { key: 'video', label: 'Video Call', icon: 'video.fill' },
         { key: 'copy', label: 'Copy', icon: 'doc.on.doc.fill' },
         ...(data.isSent ? [{ key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true }] : []),
       ];
@@ -562,14 +566,15 @@ const cmStyles = StyleSheet.create({
   bubble: { maxWidth: '78%', paddingHorizontal: 12, paddingVertical: 8 },
   bubbleText: { fontSize: 16, lineHeight: 21, color: C.label },
   menu: {
-    marginTop: 8, backgroundColor: '#2C2C2E', borderRadius: 14,
+    marginTop: 8, backgroundColor: '#000000', borderRadius: 14,
     overflow: 'hidden', minWidth: 200, maxWidth: 260,
+    borderWidth: 1, borderColor: '#2F3336',
   },
   menuItem: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingVertical: 12, paddingHorizontal: 16,
+    minHeight: 48, paddingHorizontal: 16,
   },
-  menuItemBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#48484A' },
+  menuItemBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#2F3336' },
   menuLabel: { fontSize: 16, color: C.label },
   menuLabelDest: { color: '#FF3B30' },
 });
@@ -595,7 +600,7 @@ function MessageBubble({
   const isSent = message.isMe;
   const bubbleRef = useRef<View>(null);
 
-  const accentBg = `${accent}2E`; // 18% opacity
+  const accentBg = '#1A1F2E';
 
   const bubbleRadii = {
     borderTopLeftRadius: BUBBLE_R,
@@ -667,7 +672,7 @@ function MessageBubble({
           {message.reactions && message.reactions.length > 0 && (
             <View style={styles.reactionsRow}>
               {message.reactions.map((r) => (
-                <View key={r.emoji} style={[styles.reactionChip, r.byMe && { borderColor: accent }]}>
+                <View key={r.emoji} style={[styles.reactionChip, r.byMe && { borderColor: '#FFFFFF' }]}>
                   <Text style={styles.reactionEmoji}>{r.emoji}</Text>
                   <Text style={styles.reactionCount}>{r.count}</Text>
                 </View>
@@ -678,8 +683,8 @@ function MessageBubble({
           {/* Thread indicator */}
           {message.replyCount && message.replyCount > 0 && (
             <Pressable style={styles.threadIndicator} onPress={() => onThreadTap(message)}>
-              <IconSymbol name="arrowshape.turn.up.left.fill" size={12} color={accent} />
-              <Text style={[styles.threadText, { color: accent }]}>
+              <IconSymbol name="arrowshape.turn.up.left.fill" size={12} color="#FFFFFF" />
+              <Text style={[styles.threadText, { color: '#FFFFFF' }]}>
                 {message.replyCount} {message.replyCount === 1 ? 'reply' : 'replies'}
               </Text>
             </Pressable>

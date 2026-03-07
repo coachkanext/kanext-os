@@ -17,7 +17,6 @@ import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import {
   MY_KANEXT_NUMBERS,
-  MODE_BADGE_COLORS,
   MODE_BADGE_LABELS,
   type KanextNumber,
 } from '@/data/mock-phone';
@@ -42,14 +41,13 @@ function NumberPopup({
   onClose: () => void;
 }) {
   if (!visible || !number) return null;
-  const color = MODE_BADGE_COLORS[number.mode];
 
   return (
     <Modal transparent animationType="fade" visible={visible} onRequestClose={onClose}>
       <Pressable style={popupStyles.backdrop} onPress={onClose}>
         <View style={popupStyles.card}>
           <View style={popupStyles.header}>
-            <View style={[popupStyles.headerPill, { backgroundColor: color }]}>
+            <View style={popupStyles.headerPill}>
               <Text style={popupStyles.headerPillText}>{MODE_BADGE_LABELS[number.mode]}</Text>
             </View>
             <Text style={popupStyles.num}>{number.number}</Text>
@@ -94,7 +92,6 @@ export function MyNumbersSection({ onFilter }: { onFilter: (mode: Mode) => void 
       {/* Number cards */}
       <View style={styles.cardWrap}>
         {MY_KANEXT_NUMBERS.map((num, i) => {
-          const color = MODE_BADGE_COLORS[num.mode];
           const isLast = i === MY_KANEXT_NUMBERS.length - 1;
           return (
             <Pressable
@@ -114,14 +111,14 @@ export function MyNumbersSection({ onFilter }: { onFilter: (mode: Mode) => void 
               }}
               delayLongPress={400}
             >
-              {/* Left: colored accent bar + number */}
+              {/* Left: accent bar + number */}
               <View style={styles.numberLeft}>
-                <View style={[styles.accentBar, { backgroundColor: color }]} />
+                <View style={styles.accentBar} />
                 <Text style={styles.numberText}>{num.number}</Text>
               </View>
               {/* Right: pill */}
-              <View style={[styles.pill, { backgroundColor: `${color}20` }]}>
-                <Text style={[styles.pillText, { color }]}>{MODE_BADGE_LABELS[num.mode]}</Text>
+              <View style={styles.pill}>
+                <Text style={styles.pillText}>{MODE_BADGE_LABELS[num.mode]}</Text>
               </View>
             </Pressable>
           );
@@ -179,6 +176,7 @@ const styles = StyleSheet.create({
     width: 3,
     height: 28,
     borderRadius: 2,
+    backgroundColor: '#FFFFFF',
   },
   numberText: {
     fontSize: 16,
@@ -190,10 +188,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingVertical: 4,
+    backgroundColor: 'rgba(255,255,255,0.10)',
   },
   pillText: {
     fontSize: 11,
     fontWeight: '600',
+    color: '#FFFFFF',
   },
 });
 
@@ -221,6 +221,7 @@ const popupStyles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 4,
+    backgroundColor: 'rgba(255,255,255,0.15)',
   },
   headerPillText: {
     fontSize: 11,
