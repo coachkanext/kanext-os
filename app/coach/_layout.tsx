@@ -8,6 +8,7 @@ import { Stack } from 'expo-router';
 
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { resetFooter } from '@/utils/global-footer-hide';
 
 export default function CoachLayout() {
   const colorScheme = useColorScheme() ?? 'light';
@@ -20,6 +21,7 @@ export default function CoachLayout() {
         animation: 'none',
         contentStyle: { backgroundColor: colors.background },
       }}
+      screenListeners={{ focus: () => resetFooter() }}
     >
       <Stack.Screen name="roster" />
       <Stack.Screen name="games" />

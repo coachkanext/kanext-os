@@ -24,7 +24,7 @@ import { openSplitNexus, closeSplitNexus, isSplitNexusOpen } from '@/utils/globa
 import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils/global-multitasking';
 import { startGlobalVoice } from '@/utils/global-voice';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
-import { subscribeFooterVisibility } from '@/utils/global-footer-hide';
+import { subscribeFooterVisibility, resetFooter } from '@/utils/global-footer-hide';
 
 const FOOTER_HEIGHT = 49;
 
@@ -35,14 +35,25 @@ export function UniversalFooter() {
   const translateY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    return subscribeFooterVisibility((visible) => {
+    return subscribeFooterVisibility((visible, instant) => {
       if (visible) {
-        Animated.spring(translateY, {
-          toValue: 0,
-          tension: 120,
-          friction: 14,
-          useNativeDriver: true,
-        }).start();
+        if (instant) {
+          // Screen transition — snap immediately (like X)
+          translateY.stopAnimation();
+          Animated.timing(translateY, {
+            toValue: 0,
+            duration: 0,
+            useNativeDriver: true,
+          }).start();
+        } else {
+          // Scroll-driven — spring back
+          Animated.spring(translateY, {
+            toValue: 0,
+            tension: 120,
+            friction: 14,
+            useNativeDriver: true,
+          }).start();
+        }
       } else {
         Animated.timing(translateY, {
           toValue: FOOTER_HEIGHT + insets.bottom + 1,
@@ -115,29 +126,20 @@ export function UniversalFooter() {
     [],
   );
 
-  // ── Home tap → go home ──
-  const handleHomePress = () => {
+  /** Navigate to a tab destination — dismiss any root-level screens first */
+  const goTo = useCallback((path: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.navigate('/(tabs)/(main)' as any);
-  };
+    resetFooter();
+    // If we're on a root-level screen (nexus, wallet, profile, etc.),
+    // dismiss back to tabs first so we don't flash Home
+    if (router.canDismiss()) router.dismissAll();
+    router.navigate(path as any);
+  }, [router]);
 
-  // ── Messages tap → navigate (no-op if already there) ──
-  const handleMessagesPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.navigate('/messages' as any);
-  };
-
-  // ── Media tap → navigate (no-op if already there) ──
-  const handleMediaPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.navigate('/section?title=Media' as any);
-  };
-
-  // ── Organization tap → navigate (no-op if already there) ──
-  const handleOrgPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.navigate('/section?title=Organization' as any);
-  };
+  const handleHomePress = () => goTo('/(tabs)/(main)');
+  const handleMessagesPress = () => goTo('/messages');
+  const handleMediaPress = () => goTo('/section?title=Media');
+  const handleOrgPress = () => goTo('/section?title=Organization');
 
   // ── Organization long press → mode switcher ──
   const handleOrgLongPress = () => {

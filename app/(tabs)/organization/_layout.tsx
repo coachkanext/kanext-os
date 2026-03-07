@@ -6,6 +6,7 @@
 import { Stack } from 'expo-router';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Colors } from '@/constants/theme';
+import { resetFooter } from '@/utils/global-footer-hide';
 
 export default function OrganizationLayout() {
   const colorScheme = useColorScheme() ?? 'light';
@@ -18,6 +19,7 @@ export default function OrganizationLayout() {
         animation: 'none',
         contentStyle: { backgroundColor: colors.background },
       }}
+      screenListeners={{ focus: () => resetFooter() }}
     >
       <Stack.Screen name="index" />
       <Stack.Screen

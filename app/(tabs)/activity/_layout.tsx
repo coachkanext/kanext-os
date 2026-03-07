@@ -6,6 +6,7 @@
 
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { resetFooter } from '@/utils/global-footer-hide';
 
 export default function MessagesLayout() {
   return (
@@ -14,6 +15,7 @@ export default function MessagesLayout() {
       screenOptions={{
         headerShown: false,
       }}
+      screenListeners={{ focus: () => resetFooter() }}
     >
       <Tabs.Screen name="index" options={{ title: 'Messages' }} />
       <Tabs.Screen name="chat" options={{ title: 'Chat', href: null }} />

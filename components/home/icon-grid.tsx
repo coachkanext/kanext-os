@@ -39,9 +39,9 @@ const C = {
 
 /** Mode-dependent labels for icons that change per mode (positions 2, 3, 6) */
 const MODE_LABELS: Record<string, Record<Mode, string>> = {
-  season:  { sports: 'Season',   business: 'Office',  church: 'Parish',     education: 'Term',      competition: 'Season' },
-  roster:  { sports: 'Team',     business: 'Team',    church: 'Ministries', education: 'Community', competition: 'Roster' },
-  recruits:{ sports: 'Recruits', business: 'Recruits',church: 'Outreach',   education: 'Admissions',competition: 'Recruits' },
+  season:  { sports: 'Season',   business: 'Office',  church: 'Parish',     education: 'Campus',    competition: 'Season' },
+  roster:  { sports: 'Roster',   business: 'Team',    church: 'Ministries', education: 'Community', competition: 'Roster' },
+  recruits:{ sports: 'Recruits', business: 'Prospects',church: 'Outreach',  education: 'Admissions',competition: 'Recruits' },
   store:   { sports: 'Store',    business: 'Store',   church: 'Give',       education: 'Store',     competition: 'Store' },
 };
 
@@ -50,7 +50,7 @@ const MODE_IMAGES: Record<string, Partial<Record<Mode, any>>> = {
   season: {
     church: require('@/assets/images/icon-parish.png'),
     business: require('@/assets/images/icon-office.png'),
-    education: require('@/assets/images/icon-term.png'),
+    education: require('@/assets/images/icon-campus.png'),
   },
   roster: {
     sports: require('@/assets/images/icon-team-sports.png'),

@@ -6,6 +6,7 @@
 
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { resetFooter } from '@/utils/global-footer-hide';
 
 export default function MediaLayout() {
   return (
@@ -14,6 +15,7 @@ export default function MediaLayout() {
       screenOptions={{
         headerShown: false,
       }}
+      screenListeners={{ focus: () => resetFooter() }}
     >
       <Tabs.Screen name="index" options={{ title: 'Media' }} />
       <Tabs.Screen name="reels" options={{ title: 'Reels', href: null }} />

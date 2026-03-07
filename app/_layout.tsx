@@ -42,6 +42,7 @@ import { SettingsPanel, SETTINGS_PANEL_WIDTH } from '@/components/settings-panel
 import { registerViewSwitchCallback } from '@/utils/view-switch-lifecycle';
 import { requestHomeReset } from '@/utils/global-home';
 import { requestOrgReset } from '@/utils/global-org';
+import { resetFooter } from '@/utils/global-footer-hide';
 
 import { UniversalFinder } from '@/components/universal-finder';
 import { SplitNexusOverlay } from '@/components/nexus/split-nexus-overlay';
@@ -224,15 +225,15 @@ function AppShell() {
 
       {/* Content wrapper — shifts right when settings panel opens */}
       <Animated.View style={[styles.container, { transform: [{ translateX: contentTranslateX }] }]}>
-        <Stack screenOptions={{ headerShown: false, animation: 'none', contentStyle: { backgroundColor: '#000000' } }}>
+        <Stack screenOptions={{ headerShown: false, animation: 'none', contentStyle: { backgroundColor: '#000000' } }} screenListeners={{ focus: () => resetFooter() }}>
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="coach" />
           <Stack.Screen name="login" />
           <Stack.Screen name="nexus" options={{ animation: 'slide_from_right', gestureEnabled: true, fullScreenGestureEnabled: true }} />
-          <Stack.Screen name="wallet" options={{ animation: 'slide_from_right', gestureEnabled: true, fullScreenGestureEnabled: true, contentStyle: { backgroundColor: '#000000' } }} />
+          <Stack.Screen name="wallet" options={{ gestureEnabled: true, fullScreenGestureEnabled: true, contentStyle: { backgroundColor: '#000000' } }} />
           <Stack.Screen name="video" />
           <Stack.Screen name="settings" />
-          <Stack.Screen name="profile" options={{ animation: 'slide_from_right', gestureEnabled: true, fullScreenGestureEnabled: true, contentStyle: { backgroundColor: '#000000' } }} />
+          <Stack.Screen name="profile" options={{ gestureEnabled: true, fullScreenGestureEnabled: true, contentStyle: { backgroundColor: '#000000' } }} />
           {/* section and messages are inside (tabs)/(home) Stack — tab bar stays visible */}
           <Stack.Screen
             name="modal"

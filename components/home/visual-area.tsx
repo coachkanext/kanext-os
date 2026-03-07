@@ -79,6 +79,7 @@ export function VisualArea() {
         ref={pagerRef}
         style={styles.pager}
         initialPage={0}
+        scrollEnabled={false}
         overdrag={false}
         overScrollMode="never"
         onPageSelected={(e) => setActiveIndex(e.nativeEvent.position)}

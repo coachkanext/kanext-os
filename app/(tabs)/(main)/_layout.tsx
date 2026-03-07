@@ -13,7 +13,7 @@ export default function HomeLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        animation: 'slide_from_right',
+        animation: 'none',
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
         contentStyle: { backgroundColor: '#000000' },

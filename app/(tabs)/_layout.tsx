@@ -10,6 +10,7 @@ import { Tabs, useRouter } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
 
 import { setCurrentTab } from '@/utils/global-semi-circle';
+import { resetFooter } from '@/utils/global-footer-hide';
 
 export default function TabLayout() {
   const router = useRouter();
@@ -36,6 +37,7 @@ export default function TabLayout() {
           if (route) {
             setCurrentTab(route);
           }
+          resetFooter();
         },
       }}
       screenOptions={{
