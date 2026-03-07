@@ -18,7 +18,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as SplashScreenModule from 'expo-splash-screen';
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { View, StyleSheet, Animated, Pressable, PanResponder } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView, FlingGestureHandler, Directions, State as GHState } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import 'react-native-reanimated';
 
@@ -251,16 +251,14 @@ function AppShell() {
   const pathnameRef = useRef(pathname);
   pathnameRef.current = pathname;
 
-  // Capture-phase PanResponder: intercepts left-edge horizontal right-swipes
-  // before child ScrollViews claim the gesture. Opens side panel.
-  // Only fires when touch starts within 50px of the left edge so row-level
-  // swipe-to-delete gestures work freely in the rest of the screen.
+  // Capture-phase PanResponder: intercepts horizontal right-swipes to open panels.
+  // Swipe right from anywhere on any page opens the appropriate panel.
   const panelOpenPanResponder = useMemo(
     () =>
       PanResponder.create({
         onStartShouldSetPanResponderCapture: () => false,
         onMoveShouldSetPanResponderCapture: (_evt, gs) =>
-          gs.x0 < 50 && gs.dx > 25 && gs.dx > Math.abs(gs.dy) * 2,
+          gs.dx > 25 && gs.dx > Math.abs(gs.dy) * 2,
         onPanResponderRelease: (_evt, gs) => {
           if (gs.dx > 60) {
             const p = pathnameRef.current;
@@ -279,6 +277,20 @@ function AppShell() {
   // Show auth modal when not authenticated (and not still checking)
   const showAuthModal = !authState.isChecking && !authState.isAuthenticated;
 
+  // Global fling-right handler: opens side panel on any page (settings panel on home)
+  const handleFlingRight = useCallback(({ nativeEvent }: any) => {
+    if (nativeEvent.state === GHState.ACTIVE) {
+      if (isSidePanelOpen() || isSettingsPanelOpen()) return;
+      const p = pathnameRef.current;
+      const isHome = p === '/' || p === '/(tabs)' || p === '/(tabs)/(main)' || p === '/(main)';
+      if (isHome) {
+        openSettingsPanel();
+      } else {
+        openSidePanel();
+      }
+    }
+  }, []);
+
   // Normal navigation with tabs — edge-to-edge, no header
   return (
     <View style={styles.container}>
@@ -292,22 +304,29 @@ function AppShell() {
         style={[styles.container, { transform: [{ translateX: contentTranslateX }] }]}
         {...(!settingsPanelVisible && !sidePanelVisible ? panelOpenPanResponder.panHandlers : {})}
       >
-        <Stack screenOptions={{ headerShown: false, animation: 'none', gestureEnabled: false, contentStyle: { backgroundColor: '#000000' } }} screenListeners={{ focus: () => resetFooter() }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="coach" />
-          <Stack.Screen name="login" />
-          <Stack.Screen name="nexus" options={{ animation: 'slide_from_right' }} />
-          <Stack.Screen name="wallet" options={{ contentStyle: { backgroundColor: '#000000' } }} />
-          <Stack.Screen name="video" />
-          <Stack.Screen name="settings" />
-          <Stack.Screen name="profile" options={{ contentStyle: { backgroundColor: '#000000' } }} />
-          {/* section and messages are inside (tabs)/(home) Stack — tab bar stays visible */}
-          <Stack.Screen
-            name="modal"
-            options={{ presentation: 'modal', title: 'Modal' }}
-          />
-        </Stack>
-        <UniversalFooter />
+        <FlingGestureHandler
+          direction={Directions.RIGHT}
+          onHandlerStateChange={handleFlingRight}
+        >
+          <View style={styles.container}>
+            <Stack screenOptions={{ headerShown: false, animation: 'none', gestureEnabled: false, contentStyle: { backgroundColor: '#000000' } }} screenListeners={{ focus: () => resetFooter() }}>
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="coach" />
+              <Stack.Screen name="login" />
+              <Stack.Screen name="nexus" options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="wallet" options={{ contentStyle: { backgroundColor: '#000000' } }} />
+              <Stack.Screen name="video" />
+              <Stack.Screen name="settings" />
+              <Stack.Screen name="profile" options={{ contentStyle: { backgroundColor: '#000000' } }} />
+              {/* section and messages are inside (tabs)/(home) Stack — tab bar stays visible */}
+              <Stack.Screen
+                name="modal"
+                options={{ presentation: 'modal', title: 'Modal' }}
+              />
+            </Stack>
+            <UniversalFooter />
+          </View>
+        </FlingGestureHandler>
 
         {/* Tap/swipe dismiss overlay when either panel is open */}
         {(settingsPanelVisible || sidePanelVisible) && (

@@ -10,6 +10,7 @@ import {
   View,
   Text,
   Pressable,
+  ScrollView,
   Modal,
   StyleSheet,
   Animated as RNAnimated,
@@ -29,6 +30,7 @@ import {
   type CallDirection,
 } from '@/data/mock-phone';
 import { initiateCall } from '@/utils/global-call';
+import { openSidePanel } from '@/utils/global-side-panel';
 import type { Mode } from '@/types';
 
 const C = {
@@ -148,7 +150,10 @@ function CallRow({
       ref={swipeRef}
       renderRightActions={renderRightActions}
       rightThreshold={60}
-      onSwipeableWillOpen={() => onDelete(call.id)}
+      onSwipeableWillOpen={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        onDelete(call.id);
+      }}
       overshootRight={false}
     >
       <Pressable
@@ -186,6 +191,22 @@ export default function RecentCallsScreen() {
   const accent = useAccentColor();
   const params = useLocalSearchParams<{ filterMode?: string }>();
 
+  // Right-swipe detection via raw touch events
+  const touchRef = useRef({ x: 0, y: 0, t: 0, triggered: false });
+  const onTouchStart = useCallback((e: any) => {
+    touchRef.current = { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY, t: Date.now(), triggered: false };
+  }, []);
+  const onTouchMove = useCallback((e: any) => {
+    if (touchRef.current.triggered) return;
+    const dx = e.nativeEvent.pageX - touchRef.current.x;
+    const dy = e.nativeEvent.pageY - touchRef.current.y;
+    if (dx > 60 && Math.abs(dy) < 40 && Date.now() - touchRef.current.t < 500) {
+      touchRef.current.triggered = true;
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      openSidePanel();
+    }
+  }, []);
+
   const [filter, setFilter] = useState<Filter>('all');
   const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
   const [popupCall, setPopupCall] = useState<RecentCall | null>(null);
@@ -207,7 +228,11 @@ export default function RecentCallsScreen() {
     : 'Recent Calls';
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View
+      style={[styles.container, { paddingTop: insets.top }]}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+    >
       <View style={styles.header}>
         <Text style={styles.title}>{title}</Text>
       </View>
@@ -226,7 +251,7 @@ export default function RecentCallsScreen() {
       </View>
 
       {/* Calls list */}
-      <RNAnimated.ScrollView style={styles.list} contentContainerStyle={styles.listContent} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.list} contentContainerStyle={styles.listContent} showsVerticalScrollIndicator={false}>
         {visibleCalls.map((call, idx) => (
           <React.Fragment key={call.id}>
             <CallRow
@@ -245,7 +270,7 @@ export default function RecentCallsScreen() {
             <Text style={styles.emptyText}>No calls</Text>
           </View>
         )}
-      </RNAnimated.ScrollView>
+      </ScrollView>
 
       <CallActionPopup visible={popupCall !== null} call={popupCall} onClose={() => setPopupCall(null)} accent={accent} />
     </View>

@@ -8,6 +8,7 @@
 
 import { Stack } from 'expo-router';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { closeSidePanel } from '@/utils/global-side-panel';
 
 export default function HomeLayout() {
   return (
@@ -20,7 +21,7 @@ export default function HomeLayout() {
         contentStyle: { backgroundColor: '#000000' },
       }}
       screenListeners={{
-        focus: () => resetFooter(),
+        focus: () => { resetFooter(); closeSidePanel(); },
       }}
     >
       <Stack.Screen name="index" />

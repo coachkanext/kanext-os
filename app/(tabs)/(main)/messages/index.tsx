@@ -26,6 +26,7 @@ import { useMode } from '@/context/app-context';
 import { NewDMSheet } from '@/components/messages/new-dm-sheet';
 import { getRooms, getGlobalDMs, formatMessageTime } from '@/data/mock-messages-v3';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { openSidePanel } from '@/utils/global-side-panel';
 import { subscribeMessageFilters, getMessageFilters, type MessageFilterKey } from '@/utils/global-message-filters';
 import { initiateCall } from '@/utils/global-call';
 import type { InboxThreadV3, RoomV3 } from '@/types';
@@ -232,31 +233,50 @@ function ChannelRow({
     });
   };
 
-  const renderLeftActions = () => (
-    <Pressable
-      style={s.swipeDelete}
-      onPress={() => {
-        swipeableRef.current?.close();
-        onDelete();
-      }}
-    >
-      <IconSymbol name="trash.fill" size={20} color="#FFFFFF" />
-      <Text style={s.swipeDeleteText}>Delete</Text>
-    </Pressable>
+  const renderRightActions = () => (
+    <View style={s.swipeActions}>
+      <Pressable
+        style={s.swipeMute}
+        onPress={() => {
+          swipeableRef.current?.close();
+          onToggleMute();
+        }}
+      >
+        <IconSymbol name={isMuted ? 'bell.fill' : 'bell.slash.fill'} size={20} color="#FFFFFF" />
+        <Text style={s.swipeActionText}>{isMuted ? 'Unmute' : 'Mute'}</Text>
+      </Pressable>
+      <Pressable
+        style={s.swipeDelete}
+        onPress={() => {
+          swipeableRef.current?.close();
+          onDelete();
+        }}
+      >
+        <IconSymbol name="trash.fill" size={20} color="#FFFFFF" />
+        <Text style={s.swipeActionText}>Delete</Text>
+      </Pressable>
+    </View>
   );
 
   return (
     <Swipeable
       ref={swipeableRef}
-      renderLeftActions={renderLeftActions}
-      leftThreshold={80}
+      renderLeftActions={() => <View style={{ width: 1 }} />}
+      leftThreshold={60}
+      overshootLeft={false}
+      renderRightActions={renderRightActions}
+      rightThreshold={140}
       onSwipeableWillOpen={(direction) => {
         if (direction === 'left') {
+          swipeableRef.current?.close();
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          openSidePanel();
+        } else {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
           onDelete();
         }
       }}
-      overshootLeft={false}
+      overshootRight={false}
     >
       <Pressable
         ref={rowRef}
@@ -360,31 +380,50 @@ function DMRow({
     });
   };
 
-  const renderLeftActions = () => (
-    <Pressable
-      style={s.swipeDelete}
-      onPress={() => {
-        swipeableRef.current?.close();
-        onDelete();
-      }}
-    >
-      <IconSymbol name="trash.fill" size={20} color="#FFFFFF" />
-      <Text style={s.swipeDeleteText}>Delete</Text>
-    </Pressable>
+  const renderRightActions = () => (
+    <View style={s.swipeActions}>
+      <Pressable
+        style={s.swipeMute}
+        onPress={() => {
+          swipeableRef.current?.close();
+          onToggleMute();
+        }}
+      >
+        <IconSymbol name={isMuted ? 'bell.fill' : 'bell.slash.fill'} size={20} color="#FFFFFF" />
+        <Text style={s.swipeActionText}>{isMuted ? 'Unmute' : 'Mute'}</Text>
+      </Pressable>
+      <Pressable
+        style={s.swipeDelete}
+        onPress={() => {
+          swipeableRef.current?.close();
+          onDelete();
+        }}
+      >
+        <IconSymbol name="trash.fill" size={20} color="#FFFFFF" />
+        <Text style={s.swipeActionText}>Delete</Text>
+      </Pressable>
+    </View>
   );
 
   return (
     <Swipeable
       ref={swipeableRef}
-      renderLeftActions={renderLeftActions}
-      leftThreshold={80}
+      renderLeftActions={() => <View style={{ width: 1 }} />}
+      leftThreshold={60}
+      overshootLeft={false}
+      renderRightActions={renderRightActions}
+      rightThreshold={140}
       onSwipeableWillOpen={(direction) => {
         if (direction === 'left') {
+          swipeableRef.current?.close();
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          openSidePanel();
+        } else {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
           onDelete();
         }
       }}
-      overshootLeft={false}
+      overshootRight={false}
     >
       <Pressable
         ref={rowRef}
@@ -720,7 +759,15 @@ const s = StyleSheet.create({
     shadowOpacity: 0.3, shadowRadius: 6, elevation: 8,
   },
 
-  // Swipe-to-delete
+  // Swipe actions (mute + delete)
+  swipeActions: { flexDirection: 'row' },
+  swipeMute: {
+    backgroundColor: '#FF9500',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 80,
+    gap: 4,
+  },
   swipeDelete: {
     backgroundColor: '#FF3B30',
     justifyContent: 'center',
@@ -728,12 +775,11 @@ const s = StyleSheet.create({
     width: 80,
     gap: 4,
   },
-  swipeDeleteText: {
+  swipeActionText: {
     fontSize: 12,
     fontWeight: '600',
     color: '#FFFFFF',
   },
-
   // Filter indicator
   filterBar: {
     flexDirection: 'row', paddingHorizontal: 16, gap: 8, marginBottom: 12,

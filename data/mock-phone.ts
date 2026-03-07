@@ -70,7 +70,7 @@ export const MODE_BADGE_COLORS: Record<Mode, string> = {
 export const MODE_BADGE_LABELS: Record<Mode, string> = {
   sports: 'Sports',
   business: 'Business',
-  church: 'Church',
+  church: 'Faith',
   education: 'Education',
   competition: 'Competition',
 };
@@ -164,7 +164,7 @@ export const VOICEMAILS: Voicemail[] = [
 export const MY_KANEXT_NUMBERS: KanextNumber[] = [
   { mode: 'sports', label: 'Sports', number: '+1 (555) 247-8301' },
   { mode: 'business', label: 'Business', number: '+1 (555) 247-8302' },
-  { mode: 'church', label: 'Church', number: '+1 (555) 247-8303' },
+  { mode: 'church', label: 'Faith', number: '+1 (555) 247-8303' },
   { mode: 'education', label: 'Education', number: '+1 (555) 247-8304' },
 ];
 

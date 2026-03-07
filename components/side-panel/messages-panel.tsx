@@ -1,6 +1,7 @@
 /**
- * Messages Side Panel — Menu rows that each open a full page.
- * Search, Filters, Channel Management, Notification Settings, Archived, Blocked.
+ * Messages Side Panel — My Numbers + Menu rows.
+ * 1. My Numbers — reusable component with phone-number + colored pills
+ * 2. Menu — Search, Filters, Channel Management, Notification Settings, Archived, Blocked
  */
 
 import React from 'react';
@@ -15,12 +16,15 @@ import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { MyNumbersSection } from '@/components/side-panel/my-numbers-section';
 import { closeSidePanel } from '@/utils/global-side-panel';
+import type { Mode } from '@/types';
 
 const C = {
   bg: '#000000',
   label: '#FFFFFF',
   secondary: '#A1A1AA',
+  divider: '#2F3336',
 };
 
 const MENU_ITEMS = [
@@ -40,12 +44,24 @@ export function MessagesPanel() {
     setTimeout(() => router.push(route as any), 80);
   };
 
+  const handleFilter = (mode: Mode) => {
+    closeSidePanel();
+    // Filter messages by mode — behavior TBD
+  };
+
   return (
     <ScrollView
       style={styles.scroll}
       contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={false}
     >
+      {/* ── MY NUMBERS ── */}
+      <MyNumbersSection onFilter={handleFilter} />
+
+      {/* ── DIVIDER ── */}
+      <View style={styles.divider} />
+
+      {/* ── MENU ── */}
       {MENU_ITEMS.map((item) => (
         <Pressable
           key={item.label}
@@ -70,6 +86,11 @@ export function MessagesPanel() {
 const styles = StyleSheet.create({
   scroll: { flex: 1 },
   scrollContent: { paddingBottom: 40 },
+  divider: {
+    height: 1,
+    backgroundColor: C.divider,
+    marginBottom: 8,
+  },
   menuRow: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -27,7 +27,7 @@ export const KANEXT_ORGANIZATION: BusinessOrganization = {
   legalStructure: 'Delaware C-Corporation',
   stateOfFormation: 'Delaware',
   status: 'Active - Seed Stage',
-  operationalScope: ['Sports', 'Enterprise', 'Church', 'Education'],
+  operationalScope: ['Sports', 'Enterprise', 'Faith', 'Education'],
 };
 
 // =============================================================================

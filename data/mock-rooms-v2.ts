@@ -189,7 +189,7 @@ export const ROOM_TEMPLATES: Record<Mode, RoomTemplateOption[]> = {
     { key: 'alumni', label: 'Alumni', icon: 'graduationcap.fill', description: 'Alumni relations' },
   ],
   church: [
-    { key: 'church-leadership', label: 'Church Leadership', icon: 'crown.fill', description: 'Pastoral leadership' },
+    { key: 'church-leadership', label: 'Faith Leadership', icon: 'crown.fill', description: 'Pastoral leadership' },
     { key: 'prayer', label: 'Prayer', icon: 'hands.sparkles.fill', description: 'Prayer requests & updates' },
     { key: 'care-team', label: 'Care Team', icon: 'heart.fill', description: 'Pastoral care coordination' },
     { key: 'ministry', label: 'Ministry', icon: 'person.3.fill', description: 'Ministry team space' },

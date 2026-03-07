@@ -26,6 +26,7 @@ import {
   type PhoneGroup,
 } from '@/data/mock-phone';
 import { initiateCall } from '@/utils/global-call';
+import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const C = {
@@ -48,6 +49,22 @@ export default function PhoneScreen() {
   const favorites = useMemo(() => getFavoriteContacts(), []);
   const groups = useMemo(() => PHONE_GROUPS, []);
   const contacts = useMemo(() => PHONE_CONTACTS, []);
+
+  // Right-swipe detection via raw touch events
+  const touchRef = useRef({ x: 0, y: 0, t: 0, triggered: false });
+  const onTouchStart = useCallback((e: any) => {
+    touchRef.current = { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY, t: Date.now(), triggered: false };
+  }, []);
+  const onTouchMove = useCallback((e: any) => {
+    if (touchRef.current.triggered) return;
+    const dx = e.nativeEvent.pageX - touchRef.current.x;
+    const dy = e.nativeEvent.pageY - touchRef.current.y;
+    if (dx > 60 && Math.abs(dy) < 40 && Date.now() - touchRef.current.t < 500) {
+      touchRef.current.triggered = true;
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      openSidePanel();
+    }
+  }, []);
 
   const lastScrollY = useRef(0);
   const handleScroll = useCallback((e: any) => {
@@ -84,7 +101,11 @@ export default function PhoneScreen() {
   };
 
   return (
-    <View style={[s.container, { paddingTop: insets.top }]}>
+    <View
+      style={[s.container, { paddingTop: insets.top }]}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+    >
       <ScrollView
         style={s.scrollView}
         contentContainerStyle={{ paddingTop: 28, paddingBottom: 100 }}

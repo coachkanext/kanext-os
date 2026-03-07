@@ -652,7 +652,7 @@ export const DIRECTORY: DirectoryEntry[] = [
   { id: 'dir-1', name: 'Oluwadara Carter', role: 'Founder & CEO', department: 'Executive', status: 'active' },
   { id: 'dir-2', name: 'Patrick Bet-David', role: 'Co-Founder (Pending)', department: 'Strategic', status: 'pending' },
   { id: 'dir-3', name: 'Valuetainment Media Staff', role: 'Proof Wedge — Sports', department: 'Operations', status: 'active' },
-  { id: 'dir-4', name: '2819 Church Ministry Team', role: 'Proof Wedge — Church', department: 'Operations', status: 'active' },
+  { id: 'dir-4', name: '2819 Church Ministry Team', role: 'Proof Wedge — Faith', department: 'Operations', status: 'active' },
   { id: 'dir-5', name: 'Valuetainment League Operations', role: 'Proof Wedge — Competition', department: 'Operations', status: 'active' },
   { id: 'dir-6', name: 'Legal Counsel', role: 'Outside Counsel', department: 'Legal', status: 'advisor' },
 ];
