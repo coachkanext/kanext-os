@@ -1013,6 +1013,18 @@ export interface RoomV3 {
   pinnedMessage?: string;
 }
 
+export interface VoiceNote {
+  uri: string;
+  duration: number; // seconds
+  transcript?: string;
+}
+
+export interface MessageReaction {
+  emoji: string;
+  count: number;
+  byMe: boolean;
+}
+
 export interface RoomMessageV3 {
   id: string;
   sender: string;
@@ -1023,6 +1035,13 @@ export interface RoomMessageV3 {
   isMe: boolean;
   /** @mention targets in the message */
   mentions?: string[];
+  /** Thread replies on this message */
+  replyCount?: number;
+  threadReplies?: RoomMessageV3[];
+  /** Voice note attachment */
+  voiceNote?: VoiceNote;
+  /** Reactions on this message */
+  reactions?: MessageReaction[];
 }
 
 export interface NexusHumanReply {

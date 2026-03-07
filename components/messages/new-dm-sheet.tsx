@@ -1,6 +1,6 @@
 /**
  * New DM Sheet — Compose flow for starting a new direct message.
- * Bottom sheet with recipient search, text input, and send action.
+ * Mode-aware contact list from V3 data + cross-org DM pool.
  */
 
 import React, { useState, useMemo } from 'react';
@@ -9,7 +9,9 @@ import * as Haptics from 'expo-haptics';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { SPORTS_DM_THREADS } from '@/data/mock-sports-messages';
+import { useMode } from '@/context/app-context';
+import { getInboxThreads, getGlobalDMs } from '@/data/mock-messages-v3';
+import type { InboxThreadV3 } from '@/types';
 
 const C = {
   bg: '#000000',
@@ -27,23 +29,40 @@ interface NewDMSheetProps {
 }
 
 export function NewDMSheet({ visible, onClose, onSend, accent }: NewDMSheetProps) {
+  const mode = useMode();
   const [search, setSearch] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [message, setMessage] = useState('');
 
-  const filteredParticipants = useMemo(() => {
+  // Combine mode-specific inbox threads + cross-org DMs for contact list
+  const allContacts = useMemo(() => {
+    const modeThreads = getInboxThreads(mode);
+    const globalDMs = getGlobalDMs();
+    // Merge, dedupe by name
+    const seen = new Set<string>();
+    const contacts: InboxThreadV3[] = [];
+    for (const t of [...modeThreads, ...globalDMs]) {
+      if (!seen.has(t.name)) {
+        seen.add(t.name);
+        contacts.push(t);
+      }
+    }
+    return contacts;
+  }, [mode]);
+
+  const filteredContacts = useMemo(() => {
     const q = search.toLowerCase();
-    if (!q) return SPORTS_DM_THREADS;
-    return SPORTS_DM_THREADS.filter(
+    if (!q) return allContacts;
+    return allContacts.filter(
       (t) =>
-        t.participantName.toLowerCase().includes(q) ||
-        t.participantRole.toLowerCase().includes(q),
+        t.name.toLowerCase().includes(q) ||
+        t.role.toLowerCase().includes(q),
     );
-  }, [search]);
+  }, [search, allContacts]);
 
   const selectedThread = useMemo(
-    () => SPORTS_DM_THREADS.find((t) => t.id === selectedId),
-    [selectedId],
+    () => allContacts.find((t) => t.id === selectedId),
+    [selectedId, allContacts],
   );
 
   const handleSend = () => {
@@ -72,7 +91,7 @@ export function NewDMSheet({ visible, onClose, onSend, accent }: NewDMSheetProps
             style={[styles.selectedChip, { backgroundColor: accent }]}
             onPress={() => setSelectedId(null)}
           >
-            <Text style={styles.selectedChipText}>{selectedThread.participantName}</Text>
+            <Text style={styles.selectedChipText}>{selectedThread.name}</Text>
             <IconSymbol name="xmark" size={12} color={C.textPrimary} />
           </Pressable>
         ) : (
@@ -90,7 +109,7 @@ export function NewDMSheet({ visible, onClose, onSend, accent }: NewDMSheetProps
       {/* Contact list (when no selection) */}
       {!selectedId && (
         <FlatList
-          data={filteredParticipants}
+          data={filteredContacts}
           keyExtractor={(item) => item.id}
           scrollEnabled={false}
           renderItem={({ item }) => (
@@ -103,11 +122,11 @@ export function NewDMSheet({ visible, onClose, onSend, accent }: NewDMSheetProps
               }}
             >
               <View style={styles.contactAvatar}>
-                <Text style={styles.contactInitials}>{item.participantInitials}</Text>
+                <Text style={styles.contactInitials}>{item.initials}</Text>
               </View>
               <View style={styles.contactInfo}>
-                <Text style={styles.contactName}>{item.participantName}</Text>
-                <Text style={styles.contactRole}>{item.participantRole}</Text>
+                <Text style={styles.contactName}>{item.name}</Text>
+                <Text style={styles.contactRole}>{item.role}</Text>
               </View>
             </Pressable>
           )}

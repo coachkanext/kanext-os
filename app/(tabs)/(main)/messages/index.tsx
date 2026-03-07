@@ -1,7 +1,7 @@
 /**
- * Messages — conversation list.
- * No header. No title. Content starts immediately below status bar.
- * Layout: Room bubbles → Search → Pinned section → DM list → FAB compose.
+ * Messages — Universal landing view.
+ * Single ScrollView: Search > Pinned > Channels > DMs > FAB.
+ * Works across all modes. DMs persist cross-org.
  */
 
 import React, { useState, useRef, useMemo, useCallback } from 'react';
@@ -24,84 +24,29 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useMode } from '@/context/app-context';
 import { NewDMSheet } from '@/components/messages/new-dm-sheet';
-import { SPORTS_DM_THREADS } from '@/data/mock-sports-messages';
-import type { SportsDMThread } from '@/data/mock-sports-messages';
+import { getRooms, getGlobalDMs, formatMessageTime } from '@/data/mock-messages-v3';
+import type { InboxThreadV3, RoomV3 } from '@/types';
 
 const C = {
   bg: '#000000',
   surface: '#0B0F14',
-  secondaryBg: '#1C1C1E',
+  channelIconBg: '#0B1220',
   label: '#FFFFFF',
-  secondaryLabel: '#8E8E93',
+  secondaryLabel: '#A1A1AA',
   placeholder: '#52525B',
   separator: '#38383A',
   red: '#FF3B30',
+  otherBubble: '#0B0F14',
 };
-
-const ROOMS = [
-  { id: 'rm-team', title: 'Team', initials: 'TM', unread: 3 },
-  { id: 'rm-staff', title: 'Staff', initials: 'CS', unread: 1 },
-  { id: 'rm-guards', title: 'Guards', initials: 'GD', unread: 0 },
-  { id: 'rm-wings', title: 'Wings', initials: 'WG', unread: 2 },
-  { id: 'rm-bigs', title: 'Bigs', initials: 'BG', unread: 0 },
-  { id: 'rm-recruiting', title: 'Recruiting', initials: 'RC', unread: 4 },
-];
-
-// ─── Room Bubble ────────────────────────────────────────────────────────────
-
-function RoomBubble({
-  room,
-  accent,
-  onPress,
-  onLongPress,
-}: {
-  room: (typeof ROOMS)[0];
-  accent: string;
-  onPress: () => void;
-  onLongPress: (pageY: number) => void;
-}) {
-  const hasUnread = room.unread > 0;
-  const ref = useRef<View>(null);
-  const longPressedRef = useRef(false);
-  return (
-    <Pressable
-      ref={ref}
-      style={s.roomCell}
-      onPress={() => {
-        if (longPressedRef.current) {
-          longPressedRef.current = false;
-          return;
-        }
-        onPress();
-      }}
-      onLongPress={() => {
-        longPressedRef.current = true;
-        ref.current?.measureInWindow((_x, y) => onLongPress(y));
-      }}
-      delayLongPress={400}
-    >
-      <View
-        style={[
-          s.roomAvatar,
-          hasUnread && { borderWidth: 2, borderColor: accent },
-        ]}
-      >
-        <Text style={s.roomInitials}>{room.initials}</Text>
-      </View>
-      <Text style={s.roomLabel} numberOfLines={1}>
-        {room.title}
-      </Text>
-    </Pressable>
-  );
-}
 
 // ─── Preview Overlay (iOS-style long-press context menu) ─────────────────────
 
 type PreviewData = {
-  type: 'dm' | 'room' | 'pinned';
+  type: 'dm' | 'channel' | 'pinned';
   title: string;
   subtitle: string;
   initials: string;
+  isChannel: boolean;
   pageY: number;
   actions: { key: string; label: string; icon: string; destructive?: boolean }[];
   onAction: (key: string) => void;
@@ -159,48 +104,36 @@ function PreviewOverlay({
     <Modal transparent animationType="none" onRequestClose={dismiss}>
       <Animated.View style={[pvS.overlay, { opacity: fadeAnim }]}>
         <Pressable style={pvS.backdrop} onPress={dismiss} />
-
         <Animated.View
           style={[
             pvS.content,
-            {
-              transform: [{ scale: scaleAnim }],
-              top: cardTop,
-            },
+            { transform: [{ scale: scaleAnim }], top: cardTop },
           ]}
         >
-          {/* ── Conversation preview card ── */}
           <View style={pvS.previewCard}>
-            <View style={pvS.previewAvatar}>
+            <View
+              style={[
+                pvS.previewAvatar,
+                data.isChannel
+                  ? { borderRadius: 12, backgroundColor: C.channelIconBg }
+                  : { borderRadius: 24 },
+              ]}
+            >
               <Text style={pvS.previewInitials}>{data.initials}</Text>
             </View>
             <View style={pvS.previewText}>
-              <Text style={pvS.previewName} numberOfLines={1}>
-                {data.title}
-              </Text>
-              <Text style={pvS.previewSub} numberOfLines={2}>
-                {data.subtitle}
-              </Text>
+              <Text style={pvS.previewName} numberOfLines={1}>{data.title}</Text>
+              <Text style={pvS.previewSub} numberOfLines={2}>{data.subtitle}</Text>
             </View>
           </View>
-
-          {/* ── Context menu ── */}
           <View style={pvS.menu}>
             {data.actions.map((action, idx) => (
               <Pressable
                 key={action.key}
-                style={[
-                  pvS.menuItem,
-                  idx < data.actions.length - 1 && pvS.menuItemBorder,
-                ]}
+                style={[pvS.menuItem, idx < data.actions.length - 1 && pvS.menuItemBorder]}
                 onPress={() => handleAction(action.key)}
               >
-                <Text
-                  style={[
-                    pvS.menuLabel,
-                    action.destructive && pvS.menuLabelDestructive,
-                  ]}
-                >
+                <Text style={[pvS.menuLabel, action.destructive && pvS.menuLabelDestructive]}>
                   {action.label}
                 </Text>
                 <IconSymbol
@@ -219,167 +152,115 @@ function PreviewOverlay({
 
 const pvS = StyleSheet.create({
   overlay: { flex: 1 },
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.60)',
-  },
-  content: {
-    position: 'absolute',
-    left: 24,
-    right: 24,
-    alignItems: 'center',
-  },
+  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.60)' },
+  content: { position: 'absolute', left: 24, right: 24, alignItems: 'center' },
   previewCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#2C2C2E',
-    borderRadius: 14,
-    padding: 14,
-    width: '100%',
-    gap: 12,
+    flexDirection: 'row', alignItems: 'center', backgroundColor: '#2C2C2E',
+    borderRadius: 14, padding: 14, width: '100%', gap: 12,
   },
   previewAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: C.secondaryBg,
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 48, height: 48, borderRadius: 24, backgroundColor: '#1C1C1E',
+    alignItems: 'center', justifyContent: 'center',
   },
-  previewInitials: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: C.label,
-  },
-  previewText: {
-    flex: 1,
-  },
-  previewName: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: C.label,
-    marginBottom: 2,
-  },
-  previewSub: {
-    fontSize: 14,
-    color: C.secondaryLabel,
-    lineHeight: 19,
-  },
-  menu: {
-    marginTop: 8,
-    backgroundColor: '#2C2C2E',
-    borderRadius: 14,
-    overflow: 'hidden',
-    width: '100%',
-  },
+  previewInitials: { fontSize: 16, fontWeight: '700', color: C.label },
+  previewText: { flex: 1 },
+  previewName: { fontSize: 17, fontWeight: '600', color: C.label, marginBottom: 2 },
+  previewSub: { fontSize: 14, color: C.secondaryLabel, lineHeight: 19 },
+  menu: { marginTop: 8, backgroundColor: '#2C2C2E', borderRadius: 14, overflow: 'hidden', width: '100%' },
   menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingVertical: 12, paddingHorizontal: 16,
   },
-  menuItemBorder: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#48484A',
-  },
-  menuLabel: {
-    fontSize: 16,
-    color: C.label,
-  },
-  menuLabelDestructive: {
-    color: '#FF3B30',
-  },
+  menuItemBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#48484A' },
+  menuLabel: { fontSize: 16, color: C.label },
+  menuLabelDestructive: { color: '#FF3B30' },
 });
 
-// ─── DM Row (swipe-left = delete, long press = preview) ─────────────────────
+// ─── Swipeable Row wrapper (swipe left = mute) ──────────────────────────────
 
-function DMRow({
-  thread,
-  accent,
-  isPinned,
+function SwipeRow({
+  children,
   isMuted,
-  onPress,
-  onDeleteConfirmed,
-  onToggleRead,
-  onPin,
   onToggleMute,
-  onShowPreview,
 }: {
-  thread: SportsDMThread;
-  accent: string;
-  isPinned: boolean;
+  children: React.ReactNode;
   isMuted: boolean;
-  onPress: () => void;
-  onDeleteConfirmed: () => void;
-  onToggleRead: () => void;
-  onPin: () => void;
   onToggleMute: () => void;
-  onShowPreview: (data: PreviewData) => void;
 }) {
   const swipeRef = useRef<Swipeable>(null);
-  const rowRef = useRef<View>(null);
-  const longPressedRef = useRef(false);
-  const hasUnread = thread.unreadCount > 0;
-
   const renderRightActions = () => (
     <Pressable
-      style={[s.swipeAction, { backgroundColor: C.red }]}
+      style={[s.swipeAction, { backgroundColor: isMuted ? '#22C55E' : '#F59E0B' }]}
       onPress={() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        onDeleteConfirmed();
+        onToggleMute();
         swipeRef.current?.close();
       }}
     >
-      <IconSymbol name="trash.fill" size={22} color="#FFF" />
-      <Text style={s.swipeLabel}>Delete</Text>
+      <IconSymbol name={isMuted ? 'bell.fill' : 'bell.slash.fill'} size={22} color="#FFF" />
+      <Text style={s.swipeLabel}>{isMuted ? 'Unmute' : 'Mute'}</Text>
     </Pressable>
   );
+
+  return (
+    <Swipeable ref={swipeRef} renderRightActions={renderRightActions} overshootRight={false}>
+      {children}
+    </Swipeable>
+  );
+}
+
+// ─── Channel Row ─────────────────────────────────────────────────────────────
+
+function ChannelRow({
+  room,
+  accent,
+  isMuted,
+  onPress,
+  onToggleMute,
+  onShowPreview,
+}: {
+  room: RoomV3;
+  accent: string;
+  isMuted: boolean;
+  onPress: () => void;
+  onToggleMute: () => void;
+  onShowPreview: (data: PreviewData) => void;
+}) {
+  const rowRef = useRef<View>(null);
+  const longPressedRef = useRef(false);
 
   const handleLongPress = () => {
     longPressedRef.current = true;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    const pinLabel = isPinned ? 'Unpin' : 'Pin';
-    const readLabel = hasUnread ? 'Mark as Read' : 'Mark as Unread';
-    const muteLabel = isMuted ? 'Show Alerts' : 'Hide Alerts';
-
+    const muteLabel = isMuted ? 'Show Alerts' : 'Mute';
     rowRef.current?.measureInWindow((_x, y) => {
       onShowPreview({
-        type: 'dm',
-        title: thread.participantName,
-        subtitle: thread.lastMessagePreview,
-        initials: thread.participantInitials,
+        type: 'channel',
+        title: room.name,
+        subtitle: `${room.memberCount} members`,
+        initials: room.initials,
+        isChannel: true,
         pageY: y,
         actions: [
-          { key: 'pin', label: pinLabel, icon: 'pin.fill' },
-          { key: 'read', label: readLabel, icon: 'envelope.fill' },
+          { key: 'pin', label: room.pinned ? 'Unpin' : 'Pin', icon: 'pin.fill' },
           { key: 'mute', label: muteLabel, icon: 'bell.slash.fill' },
+          { key: 'read', label: 'Mark as Read', icon: 'envelope.open.fill' },
           { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
         ],
         onAction: (key) => {
-          if (key === 'pin') onPin();
-          else if (key === 'read') onToggleRead();
-          else if (key === 'mute') onToggleMute();
-          else if (key === 'delete') onDeleteConfirmed();
+          if (key === 'mute') onToggleMute();
         },
       });
     });
   };
 
   return (
-    <Swipeable
-      ref={swipeRef}
-      renderRightActions={renderRightActions}
-      overshootRight={false}
-    >
+    <SwipeRow isMuted={isMuted} onToggleMute={onToggleMute}>
       <Pressable
         ref={rowRef}
-        style={s.dmRow}
+        style={s.row}
         onPress={() => {
-          if (longPressedRef.current) {
-            longPressedRef.current = false;
-            return;
-          }
+          if (longPressedRef.current) { longPressedRef.current = false; return; }
           onPress();
         }}
         onLongPress={handleLongPress}
@@ -387,38 +268,116 @@ function DMRow({
       >
         {/* Unread dot */}
         <View style={s.unreadCol}>
-          {hasUnread && (
-            <View style={[s.unreadDot, { backgroundColor: accent }]} />
+          {room.unread && <View style={[s.unreadDot, { backgroundColor: accent }]} />}
+        </View>
+
+        {/* Square channel icon */}
+        <View style={s.channelIcon}>
+          <Text style={s.channelInitials}>{room.initials}</Text>
+          {room.locked && (
+            <View style={s.lockBadge}>
+              <IconSymbol name="lock.fill" size={8} color="#A1A1AA" />
+            </View>
           )}
         </View>
 
-        {/* Avatar */}
-        <View style={s.dmAvatar}>
-          <Text style={s.dmAvatarText}>{thread.participantInitials}</Text>
-        </View>
-
         {/* Content */}
-        <View style={s.dmContent}>
-          <View style={s.dmTopRow}>
-            <Text
-              style={[s.dmName, hasUnread && s.dmNameBold]}
-              numberOfLines={1}
-            >
-              {thread.participantName}
+        <View style={s.rowContent}>
+          <View style={s.rowTopRow}>
+            <Text style={[s.rowName, room.unread && s.rowNameBold]} numberOfLines={1}>
+              {room.name}
             </Text>
-            <Text style={s.dmTime}>{thread.lastMessageTime}</Text>
+            <Text style={s.rowTime}>{formatMessageTime(room.timestamp)}</Text>
           </View>
-          <Text style={s.dmPreview} numberOfLines={2}>
-            {thread.lastMessagePreview}
-          </Text>
+          <Text style={s.rowPreview} numberOfLines={2}>{room.lastMessage}</Text>
         </View>
       </Pressable>
-    </Swipeable>
+    </SwipeRow>
   );
 }
 
-function RowSeparator() {
-  return <View style={s.separator} />;
+// ─── DM Row ──────────────────────────────────────────────────────────────────
+
+function DMRow({
+  thread,
+  accent,
+  isMuted,
+  onPress,
+  onToggleMute,
+  onShowPreview,
+}: {
+  thread: InboxThreadV3;
+  accent: string;
+  isMuted: boolean;
+  onPress: () => void;
+  onToggleMute: () => void;
+  onShowPreview: (data: PreviewData) => void;
+}) {
+  const rowRef = useRef<View>(null);
+  const longPressedRef = useRef(false);
+
+  const handleLongPress = () => {
+    longPressedRef.current = true;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const muteLabel = isMuted ? 'Show Alerts' : 'Mute';
+    const readLabel = thread.unread ? 'Mark as Read' : 'Mark as Unread';
+
+    rowRef.current?.measureInWindow((_x, y) => {
+      onShowPreview({
+        type: 'dm',
+        title: thread.name,
+        subtitle: thread.preview,
+        initials: thread.initials,
+        isChannel: false,
+        pageY: y,
+        actions: [
+          { key: 'pin', label: thread.pinned ? 'Unpin' : 'Pin', icon: 'pin.fill' },
+          { key: 'read', label: readLabel, icon: 'envelope.fill' },
+          { key: 'mute', label: muteLabel, icon: 'bell.slash.fill' },
+          { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
+        ],
+        onAction: (key) => {
+          if (key === 'mute') onToggleMute();
+        },
+      });
+    });
+  };
+
+  return (
+    <SwipeRow isMuted={isMuted} onToggleMute={onToggleMute}>
+      <Pressable
+        ref={rowRef}
+        style={s.row}
+        onPress={() => {
+          if (longPressedRef.current) { longPressedRef.current = false; return; }
+          onPress();
+        }}
+        onLongPress={handleLongPress}
+        delayLongPress={400}
+      >
+        {/* Unread dot */}
+        <View style={s.unreadCol}>
+          {thread.unread && <View style={[s.unreadDot, { backgroundColor: accent }]} />}
+        </View>
+
+        {/* Circular avatar */}
+        <View style={s.dmAvatar}>
+          <Text style={s.dmAvatarText}>{thread.initials}</Text>
+        </View>
+
+        {/* Content */}
+        <View style={s.rowContent}>
+          <View style={s.rowTopRow}>
+            <Text style={[s.rowName, thread.unread && s.rowNameBold]} numberOfLines={1}>
+              {thread.name}
+            </Text>
+            <Text style={s.rowTime}>{formatMessageTime(thread.timestamp)}</Text>
+          </View>
+          <Text style={s.rowPreview} numberOfLines={2}>{thread.preview}</Text>
+        </View>
+      </Pressable>
+    </SwipeRow>
+  );
 }
 
 // ─── Screen ─────────────────────────────────────────────────────────────────
@@ -429,178 +388,71 @@ export default function MessagesListScreen() {
   const mode = useMode();
   const router = useRouter();
 
-  const [threads, setThreads] = useState(SPORTS_DM_THREADS);
-  const [pinnedIds, setPinnedIds] = useState<Set<string>>(new Set());
-  const [mutedRoomIds, setMutedRoomIds] = useState<Set<string>>(new Set());
-  const [mutedThreadIds, setMutedThreadIds] = useState<Set<string>>(new Set());
-  const [roomUnreads, setRoomUnreads] = useState<Record<string, number>>(() => {
-    const init: Record<string, number> = {};
-    ROOMS.forEach((r) => { init[r.id] = r.unread; });
-    return init;
-  });
+  const [mutedIds, setMutedIds] = useState<Set<string>>(new Set());
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
   const [composeVisible, setComposeVisible] = useState(false);
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
 
-  if (mode !== 'sports') {
-    return (
-      <View style={[s.container, s.comingSoon, { paddingTop: insets.top + 60 }]}>
-        <IconSymbol name="envelope.fill" size={48} color={C.placeholder} />
-        <Text style={s.comingSoonTitle}>Messages</Text>
-        <Text style={s.comingSoonSub}>Coming Soon</Text>
-      </View>
-    );
-  }
-
-  const openRoom = (room: (typeof ROOMS)[0]) => {
-    router.push({
-      pathname: '/messages/[threadId]',
-      params: { threadId: room.id, type: 'room', title: room.title },
-    });
-  };
-
-  const openDM = (thread: SportsDMThread) => {
-    router.push({
-      pathname: '/messages/[threadId]',
-      params: { threadId: thread.id, type: 'dm', title: thread.participantName },
-    });
-  };
-
-  const handleComposeSend = (threadId: string) => {
-    setComposeVisible(false);
-    const thread = SPORTS_DM_THREADS.find((t) => t.id === threadId);
-    if (thread) {
-      router.push({
-        pathname: '/messages/[threadId]',
-        params: { threadId: thread.id, type: 'dm', title: thread.participantName },
-      });
-    }
-  };
-
-  const togglePin = (id: string) => {
-    setPinnedIds((prev) => {
+  const toggleMute = (id: string) => {
+    setMutedIds((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id); else next.add(id);
       return next;
     });
   };
 
-  const toggleRoomMute = (roomId: string) => {
-    setMutedRoomIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(roomId)) next.delete(roomId); else next.add(roomId);
-      return next;
+  // Mode-specific channels
+  const channels = useMemo(() => {
+    return getRooms(mode)
+      .filter((r) => !deletedIds.has(r.id))
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  }, [mode, deletedIds]);
+
+  // Cross-org DMs (persist across mode switches)
+  const dms = useMemo(() => {
+    return getGlobalDMs()
+      .filter((t) => !deletedIds.has(t.id))
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  }, [deletedIds]);
+
+  // Pinned items (channels + DMs)
+  const pinnedItems = useMemo(() => {
+    const pinnedChannels = channels.filter((r) => r.pinned);
+    const pinnedDMs = dms.filter((t) => t.pinned);
+    return [
+      ...pinnedChannels.map((r) => ({ id: r.id, initials: r.initials, name: r.name, isChannel: true, unread: r.unread })),
+      ...pinnedDMs.map((t) => ({ id: t.id, initials: t.initials, name: t.name, isChannel: false, unread: t.unread })),
+    ];
+  }, [channels, dms]);
+
+  const openChannel = (room: RoomV3) => {
+    router.push({
+      pathname: '/messages/[threadId]',
+      params: { threadId: room.id, type: 'channel', title: room.name },
     });
   };
 
-  const markRoomRead = (roomId: string) => {
-    setRoomUnreads((prev) => ({ ...prev, [roomId]: 0 }));
-  };
-
-  const handleDeleteThread = (threadId: string) => {
-    setThreads((prev) => prev.filter((t) => t.id !== threadId));
-  };
-
-  const handleToggleRead = (threadId: string) => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    setThreads((prev) =>
-      prev.map((t) =>
-        t.id === threadId ? { ...t, unreadCount: t.unreadCount > 0 ? 0 : 1 } : t,
-      ),
-    );
-  };
-
-  const toggleThreadMute = (threadId: string) => {
-    setMutedThreadIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(threadId)) next.delete(threadId); else next.add(threadId);
-      return next;
+  const openDM = (thread: InboxThreadV3) => {
+    router.push({
+      pathname: '/messages/[threadId]',
+      params: { threadId: thread.id, type: 'dm', title: thread.name },
     });
   };
 
-  const handleRoomLongPress = (room: (typeof ROOMS)[0], pageY: number) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    const isPinned = pinnedIds.has(room.id);
-    const isMuted = mutedRoomIds.has(room.id);
-    const pinLabel = isPinned ? 'Unpin' : 'Pin';
-    const muteLabel = isMuted ? 'Show Alerts' : 'Mute';
-
-    setPreviewData({
-      type: 'room',
-      title: room.title,
-      subtitle: 'Group Room',
-      initials: room.initials,
-      pageY,
-      actions: [
-        { key: 'pin', label: pinLabel, icon: 'pin.fill' },
-        { key: 'mute', label: muteLabel, icon: 'bell.slash.fill' },
-        { key: 'read', label: 'Mark as Read', icon: 'envelope.open.fill' },
-      ],
-      onAction: (key) => {
-        if (key === 'pin') togglePin(room.id);
-        else if (key === 'mute') toggleRoomMute(room.id);
-        else if (key === 'read') markRoomRead(room.id);
-      },
-    });
+  const handleComposeSend = (threadId: string) => {
+    setComposeVisible(false);
+    const thread = getGlobalDMs().find((t) => t.id === threadId);
+    if (thread) {
+      router.push({
+        pathname: '/messages/[threadId]',
+        params: { threadId: thread.id, type: 'dm', title: thread.name },
+      });
+    }
   };
-
-  // Split threads into pinned vs regular
-  const pinnedThreads = useMemo(
-    () => threads.filter((t) => pinnedIds.has(t.id)),
-    [threads, pinnedIds],
-  );
-  const regularThreads = useMemo(
-    () =>
-      [...threads]
-        .filter((t) => !pinnedIds.has(t.id))
-        .sort(
-          (a, b) =>
-            new Date(b.lastMessageTimestamp).getTime() -
-            new Date(a.lastMessageTimestamp).getTime(),
-        ),
-    [threads, pinnedIds],
-  );
-
-  const roomsWithState = useMemo(
-    () => ROOMS.map((r) => ({ ...r, unread: roomUnreads[r.id] ?? r.unread })),
-    [roomUnreads],
-  );
-
-  const renderDMRow = (item: SportsDMThread) => (
-    <DMRow
-      thread={item}
-      accent={accent}
-      isPinned={pinnedIds.has(item.id)}
-      isMuted={mutedThreadIds.has(item.id)}
-      onPress={() => openDM(item)}
-      onDeleteConfirmed={() => handleDeleteThread(item.id)}
-      onToggleRead={() => handleToggleRead(item.id)}
-      onPin={() => togglePin(item.id)}
-      onToggleMute={() => toggleThreadMute(item.id)}
-      onShowPreview={setPreviewData}
-    />
-  );
 
   return (
     <View style={[s.container, { paddingTop: insets.top }]}>
       <ScrollView style={s.scrollView} contentContainerStyle={{ paddingBottom: 100 }}>
-        {/* ── Room bubbles (first thing visible) ── */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={s.roomsRow}
-          style={s.roomsScroll}
-        >
-          {roomsWithState.map((room) => (
-            <RoomBubble
-              key={room.id}
-              room={room}
-              accent={accent}
-              onPress={() => openRoom(room)}
-              onLongPress={(pageY) => handleRoomLongPress(room, pageY)}
-            />
-          ))}
-        </ScrollView>
-
         {/* ── Search bar ── */}
         <Pressable
           style={s.searchBar}
@@ -610,74 +462,76 @@ export default function MessagesListScreen() {
           <Text style={s.searchText}>Search messages...</Text>
         </Pressable>
 
-        {/* ── Pinned bubbles (below search, above DMs) ── */}
-        {pinnedThreads.length > 0 && (
+        {/* ── Pinned row (horizontal scroll of circular avatars) ── */}
+        {pinnedItems.length > 0 && (
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={s.pinnedRow}
           >
-            {pinnedThreads.map((thread) => {
-              const hasUnread = thread.unreadCount > 0;
-              const pinnedRef = React.createRef<View>();
-              const pinnedLongPressed = { current: false };
-              return (
-                <Pressable
-                  key={thread.id}
-                  ref={pinnedRef}
-                  style={s.pinnedCell}
-                  onPress={() => {
-                    if (pinnedLongPressed.current) {
-                      pinnedLongPressed.current = false;
-                      return;
-                    }
-                    openDM(thread);
-                  }}
-                  onLongPress={() => {
-                    pinnedLongPressed.current = true;
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                    pinnedRef.current?.measureInWindow((_x, y) => {
-                      setPreviewData({
-                        type: 'pinned',
-                        title: thread.participantName,
-                        subtitle: thread.lastMessagePreview,
-                        initials: thread.participantInitials,
-                        pageY: y,
-                        actions: [
-                          { key: 'unpin', label: 'Unpin', icon: 'pin.slash.fill' },
-                          { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
-                        ],
-                        onAction: (key) => {
-                          if (key === 'unpin') togglePin(thread.id);
-                          else if (key === 'delete') handleDeleteThread(thread.id);
-                        },
-                      });
-                    });
-                  }}
-                  delayLongPress={400}
+            {pinnedItems.map((item) => (
+              <Pressable
+                key={item.id}
+                style={s.pinnedCell}
+                onPress={() => {
+                  if (item.isChannel) {
+                    const room = channels.find((r) => r.id === item.id);
+                    if (room) openChannel(room);
+                  } else {
+                    const thread = dms.find((t) => t.id === item.id);
+                    if (thread) openDM(thread);
+                  }
+                }}
+              >
+                <View
+                  style={[
+                    s.pinnedAvatar,
+                    item.isChannel && { borderRadius: 12, backgroundColor: C.channelIconBg },
+                    item.unread && { borderWidth: 2, borderColor: accent },
+                  ]}
                 >
-                  <View
-                    style={[
-                      s.pinnedAvatar,
-                      hasUnread && { borderWidth: 2, borderColor: accent },
-                    ]}
-                  >
-                    <Text style={s.pinnedInitials}>{thread.participantInitials}</Text>
-                  </View>
-                  <Text style={s.pinnedName} numberOfLines={1}>
-                    {thread.participantName.split(' ')[0]}
-                  </Text>
-                </Pressable>
-              );
-            })}
+                  <Text style={s.pinnedInitials}>{item.initials}</Text>
+                </View>
+                <Text style={s.pinnedName} numberOfLines={1}>
+                  {item.name.replace(/^#/, '').split(' ')[0]}
+                </Text>
+              </Pressable>
+            ))}
           </ScrollView>
         )}
 
-        {/* ── DM list ── */}
-        {regularThreads.map((item, i) => (
-          <View key={item.id}>
-            {i > 0 && <RowSeparator />}
-            {renderDMRow(item)}
+        {/* ── Channels list ── */}
+        {channels.map((room, i) => (
+          <View key={room.id}>
+            {i > 0 && <View style={s.separator} />}
+            <ChannelRow
+              room={room}
+              accent={accent}
+              isMuted={mutedIds.has(room.id)}
+              onPress={() => openChannel(room)}
+              onToggleMute={() => toggleMute(room.id)}
+              onShowPreview={setPreviewData}
+            />
+          </View>
+        ))}
+
+        {/* ── DMs list ── */}
+        {dms.length > 0 && channels.length > 0 && (
+          <View style={s.sectionDivider}>
+            <Text style={s.sectionLabel}>Direct Messages</Text>
+          </View>
+        )}
+        {dms.map((thread, i) => (
+          <View key={thread.id}>
+            {i > 0 && <View style={s.separator} />}
+            <DMRow
+              thread={thread}
+              accent={accent}
+              isMuted={mutedIds.has(thread.id)}
+              onPress={() => openDM(thread)}
+              onToggleMute={() => toggleMute(thread.id)}
+              onShowPreview={setPreviewData}
+            />
           </View>
         ))}
       </ScrollView>
@@ -701,220 +555,96 @@ export default function MessagesListScreen() {
         accent={accent}
       />
 
-      {/* ── iOS-style preview overlay on long press ── */}
+      {/* ── Preview overlay ── */}
       {previewData && (
-        <PreviewOverlay
-          data={previewData}
-          onClose={() => setPreviewData(null)}
-        />
+        <PreviewOverlay data={previewData} onClose={() => setPreviewData(null)} />
       )}
     </View>
   );
 }
 
+// ─── Styles ─────────────────────────────────────────────────────────────────
+
 const s = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: C.bg,
-  },
-  scrollView: {
-    flex: 1,
-  },
-
-  // Coming soon
-  comingSoon: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  comingSoonTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: C.label,
-    marginTop: 8,
-  },
-  comingSoonSub: {
-    fontSize: 15,
-    color: C.secondaryLabel,
-  },
-
-  // Rooms
-  roomsScroll: {
-    flexGrow: 0,
-    marginTop: 8,
-  },
-  roomsRow: {
-    paddingHorizontal: 16,
-    gap: 16,
-    paddingBottom: 14,
-  },
-  roomCell: {
-    alignItems: 'center',
-    width: 64,
-  },
-  roomAvatar: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: C.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  roomInitials: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: C.label,
-  },
-  roomLabel: {
-    fontSize: 11,
-    color: C.secondaryLabel,
-    textAlign: 'center',
-    marginTop: 4,
-  },
-
-  // Pinned bubbles (distinct from room bubbles — larger, different bg)
-  pinnedRow: {
-    paddingHorizontal: 16,
-    gap: 14,
-    paddingBottom: 16,
-  },
-  pinnedCell: {
-    alignItems: 'center',
-    width: 72,
-  },
-  pinnedAvatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: C.secondaryBg,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  pinnedInitials: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: C.label,
-  },
-  pinnedName: {
-    fontSize: 11,
-    color: C.label,
-    fontWeight: '500',
-    textAlign: 'center',
-    marginTop: 5,
-  },
+  container: { flex: 1, backgroundColor: C.bg },
+  scrollView: { flex: 1 },
 
   // Search
   searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: C.surface,
-    borderRadius: 10,
-    marginHorizontal: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    gap: 6,
-    marginBottom: 12,
+    flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface,
+    borderRadius: 10, marginHorizontal: 16, paddingHorizontal: 10, paddingVertical: 8,
+    gap: 6, marginTop: 8, marginBottom: 12,
   },
-  searchText: {
-    fontSize: 16,
-    color: C.placeholder,
+  searchText: { fontSize: 16, color: C.placeholder },
+
+  // Pinned
+  pinnedRow: { paddingHorizontal: 16, gap: 14, paddingBottom: 16 },
+  pinnedCell: { alignItems: 'center', width: 64 },
+  pinnedAvatar: {
+    width: 52, height: 52, borderRadius: 26, backgroundColor: '#1C1C1E',
+    alignItems: 'center', justifyContent: 'center',
+  },
+  pinnedInitials: { fontSize: 15, fontWeight: '700', color: C.label },
+  pinnedName: {
+    fontSize: 11, color: C.label, fontWeight: '500', textAlign: 'center', marginTop: 4,
   },
 
-  // Swipe actions
-  swipeAction: {
-    width: 80,
-    alignItems: 'center',
-    justifyContent: 'center',
+  // Section divider
+  sectionDivider: {
+    paddingHorizontal: 16, paddingTop: 20, paddingBottom: 8,
   },
-  swipeLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#FFF',
-    marginTop: 4,
+  sectionLabel: {
+    fontSize: 13, fontWeight: '600', color: C.secondaryLabel, textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
 
-  // DM row
-  dmRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingRight: 16,
-    backgroundColor: C.bg,
+  // Unified row
+  row: {
+    flexDirection: 'row', alignItems: 'center', paddingVertical: 10,
+    paddingRight: 16, backgroundColor: C.bg,
   },
-  unreadCol: {
-    width: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
+  unreadCol: { width: 24, alignItems: 'center', justifyContent: 'center' },
+  unreadDot: { width: 10, height: 10, borderRadius: 5 },
+  rowContent: { flex: 1, marginLeft: 12, marginRight: 8 },
+  rowTopRow: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2,
   },
-  unreadDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+  rowName: { fontSize: 16, fontWeight: '400', color: C.label, flex: 1, marginRight: 8 },
+  rowNameBold: { fontWeight: '600' },
+  rowTime: { fontSize: 14, color: C.secondaryLabel },
+  rowPreview: { fontSize: 14, color: C.secondaryLabel, lineHeight: 20 },
+
+  // Channel icon (square squircle)
+  channelIcon: {
+    width: 44, height: 44, borderRadius: 12, backgroundColor: C.channelIconBg,
+    alignItems: 'center', justifyContent: 'center',
   },
+  channelInitials: { fontSize: 14, fontWeight: '700', color: C.label },
+  lockBadge: {
+    position: 'absolute', bottom: -2, right: -2,
+    width: 16, height: 16, borderRadius: 8, backgroundColor: '#2C2C2E',
+    alignItems: 'center', justifyContent: 'center',
+  },
+
+  // DM avatar (circular)
   dmAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: C.secondaryBg,
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 44, height: 44, borderRadius: 22, backgroundColor: '#1C1C1E',
+    alignItems: 'center', justifyContent: 'center',
   },
-  dmAvatarText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: C.label,
-  },
-  dmContent: {
-    flex: 1,
-    marginLeft: 12,
-    marginRight: 8,
-  },
-  dmTopRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 2,
-  },
-  dmName: {
-    fontSize: 16,
-    fontWeight: '400',
-    color: C.label,
-    flex: 1,
-    marginRight: 8,
-  },
-  dmNameBold: {
-    fontWeight: '600',
-  },
-  dmTime: {
-    fontSize: 14,
-    color: C.secondaryLabel,
-  },
-  dmPreview: {
-    fontSize: 14,
-    color: C.secondaryLabel,
-    lineHeight: 20,
-  },
+  dmAvatarText: { fontSize: 14, fontWeight: '600', color: C.label },
+
+  // Swipe
+  swipeAction: { width: 80, alignItems: 'center', justifyContent: 'center' },
+  swipeLabel: { fontSize: 12, fontWeight: '600', color: '#FFF', marginTop: 4 },
 
   // Separator
-  separator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: C.separator,
-    marginLeft: 76,
-  },
+  separator: { height: StyleSheet.hairlineWidth, backgroundColor: C.separator, marginLeft: 80 },
 
   // FAB
   fab: {
-    position: 'absolute',
-    right: 20,
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 8,
+    position: 'absolute', right: 20, width: 52, height: 52, borderRadius: 26,
+    alignItems: 'center', justifyContent: 'center',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3, shadowRadius: 6, elevation: 8,
   },
 });

@@ -3,7 +3,7 @@
  * 40 inbox threads (8/mode), 30 rooms (6/mode), 15 nexus escalations (3/mode).
  */
 
-import type { Mode, InboxThreadV3, RoomV3, NexusEscalationV3, MentionV3, InboxEscalationV3, RoomMessageV3 } from '@/types';
+import type { Mode, InboxThreadV3, RoomV3, NexusEscalationV3, MentionV3, InboxEscalationV3, RoomMessageV3, MessageReaction } from '@/types';
 
 // =============================================================================
 // HELPERS
@@ -553,31 +553,53 @@ const COMPETITION_NEXUS: NexusEscalationV3[] = [
 
 const SPORTS_ROOM_MESSAGES: Record<string, RoomMessageV3[]> = {
   'sr-staff': [
-    { id: 'rm1', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Film review at 2pm today. Everyone bring scouting notes from the Bethel game.', timestamp: hoursAgo(2), isMe: false },
-    { id: 'rm2', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Got it. I have the defensive breakdowns ready — they ran a 1-3-1 zone in the second half that gave us trouble.', timestamp: hoursAgo(2), isMe: true },
-    { id: 'rm3', sender: 'Marcus Davis', initials: 'MD', role: 'Video Coordinator', content: 'Clips are uploaded. Folder: "Bethel Game Film" — 14 possessions tagged for zone offense.', timestamp: hoursAgo(1.5), isMe: false },
+    { id: 'rm1', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Film review at 2pm today. Everyone bring scouting notes from the Bethel game.', timestamp: hoursAgo(2), isMe: false, replyCount: 3, threadReplies: [
+      { id: 'rm1-r1', sender: 'Coach Reed', initials: 'CR', role: 'Strength Coach', content: 'I\'ll have the conditioning report ready too.', timestamp: hoursAgo(1.8), isMe: false },
+      { id: 'rm1-r2', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Can we also cover the press break? They struggled with it.', timestamp: hoursAgo(1.6), isMe: true },
+      { id: 'rm1-r3', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Yes — add it to the agenda. Good call.', timestamp: hoursAgo(1.5), isMe: false },
+    ], reactions: [{ emoji: '\uD83D\uDC4D', count: 4, byMe: true }] },
+    { id: 'rm2', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Got it. I have the defensive breakdowns ready — they ran a 1-3-1 zone in the second half that gave us trouble.', timestamp: hoursAgo(2), isMe: true, reactions: [{ emoji: '\uD83D\uDD25', count: 2, byMe: false }] },
+    { id: 'rm3', sender: 'Marcus Davis', initials: 'MD', role: 'Video Coordinator', content: 'Clips are uploaded. Folder: "Bethel Game Film" — 14 possessions tagged for zone offense.', timestamp: hoursAgo(1.5), isMe: false, replyCount: 1, threadReplies: [
+      { id: 'rm3-r1', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Thanks Marcus. Can you also tag their transition sets?', timestamp: hoursAgo(1.3), isMe: true },
+    ] },
     { id: 'rm4', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: '@Pearson can you prep 3 zone attack sets before the meeting?', timestamp: hoursAgo(1), isMe: false, mentions: ['Pearson'] },
     { id: 'rm5', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'On it. Will have the motion reads diagrammed by 1:30.', timestamp: hoursAgo(0.5), isMe: true },
+    { id: 'rm6', sender: 'Coach Reed', initials: 'CR', role: 'Strength Coach', content: '', timestamp: hoursAgo(0.3), isMe: false, voiceNote: { uri: 'voice://rm6', duration: 12, transcript: 'Quick update — Thomas hit all his agility marks in the morning session. Zero discomfort. He\'s good to go full contact.' } },
   ],
   'sr-ann': [
-    { id: 'rm-a1', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Practice moved to 3pm today due to facility maintenance. Check your email for the updated schedule.', timestamp: hoursAgo(1), isMe: false },
+    { id: 'rm-a1', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Practice moved to 3pm today due to facility maintenance. Check your email for the updated schedule.', timestamp: hoursAgo(1), isMe: false, replyCount: 5, threadReplies: [
+      { id: 'rm-a1-r1', sender: 'Jaylen Thomas', initials: 'JT', role: 'Student Athlete', content: 'Does that affect the weight room time too?', timestamp: hoursAgo(0.9), isMe: false },
+      { id: 'rm-a1-r2', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Weight room is open as usual. Just the main gym is affected.', timestamp: hoursAgo(0.85), isMe: false },
+      { id: 'rm-a1-r3', sender: 'Tyree Williams', initials: 'TW', role: 'Student Athlete', content: 'Got it. I\'ll be there early for shooting.', timestamp: hoursAgo(0.8), isMe: false },
+      { id: 'rm-a1-r4', sender: 'DeShawn Mitchell', initials: 'DM', role: 'Student Athlete', content: 'Copy.', timestamp: hoursAgo(0.75), isMe: false },
+      { id: 'rm-a1-r5', sender: 'Marcus Davis', initials: 'MD', role: 'Video Coordinator', content: 'Film room available from 1pm if anyone wants early film work.', timestamp: hoursAgo(0.7), isMe: false },
+    ], reactions: [{ emoji: '\uD83D\uDC4D', count: 12, byMe: true }, { emoji: '\u2705', count: 8, byMe: false }] },
     { id: 'rm-a2', sender: 'Jaylen Thomas', initials: 'JT', role: 'Student Athlete', content: 'Copy that, Coach.', timestamp: hoursAgo(0.8), isMe: false },
-    { id: 'rm-a3', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Guards — still bring your film notebooks. We\'re doing PNR reads first.', timestamp: hoursAgo(0.5), isMe: true },
+    { id: 'rm-a3', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Guards — still bring your film notebooks. We\'re doing PNR reads first.', timestamp: hoursAgo(0.5), isMe: true, reactions: [{ emoji: '\uD83D\uDC4D', count: 3, byMe: false }] },
   ],
   'sr-scout': [
-    { id: 'rm-s1', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Just posted the Mitchell eval. Strong PNR reads, solid mid-range. Needs work on transition D and closeouts.', timestamp: hoursAgo(4), isMe: true },
+    { id: 'rm-s1', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Just posted the Mitchell eval. Strong PNR reads, solid mid-range. Needs work on transition D and closeouts.', timestamp: hoursAgo(4), isMe: true, replyCount: 2, threadReplies: [
+      { id: 'rm-s1-r1', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'How does his wingspan compare to our current guards?', timestamp: hoursAgo(3.8), isMe: false },
+      { id: 'rm-s1-r2', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: '6\'7" wingspan on a 6\'2" frame. Elite for his height. Should help with the defensive concerns.', timestamp: hoursAgo(3.6), isMe: true },
+    ] },
     { id: 'rm-s2', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Good work. What\'s his KR projection looking like?', timestamp: hoursAgo(3.5), isMe: false },
-    { id: 'rm-s3', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'KR 72 overall. Shooting cluster 81, Playmaking 74, Perimeter D 58. The defensive upside is there but raw.', timestamp: hoursAgo(3), isMe: true },
+    { id: 'rm-s3', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'KR 72 overall. Shooting cluster 81, Playmaking 74, Perimeter D 58. The defensive upside is there but raw.', timestamp: hoursAgo(3), isMe: true, reactions: [{ emoji: '\uD83D\uDD25', count: 2, byMe: false }, { emoji: '\uD83D\uDC40', count: 1, byMe: false }] },
     { id: 'rm-s4', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Let\'s schedule the campus visit. @Recruiting get the paperwork started.', timestamp: hoursAgo(2.5), isMe: false, mentions: ['Recruiting'] },
   ],
   'sr-coaches': [
-    { id: 'rm-c1', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Thomas is cleared for full contact. Moving him back to starting 5 for Saturday.', timestamp: hoursAgo(1.5), isMe: false },
-    { id: 'rm-c2', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Good to hear. That changes our rotation — Williams back to 6th man role. I\'ll adjust the sub patterns.', timestamp: hoursAgo(1), isMe: true },
+    { id: 'rm-c1', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Thomas is cleared for full contact. Moving him back to starting 5 for Saturday.', timestamp: hoursAgo(1.5), isMe: false, reactions: [{ emoji: '\uD83D\uDE4C', count: 3, byMe: true }] },
+    { id: 'rm-c2', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Good to hear. That changes our rotation — Williams back to 6th man role. I\'ll adjust the sub patterns.', timestamp: hoursAgo(1), isMe: true, replyCount: 2, threadReplies: [
+      { id: 'rm-c2-r1', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Keep Williams\' minutes around 18-20. Don\'t want to overload him off the bench.', timestamp: hoursAgo(0.8), isMe: false },
+      { id: 'rm-c2-r2', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Will do. I\'ll slot him in at the 4-min and 8-min marks.', timestamp: hoursAgo(0.6), isMe: true },
+    ] },
     { id: 'rm-c3', sender: 'Coach Reed', initials: 'CR', role: 'Strength Coach', content: 'Thomas looked strong in the agility test today. No issues.', timestamp: hoursAgo(0.5), isMe: false },
+    { id: 'rm-c4', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: '', timestamp: hoursAgo(0.2), isMe: false, voiceNote: { uri: 'voice://rm-c4', duration: 8, transcript: 'Also — tell the guys dress code for Saturday is suits. Conference game, let\'s look sharp.' } },
   ],
   'sr-reccore': [
     { id: 'rm-r1', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Mitchell visit confirmed for next Tuesday. Campus tour in the morning, film session after lunch.', timestamp: hoursAgo(2), isMe: true },
-    { id: 'rm-r2', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Perfect. I\'ll clear my schedule for the 1pm sit-down. Make sure we have the scholarship packet ready.', timestamp: hoursAgo(1.5), isMe: false },
+    { id: 'rm-r2', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Perfect. I\'ll clear my schedule for the 1pm sit-down. Make sure we have the scholarship packet ready.', timestamp: hoursAgo(1.5), isMe: false, replyCount: 1, threadReplies: [
+      { id: 'rm-r2-r1', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Packet is printed and in your office. I also included the campus life brochure his mom asked about.', timestamp: hoursAgo(1.2), isMe: true },
+    ] },
     { id: 'rm-r3', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Already prepped. Also have 2 backup targets if Mitchell doesn\'t commit — both guards with similar profiles.', timestamp: hoursAgo(1), isMe: true },
   ],
 };
@@ -632,26 +654,36 @@ const CHURCH_INBOX_ESCALATIONS: InboxEscalationV3[] = [
 
 const CHURCH_ROOM_MESSAGES: Record<string, RoomMessageV3[]> = {
   'cr-ann': [
-    { id: 'crm1', sender: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', content: 'Good Friday services at 12pm and 7pm. All volunteers report at 11am.', timestamp: hoursAgo(1), isMe: false },
+    { id: 'crm1', sender: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', content: 'Good Friday services at 12pm and 7pm. All volunteers report at 11am.', timestamp: hoursAgo(1), isMe: false, replyCount: 4, threadReplies: [
+      { id: 'crm1-r1', sender: 'Sister Davis', initials: 'SD', role: 'Outreach', content: 'I can coordinate the volunteer stations. Same setup as last year?', timestamp: hoursAgo(0.9), isMe: false },
+      { id: 'crm1-r2', sender: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', content: 'Yes, but add a welcome table for visitors. Expecting higher turnout.', timestamp: hoursAgo(0.85), isMe: false },
+      { id: 'crm1-r3', sender: 'Brother Thompson', initials: 'BT', role: 'Youth Ministry', content: 'Youth group can help with parking. We have 8 volunteers.', timestamp: hoursAgo(0.8), isMe: false },
+      { id: 'crm1-r4', sender: 'You', initials: 'ME', role: 'Member', content: 'I\'ll handle the overflow seating setup.', timestamp: hoursAgo(0.7), isMe: true },
+    ], reactions: [{ emoji: '\uD83D\uDE4F', count: 18, byMe: true }, { emoji: '\u2764\uFE0F', count: 7, byMe: false }] },
     { id: 'crm2', sender: 'You', initials: 'ME', role: 'Member', content: 'I\'ll be there at 11. Do we need extra chairs for overflow?', timestamp: hoursAgo(0.8), isMe: true },
     { id: 'crm3', sender: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', content: 'Yes please — set up 50 extra chairs in the overflow area. Thank you!', timestamp: hoursAgo(0.5), isMe: false },
   ],
   'cr-prayer': [
-    { id: 'crm4', sender: 'Sister Davis', initials: 'SD', role: 'Outreach', content: 'Please keep Sister Johnson in prayer as she recovers from surgery.', timestamp: hoursAgo(2), isMe: false },
-    { id: 'crm5', sender: 'Deacon Williams', initials: 'DW', role: 'Deacon Board', content: 'Praying for a full recovery. The care team will visit her tomorrow.', timestamp: hoursAgo(1.5), isMe: false },
+    { id: 'crm4', sender: 'Sister Davis', initials: 'SD', role: 'Outreach', content: 'Please keep Sister Johnson in prayer as she recovers from surgery.', timestamp: hoursAgo(2), isMe: false, reactions: [{ emoji: '\uD83D\uDE4F', count: 24, byMe: true }, { emoji: '\u2764\uFE0F', count: 12, byMe: true }] },
+    { id: 'crm5', sender: 'Deacon Williams', initials: 'DW', role: 'Deacon Board', content: 'Praying for a full recovery. The care team will visit her tomorrow.', timestamp: hoursAgo(1.5), isMe: false, replyCount: 2, threadReplies: [
+      { id: 'crm5-r1', sender: 'Sister Davis', initials: 'SD', role: 'Outreach', content: 'Can I join the visit? I\'d like to bring flowers.', timestamp: hoursAgo(1.3), isMe: false },
+      { id: 'crm5-r2', sender: 'Deacon Williams', initials: 'DW', role: 'Deacon Board', content: 'Absolutely. Let\'s meet at the church at 10am and go together.', timestamp: hoursAgo(1.1), isMe: false },
+    ] },
     { id: 'crm6', sender: 'You', initials: 'ME', role: 'Member', content: 'Lifting her up in prayer. Let us know if the family needs meals.', timestamp: hoursAgo(1), isMe: true },
   ],
   'cr-child': [
-    { id: 'crm7', sender: 'Brother Thompson', initials: 'BT', role: 'Children\'s Ministry Lead', content: 'Lesson plan for Palm Sunday uploaded. Please review before Saturday.', timestamp: hoursAgo(2), isMe: false },
+    { id: 'crm7', sender: 'Brother Thompson', initials: 'BT', role: 'Children\'s Ministry Lead', content: 'Lesson plan for Palm Sunday uploaded. Please review before Saturday.', timestamp: hoursAgo(2), isMe: false, replyCount: 1, threadReplies: [
+      { id: 'crm7-r1', sender: 'Sister Nkechi', initials: 'SN', role: 'Teacher', content: 'Reviewed and love it! The palm branch craft is a great addition.', timestamp: hoursAgo(1.8), isMe: false },
+    ] },
     { id: 'crm8', sender: 'You', initials: 'ME', role: 'Teacher', content: 'Reviewed — looks great. I\'ll prep the craft supplies for the activity.', timestamp: hoursAgo(1.5), isMe: true },
     { id: 'crm9', sender: 'Sister Nkechi', initials: 'SN', role: 'Teacher', content: 'I can bring extra construction paper and glue sticks.', timestamp: hoursAgo(1), isMe: false },
   ],
   'cr-singles': [
-    { id: 'crm10', sender: 'Michael Chen', initials: 'MC', role: 'Singles Ministry', content: 'Game night this Friday 7pm at the fellowship hall. Bring snacks!', timestamp: hoursAgo(3), isMe: false },
+    { id: 'crm10', sender: 'Michael Chen', initials: 'MC', role: 'Singles Ministry', content: 'Game night this Friday 7pm at the fellowship hall. Bring snacks!', timestamp: hoursAgo(3), isMe: false, reactions: [{ emoji: '\uD83C\uDF89', count: 6, byMe: true }] },
     { id: 'crm11', sender: 'You', initials: 'ME', role: 'Member', content: 'Count me in! I\'ll bring the board games.', timestamp: hoursAgo(2.5), isMe: true },
   ],
   'cr-cteach': [
-    { id: 'crm12', sender: 'Brother Thompson', initials: 'BT', role: 'Children\'s Ministry Lead', content: 'Background check renewals due by March 15. Link in the pinned message.', timestamp: hoursAgo(4), isMe: false },
+    { id: 'crm12', sender: 'Brother Thompson', initials: 'BT', role: 'Children\'s Ministry Lead', content: 'Background check renewals due by March 15. Link in the pinned message.', timestamp: hoursAgo(4), isMe: false, reactions: [{ emoji: '\uD83D\uDC4D', count: 5, byMe: true }] },
     { id: 'crm13', sender: 'You', initials: 'ME', role: 'Teacher', content: 'Just submitted mine. Takes about 3 business days to process.', timestamp: hoursAgo(3), isMe: true },
   ],
 };
@@ -670,6 +702,110 @@ const INBOX_ESCALATIONS_MAP: Record<Mode, InboxEscalationV3[]> = {
   business: [],
   education: [],
   competition: [],
+};
+
+// =============================================================================
+// GLOBAL DMs — Cross-org persistent (DMs are between people, not orgs)
+// =============================================================================
+
+const GLOBAL_DMS: InboxThreadV3[] = [
+  // People you DM across all modes — they persist when you switch orgs
+  { id: 'gdm1', mode: 'sports', name: 'HC Miles', initials: 'HM', role: 'Head Coach', preview: 'Let me know when you finish the Bethel scouting notes.', timestamp: hoursAgo(0.5), unread: true, pinned: true, isRequest: false },
+  { id: 'gdm2', mode: 'sports', name: 'Jaylen Thomas', initials: 'JT', role: 'Student Athlete', preview: 'Coach, can we go over my film session notes?', timestamp: hoursAgo(2), unread: true, pinned: false, isRequest: false },
+  { id: 'gdm3', mode: 'sports', name: 'Marcus Davis', initials: 'MD', role: 'Video Coordinator', preview: 'Clips uploaded to the shared folder.', timestamp: hoursAgo(3), unread: false, pinned: false, isRequest: false },
+  { id: 'gdm4', mode: 'church', name: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', preview: 'Holy Week schedule looks good. Thanks for reviewing.', timestamp: hoursAgo(4), unread: false, pinned: true, isRequest: false },
+  { id: 'gdm5', mode: 'business', name: 'Kofi Achebe', initials: 'KA', role: 'CTO', preview: 'API latency improvement metrics look solid.', timestamp: hoursAgo(6), unread: false, pinned: false, isRequest: false },
+  { id: 'gdm6', mode: 'sports', name: 'DeShawn Mitchell', initials: 'DM', role: 'Recruit', preview: 'Looking forward to the campus visit next Tuesday!', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
+  { id: 'gdm7', mode: 'education', name: 'Dean Clark', initials: 'DC', role: 'Dean of Students', preview: 'Retention numbers report is ready for review.', timestamp: hoursAgo(8), unread: false, pinned: false, isRequest: false },
+  { id: 'gdm8', mode: 'church', name: 'Funmi Adeyemi', initials: 'FA', role: 'Worship Leader', preview: 'Easter song list finalized. Let me know if you want changes.', timestamp: hoursAgo(10), unread: false, pinned: false, isRequest: false },
+  { id: 'gdm9', mode: 'business', name: 'Sarah Kim', initials: 'SK', role: 'Product Lead', preview: 'V3 Messages spec approved. Moving to dev.', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: false },
+  { id: 'gdm10', mode: 'sports', name: 'AD Johnson', initials: 'AJ', role: 'Athletic Director', preview: 'Spring recruiting budget is approved. Go get \'em.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+];
+
+/** DM conversation messages (cross-org) */
+const GLOBAL_DM_MESSAGES: Record<string, RoomMessageV3[]> = {
+  'gdm1': [
+    { id: 'gm1-1', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Great work on the defensive game plan for Bethel.', timestamp: hoursAgo(3), isMe: false },
+    { id: 'gm1-2', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Thanks Coach. The 1-3-1 zone gave them trouble. I think we can exploit it again if they run it Saturday.', timestamp: hoursAgo(2.5), isMe: true },
+    { id: 'gm1-3', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Agreed. Can you have the scout notes finalized by Thursday morning?', timestamp: hoursAgo(1), isMe: false },
+    { id: 'gm1-4', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Will do. I\'ll also include their inbound plays — they ran 3 different sets last game.', timestamp: hoursAgo(0.8), isMe: true },
+    { id: 'gm1-5', sender: 'HC Miles', initials: 'HM', role: 'Head Coach', content: 'Let me know when you finish the Bethel scouting notes.', timestamp: hoursAgo(0.5), isMe: false },
+  ],
+  'gdm2': [
+    { id: 'gm2-1', sender: 'Jaylen Thomas', initials: 'JT', role: 'Student Athlete', content: 'Coach Pearson, I watched the film from Tuesday. I see what you mean about my closeout technique.', timestamp: hoursAgo(4), isMe: false },
+    { id: 'gm2-2', sender: 'You', initials: 'CP', role: 'Assistant Coach', content: 'Good that you see it. Your first step is too flat — you need to angle your approach to cut off the drive lane.', timestamp: hoursAgo(3.5), isMe: true },
+    { id: 'gm2-3', sender: 'Jaylen Thomas', initials: 'JT', role: 'Student Athlete', content: 'Coach, can we go over my film session notes?', timestamp: hoursAgo(2), isMe: false },
+  ],
+  'gdm4': [
+    { id: 'gm4-1', sender: 'You', initials: 'ME', role: 'Member', content: 'Pastor Chioma, I reviewed the Holy Week schedule. Everything looks great.', timestamp: hoursAgo(6), isMe: true },
+    { id: 'gm4-2', sender: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', content: 'Thank you for reviewing! Can you confirm the volunteer count for Good Friday?', timestamp: hoursAgo(5), isMe: false },
+    { id: 'gm4-3', sender: 'You', initials: 'ME', role: 'Member', content: 'We have 12 confirmed. I\'ll follow up with the remaining 5 this week.', timestamp: hoursAgo(4.5), isMe: true },
+    { id: 'gm4-4', sender: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', content: 'Holy Week schedule looks good. Thanks for reviewing.', timestamp: hoursAgo(4), isMe: false },
+  ],
+  'gdm5': [
+    { id: 'gm5-1', sender: 'Kofi Achebe', initials: 'KA', role: 'CTO', content: 'CDN migration is complete. Seeing 40% latency improvement across all endpoints.', timestamp: hoursAgo(8), isMe: false },
+    { id: 'gm5-2', sender: 'You', initials: 'ME', role: 'Founder', content: 'That\'s incredible. What\'s the cost savings looking like?', timestamp: hoursAgo(7.5), isMe: true },
+    { id: 'gm5-3', sender: 'Kofi Achebe', initials: 'KA', role: 'CTO', content: 'API latency improvement metrics look solid.', timestamp: hoursAgo(6), isMe: false },
+  ],
+};
+
+// =============================================================================
+// CHANNEL MEMBER REGISTRY (for @mentions picker)
+// =============================================================================
+
+export interface ChannelMember {
+  name: string;
+  initials: string;
+  role: string;
+}
+
+const CHANNEL_MEMBERS: Record<string, ChannelMember[]> = {
+  'sr-staff': [
+    { name: 'HC Miles', initials: 'HM', role: 'Head Coach' },
+    { name: 'Coach Pearson', initials: 'CP', role: 'Assistant Coach' },
+    { name: 'Marcus Davis', initials: 'MD', role: 'Video Coordinator' },
+    { name: 'Coach Reed', initials: 'CR', role: 'Strength Coach' },
+    { name: 'Coach Avery', initials: 'CA', role: 'Scout' },
+  ],
+  'sr-ann': [
+    { name: 'HC Miles', initials: 'HM', role: 'Head Coach' },
+    { name: 'Coach Pearson', initials: 'CP', role: 'Assistant Coach' },
+    { name: 'Jaylen Thomas', initials: 'JT', role: 'Student Athlete' },
+    { name: 'Tyree Williams', initials: 'TW', role: 'Student Athlete' },
+    { name: 'DeShawn Mitchell', initials: 'DM', role: 'Student Athlete' },
+    { name: 'Marcus Davis', initials: 'MD', role: 'Video Coordinator' },
+  ],
+  'sr-scout': [
+    { name: 'HC Miles', initials: 'HM', role: 'Head Coach' },
+    { name: 'Coach Pearson', initials: 'CP', role: 'Assistant Coach' },
+    { name: 'Recruiting', initials: 'RC', role: 'Recruiting Coordinator' },
+  ],
+  'sr-coaches': [
+    { name: 'HC Miles', initials: 'HM', role: 'Head Coach' },
+    { name: 'Coach Pearson', initials: 'CP', role: 'Assistant Coach' },
+    { name: 'Coach Reed', initials: 'CR', role: 'Strength Coach' },
+    { name: 'Coach Davis', initials: 'CD', role: 'Assistant Coach' },
+  ],
+  'sr-reccore': [
+    { name: 'HC Miles', initials: 'HM', role: 'Head Coach' },
+    { name: 'Coach Pearson', initials: 'CP', role: 'Assistant Coach' },
+    { name: 'Recruiting', initials: 'RC', role: 'Recruiting Coordinator' },
+  ],
+  'cr-ann': [
+    { name: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor' },
+    { name: 'Sister Davis', initials: 'SD', role: 'Outreach' },
+    { name: 'Deacon Williams', initials: 'DW', role: 'Deacon Board' },
+    { name: 'Brother Thompson', initials: 'BT', role: 'Youth Ministry' },
+  ],
+  'cr-prayer': [
+    { name: 'Sister Davis', initials: 'SD', role: 'Outreach' },
+    { name: 'Deacon Williams', initials: 'DW', role: 'Deacon Board' },
+    { name: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor' },
+  ],
+  'cr-child': [
+    { name: 'Brother Thompson', initials: 'BT', role: 'Children\'s Ministry Lead' },
+    { name: 'Sister Nkechi', initials: 'SN', role: 'Teacher' },
+  ],
 };
 
 // =============================================================================
@@ -698,6 +834,21 @@ export function getInboxEscalations(mode: Mode): InboxEscalationV3[] {
 
 export function getRoomMessages(roomId: string): RoomMessageV3[] {
   return SPORTS_ROOM_MESSAGES[roomId] ?? CHURCH_ROOM_MESSAGES[roomId] ?? [];
+}
+
+/** Cross-org DMs — persist across mode switches */
+export function getGlobalDMs(): InboxThreadV3[] {
+  return GLOBAL_DMS;
+}
+
+/** Get DM conversation messages */
+export function getDMMessages(threadId: string): RoomMessageV3[] {
+  return GLOBAL_DM_MESSAGES[threadId] ?? [];
+}
+
+/** Get channel members for @mentions picker */
+export function getChannelMembers(roomId: string): ChannelMember[] {
+  return CHANNEL_MEMBERS[roomId] ?? [];
 }
 
 export function getUnansweredCount(mode: Mode): number {
