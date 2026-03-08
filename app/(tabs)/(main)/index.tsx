@@ -2,9 +2,9 @@
  * Home — Auto-playing video area + icon grid.
  * Video = 42% of usable screen height (status bar to bottom safe area).
  * Grid centered in remaining space.
- * Video hero has 3 fluid-swipe pages (default = center).
- * Swiping left/right ANYWHERE on the home screen (video or grid) pages the video.
- * Edge overscroll (past page 0 or page 2) opens Settings (left) / Nexus (right).
+ * Video hero has 3 fluid-swipe pages (default = center). Swipe on video strip to page.
+ * Grid swipes: right → open settings panel, left → go to Nexus.
+ * Edge overscroll on video (past page 0 or page 2) opens Settings (left) / Nexus (right).
  */
 
 import React, { useCallback, useMemo } from 'react';
@@ -13,7 +13,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { VisualArea } from '@/components/home/visual-area';
 import { IconGrid } from '@/components/home/icon-grid';
 import { openSettingsPanel } from '@/utils/global-settings-panel';
-import { getVideoPage, getMaxVideoPage, nextVideoPage, prevVideoPage } from '@/utils/global-video-pager';
 import { enableSlideAnimation } from '@/utils/global-footer-swipe';
 import { pushNexusFromInner } from '@/utils/global-inner-nav';
 
@@ -31,7 +30,7 @@ export default function HomeScreen() {
     pushNexusFromInner();
   }, []);
 
-  // Swipe on grid area → page video first, then settings/Nexus at edges
+  // Swipe on grid area → open panel (right) or Nexus (left)
   const gridPanResponder = useMemo(
     () =>
       PanResponder.create({
@@ -39,23 +38,12 @@ export default function HomeScreen() {
           Math.abs(gs.dx) > 25 && Math.abs(gs.dx) > Math.abs(gs.dy) * 2,
         onPanResponderRelease: (_evt, gs) => {
           if (gs.dx > 60) {
-            // Swipe right: page video backward, or open settings at edge
-            const page = getVideoPage();
-            if (page > 0) {
-              prevVideoPage();
-            } else {
-              openSettingsPanel();
-            }
+            // Swipe right → open settings panel
+            openSettingsPanel();
           } else if (gs.dx < -60) {
-            // Swipe left: page video forward, or go to Nexus at edge
-            const page = getVideoPage();
-            const maxPage = getMaxVideoPage();
-            if (page < maxPage) {
-              nextVideoPage();
-            } else {
-              enableSlideAnimation();
-              pushNexusFromInner();
-            }
+            // Swipe left → go to Nexus
+            enableSlideAnimation();
+            pushNexusFromInner();
           }
         },
       }),

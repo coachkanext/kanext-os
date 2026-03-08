@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Image, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { formatViewCount } from '@/data/mock-media';
 import type { BrowseVideo, PlaylistItem } from '@/data/mock-media';
@@ -25,9 +25,10 @@ interface LibrarySectionProps {
 }
 
 /** Small video card for history/saved/downloads/uploads */
-function SmallVideoCard({ title, thumbnailColor, duration, creator, meta }: {
+function SmallVideoCard({ title, thumbnailColor, thumbnailUrl, duration, creator, meta }: {
   title: string;
   thumbnailColor: string;
+  thumbnailUrl?: string;
   duration: number;
   creator: string;
   meta?: string;
@@ -35,6 +36,13 @@ function SmallVideoCard({ title, thumbnailColor, duration, creator, meta }: {
   return (
     <Pressable style={styles.smallCard}>
       <View style={[styles.smallThumb, { backgroundColor: thumbnailColor }]}>
+        {thumbnailUrl && (
+          <Image
+            source={{ uri: thumbnailUrl }}
+            style={StyleSheet.absoluteFill}
+            resizeMode="cover"
+          />
+        )}
         <View style={styles.smallPlayOverlay}>
           <IconSymbol name="play.fill" size={14} color="#FFFFFF" />
         </View>
@@ -105,6 +113,7 @@ export function LibrarySection({ icon, label, type, videos, historyItems, playli
             key={v.id}
             title={v.title}
             thumbnailColor={v.thumbnailColor}
+            thumbnailUrl={v.thumbnailUrl}
             duration={v.duration}
             creator={v.creator}
             meta={formatViewCount(v.viewCount)}

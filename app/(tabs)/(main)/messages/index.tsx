@@ -16,7 +16,6 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { pushNexusFromInner } from '@/utils/global-inner-nav';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
@@ -414,7 +413,6 @@ export default function MessagesListScreen() {
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
         onEdgeRight={openSidePanel}
-        onEdgeLeft={pushNexusFromInner}
       >
         {/* Page 0: Channels */}
         <ScrollView

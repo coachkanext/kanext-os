@@ -45,7 +45,7 @@ import { registerViewSwitchCallback } from '@/utils/view-switch-lifecycle';
 import { requestHomeReset } from '@/utils/global-home';
 import { requestOrgReset } from '@/utils/global-org';
 import { resetFooter } from '@/utils/global-footer-hide';
-
+import { shouldUseSlideAnimation, registerAnimRerender } from '@/utils/global-footer-swipe';
 
 import { UniversalFinder } from '@/components/universal-finder';
 import { SplitNexusOverlay } from '@/components/nexus/split-nexus-overlay';
@@ -101,6 +101,12 @@ export const unstable_settings = {
 function AppShell() {
   const colorScheme = useColorScheme();
   const { state: authState } = useAuth();
+
+  // Force re-render so screenOptions picks up slide animation flag before navigation
+  const [, forceUpdate] = useState(0);
+  useEffect(() => {
+    return registerAnimRerender(() => forceUpdate((n) => n + 1));
+  }, []);
 
   // Register view-switch lifecycle callbacks — reset Home + Org tabs on view change
   useEffect(() => {
@@ -307,7 +313,7 @@ function AppShell() {
           <Stack
             screenOptions={{
               headerShown: false,
-              animation: 'none',
+              animation: shouldUseSlideAnimation() ? 'slide_from_right' : 'none',
               gestureEnabled: false,
               contentStyle: { backgroundColor: '#000000' },
             }}

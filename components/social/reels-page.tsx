@@ -1,6 +1,7 @@
 /**
- * ReelsPage — vertical paging FlatList of full-screen reels.
- * Footer hides on scroll (swipe between reels), auto-shows after 3s idle.
+ * ReelsPage — Instagram-style full-screen vertical paging reels.
+ * X-style footer: hides on scroll down, shows on scroll up.
+ * Each reel = full screen height. pagingEnabled for clean snapping.
  */
 
 import React, { useRef, useCallback } from 'react';
@@ -10,7 +11,7 @@ import {
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
-import { hideFooter } from '@/utils/global-footer-hide';
+import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { ReelCard } from './reel-card';
 import type { SocialReel } from '@/data/mock-social';
 
@@ -30,25 +31,19 @@ export function ReelsPage({
   onBookmarkToggle,
 }: ReelsPageProps) {
   const { height: screenHeight } = useWindowDimensions();
-  const hasFiredOnce = useRef(false);
+  const lastScrollY = useRef(0);
 
-  // Swiping between reels = scroll → hide footer (global 3s idle timer auto-shows)
-  // Skip the initial fire on mount so footer stays visible when entering the page
-  const onViewableItemsChanged = useRef(
-    ({ viewableItems }: { viewableItems: { index: number | null }[] }) => {
-      if (viewableItems.length > 0 && viewableItems[0].index != null) {
-        if (!hasFiredOnce.current) {
-          hasFiredOnce.current = true;
-          return;
-        }
-        hideFooter();
-      }
-    },
-  ).current;
-
-  const viewabilityConfig = useRef({
-    viewAreaCoveragePercentThreshold: 50,
-  }).current;
+  // X-style: hide footer on scroll down, show on scroll up
+  const handleScroll = useCallback((e: any) => {
+    const y = e.nativeEvent.contentOffset.y;
+    if (y > lastScrollY.current + 10) {
+      hideFooter();
+    } else if (y < lastScrollY.current - 10) {
+      showFooter();
+    }
+    lastScrollY.current = y;
+    if (y <= 0) showFooter();
+  }, []);
 
   const renderItem = useCallback(
     ({ item }: { item: SocialReel }) => (
@@ -69,12 +64,9 @@ export function ReelsPage({
         data={reels}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        pagingEnabled
-        snapToInterval={screenHeight}
-        decelerationRate="fast"
         showsVerticalScrollIndicator={false}
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={viewabilityConfig}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
         getItemLayout={(_data, index) => ({
           length: screenHeight,
           offset: screenHeight * index,

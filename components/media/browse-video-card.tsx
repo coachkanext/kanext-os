@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { formatViewCount, formatVideoTime } from '@/data/mock-media';
 import type { BrowseVideo } from '@/data/mock-media';
@@ -23,6 +23,13 @@ export function BrowseVideoCard({ video, onLongPress }: BrowseVideoCardProps) {
     >
       {/* Thumbnail */}
       <View style={[styles.thumbnail, { backgroundColor: video.thumbnailColor }]}>
+        {video.thumbnailUrl && (
+          <Image
+            source={{ uri: video.thumbnailUrl }}
+            style={StyleSheet.absoluteFill}
+            resizeMode="cover"
+          />
+        )}
         {/* Play icon */}
         <View style={styles.playOverlay}>
           <IconSymbol name="play.fill" size={20} color="#FFFFFF" />

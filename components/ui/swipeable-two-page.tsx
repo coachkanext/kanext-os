@@ -197,11 +197,15 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   dots: {
+    position: 'absolute',
+    top: 10,
+    left: 0,
+    right: 0,
+    zIndex: 10,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     gap: 6,
-    paddingVertical: 10,
   },
   dot: {
     width: 7,

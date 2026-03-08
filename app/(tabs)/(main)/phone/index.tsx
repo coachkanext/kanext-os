@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { pushNexusFromInner } from '@/utils/global-inner-nav';
 import * as Haptics from 'expo-haptics';
 
 import { SwipeableTwoPage } from '@/components/ui/swipeable-two-page';
@@ -245,7 +244,6 @@ export default function PhoneScreen() {
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
         onEdgeRight={openSidePanel}
-        onEdgeLeft={pushNexusFromInner}
       >
         {/* Page 0: Groups */}
         <ScrollView

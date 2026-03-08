@@ -5,7 +5,7 @@
  */
 
 import React, { useRef, useEffect } from 'react';
-import { View, Text, Pressable, Animated, StyleSheet } from 'react-native';
+import { View, Text, Image, Pressable, Animated, StyleSheet } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import type { BrowseVideo } from '@/data/mock-media';
 
@@ -31,6 +31,13 @@ export function FeaturedBanner({ video }: FeaturedBannerProps) {
   return (
     <Pressable style={styles.container}>
       <View style={[styles.thumbnail, { backgroundColor: video.thumbnailColor }]}>
+        {video.thumbnailUrl && (
+          <Image
+            source={{ uri: video.thumbnailUrl }}
+            style={StyleSheet.absoluteFill}
+            resizeMode="cover"
+          />
+        )}
         {/* Play icon overlay */}
         <View style={styles.playOverlay}>
           <IconSymbol name="play.fill" size={36} color="#FFFFFF" />

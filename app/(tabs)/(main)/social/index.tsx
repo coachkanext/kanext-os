@@ -7,7 +7,6 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { pushNexusFromInner } from '@/utils/global-inner-nav';
 
 import { SwipeableTwoPage } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
@@ -64,9 +63,10 @@ export default function SocialScreen() {
     if (y <= 0) showFooter();
   }, []);
 
-  // Page change: track index (footer only hides on scroll, not page switch)
+  // Page change: track index + ensure footer is visible
   const handlePageChange = useCallback((index: number) => {
     setPageIndex(index);
+    showFooter();
   }, []);
 
   // Toggle helpers
@@ -131,12 +131,11 @@ export default function SocialScreen() {
   }, [togglePostBookmark]);
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View style={[styles.container, pageIndex === 0 && { paddingTop: insets.top }]}>
       <SwipeableTwoPage
         activeIndex={pageIndex}
         onPageChange={handlePageChange}
         onEdgeRight={openSidePanel}
-        onEdgeLeft={pushNexusFromInner}
       >
         {/* Page 0: Feed */}
         <ScrollView
