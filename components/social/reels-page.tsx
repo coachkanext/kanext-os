@@ -75,8 +75,6 @@ export function ReelsPage({
         showsVerticalScrollIndicator={false}
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
-        onScrollBeginDrag={resetIdle}
-        onTouchStart={resetIdle}
         getItemLayout={(_data, index) => ({
           length: screenHeight,
           offset: screenHeight * index,

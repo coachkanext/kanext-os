@@ -1,11 +1,11 @@
 /**
  * Agenda — Personal timeline + calendar view.
- * Page 0: Rolling timeline with now-line, date sections, time markers.
- * Page 1: Calendar grid with event dots, tap date → jump to timeline.
- * No pinned bubbles row. FAB for adding manual events.
+ * Page 0: Rolling timeline with now-line, date sections, focal highlights.
+ * Page 1: Calendar grid with white event dots, context panel.
+ * Monochrome event rows — no colored category bars. Source icons for auto-pulled events.
  */
 
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -22,13 +22,15 @@ import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long
 import { CalendarGrid } from '@/components/agenda/calendar-grid';
 import {
   getAgendaItemsByDate,
-  getAgendaTypeColor,
   formatDateHeader,
-  isToday,
   dateKey,
+  getNextUpcomingEvent,
+  getCurrentEvent,
+  deriveSource,
+  getSourceIcon,
   type PersonalAgendaItem,
 } from '@/data/mock-agenda';
-import { useOrganization } from '@/context/app-context';
+import { useOrganization, useMode } from '@/context/app-context';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
@@ -37,16 +39,19 @@ const C = {
   label: '#FFFFFF',
   secondary: '#A1A1AA',
   muted: '#52525B',
-  separator: '#38383A',
-  nowLine: '#EF4444',
+  separator: '#2F3336',
+  nowLine: '#FFFFFF',
   surface: '#0B0F14',
+  blueSteel: '#1D9BF0',
 };
 
 export default function AgendaScreen() {
   const insets = useSafeAreaInsets();
   const org = useOrganization();
+  const mode = useMode();
   const [pageIndex, setPageIndex] = useState(0);
   const [menuData, setMenuData] = useState<ContextMenuData | null>(null);
+  const [calendarSelectedDate, setCalendarSelectedDate] = useState<string | null>(null);
   const sectionListRef = useRef<SectionList>(null);
 
   // Build sections from grouped agenda data
@@ -63,10 +68,33 @@ export default function AgendaScreen() {
   const now = new Date();
   const nowHour = now.getHours();
   const nowMinute = now.getMinutes();
+  const todayKey = dateKey(now);
 
+  // Next upcoming & current event
+  const nextUpcoming = useMemo(() => getNextUpcomingEvent(), []);
+  const currentEvent = useMemo(() => getCurrentEvent(), []);
+
+  // Auto-scroll to today on mount
   const lastScrollY = useRef(0);
+  const skipNextScroll = useRef(true);
+  useEffect(() => {
+    const idx = sections.findIndex((s) => s.key === todayKey);
+    if (idx >= 0 && sectionListRef.current) {
+      sectionListRef.current.scrollToLocation({
+        sectionIndex: idx,
+        itemIndex: 0,
+        animated: false,
+      });
+    }
+    setTimeout(() => { skipNextScroll.current = false; }, 500);
+  }, []);
+
   const handleScroll = useCallback((e: any) => {
     const y = e.nativeEvent.contentOffset.y;
+    if (skipNextScroll.current) {
+      lastScrollY.current = y;
+      return;
+    }
     if (y > lastScrollY.current + 10) hideFooter();
     else if (y < lastScrollY.current - 10) showFooter();
     lastScrollY.current = y;
@@ -87,6 +115,11 @@ export default function AgendaScreen() {
       }, 300); // wait for page transition
     }
   }, [sections]);
+
+  const handleAddEvent = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    // Would open add event bottom sheet
+  }, []);
 
   const handleLongPress = useCallback((item: PersonalAgendaItem, pageY: number) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -112,13 +145,29 @@ export default function AgendaScreen() {
     return item.date.getTime() < now.getTime();
   };
 
+  const isNextUpcoming = (item: PersonalAgendaItem) => {
+    return nextUpcoming?.id === item.id;
+  };
+
+  const isCurrentEvent = (item: PersonalAgendaItem) => {
+    return currentEvent?.id === item.id;
+  };
+
   const renderItem = useCallback(({ item }: { item: PersonalAgendaItem }) => {
     const past = isPastEvent(item);
-    const typeColor = getAgendaTypeColor(item.type);
+    const isNext = isNextUpcoming(item);
+    const isCurrent = isCurrentEvent(item);
+    const source = deriveSource(item);
+    const sourceIcon = getSourceIcon(source);
 
     return (
       <Pressable
-        style={[styles.eventRow, past && styles.eventRowPast]}
+        style={[
+          styles.eventRow,
+          past && styles.eventRowPast,
+          isNext && styles.eventRowNext,
+          isCurrent && styles.eventRowCurrent,
+        ]}
         onLongPress={(e) => handleLongPress(item, e.nativeEvent.pageY)}
         delayLongPress={400}
       >
@@ -130,18 +179,22 @@ export default function AgendaScreen() {
           )}
         </View>
 
-        {/* Color bar */}
-        <View style={[styles.colorBar, { backgroundColor: typeColor }]} />
-
         {/* Content */}
         <View style={styles.eventContent}>
           <Text style={[styles.eventTitle, past && styles.textPast]} numberOfLines={1}>
             {item.title}
           </Text>
-          {item.location && (
-            <Text style={[styles.eventLocation, past && styles.textPast]} numberOfLines={1}>
-              {item.location}
-            </Text>
+          {(item.location || sourceIcon) && (
+            <View style={styles.locationRow}>
+              {item.location && (
+                <Text style={[styles.eventLocation, past && styles.textPast]} numberOfLines={1}>
+                  {item.location}
+                </Text>
+              )}
+              {sourceIcon && (
+                <IconSymbol name={sourceIcon as any} size={12} color={C.blueSteel} style={styles.sourceIcon} />
+              )}
+            </View>
           )}
           {item.isAllDay && (
             <Text style={[styles.allDayBadge, past && styles.textPast]}>All Day</Text>
@@ -149,24 +202,20 @@ export default function AgendaScreen() {
         </View>
       </Pressable>
     );
-  }, [now]);
+  }, [now, nextUpcoming, currentEvent]);
 
   const renderSectionHeader = useCallback(({ section }: { section: { key: string; date: Date } }) => {
-    const today = isToday(section.date);
     return (
       <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionDate, today && styles.sectionDateToday]}>
-          {today ? 'Today' : formatDateHeader(section.date)}
+        <Text style={styles.sectionDate}>
+          {formatDateHeader(section.date)}
         </Text>
-        {today && org?.name && (
-          <Text style={styles.orgName}>{org.name}</Text>
-        )}
       </View>
     );
-  }, [org]);
+  }, []);
 
-  // Now-line component (rendered between items in today's section)
-  const todayKey = dateKey(now);
+  // Mode label for org context line
+  const modeLabel = mode.charAt(0).toUpperCase() + mode.slice(1);
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -188,11 +237,32 @@ export default function AgendaScreen() {
             onScroll={handleScroll}
             scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
-            ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
             SectionSeparatorComponent={() => <View style={styles.sectionSeparator} />}
             ListHeaderComponent={
-              /* Now-line indicator at top if today has events */
-              sections.length > 0 && sections[0].key === todayKey ? (
+              <View>
+                {/* "Next up" summary strip */}
+                <View style={styles.summaryStrip}>
+                  <Text style={styles.summaryLabel}>Next</Text>
+                  {nextUpcoming ? (
+                    <Text style={styles.summaryValue} numberOfLines={1}>
+                      {nextUpcoming.title} — {nextUpcoming.time}
+                    </Text>
+                  ) : (
+                    <Text style={styles.summaryValue}>No more events today</Text>
+                  )}
+                </View>
+
+                {/* Org context line */}
+                <View style={styles.orgContextLine}>
+                  <View style={styles.modeBadge}>
+                    <Text style={styles.modeBadgeText}>{modeLabel}</Text>
+                  </View>
+                  {org?.name && (
+                    <Text style={styles.orgContextText}>{org.name}</Text>
+                  )}
+                </View>
+
+                {/* Now-line indicator */}
                 <View style={styles.nowLineRow}>
                   <View style={styles.nowDot} />
                   <View style={styles.nowLine} />
@@ -201,24 +271,26 @@ export default function AgendaScreen() {
                     {nowMinute.toString().padStart(2, '0')} {nowHour >= 12 ? 'PM' : 'AM'}
                   </Text>
                 </View>
-              ) : null
+              </View>
             }
           />
         </View>
 
         {/* Page 1: Calendar Grid */}
         <View style={styles.page}>
-          <CalendarGrid onDateSelect={handleDateSelect} />
+          <CalendarGrid
+            selectedDate={calendarSelectedDate}
+            onSelectedDateChange={setCalendarSelectedDate}
+            onDateSelect={handleDateSelect}
+            onAddEvent={handleAddEvent}
+          />
         </View>
       </SwipeableTwoPage>
 
       {/* FAB — Add Event */}
       <Pressable
         style={[styles.fab, { bottom: insets.bottom + 60 }]}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          // Would open add event bottom sheet
-        }}
+        onPress={handleAddEvent}
       >
         <IconSymbol name="plus" size={24} color="#FFFFFF" />
       </Pressable>
@@ -230,49 +302,94 @@ export default function AgendaScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
-  page: { flex: 1 },
+  page: { flex: 1, backgroundColor: '#000000' },
+
+  // Summary strip
+  summaryStrip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    gap: 8,
+  },
+  summaryLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: C.secondary,
+  },
+  summaryValue: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: '600',
+    color: C.label,
+  },
+
+  // Org context line
+  orgContextLine: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingBottom: 10,
+    gap: 8,
+  },
+  modeBadge: {
+    backgroundColor: C.surface,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  modeBadgeText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: C.label,
+  },
+  orgContextText: {
+    fontSize: 13,
+    color: C.secondary,
+  },
 
   // Section headers
   sectionHeader: {
     paddingHorizontal: 16,
-    paddingTop: 20,
+    paddingTop: 24,
     paddingBottom: 8,
     backgroundColor: C.bg,
   },
   sectionDate: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: C.label,
-  },
-  sectionDateToday: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '700',
-  },
-  orgName: {
-    fontSize: 13,
-    color: C.secondary,
-    marginTop: 2,
+    color: C.label,
   },
 
   // Event rows
   eventRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    paddingVertical: 10,
+    paddingVertical: 16,
     paddingHorizontal: 16,
     backgroundColor: C.bg,
   },
   eventRowPast: {
     opacity: 0.5,
   },
+  eventRowNext: {
+    backgroundColor: C.surface,
+    borderRadius: 10,
+    marginHorizontal: 8,
+    paddingHorizontal: 12,
+  },
+  eventRowCurrent: {
+    borderLeftWidth: 2,
+    borderLeftColor: C.label,
+  },
   timeCol: {
-    width: 70,
+    width: 60,
     alignItems: 'flex-end',
     paddingRight: 12,
   },
   timeText: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '700',
     color: C.label,
   },
   endTimeText: {
@@ -280,24 +397,26 @@ const styles = StyleSheet.create({
     color: C.secondary,
     marginTop: 1,
   },
-  colorBar: {
-    width: 3,
-    borderRadius: 1.5,
-    minHeight: 36,
-    marginRight: 10,
-  },
   eventContent: {
     flex: 1,
   },
   eventTitle: {
-    fontSize: 15,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '700',
     color: C.label,
+  },
+  locationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 2,
   },
   eventLocation: {
     fontSize: 13,
     color: C.secondary,
-    marginTop: 2,
+  },
+  sourceIcon: {
+    marginLeft: 2,
   },
   allDayBadge: {
     fontSize: 12,
@@ -310,11 +429,6 @@ const styles = StyleSheet.create({
   },
 
   // Separators
-  itemSeparator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: C.separator,
-    marginLeft: 82,
-  },
   sectionSeparator: {
     height: 0,
   },
@@ -341,7 +455,7 @@ const styles = StyleSheet.create({
   nowLabel: {
     fontSize: 11,
     fontWeight: '600',
-    color: C.nowLine,
+    color: '#A1A1AA',
   },
 
   // FAB

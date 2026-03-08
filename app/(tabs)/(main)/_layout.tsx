@@ -30,6 +30,7 @@ export default function HomeLayout() {
         gestureEnabled: false,
         fullScreenGestureEnabled: false,
         contentStyle: { backgroundColor: '#000000' },
+        freezeOnBlur: true,
       })}
       screenListeners={{
         focus: () => { resetFooter(); closeSidePanel(); },
