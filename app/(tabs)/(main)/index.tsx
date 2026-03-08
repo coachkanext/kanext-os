@@ -1,18 +1,19 @@
 /**
- * Home — Auto-playing video area + 4-row icon grid.
+ * Home — Auto-playing video area + icon grid.
  * Video = 42% of usable screen height (status bar to bottom safe area).
- * Grid centered in remaining space. Semi-circle sits at bottom center.
- * Horizontal swipes anywhere on the screen page through videos.
+ * Grid centered in remaining space.
+ * Video hero has 3 fluid-swipe pages (default = center).
+ * Edge overscroll on video hero opens Settings (left) / Nexus (right).
+ * Grid area has no horizontal swipe gestures.
  */
 
-import React, { useMemo } from 'react';
-import { View, StyleSheet, useWindowDimensions, PanResponder } from 'react-native';
+import React, { useCallback } from 'react';
+import { View, StyleSheet, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 import { VisualArea } from '@/components/home/visual-area';
 import { IconGrid } from '@/components/home/icon-grid';
-import { nextVideoPage, prevVideoPage, getVideoPage, getMaxVideoPage } from '@/utils/global-video-pager';
 import { openSettingsPanel } from '@/utils/global-settings-panel';
 
 export default function HomeScreen() {
@@ -20,43 +21,23 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
-  // Horizontal swipe → page through videos
-  const panResponder = useMemo(
-    () =>
-      PanResponder.create({
-        onMoveShouldSetPanResponder: (_evt, gs) => {
-          // Only claim horizontal swipes (not vertical scroll or taps)
-          return Math.abs(gs.dx) > 25 && Math.abs(gs.dx) > Math.abs(gs.dy) * 1.5;
-        },
-        onPanResponderRelease: (_evt, gs) => {
-          if (gs.dx < -60) {
-            // Swipe left → next video, or navigate to Nexus at last page
-            if (getVideoPage() >= getMaxVideoPage()) {
-              router.push('/nexus' as any);
-            } else {
-              nextVideoPage();
-            }
-          } else if (gs.dx > 60) {
-            // Swipe right → previous video, or open drawer at page 1
-            if (getVideoPage() === 0) {
-              openSettingsPanel();
-            } else {
-              prevVideoPage();
-            }
-          }
-        },
-      }),
-    [],
-  );
+  // Edge callbacks for video hero overscroll
+  const handleEdgeLeft = useCallback(() => {
+    openSettingsPanel();
+  }, []);
+
+  const handleEdgeRight = useCallback(() => {
+    router.push('/nexus' as any);
+  }, [router]);
 
   // Usable height = screen minus status bar minus bottom safe area (no tab bar)
   const usableHeight = height - insets.top - insets.bottom;
   const videoHeight = usableHeight * 0.42;
 
   return (
-    <View style={styles.container} {...panResponder.panHandlers}>
+    <View style={styles.container}>
       <View style={{ height: videoHeight + insets.top }}>
-        <VisualArea />
+        <VisualArea onEdgeLeft={handleEdgeLeft} onEdgeRight={handleEdgeRight} />
       </View>
       <View style={styles.gridWrapper}>
         <IconGrid />

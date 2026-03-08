@@ -2,7 +2,7 @@ import type { VideoPage } from '@/components/home/home-types';
 
 /**
  * Mock video pages. Priority: LIVE > RECAP > HYPE.
- * Always show highest priority available. Max 2 pages.
+ * Always show highest priority available. Max 3 pages.
  *
  * Phase 1: uses public sample video URIs as placeholders.
  * Production: these will come from the program's media pipeline.
@@ -27,6 +27,15 @@ const MOCK_PAGES: VideoPage[] = [
     route: '/section?title=Media',
     poster: require('@/assets/images/sammy-kalejaiye.jpg'),
   },
+  {
+    id: 'tertiary',
+    state: 'hype',
+    source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+    title: 'Game Day Hype',
+    subtitle: 'Lincoln University',
+    route: '/section?title=Media',
+    poster: require('@/assets/images/team-logo.png'),
+  },
 ];
 
 /** State priority — lower number = higher priority */
@@ -37,10 +46,10 @@ const STATE_PRIORITY: Record<string, number> = {
 };
 
 /**
- * Returns up to 2 video pages sorted by state priority (LIVE > RECAP > HYPE).
+ * Returns up to 3 video pages sorted by state priority (LIVE > RECAP > HYPE).
  */
 export function getVideoPages(): VideoPage[] {
   return [...MOCK_PAGES]
     .sort((a, b) => STATE_PRIORITY[a.state] - STATE_PRIORITY[b.state])
-    .slice(0, 2);
+    .slice(0, 3);
 }
