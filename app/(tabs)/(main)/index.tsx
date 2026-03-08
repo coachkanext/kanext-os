@@ -10,19 +10,16 @@
 import React, { useCallback, useMemo } from 'react';
 import { View, PanResponder, StyleSheet, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-
 import { VisualArea } from '@/components/home/visual-area';
 import { IconGrid } from '@/components/home/icon-grid';
 import { openSettingsPanel } from '@/utils/global-settings-panel';
 import { getVideoPage, getMaxVideoPage, nextVideoPage, prevVideoPage } from '@/utils/global-video-pager';
 import { enableSlideAnimation } from '@/utils/global-footer-swipe';
+import { pushNexusFromInner } from '@/utils/global-inner-nav';
 
 export default function HomeScreen() {
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const router = useRouter();
-
   // Edge callbacks for video hero overscroll
   const handleEdgeLeft = useCallback(() => {
     enableSlideAnimation();
@@ -31,8 +28,8 @@ export default function HomeScreen() {
 
   const handleEdgeRight = useCallback(() => {
     enableSlideAnimation();
-    router.push('/nexus' as any);
-  }, [router]);
+    pushNexusFromInner();
+  }, []);
 
   // Swipe on grid area → page video first, then settings/Nexus at edges
   const gridPanResponder = useMemo(
@@ -57,12 +54,12 @@ export default function HomeScreen() {
               nextVideoPage();
             } else {
               enableSlideAnimation();
-              router.push('/nexus' as any);
+              pushNexusFromInner();
             }
           }
         },
       }),
-    [router],
+    [],
   );
 
   // Usable height = screen minus status bar minus bottom safe area (no tab bar)

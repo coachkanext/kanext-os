@@ -26,6 +26,7 @@ import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils
 import { startGlobalVoice } from '@/utils/global-voice';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
 import { subscribeFooterVisibility, resetFooter } from '@/utils/global-footer-hide';
+import { popInnerToHome } from '@/utils/global-inner-nav';
 import { useMode } from '@/context/app-context';
 import type { Mode } from '@/types';
 
@@ -101,6 +102,7 @@ export function UniversalFooter() {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       if (isMultitaskingOpen()) closeMultitasking();
       if (isSplitNexusOpen()) closeSplitNexus();
+  
       router.navigate('/nexus' as any);
     }, 300);
   };
@@ -135,24 +137,44 @@ export function UniversalFooter() {
     [],
   );
 
-  /** Shared pre-nav: haptic + footer reset + close split + dismiss root screens */
+  /** Shared pre-nav: haptic + footer reset + close split */
   const preNav = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     resetFooter();
     if (isSplitNexusOpen()) closeSplitNexus();
-    if (router.canDismiss()) router.dismissAll();
-  }, [router]);
+  }, []);
 
   const pIncludes = (s: string) => pathnameRef.current.includes(s);
   const pIs = (s: string) => pathnameRef.current === s;
+  const isOnNexus = () => {
+    const p = pathnameRef.current;
+    return p === '/nexus' || p.startsWith('/nexus/');
+  };
 
   const handleHomePress = () => {
     if ((pIs('/') || pIs('/(tabs)') || pIs('/(tabs)/(main)') || pIs('/(main)')) && !pIncludes('messages') && !pIncludes('phone') && !pIncludes('section')) return;
-    preNav(); router.navigate('/(tabs)/(main)' as any);
+    preNav();
+    popInnerToHome();
+    if (isOnNexus()) router.dismissAll();
   };
-  const handleMessagesPress = () => { if (pIncludes('messages')) return; preNav(); router.navigate('/(tabs)/(main)/messages' as any); };
-  const handlePhonePress = () => { if (pIncludes('phone')) return; preNav(); router.navigate('/(tabs)/(main)/phone' as any); };
-  const handleOrgPress = () => { if (pIncludes('section') && pIncludes('Organization')) return; preNav(); router.navigate('/(tabs)/(main)/section?title=Organization' as any); };
+  const handleMessagesPress = () => {
+    if (pIncludes('messages')) return;
+    preNav();
+    router.navigate('/(tabs)/(main)/messages' as any);
+    if (isOnNexus()) router.dismissAll();
+  };
+  const handlePhonePress = () => {
+    if (pIncludes('phone')) return;
+    preNav();
+    router.navigate('/(tabs)/(main)/phone' as any);
+    if (isOnNexus()) router.dismissAll();
+  };
+  const handleOrgPress = () => {
+    if (pIncludes('section') && pIncludes('Organization')) return;
+    preNav();
+    router.navigate('/(tabs)/(main)/section?title=Organization' as any);
+    if (isOnNexus()) router.dismissAll();
+  };
 
   // ── Organization long press → mode switcher ──
   const handleOrgLongPress = () => {

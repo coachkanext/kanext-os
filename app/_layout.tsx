@@ -16,7 +16,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { Stack, usePathname, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreenModule from 'expo-splash-screen';
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import React, { useEffect, useCallback, useRef, useMemo, useState } from 'react';
 import { View, StyleSheet, Animated, Pressable, PanResponder } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
@@ -45,7 +45,7 @@ import { registerViewSwitchCallback } from '@/utils/view-switch-lifecycle';
 import { requestHomeReset } from '@/utils/global-home';
 import { requestOrgReset } from '@/utils/global-org';
 import { resetFooter } from '@/utils/global-footer-hide';
-import { shouldUseSlideAnimation, registerAnimRerender } from '@/utils/global-footer-swipe';
+
 
 import { UniversalFinder } from '@/components/universal-finder';
 import { SplitNexusOverlay } from '@/components/nexus/split-nexus-overlay';
@@ -101,12 +101,6 @@ export const unstable_settings = {
 function AppShell() {
   const colorScheme = useColorScheme();
   const { state: authState } = useAuth();
-
-  // Force re-render when slide animation is enabled (so screenOptions re-evaluates)
-  const [, forceUpdate] = useState(0);
-  useEffect(() => {
-    return registerAnimRerender(() => forceUpdate(n => n + 1));
-  }, []);
 
   // Register view-switch lifecycle callbacks — reset Home + Org tabs on view change
   useEffect(() => {
@@ -274,7 +268,9 @@ function AppShell() {
           if (p === '/' || p === '/(tabs)' || p === '/(tabs)/(main)' || p === '/(main)') return false;
           // Don't capture when a swipeable page is active at page > 0
           // Let the SwipeableTwoPage bubble-phase handler page from 1→0
-          if (isSwipeablePageActive() && getSwipeablePageIndex() > 0) return false;
+          // Skip this check on screens that don't use SwipeableTwoPage (e.g. Nexus)
+          const isNonSwipeable = p === '/nexus' || p.startsWith('/nexus/');
+          if (!isNonSwipeable && isSwipeablePageActive() && getSwipeablePageIndex() > 0) return false;
           return gs.dx > 25 && gs.dx > Math.abs(gs.dy) * 2;
         },
         onPanResponderRelease: (_evt, gs) => {
@@ -309,12 +305,12 @@ function AppShell() {
       >
         <View style={styles.container}>
           <Stack
-            screenOptions={() => ({
+            screenOptions={{
               headerShown: false,
-              animation: shouldUseSlideAnimation() ? 'slide_from_right' : 'none',
+              animation: 'none',
               gestureEnabled: false,
               contentStyle: { backgroundColor: '#000000' },
-            })}
+            }}
             screenListeners={{ focus: () => resetFooter() }}
           >
             <Stack.Screen name="(tabs)" />

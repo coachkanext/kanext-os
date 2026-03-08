@@ -5,36 +5,48 @@
  * Swipe-right on page → opens side panel (handled in root _layout.tsx).
  * Native back gestures disabled — Nexus swipe is the only back mechanism.
  *
- * Animation rule: ONLY footer/screen swipe triggers slide animation.
- * All taps navigate instantly (animation: 'none').
+ * Universal slide animation on all transitions.
  */
 
-import { useState, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { Stack } from 'expo-router';
+import { StackActions } from '@react-navigation/native';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { closeSidePanel } from '@/utils/global-side-panel';
-import { shouldUseSlideAnimation, registerAnimRerender } from '@/utils/global-footer-swipe';
+import { registerInnerPopToTop } from '@/utils/global-inner-nav';
 
 export default function HomeLayout() {
-  // Force re-render when slide animation is enabled (so screenOptions re-evaluates)
-  const [, forceUpdate] = useState(0);
+  const innerNavRef = useRef<any>(null);
+
   useEffect(() => {
-    return registerAnimRerender(() => forceUpdate(n => n + 1));
+    return registerInnerPopToTop(() => {
+      const nav = innerNavRef.current;
+      if (!nav) return;
+      const state = nav.getState();
+      // Only pop if there's more than 1 screen in the Stack
+      if (state && state.routes.length > 1) {
+        nav.dispatch(StackActions.popToTop());
+      }
+    });
   }, []);
 
   return (
     <Stack
-      screenOptions={() => ({
+      screenOptions={({ route }) => ({
         headerShown: false,
-        animation: shouldUseSlideAnimation() ? 'slide_from_right' : 'none',
+        animation: 'none' as const,
         gestureEnabled: false,
         fullScreenGestureEnabled: false,
         contentStyle: { backgroundColor: '#000000' },
-        freezeOnBlur: true,
+        ...(route.name !== 'index' && { presentation: 'containedTransparentModal' as const }),
       })}
-      screenListeners={{
-        focus: () => { resetFooter(); closeSidePanel(); },
-      }}
+      screenListeners={({ navigation }) => ({
+        focus: () => {
+          innerNavRef.current = navigation;
+          resetFooter();
+          closeSidePanel();
+        },
+      })}
     >
       <Stack.Screen name="index" />
       {/* Messages */}

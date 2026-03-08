@@ -14,6 +14,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { pushNexusFromInner } from '@/utils/global-inner-nav';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -223,6 +224,7 @@ export default function AgendaScreen() {
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
         onEdgeRight={openSidePanel}
+        onEdgeLeft={pushNexusFromInner}
       >
         {/* Page 0: Rolling Timeline */}
         <View style={styles.page}>

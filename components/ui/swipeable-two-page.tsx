@@ -7,10 +7,11 @@
  * - Uses bubble phase (onMoveShouldSetPanResponder) so root capture phase runs first
  * - At page 0, right swipe: don't claim → root captures → opens side panel
  * - At page 1, right swipe: claim → page back to 0
- * - At page 1, left swipe: snap back (no page 2)
+ * - At page 1, left swipe: edge trigger → Nexus
  */
 
 import React, { useRef, useMemo, useCallback, useEffect, type ReactNode } from 'react';
+import { useFocusEffect } from 'expo-router';
 import {
   View,
   Animated,
@@ -19,6 +20,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { setSwipeablePageActive, setSwipeablePageIndex } from '@/utils/global-swipeable-page';
+import { enableSlideAnimation } from '@/utils/global-footer-swipe';
 
 const SWIPE_THRESHOLD = 60;
 const VELOCITY_THRESHOLD = 0.5;
@@ -29,6 +31,7 @@ interface SwipeableTwoPageProps {
   activeIndex: number;
   onPageChange: (index: number) => void;
   onEdgeRight?: () => void;
+  onEdgeLeft?: () => void;
 }
 
 export function SwipeableTwoPage({
@@ -36,6 +39,7 @@ export function SwipeableTwoPage({
   activeIndex,
   onPageChange,
   onEdgeRight,
+  onEdgeLeft,
 }: SwipeableTwoPageProps) {
   const { width: screenWidth } = useWindowDimensions();
   const activeRef = useRef(activeIndex);
@@ -45,17 +49,22 @@ export function SwipeableTwoPage({
   screenWidthRef.current = screenWidth;
   const onEdgeRightRef = useRef(onEdgeRight);
   onEdgeRightRef.current = onEdgeRight;
+  const onEdgeLeftRef = useRef(onEdgeLeft);
+  onEdgeLeftRef.current = onEdgeLeft;
   const edgeTriggered = useRef(false);
 
-  // Register with global state
-  useEffect(() => {
-    setSwipeablePageActive(true);
-    setSwipeablePageIndex(activeIndex);
-    return () => {
-      setSwipeablePageActive(false);
-      setSwipeablePageIndex(0);
-    };
-  }, []);
+  // Register with global state on mount + re-register on focus
+  // (freezeOnBlur prevents cleanup, so we must re-register when screen regains focus)
+  useFocusEffect(
+    useCallback(() => {
+      setSwipeablePageActive(true);
+      setSwipeablePageIndex(activeRef.current);
+      return () => {
+        setSwipeablePageActive(false);
+        setSwipeablePageIndex(0);
+      };
+    }, []),
+  );
 
   // Sync ref + global on page change
   useEffect(() => {
@@ -99,7 +108,10 @@ export function SwipeableTwoPage({
         },
         onPanResponderMove: (_evt, gs) => {
           const base = -activeRef.current * screenWidthRef.current;
-          translateX.setValue(base + gs.dx);
+          const raw = base + gs.dx;
+          // Clamp so pager doesn't overscroll past edges (0 = page 0, -screenWidth = page 1)
+          const clamped = Math.max(-screenWidthRef.current, Math.min(0, raw));
+          translateX.setValue(clamped);
         },
         onPanResponderRelease: (_evt, gs) => {
           const page = activeRef.current;
@@ -123,7 +135,17 @@ export function SwipeableTwoPage({
             if (page < 1) {
               goPage(page + 1);
             } else {
-              goPage(1); // snap back
+              // At page 1, left swipe: edge trigger → Nexus (with slide animation)
+              if (!edgeTriggered.current) {
+                edgeTriggered.current = true;
+                // Deactivate swipeable state so Nexus screen's right-swipe can open side panel
+                setSwipeablePageActive(false);
+                setSwipeablePageIndex(0);
+                enableSlideAnimation();
+                onEdgeLeftRef.current?.();
+                setTimeout(() => { edgeTriggered.current = false; }, 500);
+              }
+              goPage(1);
             }
           } else {
             goPage(page); // snap back

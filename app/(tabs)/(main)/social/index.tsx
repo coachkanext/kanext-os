@@ -7,6 +7,7 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { pushNexusFromInner } from '@/utils/global-inner-nav';
 
 import { SwipeableTwoPage } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
@@ -135,6 +136,7 @@ export default function SocialScreen() {
         activeIndex={pageIndex}
         onPageChange={handlePageChange}
         onEdgeRight={openSidePanel}
+        onEdgeLeft={pushNexusFromInner}
       >
         {/* Page 0: Feed */}
         <ScrollView
