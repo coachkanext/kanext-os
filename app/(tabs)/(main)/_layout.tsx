@@ -53,6 +53,8 @@ export default function HomeLayout() {
       <Stack.Screen name="phone/voicemail" />
       <Stack.Screen name="phone/blocked" />
       <Stack.Screen name="phone/settings" />
+      {/* Agenda */}
+      <Stack.Screen name="agenda/index" />
     </Stack>
   );
 }

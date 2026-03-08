@@ -1,6 +1,7 @@
 /**
  * Universal Footer — 5-icon persistent footer bar
- * Always visible on every page (hard wall).
+ * Always visible on every page (hard wall). TAP ONLY — no footer-specific swipe gestures.
+ * Horizontal swipes pass through to root layout (open panels) like the rest of the screen.
  *
  * Layout: 1px divider + 5 icons evenly spaced
  * 49px height + safe area bottom padding
@@ -8,9 +9,9 @@
  * Icons (all use existing image assets):
  *   Home (1):         footer-home.png    — tap → navigate home
  *   Messages (2):     footer-messages.png — tap → push messages
- *   Nexus (center):   footer-nexus.png   — 6 gestures: tap, double-tap, hold, swipe-up, swipe-right, swipe-left
+ *   Nexus (center):   footer-nexus.png   — tap, double-tap, hold, swipe-up (multitasking)
  *   Phone (4):        footer-phone.png   — tap → push phone
- *   Organization (5): footer-org.png     — tap → push organization
+ *   Organization (5): footer-org.png     — tap → push organization, long press → mode switcher
  */
 
 import React, { useRef, useMemo, useEffect, useCallback } from 'react';
@@ -25,8 +26,6 @@ import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils
 import { startGlobalVoice } from '@/utils/global-voice';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
 import { subscribeFooterVisibility, resetFooter } from '@/utils/global-footer-hide';
-import { pushForward, popForward } from '@/utils/global-nav-history';
-import { fireSwipeBack, fireSwipeForward } from '@/utils/global-footer-swipe';
 import { useMode } from '@/context/app-context';
 import type { Mode } from '@/types';
 
@@ -113,32 +112,17 @@ export function UniversalFooter() {
     openSearchOverlay();
   };
 
-  // ── Footer-wide PanResponder: swipe-right (back) + swipe-left (forward) + swipe-up (multitasking) ──
-  // No drag animation — swipe detection only. Native Stack animator handles the smooth slide.
-  const footerPanResponder = useMemo(
+  // ── Nexus swipe-up PanResponder (multitasking) ──
+  // Footer has NO special horizontal swipe gestures — those pass through
+  // to the root layout's panelOpenPanResponder like the rest of the screen.
+  const nexusPanResponder = useMemo(
     () =>
       PanResponder.create({
         onStartShouldSetPanResponder: () => false,
-        onMoveShouldSetPanResponderCapture: (_evt, gs) => {
-          // Capture horizontal swipe anywhere on footer (right=back, left=forward)
-          if (Math.abs(gs.dx) > 20 && Math.abs(gs.dx) > Math.abs(gs.dy) * 1.5) return true;
-          // Capture vertical swipe up (for multitasking on nexus area)
-          if (gs.dy < -15 && Math.abs(gs.dy) > Math.abs(gs.dx)) return true;
-          return false;
-        },
+        onMoveShouldSetPanResponder: (_evt, gs) =>
+          gs.dy < -15 && Math.abs(gs.dy) > Math.abs(gs.dx),
         onPanResponderRelease: (_evt, gs) => {
-          if (gs.dx > 40 && gs.dx > Math.abs(gs.dy)) {
-            // Swipe RIGHT → Go back with native slide animation
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            if (router.canGoBack()) {
-              fireSwipeBack();
-            }
-          } else if (gs.dx < -40 && Math.abs(gs.dx) > Math.abs(gs.dy)) {
-            // Swipe LEFT → Forward with native slide animation
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            fireSwipeForward();
-          } else if (gs.dy < -50) {
-            // Swipe UP → Multitasking
+          if (gs.dy < -50) {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             openMultitasking();
           }
@@ -177,8 +161,8 @@ export function UniversalFooter() {
       {/* 1px divider */}
       <View style={styles.divider} />
 
-      {/* 5-icon row — swipe right anywhere → go back */}
-      <View style={styles.footer} {...footerPanResponder.panHandlers}>
+      {/* 5-icon row — tap only, no footer-specific swipe gestures */}
+      <View style={styles.footer}>
         {/* 1. Home */}
         <Pressable
           style={styles.iconButton}
@@ -203,8 +187,8 @@ export function UniversalFooter() {
           />
         </Pressable>
 
-        {/* 3. Nexus (center) — 6 gestures */}
-        <View style={styles.iconButton}>
+        {/* 3. Nexus (center) — tap, double-tap, hold, swipe-up */}
+        <View style={styles.iconButton} {...nexusPanResponder.panHandlers}>
           <Pressable
             style={styles.pressableInner}
             onPress={handleNexusPress}

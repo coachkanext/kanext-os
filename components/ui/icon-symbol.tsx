@@ -206,6 +206,17 @@ const MAPPING = {
 
   // Hash / Channel
   'number': 'tag',
+
+  // Settings Panel
+  'qrcode': 'qr-code',
+  'moon.fill': 'dark-mode',
+  'pin.fill': 'push-pin',
+  'pin.slash.fill': 'push-pin',
+  'trash.fill': 'delete',
+  'pencil': 'edit',
+  'doc.on.doc.fill': 'content-copy',
+  'bell.slash.fill': 'notifications-off',
+  'envelope.open.fill': 'mark-email-read',
 } as const;
 
 export type IconSymbolName = keyof typeof MAPPING | SymbolViewProps['name'];

@@ -17,7 +17,7 @@ import { Stack, usePathname, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreenModule from 'expo-splash-screen';
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { View, StyleSheet, Animated, Pressable, PanResponder, Dimensions } from 'react-native';
+import { View, StyleSheet, Animated, Pressable, PanResponder } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import 'react-native-reanimated';
@@ -35,8 +35,7 @@ import { MultitaskingProvider } from '@/context/multitasking-context';
 import { QueryProvider } from '@/providers/query-provider';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { registerSearchOverlayHandlers } from '@/utils/global-search-overlay';
-import { registerSplitNexusHandlers, isSplitNexusOpen, closeSplitNexus } from '@/utils/global-split-nexus';
-import { isMultitaskingOpen, closeMultitasking } from '@/utils/global-multitasking';
+import { registerSplitNexusHandlers } from '@/utils/global-split-nexus';
 import { registerSettingsPanelHandlers, openSettingsPanel, closeSettingsPanel, isSettingsPanelOpen } from '@/utils/global-settings-panel';
 import { SettingsPanel, SETTINGS_PANEL_WIDTH } from '@/components/settings-panel';
 import { registerSidePanelHandlers, openSidePanel, closeSidePanel, isSidePanelOpen } from '@/utils/global-side-panel';
@@ -46,14 +45,14 @@ import { registerViewSwitchCallback } from '@/utils/view-switch-lifecycle';
 import { requestHomeReset } from '@/utils/global-home';
 import { requestOrgReset } from '@/utils/global-org';
 import { resetFooter } from '@/utils/global-footer-hide';
-import { shouldUseSlideAnimation, setSwipeCallbacks, registerAnimRerender } from '@/utils/global-footer-swipe';
-import { pushForward, popForward } from '@/utils/global-nav-history';
+import { shouldUseSlideAnimation, registerAnimRerender } from '@/utils/global-footer-swipe';
 
 import { UniversalFinder } from '@/components/universal-finder';
 import { SplitNexusOverlay } from '@/components/nexus/split-nexus-overlay';
 import { CallOverlay } from '@/components/call/call-overlay';
 import { IncomingCallOverlay } from '@/components/call/incoming-call-overlay';
 
+import { isSwipeablePageActive, getSwipeablePageIndex } from '@/utils/global-swipeable-page';
 import { registerEntitySheetHandlers } from '@/utils/global-entity-sheets';
 import type {
   TeamCardData, PlayerCardData, CoachCardData, EventCardData,
@@ -184,7 +183,7 @@ function AppShell() {
     );
   }, []);
 
-  // Settings panel state (X/Twitter-style side panel)
+  // Settings panel state — slides from LEFT, content shifts RIGHT
   const [settingsPanelVisible, setSettingsPanelVisible] = useState(false);
   const contentTranslateX = useRef(new Animated.Value(0)).current;
 
@@ -212,7 +211,7 @@ function AppShell() {
     registerSettingsPanelHandlers(openPanel, dismissPanel);
   }, [openPanel, dismissPanel]);
 
-  // Side panel state (contextual right-side panel)
+  // Side panel state — also slides from LEFT, content shifts RIGHT
   const [sidePanelVisible, setSidePanelVisible] = useState(false);
 
   const openSidePanelCb = useCallback(() => {
@@ -239,30 +238,9 @@ function AppShell() {
     registerSidePanelHandlers(openSidePanelCb, dismissSidePanelCb);
   }, [openSidePanelCb, dismissSidePanelCb]);
 
-  // Register footer swipe navigation callbacks
   const router = useRouter();
-  useEffect(() => {
-    setSwipeCallbacks({
-      onBack: () => {
-        if (router.canGoBack()) {
-          pushForward(pathnameRef.current);
-          router.back();
-        }
-      },
-      onForward: () => {
-        const fwd = popForward();
-        if (fwd) {
-          router.push(fwd as any);
-        } else {
-          if (isMultitaskingOpen()) closeMultitasking();
-          if (isSplitNexusOpen()) closeSplitNexus();
-          router.navigate('/nexus' as any);
-        }
-      },
-    });
-  }, [router]);
 
-  // PanResponder for swipe-left dismiss on shifted content (both panels open from left)
+  // PanResponder for swipe-left dismiss on shifted content (both panels on left)
   const dismissPanResponder = useMemo(
     () =>
       PanResponder.create({
@@ -284,22 +262,19 @@ function AppShell() {
   pathnameRef.current = pathname;
 
   // Capture-phase PanResponder: intercepts horizontal right-swipes to open panels.
-  // Swipe right from anywhere on any page opens the appropriate panel.
-  // Excludes footer zone (bottom 100px) — footer has its own PanResponder for back/forward.
-  // Disabled on home screen — video hero has its own ScrollView paging + edge overscroll.
-  const isHome = pathname === '/' || pathname === '/(tabs)' || pathname === '/(tabs)/(main)' || pathname === '/(main)';
-
+  // Swipe right ANYWHERE on screen (content, footer, everywhere) = open contextual panel.
+  // On home → settings panel. On all other screens → side panel.
   const panelOpenPanResponder = useMemo(
     () =>
       PanResponder.create({
         onStartShouldSetPanResponderCapture: () => false,
-        onMoveShouldSetPanResponderCapture: (evt, gs) => {
-          // Never capture on home — video hero ScrollView needs horizontal paging
+        onMoveShouldSetPanResponderCapture: (_evt, gs) => {
+          // Don't capture on home — video hero handles paging + edge overscroll opens panel
           const p = pathnameRef.current;
           if (p === '/' || p === '/(tabs)' || p === '/(tabs)/(main)' || p === '/(main)') return false;
-          // Skip footer zone (bottom 100px) — footer has its own back/forward swipes
-          const screenH = Dimensions.get('window').height;
-          if (evt.nativeEvent.pageY > screenH - 100) return false;
+          // Don't capture when a swipeable page is active at page > 0
+          // Let the SwipeableTwoPage bubble-phase handler page from 1→0
+          if (isSwipeablePageActive() && getSwipeablePageIndex() > 0) return false;
           return gs.dx > 25 && gs.dx > Math.abs(gs.dy) * 2;
         },
         onPanResponderRelease: (_evt, gs) => {
@@ -323,15 +298,14 @@ function AppShell() {
   // Normal navigation with tabs — edge-to-edge, no header
   return (
     <View style={styles.container}>
-      {/* Settings panel sits behind shifting content (left side) */}
-      <SettingsPanel visible={settingsPanelVisible} />
-      {/* Side panel sits behind shifting content (right side) */}
-      <SidePanel visible={sidePanelVisible} />
+      {/* Only mount the active panel — root bg is black so no flash */}
+      {settingsPanelVisible && <SettingsPanel visible={true} />}
+      {sidePanelVisible && <SidePanel visible={true} />}
 
       {/* Content wrapper — shifts right when panels open */}
       <Animated.View
         style={[styles.container, { transform: [{ translateX: contentTranslateX }] }]}
-        {...(!settingsPanelVisible && !sidePanelVisible && !isHome ? panelOpenPanResponder.panHandlers : {})}
+        {...(!settingsPanelVisible && !sidePanelVisible ? panelOpenPanResponder.panHandlers : {})}
       >
         <View style={styles.container}>
           <Stack
@@ -510,5 +484,6 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#000000',
   },
 });

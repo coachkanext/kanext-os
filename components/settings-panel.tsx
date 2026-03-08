@@ -1,15 +1,20 @@
 /**
- * Settings Panel — X/Twitter-style side menu
+ * Settings Panel — X/Twitter-style side menu (FINAL)
  * Sits behind shifting content, revealed when content slides right.
  * Jet black background, no overlay/blur/dimming.
+ *
+ * TOP: Avatar + Name + @username + Mode switcher + Org switcher
+ * MIDDLE: Feature shortcuts (Saved, Your Activity, QR Code)
+ * BOTTOM: Settings rows (Account, Preferences, Notifications, Appearance, Help, Terms, Log Out)
  */
 
 import React, { useCallback, useMemo } from 'react';
-import { View, Text, Image, StyleSheet, Pressable, Dimensions, ScrollView, useColorScheme as useRNColorScheme } from 'react-native';
+import { View, Text, Image, StyleSheet, Pressable, Dimensions, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAppContext } from '@/context/app-context';
 import { useAuth } from '@/context/auth-context';
 import { closeSettingsPanel } from '@/utils/global-settings-panel';
@@ -28,18 +33,10 @@ export const SETTINGS_PANEL_WIDTH = Math.min(300, SCREEN_WIDTH * 0.82);
 
 const MODE_ITEMS: { mode: Mode; label: string; image: any }[] = [
   { mode: 'sports', label: 'Sports', image: require('@/assets/images/mode-sports.png') },
-  { mode: 'church', label: 'Faith', image: require('@/assets/images/mode-church.png') },
   { mode: 'business', label: 'Business', image: require('@/assets/images/mode-business.png') },
+  { mode: 'church', label: 'Faith', image: require('@/assets/images/mode-church.png') },
   { mode: 'education', label: 'Education', image: require('@/assets/images/mode-education.png') },
 ];
-
-const MODE_LABELS: Record<string, string> = {
-  sports: 'Sports',
-  church: 'Faith',
-  business: 'Business',
-  education: 'Education',
-  competition: 'Competition',
-};
 
 interface SettingsPanelProps {
   visible: boolean;
@@ -54,7 +51,7 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
   const currentMode = state.mode;
   const activeOrgId = state.activeContext.org_id;
   const displayName = authState.session?.displayName ?? 'User';
-  const modeLabel = MODE_LABELS[currentMode] ?? currentMode;
+  const username = '@' + displayName.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 16);
 
   // Get all orgs + memberships for the current mode
   const orgRows = useMemo(() => {
@@ -96,7 +93,7 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
     switchContext(ctx);
   }, [activeOrgId, switchContext]);
 
-  const handleMenuPress = useCallback((route: string) => {
+  const handleNavigate = useCallback((route: string) => {
     closeSettingsPanel();
     setTimeout(() => {
       router.push(route as any);
@@ -118,21 +115,26 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Avatar + Name */}
-        <View style={styles.identity}>
+        {/* ── TOP SECTION: IDENTITY ── */}
+
+        {/* Avatar — tap opens Profile */}
+        <Pressable onPress={() => handleNavigate('/profile')}>
           <Image
             source={require('@/assets/images/sammy-kalejaiye.jpg')}
             style={styles.avatar}
           />
-          <Text style={styles.name}>{displayName}</Text>
-        </View>
+        </Pressable>
 
-        {/* Mode badge */}
-        <View style={styles.modeBadge}>
-          <Text style={styles.modeBadgeText}>{modeLabel}</Text>
-        </View>
+        {/* Name */}
+        <Text style={styles.name}>{displayName}</Text>
 
-        {/* Mode switcher row */}
+        {/* @username */}
+        <Text style={styles.username}>{username}</Text>
+
+        {/* 16px space */}
+        <View style={{ height: 16 }} />
+
+        {/* Mode switcher — horizontal row of 4 circles */}
         <View style={styles.modeRow}>
           {MODE_ITEMS.map((m) => {
             const isActive = m.mode === currentMode;
@@ -156,7 +158,10 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
           })}
         </View>
 
-        {/* Org switcher */}
+        {/* 12px space */}
+        <View style={{ height: 12 }} />
+
+        {/* Org switcher — vertical list */}
         <View style={styles.orgSection}>
           {orgRows.map(({ org, roleLabel }) => {
             const isActive = org.org_id === activeOrgId;
@@ -182,45 +187,79 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
           })}
         </View>
 
-        {/* Divider */}
+        {/* ── DIVIDER ── */}
         <View style={styles.divider} />
 
-        {/* Menu items */}
+        {/* ── MIDDLE SECTION: FEATURE SHORTCUTS ── */}
         <View style={styles.menuSection}>
           <Pressable
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => handleMenuPress('/settings')}
+            onPress={() => handleNavigate('/settings')}
           >
+            <IconSymbol name="bookmark.fill" size={20} color="#FFFFFF" />
+            <Text style={styles.menuItemText}>Saved</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+            onPress={() => handleNavigate('/settings')}
+          >
+            <IconSymbol name="clock.fill" size={20} color="#FFFFFF" />
+            <Text style={styles.menuItemText}>Your Activity</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+            onPress={() => handleNavigate('/settings')}
+          >
+            <IconSymbol name="qrcode" size={20} color="#FFFFFF" />
+            <Text style={styles.menuItemText}>QR Code</Text>
+          </Pressable>
+        </View>
+
+        {/* ── DIVIDER ── */}
+        <View style={styles.divider} />
+
+        {/* ── BOTTOM SECTION: SETTINGS ── */}
+        <View style={styles.menuSection}>
+          <Pressable
+            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+            onPress={() => handleNavigate('/settings')}
+          >
+            <IconSymbol name="person.fill" size={20} color="#FFFFFF" />
             <Text style={styles.menuItemText}>Account</Text>
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => handleMenuPress('/settings')}
+            onPress={() => handleNavigate('/settings')}
           >
+            <IconSymbol name="slider.horizontal.3" size={20} color="#FFFFFF" />
             <Text style={styles.menuItemText}>Preferences</Text>
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => handleMenuPress('/settings')}
+            onPress={() => handleNavigate('/settings')}
           >
+            <IconSymbol name="bell.fill" size={20} color="#FFFFFF" />
             <Text style={styles.menuItemText}>Notifications</Text>
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => handleMenuPress('/settings')}
+            onPress={() => handleNavigate('/settings')}
           >
+            <IconSymbol name="moon.fill" size={20} color="#FFFFFF" />
             <Text style={styles.menuItemText}>Appearance</Text>
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => handleMenuPress('/settings')}
+            onPress={() => handleNavigate('/settings')}
           >
+            <IconSymbol name="questionmark.circle" size={20} color="#FFFFFF" />
             <Text style={styles.menuItemText}>Help & Support</Text>
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => handleMenuPress('/settings')}
+            onPress={() => handleNavigate('/settings')}
           >
+            <IconSymbol name="shield.fill" size={20} color="#FFFFFF" />
             <Text style={styles.menuItemText}>Terms & Privacy</Text>
           </Pressable>
         </View>
@@ -228,15 +267,16 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
         {/* Spacer pushes log out to bottom */}
         <View style={styles.spacer} />
 
-        {/* Divider */}
+        {/* ── DIVIDER ── */}
         <View style={styles.divider} />
 
-        {/* Log out */}
+        {/* Log Out — always last */}
         <Pressable
           style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
           onPress={handleSignOut}
         >
-          <Text style={[styles.menuItemText, { color: '#EF4444' }]}>Log Out</Text>
+          <IconSymbol name="rectangle.portrait.and.arrow.right" size={20} color="#EF4444" />
+          <Text style={[styles.menuItemText, styles.logOutText]}>Log Out</Text>
         </Pressable>
       </ScrollView>
     </View>
@@ -260,43 +300,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
 
-  // Identity
-  identity: {
-    marginBottom: 16,
-  },
+  // ── Identity ──
   avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.15)',
   },
   name: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '700',
     color: '#FFFFFF',
     letterSpacing: -0.3,
   },
-
-  // Mode badge
-  modeBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginBottom: 20,
-  },
-  modeBadgeText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: 'rgba(255,255,255,0.6)',
+  username: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#A1A1AA',
+    marginTop: 2,
   },
 
-  // Mode switcher row
+  // ── Mode switcher ──
   modeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
     paddingHorizontal: 4,
   },
   modeCircleWrap: {
@@ -308,9 +337,10 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 24,
     overflow: 'hidden',
-    opacity: 0.4,
+    backgroundColor: '#0B0F14',
     borderWidth: 2,
     borderColor: 'transparent',
+    opacity: 0.4,
   },
   modeCircleActive: {
     opacity: 1,
@@ -329,9 +359,9 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 
-  // Org switcher
+  // ── Org switcher ──
   orgSection: {
-    marginBottom: 8,
+    marginBottom: 4,
   },
   orgRow: {
     paddingVertical: 12,
@@ -345,7 +375,7 @@ const styles = StyleSheet.create({
   orgName: {
     fontSize: 15,
     fontWeight: '600',
-    color: 'rgba(255,255,255,0.6)',
+    color: '#A1A1AA',
     marginBottom: 2,
   },
   orgNameActive: {
@@ -357,18 +387,21 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.35)',
   },
 
-  // Divider
+  // ── Divider ──
   divider: {
     height: 1,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: '#2F3336',
     marginVertical: 8,
   },
 
-  // Menu items
+  // ── Menu items (feature shortcuts + settings) ──
   menuSection: {
     marginTop: 4,
   },
   menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
     paddingVertical: 14,
     paddingHorizontal: 4,
     borderRadius: 8,
@@ -381,8 +414,11 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#FFFFFF',
   },
+  logOutText: {
+    color: '#EF4444',
+  },
 
-  // Spacer
+  // ── Spacer ──
   spacer: {
     flex: 1,
     minHeight: 24,
