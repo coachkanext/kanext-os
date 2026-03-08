@@ -9,7 +9,7 @@
  */
 
 import React, { useCallback } from 'react';
-import { View, Text, Image, StyleSheet, Pressable, Dimensions, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Dimensions, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -28,10 +28,7 @@ interface SettingsPanelProps {
 export function SettingsPanel({ visible }: SettingsPanelProps) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { state: authState, signOut } = useAuth();
-
-  const displayName = authState.session?.displayName ?? 'User';
-  const username = '@' + displayName.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 16);
+  const { signOut } = useAuth();
 
   const handleNavigate = useCallback((route: string) => {
     closeSettingsPanel();
@@ -55,22 +52,7 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── TOP SECTION: IDENTITY ── */}
-        <Pressable style={styles.identityRow} onPress={() => handleNavigate('/profile')}>
-          <Image
-            source={require('@/assets/images/sammy-kalejaiye.jpg')}
-            style={styles.avatar}
-          />
-          <View style={styles.identityText}>
-            <Text style={styles.name} numberOfLines={1}>{displayName}</Text>
-            <Text style={styles.username} numberOfLines={1}>{username}</Text>
-          </View>
-        </Pressable>
-
-        {/* 16px space */}
-        <View style={{ height: 16 }} />
-
-        {/* Mode circles + org switcher (shared component) */}
+        {/* Identity + mode circles + org switcher (shared component) */}
         <PanelHeader />
 
         {/* ── DIVIDER ── */}
@@ -184,36 +166,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: 20,
-  },
-
-  // ── Identity ──
-  identityRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    marginBottom: 12,
-  },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
-  },
-  identityText: {
-    flex: 1,
-  },
-  name: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    letterSpacing: -0.3,
-  },
-  username: {
-    fontSize: 13,
-    fontWeight: '400',
-    color: '#A1A1AA',
-    marginTop: 1,
   },
 
   // ── Divider ──

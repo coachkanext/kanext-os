@@ -10,6 +10,7 @@ import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { useAppContext } from '@/context/app-context';
+import { useAuth } from '@/context/auth-context';
 import {
   getOrgsForModeV2,
   getMembershipsForOrg,
@@ -29,8 +30,11 @@ const MODE_ITEMS: { mode: Mode; label: string; image: any }[] = [
 
 export function PanelHeader() {
   const { state, switchMode, switchContext } = useAppContext();
+  const { state: authState } = useAuth();
   const currentMode = state.mode;
   const activeOrgId = state.activeContext.org_id;
+  const displayName = authState.session?.displayName ?? 'User';
+  const username = '@' + displayName.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 16);
 
   const orgRows = useMemo(() => {
     const orgs = getOrgsForModeV2(currentMode);
@@ -73,6 +77,24 @@ export function PanelHeader() {
 
   return (
     <View style={styles.container}>
+      {/* Identity row — avatar + name + username */}
+      <View style={styles.identityRow}>
+        <View style={styles.avatarClip}>
+          <Image
+            source={require('@/assets/images/sammy-kalejaiye.jpg')}
+            style={styles.avatarImage}
+          />
+        </View>
+        <View style={styles.identityText}>
+          <Text style={styles.name} numberOfLines={1}>{displayName}</Text>
+          <Text style={styles.username} numberOfLines={1}>{username}</Text>
+        </View>
+      </View>
+
+      <View style={{ height: 20 }} />
+      <View style={styles.divider} />
+      <View style={{ height: 16 }} />
+
       {/* Mode switcher — horizontal row of 4 circles */}
       <View style={styles.modeRow}>
         {MODE_ITEMS.map((m) => {
@@ -129,8 +151,43 @@ export function PanelHeader() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 20,
+  container: {},
+  divider: {
+    height: 1,
+    backgroundColor: '#2F3336',
+  },
+  identityRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    marginBottom: 0,
+  },
+  avatarClip: {
+    width: 55,
+    height: 55,
+    borderRadius: 28,
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: 55,
+    height: 74,
+    top: -2,
+    resizeMode: 'cover',
+  } as any,
+  identityText: {
+    flex: 1,
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    letterSpacing: -0.3,
+  },
+  username: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#A1A1AA',
+    marginTop: 2,
   },
   modeRow: {
     flexDirection: 'row',

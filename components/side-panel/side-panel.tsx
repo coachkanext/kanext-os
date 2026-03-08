@@ -77,11 +77,11 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+    paddingHorizontal: 20,
   },
   divider: {
     height: 1,
     backgroundColor: '#2F3336',
     marginVertical: 8,
-    marginHorizontal: 20,
   },
 });
