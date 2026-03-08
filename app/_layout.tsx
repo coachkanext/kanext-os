@@ -18,7 +18,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as SplashScreenModule from 'expo-splash-screen';
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { View, StyleSheet, Animated, Pressable, PanResponder, Dimensions } from 'react-native';
-import { GestureHandlerRootView, FlingGestureHandler, Directions, State as GHState } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import 'react-native-reanimated';
 
@@ -46,7 +46,7 @@ import { registerViewSwitchCallback } from '@/utils/view-switch-lifecycle';
 import { requestHomeReset } from '@/utils/global-home';
 import { requestOrgReset } from '@/utils/global-org';
 import { resetFooter } from '@/utils/global-footer-hide';
-import { shouldUseSlideAnimation, setSwipeCallbacks } from '@/utils/global-footer-swipe';
+import { shouldUseSlideAnimation, setSwipeCallbacks, registerAnimRerender } from '@/utils/global-footer-swipe';
 import { pushForward, popForward } from '@/utils/global-nav-history';
 
 import { UniversalFinder } from '@/components/universal-finder';
@@ -102,6 +102,12 @@ export const unstable_settings = {
 function AppShell() {
   const colorScheme = useColorScheme();
   const { state: authState } = useAuth();
+
+  // Force re-render when slide animation is enabled (so screenOptions re-evaluates)
+  const [, forceUpdate] = useState(0);
+  useEffect(() => {
+    return registerAnimRerender(() => forceUpdate(n => n + 1));
+  }, []);
 
   // Register view-switch lifecycle callbacks — reset Home + Org tabs on view change
   useEffect(() => {
@@ -280,11 +286,17 @@ function AppShell() {
   // Capture-phase PanResponder: intercepts horizontal right-swipes to open panels.
   // Swipe right from anywhere on any page opens the appropriate panel.
   // Excludes footer zone (bottom 100px) — footer has its own PanResponder for back/forward.
+  // Disabled on home screen — video hero has its own ScrollView paging + edge overscroll.
+  const isHome = pathname === '/' || pathname === '/(tabs)' || pathname === '/(tabs)/(main)' || pathname === '/(main)';
+
   const panelOpenPanResponder = useMemo(
     () =>
       PanResponder.create({
         onStartShouldSetPanResponderCapture: () => false,
         onMoveShouldSetPanResponderCapture: (evt, gs) => {
+          // Never capture on home — video hero ScrollView needs horizontal paging
+          const p = pathnameRef.current;
+          if (p === '/' || p === '/(tabs)' || p === '/(tabs)/(main)' || p === '/(main)') return false;
           // Skip footer zone (bottom 100px) — footer has its own back/forward swipes
           const screenH = Dimensions.get('window').height;
           if (evt.nativeEvent.pageY > screenH - 100) return false;
@@ -293,8 +305,8 @@ function AppShell() {
         onPanResponderRelease: (_evt, gs) => {
           if (gs.dx > 60) {
             const p = pathnameRef.current;
-            const isHome = p === '/' || p === '/(tabs)' || p === '/(tabs)/(main)' || p === '/(main)';
-            if (isHome) {
+            const isOnHome = p === '/' || p === '/(tabs)' || p === '/(tabs)/(main)' || p === '/(main)';
+            if (isOnHome) {
               openSettingsPanel();
             } else {
               openSidePanel();
@@ -308,23 +320,6 @@ function AppShell() {
   // Show auth modal when not authenticated (and not still checking)
   const showAuthModal = !authState.isChecking && !authState.isAuthenticated;
 
-  // Global fling-right handler: opens side panel on any page (settings panel on home)
-  const handleFlingRight = useCallback(({ nativeEvent }: any) => {
-    if (nativeEvent.state === GHState.ACTIVE) {
-      // Skip footer zone — footer handles its own back/forward swipes
-      const screenH = Dimensions.get('window').height;
-      if (nativeEvent.absoluteY > screenH - 100) return;
-      if (isSidePanelOpen() || isSettingsPanelOpen()) return;
-      const p = pathnameRef.current;
-      const isHome = p === '/' || p === '/(tabs)' || p === '/(tabs)/(main)' || p === '/(main)';
-      if (isHome) {
-        openSettingsPanel();
-      } else {
-        openSidePanel();
-      }
-    }
-  }, []);
-
   // Normal navigation with tabs — edge-to-edge, no header
   return (
     <View style={styles.container}>
@@ -336,39 +331,33 @@ function AppShell() {
       {/* Content wrapper — shifts right when panels open */}
       <Animated.View
         style={[styles.container, { transform: [{ translateX: contentTranslateX }] }]}
-        {...(!settingsPanelVisible && !sidePanelVisible ? panelOpenPanResponder.panHandlers : {})}
+        {...(!settingsPanelVisible && !sidePanelVisible && !isHome ? panelOpenPanResponder.panHandlers : {})}
       >
-        <FlingGestureHandler
-          direction={Directions.RIGHT}
-          onHandlerStateChange={handleFlingRight}
-        >
-          <View style={styles.container}>
-            <Stack
-              screenOptions={() => ({
-                headerShown: false,
-                animation: shouldUseSlideAnimation() ? 'slide_from_right' : 'none',
-                gestureEnabled: false,
-                contentStyle: { backgroundColor: '#000000' },
-              })}
-              screenListeners={{ focus: () => resetFooter() }}
-            >
-              <Stack.Screen name="(tabs)" />
-              <Stack.Screen name="coach" />
-              <Stack.Screen name="login" />
-              <Stack.Screen name="nexus" />
-              <Stack.Screen name="wallet" options={{ contentStyle: { backgroundColor: '#000000' } }} />
-              <Stack.Screen name="video" />
-              <Stack.Screen name="settings" />
-              <Stack.Screen name="profile" options={{ contentStyle: { backgroundColor: '#000000' } }} />
-              {/* section and messages are inside (tabs)/(home) Stack — tab bar stays visible */}
-              <Stack.Screen
-                name="modal"
-                options={{ presentation: 'modal', title: 'Modal' }}
-              />
-            </Stack>
-          </View>
-        </FlingGestureHandler>
-        {/* Footer outside FlingGestureHandler so its own PanResponder handles swipes */}
+        <View style={styles.container}>
+          <Stack
+            screenOptions={() => ({
+              headerShown: false,
+              animation: shouldUseSlideAnimation() ? 'slide_from_right' : 'none',
+              gestureEnabled: false,
+              contentStyle: { backgroundColor: '#000000' },
+            })}
+            screenListeners={{ focus: () => resetFooter() }}
+          >
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="coach" />
+            <Stack.Screen name="login" />
+            <Stack.Screen name="nexus" />
+            <Stack.Screen name="wallet" options={{ contentStyle: { backgroundColor: '#000000' } }} />
+            <Stack.Screen name="video" />
+            <Stack.Screen name="settings" />
+            <Stack.Screen name="profile" options={{ contentStyle: { backgroundColor: '#000000' } }} />
+            {/* section and messages are inside (tabs)/(home) Stack — tab bar stays visible */}
+            <Stack.Screen
+              name="modal"
+              options={{ presentation: 'modal', title: 'Modal' }}
+            />
+          </Stack>
+        </View>
         <UniversalFooter />
 
         {/* Tap/swipe dismiss overlay when either panel is open */}

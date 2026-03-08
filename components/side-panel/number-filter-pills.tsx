@@ -1,7 +1,6 @@
 /**
- * MyNumbersSection — Shared "My Numbers" component for Phone and Messages side panels.
- * Shows user's KaNeXT numbers with mode-colored pills.
- * Tap → onFilter callback, Long-press → NumberPopup (Copy, Port, Share).
+ * NumberFilterPills — Shared phone-number-based filter pills for side panels.
+ * Each pill shows last 4 digits + mode label. Tap filters, long press opens popup.
  */
 
 import React, { useState } from 'react';
@@ -9,6 +8,7 @@ import {
   View,
   Text,
   Pressable,
+  ScrollView,
   Modal,
   StyleSheet,
 } from 'react-native';
@@ -28,6 +28,11 @@ const C = {
   divider: '#2F3336',
   surface: '#0B0F14',
 };
+
+interface NumberFilterPillsProps {
+  activeMode: Mode | null;
+  onFilterChange: (mode: Mode | null) => void;
+}
 
 // ── Number long-press popup ──
 
@@ -79,36 +84,51 @@ function NumberPopup({
   );
 }
 
+// ── Extract last 4 digits from a phone number string ──
+
+function lastFour(number: string): string {
+  const digits = number.replace(/\D/g, '');
+  return digits.slice(-4);
+}
+
 // ── Main component ──
 
-export function MyNumbersSection({ onFilter }: { onFilter: (mode: Mode) => void }) {
+export function NumberFilterPills({ activeMode, onFilterChange }: NumberFilterPillsProps) {
   const [popupNumber, setPopupNumber] = useState<KanextNumber | null>(null);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.pillRow}>
-        {MY_KANEXT_NUMBERS.map((num) => (
-          <Pressable
-            key={num.mode}
-            style={({ pressed }) => [
-              styles.pill,
-              pressed && { opacity: 0.7 },
-            ]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              onFilter(num.mode);
-            }}
-            onLongPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              setPopupNumber(num);
-            }}
-            delayLongPress={400}
-          >
-            <Text style={styles.pillNumber}>{num.number}</Text>
-            <Text style={styles.pillLabel}>{MODE_BADGE_LABELS[num.mode]}</Text>
-          </Pressable>
-        ))}
-      </View>
+    <View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.pillRow}
+      >
+        {MY_KANEXT_NUMBERS.map((num) => {
+          const active = activeMode === num.mode;
+          return (
+            <Pressable
+              key={num.mode}
+              style={[styles.pill, active && styles.pillActive]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onFilterChange(active ? null : num.mode);
+              }}
+              onLongPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                setPopupNumber(num);
+              }}
+              delayLongPress={400}
+            >
+              <Text style={[styles.pillNumber, active && styles.pillTextActive]}>
+                {lastFour(num.number)}
+              </Text>
+              <Text style={[styles.pillLabel, active && styles.pillTextActive]}>
+                {MODE_BADGE_LABELS[num.mode]}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
 
       <NumberPopup
         visible={popupNumber !== null}
@@ -120,24 +140,22 @@ export function MyNumbersSection({ onFilter }: { onFilter: (mode: Mode) => void 
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: 16,
-    paddingHorizontal: 12,
-    paddingBottom: 16,
-  },
   pillRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
+    paddingHorizontal: 16,
+    gap: 6,
   },
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    backgroundColor: 'rgba(255,255,255,0.10)',
+    gap: 5,
+    backgroundColor: C.surface,
     borderRadius: 20,
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingVertical: 7,
+  },
+  pillActive: {
+    backgroundColor: '#FFFFFF',
   },
   pillNumber: {
     fontSize: 13,
@@ -149,6 +167,9 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '500',
     color: C.secondary,
+  },
+  pillTextActive: {
+    color: '#000000',
   },
 });
 

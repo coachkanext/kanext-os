@@ -1,19 +1,24 @@
 /**
- * Nexus Screen — Sports Mode v1
- * Program-scoped intelligence layer (A2 | Single Program | V3 | D2).
+ * Nexus Screen — Full Page
+ * Program-scoped intelligence layer.
  * Conversational only — recommends, analyzes, compares, evaluates, presents.
  * Does NOT execute actions directly. All writes follow: Propose → Validate → Confirm → Commit.
  *
  * Layout: Single screen, 3 zones:
  *   Zone 1 — Top Bar (sticky): Hamburger → Sidebar, "Nexus" title, Context Chip
  *   Zone 2 — Thread Area: Active conversation with inline embeds
- *   Zone 3 — Input Bar (sticky bottom): Text | Attach | Mic
+ *   Zone 3 — Input Bar (sticky bottom): universal input bar with plus button
  *
  * States:
  * - Locked: Not authenticated → dimmed background, no input
- * - Onboarding: Authenticated + new user → onboarding conversation
- * - Landing: No active conversation → Nexus orb + mode quote + input bar
- * - Chat: Active conversation → thread + input bar
+ * - Empty: 15+ min idle or first use → faint logo + input bar
+ * - Chat: Active conversation (within 15 min) → thread + input bar
+ *
+ * 15 Minute Threshold:
+ * - Tracks lastInteractionAt timestamp (message sent or received)
+ * - If >15 min since last interaction → show empty state (logo + input)
+ * - If ≤15 min → resume previous conversation
+ * - Previous conversations always preserved in history
  */
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
@@ -25,7 +30,7 @@ import { registerHeaderLeftAction } from '@/components/global-header';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AvatarDrawer } from '@/components/avatar-drawer';
 import { ChatThread } from '@/components/nexus/chat-thread';
-import { InputBar } from '@/components/nexus/input-bar';
+import { UniversalInputBar } from '@/components/ui/universal-input-bar';
 import { NexusLanding } from '@/components/nexus/nexus-landing';
 import { ConversationsPanel } from '@/components/nexus/conversations-panel';
 import { ProgramContextDrawer } from '@/components/nexus/program-context-drawer';
@@ -45,6 +50,8 @@ import { registerGameOpsHandler } from '@/utils/global-game-ops';
 import * as Haptics from 'expo-haptics';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const PANEL_WIDTH = SCREEN_WIDTH * 0.7;
+
+const IDLE_THRESHOLD_MS = 15 * 60 * 1000; // 15 minutes
 
 
 function NexusLockedState() {
@@ -99,6 +106,20 @@ function NexusScreenContent() {
   const { state: authState, completeOnboarding } = useAuth();
   const { state: appState } = useAppContext();
   const mode = useMode();
+
+  // ── 15-minute threshold logic ──
+  const isIdle = (() => {
+    if (nexusState.lastInteractionAt === null) return true;
+    return (Date.now() - nexusState.lastInteractionAt) > IDLE_THRESHOLD_MS;
+  })();
+
+  // When idle, show empty state (no active conversation view)
+  // When not idle and there's an active conversation, show it
+  const showEmptyState = isIdle && !nexusState.activeConversationId;
+  const showResumedConvo = !isIdle && nexusState.activeConversationId;
+
+  // Track whether user has started typing (to fade out logo)
+  const [logoFading, setLogoFading] = useState(false);
 
   // Local UI state
   const [avatarDrawerVisible, setAvatarDrawerVisible] = useState(false);
@@ -242,7 +263,25 @@ function NexusScreenContent() {
     console.log('Insert action:', action);
   }, [closeNewConversationSheet]);
 
-  // Game Ops is now conversational — user types naturally, GPT parses and asks clarifying questions.
+  // ── Input handlers ──
+  const handleInputFocus = useCallback(() => {
+    if (!nexusState.activeConversationId) {
+      setLogoFading(true);
+      // Create conversation after fade starts
+      setTimeout(() => createNewConversation(), 200);
+    }
+  }, [nexusState.activeConversationId, createNewConversation]);
+
+  const handleInputChange = useCallback((text: string) => {
+    if (!nexusState.activeConversationId && text.length > 0 && !logoFading) {
+      setLogoFading(true);
+      setTimeout(() => createNewConversation(), 200);
+    }
+    setInputText(text);
+  }, [nexusState.activeConversationId, logoFading, setInputText, createNewConversation]);
+
+  // Determine whether to show landing or conversation
+  const showLanding = !nexusState.activeConversationId;
 
   return (
     <ThemedView style={styles.container}>
@@ -268,14 +307,14 @@ function NexusScreenContent() {
         style={[
           styles.mainContent,
           {
-            backgroundColor: colors.background,
+            backgroundColor: '#000000',
             transform: [{ translateX: contentSlideAnim }],
           },
         ]}
       >
 
         {/* Landing or Chat */}
-        {!nexusState.activeConversationId ? (
+        {showLanding ? (
           <>
             <Pressable
               style={styles.canvas}
@@ -284,18 +323,18 @@ function NexusScreenContent() {
                 if (isPanelOpen) closePanel();
               }}
             >
-              <NexusLanding mode={mode} />
+              <NexusLanding fadeOut={logoFading} />
             </Pressable>
-            <InputBar
-              value={nexusState.inputText}
-              onChangeText={setInputText}
-              onSend={sendMessage}
-              onMicPress={handleMicPress}
-              onAttachPress={handlePlusPress}
-              isVoiceActive={voiceState !== 'idle'}
-              onFocus={() => createNewConversation()}
-              placeholder="Ask Nexus anything..."
-            />
+            <View style={styles.inputBarWrap}>
+              <UniversalInputBar
+                showPlus={true}
+                placeholder="Ask Nexus..."
+                value={nexusState.inputText}
+                onChangeText={handleInputChange}
+                onSend={sendMessage}
+                onAttachPress={handlePlusPress}
+              />
+            </View>
           </>
         ) : (
           <>
@@ -325,19 +364,16 @@ function NexusScreenContent() {
             </Pressable>
 
             {/* Input Bar */}
-            <InputBar
-              value={nexusState.inputText}
-              onChangeText={setInputText}
-              onSend={sendMessage}
-              onMicPress={handleMicPress}
-              onAttachPress={handlePlusPress}
-              isVoiceActive={voiceState !== 'idle'}
-              onFocus={() => {
-                if (!nexusState.activeConversationId) createNewConversation();
-              }}
-              placeholder="Ask Nexus"
-              contextPill={isGameOps ? { icon: 'basketball.fill', label: 'Game Ops' } : null}
-            />
+            <View style={styles.inputBarWrap}>
+              <UniversalInputBar
+                showPlus={true}
+                placeholder="Ask Nexus..."
+                value={nexusState.inputText}
+                onChangeText={(text) => setInputText(text)}
+                onSend={sendMessage}
+                onAttachPress={handlePlusPress}
+              />
+            </View>
           </>
         )}
       </Animated.View>
@@ -429,12 +465,17 @@ export default function NexusScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#000000',
   },
   mainContent: {
     ...StyleSheet.absoluteFillObject,
   },
   canvas: {
     flex: 1,
+  },
+  inputBarWrap: {
+    paddingHorizontal: 16,
+    paddingBottom: 8,
   },
   lockedOverlay: {
     flex: 1,
@@ -464,61 +505,6 @@ const styles = StyleSheet.create({
   },
   gameOpsSubHeaderText: {
     fontSize: 14,
-    fontWeight: '600',
-  },
-  gameOpsChips: {
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    borderTopWidth: StyleSheet.hairlineWidth,
-  },
-  chipRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  chip: {
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: BorderRadius.lg,
-  },
-  chipText: {
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  starterScroll: {
-    maxHeight: 200,
-  },
-  starterGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  playerChip: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: BorderRadius.lg,
-    borderWidth: 1,
-    minWidth: '47%',
-    flexGrow: 1,
-  },
-  playerChipName: {
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  starterCount: {
-    fontSize: 13,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: Spacing.sm,
-    marginBottom: Spacing.sm,
-  },
-  confirmBtn: {
-    paddingVertical: 14,
-    borderRadius: BorderRadius.lg,
-    alignItems: 'center',
-  },
-  confirmBtnText: {
-    fontSize: 16,
     fontWeight: '600',
   },
 });

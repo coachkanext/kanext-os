@@ -1,9 +1,8 @@
 /**
  * Phone Side Panel — FINAL spec.
  * No scroll. Everything visible at once.
- * Top: mode filter pills (single row).
- * Bottom: 7 menu rows (icon + label, no chevrons).
- * Slightly tighter padding (16px per row) to fit 7 rows without scrolling.
+ * Top: number-based filter pills (single row).
+ * Bottom: 7 menu rows — 6 nav + 1 inline toggle.
  */
 
 import React, { useState } from 'react';
@@ -11,44 +10,37 @@ import {
   View,
   Text,
   Pressable,
+  Switch,
   StyleSheet,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { NumberFilterPills } from '@/components/side-panel/number-filter-pills';
+import { useMode } from '@/context/app-context';
 import { closeSidePanel } from '@/utils/global-side-panel';
+import type { Mode } from '@/types';
 
 const C = {
   bg: '#000000',
   surface: '#0B0F14',
   label: '#FFFFFF',
-  labelDark: '#000000',
 };
 
-type ModeFilter = 'all' | 'sports' | 'business' | 'church' | 'education';
-
-const MODE_PILLS: { key: ModeFilter; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'sports', label: 'Sports' },
-  { key: 'business', label: 'Business' },
-  { key: 'church', label: 'Faith' },
-  { key: 'education', label: 'Education' },
-];
-
-const MENU_ITEMS = [
+const NAV_ITEMS = [
   { icon: 'circle.grid.3x3.fill', label: 'Dial Pad', route: '/(tabs)/(main)/phone/dialpad' },
   { icon: 'clock.fill', label: 'Recent Calls', route: '/(tabs)/(main)/phone/recent' },
   { icon: 'star.fill', label: 'Favorites', route: '/(tabs)/(main)/phone/favorites' },
   { icon: 'waveform', label: 'Voicemail', route: '/(tabs)/(main)/phone/voicemail' },
-  { icon: 'circle.slash', label: 'Blocked', route: '/(tabs)/(main)/phone/blocked' },
-  { icon: 'gearshape.fill', label: 'Settings', route: '/(tabs)/(main)/phone/settings' },
-  { icon: 'phone.fill', label: 'My Numbers', route: null },
+  { icon: 'hand.raised.fill', label: 'Blocked', route: '/(tabs)/(main)/phone/blocked' },
 ] as const;
 
 export function PhonePanel() {
   const router = useRouter();
-  const [activeFilter, setActiveFilter] = useState<ModeFilter>('all');
+  const currentMode = useMode();
+  const [activeMode, setActiveMode] = useState<Mode | null>(currentMode);
+  const [notifications, setNotifications] = useState(true);
 
   const navigateTo = (route: string) => {
     closeSidePanel();
@@ -57,41 +49,23 @@ export function PhonePanel() {
 
   return (
     <View style={styles.container}>
-      {/* ── MODE FILTER PILLS ── */}
-      <View style={styles.pillRow}>
-        {MODE_PILLS.map((pill) => {
-          const active = activeFilter === pill.key;
-          return (
-            <Pressable
-              key={pill.key}
-              style={[styles.pill, active && styles.pillActive]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setActiveFilter(pill.key);
-              }}
-            >
-              <Text style={[styles.pillText, active && styles.pillTextActive]}>
-                {pill.label}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
+      {/* ── NUMBER FILTER PILLS ── */}
+      <NumberFilterPills activeMode={activeMode} onFilterChange={setActiveMode} />
 
       {/* ── 20px SPACER ── */}
       <View style={{ height: 20 }} />
 
-      {/* ── MENU ROWS ── */}
-      {MENU_ITEMS.map((item) => (
+      {/* ── NAV ROWS ── */}
+      {NAV_ITEMS.map((item) => (
         <Pressable
           key={item.label}
           style={({ pressed }) => [
             styles.menuRow,
-            pressed && { backgroundColor: 'rgba(255,255,255,0.05)' },
+            pressed && styles.menuRowPressed,
           ]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            if (item.route) navigateTo(item.route);
+            navigateTo(item.route);
           }}
         >
           <IconSymbol name={item.icon as any} size={20} color={C.label} />
@@ -99,8 +73,40 @@ export function PhonePanel() {
         </Pressable>
       ))}
 
-      {/* ── 24px BOTTOM PADDING ── */}
-      <View style={{ height: 24 }} />
+      {/* ── NOTIFICATIONS TOGGLE ROW ── */}
+      <View style={styles.menuRow}>
+        <IconSymbol name={'bell.fill' as any} size={20} color={C.label} />
+        <Text style={styles.menuLabel}>Notifications</Text>
+        <View style={styles.toggleSpacer} />
+        <Switch
+          value={notifications}
+          onValueChange={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            setNotifications(!notifications);
+          }}
+          trackColor={{ false: '#39393D', true: '#FFFFFF' }}
+          thumbColor={notifications ? '#000000' : '#808080'}
+          ios_backgroundColor="#39393D"
+        />
+      </View>
+
+      {/* ── SETTINGS NAV ROW ── */}
+      <Pressable
+        style={({ pressed }) => [
+          styles.menuRow,
+          pressed && styles.menuRowPressed,
+        ]}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          navigateTo('/(tabs)/(main)/phone/settings');
+        }}
+      >
+        <IconSymbol name={'gearshape.fill' as any} size={20} color={C.label} />
+        <Text style={styles.menuLabel}>Settings</Text>
+      </Pressable>
+
+      {/* ── 32px BOTTOM PADDING ── */}
+      <View style={{ height: 32 }} />
     </View>
   );
 }
@@ -110,28 +116,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 20,
   },
-  pillRow: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    gap: 6,
-  },
-  pill: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 14,
-    backgroundColor: C.surface,
-  },
-  pillActive: {
-    backgroundColor: '#FFFFFF',
-  },
-  pillText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: C.label,
-  },
-  pillTextActive: {
-    color: C.labelDark,
-  },
   menuRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -139,8 +123,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
   },
+  menuRowPressed: {
+    backgroundColor: 'rgba(255,255,255,0.05)',
+  },
   menuLabel: {
     fontSize: 16,
     color: C.label,
+  },
+  toggleSpacer: {
+    flex: 1,
   },
 });

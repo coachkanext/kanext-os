@@ -104,7 +104,7 @@ export function MessageBubble({
     const esc = v2.escalation;
     return (
       <View style={[styles.container, styles.assistantContainer]}>
-        <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: colors.backgroundSecondary }]}>
+        <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: '#0B0F14' }]}>
           {v2.content ? (
             <ThemedText style={[styles.messageText, { color: colors.text }]}>
               {v2.content}
@@ -151,7 +151,7 @@ export function MessageBubble({
     return (
       <View style={[styles.container, styles.assistantContainer]}>
         {v2.content ? (
-          <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: colors.backgroundSecondary }]}>
+          <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: '#0B0F14' }]}>
             <ThemedText style={[styles.messageText, { color: colors.text }]}>{v2.content}</ThemedText>
           </View>
         ) : null}
@@ -168,7 +168,7 @@ export function MessageBubble({
     return (
       <View style={[styles.container, styles.assistantContainer]}>
         {v2.content ? (
-          <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: colors.backgroundSecondary }]}>
+          <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: '#0B0F14' }]}>
             <ThemedText style={[styles.messageText, { color: colors.text }]}>{v2.content}</ThemedText>
           </View>
         ) : null}
@@ -185,7 +185,7 @@ export function MessageBubble({
     return (
       <View style={[styles.container, styles.assistantContainer]}>
         {v2.content ? (
-          <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: colors.backgroundSecondary }]}>
+          <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: '#0B0F14' }]}>
             <ThemedText style={[styles.messageText, { color: colors.text }]}>{v2.content}</ThemedText>
           </View>
         ) : null}
@@ -204,8 +204,8 @@ export function MessageBubble({
         style={[
           styles.bubble,
           isUser
-            ? [styles.userBubble, { backgroundColor: colors.backgroundTertiary }]
-            : [styles.assistantBubble, { backgroundColor: colors.backgroundSecondary }],
+            ? [styles.userBubble, { backgroundColor: '#1A1F2E' }]
+            : [styles.assistantBubble, { backgroundColor: '#0B0F14' }],
         ]}
       >
         {message.content ? (

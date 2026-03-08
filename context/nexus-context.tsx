@@ -52,6 +52,7 @@ const defaultState: NexusState = {
   targetContext: { organizationId: '' },
   pendingAction: undefined,
   pendingActionConversationId: undefined,
+  lastInteractionAt: null,
 };
 
 // =============================================================================
@@ -117,6 +118,7 @@ function nexusReducer(state: NexusState, action: NexusAction): NexusState {
         ...state,
         messages: [...state.messages, newMessage],
         conversations: updatedConversations,
+        lastInteractionAt: Date.now(),
       };
     }
 
@@ -279,6 +281,7 @@ function nexusReducer(state: NexusState, action: NexusAction): NexusState {
         ...state,
         messages: [...state.messages, ...(newMsgs as Message[])],
         conversations: convs,
+        lastInteractionAt: Date.now(),
       };
     }
 

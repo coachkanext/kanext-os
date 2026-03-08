@@ -1,58 +1,39 @@
 /**
- * Nexus Landing — mode-specific quote.
- * Shown when no active conversation is selected.
+ * Nexus Landing — Empty state with the Nexus "N" logo.
+ * Uses the same footer-nexus.png asset as the universal footer.
+ * Shown when no active conversation is selected (15+ min idle or first use).
+ * Just the logo and nothing else. No quotes, no chips, no suggestions.
+ * Logo fades out when the user starts interacting (fadeOut prop).
  */
 
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-
-import { ThemedText } from '@/components/themed-text';
-import { Colors, Spacing } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import type { Mode } from '@/types';
-
-const MODE_QUOTES: Record<Mode, { text: string; attribution: string }> = {
-  sports: {
-    text: 'Once the deal is made, there\u2019s no negotiating with yourself.',
-    attribution: '\u2014 Kobe Bryant',
-  },
-  church: {
-    text: 'The one who is unwilling to work shall not eat.',
-    attribution: '\u2014 2 Thessalonians 3:10',
-  },
-  business: {
-    text: 'The future looks bright.',
-    attribution: '\u2014 Patrick Bet-David',
-  },
-  education: {
-    text: 'The magic you\u2019re looking for is in the work you\u2019re avoiding.',
-    attribution: '\u2014 Chris Williamson',
-  },
-  competition: {
-    text: 'Why can\u2019t you do it? Do they have two heads?',
-    attribution: '\u2014 Pastor Philip Anthony Mitchell',
-  },
-};
+import React, { useRef, useEffect } from 'react';
+import { View, Animated, StyleSheet } from 'react-native';
 
 interface Props {
-  mode: Mode;
+  /** When true, the logo fades out smoothly */
+  fadeOut?: boolean;
 }
 
-export function NexusLanding({ mode }: Props) {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
-  const quote = MODE_QUOTES[mode] ?? MODE_QUOTES.business;
+export function NexusLanding({ fadeOut = false }: Props) {
+  const opacity = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (fadeOut) {
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [fadeOut]);
 
   return (
     <View style={styles.container}>
-      <View style={styles.center}>
-        <ThemedText style={[styles.quoteText, { color: colors.textSecondary }]}>
-          {quote.text}
-        </ThemedText>
-        <ThemedText style={[styles.attribution, { color: colors.textTertiary }]}>
-          {quote.attribution}
-        </ThemedText>
-      </View>
+      <Animated.Image
+        source={require('@/assets/images/footer-nexus.png')}
+        style={[styles.logo, { opacity: Animated.multiply(opacity, 0.35) }]}
+        resizeMode="contain"
+      />
     </View>
   );
 }
@@ -62,22 +43,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: Spacing.xl,
+    backgroundColor: '#000000',
   },
-  center: {
-    alignItems: 'center',
-  },
-  quoteText: {
-    fontSize: 22,
-    fontStyle: 'italic',
-    textAlign: 'center',
-    lineHeight: 32,
-    opacity: 0.75,
-  },
-  attribution: {
-    fontSize: 15,
-    fontStyle: 'italic',
-    marginTop: Spacing.md,
-    opacity: 0.5,
+  logo: {
+    width: 200,
+    height: 200,
   },
 });

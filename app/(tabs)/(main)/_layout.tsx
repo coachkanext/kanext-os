@@ -5,16 +5,23 @@
  * Swipe-right on page → opens side panel (handled in root _layout.tsx).
  * Native back gestures disabled — Nexus swipe is the only back mechanism.
  *
- * Animation rule: ONLY footer swipe triggers slide animation.
+ * Animation rule: ONLY footer/screen swipe triggers slide animation.
  * All taps navigate instantly (animation: 'none').
  */
 
+import { useState, useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { closeSidePanel } from '@/utils/global-side-panel';
-import { shouldUseSlideAnimation } from '@/utils/global-footer-swipe';
+import { shouldUseSlideAnimation, registerAnimRerender } from '@/utils/global-footer-swipe';
 
 export default function HomeLayout() {
+  // Force re-render when slide animation is enabled (so screenOptions re-evaluates)
+  const [, forceUpdate] = useState(0);
+  useEffect(() => {
+    return registerAnimRerender(() => forceUpdate(n => n + 1));
+  }, []);
+
   return (
     <Stack
       screenOptions={() => ({

@@ -656,6 +656,8 @@ export interface NexusState {
   pendingAction?: import('./nexus-v2').ActionIntent;
   /** Conversation the pending action belongs to */
   pendingActionConversationId?: string;
+  /** Timestamp of the last Nexus interaction (message sent or received) */
+  lastInteractionAt: number | null;
 }
 
 // =============================================================================
