@@ -22,6 +22,10 @@ export function canCreateGroupThread(role: Role): boolean {
   return STAFF_ROLES.includes(role);
 }
 
+export function canCreateChannel(role: Role): boolean {
+  return STAFF_ROLES.includes(role);
+}
+
 export function canRepost(role: Role): boolean {
   return STAFF_ROLES.includes(role);
 }

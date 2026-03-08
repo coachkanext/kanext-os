@@ -203,6 +203,9 @@ const MAPPING = {
   'person.circle': 'account-circle',
   'bubble.left.and.bubble.right': 'forum',
   'bag.fill': 'shopping-bag',
+
+  // Hash / Channel
+  'number': 'tag',
 } as const;
 
 export type IconSymbolName = keyof typeof MAPPING | SymbolViewProps['name'];

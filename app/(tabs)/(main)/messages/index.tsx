@@ -21,8 +21,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useMode } from '@/context/app-context';
+import { useMode, useOperatingRole } from '@/context/app-context';
+import { canCreateChannel } from '@/utils/messages-permissions';
 import { NewDMSheet } from '@/components/messages/new-dm-sheet';
+import { CreateChannelSheet } from '@/components/messages/create-channel-sheet';
 import { getRooms, getGlobalDMs, formatMessageTime } from '@/data/mock-messages-v3';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
@@ -183,6 +185,104 @@ const pvS = StyleSheet.create({
   menuLabelDestructive: { color: '#FF3B30' },
 });
 
+
+// ─── FAB Popup Menu (staff-only two-option popup) ────────────────────────────
+
+function FabPopupMenu({
+  bottomOffset,
+  onNewMessage,
+  onNewChannel,
+  onDismiss,
+}: {
+  bottomOffset: number;
+  onNewMessage: () => void;
+  onNewChannel: () => void;
+  onDismiss: () => void;
+}) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.9)).current;
+
+  React.useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        tension: 120,
+        friction: 10,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
+  const dismiss = useCallback(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 120,
+      useNativeDriver: true,
+    }).start(() => onDismiss());
+  }, [fadeAnim, onDismiss]);
+
+  return (
+    <Modal transparent animationType="none" onRequestClose={dismiss}>
+      <Animated.View style={[fabMenuS.overlay, { opacity: fadeAnim }]}>
+        <Pressable style={fabMenuS.backdrop} onPress={dismiss} />
+        <Animated.View
+          style={[
+            fabMenuS.menu,
+            {
+              bottom: bottomOffset,
+              transform: [{ scale: scaleAnim }],
+            },
+          ]}
+        >
+          <Pressable style={fabMenuS.menuItem} onPress={onNewMessage}>
+            <IconSymbol name="bubble.left.fill" size={18} color="#FFFFFF" />
+            <Text style={fabMenuS.menuLabel}>New Message</Text>
+          </Pressable>
+          <View style={fabMenuS.menuDivider} />
+          <Pressable style={fabMenuS.menuItem} onPress={onNewChannel}>
+            <IconSymbol name="number" size={18} color="#FFFFFF" />
+            <Text style={fabMenuS.menuLabel}>New Channel</Text>
+          </Pressable>
+        </Animated.View>
+      </Animated.View>
+    </Modal>
+  );
+}
+
+const fabMenuS = StyleSheet.create({
+  overlay: { flex: 1 },
+  backdrop: { ...StyleSheet.absoluteFillObject },
+  menu: {
+    position: 'absolute',
+    right: 20,
+    backgroundColor: '#000000',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#2F3336',
+    overflow: 'hidden',
+    minWidth: 180,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 16,
+    minHeight: 48,
+  },
+  menuDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: '#2F3336',
+  },
+  menuLabel: {
+    fontSize: 16,
+    color: '#FFFFFF',
+  },
+});
 
 // ─── Channel Row ─────────────────────────────────────────────────────────────
 
@@ -463,10 +563,14 @@ export default function MessagesListScreen() {
   const insets = useSafeAreaInsets();
   const mode = useMode();
   const router = useRouter();
+  const role = useOperatingRole();
+  const isStaff = canCreateChannel(role);
 
   const [mutedIds, setMutedIds] = useState<Set<string>>(new Set());
   const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
   const [composeVisible, setComposeVisible] = useState(false);
+  const [fabMenuVisible, setFabMenuVisible] = useState(false);
+  const [createChannelVisible, setCreateChannelVisible] = useState(false);
   const [previewData, setPreviewData] = useState<PreviewData | null>(null);
   const [filter, setFilter] = useState<FilterMode>('all');
 
@@ -641,13 +745,17 @@ export default function MessagesListScreen() {
 
       {/* ── FAB compose button ── */}
       <Pressable
-        style={[s.fab, { backgroundColor: '#FFFFFF', bottom: insets.bottom + 60 }]}
+        style={[s.fab, { backgroundColor: '#0B0F14', bottom: insets.bottom + 60 }]}
         onPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          setComposeVisible(true);
+          if (isStaff) {
+            setFabMenuVisible(true);
+          } else {
+            setComposeVisible(true);
+          }
         }}
       >
-        <IconSymbol name="square.and.pencil" size={22} color="#000000" />
+        <IconSymbol name="plus" size={24} color="#FFFFFF" />
       </Pressable>
 
       {/* ── Compose sheet ── */}
@@ -656,6 +764,28 @@ export default function MessagesListScreen() {
         onClose={() => setComposeVisible(false)}
         onSend={handleComposeSend}
         accent="#FFFFFF"
+      />
+
+      {/* ── FAB popup menu (staff only) ── */}
+      {fabMenuVisible && (
+        <FabPopupMenu
+          bottomOffset={insets.bottom + 60 + 60}
+          onNewMessage={() => {
+            setFabMenuVisible(false);
+            setComposeVisible(true);
+          }}
+          onNewChannel={() => {
+            setFabMenuVisible(false);
+            setCreateChannelVisible(true);
+          }}
+          onDismiss={() => setFabMenuVisible(false)}
+        />
+      )}
+
+      {/* ── Create channel sheet ── */}
+      <CreateChannelSheet
+        visible={createChannelVisible}
+        onClose={() => setCreateChannelVisible(false)}
       />
 
       {/* ── Preview overlay ── */}
