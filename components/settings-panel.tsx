@@ -56,20 +56,16 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
         showsVerticalScrollIndicator={false}
       >
         {/* ── TOP SECTION: IDENTITY ── */}
-
-        {/* Avatar — tap opens Profile */}
-        <Pressable onPress={() => handleNavigate('/profile')}>
+        <Pressable style={styles.identityRow} onPress={() => handleNavigate('/profile')}>
           <Image
             source={require('@/assets/images/sammy-kalejaiye.jpg')}
             style={styles.avatar}
           />
+          <View style={styles.identityText}>
+            <Text style={styles.name} numberOfLines={1}>{displayName}</Text>
+            <Text style={styles.username} numberOfLines={1}>{username}</Text>
+          </View>
         </Pressable>
-
-        {/* Name */}
-        <Text style={styles.name}>{displayName}</Text>
-
-        {/* @username */}
-        <Text style={styles.username}>{username}</Text>
 
         {/* 16px space */}
         <View style={{ height: 16 }} />
@@ -191,25 +187,33 @@ const styles = StyleSheet.create({
   },
 
   // ── Identity ──
-  avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+  identityRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
     marginBottom: 12,
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.15)',
   },
+  identityText: {
+    flex: 1,
+  },
   name: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '700',
     color: '#FFFFFF',
     letterSpacing: -0.3,
   },
   username: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '400',
     color: '#A1A1AA',
-    marginTop: 2,
+    marginTop: 1,
   },
 
   // ── Divider ──
