@@ -1,0 +1,208 @@
+/**
+ * Social Screen — Instagram-style visual platform.
+ * Page 0: Feed (stories + posts). Page 1: Reels (full-screen vertical paging).
+ * SwipeableTwoPage container. FAB on Feed only. Side panel on right edge swipe.
+ */
+
+import React, { useState, useRef, useMemo, useCallback } from 'react';
+import { View, ScrollView, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { SwipeableTwoPage } from '@/components/ui/swipeable-two-page';
+import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
+import { StoriesRow } from '@/components/social/stories-row';
+import { StoryViewer } from '@/components/social/story-viewer';
+import { FeedPost } from '@/components/social/feed-post';
+import { ReelsPage } from '@/components/social/reels-page';
+import { SocialFab } from '@/components/social/social-fab';
+import { getStories, getFeedPosts, getReels } from '@/data/mock-social';
+import { hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { openSidePanel } from '@/utils/global-side-panel';
+import type { StoryUser } from '@/data/mock-social';
+
+export default function SocialScreen() {
+  const insets = useSafeAreaInsets();
+
+  const [pageIndex, setPageIndex] = useState(0);
+  const [menuData, setMenuData] = useState<ContextMenuData | null>(null);
+  const [storyViewerUser, setStoryViewerUser] = useState<number | null>(null);
+
+  // Like / bookmark state
+  const [likedPosts, setLikedPosts] = useState<Set<string>>(() => {
+    const initial = new Set<string>();
+    getFeedPosts().forEach((p) => { if (p.isLiked) initial.add(p.id); });
+    return initial;
+  });
+  const [bookmarkedPosts, setBookmarkedPosts] = useState<Set<string>>(() => {
+    const initial = new Set<string>();
+    getFeedPosts().forEach((p) => { if (p.isBookmarked) initial.add(p.id); });
+    return initial;
+  });
+  const [likedReels, setLikedReels] = useState<Set<string>>(() => {
+    const initial = new Set<string>();
+    getReels().forEach((r) => { if (r.isLiked) initial.add(r.id); });
+    return initial;
+  });
+  const [bookmarkedReels, setBookmarkedReels] = useState<Set<string>>(() => {
+    const initial = new Set<string>();
+    getReels().forEach((r) => { if (r.isBookmarked) initial.add(r.id); });
+    return initial;
+  });
+
+  const stories = useMemo(() => getStories(), []);
+  const posts = useMemo(() => getFeedPosts(), []);
+  const reels = useMemo(() => getReels(), []);
+
+  // Scroll-driven footer hide/show
+  const lastScrollY = useRef(0);
+  const handleScroll = useCallback((e: any) => {
+    const y = e.nativeEvent.contentOffset.y;
+    if (y > lastScrollY.current + 10) hideFooter();
+    else if (y < lastScrollY.current - 10) showFooter();
+    lastScrollY.current = y;
+    if (y <= 0) showFooter();
+  }, []);
+
+  // Page change: show footer on Feed, hide on Reels
+  const handlePageChange = useCallback((index: number) => {
+    setPageIndex(index);
+    if (index === 0) showFooter();
+    else hideFooter();
+  }, []);
+
+  // Toggle helpers
+  const togglePostLike = useCallback((id: string) => {
+    setLikedPosts((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const togglePostBookmark = useCallback((id: string) => {
+    setBookmarkedPosts((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const toggleReelLike = useCallback((id: string) => {
+    setLikedReels((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const toggleReelBookmark = useCallback((id: string) => {
+    setBookmarkedReels((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }, []);
+
+  // Story press
+  const handleStoryPress = useCallback((user: StoryUser) => {
+    if (user.isYou || user.storyFrames.length === 0) return;
+    const idx = stories.findIndex((s) => s.id === user.id);
+    if (idx >= 0) setStoryViewerUser(idx);
+  }, [stories]);
+
+  // Long press on post → context menu
+  const handlePostLongPress = useCallback((postId: string, authorName: string, authorInitials: string, pageY: number) => {
+    setMenuData({
+      title: authorName,
+      subtitle: 'Post',
+      initials: authorInitials,
+      isSquircle: false,
+      pageY,
+      actions: [
+        { key: 'save', label: 'Save', icon: 'bookmark.fill' },
+        { key: 'share', label: 'Share', icon: 'square.and.arrow.up' },
+        { key: 'copy', label: 'Copy Link', icon: 'link' },
+        { key: 'report', label: 'Report', icon: 'exclamationmark.triangle.fill', destructive: true },
+        { key: 'mute', label: 'Mute User', icon: 'speaker.slash.fill', destructive: true },
+      ],
+      onAction: (key) => {
+        if (key === 'save') togglePostBookmark(postId);
+      },
+    });
+  }, [togglePostBookmark]);
+
+  return (
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <SwipeableTwoPage
+        activeIndex={pageIndex}
+        onPageChange={handlePageChange}
+        onEdgeRight={openSidePanel}
+      >
+        {/* Page 0: Feed */}
+        <ScrollView
+          style={styles.pageScroll}
+          contentContainerStyle={{ paddingBottom: 100 }}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+        >
+          <StoriesRow stories={stories} onStoryPress={handleStoryPress} />
+          <View style={styles.feedSeparator} />
+          {posts.map((post) => (
+            <FeedPost
+              key={post.id}
+              post={post}
+              isLiked={likedPosts.has(post.id)}
+              isBookmarked={bookmarkedPosts.has(post.id)}
+              onLikeToggle={() => togglePostLike(post.id)}
+              onBookmarkToggle={() => togglePostBookmark(post.id)}
+              onLongPress={(pageY) =>
+                handlePostLongPress(post.id, post.author.name, post.author.initials, pageY)
+              }
+            />
+          ))}
+        </ScrollView>
+
+        {/* Page 1: Reels */}
+        <ReelsPage
+          reels={reels}
+          likedReels={likedReels}
+          bookmarkedReels={bookmarkedReels}
+          onLikeToggle={toggleReelLike}
+          onBookmarkToggle={toggleReelBookmark}
+        />
+      </SwipeableTwoPage>
+
+      {/* FAB — Feed only */}
+      <SocialFab
+        visible={pageIndex === 0}
+        bottomOffset={insets.bottom + 60}
+      />
+
+      {/* Story viewer overlay */}
+      <StoryViewer
+        visible={storyViewerUser !== null}
+        stories={stories}
+        initialUserIndex={storyViewerUser ?? 0}
+        onClose={() => setStoryViewerUser(null)}
+      />
+
+      {/* Long-press context menu */}
+      <LongPressContextMenu data={menuData} onClose={() => setMenuData(null)} />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000000',
+  },
+  pageScroll: {
+    flex: 1,
+  },
+  feedSeparator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: '#2F3336',
+  },
+});

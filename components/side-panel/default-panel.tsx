@@ -87,6 +87,16 @@ const SCREEN_ITEMS: Record<string, { title: string; items: PanelItem[] }> = {
       { icon: 'waveform', label: 'Audio Devices' },
     ],
   },
+  social: {
+    title: 'Social',
+    items: [
+      { icon: 'square.grid.2x2.fill', label: 'Your Posts' },
+      { icon: 'bookmark.fill', label: 'Saved' },
+      { icon: 'doc.text.fill', label: 'Drafts' },
+      { icon: 'chart.bar.fill', label: 'Analytics' },
+      { icon: 'gearshape.fill', label: 'Settings' },
+    ],
+  },
 };
 
 /** Resolve which item set to show based on pathname */
@@ -100,6 +110,7 @@ function resolveScreen(pathname: string): { title: string; items: PanelItem[] } 
   if (p.includes('give') || p.includes('giving')) return SCREEN_ITEMS.give;
   if (p.includes('video')) return SCREEN_ITEMS.video;
   if (p.includes('phone')) return SCREEN_ITEMS.phone;
+  if (p.includes('social')) return SCREEN_ITEMS.social;
   // Generic fallback
   return {
     title: 'Tools',
