@@ -27,11 +27,12 @@ const SCREEN_ITEMS: Record<string, { title: string; items: PanelItem[] }> = {
   media: {
     title: 'Media',
     items: [
-      { icon: 'play.rectangle.fill', label: 'Library' },
-      { icon: 'music.note.list', label: 'Playlists' },
-      { icon: 'bookmark.fill', label: 'Saved Clips' },
-      { icon: 'arrow.up.circle.fill', label: 'Uploads' },
-      { icon: 'clock.fill', label: 'Watch Later' },
+      { icon: 'person.2.fill', label: 'Subscriptions' },
+      { icon: 'arrow.up.circle.fill', label: 'Upload' },
+      { icon: 'tv.fill', label: 'Your Channel' },
+      { icon: 'chart.bar.fill', label: 'Analytics' },
+      { icon: 'arrow.down.circle.fill', label: 'Downloads' },
+      { icon: 'gearshape.fill', label: 'Settings' },
     ],
   },
   organization: {

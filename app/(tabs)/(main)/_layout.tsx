@@ -57,6 +57,8 @@ export default function HomeLayout() {
       <Stack.Screen name="agenda/index" />
       {/* Social */}
       <Stack.Screen name="social/index" />
+      {/* Media */}
+      <Stack.Screen name="media/index" />
     </Stack>
   );
 }
