@@ -3,7 +3,7 @@
  * Diagonal 3D cards fanning out, newest on the right.
  * Swipe up on a card to dismiss it. Tap card to switch.
  * Tap outside = close overlay and stay on current screen.
- * Current screen is NOT shown in the card list.
+ * Current screen IS included in the card list.
  */
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
@@ -17,7 +17,7 @@ import {
   PanResponder,
   useWindowDimensions,
 } from 'react-native';
-import { useRouter, usePathname } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
@@ -146,7 +146,6 @@ function AppCard({
 export function MultitaskingOverlay() {
   const [visible, setVisible] = useState(false);
   const router = useRouter();
-  const pathname = usePathname();
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
   const { screens, removeScreen } = useMultitasking();
@@ -222,13 +221,8 @@ export function MultitaskingOverlay() {
 
   if (!visible) return null;
 
-  // Filter out the current screen, then reverse so newest is on the RIGHT
-  const currentPath = pathname.split('?')[0];
-  const otherScreens = screens.filter((s) => {
-    const routePath = s.route.split('?')[0];
-    return routePath !== currentPath;
-  });
-  const orderedScreens = [...otherScreens].reverse();
+  // Show all screens including current, reversed so newest is on the RIGHT
+  const orderedScreens = [...screens].reverse();
 
   return (
     <AnimatedPressable

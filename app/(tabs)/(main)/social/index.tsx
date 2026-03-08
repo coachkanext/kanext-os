@@ -63,11 +63,9 @@ export default function SocialScreen() {
     if (y <= 0) showFooter();
   }, []);
 
-  // Page change: show footer on Feed, hide on Reels
+  // Page change: track index (footer only hides on scroll, not page switch)
   const handlePageChange = useCallback((index: number) => {
     setPageIndex(index);
-    if (index === 0) showFooter();
-    else hideFooter();
   }, []);
 
   // Toggle helpers

@@ -1,17 +1,16 @@
 /**
  * ReelsPage — vertical paging FlatList of full-screen reels.
- * Hides footer on mount, shows on unmount.
- * 5s idle timer to show footer after inactivity.
+ * Footer hides on scroll (swipe between reels), auto-shows after 3s idle.
  */
 
-import React, { useRef, useCallback, useEffect } from 'react';
+import React, { useRef, useCallback } from 'react';
 import {
   View,
   FlatList,
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
-import { hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { hideFooter } from '@/utils/global-footer-hide';
 import { ReelCard } from './reel-card';
 import type { SocialReel } from '@/data/mock-social';
 
@@ -31,29 +30,18 @@ export function ReelsPage({
   onBookmarkToggle,
 }: ReelsPageProps) {
   const { height: screenHeight } = useWindowDimensions();
-  const idleTimer = useRef<ReturnType<typeof setTimeout>>();
+  const hasFiredOnce = useRef(false);
 
-  const resetIdle = useCallback(() => {
-    hideFooter();
-    if (idleTimer.current) clearTimeout(idleTimer.current);
-    idleTimer.current = setTimeout(() => {
-      showFooter();
-    }, 5000);
-  }, []);
-
-  // Hide footer on mount, show on unmount
-  useEffect(() => {
-    hideFooter();
-    return () => {
-      if (idleTimer.current) clearTimeout(idleTimer.current);
-      showFooter();
-    };
-  }, []);
-
+  // Swiping between reels = scroll → hide footer (global 3s idle timer auto-shows)
+  // Skip the initial fire on mount so footer stays visible when entering the page
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: { index: number | null }[] }) => {
       if (viewableItems.length > 0 && viewableItems[0].index != null) {
-        resetIdle();
+        if (!hasFiredOnce.current) {
+          hasFiredOnce.current = true;
+          return;
+        }
+        hideFooter();
       }
     },
   ).current;

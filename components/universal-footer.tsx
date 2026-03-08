@@ -9,7 +9,7 @@
  * Icons (all use existing image assets):
  *   Home (1):         footer-home.png    — tap → navigate home
  *   Messages (2):     footer-messages.png — tap → push messages
- *   Nexus (center):   footer-nexus.png   — tap, double-tap, hold, swipe-up (multitasking)
+ *   Nexus (center):   footer-nexus.png   — tap, double-tap (multitasking), hold (search), swipe-up (split screen)
  *   Phone (4):        footer-phone.png   — tap → push phone
  *   Organization (5): footer-org.png     — tap → push organization, long press → mode switcher
  */
@@ -82,14 +82,14 @@ export function UniversalFooter() {
   const handleNexusPress = () => {
     const now = Date.now();
 
-    if (now - lastTapRef.current < 350) {
-      // Double tap → Split screen
+    if (now - lastTapRef.current < 300) {
+      // Double tap → Multitasking
       lastTapRef.current = 0;
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      if (isSplitNexusOpen()) {
-        closeSplitNexus();
+      if (isMultitaskingOpen()) {
+        closeMultitasking();
       } else {
-        openSplitNexus();
+        openMultitasking();
       }
       return;
     }
@@ -102,7 +102,7 @@ export function UniversalFooter() {
       if (isMultitaskingOpen()) closeMultitasking();
       if (isSplitNexusOpen()) closeSplitNexus();
       router.navigate('/nexus' as any);
-    }, 350);
+    }, 300);
   };
 
   // ── Nexus long press → voice + search ──
@@ -112,7 +112,7 @@ export function UniversalFooter() {
     openSearchOverlay();
   };
 
-  // ── Nexus swipe-up PanResponder (multitasking) ──
+  // ── Nexus swipe-up PanResponder (split screen toggle) ──
   // Footer has NO special horizontal swipe gestures — those pass through
   // to the root layout's panelOpenPanResponder like the rest of the screen.
   const nexusPanResponder = useMemo(
@@ -124,7 +124,11 @@ export function UniversalFooter() {
         onPanResponderRelease: (_evt, gs) => {
           if (gs.dy < -50) {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            openMultitasking();
+            if (isSplitNexusOpen()) {
+              closeSplitNexus();
+            } else {
+              openSplitNexus();
+            }
           }
         },
       }),
@@ -289,8 +293,8 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   } as any,
   phoneImage: {
-    width: 52,
-    height: 52,
+    width: 79,
+    height: 79,
     resizeMode: 'contain',
   } as any,
   nexusImage: {
