@@ -1,109 +1,142 @@
 /**
- * Messages Side Panel — My Numbers + Menu rows.
- * 1. My Numbers — reusable component with phone-number + colored pills
- * 2. Menu — Search, Filters, Channel Management, Notification Settings, Archived, Blocked
+ * Messages Side Panel — FINAL spec.
+ * No scroll. Everything visible at once.
+ * Top: mode filter pills (single row).
+ * Bottom: 5 menu rows (icon + label, no chevrons).
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   Pressable,
-  ScrollView,
   StyleSheet,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { MyNumbersSection } from '@/components/side-panel/my-numbers-section';
 import { closeSidePanel } from '@/utils/global-side-panel';
-import type { Mode } from '@/types';
 
 const C = {
   bg: '#000000',
+  surface: '#0B0F14',
   label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  divider: '#2F3336',
+  labelDark: '#000000',
 };
 
+type ModeFilter = 'all' | 'sports' | 'business' | 'church' | 'education';
+
+const MODE_PILLS: { key: ModeFilter; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'sports', label: 'Sports' },
+  { key: 'business', label: 'Business' },
+  { key: 'church', label: 'Faith' },
+  { key: 'education', label: 'Education' },
+];
+
 const MENU_ITEMS = [
-  { icon: 'magnifyingglass', label: 'Search', route: '/(tabs)/(main)/messages/search' },
-  { icon: 'line.3.horizontal.decrease.circle', label: 'Filters', route: '/(tabs)/(main)/messages/filters' },
   { icon: 'number', label: 'Channel Management', route: '/(tabs)/(main)/messages/channels' },
-  { icon: 'bell.fill', label: 'Notification Settings', route: '/(tabs)/(main)/messages/notifications' },
   { icon: 'archivebox.fill', label: 'Archived', route: '/(tabs)/(main)/messages/archived' },
-  { icon: 'hand.raised.fill', label: 'Blocked Users', route: '/(tabs)/(main)/messages/blocked' },
+  { icon: 'hand.raised.fill', label: 'Blocked', route: '/(tabs)/(main)/messages/blocked' },
+  { icon: 'gearshape.fill', label: 'Settings', route: '/(tabs)/(main)/messages/notifications' },
+  { icon: 'phone.fill', label: 'My Numbers', route: null },
 ] as const;
 
 export function MessagesPanel() {
   const router = useRouter();
+  const [activeFilter, setActiveFilter] = useState<ModeFilter>('all');
 
   const navigateTo = (route: string) => {
     closeSidePanel();
     setTimeout(() => router.push(route as any), 80);
   };
 
-  const handleFilter = (mode: Mode) => {
-    closeSidePanel();
-    // Filter messages by mode — behavior TBD
-  };
-
   return (
     <View style={styles.container}>
-      {/* ── MY NUMBERS (pinned) ── */}
-      <MyNumbersSection onFilter={handleFilter} />
+      {/* ── MODE FILTER PILLS ── */}
+      <View style={styles.pillRow}>
+        {MODE_PILLS.map((pill) => {
+          const active = activeFilter === pill.key;
+          return (
+            <Pressable
+              key={pill.key}
+              style={[styles.pill, active && styles.pillActive]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setActiveFilter(pill.key);
+              }}
+            >
+              <Text style={[styles.pillText, active && styles.pillTextActive]}>
+                {pill.label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
 
-      {/* ── DIVIDER ── */}
-      <View style={styles.divider} />
+      {/* ── 20px SPACER ── */}
+      <View style={{ height: 20 }} />
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* ── MENU ── */}
-        {MENU_ITEMS.map((item) => (
-          <Pressable
-            key={item.label}
-            style={({ pressed }) => [
-              styles.menuRow,
-              pressed && { backgroundColor: 'rgba(255,255,255,0.05)' },
-            ]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              navigateTo(item.route);
-            }}
-          >
-            <IconSymbol name={item.icon as any} size={20} color={C.secondary} />
-            <Text style={styles.menuLabel}>{item.label}</Text>
-          </Pressable>
-        ))}
-      </ScrollView>
+      {/* ── MENU ROWS ── */}
+      {MENU_ITEMS.map((item) => (
+        <Pressable
+          key={item.label}
+          style={({ pressed }) => [
+            styles.menuRow,
+            pressed && { backgroundColor: 'rgba(255,255,255,0.05)' },
+          ]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            if (item.route) navigateTo(item.route);
+          }}
+        >
+          <IconSymbol name={item.icon as any} size={20} color={C.label} />
+          <Text style={styles.menuLabel}>{item.label}</Text>
+        </Pressable>
+      ))}
+
+      {/* ── 32px BOTTOM PADDING ── */}
+      <View style={{ height: 32 }} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  scroll: { flex: 1 },
-  scrollContent: { paddingBottom: 32 },
-  divider: {
-    height: 1,
-    backgroundColor: C.divider,
-    marginBottom: 8,
+  container: {
+    flex: 1,
+    paddingTop: 20,
+  },
+  pillRow: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    gap: 6,
+  },
+  pill: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
+    backgroundColor: C.surface,
+  },
+  pillActive: {
+    backgroundColor: '#FFFFFF',
+  },
+  pillText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: C.label,
+  },
+  pillTextActive: {
+    color: C.labelDark,
   },
   menuRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderRadius: 8,
-    marginHorizontal: 4,
+    gap: 14,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
   },
   menuLabel: {
-    flex: 1,
     fontSize: 16,
     color: C.label,
   },

@@ -1,160 +1,145 @@
 /**
- * Phone Side Panel — Three visual zones separated by dividers.
- * 1. My Numbers — reusable component with phone-number + colored pills
- * 2. Activity — Dial Pad, Recent Calls, Favorites, Voicemail, Blocked
- * 3. Settings — Notifications, Ringtones, DND, Forwarding, Greeting, Wi-Fi, Caller ID
- * iOS Settings feel: scannable, generous spacing, icon + label on every row.
+ * Phone Side Panel — FINAL spec.
+ * No scroll. Everything visible at once.
+ * Top: mode filter pills (single row).
+ * Bottom: 7 menu rows (icon + label, no chevrons).
+ * Slightly tighter padding (16px per row) to fit 7 rows without scrolling.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   Pressable,
-  ScrollView,
   StyleSheet,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { MyNumbersSection } from '@/components/side-panel/my-numbers-section';
 import { closeSidePanel } from '@/utils/global-side-panel';
-import type { Mode } from '@/types';
 
 const C = {
   bg: '#000000',
   surface: '#0B0F14',
   label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  divider: '#2F3336',
+  labelDark: '#000000',
 };
 
-/* ── Activity rows ── */
-const ACTIVITY_ITEMS = [
+type ModeFilter = 'all' | 'sports' | 'business' | 'church' | 'education';
+
+const MODE_PILLS: { key: ModeFilter; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'sports', label: 'Sports' },
+  { key: 'business', label: 'Business' },
+  { key: 'church', label: 'Faith' },
+  { key: 'education', label: 'Education' },
+];
+
+const MENU_ITEMS = [
   { icon: 'circle.grid.3x3.fill', label: 'Dial Pad', route: '/(tabs)/(main)/phone/dialpad' },
   { icon: 'clock.fill', label: 'Recent Calls', route: '/(tabs)/(main)/phone/recent' },
   { icon: 'star.fill', label: 'Favorites', route: '/(tabs)/(main)/phone/favorites' },
   { icon: 'waveform', label: 'Voicemail', route: '/(tabs)/(main)/phone/voicemail' },
   { icon: 'circle.slash', label: 'Blocked', route: '/(tabs)/(main)/phone/blocked' },
+  { icon: 'gearshape.fill', label: 'Settings', route: '/(tabs)/(main)/phone/settings' },
+  { icon: 'phone.fill', label: 'My Numbers', route: null },
 ] as const;
-
-/* ── Settings rows ── */
-const SETTINGS_ITEMS = [
-  { icon: 'bell.fill', label: 'Notifications', route: '/(tabs)/(main)/phone/settings' },
-  { icon: 'speaker.wave.2.fill', label: 'Ringtones', route: '/(tabs)/(main)/phone/settings' },
-  { icon: 'moon.fill', label: 'Do Not Disturb', route: '/(tabs)/(main)/phone/settings' },
-  { icon: 'arrow.uturn.forward', label: 'Call Forwarding', route: '/(tabs)/(main)/phone/settings' },
-  { icon: 'mic.fill', label: 'Voicemail Greeting', route: '/(tabs)/(main)/phone/settings' },
-  { icon: 'wifi', label: 'Wi-Fi Calling', route: '/(tabs)/(main)/phone/settings' },
-  { icon: 'eye.slash.fill', label: 'Caller ID', route: '/(tabs)/(main)/phone/settings' },
-] as const;
-
-// ── Row component ──
-
-function PanelRow({ icon, label, onPress }: { icon: string; label: string; onPress: () => void }) {
-  return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.row,
-        pressed && { backgroundColor: 'rgba(255,255,255,0.05)' },
-      ]}
-      onPress={() => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        onPress();
-      }}
-    >
-      <IconSymbol name={icon as any} size={20} color={C.label} />
-      <Text style={styles.rowLabel}>{label}</Text>
-    </Pressable>
-  );
-}
-
-// ── Main panel ──
 
 export function PhonePanel() {
   const router = useRouter();
+  const [activeFilter, setActiveFilter] = useState<ModeFilter>('all');
 
   const navigateTo = (route: string) => {
     closeSidePanel();
     setTimeout(() => router.push(route as any), 80);
   };
 
-  const handleFilter = (mode: Mode) => {
-    closeSidePanel();
-    setTimeout(() => router.push({ pathname: '/(tabs)/(main)/phone/recent', params: { filterMode: mode } } as any), 80);
-  };
-
   return (
     <View style={styles.container}>
-      {/* ── MY NUMBERS (pinned) ── */}
-      <MyNumbersSection onFilter={handleFilter} />
+      {/* ── MODE FILTER PILLS ── */}
+      <View style={styles.pillRow}>
+        {MODE_PILLS.map((pill) => {
+          const active = activeFilter === pill.key;
+          return (
+            <Pressable
+              key={pill.key}
+              style={[styles.pill, active && styles.pillActive]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setActiveFilter(pill.key);
+              }}
+            >
+              <Text style={[styles.pillText, active && styles.pillTextActive]}>
+                {pill.label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
 
-      {/* ── DIVIDER ── */}
-      <View style={styles.divider} />
+      {/* ── 20px SPACER ── */}
+      <View style={{ height: 20 }} />
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* ── SECTION 2: ACTIVITY ── */}
-        <View style={styles.menuSection}>
-          {ACTIVITY_ITEMS.map((item) => (
-            <PanelRow
-              key={item.label}
-              icon={item.icon}
-              label={item.label}
-              onPress={() => navigateTo(item.route)}
-            />
-          ))}
-        </View>
+      {/* ── MENU ROWS ── */}
+      {MENU_ITEMS.map((item) => (
+        <Pressable
+          key={item.label}
+          style={({ pressed }) => [
+            styles.menuRow,
+            pressed && { backgroundColor: 'rgba(255,255,255,0.05)' },
+          ]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            if (item.route) navigateTo(item.route);
+          }}
+        >
+          <IconSymbol name={item.icon as any} size={20} color={C.label} />
+          <Text style={styles.menuLabel}>{item.label}</Text>
+        </Pressable>
+      ))}
 
-        {/* ── DIVIDER 2 ── */}
-        <View style={styles.divider} />
-
-        {/* ── SECTION 3: SETTINGS ── */}
-        <View style={styles.menuSection}>
-          {SETTINGS_ITEMS.map((item) => (
-            <PanelRow
-              key={item.label}
-              icon={item.icon}
-              label={item.label}
-              onPress={() => navigateTo(item.route)}
-            />
-          ))}
-        </View>
-      </ScrollView>
+      {/* ── 24px BOTTOM PADDING ── */}
+      <View style={{ height: 24 }} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  scroll: { flex: 1 },
-  scrollContent: { paddingBottom: 32 },
-
-  // Dividers
-  divider: {
-    height: 1,
-    backgroundColor: C.divider,
-    marginVertical: 24,
+  container: {
+    flex: 1,
+    paddingTop: 20,
   },
-
-  // Section 2 & 3: Activity + Settings
-  menuSection: {
-    paddingHorizontal: 20,
+  pillRow: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    gap: 6,
   },
-  row: {
+  pill: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
+    backgroundColor: C.surface,
+  },
+  pillActive: {
+    backgroundColor: '#FFFFFF',
+  },
+  pillText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: C.label,
+  },
+  pillTextActive: {
+    color: C.labelDark,
+  },
+  menuRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
+    paddingHorizontal: 20,
     paddingVertical: 16,
-    paddingHorizontal: 4,
-    borderRadius: 8,
   },
-  rowLabel: {
+  menuLabel: {
     fontSize: 16,
     color: C.label,
   },

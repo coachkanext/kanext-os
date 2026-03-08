@@ -355,7 +355,7 @@ function AppShell() {
               <Stack.Screen name="(tabs)" />
               <Stack.Screen name="coach" />
               <Stack.Screen name="login" />
-              <Stack.Screen name="nexus" options={{ animation: 'slide_from_right' }} />
+              <Stack.Screen name="nexus" />
               <Stack.Screen name="wallet" options={{ contentStyle: { backgroundColor: '#000000' } }} />
               <Stack.Screen name="video" />
               <Stack.Screen name="settings" />

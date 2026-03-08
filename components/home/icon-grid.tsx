@@ -31,7 +31,7 @@ const C = {
 const MODE_LABELS: Record<string, Record<Mode, string>> = {
   season:  { sports: 'Season',   business: 'Office',  church: 'Parish',     education: 'Campus',    competition: 'Season' },
   roster:  { sports: 'Roster',   business: 'Team',    church: 'Ministries', education: 'Community', competition: 'Roster' },
-  recruits:{ sports: 'Recruits', business: 'Prospects',church: 'Outreach',  education: 'Admissions',competition: 'Recruits' },
+  recruits:{ sports: 'Prospects', business: 'Leads',church: 'Outreach',  education: 'Admissions',competition: 'Prospects' },
   store:   { sports: 'Store',    business: 'Store',   church: 'Give',       education: 'Store',     competition: 'Store' },
 };
 
