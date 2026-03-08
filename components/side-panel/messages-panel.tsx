@@ -184,10 +184,7 @@ export function MessagesPanel() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 20,
-  },
+  container: {},
   menuRow: {
     flexDirection: 'row',
     alignItems: 'center',

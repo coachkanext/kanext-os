@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 const C = {
@@ -88,6 +88,15 @@ const SCREEN_ITEMS: Record<string, { title: string; items: PanelItem[] }> = {
       { icon: 'waveform', label: 'Audio Devices' },
     ],
   },
+  agenda: {
+    title: 'Agenda',
+    items: [
+      { icon: 'checklist', label: 'Reminders' },
+      { icon: 'line.3.horizontal.decrease', label: 'Filters' },
+      { icon: 'arrow.triangle.2.circlepath', label: 'Import' },
+      { icon: 'gearshape.fill', label: 'Settings' },
+    ],
+  },
   social: {
     title: 'Social',
     items: [
@@ -111,6 +120,7 @@ function resolveScreen(pathname: string): { title: string; items: PanelItem[] } 
   if (p.includes('give') || p.includes('giving')) return SCREEN_ITEMS.give;
   if (p.includes('video')) return SCREEN_ITEMS.video;
   if (p.includes('phone')) return SCREEN_ITEMS.phone;
+  if (p.includes('agenda')) return SCREEN_ITEMS.agenda;
   if (p.includes('social')) return SCREEN_ITEMS.social;
   // Generic fallback
   return {
@@ -131,11 +141,7 @@ export function DefaultPanel({ pathname }: DefaultPanelProps) {
   const screen = resolveScreen(pathname);
 
   return (
-    <ScrollView
-      style={styles.scroll}
-      contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}
-    >
+    <View style={styles.content}>
       <Text style={styles.title}>{screen.title}</Text>
       {screen.items.map((item, idx) => (
         <Pressable
@@ -151,13 +157,12 @@ export function DefaultPanel({ pathname }: DefaultPanelProps) {
           <IconSymbol name="chevron.right" size={14} color="rgba(255,255,255,0.25)" />
         </Pressable>
       ))}
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  scroll: { flex: 1 },
-  scrollContent: { paddingBottom: 40 },
+  content: {},
   title: {
     fontSize: 18,
     fontWeight: '700',

@@ -1,14 +1,19 @@
 /**
- * Side Panel Shell — Contextual right-side panel.
- * Position: absolute right, jet black background.
- * Routes to per-screen content based on pathname.
+ * Side Panel Shell — Universal side panel for all screens.
+ * Position: absolute left, jet black background.
+ *
+ * Layout:
+ *   TOP: PanelHeader (mode circles + org switcher) — same on every screen
+ *   DIVIDER
+ *   BOTTOM: Screen-specific content based on pathname
  */
 
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { usePathname } from 'expo-router';
 
+import { PanelHeader } from './panel-header';
 import { MessagesPanel } from './messages-panel';
 import { PhonePanel } from './phone-panel';
 import { DefaultPanel } from './default-panel';
@@ -27,20 +32,33 @@ export function SidePanel({ visible }: SidePanelProps) {
   const isMessages = pathname.includes('messages');
   const isPhone = pathname.includes('phone');
 
-  const content = isMessages
-    ? <MessagesPanel />
-    : isPhone
-      ? <PhonePanel />
-      : <DefaultPanel pathname={pathname} />;
-
   return (
     <View
       style={[styles.container, { width: SIDE_PANEL_WIDTH }]}
       pointerEvents={visible ? 'auto' : 'none'}
     >
-      <View style={[styles.inner, { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24 }]}>
-        {content}
-      </View>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24 },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Universal top: mode circles + org switcher */}
+        <PanelHeader />
+
+        {/* Divider */}
+        <View style={styles.divider} />
+
+        {/* Screen-specific content */}
+        {isMessages
+          ? <MessagesPanel />
+          : isPhone
+            ? <PhonePanel />
+            : <DefaultPanel pathname={pathname} />
+        }
+      </ScrollView>
     </View>
   );
 }
@@ -54,7 +72,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     zIndex: 0,
   },
-  inner: {
+  scroll: {
     flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#2F3336',
+    marginVertical: 8,
+    marginHorizontal: 20,
   },
 });
