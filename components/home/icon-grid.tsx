@@ -28,11 +28,11 @@ const C = {
 };
 
 /** Mode-dependent labels for icons that change per mode (positions 2, 3, 6) */
-const MODE_LABELS: Record<string, Record<Mode, string>> = {
-  season:  { sports: 'Season',   business: 'Office',  church: 'Parish',     education: 'Campus',    competition: 'Season' },
-  roster:  { sports: 'Roster',   business: 'Team',    church: 'Ministries', education: 'Community', competition: 'Roster' },
-  recruits:{ sports: 'Prospects', business: 'Leads',church: 'Outreach',  education: 'Admissions',competition: 'Prospects' },
-  store:   { sports: 'Store',    business: 'Store',   church: 'Give',       education: 'Store',     competition: 'Store' },
+const MODE_LABELS: Record<string, Partial<Record<Mode, string>>> = {
+  season:  { sports: 'Season',    business: 'Office',  church: 'Parish',    education: 'Campus' },
+  roster:  { sports: 'Roster',    business: 'Team',    church: 'Ministries', education: 'Community' },
+  recruits:{ sports: 'Prospects', business: 'Leads',   church: 'Outreach',  education: 'Admissions' },
+  store:   { sports: 'Store',     business: 'Store',   church: 'Give',      education: 'Store' },
 };
 
 /** Mode-dependent images for icons that swap per mode */
@@ -46,7 +46,6 @@ const MODE_IMAGES: Record<string, Partial<Record<Mode, any>>> = {
     sports: require('@/assets/images/icon-team-sports.png'),
     business: require('@/assets/images/icon-team-sports.png'),
     church: require('@/assets/images/icon-ministries.png'),
-    competition: require('@/assets/images/icon-roster.png'),
     education: require('@/assets/images/icon-community.png'),
   },
   recruits: {
