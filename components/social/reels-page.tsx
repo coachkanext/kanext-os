@@ -1,15 +1,16 @@
 /**
- * ReelsPage — Instagram-style full-screen vertical paging reels.
+ * ReelsPage — Instagram-style full-screen vertical reels with video playback.
  * X-style footer: hides on scroll down, shows on scroll up.
- * Each reel = full screen height. pagingEnabled for clean snapping.
+ * Tracks visible item to control video playback (only active reel plays).
  */
 
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import {
   View,
   FlatList,
   StyleSheet,
   useWindowDimensions,
+  type ViewToken,
 } from 'react-native';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { ReelCard } from './reel-card';
@@ -32,6 +33,7 @@ export function ReelsPage({
 }: ReelsPageProps) {
   const { height: screenHeight } = useWindowDimensions();
   const lastScrollY = useRef(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   // X-style: hide footer on scroll down, show on scroll up
   const handleScroll = useCallback((e: any) => {
@@ -45,17 +47,31 @@ export function ReelsPage({
     if (y <= 0) showFooter();
   }, []);
 
+  // Track which reel is visible (stable refs for FlatList)
+  const onViewableItemsChanged = useRef(
+    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+      if (viewableItems.length > 0 && viewableItems[0].index != null) {
+        setActiveIndex(viewableItems[0].index);
+      }
+    },
+  ).current;
+
+  const viewabilityConfig = useRef({
+    viewAreaCoveragePercentThreshold: 50,
+  }).current;
+
   const renderItem = useCallback(
-    ({ item }: { item: SocialReel }) => (
+    ({ item, index }: { item: SocialReel; index: number }) => (
       <ReelCard
         reel={item}
         isLiked={likedReels.has(item.id)}
         isBookmarked={bookmarkedReels.has(item.id)}
+        isActive={index === activeIndex}
         onLikeToggle={() => onLikeToggle(item.id)}
         onBookmarkToggle={() => onBookmarkToggle(item.id)}
       />
     ),
-    [likedReels, bookmarkedReels, onLikeToggle, onBookmarkToggle],
+    [likedReels, bookmarkedReels, onLikeToggle, onBookmarkToggle, activeIndex],
   );
 
   return (
@@ -67,6 +83,8 @@ export function ReelsPage({
         showsVerticalScrollIndicator={false}
         onScroll={handleScroll}
         scrollEventThrottle={16}
+        onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfig={viewabilityConfig}
         getItemLayout={(_data, index) => ({
           length: screenHeight,
           offset: screenHeight * index,

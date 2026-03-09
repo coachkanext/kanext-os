@@ -1,13 +1,15 @@
 /**
  * Social Screen — Instagram-style visual platform.
- * Page 0: Feed (stories + posts). Page 1: Reels (full-screen vertical paging).
+ * Mode-aware: content changes based on active mode (sports, church, education, business).
+ * Page 0: Feed (stories + posts). Page 1: Reels (full-screen video playback).
  * SwipeableTwoPage container. FAB on Feed only. Side panel on right edge swipe.
  */
 
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useMode } from '@/context/app-context';
 import { SwipeableTwoPage } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
 import { StoriesRow } from '@/components/social/stories-row';
@@ -22,36 +24,29 @@ import type { StoryUser } from '@/data/mock-social';
 
 export default function SocialScreen() {
   const insets = useSafeAreaInsets();
+  const mode = useMode();
 
   const [pageIndex, setPageIndex] = useState(0);
   const [menuData, setMenuData] = useState<ContextMenuData | null>(null);
   const [storyViewerUser, setStoryViewerUser] = useState<number | null>(null);
 
-  // Like / bookmark state
-  const [likedPosts, setLikedPosts] = useState<Set<string>>(() => {
-    const initial = new Set<string>();
-    getFeedPosts().forEach((p) => { if (p.isLiked) initial.add(p.id); });
-    return initial;
-  });
-  const [bookmarkedPosts, setBookmarkedPosts] = useState<Set<string>>(() => {
-    const initial = new Set<string>();
-    getFeedPosts().forEach((p) => { if (p.isBookmarked) initial.add(p.id); });
-    return initial;
-  });
-  const [likedReels, setLikedReels] = useState<Set<string>>(() => {
-    const initial = new Set<string>();
-    getReels().forEach((r) => { if (r.isLiked) initial.add(r.id); });
-    return initial;
-  });
-  const [bookmarkedReels, setBookmarkedReels] = useState<Set<string>>(() => {
-    const initial = new Set<string>();
-    getReels().forEach((r) => { if (r.isBookmarked) initial.add(r.id); });
-    return initial;
-  });
+  // Mode-aware data
+  const stories = useMemo(() => getStories(mode), [mode]);
+  const posts = useMemo(() => getFeedPosts(mode), [mode]);
+  const reels = useMemo(() => getReels(mode), [mode]);
 
-  const stories = useMemo(() => getStories(), []);
-  const posts = useMemo(() => getFeedPosts(), []);
-  const reels = useMemo(() => getReels(), []);
+  // Like / bookmark state — reset on mode change
+  const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
+  const [bookmarkedPosts, setBookmarkedPosts] = useState<Set<string>>(new Set());
+  const [likedReels, setLikedReels] = useState<Set<string>>(new Set());
+  const [bookmarkedReels, setBookmarkedReels] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    setLikedPosts(new Set(posts.filter((p) => p.isLiked).map((p) => p.id)));
+    setBookmarkedPosts(new Set(posts.filter((p) => p.isBookmarked).map((p) => p.id)));
+    setLikedReels(new Set(reels.filter((r) => r.isLiked).map((r) => r.id)));
+    setBookmarkedReels(new Set(reels.filter((r) => r.isBookmarked).map((r) => r.id)));
+  }, [posts, reels]);
 
   // Scroll-driven footer hide/show
   const lastScrollY = useRef(0);

@@ -1,9 +1,9 @@
 /**
- * ReelCard — single full-screen reel with side action buttons + bottom info.
- * Poster image fills screen. Double-tap for like animation.
+ * ReelCard — single full-screen reel with video playback + side actions + bottom info.
+ * Uses expo-av Video for actual video playback. Double-tap for like animation.
  */
 
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect, Component } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,29 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { LikeAnimation } from './like-animation';
 import type { SocialReel } from '@/data/mock-social';
 
+// Graceful fallback if expo-av native module isn't linked
+let Video: any = null;
+let ResizeMode: any = {};
+try {
+  const av = require('expo-av');
+  Video = av.Video;
+  ResizeMode = av.ResizeMode;
+} catch {}
+
+/** Catches native view registration errors */
+class VideoBoundary extends Component<
+  { children: React.ReactNode; fallback: React.ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children;
+  }
+}
+
 function formatCount(n: number): string {
   if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
   if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
@@ -27,6 +50,7 @@ interface ReelCardProps {
   reel: SocialReel;
   isLiked: boolean;
   isBookmarked: boolean;
+  isActive: boolean;
   onLikeToggle: () => void;
   onBookmarkToggle: () => void;
 }
@@ -35,18 +59,30 @@ export function ReelCard({
   reel,
   isLiked,
   isBookmarked,
+  isActive,
   onLikeToggle,
   onBookmarkToggle,
 }: ReelCardProps) {
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const lastTapRef = useRef(0);
   const [showLikeAnim, setShowLikeAnim] = useState(false);
+  const videoRef = useRef<any>(null);
 
   const likeCount = isLiked && !reel.isLiked
     ? reel.likeCount + 1
     : !isLiked && reel.isLiked
       ? reel.likeCount - 1
       : reel.likeCount;
+
+  // Control playback based on visibility
+  useEffect(() => {
+    if (!videoRef.current) return;
+    if (isActive) {
+      videoRef.current.playAsync?.()?.catch?.(() => {});
+    } else {
+      videoRef.current.pauseAsync?.()?.catch?.(() => {});
+    }
+  }, [isActive]);
 
   const handleTap = useCallback(() => {
     const now = Date.now();
@@ -58,15 +94,50 @@ export function ReelCard({
     lastTapRef.current = now;
   }, [isLiked, onLikeToggle]);
 
+  const posterFallback = reel.posterUri ? (
+    <Image
+      source={{ uri: reel.posterUri }}
+      style={StyleSheet.absoluteFill}
+      resizeMode="cover"
+    />
+  ) : null;
+
   return (
     <Pressable onPress={handleTap} style={{ width: screenWidth, height: screenHeight }}>
       <View style={[styles.container, { width: screenWidth, height: screenHeight }]}>
-        {/* Background image (reel poster) */}
-        <Image
-          source={{ uri: reel.videoUri }}
-          style={StyleSheet.absoluteFill}
-          resizeMode="cover"
-        />
+        {/* Poster image (shown while video loads) */}
+        {reel.posterUri && (
+          <Image
+            source={{ uri: reel.posterUri }}
+            style={StyleSheet.absoluteFill}
+            resizeMode="cover"
+          />
+        )}
+
+        {/* Video layer */}
+        {Video ? (
+          <VideoBoundary fallback={posterFallback}>
+            <Video
+              ref={videoRef}
+              source={{ uri: reel.videoUri }}
+              style={StyleSheet.absoluteFill}
+              resizeMode={ResizeMode.COVER ?? 'cover'}
+              shouldPlay={isActive}
+              isLooping
+              isMuted
+              onError={() => {}}
+            />
+          </VideoBoundary>
+        ) : (
+          /* Fallback: show poster as static image if no Video module */
+          !reel.posterUri && (
+            <Image
+              source={{ uri: reel.videoUri }}
+              style={StyleSheet.absoluteFill}
+              resizeMode="cover"
+            />
+          )
+        )}
 
         {/* Like animation overlay */}
         <LikeAnimation
