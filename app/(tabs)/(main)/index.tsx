@@ -2,12 +2,11 @@
  * Home — Auto-playing video area + icon grid.
  * Video = 42% of usable screen height (status bar to bottom safe area).
  * Grid centered in remaining space.
- * Video hero has 2 fluid-swipe pages (default = first page). Swipe on video strip to page.
+ * Video hero has 3 self-contained swipe pages (default = middle). Dead ends at edges.
  * Grid swipes: right → open settings panel, left → go to Nexus.
- * Edge overscroll on video (past page 0 or page 1) opens Settings (left) / Nexus (right).
  */
 
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { View, PanResponder, StyleSheet, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { VisualArea } from '@/components/home/visual-area';
@@ -19,17 +18,6 @@ import { pushNexusFromInner } from '@/utils/global-inner-nav';
 export default function HomeScreen() {
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  // Edge callbacks for video hero overscroll
-  const handleEdgeLeft = useCallback(() => {
-    enableSlideAnimation();
-    openSettingsPanel();
-  }, []);
-
-  const handleEdgeRight = useCallback(() => {
-    enableSlideAnimation();
-    pushNexusFromInner();
-  }, []);
-
   // Swipe on grid area → open panel (right) or Nexus (left)
   const gridPanResponder = useMemo(
     () =>
@@ -57,7 +45,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <View style={{ height: videoHeight + insets.top }}>
-        <VisualArea onEdgeLeft={handleEdgeLeft} onEdgeRight={handleEdgeRight} />
+        <VisualArea />
       </View>
       <View style={styles.gridWrapper} {...gridPanResponder.panHandlers}>
         <IconGrid />

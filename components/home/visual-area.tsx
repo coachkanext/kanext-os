@@ -1,9 +1,9 @@
 /**
  * Full-bleed video area — auto-playing, muted, looping.
  * Edge-to-edge, no margins, no borders, no rounded corners.
- * Text + dots overlaid on gradient. Tap → toggle mute/unmute.
- * Swipeable 2 pages via PanResponder + Animated.View. Default = first page.
- * Edge overscroll triggers onEdgeLeft (settings) / onEdgeRight (nexus).
+ * Dots overlaid on gradient. Tap → toggle mute/unmute.
+ * Swipeable 3 pages via PanResponder + Animated.View. Default = page 1 (middle).
+ * Self-contained swipe zone — edges are dead ends, no external navigation.
  */
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
@@ -23,32 +23,22 @@ import { registerVideoPagerHandlers, setVideoPage } from '@/utils/global-video-p
 import { VideoSlide } from './video-slide';
 import { PageDots } from '@/components/ui/page-dots';
 
-const DEFAULT_PAGE = 0; // First page
+const DEFAULT_PAGE = 1; // Middle page
 const SWIPE_THRESHOLD = 60;
 const VELOCITY_THRESHOLD = 0.5;
 
-interface VisualAreaProps {
-  onEdgeLeft?: () => void;
-  onEdgeRight?: () => void;
-}
-
-export function VisualArea({ onEdgeLeft, onEdgeRight }: VisualAreaProps) {
+export function VisualArea() {
   const { width: screenWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const [activeIndex, setActiveIndex] = useState(DEFAULT_PAGE);
   const [muted, setMuted] = useState(true);
   const pages = getVideoPages();
   const activeRef = useRef(DEFAULT_PAGE);
-  const edgeTriggered = useRef(false);
   const translateX = useRef(new Animated.Value(-DEFAULT_PAGE * screenWidth)).current;
 
   // Refs for values accessed inside PanResponder callbacks (avoids stale closures)
   const screenWidthRef = useRef(screenWidth);
   screenWidthRef.current = screenWidth;
-  const onEdgeLeftRef = useRef(onEdgeLeft);
-  onEdgeLeftRef.current = onEdgeLeft;
-  const onEdgeRightRef = useRef(onEdgeRight);
-  onEdgeRightRef.current = onEdgeRight;
   const maxPageRef = useRef(Math.max(0, pages.length - 1));
   maxPageRef.current = Math.max(0, pages.length - 1);
 
@@ -102,6 +92,7 @@ export function VisualArea({ onEdgeLeft, onEdgeRight }: VisualAreaProps) {
   }, []);
 
   // PanResponder for horizontal swiping between pages
+  // Self-contained: edges are dead ends (snap back, no external triggers)
   const panResponder = useMemo(
     () =>
       PanResponder.create({
@@ -109,7 +100,11 @@ export function VisualArea({ onEdgeLeft, onEdgeRight }: VisualAreaProps) {
           Math.abs(gs.dx) > 15 && Math.abs(gs.dx) > Math.abs(gs.dy) * 1.5,
         onPanResponderMove: (_evt, gs) => {
           const base = -activeRef.current * screenWidthRef.current;
-          translateX.setValue(base + gs.dx);
+          const raw = base + gs.dx;
+          // Clamp so pager doesn't overscroll past edges
+          const maxTranslate = -maxPageRef.current * screenWidthRef.current;
+          const clamped = Math.max(maxTranslate, Math.min(0, raw));
+          translateX.setValue(clamped);
         },
         onPanResponderRelease: (_evt, gs) => {
           const page = activeRef.current;
@@ -117,29 +112,11 @@ export function VisualArea({ onEdgeLeft, onEdgeRight }: VisualAreaProps) {
           const goPage = animateToPageRef.current;
 
           if (gs.dx > SWIPE_THRESHOLD || gs.vx > VELOCITY_THRESHOLD) {
-            // Swipe right → previous page or edge trigger
-            if (page > 0) {
-              goPage(page - 1);
-            } else {
-              if (!edgeTriggered.current) {
-                edgeTriggered.current = true;
-                onEdgeLeftRef.current?.();
-                setTimeout(() => { edgeTriggered.current = false; }, 500);
-              }
-              goPage(0); // snap back
-            }
+            // Swipe right → previous page or snap back at edge
+            goPage(page > 0 ? page - 1 : 0);
           } else if (gs.dx < -SWIPE_THRESHOLD || gs.vx < -VELOCITY_THRESHOLD) {
-            // Swipe left → next page or edge trigger
-            if (page < maxPage) {
-              goPage(page + 1);
-            } else {
-              if (!edgeTriggered.current) {
-                edgeTriggered.current = true;
-                onEdgeRightRef.current?.();
-                setTimeout(() => { edgeTriggered.current = false; }, 500);
-              }
-              goPage(maxPage); // snap back
-            }
+            // Swipe left → next page or snap back at edge
+            goPage(page < maxPage ? page + 1 : maxPage);
           } else {
             // Not enough movement — snap back to current page
             goPage(page);

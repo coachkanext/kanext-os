@@ -8,9 +8,6 @@ export interface VideoPage {
   state: VideoState;
   /** Remote or local video URI */
   source: string;
-  title: string;
-  subtitle?: string;
-  meta?: string;
   /** Tap destination */
   route?: string;
   /** Fallback image while video loads */
