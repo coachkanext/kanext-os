@@ -11,7 +11,7 @@
  *   Messages (2):     footer-messages.png — tap → push messages
  *   Nexus (center):   footer-nexus.png   — tap, double-tap (multitasking), hold (search), swipe-up (split screen)
  *   Phone (4):        footer-phone.png   — tap → push phone
- *   Organization (5): footer-org.png     — tap → push organization, long press → mode switcher
+ *   Mode (5):         footer-org.png     — tap → push mode screen, long press → mode switcher
  */
 
 import React, { useRef, useMemo, useEffect, useCallback } from 'react';
@@ -169,15 +169,15 @@ export function UniversalFooter() {
     router.navigate('/(tabs)/(main)/phone' as any);
     if (isOnNexus()) router.dismissAll();
   };
-  const handleOrgPress = () => {
-    if (pIncludes('section') && pIncludes('Organization')) return;
+  const handleModePress = () => {
+    if (pIncludes('section') && pIncludes('Mode')) return;
     preNav();
-    router.navigate('/(tabs)/(main)/section?title=Organization' as any);
+    router.navigate('/(tabs)/(main)/section?title=Mode' as any);
     if (isOnNexus()) router.dismissAll();
   };
 
-  // ── Organization long press → mode switcher ──
-  const handleOrgLongPress = () => {
+  // ── Mode long press → mode switcher ──
+  const handleModeLongPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     openModeSwitcher();
   };
@@ -241,11 +241,11 @@ export function UniversalFooter() {
           />
         </Pressable>
 
-        {/* 5. Organization — long press → mode switcher */}
+        {/* 5. Mode — long press → mode switcher */}
         <Pressable
           style={styles.iconButton}
-          onPress={handleOrgPress}
-          onLongPress={handleOrgLongPress}
+          onPress={handleModePress}
+          onLongPress={handleModeLongPress}
           delayLongPress={400}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >

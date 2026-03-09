@@ -20,7 +20,7 @@ const FOOTER_TABS: { name: string; icon: SymbolViewProps['name']; route: string 
   { name: 'Media', icon: 'play.rectangle.fill', route: '/(tabs)/media' },
   { name: 'Nexus', icon: 'sparkles', route: '/nexus' },
   { name: 'Activity', icon: 'bell.fill', route: '/(tabs)/activity' },
-  { name: 'Organization', icon: 'building.2.fill', route: '/(tabs)/organization' },
+  { name: 'Mode', icon: 'building.2.fill', route: '/(tabs)/organization' },
 ];
 
 interface TabFooterProps {

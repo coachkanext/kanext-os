@@ -1,14 +1,14 @@
 /**
- * Global Organization Reset
+ * Global Mode Reset
  * Same flag + callback pattern as global-home.ts.
- * OpsTabButton sets the flag; the active Organization mode component
+ * OpsTabButton sets the flag; the active Mode tab component
  * checks it on focus or fires immediately if already focused.
  */
 
 let _pendingOrgReset = false;
 let _resetCallback: (() => void) | null = null;
 
-/** Called from OpsTabButton when Organization tab is pressed */
+/** Called from OpsTabButton when Mode tab is pressed */
 export function requestOrgReset() {
   _pendingOrgReset = true;
   if (_resetCallback) {
@@ -17,7 +17,7 @@ export function requestOrgReset() {
   }
 }
 
-/** Called from Organization screen on focus to check and consume the flag */
+/** Called from Mode screen on focus to check and consume the flag */
 export function consumeOrgReset(): boolean {
   if (_pendingOrgReset) {
     _pendingOrgReset = false;

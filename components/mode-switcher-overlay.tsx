@@ -1,14 +1,15 @@
 /**
  * Mode Switcher Overlay
  * Full-screen dimmed overlay with bottom dock row of mode icons.
- * Triggered by swipe-down on Nexus semi-circle.
- * Shows 4 mode icons (excluding current mode) centered horizontally with labels.
+ * Triggered by long-press on Mode footer icon or swipe-down on Nexus semi-circle.
+ * Shows ALL 4 mode icons centered horizontally; current mode highlighted.
  * Spring animation on entry. Backdrop tap dismisses.
  */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Pressable, Image, StyleSheet, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter, usePathname } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
@@ -16,6 +17,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ModeColors, MODE_ACCENT } from '@/constants/theme';
 import { useAppContext } from '@/context/app-context';
 import { registerModeSwitcherHandlers } from '@/utils/global-mode-switcher';
+import { popInnerToHome } from '@/utils/global-inner-nav';
 import type { Mode } from '@/types';
 
 const ALL_MODES: { mode: Mode; icon: IconSymbolName; label: string; image?: any }[] = [
@@ -28,6 +30,10 @@ const ALL_MODES: { mode: Mode; icon: IconSymbolName; label: string; image?: any 
 export function ModeSwitcherOverlay() {
   const [visible, setVisible] = useState(false);
   const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const pathname = usePathname();
+  const pathnameRef = useRef(pathname);
+  pathnameRef.current = pathname;
   const { state, switchMode } = useAppContext();
   const backdropOpacity = useRef(new Animated.Value(0)).current;
   const dockTranslateY = useRef(new Animated.Value(100)).current;
@@ -74,11 +80,16 @@ export function ModeSwitcherOverlay() {
     });
   }, [backdropOpacity, dockTranslateY]);
 
-  const handleSelect = useCallback((mode: Mode) => {
+  const handleSelect = useCallback((selectedMode: Mode) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    switchMode(mode);
+    switchMode(selectedMode);
+    popInnerToHome();
+    // If on Nexus, dismiss the stack
+    if (pathnameRef.current === '/nexus' || pathnameRef.current.startsWith('/nexus/')) {
+      router.dismissAll();
+    }
     dismiss();
-  }, [switchMode, dismiss]);
+  }, [switchMode, dismiss, router]);
 
   const otherModes = ALL_MODES.filter((m) => m.mode !== state.mode);
 

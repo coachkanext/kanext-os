@@ -35,8 +35,8 @@ const SCREEN_ITEMS: Record<string, { title: string; items: PanelItem[] }> = {
       { icon: 'gearshape.fill', label: 'Settings' },
     ],
   },
-  organization: {
-    title: 'Organization',
+  mode: {
+    title: 'Mode',
     items: [
       { icon: 'person.3.fill', label: 'Departments' },
       { icon: 'checkmark.shield.fill', label: 'Compliance' },
@@ -114,7 +114,7 @@ function resolveScreen(pathname: string): { title: string; items: PanelItem[] } 
   const p = pathname.toLowerCase();
   if (p.includes('nexus')) return SCREEN_ITEMS.nexus;
   if (p.includes('media') || p.includes('title=Media')) return SCREEN_ITEMS.media;
-  if (p.includes('organization') || p.includes('title=Organization')) return SCREEN_ITEMS.organization;
+  if (p.includes('organization') || p.includes('title=Mode')) return SCREEN_ITEMS.mode;
   if (p.includes('season')) return SCREEN_ITEMS.season;
   if (p.includes('store')) return SCREEN_ITEMS.store;
   if (p.includes('give') || p.includes('giving')) return SCREEN_ITEMS.give;
