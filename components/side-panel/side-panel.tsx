@@ -16,6 +16,8 @@ import { usePathname } from 'expo-router';
 import { PanelHeader } from './panel-header';
 import { MessagesPanel } from './messages-panel';
 import { PhonePanel } from './phone-panel';
+import { NexusPanel } from './nexus-panel';
+import { ModePanel } from './mode-panel';
 import { DefaultPanel } from './default-panel';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -31,6 +33,8 @@ export function SidePanel({ visible }: SidePanelProps) {
 
   const isMessages = pathname.includes('messages');
   const isPhone = pathname.includes('phone');
+  const isNexus = pathname.includes('nexus');
+  const isMode = pathname.includes('mode');
 
   return (
     <View
@@ -56,7 +60,11 @@ export function SidePanel({ visible }: SidePanelProps) {
           ? <MessagesPanel />
           : isPhone
             ? <PhonePanel />
-            : <DefaultPanel pathname={pathname} />
+            : isNexus
+              ? <NexusPanel />
+              : isMode
+                ? <ModePanel />
+                : <DefaultPanel pathname={pathname} />
         }
       </ScrollView>
     </View>

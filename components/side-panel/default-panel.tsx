@@ -16,14 +16,6 @@ const C = {
 type PanelItem = { icon: string; label: string };
 
 const SCREEN_ITEMS: Record<string, { title: string; items: PanelItem[] }> = {
-  nexus: {
-    title: 'Nexus',
-    items: [
-      { icon: 'clock.fill', label: 'Conversation History' },
-      { icon: 'bookmark.fill', label: 'Saved Conversations' },
-      { icon: 'book.fill', label: 'Bookmarks' },
-    ],
-  },
   media: {
     title: 'Media',
     items: [
@@ -33,15 +25,6 @@ const SCREEN_ITEMS: Record<string, { title: string; items: PanelItem[] }> = {
       { icon: 'chart.bar.fill', label: 'Analytics' },
       { icon: 'arrow.down.circle.fill', label: 'Downloads' },
       { icon: 'gearshape.fill', label: 'Settings' },
-    ],
-  },
-  mode: {
-    title: 'Mode',
-    items: [
-      { icon: 'person.3.fill', label: 'Departments' },
-      { icon: 'checkmark.shield.fill', label: 'Compliance' },
-      { icon: 'doc.fill', label: 'Documents' },
-      { icon: 'gearshape.fill', label: 'Admin Tools' },
     ],
   },
   season: {
@@ -112,9 +95,7 @@ const SCREEN_ITEMS: Record<string, { title: string; items: PanelItem[] }> = {
 /** Resolve which item set to show based on pathname */
 function resolveScreen(pathname: string): { title: string; items: PanelItem[] } {
   const p = pathname.toLowerCase();
-  if (p.includes('nexus')) return SCREEN_ITEMS.nexus;
   if (p.includes('media') || p.includes('title=Media')) return SCREEN_ITEMS.media;
-  if (p.includes('organization') || p.includes('title=Mode')) return SCREEN_ITEMS.mode;
   if (p.includes('season')) return SCREEN_ITEMS.season;
   if (p.includes('store')) return SCREEN_ITEMS.store;
   if (p.includes('give') || p.includes('giving')) return SCREEN_ITEMS.give;

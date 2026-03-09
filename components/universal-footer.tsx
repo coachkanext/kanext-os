@@ -170,9 +170,9 @@ export function UniversalFooter() {
     if (isOnNexus()) router.dismissAll();
   };
   const handleModePress = () => {
-    if (pIncludes('section') && pIncludes('Mode')) return;
+    if (pIncludes('mode')) return;
     preNav();
-    router.navigate('/(tabs)/(main)/section?title=Mode' as any);
+    router.navigate('/(tabs)/(main)/mode' as any);
     if (isOnNexus()) router.dismissAll();
   };
 
