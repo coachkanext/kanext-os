@@ -1,8 +1,8 @@
 /**
  * Roster Side Panel — swipe right on any roster page.
  * Mode circles + org switcher at top (handled by parent SidePanel).
- * Content: 6 nav rows → full pages.
- *   Depth Chart, Staff, Transfers, Analytics, Archive, Settings.
+ * Sports: Depth Chart, Staff, Transfers, Analytics, Archive, Settings.
+ * Business: Org Chart, Payroll, Analytics, Archive, Settings.
  */
 
 import React from 'react';
@@ -15,6 +15,7 @@ import {
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
+import { useMode } from '@/context/app-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
 
@@ -24,7 +25,7 @@ const C = {
   separator: 'rgba(255,255,255,0.08)',
 };
 
-const ROSTER_NAV = [
+const SPORTS_NAV = [
   { icon: 'rectangle.stack.fill', label: 'Depth Chart', route: '/(tabs)/(main)/roster/depth-chart' },
   { icon: 'person.2.fill', label: 'Staff', route: '/(tabs)/(main)/roster/staff' },
   { icon: 'shuffle', label: 'Transfers', route: '/(tabs)/(main)/roster/transfers' },
@@ -33,8 +34,20 @@ const ROSTER_NAV = [
   { icon: 'gearshape.fill', label: 'Settings', route: '/(tabs)/(main)/roster/settings' },
 ] as const;
 
+const TEAM_NAV = [
+  { icon: 'rectangle.stack.fill', label: 'Org Chart', route: '/(tabs)/(main)/roster/org-chart' },
+  { icon: 'dollarsign.circle.fill', label: 'Payroll', route: '/(tabs)/(main)/roster/payroll' },
+  { icon: 'chart.bar.fill', label: 'Analytics', route: '/(tabs)/(main)/roster/analytics' },
+  { icon: 'archivebox.fill', label: 'Archive', route: '/(tabs)/(main)/roster/archive' },
+  { icon: 'gearshape.fill', label: 'Settings', route: '/(tabs)/(main)/roster/settings' },
+] as const;
+
 export function RosterPanel() {
   const router = useRouter();
+  const mode = useMode();
+  const isTeam = mode === 'business';
+  const title = isTeam ? 'Team' : 'Roster';
+  const navItems = isTeam ? TEAM_NAV : SPORTS_NAV;
 
   const navigateTo = (route: string) => {
     closeSidePanel();
@@ -43,16 +56,16 @@ export function RosterPanel() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Roster</Text>
+      <Text style={styles.title}>{title}</Text>
 
       {/* ── NAV ROWS ── */}
-      {ROSTER_NAV.map((item, idx) => (
+      {navItems.map((item, idx) => (
         <Pressable
           key={item.label}
           style={({ pressed }) => [
             styles.navRow,
             pressed && styles.navRowPressed,
-            idx < ROSTER_NAV.length - 1 && styles.navRowBorder,
+            idx < navItems.length - 1 && styles.navRowBorder,
           ]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

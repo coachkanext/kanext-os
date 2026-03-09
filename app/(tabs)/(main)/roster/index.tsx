@@ -6,10 +6,11 @@
 
 import { useMode } from '@/context/app-context';
 import { RosterContent } from '@/components/roster/roster-content';
+import { TeamContent } from '@/components/team/team-content';
 
 export default function RosterScreen() {
   const mode = useMode();
-  // Future: if (mode === 'business') return <TeamContent />;
+  if (mode === 'business') return <TeamContent />;
   // Future: if (mode === 'education') return <CommunityContent />;
   // Future: if (mode === 'church') return <MinistriesContent />;
   return <RosterContent />;
