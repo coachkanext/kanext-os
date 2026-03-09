@@ -21,6 +21,7 @@ import {
 } from 'react-native';
 import { setSwipeablePageActive, setSwipeablePageIndex } from '@/utils/global-swipeable-page';
 import { enableSlideAnimation } from '@/utils/global-footer-swipe';
+import { PageDots } from '@/components/ui/page-dots';
 
 const SWIPE_THRESHOLD = 60;
 const VELOCITY_THRESHOLD = 0.5;
@@ -32,6 +33,7 @@ interface SwipeableTwoPageProps {
   onPageChange: (index: number) => void;
   onEdgeRight?: () => void;
   onEdgeLeft?: () => void;
+  badges?: Set<number>;
 }
 
 export function SwipeableTwoPage({
@@ -40,6 +42,7 @@ export function SwipeableTwoPage({
   onPageChange,
   onEdgeRight,
   onEdgeLeft,
+  badges,
 }: SwipeableTwoPageProps) {
   const { width: screenWidth } = useWindowDimensions();
   const activeRef = useRef(activeIndex);
@@ -160,18 +163,7 @@ export function SwipeableTwoPage({
 
   return (
     <View style={styles.container}>
-      {/* Dots */}
-      <View style={styles.dots}>
-        {[0, 1].map((i) => (
-          <View
-            key={i}
-            style={[
-              styles.dot,
-              { backgroundColor: i === activeIndex ? '#FFFFFF' : '#52525B' },
-            ]}
-          />
-        ))}
-      </View>
+      <PageDots count={2} activeIndex={activeIndex} badges={badges} />
 
       {/* Pages */}
       <Animated.View
@@ -195,22 +187,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     overflow: 'hidden',
-  },
-  dots: {
-    position: 'absolute',
-    top: 10,
-    left: 0,
-    right: 0,
-    zIndex: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 6,
-  },
-  dot: {
-    width: 7,
-    height: 7,
-    borderRadius: 3.5,
   },
   pagerRow: {
     flex: 1,

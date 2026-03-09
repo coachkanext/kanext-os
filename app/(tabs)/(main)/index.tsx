@@ -2,9 +2,9 @@
  * Home — Auto-playing video area + icon grid.
  * Video = 42% of usable screen height (status bar to bottom safe area).
  * Grid centered in remaining space.
- * Video hero has 3 fluid-swipe pages (default = center). Swipe on video strip to page.
+ * Video hero has 2 fluid-swipe pages (default = first page). Swipe on video strip to page.
  * Grid swipes: right → open settings panel, left → go to Nexus.
- * Edge overscroll on video (past page 0 or page 2) opens Settings (left) / Nexus (right).
+ * Edge overscroll on video (past page 0 or page 1) opens Settings (left) / Nexus (right).
  */
 
 import React, { useCallback, useMemo } from 'react';

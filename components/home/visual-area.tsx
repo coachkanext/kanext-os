@@ -2,7 +2,7 @@
  * Full-bleed video area — auto-playing, muted, looping.
  * Edge-to-edge, no margins, no borders, no rounded corners.
  * Text + dots overlaid on gradient. Tap → toggle mute/unmute.
- * Swipeable 3 pages via PanResponder + Animated.View. Default = center page.
+ * Swipeable 2 pages via PanResponder + Animated.View. Default = first page.
  * Edge overscroll triggers onEdgeLeft (settings) / onEdgeRight (nexus).
  */
 
@@ -21,13 +21,9 @@ import * as Haptics from 'expo-haptics';
 import { getVideoPages } from '@/utils/home-widgets';
 import { registerVideoPagerHandlers, setVideoPage } from '@/utils/global-video-pager';
 import { VideoSlide } from './video-slide';
+import { PageDots } from '@/components/ui/page-dots';
 
-const C = {
-  dotActive: '#FFFFFF',
-  dotInactive: '#52525B',
-};
-
-const DEFAULT_PAGE = 1; // Center page
+const DEFAULT_PAGE = 0; // First page
 const SWIPE_THRESHOLD = 60;
 const VELOCITY_THRESHOLD = 0.5;
 
@@ -191,21 +187,7 @@ export function VisualArea({ onEdgeLeft, onEdgeRight }: VisualAreaProps) {
         ))}
       </Animated.View>
 
-      {/* 3 dots — centered at top of video, just below safe area */}
-      <View style={[styles.dots, { top: insets.top + 8 }]}>
-        {pages.map((_, i) => (
-          <View
-            key={i}
-            style={[
-              styles.dot,
-              {
-                backgroundColor:
-                  i === activeIndex ? C.dotActive : C.dotInactive,
-              },
-            ]}
-          />
-        ))}
-      </View>
+      <PageDots count={pages.length} activeIndex={activeIndex} style={{ top: insets.top }} />
     </View>
   );
 }
@@ -218,19 +200,5 @@ const styles = StyleSheet.create({
   pagerRow: {
     flex: 1,
     flexDirection: 'row',
-  },
-  dots: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 6,
-  },
-  dot: {
-    width: 7,
-    height: 7,
-    borderRadius: 3.5,
   },
 });
