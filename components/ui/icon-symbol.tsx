@@ -145,6 +145,9 @@ const MAPPING = {
   'sun.max.fill': 'wb-sunny',
   'exclamationmark.triangle': 'warning-amber',
 
+  // Scouting
+  'scope': 'center-focus-strong',
+
   // Sports / Game Actions
   'basketball.fill': 'sports-basketball',
   'square.and.arrow.up': 'share',
@@ -225,6 +228,9 @@ const MAPPING = {
   // Automation
   'bolt.fill': 'flash-on',
   'arrow.up.circle.fill': 'arrow-upward',
+
+  // Roster
+  'shuffle': 'shuffle',
 } as const;
 
 export type IconSymbolName = keyof typeof MAPPING | SymbolViewProps['name'];

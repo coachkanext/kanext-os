@@ -60,8 +60,8 @@ const MODE_IMAGES: Record<string, Partial<Record<Mode, any>>> = {
 const ROWS: GridIcon[][] = [
   [
     { id: 'agenda',   icon: 'calendar.badge.clock', label: 'Agenda',   route: '/agenda',   image: require('@/assets/images/icon-agenda.png') },
-    { id: 'season',   icon: 'calendar',             label: 'Season',   route: '/section?title=Season',   image: require('@/assets/images/icon-season.png') },
-    { id: 'roster',   icon: 'person.3.fill',        label: 'Team',     route: '/section?title=Team',     image: require('@/assets/images/icon-team.png') },
+    { id: 'season',   icon: 'calendar',             label: 'Season',   route: '/(tabs)/(main)/season',   image: require('@/assets/images/icon-season.png') },
+    { id: 'roster',   icon: 'person.3.fill',        label: 'Team',     route: '/(tabs)/(main)/roster',   image: require('@/assets/images/icon-team.png') },
   ],
   [
     { id: 'recruits', icon: 'person.badge.plus',    label: 'Recruits', route: '/section?title=Recruits', image: require('@/assets/images/icon-recruits.png') },

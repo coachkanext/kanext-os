@@ -72,6 +72,10 @@ export default function HomeLayout() {
       <Stack.Screen name="agenda/index" />
       {/* Social */}
       <Stack.Screen name="social/index" />
+      {/* Season */}
+      <Stack.Screen name="season/index" />
+      {/* Roster */}
+      <Stack.Screen name="roster/index" />
       {/* Media */}
       <Stack.Screen name="media/index" />
     </Stack>
