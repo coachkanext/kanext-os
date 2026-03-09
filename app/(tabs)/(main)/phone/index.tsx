@@ -1,8 +1,10 @@
 /**
- * Phone — 2-page swipeable layout.
- * Page 0: Groups (squircle). Page 1: Contacts (circular, with alphabet scrubber).
- * Favorites row above pages. Long press for actions (no row swipe).
- * Tap favorite = instant audio call. Tap contact/group = audio call.
+ * Phone — 3-page swipeable layout. Footer icon position 4. Universal across all modes.
+ * Page 0 (default): Recents — call history with [All] [Missed] filter pills.
+ * Page 1: Contacts — alphabetical list with letter headers, online dots, org+role.
+ * Page 2: Groups — group call presets with squircle icons, member count, last call time.
+ * 3 dots at top. Swipe right on page 0 = side panel.
+ * FAB on pages 1 and 2.
  */
 
 import React, { useState, useMemo, useRef, useCallback } from 'react';
@@ -17,15 +19,19 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
-import { SwipeableTwoPage } from '@/components/ui/swipeable-two-page';
-import { PinnedBubblesRow, type PinnedBubble } from '@/components/ui/pinned-bubbles-row';
+import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import {
   PHONE_CONTACTS,
   PHONE_GROUPS,
-  getFavoriteContacts,
+  RECENT_CALLS,
+  MODE_BADGE_COLORS,
+  MODE_BADGE_LABELS,
   type PhoneContact,
   type PhoneGroup,
+  type RecentCall,
+  type CallDirection,
 } from '@/data/mock-phone';
 import { initiateCall } from '@/utils/global-call';
 import { openSidePanel } from '@/utils/global-side-panel';
@@ -33,28 +39,86 @@ import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const C = {
   bg: '#000000',
+  surface: '#0B0F14',
   channelIconBg: '#0B1220',
   label: '#FFFFFF',
   secondary: '#A1A1AA',
   muted: '#52525B',
-  separator: '#38383A',
+  separator: 'rgba(255,255,255,0.08)',
   online: '#34C759',
+  missed: '#EF4444',
+  blueSteel: '#3B82F6',
 };
 
-// ─── Group Row (no swipe) ───────────────────────────────────────────────────
+const DIRECTION_ICONS: Record<CallDirection, { icon: string; color: string }> = {
+  incoming: { icon: 'arrow.down.left', color: C.muted },
+  outgoing: { icon: 'arrow.up.right', color: C.muted },
+  missed: { icon: 'arrow.down.left', color: C.missed },
+  video: { icon: 'video.fill', color: C.muted },
+};
 
-function GroupRow({
-  group,
+// ─── Page Top Bar ────────────────────────────────────────────────────────────
+
+function PageTopBar({ title }: { title: string }) {
+  return (
+    <View style={s.topBar}>
+      <Text style={s.topBarTitle}>{title}</Text>
+    </View>
+  );
+}
+
+// ─── Filter Pills (Recents) ─────────────────────────────────────────────────
+
+type RecentsFilter = 'all' | 'missed';
+
+function FilterPills({
+  active,
+  onSelect,
+}: {
+  active: RecentsFilter;
+  onSelect: (f: RecentsFilter) => void;
+}) {
+  const filters: { key: RecentsFilter; label: string }[] = [
+    { key: 'all', label: 'All' },
+    { key: 'missed', label: 'Missed' },
+  ];
+  return (
+    <View style={s.filterRow}>
+      {filters.map((f) => {
+        const isActive = active === f.key;
+        return (
+          <Pressable
+            key={f.key}
+            style={[s.filterPill, isActive && s.filterPillActive]}
+            onPress={() => onSelect(f.key)}
+          >
+            <Text style={[s.filterText, isActive && s.filterTextActive]}>{f.label}</Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
+// ─── Recent Call Row ────────────────────────────────────────────────────────
+
+function RecentRow({
+  call,
   onPress,
   onLongPress,
 }: {
-  group: PhoneGroup;
+  call: RecentCall;
   onPress: () => void;
   onLongPress: (pageY: number) => void;
 }) {
+  const isMissed = call.direction === 'missed';
+  const dir = DIRECTION_ICONS[call.direction];
+  const badgeColor = MODE_BADGE_COLORS[call.mode];
+  const badgeLabel = MODE_BADGE_LABELS[call.mode];
+
   return (
     <Pressable
-      style={({ pressed }) => [s.row, pressed && { backgroundColor: 'rgba(255,255,255,0.04)' }]}
+      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
       onPress={onPress}
       onLongPress={(e) => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -62,18 +126,41 @@ function GroupRow({
       }}
       delayLongPress={400}
     >
-      <View style={s.groupIcon}>
-        <Text style={s.groupInitials}>{group.initials}</Text>
+      {/* Avatar */}
+      <View style={s.recentAvatar}>
+        <Text style={s.recentInitials}>{call.initials}</Text>
       </View>
+
+      {/* Info */}
       <View style={s.rowContent}>
-        <Text style={s.rowName} numberOfLines={1}>{group.name}</Text>
-        <Text style={s.rowSub}>{group.memberCount} members</Text>
+        <View style={s.recentNameRow}>
+          <Text style={[s.rowName, isMissed && { color: C.missed }]} numberOfLines={1}>
+            {call.name}
+          </Text>
+          <View style={[s.modeBadge, { backgroundColor: badgeColor + '22' }]}>
+            <Text style={[s.modeBadgeText, { color: badgeColor }]}>{badgeLabel}</Text>
+          </View>
+        </View>
+        <View style={s.recentMeta}>
+          <IconSymbol name={dir.icon as any} size={12} color={dir.color} />
+          <Text style={[s.metaText, isMissed && { color: C.missed }]}>
+            {call.username}
+          </Text>
+        </View>
+      </View>
+
+      {/* Right: duration/missed + timestamp */}
+      <View style={s.recentRight}>
+        <Text style={[s.recentDuration, isMissed && { color: C.missed }]}>
+          {isMissed ? 'Missed' : call.duration ?? ''}
+        </Text>
+        <Text style={s.recentTimestamp}>{call.timestamp}</Text>
       </View>
     </Pressable>
   );
 }
 
-// ─── Contact Row (no swipe) ─────────────────────────────────────────────────
+// ─── Contact Row ────────────────────────────────────────────────────────────
 
 function ContactRow({
   contact,
@@ -86,7 +173,7 @@ function ContactRow({
 }) {
   return (
     <Pressable
-      style={({ pressed }) => [s.row, pressed && { backgroundColor: 'rgba(255,255,255,0.04)' }]}
+      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
       onPress={onPress}
       onLongPress={(e) => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -99,15 +186,68 @@ function ContactRow({
         {contact.online && <View style={s.onlineDot} />}
       </View>
       <View style={s.rowContent}>
-        <Text style={s.rowName} numberOfLines={1}>{contact.name}</Text>
-        <View style={s.contactMeta}>
-          <Text style={s.rowSub}>{contact.username}</Text>
-          <Text style={s.contactRole}>{contact.role}</Text>
+        <View style={s.contactNameRow}>
+          <Text style={s.rowName} numberOfLines={1}>{contact.name}</Text>
+          <Text style={s.contactUsername}>{contact.username}</Text>
         </View>
+        <Text style={s.contactOrgRole} numberOfLines={1}>
+          {contact.org} · {contact.role}
+        </Text>
       </View>
     </Pressable>
   );
 }
+
+// ─── Group Row ──────────────────────────────────────────────────────────────
+
+function GroupRow({
+  group,
+  onPress,
+  onLongPress,
+}: {
+  group: PhoneGroup;
+  onPress: () => void;
+  onLongPress: (pageY: number) => void;
+}) {
+  return (
+    <Pressable
+      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
+      onPress={onPress}
+      onLongPress={(e) => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        onLongPress(e.nativeEvent.pageY);
+      }}
+      delayLongPress={400}
+    >
+      <View style={s.groupIcon}>
+        <Text style={s.groupInitials}>{group.initials}</Text>
+      </View>
+      <View style={s.rowContent}>
+        <Text style={s.rowName} numberOfLines={1}>{group.name}</Text>
+        <Text style={s.groupMeta}>{group.memberCount} members</Text>
+      </View>
+      <Text style={s.groupTimestamp}>{group.lastCallTimestamp}</Text>
+    </Pressable>
+  );
+}
+
+// ─── FAB ────────────────────────────────────────────────────────────────────
+
+function FAB({ onPress }: { onPress: () => void }) {
+  return (
+    <Pressable
+      style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
+      onPress={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        onPress();
+      }}
+    >
+      <IconSymbol name="plus" size={24} color="#FFFFFF" />
+    </Pressable>
+  );
+}
+
+// ─── Main Screen ────────────────────────────────────────────────────────────
 
 export default function PhoneScreen() {
   const insets = useSafeAreaInsets();
@@ -115,13 +255,19 @@ export default function PhoneScreen() {
 
   const [pageIndex, setPageIndex] = useState(0);
   const [menuData, setMenuData] = useState<ContextMenuData | null>(null);
+  const [recentsFilter, setRecentsFilter] = useState<RecentsFilter>('all');
 
   const contactsScrollRef = useRef<ScrollView>(null);
   const sectionOffsets = useRef<Record<string, number>>({});
 
-  const favorites = useMemo(() => getFavoriteContacts(), []);
-  const groups = useMemo(() => PHONE_GROUPS, []);
+  // ── Data ──
+  const recentCalls = useMemo(() => {
+    if (recentsFilter === 'missed') return RECENT_CALLS.filter((c) => c.direction === 'missed');
+    return RECENT_CALLS;
+  }, [recentsFilter]);
+
   const contacts = useMemo(() => PHONE_CONTACTS, []);
+  const groups = useMemo(() => PHONE_GROUPS, []);
 
   // Group contacts alphabetically
   const groupedContacts = useMemo(() => {
@@ -136,17 +282,7 @@ export default function PhoneScreen() {
 
   const ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('');
 
-  // Favorites as PinnedBubble shape
-  const favBubbles: PinnedBubble[] = useMemo(() =>
-    favorites.map((f) => ({
-      id: f.id,
-      initials: f.initials,
-      name: f.name,
-      isSquircle: false,
-      online: f.online,
-    })),
-  [favorites]);
-
+  // ── Scroll footer hide ──
   const lastScrollY = useRef(0);
   const handleScroll = useCallback((e: any) => {
     const y = e.nativeEvent.contentOffset.y;
@@ -156,60 +292,73 @@ export default function PhoneScreen() {
     if (y <= 0) showFooter();
   }, []);
 
-  const callAudio = (contact: PhoneContact) => {
+  // ── Call actions ──
+  const callAudio = useCallback((name: string, initials: string, mode: any) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    initiateCall({ contactName: contact.name, contactInitials: contact.initials, mode: contact.mode, type: 'audio' });
-  };
+    initiateCall({ contactName: name, contactInitials: initials, mode, type: 'audio' });
+  }, []);
 
-  const callVideo = (contact: PhoneContact) => {
+  const callVideo = useCallback((name: string, initials: string, mode: any) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    initiateCall({ contactName: contact.name, contactInitials: contact.initials, mode: contact.mode, type: 'video' });
-  };
+    initiateCall({ contactName: name, contactInitials: initials, mode, type: 'video' });
+  }, []);
 
-  const openMessage = (name: string) => {
+  const openMessage = useCallback((name: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     router.push({ pathname: '/messages/[threadId]', params: { threadId: name, type: 'dm', title: name } } as any);
-  };
+  }, [router]);
 
-  const callGroupAudio = (group: PhoneGroup) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    initiateCall({ contactName: group.name, contactInitials: group.initials, mode: group.mode, type: 'audio' });
-  };
-
-  const callGroupVideo = (group: PhoneGroup) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    initiateCall({ contactName: group.name, contactInitials: group.initials, mode: group.mode, type: 'video' });
-  };
-
-  const handleFavPress = (id: string) => {
-    const fav = favorites.find((f) => f.id === id);
-    if (fav) callAudio(fav);
-  };
-
-  const longPressContact = (contact: PhoneContact, pageY: number) => {
+  // ── Long press: Recents ──
+  const longPressRecent = useCallback((call: RecentCall, pageY: number) => {
     setMenuData({
-      title: contact.name,
-      subtitle: contact.role,
-      initials: contact.initials,
-      isSquircle: false,
+      title: call.name,
+      subtitle: call.username,
+      initials: call.initials,
       pageY,
       actions: [
-        { key: 'message', label: 'Message', icon: 'bubble.left.fill' },
+        { key: 'audio', label: 'Audio Call', icon: 'phone.fill' },
         { key: 'video', label: 'Video Call', icon: 'video.fill' },
-        { key: 'copy', label: 'Copy Number', icon: 'doc.on.doc.fill' },
-        { key: 'share', label: 'Share Contact', icon: 'square.and.arrow.up' },
+        { key: 'message', label: 'Message', icon: 'bubble.left.fill' },
         { key: 'profile', label: 'View Profile', icon: 'person.fill' },
-        { key: 'pin', label: 'Pin to Favorites', icon: 'pin.fill' },
-        { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
+        { key: 'copy', label: 'Copy Number', icon: 'doc.on.doc.fill' },
+        { key: 'block', label: 'Block', icon: 'hand.raised.fill', destructive: true },
+        { key: 'delete', label: 'Delete from Recents', icon: 'trash.fill', destructive: true },
       ],
       onAction: (key) => {
-        if (key === 'message') openMessage(contact.name);
-        else if (key === 'video') callVideo(contact);
+        if (key === 'audio') callAudio(call.name, call.initials, call.mode);
+        else if (key === 'video') callVideo(call.name, call.initials, call.mode);
+        else if (key === 'message') openMessage(call.name);
       },
     });
-  };
+  }, [callAudio, callVideo, openMessage]);
 
-  const longPressGroup = (group: PhoneGroup, pageY: number) => {
+  // ── Long press: Contacts ──
+  const longPressContact = useCallback((contact: PhoneContact, pageY: number) => {
+    setMenuData({
+      title: contact.name,
+      subtitle: `${contact.org} · ${contact.role}`,
+      initials: contact.initials,
+      pageY,
+      actions: [
+        { key: 'audio', label: 'Audio Call', icon: 'phone.fill' },
+        { key: 'video', label: 'Video Call', icon: 'video.fill' },
+        { key: 'message', label: 'Message', icon: 'bubble.left.fill' },
+        { key: 'profile', label: 'View Profile', icon: 'person.fill' },
+        { key: 'copy', label: 'Copy Number', icon: 'doc.on.doc.fill' },
+        { key: 'share', label: 'Share Contact', icon: 'square.and.arrow.up' },
+        { key: 'favorite', label: 'Add to Favorites', icon: 'star.fill' },
+        { key: 'block', label: 'Block', icon: 'hand.raised.fill', destructive: true },
+      ],
+      onAction: (key) => {
+        if (key === 'audio') callAudio(contact.name, contact.initials, contact.mode);
+        else if (key === 'video') callVideo(contact.name, contact.initials, contact.mode);
+        else if (key === 'message') openMessage(contact.name);
+      },
+    });
+  }, [callAudio, callVideo, openMessage]);
+
+  // ── Long press: Groups ──
+  const longPressGroup = useCallback((group: PhoneGroup, pageY: number) => {
     setMenuData({
       title: group.name,
       subtitle: `${group.memberCount} members`,
@@ -217,117 +366,163 @@ export default function PhoneScreen() {
       isSquircle: true,
       pageY,
       actions: [
-        { key: 'message', label: 'Message', icon: 'bubble.left.fill' },
+        { key: 'audio', label: 'Audio Call', icon: 'phone.fill' },
         { key: 'video', label: 'Video Call', icon: 'video.fill' },
-        { key: 'copy', label: 'Copy Number', icon: 'doc.on.doc.fill' },
-        { key: 'share', label: 'Share Contact', icon: 'square.and.arrow.up' },
-        { key: 'profile', label: 'View Profile', icon: 'person.fill' },
-        { key: 'pin', label: 'Pin to Favorites', icon: 'pin.fill' },
+        { key: 'message', label: 'Message Group', icon: 'bubble.left.fill' },
+        { key: 'members', label: 'View Members', icon: 'person.3.fill' },
+        { key: 'edit', label: 'Edit Group', icon: 'pencil' },
+        { key: 'pin', label: 'Pin', icon: 'pin.fill' },
         { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
       ],
       onAction: (key) => {
-        if (key === 'message') openMessage(group.name);
-        else if (key === 'video') callGroupVideo(group);
+        if (key === 'audio') callAudio(group.name, group.initials, group.mode);
+        else if (key === 'video') callVideo(group.name, group.initials, group.mode);
+        else if (key === 'message') openMessage(group.name);
       },
     });
-  };
+  }, [callAudio, callVideo, openMessage]);
 
   return (
     <View style={[s.container, { paddingTop: insets.top }]}>
-      {/* Favorites row */}
-      <View style={{ paddingTop: 28 }}>
-        <PinnedBubblesRow items={favBubbles} onPress={handleFavPress} />
-      </View>
-
-      {/* 2-page swipeable: Groups ↔ Contacts */}
-      <SwipeableTwoPage
+      {/* 3-page swipeable: Recents | Contacts | Groups */}
+      <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
         onEdgeRight={openSidePanel}
       >
-        {/* Page 0: Groups */}
-        <ScrollView
-          style={s.pageScroll}
-          contentContainerStyle={{ paddingBottom: 100 }}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={s.sectionHeader}>
-            <Text style={s.sectionLabel}>Groups</Text>
+        {/* ── PAGE 0: RECENTS ── */}
+        <View style={{ flex: 1 }}>
+          <View style={{ paddingTop: 16 }}>
+            <PageTopBar title="Recents" />
+            <FilterPills active={recentsFilter} onSelect={setRecentsFilter} />
           </View>
-          {groups.map((group, i) => (
-            <View key={group.id}>
-              {i > 0 && <View style={s.separator} />}
-              <GroupRow
-                group={group}
-                onPress={() => callGroupAudio(group)}
-                onLongPress={(pageY) => longPressGroup(group, pageY)}
-              />
-            </View>
-          ))}
-        </ScrollView>
-
-        {/* Page 1: Contacts */}
-        <ScrollView
-          ref={contactsScrollRef}
-          style={s.pageScroll}
-          contentContainerStyle={{ paddingBottom: 100 }}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={s.sectionHeader}>
-            <Text style={s.sectionLabel}>Contacts</Text>
-          </View>
-          {groupedContacts.map(([letter, letterContacts]) => (
-            <View
-              key={letter}
-              onLayout={(e) => { sectionOffsets.current[letter] = e.nativeEvent.layout.y; }}
-            >
-              <View style={s.letterHeader}>
-                <Text style={s.letterHeaderText}>{letter}</Text>
+          <ScrollView
+            style={s.pageScroll}
+            contentContainerStyle={{ paddingBottom: 100 }}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}
+          >
+            {recentCalls.length === 0 ? (
+              <View style={s.emptyState}>
+                <IconSymbol name="phone.fill" size={36} color={C.muted} />
+                <Text style={s.emptyText}>No calls</Text>
               </View>
-              {letterContacts.map((contact, i) => (
-                <View key={contact.id}>
-                  {i > 0 && <View style={s.separator} />}
-                  <ContactRow
-                    contact={contact}
-                    onPress={() => callAudio(contact)}
-                    onLongPress={(pageY) => longPressContact(contact, pageY)}
+            ) : (
+              recentCalls.map((call, idx) => (
+                <View key={call.id}>
+                  {idx > 0 && <View style={s.separator} />}
+                  <RecentRow
+                    call={call}
+                    onPress={() => callAudio(call.name, call.initials, call.mode)}
+                    onLongPress={(pageY) => longPressRecent(call, pageY)}
                   />
                 </View>
-              ))}
-            </View>
-          ))}
-        </ScrollView>
-      </SwipeableTwoPage>
-
-      {/* Alphabet scrubber (only on page 1) */}
-      {pageIndex === 1 && (
-        <View style={s.scrubber} pointerEvents="box-only">
-          {ALPHA.map((letter) => {
-            const hasSection = sectionOffsets.current[letter] != null;
-            return (
-              <Pressable
-                key={letter}
-                onPress={() => {
-                  const y = sectionOffsets.current[letter];
-                  if (y != null) {
-                    Haptics.selectionAsync();
-                    contactsScrollRef.current?.scrollTo({ y, animated: true });
-                  }
-                }}
-                hitSlop={{ left: 10, right: 10 }}
-              >
-                <Text style={[s.scrubberLetter, hasSection && s.scrubberLetterActive]}>
-                  {letter}
-                </Text>
-              </Pressable>
-            );
-          })}
+              ))
+            )}
+          </ScrollView>
         </View>
-      )}
+
+        {/* ── PAGE 1: CONTACTS ── */}
+        <View style={{ flex: 1 }}>
+          <View style={{ paddingTop: 16 }}>
+            <PageTopBar title="Contacts" />
+          </View>
+          <ScrollView
+            ref={contactsScrollRef}
+            style={s.pageScroll}
+            contentContainerStyle={{ paddingBottom: 100 }}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}
+          >
+            {groupedContacts.map(([letter, letterContacts]) => (
+              <View
+                key={letter}
+                onLayout={(e) => { sectionOffsets.current[letter] = e.nativeEvent.layout.y; }}
+              >
+                <View style={s.letterHeader}>
+                  <Text style={s.letterHeaderText}>{letter}</Text>
+                </View>
+                {letterContacts.map((contact, i) => (
+                  <View key={contact.id}>
+                    {i > 0 && <View style={s.separator} />}
+                    <ContactRow
+                      contact={contact}
+                      onPress={() => callAudio(contact.name, contact.initials, contact.mode)}
+                      onLongPress={(pageY) => longPressContact(contact, pageY)}
+                    />
+                  </View>
+                ))}
+              </View>
+            ))}
+          </ScrollView>
+
+          {/* Alphabet scrubber */}
+          {pageIndex === 1 && (
+            <View style={s.scrubber} pointerEvents="box-only">
+              {ALPHA.map((letter) => {
+                const hasSection = sectionOffsets.current[letter] != null;
+                return (
+                  <Pressable
+                    key={letter}
+                    onPress={() => {
+                      const y = sectionOffsets.current[letter];
+                      if (y != null) {
+                        Haptics.selectionAsync();
+                        contactsScrollRef.current?.scrollTo({ y, animated: true });
+                      }
+                    }}
+                    hitSlop={{ left: 10, right: 10 }}
+                  >
+                    <Text style={[s.scrubberLetter, hasSection && s.scrubberLetterActive]}>
+                      {letter}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
+
+          {/* FAB: Add Contact */}
+          <FAB onPress={() => console.log('Add new contact')} />
+        </View>
+
+        {/* ── PAGE 2: GROUPS ── */}
+        <View style={{ flex: 1 }}>
+          <View style={{ paddingTop: 16 }}>
+            <PageTopBar title="Groups" />
+          </View>
+          <ScrollView
+            style={s.pageScroll}
+            contentContainerStyle={{ paddingBottom: 100 }}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}
+          >
+            {groups.length === 0 ? (
+              <View style={s.emptyState}>
+                <IconSymbol name="person.3.fill" size={36} color={C.muted} />
+                <Text style={s.emptyText}>No groups yet</Text>
+              </View>
+            ) : (
+              groups.map((group, idx) => (
+                <View key={group.id}>
+                  {idx > 0 && <View style={s.separator} />}
+                  <GroupRow
+                    group={group}
+                    onPress={() => callAudio(group.name, group.initials, group.mode)}
+                    onLongPress={(pageY) => longPressGroup(group, pageY)}
+                  />
+                </View>
+              ))
+            )}
+          </ScrollView>
+
+          {/* FAB: Create Group */}
+          <FAB onPress={() => console.log('Create new group')} />
+        </View>
+      </SwipeablePages>
 
       {/* Long-press context menu */}
       <LongPressContextMenu data={menuData} onClose={() => setMenuData(null)} />
@@ -335,67 +530,151 @@ export default function PhoneScreen() {
   );
 }
 
+// ─── Styles ─────────────────────────────────────────────────────────────────
+
 const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 
-  // Section headers
-  sectionHeader: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 },
-  sectionLabel: {
-    fontSize: 13, fontWeight: '600', color: C.secondary,
-    textTransform: 'uppercase', letterSpacing: 0.5,
+  // Top bar
+  topBar: {
+    paddingHorizontal: 16,
+    paddingBottom: 8,
+  },
+  topBarTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: C.secondary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+
+  // Filter pills (Recents)
+  filterRow: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    gap: 8,
+    marginBottom: 4,
+  },
+  filterPill: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: C.surface,
+  },
+  filterPillActive: {
+    backgroundColor: C.label,
+  },
+  filterText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: C.label,
+  },
+  filterTextActive: {
+    color: '#000000',
   },
 
   // Shared row
   row: {
-    flexDirection: 'row', alignItems: 'center',
-    paddingVertical: 10, paddingLeft: 16, paddingRight: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingLeft: 16,
+    paddingRight: 12,
     backgroundColor: C.bg,
+  },
+  rowPressed: {
+    backgroundColor: 'rgba(255,255,255,0.04)',
   },
   rowContent: { flex: 1, marginLeft: 12, marginRight: 8 },
   rowName: { fontSize: 16, fontWeight: '500', color: C.label },
-  rowSub: { fontSize: 13, color: C.muted },
 
-  // Group icon (square squircle)
-  groupIcon: {
-    width: 44, height: 44, borderRadius: 12, backgroundColor: C.channelIconBg,
-    alignItems: 'center', justifyContent: 'center',
+  // Recent call row
+  recentAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: C.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  groupInitials: { fontSize: 14, fontWeight: '700', color: C.label },
+  recentInitials: { fontSize: 14, fontWeight: '700', color: C.secondary },
+  recentNameRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  recentMeta: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
+  metaText: { fontSize: 13, color: C.muted },
+  recentRight: { alignItems: 'flex-end' },
+  recentDuration: { fontSize: 13, fontWeight: '500', color: C.secondary },
+  recentTimestamp: { fontSize: 11, color: C.muted, marginTop: 2 },
+  modeBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
+  modeBadgeText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.3 },
 
-  // Contact avatar (circular)
+  // Contact row
   contactAvatar: {
-    width: 44, height: 44, borderRadius: 22, backgroundColor: '#1C1C1E',
-    alignItems: 'center', justifyContent: 'center',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#1C1C1E',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   contactInitials: { fontSize: 14, fontWeight: '600', color: C.label },
-  contactMeta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 1 },
-  contactRole: { fontSize: 13, color: C.muted },
+  contactNameRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  contactUsername: { fontSize: 13, color: C.muted },
+  contactOrgRole: { fontSize: 13, color: C.muted, marginTop: 1 },
   onlineDot: {
-    position: 'absolute', bottom: 0, right: 0,
-    width: 12, height: 12, borderRadius: 6,
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
     backgroundColor: C.online,
-    borderWidth: 2, borderColor: C.bg,
+    borderWidth: 2,
+    borderColor: C.bg,
   },
 
-  // Letter section headers
+  // Group row
+  groupIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: C.channelIconBg,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  groupInitials: { fontSize: 14, fontWeight: '700', color: C.label },
+  groupMeta: { fontSize: 13, color: C.muted, marginTop: 1 },
+  groupTimestamp: { fontSize: 11, color: C.muted },
+
+  // Letter section headers (Contacts)
   letterHeader: {
-    paddingHorizontal: 16, paddingTop: 18, paddingBottom: 4,
+    paddingHorizontal: 16,
+    paddingTop: 18,
+    paddingBottom: 4,
     backgroundColor: C.bg,
   },
   letterHeaderText: {
-    fontSize: 14, fontWeight: '700', color: C.secondary,
+    fontSize: 14,
+    fontWeight: '700',
+    color: C.secondary,
   },
 
-  // Alphabet scrubber (right edge)
+  // Alphabet scrubber (right edge, Contacts only)
   scrubber: {
-    position: 'absolute', right: 2, top: 0, bottom: 0,
-    justifyContent: 'center', alignItems: 'center',
+    position: 'absolute',
+    right: 2,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: 60,
   },
   scrubberLetter: {
-    fontSize: 10, fontWeight: '600', color: '#52525B',
-    paddingVertical: 1, paddingHorizontal: 4,
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#52525B',
+    paddingVertical: 1,
+    paddingHorizontal: 4,
   },
   scrubberLetterActive: {
     color: '#007AFF',
@@ -403,4 +682,26 @@ const s = StyleSheet.create({
 
   // Separator
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: C.separator, marginLeft: 72 },
+
+  // Empty state
+  emptyState: { alignItems: 'center', paddingTop: 120, gap: 12 },
+  emptyText: { fontSize: 16, color: C.muted },
+
+  // FAB
+  fab: {
+    position: 'absolute',
+    bottom: 24,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: C.blueSteel,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
 });

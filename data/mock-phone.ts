@@ -26,6 +26,7 @@ export interface PhoneContact {
   name: string;
   username: string;
   initials: string;
+  org: string;
   role: string;
   mode: Mode;
   isFavorite?: boolean;
@@ -49,6 +50,7 @@ export interface PhoneGroup {
   initials: string;
   memberCount: number;
   mode: Mode;
+  lastCallTimestamp: string;
 }
 
 export interface KanextNumber {
@@ -97,31 +99,33 @@ export const RECENT_CALLS: RecentCall[] = [
 // ── Contacts ──
 
 export const PHONE_CONTACTS: PhoneContact[] = [
-  { id: 'p1', name: 'Alex Kim', username: '@akim', initials: 'AK', role: 'Analyst', mode: 'business', isFavorite: true, online: true },
-  { id: 'p2', name: 'Athletic Dept', username: '@athletics', initials: 'AD', role: 'Department', mode: 'sports', online: false },
-  { id: 'p3', name: 'Coach Thompson', username: '@cthompson', initials: 'CT', role: 'Assistant Coach', mode: 'sports', isFavorite: true, online: true },
-  { id: 'p4', name: 'Coach Williams', username: '@coachwilliams', initials: 'CW', role: 'Head Coach', mode: 'sports', isFavorite: true, online: true },
-  { id: 'p5', name: 'Dr. Kim', username: '@drkim', initials: 'DK', role: 'Team Physician', mode: 'sports', online: false },
-  { id: 'p6', name: 'Front Office', username: '@frontoffice', initials: 'FO', role: 'Administration', mode: 'sports', online: true },
-  { id: 'p7', name: 'James Rodriguez', username: '@jrod23', initials: 'JR', role: 'Point Guard', mode: 'sports', isFavorite: true, online: true },
-  { id: 'p8', name: 'Lisa Park', username: '@lisapark', initials: 'LP', role: 'Operations Director', mode: 'business', online: false },
-  { id: 'p9', name: 'Marcus Johnson', username: '@mjohnson', initials: 'MJ', role: 'Shooting Guard', mode: 'sports', online: true },
-  { id: 'p10', name: 'Medical Team', username: '@medteam', initials: 'MT', role: 'Department', mode: 'sports', online: false },
-  { id: 'p11', name: 'Michael Torres', username: '@mtorres', initials: 'MT', role: 'Professor', mode: 'education', online: false },
-  { id: 'p12', name: 'Pastor Davis', username: '@pastordavis', initials: 'PD', role: 'Senior Pastor', mode: 'church', online: true },
-  { id: 'p13', name: 'Rachel Green', username: '@rgreen', initials: 'RG', role: 'Worship Leader', mode: 'church', online: false },
-  { id: 'p14', name: 'Sarah Chen', username: '@schen', initials: 'SC', role: 'CFO', mode: 'business', online: true },
-  { id: 'p15', name: 'Training Staff', username: '@trainstaff', initials: 'TS', role: 'Department', mode: 'sports', online: false },
+  { id: 'p1', name: 'Alex Kim', username: '@akim', initials: 'AK', org: 'Apex Ventures', role: 'Analyst', mode: 'business', isFavorite: true, online: true },
+  { id: 'p2', name: 'Athletic Dept', username: '@athletics', initials: 'AD', org: 'Lincoln University', role: 'Department', mode: 'sports', online: false },
+  { id: 'p3', name: 'Coach Thompson', username: '@cthompson', initials: 'CT', org: 'Lincoln University', role: 'Assistant Coach', mode: 'sports', isFavorite: true, online: true },
+  { id: 'p4', name: 'Coach Williams', username: '@coachwilliams', initials: 'CW', org: 'Lincoln University', role: 'Head Coach', mode: 'sports', isFavorite: true, online: true },
+  { id: 'p5', name: 'Dr. Kim', username: '@drkim', initials: 'DK', org: 'Lincoln University', role: 'Team Physician', mode: 'sports', online: false },
+  { id: 'p6', name: 'Front Office', username: '@frontoffice', initials: 'FO', org: 'Lincoln University', role: 'Administration', mode: 'sports', online: true },
+  { id: 'p7', name: 'James Rodriguez', username: '@jrod23', initials: 'JR', org: 'Lincoln University', role: 'Player', mode: 'sports', isFavorite: true, online: true },
+  { id: 'p8', name: 'Lisa Park', username: '@lisapark', initials: 'LP', org: 'Apex Ventures', role: 'Operations Director', mode: 'business', online: false },
+  { id: 'p9', name: 'Marcus Johnson', username: '@mjohnson', initials: 'MJ', org: 'Lincoln University', role: 'Player', mode: 'sports', online: true },
+  { id: 'p10', name: 'Medical Team', username: '@medteam', initials: 'MT', org: 'Lincoln University', role: 'Department', mode: 'sports', online: false },
+  { id: 'p11', name: 'Michael Torres', username: '@mtorres', initials: 'MT', org: 'Lincoln University', role: 'Professor', mode: 'education', online: false },
+  { id: 'p12', name: 'Pastor Davis', username: '@pastordavis', initials: 'PD', org: 'ICCLA', role: 'Senior Pastor', mode: 'church', online: true },
+  { id: 'p13', name: 'Rachel Green', username: '@rgreen', initials: 'RG', org: 'ICCLA', role: 'Worship Leader', mode: 'church', online: false },
+  { id: 'p14', name: 'Sarah Chen', username: '@schen', initials: 'SC', org: 'Apex Ventures', role: 'CFO', mode: 'business', online: true },
+  { id: 'p15', name: 'Training Staff', username: '@trainstaff', initials: 'TS', org: 'Lincoln University', role: 'Department', mode: 'sports', online: false },
 ];
 
 // ── Groups ──
 
 export const PHONE_GROUPS: PhoneGroup[] = [
-  { id: 'g1', name: 'Coaching Staff', initials: 'CS', memberCount: 4, mode: 'sports' },
-  { id: 'g2', name: 'Guards', initials: 'GD', memberCount: 6, mode: 'sports' },
-  { id: 'g3', name: 'Recruiting Core', initials: 'RK', memberCount: 3, mode: 'sports' },
-  { id: 'g4', name: 'Leadership Team', initials: 'LT', memberCount: 5, mode: 'business' },
-  { id: 'g5', name: 'Pastoral Staff', initials: 'PS', memberCount: 4, mode: 'church' },
+  { id: 'g1', name: 'Coaching Staff', initials: 'CS', memberCount: 4, mode: 'sports', lastCallTimestamp: 'Yesterday' },
+  { id: 'g2', name: 'Guards', initials: 'GD', memberCount: 6, mode: 'sports', lastCallTimestamp: 'Mar 5' },
+  { id: 'g3', name: 'Recruiting Core', initials: 'RK', memberCount: 3, mode: 'sports', lastCallTimestamp: 'Mar 3' },
+  { id: 'g4', name: 'Leadership Team', initials: 'LT', memberCount: 5, mode: 'business', lastCallTimestamp: 'Mar 1' },
+  { id: 'g5', name: 'Pastoral Staff', initials: 'PS', memberCount: 4, mode: 'church', lastCallTimestamp: 'Feb 28' },
+  { id: 'g6', name: 'Ministry Leaders', initials: 'ML', memberCount: 7, mode: 'church', lastCallTimestamp: 'Feb 25' },
+  { id: 'g7', name: 'Admissions Team', initials: 'AT', memberCount: 5, mode: 'education', lastCallTimestamp: 'Feb 20' },
 ];
 
 // ── Voicemails ──
