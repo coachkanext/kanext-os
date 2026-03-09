@@ -44,11 +44,12 @@ const MODE_IMAGES: Record<string, Partial<Record<Mode, any>>> = {
   },
   roster: {
     sports: require('@/assets/images/icon-team-sports.png'),
-    business: require('@/assets/images/icon-team-sports.png'),
+    business: require('@/assets/images/icon-team-business.png'),
     church: require('@/assets/images/icon-ministries.png'),
     education: require('@/assets/images/icon-community.png'),
   },
   recruits: {
+    business: require('@/assets/images/icon-leads.png'),
     church: require('@/assets/images/icon-outreach.png'),
     education: require('@/assets/images/icon-admissions.png'),
   },
@@ -69,9 +70,9 @@ const ROWS: GridIcon[][] = [
     { id: 'store',    icon: 'bag.fill',             label: 'Store',    route: '/section?title=Store',    image: require('@/assets/images/icon-store.png') },
   ],
   [
-    { id: 'gm',       icon: 'gamecontroller.fill',  label: 'KayGM',    route: '/section?title=GM',       image: require('@/assets/images/icon-gm.png') },
-    { id: 'wallet',   icon: 'creditcard.fill',      label: 'KayPay',   route: '/wallet',                 image: require('@/assets/images/icon-wallet.png') },
     { id: 'media',    icon: 'play.rectangle.fill',  label: 'KayTV',    route: '/media',                  image: require('@/assets/images/icon-media.png') },
+    { id: 'wallet',   icon: 'creditcard.fill',      label: 'KayPay',   route: '/wallet',                 image: require('@/assets/images/icon-wallet.png') },
+    { id: 'gm',       icon: 'gamecontroller.fill',  label: 'KayStudios',    route: '/section?title=GM',       image: require('@/assets/images/icon-gm.png') },
   ],
 ];
 
