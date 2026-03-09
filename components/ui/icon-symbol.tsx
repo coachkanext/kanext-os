@@ -207,6 +207,10 @@ const MAPPING = {
   // Hash / Channel
   'number': 'tag',
 
+  // Agenda
+  'checklist': 'assignment',
+  'line.3.horizontal.decrease': 'filter-list',
+
   // Settings Panel
   'qrcode': 'qr-code',
   'moon.fill': 'dark-mode',
@@ -217,6 +221,10 @@ const MAPPING = {
   'doc.on.doc.fill': 'content-copy',
   'bell.slash.fill': 'notifications-off',
   'envelope.open.fill': 'mark-email-read',
+
+  // Automation
+  'bolt.fill': 'flash-on',
+  'arrow.up.circle.fill': 'arrow-upward',
 } as const;
 
 export type IconSymbolName = keyof typeof MAPPING | SymbolViewProps['name'];
