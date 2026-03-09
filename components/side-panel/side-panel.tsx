@@ -21,6 +21,7 @@ import { ModePanel } from './mode-panel';
 import { AgendaPanel } from './agenda-panel';
 import { SeasonPanel } from './season-panel';
 import { RosterPanel } from './roster-panel';
+import { ProspectsPanel } from './prospects-panel';
 import { DefaultPanel } from './default-panel';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -41,6 +42,7 @@ export function SidePanel({ visible }: SidePanelProps) {
   const isAgenda = pathname.includes('agenda');
   const isSeason = pathname.includes('season');
   const isRoster = pathname.includes('roster');
+  const isRecruits = pathname.includes('recruits');
 
   return (
     <View
@@ -76,7 +78,9 @@ export function SidePanel({ visible }: SidePanelProps) {
                     ? <SeasonPanel />
                     : isRoster
                       ? <RosterPanel />
-                      : <DefaultPanel pathname={pathname} />
+                      : isRecruits
+                        ? <ProspectsPanel />
+                        : <DefaultPanel pathname={pathname} />
         }
       </ScrollView>
     </View>

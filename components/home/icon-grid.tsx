@@ -65,7 +65,7 @@ const ROWS: GridIcon[][] = [
     { id: 'roster',   icon: 'person.3.fill',        label: 'Team',     route: '/(tabs)/(main)/roster',   image: require('@/assets/images/icon-team.png') },
   ],
   [
-    { id: 'recruits', icon: 'person.badge.plus',    label: 'Recruits', route: '/section?title=Recruits', image: require('@/assets/images/icon-recruits.png') },
+    { id: 'recruits', icon: 'person.badge.plus',    label: 'Recruits', route: '/(tabs)/(main)/recruits', image: require('@/assets/images/icon-recruits.png') },
     { id: 'social',   icon: 'newspaper.fill',       label: 'Social',   route: '/social',                 image: require('@/assets/images/icon-social.png') },
     { id: 'store',    icon: 'bag.fill',             label: 'Store',    route: '/section?title=Store',    image: require('@/assets/images/icon-store.png') },
   ],
