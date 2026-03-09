@@ -21,6 +21,8 @@ import * as Haptics from 'expo-haptics';
 
 import { useMode } from '@/context/app-context';
 import { OfficeContent } from '@/components/office/office-content';
+import { CampusContent } from '@/components/campus/campus-content';
+import { ParishContent } from '@/components/parish/parish-content';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -541,6 +543,8 @@ function FAB({ onPress }: { onPress: () => void }) {
 export default function SeasonScreen() {
   const mode = useMode();
   if (mode === 'business') return <OfficeContent />;
+  if (mode === 'education') return <CampusContent />;
+  if (mode === 'church') return <ParishContent />;
   return <SportsSeasonContent />;
 }
 

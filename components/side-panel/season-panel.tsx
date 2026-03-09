@@ -43,12 +43,31 @@ const OFFICE_NAV = [
   { icon: 'gearshape.fill', label: 'Settings', route: '/(tabs)/(main)/season/settings' },
 ] as const;
 
+const CAMPUS_NAV = [
+  { icon: 'book.fill', label: 'Gradebook', route: '/(tabs)/(main)/season/gradebook' },
+  { icon: 'checklist', label: 'Attendance', route: '/(tabs)/(main)/season/attendance' },
+  { icon: 'doc.text.fill', label: 'Transcripts', route: '/(tabs)/(main)/season/transcripts' },
+  { icon: 'pencil', label: 'Lesson Planner', route: '/(tabs)/(main)/season/lesson-planner' },
+  { icon: 'archivebox.fill', label: 'Archive', route: '/(tabs)/(main)/season/archive' },
+  { icon: 'gearshape.fill', label: 'Settings', route: '/(tabs)/(main)/season/settings' },
+] as const;
+
+const PARISH_NAV = [
+  { icon: 'person.3.fill', label: 'Volunteer Manager', route: '/(tabs)/(main)/season/volunteers' },
+  { icon: 'figure.and.child.holdinghands', label: 'Check-In', route: '/(tabs)/(main)/season/checkin' },
+  { icon: 'person.2.fill', label: 'Groups', route: '/(tabs)/(main)/season/groups' },
+  { icon: 'archivebox.fill', label: 'Archive', route: '/(tabs)/(main)/season/archive' },
+  { icon: 'gearshape.fill', label: 'Settings', route: '/(tabs)/(main)/season/settings' },
+] as const;
+
 export function SeasonPanel() {
   const router = useRouter();
   const mode = useMode();
   const isOffice = mode === 'business';
-  const title = isOffice ? 'Office' : 'Season';
-  const navItems = isOffice ? OFFICE_NAV : SPORTS_NAV;
+  const isCampus = mode === 'education';
+  const isParish = mode === 'church';
+  const title = isParish ? 'Parish' : isCampus ? 'Campus' : isOffice ? 'Office' : 'Season';
+  const navItems = isParish ? PARISH_NAV : isCampus ? CAMPUS_NAV : isOffice ? OFFICE_NAV : SPORTS_NAV;
 
   const navigateTo = (route: string) => {
     closeSidePanel();
