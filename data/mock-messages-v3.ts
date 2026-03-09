@@ -809,6 +809,41 @@ const CHANNEL_MEMBERS: Record<string, ChannelMember[]> = {
 };
 
 // =============================================================================
+// GLOBAL REQUESTS — DMs from people outside the user's org awaiting acceptance
+// =============================================================================
+
+const GLOBAL_REQUESTS: InboxThreadV3[] = [
+  { id: 'req1', mode: 'sports', name: 'DeShawn Mitchell', initials: 'DM', role: 'Recruit',
+    orgName: 'Helena High School', username: 'deshawnm_22',
+    preview: 'Coach, I saw your program highlights. Would love to learn more about Carroll.',
+    timestamp: hoursAgo(2), unread: true, pinned: false, isRequest: true },
+  { id: 'req2', mode: 'sports', name: 'Jordan Ellis', initials: 'JE', role: 'Transfer',
+    orgName: 'Montana State', username: 'jellis_hoops',
+    preview: 'Coach Pearson, I\'m exploring transfer options and Carroll is on my list.',
+    timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: true },
+  { id: 'req3', mode: 'church', name: 'Amara Osei', initials: 'AO', role: 'Visitor',
+    orgName: 'Grace Fellowship', username: 'amara.osei',
+    preview: 'Hi, I visited last Sunday and would love to connect about small groups.',
+    timestamp: hoursAgo(8), unread: true, pinned: false, isRequest: true },
+  { id: 'req4', mode: 'business', name: 'Raj Patel', initials: 'RP', role: 'Investor',
+    orgName: 'Cascade Ventures', username: 'rajpatel_vc',
+    preview: 'Saw your pitch at TechStars. Would love to discuss a potential investment.',
+    timestamp: hoursAgo(12), unread: true, pinned: false, isRequest: true },
+  { id: 'req5', mode: 'education', name: 'Lisa Nguyen', initials: 'LN', role: 'Prospective Student',
+    orgName: 'Billings Senior High', username: 'lisa.nguyen24',
+    preview: 'Hi, I\'m interested in your nursing program. Can I ask a few questions?',
+    timestamp: hoursAgo(18), unread: true, pinned: false, isRequest: true },
+  { id: 'req6', mode: 'sports', name: 'Coach Rivera', initials: 'CR', role: 'Scout',
+    orgName: 'Great Falls CMR', username: 'coachrivera_gf',
+    preview: 'I have a 6\'4 wing who would be a great fit for your system.',
+    timestamp: daysAgo(1), unread: true, pinned: false, isRequest: true },
+  { id: 'req7', mode: 'church', name: 'David Mensah', initials: 'DM', role: 'Pastor',
+    orgName: 'New Life Church', username: 'pastordmensah',
+    preview: 'Would love to partner on a community outreach event this spring.',
+    timestamp: daysAgo(1), unread: true, pinned: false, isRequest: true },
+];
+
+// =============================================================================
 // PUBLIC API
 // =============================================================================
 
@@ -849,6 +884,15 @@ export function getDMMessages(threadId: string): RoomMessageV3[] {
 /** Get channel members for @mentions picker */
 export function getChannelMembers(roomId: string): ChannelMember[] {
   return CHANNEL_MEMBERS[roomId] ?? [];
+}
+
+/** Cross-org requests — DMs awaiting acceptance */
+export function getRequests(): InboxThreadV3[] {
+  return GLOBAL_REQUESTS;
+}
+
+export function getRequestCount(): number {
+  return GLOBAL_REQUESTS.length;
 }
 
 export function getUnansweredCount(mode: Mode): number {

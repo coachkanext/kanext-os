@@ -1,13 +1,12 @@
 /**
- * SwipeableTwoPage — shared 2-page horizontal swipeable container.
+ * SwipeablePages — shared N-page horizontal swipeable container.
  * Adapted from VisualArea PanResponder + Animated.View pattern.
- * Default page = 0. 2 dots at top. Spring animations.
+ * Default page = 0. N dots at top. Spring animations.
  *
  * Gesture coordination with root _layout.tsx:
  * - Uses bubble phase (onMoveShouldSetPanResponder) so root capture phase runs first
  * - At page 0, right swipe: don't claim → root captures → opens side panel
- * - At page 1, right swipe: claim → page back to 0
- * - At page 1, left swipe: edge trigger → Nexus
+ * - At last page, left swipe: edge trigger → Nexus
  */
 
 import React, { useRef, useMemo, useCallback, useEffect, type ReactNode } from 'react';
@@ -27,8 +26,8 @@ const SWIPE_THRESHOLD = 60;
 const VELOCITY_THRESHOLD = 0.5;
 const CLAIM_THRESHOLD = 15;
 
-interface SwipeableTwoPageProps {
-  children: [ReactNode, ReactNode];
+interface SwipeablePagesProps {
+  children: ReactNode[];
   activeIndex: number;
   onPageChange: (index: number) => void;
   onEdgeRight?: () => void;
@@ -36,17 +35,22 @@ interface SwipeableTwoPageProps {
   badges?: Set<number>;
 }
 
-export function SwipeableTwoPage({
+export function SwipeablePages({
   children,
   activeIndex,
   onPageChange,
   onEdgeRight,
   onEdgeLeft,
   badges,
-}: SwipeableTwoPageProps) {
+}: SwipeablePagesProps) {
   const { width: screenWidth } = useWindowDimensions();
   const activeRef = useRef(activeIndex);
   const translateX = useRef(new Animated.Value(-activeIndex * screenWidth)).current;
+
+  const childArray = React.Children.toArray(children);
+  const pageCount = childArray.length;
+  const pageCountRef = useRef(pageCount);
+  pageCountRef.current = pageCount;
 
   const screenWidthRef = useRef(screenWidth);
   screenWidthRef.current = screenWidth;
@@ -81,7 +85,7 @@ export function SwipeableTwoPage({
   }, [screenWidth, translateX]);
 
   const animateToPage = useCallback((page: number) => {
-    const clamped = Math.max(0, Math.min(page, 1));
+    const clamped = Math.max(0, Math.min(page, pageCountRef.current - 1));
     Animated.spring(translateX, {
       toValue: -clamped * screenWidthRef.current,
       tension: 50,
@@ -112,13 +116,15 @@ export function SwipeableTwoPage({
         onPanResponderMove: (_evt, gs) => {
           const base = -activeRef.current * screenWidthRef.current;
           const raw = base + gs.dx;
-          // Clamp so pager doesn't overscroll past edges (0 = page 0, -screenWidth = page 1)
-          const clamped = Math.max(-screenWidthRef.current, Math.min(0, raw));
+          // Clamp so pager doesn't overscroll past edges
+          const maxTranslate = -(pageCountRef.current - 1) * screenWidthRef.current;
+          const clamped = Math.max(maxTranslate, Math.min(0, raw));
           translateX.setValue(clamped);
         },
         onPanResponderRelease: (_evt, gs) => {
           const page = activeRef.current;
           const goPage = animateToPageRef.current;
+          const lastPage = pageCountRef.current - 1;
 
           if (gs.dx > SWIPE_THRESHOLD || gs.vx > VELOCITY_THRESHOLD) {
             // Swipe right
@@ -135,10 +141,10 @@ export function SwipeableTwoPage({
             }
           } else if (gs.dx < -SWIPE_THRESHOLD || gs.vx < -VELOCITY_THRESHOLD) {
             // Swipe left
-            if (page < 1) {
+            if (page < lastPage) {
               goPage(page + 1);
             } else {
-              // At page 1, left swipe: edge trigger → Nexus (with slide animation)
+              // At last page, left swipe: edge trigger → Nexus (with slide animation)
               if (!edgeTriggered.current) {
                 edgeTriggered.current = true;
                 // Deactivate swipeable state so Nexus screen's right-swipe can open side panel
@@ -148,7 +154,7 @@ export function SwipeableTwoPage({
                 onEdgeLeftRef.current?.();
                 setTimeout(() => { edgeTriggered.current = false; }, 500);
               }
-              goPage(1);
+              goPage(lastPage);
             }
           } else {
             goPage(page); // snap back
@@ -163,25 +169,29 @@ export function SwipeableTwoPage({
 
   return (
     <View style={styles.container}>
-      <PageDots count={2} activeIndex={activeIndex} badges={badges} />
+      <PageDots count={pageCount} activeIndex={activeIndex} badges={badges} />
 
       {/* Pages */}
       <Animated.View
         style={[
           styles.pagerRow,
           {
-            width: screenWidth * 2,
+            width: screenWidth * pageCount,
             transform: [{ translateX }],
           },
         ]}
         {...panResponder.panHandlers}
       >
-        <View style={{ width: screenWidth, flex: 1 }}>{children[0]}</View>
-        <View style={{ width: screenWidth, flex: 1 }}>{children[1]}</View>
+        {childArray.map((child, i) => (
+          <View key={i} style={{ width: screenWidth, flex: 1 }}>{child}</View>
+        ))}
       </Animated.View>
     </View>
   );
 }
+
+/** Backward-compatible alias */
+export { SwipeablePages as SwipeableTwoPage };
 
 const styles = StyleSheet.create({
   container: {

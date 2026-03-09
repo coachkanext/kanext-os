@@ -993,6 +993,8 @@ export interface InboxThreadV3 {
   favorite?: boolean;
   isRequest: boolean;
   avatar?: string;
+  orgName?: string;   // organization name for request display
+  username?: string;  // @username for request display
 }
 
 export interface RoomV3 {
