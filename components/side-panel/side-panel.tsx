@@ -18,6 +18,7 @@ import { MessagesPanel } from './messages-panel';
 import { PhonePanel } from './phone-panel';
 import { NexusPanel } from './nexus-panel';
 import { ModePanel } from './mode-panel';
+import { AgendaPanel } from './agenda-panel';
 import { DefaultPanel } from './default-panel';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -35,6 +36,7 @@ export function SidePanel({ visible }: SidePanelProps) {
   const isPhone = pathname.includes('phone');
   const isNexus = pathname.includes('nexus');
   const isMode = pathname.includes('mode');
+  const isAgenda = pathname.includes('agenda');
 
   return (
     <View
@@ -64,7 +66,9 @@ export function SidePanel({ visible }: SidePanelProps) {
               ? <NexusPanel />
               : isMode
                 ? <ModePanel />
-                : <DefaultPanel pathname={pathname} />
+                : isAgenda
+                  ? <AgendaPanel />
+                  : <DefaultPanel pathname={pathname} />
         }
       </ScrollView>
     </View>

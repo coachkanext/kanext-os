@@ -71,15 +71,6 @@ const SCREEN_ITEMS: Record<string, { title: string; items: PanelItem[] }> = {
       { icon: 'waveform', label: 'Audio Devices' },
     ],
   },
-  agenda: {
-    title: 'Agenda',
-    items: [
-      { icon: 'checklist', label: 'Reminders' },
-      { icon: 'line.3.horizontal.decrease', label: 'Filters' },
-      { icon: 'arrow.triangle.2.circlepath', label: 'Import' },
-      { icon: 'gearshape.fill', label: 'Settings' },
-    ],
-  },
   social: {
     title: 'Social',
     items: [
@@ -101,7 +92,6 @@ function resolveScreen(pathname: string): { title: string; items: PanelItem[] } 
   if (p.includes('give') || p.includes('giving')) return SCREEN_ITEMS.give;
   if (p.includes('video')) return SCREEN_ITEMS.video;
   if (p.includes('phone')) return SCREEN_ITEMS.phone;
-  if (p.includes('agenda')) return SCREEN_ITEMS.agenda;
   if (p.includes('social')) return SCREEN_ITEMS.social;
   // Generic fallback
   return {

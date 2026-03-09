@@ -1,8 +1,10 @@
 /**
- * Agenda — Personal timeline + calendar view.
- * Page 0: Rolling timeline with now-line, date sections, focal highlights.
- * Page 1: Calendar grid with white event dots, context panel.
- * Monochrome event rows — no colored category bars. Source icons for auto-pulled events.
+ * Agenda — 3-page swipeable layout. Universal across all modes.
+ * Page 0 (default): Timeline — rolling daily view with now-line, date sections, focal highlights.
+ * Page 1: Calendar — month grid with selected-day context panel.
+ * Page 2: Activity — feed of everything that happened, with filter pills + badges.
+ * 3 dots at top. Swipe right on page 0 = side panel.
+ * 3rd dot gets badge when unread activity exists.
  */
 
 import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react';
@@ -10,6 +12,7 @@ import {
   View,
   Text,
   Pressable,
+  ScrollView,
   SectionList,
   StyleSheet,
 } from 'react-native';
@@ -17,7 +20,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { SwipeableTwoPage } from '@/components/ui/swipeable-two-page';
+import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
 import { CalendarGrid } from '@/components/agenda/calendar-grid';
 import {
@@ -28,7 +31,11 @@ import {
   getCurrentEvent,
   deriveSource,
   getSourceIcon,
+  getActivityItems,
+  getUnreadActivityCount,
   type PersonalAgendaItem,
+  type ActivityCategory,
+  type ActivityItem,
 } from '@/data/mock-agenda';
 import { useOrganization, useMode } from '@/context/app-context';
 import { openSidePanel } from '@/utils/global-side-panel';
@@ -39,11 +46,111 @@ const C = {
   label: '#FFFFFF',
   secondary: '#A1A1AA',
   muted: '#52525B',
-  separator: '#2F3336',
+  separator: 'rgba(255,255,255,0.08)',
   nowLine: '#FFFFFF',
   surface: '#0B0F14',
   blueSteel: '#1D9BF0',
 };
+
+// ─── Page Top Bar ────────────────────────────────────────────────────────────
+
+function PageTopBar({ title }: { title: string }) {
+  return (
+    <View style={styles.topBar}>
+      <Text style={styles.topBarTitle}>{title}</Text>
+    </View>
+  );
+}
+
+// ─── Activity Filter Pills ──────────────────────────────────────────────────
+
+type ActivityFilter = 'all' | ActivityCategory;
+
+const ACTIVITY_FILTERS: { key: ActivityFilter; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'messages', label: 'Messages' },
+  { key: 'calls', label: 'Calls' },
+  { key: 'payments', label: 'Payments' },
+  { key: 'schedule', label: 'Schedule' },
+  { key: 'prospects', label: 'Prospects' },
+];
+
+function ActivityFilterPills({
+  active,
+  onSelect,
+}: {
+  active: ActivityFilter;
+  onSelect: (f: ActivityFilter) => void;
+}) {
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.filterRow}
+    >
+      {ACTIVITY_FILTERS.map((f) => {
+        const isActive = active === f.key;
+        return (
+          <Pressable
+            key={f.key}
+            style={[styles.filterPill, isActive && styles.filterPillActive]}
+            onPress={() => onSelect(f.key)}
+          >
+            <Text style={[styles.filterText, isActive && styles.filterTextActive]}>{f.label}</Text>
+          </Pressable>
+        );
+      })}
+    </ScrollView>
+  );
+}
+
+// ─── Activity Row ────────────────────────────────────────────────────────────
+
+function ActivityRow({
+  item,
+  onLongPress,
+}: {
+  item: ActivityItem;
+  onLongPress: (pageY: number) => void;
+}) {
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.activityRow,
+        pressed && styles.activityRowPressed,
+        !item.read && styles.activityRowUnread,
+      ]}
+      onLongPress={(e) => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        onLongPress(e.nativeEvent.pageY);
+      }}
+      delayLongPress={400}
+    >
+      {/* Source icon */}
+      <View style={styles.activityIconCircle}>
+        <IconSymbol name={item.icon as any} size={16} color={C.secondary} />
+      </View>
+
+      {/* Content */}
+      <View style={styles.activityContent}>
+        <Text style={[styles.activityTitle, item.read && styles.activityTitleRead]} numberOfLines={1}>
+          {item.title}
+        </Text>
+        <Text style={styles.activityDescription} numberOfLines={1}>
+          {item.description}
+        </Text>
+      </View>
+
+      {/* Timestamp */}
+      <Text style={styles.activityTimestamp}>{item.timestamp}</Text>
+
+      {/* Unread dot */}
+      {!item.read && <View style={styles.unreadDot} />}
+    </Pressable>
+  );
+}
+
+// ─── Main Screen ────────────────────────────────────────────────────────────
 
 export default function AgendaScreen() {
   const insets = useSafeAreaInsets();
@@ -52,6 +159,7 @@ export default function AgendaScreen() {
   const [pageIndex, setPageIndex] = useState(0);
   const [menuData, setMenuData] = useState<ContextMenuData | null>(null);
   const [calendarSelectedDate, setCalendarSelectedDate] = useState<string | null>(null);
+  const [activityFilter, setActivityFilter] = useState<ActivityFilter>('all');
   const sectionListRef = useRef<SectionList>(null);
 
   // Build sections from grouped agenda data
@@ -73,6 +181,20 @@ export default function AgendaScreen() {
   // Next upcoming & current event
   const nextUpcoming = useMemo(() => getNextUpcomingEvent(), []);
   const currentEvent = useMemo(() => getCurrentEvent(), []);
+
+  // Activity data
+  const activityItems = useMemo(() => {
+    if (activityFilter === 'all') return getActivityItems();
+    return getActivityItems(activityFilter);
+  }, [activityFilter]);
+
+  const unreadCount = useMemo(() => getUnreadActivityCount(), []);
+
+  // Badge on 3rd dot (index 2) when unread activity exists
+  const badges = useMemo(() => {
+    if (unreadCount > 0) return new Set([2]);
+    return undefined;
+  }, [unreadCount]);
 
   // Auto-scroll to today on mount
   const lastScrollY = useRef(0);
@@ -121,7 +243,8 @@ export default function AgendaScreen() {
     // Would open add event bottom sheet
   }, []);
 
-  const handleLongPress = useCallback((item: PersonalAgendaItem, pageY: number) => {
+  // ── Long press: Timeline events ──
+  const handleEventLongPress = useCallback((item: PersonalAgendaItem, pageY: number) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setMenuData({
       title: item.title,
@@ -134,6 +257,26 @@ export default function AgendaScreen() {
         { key: 'edit', label: 'Edit', icon: 'pencil' },
         { key: 'remind', label: 'Set Reminder', icon: 'bell.fill' },
         { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
+      ],
+      onAction: (_key) => {
+        // Actions would be wired to backend
+      },
+    });
+  }, []);
+
+  // ── Long press: Activity items ──
+  const handleActivityLongPress = useCallback((item: ActivityItem, pageY: number) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setMenuData({
+      title: item.title,
+      subtitle: item.timestamp,
+      initials: item.title.charAt(0),
+      isSquircle: false,
+      pageY,
+      actions: [
+        { key: 'read', label: item.read ? 'Mark as Unread' : 'Mark as Read', icon: item.read ? 'envelope.fill' : 'envelope.open.fill' },
+        { key: 'dismiss', label: 'Dismiss', icon: 'xmark.circle.fill' },
+        { key: 'mute', label: 'Mute this type', icon: 'bell.slash.fill', destructive: true },
       ],
       onAction: (_key) => {
         // Actions would be wired to backend
@@ -168,7 +311,7 @@ export default function AgendaScreen() {
           isNext && styles.eventRowNext,
           isCurrent && styles.eventRowCurrent,
         ]}
-        onLongPress={(e) => handleLongPress(item, e.nativeEvent.pageY)}
+        onLongPress={(e) => handleEventLongPress(item, e.nativeEvent.pageY)}
         delayLongPress={400}
       >
         {/* Time column */}
@@ -219,12 +362,13 @@ export default function AgendaScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <SwipeableTwoPage
+      <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
         onEdgeRight={openSidePanel}
+        badges={badges}
       >
-        {/* Page 0: Rolling Timeline */}
+        {/* ── PAGE 0: TIMELINE ── */}
         <View style={styles.page}>
           <SectionList
             ref={sectionListRef}
@@ -276,7 +420,7 @@ export default function AgendaScreen() {
           />
         </View>
 
-        {/* Page 1: Calendar Grid */}
+        {/* ── PAGE 1: CALENDAR ── */}
         <View style={styles.page}>
           <CalendarGrid
             selectedDate={calendarSelectedDate}
@@ -285,15 +429,49 @@ export default function AgendaScreen() {
             onAddEvent={handleAddEvent}
           />
         </View>
-      </SwipeableTwoPage>
 
-      {/* FAB — Add Event */}
-      <Pressable
-        style={[styles.fab, { bottom: insets.bottom + 60 }]}
-        onPress={handleAddEvent}
-      >
-        <IconSymbol name="plus" size={24} color="#FFFFFF" />
-      </Pressable>
+        {/* ── PAGE 2: ACTIVITY ── */}
+        <View style={{ flex: 1 }}>
+          <View style={{ paddingTop: 16 }}>
+            <PageTopBar title="Activity" />
+            <ActivityFilterPills active={activityFilter} onSelect={setActivityFilter} />
+          </View>
+          <ScrollView
+            style={styles.pageScroll}
+            contentContainerStyle={{ paddingBottom: 120 }}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}
+          >
+            {activityItems.length === 0 ? (
+              <View style={styles.emptyState}>
+                <IconSymbol name="bell.fill" size={36} color={C.muted} />
+                <Text style={styles.emptyText}>No activity</Text>
+              </View>
+            ) : (
+              activityItems.map((item, idx) => (
+                <View key={item.id}>
+                  {idx > 0 && <View style={styles.activitySeparator} />}
+                  <ActivityRow
+                    item={item}
+                    onLongPress={(pageY) => handleActivityLongPress(item, pageY)}
+                  />
+                </View>
+              ))
+            )}
+          </ScrollView>
+        </View>
+      </SwipeablePages>
+
+      {/* FAB — Add Event (pages 0 & 1 only) */}
+      {pageIndex < 2 && (
+        <Pressable
+          style={[styles.fab, { bottom: insets.bottom + 60 }]}
+          onPress={handleAddEvent}
+        >
+          <IconSymbol name="plus" size={24} color="#FFFFFF" />
+        </Pressable>
+      )}
 
       <LongPressContextMenu data={menuData} onClose={() => setMenuData(null)} />
     </View>
@@ -303,6 +481,44 @@ export default function AgendaScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   page: { flex: 1, backgroundColor: '#000000' },
+  pageScroll: { flex: 1 },
+
+  // Top bar (Activity page)
+  topBar: {
+    paddingHorizontal: 16,
+    paddingBottom: 8,
+  },
+  topBarTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: C.secondary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+
+  // Filter pills (Activity)
+  filterRow: {
+    paddingHorizontal: 16,
+    gap: 8,
+    paddingBottom: 4,
+  },
+  filterPill: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: C.surface,
+  },
+  filterPillActive: {
+    backgroundColor: C.label,
+  },
+  filterText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: C.label,
+  },
+  filterTextActive: {
+    color: '#000000',
+  },
 
   // Summary strip
   summaryStrip: {
@@ -457,6 +673,66 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#A1A1AA',
   },
+
+  // Activity rows
+  activityRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingLeft: 16,
+    paddingRight: 12,
+    backgroundColor: C.bg,
+  },
+  activityRowPressed: {
+    backgroundColor: 'rgba(255,255,255,0.04)',
+  },
+  activityRowUnread: {},
+  activityIconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: C.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activityContent: {
+    flex: 1,
+    marginLeft: 12,
+    marginRight: 8,
+  },
+  activityTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: C.label,
+  },
+  activityTitleRead: {
+    color: C.muted,
+  },
+  activityDescription: {
+    fontSize: 13,
+    color: C.secondary,
+    marginTop: 1,
+  },
+  activityTimestamp: {
+    fontSize: 11,
+    color: C.muted,
+  },
+  unreadDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: C.blueSteel,
+    marginLeft: 6,
+  },
+  activitySeparator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: C.separator,
+    marginLeft: 64,
+  },
+
+  // Empty state
+  emptyState: { alignItems: 'center', paddingTop: 120, gap: 12 },
+  emptyText: { fontSize: 16, color: C.muted },
 
   // FAB
   fab: {
