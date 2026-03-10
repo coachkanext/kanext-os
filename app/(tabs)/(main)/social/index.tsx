@@ -16,8 +16,9 @@ import { StoriesRow } from '@/components/social/stories-row';
 import { StoryViewer } from '@/components/social/story-viewer';
 import { FeedPost } from '@/components/social/feed-post';
 import { ReelsPage } from '@/components/social/reels-page';
+import { ExplorePage } from '@/components/social/explore-page';
 import { SocialFab } from '@/components/social/social-fab';
-import { getStories, getFeedPosts, getReels } from '@/data/mock-social';
+import { getStories, getFeedPosts, getReels, getTrendingTopics, getExploreTiles, getSuggestedAccounts } from '@/data/mock-social';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
 import type { StoryUser } from '@/data/mock-social';
@@ -34,6 +35,11 @@ export default function SocialScreen() {
   const stories = useMemo(() => getStories(mode), [mode]);
   const posts = useMemo(() => getFeedPosts(mode), [mode]);
   const reels = useMemo(() => getReels(mode), [mode]);
+
+  // Explore data (universal, not per-mode)
+  const trendingTopics = useMemo(() => getTrendingTopics(), []);
+  const exploreTiles = useMemo(() => getExploreTiles(), []);
+  const suggestedAccounts = useMemo(() => getSuggestedAccounts(), []);
 
   // Like / bookmark state — reset on mode change
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
@@ -126,7 +132,7 @@ export default function SocialScreen() {
   }, [togglePostBookmark]);
 
   return (
-    <View style={[styles.container, pageIndex === 0 && { paddingTop: insets.top }]}>
+    <View style={[styles.container, pageIndex !== 1 && { paddingTop: insets.top }]}>
       <SwipeableTwoPage
         activeIndex={pageIndex}
         onPageChange={handlePageChange}
@@ -164,6 +170,14 @@ export default function SocialScreen() {
           bookmarkedReels={bookmarkedReels}
           onLikeToggle={toggleReelLike}
           onBookmarkToggle={toggleReelBookmark}
+        />
+
+        {/* Page 2: Explore */}
+        <ExplorePage
+          mode={mode}
+          trendingTopics={trendingTopics}
+          tiles={exploreTiles}
+          suggestedAccounts={suggestedAccounts}
         />
       </SwipeableTwoPage>
 

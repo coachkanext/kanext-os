@@ -816,6 +816,101 @@ const BUSINESS_REELS: SocialReel[] = [
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════
+// EXPLORE — universal (algorithm-driven, not per-mode)
+// ═══════════════════════════════════════════════════════════════════════════
+
+export interface TrendingTopic {
+  id: string;
+  hashtag: string;
+  postCount: number;
+}
+
+export interface ExploreTile {
+  id: string;
+  type: 'image' | 'video' | 'reel';
+  uri: string;
+  aspectRatio: number;
+}
+
+export interface SuggestedAccount {
+  id: string;
+  name: string;
+  username: string;
+  initials: string;
+  followerCount: number;
+  mutualCount: number;
+}
+
+const TRENDING_TOPICS: TrendingTopic[] = [
+  { id: 'tt1', hashtag: '#GameDay',       postCount: 12400 },
+  { id: 'tt2', hashtag: '#MorningGrind',  postCount: 8900 },
+  { id: 'tt3', hashtag: '#TeamWork',      postCount: 6700 },
+  { id: 'tt4', hashtag: '#FaithForward',  postCount: 5200 },
+  { id: 'tt5', hashtag: '#StartupLife',   postCount: 4800 },
+  { id: 'tt6', hashtag: '#CampusVibes',   postCount: 3600 },
+  { id: 'tt7', hashtag: '#LeadersOfTmrw', postCount: 2900 },
+  { id: 'tt8', hashtag: '#Wellness',      postCount: 2100 },
+];
+
+const EXPLORE_TILES: ExploreTile[] = [
+  { id: 'et1',  type: 'image', uri: img('photo-1519861531473-9200262188bf'), aspectRatio: 1 },
+  { id: 'et2',  type: 'video', uri: img('photo-1546519638-68e109498ffc'),   aspectRatio: 1 },
+  { id: 'et3',  type: 'image', uri: img('photo-1504450758481-7338eba7524a'), aspectRatio: 1 },
+  { id: 'et4',  type: 'image', uri: img('photo-1574623452334-9e0bd3668cae'), aspectRatio: 1 },
+  { id: 'et5',  type: 'reel',  uri: img('photo-1552674605-db6ffd4facb5'),   aspectRatio: 1 },
+  { id: 'et6',  type: 'image', uri: img('photo-1534438327276-14e5300c3a48'), aspectRatio: 1 },
+  { id: 'et7',  type: 'image', uri: img('photo-1497366216548-37526070297c'), aspectRatio: 1 },
+  { id: 'et8',  type: 'video', uri: img('photo-1560472355-536de3962603'),   aspectRatio: 1 },
+  { id: 'et9',  type: 'image', uri: img('photo-1524178232363-1fb2b075b655'), aspectRatio: 1 },
+  { id: 'et10', type: 'image', uri: img('photo-1541339907198-e08756dedf3f'), aspectRatio: 1 },
+  { id: 'et11', type: 'reel',  uri: img('photo-1523050854058-8df90110c9f1'), aspectRatio: 1 },
+  { id: 'et12', type: 'image', uri: img('photo-1497633762265-9d179a990aa6'), aspectRatio: 1 },
+  { id: 'et13', type: 'image', uri: img('photo-1438032005730-c779502df39b'), aspectRatio: 1 },
+  { id: 'et14', type: 'video', uri: img('photo-1478737270239-2f02b77fc618'), aspectRatio: 1 },
+  { id: 'et15', type: 'image', uri: img('photo-1507692049790-de58290a4334'), aspectRatio: 1 },
+  { id: 'et16', type: 'image', uri: img('photo-1516450360452-9312f5e86fc7'), aspectRatio: 1 },
+  { id: 'et17', type: 'reel',  uri: img('photo-1470229722913-7c0e2dbbafd3'), aspectRatio: 1 },
+  { id: 'et18', type: 'image', uri: img('photo-1529070538774-1843cb3265df'), aspectRatio: 1 },
+  { id: 'et19', type: 'image', uri: img('photo-1501281668745-f7f57925c3b4'), aspectRatio: 1 },
+  { id: 'et20', type: 'video', uri: img('photo-1552664730-d307ca884978'), aspectRatio: 1 },
+  { id: 'et21', type: 'image', uri: img('photo-1522071820081-009f0129c71c'), aspectRatio: 1 },
+  { id: 'et22', type: 'image', uri: img('photo-1497215842964-222b430dc094'), aspectRatio: 1 },
+  { id: 'et23', type: 'reel',  uri: img('photo-1481627834876-b7833e8f5570'), aspectRatio: 1 },
+  { id: 'et24', type: 'image', uri: img('photo-1461896836934-bd45ba8a0dce'), aspectRatio: 1 },
+];
+
+const SUGGESTED_ACCOUNTS: SuggestedAccount[] = [
+  { id: 'sa-s1', name: 'Alex Rivera',    username: '@arivera',   initials: 'AR', followerCount: 14200, mutualCount: 3 },
+  { id: 'sa-s2', name: 'Taylor Nguyen',  username: '@tng',       initials: 'TN', followerCount: 8700,  mutualCount: 5 },
+  { id: 'sa-s3', name: 'Jordan Brooks',  username: '@jbrooks',   initials: 'JB', followerCount: 23100, mutualCount: 2 },
+  { id: 'sa-s4', name: 'Casey Mitchell', username: '@cmitchell', initials: 'CM', followerCount: 6400,  mutualCount: 7 },
+  { id: 'sa-s5', name: 'Morgan Patel',   username: '@mpatel',    initials: 'MP', followerCount: 31500, mutualCount: 1 },
+  { id: 'sa-s6', name: 'Riley Chen',     username: '@rchen',     initials: 'RC', followerCount: 11800, mutualCount: 4 },
+];
+
+export const EXPLORE_CATEGORIES = [
+  { key: 'for_you',   label: 'For You' },
+  { key: 'sports',    label: 'Sports' },
+  { key: 'business',  label: 'Business' },
+  { key: 'faith',     label: 'Faith' },
+  { key: 'education', label: 'Education' },
+  { key: 'trending',  label: 'Trending' },
+  { key: 'near_me',   label: 'Near Me' },
+] as const;
+
+export function getTrendingTopics(): TrendingTopic[] {
+  return TRENDING_TOPICS;
+}
+
+export function getExploreTiles(): ExploreTile[] {
+  return EXPLORE_TILES;
+}
+
+export function getSuggestedAccounts(): SuggestedAccount[] {
+  return SUGGESTED_ACCOUNTS;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // MODE MAPS + GETTERS
 // ═══════════════════════════════════════════════════════════════════════════
 

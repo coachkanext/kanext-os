@@ -78,6 +78,10 @@ export default function HomeLayout() {
       <Stack.Screen name="roster/index" />
       {/* Media */}
       <Stack.Screen name="media/index" />
+      {/* Store / Give */}
+      <Stack.Screen name="store/index" />
+      {/* KayTV */}
+      <Stack.Screen name="kaytv/index" />
     </Stack>
   );
 }

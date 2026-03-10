@@ -25,6 +25,10 @@ import { ProspectsPanel } from './prospects-panel';
 import { LeadsPanel } from './leads-panel';
 import { AdmissionsPanel } from './admissions-panel';
 import { OutreachPanel } from './outreach-panel';
+import { SocialPanel } from './social-panel';
+import { StorePanel } from './store-panel';
+import { GivePanel } from './give-panel';
+import { KayTVPanel } from './kaytv-panel';
 import { DefaultPanel } from './default-panel';
 import { useMode } from '@/context/app-context';
 
@@ -48,6 +52,9 @@ export function SidePanel({ visible }: SidePanelProps) {
   const isSeason = pathname.includes('season');
   const isRoster = pathname.includes('roster');
   const isRecruits = pathname.includes('recruits');
+  const isSocial = pathname.includes('social');
+  const isStore = pathname.includes('store');
+  const isKayTV = pathname.includes('kaytv');
 
   return (
     <View
@@ -75,17 +82,23 @@ export function SidePanel({ visible }: SidePanelProps) {
             ? <PhonePanel />
             : isNexus
               ? <NexusPanel />
-              : isMode
-                ? <ModePanel />
-                : isAgenda
-                  ? <AgendaPanel />
-                  : isSeason
-                    ? <SeasonPanel />
-                    : isRoster
-                      ? <RosterPanel />
-                      : isRecruits
-                        ? (mode === 'business' ? <LeadsPanel /> : mode === 'education' ? <AdmissionsPanel /> : mode === 'church' ? <OutreachPanel /> : <ProspectsPanel />)
-                        : <DefaultPanel pathname={pathname} />
+              : isSocial
+                ? <SocialPanel />
+                : isStore
+                  ? (mode === 'church' ? <GivePanel /> : <StorePanel />)
+                  : isKayTV
+                    ? <KayTVPanel />
+                    : isMode
+                      ? <ModePanel />
+                      : isAgenda
+                        ? <AgendaPanel />
+                        : isSeason
+                          ? <SeasonPanel />
+                          : isRoster
+                            ? <RosterPanel />
+                            : isRecruits
+                              ? (mode === 'business' ? <LeadsPanel /> : mode === 'education' ? <AdmissionsPanel /> : mode === 'church' ? <OutreachPanel /> : <ProspectsPanel />)
+                              : <DefaultPanel pathname={pathname} />
         }
       </ScrollView>
     </View>
