@@ -22,7 +22,11 @@ import { AgendaPanel } from './agenda-panel';
 import { SeasonPanel } from './season-panel';
 import { RosterPanel } from './roster-panel';
 import { ProspectsPanel } from './prospects-panel';
+import { LeadsPanel } from './leads-panel';
+import { AdmissionsPanel } from './admissions-panel';
+import { OutreachPanel } from './outreach-panel';
 import { DefaultPanel } from './default-panel';
+import { useMode } from '@/context/app-context';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 export const SIDE_PANEL_WIDTH = Math.min(300, SCREEN_WIDTH * 0.82);
@@ -34,6 +38,7 @@ interface SidePanelProps {
 export function SidePanel({ visible }: SidePanelProps) {
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
+  const mode = useMode();
 
   const isMessages = pathname.includes('messages');
   const isPhone = pathname.includes('phone');
@@ -79,7 +84,7 @@ export function SidePanel({ visible }: SidePanelProps) {
                     : isRoster
                       ? <RosterPanel />
                       : isRecruits
-                        ? <ProspectsPanel />
+                        ? (mode === 'business' ? <LeadsPanel /> : mode === 'education' ? <AdmissionsPanel /> : mode === 'church' ? <OutreachPanel /> : <ProspectsPanel />)
                         : <DefaultPanel pathname={pathname} />
         }
       </ScrollView>
