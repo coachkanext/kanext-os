@@ -72,7 +72,7 @@ const ROWS: GridIcon[][] = [
   [
     { id: 'media',    icon: 'play.rectangle.fill',  label: 'KayTV',    route: '/(tabs)/(main)/kaytv',    image: require('@/assets/images/icon-media.png') },
     { id: 'wallet',   icon: 'creditcard.fill',      label: 'KayPay',   route: '/wallet',                 image: require('@/assets/images/icon-wallet.png') },
-    { id: 'gm',       icon: 'gamecontroller.fill',  label: 'KayStudios',    route: '/section?title=GM',       image: require('@/assets/images/icon-gm.png') },
+    { id: 'gm',       icon: 'gamecontroller.fill',  label: 'KayStudios',    route: '/studios',                image: require('@/assets/images/icon-gm.png') },
   ],
 ];
 

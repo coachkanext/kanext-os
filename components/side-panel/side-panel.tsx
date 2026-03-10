@@ -29,6 +29,8 @@ import { SocialPanel } from './social-panel';
 import { StorePanel } from './store-panel';
 import { GivePanel } from './give-panel';
 import { KayTVPanel } from './kaytv-panel';
+import { WalletPanel } from './wallet-panel';
+import { StudiosPanel } from './studios-panel';
 import { DefaultPanel } from './default-panel';
 import { useMode } from '@/context/app-context';
 
@@ -55,6 +57,8 @@ export function SidePanel({ visible }: SidePanelProps) {
   const isSocial = pathname.includes('social');
   const isStore = pathname.includes('store');
   const isKayTV = pathname.includes('kaytv');
+  const isWallet = pathname.includes('wallet');
+  const isStudios = pathname.includes('studios');
 
   return (
     <View
@@ -88,7 +92,11 @@ export function SidePanel({ visible }: SidePanelProps) {
                   ? (mode === 'church' ? <GivePanel /> : <StorePanel />)
                   : isKayTV
                     ? <KayTVPanel />
-                    : isMode
+                    : isWallet
+                      ? <WalletPanel />
+                      : isStudios
+                        ? <StudiosPanel />
+                        : isMode
                       ? <ModePanel />
                       : isAgenda
                         ? <AgendaPanel />
