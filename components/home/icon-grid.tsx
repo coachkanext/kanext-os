@@ -67,10 +67,10 @@ const ROWS: GridIcon[][] = [
   [
     { id: 'recruits', icon: 'person.badge.plus',    label: 'Recruits', route: '/(tabs)/(main)/recruits', image: require('@/assets/images/icon-recruits.png') },
     { id: 'social',   icon: 'newspaper.fill',       label: 'Social',   route: '/social',                 image: require('@/assets/images/icon-social.png') },
-    { id: 'store',    icon: 'bag.fill',             label: 'Store',    route: '/section?title=Store',    image: require('@/assets/images/icon-store.png') },
+    { id: 'store',    icon: 'bag.fill',             label: 'Store',    route: '/(tabs)/(main)/store',    image: require('@/assets/images/icon-store.png') },
   ],
   [
-    { id: 'media',    icon: 'play.rectangle.fill',  label: 'KayTV',    route: '/media',                  image: require('@/assets/images/icon-media.png') },
+    { id: 'media',    icon: 'play.rectangle.fill',  label: 'KayTV',    route: '/(tabs)/(main)/kaytv',    image: require('@/assets/images/icon-media.png') },
     { id: 'wallet',   icon: 'creditcard.fill',      label: 'KayPay',   route: '/wallet',                 image: require('@/assets/images/icon-wallet.png') },
     { id: 'gm',       icon: 'gamecontroller.fill',  label: 'KayStudios',    route: '/section?title=GM',       image: require('@/assets/images/icon-gm.png') },
   ],
