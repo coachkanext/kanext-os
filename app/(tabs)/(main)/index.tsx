@@ -1,6 +1,6 @@
 /**
  * Home — Auto-playing video area + icon grid.
- * Video = 42% of usable screen height (status bar to bottom safe area).
+ * Video = 30% of usable screen height (status bar to bottom safe area).
  * Grid centered in remaining space.
  * Video hero has 3 self-contained swipe pages (default = middle). Dead ends at edges.
  * Grid swipes: right → open settings panel, left → go to Nexus.
@@ -42,7 +42,7 @@ export default function HomeScreen() {
 
   // Usable height = screen minus status bar minus bottom safe area (no tab bar)
   const usableHeight = height - insets.top - insets.bottom;
-  const videoHeight = usableHeight * 0.42;
+  const videoHeight = usableHeight * 0.30;
 
   return (
     <View style={[styles.container, { backgroundColor: C.bg }]}>
