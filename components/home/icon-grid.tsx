@@ -23,7 +23,7 @@ import type { GridIcon } from './home-types';
 
 /** Mode-dependent labels for icons that change per mode (positions 2, 3, 6) */
 const MODE_LABELS: Record<string, Partial<Record<Mode, string>>> = {
-  season:  { sports: 'Season',    business: 'Office',  church: 'Parish',    education: 'Campus' },
+  season:  { sports: 'Program',   business: 'Office',  church: 'Parish',    education: 'Campus' },
   roster:  { sports: 'Roster',    business: 'Team',    church: 'Ministries', education: 'Community' },
   recruits:{ sports: 'Prospects', business: 'Leads',   church: 'Outreach',  education: 'Admissions' },
   store:   { sports: 'Store',     business: 'Store',   church: 'Give',      education: 'Store' },
@@ -136,9 +136,11 @@ function GridTile({
           </View>
         )}
       </Animated.View>
-      <Text style={styles.label} numberOfLines={1}>
-        {item.label}
-      </Text>
+      <View style={styles.labelPill}>
+        <Text style={styles.labelText} numberOfLines={1}>
+          {item.label}
+        </Text>
+      </View>
     </Pressable>
   );
 }
@@ -239,10 +241,25 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     fontWeight: '700',
     color: '#FFFFFF',
   },
-  label: {
+  labelPill: {
+    marginTop: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 10,
+    backgroundColor: '#F4F4F5',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
+    elevation: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 52,
+  },
+  labelText: {
     fontSize: 11,
-    marginTop: 12,
+    fontWeight: '600',
     textAlign: 'center',
-    color: C.secondary,
+    color: '#52525B',
   },
 });
