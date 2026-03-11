@@ -3,12 +3,12 @@
  * Quick preview with identity and season stats.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Spacing } from '@/constants/theme';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import type { DriverCardData } from '@/utils/global-entity-sheets';
 
 function nameToHue(name: string): number {
@@ -24,8 +24,8 @@ interface Props {
 }
 
 export function DriverCardSheet({ visible, onClose, data }: Props) {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   if (!data) return null;
 
@@ -40,33 +40,33 @@ export function DriverCardSheet({ visible, onClose, data }: Props) {
             <Text style={styles.numberText}>#{data.number}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.driverName, { color: colors.text }]}>{data.name}</Text>
-            <Text style={[styles.teamName, { color: colors.textSecondary }]}>{data.team}</Text>
+            <Text style={styles.driverName}>{data.name}</Text>
+            <Text style={styles.teamName}>{data.team}</Text>
             {data.category && (
-              <Text style={[styles.category, { color: colors.textTertiary }]}>{data.category}</Text>
+              <Text style={styles.category}>{data.category}</Text>
             )}
           </View>
         </View>
 
         {/* Stats row */}
         {(data.points != null || data.wins != null || data.podiums != null) && (
-          <View style={[styles.statsCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={styles.statsCard}>
             {data.points != null && (
               <View style={styles.statItem}>
-                <Text style={[styles.statLabel, { color: colors.textTertiary }]}>POINTS</Text>
-                <Text style={[styles.statValue, { color: colors.text }]}>{data.points}</Text>
+                <Text style={styles.statLabel}>POINTS</Text>
+                <Text style={styles.statValue}>{data.points}</Text>
               </View>
             )}
             {data.wins != null && (
               <View style={styles.statItem}>
-                <Text style={[styles.statLabel, { color: colors.textTertiary }]}>WINS</Text>
-                <Text style={[styles.statValue, { color: colors.text }]}>{data.wins}</Text>
+                <Text style={styles.statLabel}>WINS</Text>
+                <Text style={styles.statValue}>{data.wins}</Text>
               </View>
             )}
             {data.podiums != null && (
               <View style={styles.statItem}>
-                <Text style={[styles.statLabel, { color: colors.textTertiary }]}>PODIUMS</Text>
-                <Text style={[styles.statValue, { color: colors.text }]}>{data.podiums}</Text>
+                <Text style={styles.statLabel}>PODIUMS</Text>
+                <Text style={styles.statValue}>{data.podiums}</Text>
               </View>
             )}
           </View>
@@ -77,7 +77,7 @@ export function DriverCardSheet({ visible, onClose, data }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     padding: Spacing.md,
     gap: Spacing.md,
@@ -97,19 +97,21 @@ const styles = StyleSheet.create({
   numberText: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#fff',
+    color: C.label,
     letterSpacing: 0.5,
   },
   driverName: {
     fontSize: 18,
     fontWeight: '800',
     letterSpacing: -0.5,
+    color: C.label,
   },
   teamName: {
     fontSize: 13,
     fontWeight: '700',
     letterSpacing: 0.5,
     marginTop: 2,
+    color: C.secondary,
   },
   category: {
     fontSize: 11,
@@ -117,6 +119,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     textTransform: 'uppercase',
     letterSpacing: 1,
+    color: C.muted,
   },
   statsCard: {
     flexDirection: 'row',
@@ -124,6 +127,8 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     padding: Spacing.md,
     justifyContent: 'space-around',
+    backgroundColor: C.surface,
+    borderColor: C.separator,
   },
   statItem: {
     alignItems: 'center',
@@ -134,10 +139,12 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: 1,
     textTransform: 'uppercase',
+    color: C.muted,
   },
   statValue: {
     fontSize: 17,
     fontWeight: '800',
     letterSpacing: -0.3,
+    color: C.label,
   },
 });

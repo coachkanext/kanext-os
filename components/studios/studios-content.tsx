@@ -19,6 +19,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -48,24 +49,11 @@ import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CONTINUE_CARD_WIDTH = SCREEN_WIDTH * 0.6;
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  green: '#22C55E',
-  red: '#EF4444',
-  amber: '#F59E0B',
-  blue: '#3B82F6',
-  purple: '#A855F7',
-  cyan: '#06B6D4',
-};
-
 // ─── Shared components ────────────────────────────────────────────────────
 
 function PageTopBar({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.topBar}>
       <Text style={s.topBarTitle}>{title}</Text>
@@ -82,6 +70,8 @@ function FilterPills<T extends string>({
   active: T;
   onSelect: (key: T) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <ScrollView
       horizontal
@@ -105,6 +95,8 @@ function FilterPills<T extends string>({
 }
 
 function SectionHeader({ title, action }: { title: string; action?: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.sectionRow}>
       <Text style={s.sectionTitle}>{title}</Text>
@@ -116,6 +108,8 @@ function SectionHeader({ title, action }: { title: string; action?: string }) {
 // ─── Continue Playing Card ───────────────────────────────────────────────
 
 function ContinueCard({ game }: { game: ActiveGame }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const catColor = CATEGORY_COLORS[game.category];
   return (
     <Pressable
@@ -136,6 +130,8 @@ function ContinueCard({ game }: { game: ActiveGame }) {
 // ─── Quick Play Button ───────────────────────────────────────────────────
 
 function QuickPlayButton({ option }: { option: ReturnType<typeof getQuickPlayOptions>[number] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable
       style={({ pressed }) => [s.quickPlayBtn, pressed && { opacity: 0.8 }]}
@@ -162,6 +158,8 @@ function RecentRow({
   game: ActiveGame;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const catColor = CATEGORY_COLORS[game.category];
   return (
     <Pressable
@@ -196,6 +194,8 @@ function CatalogCard({
   game: CatalogGame;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const catColor = CATEGORY_COLORS[game.category];
   const catLabel = CATEGORY_LABELS[game.category];
   return (
@@ -240,6 +240,8 @@ function CatalogCard({
 // ─── Leaderboard Row ─────────────────────────────────────────────────────
 
 function LeaderboardRow({ entry }: { entry: ReturnType<typeof getLeaderboard>[number] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={[s.leaderRow, entry.isYou && s.leaderRowHighlight]}>
       <Text style={[s.leaderRank, entry.rank <= 3 && { color: C.amber }]}>
@@ -259,6 +261,8 @@ function LeaderboardRow({ entry }: { entry: ReturnType<typeof getLeaderboard>[nu
 // ─── Achievement Card ────────────────────────────────────────────────────
 
 function AchievementCard({ achievement }: { achievement: ReturnType<typeof getAchievements>[number] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const earned = achievement.earned;
   return (
     <View style={[s.achieveCard, !earned && s.achieveCardLocked]}>
@@ -282,14 +286,15 @@ function AchievementCard({ achievement }: { achievement: ReturnType<typeof getAc
 
 // ─── Challenge Card ──────────────────────────────────────────────────────
 
-const CHALLENGE_TYPE_COLORS: Record<string, string> = {
-  daily: C.amber,
-  weekly: C.blue,
-  friend: C.purple,
-  community: C.green,
-};
-
 function ChallengeCard({ challenge }: { challenge: ReturnType<typeof getChallenges>[number] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+  const CHALLENGE_TYPE_COLORS: Record<string, string> = {
+    daily: C.amber,
+    weekly: C.blue,
+    friend: C.purple,
+    community: C.green,
+  };
   const pct = Math.min(challenge.progress / challenge.target, 1);
   const typeColor = CHALLENGE_TYPE_COLORS[challenge.type] ?? C.muted;
   return (
@@ -318,6 +323,8 @@ function ChallengeCard({ challenge }: { challenge: ReturnType<typeof getChalleng
 // ─── Friend Row ──────────────────────────────────────────────────────────
 
 function FriendRow({ friend }: { friend: ReturnType<typeof getGamingFriends>[number] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable style={({ pressed }) => [s.friendRow, pressed && { opacity: 0.85 }]}>
       <View style={s.friendAvatar}>
@@ -343,6 +350,8 @@ function FriendRow({ friend }: { friend: ReturnType<typeof getGamingFriends>[num
 // ═══════════════════════════════════════════════════════════════════════════
 
 export function StudiosContent() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
 
   const [pageIndex, setPageIndex] = useState(0);
@@ -605,7 +614,7 @@ export function StudiosContent() {
 // STYLES
 // ═══════════════════════════════════════════════════════════════════════════
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 
@@ -636,7 +645,7 @@ const s = StyleSheet.create({
     width: CONTINUE_CARD_WIDTH, borderRadius: 14, overflow: 'hidden',
     backgroundColor: C.surface,
   },
-  continueImage: { width: '100%', height: CONTINUE_CARD_WIDTH * 0.55, backgroundColor: '#1A1A1A' },
+  continueImage: { width: '100%', height: CONTINUE_CARD_WIDTH * 0.55, backgroundColor: C.surface },
   continueOverlay: { padding: 12 },
   categoryDot: { width: 8, height: 8, borderRadius: 4, marginBottom: 4 },
   continueTitle: { fontSize: 15, fontWeight: '700', color: C.label },
@@ -685,7 +694,7 @@ const s = StyleSheet.create({
     marginHorizontal: 16, marginBottom: 12, borderRadius: 14, overflow: 'hidden',
     backgroundColor: C.surface,
   },
-  catalogImage: { width: '100%', height: 140, backgroundColor: '#1A1A1A' },
+  catalogImage: { width: '100%', height: 140, backgroundColor: C.surface },
   catalogInfo: { padding: 12 },
   catalogHeaderRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   categoryBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
@@ -797,7 +806,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
     backgroundColor: C.blue,
   },
-  challengeBtnText: { fontSize: 12, fontWeight: '700', color: '#FFFFFF' },
+  challengeBtnText: { fontSize: 12, fontWeight: '700', color: C.label },
   addFriendBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     gap: 6, marginHorizontal: 16, marginTop: 8, paddingVertical: 12,

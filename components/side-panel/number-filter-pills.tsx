@@ -3,7 +3,7 @@
  * Each pill shows last 4 digits + mode label. Tap filters, long press opens popup.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -20,14 +20,8 @@ import {
   MODE_BADGE_LABELS,
   type KanextNumber,
 } from '@/data/mock-phone';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import type { Mode } from '@/types';
-
-const C = {
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  divider: '#2F3336',
-  surface: '#0B0F14',
-};
 
 interface NumberFilterPillsProps {
   activeMode: Mode | null;
@@ -40,11 +34,15 @@ function NumberPopup({
   visible,
   number,
   onClose,
+  C,
 }: {
   visible: boolean;
   number: KanextNumber | null;
   onClose: () => void;
+  C: ComponentColors;
 }) {
+  const popupStyles = useMemo(() => makePopupStyles(C), [C]);
+
   if (!visible || !number) return null;
 
   return (
@@ -94,6 +92,8 @@ function lastFour(number: string): string {
 // ── Main component ──
 
 export function NumberFilterPills({ activeMode, onFilterChange }: NumberFilterPillsProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const [popupNumber, setPopupNumber] = useState<KanextNumber | null>(null);
 
   return (
@@ -134,12 +134,13 @@ export function NumberFilterPills({ activeMode, onFilterChange }: NumberFilterPi
         visible={popupNumber !== null}
         number={popupNumber}
         onClose={() => setPopupNumber(null)}
+        C={C}
       />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   pillRow: {
     flexDirection: 'row',
     paddingHorizontal: 16,
@@ -155,7 +156,7 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   pillActive: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: C.label,
   },
   pillNumber: {
     fontSize: 13,
@@ -169,11 +170,11 @@ const styles = StyleSheet.create({
     color: C.secondary,
   },
   pillTextActive: {
-    color: '#000000',
+    color: C.bg,
   },
 });
 
-const popupStyles = StyleSheet.create({
+const makePopupStyles = (C: ComponentColors) => StyleSheet.create({
   backdrop: {
     flex: 1,
     justifyContent: 'center',
@@ -202,7 +203,7 @@ const popupStyles = StyleSheet.create({
   headerPillText: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: C.label,
   },
   num: {
     fontSize: 18,

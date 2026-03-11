@@ -12,6 +12,7 @@ import React from 'react';
 import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { usePathname } from 'expo-router';
+import { useColors } from '@/hooks/use-colors';
 
 import { PanelHeader } from './panel-header';
 import { MessagesPanel } from './messages-panel';
@@ -42,6 +43,7 @@ interface SidePanelProps {
 }
 
 export function SidePanel({ visible }: SidePanelProps) {
+  const C = useColors();
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
   const mode = useMode();
@@ -62,7 +64,7 @@ export function SidePanel({ visible }: SidePanelProps) {
 
   return (
     <View
-      style={[styles.container, { width: SIDE_PANEL_WIDTH }]}
+      style={[styles.container, { width: SIDE_PANEL_WIDTH, backgroundColor: C.surface }]}
       pointerEvents={visible ? 'auto' : 'none'}
     >
       <ScrollView
@@ -77,7 +79,7 @@ export function SidePanel({ visible }: SidePanelProps) {
         <PanelHeader />
 
         {/* Divider */}
-        <View style={styles.divider} />
+        <View style={[styles.divider, { backgroundColor: C.separator }]} />
 
         {/* Screen-specific content */}
         {isMessages
@@ -119,7 +121,6 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: '#000000',
     zIndex: 0,
   },
   scroll: {
@@ -131,7 +132,6 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: '#2F3336',
     marginVertical: 8,
   },
 });

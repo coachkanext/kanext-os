@@ -18,6 +18,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -34,65 +35,7 @@ import {
 import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  online: '#34C759',
-  blueSteel: '#3B82F6',
-  green: '#22C55E',
-  amber: '#F59E0B',
-  red: '#EF4444',
-};
-
-// ─── Page Top Bar ────────────────────────────────────────────────────────────
-
-function PageTopBar({ title }: { title: string }) {
-  return (
-    <View style={s.topBar}>
-      <Text style={s.topBarTitle}>{title}</Text>
-    </View>
-  );
-}
-
-// ─── Department Pills (Page 1) ──────────────────────────────────────────────
-
-function DepartmentPills({
-  departments,
-  active,
-  onSelect,
-}: {
-  departments: string[];
-  active: string;
-  onSelect: (d: string) => void;
-}) {
-  const all = ['All', ...departments];
-  return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={s.filterRow}
-    >
-      {all.map((d) => {
-        const isActive = active === d;
-        return (
-          <Pressable
-            key={d}
-            style={[s.filterPill, isActive && s.filterPillActive]}
-            onPress={() => onSelect(d)}
-          >
-            <Text style={[s.filterText, isActive && s.filterTextActive]}>{d}</Text>
-          </Pressable>
-        );
-      })}
-    </ScrollView>
-  );
-}
-
-// ─── Resource Category Pills (Page 2) ───────────────────────────────────────
+// ─── Resource Category data ─────────────────────────────────────────────────
 
 const RESOURCE_CATEGORIES: { key: ResourceCategory; label: string }[] = [
   { key: 'all', label: 'All' },
@@ -102,259 +45,26 @@ const RESOURCE_CATEGORIES: { key: ResourceCategory; label: string }[] = [
   { key: 'assets', label: 'Assets' },
 ];
 
-function ResourceCategoryPills({
-  active,
-  onSelect,
-}: {
-  active: ResourceCategory;
-  onSelect: (c: ResourceCategory) => void;
-}) {
-  return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={s.filterRow}
-    >
-      {RESOURCE_CATEGORIES.map((c) => {
-        const isActive = active === c.key;
-        return (
-          <Pressable
-            key={c.key}
-            style={[s.filterPill, isActive && s.filterPillActive]}
-            onPress={() => onSelect(c.key)}
-          >
-            <Text style={[s.filterText, isActive && s.filterTextActive]}>{c.label}</Text>
-          </Pressable>
-        );
-      })}
-    </ScrollView>
-  );
-}
-
-// ─── Org Header ──────────────────────────────────────────────────────────────
-
-function OrgHeader({ orgName, location, role, cycle }: {
-  orgName: string;
-  location: string;
-  role: string;
-  cycle: string;
-}) {
-  return (
-    <View style={s.orgHeader}>
-      <Text style={s.orgName}>{orgName}</Text>
-      <Text style={s.orgMeta}>{location} · {role}</Text>
-      <Text style={s.orgCycle}>{cycle}</Text>
-    </View>
-  );
-}
-
-// ─── Finance Card ────────────────────────────────────────────────────────────
-
-function FinanceCard({ revenue, expenses, balance, trend }: {
-  revenue: string; expenses: string; balance: string; trend: 'up' | 'down' | 'flat';
-}) {
-  const trendIcon = trend === 'up' ? 'arrow.up.right' : trend === 'down' ? 'arrow.down.right' : 'arrow.right';
-  const trendColor = trend === 'up' ? C.green : trend === 'down' ? C.red : C.muted;
-  return (
-    <View style={s.card}>
-      <View style={s.cardHeader}>
-        <Text style={s.cardTitle}>Finance</Text>
-        <IconSymbol name={trendIcon as any} size={14} color={trendColor} />
-      </View>
-      <View style={s.financeRow}>
-        <View style={s.financeStat}>
-          <Text style={s.financeValue}>{revenue}</Text>
-          <Text style={s.financeLabel}>Revenue</Text>
-        </View>
-        <View style={s.financeStat}>
-          <Text style={s.financeValue}>{expenses}</Text>
-          <Text style={s.financeLabel}>Expenses</Text>
-        </View>
-        <View style={s.financeStat}>
-          <Text style={[s.financeValue, { color: C.green }]}>{balance}</Text>
-          <Text style={s.financeLabel}>Balance</Text>
-        </View>
-      </View>
-    </View>
-  );
-}
-
-// ─── Compliance Card ─────────────────────────────────────────────────────────
-
-const COMPLIANCE_COLORS = { compliant: C.green, warning: C.amber, overdue: C.red };
-
-function ComplianceCard({ items }: { items: { id: string; label: string; status: 'compliant' | 'warning' | 'overdue' }[] }) {
-  return (
-    <View style={s.card}>
-      <Text style={s.cardTitle}>Compliance</Text>
-      {items.map((item, idx) => (
-        <View key={item.id} style={[s.complianceRow, idx < items.length - 1 && s.complianceRowBorder]}>
-          <View style={[s.complianceDot, { backgroundColor: COMPLIANCE_COLORS[item.status] }]} />
-          <Text style={s.complianceLabel}>{item.label}</Text>
-          <Text style={[s.complianceStatus, { color: COMPLIANCE_COLORS[item.status] }]}>
-            {item.status === 'compliant' ? 'OK' : item.status === 'warning' ? 'Warning' : 'Overdue'}
-          </Text>
-        </View>
-      ))}
-    </View>
-  );
-}
-
-// ─── Announcement Row ────────────────────────────────────────────────────────
-
-function AnnouncementRow({ title, preview, timestamp, authorInitials }: {
-  title: string; preview: string; timestamp: string; authorInitials: string;
-}) {
-  return (
-    <View style={s.row}>
-      <View style={s.avatar}>
-        <Text style={s.avatarInitials}>{authorInitials}</Text>
-      </View>
-      <View style={s.rowContent}>
-        <Text style={s.rowName} numberOfLines={1}>{title}</Text>
-        <Text style={s.rowPreview} numberOfLines={1}>{preview}</Text>
-      </View>
-      <Text style={s.rowTimestamp}>{timestamp}</Text>
-    </View>
-  );
-}
-
-// ─── Deadline Row ────────────────────────────────────────────────────────────
-
-function DeadlineRow({ title, dueDate, category, urgent }: {
-  title: string; dueDate: string; category: string; urgent: boolean;
-}) {
-  return (
-    <View style={s.row}>
-      <View style={[s.urgencyDot, { backgroundColor: urgent ? C.red : C.muted }]} />
-      <View style={s.rowContent}>
-        <Text style={s.rowName} numberOfLines={1}>{title}</Text>
-        <Text style={s.rowPreview}>{category}</Text>
-      </View>
-      <Text style={[s.rowTimestamp, urgent && { color: C.red }]}>{dueDate}</Text>
-    </View>
-  );
-}
-
-// ─── Activity Row ────────────────────────────────────────────────────────────
-
-function ActivityRow({ title, description, timestamp, icon }: {
-  title: string; description: string; timestamp: string; icon: string;
-}) {
-  return (
-    <View style={s.row}>
-      <View style={s.activityIcon}>
-        <IconSymbol name={icon as any} size={16} color={C.secondary} />
-      </View>
-      <View style={s.rowContent}>
-        <Text style={s.rowName} numberOfLines={1}>{title}</Text>
-        <Text style={s.rowPreview} numberOfLines={1}>{description}</Text>
-      </View>
-      <Text style={s.rowTimestamp}>{timestamp}</Text>
-    </View>
-  );
-}
-
-// ─── Person Row ──────────────────────────────────────────────────────────────
-
-function PersonRow({
-  person,
-  onPress,
-  onLongPress,
-}: {
-  person: OrgPerson;
-  onPress: () => void;
-  onLongPress: (pageY: number) => void;
-}) {
-  return (
-    <Pressable
-      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
-      onPress={onPress}
-      onLongPress={(e) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        onLongPress(e.nativeEvent.pageY);
-      }}
-      delayLongPress={400}
-    >
-      <View style={s.personAvatar}>
-        <Text style={s.personInitials}>{person.initials}</Text>
-        {person.online && <View style={s.onlineDot} />}
-      </View>
-      <View style={s.rowContent}>
-        <Text style={s.rowName} numberOfLines={1}>{person.name}</Text>
-        <Text style={s.personRole}>{person.role}</Text>
-      </View>
-      <View style={s.deptBadge}>
-        <Text style={s.deptBadgeText}>{person.department}</Text>
-      </View>
-    </Pressable>
-  );
-}
-
-// ─── Resource Row ────────────────────────────────────────────────────────────
-
-function ResourceRow({
-  resource,
-  onPress,
-  onLongPress,
-}: {
-  resource: OrgResource;
-  onPress: () => void;
-  onLongPress: (pageY: number) => void;
-}) {
-  const statusColor = resource.status === 'available' ? C.green : resource.status === 'in-use' ? C.amber : C.red;
-  const statusLabel = resource.status === 'available' ? 'Available' : resource.status === 'in-use' ? 'In Use' : 'Maintenance';
-  return (
-    <Pressable
-      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
-      onPress={onPress}
-      onLongPress={(e) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        onLongPress(e.nativeEvent.pageY);
-      }}
-      delayLongPress={400}
-    >
-      <View style={s.resourceIcon}>
-        <IconSymbol name={resource.icon as any} size={18} color={C.label} />
-      </View>
-      <View style={s.rowContent}>
-        <Text style={s.rowName} numberOfLines={1}>{resource.name}</Text>
-        <Text style={s.rowPreview} numberOfLines={1}>{resource.description}</Text>
-      </View>
-      <View style={[s.statusBadge, { backgroundColor: statusColor + '22' }]}>
-        <Text style={[s.statusBadgeText, { color: statusColor }]}>{statusLabel}</Text>
-      </View>
-    </Pressable>
-  );
-}
-
-// ─── FAB ─────────────────────────────────────────────────────────────────────
-
-function FAB({ onPress }: { onPress: () => void }) {
-  return (
-    <Pressable
-      style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
-      onPress={() => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        onPress();
-      }}
-    >
-      <IconSymbol name="plus" size={24} color="#FFFFFF" />
-    </Pressable>
-  );
-}
-
 // ─── Main Screen ─────────────────────────────────────────────────────────────
 
 export default function ModeScreen() {
   const insets = useSafeAreaInsets();
   const { state } = useAppContext();
   const mode = state.mode;
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
 
   const [pageIndex, setPageIndex] = useState(0);
   const [menuData, setMenuData] = useState<ContextMenuData | null>(null);
   const [deptFilter, setDeptFilter] = useState('All');
   const [resourceFilter, setResourceFilter] = useState<ResourceCategory>('all');
+
+  // Compliance color map (derived from C)
+  const COMPLIANCE_COLORS = useMemo(() => ({
+    compliant: C.green,
+    warning: C.amber,
+    overdue: C.red,
+  }), [C]);
 
   // ── Data ──
   const dashboard = useMemo(() => getDashboardByMode(mode), [mode]);
@@ -452,7 +162,9 @@ export default function ModeScreen() {
         {/* ── PAGE 0: DASHBOARD ── */}
         <View style={{ flex: 1 }}>
           <View style={{ paddingTop: 16 }}>
-            <PageTopBar title="Dashboard" />
+            <View style={s.topBar}>
+              <Text style={s.topBarTitle}>Dashboard</Text>
+            </View>
           </View>
           <ScrollView
             style={s.pageScroll}
@@ -462,18 +174,54 @@ export default function ModeScreen() {
             showsVerticalScrollIndicator={false}
           >
             {/* Org Header */}
-            <OrgHeader orgName={orgName} location={orgLocation} role={roleBadge} cycle={cycleName} />
+            <View style={s.orgHeader}>
+              <Text style={s.orgName}>{orgName}</Text>
+              <Text style={s.orgMeta}>{orgLocation} · {roleBadge}</Text>
+              <Text style={s.orgCycle}>{cycleName}</Text>
+            </View>
 
             {/* Finance Card */}
-            <FinanceCard
-              revenue={dashboard.finance.revenue}
-              expenses={dashboard.finance.expenses}
-              balance={dashboard.finance.balance}
-              trend={dashboard.finance.trend}
-            />
+            {(() => {
+              const { finance } = dashboard;
+              const trendIcon = finance.trend === 'up' ? 'arrow.up.right' : finance.trend === 'down' ? 'arrow.down.right' : 'arrow.right';
+              const trendColor = finance.trend === 'up' ? C.green : finance.trend === 'down' ? C.red : C.muted;
+              return (
+                <View style={s.card}>
+                  <View style={s.cardHeader}>
+                    <Text style={s.cardTitle}>Finance</Text>
+                    <IconSymbol name={trendIcon as any} size={14} color={trendColor} />
+                  </View>
+                  <View style={s.financeRow}>
+                    <View style={s.financeStat}>
+                      <Text style={s.financeValue}>{finance.revenue}</Text>
+                      <Text style={s.financeLabel}>Revenue</Text>
+                    </View>
+                    <View style={s.financeStat}>
+                      <Text style={s.financeValue}>{finance.expenses}</Text>
+                      <Text style={s.financeLabel}>Expenses</Text>
+                    </View>
+                    <View style={s.financeStat}>
+                      <Text style={[s.financeValue, { color: C.green }]}>{finance.balance}</Text>
+                      <Text style={s.financeLabel}>Balance</Text>
+                    </View>
+                  </View>
+                </View>
+              );
+            })()}
 
             {/* Compliance Card */}
-            <ComplianceCard items={dashboard.compliance} />
+            <View style={s.card}>
+              <Text style={s.cardTitle}>Compliance</Text>
+              {dashboard.compliance.map((item, idx) => (
+                <View key={item.id} style={[s.complianceRow, idx < dashboard.compliance.length - 1 && s.complianceRowBorder]}>
+                  <View style={[s.complianceDot, { backgroundColor: COMPLIANCE_COLORS[item.status] }]} />
+                  <Text style={s.complianceLabel}>{item.label}</Text>
+                  <Text style={[s.complianceStatus, { color: COMPLIANCE_COLORS[item.status] }]}>
+                    {item.status === 'compliant' ? 'OK' : item.status === 'warning' ? 'Warning' : 'Overdue'}
+                  </Text>
+                </View>
+              ))}
+            </View>
 
             {/* Announcements */}
             <View style={s.sectionHeader}>
@@ -482,12 +230,16 @@ export default function ModeScreen() {
             {dashboard.announcements.map((a, idx) => (
               <View key={a.id}>
                 {idx > 0 && <View style={s.separator} />}
-                <AnnouncementRow
-                  title={a.title}
-                  preview={a.preview}
-                  timestamp={a.timestamp}
-                  authorInitials={a.authorInitials}
-                />
+                <View style={s.row}>
+                  <View style={s.avatar}>
+                    <Text style={s.avatarInitials}>{a.authorInitials}</Text>
+                  </View>
+                  <View style={s.rowContent}>
+                    <Text style={s.rowName} numberOfLines={1}>{a.title}</Text>
+                    <Text style={s.rowPreview} numberOfLines={1}>{a.preview}</Text>
+                  </View>
+                  <Text style={s.rowTimestamp}>{a.timestamp}</Text>
+                </View>
               </View>
             ))}
 
@@ -498,12 +250,14 @@ export default function ModeScreen() {
             {dashboard.deadlines.map((d, idx) => (
               <View key={d.id}>
                 {idx > 0 && <View style={s.separator} />}
-                <DeadlineRow
-                  title={d.title}
-                  dueDate={d.dueDate}
-                  category={d.category}
-                  urgent={d.urgent}
-                />
+                <View style={s.row}>
+                  <View style={[s.urgencyDot, { backgroundColor: d.urgent ? C.red : C.muted }]} />
+                  <View style={s.rowContent}>
+                    <Text style={s.rowName} numberOfLines={1}>{d.title}</Text>
+                    <Text style={s.rowPreview}>{d.category}</Text>
+                  </View>
+                  <Text style={[s.rowTimestamp, d.urgent && { color: C.red }]}>{d.dueDate}</Text>
+                </View>
               </View>
             ))}
 
@@ -514,12 +268,16 @@ export default function ModeScreen() {
             {dashboard.activity.map((a, idx) => (
               <View key={a.id}>
                 {idx > 0 && <View style={s.separator} />}
-                <ActivityRow
-                  title={a.title}
-                  description={a.description}
-                  timestamp={a.timestamp}
-                  icon={a.icon}
-                />
+                <View style={s.row}>
+                  <View style={s.activityIcon}>
+                    <IconSymbol name={a.icon as any} size={16} color={C.secondary} />
+                  </View>
+                  <View style={s.rowContent}>
+                    <Text style={s.rowName} numberOfLines={1}>{a.title}</Text>
+                    <Text style={s.rowPreview} numberOfLines={1}>{a.description}</Text>
+                  </View>
+                  <Text style={s.rowTimestamp}>{a.timestamp}</Text>
+                </View>
               </View>
             ))}
           </ScrollView>
@@ -528,8 +286,27 @@ export default function ModeScreen() {
         {/* ── PAGE 1: PEOPLE ── */}
         <View style={{ flex: 1 }}>
           <View style={{ paddingTop: 16 }}>
-            <PageTopBar title="People" />
-            <DepartmentPills departments={departments} active={deptFilter} onSelect={setDeptFilter} />
+            <View style={s.topBar}>
+              <Text style={s.topBarTitle}>People</Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={s.filterRow}
+            >
+              {['All', ...departments].map((d) => {
+                const isActive = deptFilter === d;
+                return (
+                  <Pressable
+                    key={d}
+                    style={[s.filterPill, isActive && s.filterPillActive]}
+                    onPress={() => setDeptFilter(d)}
+                  >
+                    <Text style={[s.filterText, isActive && s.filterTextActive]}>{d}</Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
           </View>
           <ScrollView
             style={s.pageScroll}
@@ -546,11 +323,27 @@ export default function ModeScreen() {
                 {people.map((person, i) => (
                   <View key={person.id}>
                     {i > 0 && <View style={s.separator} />}
-                    <PersonRow
-                      person={person}
+                    <Pressable
+                      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
                       onPress={() => {}}
-                      onLongPress={(pageY) => longPressPerson(person, pageY)}
-                    />
+                      onLongPress={(e) => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        longPressPerson(person, e.nativeEvent.pageY);
+                      }}
+                      delayLongPress={400}
+                    >
+                      <View style={s.personAvatar}>
+                        <Text style={s.personInitials}>{person.initials}</Text>
+                        {person.online && <View style={s.onlineDot} />}
+                      </View>
+                      <View style={s.rowContent}>
+                        <Text style={s.rowName} numberOfLines={1}>{person.name}</Text>
+                        <Text style={s.personRole}>{person.role}</Text>
+                      </View>
+                      <View style={s.deptBadge}>
+                        <Text style={s.deptBadgeText}>{person.department}</Text>
+                      </View>
+                    </Pressable>
                   </View>
                 ))}
               </View>
@@ -564,14 +357,41 @@ export default function ModeScreen() {
           </ScrollView>
 
           {/* FAB: Add Person */}
-          <FAB onPress={() => console.log('Add person')} />
+          <Pressable
+            style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              console.log('Add person');
+            }}
+          >
+            <IconSymbol name="plus" size={24} color={C.label} />
+          </Pressable>
         </View>
 
         {/* ── PAGE 2: RESOURCES ── */}
         <View style={{ flex: 1 }}>
           <View style={{ paddingTop: 16 }}>
-            <PageTopBar title="Resources" />
-            <ResourceCategoryPills active={resourceFilter} onSelect={setResourceFilter} />
+            <View style={s.topBar}>
+              <Text style={s.topBarTitle}>Resources</Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={s.filterRow}
+            >
+              {RESOURCE_CATEGORIES.map((c) => {
+                const isActive = resourceFilter === c.key;
+                return (
+                  <Pressable
+                    key={c.key}
+                    style={[s.filterPill, isActive && s.filterPillActive]}
+                    onPress={() => setResourceFilter(c.key)}
+                  >
+                    <Text style={[s.filterText, isActive && s.filterTextActive]}>{c.label}</Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
           </View>
           <ScrollView
             style={s.pageScroll}
@@ -586,21 +406,48 @@ export default function ModeScreen() {
                 <Text style={s.emptyText}>No resources</Text>
               </View>
             ) : (
-              filteredResources.map((resource, idx) => (
-                <View key={resource.id}>
-                  {idx > 0 && <View style={s.separator} />}
-                  <ResourceRow
-                    resource={resource}
-                    onPress={() => {}}
-                    onLongPress={(pageY) => longPressResource(resource, pageY)}
-                  />
-                </View>
-              ))
+              filteredResources.map((resource, idx) => {
+                const statusColor = resource.status === 'available' ? C.green : resource.status === 'in-use' ? C.amber : C.red;
+                const statusLabel = resource.status === 'available' ? 'Available' : resource.status === 'in-use' ? 'In Use' : 'Maintenance';
+                return (
+                  <View key={resource.id}>
+                    {idx > 0 && <View style={s.separator} />}
+                    <Pressable
+                      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
+                      onPress={() => {}}
+                      onLongPress={(e) => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        longPressResource(resource, e.nativeEvent.pageY);
+                      }}
+                      delayLongPress={400}
+                    >
+                      <View style={s.resourceIcon}>
+                        <IconSymbol name={resource.icon as any} size={18} color={C.label} />
+                      </View>
+                      <View style={s.rowContent}>
+                        <Text style={s.rowName} numberOfLines={1}>{resource.name}</Text>
+                        <Text style={s.rowPreview} numberOfLines={1}>{resource.description}</Text>
+                      </View>
+                      <View style={[s.statusBadge, { backgroundColor: statusColor + '22' }]}>
+                        <Text style={[s.statusBadgeText, { color: statusColor }]}>{statusLabel}</Text>
+                      </View>
+                    </Pressable>
+                  </View>
+                );
+              })
             )}
           </ScrollView>
 
           {/* FAB: Add Resource */}
-          <FAB onPress={() => console.log('Add resource')} />
+          <Pressable
+            style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              console.log('Add resource');
+            }}
+          >
+            <IconSymbol name="plus" size={24} color={C.label} />
+          </Pressable>
         </View>
       </SwipeablePages>
 
@@ -612,7 +459,7 @@ export default function ModeScreen() {
 
 // ─── Styles ─────────────────────────────────────────────────────────────────
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 
@@ -651,7 +498,7 @@ const s = StyleSheet.create({
     color: C.label,
   },
   filterTextActive: {
-    color: '#000000',
+    color: C.bg,
   },
 
   // Org Header
@@ -818,7 +665,7 @@ const s = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: C.online,
+    backgroundColor: C.green,
     borderWidth: 2,
     borderColor: C.bg,
   },
@@ -854,7 +701,7 @@ const s = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 12,
-    backgroundColor: '#0B1220',
+    backgroundColor: C.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -886,7 +733,7 @@ const s = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: C.blueSteel,
+    backgroundColor: C.secondary,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',

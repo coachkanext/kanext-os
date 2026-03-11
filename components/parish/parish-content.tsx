@@ -20,6 +20,7 @@ import * as Haptics from 'expo-haptics';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import {
   NEXT_SERVICE,
   CURRENT_SERIES,
@@ -46,26 +47,10 @@ import {
 import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  green: '#22C55E',
-  red: '#EF4444',
-  amber: '#F59E0B',
-  blue: '#3B82F6',
-  purple: '#8B5CF6',
-  indigo: '#6366F1',
-  pink: '#EC4899',
-};
-
 const SERVICE_STATUS_COLORS: Record<ServiceStatus, string> = {
-  planning: C.amber,
-  ready: C.green,
-  completed: C.blue,
+  planning: '#F59E0B',
+  ready: '#22C55E',
+  completed: '#3B82F6',
 };
 
 const SERVICE_STATUS_LABELS: Record<ServiceStatus, string> = {
@@ -75,16 +60,16 @@ const SERVICE_STATUS_LABELS: Record<ServiceStatus, string> = {
 };
 
 const SERVICE_TYPE_COLORS: Record<ServiceType, string> = {
-  'sunday-morning': C.blue,
-  'wednesday-night': C.purple,
-  'special-event': C.amber,
-  holiday: C.green,
+  'sunday-morning': '#3B82F6',
+  'wednesday-night': '#8B5CF6',
+  'special-event': '#F59E0B',
+  holiday: '#22C55E',
 };
 
 const PRAYER_STATUS_COLORS: Record<PrayerStatus, string> = {
-  active: C.blue,
-  answered: C.green,
-  ongoing: C.amber,
+  active: '#3B82F6',
+  answered: '#22C55E',
+  ongoing: '#F59E0B',
 };
 
 const PRAYER_STATUS_LABELS: Record<PrayerStatus, string> = {
@@ -94,10 +79,10 @@ const PRAYER_STATUS_LABELS: Record<PrayerStatus, string> = {
 };
 
 const VISIT_LOCATION_COLORS: Record<VisitLocation, string> = {
-  hospital: C.red,
-  home: C.blue,
-  office: C.amber,
-  other: C.muted,
+  hospital: '#EF4444',
+  home: '#3B82F6',
+  office: '#F59E0B',
+  other: '#52525B',
 };
 
 const VISIT_LOCATION_LABELS: Record<VisitLocation, string> = {
@@ -108,11 +93,11 @@ const VISIT_LOCATION_LABELS: Record<VisitLocation, string> = {
 };
 
 const MILESTONE_TYPE_COLORS: Record<MilestoneType, string> = {
-  baptism: C.blue,
-  salvation: C.green,
-  dedication: C.amber,
-  marriage: C.pink,
-  membership: C.purple,
+  baptism: '#3B82F6',
+  salvation: '#22C55E',
+  dedication: '#F59E0B',
+  marriage: '#EC4899',
+  membership: '#8B5CF6',
 };
 
 const MILESTONE_TYPE_LABELS: Record<MilestoneType, string> = {
@@ -124,11 +109,11 @@ const MILESTONE_TYPE_LABELS: Record<MilestoneType, string> = {
 };
 
 const FOLLOW_UP_STAGE_COLORS: Record<FollowUpStage, string> = {
-  'first-visit': C.amber,
+  'first-visit': '#F59E0B',
   contacted: '#E8A317',
   'second-visit': '#A3B518',
   connected: '#5DC726',
-  member: C.green,
+  member: '#22C55E',
 };
 
 const FOLLOW_UP_STAGE_LABELS: Record<FollowUpStage, string> = {
@@ -140,11 +125,11 @@ const FOLLOW_UP_STAGE_LABELS: Record<FollowUpStage, string> = {
 };
 
 const DISCIPLESHIP_STAGE_COLORS: Record<DiscipleshipStage, string> = {
-  'new-believer': C.amber,
+  'new-believer': '#F59E0B',
   foundations: '#E8A317',
   'small-group': '#A3B518',
   serving: '#5DC726',
-  leading: C.green,
+  leading: '#22C55E',
 };
 
 const DISCIPLESHIP_STAGE_LABELS: Record<DiscipleshipStage, string> = {
@@ -158,6 +143,8 @@ const DISCIPLESHIP_STAGE_LABELS: Record<DiscipleshipStage, string> = {
 // ─── Page Top Bar ────────────────────────────────────────────────────────────
 
 function PageTopBar({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.topBar}>
       <Text style={s.topBarTitle}>{title}</Text>
@@ -176,6 +163,8 @@ function FilterPills<T extends string>({
   active: T;
   onSelect: (key: T) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <ScrollView
       horizontal
@@ -201,6 +190,8 @@ function FilterPills<T extends string>({
 // ─── Next Service Card ──────────────────────────────────────────────────────
 
 function NextServiceCard() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.nextServiceCard}>
       <View style={s.nextServiceHeader}>
@@ -228,6 +219,8 @@ function ServiceRow({
   service: ServiceItem;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const statusColor = SERVICE_STATUS_COLORS[service.status];
   const statusLabel = SERVICE_STATUS_LABELS[service.status];
   const typeColor = SERVICE_TYPE_COLORS[service.serviceType];
@@ -265,6 +258,8 @@ function ServiceRow({
 // ─── Series Hero ────────────────────────────────────────────────────────────
 
 function SeriesHero() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={[s.seriesHero, { backgroundColor: CURRENT_SERIES.artwork + '22' }]}>
       <View style={[s.seriesArtwork, { backgroundColor: CURRENT_SERIES.artwork }]}>
@@ -289,6 +284,8 @@ function SermonRow({
   sermon: SermonItem;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable
       style={({ pressed }) => [s.row, pressed && s.rowPressed]}
@@ -330,6 +327,8 @@ function SermonRow({
 // ─── Prayer Row ─────────────────────────────────────────────────────────────
 
 function PrayerRow({ request }: { request: typeof PRAYER_REQUESTS[0] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const statusColor = PRAYER_STATUS_COLORS[request.status];
   const statusLabel = PRAYER_STATUS_LABELS[request.status];
 
@@ -360,6 +359,8 @@ function PrayerRow({ request }: { request: typeof PRAYER_REQUESTS[0] }) {
 // ─── Visit Row ──────────────────────────────────────────────────────────────
 
 function VisitRow({ visit }: { visit: typeof VISITS[0] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const locColor = VISIT_LOCATION_COLORS[visit.location];
   const locLabel = VISIT_LOCATION_LABELS[visit.location];
 
@@ -390,6 +391,8 @@ function VisitRow({ visit }: { visit: typeof VISITS[0] }) {
 // ─── Milestone Row ──────────────────────────────────────────────────────────
 
 function MilestoneRow({ milestone }: { milestone: typeof MILESTONES[0] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const typeColor = MILESTONE_TYPE_COLORS[milestone.type];
   const typeLabel = MILESTONE_TYPE_LABELS[milestone.type];
 
@@ -414,6 +417,8 @@ function MilestoneRow({ milestone }: { milestone: typeof MILESTONES[0] }) {
 // ─── Follow-Up Row ──────────────────────────────────────────────────────────
 
 function FollowUpRow({ entry }: { entry: typeof FOLLOW_UPS[0] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const stageColor = FOLLOW_UP_STAGE_COLORS[entry.stage];
   const stageLabel = FOLLOW_UP_STAGE_LABELS[entry.stage];
 
@@ -439,6 +444,8 @@ function FollowUpRow({ entry }: { entry: typeof FOLLOW_UPS[0] }) {
 // ─── Discipleship Row ───────────────────────────────────────────────────────
 
 function DiscipleshipRow({ entry }: { entry: typeof DISCIPLESHIP[0] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const stageColor = DISCIPLESHIP_STAGE_COLORS[entry.stage];
   const stageLabel = DISCIPLESHIP_STAGE_LABELS[entry.stage];
 
@@ -466,6 +473,8 @@ function DiscipleshipRow({ entry }: { entry: typeof DISCIPLESHIP[0] }) {
 // ─── Section Header ─────────────────────────────────────────────────────────
 
 function SectionHeader({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.sectionHeader}>
       <Text style={s.sectionHeaderText}>{title}</Text>
@@ -476,6 +485,8 @@ function SectionHeader({ title }: { title: string }) {
 // ─── FAB ────────────────────────────────────────────────────────────────────
 
 function FAB({ onPress }: { onPress: () => void }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable
       style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
@@ -516,6 +527,8 @@ const CARE_SECTIONS: { key: CareSection; label: string }[] = [
 // ─── Main Component ─────────────────────────────────────────────────────────
 
 export function ParishContent() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
 
   const [pageIndex, setPageIndex] = useState(0);
@@ -698,7 +711,7 @@ export function ParishContent() {
 
 // ─── Styles ─────────────────────────────────────────────────────────────────
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 
@@ -881,7 +894,7 @@ const s = StyleSheet.create({
   sermonMetaRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 },
   sermonMeta: { fontSize: 13, color: C.muted },
   sermonDot: { fontSize: 13, color: C.muted },
-  sermonSeries: { fontSize: 13, color: C.indigo, flex: 1 },
+  sermonSeries: { fontSize: 13, color: C.secondary, flex: 1 },
   sermonScripture: { fontSize: 12, fontWeight: '500', color: C.secondary },
   sermonDuration: { fontSize: 12, color: C.muted },
   guestBadge: { backgroundColor: C.amber + '22', paddingHorizontal: 5, paddingVertical: 1, borderRadius: 3 },

@@ -20,6 +20,7 @@ import * as Haptics from 'expo-haptics';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import {
   TEAM_SUMMARY,
   REVIEW_ENTRIES,
@@ -49,32 +50,16 @@ import {
 import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  green: '#22C55E',
-  red: '#EF4444',
-  amber: '#F59E0B',
-  blue: '#3B82F6',
-  purple: '#8B5CF6',
-  indigo: '#6366F1',
-  pink: '#EC4899',
-};
-
 // ── Color Maps ──
 
 const DEPARTMENT_COLORS: Record<Department, string> = {
-  product: C.blue,
-  sales: C.green,
-  marketing: C.purple,
-  operations: C.amber,
-  leadership: C.red,
-  engineering: C.indigo,
-  design: C.pink,
+  product: '#3B82F6',
+  sales: '#22C55E',
+  marketing: '#8B5CF6',
+  operations: '#F59E0B',
+  leadership: '#EF4444',
+  engineering: '#6366F1',
+  design: '#EC4899',
 };
 
 const DEPARTMENT_LABELS: Record<Department, string> = {
@@ -88,11 +73,11 @@ const DEPARTMENT_LABELS: Record<Department, string> = {
 };
 
 const MEMBER_STATUS_COLORS: Record<MemberStatus, string> = {
-  active: C.green,
-  'on-leave': C.amber,
-  probation: C.red,
-  remote: C.blue,
-  'in-office': C.green,
+  active: '#22C55E',
+  'on-leave': '#F59E0B',
+  probation: '#EF4444',
+  remote: '#3B82F6',
+  'in-office': '#22C55E',
 };
 
 const MEMBER_STATUS_LABELS: Record<MemberStatus, string> = {
@@ -104,9 +89,9 @@ const MEMBER_STATUS_LABELS: Record<MemberStatus, string> = {
 };
 
 const REVIEW_CYCLE_COLORS: Record<ReviewCycleStatus, string> = {
-  upcoming: C.amber,
-  'in-progress': C.blue,
-  completed: C.green,
+  upcoming: '#F59E0B',
+  'in-progress': '#3B82F6',
+  completed: '#22C55E',
 };
 
 const REVIEW_CYCLE_LABELS: Record<ReviewCycleStatus, string> = {
@@ -116,10 +101,10 @@ const REVIEW_CYCLE_LABELS: Record<ReviewCycleStatus, string> = {
 };
 
 const GOAL_STATUS_COLORS: Record<GoalStatus, string> = {
-  'on-track': C.green,
-  'at-risk': C.amber,
-  behind: C.red,
-  completed: C.blue,
+  'on-track': '#22C55E',
+  'at-risk': '#F59E0B',
+  behind: '#EF4444',
+  completed: '#3B82F6',
 };
 
 const GOAL_STATUS_LABELS: Record<GoalStatus, string> = {
@@ -130,9 +115,9 @@ const GOAL_STATUS_LABELS: Record<GoalStatus, string> = {
 };
 
 const GOAL_LEVEL_COLORS: Record<GoalLevel, string> = {
-  company: C.purple,
-  department: C.blue,
-  individual: C.secondary,
+  company: '#8B5CF6',
+  department: '#3B82F6',
+  individual: '#A1A1AA',
 };
 
 const GOAL_LEVEL_LABELS: Record<GoalLevel, string> = {
@@ -142,10 +127,10 @@ const GOAL_LEVEL_LABELS: Record<GoalLevel, string> = {
 };
 
 const TIME_OFF_TYPE_COLORS: Record<TimeOffType, string> = {
-  pto: C.blue,
-  sick: C.red,
-  personal: C.amber,
-  parental: C.purple,
+  pto: '#3B82F6',
+  sick: '#EF4444',
+  personal: '#F59E0B',
+  parental: '#8B5CF6',
 };
 
 const TIME_OFF_TYPE_LABELS: Record<TimeOffType, string> = {
@@ -156,9 +141,9 @@ const TIME_OFF_TYPE_LABELS: Record<TimeOffType, string> = {
 };
 
 const TIME_OFF_REQUEST_COLORS: Record<TimeOffRequestStatus, string> = {
-  pending: C.amber,
-  approved: C.green,
-  denied: C.red,
+  pending: '#F59E0B',
+  approved: '#22C55E',
+  denied: '#EF4444',
 };
 
 const TIME_OFF_REQUEST_LABELS: Record<TimeOffRequestStatus, string> = {
@@ -168,10 +153,10 @@ const TIME_OFF_REQUEST_LABELS: Record<TimeOffRequestStatus, string> = {
 };
 
 const TRAINING_STATUS_COLORS: Record<TrainingStatus, string> = {
-  'not-started': C.secondary,
-  'in-progress': C.blue,
-  completed: C.green,
-  overdue: C.red,
+  'not-started': '#A1A1AA',
+  'in-progress': '#3B82F6',
+  completed: '#22C55E',
+  overdue: '#EF4444',
 };
 
 const TRAINING_STATUS_LABELS: Record<TrainingStatus, string> = {
@@ -182,12 +167,12 @@ const TRAINING_STATUS_LABELS: Record<TrainingStatus, string> = {
 };
 
 const HIRING_STAGE_COLORS: Record<HiringStage, string> = {
-  posted: C.secondary,
-  applications: C.amber,
-  screened: C.blue,
-  interviewed: C.purple,
-  offered: C.indigo,
-  hired: C.green,
+  posted: '#A1A1AA',
+  applications: '#F59E0B',
+  screened: '#3B82F6',
+  interviewed: '#8B5CF6',
+  offered: '#6366F1',
+  hired: '#22C55E',
 };
 
 const HIRING_STAGE_LABELS: Record<HiringStage, string> = {
@@ -200,10 +185,10 @@ const HIRING_STAGE_LABELS: Record<HiringStage, string> = {
 };
 
 const SOURCE_COLORS: Record<CandidateSource, string> = {
-  referral: C.green,
-  'job-board': C.blue,
-  inbound: C.purple,
-  recruiter: C.amber,
+  referral: '#22C55E',
+  'job-board': '#3B82F6',
+  inbound: '#8B5CF6',
+  recruiter: '#F59E0B',
 };
 
 const SOURCE_LABELS: Record<CandidateSource, string> = {
@@ -216,6 +201,8 @@ const SOURCE_LABELS: Record<CandidateSource, string> = {
 // ─── Page Top Bar ────────────────────────────────────────────────────────────
 
 function PageTopBar({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.topBar}>
       <Text style={s.topBarTitle}>{title}</Text>
@@ -234,6 +221,8 @@ function FilterPills<T extends string>({
   active: T;
   onSelect: (key: T) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <ScrollView
       horizontal
@@ -259,6 +248,8 @@ function FilterPills<T extends string>({
 // ─── Team Summary Card ──────────────────────────────────────────────────────
 
 function TeamSummaryCard() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const departments: { key: Department; label: string; count: number }[] = [
     { key: 'engineering', label: 'Eng',   count: TEAM_SUMMARY.departmentBreakdown.engineering },
     { key: 'product',     label: 'Prod',  count: TEAM_SUMMARY.departmentBreakdown.product },
@@ -303,9 +294,11 @@ function MemberRow({
   member: TeamMemberItem;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const deptColor = DEPARTMENT_COLORS[member.department];
   const statusColor = MEMBER_STATUS_COLORS[member.status];
-  const onlineColor = member.isOnline ? C.green : C.muted;
+  const onlineColor = member.isOnline ? '#22C55E' : '#52525B';
 
   return (
     <Pressable
@@ -347,9 +340,11 @@ function MemberRow({
 // ─── Review Row ─────────────────────────────────────────────────────────────
 
 function ReviewRow({ entry }: { entry: typeof REVIEW_ENTRIES[0] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const cycleColor = REVIEW_CYCLE_COLORS[entry.cycleStatus];
-  const selfColor = entry.selfAssessment === 'submitted' ? C.green : C.amber;
-  const mgrColor = entry.managerAssessment === 'submitted' ? C.green : C.amber;
+  const selfColor = entry.selfAssessment === 'submitted' ? '#22C55E' : '#F59E0B';
+  const mgrColor = entry.managerAssessment === 'submitted' ? '#22C55E' : '#F59E0B';
 
   return (
     <View style={s.mgmtRow}>
@@ -367,7 +362,7 @@ function ReviewRow({ entry }: { entry: typeof REVIEW_ENTRIES[0] }) {
             <Text style={[s.microBadgeText, { color: mgrColor }]}>Mgr: {entry.managerAssessment === 'submitted' ? 'Done' : 'Pending'}</Text>
           </View>
           {entry.score !== null && (
-            <Text style={[s.mgmtMeta, { color: C.label, fontWeight: '600' }]}>{entry.score.toFixed(1)}</Text>
+            <Text style={[s.mgmtMeta, { color: '#FFFFFF', fontWeight: '600' }]}>{entry.score.toFixed(1)}</Text>
           )}
         </View>
       </View>
@@ -381,6 +376,8 @@ function ReviewRow({ entry }: { entry: typeof REVIEW_ENTRIES[0] }) {
 // ─── Goal Row ───────────────────────────────────────────────────────────────
 
 function GoalRow({ entry }: { entry: typeof GOAL_ENTRIES[0] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const statusColor = GOAL_STATUS_COLORS[entry.status];
   const levelColor = GOAL_LEVEL_COLORS[entry.level];
 
@@ -414,8 +411,10 @@ function GoalRow({ entry }: { entry: typeof GOAL_ENTRIES[0] }) {
 // ─── Onboarding Row ─────────────────────────────────────────────────────────
 
 function OnboardingRow({ entry }: { entry: typeof ONBOARDING_ENTRIES[0] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const pct = Math.round((entry.tasksCompleted / entry.tasksTotal) * 100);
-  const progressColor = pct >= 80 ? C.green : pct >= 50 ? C.amber : C.blue;
+  const progressColor = pct >= 80 ? '#22C55E' : pct >= 50 ? '#F59E0B' : '#3B82F6';
 
   return (
     <View style={s.mgmtRow}>
@@ -445,6 +444,8 @@ function OnboardingRow({ entry }: { entry: typeof ONBOARDING_ENTRIES[0] }) {
 // ─── Time Off Row ───────────────────────────────────────────────────────────
 
 function TimeOffRow({ entry }: { entry: typeof TIME_OFF_REQUESTS[0] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const typeColor = TIME_OFF_TYPE_COLORS[entry.type];
   const statusColor = TIME_OFF_REQUEST_COLORS[entry.status];
 
@@ -474,6 +475,8 @@ function TimeOffRow({ entry }: { entry: typeof TIME_OFF_REQUESTS[0] }) {
 // ─── Training Row ───────────────────────────────────────────────────────────
 
 function TrainingRow({ entry }: { entry: typeof TRAINING_ENTRIES[0] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const statusColor = TRAINING_STATUS_COLORS[entry.status];
 
   return (
@@ -489,8 +492,8 @@ function TrainingRow({ entry }: { entry: typeof TRAINING_ENTRIES[0] }) {
           {entry.certification && (
             <>
               <Text style={s.mgmtDot}>·</Text>
-              <View style={[s.microBadge, { backgroundColor: C.purple + '22' }]}>
-                <Text style={[s.microBadgeText, { color: C.purple }]}>Cert</Text>
+              <View style={[s.microBadge, { backgroundColor: '#8B5CF6' + '22' }]}>
+                <Text style={[s.microBadgeText, { color: '#8B5CF6' }]}>Cert</Text>
               </View>
             </>
           )}
@@ -515,6 +518,8 @@ function CandidateCardView({
   candidate: CandidateCardType;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const sourceColor = SOURCE_COLORS[candidate.source];
 
   return (
@@ -565,6 +570,8 @@ function PipelineSection({
   candidates: CandidateCardType[];
   onLongPress: (candidate: CandidateCardType, pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const color = HIRING_STAGE_COLORS[stage];
   const label = HIRING_STAGE_LABELS[stage];
 
@@ -593,6 +600,8 @@ function PipelineSection({
 // ─── Section Header ─────────────────────────────────────────────────────────
 
 function SectionHeader({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.sectionHeader}>
       <Text style={s.sectionHeaderText}>{title}</Text>
@@ -603,6 +612,8 @@ function SectionHeader({ title }: { title: string }) {
 // ─── FAB ────────────────────────────────────────────────────────────────────
 
 function FAB({ onPress }: { onPress: () => void }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable
       style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
@@ -611,7 +622,7 @@ function FAB({ onPress }: { onPress: () => void }) {
         onPress();
       }}
     >
-      <IconSymbol name="plus" size={24} color="#FFFFFF" />
+      <IconSymbol name="plus" size={24} color={C.label} />
     </Pressable>
   );
 }
@@ -649,6 +660,8 @@ const HIRING_STAGES: HiringStage[] = ['posted', 'applications', 'screened', 'int
 // ─── Main Component ─────────────────────────────────────────────────────────
 
 export function TeamContent() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
 
   const [pageIndex, setPageIndex] = useState(0);
@@ -835,7 +848,7 @@ export function TeamContent() {
 
 // ─── Styles ─────────────────────────────────────────────────────────────────
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 
@@ -1134,3 +1147,4 @@ const s = StyleSheet.create({
     elevation: 8,
   },
 });
+

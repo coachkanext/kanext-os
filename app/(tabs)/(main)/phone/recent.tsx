@@ -31,24 +31,8 @@ import {
 } from '@/data/mock-phone';
 import { initiateCall } from '@/utils/global-call';
 import { openSidePanel } from '@/utils/global-side-panel';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import type { Mode } from '@/types';
-
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  missed: '#EF4444',
-  separator: 'rgba(255,255,255,0.08)',
-};
-
-const DIRECTION_ICONS: Record<CallDirection, { icon: string; color: string }> = {
-  incoming: { icon: 'arrow.down.left', color: C.muted },
-  outgoing: { icon: 'arrow.up.right', color: C.muted },
-  missed: { icon: 'arrow.down.left', color: C.missed },
-  video: { icon: 'video.fill', color: C.muted },
-};
 
 type Filter = 'all' | 'missed' | 'incoming' | 'outgoing' | 'video';
 const FILTERS: { key: Filter; label: string }[] = [
@@ -59,6 +43,15 @@ const FILTERS: { key: Filter; label: string }[] = [
   { key: 'video', label: 'Video' },
 ];
 
+function getDirectionIcons(C: ComponentColors): Record<CallDirection, { icon: string; color: string }> {
+  return {
+    incoming: { icon: 'arrow.down.left', color: C.muted },
+    outgoing: { icon: 'arrow.up.right', color: C.muted },
+    missed: { icon: 'arrow.down.left', color: C.red },
+    video: { icon: 'video.fill', color: C.muted },
+  };
+}
+
 // ── Popup ──
 
 function CallActionPopup({
@@ -66,11 +59,15 @@ function CallActionPopup({
   call,
   onClose,
   accent,
+  C,
+  styles: popupStyles,
 }: {
   visible: boolean;
   call: RecentCall | null;
   onClose: () => void;
   accent: string;
+  C: ComponentColors;
+  styles: ReturnType<typeof makePopupStyles>;
 }) {
   if (!visible || !call) return null;
 
@@ -79,7 +76,7 @@ function CallActionPopup({
     { icon: 'video.fill', label: 'Video Call', color: '#34D399', onPress: () => { initiateCall({ contactName: call.name, contactInitials: call.initials, mode: call.mode, type: 'video' }); onClose(); } },
     { icon: 'bubble.left.fill', label: 'Message', color: accent, onPress: onClose },
     { icon: 'person.circle', label: 'View Profile', color: C.secondary, onPress: onClose },
-    { icon: 'trash.fill', label: 'Delete', color: C.missed, onPress: onClose },
+    { icon: 'trash.fill', label: 'Delete', color: C.red, onPress: onClose },
   ];
 
   return (
@@ -120,16 +117,22 @@ function CallRow({
   onTap,
   onLongPress,
   onDelete,
+  C,
+  styles: rowStyles,
+  directionIcons,
 }: {
   call: RecentCall;
   accent: string;
   onTap: (c: RecentCall) => void;
   onLongPress: (c: RecentCall) => void;
   onDelete: (id: string) => void;
+  C: ComponentColors;
+  styles: ReturnType<typeof makeRowStyles>;
+  directionIcons: Record<CallDirection, { icon: string; color: string }>;
 }) {
   const swipeRef = useRef<Swipeable>(null);
   const isMissed = call.direction === 'missed';
-  const dir = DIRECTION_ICONS[call.direction];
+  const dir = directionIcons[call.direction];
   const badgeColor = MODE_BADGE_COLORS[call.mode];
   const badgeLabel = MODE_BADGE_LABELS[call.mode];
 
@@ -142,7 +145,7 @@ function CallRow({
         </RNAnimated.View>
       );
     },
-    [],
+    [rowStyles],
   );
 
   return (
@@ -167,14 +170,14 @@ function CallRow({
         </View>
         <View style={rowStyles.info}>
           <View style={rowStyles.nameRow}>
-            <Text style={[rowStyles.name, isMissed && { color: C.missed }]} numberOfLines={1}>{call.name}</Text>
+            <Text style={[rowStyles.name, isMissed && { color: C.red }]} numberOfLines={1}>{call.name}</Text>
             <View style={[rowStyles.modeBadge, { backgroundColor: badgeColor + '22' }]}>
               <Text style={[rowStyles.modeBadgeText, { color: badgeColor }]}>{badgeLabel}</Text>
             </View>
           </View>
           <View style={rowStyles.meta}>
             <IconSymbol name={dir.icon as any} size={12} color={dir.color} />
-            <Text style={[rowStyles.username, isMissed && { color: C.missed }]}>{call.username}</Text>
+            <Text style={[rowStyles.username, isMissed && { color: C.red }]}>{call.username}</Text>
             {call.hasVoicemail && <IconSymbol name="recordingtape" size={12} color={accent} />}
           </View>
         </View>
@@ -190,6 +193,11 @@ export default function RecentCallsScreen() {
   const insets = useSafeAreaInsets();
   const accent = useAccentColor();
   const params = useLocalSearchParams<{ filterMode?: string }>();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
+  const rowStyles = useMemo(() => makeRowStyles(C), [C]);
+  const popupStyles = useMemo(() => makePopupStyles(C), [C]);
+  const directionIcons = useMemo(() => getDirectionIcons(C), [C]);
 
   // Right-swipe detection via raw touch events
   const touchRef = useRef({ x: 0, y: 0, t: 0, triggered: false });
@@ -260,6 +268,9 @@ export default function RecentCallsScreen() {
               onTap={handleTap}
               onLongPress={setPopupCall}
               onDelete={(id) => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setDeletedIds((prev) => new Set(prev).add(id)); }}
+              C={C}
+              styles={rowStyles}
+              directionIcons={directionIcons}
             />
             {idx < visibleCalls.length - 1 && <View style={rowStyles.separator} />}
           </React.Fragment>
@@ -272,12 +283,12 @@ export default function RecentCallsScreen() {
         )}
       </ScrollView>
 
-      <CallActionPopup visible={popupCall !== null} call={popupCall} onClose={() => setPopupCall(null)} accent={accent} />
+      <CallActionPopup visible={popupCall !== null} call={popupCall} onClose={() => setPopupCall(null)} accent={accent} C={C} styles={popupStyles} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },
@@ -290,7 +301,7 @@ const styles = StyleSheet.create({
   emptyText: { fontSize: 16, color: C.muted },
 });
 
-const rowStyles = StyleSheet.create({
+const makeRowStyles = (C: ComponentColors) => StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 14, gap: 12, backgroundColor: C.bg },
   avatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' },
   initials: { fontSize: 15, fontWeight: '700', color: C.secondary },
@@ -303,12 +314,12 @@ const rowStyles = StyleSheet.create({
   username: { fontSize: 13, color: C.muted },
   timestamp: { fontSize: 13, color: C.muted },
   separator: { height: 1, backgroundColor: C.separator, marginLeft: 80 },
-  deleteAction: { backgroundColor: '#EF4444', width: 72, alignItems: 'center', justifyContent: 'center' },
+  deleteAction: { backgroundColor: C.red, width: 72, alignItems: 'center', justifyContent: 'center' },
 });
 
-const popupStyles = StyleSheet.create({
+const makePopupStyles = (C: ComponentColors) => StyleSheet.create({
   backdrop: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.6)' },
-  card: { width: '80%', maxWidth: 320, backgroundColor: '#0B0F14', borderRadius: 16, padding: 16 },
+  card: { width: '80%', maxWidth: 320, backgroundColor: C.surface, borderRadius: 16, padding: 16 },
   callerRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 12 },
   avatar: { width: 44, height: 44, borderRadius: 22, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' },
   initials: { fontSize: 14, fontWeight: '700', color: C.secondary },

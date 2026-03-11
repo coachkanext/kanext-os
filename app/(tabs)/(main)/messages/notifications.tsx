@@ -3,7 +3,7 @@
  * Messages-specific, separate from global notification settings.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -16,18 +16,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
-
-const C = {
-  bg: '#000000',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-};
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 export default function NotificationSettingsScreen() {
   const insets = useSafeAreaInsets();
   const accent = useAccentColor();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   const [muteAll, setMuteAll] = useState(false);
   const [mentionsOnly, setMentionsOnly] = useState(false);
@@ -93,7 +88,7 @@ export default function NotificationSettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },

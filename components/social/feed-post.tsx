@@ -3,7 +3,7 @@
  * Double-tap detection for like animation. Long press for context menu.
  */
 
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -16,15 +16,9 @@ import * as Haptics from 'expo-haptics';
 
 import { FeedActionRow } from './feed-action-row';
 import { LikeAnimation } from './like-animation';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { formatPostTime } from '@/data/mock-social';
 import type { FeedPost as FeedPostType } from '@/data/mock-social';
-
-const C = {
-  bg: '#000000',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  avatarBg: '#1C1C1E',
-};
 
 interface FeedPostProps {
   post: FeedPostType;
@@ -43,6 +37,8 @@ export function FeedPost({
   onBookmarkToggle,
   onLongPress,
 }: FeedPostProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const { width: screenWidth } = useWindowDimensions();
   const lastTapRef = useRef(0);
   const [showLikeAnim, setShowLikeAnim] = useState(false);
@@ -139,7 +135,7 @@ export function FeedPost({
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     backgroundColor: C.bg,
     marginBottom: 4,
@@ -154,7 +150,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: C.avatarBg,
+    backgroundColor: '#1C1C1E',
     alignItems: 'center',
     justifyContent: 'center',
   },

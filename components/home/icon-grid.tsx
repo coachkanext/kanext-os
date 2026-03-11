@@ -8,24 +8,18 @@
  * Media in grid position 9 (bottom right). Profile in settings side panel.
  */
 
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useMemo } from 'react';
 import { View, Text, Image, StyleSheet, useWindowDimensions, Animated, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useMode } from '@/context/app-context';
 import { useMultitasking } from '@/context/multitasking-context';
 import type { Mode } from '@/types';
 import type { GridIcon } from './home-types';
-
-const C = {
-  icon: '#FFFFFF',
-  label: '#A1A1AA',
-  badgeText: '#FFFFFF',
-  tileBg: '#0B1220',
-};
 
 /** Mode-dependent labels for icons that change per mode (positions 2, 3, 6) */
 const MODE_LABELS: Record<string, Partial<Record<Mode, string>>> = {
@@ -83,13 +77,16 @@ function GridTile({
   accent,
   onPress,
   onLongPress,
+  styles,
 }: {
   item: GridIcon;
   cellWidth: number;
   accent: string;
   onPress: (item: GridIcon) => void;
   onLongPress?: (item: GridIcon) => void;
+  styles: ReturnType<typeof makeStyles>;
 }) {
+  const C = useColors();
   const scale = useRef(new Animated.Value(1)).current;
 
   const handlePressIn = useCallback(() => {
@@ -131,7 +128,7 @@ function GridTile({
         {item.image ? (
           <Image source={item.image} style={styles.tileImage} />
         ) : (
-          <IconSymbol name={item.icon} size={28} color={C.icon} />
+          <IconSymbol name={item.icon} size={28} color="#FFFFFF" />
         )}
         {item.badgeCount != null && item.badgeCount > 0 && (
           <View style={[styles.badge, { backgroundColor: accent }]}>
@@ -147,6 +144,8 @@ function GridTile({
 }
 
 export function IconGrid() {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const accent = useAccentColor();
   const router = useRouter();
   const mode = useMode();
@@ -179,6 +178,7 @@ export function IconGrid() {
                 cellWidth={cellWidth}
                 accent={accent}
                 onPress={handlePress}
+                styles={styles}
               />
             );
           })}
@@ -188,11 +188,12 @@ export function IconGrid() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-evenly',
     paddingBottom: 16,
+    backgroundColor: C.bg,
   },
   row: {
     flexDirection: 'row',
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 14,
-    backgroundColor: C.tileBg,
+    backgroundColor: '#0B1220',
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
@@ -236,12 +237,12 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 11,
     fontWeight: '700',
-    color: C.badgeText,
+    color: '#FFFFFF',
   },
   label: {
     fontSize: 11,
     marginTop: 12,
     textAlign: 'center',
-    color: C.label,
+    color: C.secondary,
   },
 });

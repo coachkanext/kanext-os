@@ -9,6 +9,7 @@ import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useColors } from '@/hooks/use-colors';
 import { SwipeableTwoPage } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
 import { FeaturedBanner } from '@/components/media/featured-banner';
@@ -29,6 +30,7 @@ import { useMode } from '@/context/app-context';
 
 export default function MediaScreen() {
   const insets = useSafeAreaInsets();
+  const C = useColors();
   const mode = useMode();
 
   const [pageIndex, setPageIndex] = useState(0);
@@ -72,7 +74,7 @@ export default function MediaScreen() {
   }, []);
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View style={[styles.container, { backgroundColor: C.bg, paddingTop: insets.top }]}>
       <SwipeableTwoPage
         activeIndex={pageIndex}
         onPageChange={handlePageChange}

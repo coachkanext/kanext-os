@@ -6,7 +6,7 @@
  * and eval cards.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
@@ -17,9 +17,9 @@ import { LinkChipRow } from './link-chip';
 import { StructuredBlocks } from './structured-block';
 import { ReceiptBubble } from './receipt-bubble';
 import { ConfirmationBubble } from './confirmation-bubble';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
+import { Spacing, BorderRadius } from '@/constants/theme';
 import { useAccentColor } from '@/hooks/use-accent-color';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { formatMessageTime } from '@/data/mock-nexus';
 import { InlinePlayerCard } from './inline-player-card';
 import { InlineStatTable } from './inline-stat-table';
@@ -59,8 +59,8 @@ export function MessageBubble({
   onCancelAction,
   onEscalationChoice,
 }: MessageBubbleProps) {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const accent = useAccentColor();
   const isUser = message.role === 'user';
   const v2 = isMessageV2(message) ? message : null;
@@ -76,7 +76,7 @@ export function MessageBubble({
     return (
       <View style={[styles.container, styles.assistantContainer]}>
         <ReceiptBubble receipt={v2.receipt} onChipPress={onChipPress} />
-        <ThemedText style={[styles.timestamp, { color: colors.textTertiary }]}>
+        <ThemedText style={[styles.timestamp, { color: C.muted }]}>
           {formatMessageTime(message.timestamp)}
         </ThemedText>
       </View>
@@ -92,7 +92,7 @@ export function MessageBubble({
           onConfirm={() => onConfirmAction?.(message.id)}
           onCancel={() => onCancelAction?.(message.id)}
         />
-        <ThemedText style={[styles.timestamp, { color: colors.textTertiary }]}>
+        <ThemedText style={[styles.timestamp, { color: C.muted }]}>
           {formatMessageTime(message.timestamp)}
         </ThemedText>
       </View>
@@ -104,18 +104,18 @@ export function MessageBubble({
     const esc = v2.escalation;
     return (
       <View style={[styles.container, styles.assistantContainer]}>
-        <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: '#0B0F14' }]}>
+        <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: C.surface }]}>
           {v2.content ? (
-            <ThemedText style={[styles.messageText, { color: colors.text }]}>
+            <ThemedText style={[styles.messageText, { color: C.label }]}>
               {v2.content}
             </ThemedText>
           ) : null}
 
-          <View style={[styles.escalationBox, { borderLeftColor: '#F59E0B', backgroundColor: 'rgba(245,158,11,0.06)' }]}>
-            <ThemedText style={[styles.escalationReason, { color: colors.textSecondary }]}>
+          <View style={[styles.escalationBox, { borderLeftColor: C.amber, backgroundColor: 'rgba(245,158,11,0.06)' }]}>
+            <ThemedText style={[styles.escalationReason, { color: C.secondary }]}>
               {esc.reason}
             </ThemedText>
-            <ThemedText style={[styles.escalationTarget, { color: colors.textTertiary }]}>
+            <ThemedText style={[styles.escalationTarget, { color: C.muted }]}>
               Best route: {esc.target_room} → {esc.target_owner}
             </ThemedText>
           </View>
@@ -125,21 +125,21 @@ export function MessageBubble({
               key={i}
               style={({ pressed }) => [
                 styles.escalationOption,
-                { backgroundColor: colors.backgroundTertiary, opacity: pressed ? 0.7 : 1 },
+                { backgroundColor: C.separator, opacity: pressed ? 0.7 : 1 },
               ]}
               onPress={() => onEscalationChoice?.(message.id, opt.action)}
             >
               <ThemedText style={[styles.escalationOptionNum, { color: accent }]}>
                 {i + 1}
               </ThemedText>
-              <ThemedText style={[styles.escalationOptionLabel, { color: colors.text }]}>
+              <ThemedText style={[styles.escalationOptionLabel, { color: C.label }]}>
                 {opt.label}
               </ThemedText>
             </Pressable>
           ))}
         </View>
 
-        <ThemedText style={[styles.timestamp, { color: colors.textTertiary }]}>
+        <ThemedText style={[styles.timestamp, { color: C.muted }]}>
           {formatMessageTime(message.timestamp)}
         </ThemedText>
       </View>
@@ -151,12 +151,12 @@ export function MessageBubble({
     return (
       <View style={[styles.container, styles.assistantContainer]}>
         {v2.content ? (
-          <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: '#0B0F14' }]}>
-            <ThemedText style={[styles.messageText, { color: colors.text }]}>{v2.content}</ThemedText>
+          <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: C.surface }]}>
+            <ThemedText style={[styles.messageText, { color: C.label }]}>{v2.content}</ThemedText>
           </View>
         ) : null}
         <InlinePlayerCard data={v2.playerCard} />
-        <ThemedText style={[styles.timestamp, { color: colors.textTertiary }]}>
+        <ThemedText style={[styles.timestamp, { color: C.muted }]}>
           {formatMessageTime(message.timestamp)}
         </ThemedText>
       </View>
@@ -168,12 +168,12 @@ export function MessageBubble({
     return (
       <View style={[styles.container, styles.assistantContainer]}>
         {v2.content ? (
-          <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: '#0B0F14' }]}>
-            <ThemedText style={[styles.messageText, { color: colors.text }]}>{v2.content}</ThemedText>
+          <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: C.surface }]}>
+            <ThemedText style={[styles.messageText, { color: C.label }]}>{v2.content}</ThemedText>
           </View>
         ) : null}
         <InlineStatTable data={v2.statTable} />
-        <ThemedText style={[styles.timestamp, { color: colors.textTertiary }]}>
+        <ThemedText style={[styles.timestamp, { color: C.muted }]}>
           {formatMessageTime(message.timestamp)}
         </ThemedText>
       </View>
@@ -185,12 +185,12 @@ export function MessageBubble({
     return (
       <View style={[styles.container, styles.assistantContainer]}>
         {v2.content ? (
-          <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: '#0B0F14' }]}>
-            <ThemedText style={[styles.messageText, { color: colors.text }]}>{v2.content}</ThemedText>
+          <View style={[styles.bubble, styles.assistantBubble, { backgroundColor: C.surface }]}>
+            <ThemedText style={[styles.messageText, { color: C.label }]}>{v2.content}</ThemedText>
           </View>
         ) : null}
         <InlineKRCard data={v2.krCard} />
-        <ThemedText style={[styles.timestamp, { color: colors.textTertiary }]}>
+        <ThemedText style={[styles.timestamp, { color: C.muted }]}>
           {formatMessageTime(message.timestamp)}
         </ThemedText>
       </View>
@@ -204,15 +204,15 @@ export function MessageBubble({
         style={[
           styles.bubble,
           isUser
-            ? [styles.userBubble, { backgroundColor: '#1A1F2E' }]
-            : [styles.assistantBubble, { backgroundColor: '#0B0F14' }],
+            ? [styles.userBubble, { backgroundColor: C.bubbleSent }]
+            : [styles.assistantBubble, { backgroundColor: C.bubbleReceived }],
         ]}
       >
         {message.content ? (
           <ThemedText
             style={[
               styles.messageText,
-              isUser ? styles.userText : { color: colors.text },
+              isUser ? styles.userText : { color: C.label },
             ]}
           >
             {message.content}
@@ -262,14 +262,14 @@ export function MessageBubble({
         </View>
       )}
 
-      <ThemedText style={[styles.timestamp, { color: colors.textTertiary }]}>
+      <ThemedText style={[styles.timestamp, { color: C.muted }]}>
         {formatMessageTime(message.timestamp)}
       </ThemedText>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     marginVertical: Spacing.xs,
     paddingHorizontal: Spacing.md,
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   userText: {
-    color: '#FFFFFF',
+    color: C.label,
   },
   timestamp: {
     fontSize: 11,

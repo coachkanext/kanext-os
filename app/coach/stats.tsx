@@ -12,8 +12,7 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 // Data imports
 import { teamStats } from '@/data/sun-conference/florida-memorial/team-stats';
@@ -245,6 +244,8 @@ function adjLineups(rows: LineupRow[], split: Split): LineupRow[] {
 
 export function StatsContent() {
   const ctx = DEFAULT_PROGRAM_CONTEXT;
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   // State
   const [topTab, setTopTab] = useState<TopTab>('team');
@@ -266,21 +267,21 @@ export function StatsContent() {
 
   return (
     <SplitCtx.Provider value={split}>
-    <View style={st.container}>
+    <View style={styles.container}>
       {/* ===== STICKY HEADER ===== */}
-      <View style={st.stickyHeader}>
+      <View style={styles.stickyHeader}>
         {/* Top segment: Team | Players */}
-        <View style={st.segmentRow}>
+        <View style={styles.segmentRow}>
           {(['team', 'players'] as TopTab[]).map((tab) => (
             <Pressable
               key={tab}
-              style={[st.segmentBtn, topTab === tab && st.segmentBtnActive]}
+              style={[styles.segmentBtn, topTab === tab && styles.segmentBtnActive]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 setTopTab(tab);
               }}
             >
-              <Text style={[st.segmentText, topTab === tab && st.segmentTextActive]}>
+              <Text style={[styles.segmentText, topTab === tab && styles.segmentTextActive]}>
                 {tab === 'team' ? 'Team' : 'Players'}
               </Text>
             </Pressable>
@@ -291,19 +292,19 @@ export function StatsContent() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={st.subTabRow}
+          contentContainerStyle={styles.subTabRow}
         >
           {subTabs.map((tab) => (
             <Pressable
               key={tab.id}
-              style={[st.subTab, activeSubTab === tab.id && st.subTabActive]}
+              style={[styles.subTab, activeSubTab === tab.id && styles.subTabActive]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 if (topTab === 'team') setTeamSubTab(tab.id as TeamSubTab);
                 else setPlayerSubTab(tab.id as PlayerSubTab);
               }}
             >
-              <Text style={[st.subTabText, activeSubTab === tab.id && st.subTabTextActive]}>
+              <Text style={[styles.subTabText, activeSubTab === tab.id && styles.subTabTextActive]}>
                 {tab.label}
               </Text>
             </Pressable>
@@ -316,8 +317,8 @@ export function StatsContent() {
 
       {/* ===== CONTENT ===== */}
       <ScrollView
-        style={st.scroll}
-        contentContainerStyle={st.scrollContent}
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled
       >
@@ -398,16 +399,16 @@ export function StatsContent() {
 // ══════════════════════════════════════════════════════════════
 
 export default function StatsPage() {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
   return (
-    <View style={[st.container, { backgroundColor: colors.background, paddingTop: insets.top }]}>
-      <Pressable style={st.backBtn} onPress={() => router.back()}>
-        <IconSymbol name="chevron.left" size={20} color={colors.text} />
-        <Text style={[st.backText, { color: colors.text }]}>Statistics</Text>
+    <View style={[styles.container, { backgroundColor: C.bg, paddingTop: insets.top }]}>
+      <Pressable style={styles.backBtn} onPress={() => router.back()}>
+        <IconSymbol name="chevron.left" size={20} color={C.label} />
+        <Text style={[styles.backText, { color: C.label }]}>Statistics</Text>
       </Pressable>
       <StatsContent />
     </View>
@@ -419,33 +420,35 @@ export default function StatsPage() {
 // ══════════════════════════════════════════════════════════════
 
 function GlobalControls({ split, onSplitChange }: { split: Split; onSplitChange: (s: Split) => void }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={st.chipRow}
-      style={st.chipScrollView}
+      contentContainerStyle={styles.chipRow}
+      style={styles.chipScrollView}
     >
-      <View style={st.chipGroup}>
-        <Text style={st.chipGroupLabel}>2025–26</Text>
+      <View style={styles.chipGroup}>
+        <Text style={styles.chipGroupLabel}>2025–26</Text>
       </View>
       {SPLITS.map((s) => (
         <Pressable
           key={s.id}
-          style={[st.chip, split === s.id && st.chipActive]}
+          style={[styles.chip, split === s.id && styles.chipActive]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             onSplitChange(s.id);
           }}
         >
-          <Text style={[st.chipText, split === s.id && st.chipTextActive]}>{s.label}</Text>
+          <Text style={[styles.chipText, split === s.id && styles.chipTextActive]}>{s.label}</Text>
         </Pressable>
       ))}
-      <View style={[st.chip, st.badgeChip]}>
-        <Text style={st.badgeText}>Synergy</Text>
+      <View style={[styles.chip, styles.badgeChip]}>
+        <Text style={styles.badgeText}>Synergy</Text>
       </View>
-      <View style={[st.chip, st.badgeChip]}>
-        <Text style={st.badgeText}>Carroll</Text>
+      <View style={[styles.chip, styles.badgeChip]}>
+        <Text style={styles.badgeText}>Carroll</Text>
       </View>
     </ScrollView>
   );
@@ -470,30 +473,32 @@ function TeamOverview({
   offensiveStyle: string;
   defensiveStyle: string;
 }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const sp = useSplit();
   return (
     <>
       {/* A) Team Identity Strip */}
-      <View style={st.identityRow}>
-        <Image source={KaNeXT_LOGO} style={st.logo} resizeMode="contain" />
-        <View style={st.identityText}>
-          <Text style={st.teamName}>Carroll College</Text>
-          <Text style={st.teamSubline}>NAA {'\u00B7'} Frontier Conference</Text>
+      <View style={styles.identityRow}>
+        <Image source={KaNeXT_LOGO} style={styles.logo} resizeMode="contain" />
+        <View style={styles.identityText}>
+          <Text style={styles.teamName}>Carroll College</Text>
+          <Text style={styles.teamSubline}>NAA {'\u00B7'} Frontier Conference</Text>
         </View>
-        <View style={st.krBadge}>
-          <Text style={st.krValue}>{teamKR}</Text>
-          <View style={st.krSubRow}>
-            <Text style={st.krSubLabel}>O {teamOffKR}</Text>
-            <Text style={st.krSubSep}>{'\u00B7'}</Text>
-            <Text style={st.krSubLabel}>D {teamDefKR}</Text>
+        <View style={styles.krBadge}>
+          <Text style={styles.krValue}>{teamKR}</Text>
+          <View style={styles.krSubRow}>
+            <Text style={styles.krSubLabel}>O {teamOffKR}</Text>
+            <Text style={styles.krSubSep}>{'\u00B7'}</Text>
+            <Text style={styles.krSubLabel}>D {teamDefKR}</Text>
           </View>
         </View>
       </View>
 
       {/* Synergy efficiency row */}
-      <View style={st.card}>
-        <Text style={st.sectionLabel}>SYNERGY EFFICIENCY</Text>
-        <View style={st.statThreeCol}>
+      <View style={styles.card}>
+        <Text style={styles.sectionLabel}>SYNERGY EFFICIENCY</Text>
+        <View style={styles.statThreeCol}>
           <StatCell label="OFF PPP" value={shi(SYNERGY_SUMMARY.offPPP, sp).toFixed(2)} />
           <StatCell label="DEF PPP" value={slo(SYNERGY_SUMMARY.defPPP, sp).toFixed(2)} />
           <StatCell label="TEMPO" value={`${shi(SYNERGY_SUMMARY.tempo, sp, 1)}`} sub="Poss/G" />
@@ -501,17 +506,17 @@ function TeamOverview({
       </View>
 
       {/* B) Projection Row */}
-      <View style={st.card}>
-        <Text style={st.sectionLabel}>CARROLL PROJECTIONS</Text>
-        <View style={st.statFourCol}>
+      <View style={styles.card}>
+        <Text style={styles.sectionLabel}>CARROLL PROJECTIONS</Text>
+        <View style={styles.statFourCol}>
           <StatCell label="Proj W" value={`${SEASON_PROJECTION.line}`} />
           <StatCell label="Win%" value={`${shi(SEASON_PROJECTION.winPct, sp, 1)}%`} />
           <StatCell label="Record" value={SEASON_PROJECTION.projectedTotal} />
           <StatCell label="Confidence" value={`${shi(SEASON_PROJECTION.simConfidence, sp, 0)}%`} />
         </View>
-        <View style={st.projSubRow}>
-          <Text style={st.projSub}>{SEASON_PROJECTION.projectedSeed}</Text>
-          <Text style={st.projSub}>NAA Conference Tournament: {shi(SEASON_PROJECTION.playoffProbability, sp, 0)}%</Text>
+        <View style={styles.projSubRow}>
+          <Text style={styles.projSub}>{SEASON_PROJECTION.projectedSeed}</Text>
+          <Text style={styles.projSub}>NAA Conference Tournament: {shi(SEASON_PROJECTION.playoffProbability, sp, 0)}%</Text>
         </View>
       </View>
 
@@ -519,41 +524,41 @@ function TeamOverview({
       <FourFactorsCard />
 
       {/* D) Synergy Team Summary */}
-      <View style={st.card}>
-        <Text style={st.sectionLabel}>SYNERGY OFFENSE</Text>
+      <View style={styles.card}>
+        <Text style={styles.sectionLabel}>SYNERGY OFFENSE</Text>
         <SynergyPlayTypeTable rows={adjPT(OFFENSE_PLAY_TYPES.slice(0, 6), sp, false)} isDefense={false} />
 
-        <View style={st.divider} />
-        <Text style={st.sectionLabel}>SHOT PROFILE</Text>
+        <View style={styles.divider} />
+        <Text style={styles.sectionLabel}>SHOT PROFILE</Text>
         <ShotProfileBars zones={adjShot(OFFENSE_SHOT_PROFILE.filter((z) => z.zone !== 'FT'), sp, false)} />
 
-        <View style={st.divider} />
-        <Text style={st.sectionLabel}>TEMPO BREAKDOWN</Text>
-        <View style={st.statThreeCol}>
+        <View style={styles.divider} />
+        <Text style={styles.sectionLabel}>TEMPO BREAKDOWN</Text>
+        <View style={styles.statThreeCol}>
           <StatCell label="Transition" value={shi(TEMPO_BREAKDOWN.transition.ppp, sp).toFixed(2)} sub={`${TEMPO_BREAKDOWN.transition.freq}%`} />
           <StatCell label="Early" value={shi(TEMPO_BREAKDOWN.earlyOffense.ppp, sp).toFixed(2)} sub={`${TEMPO_BREAKDOWN.earlyOffense.freq}%`} />
           <StatCell label="Halfcourt" value={shi(TEMPO_BREAKDOWN.halfcourt.ppp, sp).toFixed(2)} sub={`${TEMPO_BREAKDOWN.halfcourt.freq}%`} />
         </View>
       </View>
 
-      <View style={st.card}>
-        <Text style={st.sectionLabel}>SYNERGY DEFENSE</Text>
+      <View style={styles.card}>
+        <Text style={styles.sectionLabel}>SYNERGY DEFENSE</Text>
         <SynergyPlayTypeTable rows={adjPT(DEFENSE_PLAY_TYPES.slice(0, 6), sp, true)} isDefense />
 
-        <View style={st.divider} />
-        <Text style={st.sectionLabel}>SHOT PROFILE ALLOWED</Text>
+        <View style={styles.divider} />
+        <Text style={styles.sectionLabel}>SHOT PROFILE ALLOWED</Text>
         <ShotProfileBars zones={adjShot(DEFENSE_SHOT_PROFILE.filter((z) => z.zone !== 'FT'), sp, true)} />
 
-        <View style={st.divider} />
-        <Text style={st.sectionLabel}>TEMPO BREAKDOWN</Text>
-        <View style={st.statThreeCol}>
+        <View style={styles.divider} />
+        <Text style={styles.sectionLabel}>TEMPO BREAKDOWN</Text>
+        <View style={styles.statThreeCol}>
           <StatCell label="Transition" value={slo(DEFENSE_TEMPO_BREAKDOWN.transition.ppp, sp).toFixed(2)} sub={`${DEFENSE_TEMPO_BREAKDOWN.transition.freq}%`} />
           <StatCell label="Early" value={slo(DEFENSE_TEMPO_BREAKDOWN.earlyOffense.ppp, sp).toFixed(2)} sub={`${DEFENSE_TEMPO_BREAKDOWN.earlyOffense.freq}%`} />
           <StatCell label="Halfcourt" value={slo(DEFENSE_TEMPO_BREAKDOWN.halfcourt.ppp, sp).toFixed(2)} sub={`${DEFENSE_TEMPO_BREAKDOWN.halfcourt.freq}%`} />
         </View>
 
-        <View style={st.divider} />
-        <View style={st.statThreeCol}>
+        <View style={styles.divider} />
+        <View style={styles.statThreeCol}>
           <StatCell label="Rim FG%" value={`${slo(RIM_PROTECTION.fgPct, sp, 1)}%`} sub={`${RIM_PROTECTION.freq}% freq`} />
           <StatCell label="3PT Allowed" value={`${slo(THREE_PT_DEFENSE.fgPct, sp, 1)}%`} sub={`${THREE_PT_DEFENSE.freq}% freq`} />
           <StatCell label="Contested" value={`${shi(THREE_PT_DEFENSE.contestedPct, sp, 1)}%`} sub="3PT contests" />
@@ -561,8 +566,8 @@ function TeamOverview({
       </View>
 
       {/* E) Carroll Overlay */}
-      <View style={st.card}>
-        <Text style={st.sectionLabel}>CARROLL CLUSTER RATINGS</Text>
+      <View style={styles.card}>
+        <Text style={styles.sectionLabel}>CARROLL CLUSTER RATINGS</Text>
         <ClusterBars
           expandedCluster={expandedCluster}
           onToggleCluster={onToggleCluster}
@@ -572,9 +577,9 @@ function TeamOverview({
       </View>
 
       {/* System Emphasis vs Reality */}
-      <View style={st.card}>
-        <Text style={st.sectionLabel}>SYSTEM EMPHASIS vs REALITY</Text>
-        <Text style={st.subLabel}>
+      <View style={styles.card}>
+        <Text style={styles.sectionLabel}>SYSTEM EMPHASIS vs REALITY</Text>
+        <Text style={styles.subLabel}>
           {offensiveStyle.replace(/_/g, ' ')} / {defensiveStyle.replace(/_/g, ' ')}
         </Text>
         {CLUSTER_KEYS.map((key) => {
@@ -586,29 +591,29 @@ function TeamOverview({
           const emphasisPct = (emphasis / maxWeight) * 100;
           const actual = teamClusterAvg[key];
           return (
-            <View key={key} style={st.emphRow}>
-              <Text style={st.emphLabel}>{CLUSTER_LABEL_MAP[key]}</Text>
-              <View style={st.emphBarContainer}>
-                <View style={st.emphBarBg}>
-                  <View style={[st.emphBarEmphasis, { width: `${emphasisPct}%` }]} />
-                  <View style={[st.emphBarActual, { width: `${actual}%` }]} />
+            <View key={key} style={styles.emphRow}>
+              <Text style={styles.emphLabel}>{CLUSTER_LABEL_MAP[key]}</Text>
+              <View style={styles.emphBarContainer}>
+                <View style={styles.emphBarBg}>
+                  <View style={[styles.emphBarEmphasis, { width: `${emphasisPct}%` }]} />
+                  <View style={[styles.emphBarActual, { width: `${actual}%` }]} />
                 </View>
               </View>
-              <View style={st.emphValues}>
-                <Text style={st.emphEmphasisVal}>{emphasis}</Text>
-                <Text style={st.emphActualVal}>{actual}</Text>
+              <View style={styles.emphValues}>
+                <Text style={styles.emphEmphasisVal}>{emphasis}</Text>
+                <Text style={styles.emphActualVal}>{actual}</Text>
               </View>
             </View>
           );
         })}
-        <View style={st.emphLegend}>
-          <View style={st.emphLegendItem}>
-            <View style={[st.emphLegendDot, { backgroundColor: 'rgba(255,255,255,0.2)' }]} />
-            <Text style={st.emphLegendText}>Emphasis</Text>
+        <View style={styles.emphLegend}>
+          <View style={styles.emphLegendItem}>
+            <View style={[styles.emphLegendDot, { backgroundColor: C.separator }]} />
+            <Text style={styles.emphLegendText}>Emphasis</Text>
           </View>
-          <View style={st.emphLegendItem}>
-            <View style={[st.emphLegendDot, { backgroundColor: '#22C55E' }]} />
-            <Text style={st.emphLegendText}>Actual</Text>
+          <View style={styles.emphLegendItem}>
+            <View style={[styles.emphLegendDot, { backgroundColor: C.green }]} />
+            <Text style={styles.emphLegendText}>Actual</Text>
           </View>
         </View>
       </View>
@@ -627,6 +632,8 @@ function TeamOffense({
   expandedCluster: keyof ClusterRatings | null;
   onToggleCluster: (k: keyof ClusterRatings) => void;
 }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const sp = useSplit();
   const offKeys: (keyof ClusterRatings)[] = ['shooting', 'finishing', 'playmaking'];
   const offAvgs: Record<keyof ClusterRatings, number> = {} as any;
@@ -638,16 +645,16 @@ function TeamOffense({
 
   return (
     <>
-      <View style={st.card}>
-        <Text style={st.sectionLabel}>SYNERGY PLAY TYPES</Text>
+      <View style={styles.card}>
+        <Text style={styles.sectionLabel}>SYNERGY PLAY TYPES</Text>
         <SynergyPlayTypeTable rows={adjPT(OFFENSE_PLAY_TYPES, sp, false)} isDefense={false} />
       </View>
 
-      <View style={st.card}>
-        <Text style={st.sectionLabel}>CARROLL OFFENSE</Text>
-        <View style={st.krInlineRow}>
-          <Text style={st.krInlineLabel}>OFF KR</Text>
-          <Text style={[st.krInlineValue, { color: barColor(teamOffKR) }]}>{teamOffKR}</Text>
+      <View style={styles.card}>
+        <Text style={styles.sectionLabel}>CARROLL OFFENSE</Text>
+        <View style={styles.krInlineRow}>
+          <Text style={styles.krInlineLabel}>OFF KR</Text>
+          <Text style={[styles.krInlineValue, { color: barColor(teamOffKR) }]}>{teamOffKR}</Text>
         </View>
         <ClusterBars
           expandedCluster={expandedCluster}
@@ -672,6 +679,8 @@ function TeamDefense({
   expandedCluster: keyof ClusterRatings | null;
   onToggleCluster: (k: keyof ClusterRatings) => void;
 }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const sp = useSplit();
   const defKeys: (keyof ClusterRatings)[] = ['on_ball_defense', 'team_defense', 'rebounding', 'physical'];
   const defAvgs: Record<keyof ClusterRatings, number> = {} as any;
@@ -683,48 +692,48 @@ function TeamDefense({
 
   return (
     <>
-      <View style={st.card}>
-        <Text style={st.sectionLabel}>SYNERGY DEFENSE PLAY TYPES</Text>
+      <View style={styles.card}>
+        <Text style={styles.sectionLabel}>SYNERGY DEFENSE PLAY TYPES</Text>
         <SynergyPlayTypeTable rows={adjPT(DEFENSE_PLAY_TYPES, sp, true)} isDefense />
       </View>
 
-      <View style={st.card}>
-        <Text style={st.sectionLabel}>OPPONENT SHOT PROFILE</Text>
+      <View style={styles.card}>
+        <Text style={styles.sectionLabel}>OPPONENT SHOT PROFILE</Text>
         <ShotProfileBars zones={adjShot(DEFENSE_SHOT_PROFILE.filter((z) => z.zone !== 'FT'), sp, true)} />
       </View>
 
-      <View style={st.card}>
-        <Text style={st.sectionLabel}>COVERAGE BREAKDOWN</Text>
-        <Text style={st.subLabel}>Ball Screen</Text>
+      <View style={styles.card}>
+        <Text style={styles.sectionLabel}>COVERAGE BREAKDOWN</Text>
+        <Text style={styles.subLabel}>Ball Screen</Text>
         {BALL_SCREEN_COVERAGE.map((c) => (
-          <View key={c.scheme} style={st.coverageRow}>
-            <Text style={st.coverageScheme}>{c.scheme}</Text>
-            <View style={st.coverageBarBg}>
-              <View style={[st.coverageBarFill, { width: `${c.freq}%` }]} />
+          <View key={c.scheme} style={styles.coverageRow}>
+            <Text style={styles.coverageScheme}>{c.scheme}</Text>
+            <View style={styles.coverageBarBg}>
+              <View style={[styles.coverageBarFill, { width: `${c.freq}%` }]} />
             </View>
-            <Text style={st.coverageFreq}>{c.freq}%</Text>
-            <Text style={st.coveragePPP}>{slo(c.pppAllowed, sp).toFixed(2)}</Text>
+            <Text style={styles.coverageFreq}>{c.freq}%</Text>
+            <Text style={styles.coveragePPP}>{slo(c.pppAllowed, sp).toFixed(2)}</Text>
           </View>
         ))}
-        <View style={st.divider} />
-        <Text style={st.subLabel}>Post Defense</Text>
+        <View style={styles.divider} />
+        <Text style={styles.subLabel}>Post Defense</Text>
         {POST_COVERAGE.map((c) => (
-          <View key={c.scheme} style={st.coverageRow}>
-            <Text style={st.coverageScheme}>{c.scheme}</Text>
-            <View style={st.coverageBarBg}>
-              <View style={[st.coverageBarFill, { width: `${c.freq}%` }]} />
+          <View key={c.scheme} style={styles.coverageRow}>
+            <Text style={styles.coverageScheme}>{c.scheme}</Text>
+            <View style={styles.coverageBarBg}>
+              <View style={[styles.coverageBarFill, { width: `${c.freq}%` }]} />
             </View>
-            <Text style={st.coverageFreq}>{c.freq}%</Text>
-            <Text style={st.coveragePPP}>{slo(c.pppAllowed, sp).toFixed(2)}</Text>
+            <Text style={styles.coverageFreq}>{c.freq}%</Text>
+            <Text style={styles.coveragePPP}>{slo(c.pppAllowed, sp).toFixed(2)}</Text>
           </View>
         ))}
       </View>
 
-      <View style={st.card}>
-        <Text style={st.sectionLabel}>CARROLL DEFENSE</Text>
-        <View style={st.krInlineRow}>
-          <Text style={st.krInlineLabel}>DEF KR</Text>
-          <Text style={[st.krInlineValue, { color: barColor(teamDefKR) }]}>{teamDefKR}</Text>
+      <View style={styles.card}>
+        <Text style={styles.sectionLabel}>CARROLL DEFENSE</Text>
+        <View style={styles.krInlineRow}>
+          <Text style={styles.krInlineLabel}>DEF KR</Text>
+          <Text style={[styles.krInlineValue, { color: barColor(teamDefKR) }]}>{teamDefKR}</Text>
         </View>
         <ClusterBars
           expandedCluster={expandedCluster}
@@ -743,27 +752,29 @@ function TeamDefense({
 // ══════════════════════════════════════════════════════════════
 
 function TeamLineups({ onOpenLineup }: { onOpenLineup: (l: LineupRow) => void }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const sp = useSplit();
   const lineups = useMemo(() => adjLineups(TOP_LINEUPS, sp), [sp]);
   return (
     <>
-      <Text style={st.sectionLabel}>TOP 10 LINEUPS</Text>
+      <Text style={styles.sectionLabel}>TOP 10 LINEUPS</Text>
       {lineups.map((lineup, idx) => (
         <Pressable
           key={lineup.id}
-          style={st.lineupCard}
+          style={styles.lineupCard}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             onOpenLineup(lineup);
           }}
         >
-          <View style={st.lineupHeader}>
-            <Text style={st.lineupRank}>#{idx + 1}</Text>
-            <Text style={st.lineupPlayers}>
+          <View style={styles.lineupHeader}>
+            <Text style={styles.lineupRank}>#{idx + 1}</Text>
+            <Text style={styles.lineupPlayers}>
               {lineup.players.map((p) => p.name).join(' · ')}
             </Text>
           </View>
-          <View style={st.lineupStatsRow}>
+          <View style={styles.lineupStatsRow}>
             <MiniStat label="MIN" value={`${lineup.minutes}`} />
             <MiniStat label="NET" value={lineup.netRating > 0 ? `+${lineup.netRating.toFixed(1)}` : lineup.netRating.toFixed(1)} color={netColor(lineup.netRating)} />
             <MiniStat label="OFF" value={lineup.offPPP.toFixed(2)} />
@@ -778,22 +789,24 @@ function TeamLineups({ onOpenLineup }: { onOpenLineup: (l: LineupRow) => void })
 }
 
 function LineupDetailContent({ lineup }: { lineup: LineupRow }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const detail = LINEUP_DETAILS[lineup.id];
   return (
     <>
-      <Text style={st.sheetTitle}>Lineup Detail</Text>
-      <View style={st.lineupDetailPlayers}>
+      <Text style={styles.sheetTitle}>Lineup Detail</Text>
+      <View style={styles.lineupDetailPlayers}>
         {lineup.players.map((p) => (
-          <View key={p.number} style={st.lineupDetailPlayer}>
-            <Text style={st.lineupDetailNum}>#{p.number}</Text>
-            <Text style={st.lineupDetailName}>{p.name}</Text>
-            <Text style={st.lineupDetailPos}>{p.position}</Text>
+          <View key={p.number} style={styles.lineupDetailPlayer}>
+            <Text style={styles.lineupDetailNum}>#{p.number}</Text>
+            <Text style={styles.lineupDetailName}>{p.name}</Text>
+            <Text style={styles.lineupDetailPos}>{p.position}</Text>
           </View>
         ))}
       </View>
 
-      <View style={st.divider} />
-      <View style={st.statFourCol}>
+      <View style={styles.divider} />
+      <View style={styles.statFourCol}>
         <StatCell label="Minutes" value={`${lineup.minutes}`} />
         <StatCell label="Poss" value={`${lineup.possessions}`} />
         <StatCell label="Net Rtg" value={lineup.netRating > 0 ? `+${lineup.netRating.toFixed(1)}` : lineup.netRating.toFixed(1)} valueColor={netColor(lineup.netRating)} />
@@ -802,26 +815,26 @@ function LineupDetailContent({ lineup }: { lineup: LineupRow }) {
 
       {detail && (
         <>
-          <View style={st.divider} />
-          <Text style={st.sectionLabel}>SHOT PROFILE</Text>
+          <View style={styles.divider} />
+          <Text style={styles.sectionLabel}>SHOT PROFILE</Text>
           {detail.shotProfile.map((z) => (
-            <View key={z.zone} style={st.coverageRow}>
-              <Text style={st.coverageScheme}>{z.zone}</Text>
-              <View style={st.coverageBarBg}>
-                <View style={[st.coverageBarFill, { width: `${z.freq}%` }]} />
+            <View key={z.zone} style={styles.coverageRow}>
+              <Text style={styles.coverageScheme}>{z.zone}</Text>
+              <View style={styles.coverageBarBg}>
+                <View style={[styles.coverageBarFill, { width: `${z.freq}%` }]} />
               </View>
-              <Text style={st.coverageFreq}>{z.freq}%</Text>
-              <Text style={st.coveragePPP}>{z.ppp.toFixed(2)}</Text>
+              <Text style={styles.coverageFreq}>{z.freq}%</Text>
+              <Text style={styles.coveragePPP}>{z.ppp.toFixed(2)}</Text>
             </View>
           ))}
 
-          <View style={st.divider} />
-          <Text style={st.sectionLabel}>TOP PLAY TYPES</Text>
+          <View style={styles.divider} />
+          <Text style={styles.sectionLabel}>TOP PLAY TYPES</Text>
           {detail.topPlayTypes.map((pt) => (
-            <View key={pt.type} style={st.playTypeCompact}>
-              <Text style={st.playTypeCompactName}>{pt.type}</Text>
-              <Text style={st.playTypeCompactFreq}>{pt.possPct}%</Text>
-              <Text style={st.playTypeCompactPPP}>{pt.ppp.toFixed(2)}</Text>
+            <View key={pt.type} style={styles.playTypeCompact}>
+              <Text style={styles.playTypeCompactName}>{pt.type}</Text>
+              <Text style={styles.playTypeCompactFreq}>{pt.possPct}%</Text>
+              <Text style={styles.playTypeCompactPPP}>{pt.ppp.toFixed(2)}</Text>
             </View>
           ))}
         </>
@@ -835,6 +848,8 @@ function LineupDetailContent({ lineup }: { lineup: LineupRow }) {
 // ══════════════════════════════════════════════════════════════
 
 function TeamShot({ shotToggle, onToggle }: { shotToggle: 'offense' | 'defense'; onToggle: (v: 'offense' | 'defense') => void }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const sp = useSplit();
   const isDef = shotToggle === 'defense';
   const zones = isDef
@@ -844,37 +859,37 @@ function TeamShot({ shotToggle, onToggle }: { shotToggle: 'offense' | 'defense';
   return (
     <>
       {/* Toggle */}
-      <View style={st.shotToggleRow}>
+      <View style={styles.shotToggleRow}>
         <Pressable
-          style={[st.pill, shotToggle === 'offense' && st.pillActive]}
+          style={[styles.pill, shotToggle === 'offense' && styles.pillActive]}
           onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onToggle('offense'); }}
         >
-          <Text style={[st.pillText, shotToggle === 'offense' && st.pillTextActive]}>Offense</Text>
+          <Text style={[styles.pillText, shotToggle === 'offense' && styles.pillTextActive]}>Offense</Text>
         </Pressable>
         <Pressable
-          style={[st.pill, shotToggle === 'defense' && st.pillActive]}
+          style={[styles.pill, shotToggle === 'defense' && styles.pillActive]}
           onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onToggle('defense'); }}
         >
-          <Text style={[st.pillText, shotToggle === 'defense' && st.pillTextActive]}>Defense</Text>
+          <Text style={[styles.pillText, shotToggle === 'defense' && styles.pillTextActive]}>Defense</Text>
         </Pressable>
       </View>
 
-      <View style={st.card}>
-        <Text style={st.sectionLabel}>{shotToggle === 'offense' ? 'SHOT PROFILE' : 'SHOT PROFILE ALLOWED'}</Text>
+      <View style={styles.card}>
+        <Text style={styles.sectionLabel}>{shotToggle === 'offense' ? 'SHOT PROFILE' : 'SHOT PROFILE ALLOWED'}</Text>
         <ShotProfileBars zones={zones} />
       </View>
 
-      <View style={st.card}>
-        <Text style={st.sectionLabel}>3-POINT BREAKDOWN</Text>
-        <View style={st.statThreeCol}>
+      <View style={styles.card}>
+        <Text style={styles.sectionLabel}>3-POINT BREAKDOWN</Text>
+        <View style={styles.statThreeCol}>
           <StatCell label="C&S" value={`${shi(THREE_PT_BREAKDOWN.catchAndShoot.efg, sp, 1)}%`} sub={`${THREE_PT_BREAKDOWN.catchAndShoot.freq}% freq`} />
           <StatCell label="Off Dribble" value={`${shi(THREE_PT_BREAKDOWN.offDribble.efg, sp, 1)}%`} sub={`${THREE_PT_BREAKDOWN.offDribble.freq}% freq`} />
         </View>
       </View>
 
-      <View style={st.card}>
-        <Text style={st.sectionLabel}>ASSISTED %</Text>
-        <View style={st.statThreeCol}>
+      <View style={styles.card}>
+        <Text style={styles.sectionLabel}>ASSISTED %</Text>
+        <View style={styles.statThreeCol}>
           <StatCell label="Rim" value={`${shi(ASSISTED_PCT.rim, sp, 1)}%`} />
           <StatCell label="Mid" value={`${shi(ASSISTED_PCT.mid, sp, 1)}%`} />
           <StatCell label="3PT" value={`${shi(ASSISTED_PCT.three, sp, 1)}%`} />
@@ -889,6 +904,8 @@ function TeamShot({ shotToggle, onToggle }: { shotToggle: 'offense' | 'defense';
 // ══════════════════════════════════════════════════════════════
 
 function PlayersOverview({ onOpenPlayer }: { onOpenPlayer: (id: string) => void }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const sp = useSplit();
   const players = useMemo(() =>
     PLAYER_SYNERGY.map((ps) => {
@@ -905,35 +922,35 @@ function PlayersOverview({ onOpenPlayer }: { onOpenPlayer: (id: string) => void 
 
   return (
     <>
-      <Text style={st.sectionLabel}>PLAYERS BY USAGE</Text>
+      <Text style={styles.sectionLabel}>PLAYERS BY USAGE</Text>
       {players.map((p) => (
         <Pressable
           key={p.playerId}
-          style={st.playerRow}
+          style={styles.playerRow}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             onOpenPlayer(p.playerId);
           }}
         >
-          <View style={st.playerLeft}>
-            <Text style={st.playerName}>{p.name}</Text>
-            <Text style={st.playerSub}>#{p.number} · {p.position}</Text>
+          <View style={styles.playerLeft}>
+            <Text style={styles.playerName}>{p.name}</Text>
+            <Text style={styles.playerSub}>#{p.number} · {p.position}</Text>
           </View>
-          <View style={st.playerKRGroup}>
-            <Text style={st.playerKR}>{p.kr}</Text>
-            <Text style={st.playerKRSub}>O{p.offKR} D{p.defKR}</Text>
+          <View style={styles.playerKRGroup}>
+            <Text style={styles.playerKR}>{p.kr}</Text>
+            <Text style={styles.playerKRSub}>O{p.offKR} D{p.defKR}</Text>
           </View>
-          <View style={st.playerStatCol}>
-            <Text style={st.playerStatVal}>{p.usagePct}%</Text>
-            <Text style={st.playerStatLabel}>USG</Text>
+          <View style={styles.playerStatCol}>
+            <Text style={styles.playerStatVal}>{p.usagePct}%</Text>
+            <Text style={styles.playerStatLabel}>USG</Text>
           </View>
-          <View style={st.playerStatCol}>
-            <Text style={st.playerStatVal}>{shi(p.ppp, sp).toFixed(2)}</Text>
-            <Text style={st.playerStatLabel}>PPP</Text>
+          <View style={styles.playerStatCol}>
+            <Text style={styles.playerStatVal}>{shi(p.ppp, sp).toFixed(2)}</Text>
+            <Text style={styles.playerStatLabel}>PPP</Text>
           </View>
-          <View style={st.playerStatCol}>
-            <Text style={[st.playerStatVal, { color: percentileColor(sptile(p.percentile, sp)) }]}>{sptile(p.percentile, sp)}</Text>
-            <Text style={st.playerStatLabel}>%ile</Text>
+          <View style={styles.playerStatCol}>
+            <Text style={[styles.playerStatVal, { color: percentileColor(sptile(p.percentile, sp)) }]}>{sptile(p.percentile, sp)}</Text>
+            <Text style={styles.playerStatLabel}>%ile</Text>
           </View>
         </Pressable>
       ))}
@@ -942,34 +959,36 @@ function PlayersOverview({ onOpenPlayer }: { onOpenPlayer: (id: string) => void 
 }
 
 function PlayersOffense({ onOpenPlayer }: { onOpenPlayer: (id: string) => void }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const sp = useSplit();
   return (
     <>
-      <Text style={st.sectionLabel}>PLAYER OFFENSE (SYNERGY)</Text>
+      <Text style={styles.sectionLabel}>PLAYER OFFENSE (SYNERGY)</Text>
       {PLAYER_SYNERGY.map((p) => (
         <Pressable
           key={p.playerId}
-          style={st.playerRow}
+          style={styles.playerRow}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             onOpenPlayer(p.playerId);
           }}
         >
-          <View style={st.playerLeft}>
-            <Text style={st.playerName}>{p.name}</Text>
-            <Text style={st.playerSub}>#{p.number}</Text>
+          <View style={styles.playerLeft}>
+            <Text style={styles.playerName}>{p.name}</Text>
+            <Text style={styles.playerSub}>#{p.number}</Text>
           </View>
-          <View style={st.playerStatCol}>
-            <Text style={st.playerStatVal}>{shi(p.ppp, sp).toFixed(2)}</Text>
-            <Text style={st.playerStatLabel}>PPP</Text>
+          <View style={styles.playerStatCol}>
+            <Text style={styles.playerStatVal}>{shi(p.ppp, sp).toFixed(2)}</Text>
+            <Text style={styles.playerStatLabel}>PPP</Text>
           </View>
-          <View style={st.playerStatCol}>
-            <Text style={st.playerStatVal}>{p.topPlayType}</Text>
-            <Text style={st.playerStatLabel}>Top Type</Text>
+          <View style={styles.playerStatCol}>
+            <Text style={styles.playerStatVal}>{p.topPlayType}</Text>
+            <Text style={styles.playerStatLabel}>Top Type</Text>
           </View>
-          <View style={st.playerStatCol}>
-            <Text style={st.playerStatVal}>{shi(p.topPlayTypePPP, sp).toFixed(2)}</Text>
-            <Text style={st.playerStatLabel}>Type PPP</Text>
+          <View style={styles.playerStatCol}>
+            <Text style={styles.playerStatVal}>{shi(p.topPlayTypePPP, sp).toFixed(2)}</Text>
+            <Text style={styles.playerStatLabel}>Type PPP</Text>
           </View>
         </Pressable>
       ))}
@@ -978,6 +997,8 @@ function PlayersOffense({ onOpenPlayer }: { onOpenPlayer: (id: string) => void }
 }
 
 function PlayersDefense() {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const players = useMemo(() =>
     PLAYER_SYNERGY.map((ps) => {
       const clusters = PLAYER_CLUSTERS[ps.number];
@@ -989,32 +1010,32 @@ function PlayersDefense() {
 
   return (
     <>
-      <Text style={st.sectionLabel}>PLAYER DEFENSE (CARROLL)</Text>
+      <Text style={styles.sectionLabel}>PLAYER DEFENSE (CARROLL)</Text>
       {players.map((p) => {
         const clusters = PLAYER_CLUSTERS[p.number];
         return (
-          <View key={p.playerId} style={st.playerRow}>
-            <View style={st.playerLeft}>
-              <Text style={st.playerName}>{p.name}</Text>
-              <Text style={st.playerSub}>#{p.number}</Text>
+          <View key={p.playerId} style={styles.playerRow}>
+            <View style={styles.playerLeft}>
+              <Text style={styles.playerName}>{p.name}</Text>
+              <Text style={styles.playerSub}>#{p.number}</Text>
             </View>
-            <View style={st.playerStatCol}>
-              <Text style={[st.playerStatVal, { color: barColor(p.defKR) }]}>{p.defKR}</Text>
-              <Text style={st.playerStatLabel}>DEF KR</Text>
+            <View style={styles.playerStatCol}>
+              <Text style={[styles.playerStatVal, { color: barColor(p.defKR) }]}>{p.defKR}</Text>
+              <Text style={styles.playerStatLabel}>DEF KR</Text>
             </View>
             {clusters && (
               <>
-                <View style={st.playerStatCol}>
-                  <Text style={st.playerStatVal}>{clusters.on_ball_defense}</Text>
-                  <Text style={st.playerStatLabel}>OB</Text>
+                <View style={styles.playerStatCol}>
+                  <Text style={styles.playerStatVal}>{clusters.on_ball_defense}</Text>
+                  <Text style={styles.playerStatLabel}>OB</Text>
                 </View>
-                <View style={st.playerStatCol}>
-                  <Text style={st.playerStatVal}>{clusters.team_defense}</Text>
-                  <Text style={st.playerStatLabel}>Team</Text>
+                <View style={styles.playerStatCol}>
+                  <Text style={styles.playerStatVal}>{clusters.team_defense}</Text>
+                  <Text style={styles.playerStatLabel}>Team</Text>
                 </View>
-                <View style={st.playerStatCol}>
-                  <Text style={st.playerStatVal}>{clusters.rebounding}</Text>
-                  <Text style={st.playerStatLabel}>Reb</Text>
+                <View style={styles.playerStatCol}>
+                  <Text style={styles.playerStatVal}>{clusters.rebounding}</Text>
+                  <Text style={styles.playerStatLabel}>Reb</Text>
                 </View>
               </>
             )}
@@ -1026,6 +1047,8 @@ function PlayersDefense() {
 }
 
 function PlayerTypes() {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const players = useMemo(() =>
     PLAYER_SYNERGY.map((ps) => {
       const clusters = PLAYER_CLUSTERS[ps.number];
@@ -1055,15 +1078,15 @@ function PlayerTypes() {
 
   return (
     <>
-      <Text style={st.sectionLabel}>PLAYER ARCHETYPES</Text>
+      <Text style={styles.sectionLabel}>PLAYER ARCHETYPES</Text>
       {grouped.map(([archetype, group]) => (
-        <View key={archetype} style={st.card}>
-          <Text style={st.subLabel}>{archetype.toUpperCase()}</Text>
+        <View key={archetype} style={styles.card}>
+          <Text style={styles.subLabel}>{archetype.toUpperCase()}</Text>
           {group.map((p) => (
-            <View key={p.playerId} style={st.playerTypeRow}>
-              <Text style={st.playerName}>{p.name}</Text>
-              <Text style={st.playerSub}>#{p.number} · {p.position}</Text>
-              <Text style={st.playerTypeKR}>KR {p.offKR > 0 ? Math.round(p.offKR * 0.53 + p.defKR * 0.47) : '—'}</Text>
+            <View key={p.playerId} style={styles.playerTypeRow}>
+              <Text style={styles.playerName}>{p.name}</Text>
+              <Text style={styles.playerSub}>#{p.number} · {p.position}</Text>
+              <Text style={styles.playerTypeKR}>KR {p.offKR > 0 ? Math.round(p.offKR * 0.53 + p.defKR * 0.47) : '—'}</Text>
             </View>
           ))}
         </View>
@@ -1073,27 +1096,29 @@ function PlayerTypes() {
 }
 
 function PlayersShot({ onOpenPlayer }: { onOpenPlayer: (id: string) => void }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const sp = useSplit();
   return (
     <>
-      <Text style={st.sectionLabel}>PLAYER SHOT PROFILES</Text>
+      <Text style={styles.sectionLabel}>PLAYER SHOT PROFILES</Text>
       {PLAYER_SYNERGY.map((p) => {
         const profile = PLAYER_SHOT_PROFILES[p.playerId];
         if (!profile) return null;
         return (
           <Pressable
             key={p.playerId}
-            style={st.playerShotCard}
+            style={styles.playerShotCard}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               onOpenPlayer(p.playerId);
             }}
           >
-            <View style={st.playerLeft}>
-              <Text style={st.playerName}>{p.name}</Text>
-              <Text style={st.playerSub}>#{p.number}</Text>
+            <View style={styles.playerLeft}>
+              <Text style={styles.playerName}>{p.name}</Text>
+              <Text style={styles.playerSub}>#{p.number}</Text>
             </View>
-            <View style={st.playerShotBars}>
+            <View style={styles.playerShotBars}>
               <MiniBar label="Rim" freq={profile.rim.freq} efg={shi(profile.rim.efg, sp, 0)} />
               <MiniBar label="Mid" freq={profile.mid.freq} efg={shi(profile.mid.efg, sp, 0)} />
               <MiniBar label="3PT" freq={profile.three.freq} efg={shi(profile.three.efg, sp, 0)} />
@@ -1118,13 +1143,15 @@ function PlayerDetailContent({
   activeTab: 'summary' | 'synergy' | 'kanext' | 'shot';
   onTabChange: (t: 'summary' | 'synergy' | 'kanext' | 'shot') => void;
 }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const player = PLAYER_SYNERGY.find((p) => p.playerId === playerId);
   const leader = KaNeXT_LEADERS.find((l) => l.number === player?.number);
   const clusters = player ? PLAYER_CLUSTERS[player.number] : null;
   const profile = PLAYER_SHOT_PROFILES[playerId];
   const [expandedCluster, setExpandedCluster] = useState<keyof ClusterRatings | null>(null);
 
-  if (!player) return <Text style={st.sheetTitle}>Player not found</Text>;
+  if (!player) return <Text style={styles.sheetTitle}>Player not found</Text>;
 
   const kr = clusters ? Math.round(computeOffKR(clusters) * 0.53 + computeDefKR(clusters) * 0.47) : 0;
   const offKR = clusters ? computeOffKR(clusters) : 0;
@@ -1140,55 +1167,55 @@ function PlayerDetailContent({
   return (
     <>
       {/* Header */}
-      <View style={st.playerSheetHeader}>
+      <View style={styles.playerSheetHeader}>
         <View>
-          <Text style={st.sheetTitle}>{player.name}</Text>
-          <Text style={st.sheetSub}>#{player.number} · {player.position}</Text>
+          <Text style={styles.sheetTitle}>{player.name}</Text>
+          <Text style={styles.sheetSub}>#{player.number} · {player.position}</Text>
         </View>
-        <View style={st.krBadge}>
-          <Text style={st.krValue}>{kr}</Text>
-          <View style={st.krSubRow}>
-            <Text style={st.krSubLabel}>O {offKR}</Text>
-            <Text style={st.krSubSep}>{'\u00B7'}</Text>
-            <Text style={st.krSubLabel}>D {defKR}</Text>
+        <View style={styles.krBadge}>
+          <Text style={styles.krValue}>{kr}</Text>
+          <View style={styles.krSubRow}>
+            <Text style={styles.krSubLabel}>O {offKR}</Text>
+            <Text style={styles.krSubSep}>{'\u00B7'}</Text>
+            <Text style={styles.krSubLabel}>D {defKR}</Text>
           </View>
         </View>
       </View>
 
       {/* Tabs */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={st.sheetTabs}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.sheetTabs}>
         {tabs.map((t) => (
           <Pressable
             key={t.id}
-            style={[st.subTab, activeTab === t.id && st.subTabActive]}
+            style={[styles.subTab, activeTab === t.id && styles.subTabActive]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               onTabChange(t.id);
             }}
           >
-            <Text style={[st.subTabText, activeTab === t.id && st.subTabTextActive]}>{t.label}</Text>
+            <Text style={[styles.subTabText, activeTab === t.id && styles.subTabTextActive]}>{t.label}</Text>
           </Pressable>
         ))}
       </ScrollView>
 
       {/* Tab content */}
       {activeTab === 'summary' && leader && (
-        <View style={st.sheetContent}>
-          <View style={st.statFourCol}>
+        <View style={styles.sheetContent}>
+          <View style={styles.statFourCol}>
             <StatCell label="PPG" value={leader.ppg.toFixed(1)} />
             <StatCell label="RPG" value={leader.rpg.toFixed(1)} />
             <StatCell label="APG" value={leader.apg.toFixed(1)} />
             <StatCell label="GP" value={`${leader.gamesPlayed}`} />
           </View>
-          <View style={st.divider} />
-          <View style={st.statFourCol}>
+          <View style={styles.divider} />
+          <View style={styles.statFourCol}>
             <StatCell label="FG%" value={`${(leader.fgPct * 100).toFixed(1)}%`} />
             <StatCell label="3PT%" value={`${(leader.threePct * 100).toFixed(1)}%`} />
             <StatCell label="FT%" value={`${(leader.ftPct * 100).toFixed(1)}%`} />
             <StatCell label="USG" value={`${player.usagePct}%`} />
           </View>
-          <View style={st.divider} />
-          <View style={st.statThreeCol}>
+          <View style={styles.divider} />
+          <View style={styles.statThreeCol}>
             <StatCell label="PPP" value={player.ppp.toFixed(2)} />
             <StatCell label="Percentile" value={`${player.percentile}`} valueColor={percentileColor(player.percentile)} />
             <StatCell label="Top Type" value={player.topPlayType} />
@@ -1197,22 +1224,22 @@ function PlayerDetailContent({
       )}
 
       {activeTab === 'synergy' && (
-        <View style={st.sheetContent}>
-          <View style={st.statThreeCol}>
+        <View style={styles.sheetContent}>
+          <View style={styles.statThreeCol}>
             <StatCell label="PPP" value={player.ppp.toFixed(2)} />
             <StatCell label="%ile" value={`${player.percentile}`} valueColor={percentileColor(player.percentile)} />
             <StatCell label="USG" value={`${player.usagePct}%`} />
           </View>
-          <View style={st.divider} />
-          <Text style={st.sectionLabel}>TOP PLAY TYPE</Text>
-          <View style={st.playTypeCompact}>
-            <Text style={st.playTypeCompactName}>{player.topPlayType}</Text>
-            <Text style={st.playTypeCompactPPP}>{player.topPlayTypePPP.toFixed(2)} PPP</Text>
+          <View style={styles.divider} />
+          <Text style={styles.sectionLabel}>TOP PLAY TYPE</Text>
+          <View style={styles.playTypeCompact}>
+            <Text style={styles.playTypeCompactName}>{player.topPlayType}</Text>
+            <Text style={styles.playTypeCompactPPP}>{player.topPlayTypePPP.toFixed(2)} PPP</Text>
           </View>
           {profile && (
             <>
-              <View style={st.divider} />
-              <Text style={st.sectionLabel}>SHOT PROFILE</Text>
+              <View style={styles.divider} />
+              <Text style={styles.sectionLabel}>SHOT PROFILE</Text>
               <ShotProfileBars zones={[
                 { zone: 'Rim', freq: profile.rim.freq, ppp: 0, efg: profile.rim.efg },
                 { zone: 'Mid', freq: profile.mid.freq, ppp: 0, efg: profile.mid.efg },
@@ -1224,7 +1251,7 @@ function PlayerDetailContent({
       )}
 
       {activeTab === 'kanext' && clusters && (
-        <View style={st.sheetContent}>
+        <View style={styles.sheetContent}>
           <ClusterBars
             expandedCluster={expandedCluster}
             onToggleCluster={(k) => setExpandedCluster(expandedCluster === k ? null : k)}
@@ -1241,15 +1268,15 @@ function PlayerDetailContent({
       )}
 
       {activeTab === 'shot' && profile && (
-        <View style={st.sheetContent}>
+        <View style={styles.sheetContent}>
           <ShotProfileBars zones={[
             { zone: 'Rim', freq: profile.rim.freq, ppp: 0, efg: profile.rim.efg },
             { zone: 'Mid', freq: profile.mid.freq, ppp: 0, efg: profile.mid.efg },
             { zone: '3PT', freq: profile.three.freq, ppp: 0, efg: profile.three.efg },
           ]} />
-          <View style={st.divider} />
-          <Text style={st.sectionLabel}>3PT BREAKDOWN</Text>
-          <View style={st.statThreeCol}>
+          <View style={styles.divider} />
+          <Text style={styles.sectionLabel}>3PT BREAKDOWN</Text>
+          <View style={styles.statThreeCol}>
             <StatCell label="C&S" value={`${profile.catchAndShoot.efg}%`} sub={`${profile.catchAndShoot.freq}% freq`} />
             <StatCell label="Off Dribble" value={`${profile.offDribble.efg}%`} sub={`${profile.offDribble.freq}% freq`} />
             <StatCell label="Assisted" value={`${profile.assistedPct}%`} />
@@ -1265,21 +1292,23 @@ function PlayerDetailContent({
 // ══════════════════════════════════════════════════════════════
 
 function FourFactorsCard() {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const sp = useSplit();
   return (
-    <View style={st.card}>
-      <Text style={st.sectionLabel}>FOUR FACTORS</Text>
-      <View style={st.ffColumns}>
-        <View style={st.ffCol}>
-          <Text style={st.ffColHeader}>OFFENSE</Text>
+    <View style={styles.card}>
+      <Text style={styles.sectionLabel}>FOUR FACTORS</Text>
+      <View style={styles.ffColumns}>
+        <View style={styles.ffCol}>
+          <Text style={styles.ffColHeader}>OFFENSE</Text>
           <FFRow label="eFG%" value={shi(eFG, sp, 1).toFixed(1)} />
           <FFRow label="TO%" value={slo(TOPct, sp, 1).toFixed(1)} invert />
           <FFRow label="ORB%" value={shi(ORBPct, sp, 1).toFixed(1)} />
           <FFRow label="FT Rate" value={shi(FTRate, sp, 1).toFixed(1)} />
         </View>
-        <View style={st.ffDivider} />
-        <View style={st.ffCol}>
-          <Text style={st.ffColHeader}>DEFENSE</Text>
+        <View style={styles.ffDivider} />
+        <View style={styles.ffCol}>
+          <Text style={styles.ffColHeader}>DEFENSE</Text>
           <FFRow label="eFG%" value={slo(OPP_eFG, sp, 1).toFixed(1)} invert />
           <FFRow label="TO%" value={shi(OPP_TOPct, sp, 1).toFixed(1)} />
           <FFRow label="ORB%" value={slo(OPP_ORBPct, sp, 1).toFixed(1)} invert />
@@ -1291,10 +1320,12 @@ function FourFactorsCard() {
 }
 
 function FFRow({ label, value, invert }: { label: string; value: string; invert?: boolean }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   return (
-    <View style={st.ffRow}>
-      <Text style={st.ffLabel}>{label}</Text>
-      <Text style={st.ffValue}>{value}%</Text>
+    <View style={styles.ffRow}>
+      <Text style={styles.ffLabel}>{label}</Text>
+      <Text style={styles.ffValue}>{value}%</Text>
     </View>
   );
 }
@@ -1312,6 +1343,8 @@ function ClusterBars({
   subclusterAvgs: Record<string, { name: string; rating: number }[]>;
   filterKeys?: (keyof ClusterRatings)[];
 }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const keys = filterKeys ?? CLUSTER_KEYS;
   return (
     <>
@@ -1322,30 +1355,30 @@ function ClusterBars({
         return (
           <View key={key}>
             <Pressable
-              style={st.clusterRow}
+              style={styles.clusterRow}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 onToggleCluster(key);
               }}
             >
-              <View style={st.clusterLabelRow}>
-                <IconSymbol name={isExpanded ? 'chevron.down' : 'chevron.right'} size={10} color="#555" />
-                <Text style={st.clusterLabel}>{CLUSTER_LABEL_MAP[key]}</Text>
+              <View style={styles.clusterLabelRow}>
+                <IconSymbol name={isExpanded ? 'chevron.down' : 'chevron.right'} size={10} color={C.muted} />
+                <Text style={styles.clusterLabel}>{CLUSTER_LABEL_MAP[key]}</Text>
               </View>
-              <View style={st.clusterBarBg}>
-                <View style={[st.clusterBarFill, { width: `${avg}%`, backgroundColor: barColor(avg) }]} />
+              <View style={styles.clusterBarBg}>
+                <View style={[styles.clusterBarFill, { width: `${avg}%`, backgroundColor: barColor(avg) }]} />
               </View>
-              <Text style={[st.clusterValue, { color: barColor(avg) }]}>{avg}</Text>
+              <Text style={[styles.clusterValue, { color: barColor(avg) }]}>{avg}</Text>
             </Pressable>
             {isExpanded && (
-              <View style={st.subclusterContainer}>
+              <View style={styles.subclusterContainer}>
                 {subs.map((sub) => (
-                  <View key={sub.name} style={st.subclusterRow}>
-                    <Text style={st.subclusterLabel}>{sub.name}</Text>
-                    <View style={st.subclusterBarBg}>
-                      <View style={[st.subclusterBarFill, { width: `${sub.rating}%`, backgroundColor: barColor(sub.rating) }]} />
+                  <View key={sub.name} style={styles.subclusterRow}>
+                    <Text style={styles.subclusterLabel}>{sub.name}</Text>
+                    <View style={styles.subclusterBarBg}>
+                      <View style={[styles.subclusterBarFill, { width: `${sub.rating}%`, backgroundColor: barColor(sub.rating) }]} />
                     </View>
-                    <Text style={[st.subclusterValue, { color: barColor(sub.rating) }]}>{sub.rating}</Text>
+                    <Text style={[styles.subclusterValue, { color: barColor(sub.rating) }]}>{sub.rating}</Text>
                   </View>
                 ))}
               </View>
@@ -1358,22 +1391,24 @@ function ClusterBars({
 }
 
 function SynergyPlayTypeTable({ rows, isDefense }: { rows: PlayTypeRow[]; isDefense: boolean }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   return (
     <>
-      <View style={st.ptHeaderRow}>
-        <Text style={[st.ptHeaderText, { flex: 1, textAlign: 'left' }]}>Play Type</Text>
-        <Text style={st.ptHeaderText}>Poss%</Text>
-        <Text style={st.ptHeaderText}>{isDefense ? 'PPP Alw' : 'PPP'}</Text>
-        <Text style={st.ptHeaderText}>%</Text>
-        <Text style={st.ptHeaderText}>TO%</Text>
+      <View style={styles.ptHeaderRow}>
+        <Text style={[styles.ptHeaderText, { flex: 1, textAlign: 'left' }]}>Play Type</Text>
+        <Text style={styles.ptHeaderText}>Poss%</Text>
+        <Text style={styles.ptHeaderText}>{isDefense ? 'PPP Alw' : 'PPP'}</Text>
+        <Text style={styles.ptHeaderText}>%</Text>
+        <Text style={styles.ptHeaderText}>TO%</Text>
       </View>
       {rows.map((row) => (
-        <View key={row.type} style={st.ptRow}>
-          <Text style={[st.ptName, { flex: 1 }]}>{row.type}</Text>
-          <Text style={st.ptVal}>{row.possPct}</Text>
-          <Text style={st.ptVal}>{row.ppp.toFixed(2)}</Text>
-          <Text style={[st.ptVal, { color: percentileColor(row.percentile) }]}>{row.percentile}</Text>
-          <Text style={st.ptVal}>{row.toPct}</Text>
+        <View key={row.type} style={styles.ptRow}>
+          <Text style={[styles.ptName, { flex: 1 }]}>{row.type}</Text>
+          <Text style={styles.ptVal}>{row.possPct}</Text>
+          <Text style={styles.ptVal}>{row.ppp.toFixed(2)}</Text>
+          <Text style={[styles.ptVal, { color: percentileColor(row.percentile) }]}>{row.percentile}</Text>
+          <Text style={styles.ptVal}>{row.toPct}</Text>
         </View>
       ))}
     </>
@@ -1381,16 +1416,18 @@ function SynergyPlayTypeTable({ rows, isDefense }: { rows: PlayTypeRow[]; isDefe
 }
 
 function ShotProfileBars({ zones }: { zones: ShotZone[] }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   return (
     <>
       {zones.map((z) => (
-        <View key={z.zone} style={st.shotBarRow}>
-          <Text style={st.shotBarLabel}>{z.zone}</Text>
-          <View style={st.shotBarBg}>
-            <View style={[st.shotBarFill, { width: `${z.freq}%` }]} />
+        <View key={z.zone} style={styles.shotBarRow}>
+          <Text style={styles.shotBarLabel}>{z.zone}</Text>
+          <View style={styles.shotBarBg}>
+            <View style={[styles.shotBarFill, { width: `${z.freq}%` }]} />
           </View>
-          <Text style={st.shotBarFreq}>{z.freq}%</Text>
-          <Text style={st.shotBarEfg}>{z.efg}%</Text>
+          <Text style={styles.shotBarFreq}>{z.freq}%</Text>
+          <Text style={styles.shotBarEfg}>{z.efg}%</Text>
         </View>
       ))}
     </>
@@ -1398,32 +1435,38 @@ function ShotProfileBars({ zones }: { zones: ShotZone[] }) {
 }
 
 function StatCell({ label, value, sub, valueColor }: { label: string; value: string; sub?: string; valueColor?: string }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   return (
-    <View style={st.statCell}>
-      <Text style={[st.statCellValue, valueColor ? { color: valueColor } : undefined]}>{value}</Text>
-      <Text style={st.statCellLabel}>{label}</Text>
-      {sub && <Text style={st.statCellSub}>{sub}</Text>}
+    <View style={styles.statCell}>
+      <Text style={[styles.statCellValue, valueColor ? { color: valueColor } : undefined]}>{value}</Text>
+      <Text style={styles.statCellLabel}>{label}</Text>
+      {sub && <Text style={styles.statCellSub}>{sub}</Text>}
     </View>
   );
 }
 
 function MiniStat({ label, value, color }: { label: string; value: string; color?: string }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   return (
-    <View style={st.miniStat}>
-      <Text style={[st.miniStatVal, color ? { color } : undefined]}>{value}</Text>
-      <Text style={st.miniStatLabel}>{label}</Text>
+    <View style={styles.miniStat}>
+      <Text style={[styles.miniStatVal, color ? { color } : undefined]}>{value}</Text>
+      <Text style={styles.miniStatLabel}>{label}</Text>
     </View>
   );
 }
 
 function MiniBar({ label, freq, efg }: { label: string; freq: number; efg: number }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   return (
-    <View style={st.miniBarCol}>
-      <Text style={st.miniBarLabel}>{label}</Text>
-      <View style={st.miniBarBg}>
-        <View style={[st.miniBarFill, { height: `${freq}%` }]} />
+    <View style={styles.miniBarCol}>
+      <Text style={styles.miniBarLabel}>{label}</Text>
+      <View style={styles.miniBarBg}>
+        <View style={[styles.miniBarFill, { height: `${freq}%` }]} />
       </View>
-      <Text style={st.miniBarVal}>{efg.toFixed(0)}%</Text>
+      <Text style={styles.miniBarVal}>{efg.toFixed(0)}%</Text>
     </View>
   );
 }
@@ -1432,7 +1475,7 @@ function MiniBar({ label, freq, efg }: { label: string; freq: number; efg: numbe
 // STYLES
 // ══════════════════════════════════════════════════════════════
 
-const st = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -1460,11 +1503,11 @@ const st = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 4,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#2F3336',
+    borderBottomColor: C.divider,
   },
   segmentRow: {
     flexDirection: 'row',
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     borderRadius: 12,
     padding: 3,
     marginBottom: 10,
@@ -1476,15 +1519,15 @@ const st = StyleSheet.create({
     borderRadius: 8,
   },
   segmentBtnActive: {
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
   },
   segmentText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#666',
+    color: C.muted,
   },
   segmentTextActive: {
-    color: '#fff',
+    color: C.label,
   },
   subTabRow: {
     gap: 4,
@@ -1496,15 +1539,15 @@ const st = StyleSheet.create({
     borderRadius: 8,
   },
   subTabActive: {
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
   },
   subTabText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#666',
+    color: C.muted,
   },
   subTabTextActive: {
-    color: '#fff',
+    color: C.label,
   },
 
   // Chip row
@@ -1519,7 +1562,7 @@ const st = StyleSheet.create({
     alignItems: 'center',
   },
   chipGroup: {
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -1527,24 +1570,24 @@ const st = StyleSheet.create({
   chipGroupLabel: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#fff',
+    color: C.label,
   },
   chip: {
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 8,
-    backgroundColor: 'rgba(255,255,255,0.04)',
+    backgroundColor: C.separator,
   },
   chipActive: {
-    backgroundColor: '#333',
+    backgroundColor: C.surface,
   },
   chipText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#666',
+    color: C.muted,
   },
   chipTextActive: {
-    color: '#fff',
+    color: C.label,
   },
   badgeChip: {
     backgroundColor: 'rgba(74,222,128,0.08)',
@@ -1554,7 +1597,7 @@ const st = StyleSheet.create({
   badgeText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#22C55E',
+    color: C.green,
     letterSpacing: 0.5,
   },
 
@@ -1575,27 +1618,27 @@ const st = StyleSheet.create({
   teamName: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#fff',
+    color: C.label,
     letterSpacing: -0.5,
   },
   teamSubline: {
     fontSize: 12,
-    color: '#888',
+    color: C.muted,
     marginTop: 2,
   },
   krBadge: {
     alignItems: 'center',
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#2F3336',
+    borderColor: C.divider,
   },
   krValue: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#fff',
+    color: C.label,
     lineHeight: 28,
   },
   krSubRow: {
@@ -1607,19 +1650,19 @@ const st = StyleSheet.create({
   krSubLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#888',
+    color: C.muted,
   },
   krSubSep: {
     fontSize: 12,
-    color: '#555',
+    color: C.muted,
   },
 
   // Cards
   card: {
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#2F3336',
+    borderColor: C.divider,
     padding: 14,
     marginBottom: 16,
     shadowColor: '#000',
@@ -1632,19 +1675,19 @@ const st = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
     letterSpacing: 1.2,
-    color: '#A1A1AA',
+    color: C.muted,
     marginBottom: 8,
   },
   subLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#888',
+    color: C.muted,
     marginBottom: 8,
     textTransform: 'capitalize',
   },
   divider: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: '#2F3336',
+    backgroundColor: C.divider,
     marginVertical: 12,
   },
 
@@ -1664,18 +1707,18 @@ const st = StyleSheet.create({
   statCellValue: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#fff',
+    color: C.label,
     letterSpacing: -0.5,
   },
   statCellLabel: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#A1A1AA',
+    color: C.muted,
     marginTop: 2,
   },
   statCellSub: {
     fontSize: 10,
-    color: '#666',
+    color: C.muted,
     marginTop: 1,
   },
 
@@ -1690,12 +1733,12 @@ const st = StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 1.0,
-    color: '#A1A1AA',
+    color: C.muted,
     marginBottom: 8,
   },
   ffDivider: {
     width: StyleSheet.hairlineWidth,
-    backgroundColor: '#2F3336',
+    backgroundColor: C.divider,
     marginHorizontal: 12,
   },
   ffRow: {
@@ -1707,12 +1750,12 @@ const st = StyleSheet.create({
   ffLabel: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#888',
+    color: C.muted,
   },
   ffValue: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#fff',
+    color: C.label,
   },
 
   // Cluster bars
@@ -1730,12 +1773,12 @@ const st = StyleSheet.create({
   clusterLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#ccc',
+    color: C.secondary,
   },
   clusterBarBg: {
     flex: 1,
     height: 10,
-    backgroundColor: '#222',
+    backgroundColor: C.surface,
     borderRadius: 5,
     marginHorizontal: 8,
     overflow: 'hidden',
@@ -1754,7 +1797,7 @@ const st = StyleSheet.create({
     marginLeft: 18,
     paddingLeft: 10,
     borderLeftWidth: 1,
-    borderLeftColor: '#2F3336',
+    borderLeftColor: C.divider,
     marginBottom: 6,
   },
   subclusterRow: {
@@ -1765,13 +1808,13 @@ const st = StyleSheet.create({
   subclusterLabel: {
     fontSize: 11,
     fontWeight: '500',
-    color: '#888',
+    color: C.muted,
     width: 110,
   },
   subclusterBarBg: {
     flex: 1,
     height: 5,
-    backgroundColor: '#222',
+    backgroundColor: C.surface,
     borderRadius: 3,
     marginHorizontal: 8,
     overflow: 'hidden',
@@ -1793,13 +1836,13 @@ const st = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 6,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#2F3336',
+    borderBottomColor: C.divider,
     marginBottom: 4,
   },
   ptHeaderText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#A1A1AA',
+    color: C.muted,
     letterSpacing: 0.5,
     width: 54,
     textAlign: 'right',
@@ -1809,17 +1852,17 @@ const st = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 7,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.04)',
+    borderBottomColor: C.separator,
   },
   ptName: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#ccc',
+    color: C.secondary,
   },
   ptVal: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#fff',
+    color: C.label,
     width: 54,
     textAlign: 'right',
   },
@@ -1833,13 +1876,13 @@ const st = StyleSheet.create({
   shotBarLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#ccc',
+    color: C.secondary,
     width: 64,
   },
   shotBarBg: {
     flex: 1,
     height: 12,
-    backgroundColor: '#222',
+    backgroundColor: C.surface,
     borderRadius: 6,
     marginHorizontal: 8,
     overflow: 'hidden',
@@ -1847,19 +1890,19 @@ const st = StyleSheet.create({
   shotBarFill: {
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#22C55E',
+    backgroundColor: C.green,
   },
   shotBarFreq: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#fff',
+    color: C.label,
     width: 40,
     textAlign: 'right',
   },
   shotBarEfg: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#888',
+    color: C.muted,
     width: 40,
     textAlign: 'right',
   },
@@ -1873,13 +1916,13 @@ const st = StyleSheet.create({
   coverageScheme: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#ccc',
+    color: C.secondary,
     width: 64,
   },
   coverageBarBg: {
     flex: 1,
     height: 8,
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     borderRadius: 4,
     marginHorizontal: 8,
     overflow: 'hidden',
@@ -1892,14 +1935,14 @@ const st = StyleSheet.create({
   coverageFreq: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#fff',
+    color: C.label,
     width: 40,
     textAlign: 'right',
   },
   coveragePPP: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#888',
+    color: C.muted,
     width: 40,
     textAlign: 'right',
   },
@@ -1913,7 +1956,7 @@ const st = StyleSheet.create({
   emphLabel: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#888',
+    color: C.muted,
     width: 84,
   },
   emphBarContainer: {
@@ -1922,7 +1965,7 @@ const st = StyleSheet.create({
   },
   emphBarBg: {
     height: 12,
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     borderRadius: 6,
     overflow: 'hidden',
     position: 'relative',
@@ -1932,7 +1975,7 @@ const st = StyleSheet.create({
     top: 0,
     left: 0,
     height: 12,
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    backgroundColor: C.separator,
     borderRadius: 6,
   },
   emphBarActual: {
@@ -1940,7 +1983,7 @@ const st = StyleSheet.create({
     top: 2,
     left: 0,
     height: 8,
-    backgroundColor: '#22C55E',
+    backgroundColor: C.green,
     borderRadius: 4,
   },
   emphValues: {
@@ -1952,12 +1995,12 @@ const st = StyleSheet.create({
   emphEmphasisVal: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#555',
+    color: C.muted,
   },
   emphActualVal: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#22C55E',
+    color: C.green,
   },
   emphLegend: {
     flexDirection: 'row',
@@ -1977,7 +2020,7 @@ const st = StyleSheet.create({
   },
   emphLegendText: {
     fontSize: 10,
-    color: '#888',
+    color: C.muted,
   },
 
   // KR inline
@@ -1990,7 +2033,7 @@ const st = StyleSheet.create({
   krInlineLabel: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#888',
+    color: C.muted,
     letterSpacing: 0.5,
   },
   krInlineValue: {
@@ -2000,10 +2043,10 @@ const st = StyleSheet.create({
 
   // Lineups
   lineupCard: {
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#2F3336',
+    borderColor: C.divider,
     padding: 12,
     marginBottom: 10,
     shadowColor: '#000',
@@ -2020,13 +2063,13 @@ const st = StyleSheet.create({
   lineupRank: {
     fontSize: 14,
     fontWeight: '800',
-    color: '#22C55E',
+    color: C.green,
     width: 28,
   },
   lineupPlayers: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#fff',
+    color: C.label,
     flex: 1,
   },
   lineupStatsRow: {
@@ -2039,12 +2082,12 @@ const st = StyleSheet.create({
   miniStatVal: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#fff',
+    color: C.label,
   },
   miniStatLabel: {
     fontSize: 9,
     fontWeight: '600',
-    color: '#888',
+    color: C.muted,
     marginTop: 1,
   },
 
@@ -2060,18 +2103,18 @@ const st = StyleSheet.create({
   lineupDetailNum: {
     fontSize: 14,
     fontWeight: '800',
-    color: '#fff',
+    color: C.label,
   },
   lineupDetailName: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#ccc',
+    color: C.secondary,
     marginTop: 2,
   },
   lineupDetailPos: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#888',
+    color: C.muted,
     marginTop: 1,
   },
 
@@ -2085,20 +2128,20 @@ const st = StyleSheet.create({
   playTypeCompactName: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#ccc',
+    color: C.secondary,
     flex: 1,
   },
   playTypeCompactFreq: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#888',
+    color: C.muted,
     width: 44,
     textAlign: 'right',
   },
   playTypeCompactPPP: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#fff',
+    color: C.label,
     width: 56,
     textAlign: 'right',
   },
@@ -2106,7 +2149,7 @@ const st = StyleSheet.create({
   // Shot toggle
   shotToggleRow: {
     flexDirection: 'row',
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     borderRadius: 8,
     padding: 2,
     marginBottom: 16,
@@ -2118,15 +2161,15 @@ const st = StyleSheet.create({
     borderRadius: 6,
   },
   pillActive: {
-    backgroundColor: '#333',
+    backgroundColor: C.surface,
   },
   pillText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#666',
+    color: C.muted,
   },
   pillTextActive: {
-    color: '#fff',
+    color: C.label,
   },
 
   // Projections
@@ -2136,22 +2179,22 @@ const st = StyleSheet.create({
     marginTop: 8,
     paddingTop: 8,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#2F3336',
+    borderTopColor: C.divider,
   },
   projSub: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#888',
+    color: C.muted,
   },
 
   // Player rows
   playerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#2F3336',
+    borderColor: C.divider,
     padding: 14,
     marginBottom: 8,
     shadowColor: '#000',
@@ -2166,32 +2209,32 @@ const st = StyleSheet.create({
   playerName: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#fff',
+    color: C.label,
   },
   playerSub: {
     fontSize: 11,
-    color: '#888',
+    color: C.muted,
     marginTop: 2,
   },
   playerKRGroup: {
     alignItems: 'center',
     marginRight: 12,
-    backgroundColor: '#2F3336',
+    backgroundColor: C.divider,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#2F3336',
+    borderColor: C.divider,
   },
   playerKR: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#fff',
+    color: C.label,
   },
   playerKRSub: {
     fontSize: 9,
     fontWeight: '600',
-    color: '#888',
+    color: C.muted,
     marginTop: 1,
   },
   playerStatCol: {
@@ -2202,12 +2245,12 @@ const st = StyleSheet.create({
   playerStatVal: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#fff',
+    color: C.label,
   },
   playerStatLabel: {
     fontSize: 9,
     fontWeight: '600',
-    color: '#888',
+    color: C.muted,
     marginTop: 1,
   },
 
@@ -2221,17 +2264,17 @@ const st = StyleSheet.create({
   playerTypeKR: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#888',
+    color: C.muted,
   },
 
   // Player shot card
   playerShotCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#2F3336',
+    borderColor: C.divider,
     padding: 14,
     marginBottom: 8,
     shadowColor: '#000',
@@ -2251,26 +2294,26 @@ const st = StyleSheet.create({
   miniBarLabel: {
     fontSize: 9,
     fontWeight: '600',
-    color: '#888',
+    color: C.muted,
     marginBottom: 4,
   },
   miniBarBg: {
     width: 16,
     height: 40,
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     borderRadius: 4,
     overflow: 'hidden',
     justifyContent: 'flex-end',
   },
   miniBarFill: {
     width: 16,
-    backgroundColor: '#22C55E',
+    backgroundColor: C.green,
     borderRadius: 4,
   },
   miniBarVal: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#fff',
+    color: C.label,
     marginTop: 2,
   },
 
@@ -2278,11 +2321,11 @@ const st = StyleSheet.create({
   sheetTitle: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#fff',
+    color: C.label,
   },
   sheetSub: {
     fontSize: 13,
-    color: '#888',
+    color: C.muted,
     marginTop: 2,
   },
   sheetTabs: {

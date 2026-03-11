@@ -19,6 +19,7 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { PinnedBubblesRow, type PinnedBubble } from '@/components/ui/pinned-bubbles-row';
@@ -33,354 +34,6 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { initiateCall } from '@/utils/global-call';
 import type { InboxThreadV3, RoomV3 } from '@/types';
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  channelIconBg: '#0B1220',
-  label: '#FFFFFF',
-  secondaryLabel: '#A1A1AA',
-  separator: '#38383A',
-};
-
-// ─── FAB Popup Menu (staff-only two-option popup) ────────────────────────────
-
-function FabPopupMenu({
-  bottomOffset,
-  onNewMessage,
-  onNewChannel,
-  onDismiss,
-}: {
-  bottomOffset: number;
-  onNewMessage: () => void;
-  onNewChannel: () => void;
-  onDismiss: () => void;
-}) {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.9)).current;
-
-  React.useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 150,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        tension: 120,
-        friction: 10,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, []);
-
-  const dismiss = useCallback(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 120,
-      useNativeDriver: true,
-    }).start(() => onDismiss());
-  }, [fadeAnim, onDismiss]);
-
-  return (
-    <Modal transparent animationType="none" onRequestClose={dismiss}>
-      <Animated.View style={[fabMenuS.overlay, { opacity: fadeAnim }]}>
-        <Pressable style={fabMenuS.backdrop} onPress={dismiss} />
-        <Animated.View
-          style={[
-            fabMenuS.menu,
-            {
-              bottom: bottomOffset,
-              transform: [{ scale: scaleAnim }],
-            },
-          ]}
-        >
-          <Pressable style={fabMenuS.menuItem} onPress={onNewMessage}>
-            <IconSymbol name="bubble.left.fill" size={18} color="#FFFFFF" />
-            <Text style={fabMenuS.menuLabel}>New Message</Text>
-          </Pressable>
-          <View style={fabMenuS.menuDivider} />
-          <Pressable style={fabMenuS.menuItem} onPress={onNewChannel}>
-            <IconSymbol name="number" size={18} color="#FFFFFF" />
-            <Text style={fabMenuS.menuLabel}>New Channel</Text>
-          </Pressable>
-        </Animated.View>
-      </Animated.View>
-    </Modal>
-  );
-}
-
-const fabMenuS = StyleSheet.create({
-  overlay: { flex: 1 },
-  backdrop: { ...StyleSheet.absoluteFillObject },
-  menu: {
-    position: 'absolute',
-    right: 20,
-    backgroundColor: '#000000',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#2F3336',
-    overflow: 'hidden',
-    minWidth: 180,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingHorizontal: 16,
-    minHeight: 48,
-  },
-  menuDivider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: '#2F3336',
-  },
-  menuLabel: {
-    fontSize: 16,
-    color: '#FFFFFF',
-  },
-});
-
-// ─── Filter Pills ────────────────────────────────────────────────────────────
-
-function FilterPills({ options, active, onSelect }: {
-  options: string[];
-  active: string;
-  onSelect: (v: string) => void;
-}) {
-  return (
-    <View style={s.filterRow}>
-      {options.map((opt) => {
-        const isActive = opt === active;
-        return (
-          <Pressable
-            key={opt}
-            style={[s.filterPill, isActive && s.filterPillActive]}
-            onPress={() => onSelect(opt)}
-          >
-            <Text style={[s.filterPillText, isActive && s.filterPillTextActive]}>
-              {opt}
-            </Text>
-          </Pressable>
-        );
-      })}
-    </View>
-  );
-}
-
-// ─── Channel Row (no swipe) ──────────────────────────────────────────────────
-
-function ChannelRow({
-  room,
-  isMuted,
-  onPress,
-  onShowPreview,
-  onCall,
-  onVideoCall,
-  onToggleMute,
-}: {
-  room: RoomV3;
-  isMuted: boolean;
-  onPress: () => void;
-  onShowPreview: (data: ContextMenuData) => void;
-  onCall: () => void;
-  onVideoCall: () => void;
-  onToggleMute: () => void;
-}) {
-  const rowRef = useRef<View>(null);
-  const longPressedRef = useRef(false);
-
-  const handleLongPress = () => {
-    longPressedRef.current = true;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    const muteLabel = isMuted ? 'Show Alerts' : 'Mute';
-    rowRef.current?.measureInWindow((_x, y) => {
-      onShowPreview({
-        title: room.name,
-        subtitle: `${room.memberCount} members`,
-        initials: room.initials,
-        isSquircle: true,
-        pageY: y,
-        actions: [
-          { key: 'call', label: 'Audio Call', icon: 'phone.fill' },
-          { key: 'video', label: 'Video Call', icon: 'video.fill' },
-          { key: 'pin', label: room.pinned ? 'Unpin' : 'Pin', icon: 'pin.fill' },
-          { key: 'mute', label: muteLabel, icon: 'bell.slash.fill' },
-          { key: 'read', label: 'Mark as Read', icon: 'envelope.open.fill' },
-          { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
-        ],
-        onAction: (key) => {
-          if (key === 'call') onCall();
-          else if (key === 'video') onVideoCall();
-          else if (key === 'mute') onToggleMute();
-        },
-      });
-    });
-  };
-
-  return (
-    <Pressable
-      ref={rowRef}
-      style={s.row}
-      onPress={() => {
-        if (longPressedRef.current) { longPressedRef.current = false; return; }
-        onPress();
-      }}
-      onLongPress={handleLongPress}
-      delayLongPress={400}
-    >
-      <View style={s.unreadCol}>
-        {room.unread && <View style={s.unreadDot} />}
-      </View>
-      <View style={s.channelIcon}>
-        <Text style={s.channelInitials}>{room.initials}</Text>
-        {room.locked && (
-          <View style={s.lockBadge}>
-            <IconSymbol name="lock.fill" size={8} color="#A1A1AA" />
-          </View>
-        )}
-      </View>
-      <View style={s.rowContent}>
-        <View style={s.rowTopRow}>
-          <Text style={[s.rowName, room.unread && s.rowNameBold]} numberOfLines={1}>
-            {room.name}
-          </Text>
-          <Text style={s.rowTime}>{formatMessageTime(room.timestamp)}</Text>
-        </View>
-        <Text style={s.rowPreview} numberOfLines={2}>{room.lastMessage}</Text>
-      </View>
-    </Pressable>
-  );
-}
-
-// ─── DM Row (no swipe) ──────────────────────────────────────────────────────
-
-function DMRow({
-  thread,
-  isMuted,
-  onPress,
-  onShowPreview,
-  onCall,
-  onVideoCall,
-  onToggleMute,
-}: {
-  thread: InboxThreadV3;
-  isMuted: boolean;
-  onPress: () => void;
-  onShowPreview: (data: ContextMenuData) => void;
-  onCall: () => void;
-  onVideoCall: () => void;
-  onToggleMute: () => void;
-}) {
-  const rowRef = useRef<View>(null);
-  const longPressedRef = useRef(false);
-
-  const handleLongPress = () => {
-    longPressedRef.current = true;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    const muteLabel = isMuted ? 'Show Alerts' : 'Mute';
-    const readLabel = thread.unread ? 'Mark as Read' : 'Mark as Unread';
-
-    rowRef.current?.measureInWindow((_x, y) => {
-      onShowPreview({
-        title: thread.name,
-        subtitle: thread.preview,
-        initials: thread.initials,
-        isSquircle: false,
-        pageY: y,
-        actions: [
-          { key: 'call', label: 'Audio Call', icon: 'phone.fill' },
-          { key: 'video', label: 'Video Call', icon: 'video.fill' },
-          { key: 'pin', label: thread.pinned ? 'Unpin' : 'Pin', icon: 'pin.fill' },
-          { key: 'mute', label: muteLabel, icon: 'bell.slash.fill' },
-          { key: 'read', label: readLabel, icon: 'envelope.fill' },
-          { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
-        ],
-        onAction: (key) => {
-          if (key === 'call') onCall();
-          else if (key === 'video') onVideoCall();
-          else if (key === 'mute') onToggleMute();
-        },
-      });
-    });
-  };
-
-  return (
-    <Pressable
-      ref={rowRef}
-      style={s.row}
-      onPress={() => {
-        if (longPressedRef.current) { longPressedRef.current = false; return; }
-        onPress();
-      }}
-      onLongPress={handleLongPress}
-      delayLongPress={400}
-    >
-      <View style={s.unreadCol}>
-        {thread.unread && <View style={s.unreadDot} />}
-      </View>
-      <View style={s.dmAvatar}>
-        <Text style={s.dmAvatarText}>{thread.initials}</Text>
-      </View>
-      <View style={s.rowContent}>
-        <View style={s.rowTopRow}>
-          <Text style={[s.rowName, thread.unread && s.rowNameBold]} numberOfLines={1}>
-            {thread.name}
-          </Text>
-          <Text style={s.rowTime}>{formatMessageTime(thread.timestamp)}</Text>
-        </View>
-        <Text style={s.rowPreview} numberOfLines={2}>{thread.preview}</Text>
-      </View>
-    </Pressable>
-  );
-}
-
-// ─── Request Row ─────────────────────────────────────────────────────────────
-
-function RequestRow({
-  thread,
-  onAccept,
-  onDecline,
-}: {
-  thread: InboxThreadV3;
-  onAccept: () => void;
-  onDecline: () => void;
-}) {
-  return (
-    <View style={s.requestRow}>
-      <View style={s.dmAvatar}>
-        <Text style={s.dmAvatarText}>{thread.initials}</Text>
-      </View>
-      <View style={s.requestContent}>
-        <View style={s.rowTopRow}>
-          <View style={{ flex: 1, marginRight: 8 }}>
-            <Text style={[s.rowName, s.rowNameBold]} numberOfLines={1}>
-              {thread.name}
-              {thread.username ? (
-                <Text style={s.requestUsername}> @{thread.username}</Text>
-              ) : null}
-            </Text>
-          </View>
-          <Text style={s.rowTime}>{formatMessageTime(thread.timestamp)}</Text>
-        </View>
-        {(thread.orgName || thread.role) && (
-          <Text style={s.requestMeta} numberOfLines={1}>
-            {thread.orgName}{thread.orgName && thread.role ? ' \u00B7 ' : ''}{thread.role}
-          </Text>
-        )}
-        <Text style={s.rowPreview} numberOfLines={2}>{thread.preview}</Text>
-        <View style={s.requestActions}>
-          <Pressable style={s.acceptBtn} onPress={onAccept}>
-            <Text style={s.acceptBtnText}>Accept</Text>
-          </Pressable>
-          <Pressable style={s.declineBtn} onPress={onDecline}>
-            <Text style={s.declineBtnText}>Decline</Text>
-          </Pressable>
-        </View>
-      </View>
-    </View>
-  );
-}
-
 // ─── Screen ─────────────────────────────────────────────────────────────────
 
 export default function MessagesListScreen() {
@@ -389,6 +42,9 @@ export default function MessagesListScreen() {
   const router = useRouter();
   const role = useOperatingRole();
   const isStaff = canCreateChannel(role);
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+  const fabMenuStyles = useMemo(() => makeFabMenuStyles(C), [C]);
 
   const [pageIndex, setPageIndex] = useState(0);
   const [mutedIds, setMutedIds] = useState<Set<string>>(new Set());
@@ -521,9 +177,62 @@ export default function MessagesListScreen() {
     }
   };
 
+  // ── Channel long press handler ──
+  const handleChannelLongPress = useCallback((room: RoomV3, y: number) => {
+    const isMuted = mutedIds.has(room.id);
+    const muteLabel = isMuted ? 'Show Alerts' : 'Mute';
+    setMenuData({
+      title: room.name,
+      subtitle: `${room.memberCount} members`,
+      initials: room.initials,
+      isSquircle: true,
+      pageY: y,
+      actions: [
+        { key: 'call', label: 'Audio Call', icon: 'phone.fill' },
+        { key: 'video', label: 'Video Call', icon: 'video.fill' },
+        { key: 'pin', label: room.pinned ? 'Unpin' : 'Pin', icon: 'pin.fill' },
+        { key: 'mute', label: muteLabel, icon: 'bell.slash.fill' },
+        { key: 'read', label: 'Mark as Read', icon: 'envelope.open.fill' },
+        { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
+      ],
+      onAction: (key) => {
+        if (key === 'call') { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: room.name, contactInitials: room.initials, mode: room.mode, type: 'audio' }); }
+        else if (key === 'video') { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: room.name, contactInitials: room.initials, mode: room.mode, type: 'video' }); }
+        else if (key === 'mute') toggleMute(room.id);
+      },
+    });
+  }, [mutedIds]);
+
+  // ── DM long press handler ──
+  const handleDMLongPress = useCallback((thread: InboxThreadV3, y: number) => {
+    const isMuted = mutedIds.has(thread.id);
+    const muteLabel = isMuted ? 'Show Alerts' : 'Mute';
+    const readLabel = thread.unread ? 'Mark as Read' : 'Mark as Unread';
+    setMenuData({
+      title: thread.name,
+      subtitle: thread.preview,
+      initials: thread.initials,
+      isSquircle: false,
+      pageY: y,
+      actions: [
+        { key: 'call', label: 'Audio Call', icon: 'phone.fill' },
+        { key: 'video', label: 'Video Call', icon: 'video.fill' },
+        { key: 'pin', label: thread.pinned ? 'Unpin' : 'Pin', icon: 'pin.fill' },
+        { key: 'mute', label: muteLabel, icon: 'bell.slash.fill' },
+        { key: 'read', label: readLabel, icon: 'envelope.fill' },
+        { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
+      ],
+      onAction: (key) => {
+        if (key === 'call') { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: thread.name, contactInitials: thread.initials, mode: thread.mode, type: 'audio' }); }
+        else if (key === 'video') { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: thread.name, contactInitials: thread.initials, mode: thread.mode, type: 'video' }); }
+        else if (key === 'mute') toggleMute(thread.id);
+      },
+    });
+  }, [mutedIds]);
+
   return (
     <View style={[s.container, { paddingTop: insets.top }]}>
-      {/* 3-page swipeable: Channels ↔ DMs ↔ Requests */}
+      {/* 3-page swipeable: Channels | DMs | Requests */}
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
@@ -541,25 +250,34 @@ export default function MessagesListScreen() {
           <View style={{ paddingTop: 28 }}>
             <PinnedBubblesRow items={pinnedChannels} onPress={handlePinnedChannelPress} />
           </View>
-          <FilterPills
-            options={['All', 'Unread', 'Mentions']}
-            active={channelFilter}
-            onSelect={(v) => setChannelFilter(v as 'All' | 'Unread' | 'Mentions')}
-          />
+          <View style={s.filterRow}>
+            {['All', 'Unread', 'Mentions'].map((opt) => {
+              const isActive = opt === channelFilter;
+              return (
+                <Pressable
+                  key={opt}
+                  style={[s.filterPill, isActive && s.filterPillActive]}
+                  onPress={() => setChannelFilter(opt as 'All' | 'Unread' | 'Mentions')}
+                >
+                  <Text style={[s.filterPillText, isActive && s.filterPillTextActive]}>
+                    {opt}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
           <View style={s.sectionDivider}>
             <Text style={s.sectionLabel}>Channels</Text>
           </View>
           {filteredChannels.map((room, i) => (
             <View key={room.id}>
               {i > 0 && <View style={s.separator} />}
-              <ChannelRow
+              <ChannelRowInline
                 room={room}
-                isMuted={mutedIds.has(room.id)}
+                s={s}
+                C={C}
                 onPress={() => openChannel(room)}
-                onShowPreview={setMenuData}
-                onCall={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: room.name, contactInitials: room.initials, mode: room.mode, type: 'audio' }); }}
-                onVideoCall={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: room.name, contactInitials: room.initials, mode: room.mode, type: 'video' }); }}
-                onToggleMute={() => toggleMute(room.id)}
+                onLongPress={(y) => handleChannelLongPress(room, y)}
               />
             </View>
           ))}
@@ -576,25 +294,34 @@ export default function MessagesListScreen() {
           <View style={{ paddingTop: 28 }}>
             <PinnedBubblesRow items={pinnedDMs} onPress={handlePinnedDMPress} />
           </View>
-          <FilterPills
-            options={['All', 'Unread']}
-            active={dmFilter}
-            onSelect={(v) => setDmFilter(v as 'All' | 'Unread')}
-          />
+          <View style={s.filterRow}>
+            {['All', 'Unread'].map((opt) => {
+              const isActive = opt === dmFilter;
+              return (
+                <Pressable
+                  key={opt}
+                  style={[s.filterPill, isActive && s.filterPillActive]}
+                  onPress={() => setDmFilter(opt as 'All' | 'Unread')}
+                >
+                  <Text style={[s.filterPillText, isActive && s.filterPillTextActive]}>
+                    {opt}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
           <View style={s.sectionDivider}>
             <Text style={s.sectionLabel}>Direct Messages</Text>
           </View>
           {filteredDMs.map((thread, i) => (
             <View key={thread.id}>
               {i > 0 && <View style={s.separator} />}
-              <DMRow
+              <DMRowInline
                 thread={thread}
-                isMuted={mutedIds.has(thread.id)}
+                s={s}
+                C={C}
                 onPress={() => openDM(thread)}
-                onShowPreview={setMenuData}
-                onCall={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: thread.name, contactInitials: thread.initials, mode: thread.mode, type: 'audio' }); }}
-                onVideoCall={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); initiateCall({ contactName: thread.name, contactInitials: thread.initials, mode: thread.mode, type: 'video' }); }}
-                onToggleMute={() => toggleMute(thread.id)}
+                onLongPress={(y) => handleDMLongPress(thread, y)}
               />
             </View>
           ))}
@@ -619,11 +346,38 @@ export default function MessagesListScreen() {
           {requests.map((thread, i) => (
             <View key={thread.id}>
               {i > 0 && <View style={s.separator} />}
-              <RequestRow
-                thread={thread}
-                onAccept={() => handleAccept(thread.id)}
-                onDecline={() => handleDecline(thread.id)}
-              />
+              <View style={s.requestRow}>
+                <View style={s.dmAvatar}>
+                  <Text style={s.dmAvatarText}>{thread.initials}</Text>
+                </View>
+                <View style={s.requestContent}>
+                  <View style={s.rowTopRow}>
+                    <View style={{ flex: 1, marginRight: 8 }}>
+                      <Text style={[s.rowName, s.rowNameBold]} numberOfLines={1}>
+                        {thread.name}
+                        {thread.username ? (
+                          <Text style={s.requestUsername}> @{thread.username}</Text>
+                        ) : null}
+                      </Text>
+                    </View>
+                    <Text style={s.rowTime}>{formatMessageTime(thread.timestamp)}</Text>
+                  </View>
+                  {(thread.orgName || thread.role) && (
+                    <Text style={s.requestMeta} numberOfLines={1}>
+                      {thread.orgName}{thread.orgName && thread.role ? ' \u00B7 ' : ''}{thread.role}
+                    </Text>
+                  )}
+                  <Text style={s.rowPreview} numberOfLines={2}>{thread.preview}</Text>
+                  <View style={s.requestActions}>
+                    <Pressable style={s.acceptBtn} onPress={() => handleAccept(thread.id)}>
+                      <Text style={s.acceptBtnText}>Accept</Text>
+                    </Pressable>
+                    <Pressable style={s.declineBtn} onPress={() => handleDecline(thread.id)}>
+                      <Text style={s.declineBtnText}>Decline</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </View>
             </View>
           ))}
           {requests.length === 0 && (
@@ -636,7 +390,7 @@ export default function MessagesListScreen() {
 
       {/* FAB compose button */}
       <Pressable
-        style={[s.fab, { backgroundColor: '#0B0F14', bottom: insets.bottom + 60 }]}
+        style={[s.fab, { backgroundColor: C.surface, bottom: insets.bottom + 60 }]}
         onPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           if (isStaff) {
@@ -646,7 +400,7 @@ export default function MessagesListScreen() {
           }
         }}
       >
-        <IconSymbol name="plus" size={24} color="#FFFFFF" />
+        <IconSymbol name="plus" size={24} color={C.label} />
       </Pressable>
 
       {/* Compose sheet */}
@@ -654,13 +408,15 @@ export default function MessagesListScreen() {
         visible={composeVisible}
         onClose={() => setComposeVisible(false)}
         onSend={handleComposeSend}
-        accent="#FFFFFF"
+        accent={C.label}
       />
 
       {/* FAB popup menu (staff only) */}
       {fabMenuVisible && (
         <FabPopupMenu
           bottomOffset={insets.bottom + 60 + 60}
+          fabMenuStyles={fabMenuStyles}
+          C={C}
           onNewMessage={() => {
             setFabMenuVisible(false);
             setComposeVisible(true);
@@ -685,9 +441,230 @@ export default function MessagesListScreen() {
   );
 }
 
+// ─── Channel Row (inline, receives styles + colors) ─────────────────────────
+
+function ChannelRowInline({
+  room,
+  s,
+  C,
+  onPress,
+  onLongPress,
+}: {
+  room: RoomV3;
+  s: ReturnType<typeof makeStyles>;
+  C: ComponentColors;
+  onPress: () => void;
+  onLongPress: (y: number) => void;
+}) {
+  const rowRef = useRef<View>(null);
+  const longPressedRef = useRef(false);
+
+  const handleLongPress = () => {
+    longPressedRef.current = true;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    rowRef.current?.measureInWindow((_x, y) => {
+      onLongPress(y);
+    });
+  };
+
+  return (
+    <Pressable
+      ref={rowRef}
+      style={s.row}
+      onPress={() => {
+        if (longPressedRef.current) { longPressedRef.current = false; return; }
+        onPress();
+      }}
+      onLongPress={handleLongPress}
+      delayLongPress={400}
+    >
+      <View style={s.unreadCol}>
+        {room.unread && <View style={s.unreadDot} />}
+      </View>
+      <View style={s.channelIcon}>
+        <Text style={s.channelInitials}>{room.initials}</Text>
+        {room.locked && (
+          <View style={s.lockBadge}>
+            <IconSymbol name="lock.fill" size={8} color={C.secondary} />
+          </View>
+        )}
+      </View>
+      <View style={s.rowContent}>
+        <View style={s.rowTopRow}>
+          <Text style={[s.rowName, room.unread && s.rowNameBold]} numberOfLines={1}>
+            {room.name}
+          </Text>
+          <Text style={s.rowTime}>{formatMessageTime(room.timestamp)}</Text>
+        </View>
+        <Text style={s.rowPreview} numberOfLines={2}>{room.lastMessage}</Text>
+      </View>
+    </Pressable>
+  );
+}
+
+// ─── DM Row (inline, receives styles + colors) ──────────────────────────────
+
+function DMRowInline({
+  thread,
+  s,
+  C,
+  onPress,
+  onLongPress,
+}: {
+  thread: InboxThreadV3;
+  s: ReturnType<typeof makeStyles>;
+  C: ComponentColors;
+  onPress: () => void;
+  onLongPress: (y: number) => void;
+}) {
+  const rowRef = useRef<View>(null);
+  const longPressedRef = useRef(false);
+
+  const handleLongPress = () => {
+    longPressedRef.current = true;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    rowRef.current?.measureInWindow((_x, y) => {
+      onLongPress(y);
+    });
+  };
+
+  return (
+    <Pressable
+      ref={rowRef}
+      style={s.row}
+      onPress={() => {
+        if (longPressedRef.current) { longPressedRef.current = false; return; }
+        onPress();
+      }}
+      onLongPress={handleLongPress}
+      delayLongPress={400}
+    >
+      <View style={s.unreadCol}>
+        {thread.unread && <View style={s.unreadDot} />}
+      </View>
+      <View style={s.dmAvatar}>
+        <Text style={s.dmAvatarText}>{thread.initials}</Text>
+      </View>
+      <View style={s.rowContent}>
+        <View style={s.rowTopRow}>
+          <Text style={[s.rowName, thread.unread && s.rowNameBold]} numberOfLines={1}>
+            {thread.name}
+          </Text>
+          <Text style={s.rowTime}>{formatMessageTime(thread.timestamp)}</Text>
+        </View>
+        <Text style={s.rowPreview} numberOfLines={2}>{thread.preview}</Text>
+      </View>
+    </Pressable>
+  );
+}
+
+// ─── FAB Popup Menu (staff-only two-option popup) ────────────────────────────
+
+function FabPopupMenu({
+  bottomOffset,
+  fabMenuStyles,
+  C,
+  onNewMessage,
+  onNewChannel,
+  onDismiss,
+}: {
+  bottomOffset: number;
+  fabMenuStyles: ReturnType<typeof makeFabMenuStyles>;
+  C: ComponentColors;
+  onNewMessage: () => void;
+  onNewChannel: () => void;
+  onDismiss: () => void;
+}) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.9)).current;
+
+  React.useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        tension: 120,
+        friction: 10,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
+  const dismiss = useCallback(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 120,
+      useNativeDriver: true,
+    }).start(() => onDismiss());
+  }, [fadeAnim, onDismiss]);
+
+  return (
+    <Modal transparent animationType="none" onRequestClose={dismiss}>
+      <Animated.View style={[fabMenuStyles.overlay, { opacity: fadeAnim }]}>
+        <Pressable style={fabMenuStyles.backdrop} onPress={dismiss} />
+        <Animated.View
+          style={[
+            fabMenuStyles.menu,
+            {
+              bottom: bottomOffset,
+              transform: [{ scale: scaleAnim }],
+            },
+          ]}
+        >
+          <Pressable style={fabMenuStyles.menuItem} onPress={onNewMessage}>
+            <IconSymbol name="bubble.left.fill" size={18} color={C.label} />
+            <Text style={fabMenuStyles.menuLabel}>New Message</Text>
+          </Pressable>
+          <View style={fabMenuStyles.menuDivider} />
+          <Pressable style={fabMenuStyles.menuItem} onPress={onNewChannel}>
+            <IconSymbol name="number" size={18} color={C.label} />
+            <Text style={fabMenuStyles.menuLabel}>New Channel</Text>
+          </Pressable>
+        </Animated.View>
+      </Animated.View>
+    </Modal>
+  );
+}
+
+// ─── FAB Menu Styles ─────────────────────────────────────────────────────────
+
+const makeFabMenuStyles = (C: ComponentColors) => StyleSheet.create({
+  overlay: { flex: 1 },
+  backdrop: { ...StyleSheet.absoluteFillObject },
+  menu: {
+    position: 'absolute',
+    right: 20,
+    backgroundColor: C.bg,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: C.divider,
+    overflow: 'hidden',
+    minWidth: 180,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 16,
+    minHeight: 48,
+  },
+  menuDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: C.divider,
+  },
+  menuLabel: {
+    fontSize: 16,
+    color: C.label,
+  },
+});
+
 // ─── Styles ─────────────────────────────────────────────────────────────────
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 
@@ -700,13 +677,13 @@ const s = StyleSheet.create({
     backgroundColor: C.surface,
   },
   filterPillActive: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: C.label,
   },
   filterPillText: {
-    fontSize: 13, fontWeight: '600', color: '#FFFFFF',
+    fontSize: 13, fontWeight: '600', color: C.label,
   },
   filterPillTextActive: {
-    color: '#000000',
+    color: C.bg,
   },
 
   // Section divider
@@ -714,7 +691,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8,
   },
   sectionLabel: {
-    fontSize: 13, fontWeight: '600', color: C.secondaryLabel, textTransform: 'uppercase',
+    fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
 
@@ -724,19 +701,19 @@ const s = StyleSheet.create({
     paddingRight: 16, backgroundColor: C.bg,
   },
   unreadCol: { width: 24, alignItems: 'center', justifyContent: 'center' },
-  unreadDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#FFFFFF' },
+  unreadDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: C.label },
   rowContent: { flex: 1, marginLeft: 12, marginRight: 8 },
   rowTopRow: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2,
   },
   rowName: { fontSize: 16, fontWeight: '400', color: C.label, flex: 1, marginRight: 8 },
   rowNameBold: { fontWeight: '600' },
-  rowTime: { fontSize: 14, color: C.secondaryLabel },
-  rowPreview: { fontSize: 14, color: C.secondaryLabel, lineHeight: 20 },
+  rowTime: { fontSize: 14, color: C.secondary },
+  rowPreview: { fontSize: 14, color: C.secondary, lineHeight: 20 },
 
   // Channel icon (square squircle)
   channelIcon: {
-    width: 44, height: 44, borderRadius: 12, backgroundColor: C.channelIconBg,
+    width: 44, height: 44, borderRadius: 12, backgroundColor: C.surface,
     alignItems: 'center', justifyContent: 'center',
   },
   channelInitials: { fontSize: 14, fontWeight: '700', color: C.label },
@@ -754,7 +731,7 @@ const s = StyleSheet.create({
   dmAvatarText: { fontSize: 14, fontWeight: '600', color: C.label },
 
   // Separator
-  separator: { height: StyleSheet.hairlineWidth, backgroundColor: C.separator, marginLeft: 80 },
+  separator: { height: StyleSheet.hairlineWidth, backgroundColor: C.divider, marginLeft: 80 },
 
   // Request row
   requestRow: {
@@ -762,26 +739,26 @@ const s = StyleSheet.create({
     paddingLeft: 16, paddingRight: 16, backgroundColor: C.bg,
   },
   requestContent: { flex: 1, marginLeft: 12 },
-  requestUsername: { fontSize: 14, fontWeight: '400', color: C.secondaryLabel },
-  requestMeta: { fontSize: 13, color: C.secondaryLabel, marginBottom: 4 },
+  requestUsername: { fontSize: 14, fontWeight: '400', color: C.secondary },
+  requestMeta: { fontSize: 13, color: C.secondary, marginBottom: 4 },
   requestActions: {
     flexDirection: 'row', gap: 10, marginTop: 10,
   },
   acceptBtn: {
     paddingHorizontal: 20, paddingVertical: 8, borderRadius: 18,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: C.label,
   },
-  acceptBtnText: { fontSize: 14, fontWeight: '600', color: '#000000' },
+  acceptBtnText: { fontSize: 14, fontWeight: '600', color: C.bg },
   declineBtn: {
     paddingHorizontal: 20, paddingVertical: 8, borderRadius: 18,
     backgroundColor: C.surface,
   },
-  declineBtnText: { fontSize: 14, fontWeight: '600', color: '#FFFFFF' },
-  requestCount: { fontSize: 15, fontWeight: '500', color: C.secondaryLabel },
+  declineBtnText: { fontSize: 14, fontWeight: '600', color: C.label },
+  requestCount: { fontSize: 15, fontWeight: '500', color: C.secondary },
   emptyState: {
     alignItems: 'center', justifyContent: 'center', paddingVertical: 60,
   },
-  emptyStateText: { fontSize: 16, color: C.secondaryLabel },
+  emptyStateText: { fontSize: 16, color: C.secondary },
 
   // FAB
   fab: {

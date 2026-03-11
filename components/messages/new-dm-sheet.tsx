@@ -10,16 +10,9 @@ import * as Haptics from 'expo-haptics';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useMode } from '@/context/app-context';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { getInboxThreads, getGlobalDMs } from '@/data/mock-messages-v3';
 import type { InboxThreadV3 } from '@/types';
-
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  textPrimary: '#FFFFFF',
-  textSecondary: '#A1A1AA',
-  placeholder: '#52525B',
-};
 
 interface NewDMSheetProps {
   visible: boolean;
@@ -29,6 +22,8 @@ interface NewDMSheetProps {
 }
 
 export function NewDMSheet({ visible, onClose, onSend, accent }: NewDMSheetProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const mode = useMode();
   const [search, setSearch] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -92,13 +87,13 @@ export function NewDMSheet({ visible, onClose, onSend, accent }: NewDMSheetProps
             onPress={() => setSelectedId(null)}
           >
             <Text style={styles.selectedChipText}>{selectedThread.name}</Text>
-            <IconSymbol name="xmark" size={12} color={C.textPrimary} />
+            <IconSymbol name="xmark" size={12} color={C.label} />
           </Pressable>
         ) : (
           <TextInput
             style={styles.searchInput}
             placeholder="Search contacts..."
-            placeholderTextColor={C.placeholder}
+            placeholderTextColor={C.muted}
             value={search}
             onChangeText={setSearch}
             autoFocus
@@ -139,7 +134,7 @@ export function NewDMSheet({ visible, onClose, onSend, accent }: NewDMSheetProps
           <TextInput
             style={styles.composeInput}
             placeholder="Type a message..."
-            placeholderTextColor={C.placeholder}
+            placeholderTextColor={C.muted}
             value={message}
             onChangeText={setMessage}
             multiline
@@ -152,7 +147,7 @@ export function NewDMSheet({ visible, onClose, onSend, accent }: NewDMSheetProps
             <IconSymbol
               name="arrow.up.circle.fill"
               size={32}
-              color={message.trim() ? accent : C.placeholder}
+              color={message.trim() ? accent : C.muted}
             />
           </Pressable>
         </View>
@@ -161,7 +156,7 @@ export function NewDMSheet({ visible, onClose, onSend, accent }: NewDMSheetProps
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   searchRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -171,12 +166,12 @@ const styles = StyleSheet.create({
   toLabel: {
     fontSize: 15,
     fontWeight: '600',
-    color: C.textSecondary,
+    color: C.secondary,
   },
   searchInput: {
     flex: 1,
     fontSize: 15,
-    color: C.textPrimary,
+    color: C.label,
     paddingVertical: 4,
   },
   selectedChip: {
@@ -190,7 +185,7 @@ const styles = StyleSheet.create({
   selectedChipText: {
     fontSize: 14,
     fontWeight: '600',
-    color: C.textPrimary,
+    color: C.label,
   },
   contactRow: {
     flexDirection: 'row',
@@ -209,7 +204,7 @@ const styles = StyleSheet.create({
   contactInitials: {
     fontSize: 14,
     fontWeight: '600',
-    color: C.textPrimary,
+    color: C.label,
   },
   contactInfo: {
     flex: 1,
@@ -217,11 +212,11 @@ const styles = StyleSheet.create({
   contactName: {
     fontSize: 15,
     fontWeight: '600',
-    color: C.textPrimary,
+    color: C.label,
   },
   contactRole: {
     fontSize: 13,
-    color: C.textSecondary,
+    color: C.secondary,
     marginTop: 1,
   },
   composeRow: {
@@ -233,7 +228,7 @@ const styles = StyleSheet.create({
   composeInput: {
     flex: 1,
     fontSize: 15,
-    color: C.textPrimary,
+    color: C.label,
     backgroundColor: C.surface,
     borderRadius: 16,
     paddingHorizontal: 14,

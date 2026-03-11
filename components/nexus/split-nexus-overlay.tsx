@@ -34,6 +34,7 @@ import { usePathname, useGlobalSearchParams } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Spacing, BorderRadius } from '@/constants/theme';
 import { useAccentColor } from '@/hooks/use-accent-color';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { sendToGPT, type ChatMessage } from '@/utils/openai';
 import { useMode, useAppContext } from '@/context/app-context';
 import { startGlobalVoice } from '@/utils/global-voice';
@@ -42,19 +43,6 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const FOOTER_HEIGHT = 49;
 const SPLIT_HEIGHT = Math.round(SCREEN_HEIGHT * 0.45);
 const DISMISS_THRESHOLD = 80;
-
-/* ── Dark palette ── */
-const C = {
-  bg: '#0B0F14',
-  chipBg: 'rgba(255,255,255,0.08)',
-  chipText: 'rgba(255,255,255,0.7)',
-  inputBg: 'rgba(255,255,255,0.06)',
-  text: '#FFFFFF',
-  textDim: 'rgba(255,255,255,0.4)',
-  userBubble: 'rgba(255,255,255,0.1)',
-  assistantBubble: 'rgba(255,255,255,0.04)',
-  handle: 'rgba(255,255,255,0.2)',
-};
 
 /* ── Contextual suggestion chips by screen ── */
 const SCREEN_CHIPS: Record<string, string[]> = {
@@ -94,6 +82,8 @@ interface Props {
 }
 
 export function SplitNexusOverlay({ visible, onClose }: Props) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const mode = useMode();
@@ -290,7 +280,7 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
           ListFooterComponent={
             isLoading ? (
               <View style={styles.loadingRow}>
-                <ActivityIndicator size="small" color={C.textDim} />
+                <ActivityIndicator size="small" color={C.muted} />
               </View>
             ) : null
           }
@@ -318,13 +308,13 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
         {/* Input bar — no divider above */}
         <View style={styles.inputRow}>
           <Pressable style={styles.micBtn} onPress={handleMicPress}>
-            <IconSymbol name="mic.fill" size={20} color={C.textDim} />
+            <IconSymbol name="mic.fill" size={20} color={C.muted} />
           </Pressable>
           <TextInput
             ref={inputRef}
             style={styles.input}
             placeholder="Ask Nexus..."
-            placeholderTextColor={C.textDim}
+            placeholderTextColor={C.muted}
             value={inputText}
             onChangeText={setInputText}
             onSubmitEditing={handleSend}
@@ -339,7 +329,7 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
             <IconSymbol
               name="arrow.up.circle.fill"
               size={28}
-              color={inputText.trim() ? accent : C.textDim}
+              color={inputText.trim() ? accent : C.muted}
             />
           </Pressable>
         </View>
@@ -348,7 +338,7 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   overlay: {
     position: 'absolute',
     left: 0,
@@ -358,17 +348,17 @@ const styles = StyleSheet.create({
   handleArea: {
     alignItems: 'center',
     paddingVertical: 8,
-    backgroundColor: C.bg,
+    backgroundColor: C.surface,
   },
   handle: {
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: C.handle,
+    backgroundColor: 'rgba(255,255,255,0.2)',
   },
   container: {
     flex: 1,
-    backgroundColor: C.bg,
+    backgroundColor: C.surface,
     overflow: 'hidden',
   },
   listContent: {
@@ -391,17 +381,17 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.lg,
   },
   userBubble: {
-    backgroundColor: C.userBubble,
+    backgroundColor: 'rgba(255,255,255,0.1)',
     borderBottomRightRadius: 4,
   },
   assistantBubble: {
-    backgroundColor: C.assistantBubble,
+    backgroundColor: 'rgba(255,255,255,0.04)',
     borderBottomLeftRadius: 4,
   },
   msgText: {
     fontSize: 14,
     lineHeight: 20,
-    color: C.text,
+    color: C.label,
   },
   emptyContainer: {
     flex: 1,
@@ -412,7 +402,7 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 14,
     fontStyle: 'italic',
-    color: C.textDim,
+    color: C.muted,
   },
   loadingRow: {
     paddingVertical: 8,
@@ -429,7 +419,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   chip: {
-    backgroundColor: C.chipBg,
+    backgroundColor: C.separator,
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 16,
@@ -440,7 +430,7 @@ const styles = StyleSheet.create({
   chipText: {
     fontSize: 13,
     fontWeight: '500',
-    color: C.chipText,
+    color: 'rgba(255,255,255,0.7)',
   },
   inputRow: {
     flexDirection: 'row',
@@ -458,8 +448,8 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     paddingHorizontal: 14,
     fontSize: 15,
-    color: C.text,
-    backgroundColor: C.inputBg,
+    color: C.label,
+    backgroundColor: 'rgba(255,255,255,0.06)',
   },
   sendBtn: {
     padding: 2,

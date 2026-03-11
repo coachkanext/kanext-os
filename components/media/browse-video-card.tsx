@@ -3,9 +3,10 @@
  * 180px wide, 16:9 thumbnail, duration/LIVE badge, title, creator, view count + timestamp.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { formatViewCount, formatVideoTime } from '@/data/mock-media';
 import type { BrowseVideo } from '@/data/mock-media';
 
@@ -15,6 +16,9 @@ interface BrowseVideoCardProps {
 }
 
 export function BrowseVideoCard({ video, onLongPress }: BrowseVideoCardProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
+
   return (
     <Pressable
       style={styles.container}
@@ -32,7 +36,7 @@ export function BrowseVideoCard({ video, onLongPress }: BrowseVideoCardProps) {
         )}
         {/* Play icon */}
         <View style={styles.playOverlay}>
-          <IconSymbol name="play.fill" size={20} color="#FFFFFF" />
+          <IconSymbol name="play.fill" size={20} color={C.label} />
         </View>
 
         {/* Duration or LIVE badge */}
@@ -57,7 +61,7 @@ export function BrowseVideoCard({ video, onLongPress }: BrowseVideoCardProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     width: 180,
   },
@@ -82,13 +86,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 6,
     right: 6,
-    backgroundColor: '#EF4444',
+    backgroundColor: C.red,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 3,
   },
   liveText: {
-    color: '#FFFFFF',
+    color: C.label,
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 0.5,
@@ -103,23 +107,23 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   durationText: {
-    color: '#FFFFFF',
+    color: C.label,
     fontSize: 11,
     fontWeight: '600',
   },
   title: {
-    color: '#FFFFFF',
+    color: C.label,
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 18,
   },
   creator: {
-    color: '#A1A1AA',
+    color: C.secondary,
     fontSize: 12,
     marginTop: 2,
   },
   meta: {
-    color: '#A1A1AA',
+    color: C.secondary,
     fontSize: 12,
     marginTop: 1,
   },

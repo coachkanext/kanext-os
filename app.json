@@ -51,7 +51,8 @@
           }
         }
       ],
-      "expo-speech-recognition"
+      "expo-speech-recognition",
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true,

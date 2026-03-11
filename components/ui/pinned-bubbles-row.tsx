@@ -4,8 +4,9 @@
  * Returns null if items array is empty.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 export interface PinnedBubble {
   id: string;
@@ -22,6 +23,9 @@ interface PinnedBubblesRowProps {
 }
 
 export function PinnedBubblesRow({ items, onPress }: PinnedBubblesRowProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
+
   if (items.length === 0) return null;
 
   return (
@@ -55,7 +59,7 @@ export function PinnedBubblesRow({ items, onPress }: PinnedBubblesRowProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   row: {
     paddingHorizontal: 16,
     gap: 14,
@@ -75,20 +79,20 @@ const styles = StyleSheet.create({
   },
   squircle: {
     borderRadius: 12,
-    backgroundColor: '#0B1220',
+    backgroundColor: C.surface,
   },
   unreadRing: {
     borderWidth: 2,
-    borderColor: '#FFFFFF',
+    borderColor: C.label,
   },
   initials: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: C.label,
   },
   name: {
     fontSize: 11,
-    color: '#FFFFFF',
+    color: C.label,
     fontWeight: '500',
     textAlign: 'center',
     marginTop: 4,
@@ -100,8 +104,8 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#34C759',
+    backgroundColor: C.green,
     borderWidth: 2,
-    borderColor: '#000000',
+    borderColor: C.bg,
   },
 });

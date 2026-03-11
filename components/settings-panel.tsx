@@ -8,7 +8,7 @@
  * BOTTOM: Settings rows (Account, Preferences, Notifications, Appearance, Help, Terms, Log Out)
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Pressable, Dimensions, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -16,6 +16,8 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { PanelHeader } from '@/components/side-panel/panel-header';
 import { useAuth } from '@/context/auth-context';
 import { closeSettingsPanel } from '@/utils/global-settings-panel';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useThemePreference, useSetThemePreference } from '@/context/theme-context';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 export const SETTINGS_PANEL_WIDTH = Math.min(300, SCREEN_WIDTH * 0.82);
@@ -25,10 +27,21 @@ interface SettingsPanelProps {
   visible: boolean;
 }
 
+const THEME_OPTIONS = [
+  { key: 'light' as const, label: 'Light' },
+  { key: 'dark' as const, label: 'Dark' },
+  { key: 'system' as const, label: 'System' },
+];
+
 export function SettingsPanel({ visible }: SettingsPanelProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { signOut } = useAuth();
+  const themePref = useThemePreference();
+  const setThemePref = useSetThemePreference();
+  const [showAppearance, setShowAppearance] = useState(false);
 
   const handleNavigate = useCallback((route: string) => {
     closeSettingsPanel();
@@ -64,21 +77,21 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
             onPress={() => handleNavigate('/settings')}
           >
-            <IconSymbol name="bookmark.fill" size={20} color="#FFFFFF" />
+            <IconSymbol name="bookmark.fill" size={20} color={C.label} />
             <Text style={styles.menuItemText}>Saved</Text>
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
             onPress={() => handleNavigate('/settings')}
           >
-            <IconSymbol name="clock.fill" size={20} color="#FFFFFF" />
+            <IconSymbol name="clock.fill" size={20} color={C.label} />
             <Text style={styles.menuItemText}>Your Activity</Text>
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
             onPress={() => handleNavigate('/settings')}
           >
-            <IconSymbol name="qrcode" size={20} color="#FFFFFF" />
+            <IconSymbol name="qrcode" size={20} color={C.label} />
             <Text style={styles.menuItemText}>QR Code</Text>
           </Pressable>
         </View>
@@ -92,42 +105,65 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
             onPress={() => handleNavigate('/settings')}
           >
-            <IconSymbol name="person.fill" size={20} color="#FFFFFF" />
+            <IconSymbol name="person.fill" size={20} color={C.label} />
             <Text style={styles.menuItemText}>Account</Text>
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
             onPress={() => handleNavigate('/settings')}
           >
-            <IconSymbol name="slider.horizontal.3" size={20} color="#FFFFFF" />
+            <IconSymbol name="slider.horizontal.3" size={20} color={C.label} />
             <Text style={styles.menuItemText}>Preferences</Text>
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
             onPress={() => handleNavigate('/settings')}
           >
-            <IconSymbol name="bell.fill" size={20} color="#FFFFFF" />
+            <IconSymbol name="bell.fill" size={20} color={C.label} />
             <Text style={styles.menuItemText}>Notifications</Text>
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => handleNavigate('/settings')}
+            onPress={() => setShowAppearance(!showAppearance)}
           >
-            <IconSymbol name="moon.fill" size={20} color="#FFFFFF" />
+            <IconSymbol name="moon.fill" size={20} color={C.label} />
             <Text style={styles.menuItemText}>Appearance</Text>
+            <IconSymbol
+              name={showAppearance ? 'chevron.up' : 'chevron.down'}
+              size={14}
+              color={C.secondary}
+            />
           </Pressable>
+          {showAppearance && (
+            <View style={styles.appearanceRow}>
+              {THEME_OPTIONS.map((opt) => {
+                const active = themePref === opt.key;
+                return (
+                  <Pressable
+                    key={opt.key}
+                    style={[styles.themePill, active && styles.themePillActive]}
+                    onPress={() => setThemePref(opt.key)}
+                  >
+                    <Text style={[styles.themePillText, active && styles.themePillTextActive]}>
+                      {opt.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
           <Pressable
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
             onPress={() => handleNavigate('/settings')}
           >
-            <IconSymbol name="questionmark.circle" size={20} color="#FFFFFF" />
+            <IconSymbol name="questionmark.circle" size={20} color={C.label} />
             <Text style={styles.menuItemText}>Help & Support</Text>
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
             onPress={() => handleNavigate('/settings')}
           >
-            <IconSymbol name="shield.fill" size={20} color="#FFFFFF" />
+            <IconSymbol name="shield.fill" size={20} color={C.label} />
             <Text style={styles.menuItemText}>Terms & Privacy</Text>
           </Pressable>
         </View>
@@ -151,13 +187,13 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     position: 'absolute',
     left: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: '#000000',
+    backgroundColor: C.surface,
     zIndex: 0,
   },
   scroll: {
@@ -171,7 +207,7 @@ const styles = StyleSheet.create({
   // ── Divider ──
   divider: {
     height: 1,
-    backgroundColor: '#2F3336',
+    backgroundColor: C.separator,
     marginVertical: 8,
   },
 
@@ -193,10 +229,37 @@ const styles = StyleSheet.create({
   menuItemText: {
     fontSize: 16,
     fontWeight: '400',
-    color: '#FFFFFF',
+    color: C.label,
+    flex: 1,
   },
   logOutText: {
-    color: '#EF4444',
+    color: C.red,
+  },
+
+  // ── Appearance toggle ──
+  appearanceRow: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingHorizontal: 4,
+    paddingBottom: 8,
+  },
+  themePill: {
+    flex: 1,
+    paddingVertical: 8,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    alignItems: 'center',
+  },
+  themePillActive: {
+    backgroundColor: C.label,
+  },
+  themePillText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: C.secondary,
+  },
+  themePillTextActive: {
+    color: C.surface,
   },
 
   // ── Spacer ──

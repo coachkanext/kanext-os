@@ -3,7 +3,7 @@
  * voicemail greeting, Wi-Fi calling, caller ID.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -17,17 +17,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { MODE_BADGE_COLORS, MY_KANEXT_NUMBERS } from '@/data/mock-phone';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-};
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, children, styles }: { title: string; children: React.ReactNode; styles: ReturnType<typeof makeStyles> }) {
   return (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
@@ -36,7 +28,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function ToggleRow({ label, value, onToggle, accent }: { label: string; value: boolean; onToggle: () => void; accent: string }) {
+function ToggleRow({ label, value, onToggle, accent, styles }: { label: string; value: boolean; onToggle: () => void; accent: string; styles: ReturnType<typeof makeStyles> }) {
   return (
     <View style={styles.toggleRow}>
       <Text style={styles.toggleLabel}>{label}</Text>
@@ -45,7 +37,7 @@ function ToggleRow({ label, value, onToggle, accent }: { label: string; value: b
   );
 }
 
-function NavRow({ icon, label }: { icon: string; label: string }) {
+function NavRow({ icon, label, C, styles }: { icon: string; label: string; C: ComponentColors; styles: ReturnType<typeof makeStyles> }) {
   return (
     <Pressable style={({ pressed }) => [styles.navRow, pressed && { backgroundColor: 'rgba(255,255,255,0.05)' }]}>
       <IconSymbol name={icon as any} size={18} color={C.secondary} />
@@ -58,6 +50,8 @@ function NavRow({ icon, label }: { icon: string; label: string }) {
 export default function PhoneSettingsScreen() {
   const insets = useSafeAreaInsets();
   const accent = useAccentColor();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   const [wifiCalling, setWifiCalling] = useState(true);
   const [vibration, setVibration] = useState(true);
@@ -75,7 +69,7 @@ export default function PhoneSettingsScreen() {
       </View>
 
       <ScrollView style={styles.list} contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
-        <Section title="Ringtone">
+        <Section title="Ringtone" styles={styles}>
           {MY_KANEXT_NUMBERS.map((num) => {
             const color = MODE_BADGE_COLORS[num.mode];
             return (
@@ -91,14 +85,14 @@ export default function PhoneSettingsScreen() {
 
         <View style={styles.divider} />
 
-        <Section title="General">
-          <ToggleRow label="Vibration" value={vibration} onToggle={() => setVibration((v) => !v)} accent={accent} />
-          <ToggleRow label="Wi-Fi Calling" value={wifiCalling} onToggle={() => setWifiCalling((v) => !v)} accent={accent} />
+        <Section title="General" styles={styles}>
+          <ToggleRow label="Vibration" value={vibration} onToggle={() => setVibration((v) => !v)} accent={accent} styles={styles} />
+          <ToggleRow label="Wi-Fi Calling" value={wifiCalling} onToggle={() => setWifiCalling((v) => !v)} accent={accent} styles={styles} />
         </Section>
 
         <View style={styles.divider} />
 
-        <Section title="Do Not Disturb">
+        <Section title="Do Not Disturb" styles={styles}>
           {MY_KANEXT_NUMBERS.map((num) => {
             const color = MODE_BADGE_COLORS[num.mode];
             return (
@@ -116,12 +110,12 @@ export default function PhoneSettingsScreen() {
               </View>
             );
           })}
-          <NavRow icon="clock.fill" label="DND Schedule" />
+          <NavRow icon="clock.fill" label="DND Schedule" C={C} styles={styles} />
         </Section>
 
         <View style={styles.divider} />
 
-        <Section title="Call Forwarding">
+        <Section title="Call Forwarding" styles={styles}>
           {MY_KANEXT_NUMBERS.map((num) => {
             const color = MODE_BADGE_COLORS[num.mode];
             return (
@@ -137,7 +131,7 @@ export default function PhoneSettingsScreen() {
 
         <View style={styles.divider} />
 
-        <Section title="Voicemail Greeting">
+        <Section title="Voicemail Greeting" styles={styles}>
           {MY_KANEXT_NUMBERS.map((num) => {
             const color = MODE_BADGE_COLORS[num.mode];
             return (
@@ -153,7 +147,7 @@ export default function PhoneSettingsScreen() {
 
         <View style={styles.divider} />
 
-        <Section title="Caller ID">
+        <Section title="Caller ID" styles={styles}>
           {MY_KANEXT_NUMBERS.map((num) => {
             const color = MODE_BADGE_COLORS[num.mode];
             return (
@@ -177,7 +171,7 @@ export default function PhoneSettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },

@@ -14,6 +14,7 @@ import {
   ScrollView,
   TextInput,
 } from 'react-native';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -107,11 +108,6 @@ import {
 } from '@/utils/recruiting-board-store';
 
 // ─── Constants ───
-const BG = '#0B0F14';
-const CARD_BG = '#0B0F14';
-const WHITE = '#FFFFFF';
-const GRAY = '#A1A1AA';
-const DIVIDER = '#0B0F14';
 const ACCENT = MODE_ACCENT.sports;
 
 const PROGRAM_ANCHOR = getDivisionAnchor(INSTITUTION.division);
@@ -226,6 +222,8 @@ export function PlayerPoolContent() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { state: appState } = useAppContext();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   // State
   const [filters, setFilters] = useState<NationalPoolFilters>({ ...DEFAULT_FILTERS });
@@ -685,11 +683,11 @@ export function PlayerPoolContent() {
       <BottomSheet visible={divSheetOpen} onClose={() => setDivSheetOpen(false)} title="Select Division">
         {/* All option */}
         <Pressable
-          style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: DIVIDER }}
+          style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: C.divider }}
           onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setFilters((prev) => ({ ...prev, division: [] })); setDivSheetOpen(false); }}
         >
-          <Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: filters.division.length === 0 ? WHITE : GRAY }}>All Divisions</Text>
-          {filters.division.length === 0 && <IconSymbol name="checkmark" size={16} color={WHITE} />}
+          <Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: filters.division.length === 0 ? C.label : C.secondary }}>All Divisions</Text>
+          {filters.division.length === 0 && <IconSymbol name="checkmark" size={16} color={C.label} />}
         </Pressable>
         {/* Division options with expandable sub-divisions */}
         {([
@@ -719,7 +717,7 @@ export function PlayerPoolContent() {
           const anyChildSelected = hasChildren && div.children!.some((c) => filters.division.includes(c.value));
           return (
             <View key={div.value}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: DIVIDER }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: C.divider }}>
                 <Pressable
                   style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingVertical: 14 }}
                   onPress={() => {
@@ -735,8 +733,8 @@ export function PlayerPoolContent() {
                     });
                   }}
                 >
-                  <Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: parentSelected || anyChildSelected ? WHITE : GRAY }}>{div.label}</Text>
-                  {parentSelected && <IconSymbol name="checkmark" size={16} color={WHITE} />}
+                  <Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: parentSelected || anyChildSelected ? C.label : C.secondary }}>{div.label}</Text>
+                  {parentSelected && <IconSymbol name="checkmark" size={16} color={C.label} />}
                 </Pressable>
                 {hasChildren && (
                   <Pressable
@@ -750,7 +748,7 @@ export function PlayerPoolContent() {
                       });
                     }}
                   >
-                    <IconSymbol name={expanded ? 'chevron.up' : 'chevron.down'} size={14} color={GRAY} />
+                    <IconSymbol name={expanded ? 'chevron.up' : 'chevron.down'} size={14} color={C.secondary} />
                   </Pressable>
                 )}
               </View>
@@ -759,7 +757,7 @@ export function PlayerPoolContent() {
                 return (
                   <Pressable
                     key={child.value}
-                    style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingLeft: 24, borderBottomWidth: 1, borderBottomColor: DIVIDER }}
+                    style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingLeft: 24, borderBottomWidth: 1, borderBottomColor: C.divider }}
                     onPress={() => {
                       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                       setFilters((prev) => {
@@ -772,8 +770,8 @@ export function PlayerPoolContent() {
                       });
                     }}
                   >
-                    <Text style={{ flex: 1, fontSize: 14, fontWeight: '500', color: childSelected || parentSelected ? WHITE : GRAY }}>{child.label}</Text>
-                    {(childSelected || parentSelected) && <IconSymbol name="checkmark" size={14} color={WHITE} />}
+                    <Text style={{ flex: 1, fontSize: 14, fontWeight: '500', color: childSelected || parentSelected ? C.label : C.secondary }}>{child.label}</Text>
+                    {(childSelected || parentSelected) && <IconSymbol name="checkmark" size={14} color={C.label} />}
                   </Pressable>
                 );
               })}
@@ -902,7 +900,7 @@ export function PlayerPoolContent() {
                         ? `${lastLogTouch.type} \u00B7 ${getRelativeTime(lastLogTouch.timestamp)}`
                         : 'No contact yet'}
                     </Text>
-                    <Text style={[styles.qaMetaLine, dueStatus === 'overdue' && { color: '#EF4444' }]}>
+                    <Text style={[styles.qaMetaLine, dueStatus === 'overdue' && { color: C.red }]}>
                       <Text style={{ fontWeight: '700' }}>Next Action: </Text>
                       {entry.nextStep || 'None set'}
                       {entry.dueDate ? ` \u00B7 ${dueStatus === 'overdue' ? 'OVERDUE' : entry.dueDate}` : ''}
@@ -913,7 +911,7 @@ export function PlayerPoolContent() {
                 {/* ─── B) Quick Action Icons Row ─── */}
                 <View style={styles.qaActionsRow}>
                   {[
-                    { icon: 'doc.text.fill' as const, label: 'Offer', color: '#22C55E', key: 'offer' as const },
+                    { icon: 'doc.text.fill' as const, label: 'Offer', color: C.green, key: 'offer' as const },
                     { icon: 'dollarsign.circle.fill' as const, label: 'NIL', color: '#F59E0B', key: 'nil' as const },
                     { icon: 'mappin.and.ellipse' as const, label: 'Visit', color: ACCENT, key: 'visit' as const },
                     { icon: 'note.text' as const, label: 'Log', color: ACCENT, key: 'log' as const },
@@ -963,8 +961,8 @@ export function PlayerPoolContent() {
                         <Text style={styles.qaDetailRow}><Text style={styles.qaDetailLabel}>Structure: </Text>{entry.nil.structure}</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                           <Text style={styles.qaDetailLabel}>Status: </Text>
-                          <View style={[styles.qaTempPill, { backgroundColor: entry.nil.status === 'Approved' ? '#22C55E25' : entry.nil.status === 'Pending' ? '#F59E0B25' : '#A1A1AA25' }]}>
-                            <Text style={{ fontSize: 11, fontWeight: '600', color: entry.nil.status === 'Approved' ? '#22C55E' : entry.nil.status === 'Pending' ? '#F59E0B' : GRAY }}>{entry.nil.status}</Text>
+                          <View style={[styles.qaTempPill, { backgroundColor: entry.nil.status === 'Approved' ? `${C.green}25` : entry.nil.status === 'Pending' ? '#F59E0B25' : `${C.secondary}25` }]}>
+                            <Text style={{ fontSize: 11, fontWeight: '600', color: entry.nil.status === 'Approved' ? C.green : entry.nil.status === 'Pending' ? '#F59E0B' : C.secondary }}>{entry.nil.status}</Text>
                           </View>
                         </View>
                         {entry.nil.complianceNotes ? <Text style={styles.qaDetailRow}><Text style={styles.qaDetailLabel}>Compliance: </Text>{entry.nil.complianceNotes}</Text> : null}
@@ -1018,14 +1016,14 @@ export function PlayerPoolContent() {
                       {entry.relationships.influencers.map((inf, i) => (
                         <View key={i} style={{ marginTop: 6, gap: 2 }}>
                           <Text style={styles.qaDetailRow}>{inf.name} ({inf.role})</Text>
-                          {inf.staffOwner && <Text style={{ fontSize: 11, color: GRAY }}>Staff: {inf.staffOwner}</Text>}
+                          {inf.staffOwner && <Text style={{ fontSize: 11, color: C.secondary }}>Staff: {inf.staffOwner}</Text>}
                         </View>
                       ))}
                       {entry.relationships.trustNotes.length > 0 && (
                         <View style={{ marginTop: 6 }}>
                           <Text style={[styles.qaDetailLabel, { marginBottom: 4 }]}>Trust Notes:</Text>
                           {entry.relationships.trustNotes.map((note, i) => (
-                            <Text key={i} style={{ fontSize: 12, color: '#A1A1AA', lineHeight: 17 }}>{'\u2022'} {note}</Text>
+                            <Text key={i} style={{ fontSize: 12, color: C.secondary, lineHeight: 17 }}>{'\u2022'} {note}</Text>
                           ))}
                         </View>
                       )}
@@ -1076,9 +1074,9 @@ export function PlayerPoolContent() {
                           }}
                         >
                           <View style={[styles.qaDdCheck, item.completed && styles.qaDdCheckDone]}>
-                            {item.completed && <Text style={{ fontSize: 10, color: WHITE }}>{'\u2713'}</Text>}
+                            {item.completed && <Text style={{ fontSize: 10, color: C.label }}>{'\u2713'}</Text>}
                           </View>
-                          <Text style={[styles.qaDetailRow, item.completed && { textDecorationLine: 'line-through', color: GRAY }]}>{item.label}</Text>
+                          <Text style={[styles.qaDetailRow, item.completed && { textDecorationLine: 'line-through', color: C.secondary }]}>{item.label}</Text>
                         </Pressable>
                       ))}
                     </View>
@@ -1110,7 +1108,7 @@ export function PlayerPoolContent() {
                 {/* ─── Confirmation Modal (Committed / Signed) ─── */}
                 {qaConfirmTarget && (
                   <View style={styles.qaConfirmBox}>
-                    <Text style={{ fontSize: 14, fontWeight: '700', color: WHITE, marginBottom: 8 }}>
+                    <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 8 }}>
                       Confirm move to {qaConfirmTarget}?
                     </Text>
                     <View style={{ gap: 4, marginBottom: 10 }}>
@@ -1124,10 +1122,10 @@ export function PlayerPoolContent() {
                     </View>
                     <View style={{ flexDirection: 'row', gap: 10 }}>
                       <Pressable
-                        style={[styles.qaConfirmBtn, { backgroundColor: '#0B0F14' }]}
+                        style={[styles.qaConfirmBtn, { backgroundColor: C.surface }]}
                         onPress={() => setQaConfirmTarget(null)}
                       >
-                        <Text style={{ fontSize: 13, fontWeight: '600', color: WHITE }}>Cancel</Text>
+                        <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Cancel</Text>
                       </Pressable>
                       <Pressable
                         style={[styles.qaConfirmBtn, { backgroundColor: BOARD_COLUMN_COLORS[qaConfirmTarget] }]}
@@ -1136,7 +1134,7 @@ export function PlayerPoolContent() {
                           setQaConfirmTarget(null);
                         }}
                       >
-                        <Text style={{ fontSize: 13, fontWeight: '700', color: WHITE }}>Confirm</Text>
+                        <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Confirm</Text>
                       </Pressable>
                     </View>
                   </View>
@@ -1151,7 +1149,7 @@ export function PlayerPoolContent() {
                     setPeekPlayer(player);
                   }}
                 >
-                  <IconSymbol name="person.fill" size={14} color={GRAY} />
+                  <IconSymbol name="person.fill" size={14} color={C.secondary} />
                   <Text style={styles.qaRowText}>View Full Profile</Text>
                 </Pressable>
 
@@ -1159,8 +1157,8 @@ export function PlayerPoolContent() {
                   style={[styles.qaRow, { marginTop: 4 }]}
                   onPress={() => handleRemoveEntry(entry.id)}
                 >
-                  <IconSymbol name="trash" size={14} color="#EF4444" />
-                  <Text style={[styles.qaRowText, { color: '#EF4444' }]}>Remove from Board</Text>
+                  <IconSymbol name="trash" size={14} color={C.red} />
+                  <Text style={[styles.qaRowText, { color: C.red }]}>Remove from Board</Text>
                 </Pressable>
               </>
             )}
@@ -1183,7 +1181,7 @@ export function PlayerPoolContent() {
                             style={[styles.qaLogTypeChip, active && { backgroundColor: meta.color + '30', borderColor: meta.color }]}
                             onPress={() => setQaLogType(type)}
                           >
-                            <Text style={{ fontSize: 11, color: active ? meta.color : GRAY, fontWeight: '600' }}>{type}</Text>
+                            <Text style={{ fontSize: 11, color: active ? meta.color : C.secondary, fontWeight: '600' }}>{type}</Text>
                           </Pressable>
                         );
                       })}
@@ -1193,7 +1191,7 @@ export function PlayerPoolContent() {
                     <TextInput
                       style={styles.qaLogInput}
                       placeholder={`Add ${qaLogType.toLowerCase()} entry...`}
-                      placeholderTextColor="#555"
+                      placeholderTextColor={C.muted}
                       value={qaLogSummary}
                       onChangeText={setQaLogSummary}
                       multiline
@@ -1229,7 +1227,7 @@ export function PlayerPoolContent() {
                     {pinnedLogs.map((logEntry) => {
                       const meta = LOG_TYPE_META[logEntry.type];
                       return (
-                        <View key={logEntry.id} style={[styles.qaLogRow, { backgroundColor: '#0B0F1480' }]}>
+                        <View key={logEntry.id} style={[styles.qaLogRow, { backgroundColor: `${C.surface}80` }]}>
                           <View style={[styles.qaLogIcon, { backgroundColor: meta.color + '25' }]}>
                             <Text style={[styles.qaLogIconText, { color: meta.color }]}>{meta.icon}</Text>
                           </View>
@@ -1291,7 +1289,7 @@ export function PlayerPoolContent() {
             setAddSheetOpen(false);
           }}
         >
-          <IconSymbol name="magnifyingglass" size={14} color={WHITE} />
+          <IconSymbol name="magnifyingglass" size={14} color={C.label} />
           <Text style={styles.qaRowText}>Add from National Pool</Text>
         </Pressable>
       </BottomSheet>
@@ -1738,18 +1736,20 @@ export function PlayerPoolContentV2({ colors }: { colors: typeof import('@/const
 export default function CoachRecruitingScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   return (
-    <View style={[styles.container, { backgroundColor: BG }]}>
+    <View style={[styles.container, { backgroundColor: C.bg }]}>
       {/* Hub Tabs */}
-      <View style={[styles.hubTabsContainer, { paddingTop: insets.top, borderBottomColor: DIVIDER }]}>
+      <View style={[styles.hubTabsContainer, { paddingTop: insets.top, borderBottomColor: C.divider }]}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hubTabsContent}>
           {HUB_TABS.map((tab) => {
             const isActive = tab.id === 'recruiting';
             return (
               <Pressable
                 key={tab.id}
-                style={[styles.hubTab, isActive && [styles.hubTabActive, { borderBottomColor: WHITE }]]}
+                style={[styles.hubTab, isActive && [styles.hubTabActive, { borderBottomColor: C.label }]]}
                 onPress={() => {
                   if (tab.id === 'recruiting') return;
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -1760,7 +1760,7 @@ export default function CoachRecruitingScreen() {
                   }
                 }}
               >
-                <ThemedText style={[styles.hubTabLabel, { color: isActive ? WHITE : GRAY }, isActive && styles.hubTabLabelActive]}>
+                <ThemedText style={[styles.hubTabLabel, { color: isActive ? C.label : C.secondary }, isActive && styles.hubTabLabelActive]}>
                   {tab.label}
                 </ThemedText>
               </Pressable>
@@ -1816,6 +1816,9 @@ function RecruitingBoardWorkspace({
   onCardLongPress: (entry: BoardEntry) => void;
   onAddPress: () => void;
 }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
+
   if (!loaded) {
     return (
       <View style={styles.emptyState}>
@@ -1888,10 +1891,10 @@ function RecruitingBoardWorkspace({
 }
 
 // ─── Styles ───
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1 },
 
-  hubTabsContainer: { borderBottomWidth: StyleSheet.hairlineWidth, backgroundColor: BG },
+  hubTabsContainer: { borderBottomWidth: StyleSheet.hairlineWidth, backgroundColor: C.bg },
   hubTabsContent: { paddingHorizontal: Spacing.lg, gap: Spacing.lg },
   hubTab: { paddingVertical: 12, borderBottomWidth: 2, borderBottomColor: 'transparent' },
   hubTabActive: { borderBottomWidth: 2 },
@@ -1903,7 +1906,7 @@ const styles = StyleSheet.create({
 
   // Hero card
   heroCard: {
-    backgroundColor: '#000000',
+    backgroundColor: C.bg,
     borderRadius: 16,
     paddingHorizontal: 20,
     paddingTop: 28,
@@ -1912,19 +1915,19 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#0B0F14',
+    borderColor: C.surface,
   },
   heroTitle: {
     fontSize: 24,
     fontWeight: '800',
-    color: WHITE,
+    color: C.label,
     letterSpacing: 1.5,
     textAlign: 'center',
     marginBottom: 8,
   },
   heroSubtitle: {
     fontSize: 14,
-    color: '#A1A1AA',
+    color: C.secondary,
     textAlign: 'center',
     marginBottom: 20,
     lineHeight: 20,
@@ -1932,19 +1935,19 @@ const styles = StyleSheet.create({
   heroSearchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     borderRadius: 24,
     paddingHorizontal: 16,
     height: 44,
     width: '100%',
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: '#0B0F14',
+    borderColor: C.surface,
   },
   heroSearchInput: {
     flex: 1,
     fontSize: 15,
-    color: WHITE,
+    color: C.label,
     paddingVertical: 0,
   },
   heroFilterPill: {
@@ -1956,26 +1959,26 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 24,
     borderWidth: 1.5,
-    borderColor: '#52525B',
+    borderColor: C.divider,
   },
   heroFilterPillActive: {
-    backgroundColor: WHITE,
-    borderColor: WHITE,
+    backgroundColor: C.label,
+    borderColor: C.label,
   },
   heroFilterText: {
     fontSize: 13,
     fontWeight: '700',
-    color: WHITE,
+    color: C.label,
     letterSpacing: 1.2,
   },
   heroFilterTextActive: {
-    color: BG,
+    color: C.bg,
   },
   filterDot: {
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#EF4444',
+    backgroundColor: C.red,
     marginLeft: 2,
   },
 
@@ -1986,8 +1989,8 @@ const styles = StyleSheet.create({
     gap: 10,
     marginBottom: Spacing.sm,
   },
-  resultCountText: { fontSize: 13, fontWeight: '500', color: GRAY },
-  resetLink: { fontSize: 12, fontWeight: '500', color: WHITE, textDecorationLine: 'underline' },
+  resultCountText: { fontSize: 13, fontWeight: '500', color: C.secondary },
+  resetLink: { fontSize: 12, fontWeight: '500', color: C.label, textDecorationLine: 'underline' as const },
 
   // Rating card list
   ratingCardList: {
@@ -1996,17 +1999,17 @@ const styles = StyleSheet.create({
   ratingListHeader: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#22C55E',
+    color: C.green,
     letterSpacing: 1,
     marginBottom: 10,
   },
   ratingCard: {
-    backgroundColor: CARD_BG,
+    backgroundColor: C.surface,
     borderRadius: 12,
     padding: 14,
     marginBottom: 10,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: DIVIDER,
+    borderColor: C.divider,
   },
   ratingCardTop: {
     flexDirection: 'row',
@@ -2017,7 +2020,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
@@ -2025,11 +2028,11 @@ const styles = StyleSheet.create({
   ratingName: {
     fontSize: 15,
     fontWeight: '600',
-    color: WHITE,
+    color: C.label,
   },
   ratingIdentity: {
     fontSize: 11,
-    color: GRAY,
+    color: C.secondary,
     marginTop: 2,
   },
   statRow: {
@@ -2039,7 +2042,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     marginTop: 6,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: DIVIDER,
+    borderTopColor: C.divider,
   },
   statCell: {
     alignItems: 'center',
@@ -2048,13 +2051,13 @@ const styles = StyleSheet.create({
   statCellLabel: {
     fontSize: 9,
     fontWeight: '700',
-    color: GRAY,
+    color: C.secondary,
     letterSpacing: 0.3,
   },
   statCellValue: {
     fontSize: 12,
     fontWeight: '600',
-    color: WHITE,
+    color: C.label,
     marginTop: 1,
   },
   ratingBadges: {
@@ -2063,7 +2066,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   ratingLevelBadge: {
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     paddingHorizontal: 7,
     paddingVertical: 3,
     borderRadius: 6,
@@ -2071,11 +2074,11 @@ const styles = StyleSheet.create({
   ratingLevelText: {
     fontSize: 9,
     fontWeight: '700',
-    color: GRAY,
+    color: C.secondary,
     letterSpacing: 0.3,
   },
   ratingPosBadge: {
-    backgroundColor: '#2F3336',
+    backgroundColor: C.surface,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
@@ -2083,7 +2086,7 @@ const styles = StyleSheet.create({
   ratingPosText: {
     fontSize: 10,
     fontWeight: '700',
-    color: WHITE,
+    color: C.label,
   },
   ratingBoxRow: {
     flexDirection: 'row',
@@ -2092,12 +2095,12 @@ const styles = StyleSheet.create({
   ratingBoxOvr: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     borderRadius: 8,
     paddingVertical: 6,
     minWidth: 42,
     borderWidth: 1,
-    borderColor: '#52525B',
+    borderColor: C.divider,
   },
   ratingBox: {
     flex: 1,
@@ -2108,32 +2111,32 @@ const styles = StyleSheet.create({
   ratingBoxLabel: {
     fontSize: 9,
     fontWeight: '600',
-    color: GRAY,
+    color: C.secondary,
     letterSpacing: 0.5,
     marginBottom: 2,
   },
   ratingBoxValueOvr: {
     fontSize: 18,
     fontWeight: '800',
-    color: WHITE,
+    color: C.label,
   },
   ratingBoxValue: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#A1A1AA',
+    color: C.secondary,
   },
   ratingBoxExpanded: {
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     borderRadius: 6,
   },
   ratingBoxSplit: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     borderRadius: 8,
     minWidth: 72,
     borderWidth: 1,
-    borderColor: '#52525B',
+    borderColor: C.divider,
   },
   ratingBoxSplitHalf: {
     flex: 1,
@@ -2145,25 +2148,25 @@ const styles = StyleSheet.create({
   ratingBoxSplitDivider: {
     width: StyleSheet.hairlineWidth,
     height: '60%',
-    backgroundColor: '#52525B',
+    backgroundColor: C.divider,
   },
   ratingBoxSplitValue: {
     fontSize: 14,
     fontWeight: '700',
-    color: WHITE,
+    color: C.label,
   },
   subclusterStrip: {
     marginTop: 10,
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     borderRadius: 8,
     padding: 10,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: DIVIDER,
+    borderColor: C.divider,
   },
   subclusterTitle: {
     fontSize: 10,
     fontWeight: '700',
-    color: GRAY,
+    color: C.secondary,
     letterSpacing: 0.5,
     marginBottom: 6,
   },
@@ -2174,7 +2177,7 @@ const styles = StyleSheet.create({
   },
   subclusterName: {
     fontSize: 12,
-    color: '#A1A1AA',
+    color: C.secondary,
   },
   subclusterVal: {
     fontSize: 12,
@@ -2189,8 +2192,8 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   tooltipText: {
-    backgroundColor: '#000000',
-    color: WHITE,
+    backgroundColor: C.bg,
+    color: C.label,
     fontSize: 12,
     fontWeight: '600',
     paddingHorizontal: 10,
@@ -2202,19 +2205,19 @@ const styles = StyleSheet.create({
   // Division group rows
   // Division pill grid
   pillGrid: { flexDirection: 'row' as const, flexWrap: 'wrap' as const, gap: 8, paddingVertical: 10, paddingHorizontal: 4 },
-  divPill: { backgroundColor: '#0B0F14', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16 },
-  divPillSelected: { backgroundColor: WHITE },
-  divPillOpen: { backgroundColor: '#2F3336' },
-  divPillText: { fontSize: 13, fontWeight: '600' as const, color: GRAY },
-  divPillTextSelected: { color: BG },
+  divPill: { backgroundColor: C.surface, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16 },
+  divPillSelected: { backgroundColor: C.label },
+  divPillOpen: { backgroundColor: C.surface },
+  divPillText: { fontSize: 13, fontWeight: '600' as const, color: C.secondary },
+  divPillTextSelected: { color: C.bg },
   pillSubGrid: { flexDirection: 'row' as const, flexWrap: 'wrap' as const, gap: 8, paddingHorizontal: 4, paddingBottom: 10 },
-  divSubPill: { backgroundColor: '#0B0F14', paddingHorizontal: 14, paddingVertical: 7, borderRadius: 14, borderWidth: 1, borderColor: '#2F3336' },
-  divSubPillSelected: { backgroundColor: WHITE, borderColor: WHITE },
-  divSubPillText: { fontSize: 12, fontWeight: '600' as const, color: GRAY },
-  divSubPillTextSelected: { color: BG },
+  divSubPill: { backgroundColor: C.surface, paddingHorizontal: 14, paddingVertical: 7, borderRadius: 14, borderWidth: 1, borderColor: C.divider },
+  divSubPillSelected: { backgroundColor: C.label, borderColor: C.label },
+  divSubPillText: { fontSize: 12, fontWeight: '600' as const, color: C.secondary },
+  divSubPillTextSelected: { color: C.bg },
 
   // Panel helper
-  sheetHelper: { fontSize: 12, color: GRAY, marginBottom: Spacing.sm },
+  sheetHelper: { fontSize: 12, color: C.secondary, marginBottom: Spacing.sm },
 
   // Footer buttons (inline at bottom of scroll)
   inlineFooter: {
@@ -2223,127 +2226,127 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingVertical: 12,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: DIVIDER,
+    borderTopColor: C.divider,
   },
-  footerResetBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, borderWidth: 1.5, borderColor: '#52525B', alignItems: 'center' as const },
-  footerResetText: { fontSize: 14, fontWeight: '600' as const, color: GRAY },
-  footerApplyBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, backgroundColor: WHITE, alignItems: 'center' as const },
-  footerApplyText: { fontSize: 14, fontWeight: '600' as const, color: BG },
+  footerResetBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, borderWidth: 1.5, borderColor: C.divider, alignItems: 'center' as const },
+  footerResetText: { fontSize: 14, fontWeight: '600' as const, color: C.secondary },
+  footerApplyBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, backgroundColor: C.label, alignItems: 'center' as const },
+  footerApplyText: { fontSize: 14, fontWeight: '600' as const, color: C.bg },
 
   emptyState: { padding: 40, alignItems: 'center' },
-  emptyText: { fontSize: 14, color: GRAY },
+  emptyText: { fontSize: 14, color: C.secondary },
 
   // ── Recruiting Board Workspace ──
   boardHeader: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 12 },
-  boardTitle: { fontSize: 20, fontWeight: '800', color: WHITE, letterSpacing: 1 },
-  boardSubtitle: { fontSize: 13, color: GRAY, marginTop: 2 },
-  addBtn: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#0B0F14', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20 },
-  addBtnText: { fontSize: 13, fontWeight: '700', color: WHITE },
-  boardSearchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0B0F14', borderRadius: 20, paddingHorizontal: 14, height: 38, borderWidth: 1, borderColor: '#0B0F14', gap: 8, marginBottom: 4 },
-  boardSearchInput: { flex: 1, fontSize: 14, color: WHITE, paddingVertical: 0 },
+  boardTitle: { fontSize: 20, fontWeight: '800', color: C.label, letterSpacing: 1 },
+  boardSubtitle: { fontSize: 13, color: C.secondary, marginTop: 2 },
+  addBtn: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: C.surface, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20 },
+  addBtnText: { fontSize: 13, fontWeight: '700', color: C.label },
+  boardSearchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 20, paddingHorizontal: 14, height: 38, borderWidth: 1, borderColor: C.surface, gap: 8, marginBottom: 4 },
+  boardSearchInput: { flex: 1, fontSize: 14, color: C.label, paddingVertical: 0 },
   needsRow: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, flexWrap: 'wrap' },
   needsDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#F59E0B', marginRight: 2 },
-  needsLabel: { fontSize: 12, fontWeight: '600', color: WHITE },
-  needsSep: { fontSize: 12, color: '#52525B', marginHorizontal: 2 },
+  needsLabel: { fontSize: 12, fontWeight: '600', color: C.label },
+  needsSep: { fontSize: 12, color: C.divider, marginHorizontal: 2 },
   needsPrimaryText: { fontSize: 12, fontWeight: '700', color: '#F59E0B' },
-  needsTotalText: { fontSize: 12, fontWeight: '600', color: GRAY },
-  needsMetric: { fontSize: 11, color: GRAY },
-  needsPanel: { backgroundColor: '#0B0F14', borderRadius: 10, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: DIVIDER },
-  needsTableHeader: { flexDirection: 'row', alignItems: 'center', paddingBottom: 6, borderBottomWidth: 1, borderBottomColor: DIVIDER, marginBottom: 4 },
+  needsTotalText: { fontSize: 12, fontWeight: '600', color: C.secondary },
+  needsMetric: { fontSize: 11, color: C.secondary },
+  needsPanel: { backgroundColor: C.surface, borderRadius: 10, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: C.divider },
+  needsTableHeader: { flexDirection: 'row', alignItems: 'center', paddingBottom: 6, borderBottomWidth: 1, borderBottomColor: C.divider, marginBottom: 4 },
   needsTableRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 5 },
-  needsCell: { fontSize: 9, fontWeight: '700', color: GRAY, textTransform: 'uppercase', letterSpacing: 0.3 },
-  needsCellVal: { fontSize: 12, fontWeight: '500', color: WHITE },
+  needsCell: { fontSize: 9, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.3 },
+  needsCellVal: { fontSize: 12, fontWeight: '500', color: C.label },
   needsCellPos: { width: 32 },
   needsCellNum: { flex: 1, textAlign: 'center' },
   needsCellNeed: { width: 36, textAlign: 'center' },
   needsCellCov: { width: 36, textAlign: 'center' },
-  needsFooter: { borderTopWidth: 1, borderTopColor: DIVIDER, marginTop: 6, paddingTop: 8, gap: 4 },
-  needsFooterText: { fontSize: 11, color: GRAY },
+  needsFooter: { borderTopWidth: 1, borderTopColor: C.divider, marginTop: 6, paddingTop: 8, gap: 4 },
+  needsFooterText: { fontSize: 11, color: C.secondary },
   viewToggleRow: { flexDirection: 'row', gap: 6, marginBottom: 12 },
-  viewTogglePill: { paddingHorizontal: 16, paddingVertical: 7, borderRadius: 16, backgroundColor: '#0B0F14' },
-  viewTogglePillActive: { backgroundColor: WHITE },
-  viewToggleText: { fontSize: 12, fontWeight: '700', color: GRAY },
-  viewToggleTextActive: { color: BG },
+  viewTogglePill: { paddingHorizontal: 16, paddingVertical: 7, borderRadius: 16, backgroundColor: C.surface },
+  viewTogglePillActive: { backgroundColor: C.label },
+  viewToggleText: { fontSize: 12, fontWeight: '700', color: C.secondary },
+  viewToggleTextActive: { color: C.bg },
   kanbanScroll: { paddingBottom: 16 },
-  sortPill: { backgroundColor: '#0B0F14', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14 },
-  sortPillActive: { backgroundColor: WHITE },
-  sortPillText: { fontSize: 11, fontWeight: '600', color: GRAY },
-  sortPillTextActive: { color: BG },
-  teamRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: CARD_BG, borderRadius: 12, padding: 14, marginBottom: 8, borderWidth: 1, borderColor: DIVIDER },
+  sortPill: { backgroundColor: C.surface, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14 },
+  sortPillActive: { backgroundColor: C.label },
+  sortPillText: { fontSize: 11, fontWeight: '600', color: C.secondary },
+  sortPillTextActive: { color: C.bg },
+  teamRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 12, padding: 14, marginBottom: 8, borderWidth: 1, borderColor: C.divider },
   teamLogo: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
-  teamLogoText: { fontSize: 13, fontWeight: '800', color: WHITE, letterSpacing: 0.5 },
-  teamName: { fontSize: 15, fontWeight: '700', color: WHITE },
-  teamMeta: { fontSize: 12, color: GRAY, marginTop: 2 },
-  teamBadge: { backgroundColor: '#0B0F14', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 },
-  teamBadgeText: { fontSize: 13, fontWeight: '700', color: WHITE },
+  teamLogoText: { fontSize: 13, fontWeight: '800', color: C.label, letterSpacing: 0.5 },
+  teamName: { fontSize: 15, fontWeight: '700', color: C.label },
+  teamMeta: { fontSize: 12, color: C.secondary, marginTop: 2 },
+  teamBadge: { backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4 },
+  teamBadgeText: { fontSize: 13, fontWeight: '700', color: C.label },
   teamSheetLogo: { width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
-  teamSheetLogoText: { fontSize: 18, fontWeight: '800', color: WHITE, letterSpacing: 0.5 },
-  teamSheetStat: { flex: 1, backgroundColor: '#0B0F14', borderRadius: 10, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: DIVIDER },
-  teamSheetStatValue: { fontSize: 20, fontWeight: '800', color: WHITE },
-  teamSheetStatLabel: { fontSize: 10, fontWeight: '600', color: GRAY, letterSpacing: 0.3, marginTop: 2 },
-  teamSheetPlayerRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: DIVIDER },
+  teamSheetLogoText: { fontSize: 18, fontWeight: '800', color: C.label, letterSpacing: 0.5 },
+  teamSheetStat: { flex: 1, backgroundColor: C.surface, borderRadius: 10, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: C.divider },
+  teamSheetStatValue: { fontSize: 20, fontWeight: '800', color: C.label },
+  teamSheetStatLabel: { fontSize: 10, fontWeight: '600', color: C.secondary, letterSpacing: 0.3, marginTop: 2 },
+  teamSheetPlayerRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.divider },
   emptyBoardCta: { alignItems: 'center', paddingVertical: 40 },
-  emptyBoardTitle: { fontSize: 16, fontWeight: '700', color: WHITE, marginBottom: 6 },
-  emptyBoardSub: { fontSize: 13, color: GRAY, textAlign: 'center' },
+  emptyBoardTitle: { fontSize: 16, fontWeight: '700', color: C.label, marginBottom: 6 },
+  emptyBoardSub: { fontSize: 13, color: C.secondary, textAlign: 'center' },
 
   // Quick actions sheet
   qaToggleRow: { flexDirection: 'row', gap: 8, marginBottom: 14 },
-  qaTogglePill: { flex: 1, paddingVertical: 8, borderRadius: 10, backgroundColor: '#0B0F14', alignItems: 'center' },
-  qaTogglePillActive: { backgroundColor: '#FFFFFF' },
-  qaToggleText: { fontSize: 13, fontWeight: '600', color: '#A1A1AA' },
-  qaToggleTextActive: { color: '#111' },
-  qaSection: { fontSize: 10, fontWeight: '700', color: GRAY, letterSpacing: 0.5, marginBottom: 6, marginTop: 4 },
-  qaRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: DIVIDER },
-  qaRowText: { fontSize: 15, fontWeight: '500', color: WHITE },
+  qaTogglePill: { flex: 1, paddingVertical: 8, borderRadius: 10, backgroundColor: C.surface, alignItems: 'center' },
+  qaTogglePillActive: { backgroundColor: C.label },
+  qaToggleText: { fontSize: 13, fontWeight: '600', color: C.secondary },
+  qaToggleTextActive: { color: C.bg },
+  qaSection: { fontSize: 10, fontWeight: '700', color: C.secondary, letterSpacing: 0.5, marginBottom: 6, marginTop: 4 },
+  qaRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.divider },
+  qaRowText: { fontSize: 15, fontWeight: '500', color: C.label },
   qaDot: { width: 8, height: 8, borderRadius: 4 },
-  qaPipelinePill: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: '#0B0F14', borderWidth: 1, borderColor: 'transparent' },
-  qaPipelinePillText: { fontSize: 12, fontWeight: '600', color: GRAY },
-  qaSnapshotCard: { backgroundColor: '#0B0F14', borderRadius: 12, padding: 14, marginBottom: 14, gap: 8 },
+  qaPipelinePill: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: C.surface, borderWidth: 1, borderColor: 'transparent' },
+  qaPipelinePillText: { fontSize: 12, fontWeight: '600', color: C.secondary },
+  qaSnapshotCard: { backgroundColor: C.surface, borderRadius: 12, padding: 14, marginBottom: 14, gap: 8 },
   qaNeedsText: { fontSize: 12, color: '#F59E0B', fontWeight: '500' },
-  qaLastTouchText: { fontSize: 12, color: GRAY },
+  qaLastTouchText: { fontSize: 12, color: C.secondary },
   qaActionsRow: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 18 },
   qaActionBtn: { alignItems: 'center', gap: 6 },
   qaActionIconWrap: { width: 48, height: 48, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
-  qaActionLabel: { fontSize: 11, fontWeight: '600', color: '#FFFFFF' },
-  qaLogRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: DIVIDER, gap: 10 },
+  qaActionLabel: { fontSize: 11, fontWeight: '600', color: C.label },
+  qaLogRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.divider, gap: 10 },
   qaLogIcon: { width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
   qaLogIconText: { fontSize: 13, fontWeight: '700' },
-  qaLogBody: { fontSize: 13, fontWeight: '500', color: '#FFFFFF', lineHeight: 18 },
-  qaLogTime: { fontSize: 11, color: '#A1A1AA', marginTop: 1 },
+  qaLogBody: { fontSize: 13, fontWeight: '500', color: C.label, lineHeight: 18 },
+  qaLogTime: { fontSize: 11, color: C.secondary, marginTop: 1 },
   qaLogTag: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
   qaLogTagText: { fontSize: 10, fontWeight: '700' },
-  qaMovePill: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 12, borderWidth: 1, backgroundColor: '#0B0F14' },
-  qaMovePillText: { fontSize: 12, fontWeight: '600', color: '#FFFFFF' },
-  qaEmptyText: { fontSize: 13, color: GRAY, paddingVertical: 12 },
-  qaHeaderMeta: { fontSize: 12, color: GRAY, marginBottom: 8 },
-  qaMetaLine: { fontSize: 12, color: '#A1A1AA', lineHeight: 18 },
+  qaMovePill: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 12, borderWidth: 1, backgroundColor: C.surface },
+  qaMovePillText: { fontSize: 12, fontWeight: '600', color: C.label },
+  qaEmptyText: { fontSize: 13, color: C.secondary, paddingVertical: 12 },
+  qaHeaderMeta: { fontSize: 12, color: C.secondary, marginBottom: 8 },
+  qaMetaLine: { fontSize: 12, color: C.secondary, lineHeight: 18 },
   qaTempPill: { paddingHorizontal: 10, paddingVertical: 3, borderRadius: 8 },
   qaTempText: { fontSize: 11, fontWeight: '700' },
-  qaDetailBlock: { backgroundColor: '#0B0F14', borderRadius: 12, padding: 14, marginBottom: 10, gap: 6 },
-  qaDetailRow: { fontSize: 12, color: '#A1A1AA', lineHeight: 18 },
-  qaDetailLabel: { fontWeight: '700', color: GRAY, fontSize: 11 },
+  qaDetailBlock: { backgroundColor: C.surface, borderRadius: 12, padding: 14, marginBottom: 10, gap: 6 },
+  qaDetailRow: { fontSize: 12, color: C.secondary, lineHeight: 18 },
+  qaDetailLabel: { fontWeight: '700', color: C.secondary, fontSize: 11 },
   qaRelBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
-  qaRiskChip: { backgroundColor: '#EF444425', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, borderWidth: 1, borderColor: '#EF444440' },
-  qaRiskChipText: { fontSize: 10, fontWeight: '600', color: '#EF4444' },
-  qaDdCheck: { width: 18, height: 18, borderRadius: 4, borderWidth: 1.5, borderColor: GRAY, alignItems: 'center' as const, justifyContent: 'center' as const },
-  qaDdCheckDone: { backgroundColor: '#22C55E', borderColor: '#22C55E' },
-  qaConfirmBox: { backgroundColor: '#0B0F14', borderRadius: 12, padding: 16, marginBottom: 10, borderWidth: 1, borderColor: '#F59E0B60' },
+  qaRiskChip: { backgroundColor: `${C.red}25`, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, borderWidth: 1, borderColor: `${C.red}40` },
+  qaRiskChipText: { fontSize: 10, fontWeight: '600', color: C.red },
+  qaDdCheck: { width: 18, height: 18, borderRadius: 4, borderWidth: 1.5, borderColor: C.secondary, alignItems: 'center' as const, justifyContent: 'center' as const },
+  qaDdCheckDone: { backgroundColor: C.green, borderColor: C.green },
+  qaConfirmBox: { backgroundColor: C.surface, borderRadius: 12, padding: 16, marginBottom: 10, borderWidth: 1, borderColor: '#F59E0B60' },
   qaConfirmBtn: { flex: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center' as const },
-  qaLogComposer: { backgroundColor: '#0B0F14', borderRadius: 12, padding: 12, marginBottom: 10 },
-  qaLogTypeChip: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, borderWidth: 1, borderColor: DIVIDER, backgroundColor: '#0B0F14' },
-  qaLogInput: { flex: 1, backgroundColor: '#0B0F14', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8, color: WHITE, fontSize: 13, maxHeight: 80 },
+  qaLogComposer: { backgroundColor: C.surface, borderRadius: 12, padding: 12, marginBottom: 10 },
+  qaLogTypeChip: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, borderWidth: 1, borderColor: C.divider, backgroundColor: C.surface },
+  qaLogInput: { flex: 1, backgroundColor: C.surface, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8, color: C.label, fontSize: 13, maxHeight: 80 },
   qaLogSendBtn: { alignSelf: 'flex-end' as const, paddingBottom: 4 },
 
   // Add selection mode
-  addSelectionBanner: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#0B0F14', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 10, marginBottom: 10 },
-  addSelectionText: { fontSize: 13, fontWeight: '600', color: '#22C55E' },
-  addSelectionDone: { fontSize: 13, fontWeight: '700', color: WHITE },
+  addSelectionBanner: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: C.surface, paddingHorizontal: 14, paddingVertical: 10, borderRadius: 10, marginBottom: 10 },
+  addSelectionText: { fontSize: 13, fontWeight: '600', color: C.green },
+  addSelectionDone: { fontSize: 13, fontWeight: '700', color: C.label },
   addToBoardBtn: { position: 'absolute', top: 14, right: 14, zIndex: 10 },
 
   // Card v2: 3-metric bar
   metricBar: {
     flexDirection: 'row',
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     borderRadius: 10,
     marginTop: 10,
     overflow: 'hidden',
@@ -2356,7 +2359,7 @@ const styles = StyleSheet.create({
   metricLabel: {
     fontSize: 9,
     fontWeight: '700',
-    color: GRAY,
+    color: C.secondary,
     letterSpacing: 0.5,
     marginBottom: 2,
   },
@@ -2366,7 +2369,7 @@ const styles = StyleSheet.create({
   },
   metricDivider: {
     width: StyleSheet.hairlineWidth,
-    backgroundColor: '#52525B',
+    backgroundColor: C.divider,
     marginVertical: 8,
   },
 
@@ -2402,7 +2405,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingTop: 8,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: DIVIDER,
+    borderTopColor: C.divider,
   },
   crmField: {
     flex: 1,
@@ -2410,14 +2413,14 @@ const styles = StyleSheet.create({
   crmFieldLabel: {
     fontSize: 9,
     fontWeight: '700',
-    color: GRAY,
+    color: C.secondary,
     letterSpacing: 0.5,
     marginBottom: 2,
   },
   crmFieldValue: {
     fontSize: 12,
     fontWeight: '500',
-    color: WHITE,
+    color: C.label,
   },
 
   // Board info strip on PlayerRatingCard (kept for backwards compat)
@@ -2426,7 +2429,7 @@ const styles = StyleSheet.create({
   boardPriorityText: { fontSize: 11, fontWeight: '800', letterSpacing: 0.3 },
   boardStatusBadge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 },
   boardStatusText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.3 },
-  boardTagChip: { backgroundColor: '#0B0F14', paddingHorizontal: 7, paddingVertical: 2, borderRadius: 4 },
-  boardTagText: { fontSize: 10, fontWeight: '600', color: GRAY },
-  boardTagMore: { fontSize: 10, fontWeight: '600', color: GRAY },
+  boardTagChip: { backgroundColor: C.surface, paddingHorizontal: 7, paddingVertical: 2, borderRadius: 4 },
+  boardTagText: { fontSize: 10, fontWeight: '600', color: C.secondary },
+  boardTagMore: { fontSize: 10, fontWeight: '600', color: C.secondary },
 });

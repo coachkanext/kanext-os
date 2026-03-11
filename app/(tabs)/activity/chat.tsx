@@ -24,6 +24,7 @@ import { ChatComposer } from '@/components/messages/chat-composer';
 import { RequestRow } from '@/components/messages/request-row';
 import { RequestDetail } from '@/components/messages/request-detail';
 import { Spacing, BorderRadius } from '@/constants/theme';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import {
   MOCK_CHAT_THREADS,
   MOCK_GROUP_THREADS,
@@ -38,6 +39,8 @@ import type { RequestItem } from '@/data/mock-requests';
 
 export default function ChatScreen() {
   const insets = useSafeAreaInsets();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const [subTab, setSubTab] = useState<ChatSubTab>('primary');
   const [search, setSearch] = useState('');
   const [selectedThread, setSelectedThread] = useState<ChatThread | null>(null);
@@ -146,11 +149,11 @@ export default function ChatScreen() {
       {/* Search + New Message + Toggle */}
       <View style={styles.topRow}>
         <View style={styles.searchBar}>
-          <IconSymbol name="magnifyingglass" size={16} color="#555" />
+          <IconSymbol name="magnifyingglass" size={16} color={C.muted} />
           <TextInput
             style={styles.searchInput}
             placeholder="Search..."
-            placeholderTextColor="#555"
+            placeholderTextColor={C.muted}
             value={search}
             onChangeText={setSearch}
           />
@@ -162,7 +165,7 @@ export default function ChatScreen() {
             setNewThreadVisible(true);
           }}
         >
-          <IconSymbol name="square.and.pencil" size={20} color="#FFFFFF" />
+          <IconSymbol name="square.and.pencil" size={20} color={C.label} />
         </Pressable>
         <ChatToggle activeTab={subTab} onTabChange={setSubTab} />
       </View>
@@ -205,7 +208,7 @@ export default function ChatScreen() {
           setNewThreadVisible(true);
         }}
       >
-        <IconSymbol name="square.and.pencil" size={22} color="#000" />
+        <IconSymbol name="square.and.pencil" size={22} color={C.bg} />
       </Pressable>
 
       {/* Thread Detail Sheet */}
@@ -265,12 +268,12 @@ export default function ChatScreen() {
                           <ThemedText style={styles.msgSender}>{msg.sender}</ThemedText>
                         )}
                         <ThemedText
-                          style={[styles.msgContent, { color: msg.isMe ? '#000' : '#FFFFFF' }]}
+                          style={[styles.msgContent, { color: msg.isMe ? C.bg : C.label }]}
                         >
                           {msg.content}
                         </ThemedText>
                         <ThemedText
-                          style={[styles.msgTime, { color: msg.isMe ? 'rgba(0,0,0,0.5)' : '#A1A1AA' }]}
+                          style={[styles.msgTime, { color: msg.isMe ? C.muted : C.secondary }]}
                         >
                           {formatMessageTime(msg.timestamp)}
                         </ThemedText>
@@ -322,170 +325,171 @@ export default function ChatScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
-  topRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.md,
-    gap: 8,
-    marginBottom: Spacing.sm,
-  },
-  searchBar: {
-    flex: 1,
-    minWidth: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#111',
-    borderRadius: BorderRadius.lg,
-    paddingHorizontal: Spacing.sm + 4,
-    paddingVertical: 8,
-    gap: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 15,
-    color: '#FFFFFF',
-  },
-  newBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#0B0F14',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  listContent: {
-    paddingBottom: 100,
-  },
-  fab: {
-    position: 'absolute',
-    right: Spacing.md,
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
+const makeStyles = (C: ComponentColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: C.bg,
+    },
+    topRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: Spacing.md,
+      gap: 8,
+      marginBottom: Spacing.sm,
+    },
+    searchBar: {
+      flex: 1,
+      minWidth: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: C.surface,
+      borderRadius: BorderRadius.lg,
+      paddingHorizontal: Spacing.sm + 4,
+      paddingVertical: 8,
+      gap: 8,
+    },
+    searchInput: {
+      flex: 1,
+      fontSize: 15,
+      color: C.label,
+    },
+    newBtn: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: C.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    listContent: {
+      paddingBottom: 100,
+    },
+    fab: {
+      position: 'absolute',
+      right: Spacing.md,
+      width: 52,
+      height: 52,
+      borderRadius: 26,
+      backgroundColor: C.label,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: C.bg,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 8,
+      elevation: 8,
+    },
 
-  // Requests section
-  sectionHeader: {
-    paddingHorizontal: Spacing.md,
-    paddingTop: Spacing.md,
-    paddingBottom: Spacing.xs,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#A1A1AA',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  emptyState: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#555',
-  },
+    // Requests section
+    sectionHeader: {
+      paddingHorizontal: Spacing.md,
+      paddingTop: Spacing.md,
+      paddingBottom: Spacing.xs,
+    },
+    sectionTitle: {
+      fontSize: 14,
+      fontWeight: '700',
+      color: C.secondary,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+    },
+    emptyState: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    emptyText: {
+      fontSize: 16,
+      color: C.muted,
+    },
 
-  // Thread detail
-  threadDetail: {
-    flex: 1,
-  },
-  contextChip: {
-    backgroundColor: '#0B0F14',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 999,
-    alignSelf: 'flex-start',
-    marginBottom: Spacing.sm,
-  },
-  contextText: {
-    fontSize: 12,
-    color: '#A1A1AA',
-    fontWeight: '500',
-  },
-  participants: {
-    fontSize: 13,
-    color: '#A1A1AA',
-    marginBottom: Spacing.md,
-  },
-  messagesContainer: {
-    gap: 12,
-    marginBottom: Spacing.md,
-  },
-  dateSeparator: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginVertical: 8,
-  },
-  dateLine: {
-    flex: 1,
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: '#0B0F14',
-  },
-  dateText: {
-    fontSize: 11,
-    color: '#555',
-  },
-  bubbleRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    gap: 8,
-  },
-  msgAvatar: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#0B0F14',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  msgAvatarText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#A1A1AA',
-  },
-  bubble: {
-    maxWidth: '75%',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 16,
-  },
-  myBubble: {
-    backgroundColor: '#FFFFFF',
-    borderBottomRightRadius: 4,
-  },
-  otherBubble: {
-    backgroundColor: '#0B0F14',
-    borderBottomLeftRadius: 4,
-  },
-  msgSender: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#A1A1AA',
-    marginBottom: 2,
-  },
-  msgContent: {
-    fontSize: 15,
-    lineHeight: 20,
-  },
-  msgTime: {
-    fontSize: 11,
-    marginTop: 4,
-    alignSelf: 'flex-end',
-  },
-});
+    // Thread detail
+    threadDetail: {
+      flex: 1,
+    },
+    contextChip: {
+      backgroundColor: C.surface,
+      paddingHorizontal: 10,
+      paddingVertical: 4,
+      borderRadius: 999,
+      alignSelf: 'flex-start',
+      marginBottom: Spacing.sm,
+    },
+    contextText: {
+      fontSize: 12,
+      color: C.secondary,
+      fontWeight: '500',
+    },
+    participants: {
+      fontSize: 13,
+      color: C.secondary,
+      marginBottom: Spacing.md,
+    },
+    messagesContainer: {
+      gap: 12,
+      marginBottom: Spacing.md,
+    },
+    dateSeparator: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      marginVertical: 8,
+    },
+    dateLine: {
+      flex: 1,
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: C.separator,
+    },
+    dateText: {
+      fontSize: 11,
+      color: C.muted,
+    },
+    bubbleRow: {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      gap: 8,
+    },
+    msgAvatar: {
+      width: 28,
+      height: 28,
+      borderRadius: 14,
+      backgroundColor: C.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    msgAvatarText: {
+      fontSize: 11,
+      fontWeight: '600',
+      color: C.secondary,
+    },
+    bubble: {
+      maxWidth: '75%',
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      borderRadius: 16,
+    },
+    myBubble: {
+      backgroundColor: C.bubbleSent,
+      borderBottomRightRadius: 4,
+    },
+    otherBubble: {
+      backgroundColor: C.bubbleReceived,
+      borderBottomLeftRadius: 4,
+    },
+    msgSender: {
+      fontSize: 12,
+      fontWeight: '600',
+      color: C.secondary,
+      marginBottom: 2,
+    },
+    msgContent: {
+      fontSize: 15,
+      lineHeight: 20,
+    },
+    msgTime: {
+      fontSize: 11,
+      marginTop: 4,
+      alignSelf: 'flex-end',
+    },
+  });

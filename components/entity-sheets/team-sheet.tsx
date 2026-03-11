@@ -9,9 +9,9 @@ import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
 import { useAccentColor } from '@/hooks/use-accent-color';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { getKRColor, CLUSTER_ORDER, CLUSTER_LABELS } from '@/utils/kr-display';
 import type { TeamCardData } from '@/utils/global-entity-sheets';
 import { openPlayerSheet, openCoachSheet } from '@/utils/global-entity-sheets';
@@ -57,11 +57,11 @@ interface Props {
 }
 
 export function TeamSheet({ visible, onClose, data }: Props) {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
+  const C = useColors();
   const accent = useAccentColor();
   const [activeTab, setActiveTab] = useState<Tab>('overview');
   const [lens, setLens] = useState<LensKey>('overall');
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   // Reset tab when sheet reopens
   React.useEffect(() => {
@@ -133,52 +133,52 @@ export function TeamSheet({ visible, onClose, data }: Props) {
             <Text style={styles.initialsText}>{initials}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.teamName, { color: colors.text }]}>{data.name}</Text>
-            <Text style={[styles.subline, { color: colors.textSecondary }]}>
+            <Text style={styles.teamName}>{data.name}</Text>
+            <Text style={styles.subline}>
               {[data.level, data.conference].filter(Boolean).join(' · ') || '—'}
             </Text>
             {data.record && (
-              <Text style={[styles.recordText, { color: colors.textSecondary }]}>{data.record}</Text>
+              <Text style={styles.recordText}>{data.record}</Text>
             )}
           </View>
         </View>
 
         {/* ── STICKY TEAM RATING STRIP ── */}
-        <View style={[styles.ratingStrip, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={styles.ratingStrip}>
           <View style={styles.ratingStripMain}>
             {data.teamKR != null && (
               <View style={[styles.ratingBadge, { backgroundColor: krColor + '20' }]}>
                 <Text style={[styles.ratingBadgeVal, { color: krColor }]}>{Math.round(data.teamKR)}</Text>
-                <Text style={[styles.ratingBadgeLabel, { color: colors.textTertiary }]}>KR</Text>
+                <Text style={styles.ratingBadgeLabel}>KR</Text>
               </View>
             )}
             {data.offKR != null && (
               <View style={styles.ratingMini}>
                 <Text style={[styles.ratingMiniVal, { color: getKRColor(data.offKR) }]}>{Math.round(data.offKR)}</Text>
-                <Text style={[styles.ratingMiniLabel, { color: colors.textTertiary }]}>OFF</Text>
+                <Text style={styles.ratingMiniLabel}>OFF</Text>
               </View>
             )}
             {data.defKR != null && (
               <View style={styles.ratingMini}>
                 <Text style={[styles.ratingMiniVal, { color: getKRColor(data.defKR) }]}>{Math.round(data.defKR)}</Text>
-                <Text style={[styles.ratingMiniLabel, { color: colors.textTertiary }]}>DEF</Text>
+                <Text style={styles.ratingMiniLabel}>DEF</Text>
               </View>
             )}
           </View>
           {/* Systems summary */}
           <View style={styles.systemsSummaryRow}>
             {(data.osie || teamSystem?.offSystem) && (
-              <Text style={[styles.systemsTag, { color: colors.textTertiary }]}>
+              <Text style={styles.systemsTag}>
                 OFF: {data.osie || teamSystem?.offSystem || '—'}
               </Text>
             )}
             {(data.dsie || teamSystem?.defSystem) && (
-              <Text style={[styles.systemsTag, { color: colors.textTertiary }]}>
+              <Text style={styles.systemsTag}>
                 DEF: {data.dsie || teamSystem?.defSystem || '—'}
               </Text>
             )}
             {teamSystem?.paceBand && (
-              <Text style={[styles.systemsTag, { color: colors.textTertiary }]}>
+              <Text style={styles.systemsTag}>
                 TEMPO: {teamSystem.paceBand}
               </Text>
             )}
@@ -186,7 +186,7 @@ export function TeamSheet({ visible, onClose, data }: Props) {
         </View>
 
         {/* ── TAB PILLS ── */}
-        <View style={[styles.tabRow, { backgroundColor: colors.card }]}>
+        <View style={styles.tabRow}>
           {TABS.map((tab) => {
             const active = activeTab === tab.key;
             return (
@@ -198,7 +198,7 @@ export function TeamSheet({ visible, onClose, data }: Props) {
                   setActiveTab(tab.key);
                 }}
               >
-                <Text style={[styles.tabText, { color: active ? accent : colors.textSecondary }]}>
+                <Text style={[styles.tabText, { color: active ? accent : C.secondary }]}>
                   {tab.label}
                 </Text>
               </Pressable>
@@ -216,12 +216,12 @@ export function TeamSheet({ visible, onClose, data }: Props) {
           {activeTab === 'overview' && (
             <>
               {/* System Identity */}
-              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>SYSTEM IDENTITY</Text>
+              <View style={styles.card}>
+                <Text style={styles.sectionTitle}>SYSTEM IDENTITY</Text>
                 <View style={styles.systemPair}>
                   <View style={styles.systemHalf}>
-                    <Text style={[styles.systemLabel, { color: colors.textTertiary }]}>OFFENSE</Text>
-                    <Text style={[styles.systemValue, { color: colors.text }]}>{data.osie || teamSystem?.offSystem || '—'}</Text>
+                    <Text style={styles.systemLabel}>OFFENSE</Text>
+                    <Text style={styles.systemValue}>{data.osie || teamSystem?.offSystem || '—'}</Text>
                     {(data.osieScore ?? teamSystem?.offSystemScore) != null && (
                       <Text style={[styles.systemScore, { color: getKRColor(data.osieScore ?? teamSystem?.offSystemScore) }]}>
                         {Math.round((data.osieScore ?? teamSystem?.offSystemScore)!)}
@@ -229,8 +229,8 @@ export function TeamSheet({ visible, onClose, data }: Props) {
                     )}
                   </View>
                   <View style={styles.systemHalf}>
-                    <Text style={[styles.systemLabel, { color: colors.textTertiary }]}>DEFENSE</Text>
-                    <Text style={[styles.systemValue, { color: colors.text }]}>{data.dsie || teamSystem?.defSystem || '—'}</Text>
+                    <Text style={styles.systemLabel}>DEFENSE</Text>
+                    <Text style={styles.systemValue}>{data.dsie || teamSystem?.defSystem || '—'}</Text>
                     {(data.dsieScore ?? teamSystem?.defSystemScore) != null && (
                       <Text style={[styles.systemScore, { color: getKRColor(data.dsieScore ?? teamSystem?.defSystemScore) }]}>
                         {Math.round((data.dsieScore ?? teamSystem?.defSystemScore)!)}
@@ -241,25 +241,25 @@ export function TeamSheet({ visible, onClose, data }: Props) {
               </View>
 
               {/* Record */}
-              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>RECORD</Text>
+              <View style={styles.card}>
+                <Text style={styles.sectionTitle}>RECORD</Text>
                 <View style={styles.recordRow}>
                   <View style={styles.recordItem}>
-                    <Text style={[styles.recordLabel, { color: colors.textTertiary }]}>OVERALL</Text>
-                    <Text style={[styles.recordValue, { color: colors.text }]}>{data.record || '—'}</Text>
+                    <Text style={styles.recordLabel}>OVERALL</Text>
+                    <Text style={styles.recordValue}>{data.record || '—'}</Text>
                   </View>
                   {data.confRecord && (
                     <View style={styles.recordItem}>
-                      <Text style={[styles.recordLabel, { color: colors.textTertiary }]}>CONF</Text>
-                      <Text style={[styles.recordValue, { color: colors.text }]}>{data.confRecord}</Text>
+                      <Text style={styles.recordLabel}>CONF</Text>
+                      <Text style={styles.recordValue}>{data.confRecord}</Text>
                     </View>
                   )}
                 </View>
               </View>
 
               {/* Rotation Snapshot */}
-              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>ROTATION SNAPSHOT</Text>
+              <View style={styles.card}>
+                <Text style={styles.sectionTitle}>ROTATION SNAPSHOT</Text>
                 {rotationSnapshot.length > 0 ? (
                   rotationSnapshot.map((p, i) => {
                     const pKrColor = getKRColor(p.kr);
@@ -272,10 +272,10 @@ export function TeamSheet({ visible, onClose, data }: Props) {
                           openPlayerSheet(toGlobalPlayerCard(p));
                         }}
                       >
-                        <Text style={[styles.rotationRank, { color: colors.textTertiary }]}>{i + 1}</Text>
+                        <Text style={styles.rotationRank}>{i + 1}</Text>
                         <View style={{ flex: 1 }}>
-                          <Text style={[styles.rotationName, { color: colors.text }]}>{p.name}</Text>
-                          <Text style={[styles.rotationPos, { color: colors.textSecondary }]}>{p.position}</Text>
+                          <Text style={styles.rotationName}>{p.name}</Text>
+                          <Text style={styles.rotationPos}>{p.position}</Text>
                         </View>
                         {p.kr != null && (
                           <Text style={[styles.rotationKR, { color: pKrColor }]}>{Math.round(p.kr)}</Text>
@@ -284,7 +284,7 @@ export function TeamSheet({ visible, onClose, data }: Props) {
                     );
                   })
                 ) : (
-                  <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
+                  <Text style={styles.placeholderText}>
                     No roster data available for rotation snapshot.
                   </Text>
                 )}
@@ -292,23 +292,23 @@ export function TeamSheet({ visible, onClose, data }: Props) {
 
               {/* Strengths / Risks */}
               {data.strengths && data.strengths.length > 0 && (
-                <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>STRENGTHS</Text>
+                <View style={styles.card}>
+                  <Text style={styles.sectionTitle}>STRENGTHS</Text>
                   {data.strengths.map((s, i) => (
                     <View key={i} style={styles.listRow}>
-                      <Text style={[styles.bullet, { color: '#22C55E' }]}>{'\u2022'}</Text>
-                      <Text style={[styles.listText, { color: colors.text }]}>{s}</Text>
+                      <Text style={[styles.bullet, { color: C.green }]}>{'\u2022'}</Text>
+                      <Text style={styles.listText}>{s}</Text>
                     </View>
                   ))}
                 </View>
               )}
               {data.risks && data.risks.length > 0 && (
-                <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>RISKS</Text>
+                <View style={styles.card}>
+                  <Text style={styles.sectionTitle}>RISKS</Text>
                   {data.risks.map((r, i) => (
                     <View key={i} style={styles.listRow}>
-                      <Text style={[styles.bullet, { color: '#EF4444' }]}>{'\u2022'}</Text>
-                      <Text style={[styles.listText, { color: colors.text }]}>{r}</Text>
+                      <Text style={[styles.bullet, { color: C.red }]}>{'\u2022'}</Text>
+                      <Text style={styles.listText}>{r}</Text>
                     </View>
                   ))}
                 </View>
@@ -335,7 +335,7 @@ export function TeamSheet({ visible, onClose, data }: Props) {
                           setLens(opt.key);
                         }}
                       >
-                        <Text style={[styles.lensPillText, { color: active ? accent : colors.textSecondary }]}>
+                        <Text style={[styles.lensPillText, { color: active ? accent : C.secondary }]}>
                           {opt.label}
                         </Text>
                       </Pressable>
@@ -346,8 +346,8 @@ export function TeamSheet({ visible, onClose, data }: Props) {
 
               {/* Coaching staff */}
               {data.coaches && data.coaches.length > 0 && (
-                <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>COACHING STAFF</Text>
+                <View style={styles.card}>
+                  <Text style={styles.sectionTitle}>COACHING STAFF</Text>
                   {data.coaches.map((coach, i) => (
                     <Pressable
                       key={i}
@@ -363,8 +363,8 @@ export function TeamSheet({ visible, onClose, data }: Props) {
                         </Text>
                       </View>
                       <View style={{ flex: 1 }}>
-                        <Text style={[styles.personName, { color: colors.text }]}>{coach.name}</Text>
-                        <Text style={[styles.personRole, { color: colors.textSecondary }]}>{coach.title}</Text>
+                        <Text style={styles.personName}>{coach.name}</Text>
+                        <Text style={styles.personRole}>{coach.title}</Text>
                       </View>
                     </Pressable>
                   ))}
@@ -372,8 +372,8 @@ export function TeamSheet({ visible, onClose, data }: Props) {
               )}
 
               {/* Player roster */}
-              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>
+              <View style={styles.card}>
+                <Text style={styles.sectionTitle}>
                   ROSTER ({sortedRoster.length})
                 </Text>
                 {sortedRoster.length > 0 ? (
@@ -390,21 +390,21 @@ export function TeamSheet({ visible, onClose, data }: Props) {
                         }}
                       >
                         <View style={{ flex: 1 }}>
-                          <Text style={[styles.rosterName, { color: colors.text }]}>{p.name}</Text>
-                          <Text style={[styles.rosterMeta, { color: colors.textSecondary }]}>
+                          <Text style={styles.rosterName}>{p.name}</Text>
+                          <Text style={styles.rosterMeta}>
                             {p.position} · {p.height}{p.weight ? ` · ${p.weight}` : ''} · {p.classYear}
                           </Text>
                         </View>
                         {score != null ? (
                           <Text style={[styles.rosterScore, { color: scoreColor }]}>{Math.round(score)}</Text>
                         ) : (
-                          <Text style={[styles.rosterScore, { color: colors.textTertiary }]}>—</Text>
+                          <Text style={styles.rosterScoreMuted}>—</Text>
                         )}
                       </Pressable>
                     );
                   })
                 ) : (
-                  <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
+                  <Text style={styles.placeholderText}>
                     No roster data available.
                   </Text>
                 )}
@@ -418,23 +418,23 @@ export function TeamSheet({ visible, onClose, data }: Props) {
           {activeTab === 'stats' && (
             <>
               {/* KR Breakdown */}
-              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>TEAM KR</Text>
+              <View style={styles.card}>
+                <Text style={styles.sectionTitle}>TEAM KR</Text>
                 <View style={styles.krBreakdownRow}>
                   <View style={styles.krBreakdownItem}>
-                    <Text style={[styles.krBreakdownLabel, { color: colors.textTertiary }]}>OFF KR</Text>
+                    <Text style={styles.krBreakdownLabel}>OFF KR</Text>
                     <Text style={[styles.krBreakdownValue, { color: getKRColor(data.offKR) }]}>
                       {data.offKR != null ? Math.round(data.offKR) : '—'}
                     </Text>
                   </View>
                   <View style={styles.krBreakdownItem}>
-                    <Text style={[styles.krBreakdownLabel, { color: colors.textTertiary }]}>DEF KR</Text>
+                    <Text style={styles.krBreakdownLabel}>DEF KR</Text>
                     <Text style={[styles.krBreakdownValue, { color: getKRColor(data.defKR) }]}>
                       {data.defKR != null ? Math.round(data.defKR) : '—'}
                     </Text>
                   </View>
                   <View style={styles.krBreakdownItem}>
-                    <Text style={[styles.krBreakdownLabel, { color: colors.textTertiary }]}>TEAM KR</Text>
+                    <Text style={styles.krBreakdownLabel}>TEAM KR</Text>
                     <Text style={[styles.krBreakdownValue, { color: krColor }]}>
                       {data.teamKR != null ? Math.round(data.teamKR) : '—'}
                     </Text>
@@ -443,8 +443,8 @@ export function TeamSheet({ visible, onClose, data }: Props) {
               </View>
 
               {/* Stat Leaders */}
-              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>STAT LEADERS</Text>
+              <View style={styles.card}>
+                <Text style={styles.sectionTitle}>STAT LEADERS</Text>
                 {statLeaders ? (
                   <>
                     {statLeaders.ppg && statLeaders.ppg.ppg != null && (
@@ -455,8 +455,8 @@ export function TeamSheet({ visible, onClose, data }: Props) {
                           openPlayerSheet(toGlobalPlayerCard(statLeaders.ppg));
                         }}
                       >
-                        <Text style={[styles.leaderCategory, { color: colors.textTertiary }]}>PPG</Text>
-                        <Text style={[styles.leaderName, { color: colors.text }]}>{statLeaders.ppg.name}</Text>
+                        <Text style={styles.leaderCategory}>PPG</Text>
+                        <Text style={styles.leaderName}>{statLeaders.ppg.name}</Text>
                         <Text style={[styles.leaderValue, { color: accent }]}>{statLeaders.ppg.ppg?.toFixed(1)}</Text>
                       </Pressable>
                     )}
@@ -468,8 +468,8 @@ export function TeamSheet({ visible, onClose, data }: Props) {
                           openPlayerSheet(toGlobalPlayerCard(statLeaders.rpg));
                         }}
                       >
-                        <Text style={[styles.leaderCategory, { color: colors.textTertiary }]}>RPG</Text>
-                        <Text style={[styles.leaderName, { color: colors.text }]}>{statLeaders.rpg.name}</Text>
+                        <Text style={styles.leaderCategory}>RPG</Text>
+                        <Text style={styles.leaderName}>{statLeaders.rpg.name}</Text>
                         <Text style={[styles.leaderValue, { color: accent }]}>{statLeaders.rpg.rpg?.toFixed(1)}</Text>
                       </Pressable>
                     )}
@@ -481,14 +481,14 @@ export function TeamSheet({ visible, onClose, data }: Props) {
                           openPlayerSheet(toGlobalPlayerCard(statLeaders.apg));
                         }}
                       >
-                        <Text style={[styles.leaderCategory, { color: colors.textTertiary }]}>APG</Text>
-                        <Text style={[styles.leaderName, { color: colors.text }]}>{statLeaders.apg.name}</Text>
+                        <Text style={styles.leaderCategory}>APG</Text>
+                        <Text style={styles.leaderName}>{statLeaders.apg.name}</Text>
                         <Text style={[styles.leaderValue, { color: accent }]}>{statLeaders.apg.apg?.toFixed(1)}</Text>
                       </Pressable>
                     )}
                   </>
                 ) : (
-                  <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
+                  <Text style={styles.placeholderText}>
                     No stat data available.
                   </Text>
                 )}
@@ -501,15 +501,15 @@ export function TeamSheet({ visible, onClose, data }: Props) {
               ════════════════════════════════════════════ */}
           {activeTab === 'video' && (
             <>
-              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>RECENT VIDEOS</Text>
-                <Text style={[styles.placeholderText, { color: colors.textTertiary }]}>
+              <View style={styles.card}>
+                <Text style={styles.sectionTitle}>RECENT VIDEOS</Text>
+                <Text style={styles.placeholderText}>
                   No video clips available yet.
                 </Text>
               </View>
 
-              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                <Text style={[styles.sectionTitle, { color: colors.textTertiary }]}>SHORTCUTS</Text>
+              <View style={styles.card}>
+                <Text style={styles.sectionTitle}>SHORTCUTS</Text>
                 <Pressable
                   style={[styles.shortcutBtn, { backgroundColor: accent + '10', borderColor: accent + '30' }]}
                   onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
@@ -532,7 +532,7 @@ export function TeamSheet({ visible, onClose, data }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   headerSection: { padding: Spacing.md, paddingBottom: 0, gap: Spacing.sm },
   scroll: { maxHeight: '100%' },
   tabContent: { padding: Spacing.md, paddingTop: Spacing.sm, gap: Spacing.sm, paddingBottom: 30 },
@@ -540,57 +540,57 @@ const styles = StyleSheet.create({
   // Identity
   identityRow: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   initialsCircle: { width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
-  initialsText: { fontSize: 20, fontWeight: '800', color: '#fff', letterSpacing: 1 },
-  teamName: { fontSize: 18, fontWeight: '800', letterSpacing: -0.5 },
-  subline: { fontSize: 13, fontWeight: '700', letterSpacing: 0.5, marginTop: 2 },
-  recordText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3, marginTop: 2 },
+  initialsText: { fontSize: 20, fontWeight: '800', color: C.label, letterSpacing: 1 },
+  teamName: { fontSize: 18, fontWeight: '800', letterSpacing: -0.5, color: C.label },
+  subline: { fontSize: 13, fontWeight: '700', letterSpacing: 0.5, marginTop: 2, color: C.secondary },
+  recordText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.3, marginTop: 2, color: C.secondary },
 
   // Sticky Rating Strip
-  ratingStrip: { borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, padding: Spacing.sm, gap: 6 },
+  ratingStrip: { borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, padding: Spacing.sm, gap: 6, backgroundColor: C.surface, borderColor: C.separator },
   ratingStripMain: { flexDirection: 'row', alignItems: 'center', gap: 16, justifyContent: 'center' },
   ratingBadge: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 10, alignItems: 'center' },
   ratingBadgeVal: { fontSize: 24, fontWeight: '900', letterSpacing: -0.5 },
-  ratingBadgeLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 1 },
+  ratingBadgeLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 1, color: C.muted },
   ratingMini: { alignItems: 'center' },
   ratingMiniVal: { fontSize: 16, fontWeight: '800', letterSpacing: -0.3 },
-  ratingMiniLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 0.5 },
+  ratingMiniLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 0.5, color: C.muted },
   systemsSummaryRow: { flexDirection: 'row', justifyContent: 'center', gap: 10 },
-  systemsTag: { fontSize: 10, fontWeight: '600', letterSpacing: 0.3 },
+  systemsTag: { fontSize: 10, fontWeight: '600', letterSpacing: 0.3, color: C.muted },
 
   // Tab pills
-  tabRow: { flexDirection: 'row', borderRadius: 10, padding: 3, gap: 4 },
+  tabRow: { flexDirection: 'row', borderRadius: 10, padding: 3, gap: 4, backgroundColor: C.surface },
   tabPill: { flex: 1, paddingVertical: 7, borderRadius: 8, alignItems: 'center' },
   tabPillActive: {},
   tabText: { fontSize: 13, fontWeight: '700' },
 
   // Cards
-  card: { borderRadius: 14, borderWidth: StyleSheet.hairlineWidth, padding: Spacing.md, gap: 8 },
-  sectionTitle: { fontSize: 10, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase' },
+  card: { borderRadius: 14, borderWidth: StyleSheet.hairlineWidth, padding: Spacing.md, gap: 8, backgroundColor: C.surface, borderColor: C.separator },
+  sectionTitle: { fontSize: 10, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', color: C.muted },
 
   // System
   systemPair: { flexDirection: 'row', justifyContent: 'space-around' },
   systemHalf: { alignItems: 'center', gap: 3 },
-  systemLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase' },
-  systemValue: { fontSize: 14, fontWeight: '800', letterSpacing: -0.3 },
+  systemLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', color: C.muted },
+  systemValue: { fontSize: 14, fontWeight: '800', letterSpacing: -0.3, color: C.label },
   systemScore: { fontSize: 12, fontWeight: '700' },
 
   // Record
   recordRow: { flexDirection: 'row', justifyContent: 'space-around' },
   recordItem: { alignItems: 'center', gap: 4 },
-  recordLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase' },
-  recordValue: { fontSize: 17, fontWeight: '800', letterSpacing: -0.3 },
+  recordLabel: { fontSize: 10, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', color: C.muted },
+  recordValue: { fontSize: 17, fontWeight: '800', letterSpacing: -0.3, color: C.label },
 
   // Rotation snapshot
   rotationRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 4 },
-  rotationRank: { width: 20, fontSize: 12, fontWeight: '700', textAlign: 'center' },
-  rotationName: { fontSize: 13, fontWeight: '700' },
-  rotationPos: { fontSize: 11, fontWeight: '600', marginTop: 1 },
+  rotationRank: { width: 20, fontSize: 12, fontWeight: '700', textAlign: 'center', color: C.muted },
+  rotationName: { fontSize: 13, fontWeight: '700', color: C.label },
+  rotationPos: { fontSize: 11, fontWeight: '600', marginTop: 1, color: C.secondary },
   rotationKR: { fontSize: 14, fontWeight: '800', width: 30, textAlign: 'right' },
 
   // KR breakdown
   krBreakdownRow: { flexDirection: 'row', justifyContent: 'space-around' },
   krBreakdownItem: { alignItems: 'center', gap: 2 },
-  krBreakdownLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase' },
+  krBreakdownLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', color: C.muted },
   krBreakdownValue: { fontSize: 18, fontWeight: '800', letterSpacing: -0.3 },
 
   // Lens
@@ -600,32 +600,33 @@ const styles = StyleSheet.create({
   lensPillText: { fontSize: 12, fontWeight: '700' },
 
   // Roster
-  rosterRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(255,255,255,0.05)' },
-  rosterName: { fontSize: 14, fontWeight: '700' },
-  rosterMeta: { fontSize: 11, fontWeight: '600', marginTop: 1 },
+  rosterRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
+  rosterName: { fontSize: 14, fontWeight: '700', color: C.label },
+  rosterMeta: { fontSize: 11, fontWeight: '600', marginTop: 1, color: C.secondary },
   rosterScore: { fontSize: 16, fontWeight: '800', width: 34, textAlign: 'right' },
+  rosterScoreMuted: { fontSize: 16, fontWeight: '800', width: 34, textAlign: 'right', color: C.muted },
 
   // Stat Leaders
   leaderRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 },
-  leaderCategory: { width: 30, fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
-  leaderName: { fontSize: 13, fontWeight: '700', flex: 1 },
+  leaderCategory: { width: 30, fontSize: 10, fontWeight: '700', letterSpacing: 0.5, color: C.muted },
+  leaderName: { fontSize: 13, fontWeight: '700', flex: 1, color: C.label },
   leaderValue: { fontSize: 14, fontWeight: '800', width: 36, textAlign: 'right' },
 
   // Lists
   listRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 6 },
   bullet: { fontSize: 13, lineHeight: 18 },
-  listText: { fontSize: 13, fontWeight: '600', lineHeight: 18, flex: 1 },
+  listText: { fontSize: 13, fontWeight: '600', lineHeight: 18, flex: 1, color: C.label },
 
   // People
   personRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   personAvatar: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  personInitials: { fontSize: 14, fontWeight: '800', color: '#fff' },
-  personName: { fontSize: 14, fontWeight: '700' },
-  personRole: { fontSize: 12, fontWeight: '600', marginTop: 1 },
+  personInitials: { fontSize: 14, fontWeight: '800', color: C.label },
+  personName: { fontSize: 14, fontWeight: '700', color: C.label },
+  personRole: { fontSize: 12, fontWeight: '600', marginTop: 1, color: C.secondary },
 
   // Video shortcuts
   shortcutBtn: { paddingVertical: 10, borderRadius: 10, borderWidth: StyleSheet.hairlineWidth, alignItems: 'center' },
   shortcutBtnText: { fontSize: 14, fontWeight: '700' },
 
-  placeholderText: { fontSize: 13, fontWeight: '500', fontStyle: 'italic' },
+  placeholderText: { fontSize: 13, fontWeight: '500', fontStyle: 'italic', color: C.muted },
 });

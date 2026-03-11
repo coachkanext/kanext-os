@@ -4,7 +4,7 @@
  * Long press 0 = +. Vertically centered on screen.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -12,14 +12,7 @@ import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { initiateCall } from '@/utils/global-call';
 import { useMode } from '@/context/app-context';
-
-const C = {
-  bg: '#000000',
-  label: '#FFFFFF',
-  letters: '#A1A1AA',
-  muted: '#52525B',
-  green: '#34C759',
-};
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 const KEYS = [
   [{ d: '1', l: '' }, { d: '2', l: 'ABC' }, { d: '3', l: 'DEF' }],
@@ -31,6 +24,8 @@ const KEYS = [
 export default function DialPadScreen() {
   const insets = useSafeAreaInsets();
   const mode = useMode();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const [digits, setDigits] = useState('');
 
   const addDigit = useCallback((d: string) => {
@@ -132,7 +127,7 @@ export default function DialPadScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: C.bg,
@@ -175,7 +170,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   keyPressed: {
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: C.separator,
   },
   keyDigit: {
     fontSize: 33,
@@ -185,7 +180,7 @@ const styles = StyleSheet.create({
   keyLetters: {
     fontSize: 10,
     fontWeight: '600',
-    color: C.letters,
+    color: C.secondary,
     letterSpacing: 2,
     marginTop: -2,
   },

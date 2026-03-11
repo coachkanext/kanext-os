@@ -5,7 +5,7 @@
  *   Filters, Import, Settings.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -17,12 +17,7 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
-
-const C = {
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  separator: 'rgba(255,255,255,0.08)',
-};
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 const NAV_ITEMS = [
   { icon: 'line.3.horizontal.decrease', label: 'Filters', route: '/(tabs)/(main)/agenda/filters' },
@@ -32,6 +27,8 @@ const NAV_ITEMS = [
 
 export function AgendaPanel() {
   const router = useRouter();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   const navigateTo = (route: string) => {
     closeSidePanel();
@@ -67,7 +64,7 @@ export function AgendaPanel() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {},
   title: {
     fontSize: 18,

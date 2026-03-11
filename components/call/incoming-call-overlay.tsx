@@ -3,12 +3,13 @@
  * Three buttons: Decline (red), Accept Audio (green), Accept Video (green camera).
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import {
   subscribeIncomingCall,
   acceptIncomingCall,
@@ -17,15 +18,9 @@ import {
 } from '@/utils/global-call';
 import { MODE_BADGE_COLORS, MODE_BADGE_LABELS } from '@/data/mock-phone';
 
-const C = {
-  bg: '#000000',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  green: '#34D399',
-  red: '#EF4444',
-};
-
 export function IncomingCallOverlay() {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
   const [call, setCall] = useState<IncomingCall | null>(null);
 
@@ -100,7 +95,7 @@ export function IncomingCallOverlay() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     position: 'absolute',
     top: 0,
@@ -121,7 +116,7 @@ const styles = StyleSheet.create({
     width: 112,
     height: 112,
     borderRadius: 56,
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,

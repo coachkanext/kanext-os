@@ -19,6 +19,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useMode } from '@/context/app-context';
 import { OfficeContent } from '@/components/office/office-content';
 import { CampusContent } from '@/components/campus/campus-content';
@@ -48,167 +49,7 @@ import {
 import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  green: '#22C55E',
-  red: '#EF4444',
-  amber: '#F59E0B',
-  orange: '#F97316',
-  blue: '#3B82F6',
-};
-
-// ─── Page Top Bar ────────────────────────────────────────────────────────────
-
-function PageTopBar({ title }: { title: string }) {
-  return (
-    <View style={s.topBar}>
-      <Text style={s.topBarTitle}>{title}</Text>
-    </View>
-  );
-}
-
-// ─── Record Header ───────────────────────────────────────────────────────────
-
-function RecordHeader() {
-  return (
-    <View style={s.recordCard}>
-      <View style={s.recordRow}>
-        <View style={s.recordStat}>
-          <Text style={s.recordValue}>{SEASON_RECORD.wins}-{SEASON_RECORD.losses}</Text>
-          <Text style={s.recordLabel}>Overall</Text>
-        </View>
-        <View style={[s.recordStat, s.recordStatBorder]}>
-          <Text style={s.recordValue}>{SEASON_RECORD.confWins}-{SEASON_RECORD.confLosses}</Text>
-          <Text style={s.recordLabel}>Conference</Text>
-        </View>
-        <View style={s.recordStat}>
-          <Text style={s.recordValue}>{SEASON_RECORD.confStanding}</Text>
-          <Text style={s.recordLabel}>Standing</Text>
-        </View>
-      </View>
-    </View>
-  );
-}
-
-// ─── Stat Leaders Strip ──────────────────────────────────────────────────────
-
-function StatLeadersStrip() {
-  return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={s.leadersScroll}
-    >
-      {STAT_LEADERS.map((leader) => (
-        <Pressable key={leader.label} style={s.leaderCard}>
-          <View style={s.leaderAvatar}>
-            <Text style={s.leaderInitials}>{leader.initials}</Text>
-          </View>
-          <View style={s.leaderInfo}>
-            <Text style={s.leaderStatLabel}>{leader.label}</Text>
-            <Text style={s.leaderStatValue}>{leader.value}</Text>
-            <Text style={s.leaderName} numberOfLines={1}>{leader.playerName}</Text>
-          </View>
-        </Pressable>
-      ))}
-    </ScrollView>
-  );
-}
-
-// ─── Team KR Badge ───────────────────────────────────────────────────────────
-
-function TeamKRBadge() {
-  const trendIcon = TEAM_KR.trend === 'rising' ? '▲' : TEAM_KR.trend === 'falling' ? '▼' : '─';
-  const trendColor = TEAM_KR.trend === 'rising' ? C.green : TEAM_KR.trend === 'falling' ? C.red : C.secondary;
-
-  return (
-    <View style={s.krRow}>
-      <Text style={s.krLabel}>Team KR</Text>
-      <View style={s.krBadge}>
-        <Text style={s.krValue}>{TEAM_KR.rating}</Text>
-        <Text style={[s.krTrend, { color: trendColor }]}>{trendIcon}</Text>
-      </View>
-    </View>
-  );
-}
-
-// ─── Game Row ────────────────────────────────────────────────────────────────
-
-function GameRow({
-  game,
-  onLongPress,
-}: {
-  game: GameItem;
-  onLongPress: (pageY: number) => void;
-}) {
-  return (
-    <Pressable
-      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
-      onLongPress={(e) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        onLongPress(e.nativeEvent.pageY);
-      }}
-      delayLongPress={400}
-    >
-      {/* Opponent avatar */}
-      <View style={s.gameAvatar}>
-        <Text style={s.gameAvatarText}>{game.opponentInitials}</Text>
-      </View>
-
-      {/* Info */}
-      <View style={s.rowContent}>
-        <View style={s.gameNameRow}>
-          <Text style={s.rowName} numberOfLines={1}>{game.opponent}</Text>
-          <View style={[s.hwBadge, { backgroundColor: game.homeAway === 'home' ? C.green + '22' : C.amber + '22' }]}>
-            <Text style={[s.hwBadgeText, { color: game.homeAway === 'home' ? C.green : C.amber }]}>
-              {game.homeAway === 'home' ? 'HOME' : 'AWAY'}
-            </Text>
-          </View>
-          {game.conference && (
-            <View style={s.confBadge}>
-              <Text style={s.confBadgeText}>Conf</Text>
-            </View>
-          )}
-        </View>
-        <Text style={s.gameMeta}>{game.date} · {game.time}</Text>
-      </View>
-
-      {/* Right: result / upcoming / live */}
-      <View style={s.gameRight}>
-        {game.status === 'completed' && (
-          <>
-            <Text style={[s.gameResult, { color: game.result === 'W' ? C.green : C.red }]}>
-              {game.result}
-            </Text>
-            <Text style={s.gameScore}>{game.score}-{game.opponentScore}</Text>
-          </>
-        )}
-        {game.status === 'upcoming' && (
-          <>
-            <Text style={s.gameKR}>KR {game.opponentKR}</Text>
-            <Text style={s.gameProb}>{game.winProbability}%</Text>
-          </>
-        )}
-        {game.status === 'live' && (
-          <>
-            <View style={s.liveBadge}>
-              <Text style={s.liveBadgeText}>LIVE</Text>
-            </View>
-            <Text style={s.liveScore}>{game.liveScore}</Text>
-            <Text style={s.livePeriod}>{game.livePeriod}</Text>
-          </>
-        )}
-      </View>
-    </Pressable>
-  );
-}
-
-// ─── Film Filter Pills ──────────────────────────────────────────────────────
+// ─── Film Filter data ──────────────────────────────────────────────────────
 
 const FILM_FILTERS: { key: FilmCategory; label: string }[] = [
   { key: 'all', label: 'All' },
@@ -218,93 +59,7 @@ const FILM_FILTERS: { key: FilmCategory; label: string }[] = [
   { key: 'clips', label: 'Clips' },
 ];
 
-function FilmFilterPills({
-  active,
-  onSelect,
-}: {
-  active: FilmCategory;
-  onSelect: (f: FilmCategory) => void;
-}) {
-  return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={s.filterRow}
-    >
-      {FILM_FILTERS.map((f) => {
-        const isActive = active === f.key;
-        return (
-          <Pressable
-            key={f.key}
-            style={[s.filterPill, isActive && s.filterPillActive]}
-            onPress={() => onSelect(f.key)}
-          >
-            <Text style={[s.filterText, isActive && s.filterTextActive]}>{f.label}</Text>
-          </Pressable>
-        );
-      })}
-    </ScrollView>
-  );
-}
-
-// ─── Film Row ────────────────────────────────────────────────────────────────
-
-function FilmRow({
-  film,
-  onLongPress,
-}: {
-  film: FilmItem;
-  onLongPress: (pageY: number) => void;
-}) {
-  const categoryLabel = film.category.charAt(0).toUpperCase() + film.category.slice(1);
-  return (
-    <Pressable
-      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
-      onLongPress={(e) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        onLongPress(e.nativeEvent.pageY);
-      }}
-      delayLongPress={400}
-    >
-      {/* Thumbnail */}
-      <View style={[s.filmThumb, { backgroundColor: film.thumbnailColor }]}>
-        <Image
-          source={{ uri: film.thumbnailUri }}
-          style={s.filmThumbImage}
-          resizeMode="cover"
-        />
-        {/* Overlays sit above the image */}
-        <View style={s.filmOverlayContainer}>
-          <View style={s.filmPlayOverlay}>
-            <IconSymbol name="play.fill" size={14} color="#FFFFFF" />
-          </View>
-        </View>
-        <View style={s.filmDurationBadge}>
-          <Text style={s.filmDurationText}>{film.duration}</Text>
-        </View>
-      </View>
-
-      <View style={s.rowContent}>
-        <View style={s.filmTitleRow}>
-          <Text style={s.rowName} numberOfLines={1}>{film.title}</Text>
-        </View>
-        <View style={s.filmMetaRow}>
-          <View style={s.filmTypeBadge}>
-            <Text style={s.filmTypeBadgeText}>{categoryLabel}</Text>
-          </View>
-          <Text style={s.filmMetaText}>{film.date}</Text>
-          {film.hasPlayVision && (
-            <View style={s.pvBadge}>
-              <Text style={s.pvBadgeText}>PV</Text>
-            </View>
-          )}
-        </View>
-      </View>
-    </Pressable>
-  );
-}
-
-// ─── Dev Section Pills ───────────────────────────────────────────────────────
+// ─── Dev Section data ───────────────────────────────────────────────────────
 
 const DEV_SECTIONS: { key: DevSection; label: string }[] = [
   { key: 'practice', label: 'Practice' },
@@ -313,121 +68,7 @@ const DEV_SECTIONS: { key: DevSection; label: string }[] = [
   { key: 'eligibility', label: 'Eligibility' },
 ];
 
-function DevSectionPills({
-  active,
-  onSelect,
-}: {
-  active: DevSection;
-  onSelect: (s: DevSection) => void;
-}) {
-  return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={s.filterRow}
-    >
-      {DEV_SECTIONS.map((sec) => {
-        const isActive = active === sec.key;
-        return (
-          <Pressable
-            key={sec.key}
-            style={[s.filterPill, isActive && s.filterPillActive]}
-            onPress={() => onSelect(sec.key)}
-          >
-            <Text style={[s.filterText, isActive && s.filterTextActive]}>{sec.label}</Text>
-          </Pressable>
-        );
-      })}
-    </ScrollView>
-  );
-}
-
-// ─── Practice Plan Row ───────────────────────────────────────────────────────
-
-function PracticePlanRow({
-  plan,
-  onLongPress,
-}: {
-  plan: PracticePlan;
-  onLongPress: (pageY: number) => void;
-}) {
-  return (
-    <Pressable
-      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
-      onLongPress={(e) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        onLongPress(e.nativeEvent.pageY);
-      }}
-      delayLongPress={400}
-    >
-      <View style={s.practiceIcon}>
-        <IconSymbol name="sportscourt.fill" size={18} color={C.secondary} />
-      </View>
-      <View style={s.rowContent}>
-        <View style={s.practiceNameRow}>
-          <Text style={s.rowName}>{plan.focusArea}</Text>
-          {plan.upcoming && (
-            <View style={s.upcomingBadge}>
-              <Text style={s.upcomingBadgeText}>Upcoming</Text>
-            </View>
-          )}
-        </View>
-        <Text style={s.practiceMeta}>{plan.date} · {plan.duration} · {plan.drillCount} drills</Text>
-      </View>
-    </Pressable>
-  );
-}
-
-// ─── Dev Player Row ──────────────────────────────────────────────────────────
-
-function DevPlayerRow({
-  player,
-  onLongPress,
-}: {
-  player: DevPlayer;
-  onLongPress: (pageY: number) => void;
-}) {
-  const trendIcon = player.krTrend === 'rising' ? '▲' : player.krTrend === 'falling' ? '▼' : '─';
-  const trendColor = player.krTrend === 'rising' ? C.green : player.krTrend === 'falling' ? C.red : C.secondary;
-
-  return (
-    <Pressable
-      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
-      onLongPress={(e) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        onLongPress(e.nativeEvent.pageY);
-      }}
-      delayLongPress={400}
-    >
-      <View style={s.devAvatar}>
-        <Text style={s.devInitials}>{player.initials}</Text>
-      </View>
-      <View style={s.rowContent}>
-        <View style={s.devNameRow}>
-          <Text style={s.rowName} numberOfLines={1}>{player.name}</Text>
-          <Text style={s.devNumber}>#{player.number}</Text>
-          <Text style={s.devPosition}>{player.position}</Text>
-        </View>
-        <View style={s.devMetaRow}>
-          <Text style={s.devKR}>KR {player.krRating}</Text>
-          <Text style={[s.devTrend, { color: trendColor }]}>{trendIcon}</Text>
-          <View style={s.devFocusTag}>
-            <Text style={s.devFocusText}>{player.devFocus}</Text>
-          </View>
-        </View>
-      </View>
-    </Pressable>
-  );
-}
-
-// ─── Health Row ──────────────────────────────────────────────────────────────
-
-const HEALTH_COLORS: Record<string, string> = {
-  healthy: C.green,
-  'day-to-day': C.amber,
-  out: C.orange,
-  'season-ending': C.red,
-};
+// ─── Health / Eligibility labels ────────────────────────────────────────────
 
 const HEALTH_LABELS: Record<string, string> = {
   healthy: 'Healthy',
@@ -436,107 +77,11 @@ const HEALTH_LABELS: Record<string, string> = {
   'season-ending': 'Season',
 };
 
-function HealthRow({
-  entry,
-  onLongPress,
-}: {
-  entry: HealthEntry;
-  onLongPress: (pageY: number) => void;
-}) {
-  const color = HEALTH_COLORS[entry.status];
-  const label = HEALTH_LABELS[entry.status];
-
-  return (
-    <Pressable
-      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
-      onLongPress={(e) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        onLongPress(e.nativeEvent.pageY);
-      }}
-      delayLongPress={400}
-    >
-      <View style={s.healthAvatar}>
-        <Text style={s.healthInitials}>{entry.initials}</Text>
-      </View>
-      <View style={s.rowContent}>
-        <Text style={s.rowName} numberOfLines={1}>{entry.playerName}</Text>
-        <View style={s.healthMetaRow}>
-          {entry.injury && <Text style={s.healthInjury}>{entry.injury}</Text>}
-          {entry.returnTimeline && <Text style={s.healthTimeline}>{entry.returnTimeline}</Text>}
-        </View>
-      </View>
-      <View style={[s.statusBadge, { backgroundColor: color + '22' }]}>
-        <Text style={[s.statusBadgeText, { color }]}>{label}</Text>
-      </View>
-    </Pressable>
-  );
-}
-
-// ─── Eligibility Row ─────────────────────────────────────────────────────────
-
-const ELIG_COLORS: Record<string, string> = {
-  eligible: C.green,
-  warning: C.amber,
-  ineligible: C.red,
-};
-
 const ELIG_LABELS: Record<string, string> = {
   eligible: 'Eligible',
   warning: 'Warning',
   ineligible: 'Ineligible',
 };
-
-function EligibilityRow({
-  entry,
-  onLongPress,
-}: {
-  entry: EligibilityEntry;
-  onLongPress: (pageY: number) => void;
-}) {
-  const color = ELIG_COLORS[entry.eligStatus];
-  const label = ELIG_LABELS[entry.eligStatus];
-
-  return (
-    <Pressable
-      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
-      onLongPress={(e) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        onLongPress(e.nativeEvent.pageY);
-      }}
-      delayLongPress={400}
-    >
-      <View style={s.eligAvatar}>
-        <Text style={s.eligInitials}>{entry.initials}</Text>
-      </View>
-      <View style={s.rowContent}>
-        <Text style={s.rowName} numberOfLines={1}>{entry.playerName}</Text>
-        <View style={s.eligMetaRow}>
-          <Text style={s.eligMeta}>GPA {entry.gpa}</Text>
-          <Text style={s.eligMeta}>{entry.credits} credits</Text>
-        </View>
-      </View>
-      <View style={[s.statusBadge, { backgroundColor: color + '22' }]}>
-        <Text style={[s.statusBadgeText, { color }]}>{label}</Text>
-      </View>
-    </Pressable>
-  );
-}
-
-// ─── FAB ─────────────────────────────────────────────────────────────────────
-
-function FAB({ onPress }: { onPress: () => void }) {
-  return (
-    <Pressable
-      style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
-      onPress={() => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        onPress();
-      }}
-    >
-      <IconSymbol name="plus" size={24} color="#FFFFFF" />
-    </Pressable>
-  );
-}
 
 // ─── Main Screen ─────────────────────────────────────────────────────────────
 
@@ -550,11 +95,27 @@ export default function SeasonScreen() {
 
 function SportsSeasonContent() {
   const insets = useSafeAreaInsets();
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
 
   const [pageIndex, setPageIndex] = useState(0);
   const [menuData, setMenuData] = useState<ContextMenuData | null>(null);
   const [filmFilter, setFilmFilter] = useState<FilmCategory>('all');
   const [devSection, setDevSection] = useState<DevSection>('practice');
+
+  // Health / eligibility color maps (derived from C)
+  const HEALTH_COLORS: Record<string, string> = useMemo(() => ({
+    healthy: C.green,
+    'day-to-day': C.amber,
+    out: C.orange,
+    'season-ending': C.red,
+  }), [C]);
+
+  const ELIG_COLORS: Record<string, string> = useMemo(() => ({
+    eligible: C.green,
+    warning: C.amber,
+    ineligible: C.red,
+  }), [C]);
 
   // ── Data ──
   const filteredFilm = useMemo(() => {
@@ -697,6 +258,10 @@ function SportsSeasonContent() {
     });
   }, []);
 
+  // Team KR trend
+  const trendIcon = TEAM_KR.trend === 'rising' ? '\u25B2' : TEAM_KR.trend === 'falling' ? '\u25BC' : '\u2500';
+  const trendColor = TEAM_KR.trend === 'rising' ? C.green : TEAM_KR.trend === 'falling' ? C.red : C.secondary;
+
   return (
     <View style={[s.container, { paddingTop: insets.top }]}>
       <SwipeablePages
@@ -707,7 +272,9 @@ function SportsSeasonContent() {
         {/* ── PAGE 0: GAMES ── */}
         <View style={{ flex: 1 }}>
           <View style={{ paddingTop: 16 }}>
-            <PageTopBar title="Games" />
+            <View style={s.topBar}>
+              <Text style={s.topBarTitle}>Games</Text>
+            </View>
           </View>
           <ScrollView
             style={s.pageScroll}
@@ -716,17 +283,114 @@ function SportsSeasonContent() {
             scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
           >
-            <RecordHeader />
-            <StatLeadersStrip />
-            <TeamKRBadge />
+            {/* Record Header */}
+            <View style={s.recordCard}>
+              <View style={s.recordRow}>
+                <View style={s.recordStat}>
+                  <Text style={s.recordValue}>{SEASON_RECORD.wins}-{SEASON_RECORD.losses}</Text>
+                  <Text style={s.recordLabel}>Overall</Text>
+                </View>
+                <View style={[s.recordStat, s.recordStatBorder]}>
+                  <Text style={s.recordValue}>{SEASON_RECORD.confWins}-{SEASON_RECORD.confLosses}</Text>
+                  <Text style={s.recordLabel}>Conference</Text>
+                </View>
+                <View style={s.recordStat}>
+                  <Text style={s.recordValue}>{SEASON_RECORD.confStanding}</Text>
+                  <Text style={s.recordLabel}>Standing</Text>
+                </View>
+              </View>
+            </View>
+
+            {/* Stat Leaders Strip */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={s.leadersScroll}
+            >
+              {STAT_LEADERS.map((leader) => (
+                <Pressable key={leader.label} style={s.leaderCard}>
+                  <View style={s.leaderAvatar}>
+                    <Text style={s.leaderInitials}>{leader.initials}</Text>
+                  </View>
+                  <View style={s.leaderInfo}>
+                    <Text style={s.leaderStatLabel}>{leader.label}</Text>
+                    <Text style={s.leaderStatValue}>{leader.value}</Text>
+                    <Text style={s.leaderName} numberOfLines={1}>{leader.playerName}</Text>
+                  </View>
+                </Pressable>
+              ))}
+            </ScrollView>
+
+            {/* Team KR Badge */}
+            <View style={s.krRow}>
+              <Text style={s.krLabel}>Team KR</Text>
+              <View style={s.krBadge}>
+                <Text style={s.krValue}>{TEAM_KR.rating}</Text>
+                <Text style={[s.krTrend, { color: trendColor }]}>{trendIcon}</Text>
+              </View>
+            </View>
 
             {GAMES.map((game, idx) => (
               <View key={game.id}>
                 {idx > 0 && <View style={s.separator} />}
-                <GameRow
-                  game={game}
-                  onLongPress={(pageY) => longPressGame(game, pageY)}
-                />
+                <Pressable
+                  style={({ pressed }) => [s.row, pressed && s.rowPressed]}
+                  onLongPress={(e) => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                    longPressGame(game, e.nativeEvent.pageY);
+                  }}
+                  delayLongPress={400}
+                >
+                  {/* Opponent avatar */}
+                  <View style={s.gameAvatar}>
+                    <Text style={s.gameAvatarText}>{game.opponentInitials}</Text>
+                  </View>
+
+                  {/* Info */}
+                  <View style={s.rowContent}>
+                    <View style={s.gameNameRow}>
+                      <Text style={s.rowName} numberOfLines={1}>{game.opponent}</Text>
+                      <View style={[s.hwBadge, { backgroundColor: game.homeAway === 'home' ? C.green + '22' : C.amber + '22' }]}>
+                        <Text style={[s.hwBadgeText, { color: game.homeAway === 'home' ? C.green : C.amber }]}>
+                          {game.homeAway === 'home' ? 'HOME' : 'AWAY'}
+                        </Text>
+                      </View>
+                      {game.conference && (
+                        <View style={s.confBadge}>
+                          <Text style={s.confBadgeText}>Conf</Text>
+                        </View>
+                      )}
+                    </View>
+                    <Text style={s.gameMeta}>{game.date} · {game.time}</Text>
+                  </View>
+
+                  {/* Right: result / upcoming / live */}
+                  <View style={s.gameRight}>
+                    {game.status === 'completed' && (
+                      <>
+                        <Text style={[s.gameResult, { color: game.result === 'W' ? C.green : C.red }]}>
+                          {game.result}
+                        </Text>
+                        <Text style={s.gameScore}>{game.score}-{game.opponentScore}</Text>
+                      </>
+                    )}
+                    {game.status === 'upcoming' && (
+                      <>
+                        <Text style={s.gameKR}>KR {game.opponentKR}</Text>
+                        <Text style={s.gameProb}>{game.winProbability}%</Text>
+                      </>
+                    )}
+                    {game.status === 'live' && (
+                      <>
+                        <View style={s.liveBadge}>
+                          <Text style={s.liveBadgeText}>LIVE</Text>
+                        </View>
+                        <Text style={s.liveScore}>{game.liveScore}</Text>
+                        <Text style={s.livePeriod}>{game.livePeriod}</Text>
+                      </>
+                    )}
+                  </View>
+                </Pressable>
               </View>
             ))}
           </ScrollView>
@@ -735,8 +399,27 @@ function SportsSeasonContent() {
         {/* ── PAGE 1: FILM ── */}
         <View style={{ flex: 1 }}>
           <View style={{ paddingTop: 16 }}>
-            <PageTopBar title="Film" />
-            <FilmFilterPills active={filmFilter} onSelect={setFilmFilter} />
+            <View style={s.topBar}>
+              <Text style={s.topBarTitle}>Film</Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={s.filterRow}
+            >
+              {FILM_FILTERS.map((f) => {
+                const isActive = filmFilter === f.key;
+                return (
+                  <Pressable
+                    key={f.key}
+                    style={[s.filterPill, isActive && s.filterPillActive]}
+                    onPress={() => setFilmFilter(f.key)}
+                  >
+                    <Text style={[s.filterText, isActive && s.filterTextActive]}>{f.label}</Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
           </View>
           <ScrollView
             style={s.pageScroll}
@@ -751,26 +434,95 @@ function SportsSeasonContent() {
                 <Text style={s.emptyText}>No film</Text>
               </View>
             ) : (
-              filteredFilm.map((film, idx) => (
-                <View key={film.id}>
-                  {idx > 0 && <View style={s.separator} />}
-                  <FilmRow
-                    film={film}
-                    onLongPress={(pageY) => longPressFilm(film, pageY)}
-                  />
-                </View>
-              ))
+              filteredFilm.map((film, idx) => {
+                const categoryLabel = film.category.charAt(0).toUpperCase() + film.category.slice(1);
+                return (
+                  <View key={film.id}>
+                    {idx > 0 && <View style={s.separator} />}
+                    <Pressable
+                      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
+                      onLongPress={(e) => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        longPressFilm(film, e.nativeEvent.pageY);
+                      }}
+                      delayLongPress={400}
+                    >
+                      {/* Thumbnail */}
+                      <View style={[s.filmThumb, { backgroundColor: film.thumbnailColor }]}>
+                        <Image
+                          source={{ uri: film.thumbnailUri }}
+                          style={s.filmThumbImage}
+                          resizeMode="cover"
+                        />
+                        <View style={s.filmOverlayContainer}>
+                          <View style={s.filmPlayOverlay}>
+                            <IconSymbol name="play.fill" size={14} color={C.label} />
+                          </View>
+                        </View>
+                        <View style={s.filmDurationBadge}>
+                          <Text style={s.filmDurationText}>{film.duration}</Text>
+                        </View>
+                      </View>
+
+                      <View style={s.rowContent}>
+                        <View style={s.filmTitleRow}>
+                          <Text style={s.rowName} numberOfLines={1}>{film.title}</Text>
+                        </View>
+                        <View style={s.filmMetaRow}>
+                          <View style={s.filmTypeBadge}>
+                            <Text style={s.filmTypeBadgeText}>{categoryLabel}</Text>
+                          </View>
+                          <Text style={s.filmMetaText}>{film.date}</Text>
+                          {film.hasPlayVision && (
+                            <View style={s.pvBadge}>
+                              <Text style={s.pvBadgeText}>PV</Text>
+                            </View>
+                          )}
+                        </View>
+                      </View>
+                    </Pressable>
+                  </View>
+                );
+              })
             )}
           </ScrollView>
 
-          {pageIndex === 1 && <FAB onPress={() => {}} />}
+          {pageIndex === 1 && (
+            <Pressable
+              style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              }}
+            >
+              <IconSymbol name="plus" size={24} color={C.label} />
+            </Pressable>
+          )}
         </View>
 
         {/* ── PAGE 2: DEVELOPMENT ── */}
         <View style={{ flex: 1 }}>
           <View style={{ paddingTop: 16 }}>
-            <PageTopBar title="Development" />
-            <DevSectionPills active={devSection} onSelect={setDevSection} />
+            <View style={s.topBar}>
+              <Text style={s.topBarTitle}>Development</Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={s.filterRow}
+            >
+              {DEV_SECTIONS.map((sec) => {
+                const isActive = devSection === sec.key;
+                return (
+                  <Pressable
+                    key={sec.key}
+                    style={[s.filterPill, isActive && s.filterPillActive]}
+                    onPress={() => setDevSection(sec.key)}
+                  >
+                    <Text style={[s.filterText, isActive && s.filterTextActive]}>{sec.label}</Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
           </View>
           <ScrollView
             style={s.pageScroll}
@@ -783,14 +535,15 @@ function SportsSeasonContent() {
             {devSection === 'practice' && practicePlans.map((plan, idx) => (
               <View key={plan.id}>
                 {idx > 0 && <View style={s.separator} />}
-                <PracticePlanRow
-                  plan={plan}
-                  onLongPress={(pageY) => {
+                <Pressable
+                  style={({ pressed }) => [s.row, pressed && s.rowPressed]}
+                  onLongPress={(e) => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                     setMenuData({
                       title: plan.focusArea,
                       subtitle: `${plan.date} · ${plan.duration}`,
                       initials: 'PP',
-                      pageY,
+                      pageY: e.nativeEvent.pageY,
                       actions: [
                         { key: 'view', label: 'View Plan', icon: 'doc.text.fill' },
                         { key: 'edit', label: 'Edit', icon: 'pencil' },
@@ -800,45 +553,140 @@ function SportsSeasonContent() {
                       onAction: () => {},
                     });
                   }}
-                />
+                  delayLongPress={400}
+                >
+                  <View style={s.practiceIcon}>
+                    <IconSymbol name="sportscourt.fill" size={18} color={C.secondary} />
+                  </View>
+                  <View style={s.rowContent}>
+                    <View style={s.practiceNameRow}>
+                      <Text style={s.rowName}>{plan.focusArea}</Text>
+                      {plan.upcoming && (
+                        <View style={s.upcomingBadge}>
+                          <Text style={s.upcomingBadgeText}>Upcoming</Text>
+                        </View>
+                      )}
+                    </View>
+                    <Text style={s.practiceMeta}>{plan.date} · {plan.duration} · {plan.drillCount} drills</Text>
+                  </View>
+                </Pressable>
               </View>
             ))}
 
             {/* Players */}
-            {devSection === 'players' && devPlayers.map((player, idx) => (
-              <View key={player.id}>
-                {idx > 0 && <View style={s.separator} />}
-                <DevPlayerRow
-                  player={player}
-                  onLongPress={(pageY) => longPressDevPlayer(player, pageY)}
-                />
-              </View>
-            ))}
+            {devSection === 'players' && devPlayers.map((player, idx) => {
+              const pTrendIcon = player.krTrend === 'rising' ? '\u25B2' : player.krTrend === 'falling' ? '\u25BC' : '\u2500';
+              const pTrendColor = player.krTrend === 'rising' ? C.green : player.krTrend === 'falling' ? C.red : C.secondary;
+              return (
+                <View key={player.id}>
+                  {idx > 0 && <View style={s.separator} />}
+                  <Pressable
+                    style={({ pressed }) => [s.row, pressed && s.rowPressed]}
+                    onLongPress={(e) => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                      longPressDevPlayer(player, e.nativeEvent.pageY);
+                    }}
+                    delayLongPress={400}
+                  >
+                    <View style={s.devAvatar}>
+                      <Text style={s.devInitials}>{player.initials}</Text>
+                    </View>
+                    <View style={s.rowContent}>
+                      <View style={s.devNameRow}>
+                        <Text style={s.rowName} numberOfLines={1}>{player.name}</Text>
+                        <Text style={s.devNumber}>#{player.number}</Text>
+                        <Text style={s.devPosition}>{player.position}</Text>
+                      </View>
+                      <View style={s.devMetaRow}>
+                        <Text style={s.devKR}>KR {player.krRating}</Text>
+                        <Text style={[s.devTrend, { color: pTrendColor }]}>{pTrendIcon}</Text>
+                        <View style={s.devFocusTag}>
+                          <Text style={s.devFocusText}>{player.devFocus}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </Pressable>
+                </View>
+              );
+            })}
 
             {/* Health */}
-            {devSection === 'health' && healthRoster.map((entry, idx) => (
-              <View key={entry.id}>
-                {idx > 0 && <View style={s.separator} />}
-                <HealthRow
-                  entry={entry}
-                  onLongPress={(pageY) => longPressHealth(entry, pageY)}
-                />
-              </View>
-            ))}
+            {devSection === 'health' && healthRoster.map((entry, idx) => {
+              const hColor = HEALTH_COLORS[entry.status];
+              const hLabel = HEALTH_LABELS[entry.status];
+              return (
+                <View key={entry.id}>
+                  {idx > 0 && <View style={s.separator} />}
+                  <Pressable
+                    style={({ pressed }) => [s.row, pressed && s.rowPressed]}
+                    onLongPress={(e) => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                      longPressHealth(entry, e.nativeEvent.pageY);
+                    }}
+                    delayLongPress={400}
+                  >
+                    <View style={s.healthAvatar}>
+                      <Text style={s.healthInitials}>{entry.initials}</Text>
+                    </View>
+                    <View style={s.rowContent}>
+                      <Text style={s.rowName} numberOfLines={1}>{entry.playerName}</Text>
+                      <View style={s.healthMetaRow}>
+                        {entry.injury && <Text style={s.healthInjury}>{entry.injury}</Text>}
+                        {entry.returnTimeline && <Text style={s.healthTimeline}>{entry.returnTimeline}</Text>}
+                      </View>
+                    </View>
+                    <View style={[s.statusBadge, { backgroundColor: hColor + '22' }]}>
+                      <Text style={[s.statusBadgeText, { color: hColor }]}>{hLabel}</Text>
+                    </View>
+                  </Pressable>
+                </View>
+              );
+            })}
 
             {/* Eligibility */}
-            {devSection === 'eligibility' && eligibilityRoster.map((entry, idx) => (
-              <View key={entry.id}>
-                {idx > 0 && <View style={s.separator} />}
-                <EligibilityRow
-                  entry={entry}
-                  onLongPress={(pageY) => longPressEligibility(entry, pageY)}
-                />
-              </View>
-            ))}
+            {devSection === 'eligibility' && eligibilityRoster.map((entry, idx) => {
+              const eColor = ELIG_COLORS[entry.eligStatus];
+              const eLabel = ELIG_LABELS[entry.eligStatus];
+              return (
+                <View key={entry.id}>
+                  {idx > 0 && <View style={s.separator} />}
+                  <Pressable
+                    style={({ pressed }) => [s.row, pressed && s.rowPressed]}
+                    onLongPress={(e) => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                      longPressEligibility(entry, e.nativeEvent.pageY);
+                    }}
+                    delayLongPress={400}
+                  >
+                    <View style={s.eligAvatar}>
+                      <Text style={s.eligInitials}>{entry.initials}</Text>
+                    </View>
+                    <View style={s.rowContent}>
+                      <Text style={s.rowName} numberOfLines={1}>{entry.playerName}</Text>
+                      <View style={s.eligMetaRow}>
+                        <Text style={s.eligMeta}>GPA {entry.gpa}</Text>
+                        <Text style={s.eligMeta}>{entry.credits} credits</Text>
+                      </View>
+                    </View>
+                    <View style={[s.statusBadge, { backgroundColor: eColor + '22' }]}>
+                      <Text style={[s.statusBadgeText, { color: eColor }]}>{eLabel}</Text>
+                    </View>
+                  </Pressable>
+                </View>
+              );
+            })}
           </ScrollView>
 
-          {pageIndex === 2 && <FAB onPress={() => {}} />}
+          {pageIndex === 2 && (
+            <Pressable
+              style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              }}
+            >
+              <IconSymbol name="plus" size={24} color={C.label} />
+            </Pressable>
+          )}
         </View>
       </SwipeablePages>
 
@@ -850,7 +698,7 @@ function SportsSeasonContent() {
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 
@@ -889,7 +737,7 @@ const s = StyleSheet.create({
     color: C.label,
   },
   filterTextActive: {
-    color: '#000000',
+    color: C.bg,
   },
 
   // Record header
@@ -1033,7 +881,7 @@ const s = StyleSheet.create({
   gameMeta: { fontSize: 13, color: C.muted, marginTop: 2 },
   hwBadge: { paddingHorizontal: 5, paddingVertical: 1, borderRadius: 3 },
   hwBadgeText: { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
-  confBadge: { backgroundColor: 'rgba(255,255,255,0.08)', paddingHorizontal: 5, paddingVertical: 1, borderRadius: 3 },
+  confBadge: { backgroundColor: C.separator, paddingHorizontal: 5, paddingVertical: 1, borderRadius: 3 },
   confBadgeText: { fontSize: 9, fontWeight: '600', color: C.secondary },
   gameRight: { alignItems: 'flex-end' },
   gameResult: { fontSize: 16, fontWeight: '700' },
@@ -1041,7 +889,7 @@ const s = StyleSheet.create({
   gameKR: { fontSize: 12, fontWeight: '600', color: C.secondary },
   gameProb: { fontSize: 11, color: C.muted, marginTop: 1 },
   liveBadge: { backgroundColor: C.red, borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 },
-  liveBadgeText: { fontSize: 10, fontWeight: '700', color: '#FFFFFF', letterSpacing: 0.3 },
+  liveBadgeText: { fontSize: 10, fontWeight: '700', color: C.label, letterSpacing: 0.3 },
   liveScore: { fontSize: 14, fontWeight: '700', color: C.label, marginTop: 2 },
   livePeriod: { fontSize: 11, color: C.secondary, marginTop: 1 },
 
@@ -1086,11 +934,11 @@ const s = StyleSheet.create({
   filmDurationText: {
     fontSize: 9,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: C.label,
   },
   filmTitleRow: { flexDirection: 'row', alignItems: 'center' },
   filmMetaRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
-  filmTypeBadge: { backgroundColor: 'rgba(255,255,255,0.08)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
+  filmTypeBadge: { backgroundColor: C.separator, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
   filmTypeBadgeText: { fontSize: 10, fontWeight: '600', color: C.secondary },
   filmMetaText: { fontSize: 12, color: C.muted },
   pvBadge: { backgroundColor: C.blue + '22', paddingHorizontal: 5, paddingVertical: 1, borderRadius: 3 },
@@ -1126,7 +974,7 @@ const s = StyleSheet.create({
   devMetaRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 3 },
   devKR: { fontSize: 12, fontWeight: '600', color: C.secondary },
   devTrend: { fontSize: 12, fontWeight: '700' },
-  devFocusTag: { backgroundColor: 'rgba(255,255,255,0.08)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
+  devFocusTag: { backgroundColor: C.separator, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
   devFocusText: { fontSize: 10, fontWeight: '600', color: C.secondary },
 
   // Health row

@@ -3,7 +3,7 @@
  * URL, title, timestamp, notes, tags, target roles, visibility, assign toggle.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import * as Haptics from 'expo-haptics';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { Spacing, BorderRadius } from '@/constants/theme';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import type { TargetRole, LinkVisibility } from '@/data/mock-coach-library';
 
 interface SaveLinkSheetProps {
@@ -28,6 +29,9 @@ const VISIBILITY_OPTIONS: LinkVisibility[] = ['Staff', 'Team', 'Player', '1:1'];
 const TAG_OPTIONS = ['offense', 'defense', 'shooting', 'finishing', 'PnR', 'transition', 'rebounding', 'conditioning', 'system'];
 
 export function SaveLinkSheet({ visible, onClose }: SaveLinkSheetProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
+
   const [url, setUrl] = useState('');
   const [title, setTitle] = useState('');
   const [timestamp, setTimestamp] = useState('');
@@ -71,7 +75,7 @@ export function SaveLinkSheet({ visible, onClose }: SaveLinkSheetProps) {
           value={url}
           onChangeText={setUrl}
           placeholder="https://..."
-          placeholderTextColor="#52525B"
+          placeholderTextColor={C.muted}
           autoCapitalize="none"
           keyboardType="url"
         />
@@ -85,7 +89,7 @@ export function SaveLinkSheet({ visible, onClose }: SaveLinkSheetProps) {
           value={title}
           onChangeText={setTitle}
           placeholder="Video or article title"
-          placeholderTextColor="#52525B"
+          placeholderTextColor={C.muted}
         />
       </View>
 
@@ -97,7 +101,7 @@ export function SaveLinkSheet({ visible, onClose }: SaveLinkSheetProps) {
           value={timestamp}
           onChangeText={setTimestamp}
           placeholder="e.g. 2:30"
-          placeholderTextColor="#52525B"
+          placeholderTextColor={C.muted}
           keyboardType="numbers-and-punctuation"
         />
       </View>
@@ -110,7 +114,7 @@ export function SaveLinkSheet({ visible, onClose }: SaveLinkSheetProps) {
           value={notes}
           onChangeText={setNotes}
           placeholder="Add context or teaching points..."
-          placeholderTextColor="#52525B"
+          placeholderTextColor={C.muted}
           multiline
         />
       </View>
@@ -193,67 +197,68 @@ export function SaveLinkSheet({ visible, onClose }: SaveLinkSheetProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  field: {
-    marginBottom: 14,
-  },
-  label: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: '#A1A1AA',
-    letterSpacing: 0.5,
-    marginBottom: 6,
-  },
-  input: {
-    backgroundColor: '#0B0F14',
-    borderRadius: BorderRadius.md,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 10,
-    fontSize: 14,
-    color: '#FFFFFF',
-  },
-  textArea: {
-    minHeight: 60,
-    textAlignVertical: 'top',
-  },
-  chipRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  chip: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 12,
-    backgroundColor: '#0B0F14',
-  },
-  chipActive: {
-    backgroundColor: '#FFFFFF',
-  },
-  chipText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#A1A1AA',
-  },
-  chipTextActive: {
-    color: '#111',
-  },
-  saveBtn: {
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 14,
-    borderRadius: BorderRadius.md,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  saveBtnDisabled: {
-    backgroundColor: '#0B0F14',
-  },
-  saveText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#000',
-  },
-  saveTextDisabled: {
-    color: '#555',
-  },
-});
+const makeStyles = (C: ComponentColors) =>
+  StyleSheet.create({
+    field: {
+      marginBottom: 14,
+    },
+    label: {
+      fontSize: 9,
+      fontWeight: '700',
+      color: C.secondary,
+      letterSpacing: 0.5,
+      marginBottom: 6,
+    },
+    input: {
+      backgroundColor: C.surface,
+      borderRadius: BorderRadius.md,
+      paddingHorizontal: Spacing.sm,
+      paddingVertical: 10,
+      fontSize: 14,
+      color: C.label,
+    },
+    textArea: {
+      minHeight: 60,
+      textAlignVertical: 'top',
+    },
+    chipRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    chip: {
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      borderRadius: 12,
+      backgroundColor: C.surface,
+    },
+    chipActive: {
+      backgroundColor: C.label,
+    },
+    chipText: {
+      fontSize: 12,
+      fontWeight: '600',
+      color: C.secondary,
+    },
+    chipTextActive: {
+      color: C.bg,
+    },
+    saveBtn: {
+      backgroundColor: C.label,
+      paddingVertical: 14,
+      borderRadius: BorderRadius.md,
+      alignItems: 'center',
+      marginTop: 8,
+    },
+    saveBtnDisabled: {
+      backgroundColor: C.surface,
+    },
+    saveText: {
+      fontSize: 15,
+      fontWeight: '600',
+      color: C.bg,
+    },
+    saveTextDisabled: {
+      color: C.muted,
+    },
+  });

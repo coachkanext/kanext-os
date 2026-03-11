@@ -18,6 +18,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -43,23 +44,11 @@ import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  green: '#22C55E',
-  red: '#EF4444',
-  amber: '#F59E0B',
-  blue: '#3B82F6',
-  purple: '#A855F7',
-};
-
 // ─── Shared components ────────────────────────────────────────────────────
 
 function PageTopBar({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.topBar}>
       <Text style={s.topBarTitle}>{title}</Text>
@@ -76,6 +65,8 @@ function FilterPills<T extends string>({
   active: T;
   onSelect: (key: T) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <ScrollView
       horizontal
@@ -99,12 +90,16 @@ function FilterPills<T extends string>({
 }
 
 function SectionHeader({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return <Text style={s.sectionHeader}>{title}</Text>;
 }
 
 // ─── Quick Action Button ─────────────────────────────────────────────────
 
 function QuickAction({ icon, label }: { icon: string; label: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable
       style={({ pressed }) => [s.quickAction, pressed && { opacity: 0.8 }]}
@@ -127,6 +122,8 @@ function TransactionRow({
   tx: Transaction;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const isPositive = tx.amount > 0;
   return (
     <Pressable
@@ -157,6 +154,8 @@ function TransactionRow({
 // ─── Card Preview (Page 0) ───────────────────────────────────────────────
 
 function CardPreview({ onPress }: { onPress: () => void }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const card = getCardInfo();
   return (
     <Pressable
@@ -173,6 +172,8 @@ function CardPreview({ onPress }: { onPress: () => void }) {
 // ─── Card Visual (Page 1) ────────────────────────────────────────────────
 
 function CardVisual() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const card = getCardInfo();
   return (
     <Pressable
@@ -206,6 +207,8 @@ function CardVisual() {
 // ─── Card Control Button ─────────────────────────────────────────────────
 
 function CardControl({ icon, label }: { icon: string; label: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable
       style={({ pressed }) => [s.cardControl, pressed && { opacity: 0.8 }]}
@@ -230,6 +233,8 @@ const BILLER_ICONS: Record<string, string> = {
 };
 
 function BillerRow({ biller }: { biller: ReturnType<typeof getBillers>[number] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable style={({ pressed }) => [s.billerRow, pressed && { opacity: 0.85 }]}>
       <View style={s.billerIcon}>
@@ -252,6 +257,8 @@ function BillerRow({ biller }: { biller: ReturnType<typeof getBillers>[number] }
 // ─── Vault Card ──────────────────────────────────────────────────────────
 
 function VaultCard({ vault }: { vault: ReturnType<typeof getSavingsVaults>[number] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const pct = Math.min(vault.current / vault.target, 1);
   return (
     <Pressable style={({ pressed }) => [s.vaultCard, pressed && { opacity: 0.85 }]}>
@@ -273,6 +280,8 @@ function VaultCard({ vault }: { vault: ReturnType<typeof getSavingsVaults>[numbe
 // ─── Crypto Row ──────────────────────────────────────────────────────────
 
 function CryptoRow({ holding }: { holding: ReturnType<typeof getCryptoHoldings>[number] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const isUp = holding.gainLoss >= 0;
   const holdingsValue = holding.price * holding.holdings;
   return (
@@ -299,6 +308,8 @@ function CryptoRow({ holding }: { holding: ReturnType<typeof getCryptoHoldings>[
 // ═══════════════════════════════════════════════════════════════════════════
 
 export function WalletContent() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
 
   const [pageIndex, setPageIndex] = useState(0);
@@ -588,7 +599,7 @@ export function WalletContent() {
 // STYLES
 // ═══════════════════════════════════════════════════════════════════════════
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 

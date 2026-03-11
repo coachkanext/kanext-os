@@ -4,7 +4,7 @@
  * Saved Searches, Watchlist, Alerts, Comparisons, Settings.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -16,12 +16,7 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
-
-const C = {
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  separator: 'rgba(255,255,255,0.08)',
-};
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 const NAV_ITEMS = [
   { icon: 'bookmark.fill',           label: 'Saved Searches', route: '/(tabs)/(main)/recruits/saved' },
@@ -33,6 +28,8 @@ const NAV_ITEMS = [
 
 export function ProspectsPanel() {
   const router = useRouter();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   const navigateTo = (route: string) => {
     closeSidePanel();
@@ -43,7 +40,7 @@ export function ProspectsPanel() {
     <View style={styles.container}>
       <Text style={styles.title}>Prospects</Text>
 
-      {/* ── NAV ROWS ── */}
+      {/* -- NAV ROWS -- */}
       {NAV_ITEMS.map((item, idx) => (
         <Pressable
           key={item.label}
@@ -68,7 +65,7 @@ export function ProspectsPanel() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {},
   title: {
     fontSize: 18,

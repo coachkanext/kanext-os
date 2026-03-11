@@ -3,7 +3,7 @@
  * 5 navigation items: Recurring, Tax Receipts, Pledges, Analytics, Settings.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -15,12 +15,7 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
-
-const C = {
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  separator: 'rgba(255,255,255,0.08)',
-};
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 const NAV_ITEMS = [
   { icon: 'repeat',               label: 'Recurring',    route: '/(tabs)/(main)/store/recurring' },
@@ -32,6 +27,8 @@ const NAV_ITEMS = [
 
 export function GivePanel() {
   const router = useRouter();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   const navigateTo = (route: string) => {
     closeSidePanel();
@@ -66,7 +63,7 @@ export function GivePanel() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {},
   title: {
     fontSize: 18,

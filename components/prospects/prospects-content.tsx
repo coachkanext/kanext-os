@@ -20,6 +20,7 @@ import * as Haptics from 'expo-haptics';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import {
   RANKINGS_SUMMARY,
   RANKED_PLAYERS,
@@ -39,20 +40,6 @@ import {
 import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  green: '#22C55E',
-  red: '#EF4444',
-  amber: '#F59E0B',
-  blue: '#3B82F6',
-  purple: '#8B5CF6',
-};
-
 // ── Trend colors/icons ──
 
 const TREND_ICON: Record<string, string> = {
@@ -61,14 +48,16 @@ const TREND_ICON: Record<string, string> = {
   stable: 'minus',
 };
 const TREND_COLOR: Record<string, string> = {
-  rising: C.green,
-  falling: C.red,
-  stable: C.muted,
+  rising: '#22C55E',
+  falling: '#EF4444',
+  stable: '#52525B',
 };
 
 // ─── Page Top Bar ───────────────────────────────────────────────────────────
 
 function PageTopBar({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.topBar}>
       <Text style={s.topBarTitle}>{title}</Text>
@@ -87,6 +76,8 @@ function FilterPills<T extends string>({
   active: T;
   onSelect: (key: T) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <ScrollView
       horizontal
@@ -120,6 +111,8 @@ function ToggleFilterPills({
   active: Set<string>;
   onToggle: (key: string) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <ScrollView
       horizontal
@@ -147,6 +140,8 @@ function ToggleFilterPills({
 // ─── Rankings Summary Card ──────────────────────────────────────────────────
 
 function RankingsSummaryCard() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.summaryCard}>
       <View style={s.summaryHeader}>
@@ -172,6 +167,8 @@ function RankingsSummaryCard() {
 // ─── Featured Player Card (horizontal scroll) ──────────────────────────────
 
 function FeaturedPlayerCard({ player, rank }: { player: RankedPlayerItem; rank: number }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable style={s.featuredCard}>
       <View style={s.featuredAvatar}>
@@ -200,6 +197,8 @@ function RankedPlayerRow({
   rank: number;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const trendColor = TREND_COLOR[player.trend];
   const trendIcon = TREND_ICON[player.trend];
 
@@ -259,6 +258,8 @@ function DiscoverPlayerRow({
   player: DiscoverPlayerItem;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable
       style={({ pressed }) => [s.row, pressed && s.rowPressed]}
@@ -321,6 +322,8 @@ function SchoolRow({
   school: SchoolItem;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable
       style={({ pressed }) => [s.row, pressed && s.rowPressed]}
@@ -364,6 +367,8 @@ function SortRow({
   sort: DiscoverSortKey;
   onSort: (key: DiscoverSortKey) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const sortOptions: { key: DiscoverSortKey; label: string }[] = [
     { key: 'kr', label: 'KR Rating' },
     { key: 'trending', label: 'Trending' },
@@ -389,6 +394,8 @@ function SortRow({
 // ─── FAB ────────────────────────────────────────────────────────────────────
 
 function FAB({ onPress }: { onPress: () => void }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable
       style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
@@ -397,7 +404,7 @@ function FAB({ onPress }: { onPress: () => void }) {
         onPress();
       }}
     >
-      <IconSymbol name="plus" size={24} color="#FFFFFF" />
+      <IconSymbol name="plus" size={24} color={C.label} />
     </Pressable>
   );
 }
@@ -445,6 +452,8 @@ const SCHOOL_LEVEL_FILTERS: { key: SchoolLevelFilter; label: string }[] = [
 
 export function ProspectsContent() {
   const insets = useSafeAreaInsets();
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
 
   const [pageIndex, setPageIndex] = useState(0);
   const [menuData, setMenuData] = useState<ContextMenuData | null>(null);
@@ -652,7 +661,7 @@ export function ProspectsContent() {
 
 // ─── Styles ─────────────────────────────────────────────────────────────────
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 

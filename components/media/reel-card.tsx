@@ -3,7 +3,7 @@
  * Used in horizontal scroll rows and grids.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
@@ -11,6 +11,7 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BorderRadius, Spacing } from '@/constants/theme';
 import { formatDuration } from '@/data/mock-video';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import type { Reel } from '@/data/mock-video';
 
 interface ReelCardProps {
@@ -20,6 +21,9 @@ interface ReelCardProps {
 }
 
 export function ReelCard({ reel, onPress, variant = 'horizontal' }: ReelCardProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
+
   const handlePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onPress?.();
@@ -30,7 +34,7 @@ export function ReelCard({ reel, onPress, variant = 'horizontal' }: ReelCardProp
       <Pressable
         style={({ pressed }) => [
           styles.gridCard,
-          { backgroundColor: pressed ? '#0B0F14' : '#111' },
+          { backgroundColor: pressed ? C.surfacePressed : C.surface },
         ]}
         onPress={handlePress}
       >
@@ -54,7 +58,7 @@ export function ReelCard({ reel, onPress, variant = 'horizontal' }: ReelCardProp
     <Pressable
       style={({ pressed }) => [
         styles.card,
-        { backgroundColor: pressed ? '#0B0F14' : '#111' },
+        { backgroundColor: pressed ? C.surfacePressed : C.surface },
       ]}
       onPress={handlePress}
     >
@@ -83,9 +87,9 @@ export function ReelCard({ reel, onPress, variant = 'horizontal' }: ReelCardProp
           )}
         </View>
         <View style={styles.statsRow}>
-          <IconSymbol name="heart.fill" size={10} color="#555" />
+          <IconSymbol name="heart.fill" size={10} color={C.muted} />
           <ThemedText style={styles.statText}>{reel.likes}</ThemedText>
-          <IconSymbol name="bookmark.fill" size={10} color="#555" />
+          <IconSymbol name="bookmark.fill" size={10} color={C.muted} />
           <ThemedText style={styles.statText}>{reel.saves}</ThemedText>
         </View>
       </View>
@@ -93,110 +97,111 @@ export function ReelCard({ reel, onPress, variant = 'horizontal' }: ReelCardProp
   );
 }
 
-const styles = StyleSheet.create({
-  // Horizontal variant
-  card: {
-    width: 160,
-    borderRadius: BorderRadius.md,
-    overflow: 'hidden',
-    marginRight: Spacing.sm,
-  },
-  thumb: {
-    aspectRatio: 9 / 16,
-    maxHeight: 200,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  playCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingLeft: 2,
-  },
-  duration: {
-    position: 'absolute',
-    bottom: 4,
-    right: 4,
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-    borderRadius: 3,
-  },
-  durationText: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#fff',
-  },
-  content: {
-    padding: 8,
-  },
-  caption: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#FFFFFF',
-    marginBottom: 4,
-  },
-  tagRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 4,
-    marginBottom: 4,
-  },
-  tag: {
-    backgroundColor: '#0B0F14',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  tagText: {
-    fontSize: 10,
-    color: '#A1A1AA',
-    fontWeight: '500',
-  },
-  statsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  statText: {
-    fontSize: 10,
-    color: '#555',
-    marginRight: 4,
-  },
+const makeStyles = (C: ComponentColors) =>
+  StyleSheet.create({
+    // Horizontal variant
+    card: {
+      width: 160,
+      borderRadius: BorderRadius.md,
+      overflow: 'hidden',
+      marginRight: Spacing.sm,
+    },
+    thumb: {
+      aspectRatio: 9 / 16,
+      maxHeight: 200,
+      justifyContent: 'center',
+      alignItems: 'center',
+      position: 'relative',
+    },
+    playCircle: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingLeft: 2,
+    },
+    duration: {
+      position: 'absolute',
+      bottom: 4,
+      right: 4,
+      backgroundColor: 'rgba(0,0,0,0.7)',
+      paddingHorizontal: 4,
+      paddingVertical: 1,
+      borderRadius: 3,
+    },
+    durationText: {
+      fontSize: 10,
+      fontWeight: '600',
+      color: '#fff',
+    },
+    content: {
+      padding: 8,
+    },
+    caption: {
+      fontSize: 12,
+      fontWeight: '500',
+      color: C.label,
+      marginBottom: 4,
+    },
+    tagRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 4,
+      marginBottom: 4,
+    },
+    tag: {
+      backgroundColor: C.surface,
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 4,
+    },
+    tagText: {
+      fontSize: 10,
+      color: C.secondary,
+      fontWeight: '500',
+    },
+    statsRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    statText: {
+      fontSize: 10,
+      color: C.muted,
+      marginRight: 4,
+    },
 
-  // Grid variant
-  gridCard: {
-    flex: 1,
-    borderRadius: BorderRadius.md,
-    overflow: 'hidden',
-    margin: 4,
-  },
-  gridThumb: {
-    aspectRatio: 9 / 16,
-    maxHeight: 180,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  gridCaption: {
-    fontSize: 11,
-    fontWeight: '500',
-    color: '#FFFFFF',
-    paddingHorizontal: 6,
-    paddingTop: 6,
-    lineHeight: 15,
-  },
-  gridMeta: {
-    paddingHorizontal: 6,
-    paddingBottom: 6,
-    paddingTop: 2,
-  },
-  gridLikes: {
-    fontSize: 10,
-    color: '#A1A1AA',
-  },
-});
+    // Grid variant
+    gridCard: {
+      flex: 1,
+      borderRadius: BorderRadius.md,
+      overflow: 'hidden',
+      margin: 4,
+    },
+    gridThumb: {
+      aspectRatio: 9 / 16,
+      maxHeight: 180,
+      justifyContent: 'center',
+      alignItems: 'center',
+      position: 'relative',
+    },
+    gridCaption: {
+      fontSize: 11,
+      fontWeight: '500',
+      color: C.label,
+      paddingHorizontal: 6,
+      paddingTop: 6,
+      lineHeight: 15,
+    },
+    gridMeta: {
+      paddingHorizontal: 6,
+      paddingBottom: 6,
+      paddingTop: 2,
+    },
+    gridLikes: {
+      fontSize: 10,
+      color: C.secondary,
+    },
+  });

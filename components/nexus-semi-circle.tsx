@@ -24,6 +24,7 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSearchOverlay } from '@/utils/global-search-overlay';
 import { openSplitNexus, closeSplitNexus, isSplitNexusOpen } from '@/utils/global-split-nexus';
 import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils/global-multitasking';
@@ -38,6 +39,8 @@ export function NexusSemiCircle() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const accent = useAccentColor();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const lastTapRef = useRef(0);
 
   // ── Tap with double-tap detection ──────────────────────────────────
@@ -114,7 +117,7 @@ export function NexusSemiCircle() {
         >
           <View style={[styles.glowArc, { borderTopColor: accent }]} />
           <View style={styles.iconArea}>
-            <IconSymbol name="sparkles" size={30} color="#FFFFFF" />
+            <IconSymbol name="sparkles" size={30} color={C.label} />
           </View>
         </Pressable>
       </View>
@@ -122,45 +125,46 @@ export function NexusSemiCircle() {
   );
 }
 
-const styles = StyleSheet.create({
-  wrapper: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    zIndex: 10001,
-  },
-  circle: {
-    width: DIAMETER,
-    height: DIAMETER,
-    borderRadius: RADIUS,
-    backgroundColor: '#000000',
-    overflow: 'hidden',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.6,
-    shadowRadius: 12,
-    elevation: 16,
-  },
-  glowArc: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    borderRadius: RADIUS,
-    borderWidth: 1.5,
-    borderColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-  },
-  iconArea: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: RADIUS,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const makeStyles = (C: ComponentColors) =>
+  StyleSheet.create({
+    wrapper: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      alignItems: 'center',
+      zIndex: 10001,
+    },
+    circle: {
+      width: DIAMETER,
+      height: DIAMETER,
+      borderRadius: RADIUS,
+      backgroundColor: C.bg,
+      overflow: 'hidden',
+      shadowOffset: { width: 0, height: -4 },
+      shadowOpacity: 0.6,
+      shadowRadius: 12,
+      elevation: 16,
+    },
+    glowArc: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      borderRadius: RADIUS,
+      borderWidth: 1.5,
+      borderColor: 'transparent',
+      borderBottomColor: 'transparent',
+      borderLeftColor: 'transparent',
+      borderRightColor: 'transparent',
+    },
+    iconArea: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      height: RADIUS,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });

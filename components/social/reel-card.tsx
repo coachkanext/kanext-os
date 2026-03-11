@@ -3,7 +3,7 @@
  * Uses expo-av Video for actual video playback. Double-tap for like animation.
  */
 
-import React, { useRef, useState, useCallback, useEffect, Component } from 'react';
+import React, { useRef, useState, useCallback, useEffect, useMemo, Component } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import {
 import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { LikeAnimation } from './like-animation';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import type { SocialReel } from '@/data/mock-social';
 
 // Graceful fallback if expo-av native module isn't linked
@@ -63,6 +64,8 @@ export function ReelCard({
   onLikeToggle,
   onBookmarkToggle,
 }: ReelCardProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const lastTapRef = useRef(0);
   const [showLikeAnim, setShowLikeAnim] = useState(false);
@@ -165,20 +168,20 @@ export function ReelCard({
             <IconSymbol
               name={isLiked ? 'heart.fill' : 'heart'}
               size={28}
-              color={isLiked ? '#FF3B30' : '#FFFFFF'}
+              color={isLiked ? '#FF3B30' : C.label}
             />
             <Text style={styles.sideCount}>{formatCount(likeCount)}</Text>
           </Pressable>
 
           {/* Comment */}
           <View style={styles.sideItem}>
-            <IconSymbol name="bubble.right" size={28} color="#FFFFFF" />
+            <IconSymbol name="bubble.right" size={28} color={C.label} />
             <Text style={styles.sideCount}>{formatCount(reel.commentCount)}</Text>
           </View>
 
           {/* Share */}
           <View style={styles.sideItem}>
-            <IconSymbol name="paperplane" size={26} color="#FFFFFF" />
+            <IconSymbol name="paperplane" size={26} color={C.label} />
             <Text style={styles.sideCount}>{formatCount(reel.shareCount)}</Text>
           </View>
 
@@ -193,7 +196,7 @@ export function ReelCard({
             <IconSymbol
               name={isBookmarked ? 'bookmark.fill' : 'bookmark'}
               size={26}
-              color="#FFFFFF"
+              color={C.label}
             />
           </Pressable>
         </View>
@@ -221,9 +224,9 @@ export function ReelCard({
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
-    backgroundColor: '#000000',
+    backgroundColor: C.bg,
   },
   sideActions: {
     position: 'absolute',
@@ -237,7 +240,7 @@ const styles = StyleSheet.create({
   sideCount: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: C.label,
   },
   creatorAvatar: {
     width: 40,
@@ -245,7 +248,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#1C1C1E',
     borderWidth: 2,
-    borderColor: '#FFFFFF',
+    borderColor: C.label,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 4,
@@ -253,7 +256,7 @@ const styles = StyleSheet.create({
   creatorAvatarText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: C.label,
   },
   bottomOverlay: {
     position: 'absolute',
@@ -270,7 +273,7 @@ const styles = StyleSheet.create({
   creatorName: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: C.label,
   },
   creatorUsername: {
     fontSize: 13,
@@ -279,7 +282,7 @@ const styles = StyleSheet.create({
   },
   caption: {
     fontSize: 14,
-    color: '#FFFFFF',
+    color: C.label,
     marginTop: 6,
     lineHeight: 20,
   },

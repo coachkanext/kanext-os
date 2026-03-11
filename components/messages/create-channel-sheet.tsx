@@ -3,20 +3,12 @@
  * Staff-only flow opened from the FAB popup menu.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, TextInput, Pressable, Switch, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  textPrimary: '#FFFFFF',
-  textSecondary: '#A1A1AA',
-  placeholder: '#52525B',
-  border: '#2F3336',
-};
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 interface CreateChannelSheetProps {
   visible: boolean;
@@ -25,6 +17,8 @@ interface CreateChannelSheetProps {
 }
 
 export function CreateChannelSheet({ visible, onClose, accent = '#FFFFFF' }: CreateChannelSheetProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
@@ -53,7 +47,7 @@ export function CreateChannelSheet({ visible, onClose, accent = '#FFFFFF' }: Cre
           <TextInput
             style={styles.nameInput}
             placeholder="e.g. general"
-            placeholderTextColor={C.placeholder}
+            placeholderTextColor={C.muted}
             value={name}
             onChangeText={setName}
             autoFocus
@@ -69,7 +63,7 @@ export function CreateChannelSheet({ visible, onClose, accent = '#FFFFFF' }: Cre
         <TextInput
           style={styles.descInput}
           placeholder="What's this channel about?"
-          placeholderTextColor={C.placeholder}
+          placeholderTextColor={C.muted}
           value={description}
           onChangeText={setDescription}
           multiline
@@ -102,19 +96,19 @@ export function CreateChannelSheet({ visible, onClose, accent = '#FFFFFF' }: Cre
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   field: {
     marginBottom: 20,
   },
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: C.textSecondary,
+    color: C.secondary,
     marginBottom: 8,
   },
   optional: {
     fontWeight: '400',
-    color: C.placeholder,
+    color: C.muted,
   },
   nameRow: {
     flexDirection: 'row',
@@ -122,28 +116,28 @@ const styles = StyleSheet.create({
     backgroundColor: C.surface,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: C.border,
+    borderColor: C.divider,
     paddingHorizontal: 12,
   },
   hashPrefix: {
     fontSize: 17,
     fontWeight: '600',
-    color: C.textSecondary,
+    color: C.secondary,
     marginRight: 4,
   },
   nameInput: {
     flex: 1,
     fontSize: 16,
-    color: C.textPrimary,
+    color: C.label,
     paddingVertical: 12,
   },
   descInput: {
     fontSize: 15,
-    color: C.textPrimary,
+    color: C.label,
     backgroundColor: C.surface,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: C.border,
+    borderColor: C.divider,
     paddingHorizontal: 12,
     paddingVertical: 12,
     minHeight: 72,
@@ -162,11 +156,11 @@ const styles = StyleSheet.create({
   toggleLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: C.textPrimary,
+    color: C.label,
   },
   toggleDesc: {
     fontSize: 13,
-    color: C.textSecondary,
+    color: C.secondary,
     marginTop: 2,
   },
   createBtn: {
@@ -178,6 +172,6 @@ const styles = StyleSheet.create({
   createBtnText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#000000',
+    color: C.bg,
   },
 });

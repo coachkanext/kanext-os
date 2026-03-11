@@ -18,6 +18,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -43,24 +44,11 @@ import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  green: '#22C55E',
-  red: '#EF4444',
-  amber: '#F59E0B',
-  blue: '#3B82F6',
-};
-
 const STATUS_COLORS: Record<ProjectStatus, string> = {
-  active: C.blue,
-  'on-hold': C.amber,
-  completed: C.green,
-  'at-risk': C.red,
+  active: '#3B82F6',
+  'on-hold': '#F59E0B',
+  completed: '#22C55E',
+  'at-risk': '#EF4444',
 };
 
 const STATUS_LABELS: Record<ProjectStatus, string> = {
@@ -71,9 +59,9 @@ const STATUS_LABELS: Record<ProjectStatus, string> = {
 };
 
 const PRIORITY_COLORS: Record<string, string> = {
-  high: C.red,
-  medium: C.amber,
-  low: C.green,
+  high: '#EF4444',
+  medium: '#F59E0B',
+  low: '#22C55E',
 };
 
 const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
@@ -86,6 +74,9 @@ const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
 // ─── Page Top Bar ────────────────────────────────────────────────────────────
 
 function PageTopBar({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   return (
     <View style={s.topBar}>
       <Text style={s.topBarTitle}>{title}</Text>
@@ -104,6 +95,9 @@ function FilterPills<T extends string>({
   active: T;
   onSelect: (key: T) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   return (
     <ScrollView
       horizontal
@@ -129,6 +123,9 @@ function FilterPills<T extends string>({
 // ─── Project Summary Strip ──────────────────────────────────────────────────
 
 function ProjectSummaryStrip({ summary }: { summary: { total: number; active: number; onHold: number; atRisk: number } }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   return (
     <View style={s.summaryCard}>
       <View style={s.summaryRow}>
@@ -156,6 +153,9 @@ function ProjectSummaryStrip({ summary }: { summary: { total: number; active: nu
 // ─── Stacked Avatars ────────────────────────────────────────────────────────
 
 function StackedAvatars({ members, max = 4 }: { members: { initials: string }[]; max?: number }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   const shown = members.slice(0, max);
   const overflow = members.length - max;
 
@@ -184,6 +184,9 @@ function ProjectCard({
   project: ProjectItem;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   const statusColor = STATUS_COLORS[project.status];
   const statusLabel = STATUS_LABELS[project.status];
 
@@ -233,6 +236,9 @@ function ProjectCard({
 // ─── Approvals Queue ────────────────────────────────────────────────────────
 
 function ApprovalsQueue({ approvals }: { approvals: typeof PENDING_APPROVALS }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   return (
     <View style={s.approvalsCard}>
       <View style={s.approvalsHeader}>
@@ -263,6 +269,9 @@ function WorkflowViewToggle({
   active: WorkflowView;
   onSelect: (v: WorkflowView) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   return (
     <View style={s.viewToggleRow}>
       <Pressable
@@ -290,6 +299,9 @@ function KanbanTaskCard({
   task: WorkflowTask;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   const priorityColor = PRIORITY_COLORS[task.priority];
 
   return (
@@ -327,6 +339,9 @@ function KanbanColumn({
   tasks: WorkflowTask[];
   onLongPressTask: (task: WorkflowTask, pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   return (
     <View style={s.kanbanColumn}>
       <View style={s.kanbanColumnHeader}>
@@ -357,6 +372,9 @@ function KanbanBoard({
   tasks: WorkflowTask[];
   onLongPressTask: (task: WorkflowTask, pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   const grouped = useMemo(() => {
     const map: Record<TaskStatus, WorkflowTask[]> = { todo: [], 'in-progress': [], review: [], done: [] };
     tasks.forEach((t) => map[t.status].push(t));
@@ -390,6 +408,9 @@ function TaskListRow({
   task: WorkflowTask;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   const priorityColor = PRIORITY_COLORS[task.priority];
 
   return (
@@ -414,6 +435,9 @@ function TaskListRow({
 // ─── KPI Card ───────────────────────────────────────────────────────────────
 
 function KpiCardView({ kpi }: { kpi: KpiCardType }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   const isPositive = kpi.invertTrend
     ? kpi.trend === 'down'
     : kpi.trend === 'up';
@@ -455,6 +479,9 @@ function KpiCardView({ kpi }: { kpi: KpiCardType }) {
 // ─── KPI Grid ───────────────────────────────────────────────────────────────
 
 function KpiGrid({ kpis }: { kpis: KpiCardType[] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   return (
     <View style={s.kpiGrid}>
       {kpis.map((kpi) => (
@@ -467,6 +494,9 @@ function KpiGrid({ kpis }: { kpis: KpiCardType[] }) {
 // ─── Performance Activity Row ───────────────────────────────────────────────
 
 function PerformanceActivityRow({ activity }: { activity: PerformanceActivity }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   return (
     <View style={s.activityRow}>
       <View style={s.activityIcon}>
@@ -483,6 +513,9 @@ function PerformanceActivityRow({ activity }: { activity: PerformanceActivity })
 // ─── Section Header ─────────────────────────────────────────────────────────
 
 function SectionHeader({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   return (
     <View style={s.sectionHeader}>
       <Text style={s.sectionHeaderText}>{title}</Text>
@@ -493,6 +526,9 @@ function SectionHeader({ title }: { title: string }) {
 // ─── FAB ────────────────────────────────────────────────────────────────────
 
 function FAB({ onPress }: { onPress: () => void }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   return (
     <Pressable
       style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
@@ -526,6 +562,9 @@ const TIME_RANGES: { key: TimeRange; label: string }[] = [
 // ─── Main Component ─────────────────────────────────────────────────────────
 
 export function OfficeContent() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
   const insets = useSafeAreaInsets();
 
   const [pageIndex, setPageIndex] = useState(0);
@@ -682,7 +721,7 @@ export function OfficeContent() {
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 

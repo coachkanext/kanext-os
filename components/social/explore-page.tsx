@@ -4,7 +4,7 @@
  * Page 3 in the Social SwipeablePages container.
  */
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import {
   Dimensions,
 } from 'react-native';
 
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import type { Mode } from '@/types';
@@ -27,21 +28,13 @@ const NUM_COLUMNS = 3;
 const TILE_GAP = 2;
 const TILE_SIZE = (SCREEN_WIDTH - TILE_GAP * (NUM_COLUMNS - 1)) / NUM_COLUMNS;
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  blue: '#3B82F6',
-};
-
 type CategoryKey = typeof EXPLORE_CATEGORIES[number]['key'];
 
 // ─── Trending Row ─────────────────────────────────────────────────────────
 
 function TrendingRow({ topics }: { topics: TrendingTopic[] }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   return (
     <ScrollView
       horizontal
@@ -69,6 +62,8 @@ function CategoryPills({
   active: CategoryKey;
   onSelect: (key: CategoryKey) => void;
 }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   return (
     <ScrollView
       horizontal
@@ -96,6 +91,8 @@ function CategoryPills({
 // ─── Suggested Account Card ──────────────────────────────────────────────
 
 function SuggestedAccountCard({ account }: { account: SuggestedAccount }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const [following, setFollowing] = useState(false);
 
   return (
@@ -129,6 +126,8 @@ function SuggestedAccountCard({ account }: { account: SuggestedAccount }) {
 // ─── Grid Tile ────────────────────────────────────────────────────────────
 
 function GridTile({ tile }: { tile: ExploreTile }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={styles.tile}>
       <Image source={{ uri: tile.uri }} style={styles.tileImage} />
@@ -159,6 +158,8 @@ type GridItem =
   | { type: 'suggested'; data: SuggestedAccount };
 
 export function ExplorePage({ mode, trendingTopics, tiles, suggestedAccounts }: ExplorePageProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const [activeCategory, setActiveCategory] = useState<CategoryKey>('for_you');
 
   // Scroll-driven footer hide/show
@@ -210,7 +211,7 @@ export function ExplorePage({ mode, trendingTopics, tiles, suggestedAccounts }: 
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: C.bg,
@@ -345,7 +346,7 @@ const styles = StyleSheet.create({
   followBtnText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: C.label,
   },
   followBtnTextActive: {
     color: C.secondary,

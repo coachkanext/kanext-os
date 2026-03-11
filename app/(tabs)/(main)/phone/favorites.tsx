@@ -2,7 +2,7 @@
  * Favorites — Pinned contacts. Tap = call. Long press = remove.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -22,18 +22,13 @@ import {
   type PhoneContact,
 } from '@/data/mock-phone';
 import { initiateCall } from '@/utils/global-call';
-
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-};
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 export default function FavoritesScreen() {
   const insets = useSafeAreaInsets();
   const accent = useAccentColor();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const [favorites] = useState(getFavoriteContacts);
 
   const handleCall = useCallback((contact: PhoneContact) => {
@@ -111,7 +106,7 @@ export default function FavoritesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },

@@ -7,6 +7,7 @@ import React, { useMemo } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useAppContext, useMode } from '@/context/app-context';
 import { useAuth } from '@/context/auth-context';
 import {
@@ -70,6 +71,7 @@ const ORG_STATUS_LABELS: Record<string, string> = {
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
+  const C = useColors();
   const mode = useMode();
   const { state } = useAppContext();
   const { state: authState } = useAuth();
@@ -91,6 +93,8 @@ export default function ProfileScreen() {
 
   const stats = MODE_STATS[mode] ?? [];
   const statsTitle = STATS_SECTION_TITLES[mode] ?? 'Stats';
+
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -152,140 +156,141 @@ export default function ProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000000',
-  },
-  scroll: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: 20,
-  },
+const makeStyles = (C: ComponentColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: C.bg,
+    },
+    scroll: {
+      flex: 1,
+    },
+    scrollContent: {
+      paddingHorizontal: 20,
+    },
 
-  // ─── Identity ───
-  identitySection: {
-    alignItems: 'center',
-    paddingTop: 24,
-    paddingBottom: 32,
-  },
-  avatar: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    marginBottom: 16,
-  },
-  fullName: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    letterSpacing: -0.3,
-    marginBottom: 4,
-  },
-  handle: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: 'rgba(255,255,255,0.45)',
-    marginBottom: 12,
-  },
-  bio: {
-    fontSize: 15,
-    fontWeight: '400',
-    color: 'rgba(255,255,255,0.65)',
-    textAlign: 'center',
-    lineHeight: 22,
-    paddingHorizontal: 12,
-  },
+    // ─── Identity ───
+    identitySection: {
+      alignItems: 'center',
+      paddingTop: 24,
+      paddingBottom: 32,
+    },
+    avatar: {
+      width: 88,
+      height: 88,
+      borderRadius: 44,
+      marginBottom: 16,
+    },
+    fullName: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: C.label,
+      letterSpacing: -0.3,
+      marginBottom: 4,
+    },
+    handle: {
+      fontSize: 14,
+      fontWeight: '400',
+      color: C.secondary,
+      marginBottom: 12,
+    },
+    bio: {
+      fontSize: 15,
+      fontWeight: '400',
+      color: C.secondary,
+      textAlign: 'center',
+      lineHeight: 22,
+      paddingHorizontal: 12,
+    },
 
-  // ─── Section ───
-  section: {
-    marginBottom: 28,
-  },
-  sectionHeader: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: 'rgba(255,255,255,0.4)',
-    letterSpacing: 0.8,
-    textTransform: 'uppercase',
-    marginBottom: 12,
-  },
+    // ─── Section ───
+    section: {
+      marginBottom: 28,
+    },
+    sectionHeader: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: C.muted,
+      letterSpacing: 0.8,
+      textTransform: 'uppercase',
+      marginBottom: 12,
+    },
 
-  // ─── Org Cards ───
-  orgCard: {
-    backgroundColor: '#0B0F14',
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 8,
-  },
-  orgCardContent: {
-    gap: 3,
-  },
-  orgCardTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  orgCardName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    flex: 1,
-    marginRight: 8,
-  },
-  statusPill: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
-    backgroundColor: 'rgba(255,255,255,0.06)',
-  },
-  statusPillActive: {
-    backgroundColor: 'rgba(34,197,94,0.15)',
-  },
-  statusText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: 'rgba(255,255,255,0.4)',
-  },
-  statusTextActive: {
-    color: '#22C55E',
-  },
-  orgCardRole: {
-    fontSize: 13,
-    fontWeight: '400',
-    color: 'rgba(255,255,255,0.55)',
-  },
-  orgCardLocation: {
-    fontSize: 12,
-    fontWeight: '400',
-    color: 'rgba(255,255,255,0.3)',
-  },
+    // ─── Org Cards ───
+    orgCard: {
+      backgroundColor: C.surface,
+      borderRadius: 12,
+      padding: 14,
+      marginBottom: 8,
+    },
+    orgCardContent: {
+      gap: 3,
+    },
+    orgCardTop: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    orgCardName: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: C.label,
+      flex: 1,
+      marginRight: 8,
+    },
+    statusPill: {
+      paddingHorizontal: 8,
+      paddingVertical: 3,
+      borderRadius: 8,
+      backgroundColor: C.surfacePressed,
+    },
+    statusPillActive: {
+      backgroundColor: 'rgba(34,197,94,0.15)',
+    },
+    statusText: {
+      fontSize: 11,
+      fontWeight: '600',
+      color: C.muted,
+    },
+    statusTextActive: {
+      color: C.green,
+    },
+    orgCardRole: {
+      fontSize: 13,
+      fontWeight: '400',
+      color: C.secondary,
+    },
+    orgCardLocation: {
+      fontSize: 12,
+      fontWeight: '400',
+      color: C.muted,
+    },
 
-  // ─── Stats ───
-  statsCard: {
-    backgroundColor: '#0B0F14',
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  statRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 14,
-  },
-  statRowBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.05)',
-  },
-  statLabel: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: 'rgba(255,255,255,0.55)',
-  },
-  statValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-});
+    // ─── Stats ───
+    statsCard: {
+      backgroundColor: C.surface,
+      borderRadius: 12,
+      overflow: 'hidden',
+    },
+    statRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 14,
+      paddingHorizontal: 14,
+    },
+    statRowBorder: {
+      borderBottomWidth: 1,
+      borderBottomColor: C.separator,
+    },
+    statLabel: {
+      fontSize: 14,
+      fontWeight: '400',
+      color: C.secondary,
+    },
+    statValue: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: C.label,
+    },
+  });

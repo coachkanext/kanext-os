@@ -1,12 +1,13 @@
 /**
  * Single video slide — auto-playing, muted, looping.
- * Full-bleed with gradient overlay and text at bottom-left.
- * Three states: LIVE (red dot), RECAP (score), HYPE (branding).
+ * Full-bleed with gradient overlay and optional headline/subline.
+ * Uses expo-av with graceful fallback if native module unavailable.
  */
 
-import React, { useEffect, useRef, useState, Component } from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState, useMemo, Component } from 'react';
+import { View, Image, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 // Graceful fallback if expo-av native module isn't linked
 let Video: any = null;
@@ -19,7 +20,7 @@ try {
   // Native module unavailable — poster image only
 }
 
-import type { VideoPage } from './home-types';
+import type { HeroVideo } from './home-types';
 
 /** Catches native view registration errors (EXVideo not found) */
 class VideoBoundary extends Component<
@@ -38,83 +39,103 @@ class VideoBoundary extends Component<
   }
 }
 
-const C = {
-  surface: '#0B0F14',
-};
-
 interface VideoSlideProps {
-  page: VideoPage;
-  isActive: boolean;
+  video: HeroVideo;
   muted?: boolean;
 }
 
-export function VideoSlide({ page, isActive, muted = true }: VideoSlideProps) {
-  const videoRef = useRef<any>(null);
+export function VideoSlide({ video, muted = true }: VideoSlideProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const [videoFailed, setVideoFailed] = useState(!Video);
-
-  // Play/pause based on active page — catch promise rejections from broken native module
-  useEffect(() => {
-    if (!videoRef.current) return;
-    try {
-      if (isActive) {
-        videoRef.current.playAsync?.()?.catch?.(() => setVideoFailed(true));
-      } else {
-        videoRef.current.pauseAsync?.()?.catch?.(() => {});
-      }
-    } catch {
-      setVideoFailed(true);
-    }
-  }, [isActive]);
 
   return (
     <View style={styles.container}>
-      {/* Poster image fallback */}
-      {page.poster && (
-        <Image
-          source={page.poster}
-          style={styles.background}
-          resizeMode="cover"
-        />
-      )}
-
-      {/* Auto-playing video (graceful fallback to poster if native module unavailable) */}
+      {/* Auto-playing video */}
       {!videoFailed && Video && (
-        <VideoBoundary onError={() => setVideoFailed(true)}>
-          <Video
-            ref={videoRef}
-            source={{ uri: page.source }}
-            style={styles.background}
-            resizeMode={ResizeMode.COVER}
-            shouldPlay={isActive}
-            isLooping
-            isMuted={muted}
-            posterSource={page.poster}
-            usePoster={!!page.poster}
-            onError={() => setVideoFailed(true)}
-          />
-        </VideoBoundary>
+        <Video
+          source={{ uri: video.source }}
+          style={StyleSheet.absoluteFill}
+          resizeMode={ResizeMode.COVER}
+          shouldPlay={true}
+          isLooping={true}
+          isMuted={muted}
+          onError={(e: any) => { console.warn('Video error:', e); setVideoFailed(true); }}
+          onPlaybackStatusUpdate={(s: any) => {
+            if (s.isLoaded && !s.isPlaying && s.shouldPlay) {
+              console.log('Video loaded but not playing, status:', JSON.stringify(s));
+            }
+          }}
+        />
       )}
 
       {/* Gradient overlay */}
       <LinearGradient
-        colors={['transparent', 'rgba(0,0,0,0.6)', 'rgba(0,0,0,0.92)']}
-        locations={[0.2, 0.6, 1]}
+        colors={['transparent', 'rgba(0,0,0,0.5)', 'rgba(0,0,0,0.85)']}
+        locations={[0.3, 0.65, 1]}
         style={styles.gradient}
       />
 
+      {/* Text overlay */}
+      {(video.headline || video.subline || video.badge) && (
+        <View style={styles.overlay}>
+          {video.badge && (
+            <View style={styles.badgeContainer}>
+              <Text style={styles.badgeText}>{video.badge}</Text>
+            </View>
+          )}
+          {video.headline && (
+            <Text style={styles.headline}>{video.headline}</Text>
+          )}
+          {video.subline && (
+            <Text style={styles.subline}>{video.subline}</Text>
+          )}
+        </View>
+      )}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: C.surface,
+    backgroundColor: '#000000',
   },
   background: {
     ...StyleSheet.absoluteFillObject,
   },
   gradient: {
     ...StyleSheet.absoluteFillObject,
+  },
+  overlay: {
+    position: 'absolute',
+    bottom: 16,
+    left: 16,
+    right: 16,
+  },
+  badgeContainer: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#EF4444',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 4,
+    marginBottom: 8,
+  },
+  badgeText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  headline: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 2,
+  },
+  subline: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 13,
+    fontWeight: '500',
   },
 });

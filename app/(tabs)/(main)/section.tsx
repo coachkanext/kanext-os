@@ -3,21 +3,14 @@
  * Always-dark. Back arrow top-left. No title in header.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
-
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  textPrimary: '#FFFFFF',
-  textSecondary: '#A1A1AA',
-  placeholder: '#52525B',
-};
 
 const SECTION_ICONS: Record<string, IconSymbolName> = {
   Messages: 'bubble.left.and.bubble.right',
@@ -38,6 +31,8 @@ const SECTION_ICONS: Record<string, IconSymbolName> = {
 };
 
 export default function SectionScreen() {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
   const { title } = useLocalSearchParams<{ title: string }>();
   const sectionTitle = title ?? 'Section';
@@ -48,7 +43,7 @@ export default function SectionScreen() {
       {/* Empty state */}
       <View style={styles.emptyContainer}>
         <View style={styles.iconCircle}>
-          <IconSymbol name={icon} size={36} color={C.textSecondary} />
+          <IconSymbol name={icon} size={36} color={C.secondary} />
         </View>
         <Text style={styles.emptyTitle}>{sectionTitle}</Text>
         <Text style={styles.emptyDescription}>Coming Soon</Text>
@@ -57,7 +52,7 @@ export default function SectionScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: C.bg,
@@ -80,11 +75,11 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: C.textPrimary,
+    color: C.label,
     marginBottom: 6,
   },
   emptyDescription: {
     fontSize: 15,
-    color: C.placeholder,
+    color: C.muted,
   },
 });

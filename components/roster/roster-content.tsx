@@ -20,6 +20,7 @@ import * as Haptics from 'expo-haptics';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import {
   ROSTER_SUMMARY,
   SCHOLARSHIP_ENTRIES,
@@ -49,26 +50,12 @@ import {
 import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  green: '#22C55E',
-  red: '#EF4444',
-  amber: '#F59E0B',
-  blue: '#3B82F6',
-  purple: '#8B5CF6',
-};
-
 // ── Color Maps ──
 
 const SCHOLARSHIP_COLORS: Record<ScholarshipType, string> = {
-  full: C.green,
-  partial: C.amber,
-  'walk-on': C.secondary,
+  full: '#22C55E',
+  partial: '#F59E0B',
+  'walk-on': '#A1A1AA',
 };
 
 const SCHOLARSHIP_LABELS: Record<ScholarshipType, string> = {
@@ -78,9 +65,9 @@ const SCHOLARSHIP_LABELS: Record<ScholarshipType, string> = {
 };
 
 const ELIGIBILITY_COLORS: Record<EligibilityStatus, string> = {
-  eligible: C.green,
-  warning: C.amber,
-  ineligible: C.red,
+  eligible: '#22C55E',
+  warning: '#F59E0B',
+  ineligible: '#EF4444',
 };
 
 const ELIGIBILITY_LABELS: Record<EligibilityStatus, string> = {
@@ -90,9 +77,9 @@ const ELIGIBILITY_LABELS: Record<EligibilityStatus, string> = {
 };
 
 const HEALTH_COLORS: Record<HealthStatus, string> = {
-  healthy: C.green,
-  'day-to-day': C.amber,
-  out: C.red,
+  healthy: '#22C55E',
+  'day-to-day': '#F59E0B',
+  out: '#EF4444',
 };
 
 const HEALTH_LABELS: Record<HealthStatus, string> = {
@@ -102,11 +89,11 @@ const HEALTH_LABELS: Record<HealthStatus, string> = {
 };
 
 const SQUAD_COLORS: Record<SquadType, string> = {
-  varsity: C.blue,
-  jv: C.purple,
-  practice: C.amber,
-  redshirt: C.secondary,
-  inactive: C.muted,
+  varsity: '#3B82F6',
+  jv: '#8B5CF6',
+  practice: '#F59E0B',
+  redshirt: '#A1A1AA',
+  inactive: '#52525B',
 };
 
 const SQUAD_LABELS: Record<SquadType, string> = {
@@ -118,10 +105,10 @@ const SQUAD_LABELS: Record<SquadType, string> = {
 };
 
 const NIL_STATUS_COLORS: Record<NILStatus, string> = {
-  active: C.green,
-  pending: C.amber,
-  completed: C.blue,
-  expired: C.secondary,
+  active: '#22C55E',
+  pending: '#F59E0B',
+  completed: '#3B82F6',
+  expired: '#A1A1AA',
 };
 
 const NIL_STATUS_LABELS: Record<NILStatus, string> = {
@@ -132,9 +119,9 @@ const NIL_STATUS_LABELS: Record<NILStatus, string> = {
 };
 
 const COMPLIANCE_STATUS_COLORS: Record<ComplianceStatus, string> = {
-  approved: C.green,
-  'under-review': C.amber,
-  flagged: C.red,
+  approved: '#22C55E',
+  'under-review': '#F59E0B',
+  flagged: '#EF4444',
 };
 
 const COMPLIANCE_STATUS_LABELS: Record<ComplianceStatus, string> = {
@@ -144,17 +131,17 @@ const COMPLIANCE_STATUS_LABELS: Record<ComplianceStatus, string> = {
 };
 
 const COMPLIANCE_ITEM_COLORS: Record<'ok' | 'warning' | 'violation', string> = {
-  ok: C.green,
-  warning: C.amber,
-  violation: C.red,
+  ok: '#22C55E',
+  warning: '#F59E0B',
+  violation: '#EF4444',
 };
 
 const PIPELINE_COLORS: Record<PipelineStage, string> = {
-  watching: C.secondary,
-  contacted: C.amber,
-  visited: C.blue,
-  offered: C.purple,
-  committed: C.green,
+  watching: '#A1A1AA',
+  contacted: '#F59E0B',
+  visited: '#3B82F6',
+  offered: '#8B5CF6',
+  committed: '#22C55E',
 };
 
 const PIPELINE_LABELS: Record<PipelineStage, string> = {
@@ -168,6 +155,8 @@ const PIPELINE_LABELS: Record<PipelineStage, string> = {
 // ─── Page Top Bar ────────────────────────────────────────────────────────────
 
 function PageTopBar({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.topBar}>
       <Text style={s.topBarTitle}>{title}</Text>
@@ -186,6 +175,8 @@ function FilterPills<T extends string>({
   active: T;
   onSelect: (key: T) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <ScrollView
       horizontal
@@ -211,6 +202,8 @@ function FilterPills<T extends string>({
 // ─── Roster Summary Card ─────────────────────────────────────────────────────
 
 function RosterSummaryCard() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const positions: Array<{ key: string; count: number }> = [
     { key: 'PG', count: ROSTER_SUMMARY.positionBreakdown.PG },
     { key: 'CG', count: ROSTER_SUMMARY.positionBreakdown.CG },
@@ -253,6 +246,8 @@ function PlayerRow({
   player: RosterPlayerItem;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const scholarshipColor = SCHOLARSHIP_COLORS[player.scholarship];
   const eligibilityColor = ELIGIBILITY_COLORS[player.eligibility];
   const healthColor = HEALTH_COLORS[player.health];
@@ -275,8 +270,8 @@ function PlayerRow({
           <Text style={s.jerseyNumber}>#{player.jerseyNumber}</Text>
         </View>
         <View style={s.playerMetaRow}>
-          <View style={[s.positionPill, { backgroundColor: C.blue + '22' }]}>
-            <Text style={[s.positionPillText, { color: C.blue }]}>{player.position}</Text>
+          <View style={[s.positionPill, { backgroundColor: '#3B82F6' + '22' }]}>
+            <Text style={[s.positionPillText, { color: '#3B82F6' }]}>{player.position}</Text>
           </View>
           <Text style={s.playerMeta}>{player.classYear}</Text>
           <Text style={s.playerDot}>·</Text>
@@ -301,8 +296,10 @@ function PlayerRow({
 // ─── Scholarship Row ─────────────────────────────────────────────────────────
 
 function ScholarshipRow({ entry }: { entry: typeof SCHOLARSHIP_ENTRIES[0] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const typeColor = SCHOLARSHIP_COLORS[entry.type];
-  const statusColor = entry.status === 'active' ? C.green : entry.status === 'expiring' ? C.amber : C.blue;
+  const statusColor = entry.status === 'active' ? '#22C55E' : entry.status === 'expiring' ? '#F59E0B' : '#3B82F6';
   const statusLabel = entry.status === 'active' ? 'Active' : entry.status === 'expiring' ? 'Expiring' : 'Renewed';
 
   return (
@@ -331,6 +328,8 @@ function ScholarshipRow({ entry }: { entry: typeof SCHOLARSHIP_ENTRIES[0] }) {
 // ─── Eligibility Row ─────────────────────────────────────────────────────────
 
 function EligibilityRow({ entry }: { entry: typeof ELIGIBILITY_ENTRIES[0] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const statusColor = ELIGIBILITY_COLORS[entry.status];
   const statusLabel = ELIGIBILITY_LABELS[entry.status];
 
@@ -357,6 +356,8 @@ function EligibilityRow({ entry }: { entry: typeof ELIGIBILITY_ENTRIES[0] }) {
 // ─── Health Row ──────────────────────────────────────────────────────────────
 
 function HealthRow({ entry }: { entry: typeof HEALTH_ENTRIES[0] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const statusColor = HEALTH_COLORS[entry.status];
   const statusLabel = HEALTH_LABELS[entry.status];
 
@@ -386,6 +387,8 @@ function HealthRow({ entry }: { entry: typeof HEALTH_ENTRIES[0] }) {
 // ─── Squad Section ───────────────────────────────────────────────────────────
 
 function SquadSection() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const squads: Array<SquadType> = ['varsity', 'jv', 'practice', 'redshirt', 'inactive'];
 
   return (
@@ -409,8 +412,8 @@ function SquadSection() {
                 <View style={{ flex: 1 }}>
                   <Text style={s.mgmtName}>{entry.playerName}</Text>
                   <View style={s.mgmtMetaRow}>
-                    <View style={[s.microBadge, { backgroundColor: C.blue + '22' }]}>
-                      <Text style={[s.microBadgeText, { color: C.blue }]}>{entry.position}</Text>
+                    <View style={[s.microBadge, { backgroundColor: '#3B82F6' + '22' }]}>
+                      <Text style={[s.microBadgeText, { color: '#3B82F6' }]}>{entry.position}</Text>
                     </View>
                     <Text style={s.mgmtMeta}>{entry.classYear}</Text>
                   </View>
@@ -427,7 +430,9 @@ function SquadSection() {
 // ─── Housing Row ─────────────────────────────────────────────────────────────
 
 function HousingRow({ entry }: { entry: typeof HOUSING_ENTRIES[0] }) {
-  const rentColor = entry.rentStatus === 'paid' ? C.green : entry.rentStatus === 'overdue' ? C.red : C.amber;
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+  const rentColor = entry.rentStatus === 'paid' ? '#22C55E' : entry.rentStatus === 'overdue' ? '#EF4444' : '#F59E0B';
   const rentLabel = entry.rentStatus === 'paid' ? 'Paid' : entry.rentStatus === 'overdue' ? 'Overdue' : 'Due';
 
   return (
@@ -458,6 +463,8 @@ function HousingRow({ entry }: { entry: typeof HOUSING_ENTRIES[0] }) {
 // ─── NIL Row ─────────────────────────────────────────────────────────────────
 
 function NILRow({ entry }: { entry: typeof NIL_ENTRIES[0] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const nilColor = NIL_STATUS_COLORS[entry.nilStatus];
   const nilLabel = NIL_STATUS_LABELS[entry.nilStatus];
   const compColor = COMPLIANCE_STATUS_COLORS[entry.complianceStatus];
@@ -472,7 +479,7 @@ function NILRow({ entry }: { entry: typeof NIL_ENTRIES[0] }) {
         <Text style={s.mgmtName}>{entry.playerName}</Text>
         <Text style={s.mgmtDescription} numberOfLines={1}>{entry.dealName} — {entry.brandName}</Text>
         <View style={s.mgmtMetaRow}>
-          <Text style={[s.mgmtMeta, { color: C.label, fontWeight: '600' }]}>{entry.dealValue}</Text>
+          <Text style={[s.mgmtMeta, { color: '#FFFFFF', fontWeight: '600' }]}>{entry.dealValue}</Text>
           <View style={[s.microBadge, { backgroundColor: nilColor + '22' }]}>
             <Text style={[s.microBadgeText, { color: nilColor }]}>{nilLabel}</Text>
           </View>
@@ -488,6 +495,8 @@ function NILRow({ entry }: { entry: typeof NIL_ENTRIES[0] }) {
 // ─── Compliance Row ──────────────────────────────────────────────────────────
 
 function ComplianceRow({ item }: { item: typeof COMPLIANCE_ITEMS[0] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const statusColor = COMPLIANCE_ITEM_COLORS[item.status];
 
   return (
@@ -517,6 +526,8 @@ function ProspectCardView({
   prospect: ProspectCardType;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable
       style={({ pressed }) => [s.prospectCard, pressed && s.rowPressed]}
@@ -532,8 +543,8 @@ function ProspectCardView({
       <View style={{ flex: 1 }}>
         <View style={s.playerNameRow}>
           <Text style={s.mgmtName}>{prospect.name}</Text>
-          <View style={[s.positionPill, { backgroundColor: C.blue + '22' }]}>
-            <Text style={[s.positionPillText, { color: C.blue }]}>{prospect.position}</Text>
+          <View style={[s.positionPill, { backgroundColor: '#3B82F6' + '22' }]}>
+            <Text style={[s.positionPillText, { color: '#3B82F6' }]}>{prospect.position}</Text>
           </View>
         </View>
         <View style={s.mgmtMetaRow}>
@@ -545,8 +556,8 @@ function ProspectCardView({
         </View>
         <View style={s.mgmtMetaRow}>
           {prospect.inPortal && (
-            <View style={[s.microBadge, { backgroundColor: C.purple + '22' }]}>
-              <Text style={[s.microBadgeText, { color: C.purple }]}>Portal</Text>
+            <View style={[s.microBadge, { backgroundColor: '#8B5CF6' + '22' }]}>
+              <Text style={[s.microBadgeText, { color: '#8B5CF6' }]}>Portal</Text>
             </View>
           )}
           <Text style={s.prospectAction}>{prospect.lastAction}</Text>
@@ -571,6 +582,8 @@ function PipelineSection({
   prospects: ProspectCardType[];
   onLongPress: (prospect: ProspectCardType, pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const color = PIPELINE_COLORS[stage];
   const label = PIPELINE_LABELS[stage];
 
@@ -599,6 +612,8 @@ function PipelineSection({
 // ─── Section Header ──────────────────────────────────────────────────────────
 
 function SectionHeader({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.sectionHeader}>
       <Text style={s.sectionHeaderText}>{title}</Text>
@@ -609,6 +624,8 @@ function SectionHeader({ title }: { title: string }) {
 // ─── FAB ─────────────────────────────────────────────────────────────────────
 
 function FAB({ onPress }: { onPress: () => void }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable
       style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
@@ -617,7 +634,7 @@ function FAB({ onPress }: { onPress: () => void }) {
         onPress();
       }}
     >
-      <IconSymbol name="plus" size={24} color="#FFFFFF" />
+      <IconSymbol name="plus" size={24} color={C.label} />
     </Pressable>
   );
 }
@@ -656,6 +673,8 @@ const PIPELINE_STAGES: PipelineStage[] = ['watching', 'contacted', 'visited', 'o
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 export function RosterContent() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
 
   const [pageIndex, setPageIndex] = useState(0);
@@ -855,7 +874,7 @@ export function RosterContent() {
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 

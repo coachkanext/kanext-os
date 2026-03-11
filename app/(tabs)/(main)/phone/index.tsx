@@ -19,6 +19,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -37,221 +38,22 @@ import { initiateCall } from '@/utils/global-call';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  channelIconBg: '#0B1220',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  online: '#34C759',
-  missed: '#EF4444',
-  blueSteel: '#3B82F6',
-};
-
-const DIRECTION_ICONS: Record<CallDirection, { icon: string; color: string }> = {
-  incoming: { icon: 'arrow.down.left', color: C.muted },
-  outgoing: { icon: 'arrow.up.right', color: C.muted },
-  missed: { icon: 'arrow.down.left', color: C.missed },
-  video: { icon: 'video.fill', color: C.muted },
-};
-
-// ─── Page Top Bar ────────────────────────────────────────────────────────────
-
-function PageTopBar({ title }: { title: string }) {
-  return (
-    <View style={s.topBar}>
-      <Text style={s.topBarTitle}>{title}</Text>
-    </View>
-  );
-}
-
-// ─── Filter Pills (Recents) ─────────────────────────────────────────────────
+// ─── Main Screen ────────────────────────────────────────────────────────────
 
 type RecentsFilter = 'all' | 'missed';
-
-function FilterPills({
-  active,
-  onSelect,
-}: {
-  active: RecentsFilter;
-  onSelect: (f: RecentsFilter) => void;
-}) {
-  const filters: { key: RecentsFilter; label: string }[] = [
-    { key: 'all', label: 'All' },
-    { key: 'missed', label: 'Missed' },
-  ];
-  return (
-    <View style={s.filterRow}>
-      {filters.map((f) => {
-        const isActive = active === f.key;
-        return (
-          <Pressable
-            key={f.key}
-            style={[s.filterPill, isActive && s.filterPillActive]}
-            onPress={() => onSelect(f.key)}
-          >
-            <Text style={[s.filterText, isActive && s.filterTextActive]}>{f.label}</Text>
-          </Pressable>
-        );
-      })}
-    </View>
-  );
-}
-
-// ─── Recent Call Row ────────────────────────────────────────────────────────
-
-function RecentRow({
-  call,
-  onPress,
-  onLongPress,
-}: {
-  call: RecentCall;
-  onPress: () => void;
-  onLongPress: (pageY: number) => void;
-}) {
-  const isMissed = call.direction === 'missed';
-  const dir = DIRECTION_ICONS[call.direction];
-  const badgeColor = MODE_BADGE_COLORS[call.mode];
-  const badgeLabel = MODE_BADGE_LABELS[call.mode];
-
-  return (
-    <Pressable
-      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
-      onPress={onPress}
-      onLongPress={(e) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        onLongPress(e.nativeEvent.pageY);
-      }}
-      delayLongPress={400}
-    >
-      {/* Avatar */}
-      <View style={s.recentAvatar}>
-        <Text style={s.recentInitials}>{call.initials}</Text>
-      </View>
-
-      {/* Info */}
-      <View style={s.rowContent}>
-        <View style={s.recentNameRow}>
-          <Text style={[s.rowName, isMissed && { color: C.missed }]} numberOfLines={1}>
-            {call.name}
-          </Text>
-          <View style={[s.modeBadge, { backgroundColor: badgeColor + '22' }]}>
-            <Text style={[s.modeBadgeText, { color: badgeColor }]}>{badgeLabel}</Text>
-          </View>
-        </View>
-        <View style={s.recentMeta}>
-          <IconSymbol name={dir.icon as any} size={12} color={dir.color} />
-          <Text style={[s.metaText, isMissed && { color: C.missed }]}>
-            {call.username}
-          </Text>
-        </View>
-      </View>
-
-      {/* Right: duration/missed + timestamp */}
-      <View style={s.recentRight}>
-        <Text style={[s.recentDuration, isMissed && { color: C.missed }]}>
-          {isMissed ? 'Missed' : call.duration ?? ''}
-        </Text>
-        <Text style={s.recentTimestamp}>{call.timestamp}</Text>
-      </View>
-    </Pressable>
-  );
-}
-
-// ─── Contact Row ────────────────────────────────────────────────────────────
-
-function ContactRow({
-  contact,
-  onPress,
-  onLongPress,
-}: {
-  contact: PhoneContact;
-  onPress: () => void;
-  onLongPress: (pageY: number) => void;
-}) {
-  return (
-    <Pressable
-      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
-      onPress={onPress}
-      onLongPress={(e) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        onLongPress(e.nativeEvent.pageY);
-      }}
-      delayLongPress={400}
-    >
-      <View style={s.contactAvatar}>
-        <Text style={s.contactInitials}>{contact.initials}</Text>
-        {contact.online && <View style={s.onlineDot} />}
-      </View>
-      <View style={s.rowContent}>
-        <View style={s.contactNameRow}>
-          <Text style={s.rowName} numberOfLines={1}>{contact.name}</Text>
-          <Text style={s.contactUsername}>{contact.username}</Text>
-        </View>
-        <Text style={s.contactOrgRole} numberOfLines={1}>
-          {contact.org} · {contact.role}
-        </Text>
-      </View>
-    </Pressable>
-  );
-}
-
-// ─── Group Row ──────────────────────────────────────────────────────────────
-
-function GroupRow({
-  group,
-  onPress,
-  onLongPress,
-}: {
-  group: PhoneGroup;
-  onPress: () => void;
-  onLongPress: (pageY: number) => void;
-}) {
-  return (
-    <Pressable
-      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
-      onPress={onPress}
-      onLongPress={(e) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        onLongPress(e.nativeEvent.pageY);
-      }}
-      delayLongPress={400}
-    >
-      <View style={s.groupIcon}>
-        <Text style={s.groupInitials}>{group.initials}</Text>
-      </View>
-      <View style={s.rowContent}>
-        <Text style={s.rowName} numberOfLines={1}>{group.name}</Text>
-        <Text style={s.groupMeta}>{group.memberCount} members</Text>
-      </View>
-      <Text style={s.groupTimestamp}>{group.lastCallTimestamp}</Text>
-    </Pressable>
-  );
-}
-
-// ─── FAB ────────────────────────────────────────────────────────────────────
-
-function FAB({ onPress }: { onPress: () => void }) {
-  return (
-    <Pressable
-      style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
-      onPress={() => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        onPress();
-      }}
-    >
-      <IconSymbol name="plus" size={24} color="#FFFFFF" />
-    </Pressable>
-  );
-}
-
-// ─── Main Screen ────────────────────────────────────────────────────────────
 
 export default function PhoneScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+
+  const DIRECTION_ICONS: Record<CallDirection, { icon: string; color: string }> = useMemo(() => ({
+    incoming: { icon: 'arrow.down.left', color: C.muted },
+    outgoing: { icon: 'arrow.up.right', color: C.muted },
+    missed: { icon: 'arrow.down.left', color: C.red },
+    video: { icon: 'video.fill', color: C.muted },
+  }), [C]);
 
   const [pageIndex, setPageIndex] = useState(0);
   const [menuData, setMenuData] = useState<ContextMenuData | null>(null);
@@ -393,8 +195,23 @@ export default function PhoneScreen() {
         {/* ── PAGE 0: RECENTS ── */}
         <View style={{ flex: 1 }}>
           <View style={{ paddingTop: 16 }}>
-            <PageTopBar title="Recents" />
-            <FilterPills active={recentsFilter} onSelect={setRecentsFilter} />
+            <View style={s.topBar}>
+              <Text style={s.topBarTitle}>Recents</Text>
+            </View>
+            <View style={s.filterRow}>
+              {([{ key: 'all', label: 'All' }, { key: 'missed', label: 'Missed' }] as { key: RecentsFilter; label: string }[]).map((f) => {
+                const isActive = recentsFilter === f.key;
+                return (
+                  <Pressable
+                    key={f.key}
+                    style={[s.filterPill, isActive && s.filterPillActive]}
+                    onPress={() => setRecentsFilter(f.key)}
+                  >
+                    <Text style={[s.filterText, isActive && s.filterTextActive]}>{f.label}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
           </View>
           <ScrollView
             style={s.pageScroll}
@@ -409,16 +226,57 @@ export default function PhoneScreen() {
                 <Text style={s.emptyText}>No calls</Text>
               </View>
             ) : (
-              recentCalls.map((call, idx) => (
-                <View key={call.id}>
-                  {idx > 0 && <View style={s.separator} />}
-                  <RecentRow
-                    call={call}
-                    onPress={() => callAudio(call.name, call.initials, call.mode)}
-                    onLongPress={(pageY) => longPressRecent(call, pageY)}
-                  />
-                </View>
-              ))
+              recentCalls.map((call, idx) => {
+                const isMissed = call.direction === 'missed';
+                const dir = DIRECTION_ICONS[call.direction];
+                const badgeColor = MODE_BADGE_COLORS[call.mode];
+                const badgeLabel = MODE_BADGE_LABELS[call.mode];
+                return (
+                  <View key={call.id}>
+                    {idx > 0 && <View style={s.separator} />}
+                    <Pressable
+                      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
+                      onPress={() => callAudio(call.name, call.initials, call.mode)}
+                      onLongPress={(e) => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        longPressRecent(call, e.nativeEvent.pageY);
+                      }}
+                      delayLongPress={400}
+                    >
+                      {/* Avatar */}
+                      <View style={s.recentAvatar}>
+                        <Text style={s.recentInitials}>{call.initials}</Text>
+                      </View>
+
+                      {/* Info */}
+                      <View style={s.rowContent}>
+                        <View style={s.recentNameRow}>
+                          <Text style={[s.rowName, isMissed && { color: C.red }]} numberOfLines={1}>
+                            {call.name}
+                          </Text>
+                          <View style={[s.modeBadge, { backgroundColor: badgeColor + '22' }]}>
+                            <Text style={[s.modeBadgeText, { color: badgeColor }]}>{badgeLabel}</Text>
+                          </View>
+                        </View>
+                        <View style={s.recentMeta}>
+                          <IconSymbol name={dir.icon as any} size={12} color={dir.color} />
+                          <Text style={[s.metaText, isMissed && { color: C.red }]}>
+                            {call.username}
+                          </Text>
+                        </View>
+                      </View>
+
+                      {/* Right: duration/missed + timestamp */}
+                      <View style={s.recentRight}>
+                        <Text style={[s.recentDuration, isMissed && { color: C.red }]}>
+                          {isMissed ? 'Missed' : call.duration ?? ''}
+                        </Text>
+                        <Text style={s.recentTimestamp}>{call.timestamp}</Text>
+                      </View>
+                    </Pressable>
+                  </View>
+                );
+              })
             )}
           </ScrollView>
         </View>
@@ -426,7 +284,9 @@ export default function PhoneScreen() {
         {/* ── PAGE 1: CONTACTS ── */}
         <View style={{ flex: 1 }}>
           <View style={{ paddingTop: 16 }}>
-            <PageTopBar title="Contacts" />
+            <View style={s.topBar}>
+              <Text style={s.topBarTitle}>Contacts</Text>
+            </View>
           </View>
           <ScrollView
             ref={contactsScrollRef}
@@ -447,11 +307,29 @@ export default function PhoneScreen() {
                 {letterContacts.map((contact, i) => (
                   <View key={contact.id}>
                     {i > 0 && <View style={s.separator} />}
-                    <ContactRow
-                      contact={contact}
+                    <Pressable
+                      style={({ pressed }) => [s.row, pressed && s.rowPressed]}
                       onPress={() => callAudio(contact.name, contact.initials, contact.mode)}
-                      onLongPress={(pageY) => longPressContact(contact, pageY)}
-                    />
+                      onLongPress={(e) => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        longPressContact(contact, e.nativeEvent.pageY);
+                      }}
+                      delayLongPress={400}
+                    >
+                      <View style={s.contactAvatar}>
+                        <Text style={s.contactInitials}>{contact.initials}</Text>
+                        {contact.online && <View style={s.onlineDot} />}
+                      </View>
+                      <View style={s.rowContent}>
+                        <View style={s.contactNameRow}>
+                          <Text style={s.rowName} numberOfLines={1}>{contact.name}</Text>
+                          <Text style={s.contactUsername}>{contact.username}</Text>
+                        </View>
+                        <Text style={s.contactOrgRole} numberOfLines={1}>
+                          {contact.org} · {contact.role}
+                        </Text>
+                      </View>
+                    </Pressable>
                   </View>
                 ))}
               </View>
@@ -485,13 +363,23 @@ export default function PhoneScreen() {
           )}
 
           {/* FAB: Add Contact */}
-          <FAB onPress={() => console.log('Add new contact')} />
+          <Pressable
+            style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              console.log('Add new contact');
+            }}
+          >
+            <IconSymbol name="plus" size={24} color={C.label} />
+          </Pressable>
         </View>
 
         {/* ── PAGE 2: GROUPS ── */}
         <View style={{ flex: 1 }}>
           <View style={{ paddingTop: 16 }}>
-            <PageTopBar title="Groups" />
+            <View style={s.topBar}>
+              <Text style={s.topBarTitle}>Groups</Text>
+            </View>
           </View>
           <ScrollView
             style={s.pageScroll}
@@ -509,18 +397,39 @@ export default function PhoneScreen() {
               groups.map((group, idx) => (
                 <View key={group.id}>
                   {idx > 0 && <View style={s.separator} />}
-                  <GroupRow
-                    group={group}
+                  <Pressable
+                    style={({ pressed }) => [s.row, pressed && s.rowPressed]}
                     onPress={() => callAudio(group.name, group.initials, group.mode)}
-                    onLongPress={(pageY) => longPressGroup(group, pageY)}
-                  />
+                    onLongPress={(e) => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                      longPressGroup(group, e.nativeEvent.pageY);
+                    }}
+                    delayLongPress={400}
+                  >
+                    <View style={s.groupIcon}>
+                      <Text style={s.groupInitials}>{group.initials}</Text>
+                    </View>
+                    <View style={s.rowContent}>
+                      <Text style={s.rowName} numberOfLines={1}>{group.name}</Text>
+                      <Text style={s.groupMeta}>{group.memberCount} members</Text>
+                    </View>
+                    <Text style={s.groupTimestamp}>{group.lastCallTimestamp}</Text>
+                  </Pressable>
                 </View>
               ))
             )}
           </ScrollView>
 
           {/* FAB: Create Group */}
-          <FAB onPress={() => console.log('Create new group')} />
+          <Pressable
+            style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              console.log('Create new group');
+            }}
+          >
+            <IconSymbol name="plus" size={24} color={C.label} />
+          </Pressable>
         </View>
       </SwipeablePages>
 
@@ -532,7 +441,7 @@ export default function PhoneScreen() {
 
 // ─── Styles ─────────────────────────────────────────────────────────────────
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 
@@ -571,7 +480,7 @@ const s = StyleSheet.create({
     color: C.label,
   },
   filterTextActive: {
-    color: '#000000',
+    color: C.bg,
   },
 
   // Shared row
@@ -628,7 +537,7 @@ const s = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: C.online,
+    backgroundColor: C.green,
     borderWidth: 2,
     borderColor: C.bg,
   },
@@ -638,7 +547,7 @@ const s = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 12,
-    backgroundColor: C.channelIconBg,
+    backgroundColor: C.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -672,7 +581,7 @@ const s = StyleSheet.create({
   scrubberLetter: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#52525B',
+    color: C.muted,
     paddingVertical: 1,
     paddingHorizontal: 4,
   },
@@ -695,7 +604,7 @@ const s = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: C.blueSteel,
+    backgroundColor: C.secondary,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',

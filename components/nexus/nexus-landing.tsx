@@ -8,6 +8,7 @@
 
 import React, { useRef, useEffect } from 'react';
 import { View, Animated, StyleSheet } from 'react-native';
+import { useColors } from '@/hooks/use-colors';
 
 interface Props {
   /** When true, the logo fades out smoothly */
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export function NexusLanding({ fadeOut = false }: Props) {
+  const C = useColors();
   const opacity = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -28,7 +30,7 @@ export function NexusLanding({ fadeOut = false }: Props) {
   }, [fadeOut]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: C.bg }]}>
       <Animated.Image
         source={require('@/assets/images/footer-nexus.png')}
         style={[styles.logo, { opacity: Animated.multiply(opacity, 0.35) }]}

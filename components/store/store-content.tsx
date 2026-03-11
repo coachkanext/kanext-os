@@ -19,6 +19,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useMode } from '@/context/app-context';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
@@ -42,22 +43,11 @@ import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = (SCREEN_WIDTH - 48) / 2;
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  green: '#22C55E',
-  red: '#EF4444',
-  amber: '#F59E0B',
-  blue: '#3B82F6',
-};
-
 // ─── Shared components ────────────────────────────────────────────────────
 
 function PageTopBar({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.topBar}>
       <Text style={s.topBarTitle}>{title}</Text>
@@ -74,6 +64,8 @@ function FilterPills<T extends string>({
   active: T;
   onSelect: (key: T) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <ScrollView
       horizontal
@@ -105,6 +97,8 @@ function ProductCard({
   product: ProductItem;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable
       style={({ pressed }) => [s.productCard, pressed && { opacity: 0.85 }]}
@@ -132,14 +126,6 @@ function ProductCard({
 
 // ─── Order Row ────────────────────────────────────────────────────────────
 
-const STATUS_COLORS: Record<string, string> = {
-  processing: C.amber,
-  shipped: C.blue,
-  out_for_delivery: C.blue,
-  delivered: C.green,
-  cancelled: C.red,
-};
-
 const STATUS_LABELS: Record<string, string> = {
   processing: 'Processing',
   shipped: 'Shipped',
@@ -149,6 +135,15 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 function OrderRow({ order }: { order: OrderItem }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+  const STATUS_COLORS: Record<string, string> = {
+    processing: C.amber,
+    shipped: C.blue,
+    out_for_delivery: C.blue,
+    delivered: C.green,
+    cancelled: C.red,
+  };
   const color = STATUS_COLORS[order.status] ?? C.muted;
   return (
     <Pressable style={({ pressed }) => [s.orderRow, pressed && { opacity: 0.85 }]}>
@@ -169,6 +164,8 @@ function OrderRow({ order }: { order: OrderItem }) {
 // ─── Drop Card ────────────────────────────────────────────────────────────
 
 function DropCard({ drop }: { drop: DropItem }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable style={({ pressed }) => [s.dropCard, pressed && { opacity: 0.85 }]}>
       <Image source={{ uri: drop.imageUri }} style={s.dropImage} />
@@ -219,6 +216,8 @@ function DropCard({ drop }: { drop: DropItem }) {
 // ═══════════════════════════════════════════════════════════════════════════
 
 export function StoreContent() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
   const mode = useMode();
 
@@ -374,7 +373,7 @@ export function StoreContent() {
 // STYLES
 // ═══════════════════════════════════════════════════════════════════════════
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 
@@ -411,7 +410,7 @@ const s = StyleSheet.create({
     borderRadius: 12, overflow: 'hidden',
     borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator,
   },
-  productImage: { width: '100%', height: CARD_WIDTH, backgroundColor: '#1A1A1A' },
+  productImage: { width: '100%', height: CARD_WIDTH, backgroundColor: C.surface },
   productName: { fontSize: 14, fontWeight: '700', color: C.label, paddingHorizontal: 10, paddingTop: 8 },
   productSubtitle: { fontSize: 11, color: C.muted, paddingHorizontal: 10, marginTop: 2 },
   productPrice: { fontSize: 15, fontWeight: '700', color: C.label, paddingHorizontal: 10, marginTop: 4 },
@@ -457,7 +456,7 @@ const s = StyleSheet.create({
     backgroundColor: 'transparent',
     borderWidth: 1, borderColor: C.separator,
   },
-  dropActionText: { fontSize: 12, fontWeight: '700', color: '#FFFFFF' },
+  dropActionText: { fontSize: 12, fontWeight: '700', color: C.label },
   dropActionTextOutline: { color: C.secondary },
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: C.separator, marginHorizontal: 16 },

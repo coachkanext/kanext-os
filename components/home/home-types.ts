@@ -1,17 +1,23 @@
 import type { IconSymbolName } from '@/components/ui/icon-symbol';
 
-/** Video content state — priority: LIVE > RECAP > HYPE */
-export type VideoState = 'live' | 'recap' | 'hype';
+/** Video content priority — LIVE > UPCOMING > RECAP > FEATURED > DEFAULT */
+export type VideoState = 'live' | 'upcoming' | 'recap' | 'featured' | 'default';
 
-export interface VideoPage {
+export interface HeroVideo {
   id: string;
   state: VideoState;
   /** Remote or local video URI */
   source: string;
-  /** Tap destination */
+  /** Tap destination (e.g. KayTV deep link) */
   route?: string;
   /** Fallback image while video loads */
   poster?: any;
+  /** Badge text (e.g. "LIVE", "2h", "RECAP") */
+  badge?: string;
+  /** Headline overlay (e.g. score, title) */
+  headline?: string;
+  /** Subline overlay (e.g. opponent, pastor name) */
+  subline?: string;
 }
 
 export interface GridIcon {

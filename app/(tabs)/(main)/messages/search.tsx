@@ -18,24 +18,17 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useMode } from '@/context/app-context';
 import { getRooms, getGlobalDMs } from '@/data/mock-messages-v3';
-
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  channelIconBg: '#0B1220',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-};
 
 export default function MessagesSearchScreen() {
   const insets = useSafeAreaInsets();
   const accent = useAccentColor();
   const mode = useMode();
   const router = useRouter();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const [search, setSearch] = useState('');
 
   const channels = useMemo(() => getRooms(mode), [mode]);
@@ -142,7 +135,7 @@ export default function MessagesSearchScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },
@@ -159,7 +152,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5, paddingHorizontal: 20, marginBottom: 8, marginTop: 12,
   },
   resultRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10, gap: 12 },
-  channelIcon: { width: 40, height: 40, borderRadius: 10, backgroundColor: C.channelIconBg, alignItems: 'center', justifyContent: 'center' },
+  channelIcon: { width: 40, height: 40, borderRadius: 10, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' },
   channelInitials: { fontSize: 13, fontWeight: '700', color: C.label },
   dmIcon: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#1C1C1E', alignItems: 'center', justifyContent: 'center' },
   dmInitials: { fontSize: 13, fontWeight: '600', color: C.label },

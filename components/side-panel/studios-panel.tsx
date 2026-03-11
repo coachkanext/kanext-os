@@ -3,7 +3,7 @@
  * 6 navigation items: Subscriptions, Downloads, Play History, Multiplayer, Reviews, Settings.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -15,12 +15,7 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
-
-const C = {
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  separator: 'rgba(255,255,255,0.08)',
-};
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 const NAV_ITEMS = [
   { icon: 'cart.fill',        label: 'Subscriptions', route: '/(tabs)/(main)/studios/subscriptions' },
@@ -33,6 +28,8 @@ const NAV_ITEMS = [
 
 export function StudiosPanel() {
   const router = useRouter();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   const navigateTo = (route: string) => {
     closeSidePanel();
@@ -67,7 +64,7 @@ export function StudiosPanel() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {},
   title: {
     fontSize: 18,

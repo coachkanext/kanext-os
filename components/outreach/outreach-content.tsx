@@ -18,6 +18,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -44,21 +45,6 @@ import {
 import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  green: '#22C55E',
-  red: '#EF4444',
-  amber: '#F59E0B',
-  blue: '#3B82F6',
-  purple: '#8B5CF6',
-  teal: '#14B8A6',
-};
-
 const COLUMN_WIDTH = Dimensions.get('window').width * 0.72;
 
 const SOURCE_LABELS: Record<VisitorSource, string> = {
@@ -67,14 +53,6 @@ const SOURCE_LABELS: Record<VisitorSource, string> = {
   'online': 'Online',
   'event': 'Event',
   'community-outreach': 'Outreach',
-};
-
-const SOURCE_COLORS: Record<VisitorSource, string> = {
-  'walked-in': C.blue,
-  'invited-by-member': C.green,
-  'online': C.purple,
-  'event': C.amber,
-  'community-outreach': C.teal,
 };
 
 const FAMILY_ICONS: Record<string, string> = {
@@ -90,13 +68,6 @@ const INITIATIVE_TYPE_LABELS: Record<InitiativeType, string> = {
   'partner-program': 'Partner Program',
 };
 
-const INITIATIVE_TYPE_COLORS: Record<InitiativeType, string> = {
-  'service-project': C.green,
-  'event': C.amber,
-  'canvassing': C.blue,
-  'partner-program': C.purple,
-};
-
 const MISSION_TYPE_LABELS: Record<MissionType, string> = {
   'short-term-trip': 'Short-Term Trip',
   'long-term': 'Long-Term',
@@ -104,16 +75,11 @@ const MISSION_TYPE_LABELS: Record<MissionType, string> = {
   'local-mission': 'Local Mission',
 };
 
-const MISSION_TYPE_COLORS: Record<MissionType, string> = {
-  'short-term-trip': C.blue,
-  'long-term': C.purple,
-  'partner-support': C.teal,
-  'local-mission': C.amber,
-};
-
 // ─── Page Top Bar ──────────────────────────────────────────────────────────
 
 function PageTopBar({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.topBar}>
       <Text style={s.topBarTitle}>{title}</Text>
@@ -132,6 +98,8 @@ function FilterPills<T extends string>({
   active: T;
   onSelect: (key: T) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <ScrollView
       horizontal
@@ -157,6 +125,8 @@ function FilterPills<T extends string>({
 // ─── FAB ───────────────────────────────────────────────────────────────────
 
 function FAB({ onPress }: { onPress: () => void }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable
       style={({ pressed }) => [s.fab, pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }]}
@@ -165,7 +135,7 @@ function FAB({ onPress }: { onPress: () => void }) {
         onPress();
       }}
     >
-      <IconSymbol name="plus" size={24} color="#FFFFFF" />
+      <IconSymbol name="plus" size={24} color={C.label} />
     </Pressable>
   );
 }
@@ -173,6 +143,8 @@ function FAB({ onPress }: { onPress: () => void }) {
 // ─── Visitor Summary Card ────────────────────────────────────────────────
 
 function VisitorSummaryCard() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.summaryCard}>
       <View style={s.summaryHeader}>
@@ -208,6 +180,15 @@ function VisitorKanbanCard({
   visitor: VisitorCardType;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+  const SOURCE_COLORS: Record<VisitorSource, string> = {
+    'walked-in': C.blue,
+    'invited-by-member': C.green,
+    'online': C.purple,
+    'event': C.amber,
+    'community-outreach': C.teal,
+  };
   const sourceColor = SOURCE_COLORS[visitor.source];
   const sourceLabel = SOURCE_LABELS[visitor.source];
   const familyIcon = FAMILY_ICONS[visitor.familyIndicator];
@@ -254,6 +235,14 @@ function InitiativeRow({
   item: OutreachInitiative;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+  const INITIATIVE_TYPE_COLORS: Record<InitiativeType, string> = {
+    'service-project': C.green,
+    'event': C.amber,
+    'canvassing': C.blue,
+    'partner-program': C.purple,
+  };
   const typeColor = INITIATIVE_TYPE_COLORS[item.type];
   const typeLabel = INITIATIVE_TYPE_LABELS[item.type];
 
@@ -323,6 +312,14 @@ function MissionRow({
   item: MissionItem;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
+  const MISSION_TYPE_COLORS: Record<MissionType, string> = {
+    'short-term-trip': C.blue,
+    'long-term': C.purple,
+    'partner-support': C.teal,
+    'local-mission': C.amber,
+  };
   const typeColor = MISSION_TYPE_COLORS[item.type];
   const typeLabel = MISSION_TYPE_LABELS[item.type];
   const progress = item.fundraisingGoal > 0 ? Math.round((item.fundraisingRaised / item.fundraisingGoal) * 100) : 0;
@@ -372,6 +369,8 @@ function MissionaryRow({
   item: SupportedMissionary;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable
       style={({ pressed }) => [s.row, pressed && s.rowPressed]}
@@ -418,6 +417,8 @@ const MISSION_FILTERS: { key: MissionFilter; label: string }[] = [
 // ─── Main Component ──────────────────────────────────────────────────────
 
 export function OutreachContent() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
 
   const [pageIndex, setPageIndex] = useState(0);
@@ -668,7 +669,7 @@ export function OutreachContent() {
 
 // ─── Styles ──────────────────────────────────────────────────────────────
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 

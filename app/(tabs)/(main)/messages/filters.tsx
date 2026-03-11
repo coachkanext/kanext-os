@@ -3,7 +3,7 @@
  * Active filters show indicator on Messages landing.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -14,19 +14,12 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useAccentColor } from '@/hooks/use-accent-color';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import {
   setMessageFilter,
   getMessageFilters,
   type MessageFilterKey,
 } from '@/utils/global-message-filters';
-
-const C = {
-  bg: '#000000',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-};
 
 const FILTER_OPTIONS: { key: MessageFilterKey; label: string; description: string }[] = [
   { key: 'unread', label: 'Unread Only', description: 'Show only channels and DMs with unread messages' },
@@ -39,6 +32,8 @@ const FILTER_OPTIONS: { key: MessageFilterKey; label: string; description: strin
 export default function FiltersScreen() {
   const insets = useSafeAreaInsets();
   const accent = useAccentColor();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const [filters, setFilters] = useState(getMessageFilters);
 
   const toggleFilter = useCallback((key: MessageFilterKey) => {
@@ -97,12 +92,12 @@ export default function FiltersScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12, gap: 10 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },
   countBadge: { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
-  countText: { fontSize: 13, fontWeight: '700', color: '#FFFFFF' },
+  countText: { fontSize: 13, fontWeight: '700', color: C.label },
   list: { flex: 1 },
   filterRow: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',

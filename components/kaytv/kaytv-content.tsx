@@ -20,6 +20,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useMode } from '@/context/app-context';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
@@ -49,21 +50,11 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_W = 200;
 const CARD_H = 112;
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  red: '#EF4444',
-  blue: '#3B82F6',
-  green: '#22C55E',
-};
-
 // ─── Shared ───────────────────────────────────────────────────────────────
 
 function PageTopBar({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.topBar}>
       <Text style={s.topBarTitle}>{title}</Text>
@@ -80,6 +71,8 @@ function FilterPills<T extends string>({
   active: T;
   onSelect: (key: T) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <ScrollView
       horizontal
@@ -103,6 +96,8 @@ function FilterPills<T extends string>({
 }
 
 function SectionHeader({ label }: { label: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Text style={s.sectionLabel}>{label}</Text>
   );
@@ -117,6 +112,8 @@ function BrowseCard({
   item: ContentCard;
   onLongPress: (pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable
       style={({ pressed }) => [s.browseCard, pressed && { opacity: 0.85 }]}
@@ -156,6 +153,8 @@ function BrowseRow({
   row: ContentRow;
   onLongPress: (item: ContentCard, pageY: number) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.browseRowContainer}>
       <SectionHeader label={row.label} />
@@ -179,6 +178,8 @@ function BrowseRow({
 // ─── Library: Video Row ───────────────────────────────────────────────────
 
 function LibraryVideoRow({ item }: { item: LibraryItem }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable style={({ pressed }) => [s.libRow, pressed && { opacity: 0.85 }]}>
       <View style={s.libThumbContainer}>
@@ -216,6 +217,8 @@ function LibraryVideoRow({ item }: { item: LibraryItem }) {
 // ─── Library: Playlist Card ───────────────────────────────────────────────
 
 function PlaylistCard({ item }: { item: PlaylistItem }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable style={({ pressed }) => [s.playlistCard, pressed && { opacity: 0.85 }]}>
       <Image source={{ uri: item.thumbnailUri }} style={s.playlistThumb} />
@@ -228,6 +231,8 @@ function PlaylistCard({ item }: { item: PlaylistItem }) {
 // ─── Channels: Channel Row ───────────────────────────────────────────────
 
 function ChannelRow({ channel }: { channel: ChannelItem }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const [subscribed, setSubscribed] = useState(channel.isSubscribed);
 
   return (
@@ -262,6 +267,8 @@ function ChannelRow({ channel }: { channel: ChannelItem }) {
 // ─── Channels: Top subscribed row ─────────────────────────────────────────
 
 function SubscribedRow({ channels }: { channels: ChannelItem[] }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const subscribed = channels.filter((c) => c.isSubscribed);
   if (subscribed.length === 0) return null;
 
@@ -291,6 +298,8 @@ function SubscribedRow({ channels }: { channels: ChannelItem[] }) {
 // ═══════════════════════════════════════════════════════════════════════════
 
 export function KayTVContent() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
   const mode = useMode();
 
@@ -481,7 +490,7 @@ export function KayTVContent() {
 // STYLES
 // ═══════════════════════════════════════════════════════════════════════════
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 
@@ -518,7 +527,7 @@ const s = StyleSheet.create({
     backgroundColor: C.red, borderRadius: 4,
     paddingHorizontal: 6, paddingVertical: 2,
   },
-  liveBadgeText: { fontSize: 10, fontWeight: '800', color: '#FFFFFF', letterSpacing: 0.5 },
+  liveBadgeText: { fontSize: 10, fontWeight: '800', color: C.label, letterSpacing: 0.5 },
 
   // Duration badge
   durationBadge: {
@@ -526,7 +535,7 @@ const s = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.75)', borderRadius: 3,
     paddingHorizontal: 4, paddingVertical: 1,
   },
-  durationText: { fontSize: 10, fontWeight: '600', color: '#FFFFFF' },
+  durationText: { fontSize: 10, fontWeight: '600', color: C.label },
 
   // Browse card
   browseRowContainer: { marginBottom: 4 },
@@ -593,7 +602,7 @@ const s = StyleSheet.create({
     backgroundColor: 'transparent',
     borderWidth: 1, borderColor: C.separator,
   },
-  subBtnText: { fontSize: 12, fontWeight: '700', color: '#FFFFFF' },
+  subBtnText: { fontSize: 12, fontWeight: '700', color: C.label },
   subBtnTextActive: { color: C.secondary },
 
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: C.separator, marginHorizontal: 16 },

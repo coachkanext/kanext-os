@@ -5,9 +5,10 @@
  * Type: playlists → 2x2 color grid covers.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, Image, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { formatViewCount } from '@/data/mock-media';
 import type { BrowseVideo, PlaylistItem } from '@/data/mock-media';
 import type { WatchHistoryItem } from '@/data/mock-video';
@@ -25,13 +26,15 @@ interface LibrarySectionProps {
 }
 
 /** Small video card for history/saved/downloads/uploads */
-function SmallVideoCard({ title, thumbnailColor, thumbnailUrl, duration, creator, meta }: {
+function SmallVideoCard({ title, thumbnailColor, thumbnailUrl, duration, creator, meta, C, styles }: {
   title: string;
   thumbnailColor: string;
   thumbnailUrl?: string;
   duration: number;
   creator: string;
   meta?: string;
+  C: ComponentColors;
+  styles: ReturnType<typeof makeStyles>;
 }) {
   return (
     <Pressable style={styles.smallCard}>
@@ -44,7 +47,7 @@ function SmallVideoCard({ title, thumbnailColor, thumbnailUrl, duration, creator
           />
         )}
         <View style={styles.smallPlayOverlay}>
-          <IconSymbol name="play.fill" size={14} color="#FFFFFF" />
+          <IconSymbol name="play.fill" size={14} color={C.label} />
         </View>
         <View style={styles.smallDurationBadge}>
           <Text style={styles.smallDurationText}>{formatDuration(duration)}</Text>
@@ -58,7 +61,7 @@ function SmallVideoCard({ title, thumbnailColor, thumbnailUrl, duration, creator
 }
 
 /** Playlist cover: 2x2 color grid */
-function PlaylistCover({ playlist }: { playlist: PlaylistItem }) {
+function PlaylistCover({ playlist, styles }: { playlist: PlaylistItem; styles: ReturnType<typeof makeStyles> }) {
   const colors = playlist.thumbnailColors;
   return (
     <Pressable style={styles.playlistCard}>
@@ -74,12 +77,15 @@ function PlaylistCover({ playlist }: { playlist: PlaylistItem }) {
 }
 
 export function LibrarySection({ icon, label, type, videos, historyItems, playlists }: LibrarySectionProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
+
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <IconSymbol name={icon as any} size={18} color="#A1A1AA" />
+          <IconSymbol name={icon as any} size={18} color={C.secondary} />
           <Text style={styles.label}>{label}</Text>
         </View>
         <Pressable hitSlop={8}>
@@ -94,7 +100,7 @@ export function LibrarySection({ icon, label, type, videos, historyItems, playli
         contentContainerStyle={styles.scrollContent}
       >
         {type === 'playlists' && playlists?.map((pl) => (
-          <PlaylistCover key={pl.id} playlist={pl} />
+          <PlaylistCover key={pl.id} playlist={pl} styles={styles} />
         ))}
 
         {type === 'history' && historyItems?.map((item) => (
@@ -105,6 +111,8 @@ export function LibrarySection({ icon, label, type, videos, historyItems, playli
             duration={item.duration}
             creator={item.contentType}
             meta={`${item.progress}% watched`}
+            C={C}
+            styles={styles}
           />
         ))}
 
@@ -117,6 +125,8 @@ export function LibrarySection({ icon, label, type, videos, historyItems, playli
             duration={v.duration}
             creator={v.creator}
             meta={formatViewCount(v.viewCount)}
+            C={C}
+            styles={styles}
           />
         ))}
       </ScrollView>
@@ -124,7 +134,7 @@ export function LibrarySection({ icon, label, type, videos, historyItems, playli
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     marginBottom: 24,
   },
@@ -141,12 +151,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   label: {
-    color: '#FFFFFF',
+    color: C.label,
     fontSize: 16,
     fontWeight: '700',
   },
   seeAll: {
-    color: '#A1A1AA',
+    color: C.secondary,
     fontSize: 14,
   },
   scrollContent: {
@@ -184,23 +194,23 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   smallDurationText: {
-    color: '#FFFFFF',
+    color: C.label,
     fontSize: 10,
     fontWeight: '600',
   },
   smallTitle: {
-    color: '#FFFFFF',
+    color: C.label,
     fontSize: 12,
     fontWeight: '600',
     lineHeight: 15,
   },
   smallCreator: {
-    color: '#A1A1AA',
+    color: C.secondary,
     fontSize: 11,
     marginTop: 1,
   },
   smallMeta: {
-    color: '#A1A1AA',
+    color: C.secondary,
     fontSize: 11,
   },
   // Playlist cover
@@ -221,12 +231,12 @@ const styles = StyleSheet.create({
     height: 60,
   },
   playlistName: {
-    color: '#FFFFFF',
+    color: C.label,
     fontSize: 12,
     fontWeight: '600',
   },
   playlistCount: {
-    color: '#A1A1AA',
+    color: C.secondary,
     fontSize: 11,
   },
 });

@@ -8,6 +8,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 import { useAppContext } from '@/context/app-context';
 import { useAuth } from '@/context/auth-context';
@@ -29,6 +30,8 @@ const MODE_ITEMS: { mode: Mode; label: string; image: any }[] = [
 ];
 
 export function PanelHeader() {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const { state, switchMode, switchContext } = useAppContext();
   const { state: authState } = useAuth();
   const currentMode = state.mode;
@@ -150,11 +153,11 @@ export function PanelHeader() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {},
   divider: {
     height: 1,
-    backgroundColor: '#2F3336',
+    backgroundColor: C.separator,
   },
   identityRow: {
     flexDirection: 'row',
@@ -180,13 +183,13 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: C.label,
     letterSpacing: -0.3,
   },
   username: {
     fontSize: 14,
     fontWeight: '400',
-    color: '#A1A1AA',
+    color: C.secondary,
     marginTop: 2,
   },
   modeRow: {
@@ -203,14 +206,14 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 24,
     overflow: 'hidden',
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.bg,
     borderWidth: 2,
     borderColor: 'transparent',
     opacity: 0.4,
   },
   modeCircleActive: {
     opacity: 1,
-    borderColor: '#FFFFFF',
+    borderColor: C.label,
   },
   modeImage: {
     width: '100%',
@@ -222,7 +225,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.35)',
   },
   modeLabelActive: {
-    color: '#FFFFFF',
+    color: C.label,
   },
   orgSection: {
     marginBottom: 4,
@@ -239,11 +242,11 @@ const styles = StyleSheet.create({
   orgName: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#A1A1AA',
+    color: C.secondary,
     marginBottom: 2,
   },
   orgNameActive: {
-    color: '#FFFFFF',
+    color: C.label,
   },
   orgRole: {
     fontSize: 12,

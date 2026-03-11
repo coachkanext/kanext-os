@@ -12,7 +12,7 @@
  * When text field empties: send arrow becomes mic again (smooth crossfade).
  */
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import {
   View,
   TextInput,
@@ -20,22 +20,12 @@ import {
   Pressable,
   Animated,
   StyleSheet,
-  Platform,
-  KeyboardAvoidingView,
 } from 'react-native';
 import type { TextInput as TextInputType } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-
-// ── Colors ──
-
-const C = {
-  surface: '#0B0F14',
-  white: '#FFFFFF',
-  placeholder: '#A1A1AA',
-  recording: '#FF3B30',
-};
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 // ── Types ──
 
@@ -61,6 +51,8 @@ interface UniversalInputBarProps {
   onVoiceNote?: (note: VoiceNotePayload) => void;
 }
 
+const RECORDING_COLOR = '#FF3B30';
+
 export function UniversalInputBar({
   showPlus,
   placeholder,
@@ -70,6 +62,8 @@ export function UniversalInputBar({
   onAttachPress,
   onVoiceNote,
 }: UniversalInputBarProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const inputRef = useRef<TextInputType>(null);
   const hasText = value.trim().length > 0;
 
@@ -141,10 +135,8 @@ export function UniversalInputBar({
   // ── Recording state UI ──
   if (isRecording) {
     return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={0}
-      >
+      <View style={styles.outerRow}>
+        {showPlus && <View style={styles.plusCircle} />}
         <View style={styles.capsule}>
           <View style={styles.recordingInner}>
             <Animated.View style={[styles.recordDot, { transform: [{ scale: pulseAnim }] }]} />
@@ -154,41 +146,38 @@ export function UniversalInputBar({
             onPressOut={stopRecording}
             style={styles.stopBtn}
           >
-            <IconSymbol name="stop.fill" size={16} color={C.white} />
+            <IconSymbol name="stop.fill" size={16} color={C.label} />
           </Pressable>
         </View>
-      </KeyboardAvoidingView>
+      </View>
     );
   }
 
   // ── Default UI ──
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={0}
-    >
-      <View style={styles.capsule}>
-        {/* Plus button */}
-        {showPlus && (
-          <Pressable
-            style={({ pressed }) => [styles.circleBtn, pressed && { opacity: 0.6 }]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              onAttachPress?.();
-            }}
-            accessibilityLabel="Attach"
-            accessibilityRole="button"
-          >
-            <IconSymbol name="plus" size={18} color={C.white} />
-          </Pressable>
-        )}
+    <View style={styles.outerRow}>
+      {/* Plus button — separate circle outside the capsule */}
+      {showPlus && (
+        <Pressable
+          style={({ pressed }) => [styles.plusCircle, pressed && { opacity: 0.6 }]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            onAttachPress?.();
+          }}
+          accessibilityLabel="Attach"
+          accessibilityRole="button"
+        >
+          <IconSymbol name="plus" size={18} color={C.label} />
+        </Pressable>
+      )}
 
-        {/* Text input */}
+      {/* Capsule — text field + mic/send */}
+      <View style={styles.capsule}>
         <TextInput
           ref={inputRef}
           style={styles.input}
           placeholder={placeholder}
-          placeholderTextColor={C.placeholder}
+          placeholderTextColor={C.secondary}
           value={value}
           onChangeText={onChangeText}
           multiline
@@ -197,7 +186,7 @@ export function UniversalInputBar({
           blurOnSubmit={false}
           autoCapitalize="sentences"
           autoCorrect
-          selectionColor={C.white}
+          selectionColor={C.label}
         />
 
         {/* Mic / Send — crossfade */}
@@ -214,7 +203,7 @@ export function UniversalInputBar({
               accessibilityLabel="Voice input"
               accessibilityRole="button"
             >
-              <IconSymbol name="mic.fill" size={18} color={C.white} />
+              <IconSymbol name="mic.fill" size={18} color={C.label} />
             </Pressable>
           </Animated.View>
 
@@ -234,14 +223,28 @@ export function UniversalInputBar({
           </Animated.View>
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
 // ── Styles ──
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
+  outerRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 8,
+  },
+  plusCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.08)',
+  },
   capsule: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-end',
     backgroundColor: C.surface,
@@ -258,13 +261,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   sendBtn: {
-    backgroundColor: C.white,
+    backgroundColor: C.label,
   },
   input: {
     flex: 1,
     fontSize: 16,
     lineHeight: 22,
-    color: C.white,
+    color: C.label,
     maxHeight: 120,
     paddingVertical: 8,
     paddingHorizontal: 6,
@@ -288,11 +291,11 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: C.recording,
+    backgroundColor: RECORDING_COLOR,
   },
   recordingText: {
     fontSize: 15,
-    color: C.recording,
+    color: RECORDING_COLOR,
     fontWeight: '500',
   },
   stopBtn: {
@@ -301,7 +304,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: C.recording,
+    backgroundColor: RECORDING_COLOR,
     marginRight: 2,
   },
 });

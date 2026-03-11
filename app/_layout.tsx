@@ -33,7 +33,9 @@ import { AppProvider } from '@/context/app-context';
 import { AuthProvider, useAuth } from '@/context/auth-context';
 import { MultitaskingProvider } from '@/context/multitasking-context';
 import { QueryProvider } from '@/providers/query-provider';
+import { ThemeProvider as KXThemeProvider } from '@/context/theme-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useColors } from '@/hooks/use-colors';
 import { registerSearchOverlayHandlers } from '@/utils/global-search-overlay';
 import { registerSplitNexusHandlers } from '@/utils/global-split-nexus';
 import { registerSettingsPanelHandlers, openSettingsPanel, closeSettingsPanel, isSettingsPanelOpen } from '@/utils/global-settings-panel';
@@ -100,6 +102,7 @@ export const unstable_settings = {
  */
 function AppShell() {
   const colorScheme = useColorScheme();
+  const colors = useColors();
   const { state: authState } = useAuth();
 
   // Force re-render so screenOptions picks up slide animation flag before navigation
@@ -274,9 +277,7 @@ function AppShell() {
           if (p === '/' || p === '/(tabs)' || p === '/(tabs)/(main)' || p === '/(main)') return false;
           // Don't capture when a swipeable page is active at page > 0
           // Let the SwipeableTwoPage bubble-phase handler page from 1→0
-          // Skip this check on screens that don't use SwipeableTwoPage (e.g. Nexus)
-          const isNonSwipeable = p === '/nexus' || p.startsWith('/nexus/');
-          if (!isNonSwipeable && isSwipeablePageActive() && getSwipeablePageIndex() > 0) return false;
+          if (isSwipeablePageActive() && getSwipeablePageIndex() > 0) return false;
           return gs.dx > 25 && gs.dx > Math.abs(gs.dy) * 2;
         },
         onPanResponderRelease: (_evt, gs) => {
@@ -298,24 +299,26 @@ function AppShell() {
   const showAuthModal = !authState.isChecking && !authState.isAuthenticated;
 
   // Normal navigation with tabs — edge-to-edge, no header
+  const containerDynamic = { flex: 1 as const, backgroundColor: colors.bg };
+
   return (
-    <View style={styles.container}>
-      {/* Only mount the active panel — root bg is black so no flash */}
+    <View style={containerDynamic}>
+      {/* Only mount the active panel — root bg matches theme so no flash */}
       {settingsPanelVisible && <SettingsPanel visible={true} />}
       {sidePanelVisible && <SidePanel visible={true} />}
 
       {/* Content wrapper — shifts right when panels open */}
       <Animated.View
-        style={[styles.container, { transform: [{ translateX: contentTranslateX }] }]}
+        style={[containerDynamic, { transform: [{ translateX: contentTranslateX }] }]}
         {...(!settingsPanelVisible && !sidePanelVisible ? panelOpenPanResponder.panHandlers : {})}
       >
-        <View style={styles.container}>
+        <View style={containerDynamic}>
           <Stack
             screenOptions={{
               headerShown: false,
               animation: shouldUseSlideAnimation() ? 'slide_from_right' : 'none',
               gestureEnabled: false,
-              contentStyle: { backgroundColor: '#000000' },
+              contentStyle: { backgroundColor: colors.bg },
             }}
             screenListeners={{ focus: () => resetFooter() }}
           >
@@ -323,10 +326,10 @@ function AppShell() {
             <Stack.Screen name="coach" />
             <Stack.Screen name="login" />
             <Stack.Screen name="nexus" />
-            <Stack.Screen name="wallet" options={{ contentStyle: { backgroundColor: '#000000' } }} />
+            <Stack.Screen name="wallet" options={{ contentStyle: { backgroundColor: colors.bg } }} />
             <Stack.Screen name="video" />
             <Stack.Screen name="settings" />
-            <Stack.Screen name="profile" options={{ contentStyle: { backgroundColor: '#000000' } }} />
+            <Stack.Screen name="profile" options={{ contentStyle: { backgroundColor: colors.bg } }} />
             {/* section and messages are inside (tabs)/(home) Stack — tab bar stays visible */}
             <Stack.Screen
               name="modal"
@@ -456,6 +459,7 @@ export default function RootLayout() {
 
   // App content with optional splash overlay
   return (
+    <KXThemeProvider>
     <AuthProvider>
       <AppProvider>
         <MultitaskingProvider>
@@ -480,12 +484,13 @@ export default function RootLayout() {
         </MultitaskingProvider>
       </AppProvider>
     </AuthProvider>
+    </KXThemeProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#FFFFFF',
   },
 });

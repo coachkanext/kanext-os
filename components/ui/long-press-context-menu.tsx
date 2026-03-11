@@ -4,7 +4,7 @@
  * Messages and Phone screens.
  */
 
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 export interface ContextMenuAction {
   key: string;
@@ -50,6 +51,8 @@ function ContextMenuInner({
   data: ContextMenuData;
   onClose: () => void;
 }) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.95)).current;
@@ -106,7 +109,7 @@ function ContextMenuInner({
               style={[
                 styles.previewAvatar,
                 data.isSquircle
-                  ? { borderRadius: 12, backgroundColor: '#0B1220' }
+                  ? { borderRadius: 12, backgroundColor: C.surface }
                   : { borderRadius: 24 },
               ]}
             >
@@ -142,7 +145,7 @@ function ContextMenuInner({
                 <IconSymbol
                   name={action.icon as any}
                   size={16}
-                  color={action.destructive ? '#FF3B30' : '#FFFFFF'}
+                  color={action.destructive ? '#FF3B30' : C.label}
                 />
               </Pressable>
             ))}
@@ -153,7 +156,7 @@ function ContextMenuInner({
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   overlay: { flex: 1 },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
@@ -182,23 +185,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  previewInitials: { fontSize: 16, fontWeight: '700', color: '#FFFFFF' },
+  previewInitials: { fontSize: 16, fontWeight: '700', color: C.label },
   previewText: { flex: 1 },
   previewName: {
     fontSize: 17,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: C.label,
     marginBottom: 2,
   },
-  previewSub: { fontSize: 14, color: '#A1A1AA', lineHeight: 19 },
+  previewSub: { fontSize: 14, color: C.secondary, lineHeight: 19 },
   menu: {
     marginTop: 8,
-    backgroundColor: '#000000',
+    backgroundColor: C.bg,
     borderRadius: 14,
     overflow: 'hidden',
     width: '100%',
     borderWidth: 1,
-    borderColor: '#2F3336',
+    borderColor: C.divider,
   },
   menuItem: {
     flexDirection: 'row',
@@ -209,8 +212,8 @@ const styles = StyleSheet.create({
   },
   menuItemBorder: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#2F3336',
+    borderBottomColor: C.divider,
   },
-  menuLabel: { fontSize: 16, color: '#FFFFFF' },
+  menuLabel: { fontSize: 16, color: C.label },
   menuLabelDestructive: { color: '#FF3B30' },
 });

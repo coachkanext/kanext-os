@@ -9,6 +9,7 @@ import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useColors } from '@/hooks/use-colors';
 import { useMode } from '@/context/app-context';
 import { SwipeableTwoPage } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
@@ -25,6 +26,7 @@ import type { StoryUser } from '@/data/mock-social';
 
 export default function SocialScreen() {
   const insets = useSafeAreaInsets();
+  const C = useColors();
   const mode = useMode();
 
   const [pageIndex, setPageIndex] = useState(0);
@@ -132,7 +134,7 @@ export default function SocialScreen() {
   }, [togglePostBookmark]);
 
   return (
-    <View style={[styles.container, pageIndex !== 1 && { paddingTop: insets.top }]}>
+    <View style={[styles.container, { backgroundColor: C.bg }, pageIndex !== 1 && { paddingTop: insets.top }]}>
       <SwipeableTwoPage
         activeIndex={pageIndex}
         onPageChange={handlePageChange}

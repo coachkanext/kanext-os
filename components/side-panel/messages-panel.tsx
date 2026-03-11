@@ -5,7 +5,7 @@
  * Bottom: 7 menu rows — 2 nav + 5 inline toggles.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -21,19 +21,15 @@ import { NumberFilterPills } from '@/components/side-panel/number-filter-pills';
 import { useMode } from '@/context/app-context';
 import { closeSidePanel } from '@/utils/global-side-panel';
 import type { Mode } from '@/types';
-
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-};
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 const DND_OPTIONS = ['1 hour', '4 hours', '8 hours', 'Until tomorrow', 'Custom'] as const;
 
 export function MessagesPanel() {
   const router = useRouter();
   const currentMode = useMode();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const [activeMode, setActiveMode] = useState<Mode | null>(currentMode);
 
   // Toggle states
@@ -183,7 +179,7 @@ export function MessagesPanel() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {},
   menuRow: {
     flexDirection: 'row',
@@ -224,6 +220,6 @@ const styles = StyleSheet.create({
     color: C.secondary,
   },
   dndPillTextActive: {
-    color: '#000000',
+    color: C.bg,
   },
 });

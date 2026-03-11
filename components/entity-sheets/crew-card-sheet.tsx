@@ -3,25 +3,19 @@
  * Quick preview with identity and pit score.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing } from '@/constants/theme';
 import { useAccentColor } from '@/hooks/use-accent-color';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import type { CrewCardData } from '@/utils/global-entity-sheets';
 
 function nameToHue(name: string): number {
   let h = 0;
   for (let i = 0; i < name.length; i++) h = ((h << 5) - h + name.charCodeAt(i)) | 0;
   return Math.abs(h) % 360;
-}
-
-function getPitScoreColor(score: number): string {
-  if (score >= 90) return '#22C55E';
-  if (score >= 75) return accent;
-  return '#EF4444';
 }
 
 interface Props {
@@ -31,9 +25,9 @@ interface Props {
 }
 
 export function CrewCardSheet({ visible, onClose, data }: Props) {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
+  const C = useColors();
   const accent = useAccentColor();
+  const styles = useMemo(() => makeStyles(C, accent), [C, accent]);
 
   if (!data) return null;
 
@@ -45,6 +39,12 @@ export function CrewCardSheet({ visible, onClose, data }: Props) {
     .slice(0, 2)
     .toUpperCase();
 
+  const getPitScoreColor = (score: number): string => {
+    if (score >= 90) return C.green;
+    if (score >= 75) return accent;
+    return C.red;
+  };
+
   return (
     <BottomSheet visible={visible} onClose={onClose} useModal>
       <View style={styles.container}>
@@ -54,17 +54,17 @@ export function CrewCardSheet({ visible, onClose, data }: Props) {
             <Text style={styles.avatarText}>{initials}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.crewName, { color: colors.text }]}>{data.name}</Text>
-            <Text style={[styles.crewRole, { color: colors.textSecondary }]}>{data.role}</Text>
-            <Text style={[styles.crewTeam, { color: colors.textTertiary }]}>{data.team}</Text>
+            <Text style={styles.crewName}>{data.name}</Text>
+            <Text style={styles.crewRole}>{data.role}</Text>
+            <Text style={styles.crewTeam}>{data.team}</Text>
           </View>
         </View>
 
         {/* Pit score card */}
         {data.pitScore != null && (
-          <View style={[styles.scoreCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={styles.scoreCard}>
             <View style={styles.scoreItem}>
-              <Text style={[styles.scoreLabel, { color: colors.textTertiary }]}>PIT SCORE</Text>
+              <Text style={styles.scoreLabel}>PIT SCORE</Text>
               <Text style={[styles.scoreValue, { color: getPitScoreColor(data.pitScore) }]}>
                 {data.pitScore}
               </Text>
@@ -77,7 +77,7 @@ export function CrewCardSheet({ visible, onClose, data }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors, accent: string) => StyleSheet.create({
   container: {
     padding: Spacing.md,
     gap: Spacing.md,
@@ -97,25 +97,28 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#fff',
+    color: C.label,
     letterSpacing: 1,
   },
   crewName: {
     fontSize: 18,
     fontWeight: '800',
     letterSpacing: -0.5,
+    color: C.label,
   },
   crewRole: {
     fontSize: 13,
     fontWeight: '700',
     letterSpacing: 0.5,
     marginTop: 2,
+    color: C.secondary,
   },
   crewTeam: {
     fontSize: 12,
     fontWeight: '600',
     letterSpacing: 0.3,
     marginTop: 1,
+    color: C.muted,
   },
   scoreCard: {
     flexDirection: 'row',
@@ -123,6 +126,8 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     padding: Spacing.md,
     justifyContent: 'space-around',
+    backgroundColor: C.surface,
+    borderColor: C.separator,
   },
   scoreItem: {
     alignItems: 'center',
@@ -133,6 +138,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: 1,
     textTransform: 'uppercase',
+    color: C.muted,
   },
   scoreValue: {
     fontSize: 17,

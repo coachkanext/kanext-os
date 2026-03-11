@@ -27,6 +27,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ChatComposer, VoiceNoteBubble } from '@/components/messages/chat-composer';
 import type { VoiceNotePayload } from '@/components/messages/chat-composer';
 import { useAccentColor } from '@/hooks/use-accent-color';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useMode } from '@/context/app-context';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import {
@@ -41,15 +42,6 @@ import type { RoomMessageV3 } from '@/types';
 import type { ChannelMember } from '@/data/mock-messages-v3';
 
 const { width: SCREEN_W } = Dimensions.get('window');
-
-const C = {
-  bg: '#000000',
-  secondaryBg: '#1C1C1E',
-  otherBubble: '#0B0F14',
-  label: '#FFFFFF',
-  secondaryLabel: '#8E8E93',
-  separator: '#38383A',
-};
 
 const BUBBLE_R = 18;
 const TAIL_R = 4;
@@ -130,6 +122,8 @@ function processMessages(messages: RoomMessageV3[]): DisplayItem[] {
 // ─── Typing Indicator ───────────────────────────────────────────────────────
 
 function TypingIndicator() {
+  const C = useColors();
+  const tiStyles = useMemo(() => makeTiStyles(C), [C]);
   const dot1 = useRef(new Animated.Value(0.3)).current;
   const dot2 = useRef(new Animated.Value(0.3)).current;
   const dot3 = useRef(new Animated.Value(0.3)).current;
@@ -161,13 +155,13 @@ function TypingIndicator() {
   );
 }
 
-const tiStyles = StyleSheet.create({
+const makeTiStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flexDirection: 'row', justifyContent: 'flex-start', paddingHorizontal: 16, marginBottom: 8 },
   bubble: {
-    flexDirection: 'row', gap: 4, backgroundColor: C.otherBubble,
+    flexDirection: 'row', gap: 4, backgroundColor: C.surface,
     borderRadius: 16, paddingHorizontal: 14, paddingVertical: 10,
   },
-  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: C.secondaryLabel },
+  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: C.secondary },
 });
 
 // ─── @Mentions Picker ───────────────────────────────────────────────────────
@@ -181,6 +175,8 @@ function MentionsPicker({
   members: ChannelMember[];
   onSelect: (name: string) => void;
 }) {
+  const C = useColors();
+  const mpStyles = useMemo(() => makeMpStyles(C), [C]);
   const filtered = useMemo(() => {
     if (!query) return members;
     const q = query.toLowerCase();
@@ -206,7 +202,7 @@ function MentionsPicker({
   );
 }
 
-const mpStyles = StyleSheet.create({
+const makeMpStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     backgroundColor: '#2C2C2E', borderRadius: 12, marginHorizontal: 12,
     marginBottom: 4, overflow: 'hidden',
@@ -223,7 +219,7 @@ const mpStyles = StyleSheet.create({
   initials: { fontSize: 10, fontWeight: '600', color: C.label },
   info: { flex: 1 },
   name: { fontSize: 14, fontWeight: '600', color: C.label },
-  role: { fontSize: 11, color: C.secondaryLabel },
+  role: { fontSize: 11, color: C.secondary },
 });
 
 // ─── Reaction Bar ───────────────────────────────────────────────────────────
@@ -307,6 +303,8 @@ function ThreadPanel({
   onClose: () => void;
 }) {
   const insets = useSafeAreaInsets();
+  const C = useColors();
+  const tpStyles = useMemo(() => makeTpStyles(C), [C]);
   const slideAnim = useRef(new Animated.Value(SCREEN_W)).current;
   const dimAnim = useRef(new Animated.Value(0)).current;
   const [threadInput, setThreadInput] = useState('');
@@ -401,11 +399,11 @@ function ThreadPanel({
   );
 }
 
-const tpStyles = StyleSheet.create({
+const makeTpStyles = (C: ComponentColors) => StyleSheet.create({
   dim: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.50)' },
   panel: {
     position: 'absolute', top: 0, bottom: 0, right: 0, width: SCREEN_W * 0.88,
-    backgroundColor: '#0A0A0A', borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: '#38383A',
+    backgroundColor: '#0A0A0A', borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: C.divider,
   },
   header: {
     flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16,
@@ -416,7 +414,7 @@ const tpStyles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   headerTitle: { fontSize: 17, fontWeight: '600', color: C.label, flex: 1 },
-  replyCount: { fontSize: 13, color: C.secondaryLabel },
+  replyCount: { fontSize: 13, color: C.secondary },
   parentMsg: {
     paddingHorizontal: 16, paddingVertical: 12, backgroundColor: '#111111',
   },
@@ -427,9 +425,9 @@ const tpStyles = StyleSheet.create({
   },
   senderAvatarText: { fontSize: 9, fontWeight: '600', color: C.label },
   senderName: { fontSize: 14, fontWeight: '600', color: C.label },
-  msgTime: { fontSize: 11, color: C.secondaryLabel },
+  msgTime: { fontSize: 11, color: C.secondary },
   msgContent: { fontSize: 15, color: C.label, lineHeight: 20 },
-  divider: { height: StyleSheet.hairlineWidth, backgroundColor: C.separator },
+  divider: { height: StyleSheet.hairlineWidth, backgroundColor: C.divider },
   replyList: { flex: 1 },
   replyRow: {
     flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 10, gap: 10,
@@ -442,11 +440,11 @@ const tpStyles = StyleSheet.create({
   replyContent: { flex: 1 },
   replyHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 },
   replySenderName: { fontSize: 13, fontWeight: '600', color: C.label },
-  replyTime: { fontSize: 11, color: C.secondaryLabel },
+  replyTime: { fontSize: 11, color: C.secondary },
   replyBody: { fontSize: 14, color: C.label, lineHeight: 19 },
   composerWrap: {
     paddingHorizontal: 12, paddingTop: 6,
-    borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator,
+    borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.divider,
   },
 });
 
@@ -470,6 +468,8 @@ function ContextMenu({
   onClose: () => void;
 }) {
   const insets = useSafeAreaInsets();
+  const C = useColors();
+  const cmStyles = useMemo(() => makeCmStyles(C), [C]);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.95)).current;
 
@@ -555,26 +555,26 @@ function ContextMenu({
   );
 }
 
-const cmStyles = StyleSheet.create({
+const makeCmStyles = (C: ComponentColors) => StyleSheet.create({
   overlay: { flex: 1 },
   backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.60)' },
   content: { position: 'absolute', left: 16, right: 16 },
   timestamp: {
-    fontSize: 12, fontWeight: '500', color: C.secondaryLabel,
+    fontSize: 12, fontWeight: '500', color: C.secondary,
     textAlign: 'center', alignSelf: 'center', marginBottom: 8,
   },
   bubble: { maxWidth: '78%', paddingHorizontal: 12, paddingVertical: 8 },
   bubbleText: { fontSize: 16, lineHeight: 21, color: C.label },
   menu: {
-    marginTop: 8, backgroundColor: '#000000', borderRadius: 14,
+    marginTop: 8, backgroundColor: C.bg, borderRadius: 14,
     overflow: 'hidden', minWidth: 200, maxWidth: 260,
-    borderWidth: 1, borderColor: '#2F3336',
+    borderWidth: 1, borderColor: C.divider,
   },
   menuItem: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     minHeight: 48, paddingHorizontal: 16,
   },
-  menuItemBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#2F3336' },
+  menuItemBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.divider },
   menuLabel: { fontSize: 16, color: C.label },
   menuLabelDest: { color: '#FF3B30' },
 });
@@ -588,6 +588,8 @@ function MessageBubble({
   onTap,
   onLongPress,
   onThreadTap,
+  C,
+  styles,
 }: {
   item: Extract<DisplayItem, { type: 'message' }>;
   accent: string;
@@ -595,6 +597,8 @@ function MessageBubble({
   onTap: (msgId: string, pageY: number) => void;
   onLongPress: (data: ContextMenuData) => void;
   onThreadTap: (msg: RoomMessageV3) => void;
+  C: ComponentColors;
+  styles: ReturnType<typeof makeStyles>;
 }) {
   const { message, isGroupEnd, isGroupStart, isLastSent } = item;
   const isSent = message.isMe;
@@ -609,7 +613,7 @@ function MessageBubble({
     borderBottomRightRadius: isSent ? (isGroupEnd ? TAIL_R : BUBBLE_R) : BUBBLE_R,
   };
 
-  const bubbleColor = isSent ? accentBg : C.otherBubble;
+  const bubbleColor = isSent ? accentBg : C.surface;
 
   const handleLongPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -702,7 +706,7 @@ function MessageBubble({
 
 // ─── Empty States ───────────────────────────────────────────────────────────
 
-function EmptyState({ title, subtitle }: { title: string; subtitle?: string }) {
+function EmptyState({ title, subtitle, C, styles }: { title: string; subtitle?: string; C: ComponentColors; styles: ReturnType<typeof makeStyles> }) {
   return (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyTitle}>{title}</Text>
@@ -719,6 +723,8 @@ export default function ThreadScreen() {
   const accent = useAccentColor();
   const mode = useMode();
   const router = useRouter();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const { threadId, type, title } = useLocalSearchParams<{
     threadId: string;
     type: 'channel' | 'dm';
@@ -889,6 +895,8 @@ export default function ThreadScreen() {
                   onTap={handleTap}
                   onLongPress={setContextMenu}
                   onThreadTap={setThreadPanel}
+                  C={C}
+                  styles={styles}
                 />
               );
             }}
@@ -903,6 +911,8 @@ export default function ThreadScreen() {
             <EmptyState
               title={title ?? ''}
               subtitle={isChannel ? headerInfo.subtitle : undefined}
+              C={C}
+              styles={styles}
             />
           </View>
         )}
@@ -962,7 +972,7 @@ export default function ThreadScreen() {
 
 // ─── Styles ─────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   flex1: { flex: 1 },
 
@@ -973,25 +983,25 @@ const styles = StyleSheet.create({
     flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 8,
   },
   navAvatar: {
-    width: 28, height: 28, borderRadius: 14, backgroundColor: C.secondaryBg,
+    width: 28, height: 28, borderRadius: 14, backgroundColor: '#1C1C1E',
     alignItems: 'center', justifyContent: 'center',
   },
-  navAvatarText: { fontSize: 11, fontWeight: '600', color: C.secondaryLabel },
+  navAvatarText: { fontSize: 11, fontWeight: '600', color: C.secondary },
   navTitle: { fontSize: 16, fontWeight: '600', color: C.label },
-  navSubtitle: { fontSize: 11, color: C.secondaryLabel },
+  navSubtitle: { fontSize: 11, color: C.secondary },
   navRight: { width: 36, height: 44, alignItems: 'center', justifyContent: 'center' },
 
   // Messages
   messageList: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 },
   timestampWrap: { alignItems: 'center', paddingVertical: 12 },
-  timestampText: { fontSize: 12, fontWeight: '500', color: C.secondaryLabel },
+  timestampText: { fontSize: 12, fontWeight: '500', color: C.secondary },
 
   // Bubble
   bubbleRow: { flexDirection: 'row', paddingHorizontal: 0 },
   bubble: { paddingHorizontal: 12, paddingVertical: 8 },
   bubbleText: { fontSize: 16, lineHeight: 21, color: C.label },
   readReceipt: {
-    fontSize: 11, color: C.secondaryLabel, alignSelf: 'flex-end',
+    fontSize: 11, color: C.secondary, alignSelf: 'flex-end',
     marginRight: 4, marginBottom: 4,
   },
 
@@ -1003,7 +1013,7 @@ const styles = StyleSheet.create({
   senderAvatarText: { fontSize: 10, fontWeight: '600', color: C.label },
   senderAvatarSpacer: { width: 34 },
   senderNameLabel: {
-    fontSize: 12, fontWeight: '600', color: C.secondaryLabel, marginBottom: 2, marginLeft: 2,
+    fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 2, marginLeft: 2,
   },
 
   // Reactions
@@ -1017,7 +1027,7 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: 'transparent',
   },
   reactionEmoji: { fontSize: 14 },
-  reactionCount: { fontSize: 12, color: C.secondaryLabel, fontWeight: '500' },
+  reactionCount: { fontSize: 12, color: C.secondary, fontWeight: '500' },
 
   // Thread indicator
   threadIndicator: {
@@ -1031,12 +1041,12 @@ const styles = StyleSheet.create({
     flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32,
   },
   emptyTitle: { fontSize: 18, fontWeight: '700', color: C.label, marginBottom: 4 },
-  emptySub: { fontSize: 14, color: C.secondaryLabel, marginBottom: 8 },
+  emptySub: { fontSize: 14, color: C.secondary, marginBottom: 8 },
   emptyHint: { fontSize: 14, color: '#48484A' },
 
   // Composer
   composerWrap: {
     paddingHorizontal: 12, paddingTop: 6,
-    borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator,
+    borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.divider,
   },
 });

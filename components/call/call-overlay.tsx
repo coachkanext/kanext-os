@@ -3,7 +3,7 @@
  * Renders globally via root layout. Subscribes to global-call state.
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import {
   subscribeCall,
   endCall,
@@ -24,16 +25,6 @@ import {
   type ActiveCall,
 } from '@/utils/global-call';
 import { MODE_BADGE_COLORS, MODE_BADGE_LABELS } from '@/data/mock-phone';
-
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  green: '#34D399',
-  red: '#EF4444',
-};
 
 // ── Duration timer hook ──
 
@@ -56,6 +47,8 @@ function useCallTimer(startedAt: number, state: string) {
 // ── Minimized call pill ──
 
 function CallPill({ call }: { call: ActiveCall }) {
+  const C = useColors();
+  const pillStyles = useMemo(() => makePillStyles(C), [C]);
   const insets = useSafeAreaInsets();
   const timer = useCallTimer(call.startedAt, call.state);
   const badgeColor = MODE_BADGE_COLORS[call.mode];
@@ -89,6 +82,8 @@ function CallPill({ call }: { call: ActiveCall }) {
 // ── Full-screen call UI ──
 
 function FullCallScreen({ call }: { call: ActiveCall }) {
+  const C = useColors();
+  const fullStyles = useMemo(() => makeFullStyles(C), [C]);
   const insets = useSafeAreaInsets();
   const timer = useCallTimer(call.startedAt, call.state);
   const badgeColor = MODE_BADGE_COLORS[call.mode];
@@ -251,7 +246,7 @@ export function CallOverlay() {
 
 // ── Styles ──
 
-const pillStyles = StyleSheet.create({
+const makePillStyles = (C: ComponentColors) => StyleSheet.create({
   pill: {
     position: 'absolute',
     left: 16,
@@ -292,7 +287,7 @@ const pillStyles = StyleSheet.create({
   },
 });
 
-const fullStyles = StyleSheet.create({
+const makeFullStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     position: 'absolute',
     top: 0,

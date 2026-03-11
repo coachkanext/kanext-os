@@ -3,12 +3,12 @@
  * Quick preview with ministry pills and bio snippet.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Spacing } from '@/constants/theme';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import type { LeaderCardData } from '@/utils/global-entity-sheets';
 
 function nameToHue(name: string): number {
@@ -24,8 +24,8 @@ interface Props {
 }
 
 export function LeaderCardSheet({ visible, onClose, data }: Props) {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   if (!data) return null;
 
@@ -46,19 +46,19 @@ export function LeaderCardSheet({ visible, onClose, data }: Props) {
             <Text style={styles.avatarText}>{initials}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.leaderName, { color: colors.text }]}>{data.name}</Text>
-            <Text style={[styles.leaderTitle, { color: colors.textSecondary }]}>{data.title}</Text>
+            <Text style={styles.leaderName}>{data.name}</Text>
+            <Text style={styles.leaderTitle}>{data.title}</Text>
           </View>
         </View>
 
         {/* Ministry pills */}
         {data.ministries && data.ministries.length > 0 && (
-          <View style={[styles.ministriesCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Text style={[styles.ministriesLabel, { color: colors.textTertiary }]}>MINISTRIES</Text>
+          <View style={styles.ministriesCard}>
+            <Text style={styles.ministriesLabel}>MINISTRIES</Text>
             <View style={styles.pillsRow}>
               {data.ministries.map((m) => (
-                <View key={m} style={[styles.ministryPill, { backgroundColor: colors.text + '10' }]}>
-                  <Text style={[styles.ministryPillText, { color: colors.text }]}>{m}</Text>
+                <View key={m} style={[styles.ministryPill, { backgroundColor: C.label + '10' }]}>
+                  <Text style={styles.ministryPillText}>{m}</Text>
                 </View>
               ))}
             </View>
@@ -67,8 +67,8 @@ export function LeaderCardSheet({ visible, onClose, data }: Props) {
 
         {/* Bio snippet */}
         {data.bio && (
-          <View style={[styles.bioCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Text style={[styles.bioText, { color: colors.textSecondary }]} numberOfLines={4}>
+          <View style={styles.bioCard}>
+            <Text style={styles.bioText} numberOfLines={4}>
               {data.bio}
             </Text>
           </View>
@@ -79,7 +79,7 @@ export function LeaderCardSheet({ visible, onClose, data }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     padding: Spacing.md,
     gap: Spacing.md,
@@ -99,31 +99,36 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#fff',
+    color: C.label,
     letterSpacing: 1,
   },
   leaderName: {
     fontSize: 18,
     fontWeight: '800',
     letterSpacing: -0.5,
+    color: C.label,
   },
   leaderTitle: {
     fontSize: 13,
     fontWeight: '700',
     letterSpacing: 0.5,
     marginTop: 2,
+    color: C.secondary,
   },
   ministriesCard: {
     borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
     padding: Spacing.md,
     gap: 8,
+    backgroundColor: C.surface,
+    borderColor: C.separator,
   },
   ministriesLabel: {
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 1,
     textTransform: 'uppercase',
+    color: C.muted,
   },
   pillsRow: {
     flexDirection: 'row',
@@ -138,15 +143,19 @@ const styles = StyleSheet.create({
   ministryPillText: {
     fontSize: 11,
     fontWeight: '700',
+    color: C.label,
   },
   bioCard: {
     borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
     padding: Spacing.md,
+    backgroundColor: C.surface,
+    borderColor: C.separator,
   },
   bioText: {
     fontSize: 13,
     fontWeight: '500',
     lineHeight: 18,
+    color: C.secondary,
   },
 });

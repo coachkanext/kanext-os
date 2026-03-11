@@ -5,7 +5,7 @@
  *   Full Stats, Scorekeeper, Scouting, Travel, Standings, Archive, Settings.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -18,12 +18,7 @@ import * as Haptics from 'expo-haptics';
 import { useMode } from '@/context/app-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
-
-const C = {
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  separator: 'rgba(255,255,255,0.08)',
-};
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 const SPORTS_NAV = [
   { icon: 'chart.bar.fill', label: 'Full Stats', route: '/(tabs)/(main)/season/stats' },
@@ -63,6 +58,8 @@ const PARISH_NAV = [
 export function SeasonPanel() {
   const router = useRouter();
   const mode = useMode();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const isOffice = mode === 'business';
   const isCampus = mode === 'education';
   const isParish = mode === 'church';
@@ -103,7 +100,7 @@ export function SeasonPanel() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {},
   title: {
     fontSize: 18,

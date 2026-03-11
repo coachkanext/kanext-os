@@ -8,6 +8,7 @@
 
 import React, { useMemo } from 'react';
 import { View, PanResponder, StyleSheet, useWindowDimensions } from 'react-native';
+import { useColors } from '@/hooks/use-colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { VisualArea } from '@/components/home/visual-area';
 import { IconGrid } from '@/components/home/icon-grid';
@@ -18,6 +19,7 @@ import { pushNexusFromInner } from '@/utils/global-inner-nav';
 export default function HomeScreen() {
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
+  const C = useColors();
   // Swipe on grid area → open panel (right) or Nexus (left)
   const gridPanResponder = useMemo(
     () =>
@@ -43,7 +45,7 @@ export default function HomeScreen() {
   const videoHeight = usableHeight * 0.42;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: C.bg }]}>
       <View style={{ height: videoHeight + insets.top }}>
         <VisualArea />
       </View>

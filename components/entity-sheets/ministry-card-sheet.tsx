@@ -3,12 +3,12 @@
  * Quick preview with mission, volunteers, and leader.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Spacing } from '@/constants/theme';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import type { MinistryCardData } from '@/utils/global-entity-sheets';
 
 function nameToHue(name: string): number {
@@ -24,8 +24,8 @@ interface Props {
 }
 
 export function MinistryCardSheet({ visible, onClose, data }: Props) {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   if (!data) return null;
 
@@ -40,15 +40,15 @@ export function MinistryCardSheet({ visible, onClose, data }: Props) {
             <Text style={styles.iconText}>{data.icon ?? '+'}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.ministryName, { color: colors.text }]}>{data.name}</Text>
+            <Text style={styles.ministryName}>{data.name}</Text>
           </View>
         </View>
 
         {/* Mission text */}
         {data.mission && (
-          <View style={[styles.missionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Text style={[styles.missionLabel, { color: colors.textTertiary }]}>MISSION</Text>
-            <Text style={[styles.missionText, { color: colors.textSecondary }]} numberOfLines={4}>
+          <View style={styles.missionCard}>
+            <Text style={styles.missionLabel}>MISSION</Text>
+            <Text style={styles.missionText} numberOfLines={4}>
               {data.mission}
             </Text>
           </View>
@@ -56,17 +56,17 @@ export function MinistryCardSheet({ visible, onClose, data }: Props) {
 
         {/* Stats row */}
         {(data.volunteers != null || data.leader) && (
-          <View style={[styles.statsCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <View style={styles.statsCard}>
             {data.volunteers != null && (
               <View style={styles.statItem}>
-                <Text style={[styles.statLabel, { color: colors.textTertiary }]}>VOLUNTEERS</Text>
-                <Text style={[styles.statValue, { color: colors.text }]}>{data.volunteers}</Text>
+                <Text style={styles.statLabel}>VOLUNTEERS</Text>
+                <Text style={styles.statValue}>{data.volunteers}</Text>
               </View>
             )}
             {data.leader && (
               <View style={styles.statItem}>
-                <Text style={[styles.statLabel, { color: colors.textTertiary }]}>LEADER</Text>
-                <Text style={[styles.statValue, { color: colors.text }]}>{data.leader}</Text>
+                <Text style={styles.statLabel}>LEADER</Text>
+                <Text style={styles.statValue}>{data.leader}</Text>
               </View>
             )}
           </View>
@@ -77,7 +77,7 @@ export function MinistryCardSheet({ visible, onClose, data }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     padding: Spacing.md,
     gap: Spacing.md,
@@ -96,29 +96,34 @@ const styles = StyleSheet.create({
   },
   iconText: {
     fontSize: 22,
-    color: '#fff',
+    color: C.label,
   },
   ministryName: {
     fontSize: 18,
     fontWeight: '800',
     letterSpacing: -0.5,
+    color: C.label,
   },
   missionCard: {
     borderRadius: 14,
     borderWidth: StyleSheet.hairlineWidth,
     padding: Spacing.md,
     gap: 6,
+    backgroundColor: C.surface,
+    borderColor: C.separator,
   },
   missionLabel: {
     fontSize: 10,
     fontWeight: '700',
     letterSpacing: 1,
     textTransform: 'uppercase',
+    color: C.muted,
   },
   missionText: {
     fontSize: 13,
     fontWeight: '500',
     lineHeight: 18,
+    color: C.secondary,
   },
   statsCard: {
     flexDirection: 'row',
@@ -126,6 +131,8 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     padding: Spacing.md,
     justifyContent: 'space-around',
+    backgroundColor: C.surface,
+    borderColor: C.separator,
   },
   statItem: {
     alignItems: 'center',
@@ -136,10 +143,12 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: 1,
     textTransform: 'uppercase',
+    color: C.muted,
   },
   statValue: {
     fontSize: 15,
     fontWeight: '800',
     letterSpacing: -0.3,
+    color: C.label,
   },
 });

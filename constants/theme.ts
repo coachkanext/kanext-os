@@ -124,13 +124,13 @@ const lightPalette = {
 
   // Backgrounds
   background: '#FFFFFF',
-  backgroundSecondary: '#F2F2F7',
+  backgroundSecondary: '#0B1220',
   backgroundTertiary: '#E5E5EA',
 
   // Borders & Dividers
   border: '#D1D1D6',
   borderStrong: '#C7C7CC',
-  divider: '#D1D1D6',
+  divider: '#E5E5EA',
 
   // Interactive
   tint: '#1D9BF0',
@@ -143,7 +143,7 @@ const lightPalette = {
   tabIconSelected: '#1D9BF0',
 
   // Cards & Surfaces
-  card: '#F2F2F7',
+  card: '#0B1220',
   cardElevated: '#FFFFFF',
 
   // Overlays

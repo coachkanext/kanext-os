@@ -4,9 +4,10 @@
  * If live: pulsing red LIVE badge top-left.
  */
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { View, Text, Image, Pressable, Animated, StyleSheet } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import type { BrowseVideo } from '@/data/mock-media';
 
 interface FeaturedBannerProps {
@@ -14,6 +15,8 @@ interface FeaturedBannerProps {
 }
 
 export function FeaturedBanner({ video }: FeaturedBannerProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -40,7 +43,7 @@ export function FeaturedBanner({ video }: FeaturedBannerProps) {
         )}
         {/* Play icon overlay */}
         <View style={styles.playOverlay}>
-          <IconSymbol name="play.fill" size={36} color="#FFFFFF" />
+          <IconSymbol name="play.fill" size={36} color={C.label} />
         </View>
 
         {/* LIVE badge */}
@@ -60,7 +63,7 @@ export function FeaturedBanner({ video }: FeaturedBannerProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     marginHorizontal: 16,
     marginBottom: 16,
@@ -84,13 +87,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 12,
     left: 12,
-    backgroundColor: '#EF4444',
+    backgroundColor: C.red,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
   },
   liveText: {
-    color: '#FFFFFF',
+    color: C.label,
     fontSize: 12,
     fontWeight: '700',
     letterSpacing: 0.5,
@@ -104,12 +107,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.6)',
   },
   title: {
-    color: '#FFFFFF',
+    color: C.label,
     fontSize: 18,
     fontWeight: '700',
   },
   creator: {
-    color: '#A1A1AA',
+    color: C.secondary,
     fontSize: 14,
     marginTop: 2,
   },

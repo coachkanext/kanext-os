@@ -3,7 +3,7 @@
  * Swipe left = delete. Unheard = bold.
  */
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -19,6 +19,7 @@ import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { openSidePanel } from '@/utils/global-side-panel';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 import {
   VOICEMAILS,
@@ -27,15 +28,6 @@ import {
   type Voicemail,
 } from '@/data/mock-phone';
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-};
-
 function VoicemailRow({
   vm,
   accent,
@@ -43,6 +35,8 @@ function VoicemailRow({
   onExpand,
   expanded,
   onDelete,
+  C,
+  styles,
 }: {
   vm: Voicemail;
   accent: string;
@@ -50,6 +44,8 @@ function VoicemailRow({
   onExpand: () => void;
   expanded: boolean;
   onDelete: () => void;
+  C: ComponentColors;
+  styles: ReturnType<typeof makeStyles>;
 }) {
   const swipeRef = useRef<Swipeable>(null);
   const badgeColor = MODE_BADGE_COLORS[vm.mode];
@@ -63,7 +59,7 @@ function VoicemailRow({
         </RNAnimated.View>
       );
     },
-    [],
+    [styles],
   );
 
   return (
@@ -119,6 +115,8 @@ function VoicemailRow({
 export default function VoicemailScreen() {
   const insets = useSafeAreaInsets();
   const accent = useAccentColor();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   // Right-swipe detection via raw touch events
   const touchRef = useRef({ x: 0, y: 0, t: 0, triggered: false });
@@ -170,6 +168,8 @@ export default function VoicemailScreen() {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 setDeletedIds((prev) => new Set(prev).add(vm.id));
               }}
+              C={C}
+              styles={styles}
             />
             {idx < visible.length - 1 && <View style={styles.separator} />}
           </React.Fragment>
@@ -186,7 +186,7 @@ export default function VoicemailScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   transcriptionLabel: { fontSize: 11, fontWeight: '600', color: C.muted, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 },
   transcriptionText: { fontSize: 14, color: C.secondary, lineHeight: 20 },
 
-  deleteAction: { backgroundColor: '#EF4444', width: 72, alignItems: 'center', justifyContent: 'center' },
+  deleteAction: { backgroundColor: C.red, width: 72, alignItems: 'center', justifyContent: 'center' },
   empty: { alignItems: 'center', paddingTop: 120, gap: 12 },
   emptyText: { fontSize: 16, color: C.muted },
 });

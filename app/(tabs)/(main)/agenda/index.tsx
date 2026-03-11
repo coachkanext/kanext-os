@@ -19,6 +19,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
@@ -41,27 +42,6 @@ import { useOrganization, useMode } from '@/context/app-context';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
-const C = {
-  bg: '#000000',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  nowLine: '#FFFFFF',
-  surface: '#0B0F14',
-  blueSteel: '#1D9BF0',
-};
-
-// ─── Page Top Bar ────────────────────────────────────────────────────────────
-
-function PageTopBar({ title }: { title: string }) {
-  return (
-    <View style={styles.topBar}>
-      <Text style={styles.topBarTitle}>{title}</Text>
-    </View>
-  );
-}
-
 // ─── Activity Filter Pills ──────────────────────────────────────────────────
 
 type ActivityFilter = 'all' | ActivityCategory;
@@ -75,87 +55,14 @@ const ACTIVITY_FILTERS: { key: ActivityFilter; label: string }[] = [
   { key: 'prospects', label: 'Prospects' },
 ];
 
-function ActivityFilterPills({
-  active,
-  onSelect,
-}: {
-  active: ActivityFilter;
-  onSelect: (f: ActivityFilter) => void;
-}) {
-  return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.filterRow}
-    >
-      {ACTIVITY_FILTERS.map((f) => {
-        const isActive = active === f.key;
-        return (
-          <Pressable
-            key={f.key}
-            style={[styles.filterPill, isActive && styles.filterPillActive]}
-            onPress={() => onSelect(f.key)}
-          >
-            <Text style={[styles.filterText, isActive && styles.filterTextActive]}>{f.label}</Text>
-          </Pressable>
-        );
-      })}
-    </ScrollView>
-  );
-}
-
-// ─── Activity Row ────────────────────────────────────────────────────────────
-
-function ActivityRow({
-  item,
-  onLongPress,
-}: {
-  item: ActivityItem;
-  onLongPress: (pageY: number) => void;
-}) {
-  return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.activityRow,
-        pressed && styles.activityRowPressed,
-        !item.read && styles.activityRowUnread,
-      ]}
-      onLongPress={(e) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        onLongPress(e.nativeEvent.pageY);
-      }}
-      delayLongPress={400}
-    >
-      {/* Source icon */}
-      <View style={styles.activityIconCircle}>
-        <IconSymbol name={item.icon as any} size={16} color={C.secondary} />
-      </View>
-
-      {/* Content */}
-      <View style={styles.activityContent}>
-        <Text style={[styles.activityTitle, item.read && styles.activityTitleRead]} numberOfLines={1}>
-          {item.title}
-        </Text>
-        <Text style={styles.activityDescription} numberOfLines={1}>
-          {item.description}
-        </Text>
-      </View>
-
-      {/* Timestamp */}
-      <Text style={styles.activityTimestamp}>{item.timestamp}</Text>
-
-      {/* Unread dot */}
-      {!item.read && <View style={styles.unreadDot} />}
-    </Pressable>
-  );
-}
-
 // ─── Main Screen ────────────────────────────────────────────────────────────
 
 export default function AgendaScreen() {
   const insets = useSafeAreaInsets();
   const org = useOrganization();
   const mode = useMode();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const [pageIndex, setPageIndex] = useState(0);
   const [menuData, setMenuData] = useState<ContextMenuData | null>(null);
   const [calendarSelectedDate, setCalendarSelectedDate] = useState<string | null>(null);
@@ -335,7 +242,7 @@ export default function AgendaScreen() {
                 </Text>
               )}
               {sourceIcon && (
-                <IconSymbol name={sourceIcon as any} size={12} color={C.blueSteel} style={styles.sourceIcon} />
+                <IconSymbol name={sourceIcon as any} size={12} color={C.secondary} style={styles.sourceIcon} />
               )}
             </View>
           )}
@@ -345,7 +252,7 @@ export default function AgendaScreen() {
         </View>
       </Pressable>
     );
-  }, [now, nextUpcoming, currentEvent]);
+  }, [now, nextUpcoming, currentEvent, styles, C]);
 
   const renderSectionHeader = useCallback(({ section }: { section: { key: string; date: Date } }) => {
     return (
@@ -355,7 +262,7 @@ export default function AgendaScreen() {
         </Text>
       </View>
     );
-  }, []);
+  }, [styles]);
 
   // Mode label for org context line
   const modeLabel = mode.charAt(0).toUpperCase() + mode.slice(1);
@@ -433,8 +340,27 @@ export default function AgendaScreen() {
         {/* ── PAGE 2: ACTIVITY ── */}
         <View style={{ flex: 1 }}>
           <View style={{ paddingTop: 16 }}>
-            <PageTopBar title="Activity" />
-            <ActivityFilterPills active={activityFilter} onSelect={setActivityFilter} />
+            <View style={styles.topBar}>
+              <Text style={styles.topBarTitle}>Activity</Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.filterRow}
+            >
+              {ACTIVITY_FILTERS.map((f) => {
+                const isActive = activityFilter === f.key;
+                return (
+                  <Pressable
+                    key={f.key}
+                    style={[styles.filterPill, isActive && styles.filterPillActive]}
+                    onPress={() => setActivityFilter(f.key)}
+                  >
+                    <Text style={[styles.filterText, isActive && styles.filterTextActive]}>{f.label}</Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
           </View>
           <ScrollView
             style={styles.pageScroll}
@@ -452,10 +378,39 @@ export default function AgendaScreen() {
               activityItems.map((item, idx) => (
                 <View key={item.id}>
                   {idx > 0 && <View style={styles.activitySeparator} />}
-                  <ActivityRow
-                    item={item}
-                    onLongPress={(pageY) => handleActivityLongPress(item, pageY)}
-                  />
+                  <Pressable
+                    style={({ pressed }) => [
+                      styles.activityRow,
+                      pressed && styles.activityRowPressed,
+                      !item.read && styles.activityRowUnread,
+                    ]}
+                    onLongPress={(e) => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                      handleActivityLongPress(item, e.nativeEvent.pageY);
+                    }}
+                    delayLongPress={400}
+                  >
+                    {/* Source icon */}
+                    <View style={styles.activityIconCircle}>
+                      <IconSymbol name={item.icon as any} size={16} color={C.secondary} />
+                    </View>
+
+                    {/* Content */}
+                    <View style={styles.activityContent}>
+                      <Text style={[styles.activityTitle, item.read && styles.activityTitleRead]} numberOfLines={1}>
+                        {item.title}
+                      </Text>
+                      <Text style={styles.activityDescription} numberOfLines={1}>
+                        {item.description}
+                      </Text>
+                    </View>
+
+                    {/* Timestamp */}
+                    <Text style={styles.activityTimestamp}>{item.timestamp}</Text>
+
+                    {/* Unread dot */}
+                    {!item.read && <View style={styles.unreadDot} />}
+                  </Pressable>
                 </View>
               ))
             )}
@@ -469,7 +424,7 @@ export default function AgendaScreen() {
           style={[styles.fab, { bottom: insets.bottom + 60 }]}
           onPress={handleAddEvent}
         >
-          <IconSymbol name="plus" size={24} color="#FFFFFF" />
+          <IconSymbol name="plus" size={24} color={C.label} />
         </Pressable>
       )}
 
@@ -478,9 +433,9 @@ export default function AgendaScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
-  page: { flex: 1, backgroundColor: '#000000' },
+  page: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 
   // Top bar (Activity page)
@@ -517,7 +472,7 @@ const styles = StyleSheet.create({
     color: C.label,
   },
   filterTextActive: {
-    color: '#000000',
+    color: C.bg,
   },
 
   // Summary strip
@@ -660,18 +615,18 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: C.nowLine,
+    backgroundColor: C.label,
   },
   nowLine: {
     flex: 1,
     height: 1,
-    backgroundColor: C.nowLine,
+    backgroundColor: C.label,
     marginHorizontal: 6,
   },
   nowLabel: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#A1A1AA',
+    color: C.secondary,
   },
 
   // Activity rows
@@ -721,7 +676,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: C.blueSteel,
+    backgroundColor: C.secondary,
     marginLeft: 6,
   },
   activitySeparator: {
@@ -741,7 +696,7 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: '#0B0F14',
+    backgroundColor: C.surface,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',

@@ -2,7 +2,7 @@
  * Archived — Archived channels and DMs with restore option.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -15,16 +15,7 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
-
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  channelIconBg: '#0B1220',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-};
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 // Mock archived items
 const MOCK_ARCHIVED = [
@@ -36,6 +27,8 @@ const MOCK_ARCHIVED = [
 export default function ArchivedScreen() {
   const insets = useSafeAreaInsets();
   const accent = useAccentColor();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const [archived, setArchived] = useState(MOCK_ARCHIVED);
 
   const restore = (id: string) => {
@@ -76,20 +69,20 @@ export default function ArchivedScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },
   list: { flex: 1 },
   row: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 12, gap: 12 },
   icon: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center', opacity: 0.6 },
-  channelShape: { borderRadius: 10, backgroundColor: C.channelIconBg },
+  channelShape: { borderRadius: 10, backgroundColor: C.surface },
   dmShape: { borderRadius: 20, backgroundColor: '#1C1C1E' },
   initials: { fontSize: 13, fontWeight: '700', color: C.label },
   info: { flex: 1 },
   name: { fontSize: 16, fontWeight: '500', color: C.label },
   date: { fontSize: 12, color: C.muted, marginTop: 2 },
-  restoreBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: 'rgba(255,255,255,0.08)' },
+  restoreBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: C.separator },
   restoreText: { fontSize: 13, fontWeight: '600' },
   empty: { alignItems: 'center', paddingTop: 120, gap: 12 },
   emptyText: { fontSize: 16, color: C.muted },

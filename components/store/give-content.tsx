@@ -17,6 +17,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { SwipeablePages } from '@/components/ui/swipeable-two-page';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import {
@@ -37,22 +38,11 @@ import {
 import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-  green: '#22C55E',
-  blue: '#3B82F6',
-  purple: '#8B5CF6',
-  amber: '#F59E0B',
-};
-
 // ─── Shared ───────────────────────────────────────────────────────────────
 
 function PageTopBar({ title }: { title: string }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.topBar}>
       <Text style={s.topBarTitle}>{title}</Text>
@@ -69,6 +59,8 @@ function FilterPills<T extends string>({
   active: T;
   onSelect: (key: T) => void;
 }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <ScrollView
       horizontal
@@ -94,6 +86,8 @@ function FilterPills<T extends string>({
 // ─── Giving Hero ──────────────────────────────────────────────────────────
 
 function GivingHero() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const hero = getGivingHero();
   const pct = Math.round((hero.raisedAmount / hero.goalAmount) * 100);
 
@@ -114,6 +108,8 @@ function GivingHero() {
 // ─── Designation Card ─────────────────────────────────────────────────────
 
 function DesignationCard({ item }: { item: GivingDesignation }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <View style={s.designationRow}>
       <View style={s.designationInfo}>
@@ -133,6 +129,8 @@ function DesignationCard({ item }: { item: GivingDesignation }) {
 // ─── Transaction Row ──────────────────────────────────────────────────────
 
 function TransactionRow({ tx }: { tx: GivingTransaction }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   return (
     <Pressable style={({ pressed }) => [s.txRow, pressed && { opacity: 0.85 }]}>
       <View style={s.txIcon}>
@@ -155,6 +153,8 @@ function TransactionRow({ tx }: { tx: GivingTransaction }) {
 // ─── Campaign Card ────────────────────────────────────────────────────────
 
 function CampaignCard({ campaign }: { campaign: GivingCampaign }) {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const pct = campaign.goalAmount > 0
     ? Math.round((campaign.raisedAmount / campaign.goalAmount) * 100)
     : 0;
@@ -202,6 +202,8 @@ function CampaignCard({ campaign }: { campaign: GivingCampaign }) {
 // ═══════════════════════════════════════════════════════════════════════════
 
 export function GiveContent() {
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
 
   const [pageIndex, setPageIndex] = useState(0);
@@ -329,7 +331,7 @@ export function GiveContent() {
 // STYLES
 // ═══════════════════════════════════════════════════════════════════════════
 
-const s = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   pageScroll: { flex: 1 },
 
@@ -372,7 +374,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 20, paddingVertical: 8,
     borderRadius: 8, backgroundColor: C.blue,
   },
-  giveBtnText: { fontSize: 14, fontWeight: '700', color: '#FFFFFF' },
+  giveBtnText: { fontSize: 14, fontWeight: '700', color: C.label },
 
   // Summary
   summaryCard: {
@@ -424,7 +426,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 16, paddingVertical: 6,
     borderRadius: 8, backgroundColor: C.blue,
   },
-  campaignGiveBtnText: { fontSize: 12, fontWeight: '700', color: '#FFFFFF' },
+  campaignGiveBtnText: { fontSize: 12, fontWeight: '700', color: C.label },
   completedBadge: {
     paddingHorizontal: 10, paddingVertical: 4,
     borderRadius: 8, backgroundColor: C.green + '18',

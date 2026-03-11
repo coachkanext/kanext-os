@@ -16,23 +16,16 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useMode } from '@/context/app-context';
 import { getRooms } from '@/data/mock-messages-v3';
-
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  channelIconBg: '#0B1220',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-  separator: 'rgba(255,255,255,0.08)',
-};
 
 export default function ChannelManagementScreen() {
   const insets = useSafeAreaInsets();
   const accent = useAccentColor();
   const mode = useMode();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
 
   const channels = useMemo(() => getRooms(mode), [mode]);
   const [mutedIds, setMutedIds] = useState<Set<string>>(new Set());
@@ -129,7 +122,7 @@ export default function ChannelManagementScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },
@@ -141,7 +134,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5, paddingHorizontal: 20, marginBottom: 8, marginTop: 8,
   },
   channelRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10, gap: 10 },
-  channelIcon: { width: 36, height: 36, borderRadius: 10, backgroundColor: C.channelIconBg, alignItems: 'center', justifyContent: 'center' },
+  channelIcon: { width: 36, height: 36, borderRadius: 10, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' },
   channelInitials: { fontSize: 12, fontWeight: '700', color: C.label },
   lockBadge: {
     position: 'absolute', bottom: -2, right: -2, width: 14, height: 14, borderRadius: 7,
@@ -152,6 +145,6 @@ const styles = StyleSheet.create({
   channelMeta: { fontSize: 12, color: C.muted, marginTop: 2 },
   miniSwitch: { transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }] },
   divider: { height: 1, backgroundColor: C.separator, marginHorizontal: 20, marginVertical: 8 },
-  restoreBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: 'rgba(255,255,255,0.08)' },
+  restoreBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: C.separator },
   restoreText: { fontSize: 13, fontWeight: '600', color: C.secondary },
 });

@@ -3,15 +3,10 @@
  * Per-screen tappable rows with relevant secondary features.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-
-const C = {
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  separator: 'rgba(255,255,255,0.08)',
-};
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 type PanelItem = { icon: string; label: string };
 
@@ -25,15 +20,6 @@ const SCREEN_ITEMS: Record<string, { title: string; items: PanelItem[] }> = {
       { icon: 'chart.bar.fill', label: 'Analytics' },
       { icon: 'arrow.down.circle.fill', label: 'Downloads' },
       { icon: 'gearshape.fill', label: 'Settings' },
-    ],
-  },
-  season: {
-    title: 'Season',
-    items: [
-      { icon: 'list.number', label: 'Standings' },
-      { icon: 'chart.bar.fill', label: 'Full Stats' },
-      { icon: 'line.3.horizontal.decrease.circle.fill', label: 'Schedule Filters' },
-      { icon: 'film.fill', label: 'Film Library' },
     ],
   },
   store: {
@@ -87,7 +73,6 @@ const SCREEN_ITEMS: Record<string, { title: string; items: PanelItem[] }> = {
 function resolveScreen(pathname: string): { title: string; items: PanelItem[] } {
   const p = pathname.toLowerCase();
   if (p.includes('media') || p.includes('title=Media')) return SCREEN_ITEMS.media;
-  if (p.includes('season')) return SCREEN_ITEMS.season;
   if (p.includes('store')) return SCREEN_ITEMS.store;
   if (p.includes('give') || p.includes('giving')) return SCREEN_ITEMS.give;
   if (p.includes('video')) return SCREEN_ITEMS.video;
@@ -109,6 +94,8 @@ interface DefaultPanelProps {
 }
 
 export function DefaultPanel({ pathname }: DefaultPanelProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const screen = resolveScreen(pathname);
 
   return (
@@ -132,7 +119,7 @@ export function DefaultPanel({ pathname }: DefaultPanelProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   content: {},
   title: {
     fontSize: 18,

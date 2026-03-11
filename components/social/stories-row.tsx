@@ -3,19 +3,10 @@
  * White ring = unseen, gray ring = seen. First item = "You" with blue "+" badge.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import type { StoryUser } from '@/data/mock-social';
-
-const C = {
-  unseenRing: '#FFFFFF',
-  seenRing: '#52525B',
-  avatarBg: '#1C1C1E',
-  avatarText: '#FFFFFF',
-  nameText: '#A1A1AA',
-  youBadgeBg: '#1D9BF0',
-  youBadgeIcon: '#FFFFFF',
-};
 
 interface StoriesRowProps {
   stories: StoryUser[];
@@ -23,6 +14,9 @@ interface StoriesRowProps {
 }
 
 export function StoriesRow({ stories, onStoryPress }: StoriesRowProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
+
   return (
     <ScrollView
       horizontal
@@ -43,8 +37,8 @@ export function StoriesRow({ stories, onStoryPress }: StoriesRowProps) {
                 borderColor: user.isYou
                   ? 'transparent'
                   : user.hasUnseenStory
-                    ? C.unseenRing
-                    : C.seenRing,
+                    ? C.label
+                    : C.muted,
               },
             ]}
           >
@@ -66,7 +60,7 @@ export function StoriesRow({ stories, onStoryPress }: StoriesRowProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   scroll: {
     flexGrow: 0,
   },
@@ -91,14 +85,14 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: C.avatarBg,
+    backgroundColor: '#1C1C1E',
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: {
     fontSize: 16,
     fontWeight: '600',
-    color: C.avatarText,
+    color: C.label,
   },
   youBadge: {
     position: 'absolute',
@@ -107,21 +101,21 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: C.youBadgeBg,
+    backgroundColor: '#1D9BF0',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: '#000000',
+    borderColor: C.bg,
   },
   youBadgeText: {
     fontSize: 14,
     fontWeight: '700',
-    color: C.youBadgeIcon,
+    color: C.label,
     marginTop: -1,
   },
   name: {
     fontSize: 12,
-    color: C.nameText,
+    color: C.secondary,
     marginTop: 4,
     textAlign: 'center',
     width: 68,

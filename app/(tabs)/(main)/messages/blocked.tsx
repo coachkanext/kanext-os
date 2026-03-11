@@ -2,7 +2,7 @@
  * Blocked Users — Manage blocked users who cannot DM you.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -15,14 +15,7 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
-
-const C = {
-  bg: '#000000',
-  surface: '#0B0F14',
-  label: '#FFFFFF',
-  secondary: '#A1A1AA',
-  muted: '#52525B',
-};
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 const MOCK_BLOCKED = [
   { id: 'mb1', name: 'Spam Account', username: '@spammer123', initials: 'SA' },
@@ -32,6 +25,8 @@ const MOCK_BLOCKED = [
 export default function BlockedUsersScreen() {
   const insets = useSafeAreaInsets();
   const accent = useAccentColor();
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const [blocked, setBlocked] = useState(MOCK_BLOCKED);
 
   const unblock = (id: string) => {
@@ -76,7 +71,7 @@ export default function BlockedUsersScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: C.bg },
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
   title: { fontSize: 28, fontWeight: '700', color: C.label },
@@ -87,8 +82,8 @@ const styles = StyleSheet.create({
   info: { flex: 1 },
   name: { fontSize: 16, fontWeight: '600', color: C.label },
   username: { fontSize: 13, color: C.muted, marginTop: 2 },
-  unblockBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: 'rgba(255,255,255,0.08)' },
-  unblockText: { fontSize: 13, fontWeight: '600', color: '#EF4444' },
+  unblockBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: C.separator },
+  unblockText: { fontSize: 13, fontWeight: '600', color: C.red },
   empty: { alignItems: 'center', paddingTop: 120, gap: 12 },
   emptyText: { fontSize: 16, color: C.muted },
   note: { fontSize: 13, color: C.muted, paddingHorizontal: 20, marginTop: 24, lineHeight: 18 },

@@ -16,6 +16,7 @@
 
 import React, { useRef, useMemo, useEffect, useCallback } from 'react';
 import { View, Text, Image, Pressable, PanResponder, Animated, StyleSheet } from 'react-native';
+import { useColors } from '@/hooks/use-colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, usePathname } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -40,6 +41,7 @@ const ORG_ICONS: Record<string, any> = {
 const FOOTER_HEIGHT = 49;
 
 export function UniversalFooter() {
+  const C = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const pathname = usePathname();
@@ -185,10 +187,10 @@ export function UniversalFooter() {
   return (
     <Animated.View style={[styles.wrapper, { transform: [{ translateY }] }]}>
       {/* 1px divider */}
-      <View style={styles.divider} />
+      <View style={[styles.divider, { backgroundColor: C.footerDivider }]} />
 
       {/* 5-icon row — tap only, no footer-specific swipe gestures */}
-      <View style={styles.footer}>
+      <View style={[styles.footer, { backgroundColor: C.footer }]}>
         {/* 1. Home */}
         <Pressable
           style={styles.iconButton}
@@ -256,8 +258,8 @@ export function UniversalFooter() {
         </Pressable>
       </View>
 
-      {/* Safe area fill — extends black behind home indicator */}
-      <View style={{ height: insets.bottom, backgroundColor: '#000000' }} />
+      {/* Safe area fill — extends behind home indicator */}
+      <View style={{ height: insets.bottom, backgroundColor: C.footer }} />
     </Animated.View>
   );
 }
@@ -273,11 +275,9 @@ const styles = StyleSheet.create({
   divider: {
     width: '100%',
     height: 1,
-    backgroundColor: 'rgba(255,255,255,0.08)',
   },
   footer: {
     height: FOOTER_HEIGHT,
-    backgroundColor: '#000000',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
