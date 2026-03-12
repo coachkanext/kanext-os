@@ -39,7 +39,7 @@ import {
   type ActivityItem,
 } from '@/data/mock-agenda';
 import { useOrganization, useMode } from '@/context/app-context';
-import { openSidePanel } from '@/utils/global-side-panel';
+
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 // ─── Activity Filter Pills ──────────────────────────────────────────────────
@@ -272,7 +272,7 @@ export default function AgendaScreen() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
+
         badges={badges}
       >
         {/* ── PAGE 0: TIMELINE ── */}

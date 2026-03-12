@@ -44,7 +44,6 @@ import {
   type FollowUpStage,
   type DiscipleshipStage,
 } from '@/data/mock-parish';
-import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const SERVICE_STATUS_COLORS: Record<ServiceStatus, string> = {
@@ -588,7 +587,6 @@ export function ParishContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
       >
         {/* ── PAGE 0: SERVICES ── */}
         <View style={{ flex: 1 }}>

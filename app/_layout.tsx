@@ -13,7 +13,7 @@
  */
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack, usePathname, useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreenModule from 'expo-splash-screen';
 import React, { useEffect, useCallback, useRef, useMemo, useState } from 'react';
@@ -25,7 +25,7 @@ import 'react-native-reanimated';
 import { SplashScreen } from '@/components/splash-screen';
 import { AuthModal } from '@/components/auth/auth-modal';
 import { SearchOverlay } from '@/components/nexus/search-overlay';
-import { ModeSwitcherOverlay } from '@/components/mode-switcher-overlay';
+import { OrgDrawer } from '@/components/org-drawer';
 import { UniversalFooter } from '@/components/universal-footer';
 import { MultitaskingOverlay } from '@/components/multitasking-overlay';
 import { KXTransition } from '@/components/kx-transition';
@@ -38,7 +38,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useColors } from '@/hooks/use-colors';
 import { registerSearchOverlayHandlers } from '@/utils/global-search-overlay';
 import { registerSplitNexusHandlers } from '@/utils/global-split-nexus';
-import { registerSettingsPanelHandlers, openSettingsPanel, closeSettingsPanel, isSettingsPanelOpen } from '@/utils/global-settings-panel';
+import { registerSettingsPanelHandlers, closeSettingsPanel, isSettingsPanelOpen } from '@/utils/global-settings-panel';
 import { SettingsPanel, SETTINGS_PANEL_WIDTH } from '@/components/settings-panel';
 import { registerSidePanelHandlers, openSidePanel, closeSidePanel, isSidePanelOpen } from '@/utils/global-side-panel';
 import { SidePanel, SIDE_PANEL_WIDTH } from '@/components/side-panel/side-panel';
@@ -54,7 +54,8 @@ import { SplitNexusOverlay } from '@/components/nexus/split-nexus-overlay';
 import { CallOverlay } from '@/components/call/call-overlay';
 import { IncomingCallOverlay } from '@/components/call/incoming-call-overlay';
 
-import { isSwipeablePageActive, getSwipeablePageIndex } from '@/utils/global-swipeable-page';
+
+
 import { registerEntitySheetHandlers } from '@/utils/global-entity-sheets';
 import type {
   TeamCardData, PlayerCardData, CoachCardData, EventCardData,
@@ -259,42 +260,6 @@ function AppShell() {
     [],
   );
 
-  // Edge swipe-right to open panel (swipe right on the page = panel)
-  const pathname = usePathname();
-  const pathnameRef = useRef(pathname);
-  pathnameRef.current = pathname;
-
-  // Capture-phase PanResponder: intercepts horizontal right-swipes to open panels.
-  // Swipe right ANYWHERE on screen (content, footer, everywhere) = open contextual panel.
-  // On home → settings panel. On all other screens → side panel.
-  const panelOpenPanResponder = useMemo(
-    () =>
-      PanResponder.create({
-        onStartShouldSetPanResponderCapture: () => false,
-        onMoveShouldSetPanResponderCapture: (_evt, gs) => {
-          // Don't capture on home — video hero handles paging + edge overscroll opens panel
-          const p = pathnameRef.current;
-          if (p === '/' || p === '/(tabs)' || p === '/(tabs)/(main)' || p === '/(main)') return false;
-          // Don't capture when a swipeable page is active at page > 0
-          // Let the SwipeableTwoPage bubble-phase handler page from 1→0
-          if (isSwipeablePageActive() && getSwipeablePageIndex() > 0) return false;
-          return gs.dx > 25 && gs.dx > Math.abs(gs.dy) * 2;
-        },
-        onPanResponderRelease: (_evt, gs) => {
-          if (gs.dx > 60) {
-            const p = pathnameRef.current;
-            const isOnHome = p === '/' || p === '/(tabs)' || p === '/(tabs)/(main)' || p === '/(main)';
-            if (isOnHome) {
-              openSettingsPanel();
-            } else {
-              openSidePanel();
-            }
-          }
-        },
-      }),
-    [],
-  );
-
   // Show auth modal when not authenticated (and not still checking)
   const showAuthModal = !authState.isChecking && !authState.isAuthenticated;
 
@@ -310,7 +275,6 @@ function AppShell() {
       {/* Content wrapper — shifts right when panels open */}
       <Animated.View
         style={[containerDynamic, { transform: [{ translateX: contentTranslateX }] }]}
-        {...(!settingsPanelVisible && !sidePanelVisible ? panelOpenPanResponder.panHandlers : {})}
       >
         <View style={containerDynamic}>
           <Stack
@@ -329,7 +293,6 @@ function AppShell() {
             <Stack.Screen name="wallet" options={{ contentStyle: { backgroundColor: colors.bg } }} />
             <Stack.Screen name="video" />
             <Stack.Screen name="settings" />
-            <Stack.Screen name="profile" options={{ contentStyle: { backgroundColor: colors.bg } }} />
             {/* section and messages are inside (tabs)/(home) Stack — tab bar stays visible */}
             <Stack.Screen
               name="modal"
@@ -405,7 +368,7 @@ function AppShell() {
       <SplitNexusOverlay visible={splitNexusVisible} onClose={() => setSplitNexusVisible(false)} />
       <SearchOverlay visible={searchOverlayVisible} onClose={() => setSearchOverlayVisible(false)} />
       <MultitaskingOverlay />
-      <ModeSwitcherOverlay />
+      <OrgDrawer />
       <CallOverlay />
       <IncomingCallOverlay />
       <KXTransition />

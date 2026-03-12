@@ -42,7 +42,6 @@ import {
   type InitiativeType,
   type MissionType,
 } from '@/data/mock-outreach';
-import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const COLUMN_WIDTH = Dimensions.get('window').width * 0.72;
@@ -529,7 +528,6 @@ export function OutreachContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
       >
         {/* ── PAGE 0: VISITORS ── */}
         <View style={{ flex: 1 }}>

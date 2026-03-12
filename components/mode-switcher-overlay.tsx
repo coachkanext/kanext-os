@@ -9,7 +9,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Pressable, Image, StyleSheet, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter, usePathname } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol, type IconSymbolName } from '@/components/ui/icon-symbol';
@@ -17,7 +16,6 @@ import { ThemedText } from '@/components/themed-text';
 import { ModeColors, MODE_ACCENT } from '@/constants/theme';
 import { useAppContext } from '@/context/app-context';
 import { registerModeSwitcherHandlers } from '@/utils/global-mode-switcher';
-import { popInnerToHome } from '@/utils/global-inner-nav';
 import type { Mode } from '@/types';
 
 const ALL_MODES: { mode: Mode; icon: IconSymbolName; label: string; image?: any }[] = [
@@ -30,10 +28,6 @@ const ALL_MODES: { mode: Mode; icon: IconSymbolName; label: string; image?: any 
 export function ModeSwitcherOverlay() {
   const [visible, setVisible] = useState(false);
   const insets = useSafeAreaInsets();
-  const router = useRouter();
-  const pathname = usePathname();
-  const pathnameRef = useRef(pathname);
-  pathnameRef.current = pathname;
   const { state, switchMode } = useAppContext();
   const backdropOpacity = useRef(new Animated.Value(0)).current;
   const dockTranslateY = useRef(new Animated.Value(100)).current;
@@ -82,16 +76,11 @@ export function ModeSwitcherOverlay() {
 
   const handleSelect = useCallback((selectedMode: Mode) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    switchMode(selectedMode);
-    popInnerToHome();
-    // If on Nexus, dismiss the stack
-    if (pathnameRef.current === '/nexus' || pathnameRef.current.startsWith('/nexus/')) {
-      router.dismissAll();
+    if (selectedMode !== state.mode) {
+      switchMode(selectedMode);
     }
     dismiss();
-  }, [switchMode, dismiss, router]);
-
-  const otherModes = ALL_MODES.filter((m) => m.mode !== state.mode);
+  }, [switchMode, dismiss, state.mode]);
 
   if (!visible) return null;
 
@@ -112,21 +101,25 @@ export function ModeSwitcherOverlay() {
           },
         ]}
       >
-        {otherModes.map((m) => {
+        {ALL_MODES.map((m) => {
           const modeColor = MODE_ACCENT[m.mode];
+          const isCurrent = m.mode === state.mode;
           return (
             <Pressable
               key={m.mode}
               style={({ pressed }) => [
                 styles.modeButton,
+                !isCurrent && { opacity: 0.5 },
                 pressed && { opacity: 0.7 },
               ]}
               onPress={() => handleSelect(m.mode)}
             >
               {m.image ? (
-                <Image source={m.image} style={styles.modeImage} />
+                <View style={isCurrent ? [styles.accentRing, { borderColor: modeColor }] : undefined}>
+                  <Image source={m.image} style={styles.modeImage} />
+                </View>
               ) : (
-                <View style={[styles.iconCircle, { backgroundColor: modeColor + '30' }]}>
+                <View style={[styles.iconCircle, { backgroundColor: modeColor + '30' }, isCurrent && { borderWidth: 2, borderColor: modeColor }]}>
                   <IconSymbol name={m.icon} size={24} color={modeColor} />
                 </View>
               )}
@@ -167,6 +160,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
+  },
+  accentRing: {
+    borderWidth: 2,
+    borderRadius: 28,
+    padding: 1,
   },
   modeImage: {
     width: 52,

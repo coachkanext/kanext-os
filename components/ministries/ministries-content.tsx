@@ -46,7 +46,7 @@ import {
   type BgCheckStatus,
   type PipelineStage,
 } from '@/data/mock-ministries-screen';
-import { openSidePanel } from '@/utils/global-side-panel';
+
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 // ── Color Maps ──
@@ -727,7 +727,7 @@ export function MinistriesContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
+
       >
         {/* ── PAGE 0: SERVE ── */}
         <View style={{ flex: 1 }}>

@@ -37,7 +37,6 @@ import {
   type OrderItem,
   type DropItem,
 } from '@/data/mock-store';
-import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -273,7 +272,6 @@ export function StoreContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={handlePageChange}
-        onEdgeRight={openSidePanel}
       >
         {/* ── PAGE 0: SHOP ── */}
         <View style={{ flex: 1 }}>

@@ -37,7 +37,7 @@ import {
   type DiscoverSortKey,
   type SchoolLevelFilter,
 } from '@/data/mock-prospects-screen';
-import { openSidePanel } from '@/utils/global-side-panel';
+
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 // ── Trend colors/icons ──
@@ -546,7 +546,7 @@ export function ProspectsContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
+
       >
         {/* ── PAGE 0: RANKINGS ── */}
         <View style={{ flex: 1 }}>

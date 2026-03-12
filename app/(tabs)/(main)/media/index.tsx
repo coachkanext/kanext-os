@@ -25,7 +25,7 @@ import {
 } from '@/data/mock-media';
 import { WATCH_HISTORY_BY_MODE } from '@/data/mock-video';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
-import { openSidePanel } from '@/utils/global-side-panel';
+
 import { useMode } from '@/context/app-context';
 
 export default function MediaScreen() {
@@ -78,7 +78,7 @@ export default function MediaScreen() {
       <SwipeableTwoPage
         activeIndex={pageIndex}
         onPageChange={handlePageChange}
-        onEdgeRight={openSidePanel}
+
       >
         {/* Page 0: Browse */}
         <ScrollView

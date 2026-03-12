@@ -46,7 +46,7 @@ import {
   type HealthEntry,
   type EligibilityEntry,
 } from '@/data/mock-season';
-import { openSidePanel } from '@/utils/global-side-panel';
+
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 // ─── Film Filter data ──────────────────────────────────────────────────────
@@ -267,7 +267,7 @@ function SportsSeasonContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
+
       >
         {/* ── PAGE 0: GAMES ── */}
         <View style={{ flex: 1 }}>

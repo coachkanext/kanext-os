@@ -8,7 +8,7 @@
  *
  * 6 gestures (scoped to this element only):
  *   Tap         → always Nexus fullscreen
- *   Double-tap  → mode switcher (3 icons, excludes current)
+ *   Double-tap  → org drawer bottom sheet
  *   Long-press  → search + voice
  *   Swipe UP    → multitasking overlay
  *   Swipe RIGHT → toggle split Nexus on/off
@@ -28,7 +28,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSearchOverlay } from '@/utils/global-search-overlay';
 import { openSplitNexus, closeSplitNexus, isSplitNexusOpen } from '@/utils/global-split-nexus';
 import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils/global-multitasking';
-import { openModeSwitcher } from '@/utils/global-mode-switcher';
+import { openOrgDrawer } from '@/utils/global-org-drawer';
 import { startGlobalVoice } from '@/utils/global-voice';
 
 const DIAMETER = 120;
@@ -47,10 +47,10 @@ export function NexusSemiCircle() {
   const handlePress = () => {
     const now = Date.now();
     if (now - lastTapRef.current < 350) {
-      // Double tap → mode switcher
+      // Double tap → org drawer
       lastTapRef.current = 0;
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      openModeSwitcher();
+      openOrgDrawer();
       return;
     }
     lastTapRef.current = now;

@@ -8,10 +8,10 @@
  *
  * Icons (all use existing image assets):
  *   Home (1):         footer-home.png    — tap → navigate home
- *   Messages (2):     footer-messages.png — tap → push messages
+ *   Phone (2):        footer-phone.png   — tap → push phone
  *   Nexus (center):   footer-nexus.png   — tap, double-tap (multitasking), hold (search), swipe-up (split screen)
- *   Phone (4):        footer-phone.png   — tap → push phone
- *   Mode (5):         footer-org.png     — tap → push mode screen, long press → mode switcher
+ *   Messages (4):     footer-messages.png — tap → push messages
+ *   Profile (5):      footer-profile.png — tap → push profile, swipe-up → org drawer
  */
 
 import React, { useRef, useMemo, useEffect, useCallback } from 'react';
@@ -25,19 +25,9 @@ import { openSearchOverlay } from '@/utils/global-search-overlay';
 import { openSplitNexus, closeSplitNexus, isSplitNexusOpen } from '@/utils/global-split-nexus';
 import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils/global-multitasking';
 import { startGlobalVoice } from '@/utils/global-voice';
-import { openModeSwitcher } from '@/utils/global-mode-switcher';
+import { openOrgDrawer } from '@/utils/global-org-drawer';
 import { subscribeFooterVisibility, resetFooter } from '@/utils/global-footer-hide';
 import { popInnerToHome } from '@/utils/global-inner-nav';
-import { useMode } from '@/context/app-context';
-import type { Mode } from '@/types';
-
-const ORG_ICONS: Record<string, any> = {
-  sports: require('@/assets/images/footer-org.png'),
-  business: require('@/assets/images/footer-org-business.png'),
-  church: require('@/assets/images/footer-org-church.png'),
-  education: require('@/assets/images/footer-org-education.png'),
-};
-
 const FOOTER_HEIGHT = 49;
 
 export function UniversalFooter() {
@@ -45,7 +35,6 @@ export function UniversalFooter() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const pathname = usePathname();
-  const mode = useMode();
   const pathnameRef = useRef(pathname);
   pathnameRef.current = pathname;
   const lastTapRef = useRef(0);
@@ -104,7 +93,7 @@ export function UniversalFooter() {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       if (isMultitaskingOpen()) closeMultitasking();
       if (isSplitNexusOpen()) closeSplitNexus();
-  
+
       router.navigate('/nexus' as any);
     }, 300);
   };
@@ -139,6 +128,23 @@ export function UniversalFooter() {
     [],
   );
 
+  // ── Profile swipe-up → org drawer ──
+  const profilePanResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => false,
+        onMoveShouldSetPanResponder: (_evt, gs) =>
+          gs.dy < -15 && Math.abs(gs.dy) > Math.abs(gs.dx),
+        onPanResponderRelease: (_evt, gs) => {
+          if (gs.dy < -50) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            openOrgDrawer();
+          }
+        },
+      }),
+    [],
+  );
+
   /** Shared pre-nav: haptic + footer reset + close split */
   const preNav = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -154,7 +160,9 @@ export function UniversalFooter() {
   };
 
   const handleHomePress = () => {
-    if ((pIs('/') || pIs('/(tabs)') || pIs('/(tabs)/(main)') || pIs('/(main)')) && !pIncludes('messages') && !pIncludes('phone') && !pIncludes('section')) return;
+    const p = pathnameRef.current;
+    // Dead tap only when already on the home index
+    if (p === '/' || p === '/(tabs)' || p === '/(tabs)/(main)' || p === '/(main)') return;
     preNav();
     popInnerToHome();
     if (isOnNexus()) router.dismissAll();
@@ -171,17 +179,15 @@ export function UniversalFooter() {
     router.navigate('/(tabs)/(main)/phone' as any);
     if (isOnNexus()) router.dismissAll();
   };
-  const handleModePress = () => {
-    if (pIncludes('mode')) return;
+  const handleProfilePress = () => {
+    if (pIncludes('profile')) return;
     preNav();
-    router.navigate('/(tabs)/(main)/mode' as any);
+    router.navigate('/(tabs)/(main)/profile' as any);
     if (isOnNexus()) router.dismissAll();
   };
-
-  // ── Mode long press → mode switcher ──
-  const handleModeLongPress = () => {
+  const handleProfileLongPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    openModeSwitcher();
+    openOrgDrawer();
   };
 
   return (
@@ -199,19 +205,19 @@ export function UniversalFooter() {
         >
           <Image
             source={require('@/assets/images/footer-home.png')}
-            style={styles.homeImage}
+            style={styles.iconImage}
           />
         </Pressable>
 
-        {/* 2. Messages */}
+        {/* 2. Phone */}
         <Pressable
           style={styles.iconButton}
-          onPress={handleMessagesPress}
+          onPress={handlePhonePress}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <Image
-            source={require('@/assets/images/footer-messages.png')}
-            style={styles.messagesImage}
+            source={require('@/assets/images/footer-phone.png')}
+            style={styles.iconImage}
           />
         </Pressable>
 
@@ -231,31 +237,33 @@ export function UniversalFooter() {
           </Pressable>
         </View>
 
-        {/* 4. Phone */}
+        {/* 4. Messages */}
         <Pressable
           style={styles.iconButton}
-          onPress={handlePhonePress}
+          onPress={handleMessagesPress}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <Image
-            source={require('@/assets/images/footer-phone.png')}
-            style={styles.phoneImage}
+            source={require('@/assets/images/footer-messages.png')}
+            style={styles.iconImage}
           />
         </Pressable>
 
-        {/* 5. Mode — long press → mode switcher */}
-        <Pressable
-          style={styles.iconButton}
-          onPress={handleModePress}
-          onLongPress={handleModeLongPress}
-          delayLongPress={400}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Image
-            source={ORG_ICONS[mode]}
-            style={styles.orgImage}
-          />
-        </Pressable>
+        {/* 5. Profile — tap → profile page, swipe-up → org drawer */}
+        <View style={styles.iconButton} {...profilePanResponder.panHandlers}>
+          <Pressable
+            style={styles.pressableInner}
+            onPress={handleProfilePress}
+            onLongPress={handleProfileLongPress}
+            delayLongPress={400}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Image
+              source={require('@/assets/images/footer-profile.png')}
+              style={styles.iconImage}
+            />
+          </Pressable>
+        </View>
       </View>
 
       {/* Safe area fill — extends behind home indicator */}
@@ -294,29 +302,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
   },
-  homeImage: {
-    width: 67,
-    height: 67,
-    resizeMode: 'contain',
-  } as any,
-  messagesImage: {
-    width: 60,
-    height: 60,
-    resizeMode: 'contain',
-  } as any,
-  footerImage: {
-    width: 75,
-    height: 75,
-    resizeMode: 'contain',
-  } as any,
-  orgImage: {
+  iconImage: {
     width: 36,
     height: 36,
-    resizeMode: 'contain',
-  } as any,
-  phoneImage: {
-    width: 79,
-    height: 79,
     resizeMode: 'contain',
   } as any,
   nexusImage: {
@@ -324,7 +312,4 @@ const styles = StyleSheet.create({
     height: (FOOTER_HEIGHT - 8) * 1.2,
     resizeMode: 'contain',
   } as any,
-  phoneEmoji: {
-    fontSize: 28,
-  },
 });

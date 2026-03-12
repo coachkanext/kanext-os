@@ -32,7 +32,7 @@ import {
   type OrgResource,
   type ResourceCategory,
 } from '@/data/mock-mode';
-import { openSidePanel } from '@/utils/global-side-panel';
+
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 // ─── Resource Category data ─────────────────────────────────────────────────
@@ -157,7 +157,7 @@ export default function ModeScreen() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
+
       >
         {/* ── PAGE 0: DASHBOARD ── */}
         <View style={{ flex: 1 }}>

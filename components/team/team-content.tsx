@@ -47,7 +47,6 @@ import {
   type CandidateSource,
   type CandidateCard as CandidateCardType,
 } from '@/data/mock-team';
-import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 // ── Color Maps ──
@@ -727,7 +726,6 @@ export function TeamContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
       >
         {/* ── PAGE 0: MEMBERS ── */}
         <View style={{ flex: 1 }}>

@@ -30,7 +30,7 @@ import { NewDMSheet } from '@/components/messages/new-dm-sheet';
 import { CreateChannelSheet } from '@/components/messages/create-channel-sheet';
 import { getRooms, getGlobalDMs, getRequests, formatMessageTime } from '@/data/mock-messages-v3';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
-import { openSidePanel } from '@/utils/global-side-panel';
+
 import { initiateCall } from '@/utils/global-call';
 import type { InboxThreadV3, RoomV3 } from '@/types';
 
@@ -236,7 +236,7 @@ export default function MessagesListScreen() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
+
         badges={dotBadges}
       >
         {/* Page 0: Channels */}

@@ -47,7 +47,7 @@ import {
   type ComplianceStatus,
   type ProspectCard as ProspectCardType,
 } from '@/data/mock-roster-screen';
-import { openSidePanel } from '@/utils/global-side-panel';
+
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 // ── Color Maps ──
@@ -739,7 +739,7 @@ export function RosterContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
+
       >
         {/* ── PAGE 0: PLAYERS ── */}
         <View style={{ flex: 1 }}>

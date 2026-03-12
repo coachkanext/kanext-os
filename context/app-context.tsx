@@ -388,8 +388,6 @@ export function AppProvider({ children }: AppProviderProps) {
           try {
             const parsed = JSON.parse(savedActiveView) as ActiveView;
             if (parsed.view_id && parsed.mode && parsed.org_id) {
-              // Always boot into sports — other modes are Coming Soon
-              parsed.mode = 'sports' as any;
               dispatch({ type: 'SET_ACTIVE_VIEW', payload: parsed });
               dispatch({ type: 'SET_LOADING', payload: false });
               // Also restore auth
@@ -412,12 +410,10 @@ export function AppProvider({ children }: AppProviderProps) {
         if (lastMode) {
           // Migrate old mode names
           const resolvedMode = lastMode === 'community' ? 'sports' : lastMode;
-          // Always boot into sports mode — other modes are Coming Soon
-          const bootMode = 'sports';
           dispatch({
             type: 'RESTORE_STATE',
             payload: {
-              mode: bootMode as Mode,
+              mode: resolvedMode as Mode,
               authState: (auth as AuthState) || 'viewer',
               organization: organization || undefined,
               program: program || undefined,
@@ -486,8 +482,9 @@ export function AppProvider({ children }: AppProviderProps) {
   const switchContext = useCallback((ctx: ActiveContext) => {
     const badge = deriveRoleBadge(ctx.membership_id, ctx.program_id);
     dispatch({ type: 'SWITCH_CONTEXT', payload: { ...ctx, derived_role_badge: badge } });
-    // Persist
+    // Persist context + mode
     AsyncStorage.setItem(STORAGE_KEYS.activeContext, JSON.stringify({ ...ctx, derived_role_badge: badge })).catch(console.error);
+    AsyncStorage.setItem(STORAGE_KEYS.lastMode, ctx.mode).catch(console.error);
   }, []);
 
   const setActiveView = useCallback((view: ActiveView) => {

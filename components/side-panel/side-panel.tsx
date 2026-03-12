@@ -2,10 +2,8 @@
  * Side Panel Shell — Universal side panel for all screens.
  * Position: absolute left, jet black background.
  *
- * Layout:
- *   TOP: PanelHeader (mode circles + org switcher) — same on every screen
- *   DIVIDER
- *   BOTTOM: Screen-specific content based on pathname
+ * Layout: Screen-specific content rows only.
+ * Mode/org switching lives exclusively in the Profile org drawer.
  */
 
 import React from 'react';
@@ -14,7 +12,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { usePathname } from 'expo-router';
 import { useColors } from '@/hooks/use-colors';
 
-import { PanelHeader } from './panel-header';
 import { MessagesPanel } from './messages-panel';
 import { PhonePanel } from './phone-panel';
 import { NexusPanel } from './nexus-panel';
@@ -75,13 +72,7 @@ export function SidePanel({ visible }: SidePanelProps) {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Universal top: mode circles + org switcher */}
-        <PanelHeader />
-
-        {/* Divider */}
-        <View style={[styles.divider, { backgroundColor: C.separator }]} />
-
-        {/* Screen-specific content */}
+        {/* Screen-specific content — no mode circles or org switcher */}
         {isMessages
           ? <MessagesPanel />
           : isPhone
@@ -129,9 +120,5 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: 20,
-  },
-  divider: {
-    height: 1,
-    marginVertical: 8,
   },
 });

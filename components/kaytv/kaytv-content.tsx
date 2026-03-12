@@ -43,7 +43,7 @@ import {
   type ChannelItem,
   type PlaylistItem,
 } from '@/data/mock-kaytv';
-import { openSidePanel } from '@/utils/global-side-panel';
+
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -359,7 +359,7 @@ export function KayTVContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={handlePageChange}
-        onEdgeRight={openSidePanel}
+
       >
         {/* ── PAGE 0: BROWSE ── */}
         <View style={{ flex: 1 }}>

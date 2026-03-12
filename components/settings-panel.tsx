@@ -3,9 +3,9 @@
  * Sits behind shifting content, revealed when content slides right.
  * Jet black background, no overlay/blur/dimming.
  *
- * TOP: Avatar + Name + @username + Mode switcher + Org switcher
- * MIDDLE: Feature shortcuts (Saved, Your Activity, QR Code)
- * BOTTOM: Settings rows (Account, Preferences, Notifications, Appearance, Help, Terms, Log Out)
+ * Feature shortcuts (Saved, Your Activity, QR Code)
+ * Settings rows (Account, Preferences, Notifications, Appearance, Help, Terms, Log Out)
+ * Mode/org switching lives in the Profile org drawer.
  */
 
 import React, { useCallback, useState, useMemo } from 'react';
@@ -13,7 +13,6 @@ import { View, Text, StyleSheet, Pressable, Dimensions, ScrollView } from 'react
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { PanelHeader } from '@/components/side-panel/panel-header';
 import { useAuth } from '@/context/auth-context';
 import { closeSettingsPanel } from '@/utils/global-settings-panel';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
@@ -65,13 +64,7 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Identity + mode circles + org switcher (shared component) */}
-        <PanelHeader />
-
-        {/* ── DIVIDER ── */}
-        <View style={styles.divider} />
-
-        {/* ── MIDDLE SECTION: FEATURE SHORTCUTS ── */}
+        {/* ── FEATURE SHORTCUTS ── */}
         <View style={styles.menuSection}>
           <Pressable
             style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}

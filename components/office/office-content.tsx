@@ -39,7 +39,7 @@ import {
   type KpiCard as KpiCardType,
   type PerformanceActivity,
 } from '@/data/mock-office';
-import { openSidePanel } from '@/utils/global-side-panel';
+
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -627,7 +627,7 @@ export function OfficeContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
+
       >
         {/* ── PAGE 0: PROJECTS ── */}
         <View style={{ flex: 1 }}>

@@ -35,7 +35,7 @@ import {
   type CallDirection,
 } from '@/data/mock-phone';
 import { initiateCall } from '@/utils/global-call';
-import { openSidePanel } from '@/utils/global-side-panel';
+
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 // ─── Main Screen ────────────────────────────────────────────────────────────
@@ -190,7 +190,7 @@ export default function PhoneScreen() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
+
       >
         {/* ── PAGE 0: RECENTS ── */}
         <View style={{ flex: 1 }}>

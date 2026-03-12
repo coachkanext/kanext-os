@@ -1,37 +1,39 @@
 /**
- * Home — Auto-playing video area + icon grid.
- * Video = 30% of usable screen height (status bar to bottom safe area).
- * Grid centered in remaining space.
- * Video hero has 3 self-contained swipe pages (default = middle). Dead ends at edges.
- * Grid swipes: right → open settings panel, left → go to Nexus.
+ * Home — video hero + org name + 9-icon grid + footer.
+ * Video bleeds under status bar. Grid swipe left → Nexus.
  */
 
 import React, { useMemo } from 'react';
-import { View, PanResponder, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, Text, PanResponder, StyleSheet } from 'react-native';
 import { useColors } from '@/hooks/use-colors';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { VisualArea } from '@/components/home/visual-area';
+import { VideoHero } from '@/components/home/video-hero';
 import { IconGrid } from '@/components/home/icon-grid';
-import { openSettingsPanel } from '@/utils/global-settings-panel';
+import { useAppContext } from '@/context/app-context';
+import { getOrgById, getProgramById, getProgramsForOrg } from '@/data/mock-memberships';
 import { enableSlideAnimation } from '@/utils/global-footer-swipe';
 import { pushNexusFromInner } from '@/utils/global-inner-nav';
 
 export default function HomeScreen() {
-  const { height } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
   const C = useColors();
-  // Swipe on grid area → open panel (right) or Nexus (left)
+  const { state } = useAppContext();
+
+  const orgLabel = useMemo(() => {
+    const org = getOrgById(state.activeContext.org_id);
+    if (!org) return '';
+    const programs = getProgramsForOrg(org.org_id);
+    if (programs.length <= 1) return org.org_name;
+    const program = getProgramById(state.activeContext.program_id);
+    if (!program) return org.org_name;
+    return `${org.org_name} - ${program.program_name}`;
+  }, [state.activeContext.org_id, state.activeContext.program_id]);
+
   const gridPanResponder = useMemo(
     () =>
       PanResponder.create({
         onMoveShouldSetPanResponder: (_evt, gs) =>
-          Math.abs(gs.dx) > 25 && Math.abs(gs.dx) > Math.abs(gs.dy) * 2,
+          gs.dx < -25 && Math.abs(gs.dx) > Math.abs(gs.dy) * 2,
         onPanResponderRelease: (_evt, gs) => {
-          if (gs.dx > 60) {
-            // Swipe right → open settings panel
-            openSettingsPanel();
-          } else if (gs.dx < -60) {
-            // Swipe left → go to Nexus
+          if (gs.dx < -60) {
             enableSlideAnimation();
             pushNexusFromInner();
           }
@@ -40,18 +42,23 @@ export default function HomeScreen() {
     [],
   );
 
-  // Usable height = screen minus status bar minus bottom safe area (no tab bar)
-  const usableHeight = height - insets.top - insets.bottom;
-  const videoHeight = usableHeight * 0.30;
-
   return (
     <View style={[styles.container, { backgroundColor: C.bg }]}>
-      <View style={{ height: videoHeight + insets.top }}>
-        <VisualArea />
+      {/* Video hero — flush to top, bleeds under status bar */}
+      <VideoHero />
+
+      {/* Org context pill */}
+      <View style={styles.orgPillWrap}>
+        <View style={styles.orgPill}>
+          <Text style={styles.orgPillText} numberOfLines={1}>
+            {orgLabel}
+          </Text>
+        </View>
       </View>
+
+      {/* Icon grid fills remaining space */}
       <View style={styles.gridWrapper} {...gridPanResponder.panHandlers}>
         <IconGrid />
-        {/* Space for the universal footer bar (49px + divider) */}
         <View style={{ height: 50 }} />
       </View>
     </View>
@@ -61,10 +68,31 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+  },
+  orgPillWrap: {
+    alignItems: 'center',
+    paddingTop: 14,
+    paddingBottom: 6,
+  },
+  orgPill: {
+    paddingHorizontal: 14,
+    paddingVertical: 5,
+    borderRadius: 12,
+    backgroundColor: '#F4F4F5',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  orgPillText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#52525B',
+    textAlign: 'center',
   },
   gridWrapper: {
     flex: 1,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
   },
 });

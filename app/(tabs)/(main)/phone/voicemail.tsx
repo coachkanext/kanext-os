@@ -18,7 +18,8 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAccentColor } from '@/hooks/use-accent-color';
-import { openSidePanel } from '@/utils/global-side-panel';
+
+
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 import {
@@ -118,22 +119,6 @@ export default function VoicemailScreen() {
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
 
-  // Right-swipe detection via raw touch events
-  const touchRef = useRef({ x: 0, y: 0, t: 0, triggered: false });
-  const onTouchStart = useCallback((e: any) => {
-    touchRef.current = { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY, t: Date.now(), triggered: false };
-  }, []);
-  const onTouchMove = useCallback((e: any) => {
-    if (touchRef.current.triggered) return;
-    const dx = e.nativeEvent.pageX - touchRef.current.x;
-    const dy = e.nativeEvent.pageY - touchRef.current.y;
-    if (dx > 60 && Math.abs(dy) < 40 && Date.now() - touchRef.current.t < 500) {
-      touchRef.current.triggered = true;
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      openSidePanel();
-    }
-  }, []);
-
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [heardIds, setHeardIds] = useState<Set<string>>(new Set());
   const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set());
@@ -148,8 +133,6 @@ export default function VoicemailScreen() {
   return (
     <View
       style={[styles.container, { paddingTop: insets.top }]}
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
     >
       <View style={styles.header}>
         <Text style={styles.title}>Voicemail</Text>

@@ -21,7 +21,7 @@ import { ExplorePage } from '@/components/social/explore-page';
 import { SocialFab } from '@/components/social/social-fab';
 import { getStories, getFeedPosts, getReels, getTrendingTopics, getExploreTiles, getSuggestedAccounts } from '@/data/mock-social';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
-import { openSidePanel } from '@/utils/global-side-panel';
+
 import type { StoryUser } from '@/data/mock-social';
 
 export default function SocialScreen() {
@@ -138,7 +138,7 @@ export default function SocialScreen() {
       <SwipeableTwoPage
         activeIndex={pageIndex}
         onPageChange={handlePageChange}
-        onEdgeRight={openSidePanel}
+
       >
         {/* Page 0: Feed */}
         <ScrollView

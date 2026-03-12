@@ -39,7 +39,6 @@ import {
   type Transaction,
   type TransactionFilterKey,
 } from '@/data/mock-wallet';
-import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -367,7 +366,6 @@ export function WalletContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={handlePageChange}
-        onEdgeRight={openSidePanel}
       >
         {/* ── PAGE 0: HOME ── */}
         <View style={{ flex: 1 }}>

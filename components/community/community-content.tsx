@@ -45,7 +45,6 @@ import {
   type AlertSeverity,
   type OrganizationItem,
 } from '@/data/mock-community-screen';
-import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 // ── Color Maps ──
@@ -620,7 +619,6 @@ export function CommunityContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
       >
         {/* ── PAGE 0: MEMBERS ── */}
         <View style={{ flex: 1 }}>

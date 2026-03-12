@@ -38,7 +38,7 @@ import {
   type ActivityFilter,
   type ActivityItem,
 } from '@/data/mock-leads-screen';
-import { openSidePanel } from '@/utils/global-side-panel';
+
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const COLUMN_WIDTH = Dimensions.get('window').width * 0.72;
@@ -480,7 +480,7 @@ export function LeadsContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
+
       >
         {/* ── PAGE 0: PIPELINE ── */}
         <View style={{ flex: 1 }}>

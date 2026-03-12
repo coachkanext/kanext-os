@@ -38,7 +38,6 @@ import {
   type AppFilter,
   type ApplicationItem,
 } from '@/data/mock-admissions';
-import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const COLUMN_WIDTH = Dimensions.get('window').width * 0.72;
@@ -536,7 +535,6 @@ export function AdmissionsContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
       >
         {/* ── PAGE 0: ENROLLMENT ── */}
         <View style={{ flex: 1 }}>

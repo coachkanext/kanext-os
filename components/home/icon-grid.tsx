@@ -24,7 +24,7 @@ import type { GridIcon } from './home-types';
 /** Mode-dependent labels for icons that change per mode (positions 2, 3, 6) */
 const MODE_LABELS: Record<string, Partial<Record<Mode, string>>> = {
   season:  { sports: 'Program',   business: 'Office',  church: 'Parish',    education: 'Campus' },
-  roster:  { sports: 'Roster',    business: 'Team',    church: 'Ministries', education: 'Community' },
+  roster:  { sports: 'Roster',    business: 'Departments',    church: 'Ministries', education: 'Community' },
   recruits:{ sports: 'Prospects', business: 'Leads',   church: 'Outreach',  education: 'Admissions' },
   store:   { sports: 'Store',     business: 'Store',   church: 'Give',      education: 'Store' },
 };
@@ -60,8 +60,8 @@ const ROWS: GridIcon[][] = [
   ],
   [
     { id: 'recruits', icon: 'person.badge.plus',    label: 'Recruits', route: '/(tabs)/(main)/recruits', image: require('@/assets/images/icon-recruits.png') },
-    { id: 'social',   icon: 'newspaper.fill',       label: 'Social',   route: '/social',                 image: require('@/assets/images/icon-social.png') },
     { id: 'store',    icon: 'bag.fill',             label: 'Store',    route: '/(tabs)/(main)/store',    image: require('@/assets/images/icon-store.png') },
+    { id: 'social',   icon: 'newspaper.fill',       label: 'Social',   route: '/social',                 image: require('@/assets/images/icon-social.png') },
   ],
   [
     { id: 'media',    icon: 'play.rectangle.fill',  label: 'KayTV',    route: '/(tabs)/(main)/kaytv',    image: require('@/assets/images/icon-media.png') },
@@ -128,7 +128,7 @@ function GridTile({
         {item.image ? (
           <Image source={item.image} style={styles.tileImage} />
         ) : (
-          <IconSymbol name={item.icon} size={28} color="#FFFFFF" />
+          <IconSymbol name={item.icon} size={36} color="#FFFFFF" />
         )}
         {item.badgeCount != null && item.badgeCount > 0 && (
           <View style={[styles.badge, { backgroundColor: accent }]}>
@@ -194,21 +194,19 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-evenly',
-    paddingBottom: 16,
     backgroundColor: C.bg,
   },
   row: {
     flexDirection: 'row',
-    marginBottom: 14,
   },
   cell: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   iconContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 14,
+    width: 72,
+    height: 72,
+    borderRadius: 18,
     backgroundColor: '#0B1220',
     alignItems: 'center',
     justifyContent: 'center',
@@ -222,30 +220,30 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     backgroundColor: '#000000',
   },
   tileImage: {
-    width: 56,
-    height: 56,
+    width: 72,
+    height: 72,
   },
   badge: {
     position: 'absolute',
     top: -4,
     right: -4,
-    minWidth: 18,
-    height: 18,
-    borderRadius: 9,
+    minWidth: 20,
+    height: 20,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 4,
+    paddingHorizontal: 5,
   },
   badgeText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: '#FFFFFF',
   },
   labelPill: {
-    marginTop: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 10,
+    marginTop: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 12,
     backgroundColor: '#F4F4F5',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 1 },
@@ -254,10 +252,10 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     elevation: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 52,
+    minWidth: 58,
   },
   labelText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     textAlign: 'center',
     color: '#52525B',

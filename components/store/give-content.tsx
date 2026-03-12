@@ -35,7 +35,6 @@ import {
   type GivingTransaction,
   type GivingCampaign,
 } from '@/data/mock-store';
-import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 // ─── Shared ───────────────────────────────────────────────────────────────
@@ -242,7 +241,6 @@ export function GiveContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={handlePageChange}
-        onEdgeRight={openSidePanel}
       >
         {/* ── PAGE 0: GIVE ── */}
         <View style={{ flex: 1 }}>

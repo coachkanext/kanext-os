@@ -39,7 +39,7 @@ import {
   type AcademicTimeRange,
   type AcademicKpi as AcademicKpiType,
 } from '@/data/mock-campus';
-import { openSidePanel } from '@/utils/global-side-panel';
+
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const CLASS_STATUS_COLORS: Record<ClassStatus, string> = {
@@ -549,7 +549,7 @@ export function CampusContent() {
       <SwipeablePages
         activeIndex={pageIndex}
         onPageChange={setPageIndex}
-        onEdgeRight={openSidePanel}
+
       >
         {/* ── PAGE 0: CLASSES ── */}
         <View style={{ flex: 1 }}>
