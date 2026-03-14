@@ -23,24 +23,19 @@ import type { GridIcon } from './home-types';
 
 /** Mode-dependent labels for icons that change per mode (positions 2, 3, 6) */
 const MODE_LABELS: Record<string, Partial<Record<Mode, string>>> = {
-  season:  { sports: 'Program',   business: 'Office',  church: 'Parish',    education: 'Campus' },
-  roster:  { sports: 'Roster',    business: 'Departments',    church: 'Ministries', education: 'Community' },
+  roster:  { sports: 'Roster', business: 'Departments', church: 'Ministries', education: 'Community', competition: 'Network' },
   recruits:{ sports: 'Prospects', business: 'Leads',   church: 'Outreach',  education: 'Admissions' },
   store:   { sports: 'Booster',   business: 'Impact',  church: 'Give',      education: 'Fund' },
 };
 
 /** Mode-dependent images for icons that swap per mode */
 const MODE_IMAGES: Record<string, Partial<Record<Mode, any>>> = {
-  season: {
-    church: require('@/assets/images/icon-parish.png'),
-    business: require('@/assets/images/icon-office.png'),
-    education: require('@/assets/images/icon-campus.png'),
-  },
   roster: {
-    sports: require('@/assets/images/icon-team-sports.png'),
-    business: require('@/assets/images/icon-team-business.png'),
-    church: require('@/assets/images/icon-ministries.png'),
-    education: require('@/assets/images/icon-community.png'),
+    sports:      require('@/assets/images/icon-roster-v2.png'),
+    business:    require('@/assets/images/icon-departments-v2.png'),
+    church:      require('@/assets/images/icon-ministries-v2.png'),
+    education:   require('@/assets/images/icon-community-v2.png'),
+    competition: require('@/assets/images/icon-network-v2.png'),
   },
   recruits: {
     business: require('@/assets/images/icon-leads.png'),
@@ -58,8 +53,8 @@ const MODE_IMAGES: Record<string, Partial<Record<Mode, any>>> = {
 const ROWS: GridIcon[][] = [
   [
     { id: 'agenda',   icon: 'calendar.badge.clock', label: 'Agenda',   route: '/agenda',   image: require('@/assets/images/icon-agenda.png') },
-    { id: 'season',   icon: 'calendar',             label: 'Program',  route: '/(tabs)/(main)/season',   image: require('@/assets/images/icon-season.png') },
-    { id: 'roster',   icon: 'person.3.fill',        label: 'Roster',   route: '/(tabs)/(main)/roster',   image: require('@/assets/images/icon-team-sports.png') },
+    { id: 'season',   icon: 'calendar',             label: 'Hub',      route: '/(tabs)/(main)/season',   image: require('@/assets/images/icon-hub.png') },
+    { id: 'roster',   icon: 'person.3.fill',        label: 'Roster',   route: '/(tabs)/(main)/roster',   image: require('@/assets/images/icon-roster-v2.png') },
   ],
   [
     { id: 'recruits', icon: 'person.badge.plus',    label: 'Prospects', route: '/(tabs)/(main)/recruits', image: require('@/assets/images/icon-recruits.png') },
@@ -70,6 +65,25 @@ const ROWS: GridIcon[][] = [
     { id: 'media',    icon: 'play.rectangle.fill',  label: 'KayTV',    route: '/(tabs)/(main)/kaytv',    image: require('@/assets/images/icon-media.png') },
     { id: 'wallet',   icon: 'creditcard.fill',      label: 'KayPay',   route: '/wallet',                 image: require('@/assets/images/icon-wallet.png') },
     { id: 'gm',       icon: 'gamecontroller.fill',  label: 'KayStudios',    route: '/studios',                image: require('@/assets/images/icon-gm.png') },
+  ],
+];
+
+/** Personal Brand grid — shown when mode = pulse */
+const PULSE_ROWS: GridIcon[][] = [
+  [
+    { id: 'agenda',    icon: 'calendar.badge.clock',    label: 'Agenda',     route: '/agenda',                 image: require('@/assets/images/icon-agenda.png') },
+    { id: 'portfolio', icon: 'person.text.rectangle',   label: 'Hub',        route: '/(tabs)/(main)/profile',  image: require('@/assets/images/icon-hub.png') },
+    { id: 'community', icon: 'person.3.fill',           label: 'Community',  route: '/community',              image: require('@/assets/images/icon-community.png') },
+  ],
+  [
+    { id: 'deals',   icon: 'dollarsign.circle.fill',   label: 'Deals',    route: '/deals',   image: require('@/assets/images/icon-deals.png') },
+    { id: 'support', icon: 'questionmark.circle.fill', label: 'Support',  route: '/support', image: require('@/assets/images/icon-support.png') },
+    { id: 'social',  icon: 'newspaper.fill',           label: 'Social',   route: '/social',  image: require('@/assets/images/icon-social.png') },
+  ],
+  [
+    { id: 'media',  icon: 'play.rectangle.fill', label: 'KayTV',      route: '/(tabs)/(main)/kaytv', image: require('@/assets/images/icon-media.png') },
+    { id: 'wallet', icon: 'creditcard.fill',     label: 'KayPay',     route: '/wallet',              image: require('@/assets/images/icon-wallet.png') },
+    { id: 'gm',     icon: 'gamecontroller.fill', label: 'KayStudios', route: '/studios',             image: require('@/assets/images/icon-gm.png') },
   ],
 ];
 
@@ -169,13 +183,15 @@ export function IconGrid() {
     router.navigate(item.route as any);
   }, [addScreen, router]);
 
+  const activeRows = mode === 'pulse' ? PULSE_ROWS : ROWS;
+
   return (
     <View style={styles.container}>
-      {ROWS.map((row, rowIndex) => (
+      {activeRows.map((row, rowIndex) => (
         <View key={rowIndex} style={styles.row}>
           {row.map((item) => {
-            const label = MODE_LABELS[item.id]?.[mode] ?? item.label;
-            const image = MODE_IMAGES[item.id]?.[mode] ?? item.image;
+            const label = mode === 'pulse' ? item.label : (MODE_LABELS[item.id]?.[mode] ?? item.label);
+            const image = mode === 'pulse' ? item.image : (MODE_IMAGES[item.id]?.[mode] ?? item.image);
             return (
               <GridTile
                 key={item.id}
@@ -208,9 +224,9 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     justifyContent: 'center',
   },
   iconContainer: {
-    width: 72,
-    height: 72,
-    borderRadius: 18,
+    width: 94,
+    height: 94,
+    borderRadius: 22,
     backgroundColor: '#0B1220',
     alignItems: 'center',
     justifyContent: 'center',
@@ -224,8 +240,8 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     backgroundColor: 'transparent',
   },
   tileImage: {
-    width: 72,
-    height: 72,
+    width: 94,
+    height: 94,
     resizeMode: 'contain',
   },
   badge: {
@@ -245,7 +261,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     color: '#FFFFFF',
   },
   labelPill: {
-    marginTop: 10,
+    marginTop: 7,
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 12,

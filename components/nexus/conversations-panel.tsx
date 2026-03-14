@@ -1,50 +1,45 @@
 /**
  * Conversations Panel — Nexus Side Panel
  *
- * Universal thread list. Threads are global — NOT mode-scoped.
- * Mode is ambient context, not a partition.
+ * Spec layout (top → bottom):
+ *   1. "KaNeXT" brand (18px 700)
+ *   2. Nav tabs: Chats / Projects / Artifacts (with count badges)
+ *   3. Divider
+ *   4. "RECENT" section label
+ *   5. Thread rows (title only, 13px 500)
+ *   6. Bottom bar: avatar + name + compose circle
  *
- * Layout:
- *   Header: Avatar + Name + Role
- *   New Thread CTA
- *   Thread List: all threads, most recent first, mode dot is informational only
- *   Footer: Settings · Clear Conversations · About Nexus
+ * Width: 280px. Background: #F8F8F8 (light) / #1C1C1E (dark).
  */
 
-import React, { useRef, useEffect, useState, useMemo } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   View,
+  Text,
   StyleSheet,
   Pressable,
   Animated,
-  Dimensions,
-  TextInput,
-  ScrollView,
   Share,
-  Alert,
+  ScrollView,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
-import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ConversationContextMenu } from './conversation-context-menu';
-import { Colors, Spacing, BorderRadius, MODE_ACCENT } from '@/constants/theme';
-import { useAccentColor } from '@/hooks/use-accent-color';
+import { useColors } from '@/hooks/use-colors';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { formatTimestamp } from '@/data/mock-nexus';
-import type { Conversation, Mode } from '@/types';
+import type { Conversation } from '@/types';
 
-const MODE_DOT_COLORS: Record<Mode, string> = {
-  sports: MODE_ACCENT.sports,
-  church: MODE_ACCENT.church,
-  business: MODE_ACCENT.business,
-  education: MODE_ACCENT.education,
-  competition: MODE_ACCENT.competition,
-};
+const PANEL_WIDTH = 280;
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const PANEL_WIDTH = SCREEN_WIDTH * 0.7;
+export type SidebarNav = 'chats' | 'projects' | 'artifacts';
+
+const NAV_TABS: Array<{ key: SidebarNav; label: string; icon: string; badge: number | null }> = [
+  { key: 'chats',     label: 'Chats',     icon: 'bubble.left.and.bubble.right', badge: null },
+  { key: 'projects',  label: 'Projects',  icon: 'folder',                        badge: 5    },
+  { key: 'artifacts', label: 'Artifacts', icon: 'doc.text',                      badge: 9    },
+];
 
 interface ConversationsPanelProps {
   visible: boolean;
@@ -60,6 +55,8 @@ interface ConversationsPanelProps {
   onRenameConversation: (id: string, title: string) => void;
   onArchiveConversation: (id: string) => void;
   onDeleteConversation: (id: string) => void;
+  activeNav?: SidebarNav;
+  onNavSelect?: (nav: SidebarNav) => void;
 }
 
 export function ConversationsPanel({
@@ -75,21 +72,22 @@ export function ConversationsPanel({
   onRenameConversation,
   onArchiveConversation,
   onDeleteConversation,
+  activeNav = 'chats',
+  onNavSelect,
 }: ConversationsPanelProps) {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
-  const accent = useAccentColor();
+  const C = useColors();
+  const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
+
+  const panelBg    = colorScheme === 'dark' ? '#1C1C1E' : '#F8F8F8';
+  const activeBg   = 'rgba(0,0,0,0.06)';
+  const borderColor = 'rgba(0,0,0,0.06)';
 
   const slideAnim = useRef(new Animated.Value(-PANEL_WIDTH)).current;
 
-  // Context menu state
   const [contextMenuVisible, setContextMenuVisible] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-
-  // Search
-  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     Animated.timing(slideAnim, {
@@ -98,22 +96,6 @@ export function ConversationsPanel({
       useNativeDriver: true,
     }).start();
   }, [visible, slideAnim]);
-
-  // Universal thread list — no mode filtering, all threads visible
-  const filtered = useMemo(() => {
-    let list = conversations;
-
-    if (searchQuery.length > 0) {
-      const q = searchQuery.toLowerCase();
-      list = list.filter(
-        (c) =>
-          c.title.toLowerCase().includes(q) ||
-          c.lastMessage?.content.toLowerCase().includes(q),
-      );
-    }
-
-    return list;
-  }, [conversations, searchQuery]);
 
   const handleConversationPress = (id: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -139,179 +121,136 @@ export function ConversationsPanel({
     }
   };
 
-  const handleClearConversations = () => {
-    Alert.alert(
-      'Clear Conversations',
-      'This will delete all conversations. This action cannot be undone.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Clear All',
-          style: 'destructive',
-          onPress: () => {
-            conversations.forEach((c) => onDeleteConversation(c.id));
-          },
-        },
-      ],
-    );
-  };
-
   if (!visible) return null;
-
-  const renderThreadRow = (conversation: Conversation) => {
-    const isActive = conversation.id === activeConversationId;
-    const dotColor = conversation.mode ? MODE_DOT_COLORS[conversation.mode] : colors.textTertiary;
-    return (
-      <Pressable
-        key={conversation.id}
-        style={({ pressed }) => [
-          styles.threadRow,
-          {
-            backgroundColor: isActive
-              ? colors.backgroundSecondary
-              : pressed
-              ? colors.backgroundSecondary
-              : 'transparent',
-          },
-        ]}
-        onPress={() => handleConversationPress(conversation.id)}
-        onLongPress={(event) => handleConversationLongPress(conversation, event)}
-        delayLongPress={300}
-      >
-        {/* Mode dot — informational only, does not restrict access */}
-        <View style={[styles.modeDot, { backgroundColor: dotColor }]} />
-        <View style={styles.threadContent}>
-          <View style={styles.titleRow}>
-            <ThemedText
-              style={[styles.threadTitle, isActive && { fontWeight: '600' }]}
-              numberOfLines={1}
-            >
-              {conversation.title}
-            </ThemedText>
-            <ThemedText style={[styles.threadTime, { color: colors.textTertiary }]}>
-              {formatTimestamp(conversation.updatedAt)}
-            </ThemedText>
-          </View>
-          {conversation.lastMessage && (
-            <ThemedText
-              style={[styles.threadPreview, { color: colors.textTertiary }]}
-              numberOfLines={1}
-            >
-              {conversation.lastMessage.content}
-            </ThemedText>
-          )}
-        </View>
-      </Pressable>
-    );
-  };
 
   return (
     <Animated.View
       style={[
         styles.panel,
         {
-          width: PANEL_WIDTH,
-          backgroundColor: colors.background,
+          backgroundColor: panelBg,
           paddingTop: insets.top,
-          borderRightColor: colors.border,
+          bottom: (insets.bottom || 0) + 72,
+          borderRightColor: borderColor,
           transform: [{ translateX: slideAnim }],
         },
       ]}
     >
-      {/* ── Header: Avatar + Name + Role ── */}
-      <Pressable
-        style={({ pressed }) => [styles.headerSection, { opacity: pressed ? 0.7 : 1 }]}
-        onPress={onAvatarPress}
-        accessibilityLabel="Open profile"
-        accessibilityRole="button"
-      >
-        <View style={[styles.avatarCircle, { backgroundColor: colors.backgroundTertiary }]}>
-          <IconSymbol name="person.fill" size={20} color={colors.icon} />
-        </View>
-        <View style={styles.headerText}>
-          <ThemedText style={styles.headerName}>Alex Morgan</ThemedText>
-          <ThemedText style={[styles.headerRole, { color: colors.textTertiary }]}>
-            Primary Admin
-          </ThemedText>
-        </View>
-      </Pressable>
+      {/* ── 1. Brand ── */}
+      <Text style={[styles.brand, { color: C.label }]}>KaNeXT</Text>
 
-      {/* ── New Thread CTA ── */}
-      <Pressable
-        style={({ pressed }) => [
-          styles.newThreadBtn,
-          { backgroundColor: accent, opacity: pressed ? 0.85 : 1 },
-        ]}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          onNewChat();
-        }}
-      >
-        <IconSymbol name="plus" size={16} color="#FFFFFF" />
-        <ThemedText style={styles.newThreadText}>New Thread</ThemedText>
-      </Pressable>
-
-      {/* ── Search ── */}
-      <View style={styles.searchRow}>
-        <View
-          style={[styles.searchContainer, { backgroundColor: colors.backgroundSecondary }]}
-        >
-          <IconSymbol name="magnifyingglass" size={16} color={colors.textTertiary} />
-          <TextInput
-            style={[styles.searchInput, { color: colors.text }]}
-            placeholder="Search threads"
-            placeholderTextColor={colors.textTertiary}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
-        </View>
+      {/* ── 2. Nav Tabs ── */}
+      <View style={styles.navContainer}>
+        {NAV_TABS.map((tab) => {
+          const isActive = activeNav === tab.key;
+          const badge = tab.key === 'chats' ? conversations.length : tab.badge;
+          return (
+            <Pressable
+              key={tab.key}
+              style={({ pressed }) => [
+                styles.navTab,
+                { backgroundColor: isActive || pressed ? activeBg : 'transparent' },
+              ]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onNavSelect?.(tab.key);
+                onClose();
+              }}
+            >
+              <IconSymbol
+                name={tab.icon as any}
+                size={18}
+                color={isActive ? C.label : C.secondary}
+              />
+              <Text
+                style={[
+                  styles.navLabel,
+                  {
+                    color: isActive ? C.label : C.secondary,
+                    fontWeight: isActive ? '600' : '500',
+                  },
+                ]}
+              >
+                {tab.label}
+              </Text>
+              {badge != null && badge > 0 && (
+                <View style={[styles.navBadge, { backgroundColor: activeBg }]}>
+                  <Text style={[styles.navBadgeText, { color: C.muted }]}>{badge}</Text>
+                </View>
+              )}
+            </Pressable>
+          );
+        })}
       </View>
 
-      {/* ── Thread List (universal — all modes) ── */}
+      {/* ── 3. Divider ── */}
+      <View style={[styles.divider, { backgroundColor: borderColor }]} />
+
+      {/* ── 4. RECENT label ── */}
+      <Text style={[styles.sectionLabel, { color: C.muted }]}>RECENT</Text>
+
+      {/* ── 5. Thread List ── */}
       <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {filtered.length > 0 ? (
-          filtered.map(renderThreadRow)
+        {conversations.length > 0 ? (
+          conversations.map((conv) => {
+            const isActive = conv.id === activeConversationId;
+            return (
+              <Pressable
+                key={conv.id}
+                style={({ pressed }) => [
+                  styles.threadRow,
+                  { backgroundColor: isActive || pressed ? activeBg : 'transparent' },
+                ]}
+                onPress={() => handleConversationPress(conv.id)}
+                onLongPress={(event) => handleConversationLongPress(conv, event)}
+                delayLongPress={300}
+              >
+                <Text
+                  style={[
+                    styles.threadTitle,
+                    {
+                      color: C.label,
+                      fontWeight: isActive ? '600' : '500',
+                    },
+                  ]}
+                  numberOfLines={1}
+                >
+                  {conv.title}
+                </Text>
+              </Pressable>
+            );
+          })
         ) : (
           <View style={styles.emptyState}>
-            <ThemedText style={[styles.emptyText, { color: colors.textTertiary }]}>
-              {searchQuery ? 'No matching threads' : 'No threads yet'}
-            </ThemedText>
+            <Text style={[styles.emptyText, { color: C.muted }]}>No threads yet</Text>
           </View>
         )}
       </ScrollView>
 
-      {/* ── Bottom Section ── */}
-      <View style={[styles.bottomSection, { borderTopColor: colors.border }]}>
+      {/* ── 6. Bottom Bar ── */}
+      <View style={[styles.bottomBar, { borderTopColor: borderColor }]}>
         <Pressable
-          style={({ pressed }) => [styles.bottomRow, { opacity: pressed ? 0.6 : 1 }]}
-          onPress={() => { /* Settings placeholder */ }}
+          style={styles.bottomLeft}
+          onPress={onAvatarPress}
+          accessibilityLabel="Open profile"
         >
-          <IconSymbol name="gearshape" size={16} color={colors.textSecondary} />
-          <ThemedText style={[styles.bottomLabel, { color: colors.textSecondary }]}>
-            Settings
-          </ThemedText>
+          <View style={[styles.avatar, { backgroundColor: activeBg }]}>
+            <Text style={[styles.avatarInitials, { color: C.label }]}>A</Text>
+          </View>
+          <Text style={[styles.bottomName, { color: C.label }]} numberOfLines={1}>
+            Alex Morgan
+          </Text>
         </Pressable>
-
         <Pressable
-          style={({ pressed }) => [styles.bottomRow, { opacity: pressed ? 0.6 : 1 }]}
-          onPress={handleClearConversations}
+          style={styles.composeBtn}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            onNewChat();
+            onClose();
+          }}
+          accessibilityLabel="New chat"
         >
-          <IconSymbol name="trash" size={16} color="#FF453A" />
-          <ThemedText style={[styles.bottomLabel, { color: '#FF453A' }]}>
-            Clear Conversations
-          </ThemedText>
-        </Pressable>
-
-        <Pressable
-          style={({ pressed }) => [styles.bottomRow, { opacity: pressed ? 0.6 : 1 }]}
-          onPress={() => { /* About Nexus placeholder */ }}
-        >
-          <IconSymbol name="info.circle" size={16} color={colors.textSecondary} />
-          <ThemedText style={[styles.bottomLabel, { color: colors.textSecondary }]}>
-            About Nexus
-          </ThemedText>
+          <IconSymbol name="square.and.pencil" size={16} color="#FFFFFF" />
         </Pressable>
       </View>
 
@@ -338,142 +277,114 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     bottom: 0,
-    borderRightWidth: 1,
+    width: PANEL_WIDTH,
+    borderRightWidth: StyleSheet.hairlineWidth,
+    zIndex: 50,
   },
 
-  // Header
-  headerSection: {
+  // 1. Brand
+  brand: {
+    fontSize: 18,
+    fontWeight: '700',
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 8,
+  },
+
+  // 2. Nav tabs
+  navContainer: {
+    paddingHorizontal: 8,
+  },
+  navTab: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    paddingHorizontal: Spacing.md,
-    paddingTop: Spacing.md,
-    paddingBottom: Spacing.sm,
-  },
-  avatarCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerText: {
-    flex: 1,
-  },
-  headerName: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  headerRole: {
-    fontSize: 12,
-    fontWeight: '500',
-    marginTop: 1,
-  },
-
-  // New Thread CTA
-  newThreadBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    marginHorizontal: Spacing.md,
-    marginVertical: Spacing.sm,
     paddingVertical: 10,
-    borderRadius: BorderRadius.md,
+    paddingHorizontal: 12,
+    borderRadius: 10,
   },
-  newThreadText: {
+  navLabel: {
+    flex: 1,
     fontSize: 14,
-    fontWeight: '600',
-    color: '#FFFFFF',
   },
-
-  // Search
-  searchRow: {
-    paddingHorizontal: Spacing.md,
-    paddingBottom: Spacing.sm,
-  },
-  searchContainer: {
-    flexDirection: 'row',
+  navBadge: {
+    minWidth: 22,
+    height: 18,
+    borderRadius: 9,
     alignItems: 'center',
-    height: 36,
-    borderRadius: BorderRadius.md,
-    paddingHorizontal: Spacing.sm,
+    justifyContent: 'center',
+    paddingHorizontal: 5,
   },
-  searchInput: {
-    flex: 1,
-    fontSize: 14,
-    marginLeft: Spacing.xs,
-    paddingVertical: 0,
-  },
-
-  scrollContent: {
-    flex: 1,
-  },
-
-  // Thread rows
-  threadRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
-    borderRadius: BorderRadius.md,
-    marginHorizontal: Spacing.xs,
-    marginVertical: 1,
-    gap: 8,
-  },
-  modeDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginTop: 5,
-  },
-  threadContent: {
-    flex: 1,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  threadTitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    flex: 1,
-    marginRight: 8,
-  },
-  threadTime: {
+  navBadgeText: {
     fontSize: 11,
-  },
-  threadPreview: {
-    fontSize: 12,
-    marginTop: 2,
+    fontWeight: '600',
   },
 
-  // Empty
-  emptyState: {
-    paddingVertical: 40,
-    alignItems: 'center',
-  },
-  emptyText: {
-    fontSize: 14,
-    fontStyle: 'italic',
+  // 3. Divider
+  divider: {
+    height: 1,
+    marginHorizontal: 12,
+    marginVertical: 6,
   },
 
-  // Bottom Section
-  bottomSection: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
-    marginBottom: Spacing.sm,
+  // 4. Section label
+  sectionLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 0.7,
+    paddingHorizontal: 20,
+    paddingBottom: 4,
   },
-  bottomRow: {
+
+  // 5. Thread list
+  scrollContent: { flex: 1 },
+  threadRow: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginHorizontal: 4,
+  },
+  threadTitle: { fontSize: 13 },
+  emptyState: { paddingVertical: 40, alignItems: 'center' },
+  emptyText: { fontSize: 13, fontStyle: 'italic' },
+
+  // 6. Bottom bar
+  bottomBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    paddingVertical: 10,
+    gap: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
-  bottomLabel: {
+  bottomLeft: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  avatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarInitials: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  bottomName: {
+    flex: 1,
     fontSize: 14,
     fontWeight: '500',
+  },
+  composeBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#111111',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
