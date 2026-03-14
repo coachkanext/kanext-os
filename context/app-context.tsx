@@ -421,7 +421,12 @@ export function AppProvider({ children }: AppProviderProps) {
             },
           });
         } else {
-          // No saved mode - first run
+          // No saved mode — first run, bootstrap with sports default
+          const defaultCtx = getDefaultContextForMode('sports');
+          if (defaultCtx) {
+            const badge = deriveRoleBadge(defaultCtx.membership_id, defaultCtx.program_id);
+            dispatch({ type: 'SWITCH_CONTEXT', payload: { ...defaultCtx, derived_role_badge: badge } });
+          }
           dispatch({ type: 'SET_LOADING', payload: false });
         }
       } catch (error) {

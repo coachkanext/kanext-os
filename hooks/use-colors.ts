@@ -8,7 +8,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export const LIGHT_PALETTE = {
   bg: '#FFFFFF',
-  surface: '#F7F7F8',
+  surface: '#FFFFFF',
   surfacePressed: 'rgba(0,0,0,0.06)',
   label: '#0D0D0D',
   secondary: '#6E6E80',
@@ -28,7 +28,7 @@ export const LIGHT_PALETTE = {
   dotInactive: '#D9D9E3',
   footer: '#FFFFFF',
   footerDivider: 'rgba(0,0,0,0.08)',
-  bubbleSent: '#F7F7F8',
+  bubbleSent: '#FFFFFF',
   bubbleReceived: '#EFEFEF',
 } as const;
 

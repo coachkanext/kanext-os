@@ -28,7 +28,7 @@ import { startGlobalVoice } from '@/utils/global-voice';
 import { openOrgDrawer } from '@/utils/global-org-drawer';
 import { subscribeFooterVisibility, resetFooter } from '@/utils/global-footer-hide';
 import { popInnerToHome } from '@/utils/global-inner-nav';
-const FOOTER_HEIGHT = 49;
+const FOOTER_HEIGHT = 72;
 
 export function UniversalFooter() {
   const C = useColors();
@@ -303,13 +303,13 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   iconImage: {
-    width: 36,
-    height: 36,
+    width: 72,
+    height: 72,
     resizeMode: 'contain',
   } as any,
   nexusImage: {
     width: '96%',
-    height: (FOOTER_HEIGHT - 8) * 1.2,
+    height: 50,
     resizeMode: 'contain',
   } as any,
 });

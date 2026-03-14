@@ -26,7 +26,7 @@ const MODE_LABELS: Record<string, Partial<Record<Mode, string>>> = {
   season:  { sports: 'Program',   business: 'Office',  church: 'Parish',    education: 'Campus' },
   roster:  { sports: 'Roster',    business: 'Departments',    church: 'Ministries', education: 'Community' },
   recruits:{ sports: 'Prospects', business: 'Leads',   church: 'Outreach',  education: 'Admissions' },
-  store:   { sports: 'Store',     business: 'Store',   church: 'Give',      education: 'Store' },
+  store:   { sports: 'Booster',   business: 'Impact',  church: 'Give',      education: 'Fund' },
 };
 
 /** Mode-dependent images for icons that swap per mode */
@@ -48,19 +48,22 @@ const MODE_IMAGES: Record<string, Partial<Record<Mode, any>>> = {
     education: require('@/assets/images/icon-admissions.png'),
   },
   store: {
+    sports: require('@/assets/images/icon-booster.png'),
+    business: require('@/assets/images/icon-sponsor.png'),
     church: require('@/assets/images/icon-give.png'),
+    education: require('@/assets/images/icon-fund.png'),
   },
 };
 
 const ROWS: GridIcon[][] = [
   [
     { id: 'agenda',   icon: 'calendar.badge.clock', label: 'Agenda',   route: '/agenda',   image: require('@/assets/images/icon-agenda.png') },
-    { id: 'season',   icon: 'calendar',             label: 'Season',   route: '/(tabs)/(main)/season',   image: require('@/assets/images/icon-season.png') },
-    { id: 'roster',   icon: 'person.3.fill',        label: 'Team',     route: '/(tabs)/(main)/roster',   image: require('@/assets/images/icon-team.png') },
+    { id: 'season',   icon: 'calendar',             label: 'Program',  route: '/(tabs)/(main)/season',   image: require('@/assets/images/icon-season.png') },
+    { id: 'roster',   icon: 'person.3.fill',        label: 'Roster',   route: '/(tabs)/(main)/roster',   image: require('@/assets/images/icon-team-sports.png') },
   ],
   [
-    { id: 'recruits', icon: 'person.badge.plus',    label: 'Recruits', route: '/(tabs)/(main)/recruits', image: require('@/assets/images/icon-recruits.png') },
-    { id: 'store',    icon: 'bag.fill',             label: 'Store',    route: '/(tabs)/(main)/store',    image: require('@/assets/images/icon-store.png') },
+    { id: 'recruits', icon: 'person.badge.plus',    label: 'Prospects', route: '/(tabs)/(main)/recruits', image: require('@/assets/images/icon-recruits.png') },
+    { id: 'store',    icon: 'bag.fill',             label: 'Booster',  route: '/(tabs)/(main)/store',    image: require('@/assets/images/icon-booster.png') },
     { id: 'social',   icon: 'newspaper.fill',       label: 'Social',   route: '/social',                 image: require('@/assets/images/icon-social.png') },
   ],
   [
@@ -217,7 +220,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     elevation: 6,
   },
   iconContainerImage: {
-    backgroundColor: '#000000',
+    backgroundColor: 'transparent',
   },
   tileImage: {
     width: 72,

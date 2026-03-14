@@ -198,7 +198,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   modeRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 32,
+    gap: 12,
     paddingVertical: 12,
     marginBottom: 8,
   },
@@ -209,8 +209,8 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     opacity: 0.3,
   },
   modeGlyphImage: {
-    width: 96,
-    height: 96,
+    width: 64,
+    height: 64,
     resizeMode: 'contain',
   } as any,
   searchWrap: {

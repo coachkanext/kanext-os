@@ -1,708 +1,1606 @@
 /**
- * Agenda — 3-page swipeable layout. Universal across all modes.
- * Page 0 (default): Timeline — rolling daily view with now-line, date sections, focal highlights.
- * Page 1: Calendar — month grid with selected-day context panel.
- * Page 2: Activity — feed of everything that happened, with filter pills + badges.
- * 3 dots at top. Swipe right on page 0 = side panel.
- * 3rd dot gets badge when unread activity exists.
+ * Agenda — Now · Plan · Feed
+ *
+ * Now view (default):
+ *   1. Now/Next Hero Card
+ *   2. Critical Updates (horizontal scroll)
+ *   3. Daily Timeline (starts at current hour)
+ *   4. Missed / Overdue (horizontal scroll)
+ *   5. Priority Stack (horizontal scroll)
+ *   6. Prep Blocks (horizontal scroll)
+ *
+ * Side panel: left-edge tab, swipe right to open.
  */
 
-import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
   Pressable,
   ScrollView,
-  SectionList,
   StyleSheet,
+  Animated,
+  PanResponder,
+  useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { SwipeablePages } from '@/components/ui/swipeable-two-page';
-import { LongPressContextMenu, type ContextMenuData } from '@/components/ui/long-press-context-menu';
-import { CalendarGrid } from '@/components/agenda/calendar-grid';
+import { AgendaSidePanel } from '@/components/side-panel/agenda-panel';
 import {
-  getAgendaItemsByDate,
-  formatDateHeader,
-  dateKey,
-  getNextUpcomingEvent,
-  getCurrentEvent,
-  deriveSource,
-  getSourceIcon,
-  getActivityItems,
-  getUnreadActivityCount,
-  type PersonalAgendaItem,
-  type ActivityCategory,
-  type ActivityItem,
-} from '@/data/mock-agenda';
-import { useOrganization, useMode } from '@/context/app-context';
+  NOW_ITEM,
+  NEXT_ITEM,
+  CRITICAL_UPDATES,
+  TIMELINE_BLOCKS,
+  MISSED_ITEMS,
+  PRIORITY_ITEMS,
+  PREP_BLOCKS,
+  type NowItem,
+  type CriticalUpdate,
+  type TimelineBlock,
+  type MissedItem,
+  type PriorityItem,
+  type PrepBlock,
+  type AgendaPriority,
+  type CriticalChangeType,
+  type PrepType,
+} from '@/data/mock-agenda-now';
 
-import { hideFooter, showFooter } from '@/utils/global-footer-hide';
+// ─── Constants ────────────────────────────────────────────────────────────────
 
-// ─── Activity Filter Pills ──────────────────────────────────────────────────
+const PANEL_WIDTH = 0; // computed below via Dimensions
+const VIEWS = ['Now', 'Plan', 'Feed'] as const;
+type AgendaView = (typeof VIEWS)[number];
 
-type ActivityFilter = 'all' | ActivityCategory;
+const PRIORITY_COLOR: Record<AgendaPriority, string> = {
+  critical: '#EF4444',
+  high:     '#F97316',
+  normal:   '#6B7280',
+  low:      '#D1D5DB',
+};
 
-const ACTIVITY_FILTERS: { key: ActivityFilter; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'messages', label: 'Messages' },
-  { key: 'calls', label: 'Calls' },
-  { key: 'payments', label: 'Payments' },
-  { key: 'schedule', label: 'Schedule' },
-  { key: 'prospects', label: 'Prospects' },
-];
+const CHANGE_COLOR: Record<CriticalChangeType, string> = {
+  cancelled: '#EF4444',
+  moved:     '#F97316',
+  urgent:    '#EF4444',
+  blocked:   '#EAB308',
+};
 
-// ─── Main Screen ────────────────────────────────────────────────────────────
+const PREP_ICON: Record<PrepType, any> = {
+  film:    'film.fill',
+  sermon:  'book.fill',
+  meeting: 'person.3.fill',
+  class:   'graduationcap.fill',
+  content: 'pencil.and.list.clipboard',
+};
 
-export default function AgendaScreen() {
-  const insets = useSafeAreaInsets();
-  const org = useOrganization();
-  const mode = useMode();
-  const C = useColors();
-  const styles = useMemo(() => makeStyles(C), [C]);
-  const [pageIndex, setPageIndex] = useState(0);
-  const [menuData, setMenuData] = useState<ContextMenuData | null>(null);
-  const [calendarSelectedDate, setCalendarSelectedDate] = useState<string | null>(null);
-  const [activityFilter, setActivityFilter] = useState<ActivityFilter>('all');
-  const sectionListRef = useRef<SectionList>(null);
+// ─── View Switcher ────────────────────────────────────────────────────────────
 
-  // Build sections from grouped agenda data
-  const sections = useMemo(() => {
-    const byDate = getAgendaItemsByDate();
-    const result: { key: string; date: Date; data: PersonalAgendaItem[] }[] = [];
-    byDate.forEach((items, key) => {
-      result.push({ key, date: items[0].date, data: items });
-    });
-    return result;
-  }, []);
-
-  // Current time for now-line
-  const now = new Date();
-  const nowHour = now.getHours();
-  const nowMinute = now.getMinutes();
-  const todayKey = dateKey(now);
-
-  // Next upcoming & current event
-  const nextUpcoming = useMemo(() => getNextUpcomingEvent(), []);
-  const currentEvent = useMemo(() => getCurrentEvent(), []);
-
-  // Activity data
-  const activityItems = useMemo(() => {
-    if (activityFilter === 'all') return getActivityItems();
-    return getActivityItems(activityFilter);
-  }, [activityFilter]);
-
-  const unreadCount = useMemo(() => getUnreadActivityCount(), []);
-
-  // Badge on 3rd dot (index 2) when unread activity exists
-  const badges = useMemo(() => {
-    if (unreadCount > 0) return new Set([2]);
-    return undefined;
-  }, [unreadCount]);
-
-  // Auto-scroll to today on mount
-  const lastScrollY = useRef(0);
-  const skipNextScroll = useRef(true);
-  useEffect(() => {
-    const idx = sections.findIndex((s) => s.key === todayKey);
-    if (idx >= 0 && sectionListRef.current) {
-      sectionListRef.current.scrollToLocation({
-        sectionIndex: idx,
-        itemIndex: 0,
-        animated: false,
-      });
-    }
-    setTimeout(() => { skipNextScroll.current = false; }, 500);
-  }, []);
-
-  const handleScroll = useCallback((e: any) => {
-    const y = e.nativeEvent.contentOffset.y;
-    if (skipNextScroll.current) {
-      lastScrollY.current = y;
-      return;
-    }
-    if (y > lastScrollY.current + 10) hideFooter();
-    else if (y < lastScrollY.current - 10) showFooter();
-    lastScrollY.current = y;
-    if (y <= 0) showFooter();
-  }, []);
-
-  const handleDateSelect = useCallback((selectedKey: string) => {
-    setPageIndex(0);
-    // Find section index and scroll to it
-    const idx = sections.findIndex((s) => s.key === selectedKey);
-    if (idx >= 0 && sectionListRef.current) {
-      setTimeout(() => {
-        sectionListRef.current?.scrollToLocation({
-          sectionIndex: idx,
-          itemIndex: 0,
-          animated: true,
-        });
-      }, 300); // wait for page transition
-    }
-  }, [sections]);
-
-  const handleAddEvent = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    // Would open add event bottom sheet
-  }, []);
-
-  // ── Long press: Timeline events ──
-  const handleEventLongPress = useCallback((item: PersonalAgendaItem, pageY: number) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setMenuData({
-      title: item.title,
-      subtitle: `${item.time}${item.endTime ? ` - ${item.endTime}` : ''}`,
-      initials: item.title.charAt(0),
-      isSquircle: false,
-      pageY,
-      actions: [
-        { key: 'view', label: 'View Details', icon: 'eye.fill' },
-        { key: 'edit', label: 'Edit', icon: 'pencil' },
-        { key: 'remind', label: 'Set Reminder', icon: 'bell.fill' },
-        { key: 'delete', label: 'Delete', icon: 'trash.fill', destructive: true },
-      ],
-      onAction: (_key) => {
-        // Actions would be wired to backend
-      },
-    });
-  }, []);
-
-  // ── Long press: Activity items ──
-  const handleActivityLongPress = useCallback((item: ActivityItem, pageY: number) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setMenuData({
-      title: item.title,
-      subtitle: item.timestamp,
-      initials: item.title.charAt(0),
-      isSquircle: false,
-      pageY,
-      actions: [
-        { key: 'read', label: item.read ? 'Mark as Unread' : 'Mark as Read', icon: item.read ? 'envelope.fill' : 'envelope.open.fill' },
-        { key: 'dismiss', label: 'Dismiss', icon: 'xmark.circle.fill' },
-        { key: 'mute', label: 'Mute this type', icon: 'bell.slash.fill', destructive: true },
-      ],
-      onAction: (_key) => {
-        // Actions would be wired to backend
-      },
-    });
-  }, []);
-
-  const isPastEvent = (item: PersonalAgendaItem) => {
-    return item.date.getTime() < now.getTime();
-  };
-
-  const isNextUpcoming = (item: PersonalAgendaItem) => {
-    return nextUpcoming?.id === item.id;
-  };
-
-  const isCurrentEvent = (item: PersonalAgendaItem) => {
-    return currentEvent?.id === item.id;
-  };
-
-  const renderItem = useCallback(({ item }: { item: PersonalAgendaItem }) => {
-    const past = isPastEvent(item);
-    const isNext = isNextUpcoming(item);
-    const isCurrent = isCurrentEvent(item);
-    const source = deriveSource(item);
-    const sourceIcon = getSourceIcon(source);
-
-    return (
-      <Pressable
-        style={[
-          styles.eventRow,
-          past && styles.eventRowPast,
-          isNext && styles.eventRowNext,
-          isCurrent && styles.eventRowCurrent,
-        ]}
-        onLongPress={(e) => handleEventLongPress(item, e.nativeEvent.pageY)}
-        delayLongPress={400}
-      >
-        {/* Time column */}
-        <View style={styles.timeCol}>
-          <Text style={[styles.timeText, past && styles.textPast]}>{item.time}</Text>
-          {item.endTime && (
-            <Text style={[styles.endTimeText, past && styles.textPast]}>{item.endTime}</Text>
-          )}
-        </View>
-
-        {/* Content */}
-        <View style={styles.eventContent}>
-          <Text style={[styles.eventTitle, past && styles.textPast]} numberOfLines={1}>
-            {item.title}
-          </Text>
-          {(item.location || sourceIcon) && (
-            <View style={styles.locationRow}>
-              {item.location && (
-                <Text style={[styles.eventLocation, past && styles.textPast]} numberOfLines={1}>
-                  {item.location}
-                </Text>
-              )}
-              {sourceIcon && (
-                <IconSymbol name={sourceIcon as any} size={12} color={C.secondary} style={styles.sourceIcon} />
-              )}
-            </View>
-          )}
-          {item.isAllDay && (
-            <Text style={[styles.allDayBadge, past && styles.textPast]}>All Day</Text>
-          )}
-        </View>
-      </Pressable>
-    );
-  }, [now, nextUpcoming, currentEvent, styles, C]);
-
-  const renderSectionHeader = useCallback(({ section }: { section: { key: string; date: Date } }) => {
-    return (
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionDate}>
-          {formatDateHeader(section.date)}
-        </Text>
-      </View>
-    );
-  }, [styles]);
-
-  // Mode label for org context line
-  const modeLabel = mode.charAt(0).toUpperCase() + mode.slice(1);
-
+function ViewSwitcher({
+  active,
+  onChange,
+  C,
+}: {
+  active: AgendaView;
+  onChange: (v: AgendaView) => void;
+  C: ComponentColors;
+}) {
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <SwipeablePages
-        activeIndex={pageIndex}
-        onPageChange={setPageIndex}
-
-        badges={badges}
-      >
-        {/* ── PAGE 0: TIMELINE ── */}
-        <View style={styles.page}>
-          <SectionList
-            ref={sectionListRef}
-            sections={sections}
-            keyExtractor={(item) => item.id}
-            renderItem={renderItem}
-            renderSectionHeader={renderSectionHeader}
-            stickySectionHeadersEnabled={false}
-            contentContainerStyle={{ paddingTop: 8, paddingBottom: 120 }}
-            onScroll={handleScroll}
-            scrollEventThrottle={16}
-            showsVerticalScrollIndicator={false}
-            SectionSeparatorComponent={() => <View style={styles.sectionSeparator} />}
-            ListHeaderComponent={
-              <View>
-                {/* "Next up" summary strip */}
-                <View style={styles.summaryStrip}>
-                  <Text style={styles.summaryLabel}>Next</Text>
-                  {nextUpcoming ? (
-                    <Text style={styles.summaryValue} numberOfLines={1}>
-                      {nextUpcoming.title} — {nextUpcoming.time}
-                    </Text>
-                  ) : (
-                    <Text style={styles.summaryValue}>No more events today</Text>
-                  )}
-                </View>
-
-                {/* Org context line */}
-                <View style={styles.orgContextLine}>
-                  <View style={styles.modeBadge}>
-                    <Text style={styles.modeBadgeText}>{modeLabel}</Text>
-                  </View>
-                  {org?.name && (
-                    <Text style={styles.orgContextText}>{org.name}</Text>
-                  )}
-                </View>
-
-                {/* Now-line indicator */}
-                <View style={styles.nowLineRow}>
-                  <View style={styles.nowDot} />
-                  <View style={styles.nowLine} />
-                  <Text style={styles.nowLabel}>
-                    {nowHour > 12 ? nowHour - 12 : nowHour === 0 ? 12 : nowHour}:
-                    {nowMinute.toString().padStart(2, '0')} {nowHour >= 12 ? 'PM' : 'AM'}
-                  </Text>
-                </View>
-              </View>
-            }
-          />
-        </View>
-
-        {/* ── PAGE 1: CALENDAR ── */}
-        <View style={styles.page}>
-          <CalendarGrid
-            selectedDate={calendarSelectedDate}
-            onSelectedDateChange={setCalendarSelectedDate}
-            onDateSelect={handleDateSelect}
-            onAddEvent={handleAddEvent}
-          />
-        </View>
-
-        {/* ── PAGE 2: ACTIVITY ── */}
-        <View style={{ flex: 1 }}>
-          <View style={{ paddingTop: 16 }}>
-            <View style={styles.topBar}>
-              <Text style={styles.topBarTitle}>Activity</Text>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.filterRow}
-            >
-              {ACTIVITY_FILTERS.map((f) => {
-                const isActive = activityFilter === f.key;
-                return (
-                  <Pressable
-                    key={f.key}
-                    style={[styles.filterPill, isActive && styles.filterPillActive]}
-                    onPress={() => setActivityFilter(f.key)}
-                  >
-                    <Text style={[styles.filterText, isActive && styles.filterTextActive]}>{f.label}</Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
-          </View>
-          <ScrollView
-            style={styles.pageScroll}
-            contentContainerStyle={{ paddingBottom: 120 }}
-            onScroll={handleScroll}
-            scrollEventThrottle={16}
-            showsVerticalScrollIndicator={false}
+    <View style={[switcherStyles.track, { backgroundColor: 'rgba(0,0,0,0.06)' }]}>
+      {VIEWS.map((v) => {
+        const isActive = v === active;
+        return (
+          <Pressable
+            key={v}
+            style={[
+              switcherStyles.segment,
+              isActive && [switcherStyles.segmentActive, { backgroundColor: C.bg }],
+            ]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onChange(v);
+            }}
           >
-            {activityItems.length === 0 ? (
-              <View style={styles.emptyState}>
-                <IconSymbol name="bell.fill" size={36} color={C.muted} />
-                <Text style={styles.emptyText}>No activity</Text>
-              </View>
-            ) : (
-              activityItems.map((item, idx) => (
-                <View key={item.id}>
-                  {idx > 0 && <View style={styles.activitySeparator} />}
-                  <Pressable
-                    style={({ pressed }) => [
-                      styles.activityRow,
-                      pressed && styles.activityRowPressed,
-                      !item.read && styles.activityRowUnread,
-                    ]}
-                    onLongPress={(e) => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                      handleActivityLongPress(item, e.nativeEvent.pageY);
-                    }}
-                    delayLongPress={400}
-                  >
-                    {/* Source icon */}
-                    <View style={styles.activityIconCircle}>
-                      <IconSymbol name={item.icon as any} size={16} color={C.secondary} />
-                    </View>
-
-                    {/* Content */}
-                    <View style={styles.activityContent}>
-                      <Text style={[styles.activityTitle, item.read && styles.activityTitleRead]} numberOfLines={1}>
-                        {item.title}
-                      </Text>
-                      <Text style={styles.activityDescription} numberOfLines={1}>
-                        {item.description}
-                      </Text>
-                    </View>
-
-                    {/* Timestamp */}
-                    <Text style={styles.activityTimestamp}>{item.timestamp}</Text>
-
-                    {/* Unread dot */}
-                    {!item.read && <View style={styles.unreadDot} />}
-                  </Pressable>
-                </View>
-              ))
-            )}
-          </ScrollView>
-        </View>
-      </SwipeablePages>
-
-      {/* FAB — Add Event (pages 0 & 1 only) */}
-      {pageIndex < 2 && (
-        <Pressable
-          style={[styles.fab, { bottom: insets.bottom + 60 }]}
-          onPress={handleAddEvent}
-        >
-          <IconSymbol name="plus" size={24} color={C.label} />
-        </Pressable>
-      )}
-
-      <LongPressContextMenu data={menuData} onClose={() => setMenuData(null)} />
+            <Text
+              style={[
+                switcherStyles.label,
+                { color: isActive ? C.label : C.secondary },
+                isActive && switcherStyles.labelActive,
+              ]}
+            >
+              {v}
+            </Text>
+          </Pressable>
+        );
+      })}
     </View>
   );
 }
 
-const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  container: { flex: 1, backgroundColor: C.bg },
-  page: { flex: 1, backgroundColor: C.bg },
-  pageScroll: { flex: 1 },
-
-  // Top bar (Activity page)
-  topBar: {
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-  },
-  topBarTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: C.secondary,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-
-  // Filter pills (Activity)
-  filterRow: {
-    paddingHorizontal: 16,
-    gap: 8,
-    paddingBottom: 4,
-  },
-  filterPill: {
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderRadius: 16,
-    backgroundColor: C.surface,
-  },
-  filterPillActive: {
-    backgroundColor: C.label,
-  },
-  filterText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: C.label,
-  },
-  filterTextActive: {
-    color: C.bg,
-  },
-
-  // Summary strip
-  summaryStrip: {
+const switcherStyles = StyleSheet.create({
+  track: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    gap: 8,
-  },
-  summaryLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: C.secondary,
-  },
-  summaryValue: {
-    flex: 1,
-    fontSize: 14,
-    fontWeight: '600',
-    color: C.label,
-  },
-
-  // Org context line
-  orgContextLine: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingBottom: 10,
-    gap: 8,
-  },
-  modeBadge: {
-    backgroundColor: C.surface,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-  },
-  modeBadgeText: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: C.label,
-  },
-  orgContextText: {
-    fontSize: 13,
-    color: C.secondary,
-  },
-
-  // Section headers
-  sectionHeader: {
-    paddingHorizontal: 16,
-    paddingTop: 24,
-    paddingBottom: 8,
-    backgroundColor: C.bg,
-  },
-  sectionDate: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: C.label,
-  },
-
-  // Event rows
-  eventRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    backgroundColor: C.bg,
-  },
-  eventRowPast: {
-    opacity: 0.5,
-  },
-  eventRowNext: {
-    backgroundColor: C.surface,
     borderRadius: 10,
-    marginHorizontal: 8,
-    paddingHorizontal: 12,
+    padding: 3,
+    marginHorizontal: 16,
   },
-  eventRowCurrent: {
-    borderLeftWidth: 2,
-    borderLeftColor: C.label,
-  },
-  timeCol: {
-    width: 60,
-    alignItems: 'flex-end',
-    paddingRight: 12,
-  },
-  timeText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: C.label,
-  },
-  endTimeText: {
-    fontSize: 12,
-    color: C.secondary,
-    marginTop: 1,
-  },
-  eventContent: {
+  segment: {
     flex: 1,
+    paddingVertical: 7,
+    borderRadius: 8,
+    alignItems: 'center',
   },
-  eventTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: C.label,
+  segmentActive: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
-  locationRow: {
+  label: { fontSize: 14, fontWeight: '500' },
+  labelActive: { fontWeight: '700' },
+});
+
+// ─── Now/Next Hero Card ───────────────────────────────────────────────────────
+
+function NowNextCard({ C }: { C: ComponentColors }) {
+  const now = NOW_ITEM;
+  const next = NEXT_ITEM;
+
+  return (
+    <View style={[heroStyles.card, { backgroundColor: C.bg, borderColor: C.separator }]}>
+      {/* Current item */}
+      <View style={heroStyles.nowSection}>
+        <View style={heroStyles.topRow}>
+          <View style={[heroStyles.statusDot, { backgroundColor: '#22C55E' }]} />
+          <Text style={[heroStyles.nowLabel, { color: '#22C55E' }]}>NOW</Text>
+          <View style={[heroStyles.typeBadge, { backgroundColor: C.surfacePressed }]}>
+            <Text style={[heroStyles.typeBadgeText, { color: C.secondary }]}>
+              {now.type.toUpperCase()}
+            </Text>
+          </View>
+          <View style={{ flex: 1 }} />
+          <View style={[heroStyles.priorityDot, { backgroundColor: PRIORITY_COLOR[now.priority] }]} />
+        </View>
+
+        <Text style={[heroStyles.nowTitle, { color: C.label }]}>{now.title}</Text>
+
+        <View style={heroStyles.metaRow}>
+          <IconSymbol name="clock.fill" size={12} color={C.muted} />
+          <Text style={[heroStyles.metaText, { color: C.secondary }]}>
+            {now.time} – {now.endTime}
+          </Text>
+          <View style={[heroStyles.orgBadge, { backgroundColor: C.surfacePressed }]}>
+            <Text style={[heroStyles.orgText, { color: C.muted }]}>{now.org}</Text>
+          </View>
+        </View>
+
+        {now.isLate && (
+          <View style={[heroStyles.warningRow, { backgroundColor: 'rgba(239,68,68,0.08)' }]}>
+            <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
+            <Text style={[heroStyles.warningText, { color: '#EF4444' }]}>Running late</Text>
+          </View>
+        )}
+        {now.hasConflict && now.conflictNote && (
+          <View style={[heroStyles.warningRow, { backgroundColor: 'rgba(234,179,8,0.08)' }]}>
+            <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EAB308" />
+            <Text style={[heroStyles.warningText, { color: '#EAB308' }]}>{now.conflictNote}</Text>
+          </View>
+        )}
+      </View>
+
+      <View style={[heroStyles.divider, { backgroundColor: C.separator }]} />
+
+      {/* Next item */}
+      <View style={heroStyles.nextSection}>
+        <View style={heroStyles.topRow}>
+          <Text style={[heroStyles.nextLabel, { color: C.muted }]}>NEXT</Text>
+          <View style={[heroStyles.typeBadge, { backgroundColor: C.surfacePressed }]}>
+            <Text style={[heroStyles.typeBadgeText, { color: C.secondary }]}>
+              {next.type.toUpperCase()}
+            </Text>
+          </View>
+          {next.countdownMin != null && (
+            <View style={[heroStyles.countdown, { backgroundColor: C.surfacePressed }]}>
+              <Text style={[heroStyles.countdownText, { color: C.secondary }]}>
+                in {next.countdownMin}m
+              </Text>
+            </View>
+          )}
+        </View>
+        <Text style={[heroStyles.nextTitle, { color: C.label }]}>{next.title}</Text>
+        <View style={heroStyles.metaRow}>
+          <IconSymbol name="clock" size={12} color={C.muted} />
+          <Text style={[heroStyles.metaText, { color: C.secondary }]}>
+            {next.time} – {next.endTime}
+          </Text>
+          <View style={[heroStyles.orgBadge, { backgroundColor: C.surfacePressed }]}>
+            <Text style={[heroStyles.orgText, { color: C.muted }]}>{next.org}</Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+const heroStyles = StyleSheet.create({
+  card: {
+    marginHorizontal: 16,
+    borderRadius: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  nowSection: { padding: 16, gap: 8 },
+  nextSection: { padding: 16, gap: 6 },
+  divider: { height: StyleSheet.hairlineWidth },
+  topRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  statusDot: { width: 8, height: 8, borderRadius: 4 },
+  nowLabel: { fontSize: 11, fontWeight: '800', letterSpacing: 1 },
+  nextLabel: { fontSize: 11, fontWeight: '700', letterSpacing: 1 },
+  typeBadge: {
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  typeBadgeText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  priorityDot: { width: 8, height: 8, borderRadius: 4 },
+  nowTitle: { fontSize: 20, fontWeight: '700', letterSpacing: -0.3 },
+  nextTitle: { fontSize: 16, fontWeight: '600', letterSpacing: -0.2 },
+  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' },
+  metaText: { fontSize: 13 },
+  orgBadge: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6 },
+  orgText: { fontSize: 11, fontWeight: '500' },
+  countdown: { paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6 },
+  countdownText: { fontSize: 11, fontWeight: '600' },
+  warningRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  warningText: { fontSize: 12, fontWeight: '500' },
+});
+
+// ─── Section Header ───────────────────────────────────────────────────────────
+
+function SectionHeader({ title, count, C }: { title: string; count?: number; C: ComponentColors }) {
+  return (
+    <View style={sectionHeaderStyles.row}>
+      <Text style={[sectionHeaderStyles.title, { color: C.muted }]}>{title.toUpperCase()}</Text>
+      {count != null && (
+        <View style={[sectionHeaderStyles.badge, { backgroundColor: C.surfacePressed }]}>
+          <Text style={[sectionHeaderStyles.badgeText, { color: C.secondary }]}>{count}</Text>
+        </View>
+      )}
+    </View>
+  );
+}
+
+const sectionHeaderStyles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 16,
+    marginBottom: 10,
+  },
+  title: { fontSize: 11, fontWeight: '700', letterSpacing: 0.8 },
+  badge: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6 },
+  badgeText: { fontSize: 11, fontWeight: '600' },
+});
+
+// ─── Critical Updates Row ─────────────────────────────────────────────────────
+
+function CriticalUpdatesRow({ C }: { C: ComponentColors }) {
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}
+    >
+      {CRITICAL_UPDATES.map((u) => (
+        <View
+          key={u.id}
+          style={[
+            updateCardStyles.card,
+            { backgroundColor: C.bg, borderColor: C.separator, borderLeftColor: CHANGE_COLOR[u.changeType] },
+          ]}
+        >
+          <Text style={[updateCardStyles.changeType, { color: CHANGE_COLOR[u.changeType] }]}>
+            {u.changeType.toUpperCase()}
+          </Text>
+          <Text style={[updateCardStyles.title, { color: C.label }]} numberOfLines={1}>
+            {u.title}
+          </Text>
+          <Text style={[updateCardStyles.detail, { color: C.secondary }]} numberOfLines={1}>
+            {u.detail}
+          </Text>
+          <Pressable
+            style={[updateCardStyles.actionBtn, { backgroundColor: C.surfacePressed }]}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <Text style={[updateCardStyles.actionText, { color: C.label }]}>{u.action}</Text>
+          </Pressable>
+        </View>
+      ))}
+    </ScrollView>
+  );
+}
+
+const updateCardStyles = StyleSheet.create({
+  card: {
+    width: 180,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderLeftWidth: 3,
+    padding: 14,
+    gap: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  changeType: { fontSize: 10, fontWeight: '800', letterSpacing: 0.8 },
+  title: { fontSize: 14, fontWeight: '600' },
+  detail: { fontSize: 12 },
+  actionBtn: {
+    marginTop: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+  },
+  actionText: { fontSize: 12, fontWeight: '600' },
+});
+
+// ─── Daily Timeline ───────────────────────────────────────────────────────────
+
+function DailyTimeline({ C }: { C: ComponentColors }) {
+  const now = new Date();
+  const currentMin = now.getHours() * 60 + now.getMinutes();
+
+  const visibleBlocks = TIMELINE_BLOCKS.filter((b) => b.startMin >= currentMin - 30);
+
+  return (
+    <View style={timelineStyles.container}>
+      {visibleBlocks.map((block, i) => {
+        const isNow = block.status === 'in-progress';
+        return (
+          <View key={block.id} style={timelineStyles.row}>
+            {/* Time column */}
+            <View style={timelineStyles.timeCol}>
+              <Text style={[timelineStyles.time, { color: isNow ? C.label : C.muted }]}>
+                {block.time}
+              </Text>
+              {i < visibleBlocks.length - 1 && (
+                <View style={[timelineStyles.line, { backgroundColor: C.separator }]} />
+              )}
+            </View>
+
+            {/* Block card */}
+            <View
+              style={[
+                timelineStyles.blockCard,
+                {
+                  backgroundColor: C.bg,
+                  borderColor: C.separator,
+                  borderLeftColor: PRIORITY_COLOR[block.priority],
+                },
+                isNow && { borderLeftColor: '#22C55E' },
+              ]}
+            >
+              <View style={timelineStyles.cardTop}>
+                <View style={[timelineStyles.typePill, { backgroundColor: C.surfacePressed }]}>
+                  <Text style={[timelineStyles.typePillText, { color: C.secondary }]}>
+                    {block.type.toUpperCase()}
+                  </Text>
+                </View>
+                {isNow && (
+                  <View style={[timelineStyles.nowPill, { backgroundColor: 'rgba(34,197,94,0.1)' }]}>
+                    <Text style={[timelineStyles.nowPillText, { color: '#22C55E' }]}>IN PROGRESS</Text>
+                  </View>
+                )}
+              </View>
+              <Text style={[timelineStyles.blockTitle, { color: C.label }]}>{block.title}</Text>
+              <View style={timelineStyles.blockMeta}>
+                <Text style={[timelineStyles.blockTime, { color: C.secondary }]}>
+                  {block.time} – {block.endTime}
+                </Text>
+                <Text style={[timelineStyles.blockOrg, { color: C.muted }]}>{block.org}</Text>
+              </View>
+            </View>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+const timelineStyles = StyleSheet.create({
+  container: { paddingHorizontal: 16, gap: 0 },
+  row: { flexDirection: 'row', gap: 12, marginBottom: 12 },
+  timeCol: { width: 56, alignItems: 'flex-end', paddingTop: 14 },
+  time: { fontSize: 11, fontWeight: '600' },
+  line: { width: 1, flex: 1, marginTop: 4, marginBottom: -12, alignSelf: 'center' },
+  blockCard: {
+    flex: 1,
+    borderRadius: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderLeftWidth: 3,
+    padding: 12,
+    gap: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  cardTop: { flexDirection: 'row', gap: 6, alignItems: 'center' },
+  typePill: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5 },
+  typePillText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.4 },
+  nowPill: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5 },
+  nowPillText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.4 },
+  blockTitle: { fontSize: 15, fontWeight: '600' },
+  blockMeta: { flexDirection: 'row', gap: 10, alignItems: 'center' },
+  blockTime: { fontSize: 12 },
+  blockOrg: { fontSize: 11 },
+});
+
+// ─── Missed / Overdue Row ─────────────────────────────────────────────────────
+
+function MissedRow({ C }: { C: ComponentColors }) {
+  const ACTIONS = [
+    { icon: 'arrow.clockwise' as const, label: 'Reschedule' },
+    { icon: 'checkmark' as const, label: 'Complete' },
+    { icon: 'zzz' as const, label: 'Snooze' },
+    { icon: 'person.fill.badge.plus' as const, label: 'Delegate' },
+    { icon: 'message.fill' as const, label: 'Message' },
+  ];
+
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}
+    >
+      {MISSED_ITEMS.map((item) => (
+        <View
+          key={item.id}
+          style={[
+            missedCardStyles.card,
+            { backgroundColor: C.bg, borderColor: C.separator, borderTopColor: '#EF4444' },
+          ]}
+        >
+          <View style={[missedCardStyles.typePill, { backgroundColor: C.surfacePressed }]}>
+            <Text style={[missedCardStyles.typeText, { color: C.secondary }]}>
+              {item.type.toUpperCase()}
+            </Text>
+          </View>
+          <Text style={[missedCardStyles.title, { color: C.label }]} numberOfLines={2}>
+            {item.title}
+          </Text>
+          <Text style={[missedCardStyles.time, { color: '#EF4444' }]}>{item.time}</Text>
+          <View style={missedCardStyles.actionsRow}>
+            {ACTIONS.map((a) => (
+              <Pressable
+                key={a.label}
+                style={[missedCardStyles.actionBtn, { backgroundColor: C.surfacePressed }]}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              >
+                <IconSymbol name={a.icon} size={13} color={C.secondary} />
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      ))}
+    </ScrollView>
+  );
+}
+
+const missedCardStyles = StyleSheet.create({
+  card: {
+    width: 170,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderTopWidth: 3,
+    padding: 14,
+    gap: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  typePill: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: 5, alignSelf: 'flex-start' },
+  typeText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.4 },
+  title: { fontSize: 14, fontWeight: '600' },
+  time: { fontSize: 12, fontWeight: '500' },
+  actionsRow: { flexDirection: 'row', gap: 6, marginTop: 4 },
+  actionBtn: { width: 28, height: 28, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
+});
+
+// ─── Priority Stack Row ───────────────────────────────────────────────────────
+
+function PriorityRow({ C }: { C: ComponentColors }) {
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}
+    >
+      {PRIORITY_ITEMS.map((item) => (
+        <View
+          key={item.id}
+          style={[priorityCardStyles.card, { backgroundColor: C.bg, borderColor: C.separator }]}
+        >
+          <View style={priorityCardStyles.topRow}>
+            <View style={[priorityCardStyles.dot, { backgroundColor: PRIORITY_COLOR[item.priority] }]} />
+            <Text style={[priorityCardStyles.priorityLabel, { color: PRIORITY_COLOR[item.priority] }]}>
+              {item.priority.toUpperCase()}
+            </Text>
+          </View>
+          <Text style={[priorityCardStyles.title, { color: C.label }]} numberOfLines={2}>
+            {item.title}
+          </Text>
+          <View style={[priorityCardStyles.typePill, { backgroundColor: C.surfacePressed }]}>
+            <Text style={[priorityCardStyles.typeText, { color: C.secondary }]}>
+              {item.type.toUpperCase()}
+            </Text>
+          </View>
+          <Pressable
+            style={[priorityCardStyles.actionBtn, { backgroundColor: C.surfacePressed }]}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <Text style={[priorityCardStyles.actionText, { color: C.label }]}>{item.action}</Text>
+          </Pressable>
+        </View>
+      ))}
+    </ScrollView>
+  );
+}
+
+const priorityCardStyles = StyleSheet.create({
+  card: {
+    width: 160,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: 14,
+    gap: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  topRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  dot: { width: 7, height: 7, borderRadius: 3.5 },
+  priorityLabel: { fontSize: 10, fontWeight: '800', letterSpacing: 0.6 },
+  title: { fontSize: 14, fontWeight: '600' },
+  typePill: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: 5, alignSelf: 'flex-start' },
+  typeText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.4 },
+  actionBtn: { marginTop: 2, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8, alignSelf: 'flex-start' },
+  actionText: { fontSize: 12, fontWeight: '600' },
+});
+
+// ─── Prep Blocks Row ──────────────────────────────────────────────────────────
+
+function PrepRow({ C }: { C: ComponentColors }) {
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}
+    >
+      {PREP_BLOCKS.map((block) => (
+        <View
+          key={block.id}
+          style={[prepCardStyles.card, { backgroundColor: C.bg, borderColor: C.separator }]}
+        >
+          <View style={prepCardStyles.iconRow}>
+            <View style={[prepCardStyles.iconWrap, { backgroundColor: C.surfacePressed }]}>
+              <IconSymbol name={PREP_ICON[block.prepType]} size={16} color={C.secondary} />
+            </View>
+            <Text style={[prepCardStyles.prepType, { color: C.secondary }]}>
+              {block.prepType.toUpperCase()}
+            </Text>
+          </View>
+          <Text style={[prepCardStyles.linkedTo, { color: C.label }]} numberOfLines={2}>
+            {block.linkedTo}
+          </Text>
+          <View style={prepCardStyles.metaRow}>
+            <IconSymbol name="clock" size={11} color={C.muted} />
+            <Text style={[prepCardStyles.meta, { color: C.muted }]}>{block.time}</Text>
+            <Text style={[prepCardStyles.duration, { color: C.muted }]}>· {block.duration}</Text>
+          </View>
+        </View>
+      ))}
+    </ScrollView>
+  );
+}
+
+const prepCardStyles = StyleSheet.create({
+  card: {
+    width: 180,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: 14,
+    gap: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  iconRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  iconWrap: { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
+  prepType: { fontSize: 10, fontWeight: '800', letterSpacing: 0.6 },
+  linkedTo: { fontSize: 14, fontWeight: '600' },
+  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  meta: { fontSize: 11 },
+  duration: { fontSize: 11 },
+});
+
+// ─── Now View ─────────────────────────────────────────────────────────────────
+
+function NowView({ C }: { C: ComponentColors }) {
+  return (
+    <ScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{ paddingTop: 16, paddingBottom: 120, gap: 24 }}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* 1. Now/Next Hero */}
+      <NowNextCard C={C} />
+
+      {/* 2. Critical Updates */}
+      <View>
+        <SectionHeader title="Critical Updates" count={CRITICAL_UPDATES.length} C={C} />
+        <CriticalUpdatesRow C={C} />
+      </View>
+
+      {/* 3. Daily Timeline */}
+      <View>
+        <SectionHeader title="Today's Timeline" C={C} />
+        <DailyTimeline C={C} />
+      </View>
+
+      {/* 4. Missed / Overdue */}
+      <View>
+        <SectionHeader title="Missed / Overdue" count={MISSED_ITEMS.length} C={C} />
+        <MissedRow C={C} />
+      </View>
+
+      {/* 5. Priority Stack */}
+      <View>
+        <SectionHeader title="Priority" count={PRIORITY_ITEMS.length} C={C} />
+        <PriorityRow C={C} />
+      </View>
+
+      {/* 6. Prep Blocks */}
+      <View>
+        <SectionHeader title="Prep Blocks" count={PREP_BLOCKS.length} C={C} />
+        <PrepRow C={C} />
+      </View>
+    </ScrollView>
+  );
+}
+
+// ─── Plan View ────────────────────────────────────────────────────────────────
+
+const WEEK_DAYS = [
+  { day: 'SAT', date: '14', count: 3, hasConflict: false, hasCritical: true },
+  { day: 'SUN', date: '15', count: 3, hasConflict: false, hasCritical: true },
+  { day: 'MON', date: '16', count: 4, hasConflict: true,  hasCritical: false },
+  { day: 'TUE', date: '17', count: 3, hasConflict: false, hasCritical: true },
+  { day: 'WED', date: '18', count: 2, hasConflict: false, hasCritical: false },
+  { day: 'THU', date: '19', count: 1, hasConflict: false, hasCritical: false },
+  { day: 'FRI', date: '20', count: 1, hasConflict: false, hasCritical: true },
+];
+
+const UNSCHEDULED = [
+  { id: 'u1', title: 'Update Transfer Portal List', type: 'Task', priority: 'high' as AgendaPriority },
+  { id: 'u2', title: 'Review Equipment Budget', type: 'Task', priority: 'normal' as AgendaPriority },
+  { id: 'u3', title: 'Call D. Carter Follow-Up', type: 'Call', priority: 'high' as AgendaPriority },
+];
+
+const PRIORITY_QUEUE = [
+  { id: 'pq1', title: 'Submit Compliance Form', type: 'Deadline', priority: 'critical' as AgendaPriority, due: 'Due Tomorrow' },
+  { id: 'pq2', title: 'Finalize Spring Roster', type: 'Deadline', priority: 'critical' as AgendaPriority, due: 'Mar 20' },
+  { id: 'pq3', title: 'Film Opponent — Howard', type: 'Prep', priority: 'high' as AgendaPriority, due: 'Before Fri' },
+  { id: 'pq4', title: 'Recruiting Report — I. Brooks', type: 'Task', priority: 'high' as AgendaPriority, due: 'This Week' },
+];
+
+const TEAM_COMMITMENTS = [
+  { id: 'tc1', title: 'Team Lift', time: 'Mon 6:00 AM', org: 'Lincoln U', attending: 24 },
+  { id: 'tc2', title: 'Morning Practice', time: 'Mon 9:00 AM', org: 'Lincoln U', attending: 28 },
+  { id: 'tc3', title: 'Staff Meeting', time: 'Mon 4:00 PM', org: 'Coaching Staff', attending: 8 },
+  { id: 'tc4', title: 'Travel Departure', time: 'Tue 3:00 PM', org: 'Lincoln U', attending: 35 },
+  { id: 'tc5', title: 'Home Game vs. Howard', time: 'Fri 3:00 PM', org: 'Lincoln U', attending: 40 },
+];
+
+const CONFLICTS = [
+  { id: 'cf1', title: 'Recruiting Visit overlaps Film Session', time: 'Mon 1–3 PM', severity: 'high' as AgendaPriority },
+  { id: 'cf2', title: 'Staff Debrief back-to-back with Recruiting Call', time: 'Sat 9–10 PM', severity: 'normal' as AgendaPriority },
+];
+
+const SUGGESTED_BLOCKS = [
+  { id: 'sb1', title: 'Film Review Prep', suggestion: 'Open slot Mon 7–9 AM', reason: 'Before morning practice' },
+  { id: 'sb2', title: 'Recruiting Outreach', suggestion: 'Open slot Wed 2–4 PM', reason: 'No meetings blocked' },
+  { id: 'sb3', title: 'Rest & Recovery', suggestion: 'Thu afternoon', reason: 'High load week' },
+];
+
+const PLAN_TEMPLATES = [
+  { id: 'pt1', label: 'Game Day', icon: 'sportscourt.fill' as const },
+  { id: 'pt2', label: 'Travel Day', icon: 'airplane' as const },
+  { id: 'pt3', label: 'Recruiting Visit', icon: 'person.badge.plus' as const },
+  { id: 'pt4', label: 'Staff Meeting', icon: 'person.3.fill' as const },
+];
+
+function PlanView({ C }: { C: ComponentColors }) {
+  const [selectedDay, setSelectedDay] = useState('14');
+
+  return (
+    <ScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{ paddingTop: 16, paddingBottom: 120, gap: 28 }}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* 1. Week Calendar */}
+      <View>
+        <SectionHeader title="Week" C={C} />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 16, gap: 8 }}
+        >
+          {WEEK_DAYS.map((d) => {
+            const isSelected = d.date === selectedDay;
+            return (
+              <Pressable
+                key={d.date}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setSelectedDay(d.date);
+                }}
+                style={[
+                  planStyles.dayCell,
+                  {
+                    backgroundColor: isSelected ? C.label : C.surfacePressed,
+                    borderColor: C.separator,
+                  },
+                ]}
+              >
+                <Text style={[planStyles.dayCellDay, { color: isSelected ? C.bg : C.muted }]}>{d.day}</Text>
+                <Text style={[planStyles.dayCellDate, { color: isSelected ? C.bg : C.label }]}>{d.date}</Text>
+                {/* density dots */}
+                <View style={planStyles.densityRow}>
+                  {Array.from({ length: Math.min(d.count, 4) }).map((_, i) => (
+                    <View
+                      key={i}
+                      style={[
+                        planStyles.densityDot,
+                        {
+                          backgroundColor: isSelected
+                            ? 'rgba(255,255,255,0.6)'
+                            : d.hasCritical
+                            ? '#EF4444'
+                            : C.muted,
+                        },
+                      ]}
+                    />
+                  ))}
+                </View>
+                {d.hasConflict && (
+                  <View style={[planStyles.conflictDot, { backgroundColor: '#F97316' }]} />
+                )}
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+      </View>
+
+      {/* 2. Unscheduled Queue */}
+      <View>
+        <SectionHeader title="Unscheduled" count={UNSCHEDULED.length} C={C} />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}
+        >
+          {UNSCHEDULED.map((item) => (
+            <View
+              key={item.id}
+              style={[planStyles.queueCard, { backgroundColor: C.bg, borderColor: C.separator }]}
+            >
+              <View style={[planStyles.priorityBar2, { backgroundColor: PRIORITY_COLOR[item.priority] }]} />
+              <View style={planStyles.queueCardInner}>
+                <Text style={[planStyles.queueTitle, { color: C.label }]} numberOfLines={2}>{item.title}</Text>
+                <View style={[planStyles.typePill, { backgroundColor: C.surfacePressed }]}>
+                  <Text style={[planStyles.typeText, { color: C.secondary }]}>{item.type}</Text>
+                </View>
+                <Pressable
+                  style={[planStyles.scheduleBtn, { backgroundColor: C.surfacePressed }]}
+                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                >
+                  <IconSymbol name="plus" size={11} color={C.secondary} />
+                  <Text style={[planStyles.scheduleBtnText, { color: C.secondary }]}>Schedule</Text>
+                </Pressable>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* 3. Priority Queue */}
+      <View>
+        <SectionHeader title="Priority Queue" count={PRIORITY_QUEUE.length} C={C} />
+        <View style={{ paddingHorizontal: 16, gap: 8 }}>
+          {PRIORITY_QUEUE.map((item) => (
+            <Pressable
+              key={item.id}
+              style={[planStyles.priorityRow, { backgroundColor: C.bg, borderColor: C.separator }]}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <View style={[planStyles.priorityBar3, { backgroundColor: PRIORITY_COLOR[item.priority] }]} />
+              <View style={planStyles.priorityInfo}>
+                <Text style={[planStyles.priorityTitle, { color: C.label }]}>{item.title}</Text>
+                <View style={planStyles.priorityMeta}>
+                  <View style={[planStyles.typePill, { backgroundColor: C.surfacePressed }]}>
+                    <Text style={[planStyles.typeText, { color: C.secondary }]}>{item.type}</Text>
+                  </View>
+                  <Text style={[planStyles.dueText, { color: item.priority === 'critical' ? '#EF4444' : C.muted }]}>
+                    {item.due}
+                  </Text>
+                </View>
+              </View>
+              <IconSymbol name="chevron.right" size={12} color={C.muted} />
+            </Pressable>
+          ))}
+        </View>
+      </View>
+
+      {/* 4. Team / Org Commitments */}
+      <View>
+        <SectionHeader title="Team & Org Commitments" count={TEAM_COMMITMENTS.length} C={C} />
+        <View style={{ paddingHorizontal: 16, gap: 8 }}>
+          {TEAM_COMMITMENTS.map((item) => (
+            <View
+              key={item.id}
+              style={[planStyles.commitRow, { backgroundColor: C.bg, borderColor: C.separator }]}
+            >
+              <View style={planStyles.commitLeft}>
+                <Text style={[planStyles.commitTitle, { color: C.label }]}>{item.title}</Text>
+                <Text style={[planStyles.commitTime, { color: C.muted }]}>{item.time}</Text>
+              </View>
+              <View style={planStyles.commitRight}>
+                <View style={[planStyles.orgPill, { backgroundColor: C.surfacePressed }]}>
+                  <Text style={[planStyles.orgText, { color: C.secondary }]}>{item.org}</Text>
+                </View>
+                <View style={planStyles.attendeeRow}>
+                  <IconSymbol name="person.fill" size={11} color={C.muted} />
+                  <Text style={[planStyles.attendeeCount, { color: C.muted }]}>{item.attending}</Text>
+                </View>
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* 5. Conflict Detection */}
+      <View>
+        <SectionHeader title="Conflicts" count={CONFLICTS.length} C={C} />
+        <View style={{ paddingHorizontal: 16, gap: 8 }}>
+          {CONFLICTS.map((item) => (
+            <View
+              key={item.id}
+              style={[
+                planStyles.conflictCard,
+                {
+                  backgroundColor: 'rgba(249,115,22,0.06)',
+                  borderColor: '#F97316',
+                },
+              ]}
+            >
+              <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#F97316" />
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text style={[planStyles.conflictTitle, { color: C.label }]}>{item.title}</Text>
+                <Text style={[planStyles.conflictTime, { color: C.muted }]}>{item.time}</Text>
+              </View>
+              <Pressable
+                style={[planStyles.resolveBtn, { backgroundColor: C.surfacePressed }]}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              >
+                <Text style={[planStyles.resolveBtnText, { color: C.secondary }]}>Resolve</Text>
+              </Pressable>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* 6. Suggested Blocks */}
+      <View>
+        <SectionHeader title="Suggested Blocks" C={C} />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}
+        >
+          {SUGGESTED_BLOCKS.map((item) => (
+            <View
+              key={item.id}
+              style={[planStyles.suggestCard, { backgroundColor: C.bg, borderColor: C.separator }]}
+            >
+              <View style={[planStyles.suggestIcon, { backgroundColor: C.surfacePressed }]}>
+                <IconSymbol name="sparkles" size={14} color={C.secondary} />
+              </View>
+              <Text style={[planStyles.suggestTitle, { color: C.label }]}>{item.title}</Text>
+              <Text style={[planStyles.suggestSlot, { color: '#6B7280' }]}>{item.suggestion}</Text>
+              <Text style={[planStyles.suggestReason, { color: C.muted }]}>{item.reason}</Text>
+              <Pressable
+                style={[planStyles.addBtn, { backgroundColor: C.label }]}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              >
+                <Text style={[planStyles.addBtnText, { color: C.bg }]}>Add</Text>
+              </Pressable>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* 7. Templates */}
+      <View>
+        <SectionHeader title="Templates" C={C} />
+        <View style={planStyles.templateGrid}>
+          {PLAN_TEMPLATES.map((t) => (
+            <Pressable
+              key={t.id}
+              style={[planStyles.templateBtn, { backgroundColor: C.bg, borderColor: C.separator }]}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <IconSymbol name={t.icon} size={18} color={C.secondary} />
+              <Text style={[planStyles.templateLabel, { color: C.label }]}>{t.label}</Text>
+            </Pressable>
+          ))}
+        </View>
+      </View>
+    </ScrollView>
+  );
+}
+
+const planStyles = StyleSheet.create({
+  // Week calendar
+  dayCell: {
+    width: 56,
+    paddingVertical: 10,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    alignItems: 'center',
+    gap: 4,
+    position: 'relative',
+  },
+  dayCellDay: { fontSize: 10, fontWeight: '700', letterSpacing: 0.6 },
+  dayCellDate: { fontSize: 18, fontWeight: '700' },
+  densityRow: { flexDirection: 'row', gap: 2 },
+  densityDot: { width: 5, height: 5, borderRadius: 2.5 },
+  conflictDot: {
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+
+  // Unscheduled Queue cards
+  queueCard: {
+    width: 160,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+    flexDirection: 'row',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  priorityBar2: { width: 3 },
+  queueCardInner: { flex: 1, padding: 12, gap: 8 },
+  queueTitle: { fontSize: 13, fontWeight: '600' },
+  scheduleBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    marginTop: 2,
+    alignSelf: 'flex-start',
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 8,
   },
-  eventLocation: {
-    fontSize: 13,
-    color: C.secondary,
-  },
-  sourceIcon: {
-    marginLeft: 2,
-  },
-  allDayBadge: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: C.secondary,
-    marginTop: 2,
-  },
-  textPast: {
-    color: C.muted,
-  },
+  scheduleBtnText: { fontSize: 11, fontWeight: '600' },
 
-  // Separators
-  sectionSeparator: {
-    height: 0,
-  },
-
-  // Now-line
-  nowLineRow: {
+  // Priority Queue rows
+  priorityRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-  },
-  nowDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: C.label,
-  },
-  nowLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: C.label,
-    marginHorizontal: 6,
-  },
-  nowLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: C.secondary,
-  },
-
-  // Activity rows
-  activityRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingLeft: 16,
-    paddingRight: 12,
-    backgroundColor: C.bg,
-  },
-  activityRowPressed: {
-    backgroundColor: 'rgba(255,255,255,0.04)',
-  },
-  activityRowUnread: {},
-  activityIconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: C.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  activityContent: {
-    flex: 1,
-    marginLeft: 12,
-    marginRight: 8,
-  },
-  activityTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: C.label,
-  },
-  activityTitleRead: {
-    color: C.muted,
-  },
-  activityDescription: {
-    fontSize: 13,
-    color: C.secondary,
-    marginTop: 1,
-  },
-  activityTimestamp: {
-    fontSize: 11,
-    color: C.muted,
-  },
-  unreadDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: C.secondary,
-    marginLeft: 6,
-  },
-  activitySeparator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: C.separator,
-    marginLeft: 64,
-  },
-
-  // Empty state
-  emptyState: { alignItems: 'center', paddingTop: 120, gap: 12 },
-  emptyText: { fontSize: 16, color: C.muted },
-
-  // FAB
-  fab: {
-    position: 'absolute',
-    right: 20,
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: C.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
+    gap: 10,
+    borderRadius: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 3,
+    elevation: 1,
   },
+  priorityBar3: { width: 3, alignSelf: 'stretch' },
+  priorityInfo: { flex: 1, paddingVertical: 12, gap: 4 },
+  priorityTitle: { fontSize: 14, fontWeight: '600' },
+  priorityMeta: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  dueText: { fontSize: 11, fontWeight: '500' },
+
+  // Team commitments
+  commitRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: 12,
+    gap: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  commitLeft: { flex: 1, gap: 3 },
+  commitTitle: { fontSize: 14, fontWeight: '600' },
+  commitTime: { fontSize: 12 },
+  commitRight: { alignItems: 'flex-end', gap: 4 },
+  orgPill: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6 },
+  orgText: { fontSize: 10, fontWeight: '600' },
+  attendeeRow: { flexDirection: 'row', alignItems: 'center', gap: 3 },
+  attendeeCount: { fontSize: 11 },
+
+  // Conflicts
+  conflictCard: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 12,
+  },
+  conflictTitle: { fontSize: 13, fontWeight: '600' },
+  conflictTime: { fontSize: 11 },
+  resolveBtn: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8 },
+  resolveBtnText: { fontSize: 12, fontWeight: '600' },
+
+  // Suggested Blocks
+  suggestCard: {
+    width: 180,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: 14,
+    gap: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  suggestIcon: { width: 32, height: 32, borderRadius: 9, alignItems: 'center', justifyContent: 'center' },
+  suggestTitle: { fontSize: 14, fontWeight: '600' },
+  suggestSlot: { fontSize: 12, fontWeight: '500' },
+  suggestReason: { fontSize: 11 },
+  addBtn: { alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8 },
+  addBtnText: { fontSize: 12, fontWeight: '700' },
+
+  // Templates
+  templateGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    paddingHorizontal: 16,
+  },
+  templateBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  templateLabel: { fontSize: 13, fontWeight: '600' },
+
+  // Shared
+  typePill: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5, alignSelf: 'flex-start' },
+  typeText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.3 },
+  priorityBar: { width: 3, height: 36, borderRadius: 2 },
+});
+
+// ─── Feed View ────────────────────────────────────────────────────────────────
+
+const WHAT_CHANGED = [
+  { id: 'wc1', event: 'Bus Booking — Away Game', change: 'cancelled', detail: 'Vendor cancelled. Needs rebooking.', time: '2h ago' },
+  { id: 'wc2', event: 'Staff Meeting', change: 'moved', detail: 'Moved Mon → Tue 4 PM', time: '3h ago' },
+  { id: 'wc3', event: 'Compliance Form Deadline', change: 'urgent', detail: 'Due date confirmed for Mar 15', time: '5h ago' },
+];
+
+const COMPLETED_ITEMS = [
+  { id: 'ci1', title: 'Morning Practice', time: 'Today 9:00 AM', type: 'Practice' },
+  { id: 'ci2', title: 'Recruiting Call — T. Williams', time: 'Today 11:00 AM', type: 'Call' },
+  { id: 'ci3', title: 'Equipment Order Submitted', time: 'Today 2:00 PM', type: 'Task' },
+  { id: 'ci4', title: 'Film Review — East Regional', time: 'Yesterday', type: 'Prep' },
+];
+
+const SLIPPED_ITEMS = [
+  { id: 'sl1', title: 'Update Transfer Portal List', originalDue: 'Yesterday', newStatus: 'Unscheduled', priority: 'high' as AgendaPriority },
+  { id: 'sl2', title: 'Booster Club Report', originalDue: 'Last Wed', newStatus: 'Deferred to next week', priority: 'normal' as AgendaPriority },
+  { id: 'sl3', title: 'Video Content — Highlights Reel', originalDue: 'Mar 10', newStatus: 'No time slot', priority: 'normal' as AgendaPriority },
+];
+
+const ORG_ACTIVITY = [
+  { id: 'oa1', person: 'A. Thompson', action: 'added Practice to Tue 10 AM', time: '1h ago' },
+  { id: 'oa2', person: 'M. Davis', action: 'rescheduled Film Session to Wed', time: '2h ago' },
+  { id: 'oa3', person: 'Admin', action: 'posted Compliance reminder', time: '4h ago' },
+  { id: 'oa4', person: 'R. Johnson', action: 'marked Scouting Report complete', time: '6h ago' },
+];
+
+const APPROVALS_NEEDED = [
+  { id: 'an1', title: 'Bus Booking — Away Game', requestedBy: 'Travel Dept', due: 'Today', action: 'Approve' },
+  { id: 'an2', title: 'Roster Change — #22 Redshirt', requestedBy: 'A. Thompson', due: 'Tomorrow', action: 'Review' },
+  { id: 'an3', title: 'Equipment Purchase — $3,200', requestedBy: 'Equipment Mgr', due: 'Mar 18', action: 'Approve' },
+];
+
+const FOLLOW_UPS = [
+  { id: 'fu1', title: 'D. Carter — Scholarship Discussion', type: 'Call', flagged: '2d ago', urgent: true },
+  { id: 'fu2', title: 'I. Brooks — Campus Visit Feedback', type: 'Message', flagged: 'Yesterday', urgent: false },
+  { id: 'fu3', title: 'Booster Club — Spring Donation Ask', type: 'Email', flagged: '3d ago', urgent: false },
+];
+
+type FeedChangeType = 'cancelled' | 'moved' | 'urgent';
+const FEED_CHANGE_COLOR: Record<FeedChangeType, string> = {
+  cancelled: '#EF4444',
+  moved:     '#F97316',
+  urgent:    '#EAB308',
+};
+
+function FeedView({ C }: { C: ComponentColors }) {
+  return (
+    <ScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{ paddingTop: 16, paddingBottom: 120, gap: 28 }}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* 1. What Changed */}
+      <View>
+        <SectionHeader title="What Changed" count={WHAT_CHANGED.length} C={C} />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}
+        >
+          {WHAT_CHANGED.map((item) => {
+            const color = FEED_CHANGE_COLOR[item.change as FeedChangeType] ?? '#6B7280';
+            return (
+              <View
+                key={item.id}
+                style={[feedStyles.changeCard, { backgroundColor: C.bg, borderColor: C.separator, borderLeftColor: color }]}
+              >
+                <Text style={[feedStyles.changeType, { color }]}>{item.change.toUpperCase()}</Text>
+                <Text style={[feedStyles.changeEvent, { color: C.label }]} numberOfLines={1}>{item.event}</Text>
+                <Text style={[feedStyles.changeDetail, { color: C.secondary }]} numberOfLines={2}>{item.detail}</Text>
+                <Text style={[feedStyles.changeTime, { color: C.muted }]}>{item.time}</Text>
+              </View>
+            );
+          })}
+        </ScrollView>
+      </View>
+
+      {/* 2. Completed Items */}
+      <View>
+        <SectionHeader title="Completed Today" count={COMPLETED_ITEMS.length} C={C} />
+        <View style={{ paddingHorizontal: 16, gap: 0 }}>
+          {COMPLETED_ITEMS.map((item, i) => (
+            <View
+              key={item.id}
+              style={[
+                feedStyles.completedRow,
+                { borderBottomColor: C.separator },
+                i === COMPLETED_ITEMS.length - 1 && { borderBottomWidth: 0 },
+              ]}
+            >
+              <View style={[feedStyles.checkCircle, { borderColor: '#22C55E', backgroundColor: 'rgba(34,197,94,0.08)' }]}>
+                <IconSymbol name="checkmark" size={11} color="#22C55E" />
+              </View>
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text style={[feedStyles.completedTitle, { color: C.label }]}>{item.title}</Text>
+                <Text style={[feedStyles.completedMeta, { color: C.muted }]}>{item.time}</Text>
+              </View>
+              <View style={[feedStyles.typePill, { backgroundColor: C.surfacePressed }]}>
+                <Text style={[feedStyles.typeText, { color: C.secondary }]}>{item.type}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* 3. Slipped / Deferred */}
+      <View>
+        <SectionHeader title="Slipped / Deferred" count={SLIPPED_ITEMS.length} C={C} />
+        <View style={{ paddingHorizontal: 16, gap: 8 }}>
+          {SLIPPED_ITEMS.map((item) => (
+            <View
+              key={item.id}
+              style={[feedStyles.slippedCard, { backgroundColor: C.bg, borderColor: C.separator }]}
+            >
+              <View style={[feedStyles.slippedBar, { backgroundColor: PRIORITY_COLOR[item.priority] }]} />
+              <View style={{ flex: 1, gap: 3 }}>
+                <Text style={[feedStyles.slippedTitle, { color: C.label }]}>{item.title}</Text>
+                <Text style={[feedStyles.slippedDue, { color: C.muted }]}>Was due: {item.originalDue}</Text>
+                <Text style={[feedStyles.slippedStatus, { color: '#F97316' }]}>{item.newStatus}</Text>
+              </View>
+              <Pressable
+                style={[feedStyles.rescheduleBtn, { backgroundColor: C.surfacePressed }]}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              >
+                <Text style={[feedStyles.rescheduleBtnText, { color: C.secondary }]}>Reschedule</Text>
+              </Pressable>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* 4. Organization Activity */}
+      <View>
+        <SectionHeader title="Organization Activity" C={C} />
+        <View style={{ paddingHorizontal: 16, gap: 0 }}>
+          {ORG_ACTIVITY.map((item, i) => (
+            <View
+              key={item.id}
+              style={[
+                feedStyles.orgRow,
+                { borderBottomColor: C.separator },
+                i === ORG_ACTIVITY.length - 1 && { borderBottomWidth: 0 },
+              ]}
+            >
+              <View style={[feedStyles.avatarCircle, { backgroundColor: C.surfacePressed }]}>
+                <IconSymbol name="person.fill" size={13} color={C.muted} />
+              </View>
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text style={[feedStyles.orgAction, { color: C.label }]}>
+                  <Text style={{ fontWeight: '700' }}>{item.person}</Text>
+                  {' '}{item.action}
+                </Text>
+                <Text style={[feedStyles.orgTime, { color: C.muted }]}>{item.time}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* 5. Approvals Needed */}
+      <View>
+        <SectionHeader title="Approvals Needed" count={APPROVALS_NEEDED.length} C={C} />
+        <View style={{ paddingHorizontal: 16, gap: 8 }}>
+          {APPROVALS_NEEDED.map((item) => (
+            <View
+              key={item.id}
+              style={[feedStyles.approvalCard, { backgroundColor: C.bg, borderColor: C.separator }]}
+            >
+              <View style={{ flex: 1, gap: 3 }}>
+                <Text style={[feedStyles.approvalTitle, { color: C.label }]}>{item.title}</Text>
+                <Text style={[feedStyles.approvalFrom, { color: C.muted }]}>
+                  From {item.requestedBy} · Due {item.due}
+                </Text>
+              </View>
+              <Pressable
+                style={[feedStyles.approveBtn, { backgroundColor: C.label }]}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+              >
+                <Text style={[feedStyles.approveBtnText, { color: C.bg }]}>{item.action}</Text>
+              </Pressable>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* 6. Follow-Up Required */}
+      <View>
+        <SectionHeader title="Follow-Up Required" count={FOLLOW_UPS.length} C={C} />
+        <View style={{ paddingHorizontal: 16, gap: 0 }}>
+          {FOLLOW_UPS.map((item, i) => (
+            <View
+              key={item.id}
+              style={[
+                feedStyles.followRow,
+                { borderBottomColor: C.separator },
+                i === FOLLOW_UPS.length - 1 && { borderBottomWidth: 0 },
+              ]}
+            >
+              {item.urgent && (
+                <View style={[feedStyles.urgentDot, { backgroundColor: '#EF4444' }]} />
+              )}
+              <View style={[feedStyles.followIcon, { backgroundColor: C.surfacePressed }]}>
+                <IconSymbol name="arrow.turn.up.right" size={13} color={C.secondary} />
+              </View>
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text style={[feedStyles.followTitle, { color: C.label }]}>{item.title}</Text>
+                <Text style={[feedStyles.followMeta, { color: C.muted }]}>
+                  {item.type} · Flagged {item.flagged}
+                </Text>
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* 7. Review Summary (Nexus card) */}
+      <View style={{ paddingHorizontal: 16 }}>
+        <SectionHeader title="Week Review" C={C} />
+        <View
+          style={[
+            feedStyles.nexusCard,
+            { backgroundColor: C.bg, borderColor: C.separator },
+          ]}
+        >
+          <View style={feedStyles.nexusHeader}>
+            <View style={[feedStyles.nexusIcon, { backgroundColor: C.surfacePressed }]}>
+              <IconSymbol name="sparkles" size={16} color={C.secondary} />
+            </View>
+            <Text style={[feedStyles.nexusTitle, { color: C.label }]}>Nexus Weekly Summary</Text>
+          </View>
+          <Text style={[feedStyles.nexusBody, { color: C.secondary }]}>
+            This week you have{' '}
+            <Text style={{ fontWeight: '700', color: C.label }}>17 commitments</Text> across 4 orgs.
+            {' '}3 items need attention: Compliance Form (due tomorrow), Roster Change pending approval,
+            and 2 scheduling conflicts on Monday.{' '}
+            <Text style={{ fontWeight: '700', color: '#22C55E' }}>4 tasks completed</Text> today.
+          </Text>
+          <View style={feedStyles.nexusStats}>
+            {[
+              { label: 'Completed', value: '4', color: '#22C55E' },
+              { label: 'Pending', value: '3', color: '#F97316' },
+              { label: 'Slipped', value: '3', color: '#EF4444' },
+            ].map((s) => (
+              <View key={s.label} style={[feedStyles.nexusStat, { backgroundColor: C.surfacePressed }]}>
+                <Text style={[feedStyles.nexusStatValue, { color: s.color }]}>{s.value}</Text>
+                <Text style={[feedStyles.nexusStatLabel, { color: C.muted }]}>{s.label}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      </View>
+    </ScrollView>
+  );
+}
+
+const feedStyles = StyleSheet.create({
+  // What Changed cards
+  changeCard: {
+    width: 180,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderLeftWidth: 3,
+    padding: 14,
+    gap: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  changeType: { fontSize: 10, fontWeight: '800', letterSpacing: 0.8 },
+  changeEvent: { fontSize: 14, fontWeight: '600' },
+  changeDetail: { fontSize: 12 },
+  changeTime: { fontSize: 11 },
+
+  // Completed rows
+  completedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  checkCircle: { width: 24, height: 24, borderRadius: 12, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
+  completedTitle: { fontSize: 14, fontWeight: '500' },
+  completedMeta: { fontSize: 11 },
+
+  // Slipped cards
+  slippedCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+    gap: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  slippedBar: { width: 3, alignSelf: 'stretch' },
+  slippedTitle: { fontSize: 14, fontWeight: '600' },
+  slippedDue: { fontSize: 11 },
+  slippedStatus: { fontSize: 11, fontWeight: '600' },
+  rescheduleBtn: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8, marginRight: 12 },
+  rescheduleBtnText: { fontSize: 11, fontWeight: '600' },
+
+  // Org activity rows
+  orgRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  avatarCircle: { width: 30, height: 30, borderRadius: 15, alignItems: 'center', justifyContent: 'center' },
+  orgAction: { fontSize: 13, lineHeight: 18 },
+  orgTime: { fontSize: 11 },
+
+  // Approval cards
+  approvalCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: 12,
+    gap: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  approvalTitle: { fontSize: 14, fontWeight: '600' },
+  approvalFrom: { fontSize: 11 },
+  approveBtn: { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 8 },
+  approveBtnText: { fontSize: 12, fontWeight: '700' },
+
+  // Follow-up rows
+  followRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    position: 'relative',
+  },
+  urgentDot: {
+    position: 'absolute',
+    left: -8,
+    top: '50%',
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  followIcon: { width: 30, height: 30, borderRadius: 9, alignItems: 'center', justifyContent: 'center' },
+  followTitle: { fontSize: 14, fontWeight: '500' },
+  followMeta: { fontSize: 11 },
+
+  // Nexus card
+  nexusCard: {
+    borderRadius: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: 16,
+    gap: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  nexusHeader: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  nexusIcon: { width: 32, height: 32, borderRadius: 9, alignItems: 'center', justifyContent: 'center' },
+  nexusTitle: { fontSize: 15, fontWeight: '700' },
+  nexusBody: { fontSize: 14, lineHeight: 21 },
+  nexusStats: { flexDirection: 'row', gap: 8 },
+  nexusStat: { flex: 1, borderRadius: 10, paddingVertical: 8, alignItems: 'center', gap: 2 },
+  nexusStatValue: { fontSize: 20, fontWeight: '800' },
+  nexusStatLabel: { fontSize: 10, fontWeight: '600', letterSpacing: 0.4 },
+
+  // Shared
+  typePill: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5, alignSelf: 'flex-start' },
+  typeText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.3 },
+});
+
+// ─── Screen ───────────────────────────────────────────────────────────────────
+
+export default function AgendaScreen() {
+  const C = useColors();
+  const insets = useSafeAreaInsets();
+  const { width: screenWidth } = useWindowDimensions();
+
+  const [activeView, setActiveView] = useState<AgendaView>('Now');
+  const panelWidth = screenWidth * 0.78;
+  const panelTranslateX = useRef(new Animated.Value(0)).current;
+  const [panelOpen, setPanelOpen] = useState(false);
+
+  const openPanel = useCallback(() => {
+    setPanelOpen(true);
+    Animated.spring(panelTranslateX, {
+      toValue: panelWidth,
+      tension: 65,
+      friction: 11,
+      useNativeDriver: true,
+    }).start();
+  }, [panelTranslateX, panelWidth]);
+
+  const closePanel = useCallback(() => {
+    Animated.timing(panelTranslateX, {
+      toValue: 0,
+      duration: 220,
+      useNativeDriver: true,
+    }).start(() => setPanelOpen(false));
+  }, [panelTranslateX]);
+
+  // Swipe right → open panel
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_e, gs) =>
+          !panelOpen && gs.dx > 20 && Math.abs(gs.dx) > Math.abs(gs.dy) * 1.5,
+        onPanResponderRelease: (_e, gs) => {
+          if (gs.dx > 60) openPanel();
+        },
+      }),
+    [panelOpen, openPanel],
+  );
+
+  return (
+    <View style={[styles.root, { backgroundColor: C.bg }]}>
+      {/* Main content — shifts right when panel opens */}
+      <Animated.View
+        style={[styles.content, { transform: [{ translateX: panelTranslateX }] }]}
+        {...panResponder.panHandlers}
+      >
+        {/* View switcher */}
+        <View style={[styles.switcherWrap, { paddingTop: insets.top + 12 }]}>
+          <ViewSwitcher active={activeView} onChange={setActiveView} C={C} />
+        </View>
+
+        {/* Content */}
+        {activeView === 'Now' && <NowView C={C} />}
+        {activeView === 'Plan' && <PlanView C={C} />}
+        {activeView === 'Feed' && <FeedView C={C} />}
+      </Animated.View>
+
+      {/* Tap-to-dismiss backdrop */}
+      {panelOpen && (
+        <Pressable style={StyleSheet.absoluteFill} onPress={closePanel} />
+      )}
+
+      {/* Side panel */}
+      <AgendaSidePanel
+        translateX={panelTranslateX}
+        onOpen={openPanel}
+        onClose={closePanel}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+  content: { flex: 1 },
+  switcherWrap: { paddingBottom: 12 },
 });
