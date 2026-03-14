@@ -201,6 +201,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   cell: {
     alignItems: 'center',
@@ -225,6 +226,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   tileImage: {
     width: 72,
     height: 72,
+    resizeMode: 'contain',
   },
   badge: {
     position: 'absolute',

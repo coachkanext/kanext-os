@@ -195,6 +195,7 @@ const makeStyles = (C: ComponentColors) =>
     },
     row: {
       flexDirection: 'row',
+      alignItems: 'center',
     },
     cell: {
       alignItems: 'center',
@@ -215,6 +216,7 @@ const makeStyles = (C: ComponentColors) =>
     tileImage: {
       width: 72,
       height: 72,
+      resizeMode: 'contain',
     },
     labelPill: {
       marginTop: 10,
