@@ -30,6 +30,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { ThemedView } from '@/components/themed-view';
@@ -137,6 +138,7 @@ function NexusScreenContent() {
   const { state: appState } = useAppContext();
   const mode = useMode();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
 
@@ -295,8 +297,8 @@ function NexusScreenContent() {
 
   const handleAvatarPress = useCallback(() => {
     setSidebarOpen(false);
-    setAvatarDrawerVisible(true);
-  }, []);
+    router.navigate('/settings' as any);
+  }, [router]);
 
   // ── Top bar derived ──
   const topBarView: 'home' | 'chat' | 'list' =
@@ -638,19 +640,6 @@ export default function NexusScreen() {
   const styles = useMemo(() => makeStyles(C), [C]);
 
   if (!authState.isAuthenticated) return <NexusLockedState />;
-
-  if (mode === 'church' || mode === 'education' || mode === 'competition') {
-    return (
-      <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ fontSize: 32, fontWeight: '800', lineHeight: 40, color: C.label }}>
-          Coming Soon
-        </Text>
-        <Text style={{ fontSize: 15, color: C.muted, textAlign: 'center', marginTop: 8 }}>
-          This mode is under development.{'\n'}Stay tuned for updates.
-        </Text>
-      </ThemedView>
-    );
-  }
 
   return (
     <NexusProvider>

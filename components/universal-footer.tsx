@@ -7,7 +7,7 @@
  * 49px height + safe area bottom padding
  *
  * Icons (all use existing image assets):
- *   Home (1):         footer-home.png    — tap → navigate home
+ *   Home (1):         footer-home.png    — tap → navigate home, swipe-up → org drawer, hold → settings
  *   Phone (2):        footer-phone.png   — tap → push phone
  *   Nexus (center):   footer-nexus.png   — tap, double-tap (multitasking), hold (search), swipe-up (split screen)
  *   Messages (4):     footer-messages.png — tap → push messages
@@ -26,6 +26,7 @@ import { openSplitNexus, closeSplitNexus, isSplitNexusOpen } from '@/utils/globa
 import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils/global-multitasking';
 import { startGlobalVoice } from '@/utils/global-voice';
 import { openOrgDrawer } from '@/utils/global-org-drawer';
+import { openModeSwitcher } from '@/utils/global-mode-switcher';
 import { subscribeFooterVisibility, resetFooter } from '@/utils/global-footer-hide';
 import { popInnerToHome } from '@/utils/global-inner-nav';
 const FOOTER_HEIGHT = 72;
@@ -128,8 +129,8 @@ export function UniversalFooter() {
     [],
   );
 
-  // ── Profile swipe-up → org drawer ──
-  const profilePanResponder = useMemo(
+  // ── Home swipe-up → org drawer ──
+  const homePanResponder = useMemo(
     () =>
       PanResponder.create({
         onStartShouldSetPanResponder: () => false,
@@ -179,16 +180,6 @@ export function UniversalFooter() {
     router.navigate('/(tabs)/(main)/phone' as any);
     if (isOnNexus()) router.dismissAll();
   };
-  const handleProfilePress = () => {
-    if (pIncludes('profile')) return;
-    preNav();
-    router.navigate('/(tabs)/(main)/profile' as any);
-    if (isOnNexus()) router.dismissAll();
-  };
-  const handleProfileLongPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    openOrgDrawer();
-  };
 
   return (
     <Animated.View style={[styles.wrapper, { transform: [{ translateY }] }]}>
@@ -197,17 +188,24 @@ export function UniversalFooter() {
 
       {/* 5-icon row — tap only, no footer-specific swipe gestures */}
       <View style={[styles.footer, { backgroundColor: C.footer }]}>
-        {/* 1. Home */}
-        <Pressable
-          style={styles.iconButton}
-          onPress={handleHomePress}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Image
-            source={require('@/assets/images/footer-home.png')}
-            style={styles.iconImage}
-          />
-        </Pressable>
+        {/* 1. Home — tap → home, swipe-up → org drawer, hold → settings */}
+        <View style={styles.iconButton} {...homePanResponder.panHandlers}>
+          <Pressable
+            style={styles.pressableInner}
+            onPress={handleHomePress}
+            onLongPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              router.navigate('/settings' as any);
+            }}
+            delayLongPress={400}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Image
+              source={require('@/assets/images/footer-home.png')}
+              style={styles.iconImage}
+            />
+          </Pressable>
+        </View>
 
         {/* 2. Phone */}
         <Pressable
@@ -249,21 +247,15 @@ export function UniversalFooter() {
           />
         </Pressable>
 
-        {/* 5. Profile — tap → profile page, swipe-up → org drawer */}
-        <View style={styles.iconButton} {...profilePanResponder.panHandlers}>
-          <Pressable
-            style={styles.pressableInner}
-            onPress={handleProfilePress}
-            onLongPress={handleProfileLongPress}
-            delayLongPress={400}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <Image
-              source={require('@/assets/images/footer-profile.png')}
-              style={styles.iconImage}
-            />
-          </Pressable>
-        </View>
+        {/* 5. Pulse — coming soon placeholder */}
+        <Pressable
+          style={styles.iconButton}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Text style={styles.pulseEmoji}>⚡</Text>
+          <Text style={styles.comingSoonLabel}>Coming Soon</Text>
+        </Pressable>
       </View>
 
       {/* Safe area fill — extends behind home indicator */}
@@ -312,4 +304,17 @@ const styles = StyleSheet.create({
     height: 50,
     resizeMode: 'contain',
   } as any,
+  pulseEmoji: {
+    fontSize: 28,
+    textAlign: 'center',
+    opacity: 0.35,
+  },
+  comingSoonLabel: {
+    fontSize: 8,
+    fontWeight: '600',
+    color: 'rgba(255,255,255,0.3)',
+    textAlign: 'center',
+    letterSpacing: 0.3,
+    marginTop: 2,
+  },
 });
