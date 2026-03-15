@@ -165,6 +165,11 @@ export function UniversalFooter() {
     // Dead tap only when already on the home index
     if (p === '/' || p === '/(tabs)' || p === '/(tabs)/(main)' || p === '/(main)') return;
     preNav();
+    // From settings (or any root-level modal), navigate directly to home tab
+    if (p.startsWith('/settings') || p === '/wallet' || p === '/nexus') {
+      router.navigate('/(tabs)/(main)' as any);
+      return;
+    }
     popInnerToHome();
     if (isOnNexus()) router.dismissAll();
   };

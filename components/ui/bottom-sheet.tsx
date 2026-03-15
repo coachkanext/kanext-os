@@ -37,6 +37,8 @@ export interface BottomSheetProps {
   mode?: 'standard' | 'full';
   /** Use portal-based BottomSheetModal for deeply nested components */
   useModal?: boolean;
+  /** Custom snap points. Defaults to ['50%', '100%']. */
+  snapPoints?: string[];
 }
 
 const SNAP_POINTS = ['50%', '100%'];
@@ -48,6 +50,7 @@ export function BottomSheet({
   title,
   footer,
   useModal = false,
+  snapPoints: snapPointsProp,
 }: BottomSheetProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
@@ -200,8 +203,17 @@ export function BottomSheet({
   );
 
   const sharedProps = {
-    snapPoints: SNAP_POINTS,
+    snapPoints: snapPointsProp ?? SNAP_POINTS,
     enablePanDownToClose: true,
+    enableDynamicSizing: false,
+    animationConfigs: {
+      damping: 80,
+      stiffness: 400,
+      mass: 0.8,
+      overshootClamping: false,
+      restDisplacementThreshold: 0.01,
+      restSpeedThreshold: 0.01,
+    },
     backdropComponent: renderBackdrop,
     footerComponent: renderFooter,
     handleIndicatorStyle: { backgroundColor: colors.border, width: 36 },

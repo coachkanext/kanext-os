@@ -1,51 +1,94 @@
 /**
  * Org Drawer — bottom sheet for switching orgs and modes.
- * Triggered by swipe-up on Profile footer icon.
+ * Triggered by swipe-up on Home footer icon.
  *
  * Layout (top to bottom):
- *   Drag handle pill (built into @gorhom/bottom-sheet)
- *   4 mode glyphs row: Trophy | Briefcase | Cross | Grad Cap
+ *   Drag handle (cosmetic)
+ *   Mode pills row: All · Sports · Business · Faith · Education · Personal
  *   Search bar
- *   Org list for selected mode filter
+ *   Org list with sub-orgs (indented, visible only when parent is active)
  *
- * Tapping an org:
- *   Same mode → switch org, dismiss, stay on screen
- *   Different mode → switch mode + org, dismiss, go Home
+ * Tap org → dismiss drawer, switch context (mode switches silently if different).
+ * Sub-orgs visible only when parent org is the active org.
  */
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { View, Text, Image, TextInput, Pressable, StyleSheet } from 'react-native';
+import {
+  View, Text, TextInput, Pressable, StyleSheet, ScrollView,
+} from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useAppContext } from '@/context/app-context';
-import { useAuth } from '@/context/auth-context';
 import {
-  getOrgsForModeV2,
-  getMembershipsForOrg,
+  V2_ORGANIZATIONS,
   getOrgById,
   getProgramsForOrg,
   getCurrentSeasonForOrg,
   getMembershipsForOrgProgram,
 } from '@/data/mock-memberships';
-import { popInnerToHome } from '@/utils/global-inner-nav';
 import { registerOrgDrawerHandlers } from '@/utils/global-org-drawer';
 import type { Mode, ActiveContext } from '@/types';
 
-const MODE_GLYPHS: { mode: Mode; image: any }[] = [
-  { mode: 'sports', image: require('@/assets/images/mode-sports.png') },
-  { mode: 'business', image: require('@/assets/images/mode-business.png') },
-  { mode: 'church', image: require('@/assets/images/mode-church.png') },
-  { mode: 'education', image: require('@/assets/images/mode-education.png') },
-  { mode: 'pulse', image: require('@/assets/images/icon-portfolio.png') },
+// ── Filter pill config ───────────────────────────────────────────────────────
+
+type FilterKey = 'all' | Mode;
+
+const FILTER_PILLS: { key: FilterKey; label: string }[] = [
+  { key: 'all',       label: 'All' },
+  { key: 'sports',    label: 'Sports' },
+  { key: 'business',  label: 'Business' },
+  { key: 'church',    label: 'Faith' },
+  { key: 'education', label: 'Education' },
+  { key: 'pulse',     label: 'Personal' },
 ];
+
+// ── Org type → display label ─────────────────────────────────────────────────
+
+const ORG_TYPE_LABEL: Record<string, string> = {
+  college_athletics:      'Athletics',
+  high_school:            'Athletics',
+  conference:             'Association',
+  platform:               'Office',
+  faith:                  'Parish',
+  university:             'Campus',
+  grassroots_basketball:  'Association',
+  personal:               'Personal',
+};
+
+// ── Sub-org data (display only — tap routes to parent's context) ─────────────
+
+type SubOrg = { id: string; name: string; initials: string };
+
+const SUB_ORGS: Record<string, SubOrg[]> = {
+  sports_kx: [
+    { id: 'sports_kx__athletics',  name: 'Athletics',  initials: 'AT' },
+    { id: 'sports_kx__recruiting', name: 'Recruiting', initials: 'RC' },
+  ],
+  edu_kx: [
+    { id: 'edu_kx__admissions', name: 'Admissions', initials: 'AD' },
+  ],
+};
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+/** Two-letter initials from an org name */
+function getInitials(name: string): string {
+  const words = name.trim().split(/\s+/);
+  if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
+  return name.slice(0, 2).toUpperCase();
+}
+
+// ── Component ────────────────────────────────────────────────────────────────
 
 export function OrgDrawer() {
   const [visible, setVisible] = useState(false);
-  const [filterMode, setFilterMode] = useState<Mode>('sports');
+  const [filterKey, setFilterKey] = useState<FilterKey>('all');
   const [search, setSearch] = useState('');
+  const [selectedSubOrgId, setSelectedSubOrgId] = useState<string | null>(null);
+
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
   const { state, switchContext } = useAppContext();
@@ -55,30 +98,38 @@ export function OrgDrawer() {
   useEffect(() => {
     registerOrgDrawerHandlers(
       () => {
-        setFilterMode(currentMode);
+        setFilterKey('all');
         setSearch('');
+        setSelectedSubOrgId(null);
         setVisible(true);
       },
       () => setVisible(false),
     );
-  }, [currentMode]);
+  }, []);
 
-  const orgRows = useMemo(() => {
-    const orgs = getOrgsForModeV2(filterMode);
-    return orgs.map((org) => {
-      const memberships = getMembershipsForOrg(org.org_id);
-      const roleLabel = memberships[0]?.role_titles.join(' \u00B7 ') ?? '';
-      return { org, roleLabel };
-    });
-  }, [filterMode]);
+  // ── Filtered orgs ──────────────────────────────────────────────────────────
 
-  const filteredOrgs = useMemo(() => {
-    if (!search.trim()) return orgRows;
-    const q = search.toLowerCase();
-    return orgRows.filter(({ org }) => org.org_name.toLowerCase().includes(q));
-  }, [orgRows, search]);
+  const displayOrgs = useMemo(() => {
+    // Personal pill → no orgs
+    if (filterKey === 'pulse') return [];
 
-  const handleOrgPress = useCallback((orgId: string, orgMode: Mode) => {
+    let orgs = V2_ORGANIZATIONS.filter(o => o.mode !== 'pulse' && o.mode !== 'competition');
+
+    if (filterKey !== 'all') {
+      orgs = orgs.filter(o => o.mode === filterKey);
+    }
+
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      orgs = orgs.filter(o => o.org_name.toLowerCase().includes(q));
+    }
+
+    return orgs;
+  }, [filterKey, search]);
+
+  // ── Org press ──────────────────────────────────────────────────────────────
+
+  const handleOrgPress = useCallback((orgId: string, orgMode: Mode, subOrgId?: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     const org = getOrgById(orgId);
     if (!org) return;
@@ -100,47 +151,51 @@ export function OrgDrawer() {
       derived_role_badge: membership.role_titles.join(' \u00B7 '),
     };
 
-    if (orgMode !== currentMode) {
-      switchContext(ctx);
-      popInnerToHome();
-    } else {
-      switchContext(ctx);
-    }
+    switchContext(ctx);
+
+    setSelectedSubOrgId(subOrgId ?? null);
     setVisible(false);
   }, [currentMode, switchContext]);
 
-  const handleClose = useCallback(() => {
-    setVisible(false);
-  }, []);
+  const handleClose = useCallback(() => setVisible(false), []);
+
+  // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <BottomSheet visible={visible} onClose={handleClose} useModal>
-      {/* Mode filter glyphs */}
-      <View style={styles.modeRow}>
-        {MODE_GLYPHS.map((m) => {
-          const isActive = m.mode === filterMode;
+    <BottomSheet visible={visible} onClose={handleClose} useModal snapPoints={['50%', '90%']}>
+      {/* Mode pills */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.pillsScroll}
+        contentContainerStyle={styles.pillsContent}
+      >
+        {FILTER_PILLS.map(p => {
+          const active = p.key === filterKey;
           return (
             <Pressable
-              key={m.mode}
-              style={[styles.modeGlyph, !isActive && styles.modeGlyphInactive]}
+              key={p.key}
+              style={[styles.pill, active && styles.pillActive]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setFilterMode(m.mode);
+                setFilterKey(p.key);
               }}
             >
-              <Image source={m.image} style={styles.modeGlyphImage} />
+              <Text style={[styles.pillText, active && styles.pillTextActive]}>
+                {p.label}
+              </Text>
             </Pressable>
           );
         })}
-      </View>
+      </ScrollView>
 
       {/* Search bar */}
-      <View style={[styles.searchWrap, { backgroundColor: C.surface }]}>
-        <IconSymbol name="magnifyingglass" size={16} color={C.textSecondary} />
+      <View style={styles.searchWrap}>
+        <IconSymbol name="magnifyingglass" size={16} color="rgba(0,0,0,0.30)" />
         <TextInput
-          style={[styles.searchInput, { color: C.text }]}
-          placeholder="Search orgs..."
-          placeholderTextColor={C.textSecondary + '80'}
+          style={styles.searchInput}
+          placeholder="Search organizations..."
+          placeholderTextColor="rgba(0,0,0,0.30)"
           value={search}
           onChangeText={setSearch}
           autoCapitalize="none"
@@ -148,116 +203,193 @@ export function OrgDrawer() {
         />
       </View>
 
-      {/* Org list */}
-      {filteredOrgs.map(({ org, roleLabel }) => {
-        const isActive = org.org_id === activeOrgId && filterMode === currentMode;
-        return (
-          <Pressable
-            key={org.org_id}
-            style={({ pressed }) => [
-              styles.orgRow,
-              pressed && { opacity: 0.7 },
-            ]}
-            onPress={() => handleOrgPress(org.org_id, org.mode)}
-          >
-            {/* Org avatar placeholder */}
-            <View style={[styles.orgAvatar, { backgroundColor: C.surface }]}>
-              <Text style={styles.orgInitial}>
-                {org.org_name.charAt(0).toUpperCase()}
-              </Text>
-            </View>
-            <View style={styles.orgInfo}>
-              <Text style={[styles.orgName, { color: C.text }]} numberOfLines={1}>
-                {org.org_name}
-              </Text>
-              {roleLabel ? (
-                <Text style={[styles.orgRole, { color: C.textSecondary }]} numberOfLines={1}>
-                  {roleLabel}
-                </Text>
-              ) : null}
-            </View>
-            {isActive && (
-              <IconSymbol name="checkmark" size={18} color={C.text} />
-            )}
-          </Pressable>
-        );
-      })}
+      {/* Org list — rendered flat; outer BottomSheetScrollView handles all scrolling */}
+      <View style={styles.orgListContent}>
+        {filterKey === 'pulse' && (
+          <Text style={styles.emptyText}>No organizations in Personal mode</Text>
+        )}
 
-      {filteredOrgs.length === 0 && (
-        <Text style={[styles.emptyText, { color: C.textSecondary }]}>
-          No organizations found
-        </Text>
-      )}
+        {filterKey !== 'pulse' && displayOrgs.length === 0 && (
+          <Text style={styles.emptyText}>No organizations found</Text>
+        )}
+
+        {displayOrgs.map(org => {
+          const isActiveOrg = org.org_id === activeOrgId;
+          const orgTypeLabel = ORG_TYPE_LABEL[org.org_type] ?? org.org_type;
+          const orgMode = org.mode as Mode;
+          const subOrgs = isActiveOrg ? (SUB_ORGS[org.org_id] ?? []) : [];
+
+          return (
+            <React.Fragment key={org.org_id}>
+              {/* Parent org row */}
+              <Pressable
+                style={({ pressed }) => [
+                  styles.orgRow,
+                  isActiveOrg && styles.orgRowActive,
+                  pressed && !isActiveOrg && { backgroundColor: 'rgba(0,0,0,0.03)' },
+                ]}
+                onPress={() => handleOrgPress(org.org_id, orgMode)}
+              >
+                <View style={[styles.orgAvatar, isActiveOrg && styles.orgAvatarActive]}>
+                  <Text style={[styles.orgInitials, isActiveOrg && styles.orgInitialsActive]}>
+                    {getInitials(org.org_name)}
+                  </Text>
+                </View>
+                <View style={styles.orgInfo}>
+                  <Text style={[styles.orgName, isActiveOrg && styles.orgNameActive]} numberOfLines={1}>
+                    {org.org_name}
+                  </Text>
+                  <Text style={styles.orgMeta} numberOfLines={1}>{orgTypeLabel}</Text>
+                </View>
+                <RadioCircle active={isActiveOrg && !selectedSubOrgId} />
+              </Pressable>
+
+              {/* Sub-org rows — only when parent is active */}
+              {subOrgs.map(sub => {
+                const isActiveSub = selectedSubOrgId === sub.id;
+                return (
+                  <Pressable
+                    key={sub.id}
+                    style={({ pressed }) => [
+                      styles.orgRow,
+                      styles.subOrgRow,
+                      isActiveSub && styles.orgRowActive,
+                      pressed && !isActiveSub && { backgroundColor: 'rgba(0,0,0,0.03)' },
+                    ]}
+                    onPress={() => handleOrgPress(org.org_id, orgMode, sub.id)}
+                  >
+                    <View style={[styles.subAvatar, isActiveSub && styles.orgAvatarActive]}>
+                      <Text style={[styles.subInitials, isActiveSub && styles.orgInitialsActive]}>
+                        {sub.initials}
+                      </Text>
+                    </View>
+                    <View style={styles.orgInfo}>
+                      <Text style={[styles.orgName, isActiveSub && styles.orgNameActive]} numberOfLines={1}>
+                        {sub.name}
+                      </Text>
+                      <Text style={styles.orgMeta}>Sub-org</Text>
+                    </View>
+                    <RadioCircle active={isActiveSub} />
+                  </Pressable>
+                );
+              })}
+            </React.Fragment>
+          );
+        })}
+      </View>
     </BottomSheet>
   );
 }
 
+// ── Radio circle ─────────────────────────────────────────────────────────────
+
+function RadioCircle({ active }: { active: boolean }) {
+  return (
+    <View style={[radioStyles.circle, active && radioStyles.circleActive]}>
+      {active && (
+        <IconSymbol name="checkmark" size={10} color="#FFFFFF" />
+      )}
+    </View>
+  );
+}
+
+const radioStyles = StyleSheet.create({
+  circle: {
+    width: 20, height: 20, borderRadius: 10,
+    borderWidth: 2, borderColor: 'rgba(0,0,0,0.06)',
+    alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  circleActive: {
+    backgroundColor: '#111111', borderColor: '#111111',
+  },
+});
+
+// ── Styles ───────────────────────────────────────────────────────────────────
+
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  modeRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 12,
-    paddingVertical: 12,
-    marginBottom: 8,
+  // Mode pills
+  pillsScroll: { flexShrink: 0 },
+  pillsContent: {
+    flexDirection: 'row', gap: 8,
+    paddingHorizontal: 20, paddingBottom: 14,
   },
-  modeGlyph: {
-    padding: 8,
+  pill: {
+    paddingVertical: 10, paddingHorizontal: 20,
+    borderRadius: 24, borderWidth: 1.5,
+    borderColor: 'rgba(0,0,0,0.06)',
+    flexShrink: 0,
   },
-  modeGlyphInactive: {
-    opacity: 0.3,
+  pillActive: {
+    backgroundColor: '#111111', borderColor: '#111111',
   },
-  modeGlyphImage: {
-    width: 64,
-    height: 64,
-    resizeMode: 'contain',
-  } as any,
+  pillText: {
+    fontSize: 14, fontWeight: '500', color: 'rgba(0,0,0,0.52)',
+  },
+  pillTextActive: {
+    color: '#FFFFFF', fontWeight: '600',
+  },
+
+  // Search
   searchWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 10,
-    marginBottom: 12,
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    marginHorizontal: 20, marginBottom: 12,
+    backgroundColor: 'rgba(0,0,0,0.03)',
+    borderWidth: 1, borderColor: 'rgba(0,0,0,0.06)',
+    borderRadius: 14, paddingVertical: 11, paddingHorizontal: 14,
   },
   searchInput: {
-    flex: 1,
-    fontSize: 15,
-    padding: 0,
+    flex: 1, fontSize: 14, color: '#111111', padding: 0,
   },
+
+  // Org list
+  orgListContent: { paddingHorizontal: 12, paddingBottom: 28 },
+
+  // Org row
   orgRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 4,
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    paddingVertical: 13, paddingHorizontal: 12,
+    borderRadius: 14, marginBottom: 2,
   },
+  orgRowActive: {
+    backgroundColor: 'rgba(0,0,0,0.04)',
+  },
+
+  // Parent avatar
   orgAvatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 40, height: 40, borderRadius: 12,
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
   },
-  orgInitial: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: C.textSecondary,
+  orgAvatarActive: {
+    backgroundColor: '#111111',
   },
-  orgInfo: {
-    flex: 1,
+  orgInitials: {
+    fontSize: 14, fontWeight: '700', color: 'rgba(0,0,0,0.52)',
   },
-  orgName: {
-    fontSize: 16,
-    fontWeight: '600',
+  orgInitialsActive: { color: '#FFFFFF' },
+
+  // Sub-org
+  subOrgRow: { marginLeft: 20 },
+  subAvatar: {
+    width: 34, height: 34, borderRadius: 10,
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
   },
-  orgRole: {
-    fontSize: 13,
-    marginTop: 2,
+  subInitials: {
+    fontSize: 12, fontWeight: '700', color: 'rgba(0,0,0,0.52)',
   },
+
+  // Org info
+  orgInfo: { flex: 1, minWidth: 0 },
+  orgName: { fontSize: 15, fontWeight: '500', color: '#111111' },
+  orgNameActive: { fontWeight: '600' },
+  orgMeta: { fontSize: 12, color: 'rgba(0,0,0,0.30)', marginTop: 1 },
+
   emptyText: {
-    textAlign: 'center',
-    fontSize: 14,
-    paddingVertical: 24,
+    textAlign: 'center', fontSize: 14,
+    color: 'rgba(0,0,0,0.30)', paddingVertical: 32,
   },
 });
