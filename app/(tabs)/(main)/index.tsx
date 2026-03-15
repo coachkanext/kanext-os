@@ -8,7 +8,8 @@ import { View, Text, PanResponder, StyleSheet } from 'react-native';
 import { useColors } from '@/hooks/use-colors';
 import { VideoHero } from '@/components/home/video-hero';
 import { IconGrid } from '@/components/home/icon-grid';
-import { useAppContext } from '@/context/app-context';
+import { useAppContext, useMode } from '@/context/app-context';
+import { useAuth } from '@/context/auth-context';
 import { getOrgById, getProgramById, getProgramsForOrg } from '@/data/mock-memberships';
 import { enableSlideAnimation } from '@/utils/global-footer-swipe';
 import { pushNexusFromInner } from '@/utils/global-inner-nav';
@@ -16,8 +17,12 @@ import { pushNexusFromInner } from '@/utils/global-inner-nav';
 export default function HomeScreen() {
   const C = useColors();
   const { state } = useAppContext();
+  const mode = useMode();
+  const { state: authState } = useAuth();
+  const displayName = authState.session?.displayName ?? 'My Brand';
 
   const orgLabel = useMemo(() => {
+    if (mode === 'pulse') return displayName;
     const org = getOrgById(state.activeContext.org_id);
     if (!org) return '';
     const programs = getProgramsForOrg(org.org_id);
@@ -25,7 +30,7 @@ export default function HomeScreen() {
     const program = getProgramById(state.activeContext.program_id);
     if (!program) return org.org_name;
     return `${org.org_name} - ${program.program_name}`;
-  }, [state.activeContext.org_id, state.activeContext.program_id]);
+  }, [mode, displayName, state.activeContext.org_id, state.activeContext.program_id]);
 
   const gridPanResponder = useMemo(
     () =>
@@ -59,7 +64,7 @@ export default function HomeScreen() {
       {/* Icon grid fills remaining space */}
       <View style={styles.gridWrapper} {...gridPanResponder.panHandlers}>
         <IconGrid />
-        <View style={{ height: 50 }} />
+        <View style={{ height: 90 }} />
       </View>
     </View>
   );

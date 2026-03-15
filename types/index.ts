@@ -7,7 +7,7 @@
 // MODES & ROLES
 // =============================================================================
 
-export type Mode = 'sports' | 'business' | 'church' | 'education';
+export type Mode = 'sports' | 'business' | 'church' | 'education' | 'pulse';
 
 export type Role =
   // Business

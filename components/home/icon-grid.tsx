@@ -23,7 +23,7 @@ import type { GridIcon } from './home-types';
 
 /** Mode-dependent labels for icons that change per mode (positions 2, 3, 6) */
 const MODE_LABELS: Record<string, Partial<Record<Mode, string>>> = {
-  roster:  { sports: 'Roster', business: 'Departments', church: 'Ministries', education: 'Community', competition: 'Network' },
+  roster:  { sports: 'Roster', business: 'Departments', church: 'Ministries', education: 'Community' },
   recruits:{ sports: 'Prospects', business: 'Leads',   church: 'Outreach',  education: 'Admissions' },
   store:   { sports: 'Booster',   business: 'Impact',  church: 'Give',      education: 'Fund' },
 };
@@ -35,7 +35,6 @@ const MODE_IMAGES: Record<string, Partial<Record<Mode, any>>> = {
     business:    require('@/assets/images/icon-departments-v2.png'),
     church:      require('@/assets/images/icon-ministries-v2.png'),
     education:   require('@/assets/images/icon-community-v2.png'),
-    competition: require('@/assets/images/icon-network-v2.png'),
   },
   recruits: {
     business: require('@/assets/images/icon-leads.png'),
@@ -73,7 +72,7 @@ const PULSE_ROWS: GridIcon[][] = [
   [
     { id: 'agenda',    icon: 'calendar.badge.clock',    label: 'Agenda',     route: '/agenda',                 image: require('@/assets/images/icon-agenda.png') },
     { id: 'portfolio', icon: 'person.text.rectangle',   label: 'Hub',        route: '/(tabs)/(main)/profile',  image: require('@/assets/images/icon-hub.png') },
-    { id: 'community', icon: 'person.3.fill',           label: 'Community',  route: '/community',              image: require('@/assets/images/icon-community.png') },
+    { id: 'community', icon: 'person.3.fill',           label: 'Network',    route: '/community',              image: require('@/assets/images/icon-network-v2.png') },
   ],
   [
     { id: 'deals',   icon: 'dollarsign.circle.fill',   label: 'Deals',    route: '/deals',   image: require('@/assets/images/icon-deals.png') },
@@ -180,7 +179,7 @@ export function IconGrid() {
       title: item.label,
       icon: item.icon,
     });
-    router.navigate(item.route as any);
+    router.push(item.route as any);
   }, [addScreen, router]);
 
   const activeRows = mode === 'pulse' ? PULSE_ROWS : ROWS;

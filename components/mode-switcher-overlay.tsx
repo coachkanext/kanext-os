@@ -23,6 +23,7 @@ const ALL_MODES: { mode: Mode; icon: IconSymbolName; label: string; image?: any 
   { mode: 'sports', icon: 'basketball.fill', label: 'Sports', image: require('@/assets/images/mode-sports.png') },
   { mode: 'church', icon: 'building.columns.fill', label: 'Faith', image: require('@/assets/images/mode-church.png') },
   { mode: 'business', icon: 'briefcase.fill', label: 'Business', image: require('@/assets/images/mode-business.png') },
+  { mode: 'pulse', icon: 'person.text.rectangle.fill', label: 'Pulse', image: require('@/assets/images/icon-portfolio.png') },
 ];
 
 export function ModeSwitcherOverlay() {

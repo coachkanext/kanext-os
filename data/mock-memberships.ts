@@ -34,6 +34,9 @@ export const V2_ORGANIZATIONS: V2Organization[] = [
 
   // ── Competition ──
   { org_id: 'comp_kx', org_name: 'Adidas 3SSB', mode: 'competition', location: 'Rock Hill, SC', org_type: 'grassroots_basketball' },
+
+  // ── Pulse ──
+  { org_id: 'pb_kx', org_name: 'Pulse', mode: 'pulse', location: '', org_type: 'personal' },
 ];
 
 // =============================================================================
@@ -114,6 +117,16 @@ export const V2_MEMBERSHIPS: V2Membership[] = [
     permission_tier: 'Full',
     program_scopes: ['*'],
   },
+
+  // ── Pulse ──
+  {
+    membership_id: 'mem_pb_kx',
+    mode: 'pulse',
+    org_id: 'pb_kx',
+    role_titles: ['Owner'],
+    permission_tier: 'Full',
+    program_scopes: ['*'],
+  },
 ];
 
 // =============================================================================
@@ -144,6 +157,9 @@ export const V2_PROGRAMS: V2Program[] = [
   { program_id: 'edu_kx_stem', org_id: 'edu_kx', mode: 'education', program_name: 'College of Engineering & Architecture', program_type: 'Division', source_tag: 'OFFICIAL', status: 'Active' },
   { program_id: 'edu_kx_arts', org_id: 'edu_kx', mode: 'education', program_name: 'College of Arts & Sciences', program_type: 'Division', source_tag: 'OFFICIAL', status: 'Active' },
   { program_id: 'edu_kx_business', org_id: 'edu_kx', mode: 'education', program_name: 'School of Business', program_type: 'Division', source_tag: 'OFFICIAL', status: 'Active' },
+
+  // ── Pulse ──
+  { program_id: 'pb_kx_main', org_id: 'pb_kx', mode: 'pulse', program_name: 'Pulse', program_type: 'Personal', source_tag: 'OFFICIAL', status: 'Active' },
 
   // ── Adidas 3SSB (3 programs) ──
   { program_id: 'comp_kx_main', org_id: 'comp_kx', mode: 'competition', program_name: '3SSB Championship Circuit', program_type: 'League', source_tag: 'OFFICIAL', status: 'Active' },
@@ -176,6 +192,9 @@ export const V2_SEASONS: V2Season[] = [
 
   // Howard University
   { season_id: 'edu_kx_2025_26', org_id: 'edu_kx', mode: 'education', season_name: '2025\u201326 Academic Year', start_date: '2025-08-18', end_date: '2026-05-10', is_current: true },
+
+  // Pulse
+  { season_id: 'pb_kx_2026', org_id: 'pb_kx', mode: 'pulse', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
 
   // Adidas 3SSB
   { season_id: 'comp_kx_s1_2026', org_id: 'comp_kx', mode: 'competition', season_name: '2025\u201326 Circuit', start_date: '2025-10-01', end_date: '2026-07-31', is_current: true },

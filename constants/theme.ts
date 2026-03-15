@@ -55,10 +55,11 @@ export const ModeColors: Record<Mode, { primary: string; secondary: string; nexu
 // =============================================================================
 
 export const MODE_ACCENT: Record<Mode, string> = {
-  sports:      '#990000',   // Lincoln University Maroon
-  business:    '#1D9BF0',   // KaNeXT Blue
-  church:      '#0081CA',   // ICC Blue
-  education:   '#003A63',   // Howard Navy
+  sports:         '#990000',   // Lincoln University Maroon
+  business:       '#1D9BF0',   // KaNeXT Blue
+  church:         '#0081CA',   // ICC Blue
+  education:      '#003A63',   // Howard Navy
+  pulse: '#7C3AED',   // Personal Brand Violet
 };
 
 // =============================================================================
@@ -66,10 +67,11 @@ export const MODE_ACCENT: Record<Mode, string> = {
 // =============================================================================
 
 export const MODE_ACCENT_SECONDARY: Record<Mode, string> = {
-  sports:      '#DFA414',   // Lincoln University Gold
-  business:    '#1D9BF0',   // KaNeXT Blue (same)
-  church:      '#004C7A',   // ICC Navy
-  education:   '#E51937',   // Howard Crimson
+  sports:         '#DFA414',   // Lincoln University Gold
+  business:       '#1D9BF0',   // KaNeXT Blue (same)
+  church:         '#004C7A',   // ICC Navy
+  education:      '#E51937',   // Howard Crimson
+  pulse: '#A78BFA',   // Personal Brand Lavender
 };
 
 // =============================================================================

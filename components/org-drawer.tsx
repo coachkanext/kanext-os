@@ -39,6 +39,7 @@ const MODE_GLYPHS: { mode: Mode; image: any }[] = [
   { mode: 'business', image: require('@/assets/images/mode-business.png') },
   { mode: 'church', image: require('@/assets/images/mode-church.png') },
   { mode: 'education', image: require('@/assets/images/mode-education.png') },
+  { mode: 'pulse', image: require('@/assets/images/icon-portfolio.png') },
 ];
 
 export function OrgDrawer() {
@@ -47,7 +48,7 @@ export function OrgDrawer() {
   const [search, setSearch] = useState('');
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
-  const { state, switchMode, switchContext } = useAppContext();
+  const { state, switchContext } = useAppContext();
   const currentMode = state.mode;
   const activeOrgId = state.activeContext.org_id;
 
@@ -125,9 +126,6 @@ export function OrgDrawer() {
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 setFilterMode(m.mode);
-                if (m.mode !== currentMode) {
-                  switchMode(m.mode);
-                }
               }}
             >
               <Image source={m.image} style={styles.modeGlyphImage} />

@@ -202,9 +202,9 @@ const makeStyles = (C: ComponentColors) =>
       justifyContent: 'center',
     },
     iconContainer: {
-      width: 72,
-      height: 72,
-      borderRadius: 18,
+      width: 94,
+      height: 94,
+      borderRadius: 22,
       backgroundColor: 'transparent',
       alignItems: 'center',
       justifyContent: 'center',
@@ -214,8 +214,8 @@ const makeStyles = (C: ComponentColors) =>
       elevation: 6,
     },
     tileImage: {
-      width: 72,
-      height: 72,
+      width: 94,
+      height: 94,
       resizeMode: 'contain',
     },
     labelPill: {

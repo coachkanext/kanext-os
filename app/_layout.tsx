@@ -26,6 +26,7 @@ import { SplashScreen } from '@/components/splash-screen';
 import { AuthModal } from '@/components/auth/auth-modal';
 import { SearchOverlay } from '@/components/nexus/search-overlay';
 import { OrgDrawer } from '@/components/org-drawer';
+import { ModeSwitcherOverlay } from '@/components/mode-switcher-overlay';
 import { UniversalFooter } from '@/components/universal-footer';
 import { MultitaskingOverlay } from '@/components/multitasking-overlay';
 import { KXTransition } from '@/components/kx-transition';
@@ -369,6 +370,7 @@ function AppShell() {
       <SearchOverlay visible={searchOverlayVisible} onClose={() => setSearchOverlayVisible(false)} />
       <MultitaskingOverlay />
       <OrgDrawer />
+      <ModeSwitcherOverlay />
       <CallOverlay />
       <IncomingCallOverlay />
       <KXTransition />
