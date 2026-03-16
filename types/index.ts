@@ -891,6 +891,8 @@ export interface V2Organization {
   description?: string;
   org_type?: string;
   view_variant?: string;
+  /** Override auto-generated initials (e.g. 'K' for KaNeXT, 'LU' for LU Men's Basketball) */
+  initials?: string;
 }
 
 export interface V2Membership {

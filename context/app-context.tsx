@@ -53,45 +53,45 @@ interface ExtendedAppState extends AppContextState {
 // =============================================================================
 
 const DEMO_ORGANIZATIONS: Record<Mode, Organization> = {
-  sports: {
-    id: 'sports_kx',
-    name: 'Lincoln University',
-    mode: 'sports',
-    type: 'college_athletics',
-    location: 'Oakland, CA',
-    description: 'Lincoln University — Oaklanders Athletics',
+  personal: {
+    id: 'pb_kx',
+    name: 'Sammy Kalejaiye',
+    mode: 'personal',
+    type: 'personal',
+    location: '',
+    description: 'Personal Brand',
   },
   business: {
     id: 'biz_kx',
     name: 'KaNeXT',
     mode: 'business',
     type: 'platform',
-    location: 'Atlanta, GA',
-    description: 'KaNeXT — Command Center',
-  },
-  community: {
-    id: 'church_kx',
-    name: 'ICC',
-    mode: 'community',
-    type: 'faith',
-    location: 'Los Angeles, CA',
-    description: 'ICC — International Christian Center',
+    location: '',
+    description: 'KaNeXT Operations LLC',
   },
   education: {
     id: 'edu_kx',
-    name: 'Howard University',
+    name: 'Lincoln University',
     mode: 'education',
     type: 'university',
-    location: 'Washington, DC',
-    description: 'Howard University — Academic Institution',
+    location: 'Oakland, CA',
+    description: 'Lincoln University',
   },
-  personal: {
-    id: 'pb_kx',
-    name: 'Pulse',
-    mode: 'personal',
-    type: 'personal',
-    location: '',
-    description: 'Your Pulse',
+  sports: {
+    id: 'sports_kx',
+    name: "LU Men's Basketball",
+    mode: 'sports',
+    type: 'college_athletics',
+    location: 'Oakland, CA',
+    description: "Lincoln University Men's Basketball",
+  },
+  community: {
+    id: 'church_kx',
+    name: 'ICCLA',
+    mode: 'community',
+    type: 'faith',
+    location: 'Los Angeles, CA',
+    description: 'International Christian Center Los Angeles',
   },
 };
 
@@ -134,16 +134,16 @@ const DEMO_CYCLES: Record<Mode, Cycle> = {
 };
 
 const DEMO_ROLES: Record<Mode, Role> = {
-  sports: 'assistant_coach',
-  community: 'member',
-  education: 'faculty',
-  business: 'founder',
   personal: 'founder',
+  business: 'founder',
+  education: 'founder',
+  sports: 'founder',
+  community: 'founder',
 };
 
 const DEMO_PROGRAM: Program = {
-  id: 'kx_mbb',
-  name: "Men's Basketball",
+  id: 'biz_kx_ops',
+  name: 'KaNeXT Operations',
   level: 'varsity',
 };
 
@@ -159,13 +159,13 @@ const SPORTS_SEASONS: Record<string, Cycle> = {
 
 // Organizations for sports mode (static for now)
 const SPORTS_ORGANIZATIONS: Record<string, Organization> = {
-  'Lincoln University': {
+  "LU Men's Basketball": {
     id: 'sports_kx',
-    name: 'Lincoln University',
+    name: "LU Men's Basketball",
     mode: 'sports',
     type: 'college_athletics',
     location: 'Oakland, CA',
-    description: 'Lincoln University — Oaklanders Athletics',
+    description: "Lincoln University Men's Basketball",
   },
 };
 
@@ -177,11 +177,11 @@ export { SPORTS_ORGANIZATIONS, SPORTS_PROGRAMS, SPORTS_SEASONS };
 // =============================================================================
 
 const defaultState: ExtendedAppState = {
-  mode: 'sports',
-  organization: DEMO_ORGANIZATIONS.sports,
-  operatingRole: DEMO_ROLES.sports,
-  cycle: DEMO_CYCLES.sports,
-  program: DEMO_PROGRAM,
+  mode: 'business',
+  organization: DEMO_ORGANIZATIONS.business,
+  operatingRole: DEMO_ROLES.business,
+  cycle: DEMO_CYCLES.business,
+  program: null,
   isFirstRun: true,
   isLoading: true,
   authState: 'viewer',
@@ -424,12 +424,10 @@ export function AppProvider({ children }: AppProviderProps) {
         ]);
 
         if (lastMode) {
-          // Migrate old mode names
-          const resolvedMode = lastMode === 'community' ? 'sports' : lastMode;
           dispatch({
             type: 'RESTORE_STATE',
             payload: {
-              mode: resolvedMode as Mode,
+              mode: lastMode as Mode,
               authState: (auth as AuthState) || 'viewer',
               organization: organization || undefined,
               program: program || undefined,
@@ -437,8 +435,8 @@ export function AppProvider({ children }: AppProviderProps) {
             },
           });
         } else {
-          // No saved mode — first run, bootstrap with sports default
-          const defaultCtx = getDefaultContextForMode('sports');
+          // No saved mode — first run, bootstrap with business default
+          const defaultCtx = getDefaultContextForMode('business');
           if (defaultCtx) {
             const badge = deriveRoleBadge(defaultCtx.membership_id, defaultCtx.program_id);
             dispatch({ type: 'SWITCH_CONTEXT', payload: { ...defaultCtx, derived_role_badge: badge } });

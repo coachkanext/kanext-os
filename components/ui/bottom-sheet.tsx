@@ -39,6 +39,8 @@ export interface BottomSheetProps {
   useModal?: boolean;
   /** Custom snap points. Defaults to ['50%', '100%']. */
   snapPoints?: string[];
+  /** Override sheet background color. Defaults to theme background. */
+  backgroundColor?: string;
 }
 
 const SNAP_POINTS = ['50%', '100%'];
@@ -51,6 +53,7 @@ export function BottomSheet({
   footer,
   useModal = false,
   snapPoints: snapPointsProp,
+  backgroundColor,
 }: BottomSheetProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
@@ -218,7 +221,7 @@ export function BottomSheet({
     footerComponent: renderFooter,
     handleIndicatorStyle: { backgroundColor: colors.border, width: 36 },
     backgroundStyle: {
-      backgroundColor: colors.background,
+      backgroundColor: backgroundColor ?? colors.background,
       borderTopLeftRadius: 16,
       borderTopRightRadius: 16,
     },

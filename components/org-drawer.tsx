@@ -12,7 +12,7 @@
  * Sub-orgs visible only when parent org is the active org.
  */
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   View, Text, TextInput, Pressable, StyleSheet, ScrollView,
 } from 'react-native';
@@ -39,39 +39,12 @@ type FilterKey = 'all' | Mode;
 
 const FILTER_PILLS: { key: FilterKey; label: string }[] = [
   { key: 'all',       label: 'All' },
-  { key: 'sports',    label: 'Sports' },
-  { key: 'business',  label: 'Business' },
-  { key: 'community', label: 'Community' },
-  { key: 'education', label: 'Education' },
   { key: 'personal',  label: 'Personal' },
+  { key: 'business',  label: 'Business' },
+  { key: 'education', label: 'Education' },
+  { key: 'sports',    label: 'Sports' },
+  { key: 'community', label: 'Community' },
 ];
-
-// ── Org type → display label ─────────────────────────────────────────────────
-
-const ORG_TYPE_LABEL: Record<string, string> = {
-  college_athletics:      'Athletics',
-  high_school:            'Athletics',
-  conference:             'Association',
-  platform:               'Office',
-  faith:                  'Parish',
-  university:             'Campus',
-  grassroots_basketball:  'Association',
-  personal:               'Personal',
-};
-
-// ── Sub-org data (display only — tap routes to parent's context) ─────────────
-
-type SubOrg = { id: string; name: string; initials: string };
-
-const SUB_ORGS: Record<string, SubOrg[]> = {
-  sports_kx: [
-    { id: 'sports_kx__athletics',  name: 'Athletics',  initials: 'AT' },
-    { id: 'sports_kx__recruiting', name: 'Recruiting', initials: 'RC' },
-  ],
-  edu_kx: [
-    { id: 'edu_kx__admissions', name: 'Admissions', initials: 'AD' },
-  ],
-};
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -88,13 +61,11 @@ export function OrgDrawer() {
   const [visible, setVisible] = useState(false);
   const [filterKey, setFilterKey] = useState<FilterKey>('all');
   const [search, setSearch] = useState('');
-  const [selectedSubOrgId, setSelectedSubOrgId] = useState<string | null>(null);
 
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
   const { state, switchContext } = useAppContext();
   const router = useRouter();
-  const currentMode = state.mode;
   const activeOrgId = state.activeContext.org_id;
 
   useEffect(() => {
@@ -102,7 +73,6 @@ export function OrgDrawer() {
       () => {
         setFilterKey('all');
         setSearch('');
-        setSelectedSubOrgId(null);
         setVisible(true);
       },
       () => setVisible(false),
@@ -112,10 +82,12 @@ export function OrgDrawer() {
   // ── Filtered orgs ──────────────────────────────────────────────────────────
 
   const displayOrgs = useMemo(() => {
-    // Personal pill → no orgs
-    if (filterKey === 'pulse') return [];
-
-    let orgs = V2_ORGANIZATIONS.filter(o => o.mode !== 'pulse' && o.mode !== 'competition');
+    // Personal only shows on All or Personal filter
+    let orgs = V2_ORGANIZATIONS.filter(o =>
+      filterKey === 'all' || filterKey === 'personal'
+        ? true
+        : o.mode !== 'personal'
+    );
 
     if (filterKey !== 'all') {
       orgs = orgs.filter(o => o.mode === filterKey);
@@ -126,12 +98,18 @@ export function OrgDrawer() {
       orgs = orgs.filter(o => o.org_name.toLowerCase().includes(q));
     }
 
-    return orgs;
+    // Personal pinned first, rest alphabetical
+    const personal = orgs.filter(o => o.mode === 'personal');
+    const others = orgs
+      .filter(o => o.mode !== 'personal')
+      .sort((a, b) => a.org_name.localeCompare(b.org_name));
+
+    return [...personal, ...others];
   }, [filterKey, search]);
 
   // ── Org press ──────────────────────────────────────────────────────────────
 
-  const handleOrgPress = useCallback((orgId: string, orgMode: Mode, subOrgId?: string) => {
+  const handleOrgPress = useCallback((orgId: string, orgMode: Mode) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     const org = getOrgById(orgId);
     if (!org) return;
@@ -154,10 +132,8 @@ export function OrgDrawer() {
     };
 
     switchContext(ctx);
-
-    setSelectedSubOrgId(subOrgId ?? null);
     setVisible(false);
-  }, [currentMode, switchContext]);
+  }, [switchContext]);
 
   const handleClose = useCallback(() => setVisible(false), []);
 
@@ -169,7 +145,7 @@ export function OrgDrawer() {
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <BottomSheet visible={visible} onClose={handleClose} useModal snapPoints={['50%', '90%']}>
+    <BottomSheet visible={visible} onClose={handleClose} useModal snapPoints={['50%', '90%']} backgroundColor="#FFFFFF">
       {/* Mode pills */}
       <ScrollView
         horizontal
@@ -212,81 +188,38 @@ export function OrgDrawer() {
 
       {/* Org list — rendered flat; outer BottomSheetScrollView handles all scrolling */}
       <View style={styles.orgListContent}>
-        {filterKey === 'pulse' && (
-          <Text style={styles.emptyText}>No organizations in Personal mode</Text>
-        )}
-
-        {filterKey !== 'pulse' && displayOrgs.length === 0 && (
+        {displayOrgs.length === 0 && (
           <Text style={styles.emptyText}>No organizations found</Text>
         )}
 
         {displayOrgs.map(org => {
           const isActiveOrg = org.org_id === activeOrgId;
-          const orgTypeLabel = ORG_TYPE_LABEL[org.org_type] ?? org.org_type;
           const orgMode = org.mode as Mode;
-          const subOrgs = isActiveOrg ? (SUB_ORGS[org.org_id] ?? []) : [];
-
           return (
-            <React.Fragment key={org.org_id}>
-              {/* Parent org row */}
-              <Pressable
-                style={({ pressed }) => [
-                  styles.orgRow,
-                  isActiveOrg && styles.orgRowActive,
-                  pressed && !isActiveOrg && { backgroundColor: 'rgba(0,0,0,0.03)' },
-                ]}
-                onPress={() => handleOrgPress(org.org_id, orgMode)}
-              >
-                <View style={[styles.orgAvatar, isActiveOrg && styles.orgAvatarActive]}>
-                  <Text style={[styles.orgInitials, isActiveOrg && styles.orgInitialsActive]}>
-                    {getInitials(org.org_name)}
-                  </Text>
-                </View>
-                <View style={styles.orgInfo}>
-                  <Text style={[styles.orgName, isActiveOrg && styles.orgNameActive]} numberOfLines={1}>
-                    {org.org_name}
-                  </Text>
-                  <Text style={styles.orgMeta} numberOfLines={1}>{orgTypeLabel}</Text>
-                </View>
-                <RadioCircle active={isActiveOrg && !selectedSubOrgId} />
-              </Pressable>
-
-              {/* Sub-org rows — only when parent is active */}
-              {subOrgs.map(sub => {
-                const isActiveSub = selectedSubOrgId === sub.id;
-                return (
-                  <Pressable
-                    key={sub.id}
-                    style={({ pressed }) => [
-                      styles.orgRow,
-                      styles.subOrgRow,
-                      isActiveSub && styles.orgRowActive,
-                      pressed && !isActiveSub && { backgroundColor: 'rgba(0,0,0,0.03)' },
-                    ]}
-                    onPress={() => handleOrgPress(org.org_id, orgMode, sub.id)}
-                  >
-                    <View style={[styles.subAvatar, isActiveSub && styles.orgAvatarActive]}>
-                      <Text style={[styles.subInitials, isActiveSub && styles.orgInitialsActive]}>
-                        {sub.initials}
-                      </Text>
-                    </View>
-                    <View style={styles.orgInfo}>
-                      <Text style={[styles.orgName, isActiveSub && styles.orgNameActive]} numberOfLines={1}>
-                        {sub.name}
-                      </Text>
-                      <Text style={styles.orgMeta}>Sub-org</Text>
-                    </View>
-                    <RadioCircle active={isActiveSub} />
-                  </Pressable>
-                );
-              })}
-            </React.Fragment>
+            <Pressable
+              key={org.org_id}
+              style={({ pressed }) => [
+                styles.orgRow,
+                isActiveOrg && styles.orgRowActive,
+                pressed && !isActiveOrg && { backgroundColor: 'rgba(0,0,0,0.03)' },
+              ]}
+              onPress={() => handleOrgPress(org.org_id, orgMode)}
+            >
+              <View style={[styles.orgAvatar, isActiveOrg && styles.orgAvatarActive]}>
+                <Text style={[styles.orgInitials, isActiveOrg && styles.orgInitialsActive]}>
+                  {org.initials ?? getInitials(org.org_name)}
+                </Text>
+              </View>
+              <View style={styles.orgInfo}>
+                <Text style={[styles.orgName, isActiveOrg && styles.orgNameActive]} numberOfLines={1}>
+                  {org.org_name}
+                </Text>
+              </View>
+              <RadioCircle active={isActiveOrg} />
+            </Pressable>
           );
         })}
-      </View>
-
-      {/* Settings footer */}
-      <View style={styles.settingsFooter}>
+        {/* Settings — last item */}
         <Pressable
           style={({ pressed }) => [styles.settingsRow, pressed && { opacity: 0.6 }]}
           onPress={handleSettings}
@@ -295,9 +228,9 @@ export function OrgDrawer() {
             <IconSymbol name="gearshape" size={16} color="rgba(0,0,0,0.50)" />
           </View>
           <Text style={styles.settingsLabel}>Settings</Text>
-          <IconSymbol name="chevron.right" size={14} color="rgba(0,0,0,0.25)" />
         </Pressable>
       </View>
+
     </BottomSheet>
   );
 }
@@ -391,39 +324,21 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   },
   orgInitialsActive: { color: '#FFFFFF' },
 
-  // Sub-org
-  subOrgRow: { marginLeft: 20 },
-  subAvatar: {
-    width: 34, height: 34, borderRadius: 10,
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    alignItems: 'center', justifyContent: 'center',
-    flexShrink: 0,
-  },
-  subInitials: {
-    fontSize: 12, fontWeight: '700', color: 'rgba(0,0,0,0.52)',
-  },
-
   // Org info
   orgInfo: { flex: 1, minWidth: 0 },
   orgName: { fontSize: 15, fontWeight: '500', color: '#111111' },
   orgNameActive: { fontWeight: '600' },
-  orgMeta: { fontSize: 12, color: 'rgba(0,0,0,0.30)', marginTop: 1 },
 
   emptyText: {
     textAlign: 'center', fontSize: 14,
     color: 'rgba(0,0,0,0.30)', paddingVertical: 32,
   },
 
-  settingsFooter: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(0,0,0,0.08)',
-    paddingHorizontal: 24,
-    paddingVertical: 4,
-    paddingBottom: 8,
-  },
   settingsRow: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
-    paddingVertical: 14,
+    paddingVertical: 14, marginTop: 12,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(0,0,0,0.08)',
   },
   settingsIcon: {
     width: 32, height: 32, borderRadius: 10,
