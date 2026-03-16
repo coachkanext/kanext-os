@@ -69,10 +69,10 @@ const DEMO_ORGANIZATIONS: Record<Mode, Organization> = {
     location: 'Atlanta, GA',
     description: 'KaNeXT — Command Center',
   },
-  church: {
+  community: {
     id: 'church_kx',
     name: 'ICC',
-    mode: 'church',
+    mode: 'community',
     type: 'faith',
     location: 'Los Angeles, CA',
     description: 'ICC — International Christian Center',
@@ -85,10 +85,10 @@ const DEMO_ORGANIZATIONS: Record<Mode, Organization> = {
     location: 'Washington, DC',
     description: 'Howard University — Academic Institution',
   },
-  pulse: {
+  personal: {
     id: 'pb_kx',
     name: 'Pulse',
-    mode: 'pulse',
+    mode: 'personal',
     type: 'personal',
     location: '',
     description: 'Your Pulse',
@@ -110,7 +110,7 @@ const DEMO_CYCLES: Record<Mode, Cycle> = {
     endDate: new Date('2026-12-31'),
     isCurrent: true,
   },
-  church: {
+  community: {
     id: 'church_kx_2026',
     name: '2026',
     startDate: new Date('2026-01-01'),
@@ -124,7 +124,7 @@ const DEMO_CYCLES: Record<Mode, Cycle> = {
     endDate: new Date('2026-05-10'),
     isCurrent: true,
   },
-  pulse: {
+  personal: {
     id: 'pb_kx_2026',
     name: '2026',
     startDate: new Date('2026-01-01'),
@@ -135,10 +135,10 @@ const DEMO_CYCLES: Record<Mode, Cycle> = {
 
 const DEMO_ROLES: Record<Mode, Role> = {
   sports: 'assistant_coach',
-  church: 'member',
+  community: 'member',
   education: 'faculty',
   business: 'founder',
-  pulse: 'founder',
+  personal: 'founder',
 };
 
 const DEMO_PROGRAM: Program = {

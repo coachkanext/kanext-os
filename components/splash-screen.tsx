@@ -1,6 +1,6 @@
 /**
  * KaNeXT OS Boot Splash Screen
- * Full-screen black with pulsating center watermark and bottom tag.
+ * Full-screen #F8F7F4 with centered K logo — static fade in/out.
  *
  * Only shows on cold start, not when resuming from background.
  *
@@ -9,9 +9,9 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Image, StyleSheet, Animated, Easing } from 'react-native';
+import { View, Image, StyleSheet, Animated } from 'react-native';
 
-const KX_LOGO = require('@/assets/images/kx-logo.png');
+const SPLASH_ICON = require('@/assets/images/kx-logo.png');
 
 /**
  * Module-level guard: prevents animation from running more than once per session.
@@ -26,21 +26,10 @@ interface SplashScreenProps {
 export function SplashScreen({ onReady, isAppReady }: SplashScreenProps) {
   const contentFadeAnim = useRef(new Animated.Value(0)).current;
   const containerFadeAnim = useRef(new Animated.Value(1)).current;
-  const pulseAnim = useRef(new Animated.Value(0)).current;
   const hasStartedRef = useRef(false);
   const hasFadedOutRef = useRef(false);
 
-  // Derived animated values for the pulse
-  const pulseScale = pulseAnim.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: [0.95, 1.05, 0.95],
-  });
-  const pulseOpacity = pulseAnim.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: [0.7, 1, 0.7],
-  });
-
-  // Fade in content + start pulse loop on mount
+  // Fade in content on mount
   useEffect(() => {
     if (ANIMATION_STARTED || hasStartedRef.current) {
       onReady();
@@ -50,23 +39,12 @@ export function SplashScreen({ onReady, isAppReady }: SplashScreenProps) {
     ANIMATION_STARTED = true;
     hasStartedRef.current = true;
 
-    // Fade in content
     Animated.timing(contentFadeAnim, {
       toValue: 1,
       duration: 400,
       useNativeDriver: true,
     }).start();
-
-    // Start heartbeat pulse loop
-    Animated.loop(
-      Animated.timing(pulseAnim, {
-        toValue: 1,
-        duration: 1100,
-        easing: Easing.inOut(Easing.ease),
-        useNativeDriver: true,
-      })
-    ).start();
-  }, [contentFadeAnim, pulseAnim, onReady]);
+  }, [contentFadeAnim, onReady]);
 
   // Fade out when app is ready
   useEffect(() => {
@@ -85,23 +63,8 @@ export function SplashScreen({ onReady, isAppReady }: SplashScreenProps) {
 
   return (
     <Animated.View style={[styles.container, { opacity: containerFadeAnim }]}>
-      {/* Center watermark with pulse */}
-      <Animated.View
-        style={[
-          styles.centerMark,
-          {
-            opacity: Animated.multiply(contentFadeAnim, pulseOpacity),
-            transform: [{ scale: pulseScale }],
-          },
-        ]}
-      >
-        <Image source={KX_LOGO} style={styles.logo} resizeMode="contain" />
-      </Animated.View>
-
-      {/* Bottom tag */}
-      <Animated.View style={[styles.bottomTag, { opacity: contentFadeAnim }]}>
-        <Text style={styles.poweredBy}>powered by </Text>
-        <Text style={styles.nexus}>Nexus</Text>
+      <Animated.View style={{ opacity: contentFadeAnim }}>
+        <Image source={SPLASH_ICON} style={styles.logo} resizeMode="contain" />
       </Animated.View>
     </Animated.View>
   );
@@ -110,31 +73,12 @@ export function SplashScreen({ onReady, isAppReady }: SplashScreenProps) {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F8F7F4',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  centerMark: {
-    alignItems: 'center',
-  },
   logo: {
-    width: 160,
+    width: 120,
     height: 120,
-  },
-  bottomTag: {
-    position: 'absolute',
-    bottom: 60,
-    flexDirection: 'row',
-    alignItems: 'baseline',
-  },
-  poweredBy: {
-    fontSize: 13,
-    fontWeight: '400',
-    color: 'rgba(0, 0, 0, 0.35)',
-  },
-  nexus: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: 'rgba(0, 0, 0, 0.6)',
   },
 });

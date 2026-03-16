@@ -9,7 +9,7 @@
  */
 
 import React, { useRef, useCallback, useMemo } from 'react';
-import { View, Text, Image, StyleSheet, useWindowDimensions, Animated, Pressable } from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions, Animated, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 
@@ -21,68 +21,31 @@ import { useMultitasking } from '@/context/multitasking-context';
 import type { Mode } from '@/types';
 import type { GridIcon } from './home-types';
 
-/** Mode-dependent labels for icons that change per mode (positions 2, 3, 6) */
+/** Row 2 labels shift per mode */
 const MODE_LABELS: Record<string, Partial<Record<Mode, string>>> = {
-  roster:  { sports: 'Roster', business: 'Departments', church: 'Ministries', education: 'Community' },
-  recruits:{ sports: 'Prospects', business: 'Leads',   church: 'Outreach',  education: 'Admissions' },
-  store:   { sports: 'Booster',   business: 'Impact',  church: 'Give',      education: 'Fund' },
-};
-
-/** Mode-dependent images for icons that swap per mode */
-const MODE_IMAGES: Record<string, Partial<Record<Mode, any>>> = {
-  roster: {
-    sports:      require('@/assets/images/icon-roster-v2.png'),
-    business:    require('@/assets/images/icon-departments-v2.png'),
-    church:      require('@/assets/images/icon-ministries-v2.png'),
-    education:   require('@/assets/images/icon-community-v2.png'),
-  },
-  recruits: {
-    business: require('@/assets/images/icon-leads.png'),
-    church: require('@/assets/images/icon-outreach.png'),
-    education: require('@/assets/images/icon-admissions.png'),
-  },
-  store: {
-    sports: require('@/assets/images/icon-booster.png'),
-    business: require('@/assets/images/icon-sponsor.png'),
-    church: require('@/assets/images/icon-give.png'),
-    education: require('@/assets/images/icon-fund.png'),
-  },
+  p4: { personal: 'Network', business: 'Team',  education: 'Students', sports: 'Roster',   community: 'Members'  },
+  p5: { personal: 'Deals',   business: 'Leads', education: 'Admissions', sports: 'Recruits', community: 'Outreach' },
+  p6: { personal: 'Earn',    business: 'Sales', education: 'Fund',     sports: 'Booster',  community: 'Give'     },
 };
 
 const ROWS: GridIcon[][] = [
+  // Row 1 — universal
   [
-    { id: 'agenda',   icon: 'calendar.badge.clock', label: 'Agenda',   route: '/agenda',   image: require('@/assets/images/icon-agenda.png') },
-    { id: 'season',   icon: 'calendar',             label: 'Hub',      route: '/(tabs)/(main)/season',   image: require('@/assets/images/icon-hub.png') },
-    { id: 'roster',   icon: 'person.3.fill',        label: 'Roster',   route: '/(tabs)/(main)/roster',   image: require('@/assets/images/icon-roster-v2.png') },
+    { id: 'agenda',  icon: 'calendar.badge.clock',  label: 'Agenda', route: '/agenda' },
+    { id: 'hub',     icon: 'square.grid.2x2.fill',  label: 'Hub',    route: '/(tabs)/(main)/season' },
+    { id: 'social',  icon: 'globe',                 label: 'Social', route: '/social' },
   ],
+  // Row 2 — mode-dependent labels
   [
-    { id: 'recruits', icon: 'person.badge.plus',    label: 'Prospects', route: '/(tabs)/(main)/recruits', image: require('@/assets/images/icon-recruits.png') },
-    { id: 'store',    icon: 'bag.fill',             label: 'Booster',  route: '/(tabs)/(main)/store',    image: require('@/assets/images/icon-booster.png') },
-    { id: 'social',   icon: 'newspaper.fill',       label: 'Social',   route: '/social',                 image: require('@/assets/images/icon-social.png') },
+    { id: 'p4', icon: 'person.3.fill',   label: 'Roster',    route: '/(tabs)/(main)/roster' },
+    { id: 'p5', icon: 'person.badge.plus', label: 'Recruits', route: '/(tabs)/(main)/recruits' },
+    { id: 'p6', icon: 'bag.fill',        label: 'Booster',   route: '/(tabs)/(main)/store' },
   ],
+  // Row 3 — universal
   [
-    { id: 'media',    icon: 'play.rectangle.fill',  label: 'KayTV',    route: '/(tabs)/(main)/kaytv',    image: require('@/assets/images/icon-media.png') },
-    { id: 'wallet',   icon: 'creditcard.fill',      label: 'KayPay',   route: '/wallet',                 image: require('@/assets/images/icon-wallet.png') },
-    { id: 'gm',       icon: 'gamecontroller.fill',  label: 'KayStudios',    route: '/studios',                image: require('@/assets/images/icon-gm.png') },
-  ],
-];
-
-/** Personal Brand grid — shown when mode = pulse */
-const PULSE_ROWS: GridIcon[][] = [
-  [
-    { id: 'agenda',    icon: 'calendar.badge.clock',    label: 'Agenda',     route: '/agenda',                 image: require('@/assets/images/icon-agenda.png') },
-    { id: 'portfolio', icon: 'person.text.rectangle',   label: 'Hub',        route: '/(tabs)/(main)/profile',  image: require('@/assets/images/icon-hub.png') },
-    { id: 'community', icon: 'person.3.fill',           label: 'Network',    route: '/community',              image: require('@/assets/images/icon-network-v2.png') },
-  ],
-  [
-    { id: 'deals',   icon: 'dollarsign.circle.fill',   label: 'Deals',    route: '/deals',   image: require('@/assets/images/icon-deals.png') },
-    { id: 'support', icon: 'questionmark.circle.fill', label: 'Support',  route: '/support', image: require('@/assets/images/icon-support.png') },
-    { id: 'social',  icon: 'newspaper.fill',           label: 'Social',   route: '/social',  image: require('@/assets/images/icon-social.png') },
-  ],
-  [
-    { id: 'media',  icon: 'play.rectangle.fill', label: 'KayTV',      route: '/(tabs)/(main)/kaytv', image: require('@/assets/images/icon-media.png') },
-    { id: 'wallet', icon: 'creditcard.fill',     label: 'KayPay',     route: '/wallet',              image: require('@/assets/images/icon-wallet.png') },
-    { id: 'gm',     icon: 'gamecontroller.fill', label: 'KayStudios', route: '/studios',             image: require('@/assets/images/icon-gm.png') },
+    { id: 'media',  icon: 'play.rectangle.fill', label: 'KayTV',      route: '/(tabs)/(main)/kaytv' },
+    { id: 'wallet', icon: 'creditcard.fill',     label: 'KayPay',     route: '/wallet' },
+    { id: 'gm',     icon: 'gamecontroller.fill', label: 'KayStudios', route: '/studios' },
   ],
 ];
 
@@ -130,22 +93,8 @@ function GridTile({
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
     >
-      <Animated.View
-        style={[
-          styles.iconContainer,
-          item.image && styles.iconContainerImage,
-          {
-            transform: [{ scale }],
-            shadowColor: accent,
-            shadowOpacity: 0.0,
-          },
-        ]}
-      >
-        {item.image ? (
-          <Image source={item.image} style={styles.tileImage} />
-        ) : (
-          <IconSymbol name={item.icon} size={36} color="#FFFFFF" />
-        )}
+      <Animated.View style={{ transform: [{ scale }] }}>
+        <IconSymbol name={item.icon} size={36} color={C.muted} />
         {item.badgeCount != null && item.badgeCount > 0 && (
           <View style={[styles.badge, { backgroundColor: accent }]}>
             <Text style={styles.badgeText}>{item.badgeCount}</Text>
@@ -182,19 +131,16 @@ export function IconGrid() {
     router.push(item.route as any);
   }, [addScreen, router]);
 
-  const activeRows = mode === 'pulse' ? PULSE_ROWS : ROWS;
-
   return (
     <View style={styles.container}>
-      {activeRows.map((row, rowIndex) => (
+      {ROWS.map((row, rowIndex) => (
         <View key={rowIndex} style={styles.row}>
           {row.map((item) => {
-            const label = mode === 'pulse' ? item.label : (MODE_LABELS[item.id]?.[mode] ?? item.label);
-            const image = mode === 'pulse' ? item.image : (MODE_IMAGES[item.id]?.[mode] ?? item.image);
+            const label = MODE_LABELS[item.id]?.[mode] ?? item.label;
             return (
               <GridTile
                 key={item.id}
-                item={{ ...item, label, image }}
+                item={{ ...item, label }}
                 cellWidth={cellWidth}
                 accent={accent}
                 onPress={handlePress}
@@ -222,27 +168,6 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  iconContainer: {
-    width: 94,
-    height: 94,
-    borderRadius: 22,
-    backgroundColor: '#0B1220',
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-    // Glow on press (shadow animates with scale)
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  iconContainerImage: {
-    backgroundColor: 'transparent',
-  },
-  tileImage: {
-    width: 94,
-    height: 94,
-    resizeMode: 'contain',
-  },
   badge: {
     position: 'absolute',
     top: -4,
@@ -264,12 +189,6 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 12,
-    backgroundColor: '#F4F4F5',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 3,
-    elevation: 2,
     alignItems: 'center',
     justifyContent: 'center',
     minWidth: 58,
@@ -278,6 +197,6 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     textAlign: 'center',
-    color: '#52525B',
+    color: C.label,
   },
 });

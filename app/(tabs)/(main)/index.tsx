@@ -4,7 +4,7 @@
  */
 
 import React, { useMemo } from 'react';
-import { View, Text, PanResponder, StyleSheet } from 'react-native';
+import { View, Text, Pressable, PanResponder, StyleSheet } from 'react-native';
 import { useColors } from '@/hooks/use-colors';
 import { VideoHero } from '@/components/home/video-hero';
 import { IconGrid } from '@/components/home/icon-grid';
@@ -13,6 +13,8 @@ import { useAuth } from '@/context/auth-context';
 import { getOrgById, getProgramById, getProgramsForOrg } from '@/data/mock-memberships';
 import { enableSlideAnimation } from '@/utils/global-footer-swipe';
 import { pushNexusFromInner } from '@/utils/global-inner-nav';
+import { openOrgDrawer } from '@/utils/global-org-drawer';
+import * as Haptics from 'expo-haptics';
 
 export default function HomeScreen() {
   const C = useColors();
@@ -52,13 +54,19 @@ export default function HomeScreen() {
       {/* Video hero — flush to top, bleeds under status bar */}
       <VideoHero />
 
-      {/* Org context pill */}
+      {/* Org context pill — tap → org drawer */}
       <View style={styles.orgPillWrap}>
-        <View style={styles.orgPill}>
+        <Pressable
+          style={styles.orgPill}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            openOrgDrawer();
+          }}
+        >
           <Text style={styles.orgPillText} numberOfLines={1}>
             {orgLabel}
           </Text>
-        </View>
+        </Pressable>
       </View>
 
       {/* Icon grid fills remaining space */}
@@ -76,7 +84,7 @@ const styles = StyleSheet.create({
   },
   orgPillWrap: {
     alignItems: 'center',
-    paddingTop: 14,
+    paddingTop: 28,
     paddingBottom: 6,
   },
   orgPill: {

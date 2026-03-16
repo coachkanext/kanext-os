@@ -77,7 +77,7 @@ export interface OrgResource {
 const DEPARTMENTS_BY_MODE: Record<Mode, string[]> = {
   sports: ['Coaching', 'Medical', 'Operations', 'Academic', 'Players', 'Support'],
   business: ['Product', 'Sales', 'Marketing', 'Operations', 'Leadership'],
-  church: ['Pastoral', 'Ministry Leaders', 'Staff', 'Deacons', 'Members'],
+  community: ['Pastoral', 'Ministry Leaders', 'Staff', 'Deacons', 'Members'],
   education: ['Faculty', 'Admin', 'Staff', 'Students', 'Support'],
 };
 
@@ -86,7 +86,7 @@ const DEPARTMENTS_BY_MODE: Record<Mode, string[]> = {
 const FINANCE_BY_MODE: Record<Mode, OrgFinanceSnapshot> = {
   sports: { revenue: '$2.4M', expenses: '$1.8M', balance: '$620K', trend: 'up' },
   business: { revenue: '$1.2M', expenses: '$890K', balance: '$310K', trend: 'up' },
-  church: { revenue: '$485K', expenses: '$320K', balance: '$165K', trend: 'flat' },
+  community: { revenue: '$485K', expenses: '$320K', balance: '$165K', trend: 'flat' },
   education: { revenue: '$8.7M', expenses: '$7.1M', balance: '$1.6M', trend: 'up' },
 };
 
@@ -107,7 +107,7 @@ const COMPLIANCE_BY_MODE: Record<Mode, OrgComplianceItem[]> = {
     { id: 'bc4', label: 'Regulatory Filing', status: 'overdue' },
     { id: 'bc5', label: 'Insurance', status: 'compliant' },
   ],
-  church: [
+  community: [
     { id: 'cc1', label: 'Tax-Exempt Status', status: 'compliant' },
     { id: 'cc2', label: 'Bylaws Review', status: 'compliant' },
     { id: 'cc3', label: 'Background Checks', status: 'warning' },
@@ -136,7 +136,7 @@ const ANNOUNCEMENTS_BY_MODE: Record<Mode, OrgAnnouncement[]> = {
     { id: 'ba2', title: 'New Benefits Package', preview: 'Updated health and wellness benefits available starting April 1...', timestamp: '1d ago', authorInitials: 'HR' },
     { id: 'ba3', title: 'Office Hours Change', preview: 'Effective March 20, office hours will shift to 9 AM - 5 PM...', timestamp: '2d ago', authorInitials: 'OP' },
   ],
-  church: [
+  community: [
     { id: 'ca1', title: 'Easter Service Schedule', preview: 'Three services planned for Easter Sunday: 7 AM sunrise, 9 AM, 11 AM...', timestamp: '1h ago', authorInitials: 'PD' },
     { id: 'ca2', title: 'Volunteer Sign-Up Open', preview: 'Spring outreach needs volunteers for food bank and community...', timestamp: '6h ago', authorInitials: 'ML' },
     { id: 'ca3', title: 'Building Fund Update', preview: 'We have reached 75% of our building fund goal. Thank you for...', timestamp: 'Yesterday', authorInitials: 'TR' },
@@ -163,7 +163,7 @@ const DEADLINES_BY_MODE: Record<Mode, OrgDeadline[]> = {
     { id: 'bd3', title: 'Contract Renewal — AWS', dueDate: 'Mar 25', category: 'Operations', urgent: false },
     { id: 'bd4', title: 'Annual Audit Prep', dueDate: 'Apr 1', category: 'Finance', urgent: false },
   ],
-  church: [
+  community: [
     { id: 'cd1', title: 'Easter Volunteer Roster', dueDate: 'Mar 14', category: 'Ministry', urgent: true },
     { id: 'cd2', title: 'Annual Report Filing', dueDate: 'Mar 20', category: 'Administration', urgent: false },
     { id: 'cd3', title: 'VBS Registration Open', dueDate: 'Apr 1', category: 'Ministry', urgent: false },
@@ -194,7 +194,7 @@ const ACTIVITY_BY_MODE: Record<Mode, OrgActivity[]> = {
     { id: 'bact4', title: 'Expense Report', description: 'Marketing submitted March expense report', timestamp: 'Yesterday', icon: 'doc.text.fill' },
     { id: 'bact5', title: 'Policy Updated', description: 'Remote work policy updated for Q2', timestamp: '2d ago', icon: 'doc.badge.gearshape.fill' },
   ],
-  church: [
+  community: [
     { id: 'cact1', title: 'Service Attendance', description: 'Sunday service: 342 in-person, 128 online', timestamp: '5h ago', icon: 'person.3.fill' },
     { id: 'cact2', title: 'Giving Report', description: 'Weekly tithes and offerings: $12,450', timestamp: '6h ago', icon: 'heart.fill' },
     { id: 'cact3', title: 'Volunteer Signup', description: '14 new volunteers for Easter outreach', timestamp: 'Yesterday', icon: 'hand.raised.fill' },
@@ -243,7 +243,7 @@ const PEOPLE_BY_MODE: Record<Mode, OrgPerson[]> = {
     { id: 'bp11', name: 'Michael Torres', initials: 'MT', role: 'CTO', department: 'Leadership', online: true },
     { id: 'bp12', name: 'Rachel Adams', initials: 'RA', role: 'COO', department: 'Leadership', online: false },
   ],
-  church: [
+  community: [
     { id: 'cp1', name: 'Pastor Davis', initials: 'PD', role: 'Senior Pastor', department: 'Pastoral', online: true },
     { id: 'cp2', name: 'Rev. Thompson', initials: 'RT', role: 'Associate Pastor', department: 'Pastoral', online: false },
     { id: 'cp3', name: 'Emily Grace', initials: 'EG', role: 'Worship Leader', department: 'Ministry Leaders', online: true },
@@ -308,7 +308,7 @@ const RESOURCES_BY_MODE: Record<Mode, OrgResource[]> = {
     { id: 'br9', name: 'Server Rack', category: 'assets', description: 'On-prem dev/test environment', status: 'available', icon: 'server.rack' },
     { id: 'br10', name: 'Company Vehicle', category: 'assets', description: 'Tesla Model Y — deliveries', status: 'available', icon: 'car.fill' },
   ],
-  church: [
+  community: [
     { id: 'cr1', name: 'Sanctuary', category: 'facilities', description: 'Main worship space — 500 seats', status: 'available', icon: 'building.columns.fill' },
     { id: 'cr2', name: 'Fellowship Hall', category: 'facilities', description: 'Events and community meals', status: 'available', icon: 'person.3.fill' },
     { id: 'cr3', name: "Children's Wing", category: 'facilities', description: '4 classrooms + nursery', status: 'in-use', icon: 'figure.and.child.holdinghands' },

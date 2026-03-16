@@ -26,8 +26,8 @@ export const V2_ORGANIZATIONS: V2Organization[] = [
   { org_id: 'biz_kx', org_name: 'KaNeXT', mode: 'business', location: 'Atlanta, GA', org_type: 'platform', view_variant: 'Founder' },
 
   // ── Church ──
-  { org_id: 'church_kx', org_name: 'ICC', mode: 'church', location: 'Los Angeles, CA', org_type: 'faith' },
-  { org_id: 'church_grace', org_name: 'Grace Community', mode: 'church', location: 'Sun Valley, CA', org_type: 'faith' },
+  { org_id: 'church_kx', org_name: 'ICC', mode: 'community', location: 'Los Angeles, CA', org_type: 'faith' },
+  { org_id: 'church_grace', org_name: 'Grace Community', mode: 'community', location: 'Sun Valley, CA', org_type: 'faith' },
 
   // ── Education ──
   { org_id: 'edu_kx', org_name: 'Howard University', mode: 'education', location: 'Washington, DC', org_type: 'university' },
@@ -36,7 +36,7 @@ export const V2_ORGANIZATIONS: V2Organization[] = [
   { org_id: 'comp_kx', org_name: 'Adidas 3SSB', mode: 'competition', location: 'Rock Hill, SC', org_type: 'grassroots_basketball' },
 
   // ── Pulse ──
-  { org_id: 'pb_kx', org_name: 'Pulse', mode: 'pulse', location: '', org_type: 'personal' },
+  { org_id: 'pb_kx', org_name: 'Pulse', mode: 'personal', location: '', org_type: 'personal' },
 ];
 
 // =============================================================================
@@ -83,7 +83,7 @@ export const V2_MEMBERSHIPS: V2Membership[] = [
   // ── Church ──
   {
     membership_id: 'mem_church_kx',
-    mode: 'church',
+    mode: 'community',
     org_id: 'church_kx',
     role_titles: ['Ministry Leader'],
     permission_tier: 'Admin',
@@ -91,7 +91,7 @@ export const V2_MEMBERSHIPS: V2Membership[] = [
   },
   {
     membership_id: 'mem_church_grace',
-    mode: 'church',
+    mode: 'community',
     org_id: 'church_grace',
     role_titles: ['Member'],
     permission_tier: 'View',
@@ -121,7 +121,7 @@ export const V2_MEMBERSHIPS: V2Membership[] = [
   // ── Pulse ──
   {
     membership_id: 'mem_pb_kx',
-    mode: 'pulse',
+    mode: 'personal',
     org_id: 'pb_kx',
     role_titles: ['Owner'],
     permission_tier: 'Full',
@@ -147,10 +147,10 @@ export const V2_PROGRAMS: V2Program[] = [
   { program_id: 'biz_kx_ops', org_id: 'biz_kx', mode: 'business', program_name: 'KaNeXT Operations', program_type: 'Platform', source_tag: 'OFFICIAL', status: 'Active' },
 
   // ── ICC ──
-  { program_id: 'church_kx_main', org_id: 'church_kx', mode: 'church', program_name: 'Sunday Worship', program_type: 'Campus', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'church_kx_main', org_id: 'church_kx', mode: 'community', program_name: 'Sunday Worship', program_type: 'Campus', source_tag: 'OFFICIAL', status: 'Active' },
 
   // ── Grace Community ──
-  { program_id: 'church_grace_main', org_id: 'church_grace', mode: 'church', program_name: 'Main Campus', program_type: 'Campus', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'church_grace_main', org_id: 'church_grace', mode: 'community', program_name: 'Main Campus', program_type: 'Campus', source_tag: 'OFFICIAL', status: 'Active' },
 
   // ── Howard University (4 programs) ──
   { program_id: 'edu_kx_main', org_id: 'edu_kx', mode: 'education', program_name: 'Academic Programs', program_type: 'Institution', source_tag: 'OFFICIAL', status: 'Active' },
@@ -159,7 +159,7 @@ export const V2_PROGRAMS: V2Program[] = [
   { program_id: 'edu_kx_business', org_id: 'edu_kx', mode: 'education', program_name: 'School of Business', program_type: 'Division', source_tag: 'OFFICIAL', status: 'Active' },
 
   // ── Pulse ──
-  { program_id: 'pb_kx_main', org_id: 'pb_kx', mode: 'pulse', program_name: 'Pulse', program_type: 'Personal', source_tag: 'OFFICIAL', status: 'Active' },
+  { program_id: 'pb_kx_main', org_id: 'pb_kx', mode: 'personal', program_name: 'Pulse', program_type: 'Personal', source_tag: 'OFFICIAL', status: 'Active' },
 
   // ── Adidas 3SSB (3 programs) ──
   { program_id: 'comp_kx_main', org_id: 'comp_kx', mode: 'competition', program_name: '3SSB Championship Circuit', program_type: 'League', source_tag: 'OFFICIAL', status: 'Active' },
@@ -185,16 +185,16 @@ export const V2_SEASONS: V2Season[] = [
   { season_id: 'biz_kx_fy2026', org_id: 'biz_kx', mode: 'business', season_name: 'FY 2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
 
   // ICC
-  { season_id: 'church_kx_2026', org_id: 'church_kx', mode: 'church', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
+  { season_id: 'church_kx_2026', org_id: 'church_kx', mode: 'community', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
 
   // Grace Community
-  { season_id: 'church_grace_2026', org_id: 'church_grace', mode: 'church', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
+  { season_id: 'church_grace_2026', org_id: 'church_grace', mode: 'community', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
 
   // Howard University
   { season_id: 'edu_kx_2025_26', org_id: 'edu_kx', mode: 'education', season_name: '2025\u201326 Academic Year', start_date: '2025-08-18', end_date: '2026-05-10', is_current: true },
 
   // Pulse
-  { season_id: 'pb_kx_2026', org_id: 'pb_kx', mode: 'pulse', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
+  { season_id: 'pb_kx_2026', org_id: 'pb_kx', mode: 'personal', season_name: '2026', start_date: '2026-01-01', end_date: '2026-12-31', is_current: true },
 
   // Adidas 3SSB
   { season_id: 'comp_kx_s1_2026', org_id: 'comp_kx', mode: 'competition', season_name: '2025\u201326 Circuit', start_date: '2025-10-01', end_date: '2026-07-31', is_current: true },
@@ -227,7 +227,7 @@ export const SEEDED_RECENT_CONTEXTS: RecentContext[] = [
     membership_id: 'mem_biz_kx', derived_role_badge: 'System Owner', timestamp: Date.now() - 2000,
   },
   {
-    mode: 'church', org_id: 'church_kx', program_id: 'church_kx_main', season_id: 'church_kx_2026',
+    mode: 'community', org_id: 'church_kx', program_id: 'church_kx_main', season_id: 'church_kx_2026',
     membership_id: 'mem_church_kx', derived_role_badge: 'System Owner', timestamp: Date.now() - 3000,
   },
   {

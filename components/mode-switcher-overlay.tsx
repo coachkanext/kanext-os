@@ -21,9 +21,9 @@ import type { Mode } from '@/types';
 const ALL_MODES: { mode: Mode; icon: IconSymbolName; label: string; image?: any }[] = [
   { mode: 'education', icon: 'graduationcap.fill', label: 'Education', image: require('@/assets/images/mode-education.png') },
   { mode: 'sports', icon: 'basketball.fill', label: 'Sports', image: require('@/assets/images/mode-sports.png') },
-  { mode: 'church', icon: 'building.columns.fill', label: 'Faith', image: require('@/assets/images/mode-church.png') },
+  { mode: 'community', icon: 'person.3.fill', label: 'Community', image: require('@/assets/images/mode-church.png') },
   { mode: 'business', icon: 'briefcase.fill', label: 'Business', image: require('@/assets/images/mode-business.png') },
-  { mode: 'pulse', icon: 'person.text.rectangle.fill', label: 'Pulse', image: require('@/assets/images/icon-portfolio.png') },
+  { mode: 'personal', icon: 'person.text.rectangle.fill', label: 'Personal', image: require('@/assets/images/icon-portfolio.png') },
 ];
 
 export function ModeSwitcherOverlay() {

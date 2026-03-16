@@ -7,7 +7,7 @@
 // MODES & ROLES
 // =============================================================================
 
-export type Mode = 'sports' | 'business' | 'church' | 'education' | 'pulse';
+export type Mode = 'sports' | 'business' | 'community' | 'education' | 'personal';
 
 export type Role =
   // Business
@@ -531,7 +531,7 @@ export interface EducationOrganization extends Organization {
 // AUTH & ONBOARDING
 // =============================================================================
 
-export type AuthProvider = 'apple' | 'google' | 'email';
+export type AuthProvider = 'apple' | 'google' | 'email' | 'phone';
 
 export type AccessTier = 'founder' | 'cofounder' | 'investor' | 'public';
 

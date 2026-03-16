@@ -54,7 +54,6 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { NexusProvider, useNexusContext } from '@/context/nexus-context';
 import { useAuth } from '@/context/auth-context';
 import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
-import { sendToGPT } from '@/utils/openai';
 import { useAppContext, useMode } from '@/context/app-context';
 import { registerGameOpsHandler } from '@/utils/global-game-ops';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
@@ -123,7 +122,6 @@ function NexusScreenContent() {
     closeSimulation,
     getSimulation,
     saveSimulation,
-    addAssistantMessage,
     createNewGameOps,
     openNewConversationSheet,
     closeNewConversationSheet,
@@ -134,7 +132,6 @@ function NexusScreenContent() {
     deleteConversation,
   } = useNexusContext();
 
-  const { state: authState, completeOnboarding } = useAuth();
   const { state: appState } = useAppContext();
   const mode = useMode();
   const insets = useSafeAreaInsets();
@@ -184,39 +181,6 @@ function NexusScreenContent() {
   const showLanding =
     canvasView === 'home' &&
     (isIdle || !nexusState.activeConversationId || nexusState.messages.length === 0);
-
-  // ── Onboarding ──
-  const onboardingTriggeredRef = useRef(false);
-  useEffect(() => {
-    if (!authState.isNewUser || onboardingTriggeredRef.current) return;
-    onboardingTriggeredRef.current = true;
-    createNewConversation();
-  }, [authState.isNewUser, createNewConversation]);
-
-  useEffect(() => {
-    if (!authState.isNewUser || !nexusState.activeConversationId || nexusState.messages.length > 0) return;
-    const convId = nexusState.activeConversationId;
-    (async () => {
-      try {
-        const text = await sendToGPT({
-          messages: [],
-          context: {
-            mode: appState.mode,
-            organization: appState.organization,
-            operatingRole: appState.operatingRole,
-            program: appState.program,
-            cycleName: appState.cycle?.name ?? null,
-            isOnboarding: true,
-          },
-        });
-        addAssistantMessage(convId, text);
-        await completeOnboarding();
-      } catch {
-        addAssistantMessage(convId, 'Welcome to Nexus. How can I help you today?');
-        await completeOnboarding();
-      }
-    })();
-  }, [authState.isNewUser, nexusState.activeConversationId, nexusState.messages.length, appState, addAssistantMessage, completeOnboarding]);
 
   // ── Game Ops ──
   useEffect(() => {
@@ -274,6 +238,18 @@ function NexusScreenContent() {
     }
     setCanvasView('chat');
   }, [nexusState.inputText, nexusState.activeConversationId, nexusState.messages.length, createNewConversation, sendMessage]);
+
+  const handleSuggestionTap = useCallback((title: string) => {
+    setLogoFading(true);
+    setInputText(title);
+    if (!nexusState.activeConversationId) {
+      createNewConversation();
+      setTimeout(sendMessage, 80);
+    } else {
+      setTimeout(sendMessage, 50);
+    }
+    setCanvasView('chat');
+  }, [nexusState.activeConversationId, setInputText, createNewConversation, sendMessage]);
 
   const handleSelectConversation = useCallback((id: string) => {
     selectConversation(id);
@@ -404,7 +380,7 @@ function NexusScreenContent() {
           {/* HOME */}
           {canvasView === 'home' && (
             <Pressable style={StyleSheet.absoluteFill} onPress={() => Keyboard.dismiss()}>
-              <NexusLanding fadeOut={logoFading} />
+              <NexusLanding />
             </Pressable>
           )}
 
@@ -463,7 +439,25 @@ function NexusScreenContent() {
         </View>
 
         {/* ── Suggest Cards (home state only) ── */}
-        {canvasView === 'home' && (
+        {canvasView === 'home' && !appState.organization && (
+          <View style={styles.orgSuggestRow}>
+            <Pressable
+              style={({ pressed }) => [styles.orgSuggestCard, { borderColor: C.divider }, pressed && { opacity: 0.7 }]}
+              onPress={() => handleSuggestionTap('Create an organization')}
+            >
+              <Text style={[styles.orgSuggestTitle, { color: C.label }]}>Create an organization</Text>
+              <Text style={[styles.orgSuggestDesc, { color: C.secondary }]}>Start your team, church, or company</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [styles.orgSuggestCard, { borderColor: C.divider }, pressed && { opacity: 0.7 }]}
+              onPress={() => handleSuggestionTap('Join an organization')}
+            >
+              <Text style={[styles.orgSuggestTitle, { color: C.label }]}>Join an organization</Text>
+              <Text style={[styles.orgSuggestDesc, { color: C.secondary }]}>Enter an invite code</Text>
+            </Pressable>
+          </View>
+        )}
+        {canvasView === 'home' && appState.organization && (
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -717,6 +711,28 @@ const makeStyles = (C: ComponentColors) =>
     },
     suggestTitle: { fontSize: 13, fontWeight: '500', color: C.label },
     suggestSub: { fontSize: 11, color: C.muted },
+
+    // New-org contextual suggestion cards (two columns, above input)
+    orgSuggestRow: {
+      flexDirection: 'row',
+      gap: 12,
+      paddingHorizontal: 16,
+      paddingBottom: 10,
+    },
+    orgSuggestCard: {
+      flex: 1,
+      borderWidth: 1,
+      borderRadius: 12,
+      padding: 16,
+    },
+    orgSuggestTitle: {
+      fontSize: 15,
+      fontWeight: '600',
+      marginBottom: 4,
+    },
+    orgSuggestDesc: {
+      fontSize: 12,
+    },
 
     // Composer bar (single rounded bar — spec)
     inputBarWrap: { paddingHorizontal: 16, paddingTop: 4 },

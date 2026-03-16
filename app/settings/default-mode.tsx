@@ -9,9 +9,9 @@ import { useMode } from '@/context/app-context';
 const MODES = [
   { id: 'sports',    label: 'Sports' },
   { id: 'business',  label: 'Business' },
-  { id: 'church',    label: 'Faith' },
+  { id: 'community', label: 'Community' },
   { id: 'education', label: 'Education' },
-  { id: 'pulse',     label: 'Personal' },
+  { id: 'personal',  label: 'Personal' },
 ] as const;
 
 export default function DefaultModeScreen() {

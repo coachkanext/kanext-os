@@ -45,9 +45,10 @@ const uniformMode = {
 
 export const ModeColors: Record<Mode, { primary: string; secondary: string; nexusGlyph: string; nexusGlyphDim: string }> = {
   sports: { ...uniformMode },
-  church: { ...uniformMode },
+  community: { ...uniformMode },
   education: { ...uniformMode },
   business: { ...uniformMode },
+  personal: { ...uniformMode },
 };
 
 // =============================================================================
@@ -55,11 +56,11 @@ export const ModeColors: Record<Mode, { primary: string; secondary: string; nexu
 // =============================================================================
 
 export const MODE_ACCENT: Record<Mode, string> = {
-  sports:         '#990000',   // Lincoln University Maroon
-  business:       '#1D9BF0',   // KaNeXT Blue
-  church:         '#0081CA',   // ICC Blue
-  education:      '#003A63',   // Howard Navy
-  pulse: '#7C3AED',   // Personal Brand Violet
+  sports:     '#990000',   // Lincoln University Maroon
+  business:   '#1D9BF0',   // KaNeXT Blue
+  community:  '#0081CA',   // Community Blue
+  education:  '#003A63',   // Howard Navy
+  personal:   '#7C3AED',   // Personal Brand Violet
 };
 
 // =============================================================================
@@ -67,11 +68,11 @@ export const MODE_ACCENT: Record<Mode, string> = {
 // =============================================================================
 
 export const MODE_ACCENT_SECONDARY: Record<Mode, string> = {
-  sports:         '#DFA414',   // Lincoln University Gold
-  business:       '#1D9BF0',   // KaNeXT Blue (same)
-  church:         '#004C7A',   // ICC Navy
-  education:      '#E51937',   // Howard Crimson
-  pulse: '#A78BFA',   // Personal Brand Lavender
+  sports:     '#DFA414',   // Lincoln University Gold
+  business:   '#1D9BF0',   // KaNeXT Blue (same)
+  community:  '#004C7A',   // Community Navy
+  education:  '#E51937',   // Howard Crimson
+  personal:   '#A78BFA',   // Personal Brand Lavender
 };
 
 // =============================================================================

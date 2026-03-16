@@ -17,6 +17,7 @@ import {
   View, Text, TextInput, Pressable, StyleSheet, ScrollView,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
 
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -40,9 +41,9 @@ const FILTER_PILLS: { key: FilterKey; label: string }[] = [
   { key: 'all',       label: 'All' },
   { key: 'sports',    label: 'Sports' },
   { key: 'business',  label: 'Business' },
-  { key: 'church',    label: 'Faith' },
+  { key: 'community', label: 'Community' },
   { key: 'education', label: 'Education' },
-  { key: 'pulse',     label: 'Personal' },
+  { key: 'personal',  label: 'Personal' },
 ];
 
 // ── Org type → display label ─────────────────────────────────────────────────
@@ -92,6 +93,7 @@ export function OrgDrawer() {
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
   const { state, switchContext } = useAppContext();
+  const router = useRouter();
   const currentMode = state.mode;
   const activeOrgId = state.activeContext.org_id;
 
@@ -158,6 +160,11 @@ export function OrgDrawer() {
   }, [currentMode, switchContext]);
 
   const handleClose = useCallback(() => setVisible(false), []);
+
+  const handleSettings = useCallback(() => {
+    setVisible(false);
+    router.push('/settings');
+  }, [router]);
 
   // ── Render ─────────────────────────────────────────────────────────────────
 
@@ -277,6 +284,20 @@ export function OrgDrawer() {
           );
         })}
       </View>
+
+      {/* Settings footer */}
+      <View style={styles.settingsFooter}>
+        <Pressable
+          style={({ pressed }) => [styles.settingsRow, pressed && { opacity: 0.6 }]}
+          onPress={handleSettings}
+        >
+          <View style={styles.settingsIcon}>
+            <IconSymbol name="gearshape" size={16} color="rgba(0,0,0,0.50)" />
+          </View>
+          <Text style={styles.settingsLabel}>Settings</Text>
+          <IconSymbol name="chevron.right" size={14} color="rgba(0,0,0,0.25)" />
+        </Pressable>
+      </View>
     </BottomSheet>
   );
 }
@@ -391,5 +412,25 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   emptyText: {
     textAlign: 'center', fontSize: 14,
     color: 'rgba(0,0,0,0.30)', paddingVertical: 32,
+  },
+
+  settingsFooter: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(0,0,0,0.08)',
+    paddingHorizontal: 24,
+    paddingVertical: 4,
+    paddingBottom: 8,
+  },
+  settingsRow: {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    paddingVertical: 14,
+  },
+  settingsIcon: {
+    width: 32, height: 32, borderRadius: 10,
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    alignItems: 'center', justifyContent: 'center',
+  },
+  settingsLabel: {
+    flex: 1, fontSize: 15, fontWeight: '500', color: 'rgba(0,0,0,0.70)',
   },
 });
