@@ -1,54 +1,48 @@
 /**
- * Nexus Landing — Empty state with the Nexus "N" logo.
- * Uses the same footer-nexus.png asset as the universal footer.
- * Shown when no active conversation is selected (15+ min idle or first use).
- * Just the logo and nothing else. No quotes, no chips, no suggestions.
- * Logo fades out when the user starts interacting (fadeOut prop).
+ * Nexus Landing — Empty state with asterisk logo and time-aware greeting.
+ * Matches the Claude mobile app home screen aesthetic.
  */
 
-import React, { useRef, useEffect } from 'react';
-import { View, Animated, StyleSheet } from 'react-native';
+import React, { useMemo } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { useColors } from '@/hooks/use-colors';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 
-interface Props {
-  /** When true, the logo fades out smoothly */
-  fadeOut?: boolean;
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'How can I help you\nthis morning?';
+  if (hour < 17) return 'How can I help you\nthis afternoon?';
+  return 'How can I help you\nthis evening?';
 }
 
-export function NexusLanding({ fadeOut = false }: Props) {
+export function NexusLanding() {
   const C = useColors();
-  const opacity = useRef(new Animated.Value(1)).current;
-
-  useEffect(() => {
-    if (fadeOut) {
-      Animated.timing(opacity, {
-        toValue: 0,
-        duration: 400,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [fadeOut]);
-
+  const greeting = useMemo(() => getGreeting(), []);
   return (
     <View style={[styles.container, { backgroundColor: C.bg }]}>
-      <Animated.Image
-        source={require('@/assets/images/footer-nexus.png')}
-        style={[styles.logo, { opacity: Animated.multiply(opacity, 0.35) }]}
-        resizeMode="contain"
-      />
+      <View style={styles.center}>
+        <IconSymbol name="sparkles" size={52} color={C.secondary} weight="medium" />
+        <Text style={[styles.greeting, { color: C.label }]}>{greeting}</Text>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: { flex: 1 },
+  center: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000000',
+    justifyContent: 'center',
+    paddingHorizontal: 40,
+    paddingBottom: 100,
   },
-  logo: {
-    width: 200,
-    height: 200,
+  greeting: {
+    marginTop: 22,
+    fontSize: 30,
+    fontFamily: 'Georgia',
+    textAlign: 'center',
+    lineHeight: 40,
+    letterSpacing: -0.3,
   },
 });

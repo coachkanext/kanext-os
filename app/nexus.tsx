@@ -1,33 +1,19 @@
 /**
- * Nexus Screen — Canvas State Machine
- *
- * Canvas states:
- *  home          → landing logo + input bar (idle / no active conv)
- *  chat          → active conversation thread + input bar + pills row
- *  chats         → full-canvas conversation list
- *  projects      → project cards
- *  project-detail → single project detail with back arrow
- *  artifacts     → artifacts list with filter chips
- *
- * Sidebar (ConversationsPanel): absolutely positioned, zIndex 50.
- * Semi-transparent overlay (zIndex 49) dismisses it on tap.
- *
- * All existing functionality preserved:
- *  SimulationOverlay, VoiceOverlay, AvatarDrawer, InsertSheet,
- *  logo-fade-on-send, 15-min idle, mic/send crossfade, game-ops, onboarding.
+ * Nexus Screen — Home only.
+ * Landing logo + input bar + suggest cards + sidebar panel.
  */
 
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import {
   StyleSheet,
   Keyboard,
+  PanResponder,
   Pressable,
   View,
   Text,
   TextInput,
   Platform,
   ScrollView,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -44,13 +30,6 @@ import { VoiceOverlay } from '@/components/nexus/voice-overlay';
 import { InsertSheet, type InsertAction } from '@/components/nexus/new-conversation-sheet';
 import { NexusPageTopBar } from '@/components/nexus/nexus-page-top-bar';
 import { ConversationsPanel } from '@/components/nexus/conversations-panel';
-import type { SidebarNav } from '@/components/nexus/conversations-panel';
-import { ChatsCanvasView } from '@/components/nexus/chats-canvas-view';
-import { ProjectsCanvasView } from '@/components/nexus/projects-canvas-view';
-import { ProjectDetailCanvasView } from '@/components/nexus/project-detail-canvas-view';
-import { ArtifactsCanvasView } from '@/components/nexus/artifacts-canvas-view';
-import { NexusPillsRow } from '@/components/nexus/nexus-pills-row';
-import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { NexusProvider, useNexusContext } from '@/context/nexus-context';
 import { useAuth } from '@/context/auth-context';
 import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
@@ -60,33 +39,39 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 const IDLE_THRESHOLD_MS = 15 * 60 * 1000;
 
-type CanvasView = 'home' | 'chat' | 'chats' | 'projects' | 'project-detail' | 'artifacts';
-
-// ── Filter chips ──
-const MODE_CHIPS = ['All', 'Sports', 'Business', 'Faith', 'Education'] as const;
-type ModeChip = (typeof MODE_CHIPS)[number];
-const ORG_CHIPS: Record<ModeChip, string[]> = {
-  All: [],
-  Sports: ['Lincoln U', 'FMU', 'All Sports'],
-  Business: ['BizCo', 'StartupX', 'All Business'],
-  Faith: ['Riverside Church', 'All Faith'],
-  Education: ['Lincoln U', 'Central Academy', 'All Education'],
-};
-
 // ── Suggest cards (home state) ──
-const SUGGEST_CARDS = [
-  { title: 'Evaluate a recruit',  sub: 'Pull film, academics, and KR score'     },
-  { title: 'Draft practice plan', sub: 'Generate weekly schedule from template' },
-  { title: 'Analyze game film',   sub: 'Break down opponent tendencies'         },
-  { title: 'Donor outreach',      sub: 'Draft personalized outreach messages'   },
-];
-
-// ── Artifacts sheet mock (spec: chatArtifacts) ──
-const SHEET_ARTIFACTS = [
-  { id: 'sa1', icon: '📄', title: 'Williams Full Report',        meta: 'Report · 2 pages · Just now' },
-  { id: 'sa2', icon: '📄', title: 'Highlight Tape Analysis',     meta: 'Document · 4 pages · 3:42 PM' },
-  { id: 'sa3', icon: '🎮', title: 'Route Running Breakdown',     meta: 'Simulation · 3:43 PM' },
-];
+const SUGGEST_CARDS: Record<string, { title: string; sub: string }[]> = {
+  sports: [
+    { title: 'Evaluate a recruit',   sub: 'Pull film, academics, and KR score'      },
+    { title: 'Draft practice plan',  sub: 'Generate weekly schedule from template'  },
+    { title: 'Analyze game film',    sub: 'Break down opponent tendencies'          },
+    { title: 'Donor outreach',       sub: 'Draft personalized outreach messages'    },
+  ],
+  business: [
+    { title: 'Summarize pipeline',   sub: 'Review open deals and next steps'        },
+    { title: 'Draft a proposal',     sub: 'Generate a client-ready proposal'        },
+    { title: 'Analyze revenue',      sub: 'Break down monthly performance'          },
+    { title: 'Outreach sequence',    sub: 'Write a personalized lead cadence'       },
+  ],
+  education: [
+    { title: 'Review student progress', sub: 'Summarize academic standing'         },
+    { title: 'Draft lesson plan',       sub: 'Generate week plan from curriculum'  },
+    { title: 'Admission evaluation',    sub: 'Score applicant fit and readiness'   },
+    { title: 'Parent communication',    sub: 'Draft a personalized update email'   },
+  ],
+  community: [
+    { title: 'Plan an event',        sub: 'Generate event checklist and timeline'  },
+    { title: 'Draft an announcement', sub: 'Write a community-wide message'        },
+    { title: 'Outreach campaign',    sub: 'Build a volunteer recruitment plan'     },
+    { title: 'Summarize engagement', sub: 'Review member activity and growth'      },
+  ],
+  personal: [
+    { title: 'Plan my week',         sub: 'Organize tasks and priorities'          },
+    { title: 'Draft a message',      sub: 'Write something for any occasion'       },
+    { title: 'Research a topic',     sub: 'Get a clear, concise briefing'          },
+    { title: 'Set a goal',           sub: 'Build an actionable plan to hit it'     },
+  ],
+};
 
 // ─────────────────────────────────────────────
 // Locked state
@@ -139,16 +124,25 @@ function NexusScreenContent() {
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
 
-  // ── Canvas state ──
-  const [canvasView, setCanvasView] = useState<CanvasView>('home');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarNav, setSidebarNav] = useState<SidebarNav>('chats');
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [filterStage, setFilterStage] = useState<'mode' | 'org'>('mode');
-  const [selectedModeChip, setSelectedModeChip] = useState<ModeChip>('All');
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  const [artifactsSheetOpen, setArtifactsSheetOpen] = useState(false);
   const [avatarDrawerVisible, setAvatarDrawerVisible] = useState(false);
+  const [attachMenuOpen, setAttachMenuOpen] = useState(false);
+
+  // ── Swipe to open/close sidebar ──
+  const sidebarOpenRef = useRef(sidebarOpen);
+  useEffect(() => { sidebarOpenRef.current = sidebarOpen; }, [sidebarOpen]);
+  const swipePanResponder = useMemo(() => PanResponder.create({
+    onMoveShouldSetPanResponder: (evt, { dx, dy }) => {
+      if (Math.abs(dy) > Math.abs(dx)) return false;
+      if (dx > 8 && evt.nativeEvent.pageX < 44) return true;
+      if (dx < -8 && sidebarOpenRef.current) return true;
+      return false;
+    },
+    onPanResponderRelease: (_, { dx, vx }) => {
+      if (dx > 50 || vx > 0.5) setSidebarOpen(true);
+      else if (dx < -50 || vx < -0.5) setSidebarOpen(false);
+    },
+  }), []);
 
   // ── 15-min idle ──
   const isIdle =
@@ -156,7 +150,7 @@ function NexusScreenContent() {
     Date.now() - nexusState.lastInteractionAt > IDLE_THRESHOLD_MS;
 
   // ── Keyboard height ──
-  const footerClearance = (insets.bottom || 0) + 72 + 8;
+  const footerClearance = (insets.bottom || 0) + 49 + 4;
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   useEffect(() => {
     const show = Keyboard.addListener(
@@ -172,15 +166,9 @@ function NexusScreenContent() {
   const keyboardUp = keyboardHeight > 0;
   const inputBottomPadding = keyboardUp ? keyboardHeight : footerClearance;
 
-  // ── Logo fade ──
-  const [logoFading, setLogoFading] = useState(false);
-
-  // ── Send button visibility ──
   const hasText = nexusState.inputText.trim().length > 0;
-
   const showLanding =
-    canvasView === 'home' &&
-    (isIdle || !nexusState.activeConversationId || nexusState.messages.length === 0);
+    isIdle || !nexusState.activeConversationId || nexusState.messages.length === 0;
 
   // ── Game Ops ──
   useEffect(() => {
@@ -188,15 +176,9 @@ function NexusScreenContent() {
     return () => registerGameOpsHandler(null);
   }, [createNewGameOps]);
 
-  const activeConversation = nexusState.conversations.find(
-    (c) => c.id === nexusState.activeConversationId,
-  );
-  const isGameOps = activeConversation?.type === 'game-ops';
-  const gameOpsConfig = activeConversation?.gameOpsConfig;
-
   // ── Voice ──
   const preExistingTextRef = useRef('');
-  const { voiceState, audioLevel, stopListening } = useSpeechRecognition({
+  const { voiceState, audioLevel, startListening, stopListening } = useSpeechRecognition({
     onTranscript: useCallback((text: string) => {
       const prefix = preExistingTextRef.current;
       const sep = prefix.length > 0 && !prefix.endsWith(' ') ? ' ' : '';
@@ -204,19 +186,27 @@ function NexusScreenContent() {
     }, [setInputText]),
   });
   const handleVoiceStop = useCallback(() => stopListening(), [stopListening]);
+  const handleMicPress = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    preExistingTextRef.current = nexusState.inputText;
+    startListening();
+  }, [nexusState.inputText, startListening]);
+  const handleWaveformPress = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    preExistingTextRef.current = nexusState.inputText;
+    startListening();
+  }, [nexusState.inputText, startListening]);
 
   // ── Handlers ──
   const handleNewConversation = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setLogoFading(false);
     createNewConversation();
-    setCanvasView('home');
   }, [createNewConversation]);
 
   const handlePlusPress = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    openNewConversationSheet();
-  }, [openNewConversationSheet]);
+    setAttachMenuOpen((v) => !v);
+  }, []);
 
   const handleInsertAction = useCallback((action: InsertAction) => {
     closeNewConversationSheet();
@@ -227,20 +217,16 @@ function NexusScreenContent() {
     if (!nexusState.inputText.trim()) return;
     Keyboard.dismiss();
     if (!nexusState.activeConversationId) {
-      setLogoFading(true);
       createNewConversation();
       setTimeout(sendMessage, 50);
     } else if (nexusState.messages.length === 0) {
-      setLogoFading(true);
       setTimeout(sendMessage, 50);
     } else {
       sendMessage();
     }
-    setCanvasView('chat');
   }, [nexusState.inputText, nexusState.activeConversationId, nexusState.messages.length, createNewConversation, sendMessage]);
 
   const handleSuggestionTap = useCallback((title: string) => {
-    setLogoFading(true);
     setInputText(title);
     if (!nexusState.activeConversationId) {
       createNewConversation();
@@ -248,198 +234,50 @@ function NexusScreenContent() {
     } else {
       setTimeout(sendMessage, 50);
     }
-    setCanvasView('chat');
   }, [nexusState.activeConversationId, setInputText, createNewConversation, sendMessage]);
 
   const handleSelectConversation = useCallback((id: string) => {
     selectConversation(id);
-    setCanvasView('chat');
     setSidebarOpen(false);
   }, [selectConversation]);
-
-  const handleNavSelect = useCallback((nav: SidebarNav) => {
-    setSidebarNav(nav);
-    setSidebarOpen(false);
-    if (nav === 'chats') setCanvasView('chats');
-    else if (nav === 'projects') setCanvasView('projects');
-    else if (nav === 'artifacts') setCanvasView('artifacts');
-  }, []);
-
-  const handleBack = useCallback(() => {
-    if (canvasView === 'chat') setCanvasView('chats');
-    else if (canvasView === 'project-detail') setCanvasView('projects');
-    else setCanvasView('home');
-  }, [canvasView]);
 
   const handleAvatarPress = useCallback(() => {
     setSidebarOpen(false);
     router.navigate('/settings' as any);
   }, [router]);
 
-  // ── Top bar derived ──
-  const topBarView: 'home' | 'chat' | 'list' =
-    canvasView === 'chat' ? 'chat' : canvasView === 'home' ? 'home' : 'list';
-
-  const listTitles: Record<CanvasView, string> = {
-    home: '', chat: '', chats: 'Chats', projects: 'Projects',
-    'project-detail': 'Project', artifacts: 'Artifacts',
-  };
-
-  const showBack = canvasView === 'chat' || canvasView === 'project-detail';
-  const showFilter = canvasView === 'chats' || canvasView === 'projects';
-  const showNewChat = canvasView === 'chat';
-  const showInputBar = canvasView === 'home' || canvasView === 'chat';
-  const showFAB = canvasView === 'chats' || canvasView === 'projects' || canvasView === 'artifacts';
-
-  const orgChips = filterStage === 'org' ? ORG_CHIPS[selectedModeChip] : [];
-
   return (
     <ThemedView style={styles.container}>
-      <View style={{ flex: 1, paddingTop: insets.top }}>
+      <View style={{ flex: 1, paddingTop: insets.top }} {...swipePanResponder.panHandlers}>
 
         {/* ── Top Bar ── */}
         <NexusPageTopBar
-          view={topBarView}
-          title={listTitles[canvasView]}
-          showBack={showBack}
-          showFilter={showFilter}
-          showNewChat={showNewChat}
-          filterActive={filterOpen}
+          view="home"
           onHamburger={() => setSidebarOpen(true)}
-          onBack={handleBack}
           onNewChat={handleNewConversation}
-          onFilter={() => {
-            setFilterOpen((v) => !v);
-            setFilterStage('mode');
-            setSelectedModeChip('All');
-          }}
           onDropdownAction={(action) => console.log('dropdown:', action)}
-          onPlusPress={handleNewConversation}
         />
-
-        {/* ── Filter Chips ── */}
-        {filterOpen && showFilter && (
-          <View style={[styles.filterBar, { borderBottomColor: C.divider }]}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.filterChipsRow}
-            >
-              {filterStage === 'mode' ? (
-                MODE_CHIPS.map((chip) => {
-                  const active = chip === selectedModeChip;
-                  return (
-                    <Pressable
-                      key={chip}
-                      style={[styles.chip, { backgroundColor: active ? C.label : C.surface }]}
-                      onPress={() => {
-                        setSelectedModeChip(chip);
-                        if (chip !== 'All') setFilterStage('org');
-                      }}
-                    >
-                      <Text style={[styles.chipText, { color: active ? C.bg : C.secondary }]}>{chip}</Text>
-                    </Pressable>
-                  );
-                })
-              ) : (
-                <>
-                  <Pressable
-                    style={[styles.chip, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'center', gap: 4 }]}
-                    onPress={() => setFilterStage('mode')}
-                  >
-                    <IconSymbol name="chevron.left" size={12} color={C.secondary} />
-                    <Text style={[styles.chipText, { color: C.secondary }]}>Back</Text>
-                  </Pressable>
-                  {orgChips.map((org) => (
-                    <Pressable
-                      key={org}
-                      style={[styles.chip, { backgroundColor: C.surface }]}
-                      onPress={() => { setFilterOpen(false); setFilterStage('mode'); }}
-                    >
-                      <Text style={[styles.chipText, { color: C.secondary }]}>{org}</Text>
-                    </Pressable>
-                  ))}
-                </>
-              )}
-            </ScrollView>
-          </View>
-        )}
-
-        {/* ── Pills Row (active chat) ── */}
-        {canvasView === 'chat' && (
-          <NexusPillsRow
-            projectName={activeConversation?.workspace ?? null}
-            artifactCount={3}
-            onProjectPress={() => setCanvasView('project-detail')}
-            onArtifactsPress={() => setArtifactsSheetOpen(true)}
-          />
-        )}
 
         {/* ── Canvas ── */}
         <View style={styles.canvas}>
-          {/* HOME */}
-          {canvasView === 'home' && (
-            <Pressable style={StyleSheet.absoluteFill} onPress={() => Keyboard.dismiss()}>
+          <Pressable style={StyleSheet.absoluteFill} onPress={() => Keyboard.dismiss()}>
+            {showLanding ? (
               <NexusLanding />
-            </Pressable>
-          )}
-
-          {/* CHAT */}
-          {canvasView === 'chat' && (
-            <>
-              {isGameOps && gameOpsConfig && (
-                <View style={[styles.gameOpsBar, { borderBottomColor: C.divider }]}>
-                  <Text style={[styles.gameOpsText, { color: C.secondary }]}>
-                    FMU vs {gameOpsConfig.opponent}
-                  </Text>
-                </View>
-              )}
-              <Pressable style={StyleSheet.absoluteFill} onPress={() => Keyboard.dismiss()}>
-                <ChatThread
-                  messages={nexusState.messages}
-                  isLoading={nexusState.isLoading}
-                  conversation={
-                    nexusState.conversations.find((c) => c.id === nexusState.activeConversationId) ?? null
-                  }
-                  mode={mode}
-                />
-              </Pressable>
-            </>
-          )}
-
-          {/* CHATS LIST */}
-          {canvasView === 'chats' && (
-            <ChatsCanvasView
-              conversations={nexusState.conversations}
-              onSelectConversation={handleSelectConversation}
-            />
-          )}
-
-          {/* PROJECTS */}
-          {canvasView === 'projects' && (
-            <ProjectsCanvasView
-              onSelectProject={(id) => {
-                setSelectedProjectId(id);
-                setCanvasView('project-detail');
-              }}
-            />
-          )}
-
-          {/* PROJECT DETAIL */}
-          {canvasView === 'project-detail' && (
-            <ProjectDetailCanvasView
-              projectId={selectedProjectId}
-              conversations={nexusState.conversations}
-              onSelectConversation={handleSelectConversation}
-            />
-          )}
-
-          {/* ARTIFACTS */}
-          {canvasView === 'artifacts' && <ArtifactsCanvasView />}
+            ) : (
+              <ChatThread
+                messages={nexusState.messages}
+                isLoading={nexusState.isLoading}
+                conversation={
+                  nexusState.conversations.find((c) => c.id === nexusState.activeConversationId) ?? null
+                }
+                mode={mode}
+              />
+            )}
+          </Pressable>
         </View>
 
-        {/* ── Suggest Cards (home state only) ── */}
-        {canvasView === 'home' && !appState.organization && (
+        {/* ── Suggest Cards (landing only) ── */}
+        {showLanding && !appState.organization && (
           <View style={styles.orgSuggestRow}>
             <Pressable
               style={({ pressed }) => [styles.orgSuggestCard, { borderColor: C.divider }, pressed && { opacity: 0.7 }]}
@@ -457,22 +295,18 @@ function NexusScreenContent() {
             </Pressable>
           </View>
         )}
-        {canvasView === 'home' && appState.organization && (
+        {showLanding && appState.organization && (
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.suggestRow}
             style={styles.suggestScroll}
           >
-            {SUGGEST_CARDS.map((card) => (
+            {(SUGGEST_CARDS[mode] ?? SUGGEST_CARDS.sports).map((card) => (
               <Pressable
                 key={card.title}
                 style={({ pressed }) => [styles.suggestCard, { opacity: pressed ? 0.7 : 1 }]}
-                onPress={() => {
-                  setInputText(card.title);
-                  if (!nexusState.activeConversationId) createNewConversation();
-                  setCanvasView('chat');
-                }}
+                onPress={() => handleSuggestionTap(card.title)}
               >
                 <Text style={styles.suggestTitle}>{card.title}</Text>
                 <Text style={styles.suggestSub}>{card.sub}</Text>
@@ -481,22 +315,45 @@ function NexusScreenContent() {
           </ScrollView>
         )}
 
-        {/* ── Input Bar (home + chat only) ── */}
-        {showInputBar && (
-          <View style={[styles.inputBarWrap, { paddingBottom: inputBottomPadding }]}>
-            <View style={[styles.composerBar, { borderColor: 'rgba(0,0,0,0.06)' }]}>
-              {/* + button inside bar */}
-              <Pressable
-                style={({ pressed }) => [styles.composerPlus, { opacity: pressed ? 0.6 : 1 }]}
-                onPress={handlePlusPress}
-              >
-                <IconSymbol name="plus" size={18} color={C.secondary} />
-              </Pressable>
+        {/* ── Attach Menu ── */}
+        {attachMenuOpen && (
+          <>
+            <Pressable style={StyleSheet.absoluteFill} onPress={() => setAttachMenuOpen(false)} />
+            <View style={[styles.attachMenu, { bottom: inputBottomPadding + 52, backgroundColor: C.bg }]}>
+              {([
+                { label: 'Camera', icon: 'camera' },
+                { label: 'Photos', icon: 'photo.on.rectangle' },
+                { label: 'Files',  icon: 'doc' },
+              ] as const).map((item) => (
+                <Pressable
+                  key={item.label}
+                  style={({ pressed }) => [styles.attachMenuItem, { opacity: pressed ? 0.7 : 1 }]}
+                  onPress={() => setAttachMenuOpen(false)}
+                >
+                  <View style={[styles.attachMenuIcon, { backgroundColor: C.separator }]}>
+                    <IconSymbol name={item.icon} size={20} color={C.label} />
+                  </View>
+                  <Text style={[styles.attachMenuLabel, { color: C.label }]}>{item.label}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </>
+        )}
 
-              {/* Text input */}
+        {/* ── Input Bar ── */}
+        <View style={[styles.inputBarWrap, { paddingBottom: inputBottomPadding }]}>
+          <View style={styles.inputBarRow}>
+            <Pressable
+              style={({ pressed }) => [styles.composerPlusOuter, { opacity: pressed ? 0.6 : 1 }]}
+              onPress={handlePlusPress}
+            >
+              <IconSymbol name="plus" size={20} color={C.secondary} />
+            </Pressable>
+
+            <View style={[styles.composerBar, { borderColor: 'rgba(0,0,0,0.06)', flex: 1 }]}>
               <TextInput
                 style={styles.composerInput}
-                placeholder={canvasView === 'home' ? 'Ask Nexus anything...' : 'Ask Nexus...'}
+                placeholder="Ask Nexus"
                 placeholderTextColor={C.muted}
                 value={nexusState.inputText}
                 onChangeText={setInputText}
@@ -508,44 +365,28 @@ function NexusScreenContent() {
                 autoCorrect
                 selectionColor={C.label}
                 onFocus={() => {
-                  if (!nexusState.activeConversationId) {
-                    createNewConversation();
-                    setCanvasView('chat');
-                  }
+                  if (!nexusState.activeConversationId) createNewConversation();
                 }}
               />
 
-              {/* Send button — visible only when typing */}
-              {hasText && (
+              {hasText ? (
                 <Pressable style={styles.composerSend} onPress={handleSend}>
                   <IconSymbol name="arrow.up" size={16} weight="semibold" color="#FFFFFF" />
                 </Pressable>
+              ) : (
+                <View style={styles.composerActions}>
+                  <Pressable style={styles.composerMic} onPress={handleMicPress}>
+                    <IconSymbol name="microphone" size={20} color={C.secondary} />
+                  </Pressable>
+                  <Pressable style={styles.composerWaveform} onPress={handleWaveformPress}>
+                    <IconSymbol name="waveform" size={18} color="#FFFFFF" />
+                  </Pressable>
+                </View>
               )}
             </View>
           </View>
-        )}
-
-        {/* ── FAB (list views) ── */}
-        {showFAB && (
-          <Pressable
-            style={[styles.fab, { bottom: insets.bottom + 88 }]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              createNewConversation();
-              setCanvasView('home');
-            }}
-          >
-            <IconSymbol name="square.and.pencil" size={20} color={C.bg} />
-          </Pressable>
-        )}
+        </View>
       </View>
-
-      {/* ── Sidebar overlay ── */}
-      {sidebarOpen && (
-        <TouchableWithoutFeedback onPress={() => setSidebarOpen(false)}>
-          <View style={styles.sidebarOverlay} />
-        </TouchableWithoutFeedback>
-      )}
 
       {/* ── Conversations Panel ── */}
       <ConversationsPanel
@@ -561,8 +402,6 @@ function NexusScreenContent() {
         onRenameConversation={renameConversation}
         onArchiveConversation={archiveConversation}
         onDeleteConversation={deleteConversation}
-        activeNav={sidebarNav}
-        onNavSelect={handleNavSelect}
       />
 
       {/* ── Overlays ── */}
@@ -593,33 +432,6 @@ function NexusScreenContent() {
         onClose={closeNewConversationSheet}
         onSelectAction={handleInsertAction}
       />
-
-      {/* ── Artifacts Bottom Sheet ── */}
-      <BottomSheet
-        visible={artifactsSheetOpen}
-        onClose={() => setArtifactsSheetOpen(false)}
-        title="Artifacts"
-      >
-        <View>
-          {SHEET_ARTIFACTS.map((a) => (
-            <View key={a.id} style={[styles.sheetRow, { borderBottomColor: C.divider }]}>
-              <Text style={styles.sheetIcon}>{a.icon}</Text>
-              <View style={styles.sheetContent}>
-                <Text style={[styles.sheetTitle, { color: C.label }]}>{a.title}</Text>
-                <Text style={[styles.sheetMeta, { color: C.secondary }]}>{a.meta}</Text>
-              </View>
-              <IconSymbol name="chevron.right" size={14} color={C.secondary} />
-            </View>
-          ))}
-          <Pressable
-            style={[styles.downloadBtn, { backgroundColor: C.label }]}
-            onPress={() => setArtifactsSheetOpen(false)}
-          >
-            <IconSymbol name="arrow.down.circle" size={16} color={C.bg} />
-            <Text style={[styles.downloadText, { color: C.bg }]}>Download All</Text>
-          </Pressable>
-        </View>
-      </BottomSheet>
     </ThemedView>
   );
 }
@@ -629,7 +441,6 @@ function NexusScreenContent() {
 // ─────────────────────────────────────────────
 export default function NexusScreen() {
   const { state: authState } = useAuth();
-  const mode = useMode();
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
 
@@ -649,46 +460,6 @@ const makeStyles = (C: ComponentColors) =>
   StyleSheet.create({
     container: { flex: 1, backgroundColor: C.bg },
     canvas: { flex: 1 },
-
-    // Sidebar overlay
-    sidebarOverlay: {
-      ...StyleSheet.absoluteFillObject,
-      backgroundColor: 'rgba(0,0,0,0.4)',
-      zIndex: 49,
-    },
-
-    // Filter bar
-    filterBar: { borderBottomWidth: StyleSheet.hairlineWidth },
-    filterChipsRow: {
-      flexDirection: 'row',
-      gap: 8,
-      paddingHorizontal: 16,
-      paddingVertical: 10,
-    },
-    chip: {
-      paddingHorizontal: 14,
-      paddingVertical: 7,
-      borderRadius: 999,
-    },
-    chipText: { fontSize: 13, fontWeight: '600' },
-
-    // FAB
-    fab: {
-      position: 'absolute',
-      right: 20,
-      width: 52,
-      height: 52,
-      borderRadius: 26,
-      backgroundColor: C.label,
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 10,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.25,
-      shadowRadius: 8,
-      elevation: 8,
-    },
 
     // Suggest cards
     suggestScroll: { flexGrow: 0 },
@@ -712,7 +483,7 @@ const makeStyles = (C: ComponentColors) =>
     suggestTitle: { fontSize: 13, fontWeight: '500', color: C.label },
     suggestSub: { fontSize: 11, color: C.muted },
 
-    // New-org contextual suggestion cards (two columns, above input)
+    // New-org contextual suggestion cards
     orgSuggestRow: {
       flexDirection: 'row',
       gap: 12,
@@ -734,25 +505,65 @@ const makeStyles = (C: ComponentColors) =>
       fontSize: 12,
     },
 
-    // Composer bar (single rounded bar — spec)
+    // Attach menu popup
+    attachMenu: {
+      position: 'absolute',
+      left: 16,
+      borderRadius: 18,
+      paddingVertical: 6,
+      paddingHorizontal: 6,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.12,
+      shadowRadius: 16,
+      elevation: 10,
+      zIndex: 100,
+    },
+    attachMenuItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 14,
+      paddingVertical: 8,
+      paddingHorizontal: 8,
+    },
+    attachMenuIcon: {
+      width: 42,
+      height: 42,
+      borderRadius: 21,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    attachMenuLabel: {
+      fontSize: 16,
+      fontWeight: '500',
+    },
+
+    // Composer
     inputBarWrap: { paddingHorizontal: 16, paddingTop: 4 },
+    inputBarRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    composerPlusOuter: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+      borderColor: 'rgba(0,0,0,0.06)',
+    },
     composerBar: {
       flexDirection: 'row',
-      alignItems: 'flex-end',
+      alignItems: 'center',
       backgroundColor: C.bg,
       borderWidth: 1,
       borderRadius: 22,
       paddingVertical: 6,
-      paddingLeft: 6,
+      paddingLeft: 12,
       paddingRight: 6,
       minHeight: 44,
-    },
-    composerPlus: {
-      width: 32,
-      height: 32,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginLeft: 2,
     },
     composerInput: {
       flex: 1,
@@ -772,32 +583,30 @@ const makeStyles = (C: ComponentColors) =>
       backgroundColor: C.label,
       marginRight: 2,
     },
+    composerActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+      marginRight: 2,
+    },
+    composerMic: {
+      width: 32,
+      height: 32,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    composerWaveform: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: C.label,
+    },
 
     // Locked state
     lockedOverlay: { flex: 1, alignItems: 'center', justifyContent: 'center' },
     lockedContent: { alignItems: 'center', opacity: 0.4 },
     lockedLogo: { fontSize: 48, fontWeight: '800', letterSpacing: 2, marginBottom: 12 },
     lockedText: { fontSize: 15, fontWeight: '500', color: C.muted },
-
-    // Game Ops bar
-    gameOpsBar: {
-      paddingVertical: 8, paddingHorizontal: 16,
-      borderBottomWidth: StyleSheet.hairlineWidth, alignItems: 'center',
-    },
-    gameOpsText: { fontSize: 14, fontWeight: '600' },
-
-    // Artifacts sheet
-    sheetRow: {
-      flexDirection: 'row', alignItems: 'center',
-      paddingVertical: 14, borderBottomWidth: StyleSheet.hairlineWidth, gap: 12,
-    },
-    sheetIcon: { fontSize: 22, width: 32, textAlign: 'center' },
-    sheetContent: { flex: 1, gap: 3 },
-    sheetTitle: { fontSize: 15, fontWeight: '500' },
-    sheetMeta: { fontSize: 12 },
-    downloadBtn: {
-      flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-      gap: 8, marginTop: 16, paddingVertical: 12, borderRadius: 10,
-    },
-    downloadText: { fontSize: 15, fontWeight: '600' },
   });

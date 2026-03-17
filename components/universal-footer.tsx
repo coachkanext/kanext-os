@@ -14,8 +14,9 @@
  *   Profile (5):      footer-profile.png — tap → push profile, swipe-up → org drawer
  */
 
-import React, { useRef, useMemo, useEffect, useCallback } from 'react';
-import { View, Text, Image, Pressable, PanResponder, Animated, StyleSheet } from 'react-native';
+import React, { useRef, useMemo, useCallback } from 'react';
+import { View, Pressable, PanResponder, StyleSheet } from 'react-native';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, usePathname } from 'expo-router';
@@ -27,9 +28,9 @@ import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils
 import { startGlobalVoice } from '@/utils/global-voice';
 import { openOrgDrawer } from '@/utils/global-org-drawer';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
-import { subscribeFooterVisibility, resetFooter } from '@/utils/global-footer-hide';
+import { resetFooter } from '@/utils/global-footer-hide';
 import { popInnerToHome } from '@/utils/global-inner-nav';
-const FOOTER_HEIGHT = 72;
+const FOOTER_HEIGHT = 49;
 
 export function UniversalFooter() {
   const C = useColors();
@@ -39,37 +40,6 @@ export function UniversalFooter() {
   const pathnameRef = useRef(pathname);
   pathnameRef.current = pathname;
   const lastTapRef = useRef(0);
-  const translateY = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    return subscribeFooterVisibility((visible, instant) => {
-      if (visible) {
-        if (instant) {
-          // Screen transition — snap immediately (like X)
-          translateY.stopAnimation();
-          Animated.timing(translateY, {
-            toValue: 0,
-            duration: 0,
-            useNativeDriver: true,
-          }).start();
-        } else {
-          // Scroll-driven — spring back
-          Animated.spring(translateY, {
-            toValue: 0,
-            tension: 120,
-            friction: 14,
-            useNativeDriver: true,
-          }).start();
-        }
-      } else {
-        Animated.timing(translateY, {
-          toValue: FOOTER_HEIGHT + insets.bottom + 1,
-          duration: 250,
-          useNativeDriver: true,
-        }).start();
-      }
-    });
-  }, [insets.bottom]);
 
   // ── Nexus tap → navigate to Nexus fullscreen (with double-tap for split) ──
   const handleNexusPress = () => {
@@ -162,16 +132,12 @@ export function UniversalFooter() {
 
   const handleHomePress = () => {
     const p = pathnameRef.current;
-    // Dead tap only when already on the home index
+    // Dead tap when already on home index
     if (p === '/' || p === '/(tabs)' || p === '/(tabs)/(main)' || p === '/(main)') return;
     preNav();
-    // From settings (or any root-level modal), navigate directly to home tab
-    if (p.startsWith('/settings') || p === '/wallet' || p === '/nexus') {
-      router.navigate('/(tabs)/(main)' as any);
-      return;
-    }
-    popInnerToHome();
-    if (isOnNexus()) router.dismissAll();
+    // Dismiss all modal presentations — pops back to the existing home
+    // screen instance without remounting (preserves video + layout)
+    router.dismissAll();
   };
   const handleMessagesPress = () => {
     if (pIncludes('messages')) return;
@@ -187,28 +153,25 @@ export function UniversalFooter() {
   };
 
   return (
-    <Animated.View style={[styles.wrapper, { transform: [{ translateY }] }]}>
+    <View style={styles.wrapper}>
       {/* 1px divider */}
       <View style={[styles.divider, { backgroundColor: C.footerDivider }]} />
 
       {/* 5-icon row — tap only, no footer-specific swipe gestures */}
       <View style={[styles.footer, { backgroundColor: C.footer }]}>
-        {/* 1. Home — tap → home, swipe-up → org drawer, hold → settings */}
+        {/* 1. Home */}
         <View style={styles.iconButton} {...homePanResponder.panHandlers}>
           <Pressable
             style={styles.pressableInner}
             onPress={handleHomePress}
             onLongPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              router.navigate('/settings' as any);
+              openOrgDrawer();
             }}
             delayLongPress={400}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Image
-              source={require('@/assets/images/footer-home.png')}
-              style={styles.iconImage}
-            />
+            <IconSymbol name="house.fill" size={22} color={C.muted} />
           </Pressable>
         </View>
 
@@ -218,13 +181,10 @@ export function UniversalFooter() {
           onPress={handlePhonePress}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Image
-            source={require('@/assets/images/footer-phone.png')}
-            style={styles.iconImage}
-          />
+          <IconSymbol name="phone.fill" size={22} color={C.muted} />
         </Pressable>
 
-        {/* 3. Nexus (center) — tap, double-tap, hold, swipe-up */}
+        {/* 3. Nexus (center) */}
         <View style={styles.iconButton} {...nexusPanResponder.panHandlers}>
           <Pressable
             style={styles.pressableInner}
@@ -233,10 +193,7 @@ export function UniversalFooter() {
             delayLongPress={400}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Image
-              source={require('@/assets/images/footer-nexus.png')}
-              style={styles.nexusImage}
-            />
+            <IconSymbol name="sparkles" size={24} color={C.muted} />
           </Pressable>
         </View>
 
@@ -246,26 +203,22 @@ export function UniversalFooter() {
           onPress={handleMessagesPress}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Image
-            source={require('@/assets/images/footer-messages.png')}
-            style={styles.iconImage}
-          />
+          <IconSymbol name="message.fill" size={22} color={C.muted} />
         </Pressable>
 
-        {/* 5. Pulse — coming soon placeholder */}
+        {/* 5. Pulse — coming soon */}
         <Pressable
           style={styles.iconButton}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Text style={styles.pulseEmoji}>⚡</Text>
-          <Text style={styles.comingSoonLabel}>Coming Soon</Text>
+          <IconSymbol name="bolt.fill" size={22} color={C.muted} />
         </Pressable>
       </View>
 
       {/* Safe area fill — extends behind home indicator */}
       <View style={{ height: insets.bottom, backgroundColor: C.footer }} />
-    </Animated.View>
+    </View>
   );
 }
 
@@ -279,7 +232,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     width: '100%',
-    height: 1,
+    height: StyleSheet.hairlineWidth,
   },
   footer: {
     height: FOOTER_HEIGHT,
@@ -298,28 +251,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-  },
-  iconImage: {
-    width: 72,
-    height: 72,
-    resizeMode: 'contain',
-  } as any,
-  nexusImage: {
-    width: '96%',
-    height: 50,
-    resizeMode: 'contain',
-  } as any,
-  pulseEmoji: {
-    fontSize: 28,
-    textAlign: 'center',
-    opacity: 0.35,
-  },
-  comingSoonLabel: {
-    fontSize: 8,
-    fontWeight: '600',
-    color: 'rgba(255,255,255,0.3)',
-    textAlign: 'center',
-    letterSpacing: 0.3,
-    marginTop: 2,
   },
 });

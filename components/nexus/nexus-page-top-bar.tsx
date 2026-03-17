@@ -69,8 +69,6 @@ export function NexusPageTopBar({
     onPlusPress?.();
   };
 
-  const leftIconName = showBack ? 'chevron.left' : 'line.horizontal.3';
-
   return (
     <View>
       <View style={styles.container}>
@@ -81,7 +79,14 @@ export function NexusPageTopBar({
           accessibilityLabel={showBack ? 'Go back' : 'Open sidebar'}
           accessibilityRole="button"
         >
-          <IconSymbol name={leftIconName} size={showBack ? 20 : 22} color={C.label} />
+          {showBack ? (
+            <IconSymbol name="chevron.left" size={20} color={C.label} />
+          ) : (
+            <View style={styles.menuLines}>
+              <View style={[styles.menuLine, { width: 20, backgroundColor: C.secondary }]} />
+              <View style={[styles.menuLine, { width: 13, backgroundColor: C.secondary }]} />
+            </View>
+          )}
         </Pressable>
 
         {/* Center */}
@@ -96,15 +101,20 @@ export function NexusPageTopBar({
             onPress={() => setDropdownOpen((v) => !v)}
             accessibilityLabel="Nexus options"
           >
-            <Text style={styles.nexusPillText}>Nexus v1</Text>
-            {view === 'chat' && (
-              <IconSymbol name="chevron.down" size={11} color={C.secondary} />
-            )}
+            <Text style={styles.nexusPillText}>Nexus 1.0</Text>
           </Pressable>
         )}
 
         {/* Right */}
-        {view === 'chat' && showNewChat ? (
+        {view === 'home' ? (
+          <Pressable
+            style={({ pressed }) => [styles.iconBtn, { opacity: pressed ? 0.6 : 1 }]}
+            onPress={handleNewChat}
+            accessibilityLabel="New chat"
+          >
+            <IconSymbol name="square.and.pencil" size={20} color={C.secondary} />
+          </Pressable>
+        ) : view === 'chat' && showNewChat ? (
           <Pressable
             style={({ pressed }) => [styles.newChatBtn, { opacity: pressed ? 0.7 : 1 }]}
             onPress={handleNewChat}
@@ -196,6 +206,14 @@ const makeStyles = (C: ComponentColors) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
+    menuLines: {
+      gap: 5,
+      alignItems: 'flex-start',
+    },
+    menuLine: {
+      height: 2,
+      borderRadius: 1,
+    },
     listTitle: {
       flex: 1,
       textAlign: 'center',
@@ -216,6 +234,18 @@ const makeStyles = (C: ComponentColors) =>
       fontSize: 15,
       fontWeight: '600',
       color: C.label,
+    },
+    ghostBtn: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: C.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 4,
+    },
+    ghostEmoji: {
+      fontSize: 20,
     },
     newChatBtn: {
       width: 36,

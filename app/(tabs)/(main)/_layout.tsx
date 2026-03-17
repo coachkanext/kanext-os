@@ -37,7 +37,7 @@ export default function HomeLayout() {
         animation: 'none' as const,
         gestureEnabled: false,
         fullScreenGestureEnabled: false,
-        contentStyle: { backgroundColor: 'transparent' },
+        contentStyle: { backgroundColor: route.name === 'index' ? '#0B1220' : 'transparent' },
         ...(route.name !== 'index' && { presentation: 'containedTransparentModal' as const }),
       })}
       screenListeners={({ navigation }) => ({
