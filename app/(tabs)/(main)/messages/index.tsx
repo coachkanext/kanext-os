@@ -100,6 +100,11 @@ function ThreadRow({
             {formatMessageTime(thread.timestamp)}
           </Text>
         </View>
+        {thread.username ? (
+          <Text style={[styles.threadHandle, { color: C.muted }]} numberOfLines={1}>
+            {thread.username}
+          </Text>
+        ) : null}
         <Text
           style={[styles.threadPreview, thread.unread && styles.threadPreviewBold, { color: thread.unread ? C.label : C.secondary }]}
           numberOfLines={2}
@@ -276,6 +281,7 @@ function EmailRow({
   onPress: () => void;
   onLongPress: (pageY: number) => void;
 }) {
+  const [starred, setStarred] = useState(false);
   return (
     <Pressable
       style={({ pressed }) => [styles.threadRow, pressed && { backgroundColor: C.surfacePressed }]}
@@ -285,9 +291,6 @@ function EmailRow({
     >
       <View style={[styles.threadAvatar, { backgroundColor: C.surface }]}>
         <Text style={[styles.threadInitials, { color: C.label }]}>{email.initials}</Text>
-        {email.unread && (
-          <View style={[styles.unreadDot, { backgroundColor: C.accent, borderColor: C.bg }]} />
-        )}
       </View>
       <View style={styles.threadInfo}>
         <View style={styles.threadTopRow}>
@@ -312,7 +315,21 @@ function EmailRow({
           {email.preview}
         </Text>
       </View>
-      <IconSymbol name="chevron.right" size={13} color={C.muted} />
+      <Pressable
+        onPress={(e) => {
+          e.stopPropagation();
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          setStarred(v => !v);
+        }}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        style={styles.emailStarBtn}
+      >
+        <IconSymbol
+          name={starred ? 'star.fill' : 'star'}
+          size={18}
+          color={starred ? '#F59E0B' : C.muted}
+        />
+      </Pressable>
     </Pressable>
   );
 }
@@ -1527,6 +1544,14 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   emailSubject: {
     fontSize: 14,
     fontWeight: '400',
+  },
+  emailStarBtn: {
+    padding: 4,
+    flexShrink: 0,
+  },
+  threadHandle: {
+    fontSize: 13,
+    lineHeight: 16,
   },
   threadPreviewBold: {
     fontWeight: '500',

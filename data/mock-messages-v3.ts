@@ -23,14 +23,14 @@ function daysAgo(d: number): Date {
 // =============================================================================
 
 const SPORTS_INBOX: InboxThreadV3[] = [
-  { id: 'si1', mode: 'sports', name: 'HC Miles', initials: 'HM', role: 'Head Coach', preview: 'Need your scouting report on Mitchell before Thursday.', timestamp: hoursAgo(1), unread: true, pinned: false, favorite: true, isRequest: false },
-  { id: 'si2', mode: 'sports', name: 'Jaylen Thomas', initials: 'JT', role: 'Student Athlete', preview: 'Coach Pearson, can we go over film from Tuesday?', timestamp: hoursAgo(2), unread: true, pinned: false, favorite: true, isRequest: false },
-  { id: 'si3', mode: 'sports', name: 'Marcus Davis', initials: 'MD', role: 'Video Coordinator', preview: 'Defensive clips for Saturday uploaded to shared folder.', timestamp: hoursAgo(3), unread: true, pinned: false, isRequest: false },
-  { id: 'si4', mode: 'sports', name: 'DeShawn Mitchell', initials: 'DM', role: 'Recruit', preview: 'Thanks for reaching out, Coach. I\'d love to set up a visit.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
-  { id: 'si5', mode: 'sports', name: 'AD Johnson', initials: 'AJ', role: 'Athletic Director', preview: 'Spring recruiting trip budget approved. Details attached.', timestamp: hoursAgo(8), unread: false, pinned: true, favorite: true, isRequest: false },
-  { id: 'si6', mode: 'sports', name: 'Medical Staff', initials: 'MS', role: 'Medical', preview: 'Thomas cleared for full contact practice tomorrow.', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: false },
-  { id: 'si7', mode: 'sports', name: 'Tyree Williams', initials: 'TW', role: 'Student Athlete', preview: 'Can I get extra film time this week?', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
-  { id: 'si8', mode: 'sports', name: 'Patricia Moore', initials: 'PM', role: 'Parent', preview: 'Coach Pearson, wanted to discuss Jaylen\'s academic plan.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'si1', mode: 'sports', name: 'HC Miles', initials: 'HM', role: 'Head Coach', username: '@hcmiles', preview: 'Need your scouting report on Mitchell before Thursday.', timestamp: hoursAgo(1), unread: true, pinned: false, favorite: true, isRequest: false },
+  { id: 'si2', mode: 'sports', name: 'Jaylen Thomas', initials: 'JT', role: 'Student Athlete', username: '@jthomas', preview: 'Coach Pearson, can we go over film from Tuesday?', timestamp: hoursAgo(2), unread: true, pinned: false, favorite: true, isRequest: false },
+  { id: 'si3', mode: 'sports', name: 'Marcus Davis', initials: 'MD', role: 'Video Coordinator', username: '@mdavis', preview: 'Defensive clips for Saturday uploaded to shared folder.', timestamp: hoursAgo(3), unread: true, pinned: false, isRequest: false },
+  { id: 'si4', mode: 'sports', name: 'DeShawn Mitchell', initials: 'DM', role: 'Recruit', username: '@deshawnm', preview: 'Thanks for reaching out, Coach. I\'d love to set up a visit.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
+  { id: 'si5', mode: 'sports', name: 'AD Johnson', initials: 'AJ', role: 'Athletic Director', username: '@adjohnson', preview: 'Spring recruiting trip budget approved. Details attached.', timestamp: hoursAgo(8), unread: false, pinned: true, favorite: true, isRequest: false },
+  { id: 'si6', mode: 'sports', name: 'Medical Staff', initials: 'MS', role: 'Medical', username: '@medstaff', preview: 'Thomas cleared for full contact practice tomorrow.', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: false },
+  { id: 'si7', mode: 'sports', name: 'Tyree Williams', initials: 'TW', role: 'Student Athlete', username: '@twilliams', preview: 'Can I get extra film time this week?', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'si8', mode: 'sports', name: 'Patricia Moore', initials: 'PM', role: 'Parent', username: '@pmoore', preview: 'Coach Pearson, wanted to discuss Jaylen\'s academic plan.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
 ];
 
 const SPORTS_ROOMS: RoomV3[] = [
@@ -163,14 +163,14 @@ const SPORTS_INBOX_ESCALATIONS: InboxEscalationV3[] = [
 // =============================================================================
 
 const CHURCH_INBOX: InboxThreadV3[] = [
-  { id: 'ci1', mode: 'church', name: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', preview: 'The prayer schedule for Holy Week is finalized. Please review.', timestamp: hoursAgo(1), unread: true, pinned: true, favorite: true, isRequest: false },
-  { id: 'ci2', mode: 'church', name: 'Deacon Williams', initials: 'DW', role: 'Deacon Board', preview: 'Building fund update — we\'re at 78% of our goal.', timestamp: hoursAgo(3), unread: false, pinned: true, favorite: true, isRequest: false },
-  { id: 'ci3', mode: 'church', name: 'Funmi Adeyemi', initials: 'FA', role: 'Worship Leader', preview: 'Song list for Easter Sunday ready for your approval.', timestamp: hoursAgo(2), unread: true, pinned: false, favorite: true, isRequest: false },
-  { id: 'ci4', mode: 'church', name: 'Brother Thompson', initials: 'BT', role: 'Youth Ministry', preview: 'Youth retreat registration is filling up. 47 of 60 spots taken.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
-  { id: 'ci5', mode: 'church', name: 'Sister Davis', initials: 'SD', role: 'Outreach', preview: 'Community meal prep volunteers needed for Saturday.', timestamp: hoursAgo(8), unread: true, pinned: false, isRequest: false },
-  { id: 'ci6', mode: 'church', name: 'Michael Chen', initials: 'MC', role: 'New Member', preview: 'I\'d like to join the men\'s fellowship group.', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
-  { id: 'ci7', mode: 'church', name: 'Media Team', initials: 'MT', role: 'Media', preview: 'Livestream equipment tested and ready for Sunday.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
-  { id: 'ci8', mode: 'church', name: 'Finance Committee', initials: 'FC', role: 'Finance', preview: 'Monthly financial report attached for review.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'ci1', mode: 'church', name: 'Chioma Okonkwo', initials: 'CO', role: 'Associate Pastor', username: '@cokonkwo', preview: 'The prayer schedule for Holy Week is finalized. Please review.', timestamp: hoursAgo(1), unread: true, pinned: true, favorite: true, isRequest: false },
+  { id: 'ci2', mode: 'church', name: 'Deacon Williams', initials: 'DW', role: 'Deacon Board', username: '@dwilliams', preview: 'Building fund update — we\'re at 78% of our goal.', timestamp: hoursAgo(3), unread: false, pinned: true, favorite: true, isRequest: false },
+  { id: 'ci3', mode: 'church', name: 'Funmi Adeyemi', initials: 'FA', role: 'Worship Leader', username: '@fadeyemi', preview: 'Song list for Easter Sunday ready for your approval.', timestamp: hoursAgo(2), unread: true, pinned: false, favorite: true, isRequest: false },
+  { id: 'ci4', mode: 'church', name: 'Brother Thompson', initials: 'BT', role: 'Youth Ministry', username: '@bthompson', preview: 'Youth retreat registration is filling up. 47 of 60 spots taken.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
+  { id: 'ci5', mode: 'church', name: 'Sister Davis', initials: 'SD', role: 'Outreach', username: '@sdavis', preview: 'Community meal prep volunteers needed for Saturday.', timestamp: hoursAgo(8), unread: true, pinned: false, isRequest: false },
+  { id: 'ci6', mode: 'church', name: 'Michael Chen', initials: 'MC', role: 'New Member', username: '@mchen', preview: 'I\'d like to join the men\'s fellowship group.', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
+  { id: 'ci7', mode: 'church', name: 'Media Team', initials: 'MT', role: 'Media', username: '@mediateam', preview: 'Livestream equipment tested and ready for Sunday.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'ci8', mode: 'church', name: 'Finance Committee', initials: 'FC', role: 'Finance', username: '@financecomm', preview: 'Monthly financial report attached for review.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
 ];
 
 const CHURCH_ROOMS: RoomV3[] = [
@@ -292,14 +292,14 @@ const CHURCH_NEXUS: NexusEscalationV3[] = [
 // =============================================================================
 
 const BUSINESS_INBOX: InboxThreadV3[] = [
-  { id: 'bi1', mode: 'business', name: 'Kofi Achebe', initials: 'KA', role: 'CTO', preview: 'API latency down 40% after the CDN migration. Metrics attached.', timestamp: hoursAgo(1), unread: true, pinned: true, favorite: true, isRequest: false },
-  { id: 'bi2', mode: 'business', name: 'Patrick Bet-David', initials: 'PB', role: 'Advisor', preview: 'Let\'s sync on the Series A timeline this week.', timestamp: hoursAgo(3), unread: false, pinned: true, favorite: true, isRequest: false },
-  { id: 'bi3', mode: 'business', name: 'Sarah Kim', initials: 'AM', role: 'Product Lead', preview: 'V3 Messages spec is ready for review.', timestamp: hoursAgo(2), unread: true, pinned: false, favorite: true, isRequest: false },
-  { id: 'bi4', mode: 'business', name: 'James Park', initials: 'JP', role: 'Design Lead', preview: 'Updated the design system tokens — check Figma.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
-  { id: 'bi5', mode: 'business', name: 'Marcus Webb', initials: 'MW', role: 'BD Lead', preview: 'Partnership meeting with NAIA confirmed for next week.', timestamp: hoursAgo(8), unread: true, pinned: false, isRequest: false },
-  { id: 'bi6', mode: 'business', name: 'Jordan Ellis', initials: 'JE', role: 'Intern Applicant', preview: 'Applied for the engineering intern position. Portfolio attached.', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
-  { id: 'bi7', mode: 'business', name: 'Legal Team', initials: 'LT', role: 'Legal', preview: 'IP filing update — provisional patent accepted.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
-  { id: 'bi8', mode: 'business', name: 'Finance', initials: 'FN', role: 'Finance', preview: 'Monthly burn rate report ready.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'bi1', mode: 'business', name: 'Kofi Achebe', initials: 'KA', role: 'CTO', username: '@kachebe', preview: 'API latency down 40% after the CDN migration. Metrics attached.', timestamp: hoursAgo(1), unread: true, pinned: true, favorite: true, isRequest: false },
+  { id: 'bi2', mode: 'business', name: 'Patrick Bet-David', initials: 'PB', role: 'Advisor', username: '@pbetdavid', preview: 'Let\'s sync on the Series A timeline this week.', timestamp: hoursAgo(3), unread: false, pinned: true, favorite: true, isRequest: false },
+  { id: 'bi3', mode: 'business', name: 'Sarah Kim', initials: 'AM', role: 'Product Lead', username: '@skim', preview: 'V3 Messages spec is ready for review.', timestamp: hoursAgo(2), unread: true, pinned: false, favorite: true, isRequest: false },
+  { id: 'bi4', mode: 'business', name: 'James Park', initials: 'JP', role: 'Design Lead', username: '@jpark', preview: 'Updated the design system tokens — check Figma.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
+  { id: 'bi5', mode: 'business', name: 'Marcus Webb', initials: 'MW', role: 'BD Lead', username: '@mwebb', preview: 'Partnership meeting with NAIA confirmed for next week.', timestamp: hoursAgo(8), unread: true, pinned: false, isRequest: false },
+  { id: 'bi6', mode: 'business', name: 'Jordan Ellis', initials: 'JE', role: 'Intern Applicant', username: '@jellis', preview: 'Applied for the engineering intern position. Portfolio attached.', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
+  { id: 'bi7', mode: 'business', name: 'Legal Team', initials: 'LT', role: 'Legal', username: '@legalteam', preview: 'IP filing update — provisional patent accepted.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'bi8', mode: 'business', name: 'Finance', initials: 'FN', role: 'Finance', username: '@finance', preview: 'Monthly burn rate report ready.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
 ];
 
 const BUSINESS_ROOMS: RoomV3[] = [
@@ -492,14 +492,14 @@ const BUSINESS_NEXUS: NexusEscalationV3[] = [
 // =============================================================================
 
 const EDUCATION_INBOX: InboxThreadV3[] = [
-  { id: 'ei1', mode: 'education', name: 'Dean Clark', initials: 'DC', role: 'Dean of Students', preview: 'Retention numbers are up 3.2% this semester. Full report attached.', timestamp: hoursAgo(1), unread: true, pinned: true, favorite: true, isRequest: false },
-  { id: 'ei2', mode: 'education', name: 'SACSCOC Liaison', initials: 'SL', role: 'Accreditation', preview: 'Reaffirmation timeline confirmed. Site visit March 15-17.', timestamp: hoursAgo(3), unread: false, pinned: true, favorite: true, isRequest: false },
-  { id: 'ei3', mode: 'education', name: 'Dr. Harris', initials: 'DH', role: 'Provost', preview: 'New program proposal for Data Science is ready for your review.', timestamp: hoursAgo(2), unread: true, pinned: false, favorite: true, isRequest: false },
-  { id: 'ei4', mode: 'education', name: 'Prof. Washington', initials: 'PW', role: 'Faculty Senate', preview: 'Faculty senate resolution on course load passed unanimously.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
-  { id: 'ei5', mode: 'education', name: 'Student Davis', initials: 'SD', role: 'SGA President', preview: 'Student government requesting meeting about campus dining.', timestamp: hoursAgo(8), unread: true, pinned: false, isRequest: false },
-  { id: 'ei6', mode: 'education', name: 'Angela Morrison', initials: 'AM', role: 'Transfer Student', preview: 'Requesting transfer credit evaluation for 12 courses.', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
-  { id: 'ei7', mode: 'education', name: 'Facilities', initials: 'FC', role: 'Operations', preview: 'Library renovation Phase 2 on track for completion.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
-  { id: 'ei8', mode: 'education', name: 'IT Services', initials: 'IT', role: 'Technology', preview: 'LMS migration plan finalized. Training sessions next week.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'ei1', mode: 'education', name: 'Dean Clark', initials: 'DC', role: 'Dean of Students', username: '@dclark', preview: 'Retention numbers are up 3.2% this semester. Full report attached.', timestamp: hoursAgo(1), unread: true, pinned: true, favorite: true, isRequest: false },
+  { id: 'ei2', mode: 'education', name: 'SACSCOC Liaison', initials: 'SL', role: 'Accreditation', username: '@sacscoc', preview: 'Reaffirmation timeline confirmed. Site visit March 15-17.', timestamp: hoursAgo(3), unread: false, pinned: true, favorite: true, isRequest: false },
+  { id: 'ei3', mode: 'education', name: 'Dr. Harris', initials: 'DH', role: 'Provost', username: '@dharris', preview: 'New program proposal for Data Science is ready for your review.', timestamp: hoursAgo(2), unread: true, pinned: false, favorite: true, isRequest: false },
+  { id: 'ei4', mode: 'education', name: 'Prof. Washington', initials: 'PW', role: 'Faculty Senate', username: '@pwashington', preview: 'Faculty senate resolution on course load passed unanimously.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
+  { id: 'ei5', mode: 'education', name: 'Student Davis', initials: 'SD', role: 'SGA President', username: '@stdavis', preview: 'Student government requesting meeting about campus dining.', timestamp: hoursAgo(8), unread: true, pinned: false, isRequest: false },
+  { id: 'ei6', mode: 'education', name: 'Angela Morrison', initials: 'AM', role: 'Transfer Student', username: '@amorrison', preview: 'Requesting transfer credit evaluation for 12 courses.', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
+  { id: 'ei7', mode: 'education', name: 'Facilities', initials: 'FC', role: 'Operations', username: '@facilities', preview: 'Library renovation Phase 2 on track for completion.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'ei8', mode: 'education', name: 'IT Services', initials: 'IT', role: 'Technology', username: '@itservices', preview: 'LMS migration plan finalized. Training sessions next week.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
 ];
 
 const EDUCATION_ROOMS: RoomV3[] = [
@@ -522,14 +522,14 @@ const EDUCATION_NEXUS: NexusEscalationV3[] = [
 // =============================================================================
 
 const COMPETITION_INBOX: InboxThreadV3[] = [
-  { id: 'ki1', mode: 'competition', name: 'Carlos Hernandez', initials: 'CH', role: 'Race Director', preview: 'Track inspection complete. All barriers meet FIA spec.', timestamp: hoursAgo(1), unread: true, pinned: true, favorite: true, isRequest: false },
-  { id: 'ki2', mode: 'competition', name: 'FIA Liaison', initials: 'FL', role: 'Governing Body', preview: 'Updated safety protocols for wet conditions approved.', timestamp: hoursAgo(3), unread: false, pinned: true, favorite: true, isRequest: false },
-  { id: 'ki3', mode: 'competition', name: 'Takeshi Yamamoto', initials: 'TY', role: 'Team Principal', preview: 'Requesting clarification on the new aero regulations.', timestamp: hoursAgo(2), unread: true, pinned: false, favorite: true, isRequest: false },
-  { id: 'ki4', mode: 'competition', name: 'Marco Rossi', initials: 'MR', role: 'Chief Steward', preview: 'Steward panel recommendations for Round 4 incidents.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
-  { id: 'ki5', mode: 'competition', name: 'Sophie Laurent', initials: 'SL', role: 'Media Director', preview: 'Broadcast partner wants to discuss camera placement for Monaco.', timestamp: hoursAgo(8), unread: true, pinned: false, isRequest: false },
-  { id: 'ki6', mode: 'competition', name: 'Carlos Vega', initials: 'CV', role: 'New Team Entry', preview: 'Applying for 3SSB grid expansion. Documentation attached.', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
-  { id: 'ki7', mode: 'competition', name: 'Medical Team', initials: 'MT', role: 'Medical', preview: 'All medical stations confirmed operational for Round 5.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
-  { id: 'ki8', mode: 'competition', name: 'Logistics', initials: 'LG', role: 'Operations', preview: 'Freight schedule confirmed for the European leg.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'ki1', mode: 'competition', name: 'Carlos Hernandez', initials: 'CH', role: 'Race Director', username: '@chernandez', preview: 'Track inspection complete. All barriers meet FIA spec.', timestamp: hoursAgo(1), unread: true, pinned: true, favorite: true, isRequest: false },
+  { id: 'ki2', mode: 'competition', name: 'FIA Liaison', initials: 'FL', role: 'Governing Body', username: '@fialiaison', preview: 'Updated safety protocols for wet conditions approved.', timestamp: hoursAgo(3), unread: false, pinned: true, favorite: true, isRequest: false },
+  { id: 'ki3', mode: 'competition', name: 'Takeshi Yamamoto', initials: 'TY', role: 'Team Principal', username: '@tyamamoto', preview: 'Requesting clarification on the new aero regulations.', timestamp: hoursAgo(2), unread: true, pinned: false, favorite: true, isRequest: false },
+  { id: 'ki4', mode: 'competition', name: 'Marco Rossi', initials: 'MR', role: 'Chief Steward', username: '@mrossi', preview: 'Steward panel recommendations for Round 4 incidents.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
+  { id: 'ki5', mode: 'competition', name: 'Sophie Laurent', initials: 'SL', role: 'Media Director', username: '@slaurent', preview: 'Broadcast partner wants to discuss camera placement for Monaco.', timestamp: hoursAgo(8), unread: true, pinned: false, isRequest: false },
+  { id: 'ki6', mode: 'competition', name: 'Carlos Vega', initials: 'CV', role: 'New Team Entry', username: '@cvega', preview: 'Applying for 3SSB grid expansion. Documentation attached.', timestamp: hoursAgo(12), unread: false, pinned: false, isRequest: true },
+  { id: 'ki7', mode: 'competition', name: 'Medical Team', initials: 'MT', role: 'Medical', username: '@medteam', preview: 'All medical stations confirmed operational for Round 5.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'ki8', mode: 'competition', name: 'Logistics', initials: 'LG', role: 'Operations', username: '@logistics', preview: 'Freight schedule confirmed for the European leg.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
 ];
 
 const COMPETITION_ROOMS: RoomV3[] = [
