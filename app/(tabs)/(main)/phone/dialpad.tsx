@@ -1,18 +1,19 @@
 /**
- * Dial Pad — iPhone-style centered keypad.
- * Number display, standard keypad, green call button.
- * Long press 0 = +. Vertically centered on screen.
+ * Dialpad — full-screen keypad with T9 live contact search.
+ * Suggestions appear above number display as user types.
+ * 5th row: Video (left) · Voice (center) · Backspace (right).
  */
 
-import React, { useState, useCallback, useMemo } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
+import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { initiateCall } from '@/utils/global-call';
-import { useMode } from '@/context/app-context';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { PHONE_CONTACTS, CONTACT_PHONES } from '@/data/mock-phone';
+import { initiateCall } from '@/utils/global-call';
 
 const KEYS = [
   [{ d: '1', l: '' }, { d: '2', l: 'ABC' }, { d: '3', l: 'DEF' }],
@@ -21,106 +22,230 @@ const KEYS = [
   [{ d: '*', l: '' }, { d: '0', l: '+' }, { d: '#', l: '' }],
 ];
 
-export default function DialPadScreen() {
-  const insets = useSafeAreaInsets();
-  const mode = useMode();
+const KEY_SIZE = 70;
+const KEY_GAP = 24;
+
+// ── T9 matching ───────────────────────────────────────────────────────────────
+
+const T9: Record<string, string> = {
+  '2': 'abc', '3': 'def', '4': 'ghi', '5': 'jkl',
+  '6': 'mno', '7': 'pqrs', '8': 'tuv', '9': 'wxyz',
+};
+
+function digitForChar(c: string): string {
+  for (const [d, letters] of Object.entries(T9)) {
+    if (letters.includes(c.toLowerCase())) return d;
+  }
+  return '';
+}
+
+function contactMatchesDigits(contact: { name: string; username: string }, digits: string): boolean {
+  const d = digits.replace(/\D/g, '');
+  if (!d || d.length < 2) return false;
+
+  // Phone number match
+  const phones = CONTACT_PHONES[contact.username];
+  if (phones?.some(ph => ph.number.replace(/\D/g, '').includes(d))) return true;
+
+  // T9 name match — any word prefix
+  return contact.name.toLowerCase().split(/\s+/).some(word => {
+    const enc = word.split('').map(digitForChar).filter(Boolean).join('');
+    return enc.startsWith(d);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+export default function DialpadScreen() {
   const C = useColors();
+  const router = useRouter();
+  const insets = useSafeAreaInsets();
   const styles = useMemo(() => makeStyles(C), [C]);
   const [digits, setDigits] = useState('');
 
   const addDigit = useCallback((d: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setDigits((prev) => prev + d);
+    setDigits(prev => prev + d);
   }, []);
 
   const deleteLast = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setDigits((prev) => prev.slice(0, -1));
+    setDigits(prev => prev.slice(0, -1));
   }, []);
 
-  const clearAll = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setDigits('');
-  }, []);
+  const suggestions = useMemo(() => {
+    if (digits.length < 2) return [];
+    return PHONE_CONTACTS.filter(c => contactMatchesDigits(c, digits)).slice(0, 3);
+  }, [digits]);
 
-  const handleCall = useCallback(() => {
-    if (!digits) return;
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    initiateCall({
-      contactName: digits,
-      contactInitials: digits.slice(0, 2),
-      mode,
-      type: 'audio',
-    });
-  }, [digits, mode]);
+  const [contactMenuOpen, setContactMenuOpen] = useState(false);
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-      {/* Center everything vertically */}
-      <View style={styles.center}>
-        {/* Number display */}
-        <View style={styles.display}>
-          <Text
-            style={[styles.digits, digits.length > 12 && styles.digitsSmall]}
-            numberOfLines={1}
-            adjustsFontSizeToFit
-          >
-            {digits || '\u00A0'}
-          </Text>
-        </View>
+    <View style={styles.root}>
+      {/* Back button (left) + Contact icon (right) — absolute */}
+      <View style={[styles.topBar, { top: insets.top }]}>
+        <Pressable
+          style={[styles.backBtn, { backgroundColor: C.surfacePressed }]}
+          onPress={() => router.back()}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <IconSymbol name="chevron.left" size={20} color={C.label} />
+        </Pressable>
+        <Pressable
+          style={[styles.backBtn, { backgroundColor: C.surfacePressed }]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            setContactMenuOpen(v => !v);
+          }}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <IconSymbol name="person.crop.circle.badge.plus" size={20} color={C.label} />
+        </Pressable>
+      </View>
 
-        {/* Keypad */}
+      {/* Contact dropdown */}
+      {contactMenuOpen && (
+        <>
+          <Pressable style={StyleSheet.absoluteFill} onPress={() => setContactMenuOpen(false)} />
+          <View style={[styles.contactMenu, { top: insets.top + 52, backgroundColor: C.bg, borderColor: C.separator }]}>
+            {[
+              { icon: 'person.badge.plus', label: 'Create New Contact' },
+              { icon: 'person.crop.circle.badge.checkmark', label: 'Add to Existing Contact' },
+            ].map(({ icon, label }) => (
+              <Pressable
+                key={label}
+                style={({ pressed }) => [styles.contactMenuItem, pressed && { backgroundColor: C.surfacePressed }]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setContactMenuOpen(false);
+                }}
+              >
+                <IconSymbol name={icon as any} size={18} color={C.label} />
+                <Text style={[styles.contactMenuLabel, { color: C.label }]}>{label}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </>
+      )}
+
+      {/* Center fills full height → truly centered keypad */}
+      <View style={styles.center}>
+
+        {/* T9 suggestions — appear above display when typing */}
+        {suggestions.length > 0 && (
+          <View style={styles.suggestList}>
+            {suggestions.map(contact => {
+              const phones = CONTACT_PHONES[contact.username];
+              const subtitle = phones?.[0]
+                ? `${phones[0].label} · ${phones[0].number}`
+                : `${contact.role} · ${contact.org}`;
+              return (
+                <Pressable
+                  key={contact.id}
+                  style={({ pressed }) => [
+                    styles.suggestRow,
+                    pressed && { backgroundColor: C.surfacePressed },
+                  ]}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                    const num = phones?.[0]?.number.replace(/\D/g, '') ?? digits;
+                    setDigits(num);
+                    initiateCall({
+                      contactName: contact.name,
+                      contactInitials: contact.initials,
+                      mode: contact.mode,
+                      type: 'audio',
+                    });
+                    router.back();
+                  }}
+                >
+                  <View style={[styles.suggestAvatar, { backgroundColor: C.surface }]}>
+                    <Text style={[styles.suggestInitials, { color: C.label }]}>{contact.initials}</Text>
+                  </View>
+                  <View style={styles.suggestInfo}>
+                    <Text style={[styles.suggestName, { color: C.label }]}>{contact.name}</Text>
+                    <Text style={[styles.suggestSub, { color: C.secondary }]} numberOfLines={1}>{subtitle}</Text>
+                  </View>
+                  <IconSymbol name="phone.fill" size={15} color={C.accent} />
+                </Pressable>
+              );
+            })}
+          </View>
+        )}
+
+        {/* Number display */}
+        <Text
+          style={[styles.digits, { color: C.label }]}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+        >
+          {digits || '\u00A0'}
+        </Text>
+
+        {/* Keypad rows 1–4 + 5th row (call + backspace) */}
         <View style={styles.keypad}>
           {KEYS.map((row, ri) => (
             <View key={ri} style={styles.keyRow}>
-              {row.map((key) => (
+              {row.map(key => (
                 <Pressable
                   key={key.d}
-                  style={({ pressed }) => [
-                    styles.key,
-                    pressed && styles.keyPressed,
-                  ]}
+                  style={({ pressed }) => [styles.key, pressed && { backgroundColor: C.separator }]}
                   onPress={() => addDigit(key.d)}
-                  onLongPress={
-                    key.d === '0'
-                      ? () => {
-                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                          setDigits((prev) => prev + '+');
-                        }
-                      : undefined
-                  }
+                  onLongPress={key.d === '0' ? () => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setDigits(prev => prev + '+');
+                  } : undefined}
                   delayLongPress={500}
                 >
-                  <Text style={styles.keyDigit}>{key.d}</Text>
-                  {key.l !== '' && <Text style={styles.keyLetters}>{key.l}</Text>}
+                  <Text style={[styles.keyDigit, { color: C.label }]}>{key.d}</Text>
+                  {key.l !== '' && (
+                    <Text style={[styles.keyLetters, { color: C.secondary }]}>{key.l}</Text>
+                  )}
                 </Pressable>
               ))}
             </View>
           ))}
-        </View>
 
-        {/* Bottom row: spacer | call | delete */}
-        <View style={styles.bottomRow}>
-          <View style={styles.bottomSide} />
-          <Pressable
-            style={[styles.callBtn, !digits && styles.callBtnDim]}
-            onPress={handleCall}
-          >
-            <IconSymbol name="phone.fill" size={32} color="#FFFFFF" />
-          </Pressable>
-          {digits.length > 0 ? (
+          {/* 5th row: centered circles + backspace to the right */}
+          <View style={styles.callRow}>
+            <View style={styles.callSpacer} />
+            <View style={styles.callCircles}>
+              <Pressable
+                style={[styles.callCircle, { backgroundColor: C.accent }]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  initiateCall({ contactName: digits || 'Unknown', contactInitials: '?', mode: 'personal', type: 'video' });
+                  router.back();
+                }}
+              >
+                <IconSymbol name="video.fill" size={22} color="#FFFFFF" />
+              </Pressable>
+              <Pressable
+                style={[styles.callCircle, { backgroundColor: C.green }]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  initiateCall({ contactName: digits || 'Unknown', contactInitials: '?', mode: 'personal', type: 'audio' });
+                  router.back();
+                }}
+              >
+                <IconSymbol name="phone.fill" size={22} color="#FFFFFF" />
+              </Pressable>
+            </View>
             <Pressable
-              style={styles.bottomSide}
+              style={styles.callSpacer}
               onPress={deleteLast}
-              onLongPress={clearAll}
+              onLongPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                setDigits('');
+              }}
               delayLongPress={600}
-              hitSlop={12}
+              hitSlop={10}
             >
-              <IconSymbol name="delete.backward.fill" size={24} color={C.label} />
+              {digits.length > 0 && (
+                <IconSymbol name="delete.backward.fill" size={22} color={C.secondary} />
+              )}
             </Pressable>
-          ) : (
-            <View style={styles.bottomSide} />
-          )}
+          </View>
         </View>
       </View>
     </View>
@@ -128,84 +253,126 @@ export default function DialPadScreen() {
 }
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  container: {
+  root: {
     flex: 1,
     backgroundColor: C.bg,
   },
+  topBar: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    zIndex: 2,
+  },
+  contactMenu: {
+    position: 'absolute',
+    right: 16,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+    zIndex: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 8,
+    minWidth: 220,
+  },
+  contactMenuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  contactMenuLabel: { fontSize: 15, fontWeight: '500' },
+  backBtn: {
+    width: 36, height: 36, borderRadius: 18,
+    alignItems: 'center', justifyContent: 'center',
+  },
+
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  display: {
+
+  // T9 suggestions
+  suggestList: {
+    width: KEY_SIZE * 3 + KEY_GAP * 2,
+    marginBottom: 8,
+    borderRadius: 14,
+    overflow: 'hidden',
+  },
+  suggestRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 32,
-    marginBottom: 24,
-    minHeight: 48,
-    justifyContent: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    gap: 10,
   },
+  suggestAvatar: {
+    width: 36, height: 36, borderRadius: 18,
+    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+  },
+  suggestInitials: { fontSize: 13, fontWeight: '700' },
+  suggestInfo: { flex: 1, minWidth: 0, gap: 1 },
+  suggestName: { fontSize: 15, fontWeight: '500' },
+  suggestSub: { fontSize: 12 },
+
   digits: {
-    fontSize: 40,
+    width: KEY_SIZE * 3 + KEY_GAP * 2,
+    fontSize: 36,
     fontWeight: '300',
-    color: C.label,
     letterSpacing: 2,
+    textAlign: 'center',
     fontVariant: ['tabular-nums'],
+    marginBottom: 20,
+    minHeight: 46,
   },
-  digitsSmall: {
-    fontSize: 28,
-  },
-  keypad: {
-    gap: 14,
-  },
+
+  keypad: { gap: 12 },
   keyRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 24,
+    gap: KEY_GAP,
   },
   key: {
-    width: 78,
-    height: 78,
-    borderRadius: 39,
+    width: KEY_SIZE,
+    height: KEY_SIZE,
+    borderRadius: KEY_SIZE / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  keyPressed: {
-    backgroundColor: C.separator,
-  },
-  keyDigit: {
-    fontSize: 33,
-    fontWeight: '300',
-    color: C.label,
-  },
-  keyLetters: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: C.secondary,
-    letterSpacing: 2,
-    marginTop: -2,
-  },
-  bottomRow: {
+  keyDigit: { fontSize: 28, fontWeight: '300' },
+  keyLetters: { fontSize: 9, fontWeight: '600', letterSpacing: 2, marginTop: -2 },
+
+  callRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-    width: 78 * 3 + 24 * 2,
+    width: KEY_SIZE * 3 + KEY_GAP * 2,
+    height: KEY_SIZE,
   },
-  bottomSide: {
+  callSpacer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    height: 64,
+    height: KEY_SIZE,
   },
-  callBtn: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: C.green,
+  callCircles: {
+    flexDirection: 'row',
+    gap: KEY_GAP,
+  },
+  callCircle: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  callBtnDim: {
-    opacity: 0.5,
   },
 });

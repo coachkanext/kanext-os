@@ -22,8 +22,10 @@ import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useMode, useAppContext } from '@/context/app-context';
 import { useRouter } from 'expo-router';
+import { hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { initiateCall } from '@/utils/global-call';
 import {
-  RECENT_CALLS, PHONE_CONTACTS, VOICEMAILS, MY_KANEXT_NUMBERS,
+  RECENT_CALLS, PHONE_CONTACTS, VOICEMAILS, MY_KANEXT_NUMBERS, CONTACT_PHONES,
   type RecentCall, type PhoneContact, type Voicemail, type CallDirection,
 } from '@/data/mock-phone';
 
@@ -51,13 +53,8 @@ const SEARCH_BAR_HEIGHT = 52;
 const SECTION_MAX = 3;
 
 const FULL_ALPHABET = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '#'];
-
-const DIALPAD_KEYS = [
-  [{ digit: '1', letters: '' }, { digit: '2', letters: 'ABC' }, { digit: '3', letters: 'DEF' }],
-  [{ digit: '4', letters: 'GHI' }, { digit: '5', letters: 'JKL' }, { digit: '6', letters: 'MNO' }],
-  [{ digit: '7', letters: 'PQRS' }, { digit: '8', letters: 'TUV' }, { digit: '9', letters: 'WXYZ' }],
-  [{ digit: '*', letters: '' }, { digit: '0', letters: '+' }, { digit: '#', letters: '' }],
-] as const;
+const PHONE_LABEL_OPTIONS = ['Mobile', 'Home', 'Work', 'Business', 'Sports', 'Personal'];
+type AddContactStep = 'menu' | 'kanext' | 'external';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -86,6 +83,9 @@ function FavoriteCard({
     <Pressable style={styles.favCard} onPress={onPress}>
       <View style={[styles.favAvatar, { backgroundColor: C.surface }]}>
         <Text style={styles.favInitials}>{contact.initials}</Text>
+        {contact.online && (
+          <View style={[styles.rowOnlineDot, { backgroundColor: C.green, borderColor: C.surface }]} />
+        )}
       </View>
       <Text style={styles.favName} numberOfLines={1}>{contact.name.split(' ')[0]}</Text>
     </Pressable>
@@ -114,11 +114,14 @@ function RecentRow({
         {call.hasVoicemail && (
           <View style={[styles.vmBadge, { backgroundColor: C.red, borderColor: C.bg }]} />
         )}
+        {call.online && (
+          <View style={[styles.rowOnlineDot, { backgroundColor: C.green, borderColor: C.surface }]} />
+        )}
       </View>
       <View style={styles.rowInfo}>
         <Text style={[styles.rowName, isMissed && { color: C.red }]}>{call.name}</Text>
         <View style={styles.rowMeta}>
-          <Text style={[styles.rowHandle, { color: C.muted }]}>@{call.username}</Text>
+          <Text style={[styles.rowHandle, { color: C.muted }]}>{call.username}</Text>
           <Text style={[styles.rowSub, { color: C.muted }]}> · </Text>
           <IconSymbol name={directionIcon(call.direction) as any} size={11} color={dirColor} />
           <Text style={[styles.rowSub, { color: dirColor }]}>
@@ -129,7 +132,15 @@ function RecentRow({
       <Text style={styles.rowTimestamp}>{call.timestamp}</Text>
       <Pressable
         style={styles.callBtn}
-        onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          initiateCall({
+            contactName: call.name,
+            contactInitials: call.initials,
+            mode: call.mode,
+            type: call.direction === 'video' ? 'video' : 'audio',
+          });
+        }}
         hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
       >
         <IconSymbol
@@ -169,7 +180,15 @@ function VoicemailRow({
       </View>
       <Pressable
         style={styles.callBtn}
-        onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          initiateCall({
+            contactName: vm.callerName,
+            contactInitials: vm.callerInitials,
+            mode: vm.mode,
+            type: 'audio',
+          });
+        }}
         hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
       >
         <IconSymbol name="phone.fill" size={16} color={C.accent} />
@@ -199,6 +218,9 @@ function ContactRow({
     >
       <View style={[styles.contactAvatar, { backgroundColor: C.surface }]}>
         <Text style={[styles.contactInitials, { color: C.label }]}>{contact.initials}</Text>
+        {contact.online && (
+          <View style={[styles.rowOnlineDot, { backgroundColor: C.green, borderColor: C.surface }]} />
+        )}
       </View>
       <View style={styles.contactInfo}>
         <Text style={[styles.contactName, { color: C.label }]} numberOfLines={1}>
@@ -206,7 +228,7 @@ function ContactRow({
           <Text style={styles.contactNameBold}>{lastName}</Text>
         </Text>
         <Text style={[styles.contactHandle, { color: C.muted }]} numberOfLines={1}>
-          @{contact.username}{contact.role ? ` · ${contact.role}` : ''}{contact.org ? ` · ${contact.org}` : ''}
+          {contact.username}{contact.role ? ` · ${contact.role}` : ''}{contact.org ? ` · ${contact.org}` : ''}
         </Text>
         {/* Inset separator */}
         <View style={[styles.contactSeparator, { backgroundColor: C.separator }]} />
@@ -216,123 +238,435 @@ function ContactRow({
 }
 
 function ProfileSheet({
-  contact, C, styles,
+  contact, C, styles, canEdit = false,
 }: {
-  contact: PhoneContact; C: ComponentColors; styles: ReturnType<typeof makeStyles>;
+  contact: PhoneContact; C: ComponentColors; styles: ReturnType<typeof makeStyles>; canEdit?: boolean;
 }) {
+  const [isFav, setIsFav] = useState(contact.isFavorite ?? false);
+  const [editMode, setEditMode] = useState(false);
+  const [notes, setNotes] = useState('');
+  const [personalPhones, setPersonalPhones] = useState<Array<{ label: string; number: string }>>([]);
+  const [addingPhone, setAddingPhone] = useState(false);
+  const [newPhoneNum, setNewPhoneNum] = useState('');
+  const [newPhoneLabel, setNewPhoneLabel] = useState('Mobile');
+
+  const email = `${contact.username.replace('@', '')}@kanext.com`;
+
+  const systemPhones = useMemo(() => {
+    if (CONTACT_PHONES[contact.username]) return CONTACT_PHONES[contact.username];
+    let h = 0;
+    for (let i = 0; i < contact.username.length; i++) {
+      h = Math.imul(31, h) + contact.username.charCodeAt(i) | 0;
+    }
+    h = Math.abs(h);
+    const area = 200 + (h % 800);
+    const mid  = String(100 + (h % 900)).padStart(3, '0');
+    const last = String(1000 + ((h >> 4) % 9000)).padStart(4, '0');
+    const modeLabel = contact.mode.charAt(0).toUpperCase() + contact.mode.slice(1);
+    return [{ label: `${modeLabel} · ${contact.org}`, number: `+1 (${area}) ${mid}-${last}` }];
+  }, [contact.username, contact.mode, contact.org]);
+
   const actions = [
-    { icon: 'phone.fill', label: 'Call', color: C.green },
-    { icon: 'video.fill', label: 'Video', color: C.accent },
-    { icon: 'message.fill', label: 'Message', color: C.accent },
+    { icon: 'phone.fill',    label: 'Call',    color: C.green,  type: 'audio' as const },
+    { icon: 'video.fill',    label: 'Video',   color: C.accent, type: 'video' as const },
+    { icon: 'message.fill',  label: 'Message', color: C.accent, type: null },
+    { icon: 'envelope.fill', label: 'Email',   color: C.accent, type: null },
   ] as const;
+
+  const quickActions = [
+    { icon: 'message.fill',        label: 'Send Message',        onPress: () => {},                                                                   destructive: false },
+    { icon: 'square.and.arrow.up', label: 'Share Contact',       onPress: () => {},                                                                   destructive: false },
+    { icon: isFav ? 'star.fill' : 'star', label: isFav ? 'Remove from Favorites' : 'Add to Favorites',
+      onPress: () => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setIsFav(v => !v); }, destructive: false },
+    { icon: 'minus.circle.fill',   label: 'Block Contact',       onPress: () => {},                                                                   destructive: true  },
+  ];
 
   return (
     <View style={styles.profileSheet}>
-      <View style={[styles.profileAvatar, { backgroundColor: C.surface }]}>
-        <Text style={styles.profileInitials}>{contact.initials}</Text>
-        {contact.online && (
-          <View style={[styles.profileOnlineDot, { backgroundColor: C.green, borderColor: C.bg }]} />
+      {/* Edit / Done — RBAC gated */}
+      <View style={styles.profileEditRow}>
+        <Pressable
+          style={[styles.profileEditBtn, !canEdit && { opacity: 0.35 }]}
+          disabled={!canEdit}
+          onPress={() => {
+            if (!canEdit) return;
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            if (editMode) { setEditMode(false); setAddingPhone(false); }
+            else { setEditMode(true); }
+          }}
+        >
+          <Text style={[styles.profileEditLabel, { color: C.accent }]}>{editMode ? 'Done' : 'Edit'}</Text>
+        </Pressable>
+      </View>
+
+      {/* Hero */}
+      <View style={styles.profileHero}>
+        <View style={[styles.profileAvatar, { backgroundColor: C.surface }]}>
+          <Text style={styles.profileInitials}>{contact.initials}</Text>
+          {contact.online && (
+            <View style={[styles.profileOnlineDot, { backgroundColor: C.green, borderColor: C.bg }]} />
+          )}
+        </View>
+        {editMode ? (
+          <View style={styles.profileLockedNameRow}>
+            <Text style={[styles.profileName, { color: C.muted }]}>{contact.name}</Text>
+            <IconSymbol name="lock.fill" size={12} color={C.muted} />
+          </View>
+        ) : (
+          <Text style={styles.profileName}>{contact.name}</Text>
+        )}
+        <Text style={[styles.profileHandle, { color: C.secondary }]}>{contact.username}</Text>
+        {(contact.role || contact.org) && (
+          <Text style={[styles.profileRole, { color: C.muted }]}>
+            {[contact.role, contact.org].filter(Boolean).join(' · ')}
+          </Text>
         )}
       </View>
-      <Text style={styles.profileName}>{contact.name}</Text>
-      {(contact.role || contact.org) ? (
-        <Text style={[styles.profileRole, { color: C.secondary }]}>
-          {[contact.role, contact.org].filter(Boolean).join(' · ')}
-        </Text>
-      ) : null}
-      <View style={styles.profileActions}>
-        {actions.map(({ icon, label, color }) => (
-          <Pressable
-            key={label}
-            style={styles.profileActionBtn}
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-          >
-            <View style={[styles.profileActionIcon, { backgroundColor: color + '22' }]}>
-              <IconSymbol name={icon} size={22} color={color} />
-            </View>
-            <Text style={[styles.profileActionLabel, { color: C.secondary }]}>{label}</Text>
-          </Pressable>
+
+      {/* Action buttons — hidden in edit mode */}
+      {!editMode && (
+        <View style={styles.profileActions}>
+          {actions.map(({ icon, label, color, type }) => (
+            <Pressable
+              key={label}
+              style={styles.profileActionBtn}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                if (type) initiateCall({ contactName: contact.name, contactInitials: contact.initials, mode: contact.mode, type });
+              }}
+            >
+              <View style={[styles.profileActionIcon, { backgroundColor: color + '22' }]}>
+                <IconSymbol name={icon} size={22} color={color} />
+              </View>
+              <Text style={[styles.profileActionLabel, { color: C.secondary }]}>{label}</Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
+
+      {/* Contact info card */}
+      <View style={[styles.profileInfoCard, { backgroundColor: C.surface, borderColor: C.separator }]}>
+        {/* System phones — locked in edit mode */}
+        {systemPhones.map((ph, i) => (
+          <React.Fragment key={ph.number}>
+            {editMode ? (
+              <View style={[styles.profileInfoRow, { backgroundColor: C.surfacePressed }]}>
+                <IconSymbol name="phone" size={16} color={C.muted} />
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.profileInfoText, { color: C.muted }]}>{ph.number}</Text>
+                  <Text style={{ fontSize: 12, color: C.muted, marginTop: 1 }}>{ph.label}</Text>
+                </View>
+                <IconSymbol name="lock.fill" size={12} color={C.muted} />
+              </View>
+            ) : (
+              <Pressable
+                style={styles.profileInfoRow}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  initiateCall({ contactName: contact.name, contactInitials: contact.initials, mode: contact.mode, type: 'audio' });
+                }}
+              >
+                <IconSymbol name="phone" size={16} color={C.secondary} />
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.profileInfoText, { color: C.label }]}>{ph.number}</Text>
+                  <Text style={{ fontSize: 12, color: C.muted, marginTop: 1 }}>{ph.label}</Text>
+                </View>
+              </Pressable>
+            )}
+            {i < systemPhones.length - 1 && <View style={[styles.profileInfoDivider, { backgroundColor: C.separator }]} />}
+          </React.Fragment>
         ))}
+
+        {/* Personal phones — editable, deletable */}
+        {personalPhones.map((ph, i) => (
+          <React.Fragment key={i}>
+            <View style={[styles.profileInfoDivider, { backgroundColor: C.separator }]} />
+            <View style={styles.profileInfoRow}>
+              <IconSymbol name="phone" size={16} color={C.secondary} />
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.profileInfoText, { color: C.label }]}>{ph.number}</Text>
+                <Text style={{ fontSize: 12, color: C.muted, marginTop: 1 }}>{ph.label}</Text>
+              </View>
+              {editMode && (
+                <Pressable onPress={() => setPersonalPhones(prev => prev.filter((_, idx) => idx !== i))} hitSlop={12}>
+                  <IconSymbol name="minus.circle.fill" size={18} color={C.red} />
+                </Pressable>
+              )}
+            </View>
+          </React.Fragment>
+        ))}
+
+        {/* Add phone (edit mode) */}
+        {editMode && (
+          <>
+            <View style={[styles.profileInfoDivider, { backgroundColor: C.separator }]} />
+            {addingPhone ? (
+              <View style={styles.editPhoneForm}>
+                <TextInput
+                  style={[styles.editPhoneInput, { color: C.label, borderColor: C.separator }]}
+                  value={newPhoneNum}
+                  onChangeText={setNewPhoneNum}
+                  placeholder="Phone number"
+                  placeholderTextColor={C.muted}
+                  keyboardType="phone-pad"
+                  autoFocus
+                />
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  <View style={styles.editPhoneModes}>
+                    {PHONE_LABEL_OPTIONS.map(lbl => (
+                      <Pressable
+                        key={lbl}
+                        onPress={() => setNewPhoneLabel(lbl)}
+                        style={[styles.editPhoneModePill, { backgroundColor: newPhoneLabel === lbl ? C.accent : C.surfacePressed }]}
+                      >
+                        <Text style={{ fontSize: 13, color: newPhoneLabel === lbl ? '#fff' : C.label }}>{lbl}</Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                </ScrollView>
+                <View style={styles.editPhoneActions}>
+                  <Pressable onPress={() => { setAddingPhone(false); setNewPhoneNum(''); }} hitSlop={8}>
+                    <Text style={{ color: C.secondary, fontSize: 15 }}>Cancel</Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => {
+                      if (!newPhoneNum.trim()) return;
+                      setPersonalPhones(prev => [...prev, { label: newPhoneLabel, number: newPhoneNum.trim() }]);
+                      setNewPhoneNum(''); setAddingPhone(false);
+                    }}
+                    hitSlop={8}
+                  >
+                    <Text style={{ color: C.accent, fontSize: 15, fontWeight: '600' }}>Add</Text>
+                  </Pressable>
+                </View>
+              </View>
+            ) : (
+              <Pressable
+                style={styles.profileInfoRow}
+                onPress={() => { setAddingPhone(true); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
+              >
+                <IconSymbol name="plus.circle.fill" size={16} color={C.accent} />
+                <Text style={[styles.profileInfoText, { color: C.accent }]}>Add Phone</Text>
+              </Pressable>
+            )}
+          </>
+        )}
+
+        {/* Email — locked in edit mode */}
+        <View style={[styles.profileInfoDivider, { backgroundColor: C.separator }]} />
+        {editMode ? (
+          <View style={[styles.profileInfoRow, { backgroundColor: C.surfacePressed }]}>
+            <IconSymbol name="envelope" size={16} color={C.muted} />
+            <Text style={[styles.profileInfoText, { color: C.muted }]} numberOfLines={1}>{email}</Text>
+            <IconSymbol name="lock.fill" size={12} color={C.muted} />
+          </View>
+        ) : (
+          <View style={styles.profileInfoRow}>
+            <IconSymbol name="envelope" size={16} color={C.secondary} />
+            <Text style={[styles.profileInfoText, { color: C.label }]} numberOfLines={1}>{email}</Text>
+          </View>
+        )}
+
+        {/* Username */}
+        <View style={[styles.profileInfoDivider, { backgroundColor: C.separator }]} />
+        {editMode ? (
+          <View style={[styles.profileInfoRow, { backgroundColor: C.surfacePressed }]}>
+            <IconSymbol name="at" size={16} color={C.muted} />
+            <Text style={[styles.profileInfoText, { color: C.muted }]} numberOfLines={1}>{contact.username.replace('@', '')}</Text>
+            <IconSymbol name="lock.fill" size={12} color={C.muted} />
+          </View>
+        ) : (
+          <View style={styles.profileInfoRow}>
+            <IconSymbol name="at" size={16} color={C.secondary} />
+            <Text style={[styles.profileInfoText, { color: C.label }]} numberOfLines={1}>{contact.username.replace('@', '')}</Text>
+          </View>
+        )}
       </View>
+
+      {/* Notes — edit mode only */}
+      {editMode && (
+        <View style={[styles.profileInfoCard, { backgroundColor: C.surface, borderColor: C.separator }]}>
+          <View style={[styles.profileInfoRow, { alignItems: 'flex-start', paddingVertical: 12 }]}>
+            <IconSymbol name="note.text" size={16} color={C.secondary} style={{ marginTop: 2 }} />
+            <TextInput
+              style={[styles.profileInfoText, { color: C.label, minHeight: 56, textAlignVertical: 'top' }]}
+              value={notes}
+              onChangeText={setNotes}
+              placeholder="Notes"
+              placeholderTextColor={C.muted}
+              multiline
+            />
+          </View>
+        </View>
+      )}
+
+      {/* Quick actions — hidden in edit mode */}
+      {!editMode && (
+        <View style={[styles.profileQuickActions, { backgroundColor: C.surface, borderColor: C.separator }]}>
+          {quickActions.map((action, i) => (
+            <React.Fragment key={action.label}>
+              <Pressable
+                style={({ pressed }) => [styles.profileQuickRow, pressed && { backgroundColor: C.surfacePressed }]}
+                onPress={action.onPress}
+              >
+                <IconSymbol name={action.icon as any} size={18} color={action.destructive ? C.red : C.label} />
+                <Text style={[styles.profileQuickLabel, { color: action.destructive ? C.red : C.label }]}>
+                  {action.label}
+                </Text>
+              </Pressable>
+              {i < quickActions.length - 1 && <View style={[styles.profileQuickDivider, { backgroundColor: C.separator }]} />}
+            </React.Fragment>
+          ))}
+        </View>
+      )}
     </View>
   );
 }
 
-// ── Dialer keypad (inside BottomSheet) ────────────────────────────────────────
+// ── Add Contact Sheet ─────────────────────────────────────────────────────────
 
-function DialerContent({
+function AddContactSheet({
   C, styles, onClose,
 }: {
   C: ComponentColors; styles: ReturnType<typeof makeStyles>; onClose: () => void;
 }) {
-  const [digits, setDigits] = useState('');
+  const [step, setStep] = useState<AddContactStep>('menu');
+  const [kanextQuery, setKanextQuery] = useState('');
+  const [extName, setExtName] = useState('');
+  const [extPhone, setExtPhone] = useState('');
+  const [extEmail, setExtEmail] = useState('');
+  const [extNotes, setExtNotes] = useState('');
 
-  const addDigit = useCallback((d: string) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setDigits(prev => prev + d);
-  }, []);
+  const kanextResults = useMemo(() => {
+    const q = kanextQuery.toLowerCase().trim();
+    if (!q) return [];
+    return PHONE_CONTACTS.filter(c =>
+      c.name.toLowerCase().includes(q) ||
+      c.username.toLowerCase().includes(q),
+    ).slice(0, 5);
+  }, [kanextQuery]);
 
-  const backspace = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setDigits(prev => prev.slice(0, -1));
-  }, []);
-
-  return (
-    <View style={styles.dialerContent}>
-      {/* Number display */}
-      <View style={styles.dialerDisplayWrap}>
-        <Text style={[styles.dialerDisplay, { color: C.label }]} adjustsFontSizeToFit numberOfLines={1}>
-          {digits}
-        </Text>
-      </View>
-
-      {/* 4 × 3 key grid */}
-      {DIALPAD_KEYS.map((row, ri) => (
-        <View key={ri} style={styles.keyRow}>
-          {row.map(({ digit, letters }) => (
-            <Pressable
-              key={digit}
-              style={({ pressed }) => [styles.key, pressed && { backgroundColor: C.surfacePressed }]}
-              onPress={() => addDigit(digit)}
-              onLongPress={digit === '0' ? () => addDigit('+') : undefined}
-            >
-              <Text style={[styles.keyDigit, { color: C.label }]}>{digit}</Text>
-              {letters
-                ? <Text style={[styles.keyLetters, { color: C.muted }]}>{letters}</Text>
-                : <View style={styles.keyLettersSpacer} />
-              }
-            </Pressable>
-          ))}
+  if (step === 'menu') {
+    return (
+      <View style={styles.addContactSheet}>
+        <View style={styles.addContactHeader}>
+          <Text style={[styles.addContactTitle, { color: C.label }]}>Add Contact</Text>
         </View>
-      ))}
-
-      {/* Bottom row: empty · call · backspace */}
-      <View style={styles.keyRow}>
-        <View style={styles.key} />
-        <View style={[styles.key, styles.keyCenter]}>
+        {[
+          { icon: 'person.badge.plus', label: 'Add KaNeXT Member', next: 'kanext' as AddContactStep },
+          { icon: 'person.crop.circle', label: 'Add External Contact', next: 'external' as AddContactStep },
+        ].map(({ icon, label, next }) => (
           <Pressable
-            style={[styles.callKeyCircle, { backgroundColor: C.green }]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              onClose();
-            }}
+            key={label}
+            style={({ pressed }) => [styles.addContactOption, pressed && { backgroundColor: C.surfacePressed }]}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setStep(next); }}
           >
-            <IconSymbol name="phone.fill" size={26} color="#FFFFFF" />
+            <View style={[styles.addContactIconWrap, { backgroundColor: C.surface }]}>
+              <IconSymbol name={icon as any} size={22} color={C.accent} />
+            </View>
+            <Text style={[styles.addContactOptionLabel, { color: C.label }]}>{label}</Text>
           </Pressable>
-        </View>
-        <Pressable
-          style={styles.key}
-          onPress={backspace}
-          onLongPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            setDigits('');
-          }}
-        >
-          {digits.length > 0 && (
-            <IconSymbol name="delete.left.fill" size={22} color={C.secondary} />
-          )}
-        </Pressable>
+        ))}
       </View>
+    );
+  }
+
+  if (step === 'kanext') {
+    return (
+      <View style={styles.addContactSheet}>
+        <View style={styles.addContactHeader}>
+          <Pressable onPress={() => setStep('menu')} hitSlop={12}>
+            <IconSymbol name="chevron.left" size={18} color={C.accent} />
+          </Pressable>
+          <Text style={[styles.addContactTitle, { color: C.label }]}>Add KaNeXT Member</Text>
+          <View style={{ width: 18 }} />
+        </View>
+        <View style={[styles.addContactSearch, { backgroundColor: C.surface, borderColor: C.separator }]}>
+          <IconSymbol name="magnifyingglass" size={15} color={C.muted} />
+          <TextInput
+            style={{ flex: 1, fontSize: 15, color: C.label }}
+            value={kanextQuery}
+            onChangeText={setKanextQuery}
+            placeholder="Search by name or @handle"
+            placeholderTextColor={C.muted}
+            autoFocus
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+        </View>
+        {kanextResults.map(contact => (
+          <Pressable
+            key={contact.id}
+            style={({ pressed }) => [styles.addContactResult, pressed && { backgroundColor: C.surfacePressed }]}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); onClose(); }}
+          >
+            <View style={[styles.contactAvatar, { backgroundColor: C.surface }]}>
+              <Text style={[styles.contactInitials, { color: C.label }]}>{contact.initials}</Text>
+            </View>
+            <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
+              <Text style={[styles.addContactOptionLabel, { color: C.label }]}>{contact.name}</Text>
+              <Text style={{ fontSize: 12, color: C.muted }}>
+                {contact.username}{contact.role ? ` · ${contact.role}` : ''}
+              </Text>
+            </View>
+            <IconSymbol name="plus.circle.fill" size={22} color={C.accent} />
+          </Pressable>
+        ))}
+      </View>
+    );
+  }
+
+  // External contact form
+  return (
+    <View style={styles.addContactSheet}>
+      <View style={styles.addContactHeader}>
+        <Pressable onPress={() => setStep('menu')} hitSlop={12}>
+          <IconSymbol name="chevron.left" size={18} color={C.accent} />
+        </Pressable>
+        <Text style={[styles.addContactTitle, { color: C.label }]}>Add External Contact</Text>
+        <View style={{ width: 18 }} />
+      </View>
+      <View style={[styles.profileInfoCard, { backgroundColor: C.surface, borderColor: C.separator }]}>
+        {([
+          { placeholder: 'Name*', value: extName, onChange: setExtName, kbType: 'default' as const, cap: 'words' as const },
+          { placeholder: 'Phone', value: extPhone, onChange: setExtPhone, kbType: 'phone-pad' as const, cap: 'none' as const },
+          { placeholder: 'Email', value: extEmail, onChange: setExtEmail, kbType: 'email-address' as const, cap: 'none' as const },
+        ] as const).map(({ placeholder, value, onChange, kbType, cap }, i) => (
+          <React.Fragment key={placeholder}>
+            {i > 0 && <View style={[styles.profileInfoDivider, { backgroundColor: C.separator }]} />}
+            <View style={styles.profileInfoRow}>
+              <TextInput
+                style={[styles.profileInfoText, { color: C.label }]}
+                value={value}
+                onChangeText={onChange as (t: string) => void}
+                placeholder={placeholder}
+                placeholderTextColor={C.muted}
+                keyboardType={kbType}
+                autoCapitalize={cap}
+                autoCorrect={false}
+              />
+            </View>
+          </React.Fragment>
+        ))}
+        <View style={[styles.profileInfoDivider, { backgroundColor: C.separator }]} />
+        <View style={[styles.profileInfoRow, { alignItems: 'flex-start', paddingVertical: 12 }]}>
+          <TextInput
+            style={[styles.profileInfoText, { color: C.label, minHeight: 56, textAlignVertical: 'top' }]}
+            value={extNotes}
+            onChangeText={setExtNotes}
+            placeholder="Notes"
+            placeholderTextColor={C.muted}
+            multiline
+          />
+        </View>
+      </View>
+      <Pressable
+        style={[styles.addContactSaveBtn, { backgroundColor: extName.trim() ? C.accent : C.surfacePressed }]}
+        disabled={!extName.trim()}
+        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); onClose(); }}
+      >
+        <Text style={{ color: extName.trim() ? '#FFFFFF' : C.muted, fontSize: 16, fontWeight: '600' }}>Save</Text>
+      </Pressable>
     </View>
   );
 }
@@ -427,7 +761,16 @@ function TopMatchCard({
       </View>
       <Pressable
         style={[styles.callBtn, { backgroundColor: actionBg }]}
-        onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          if (match.kind === 'contact') {
+            initiateCall({ contactName: match.data.name, contactInitials: match.data.initials, mode: match.data.mode, type: 'audio' });
+          } else if (match.kind === 'call') {
+            initiateCall({ contactName: match.data.name, contactInitials: match.data.initials, mode: match.data.mode, type: match.data.direction === 'video' ? 'video' : 'audio' });
+          } else {
+            initiateCall({ contactName: match.data.callerName, contactInitials: match.data.callerInitials, mode: match.data.mode, type: 'audio' });
+          }
+        }}
         hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
       >
         <IconSymbol name={actionIcon as any} size={16} color={actionColor} />
@@ -607,14 +950,18 @@ function SearchResults({
 // ── My profile card (top of contacts list) ────────────────────────────────────
 
 function MyProfileCard({
-  role, mode, C, styles,
+  role, mode, C, styles, onPress,
 }: {
   role: string; mode: ReturnType<typeof useMode>;
   C: ComponentColors; styles: ReturnType<typeof makeStyles>;
+  onPress: () => void;
 }) {
   const myNumber = MY_KANEXT_NUMBERS.find(n => n.mode === mode);
   return (
-    <View style={[styles.myCard, { backgroundColor: C.surface }]}>
+    <Pressable
+      style={({ pressed }) => [styles.myCard, { backgroundColor: C.surface }, pressed && { opacity: 0.85 }]}
+      onPress={onPress}
+    >
       <View style={[styles.myAvatar, { backgroundColor: C.accent }]}>
         <Text style={styles.myAvatarInitials}>SK</Text>
         <View style={[styles.onlineDot, { backgroundColor: C.green, borderColor: C.surface }]} />
@@ -625,7 +972,7 @@ function MyProfileCard({
           {role || 'Owner'}{myNumber ? `  ·  ${myNumber.number}` : ''}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -724,7 +1071,6 @@ export default function PhoneScreen() {
 
   const [filter, setFilter] = useState<PhoneFilter>('Calls');
   const [filterDropdownVisible, setFilterDropdownVisible] = useState(false);
-  const [dialerVisible, setDialerVisible] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedSection, setExpandedSection] = useState<ExpandedSection>(null);
@@ -732,6 +1078,20 @@ export default function PhoneScreen() {
   const [profileSheetVisible, setProfileSheetVisible] = useState(false);
   const [ctxMenu, setCtxMenu] = useState<ContextMenuState>({ visible: false, items: [], anchorY: 0 });
   const [contactCtxMenu, setContactCtxMenu] = useState<ContactContextMenuState>({ visible: false, items: [], anchorY: 0, contact: null });
+  const [addContactSheetVisible, setAddContactSheetVisible] = useState(false);
+  const [myProfileSheetVisible, setMyProfileSheetVisible] = useState(false);
+
+  const ownContact = useMemo<PhoneContact>(() => ({
+    id: 'me',
+    name: 'Sammy Kalejaiye',
+    username: '@sk',
+    initials: 'SK',
+    role: activeRole,
+    org: 'KaNeXT',
+    mode,
+    isFavorite: false,
+    online: true,
+  }), [activeRole, mode]);
 
   // Fade animations
   const mainOpacity = useRef(new Animated.Value(1)).current;
@@ -777,6 +1137,14 @@ export default function PhoneScreen() {
 
   const contactsScrollRef = useRef<ScrollView>(null);
   const sectionYRef = useRef<Record<string, number>>({});
+  const lastScrollYRef = useRef(0);
+  const handleScroll = useCallback((e: any) => {
+    const y = e.nativeEvent.contentOffset.y;
+    const dy = y - lastScrollYRef.current;
+    lastScrollYRef.current = y;
+    if (dy > 5) hideFooter();
+    else if (dy < -5) showFooter();
+  }, []);
 
   const scrollToLetter = useCallback((letter: string) => {
     if (contactSections.length === 0) return;
@@ -888,8 +1256,21 @@ export default function PhoneScreen() {
       >
         {/* Header */}
         <View style={[styles.header, { paddingTop: insets.top + 14 }]}>
-          {/* Spacer to balance the filter icon */}
-          <View style={styles.filterBtn} />
+          {/* Add contact — only on Contacts filter */}
+          {filter === 'Contacts' ? (
+            <Pressable
+              style={styles.filterBtn}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setAddContactSheetVisible(true);
+              }}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <IconSymbol name="plus" size={22} color={C.accent} />
+            </Pressable>
+          ) : (
+            <View style={styles.filterBtn} />
+          )}
 
           {/* Centered state pill */}
           <View style={[styles.statePill, { backgroundColor: C.surfacePressed }]}>
@@ -919,9 +1300,17 @@ export default function PhoneScreen() {
             ref={contactsScrollRef}
             style={styles.scroll}
             showsVerticalScrollIndicator={false}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
             contentContainerStyle={{ paddingBottom: insets.bottom + FOOTER_HEIGHT + 150 }}
           >
-            <MyProfileCard role={activeRole} mode={mode} C={C} styles={styles} />
+            <MyProfileCard
+              role={activeRole} mode={mode} C={C} styles={styles}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setMyProfileSheetVisible(true);
+              }}
+            />
             {contactSections.length === 0 && <Text style={styles.emptyText}>No contacts</Text>}
             {contactSections.map(section => (
               <React.Fragment key={section.title}>
@@ -946,10 +1335,12 @@ export default function PhoneScreen() {
           <ScrollView
             style={styles.scroll}
             showsVerticalScrollIndicator={false}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
             contentContainerStyle={{ paddingBottom: insets.bottom + FOOTER_HEIGHT + 150 }}
           >
             {favorites.length > 0 && filter === 'Calls' && (
-              <View style={styles.section}>
+              <View style={[styles.section, styles.favsSection]}>
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
@@ -1026,7 +1417,7 @@ export default function PhoneScreen() {
             style={[styles.fab, { backgroundColor: C.green }]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              setDialerVisible(true);
+              router.push('/(tabs)/(main)/phone/dialpad' as any);
             }}
           >
             <IconSymbol name="circle.grid.3x3.fill" size={26} color="#FFFFFF" />
@@ -1137,29 +1528,41 @@ export default function PhoneScreen() {
         </>
       )}
 
-      {/* ── Dialer sheet ── */}
-      <BottomSheet
-        visible={dialerVisible}
-        onClose={() => setDialerVisible(false)}
-        useModal
-        snapPoints={['90%', '100%']}
-        backgroundColor={C.bg}
-        contentContainerStyle={{ paddingHorizontal: 0, paddingTop: 0 }}
-      >
-        <DialerContent C={C} styles={styles} onClose={() => setDialerVisible(false)} />
-      </BottomSheet>
-
       {/* ── Profile sheet ── */}
       {selectedContact && (
         <BottomSheet
+          key={selectedContact.id}
           visible={profileSheetVisible}
           onClose={() => setProfileSheetVisible(false)}
           useModal
           backgroundColor={C.bg}
+          contentContainerStyle={{ paddingHorizontal: 0, paddingTop: 0 }}
         >
-          <ProfileSheet contact={selectedContact} C={C} styles={styles} />
+          <ProfileSheet contact={selectedContact} C={C} styles={styles} canEdit={true} />
         </BottomSheet>
       )}
+
+      {/* ── My profile sheet ── */}
+      <BottomSheet
+        visible={myProfileSheetVisible}
+        onClose={() => setMyProfileSheetVisible(false)}
+        useModal
+        backgroundColor={C.bg}
+        contentContainerStyle={{ paddingHorizontal: 0, paddingTop: 0 }}
+      >
+        <ProfileSheet contact={ownContact} C={C} styles={styles} canEdit={true} />
+      </BottomSheet>
+
+      {/* ── Add Contact sheet ── */}
+      <BottomSheet
+        visible={addContactSheetVisible}
+        onClose={() => setAddContactSheetVisible(false)}
+        useModal
+        backgroundColor={C.bg}
+        contentContainerStyle={{ paddingHorizontal: 0, paddingTop: 0 }}
+      >
+        <AddContactSheet C={C} styles={styles} onClose={() => setAddContactSheetVisible(false)} />
+      </BottomSheet>
 
       {/* ── Context menu (calls/voicemails) ── */}
       <ContextMenuOverlay ctxMenu={ctxMenu} onClose={closeCtxMenu} C={C} styles={styles} />
@@ -1235,6 +1638,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   },
 
   // Favorites
+  favsSection: { marginBottom: 20 },
   favsContent: { paddingHorizontal: 16, gap: 8, paddingBottom: 4 },
   favCard: { width: 68, alignItems: 'center', gap: 6 },
   favAvatar: {
@@ -1387,65 +1791,89 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   seeAllBtn: { marginLeft: 'auto' as any },
   seeAll: { fontSize: 13, fontWeight: '500' },
 
-  // Dialer keypad
-  dialerContent: { paddingBottom: 20 },
-  dialerDisplayWrap: {
-    height: 80,
-    justifyContent: 'center',
-    paddingHorizontal: 32,
-  },
-  dialerDisplay: {
-    fontSize: 36,
-    fontWeight: '300',
-    textAlign: 'center',
-    letterSpacing: 3,
-  },
-  keyRow: { flexDirection: 'row' },
-  key: {
-    flex: 1,
-    height: 76,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 8,
-  },
-  keyCenter: { alignItems: 'center', justifyContent: 'center' },
-  keyDigit: { fontSize: 28, fontWeight: '300' },
-  keyLetters: { fontSize: 10, fontWeight: '500', letterSpacing: 1.5, marginTop: 2 },
-  keyLettersSpacer: { height: 14 },
-  callKeyCircle: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
+  // Online dot (shared for row avatars — 44px recents/contacts, 58px favorites)
+  rowOnlineDot: {
+    position: 'absolute', bottom: 0, right: 0,
+    width: 13, height: 13, borderRadius: 6.5, borderWidth: 2,
   },
 
   // Profile sheet
-  profileSheet: {
-    alignItems: 'center', paddingHorizontal: 24, paddingTop: 8, paddingBottom: 16,
+  profileSheet: {},
+  profileEditRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 4,
+  },
+  profileEditBtn: {
+    paddingHorizontal: 4,
+    paddingVertical: 4,
+  },
+  profileEditLabel: { fontSize: 16, fontWeight: '500' },
+  profileHero: {
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingTop: 8,
+    paddingBottom: 20,
+    gap: 3,
   },
   profileAvatar: {
     width: 80, height: 80, borderRadius: 40,
     alignItems: 'center', justifyContent: 'center',
-    position: 'relative', marginBottom: 14,
+    position: 'relative', marginBottom: 6,
   },
   profileInitials: { fontSize: 28, fontWeight: '700', color: C.label },
   profileOnlineDot: {
     position: 'absolute', bottom: 3, right: 3,
     width: 18, height: 18, borderRadius: 9, borderWidth: 3,
   },
-  profileName: {
-    fontSize: 22, fontWeight: '700', color: C.label,
-    marginBottom: 4, textAlign: 'center',
-  },
-  profileRole: { fontSize: 14, marginBottom: 28, textAlign: 'center' },
-  profileActions: { flexDirection: 'row', gap: 20 },
-  profileActionBtn: { alignItems: 'center', gap: 8 },
+  profileName: { fontSize: 22, fontWeight: '700', color: C.label, textAlign: 'center' },
+  profileHandle: { fontSize: 14, fontWeight: '400' },
+  profileRole: { fontSize: 13, textAlign: 'center' },
+  profileActions: { flexDirection: 'row', paddingHorizontal: 16, marginBottom: 16 },
+  profileActionBtn: { flex: 1, alignItems: 'center', gap: 6 },
   profileActionIcon: {
     width: 56, height: 56, borderRadius: 28,
     alignItems: 'center', justifyContent: 'center',
   },
   profileActionLabel: { fontSize: 12, fontWeight: '500' },
+
+  // Contact info card
+  profileInfoCard: {
+    marginHorizontal: 16,
+    marginBottom: 12,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+  },
+  profileInfoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  profileInfoText: { flex: 1, fontSize: 15 },
+  profileInfoDivider: { height: StyleSheet.hairlineWidth, marginLeft: 44 },
+
+  // Quick actions
+  profileQuickActions: {
+    marginHorizontal: 16,
+    marginBottom: 8,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+  },
+  profileQuickRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    paddingHorizontal: 16,
+    height: 50,
+  },
+  profileQuickLabel: { flex: 1, fontSize: 16, fontWeight: '400' },
+  profileQuickDivider: { height: StyleSheet.hairlineWidth, marginLeft: 48 },
 
   // Contacts section headers + alphabet
   sectionLetterHeader: {
@@ -1579,5 +2007,101 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   ctxDivider: {
     height: StyleSheet.hairlineWidth,
     marginLeft: 16,
+  },
+
+  // Profile edit mode
+  profileLockedNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  editPhoneForm: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 8,
+    gap: 10,
+  },
+  editPhoneInput: {
+    fontSize: 15,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderRadius: 8,
+  },
+  editPhoneModes: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  editPhoneModePill: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+  editPhoneActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 4,
+  },
+
+  // Add contact sheet
+  addContactSheet: {
+    paddingBottom: 24,
+  },
+  addContactHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 16,
+  },
+  addContactTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    flex: 1,
+    textAlign: 'center',
+  },
+  addContactOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  addContactIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addContactOptionLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  addContactSearch: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginHorizontal: 16,
+    marginBottom: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  addContactResult: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 12,
+  },
+  addContactSaveBtn: {
+    marginHorizontal: 16,
+    marginTop: 8,
+    paddingVertical: 15,
+    borderRadius: 12,
+    alignItems: 'center',
   },
 });

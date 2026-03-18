@@ -19,6 +19,7 @@ export interface RecentCall {
   timestamp: string;
   duration?: string;
   hasVoicemail?: boolean;
+  online?: boolean;
 }
 
 export interface PhoneContact {
@@ -80,20 +81,20 @@ export const MODE_BADGE_LABELS: Record<Mode, string> = {
 // ── Recent Calls ──
 
 export const RECENT_CALLS: RecentCall[] = [
-  { id: 'c1', name: 'Coach Williams', username: '@coachwilliams', initials: 'CW', mode: 'sports', direction: 'outgoing', timestamp: '2:34 PM', duration: '4:21' },
-  { id: 'c2', name: 'James Rodriguez', username: '@jrod23', initials: 'JR', mode: 'sports', direction: 'incoming', timestamp: '1:12 PM', duration: '12:05' },
-  { id: 'c3', name: 'Sarah Chen', username: '@schen', initials: 'SC', mode: 'business', direction: 'missed', timestamp: '11:45 AM' },
-  { id: 'c4', name: 'Pastor Davis', username: '@pastordavis', initials: 'PD', mode: 'community', direction: 'incoming', timestamp: '10:20 AM', duration: '8:33' },
-  { id: 'c5', name: 'Marcus Johnson', username: '@mjohnson', initials: 'MJ', mode: 'sports', direction: 'video', timestamp: '9:15 AM', duration: '22:17' },
-  { id: 'c6', name: 'Athletic Dept', username: '@athletics', initials: 'AD', mode: 'sports', direction: 'missed', timestamp: 'Yesterday', hasVoicemail: true },
-  { id: 'c7', name: 'Lisa Park', username: '@lisapark', initials: 'LP', mode: 'business', direction: 'outgoing', timestamp: 'Yesterday', duration: '3:45' },
-  { id: 'c8', name: 'Training Staff', username: '@trainstaff', initials: 'TS', mode: 'sports', direction: 'incoming', timestamp: 'Yesterday', duration: '1:33' },
-  { id: 'c9', name: 'Michael Torres', username: '@mtorres', initials: 'MT', mode: 'education', direction: 'missed', timestamp: 'Mar 5' },
-  { id: 'c10', name: 'Dr. Kim', username: '@drkim', initials: 'DK', mode: 'sports', direction: 'incoming', timestamp: 'Mar 5', duration: '6:12' },
-  { id: 'c11', name: 'Front Office', username: '@frontoffice', initials: 'FO', mode: 'sports', direction: 'outgoing', timestamp: 'Mar 4', duration: '0:45' },
-  { id: 'c12', name: 'Rachel Green', username: '@rgreen', initials: 'RG', mode: 'community', direction: 'video', timestamp: 'Mar 4', duration: '15:20' },
-  { id: 'c13', name: 'Alex Kim', username: '@akim', initials: 'AK', mode: 'business', direction: 'missed', timestamp: 'Mar 3', hasVoicemail: true },
-  { id: 'c14', name: 'Coach Thompson', username: '@cthompson', initials: 'CT', mode: 'sports', direction: 'incoming', timestamp: 'Mar 3', duration: '11:02' },
+  { id: 'c1',  name: 'Coach Williams', username: '@coachwilliams', initials: 'CW', mode: 'sports',    direction: 'outgoing', timestamp: '2:34 PM',   duration: '4:21',  online: true  },
+  { id: 'c2',  name: 'James Rodriguez',username: '@jrod23',        initials: 'JR', mode: 'sports',    direction: 'incoming', timestamp: '1:12 PM',   duration: '12:05', online: true  },
+  { id: 'c3',  name: 'Sarah Chen',      username: '@schen',         initials: 'SC', mode: 'business',  direction: 'missed',   timestamp: '11:45 AM',                    online: true  },
+  { id: 'c4',  name: 'Pastor Davis',    username: '@pastordavis',   initials: 'PD', mode: 'community', direction: 'incoming', timestamp: '10:20 AM', duration: '8:33',  online: true  },
+  { id: 'c5',  name: 'Marcus Johnson',  username: '@mjohnson',      initials: 'MJ', mode: 'sports',    direction: 'video',    timestamp: '9:15 AM',  duration: '22:17', online: true  },
+  { id: 'c6',  name: 'Athletic Dept',   username: '@athletics',     initials: 'AD', mode: 'sports',    direction: 'missed',   timestamp: 'Yesterday', hasVoicemail: true, online: false },
+  { id: 'c7',  name: 'Lisa Park',       username: '@lisapark',      initials: 'LP', mode: 'business',  direction: 'outgoing', timestamp: 'Yesterday', duration: '3:45', online: false },
+  { id: 'c8',  name: 'Training Staff',  username: '@trainstaff',    initials: 'TS', mode: 'sports',    direction: 'incoming', timestamp: 'Yesterday', duration: '1:33', online: false },
+  { id: 'c9',  name: 'Michael Torres',  username: '@mtorres',       initials: 'MT', mode: 'education', direction: 'missed',   timestamp: 'Mar 5',                       online: false },
+  { id: 'c10', name: 'Dr. Kim',         username: '@drkim',         initials: 'DK', mode: 'sports',    direction: 'incoming', timestamp: 'Mar 5',    duration: '6:12',  online: false },
+  { id: 'c11', name: 'Front Office',    username: '@frontoffice',   initials: 'FO', mode: 'sports',    direction: 'outgoing', timestamp: 'Mar 4',    duration: '0:45',  online: true  },
+  { id: 'c12', name: 'Rachel Green',    username: '@rgreen',        initials: 'RG', mode: 'community', direction: 'video',    timestamp: 'Mar 4',    duration: '15:20', online: false },
+  { id: 'c13', name: 'Alex Kim',        username: '@akim',          initials: 'AK', mode: 'business',  direction: 'missed',   timestamp: 'Mar 3',   hasVoicemail: true, online: true  },
+  { id: 'c14', name: 'Coach Thompson',  username: '@cthompson',     initials: 'CT', mode: 'sports',    direction: 'incoming', timestamp: 'Mar 3',    duration: '11:02', online: true  },
 ];
 
 // ── Contacts ──
@@ -235,6 +236,26 @@ export const MY_KANEXT_NUMBERS: KanextNumber[] = [
   { mode: 'community', label: 'Community', number: '+1 (555) 247-8303' },
   { mode: 'education', label: 'Education', number: '+1 (555) 247-8304' },
 ];
+
+// ── Phone numbers by username (used in profile sheets + dialpad T9) ──
+
+export const CONTACT_PHONES: Record<string, Array<{ label: string; number: string }>> = {
+  '@cthompson':    [{ label: 'Sports · Lincoln', number: '+1 (555) 583-7241' }],
+  '@coachwilliams':[{ label: 'Sports · Lincoln', number: '+1 (555) 410-2934' }],
+  '@jrod23':       [{ label: 'Sports · Lincoln', number: '+1 (555) 247-8302' }],
+  '@schen':        [{ label: 'Business · KaNeXT', number: '+1 (555) 324-7810' }, { label: 'Mobile', number: '+1 (555) 891-4523' }],
+  '@akim':         [{ label: 'Business · KaNeXT', number: '+1 (555) 766-3211' }],
+  '@dellis':       [{ label: 'Business · KaNeXT', number: '+1 (555) 538-9017' }],
+  '@djackson':     [{ label: 'Business · KaNeXT', number: '+1 (555) 443-2871' }],
+  '@amurphy':      [{ label: 'Business · KaNeXT', number: '+1 (555) 992-5540' }],
+  '@vprice':       [{ label: 'Business · KaNeXT', number: '+1 (555) 673-1894' }],
+  '@twashington':  [{ label: 'Business · KaNeXT', number: '+1 (555) 221-8765' }],
+  '@swright':      [{ label: 'Business · KaNeXT', number: '+1 (555) 885-3302' }],
+  '@lisapark':     [{ label: 'Business · KaNeXT', number: '+1 (555) 734-6190' }],
+  '@pastordavis':  [{ label: 'Community · ICCLA', number: '+1 (555) 329-1047' }],
+  '@mjohnson':     [{ label: 'Sports · Lincoln',  number: '+1 (555) 601-8823' }],
+  '@drkim':        [{ label: 'Sports · Lincoln',  number: '+1 (555) 712-3490' }],
+};
 
 // ── Helpers ──
 
