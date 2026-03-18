@@ -99,23 +99,6 @@ export function UniversalFooter() {
     [],
   );
 
-  // ── Home swipe-up → org drawer ──
-  const homePanResponder = useMemo(
-    () =>
-      PanResponder.create({
-        onStartShouldSetPanResponder: () => false,
-        onMoveShouldSetPanResponder: (_evt, gs) =>
-          gs.dy < -15 && Math.abs(gs.dy) > Math.abs(gs.dx),
-        onPanResponderRelease: (_evt, gs) => {
-          if (gs.dy < -50) {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            openOrgDrawer();
-          }
-        },
-      }),
-    [],
-  );
-
   /** Shared pre-nav: haptic + footer reset + close split */
   const preNav = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -133,23 +116,21 @@ export function UniversalFooter() {
   const handleHomePress = () => {
     const p = pathnameRef.current;
     // Dead tap when already on home index
-    if (p === '/' || p === '/(tabs)' || p === '/(tabs)/(main)' || p === '/(main)') return;
+    if (p === '/' || p === '/(tabs)/(main)') return;
     preNav();
-    // Dismiss all modal presentations — pops back to the existing home
-    // screen instance without remounting (preserves video + layout)
-    router.dismissAll();
+    // popInnerToHome dispatches StackActions.popToTop() directly to the
+    // (main) Stack navigator ref — reliable from any nesting level
+    popInnerToHome();
   };
   const handleMessagesPress = () => {
     if (pIncludes('messages')) return;
     preNav();
-    router.navigate('/(tabs)/(main)/messages' as any);
-    if (isOnNexus()) router.dismissAll();
+    router.push('/(tabs)/(main)/messages' as any);
   };
   const handlePhonePress = () => {
     if (pIncludes('phone')) return;
     preNav();
-    router.navigate('/(tabs)/(main)/phone' as any);
-    if (isOnNexus()) router.dismissAll();
+    router.push('/(tabs)/(main)/phone' as any);
   };
 
   return (
@@ -157,23 +138,21 @@ export function UniversalFooter() {
       {/* 1px divider */}
       <View style={[styles.divider, { backgroundColor: C.footerDivider }]} />
 
-      {/* 5-icon row — tap only, no footer-specific swipe gestures */}
+      {/* 5-icon row */}
       <View style={[styles.footer, { backgroundColor: C.footer }]}>
         {/* 1. Home */}
-        <View style={styles.iconButton} {...homePanResponder.panHandlers}>
-          <Pressable
-            style={styles.pressableInner}
-            onPress={handleHomePress}
-            onLongPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              openOrgDrawer();
-            }}
-            delayLongPress={400}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <IconSymbol name="house.fill" size={22} color={C.muted} />
-          </Pressable>
-        </View>
+        <Pressable
+          style={[styles.iconButton, styles.pressableInner]}
+          onPress={handleHomePress}
+          onLongPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            openOrgDrawer();
+          }}
+          delayLongPress={400}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <IconSymbol name="house.fill" size={22} color={C.muted} />
+        </Pressable>
 
         {/* 2. Phone */}
         <Pressable
@@ -206,7 +185,7 @@ export function UniversalFooter() {
           <IconSymbol name="message.fill" size={22} color={C.muted} />
         </Pressable>
 
-        {/* 5. Pulse — coming soon */}
+        {/* 5. Pulse */}
         <Pressable
           style={styles.iconButton}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
@@ -216,7 +195,7 @@ export function UniversalFooter() {
         </Pressable>
       </View>
 
-      {/* Safe area fill — extends behind home indicator */}
+      {/* Safe area fill */}
       <View style={{ height: insets.bottom, backgroundColor: C.footer }} />
     </View>
   );
@@ -231,7 +210,6 @@ const styles = StyleSheet.create({
     zIndex: 10001,
   },
   divider: {
-    width: '100%',
     height: StyleSheet.hairlineWidth,
   },
   footer: {
