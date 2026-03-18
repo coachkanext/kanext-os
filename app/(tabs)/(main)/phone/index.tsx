@@ -11,7 +11,7 @@
 
 import React, { useState, useMemo, useCallback, useRef } from 'react';
 import {
-  View, Text, Pressable, ScrollView, StyleSheet, TextInput, Animated,
+  View, Text, Pressable, ScrollView, SectionList, StyleSheet, TextInput, Animated,
   useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -29,7 +29,8 @@ import {
   type RecentCall, type PhoneContact, type Voicemail, type CallDirection,
 } from '@/data/mock-phone';
 
-type PhoneFilter = 'Calls' | 'Missed' | 'Voicemail' | 'Contacts';
+type PhoneTab = 'Calls' | 'Contacts';
+type CallsSubFilter = 'All' | 'Missed' | 'Voicemail';
 type ExpandedSection = 'calls' | 'voicemails' | 'contacts' | null;
 
 type ContextMenuItem = {
@@ -47,10 +48,18 @@ type ContextMenuState = {
 
 type ContactContextMenuState = ContextMenuState & { contact: PhoneContact | null };
 
-const FILTER_OPTIONS: PhoneFilter[] = ['Calls', 'Missed', 'Voicemail', 'Contacts'];
+const CALLS_PILLS: CallsSubFilter[] = ['All', 'Missed', 'Voicemail'];
 const FOOTER_HEIGHT = 49;
+const PILLS_ROW_H = 46;
 const SEARCH_BAR_HEIGHT = 52;
 const SECTION_MAX = 3;
+
+const CONTACT_GROUPS: Record<string, string[]> = {
+  business: ['All', 'Leadership', 'Product', 'Engineering', 'Operations'],
+  sports:   ['All', 'Coaching', 'Players', 'Support', 'Staff'],
+  education:['All', 'Faculty', 'Students', 'Staff', 'Alumni'],
+  community:['All', 'Leadership', 'Ministry', 'Volunteers', 'Members'],
+};
 
 const FULL_ALPHABET = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '#'];
 const PHONE_LABEL_OPTIONS = ['Mobile', 'Home', 'Work', 'Business', 'Sports', 'Personal'];
@@ -74,17 +83,27 @@ function directionLabel(d: CallDirection): string {
 // ── Row / card components ─────────────────────────────────────────────────────
 
 function FavoriteCard({
-  contact, C, styles, onPress,
+  contact, C, styles, onPress, editMode, onRemove,
 }: {
   contact: PhoneContact; C: ComponentColors;
   styles: ReturnType<typeof makeStyles>; onPress: () => void;
+  editMode?: boolean; onRemove?: () => void;
 }) {
   return (
-    <Pressable style={styles.favCard} onPress={onPress}>
+    <Pressable style={styles.favCard} onPress={editMode ? undefined : onPress}>
       <View style={[styles.favAvatar, { backgroundColor: C.surface }]}>
         <Text style={styles.favInitials}>{contact.initials}</Text>
-        {contact.online && (
+        {contact.online && !editMode && (
           <View style={[styles.rowOnlineDot, { backgroundColor: C.green, borderColor: C.surface }]} />
+        )}
+        {editMode && (
+          <Pressable
+            style={[styles.favRemoveBtn, { backgroundColor: C.red, borderColor: C.bg }]}
+            onPress={onRemove}
+            hitSlop={{ top: 4, bottom: 4, left: 4, right: 4 }}
+          >
+            <IconSymbol name="minus" size={10} color="#FFF" />
+          </Pressable>
         )}
       </View>
       <Text style={styles.favName} numberOfLines={1}>{contact.name.split(' ')[0]}</Text>
@@ -93,11 +112,12 @@ function FavoriteCard({
 }
 
 function RecentRow({
-  call, C, styles, onPress, onLongPress,
+  call, C, styles, onPress, onLongPress, selectMode, selected, onToggle,
 }: {
   call: RecentCall; C: ComponentColors;
   styles: ReturnType<typeof makeStyles>; onPress: () => void;
   onLongPress?: (pageY: number) => void;
+  selectMode?: boolean; selected?: boolean; onToggle?: () => void;
 }) {
   const isMissed = call.direction === 'missed';
   const dirColor = isMissed ? C.red : C.secondary;
@@ -105,10 +125,15 @@ function RecentRow({
   return (
     <Pressable
       style={({ pressed }) => [styles.row, pressed && { backgroundColor: C.surfacePressed }]}
-      onPress={onPress}
-      onLongPress={onLongPress ? (e) => onLongPress(e.nativeEvent.pageY) : undefined}
+      onPress={selectMode ? onToggle : onPress}
+      onLongPress={(!selectMode && onLongPress) ? (e) => onLongPress(e.nativeEvent.pageY) : undefined}
       delayLongPress={350}
     >
+      {selectMode && (
+        <View style={[styles.selectCircle, selected && { backgroundColor: C.accent, borderColor: C.accent }]}>
+          {selected && <IconSymbol name="checkmark" size={11} color="#FFF" />}
+        </View>
+      )}
       <View style={[styles.rowAvatar, { backgroundColor: C.surface }]}>
         <Text style={styles.rowInitials}>{call.initials}</Text>
         {call.hasVoicemail && (
@@ -1069,8 +1094,12 @@ export default function PhoneScreen() {
   const { state } = useAppContext();
   const activeRole = state.activeContext.derived_role_badge ?? 'Owner';
 
-  const [filter, setFilter] = useState<PhoneFilter>('Calls');
-  const [filterDropdownVisible, setFilterDropdownVisible] = useState(false);
+  const [tab, setTab] = useState<PhoneTab>('Calls');
+  const [subFilter, setSubFilter] = useState<CallsSubFilter>('All');
+  const [tabDropdownVisible, setTabDropdownVisible] = useState(false);
+  const [editDropdownVisible, setEditDropdownVisible] = useState(false);
+  const [filterPillsVisible, setFilterPillsVisible] = useState(false);
+  const pillsRevealAnim = useRef(new Animated.Value(0)).current;
   const [searchActive, setSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedSection, setExpandedSection] = useState<ExpandedSection>(null);
@@ -1080,6 +1109,14 @@ export default function PhoneScreen() {
   const [contactCtxMenu, setContactCtxMenu] = useState<ContactContextMenuState>({ visible: false, items: [], anchorY: 0, contact: null });
   const [addContactSheetVisible, setAddContactSheetVisible] = useState(false);
   const [myProfileSheetVisible, setMyProfileSheetVisible] = useState(false);
+  const [editFavoritesMode, setEditFavoritesMode] = useState(false);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedCallIds, setSelectedCallIds] = useState<Set<string>>(new Set());
+  const [removedFavIds, setRemovedFavIds] = useState<Set<string>>(new Set());
+  const [deletedCallIds, setDeletedCallIds] = useState<Set<string>>(new Set());
+  const [contactFilter, setContactFilter] = useState<string>('All');
+  const [contactFilterPillsVisible, setContactFilterPillsVisible] = useState(false);
+  const contactPillsRevealAnim = useRef(new Animated.Value(0)).current;
 
   const ownContact = useMemo<PhoneContact>(() => ({
     id: 'me',
@@ -1112,19 +1149,67 @@ export default function PhoneScreen() {
     [mode],
   );
   const favorites = useMemo(() => orgContacts.filter(c => c.isFavorite), [orgContacts]);
+  const displayFavorites = useMemo(() => favorites.filter(f => !removedFavIds.has(f.id)), [favorites, removedFavIds]);
 
-  const missedCalls = useMemo(() => orgCalls.filter(c => c.direction === 'missed'), [orgCalls]);
-  const canvasCalls = filter === 'Missed' ? missedCalls : orgCalls;
-  const pillLabel = filter;
+  const missedCalls = useMemo(() => orgCalls.filter(c => c.direction === 'missed' && !deletedCallIds.has(c.id)), [orgCalls, deletedCallIds]);
+  const canvasCalls = useMemo(() => {
+    const base = subFilter === 'Missed' ? missedCalls : orgCalls.filter(c => !deletedCallIds.has(c.id));
+    return base;
+  }, [subFilter, missedCalls, orgCalls, deletedCallIds]);
+
+  const toggleFilterPills = useCallback(() => {
+    setFilterPillsVisible(prev => {
+      const next = !prev;
+      Animated.timing(pillsRevealAnim, {
+        toValue: next ? 1 : 0,
+        duration: 200,
+        useNativeDriver: false,
+      }).start();
+      return next;
+    });
+  }, [pillsRevealAnim]);
+
+  const toggleContactFilterPills = useCallback(() => {
+    setContactFilterPillsVisible(prev => {
+      const next = !prev;
+      Animated.timing(contactPillsRevealAnim, {
+        toValue: next ? 1 : 0,
+        duration: 200,
+        useNativeDriver: false,
+      }).start();
+      return next;
+    });
+  }, [contactPillsRevealAnim]);
+
+  // Reset edit/select state when mode changes
+  React.useEffect(() => {
+    setEditFavoritesMode(false);
+    setSelectMode(false);
+    setSelectedCallIds(new Set());
+    setRemovedFavIds(new Set());
+    setDeletedCallIds(new Set());
+    setContactFilter('All');
+    setContactFilterPillsVisible(false);
+    contactPillsRevealAnim.setValue(0);
+  }, [mode, contactPillsRevealAnim]);
 
   const fabBottom = insets.bottom + FOOTER_HEIGHT + 16;
   const searchBarBottom = insets.bottom + FOOTER_HEIGHT;
   const headerHeight = insets.top + 14 + 50; // approx header block height
 
   // ── Contacts: grouped sections + alphabet index ─────────────────────────────
+  const contactGroupPills = useMemo(() => {
+    return CONTACT_GROUPS[mode] ?? CONTACT_GROUPS['business'];
+  }, [mode]);
+
+  const filteredOrgContacts = useMemo(() => {
+    if (contactFilter === 'All') return orgContacts;
+    return orgContacts.filter(c => c.group === contactFilter);
+  }, [orgContacts, contactFilter]);
+
   const contactSections = useMemo(() => {
     const groups: Record<string, PhoneContact[]> = {};
-    for (const c of orgContacts) {
+    for (const c of filteredOrgContacts) {
       const raw = ((c.name.split(' ').pop() ?? c.name)[0] ?? '#').toUpperCase();
       const letter = /^[0-9]/.test(raw) ? '#' : raw;
       if (!groups[letter]) groups[letter] = [];
@@ -1133,10 +1218,9 @@ export default function PhoneScreen() {
     return Object.keys(groups)
       .sort((a, b) => a === '#' ? 1 : b === '#' ? -1 : a.localeCompare(b))
       .map(title => ({ title, data: groups[title] }));
-  }, [orgContacts]);
+  }, [filteredOrgContacts]);
 
-  const contactsScrollRef = useRef<ScrollView>(null);
-  const sectionYRef = useRef<Record<string, number>>({});
+  const sectionListRef = useRef<SectionList<PhoneContact>>(null);
   const lastScrollYRef = useRef(0);
   const handleScroll = useCallback((e: any) => {
     const y = e.nativeEvent.contentOffset.y;
@@ -1148,18 +1232,18 @@ export default function PhoneScreen() {
 
   const scrollToLetter = useCallback((letter: string) => {
     if (contactSections.length === 0) return;
-    let targetTitle: string | undefined;
+    let sectionIndex: number;
     if (letter === '#') {
-      targetTitle = contactSections.find(s => s.title === '#')?.title;
+      sectionIndex = contactSections.findIndex(s => s.title === '#');
     } else {
-      const found = contactSections.find(s => s.title !== '#' && s.title >= letter);
-      targetTitle = found?.title
-        ?? [...contactSections].reverse().find(s => s.title !== '#')?.title;
+      sectionIndex = contactSections.findIndex(s => s.title !== '#' && s.title >= letter);
+      if (sectionIndex === -1) {
+        const lastNonHash = [...contactSections].reverse().findIndex(s => s.title !== '#');
+        sectionIndex = lastNonHash !== -1 ? contactSections.length - 1 - lastNonHash : -1;
+      }
     }
-    if (!targetTitle) return;
-    const y = sectionYRef.current[targetTitle];
-    if (y == null) return;
-    contactsScrollRef.current?.scrollTo({ y, animated: false });
+    if (sectionIndex === -1) return;
+    sectionListRef.current?.scrollToLocation({ sectionIndex, itemIndex: 0, viewOffset: 0, animated: false });
   }, [contactSections]);
 
   const openContact = useCallback((contact: PhoneContact) => {
@@ -1256,8 +1340,43 @@ export default function PhoneScreen() {
       >
         {/* Header */}
         <View style={[styles.header, { paddingTop: insets.top + 14 }]}>
-          {/* Add contact — only on Contacts filter */}
-          {filter === 'Contacts' ? (
+          {/* Left */}
+          {editFavoritesMode ? (
+            <Pressable
+              style={styles.headerTextBtn}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setEditFavoritesMode(false);
+              }}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Text style={[styles.editBtnText, { color: C.accent }]}>Done</Text>
+            </Pressable>
+          ) : selectMode ? (
+            <Pressable
+              style={styles.headerTextBtn}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setSelectMode(false);
+                setSelectedCallIds(new Set());
+              }}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Text style={[styles.editBtnText, { color: C.accent }]}>Cancel</Text>
+            </Pressable>
+          ) : tab === 'Calls' ? (
+            <Pressable
+              style={styles.filterBtn}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setEditDropdownVisible(v => !v);
+                setTabDropdownVisible(false);
+              }}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Text style={[styles.editBtnText, { color: C.accent }]}>Edit</Text>
+            </Pressable>
+          ) : tab === 'Contacts' ? (
             <Pressable
               style={styles.filterBtn}
               onPress={() => {
@@ -1266,71 +1385,190 @@ export default function PhoneScreen() {
               }}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
-              <IconSymbol name="plus" size={22} color={C.accent} />
+              <View style={[styles.circleBtn, { backgroundColor: C.surface }]}>
+                <IconSymbol name="plus" size={18} color={C.accent} />
+              </View>
             </Pressable>
           ) : (
             <View style={styles.filterBtn} />
           )}
 
-          {/* Centered state pill */}
-          <View style={[styles.statePill, { backgroundColor: C.surfacePressed }]}>
-            <Text style={[styles.statePillText, { color: C.label }]}>{pillLabel}</Text>
-          </View>
-
-          {/* Filter icon */}
+          {/* Centered tab pill — disabled in edit/select modes */}
           <Pressable
-            style={styles.filterBtn}
+            style={[styles.statePill, { backgroundColor: C.surfacePressed }]}
             onPress={() => {
+              if (editFavoritesMode || selectMode) return;
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              setFilterDropdownVisible(v => !v);
+              setTabDropdownVisible(v => !v);
+              setEditDropdownVisible(false);
             }}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <IconSymbol
-              name="slider.horizontal.3"
-              size={20}
-              color={C.secondary}
-            />
+            <Text style={[styles.statePillText, { color: C.label }]}>
+              {selectMode ? `${selectedCallIds.size} Selected` : tab}
+            </Text>
           </Pressable>
+
+          {/* Right */}
+          {tab === 'Contacts' ? (
+            <Pressable
+              style={styles.filterBtn}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                toggleContactFilterPills();
+                setTabDropdownVisible(false);
+              }}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <IconSymbol
+                name={contactFilterPillsVisible || contactFilter !== 'All' ? 'line.3.horizontal.decrease.circle.fill' : 'line.3.horizontal.decrease.circle'}
+                size={22}
+                color={contactFilterPillsVisible || contactFilter !== 'All' ? C.accent : C.label}
+              />
+            </Pressable>
+          ) : tab === 'Calls' && !editFavoritesMode && !selectMode ? (
+            <Pressable
+              style={styles.filterBtn}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                toggleFilterPills();
+                setTabDropdownVisible(false);
+              }}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <IconSymbol
+                name={filterPillsVisible || subFilter !== 'All' ? 'line.3.horizontal.decrease.circle.fill' : 'line.3.horizontal.decrease.circle'}
+                size={22}
+                color={filterPillsVisible || subFilter !== 'All' ? C.accent : C.label}
+              />
+            </Pressable>
+          ) : (
+            <View style={styles.filterBtn} />
+          )}
         </View>
 
-        {/* Scrollable body — plain ScrollView for Contacts (onLayout-measured Y), ScrollView for everything else */}
-        {filter === 'Contacts' ? (
-          <ScrollView
-            ref={contactsScrollRef}
+        {/* Sub-filter pills — Calls view only, slides in */}
+        {tab === 'Calls' && (
+          <Animated.View style={{
+            height: pillsRevealAnim.interpolate({ inputRange: [0, 1], outputRange: [0, PILLS_ROW_H] }),
+            opacity: pillsRevealAnim,
+            overflow: 'hidden',
+          }}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.pillsRow}
+              style={styles.pillsScroll}
+            >
+              {CALLS_PILLS.map(pill => {
+                const isActive = subFilter === pill;
+                return (
+                  <Pressable
+                    key={pill}
+                    style={[
+                      styles.pill,
+                      isActive
+                        ? { backgroundColor: C.label }
+                        : { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: C.separator },
+                    ]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      if (isActive) {
+                        toggleFilterPills();
+                      } else {
+                        setSubFilter(pill);
+                      }
+                    }}
+                  >
+                    <Text style={[styles.pillText, { color: isActive ? C.bg : C.secondary }]}>
+                      {pill}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </Animated.View>
+        )}
+
+        {/* Group filter pills — Contacts view only, slides in */}
+        {tab === 'Contacts' && (
+          <Animated.View style={{
+            height: contactPillsRevealAnim.interpolate({ inputRange: [0, 1], outputRange: [0, PILLS_ROW_H] }),
+            opacity: contactPillsRevealAnim,
+            overflow: 'hidden',
+          }}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.pillsRow}
+              style={styles.pillsScroll}
+            >
+              {contactGroupPills.map(pill => {
+                const isActive = contactFilter === pill;
+                return (
+                  <Pressable
+                    key={pill}
+                    style={[
+                      styles.pill,
+                      isActive
+                        ? { backgroundColor: C.label }
+                        : { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: C.separator },
+                    ]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      if (isActive) {
+                        toggleContactFilterPills();
+                        setContactFilter('All');
+                      } else {
+                        setContactFilter(pill);
+                      }
+                    }}
+                  >
+                    <Text style={[styles.pillText, { color: isActive ? C.bg : C.secondary }]}>
+                      {pill}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </Animated.View>
+        )}
+
+        {/* Scrollable body */}
+        {tab === 'Contacts' ? (
+          <SectionList
+            ref={sectionListRef}
             style={styles.scroll}
+            sections={contactSections}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <ContactRow
+                contact={item} C={C} styles={styles}
+                onPress={() => openContact(item)}
+                onLongPress={(py) => openContactCtxMenu(item, py)}
+              />
+            )}
+            renderSectionHeader={({ section: { title } }) => (
+              <View style={[styles.sectionLetterHeader, { backgroundColor: C.bg }]}>
+                <Text style={[styles.sectionLetter, { color: C.secondary }]}>{title}</Text>
+              </View>
+            )}
+            stickySectionHeadersEnabled
+            ListHeaderComponent={
+              <MyProfileCard
+                role={activeRole} mode={mode} C={C} styles={styles}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setMyProfileSheetVisible(true);
+                }}
+              />
+            }
+            ListEmptyComponent={<Text style={styles.emptyText}>No contacts</Text>}
             showsVerticalScrollIndicator={false}
             onScroll={handleScroll}
             scrollEventThrottle={16}
             contentContainerStyle={{ paddingBottom: insets.bottom + FOOTER_HEIGHT + 150 }}
-          >
-            <MyProfileCard
-              role={activeRole} mode={mode} C={C} styles={styles}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setMyProfileSheetVisible(true);
-              }}
-            />
-            {contactSections.length === 0 && <Text style={styles.emptyText}>No contacts</Text>}
-            {contactSections.map(section => (
-              <React.Fragment key={section.title}>
-                <View
-                  style={[styles.sectionLetterHeader, { backgroundColor: C.bg }]}
-                  onLayout={(e) => { sectionYRef.current[section.title] = e.nativeEvent.layout.y; }}
-                >
-                  <Text style={[styles.sectionLetter, { color: C.secondary }]}>{section.title}</Text>
-                </View>
-                {section.data.map(contact => (
-                  <ContactRow
-                    key={contact.id}
-                    contact={contact} C={C} styles={styles}
-                    onPress={() => openContact(contact)}
-                    onLongPress={(py) => openContactCtxMenu(contact, py)}
-                  />
-                ))}
-              </React.Fragment>
-            ))}
-          </ScrollView>
+            onScrollToIndexFailed={() => {}}
+          />
         ) : (
           <ScrollView
             style={styles.scroll}
@@ -1339,25 +1577,33 @@ export default function PhoneScreen() {
             scrollEventThrottle={16}
             contentContainerStyle={{ paddingBottom: insets.bottom + FOOTER_HEIGHT + 150 }}
           >
-            {favorites.length > 0 && filter === 'Calls' && (
+            {(displayFavorites.length > 0 || editFavoritesMode) && subFilter === 'All' && !selectMode && (
               <View style={[styles.section, styles.favsSection]}>
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.favsContent}
+                  contentContainerStyle={[styles.favsContent, editFavoritesMode && { paddingTop: 10 }]}
                 >
-                  {favorites.map(fav => (
+                  {displayFavorites.map(fav => (
                     <FavoriteCard
                       key={fav.id} contact={fav} C={C} styles={styles}
                       onPress={() => openContact(fav)}
+                      editMode={editFavoritesMode}
+                      onRemove={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        setRemovedFavIds(s => { const n = new Set(s); n.add(fav.id); return n; });
+                      }}
                     />
                   ))}
+                  {editFavoritesMode && displayFavorites.length === 0 && (
+                    <Text style={[styles.emptyText, { marginLeft: 16 }]}>No favorites</Text>
+                  )}
                 </ScrollView>
               </View>
             )}
 
             <View style={styles.section}>
-              {filter === 'Voicemail' ? (
+              {subFilter === 'Voicemail' ? (
                 <>
                   {orgVoicemails.length === 0
                     ? <Text style={styles.emptyText}>No voicemails</Text>
@@ -1382,6 +1628,16 @@ export default function PhoneScreen() {
                         key={call.id} call={call} C={C} styles={styles}
                         onPress={() => openFromCall(call)}
                         onLongPress={(py) => openCallCtxMenu(call, py)}
+                        selectMode={selectMode}
+                        selected={selectedCallIds.has(call.id)}
+                        onToggle={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          setSelectedCallIds(s => {
+                            const n = new Set(s);
+                            if (n.has(call.id)) n.delete(call.id); else n.add(call.id);
+                            return n;
+                          });
+                        }}
                       />
                     ))
                   }
@@ -1392,7 +1648,7 @@ export default function PhoneScreen() {
         )}
 
         {/* Alphabet index — Contacts view only */}
-        {filter === 'Contacts' && (
+        {tab === 'Contacts' && (
           <View
             style={[styles.alphabetIndex, { top: headerHeight, bottom: insets.bottom + FOOTER_HEIGHT + 4 }]}
           >
@@ -1411,27 +1667,49 @@ export default function PhoneScreen() {
           </View>
         )}
 
-        {/* FAB stack */}
-        <View style={[styles.fabStack, { bottom: fabBottom }]}>
-          <Pressable
-            style={[styles.fab, { backgroundColor: C.green }]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              router.push('/(tabs)/(main)/phone/dialpad' as any);
-            }}
-          >
-            <IconSymbol name="circle.grid.3x3.fill" size={26} color="#FFFFFF" />
-          </Pressable>
-          <Pressable
-            style={[styles.fab, { backgroundColor: C.accent }]}
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              activateSearch();
-            }}
-          >
-            <IconSymbol name="magnifyingglass" size={22} color="#FFFFFF" />
-          </Pressable>
-        </View>
+        {/* FAB stack — hidden in select mode */}
+        {!selectMode && (
+          <View style={[styles.fabStack, { bottom: fabBottom }]}>
+            <Pressable
+              style={[styles.fab, { backgroundColor: C.green }]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                router.push('/(tabs)/(main)/phone/dialpad' as any);
+              }}
+            >
+              <IconSymbol name="circle.grid.3x3.fill" size={26} color="#FFFFFF" />
+            </Pressable>
+            <Pressable
+              style={[styles.fab, { backgroundColor: C.accent }]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                activateSearch();
+              }}
+            >
+              <IconSymbol name="magnifyingglass" size={22} color="#FFFFFF" />
+            </Pressable>
+          </View>
+        )}
+
+        {/* Select action bar */}
+        {selectMode && (
+          <View style={[styles.selectBar, { bottom: insets.bottom + FOOTER_HEIGHT, backgroundColor: C.bg, borderTopColor: C.separator }]}>
+            <Pressable
+              style={[styles.selectDeleteBtn, { backgroundColor: selectedCallIds.size > 0 ? C.red : C.surface }]}
+              onPress={() => {
+                if (selectedCallIds.size === 0) return;
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                setDeletedCallIds(s => { const n = new Set(s); selectedCallIds.forEach(id => n.add(id)); return n; });
+                setSelectedCallIds(new Set());
+                setSelectMode(false);
+              }}
+            >
+              <Text style={[styles.selectDeleteText, { color: selectedCallIds.size > 0 ? '#FFF' : C.muted }]}>
+                {selectedCallIds.size > 0 ? `Delete (${selectedCallIds.size})` : 'Delete'}
+              </Text>
+            </Pressable>
+          </View>
+        )}
       </Animated.View>
 
       {/* ── Search results overlay — fades in when searching ── */}
@@ -1484,44 +1762,86 @@ export default function PhoneScreen() {
         </View>
       )}
 
-      {/* ── Filter dropdown ── */}
-      {filterDropdownVisible && (
+      {/* ── Tab dropdown (Calls / Contacts) — centered below pill ── */}
+      {tabDropdownVisible && (
         <>
-          {/* Backdrop — tap outside to dismiss */}
-          <Pressable
-            style={StyleSheet.absoluteFill}
-            onPress={() => setFilterDropdownVisible(false)}
-          />
-          {/* Menu */}
+          <Pressable style={StyleSheet.absoluteFill} onPress={() => setTabDropdownVisible(false)} />
           <View style={[
-            styles.filterDropdown,
+            styles.tabDropdown,
             { top: insets.top + 56, backgroundColor: C.bg, borderColor: C.separator },
           ]}>
-            {FILTER_OPTIONS.map((opt, i) => (
+            {(['Calls', 'Contacts'] as PhoneTab[]).map(t => (
               <Pressable
-                key={opt}
-                style={({ pressed }) => [
-                  styles.dropdownOption,
-                  pressed && { backgroundColor: C.surfacePressed },
-                  i < FILTER_OPTIONS.length - 1 && {
-                    borderBottomWidth: StyleSheet.hairlineWidth,
-                    borderBottomColor: C.separator,
-                  },
-                ]}
+                key={t}
+                style={({ pressed }) => [styles.tabDropdownOption, pressed && { backgroundColor: C.surfacePressed }]}
                 onPress={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setFilter(opt);
-                  setFilterDropdownVisible(false);
+                  if (t !== tab) {
+                    setTab(t);
+                    setSubFilter('All');
+                    setFilterPillsVisible(false);
+                    pillsRevealAnim.setValue(0);
+                  }
+                  setTabDropdownVisible(false);
                 }}
               >
                 <Text style={[
-                  styles.dropdownOptionText,
-                  { color: opt === filter ? C.label : C.secondary },
-                  opt === filter && { fontWeight: '600' },
+                  styles.tabDropdownText,
+                  { color: tab === t ? C.label : C.secondary },
+                  tab === t && { fontWeight: '600' },
                 ]}>
-                  {opt}
+                  {t}
                 </Text>
-                {opt === filter && <IconSymbol name="checkmark" size={14} color={C.accent} />}
+              </Pressable>
+            ))}
+          </View>
+        </>
+      )}
+
+      {/* ── Edit dropdown (Edit Favorites / Select) ── */}
+      {editDropdownVisible && (
+        <>
+          <Pressable style={StyleSheet.absoluteFill} onPress={() => setEditDropdownVisible(false)} />
+          <View style={[
+            styles.editDropdown,
+            { top: insets.top + 56, backgroundColor: C.bg, borderColor: C.separator },
+          ]}>
+            {[
+              {
+                icon: 'star.fill',
+                label: 'Edit Favorites',
+                onPress: () => {
+                  setEditFavoritesMode(true);
+                  setSelectMode(false);
+                  setSelectedCallIds(new Set());
+                  setEditDropdownVisible(false);
+                },
+              },
+              {
+                icon: 'checkmark.circle',
+                label: 'Select',
+                onPress: () => {
+                  setSelectMode(true);
+                  setEditFavoritesMode(false);
+                  setSelectedCallIds(new Set());
+                  setEditDropdownVisible(false);
+                },
+              },
+            ].map(({ icon, label, onPress }, i) => (
+              <Pressable
+                key={label}
+                style={({ pressed }) => [
+                  styles.dropdownOption,
+                  pressed && { backgroundColor: C.surfacePressed },
+                  i === 0 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
+                ]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  onPress();
+                }}
+              >
+                <IconSymbol name={icon as any} size={16} color={C.label} />
+                <Text style={[styles.dropdownOptionText, { color: C.label }]}>{label}</Text>
               </Pressable>
             ))}
           </View>
@@ -1610,15 +1930,95 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     height: 44,
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'relative',
   },
-  filterDot: {
+  headerTextBtn: {
+    height: 44,
+    minWidth: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  circleBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  editBtnText: {
+    fontSize: 16,
+    fontWeight: '400',
+  },
+
+  // Sub-filter pills
+  pillsScroll: { flexGrow: 0 },
+  pillsRow: {
+    paddingHorizontal: 16,
+    paddingBottom: 10,
+    gap: 8,
+    flexDirection: 'row',
+  },
+  pill: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+  },
+  pillText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+
+  // Edit dropdown (left-aligned)
+  editDropdown: {
     position: 'absolute',
-    top: 8,
-    right: 8,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    left: 16,
+    minWidth: 200,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 8,
+    zIndex: 100,
+  },
+  dropdownOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 13,
+    gap: 12,
+  },
+  dropdownOptionText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '400',
+  },
+
+  // Tab dropdown (centered below pill)
+  tabDropdown: {
+    position: 'absolute',
+    alignSelf: 'center',
+    left: '50%' as any,
+    marginLeft: -90,
+    minWidth: 180,
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 8,
+    zIndex: 100,
+  },
+  tabDropdownOption: {
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+  },
+  tabDropdownText: {
+    fontSize: 17,
+    textAlign: 'center',
   },
 
   // Scroll
@@ -1707,29 +2107,47 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     elevation: 5,
   },
 
-  // Filter dropdown
-  filterDropdown: {
+  // Favorites edit mode — remove badge
+  favRemoveBtn: {
     position: 'absolute',
-    right: 16,
-    minWidth: 160,
-    borderRadius: 12,
-    borderWidth: StyleSheet.hairlineWidth,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 12,
-    elevation: 8,
-    zIndex: 100,
-  },
-  dropdownOption: {
-    flexDirection: 'row',
+    top: -4,
+    right: -4,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 13,
-    gap: 12,
+    justifyContent: 'center',
+    borderWidth: 2,
   },
-  dropdownOptionText: { flex: 1, fontSize: 15, fontWeight: '500' },
+
+  // Select mode
+  selectCircle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: C.separator,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  },
+  selectBar: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  selectDeleteBtn: {
+    borderRadius: 10,
+    paddingVertical: 13,
+    alignItems: 'center',
+  },
+  selectDeleteText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
 
   // Search bar (above footer)
   searchBar: {

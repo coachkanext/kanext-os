@@ -844,11 +844,67 @@ const GLOBAL_REQUESTS: InboxThreadV3[] = [
 ];
 
 // =============================================================================
+// EMAILS — per-mode mock data (reuses InboxThreadV3; role = subject line)
+// =============================================================================
+
+const SPORTS_EMAILS: InboxThreadV3[] = [
+  { id: 'eml-s1', mode: 'sports', name: 'NAIA Eligibility Office', initials: 'NA', role: 'Spring Roster Deadline Reminder', preview: 'Please submit your final spring roster by March 31st. Late submissions will result in ineligibility for post-season play.', timestamp: hoursAgo(1), unread: true, pinned: false, isRequest: false },
+  { id: 'eml-s2', mode: 'sports', name: 'Carroll Athletics', initials: 'CA', role: 'Budget Approval — Spring Travel', preview: 'Your travel reimbursement request REQ-1043 has been approved for $2,400. See attached for disbursement details.', timestamp: hoursAgo(4), unread: true, pinned: false, isRequest: false },
+  { id: 'eml-s3', mode: 'sports', name: 'Bethel University', initials: 'BU', role: 'Game Day Logistics — Saturday', preview: 'Venue opens at 12:30 PM. Visitor locker room is in the East Wing. Parking passes attached.', timestamp: hoursAgo(8), unread: false, pinned: false, isRequest: false },
+  { id: 'eml-s4', mode: 'sports', name: 'HC Miles', initials: 'HM', role: 'Weekly Coaching Staff Notes', preview: 'Team meeting agenda for Monday: defensive scheme review, scouting updates, player availability reports.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'eml-s5', mode: 'sports', name: 'Patricia Moore', initials: 'PM', role: 'RE: Jaylen Academic Plan', preview: 'Thank you for your response, Coach. We would love to schedule a call this week if your schedule allows.', timestamp: daysAgo(2), unread: false, pinned: false, isRequest: false },
+];
+
+const CHURCH_EMAILS: InboxThreadV3[] = [
+  { id: 'eml-c1', mode: 'church', name: 'Diocese of Helena', initials: 'DH', role: 'Easter Week Liturgy Guidelines', preview: 'Please ensure all Easter Week services follow the updated diocesan guidelines enclosed in this message.', timestamp: hoursAgo(2), unread: true, pinned: false, isRequest: false },
+  { id: 'eml-c2', mode: 'church', name: 'Finance Committee', initials: 'FC', role: 'Q1 Budget Review — Action Required', preview: 'The Q1 financial summary is attached. Please review and sign off before the board meeting on Friday.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
+  { id: 'eml-c3', mode: 'church', name: 'Community Food Bank', initials: 'CF', role: 'Partnership Confirmation — April Drive', preview: 'We are thrilled to confirm the April food drive partnership with 2819 Church. Details attached.', timestamp: hoursAgo(10), unread: false, pinned: false, isRequest: false },
+  { id: 'eml-c4', mode: 'church', name: 'Chioma Okonkwo', initials: 'CO', role: 'Holy Week Staff Schedule', preview: 'Attached is the finalized Holy Week staff schedule. Please confirm your availability for each service.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'eml-c5', mode: 'church', name: 'Media Ministry', initials: 'MM', role: 'Livestream Setup Notes for Easter', preview: 'Equipment checklist and streaming credentials for Easter Sunday broadcast are ready for review.', timestamp: daysAgo(2), unread: false, pinned: false, isRequest: false },
+];
+
+const BUSINESS_EMAILS: InboxThreadV3[] = [
+  { id: 'eml-b1', mode: 'business', name: 'Legal Team', initials: 'LT', role: 'Series A Term Sheet — Review Required', preview: 'Attached is the revised term sheet from Sequoia. Key changes are highlighted in section 4 regarding board composition.', timestamp: hoursAgo(1), unread: true, pinned: false, isRequest: false },
+  { id: 'eml-b2', mode: 'business', name: 'Sarah Kim', initials: 'SK', role: 'V3 Messages Spec — Final Review', preview: 'The messages spec is attached for final sign-off. Engineering has estimated 3 sprints to ship the full feature set.', timestamp: hoursAgo(3), unread: true, pinned: false, isRequest: false },
+  { id: 'eml-b3', mode: 'business', name: 'Investor Relations', initials: 'IR', role: 'Monthly KPI Report — February', preview: 'MRR is at $142K, up 18% MoM. Churn held steady at 2.1%. Full breakdown in the attached report.', timestamp: hoursAgo(7), unread: false, pinned: false, isRequest: false },
+  { id: 'eml-b4', mode: 'business', name: 'Marcus Webb', initials: 'MW', role: 'Partnership Proposal — PortfolioCo', preview: 'Following our meeting last week, I have attached the formal partnership proposal for your review and signature.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'eml-b5', mode: 'business', name: 'Finance Dept', initials: 'FD', role: 'Q1 Expense Approval Needed', preview: 'Three purchase orders require your approval before end of quarter. Combined total: $34,200.', timestamp: daysAgo(2), unread: false, pinned: false, isRequest: false },
+];
+
+const EDUCATION_EMAILS: InboxThreadV3[] = [
+  { id: 'eml-e1', mode: 'education', name: 'Department Chair', initials: 'DC', role: 'Curriculum Committee — Meeting Notes', preview: 'Minutes from Tuesday\'s curriculum review are attached. Action items due by Friday EOD.', timestamp: hoursAgo(2), unread: true, pinned: false, isRequest: false },
+  { id: 'eml-e2', mode: 'education', name: 'Jordan Ellis', initials: 'JE', role: 'RE: Portfolio Submission Extension', preview: 'Thank you for considering my request. My laptop issue has been resolved and I can submit by Thursday.', timestamp: hoursAgo(4), unread: true, pinned: false, isRequest: false },
+  { id: 'eml-e3', mode: 'education', name: 'Dean\'s Office', initials: 'DO', role: 'Spring Term Enrollment Confirmation', preview: 'Your course roster for Spring term has been finalized. 28 students enrolled in EDUC 301.', timestamp: hoursAgo(9), unread: false, pinned: false, isRequest: false },
+  { id: 'eml-e4', mode: 'education', name: 'Parent Liaison', initials: 'PL', role: 'Parent-Teacher Conference Schedule', preview: 'Attached is the updated schedule for spring conferences. 14 slots remain available for booking.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'eml-e5', mode: 'education', name: 'IT Department', initials: 'IT', role: 'LMS Maintenance Window — Friday Night', preview: 'The learning management system will be offline from 11pm–2am Friday for scheduled updates.', timestamp: daysAgo(2), unread: false, pinned: false, isRequest: false },
+];
+
+const COMPETITION_EMAILS: InboxThreadV3[] = [
+  { id: 'eml-k1', mode: 'competition', name: 'Event Organizer', initials: 'EO', role: 'Bracket Seeding Confirmation', preview: 'Your seed position for the regional championship has been confirmed: #3 seed in the East bracket.', timestamp: hoursAgo(1), unread: true, pinned: false, isRequest: false },
+  { id: 'eml-k2', mode: 'competition', name: 'Sponsorship Team', initials: 'ST', role: 'Sponsor Package — Spring Circuit', preview: 'Please review and sign the attached sponsorship agreement before the season opener on April 5th.', timestamp: hoursAgo(5), unread: true, pinned: false, isRequest: false },
+  { id: 'eml-k3', mode: 'competition', name: 'League Commissioner', initials: 'LC', role: 'Rule Change Notice — Effective April 1', preview: 'Three rule modifications will take effect next month. Please review the attached amendment document carefully.', timestamp: hoursAgo(10), unread: false, pinned: false, isRequest: false },
+  { id: 'eml-k4', mode: 'competition', name: 'Media Coordinator', initials: 'MC', role: 'Press Credentials — Regional Finals', preview: 'Your media badge for the regional finals is ready. Pick up at credentialing desk by 8am on race day.', timestamp: daysAgo(1), unread: false, pinned: false, isRequest: false },
+  { id: 'eml-k5', mode: 'competition', name: 'Finance Office', initials: 'FO', role: 'Prize Distribution — February Events', preview: 'Prize winnings from February events have been processed. Transfer expected within 3–5 business days.', timestamp: daysAgo(2), unread: false, pinned: false, isRequest: false },
+];
+
+const EMAILS_MAP: Record<Mode, InboxThreadV3[]> = {
+  sports:      SPORTS_EMAILS,
+  church:      CHURCH_EMAILS,
+  business:    BUSINESS_EMAILS,
+  education:   EDUCATION_EMAILS,
+  competition: COMPETITION_EMAILS,
+};
+
+// =============================================================================
 // PUBLIC API
 // =============================================================================
 
 export function getInboxThreads(mode: Mode): InboxThreadV3[] {
   return INBOX_MAP[mode] ?? [];
+}
+
+export function getEmails(mode: Mode): InboxThreadV3[] {
+  return EMAILS_MAP[mode] ?? [];
 }
 
 export function getRooms(mode: Mode): RoomV3[] {

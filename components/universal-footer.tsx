@@ -14,8 +14,8 @@
  *   Profile (5):      footer-profile.png — tap → push profile, swipe-up → org drawer
  */
 
-import React, { useRef, useMemo, useCallback } from 'react';
-import { View, Pressable, PanResponder, StyleSheet } from 'react-native';
+import React, { useRef, useMemo, useCallback, useEffect } from 'react';
+import { View, Pressable, PanResponder, StyleSheet, Animated } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -28,7 +28,7 @@ import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils
 import { startGlobalVoice } from '@/utils/global-voice';
 import { openOrgDrawer } from '@/utils/global-org-drawer';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
-import { resetFooter } from '@/utils/global-footer-hide';
+import { resetFooter, subscribeFooterVisibility } from '@/utils/global-footer-hide';
 import { popInnerToHome } from '@/utils/global-inner-nav';
 const FOOTER_HEIGHT = 49;
 
@@ -40,6 +40,26 @@ export function UniversalFooter() {
   const pathnameRef = useRef(pathname);
   pathnameRef.current = pathname;
   const lastTapRef = useRef(0);
+
+  const translateY = useRef(new Animated.Value(0)).current;
+  const insetsRef = useRef(insets);
+  insetsRef.current = insets;
+
+  useEffect(() => {
+    return subscribeFooterVisibility((visible, instant) => {
+      const toValue = visible ? 0 : FOOTER_HEIGHT + insetsRef.current.bottom + 1;
+      if (instant) {
+        translateY.setValue(toValue);
+      } else {
+        Animated.spring(translateY, {
+          toValue,
+          useNativeDriver: true,
+          tension: 200,
+          friction: 25,
+        }).start();
+      }
+    });
+  }, [translateY]);
 
   // ── Nexus tap → navigate to Nexus fullscreen (with double-tap for split) ──
   const handleNexusPress = () => {
@@ -125,16 +145,16 @@ export function UniversalFooter() {
   const handleMessagesPress = () => {
     if (pIncludes('messages')) return;
     preNav();
-    router.push('/(tabs)/(main)/messages' as any);
+    router.navigate('/(tabs)/(main)/messages' as any);
   };
   const handlePhonePress = () => {
     if (pIncludes('phone')) return;
     preNav();
-    router.push('/(tabs)/(main)/phone' as any);
+    router.navigate('/(tabs)/(main)/phone' as any);
   };
 
   return (
-    <View style={styles.wrapper}>
+    <Animated.View style={[styles.wrapper, { transform: [{ translateY }] }]}>
       {/* 1px divider */}
       <View style={[styles.divider, { backgroundColor: C.footerDivider }]} />
 
@@ -197,7 +217,7 @@ export function UniversalFooter() {
 
       {/* Safe area fill */}
       <View style={{ height: insets.bottom, backgroundColor: C.footer }} />
-    </View>
+    </Animated.View>
   );
 }
 

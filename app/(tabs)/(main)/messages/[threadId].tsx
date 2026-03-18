@@ -829,8 +829,12 @@ export default function ThreadScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* ── Header ── */}
       <View style={styles.navBar}>
-        <Pressable style={styles.backBtn} onPress={() => router.back()}>
-          <IconSymbol name="chevron.left" size={22} color={accent} />
+        <Pressable
+          style={[styles.backBtn, { backgroundColor: C.surfacePressed }]}
+          onPress={() => router.back()}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <IconSymbol name="chevron.left" size={20} color={C.label} />
         </Pressable>
 
         <View style={styles.navCenter}>
@@ -978,7 +982,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
 
   // Nav bar
   navBar: { flexDirection: 'row', alignItems: 'center', height: 44, paddingHorizontal: 8 },
-  backBtn: { width: 40, height: 44, alignItems: 'center', justifyContent: 'center' },
+  backBtn: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   navCenter: {
     flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 8,
   },
