@@ -1,5 +1,5 @@
 /**
- * Channel Management — Create channel, list all with mute toggles, archive.
+ * Room Management — Create room, list all with mute toggles, archive.
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
@@ -45,7 +45,7 @@ export default function ChannelManagementScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <Text style={styles.title}>Channels</Text>
+        <Text style={styles.title}>Rooms</Text>
       </View>
 
       <ScrollView style={styles.list} contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
@@ -55,11 +55,11 @@ export default function ChannelManagementScreen() {
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
         >
           <IconSymbol name="plus.circle.fill" size={20} color={accent} />
-          <Text style={[styles.createLabel, { color: accent }]}>Create Channel</Text>
+          <Text style={[styles.createLabel, { color: accent }]}>Create Room</Text>
         </Pressable>
 
-        {/* Active channels */}
-        <Text style={styles.sectionLabel}>Active Channels</Text>
+        {/* Active rooms */}
+        <Text style={styles.sectionLabel}>Active Rooms</Text>
         {activeChannels.map((ch) => (
           <View key={ch.id} style={styles.channelRow}>
             <View style={styles.channelIcon}>

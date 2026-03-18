@@ -22,11 +22,11 @@ import {
 } from '@/utils/global-message-filters';
 
 const FILTER_OPTIONS: { key: MessageFilterKey; label: string; description: string }[] = [
-  { key: 'unread', label: 'Unread Only', description: 'Show only channels and DMs with unread messages' },
+  { key: 'unread', label: 'Unread Only', description: 'Show only rooms and DMs with unread messages' },
   { key: 'mentions', label: 'Mentions Only', description: 'Show only conversations where you were mentioned' },
-  { key: 'pinned', label: 'Pinned Only', description: 'Show only pinned channels and DMs' },
-  { key: 'dms_only', label: 'DMs Only', description: 'Hide channels, show only direct messages' },
-  { key: 'channels_only', label: 'Channels Only', description: 'Hide DMs, show only channels' },
+  { key: 'pinned', label: 'Pinned Only', description: 'Show only pinned rooms and DMs' },
+  { key: 'dms_only', label: 'DMs Only', description: 'Hide rooms, show only direct messages' },
+  { key: 'channels_only', label: 'Rooms Only', description: 'Hide DMs, show only rooms' },
 ];
 
 export default function FiltersScreen() {

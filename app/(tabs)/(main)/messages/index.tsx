@@ -1,6 +1,6 @@
 /**
  * Messages — universal to all modes.
- * Top bar: Edit (left) · Chats/Channels/Emails pill (center) · Filter icon (right).
+ * Top bar: Edit (left) · Chats/Rooms/Emails pill (center) · Filter icon (right).
  * Edit tap → dropdown: Select Chats / Edit Pins.
  * Pinned conversations: large circular avatars at top (iOS Messages style) with unread dots.
  * Chat list below with swipe right-to-left to toggle read/unread.
@@ -30,7 +30,7 @@ import type { InboxThreadV3, RoomV3 } from '@/types';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type MsgTab = 'Chats' | 'Channels' | 'Emails';
+type MsgTab = 'Chats' | 'Rooms' | 'Emails';
 type SearchSection = 'contacts' | 'pins' | 'chats' | 'links' | 'photos' | 'locations' | 'documents';
 
 type ContextMenuItem = {
@@ -112,9 +112,9 @@ function ThreadRow({
   );
 }
 
-// ── Channel row ───────────────────────────────────────────────────────────────
+// ── Room row ──────────────────────────────────────────────────────────────────
 
-function ChannelRow({
+function RoomRow({
   room, C, styles, onPress, onLongPress, selectMode, selected, onToggle,
 }: {
   room: RoomV3;
@@ -219,9 +219,9 @@ function PinnedAvatarsRow({
   );
 }
 
-// ── Pinned channels row ───────────────────────────────────────────────────────
+// ── Pinned rooms row ──────────────────────────────────────────────────────────
 
-function PinnedChannelsRow({
+function PinnedRoomsRow({
   rooms, C, styles, onPress, editMode, onUnpin,
 }: {
   rooms: RoomV3[];
@@ -408,11 +408,11 @@ function ComposeSheet({
   C: ComponentColors;
   styles: ReturnType<typeof makeStyles>;
   onClose: () => void;
-  onSelectOption: (opt: 'Chat' | 'Channel' | 'Email') => void;
+  onSelectOption: (opt: 'Chat' | 'Room' | 'Email') => void;
 }) {
-  const options: { icon: string; label: 'Chat' | 'Channel' | 'Email'; color: string }[] = [
-    { icon: 'message.fill',  label: 'Chat',    color: C.accent },
-    { icon: 'number',        label: 'Channel', color: C.green },
+  const options: { icon: string; label: 'Chat' | 'Room' | 'Email'; color: string }[] = [
+    { icon: 'message.fill',  label: 'Chat', color: C.accent },
+    { icon: 'number',        label: 'Room', color: C.green },
     { icon: 'envelope.fill', label: 'Email',   color: C.red },
   ];
 
@@ -756,7 +756,7 @@ export default function MessagesScreen() {
       anchorY,
       items: [
         { icon: 'bell.slash.fill', label: 'Hide Alerts', onPress: () => {} },
-        { icon: 'rectangle.portrait.and.arrow.right', label: 'Leave Channel', onPress: () => {}, destructive: true },
+        { icon: 'rectangle.portrait.and.arrow.right', label: 'Leave Room', onPress: () => {}, destructive: true },
       ],
     });
   }, []);
@@ -781,7 +781,7 @@ export default function MessagesScreen() {
 
   const pills: readonly string[] =
     activeTab === 'Chats' ? CHAT_PILLS
-    : activeTab === 'Channels' ? CHANNEL_PILLS
+    : activeTab === 'Rooms' ? CHANNEL_PILLS
     : EMAIL_PILLS;
 
   // Unread counts for badge on All/Inbox pill
@@ -892,7 +892,7 @@ export default function MessagesScreen() {
               const isActive = subFilter === null ? isAll : subFilter === pill;
               const count =
                 isAll && activeTab === 'Chats' ? unreadThreadCount
-                : isAll && activeTab === 'Channels' ? unreadRoomCount
+                : isAll && activeTab === 'Rooms' ? unreadRoomCount
                 : isAll && activeTab === 'Emails' ? unreadEmailCount
                 : 0;
               return (
@@ -982,11 +982,11 @@ export default function MessagesScreen() {
             </>
           )}
 
-          {/* ── Channels ── */}
-          {activeTab === 'Channels' && (
+          {/* ── Rooms ── */}
+          {activeTab === 'Rooms' && (
             <>
               {subFilter === null && pinnedRooms.length > 0 && (
-                <PinnedChannelsRow
+                <PinnedRoomsRow
                   rooms={pinnedRooms}
                   C={C}
                   styles={styles}
@@ -1000,11 +1000,11 @@ export default function MessagesScreen() {
               )}
               {!selectChatsMode && filteredRooms.length === 0 ? (
                 <Text style={[styles.emptyText, { color: C.muted }]}>
-                  {subFilter ? `No ${subFilter.toLowerCase()} channels` : 'No channels'}
+                  {subFilter ? `No ${subFilter.toLowerCase()} rooms` : 'No rooms'}
                 </Text>
               ) : (
                 filteredRooms.map(r => (
-                  <ChannelRow
+                  <RoomRow
                     key={r.id}
                     room={r}
                     C={C}
@@ -1150,7 +1150,7 @@ export default function MessagesScreen() {
             styles.filterDropdown,
             { top: insets.top + 56, backgroundColor: C.bg, borderColor: C.separator },
           ]}>
-            {(['Chats', 'Channels', 'Emails'] as MsgTab[]).map(tab => (
+            {(['Chats', 'Rooms', 'Emails'] as MsgTab[]).map(tab => (
               <Pressable
                 key={tab}
                 style={({ pressed }) => [
@@ -1244,7 +1244,7 @@ export default function MessagesScreen() {
           onClose={() => setComposeSheetVisible(false)}
           onSelectOption={(opt) => {
             if (opt === 'Chat') router.push('/(tabs)/(main)/messages/new-message' as any);
-            else if (opt === 'Channel') router.push('/(tabs)/(main)/messages/new-channel' as any);
+            else if (opt === 'Room') router.push('/(tabs)/(main)/messages/new-channel' as any);
           }}
         />
       </BottomSheet>

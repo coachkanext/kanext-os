@@ -1,5 +1,5 @@
 /**
- * New Channel — create a channel with a name and optional members.
+ * New Room — create a room with a name and optional members.
  */
 
 import React, { useState, useMemo } from 'react';
@@ -78,7 +78,7 @@ export default function NewChannelScreen() {
         <Pressable onPress={() => router.back()} style={s.cancel}>
           <Text style={[s.cancelText, { color: accent }]}>Cancel</Text>
         </Pressable>
-        <Text style={[s.navTitle, { color: C.label }]}>New Channel</Text>
+        <Text style={[s.navTitle, { color: C.label }]}>New Room</Text>
         <Pressable
           style={[s.createBtn, { backgroundColor: canCreate ? accent : C.surfacePressed }]}
           onPress={handleCreate}
@@ -89,13 +89,13 @@ export default function NewChannelScreen() {
       </View>
 
       <ScrollView keyboardShouldPersistTaps="handled" style={s.scroll}>
-        {/* ── Channel name ── */}
+        {/* ── Room name ── */}
         <View style={[s.section, { borderBottomColor: C.separator }]}>
           <View style={[s.nameRow, { borderColor: C.separator }]}>
             <IconSymbol name="number" size={18} color={C.muted} />
             <TextInput
               style={[s.nameInput, { color: C.label }]}
-              placeholder="Channel name"
+              placeholder="Room name"
               placeholderTextColor={C.muted}
               value={name}
               onChangeText={setName}

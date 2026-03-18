@@ -53,7 +53,7 @@ export default function MessagesSearchScreen() {
         <IconSymbol name="magnifyingglass" size={16} color={C.secondary} />
         <TextInput
           style={styles.searchInput}
-          placeholder="Search messages, channels, DMs"
+          placeholder="Search messages, rooms, DMs"
           placeholderTextColor={C.muted}
           value={search}
           onChangeText={setSearch}
@@ -73,7 +73,7 @@ export default function MessagesSearchScreen() {
         {!results && (
           <View style={styles.hint}>
             <IconSymbol name="magnifyingglass" size={40} color={C.muted} />
-            <Text style={styles.hintText}>Search channels, DMs, and messages</Text>
+            <Text style={styles.hintText}>Search rooms, DMs, and messages</Text>
           </View>
         )}
 
@@ -85,7 +85,7 @@ export default function MessagesSearchScreen() {
 
         {results && results.channels.length > 0 && (
           <>
-            <Text style={styles.sectionLabel}>Channels</Text>
+            <Text style={styles.sectionLabel}>Rooms</Text>
             {results.channels.map((ch) => (
               <Pressable
                 key={ch.id}
