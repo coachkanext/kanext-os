@@ -37,7 +37,7 @@ export default function HomeLayout() {
         animation: 'none' as const,
         gestureEnabled: false,
         fullScreenGestureEnabled: false,
-        contentStyle: { backgroundColor: route.name === 'index' ? '#0B1220' : 'transparent' },
+        contentStyle: { backgroundColor: route.name === 'index' ? '#F5EFE4' : 'transparent' },
         ...(route.name !== 'index' && { presentation: 'containedTransparentModal' as const }),
       })}
       screenListeners={({ navigation }) => ({
@@ -51,6 +51,9 @@ export default function HomeLayout() {
       <Stack.Screen name="index" />
       {/* Messages */}
       <Stack.Screen name="messages/index" />
+      <Stack.Screen name="messages/new-message" />
+      <Stack.Screen name="messages/new-channel" />
+      <Stack.Screen name="messages/new-email" />
       <Stack.Screen name="messages/[threadId]" />
       <Stack.Screen name="messages/search" />
       <Stack.Screen name="messages/filters" />

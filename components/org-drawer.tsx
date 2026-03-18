@@ -145,7 +145,7 @@ export function OrgDrawer() {
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <BottomSheet visible={visible} onClose={handleClose} useModal snapPoints={['50%', '90%']} backgroundColor="#FFFFFF">
+    <BottomSheet visible={visible} onClose={handleClose} useModal snapPoints={['50%', '90%']} backgroundColor={C.bg}>
       {/* Mode pills */}
       <ScrollView
         horizontal
@@ -174,11 +174,11 @@ export function OrgDrawer() {
 
       {/* Search bar */}
       <View style={styles.searchWrap}>
-        <IconSymbol name="magnifyingglass" size={16} color="rgba(0,0,0,0.30)" />
+        <IconSymbol name="magnifyingglass" size={16} color={C.muted} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search organizations..."
-          placeholderTextColor="rgba(0,0,0,0.30)"
+          placeholderTextColor={C.muted}
           value={search}
           onChangeText={setSearch}
           autoCapitalize="none"
@@ -201,7 +201,7 @@ export function OrgDrawer() {
               style={({ pressed }) => [
                 styles.orgRow,
                 isActiveOrg && styles.orgRowActive,
-                pressed && !isActiveOrg && { backgroundColor: 'rgba(0,0,0,0.03)' },
+                pressed && !isActiveOrg && { backgroundColor: C.surfacePressed },
               ]}
               onPress={() => handleOrgPress(org.org_id, orgMode)}
             >
@@ -215,7 +215,7 @@ export function OrgDrawer() {
                   {org.org_name}
                 </Text>
               </View>
-              <RadioCircle active={isActiveOrg} />
+              <RadioCircle active={isActiveOrg} C={C} />
             </Pressable>
           );
         })}
@@ -225,7 +225,7 @@ export function OrgDrawer() {
           onPress={handleSettings}
         >
           <View style={styles.settingsIcon}>
-            <IconSymbol name="gearshape" size={16} color="rgba(0,0,0,0.50)" />
+            <IconSymbol name="gearshape" size={16} color={C.secondary} />
           </View>
           <Text style={styles.settingsLabel}>Settings</Text>
         </Pressable>
@@ -237,27 +237,16 @@ export function OrgDrawer() {
 
 // ── Radio circle ─────────────────────────────────────────────────────────────
 
-function RadioCircle({ active }: { active: boolean }) {
+function RadioCircle({ active, C }: { active: boolean; C: ComponentColors }) {
   return (
-    <View style={[radioStyles.circle, active && radioStyles.circleActive]}>
-      {active && (
-        <IconSymbol name="checkmark" size={10} color="#FFFFFF" />
-      )}
+    <View style={[
+      { width: 20, height: 20, borderRadius: 10, borderWidth: 2, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+      active ? { backgroundColor: C.accent, borderColor: C.accent } : { borderColor: C.separator },
+    ]}>
+      {active && <IconSymbol name="checkmark" size={10} color={C.bg} />}
     </View>
   );
 }
-
-const radioStyles = StyleSheet.create({
-  circle: {
-    width: 20, height: 20, borderRadius: 10,
-    borderWidth: 2, borderColor: 'rgba(0,0,0,0.06)',
-    alignItems: 'center', justifyContent: 'center',
-    flexShrink: 0,
-  },
-  circleActive: {
-    backgroundColor: '#111111', borderColor: '#111111',
-  },
-});
 
 // ── Styles ───────────────────────────────────────────────────────────────────
 
@@ -271,29 +260,29 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   pill: {
     paddingVertical: 10, paddingHorizontal: 20,
     borderRadius: 24, borderWidth: 1.5,
-    borderColor: 'rgba(0,0,0,0.06)',
+    borderColor: C.separator,
     flexShrink: 0,
   },
   pillActive: {
-    backgroundColor: '#111111', borderColor: '#111111',
+    backgroundColor: C.label, borderColor: C.label,
   },
   pillText: {
-    fontSize: 14, fontWeight: '500', color: 'rgba(0,0,0,0.52)',
+    fontSize: 14, fontWeight: '500', color: C.secondary,
   },
   pillTextActive: {
-    color: '#FFFFFF', fontWeight: '600',
+    color: C.bg, fontWeight: '600',
   },
 
   // Search
   searchWrap: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
     marginHorizontal: 20, marginBottom: 12,
-    backgroundColor: 'rgba(0,0,0,0.03)',
-    borderWidth: 1, borderColor: 'rgba(0,0,0,0.06)',
+    backgroundColor: C.surfacePressed,
+    borderWidth: 1, borderColor: C.separator,
     borderRadius: 14, paddingVertical: 11, paddingHorizontal: 14,
   },
   searchInput: {
-    flex: 1, fontSize: 14, color: '#111111', padding: 0,
+    flex: 1, fontSize: 14, color: C.label, padding: 0,
   },
 
   // Org list
@@ -306,46 +295,46 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     borderRadius: 14, marginBottom: 2,
   },
   orgRowActive: {
-    backgroundColor: 'rgba(0,0,0,0.04)',
+    backgroundColor: C.surfacePressed,
   },
 
   // Parent avatar
   orgAvatar: {
     width: 40, height: 40, borderRadius: 12,
-    backgroundColor: 'rgba(0,0,0,0.05)',
+    backgroundColor: C.surfacePressed,
     alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
   orgAvatarActive: {
-    backgroundColor: '#111111',
+    backgroundColor: C.accent,
   },
   orgInitials: {
-    fontSize: 14, fontWeight: '700', color: 'rgba(0,0,0,0.52)',
+    fontSize: 14, fontWeight: '700', color: C.secondary,
   },
-  orgInitialsActive: { color: '#FFFFFF' },
+  orgInitialsActive: { color: C.bg },
 
   // Org info
   orgInfo: { flex: 1, minWidth: 0 },
-  orgName: { fontSize: 15, fontWeight: '500', color: '#111111' },
+  orgName: { fontSize: 15, fontWeight: '500', color: C.label },
   orgNameActive: { fontWeight: '600' },
 
   emptyText: {
     textAlign: 'center', fontSize: 14,
-    color: 'rgba(0,0,0,0.30)', paddingVertical: 32,
+    color: C.muted, paddingVertical: 32,
   },
 
   settingsRow: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
     paddingVertical: 14, marginTop: 12,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(0,0,0,0.08)',
+    borderTopColor: C.separator,
   },
   settingsIcon: {
     width: 32, height: 32, borderRadius: 10,
-    backgroundColor: 'rgba(0,0,0,0.05)',
+    backgroundColor: C.surfacePressed,
     alignItems: 'center', justifyContent: 'center',
   },
   settingsLabel: {
-    flex: 1, fontSize: 15, fontWeight: '500', color: 'rgba(0,0,0,0.70)',
+    flex: 1, fontSize: 15, fontWeight: '500', color: C.secondary,
   },
 });

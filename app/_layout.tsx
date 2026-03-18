@@ -261,8 +261,8 @@ function AppShell() {
     [],
   );
 
-  // Show auth modal when not authenticated (and not still checking)
-  const showAuthModal = !authState.isChecking && !authState.isAuthenticated;
+  // Show onboarding when not authenticated OR when authenticated but new user needs onboarding
+  const showAuthModal = !authState.isChecking && (!authState.isAuthenticated || authState.isNewUser);
 
   // Normal navigation with tabs — edge-to-edge, no header
   const containerDynamic = { flex: 1 as const, backgroundColor: colors.bg };
@@ -456,6 +456,6 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F5EFE4',
   },
 });

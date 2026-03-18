@@ -7,7 +7,7 @@ export default function SettingsLayout() {
         headerShown: false,
         animation: 'slide_from_right',
         gestureEnabled: true,
-        contentStyle: { backgroundColor: '#FFFFFF' },
+        contentStyle: { backgroundColor: '#F5EFE4' },
       }}
     />
   );

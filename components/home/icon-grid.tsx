@@ -23,16 +23,16 @@ import type { GridIcon } from './home-types';
 
 /** Row 2 labels shift per mode */
 const MODE_LABELS: Record<string, Partial<Record<Mode, string>>> = {
-  p4: { personal: 'Network', business: 'Team',  education: 'Students', sports: 'Roster',   community: 'Members'  },
-  p5: { personal: 'Deals',   business: 'Leads', education: 'Admissions', sports: 'Recruits', community: 'Outreach' },
-  p6: { personal: 'Earn',    business: 'Sales', education: 'Fund',     sports: 'Booster',  community: 'Give'     },
+  p4: { personal: 'Network', business: 'Team',     education: 'Campus',     sports: 'Roster',   community: 'Members'  },
+  p5: { personal: 'Deals',   business: 'Inquiries', education: 'Admissions', sports: 'Recruits', community: 'Outreach' },
+  p6: { personal: 'Earn',    business: 'Store',    education: 'Fund',       sports: 'Booster',  community: 'Give'     },
 };
 
 const ROWS: GridIcon[][] = [
   // Row 1 — universal
   [
-    { id: 'agenda',  icon: 'calendar.badge.clock',  label: 'Agenda', route: '/agenda' },
     { id: 'hub',     icon: 'square.grid.2x2.fill',  label: 'Hub',    route: '/(tabs)/(main)/season' },
+    { id: 'agenda',  icon: 'calendar.badge.clock',  label: 'Agenda', route: '/agenda' },
     { id: 'social',  icon: 'globe',                 label: 'Social', route: '/social' },
   ],
   // Row 2 — mode-dependent labels

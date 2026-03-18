@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 5,
     borderRadius: 12,
-    backgroundColor: '#F4F4F5',
+    backgroundColor: 'rgba(139,99,67,0.08)',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.08,
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   orgPillText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#52525B',
+    color: '#8C7B6E',
     textAlign: 'center',
   },
   gridWrapper: {
