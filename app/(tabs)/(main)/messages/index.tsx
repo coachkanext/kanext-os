@@ -345,6 +345,28 @@ function ThreadPreviewCard({
   );
 }
 
+function RoomPreviewCard({
+  room, C, styles,
+}: {
+  room: RoomV3;
+  C: ComponentColors;
+  styles: ReturnType<typeof makeStyles>;
+}) {
+  return (
+    <View style={styles.ctxPreview}>
+      <View style={[styles.ctxPreviewAvatar, { backgroundColor: room.color + '22' }]}>
+        <Text style={[styles.ctxPreviewInitials, { color: room.color }]}>#</Text>
+      </View>
+      <View style={styles.ctxPreviewInfo}>
+        <Text style={[styles.ctxPreviewName, { color: C.label }]} numberOfLines={1}>{room.name}</Text>
+        <Text style={[styles.ctxPreviewSub, { color: C.secondary }]} numberOfLines={2}>
+          {room.lastMessage}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
 function ContextMenuOverlay({
   ctxMenu, onClose, C, styles, preview,
 }: {
@@ -635,6 +657,7 @@ export default function MessagesScreen() {
   const [composeSheetVisible, setComposeSheetVisible] = useState(false);
   const [ctxMenu, setCtxMenu] = useState<ContextMenuState>({ visible: false, items: [], anchorY: 0 });
   const [ctxThread, setCtxThread] = useState<InboxThreadV3 | null>(null);
+  const [ctxRoom, setCtxRoom] = useState<RoomV3 | null>(null);
 
   // Local mutable state for pinned/unread
   const [threads, setThreads] = useState<InboxThreadV3[]>(() => getInboxThreads(mode));
@@ -685,6 +708,14 @@ export default function MessagesScreen() {
 
   const toggleThreadPinned = useCallback((id: string) => {
     setThreads(prev => prev.map(t => t.id === id ? { ...t, pinned: !t.pinned } : t));
+  }, []);
+
+  const toggleRoomRead = useCallback((id: string) => {
+    setRooms(prev => prev.map(r => r.id === id ? { ...r, unread: !r.unread } : r));
+  }, []);
+
+  const toggleRoomPinned = useCallback((id: string) => {
+    setRooms(prev => prev.map(r => r.id === id ? { ...r, pinned: !r.pinned } : r));
   }, []);
 
   // Fade animations for search overlay
@@ -748,20 +779,44 @@ export default function MessagesScreen() {
     setCtxMenu({ visible: true, items, anchorY });
   }, [toggleThreadPinned, toggleThreadRead]);
 
-  const openRoomCtxMenu = useCallback((anchorY: number) => {
+  const openRoomCtxMenu = useCallback((room: RoomV3, anchorY: number) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setCtxThread(null);
+    setCtxRoom(room);
     setCtxMenu({
       visible: true,
       anchorY,
       items: [
-        { icon: 'bell.slash.fill', label: 'Hide Alerts', onPress: () => {} },
-        { icon: 'rectangle.portrait.and.arrow.right', label: 'Leave Room', onPress: () => {}, destructive: true },
+        {
+          icon: room.pinned ? 'pin.slash.fill' : 'pin.fill',
+          label: room.pinned ? 'Unpin' : 'Pin',
+          onPress: () => toggleRoomPinned(room.id),
+        },
+        {
+          icon: room.unread ? 'message.fill' : 'message.badge.filled.fill',
+          label: room.unread ? 'Mark as Read' : 'Mark as Unread',
+          onPress: () => toggleRoomRead(room.id),
+        },
+        {
+          icon: 'bell.slash.fill',
+          label: 'Hide Alerts',
+          onPress: () => {},
+        },
+        {
+          icon: 'rectangle.portrait.and.arrow.right',
+          label: 'Leave Room',
+          onPress: () => {},
+          destructive: true,
+        },
       ],
     });
-  }, []);
+  }, [toggleRoomPinned, toggleRoomRead]);
 
-  const closeCtxMenu = useCallback(() => setCtxMenu(s => ({ ...s, visible: false })), []);
+  const closeCtxMenu = useCallback(() => {
+    setCtxMenu(s => ({ ...s, visible: false }));
+    setCtxThread(null);
+    setCtxRoom(null);
+  }, []);
 
   const toggleFilterPills = useCallback(() => {
     setFilterPillsVisible(prev => {
@@ -1010,7 +1065,7 @@ export default function MessagesScreen() {
                     C={C}
                     styles={styles}
                     onPress={() => router.push(`/(tabs)/(main)/messages/${r.id}` as any)}
-                    onLongPress={(y) => openRoomCtxMenu(y)}
+                    onLongPress={(y) => openRoomCtxMenu(r, y)}
                     selectMode={selectChatsMode}
                     selected={selectedThreadIds.has(r.id)}
                     onToggle={() => {
@@ -1255,8 +1310,9 @@ export default function MessagesScreen() {
         onClose={closeCtxMenu}
         C={C}
         styles={styles}
-        preview={ctxThread
-          ? <ThreadPreviewCard thread={ctxThread} C={C} styles={styles} />
+        preview={
+          ctxThread ? <ThreadPreviewCard thread={ctxThread} C={C} styles={styles} />
+          : ctxRoom  ? <RoomPreviewCard  room={ctxRoom}    C={C} styles={styles} />
           : undefined
         }
       />
