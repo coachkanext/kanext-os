@@ -12,6 +12,7 @@
 import React, { useState, useMemo, useCallback, useRef } from 'react';
 import {
   View, Text, Pressable, ScrollView, StyleSheet, TextInput, Animated,
+  useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -19,18 +20,37 @@ import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useMode, useAppContext } from '@/context/app-context';
+import { useRouter } from 'expo-router';
 import {
-  RECENT_CALLS, PHONE_CONTACTS, VOICEMAILS, getFavoriteContacts,
+  RECENT_CALLS, PHONE_CONTACTS, VOICEMAILS, MY_KANEXT_NUMBERS,
   type RecentCall, type PhoneContact, type Voicemail, type CallDirection,
 } from '@/data/mock-phone';
 
 type PhoneFilter = 'Calls' | 'Missed' | 'Voicemail' | 'Contacts';
 type ExpandedSection = 'calls' | 'voicemails' | 'contacts' | null;
 
+type ContextMenuItem = {
+  icon: string;
+  label: string;
+  onPress: () => void;
+  destructive?: boolean;
+};
+
+type ContextMenuState = {
+  visible: boolean;
+  items: ContextMenuItem[];
+  anchorY: number;
+};
+
+type ContactContextMenuState = ContextMenuState & { contact: PhoneContact | null };
+
 const FILTER_OPTIONS: PhoneFilter[] = ['Calls', 'Missed', 'Voicemail', 'Contacts'];
 const FOOTER_HEIGHT = 49;
 const SEARCH_BAR_HEIGHT = 52;
 const SECTION_MAX = 3;
+
+const FULL_ALPHABET = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '#'];
 
 const DIALPAD_KEYS = [
   [{ digit: '1', letters: '' }, { digit: '2', letters: 'ABC' }, { digit: '3', letters: 'DEF' }],
@@ -66,9 +86,6 @@ function FavoriteCard({
     <Pressable style={styles.favCard} onPress={onPress}>
       <View style={[styles.favAvatar, { backgroundColor: C.surface }]}>
         <Text style={styles.favInitials}>{contact.initials}</Text>
-        {contact.online && (
-          <View style={[styles.onlineDot, { backgroundColor: C.green, borderColor: C.bg }]} />
-        )}
       </View>
       <Text style={styles.favName} numberOfLines={1}>{contact.name.split(' ')[0]}</Text>
     </Pressable>
@@ -76,10 +93,11 @@ function FavoriteCard({
 }
 
 function RecentRow({
-  call, C, styles, onPress,
+  call, C, styles, onPress, onLongPress,
 }: {
   call: RecentCall; C: ComponentColors;
   styles: ReturnType<typeof makeStyles>; onPress: () => void;
+  onLongPress?: (pageY: number) => void;
 }) {
   const isMissed = call.direction === 'missed';
   const dirColor = isMissed ? C.red : C.secondary;
@@ -88,6 +106,8 @@ function RecentRow({
     <Pressable
       style={({ pressed }) => [styles.row, pressed && { backgroundColor: C.surfacePressed }]}
       onPress={onPress}
+      onLongPress={onLongPress ? (e) => onLongPress(e.nativeEvent.pageY) : undefined}
+      delayLongPress={350}
     >
       <View style={[styles.rowAvatar, { backgroundColor: C.surface }]}>
         <Text style={styles.rowInitials}>{call.initials}</Text>
@@ -98,9 +118,11 @@ function RecentRow({
       <View style={styles.rowInfo}>
         <Text style={[styles.rowName, isMissed && { color: C.red }]}>{call.name}</Text>
         <View style={styles.rowMeta}>
+          <Text style={[styles.rowHandle, { color: C.muted }]}>@{call.username}</Text>
+          <Text style={[styles.rowSub, { color: C.muted }]}> · </Text>
           <IconSymbol name={directionIcon(call.direction) as any} size={11} color={dirColor} />
           <Text style={[styles.rowSub, { color: dirColor }]}>
-            {directionLabel(call.direction)}{call.duration ? ` · ${call.duration}` : ''}
+            {' '}{directionLabel(call.direction)}{call.duration ? ` · ${call.duration}` : ''}
           </Text>
         </View>
       </View>
@@ -121,15 +143,18 @@ function RecentRow({
 }
 
 function VoicemailRow({
-  vm, C, styles, onPress,
+  vm, C, styles, onPress, onLongPress,
 }: {
   vm: Voicemail; C: ComponentColors;
   styles: ReturnType<typeof makeStyles>; onPress: () => void;
+  onLongPress?: (pageY: number) => void;
 }) {
   return (
     <Pressable
       style={({ pressed }) => [styles.row, pressed && { backgroundColor: C.surfacePressed }]}
       onPress={onPress}
+      onLongPress={onLongPress ? (e) => onLongPress(e.nativeEvent.pageY) : undefined}
+      delayLongPress={350}
     >
       <View style={[styles.rowAvatar, { backgroundColor: C.surface }]}>
         <Text style={styles.rowInitials}>{vm.callerInitials}</Text>
@@ -143,46 +168,49 @@ function VoicemailRow({
         <Text style={[styles.vmDuration, { color: C.muted }]}>{vm.duration}</Text>
       </View>
       <Pressable
-        style={[styles.callBtn, { backgroundColor: C.accent }]}
-        onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-        hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-      >
-        <IconSymbol name="play.fill" size={14} color="#FFFFFF" />
-      </Pressable>
-    </Pressable>
-  );
-}
-
-function ContactRow({
-  contact, C, styles, onPress,
-}: {
-  contact: PhoneContact; C: ComponentColors;
-  styles: ReturnType<typeof makeStyles>; onPress: () => void;
-}) {
-  return (
-    <Pressable
-      style={({ pressed }) => [styles.row, pressed && { backgroundColor: C.surfacePressed }]}
-      onPress={onPress}
-    >
-      <View style={[styles.rowAvatar, { backgroundColor: C.surface }]}>
-        <Text style={styles.rowInitials}>{contact.initials}</Text>
-        {contact.online && (
-          <View style={[styles.onlineDot, { backgroundColor: C.green, borderColor: C.bg }]} />
-        )}
-      </View>
-      <View style={styles.rowInfo}>
-        <Text style={styles.rowName}>{contact.name}</Text>
-        <Text style={[styles.rowSub, { color: C.muted }]} numberOfLines={1}>
-          {[contact.role, contact.org].filter(Boolean).join(' · ')}
-        </Text>
-      </View>
-      <Pressable
         style={styles.callBtn}
         onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
         hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
       >
         <IconSymbol name="phone.fill" size={16} color={C.accent} />
       </Pressable>
+    </Pressable>
+  );
+}
+
+function ContactRow({
+  contact, C, styles, onPress, onLongPress,
+}: {
+  contact: PhoneContact; C: ComponentColors;
+  styles: ReturnType<typeof makeStyles>; onPress: () => void;
+  onLongPress?: (pageY: number) => void;
+}) {
+  // Split "First Last" → first name (normal) + last name (bold)
+  const parts = contact.name.trim().split(' ');
+  const lastName = parts.pop() ?? '';
+  const firstName = parts.join(' ');
+
+  return (
+    <Pressable
+      style={({ pressed }) => [styles.contactRow, pressed && { backgroundColor: C.surfacePressed }]}
+      onPress={onPress}
+      onLongPress={onLongPress ? (e) => onLongPress(e.nativeEvent.pageY) : undefined}
+      delayLongPress={350}
+    >
+      <View style={[styles.contactAvatar, { backgroundColor: C.surface }]}>
+        <Text style={[styles.contactInitials, { color: C.label }]}>{contact.initials}</Text>
+      </View>
+      <View style={styles.contactInfo}>
+        <Text style={[styles.contactName, { color: C.label }]} numberOfLines={1}>
+          {firstName ? `${firstName} ` : ''}
+          <Text style={styles.contactNameBold}>{lastName}</Text>
+        </Text>
+        <Text style={[styles.contactHandle, { color: C.muted }]} numberOfLines={1}>
+          @{contact.username}{contact.role ? ` · ${contact.role}` : ''}{contact.org ? ` · ${contact.org}` : ''}
+        </Text>
+        {/* Inset separator */}
+        <View style={[styles.contactSeparator, { backgroundColor: C.separator }]} />
+      </View>
     </Pressable>
   );
 }
@@ -324,26 +352,31 @@ function nameScore(name: string, q: string): number {
   return 0;
 }
 
-function getTopMatch(query: string): TopMatchKind | null {
+function getTopMatch(
+  query: string,
+  calls: RecentCall[],
+  contacts: PhoneContact[],
+  voicemails: Voicemail[],
+): TopMatchKind | null {
   const q = query.toLowerCase().trim();
   if (!q) return null;
 
   let bestScore = 0;
   let best: TopMatchKind | null = null;
 
-  for (const c of PHONE_CONTACTS) {
+  for (const c of contacts) {
     const ns = nameScore(c.name, q);
     if (!ns) continue;
-    const freq = RECENT_CALLS.filter(r => r.username === c.username).length;
+    const freq = calls.filter(r => r.username === c.username).length;
     const score = ns + freq * 5 + (c.isFavorite ? 20 : 0);
     if (score > bestScore) { bestScore = score; best = { kind: 'contact', data: c }; }
   }
-  for (const c of RECENT_CALLS) {
+  for (const c of calls) {
     const ns = nameScore(c.name, q);
     if (!ns) continue;
     if (ns > bestScore) { bestScore = ns; best = { kind: 'call', data: c }; }
   }
-  for (const v of VOICEMAILS) {
+  for (const v of voicemails) {
     const ns = nameScore(v.callerName, q);
     if (!ns) continue;
     if (ns > bestScore) { bestScore = ns; best = { kind: 'voicemail', data: v }; }
@@ -407,40 +440,47 @@ function TopMatchCard({
 
 function SearchResults({
   query, C, styles, expandedSection, setExpandedSection, onOpenContact, onOpenFromCall, bottomPad,
+  calls, contacts, voicemails, onCallLongPress, onVmLongPress,
 }: {
   query: string; C: ComponentColors; styles: ReturnType<typeof makeStyles>;
   expandedSection: ExpandedSection; setExpandedSection: (s: ExpandedSection) => void;
   onOpenContact: (c: PhoneContact) => void; onOpenFromCall: (c: RecentCall) => void;
   bottomPad: number;
+  calls: RecentCall[]; contacts: PhoneContact[]; voicemails: Voicemail[];
+  onCallLongPress?: (call: RecentCall, pageY: number) => void;
+  onVmLongPress?: (vm: Voicemail, pageY: number) => void;
 }) {
   const q = query.toLowerCase().trim();
 
-  const topMatch = useMemo(() => getTopMatch(query), [query]);
+  const topMatch = useMemo(() => getTopMatch(query, calls, contacts, voicemails), [query, calls, contacts, voicemails]);
 
   const matchingCalls = useMemo(() => {
     if (!q) return [];
-    return RECENT_CALLS.filter(c =>
+    return calls.filter(c =>
       c.name.toLowerCase().includes(q) || c.username.toLowerCase().includes(q),
     );
-  }, [q]);
+  }, [q, calls]);
 
   const matchingVMs = useMemo(() => {
     if (!q) return [];
-    return VOICEMAILS.filter(v =>
+    return voicemails.filter(v =>
       v.callerName.toLowerCase().includes(q) || v.transcription.toLowerCase().includes(q),
     );
-  }, [q]);
+  }, [q, voicemails]);
 
   const matchingContacts = useMemo(() => {
     if (!q) return [];
-    return PHONE_CONTACTS
+    return contacts
       .filter(c =>
         c.name.toLowerCase().includes(q) ||
         c.username.toLowerCase().includes(q) ||
         c.org.toLowerCase().includes(q),
       )
-      .sort((a, b) => a.name.localeCompare(b.name));
-  }, [q]);
+      .sort((a, b) => {
+        const last = (n: string) => n.split(' ').pop() ?? n;
+        return last(a.name).localeCompare(last(b.name));
+      });
+  }, [q, contacts]);
 
   if (!q) {
     return (
@@ -470,7 +510,7 @@ function SearchResults({
     if (topMatch.kind === 'contact') onOpenContact(topMatch.data);
     else if (topMatch.kind === 'call') onOpenFromCall(topMatch.data);
     else {
-      const c = PHONE_CONTACTS.find(p => p.username === topMatch.data.callerUsername);
+      const c = contacts.find(p => p.username === topMatch.data.callerUsername);
       if (c) onOpenContact(c);
     }
   };
@@ -503,7 +543,11 @@ function SearchResults({
             )}
           </View>
           {(callsExp ? matchingCalls : matchingCalls.slice(0, SECTION_MAX)).map(call => (
-            <RecentRow key={call.id} call={call} C={C} styles={styles} onPress={() => onOpenFromCall(call)} />
+            <RecentRow
+              key={call.id} call={call} C={C} styles={styles}
+              onPress={() => onOpenFromCall(call)}
+              onLongPress={onCallLongPress ? (py) => onCallLongPress(call, py) : undefined}
+            />
           ))}
         </View>
       )}
@@ -527,9 +571,10 @@ function SearchResults({
             <VoicemailRow
               key={vm.id} vm={vm} C={C} styles={styles}
               onPress={() => {
-                const c = PHONE_CONTACTS.find(p => p.username === vm.callerUsername);
+                const c = contacts.find(p => p.username === vm.callerUsername);
                 if (c) onOpenContact(c);
               }}
+              onLongPress={onVmLongPress ? (py) => onVmLongPress(vm, py) : undefined}
             />
           ))}
         </View>
@@ -559,12 +604,123 @@ function SearchResults({
   );
 }
 
+// ── My profile card (top of contacts list) ────────────────────────────────────
+
+function MyProfileCard({
+  role, mode, C, styles,
+}: {
+  role: string; mode: ReturnType<typeof useMode>;
+  C: ComponentColors; styles: ReturnType<typeof makeStyles>;
+}) {
+  const myNumber = MY_KANEXT_NUMBERS.find(n => n.mode === mode);
+  return (
+    <View style={[styles.myCard, { backgroundColor: C.surface }]}>
+      <View style={[styles.myAvatar, { backgroundColor: C.accent }]}>
+        <Text style={styles.myAvatarInitials}>SK</Text>
+        <View style={[styles.onlineDot, { backgroundColor: C.green, borderColor: C.surface }]} />
+      </View>
+      <View style={styles.myInfo}>
+        <Text style={[styles.myName, { color: C.label }]}>Sammy Kalejaiye</Text>
+        <Text style={[styles.myMeta, { color: C.secondary }]} numberOfLines={1}>
+          {role || 'Owner'}{myNumber ? `  ·  ${myNumber.number}` : ''}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+// ── Context menu overlay ──────────────────────────────────────────────────────
+
+const CTX_ITEM_H = 50;
+const CTX_PREVIEW_H = 72;
+const CTX_WIDTH = 248;
+
+function ContactPreview({
+  contact, C, styles,
+}: {
+  contact: PhoneContact; C: ComponentColors; styles: ReturnType<typeof makeStyles>;
+}) {
+  return (
+    <View style={styles.ctxPreview}>
+      <View style={[styles.ctxPreviewAvatar, { backgroundColor: C.surface }]}>
+        <Text style={[styles.ctxPreviewInitials, { color: C.label }]}>{contact.initials}</Text>
+      </View>
+      <View style={styles.ctxPreviewInfo}>
+        <Text style={[styles.ctxPreviewName, { color: C.label }]} numberOfLines={1}>{contact.name}</Text>
+        <Text style={[styles.ctxPreviewSub, { color: C.secondary }]} numberOfLines={1}>
+          {[contact.role, contact.org].filter(Boolean).join(' · ')}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+function ContextMenuOverlay({
+  ctxMenu, onClose, C, styles, preview,
+}: {
+  ctxMenu: ContextMenuState; onClose: () => void;
+  C: ComponentColors; styles: ReturnType<typeof makeStyles>;
+  preview?: React.ReactNode;
+}) {
+  const { height: screenH } = useWindowDimensions();
+  if (!ctxMenu.visible) return null;
+
+  const previewH = preview ? CTX_PREVIEW_H : 0;
+  const menuH = ctxMenu.items.length * CTX_ITEM_H + previewH;
+  const showAbove = ctxMenu.anchorY > screenH * 0.55;
+  const rawTop = showAbove ? ctxMenu.anchorY - menuH - 12 : ctxMenu.anchorY + 12;
+  const menuTop = Math.max(60, Math.min(rawTop, screenH - menuH - 16));
+
+  return (
+    <>
+      <Pressable style={[StyleSheet.absoluteFill, styles.ctxBackdrop]} onPress={onClose} />
+      <View style={[styles.ctxShadow, { top: menuTop, width: CTX_WIDTH }]}>
+        <View style={[styles.ctxInner, { backgroundColor: C.bg, borderColor: C.separator }]}>
+          {preview && (
+            <>
+              {preview}
+              <View style={[styles.ctxDivider, { backgroundColor: C.separator, marginLeft: 0 }]} />
+            </>
+          )}
+          {ctxMenu.items.map((item, i) => (
+            <React.Fragment key={item.label}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.ctxItem,
+                  pressed && { backgroundColor: C.surfacePressed },
+                ]}
+                onPress={() => { onClose(); item.onPress(); }}
+              >
+                <IconSymbol
+                  name={item.icon as any}
+                  size={18}
+                  color={item.destructive ? C.red : C.label}
+                />
+                <Text style={[styles.ctxLabel, { color: item.destructive ? C.red : C.label }]}>
+                  {item.label}
+                </Text>
+              </Pressable>
+              {i < ctxMenu.items.length - 1 && (
+                <View style={[styles.ctxDivider, { backgroundColor: C.separator }]} />
+              )}
+            </React.Fragment>
+          ))}
+        </View>
+      </View>
+    </>
+  );
+}
+
 // ── Screen ────────────────────────────────────────────────────────────────────
 
 export default function PhoneScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => makeStyles(C), [C]);
+  const mode = useMode();
+  const router = useRouter();
+  const { state } = useAppContext();
+  const activeRole = state.activeContext.derived_role_badge ?? 'Owner';
 
   const [filter, setFilter] = useState<PhoneFilter>('Calls');
   const [filterDropdownVisible, setFilterDropdownVisible] = useState(false);
@@ -574,23 +730,69 @@ export default function PhoneScreen() {
   const [expandedSection, setExpandedSection] = useState<ExpandedSection>(null);
   const [selectedContact, setSelectedContact] = useState<PhoneContact | null>(null);
   const [profileSheetVisible, setProfileSheetVisible] = useState(false);
+  const [ctxMenu, setCtxMenu] = useState<ContextMenuState>({ visible: false, items: [], anchorY: 0 });
+  const [contactCtxMenu, setContactCtxMenu] = useState<ContactContextMenuState>({ visible: false, items: [], anchorY: 0, contact: null });
 
   // Fade animations
   const mainOpacity = useRef(new Animated.Value(1)).current;
   const resultsOpacity = useRef(new Animated.Value(0)).current;
 
-  const favorites = useMemo(() => getFavoriteContacts(), []);
-  const contacts = useMemo(
-    () => [...PHONE_CONTACTS].sort((a, b) => a.name.localeCompare(b.name)),
-    [],
+  // Org-scoped data — re-derives whenever the active mode changes
+  const orgCalls = useMemo(
+    () => RECENT_CALLS.filter(c => c.mode === mode),
+    [mode],
   );
-  const missedCalls = useMemo(() => RECENT_CALLS.filter(c => c.direction === 'missed'), []);
-  const canvasCalls = filter === 'Missed' ? missedCalls : RECENT_CALLS;
+  const orgContacts = useMemo(() => {
+    const lastName = (n: string) => n.split(' ').pop() ?? n;
+    return [...PHONE_CONTACTS.filter(c => c.mode === mode)]
+      .sort((a, b) => lastName(a.name).localeCompare(lastName(b.name)));
+  }, [mode]);
+  const orgVoicemails = useMemo(
+    () => VOICEMAILS.filter(v => v.mode === mode),
+    [mode],
+  );
+  const favorites = useMemo(() => orgContacts.filter(c => c.isFavorite), [orgContacts]);
+
+  const missedCalls = useMemo(() => orgCalls.filter(c => c.direction === 'missed'), [orgCalls]);
+  const canvasCalls = filter === 'Missed' ? missedCalls : orgCalls;
   const pillLabel = filter;
 
   const fabBottom = insets.bottom + FOOTER_HEIGHT + 16;
   const searchBarBottom = insets.bottom + FOOTER_HEIGHT;
   const headerHeight = insets.top + 14 + 50; // approx header block height
+
+  // ── Contacts: grouped sections + alphabet index ─────────────────────────────
+  const contactSections = useMemo(() => {
+    const groups: Record<string, PhoneContact[]> = {};
+    for (const c of orgContacts) {
+      const raw = ((c.name.split(' ').pop() ?? c.name)[0] ?? '#').toUpperCase();
+      const letter = /^[0-9]/.test(raw) ? '#' : raw;
+      if (!groups[letter]) groups[letter] = [];
+      groups[letter].push(c);
+    }
+    return Object.keys(groups)
+      .sort((a, b) => a === '#' ? 1 : b === '#' ? -1 : a.localeCompare(b))
+      .map(title => ({ title, data: groups[title] }));
+  }, [orgContacts]);
+
+  const contactsScrollRef = useRef<ScrollView>(null);
+  const sectionYRef = useRef<Record<string, number>>({});
+
+  const scrollToLetter = useCallback((letter: string) => {
+    if (contactSections.length === 0) return;
+    let targetTitle: string | undefined;
+    if (letter === '#') {
+      targetTitle = contactSections.find(s => s.title === '#')?.title;
+    } else {
+      const found = contactSections.find(s => s.title !== '#' && s.title >= letter);
+      targetTitle = found?.title
+        ?? [...contactSections].reverse().find(s => s.title !== '#')?.title;
+    }
+    if (!targetTitle) return;
+    const y = sectionYRef.current[targetTitle];
+    if (y == null) return;
+    contactsScrollRef.current?.scrollTo({ y, animated: false });
+  }, [contactSections]);
 
   const openContact = useCallback((contact: PhoneContact) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -600,13 +802,13 @@ export default function PhoneScreen() {
 
   const openFromCall = useCallback((call: RecentCall) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const found = PHONE_CONTACTS.find(c => c.username === call.username);
+    const found = orgContacts.find(c => c.username === call.username);
     setSelectedContact(found ?? {
       id: call.id, name: call.name, username: call.username,
       initials: call.initials, org: '', role: '', mode: call.mode,
     });
     setProfileSheetVisible(true);
-  }, []);
+  }, [orgContacts]);
 
   const activateSearch = useCallback(() => {
     setSearchActive(true);
@@ -626,6 +828,55 @@ export default function PhoneScreen() {
       setSearchQuery('');
     });
   }, [mainOpacity, resultsOpacity]);
+
+  const closeCtxMenu = useCallback(() => setCtxMenu(s => ({ ...s, visible: false })), []);
+
+  const openCallCtxMenu = useCallback((call: RecentCall, anchorY: number) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const isKnown = orgContacts.some(c => c.username === call.username);
+    const items: ContextMenuItem[] = [
+      { icon: 'phone.fill',    label: 'Call',    onPress: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium) },
+      { icon: 'message.fill',  label: 'Message', onPress: () => {} },
+      { icon: 'video.fill',    label: 'Video',   onPress: () => {} },
+      ...(isKnown ? [] : [
+        { icon: 'person.badge.plus',           label: 'Add to Existing Contact', onPress: () => {} },
+        { icon: 'person.crop.circle.badge.plus', label: 'Create New Contact',    onPress: () => {} },
+      ]),
+      { icon: 'trash.fill', label: 'Delete', onPress: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium), destructive: true },
+    ];
+    setCtxMenu({ visible: true, items, anchorY });
+  }, [orgContacts]);
+
+  const openVmCtxMenu = useCallback((vm: Voicemail, anchorY: number) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const isKnown = orgContacts.some(c => c.username === vm.callerUsername);
+    const items: ContextMenuItem[] = [
+      { icon: 'phone.fill',   label: 'Call',    onPress: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium) },
+      { icon: 'message.fill', label: 'Message', onPress: () => {} },
+      { icon: 'video.fill',   label: 'Video',   onPress: () => {} },
+      ...(isKnown ? [] : [
+        { icon: 'person.badge.plus',           label: 'Add to Existing Contact', onPress: () => {} },
+        { icon: 'person.crop.circle.badge.plus', label: 'Create New Contact',    onPress: () => {} },
+      ]),
+      { icon: 'trash.fill', label: 'Delete', onPress: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium), destructive: true },
+    ];
+    setCtxMenu({ visible: true, items, anchorY });
+  }, [orgContacts]);
+
+  const closeContactCtxMenu = useCallback(() => setContactCtxMenu(s => ({ ...s, visible: false })), []);
+
+  const openContactCtxMenu = useCallback((contact: PhoneContact, anchorY: number) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const items: ContextMenuItem[] = [
+      { icon: 'message.fill',        label: 'Message',        onPress: () => {} },
+      { icon: 'phone.fill',          label: 'Call',           onPress: () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium) },
+      { icon: 'video.fill',          label: 'Video',          onPress: () => {} },
+      { icon: 'doc.on.doc',          label: 'Copy',           onPress: () => {} },
+      { icon: 'square.and.arrow.up', label: 'Share',          onPress: () => {} },
+      { icon: 'trash.fill',          label: 'Delete Contact', onPress: () => {}, destructive: true },
+    ];
+    setContactCtxMenu({ visible: true, items, anchorY, contact });
+  }, []);
 
   return (
     <View style={[styles.root, { backgroundColor: C.bg }]}>
@@ -657,71 +908,117 @@ export default function PhoneScreen() {
             <IconSymbol
               name="slider.horizontal.3"
               size={20}
-              color={filter !== 'Calls' ? C.accent : C.secondary}
+              color={C.secondary}
             />
-            {filter !== 'Calls' && (
-              <View style={[styles.filterDot, { backgroundColor: C.accent }]} />
-            )}
           </Pressable>
         </View>
 
-        {/* Scrollable body */}
-        <ScrollView
-          style={styles.scroll}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: insets.bottom + FOOTER_HEIGHT + 150 }}
-        >
-          {favorites.length > 0 && filter === 'Calls' && (
-            <View style={styles.section}>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.favsContent}
-              >
-                {favorites.map(fav => (
-                  <FavoriteCard
-                    key={fav.id} contact={fav} C={C} styles={styles}
-                    onPress={() => openContact(fav)}
+        {/* Scrollable body — plain ScrollView for Contacts (onLayout-measured Y), ScrollView for everything else */}
+        {filter === 'Contacts' ? (
+          <ScrollView
+            ref={contactsScrollRef}
+            style={styles.scroll}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: insets.bottom + FOOTER_HEIGHT + 150 }}
+          >
+            <MyProfileCard role={activeRole} mode={mode} C={C} styles={styles} />
+            {contactSections.length === 0 && <Text style={styles.emptyText}>No contacts</Text>}
+            {contactSections.map(section => (
+              <React.Fragment key={section.title}>
+                <View
+                  style={[styles.sectionLetterHeader, { backgroundColor: C.bg }]}
+                  onLayout={(e) => { sectionYRef.current[section.title] = e.nativeEvent.layout.y; }}
+                >
+                  <Text style={[styles.sectionLetter, { color: C.secondary }]}>{section.title}</Text>
+                </View>
+                {section.data.map(contact => (
+                  <ContactRow
+                    key={contact.id}
+                    contact={contact} C={C} styles={styles}
+                    onPress={() => openContact(contact)}
+                    onLongPress={(py) => openContactCtxMenu(contact, py)}
                   />
                 ))}
-              </ScrollView>
-            </View>
-          )}
-
-          <View style={styles.section}>
-            {filter === 'Voicemail' ? (
-              <>
-                {VOICEMAILS.length === 0
-                  ? <Text style={styles.emptyText}>No voicemails</Text>
-                  : VOICEMAILS.map(vm => (
-                    <VoicemailRow
-                      key={vm.id} vm={vm} C={C} styles={styles}
-                      onPress={() => {
-                        const c = PHONE_CONTACTS.find(p => p.username === vm.callerUsername);
-                        if (c) openContact(c);
-                      }}
+              </React.Fragment>
+            ))}
+          </ScrollView>
+        ) : (
+          <ScrollView
+            style={styles.scroll}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: insets.bottom + FOOTER_HEIGHT + 150 }}
+          >
+            {favorites.length > 0 && filter === 'Calls' && (
+              <View style={styles.section}>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.favsContent}
+                >
+                  {favorites.map(fav => (
+                    <FavoriteCard
+                      key={fav.id} contact={fav} C={C} styles={styles}
+                      onPress={() => openContact(fav)}
                     />
-                  ))
-                }
-              </>
-            ) : filter === 'Contacts' ? (
-              <>
-                {contacts.map(c => (
-                  <ContactRow key={c.id} contact={c} C={C} styles={styles} onPress={() => openContact(c)} />
-                ))}
-              </>
-            ) : (
-              <>
-                {canvasCalls.length === 0
-                  ? <Text style={styles.emptyText}>No calls</Text>
-                  : canvasCalls.map(call => (
-                    <RecentRow key={call.id} call={call} C={C} styles={styles} onPress={() => openFromCall(call)} />
-                  ))
-                }
-              </>
+                  ))}
+                </ScrollView>
+              </View>
             )}
+
+            <View style={styles.section}>
+              {filter === 'Voicemail' ? (
+                <>
+                  {orgVoicemails.length === 0
+                    ? <Text style={styles.emptyText}>No voicemails</Text>
+                    : orgVoicemails.map(vm => (
+                      <VoicemailRow
+                        key={vm.id} vm={vm} C={C} styles={styles}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          router.push(`/(tabs)/(main)/phone/vm/${vm.id}` as any);
+                        }}
+                        onLongPress={(py) => openVmCtxMenu(vm, py)}
+                      />
+                    ))
+                  }
+                </>
+              ) : (
+                <>
+                  {canvasCalls.length === 0
+                    ? <Text style={styles.emptyText}>No calls</Text>
+                    : canvasCalls.map(call => (
+                      <RecentRow
+                        key={call.id} call={call} C={C} styles={styles}
+                        onPress={() => openFromCall(call)}
+                        onLongPress={(py) => openCallCtxMenu(call, py)}
+                      />
+                    ))
+                  }
+                </>
+              )}
+            </View>
+          </ScrollView>
+        )}
+
+        {/* Alphabet index — Contacts view only */}
+        {filter === 'Contacts' && (
+          <View
+            style={[styles.alphabetIndex, { top: headerHeight, bottom: insets.bottom + FOOTER_HEIGHT + 4 }]}
+          >
+            {FULL_ALPHABET.map(letter => (
+              <Pressable
+                key={letter}
+                onPress={() => {
+                  scrollToLetter(letter);
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                }}
+                hitSlop={{ top: 2, bottom: 2, left: 8, right: 8 }}
+              >
+                <Text style={[styles.alphabetLetter, { color: C.accent }]}>{letter}</Text>
+              </Pressable>
+            ))}
           </View>
-        </ScrollView>
+        )}
 
         {/* FAB stack */}
         <View style={[styles.fabStack, { bottom: fabBottom }]}>
@@ -761,6 +1058,11 @@ export default function PhoneScreen() {
           onOpenContact={openContact}
           onOpenFromCall={openFromCall}
           bottomPad={insets.bottom + FOOTER_HEIGHT + SEARCH_BAR_HEIGHT + 8}
+          calls={orgCalls}
+          contacts={orgContacts}
+          voicemails={orgVoicemails}
+          onCallLongPress={openCallCtxMenu}
+          onVmLongPress={openVmCtxMenu}
         />
       </Animated.View>
 
@@ -859,6 +1161,21 @@ export default function PhoneScreen() {
         </BottomSheet>
       )}
 
+      {/* ── Context menu (calls/voicemails) ── */}
+      <ContextMenuOverlay ctxMenu={ctxMenu} onClose={closeCtxMenu} C={C} styles={styles} />
+
+      {/* ── Context menu (contacts) ── */}
+      <ContextMenuOverlay
+        ctxMenu={contactCtxMenu}
+        onClose={closeContactCtxMenu}
+        C={C}
+        styles={styles}
+        preview={contactCtxMenu.contact
+          ? <ContactPreview contact={contactCtxMenu.contact} C={C} styles={styles} />
+          : undefined
+        }
+      />
+
     </View>
   );
 }
@@ -946,10 +1263,11 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     position: 'absolute', top: 0, right: 0,
     width: 12, height: 12, borderRadius: 6, borderWidth: 2,
   },
-  rowInfo: { flex: 1, minWidth: 0, gap: 3 },
+  rowInfo: { flex: 1, minWidth: 0, gap: 2 },
   rowName: { fontSize: 16, fontWeight: '500', color: C.label },
-  rowMeta: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  rowSub: { fontSize: 13 },
+  rowHandle: { fontSize: 12, fontWeight: '400' },
+  rowMeta: { flexDirection: 'row', alignItems: 'center' },
+  rowSub: { fontSize: 12 },
   rowTimestamp: { fontSize: 13, color: C.muted, flexShrink: 0 },
   callBtn: {
     width: 36, height: 36, borderRadius: 18,
@@ -1128,4 +1446,138 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   profileActionLabel: { fontSize: 12, fontWeight: '500' },
+
+  // Contacts section headers + alphabet
+  sectionLetterHeader: {
+    paddingLeft: 16,
+    paddingTop: 20,
+    paddingBottom: 4,
+  },
+  sectionLetter: {
+    fontSize: 13,
+    fontWeight: '600',
+    letterSpacing: 0.2,
+  },
+
+  // iOS-style contact row
+  contactRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 16,
+    height: 64,
+  },
+  contactAvatar: {
+    width: 44, height: 44, borderRadius: 22,
+    alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0, position: 'relative',
+  },
+  contactInitials: { fontSize: 15, fontWeight: '700' },
+  contactInfo: {
+    flex: 1,
+    height: '100%',
+    justifyContent: 'center',
+    paddingLeft: 12,
+    paddingRight: 16,
+    position: 'relative',
+  },
+  contactName: { fontSize: 17, fontWeight: '400' },
+  contactNameBold: { fontWeight: '700' },
+  contactHandle: { fontSize: 12, marginTop: 1 },
+  contactSeparator: {
+    position: 'absolute',
+    bottom: 0,
+    left: 12,
+    right: 0,
+    height: StyleSheet.hairlineWidth,
+  },
+  alphabetIndex: {
+    position: 'absolute',
+    right: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 100,
+  },
+  alphabetLetter: {
+    fontSize: 10,
+    fontWeight: '600',
+    lineHeight: 12,
+    paddingHorizontal: 5,
+  },
+
+  // My profile card (top of Contacts)
+  myCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 16,
+    marginTop: 8,
+    marginBottom: 12,
+    padding: 14,
+    borderRadius: 16,
+    gap: 12,
+  },
+  myAvatar: {
+    width: 48, height: 48, borderRadius: 24,
+    alignItems: 'center', justifyContent: 'center',
+    position: 'relative', flexShrink: 0,
+  },
+  myAvatarInitials: { fontSize: 17, fontWeight: '700', color: '#FFFFFF' },
+  myInfo: { flex: 1, minWidth: 0, gap: 3 },
+  myName: { fontSize: 16, fontWeight: '600' },
+  myMeta: { fontSize: 13 },
+
+  // Context menu preview card
+  ctxPreview: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    gap: 12,
+    height: CTX_PREVIEW_H,
+  },
+  ctxPreviewAvatar: {
+    width: 44, height: 44, borderRadius: 22,
+    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+  },
+  ctxPreviewInitials: { fontSize: 15, fontWeight: '700' },
+  ctxPreviewInfo: { flex: 1, minWidth: 0, gap: 2 },
+  ctxPreviewName: { fontSize: 15, fontWeight: '600' },
+  ctxPreviewSub: { fontSize: 13 },
+
+  // Context menu
+  ctxBackdrop: {
+    backgroundColor: 'rgba(0,0,0,0.28)',
+    zIndex: 5000,
+  },
+  ctxShadow: {
+    position: 'absolute',
+    right: 16,
+    zIndex: 5001,
+    borderRadius: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.18,
+    shadowRadius: 20,
+    elevation: 14,
+  },
+  ctxInner: {
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+  },
+  ctxItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: CTX_ITEM_H,
+    paddingHorizontal: 16,
+    gap: 14,
+  },
+  ctxLabel: {
+    fontSize: 16,
+    fontWeight: '400',
+    flex: 1,
+  },
+  ctxDivider: {
+    height: StyleSheet.hairlineWidth,
+    marginLeft: 16,
+  },
 });

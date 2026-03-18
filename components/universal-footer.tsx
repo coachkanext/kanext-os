@@ -118,9 +118,9 @@ export function UniversalFooter() {
     // Dead tap when already on home index
     if (p === '/' || p === '/(tabs)/(main)') return;
     preNav();
-    // popInnerToHome dispatches StackActions.popToTop() directly to the
-    // (main) Stack navigator ref — reliable from any nesting level
     popInnerToHome();
+    // Fallback: direct navigation in case the inner nav ref isn't ready
+    router.navigate('/' as any);
   };
   const handleMessagesPress = () => {
     if (pIncludes('messages')) return;

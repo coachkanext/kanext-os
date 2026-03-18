@@ -67,6 +67,7 @@ export default function HomeLayout() {
       <Stack.Screen name="phone/dialpad" />
       <Stack.Screen name="phone/favorites" />
       <Stack.Screen name="phone/voicemail" />
+      <Stack.Screen name="phone/vm/[id]" />
       <Stack.Screen name="phone/blocked" />
       <Stack.Screen name="phone/settings" />
       {/* Mode */}
