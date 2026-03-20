@@ -13,7 +13,7 @@ import React, {
 } from 'react';
 import {
   View, Text, Pressable, ScrollView, FlatList, TextInput, Image,
-  StyleSheet, useWindowDimensions,
+  StyleSheet, useWindowDimensions, PanResponder,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -568,6 +568,22 @@ export default function SocialScreen() {
 
   const lastScrollY = useRef(0);
 
+  // Swipe left/right to switch Feed ↔ Reels
+  const swipeResponder = useMemo(() => PanResponder.create({
+    onStartShouldSetPanResponder: () => false,
+    onMoveShouldSetPanResponder: (_evt, gs) =>
+      Math.abs(gs.dx) > 12 && Math.abs(gs.dx) > Math.abs(gs.dy) * 1.5,
+    onPanResponderRelease: (_evt, gs) => {
+      if (gs.dx > 60 && view !== 'feed') {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        handleSwitchView('feed');
+      } else if (gs.dx < -60 && view !== 'reels') {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        handleSwitchView('reels');
+      }
+    },
+  }), [view, handleSwitchView]);
+
   const scope = view === 'feed' ? feedScope : reelsScope;
   const setScope = view === 'feed' ? setFeedScope : setReelsScope;
 
@@ -647,7 +663,7 @@ export default function SocialScreen() {
   // ── Render ──
 
   return (
-    <View style={[styles.screen, { backgroundColor: view === 'reels' ? '#000' : C.bg }]}>
+    <View style={[styles.screen, { backgroundColor: view === 'reels' ? '#000' : C.bg }]} {...swipeResponder.panHandlers}>
 
       {/* Full-screen Reels layer (behind top bar) */}
       {view === 'reels' && (
@@ -867,21 +883,22 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   viewPillInner: {
     flexDirection: 'row',
     backgroundColor: C.surfacePressed,
-    borderRadius: 20,
+    borderRadius: 22,
     padding: 3,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: C.separator,
+    borderWidth: 1.5,
+    borderColor: C.inputBorder,
+    gap: 2,
   },
   pillOption: {
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderRadius: 16,
+    paddingHorizontal: 18,
+    paddingVertical: 7,
+    borderRadius: 18,
   },
   pillOptionActive: {
     backgroundColor: C.label,
   },
   pillOptionText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '500',
     color: C.secondary,
   },
