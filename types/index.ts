@@ -538,6 +538,7 @@ export type AccessTier = 'founder' | 'cofounder' | 'investor' | 'public';
 export interface AuthSession {
   userId: string;
   displayName: string;
+  handle: string;
   email: string;
   provider: AuthProvider;
   token: string;
@@ -997,6 +998,10 @@ export interface InboxThreadV3 {
   avatar?: string;
   orgName?: string;   // organization name for request display
   username?: string;  // @username for request display
+  readAt?: Date;        // chat: when recipient read last message
+  openedAt?: Date;      // email: when recipient opened email
+  isTyping?: boolean;   // chat: someone is currently typing
+  snoozedUntil?: Date;  // email: snoozed — hidden until this time
 }
 
 export interface RoomV3 {

@@ -24,6 +24,7 @@ import { useMode, useAppContext } from '@/context/app-context';
 import { useRouter } from 'expo-router';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { initiateCall } from '@/utils/global-call';
+import { openProfileSheet } from '@/utils/global-profile-sheet';
 import {
   RECENT_CALLS, PHONE_CONTACTS, VOICEMAILS, MY_KANEXT_NUMBERS, CONTACT_PHONES,
   type RecentCall, type PhoneContact, type Voicemail, type CallDirection,
@@ -1103,8 +1104,6 @@ export default function PhoneScreen() {
   const [searchActive, setSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedSection, setExpandedSection] = useState<ExpandedSection>(null);
-  const [selectedContact, setSelectedContact] = useState<PhoneContact | null>(null);
-  const [profileSheetVisible, setProfileSheetVisible] = useState(false);
   const [ctxMenu, setCtxMenu] = useState<ContextMenuState>({ visible: false, items: [], anchorY: 0 });
   const [contactCtxMenu, setContactCtxMenu] = useState<ContactContextMenuState>({ visible: false, items: [], anchorY: 0, contact: null });
   const [addContactSheetVisible, setAddContactSheetVisible] = useState(false);
@@ -1248,18 +1247,27 @@ export default function PhoneScreen() {
 
   const openContact = useCallback((contact: PhoneContact) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setSelectedContact(contact);
-    setProfileSheetVisible(true);
+    openProfileSheet({
+      name: contact.name,
+      handle: contact.username,
+      role: contact.role,
+      brand: contact.org,
+      initials: contact.initials,
+      mode: contact.mode,
+    });
   }, []);
 
   const openFromCall = useCallback((call: RecentCall) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const found = orgContacts.find(c => c.username === call.username);
-    setSelectedContact(found ?? {
-      id: call.id, name: call.name, username: call.username,
-      initials: call.initials, org: '', role: '', mode: call.mode,
+    openProfileSheet({
+      name: found?.name ?? call.name,
+      handle: found?.username ?? call.username,
+      role: found?.role ?? '',
+      brand: found?.org ?? '',
+      initials: found?.initials ?? call.initials,
+      mode: found?.mode ?? call.mode,
     });
-    setProfileSheetVisible(true);
   }, [orgContacts]);
 
   const activateSearch = useCallback(() => {
@@ -1406,6 +1414,9 @@ export default function PhoneScreen() {
             <Text style={[styles.statePillText, { color: C.label }]}>
               {selectMode ? `${selectedCallIds.size} Selected` : tab}
             </Text>
+            {!selectMode && !editFavoritesMode && (
+              <IconSymbol name="chevron.down" size={11} color={C.label} />
+            )}
           </Pressable>
 
           {/* Right */}
@@ -1848,19 +1859,7 @@ export default function PhoneScreen() {
         </>
       )}
 
-      {/* ── Profile sheet ── */}
-      {selectedContact && (
-        <BottomSheet
-          key={selectedContact.id}
-          visible={profileSheetVisible}
-          onClose={() => setProfileSheetVisible(false)}
-          useModal
-          backgroundColor={C.bg}
-          contentContainerStyle={{ paddingHorizontal: 0, paddingTop: 0 }}
-        >
-          <ProfileSheet contact={selectedContact} C={C} styles={styles} canEdit={true} />
-        </BottomSheet>
-      )}
+      {/* ── Profile sheet — now handled by global ProfileSheet in _layout.tsx ── */}
 
       {/* ── My profile sheet ── */}
       <BottomSheet
@@ -1917,7 +1916,8 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     paddingBottom: 12,
   },
   statePill: {
-    paddingHorizontal: 18,
+    flexDirection: 'row', alignItems: 'center', gap: 5,
+    paddingHorizontal: 16,
     paddingVertical: 7,
     borderRadius: 20,
   },

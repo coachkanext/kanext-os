@@ -1,15 +1,15 @@
 /**
- * Org Drawer — bottom sheet for switching orgs and modes.
- * Triggered by swipe-up on Home footer icon.
+ * Brand Drawer — bottom sheet for switching brands and modes.
+ * Triggered by long-press on Home footer icon.
  *
  * Layout (top to bottom):
  *   Drag handle (cosmetic)
- *   Mode pills row: All · Sports · Business · Faith · Education · Personal
+ *   Mode pills row: All · Personal · Business · Education · Sports · Community
  *   Search bar
- *   Org list with sub-orgs (indented, visible only when parent is active)
+ *   Brand list
  *
- * Tap org → dismiss drawer, switch context (mode switches silently if different).
- * Sub-orgs visible only when parent org is the active org.
+ * Tap brand → dismiss drawer, switch context (mode switches silently if different).
+ * Right badge: checkmark (selected) · count (unread activity) · empty radio (none).
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
@@ -31,6 +31,7 @@ import {
   getMembershipsForOrgProgram,
 } from '@/data/mock-memberships';
 import { registerOrgDrawerHandlers } from '@/utils/global-org-drawer';
+import { subscribePulseOrgBadges } from '@/utils/global-pulse-badge';
 import type { Mode, ActiveContext } from '@/types';
 
 // ── Filter pill config ───────────────────────────────────────────────────────
@@ -48,7 +49,7 @@ const FILTER_PILLS: { key: FilterKey; label: string }[] = [
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-/** Two-letter initials from an org name */
+/** Two-letter initials from a brand name */
 function getInitials(name: string): string {
   const words = name.trim().split(/\s+/);
   if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
@@ -61,6 +62,9 @@ export function OrgDrawer() {
   const [visible, setVisible] = useState(false);
   const [filterKey, setFilterKey] = useState<FilterKey>('all');
   const [search, setSearch] = useState('');
+  const [pulseCounts, setPulseCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => subscribePulseOrgBadges(setPulseCounts), []);
 
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
@@ -177,7 +181,7 @@ export function OrgDrawer() {
         <IconSymbol name="magnifyingglass" size={16} color={C.muted} />
         <TextInput
           style={styles.searchInput}
-          placeholder="Search organizations..."
+          placeholder="Search brands..."
           placeholderTextColor={C.muted}
           value={search}
           onChangeText={setSearch}
@@ -186,10 +190,10 @@ export function OrgDrawer() {
         />
       </View>
 
-      {/* Org list — rendered flat; outer BottomSheetScrollView handles all scrolling */}
+      {/* Brand list — rendered flat; outer BottomSheetScrollView handles all scrolling */}
       <View style={styles.orgListContent}>
         {displayOrgs.length === 0 && (
-          <Text style={styles.emptyText}>No organizations found</Text>
+          <Text style={styles.emptyText}>No brands found</Text>
         )}
 
         {displayOrgs.map(org => {
@@ -215,7 +219,7 @@ export function OrgDrawer() {
                   {org.org_name}
                 </Text>
               </View>
-              <RadioCircle active={isActiveOrg} C={C} />
+              <BrandBadge active={isActiveOrg} activityCount={pulseCounts[org.org_id] ?? 0} C={C} />
             </Pressable>
           );
         })}
@@ -235,16 +239,38 @@ export function OrgDrawer() {
   );
 }
 
-// ── Radio circle ─────────────────────────────────────────────────────────────
+// ── Brand badge (right slot) ──────────────────────────────────────────────────
+// Selected → checkmark. Unselected + activity → count number. Otherwise → empty radio.
 
-function RadioCircle({ active, C }: { active: boolean; C: ComponentColors }) {
+function BrandBadge({ active, activityCount, C }: { active: boolean; activityCount: number; C: ComponentColors }) {
+  if (active) {
+    return (
+      <View style={[
+        { width: 20, height: 20, borderRadius: 10, borderWidth: 2, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+        { backgroundColor: C.accent, borderColor: C.accent },
+      ]}>
+        <IconSymbol name="checkmark" size={10} color={C.bg} />
+      </View>
+    );
+  }
+  if (activityCount > 0) {
+    return (
+      <View style={{
+        minWidth: 20, height: 20, borderRadius: 10,
+        backgroundColor: C.accent, paddingHorizontal: 5,
+        alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+      }}>
+        <Text style={{ fontSize: 11, fontWeight: '700', color: '#FFFFFF' }}>
+          {activityCount > 99 ? '99+' : activityCount}
+        </Text>
+      </View>
+    );
+  }
   return (
-    <View style={[
-      { width: 20, height: 20, borderRadius: 10, borderWidth: 2, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-      active ? { backgroundColor: C.accent, borderColor: C.accent } : { borderColor: C.separator },
-    ]}>
-      {active && <IconSymbol name="checkmark" size={10} color={C.bg} />}
-    </View>
+    <View style={{
+      width: 20, height: 20, borderRadius: 10,
+      borderWidth: 2, borderColor: C.separator, flexShrink: 0,
+    }} />
   );
 }
 

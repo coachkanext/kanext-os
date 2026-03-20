@@ -7,19 +7,23 @@
  */
 
 import { Tabs, useRouter } from 'expo-router';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 
 import { setCurrentTab } from '@/utils/global-semi-circle';
 import { resetFooter } from '@/utils/global-footer-hide';
 
+// Module-level flag — persists for the entire app session across re-mounts.
+// Prevents the initial-route redirect from firing a second time when a new
+// (tabs) instance is created (e.g. router.push from Nexus pushes a fresh copy).
+let _didNavigateToMain = false;
+
 export default function TabLayout() {
   const router = useRouter();
-  const hasNavigated = useRef(false);
 
-  // Post-auth default: route to Home
+  // Post-auth default: route to Home — runs ONCE per app session, not per mount.
   useEffect(() => {
-    if (hasNavigated.current) return;
-    hasNavigated.current = true;
+    if (_didNavigateToMain) return;
+    _didNavigateToMain = true;
 
     const timer = setTimeout(() => {
       router.replace('/(tabs)/(main)' as any);

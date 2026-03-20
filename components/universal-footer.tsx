@@ -14,8 +14,8 @@
  *   Profile (5):      footer-profile.png — tap → push profile, swipe-up → org drawer
  */
 
-import React, { useRef, useMemo, useCallback, useEffect } from 'react';
-import { View, Pressable, PanResponder, StyleSheet, Animated } from 'react-native';
+import React, { useRef, useMemo, useCallback, useEffect, useState } from 'react';
+import { View, Text, Pressable, PanResponder, StyleSheet, Animated } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -30,6 +30,7 @@ import { openOrgDrawer } from '@/utils/global-org-drawer';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
 import { resetFooter, subscribeFooterVisibility } from '@/utils/global-footer-hide';
 import { popInnerToHome } from '@/utils/global-inner-nav';
+import { subscribePulseBadge } from '@/utils/global-pulse-badge';
 const FOOTER_HEIGHT = 49;
 
 export function UniversalFooter() {
@@ -40,6 +41,10 @@ export function UniversalFooter() {
   const pathnameRef = useRef(pathname);
   pathnameRef.current = pathname;
   const lastTapRef = useRef(0);
+
+  const [pulseBadge, setPulseBadge] = useState(0);
+
+  useEffect(() => subscribePulseBadge(setPulseBadge), []);
 
   const translateY = useRef(new Animated.Value(0)).current;
   const insetsRef = useRef(insets);
@@ -143,14 +148,27 @@ export function UniversalFooter() {
     router.navigate('/' as any);
   };
   const handleMessagesPress = () => {
-    if (pIncludes('messages')) return;
+    const p = pathnameRef.current;
+    // Dead tap — already on messages list
+    if (p === '/(tabs)/(main)/messages') return;
     preNav();
-    router.navigate('/(tabs)/(main)/messages' as any);
+    // Inside a messages sub-screen — navigate pops back to root within the stack
+    if (p.startsWith('/(tabs)/(main)/messages')) {
+      router.navigate({ pathname: '/(tabs)/(main)/messages' } as any);
+      return;
+    }
+    // From any other context (home, phone, nexus, etc.) — push
+    router.push({ pathname: '/(tabs)/(main)/messages' } as any);
   };
   const handlePhonePress = () => {
     if (pIncludes('phone')) return;
     preNav();
-    router.navigate('/(tabs)/(main)/phone' as any);
+    router.navigate({ pathname: '/(tabs)/(main)/phone' } as any);
+  };
+  const handlePulsePress = () => {
+    if (pIncludes('pulse')) return;
+    preNav();
+    router.push({ pathname: '/(tabs)/(main)/pulse' } as any);
   };
 
   return (
@@ -208,10 +226,17 @@ export function UniversalFooter() {
         {/* 5. Pulse */}
         <Pressable
           style={styles.iconButton}
-          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          onPress={handlePulsePress}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol name="bolt.fill" size={22} color={C.muted} />
+          <View>
+            <IconSymbol name="bolt.fill" size={22} color={pulseBadge > 0 ? C.accent : C.muted} />
+            {pulseBadge > 0 && (
+              <View style={[styles.badge, { backgroundColor: C.red }]}>
+                <Text style={styles.badgeText}>{pulseBadge > 99 ? '99+' : pulseBadge}</Text>
+              </View>
+            )}
+          </View>
         </Pressable>
       </View>
 
@@ -249,5 +274,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+  },
+  badge: {
+    position: 'absolute',
+    top: -4,
+    right: -6,
+    minWidth: 15,
+    height: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 3,
+  },
+  badgeText: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#fff',
   },
 });

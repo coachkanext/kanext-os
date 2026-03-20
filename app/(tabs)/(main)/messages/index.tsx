@@ -11,7 +11,7 @@
  * Footer hides on scroll down, reappears on scroll up.
  */
 
-import React, { useState, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import {
   View, Text, Pressable, ScrollView, StyleSheet, TextInput, Animated,
   useWindowDimensions,
@@ -19,6 +19,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
+import { Swipeable } from 'react-native-gesture-handler';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
@@ -55,6 +56,50 @@ const SEARCH_BAR_HEIGHT = 52;
 const SECTION_MAX = 3;
 const SWIPE_REVEAL_W = 80;
 const PILLS_ROW_H = 46;
+
+// ── Typing dots ───────────────────────────────────────────────────────────────
+
+function TypingDots({ C }: { C: ComponentColors }) {
+  const dot1 = useRef(new Animated.Value(0.3)).current;
+  const dot2 = useRef(new Animated.Value(0.3)).current;
+  const dot3 = useRef(new Animated.Value(0.3)).current;
+
+  useEffect(() => {
+    const makeAnim = (dot: Animated.Value, delay: number) =>
+      Animated.loop(
+        Animated.sequence([
+          Animated.delay(delay),
+          Animated.timing(dot, { toValue: 1, duration: 300, useNativeDriver: true }),
+          Animated.timing(dot, { toValue: 0.3, duration: 300, useNativeDriver: true }),
+          Animated.delay(600),
+        ]),
+      );
+
+    const a1 = makeAnim(dot1, 0);
+    const a2 = makeAnim(dot2, 200);
+    const a3 = makeAnim(dot3, 400);
+    a1.start();
+    a2.start();
+    a3.start();
+    return () => { a1.stop(); a2.stop(); a3.stop(); };
+  }, [dot1, dot2, dot3]);
+
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 2 }}>
+      {[dot1, dot2, dot3].map((dot, i) => (
+        <Animated.View
+          key={i}
+          style={{
+            width: 6, height: 6, borderRadius: 3,
+            backgroundColor: C.secondary,
+            marginHorizontal: 2,
+            opacity: dot,
+          }}
+        />
+      ))}
+    </View>
+  );
+}
 
 // ── Thread row (swipe left → Read/Unread action) ──────────────────────────────
 
@@ -112,7 +157,6 @@ function ThreadRow({
           {thread.preview}
         </Text>
       </View>
-      {!selectMode && <IconSymbol name="chevron.right" size={13} color={C.muted} />}
     </Pressable>
   );
 }
@@ -173,7 +217,6 @@ function RoomRow({
           </Text>
         )}
       </View>
-      {!selectMode && <IconSymbol name="chevron.right" size={13} color={C.muted} />}
     </Pressable>
   );
 }
@@ -273,64 +316,166 @@ function PinnedRoomsRow({
 // ── Email row ─────────────────────────────────────────────────────────────────
 
 function EmailRow({
-  email, C, styles, onPress, onLongPress,
+  email, C, styles, onPress, onLongPress, onArchive,
 }: {
   email: InboxThreadV3;
   C: ComponentColors;
   styles: ReturnType<typeof makeStyles>;
   onPress: () => void;
   onLongPress: (pageY: number) => void;
+  onArchive: () => void;
 }) {
   const [starred, setStarred] = useState(false);
+  const swipeRef = useRef<Swipeable>(null);
+
+  const renderRightActions = () => (
+    <View style={styles.swipeArchiveWrap}>
+      <IconSymbol name="archivebox.fill" size={22} color="#fff" />
+      <Text style={styles.swipeActionLabel}>Archive</Text>
+    </View>
+  );
+
+  const renderLeftActions = () => (
+    <View style={styles.swipeStarWrap}>
+      <IconSymbol name="star.fill" size={22} color="#fff" />
+      <Text style={styles.swipeActionLabel}>Star</Text>
+    </View>
+  );
+
   return (
-    <Pressable
-      style={({ pressed }) => [styles.threadRow, pressed && { backgroundColor: C.surfacePressed }]}
-      onPress={onPress}
-      onLongPress={(e) => onLongPress(e.nativeEvent.pageY)}
-      delayLongPress={350}
-    >
-      <View style={[styles.threadAvatar, { backgroundColor: C.surface }]}>
-        <Text style={[styles.threadInitials, { color: C.label }]}>{email.initials}</Text>
-      </View>
-      <View style={styles.threadInfo}>
-        <View style={styles.threadTopRow}>
-          <Text
-            style={[styles.threadName, email.unread && styles.threadNameBold, { color: C.label }]}
-            numberOfLines={1}
-          >
-            {email.name}
-          </Text>
-          <Text style={[styles.threadTime, { color: C.muted }]}>
-            {formatMessageTime(email.timestamp)}
-          </Text>
-        </View>
-        {/* Subject line */}
-        <Text
-          style={[styles.emailSubject, email.unread && styles.threadNameBold, { color: C.label }]}
-          numberOfLines={1}
-        >
-          {email.role}
-        </Text>
-        <Text style={[styles.threadPreview, { color: C.secondary }]} numberOfLines={1}>
-          {email.preview}
-        </Text>
-      </View>
-      <Pressable
-        onPress={(e) => {
-          e.stopPropagation();
+    <Swipeable
+      ref={swipeRef}
+      renderRightActions={renderRightActions}
+      renderLeftActions={renderLeftActions}
+      onSwipeableOpen={(direction) => {
+        if (direction === 'right') {
+          swipeRef.current?.close();
+          onArchive();
+        } else {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           setStarred(v => !v);
-        }}
-        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        style={styles.emailStarBtn}
+          swipeRef.current?.close();
+        }
+      }}
+      friction={2}
+      overshootRight={false}
+      overshootLeft={false}
+    >
+      <Pressable
+        style={({ pressed }) => [styles.threadRow, pressed && { backgroundColor: C.surfacePressed }]}
+        onPress={onPress}
+        onLongPress={(e) => onLongPress(e.nativeEvent.pageY)}
+        delayLongPress={350}
       >
-        <IconSymbol
-          name={starred ? 'star.fill' : 'star'}
-          size={18}
-          color={starred ? '#F59E0B' : C.muted}
-        />
+        <View style={[styles.threadAvatar, { backgroundColor: C.surface }]}>
+          <Text style={[styles.threadInitials, { color: C.label }]}>{email.initials}</Text>
+        </View>
+        <View style={styles.threadInfo}>
+          <View style={styles.threadTopRow}>
+            <Text
+              style={[styles.threadName, email.unread && styles.threadNameBold, { color: C.label }]}
+              numberOfLines={1}
+            >
+              {email.name}
+            </Text>
+            <Text style={[styles.threadTime, { color: C.muted }]}>
+              {formatMessageTime(email.timestamp)}
+            </Text>
+          </View>
+          {/* Subject line */}
+          <Text
+            style={[styles.emailSubject, email.unread && styles.threadNameBold, { color: C.label }]}
+            numberOfLines={1}
+          >
+            {email.role}
+          </Text>
+          <Text style={[styles.threadPreview, { color: C.secondary }]} numberOfLines={1}>
+            {email.preview}
+          </Text>
+          {email.openedAt && (
+            <Text style={styles.openedReceipt}>
+              Opened · {formatMessageTime(email.openedAt)}
+            </Text>
+          )}
+        </View>
+        <Pressable
+          onPress={(e) => {
+            e.stopPropagation();
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            setStarred(v => !v);
+          }}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          style={styles.emailStarBtn}
+        >
+          <IconSymbol
+            name={starred ? 'star.fill' : 'star'}
+            size={18}
+            color={starred ? '#F59E0B' : C.muted}
+          />
+        </Pressable>
       </Pressable>
-    </Pressable>
+    </Swipeable>
+  );
+}
+
+// ── Snooze / Reminder pickers ─────────────────────────────────────────────────
+
+const SNOOZE_OPTIONS = ['In 1 hour', 'In 3 hours', 'Tonight 8 PM', 'Tomorrow morning', 'Next week'] as const;
+const REMINDER_OPTIONS = ['In 1 day', 'In 3 days', 'In 1 week'] as const;
+
+function SnoozePicker({
+  visible, onClose, C, onSelect,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  C: ComponentColors;
+  onSelect: () => void;
+}) {
+  return (
+    <BottomSheet visible={visible} onClose={onClose} useModal backgroundColor={C.bg} title="Snooze until">
+      <View style={{ paddingBottom: 24 }}>
+        {SNOOZE_OPTIONS.map((opt, i) => (
+          <React.Fragment key={opt}>
+            {i > 0 && <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: C.separator, marginLeft: 20 }} />}
+            <Pressable
+              style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 16, backgroundColor: pressed ? C.surfacePressed : 'transparent' })}
+              onPress={() => { onSelect(); onClose(); }}
+            >
+              <IconSymbol name="clock.fill" size={18} color={C.accent} />
+              <Text style={{ flex: 1, fontSize: 16, color: C.label, marginLeft: 14 }}>{opt}</Text>
+            </Pressable>
+          </React.Fragment>
+        ))}
+      </View>
+    </BottomSheet>
+  );
+}
+
+function ReminderPicker({
+  visible, onClose, C, onSelect,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  C: ComponentColors;
+  onSelect: () => void;
+}) {
+  return (
+    <BottomSheet visible={visible} onClose={onClose} useModal backgroundColor={C.bg} title="Remind me">
+      <View style={{ paddingBottom: 24 }}>
+        {REMINDER_OPTIONS.map((opt, i) => (
+          <React.Fragment key={opt}>
+            {i > 0 && <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: C.separator, marginLeft: 20 }} />}
+            <Pressable
+              style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 16, backgroundColor: pressed ? C.surfacePressed : 'transparent' })}
+              onPress={() => { onSelect(); onClose(); }}
+            >
+              <IconSymbol name="bell.fill" size={18} color={C.accent} />
+              <Text style={{ flex: 1, fontSize: 16, color: C.label, marginLeft: 14 }}>{opt}</Text>
+            </Pressable>
+          </React.Fragment>
+        ))}
+      </View>
+    </BottomSheet>
   );
 }
 
@@ -558,7 +703,9 @@ function SearchResults({
             <Text style={[styles.threadInitials, { color: C.label }]}>{t.initials}</Text>
           </View>
           <View style={styles.threadInfo}>
-            <Text style={[styles.threadName, { color: C.label }]}>{t.name}</Text>
+            <Text style={[styles.threadName, { color: C.label }]} numberOfLines={1}>
+              {t.username ? `${t.name} · ${t.username}` : t.name}
+            </Text>
             <Text style={[styles.threadPreview, { color: C.secondary }]} numberOfLines={1}>{t.role}</Text>
           </View>
         </Pressable>
@@ -675,6 +822,11 @@ export default function MessagesScreen() {
   const [ctxMenu, setCtxMenu] = useState<ContextMenuState>({ visible: false, items: [], anchorY: 0 });
   const [ctxThread, setCtxThread] = useState<InboxThreadV3 | null>(null);
   const [ctxRoom, setCtxRoom] = useState<RoomV3 | null>(null);
+  const [snoozeTarget, setSnoozeTarget] = useState<InboxThreadV3 | null>(null);
+  const [reminderTarget, setReminderTarget] = useState<InboxThreadV3 | null>(null);
+  const [archivedEmailIds, setArchivedEmailIds] = useState<Set<string>>(new Set());
+  const [snoozedEmailIds, setSnoozedEmailIds] = useState<Set<string>>(new Set());
+  const [reminderToast, setReminderToast] = useState(false);
 
   // Local mutable state for pinned/unread
   const [threads, setThreads] = useState<InboxThreadV3[]>(() => getInboxThreads(mode));
@@ -710,14 +862,14 @@ export default function MessagesScreen() {
   }, [rooms, subFilter]);
 
   const filteredEmails = useMemo(() => {
-    let list = [...emails];
+    let list = emails.filter(e => !archivedEmailIds.has(e.id) && !snoozedEmailIds.has(e.id));
     if (subFilter === 'Starred') list = [];
     else if (subFilter === 'Sent') list = [];
     else if (subFilter === 'Drafts') list = [];
     else if (subFilter === 'Archived' || subFilter === 'Recently Deleted') list = [];
     else if (subFilter === 'Unread') list = list.filter(e => e.unread);
     return list;
-  }, [emails, subFilter]);
+  }, [emails, subFilter, archivedEmailIds, snoozedEmailIds]);
 
   const toggleThreadRead = useCallback((id: string) => {
     setThreads(prev => prev.map(t => t.id === id ? { ...t, unread: !t.unread } : t));
@@ -829,6 +981,41 @@ export default function MessagesScreen() {
     });
   }, [toggleRoomPinned, toggleRoomRead]);
 
+  const openEmailCtxMenu = useCallback((email: InboxThreadV3, anchorY: number) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setCtxThread(email);
+    setCtxRoom(null);
+    const items: ContextMenuItem[] = [
+      {
+        icon: email.unread ? 'message.fill' : 'message.badge.filled.fill',
+        label: email.unread ? 'Mark as Read' : 'Mark as Unread',
+        onPress: () => setEmails(prev => prev.map(e => e.id === email.id ? { ...e, unread: !e.unread } : e)),
+      },
+      {
+        icon: 'bell.slash.fill',
+        label: 'Hide Alerts',
+        onPress: () => {},
+      },
+      {
+        icon: 'clock.fill',
+        label: 'Snooze',
+        onPress: () => setSnoozeTarget(email),
+      },
+      {
+        icon: 'bell.fill',
+        label: 'Remind me',
+        onPress: () => setReminderTarget(email),
+      },
+      {
+        icon: 'trash.fill',
+        label: 'Delete',
+        onPress: () => setEmails(prev => prev.filter(e => e.id !== email.id)),
+        destructive: true,
+      },
+    ];
+    setCtxMenu({ visible: true, items, anchorY });
+  }, []);
+
   const closeCtxMenu = useCallback(() => {
     setCtxMenu(s => ({ ...s, visible: false }));
     setCtxThread(null);
@@ -922,6 +1109,9 @@ export default function MessagesScreen() {
             <Text style={[styles.statePillText, { color: C.label }]}>
               {selectChatsMode ? `${selectedThreadIds.size} Selected` : activeTab}
             </Text>
+            {!selectChatsMode && !editPinsMode && (
+              <IconSymbol name="chevron.down" size={11} color={C.label} />
+            )}
           </Pressable>
 
           {/* Right: filter icon, hidden in edit/select modes */}
@@ -1017,7 +1207,7 @@ export default function MessagesScreen() {
                   threads={pinnedThreads}
                   C={C}
                   styles={styles}
-                  onPress={(t) => router.push(`/(tabs)/(main)/messages/${t.id}` as any)}
+                  onPress={(t) => router.push({ pathname: '/(tabs)/(main)/messages/[threadId]', params: { threadId: t.id, type: 'dm', title: t.name, username: t.username ?? '', unreadCount: String(t.unread ? (threads.filter(x => x.unread).length) : 0) } } as any)}
                   editMode={editPinsMode}
                   onUnpin={(t) => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -1036,7 +1226,7 @@ export default function MessagesScreen() {
                     thread={t}
                     C={C}
                     styles={styles}
-                    onPress={() => router.push(`/(tabs)/(main)/messages/${t.id}` as any)}
+                    onPress={() => router.push({ pathname: '/(tabs)/(main)/messages/[threadId]', params: { threadId: t.id, type: 'dm', title: t.name, username: t.username ?? '', unreadCount: String(t.unread ? (threads.filter(x => x.unread).length) : 0) } } as any)}
                     onLongPress={(y) => openThreadCtxMenu(t, y)}
                     selectMode={selectChatsMode}
                     selected={selectedThreadIds.has(t.id)}
@@ -1062,7 +1252,7 @@ export default function MessagesScreen() {
                   rooms={pinnedRooms}
                   C={C}
                   styles={styles}
-                  onPress={(r) => router.push(`/(tabs)/(main)/messages/${r.id}` as any)}
+                  onPress={(r) => router.push({ pathname: '/(tabs)/(main)/messages/[threadId]', params: { threadId: r.id, type: 'channel', title: r.name } } as any)}
                   editMode={editPinsMode}
                   onUnpin={(r) => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -1081,7 +1271,7 @@ export default function MessagesScreen() {
                     room={r}
                     C={C}
                     styles={styles}
-                    onPress={() => router.push(`/(tabs)/(main)/messages/${r.id}` as any)}
+                    onPress={() => router.push({ pathname: '/(tabs)/(main)/messages/[threadId]', params: { threadId: r.id, type: 'channel', title: r.name } } as any)}
                     onLongPress={(y) => openRoomCtxMenu(r, y)}
                     selectMode={selectChatsMode}
                     selected={selectedThreadIds.has(r.id)}
@@ -1113,8 +1303,9 @@ export default function MessagesScreen() {
                     email={e}
                     C={C}
                     styles={styles}
-                    onPress={() => router.push(`/(tabs)/(main)/messages/${e.id}` as any)}
-                    onLongPress={(y) => openThreadCtxMenu(e, y)}
+                    onPress={() => router.push({ pathname: '/(tabs)/(main)/messages/email-thread', params: { threadId: e.id, subject: e.role, from: e.name, initials: e.initials, preview: e.preview, timestamp: e.timestamp.toISOString() } } as any)}
+                    onLongPress={(y) => openEmailCtxMenu(e, y)}
+                    onArchive={() => setArchivedEmailIds(s => new Set(s).add(e.id))}
                   />
                 ))
               )}
@@ -1317,6 +1508,7 @@ export default function MessagesScreen() {
           onSelectOption={(opt) => {
             if (opt === 'Chat') router.push('/(tabs)/(main)/messages/new-message' as any);
             else if (opt === 'Room') router.push('/(tabs)/(main)/messages/new-channel' as any);
+            else if (opt === 'Email') router.push('/(tabs)/(main)/messages/new-email' as any);
           }}
         />
       </BottomSheet>
@@ -1333,6 +1525,42 @@ export default function MessagesScreen() {
           : undefined
         }
       />
+
+      {/* ── Snooze picker ── */}
+      <SnoozePicker
+        visible={snoozeTarget != null}
+        onClose={() => setSnoozeTarget(null)}
+        C={C}
+        onSelect={() => {
+          if (snoozeTarget) setSnoozedEmailIds(s => new Set(s).add(snoozeTarget.id));
+        }}
+      />
+
+      {/* ── Reminder picker ── */}
+      <ReminderPicker
+        visible={reminderTarget != null}
+        onClose={() => setReminderTarget(null)}
+        C={C}
+        onSelect={() => {
+          setReminderToast(true);
+          setTimeout(() => setReminderToast(false), 2000);
+        }}
+      />
+
+      {/* ── Reminder toast ── */}
+      {reminderToast && (
+        <View style={{
+          position: 'absolute',
+          bottom: insets.bottom + FOOTER_HEIGHT + 80,
+          alignSelf: 'center',
+          backgroundColor: C.label,
+          paddingHorizontal: 16,
+          paddingVertical: 10,
+          borderRadius: 20,
+        }}>
+          <Text style={{ color: C.bg, fontSize: 14, fontWeight: '500' }}>Reminder set</Text>
+        </View>
+      )}
 
     </View>
   );
@@ -1407,7 +1635,8 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     fontWeight: '600',
   },
   statePill: {
-    paddingHorizontal: 18,
+    flexDirection: 'row', alignItems: 'center', gap: 5,
+    paddingHorizontal: 16,
     paddingVertical: 7,
     borderRadius: 20,
   },
@@ -1544,6 +1773,29 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   emailSubject: {
     fontSize: 14,
     fontWeight: '400',
+  },
+  openedReceipt: {
+    fontSize: 12,
+    color: '#5A8A6E',
+    marginTop: 1,
+  },
+  swipeStarWrap: {
+    width: 80,
+    backgroundColor: '#F59E0B',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  swipeArchiveWrap: {
+    width: 80,
+    backgroundColor: 'rgba(0,0,0,0.25)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  swipeActionLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#fff',
+    marginTop: 4,
   },
   emailStarBtn: {
     padding: 4,
