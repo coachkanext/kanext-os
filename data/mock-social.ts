@@ -201,6 +201,26 @@ const SPORTS_FEED: FeedPost[] = [
     likeCount: 312, commentCount: 56, isLiked: true, isBookmarked: false,
     timestamp: new Date('2026-03-06T14:00:00'),
   },
+  {
+    id: 'sfp9',
+    author: { id: 'sa1', name: 'Coach Williams', username: '@coachwilliams', initials: 'CW' },
+    media: [
+      { type: 'image', uri: img('photo-1546519638-68e109498ffc'), aspectRatio: 1 },
+      { type: 'image', uri: img('photo-1552674605-db6ffd4facb5'), aspectRatio: 1 },
+      { type: 'image', uri: img('photo-1461896836934-bd45ba8a0dce'), aspectRatio: 1 },
+    ],
+    caption: 'Highlights from the team gallery this week. What a run! 🏆',
+    likeCount: 487, commentCount: 72, isLiked: false, isBookmarked: false,
+    timestamp: new Date('2026-03-05T10:00:00'),
+  },
+  {
+    id: 'sfp10',
+    author: { id: 'sa4', name: 'Tyler Roberts', username: '@troberts', initials: 'TR' },
+    media: [],
+    caption: 'Film session at 6am. Some guys think showing up early is extra — I call it standard. The work you put in when nobody\'s watching is what separates you. 📖',
+    likeCount: 203, commentCount: 38, isLiked: false, isBookmarked: false,
+    timestamp: new Date('2026-03-05T06:30:00'),
+  },
 ];
 
 const SPORTS_REELS: SocialReel[] = [
@@ -916,23 +936,26 @@ export function getSuggestedAccounts(): SuggestedAccount[] {
 
 const STORIES_BY_MODE: Record<Mode, StoryUser[]> = {
   sports: SPORTS_STORIES,
-  church: CHURCH_STORIES,
+  community: CHURCH_STORIES,
   education: EDUCATION_STORIES,
   business: BUSINESS_STORIES,
+  personal: [YOU],
 };
 
 const FEED_BY_MODE: Record<Mode, FeedPost[]> = {
   sports: SPORTS_FEED,
-  church: CHURCH_FEED,
+  community: CHURCH_FEED,
   education: EDUCATION_FEED,
   business: BUSINESS_FEED,
+  personal: [],
 };
 
 const REELS_BY_MODE: Record<Mode, SocialReel[]> = {
   sports: SPORTS_REELS,
-  church: CHURCH_REELS,
+  community: CHURCH_REELS,
   education: EDUCATION_REELS,
   business: BUSINESS_REELS,
+  personal: [],
 };
 
 export function getStories(mode?: Mode): StoryUser[] {

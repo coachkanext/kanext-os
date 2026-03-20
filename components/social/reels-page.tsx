@@ -22,6 +22,8 @@ interface ReelsPageProps {
   bookmarkedReels: Set<string>;
   onLikeToggle: (id: string) => void;
   onBookmarkToggle: (id: string) => void;
+  onCommentPress?: (reel: SocialReel) => void;
+  onSharePress?: (reel: SocialReel) => void;
 }
 
 export function ReelsPage({
@@ -30,6 +32,8 @@ export function ReelsPage({
   bookmarkedReels,
   onLikeToggle,
   onBookmarkToggle,
+  onCommentPress,
+  onSharePress,
 }: ReelsPageProps) {
   const { height: screenHeight } = useWindowDimensions();
   const lastScrollY = useRef(0);
@@ -69,9 +73,11 @@ export function ReelsPage({
         isActive={index === activeIndex}
         onLikeToggle={() => onLikeToggle(item.id)}
         onBookmarkToggle={() => onBookmarkToggle(item.id)}
+        onCommentPress={() => onCommentPress?.(item)}
+        onSharePress={() => onSharePress?.(item)}
       />
     ),
-    [likedReels, bookmarkedReels, onLikeToggle, onBookmarkToggle, activeIndex],
+    [likedReels, bookmarkedReels, onLikeToggle, onBookmarkToggle, activeIndex, onCommentPress, onSharePress],
   );
 
   return (

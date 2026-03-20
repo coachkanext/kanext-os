@@ -54,6 +54,8 @@ interface ReelCardProps {
   isActive: boolean;
   onLikeToggle: () => void;
   onBookmarkToggle: () => void;
+  onCommentPress?: () => void;
+  onSharePress?: () => void;
 }
 
 export function ReelCard({
@@ -63,6 +65,8 @@ export function ReelCard({
   isActive,
   onLikeToggle,
   onBookmarkToggle,
+  onCommentPress,
+  onSharePress,
 }: ReelCardProps) {
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
@@ -174,16 +178,28 @@ export function ReelCard({
           </Pressable>
 
           {/* Comment */}
-          <View style={styles.sideItem}>
+          <Pressable
+            style={styles.sideItem}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onCommentPress?.();
+            }}
+          >
             <IconSymbol name="bubble.right" size={28} color={C.label} />
             <Text style={styles.sideCount}>{formatCount(reel.commentCount)}</Text>
-          </View>
+          </Pressable>
 
           {/* Share */}
-          <View style={styles.sideItem}>
+          <Pressable
+            style={styles.sideItem}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onSharePress?.();
+            }}
+          >
             <IconSymbol name="paperplane" size={26} color={C.label} />
             <Text style={styles.sideCount}>{formatCount(reel.shareCount)}</Text>
-          </View>
+          </Pressable>
 
           {/* Bookmark */}
           <Pressable
