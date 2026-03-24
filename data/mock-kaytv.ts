@@ -330,3 +330,218 @@ export function formatViewCount(count: number): string {
   if (count >= 1000) return `${(count / 1000).toFixed(count >= 10000 ? 0 : 1)}K views`;
   return `${count} views`;
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// KAYTV FEED — YouTube-style flat video list per mode
+// ═══════════════════════════════════════════════════════════════════════════
+
+export interface KayTVFeedItem {
+  id: string;
+  title: string;
+  uploaderName: string;
+  uploaderHandle: string;
+  uploaderInitials: string;
+  brandName: string;       // Organization/brand the video belongs to
+  viewCount: number;
+  timestamp: Date;
+  duration: string;
+  mode: string;
+  category: string;
+  description: string;
+  likeCount: number;
+  commentCount: number;
+  thumbHue: number;
+  thumbEmoji: string;
+}
+
+export interface KayTVVideoComment {
+  id: string;
+  authorName: string;
+  authorInitials: string;
+  text: string;
+  likeCount: number;
+  timestamp: Date;
+}
+
+export interface ExploreRow {
+  id: string;
+  label: string;
+  items: KayTVFeedItem[];
+}
+
+export const MOCK_VIDEO_COMMENTS: KayTVVideoComment[] = [
+  { id: 'kc1', authorName: 'Jordan H',  authorInitials: 'JH', text: 'This is exactly what we needed. Sharing with the whole team 🔥', likeCount: 24, timestamp: new Date(Date.now() - 3_600_000) },
+  { id: 'kc2', authorName: 'Riley T',   authorInitials: 'RT', text: 'The quality keeps getting better every week. Love the production.', likeCount: 11, timestamp: new Date(Date.now() - 10_800_000) },
+  { id: 'kc3', authorName: 'Alex R',    authorInitials: 'AR', text: "At 22:30 — that breakdown was so clear. Finally understand this.", likeCount: 8,  timestamp: new Date(Date.now() - 18_000_000) },
+  { id: 'kc4', authorName: 'Sam D',     authorInitials: 'SD', text: 'Can we get a follow-up video on this topic?', likeCount: 16, timestamp: new Date(Date.now() - 28_800_000) },
+  { id: 'kc5', authorName: 'Maya C',    authorInitials: 'MC', text: 'Watched this twice already. So much value packed in here.', likeCount: 7, timestamp: new Date(Date.now() - 43_200_000) },
+];
+
+export const KAYTV_CATEGORIES: Record<string, string[]> = {
+  sports:    ['All', 'Games', 'Highlights', 'Press', 'Recruiting'],
+  business:  ['All', 'Product', 'Updates', 'Webinars', 'Culture'],
+  education: ['All', 'Campus', 'Commencement', 'Student Showcase', 'Orientation'],
+  community: ['All', 'Sermons', 'Worship', 'Events', 'Testimonies'],
+  personal:  ['All', 'Uploads', 'Saved', 'Watch Later'],
+};
+
+// Brands the user is subscribed to within each mode.
+// Subscribed brand content floats to top of the Home feed.
+export const SUBSCRIBED_BRANDS: Record<string, string[]> = {
+  sports:    ['Varsity FC'],
+  business:  ['NovaTech'],
+  education: ['Lincoln University'],
+  community: ['Grace Church'],
+  personal:  [],
+};
+
+export function formatVideoTimestamp(date: Date): string {
+  const diff = Date.now() - date.getTime();
+  const hr = 3_600_000, day = 86_400_000, wk = 7 * day;
+  if (diff < hr)       return `${Math.max(1, Math.floor(diff / 60_000))} min ago`;
+  if (diff < day)      return `${Math.floor(diff / hr)} hours ago`;
+  if (diff < 7 * day)  return `${Math.floor(diff / day)} days ago`;
+  if (diff < 28 * day) return `${Math.floor(diff / wk)} weeks ago`;
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+const _N = Date.now();
+const _D = 86_400_000;
+
+// ── Sports feed (Varsity FC = subscribed brand + City Athletic = discovery) ──
+
+const FEED_SPORTS: KayTVFeedItem[] = [
+  { id: 'fsv1',  mode: 'sports', category: 'Games',      brandName: 'Varsity FC', title: 'Full Game Replay: Varsity FC vs. Riverside United',        uploaderName: 'Varsity FC',          uploaderHandle: '@varsityfc',       uploaderInitials: 'VF', viewCount: 14800, timestamp: new Date(_N - 2*3_600_000), duration: '1:47:22', likeCount: 892,  commentCount: 134, thumbHue: 0,   thumbEmoji: '⚽', description: 'Full replay of last night\'s match vs. Riverside United. Watch the complete 90 minutes including extra time.' },
+  { id: 'fsv2',  mode: 'sports', category: 'Highlights', brandName: 'Varsity FC', title: 'Top 10 Plays — Week 7 Highlights Reel',                    uploaderName: 'Coach Rodriguez',     uploaderHandle: '@coach_rod',       uploaderInitials: 'CR', viewCount: 8320,  timestamp: new Date(_N - 6*3_600_000), duration: '4:15',    likeCount: 541,  commentCount: 67,  thumbHue: 12,  thumbEmoji: '🔥', description: 'The 10 best plays from Week 7 across all age groups. Some truly elite moments this week.' },
+  { id: 'fsv3',  mode: 'sports', category: 'Highlights', brandName: 'Varsity FC', title: 'Tuesday Training Session — Defensive Shape',               uploaderName: 'Coaching Staff',      uploaderHandle: '@varsityfc_staff', uploaderInitials: 'CS', viewCount: 1230,  timestamp: new Date(_N - 1*_D),        duration: '22:08',   likeCount: 89,   commentCount: 14,  thumbHue: 210, thumbEmoji: '🎬', description: 'Full practice film from Tuesday\'s session. Focus on defensive shape and pressing triggers.' },
+  { id: 'fsv4',  mode: 'sports', category: 'Press',      brandName: 'Varsity FC', title: 'Post-Match Press Conference — Head Coach',                 uploaderName: 'Varsity FC Media',    uploaderHandle: '@varsityfc_media', uploaderInitials: 'VM', viewCount: 3100,  timestamp: new Date(_N - 2*_D),        duration: '11:44',   likeCount: 178,  commentCount: 29,  thumbHue: 30,  thumbEmoji: '🎙️', description: 'Full post-match press conference after the 2-1 win over Riverside. Coach discusses tactics and key moments.' },
+  { id: 'fsv5',  mode: 'sports', category: 'Recruiting', brandName: 'Varsity FC', title: 'Prospect Profile: Marcus J. — Class of 2026',             uploaderName: 'Varsity FC Scouting', uploaderHandle: '@varsityfc_scout', uploaderInitials: 'VS', viewCount: 2500,  timestamp: new Date(_N - 3*_D),        duration: '6:30',    likeCount: 203,  commentCount: 41,  thumbHue: 120, thumbEmoji: '⭐', description: 'Full highlight reel for Marcus J., top Class of 2026 prospect. Breakdown of key attributes and stats.' },
+  { id: 'fsv6',  mode: 'sports', category: 'Highlights', brandName: 'Varsity FC', title: 'Marcus Johnson Hat-Trick — Season Best Performance',       uploaderName: 'Varsity FC',          uploaderHandle: '@varsityfc',       uploaderInitials: 'VF', viewCount: 22400, timestamp: new Date(_N - 4*_D),        duration: '3:52',    likeCount: 1840, commentCount: 287, thumbHue: 355, thumbEmoji: '🏆', description: 'Three goals, one incredible performance. Marcus Johnson\'s hat-trick against City Athletic.' },
+  { id: 'fsv7',  mode: 'sports', category: 'Games',      brandName: 'Varsity FC', title: 'Condensed Match: Varsity FC vs. City Athletic (3-1)',       uploaderName: 'Varsity FC',          uploaderHandle: '@varsityfc',       uploaderInitials: 'VF', viewCount: 6700,  timestamp: new Date(_N - 5*_D),        duration: '28:14',   likeCount: 445,  commentCount: 78,  thumbHue: 40,  thumbEmoji: '⚽', description: '28-minute condensed version of the City Athletic match with all goals and key moments.' },
+  { id: 'fsv8',  mode: 'sports', category: 'Highlights', brandName: 'Varsity FC', title: 'Set Pieces Training — Corner Kick Routines',               uploaderName: 'Coaching Staff',      uploaderHandle: '@varsityfc_staff', uploaderInitials: 'CS', viewCount: 890,   timestamp: new Date(_N - 7*_D),        duration: '18:05',   likeCount: 67,   commentCount: 8,   thumbHue: 220, thumbEmoji: '📋', description: 'Full set piece session from Thursday. Six new corner routines and three free-kick variations.' },
+  // City Athletic — discovery (not subscribed)
+  { id: 'fsv9',  mode: 'sports', category: 'Games',      brandName: 'City Athletic', title: 'Match Report: City Athletic vs. Northern United (2-0)',  uploaderName: 'City Athletic FC',    uploaderHandle: '@cityathletic',    uploaderInitials: 'CA', viewCount: 5200,  timestamp: new Date(_N - 3*_D),        duration: '6:45',    likeCount: 312,  commentCount: 44,  thumbHue: 195, thumbEmoji: '⚽', description: 'City Athletic continue their winning streak with a 2-0 victory over Northern United. Full match report and highlights.' },
+  { id: 'fsv10', mode: 'sports', category: 'Highlights', brandName: 'City Athletic', title: 'City Athletic — Top Goals of the Month',                 uploaderName: 'City Athletic FC',    uploaderHandle: '@cityathletic',    uploaderInitials: 'CA', viewCount: 8900,  timestamp: new Date(_N - 6*_D),        duration: '4:30',    likeCount: 567,  commentCount: 78,  thumbHue: 195, thumbEmoji: '🎯', description: 'The best goals scored by City Athletic FC this month. Some incredible finishes.' },
+  { id: 'fsv11', mode: 'sports', category: 'Press',      brandName: 'City Athletic', title: 'City Athletic Pre-Season Press Day 2026',                uploaderName: 'City Athletic Media', uploaderHandle: '@ca_media',        uploaderInitials: 'CA', viewCount: 2100,  timestamp: new Date(_N - 9*_D),        duration: '9:18',    likeCount: 145,  commentCount: 22,  thumbHue: 195, thumbEmoji: '🎙️', description: 'Full pre-season press day coverage. Manager previews the season ahead.' },
+  // River Valley FC — discovery (not subscribed)
+  { id: 'fsv12', mode: 'sports', category: 'Games',      brandName: 'River Valley FC', title: 'River Valley vs. Eastside FC — Match Highlights (2-1)',  uploaderName: 'RV Media',        uploaderHandle: '@rivervalleyfc', uploaderInitials: 'RV', viewCount: 3800,  timestamp: new Date(_N - 1*_D),  duration: '8:22',  likeCount: 245, commentCount: 38, thumbHue: 170, thumbEmoji: '⚽', description: 'Full match highlights from River Valley FC vs Eastside. Two great goals and a stunning save.' },
+  { id: 'fsv13', mode: 'sports', category: 'Highlights', brandName: 'River Valley FC', title: 'River Valley — Top 5 Goals of February 2026',            uploaderName: 'RV Media',        uploaderHandle: '@rivervalleyfc', uploaderInitials: 'RV', viewCount: 6100,  timestamp: new Date(_N - 5*_D),  duration: '3:45',  likeCount: 412, commentCount: 55, thumbHue: 170, thumbEmoji: '🎯', description: 'Our five best goals from February 2026. What a month for River Valley FC.' },
+  { id: 'fsv14', mode: 'sports', category: 'Recruiting', brandName: 'River Valley FC', title: 'River Valley FC — Recruiting Highlights 2026',           uploaderName: 'RV Scouting',     uploaderHandle: '@rv_scout',      uploaderInitials: 'RS', viewCount: 1500,  timestamp: new Date(_N - 8*_D),  duration: '5:58',  likeCount: 134, commentCount: 21, thumbHue: 170, thumbEmoji: '⭐', description: 'Showcase video for our 2026 recruiting class. Top prospects in action.' },
+];
+
+const FEED_BUSINESS: KayTVFeedItem[] = [
+  { id: 'fbv1', mode: 'business', category: 'Culture',  brandName: 'NovaTech', title: 'Onboarding Series: Day 1 Welcome & Culture',           uploaderName: 'NovaTech HR',         uploaderHandle: '@novatech_hr',       uploaderInitials: 'NH', viewCount: 3420,  timestamp: new Date(_N - 3*3_600_000), duration: '14:22', likeCount: 198, commentCount: 22, thumbHue: 200, thumbEmoji: '🎯', description: 'Welcome to NovaTech. This video covers our mission, values, and what to expect in your first week.' },
+  { id: 'fbv2', mode: 'business', category: 'Product',  brandName: 'NovaTech', title: 'Q4 Product Roadmap Presentation',                      uploaderName: 'Alex Rivera (CPO)',   uploaderHandle: '@alex_cpo',          uploaderInitials: 'AR', viewCount: 5100,  timestamp: new Date(_N - 8*3_600_000), duration: '31:48', likeCount: 312, commentCount: 54, thumbHue: 240, thumbEmoji: '🗺️', description: 'Full Q4 roadmap presentation. Covers three major feature releases, infrastructure updates, and customer commitments.' },
+  { id: 'fbv3', mode: 'business', category: 'Updates',  brandName: 'NovaTech', title: 'Company-Wide Town Hall — March 2026',                  uploaderName: 'NovaTech CEO',        uploaderHandle: '@ceo_novatech',      uploaderInitials: 'CN', viewCount: 9800,  timestamp: new Date(_N - 2*_D),        duration: '54:10', likeCount: 720, commentCount: 143, thumbHue: 160, thumbEmoji: '📢', description: 'March 2026 all-hands town hall. Covers Q1 results, strategic priorities, and Q&A.' },
+  { id: 'fbv4', mode: 'business', category: 'Webinars', brandName: 'NovaTech', title: 'Sales Excellence: Closing Strategies That Work',       uploaderName: 'Sales Enablement',   uploaderHandle: '@novatech_sales',    uploaderInitials: 'SE', viewCount: 2700,  timestamp: new Date(_N - 3*_D),        duration: '47:33', likeCount: 189, commentCount: 31, thumbHue: 25,  thumbEmoji: '💼', description: 'Recorded webinar on modern closing strategies. Covers SPIN selling, objection handling, and pipeline hygiene.' },
+  { id: 'fbv5', mode: 'business', category: 'Product',  brandName: 'NovaTech', title: 'Product Demo: Full Platform Walkthrough',              uploaderName: 'Product Team',        uploaderHandle: '@novatech_product',  uploaderInitials: 'PT', viewCount: 4500,  timestamp: new Date(_N - 4*_D),        duration: '22:15', likeCount: 278, commentCount: 43, thumbHue: 190, thumbEmoji: '🖥️', description: 'Complete platform walkthrough for new employees. Covers all core modules and workflows.' },
+  { id: 'fbv6', mode: 'business', category: 'Culture',  brandName: 'NovaTech', title: 'Leadership Development: Managing Remote Teams',        uploaderName: 'L&D Team',            uploaderHandle: '@novatech_ld',       uploaderInitials: 'LD', viewCount: 1900,  timestamp: new Date(_N - 6*_D),        duration: '35:40', likeCount: 134, commentCount: 19, thumbHue: 280, thumbEmoji: '🏅', description: 'Part 3 of our Leadership Development series. Focus on async communication and distributed team management.' },
+  { id: 'fbv7', mode: 'business', category: 'Product',  brandName: 'NovaTech', title: 'Feature Launch: KaNeXT Analytics Dashboard',          uploaderName: 'Alex Rivera (CPO)',   uploaderHandle: '@alex_cpo',          uploaderInitials: 'AR', viewCount: 7200,  timestamp: new Date(_N - 8*_D),        duration: '8:50',  likeCount: 534, commentCount: 87, thumbHue: 210, thumbEmoji: '📊', description: 'Official launch video for the new analytics dashboard. Live demo, key features, and release notes.' },
+  // TechCorp — discovery (not subscribed)
+  { id: 'ftv1', mode: 'business', category: 'Product',  brandName: 'TechCorp', title: 'TechCorp AI Suite 2026 — Full Product Demo',          uploaderName: 'TechCorp Demo',  uploaderHandle: '@techcorp',      uploaderInitials: 'TC', viewCount: 11200, timestamp: new Date(_N - 1*_D),  duration: '18:30', likeCount: 845, commentCount: 132, thumbHue: 260, thumbEmoji: '🤖', description: 'Full product demo of TechCorp AI Suite 2026. See how teams use AI to automate their workflows.' },
+  { id: 'ftv2', mode: 'business', category: 'Updates',  brandName: 'TechCorp', title: 'TechCorp Year in Review 2025',                        uploaderName: 'TechCorp CEO',   uploaderHandle: '@techcorp_ceo',  uploaderInitials: 'TC', viewCount: 7800,  timestamp: new Date(_N - 4*_D),  duration: '34:12', likeCount: 567, commentCount: 89,  thumbHue: 260, thumbEmoji: '📈', description: '2025 was a big year. Our CEO reflects on key milestones, lessons learned, and what\'s coming in 2026.' },
+  { id: 'ftv3', mode: 'business', category: 'Culture',  brandName: 'TechCorp', title: 'Inside TechCorp: How We Build Products',              uploaderName: 'TechCorp Team',  uploaderHandle: '@techcorp_team', uploaderInitials: 'TC', viewCount: 4300,  timestamp: new Date(_N - 7*_D),  duration: '22:05', likeCount: 298, commentCount: 47,  thumbHue: 260, thumbEmoji: '🏗️', description: 'A behind-the-scenes look at how TechCorp\'s product team operates.' },
+];
+
+const FEED_EDUCATION: KayTVFeedItem[] = [
+  { id: 'fev1', mode: 'education', category: 'Campus',           brandName: 'Lincoln University', title: 'HIST 301: Civil Rights Movement — Week 8 Lecture',     uploaderName: 'Prof. James Carter',  uploaderHandle: '@prof_carter',      uploaderInitials: 'JC', viewCount: 1840,  timestamp: new Date(_N - 4*3_600_000), duration: '58:32',   likeCount: 123,  commentCount: 18,  thumbHue: 40,  thumbEmoji: '📚', description: 'Week 8 recorded lecture. Covers the Birmingham Campaign, Letter from Birmingham Jail, and the March on Washington.' },
+  { id: 'fev2', mode: 'education', category: 'Campus',           brandName: 'Lincoln University', title: 'Campus Tour 2026 — Welcome to Lincoln University',     uploaderName: 'Admissions Office',   uploaderHandle: '@lincoln_admit',    uploaderInitials: 'LA', viewCount: 12300, timestamp: new Date(_N - 1*_D),        duration: '16:45',   likeCount: 890,  commentCount: 112, thumbHue: 140, thumbEmoji: '🏛️', description: 'Official 2026 campus tour. See the new STEM center, the library, residence halls, and athletic facilities.' },
+  { id: 'fev3', mode: 'education', category: 'Commencement',     brandName: 'Lincoln University', title: 'Commencement 2025 — Full Ceremony',                    uploaderName: 'Lincoln University',  uploaderHandle: '@lincoln_univ',     uploaderInitials: 'LU', viewCount: 28500, timestamp: new Date(_N - 2*_D),        duration: '2:14:08', likeCount: 2100, commentCount: 430, thumbHue: 50,  thumbEmoji: '🎓', description: 'Full recording of the Class of 2025 commencement ceremony. Includes keynote, degree conferral, and reception.' },
+  { id: 'fev4', mode: 'education', category: 'Student Showcase', brandName: 'Lincoln University', title: 'Student Spotlight: Research Award Winners 2026',       uploaderName: 'Student Affairs',     uploaderHandle: '@lincoln_students', uploaderInitials: 'SA', viewCount: 3200,  timestamp: new Date(_N - 3*_D),        duration: '12:20',   likeCount: 245,  commentCount: 38,  thumbHue: 100, thumbEmoji: '🔬', description: 'Recognizing our top 10 undergraduate researchers for the 2025-2026 academic year.' },
+  { id: 'fev5', mode: 'education', category: 'Orientation',      brandName: 'Lincoln University', title: 'New Student Orientation: Everything You Need to Know', uploaderName: "Dean's Office",       uploaderHandle: '@lincoln_dean',     uploaderInitials: 'DO', viewCount: 8900,  timestamp: new Date(_N - 5*_D),        duration: '41:55',   likeCount: 567,  commentCount: 74,  thumbHue: 180, thumbEmoji: '🎒', description: 'Complete orientation guide for incoming students. Registration, financial aid, housing, and student life.' },
+  { id: 'fev6', mode: 'education', category: 'Campus',           brandName: 'Lincoln University', title: 'CS 210: Data Structures — Binary Trees Explained',     uploaderName: 'Prof. Maria Santos',  uploaderHandle: '@prof_santos',      uploaderInitials: 'MS', viewCount: 2150,  timestamp: new Date(_N - 7*_D),        duration: '44:18',   likeCount: 178,  commentCount: 25,  thumbHue: 220, thumbEmoji: '🖥️', description: 'Full lecture on binary search trees. Includes insertion, deletion, traversal, and complexity analysis.' },
+  // State College — discovery (not subscribed)
+  { id: 'fsc1', mode: 'education', category: 'Campus',           brandName: 'State College', title: 'State College Fall 2026 Preview — What\'s New',           uploaderName: 'State College',    uploaderHandle: '@statecollege',    uploaderInitials: 'SC', viewCount: 8700,  timestamp: new Date(_N - 2*_D),  duration: '14:18',    likeCount: 634,  commentCount: 88,  thumbHue: 320, thumbEmoji: '🏫', description: 'What\'s new at State College for Fall 2026. New buildings, programs, and student resources.' },
+  { id: 'fsc2', mode: 'education', category: 'Student Showcase', brandName: 'State College', title: 'State College Senior Design Finals 2026',                 uploaderName: 'SC Engineering', uploaderHandle: '@sc_engineering',  uploaderInitials: 'SE', viewCount: 4200,  timestamp: new Date(_N - 5*_D),  duration: '1:12:44',  likeCount: 345,  commentCount: 62,  thumbHue: 320, thumbEmoji: '🛠️', description: 'Full recording of 2026 Senior Design Final presentations. Some truly impressive projects this year.' },
+  { id: 'fsc3', mode: 'education', category: 'Orientation',      brandName: 'State College', title: 'Welcome to State College — Class of 2026 Orientation',    uploaderName: 'SC Admissions',  uploaderHandle: '@sc_admissions',   uploaderInitials: 'SA', viewCount: 15600, timestamp: new Date(_N - 9*_D),  duration: '28:55',    likeCount: 1120, commentCount: 178, thumbHue: 320, thumbEmoji: '🎓', description: 'Official orientation video for the Class of 2026. Campus resources and how to get started.' },
+];
+
+const FEED_COMMUNITY: KayTVFeedItem[] = [
+  { id: 'fcv1', mode: 'community', category: 'Sermons',     brandName: 'Grace Church', title: 'Sunday Service — "Walking in Purpose" | Pastor Davis',  uploaderName: 'Grace Church LA',       uploaderHandle: '@grace_church',    uploaderInitials: 'GC', viewCount: 6700,  timestamp: new Date(_N - 2*_D),  duration: '42:15',   likeCount: 891,  commentCount: 156, thumbHue: 280, thumbEmoji: '✝️', description: 'Full Sunday message by Pastor Davis. Scripture: Jeremiah 29:11. Topic: Walking in the purpose God has for your life.' },
+  { id: 'fcv2', mode: 'community', category: 'Worship',     brandName: 'Grace Church', title: 'Worship Night 2026 — Live Recording',                   uploaderName: 'Grace Church Music',    uploaderHandle: '@grace_music',     uploaderInitials: 'GM', viewCount: 9200,  timestamp: new Date(_N - 4*_D),  duration: '1:08:30', likeCount: 1240, commentCount: 203, thumbHue: 50,  thumbEmoji: '🎵', description: 'Full live recording from our annual Worship Night. Features the full band, choir, and special guests.' },
+  { id: 'fcv3', mode: 'community', category: 'Events',      brandName: 'Grace Church', title: 'Community Outreach Day — March 2026 Recap',             uploaderName: 'Grace Church Outreach', uploaderHandle: '@grace_outreach',  uploaderInitials: 'GO', viewCount: 3400,  timestamp: new Date(_N - 6*_D),  duration: '9:22',    likeCount: 445,  commentCount: 67,  thumbHue: 120, thumbEmoji: '🤝', description: 'Recap of our March community outreach day. Over 200 volunteers served 850 families across four neighborhoods.' },
+  { id: 'fcv4', mode: 'community', category: 'Testimonies', brandName: 'Grace Church', title: '"How Faith Carried Me Through Loss" — Sister Johnson',  uploaderName: 'Grace Church',          uploaderHandle: '@grace_church',    uploaderInitials: 'GC', viewCount: 14800, timestamp: new Date(_N - 8*_D),  duration: '18:44',   likeCount: 2300, commentCount: 412, thumbHue: 340, thumbEmoji: '❤️', description: 'Sister Patricia Johnson shares her powerful testimony of faith through grief and loss.' },
+  { id: 'fcv5', mode: 'community', category: 'Sermons',     brandName: 'Grace Church', title: 'Wednesday Bible Study — Romans 8: Deep Dive',           uploaderName: 'Pastor Davis',          uploaderHandle: '@pastor_davis',    uploaderInitials: 'PD', viewCount: 4100,  timestamp: new Date(_N - 9*_D),  duration: '55:18',   likeCount: 678,  commentCount: 98,  thumbHue: 200, thumbEmoji: '📖', description: 'Recorded Wednesday Bible study on Romans 8. We go verse-by-verse through one of Scripture\'s most powerful chapters.' },
+  { id: 'fcv6', mode: 'community', category: 'Sermons',     brandName: 'Grace Church', title: '"The Power of Forgiveness" — Easter Sunday Message',    uploaderName: 'Grace Church LA',       uploaderHandle: '@grace_church',    uploaderInitials: 'GC', viewCount: 22100, timestamp: new Date(_N - 12*_D), duration: '47:55',   likeCount: 3400, commentCount: 589, thumbHue: 30,  thumbEmoji: '✝️', description: 'Easter Sunday message on forgiveness, redemption, and the resurrection.' },
+  // City Fellowship — discovery (not subscribed)
+  { id: 'fcf1', mode: 'community', category: 'Sermons',     brandName: 'City Fellowship', title: '"Grace for Today" — Sunday Sermon | Pastor Wilson',   uploaderName: 'City Fellowship',        uploaderHandle: '@cityfellowship', uploaderInitials: 'CF', viewCount: 8900,  timestamp: new Date(_N - 3*_D),  duration: '38:22', likeCount: 1230, commentCount: 215, thumbHue: 60, thumbEmoji: '✝️', description: 'Pastor Wilson brings a message of grace and renewal from 2 Corinthians 12:9.' },
+  { id: 'fcf2', mode: 'community', category: 'Worship',     brandName: 'City Fellowship', title: 'City Fellowship Live Worship — March 2026',           uploaderName: 'CF Worship Team',        uploaderHandle: '@cf_worship',     uploaderInitials: 'CW', viewCount: 12400, timestamp: new Date(_N - 6*_D),  duration: '55:44', likeCount: 1890, commentCount: 312, thumbHue: 60, thumbEmoji: '🎶', description: 'Full live worship set from City Fellowship\'s March 2026 Sunday service.' },
+  { id: 'fcf3', mode: 'community', category: 'Events',      brandName: 'City Fellowship', title: 'City Fellowship Community Night — Spring 2026',       uploaderName: 'City Fellowship Events', uploaderHandle: '@cf_events',      uploaderInitials: 'CE', viewCount: 5200,  timestamp: new Date(_N - 10*_D), duration: '12:08', likeCount: 678,  commentCount: 95,  thumbHue: 60, thumbEmoji: '🌟', description: 'Recap of our Spring Community Night. Great fellowship, food, and fun for the whole family.' },
+];
+
+const FEED_PERSONAL: KayTVFeedItem[] = [
+  { id: 'fpv1', mode: 'personal', category: 'Uploads',     brandName: 'Personal', title: 'My First KayTV Upload — Testing 1 2 3',               uploaderName: 'Sammy K.',         uploaderHandle: '@sammyk',      uploaderInitials: 'SK', viewCount: 42,   timestamp: new Date(_N - 1*_D),        duration: '0:47',  likeCount: 8,  commentCount: 3,  thumbHue: 200, thumbEmoji: '📹', description: 'Just testing the upload feature.' },
+  { id: 'fpv2', mode: 'personal', category: 'Saved',       brandName: 'Personal', title: 'Top 10 Plays — Week 7 Highlights Reel',               uploaderName: 'Coach Rodriguez',  uploaderHandle: '@coach_rod',   uploaderInitials: 'CR', viewCount: 8320, timestamp: new Date(_N - 6*3_600_000), duration: '4:15',  likeCount: 541, commentCount: 67, thumbHue: 12,  thumbEmoji: '🔥', description: 'Saved from the sports feed. Great highlights reel.' },
+  { id: 'fpv3', mode: 'personal', category: 'Watch Later', brandName: 'Personal', title: 'Q4 Product Roadmap Presentation',                     uploaderName: 'Alex Rivera (CPO)', uploaderHandle: '@alex_cpo',   uploaderInitials: 'AR', viewCount: 5100, timestamp: new Date(_N - 8*3_600_000), duration: '31:48', likeCount: 312, commentCount: 54, thumbHue: 240, thumbEmoji: '🗺️', description: 'Watch later from the business feed.' },
+];
+
+const ALL_FEED: KayTVFeedItem[] = [
+  ...FEED_SPORTS, ...FEED_BUSINESS, ...FEED_EDUCATION, ...FEED_COMMUNITY, ...FEED_PERSONAL,
+];
+
+// Home feed: brands the user is a member of, sorted most recent first.
+export function getKayTVFeed(mode: string, category = 'All'): KayTVFeedItem[] {
+  const subscribed = SUBSCRIBED_BRANDS[mode] ?? [];
+  const items = ALL_FEED.filter(v =>
+    v.mode === mode && (subscribed.length === 0 || subscribed.includes(v.brandName))
+  );
+  const filtered = category === 'All' ? items : items.filter(v => v.category === category);
+  return filtered.slice().sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+}
+
+export function getAllKayTVFeed(): KayTVFeedItem[] {
+  return ALL_FEED;
+}
+
+export function getKayTVFeedItem(id: string): KayTVFeedItem | undefined {
+  return ALL_FEED.find(v => v.id === id);
+}
+
+export function getRelatedFeedItems(video: KayTVFeedItem, limit = 6): KayTVFeedItem[] {
+  return ALL_FEED.filter(v => v.id !== video.id && v.mode === video.mode).slice(0, limit);
+}
+
+// Explore feed: discovery — brands the user is NOT a member of, within the current mode.
+// Rows: Trending / Popular This Week / New Brands / Rising Creators.
+export function getExploreRows(mode: string, category = 'All'): ExploreRow[] {
+  if (mode === 'personal') return [];
+  const subscribed = SUBSCRIBED_BRANDS[mode] ?? [];
+  const pool = ALL_FEED.filter(v =>
+    v.mode === mode && !subscribed.includes(v.brandName)
+  );
+  const filtered = category === 'All' ? pool : pool.filter(v => v.category === category);
+  if (filtered.length === 0) return [];
+
+  const _7d = 7 * 86_400_000;
+  const now = Date.now();
+
+  const trending       = [...filtered].sort((a, b) => b.viewCount - a.viewCount).slice(0, 8);
+  const popularWeek    = [...filtered].filter(v => now - v.timestamp.getTime() <= _7d)
+                                      .sort((a, b) => b.viewCount - a.viewCount).slice(0, 8);
+  const newBrands      = [...filtered].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, 8);
+  const risingCreators = [...filtered].sort((a, b) => (b.likeCount + b.commentCount) - (a.likeCount + a.commentCount)).slice(0, 8);
+
+  const rows: ExploreRow[] = [];
+  if (trending.length)       rows.push({ id: 'trending',      label: 'Trending',           items: trending });
+  if (popularWeek.length)    rows.push({ id: 'popular-week',  label: 'Popular This Week',  items: popularWeek });
+  if (newBrands.length)      rows.push({ id: 'new-brands',    label: 'New Brands',         items: newBrands });
+  if (risingCreators.length) rows.push({ id: 'rising',        label: 'Rising Creators',    items: risingCreators });
+  return rows;
+}
+
+// Library feeds — all mode-scoped (only shows content from the current mode).
+export function getWatchHistoryFeed(mode: string): KayTVFeedItem[] {
+  const items = ALL_FEED.filter(v => v.mode === mode);
+  return items.slice().sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, 6);
+}
+
+export function getWatchLaterFeed(mode: string): KayTVFeedItem[] {
+  // Simulate watch-later as older items (things saved to come back to)
+  const items = ALL_FEED.filter(v => v.mode === mode);
+  return items.slice().sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()).slice(0, 4);
+}
+
+export function getLikedVideosFeed(mode: string): KayTVFeedItem[] {
+  const items = ALL_FEED.filter(v => v.mode === mode);
+  return items.slice().sort((a, b) => b.likeCount - a.likeCount).slice(0, 5);
+}

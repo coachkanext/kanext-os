@@ -9,7 +9,7 @@
  */
 
 import React, { useRef, useCallback, useMemo } from 'react';
-import { View, Text, StyleSheet, useWindowDimensions, Animated, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Animated, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 
@@ -20,6 +20,13 @@ import { useMode } from '@/context/app-context';
 import { useMultitasking } from '@/context/multitasking-context';
 import type { Mode } from '@/types';
 import type { GridIcon } from './home-types';
+
+/** Route overrides per mode */
+const MODE_ROUTES: Record<string, Partial<Record<string, string>>> = {
+  hub: { personal: '/(tabs)/(main)/hub', community: '/(tabs)/(main)/hub/community', education: '/(tabs)/(main)/hub/education' },
+  p4:  { community: '/(tabs)/(main)/members' },
+  p5:  { community: '/(tabs)/(main)/outreach' },
+};
 
 /** Row 2 labels shift per mode */
 const MODE_LABELS: Record<string, Partial<Record<Mode, string>>> = {
@@ -52,14 +59,12 @@ const ROWS: GridIcon[][] = [
 /** Single grid tile with scale-up glow on press */
 function GridTile({
   item,
-  cellWidth,
   accent,
   onPress,
   onLongPress,
   styles,
 }: {
   item: GridIcon;
-  cellWidth: number;
   accent: string;
   onPress: (item: GridIcon) => void;
   onLongPress?: (item: GridIcon) => void;
@@ -86,7 +91,7 @@ function GridTile({
 
   return (
     <Pressable
-      style={[styles.cell, { width: cellWidth }]}
+      style={styles.cell}
       onPress={() => onPress(item)}
       onLongPress={onLongPress ? () => onLongPress(item) : undefined}
       delayLongPress={400}
@@ -116,20 +121,19 @@ export function IconGrid() {
   const accent = useAccentColor();
   const router = useRouter();
   const mode = useMode();
-  const { width: screenWidth } = useWindowDimensions();
   const { addScreen } = useMultitasking();
-  const cellWidth = screenWidth / 3;
 
   const handlePress = useCallback((item: GridIcon) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const route = MODE_ROUTES[item.id]?.[mode] ?? item.route;
     addScreen({
       id: item.id,
-      route: item.route,
+      route,
       title: item.label,
       icon: item.icon,
     });
-    router.push(item.route as any);
-  }, [addScreen, router]);
+    router.push(route as any);
+  }, [addScreen, router, mode]);
 
   return (
     <View style={styles.container}>
@@ -141,7 +145,6 @@ export function IconGrid() {
               <GridTile
                 key={item.id}
                 item={{ ...item, label }}
-                cellWidth={cellWidth}
                 accent={accent}
                 onPress={handlePress}
                 styles={styles}
@@ -163,8 +166,10 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
+    width: '100%',
   },
   cell: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },

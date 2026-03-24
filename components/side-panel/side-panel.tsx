@@ -29,6 +29,11 @@ import { GivePanel } from './give-panel';
 import { KayTVPanel } from './kaytv-panel';
 import { WalletPanel } from './wallet-panel';
 import { StudiosPanel } from './studios-panel';
+import { HubPanel } from './hub-panel';
+import { CommunityHubPanel } from './community-hub-panel';
+import { EducationHubPanel } from './education-hub-panel';
+import { CommunityMembersPanel } from './community-members-panel';
+import { CommunityOutreachPanel } from './community-outreach-panel';
 import { DefaultPanel } from './default-panel';
 import { useMode } from '@/context/app-context';
 
@@ -58,6 +63,11 @@ export function SidePanel({ visible }: SidePanelProps) {
   const isKayTV = pathname.includes('kaytv');
   const isWallet = pathname.includes('wallet');
   const isStudios = pathname.includes('studios');
+  const isHubCommunity  = pathname.includes('hub/community') || pathname.includes('hub/announcement-compose') || pathname.includes('hub/care-request');
+  const isHubEducation  = pathname.includes('hub/education') || pathname.includes('hub/edu-announcement');
+  const isHub = pathname.includes('hub') && !isHubCommunity && !isHubEducation;
+  const isMembers  = pathname.includes('members');
+  const isOutreach = pathname.includes('outreach');
 
   return (
     <View
@@ -87,7 +97,13 @@ export function SidePanel({ visible }: SidePanelProps) {
                     ? <KayTVPanel />
                     : isWallet
                       ? <WalletPanel />
-                      : isStudios
+                      : isHubCommunity
+                        ? <CommunityHubPanel />
+                        : isHubEducation
+                        ? <EducationHubPanel />
+                        : isHub
+                        ? <HubPanel />
+                        : isStudios
                         ? <StudiosPanel />
                         : isMode
                       ? <ModePanel />
@@ -99,7 +115,11 @@ export function SidePanel({ visible }: SidePanelProps) {
                             ? <RosterPanel />
                             : isRecruits
                               ? (mode === 'business' ? <LeadsPanel /> : mode === 'education' ? <AdmissionsPanel /> : mode === 'church' ? <OutreachPanel /> : <ProspectsPanel />)
-                              : <DefaultPanel pathname={pathname} />
+                              : isOutreach
+                                ? <CommunityOutreachPanel />
+                                : isMembers
+                                  ? <CommunityMembersPanel />
+                                  : <DefaultPanel pathname={pathname} />
         }
       </ScrollView>
     </View>

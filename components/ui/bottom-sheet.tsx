@@ -10,7 +10,7 @@
  */
 
 import React, { useRef, useCallback, useEffect, useMemo, useState } from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, Pressable, type StyleProp, type ViewStyle } from 'react-native';
 import GorhomBottomSheet, {
   BottomSheetModal,
   BottomSheetScrollView,
@@ -41,6 +41,8 @@ export interface BottomSheetProps {
   snapPoints?: string[];
   /** Override sheet background color. Defaults to theme background. */
   backgroundColor?: string;
+  /** Override the ScrollView's contentContainerStyle. */
+  contentContainerStyle?: StyleProp<ViewStyle>;
 }
 
 const SNAP_POINTS = ['50%', '100%'];
@@ -54,6 +56,7 @@ export function BottomSheet({
   useModal = false,
   snapPoints: snapPointsProp,
   backgroundColor,
+  contentContainerStyle: contentContainerStyleProp,
 }: BottomSheetProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
@@ -197,7 +200,7 @@ export function BottomSheet({
       )}
       <BottomSheetScrollView
         style={styles.scrollView}
-        contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 20 }]}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 20 }, contentContainerStyleProp]}
         showsVerticalScrollIndicator={false}
       >
         {children}

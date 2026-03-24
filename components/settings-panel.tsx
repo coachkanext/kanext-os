@@ -37,10 +37,13 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
   const styles = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { signOut } = useAuth();
+  const { signOut, state: authState } = useAuth();
   const themePref = useThemePreference();
   const setThemePref = useSetThemePreference();
   const [showAppearance, setShowAppearance] = useState(false);
+
+  const displayName = authState.session?.displayName ?? 'My Brand';
+  const handle = authState.session?.handle ?? '';
 
   const handleNavigate = useCallback((route: string) => {
     closeSettingsPanel();
@@ -64,6 +67,22 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
         ]}
         showsVerticalScrollIndicator={false}
       >
+        {/* ── PROFILE HEADER ── */}
+        <View style={styles.profileHeader}>
+          <View style={styles.profileAvatar}>
+            <Text style={styles.profileInitials}>
+              {displayName.trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase()}
+            </Text>
+          </View>
+          <View style={styles.profileInfo}>
+            <Text style={styles.profileName} numberOfLines={1}>{displayName}</Text>
+            {handle ? <Text style={styles.profileHandle} numberOfLines={1}>@{handle}</Text> : null}
+          </View>
+        </View>
+
+        {/* ── DIVIDER ── */}
+        <View style={styles.divider} />
+
         {/* ── FEATURE SHORTCUTS ── */}
         <View style={styles.menuSection}>
           <Pressable
@@ -195,6 +214,44 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: 20,
+  },
+
+  // ── Profile header ──
+  profileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 4,
+    paddingBottom: 16,
+  },
+  profileAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: C.separator,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  },
+  profileInitials: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: C.label,
+  },
+  profileInfo: {
+    flex: 1,
+    minWidth: 0,
+  },
+  profileName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: C.label,
+  },
+  profileHandle: {
+    fontSize: 13,
+    fontWeight: '400',
+    color: C.secondary,
+    marginTop: 1,
   },
 
   // ── Divider ──

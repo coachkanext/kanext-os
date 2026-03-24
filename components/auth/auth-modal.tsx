@@ -10,7 +10,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View, Text, StyleSheet, Pressable, TextInput, Image,
-  KeyboardAvoidingView, Platform, Animated,
+  KeyboardAvoidingView, Platform, Animated, ScrollView,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -59,7 +59,15 @@ function checkRouteInput(text: string): OrgMatch | null {
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
-type Step = 'route' | 'auth';
+type Step = 'route' | 'apply' | 'confirm' | 'auth';
+type AppMode = 'business' | 'education' | 'sports' | 'community';
+
+const MODE_OPTIONS: { key: AppMode; label: string; icon: string }[] = [
+  { key: 'business',  label: 'Business',  icon: 'briefcase.fill' },
+  { key: 'education', label: 'Education', icon: 'graduationcap.fill' },
+  { key: 'sports',    label: 'Sports',    icon: 'trophy.fill' },
+  { key: 'community', label: 'Community', icon: 'person.3.fill' },
+];
 
 interface AuthModalProps { visible: boolean; }
 
@@ -79,6 +87,14 @@ export function AuthModal({ visible }: AuthModalProps) {
   const [matchedOrg, setMatchedOrg] = useState<OrgMatch | null>(null);
   const cardAnim = useRef(new Animated.Value(0)).current;
 
+  // Apply form state
+  const [applyName, setApplyName] = useState('');
+  const [applyEmail, setApplyEmail] = useState('');
+  const [applyInstitution, setApplyInstitution] = useState('');
+  const [applyMode, setApplyMode] = useState<AppMode | null>(null);
+
+  const applyValid = applyName.trim().length > 0 && applyEmail.trim().includes('@') && applyInstitution.trim().length > 0 && applyMode !== null;
+
   // Org card spring
   useEffect(() => {
     Animated.spring(cardAnim, {
@@ -94,6 +110,10 @@ export function AuthModal({ visible }: AuthModalProps) {
       setStep('route');
       setRouteInput('');
       setMatchedOrg(null);
+      setApplyName('');
+      setApplyEmail('');
+      setApplyInstitution('');
+      setApplyMode(null);
     }
   }, [visible, fadeAnim]);
 
@@ -128,9 +148,7 @@ export function AuthModal({ visible }: AuthModalProps) {
           style={[styles.screen, { paddingTop: insets.top + 8 }]}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          {/* Input + org card */}
           <View style={styles.routeMiddle}>
-            {/* Logo + name right above input */}
             <View style={styles.routeLogoWrap}>
               <Image source={KX_LOGO} style={styles.routeLogo} resizeMode="contain" />
               <Text style={styles.routeTitle}>KaNeXT</Text>
@@ -148,7 +166,8 @@ export function AuthModal({ visible }: AuthModalProps) {
                 autoCapitalize="none"
                 autoCorrect={false}
                 keyboardType="email-address"
-                autoFocus
+                returnKeyType="go"
+                onSubmitEditing={matchedOrg ? () => setStep('auth') : undefined}
               />
             </View>
 
@@ -168,7 +187,7 @@ export function AuthModal({ visible }: AuthModalProps) {
               {matchedOrg && (
                 <Pressable
                   style={({ pressed }) => [styles.orgCardInner, pressed && { opacity: 0.75 }]}
-                  onPress={handleContinue}
+                  onPress={() => setStep('auth')}
                 >
                   <View style={styles.orgCardAvatar}>
                     <Text style={styles.orgCardInitials}>
@@ -185,21 +204,138 @@ export function AuthModal({ visible }: AuthModalProps) {
             </Animated.View>
           </View>
 
-          {/* Continue */}
-          <View style={[styles.btnWrap, { paddingBottom: insets.bottom + 32 }]}>
+        </KeyboardAvoidingView>
+      )}
+
+      {/* ── APPLY ─────────────────────────────────────────────────────────────── */}
+      {step === 'apply' && (
+        <KeyboardAvoidingView
+          style={[styles.screen, { paddingTop: insets.top }]}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+          <View style={styles.stepNav}>
+            <Pressable style={styles.navBtn} onPress={() => setStep('route')} hitSlop={12}>
+              <IconSymbol name="chevron.left" size={22} color="#1A1A1A" />
+            </Pressable>
+          </View>
+
+          <ScrollView
+            style={styles.applyScroll}
+            contentContainerStyle={[styles.applyContent, { paddingBottom: insets.bottom + 120 }]}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <Text style={styles.applyHeading}>Bring your institution{'\n'}to KaNeXT.</Text>
+
+            {/* Name */}
+            <View style={styles.applyFieldWrap}>
+              <Text style={styles.applyLabel}>NAME</Text>
+              <View style={styles.applyField}>
+                <TextInput
+                  style={styles.applyInput}
+                  value={applyName}
+                  onChangeText={setApplyName}
+                  placeholder="Your full name"
+                  placeholderTextColor="rgba(0,0,0,0.25)"
+                  autoCorrect={false}
+                  returnKeyType="next"
+                />
+              </View>
+            </View>
+
+            {/* Email */}
+            <View style={styles.applyFieldWrap}>
+              <Text style={styles.applyLabel}>EMAIL</Text>
+              <View style={styles.applyField}>
+                <TextInput
+                  style={styles.applyInput}
+                  value={applyEmail}
+                  onChangeText={setApplyEmail}
+                  placeholder="your@email.com"
+                  placeholderTextColor="rgba(0,0,0,0.25)"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  keyboardType="email-address"
+                  returnKeyType="next"
+                />
+              </View>
+            </View>
+
+            {/* Institution */}
+            <View style={styles.applyFieldWrap}>
+              <Text style={styles.applyLabel}>INSTITUTION NAME</Text>
+              <View style={styles.applyField}>
+                <TextInput
+                  style={styles.applyInput}
+                  value={applyInstitution}
+                  onChangeText={setApplyInstitution}
+                  placeholder="Your institution or organization"
+                  placeholderTextColor="rgba(0,0,0,0.25)"
+                  autoCorrect={false}
+                  returnKeyType="done"
+                />
+              </View>
+            </View>
+
+            {/* Mode */}
+            <View style={styles.applyFieldWrap}>
+              <Text style={styles.applyLabel}>MODE</Text>
+              <View style={styles.modeGrid}>
+                {MODE_OPTIONS.map((m) => {
+                  const active = applyMode === m.key;
+                  return (
+                    <Pressable
+                      key={m.key}
+                      style={({ pressed }) => [
+                        styles.modeCard,
+                        active && styles.modeCardActive,
+                        pressed && !active && { opacity: 0.7 },
+                      ]}
+                      onPress={() => setApplyMode(m.key)}
+                    >
+                      <IconSymbol name={m.icon as any} size={20} color={active ? '#1A1A1A' : 'rgba(0,0,0,0.35)'} />
+                      <Text style={[styles.modeLabel, active && styles.modeLabelActive]}>{m.label}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+          </ScrollView>
+
+          <View style={[styles.applyFooter, { paddingBottom: insets.bottom + 24 }]}>
             <Pressable
-              style={({ pressed }) => [
-                styles.btn, styles.btnFilled,
-                routeInput.trim().length === 0 && styles.btnDisabled,
-                pressed && { opacity: 0.8 },
-              ]}
-              disabled={routeInput.trim().length === 0}
-              onPress={handleContinue}
+              style={[styles.btn, styles.btnFilled, !applyValid && styles.btnDisabled]}
+              disabled={!applyValid}
+              onPress={() => setStep('confirm')}
             >
-              <Text style={styles.btnTextLight}>Continue</Text>
+              <Text style={[styles.btnText, { color: '#F8F7F4' }]}>Submit Application</Text>
             </Pressable>
           </View>
         </KeyboardAvoidingView>
+      )}
+
+      {/* ── CONFIRM ───────────────────────────────────────────────────────────── */}
+      {step === 'confirm' && (
+        <View style={[styles.screen, { paddingTop: insets.top }]}>
+          <View style={styles.confirmBody}>
+            <View style={styles.confirmIcon}>
+              <IconSymbol name="checkmark" size={32} color="#FFFFFF" />
+            </View>
+            <Text style={styles.confirmTitle}>Application received.</Text>
+            <Text style={styles.confirmSub}>
+              We'll review your institution and send you an invite code within 48 hours.
+            </Text>
+          </View>
+
+          <View style={[styles.applyFooter, { paddingBottom: insets.bottom + 24 }]}>
+            <Pressable
+              style={[styles.btn, styles.btnFilled]}
+              onPress={() => setStep('route')}
+            >
+              <Text style={[styles.btnText, { color: '#F8F7F4' }]}>Done</Text>
+            </Pressable>
+          </View>
+        </View>
       )}
 
       {/* ── AUTH ──────────────────────────────────────────────────────────────── */}
@@ -222,14 +358,14 @@ export function AuthModal({ visible }: AuthModalProps) {
           <View style={[styles.authBottom, { paddingBottom: insets.bottom + 32 }]}>
             <Pressable
               style={({ pressed }) => [styles.btn, styles.btnFilled, pressed && { opacity: 0.8 }]}
-              onPress={() => handleAuthPress('apple')}
+              onPress={() => handleContinue()}
             >
               <IconSymbol name="apple.logo" size={18} color="#F8F7F4" />
               <Text style={[styles.btnText, { color: '#F8F7F4' }]}>Continue with Apple</Text>
             </Pressable>
             <Pressable
               style={({ pressed }) => [styles.btn, styles.btnOutlined, pressed && { opacity: 0.8 }]}
-              onPress={() => handleAuthPress('google')}
+              onPress={() => handleContinue()}
             >
               <IconSymbol name="globe" size={18} color="#1A1A1A" />
               <Text style={[styles.btnText, { color: '#1A1A1A' }]}>Continue with Google</Text>
@@ -241,7 +377,7 @@ export function AuthModal({ visible }: AuthModalProps) {
             </View>
             <Pressable
               style={({ pressed }) => [styles.btn, styles.btnOutlined, pressed && { opacity: 0.8 }]}
-              onPress={() => handleAuthPress('phone')}
+              onPress={() => handleContinue()}
             >
               <IconSymbol name="phone.fill" size={18} color="#1A1A1A" />
               <Text style={[styles.btnText, { color: '#1A1A1A' }]}>Continue with Phone</Text>
@@ -321,6 +457,66 @@ const styles = StyleSheet.create({
   orgCardName: { fontSize: 15, fontWeight: '600', color: '#1A1A1A' },
   orgCardMeta: { fontSize: 12, color: 'rgba(0,0,0,0.40)', marginTop: 2 },
 
+  // ── Apply ──
+  applyScroll: { flex: 1 },
+  applyContent: { paddingHorizontal: 28, paddingTop: 8 },
+  applyHeading: {
+    fontSize: 26, fontWeight: '600', color: '#1A1A1A',
+    lineHeight: 34, marginBottom: 32,
+  },
+  applyFieldWrap: { marginBottom: 24 },
+  applyLabel: {
+    fontSize: 11, fontWeight: '600', color: 'rgba(0,0,0,0.35)',
+    letterSpacing: 0.8, marginBottom: 8,
+  },
+  applyField: {
+    borderWidth: 1, borderColor: 'rgba(0,0,0,0.10)',
+    borderRadius: 14, height: 52,
+    justifyContent: 'center', paddingHorizontal: 16,
+    backgroundColor: '#FFFFFF',
+  },
+  applyInput: { fontSize: 15, color: '#1A1A1A' },
+  applyFooter: { paddingHorizontal: 28, paddingTop: 12, backgroundColor: '#F8F7F4' },
+
+  // ── Mode grid ──
+  modeGrid: {
+    flexDirection: 'row', flexWrap: 'wrap', gap: 10,
+  },
+  modeCard: {
+    flex: 1, minWidth: '45%',
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5, borderColor: 'rgba(0,0,0,0.08)',
+    borderRadius: 12,
+    paddingVertical: 14, paddingHorizontal: 14,
+  },
+  modeCardActive: {
+    borderColor: '#1A1A1A',
+    backgroundColor: '#F8F7F4',
+  },
+  modeLabel: { fontSize: 14, fontWeight: '500', color: 'rgba(0,0,0,0.45)' },
+  modeLabelActive: { color: '#1A1A1A', fontWeight: '600' },
+
+  // ── Confirm ──
+  confirmBody: {
+    flex: 1, alignItems: 'center', justifyContent: 'center',
+    paddingHorizontal: 36,
+  },
+  confirmIcon: {
+    width: 72, height: 72, borderRadius: 36,
+    backgroundColor: '#5A8A6E',
+    alignItems: 'center', justifyContent: 'center',
+    marginBottom: 24,
+  },
+  confirmTitle: {
+    fontSize: 24, fontWeight: '600', color: '#1A1A1A',
+    textAlign: 'center', marginBottom: 12,
+  },
+  confirmSub: {
+    fontSize: 15, color: 'rgba(0,0,0,0.45)',
+    textAlign: 'center', lineHeight: 22,
+  },
+
   // ── Auth ──
   authTop: {
     flex: 1, alignItems: 'center', justifyContent: 'center',
@@ -342,14 +538,12 @@ const styles = StyleSheet.create({
   },
 
   // ── Buttons ──
-  btnWrap: { paddingHorizontal: 28 },
   btn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     borderRadius: 14, paddingVertical: 15, paddingHorizontal: 20, gap: 10,
   },
   btnFilled: { backgroundColor: '#1A1A1A' },
   btnOutlined: { borderWidth: 1.5, borderColor: 'rgba(0,0,0,0.10)', backgroundColor: 'transparent' },
-  btnDisabled: { opacity: 0.25 },
+  btnDisabled: { backgroundColor: 'rgba(0,0,0,0.10)' },
   btnText: { fontSize: 15, fontWeight: '600' },
-  btnTextLight: { fontSize: 16, fontWeight: '600', color: '#F8F7F4' },
 });

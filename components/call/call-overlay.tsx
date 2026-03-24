@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { ActiveCallBar } from '@/components/ui/active-call-bar';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import {
   subscribeCall, subscribeHeld, subscribeDecline,
@@ -108,36 +109,20 @@ const vtStyles = StyleSheet.create({
 // ── Minimized pill ────────────────────────────────────────────────────────────
 
 function CallPill({ call }: { call: ActiveCall }) {
-  const C = useColors();
   const insets = useSafeAreaInsets();
-  const timer = useCallTimer(call.startedAt, call.state);
-
   return (
-    <Pressable
-      style={[pillStyles.pill, { top: insets.top + 4, backgroundColor: C.surface }]}
-      onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); toggleCallMinimize(); }}
-    >
-      <View style={[pillStyles.dot, { backgroundColor: call.type === 'video' ? '#4A9EFF' : C.green }]} />
-      <Text style={[pillStyles.name, { color: C.label }]} numberOfLines={1}>{call.contactName}</Text>
-      <Text style={[pillStyles.timer, { color: C.green }]}>{timer}</Text>
-      <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); endCall(); }} hitSlop={8}>
-        <View style={[pillStyles.endBtn, { backgroundColor: C.red }]}>
-          <IconSymbol name="phone.down.fill" size={12} color="#FFFFFF" />
-        </View>
-      </Pressable>
-    </Pressable>
+    <View style={[pillStyles.wrap, { top: insets.top + 4 }]}>
+      <ActiveCallBar
+        name={call.contactName}
+        onEnd={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); endCall(); }}
+        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); toggleCallMinimize(); }}
+      />
+    </View>
   );
 }
 
 const pillStyles = StyleSheet.create({
-  pill: {
-    position: 'absolute', left: 16, right: 16, height: 40, borderRadius: 20,
-    flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, gap: 8, zIndex: 20000,
-  },
-  dot: { width: 8, height: 8, borderRadius: 4 },
-  name: { flex: 1, fontSize: 14, fontWeight: '600' },
-  timer: { fontSize: 13, fontWeight: '500', fontVariant: ['tabular-nums'] },
-  endBtn: { width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  wrap: { position: 'absolute', left: 0, right: 0, zIndex: 20000 },
 });
 
 // ── Full call screen ──────────────────────────────────────────────────────────

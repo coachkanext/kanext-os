@@ -19,17 +19,21 @@ import {
   Dimensions,
   StyleSheet,
 } from 'react-native';
+import { BlurView } from 'expo-blur';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { ChatComposer, VoiceNoteBubble } from '@/components/messages/chat-composer';
 import type { VoiceNotePayload } from '@/components/messages/chat-composer';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useMode } from '@/context/app-context';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { initiateCall } from '@/utils/global-call';
+import { openProfileSheet } from '@/utils/global-profile-sheet';
 import {
   getRoomMessages,
   getRooms,
@@ -116,8 +120,40 @@ function processMessages(messages: RoomMessageV3[]): DisplayItem[] {
     });
   }
 
-  return items.reverse();
+  return items;
 }
+
+
+// ─── DM Profile Card ────────────────────────────────────────────────────────
+
+function DmProfileCard({
+  initials, name, username, role,
+  C,
+}: {
+  initials: string; name: string; username: string; role: string;
+  C: ComponentColors;
+}) {
+  return (
+    <BlurView intensity={70} tint="light" style={pcStyles.blurWrap}>
+      <View style={pcStyles.card}>
+        <View style={[pcStyles.avatar, { backgroundColor: C.surface }]}>
+          <Text style={[pcStyles.avatarText, { color: C.label }]}>{initials}</Text>
+        </View>
+        <Text style={[pcStyles.name, { color: C.label }]}>{name}</Text>
+        {!!username && <Text style={[pcStyles.handle, { color: C.muted }]}>{username}</Text>}
+      </View>
+    </BlurView>
+  );
+}
+
+const pcStyles = StyleSheet.create({
+  blurWrap:    { width: '100%' },
+  card:        { alignItems: 'center', paddingTop: 12, paddingBottom: 20, paddingHorizontal: 16 },
+  avatar:      { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
+  avatarText:  { fontSize: 24, fontWeight: '600' },
+  name:        { fontSize: 17, fontWeight: '700', marginBottom: 2 },
+  handle:      { fontSize: 13 },
+});
 
 // ─── Typing Indicator ───────────────────────────────────────────────────────
 
@@ -538,13 +574,13 @@ function ContextMenu({
                 style={[cmStyles.menuItem, idx < actions.length - 1 && cmStyles.menuItemBorder]}
                 onPress={dismiss}
               >
-                <Text style={[cmStyles.menuLabel, (action as any).destructive && cmStyles.menuLabelDest]}>
+                <Text style={cmStyles.menuLabel}>
                   {action.label}
                 </Text>
                 <IconSymbol
                   name={action.icon as any}
                   size={16}
-                  color={(action as any).destructive ? '#FF3B30' : C.label}
+                  color={C.label}
                 />
               </Pressable>
             ))}
@@ -576,7 +612,6 @@ const makeCmStyles = (C: ComponentColors) => StyleSheet.create({
   },
   menuItemBorder: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.divider },
   menuLabel: { fontSize: 16, color: C.label },
-  menuLabelDest: { color: '#FF3B30' },
 });
 
 // ─── Message Bubble ─────────────────────────────────────────────────────────
@@ -588,6 +623,7 @@ function MessageBubble({
   onTap,
   onLongPress,
   onThreadTap,
+  highlighted,
   C,
   styles,
 }: {
@@ -597,14 +633,13 @@ function MessageBubble({
   onTap: (msgId: string, pageY: number) => void;
   onLongPress: (data: ContextMenuData) => void;
   onThreadTap: (msg: RoomMessageV3) => void;
+  highlighted?: boolean;
   C: ComponentColors;
   styles: ReturnType<typeof makeStyles>;
 }) {
   const { message, isGroupEnd, isGroupStart, isLastSent } = item;
   const isSent = message.isMe;
   const bubbleRef = useRef<View>(null);
-
-  const accentBg = '#1A1F2E';
 
   const bubbleRadii = {
     borderTopLeftRadius: BUBBLE_R,
@@ -613,7 +648,7 @@ function MessageBubble({
     borderBottomRightRadius: isSent ? (isGroupEnd ? TAIL_R : BUBBLE_R) : BUBBLE_R,
   };
 
-  const bubbleColor = isSent ? accentBg : C.surface;
+  const bubbleColor = isSent ? C.accent : C.surface;
 
   const handleLongPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -629,7 +664,7 @@ function MessageBubble({
   };
 
   return (
-    <View>
+    <View style={highlighted && { backgroundColor: 'rgba(217,119,87,0.10)', borderRadius: 8 }}>
       <View
         style={[
           styles.bubbleRow,
@@ -640,9 +675,12 @@ function MessageBubble({
       >
         {/* Sender avatar (channel only, on other's messages) */}
         {isChannel && !isSent && isGroupStart ? (
-          <View style={styles.senderAvatar}>
+          <Pressable
+            style={styles.senderAvatar}
+            onPress={() => openProfileSheet({ name: message.sender, initials: message.initials, role: message.role })}
+          >
             <Text style={styles.senderAvatarText}>{message.initials}</Text>
-          </View>
+          </Pressable>
         ) : isChannel && !isSent ? (
           <View style={styles.senderAvatarSpacer} />
         ) : null}
@@ -650,7 +688,9 @@ function MessageBubble({
         <View style={{ maxWidth: '78%' }}>
           {/* Sender name (channel only, first in group) */}
           {isChannel && !isSent && isGroupStart && (
-            <Text style={styles.senderNameLabel}>{message.sender}</Text>
+            <Pressable onPress={() => openProfileSheet({ name: message.sender, initials: message.initials, role: message.role })}>
+              <Text style={styles.senderNameLabel}>{message.sender}</Text>
+            </Pressable>
           )}
 
           <Pressable
@@ -667,7 +707,7 @@ function MessageBubble({
                   accent={accent}
                 />
               ) : (
-                <Text style={styles.bubbleText}>{message.content}</Text>
+                <Text style={[styles.bubbleText, { color: isSent ? '#fff' : C.label }]}>{message.content}</Text>
               )}
             </View>
           </Pressable>
@@ -725,11 +765,16 @@ export default function ThreadScreen() {
   const router = useRouter();
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
-  const { threadId, type, title } = useLocalSearchParams<{
+  const { threadId, type, title, username: routeUsername, unreadCount, initialBody, memberCount: routeMemberCount } = useLocalSearchParams<{
     threadId: string;
     type: 'channel' | 'dm';
     title: string;
+    username: string;
+    unreadCount: string;
+    initialBody: string;
+    memberCount: string;
   }>();
+  const unread = parseInt(unreadCount ?? '0', 10);
 
   const isChannel = type === 'channel';
 
@@ -738,6 +783,26 @@ export default function ThreadScreen() {
   const [reactionTarget, setReactionTarget] = useState<{ messageId: string; pageY: number } | null>(null);
   const [threadPanel, setThreadPanel] = useState<RoomMessageV3 | null>(null);
   const [mentionQuery, setMentionQuery] = useState<string | null>(null);
+  const [pinnedSheetVisible, setPinnedSheetVisible] = useState(false);
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
+
+  // Always keep footer visible in thread
+  useEffect(() => { showFooter(); }, []);
+
+  // Seed initial message from new-message compose screen
+  useEffect(() => {
+    if (!initialBody?.trim()) return;
+    const sent: RoomMessageV3 = {
+      id: `local-${Date.now()}`,
+      sender: 'You',
+      initials: 'ME',
+      role: 'Me',
+      content: initialBody.trim(),
+      timestamp: new Date(),
+      isMe: true,
+    };
+    setLocalMessages([sent]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Track keyboard for composer padding — when keyboard is up, footer hides
   const [keyboardUp, setKeyboardUp] = useState(false);
@@ -755,11 +820,7 @@ export default function ThreadScreen() {
 
   const lastScrollY = useRef(0);
   const handleScroll = useCallback((e: any) => {
-    const y = e.nativeEvent.contentOffset.y;
-    if (y > lastScrollY.current + 10) hideFooter();
-    else if (y < lastScrollY.current - 10) showFooter();
-    lastScrollY.current = y;
-    if (y <= 0) showFooter();
+    lastScrollY.current = e.nativeEvent.contentOffset.y;
   }, []);
 
   // Simulate typing indicator for DMs (show for 3s then hide, repeating)
@@ -772,14 +833,32 @@ export default function ThreadScreen() {
     return () => { clearTimeout(timer); clearTimeout(hideTimer); };
   }, [isChannel]);
 
-  // Get messages
-  const messages = useMemo(() => {
-    if (isChannel) return getRoomMessages(threadId ?? '');
-    return getDMMessages(threadId ?? '');
-  }, [threadId, isChannel]);
+  // Get messages — local copy so sends appear immediately
+  const [localMessages, setLocalMessages] = useState<RoomMessageV3[]>(() =>
+    isChannel ? getRoomMessages(threadId ?? '') : getDMMessages(threadId ?? ''),
+  );
 
-  const displayItems = useMemo(() => processMessages(messages), [messages]);
-  const hasMessages = messages.length > 0;
+  const displayItems = useMemo(() => processMessages(localMessages), [localMessages]);
+  const hasMessages = localMessages.length > 0;
+
+  const flatListRef = useRef<FlatList>(null);
+  const hasScrolledToEnd = useRef(false);
+
+  // Derive pinned messages — first 3 non-sent messages with content
+  const pinnedMessages = useMemo(
+    () => localMessages.filter(m => !m.isMe && m.content).slice(0, 3),
+    [localMessages],
+  );
+
+  const jumpToMessage = (msgId: string) => {
+    const idx = displayItems.findIndex(item => item.type === 'message' && item.message.id === msgId);
+    if (idx === -1) return;
+    flatListRef.current?.scrollToIndex({ index: idx, animated: true, viewPosition: 0.3 });
+    setHighlightedId(msgId);
+    setTimeout(() => setHighlightedId(null), 1800);
+    setPinnedSheetVisible(false);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
 
   // Get channel members for @mentions
   const channelMembers = useMemo(() => {
@@ -793,16 +872,59 @@ export default function ThreadScreen() {
       const rooms = getRooms(mode);
       const room = rooms.find((r) => r.id === threadId);
       return {
-        subtitle: room ? `${room.memberCount} members` : '',
+        subtitle: room ? `${room.memberCount} members` : (routeMemberCount ? `${routeMemberCount} members` : ''),
         initials: room?.initials ?? (title ?? '').substring(0, 2).toUpperCase(),
       };
     }
     const dm = getGlobalDMs().find((t) => t.id === threadId);
     return {
       subtitle: dm?.role ?? '',
-      initials: dm?.initials ?? (title ?? '').charAt(0),
+      initials: dm?.initials ?? (title ?? '').charAt(0).toUpperCase(),
+      dmName: dm?.name ?? title ?? '',
+      dmUsername: routeUsername ?? dm?.username ?? '',
     };
   }, [threadId, isChannel, mode, title]);
+
+  const AUTO_REPLIES = [
+    'Got it 👍', 'On it!', 'Sounds good!', 'Will do.', 'Thanks for the heads up.',
+    'Sure, no problem.', 'Let me check on that.', 'Noted!', 'Perfect, thanks!', '👌',
+    'Absolutely!', "I'll get back to you shortly.", 'Makes sense.', 'Appreciate it!',
+  ];
+
+  const handleSend = useCallback(() => {
+    const text = inputText.trim();
+    if (!text) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+    const sent: RoomMessageV3 = {
+      id: `local-${Date.now()}`,
+      sender: 'You',
+      initials: 'ME',
+      role: 'Me',
+      content: text,
+      timestamp: new Date(),
+      isMe: true,
+    };
+    setLocalMessages(prev => [...prev, sent]);
+    setInputText('');
+    setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 50);
+
+    // Auto-reply after ~1.5s
+    const replyDelay = 1200 + Math.random() * 800;
+    setTimeout(() => {
+      const reply: RoomMessageV3 = {
+        id: `reply-${Date.now()}`,
+        sender: headerInfo.dmName ?? title ?? 'Them',
+        initials: headerInfo.initials ?? '?',
+        role: '',
+        content: AUTO_REPLIES[Math.floor(Math.random() * AUTO_REPLIES.length)],
+        timestamp: new Date(),
+        isMe: false,
+      };
+      setLocalMessages(prev => [...prev, reply]);
+      setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 50);
+    }, replyDelay);
+  }, [inputText, headerInfo, title]);
 
   const handleTap = (messageId: string, pageY: number) => {
     setReactionTarget({ messageId, pageY });
@@ -829,42 +951,84 @@ export default function ThreadScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* ── Header ── */}
       <View style={styles.navBar}>
-        <Pressable
-          style={[styles.backBtn, { backgroundColor: C.surfacePressed }]}
-          onPress={() => router.back()}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        >
-          <IconSymbol name="chevron.left" size={20} color={C.label} />
-        </Pressable>
-
-        <View style={styles.navCenter}>
-          <View
-            style={[
-              styles.navAvatar,
-              isChannel && { borderRadius: 8, backgroundColor: '#0B1220' },
-            ]}
+        <View style={styles.navLeft}>
+          <Pressable
+            style={styles.backBtn}
+            onPress={() => router.back()}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            <Text style={styles.navAvatarText}>{headerInfo.initials}</Text>
-          </View>
-          <View>
-            <Text style={styles.navTitle} numberOfLines={1}>{title}</Text>
-            {headerInfo.subtitle ? (
-              <Text style={styles.navSubtitle} numberOfLines={1}>{headerInfo.subtitle}</Text>
-            ) : null}
-          </View>
+            <View style={[styles.backBubble, { backgroundColor: C.surfacePressed }]}>
+              <IconSymbol name="chevron.left" size={20} color={C.label} />
+              {unread > 0 && (
+                <Text style={[styles.backUnread, { color: C.label }]}>{unread}</Text>
+              )}
+            </View>
+          </Pressable>
+
+          {!isChannel && (
+            <Pressable
+              style={styles.dmNavInfo}
+              onPress={() => openProfileSheet({
+                name: headerInfo.dmName ?? title ?? '',
+                handle: headerInfo.dmUsername,
+                initials: headerInfo.initials ?? '',
+              })}
+            >
+              <Text style={[styles.navTitle, { color: C.label }]} numberOfLines={1}>{headerInfo.dmName}</Text>
+              {!!headerInfo.dmUsername && (
+                <Text style={[styles.dmNavHandle, { color: C.muted }]} numberOfLines={1}>{headerInfo.dmUsername}</Text>
+              )}
+            </Pressable>
+          )}
         </View>
 
+        <Pressable
+          style={styles.navCenter}
+          onPress={() => {
+            if (!isChannel) return;
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            router.push({
+              pathname: '/(tabs)/(main)/messages/room-info',
+              params: {
+                threadId: threadId ?? '',
+                title: title ?? '',
+                memberCount: routeMemberCount ?? headerInfo.subtitle?.replace(' members', '') ?? '0',
+              },
+            });
+          }}
+        >
+          {isChannel && (
+            <>
+              <View style={[styles.navAvatar, { borderRadius: 8 }]}>
+                <Text style={styles.navAvatarText}>{headerInfo.initials}</Text>
+              </View>
+              <View>
+                <Text style={styles.navTitle} numberOfLines={1}>{title}</Text>
+                {headerInfo.subtitle ? (
+                  <Text style={styles.navSubtitle} numberOfLines={1}>{headerInfo.subtitle}</Text>
+                ) : null}
+              </View>
+            </>
+          )}
+        </Pressable>
+
         {isChannel ? (
-          <Pressable style={styles.navRight}>
-            <IconSymbol name="pin.fill" size={16} color={accent} />
+          <Pressable style={styles.navRight} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setPinnedSheetVisible(true); }}>
+            <IconSymbol name="pin.fill" size={16} color={C.accent} />
           </Pressable>
         ) : (
           <>
-            <Pressable style={styles.navRight}>
-              <IconSymbol name="phone.fill" size={18} color={accent} />
+            <Pressable style={styles.navRight} onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              initiateCall({ contactName: headerInfo.dmName ?? title ?? '', contactInitials: headerInfo.initials ?? '', mode, type: 'audio' });
+            }}>
+              <IconSymbol name="phone.fill" size={18} color={C.accent} />
             </Pressable>
-            <Pressable style={styles.navRight}>
-              <IconSymbol name="video.fill" size={18} color={accent} />
+            <Pressable style={styles.navRight} onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              initiateCall({ contactName: headerInfo.dmName ?? title ?? '', contactInitials: headerInfo.initials ?? '', mode, type: 'video' });
+            }}>
+              <IconSymbol name="video.fill" size={18} color={C.accent} />
             </Pressable>
           </>
         )}
@@ -878,11 +1042,17 @@ export default function ThreadScreen() {
       >
         {hasMessages ? (
           <FlatList
+            ref={flatListRef}
             data={displayItems}
             keyExtractor={(item) => item.key}
-            inverted
             onScroll={handleScroll}
             scrollEventThrottle={16}
+            onContentSizeChange={() => {
+              if (!hasScrolledToEnd.current) {
+                flatListRef.current?.scrollToEnd({ animated: false });
+                hasScrolledToEnd.current = true;
+              }
+            }}
             renderItem={({ item }) => {
               if (item.type === 'timestamp') {
                 return (
@@ -899,6 +1069,7 @@ export default function ThreadScreen() {
                   onTap={handleTap}
                   onLongPress={setContextMenu}
                   onThreadTap={setThreadPanel}
+                  highlighted={highlightedId === item.message.id}
                   C={C}
                   styles={styles}
                 />
@@ -906,7 +1077,7 @@ export default function ThreadScreen() {
             }}
             contentContainerStyle={styles.messageList}
             showsVerticalScrollIndicator={false}
-            ListHeaderComponent={
+            ListFooterComponent={
               !isChannel && showTyping ? <TypingIndicator /> : null
             }
           />
@@ -935,7 +1106,7 @@ export default function ThreadScreen() {
           <ChatComposer
             value={inputText}
             onChangeText={setInputText}
-            onSend={() => setInputText('')}
+            onSend={handleSend}
             onVoiceNote={handleVoiceNote}
             accent={accent}
             onMentionTrigger={isChannel ? setMentionQuery : undefined}
@@ -970,6 +1141,54 @@ export default function ThreadScreen() {
           onClose={() => setThreadPanel(null)}
         />
       )}
+
+      {/* ── Pinned messages sheet ── */}
+      <BottomSheet
+        visible={pinnedSheetVisible}
+        onClose={() => setPinnedSheetVisible(false)}
+        useModal
+        backgroundColor={C.bg}
+        title="Pinned Messages"
+      >
+        <View style={{ paddingBottom: 24 }}>
+          {pinnedMessages.length === 0 ? (
+            <View style={{ alignItems: 'center', paddingVertical: 32 }}>
+              <IconSymbol name="pin.slash" size={28} color={C.muted} />
+              <Text style={{ color: C.muted, fontSize: 14, marginTop: 10 }}>No pinned messages</Text>
+            </View>
+          ) : (
+            pinnedMessages.map((msg, i) => (
+              <Pressable
+                key={msg.id}
+                style={({ pressed }) => ({
+                  flexDirection: 'row',
+                  alignItems: 'flex-start',
+                  paddingHorizontal: 20,
+                  paddingVertical: 14,
+                  gap: 12,
+                  backgroundColor: pressed ? C.surfacePressed : 'transparent',
+                  borderTopWidth: i > 0 ? StyleSheet.hairlineWidth : 0,
+                  borderTopColor: C.separator,
+                })}
+                onPress={() => jumpToMessage(msg.id)}
+              >
+                <View style={{ width: 28, height: 28, borderRadius: 8, backgroundColor: accent + '22', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
+                  <IconSymbol name="pin.fill" size={12} color={accent} />
+                </View>
+                <View style={{ flex: 1, gap: 2 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>{msg.sender}</Text>
+                  <Text style={{ fontSize: 14, color: C.secondary, lineHeight: 20 }} numberOfLines={3}>{msg.content}</Text>
+                  <Text style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>
+                    {formatMessageTime(msg.timestamp)}
+                  </Text>
+                </View>
+                <IconSymbol name="chevron.right" size={14} color={C.muted} />
+              </Pressable>
+            ))
+          )}
+        </View>
+      </BottomSheet>
+
     </View>
   );
 }
@@ -982,15 +1201,22 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
 
   // Nav bar
   navBar: { flexDirection: 'row', alignItems: 'center', height: 44, paddingHorizontal: 8 },
-  backBtn: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
+  navLeft: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  backBtn:    {},
+  backBubble: { flexDirection: 'row', alignItems: 'center', height: 36, borderRadius: 18, paddingLeft: 8, paddingRight: 12, gap: 0 },
+  backUnread: { fontSize: 16, fontWeight: '500' },
+  dmNavInfo:  { justifyContent: 'center' },
   navCenter: {
     flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 8,
   },
   navAvatar: {
-    width: 28, height: 28, borderRadius: 14, backgroundColor: '#1C1C1E',
+    width: 28, height: 28, borderRadius: 14, backgroundColor: C.surface,
     alignItems: 'center', justifyContent: 'center',
   },
-  navAvatarText: { fontSize: 11, fontWeight: '600', color: C.secondary },
+  navAvatarText:  { fontSize: 11, fontWeight: '600', color: C.label },
+  dmNavProfile:   { alignItems: 'center' },
+  dmNavName:      { fontSize: 15, fontWeight: '600', color: C.label, marginTop: 2 },
+  dmNavHandle:    { fontSize: 12, color: C.muted },
   navTitle: { fontSize: 16, fontWeight: '600', color: C.label },
   navSubtitle: { fontSize: 11, color: C.secondary },
   navRight: { width: 36, height: 44, alignItems: 'center', justifyContent: 'center' },
@@ -1011,7 +1237,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
 
   // Sender (channel)
   senderAvatar: {
-    width: 28, height: 28, borderRadius: 14, backgroundColor: '#2C2C2E',
+    width: 28, height: 28, borderRadius: 14, backgroundColor: C.surface,
     alignItems: 'center', justifyContent: 'center', marginRight: 6, marginTop: 2,
   },
   senderAvatarText: { fontSize: 10, fontWeight: '600', color: C.label },

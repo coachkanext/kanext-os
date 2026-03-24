@@ -11,7 +11,6 @@ import React from 'react';
 import { View, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -39,7 +38,7 @@ function VideoHeroPlayer({ totalHeight, topInset }: { totalHeight: number; topIn
 
   return (
     <Pressable
-      style={[styles.container, { height: totalHeight, marginTop: -topInset }]}
+      style={[styles.container, { height: totalHeight }]}
       onPress={() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         router.navigate('/(tabs)/(main)/kaytv' as any);
@@ -65,7 +64,7 @@ function VideoHeroPlaceholder({ totalHeight, topInset }: { totalHeight: number; 
   const router = useRouter();
   return (
     <Pressable
-      style={[styles.container, { height: totalHeight, marginTop: -topInset }]}
+      style={[styles.container, { height: totalHeight }]}
       onPress={() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         router.navigate('/(tabs)/(main)/kaytv' as any);
@@ -82,14 +81,12 @@ function VideoHeroPlaceholder({ totalHeight, topInset }: { totalHeight: number; 
 
 export function VideoHero() {
   const { height: screenHeight } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
   const heroHeight = Math.round(screenHeight * 0.40);
-  const totalHeight = heroHeight + insets.top;
 
   if (VideoView && useVideoPlayer) {
-    return <VideoHeroPlayer totalHeight={totalHeight} topInset={insets.top} />;
+    return <VideoHeroPlayer totalHeight={heroHeight} topInset={0} />;
   }
-  return <VideoHeroPlaceholder totalHeight={totalHeight} topInset={insets.top} />;
+  return <VideoHeroPlaceholder totalHeight={heroHeight} topInset={0} />;
 }
 
 const styles = StyleSheet.create({

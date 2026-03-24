@@ -970,6 +970,226 @@ export function getReels(mode?: Mode): SocialReel[] {
   return REELS_BY_MODE[mode ?? 'sports'];
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// SAMMY KALEJAIYE (@sammyk) — owner profile posts
+// ═══════════════════════════════════════════════════════════════════════════
+
+const SAMMY: PostAuthor = {
+  id: 'sammyk',
+  name: 'Sammy Kalejaiye',
+  username: '@sammyk',
+  initials: 'SK',
+};
+
+export const SAMMY_POSTS: FeedPost[] = [
+  {
+    id: 'skp1',
+    author: SAMMY,
+    media: [{ type: 'image', uri: img('photo-1497366216548-37526070297c'), aspectRatio: 1 }],
+    caption: 'The new home screen drops this week. 9 icons, infinite possibilities. 🏗️ #KaNeXT #BuildingSomething',
+    likeCount: 57, commentCount: 8, isLiked: false, isBookmarked: false,
+    timestamp: new Date('2026-03-18T11:00:00'),
+  },
+  {
+    id: 'skp2',
+    author: SAMMY,
+    media: [{ type: 'image', uri: img('photo-1498050108023-c5249f4df085', 600, 400), aspectRatio: 0.667 }],
+    caption: '2am and we\'re still at it. Shipping is a lifestyle. 🌙',
+    likeCount: 203, commentCount: 31, isLiked: true, isBookmarked: false,
+    timestamp: new Date('2026-03-14T02:17:00'),
+  },
+  {
+    id: 'skp3',
+    author: SAMMY,
+    media: [{ type: 'image', uri: img('photo-1531482615713-2afd69097998', 600, 750), aspectRatio: 1.25 }],
+    caption: 'On stage at @TechWeek talking about why community is the next great platform. Loved every second. 🎤',
+    likeCount: 412, commentCount: 47, isLiked: false, isBookmarked: true,
+    timestamp: new Date('2026-03-10T18:30:00'),
+  },
+  {
+    id: 'skp4',
+    author: SAMMY,
+    media: [{ type: 'image', uri: img('photo-1522202176988-66273c2fd55f'), aspectRatio: 1 }],
+    caption: 'This team. 🙏 We\'re building something real. Grateful every single day.',
+    likeCount: 189, commentCount: 22, isLiked: true, isBookmarked: false,
+    timestamp: new Date('2026-03-07T16:45:00'),
+  },
+  {
+    id: 'skp5',
+    author: SAMMY,
+    media: [{ type: 'image', uri: img('photo-1460925895917-afdab827c52f', 600, 400), aspectRatio: 0.667 }],
+    caption: 'Everything starts here. Clean slate, new sprint. Let\'s go. ⚡',
+    likeCount: 95, commentCount: 14, isLiked: false, isBookmarked: false,
+    timestamp: new Date('2026-03-03T09:00:00'),
+  },
+  {
+    id: 'skp6',
+    author: SAMMY,
+    media: [{ type: 'image', uri: img('photo-1517048676732-d65bc937f952', 600, 400), aspectRatio: 0.625 }],
+    caption: 'Pitch meeting #12. Every no gets me closer to the yes that changes everything.',
+    likeCount: 78, commentCount: 11, isLiked: false, isBookmarked: false,
+    timestamp: new Date('2026-02-27T14:00:00'),
+  },
+  {
+    id: 'skp7',
+    author: SAMMY,
+    media: [{ type: 'image', uri: img('photo-1512758017271-d7b84c2113f1', 600, 750), aspectRatio: 1.25 }],
+    caption: 'The app that replaces your folder of 14 different group chats. Coming soon. 📱 #KaNeXT',
+    likeCount: 341, commentCount: 52, isLiked: false, isBookmarked: true,
+    timestamp: new Date('2026-02-22T12:30:00'),
+  },
+  {
+    id: 'skp8',
+    author: SAMMY,
+    media: [{ type: 'image', uri: img('photo-1469474968028-56623f02e42e', 600, 400), aspectRatio: 0.667 }],
+    caption: 'Weekend recharge. Coming back Monday with a clearer head and a bigger vision. 🌄',
+    likeCount: 134, commentCount: 19, isLiked: true, isBookmarked: false,
+    timestamp: new Date('2026-02-16T07:30:00'),
+  },
+  {
+    id: 'skp9',
+    author: SAMMY,
+    media: [{ type: 'image', uri: img('photo-1504868584819-f8e8b4b6d7e3'), aspectRatio: 1 }],
+    caption: 'Everything I need. Nothing I don\'t. ⚡',
+    likeCount: 88, commentCount: 7, isLiked: false, isBookmarked: false,
+    timestamp: new Date('2026-02-10T08:15:00'),
+  },
+  {
+    id: 'skp10',
+    author: SAMMY,
+    media: [{ type: 'image', uri: img('photo-1551434678-e076c223a692'), aspectRatio: 1 }],
+    caption: 'First principles. Every screen you see started with a conversation like this. ✏️',
+    likeCount: 156, commentCount: 24, isLiked: false, isBookmarked: false,
+    timestamp: new Date('2026-02-04T13:00:00'),
+  },
+  {
+    id: 'skp11',
+    author: SAMMY,
+    media: [{ type: 'image', uri: img('photo-1552664730-d307ca884978'), aspectRatio: 1 }],
+    caption: 'All-hands done. Direction is locked. Now we execute. 🔒',
+    likeCount: 112, commentCount: 16, isLiked: true, isBookmarked: false,
+    timestamp: new Date('2026-01-29T17:00:00'),
+  },
+  {
+    id: 'skp12',
+    author: SAMMY,
+    media: [{ type: 'image', uri: img('photo-1524178232363-1fb2b075b655'), aspectRatio: 1 }],
+    caption: 'Milestone unlocked. The details aren\'t important right now — the direction is everything. 🎯',
+    likeCount: 507, commentCount: 83, isLiked: true, isBookmarked: true,
+    timestamp: new Date('2026-01-20T20:00:00'),
+  },
+];
+
+export function getSammyPosts(): FeedPost[] {
+  return SAMMY_POSTS;
+}
+
+// ── Sammy reels ───────────────────────────────────────────────────────────────
+
+export const SAMMY_REELS: SocialReel[] = [
+  {
+    id: 'skr1',
+    creator: { id: 'sammyk', name: 'Sammy Kalejaiye', username: '@sammyk', initials: 'SK' },
+    videoUri: vid(39577),
+    posterUri: img('photo-1497366216548-37526070297c', 400, 700),
+    caption: 'The team is locked in. Something big is shipping this week. 🔨 #KaNeXT #BuildInPublic',
+    likeCount: 1842, commentCount: 94, shareCount: 213,
+    isLiked: false, isBookmarked: false,
+    musicTrack: 'Original Audio · sammyk',
+  },
+  {
+    id: 'skr2',
+    creator: { id: 'sammyk', name: 'Sammy Kalejaiye', username: '@sammyk', initials: 'SK' },
+    videoUri: vid(6894),
+    posterUri: img('photo-1531482615713-2afd69097998', 400, 700),
+    caption: 'On stage talking about why community is the next great platform. This is the vision. 🎤',
+    likeCount: 4210, commentCount: 187, shareCount: 541,
+    isLiked: true, isBookmarked: true,
+    musicTrack: 'TechWeek 2026 · Live',
+  },
+  {
+    id: 'skr3',
+    creator: { id: 'sammyk', name: 'Sammy Kalejaiye', username: '@sammyk', initials: 'SK' },
+    videoUri: vid(3015),
+    posterUri: img('photo-1460925895917-afdab827c52f', 400, 700),
+    caption: '2am shipping mode. This is what building really looks like. No glamour. Just reps. 🌙',
+    likeCount: 2987, commentCount: 145, shareCount: 389,
+    isLiked: false, isBookmarked: false,
+    musicTrack: 'lo-fi beats · chillhop',
+  },
+  {
+    id: 'skr4',
+    creator: { id: 'sammyk', name: 'Sammy Kalejaiye', username: '@sammyk', initials: 'SK' },
+    videoUri: vid(45874),
+    posterUri: img('photo-1522202176988-66273c2fd55f', 400, 700),
+    caption: 'This team makes everything possible. Grateful every single day. 🙏 #KaNeXT',
+    likeCount: 3654, commentCount: 212, shareCount: 478,
+    isLiked: true, isBookmarked: false,
+    musicTrack: 'Original Audio · sammyk',
+  },
+];
+
+export function getSammyReels(): SocialReel[] {
+  return SAMMY_REELS;
+}
+
+// ── Sammy tagged posts (posts from others that mention @sammyk) ───────────────
+
+export const SAMMY_TAGGED_POSTS: FeedPost[] = [
+  {
+    id: 'sktag1',
+    author: { id: 'ba2', name: 'Lisa Park', username: '@lisapark', initials: 'LP' },
+    media: [{ type: 'image', uri: img('photo-1560472355-536de3962603'), aspectRatio: 1 }],
+    caption: 'Great session with @sammyk today. The KaNeXT vision is something else entirely. 🚀',
+    likeCount: 134, commentCount: 18, isLiked: false, isBookmarked: false,
+    timestamp: new Date('2026-03-15T14:00:00'),
+  },
+  {
+    id: 'sktag2',
+    author: { id: 'sa1', name: 'Coach Williams', username: '@coachwilliams', initials: 'CW' },
+    media: [{ type: 'image', uri: img('photo-1546519638-68e109498ffc'), aspectRatio: 1 }],
+    caption: 'Shoutout to @sammyk for building the platform that keeps our program connected. Game changer.',
+    likeCount: 287, commentCount: 34, isLiked: true, isBookmarked: false,
+    timestamp: new Date('2026-03-09T10:30:00'),
+  },
+  {
+    id: 'sktag3',
+    author: { id: 'ea3', name: 'Dean Johnson', username: '@deanj', initials: 'DJ' },
+    media: [{ type: 'image', uri: img('photo-1523050854058-8df90110c9f1'), aspectRatio: 1 }],
+    caption: "Lincoln Univ. is now on @sammyk's KaNeXT platform. Proud to be an early partner. 📚",
+    likeCount: 198, commentCount: 27, isLiked: false, isBookmarked: true,
+    timestamp: new Date('2026-02-28T09:00:00'),
+  },
+  {
+    id: 'sktag4',
+    author: { id: 'ca1', name: 'Pastor David', username: '@pastordavid', initials: 'PD' },
+    media: [{ type: 'image', uri: img('photo-1438032005730-c779502df39b'), aspectRatio: 1 }],
+    caption: "Our community runs on @sammyk's platform now. The connections it creates are real. 🙏",
+    likeCount: 312, commentCount: 41, isLiked: false, isBookmarked: false,
+    timestamp: new Date('2026-02-20T16:00:00'),
+  },
+  {
+    id: 'sktag5',
+    author: { id: 'ba4', name: 'Emma Watson', username: '@emmaw', initials: 'EW' },
+    media: [{ type: 'image', uri: img('photo-1522071820081-009f0129c71c'), aspectRatio: 1 }],
+    caption: 'The future of community management is here. Thanks @sammyk for bringing us on early.',
+    likeCount: 156, commentCount: 22, isLiked: true, isBookmarked: false,
+    timestamp: new Date('2026-02-12T11:00:00'),
+  },
+  {
+    id: 'sktag6',
+    author: { id: 'sa5', name: 'Sarah Chen', username: '@schen', initials: 'SC' },
+    media: [{ type: 'image', uri: img('photo-1608245449230-4ac19066d2d0'), aspectRatio: 0.667 }],
+    caption: 'Analytics dashboard powered by @sammyk and the KaNeXT team. The data tells the story.',
+    likeCount: 89, commentCount: 11, isLiked: false, isBookmarked: false,
+    timestamp: new Date('2026-02-05T13:30:00'),
+  },
+];
+
+export function getSammyTaggedPosts(): FeedPost[] {
+  return SAMMY_TAGGED_POSTS;
+}
+
 export function formatPostTime(date: Date): string {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();

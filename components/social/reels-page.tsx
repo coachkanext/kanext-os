@@ -87,6 +87,7 @@ export function ReelsPage({
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
+        pagingEnabled
         onScroll={handleScroll}
         scrollEventThrottle={16}
         onViewableItemsChanged={onViewableItemsChanged}

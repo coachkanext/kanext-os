@@ -5,11 +5,24 @@
  * Shows audio playback + transcription in chat.
  */
 
-import React, { useState, useRef, useCallback } from 'react';
-import { View, Text, TextInput, Pressable, Animated, StyleSheet } from 'react-native';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
+import { View, Text, TextInput, Pressable, Animated, Modal, StyleSheet } from 'react-native';
+import { BlurView } from 'expo-blur';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
+
+const ATTACH_OPTIONS = [
+  { key: 'camera',   label: 'Camera',   icon: 'camera.fill',            color: '#1C1C1E' },
+  { key: 'photos',   label: 'Photos',   icon: 'photo.fill',             color: '#BF5AF2' },
+  { key: 'files',    label: 'Files',    icon: 'doc.fill',               color: '#007AFF' },
+  { key: 'location', label: 'Location', icon: 'location.fill',          color: '#34C759' },
+  { key: 'contact',  label: 'Contact',  icon: 'person.crop.circle.fill',color: '#636366' },
+  { key: 'kaypay',   label: 'KayPay',   icon: 'dollarsign.circle.fill', color: '#30D158' },
+  { key: 'polls',    label: 'Polls',    icon: 'chart.bar.fill',         color: '#FF9F0A' },
+  { key: 'audio',    label: 'Audio',    icon: 'waveform.circle.fill',   color: '#FF453A' },
+] as const;
 
 export interface VoiceNotePayload {
   uri: string;
@@ -32,10 +45,26 @@ export function ChatComposer({
   onChangeText,
   onSend,
   onVoiceNote,
-  accent = '#0A84FF',
+  accent,
   onMentionTrigger,
 }: ChatComposerProps) {
+  const C = useColors();
+  const styles = useMemo(() => makeStyles(C), [C]);
+  const resolvedAccent = accent ?? C.accent;
+
   const hasText = value.trim().length > 0;
+  const [showAttach, setShowAttach] = useState(false);
+  const attachAnim = useRef(new Animated.Value(400)).current;
+
+  const openAttach = () => {
+    setShowAttach(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Animated.spring(attachAnim, { toValue: 0, tension: 80, friction: 14, useNativeDriver: true }).start();
+  };
+  const closeAttach = () => {
+    Animated.timing(attachAnim, { toValue: 400, duration: 220, useNativeDriver: true }).start(() => setShowAttach(false));
+  };
+
   const [isRecording, setIsRecording] = useState(false);
   const [recordDuration, setRecordDuration] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -51,12 +80,10 @@ export function ChatComposer({
   const handleTextChange = useCallback((text: string) => {
     onChangeText(text);
 
-    // @mention detection
     if (onMentionTrigger) {
       const lastAt = text.lastIndexOf('@');
       if (lastAt !== -1) {
         const afterAt = text.slice(lastAt + 1);
-        // Only trigger if @ is at start or preceded by space, and no space after
         const charBefore = lastAt > 0 ? text[lastAt - 1] : ' ';
         if (charBefore === ' ' || charBefore === '\n' || lastAt === 0) {
           if (!afterAt.includes(' ')) {
@@ -75,7 +102,6 @@ export function ChatComposer({
     setRecordDuration(0);
     recordStartRef.current = Date.now();
 
-    // Pulse animation
     Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, { toValue: 1.3, duration: 600, useNativeDriver: true }),
@@ -83,7 +109,6 @@ export function ChatComposer({
       ]),
     ).start();
 
-    // Duration timer
     timerRef.current = setInterval(() => {
       setRecordDuration(Math.floor((Date.now() - recordStartRef.current) / 1000));
     }, 1000);
@@ -116,7 +141,6 @@ export function ChatComposer({
     return `${min}:${sec.toString().padStart(2, '0')}`;
   };
 
-  // Recording state — show recording bar
   if (isRecording) {
     return (
       <View style={styles.bar}>
@@ -126,7 +150,7 @@ export function ChatComposer({
         </View>
         <Pressable
           onPressOut={stopRecording}
-          style={[styles.micBtn, { backgroundColor: accent }]}
+          style={[styles.micBtn, { backgroundColor: resolvedAccent }]}
         >
           <IconSymbol name="stop.fill" size={18} color="#FFFFFF" />
         </Pressable>
@@ -135,36 +159,56 @@ export function ChatComposer({
   }
 
   return (
+    <>
+    <Modal visible={showAttach} transparent animationType="none" onRequestClose={closeAttach}>
+      <Pressable style={styles.attachBackdrop} onPress={closeAttach} />
+      <Animated.View style={[styles.attachSheet, { transform: [{ translateY: attachAnim }] }]}>
+        <BlurView intensity={80} tint="light" style={styles.attachBlur}>
+          {ATTACH_OPTIONS.map((opt, i) => (
+            <Pressable
+              key={opt.key}
+              style={[styles.attachRow, i < ATTACH_OPTIONS.length - 1 && styles.attachRowBorder]}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); closeAttach(); }}
+            >
+              <View style={[styles.attachIconWrap, { backgroundColor: opt.color }]}>
+                <IconSymbol name={opt.icon as any} size={20} color="#fff" />
+              </View>
+              <Text style={styles.attachLabel}>{opt.label}</Text>
+            </Pressable>
+          ))}
+        </BlurView>
+      </Animated.View>
+    </Modal>
     <View style={styles.bar}>
-      <Pressable style={styles.addBtn}>
-        <IconSymbol name="plus.circle.fill" size={30} color="#8E8E93" />
+      <Pressable style={styles.addBtn} onPress={openAttach}>
+        <IconSymbol name="plus.circle.fill" size={30} color={C.secondary} />
       </Pressable>
 
       <View style={styles.inputWrap}>
         <TextInput
           style={styles.input}
           placeholder="Message"
-          placeholderTextColor="#8E8E93"
+          placeholderTextColor={C.muted}
           value={value}
           onChangeText={handleTextChange}
           multiline
         />
+        {hasText ? (
+          <Pressable onPress={handleSend} style={styles.inputAction}>
+            <IconSymbol name="arrow.up.circle.fill" size={28} color={resolvedAccent} />
+          </Pressable>
+        ) : (
+          <Pressable
+            onLongPress={startRecording}
+            delayLongPress={200}
+            style={styles.inputAction}
+          >
+            <IconSymbol name="mic.fill" size={20} color={C.secondary} />
+          </Pressable>
+        )}
       </View>
-
-      {hasText ? (
-        <Pressable onPress={handleSend} style={styles.sendBtn}>
-          <IconSymbol name="arrow.up.circle.fill" size={30} color={accent} />
-        </Pressable>
-      ) : (
-        <Pressable
-          onLongPress={startRecording}
-          delayLongPress={200}
-          style={styles.sendBtn}
-        >
-          <IconSymbol name="mic.fill" size={24} color="#8E8E93" />
-        </Pressable>
-      )}
     </View>
+    </>
   );
 }
 
@@ -172,12 +216,16 @@ export function ChatComposer({
 export function VoiceNoteBubble({
   duration,
   transcript,
-  accent = '#0A84FF',
+  accent,
 }: {
   duration: number;
   transcript?: string;
   accent?: string;
 }) {
+  const C = useColors();
+  const vnStyles = useMemo(() => makeVnStyles(C), [C]);
+  const resolvedAccent = accent ?? C.accent;
+
   const [isPlaying, setIsPlaying] = useState(false);
   const progressAnim = useRef(new Animated.Value(0)).current;
 
@@ -214,7 +262,7 @@ export function VoiceNoteBubble({
   return (
     <View style={vnStyles.container}>
       <View style={vnStyles.playbackRow}>
-        <Pressable onPress={togglePlay} style={[vnStyles.playBtn, { backgroundColor: accent }]}>
+        <Pressable onPress={togglePlay} style={[vnStyles.playBtn, { backgroundColor: resolvedAccent }]}>
           <IconSymbol
             name={isPlaying ? 'pause.fill' : 'play.fill'}
             size={14}
@@ -224,7 +272,7 @@ export function VoiceNoteBubble({
         <View style={vnStyles.waveformWrap}>
           <View style={vnStyles.waveformTrack}>
             <Animated.View
-              style={[vnStyles.waveformProgress, { width: progressWidth, backgroundColor: accent }]}
+              style={[vnStyles.waveformProgress, { width: progressWidth, backgroundColor: resolvedAccent }]}
             />
           </View>
           <Text style={vnStyles.durationText}>{formatDuration(duration)}</Text>
@@ -237,7 +285,7 @@ export function VoiceNoteBubble({
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
   bar: {
     flexDirection: 'row',
     alignItems: 'flex-end',
@@ -249,24 +297,28 @@ const styles = StyleSheet.create({
   },
   inputWrap: {
     flex: 1,
-    backgroundColor: '#1C1C1E',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    backgroundColor: C.surface,
     borderRadius: 20,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#38383A',
-    paddingHorizontal: 14,
+    borderColor: C.inputBorder,
+    paddingLeft: 14,
+    paddingRight: 6,
     paddingVertical: 6,
     minHeight: 36,
-    justifyContent: 'center',
   },
   input: {
+    flex: 1,
     fontSize: 16,
-    color: '#FFFFFF',
+    color: C.label,
     lineHeight: 20,
     maxHeight: 100,
     paddingVertical: 2,
   },
-  sendBtn: {
+  inputAction: {
     paddingBottom: 2,
+    paddingLeft: 4,
   },
   micBtn: {
     width: 30,
@@ -281,7 +333,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: C.surface,
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 10,
@@ -291,16 +343,59 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#FF3B30',
+    backgroundColor: C.accent,
   },
   recordingText: {
     fontSize: 15,
-    color: '#FF3B30',
+    color: C.accent,
     fontWeight: '500',
+  },
+  // Attach sheet
+  attachBackdrop: {
+    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+  },
+  attachSheet: {
+    position: 'absolute',
+    bottom: 80,
+    left: 12,
+    width: 260,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 12,
+  },
+  attachBlur: {
+    paddingVertical: 4,
+  },
+  attachRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 14,
+  },
+  attachRowBorder: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(0,0,0,0.08)',
+  },
+  attachIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  attachLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: C.label,
   },
 });
 
-const vnStyles = StyleSheet.create({
+const makeVnStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
     gap: 6,
   },
@@ -323,7 +418,7 @@ const vnStyles = StyleSheet.create({
   waveformTrack: {
     height: 4,
     borderRadius: 2,
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: C.separator,
     overflow: 'hidden',
   },
   waveformProgress: {
@@ -332,11 +427,11 @@ const vnStyles = StyleSheet.create({
   },
   durationText: {
     fontSize: 11,
-    color: '#8E8E93',
+    color: C.secondary,
   },
   transcript: {
     fontSize: 13,
-    color: '#A1A1AA',
+    color: C.muted,
     fontStyle: 'italic',
     lineHeight: 17,
   },

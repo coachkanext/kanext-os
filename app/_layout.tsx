@@ -54,6 +54,7 @@ import { UniversalFinder } from '@/components/universal-finder';
 import { SplitNexusOverlay } from '@/components/nexus/split-nexus-overlay';
 import { CallOverlay } from '@/components/call/call-overlay';
 import { IncomingCallOverlay } from '@/components/call/incoming-call-overlay';
+import { ProfileSheet } from '@/components/ui/profile-sheet';
 
 
 
@@ -270,8 +271,8 @@ function AppShell() {
   return (
     <View style={containerDynamic}>
       {/* Only mount the active panel — root bg matches theme so no flash */}
-      {settingsPanelVisible && <SettingsPanel visible={true} />}
-      {sidePanelVisible && <SidePanel visible={true} />}
+      {settingsPanelVisible ? <SettingsPanel visible={true} /> : null}
+      {sidePanelVisible ? <SidePanel visible={true} /> : null}
 
       {/* Content wrapper — shifts right when panels open */}
       <Animated.View
@@ -304,7 +305,7 @@ function AppShell() {
         <UniversalFooter />
 
         {/* Tap/swipe dismiss overlay when either panel is open */}
-        {(settingsPanelVisible || sidePanelVisible) && (
+        {(settingsPanelVisible || sidePanelVisible) ? (
           <View style={StyleSheet.absoluteFill} {...dismissPanResponder.panHandlers}>
             <Pressable
               style={StyleSheet.absoluteFill}
@@ -314,7 +315,7 @@ function AppShell() {
               }}
             />
           </View>
-        )}
+        ) : null}
       </Animated.View>
 
       {/* Universal entity sheets (single sheet per entity type) */}
@@ -373,6 +374,7 @@ function AppShell() {
       <ModeSwitcherOverlay />
       <CallOverlay />
       <IncomingCallOverlay />
+      <ProfileSheet />
       <KXTransition />
       <AuthModal visible={showAuthModal} />
     </View>
@@ -435,12 +437,12 @@ export default function RootLayout() {
               <AppShell />
 
               {/* Boot splash overlay - fades out when app is ready */}
-              {bootSplashVisible && !BOOT_SPLASH_COMPLETED && (
+              {bootSplashVisible && !BOOT_SPLASH_COMPLETED ? (
                 <SplashScreen
                   onReady={handleSplashComplete}
                   isAppReady={isAppReady}
                 />
-              )}
+              ) : null}
             </BottomSheetModalProvider>
           </GestureHandlerRootView>
           <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />

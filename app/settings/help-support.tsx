@@ -129,7 +129,7 @@ export default function HelpSupportScreen() {
 }
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F6F6F6' },
+  container: { flex: 1, backgroundColor: '#F8F7F4' },
   topBar: {
     flexDirection: 'row', alignItems: 'center',
     paddingHorizontal: 8, paddingVertical: 4, minHeight: 44,

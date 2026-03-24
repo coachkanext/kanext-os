@@ -5,6 +5,7 @@
 
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import type { StoryUser } from '@/data/mock-social';
 
@@ -30,27 +31,37 @@ export function StoriesRow({ stories, onStoryPress }: StoriesRowProps) {
           style={styles.storyItem}
           onPress={() => onStoryPress(user)}
         >
-          <View
-            style={[
-              styles.ringContainer,
-              {
-                borderColor: user.isYou
-                  ? 'transparent'
-                  : user.hasUnseenStory
-                    ? C.label
-                    : C.muted,
-              },
-            ]}
-          >
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>{user.initials}</Text>
+          {user.isYou ? (
+            <View style={styles.plainContainer}>
+              <View style={styles.avatar}>
+                <Text style={styles.avatarText}>{user.initials}</Text>
+              </View>
             </View>
-          </View>
-          {user.isYou && (
+          ) : user.hasUnseenStory ? (
+            <LinearGradient
+              colors={['#f09433', '#e6683c', '#dc2743', '#cc2366', '#bc1888']}
+              start={{ x: 0.0, y: 1.0 }}
+              end={{ x: 1.0, y: 0.0 }}
+              style={styles.gradientRing}
+            >
+              <View style={[styles.ringInner, { backgroundColor: C.bg }]}>
+                <View style={styles.avatar}>
+                  <Text style={styles.avatarText}>{user.initials}</Text>
+                </View>
+              </View>
+            </LinearGradient>
+          ) : (
+            <View style={[styles.ringContainer, { borderColor: C.muted }]}>
+              <View style={styles.avatar}>
+                <Text style={styles.avatarText}>{user.initials}</Text>
+              </View>
+            </View>
+          )}
+          {user.isYou ? (
             <View style={styles.youBadge}>
               <Text style={styles.youBadgeText}>+</Text>
             </View>
-          )}
+          ) : null}
           <Text style={styles.name} numberOfLines={1}>
             {user.isYou ? 'You' : user.name}
           </Text>
@@ -72,6 +83,26 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   storyItem: {
     alignItems: 'center',
     width: 68,
+  },
+  gradientRing: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ringInner: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  plainContainer: {
+    width: 64,
+    height: 64,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   ringContainer: {
     width: 64,

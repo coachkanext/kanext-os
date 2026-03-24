@@ -3,7 +3,7 @@
  * Video bleeds under status bar. Grid swipe left → Nexus.
  */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { View, Text, Pressable, PanResponder, StyleSheet } from 'react-native';
 import { useColors } from '@/hooks/use-colors';
 import { VideoHero } from '@/components/home/video-hero';
@@ -14,6 +14,8 @@ import { getOrgById, getProgramById, getProgramsForOrg } from '@/data/mock-membe
 import { enableSlideAnimation } from '@/utils/global-footer-swipe';
 import { pushNexusFromInner } from '@/utils/global-inner-nav';
 import { openOrgDrawer } from '@/utils/global-org-drawer';
+import { resetFooter } from '@/utils/global-footer-hide';
+import { useFocusEffect } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 export default function HomeScreen() {
@@ -33,6 +35,10 @@ export default function HomeScreen() {
     if (!program) return org.org_name;
     return `${org.org_name} - ${program.program_name}`;
   }, [mode, displayName, state.activeContext.org_id, state.activeContext.program_id]);
+
+  useFocusEffect(useCallback(() => {
+    resetFooter();
+  }, []));
 
   const gridPanResponder = useMemo(
     () =>

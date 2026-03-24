@@ -7,17 +7,23 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useAuth } from '@/context/auth-context';
 
 export default function ProfileEditScreen() {
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { state: authState } = useAuth();
 
-  const [fullName, setFullName] = useState('Coach Williams');
-  const [displayName, setDisplayName] = useState('Coach Williams');
-  const [bio, setBio] = useState('');
-  const isDirty = fullName !== 'Coach Williams' || displayName !== 'Coach Williams' || bio !== '';
+  const sessionName = authState.session?.displayName ?? '';
+  const sessionHandle = authState.session?.handle ?? '';
+  const initials = sessionName.trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+
+  const [fullName, setFullName] = useState(sessionName);
+  const [handle, setHandle] = useState(sessionHandle);
+  const [nameSelection, setNameSelection] = useState<{ start: number; end: number } | undefined>(undefined);
+  const isDirty = fullName !== sessionName || handle !== sessionHandle;
 
   return (
     <KeyboardAvoidingView
@@ -28,73 +34,89 @@ export default function ProfileEditScreen() {
         <Pressable style={styles.backBtn} onPress={() => router.back()}>
           <IconSymbol name="chevron.left" size={20} color={C.label} />
         </Pressable>
-        <Text style={styles.title}>Edit Profile</Text>
+        <Text style={styles.title}>Profile</Text>
         <View style={styles.backBtn} />
       </View>
 
       <ScrollView
-        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 100 }]}
+        style={styles.scroll}
+        contentContainerStyle={[styles.content, { paddingBottom: 24 }]}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
         {/* Avatar */}
         <Pressable style={styles.avatarWrap}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarInitials}>CW</Text>
+          <View style={styles.avatarContainer}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarInitials}>{initials}</Text>
+            </View>
+            <View style={styles.cameraBadge}>
+              <IconSymbol name="camera.fill" size={14} color="#FFFFFF" />
+            </View>
           </View>
-          <Text style={styles.changePhoto}>Change Photo</Text>
+          <Text style={styles.changePhoto}>Edit photo</Text>
         </Pressable>
 
-        {/* Fields */}
-        <View style={[styles.group, { backgroundColor: C.surface }]}>
-          <View style={styles.field}>
-            <Text style={[styles.fieldLabel, { color: C.muted }]}>Full Name</Text>
+        {/* Display Name */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionLabel, { color: C.muted }]}>NAME</Text>
+          <View style={[styles.fieldRow, { borderBottomColor: C.separator }]}>
             <TextInput
               style={[styles.fieldInput, { color: C.label }]}
               value={fullName}
               onChangeText={setFullName}
+              onFocus={() => setNameSelection({ start: fullName.length, end: fullName.length })}
+              onSelectionChange={() => setNameSelection(undefined)}
+              selection={nameSelection}
               placeholderTextColor={C.muted}
             />
-          </View>
-          <View style={[styles.divider, { backgroundColor: C.separator }]} />
-          <View style={styles.field}>
-            <Text style={[styles.fieldLabel, { color: C.muted }]}>Display Name</Text>
-            <TextInput
-              style={[styles.fieldInput, { color: C.label }]}
-              value={displayName}
-              onChangeText={setDisplayName}
-              placeholderTextColor={C.muted}
-            />
-          </View>
-          <View style={[styles.divider, { backgroundColor: C.separator }]} />
-          <View style={styles.field}>
-            <View style={styles.fieldLabelRow}>
-              <Text style={[styles.fieldLabel, { color: C.muted }]}>Bio</Text>
-              <Text style={[styles.charCount, { color: C.muted }]}>{bio.length}/160</Text>
-            </View>
-            <TextInput
-              style={[styles.fieldInput, styles.bioInput, { color: C.label }]}
-              value={bio}
-              onChangeText={(t) => setBio(t.slice(0, 160))}
-              multiline
-              numberOfLines={3}
-              placeholder="Tell people about yourself…"
-              placeholderTextColor={C.muted}
-            />
-          </View>
-          <View style={[styles.divider, { backgroundColor: C.separator }]} />
-          <View style={styles.field}>
-            <Text style={[styles.fieldLabel, { color: C.muted }]}>Username</Text>
-            <Text style={[styles.fieldInput, { color: C.muted }]}>@coachwilliams</Text>
-            <Text style={[styles.helperText, { color: C.muted }]}>
-              You can change your username once per year. Old name is locked for 90 days.
-            </Text>
           </View>
         </View>
+
+        {/* Username */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionLabel, { color: C.muted }]}>USERNAME</Text>
+          <View style={[styles.fieldRow, { borderBottomColor: C.separator }]}>
+            <Text style={[styles.fieldAtSign, { color: C.label }]}>@</Text>
+            <TextInput
+              style={[styles.fieldInput, { color: C.label }]}
+              value={handle}
+              onChangeText={(t) => setHandle(t.replace(/[^a-z0-9_]/g, '').toLowerCase())}
+              onBlur={() => setHandle(sessionHandle)}
+              autoCapitalize="none"
+              autoCorrect={false}
+              placeholderTextColor={C.muted}
+              placeholder="username"
+            />
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={[styles.helperText, { color: C.muted }]}>
+            Username can be changed anytime. Old handle locked 30 days before release.
+          </Text>
+        </View>
+
+        {/* Create Organization */}
+        <View style={[styles.dividerLine, { backgroundColor: C.separator }]} />
+        <Pressable
+          style={({ pressed }) => [styles.createOrgRow, pressed && { opacity: 0.7 }]}
+          onPress={() => router.push('/settings/create-org' as any)}
+        >
+          <View style={styles.createOrgIcon}>
+            <IconSymbol name="plus" size={20} color={C.secondary} />
+          </View>
+          <View style={styles.createOrgInfo}>
+            <Text style={[styles.createOrgTitle, { color: C.label }]}>Create Organization</Text>
+            <Text style={[styles.createOrgSub, { color: C.muted }]}>Start a new org in any mode</Text>
+          </View>
+          <IconSymbol name="chevron.right" size={16} color={C.muted} />
+        </Pressable>
+        <View style={[styles.dividerLine, { backgroundColor: C.separator }]} />
       </ScrollView>
 
-      {/* Save button */}
-      <View style={[styles.saveWrap, { paddingBottom: insets.bottom + 16 }]}>
+      {/* Save button — sits above the universal footer */}
+      <View style={[styles.saveWrap, { paddingBottom: insets.bottom + 49 + 12 }]}>
         <Pressable
           style={[styles.saveBtn, !isDirty && styles.saveBtnDisabled]}
           onPress={isDirty ? () => router.back() : undefined}
@@ -108,7 +130,8 @@ export default function ProfileEditScreen() {
 }
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F6F6F6' },
+  container: { flex: 1, backgroundColor: '#F8F7F4' },
+  scroll: { flex: 1 },
   topBar: {
     flexDirection: 'row', alignItems: 'center',
     paddingHorizontal: 8, paddingVertical: 4, minHeight: 44,
@@ -116,27 +139,56 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   backBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center', borderRadius: 18 },
   title: { flex: 1, textAlign: 'center', fontSize: 17, fontWeight: '600', color: C.label },
   content: { paddingTop: 24 },
-  avatarWrap: { alignItems: 'center', marginBottom: 28 },
+
+  // Avatar
+  avatarWrap: { alignItems: 'center', marginBottom: 32 },
+  avatarContainer: { position: 'relative' },
   avatar: {
-    width: 100, height: 100, borderRadius: 50,
-    backgroundColor: 'rgba(0,0,0,0.08)', alignItems: 'center', justifyContent: 'center',
+    width: 110, height: 110, borderRadius: 55,
+    backgroundColor: 'rgba(0,0,0,0.07)', alignItems: 'center', justifyContent: 'center',
   },
-  avatarInitials: { fontSize: 36, fontWeight: '700', color: C.secondary },
-  changePhoto: { marginTop: 10, fontSize: 15, fontWeight: '500', color: '#007AFF' },
-  group: { marginHorizontal: 16, borderRadius: 14, overflow: 'hidden' },
-  field: { paddingHorizontal: 16, paddingVertical: 14 },
-  fieldLabelRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  fieldLabel: { fontSize: 12, fontWeight: '500', marginBottom: 6 },
-  charCount: { fontSize: 12 },
-  fieldInput: { fontSize: 15, fontWeight: '400' },
-  bioInput: { minHeight: 60 },
-  helperText: { fontSize: 12, marginTop: 6, lineHeight: 16 },
-  divider: { height: StyleSheet.hairlineWidth, marginLeft: 16 },
-  saveWrap: { paddingHorizontal: 16, paddingTop: 12, backgroundColor: '#F6F6F6' },
-  saveBtn: {
-    backgroundColor: '#111111', borderRadius: 14,
-    paddingVertical: 16, alignItems: 'center',
+  avatarInitials: { fontSize: 38, fontWeight: '600', color: C.secondary },
+  cameraBadge: {
+    position: 'absolute', bottom: 2, right: 2,
+    width: 32, height: 32, borderRadius: 16,
+    backgroundColor: '#1A1A1A',
+    alignItems: 'center', justifyContent: 'center',
+    borderWidth: 2, borderColor: '#F8F7F4',
   },
+  changePhoto: { marginTop: 10, fontSize: 15, fontWeight: '500', color: '#4A6D8C' },
+
+  // Sections
+  section: { paddingHorizontal: 20, marginBottom: 24 },
+  sectionLabel: { fontSize: 12, fontWeight: '600', letterSpacing: 0.5, marginBottom: 8 },
+  fieldRow: {
+    flexDirection: 'row', alignItems: 'center',
+    borderBottomWidth: StyleSheet.hairlineWidth, paddingBottom: 10,
+  },
+  fieldAtSign: { fontSize: 17, fontWeight: '400', marginRight: 1 },
+  fieldInput: { flex: 1, fontSize: 17, fontWeight: '400' },
+  helperText: { fontSize: 12, marginTop: 8, lineHeight: 17 },
+
+  // Divider
+  dividerLine: { height: StyleSheet.hairlineWidth, marginBottom: 0 },
+
+  // Create Org
+  createOrgRow: {
+    flexDirection: 'row', alignItems: 'center',
+    paddingHorizontal: 20, paddingVertical: 16, gap: 14,
+  },
+  createOrgIcon: {
+    width: 44, height: 44, borderRadius: 12,
+    backgroundColor: 'rgba(0,0,0,0.06)',
+    alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  },
+  createOrgInfo: { flex: 1, minWidth: 0 },
+  createOrgTitle: { fontSize: 16, fontWeight: '600' },
+  createOrgSub: { fontSize: 13, marginTop: 2 },
+
+  // Save
+  saveWrap: { paddingHorizontal: 20, paddingTop: 12, backgroundColor: '#F8F7F4' },
+  saveBtn: { backgroundColor: '#111111', borderRadius: 14, paddingVertical: 16, alignItems: 'center' },
   saveBtnDisabled: { backgroundColor: '#C7C7CC' },
   saveBtnText: { fontSize: 15, fontWeight: '600', color: '#FFFFFF' },
 });

@@ -7,14 +7,17 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useAuth } from '@/context/auth-context';
 
-const TAKEN = ['admin', 'kaynext', 'coachwilliams'];
+const TAKEN = ['admin', 'kaynext', 'kanext'];
 
 export default function UsernameScreen() {
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { state: authState } = useAuth();
+  const currentHandle = authState.session?.handle ?? '';
   const [handle, setHandle] = useState('');
   const available = handle.length > 2 && !TAKEN.includes(handle.toLowerCase());
   const taken = handle.length > 2 && TAKEN.includes(handle.toLowerCase());
@@ -36,12 +39,11 @@ export default function UsernameScreen() {
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 100 }]}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={[styles.currentHandle, { color: C.label }]}>@coachwilliams</Text>
+        <Text style={[styles.currentHandle, { color: C.label }]}>{currentHandle ? `@${currentHandle}` : '—'}</Text>
 
         <View style={[styles.infoCard, { backgroundColor: C.surface }]}>
           <Text style={[styles.infoText, { color: C.secondary }]}>
-            You can change your username once per year. Your old username will be locked for 90 days
-            and cannot be claimed by anyone else.
+            Change your username anytime. Your old handle is locked for 30 days, then released to others.
           </Text>
         </View>
 
@@ -79,7 +81,7 @@ export default function UsernameScreen() {
 }
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F6F6F6' },
+  container: { flex: 1, backgroundColor: '#F8F7F4' },
   topBar: {
     flexDirection: 'row', alignItems: 'center',
     paddingHorizontal: 8, paddingVertical: 4, minHeight: 44,
@@ -98,7 +100,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   atSign: { fontSize: 17, fontWeight: '500' },
   input: { flex: 1, fontSize: 17 },
   lastChanged: { fontSize: 13, textAlign: 'center', marginTop: 8 },
-  saveWrap: { paddingHorizontal: 16, paddingTop: 12, backgroundColor: '#F6F6F6' },
+  saveWrap: { paddingHorizontal: 16, paddingTop: 12, backgroundColor: '#F8F7F4' },
   saveBtn: { backgroundColor: '#111111', borderRadius: 14, paddingVertical: 16, alignItems: 'center' },
   saveBtnDisabled: { backgroundColor: '#C7C7CC' },
   saveBtnText: { fontSize: 15, fontWeight: '600', color: '#FFFFFF' },

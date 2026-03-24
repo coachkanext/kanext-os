@@ -17,17 +17,20 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { StoriesRow } from '@/components/social/stories-row';
 import { ReelsPage } from '@/components/social/reels-page';
+import { LikeAnimation } from '@/components/social/like-animation';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useAppContext } from '@/context/app-context';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import {
-  getFeedPosts, getReels, getStories, formatPostTime,
-  type FeedPost, type SocialReel,
+  getFeedPosts, getReels, getStories, getSammyPosts, getSammyTaggedPosts, formatPostTime,
+  SAMMY_POSTS, SAMMY_REELS, type FeedPost, type SocialReel,
 } from '@/data/mock-social';
 import type { Mode } from '@/types';
 
@@ -72,44 +75,95 @@ const MOCK_COMMENTS = [
 
 const EMOJI_REACTIONS = ['❤️', '😂', '😮', '😢', '👏'];
 
-type SocialView = 'feed' | 'reels';
+type SocialView = 'feed' | 'reels' | 'profile';
 type SocialScope = 'brand' | 'mode' | 'all';
+type ProfileGridTab = 'posts' | 'reels' | 'tagged';
 
 const ALL_MODES: Mode[] = ['sports', 'business', 'community', 'education'];
+const VIEW_ORDER: SocialView[] = ['feed', 'reels', 'profile'];
+
+// ── Profile mock data per mode ────────────────────────────────────────────────
+
+interface MockProfile {
+  name: string;
+  handle: string;
+  role: string;
+  brand: string;
+  bio: string;
+  postCount: number;
+  followerCount: number;
+  followingCount: number;
+  initials: string;
+}
+
+const MY_PROFILE: MockProfile = {
+  name: 'Sammy Kalejaiye',
+  handle: '@sammyk',
+  role: 'Owner',
+  brand: 'KaNeXT',
+  bio: "Building the operating system for communities. Let's get to work.",
+  postCount: 47,
+  followerCount: 312,
+  followingCount: 89,
+  initials: 'SK',
+};
+
+// ── RBAC ──────────────────────────────────────────────────────────────────────
+// Logged-in user is Sammy Kalejaiye (@sammyk) — not present in mock feed authors.
+// isOwnPost is always false for mock content; admin = brand owner in any work mode.
+const MY_SOCIAL_AUTHOR_ID = 'sammyk'; // no mock post uses this ID
+
+function authorStats(id: string) {
+  const seed = id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  return {
+    postCount:      ((seed * 7)  % 140) + 8,
+    followerCount:  ((seed * 13) % 2800) + 50,
+    followingCount: ((seed * 11) % 380) + 30,
+  };
+}
+
+function fmtStat(n: number) {
+  return n >= 1000 ? `${(n / 1000).toFixed(1)}K` : String(n);
+}
 
 const TOP_BAR_HEIGHT = 52;
 const SCOPE_BAR_HEIGHT = 44;
 
 // ── PostCard ─────────────────────────────────────────────────────────────────
 
+const LIKED_NAMES = ['Alex R', 'Maya C', 'Jordan H', 'Riley T', 'Sam D'];
+
 interface PostCardProps {
   post: FeedPost;
   isLiked: boolean;
   isBookmarked: boolean;
   showScope: boolean;
-  selectMode: boolean;
-  isSelected: boolean;
   onLikeToggle: () => void;
   onBookmarkToggle: () => void;
   onCommentPress: () => void;
   onSharePress: () => void;
-  onSelectToggle: () => void;
+  onAuthorPress: () => void;
+  onBrandPress: () => void;
+  onMenuPress: () => void;
 }
 
 function PostCard({
-  post, isLiked, isBookmarked, showScope, selectMode, isSelected,
-  onLikeToggle, onBookmarkToggle, onCommentPress, onSharePress, onSelectToggle,
+  post, isLiked, isBookmarked, showScope,
+  onLikeToggle, onBookmarkToggle, onCommentPress, onSharePress,
+  onAuthorPress, onBrandPress, onMenuPress,
 }: PostCardProps) {
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
   const { width: screenWidth } = useWindowDimensions();
   const lastTapRef = useRef(0);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [commentsExpanded, setCommentsExpanded] = useState(false);
-  const [commentInput, setCommentInput] = useState('');
+  const [showLikeAnim, setShowLikeAnim] = useState(false);
+  const [captionExpanded, setCaptionExpanded] = useState(false);
+  const [following, setFollowing] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
 
   const meta = AUTHOR_META[post.author.id];
+  const nameA = LIKED_NAMES[post.likeCount % 5];
 
   const likeCount = isLiked && !post.isLiked
     ? post.likeCount + 1
@@ -126,6 +180,7 @@ function PostCard({
     const now = Date.now();
     if (now - lastTapRef.current < 300) {
       if (!isLiked) onLikeToggle();
+      setShowLikeAnim(true);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
     lastTapRef.current = now;
@@ -135,63 +190,66 @@ function PostCard({
   const mediaHeight = screenWidth * firstMediaAspect;
 
   return (
-    <View style={[styles.postContainer, isSelected && { backgroundColor: C.surfacePressed }]}>
-
-      {/* Select overlay */}
-      {selectMode && (
-        <Pressable style={StyleSheet.absoluteFill} onPress={onSelectToggle}>
-          <View style={styles.selectCircleWrap}>
-            <View style={[styles.selectCircle, isSelected && styles.selectCircleActive]}>
-              {isSelected && <IconSymbol name="checkmark" size={10} color={C.bg} />}
-            </View>
-          </View>
-        </Pressable>
-      )}
+    <View style={styles.postContainer}>
 
       {/* Header */}
       <View style={styles.postHeader}>
-        <View style={styles.postAvatar}>
-          <Text style={styles.postAvatarText}>{post.author.initials}</Text>
-        </View>
-        <View style={styles.postHeaderText}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-            <Text style={styles.postAuthorName}>{post.author.name}</Text>
-            {showScope && meta && (
-              <View style={styles.brandChip}>
-                <Text style={styles.brandChipText}>{meta.brand}</Text>
-              </View>
-            )}
+        <Pressable style={styles.postHeaderLeft} onPress={onAuthorPress}>
+          <View style={styles.postAvatar}>
+            <Text style={styles.postAvatarText}>{post.author.initials}</Text>
           </View>
-          <Text style={styles.postAuthorMeta} numberOfLines={1}>
-            {post.author.username}
-            {meta ? ` · ${meta.role}` : ''}
-            {` · ${formatPostTime(post.timestamp)}`}
+          <View style={styles.postHeaderText}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+              <Text style={styles.postAuthorName}>{post.author.name}</Text>
+              {meta && (
+                <Pressable style={styles.brandChip} onPress={onBrandPress}>
+                  <Text style={styles.brandChipText}>{meta.brand}</Text>
+                </Pressable>
+              )}
+            </View>
+            <Text style={styles.postAuthorMeta} numberOfLines={1}>
+              {post.author.username}
+              {meta ? ` · ${meta.role}` : ''}
+              {` · ${formatPostTime(post.timestamp)}`}
+            </Text>
+          </View>
+        </Pressable>
+        <Pressable
+          hitSlop={8}
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setFollowing(v => !v); }}
+        >
+          <Text style={{ color: following ? C.secondary : C.accent, fontWeight: '600', fontSize: 13 }}>
+            {following ? 'Following' : 'Follow'}
           </Text>
-        </View>
-        <Pressable hitSlop={8} style={{ padding: 4 }}>
+        </Pressable>
+        <Pressable hitSlop={8} style={{ padding: 4 }} onPress={onMenuPress}>
           <IconSymbol name="ellipsis" size={18} color={C.secondary} />
         </Pressable>
       </View>
 
       {/* Text-only caption (above media) */}
-      {postType === 'text' && (
+      {postType === 'text' ? (
         <Text style={styles.textOnlyCaption}>{post.caption}</Text>
-      )}
+      ) : null}
 
       {/* Single image */}
-      {postType === 'image' && (
-        <Pressable onPress={handleMediaTap} delayLongPress={400}>
-          <Image
-            source={{ uri: post.media[0].uri }}
-            style={{ width: screenWidth, height: mediaHeight }}
-            resizeMode="cover"
-          />
-        </Pressable>
-      )}
+      {postType === 'image' ? (
+        <View>
+          <Pressable onPress={handleMediaTap} delayLongPress={400}>
+            <Image
+              source={{ uri: post.media[0].uri }}
+              style={{ width: screenWidth, height: mediaHeight }}
+              resizeMode="cover"
+            />
+          </Pressable>
+          <LikeAnimation visible={showLikeAnim} onComplete={() => setShowLikeAnim(false)} />
+        </View>
+      ) : null}
 
       {/* Multi-image carousel */}
-      {postType === 'multi-image' && (
+      {postType === 'multi-image' ? (
         <View>
+          <LikeAnimation visible={showLikeAnim} onComplete={() => setShowLikeAnim(false)} />
           <ScrollView
             horizontal
             pagingEnabled
@@ -223,14 +281,14 @@ function PostCard({
             <Text style={styles.slideCounterText}>{carouselIndex + 1}/{post.media.length}</Text>
           </View>
         </View>
-      )}
+      ) : null}
 
       {/* Action Row */}
       <View style={styles.actionRow}>
         <View style={styles.actionLeft}>
           {/* Like with emoji picker */}
           <View>
-            {showEmojiPicker && (
+            {showEmojiPicker ? (
               <View style={styles.emojiPicker}>
                 {EMOJI_REACTIONS.map((emoji) => (
                   <Pressable
@@ -246,7 +304,7 @@ function PostCard({
                   </Pressable>
                 ))}
               </View>
-            )}
+            ) : null}
             <Pressable
               hitSlop={8}
               onPress={() => {
@@ -272,7 +330,6 @@ function PostCard({
             hitSlop={8}
             onPress={() => {
               onCommentPress();
-              setCommentsExpanded(true);
             }}
           >
             <IconSymbol name="bubble.right" size={24} color={C.label} />
@@ -300,54 +357,45 @@ function PostCard({
 
       {/* Likes + Caption + Comments */}
       <View style={styles.captionArea}>
-        <Text style={styles.likeCountText}>{likeCount.toLocaleString()} likes</Text>
+        <Text style={styles.likeCountText}>
+          {'Liked by '}
+          <Text style={styles.likeCountBold}>{nameA}</Text>
+          {' and '}
+          <Text style={styles.likeCountBold}>{(likeCount - 1).toLocaleString()} others</Text>
+        </Text>
 
-        {postType !== 'text' && (
-          <Text style={styles.captionText} numberOfLines={commentsExpanded ? undefined : 3}>
-            <Text style={styles.captionAuthorText}>{post.author.username} </Text>
-            {post.caption}
-          </Text>
-        )}
-
-        {/* Comments toggle */}
-        {post.commentCount > 0 && (
+        {postType !== 'text' ? (
           <>
-            {!commentsExpanded ? (
-              <Pressable onPress={() => setCommentsExpanded(true)}>
+            <Text style={styles.captionText} numberOfLines={captionExpanded ? undefined : 3}>
+              <Text style={styles.captionAuthorText}>{post.author.username} </Text>
+              {post.caption}
+            </Text>
+            {!captionExpanded && post.caption.length > 120 ? (
+              <Pressable onPress={() => setCaptionExpanded(true)}>
+                <Text style={styles.viewCommentsText}>more</Text>
+              </Pressable>
+            ) : null}
+          </>
+        ) : null}
+
+        {/* Always-visible 2 preview comments */}
+        {post.commentCount > 0 ? (
+          <View style={styles.inlineComments}>
+            {MOCK_COMMENTS.slice(0, 2).map(c => (
+              <Text key={c.id} style={styles.commentText} numberOfLines={2}>
+                <Text style={styles.commentAuthorText}>{c.authorName} </Text>
+                {c.text}
+              </Text>
+            ))}
+            {post.commentCount > 2 ? (
+              <Pressable onPress={() => onCommentPress()}>
                 <Text style={styles.viewCommentsText}>
                   View all {post.commentCount} comments
                 </Text>
               </Pressable>
-            ) : (
-              <View style={styles.inlineComments}>
-                {MOCK_COMMENTS.slice(0, 3).map(c => (
-                  <View key={c.id} style={styles.commentRow}>
-                    <Text style={styles.commentText}>
-                      <Text style={styles.commentAuthorText}>{c.authorName} </Text>
-                      {c.text}
-                    </Text>
-                  </View>
-                ))}
-                <View style={styles.commentInputRow}>
-                  <TextInput
-                    style={styles.commentInput}
-                    placeholder="Add a comment..."
-                    placeholderTextColor={C.muted}
-                    value={commentInput}
-                    onChangeText={setCommentInput}
-                    returnKeyType="send"
-                    onSubmitEditing={() => setCommentInput('')}
-                  />
-                  {commentInput.length > 0 && (
-                    <Pressable onPress={() => setCommentInput('')}>
-                      <Text style={{ color: C.accent, fontWeight: '600', fontSize: 14 }}>Post</Text>
-                    </Pressable>
-                  )}
-                </View>
-              </View>
-            )}
-          </>
-        )}
+            ) : null}
+          </View>
+        ) : null}
       </View>
     </View>
   );
@@ -397,11 +445,11 @@ function CommentsSheet({
           returnKeyType="send"
           onSubmitEditing={() => setInput('')}
         />
-        {input.length > 0 && (
+        {input.length > 0 ? (
           <Pressable onPress={() => setInput('')}>
             <Text style={{ color: C.accent, fontWeight: '600', fontSize: 14 }}>Post</Text>
           </Pressable>
-        )}
+        ) : null}
       </View>
     </BottomSheet>
   );
@@ -538,11 +586,349 @@ function CreatePostSheet({
   );
 }
 
+// ── PostMenuSheet ─────────────────────────────────────────────────────────────
+
+interface MenuAction {
+  icon: string;
+  label: string;
+  destructive?: boolean;
+  onPress?: () => void;
+}
+
+function PostMenuSheet({
+  post, isOwnPost, isAdmin, isSaved, onSaveToggle, visible, onClose, C,
+}: {
+  post: FeedPost | null;
+  isOwnPost: boolean;
+  isAdmin: boolean;
+  isSaved: boolean;
+  onSaveToggle: () => void;
+  visible: boolean;
+  onClose: () => void;
+  C: ComponentColors;
+}) {
+  if (!post) return null;
+
+  const ownActions: MenuAction[] = [
+    { icon: 'pencil',       label: 'Edit Caption' },
+    { icon: 'pin',          label: 'Pin to Profile' },
+    { icon: 'archivebox',   label: 'Archive' },
+    { icon: 'paperplane',   label: 'Share' },
+    { icon: 'link',         label: 'Copy Link' },
+    { icon: 'trash',        label: 'Delete', destructive: true },
+  ];
+
+  const othersActions: MenuAction[] = [
+    { icon: isSaved ? 'bookmark.fill' : 'bookmark', label: isSaved ? 'Unsave' : 'Save', onPress: onSaveToggle },
+    { icon: 'paperplane',    label: 'Share' },
+    { icon: 'link',          label: 'Copy Link' },
+    { icon: 'flag',          label: 'Report' },
+    { icon: 'speaker.slash', label: 'Mute' },
+    { icon: 'nosign',        label: 'Block', destructive: true },
+  ];
+
+  const adminActions: MenuAction[] = [
+    { icon: 'pin.fill',   label: 'Pin to Brand Page' },
+    { icon: 'eye.slash',  label: 'Hide from Feed' },
+    { icon: 'trash.fill', label: 'Remove Post', destructive: true },
+  ];
+
+  const actions = [
+    ...(isOwnPost ? ownActions : othersActions),
+    ...(!isOwnPost && isAdmin ? adminActions : []),
+  ];
+
+  return (
+    <BottomSheet visible={visible} onClose={onClose} useModal>
+      <View style={{ paddingBottom: 24 }}>
+        {/* Mini post preview */}
+        <View style={[pmStyles.preview, { borderBottomColor: C.separator }]}>
+          <View style={[pmStyles.previewAvatar, { backgroundColor: C.accent }]}>
+            <Text style={[pmStyles.previewAvatarText, { color: '#fff' }]}>{post.author.initials}</Text>
+          </View>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text style={[pmStyles.previewName, { color: C.label }]} numberOfLines={1}>{post.author.name}</Text>
+            <Text style={[pmStyles.previewCaption, { color: C.muted }]} numberOfLines={1}>{post.caption}</Text>
+          </View>
+        </View>
+
+        {/* Action rows */}
+        {actions.map((action, i) => (
+          <Pressable
+            key={action.label}
+            style={({ pressed }) => [
+              pmStyles.actionRow,
+              { backgroundColor: pressed ? C.surfacePressed : 'transparent' },
+              i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator },
+            ]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              action.onPress?.();
+              onClose();
+            }}
+          >
+            <IconSymbol
+              name={action.icon as any}
+              size={20}
+              color={action.destructive ? C.red : C.label}
+            />
+            <Text style={[pmStyles.actionLabel, {
+              color: action.destructive ? C.red : C.label,
+              fontWeight: action.destructive ? '500' : '400',
+            }]}>
+              {action.label}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+    </BottomSheet>
+  );
+}
+
+const pmStyles = StyleSheet.create({
+  preview:           { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth },
+  previewAvatar:     { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  previewAvatarText: { fontSize: 12, fontWeight: '700' },
+  previewName:       { fontSize: 13, fontWeight: '600' },
+  previewCaption:    { fontSize: 12, marginTop: 1 },
+  actionRow:         { flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 20, paddingVertical: 15 },
+  actionLabel:       { fontSize: 16 },
+});
+
+// ── ProfileView ───────────────────────────────────────────────────────────────
+
+function ProfileView({ C }: { C: ComponentColors }) {
+  const styles = useMemo(() => makeStyles(C), [C]);
+  const { width } = useWindowDimensions();
+  const router = useRouter();
+  const [gridTab, setGridTab] = useState<ProfileGridTab>('posts');
+
+  const profile = MY_PROFILE;
+  const ownPosts = useMemo(() => getSammyPosts(), []);
+  const taggedPosts = useMemo(() => getSammyTaggedPosts(), []);
+  const cellSize = (width - 2) / 3;
+
+  function formatStat(n: number) {
+    return n >= 1000 ? `${(n / 1000).toFixed(1)}K` : String(n);
+  }
+
+  return (
+    <ScrollView
+      style={{ flex: 1, backgroundColor: C.bg }}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 120 }}
+    >
+      {/* Avatar + stats row */}
+      <View style={styles.profileHeader}>
+        <LinearGradient
+          colors={['#f09433', '#e6683c', '#dc2743', '#cc2366', '#bc1888']}
+          start={{ x: 0.0, y: 1.0 }}
+          end={{ x: 1.0, y: 0.0 }}
+          style={styles.profileAvatarRing}
+        >
+          <View style={[styles.profileAvatarInner, { backgroundColor: C.bg }]}>
+            <View style={styles.profileAvatarWrap}>
+              <Text style={styles.profileAvatarText}>{profile.initials}</Text>
+            </View>
+          </View>
+        </LinearGradient>
+        <View style={styles.profileStats}>
+          {[
+            { label: 'Posts',     value: formatStat(profile.postCount) },
+            { label: 'Followers', value: formatStat(profile.followerCount) },
+            { label: 'Following', value: formatStat(profile.followingCount) },
+          ].map(s => (
+            <View key={s.label} style={styles.profileStatItem}>
+              <Text style={[styles.profileStatValue, { color: C.label }]}>{s.value}</Text>
+              <Text style={[styles.profileStatLabel, { color: C.secondary }]}>{s.label}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* Name / handle / role */}
+      <View style={styles.profileInfo}>
+        <Text style={[styles.profileName, { color: C.label }]}>{profile.name}</Text>
+        <Text style={[styles.profileHandle, { color: C.secondary }]}>{profile.handle}</Text>
+        <Text style={[styles.profileRole, { color: C.muted }]}>{profile.role} · {profile.brand}</Text>
+        <Text style={[styles.profileBio, { color: C.label }]}>{profile.bio}</Text>
+      </View>
+
+      {/* Edit Profile + Share Profile buttons */}
+      <View style={[styles.profileActions, { flexDirection: 'row', gap: 8 }]}>
+        <Pressable
+          style={[styles.editProfileBtn, { flex: 1, borderColor: C.inputBorder }]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            router.push('/(tabs)/(main)/social/edit-profile' as any);
+          }}
+        >
+          <Text style={[styles.editProfileLabel, { color: C.label }]}>Edit Profile</Text>
+        </Pressable>
+        <Pressable
+          style={[styles.editProfileBtn, { flex: 1, borderColor: C.inputBorder }]}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        >
+          <Text style={[styles.editProfileLabel, { color: C.label }]}>Share Profile</Text>
+        </Pressable>
+      </View>
+
+      {/* Highlights row */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 14, gap: 20 }}
+      >
+        {[
+          { id: 'h1', label: 'Training', emoji: '⚽' },
+          { id: 'h2', label: 'Matchday', emoji: '🏆' },
+          { id: 'h3', label: 'KaNeXT',   emoji: '💡' },
+          { id: 'h4', label: 'Travel',   emoji: '✈️' },
+        ].map(h => (
+          <Pressable
+            key={h.id}
+            style={{ alignItems: 'center', gap: 5 }}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <View style={[styles.highlightCircle, { borderColor: C.inputBorder }]}>
+              <Text style={{ fontSize: 28 }}>{h.emoji}</Text>
+            </View>
+            <Text style={{ fontSize: 11, color: C.secondary }}>{h.label}</Text>
+          </Pressable>
+        ))}
+        <Pressable style={{ alignItems: 'center', gap: 5 }}>
+          <View style={[styles.highlightCircle, { borderColor: C.inputBorder }]}>
+            <IconSymbol name="plus" size={22} color={C.secondary} />
+          </View>
+          <Text style={{ fontSize: 11, color: C.secondary }}>New</Text>
+        </Pressable>
+      </ScrollView>
+
+      {/* Grid sub-tabs */}
+      <View style={[styles.gridTabBar, { borderBottomColor: C.separator }]}>
+        {(['posts', 'reels', 'tagged'] as ProfileGridTab[]).map(t => (
+          <Pressable
+            key={t}
+            style={[styles.gridTab, gridTab === t && { borderBottomColor: C.label }]}
+            onPress={() => { Haptics.selectionAsync(); setGridTab(t); }}
+          >
+            <IconSymbol
+              name={t === 'posts' ? 'squareshape.split.2x2' : t === 'reels' ? 'play.square' : 'person.crop.rectangle'}
+              size={20}
+              color={gridTab === t ? C.label : C.muted}
+            />
+          </Pressable>
+        ))}
+      </View>
+
+      {/* 3-column photo grid */}
+      {gridTab === 'posts' ? (
+        <View style={styles.photoGrid}>
+          {ownPosts.map((post, i) => (
+            <Pressable
+              key={post.id}
+              style={[styles.gridCell, { width: cellSize, height: cellSize }]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                router.push({
+                  pathname: '/(tabs)/(main)/social/grid-feed' as any,
+                  params: { startPostId: post.id },
+                });
+              }}
+            >
+              {post.media[0] ? (
+                <Image source={{ uri: post.media[0].uri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
+              ) : (
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: `hsl(${(i * 37 + 200) % 360},18%,82%)` }]} />
+              )}
+              {post.media.length > 1 ? (
+                <View style={styles.gridMultiIcon}>
+                  <IconSymbol name="square.on.square" size={12} color="#fff" />
+                </View>
+              ) : null}
+              {post.isLiked ? (
+                <View style={{ position: 'absolute', bottom: 6, left: 6 }}>
+                  <IconSymbol name="heart.fill" size={13} color="#FF3B30" />
+                </View>
+              ) : null}
+            </Pressable>
+          ))}
+        </View>
+      ) : gridTab === 'reels' ? (
+        <View style={styles.photoGrid}>
+          {SAMMY_REELS.map((reel, i) => (
+            <Pressable
+              key={reel.id}
+              style={[styles.gridCell, { width: cellSize, height: cellSize }]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                router.push({
+                  pathname: '/(tabs)/(main)/social/profile-reels' as any,
+                  params: { startIndex: String(i) },
+                });
+              }}
+            >
+              {reel.posterUri ? (
+                <Image source={{ uri: reel.posterUri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
+              ) : (
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: `hsl(${(i * 53 + 180) % 360},20%,18%)` }]} />
+              )}
+              {/* Play overlay */}
+              <View style={[StyleSheet.absoluteFill, { alignItems: 'center', justifyContent: 'center' }]}>
+                <View style={{ backgroundColor: 'rgba(0,0,0,0.35)', borderRadius: 20, padding: 6 }}>
+                  <IconSymbol name="play.fill" size={18} color="#fff" />
+                </View>
+              </View>
+              {/* View count bottom-left */}
+              <View style={{ position: 'absolute', bottom: 5, left: 6, flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+                <IconSymbol name="play.fill" size={9} color="rgba(255,255,255,0.85)" />
+                <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.85)' }}>
+                  {reel.likeCount >= 1000 ? `${(reel.likeCount / 1000).toFixed(1)}K` : String(reel.likeCount)}
+                </Text>
+              </View>
+            </Pressable>
+          ))}
+        </View>
+      ) : (
+        /* Tagged */
+        <View style={styles.photoGrid}>
+          {taggedPosts.map((post, i) => (
+            <Pressable
+              key={post.id}
+              style={[styles.gridCell, { width: cellSize, height: cellSize }]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                router.push({
+                  pathname: '/(tabs)/(main)/social/grid-feed' as any,
+                  params: { startPostId: post.id, type: 'tagged' },
+                });
+              }}
+            >
+              {post.media[0] ? (
+                <Image source={{ uri: post.media[0].uri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
+              ) : (
+                <View style={[StyleSheet.absoluteFill, { backgroundColor: `hsl(${(i * 37 + 200) % 360},18%,82%)` }]} />
+              )}
+              {/* Tagged badge */}
+              <View style={{ position: 'absolute', top: 5, right: 5 }}>
+                <View style={{ backgroundColor: 'rgba(0,0,0,0.45)', borderRadius: 8, padding: 3 }}>
+                  <IconSymbol name="person.fill" size={10} color="#fff" />
+                </View>
+              </View>
+            </Pressable>
+          ))}
+        </View>
+      )}
+    </ScrollView>
+  );
+}
+
 // ── Social Screen (main) ──────────────────────────────────────────────────────
 
 export default function SocialScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const styles = useMemo(() => makeStyles(C), [C]);
   const { state } = useAppContext();
   const mode = state.activeContext.mode;
@@ -551,9 +937,6 @@ export default function SocialScreen() {
   const [feedScope, setFeedScope] = useState<SocialScope>('brand');
   const [reelsScope, setReelsScope] = useState<SocialScope>('all');
   const [showScopeBar, setShowScopeBar] = useState(false);
-  const [showEditDD, setShowEditDD] = useState(false);
-  const [selectMode, setSelectMode] = useState(false);
-  const [selectedPostIds, setSelectedPostIds] = useState<Set<string>>(new Set());
 
   // Like/bookmark — tracks XOR flips from initial post.isLiked / post.isBookmarked
   const [likedPostFlips, setLikedPostFlips] = useState<Set<string>>(new Set());
@@ -561,25 +944,29 @@ export default function SocialScreen() {
   const [likedReels, setLikedReels] = useState<Set<string>>(new Set());
   const [bookmarkedReels, setBookmarkedReels] = useState<Set<string>>(new Set());
 
-  const [commentPostId, setCommentPostId] = useState<string | null>(null);
-  const [shareVisible, setShareVisible] = useState(false);
-  const [commentReelId, setCommentReelId] = useState<string | null>(null);
-  const [createPostVisible, setCreatePostVisible] = useState(false);
+  const [commentPostId, setCommentPostId]   = useState<string | null>(null);
+  const [shareVisible, setShareVisible]     = useState(false);
+  const [commentReelId, setCommentReelId]   = useState<string | null>(null);
+  const [savedPostIds, setSavedPostIds]     = useState<Set<string>>(new Set());
+  const [menuTarget, setMenuTarget]         = useState<FeedPost | null>(null);
+
+  const isAdmin = mode !== 'personal';
 
   const lastScrollY = useRef(0);
 
-  // Swipe left/right to switch Feed ↔ Reels
+  // Swipe left/right through Feed → Reels → Profile
   const swipeResponder = useMemo(() => PanResponder.create({
     onStartShouldSetPanResponder: () => false,
     onMoveShouldSetPanResponder: (_evt, gs) =>
       Math.abs(gs.dx) > 12 && Math.abs(gs.dx) > Math.abs(gs.dy) * 1.5,
     onPanResponderRelease: (_evt, gs) => {
-      if (gs.dx > 60 && view !== 'feed') {
+      const idx = VIEW_ORDER.indexOf(view);
+      if (gs.dx < -60 && idx < VIEW_ORDER.length - 1) {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        handleSwitchView('feed');
-      } else if (gs.dx < -60 && view !== 'reels') {
+        handleSwitchView(VIEW_ORDER[idx + 1]);
+      } else if (gs.dx > 60 && idx > 0) {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        handleSwitchView('reels');
+        handleSwitchView(VIEW_ORDER[idx - 1]);
       }
     },
   }), [view, handleSwitchView]);
@@ -610,8 +997,6 @@ export default function SocialScreen() {
   const handleSwitchView = useCallback((newView: SocialView) => {
     setView(newView);
     setShowScopeBar(false);
-    setShowEditDD(false);
-    setSelectMode(false);
   }, []);
 
   const handleLikeToggle = useCallback((postId: string) => {
@@ -646,8 +1031,8 @@ export default function SocialScreen() {
     });
   }, []);
 
-  const handleSelectToggle = useCallback((postId: string) => {
-    setSelectedPostIds(prev => {
+  const handleSaveToggle = useCallback((postId: string) => {
+    setSavedPostIds(prev => {
       const s = new Set(prev);
       if (s.has(postId)) s.delete(postId); else s.add(postId);
       return s;
@@ -666,7 +1051,7 @@ export default function SocialScreen() {
     <View style={[styles.screen, { backgroundColor: view === 'reels' ? '#000' : C.bg }]} {...swipeResponder.panHandlers}>
 
       {/* Full-screen Reels layer (behind top bar) */}
-      {view === 'reels' && (
+      {view === 'reels' ? (
         <View style={StyleSheet.absoluteFill}>
           <ReelsPage
             reels={reels}
@@ -678,7 +1063,7 @@ export default function SocialScreen() {
             onSharePress={() => setShareVisible(true)}
           />
         </View>
-      )}
+      ) : null}
 
       {/* Top bar — always visible, overlaid on reels */}
       <View style={[
@@ -687,84 +1072,50 @@ export default function SocialScreen() {
         view === 'reels' && styles.topBarWrapOverlay,
       ]}>
         <View style={styles.topBar}>
-          {/* Left: Edit / Cancel */}
-          <View style={{ position: 'relative' }}>
-            {selectMode ? (
-              <Pressable
-                style={styles.topBarSide}
-                onPress={() => { setSelectMode(false); setSelectedPostIds(new Set()); }}
-              >
-                <Text style={[styles.topBarBtn, { color: C.secondary }]}>Cancel</Text>
-              </Pressable>
-            ) : (
-              <Pressable
-                style={styles.topBarSide}
-                onPress={() => { setShowEditDD(v => !v); setShowScopeBar(false); }}
-              >
-                <Text style={[styles.topBarBtn, view === 'reels' && { color: '#fff' }]}>Edit</Text>
-              </Pressable>
-            )}
+          {/* Left: Create "+" */}
+          <Pressable
+            style={styles.topBarSide}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              router.push('/(tabs)/(main)/social/create' as any);
+            }}
+          >
+            <IconSymbol name="plus" size={22} color={view === 'reels' ? '#fff' : C.label} />
+          </Pressable>
 
-            {/* Edit dropdown */}
-            {showEditDD && (
-              <View style={styles.editDD}>
+          {/* Center: Feed · Reels · Profile pill */}
+          <View style={styles.viewPill}>
+            <View style={styles.viewPillInner}>
+              {VIEW_ORDER.map(v => (
                 <Pressable
-                  style={({ pressed }) => [styles.ddItem, pressed && { backgroundColor: C.surfacePressed }]}
-                  onPress={() => { setShowEditDD(false); setSelectMode(true); setSelectedPostIds(new Set()); }}
+                  key={v}
+                  style={[styles.pillOption, view === v && styles.pillOptionActive]}
+                  onPress={() => handleSwitchView(v)}
                 >
-                  <IconSymbol name="checkmark.circle" size={16} color={C.label} />
-                  <Text style={styles.ddText}>Select Posts</Text>
+                  <Text style={[styles.pillOptionText, view === v && styles.pillOptionTextActive]}>
+                    {v.charAt(0).toUpperCase() + v.slice(1)}
+                  </Text>
                 </Pressable>
-                <Pressable
-                  style={({ pressed }) => [styles.ddItem, { borderBottomWidth: 0 }, pressed && { backgroundColor: C.surfacePressed }]}
-                  onPress={() => setShowEditDD(false)}
-                >
-                  <IconSymbol name="tag" size={16} color={C.label} />
-                  <Text style={styles.ddText}>Manage Tags</Text>
-                </Pressable>
-              </View>
-            )}
+              ))}
+            </View>
           </View>
 
-          {/* Center: Feed·Reels pill or X Selected */}
-          {selectMode ? (
-            <View style={styles.viewPill}>
-              <Text style={styles.viewPillText}>{selectedPostIds.size} Selected</Text>
-            </View>
-          ) : (
-            <View style={styles.viewPill}>
-              <View style={styles.viewPillInner}>
-                <Pressable
-                  style={[styles.pillOption, view === 'feed' && styles.pillOptionActive]}
-                  onPress={() => handleSwitchView('feed')}
-                >
-                  <Text style={[styles.pillOptionText, view === 'feed' && styles.pillOptionTextActive]}>Feed</Text>
-                </Pressable>
-                <Pressable
-                  style={[styles.pillOption, view === 'reels' && styles.pillOptionActive]}
-                  onPress={() => handleSwitchView('reels')}
-                >
-                  <Text style={[styles.pillOptionText, view === 'reels' && styles.pillOptionTextActive]}>Reels</Text>
-                </Pressable>
-              </View>
-            </View>
-          )}
-
-          {/* Right: Filter icon */}
-          <Pressable
-            style={[styles.topBarSide, { alignItems: 'flex-end' }]}
-            onPress={() => { setShowScopeBar(v => !v); setShowEditDD(false); }}
-          >
-            <IconSymbol
-              name="line.3.horizontal.decrease"
-              size={20}
-              color={showScopeBar ? C.accent : view === 'reels' ? '#fff' : C.label}
-            />
-          </Pressable>
+          {/* Right: Filter icon (hidden on profile) */}
+          <View style={[styles.topBarSide, { alignItems: 'flex-end' }]}>
+            {view === 'feed' ? (
+              <Pressable onPress={() => setShowScopeBar(v => !v)}>
+                <IconSymbol
+                  name="line.3.horizontal.decrease"
+                  size={20}
+                  color={showScopeBar ? C.accent : C.label}
+                />
+              </Pressable>
+            ) : null}
+          </View>
         </View>
 
         {/* Scope pills */}
-        {showScopeBar && (
+        {showScopeBar ? (
           <View style={[styles.scopeBar, view === 'reels' && { backgroundColor: 'rgba(0,0,0,0.4)' }]}>
             {(['brand', 'mode', 'all'] as SocialScope[]).map(s => {
               const active = s === scope;
@@ -781,11 +1132,11 @@ export default function SocialScreen() {
               );
             })}
           </View>
-        )}
+        ) : null}
       </View>
 
       {/* Feed content */}
-      {view === 'feed' && (
+      {view === 'feed' ? (
         <FlatList
           data={feedPosts}
           keyExtractor={item => item.id}
@@ -802,34 +1153,23 @@ export default function SocialScreen() {
               isLiked={isPostLiked(item)}
               isBookmarked={isPostBookmarked(item)}
               showScope={scope !== 'brand'}
-              selectMode={selectMode}
-              isSelected={selectedPostIds.has(item.id)}
               onLikeToggle={() => handleLikeToggle(item.id)}
               onBookmarkToggle={() => handleBookmarkToggle(item.id)}
               onCommentPress={() => setCommentPostId(item.id)}
               onSharePress={() => setShareVisible(true)}
-              onSelectToggle={() => handleSelectToggle(item.id)}
+              onAuthorPress={() => router.push({ pathname: '/(tabs)/(main)/social/person', params: { authorId: item.author.id } } as any)}
+              onBrandPress={() => { const m = AUTHOR_META[item.author.id]; if (m?.brand) router.push({ pathname: '/(tabs)/(main)/social/brand', params: { brand: m.brand } } as any); }}
+              onMenuPress={() => setMenuTarget(item)}
             />
           )}
           ItemSeparatorComponent={() => <View style={styles.postSeparator} />}
         />
-      )}
+      ) : null}
 
-      {/* FAB — create post (feed) or camera (reels) */}
-      {!selectMode && (
-        <Pressable
-          style={[styles.fab, { bottom: insets.bottom + 74 }]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            if (view === 'feed') {
-              setCreatePostVisible(true);
-            }
-            // reels → camera (mock no-op for now)
-          }}
-        >
-          <IconSymbol name="plus" size={22} color="#fff" />
-        </Pressable>
-      )}
+      {/* Profile tab */}
+      {view === 'profile' ? (
+        <ProfileView C={C} />
+      ) : null}
 
       {/* Sheets */}
       <CommentsSheet
@@ -838,7 +1178,16 @@ export default function SocialScreen() {
         C={C}
       />
       <ShareSheet visible={shareVisible} onClose={() => setShareVisible(false)} C={C} />
-      <CreatePostSheet visible={createPostVisible} onClose={() => setCreatePostVisible(false)} C={C} />
+      <PostMenuSheet
+        post={menuTarget}
+        isOwnPost={menuTarget?.author.id === MY_SOCIAL_AUTHOR_ID}
+        isAdmin={isAdmin}
+        isSaved={menuTarget != null && savedPostIds.has(menuTarget.id)}
+        onSaveToggle={() => menuTarget && handleSaveToggle(menuTarget.id)}
+        visible={menuTarget != null}
+        onClose={() => setMenuTarget(null)}
+        C={C}
+      />
     </View>
   );
 }
@@ -890,7 +1239,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     gap: 2,
   },
   pillOption: {
-    paddingHorizontal: 18,
+    paddingHorizontal: 13,
     paddingVertical: 7,
     borderRadius: 18,
   },
@@ -941,39 +1290,6 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     fontWeight: '600',
   },
 
-  // Edit dropdown
-  editDD: {
-    position: 'absolute',
-    top: 44,
-    left: 0,
-    zIndex: 100,
-    backgroundColor: C.bg,
-    borderRadius: 14,
-    minWidth: 180,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
-    elevation: 8,
-    overflow: 'hidden',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: C.separator,
-  },
-  ddItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 13,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: C.separator,
-  },
-  ddText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: C.label,
-  },
-
   // Feed separator
   postSeparator: {
     height: 8,
@@ -990,6 +1306,13 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
     gap: 10,
+  },
+  postHeaderLeft: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    minWidth: 0,
   },
   postAvatar: {
     width: 36,
@@ -1129,6 +1452,10 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     fontWeight: '600',
     color: C.label,
   },
+  likeCountBold: {
+    fontWeight: '700',
+    color: C.label,
+  },
   captionText: {
     fontSize: 14,
     color: C.label,
@@ -1176,43 +1503,132 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     paddingVertical: 4,
   },
 
-  // Select overlay
-  selectCircleWrap: {
-    position: 'absolute',
-    top: 10,
-    right: 14,
-    zIndex: 5,
+  // Profile
+  profileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    paddingBottom: 12,
+    gap: 16,
   },
-  selectCircle: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 2,
-    borderColor: C.separator,
-    backgroundColor: C.bg,
+  profileAvatarRing: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  },
+  profileAvatarInner: {
+    width: 84,
+    height: 84,
+    borderRadius: 42,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  selectCircleActive: {
-    backgroundColor: C.accent,
-    borderColor: C.accent,
-  },
-
-  // FAB
-  fab: {
-    position: 'absolute',
-    right: 20,
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+  profileAvatarWrap: {
+    width: 80, height: 80,
+    borderRadius: 40,
     backgroundColor: C.accent,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: C.accent,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    elevation: 6,
-    zIndex: 15,
+  },
+  profileAvatarText: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  profileStats: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  profileStatItem: {
+    alignItems: 'center',
+    gap: 2,
+  },
+  profileStatValue: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  profileStatLabel: {
+    fontSize: 12,
+  },
+  profileInfo: {
+    paddingHorizontal: 16,
+    paddingBottom: 14,
+    gap: 2,
+  },
+  profileName: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  profileHandle: {
+    fontSize: 13,
+  },
+  profileRole: {
+    fontSize: 12,
+    marginTop: 1,
+  },
+  profileBio: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 6,
+  },
+  profileActions: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  editProfileBtn: {
+    borderWidth: 1.5,
+    borderRadius: 10,
+    paddingVertical: 9,
+    alignItems: 'center',
+  },
+  editProfileLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  gridTabBar: {
+    flexDirection: 'row',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  gridTab: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
+  },
+  photoGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 1,
+  },
+  gridCell: {
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  gridMultiIcon: {
+    position: 'absolute',
+    top: 6, right: 6,
+  },
+  highlightCircle: {
+    width: 66,
+    height: 66,
+    borderRadius: 33,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyGrid: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 60,
+    gap: 12,
+  },
+  emptyGridText: {
+    fontSize: 14,
   },
 });

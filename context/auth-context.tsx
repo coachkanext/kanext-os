@@ -131,6 +131,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (sessionJson) {
           const parsed = JSON.parse(sessionJson);
           session = { ...parsed, createdAt: new Date(parsed.createdAt) };
+          // Migrate stale demo sessions with wrong name/handle
+          if (session && session.email === 'coachk@kanext.io') {
+            session = { ...session, displayName: 'Sammy Kalejaiye', handle: 'coachk' };
+            await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(session));
+          }
         }
 
         dispatch({
@@ -194,7 +199,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const session: AuthSession = {
       userId: `user-${Date.now()}`,
-      displayName: provider === 'apple' ? 'Coach K.' : provider === 'google' ? 'Coach K' : 'Coach K',
+      displayName: 'Sammy Kalejaiye',
+      handle: 'coachk',
       email,
       provider,
       token: `mock-token-${Date.now()}`,
@@ -214,6 +220,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const session: AuthSession = {
       userId: `user-${Date.now()}`,
       displayName: 'Investor Demo',
+      handle: 'investordemo',
       email,
       provider: 'email',
       token: `mock-token-${Date.now()}`,
@@ -240,6 +247,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const session: AuthSession = {
       userId: data.user.id,
       displayName: data.user.user_metadata?.display_name ?? email.split('@')[0],
+      handle: data.user.user_metadata?.handle ?? email.split('@')[0],
       email,
       provider: 'email',
       token: data.session.access_token,
