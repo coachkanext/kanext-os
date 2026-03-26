@@ -22,6 +22,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useMode } from '@/context/app-context';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -87,9 +88,16 @@ const shStyles = StyleSheet.create({
 
 // ── Category pills ────────────────────────────────────────────────────────────
 
-const CATEGORIES = ['Sports', 'Fitness', 'Education', 'Business', 'Art', 'Music', 'Faith', 'Tech', 'Food', 'Travel'];
+const MODE_CATEGORIES: Record<string, string[]> = {
+  sports:    ['Game Day', 'Training', 'Behind the Scenes', 'Highlights', 'Team'],
+  business:  ['Product', 'Culture', 'Updates', 'Team', 'Industry'],
+  education: ['Campus', 'Student Life', 'Academic', 'Events', 'Alumni'],
+  community: ['Service', 'Worship', 'Events', 'Testimony', 'Volunteer'],
+  personal:  ['Life', 'Work', 'Travel', 'Creative', 'Thoughts'],
+};
 
-function CategoryPills({ C }: { C: ComponentColors }) {
+function CategoryPills({ C, mode }: { C: ComponentColors; mode: string }) {
+  const categories = MODE_CATEGORIES[mode] ?? MODE_CATEGORIES.personal;
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   function toggle(cat: string) {
@@ -104,7 +112,7 @@ function CategoryPills({ C }: { C: ComponentColors }) {
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={cpStyles.strip}>
-      {CATEGORIES.map((cat) => {
+      {categories.map((cat) => {
         const active = selected.has(cat);
         return (
           <Pressable
@@ -270,6 +278,7 @@ export default function SocialPublishScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const C = useColors();
+  const mode = useMode();
 
   const [caption, setCaption]           = useState('');
   const [location, setLocation]         = useState('');
@@ -386,7 +395,7 @@ export default function SocialPublishScreen() {
           <>
             <SectionHeader title="Category" C={C} />
             <View style={[styles.section, { backgroundColor: C.surface, borderColor: C.separator }]}>
-              <CategoryPills C={C} />
+              <CategoryPills C={C} mode={mode} />
             </View>
           </>
         )}

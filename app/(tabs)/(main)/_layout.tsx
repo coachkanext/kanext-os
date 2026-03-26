@@ -32,19 +32,21 @@ export default function HomeLayout() {
 
   return (
     <Stack
-      screenOptions={({ route }) => ({
+      screenOptions={{
         headerShown: false,
         animation: 'none' as const,
         gestureEnabled: false,
         fullScreenGestureEnabled: false,
-        contentStyle: { backgroundColor: route.name === 'index' ? '#F5EFE4' : 'transparent' },
-        ...(route.name !== 'index' && { presentation: 'containedTransparentModal' as const }),
-      })}
+        contentStyle: { backgroundColor: '#F5EFE4' },
+      }}
       screenListeners={({ navigation }) => ({
         focus: () => {
           innerNavRef.current = navigation;
           resetFooter();
           closeSidePanel();
+        },
+        beforeRemove: () => {
+          resetFooter();
         },
       })}
     >
@@ -89,6 +91,12 @@ export default function HomeLayout() {
       <Stack.Screen name="social/grid-feed" />
       <Stack.Screen name="social/profile-reels" />
       <Stack.Screen name="social/edit-profile" />
+      <Stack.Screen name="social/your-posts" />
+      <Stack.Screen name="social/saved" />
+      <Stack.Screen name="social/drafts" />
+      <Stack.Screen name="social/analytics" />
+      <Stack.Screen name="social/following" />
+      <Stack.Screen name="social/settings" />
       {/* Season */}
       <Stack.Screen name="season/index" />
       {/* Roster */}
@@ -97,6 +105,10 @@ export default function HomeLayout() {
       <Stack.Screen name="media/index" />
       {/* Recruits / Prospects / Leads / Outreach / Admissions */}
       <Stack.Screen name="recruits/index" />
+      {/* Give */}
+      <Stack.Screen name="give/index" />
+      {/* Fund */}
+      <Stack.Screen name="fund/index" />
       {/* Store / Give */}
       <Stack.Screen name="store/index" />
       {/* KayTV */}
@@ -121,14 +133,26 @@ export default function HomeLayout() {
       <Stack.Screen name="members/index" />
       {/* Outreach */}
       <Stack.Screen name="outreach/index" />
+      {/* Network */}
+      <Stack.Screen name="network/index" />
+      {/* Earn */}
+      <Stack.Screen name="earn/index" />
+      {/* Deals */}
+      <Stack.Screen name="deals/index" />
+      <Stack.Screen name="deals/contact" />
       {/* Hub */}
       <Stack.Screen name="hub/index" />
       <Stack.Screen name="hub/newsletter-compose" />
       <Stack.Screen name="hub/community" />
+      <Stack.Screen name="hub/dept-detail" />
+      <Stack.Screen name="hub/group-detail" />
       <Stack.Screen name="hub/announcement-compose" />
       <Stack.Screen name="hub/care-request" />
       <Stack.Screen name="hub/education" />
       <Stack.Screen name="hub/edu-announcement" />
+      <Stack.Screen name="hub/campus" />
+      {/* Admissions */}
+      <Stack.Screen name="admissions/index" />
     </Stack>
   );
 }

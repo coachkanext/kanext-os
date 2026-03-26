@@ -55,17 +55,6 @@ export function CommunityMembersPanel() {
 
   return (
     <View style={s.container}>
-      {/* Header */}
-      <View style={s.header}>
-        <View style={[s.avatar, { backgroundColor: 'hsl(220,55%,30%)' }]}>
-          <Text style={s.avatarText}>IC</Text>
-        </View>
-        <View style={s.headerInfo}>
-          <Text style={[s.headerName, { color: C.label }]}>ICCLA Members</Text>
-          <Text style={[s.headerSub, { color: C.secondary }]}>Community Directory</Text>
-        </View>
-      </View>
-
       {/* Stats */}
       <View style={[s.statsRow, { backgroundColor: C.surfacePressed, borderRadius: 12 }]}>
         <View style={s.statItem}>

@@ -32,8 +32,14 @@ import { StudiosPanel } from './studios-panel';
 import { HubPanel } from './hub-panel';
 import { CommunityHubPanel } from './community-hub-panel';
 import { EducationHubPanel } from './education-hub-panel';
+import { CampusPanel } from './campus-panel';
 import { CommunityMembersPanel } from './community-members-panel';
 import { CommunityOutreachPanel } from './community-outreach-panel';
+import { CommunityGivePanel } from './community-give-panel';
+import { EduFundPanel } from './edu-fund-panel';
+import { NetworkPanel } from './network-panel';
+import { DealsPanel } from './deals-panel';
+import { EarnPanel } from './earn-panel';
 import { DefaultPanel } from './default-panel';
 import { useMode } from '@/context/app-context';
 
@@ -63,11 +69,18 @@ export function SidePanel({ visible }: SidePanelProps) {
   const isKayTV = pathname.includes('kaytv');
   const isWallet = pathname.includes('wallet');
   const isStudios = pathname.includes('studios');
+  const isAdmissions    = pathname.includes('/admissions');
   const isHubCommunity  = pathname.includes('hub/community') || pathname.includes('hub/announcement-compose') || pathname.includes('hub/care-request');
   const isHubEducation  = pathname.includes('hub/education') || pathname.includes('hub/edu-announcement');
-  const isHub = pathname.includes('hub') && !isHubCommunity && !isHubEducation;
+  const isCampus        = pathname.includes('hub/campus');
+  const isHub = pathname.includes('hub') && !isHubCommunity && !isHubEducation && !isCampus;
+  const isEarn     = pathname.includes('earn');
+  const isDeals    = pathname.includes('deals');
+  const isNetwork  = pathname.includes('network');
   const isMembers  = pathname.includes('members');
   const isOutreach = pathname.includes('outreach');
+  const isGive     = pathname.includes('/give');
+  const isFund     = pathname.includes('/fund');
 
   return (
     <View
@@ -101,6 +114,10 @@ export function SidePanel({ visible }: SidePanelProps) {
                         ? <CommunityHubPanel />
                         : isHubEducation
                         ? <EducationHubPanel />
+                        : isCampus
+                        ? <CampusPanel />
+                        : isAdmissions
+                        ? <AdmissionsPanel />
                         : isHub
                         ? <HubPanel />
                         : isStudios
@@ -117,9 +134,19 @@ export function SidePanel({ visible }: SidePanelProps) {
                               ? (mode === 'business' ? <LeadsPanel /> : mode === 'education' ? <AdmissionsPanel /> : mode === 'church' ? <OutreachPanel /> : <ProspectsPanel />)
                               : isOutreach
                                 ? <CommunityOutreachPanel />
-                                : isMembers
+                                : isEarn
+                                  ? <EarnPanel />
+                                : isDeals
+                                  ? <DealsPanel />
+                                : isNetwork
+                                  ? <NetworkPanel />
+                                  : isMembers
                                   ? <CommunityMembersPanel />
-                                  : <DefaultPanel pathname={pathname} />
+                                  : isGive
+                                    ? <CommunityGivePanel />
+                                    : isFund
+                                      ? <EduFundPanel />
+                                      : <DefaultPanel pathname={pathname} />
         }
       </ScrollView>
     </View>

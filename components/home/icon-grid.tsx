@@ -14,6 +14,7 @@ import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { GlassView } from '@/components/ui/glass-view';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useMode } from '@/context/app-context';
@@ -24,8 +25,9 @@ import type { GridIcon } from './home-types';
 /** Route overrides per mode */
 const MODE_ROUTES: Record<string, Partial<Record<string, string>>> = {
   hub: { personal: '/(tabs)/(main)/hub', community: '/(tabs)/(main)/hub/community', education: '/(tabs)/(main)/hub/education' },
-  p4:  { community: '/(tabs)/(main)/members' },
-  p5:  { community: '/(tabs)/(main)/outreach' },
+  p4:  { personal: '/(tabs)/(main)/network', community: '/(tabs)/(main)/members', education: '/(tabs)/(main)/hub/campus' },
+  p5:  { personal: '/(tabs)/(main)/deals', community: '/(tabs)/(main)/outreach', education: '/(tabs)/(main)/admissions' },
+  p6:  { personal: '/(tabs)/(main)/earn', community: '/(tabs)/(main)/give', education: '/(tabs)/(main)/fund' },
 };
 
 /** Row 2 labels shift per mode */
@@ -33,6 +35,13 @@ const MODE_LABELS: Record<string, Partial<Record<Mode, string>>> = {
   p4: { personal: 'Network', business: 'Team',     education: 'Campus',     sports: 'Roster',   community: 'Members'  },
   p5: { personal: 'Deals',   business: 'Inquiries', education: 'Admissions', sports: 'Recruits', community: 'Outreach' },
   p6: { personal: 'Earn',    business: 'Store',    education: 'Fund',       sports: 'Booster',  community: 'Give'     },
+};
+
+/** Row 2 icons shift per mode to match labels */
+const MODE_ICONS: Record<string, Partial<Record<Mode, string>>> = {
+  p4: { personal: 'person.2.fill', business: 'person.2.fill', education: 'building.fill', sports: 'person.3.fill', community: 'person.2.fill' },
+  p5: { personal: 'tag.fill',      business: 'envelope.fill', education: 'doc.text.fill', sports: 'person.badge.plus', community: 'megaphone.fill' },
+  p6: { personal: 'dollarsign.circle.fill', business: 'storefront.fill', education: 'dollarsign.circle.fill', sports: 'bag.fill', community: 'heart.fill' },
 };
 
 const ROWS: GridIcon[][] = [
@@ -99,7 +108,9 @@ function GridTile({
       onPressOut={handlePressOut}
     >
       <Animated.View style={{ transform: [{ scale }] }}>
-        <IconSymbol name={item.icon} size={36} color={C.muted} />
+        <GlassView tier={1} radius={20} style={styles.tile}>
+          <IconSymbol name={item.icon} size={28} color={C.secondary} />
+        </GlassView>
         {item.badgeCount != null && item.badgeCount > 0 && (
           <View style={[styles.badge, { backgroundColor: accent }]}>
             <Text style={styles.badgeText}>{item.badgeCount}</Text>
@@ -141,10 +152,11 @@ export function IconGrid() {
         <View key={rowIndex} style={styles.row}>
           {row.map((item) => {
             const label = MODE_LABELS[item.id]?.[mode] ?? item.label;
+            const icon  = MODE_ICONS[item.id]?.[mode] ?? item.icon;
             return (
               <GridTile
                 key={item.id}
-                item={{ ...item, label }}
+                item={{ ...item, label, icon }}
                 accent={accent}
                 onPress={handlePress}
                 styles={styles}
@@ -170,6 +182,13 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   },
   cell: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 6,
+  },
+  tile: {
+    width: 64,
+    height: 64,
     alignItems: 'center',
     justifyContent: 'center',
   },

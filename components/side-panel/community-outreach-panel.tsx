@@ -38,17 +38,6 @@ export function CommunityOutreachPanel() {
 
   return (
     <View style={{ gap: 8 }}>
-      {/* Header */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-        <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: C.accent + '22', alignItems: 'center', justifyContent: 'center' }}>
-          <IconSymbol name="megaphone.fill" size={20} color={C.accent} />
-        </View>
-        <View>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Outreach</Text>
-          <Text style={{ fontSize: 12, color: C.secondary }}>{totalProspects} active prospects</Text>
-        </View>
-      </View>
-
       {/* Pipeline summary */}
       <View style={{ backgroundColor: C.surface, borderRadius: 12, padding: 12, gap: 8 }}>
         <Text style={[s.sectionHeader, { color: C.secondary }]}>Pipeline</Text>

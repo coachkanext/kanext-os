@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -27,7 +27,7 @@ import { ReelsPage } from '@/components/social/reels-page';
 import { LikeAnimation } from '@/components/social/like-animation';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useAppContext } from '@/context/app-context';
-import { hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
 import {
   getFeedPosts, getReels, getStories, getSammyPosts, getSammyTaggedPosts, formatPostTime,
   SAMMY_POSTS, SAMMY_REELS, type FeedPost, type SocialReel,
@@ -950,7 +950,14 @@ export default function SocialScreen() {
   const [savedPostIds, setSavedPostIds]     = useState<Set<string>>(new Set());
   const [menuTarget, setMenuTarget]         = useState<FeedPost | null>(null);
 
-  const isAdmin = mode !== 'personal';
+  const [role, setRole] = useState<'admin' | 'member' | 'visitor'>('admin');
+  const isAdmin = role === 'admin';
+  const cycleRole = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setRole(r => r === 'admin' ? 'member' : r === 'member' ? 'visitor' : 'admin');
+  }, []);
+
+  useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
   const lastScrollY = useRef(0);
 
@@ -1100,9 +1107,17 @@ export default function SocialScreen() {
             </View>
           </View>
 
-          {/* Right: Filter icon (hidden on profile) */}
-          <View style={[styles.topBarSide, { alignItems: 'flex-end' }]}>
-            {view === 'feed' ? (
+          {/* Right: RBAC pill + filter icon */}
+          <View style={[styles.topBarSide, { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 8, width: 'auto' as any }]}>
+            <Pressable
+              style={[styles.rbacPill, { backgroundColor: view === 'reels' ? 'rgba(255,255,255,0.15)' : C.surfacePressed }]}
+              onPress={cycleRole}
+            >
+              <Text style={[styles.rbacPillText, { color: view === 'reels' ? 'rgba(255,255,255,0.85)' : C.secondary }]}>
+                {role === 'admin' ? 'Admin' : role === 'member' ? 'Member' : 'Visitor'}
+              </Text>
+            </Pressable>
+            {view === 'feed' && (
               <Pressable onPress={() => setShowScopeBar(v => !v)}>
                 <IconSymbol
                   name="line.3.horizontal.decrease"
@@ -1110,7 +1125,7 @@ export default function SocialScreen() {
                   color={showScopeBar ? C.accent : C.label}
                 />
               </Pressable>
-            ) : null}
+            )}
           </View>
         </View>
 
@@ -1225,6 +1240,8 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     fontWeight: '500',
     color: C.label,
   },
+  rbacPill:    { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 12 },
+  rbacPillText: { fontSize: 11, fontWeight: '600' },
   viewPill: {
     flex: 1,
     alignItems: 'center',

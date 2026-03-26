@@ -88,9 +88,11 @@ export default function CampusScreen() {
 
   // ── Map state ──
   const [mapSearch, setMapSearch]           = useState('');
+  const [searchFabOpen, setSearchFabOpen]   = useState(false);
   const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null);
   const [buildingSheetOpen, setBuildingSheet]   = useState(false);
   const [floorDirOpen, setFloorDirOpen]         = useState(false);
+  const [legendOpen, setLegendOpen]             = useState(false);
 
   // ── Life state ──
   const [clubSearch, setClubSearch]           = useState('');
@@ -156,9 +158,7 @@ export default function CampusScreen() {
     const pillFilter = selectedPill === 'All' ? null : selectedPill.toLowerCase();
 
     const filteredBuildings = CAMPUS_BUILDINGS.filter(b => {
-      if (pillFilter && b.type !== pillFilter && !(pillFilter === 'residential' && b.type === 'residential')) {
-        if (pillFilter !== b.type) return false;
-      }
+      if (pillFilter && b.type !== pillFilter) return false;
       return true;
     });
 
@@ -167,26 +167,21 @@ export default function CampusScreen() {
       return b.name.toLowerCase().includes(q) || b.departments.some(d => d.toLowerCase().includes(q));
     };
 
-    return (
-      <View style={{ flex: 1, paddingTop: topBarH + (filterPillsVisible ? PILL_ROW_H : 0) }}>
-        {/* Search bar */}
-        <View style={[mapS.searchWrap, { backgroundColor: C.surface, borderColor: C.inputBorder }]}>
-          <IconSymbol name="magnifyingglass" size={15} color={C.muted} />
-          <TextInput
-            style={[mapS.searchInput, { color: C.label }]}
-            value={mapSearch}
-            onChangeText={setMapSearch}
-            placeholder="Search buildings, departments…"
-            placeholderTextColor={C.muted}
-          />
-          {mapSearch.length > 0 && (
-            <Pressable onPress={() => setMapSearch('')}>
-              <IconSymbol name="xmark.circle.fill" size={15} color={C.muted} />
-            </Pressable>
-          )}
-        </View>
+    // Footprint dimensions per building id
+    const FP: Record<string, { w: number; h: number }> = {
+      'morrison':         { w: 100, h: 68 },
+      'williams-science': { w: 115, h: 78 },
+      'king-library':     { w: 92,  h: 64 },
+      'lincoln-arena':    { w: 134, h: 88 },
+      'student-center':   { w: 108, h: 70 },
+      'administration':   { w: 96,  h: 64 },
+      'main-dining':      { w: 90,  h: 62 },
+      'health-center':    { w: 76,  h: 54 },
+    };
 
-        {/* Map canvas */}
+    return (
+      <View style={{ flex: 1 }}>
+        {/* Map canvas — fills full screen, top bar overlays it */}
         <ScrollView
           minimumZoomScale={1}
           maximumZoomScale={3}
@@ -197,14 +192,82 @@ export default function CampusScreen() {
           style={{ flex: 1 }}
         >
           <View style={mapS.canvas}>
-            {/* Roads */}
-            <View style={[mapS.road, mapS.roadH, { top: 200, left: 80, width: 620 }]} />
-            <View style={[mapS.road, mapS.roadH, { top: 340, left: 80, width: 620 }]} />
-            <View style={[mapS.road, mapS.roadV, { left: 220, top: 60, height: 340 }]} />
-            <View style={[mapS.road, mapS.roadV, { left: 460, top: 60, height: 340 }]} />
+            {/* ── Perimeter roads ── */}
+            <View style={[mapS.perimRoad, { top: 0, left: 0, right: 0, height: 20 }]} />
+            <View style={[mapS.perimRoad, { bottom: 0, left: 0, right: 0, height: 20 }]} />
+            <View style={[mapS.perimRoad, { top: 0, bottom: 0, left: 0, width: 20 }]} />
+            <View style={[mapS.perimRoad, { top: 0, bottom: 0, right: 0, width: 20 }]} />
 
-            {/* Buildings */}
+            {/* ── Internal roads ── */}
+            <View style={[mapS.road, { top: 218, left: 20, right: 20, height: 14 }]} />
+            <View style={[mapS.road, { left: 443, top: 20, bottom: 20, width: 14 }]} />
+            <View style={[mapS.road, { top: 455, left: 20, right: 20, height: 14 }]} />
+
+            {/* ── Walking paths ── */}
+            <View style={[mapS.path, { top: 232, left: 170, width: 8, height: 185 }]} />
+            <View style={[mapS.path, { top: 232, left: 395, width: 8, height: 195 }]} />
+            <View style={[mapS.path, { top: 342, left: 170, width: 233, height: 8 }]} />
+            <View style={[mapS.path, { top: 148, left: 395, width: 8, height: 74 }]} />
+            <View style={[mapS.path, { top: 148, left: 175, width: 8, height: 86 }]} />
+
+            {/* ── Green spaces ── */}
+            {/* Central Quad */}
+            <View style={[mapS.greenSpace, { left: 182, top: 30, width: 148, height: 182 }]} />
+            {/* East Lawn */}
+            <View style={[mapS.greenSpace, { left: 475, top: 30, width: 130, height: 110 }]} />
+            {/* South Quad */}
+            <View style={[mapS.greenSpace, { left: 148, top: 368, width: 112, height: 78 }]} />
+            {/* West strip */}
+            <View style={[mapS.greenSpace, { left: 20, top: 120, width: 40, height: 88 }]} />
+
+            {/* ── Trees (scattered) ── */}
+            {[
+              { x: 230, y: 72 }, { x: 264, y: 108 }, { x: 208, y: 148 }, { x: 290, y: 58 },
+              { x: 318, y: 138 }, { x: 248, y: 192 }, { x: 522, y: 52 }, { x: 558, y: 86 },
+              { x: 504, y: 118 }, { x: 170, y: 394 }, { x: 218, y: 418 }, { x: 54, y: 200 },
+              { x: 54, y: 252 }, { x: 54, y: 304 }, { x: 846, y: 200 }, { x: 846, y: 280 },
+              { x: 846, y: 360 }, { x: 750, y: 52 }, { x: 800, y: 80 },
+            ].map((t, i) => (
+              <View key={`tree-${i}`} style={[mapS.tree, { left: t.x - 8, top: t.y - 8 }]} />
+            ))}
+
+            {/* ── Athletic field ── */}
+            <View style={[mapS.athleticField, { left: 56, top: 472, width: 190, height: 110 }]}>
+              <View style={{ position: 'absolute', left: 95, top: 0, bottom: 0, width: 1, backgroundColor: 'rgba(255,255,255,0.35)' }} />
+              <View style={{ position: 'absolute', top: 55, left: 0, right: 0, height: 1, backgroundColor: 'rgba(255,255,255,0.35)' }} />
+              <View style={{ position: 'absolute', left: '50%', top: '50%', marginLeft: -14, marginTop: -14, width: 28, height: 28, borderRadius: 14, borderWidth: 1, borderColor: 'rgba(255,255,255,0.35)' }} />
+            </View>
+            <Text style={[mapS.fieldLabel, { left: 78, top: 587, color: C.muted }]}>Athletic Field</Text>
+
+            {/* ── Basketball court ── */}
+            <View style={[mapS.courtField, { left: 562, top: 472, width: 88, height: 58 }]}>
+              <View style={{ position: 'absolute', left: 44, top: 0, bottom: 0, width: 1, backgroundColor: 'rgba(255,255,255,0.3)' }} />
+            </View>
+            <Text style={[mapS.fieldLabel, { left: 566, top: 534, color: C.muted }]}>Court</Text>
+
+            {/* ── Parking lots ── */}
+            <View style={[mapS.parking, { left: 268, top: 472, width: 152, height: 78 }]}>
+              {[0, 1, 2, 3, 4].map(i => (
+                <View key={i} style={[mapS.parkingStripe, { left: 22 + i * 27 }]} />
+              ))}
+            </View>
+            <Text style={[mapS.fieldLabel, { left: 306, top: 554, color: C.muted }]}>Lot A</Text>
+
+            <View style={[mapS.parking, { left: 682, top: 472, width: 160, height: 78 }]}>
+              {[0, 1, 2, 3, 4, 5].map(i => (
+                <View key={i} style={[mapS.parkingStripe, { left: 16 + i * 24 }]} />
+              ))}
+            </View>
+            <Text style={[mapS.fieldLabel, { left: 722, top: 554, color: C.muted }]}>Lot B</Text>
+
+            {/* ── Chapel (non-interactive) ── */}
+            <View style={[mapS.chapelBuilding, { left: 722, top: 318 }]}>
+              <Text style={mapS.chapelTxt}>Chapel</Text>
+            </View>
+
+            {/* ── Building footprints ── */}
             {filteredBuildings.map(b => {
+              const fp = FP[b.id] ?? { w: 80, h: 58 };
               const hasAlert = CAMPUS_ALERTS.some(a => a.buildingId === b.id);
               const isMatch = searchMatches(b);
               const dimmed = q && !isMatch;
@@ -212,10 +275,17 @@ export default function CampusScreen() {
                 <Pressable
                   key={b.id}
                   style={[
-                    mapS.pin,
-                    { left: b.x - 36, top: b.y - 26, backgroundColor: b.colorHex },
-                    dimmed && { opacity: 0.25 },
-                    !dimmed && q && isMatch && { borderWidth: 2, borderColor: C.accent },
+                    mapS.footprint,
+                    {
+                      left: b.x - fp.w / 2,
+                      top:  b.y - fp.h / 2,
+                      width: fp.w,
+                      height: fp.h,
+                      backgroundColor: b.colorHex + '28',
+                      borderColor: b.colorHex,
+                    },
+                    dimmed && { opacity: 0.2 },
+                    !dimmed && q && isMatch && { borderWidth: 2.5, borderColor: C.accent },
                   ]}
                   onPress={() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -224,38 +294,92 @@ export default function CampusScreen() {
                     setBuildingSheet(true);
                   }}
                 >
-                  <Text style={mapS.pinLetter}>{b.name.charAt(0)}</Text>
-                  {hasAlert && <View style={[mapS.alertDot, { backgroundColor: CAMPUS_ALERTS.find(a => a.buildingId === b.id)?.color ?? '#C4872A' }]} />}
+                  {hasAlert && (
+                    <View style={[mapS.alertDot, { backgroundColor: CAMPUS_ALERTS.find(a => a.buildingId === b.id)?.color ?? '#C4872A' }]} />
+                  )}
                 </Pressable>
               );
             })}
 
-            {/* Building labels */}
+            {/* ── Building labels ── */}
             {filteredBuildings.map(b => {
+              const fp = FP[b.id] ?? { w: 80, h: 58 };
               const isMatch = searchMatches(b);
               const dimmed = q && !isMatch;
               return (
                 <Text
                   key={`lbl-${b.id}`}
-                  style={[mapS.pinLabel, { left: b.x - 44, top: b.y + 30, color: C.label, opacity: dimmed ? 0.25 : 1 }]}
+                  style={[
+                    mapS.pinLabel,
+                    { left: b.x - 52, top: b.y + fp.h / 2 + 4, color: C.label, opacity: dimmed ? 0.2 : 1 },
+                  ]}
                   numberOfLines={2}
                 >
                   {b.name}
                 </Text>
               );
             })}
+
+            {/* ── User location ── */}
+            <View style={[mapS.userHalo, { left: 227 - 16, top: 336 - 16 }]} />
+            <View style={[mapS.userDot,  { left: 227 - 6,  top: 336 - 6  }]} />
           </View>
         </ScrollView>
 
-        {/* Legend */}
-        <View style={[mapS.legend, { backgroundColor: C.surface }]}>
-          {(Object.entries(BUILDING_COLORS) as [string, string][]).map(([type, color]) => (
-            <View key={type} style={mapS.legendItem}>
-              <View style={[mapS.legendDot, { backgroundColor: color }]} />
-              <Text style={[mapS.legendTxt, { color: C.secondary }]}>{type.charAt(0).toUpperCase() + type.slice(1)}</Text>
+        {/* Search FAB / expanded search bar */}
+        {searchFabOpen ? (
+          <View style={{ position: 'absolute', top: topBarH + (filterPillsVisible ? PILL_ROW_H : 0) + 10, left: 0, right: 0, zIndex: 5 }}>
+            <View style={[mapS.searchWrap, { backgroundColor: C.surface, borderColor: C.inputBorder }]}>
+              <IconSymbol name="magnifyingglass" size={15} color={C.muted} />
+              <TextInput
+                autoFocus
+                style={[mapS.searchInput, { color: C.label }]}
+                value={mapSearch}
+                onChangeText={setMapSearch}
+                placeholder="Search"
+                placeholderTextColor={C.muted}
+              />
+              <Pressable onPress={() => { setSearchFabOpen(false); setMapSearch(''); }} hitSlop={8}>
+                <IconSymbol name="xmark.circle.fill" size={15} color={C.muted} />
+              </Pressable>
             </View>
-          ))}
-        </View>
+          </View>
+        ) : (
+          <Pressable
+            style={[mapS.searchFab, { backgroundColor: C.surface, top: topBarH + (filterPillsVisible ? PILL_ROW_H : 0) + 10 }]}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSearchFabOpen(true); }}
+          >
+            <IconSymbol name="magnifyingglass" size={18} color={C.label} />
+          </Pressable>
+        )}
+
+        {/* Legend floating button */}
+        <Pressable
+          style={[mapS.legendBtn, { backgroundColor: C.surface }]}
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setLegendOpen(v => !v); }}
+        >
+          <IconSymbol name="map" size={14} color={C.secondary} />
+          <Text style={[mapS.legendBtnTxt, { color: C.secondary }]}>Legend</Text>
+          <IconSymbol name={legendOpen ? 'chevron.down' : 'chevron.up'} size={10} color={C.muted} />
+        </Pressable>
+
+        {/* Legend panel */}
+        {legendOpen && (
+          <View style={[mapS.legendPanel, { backgroundColor: C.surface }]}>
+            {(Object.entries(BUILDING_COLORS) as [string, string][]).map(([type, color]) => (
+              <View key={type} style={mapS.legendItem}>
+                <View style={[mapS.legendDot, { backgroundColor: color }]} />
+                <Text style={[mapS.legendTxt, { color: C.secondary }]}>
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </Text>
+              </View>
+            ))}
+            <View style={mapS.legendItem}>
+              <View style={[mapS.legendDot, { backgroundColor: '#007AFF' }]} />
+              <Text style={[mapS.legendTxt, { color: C.secondary }]}>Your Location</Text>
+            </View>
+          </View>
+        )}
       </View>
     );
   };
@@ -271,10 +395,7 @@ export default function CampusScreen() {
     };
     const tc = typeColors[c.type];
     return (
-      <View style={{ flex: 1, paddingTop: topBarH + (filterPillsVisible ? PILL_ROW_H : 0) }}>
-      <ScrollView onScroll={handleScroll} scrollEventThrottle={16} showsVerticalScrollIndicator={false}
-        contentInsetAdjustmentBehavior="never"
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120 }}>
+      <>
         {/* Back */}
         <Pressable style={lifeS.backRow} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setClubDetailOpen(false); setSelectedClub(null); }}>
           <IconSymbol name="chevron.left" size={16} color={C.accent} />
@@ -333,8 +454,7 @@ export default function CampusScreen() {
             </Pressable>
           </View>
         )}
-      </ScrollView>
-      </View>
+      </>
     );
   };
 
@@ -359,10 +479,7 @@ export default function CampusScreen() {
     });
 
     return (
-      <View style={{ flex: 1, paddingTop: topBarH + (filterPillsVisible ? PILL_ROW_H : 0) }}>
-      <ScrollView onScroll={handleScroll} scrollEventThrottle={16} showsVerticalScrollIndicator={false}
-        contentInsetAdjustmentBehavior="never"
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120 }}>
+      <>
 
         {/* News */}
         {showNews && (
@@ -590,8 +707,7 @@ export default function CampusScreen() {
             </View>
           </>
         )}
-      </ScrollView>
-      </View>
+      </>
     );
   };
 
@@ -606,10 +722,7 @@ export default function CampusScreen() {
       : filtered;
 
     return (
-      <View style={{ flex: 1, paddingTop: topBarH + (filterPillsVisible ? PILL_ROW_H : 0) }}>
-      <ScrollView onScroll={handleScroll} scrollEventThrottle={16} showsVerticalScrollIndicator={false}
-        contentInsetAdjustmentBehavior="never"
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120 }}>
+      <>
         {orderedCategories.map(cat => {
           if (selectedPill !== 'All' && cat !== selectedPill) return null;
           const items = RESOURCES.filter(r => r.category === cat);
@@ -668,8 +781,7 @@ export default function CampusScreen() {
             </View>
           );
         })}
-      </ScrollView>
-      </View>
+      </>
     );
   };
 
@@ -892,14 +1004,24 @@ export default function CampusScreen() {
   // ── Main render ───────────────────────────────────────────────────────────
 
   const renderContent = () => {
-    if (activeTab === 'Map')       return renderMap();
-    if (activeTab === 'Life')      return renderLife();
+    if (activeTab === 'Life') return renderLife();
     return renderResources();
   };
 
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
-      {renderContent()}
+      {activeTab === 'Map' ? renderMap() : (
+        <ScrollView
+          key={activeTab}
+          style={{ flex: 1 }}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}
+        >
+          {renderContent()}
+        </ScrollView>
+      )}
 
       {/* ── Fixed Top Bar ── */}
       <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
@@ -918,12 +1040,7 @@ export default function CampusScreen() {
             </Pressable>
           </View>
 
-          <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', gap: 8 }]}>
-            <Pressable
-              style={[s.roleToggle, { backgroundColor: role === 'admin' ? C.accent : role === 'student' ? C.label : C.surfacePressed }]}
-              onPress={handleRoleChange}>
-              <Text style={[s.roleToggleTxt, { color: role === 'parent' ? C.secondary : '#fff' }]}>{roleLabel(role)}</Text>
-            </Pressable>
+          <View style={[s.topBarSide, { alignItems: 'flex-end', justifyContent: 'flex-end' }]}>
             <Pressable onPress={togglePills} hitSlop={12}>
               <IconSymbol
                 name={filterPillsVisible || selectedPill !== 'All' ? 'line.3.horizontal.decrease.circle.fill' : 'line.3.horizontal.decrease.circle'}
@@ -1007,25 +1124,36 @@ const s = StyleSheet.create({
   pillsContent:      { paddingHorizontal: 12, alignItems: 'center', gap: 8 },
   pill:              { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1.5 },
   pillTxt:           { fontSize: 13 },
-  roleToggle:        { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 12 },
-  roleToggleTxt:     { fontSize: 11, fontWeight: '700' },
 });
 
 const mapS = StyleSheet.create({
-  searchWrap:  { flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 16, marginBottom: 8, paddingHorizontal: 12, paddingVertical: 9, borderRadius: 12, borderWidth: 1 },
-  searchInput: { flex: 1, fontSize: 14 },
-  canvas:      { width: 800, height: 600, backgroundColor: '#E8EDF0', position: 'relative' },
-  road:        { position: 'absolute', backgroundColor: '#CDD5DB' },
-  roadH:       { height: 12, borderRadius: 6 },
-  roadV:       { width: 12, borderRadius: 6 },
-  pin:         { position: 'absolute', width: 72, height: 52, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
-  pinLetter:   { fontSize: 20, fontWeight: '800', color: '#fff' },
-  pinLabel:    { position: 'absolute', fontSize: 9, fontWeight: '600', textAlign: 'center', width: 88 },
-  alertDot:    { position: 'absolute', top: -5, right: -5, width: 12, height: 12, borderRadius: 6, borderWidth: 2, borderColor: '#fff' },
-  legend:      { position: 'absolute', bottom: 12, right: 12, borderRadius: 10, padding: 10, gap: 5 },
-  legendItem:  { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  legendDot:   { width: 8, height: 8, borderRadius: 4 },
-  legendTxt:   { fontSize: 10 },
+  searchFab:      { position: 'absolute', left: 14, width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.10, shadowRadius: 6, elevation: 4, zIndex: 5 },
+  searchWrap:     { flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 14, paddingHorizontal: 12, paddingVertical: 9, borderRadius: 12, borderWidth: 1, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.10, shadowRadius: 8, elevation: 4 },
+  searchInput:    { flex: 1, fontSize: 14 },
+  canvas:         { width: 900, height: 680, backgroundColor: '#D8DDD4', position: 'relative' },
+  perimRoad:      { position: 'absolute', backgroundColor: '#AEB6BE' },
+  road:           { position: 'absolute', backgroundColor: '#B8BFC6' },
+  path:           { position: 'absolute', backgroundColor: '#C8C4B6', borderRadius: 4 },
+  greenSpace:     { position: 'absolute', backgroundColor: '#9DC472', borderRadius: 6 },
+  tree:           { position: 'absolute', width: 16, height: 16, borderRadius: 8, backgroundColor: '#6DA85A' },
+  athleticField:  { position: 'absolute', backgroundColor: '#6CAE3A', borderRadius: 4, overflow: 'hidden' },
+  courtField:     { position: 'absolute', backgroundColor: '#8EC45A', borderRadius: 3, overflow: 'hidden' },
+  fieldLabel:     { position: 'absolute', fontSize: 9, fontWeight: '500' },
+  parking:        { position: 'absolute', backgroundColor: '#9AA0A8', borderRadius: 3, overflow: 'hidden' },
+  parkingStripe:  { position: 'absolute', top: 0, bottom: 0, width: 1, backgroundColor: 'rgba(255,255,255,0.28)' },
+  chapelBuilding: { position: 'absolute', width: 50, height: 38, backgroundColor: 'rgba(180,155,110,0.55)', borderRadius: 4, borderWidth: 1, borderColor: 'rgba(140,105,60,0.4)', alignItems: 'center', justifyContent: 'center' },
+  chapelTxt:      { fontSize: 8, fontWeight: '600', color: 'rgba(70,45,15,0.75)' },
+  footprint:      { position: 'absolute', borderRadius: 6, borderWidth: 1.5 },
+  pinLabel:       { position: 'absolute', fontSize: 9, fontWeight: '600', textAlign: 'center', width: 104 },
+  alertDot:       { position: 'absolute', top: -5, right: -5, width: 11, height: 11, borderRadius: 5.5, borderWidth: 2, borderColor: '#fff' },
+  userHalo:       { position: 'absolute', width: 32, height: 32, borderRadius: 16, backgroundColor: 'rgba(0,122,255,0.18)' },
+  userDot:        { position: 'absolute', width: 12, height: 12, borderRadius: 6, backgroundColor: '#007AFF', borderWidth: 2.5, borderColor: '#fff' },
+  legendBtn:      { position: 'absolute', bottom: 12, right: 12, flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 10 },
+  legendBtnTxt:   { fontSize: 11, fontWeight: '600' },
+  legendPanel:    { position: 'absolute', bottom: 46, right: 12, borderRadius: 12, padding: 12, gap: 7, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 8, elevation: 4 },
+  legendItem:     { flexDirection: 'row', alignItems: 'center', gap: 7 },
+  legendDot:      { width: 10, height: 10, borderRadius: 5 },
+  legendTxt:      { fontSize: 11 },
 });
 
 const lifeS = StyleSheet.create({

@@ -38,8 +38,6 @@ export function SocialPanel() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Social</Text>
-
       {NAV_ITEMS.map((item, idx) => (
         <Pressable
           key={item.label}
@@ -66,13 +64,6 @@ export function SocialPanel() {
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
   container: {},
-  title: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: C.label,
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
   navRow: {
     flexDirection: 'row',
     alignItems: 'center',

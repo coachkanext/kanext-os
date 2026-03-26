@@ -67,7 +67,7 @@ export const ENROLLMENT_SUMMARY: EnrollmentSummary = {
   lastCycleYieldRate: 68,
 };
 
-const APPLICANTS: ApplicantCard[] = [
+export const APPLICANTS: ApplicantCard[] = [
   // Prospect (3)
   { id: 'ap1',  name: 'Maya Johnson',     initials: 'MJ', intendedMajor: 'Computer Science',   location: 'Atlanta, GA',       applicationType: 'regular',       gpa: 3.85, testScore: 1380, financialAidStatus: 'none',    lastInteraction: '2h ago',  flags: ['first-gen'],                        stage: 'Prospect' },
   { id: 'ap2',  name: 'Ethan Brooks',     initials: 'EB', intendedMajor: 'Business Admin',     location: 'Chicago, IL',       applicationType: 'regular',       gpa: 3.62, testScore: 1290, financialAidStatus: 'none',    lastInteraction: '1d ago',  flags: [],                                   stage: 'Prospect' },
@@ -263,4 +263,144 @@ export function getApplications(filter: AppFilter): ApplicationItem[] {
 export function formatAidAmount(n: number): string {
   if (n >= 1_000) return `$${Math.round(n / 1_000)}K`;
   return `$${n}`;
+}
+
+// ─── Campaigns ───────────────────────────────────────────────────────────────
+
+export type CampaignType = 'campus-visit' | 'virtual' | 'high-school' | 'digital' | 'direct-mail' | 'transfer-fair' | 'alumni-referral' | 'scholarship' | 'social-media';
+export type AdmCampaignStatus = 'active' | 'upcoming' | 'completed' | 'planning';
+
+export interface AdmCampaign {
+  id: string;
+  name: string;
+  type: CampaignType;
+  status: AdmCampaignStatus;
+  startDate: string;
+  endDate: string;
+  description: string;
+  targetAudience: string;
+  reach: number;
+  inquiriesGenerated: number;
+  applicationsGenerated: number;
+  assignedStaff: string[];
+  budget: number;
+  rsvpCount?: number;
+}
+
+export const CAMPAIGNS: AdmCampaign[] = [
+  {
+    id: 'c1', name: 'Spring Campus Visit Day', type: 'campus-visit', status: 'active',
+    startDate: '2026-04-12', endDate: '2026-04-12',
+    description: 'Annual spring visit day with tours, info sessions, and meet-the-faculty. Includes lunch with current students and department showcases.',
+    targetAudience: 'Prospective students nationwide', reach: 45, inquiriesGenerated: 38,
+    applicationsGenerated: 12, assignedStaff: ['Sarah Chen', 'Marcus Webb'], budget: 2500, rsvpCount: 45,
+  },
+  {
+    id: 'c2', name: 'Fall 2026 Digital Campaign', type: 'digital', status: 'active',
+    startDate: '2026-02-01', endDate: '2026-06-30',
+    description: 'Multi-platform social and email campaign targeting high school juniors and seniors. Includes Google Display ads, email drip sequences, and retargeting.',
+    targetAudience: 'High school juniors/seniors nationally', reach: 200, inquiriesGenerated: 82,
+    applicationsGenerated: 31, assignedStaff: ['Jordan Kim'], budget: 8000,
+  },
+  {
+    id: 'c3', name: 'High School Tour — MLK Academy', type: 'high-school', status: 'completed',
+    startDate: '2026-03-05', endDate: '2026-03-05',
+    description: 'Counselor visit to MLK Academy to present Lincoln University programs and financial aid options. 7 applications generated — 11.3% conversion rate.',
+    targetAudience: 'MLK Academy seniors', reach: 62, inquiriesGenerated: 24,
+    applicationsGenerated: 7, assignedStaff: ['Sarah Chen', 'David Park'], budget: 600,
+  },
+  {
+    id: 'c4', name: 'Virtual Open House — Fall 2026', type: 'virtual', status: 'upcoming',
+    startDate: '2026-05-20', endDate: '2026-05-20',
+    description: 'Live virtual tour and Q&A for out-of-state and international prospects. Breakout rooms by intended major.',
+    targetAudience: 'National and international prospects', reach: 0, inquiriesGenerated: 0,
+    applicationsGenerated: 0, assignedStaff: ['Jordan Kim', 'Priya Nair'], budget: 1200, rsvpCount: 18,
+  },
+  {
+    id: 'c5', name: 'Community College Transfer Fair', type: 'transfer-fair', status: 'active',
+    startDate: '2026-03-18', endDate: '2026-03-18',
+    description: 'Lincoln University table at the Metro Transfer Fair. Focused on 2+2 articulation agreements and transfer scholarship opportunities.',
+    targetAudience: 'Community college sophomores in metro area', reach: 134, inquiriesGenerated: 51,
+    applicationsGenerated: 9, assignedStaff: ['Marcus Webb', 'Priya Nair'], budget: 900,
+  },
+  {
+    id: 'c6', name: 'Alumni Referral Drive — Spring', type: 'alumni-referral', status: 'active',
+    startDate: '2026-02-15', endDate: '2026-04-30',
+    description: 'Activate alumni network to refer qualified prospective students. Alumni share personalized links and receive thank-you gifts for successful enrollments.',
+    targetAudience: 'Friends/family of Lincoln alumni nationwide', reach: 312, inquiriesGenerated: 44,
+    applicationsGenerated: 18, assignedStaff: ['Sarah Chen'], budget: 3200,
+  },
+  {
+    id: 'c7', name: 'Lincoln Scholarship Awareness', type: 'scholarship', status: 'active',
+    startDate: '2026-01-10', endDate: '2026-05-01',
+    description: 'Targeted outreach to highlight Lincoln Excellence Scholarship and STEM Innovation Award to high-achieving seniors. Geo-targeted to underrepresented zip codes.',
+    targetAudience: 'High-GPA seniors, Title I school districts', reach: 580, inquiriesGenerated: 97,
+    applicationsGenerated: 42, assignedStaff: ['Jordan Kim', 'David Park'], budget: 5500,
+  },
+  {
+    id: 'c8', name: 'Instagram + TikTok Campaign', type: 'social-media', status: 'completed',
+    startDate: '2026-01-20', endDate: '2026-03-15',
+    description: 'Short-form video series showcasing campus life, student stories, and dorm tours. Ran through admissions @lincolnu accounts and boosted posts.',
+    targetAudience: 'High school students ages 16–18', reach: 4800, inquiriesGenerated: 118,
+    applicationsGenerated: 23, assignedStaff: ['Jordan Kim'], budget: 2200,
+  },
+  {
+    id: 'c9', name: 'Fall Preview Weekend', type: 'campus-visit', status: 'planning',
+    startDate: '2026-10-03', endDate: '2026-10-04',
+    description: 'Overnight campus visit experience for early-decision prospects. Includes dinner with faculty, overnight in dorms, and Saturday class shadowing.',
+    targetAudience: 'High school seniors — early decision candidates', reach: 0, inquiriesGenerated: 0,
+    applicationsGenerated: 0, assignedStaff: ['Sarah Chen', 'Marcus Webb', 'Priya Nair'], budget: 6000, rsvpCount: 0,
+  },
+  {
+    id: 'c10', name: 'Direct Mail — Junior List', type: 'direct-mail', status: 'completed',
+    startDate: '2026-02-03', endDate: '2026-02-28',
+    description: 'Viewbook mailing to purchased list of high-achieving juniors in five target states. Included QR code linking to personalized landing page.',
+    targetAudience: 'High school juniors, 5 target states', reach: 2400, inquiriesGenerated: 62,
+    applicationsGenerated: 0, assignedStaff: ['David Park'], budget: 4100,
+  },
+];
+
+export function getApplicantHue(id: string): number {
+  const n = id.charCodeAt(id.length - 1) + (id.charCodeAt(2) ?? 0);
+  return (n * 47) % 360;
+}
+
+export const MOCK_INTERACTION_LOG: Record<string, { date: string; type: string; summary: string }[]> = {
+  ap8:  [
+    { date: '2026-03-20', type: 'email', summary: 'Sent application confirmation' },
+    { date: '2026-03-18', type: 'call',  summary: 'Discussed CS program and scholarship options' },
+    { date: '2026-03-10', type: 'visit', summary: 'Campus visit — info session and dorm tour' },
+  ],
+  ap9:  [
+    { date: '2026-03-22', type: 'email', summary: 'Pre-med advising packet sent' },
+    { date: '2026-03-15', type: 'call',  summary: 'Spoke about nursing vs pre-med track' },
+  ],
+  ap12: [
+    { date: '2026-03-21', type: 'email', summary: 'Follow-up on financial aid award letter' },
+    { date: '2026-03-18', type: 'note',  summary: 'Legacy family — father is alum class of 2001' },
+  ],
+  ap15: [
+    { date: '2026-03-23', type: 'email', summary: 'Sent acceptance + scholarship congratulations' },
+    { date: '2026-03-01', type: 'call',  summary: 'Journalism dept chair personally reached out' },
+  ],
+};
+
+export function getCampaignsByStatus(s: AdmCampaignStatus | 'all'): AdmCampaign[] {
+  return s === 'all' ? CAMPAIGNS : CAMPAIGNS.filter(c => c.status === s);
+}
+
+export function getTotalCampaignStats(): { totalReach: number; totalInquiries: number; totalApplications: number; totalRsvps: number; conversionRate: number } {
+  const totals = CAMPAIGNS.reduce((acc, c) => ({
+    reach: acc.reach + c.reach,
+    inquiries: acc.inquiries + c.inquiriesGenerated,
+    applications: acc.applications + c.applicationsGenerated,
+    rsvps: acc.rsvps + (c.rsvpCount ?? 0),
+  }), { reach: 0, inquiries: 0, applications: 0, rsvps: 0 });
+  return {
+    totalReach: totals.reach,
+    totalInquiries: totals.inquiries,
+    totalApplications: totals.applications,
+    totalRsvps: totals.rsvps,
+    conversionRate: totals.reach > 0 ? Math.round((totals.applications / totals.reach) * 1000) / 10 : 0,
+  };
 }
