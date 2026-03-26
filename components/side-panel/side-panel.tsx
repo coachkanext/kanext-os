@@ -37,6 +37,10 @@ import { CommunityMembersPanel } from './community-members-panel';
 import { CommunityOutreachPanel } from './community-outreach-panel';
 import { CommunityGivePanel } from './community-give-panel';
 import { EduFundPanel } from './edu-fund-panel';
+import { SportsHubPanel } from './sports-hub-panel';
+import { SportsRosterPanel } from './sports-roster-panel';
+import { SportsRecruitsPanel } from './sports-recruits-panel';
+import { SportsBoosterPanel } from './sports-booster-panel';
 import { NetworkPanel } from './network-panel';
 import { DealsPanel } from './deals-panel';
 import { EarnPanel } from './earn-panel';
@@ -73,7 +77,9 @@ export function SidePanel({ visible }: SidePanelProps) {
   const isHubCommunity  = pathname.includes('hub/community') || pathname.includes('hub/announcement-compose') || pathname.includes('hub/care-request');
   const isHubEducation  = pathname.includes('hub/education') || pathname.includes('hub/edu-announcement');
   const isCampus        = pathname.includes('hub/campus');
-  const isHub = pathname.includes('hub') && !isHubCommunity && !isHubEducation && !isCampus;
+  const isHubSports     = pathname.includes('hub/sports');
+  const isBooster       = pathname.includes('/booster');
+  const isHub = pathname.includes('hub') && !isHubCommunity && !isHubEducation && !isCampus && !isHubSports;
   const isEarn     = pathname.includes('earn');
   const isDeals    = pathname.includes('deals');
   const isNetwork  = pathname.includes('network');
@@ -116,6 +122,10 @@ export function SidePanel({ visible }: SidePanelProps) {
                         ? <EducationHubPanel />
                         : isCampus
                         ? <CampusPanel />
+                        : isHubSports
+                        ? <SportsHubPanel />
+                        : isBooster
+                        ? <SportsBoosterPanel />
                         : isAdmissions
                         ? <AdmissionsPanel />
                         : isHub
@@ -129,9 +139,9 @@ export function SidePanel({ visible }: SidePanelProps) {
                         : isSeason
                           ? <SeasonPanel />
                           : isRoster
-                            ? <RosterPanel />
+                            ? (mode === 'sports' ? <SportsRosterPanel /> : <RosterPanel />)
                             : isRecruits
-                              ? (mode === 'business' ? <LeadsPanel /> : mode === 'education' ? <AdmissionsPanel /> : mode === 'church' ? <OutreachPanel /> : <ProspectsPanel />)
+                              ? (mode === 'sports' ? <SportsRecruitsPanel /> : mode === 'business' ? <LeadsPanel /> : mode === 'education' ? <AdmissionsPanel /> : mode === 'church' ? <OutreachPanel /> : <ProspectsPanel />)
                               : isOutreach
                                 ? <CommunityOutreachPanel />
                                 : isEarn

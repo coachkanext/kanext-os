@@ -24,10 +24,10 @@ import type { GridIcon } from './home-types';
 
 /** Route overrides per mode */
 const MODE_ROUTES: Record<string, Partial<Record<string, string>>> = {
-  hub: { personal: '/(tabs)/(main)/hub', community: '/(tabs)/(main)/hub/community', education: '/(tabs)/(main)/hub/education' },
+  hub: { personal: '/(tabs)/(main)/hub', community: '/(tabs)/(main)/hub/community', education: '/(tabs)/(main)/hub/education', sports: '/(tabs)/(main)/hub/sports' },
   p4:  { personal: '/(tabs)/(main)/network', community: '/(tabs)/(main)/members', education: '/(tabs)/(main)/hub/campus' },
   p5:  { personal: '/(tabs)/(main)/deals', community: '/(tabs)/(main)/outreach', education: '/(tabs)/(main)/admissions' },
-  p6:  { personal: '/(tabs)/(main)/earn', community: '/(tabs)/(main)/give', education: '/(tabs)/(main)/fund' },
+  p6:  { personal: '/(tabs)/(main)/earn', community: '/(tabs)/(main)/give', education: '/(tabs)/(main)/fund', sports: '/(tabs)/(main)/booster' },
 };
 
 /** Row 2 labels shift per mode */

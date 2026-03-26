@@ -151,6 +151,9 @@ export default function HomeLayout() {
       <Stack.Screen name="hub/education" />
       <Stack.Screen name="hub/edu-announcement" />
       <Stack.Screen name="hub/campus" />
+      <Stack.Screen name="hub/sports" />
+      {/* Booster */}
+      <Stack.Screen name="booster/index" />
       {/* Admissions */}
       <Stack.Screen name="admissions/index" />
     </Stack>
