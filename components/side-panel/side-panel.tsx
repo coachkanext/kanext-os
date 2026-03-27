@@ -45,6 +45,10 @@ import { NetworkPanel } from './network-panel';
 import { DealsPanel } from './deals-panel';
 import { EarnPanel } from './earn-panel';
 import { DefaultPanel } from './default-panel';
+import { BusinessHubPanel } from './business-hub-panel';
+import { TeamPanel } from './team-panel';
+import { InquiriesPanel } from './inquiries-panel';
+import { BusinessStorePanel } from './business-store-panel';
 import { useMode } from '@/context/app-context';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -69,7 +73,8 @@ export function SidePanel({ visible }: SidePanelProps) {
   const isRoster = pathname.includes('roster');
   const isRecruits = pathname.includes('recruits');
   const isSocial = pathname.includes('social');
-  const isStore = pathname.includes('store');
+  const isBusinessStore = pathname.includes('business-store');
+  const isStore = pathname.includes('store') && !isBusinessStore;
   const isKayTV = pathname.includes('kaytv');
   const isWallet = pathname.includes('wallet');
   const isStudios = pathname.includes('studios');
@@ -79,7 +84,10 @@ export function SidePanel({ visible }: SidePanelProps) {
   const isCampus        = pathname.includes('hub/campus');
   const isHubSports     = pathname.includes('hub/sports');
   const isBooster       = pathname.includes('/booster');
-  const isHub = pathname.includes('hub') && !isHubCommunity && !isHubEducation && !isCampus && !isHubSports;
+  const isHubBusiness  = pathname.includes('hub/business');
+  const isTeam         = pathname.includes('/team') && !pathname.includes('admissions');
+  const isInquiries    = pathname.includes('/inquiries');
+  const isHub = pathname.includes('hub') && !isHubCommunity && !isHubEducation && !isCampus && !isHubSports && !isHubBusiness;
   const isEarn     = pathname.includes('earn');
   const isDeals    = pathname.includes('deals');
   const isNetwork  = pathname.includes('network');
@@ -110,6 +118,8 @@ export function SidePanel({ visible }: SidePanelProps) {
               ? <NexusPanel />
               : isSocial
                 ? <SocialPanel />
+                : isBusinessStore
+                  ? <BusinessStorePanel />
                 : isStore
                   ? (mode === 'church' ? <GivePanel /> : <StorePanel />)
                   : isKayTV
@@ -128,6 +138,12 @@ export function SidePanel({ visible }: SidePanelProps) {
                         ? <SportsBoosterPanel />
                         : isAdmissions
                         ? <AdmissionsPanel />
+                        : isHubBusiness
+                        ? <BusinessHubPanel />
+                        : isTeam
+                        ? <TeamPanel />
+                        : isInquiries
+                        ? <InquiriesPanel />
                         : isHub
                         ? <HubPanel />
                         : isStudios

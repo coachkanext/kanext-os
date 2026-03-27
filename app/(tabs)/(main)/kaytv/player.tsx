@@ -11,6 +11,7 @@ import {
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { VideoView, useVideoPlayer } from 'expo-video';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
@@ -74,12 +75,17 @@ export default function KayTVPlayerScreen() {
   const video = getKayTVFeedItem(videoId);
   const related = video ? getRelatedFeedItems(video) : [];
 
+  const player = useVideoPlayer((video?.videoUri ?? null) as any, p => {
+    p.loop = false;
+    p.play();
+  });
+
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
   const [descExpanded, setDescExpanded] = useState(false);
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState(!!video?.videoUri);
   const [minimized, setMinimized] = useState(false);
 
   const lastScrollY = useRef(0);
@@ -128,15 +134,30 @@ export default function KayTVPlayerScreen() {
           style={[styles.player, { height: playerH + insets.top, paddingTop: insets.top }]}
           {...panResponder.panHandlers}
         >
-          {/* Play/pause tap */}
+          {video.videoUri ? (
+            /* Real video playback */
+            <VideoView
+              player={player}
+              style={[StyleSheet.absoluteFill, { top: insets.top }]}
+              contentFit="contain"
+              nativeControls={false}
+            />
+          ) : null}
+
+          {/* Play/pause tap overlay */}
           <Pressable
             style={styles.playerTap}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              setPlaying(v => !v);
+              const next = !playing;
+              setPlaying(next);
+              if (video.videoUri) {
+                if (next) player.play();
+                else player.pause();
+              }
             }}
           >
-            <View style={styles.playIconWrap}>
+            <View style={[styles.playIconWrap, playing && video.videoUri ? { opacity: 0 } : {}]}>
               <IconSymbol
                 name={playing ? 'pause.fill' : 'play.fill'}
                 size={42}
@@ -163,10 +184,12 @@ export default function KayTVPlayerScreen() {
             <IconSymbol name="ellipsis" size={18} color="#fff" />
           </Pressable>
 
-          {/* Progress bar */}
-          <View style={styles.progressBg}>
-            <View style={styles.progressFill} />
-          </View>
+          {/* Progress bar (shown when no native video controls) */}
+          {!video.videoUri && (
+            <View style={styles.progressBg}>
+              <View style={styles.progressFill} />
+            </View>
+          )}
         </View>
       ) : null}
 
@@ -428,7 +451,10 @@ export default function KayTVPlayerScreen() {
             <IconSymbol name={playing ? 'pause.fill' : 'play.fill'} size={18} color="#fff" />
           </Pressable>
           <Pressable
-            onPress={() => router.back()}
+            onPress={() => {
+              if (video.videoUri) player.pause();
+              router.back();
+            }}
             hitSlop={10}
             style={styles.miniClose}
           >

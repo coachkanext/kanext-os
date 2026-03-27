@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { GlassView }  from '@/components/ui/glass-view';
@@ -158,6 +158,7 @@ export default function SportsHubScreen() {
   const C       = useColors();
   const styles  = useMemo(() => makeStyles(C), [C]);
   const insets  = useSafeAreaInsets();
+  const router  = useRouter();
 
   const [activeTab, setActiveTab] = useState<SportsTab>('Overview');
   const [role,      setRole]      = useState<SportsRole>('Coach');
@@ -376,6 +377,22 @@ export default function SportsHubScreen() {
           <IconSymbol name="chevron.right" size={12} color={C.muted} />
         </Pressable>
       ))}
+
+      {/* Tools */}
+      <SectionTitle title="Tools" C={C} />
+      <View style={{ flexDirection: 'row', gap: 8 }}>
+        <Pressable
+          onPress={() => router.push('/(tabs)/(main)/statkeeper' as any)}
+          style={({ pressed }) => [
+            styles.toolTile,
+            { backgroundColor: NAVY, opacity: pressed ? 0.85 : 1 },
+          ]}
+        >
+          <IconSymbol name="figure.run" size={22} color="rgba(255,255,255,0.75)" />
+          <Text style={styles.toolTileLabel}>Operations</Text>
+          <Text style={styles.toolTileSub}>StatKeeper</Text>
+        </Pressable>
+      </View>
 
       <View style={{ height: 20 }} />
     </View>
@@ -995,6 +1012,10 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
 
   newsRow:       { borderRadius: 14, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 10, borderWidth: 1, marginBottom: 6 },
   newsTitle:     { fontSize: 14, fontWeight: '600', lineHeight: 20 },
+
+  toolTile:      { borderRadius: 16, padding: 16, gap: 4, minWidth: 120 },
+  toolTileLabel: { fontSize: 15, fontWeight: '700', color: '#fff', marginTop: 4 },
+  toolTileSub:   { fontSize: 11, color: 'rgba(255,255,255,0.55)' },
 
   lockWrap: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 80, paddingHorizontal: 40 },
   lockCard: { padding: 28, alignItems: 'center', gap: 12, maxWidth: 280 },

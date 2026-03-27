@@ -152,10 +152,22 @@ export default function HomeLayout() {
       <Stack.Screen name="hub/edu-announcement" />
       <Stack.Screen name="hub/campus" />
       <Stack.Screen name="hub/sports" />
+      {/* StatKeeper */}
+      <Stack.Screen
+        name="statkeeper/index"
+        options={{ headerShown: false, animation: 'none', gestureEnabled: false, fullScreenGestureEnabled: false } as any}
+      />
+      {/* KayPay */}
+      <Stack.Screen name="kaypay/index" />
       {/* Booster */}
       <Stack.Screen name="booster/index" />
       {/* Admissions */}
       <Stack.Screen name="admissions/index" />
+      {/* Business Mode Row 2 */}
+      <Stack.Screen name="hub/business" />
+      <Stack.Screen name="team/index" />
+      <Stack.Screen name="inquiries/index" />
+      <Stack.Screen name="business-store/index" />
     </Stack>
   );
 }

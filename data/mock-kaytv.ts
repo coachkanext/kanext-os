@@ -352,6 +352,7 @@ export interface KayTVFeedItem {
   commentCount: number;
   thumbHue: number;
   thumbEmoji: string;
+  videoUri?: string | number; // URI string or bundled require() asset
 }
 
 export interface KayTVVideoComment {
@@ -388,11 +389,11 @@ export const KAYTV_CATEGORIES: Record<string, string[]> = {
 // Brands the user is subscribed to within each mode.
 // Subscribed brand content floats to top of the Home feed.
 export const SUBSCRIBED_BRANDS: Record<string, string[]> = {
-  sports:    ['Varsity FC'],
-  business:  ['NovaTech'],
-  education: ['Lincoln University'],
-  community: ['Grace Church'],
-  personal:  [],
+  sports:    ['Varsity FC',        'Lincoln Basketball'],
+  business:  ['NovaTech',          'Lincoln Basketball'],
+  education: ['Lincoln University', 'Lincoln Basketball'],
+  community: ['Grace Church',       'Lincoln Basketball'],
+  personal:  ['Lincoln Basketball'],
 };
 
 export function formatVideoTimestamp(date: Date): string {
@@ -408,11 +409,50 @@ export function formatVideoTimestamp(date: Date): string {
 const _N = Date.now();
 const _D = 86_400_000;
 
+// ── Bundled game film assets ───────────────────────────────────────────────
+const A_PEPPER  = require('@/assets/videos/kaytv-preview.mp4') as number;
+const A_LB      = require('@/assets/videos/lb-state.mp4')      as number;
+const A_WEBER   = require('@/assets/videos/weber-st.mp4')      as number;
+const A_IRVINE  = require('@/assets/videos/irvine.mp4')         as number;
+const A_LMU     = require('@/assets/videos/lmu.mp4')            as number;
+const A_SIMPSON = require('@/assets/videos/simpson.mp4')        as number;
+const A_MAR_W   = require('@/assets/videos/maritime-w.mp4')    as number;
+const A_MAR_L   = require('@/assets/videos/maritime-l.mp4')    as number;
+
+// Shared uploader stub for all Lincoln Basketball videos
+const _LB = {
+  uploaderName: 'Lincoln Basketball', uploaderHandle: '@lincolnbball',
+  uploaderInitials: 'LB', brandName: 'Lincoln Basketball', category: 'Games', thumbEmoji: '🏀',
+};
+
+// Helper: minutes ago offset
+function _minsAgo(m: number) { return new Date(_N - m * 60_000); }
+
+// The 8 real game clips as canonical objects (mode/id assigned per feed below)
+const _GAME_PEPPER  = { ..._LB, title: 'Lincoln @ Pepperdine — Laolu 12 Three-Pointers',       thumbHue: 215, duration: '4:12', viewCount: 24800, likeCount: 1840, commentCount: 312, description: 'Laolu drops 12 three-pointers in a dominant road win at Pepperdine.',          videoUri: A_PEPPER  };
+const _GAME_LB      = { ..._LB, title: 'Lincoln @ Long Beach State — Laolu 6 Three-Pointers',  thumbHue:  45, duration: '3:48', viewCount: 18400, likeCount: 1340, commentCount: 224, description: 'Six threes in a statement road win at Long Beach State.',                       videoUri: A_LB      };
+const _GAME_WEBER   = { ..._LB, title: 'Lincoln @ Weber State — Laolu 4 Three-Pointers',       thumbHue: 270, duration: '3:22', viewCount: 14200, likeCount:  980, commentCount: 156, description: 'Laolu catches fire from three in a big road win at Weber State.',              videoUri: A_WEBER   };
+const _GAME_IRVINE  = { ..._LB, title: 'Lincoln @ UC Irvine — Laolu 4 Three-Pointers',         thumbHue: 210, duration: '2:58', viewCount: 12600, likeCount:  890, commentCount: 143, description: 'Four threes and a complete team effort in Irvine.',                            videoUri: A_IRVINE  };
+const _GAME_LMU     = { ..._LB, title: 'Lincoln @ LMU — Laolu 2 Three-Pointers',               thumbHue:   0, duration: '2:34', viewCount:  9800, likeCount:  720, commentCount: 118, description: 'Two big threes help Lincoln pull away at LMU.',                                videoUri: A_LMU     };
+const _GAME_SIMPSON = { ..._LB, title: 'Lincoln @ Simpson — Laolu 8 Three-Pointers',           thumbHue:  10, duration: '4:05', viewCount: 16200, likeCount: 1120, commentCount: 189, description: 'Career-high eight three-pointers — Laolu goes off at Simpson.',                videoUri: A_SIMPSON };
+const _GAME_MAR_W   = { ..._LB, title: 'Lincoln vs Cal Maritime (W) — Laolu 6 Three-Pointers', thumbHue: 205, duration: '3:30', viewCount: 11400, likeCount:  810, commentCount: 134, description: 'Six threes in a convincing home win over Cal Maritime.',                       videoUri: A_MAR_W   };
+const _GAME_MAR_L   = { ..._LB, title: 'Lincoln @ Cal Maritime (L) — Laolu 6 Three-Pointers',  thumbHue: 205, duration: '3:15', viewCount: 10200, likeCount:  740, commentCount: 122, description: 'Laolu hit six threes but Lincoln fell short in a tough road game at Maritime.', videoUri: A_MAR_L   };
+
 // ── Sports feed (Varsity FC = subscribed brand + City Athletic = discovery) ──
 
 const FEED_SPORTS: KayTVFeedItem[] = [
-  { id: 'fsv1',  mode: 'sports', category: 'Games',      brandName: 'Varsity FC', title: 'Full Game Replay: Varsity FC vs. Riverside United',        uploaderName: 'Varsity FC',          uploaderHandle: '@varsityfc',       uploaderInitials: 'VF', viewCount: 14800, timestamp: new Date(_N - 2*3_600_000), duration: '1:47:22', likeCount: 892,  commentCount: 134, thumbHue: 0,   thumbEmoji: '⚽', description: 'Full replay of last night\'s match vs. Riverside United. Watch the complete 90 minutes including extra time.' },
-  { id: 'fsv2',  mode: 'sports', category: 'Highlights', brandName: 'Varsity FC', title: 'Top 10 Plays — Week 7 Highlights Reel',                    uploaderName: 'Coach Rodriguez',     uploaderHandle: '@coach_rod',       uploaderInitials: 'CR', viewCount: 8320,  timestamp: new Date(_N - 6*3_600_000), duration: '4:15',    likeCount: 541,  commentCount: 67,  thumbHue: 12,  thumbEmoji: '🔥', description: 'The 10 best plays from Week 7 across all age groups. Some truly elite moments this week.' },
+  // ── Real game film (featured first) ──
+  { id: 'gs1', mode: 'sports', ..._GAME_LB,      timestamp: _minsAgo(5)  },
+  { id: 'gs2', mode: 'sports', ..._GAME_MAR_W,   timestamp: _minsAgo(20) },
+  { id: 'gs3', mode: 'sports', ..._GAME_PEPPER,  timestamp: _minsAgo(35) },
+  { id: 'gs4', mode: 'sports', ..._GAME_WEBER,   timestamp: _minsAgo(50) },
+  { id: 'gs5', mode: 'sports', ..._GAME_IRVINE,  timestamp: _minsAgo(65) },
+  { id: 'gs6', mode: 'sports', ..._GAME_LMU,     timestamp: _minsAgo(80) },
+  { id: 'gs7', mode: 'sports', ..._GAME_SIMPSON, timestamp: _minsAgo(95) },
+  { id: 'gs8', mode: 'sports', ..._GAME_MAR_L,   timestamp: _minsAgo(110) },
+  // ── Mock feed ──
+  { id: 'fsv1',  mode: 'sports', category: 'Games',      brandName: 'Varsity FC', title: 'LMU Game 2 — Full Replay',                                  uploaderName: 'Varsity FC',          uploaderHandle: '@varsityfc',       uploaderInitials: 'VF', viewCount: 14800, timestamp: new Date(_N - 2*3_600_000), duration: '1:47:22', likeCount: 892,  commentCount: 134, thumbHue: 0,   thumbEmoji: '⚽', description: 'Full replay of Game 2 vs. LMU. Watch every possession including overtime.', videoUri: 'file:///Users/sammy/Desktop/Laolu%203/LMU%202.mp4' },
+  { id: 'fsv2',  mode: 'sports', category: 'Highlights', brandName: 'Varsity FC', title: 'LB State — 6 Three-Pointers Highlights',                    uploaderName: 'Coach Rodriguez',     uploaderHandle: '@coach_rod',       uploaderInitials: 'CR', viewCount: 8320,  timestamp: new Date(_N - 6*3_600_000), duration: '4:15',    likeCount: 541,  commentCount: 67,  thumbHue: 12,  thumbEmoji: '🔥', description: '6 three-pointers in one game — State tournament performance highlights.', videoUri: 'file:///Users/sammy/Desktop/Laolu%203/LB%20State%206%20Threes.mp4' },
   { id: 'fsv3',  mode: 'sports', category: 'Highlights', brandName: 'Varsity FC', title: 'Tuesday Training Session — Defensive Shape',               uploaderName: 'Coaching Staff',      uploaderHandle: '@varsityfc_staff', uploaderInitials: 'CS', viewCount: 1230,  timestamp: new Date(_N - 1*_D),        duration: '22:08',   likeCount: 89,   commentCount: 14,  thumbHue: 210, thumbEmoji: '🎬', description: 'Full practice film from Tuesday\'s session. Focus on defensive shape and pressing triggers.' },
   { id: 'fsv4',  mode: 'sports', category: 'Press',      brandName: 'Varsity FC', title: 'Post-Match Press Conference — Head Coach',                 uploaderName: 'Varsity FC Media',    uploaderHandle: '@varsityfc_media', uploaderInitials: 'VM', viewCount: 3100,  timestamp: new Date(_N - 2*_D),        duration: '11:44',   likeCount: 178,  commentCount: 29,  thumbHue: 30,  thumbEmoji: '🎙️', description: 'Full post-match press conference after the 2-1 win over Riverside. Coach discusses tactics and key moments.' },
   { id: 'fsv5',  mode: 'sports', category: 'Recruiting', brandName: 'Varsity FC', title: 'Prospect Profile: Marcus J. — Class of 2026',             uploaderName: 'Varsity FC Scouting', uploaderHandle: '@varsityfc_scout', uploaderInitials: 'VS', viewCount: 2500,  timestamp: new Date(_N - 3*_D),        duration: '6:30',    likeCount: 203,  commentCount: 41,  thumbHue: 120, thumbEmoji: '⭐', description: 'Full highlight reel for Marcus J., top Class of 2026 prospect. Breakdown of key attributes and stats.' },
@@ -430,6 +470,16 @@ const FEED_SPORTS: KayTVFeedItem[] = [
 ];
 
 const FEED_BUSINESS: KayTVFeedItem[] = [
+  // ── Real game film ──
+  { id: 'gb1', mode: 'business', ..._GAME_PEPPER,  timestamp: _minsAgo(5)  },
+  { id: 'gb2', mode: 'business', ..._GAME_LB,      timestamp: _minsAgo(20) },
+  { id: 'gb3', mode: 'business', ..._GAME_WEBER,   timestamp: _minsAgo(35) },
+  { id: 'gb4', mode: 'business', ..._GAME_IRVINE,  timestamp: _minsAgo(50) },
+  { id: 'gb5', mode: 'business', ..._GAME_LMU,     timestamp: _minsAgo(65) },
+  { id: 'gb6', mode: 'business', ..._GAME_SIMPSON, timestamp: _minsAgo(80) },
+  { id: 'gb7', mode: 'business', ..._GAME_MAR_W,   timestamp: _minsAgo(95) },
+  { id: 'gb8', mode: 'business', ..._GAME_MAR_L,   timestamp: _minsAgo(110) },
+  // ── Mock feed ──
   { id: 'fbv1', mode: 'business', category: 'Culture',  brandName: 'NovaTech', title: 'Onboarding Series: Day 1 Welcome & Culture',           uploaderName: 'NovaTech HR',         uploaderHandle: '@novatech_hr',       uploaderInitials: 'NH', viewCount: 3420,  timestamp: new Date(_N - 3*3_600_000), duration: '14:22', likeCount: 198, commentCount: 22, thumbHue: 200, thumbEmoji: '🎯', description: 'Welcome to NovaTech. This video covers our mission, values, and what to expect in your first week.' },
   { id: 'fbv2', mode: 'business', category: 'Product',  brandName: 'NovaTech', title: 'Q4 Product Roadmap Presentation',                      uploaderName: 'Alex Rivera (CPO)',   uploaderHandle: '@alex_cpo',          uploaderInitials: 'AR', viewCount: 5100,  timestamp: new Date(_N - 8*3_600_000), duration: '31:48', likeCount: 312, commentCount: 54, thumbHue: 240, thumbEmoji: '🗺️', description: 'Full Q4 roadmap presentation. Covers three major feature releases, infrastructure updates, and customer commitments.' },
   { id: 'fbv3', mode: 'business', category: 'Updates',  brandName: 'NovaTech', title: 'Company-Wide Town Hall — March 2026',                  uploaderName: 'NovaTech CEO',        uploaderHandle: '@ceo_novatech',      uploaderInitials: 'CN', viewCount: 9800,  timestamp: new Date(_N - 2*_D),        duration: '54:10', likeCount: 720, commentCount: 143, thumbHue: 160, thumbEmoji: '📢', description: 'March 2026 all-hands town hall. Covers Q1 results, strategic priorities, and Q&A.' },
@@ -444,6 +494,16 @@ const FEED_BUSINESS: KayTVFeedItem[] = [
 ];
 
 const FEED_EDUCATION: KayTVFeedItem[] = [
+  // ── Real game film ──
+  { id: 'ge1', mode: 'education', ..._GAME_WEBER,   timestamp: _minsAgo(5)  },
+  { id: 'ge2', mode: 'education', ..._GAME_MAR_L,   timestamp: _minsAgo(20) },
+  { id: 'ge3', mode: 'education', ..._GAME_PEPPER,  timestamp: _minsAgo(35) },
+  { id: 'ge4', mode: 'education', ..._GAME_LB,      timestamp: _minsAgo(50) },
+  { id: 'ge5', mode: 'education', ..._GAME_IRVINE,  timestamp: _minsAgo(65) },
+  { id: 'ge6', mode: 'education', ..._GAME_LMU,     timestamp: _minsAgo(80) },
+  { id: 'ge7', mode: 'education', ..._GAME_SIMPSON, timestamp: _minsAgo(95) },
+  { id: 'ge8', mode: 'education', ..._GAME_MAR_W,   timestamp: _minsAgo(110) },
+  // ── Mock feed ──
   { id: 'fev1', mode: 'education', category: 'Campus',           brandName: 'Lincoln University', title: 'HIST 301: Civil Rights Movement — Week 8 Lecture',     uploaderName: 'Prof. James Carter',  uploaderHandle: '@prof_carter',      uploaderInitials: 'JC', viewCount: 1840,  timestamp: new Date(_N - 4*3_600_000), duration: '58:32',   likeCount: 123,  commentCount: 18,  thumbHue: 40,  thumbEmoji: '📚', description: 'Week 8 recorded lecture. Covers the Birmingham Campaign, Letter from Birmingham Jail, and the March on Washington.' },
   { id: 'fev2', mode: 'education', category: 'Campus',           brandName: 'Lincoln University', title: 'Campus Tour 2026 — Welcome to Lincoln University',     uploaderName: 'Admissions Office',   uploaderHandle: '@lincoln_admit',    uploaderInitials: 'LA', viewCount: 12300, timestamp: new Date(_N - 1*_D),        duration: '16:45',   likeCount: 890,  commentCount: 112, thumbHue: 140, thumbEmoji: '🏛️', description: 'Official 2026 campus tour. See the new STEM center, the library, residence halls, and athletic facilities.' },
   { id: 'fev3', mode: 'education', category: 'Commencement',     brandName: 'Lincoln University', title: 'Commencement 2025 — Full Ceremony',                    uploaderName: 'Lincoln University',  uploaderHandle: '@lincoln_univ',     uploaderInitials: 'LU', viewCount: 28500, timestamp: new Date(_N - 2*_D),        duration: '2:14:08', likeCount: 2100, commentCount: 430, thumbHue: 50,  thumbEmoji: '🎓', description: 'Full recording of the Class of 2025 commencement ceremony. Includes keynote, degree conferral, and reception.' },
@@ -457,6 +517,16 @@ const FEED_EDUCATION: KayTVFeedItem[] = [
 ];
 
 const FEED_COMMUNITY: KayTVFeedItem[] = [
+  // ── Real game film ──
+  { id: 'gc1', mode: 'community', ..._GAME_IRVINE,  timestamp: _minsAgo(5)  },
+  { id: 'gc2', mode: 'community', ..._GAME_LMU,     timestamp: _minsAgo(20) },
+  { id: 'gc3', mode: 'community', ..._GAME_PEPPER,  timestamp: _minsAgo(35) },
+  { id: 'gc4', mode: 'community', ..._GAME_LB,      timestamp: _minsAgo(50) },
+  { id: 'gc5', mode: 'community', ..._GAME_WEBER,   timestamp: _minsAgo(65) },
+  { id: 'gc6', mode: 'community', ..._GAME_SIMPSON, timestamp: _minsAgo(80) },
+  { id: 'gc7', mode: 'community', ..._GAME_MAR_W,   timestamp: _minsAgo(95) },
+  { id: 'gc8', mode: 'community', ..._GAME_MAR_L,   timestamp: _minsAgo(110) },
+  // ── Mock feed ──
   { id: 'fcv1', mode: 'community', category: 'Sermons',     brandName: 'Grace Church', title: 'Sunday Service — "Walking in Purpose" | Pastor Davis',  uploaderName: 'Grace Church LA',       uploaderHandle: '@grace_church',    uploaderInitials: 'GC', viewCount: 6700,  timestamp: new Date(_N - 2*_D),  duration: '42:15',   likeCount: 891,  commentCount: 156, thumbHue: 280, thumbEmoji: '✝️', description: 'Full Sunday message by Pastor Davis. Scripture: Jeremiah 29:11. Topic: Walking in the purpose God has for your life.' },
   { id: 'fcv2', mode: 'community', category: 'Worship',     brandName: 'Grace Church', title: 'Worship Night 2026 — Live Recording',                   uploaderName: 'Grace Church Music',    uploaderHandle: '@grace_music',     uploaderInitials: 'GM', viewCount: 9200,  timestamp: new Date(_N - 4*_D),  duration: '1:08:30', likeCount: 1240, commentCount: 203, thumbHue: 50,  thumbEmoji: '🎵', description: 'Full live recording from our annual Worship Night. Features the full band, choir, and special guests.' },
   { id: 'fcv3', mode: 'community', category: 'Events',      brandName: 'Grace Church', title: 'Community Outreach Day — March 2026 Recap',             uploaderName: 'Grace Church Outreach', uploaderHandle: '@grace_outreach',  uploaderInitials: 'GO', viewCount: 3400,  timestamp: new Date(_N - 6*_D),  duration: '9:22',    likeCount: 445,  commentCount: 67,  thumbHue: 120, thumbEmoji: '🤝', description: 'Recap of our March community outreach day. Over 200 volunteers served 850 families across four neighborhoods.' },
@@ -470,6 +540,16 @@ const FEED_COMMUNITY: KayTVFeedItem[] = [
 ];
 
 const FEED_PERSONAL: KayTVFeedItem[] = [
+  // ── Real game film ──
+  { id: 'gp1', mode: 'personal', ..._GAME_LMU,     timestamp: _minsAgo(5)  },
+  { id: 'gp2', mode: 'personal', ..._GAME_SIMPSON, timestamp: _minsAgo(20) },
+  { id: 'gp3', mode: 'personal', ..._GAME_PEPPER,  timestamp: _minsAgo(35) },
+  { id: 'gp4', mode: 'personal', ..._GAME_LB,      timestamp: _minsAgo(50) },
+  { id: 'gp5', mode: 'personal', ..._GAME_WEBER,   timestamp: _minsAgo(65) },
+  { id: 'gp6', mode: 'personal', ..._GAME_IRVINE,  timestamp: _minsAgo(80) },
+  { id: 'gp7', mode: 'personal', ..._GAME_MAR_W,   timestamp: _minsAgo(95) },
+  { id: 'gp8', mode: 'personal', ..._GAME_MAR_L,   timestamp: _minsAgo(110) },
+  // ── Mock feed ──
   { id: 'fpv1', mode: 'personal', category: 'Uploads',     brandName: 'Personal', title: 'My First KayTV Upload — Testing 1 2 3',               uploaderName: 'Sammy K.',         uploaderHandle: '@sammyk',      uploaderInitials: 'SK', viewCount: 42,   timestamp: new Date(_N - 1*_D),        duration: '0:47',  likeCount: 8,  commentCount: 3,  thumbHue: 200, thumbEmoji: '📹', description: 'Just testing the upload feature.' },
   { id: 'fpv2', mode: 'personal', category: 'Saved',       brandName: 'Personal', title: 'Top 10 Plays — Week 7 Highlights Reel',               uploaderName: 'Coach Rodriguez',  uploaderHandle: '@coach_rod',   uploaderInitials: 'CR', viewCount: 8320, timestamp: new Date(_N - 6*3_600_000), duration: '4:15',  likeCount: 541, commentCount: 67, thumbHue: 12,  thumbEmoji: '🔥', description: 'Saved from the sports feed. Great highlights reel.' },
   { id: 'fpv3', mode: 'personal', category: 'Watch Later', brandName: 'Personal', title: 'Q4 Product Roadmap Presentation',                     uploaderName: 'Alex Rivera (CPO)', uploaderHandle: '@alex_cpo',   uploaderInitials: 'AR', viewCount: 5100, timestamp: new Date(_N - 8*3_600_000), duration: '31:48', likeCount: 312, commentCount: 54, thumbHue: 240, thumbEmoji: '🗺️', description: 'Watch later from the business feed.' },
@@ -544,4 +624,108 @@ export function getWatchLaterFeed(mode: string): KayTVFeedItem[] {
 export function getLikedVideosFeed(mode: string): KayTVFeedItem[] {
   const items = ALL_FEED.filter(v => v.mode === mode);
   return items.slice().sort((a, b) => b.likeCount - a.likeCount).slice(0, 5);
+}
+
+// ── Panel data ────────────────────────────────────────────────────────────────
+
+export interface KayTVSubscription {
+  brandName: string;
+  initials: string;
+  hue: number;
+  handle: string;
+  hasNew: boolean;
+  newCount: number;
+}
+
+export interface KayTVUpload {
+  id: string;
+  title: string;
+  thumbHue: number;
+  thumbEmoji: string;
+  duration: string;
+  viewCount: number;
+  publishedDate: string;
+  status: 'published' | 'draft';
+}
+
+export interface KayTVScheduled {
+  id: string;
+  title: string;
+  thumbHue: number;
+  thumbEmoji: string;
+  duration: string;
+  scheduledDate: string;
+}
+
+export interface KayTVChannelStats {
+  uploadCount: number;
+  totalViews: number;
+  subscriberCount: number;
+  viewsThisWeek: number;
+  topVideoTitle: string;
+  subGrowth: number;
+}
+
+const SUBSCRIPTIONS: Record<string, KayTVSubscription[]> = {
+  sports: [
+    { brandName: 'Varsity FC',        initials: 'VF', hue: 40,  handle: '@varsityfc',      hasNew: true,  newCount: 3 },
+    { brandName: 'LU Athletics',      initials: 'LA', hue: 220, handle: '@lu_athletics',    hasNew: true,  newCount: 1 },
+    { brandName: 'Metro Hoops',       initials: 'MH', hue: 0,   handle: '@metrohoops',      hasNew: false, newCount: 0 },
+  ],
+  business: [
+    { brandName: 'NovaTech',          initials: 'NT', hue: 200, handle: '@novatech',         hasNew: true,  newCount: 2 },
+    { brandName: 'KaNeXT',            initials: 'KN', hue: 160, handle: '@kanext',           hasNew: false, newCount: 0 },
+    { brandName: 'Apex Ventures',     initials: 'AV', hue: 280, handle: '@apexventures',     hasNew: true,  newCount: 1 },
+  ],
+  education: [
+    { brandName: 'Lincoln University', initials: 'LU', hue: 220, handle: '@lincoln_u',      hasNew: true,  newCount: 5 },
+    { brandName: 'LU Athletics',       initials: 'LA', hue: 40,  handle: '@lu_athletics',   hasNew: false, newCount: 0 },
+    { brandName: 'STEM Academy',       initials: 'SA', hue: 120, handle: '@stem_academy',   hasNew: true,  newCount: 2 },
+  ],
+  community: [
+    { brandName: 'Grace Church',      initials: 'GC', hue: 30,  handle: '@grace_church',    hasNew: true,  newCount: 1 },
+    { brandName: 'City Fellowship',   initials: 'CF', hue: 280, handle: '@cityfellowship',  hasNew: false, newCount: 0 },
+    { brandName: 'Hope Ministries',   initials: 'HM', hue: 340, handle: '@hope_ministries', hasNew: true,  newCount: 3 },
+  ],
+  personal: [
+    { brandName: 'Sammy Brand',       initials: 'SB', hue: 15,  handle: '@sammy',           hasNew: false, newCount: 0 },
+    { brandName: 'KaNeXT Originals',  initials: 'KO', hue: 200, handle: '@kanext_orig',     hasNew: true,  newCount: 2 },
+  ],
+};
+
+const MY_CHANNEL: KayTVChannelStats = {
+  uploadCount: 24,
+  totalViews: 142800,
+  subscriberCount: 3400,
+  viewsThisWeek: 8920,
+  topVideoTitle: 'Season Highlights Reel 2025',
+  subGrowth: 12.4,
+};
+
+const MY_UPLOADS: KayTVUpload[] = [
+  { id: 'mu1', title: 'Championship Recap — Final Score 87–72', thumbHue: 40,  thumbEmoji: '🏆', duration: '8:14',  viewCount: 12400, publishedDate: 'Mar 20', status: 'published' },
+  { id: 'mu2', title: 'Post-Game Press Conference',              thumbHue: 220, thumbEmoji: '🎙️', duration: '15:30', viewCount: 4800,  publishedDate: 'Mar 18', status: 'published' },
+  { id: 'mu3', title: 'Practice Highlights — New Plays',         thumbHue: 160, thumbEmoji: '🏀', duration: '5:45',  viewCount: 2100,  publishedDate: 'Mar 15', status: 'published' },
+  { id: 'mu4', title: 'Season Preview 2026 (Draft)',              thumbHue: 90,  thumbEmoji: '📋', duration: '3:10',  viewCount: 0,     publishedDate: '—',      status: 'draft'     },
+];
+
+const SCHEDULED_VIDEOS: KayTVScheduled[] = [
+  { id: 'sv1', title: 'Player Profile: Marcus James',    thumbHue: 200, thumbEmoji: '⭐', duration: '6:22', scheduledDate: 'Mar 27, 9:00 AM' },
+  { id: 'sv2', title: 'Weekly Roundup — March Week 4',   thumbHue: 40,  thumbEmoji: '📊', duration: '4:15', scheduledDate: 'Mar 28, 8:00 AM' },
+];
+
+export function getSubscriptions(mode: string): KayTVSubscription[] {
+  return SUBSCRIPTIONS[mode] ?? [];
+}
+
+export function getMyChannelStats(): KayTVChannelStats {
+  return MY_CHANNEL;
+}
+
+export function getMyUploads(): KayTVUpload[] {
+  return MY_UPLOADS;
+}
+
+export function getScheduledVideos(): KayTVScheduled[] {
+  return SCHEDULED_VIDEOS;
 }

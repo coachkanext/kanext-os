@@ -15,8 +15,26 @@ import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useMode } from '@/context/app-context';
 
 const KAYTV_VIDEO = require('@/assets/videos/kaytv-preview.mp4');
+
+const V_LB      = require('@/assets/videos/lb-state.mp4');
+const V_WEBER   = require('@/assets/videos/weber-st.mp4');
+const V_IRVINE  = require('@/assets/videos/irvine.mp4');
+const V_LMU     = require('@/assets/videos/lmu.mp4');
+const V_SIMPSON = require('@/assets/videos/simpson.mp4');
+const V_MAR_W   = require('@/assets/videos/maritime-w.mp4');
+const V_MAR_L   = require('@/assets/videos/maritime-l.mp4');
+
+// Each mode plays all 7 clips, starting from its own featured video.
+const MODE_VIDEO_LISTS: Partial<Record<string, (string | number)[]>> = {
+  sports:    [V_LB,      V_WEBER,   V_IRVINE,  V_LMU,    V_SIMPSON, V_MAR_W,  V_MAR_L],
+  personal:  [V_LMU,    V_SIMPSON, V_LB,       V_WEBER,  V_IRVINE,  V_MAR_W,  V_MAR_L],
+  community: [V_IRVINE, V_LMU,     V_LB,       V_WEBER,  V_SIMPSON, V_MAR_W,  V_MAR_L],
+  education: [V_WEBER,  V_LB,      V_IRVINE,   V_LMU,    V_SIMPSON, V_MAR_W,  V_MAR_L],
+  business:  [KAYTV_VIDEO, V_LB,   V_WEBER,    V_IRVINE,  V_LMU,    V_SIMPSON, V_MAR_W, V_MAR_L],
+};
 
 let VideoView: any = null;
 let useVideoPlayer: any = null;
@@ -27,22 +45,40 @@ try {
 } catch {}
 
 function VideoHeroPlayer({
-  uri, totalHeight,
-}: { uri: string | number; totalHeight: number }) {
+  uris, totalHeight,
+}: { uris: (string | number)[]; totalHeight: number }) {
   const router = useRouter();
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
 
-  const [muted,    setMuted]    = useState(true);
-  const [paused,   setPaused]   = useState(false);
-  const [zoomed,   setZoomed]   = useState(false); // false = cover, true = contain
+  const [muted,      setMuted]      = useState(true);
+  const [paused,     setPaused]     = useState(false);
+  const [zoomed,     setZoomed]     = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+  const [videoIndex, setVideoIndex] = useState(0);
 
-  const player = useVideoPlayer(uri, (p: any) => {
-    p.loop  = true;
+  const isPlaylist = uris.length > 1;
+
+  const player = useVideoPlayer(uris[0], (p: any) => {
+    p.loop  = !isPlaylist;
     p.muted = true;
     p.play();
   });
+
+  // Advance to next video when current one ends
+  useEffect(() => {
+    if (!isPlaylist || !player?.addListener) return;
+    const sub = player.addListener('playToEnd', () => {
+      setVideoIndex(prev => {
+        const next = (prev + 1) % uris.length;
+        const src = uris[next];
+        player.replace(src);
+        player.play();
+        return next;
+      });
+    });
+    return () => sub.remove();
+  }, [player, uris, isPlaylist]);
 
   // Auto full-screen on landscape rotation
   useEffect(() => {
@@ -199,7 +235,9 @@ function VideoHeroPlaceholder({ totalHeight }: { totalHeight: number }) {
 export function VideoHero() {
   const { height: screenHeight } = useWindowDimensions();
   const heroHeight = Math.round(screenHeight * 0.38);
-  return <VideoHeroPlayer uri={KAYTV_VIDEO} totalHeight={heroHeight} />;
+  const mode = useMode();
+  const uris = MODE_VIDEO_LISTS[mode] ?? [KAYTV_VIDEO];
+  return <VideoHeroPlayer uris={uris} totalHeight={heroHeight} />;
 }
 
 const styles = StyleSheet.create({
