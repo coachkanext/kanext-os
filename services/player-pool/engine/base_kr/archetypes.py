@@ -1,15 +1,37 @@
 """
-Archetype Library — College v1
+Archetype Library — College v3.0
 
-Source: Archetype Library (2).pdf
-21 archetypes with Must-Haves (ALL), Supports (N of M), Auto-Disqualifiers (ANY).
+Source: Basketball Player Intelligence v3 spec — Archetype Library (26 archetypes)
 
-Archetypes are descriptive (how a player tends to contribute), not evaluative.
-They do NOT change KR scores. A player may qualify for 0, 1, or many archetypes.
+26 archetypes: descriptive, NOT evaluative.
+Archetypes do NOT change KR scores.
+A player may qualify for 0, 1, or many archetypes.
 
-Trait references use our trait_key system where possible.
-Some archetype criteria reference composite/derived concepts (prefixed with '$')
-that require additional evaluation logic beyond individual traits.
+Archetype evaluation is conservative at box_score coverage —
+most archetypes require synergy/tracking traits that will be UNSCORED,
+so most players will have no archetypes assigned at this coverage tier.
+
+Gates use v3 trait keys:
+  Shooting cluster:   spot_up_3pt, movement_3pt, pull_up_3pt, deep_range_3pt,
+                      midrange_shotmaking, free_throw
+  Finishing cluster:  rim_pressure, contact_finishing, touch_craft, foul_draw,
+                      vertical_finishing, transition_finishing
+  Playmaking cluster: advantage_creation, passing_vision, passing_execution,
+                      advantage_passing, transition_playmaking, ball_security,
+                      connector_creation
+  POA Defense:        containment, screen_navigation, ball_pressure,
+                      closeout_recovery, deflections, steal_timing,
+                      poa_foul_discipline
+  Team Defense:       help_rotation, rim_protection, closeout_execution,
+                      off_ball_positioning, communication_qb, versatility,
+                      team_foul_discipline
+  Rebounding:         defensive_rebounding, offensive_rebounding, box_out,
+                      rebound_range, hands, second_jump_tip
+  Tools:              height, length, strength, speed, lateral_quickness,
+                      vertical_pop, motor, endurance
+  IQ:                 decision_speed, correct_read_rate, shot_selection,
+                      turnover_decision_quality, advantage_conversion,
+                      role_discipline, processing_under_pressure
 """
 from __future__ import annotations
 
@@ -17,24 +39,17 @@ from __future__ import annotations
 # ═══════════════════════════════════════════════════════════════════════════
 # Archetype Definitions
 # ═══════════════════════════════════════════════════════════════════════════
-#
-# Each archetype:
-#   key: unique identifier
-#   name: display name
-#   identity: short description
-#   must_haves: [(trait_key, min_score)] — ALL must be met
-#   supports: [(trait_key, min_score)] — N of M must be met
-#   supports_required: int — how many supports must be met
-#   disqualifiers: [str] — descriptive labels for disqualification conditions
 
 ARCHETYPE_DEFS: list[dict] = [
+
+    # ── Two-Way / Versatile ────────────────────────────────────────────
     {
         "key": "two_way_wing",
         "name": "Two-Way Wing",
-        "identity": "Scales on both ends. Can stay on the floor in most lineups.",
+        "identity": "Scales on both ends. Can stay on floor in most lineups.",
         "must_haves": [
             ("spot_up_3pt", 70),
-            ("on_ball_containment", 70),
+            ("containment", 70),
             ("lateral_quickness", 70),
         ],
         "supports": [
@@ -44,97 +59,92 @@ ARCHETYPE_DEFS: list[dict] = [
             ("defensive_rebounding", 60),
         ],
         "supports_required": 2,
-        "disqualifiers": ["range_gap_major", "defensive_target_major", "severe_undersize"],
     },
+    {
+        "key": "two_way_guard",
+        "name": "Two-Way Guard",
+        "identity": "Guard-sized two-way player; creates offensively and locks up defensively.",
+        "must_haves": [
+            ("pull_up_3pt", 68),
+            ("containment", 72),
+            ("steal_timing", 68),
+        ],
+        "supports": [
+            ("ball_security", 65),
+            ("screen_navigation", 65),
+            ("passing_vision", 65),
+            ("poa_foul_discipline", 65),
+        ],
+        "supports_required": 2,
+    },
+    {
+        "key": "two_way_big",
+        "name": "Two-Way Big",
+        "identity": "Big who scores and protects the rim.",
+        "must_haves": [
+            ("rim_pressure", 70),
+            ("rim_protection", 70),
+            ("defensive_rebounding", 70),
+        ],
+        "supports": [
+            ("help_rotation", 65),
+            ("team_foul_discipline", 65),
+            ("contact_finishing", 65),
+            ("offensive_rebounding", 60),
+        ],
+        "supports_required": 2,
+    },
+
+    # ── Offensive Specialists ──────────────────────────────────────────
     {
         "key": "3_and_d_wing",
         "name": "3-and-D Wing",
         "identity": "Spacing + reliable defense. Low-creation, high trust.",
         "must_haves": [
             ("spot_up_3pt", 75),
-            ("perimeter_shot_contest", 70),
-            ("$team_defense", 70),
+            ("closeout_recovery", 68),
+            ("$team_defense", 68),
         ],
         "supports": [
-            ("on_ball_containment", 65),
+            ("containment", 65),
             ("screen_navigation", 65),
-            ("$closeout_discipline", 65),
-            ("$motor", 65),
+            ("free_throw", 72),
+            ("off_ball_positioning", 65),
         ],
         "supports_required": 2,
-        "disqualifiers": ["no_gravity_major", "foul_machine_major", "switch_liability_major"],
-    },
-    {
-        "key": "poa_defender_guard",
-        "name": "POA Defender Guard",
-        "identity": "Defense-first guard who can take the toughest assignment.",
-        "must_haves": [
-            ("on_ball_containment", 75),
-            ("screen_navigation", 70),
-            ("lateral_quickness", 75),
-        ],
-        "supports": [
-            ("ball_pressure", 65),
-            ("perimeter_disruption", 65),
-            ("$motor", 65),
-            ("$transition_defense", 60),
-        ],
-        "supports_required": 2,
-        "disqualifiers": ["foul_machine_major", "decision_making_collapse", "severe_undersize"],
     },
     {
         "key": "primary_ball_handler",
-        "name": "Primary Ball-Handler (Offense-First)",
+        "name": "Primary Ball-Handler",
         "identity": "Usage engine. Creates advantages; defense is secondary.",
         "must_haves": [
             ("passing_vision", 75),
-            ("ball_security", 70),
-            ("$otd_shooting", 70),  # Off-Dribble Shooting (2PT or 3PT) — max of otd_3pt, 2pt_jumper_otd
+            ("ball_security", 68),
+            ("advantage_creation", 70),
         ],
         "supports": [
-            ("otd_3pt", 65),
-            ("drive_and_kick", 65),
+            ("pull_up_3pt", 65),
+            ("advantage_passing", 65),
             ("free_throw", 75),
-            ("$pace_control", 65),
+            ("transition_playmaking", 65),
         ],
         "supports_required": 2,
-        "disqualifiers": ["turnover_risk_major", "severe_pullup_void", "defensive_target_AND_no_gravity"],
     },
     {
-        "key": "switchable_defender_wing",
-        "name": "Switchable Defender Wing",
-        "identity": "Defense-first wing who can credibly switch across positions.",
+        "key": "situational_shooter",
+        "name": "Situational Shooter",
+        "identity": "One-job player: spacing. Limited elsewhere.",
         "must_haves": [
-            ("lateral_quickness", 75),
-            ("screen_navigation", 70),
-            ("on_ball_containment", 70),
+            ("spot_up_3pt", 80),
+            ("movement_3pt", 70),
+            ("free_throw", 78),
         ],
         "supports": [
-            ("$length_wingspan", 65),
-            ("strength_functional", 65),
-            ("$team_defense", 65),
-            ("$motor", 65),
+            ("deep_range_3pt", 65),
+            ("midrange_shotmaking", 65),
+            ("$role_discipline_iq", 65),
         ],
         "supports_required": 2,
-        "disqualifiers": ["switch_liability_major", "foul_machine_major", "severe_undersize"],
-    },
-    {
-        "key": "anchor_big",
-        "name": "Anchor Big",
-        "identity": "Paint controller; drop coverage backbone.",
-        "must_haves": [
-            ("$rim_protection", 75),  # block or rim_deterrence
-            ("$paint_deterrence", 70),
-            ("defensive_rebounding", 70),
-        ],
-        "supports": [
-            ("post_defense", 65),
-            ("help_defense_interior", 65),
-            ("vertical_contest", 65),
-            ("$foul_discipline", 60),
-        ],
-        "supports_required": 2,
-        "disqualifiers": ["mobility_floor_violation", "switch_liability_major", "fragility_major"],
     },
     {
         "key": "stretch_big",
@@ -143,106 +153,239 @@ ARCHETYPE_DEFS: list[dict] = [
         "must_haves": [
             ("spot_up_3pt", 70),
             ("free_throw", 75),
-            ("$team_defense", 65),
+            ("$team_defense", 63),
         ],
         "supports": [
-            ("$pick_and_pop", 65),
-            ("screen_assist_creation", 60),
-            ("defensive_rebounding", 60),
-            ("$closeout_discipline", 60),
+            ("midrange_shotmaking", 65),
+            ("defensive_rebounding", 62),
+            ("team_foul_discipline", 65),
+            ("rim_protection", 55),
         ],
         "supports_required": 2,
-        "disqualifiers": ["no_gravity_major", "range_gap_major", "defensive_target_major"],
     },
     {
-        "key": "connector_guard",
-        "name": "Connector Guard",
-        "identity": "Low-usage organizer; keeps offense and defense coherent.",
+        "key": "stretch_four",
+        "name": "Stretch Four",
+        "identity": "PF with perimeter shooting; floor spacing from the elbow.",
         "must_haves": [
-            ("passing_accuracy", 75),
-            ("$decision_speed", 70),
-            ("ball_security", 70),
+            ("spot_up_3pt", 68),
+            ("midrange_shotmaking", 68),
+            ("defensive_rebounding", 65),
         ],
         "supports": [
-            ("$team_defense", 65),
-            ("hockey_assist_creation", 60),
-            ("screen_assist_creation", 60),
-            ("$motor", 65),
+            ("free_throw", 72),
+            ("contact_finishing", 62),
+            ("help_rotation", 60),
+            ("$team_defense", 60),
         ],
         "supports_required": 2,
-        "disqualifiers": ["decision_making_collapse", "turnover_risk_major", "defensive_target_major"],
     },
     {
         "key": "offensive_wing_scorer",
         "name": "Offensive Wing Scorer",
         "identity": "Shot-creation wing; offense drives value, defense is managed.",
         "must_haves": [
-            ("$otd_shooting", 75),
+            ("pull_up_3pt", 72),
             ("$shot_creation_volume", 70),
-            ("free_throw", 75),
+            ("free_throw", 74),
         ],
         "supports": [
-            ("otd_3pt", 65),
-            ("power_through_contact", 65),
-            ("$advantage_creation", 65),
-            ("movement_3pt", 60),
+            ("midrange_shotmaking", 65),
+            ("contact_finishing", 65),
+            ("advantage_creation", 65),
+            ("movement_3pt", 62),
         ],
         "supports_required": 2,
-        "disqualifiers": ["severe_pullup_void", "decision_making_collapse", "defensive_target_AND_no_gravity"],
     },
     {
-        "key": "gap_team_defender_wing",
-        "name": "Gap / Team Defender Wing",
-        "identity": "IQ-driven defender; wins with positioning and communication.",
+        "key": "roll_man_vertical_threat",
+        "name": "Roll Man / Vertical Threat",
+        "identity": "Creates offensive gravity via rim pressure; finishes plays.",
         "must_haves": [
-            ("$team_defense", 75),
-            ("$closeout_discipline", 70),
-            ("$help_defense_perimeter", 70),
+            ("vertical_finishing", 75),
+            ("rim_pressure", 70),
+            ("foul_draw", 65),
         ],
         "supports": [
-            ("$anticipation_disruption", 65),
-            ("defensive_rebounding", 60),
-            ("$motor", 65),
-            ("$communication", 65),
+            ("offensive_rebounding", 62),
+            ("vertical_pop", 68),
+            ("height", 75),
+            ("contact_finishing", 62),
         ],
         "supports_required": 2,
-        "disqualifiers": ["low_motor_major", "containment_slippage_major", "$decision_speed_below_60"],
+    },
+    {
+        "key": "offensive_big",
+        "name": "Offensive Big",
+        "identity": "Offense-first interior scorer; requires protection.",
+        "must_haves": [
+            ("rim_pressure", 75),
+            ("contact_finishing", 70),
+            ("free_throw", 68),
+        ],
+        "supports": [
+            ("offensive_rebounding", 60),
+            ("foul_draw", 65),
+            ("touch_craft", 60),
+            ("height", 75),
+        ],
+        "supports_required": 2,
+    },
+    {
+        "key": "pick_and_pop_threat",
+        "name": "Pick-and-Pop Threat",
+        "identity": "Big who pops to perimeter off screens; stretch without being a stretch-5.",
+        "must_haves": [
+            ("midrange_shotmaking", 70),
+            ("free_throw", 72),
+            ("$tools_height_ok", 68),
+        ],
+        "supports": [
+            ("spot_up_3pt", 62),
+            ("rim_pressure", 62),
+            ("screen_navigation", 58),
+        ],
+        "supports_required": 2,
+    },
+
+    # ── Defensive Specialists ──────────────────────────────────────────
+    {
+        "key": "poa_defender_guard",
+        "name": "POA Defender Guard",
+        "identity": "Defense-first guard who takes the toughest assignment.",
+        "must_haves": [
+            ("containment", 75),
+            ("screen_navigation", 70),
+            ("lateral_quickness", 73),
+        ],
+        "supports": [
+            ("ball_pressure", 65),
+            ("deflections", 65),
+            ("poa_foul_discipline", 68),
+            ("steal_timing", 65),
+        ],
+        "supports_required": 2,
+    },
+    {
+        "key": "switchable_defender",
+        "name": "Switchable Defender",
+        "identity": "Defense-first wing/forward who credibly switches positions.",
+        "must_haves": [
+            ("lateral_quickness", 73),
+            ("screen_navigation", 68),
+            ("versatility", 70),
+        ],
+        "supports": [
+            ("containment", 65),
+            ("$team_defense", 65),
+            ("closeout_recovery", 65),
+            ("team_foul_discipline", 65),
+        ],
+        "supports_required": 2,
+    },
+    {
+        "key": "anchor_big",
+        "name": "Anchor Big",
+        "identity": "Paint controller; drop coverage backbone.",
+        "must_haves": [
+            ("rim_protection", 75),
+            ("help_rotation", 70),
+            ("defensive_rebounding", 70),
+        ],
+        "supports": [
+            ("team_foul_discipline", 65),
+            ("communication_qb", 60),
+            ("box_out", 65),
+            ("height", 80),
+        ],
+        "supports_required": 2,
+    },
+    {
+        "key": "gap_team_defender",
+        "name": "Gap / Team Defender",
+        "identity": "IQ-driven defender; wins with positioning and communication.",
+        "must_haves": [
+            ("$team_defense", 72),
+            ("off_ball_positioning", 68),
+            ("closeout_execution", 68),
+        ],
+        "supports": [
+            ("deflections", 62),
+            ("defensive_rebounding", 60),
+            ("team_foul_discipline", 65),
+            ("communication_qb", 62),
+        ],
+        "supports_required": 2,
     },
     {
         "key": "mobile_defensive_big",
         "name": "Mobile Defensive Big",
-        "identity": "Big who survives space; P&R defender more than paint anchor.",
+        "identity": "Big who survives in space; PnR defender more than paint anchor.",
         "must_haves": [
-            ("roll_man_defense", 70),
-            ("lateral_quickness", 65),
-            ("help_defense_interior", 70),
+            ("versatility", 68),
+            ("lateral_quickness", 63),
+            ("help_rotation", 68),
         ],
         "supports": [
-            ("$rim_protection", 65),
-            ("vertical_contest", 65),
-            ("screen_navigation", 60),
+            ("rim_protection", 62),
+            ("screen_navigation", 58),
             ("defensive_rebounding", 60),
+            ("closeout_execution", 60),
         ],
         "supports_required": 2,
-        "disqualifiers": ["switch_liability_major", "mobility_floor_violation", "foul_machine_major"],
     },
     {
-        "key": "chaos_disruptor_wing",
-        "name": "Chaos Disruptor Wing",
-        "identity": "High-activity, high-variance defender; creates disorder.",
+        "key": "defensive_specialist",
+        "name": "Defensive Specialist",
+        "identity": "Defense-only contributor; offense minimized.",
         "must_haves": [
-            ("steal", 75),
-            ("$motor", 75),
-            ("$anticipation", 70),
+            ("containment", 75),
+            ("screen_navigation", 68),
+            ("$team_defense", 70),
         ],
         "supports": [
-            ("ball_pressure", 65),
-            ("$passing_lane_defense", 65),
-            ("$transition_defense", 60),
-            ("$recovery_speed", 60),
+            ("lateral_quickness", 70),
+            ("deflections", 65),
+            ("poa_foul_discipline", 68),
+            ("steal_timing", 62),
         ],
         "supports_required": 2,
-        "disqualifiers": ["poor_discipline_major", "decision_making_collapse", "foul_machine_major"],
+    },
+    {
+        "key": "chaos_disruptor",
+        "name": "Chaos Disruptor",
+        "identity": "High-activity, high-variance defender; creates disorder.",
+        "must_haves": [
+            ("steal_timing", 75),
+            ("deflections", 72),
+            ("ball_pressure", 68),
+        ],
+        "supports": [
+            ("containment", 65),
+            ("off_ball_positioning", 63),
+            ("poa_foul_discipline", 65),
+            ("lateral_quickness", 65),
+        ],
+        "supports_required": 2,
+    },
+
+    # ── Playmaking ─────────────────────────────────────────────────────
+    {
+        "key": "connector_guard",
+        "name": "Connector Guard",
+        "identity": "Low-usage organizer; keeps offense and defense coherent.",
+        "must_haves": [
+            ("passing_execution", 73),
+            ("decision_speed", 68),
+            ("ball_security", 70),
+        ],
+        "supports": [
+            ("$team_defense", 63),
+            ("connector_creation", 62),
+            ("advantage_passing", 60),
+            ("role_discipline", 70),
+        ],
+        "supports_required": 2,
     },
     {
         "key": "point_forward",
@@ -250,157 +393,102 @@ ARCHETYPE_DEFS: list[dict] = [
         "identity": "Size-based secondary creator; offense flows through them.",
         "must_haves": [
             ("passing_vision", 70),
-            ("ball_security", 70),
-            ("$advantage_creation_nonguard", 65),
+            ("ball_security", 68),
+            ("advantage_creation", 63),
         ],
         "supports": [
-            ("$handle_security_pressure", 65),
-            ("passing_accuracy", 65),
-            ("$team_defense", 65),
+            ("passing_execution", 65),
+            ("advantage_passing", 63),
+            ("$team_defense", 63),
             ("spot_up_3pt", 60),
         ],
         "supports_required": 2,
-        "disqualifiers": ["turnover_risk_major", "decision_making_collapse", "severe_pullup_void"],
     },
+    {
+        "key": "high_iq_playmaker",
+        "name": "High-IQ Playmaker",
+        "identity": "Elite decision-maker; reads defense before it sets.",
+        "must_haves": [
+            ("decision_speed", 75),
+            ("shot_selection", 75),
+            ("processing_under_pressure", 70),
+        ],
+        "supports": [
+            ("ball_security", 70),
+            ("passing_vision", 68),
+            ("role_discipline", 70),
+            ("advantage_creation", 65),
+        ],
+        "supports_required": 2,
+    },
+
+    # ── Role Players & Other ───────────────────────────────────────────
     {
         "key": "utility_forward",
         "name": "Utility Forward",
         "identity": "Lineup glue; fills gaps without being a focal point.",
         "must_haves": [
-            ("$team_defense", 70),
-            ("$motor", 70),
-            ("ball_security", 65),
+            ("$team_defense", 68),
+            ("role_discipline", 68),
+            ("ball_security", 63),
         ],
         "supports": [
-            ("screen_assist_creation", 60),
+            ("connector_creation", 60),
             ("defensive_rebounding", 60),
             ("spot_up_3pt", 60),
-            ("passing_accuracy", 60),
+            ("passing_vision", 60),
         ],
         "supports_required": 2,
-        "disqualifiers": ["low_motor_major", "role_collapse_major", "defensive_target_major"],
-    },
-    {
-        "key": "roll_man_vertical_threat",
-        "name": "Roll Man / Vertical Threat",
-        "identity": "Creates offensive gravity via rim pressure; finishes plays.",
-        "must_haves": [
-            ("dunk_finishing", 75),
-            ("$roll_man_efficiency", 70),
-            ("$screen_quality", 65),
-        ],
-        "supports": [
-            ("offensive_rebounding", 60),
-            ("foul_draw_rate", 60),
-            ("vertical_pop", 65),
-            ("$short_roll_passing", 60),
-        ],
-        "supports_required": 2,
-        "disqualifiers": ["poor_hands_major", "foul_machine_major", "fragility_major"],
-    },
-    {
-        "key": "offensive_big",
-        "name": "Offensive Big (Defense Liability)",
-        "identity": "Offense-first interior scorer; requires protection.",
-        "must_haves": [
-            ("$post_scoring", 75),
-            ("close_finishing", 70),
-            ("free_throw", 70),
-        ],
-        "supports": [
-            ("offensive_rebounding", 60),
-            ("$passing_out_of_post", 60),
-            ("screen_assist_creation", 60),
-            ("foul_draw_rate", 65),
-        ],
-        "supports_required": 2,
-        "disqualifiers": ["defensive_target_major", "switch_liability_major", "mobility_floor_violation"],
-    },
-    {
-        "key": "situational_shooter",
-        "name": "Situational Shooter (Specialist)",
-        "identity": "One-job player: spacing. Limited elsewhere.",
-        "must_haves": [
-            ("spot_up_3pt", 80),
-            ("$cs_volume", 70),
-            ("$shot_prep_speed", 65),
-        ],
-        "supports": [
-            ("movement_3pt", 65),
-            ("free_throw", 80),
-            ("$offball_relocation", 60),
-        ],
-        "supports_required": 2,
-        "disqualifiers": ["no_gravity_major", "defensive_target_major", "low_motor_major"],
-    },
-    {
-        "key": "defensive_specialist",
-        "name": "Defensive Specialist (Non-Scoring)",
-        "identity": "Defense-only contributor; offense minimized.",
-        "must_haves": [
-            ("on_ball_containment", 75),
-            ("screen_navigation", 70),
-            ("$team_defense", 70),
-        ],
-        "supports": [
-            ("lateral_quickness", 70),
-            ("$motor", 70),
-            ("$disruption_deflections", 65),
-        ],
-        "supports_required": 2,
-        "disqualifiers": ["foul_machine_major", "decision_making_collapse", "severe_undersize"],
     },
     {
         "key": "energy_big",
         "name": "Energy Big",
         "identity": "Bench impact via effort, rebounding, rim pressure.",
         "must_haves": [
-            ("$motor", 75),
             ("offensive_rebounding", 70),
             ("defensive_rebounding", 65),
+            ("rim_pressure", 65),
         ],
         "supports": [
             ("vertical_pop", 65),
-            ("$screen_quality", 60),
-            ("$rim_protection", 60),
+            ("vertical_finishing", 62),
+            ("rim_protection", 60),
+            ("height", 70),
         ],
         "supports_required": 2,
-        "disqualifiers": ["fragility_major", "poor_hands_major", "foul_machine_major"],
     },
     {
-        "key": "situational_ball_handler",
-        "name": "Situational Ball-Handler (Bench Guard)",
-        "identity": "Secondary handler; stabilizes units without full creation load.",
+        "key": "rebounding_specialist",
+        "name": "Rebounding Specialist",
+        "identity": "Dominates glass on both ends; primary value is possession control.",
         "must_haves": [
-            ("ball_security", 75),
-            ("passing_accuracy", 70),
-            ("$decision_speed", 70),
+            ("defensive_rebounding", 78),
+            ("offensive_rebounding", 70),
+            ("box_out", 70),
         ],
         "supports": [
-            ("spot_up_3pt", 60),
-            ("drive_and_kick", 60),
-            ("$team_defense", 60),
+            ("rebound_range", 65),
+            ("hands", 65),
+            ("height", 72),
+            ("rim_pressure", 58),
         ],
         "supports_required": 2,
-        "disqualifiers": ["turnover_risk_major", "decision_making_collapse", "defensive_target_major"],
     },
     {
         "key": "developmental_prospect",
         "name": "Developmental Prospect",
         "identity": "Tools > production; projection archetype.",
         "must_haves": [
-            ("$physical_tools_composite", 70),
-            ("$one_offensive_trait", 70),
-            ("$one_defensive_trait", 70),
+            ("$physical_tools", 70),
+            ("$one_offensive", 68),
+            ("$one_defensive", 68),
         ],
         "supports": [
-            ("$motor", 65),
-            ("$coachability", 60),
-            ("$improvement_trend", 0),
-            ("$role_adaptability", 60),
+            ("role_discipline", 62),
+            ("shot_selection", 60),
+            ("decision_speed", 58),
         ],
         "supports_required": 2,
-        "disqualifiers": ["fragility_major", "severe_iq_collapse", "multi_category_system_risks"],
     },
 ]
 
@@ -408,139 +496,123 @@ ARCHETYPE_BY_KEY: dict[str, dict] = {a["key"]: a for a in ARCHETYPE_DEFS}
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# Archetype Evaluation
+# Composite Trait References
 # ═══════════════════════════════════════════════════════════════════════════
 
 def _get_trait_score(
     trait_ref: str,
     trait_scores: dict[str, int | None],
-    cluster_scores: dict[str, float | None] = None,
+    cluster_scores: dict[str, float | None] | None = None,
 ) -> int | None:
     """
     Resolve a trait reference to a score.
 
-    Direct trait keys (e.g. "spot_up_3pt") → lookup in trait_scores.
-    Composite keys (prefixed with '$') → derived logic or None if not computable.
+    Direct keys (no $ prefix) → lookup trait_scores.
+    Composite keys ($ prefix)  → derived logic.
     """
     if not trait_ref.startswith("$"):
         return trait_scores.get(trait_ref)
 
-    # Composite / derived trait references
     cs = cluster_scores or {}
 
-    if trait_ref == "$otd_shooting":
-        # max of off-the-dribble 3PT or 2PT OTD
-        a = trait_scores.get("otd_3pt")
-        b = trait_scores.get("2pt_jumper_otd")
+    # ── Composite Refs ────────────────────────────────────────────────
+    if trait_ref == "$team_defense":
+        # Avg of available team defense cluster traits
+        td_traits = ["help_rotation", "rim_protection", "closeout_execution",
+                     "off_ball_positioning", "communication_qb", "versatility",
+                     "team_foul_discipline"]
+        scores = [s for t in td_traits if (s := trait_scores.get(t)) is not None]
+        return round(sum(scores) / len(scores)) if scores else cs.get("team_defense") and round(cs["team_defense"])
+
+    if trait_ref == "$shot_creation_volume":
+        # Proxy: pull_up_3pt or midrange as "off-the-dribble" scoring
+        a = trait_scores.get("pull_up_3pt")
+        b = trait_scores.get("midrange_shotmaking")
         if a is not None and b is not None:
             return max(a, b)
-        return a or b  # return whichever is scored
-
-    if trait_ref == "$rim_protection":
-        return trait_scores.get("block") or trait_scores.get("rim_deterrence")
-
-    if trait_ref == "$team_defense":
-        # Approximate from perimeter defense cluster or help defense
-        return trait_scores.get("off_ball_denial") or trait_scores.get("help_defense_interior")
-
-    if trait_ref == "$motor":
-        # Motor is a frame-cluster concept — approximate from frame cluster
-        frame = cs.get("frame")
-        return round(frame) if frame is not None else None
-
-    if trait_ref == "$paint_deterrence":
-        return trait_scores.get("rim_deterrence")
-
-    if trait_ref == "$foul_discipline":
-        a = trait_scores.get("perimeter_foul_discipline")
-        b = trait_scores.get("interior_foul_discipline")
-        if a is not None and b is not None:
-            return min(a, b)
         return a or b
 
-    if trait_ref == "$closeout_discipline":
-        return trait_scores.get("perimeter_shot_contest")
+    if trait_ref == "$role_discipline_iq":
+        return trait_scores.get("role_discipline")
 
-    if trait_ref == "$help_defense_perimeter":
-        return trait_scores.get("off_ball_denial")
+    if trait_ref == "$tools_height_ok":
+        # Height ≥ 78" (6'6") as "big enough to be a pick-and-pop threat"
+        h = trait_scores.get("height")
+        return h if h is not None else None
 
-    if trait_ref == "$physical_tools_composite":
-        frame = cs.get("frame")
+    if trait_ref == "$physical_tools":
+        # Max of available tools cluster scores (v4.0: includes strength, motor, endurance)
+        tool_traits = ["height", "length", "strength", "speed", "lateral_quickness",
+                       "vertical_pop", "motor", "endurance"]
+        scores = [s for t in tool_traits if (s := trait_scores.get(t)) is not None]
+        if scores:
+            return max(scores)
+        frame = cs.get("tools")
         return round(frame) if frame is not None else None
 
-    if trait_ref == "$one_offensive_trait":
-        off_clusters = ["shooting", "finishing", "playmaking"]
-        for c in off_clusters:
-            for key, score in trait_scores.items():
-                if score is not None and score >= 70:
-                    from .traits import TRAIT_BY_KEY
-                    tdef = TRAIT_BY_KEY.get(key)
-                    if tdef and tdef["cluster"] in off_clusters:
-                        return score
+    if trait_ref == "$one_offensive":
+        off_clusters = {"shooting", "finishing", "playmaking"}
+        from .traits import TRAIT_BY_KEY
+        for key, score in trait_scores.items():
+            if score is not None and score >= 68:
+                tdef = TRAIT_BY_KEY.get(key)
+                if tdef and tdef["cluster"] in off_clusters:
+                    return score
         return None
 
-    if trait_ref == "$one_defensive_trait":
-        def_clusters = ["on_ball_defense", "team_defense"]
+    if trait_ref == "$one_defensive":
+        def_clusters = {"poa_defense", "team_defense"}
+        from .traits import TRAIT_BY_KEY
         for key, score in trait_scores.items():
-            if score is not None and score >= 70:
-                from .traits import TRAIT_BY_KEY
+            if score is not None and score >= 68:
                 tdef = TRAIT_BY_KEY.get(key)
                 if tdef and tdef["cluster"] in def_clusters:
                     return score
         return None
 
-    # All other composite refs → not computable from current data
+    # Unknown composite → unresolvable
     return None
 
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Archetype Evaluation
+# ═══════════════════════════════════════════════════════════════════════════
 
 def evaluate_archetype(
     archetype_def: dict,
     trait_scores: dict[str, int | None],
-    cluster_scores: dict[str, float | None] = None,
+    cluster_scores: dict[str, float | None] | None = None,
 ) -> bool:
     """
-    Evaluate whether a player qualifies for a given archetype.
-
-    Returns True if:
-      1. ALL must-haves are met (scored and >= threshold)
-      2. Required number of supports are met
-      3. No auto-disqualifiers are triggered
-
-    UNSCORED traits cannot meet thresholds, so most archetypes will not
-    qualify with box_score coverage (conservative by design).
+    Returns True if player qualifies for this archetype:
+      1. ALL must-haves scored and ≥ threshold
+      2. Required number of supports scored and ≥ threshold
     """
-    # Check must-haves: ALL must be met
+    # Must-haves: ALL required
     for trait_ref, min_score in archetype_def["must_haves"]:
         score = _get_trait_score(trait_ref, trait_scores, cluster_scores)
         if score is None or score < min_score:
             return False
 
-    # Check supports: N of M must be met
-    supports_met = 0
-    for trait_ref, min_score in archetype_def["supports"]:
-        score = _get_trait_score(trait_ref, trait_scores, cluster_scores)
-        if score is not None and score >= min_score:
-            supports_met += 1
-    if supports_met < archetype_def["supports_required"]:
-        return False
-
-    # Auto-disqualifiers: skipped for now (require meta-flag evaluation)
-    # With box_score coverage, disqualifiers that reference tracking data
-    # cannot be evaluated, so we don't trigger them (conservative).
-
-    return True
+    # Supports: N of M required
+    supports_met = sum(
+        1 for trait_ref, min_score in archetype_def["supports"]
+        if (_s := _get_trait_score(trait_ref, trait_scores, cluster_scores)) is not None
+        and _s >= min_score
+    )
+    return supports_met >= archetype_def["supports_required"]
 
 
 def assign_archetypes(
     trait_scores: dict[str, int | None],
-    cluster_scores: dict[str, float | None] = None,
+    cluster_scores: dict[str, float | None] | None = None,
 ) -> list[str]:
     """
-    Evaluate all 21 archetypes and return list of qualifying archetype keys.
+    Evaluate all 26 archetypes. Returns list of qualifying archetype keys.
     A player may qualify for 0, 1, or many archetypes.
     """
-    qualifying = []
-    for adef in ARCHETYPE_DEFS:
-        if evaluate_archetype(adef, trait_scores, cluster_scores):
-            qualifying.append(adef["key"])
-    return qualifying
+    return [
+        adef["key"]
+        for adef in ARCHETYPE_DEFS
+        if evaluate_archetype(adef, trait_scores, cluster_scores)
+    ]

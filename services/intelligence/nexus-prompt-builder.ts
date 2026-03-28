@@ -15,6 +15,7 @@
 
 import { IntelligenceResult, IntelligenceQueryType } from './router';
 import { CoachContext } from './v1-eval-engine';
+import { getTierContext } from './legends';
 
 // ── Program Identity Block ──
 
@@ -63,6 +64,12 @@ INSTRUCTIONS FOR THIS EVALUATION:
 - Describe strengths and gaps in basketball terms — not generic labels.
 - Do NOT recompute the math. Narrate what the engine produced.
 - Do NOT add draft/pro projection language unless the user explicitly asks about pro transition.`);
+
+  // Legend tier context (matching tier ±1 + level tier map)
+  if (ev.finalKr !== null) {
+    const tierCtx = getTierContext(ev.finalKr, ev.levelKey);
+    if (tierCtx) lines.push('\n' + tierCtx);
+  }
 
   return lines.join('\n');
 }
@@ -129,7 +136,7 @@ You are analyzing a team's roster composition. The Team KR engine has computed a
 Your role: interpret the numbers, identify roster trends, and provide actionable observations.`,
 
   legend_lookup: `
-The user wants to understand what a KR value means. Use the appropriate level legend (based on Coach Context) to explain tier labels, role expectations, and comparable profiles.`,
+The user wants to understand what a KR value means. Use the legend tier context provided in this prompt to explain the tier label, role expectations, and comparable profiles at this level. Cross-reference the Level Tier Map to show how this rating translates at adjacent competition levels.`,
 
   general_basketball: `
 Answer the basketball question directly using your knowledge. No engine output is available for this query.`,

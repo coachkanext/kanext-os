@@ -54,7 +54,7 @@ function roleLabel(r: CampusRole): string {
 function SecH({ title, C }: { title: string; C: ComponentColors }) {
   return <Text style={[secHs.t, { color: C.label }]}>{title}</Text>;
 }
-const secHs = StyleSheet.create({ t: { fontSize: 17, fontWeight: '700', marginBottom: 12, marginTop: 4 } });
+const secHs = StyleSheet.create({ t: { fontSize: 17, fontWeight: '700', marginBottom: 12, marginTop: 0 } });
 
 // ── Type Badge ────────────────────────────────────────────────────────────────
 
@@ -478,8 +478,33 @@ export default function CampusScreen() {
       return matchesType && matchesSearch;
     });
 
+    const openDining = DINING_HALLS.filter(h => h.isOpen).length;
+    const upcomingEvts = CAMPUS_EVENTS.length;
+
     return (
       <>
+
+        {/* Quick stats strip — fills dead space at top */}
+        {showAll && (
+          <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
+            <View style={{ flex: 1, backgroundColor: C.surface, borderRadius: 14, padding: 12, alignItems: 'center' }}>
+              <Text style={{ fontSize: 22, fontWeight: '800', color: C.label, lineHeight: 26 }}>{CLUBS.length}</Text>
+              <Text style={{ fontSize: 11, color: C.secondary, marginTop: 2 }}>Clubs</Text>
+            </View>
+            <View style={{ flex: 1, backgroundColor: C.surface, borderRadius: 14, padding: 12, alignItems: 'center' }}>
+              <Text style={{ fontSize: 22, fontWeight: '800', color: C.label, lineHeight: 26 }}>{joinedClubs.size}</Text>
+              <Text style={{ fontSize: 11, color: C.secondary, marginTop: 2 }}>Joined</Text>
+            </View>
+            <View style={{ flex: 1, backgroundColor: C.surface, borderRadius: 14, padding: 12, alignItems: 'center' }}>
+              <Text style={{ fontSize: 22, fontWeight: '800', color: C.label, lineHeight: 26 }}>{upcomingEvts}</Text>
+              <Text style={{ fontSize: 11, color: C.secondary, marginTop: 2 }}>Events</Text>
+            </View>
+            <View style={{ flex: 1, backgroundColor: C.surface, borderRadius: 14, padding: 12, alignItems: 'center' }}>
+              <Text style={{ fontSize: 22, fontWeight: '800', color: openDining > 0 ? C.green : C.red, lineHeight: 26 }}>{openDining}</Text>
+              <Text style={{ fontSize: 11, color: C.secondary, marginTop: 2 }}>Dining open</Text>
+            </View>
+          </View>
+        )}
 
         {/* News */}
         {showNews && (

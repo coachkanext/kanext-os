@@ -1,67 +1,49 @@
 """
-System Risks — College v1
+System Risks — College v4.0
 
-Source: System Risks.docx
-24 college risks. ~8 evaluable from box-score data; remainder require
-tracking/Synergy/manual scouting data and return status="not_evaluable".
+Source: Basketball Player Intelligence v3 spec
+14 college risks: 9 Major (-2.0) + 5 Minor (-1.0)
 
-Risk Types:
-  - major: -2.0 penalty
-  - minor: -1.0 penalty
+v4.0 Changes vs v3.0:
+  - Turnover Risk major: threshold lowered 20% → 17% TOV%
+  - Elevated Turnover Risk minor: range shifted from 17–19.9% to 14–16.9%
 
-Applied at Step 10 in the 13-step pipeline.
-Penalties stack across triggered risks.
+Note: System Risks formally belong to Block 2 (System Context) in the spec.
+For the standalone national pool evaluation (Block 1 only), we apply the
+player-intrinsic subset that is evaluable from box-score data.
+System-context-dependent risks (e.g. System Locked, Defensive Target) are
+not applied here — they require team/scheme context.
+
+College Major Risks (-2.0):  Range Gap, No Gravity, Turnover Risk,
+  Defensive Target, Switch Liability, Foul Machine, Severe Undersize,
+  System Locked (Severe), Role Collapse
+College Minor Risks (-1.0): Limited Range, Low Shooting Volume,
+  Elevated Turnover Risk, Partial System Lock, Role Fragility
+
+Evaluable from box score (applied in this pipeline):
+  Major: Range Gap, Turnover Risk, Foul Machine, Severe Undersize
+  Minor: Limited Range, Low Shooting Volume, Elevated Turnover Risk, Role Fragility
+
+All other risks require tracking/Synergy/manual data → not applied here.
 """
 from __future__ import annotations
 
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Position average heights (inches) for undersize checks
+# v3 positions: PG/SG/SF/PF/C
 # ═══════════════════════════════════════════════════════════════════════════
 
 POSITION_AVG_HEIGHT: dict[str, int] = {
-    "PG": 74,    # 6'2"
-    "CG": 76,    # 6'4"
-    "Wing": 78,  # 6'6"
-    "Forward": 80,  # 6'8"
-    "Big": 82,   # 6'10"
+    "PG": 74,   # 6'2"
+    "SG": 76,   # 6'4"
+    "SF": 78,   # 6'6"
+    "PF": 80,   # 6'8"
+    "C":  82,   # 6'10"
 }
 
-# ═══════════════════════════════════════════════════════════════════════════
-# Risk Definitions — All 24
-# ═══════════════════════════════════════════════════════════════════════════
-
-RISK_DEFS: list[dict] = [
-    # ── MAJOR RISKS (-2.0) ────────────────────────────────────────────
-    {"key": "one_dimensional_scorer", "name": "One-Dimensional Scorer", "type": "major", "penalty": -2.0, "evaluable": False},
-    {"key": "defensive_sieve", "name": "Defensive Sieve", "type": "major", "penalty": -2.0, "evaluable": False},
-    {"key": "ball_stopper", "name": "Ball Stopper", "type": "major", "penalty": -2.0, "evaluable": False},
-    {"key": "turnover_risk_major", "name": "Turnover Risk (Major)", "type": "major", "penalty": -2.0, "evaluable": True},
-    {"key": "no_gravity", "name": "No Gravity", "type": "major", "penalty": -2.0, "evaluable": False},
-    {"key": "switch_liability", "name": "Switch Liability", "type": "major", "penalty": -2.0, "evaluable": False},
-    {"key": "role_collapse", "name": "Role Collapse", "type": "major", "penalty": -2.0, "evaluable": False},
-    {"key": "foul_machine", "name": "Foul Machine", "type": "major", "penalty": -2.0, "evaluable": True},
-    {"key": "fragility", "name": "Fragility", "type": "major", "penalty": -2.0, "evaluable": True},
-    {"key": "severe_undersize", "name": "Severe Undersize", "type": "major", "penalty": -2.0, "evaluable": True},
-    {"key": "motor_collapse", "name": "Motor Collapse", "type": "major", "penalty": -2.0, "evaluable": False},
-    {"key": "decision_making_collapse", "name": "Decision-Making Collapse", "type": "major", "penalty": -2.0, "evaluable": False},
-
-    # ── MINOR RISKS (-1.0) ────────────────────────────────────────────
-    {"key": "limited_range", "name": "Limited Range", "type": "minor", "penalty": -1.0, "evaluable": True},
-    {"key": "low_shooting_volume", "name": "Low Shooting Volume", "type": "minor", "penalty": -1.0, "evaluable": True},
-    {"key": "elevated_turnover_risk", "name": "Elevated Turnover Risk", "type": "minor", "penalty": -1.0, "evaluable": True},
-    {"key": "foul_prone", "name": "Foul-Prone", "type": "minor", "penalty": -1.0, "evaluable": False},
-    {"key": "poor_free_throw", "name": "Poor Free Throw", "type": "minor", "penalty": -1.0, "evaluable": False},
-    {"key": "finishing_void", "name": "Finishing Void", "type": "minor", "penalty": -1.0, "evaluable": False},
-    {"key": "isolation_dependent", "name": "Isolation-Dependent", "type": "minor", "penalty": -1.0, "evaluable": False},
-    {"key": "moderate_undersize", "name": "Moderate Undersize", "type": "minor", "penalty": -1.0, "evaluable": True},
-    {"key": "transition_liability", "name": "Transition Liability", "type": "minor", "penalty": -1.0, "evaluable": False},
-    {"key": "slow_decision_making", "name": "Slow Decision-Making", "type": "minor", "penalty": -1.0, "evaluable": False},
-    {"key": "low_motor", "name": "Low Motor", "type": "minor", "penalty": -1.0, "evaluable": False},
-    {"key": "conditioning_concern", "name": "Conditioning Concern", "type": "minor", "penalty": -1.0, "evaluable": False},
-]
-
-RISK_BY_KEY: dict[str, dict] = {r["key"]: r for r in RISK_DEFS}
+# Positions considered "perimeter" for shooting-volume risk
+PERIMETER_POSITIONS = {"PG", "SG", "SF"}
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -77,65 +59,71 @@ def evaluate_system_risks(
     team_max_gp: int,
 ) -> dict:
     """
-    Evaluate all 24 system risks for a player.
+    Evaluate system risks for a player.
 
-    Parameters
-    ----------
-    season_stats : dict
-        Player's season stat row (from DB query).
-    trait_inputs : dict
-        Derived trait inputs from build_trait_inputs().
-    height_inches : int or None
-        Player's height.
-    position : str
-        Mapped position (PG/CG/Wing/Forward/Big).
-    games_played : int
-        Games played this season.
-    team_max_gp : int
-        Maximum games played by any player on the team.
+    Only applies risks evaluable from box-score data.
 
     Returns
     -------
     dict with:
-      - risks: list of triggered risk dicts {key, name, type, penalty, trigger_values}
-      - total_penalty: float (sum of penalties, always <= 0)
+      risks         : list of triggered risk dicts
+      total_penalty : float (sum of penalties, ≤ 0)
     """
     triggered: list[dict] = []
 
-    # Helper to safely get float values
-    def _f(v):
-        if v is None:
-            return 0.0
-        return float(v)
+    def _f(v) -> float:
+        return float(v) if v is not None else 0.0
 
-    min_pg = _f(season_stats.get("minutes_per_game"))
-    to_pg = _f(season_stats.get("to_per_game"))
-    pf_pg = _f(season_stats.get("pf_per_game"))
-    three_pct = _f(season_stats.get("three_pct"))
+    min_pg      = _f(season_stats.get("minutes_per_game"))
+    to_pg       = _f(season_stats.get("to_per_game"))
+    pf_pg       = _f(season_stats.get("pf_per_game"))
+    three_pct   = _f(season_stats.get("three_pct"))
     three_pa_pg = _f(season_stats.get("three_pa_per_game"))
+    fga_pg      = _f(season_stats.get("fga_per_game"))
+    fta_pg      = _f(season_stats.get("fta_per_game"))
 
-    # Estimate possessions for rate stats
-    est_poss = (min_pg / 40.0) * 70.0 if min_pg > 5 else 0.0
+    # Estimated possessions used per game
+    est_poss     = (min_pg / 40.0) * 70.0 if min_pg > 5 else 0.0
+    poss_used    = fga_pg + 0.44 * fta_pg + to_pg
 
-    # ── Risk #4: Turnover Risk (Major) ─────────────────────────────
-    # TOV% >= 20%  (TOV% ≈ TOV / possessions_used * 100)
-    # Approximate possessions used = FGA + 0.44*FTA + TOV
-    fga_pg = _f(season_stats.get("fga_per_game"))
-    fta_pg = _f(season_stats.get("fta_per_game"))
-    poss_used = fga_pg + 0.44 * fta_pg + to_pg
+    # ─────────────────────────────────────────────────────────────────
+    # MAJOR: Range Gap
+    # Guards/wings with no 3PT threat (3PA/G = 0 or very low + low 3P%)
+    # Rationale: creates systematic defensive advantage against player.
+    # ─────────────────────────────────────────────────────────────────
+    if position in PERIMETER_POSITIONS:
+        if three_pa_pg < 0.5 or (three_pa_pg < 1.5 and three_pct < 0.28):
+            triggered.append({
+                "key": "range_gap",
+                "name": "Range Gap",
+                "type": "major",
+                "penalty": -2.0,
+                "trigger_values": {
+                    "three_pa_pg": round(three_pa_pg, 1),
+                    "three_pct": round(three_pct, 3),
+                    "position": position,
+                },
+            })
+
+    # ─────────────────────────────────────────────────────────────────
+    # MAJOR: Turnover Risk
+    # TOV% ≥ 17% (v4.0: lowered from ≥ 20%)
+    # ─────────────────────────────────────────────────────────────────
     if poss_used > 0:
         tov_pct = (to_pg / poss_used) * 100.0
-        if tov_pct >= 20.0:
+        if tov_pct >= 17.0:
             triggered.append({
-                "key": "turnover_risk_major",
-                "name": "Turnover Risk (Major)",
+                "key": "turnover_risk",
+                "name": "Turnover Risk",
                 "type": "major",
                 "penalty": -2.0,
                 "trigger_values": {"tov_pct": round(tov_pct, 1)},
             })
 
-    # ── Risk #8: Foul Machine ─────────────────────────────────────
-    # PF per 100 possessions >= 6.0
+    # ─────────────────────────────────────────────────────────────────
+    # MAJOR: Foul Machine
+    # PF per 100 possessions ≥ 6.0
+    # ─────────────────────────────────────────────────────────────────
     if est_poss > 0:
         pf_per_100 = (pf_pg / est_poss) * 100.0
         if pf_per_100 >= 6.0:
@@ -147,25 +135,10 @@ def evaluate_system_risks(
                 "trigger_values": {"pf_per_100": round(pf_per_100, 1)},
             })
 
-    # ── Risk #9: Fragility ────────────────────────────────────────
-    # GP < 60% of team max GP
-    if team_max_gp > 0:
-        gp_pct = games_played / team_max_gp
-        if gp_pct < 0.60:
-            triggered.append({
-                "key": "fragility",
-                "name": "Fragility",
-                "type": "major",
-                "penalty": -2.0,
-                "trigger_values": {
-                    "games_played": games_played,
-                    "team_max_gp": team_max_gp,
-                    "gp_pct": round(gp_pct, 2),
-                },
-            })
-
-    # ── Risk #10: Severe Undersize ─────────────────────────────────
-    # Height >= 4" below position average
+    # ─────────────────────────────────────────────────────────────────
+    # MAJOR: Severe Undersize
+    # Height ≥ 4" below position average
+    # ─────────────────────────────────────────────────────────────────
     pos_avg = POSITION_AVG_HEIGHT.get(position)
     if height_inches is not None and pos_avg is not None:
         deficit = pos_avg - height_inches
@@ -177,13 +150,15 @@ def evaluate_system_risks(
                 "penalty": -2.0,
                 "trigger_values": {
                     "height_inches": height_inches,
-                    "position_avg": pos_avg,
-                    "deficit": deficit,
+                    "position_avg":  pos_avg,
+                    "deficit":       deficit,
                 },
             })
 
-    # ── Risk #13: Limited Range ────────────────────────────────────
-    # 3P% between 28-33% AND 3PA/G > 2.0
+    # ─────────────────────────────────────────────────────────────────
+    # MINOR: Limited Range
+    # 3P% 28-33% AND 3PA/G > 2.0 (attempts but poor accuracy)
+    # ─────────────────────────────────────────────────────────────────
     if 0.28 <= three_pct <= 0.33 and three_pa_pg > 2.0:
         triggered.append({
             "key": "limited_range",
@@ -191,30 +166,40 @@ def evaluate_system_risks(
             "type": "minor",
             "penalty": -1.0,
             "trigger_values": {
-                "three_pct": round(three_pct, 3),
+                "three_pct":   round(three_pct, 3),
                 "three_pa_pg": round(three_pa_pg, 1),
             },
         })
 
-    # ── Risk #14: Low Shooting Volume ──────────────────────────────
-    # 3PA/G < 1.0 (guards and wings only)
-    if position in ("PG", "CG", "Wing") and three_pa_pg < 1.0:
-        triggered.append({
-            "key": "low_shooting_volume",
-            "name": "Low Shooting Volume",
-            "type": "minor",
-            "penalty": -1.0,
-            "trigger_values": {
-                "three_pa_pg": round(three_pa_pg, 1),
-                "position": position,
-            },
-        })
+    # ─────────────────────────────────────────────────────────────────
+    # MINOR: Low Shooting Volume
+    # Perimeter positions with 3PA/G < 1.0 (not enough range to threaten)
+    # Note: doesn't overlap with Range Gap (which fires at < 0.5 or very low%)
+    # ─────────────────────────────────────────────────────────────────
+    if position in PERIMETER_POSITIONS:
+        # Only apply if Range Gap major was NOT already triggered
+        rg_triggered = any(r["key"] == "range_gap" for r in triggered)
+        if not rg_triggered and 0.5 <= three_pa_pg < 1.0:
+            triggered.append({
+                "key": "low_shooting_volume",
+                "name": "Low Shooting Volume",
+                "type": "minor",
+                "penalty": -1.0,
+                "trigger_values": {
+                    "three_pa_pg": round(three_pa_pg, 1),
+                    "position":    position,
+                },
+            })
 
-    # ── Risk #15: Elevated Turnover Risk ───────────────────────────
-    # TOV% 17-19% (but not >= 20%, which is major)
+    # ─────────────────────────────────────────────────────────────────
+    # MINOR: Elevated Turnover Risk
+    # TOV% 14-16.9% (v4.0: shifted down from 17-19.9%)
+    # ─────────────────────────────────────────────────────────────────
     if poss_used > 0:
         tov_pct_minor = (to_pg / poss_used) * 100.0
-        if 17.0 <= tov_pct_minor < 20.0:
+        # Only apply if major Turnover Risk was NOT triggered
+        tr_triggered = any(r["key"] == "turnover_risk" for r in triggered)
+        if not tr_triggered and 14.0 <= tov_pct_minor < 17.0:
             triggered.append({
                 "key": "elevated_turnover_risk",
                 "name": "Elevated Turnover Risk",
@@ -223,26 +208,26 @@ def evaluate_system_risks(
                 "trigger_values": {"tov_pct": round(tov_pct_minor, 1)},
             })
 
-    # ── Risk #20: Moderate Undersize ───────────────────────────────
-    # Height 2-3" below position average (but not >= 4, which is severe)
-    if height_inches is not None and pos_avg is not None:
-        deficit_mod = pos_avg - height_inches
-        if 2 <= deficit_mod <= 3:
+    # ─────────────────────────────────────────────────────────────────
+    # MINOR: Role Fragility
+    # GP < 60% of team max GP (durability/availability concern)
+    # ─────────────────────────────────────────────────────────────────
+    if team_max_gp > 0:
+        gp_pct = games_played / team_max_gp
+        if gp_pct < 0.60:
             triggered.append({
-                "key": "moderate_undersize",
-                "name": "Moderate Undersize",
+                "key": "role_fragility",
+                "name": "Role Fragility",
                 "type": "minor",
                 "penalty": -1.0,
                 "trigger_values": {
-                    "height_inches": height_inches,
-                    "position_avg": pos_avg,
-                    "deficit": deficit_mod,
+                    "games_played": games_played,
+                    "team_max_gp":  team_max_gp,
+                    "gp_pct":       round(gp_pct, 2),
                 },
             })
 
-    total_penalty = sum(r["penalty"] for r in triggered)
-
     return {
-        "risks": triggered,
-        "total_penalty": total_penalty,
+        "risks":         triggered,
+        "total_penalty": sum(r["penalty"] for r in triggered),
     }

@@ -44,6 +44,10 @@ export function resetFooter() {
   _listeners.forEach((cb) => cb(true, true));
 }
 
+export function getFooterVisible(): boolean {
+  return _visible;
+}
+
 export function subscribeFooterVisibility(
   callback: (visible: boolean, instant: boolean) => void,
 ): () => void {

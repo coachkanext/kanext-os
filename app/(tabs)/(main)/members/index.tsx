@@ -81,15 +81,25 @@ function statusLabel(status: CommunityMember['status']): string {
 
 function roleColor(role: MemberRoleType): string {
   const map: Record<MemberRoleType, string> = {
-    admin: 'hsl(220,55%,32%)',
-    staff: 'hsl(200,55%,30%)',
-    leader: 'hsl(140,42%,28%)',
-    volunteer: 'hsl(50,55%,28%)',
-    member: 'rgba(45,30,18,0.40)',
-    visitor: 'rgba(45,30,18,0.25)',
+    admin:     'rgba(26,23,20,1.00)',
+    staff:     'rgba(26,23,20,0.68)',
+    leader:    'rgba(26,23,20,0.46)',
+    volunteer: 'rgba(26,23,20,0.30)',
+    member:    'rgba(26,23,20,0.18)',
+    visitor:   'rgba(26,23,20,0.11)',
   };
   return map[role];
 }
+
+// Member-facing role display names (no admin jargon)
+const ROLE_DISPLAY: Record<MemberRoleType, string> = {
+  admin:     'Senior Pastor',
+  staff:     'Staff & Deacons',
+  leader:    'Ministry Leader',
+  volunteer: 'Volunteer',
+  member:    'Member',
+  visitor:   'Visitor',
+};
 
 function formatShortDate(dateStr: string): string {
   const [, m, d] = dateStr.split('-').map(Number);
@@ -204,6 +214,42 @@ function SectionHeader({ letter, onLayout, C, s }: {
       onLayout={(e) => onLayout(letter, e.nativeEvent.layout.y)}
     >
       <Text style={[s.sectionHeaderText, { color: C.secondary }]}>{letter}</Text>
+    </View>
+  );
+}
+
+// ── StackedAvatars ────────────────────────────────────────────────────────────
+
+function StackedAvatars({ members, surfaceColor }: { members: CommunityMember[]; surfaceColor: string }) {
+  const shown = members.slice(0, 3);
+  const extra = members.length - 3;
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      {shown.map((m, i) => (
+        <View
+          key={m.id}
+          style={{
+            width: 26, height: 26, borderRadius: 13,
+            backgroundColor: `hsl(${m.hue},42%,32%)`,
+            alignItems: 'center', justifyContent: 'center',
+            marginLeft: i === 0 ? 0 : -9,
+            borderWidth: 1.5, borderColor: surfaceColor,
+            zIndex: shown.length - i,
+          }}
+        >
+          <Text style={{ fontSize: 9, fontWeight: '700', color: '#fff' }}>{m.initials}</Text>
+        </View>
+      ))}
+      {extra > 0 && (
+        <View style={{
+          marginLeft: -9, width: 26, height: 26, borderRadius: 13,
+          backgroundColor: 'rgba(45,30,18,0.12)',
+          alignItems: 'center', justifyContent: 'center',
+          borderWidth: 1.5, borderColor: surfaceColor,
+        }}>
+          <Text style={{ fontSize: 8, fontWeight: '700', color: 'rgba(45,30,18,0.50)' }}>+{extra}</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -795,88 +841,233 @@ export default function CommunityMembersScreen() {
       ? ROLE_DEFINITIONS.filter(r => r.id === filterRole)
       : ROLE_DEFINITIONS;
 
+    const totalMembers = ROLE_DEFINITIONS.reduce((sum, r) => sum + r.memberCount, 0);
+
+    const ROLE_CHANGES = [
+      { id: 'rc1', text: 'Nia Sanders promoted to Leader', time: '3 days ago', icon: 'arrow.up.circle.fill' as const },
+      { id: 'rc2', text: '2 new Visitors added this week', time: '5 days ago', icon: 'person.badge.plus' as const },
+      { id: 'rc3', text: 'Kevin Park assigned Hospitality volunteer', time: '1 week ago', icon: 'hands.and.sparkles' as const },
+    ];
+
+    const VOL_NEEDS = [
+      { id: 'vn1', dept: 'Hospitality', need: '3 more volunteers needed' },
+      { id: 'vn2', dept: 'Youth', need: '1 more leader needed' },
+    ];
+
     return (
       <>
         {visibleRoles.map(role => {
           const isExpanded = expandedRoleId === role.id;
           const roleMembers = COMMUNITY_MEMBERS.filter(m => m.role === role.id);
+          const dotColor = roleColor(role.id as MemberRoleType);
           return (
             <View key={role.id} style={[s.roleCard, { backgroundColor: C.surface }]}>
               <Pressable
                 style={({ pressed }) => [s.roleCardHeader, pressed && { backgroundColor: C.surfacePressed }]}
                 onPress={() => { Haptics.selectionAsync(); setExpandedRoleId(isExpanded ? null : role.id); }}
               >
-                <View style={[s.roleColorDot, { backgroundColor: `hsl(${role.hue},42%,32%)` }]} />
+                <View style={[s.roleColorDot, { backgroundColor: dotColor }]} />
                 <View style={{ flex: 1 }}>
                   <Text style={[s.roleName, { color: C.label }]}>{role.displayName}</Text>
                   <Text style={[s.roleDesc, { color: C.secondary }]}>{role.description}</Text>
                 </View>
-                <Text style={[s.roleMemberCount, { color: C.muted }]}>{role.memberCount}</Text>
-                <IconSymbol name={isExpanded ? 'chevron.up' : 'chevron.down'} size={14} color={C.muted} />
+                {/* Stacked avatars + bold count */}
+                <View style={{ alignItems: 'flex-end', gap: 4 }}>
+                  {roleMembers.length > 0 && (
+                    <StackedAvatars members={roleMembers} surfaceColor={C.surface} />
+                  )}
+                  <Text style={[s.roleMemberCount, { color: C.label }]}>{role.memberCount}</Text>
+                </View>
+                <IconSymbol name={isExpanded ? 'chevron.up' : 'chevron.down'} size={14} color={C.muted} style={{ marginLeft: 8 }} />
               </Pressable>
 
               {isExpanded && (
                 <View style={[s.roleExpanded, { borderTopColor: C.separator }]}>
-                  {/* Permissions */}
-                  <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 }}>
-                    <Text style={[s.sectionHeaderText, { color: C.secondary, marginBottom: 6 }]}>PERMISSIONS</Text>
+                  {/* People first */}
+                  {roleMembers.map((m, idx) => (
+                    <Pressable
+                      key={m.id}
+                      style={({ pressed }) => [
+                        s.memberRow,
+                        pressed && { backgroundColor: C.surfacePressed },
+                        idx < roleMembers.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
+                      ]}
+                      onPress={() => openDetail(m)}
+                    >
+                      <View style={[s.memberAvatar, { width: 34, height: 34, borderRadius: 17, backgroundColor: `hsl(${m.hue},42%,32%)` }]}>
+                        <Text style={[s.memberAvatarText, { fontSize: 11 }]}>{m.initials}</Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: 14, fontWeight: '500', color: C.label }}>{m.name}</Text>
+                        {m.departments.length > 0 && (
+                          <Text style={{ fontSize: 12, color: C.muted, marginTop: 1 }}>{m.departments[0]}</Text>
+                        )}
+                      </View>
+                      <IconSymbol name="chevron.right" size={13} color={C.muted} />
+                    </Pressable>
+                  ))}
+                  {/* Permissions below */}
+                  <View style={{ padding: 14, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator }}>
+                    <Text style={[s.sectionHeaderText, { color: C.muted, marginBottom: 8 }]}>PERMISSIONS</Text>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
                       {role.permissions.map(p => (
                         <View key={p} style={{ backgroundColor: C.surfacePressed, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 }}>
-                          <Text style={{ fontSize: 12, color: C.label }}>{p}</Text>
+                          <Text style={{ fontSize: 11, color: C.secondary }}>{p}</Text>
                         </View>
                       ))}
                     </View>
-                  </View>
-                  {/* Members with this role */}
-                  <View style={{ borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator }}>
-                    {roleMembers.map(m => (
-                      <Pressable
-                        key={m.id}
-                        style={({ pressed }) => [s.memberRow, pressed && { backgroundColor: C.surfacePressed }]}
-                        onPress={() => openDetail(m)}
-                      >
-                        <View style={[s.memberAvatar, { width: 34, height: 34, borderRadius: 17, backgroundColor: `hsl(${m.hue},42%,32%)` }]}>
-                          <Text style={[s.memberAvatarText, { fontSize: 11 }]}>{m.initials}</Text>
-                        </View>
-                        <Text style={[{ flex: 1, fontSize: 14, color: C.label }]}>{m.name}</Text>
-                        <IconSymbol name="chevron.right" size={13} color={C.muted} />
-                      </Pressable>
-                    ))}
                   </View>
                 </View>
               )}
             </View>
           );
         })}
-        <View style={{ height: 40 }} />
+
+        {/* ── Role Distribution ── */}
+        {!filterRole && (
+          <>
+            <Text style={[s.sectionLabel, { color: C.secondary, marginTop: 12 }]}>Role Distribution</Text>
+            <View style={[s.distCard, { backgroundColor: C.surface }]}>
+              {ROLE_DEFINITIONS.map(role => {
+                const pct = totalMembers > 0 ? role.memberCount / totalMembers : 0;
+                const dotColor = roleColor(role.id as MemberRoleType);
+                return (
+                  <View key={role.id} style={s.distRow}>
+                    <View style={[s.distDot, { backgroundColor: dotColor }]} />
+                    <Text style={[s.distLabel, { color: C.label }]}>{role.displayName}</Text>
+                    <View style={[s.distTrack, { backgroundColor: C.separator }]}>
+                      <View style={[s.distFill, { width: `${pct * 100}%` as any, backgroundColor: dotColor }]} />
+                    </View>
+                    <Text style={[s.distCount, { color: C.label }]}>{role.memberCount}</Text>
+                  </View>
+                );
+              })}
+            </View>
+
+            {/* ── Recent Role Changes ── */}
+            <Text style={[s.sectionLabel, { color: C.secondary, marginTop: 4 }]}>Recent Changes</Text>
+            <View style={[{ backgroundColor: C.surface, borderRadius: 14, marginBottom: 16 }]}>
+              {ROLE_CHANGES.map((item, idx) => (
+                <View
+                  key={item.id}
+                  style={[
+                    s.changeRow,
+                    idx < ROLE_CHANGES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
+                  ]}
+                >
+                  <IconSymbol name={item.icon} size={16} color={C.accent} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 13, color: C.label }}>{item.text}</Text>
+                    <Text style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{item.time}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+
+            {/* ── Volunteer Needs ── */}
+            <Text style={[s.sectionLabel, { color: C.secondary }]}>Volunteer Needs</Text>
+            <View style={[{ backgroundColor: '#D9775712', borderRadius: 14, marginBottom: 24 }]}>
+              {VOL_NEEDS.map((vn, idx) => (
+                <View
+                  key={vn.id}
+                  style={[
+                    s.changeRow,
+                    idx < VOL_NEEDS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(217,119,87,0.15)' },
+                  ]}
+                >
+                  <IconSymbol name="exclamationmark.circle" size={16} color={C.accent} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>{vn.dept}</Text>
+                    <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{vn.need}</Text>
+                  </View>
+                  <Pressable
+                    style={[s.signUpBtn, { borderColor: C.accent }]}
+                    onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                  >
+                    <Text style={[s.signUpBtnText, { color: C.accent }]}>Sign Up</Text>
+                  </Pressable>
+                </View>
+              ))}
+            </View>
+          </>
+        )}
       </>
     );
   }
 
   function renderMemberRoles() {
-    const tiers: { label: string; roles: MemberRoleType[] }[] = [
-      { label: 'Pastor / Director', roles: ['admin'] },
-      { label: 'Staff & Deacons', roles: ['staff'] },
-      { label: 'Ministry Leaders', roles: ['leader'] },
-      { label: 'Volunteers', roles: ['volunteer'] },
+    const tiers: { label: string; desc: string; roles: MemberRoleType[] }[] = [
+      { label: 'Senior Pastor',     desc: 'Provides spiritual leadership and vision for the church.',   roles: ['admin'] },
+      { label: 'Staff & Deacons',   desc: 'Commissioned servants who support pastoral ministry.',       roles: ['staff'] },
+      { label: 'Ministry Leaders',  desc: 'Department and group leaders serving the congregation.',     roles: ['leader'] },
+      { label: 'Volunteers',        desc: 'Faithful servants who keep our ministries running.',         roles: ['volunteer'] },
     ];
+
+    const totalMembers = ROLE_DEFINITIONS.reduce((sum, r) => sum + r.memberCount, 0);
+    const displayRoles = ROLE_DEFINITIONS.filter(r => ['admin','staff','leader','volunteer','member'].includes(r.id));
+
     return (
       <>
-        <Text style={[s.sectionLabel, { color: C.secondary }]}>Leadership Structure</Text>
+        {/* Leadership tiers with people */}
         {tiers.map(tier => {
           const tierMembers = COMMUNITY_MEMBERS.filter(m => tier.roles.includes(m.role));
           if (tierMembers.length === 0) return null;
           return (
-            <View key={tier.label} style={{ marginBottom: 16 }}>
-              <Text style={[s.tierLabel, { color: C.label }]}>{tier.label}</Text>
-              {tierMembers.map(m => (
-                <MemberRowSimple key={m.id} member={m} onPress={openDetail} C={C} s={s} />
-              ))}
+            <View key={tier.label} style={[s.roleCard, { backgroundColor: C.surface, marginBottom: 10 }]}>
+              <View style={s.roleCardHeader}>
+                <View style={[s.roleColorDot, { backgroundColor: roleColor(tier.roles[0]) }]} />
+                <View style={{ flex: 1 }}>
+                  <Text style={[s.roleName, { color: C.label }]}>{tier.label}</Text>
+                  <Text style={[s.roleDesc, { color: C.secondary }]}>{tier.desc}</Text>
+                </View>
+                <StackedAvatars members={tierMembers} surfaceColor={C.surface} />
+              </View>
+              <View style={{ borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator }}>
+                {tierMembers.map((m, idx) => (
+                  <Pressable
+                    key={m.id}
+                    style={({ pressed }) => [
+                      s.memberRow,
+                      pressed && { backgroundColor: C.surfacePressed },
+                      idx < tierMembers.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
+                    ]}
+                    onPress={() => openDetail(m)}
+                  >
+                    <View style={[s.memberAvatar, { width: 34, height: 34, borderRadius: 17, backgroundColor: `hsl(${m.hue},42%,32%)` }]}>
+                      <Text style={[s.memberAvatarText, { fontSize: 11 }]}>{m.initials}</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 14, fontWeight: '500', color: C.label }}>{m.name}</Text>
+                      {m.departments.length > 0 && (
+                        <Text style={{ fontSize: 12, color: C.muted, marginTop: 1 }}>{m.departments[0]}</Text>
+                      )}
+                    </View>
+                    <IconSymbol name="chevron.right" size={13} color={C.muted} />
+                  </Pressable>
+                ))}
+              </View>
             </View>
           );
         })}
-        <View style={{ height: 40 }} />
+
+        {/* Congregation breakdown (no permissions — just numbers) */}
+        <Text style={[s.sectionLabel, { color: C.secondary, marginTop: 8 }]}>Congregation</Text>
+        <View style={[s.distCard, { backgroundColor: C.surface, marginBottom: 24 }]}>
+          {displayRoles.map(role => {
+            const pct = totalMembers > 0 ? role.memberCount / totalMembers : 0;
+            const dotColor = roleColor(role.id as MemberRoleType);
+            return (
+              <View key={role.id} style={s.distRow}>
+                <View style={[s.distDot, { backgroundColor: dotColor }]} />
+                <Text style={[s.distLabel, { color: C.label }]}>{ROLE_DISPLAY[role.id as MemberRoleType]}</Text>
+                <View style={[s.distTrack, { backgroundColor: C.separator }]}>
+                  <View style={[s.distFill, { width: `${pct * 100}%` as any, backgroundColor: dotColor }]} />
+                </View>
+                <Text style={[s.distCount, { color: C.label }]}>{role.memberCount}</Text>
+              </View>
+            );
+          })}
+        </View>
       </>
     );
   }
@@ -1034,7 +1225,7 @@ export default function CommunityMembersScreen() {
 
   // ── Layout ──────────────────────────────────────────────────────────────────
 
-  const contentPaddingTop = topBarH + PILLS_H + 8;
+  const contentPaddingTop = topBarH + (pillsVisible ? PILLS_H : 0) + 8;
   const showAlphaIndex    = activeTab === 'Directory' && !isAdmin && selectedPill !== 'Leadership';
 
   return (
@@ -1085,16 +1276,8 @@ export default function CommunityMembersScreen() {
             </Pressable>
           </View>
 
-          {/* Right: RBAC toggle + filter icon */}
+          {/* Right: filter icon */}
           <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end', gap: 10 }]}>
-            <Pressable
-              style={[s.rbacToggle, { backgroundColor: isAdmin ? C.accent : C.surfacePressed }]}
-              onPress={handleRoleToggle}
-            >
-              <Text style={[s.rbacToggleText, { color: isAdmin ? '#fff' : C.secondary }]}>
-                {isAdmin ? 'Admin' : 'Member'}
-              </Text>
-            </Pressable>
             {pills.length > 0 && (
               <Pressable onPress={togglePills} hitSlop={12}>
                 <IconSymbol
@@ -1275,10 +1458,24 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
 
   roleCard:       { borderRadius: 14, marginBottom: 10, overflow: 'hidden' },
   roleCardHeader: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14 },
-  roleColorDot:   { width: 12, height: 12, borderRadius: 6, flexShrink: 0 },
+  roleColorDot:   { width: 10, height: 10, borderRadius: 5, flexShrink: 0 },
   roleName:       { fontSize: 15, fontWeight: '700' },
   roleDesc:       { fontSize: 12, marginTop: 1 },
-  roleMemberCount:{ fontSize: 15, fontWeight: '700' },
+  roleMemberCount:{ fontSize: 16, fontWeight: '800' },
+
+  // Role distribution
+  distCard:    { borderRadius: 14, padding: 14, marginBottom: 16 },
+  distRow:     { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 7 },
+  distDot:     { width: 8, height: 8, borderRadius: 4, flexShrink: 0 },
+  distLabel:   { fontSize: 13, fontWeight: '500', width: 90 },
+  distTrack:   { flex: 1, height: 4, borderRadius: 2, overflow: 'hidden' },
+  distFill:    { height: 4, borderRadius: 2 },
+  distCount:   { fontSize: 13, fontWeight: '700', width: 24, textAlign: 'right' },
+
+  // Role changes / vol needs
+  changeRow:   { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 12 },
+  signUpBtn:   { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 10, borderWidth: 1.5 },
+  signUpBtnText: { fontSize: 12, fontWeight: '600' },
   roleExpanded:   { borderTopWidth: StyleSheet.hairlineWidth },
 
   statsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 16 },

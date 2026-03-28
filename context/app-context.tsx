@@ -18,6 +18,7 @@ import {
 import { deriveRoleBadge } from '@/utils/role-badge';
 import { buildActiveView, getActiveViewKey } from '@/utils/active-view';
 import { notifyViewSwitch } from '@/utils/view-switch-lifecycle';
+import { notifyContextSwitch } from '@/utils/global-context-switch';
 
 // Storage keys
 const STORAGE_KEYS = {
@@ -252,6 +253,8 @@ function appReducer(state: ExtendedAppState, action: AppAction): ExtendedAppStat
         : DEMO_ORGANIZATIONS[mode];
       const resolvedProgram = program && SPORTS_PROGRAMS[program] ? SPORTS_PROGRAMS[program] : DEMO_PROGRAM;
       const resolvedSeason = season && SPORTS_SEASONS[season] ? SPORTS_SEASONS[season] : DEMO_CYCLES[mode];
+      // Derive a mode-consistent activeContext so org drawer and home screen stay in sync
+      const restoredCtx = getDefaultContextForMode(mode);
       return {
         ...state,
         mode,
@@ -262,6 +265,7 @@ function appReducer(state: ExtendedAppState, action: AppAction): ExtendedAppStat
         isFirstRun: false,
         isLoading: false,
         authState,
+        activeContext: restoredCtx ?? state.activeContext,
       };
     }
     case 'SET_ACTIVE_VIEW': {
@@ -504,6 +508,8 @@ export function AppProvider({ children }: AppProviderProps) {
     // Persist context + mode
     AsyncStorage.setItem(STORAGE_KEYS.activeContext, JSON.stringify({ ...ctx, derived_role_badge: badge })).catch(console.error);
     AsyncStorage.setItem(STORAGE_KEYS.lastMode, ctx.mode).catch(console.error);
+    // Broadcast so home screen force-updates (guards against React Compiler memoization)
+    notifyContextSwitch();
   }, []);
 
   const setActiveView = useCallback((view: ActiveView) => {

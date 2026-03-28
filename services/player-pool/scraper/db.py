@@ -68,7 +68,21 @@ def upsert_team(
     competitive_level_id: str, city: str | None = None,
     state: str | None = None, base_url: str | None = None,
 ) -> str:
-    """Insert team if not exists (by slug), return id."""
+    """Insert team if not exists, return id.
+
+    Dedup order:
+      1. (name, competitive_level_id) — catches cross-scraper duplicates where
+         ESPN and ncaa_scraper both insert the same school with different slugs.
+      2. slug — catches same-scraper re-runs on an already-inserted team.
+    """
+    # Primary: same name + same level = same team regardless of source slug
+    row = conn.execute(
+        "SELECT id FROM teams WHERE name = %s AND competitive_level_id = %s",
+        (name, competitive_level_id),
+    ).fetchone()
+    if row:
+        return str(row["id"])
+    # Fallback: slug match (same scraper, re-run)
     row = conn.execute(
         "SELECT id FROM teams WHERE slug = %s", (slug,)
     ).fetchone()

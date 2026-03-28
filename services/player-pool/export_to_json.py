@@ -44,16 +44,20 @@ LEVEL_MAP = {
     "professional": "Pro",
 }
 
-# DB cluster name -> app cluster name (canonical — identity mapping)
+# DB cluster name (v3) -> frontend cluster name (v2-compatible keys)
 CLUSTER_MAP = {
     "shooting": "shooting",
     "finishing": "finishing",
     "playmaking": "playmaking",
-    "on_ball_defense": "on_ball_defense",
+    "poa_defense": "on_ball_defense",   # v3 → v2 display name
     "team_defense": "team_defense",
     "rebounding": "rebounding",
-    "physical": "physical",
+    "tools": "physical",                 # v3 → v2 display name
+    "iq": "iq",                          # new in v3 — frontend ignores unknown keys
 }
+
+# v3 engine position (PG/SG/SF/PF/C) → v2 app position (PG/CG/W/F/B)
+V3_TO_V2_POS = {"PG": "PG", "SG": "CG", "SF": "W", "PF": "F", "C": "B"}
 
 
 def _f(v) -> float | None:
@@ -154,56 +158,77 @@ def _infer_position(positions: list[str] | None, ppg, apg, rpg, bpg, stl,
 
 
 def export_players(conn) -> list[dict]:
-    """Export all players with stats, team, level info (no KR)."""
+    """Export all players with stats, team, level info, and v3 KR data.
+
+    Uses DISTINCT ON (p.id, t.name) to collapse duplicate team records created
+    when multiple scrapers (ESPN slug 'espn-N', ncaa_scraper slug 'ncaa-N') both
+    insert the same school. Within each (player, team-name) group, the row with
+    the most games_played is kept; ties broken by best KR then most recent insert.
+    Players who legitimately transferred (different team names) keep all rows.
+    """
     cur = conn.cursor()
     cur.execute("""
-        SELECT
-            p.id,
-            p.full_name,
-            p.height_inches,
-            p.weight_lbs,
-            p.declared_positions,
-            p.state_origin,
-            p.country_origin,
-            p.city_origin,
-            p.high_school,
-            pts.class_year,
-            pts.jersey_number,
-            pts.portal_entry_date,
-            t.name AS team_name,
-            c.name AS conference_name,
-            cl.level_key,
-            cl.display_name AS level_display,
-            pss.games_played,
-            pss.games_started,
-            pss.minutes_per_game,
-            pss.pts_per_game,
-            pss.reb_per_game,
-            pss.ast_per_game,
-            pss.stl_per_game,
-            pss.blk_per_game,
-            pss.to_per_game,
-            pss.fg_pct,
-            pss.three_pct,
-            pss.ft_pct,
-            pss.oreb_per_game,
-            pss.dreb_per_game,
-            pss.fga_per_game,
-            pss.three_pa_per_game,
-            pss.fta_per_game,
-            pss.pf_per_game,
-            pss.usage_rate,
-            pss.bpr_season_avg,
-            pss.bpr_trend
-        FROM players p
-        JOIN player_team_seasons pts ON pts.player_id = p.id
-        JOIN team_seasons ts ON ts.id = pts.team_season_id
-        JOIN teams t ON t.id = ts.team_id
-        LEFT JOIN conferences c ON c.id = t.conference_id
-        LEFT JOIN competitive_levels cl ON cl.id = t.competitive_level_id
-        LEFT JOIN player_season_stats pss ON pss.player_team_season_id = pts.id
-        WHERE ts.season = '2025-26'
-        ORDER BY pss.pts_per_game DESC NULLS LAST, p.full_name
+        WITH best_row AS (
+            SELECT DISTINCT ON (p.id, t.name)
+                p.id,
+                p.full_name,
+                p.height_inches,
+                p.weight_lbs,
+                p.declared_positions,
+                p.state_origin,
+                p.country_origin,
+                p.city_origin,
+                p.high_school,
+                pts.class_year,
+                pts.jersey_number,
+                pts.portal_entry_date,
+                t.name AS team_name,
+                c.name AS conference_name,
+                cl.level_key,
+                cl.display_name AS level_display,
+                pss.games_played,
+                pss.games_started,
+                pss.minutes_per_game,
+                pss.pts_per_game,
+                pss.reb_per_game,
+                pss.ast_per_game,
+                pss.stl_per_game,
+                pss.blk_per_game,
+                pss.to_per_game,
+                pss.fg_pct,
+                pss.three_pct,
+                pss.ft_pct,
+                pss.oreb_per_game,
+                pss.dreb_per_game,
+                pss.fga_per_game,
+                pss.three_pa_per_game,
+                pss.fta_per_game,
+                pss.pf_per_game,
+                pss.usage_rate,
+                pss.bpr_season_avg,
+                pss.bpr_trend,
+                NULL::numeric AS kr,
+                NULL::numeric AS okr,
+                NULL::numeric AS dkr,
+                NULL::text    AS primary_archetype,
+                NULL::text[]  AS all_archetypes,
+                NULL::numeric AS confidence_pct,
+                NULL::text    AS kr_position,
+                NULL::text    AS impact_modifier
+            FROM players p
+            JOIN player_team_seasons pts ON pts.player_id = p.id
+            JOIN team_seasons ts ON ts.id = pts.team_season_id
+            JOIN teams t ON t.id = ts.team_id
+            LEFT JOIN conferences c ON c.id = t.conference_id
+            LEFT JOIN competitive_levels cl ON cl.id = t.competitive_level_id
+            LEFT JOIN player_season_stats pss ON pss.player_team_season_id = pts.id
+            WHERE ts.season = '2025-26'
+            ORDER BY p.id, t.name,
+                     COALESCE(pss.games_played, 0) DESC,
+                     pts.created_at DESC
+        )
+        SELECT * FROM best_row
+        ORDER BY kr DESC NULLS LAST, full_name
     """)
 
     players = []
@@ -214,16 +239,20 @@ def export_players(conn) -> list[dict]:
             team, conference, level_key, level_display,
             gp, gs, mpg, ppg, rpg, apg, spg, bpg, topg,
             fg_pct, three_pct, ft_pct, oreb, dreb, fga, threepa, fta, pf,
-            usage, bpr_avg, bpr_trend
+            usage, bpr_avg, bpr_trend,
+            kr, okr, dkr, primary_archetype, all_archetypes,
+            confidence_pct, kr_position, impact_modifier
         ) = row
 
         name_parts = full_name.split(" ", 1) if full_name else ["", ""]
         first_name = name_parts[0]
         last_name = name_parts[1] if len(name_parts) > 1 else ""
 
-        pos = _infer_position(
-            positions, ppg, apg, rpg, bpg, spg, mpg, oreb, fga
-        )
+        # Use v3 position (mapped to v2) when available, else infer from stats
+        if kr_position and kr_position in V3_TO_V2_POS:
+            pos = V3_TO_V2_POS[kr_position]
+        else:
+            pos = _infer_position(positions, ppg, apg, rpg, bpg, spg, mpg, oreb, fga)
 
         players.append({
             "id": str(pid),
@@ -245,9 +274,14 @@ def export_players(conn) -> list[dict]:
             "city": city or "",
             "highSchool": high_school or "",
             "portalEntryDate": str(portal_date) if portal_date else None,
-            "kr": None,
-            "archetype": "",
-            "confidence": None,
+            "kr": _f(kr),
+            "offKR": _f(okr),
+            "defKR": _f(dkr),
+            "archetype": primary_archetype or "",
+            "secondaryArchetypes": list(all_archetypes or []),
+            "confidence": int(confidence_pct) if confidence_pct is not None else None,
+            "impactModifier": impact_modifier or "",
+            "clusters": {},  # filled in by export_clusters below
             "gp": _f(gp),
             "gs": _f(gs),
             "mpg": _f(mpg),
@@ -276,42 +310,30 @@ def export_players(conn) -> list[dict]:
 
 
 def export_clusters(conn) -> dict[str, dict[str, float]]:
-    """Export cluster scores keyed by player ID."""
+    """Export v3 cluster scores keyed by player_team_season_id."""
     cur = conn.cursor()
     cur.execute("""
         SELECT
-            p.id AS player_id,
-            pkc.cluster,
-            pkc.score
-        FROM player_kr_clusters pkc
-        JOIN player_kr pk ON pkc.player_kr_id = pk.id
-        JOIN player_team_seasons pts ON pk.player_team_season_id = pts.id
-        JOIN players p ON pts.player_id = p.id
+            pc.player_team_season_id,
+            pc.cluster,
+            pc.score
+        FROM player_clusters_v3 pc
+        JOIN player_team_seasons pts ON pc.player_team_season_id = pts.id
         JOIN team_seasons ts ON pts.team_season_id = ts.id
         WHERE ts.season = '2025-26'
-        ORDER BY p.id, pkc.cluster
+        ORDER BY pc.player_team_season_id, pc.cluster
     """)
 
     clusters: dict[str, dict[str, float]] = {}
-    for pid, cluster, score in cur.fetchall():
-        pid = str(pid)
-        if pid not in clusters:
-            clusters[pid] = {
-                "shooting": 50, "finishing": 50, "playmaking": 50,
-                "on_ball_defense": 50, "team_defense": 50,
-                "rebounding": 50, "physical": 50,
-                "perimeter_defense_lens": 50, "interior_defense_lens": 50,
-            }
-        # Derived lenses stored as virtual cluster rows
-        if cluster in ("perimeter_defense_lens", "interior_defense_lens"):
-            if score is not None:
-                clusters[pid][cluster] = round(float(score))
-            continue
+    for pts_id, cluster, score in cur.fetchall():
+        pts_id = str(pts_id)
+        if pts_id not in clusters:
+            clusters[pts_id] = {}
         mapped = CLUSTER_MAP.get(cluster)
         if mapped and score is not None:
-            clusters[pid][mapped] = round(float(score))
+            clusters[pts_id][mapped] = round(float(score), 1)
 
-    print(f"  Cluster records: {len(clusters)}")
+    print(f"  Cluster records: {len(clusters)} player-seasons")
     return clusters
 
 
@@ -363,38 +385,37 @@ def export_scholarship_nil(conn) -> dict[str, dict]:
 
 
 def export_badges(conn) -> dict[str, list[dict]]:
-    """Export player badges keyed by player ID."""
+    """Export v3 player badges keyed by player_team_season_id."""
     cur = conn.cursor()
     cur.execute("""
         SELECT
-            p.id AS player_id,
+            pb.player_team_season_id,
             pb.badge_name,
             pb.cluster,
             pb.tier,
             pb.effect
-        FROM player_badges pb
-        JOIN player_kr pk ON pb.player_kr_id = pk.id
-        JOIN player_team_seasons pts ON pk.player_team_season_id = pts.id
-        JOIN players p ON pts.player_id = p.id
+        FROM player_badges_v3 pb
+        JOIN player_team_seasons pts ON pb.player_team_season_id = pts.id
         JOIN team_seasons ts ON pts.team_season_id = ts.id
         WHERE ts.season = '2025-26'
-        ORDER BY p.id, pb.tier DESC, pb.badge_name
+        ORDER BY pb.player_team_season_id, pb.tier DESC, pb.badge_name
     """)
 
     badges: dict[str, list[dict]] = {}
-    for pid, name, cluster, tier, effect in cur.fetchall():
-        pid = str(pid)
-        if pid not in badges:
-            badges[pid] = []
-        badges[pid].append({
+    for pts_id, name, cluster, tier, effect in cur.fetchall():
+        pts_id = str(pts_id)
+        if pts_id not in badges:
+            badges[pts_id] = []
+        mapped_cluster = CLUSTER_MAP.get(cluster, cluster)
+        badges[pts_id].append({
             "name": name,
-            "cluster": cluster,
+            "cluster": mapped_cluster,
             "tier": tier,
             "effect": _f(effect),
         })
 
     total = sum(len(v) for v in badges.values())
-    print(f"  Badge records: {total} across {len(badges)} players")
+    print(f"  Badge records: {total} across {len(badges)} player-seasons")
     return badges
 
 
@@ -441,6 +462,39 @@ def main():
     print("Exporting data...")
     players = export_players(conn)
 
+    # Build pts_id → player lookup for cluster/badge merge
+    # export_players() now includes pts_id for this purpose — we need to add it
+    # Re-query pts_ids for season players to link clusters/badges
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT pts.id AS pts_id, p.id AS player_id
+        FROM player_team_seasons pts
+        JOIN players p ON pts.player_id = p.id
+        JOIN team_seasons ts ON ts.id = pts.team_season_id
+        WHERE ts.season = '2025-26'
+    """)
+    pts_to_player: dict[str, str] = {str(r[0]): str(r[1]) for r in cur.fetchall()}
+
+    clusters = export_clusters(conn)
+    badges   = export_badges(conn)
+
+    # Merge clusters and badges into player objects by player_id
+    # (pts_id-keyed data → player_id-keyed merge)
+    player_clusters: dict[str, dict] = {}
+    player_badges: dict[str, list]   = {}
+    for pts_id, player_id in pts_to_player.items():
+        if pts_id in clusters:
+            player_clusters[player_id] = clusters[pts_id]
+        if pts_id in badges:
+            player_badges[player_id] = badges[pts_id]
+
+    for p in players:
+        pid = p["id"]
+        if pid in player_clusters:
+            p["clusters"] = player_clusters[pid]
+        if pid in player_badges:
+            p["badges"] = player_badges[pid]
+
     # Write single combined file
     os.makedirs(OUT_DIR, exist_ok=True)
     out_path = os.path.join(OUT_DIR, "national-pool.json")
@@ -450,6 +504,7 @@ def main():
             "exportedAt": __import__("datetime").datetime.now().isoformat(),
             "counts": {
                 "players": len(players),
+                "withKR": sum(1 for p in players if p["kr"] is not None),
                 "withStats": sum(1 for p in players if p["gp"] is not None),
                 "withHeight": sum(1 for p in players if p["heightInches"] is not None),
                 "withWeight": sum(1 for p in players if p["weight"] is not None),
@@ -458,8 +513,9 @@ def main():
 
     size_mb = os.path.getsize(out_path) / (1024 * 1024)
     print(f"\nWrote {out_path} ({size_mb:.1f} MB)")
+    with_kr = sum(1 for p in players if p["kr"] is not None)
     with_stats = sum(1 for p in players if p["gp"] is not None)
-    print(f"  {len(players)} players, {with_stats} with stats")
+    print(f"  {len(players)} players, {with_kr} with KR, {with_stats} with stats")
 
     conn.close()
     print("Done.")

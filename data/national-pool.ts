@@ -5,20 +5,13 @@
  * for the React Native UI. Drop-in replacement for mock data.
  *
  * Usage:
- *   import { nationalPool } from '@/data/national-pool';
+ *   import { nationalPool, formatForEval } from '@/data/national-pool';
  *   const results = nationalPool.search({ query: 'Bradley', level: 'naia' });
  *   const player = nationalPool.getById('some-uuid');
  */
 
 import rawData from './national-pool.json';
-import {
-  getKRColor,
-  getKRTierLabel,
-  getArchetypeDisplay,
-  CLUSTER_ORDER,
-} from '@/utils/kr-display';
-import { computePlayerBadges, type PlayerBadge } from '@/utils/player-badges';
-import type { ClusterType } from '@/types';
+import type { PlayerCardData as GlobalPlayerCardData } from '@/utils/global-entity-sheets';
 
 // =============================================================================
 // TYPES
@@ -44,16 +37,7 @@ export interface NationalPlayer {
   city: string;
   highSchool: string;
   portalEntryDate: string | null;
-  // KR
-  kr: number | null;
-  offKR: number | null;
-  defKR: number | null;
-  archetype: string;
-  secondaryArchetypes: string[];
-  confidence: number | null;
-  // Clusters
-  clusters: Record<string, number>;
-  // Stats
+  // Stats (raw — KR is computed live by Claude via SKILL.md)
   gp: number | null;
   gs: number | null;
   mpg: number | null;
@@ -73,9 +57,16 @@ export interface NationalPlayer {
   ftaPg: number | null;
   pfPg: number | null;
   usageRate: number | null;
-  bprAvg: number | null;
-  bprTrend: number | null;
-  // Scholarship/NIL
+  // Legacy fields — present in JSON but not used in new UI code
+  kr?: number | null;
+  offKR?: number | null;
+  defKR?: number | null;
+  archetype?: string;
+  secondaryArchetypes?: string[];
+  confidence?: number | null;
+  clusters?: Record<string, number>;
+  bprAvg?: number | null;
+  bprTrend?: number | null;
   scholarship?: {
     tier: string;
     scholarshipPct: number | null;
@@ -105,15 +96,10 @@ export interface SearchFilters {
   level?: string | string[];
   position?: string | string[];
   conference?: string;
-  minKR?: number;
-  maxKR?: number;
   minHeight?: number; // inches
   maxHeight?: number;
-  archetype?: string;
   hasPortalEntry?: boolean;
-  hasBadge?: string;     // badge name
-  badgeLevel?: string;   // 'Gold' | 'Silver' | 'Bronze'
-  sortBy?: 'kr' | 'ppg' | 'rpg' | 'apg' | 'name' | 'height';
+  sortBy?: 'ppg' | 'rpg' | 'apg' | 'name' | 'height';
   sortDir?: 'asc' | 'desc';
   limit?: number;
   offset?: number;
@@ -160,6 +146,57 @@ for (const p of data.players) {
 }
 
 // =============================================================================
+// FILTER HELPER
+// =============================================================================
+
+function filterPlayers(players: NationalPlayer[], filters: SearchFilters): NationalPlayer[] {
+  let results = players;
+
+  // Text search
+  if (filters.query && filters.query.length > 0) {
+    const q = filters.query.toLowerCase();
+    results = results.filter(p =>
+      p.fullName.toLowerCase().includes(q) ||
+      p.school.toLowerCase().includes(q) ||
+      p.conference.toLowerCase().includes(q)
+    );
+  }
+
+  // Level filter
+  if (filters.level) {
+    const levels = Array.isArray(filters.level) ? filters.level : [filters.level];
+    results = results.filter(p => levels.includes(p.levelKey));
+  }
+
+  // Position filter
+  if (filters.position) {
+    const positions = Array.isArray(filters.position) ? filters.position : [filters.position];
+    results = results.filter(p => positions.includes(p.position));
+  }
+
+  // Conference filter
+  if (filters.conference) {
+    const conf = filters.conference.toLowerCase();
+    results = results.filter(p => p.conference.toLowerCase().includes(conf));
+  }
+
+  // Height range (inches)
+  if (filters.minHeight != null) {
+    results = results.filter(p => p.heightInches != null && p.heightInches >= filters.minHeight!);
+  }
+  if (filters.maxHeight != null) {
+    results = results.filter(p => p.heightInches != null && p.heightInches <= filters.maxHeight!);
+  }
+
+  // Portal entry
+  if (filters.hasPortalEntry) {
+    results = results.filter(p => p.portalEntryDate != null);
+  }
+
+  return results;
+}
+
+// =============================================================================
 // QUERY FUNCTIONS
 // =============================================================================
 
@@ -167,7 +204,7 @@ export const nationalPool = {
   /** Total counts */
   get counts() { return data.counts; },
 
-  /** Get all players (use sparingly — 9K+ records) */
+  /** Get all players (use sparingly — 38K+ records) */
   getAll(): NationalPlayer[] {
     return data.players;
   },
@@ -198,143 +235,41 @@ export const nationalPool = {
   },
 
   /**
+   * Count players matching filters (without pagination).
+   * Use for result count headers: nationalPool.count({ query, level, position })
+   */
+  count(filters: Omit<SearchFilters, 'sortBy' | 'sortDir' | 'limit' | 'offset'> = {}): number {
+    return filterPlayers(data.players, filters).length;
+  },
+
+  /**
    * Search and filter players.
    * All filters are optional and combine with AND logic.
    */
   search(filters: SearchFilters = {}): NationalPlayer[] {
-    let results = data.players;
-
-    // Text search
-    if (filters.query && filters.query.length > 0) {
-      const q = filters.query.toLowerCase();
-      results = results.filter(p =>
-        p.fullName.toLowerCase().includes(q) ||
-        p.school.toLowerCase().includes(q) ||
-        p.conference.toLowerCase().includes(q)
-      );
-    }
-
-    // Level filter
-    if (filters.level) {
-      const levels = Array.isArray(filters.level) ? filters.level : [filters.level];
-      results = results.filter(p => levels.includes(p.levelKey));
-    }
-
-    // Position filter
-    if (filters.position) {
-      const positions = Array.isArray(filters.position) ? filters.position : [filters.position];
-      results = results.filter(p => positions.includes(p.position));
-    }
-
-    // Conference filter
-    if (filters.conference) {
-      const conf = filters.conference.toLowerCase();
-      results = results.filter(p => p.conference.toLowerCase().includes(conf));
-    }
-
-    // KR range
-    if (filters.minKR != null) {
-      results = results.filter(p => p.kr != null && p.kr >= filters.minKR!);
-    }
-    if (filters.maxKR != null) {
-      results = results.filter(p => p.kr != null && p.kr <= filters.maxKR!);
-    }
-
-    // Height range (inches)
-    if (filters.minHeight != null) {
-      results = results.filter(p => p.heightInches != null && p.heightInches >= filters.minHeight!);
-    }
-    if (filters.maxHeight != null) {
-      results = results.filter(p => p.heightInches != null && p.heightInches <= filters.maxHeight!);
-    }
-
-    // Archetype
-    if (filters.archetype) {
-      const arch = filters.archetype.toLowerCase();
-      results = results.filter(p => p.archetype.toLowerCase().includes(arch));
-    }
-
-    // Portal entry
-    if (filters.hasPortalEntry) {
-      results = results.filter(p => p.portalEntryDate != null);
-    }
+    let results = filterPlayers(data.players, filters);
 
     // Sort
-    const sortBy = filters.sortBy ?? 'kr';
+    const sortBy  = filters.sortBy  ?? 'ppg';
     const sortDir = filters.sortDir ?? 'desc';
-    const mult = sortDir === 'asc' ? 1 : -1;
+    const mult    = sortDir === 'asc' ? 1 : -1;
 
     results = [...results].sort((a, b) => {
       switch (sortBy) {
-        case 'kr': return mult * ((a.kr ?? 0) - (b.kr ?? 0));
-        case 'ppg': return mult * ((a.ppg ?? 0) - (b.ppg ?? 0));
-        case 'rpg': return mult * ((a.rpg ?? 0) - (b.rpg ?? 0));
-        case 'apg': return mult * ((a.apg ?? 0) - (b.apg ?? 0));
+        case 'ppg':    return mult * ((a.ppg ?? 0) - (b.ppg ?? 0));
+        case 'rpg':    return mult * ((a.rpg ?? 0) - (b.rpg ?? 0));
+        case 'apg':    return mult * ((a.apg ?? 0) - (b.apg ?? 0));
         case 'height': return mult * ((a.heightInches ?? 0) - (b.heightInches ?? 0));
-        case 'name': return mult * a.fullName.localeCompare(b.fullName);
-        default: return 0;
+        case 'name':   return mult * a.fullName.localeCompare(b.fullName);
+        default:       return 0;
       }
     });
 
     // Pagination
-    if (filters.offset) {
-      results = results.slice(filters.offset);
-    }
-    if (filters.limit) {
-      results = results.slice(0, filters.limit);
-    }
+    if (filters.offset) results = results.slice(filters.offset);
+    if (filters.limit)  results = results.slice(0, filters.limit);
 
     return results;
-  },
-
-  /**
-   * Get enriched player data with display-ready KR info.
-   * Returns everything needed for the Player Card sheet.
-   */
-  getPlayerCard(id: string): PlayerCardData | undefined {
-    const p = playerIndex.get(id);
-    if (!p) return undefined;
-
-    const clusters = p.clusters as Record<ClusterType, number>;
-
-    // Compute badges from cluster scores
-    const badges = computePlayerBadges(
-      clusters as any,
-      (clusterKey: string) => {
-        // We don't have trait-level data yet (player_kr_traits is empty)
-        // Return cluster score as a single "trait" for badge eligibility
-        const score = clusters[clusterKey as ClusterType] ?? 50;
-        return [{ name: clusterKey, rating: score }];
-      },
-    );
-
-    return {
-      ...p,
-      krColor: getKRColor(p.kr),
-      krTierLabel: getKRTierLabel(p.kr, p.levelKey),
-      archetypeDisplay: getArchetypeDisplay(p.archetype),
-      badges,
-      clusterScores: CLUSTER_ORDER.map(key => ({
-        key,
-        score: clusters[key] ?? 50,
-        color: getKRColor(clusters[key] ?? 50),
-      })),
-      statLine: buildStatLine(p),
-    };
-  },
-
-  /**
-   * Top N players by KR, optionally filtered by level.
-   * For Nexus queries like "top 10 NAIA guards by KR".
-   */
-  topByKR(n: number, filters?: { level?: string; position?: string }): NationalPlayer[] {
-    return nationalPool.search({
-      ...filters,
-      sortBy: 'kr',
-      sortDir: 'desc',
-      limit: n,
-      minKR: 1, // exclude unrated
-    });
   },
 
   /**
@@ -346,11 +281,10 @@ export const nationalPool = {
     if (results.length === 0) return 'No players found matching your criteria.';
 
     const lines = results.map((p, i) => {
-      const kr = p.kr != null ? `KR ${Math.round(p.kr)}` : 'Unrated';
-      const tier = p.kr != null ? getKRTierLabel(p.kr, p.levelKey) : '';
-      const stats = p.ppg != null ? `${p.ppg.toFixed(1)}/${p.rpg?.toFixed(1)}/${p.apg?.toFixed(1)}` : 'No stats';
-      const arch = getArchetypeDisplay(p.archetype);
-      return `${i + 1}. ${p.fullName} · ${p.position} · ${p.height} · ${p.school} (${p.levelKey.replace(/_/g, ' ').toUpperCase()}) · ${kr} ${tier} · ${arch} · ${stats} PPG/RPG/APG`;
+      const stats = p.ppg != null
+        ? `${p.ppg.toFixed(1)}/${p.rpg?.toFixed(1) ?? '-'}/${p.apg?.toFixed(1) ?? '-'}`
+        : 'No stats';
+      return `${i + 1}. ${p.fullName} · ${p.position} · ${p.height} · ${p.school} (${p.levelDisplay}) · ${stats} PPG/RPG/APG`;
     });
 
     return `Found ${results.length} player${results.length > 1 ? 's' : ''}:\n${lines.join('\n')}`;
@@ -358,70 +292,68 @@ export const nationalPool = {
 };
 
 // =============================================================================
-// ENRICHED TYPES
+// EVAL FORMATTER
 // =============================================================================
 
-export interface PlayerCardData extends NationalPlayer {
-  krColor: string;
-  krTierLabel: string;
-  archetypeDisplay: string;
-  badges: PlayerBadge[];
-  clusterScores: { key: string; score: number; color: string }[];
-  statLine: string;
-}
+/**
+ * Format a player's stats for injection into a Claude system prompt.
+ * Claude then computes KR live via SKILL.md + V1 Protocol.
+ */
+export function formatForEval(p: NationalPlayer): string {
+  const pct = (v: number | null) => {
+    if (v == null) return '-';
+    // Values < 1.0 are stored as fractions (0.456 → 45.6%)
+    const display = v < 1.0 ? v * 100 : v;
+    return `${display.toFixed(1)}%`;
+  };
+  const n = (v: number | null, d = 1) => v != null ? v.toFixed(d) : '-';
 
-function buildStatLine(p: NationalPlayer): string {
-  const parts: string[] = [];
-  if (p.ppg != null) parts.push(`${p.ppg.toFixed(1)} PPG`);
-  if (p.rpg != null) parts.push(`${p.rpg.toFixed(1)} RPG`);
-  if (p.apg != null) parts.push(`${p.apg.toFixed(1)} APG`);
-  return parts.join(' / ') || 'No stats';
+  return [
+    `## PLAYER DATA FOR EVALUATION (National Pool)`,
+    `**${p.fullName} · ${p.position} · ${p.height}${p.weight ? ` · ${p.weight} lbs` : ''}**`,
+    `**${p.school}** | **${p.levelDisplay}** | **${p.conference || 'Unknown conf.'}**`,
+    `**Class:** ${p.classYear}${p.portalEntryDate ? ` | **Portal Entry:** ${p.portalEntryDate}` : ''}`,
+    ``,
+    `Season Stats:`,
+    `GP ${n(p.gp, 0)} / GS ${n(p.gs, 0)} / MPG ${n(p.mpg)}`,
+    `PPG ${n(p.ppg)} / FG% ${pct(p.fgPct)} / 3P% ${pct(p.threePct)} / FT% ${pct(p.ftPct)}`,
+    `RPG ${n(p.rpg)} (Off ${n(p.orebPg)} / Def ${n(p.drebPg)}) / APG ${n(p.apg)} / SPG ${n(p.spg)} / BPG ${n(p.bpg)} / TOPG ${n(p.topg)}`,
+    `Usage Rate: ${n(p.usageRate)}`,
+  ].join('\n');
 }
 
 // =============================================================================
 // GLOBAL PLAYER CARD ADAPTER
 // =============================================================================
 
-import type { PlayerCardData as GlobalPlayerCardData } from '@/utils/global-entity-sheets';
-
 /** Convert a NationalPlayer to the global entity sheet PlayerCardData format */
 export function toGlobalPlayerCard(p: NationalPlayer): GlobalPlayerCardData {
   return {
-    name: p.fullName,
-    number: p.jerseyNumber,
-    position: p.position,
-    height: p.height,
-    weight: p.weight ?? 0,
-    classYear: p.classYear,
-    hometown: [p.city, p.state].filter(Boolean).join(', ') || undefined,
-    previousSchool: p.highSchool || undefined,
-    kr: p.kr ?? undefined,
-    ppg: p.ppg ?? undefined,
-    rpg: p.rpg ?? undefined,
-    apg: p.apg ?? undefined,
-    playerId: p.id,
-    school: p.school,
-    conference: p.conference,
-    levelKey: p.levelKey,
-    levelDisplay: p.levelDisplay,
-    offKR: p.offKR ?? undefined,
-    defKR: p.defKR ?? undefined,
-    archetype: p.archetype,
-    confidence: p.confidence ?? undefined,
-    clusters: p.clusters,
-    spg: p.spg ?? undefined,
-    bpg: p.bpg ?? undefined,
-    topg: p.topg ?? undefined,
-    fgPct: p.fgPct ?? undefined,
-    threePct: p.threePct ?? undefined,
-    ftPct: p.ftPct ?? undefined,
-    mpg: p.mpg ?? undefined,
-    gp: p.gp ?? undefined,
-    bprAvg: p.bprAvg ?? undefined,
+    name:            p.fullName,
+    number:          p.jerseyNumber,
+    position:        p.position,
+    height:          p.height,
+    weight:          p.weight ?? 0,
+    classYear:       p.classYear,
+    hometown:        [p.city, p.state].filter(Boolean).join(', ') || undefined,
+    previousSchool:  p.highSchool || undefined,
+    ppg:             p.ppg ?? undefined,
+    rpg:             p.rpg ?? undefined,
+    apg:             p.apg ?? undefined,
+    playerId:        p.id,
+    school:          p.school,
+    conference:      p.conference,
+    levelKey:        p.levelKey,
+    levelDisplay:    p.levelDisplay,
+    spg:             p.spg ?? undefined,
+    bpg:             p.bpg ?? undefined,
+    topg:            p.topg ?? undefined,
+    fgPct:           p.fgPct ?? undefined,
+    threePct:        p.threePct ?? undefined,
+    ftPct:           p.ftPct ?? undefined,
+    mpg:             p.mpg ?? undefined,
+    gp:              p.gp ?? undefined,
     portalEntryDate: p.portalEntryDate,
-    scholarshipPct: p.scholarship?.scholarshipPct ?? undefined,
-    nilAmount: p.scholarship?.nilAmount ?? undefined,
-    overallFitPct: p.scholarship?.overallFitPct ?? undefined,
   };
 }
 

@@ -16,7 +16,7 @@ import {
   Platform,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
@@ -25,9 +25,10 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
+import { setPendingEvalQuery } from '@/utils/global-nexus-state';
+import { nationalPool, type NationalPlayer } from '@/data/national-pool';
 import {
   RECRUITS_BOARD,
-  PORTAL_PLAYERS,
   type Recruit,
   type RecruitStage,
   type RecruitPriority,
@@ -45,42 +46,27 @@ type Tab  = 'Board' | 'Pool' | 'Portal';
 type Role = 'Coach' | 'Recruit';
 const TABS: Tab[]   = ['Board', 'Pool', 'Portal'];
 
-const POSITIONS      = ['All', 'PG', 'SG', 'SF', 'PF', 'C'];
-const CLASS_YEARS    = ['All', '2025', '2026', '2027'];
-const SORT_OPTIONS   = ['By KR', 'By Stars', 'Alphabetical'];
+const POSITIONS    = ['All', 'PG', 'SG', 'SF', 'PF', 'C'];
+const SORT_OPTIONS = ['By PPG', 'By RPG', 'Alphabetical'];
 const BOARD_STAGES: Array<RecruitStage | 'All'> = [
   'All', 'Identified', 'Evaluating', 'Offered', 'Committed', 'Signed',
 ];
 
-// ── Extra Pool Prospects ──────────────────────────────────────────────────────
+const LEVEL_PILLS = ['All', 'D1 HM', 'D1 MM', 'D1 LM', 'D2', 'D3', 'NAIA', 'JUCO', 'USCAA'];
 
-interface PoolProspect {
-  id:        string;
-  name:      string;
-  initials:  string;
-  hue:       number;
-  pos:       string;
-  classYear: string;
-  school:    string;
-  state:     string;
-  heightFt:  string;
-  kr?:       number;
-  stars:     number;
-  systemFit?: number;
-}
+const LEVEL_KEY_MAP: Record<string, string | string[]> = {
+  'D1 HM': 'ncaa_d1_high_major',
+  'D1 MM': 'ncaa_d1_mid_major',
+  'D1 LM': 'ncaa_d1_low_major',
+  'D2':    'ncaa_d2',
+  'D3':    'ncaa_d3',
+  'NAIA':  'naia',
+  'JUCO':  ['njcaa_d1', 'njcaa_d2', 'njcaa_d3'],
+  'USCAA': 'uscaa',
+};
 
-const EXTRA_POOL: PoolProspect[] = [
-  { id: 'pool01', name: 'Caleb Morris',    initials: 'CM', hue: 45,  pos: 'SG', classYear: '2026', school: 'La Lumiere',       state: 'IN', heightFt: "6'4\"",  kr: 75.4, stars: 3, systemFit: 82 },
-  { id: 'pool02', name: 'Xavier Jennings', initials: 'XJ', hue: 200, pos: 'PF', classYear: '2026', school: 'Sunrise Christian', state: 'KS', heightFt: "6'8\"",  kr: 78.1, stars: 4, systemFit: 86 },
-  { id: 'pool03', name: 'Andre Wallace',   initials: 'AW', hue: 130, pos: 'C',  classYear: '2025', school: 'JUCO — CCBC',      state: 'MD', heightFt: "6'10\"", kr: 67.4, stars: 2, systemFit: 78 },
-  { id: 'pool04', name: 'Isaiah Webb',     initials: 'IW', hue: 300, pos: 'PG', classYear: '2027', school: 'Paul VI',           state: 'VA', heightFt: "6'1\"",  kr: 71.2, stars: 3, systemFit: 80 },
-  { id: 'pool05', name: 'Marcus Bell',     initials: 'MB', hue: 20,  pos: 'SF', classYear: '2026', school: 'Hamilton Heights',  state: 'TN', heightFt: "6'6\"",  kr: 73.8, stars: 3, systemFit: 77 },
-  { id: 'pool06', name: 'Tre Williams',    initials: 'TW', hue: 170, pos: 'SG', classYear: '2026', school: 'Millbrook',         state: 'VA', heightFt: "6'3\"",  kr: 69.1, stars: 2, systemFit: 74 },
-  { id: 'pool07', name: 'Nate Jackson',    initials: 'NJ', hue: 260, pos: 'PG', classYear: '2025', school: 'Chipola College',   state: 'FL', heightFt: "5'11\"", kr: 72.6, stars: 2, systemFit: 79 },
-  { id: 'pool08', name: 'Darius Brown',    initials: 'DB', hue: 90,  pos: 'C',  classYear: '2026', school: 'Branson',           state: 'MO', heightFt: "6'9\"",  kr: 70.3, stars: 3, systemFit: 81 },
-  { id: 'pool09', name: 'Jaylen Pierce',   initials: 'JP', hue: 330, pos: 'PF', classYear: '2026', school: 'Link Year Prep',    state: 'MO', heightFt: "6'7\"",  kr: 74.2, stars: 3, systemFit: 85 },
-  { id: 'pool10', name: 'Omar Abdullah',   initials: 'OA', hue: 60,  pos: 'SF', classYear: '2027', school: 'Wasatch Academy',   state: 'UT', heightFt: "6'5\"",  kr: undefined, stars: 3, systemFit: undefined },
-];
+const POOL_PAGE_SIZE = 50;
+const DEBOUNCE_MS   = 200;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -95,6 +81,16 @@ function contactIcon(type: Recruit['contactType']): string {
 
 function hslAvatar(hue: number): string {
   return `hsl(${hue}, 55%, 52%)`;
+}
+
+function initialsFrom(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  return name.slice(0, 2).toUpperCase();
+}
+
+function hueFrom(id: string): number {
+  return id.charCodeAt(0) % 360;
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -544,6 +540,7 @@ export default function RecruitsScreen() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
   const s      = useMemo(() => makeStyles(C), [C]);
+  const router = useRouter();
 
   // ── Core state ──
   const [activeTab, setActiveTab]       = useState<Tab>('Board');
@@ -557,9 +554,11 @@ export default function RecruitsScreen() {
 
   // ── Pool state ──
   const [poolSearch, setPoolSearch]           = useState('');
+  const [debouncedQuery, setDebouncedQuery]   = useState('');
   const [poolPosFilter, setPoolPosFilter]     = useState('All');
-  const [poolClassFilter, setPoolClassFilter] = useState('All');
-  const [poolSort, setPoolSort]               = useState('By KR');
+  const [poolLevelFilter, setPoolLevelFilter] = useState('All');
+  const [poolSort, setPoolSort]               = useState('By PPG');
+  const [poolPage, setPoolPage]               = useState(0);
 
   // ── Portal state ──
   const [portalPosFilter, setPortalPosFilter] = useState('All');
@@ -570,6 +569,15 @@ export default function RecruitsScreen() {
 
   // ── Footer reset on focus ──
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
+
+  // ── Debounce pool search (200ms) ──
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(poolSearch), DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [poolSearch]);
+
+  // ── Reset page when filters change ──
+  useEffect(() => { setPoolPage(0); }, [debouncedQuery, poolPosFilter, poolLevelFilter, poolSort]);
 
   // ── Toast auto-dismiss ──
   const showToast = useCallback((msg: string) => {
@@ -598,8 +606,45 @@ export default function RecruitsScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   }, []);
 
+  // ── Pool query ──
+  const poolLevelKey = useMemo((): string | string[] | undefined => {
+    if (poolLevelFilter === 'All') return undefined;
+    return LEVEL_KEY_MAP[poolLevelFilter] ?? poolLevelFilter;
+  }, [poolLevelFilter]);
+
+  const poolSortBy = useMemo(() => {
+    if (poolSort === 'By PPG') return 'ppg' as const;
+    if (poolSort === 'By RPG') return 'rpg' as const;
+    return 'name' as const;
+  }, [poolSort]);
+
+  const poolResults = useMemo(() => nationalPool.search({
+    query:    debouncedQuery || undefined,
+    position: poolPosFilter !== 'All' ? poolPosFilter : undefined,
+    level:    poolLevelKey,
+    sortBy:   poolSortBy,
+    sortDir:  poolSort === 'Alphabetical' ? 'asc' : 'desc',
+    limit:    POOL_PAGE_SIZE * (poolPage + 1),
+  }), [debouncedQuery, poolPosFilter, poolLevelKey, poolSortBy, poolSort, poolPage]);
+
+  const poolTotal = useMemo(() => nationalPool.count({
+    query:    debouncedQuery || undefined,
+    position: poolPosFilter !== 'All' ? poolPosFilter : undefined,
+    level:    poolLevelKey,
+  }), [debouncedQuery, poolPosFilter, poolLevelKey]);
+
+  const hasMorePool = poolResults.length < poolTotal;
+
+  // ── Portal query ──
+  const portalResults = useMemo(() => nationalPool.search({
+    hasPortalEntry: true,
+    position: portalPosFilter !== 'All' ? portalPosFilter : undefined,
+    sortBy: 'ppg',
+    sortDir: 'desc',
+  }), [portalPosFilter]);
+
   // ── Computed ──
-  const topBarH          = insets.top + TOP_BAR_H;
+  const topBarH           = insets.top + TOP_BAR_H;
   const contentPaddingTop = topBarH + PILL_ROW_H + 8;
 
   const stageCounts = useMemo(() => getStageCounts(), []);
@@ -609,51 +654,13 @@ export default function RecruitsScreen() {
     return RECRUITS_BOARD.filter((r) => r.stage === stageFilter);
   }, [stageFilter]);
 
-  const allPoolProspects = useMemo((): PoolProspect[] => {
-    const fromBoard: PoolProspect[] = RECRUITS_BOARD.map((r) => ({
-      id:        r.id,
-      name:      r.name,
-      initials:  r.initials,
-      hue:       r.hue,
-      pos:       r.position,
-      classYear: r.classYear,
-      school:    r.school,
-      state:     r.state,
-      heightFt:  r.heightFt,
-      kr:        r.kr,
-      stars:     r.stars,
-      systemFit: r.systemFit,
-    }));
-    return [...fromBoard, ...EXTRA_POOL];
-  }, []);
-
-  const poolFiltered = useMemo(() => {
-    let list = allPoolProspects;
-    if (poolSearch.trim()) {
-      const q = poolSearch.toLowerCase();
-      list = list.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.school.toLowerCase().includes(q),
-      );
-    }
-    if (poolPosFilter !== 'All')
-      list = list.filter((p) => p.pos === poolPosFilter);
-    if (poolClassFilter !== 'All')
-      list = list.filter((p) => p.classYear === poolClassFilter);
-    if (poolSort === 'By KR')
-      list = [...list].sort((a, b) => (b.kr ?? 0) - (a.kr ?? 0));
-    else if (poolSort === 'By Stars')
-      list = [...list].sort((a, b) => b.stars - a.stars);
-    else
-      list = [...list].sort((a, b) => a.name.localeCompare(b.name));
-    return list;
-  }, [allPoolProspects, poolSearch, poolPosFilter, poolClassFilter, poolSort]);
-
-  const portalFiltered = useMemo(() => {
-    if (portalPosFilter === 'All') return PORTAL_PLAYERS;
-    return PORTAL_PLAYERS.filter((p) => p.position === portalPosFilter);
-  }, [portalPosFilter]);
+  // ── Evaluate handler ──
+  const handleEvaluate = useCallback((p: NationalPlayer) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const query = `evaluate ${p.fullName} from ${p.school} (${p.levelDisplay})`;
+    setPendingEvalQuery(query);
+    router.push('/nexus' as any);
+  }, [router]);
 
   // ─────────────────────────────────────────────────────────────────────────
   // Render helpers
@@ -1110,84 +1117,88 @@ export default function RecruitsScreen() {
         </View>
       </GlassView>
 
-      {/* Search bar */}
-      <View
-        style={[
-          s.searchBar,
-          {
-            backgroundColor: C.surface,
-            borderColor: C.inputBorder,
-            marginHorizontal: 16,
-            marginBottom: 12,
-          },
-        ]}
-      >
-        <IconSymbol name="magnifyingglass" size={15} color={C.muted} />
-        <TextInput
-          value={poolSearch}
-          onChangeText={setPoolSearch}
-          placeholder="Search prospects..."
-          placeholderTextColor={C.muted}
-          style={{
-            flex: 1,
-            fontSize: 14,
-            color: C.label,
-            marginLeft: 8,
-            paddingVertical: Platform.OS === 'ios' ? 0 : 2,
-          }}
-        />
-        {poolSearch.length > 0 && (
-          <Pressable onPress={() => setPoolSearch('')}>
-            <IconSymbol name="xmark.circle.fill" size={15} color={C.muted} />
-          </Pressable>
-        )}
+      {/* Result count + search bar */}
+      <View style={{ paddingHorizontal: 16, marginBottom: 8 }}>
+        <Text style={{ fontSize: 12, color: C.muted, marginBottom: 6 }}>
+          {poolTotal.toLocaleString()} players
+        </Text>
+        <View
+          style={[
+            s.searchBar,
+            {
+              backgroundColor: C.surface,
+              borderColor: C.inputBorder,
+            },
+          ]}
+        >
+          <IconSymbol name="magnifyingglass" size={15} color={C.muted} />
+          <TextInput
+            value={poolSearch}
+            onChangeText={setPoolSearch}
+            placeholder="Search prospects..."
+            placeholderTextColor={C.muted}
+            style={{
+              flex: 1,
+              fontSize: 14,
+              color: C.label,
+              marginLeft: 8,
+              paddingVertical: Platform.OS === 'ios' ? 0 : 2,
+            }}
+          />
+          {poolSearch.length > 0 && (
+            <Pressable onPress={() => setPoolSearch('')}>
+              <IconSymbol name="xmark.circle.fill" size={15} color={C.muted} />
+            </Pressable>
+          )}
+        </View>
       </View>
 
-      {/* Filter row */}
+      {/* Level filter pills */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={{ marginBottom: 12 }}
+        style={{ marginBottom: 8 }}
       >
         <View style={{ flexDirection: 'row', gap: 8, paddingHorizontal: 16 }}>
-          {CLASS_YEARS.map((yr) => {
-            const active = yr === poolClassFilter;
+          {LEVEL_PILLS.map((lvl) => {
+            const active = lvl === poolLevelFilter;
             return (
               <Pressable
-                key={yr}
+                key={lvl}
                 onPress={() => {
-                  setPoolClassFilter(yr);
+                  setPoolLevelFilter(lvl);
                   Haptics.selectionAsync();
                 }}
                 style={[
                   s.filterPill,
                   {
-                    backgroundColor: active
-                      ? '#003A63' + '18'
-                      : C.surface,
+                    backgroundColor: active ? '#003A63' + '18' : C.surface,
                     borderColor: active ? '#003A63' : C.inputBorder,
                   },
                 ]}
               >
                 <Text
                   style={{
-                    fontSize: 12,
+                    fontSize: 11,
                     fontWeight: active ? '700' : '500',
                     color: active ? '#003A63' : C.secondary,
                   }}
                 >
-                  {yr}
+                  {lvl}
                 </Text>
               </Pressable>
             );
           })}
-          <View
-            style={{
-              width: 1,
-              backgroundColor: C.separator,
-              marginHorizontal: 4,
-            }}
-          />
+        </View>
+      </ScrollView>
+
+      {/* Sort pills */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{ marginBottom: 12 }}
+      >
+        <View style={{ flexDirection: 'row', gap: 8, paddingHorizontal: 16 }}>
           {SORT_OPTIONS.map((opt) => {
             const active = opt === poolSort;
             return (
@@ -1207,7 +1218,7 @@ export default function RecruitsScreen() {
               >
                 <Text
                   style={{
-                    fontSize: 12,
+                    fontSize: 11,
                     fontWeight: active ? '700' : '500',
                     color: active ? '#D97757' : C.secondary,
                   }}
@@ -1222,128 +1233,130 @@ export default function RecruitsScreen() {
 
       {/* Pool list */}
       <View style={{ paddingHorizontal: 16, gap: 10 }}>
-        {poolFiltered.map((p) => (
-          <GlassView key={p.id} tier={1} style={s.poolCard}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <AvatarCircle initials={p.initials} hue={p.hue} size={40} />
-              <View style={{ flex: 1 }}>
+        {poolResults.length === 0 ? (
+          <View style={s.emptyState}>
+            <IconSymbol name="person.2" size={32} color={C.muted} />
+            <Text style={{ color: C.muted, fontSize: 14, marginTop: 8 }}>
+              No players found
+            </Text>
+          </View>
+        ) : (
+          poolResults.map((p) => {
+            const initials = initialsFrom(p.fullName);
+            const hue      = hueFrom(p.id);
+            return (
+              <GlassView key={p.id} tier={1} style={s.poolCard}>
+                {/* Row 1: Avatar + info */}
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+                  <AvatarCircle initials={initials} hue={hue} size={42} />
+                  <View style={{ flex: 1 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                      <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>
+                        {p.fullName}
+                      </Text>
+                      <View style={[s.posBadge, { backgroundColor: '#003A63' + '18' }]}>
+                        <Text style={{ fontSize: 10, fontWeight: '700', color: '#003A63' }}>
+                          {p.position}
+                        </Text>
+                      </View>
+                      <View style={[s.posBadge, { backgroundColor: C.surfacePressed }]}>
+                        <Text style={{ fontSize: 10, fontWeight: '600', color: C.secondary }}>
+                          {p.levelDisplay}
+                        </Text>
+                      </View>
+                    </View>
+                    <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>
+                      {p.school} · {p.classYear} · {p.height}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Row 2: Stats chips + actions */}
                 <View
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    gap: 6,
+                    justifyContent: 'space-between',
+                    marginTop: 10,
                   }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontWeight: '700',
-                      color: C.label,
-                    }}
-                  >
-                    {p.name}
-                  </Text>
-                  <View
-                    style={[
-                      s.posBadge,
-                      { backgroundColor: '#003A63' + '18' },
-                    ]}
-                  >
-                    <Text
+                  {/* Stats */}
+                  <View style={{ flexDirection: 'row', gap: 6 }}>
+                    {[
+                      { label: 'PPG', val: p.ppg },
+                      { label: 'RPG', val: p.rpg },
+                      { label: 'APG', val: p.apg },
+                    ].map((stat) => (
+                      <View key={stat.label} style={[s.statChip, { backgroundColor: C.surface }]}>
+                        <Text style={{ fontSize: 12, fontWeight: '700', color: C.label }}>
+                          {stat.val != null ? stat.val.toFixed(1) : '-'}
+                        </Text>
+                        <Text style={{ fontSize: 10, color: C.muted }}>{stat.label}</Text>
+                      </View>
+                    ))}
+                  </View>
+
+                  {/* Action buttons */}
+                  <View style={{ flexDirection: 'row', gap: 6 }}>
+                    <Pressable
+                      onPress={() => handleEvaluate(p)}
                       style={{
-                        fontSize: 10,
-                        fontWeight: '700',
-                        color: '#003A63',
+                        paddingHorizontal: 10,
+                        paddingVertical: 5,
+                        borderRadius: 8,
+                        backgroundColor: '#D97757' + '18',
+                        borderWidth: 1,
+                        borderColor: '#D97757' + '40',
                       }}
                     >
-                      {p.pos}
-                    </Text>
+                      <Text style={{ fontSize: 11, fontWeight: '700', color: '#D97757' }}>
+                        Evaluate
+                      </Text>
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        showToast(`${p.fullName} added to Board`);
+                      }}
+                      style={[
+                        s.addBoardBtn,
+                        { backgroundColor: C.surface, borderColor: C.inputBorder },
+                      ]}
+                    >
+                      <IconSymbol name="plus" size={11} color="#D97757" />
+                      <Text style={{ fontSize: 11, fontWeight: '600', color: '#D97757' }}>
+                        Add
+                      </Text>
+                    </Pressable>
                   </View>
                 </View>
-                <Text style={{ fontSize: 12, color: C.secondary }}>
-                  {p.school}, {p.state} · {p.classYear} · {p.heightFt}
-                </Text>
-              </View>
-              {/* KR or evaluate */}
-              {p.kr !== undefined ? (
-                <View style={{ alignItems: 'flex-end' }}>
-                  <Text
-                    style={{
-                      fontSize: 17,
-                      fontWeight: '900',
-                      color: '#003A63',
-                    }}
-                  >
-                    {p.kr.toFixed(1)}
-                  </Text>
-                  <Text style={{ fontSize: 10, color: C.muted }}>KR</Text>
-                </View>
-              ) : (
-                <Pressable
-                  onPress={() =>
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-                  }
-                  style={{
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
-                    borderRadius: 8,
-                    backgroundColor: '#D97757' + '18',
-                    borderWidth: 1,
-                    borderColor: '#D97757' + '40',
-                  }}
-                >
-                  <Text
-                    style={{ fontSize: 11, fontWeight: '700', color: '#D97757' }}
-                  >
-                    Evaluate
-                  </Text>
-                </Pressable>
-              )}
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginTop: 8,
-              }}
-            >
-              <View
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}
-              >
-                <StarRow stars={p.stars} C={C} />
-                {p.systemFit !== undefined && (
-                  <Text
-                    style={{
-                      fontSize: 11,
-                      color: '#5A8A6E',
-                      fontWeight: '600',
-                    }}
-                  >
-                    Fit {p.systemFit}%
-                  </Text>
-                )}
-              </View>
-              <Pressable
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                  showToast(`${p.name} added to Board`);
-                }}
-                style={[
-                  s.addBoardBtn,
-                  { backgroundColor: C.surface, borderColor: C.inputBorder },
-                ]}
-              >
-                <IconSymbol name="plus" size={11} color="#D97757" />
-                <Text
-                  style={{ fontSize: 11, fontWeight: '600', color: '#D97757' }}
-                >
-                  Add to Board
-                </Text>
-              </Pressable>
-            </View>
-          </GlassView>
-        ))}
+              </GlassView>
+            );
+          })
+        )}
+
+        {/* Load more */}
+        {hasMorePool && (
+          <Pressable
+            onPress={() => {
+              setPoolPage((p) => p + 1);
+              Haptics.selectionAsync();
+            }}
+            style={{
+              paddingVertical: 14,
+              alignItems: 'center',
+              borderRadius: 12,
+              backgroundColor: C.surface,
+              borderWidth: 1,
+              borderColor: C.inputBorder,
+              marginTop: 4,
+            }}
+          >
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>
+              Load more · {(poolTotal - poolResults.length).toLocaleString()} remaining
+            </Text>
+          </Pressable>
+        )}
       </View>
     </>
   );
@@ -1706,24 +1719,16 @@ export default function RecruitsScreen() {
           style={{
             fontSize: 13,
             color: 'rgba(255,255,255,0.80)',
-            marginBottom: 6,
+            marginBottom: 4,
           }}
         >
-          2 portal players match your team needs
+          {portalResults.length} portal players match your position filter
         </Text>
-        <View style={{ gap: 4 }}>
-          <Text style={{ fontSize: 12, color: 'rgba(255,255,255,0.70)' }}>
-            • Kobe Lawrence (C) would move Team KR from 78.4 → 81.2
-          </Text>
-          <Text style={{ fontSize: 12, color: 'rgba(255,255,255,0.70)' }}>
-            • Mike Santos (SG) fills shooting gap in system
-          </Text>
-        </View>
       </View>
 
       {/* Portal list */}
       <View style={{ paddingHorizontal: 16, gap: 12 }}>
-        {portalFiltered.length === 0 ? (
+        {portalResults.length === 0 ? (
           <View style={s.emptyState}>
             <IconSymbol name="arrow.left.arrow.right" size={32} color={C.muted} />
             <Text style={{ color: C.muted, fontSize: 14, marginTop: 8 }}>
@@ -1731,200 +1736,183 @@ export default function RecruitsScreen() {
             </Text>
           </View>
         ) : (
-          portalFiltered.map((p) => (
-            <GlassView key={p.id} tier={1} style={s.portalCard}>
-              {/* Row 1 */}
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'flex-start',
-                  gap: 12,
-                }}
-              >
-                <AvatarCircle initials={p.initials} hue={p.hue} size={46} />
-                <View style={{ flex: 1 }}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      gap: 8,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontWeight: '700',
-                        color: C.label,
-                      }}
-                    >
-                      {p.name}
-                    </Text>
+          portalResults.map((p) => {
+            const initials = initialsFrom(p.fullName);
+            const hue      = hueFrom(p.id);
+            return (
+              <GlassView key={p.id} tier={1} style={s.portalCard}>
+                {/* Row 1 */}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'flex-start',
+                    gap: 12,
+                  }}
+                >
+                  <AvatarCircle initials={initials} hue={hue} size={46} />
+                  <View style={{ flex: 1 }}>
                     <View
-                      style={[
-                        s.posBadge,
-                        { backgroundColor: '#003A63' + '18' },
-                      ]}
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 8,
+                        flexWrap: 'wrap',
+                      }}
                     >
                       <Text
                         style={{
-                          fontSize: 11,
+                          fontSize: 15,
                           fontWeight: '700',
-                          color: '#003A63',
+                          color: C.label,
                         }}
                       >
-                        {p.position}
+                        {p.fullName}
                       </Text>
+                      <View
+                        style={[
+                          s.posBadge,
+                          { backgroundColor: '#003A63' + '18' },
+                        ]}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 11,
+                            fontWeight: '700',
+                            color: '#003A63',
+                          }}
+                        >
+                          {p.position}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                  <Text
-                    style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}
-                  >
-                    {p.prevSchool} · {p.conference}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      gap: 8,
-                      marginTop: 5,
-                    }}
-                  >
+                    <Text
+                      style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}
+                    >
+                      {p.school} · {p.conference}
+                    </Text>
                     <View
-                      style={[
-                        s.eligBadge,
-                        {
-                          backgroundColor:
-                            p.eligible === 'immediately'
-                              ? '#5A8A6E' + '20'
-                              : '#F59E0B' + '20',
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 8,
+                        marginTop: 5,
+                      }}
+                    >
+                      <View
+                        style={{
+                          backgroundColor: '#5A8A6E' + '20',
                           paddingHorizontal: 8,
                           paddingVertical: 2,
                           borderRadius: 6,
-                        },
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 11,
+                            fontWeight: '700',
+                            color: '#5A8A6E',
+                          }}
+                        >
+                          Portal
+                        </Text>
+                      </View>
+                      {p.portalEntryDate && (
+                        <Text style={{ fontSize: 11, color: C.muted }}>
+                          Entered {p.portalEntryDate}
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+                </View>
+
+                {/* Row 2: Stats chips */}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    gap: 8,
+                    marginTop: 10,
+                  }}
+                >
+                  {[
+                    { label: 'PPG', val: p.ppg },
+                    { label: 'RPG', val: p.rpg },
+                    { label: 'APG', val: p.apg },
+                  ].map((stat) => (
+                    <View
+                      key={stat.label}
+                      style={[
+                        s.statChip,
+                        { backgroundColor: C.surface },
                       ]}
                     >
                       <Text
                         style={{
-                          fontSize: 11,
+                          fontSize: 13,
                           fontWeight: '700',
-                          color:
-                            p.eligible === 'immediately'
-                              ? '#5A8A6E'
-                              : '#F59E0B',
+                          color: C.label,
                         }}
                       >
-                        {p.eligible === 'immediately'
-                          ? 'Immediately'
-                          : 'Sit-out'}
+                        {stat.val != null ? stat.val.toFixed(1) : '-'}
+                      </Text>
+                      <Text style={{ fontSize: 10, color: C.muted }}>
+                        {stat.label}
                       </Text>
                     </View>
-                    <Text style={{ fontSize: 11, color: C.muted }}>
-                      Entered {p.enteredDate}
-                    </Text>
-                  </View>
+                  ))}
                 </View>
-                {p.kr !== undefined && (
-                  <View style={{ alignItems: 'flex-end' }}>
-                    <Text
-                      style={{
-                        fontSize: 18,
-                        fontWeight: '900',
-                        color: '#003A63',
-                      }}
-                    >
-                      {p.kr.toFixed(1)}
-                    </Text>
-                    <Text style={{ fontSize: 10, color: C.muted }}>KR</Text>
-                  </View>
-                )}
-              </View>
 
-              {/* Row 2: Stats chips */}
-              <View
-                style={{
-                  flexDirection: 'row',
-                  gap: 8,
-                  marginTop: 10,
-                }}
-              >
-                {[
-                  { label: 'PPG', val: p.stats.ppg.toFixed(1) },
-                  { label: 'RPG', val: p.stats.rpg.toFixed(1) },
-                  { label: 'APG', val: p.stats.apg.toFixed(1) },
-                ].map((stat) => (
-                  <View
-                    key={stat.label}
-                    style={[
-                      s.statChip,
-                      { backgroundColor: C.surface },
-                    ]}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 13,
-                        fontWeight: '700',
-                        color: C.label,
-                      }}
-                    >
-                      {stat.val}
-                    </Text>
-                    <Text style={{ fontSize: 10, color: C.muted }}>
-                      {stat.label}
-                    </Text>
-                  </View>
-                ))}
-                {p.systemFit !== undefined && (
-                  <View
-                    style={[
-                      s.statChip,
-                      { backgroundColor: '#5A8A6E' + '15' },
-                    ]}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 13,
-                        fontWeight: '700',
-                        color: '#5A8A6E',
-                      }}
-                    >
-                      {p.systemFit}%
-                    </Text>
-                    <Text style={{ fontSize: 10, color: '#5A8A6E' }}>
-                      Fit
-                    </Text>
-                  </View>
-                )}
-              </View>
-
-              {/* Row 3: Add to Board */}
-              <Pressable
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                  showToast(`Added ${p.name} to Board`);
-                }}
-                style={[
-                  s.addBoardBtn,
-                  {
-                    backgroundColor: C.surface,
-                    borderColor: C.inputBorder,
-                    alignSelf: 'flex-end',
-                    marginTop: 10,
-                  },
-                ]}
-              >
-                <IconSymbol name="plus" size={11} color="#D97757" />
-                <Text
+                {/* Row 3: Actions */}
+                <View
                   style={{
-                    fontSize: 11,
-                    fontWeight: '600',
-                    color: '#D97757',
+                    flexDirection: 'row',
+                    gap: 8,
+                    marginTop: 10,
+                    alignSelf: 'flex-end',
                   }}
                 >
-                  Add to Board
-                </Text>
-              </Pressable>
-            </GlassView>
-          ))
+                  <Pressable
+                    onPress={() => handleEvaluate(p)}
+                    style={{
+                      paddingHorizontal: 10,
+                      paddingVertical: 5,
+                      borderRadius: 8,
+                      backgroundColor: '#D97757' + '18',
+                      borderWidth: 1,
+                      borderColor: '#D97757' + '40',
+                    }}
+                  >
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: '#D97757' }}>
+                      Evaluate
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                      showToast(`Added ${p.fullName} to Board`);
+                    }}
+                    style={[
+                      s.addBoardBtn,
+                      {
+                        backgroundColor: C.surface,
+                        borderColor: C.inputBorder,
+                      },
+                    ]}
+                  >
+                    <IconSymbol name="plus" size={11} color="#D97757" />
+                    <Text
+                      style={{
+                        fontSize: 11,
+                        fontWeight: '600',
+                        color: '#D97757',
+                      }}
+                    >
+                      Add to Board
+                    </Text>
+                  </Pressable>
+                </View>
+              </GlassView>
+            );
+          })
         )}
       </View>
     </>
@@ -2153,9 +2141,9 @@ function makeStyles(C: ComponentColors) {
       borderWidth: 1,
     },
     filterPill: {
-      paddingHorizontal: 12,
-      paddingVertical: 6,
-      borderRadius: 16,
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      borderRadius: 14,
       borderWidth: 1,
     },
     poolCard: { padding: 14 },
@@ -2168,6 +2156,12 @@ function makeStyles(C: ComponentColors) {
       borderRadius: 8,
       borderWidth: 1,
     },
+    statChip: {
+      alignItems: 'center',
+      paddingHorizontal: 10,
+      paddingVertical: 6,
+      borderRadius: 8,
+    },
 
     // Portal
     portalBanner: {
@@ -2176,13 +2170,6 @@ function makeStyles(C: ComponentColors) {
       overflow: 'hidden',
     },
     portalCard: { padding: 14 },
-    eligBadge: {},
-    statChip: {
-      alignItems: 'center',
-      paddingHorizontal: 12,
-      paddingVertical: 7,
-      borderRadius: 8,
-    },
 
     // FAB
     fab: {

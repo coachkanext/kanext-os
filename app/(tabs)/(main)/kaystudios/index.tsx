@@ -8,7 +8,7 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import {
   View, Text, Pressable, ScrollView, FlatList,
-  StyleSheet, Animated,
+  StyleSheet, Animated, PanResponder,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,11 +16,11 @@ import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
-import { useAppContext } from '@/context/app-context';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { openSidePanel } from '@/utils/global-side-panel';
 import {
-  getFeedContent, getExploreRows, getModeContent, filterByPill,
-  STUDIOS_CONTENT_PILLS,
+  getFeedContent, getExploreRows, getAllContent, filterByPill,
+  STUDIOS_PILLS,
   type StudioContent, type ExperienceType,
 } from '@/data/mock-kaystudios';
 import {
@@ -80,11 +80,15 @@ function ContentCard({
       <View style={styles.cardInfo}>
         <Text style={[styles.cardTitle, { color: C.label }]} numberOfLines={2}>{item.title}</Text>
         <Text style={[styles.cardBrand, { color: C.secondary }]} numberOfLines={1}>
-          {item.brand} · @{item.brandHandle}
+          {item.brand} · {item.brandHandle}
         </Text>
         <View style={styles.cardMeta}>
           <TypeBadge type={item.type} C={C} />
           <Text style={[styles.cardParticipants, { color: C.muted }]}>{item.participants}</Text>
+          <Text style={[styles.cardRating, { color: C.muted }]}>★ {item.rating}</Text>
+          {progress?.completed && progress.score != null && (
+            <Text style={[styles.cardScore, { color: C.green }]}>{progress.score}%</Text>
+          )}
         </View>
       </View>
       <IconSymbol name="chevron.right" size={14} color={C.muted} />
@@ -133,16 +137,28 @@ function ExploreRow({
 // ── Library Section ─────────────────────────────────────────────────────────
 
 function LibSection({
-  title, items, C, onPressItem, progress,
+  title, items, C, onPressItem, progress, limit = 99,
 }: {
   title: string; items: StudioContent[]; C: ComponentColors;
-  onPressItem: (item: StudioContent) => void; progress?: Record<string, ProgressEntry>;
+  onPressItem: (item: StudioContent) => void;
+  progress?: Record<string, ProgressEntry>;
+  limit?: number;
 }) {
+  const [expanded, setExpanded] = useState(false);
   if (items.length === 0) return null;
+  const showAll = expanded || items.length <= limit;
+  const visible = showAll ? items : items.slice(0, limit);
   return (
     <View style={styles.libSection}>
-      <Text style={[styles.rowLabel, { color: C.label, paddingLeft: 16 }]}>{title}</Text>
-      {items.map(item => (
+      <View style={styles.libSectionHeader}>
+        <Text style={[styles.rowLabel, { color: C.label }]}>{title}</Text>
+        {!showAll && (
+          <Pressable onPress={() => setExpanded(true)} hitSlop={8}>
+            <Text style={[styles.seeAll, { color: C.accent }]}>See All</Text>
+          </Pressable>
+        )}
+      </View>
+      {visible.map(item => (
         <ContentCard
           key={item.id}
           item={item}
@@ -155,32 +171,101 @@ function LibSection({
   );
 }
 
+// ── Achievements Section ─────────────────────────────────────────────────────
+
+function AchievementsSection({ completedItems, C }: { completedItems: StudioContent[]; C: ComponentColors }) {
+  const badges = [
+    { id: 'first',  label: 'First Step',      emoji: '🎯', unlocked: completedItems.length >= 1 },
+    { id: 'three',  label: 'Curious Mind',     emoji: '🧠', unlocked: completedItems.length >= 3 },
+    { id: 'quiz',   label: 'Quiz Pro',          emoji: '✅', unlocked: completedItems.some(c => c.type === 'quiz') },
+    { id: 'course', label: 'Course Complete',   emoji: '🎓', unlocked: completedItems.some(c => c.type === 'course' || c.type === 'training' || c.type === 'devotional') },
+    { id: 'trivia', label: 'Trivia King',        emoji: '🏆', unlocked: completedItems.some(c => c.type === 'trivia') },
+  ].filter(b => b.unlocked);
+
+  return (
+    <View style={[styles.libSection, { marginBottom: 0 }]}>
+      <View style={styles.libSectionHeader}>
+        <Text style={[styles.rowLabel, { color: C.label }]}>Achievements</Text>
+      </View>
+      <View style={styles.achieveStats}>
+        <View style={[styles.achieveStat, { backgroundColor: C.surfacePressed }]}>
+          <Text style={[styles.achieveStatNum, { color: C.label }]}>{completedItems.length}</Text>
+          <Text style={[styles.achieveStatLbl, { color: C.secondary }]}>Completed</Text>
+        </View>
+        <View style={[styles.achieveStat, { backgroundColor: C.surfacePressed }]}>
+          <Text style={[styles.achieveStatNum, { color: C.accent }]}>3</Text>
+          <Text style={[styles.achieveStatLbl, { color: C.secondary }]}>Day Streak 🔥</Text>
+        </View>
+        <View style={[styles.achieveStat, { backgroundColor: C.surfacePressed }]}>
+          <Text style={[styles.achieveStatNum, { color: C.label }]}>{badges.length}</Text>
+          <Text style={[styles.achieveStatLbl, { color: C.secondary }]}>Badges</Text>
+        </View>
+      </View>
+      {badges.length > 0 && (
+        <View style={styles.badgeRow}>
+          {badges.map(b => (
+            <View key={b.id} style={[styles.badge, { backgroundColor: C.surfacePressed }]}>
+              <Text style={styles.badgeEmoji}>{b.emoji}</Text>
+              <Text style={[styles.badgeLabel, { color: C.secondary }]}>{b.label}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+
+// ── Demo seed data (shown until real AsyncStorage progress loads) ────────────
+
+const DEMO_PROGRESS: Record<string, ProgressEntry> = {
+  'ks-biz-course-1':  { progress: 0.45, completed: false, lastPlayed: '2026-03-20T10:00:00Z', currentIndex: 2 },
+  'ks-edu-course-1':  { progress: 0.70, completed: false, lastPlayed: '2026-03-22T14:00:00Z', currentIndex: 3 },
+  'ks-sp-training-1': { progress: 0.30, completed: false, lastPlayed: '2026-03-18T09:00:00Z', currentIndex: 1 },
+  'ks-sp-trivia-1':   { progress: 1, completed: true, score: 80,  lastPlayed: '2026-03-15T16:00:00Z' },
+  'ks-com-flash-1':   { progress: 1, completed: true, score: 100, lastPlayed: '2026-03-10T11:00:00Z' },
+  'ks-biz-trivia-1':  { progress: 1, completed: true, score: 90,  lastPlayed: '2026-03-05T15:00:00Z' },
+};
+const DEMO_SAVED_IDS = ['ks-edu-lab-1', 'ks-biz-sim-1', 'ks-edu-trivia-1'];
+
 // ── KayStudios Screen ───────────────────────────────────────────────────────
 
 export default function KayStudiosScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { state } = useAppContext();
-  const mode = (state.activeContext?.mode as string) ?? 'sports';
-
   const [activeTab, setActiveTab] = useState<KSTab>('Home');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [filterPillsVisible, setFilterPillsVisible] = useState(false);
   const [selectedPill, setSelectedPill] = useState('All');
-  const [allProgress, setAllProgress] = useState<Record<string, ProgressEntry>>({});
-  const [savedIds, setSavedIds] = useState<string[]>([]);
+  const [allProgress, setAllProgress] = useState<Record<string, ProgressEntry>>(DEMO_PROGRESS);
+  const [savedIds, setSavedIds] = useState<string[]>(DEMO_SAVED_IDS);
 
   const pillsRevealAnim = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
 
+  // Swipe-right to open side panel
+  const swipePanResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_evt, gs) =>
+          gs.dx > 25 && Math.abs(gs.dx) > Math.abs(gs.dy) * 2,
+        onPanResponderRelease: (_evt, gs) => {
+          if (gs.dx > 60) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            openSidePanel();
+          }
+        },
+      }),
+    [],
+  );
+
   const topBarH = insets.top + TOP_BAR_H;
   const contentTop = topBarH + (filterPillsVisible ? PILL_ROW_H : 0);
 
-  const pills = useMemo(() => STUDIOS_CONTENT_PILLS[mode] ?? ['All'], [mode]);
-  const feedContent = useMemo(() => getFeedContent(mode), [mode]);
-  const exploreRows = useMemo(() => getExploreRows(mode), [mode]);
-  const modeContent = useMemo(() => getModeContent(mode), [mode]);
+  const pills = STUDIOS_PILLS;
+  const feedContent = useMemo(() => getFeedContent(), []);
+  const exploreRows = useMemo(() => getExploreRows(), []);
+  const allContent = useMemo(() => getAllContent(), []);
 
   const loadLibraryData = useCallback(async () => {
     const [prog, saves] = await Promise.all([loadAllProgress(), getSavedIds()]);
@@ -194,27 +279,24 @@ export default function KayStudiosScreen() {
     if (activeTab === 'Library') loadLibraryData();
   }, [activeTab, loadLibraryData]);
 
-  useEffect(() => {
-    setSelectedPill('All');
-    setFilterPillsVisible(false);
-    pillsRevealAnim.setValue(0);
-    setActiveTab('Home');
-    loadLibraryData();
-  }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
-
   // Library derived lists
   const inProgressItems = useMemo(() =>
-    modeContent.filter(c => { const p = allProgress[c.id]; return p && p.progress > 0 && !p.completed; }),
-    [modeContent, allProgress]);
+    allContent.filter(c => { const p = allProgress[c.id]; return p && p.progress > 0 && !p.completed; }),
+    [allContent, allProgress]);
   const completedItems = useMemo(() =>
-    modeContent.filter(c => allProgress[c.id]?.completed),
-    [modeContent, allProgress]);
+    allContent.filter(c => allProgress[c.id]?.completed),
+    [allContent, allProgress]);
   const savedItems = useMemo(() =>
-    modeContent.filter(c => savedIds.includes(c.id)),
-    [modeContent, savedIds]);
+    allContent.filter(c => savedIds.includes(c.id)),
+    [allContent, savedIds]);
   const myCourses = useMemo(() =>
-    modeContent.filter(c => c.type === 'course'),
-    [modeContent]);
+    allContent.filter(c => c.type === 'course'),
+    [allContent]);
+  const recommendedItems = useMemo(() =>
+    allContent
+      .filter(c => !allProgress[c.id] && !savedIds.includes(c.id) && c.type !== 'course')
+      .slice(0, 5),
+    [allContent, allProgress, savedIds]);
 
   const filteredFeed = useMemo(() => filterByPill(feedContent, selectedPill), [feedContent, selectedPill]);
   const filteredExploreRows = useMemo(() =>
@@ -264,7 +346,7 @@ export default function KayStudiosScreen() {
   }, [router]);
 
   return (
-    <View style={[styles.screen, { backgroundColor: C.bg }]}>
+    <View style={[styles.screen, { backgroundColor: C.bg }]} {...swipePanResponder.panHandlers}>
 
       {/* ── Home View ── */}
       {activeTab === 'Home' && (
@@ -327,10 +409,14 @@ export default function KayStudiosScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingTop: contentTop + 8, paddingBottom: 120 }}
         >
-          <LibSection title="In Progress" items={inProgressItems} C={C} onPressItem={launchExperience} progress={allProgress} />
-          <LibSection title="Completed" items={completedItems} C={C} onPressItem={navigateToDetail} progress={allProgress} />
-          <LibSection title="Saved" items={savedItems} C={C} onPressItem={navigateToDetail} progress={allProgress} />
+          <LibSection title="In Progress" items={inProgressItems} C={C} onPressItem={launchExperience} progress={allProgress} limit={3} />
+          <LibSection title="Completed" items={completedItems} C={C} onPressItem={navigateToDetail} progress={allProgress} limit={3} />
+          <LibSection title="Saved" items={savedItems} C={C} onPressItem={navigateToDetail} progress={allProgress} limit={3} />
           <LibSection title="My Courses" items={myCourses} C={C} onPressItem={launchExperience} progress={allProgress} />
+          <LibSection title="Recommended For You" items={recommendedItems} C={C} onPressItem={navigateToDetail} progress={allProgress} limit={4} />
+          {(inProgressItems.length > 0 || completedItems.length > 0) && (
+            <AchievementsSection completedItems={completedItems} C={C} />
+          )}
           {!inProgressItems.length && !completedItems.length && !savedItems.length && !myCourses.length && (
             <View style={[styles.empty, { marginTop: 100 }]}>
               <Text style={styles.emptyIcon}>📚</Text>
@@ -346,9 +432,13 @@ export default function KayStudiosScreen() {
       {/* ── Fixed Top Bar ── */}
       <View style={[styles.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         <View style={styles.topBar}>
-          <View style={styles.topBarSide}>
-            <Text style={[styles.wordmark, { color: C.label }]}>KS</Text>
-          </View>
+          <Pressable
+            style={styles.topBarSide}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+            hitSlop={8}
+          >
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
           <View style={styles.dropdownPillWrap}>
             <Pressable
               style={[styles.dropdownPill, { backgroundColor: C.surfacePressed }]}
@@ -487,6 +577,8 @@ const styles = StyleSheet.create({
   typeBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
   typeBadgeText: { fontSize: 10, fontWeight: '600' },
   cardParticipants: { fontSize: 11 },
+  cardRating: { fontSize: 11 },
+  cardScore: { fontSize: 11, fontWeight: '600' },
 
   // Explore card
   exploreCard: { width: 140 },
@@ -495,9 +587,20 @@ const styles = StyleSheet.create({
   exploreTitle: { fontSize: 13, fontWeight: '600', lineHeight: 18, marginBottom: 6 },
 
   exploreRowWrap: { marginBottom: 24 },
-  rowLabel: { fontSize: 16, fontWeight: '700', paddingBottom: 10 },
+  rowLabel: { fontSize: 16, fontWeight: '700', paddingLeft: 16, paddingBottom: 10 },
 
   libSection: { marginBottom: 24 },
+  libSectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingRight: 16 },
+  seeAll: { fontSize: 13, fontWeight: '600' },
+
+  achieveStats: { flexDirection: 'row', gap: 10, paddingHorizontal: 16, marginBottom: 16 },
+  achieveStat: { flex: 1, borderRadius: 12, paddingVertical: 12, alignItems: 'center', gap: 2 },
+  achieveStatNum: { fontSize: 22, fontWeight: '800' },
+  achieveStatLbl: { fontSize: 11 },
+  badgeRow: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 16, gap: 8 },
+  badge: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, flexDirection: 'row', alignItems: 'center', gap: 6 },
+  badgeEmoji: { fontSize: 15 },
+  badgeLabel: { fontSize: 12, fontWeight: '600' },
 
   fab: {
     position: 'absolute', right: 24, width: 44, height: 44, borderRadius: 22,

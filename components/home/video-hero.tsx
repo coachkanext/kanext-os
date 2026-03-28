@@ -7,9 +7,9 @@
  * Zoom button  → toggle contentFit cover ↔ contain
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
-  View, Text, Pressable, StyleSheet, useWindowDimensions, Modal, StatusBar,
+  View, Text, Pressable, StyleSheet, useWindowDimensions, Modal, StatusBar, Animated,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -44,6 +44,24 @@ try {
   useVideoPlayer = mod.useVideoPlayer;
 } catch {}
 
+// KayTV branded slate shown between videos
+function KayTVSlate({ opacity }: { opacity: Animated.Value }) {
+  return (
+    <Animated.View style={[styles.slate, { opacity }]} pointerEvents="none">
+      <View style={styles.slateInner}>
+        <View style={styles.slateIconWrap}>
+          <IconSymbol name="play.tv.fill" size={22} color="#D97757" />
+        </View>
+        <Text style={styles.slateTitle}>
+          <Text style={styles.slateTitleWhite}>Kay</Text>
+          <Text style={styles.slateTitleCoral}>TV</Text>
+        </Text>
+        <Text style={styles.slateNext}>Up next</Text>
+      </View>
+    </Animated.View>
+  );
+}
+
 function VideoHeroPlayer({
   uris, totalHeight,
 }: { uris: (string | number)[]; totalHeight: number }) {
@@ -56,6 +74,7 @@ function VideoHeroPlayer({
   const [zoomed,     setZoomed]     = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [videoIndex, setVideoIndex] = useState(0);
+  const slateOpacity = useRef(new Animated.Value(0)).current;
 
   const isPlaylist = uris.length > 1;
 
@@ -65,19 +84,32 @@ function VideoHeroPlayer({
     p.play();
   });
 
-  // Advance to next video when current one ends
+  // Advance to next video with KayTV branded slate transition
   useEffect(() => {
     if (!isPlaylist || !player?.addListener) return;
-    const sub = player.addListener('playToEnd', () => {
-      setVideoIndex(prev => {
-        const next = (prev + 1) % uris.length;
-        const src = uris[next];
-        player.replace(src);
-        player.play();
-        return next;
-      });
+
+    const subEnd = player.addListener('playToEnd', () => {
+      // 1. Fade in slate
+      Animated.timing(slateOpacity, {
+        toValue: 1, duration: 350, useNativeDriver: true,
+      }).start();
+
+      // 2. After 1.2s load + start next video
+      setTimeout(() => {
+        setVideoIndex(prev => {
+          const next = (prev + 1) % uris.length;
+          player.replace(uris[next]);
+          setTimeout(() => player.play(), 400);
+          return next;
+        });
+        // 3. Fade out slate
+        Animated.timing(slateOpacity, {
+          toValue: 0, duration: 500, useNativeDriver: true,
+        }).start();
+      }, 1200);
     });
-    return () => sub.remove();
+
+    return () => subEnd.remove();
   }, [player, uris, isPlaylist]);
 
   // Auto full-screen on landscape rotation
@@ -176,6 +208,7 @@ function VideoHeroPlayer({
           nativeControls={false}
         />
         <Controls fs={false} />
+        <KayTVSlate opacity={slateOpacity} />
       </Pressable>
 
       {/* ── Full-screen modal (landscape rotation) ── */}
@@ -199,6 +232,7 @@ function VideoHeroPlayer({
             nativeControls={false}
           />
           <Controls fs={true} />
+          <KayTVSlate opacity={slateOpacity} />
         </Pressable>
       </Modal>
     </>
@@ -253,6 +287,47 @@ const styles = StyleSheet.create({
   gradient: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.12)',
+  },
+
+  // KayTV branded slate
+  slate: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#0D1520',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  slateInner: {
+    alignItems: 'center',
+    gap: 8,
+  },
+  slateIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(217,119,87,0.15)',
+    borderWidth: 1,
+    borderColor: 'rgba(217,119,87,0.30)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
+  },
+  slateTitle: {
+    fontSize: 26,
+    fontWeight: '800',
+    letterSpacing: 1,
+  },
+  slateTitleWhite: {
+    color: 'rgba(255,255,255,0.95)',
+  },
+  slateTitleCoral: {
+    color: '#D97757',
+  },
+  slateNext: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: 'rgba(255,255,255,0.40)',
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
   },
 
   // Top-right zoom toggle

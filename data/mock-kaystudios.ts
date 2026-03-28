@@ -75,15 +75,10 @@ export interface StudioContent {
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
-export const STUDIOS_CONTENT_PILLS: Record<string, string[]> = {
-  sports:    ['All', 'Games', 'Fantasy', 'Trivia', 'Prediction', 'Training'],
-  business:  ['All', 'Simulations', 'Strategy', 'Courses', 'Trivia'],
-  education: ['All', 'Courses', 'Quizzes', 'Flashcards', 'Simulations', 'Labs'],
-  community: ['All', 'Bible Study', 'Trivia', 'Group Games', 'Devotionals'],
-  personal:  ['All', 'Favorites', 'Recently Played', 'Saved'],
-};
+// Cross-mode — same pills everywhere regardless of active mode
+export const STUDIOS_PILLS = ['All', 'Courses', 'Games', 'Quizzes', 'Trivia', 'Challenges', 'Simulations'];
 
-export const EXPLORE_ROW_LABELS = ['Trending', 'New', 'Popular This Week', 'Rising Creators'];
+export const EXPLORE_ROW_LABELS = ['Trending', 'New This Week', 'Popular Courses', 'Quick Games', 'Brain Teasers', 'Faith & Spirituality', 'Sports & Athletics', 'Business & Career'];
 
 export function getLaunchLabel(type: ExperienceType): string {
   switch (type) {
@@ -145,7 +140,7 @@ const FANTASY_COURSE: StudioContent = {
   id: 'ks-sp-course-1',
   title: 'Fantasy Manager Basics',
   description: 'Learn the fundamentals of fantasy football — drafting, scoring, waiver wire strategy, and in-season management.',
-  type: 'course', category: 'Fantasy', mode: 'sports',
+  type: 'course', category: 'Courses', mode: 'sports',
   brand: 'EliteHoops Academy', brandHandle: '@elitehoops',
   thumbHue: 25, thumbEmoji: '🏈',
   difficulty: 'Beginner', duration: '15 min', participants: '1.8k started', rating: 4.7,
@@ -163,7 +158,7 @@ const SCORE_PREDICTOR: StudioContent = {
   id: 'ks-sp-game-1',
   title: 'Score Predictor',
   description: 'Predict the outcomes of today\'s biggest matchups. Earn points for accuracy. Coming soon.',
-  type: 'game', category: 'Prediction', mode: 'sports',
+  type: 'game', category: 'Games', mode: 'sports',
   brand: 'Lincoln Athletics', brandHandle: '@lincolnathletics',
   thumbHue: 355, thumbEmoji: '🔮',
   difficulty: 'Beginner', duration: '3 min', participants: '890 played', rating: 4.2,
@@ -173,7 +168,7 @@ const TRAINING_COURSE: StudioContent = {
   id: 'ks-sp-training-1',
   title: 'Strength & Conditioning Fundamentals',
   description: 'Science-backed training principles used by elite athletes. Build your foundation — strength, speed, recovery.',
-  type: 'training', category: 'Training', mode: 'sports',
+  type: 'training', category: 'Courses', mode: 'sports',
   brand: 'The Training Ground', brandHandle: '@trainingground',
   thumbHue: 30, thumbEmoji: '💪',
   difficulty: 'Intermediate', duration: '20 min', participants: '1.1k started', rating: 4.6,
@@ -215,7 +210,7 @@ const BIZ_SIM: StudioContent = {
   id: 'ks-biz-sim-1',
   title: 'Business Strategy Simulation',
   description: 'Five real startup scenarios. Every decision has consequences. How does your business instinct hold up under pressure?',
-  type: 'simulation', category: 'Strategy', mode: 'business',
+  type: 'simulation', category: 'Simulations', mode: 'business',
   brand: 'The Strategy Lab', brandHandle: '@stratlab',
   thumbHue: 215, thumbEmoji: '♟️',
   difficulty: 'Advanced', duration: '12 min', participants: '1.4k played', rating: 4.8,
@@ -277,7 +272,7 @@ const MARKETING_QUIZ: StudioContent = {
   id: 'ks-biz-quiz-1',
   title: 'Marketing Fundamentals Quiz',
   description: 'From brand positioning to customer acquisition — how solid is your marketing foundation?',
-  type: 'quiz', category: 'Courses', mode: 'business',
+  type: 'quiz', category: 'Quizzes', mode: 'business',
   brand: 'Capital IQ', brandHandle: '@capitaliq',
   thumbHue: 225, thumbEmoji: '📣',
   difficulty: 'Intermediate', duration: '7 min', participants: '1.9k played', rating: 4.5,
@@ -299,7 +294,7 @@ const HBCU_FLASHCARDS: StudioContent = {
   id: 'ks-edu-flash-1',
   title: 'HBCU History Flashcards',
   description: '10 essential facts about Historically Black Colleges and Universities. Perfect for students, applicants, and anyone building their HBCU knowledge.',
-  type: 'flashcards', category: 'Flashcards', mode: 'education',
+  type: 'flashcards', category: 'Quizzes', mode: 'education',
   brand: 'Scholar\'s Path', brandHandle: '@scholarspath',
   thumbHue: 120, thumbEmoji: '📇',
   difficulty: 'Beginner', duration: '8 min', participants: '3.1k studied', rating: 4.9,
@@ -361,7 +356,7 @@ const CRITICAL_THINKING: StudioContent = {
   id: 'ks-edu-lab-1',
   title: 'Critical Thinking Lab',
   description: 'Five real-world scenarios that test your logical reasoning. Identify fallacies, evaluate evidence, and think clearly.',
-  type: 'simulation', category: 'Labs', mode: 'education',
+  type: 'simulation', category: 'Challenges', mode: 'education',
   brand: 'Lincoln University', brandHandle: '@lincolnuniv',
   thumbHue: 110, thumbEmoji: '🔬',
   difficulty: 'Advanced', duration: '10 min', participants: '980 played', rating: 4.8,
@@ -403,7 +398,7 @@ const SCIENCE_TRIVIA: StudioContent = {
   id: 'ks-edu-trivia-1',
   title: 'Science Trivia',
   description: 'Biology, chemistry, physics, and Earth science. 10 questions that test your STEM knowledge.',
-  type: 'trivia', category: 'Quizzes', mode: 'education',
+  type: 'trivia', category: 'Trivia', mode: 'education',
   brand: 'The Learning Lab', brandHandle: '@learninglab',
   thumbHue: 160, thumbEmoji: '⚗️',
   difficulty: 'Intermediate', duration: '5 min', participants: '2.2k played', rating: 4.6,
@@ -450,7 +445,7 @@ const SCRIPTURE_FLASH: StudioContent = {
   id: 'ks-com-flash-1',
   title: 'Scripture Flashcards',
   description: 'Key Bible verses every believer should know. Study, memorize, and carry the Word with you.',
-  type: 'flashcards', category: 'Bible Study', mode: 'community',
+  type: 'flashcards', category: 'Quizzes', mode: 'community',
   brand: 'The Kingdom App', brandHandle: '@kingdomapp',
   thumbHue: 288, thumbEmoji: '📖',
   difficulty: 'Beginner', duration: '10 min', participants: '6.2k studied', rating: 4.9,
@@ -471,7 +466,7 @@ const FAITH_COURSE: StudioContent = {
   id: 'ks-com-course-1',
   title: 'Faith & Purpose',
   description: 'Five principles for living with intention. Discover how faith, community, and service connect to your God-given purpose.',
-  type: 'devotional', category: 'Devotionals', mode: 'community',
+  type: 'devotional', category: 'Courses', mode: 'community',
   brand: 'Community Bible Church', brandHandle: '@communitybible',
   thumbHue: 275, thumbEmoji: '🕊️',
   difficulty: 'Beginner', duration: '12 min', participants: '3.4k started', rating: 4.9,
@@ -525,20 +520,31 @@ const DEFAULT_REVIEWS: Review[] = [
 
 // ── Public API ─────────────────────────────────────────────────────────────
 
-export function getFeedContent(mode: string): StudioContent[] {
-  return ALL_CONTENT.filter(c => c.mode === mode && c.isFeed);
+// Cross-mode feed — all isFeed content interleaved from every mode
+export function getFeedContent(): StudioContent[] {
+  return ALL_CONTENT.filter(c => c.isFeed);
 }
 
-export function getExploreRows(mode: string): { label: string; items: StudioContent[] }[] {
-  const pool = ALL_CONTENT.filter(c => c.mode === mode);
+// Cross-mode explore rows — category rows pull from the full library regardless of mode
+export function getExploreRows(): { label: string; items: StudioContent[] }[] {
   return [
-    { label: 'Trending',          items: [...pool].sort((a, b) => b.rating - a.rating) },
-    { label: 'New',               items: [...pool].slice(0, 4) },
-    { label: 'Popular This Week', items: [...pool].sort((a, b) => b.participants.localeCompare(a.participants)).slice(0, 4) },
-    { label: 'Rising Creators',   items: pool.slice(pool.length > 2 ? pool.length - 2 : 0) },
+    { label: 'Trending',             items: [...ALL_CONTENT].sort((a, b) => b.rating - a.rating).slice(0, 8) },
+    { label: 'New This Week',        items: ALL_CONTENT.filter(c => c.isFeed).slice(0, 6) },
+    { label: 'Popular Courses',      items: ALL_CONTENT.filter(c => c.type === 'course' || c.type === 'training' || c.type === 'devotional') },
+    { label: 'Quick Games',          items: ALL_CONTENT.filter(c => c.type === 'trivia' || c.type === 'game').slice(0, 6) },
+    { label: 'Brain Teasers',        items: ALL_CONTENT.filter(c => c.type === 'quiz' || c.type === 'flashcards' || c.type === 'simulation').slice(0, 6) },
+    { label: 'Faith & Spirituality', items: ALL_CONTENT.filter(c => c.mode === 'community') },
+    { label: 'Sports & Athletics',   items: ALL_CONTENT.filter(c => c.mode === 'sports') },
+    { label: 'Business & Career',    items: ALL_CONTENT.filter(c => c.mode === 'business') },
   ].filter(row => row.items.length > 0);
 }
 
+// Cross-mode library — all content regardless of active mode
+export function getAllContent(): StudioContent[] {
+  return ALL_CONTENT;
+}
+
+/** @deprecated Keep for any external callers that still need mode-scoped lists. */
 export function getModeContent(mode: string): StudioContent[] {
   return ALL_CONTENT.filter(c => c.mode === mode);
 }
@@ -548,23 +554,27 @@ export function getContentById(id: string): StudioContent | undefined {
 }
 
 export function filterByPill(items: StudioContent[], pill: string): StudioContent[] {
-  if (pill === 'All' || pill === 'Favorites' || pill === 'Recently Played' || pill === 'Saved') return items;
+  if (pill === 'All') return items;
   return items.filter(c => c.category === pill);
 }
 
-export function getRelatedContent(id: string, mode: string): StudioContent[] {
+// Cross-mode related content
+export function getRelatedContent(id: string): StudioContent[] {
   const item = getContentById(id);
-  const pool = ALL_CONTENT.filter(c => c.mode === mode && c.id !== id);
+  const pool = ALL_CONTENT.filter(c => c.id !== id);
   const same = pool.filter(c => c.category === item?.category);
   return (same.length >= 3 ? same : pool).slice(0, 6);
 }
 
-export function searchContent(query: string, mode: string): StudioContent[] {
+// Cross-mode search — searches entire library
+export function searchContent(query: string): StudioContent[] {
   if (!query) return [];
   const q = query.toLowerCase();
   return ALL_CONTENT.filter(c =>
-    c.mode === mode &&
-    (c.title.toLowerCase().includes(q) || c.description.toLowerCase().includes(q) || c.category.toLowerCase().includes(q) || c.type.toLowerCase().includes(q))
+    c.title.toLowerCase().includes(q) ||
+    c.description.toLowerCase().includes(q) ||
+    c.category.toLowerCase().includes(q) ||
+    c.type.toLowerCase().includes(q)
   ).slice(0, 12);
 }
 

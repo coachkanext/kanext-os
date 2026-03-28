@@ -91,6 +91,7 @@ Context-driven media presentation with 4 badge states:
 | Development       | `arrow.up.right`   | Development OS        |
 | Alerts & Decisions| `bell.badge.fill`  | Alerts page           |
 | Recruiting        | `person.badge.plus`| Recruiting page       |
+| Operations        | `figure.run`       | Operations Hub        |
 
 **RBAC Gating:** `DOMAIN_HIDDEN[role]` controls card visibility per role (R0–R13).
 
@@ -412,6 +413,29 @@ Accessed via Dashboard domain cards. Navigation uses state-based drill-down (no 
 | 9     | Coaching Notes v1.1    | Coach reflection notes (future feature)          |
 
 **RBAC:** Can view plans, assign tasks, submit evidence; cannot modify constraints, delete snapshots.
+
+---
+
+### 6.5 Operations Hub
+
+**Purpose:** Game-day and in-season operational tools for live event management and real-time data capture.
+
+#### Game Day
+
+Launched from the Operations domain card on the dashboard, or directly from a scheduled game card in the Schedule tab ("Track Stats" action). Provides the active coaching staff with live game management tooling.
+
+**StatKeeper — Live Stat Capture**
+
+StatKeeper is the live basketball stat-tracking tool embedded in KaNeXT OS. A manager, parent, or coach taps events in real time on iPad or iPhone. At game end, the app produces a complete box score with per-player attribution, a play-by-play log, and structured event data that feeds directly into the KaNeXT Intelligence pipeline — scoring ~25-30 of 47 player traits from a single game.
+
+**Entry points:**
+- Operations domain card on the Sports Hub dashboard → Game Day
+- Schedule tab → tap any upcoming game → "Track Stats"
+- Standalone launch (no active game required — for pickup games, scrimmages, or retroactive entry)
+
+**Output:** Box score auto-published to the school's KaNeXT page; structured event data ingested by the trait pipeline to update player KR.
+
+**Full specification:** See `spec/STATKEEPER_SPEC.md`.
 
 ---
 

@@ -69,7 +69,7 @@ function formatDate(d: string): string {
 }
 
 function isOverdue(dateStr: string): boolean {
-  return dateStr < '2026-03-23';
+  return dateStr < '2026-03-25';
 }
 
 function statusColor(status: CampaignStatus): string {
@@ -115,12 +115,9 @@ function ProspectRow({ prospect, onPress, C, s }: {
         <Text style={{ fontSize: 12, color: overdue ? '#D97757' : C.muted }} numberOfLines={1}>
           {overdue ? '⚠ ' : ''}{prospect.nextAction} · {formatDate(prospect.nextActionDue)}
         </Text>
-      </View>
-      <View style={{ alignItems: 'flex-end', gap: 3, marginLeft: 8 }}>
-        <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: 'hsl(120,42%,32%)', alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontSize: 9, fontWeight: '800', color: '#fff' }}>{prospect.assignedToInitials}</Text>
-        </View>
-        <Text style={{ fontSize: 10, color: C.muted }}>{prospect.visitCount}x</Text>
+        <Text style={{ fontSize: 11, color: C.muted }} numberOfLines={1}>
+          {prospect.visitCount} visit{prospect.visitCount !== 1 ? 's' : ''} · {prospect.assignedTo}
+        </Text>
       </View>
     </Pressable>
   );
@@ -451,11 +448,16 @@ export default function CommunityOutreachScreen() {
   // Derived
   const pills = useMemo(() => pillsForTab(activeTab, isAdmin), [activeTab, isAdmin]);
 
-  const filteredProspects = useMemo(() => {
+  // Members are shown separately in "Recently Converted" — exclude from main list
+  const pipelineProspects = useMemo(() => {
     if (!isAdmin) return [];
-    if (selectedPill === 'All') return PROSPECTS;
-    return PROSPECTS.filter(p => (prospectStages[p.id] ?? p.stage) === (selectedPill as ProspectStage));
+    const stage = (p: Prospect) => prospectStages[p.id] ?? p.stage;
+    const nonMembers = PROSPECTS.filter(p => stage(p) !== 'Member');
+    if (selectedPill === 'All' || selectedPill === 'Member') return nonMembers;
+    return nonMembers.filter(p => stage(p) === (selectedPill as ProspectStage));
   }, [selectedPill, isAdmin, prospectStages]);
+
+  const filteredProspects = pipelineProspects;
 
   const expandedProspect = useMemo(() =>
     expandedProspectId ? PROSPECTS.find(p => p.id === expandedProspectId) ?? null : null,
@@ -525,7 +527,7 @@ export default function CommunityOutreachScreen() {
     setProspectStages(prev => ({ ...prev, [prospectId]: stage }));
   }, []);
 
-  const contentPaddingTop = topBarH + PILLS_H + 8;
+  const contentPaddingTop = topBarH + (pillsVisible ? PILLS_H : 0) + 8;
 
   // ── Render functions ──────────────────────────────────────────────────────
 
@@ -535,46 +537,122 @@ export default function CommunityOutreachScreen() {
 
     return (
       <>
-        {/* Funnel row */}
+        {/* Funnel row — tap to filter, tap again to deselect */}
         <View style={s.funnelRow}>
-          {PIPELINE_STAGES.map(ps => (
-            <Pressable
-              key={ps.stage}
-              style={[s.funnelCell, { borderColor: ps.color + '44', backgroundColor: ps.color + '11' }]}
-              onPress={() => {
-                Haptics.selectionAsync();
-                if (!pillsVisible) {
-                  setPillsVisible(true);
-                  Animated.timing(pillsAnim, { toValue: 1, duration: 200, useNativeDriver: false }).start();
-                }
-                setSelectedPill(ps.stage);
-              }}
-            >
-              <Text style={{ fontSize: 20, fontWeight: '800', color: ps.color }}>{overrideCounts[ps.stage]}</Text>
-              <Text style={{ fontSize: 9, fontWeight: '600', color: ps.color, textAlign: 'center' }} numberOfLines={2}>{ps.stage}</Text>
-            </Pressable>
-          ))}
+          {PIPELINE_STAGES.map(ps => {
+            const isActive = selectedPill === ps.stage;
+            return (
+              <Pressable
+                key={ps.stage}
+                style={[
+                  s.funnelCell,
+                  { borderColor: ps.color + (isActive ? 'CC' : '44'), backgroundColor: ps.color + (isActive ? '28' : '11') },
+                  isActive && { borderWidth: 2 },
+                ]}
+                onPress={() => {
+                  Haptics.selectionAsync();
+                  // Toggle: tap active stage → back to All; tap another → filter to it
+                  setSelectedPill(isActive ? 'All' : ps.stage);
+                  // Close pills row if open (funnel cards are the filter UI here)
+                  if (pillsVisible) {
+                    setPillsVisible(false);
+                    Animated.timing(pillsAnim, { toValue: 0, duration: 200, useNativeDriver: false }).start();
+                  }
+                }}
+              >
+                <Text style={{ fontSize: 20, fontWeight: '800', color: ps.color }}>{overrideCounts[ps.stage]}</Text>
+                <Text style={{ fontSize: 9, fontWeight: '600', color: ps.color, textAlign: 'center' }} numberOfLines={2}>{ps.stage}</Text>
+              </Pressable>
+            );
+          })}
         </View>
 
-        {/* Total */}
+        {/* Separator */}
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, gap: 8 }}>
           <View style={{ flex: 1, height: 1, backgroundColor: C.separator }} />
-          <Text style={{ fontSize: 11, color: C.muted }}>{PROSPECTS.length} total prospects</Text>
+          <Text style={{ fontSize: 11, color: C.muted }}>
+            {selectedPill === 'All' ? `${PROSPECTS.filter(p => (prospectStages[p.id] ?? p.stage) !== 'Member').length} in pipeline` : `${pipelineProspects.length} prospects`}
+          </Text>
           <View style={{ flex: 1, height: 1, backgroundColor: C.separator }} />
         </View>
 
-        {filteredProspects.length === 0 && (
-          <Text style={{ fontSize: 14, color: C.muted, textAlign: 'center', marginTop: 16 }}>No prospects at this stage.</Text>
-        )}
-        {filteredProspects.map(p => (
-          <ProspectRow
-            key={p.id}
-            prospect={{ ...p, stage: prospectStages[p.id] ?? p.stage }}
-            onPress={openProspect}
-            C={C}
-            s={s}
-          />
-        ))}
+        {/* Needs Follow-Up section (overdue items sorted to top) */}
+        {(() => {
+          const overdue  = pipelineProspects.filter(p => isOverdue(p.nextActionDue));
+          const current  = pipelineProspects.filter(p => !isOverdue(p.nextActionDue));
+          const members  = selectedPill === 'All' || selectedPill === 'Member'
+            ? PROSPECTS.filter(p => (prospectStages[p.id] ?? p.stage) === 'Member')
+            : [];
+
+          return (
+            <>
+              {overdue.length > 0 && (
+                <>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                    <IconSymbol name="exclamationmark.triangle.fill" size={13} color="#D97757" />
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: '#D97757', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                      Needs Follow-Up ({overdue.length})
+                    </Text>
+                  </View>
+                  <View style={{ backgroundColor: '#D9775708', borderRadius: 12, borderWidth: 1, borderColor: '#D9775722', marginBottom: 16, overflow: 'hidden' }}>
+                    {overdue.map(p => (
+                      <ProspectRow
+                        key={p.id}
+                        prospect={{ ...p, stage: prospectStages[p.id] ?? p.stage }}
+                        onPress={openProspect}
+                        C={C}
+                        s={s}
+                      />
+                    ))}
+                  </View>
+                </>
+              )}
+
+              {current.length === 0 && overdue.length === 0 && (
+                <Text style={{ fontSize: 14, color: C.muted, textAlign: 'center', marginTop: 8 }}>No prospects at this stage.</Text>
+              )}
+              {current.map(p => (
+                <ProspectRow
+                  key={p.id}
+                  prospect={{ ...p, stage: prospectStages[p.id] ?? p.stage }}
+                  onPress={openProspect}
+                  C={C}
+                  s={s}
+                />
+              ))}
+
+              {/* Recently Converted win board */}
+              {members.length > 0 && (
+                <>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 24, marginBottom: 10 }}>
+                    <IconSymbol name="checkmark.seal.fill" size={14} color="#5A8A6E" />
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: '#5A8A6E', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                      Recently Converted
+                    </Text>
+                  </View>
+                  {members.map(p => (
+                    <View
+                      key={p.id}
+                      style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10, paddingHorizontal: 12, backgroundColor: '#5A8A6E11', borderRadius: 12, marginBottom: 8, borderWidth: 1, borderColor: '#5A8A6E22' }}
+                    >
+                      <View style={[s.prospectAvatar, { backgroundColor: `hsl(${p.hue},42%,32%)` }]}>
+                        <Text style={s.prospectAvatarText}>{p.initials}</Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: 15, fontWeight: '600', color: C.label }}>{p.name}</Text>
+                        <Text style={{ fontSize: 12, color: '#5A8A6E' }}>
+                          {p.visitCount} visits · Joined {formatDate(p.lastInteraction)}
+                        </Text>
+                      </View>
+                      <IconSymbol name="checkmark.circle.fill" size={22} color="#5A8A6E" />
+                    </View>
+                  ))}
+                </>
+              )}
+            </>
+          );
+        })()}
+
         <View style={{ height: 80 }} />
       </>
     );
@@ -614,13 +692,42 @@ export default function CommunityOutreachScreen() {
   function renderCampaignsAdmin() {
     const filterStatus = selectedPill === 'All' ? 'all' : selectedPill.toLowerCase() as 'active' | 'planning' | 'completed';
     const visible = getCampaignsByStatus(filterStatus);
+    const activeCampaigns  = CAMPAIGNS.filter(c => c.status === 'active');
+    const totalReached     = CAMPAIGNS.reduce((sum, c) => sum + c.actualReach, 0);
+    const totalConverted   = CAMPAIGNS.reduce((sum, c) => sum + c.actualConvert, 0);
+    const totalVolNeeded   = activeCampaigns.reduce((sum, c) => sum + c.volunteersNeeded, 0);
+    const totalVolJoined   = activeCampaigns.reduce((sum, c) => sum + c.volunteersJoined, 0);
+    const volGapCampaigns  = activeCampaigns.filter(c => c.volunteersJoined < c.volunteersNeeded);
+    const showImpact       = selectedPill === 'All' || selectedPill === 'Completed';
 
     return (
       <>
+        {/* Stats summary — horizontal scroll */}
+        <ScrollView
+          horizontal showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 10, paddingBottom: 16 }}
+          style={{ marginHorizontal: -16, paddingHorizontal: 16 }}
+        >
+          {([
+            { label: 'Active',        value: activeCampaigns.length.toString(), color: '#5A8A6E' },
+            { label: 'Total Reached', value: totalReached.toLocaleString(),     color: '#1D9BF0' },
+            { label: 'Conversions',   value: totalConverted.toString(),         color: '#5A8A6E' },
+            { label: 'Volunteers',    value: `${totalVolJoined}/${totalVolNeeded}`, color: C.accent },
+            { label: 'Campaigns',     value: CAMPAIGNS.length.toString(),       color: C.secondary },
+          ] as const).map(stat => (
+            <View key={stat.label} style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12, alignItems: 'center', minWidth: 80, gap: 2 }}>
+              <Text style={{ fontSize: 18, fontWeight: '800', color: stat.color }}>{stat.value}</Text>
+              <Text style={{ fontSize: 10, color: C.muted, textAlign: 'center' }}>{stat.label}</Text>
+            </View>
+          ))}
+        </ScrollView>
+
+        {/* Campaign cards */}
         {visible.map(campaign => {
           const isExpanded = expandedCampaignId === campaign.id;
           const reachPct   = campaign.goalReach   > 0 ? Math.min(100, Math.round(campaign.actualReach   / campaign.goalReach   * 100)) : 0;
           const convertPct = campaign.goalConvert > 0 ? Math.min(100, Math.round(campaign.actualConvert / campaign.goalConvert * 100)) : 0;
+          const volGap     = campaign.volunteersNeeded - campaign.volunteersJoined;
 
           return (
             <View key={campaign.id} style={[s.campaignCard, { backgroundColor: C.surface }]}>
@@ -628,8 +735,8 @@ export default function CommunityOutreachScreen() {
                 style={({ pressed }) => [s.campaignHeader, pressed && { backgroundColor: C.surfacePressed }]}
                 onPress={() => { Haptics.selectionAsync(); setExpandedCampaignId(isExpanded ? null : campaign.id); }}
               >
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <View style={{ flex: 1, gap: 4 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                     <Text style={{ fontSize: 15, fontWeight: '700', color: C.label, flex: 1 }} numberOfLines={1}>{campaign.name}</Text>
                     <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, backgroundColor: statusColor(campaign.status) + '22' }}>
                       <Text style={{ fontSize: 11, fontWeight: '700', color: statusColor(campaign.status) }}>{statusLabel(campaign.status)}</Text>
@@ -642,6 +749,22 @@ export default function CommunityOutreachScreen() {
                     <Text style={{ fontSize: 11, color: C.muted }}>
                       {formatDate(campaign.startDate)} – {formatDate(campaign.endDate)}
                     </Text>
+                  </View>
+                  {/* Inline metrics */}
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 2 }}>
+                    <Text style={{ fontSize: 11, color: C.secondary }}>
+                      <Text style={{ fontWeight: '700', color: '#1D9BF0' }}>{campaign.actualReach}</Text>
+                      {'/' + campaign.goalReach + ' reached'}
+                    </Text>
+                    <Text style={{ fontSize: 11, color: C.secondary }}>
+                      <Text style={{ fontWeight: '700', color: '#5A8A6E' }}>{campaign.actualConvert}</Text>
+                      {'/' + campaign.goalConvert + ' conv'}
+                    </Text>
+                    {volGap > 0 && (
+                      <View style={{ backgroundColor: '#D9775722', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
+                        <Text style={{ fontSize: 10, fontWeight: '700', color: '#D97757' }}>{volGap} vol needed</Text>
+                      </View>
+                    )}
                   </View>
                 </View>
                 <IconSymbol name={isExpanded ? 'chevron.up' : 'chevron.down'} size={14} color={C.muted} />
@@ -673,11 +796,9 @@ export default function CommunityOutreachScreen() {
                     <Text style={{ fontSize: 13, color: C.secondary }}>
                       Volunteers: <Text style={{ fontWeight: '700', color: C.label }}>{campaign.volunteersJoined} / {campaign.volunteersNeeded}</Text>
                     </Text>
-                    {campaign.volunteersJoined < campaign.volunteersNeeded && (
+                    {volGap > 0 && (
                       <View style={{ backgroundColor: '#D9775722', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
-                        <Text style={{ fontSize: 10, fontWeight: '700', color: '#D97757' }}>
-                          {campaign.volunteersNeeded - campaign.volunteersJoined} needed
-                        </Text>
+                        <Text style={{ fontSize: 10, fontWeight: '700', color: '#D97757' }}>{volGap} needed</Text>
                       </View>
                     )}
                   </View>
@@ -690,11 +811,116 @@ export default function CommunityOutreachScreen() {
                   </View>
 
                   <Text style={{ fontSize: 12, color: C.muted }}>Target: {campaign.targetAudience}</Text>
+
+                  {/* Quick actions */}
+                  <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
+                    {(['Edit', 'Share', 'Duplicate'] as const).map(action => (
+                      <Pressable
+                        key={action}
+                        style={({ pressed }) => ({
+                          flex: 1, alignItems: 'center', paddingVertical: 8,
+                          backgroundColor: pressed ? C.surfacePressed : C.bg,
+                          borderRadius: 8, borderWidth: 1, borderColor: C.separator,
+                        })}
+                        onPress={() => Haptics.selectionAsync()}
+                      >
+                        <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>{action}</Text>
+                      </Pressable>
+                    ))}
+                  </View>
                 </View>
               )}
             </View>
           );
         })}
+
+        {/* Campaign Impact section */}
+        {showImpact && (
+          <>
+            <Text style={{ fontSize: 11, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 24, marginBottom: 12 }}>
+              Campaign Impact
+            </Text>
+            <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, gap: 14, marginBottom: 10 }}>
+              {/* Totals row */}
+              <View style={{ flexDirection: 'row' }}>
+                {([
+                  { label: 'Reached',    value: totalReached,   color: '#1D9BF0' },
+                  { label: 'Converted',  value: totalConverted, color: '#5A8A6E' },
+                  { label: 'Campaigns',  value: CAMPAIGNS.length, color: C.accent },
+                ] as const).map((item, i) => (
+                  <View key={item.label} style={{
+                    flex: 1, alignItems: 'center',
+                    borderRightWidth: i < 2 ? StyleSheet.hairlineWidth : 0, borderRightColor: C.separator,
+                  }}>
+                    <Text style={{ fontSize: 22, fontWeight: '800', color: item.color }}>{item.value.toLocaleString()}</Text>
+                    <Text style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>{item.label}</Text>
+                  </View>
+                ))}
+              </View>
+              {/* Conversion rate */}
+              <View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <Text style={{ fontSize: 12, color: C.secondary }}>Overall Reach → Conversion</Text>
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: '#5A8A6E' }}>
+                    {totalReached > 0 ? Math.round((totalConverted / totalReached) * 100) : 0}%
+                  </Text>
+                </View>
+                <View style={{ height: 6, borderRadius: 3, backgroundColor: C.separator }}>
+                  <View style={{
+                    height: 6, borderRadius: 3, backgroundColor: '#5A8A6E',
+                    width: `${totalReached > 0 ? Math.min(100, Math.round((totalConverted / totalReached) * 100)) : 0}%` as any,
+                  }} />
+                </View>
+              </View>
+              {/* Top campaign */}
+              {(() => {
+                const top = [...CAMPAIGNS].sort((a, b) => b.actualReach - a.actualReach)[0];
+                return top ? (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                    <IconSymbol name="star.fill" size={14} color={C.accent} />
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 11, color: C.secondary }}>Top Campaign by Reach</Text>
+                      <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>{top.name}</Text>
+                    </View>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: '#1D9BF0' }}>{top.actualReach.toLocaleString()}</Text>
+                  </View>
+                ) : null;
+              })()}
+            </View>
+          </>
+        )}
+
+        {/* Volunteer gap prompts */}
+        {volGapCampaigns.length > 0 && selectedPill !== 'Completed' && (
+          <>
+            <Text style={{ fontSize: 11, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 16, marginBottom: 10 }}>
+              Volunteer Gaps
+            </Text>
+            {volGapCampaigns.map(campaign => (
+              <View key={`gap-${campaign.id}`} style={{
+                backgroundColor: '#D9775711', borderRadius: 12,
+                borderWidth: 1, borderColor: '#D9775730',
+                padding: 14, marginBottom: 8,
+                flexDirection: 'row', alignItems: 'center', gap: 12,
+              }}>
+                <IconSymbol name="person.badge.plus" size={18} color="#D97757" />
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }} numberOfLines={1}>{campaign.name}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary }}>
+                    Needs {campaign.volunteersNeeded - campaign.volunteersJoined} more volunteer{campaign.volunteersNeeded - campaign.volunteersJoined !== 1 ? 's' : ''}
+                  </Text>
+                </View>
+                <Pressable
+                  style={{ backgroundColor: C.accent, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 10 }}
+                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                >
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: '#fff' }}>Recruit</Text>
+                </Pressable>
+              </View>
+            ))}
+          </>
+        )}
+
         <View style={{ height: 80 }} />
       </>
     );
@@ -1002,6 +1228,17 @@ export default function CommunityOutreachScreen() {
         </Pressable>
       )}
 
+      {/* Create Campaign FAB (campaigns admin only) */}
+      {isAdmin && activeTab === 'Campaigns' && (
+        <Pressable
+          style={[s.fab, { bottom: insets.bottom + 80 }]}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+        >
+          <IconSymbol name="plus" size={20} color="#fff" />
+          <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff' }}>New Campaign</Text>
+        </Pressable>
+      )}
+
       {/* Absolute top bar */}
       <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         <View style={s.topBar}>
@@ -1028,16 +1265,8 @@ export default function CommunityOutreachScreen() {
             </Pressable>
           </View>
 
-          {/* Right: RBAC toggle + filter icon */}
+          {/* Right: filter icon */}
           <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end', gap: 10 }]}>
-            <Pressable
-              style={[s.rbacToggle, { backgroundColor: isAdmin ? C.accent : C.surfacePressed }]}
-              onPress={handleRoleToggle}
-            >
-              <Text style={[s.rbacToggleText, { color: isAdmin ? '#fff' : C.secondary }]}>
-                {isAdmin ? 'Admin' : 'Member'}
-              </Text>
-            </Pressable>
             {pills.length > 0 && (
               <Pressable onPress={togglePills} hitSlop={12}>
                 <IconSymbol

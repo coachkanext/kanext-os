@@ -931,6 +931,204 @@ export function getSuggestedAccounts(): SuggestedAccount[] {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+// PERSONAL MODE
+// ═══════════════════════════════════════════════════════════════════════════
+
+const PERSONAL_STORIES: StoryUser[] = [
+  YOU,
+  {
+    id: 'ps2', name: 'Nia Okafor', username: '@niaokafor', initials: 'NO',
+    hasUnseenStory: true,
+    storyFrames: [
+      { id: 'psf1', type: 'image', uri: vimg('photo-1529156069898-49953e39b3ac'), duration: 5000, timestamp: new Date('2026-03-24T09:00:00') },
+    ],
+  },
+  {
+    id: 'ps3', name: 'Darius Moore', username: '@dmoore', initials: 'DM',
+    hasUnseenStory: true,
+    storyFrames: [
+      { id: 'psf2', type: 'image', uri: vimg('photo-1507003211169-0a1dd7228f2d'), duration: 5000, timestamp: new Date('2026-03-24T08:30:00') },
+      { id: 'psf3', type: 'image', uri: vimg('photo-1534528741775-53994a69daeb'), duration: 5000, timestamp: new Date('2026-03-24T08:35:00') },
+    ],
+  },
+  {
+    id: 'ps4', name: 'Jade Kim', username: '@jadekim', initials: 'JK',
+    hasUnseenStory: true,
+    storyFrames: [
+      { id: 'psf4', type: 'image', uri: vimg('photo-1488426862026-3ee34a7d66df'), duration: 5000, timestamp: new Date('2026-03-24T07:45:00') },
+    ],
+  },
+  {
+    id: 'ps5', name: 'Marcus Webb', username: '@mwebb', initials: 'MW',
+    hasUnseenStory: false,
+    storyFrames: [
+      { id: 'psf5', type: 'image', uri: vimg('photo-1539571696357-5a69c17a67c6'), duration: 5000, timestamp: new Date('2026-03-23T22:00:00') },
+    ],
+  },
+  {
+    id: 'ps6', name: 'Priya S', username: '@priyasharma', initials: 'PS',
+    hasUnseenStory: true,
+    storyFrames: [
+      { id: 'psf6', type: 'image', uri: vimg('photo-1524504388940-b1c1722653e1'), duration: 5000, timestamp: new Date('2026-03-24T10:00:00') },
+    ],
+  },
+  {
+    id: 'ps7', name: 'Chris Lang', username: '@clang', initials: 'CL',
+    hasUnseenStory: false,
+    storyFrames: [
+      { id: 'psf7', type: 'image', uri: vimg('photo-1568602471122-7832951cc4c5'), duration: 5000, timestamp: new Date('2026-03-23T18:00:00') },
+    ],
+  },
+];
+
+const PERSONAL_FEED: FeedPost[] = [
+  {
+    id: 'pfp1',
+    author: { id: 'pa1', name: 'Nia Okafor', username: '@niaokafor', initials: 'NO' },
+    media: [{ type: 'image', uri: img('photo-1495474472287-4d71bcdd2085'), aspectRatio: 1 }],
+    caption: 'Sunday morning ritual. No emails, no meetings — just good coffee and a book. You have to protect your mornings. ☕',
+    likeCount: 847, commentCount: 63, isLiked: true, isBookmarked: false,
+    timestamp: new Date('2026-03-24T07:30:00'),
+  },
+  {
+    id: 'pfp2',
+    author: { id: 'pa2', name: 'Darius Moore', username: '@dmoore', initials: 'DM' },
+    media: [],
+    caption: 'Been heads down on this project for 3 months. Finally shipped. The feeling of "it\'s done" hits different when you poured everything into it. Grateful for the team.',
+    likeCount: 1203, commentCount: 142, isLiked: false, isBookmarked: true,
+    timestamp: new Date('2026-03-24T06:00:00'),
+  },
+  {
+    id: 'pfp3',
+    author: { id: 'pa3', name: 'Jade Kim', username: '@jadekim', initials: 'JK' },
+    media: [
+      { type: 'image', uri: img('photo-1476514525535-07fb3b4ae5f1'), aspectRatio: 0.75 },
+      { type: 'image', uri: img('photo-1500530855697-b586d89ba3ee'), aspectRatio: 0.75 },
+      { type: 'image', uri: img('photo-1469854523086-cc02fe5d8800'), aspectRatio: 0.75 },
+    ],
+    caption: 'Lisbon, Portugal 🇵🇹 Three days was not enough. The pastéis de nata, the trams, the light at golden hour. I\'ll be back.',
+    likeCount: 2341, commentCount: 189, isLiked: true, isBookmarked: true,
+    timestamp: new Date('2026-03-23T20:15:00'),
+  },
+  {
+    id: 'pfp4',
+    author: { id: 'pa4', name: 'Marcus Webb', username: '@mwebb', initials: 'MW' },
+    media: [{ type: 'image', uri: img('photo-1571019613454-1cb2f99b2d8b'), aspectRatio: 1 }],
+    caption: '5am club. Two years in and it\'s still the hardest and best decision I\'ve made. Start before the world wakes up. 💪',
+    likeCount: 976, commentCount: 87, isLiked: false, isBookmarked: false,
+    timestamp: new Date('2026-03-23T17:00:00'),
+  },
+  {
+    id: 'pfp5',
+    author: { id: 'pa5', name: 'Priya Sharma', username: '@priyasharma', initials: 'PS' },
+    media: [{ type: 'image', uri: img('photo-1504674900247-0877df9cc836'), aspectRatio: 1 }],
+    caption: 'Made grandma\'s jollof rice from scratch for the first time. Didn\'t follow a recipe — just called her and listened for 2 hours. Some knowledge can\'t be Googled.',
+    likeCount: 3100, commentCount: 274, isLiked: true, isBookmarked: true,
+    timestamp: new Date('2026-03-23T14:30:00'),
+  },
+  {
+    id: 'pfp6',
+    author: { id: 'pa6', name: 'Chris Lang', username: '@clang', initials: 'CL' },
+    media: [],
+    caption: 'Reminder: rest is not a reward for finishing your work. It\'s part of the work. Your best ideas don\'t come from grinding — they come from breathing.',
+    likeCount: 5420, commentCount: 312, isLiked: false, isBookmarked: false,
+    timestamp: new Date('2026-03-23T11:00:00'),
+  },
+  {
+    id: 'pfp7',
+    author: { id: 'pa2', name: 'Darius Moore', username: '@dmoore', initials: 'DM' },
+    media: [{ type: 'image', uri: img('photo-1448932223592-d1fc686e76ea'), aspectRatio: 1.33 }],
+    caption: 'Golden Gate fog this morning. Sometimes this city is unreal. 🌁',
+    likeCount: 418, commentCount: 34, isLiked: false, isBookmarked: false,
+    timestamp: new Date('2026-03-22T08:00:00'),
+  },
+  {
+    id: 'pfp8',
+    author: { id: 'pa1', name: 'Nia Okafor', username: '@niaokafor', initials: 'NO' },
+    media: [
+      { type: 'image', uri: img('photo-1512621776951-a57141f2eefd'), aspectRatio: 1 },
+      { type: 'image', uri: img('photo-1490645935967-10de6ba17061'), aspectRatio: 1 },
+    ],
+    caption: 'Meal prepped for the week. Eating well shouldn\'t be complicated. 6 ingredients, 45 minutes, sorted. Drop a 🥗 if you want the recipe.',
+    likeCount: 1876, commentCount: 203, isLiked: false, isBookmarked: false,
+    timestamp: new Date('2026-03-22T16:00:00'),
+  },
+  {
+    id: 'pfp9',
+    author: { id: 'pa3', name: 'Jade Kim', username: '@jadekim', initials: 'JK' },
+    media: [{ type: 'image', uri: img('photo-1456327102063-fb5054efe647'), aspectRatio: 0.8 }],
+    caption: 'My corner of the world at 11pm. This is where everything gets built. The desk doesn\'t judge you. 💡',
+    likeCount: 692, commentCount: 58, isLiked: true, isBookmarked: false,
+    timestamp: new Date('2026-03-21T23:00:00'),
+  },
+  {
+    id: 'pfp10',
+    author: { id: 'pa5', name: 'Priya Sharma', username: '@priyasharma', initials: 'PS' },
+    media: [],
+    caption: 'Turned 28 today. Last year I was afraid of being behind. This year I realized I\'m exactly where I need to be. Growth isn\'t linear and that\'s okay. 🎂',
+    likeCount: 8923, commentCount: 741, isLiked: true, isBookmarked: false,
+    timestamp: new Date('2026-03-20T10:00:00'),
+  },
+];
+
+const PERSONAL_REELS: SocialReel[] = [
+  {
+    id: 'pr1',
+    creator: { id: 'pa4', name: 'Marcus Webb', username: '@mwebb', initials: 'MW' },
+    videoUri: vid(26362), posterUri: vimg('photo-1571019613454-1cb2f99b2d8b'),
+    caption: '5am workout. No excuses. #morninggrind',
+    likeCount: 4231, commentCount: 178, shareCount: 89,
+    isLiked: true, isBookmarked: false,
+    musicTrack: 'Power Up - Workout Beats',
+  },
+  {
+    id: 'pr2',
+    creator: { id: 'pa3', name: 'Jade Kim', username: '@jadekim', initials: 'JK' },
+    videoUri: vid(26127), posterUri: vimg('photo-1476514525535-07fb3b4ae5f1'),
+    caption: 'Lisbon in 60 seconds ✈️🇵🇹 #travel #travelgram',
+    likeCount: 12450, commentCount: 623, shareCount: 340,
+    isLiked: false, isBookmarked: true,
+    musicTrack: 'Fado Soul - Portuguese Mix',
+  },
+  {
+    id: 'pr3',
+    creator: { id: 'pa1', name: 'Nia Okafor', username: '@niaokafor', initials: 'NO' },
+    videoUri: vid(6894), posterUri: vimg('photo-1495474472287-4d71bcdd2085'),
+    caption: 'Morning routine that changed my life ☕ #wellness',
+    likeCount: 7823, commentCount: 445, shareCount: 210,
+    isLiked: false, isBookmarked: false,
+    musicTrack: 'Lo-fi Morning - Chill Beats',
+  },
+  {
+    id: 'pr4',
+    creator: { id: 'pa5', name: 'Priya Sharma', username: '@priyasharma', initials: 'PS' },
+    videoUri: vid(43209), posterUri: vimg('photo-1504674900247-0877df9cc836'),
+    caption: 'Cooking jollof from scratch for the first time 🍛 #cooking #culture',
+    likeCount: 9100, commentCount: 512, shareCount: 388,
+    isLiked: true, isBookmarked: true,
+    musicTrack: 'Afrobeats Kitchen - DJ Mix',
+  },
+  {
+    id: 'pr5',
+    creator: { id: 'pa6', name: 'Chris Lang', username: '@clang', initials: 'CL' },
+    videoUri: vid(2273), posterUri: vimg('photo-1568602471122-7832951cc4c5'),
+    caption: 'How I structure my week for max output 📅 #productivity',
+    likeCount: 15600, commentCount: 890, shareCount: 567,
+    isLiked: false, isBookmarked: false,
+    musicTrack: 'Focus Mode - Study Beats',
+  },
+  {
+    id: 'pr6',
+    creator: { id: 'pa2', name: 'Darius Moore', username: '@dmoore', initials: 'DM' },
+    videoUri: vid(38555), posterUri: vimg('photo-1448932223592-d1fc686e76ea'),
+    caption: 'The moment we shipped 🚀 3 months of late nights compressed into 60s',
+    likeCount: 6780, commentCount: 334, shareCount: 201,
+    isLiked: false, isBookmarked: false,
+    musicTrack: 'Victory Lap - Beat Collective',
+  },
+];
+
+// ═══════════════════════════════════════════════════════════════════════════
 // MODE MAPS + GETTERS
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -939,7 +1137,7 @@ const STORIES_BY_MODE: Record<Mode, StoryUser[]> = {
   community: CHURCH_STORIES,
   education: EDUCATION_STORIES,
   business: BUSINESS_STORIES,
-  personal: [YOU],
+  personal: PERSONAL_STORIES,
 };
 
 const FEED_BY_MODE: Record<Mode, FeedPost[]> = {
@@ -947,7 +1145,7 @@ const FEED_BY_MODE: Record<Mode, FeedPost[]> = {
   community: CHURCH_FEED,
   education: EDUCATION_FEED,
   business: BUSINESS_FEED,
-  personal: [],
+  personal: PERSONAL_FEED,
 };
 
 const REELS_BY_MODE: Record<Mode, SocialReel[]> = {
@@ -955,7 +1153,7 @@ const REELS_BY_MODE: Record<Mode, SocialReel[]> = {
   community: CHURCH_REELS,
   education: EDUCATION_REELS,
   business: BUSINESS_REELS,
-  personal: [],
+  personal: PERSONAL_REELS,
 };
 
 export function getStories(mode?: Mode): StoryUser[] {

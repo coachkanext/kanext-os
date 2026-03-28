@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { openSidePanel } from '@/utils/global-side-panel';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
@@ -24,7 +25,8 @@ import { useMode } from '@/context/app-context';
 type AgendaView = 'Day' | 'Month' | 'List';
 type EventType =
   | 'game' | 'practice' | 'travel' | 'meeting' | 'recruiting'
-  | 'call' | 'deadline' | 'class' | 'exam' | 'service' | 'event' | 'other';
+  | 'call' | 'deadline' | 'class' | 'exam' | 'service' | 'event'
+  | 'registration' | 'volunteer' | 'reminder' | 'other';
 type FilterKey = 'all' | EventType;
 
 interface AgendaEvent {
@@ -37,6 +39,8 @@ interface AgendaEvent {
   allDay?: boolean;
   location?: string;
   description?: string;
+  attendees?: { initials: string; hue: number }[];
+  virtual?: boolean;
 }
 
 interface LaidOutEvent extends AgendaEvent {
@@ -56,35 +60,39 @@ const DAY_LABELS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
 const MODE_FILTERS: Record<string, { key: FilterKey; label: string }[]> = {
   sports: [
-    { key: 'all',       label: 'All' },
-    { key: 'game',      label: 'Games' },
-    { key: 'practice',  label: 'Practices' },
-    { key: 'travel',    label: 'Travel' },
-    { key: 'meeting',   label: 'Meetings' },
+    { key: 'all',        label: 'All' },
+    { key: 'game',       label: 'Games' },
+    { key: 'practice',   label: 'Practices' },
+    { key: 'travel',     label: 'Travel' },
+    { key: 'meeting',    label: 'Meetings' },
+    { key: 'recruiting', label: 'Recruiting Visits' },
   ],
   business: [
     { key: 'all',      label: 'All' },
     { key: 'meeting',  label: 'Meetings' },
-    { key: 'call',     label: 'Calls' },
     { key: 'deadline', label: 'Deadlines' },
-    { key: 'event',    label: 'Events' },
+    { key: 'travel',   label: 'Travel' },
+    { key: 'event',    label: 'Team Events' },
   ],
   education: [
-    { key: 'all',    label: 'All' },
-    { key: 'class',  label: 'Classes' },
-    { key: 'exam',   label: 'Exams' },
-    { key: 'event',  label: 'Events' },
+    { key: 'all',          label: 'All' },
+    { key: 'class',        label: 'Classes' },
+    { key: 'exam',         label: 'Exams' },
+    { key: 'event',        label: 'Events' },
+    { key: 'registration', label: 'Registration' },
   ],
   community: [
-    { key: 'all',     label: 'All' },
-    { key: 'service', label: 'Services' },
-    { key: 'meeting', label: 'Meetings' },
-    { key: 'event',   label: 'Events' },
+    { key: 'all',       label: 'All' },
+    { key: 'service',   label: 'Services' },
+    { key: 'meeting',   label: 'Meetings' },
+    { key: 'event',     label: 'Events' },
+    { key: 'volunteer', label: 'Volunteer' },
   ],
   personal: [
-    { key: 'all',     label: 'All' },
-    { key: 'event',   label: 'Events' },
-    { key: 'meeting', label: 'Meetings' },
+    { key: 'all',      label: 'All' },
+    { key: 'event',    label: 'Events' },
+    { key: 'meeting',  label: 'Meetings' },
+    { key: 'reminder', label: 'Reminders' },
   ],
 };
 
@@ -170,11 +178,11 @@ function timeDuration(start: Date, end: Date): number {
 }
 function eventColor(type: EventType): string {
   switch (type) {
-    case 'game':                return '#990000';
-    case 'deadline': case 'exam': return '#B85C5C';
-    case 'service':  case 'call': return '#5A8A6E';
-    case 'class':               return '#003A63';
-    default:                    return '#D97757';
+    case 'game':                                       return '#990000';
+    case 'deadline': case 'exam':                      return '#B85C5C';
+    case 'service': case 'call': case 'volunteer':     return '#5A8A6E';
+    case 'class': case 'registration':                 return '#003A63';
+    default:                                           return '#D97757';
   }
 }
 
@@ -227,20 +235,88 @@ const MOCK_EVENTS: AgendaEvent[] = [
   { id: 's10', title: 'Away Game vs. Northside', type: 'game',       mode: 'sports',    start: dn(9, 17, 30), end: dn(9, 20),     location: 'Northside Gym' },
   { id: 's11', title: 'Team Dinner',             type: 'event',      mode: 'sports',    start: dn(10, 18, 30), end: dn(10, 20, 30), location: 'Booster Club Hall' },
   { id: 's12', title: 'Strength & Conditioning', type: 'practice',   mode: 'sports',    start: dn(11, 7),     end: dn(11, 8, 30), location: 'Weight Room' },
-  // Business
-  { id: 'b1',  title: 'Weekly Standup',          type: 'meeting',    mode: 'business',  start: dn(0, 9),      end: dn(0, 9, 30),  location: 'Zoom' },
-  { id: 'b2',  title: 'Client Call — TechCorp',  type: 'call',       mode: 'business',  start: dn(1, 11),     end: dn(1, 12),     location: 'Zoom' },
-  { id: 'b3',  title: 'Q1 Review',               type: 'deadline',   mode: 'business',  start: dn(3, 14),     end: dn(3, 16),     location: 'Board Room' },
-  { id: 'b4',  title: 'Product Roadmap Review',  type: 'meeting',    mode: 'business',  start: dn(5, 10),     end: dn(5, 11, 30), location: 'Conference Room' },
-  { id: 'bd1', title: 'Sprint Week',             type: 'deadline',   mode: 'business',  start: dn(0, 0),      end: dn(0, 23, 59), allDay: true },
+  // Business — full week (Thu Mar 26 → Thu Apr 2)
+  { id: 'bd1', title: 'Q1 Close Sprint',          type: 'deadline',   mode: 'business',  start: dn(0, 0),      end: dn(4, 23, 59), allDay: true },
+  // Today (Thu Mar 26)
+  { id: 'b1',  title: 'Daily Standup',            type: 'meeting',    mode: 'business',  start: dn(0, 9),      end: dn(0, 9, 30),  location: 'Zoom',             virtual: true,  attendees: [{ initials: 'MW', hue: 140 }, { initials: 'DC', hue: 300 }, { initials: 'TO', hue: 30 }], description: 'All-hands sync · blockers + priorities' },
+  { id: 'b1b', title: '1:1 — Marcus Webb',        type: 'meeting',    mode: 'business',  start: dn(0, 10),     end: dn(0, 10, 30), location: 'Zoom',             virtual: true,  attendees: [{ initials: 'MW', hue: 140 }], description: 'Product roadmap check-in' },
+  { id: 'b1c', title: 'Engineering Sync',         type: 'meeting',    mode: 'business',  start: dn(0, 14),     end: dn(0, 15),     location: 'Zoom',             virtual: true,  attendees: [{ initials: 'DC', hue: 300 }, { initials: 'JL', hue: 180 }, { initials: 'PN', hue: 240 }, { initials: 'ZP', hue: 20 }], description: 'V2 sprint review + unblocking' },
+  // Fri Mar 27
+  { id: 'b2',  title: 'Daily Standup',            type: 'meeting',    mode: 'business',  start: dn(1, 9),      end: dn(1, 9, 30),  location: 'Zoom',             virtual: true,  attendees: [{ initials: 'MW', hue: 140 }, { initials: 'DC', hue: 300 }, { initials: 'TO', hue: 30 }] },
+  { id: 'b2b', title: 'Client Call — TechCorp',   type: 'call',       mode: 'business',  start: dn(1, 11),     end: dn(1, 12),     location: 'Zoom',             virtual: true,  attendees: [{ initials: 'SK', hue: 200 }, { initials: 'TO', hue: 30 }], description: 'Q2 partnership scope + contract review' },
+  { id: 'b2c', title: 'Legal Review',             type: 'meeting',    mode: 'business',  start: dn(1, 15),     end: dn(1, 16),     location: 'Zoom',             virtual: true,  attendees: [{ initials: 'KM', hue: 100 }], description: 'Contract redlines with outside counsel' },
+  // Mon Mar 30
+  { id: 'b3',  title: 'Daily Standup',            type: 'meeting',    mode: 'business',  start: dn(4, 9),      end: dn(4, 9, 30),  location: 'Zoom',             virtual: true,  attendees: [{ initials: 'MW', hue: 140 }, { initials: 'DC', hue: 300 }, { initials: 'TO', hue: 30 }] },
+  { id: 'b3b', title: 'Sprint Planning',          type: 'meeting',    mode: 'business',  start: dn(4, 10),     end: dn(4, 11, 30), location: 'Conference Room',                  attendees: [{ initials: 'MW', hue: 140 }, { initials: 'DC', hue: 300 }, { initials: 'AB', hue: 60 }], description: 'Scope Apr 1–14 sprint tasks' },
+  { id: 'b3c', title: 'Investor Call — Sequoia',  type: 'call',       mode: 'business',  start: dn(4, 14),     end: dn(4, 15),     location: 'Zoom',             virtual: true,  attendees: [{ initials: 'SK', hue: 200 }], description: 'Series A update + traction metrics' },
+  { id: 'b3d', title: 'Q1 Review',                type: 'meeting',    mode: 'business',  start: dn(4, 16),     end: dn(4, 18),     location: 'Board Room',                       attendees: [{ initials: 'SK', hue: 200 }, { initials: 'KM', hue: 100 }, { initials: 'MW', hue: 140 }], description: 'Full Q1 performance walkthrough' },
+  // Tue Mar 31
+  { id: 'b4',  title: 'Daily Standup',            type: 'meeting',    mode: 'business',  start: dn(5, 9),      end: dn(5, 9, 30),  location: 'Zoom',             virtual: true,  attendees: [{ initials: 'MW', hue: 140 }, { initials: 'DC', hue: 300 }, { initials: 'TO', hue: 30 }] },
+  { id: 'b4b', title: 'Design Review',            type: 'meeting',    mode: 'business',  start: dn(5, 10),     end: dn(5, 11),     location: 'Zoom',             virtual: true,  attendees: [{ initials: 'AB', hue: 60 }, { initials: 'CD', hue: 160 }], description: 'Business Hub screens — polish pass' },
+  { id: 'b4c', title: 'Lunch w/ Advisor',         type: 'event',      mode: 'business',  start: dn(5, 12, 30), end: dn(5, 14),     location: 'The Porch',                        attendees: [{ initials: 'SK', hue: 200 }], description: 'Strategy session w/ David Moore (mentor)' },
+  { id: 'b4d', title: 'Product Roadmap Review',   type: 'meeting',    mode: 'business',  start: dn(5, 15),     end: dn(5, 16, 30), location: 'Conference Room',                  attendees: [{ initials: 'MW', hue: 140 }, { initials: 'AB', hue: 60 }, { initials: 'DC', hue: 300 }], description: 'Finalize Q2 roadmap for investor deck' },
+  // Wed Apr 1
+  { id: 'b5',  title: 'Daily Standup',            type: 'meeting',    mode: 'business',  start: dn(6, 9),      end: dn(6, 9, 30),  location: 'Zoom',             virtual: true,  attendees: [{ initials: 'MW', hue: 140 }, { initials: 'DC', hue: 300 }, { initials: 'TO', hue: 30 }] },
+  { id: 'b5b', title: '1:1 — Deja Collins',       type: 'meeting',    mode: 'business',  start: dn(6, 10),     end: dn(6, 10, 30), location: 'Zoom',             virtual: true,  attendees: [{ initials: 'DC', hue: 300 }], description: 'Engineering capacity + Q2 hiring' },
+  { id: 'b5c', title: 'Board Prep',               type: 'meeting',    mode: 'business',  start: dn(6, 14),     end: dn(6, 16),     location: 'Board Room',                       attendees: [{ initials: 'SK', hue: 200 }, { initials: 'KM', hue: 100 }], description: 'Prep materials for April board meeting' },
+  // Thu Apr 2
+  { id: 'b6',  title: 'Daily Standup',            type: 'meeting',    mode: 'business',  start: dn(7, 9),      end: dn(7, 9, 30),  location: 'Zoom',             virtual: true,  attendees: [{ initials: 'MW', hue: 140 }, { initials: 'DC', hue: 300 }, { initials: 'TO', hue: 30 }] },
+  { id: 'b6b', title: 'Content Recording',        type: 'event',      mode: 'business',  start: dn(7, 11),     end: dn(7, 13),     location: 'Studio B',                         attendees: [{ initials: 'MG', hue: 270 }, { initials: 'TO', hue: 30 }], description: 'KaNeXT brand launch video + social reels' },
+  { id: 'b6c', title: '1:1 — Tyler Okafor',       type: 'meeting',    mode: 'business',  start: dn(7, 14),     end: dn(7, 14, 30), location: 'Zoom',             virtual: true,  attendees: [{ initials: 'TO', hue: 30 }], description: 'Growth targets + NAIA outreach status' },
   // Education
   { id: 'e1',  title: 'English Literature',      type: 'class',      mode: 'education', start: dn(0, 10),     end: dn(0, 11),     location: 'Room 204' },
   { id: 'e2',  title: 'Calculus',                type: 'class',      mode: 'education', start: dn(1, 9),      end: dn(1, 10),     location: 'Room 101' },
   { id: 'e3',  title: 'Mid-Term Exam',           type: 'exam',       mode: 'education', start: dn(4, 9),      end: dn(4, 11),     location: 'Exam Hall',          description: 'Covers chapters 1–8' },
+  { id: 'e4',  title: 'Biology Lab',             type: 'class',      mode: 'education', start: dn(2, 13),     end: dn(2, 15),     location: 'Science Hall 108',   description: 'Lab: Cell division and mitosis' },
+  { id: 'e5',  title: 'Fall 2026 Registration',  type: 'registration', mode: 'education', start: dn(2, 0),   end: dn(2, 23, 59), allDay: true, location: 'Student Portal' },
+  { id: 'e6',  title: 'English Literature',      type: 'class',      mode: 'education', start: dn(5, 10),     end: dn(5, 11),     location: 'Room 204' },
+  { id: 'e7',  title: 'Calculus',                type: 'class',      mode: 'education', start: dn(6, 9),      end: dn(6, 10),     location: 'Room 101' },
+  { id: 'e8',  title: 'Academic Advisor Appt',   type: 'event',      mode: 'education', start: dn(6, 14),     end: dn(6, 14, 30), location: 'Advising Center',    description: 'Course selection for Fall 2026' },
+  { id: 'e9',  title: 'English Literature',      type: 'class',      mode: 'education', start: dn(7, 10),     end: dn(7, 11),     location: 'Room 204' },
+  { id: 'e10', title: 'Calculus',                type: 'class',      mode: 'education', start: dn(8, 9),      end: dn(8, 10),     location: 'Room 101' },
+  { id: 'e11', title: 'Biology Lab',             type: 'class',      mode: 'education', start: dn(9, 13),     end: dn(9, 15),     location: 'Science Hall 108' },
+  { id: 'e12', title: 'Research Paper Draft Due',type: 'deadline',   mode: 'education', start: dn(9, 23, 59), end: dn(9, 23, 59), location: 'Submit Online',      description: 'ENGL 301 — upload to course portal' },
+  { id: 'e13', title: 'Campus Career Fair',      type: 'event',      mode: 'education', start: dn(10, 10),    end: dn(10, 15),    location: 'Student Union',      description: '50+ employers on-site — business casual' },
+  { id: 'e14', title: 'English Literature',      type: 'class',      mode: 'education', start: dn(12, 10),    end: dn(12, 11),    location: 'Room 204' },
+  { id: 'e15', title: 'Calculus',                type: 'class',      mode: 'education', start: dn(13, 9),     end: dn(13, 10),    location: 'Room 101' },
+  { id: 'e16', title: 'Spring Convocation',      type: 'event',      mode: 'education', start: dn(14, 13),    end: dn(14, 16),    location: 'Lincoln Hall',       description: 'Honors and awards ceremony' },
+  { id: 'e17', title: 'Spring Break',            type: 'event',      mode: 'education', start: dn(16, 0),     end: dn(23, 23, 59), allDay: true, location: 'Campus Closed' },
+  { id: 'e18', title: 'English Literature',      type: 'class',      mode: 'education', start: dn(19, 10),    end: dn(19, 11),    location: 'Room 204' },
+  { id: 'e19', title: 'Calculus',                type: 'class',      mode: 'education', start: dn(20, 9),     end: dn(20, 10),    location: 'Room 101' },
+  { id: 'e20', title: 'Biology Lab',             type: 'class',      mode: 'education', start: dn(23, 13),    end: dn(23, 15),    location: 'Science Hall 108' },
+  { id: 'e21', title: 'Calculus Final Exam',     type: 'exam',       mode: 'education', start: dn(28, 9),     end: dn(28, 11),    location: 'Exam Hall',          description: 'Comprehensive final — chapters 1–12' },
+  { id: 'e22', title: 'ENGL 301 Final Exam',     type: 'exam',       mode: 'education', start: dn(30, 14),    end: dn(30, 16),    location: 'Room 204',           description: 'Final essay exam — open notes' },
+  { id: 'e23', title: 'Registration Closes',     type: 'registration', mode: 'education', start: dn(35, 0),  end: dn(35, 23, 59), allDay: true },
+  { id: 'e24', title: 'Graduation Ceremony',     type: 'event',      mode: 'education', start: dn(42, 10),    end: dn(42, 13),    location: 'Lincoln Stadium',    description: 'Class of 2026 Commencement' },
   // Community
-  { id: 'c1',  title: 'Sunday Service',          type: 'service',    mode: 'community', start: dn(6, 10),     end: dn(6, 12),     location: 'Main Sanctuary' },
-  { id: 'c2',  title: 'Youth Meeting',           type: 'meeting',    mode: 'community', start: dn(2, 18),     end: dn(2, 19, 30), location: 'Fellowship Hall' },
-  { id: 'c3',  title: 'Community Outreach',      type: 'event',      mode: 'community', start: dn(8, 9),      end: dn(8, 13),     location: 'City Park' },
+  { id: 'c1',  title: 'Sunday Service',          type: 'service',    mode: 'community', start: dn(4, 10),     end: dn(4, 12),     location: 'Main Sanctuary',     description: '10 AM Worship & Message — all are welcome' },
+  { id: 'c2',  title: 'Youth Meeting',           type: 'meeting',    mode: 'community', start: dn(2, 18),     end: dn(2, 19, 30), location: 'Fellowship Hall',    description: 'Weekly youth leadership meeting' },
+  { id: 'c3',  title: 'Community Outreach',      type: 'event',      mode: 'community', start: dn(8, 9),      end: dn(8, 13),     location: 'City Park',          description: 'Food drive & neighborhood cleanup' },
+  { id: 'c4',  title: 'Evening Prayer Service',  type: 'service',    mode: 'community', start: dn(0, 19),     end: dn(0, 20),     location: 'Sanctuary',          description: 'Open prayer — all welcome' },
+  { id: 'c5',  title: 'Worship Team Rehearsal',  type: 'meeting',    mode: 'community', start: dn(1, 17),     end: dn(1, 19),     location: 'Worship Center',     description: 'Sunday set run-through' },
+  { id: 'c6',  title: "Women's Circle",          type: 'meeting',    mode: 'community', start: dn(3, 18),     end: dn(3, 19, 30), location: 'Room 204',           description: 'Bi-weekly fellowship' },
+  { id: 'c7',  title: "Men's Fellowship",        type: 'meeting',    mode: 'community', start: dn(3, 19),     end: dn(3, 20, 30), location: 'Fellowship Hall',    description: 'Men\'s accountability group' },
+  { id: 'c8',  title: 'Deacons Meeting',         type: 'meeting',    mode: 'community', start: dn(5, 18),     end: dn(5, 19),     location: 'Conference Room' },
+  { id: 'c9',  title: 'Bible Study',             type: 'service',    mode: 'community', start: dn(5, 19),     end: dn(5, 20, 30), location: 'Room 101',           description: 'Book of Romans — Chapter 8' },
+  { id: 'c10', title: 'Volunteer Training',      type: 'volunteer',  mode: 'community', start: dn(6, 14),     end: dn(6, 16),     location: 'Fellowship Hall',    description: 'New volunteer orientation' },
+  { id: 'c11', title: 'Sunday Service',          type: 'service',    mode: 'community', start: dn(11, 10),    end: dn(11, 12),    location: 'Main Sanctuary' },
+  { id: 'c12', title: 'Leadership Council',      type: 'meeting',    mode: 'community', start: dn(10, 14),    end: dn(10, 16),    location: 'Conference Room',    description: 'Monthly leadership alignment' },
+  { id: 'c13', title: 'Prayer Warriors',         type: 'service',    mode: 'community', start: dn(7, 6),      end: dn(7, 7),      location: 'Prayer Room',        description: 'Early morning intercession' },
+  { id: 'c14', title: 'Young Adults Night',      type: 'event',      mode: 'community', start: dn(9, 19),     end: dn(9, 21),     location: 'Fellowship Hall',    description: 'Game night + fellowship' },
+  { id: 'c15', title: 'Food Pantry',             type: 'volunteer',  mode: 'community', start: dn(12, 9),     end: dn(12, 12),    location: 'Outreach Center' },
+  { id: 'c16', title: 'Sunday Service',          type: 'service',    mode: 'community', start: dn(18, 10),    end: dn(18, 12),    location: 'Main Sanctuary' },
+  { id: 'cd1', title: 'Easter Sunday',           type: 'event',      mode: 'community', start: dn(11, 0),     end: dn(11, 23, 59), allDay: true, location: 'Main Campus' },
+  // Personal
+  { id: 'p1',  title: 'Coffee with Marcus',      type: 'meeting',    mode: 'personal',  start: dn(0, 9),      end: dn(0, 10),     location: 'Blue Bottle Coffee',  description: 'Catch up + brand strategy chat' },
+  { id: 'p2',  title: 'Content Shoot',           type: 'event',      mode: 'personal',  start: dn(0, 13),     end: dn(0, 16),     location: 'Studio 4',            description: 'Spring campaign photos + reels' },
+  { id: 'p3',  title: 'Brand Review Call',       type: 'meeting',    mode: 'personal',  start: dn(1, 11),     end: dn(1, 12),     location: 'Zoom',                description: 'Q2 sponsorship check-in' },
+  { id: 'p4',  title: 'Post Content',            type: 'reminder',   mode: 'personal',  start: dn(1, 17),     end: dn(1, 17, 15) },
+  { id: 'p5',  title: 'Podcast Recording',       type: 'event',      mode: 'personal',  start: dn(3, 14),     end: dn(3, 16),     location: 'Studio B',            description: 'Episode 42 — guest: Coach Reeves' },
+  { id: 'p6',  title: 'Weekly Planning',         type: 'reminder',   mode: 'personal',  start: dn(4, 8),      end: dn(4, 8, 30) },
+  { id: 'p7',  title: 'Sponsorship Dinner',      type: 'event',      mode: 'personal',  start: dn(5, 19),     end: dn(5, 21, 30), location: 'The Capital Grille',  description: 'Nike partnership kickoff' },
+  { id: 'p8',  title: 'Content Calendar Review', type: 'meeting',    mode: 'personal',  start: dn(7, 10),     end: dn(7, 11),     location: 'Zoom' },
+  { id: 'p9',  title: 'Media Day',               type: 'event',      mode: 'personal',  start: dn(9, 9),      end: dn(9, 17),     location: 'Convention Center',   description: 'Annual athlete media appearances' },
+  { id: 'p10', title: 'Reply to DMs',            type: 'reminder',   mode: 'personal',  start: dn(10, 18),    end: dn(10, 18, 15) },
 ];
 
 // ── WeekRow ───────────────────────────────────────────────────────────────────
@@ -393,7 +469,7 @@ function MonthGrid({
 // ── SharedTimeline ────────────────────────────────────────────────────────────
 
 function SharedTimeline({
-  selectedDate, events, expandedId, onExpand, onCreateAtTime, C, styles, evAreaWidth,
+  selectedDate, events, expandedId, onExpand, onCreateAtTime, C, styles, evAreaWidth, role,
 }: {
   selectedDate: Date;
   events: AgendaEvent[];
@@ -403,6 +479,7 @@ function SharedTimeline({
   C: ComponentColors;
   styles: ReturnType<typeof makeStyles>;
   evAreaWidth: number;
+  role: 'admin' | 'member' | 'parent';
 }) {
   const scrollRef  = useRef<ScrollView>(null);
   const isToday    = isSameDay(selectedDate, today());
@@ -516,12 +593,37 @@ function SharedTimeline({
                 {isExp && ev.description && <Text style={[styles.evDesc, { color: color + 'AA' }]}>{ev.description}</Text>}
                 {isExp && (
                   <View style={styles.evActions}>
-                    <Pressable style={[styles.evBtn, { borderColor: color + '44' }]}>
-                      <Text style={[styles.evBtnText, { color }]}>Edit</Text>
-                    </Pressable>
-                    <Pressable style={[styles.evBtn, { borderColor: C.separator }]}>
-                      <Text style={[styles.evBtnText, { color: C.red }]}>Delete</Text>
-                    </Pressable>
+                    {role === 'admin' ? (
+                      <>
+                        <Pressable style={[styles.evBtn, { borderColor: color + '44' }]}>
+                          <Text style={[styles.evBtnText, { color }]}>Edit</Text>
+                        </Pressable>
+                        <Pressable style={[styles.evBtn, { borderColor: C.separator }]}>
+                          <Text style={[styles.evBtnText, { color: C.red }]}>Delete</Text>
+                        </Pressable>
+                      </>
+                    ) : role === 'member' ? (
+                      <>
+                        <Pressable style={[styles.evBtn, { borderColor: C.accent + '44' }]}>
+                          <Text style={[styles.evBtnText, { color: C.accent }]}>Accept</Text>
+                        </Pressable>
+                        <Pressable style={[styles.evBtn, { borderColor: C.separator }]}>
+                          <Text style={[styles.evBtnText, { color: C.secondary }]}>Decline</Text>
+                        </Pressable>
+                        <Pressable style={[styles.evBtn, { borderColor: C.separator }]}>
+                          <Text style={[styles.evBtnText, { color: C.secondary }]}>+ Calendar</Text>
+                        </Pressable>
+                      </>
+                    ) : (
+                      <>
+                        <Pressable style={[styles.evBtn, { borderColor: C.accent + '44' }]}>
+                          <Text style={[styles.evBtnText, { color: C.accent }]}>Accept</Text>
+                        </Pressable>
+                        <Pressable style={[styles.evBtn, { borderColor: C.separator }]}>
+                          <Text style={[styles.evBtnText, { color: C.secondary }]}>+ Calendar</Text>
+                        </Pressable>
+                      </>
+                    )}
                   </View>
                 )}
               </Pressable>
@@ -559,6 +661,138 @@ function ListView({ events, C, styles }: {
     return Array.from(map.entries()).map(([key, data]) => ({ date: new Date(key), data }));
   }, [events]);
 
+  const upcomingCount = useMemo(() => events.filter(e => !e.allDay).length, [events]);
+  const thisWeekCount = useMemo(
+    () => events.filter(e => !e.allDay && e.start <= addDays(_today, 7)).length,
+    [events],
+  );
+  const nextEvent = useMemo(
+    () => events.filter(e => !e.allDay).sort((a, b) => a.start.getTime() - b.start.getTime())[0],
+    [events],
+  );
+
+  const busyDays = useMemo(() => {
+    const dayCounts = new Map<string, number>();
+    events.filter(e => !e.allDay).forEach(e => {
+      const k = sod(e.start).toISOString();
+      dayCounts.set(k, (dayCounts.get(k) ?? 0) + 1);
+    });
+    let max = 0; let busyKey = '';
+    dayCounts.forEach((v, k) => { if (v > max) { max = v; busyKey = k; } });
+    return busyKey ? new Date(busyKey).toLocaleDateString('en-US', { weekday: 'long' }) : 'N/A';
+  }, [events]);
+
+  const totalMeetingMins = useMemo(() =>
+    events.filter(e => !e.allDay && e.start >= _today && e.start <= addDays(_today, 7))
+      .reduce((acc, e) => acc + (e.end.getTime() - e.start.getTime()) / 60000, 0),
+    [events]);
+
+  const DEADLINES = [
+    { title: 'Q1 Report',      due: 'Friday', icon: 'doc.text.fill',       color: '#B85C5C' },
+    { title: 'Investor Deck',  due: 'Monday', icon: 'chart.bar.fill',       color: '#D97757' },
+    { title: 'Tax Filing',     due: 'Apr 15', icon: 'dollarsign.circle.fill', color: '#5A8A6E' },
+  ];
+
+  const ListHeader = (
+    <View style={{ paddingTop: 8, paddingBottom: 4, gap: 8 }}>
+      {/* Stats row */}
+      <View style={{ flexDirection: 'row', gap: 8 }}>
+        <View style={{ flex: 1, backgroundColor: C.surface, borderRadius: 14, padding: 14 }}>
+          <Text style={{ fontSize: 26, fontWeight: '800', color: C.label, lineHeight: 30 }}>{upcomingCount}</Text>
+          <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>Upcoming</Text>
+        </View>
+        <View style={{ flex: 1, backgroundColor: C.surface, borderRadius: 14, padding: 14 }}>
+          <Text style={{ fontSize: 26, fontWeight: '800', color: C.label, lineHeight: 30 }}>{thisWeekCount}</Text>
+          <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>This week</Text>
+        </View>
+      </View>
+      {/* Next Up — full width prominent card */}
+      {nextEvent && (
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+            <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: eventColor(nextEvent.type) }} />
+            <Text style={{ fontSize: 10, fontWeight: '700', color: C.muted, textTransform: 'uppercase', letterSpacing: 0.8 }}>Next Up</Text>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }} numberOfLines={1}>{nextEvent.title}</Text>
+              <Text style={{ fontSize: 13, color: C.secondary, marginTop: 3 }}>
+                {fmtTime(nextEvent.start)} – {fmtTime(nextEvent.end)}{nextEvent.location ? `  ·  ${nextEvent.location}` : ''}
+              </Text>
+              {nextEvent.attendees && nextEvent.attendees.length > 0 && (
+                <View style={{ flexDirection: 'row', marginTop: 6 }}>
+                  {nextEvent.attendees.slice(0, 4).map((a, i) => (
+                    <View key={i} style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: `hsl(${a.hue},50%,50%)`, alignItems: 'center', justifyContent: 'center', marginLeft: i > 0 ? -6 : 0, borderWidth: 1.5, borderColor: C.surface }}>
+                      <Text style={{ fontSize: 8, fontWeight: '700', color: '#fff' }}>{a.initials}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+            {nextEvent.virtual && (
+              <Pressable
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                style={{ paddingHorizontal: 16, paddingVertical: 9, borderRadius: 10, backgroundColor: C.accent, marginLeft: 12 }}
+              >
+                <Text style={{ fontSize: 13, fontWeight: '700', color: '#fff' }}>Join</Text>
+              </Pressable>
+            )}
+          </View>
+        </View>
+      )}
+    </View>
+  );
+
+  const ListFooter = (
+    <View style={{ gap: 16, paddingTop: 8, paddingBottom: 32 }}>
+      {/* This Week Summary */}
+      <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 10 }}>
+        <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>This Week Summary</Text>
+        {[
+          { label: 'Total meetings',  value: `${thisWeekCount}` },
+          { label: 'Meeting time',    value: `${Math.round(totalMeetingMins / 60)}h ${Math.round(totalMeetingMins % 60)}m` },
+          { label: 'Busiest day',     value: busyDays },
+          { label: 'Virtual / In-person', value: `${events.filter(e => e.virtual && e.start >= _today && e.start <= addDays(_today, 7)).length} / ${events.filter(e => !e.virtual && !e.allDay && e.start >= _today && e.start <= addDays(_today, 7)).length}` },
+        ].map((item, i) => (
+          <View key={item.label} style={[{ flexDirection: 'row', justifyContent: 'space-between' }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator, paddingTop: 8 }]}>
+            <Text style={{ fontSize: 13, color: C.secondary }}>{item.label}</Text>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>{item.value}</Text>
+          </View>
+        ))}
+      </View>
+
+      {/* Upcoming Deadlines */}
+      <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 10 }}>
+        <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>Upcoming Deadlines</Text>
+        {DEADLINES.map((d, i) => (
+          <View key={d.title} style={[{ flexDirection: 'row', alignItems: 'center', gap: 10 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator, paddingTop: 8 }]}>
+            <View style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: `${d.color}18`, alignItems: 'center', justifyContent: 'center' }}>
+              <IconSymbol name={d.icon as any} size={15} color={d.color} />
+            </View>
+            <Text style={{ flex: 1, fontSize: 13, fontWeight: '500', color: C.label }}>{d.title}</Text>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: d.color }}>Due {d.due}</Text>
+          </View>
+        ))}
+      </View>
+
+      {/* Quick Add suggestions */}
+      <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 10 }}>
+        <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>Quick Add</Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+          {['Block focus time', 'Schedule 1:1', 'Add deadline', 'Team lunch'].map(label => (
+            <Pressable
+              key={label}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              style={({ pressed }) => ({ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, borderWidth: 1, borderColor: C.inputBorder, backgroundColor: pressed ? C.surfacePressed : 'transparent' })}
+            >
+              <Text style={{ fontSize: 13, color: C.label }}>+ {label}</Text>
+            </Pressable>
+          ))}
+        </View>
+      </View>
+    </View>
+  );
+
   if (sections.length === 0) {
     return <View style={styles.emptyDay}><Text style={styles.emptyText}>No upcoming events</Text></View>;
   }
@@ -566,7 +800,9 @@ function ListView({ events, C, styles }: {
   return (
     <SectionList
       style={{ flex: 1 }}
-      contentContainerStyle={{ paddingBottom: 80 }}
+      contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 100 }}
+      ListHeaderComponent={ListHeader}
+      ListFooterComponent={ListFooter}
       sections={sections}
       keyExtractor={ev => ev.id}
       stickySectionHeadersEnabled
@@ -575,17 +811,55 @@ function ListView({ events, C, styles }: {
           <Text style={styles.listHeaderText}>{fmtListDate(date)}</Text>
         </View>
       )}
-      renderItem={({ item: ev }) => {
-        const color = eventColor(ev.type);
+      renderSectionFooter={() => <View style={{ height: 6 }} />}
+      renderItem={({ item: ev, index, section }) => {
+        const color   = eventColor(ev.type);
+        const isFirst = index === 0;
+        const isLast  = index === section.data.length - 1;
         return (
-          <View style={styles.listRow}>
-            <Text style={styles.listTime}>{fmtTime(ev.start)}</Text>
-            <View style={[styles.listBar, { backgroundColor: color }]} />
+          <Pressable
+            style={[
+              styles.listRow,
+              { backgroundColor: C.surface, alignItems: 'flex-start', paddingVertical: 12 },
+              isFirst && { borderTopLeftRadius: 14, borderTopRightRadius: 14 },
+              isLast  && { borderBottomLeftRadius: 14, borderBottomRightRadius: 14 },
+              !isLast && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
+            ]}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            {/* Time column */}
+            <View style={{ width: 52 }}>
+              <Text style={styles.listTime}>{fmtTime(ev.start)}</Text>
+              <Text style={[styles.listTime, { fontSize: 10, color: C.muted }]}>{fmtTime(ev.end)}</Text>
+            </View>
+            <View style={[styles.listBar, { backgroundColor: color, marginTop: 2 }]} />
+            {/* Content */}
             <View style={{ flex: 1 }}>
               <Text style={styles.listTitle}>{ev.title}</Text>
               {ev.location && <Text style={styles.listLoc}>{ev.location}</Text>}
+              {/* Attendee avatars */}
+              {ev.attendees && ev.attendees.length > 0 && (
+                <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                  {ev.attendees.slice(0, 5).map((a, i) => (
+                    <View key={i} style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: `hsl(${a.hue},50%,50%)`, alignItems: 'center', justifyContent: 'center', marginLeft: i > 0 ? -5 : 0, borderWidth: 1.5, borderColor: C.surface }}>
+                      <Text style={{ fontSize: 7, fontWeight: '700', color: '#fff' }}>{a.initials}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
             </View>
-          </View>
+            {/* Join button for virtual or chevron */}
+            {ev.virtual ? (
+              <Pressable
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: color + '20', borderWidth: 1, borderColor: color, marginTop: 1 }}
+              >
+                <Text style={{ fontSize: 11, fontWeight: '700', color }}> Join</Text>
+              </Pressable>
+            ) : (
+              <IconSymbol name="chevron.right" size={12} color={C.muted} style={{ marginTop: 3 }} />
+            )}
+          </Pressable>
         );
       }}
     />
@@ -641,7 +915,9 @@ const CATEGORY_OPTIONS: { type: EventType; label: string }[] = [
   { type: 'recruiting', label: 'Recruiting' }, { type: 'call', label: 'Call' },
   { type: 'deadline', label: 'Deadline' }, { type: 'class', label: 'Class' },
   { type: 'exam', label: 'Exam' }, { type: 'service', label: 'Service' },
-  { type: 'event', label: 'Event' }, { type: 'other', label: 'Other' },
+  { type: 'event', label: 'Event' }, { type: 'registration', label: 'Registration' },
+  { type: 'volunteer', label: 'Volunteer' }, { type: 'reminder', label: 'Reminder' },
+  { type: 'other', label: 'Other' },
 ];
 
 function CreateEventSheet({ selectedDate, initialTime, onClose, C }: {
@@ -970,18 +1246,21 @@ function CreateEventSheet({ selectedDate, initialTime, onClose, C }: {
 // ── EditCategoriesSheet ───────────────────────────────────────────────────────
 
 const CATEGORY_LIST: { type: EventType; label: string; desc: string }[] = [
-  { type: 'game',       label: 'Game',       desc: 'Scheduled games and matches' },
-  { type: 'practice',   label: 'Practice',   desc: 'Team practices and drills' },
-  { type: 'travel',     label: 'Travel',     desc: 'Team travel events' },
-  { type: 'meeting',    label: 'Meeting',    desc: 'Team and staff meetings' },
-  { type: 'recruiting', label: 'Recruiting', desc: 'Recruiting visits and calls' },
-  { type: 'call',       label: 'Call',       desc: 'Phone or video calls' },
-  { type: 'deadline',   label: 'Deadline',   desc: 'Project and task deadlines' },
-  { type: 'class',      label: 'Class',      desc: 'Classes and lectures' },
-  { type: 'exam',       label: 'Exam',       desc: 'Tests and exams' },
-  { type: 'service',    label: 'Service',    desc: 'Community service events' },
-  { type: 'event',      label: 'Event',      desc: 'General events' },
-  { type: 'other',      label: 'Other',      desc: 'Miscellaneous events' },
+  { type: 'game',         label: 'Game',         desc: 'Scheduled games and matches' },
+  { type: 'practice',     label: 'Practice',     desc: 'Team practices and drills' },
+  { type: 'travel',       label: 'Travel',       desc: 'Team travel events' },
+  { type: 'meeting',      label: 'Meeting',      desc: 'Team and staff meetings' },
+  { type: 'recruiting',   label: 'Recruiting',   desc: 'Recruiting visits and calls' },
+  { type: 'call',         label: 'Call',         desc: 'Phone or video calls' },
+  { type: 'deadline',     label: 'Deadline',     desc: 'Project and task deadlines' },
+  { type: 'class',        label: 'Class',        desc: 'Classes and lectures' },
+  { type: 'exam',         label: 'Exam',         desc: 'Tests and exams' },
+  { type: 'service',      label: 'Service',      desc: 'Community service events' },
+  { type: 'event',        label: 'Event',        desc: 'General events' },
+  { type: 'registration', label: 'Registration', desc: 'Registration deadlines and periods' },
+  { type: 'volunteer',    label: 'Volunteer',    desc: 'Volunteer opportunities' },
+  { type: 'reminder',     label: 'Reminder',     desc: 'Personal reminders' },
+  { type: 'other',        label: 'Other',        desc: 'Miscellaneous events' },
 ];
 
 function EditCategoriesSheet({ visible, onClose, C }: { visible: boolean; onClose: () => void; C: ComponentColors }) {
@@ -1043,11 +1322,25 @@ export default function AgendaScreen() {
   const [showEditDD,        setShowEditDD]        = useState(false);
   const [expandedId,        setExpandedId]        = useState<string | null>(null);
   const [activeFilter,      setActiveFilter]      = useState<FilterKey>('all');
+  const [pillsVisible,      setPillsVisible]      = useState(false);
   const [createVisible,     setCreateVisible]     = useState(false);
   const [createTime,        setCreateTime]        = useState<Date | null>(null);
   const [selectEventsMode,  setSelectEventsMode]  = useState(false);
   const [selectedEventIds,  setSelectedEventIds]  = useState<Set<string>>(new Set());
   const [editCatVisible,    setEditCatVisible]    = useState(false);
+
+  const [role, setRole] = useState<'admin' | 'member' | 'parent'>('admin');
+  const isAdmin  = role === 'admin';
+  const isParent = role === 'parent';
+  const cycleRole = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setRole(r => {
+      if (mode === 'education') {
+        return r === 'admin' ? 'member' : r === 'member' ? 'parent' : 'admin';
+      }
+      return r === 'admin' ? 'member' : 'admin';
+    });
+  }, [mode]);
 
   const filterPills  = MODE_FILTERS[mode] ?? MODE_FILTERS.personal;
   const modeEvents   = useMemo(() =>
@@ -1081,7 +1374,13 @@ export default function AgendaScreen() {
           </>
         ) : (
           <>
-            <View style={styles.topLeft}>
+            <View style={[styles.topLeft, { flexDirection: 'row', alignItems: 'center', gap: 10 }]}>
+              <Pressable
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+                hitSlop={12}
+              >
+                <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+              </Pressable>
               {!isSameDay(selectedDate, today()) && (
                 <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSelectedDate(today()); setExpandedId(null); }}>
                   <Text style={styles.todayBtn}>Today</Text>
@@ -1095,31 +1394,50 @@ export default function AgendaScreen() {
               <Text style={styles.viewPillText}>{view}</Text>
               <IconSymbol name="chevron.down" size={11} color={C.label} />
             </Pressable>
-            <Pressable
-              style={styles.topRight}
-              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowEditDD(v => !v); setShowViewDD(false); }}
-            >
-              <Text style={styles.editBtn}>Edit</Text>
-            </Pressable>
+            <View style={[styles.topRight, { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 8 }]}>
+              <Pressable
+                style={[styles.rbacPill, { backgroundColor: C.surfacePressed }]}
+                onPress={cycleRole}
+              >
+                <Text style={[styles.rbacPillText, { color: C.secondary }]}>
+                  {role === 'admin' ? 'Admin' : role === 'member' ? 'Member' : 'Parent'}
+                </Text>
+              </Pressable>
+              <Pressable
+                hitSlop={8}
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setPillsVisible(v => !v); setShowEditDD(false); setShowViewDD(false); }}
+              >
+                <IconSymbol name={pillsVisible ? 'line.3.horizontal.decrease.circle.fill' : 'line.3.horizontal.decrease.circle'} size={20} color={pillsVisible ? C.accent : C.label} />
+              </Pressable>
+              {isAdmin && (
+                <Pressable
+                  onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowEditDD(v => !v); setShowViewDD(false); }}
+                >
+                  <Text style={styles.editBtn}>Edit</Text>
+                </Pressable>
+              )}
+            </View>
           </>
         )}
       </View>
 
-      {/* ── Filter pills ── */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pillsScroll} contentContainerStyle={styles.pillsContent}>
-        {filterPills.map(p => {
-          const active = p.key === activeFilter;
-          return (
-            <Pressable
-              key={p.key}
-              style={[styles.pill, active && styles.pillActive]}
-              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActiveFilter(p.key); }}
-            >
-              <Text style={[styles.pillText, active && styles.pillTextActive]}>{p.label}</Text>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
+      {/* ── Filter pills (toggle via filter icon) ── */}
+      {pillsVisible && (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pillsScroll} contentContainerStyle={styles.pillsContent}>
+          {filterPills.map(p => {
+            const active = p.key === activeFilter;
+            return (
+              <Pressable
+                key={p.key}
+                style={[styles.pill, active && styles.pillActive]}
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActiveFilter(p.key); }}
+              >
+                <Text style={[styles.pillText, active && styles.pillTextActive]}>{p.label}</Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+      )}
 
       {/* ── Week row (Day view) ── */}
       {view === 'Day' && (
@@ -1158,6 +1476,7 @@ export default function AgendaScreen() {
           C={C}
           styles={styles}
           evAreaWidth={evAreaWidth}
+          role={role}
         />
       )}
 
@@ -1171,12 +1490,14 @@ export default function AgendaScreen() {
       )}
 
       {/* ── FAB ── */}
-      <Pressable
-        style={[styles.fab, { bottom: FOOTER_H + insets.bottom + 16 }]}
-        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setCreateTime(null); setCreateVisible(true); }}
-      >
-        <IconSymbol name="plus" size={22} color="#fff" />
-      </Pressable>
+      {!isParent && (
+        <Pressable
+          style={[styles.fab, { bottom: FOOTER_H + insets.bottom + 16 }]}
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setCreateTime(null); setCreateVisible(true); }}
+        >
+          <IconSymbol name="plus" size={22} color="#fff" />
+        </Pressable>
+      )}
 
       {/* ── Dropdown backdrop ── */}
       {(showViewDD || showEditDD) && (
@@ -1247,6 +1568,8 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   todayBtn:    { fontSize: 15, fontWeight: '500', color: C.accent },
   cancelBtn:   { fontSize: 15, fontWeight: '500', color: C.secondary },
   editBtn:     { fontSize: 15, fontWeight: '500', color: C.secondary },
+  rbacPill:    { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 12 },
+  rbacPillText: { fontSize: 12, fontWeight: '600' },
   viewPill:    { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 16, paddingVertical: 7, borderRadius: 20, borderWidth: 1.5, borderColor: C.separator },
   viewPillText: { fontSize: 14, fontWeight: '600', color: C.label },
 
@@ -1303,11 +1626,11 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   emptyText: { fontSize: 13, color: C.muted },
 
   // List view
-  listHeader:     { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 },
+  listHeader:     { paddingTop: 10, paddingBottom: 6 },
   listHeaderText: { fontSize: 15, fontWeight: '600', color: C.label },
-  listRow:        { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
-  listTime:       { width: 56, fontSize: 12, color: C.secondary, fontVariant: ['tabular-nums'] },
-  listBar:        { width: 3, height: 36, borderRadius: 2, marginRight: 12 },
+  listRow:        { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 12, gap: 4 },
+  listTime:       { width: 52, fontSize: 12, color: C.secondary, fontVariant: ['tabular-nums'] },
+  listBar:        { width: 3, height: 36, borderRadius: 2, marginRight: 10 },
   listTitle:      { fontSize: 14, fontWeight: '500', color: C.label },
   listLoc:        { fontSize: 12, color: C.muted, marginTop: 2 },
 

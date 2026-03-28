@@ -3,38 +3,56 @@
  * Video bleeds under status bar. Grid swipe left → Nexus.
  */
 
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useReducer, useEffect } from 'react';
 import { View, Text, Pressable, PanResponder, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColors } from '@/hooks/use-colors';
 import { VideoHero } from '@/components/home/video-hero';
 import { IconGrid } from '@/components/home/icon-grid';
 import { useAppContext, useMode } from '@/context/app-context';
 import { useAuth } from '@/context/auth-context';
-import { getOrgById, getProgramById, getProgramsForOrg } from '@/data/mock-memberships';
+import { getOrgById, getProgramById, getProgramsForOrg, getOrgsForModeV2 } from '@/data/mock-memberships';
 import { enableSlideAnimation } from '@/utils/global-footer-swipe';
 import { pushNexusFromInner } from '@/utils/global-inner-nav';
 import { openOrgDrawer } from '@/utils/global-org-drawer';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { registerContextSwitchListener } from '@/utils/global-context-switch';
 import { useFocusEffect } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
+const FOOTER_H = 49;
+
 export default function HomeScreen() {
   const C = useColors();
+  const insets = useSafeAreaInsets();
   const { state } = useAppContext();
   const mode = useMode();
+  const isLoading = state.isLoading;
   const { state: authState } = useAuth();
   const displayName = authState.session?.displayName ?? 'My Brand';
 
   const orgLabel = useMemo(() => {
-    if (mode === 'pulse') return displayName;
+    if (mode === 'personal') return displayName;
     const org = getOrgById(state.activeContext.org_id);
-    if (!org) return '';
+    // Guard against stale context mismatch (e.g. legacy restore sets mode without updating org)
+    if (!org || org.mode !== mode) {
+      if (state.activeView?.mode === mode) return state.activeView.org_name;
+      const [fallback] = getOrgsForModeV2(mode);
+      return fallback?.org_name ?? '';
+    }
     const programs = getProgramsForOrg(org.org_id);
     if (programs.length <= 1) return org.org_name;
     const program = getProgramById(state.activeContext.program_id);
     if (!program) return org.org_name;
     return `${org.org_name} - ${program.program_name}`;
-  }, [mode, displayName, state.activeContext.org_id, state.activeContext.program_id]);
+  }, [mode, displayName, state.activeView, state.activeContext.org_id, state.activeContext.program_id]);
+
+  // Force re-render when context switches (guards against React Compiler memoization)
+  const [, forceUpdate] = useReducer((x: number) => x + 1, 0);
+  useEffect(() => {
+    registerContextSwitchListener(forceUpdate);
+    return () => registerContextSwitchListener(null);
+  }, []);
 
   useFocusEffect(useCallback(() => {
     resetFooter();
@@ -75,10 +93,10 @@ export default function HomeScreen() {
         </Pressable>
       </View>
 
-      {/* Icon grid fills remaining space */}
+      {/* Icon grid fills remaining space — only render once mode is known */}
       <View style={styles.gridWrapper} {...gridPanResponder.panHandlers}>
-        <IconGrid />
-        <View style={{ height: 90 }} />
+        {!isLoading && <IconGrid key={mode} />}
+        <View style={{ height: FOOTER_H + insets.bottom + 12 }} />
       </View>
     </View>
   );

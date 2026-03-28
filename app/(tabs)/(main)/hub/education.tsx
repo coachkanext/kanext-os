@@ -450,7 +450,7 @@ export default function EducationHubScreen() {
   const pillsRevealAnim = useRef(new Animated.Value(0)).current;
   const lastScrollY     = useRef(0);
   const topBarH         = insets.top + TOP_BAR_H;
-  const contentPaddingTop = topBarH + PILL_ROW_H + 8;
+  const contentPaddingTop = topBarH + (filterPillsVisible ? PILL_ROW_H : 0) + 8;
 
   const pills = pillsForTab(activeTab, role);
 
@@ -669,7 +669,7 @@ export default function EducationHubScreen() {
         <SecH title="By the Numbers" C={C} />
         <View style={[s.statsCard, { backgroundColor: C.surface }]}>
           {[
-            { label: 'Students', value: p.totalEnrollment.toLocaleString() },
+            { label: 'Students', value: EDUCATION_ANALYTICS.totalEnrollment.toLocaleString() },
             { label: 'Programs', value: String(p.programs) },
             { label: 'Stu:Faculty', value: p.studentFacultyRatio },
           ].map((st, idx) => (

@@ -14,7 +14,6 @@ import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
-import { useAppContext } from '@/context/app-context';
 import { searchContent, type StudioContent, type ExperienceType } from '@/data/mock-kaystudios';
 
 function TypeBadge({ type, C }: { type: ExperienceType; C: ComponentColors }) {
@@ -54,9 +53,6 @@ export default function StudioSearchScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { state } = useAppContext();
-  const mode = (state.activeContext?.mode as string) ?? 'sports';
-
   const [query, setQuery] = useState('');
   const inputRef = useRef<TextInput>(null);
 
@@ -65,7 +61,7 @@ export default function StudioSearchScreen() {
     return () => clearTimeout(t);
   }, []);
 
-  const results = useMemo(() => searchContent(query, mode), [query, mode]);
+  const results = useMemo(() => searchContent(query), [query]);
 
   const navigateToDetail = useCallback((item: StudioContent) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -121,7 +117,7 @@ export default function StudioSearchScreen() {
             <IconSymbol name="magnifyingglass" size={44} color={C.muted} />
             <Text style={[styles.emptyTitle, { color: C.secondary }]}>Search experiences</Text>
             <Text style={[styles.emptySubtitle, { color: C.muted }]}>
-              Find games, courses, quizzes, and more in {mode} mode
+              Find games, courses, trivia, and more across all of KaNeXT
             </Text>
           </View>
         )}

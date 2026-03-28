@@ -106,8 +106,8 @@ def get_overview_stats():
             (SELECT count(*) FROM teams) AS total_teams,
             (SELECT count(*) FROM games) AS total_games,
             (SELECT count(*) FROM player_game_stats) AS total_pgs,
-            (SELECT count(*) FROM player_kr) AS total_kr,
-            (SELECT count(*) FROM player_badges) AS total_badges,
+            (SELECT count(*) FROM player_kr_v2) AS total_kr,
+            (SELECT count(*) FROM player_badges_v2) AS total_badges,
             (SELECT count(*) FROM team_seasons WHERE team_overall_kr IS NOT NULL) AS teams_with_kr,
             (SELECT count(*) FROM scholarship_nil_allocations) AS total_sna
     """)
@@ -133,7 +133,7 @@ def get_level_stats():
 
 @st.cache_data(ttl=60)
 def get_kr_players(level_filter=None, min_kr=0, max_kr=100, position=None):
-    where = ["kr.overall_kr IS NOT NULL", f"kr.overall_kr >= {min_kr}", f"kr.overall_kr <= {max_kr}"]
+    where = ["kr.npd_final_kr IS NOT NULL", f"kr.npd_final_kr >= {min_kr}", f"kr.npd_final_kr <= {max_kr}"]
     if level_filter and level_filter != "All":
         where.append(f"cl.level_key = '{level_filter}'")
     if position and position != "All":
@@ -142,18 +142,18 @@ def get_kr_players(level_filter=None, min_kr=0, max_kr=100, position=None):
     return q(f"""
         SELECT p.full_name, p.declared_positions,
                t.name AS team, cl.level_key,
-               round(kr.overall_kr::numeric, 1) AS kr,
-               round(kr.base_off_kr::numeric, 1) AS off_kr,
-               round(kr.base_def_kr::numeric, 1) AS def_kr,
-               round(coalesce(kr.final_overall_kr, kr.overall_kr)::numeric, 1) AS final_kr,
-               round(coalesce(kr.off_badge_boost, 0)::numeric, 1) AS badge_boost,
+               round(kr.raw_player_kr::numeric, 1) AS kr,
+               round(kr.okr::numeric, 1) AS off_kr,
+               round(kr.dkr::numeric, 1) AS def_kr,
+               round(kr.npd_final_kr::numeric, 1) AS final_kr,
+               round(coalesce(kr.badge_boost, 0)::numeric, 1) AS badge_boost,
                kr.primary_archetype AS archetype,
                kr.confidence_pct AS confidence,
                pss.games_played AS gp,
                round(pss.pts_per_game::numeric, 1) AS ppg,
                round(pss.reb_per_game::numeric, 1) AS rpg,
                round(pss.ast_per_game::numeric, 1) AS apg
-        FROM player_kr kr
+        FROM player_kr_v2 kr
         JOIN player_team_seasons pts ON kr.player_team_season_id = pts.id
         JOIN players p ON pts.player_id = p.id
         JOIN team_seasons ts ON pts.team_season_id = ts.id
@@ -161,7 +161,7 @@ def get_kr_players(level_filter=None, min_kr=0, max_kr=100, position=None):
         JOIN competitive_levels cl ON t.competitive_level_id = cl.id
         LEFT JOIN player_season_stats pss ON pss.player_team_season_id = pts.id
         WHERE {where_sql}
-        ORDER BY kr.overall_kr DESC
+        ORDER BY kr.npd_final_kr DESC
         LIMIT 500
     """)
 
@@ -170,13 +170,13 @@ def get_kr_players(level_filter=None, min_kr=0, max_kr=100, position=None):
 def get_kr_histogram():
     return q("""
         SELECT cl.level_key,
-               round(kr.overall_kr::numeric, 0) AS kr_bucket
-        FROM player_kr kr
+               round(kr.npd_final_kr::numeric, 0) AS kr_bucket
+        FROM player_kr_v2 kr
         JOIN player_team_seasons pts ON kr.player_team_season_id = pts.id
         JOIN team_seasons ts ON pts.team_season_id = ts.id
         JOIN teams t ON ts.team_id = t.id
         JOIN competitive_levels cl ON t.competitive_level_id = cl.id
-        WHERE kr.overall_kr IS NOT NULL
+        WHERE kr.npd_final_kr IS NOT NULL
     """)
 
 
@@ -184,11 +184,11 @@ def get_kr_histogram():
 def get_badge_stats():
     return q("""
         SELECT pb.tier,
-               pb.cluster,
+               pb.badge_group AS cluster,
                pb.badge_name,
                count(*) AS count
-        FROM player_badges pb
-        GROUP BY pb.tier, pb.cluster, pb.badge_name
+        FROM player_badges_v2 pb
+        GROUP BY pb.tier, pb.badge_group, pb.badge_name
         ORDER BY count(*) DESC
     """)
 
@@ -197,7 +197,7 @@ def get_badge_stats():
 def get_badge_tier_summary():
     return q("""
         SELECT pb.tier, count(*) AS count
-        FROM player_badges pb
+        FROM player_badges_v2 pb
         GROUP BY pb.tier
         ORDER BY
             CASE pb.tier WHEN 'gold' THEN 1 WHEN 'silver' THEN 2 WHEN 'bronze' THEN 3 END
@@ -298,7 +298,7 @@ def get_archetype_distribution():
         SELECT kr.primary_archetype AS archetype,
                cl.level_key,
                count(*) AS count
-        FROM player_kr kr
+        FROM player_kr_v2 kr
         JOIN player_team_seasons pts ON kr.player_team_season_id = pts.id
         JOIN team_seasons ts ON pts.team_season_id = ts.id
         JOIN teams t ON ts.team_id = t.id
@@ -313,10 +313,10 @@ def get_archetype_distribution():
 def get_top_badges():
     return q("""
         SELECT p.full_name, t.name AS team, cl.level_key,
-               pb.badge_name, pb.tier, pb.cluster,
-               round(kr.overall_kr::numeric, 1) AS kr
-        FROM player_badges pb
-        JOIN player_kr kr ON pb.player_kr_id = kr.id
+               pb.badge_name, pb.tier, pb.badge_group AS cluster,
+               round(kr.npd_final_kr::numeric, 1) AS kr
+        FROM player_badges_v2 pb
+        JOIN player_kr_v2 kr ON pb.player_team_season_id = kr.player_team_season_id
         JOIN player_team_seasons pts ON kr.player_team_season_id = pts.id
         JOIN players p ON pts.player_id = p.id
         JOIN team_seasons ts ON pts.team_season_id = ts.id
@@ -324,7 +324,7 @@ def get_top_badges():
         JOIN competitive_levels cl ON t.competitive_level_id = cl.id
         WHERE pb.tier IN ('gold', 'silver')
         ORDER BY CASE pb.tier WHEN 'gold' THEN 1 WHEN 'silver' THEN 2 END,
-                 kr.overall_kr DESC
+                 kr.npd_final_kr DESC
         LIMIT 100
     """)
 

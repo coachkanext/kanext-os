@@ -27,3 +27,20 @@ export function subscribeNexusLogoState(
     _listeners.delete(callback);
   };
 }
+
+// ── Pending eval query ────────────────────────────────────────────────────────
+// Set by the Recruits screen when the user taps "Evaluate" on a pool player.
+// Nexus consumes (and clears) it on focus to auto-send the eval message.
+
+let _pendingEvalQuery: string | null = null;
+
+export function setPendingEvalQuery(query: string): void {
+  _pendingEvalQuery = query;
+}
+
+/** Returns the pending query and clears it. Returns null if none queued. */
+export function consumePendingEvalQuery(): string | null {
+  const q = _pendingEvalQuery;
+  _pendingEvalQuery = null;
+  return q;
+}

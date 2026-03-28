@@ -13,7 +13,6 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
-import { useAppContext } from '@/context/app-context';
 import {
   getContentById, getRelatedContent, getReviews, getLaunchLabel,
   type StudioContent, type Review,
@@ -85,14 +84,11 @@ export default function DetailScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { contentId } = useLocalSearchParams<{ contentId: string }>();
-  const { state } = useAppContext();
-  const mode = (state.activeContext?.mode as string) ?? 'sports';
-
   const [saved, setSaved] = useState(false);
   const [progress, setProgress] = useState<ProgressEntry | null>(null);
 
   const item = useMemo(() => getContentById(contentId ?? ''), [contentId]);
-  const related = useMemo(() => item ? getRelatedContent(item.id, mode) : [], [item, mode]);
+  const related = useMemo(() => item ? getRelatedContent(item.id) : [], [item]);
   const reviews = useMemo(() => getReviews(), []);
 
   useEffect(() => {

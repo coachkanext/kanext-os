@@ -19,6 +19,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useAppContext } from '@/context/app-context';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { openSidePanel } from '@/utils/global-side-panel';
 import {
   getKayTVFeed, getExploreRows, getWatchHistoryFeed, getWatchLaterFeed,
   getLikedVideosFeed, getPlaylists, KAYTV_CATEGORIES,
@@ -336,19 +337,14 @@ export default function KayTVScreen() {
       {/* ── Fixed top bar ── */}
       <View style={[styles.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         <View style={styles.topBar}>
-          {/* Left: upload */}
+          {/* Left: hamburger */}
           <View style={styles.topBarSide}>
-            {canUpload ? (
-              <Pressable
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                  router.push('/(tabs)/(main)/kaytv/upload' as any);
-                }}
-                hitSlop={8}
-              >
-                <IconSymbol name="plus" size={22} color={C.label} />
-              </Pressable>
-            ) : null}
+            <Pressable
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+              hitSlop={8}
+            >
+              <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+            </Pressable>
           </View>
 
           {/* Center: KayTV ▾ dropdown */}
@@ -442,6 +438,19 @@ export default function KayTVScreen() {
         </>
       ) : null}
 
+      {/* ── Upload FAB (creators/admins only) ── */}
+      {canUpload && (
+        <Pressable
+          style={[styles.fab, { bottom: insets.bottom + 49 + 16 + 56, backgroundColor: C.label }]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            router.push('/(tabs)/(main)/kaytv/upload' as any);
+          }}
+        >
+          <IconSymbol name="plus" size={20} color={C.bg} />
+        </Pressable>
+      )}
+
       {/* ── Search FAB ── */}
       <Pressable
         style={[styles.fab, { bottom: insets.bottom + 49 + 16, backgroundColor: C.accent }]}
@@ -476,7 +485,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
   },
-  topBarSide: { width: 48, justifyContent: 'center' },
+  topBarSide: { width: 72, justifyContent: 'center' },
 
   // Dropdown pill
   dropdownPillWrap: {

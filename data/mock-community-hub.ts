@@ -47,7 +47,9 @@ export interface CommunityGroup {
   description: string;
   departmentName: string;
   isOpen: boolean;
-  status: 'active' | 'inactive';
+  status: 'active' | 'inactive' | 'new' | 'paused';
+  hue: number;
+  nextMeeting: string;
 }
 
 export interface CommunityEvent {
@@ -227,7 +229,7 @@ export const COMMUNITY_GROUPS: CommunityGroup[] = [
     description:
       'A brotherhood built on accountability, prayer, and purpose. We dig into scripture, share life, and challenge each other to grow.',
     departmentName: 'Education',
-    isOpen: true, status: 'active',
+    isOpen: true, status: 'active', hue: 220, nextMeeting: 'Tomorrow · 7:00 PM',
   },
   {
     id: 'grp2', name: "Women's Circle",
@@ -237,7 +239,7 @@ export const COMMUNITY_GROUPS: CommunityGroup[] = [
     description:
       'A safe space for women to be real, grow spiritually, and support one another through every season of life.',
     departmentName: 'Education',
-    isOpen: true, status: 'active',
+    isOpen: true, status: 'active', hue: 320, nextMeeting: 'Wednesday · 6:00 PM',
   },
   {
     id: 'grp3', name: 'Young Adults',
@@ -247,7 +249,7 @@ export const COMMUNITY_GROUPS: CommunityGroup[] = [
     description:
       "Community for 18\u201330 year olds navigating faith, career, and relationships. Relevant conversation, real community.",
     departmentName: 'Youth',
-    isOpen: true, status: 'active',
+    isOpen: true, status: 'active', hue: 40, nextMeeting: 'Friday · 8:00 PM',
   },
   {
     id: 'grp4', name: 'Prayer Warriors',
@@ -257,7 +259,7 @@ export const COMMUNITY_GROUPS: CommunityGroup[] = [
     description:
       'Dedicated intercessors who cover the church, city, and nations in prayer. Early morning, powerful ministry.',
     departmentName: 'Worship',
-    isOpen: true, status: 'active',
+    isOpen: true, status: 'active', hue: 160, nextMeeting: 'Monday · 6:00 AM',
   },
   {
     id: 'grp5', name: 'Bible Study 101',
@@ -267,7 +269,37 @@ export const COMMUNITY_GROUPS: CommunityGroup[] = [
     description:
       'Foundational Bible study for new believers and anyone wanting a solid grounding in Scripture. No question too basic.',
     departmentName: 'Education',
-    isOpen: false, status: 'active',
+    isOpen: false, status: 'active', hue: 200, nextMeeting: 'Sunday · 11:30 AM',
+  },
+  {
+    id: 'grp6', name: 'Senior Saints',
+    leaderName: 'Elder Robert Chen', leaderInitials: 'RC',
+    schedule: 'Thursdays 10:00 AM', frequency: 'Weekly',
+    memberCount: 15, capacity: 15,
+    description:
+      'A vibrant community for adults 60+ to connect, encourage one another, and go deeper in faith together.',
+    departmentName: 'Hospitality',
+    isOpen: false, status: 'active', hue: 30, nextMeeting: 'Thursday · 10:00 AM',
+  },
+  {
+    id: 'grp7', name: 'Couples Ministry',
+    leaderName: 'Marcus & Jade Thompson', leaderInitials: 'MT',
+    schedule: 'Saturdays 5:00 PM', frequency: 'Bi-weekly',
+    memberCount: 4, capacity: 20,
+    description:
+      'Building strong marriages through faith, communication, and community. Open to dating and married couples at any stage.',
+    departmentName: 'Outreach',
+    isOpen: true, status: 'new', hue: 350, nextMeeting: 'Saturday · 5:00 PM',
+  },
+  {
+    id: 'grp8', name: 'Recovery Support',
+    leaderName: 'Amara Osei', leaderInitials: 'AO',
+    schedule: 'Thursdays 7:00 PM', frequency: 'Weekly',
+    memberCount: 9, capacity: 12,
+    description:
+      'A confidential support group for those in recovery from addiction, grief, or life transitions. Rooted in grace and scripture.',
+    departmentName: 'Outreach',
+    isOpen: true, status: 'paused', hue: 180, nextMeeting: 'Resuming April 1',
   },
 ];
 

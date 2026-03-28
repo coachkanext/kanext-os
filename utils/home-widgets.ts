@@ -20,9 +20,9 @@ const MODE_DEFAULTS: Record<Mode, HeroVideo> = {
   sports: {
     id: 'sports-default',
     state: 'default',
-    source: 'https://assets.mixkit.co/videos/44468/44468-720.mp4',
+    source: 'file:///Users/sammy/Desktop/Laolu%203/LB%20State%206%20Threes.mp4',
     route: '/(tabs)/(main)/kaytv',
-    headline: 'Game Highlights',
+    headline: 'LB State Highlights',
     subline: 'Watch on KayTV',
   },
   business: {

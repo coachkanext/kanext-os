@@ -235,17 +235,17 @@ const ldrS = StyleSheet.create({
 // ── Department Card ───────────────────────────────────────────────────────────
 
 function DepartmentCard({
-  dept, isAdmin, expanded, onToggle, C,
+  dept, isAdmin, onPress, C,
 }: {
   dept: CommunityDepartment; isAdmin: boolean;
-  expanded: boolean; onToggle: () => void; C: ComponentColors;
+  onPress: () => void; C: ComponentColors;
 }) {
   const totalNeeded = dept.volunteerNeeds.reduce((s, n) => s + n.needed, 0);
   const totalFilled = dept.volunteerNeeds.reduce((s, n) => s + n.filled, 0);
   const hasGap = totalFilled < totalNeeded;
 
   return (
-    <Pressable onPress={onToggle} style={[deptS.card, { backgroundColor: C.surface }]}>
+    <Pressable onPress={onPress} style={[deptS.card, { backgroundColor: C.surface }]}>
       <View style={deptS.row}>
         <View style={[deptS.iconWrap, { backgroundColor: `hsl(${dept.hue},42%,28%)` }]}>
           <IconSymbol name={dept.icon as any} size={18} color="#fff" />
@@ -263,38 +263,9 @@ function DepartmentCard({
               <Text style={deptS.gapText}>vol gap</Text>
             </View>
           )}
-          <IconSymbol name={expanded ? 'chevron.up' : 'chevron.down'} size={14} color={C.muted} />
+          <IconSymbol name="chevron.right" size={14} color={C.muted} />
         </View>
       </View>
-
-      {expanded && (
-        <View style={[deptS.detail, { borderTopColor: C.separator }]}>
-          <Text style={[deptS.description, { color: C.secondary }]}>{dept.description}</Text>
-
-          {isAdmin && dept.volunteerNeeds.length > 0 && (
-            <View style={deptS.volSection}>
-              <Text style={[deptS.volTitle, { color: C.label }]}>Volunteer Needs</Text>
-              {dept.volunteerNeeds.map(vn => (
-                <View key={vn.role} style={deptS.volNeedRow}>
-                  <Text style={[deptS.volRole, { color: C.secondary }]}>{vn.role}</Text>
-                  <Text style={[deptS.volCount, { color: vn.filled < vn.needed ? '#D97757' : '#5A8A6E' }]}>
-                    {vn.filled}/{vn.needed}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          )}
-
-          <Pressable
-            style={[deptS.actionBtn, { borderColor: C.accent }]}
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-          >
-            <Text style={[deptS.actionBtnText, { color: C.accent }]}>
-              {isAdmin ? 'Manage Dept' : 'Join / Volunteer'}
-            </Text>
-          </Pressable>
-        </View>
-      )}
     </Pressable>
   );
 }
@@ -324,38 +295,30 @@ const deptS = StyleSheet.create({
 // ── Group Card ────────────────────────────────────────────────────────────────
 
 function GroupCard({
-  group, isAdmin, expanded, onToggle, isJoined, onJoin, router, C,
+  group, onPress, C,
 }: {
-  group: CommunityGroup; isAdmin: boolean;
-  expanded: boolean; onToggle: () => void;
-  isJoined: boolean; onJoin: () => void;
-  router: any; C: ComponentColors;
+  group: CommunityGroup; onPress: () => void; C: ComponentColors;
 }) {
-  const spotsLeft = group.capacity - group.memberCount;
+  const fillPct   = group.memberCount / group.capacity;
+  const isFull    = group.memberCount >= group.capacity;
+  const isPaused  = group.status === 'paused';
+  const isNew     = group.status === 'new';
+  const showBadge = isFull || isPaused || isNew;
+
+  const badgeLabel = isPaused ? 'Paused' : isNew ? 'New' : 'Full';
+  const badgeBg    = isPaused ? C.surfacePressed : isNew ? '#5A8A6E22' : '#B85C5C22';
+  const badgeColor = isPaused ? C.muted          : isNew ? '#5A8A6E'   : '#B85C5C';
+  const barColor   = fillPct >= 0.9 ? '#B85C5C' : C.accent;
+
   return (
-    <Pressable onPress={onToggle} style={[grpS.card, { backgroundColor: C.surface }]}>
+    <Pressable onPress={onPress} style={[grpS.card, { backgroundColor: C.surface }]}>
       <View style={grpS.row}>
         <View style={grpS.info}>
           <View style={grpS.titleRow}>
             <Text style={[grpS.name, { color: C.label }]}>{group.name}</Text>
-            {!isAdmin && (
-              <View style={[
-                grpS.statusBadge,
-                { backgroundColor: group.isOpen ? '#5A8A6E22' : '#B85C5C22' },
-              ]}>
-                <Text style={[grpS.statusText, { color: group.isOpen ? '#5A8A6E' : '#B85C5C' }]}>
-                  {group.isOpen ? 'Open' : 'Full'}
-                </Text>
-              </View>
-            )}
-            {isAdmin && (
-              <View style={[
-                grpS.statusBadge,
-                { backgroundColor: group.status === 'active' ? '#5A8A6E22' : C.surfacePressed },
-              ]}>
-                <Text style={[grpS.statusText, {
-                  color: group.status === 'active' ? '#5A8A6E' : C.muted,
-                }]}>{group.status}</Text>
+            {showBadge && (
+              <View style={[grpS.statusBadge, { backgroundColor: badgeBg }]}>
+                <Text style={[grpS.statusText, { color: badgeColor }]}>{badgeLabel}</Text>
               </View>
             )}
           </View>
@@ -365,62 +328,19 @@ function GroupCard({
           <Text style={[grpS.dept, { color: C.muted }]}>
             {group.departmentName} · {group.memberCount}/{group.capacity} members
           </Text>
-        </View>
-        <IconSymbol name={expanded ? 'chevron.up' : 'chevron.down'} size={14} color={C.muted} />
-      </View>
-
-      {expanded && (
-        <View style={[grpS.detail, { borderTopColor: C.separator }]}>
-          <Text style={[grpS.description, { color: C.secondary }]}>{group.description}</Text>
-          <View style={grpS.actions}>
-            {!isAdmin && (
-              <Pressable
-                style={[
-                  grpS.btn,
-                  isJoined
-                    ? { backgroundColor: C.surfacePressed }
-                    : group.isOpen
-                      ? { backgroundColor: C.accent }
-                      : { borderWidth: 1.5, borderColor: C.separator },
-                ]}
-                onPress={() => {
-                  if (group.isOpen && !isJoined) { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); onJoin(); }
-                }}
-              >
-                <Text style={[grpS.btnText, {
-                  color: isJoined ? C.secondary : group.isOpen ? '#fff' : C.muted,
-                }]}>
-                  {isJoined ? 'Joined' : group.isOpen ? 'Join Group' : 'Group Full'}
-                </Text>
-              </Pressable>
-            )}
-            {(isJoined || isAdmin) && (
-              <Pressable
-                style={[grpS.btn, { borderWidth: 1.5, borderColor: C.separator }]}
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  router.push('/(tabs)/(main)/messages' as any);
-                }}
-              >
-                <IconSymbol name="bubble.left.fill" size={14} color={C.secondary} />
-                <Text style={[grpS.btnText, { color: C.secondary }]}>Group Room</Text>
-              </Pressable>
-            )}
+          <View style={[grpS.capTrack, { backgroundColor: C.separator }]}>
+            <View style={[grpS.capFill, { width: `${Math.min(100, fillPct * 100)}%` as any, backgroundColor: barColor }]} />
           </View>
-          {!isAdmin && !group.isOpen && (
-            <Text style={[grpS.fullNote, { color: C.muted }]}>
-              {spotsLeft === 0 ? 'This group is full. ' : ''}Request to join when a spot opens.
-            </Text>
-          )}
         </View>
-      )}
+        <IconSymbol name="chevron.right" size={14} color={C.muted} />
+      </View>
     </Pressable>
   );
 }
 
 const grpS = StyleSheet.create({
   card:        { borderRadius: 14, padding: 14, marginBottom: 10 },
-  row:         { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
+  row:         { flexDirection: 'row', alignItems: 'center', gap: 10 },
   info:        { flex: 1, gap: 3 },
   titleRow:    { flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
   name:        { fontSize: 15, fontWeight: '700' },
@@ -428,13 +348,8 @@ const grpS = StyleSheet.create({
   statusText:  { fontSize: 10, fontWeight: '700' },
   sub:         { fontSize: 12 },
   dept:        { fontSize: 11 },
-  detail:      { marginTop: 12, paddingTop: 12, borderTopWidth: StyleSheet.hairlineWidth, gap: 10 },
-  description: { fontSize: 13, lineHeight: 19 },
-  actions:     { flexDirection: 'row', gap: 8 },
-  btn:         { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-                 gap: 6, paddingVertical: 9, borderRadius: 10 },
-  btnText:     { fontSize: 13, fontWeight: '700' },
-  fullNote:    { fontSize: 11, textAlign: 'center' },
+  capTrack:    { height: 3, borderRadius: 2, overflow: 'hidden', marginTop: 5 },
+  capFill:     { height: 3, borderRadius: 2 },
 });
 
 // ── Section Header ────────────────────────────────────────────────────────────
@@ -459,15 +374,14 @@ export default function CommunityHubScreen() {
   const [filterPillsVisible, setFilterPillsVisible] = useState(false);
   const [selectedPill, setSelectedPill] = useState('All');
   const [chartMetric, setChartMetric]   = useState<CommunityChartMetric>('attendance');
-  const [expandedDeptId, setExpandedDeptId]   = useState<string | null>(null);
-  const [expandedGroupId, setExpandedGroupId] = useState<string | null>(null);
-  const [joinedGroups, setJoinedGroups] = useState<Set<string>>(new Set(['grp1']));
+  const [expandedDeptId, setExpandedDeptId] = useState<string | null>(null);
+  const [joinedGroups, setJoinedGroups]     = useState<Set<string>>(new Set(['grp1']));
 
   const pillsRevealAnim = useRef(new Animated.Value(0)).current;
   const lastScrollY     = useRef(0);
 
   const topBarH         = insets.top + TOP_BAR_H;
-  const contentPaddingTop = topBarH + PILL_ROW_H + 8;
+  const contentPaddingTop = topBarH + (filterPillsVisible ? PILL_ROW_H : 0) + 8;
 
   const pills = pillsForTab(activeTab, isAdmin);
 
@@ -733,6 +647,251 @@ export default function CommunityHubScreen() {
     );
   };
 
+  // ── Dept sections (below dept list) ──────────────────────────────────────
+  const renderDeptSections = (showAdmin: boolean) => {
+    const volGapDepts = COMMUNITY_DEPARTMENTS.filter(d =>
+      d.volunteerNeeds.some(n => n.filled < n.needed)
+    );
+    const upcomingEvents = COMMUNITY_EVENTS.slice(0, 3);
+    const DEPT_ACTIVITY = [
+      { id: 'a1', text: 'Nia Sanders added 3 new members to Youth', time: '2h ago', icon: 'person.badge.plus' },
+      { id: 'a2', text: 'Elder Chen posted worship setlist for Sunday', time: '5h ago', icon: 'doc.text' },
+      { id: 'a3', text: 'Jordan Williams updated Hospitality schedule', time: '1d ago', icon: 'calendar.badge.clock' },
+      { id: 'a4', text: 'Deacon Keisha completed food drive prep', time: '2d ago', icon: 'checkmark.circle.fill' },
+    ];
+    const sortedByMember = [...COMMUNITY_DEPARTMENTS].sort((a, b) => b.memberCount - a.memberCount);
+
+    return (
+      <>
+        {/* Volunteer gaps */}
+        {volGapDepts.length > 0 && (
+          <>
+            <SecHeader title={`${volGapDepts.length} Departments Need Volunteers`} C={C} />
+            <View style={[s.section, { backgroundColor: C.surface, marginBottom: 20 }]}>
+              {volGapDepts.map((dept, idx) => {
+                const gaps = dept.volunteerNeeds.filter(n => n.filled < n.needed);
+                return (
+                  <View
+                    key={dept.id}
+                    style={[
+                      s.volGapRow,
+                      idx < volGapDepts.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
+                    ]}
+                  >
+                    <View style={{ flex: 1 }}>
+                      <Text style={[s.volGapDept, { color: C.label }]}>{dept.name}</Text>
+                      <Text style={[s.volGapNeeds, { color: C.secondary }]}>
+                        {gaps.map(g => `${g.needed - g.filled} ${g.role}`).join(' · ')}
+                      </Text>
+                    </View>
+                    <Pressable
+                      style={[s.volSignUpBtn, { borderColor: C.accent }]}
+                      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                    >
+                      <Text style={[s.volSignUpText, { color: C.accent }]}>Sign Up</Text>
+                    </Pressable>
+                  </View>
+                );
+              })}
+            </View>
+          </>
+        )}
+
+        {/* Upcoming events */}
+        <SecHeader title="Upcoming Events" C={C} />
+        <View style={[s.section, { backgroundColor: C.surface, marginBottom: 20 }]}>
+          {upcomingEvents.map((ev, idx) => (
+            <View
+              key={ev.id}
+              style={[
+                s.eventRow,
+                idx < upcomingEvents.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
+              ]}
+            >
+              <View style={{ flex: 1 }}>
+                <Text style={[s.eventTitle, { color: C.label }]}>{ev.title}</Text>
+                <Text style={[s.eventMeta, { color: C.secondary }]}>{ev.date} · {ev.time} · {ev.location}</Text>
+              </View>
+              {ev.volunteersNeeded > 0 && (
+                <Text style={[s.eventVol, { color: ev.volunteersFilled < ev.volunteersNeeded ? C.accent : '#5A8A6E' }]}>
+                  {ev.volunteersFilled}/{ev.volunteersNeeded}
+                </Text>
+              )}
+            </View>
+          ))}
+        </View>
+
+        {/* Activity feed — admin only */}
+        {showAdmin && (
+          <>
+            <SecHeader title="Department Activity" C={C} />
+            <View style={[s.section, { backgroundColor: C.surface, marginBottom: 20 }]}>
+              {DEPT_ACTIVITY.map((item, idx) => (
+                <View
+                  key={item.id}
+                  style={[
+                    s.activityRow,
+                    idx < DEPT_ACTIVITY.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
+                  ]}
+                >
+                  <IconSymbol name={item.icon as any} size={16} color={C.accent} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.activityText, { color: C.label }]}>{item.text}</Text>
+                    <Text style={[s.activityTime, { color: C.muted }]}>{item.time}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </>
+        )}
+
+        {/* Dept health — admin only */}
+        {showAdmin && (
+          <>
+            <SecHeader title="Department Health" C={C} />
+            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 24 }}>
+              {[
+                { label: 'Most Active', value: sortedByMember[0].name, sub: `${sortedByMember[0].memberCount} members` },
+                { label: 'Needs Attention', value: sortedByMember[sortedByMember.length - 1].name, sub: `${sortedByMember[sortedByMember.length - 1].memberCount} members` },
+                { label: 'Vol Gaps', value: `${volGapDepts.length} depts`, sub: 'need volunteers' },
+              ].map(card => (
+                <View key={card.label} style={[s.healthCard, { backgroundColor: C.surface }]}>
+                  <Text style={[s.healthLabel, { color: C.muted }]}>{card.label}</Text>
+                  <Text style={[s.healthValue, { color: C.label }]}>{card.value}</Text>
+                  <Text style={[s.healthSub, { color: C.secondary }]}>{card.sub}</Text>
+                </View>
+              ))}
+            </View>
+          </>
+        )}
+      </>
+    );
+  };
+
+  // ── Group sections (below group list) ────────────────────────────────────
+  const renderGroupSections = (showAdmin: boolean) => {
+    const myGroups   = COMMUNITY_GROUPS.filter(g => joinedGroups.has(g.id));
+    const openGroups = COMMUNITY_GROUPS.filter(g => g.isOpen && !joinedGroups.has(g.id) && g.memberCount < g.capacity && g.status !== 'paused');
+    const GROUP_ACTIVITY = [
+      { id: 'ga1', text: "Pastor Davis posted new curriculum in Men's Fellowship", time: '2h ago', icon: 'doc.text' },
+      { id: 'ga2', text: 'Young Adults planned a game night this Friday', time: '5h ago', icon: 'gamecontroller' },
+      { id: 'ga3', text: 'Nia Sanders welcomed 2 new members to Young Adults', time: '1d ago', icon: 'person.badge.plus' },
+      { id: 'ga4', text: 'Prayer Warriors completed their 30-day prayer challenge', time: '2d ago', icon: 'checkmark.circle.fill' },
+    ];
+    const GROUP_HIGHLIGHTS = [
+      { id: 'h1', group: "Men's Fellowship", title: 'This Week: Identity in Christ', preview: 'Exploring what it means to be rooted in who God says you are — not what the world defines.', time: '3 days ago', hue: 220 },
+      { id: 'h2', group: 'Young Adults', title: 'Game Night This Friday!', preview: 'Join us for a night of fun, food, and community. Bring a friend. 8pm at the Fellowship Hall.', time: '1 day ago', hue: 40 },
+    ];
+
+    return (
+      <>
+        {/* My Groups — next meeting highlight (member view only) */}
+        {!showAdmin && myGroups.length > 0 && (
+          <>
+            <SecHeader title="My Groups" C={C} />
+            <View style={[s.section, { backgroundColor: C.surface, marginBottom: 20 }]}>
+              {myGroups.map((g, idx) => (
+                <Pressable
+                  key={g.id}
+                  style={[
+                    s.myGroupRow,
+                    idx < myGroups.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
+                  ]}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    router.push({ pathname: '/(tabs)/(main)/hub/group-detail', params: { id: g.id } } as any);
+                  }}
+                >
+                  <View style={[s.myGroupDot, { backgroundColor: `hsl(${g.hue},42%,28%)` }]}>
+                    <Text style={s.myGroupInitials}>{g.leaderInitials}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.myGroupName, { color: C.label }]}>{g.name}</Text>
+                    <Text style={[s.myGroupNext, { color: C.accent }]}>{g.nextMeeting}</Text>
+                  </View>
+                  <IconSymbol name="chevron.right" size={14} color={C.muted} />
+                </Pressable>
+              ))}
+            </View>
+          </>
+        )}
+
+        {/* Open Groups — available spots (member view only) */}
+        {!showAdmin && openGroups.length > 0 && (
+          <>
+            <SecHeader title="Open Groups" C={C} />
+            <View style={[s.section, { backgroundColor: C.surface, marginBottom: 20 }]}>
+              {openGroups.map((g, idx) => {
+                const spotsLeft = g.capacity - g.memberCount;
+                return (
+                  <View
+                    key={g.id}
+                    style={[
+                      s.openGroupRow,
+                      idx < openGroups.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
+                    ]}
+                  >
+                    <View style={{ flex: 1 }}>
+                      <Text style={[s.openGroupName, { color: C.label }]}>{g.name}</Text>
+                      <Text style={[s.openGroupMeta, { color: C.secondary }]}>{g.leaderName} · {g.schedule}</Text>
+                    </View>
+                    <Pressable
+                      style={[s.joinBtn, { backgroundColor: C.accent }]}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        setJoinedGroups(prev => new Set([...prev, g.id]));
+                      }}
+                    >
+                      <Text style={s.joinBtnText}>{spotsLeft} spot{spotsLeft !== 1 ? 's' : ''} — Join</Text>
+                    </Pressable>
+                  </View>
+                );
+              })}
+            </View>
+          </>
+        )}
+
+        {/* Group Activity */}
+        <SecHeader title="Group Activity" C={C} />
+        <View style={[s.section, { backgroundColor: C.surface, marginBottom: 20 }]}>
+          {GROUP_ACTIVITY.map((item, idx) => (
+            <View
+              key={item.id}
+              style={[
+                s.activityRow,
+                idx < GROUP_ACTIVITY.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
+              ]}
+            >
+              <IconSymbol name={item.icon as any} size={16} color={C.accent} />
+              <View style={{ flex: 1 }}>
+                <Text style={[s.activityText, { color: C.label }]}>{item.text}</Text>
+                <Text style={[s.activityTime, { color: C.muted }]}>{item.time}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+
+        {/* Group Highlights */}
+        <SecHeader title="Group Highlights" C={C} />
+        {GROUP_HIGHLIGHTS.map(h => (
+          <Pressable
+            key={h.id}
+            style={[s.highlightCard, { backgroundColor: C.surface }]}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <View style={s.highlightHeader}>
+              <View style={[s.highlightDot, { backgroundColor: `hsl(${h.hue},42%,28%)` }]} />
+              <Text style={[s.highlightGroup, { color: C.secondary }]}>{h.group}</Text>
+              <Text style={[s.highlightTime, { color: C.muted }]}>{h.time}</Text>
+            </View>
+            <Text style={[s.highlightTitle, { color: C.label }]}>{h.title}</Text>
+            <Text style={[s.highlightPreview, { color: C.secondary }]} numberOfLines={2}>{h.preview}</Text>
+          </Pressable>
+        ))}
+      </>
+    );
+  };
+
   // ── Admin Departments ─────────────────────────────────────────────────────
 
   const renderAdminDepts = () => {
@@ -747,24 +906,19 @@ export default function CommunityHubScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}
       >
-        <SecHeader title="Departments" C={C} />
         {filtered.map(dept => (
           <DepartmentCard
             key={dept.id}
             dept={dept}
             isAdmin
-            expanded={expandedDeptId === dept.id}
-            onToggle={() => setExpandedDeptId(expandedDeptId === dept.id ? null : dept.id)}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push({ pathname: '/(tabs)/(main)/hub/dept-detail', params: { id: dept.id } } as any);
+            }}
             C={C}
           />
         ))}
-        <Pressable
-          style={[s.createBtn, { borderColor: C.separator }]}
-          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-        >
-          <IconSymbol name="plus" size={16} color={C.accent} />
-          <Text style={[s.createBtnText, { color: C.accent }]}>Create Department</Text>
-        </Pressable>
+        {renderDeptSections(true)}
       </ScrollView>
     );
   };
@@ -783,17 +937,19 @@ export default function CommunityHubScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}
       >
-        <SecHeader title="Departments" C={C} />
         {filtered.map(dept => (
           <DepartmentCard
             key={dept.id}
             dept={dept}
             isAdmin={false}
-            expanded={expandedDeptId === dept.id}
-            onToggle={() => setExpandedDeptId(expandedDeptId === dept.id ? null : dept.id)}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push({ pathname: '/(tabs)/(main)/hub/dept-detail', params: { id: dept.id } } as any);
+            }}
             C={C}
           />
         ))}
+        {renderDeptSections(false)}
       </ScrollView>
     );
   };
@@ -805,7 +961,7 @@ export default function CommunityHubScreen() {
       ? COMMUNITY_GROUPS
       : selectedPill === 'Active'
         ? COMMUNITY_GROUPS.filter(g => g.status === 'active')
-        : COMMUNITY_GROUPS.filter(g => g.status === 'inactive');
+        : COMMUNITY_GROUPS.filter(g => g.status !== 'active');
 
     return (
       <ScrollView
@@ -814,27 +970,18 @@ export default function CommunityHubScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}
       >
-        <SecHeader title="Groups" C={C} />
         {filtered.map(group => (
           <GroupCard
             key={group.id}
             group={group}
-            isAdmin
-            expanded={expandedGroupId === group.id}
-            onToggle={() => setExpandedGroupId(expandedGroupId === group.id ? null : group.id)}
-            isJoined={false}
-            onJoin={() => {}}
-            router={router}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push({ pathname: '/(tabs)/(main)/hub/group-detail', params: { id: group.id } } as any);
+            }}
             C={C}
           />
         ))}
-        <Pressable
-          style={[s.createBtn, { borderColor: C.separator }]}
-          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-        >
-          <IconSymbol name="plus" size={16} color={C.accent} />
-          <Text style={[s.createBtnText, { color: C.accent }]}>Create Group</Text>
-        </Pressable>
+        {renderGroupSections(true)}
       </ScrollView>
     );
   };
@@ -843,9 +990,9 @@ export default function CommunityHubScreen() {
 
   const renderMemberGroups = () => {
     let filtered = COMMUNITY_GROUPS;
-    if (selectedPill === 'Open')      filtered = filtered.filter(g => g.isOpen);
+    if (selectedPill === 'Open')      filtered = filtered.filter(g => g.isOpen && g.memberCount < g.capacity);
     if (selectedPill === 'My Groups') filtered = filtered.filter(g => joinedGroups.has(g.id));
-    if (selectedPill === 'Full')      filtered = filtered.filter(g => !g.isOpen);
+    if (selectedPill === 'Full')      filtered = filtered.filter(g => !g.isOpen || g.memberCount >= g.capacity);
 
     return (
       <ScrollView
@@ -854,38 +1001,18 @@ export default function CommunityHubScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}
       >
-        {joinedGroups.size > 0 && selectedPill !== 'My Groups' && (
-          <>
-            <SecHeader title="My Groups" C={C} />
-            {COMMUNITY_GROUPS.filter(g => joinedGroups.has(g.id)).map(group => (
-              <GroupCard
-                key={group.id}
-                group={group}
-                isAdmin={false}
-                expanded={expandedGroupId === group.id}
-                onToggle={() => setExpandedGroupId(expandedGroupId === group.id ? null : group.id)}
-                isJoined
-                onJoin={() => {}}
-                router={router}
-                C={C}
-              />
-            ))}
-            <SecHeader title="All Groups" C={C} />
-          </>
-        )}
         {filtered.map(group => (
           <GroupCard
-            key={group.id + '_b'}
+            key={group.id}
             group={group}
-            isAdmin={false}
-            expanded={expandedGroupId === group.id + '_b'}
-            onToggle={() => setExpandedGroupId(expandedGroupId === group.id + '_b' ? null : group.id + '_b')}
-            isJoined={joinedGroups.has(group.id)}
-            onJoin={() => setJoinedGroups(prev => new Set([...prev, group.id]))}
-            router={router}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push({ pathname: '/(tabs)/(main)/hub/group-detail', params: { id: group.id } } as any);
+            }}
             C={C}
           />
         ))}
+        {renderGroupSections(false)}
       </ScrollView>
     );
   };
@@ -928,14 +1055,6 @@ export default function CommunityHubScreen() {
           </View>
 
           <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', gap: 10 }]}>
-            <Pressable
-              style={[s.roleToggle, { backgroundColor: isAdmin ? C.accent : C.surfacePressed }]}
-              onPress={() => { Haptics.selectionAsync(); setIsAdmin(v => !v); }}
-            >
-              <Text style={[s.roleToggleText, { color: isAdmin ? '#fff' : C.secondary }]}>
-                {isAdmin ? 'Admin' : 'Member'}
-              </Text>
-            </Pressable>
             {pills.length > 0 && (
               <Pressable onPress={toggleFilterPills} hitSlop={12}>
                 <IconSymbol
@@ -996,8 +1115,8 @@ export default function CommunityHubScreen() {
         </>
       )}
 
-      {/* ── Announcement FAB (admin) ── */}
-      {isAdmin && (
+      {/* ── Context-aware FAB (admin) ── */}
+      {isAdmin && activeTab === 'Overview' && (
         <Pressable
           style={[s.fab, { bottom: insets.bottom + 49 + 16, backgroundColor: C.label }]}
           onPress={() => {
@@ -1006,6 +1125,22 @@ export default function CommunityHubScreen() {
           }}
         >
           <IconSymbol name="megaphone.fill" size={20} color={C.bg} />
+        </Pressable>
+      )}
+      {isAdmin && activeTab === 'Departments' && (
+        <Pressable
+          style={[s.fab, { bottom: insets.bottom + 49 + 16, backgroundColor: C.label }]}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+        >
+          <IconSymbol name="plus" size={22} color={C.bg} />
+        </Pressable>
+      )}
+      {isAdmin && activeTab === 'Groups' && (
+        <Pressable
+          style={[s.fab, { bottom: insets.bottom + 49 + 16, backgroundColor: C.label }]}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+        >
+          <IconSymbol name="plus" size={22} color={C.bg} />
         </Pressable>
       )}
 
@@ -1096,6 +1231,43 @@ const s = StyleSheet.create({
     gap: 8, padding: 14, borderRadius: 14, borderWidth: 1.5, borderStyle: 'dashed', marginTop: 4, marginBottom: 24,
   },
   createBtnText: { fontSize: 14, fontWeight: '600' },
+
+  // Dept sections
+  volGapRow:    { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, gap: 12 },
+  volGapDept:   { fontSize: 13, fontWeight: '700' },
+  volGapNeeds:  { fontSize: 12, marginTop: 2 },
+  volSignUpBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, borderWidth: 1.5 },
+  volSignUpText:{ fontSize: 12, fontWeight: '600' },
+  eventRow:     { paddingVertical: 11, gap: 4 },
+  eventTitle:   { fontSize: 13, fontWeight: '600' },
+  eventMeta:    { fontSize: 12 },
+  eventVol:     { fontSize: 11, fontWeight: '700' },
+  activityRow:  { flexDirection: 'row', alignItems: 'flex-start', gap: 10, paddingVertical: 10 },
+  activityText: { fontSize: 13 },
+  activityTime: { fontSize: 11 },
+  healthCard:   { flex: 1, borderRadius: 12, padding: 12, gap: 3 },
+  healthLabel:  { fontSize: 10, fontWeight: '700', textTransform: 'uppercase' as const, letterSpacing: 0.5 },
+  healthValue:  { fontSize: 13, fontWeight: '700' },
+  healthSub:    { fontSize: 11 },
+
+  // Group sections
+  myGroupRow:     { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 11 },
+  myGroupDot:     { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  myGroupInitials:{ fontSize: 12, fontWeight: '700', color: '#fff' },
+  myGroupName:    { fontSize: 14, fontWeight: '600' },
+  myGroupNext:    { fontSize: 12, marginTop: 1 },
+  openGroupRow:   { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 10 },
+  openGroupName:  { fontSize: 14, fontWeight: '600' },
+  openGroupMeta:  { fontSize: 12, marginTop: 1 },
+  joinBtn:        { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 12 },
+  joinBtnText:    { fontSize: 12, fontWeight: '700', color: '#fff' },
+  highlightCard:  { borderRadius: 14, padding: 14, marginBottom: 10, gap: 6 },
+  highlightHeader:{ flexDirection: 'row', alignItems: 'center', gap: 6 },
+  highlightDot:   { width: 8, height: 8, borderRadius: 4 },
+  highlightGroup: { fontSize: 12, fontWeight: '600', flex: 1 },
+  highlightTime:  { fontSize: 11 },
+  highlightTitle: { fontSize: 14, fontWeight: '700' },
+  highlightPreview: { fontSize: 13, lineHeight: 19 },
 
   fab: {
     position: 'absolute', right: 24, width: 52, height: 52, borderRadius: 26,

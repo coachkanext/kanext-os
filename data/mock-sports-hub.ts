@@ -218,6 +218,32 @@ export interface FanReward {
   hue:    number;
 }
 
+export interface NILActivity {
+  id:         string;
+  playerId:   string;
+  playerName: string;
+  initials:   string;
+  hue:        number;
+  action:     string;
+  brand:      string;
+  timestamp:  string;
+  amount?:    number;
+}
+
+export interface FanExperience {
+  id:          string;
+  playerId:    string;
+  playerName:  string;
+  initials:    string;
+  hue:         number;
+  type:        'shoutout' | 'signed-item' | 'raffle' | 'training' | 'courtside';
+  title:       string;
+  description: string;
+  price:       number;
+  spotsLeft:   number | null;
+  isRaffle:    boolean;
+}
+
 // ── Team Info ─────────────────────────────────────────────────────────────────
 
 export const TEAM_INFO = {
@@ -592,7 +618,10 @@ export const NIL_OPPORTUNITIES: NILOpportunity[] = [
 export const NIL_DEALS: NILDeal[] = [
   { id: 'nd1', playerId: 'p01', playerName: 'Marcus Johnson', brand: 'Gatorade', type: 'ambassador', amount: 3500, status: 'in-progress', compliance: 'approved', startDate: 'Feb 1', endDate: 'May 30', deliverables: ['3 social posts', '1 event appearance', 'Brand tag in all game-day content'], completed: 67 },
   { id: 'nd2', playerId: 'p02', playerName: 'Devon Hayes',    brand: 'DICK\'S Sporting Goods', type: 'social-post', amount: 1200, status: 'completed', compliance: 'approved', startDate: 'Jan 15', endDate: 'Mar 31', deliverables: ['4 Instagram posts', '1 Reel'], completed: 100 },
-  { id: 'nd3', playerId: 'p05', playerName: 'Trey Coleman',   brand: 'Under Armour Campus', type: 'endorsement', amount: 2800, status: 'in-progress', compliance: 'pending', startDate: 'Mar 1', endDate: 'Jun 30', deliverables: ['Photo shoot (complete)', '2 social posts', '1 campus store appearance'], completed: 40 },
+  { id: 'nd3', playerId: 'p05', playerName: 'Trey Coleman',      brand: 'Under Armour Campus',   type: 'endorsement', amount: 2800, status: 'in-progress', compliance: 'pending',  startDate: 'Mar 1',  endDate: 'Jun 30',  deliverables: ['Photo shoot (complete)', '2 social posts', '1 campus store appearance'], completed: 40  },
+  { id: 'nd4', playerId: 'p03', playerName: 'Elijah Washington', brand: 'Jordan Brand',          type: 'ambassador',  amount: 5000, status: 'in-progress', compliance: 'approved', startDate: 'Feb 15', endDate: 'Aug 15',  deliverables: ['4 social posts', '2 campus store appearances', 'Brand ambassador bio'],   completed: 50  },
+  { id: 'nd5', playerId: 'p04', playerName: 'Jordan Williams',   brand: 'Nike Campus',           type: 'endorsement', amount: 3200, status: 'in-progress', compliance: 'pending',  startDate: 'Mar 10', endDate: 'Jul 31',  deliverables: ['Photo shoot', '3 social posts', '1 campus event'],                         completed: 25  },
+  { id: 'nd6', playerId: 'p06', playerName: 'Isaiah Brooks',     brand: 'DC Sports Network',     type: 'social-post', amount:  900, status: 'completed',   compliance: 'approved', startDate: 'Jan 20', endDate: 'Mar 1',   deliverables: ['3 Instagram posts', '1 Twitter thread'],                                    completed: 100 },
 ];
 
 // ── Fundraising Campaigns ──────────────────────────────────────────────────────
@@ -648,6 +677,25 @@ export const FAN_REWARDS: FanReward[] = [
   { id: 'fr3', name: 'Robert Thompson', points: 3210, rank: 3, hue: 45  },
   { id: 'fr4', name: 'Brenda Harris',   points: 2880, rank: 4, hue: 130 },
   { id: 'fr5', name: 'James Moore',     points: 2641, rank: 5, hue: 340 },
+];
+
+// ── NIL Activity Feed ─────────────────────────────────────────────────────────
+
+export const NIL_ACTIVITY: NILActivity[] = [
+  { id: 'na1', playerId: 'p01', playerName: 'Marcus Johnson',    initials: 'MJ', hue: 215, action: 'Signed 6-month extension',        brand: 'Gatorade',              timestamp: '2h ago',    amount: 4200 },
+  { id: 'na2', playerId: 'p03', playerName: 'Elijah Washington', initials: 'EW', hue: 280, action: 'Posted 3 brand reels \u2014 2M views', brand: 'Jordan Brand',      timestamp: '5h ago'               },
+  { id: 'na3', playerId: 'p05', playerName: 'Trey Coleman',      initials: 'TC', hue: 0,   action: 'Completed photo shoot',            brand: 'Under Armour Campus',   timestamp: 'Yesterday'            },
+  { id: 'na4', playerId: 'p02', playerName: 'Devon Hayes',       initials: 'DH', hue: 160, action: 'Deal paid out',                    brand: "DICK'S Sporting Goods", timestamp: 'Yesterday', amount: 1200 },
+  { id: 'na5', playerId: 'p04', playerName: 'Jordan Williams',   initials: 'JW', hue: 30,  action: 'NIL compliance submitted',         brand: 'Nike Campus',           timestamp: '2 days ago'           },
+];
+
+// ── Fan Experiences ────────────────────────────────────────────────────────────
+
+export const FAN_EXPERIENCES: FanExperience[] = [
+  { id: 'fe1', playerId: 'p01', playerName: 'Marcus Johnson',    initials: 'MJ', hue: 215, type: 'shoutout',    title: 'Personalized Shoutout',   description: 'Marcus records a personal video shoutout for you or a friend — delivered in 48 hours.', price: 25, spotsLeft: 4,  isRaffle: false },
+  { id: 'fe2', playerId: 'p05', playerName: 'Trey Coleman',      initials: 'TC', hue: 0,   type: 'signed-item', title: 'Signed Jersey #21',        description: 'Authentic game jersey hand-signed by Trey. Includes certificate of authenticity.',      price: 50, spotsLeft: 0,  isRaffle: false },
+  { id: 'fe3', playerId: 'p03', playerName: 'Elijah Washington', initials: 'EW', hue: 280, type: 'raffle',      title: 'Meet & Greet Raffle',      description: 'Win a 15-min meet & greet with Elijah at the team facility. Monthly drawing.',          price: 10, spotsLeft: 12, isRaffle: true  },
+  { id: 'fe4', playerId: 'p02', playerName: 'Devon Hayes',       initials: 'DH', hue: 160, type: 'training',    title: '1-on-1 Training Session',  description: 'Book a private 45-min ball-handling session with Devon at Burr Gymnasium.',             price: 75, spotsLeft: 2,  isRaffle: false },
 ];
 
 // ── Practice Plan ─────────────────────────────────────────────────────────────

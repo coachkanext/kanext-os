@@ -561,6 +561,7 @@ export default function HubScreen() {
 
     return (
       <ScrollView
+        key="owner-overview"
         onScroll={handleScroll}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
@@ -635,6 +636,7 @@ export default function HubScreen() {
 
   const renderVisitorOverview = () => (
     <ScrollView
+      key="visitor-overview"
       onScroll={handleScroll}
       scrollEventThrottle={16}
       showsVerticalScrollIndicator={false}
@@ -702,6 +704,7 @@ export default function HubScreen() {
 
     return (
       <ScrollView
+        key="owner-page"
         onScroll={handleScroll}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
@@ -804,6 +807,7 @@ export default function HubScreen() {
 
   const renderVisitorPage = () => (
     <ScrollView
+      key="visitor-page"
       onScroll={handleScroll}
       scrollEventThrottle={16}
       showsVerticalScrollIndicator={false}
@@ -857,6 +861,7 @@ export default function HubScreen() {
 
     return (
       <ScrollView
+        key="owner-members"
         onScroll={handleScroll}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
@@ -925,6 +930,7 @@ export default function HubScreen() {
 
   const renderVisitorMembers = () => (
     <ScrollView
+      key="visitor-members"
       onScroll={handleScroll}
       scrollEventThrottle={16}
       showsVerticalScrollIndicator={false}

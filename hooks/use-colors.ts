@@ -30,8 +30,8 @@ export const LIGHT_PALETTE = {
   teal: '#5A8A6E',
   dotActive: '#1A1714',
   dotInactive: 'rgba(45,30,18,0.15)',
-  footer: '#F5EFE4',
-  footerDivider: 'rgba(139,99,67,0.10)',
+  footer: '#EDE5D8',
+  footerDivider: 'rgba(139,99,67,0.18)',
   bubbleSent: '#EDE5D8',
   bubbleReceived: 'rgba(139,99,67,0.08)',
 } as const;
@@ -58,8 +58,8 @@ export const DARK_PALETTE = {
   teal: '#6FA882',
   dotActive: '#F0E8DC',
   dotInactive: 'rgba(240,232,220,0.15)',
-  footer: '#1C1410',
-  footerDivider: 'rgba(217,119,87,0.12)',
+  footer: '#261D17',
+  footerDivider: 'rgba(217,119,87,0.20)',
   bubbleSent: '#261D17',
   bubbleReceived: 'rgba(217,119,87,0.10)',
 } as const;

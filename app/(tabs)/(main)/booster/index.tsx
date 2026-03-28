@@ -25,8 +25,10 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import {
   BOOSTER_CAMPAIGNS, NIL_OPPORTUNITIES, NIL_DEALS, MERCH_PRODUCTS,
-  TICKET_GAMES, FAN_REWARDS, formatCurrency,
-  type NILOpportunity, type MerchProduct,
+  TICKET_GAMES, FAN_REWARDS, NIL_ACTIVITY, FAN_EXPERIENCES, PLAYERS,
+  formatCurrency,
+  type NILOpportunity, type MerchProduct, type Player,
+  type NILActivity, type FanExperience,
 } from '@/data/mock-sports-hub';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -140,8 +142,11 @@ export default function BoosterScreen() {
   const [showSuccess,  setShowSuccess]  = useState(false);
 
   // ── NIL ────────────────────────────────────────────────────────────────────
-  const [selectedOpportunity, setSelectedOpportunity] = useState<NILOpportunity | null>(null);
-  const [nilFilter,            setNilFilter]           = useState<'All' | 'Approved' | 'Pending' | 'Flagged'>('All');
+  const [selectedOpportunity,   setSelectedOpportunity]   = useState<NILOpportunity | null>(null);
+  const [nilFilter,              setNilFilter]             = useState<'All' | 'Approved' | 'Pending' | 'Flagged'>('All');
+  const [showSupportSheet,      setShowSupportSheet]      = useState(false);
+  const [supportSelectedPlayer, setSupportSelectedPlayer] = useState<Player | null>(null);
+  const [supportAmount,         setSupportAmount]         = useState('');
 
   // ── Shop ───────────────────────────────────────────────────────────────────
   const [categoryFilter,   setCategoryFilter]   = useState('All');
@@ -234,7 +239,7 @@ export default function BoosterScreen() {
         <Text style={[s.sectionTitle, { color: '#fff', marginBottom: 4 }]}>Giving Dashboard</Text>
         <Text style={[s.adminStatBig, { color: '#fff' }]}>$284,200 raised this year</Text>
         <Text style={[s.bodySmall, { color: 'rgba(255,255,255,0.65)', marginBottom: 12 }]}>
-          vs $241,000 last year \u00B7 +18% YoY
+          {'vs $241,000 last year \u00B7 +18% YoY'}
         </Text>
         <View style={s.row}>
           {[
@@ -264,7 +269,7 @@ export default function BoosterScreen() {
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           style={{ marginTop: 12 }}
         >
-          <Text style={[s.linkText, { color: '#7EB8D4' }]}>View Full Report \u2192</Text>
+          <Text style={[s.linkText, { color: '#7EB8D4' }]}>{'View Full Report \u2192'}</Text>
         </Pressable>
       </GlassView>
     );
@@ -489,7 +494,7 @@ export default function BoosterScreen() {
               <View style={{ flex: 1 }}>
                 <Text style={[s.campaignName, { color: C.label }]}>vs {game.opponent}</Text>
                 <Text style={[s.bodySmall, { color: C.secondary as string, marginTop: 2 }]}>
-                  {game.date} \u00B7 {game.time}
+                  {`${game.date} \u00B7 ${game.time}`}
                 </Text>
                 <Text style={[s.bodySmall, { color: C.secondary as string }]}>{game.venue}</Text>
               </View>
@@ -730,7 +735,7 @@ export default function BoosterScreen() {
               </View>
             </View>
             <Text style={[s.bodySmall, { color: C.secondary as string, marginTop: 2 }]}>
-              {deal.type} \u00B7 ${deal.amount.toLocaleString()}
+              {`${deal.type} \u00B7 $${deal.amount.toLocaleString()}`}
             </Text>
 
             {/* Progress bar */}
@@ -774,7 +779,7 @@ export default function BoosterScreen() {
           <View style={[s.row, { alignItems: 'center' }]}>
             <IconSymbol name="checkmark.shield.fill" size={18} color={C.green} />
             <Text style={[s.bodySmall, { color: C.green, fontWeight: '600', marginLeft: 8, flex: 1 }]}>
-              All NIL activity auto-disclosed \u00B7 KaNeXT Compliance Verified
+              {'All NIL activity auto-disclosed \u00B7 KaNeXT Compliance Verified'}
             </Text>
           </View>
         </GlassView>
@@ -783,49 +788,378 @@ export default function BoosterScreen() {
   }
 
   function renderNILFanView() {
+    const starters = PLAYERS.filter(p => p.role === 'Starter');
+
     return (
       <>
+        {/* ── Hero ──────────────────────────────────────────────────────────── */}
         <GlassView tier={1} style={[s.card, { marginBottom: 16 }]}>
           <View style={[s.row, { alignItems: 'center', marginBottom: 8 }]}>
-            <IconSymbol name="star.fill" size={18} color={C.accent} />
-            <Text style={[s.sectionTitle, { color: C.label, marginLeft: 8 }]}>NIL Hub</Text>
+            <IconSymbol name="heart.fill" size={18} color={C.accent} />
+            <Text style={[s.sectionTitle, { color: C.label, marginLeft: 8 }]}>Support Your Players</Text>
+            <View style={[s.fanBadge, { marginLeft: 'auto' as any }]}>
+              <Text style={s.fanBadgeText}>Fan</Text>
+            </View>
           </View>
           <Text style={[s.campaignDesc, { color: C.secondary as string }]}>
-            Support your favorite players through verified NIL deals. All deals are
-            compliance-reviewed and publicly disclosed.
+            Every contribution supports athlete NIL — verified, compliance-reviewed, and publicly disclosed. Be part of their journey.
           </Text>
           <Pressable
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-            style={[s.outlineBtn, { borderColor: C.accent, marginTop: 12 }]}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setShowSupportSheet(true); }}
+            style={[s.giveBtn, { backgroundColor: C.accent, marginTop: 14 }]}
           >
-            <Text style={[s.outlineBtnText, { color: C.accent }]}>Browse Brand Opportunities</Text>
+            <Text style={s.giveBtnText}>Support an Athlete</Text>
           </Pressable>
         </GlassView>
 
+        {/* ── Featured Athletes ─────────────────────────────────────────────── */}
+        <Text style={[s.sectionHeader, { color: C.label }]}>Featured Athletes</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ marginBottom: 16 }}
+          contentContainerStyle={{ gap: 10, paddingRight: 16 }}
+        >
+          {starters.map(p => {
+            const totalNIL = NIL_DEALS
+              .filter(d => d.playerId === p.id)
+              .reduce((sum, d) => sum + d.amount, 0);
+            return (
+              <GlassView tier={1} key={p.id} style={s.athleteCard}>
+                <View style={[s.athleteAvatar, { backgroundColor: `hsl(${p.hue},55%,35%)` }]}>
+                  <Text style={s.athleteAvatarText}>{p.initials}</Text>
+                </View>
+                <Text
+                  style={[s.bodySmall, { color: C.label, marginTop: 8, textAlign: 'center', fontWeight: '600' }]}
+                  numberOfLines={1}
+                >
+                  {p.name.split(' ')[0]}
+                </Text>
+                <Text style={[s.bodySmall, { color: C.secondary as string, textAlign: 'center', fontSize: 11 }]}>
+                  {p.position}
+                </Text>
+                {totalNIL > 0 && (
+                  <View style={[s.nilValueChip, { backgroundColor: `${C.green}22`, marginTop: 6 }]}>
+                    <Text style={[s.nilValueChipText, { color: C.green }]}>
+                      {`$${(totalNIL / 1000).toFixed(1)}K`}
+                    </Text>
+                  </View>
+                )}
+              </GlassView>
+            );
+          })}
+        </ScrollView>
+
+        {/* ── Active NIL Deals ──────────────────────────────────────────────── */}
         <Text style={[s.sectionHeader, { color: C.label }]}>Active NIL Deals</Text>
-        {NIL_DEALS.map(deal => (
-          <GlassView tier={1} key={deal.id} style={[s.card, { marginBottom: 10 }]}>
-            <View style={[s.row, { justifyContent: 'space-between', alignItems: 'center' }]}>
-              <View style={{ flex: 1 }}>
-                <Text style={[s.bodyMed, { color: C.label }]}>{deal.playerName}</Text>
-                <Text style={[s.bodySmall, { color: C.secondary as string, marginTop: 2 }]}>
-                  {deal.brand} \u00B7 {deal.type}
+        {NIL_DEALS.map(deal => {
+          const player = PLAYERS.find(p => p.id === deal.playerId);
+          const hue = player?.hue ?? 215;
+          return (
+            <GlassView tier={1} key={deal.id} style={[s.card, { marginBottom: 10 }]}>
+              <View style={[s.row, { alignItems: 'center', marginBottom: 8 }]}>
+                <View style={[s.nilDealAvatar, { backgroundColor: `hsl(${hue},55%,35%)` }]}>
+                  <Text style={s.nilDealAvatarText}>{player?.initials ?? deal.playerName[0]}</Text>
+                </View>
+                <View style={{ flex: 1, marginLeft: 10 }}>
+                  <Text style={[s.bodyMed, { color: C.label }]}>{deal.playerName}</Text>
+                  <Text style={[s.bodySmall, { color: C.secondary as string }]}>
+                    {`${deal.brand} \u00B7 ${deal.type}`}
+                  </Text>
+                </View>
+                <View style={[s.dealValueChip, { backgroundColor: `${C.green}22` }]}>
+                  <Text style={[s.dealValueChipText, { color: C.green }]}>
+                    {`$${deal.amount.toLocaleString()}`}
+                  </Text>
+                </View>
+              </View>
+              <Text style={[s.bodySmall, { color: C.muted as string, marginBottom: 6 }]}>
+                {`${deal.startDate} \u2013 ${deal.endDate}`}
+              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <View style={[s.thermoBg, { flex: 1, backgroundColor: C.separator as string }]}>
+                  <View
+                    style={[
+                      s.thermoFill,
+                      {
+                        width: `${deal.completed}%` as any,
+                        backgroundColor: deal.completed === 100 ? C.green : C.accent,
+                      },
+                    ]}
+                  />
+                </View>
+                <Text style={[s.bodySmall, { color: C.secondary as string, width: 36, textAlign: 'right' }]}>
+                  {`${deal.completed}%`}
+                </Text>
+                <View style={[s.statusBadge, { backgroundColor: `${nilStatusColor(deal.compliance, C)}22` }]}>
+                  <Text style={[s.statusBadgeText, { color: nilStatusColor(deal.compliance, C) }]}>
+                    {deal.compliance}
+                  </Text>
+                </View>
+              </View>
+            </GlassView>
+          );
+        })}
+
+        {/* ── Recent NIL Activity ───────────────────────────────────────────── */}
+        <Text style={[s.sectionHeader, { color: C.label, marginTop: 4 }]}>Recent Activity</Text>
+        <GlassView tier={1} style={[s.card, { marginBottom: 16 }]}>
+          {NIL_ACTIVITY.map((item, idx) => (
+            <View
+              key={item.id}
+              style={[
+                s.activityRow,
+                idx < NIL_ACTIVITY.length - 1 && {
+                  borderBottomWidth: StyleSheet.hairlineWidth,
+                  borderBottomColor: C.separator as string,
+                },
+              ]}
+            >
+              <View style={[s.activityAvatar, { backgroundColor: `hsl(${item.hue},55%,35%)` }]}>
+                <Text style={s.activityAvatarText}>{item.initials}</Text>
+              </View>
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text style={[s.bodySmall, { color: C.label, fontWeight: '600' }]}>
+                  {item.playerName}
+                </Text>
+                <Text style={[s.bodySmall, { color: C.secondary as string }]}>
+                  {`${item.action} \u00B7 ${item.brand}`}
                 </Text>
               </View>
-              <View
-                style={[
-                  s.statusBadge,
-                  { backgroundColor: `${nilStatusColor(deal.compliance, C)}22` },
-                ]}
-              >
-                <Text style={[s.statusBadgeText, { color: nilStatusColor(deal.compliance, C) }]}>
-                  {deal.compliance}
+              <View style={{ alignItems: 'flex-end' }}>
+                {item.amount != null && (
+                  <Text style={[s.bodySmall, { color: C.green, fontWeight: '700' }]}>
+                    {`+$${item.amount.toLocaleString()}`}
+                  </Text>
+                )}
+                <Text style={[s.bodySmall, { color: C.muted as string, marginTop: item.amount != null ? 2 : 0 }]}>
+                  {item.timestamp}
                 </Text>
               </View>
             </View>
-          </GlassView>
-        ))}
+          ))}
+        </GlassView>
+
+        {/* ── Fan Leaderboard ───────────────────────────────────────────────── */}
+        <Text style={[s.sectionHeader, { color: C.label }]}>Fan Leaderboard</Text>
+        <GlassView tier={1} style={[s.card, { marginBottom: 16 }]}>
+          <Text style={[s.subHeader, { color: C.muted as string, marginBottom: 10 }]}>Top Supporters This Month</Text>
+          {FAN_REWARDS.map(fan => (
+            <View key={fan.id} style={[s.row, { alignItems: 'center', paddingVertical: 7, gap: 10 }]}>
+              <Text style={[s.rankNum, { color: fan.rank <= 3 ? C.accent : (C.secondary as string) }]}>
+                {`#${fan.rank}`}
+              </Text>
+              <View style={[s.avatarCircle, { backgroundColor: `hsl(${fan.hue},50%,38%)` }]}>
+                <Text style={s.avatarText}>{fan.name.split(' ').map(n => n[0]).join('')}</Text>
+              </View>
+              <Text style={[s.bodySmall, { flex: 1, color: C.label, fontWeight: fan.rank <= 3 ? '700' : '400' }]}>
+                {fan.name}
+              </Text>
+              <View style={[s.pointsBadge, { backgroundColor: `${C.accent}22` }]}>
+                <Text style={[s.pointsBadgeText, { color: C.accent, fontSize: 12 }]}>
+                  {`${fan.points.toLocaleString()} pts`}
+                </Text>
+              </View>
+            </View>
+          ))}
+          <View
+            style={[
+              s.row,
+              {
+                alignItems:       'center',
+                paddingVertical:  7,
+                gap:              10,
+                marginTop:        6,
+                borderTopWidth:   StyleSheet.hairlineWidth,
+                borderTopColor:   C.separator as string,
+              },
+            ]}
+          >
+            <Text style={[s.rankNum, { color: C.secondary as string }]}>#247</Text>
+            <View style={[s.avatarCircle, { backgroundColor: `${C.accent}33` }]}>
+              <Text style={[s.avatarText, { color: C.accent, fontSize: 10 }]}>You</Text>
+            </View>
+            <Text style={[s.bodySmall, { flex: 1, color: C.label }]}>You</Text>
+            <View style={[s.pointsBadge, { backgroundColor: `${C.accent}22` }]}>
+              <Text style={[s.pointsBadgeText, { color: C.accent, fontSize: 12 }]}>480 pts</Text>
+            </View>
+          </View>
+        </GlassView>
+
+        {/* ── Fan Experiences ───────────────────────────────────────────────── */}
+        <Text style={[s.sectionHeader, { color: C.label }]}>Fan Experiences</Text>
+        {FAN_EXPERIENCES.map(exp => {
+          const soldOut = exp.spotsLeft === 0;
+          return (
+            <GlassView
+              tier={1}
+              key={exp.id}
+              style={[s.card, { marginBottom: 10, opacity: soldOut ? 0.65 : 1 }]}
+            >
+              <View style={[s.row, { alignItems: 'center', marginBottom: 8 }]}>
+                <View style={[s.nilDealAvatar, { backgroundColor: `hsl(${exp.hue},55%,35%)` }]}>
+                  <Text style={s.nilDealAvatarText}>{exp.initials}</Text>
+                </View>
+                <View style={{ flex: 1, marginLeft: 10 }}>
+                  <Text style={[s.bodyMed, { color: C.label }]}>{exp.title}</Text>
+                  <Text style={[s.bodySmall, { color: C.secondary as string }]}>
+                    {`with ${exp.playerName}`}
+                  </Text>
+                </View>
+                <Text style={[s.bodyMed, { color: C.accent }]}>{`$${exp.price}`}</Text>
+              </View>
+              <Text style={[s.campaignDesc, { color: C.secondary as string, marginBottom: 8 }]}>
+                {exp.description}
+              </Text>
+              <View style={[s.row, { alignItems: 'center' }]}>
+                {exp.spotsLeft != null && exp.spotsLeft > 0 && (
+                  <Text style={[s.bodySmall, { color: C.muted as string, flex: 1 }]}>
+                    {exp.isRaffle
+                      ? `${exp.spotsLeft} raffle entries left`
+                      : `${exp.spotsLeft} spot${exp.spotsLeft !== 1 ? 's' : ''} left`}
+                  </Text>
+                )}
+                {soldOut ? (
+                  <View style={s.soldOutBadge}>
+                    <Text style={s.soldOutText}>Sold Out</Text>
+                  </View>
+                ) : (
+                  <Pressable
+                    onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+                    style={[s.expBookBtn, { backgroundColor: C.accent }]}
+                  >
+                    <Text style={[s.giveBtnText, { fontSize: 13 }]}>
+                      {exp.isRaffle ? 'Enter Raffle' : 'Book Now'}
+                    </Text>
+                  </Pressable>
+                )}
+              </View>
+            </GlassView>
+          );
+        })}
       </>
+    );
+  }
+
+  function renderSupportSheet() {
+    const SUPPORT_AMOUNTS = [25, 50, 100, 250];
+    const starters = PLAYERS.filter(p => p.role === 'Starter');
+    const customAmt = parseFloat(supportAmount);
+    const finalAmt  = isNaN(customAmt) ? 0 : customAmt;
+    const canPay    = supportSelectedPlayer != null && finalAmt > 0;
+
+    return (
+      <BottomSheet
+        visible={showSupportSheet}
+        onClose={() => { setShowSupportSheet(false); setSupportSelectedPlayer(null); setSupportAmount(''); }}
+        useModal
+        snapPoints={['50%', '100%']}
+      >
+        <ScrollView
+          contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <Text style={[s.subHeader, { color: C.muted as string, marginBottom: 10 }]}>Choose Athlete</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginBottom: 20 }}
+            contentContainerStyle={{ gap: 10, paddingRight: 8 }}
+          >
+            {starters.map(p => {
+              const isSelected = supportSelectedPlayer?.id === p.id;
+              return (
+                <Pressable
+                  key={p.id}
+                  onPress={() => { Haptics.selectionAsync(); setSupportSelectedPlayer(isSelected ? null : p); }}
+                  style={[
+                    s.athleteCard,
+                    isSelected && { borderWidth: 2, borderColor: C.accent },
+                  ]}
+                >
+                  <View style={[s.athleteAvatar, { backgroundColor: `hsl(${p.hue},55%,35%)` }]}>
+                    <Text style={s.athleteAvatarText}>{p.initials}</Text>
+                  </View>
+                  <Text
+                    style={[s.bodySmall, { color: C.label, marginTop: 6, textAlign: 'center', fontWeight: '600' }]}
+                    numberOfLines={1}
+                  >
+                    {p.name.split(' ')[0]}
+                  </Text>
+                  <Text style={[s.bodySmall, { color: C.secondary as string, textAlign: 'center', fontSize: 11 }]}>
+                    {`#${p.number}`}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+
+          <Text style={[s.subHeader, { color: C.muted as string, marginBottom: 10 }]}>Choose Amount</Text>
+          <View style={[s.row, { flexWrap: 'wrap' as any, gap: 8, marginBottom: 14 }]}>
+            {SUPPORT_AMOUNTS.map(amt => {
+              const isSelected = parseFloat(supportAmount) === amt;
+              return (
+                <Pressable
+                  key={amt}
+                  onPress={() => { Haptics.selectionAsync(); setSupportAmount(String(amt)); }}
+                  style={[
+                    s.amountPresetChip,
+                    {
+                      borderColor:     isSelected ? C.accent : (C.inputBorder as string),
+                      backgroundColor: isSelected ? C.accent : 'transparent',
+                    },
+                  ]}
+                >
+                  <Text style={[s.amountPresetText, { color: isSelected ? '#fff' : (C.label as string) }]}>
+                    {`$${amt}`}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          <TextInput
+            value={supportAmount}
+            onChangeText={setSupportAmount}
+            keyboardType="numeric"
+            placeholder="Custom amount"
+            placeholderTextColor={C.muted as string}
+            style={[
+              s.supportAmtInput,
+              {
+                color:           C.label as string,
+                borderColor:     C.inputBorder as string,
+                backgroundColor: C.surface,
+              },
+            ]}
+          />
+
+          <Pressable
+            onPress={() => {
+              if (!canPay) return;
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+              setShowSupportSheet(false);
+              setSupportSelectedPlayer(null);
+              setSupportAmount('');
+              setShowSuccess(true);
+            }}
+            style={[
+              s.giveBtn,
+              {
+                backgroundColor: canPay ? C.accent : (C.separator as string),
+                marginTop:        20,
+              },
+            ]}
+          >
+            <Text style={[s.giveBtnText, { color: canPay ? '#fff' : (C.secondary as string) }]}>
+              {canPay
+                ? `Send $${finalAmt} to ${supportSelectedPlayer!.name.split(' ')[0]} via KayPay`
+                : 'Select athlete and amount'}
+            </Text>
+          </Pressable>
+        </ScrollView>
+      </BottomSheet>
     );
   }
 
@@ -889,7 +1223,7 @@ export default function BoosterScreen() {
                   {deal.playerName}
                 </Text>
                 <Text style={[s.bodySmall, { color: C.secondary as string }]}>
-                  {deal.brand} \u00B7 {deal.type}
+                  {`${deal.brand} \u00B7 ${deal.type}`}
                 </Text>
               </View>
               <Text style={[s.bodySmall, { color: C.label, marginRight: 10 }]}>
@@ -958,13 +1292,13 @@ export default function BoosterScreen() {
           ]}
         >
           <View style={[s.row, { alignItems: 'center' }]}>
-            <Text style={{ fontSize: 20 }}>\uD83C\uDFC0</Text>
+            <Text style={{ fontSize: 20 }}>{'\uD83C\uDFC0'}</Text>
             <View style={{ marginLeft: 10, flex: 1 }}>
               <Text style={[s.bodyMed, { color: C.accent, fontWeight: '800', letterSpacing: 0.3 }]}>
                 GAME DAY SPECIAL
               </Text>
               <Text style={[s.bodySmall, { color: C.label }]}>
-                Apr 1 vs Howard \u2014 20% off all jerseys
+                {'Apr 1 vs Howard \u2014 20% off all jerseys'}
               </Text>
             </View>
           </View>
@@ -988,13 +1322,11 @@ export default function BoosterScreen() {
               }}
             >
               <GlassView tier={1} style={s.featuredCard}>
-                <View
-                  style={[
-                    s.featuredImg,
-                    { backgroundColor: `hsl(${categoryHue(product.category)}, 50%, 40%)` },
-                  ]}
-                >
-                  <Text style={s.featuredImgLetter}>{product.category.charAt(0)}</Text>
+                <View style={[s.featuredImg, { backgroundColor: '#003A63' }]}>
+                  <View style={s.productLogoWrap}>
+                    <Text style={s.productLogoText}>LU</Text>
+                  </View>
+                  <Text style={s.productCategoryLabel}>{product.category.toUpperCase()}</Text>
                   {product.isLimited && (
                     <View style={s.limitedBadge}>
                       <Text style={s.limitedBadgeText}>LIMITED</Text>
@@ -1079,13 +1411,9 @@ export default function BoosterScreen() {
               }}
             >
               <GlassView tier={1} style={s.productCard}>
-                <View
-                  style={[
-                    s.productImg,
-                    { backgroundColor: `hsl(${categoryHue(product.category)}, 50%, 40%)` },
-                  ]}
-                >
-                  <Text style={s.productImgLetter}>{product.category.charAt(0)}</Text>
+                <View style={[s.productImg, { backgroundColor: '#003A63' }]}>
+                  <Text style={s.productGridLogo}>LU</Text>
+                  <Text style={s.productGridCategory}>{product.category.toUpperCase()}</Text>
                   {product.isLimited && (
                     <View style={s.limitedBadgeSmall}>
                       <Text style={s.limitedBadgeSmallText}>LTD</Text>
@@ -1111,7 +1439,7 @@ export default function BoosterScreen() {
                       ${product.price.toFixed(2)}
                     </Text>
                     <Text style={{ fontSize: 11, color: C.muted as string }}>
-                      \u2605{product.rating}
+                      {'\u2605'}{product.rating}
                     </Text>
                   </View>
                   {!product.inStock && (
@@ -1146,13 +1474,11 @@ export default function BoosterScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* Large product photo placeholder */}
-          <View
-            style={[
-              s.productSheetImg,
-              { backgroundColor: `hsl(${categoryHue(selectedProduct.category)}, 50%, 35%)` },
-            ]}
-          >
-            <Text style={s.productSheetImgText} numberOfLines={2}>
+          <View style={[s.productSheetImg, { backgroundColor: '#003A63' }]}>
+            <View style={s.productSheetLogoWrap}>
+              <Text style={s.productSheetLogo}>LU</Text>
+            </View>
+            <Text style={s.productSheetName} numberOfLines={2}>
               {selectedProduct.name}
             </Text>
             {selectedProduct.isLimited && (
@@ -1469,8 +1795,14 @@ export default function BoosterScreen() {
             />
           </Pressable>
 
-          {/* Right: filter icon + role cycle pill */}
+          {/* Right: role cycle pill + filter icon */}
           <View style={[s.row, { gap: 8 }]}>
+            <Pressable
+              onPress={handleCycleRole}
+              style={[s.rolePill, { backgroundColor: C.surface, borderColor: C.separator as string }]}
+            >
+              <Text style={[s.rolePillText, { color: C.accent }]}>{roleLabel(role)}</Text>
+            </Pressable>
             {pills.length > 0 && (
               <Pressable onPress={togglePills} hitSlop={8} style={s.iconBtn}>
                 <IconSymbol
@@ -1484,12 +1816,6 @@ export default function BoosterScreen() {
                 />
               </Pressable>
             )}
-            <Pressable
-              onPress={handleCycleRole}
-              style={[s.rolePill, { backgroundColor: C.surface, borderColor: C.separator as string }]}
-            >
-              <Text style={[s.rolePillText, { color: C.accent }]}>{roleLabel(role)}</Text>
-            </Pressable>
           </View>
         </View>
 
@@ -1610,6 +1936,7 @@ export default function BoosterScreen() {
       {renderProductSheet()}
       {renderOpportunitySheet()}
       {renderCartSheet()}
+      {renderSupportSheet()}
     </View>
   );
 }
@@ -2075,6 +2402,124 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
 
+  // Fan NIL view
+  fanBadge: {
+    paddingHorizontal: 8,
+    paddingVertical:   3,
+    borderRadius:      8,
+    backgroundColor:   'rgba(217,119,87,0.15)',
+  },
+  fanBadgeText: {
+    fontSize:   11,
+    fontWeight: '700',
+    color:      '#D97757',
+  },
+  athleteCard: {
+    width:        88,
+    padding:      12,
+    borderRadius: 16,
+    alignItems:   'center',
+  },
+  athleteAvatar: {
+    width:          48,
+    height:         48,
+    borderRadius:   24,
+    alignItems:     'center',
+    justifyContent: 'center',
+  },
+  athleteAvatarText: {
+    color:      '#fff',
+    fontWeight: '800',
+    fontSize:   16,
+  },
+  nilValueChip: {
+    paddingHorizontal: 8,
+    paddingVertical:   3,
+    borderRadius:      8,
+  },
+  nilValueChipText: {
+    fontSize:   11,
+    fontWeight: '700',
+  },
+  nilDealAvatar: {
+    width:          38,
+    height:         38,
+    borderRadius:   19,
+    alignItems:     'center',
+    justifyContent: 'center',
+    flexShrink:     0,
+  },
+  nilDealAvatarText: {
+    color:      '#fff',
+    fontWeight: '800',
+    fontSize:   14,
+  },
+  dealValueChip: {
+    paddingHorizontal: 10,
+    paddingVertical:   5,
+    borderRadius:      10,
+  },
+  dealValueChipText: {
+    fontSize:   13,
+    fontWeight: '800',
+  },
+  activityRow: {
+    flexDirection:  'row',
+    alignItems:     'center',
+    paddingVertical: 9,
+  },
+  activityAvatar: {
+    width:          32,
+    height:         32,
+    borderRadius:   16,
+    alignItems:     'center',
+    justifyContent: 'center',
+    flexShrink:     0,
+  },
+  activityAvatarText: {
+    color:      '#fff',
+    fontWeight: '800',
+    fontSize:   12,
+  },
+  soldOutBadge: {
+    paddingHorizontal: 12,
+    paddingVertical:   7,
+    borderRadius:      10,
+    backgroundColor:   'rgba(184,92,92,0.15)',
+  },
+  soldOutText: {
+    color:      '#B85C5C',
+    fontWeight: '700',
+    fontSize:   13,
+  },
+  expBookBtn: {
+    height:            38,
+    borderRadius:      19,
+    paddingHorizontal: 20,
+    alignItems:        'center',
+    justifyContent:    'center',
+  },
+  amountPresetChip: {
+    height:            40,
+    paddingHorizontal: 18,
+    borderRadius:      20,
+    borderWidth:       1.5,
+    alignItems:        'center',
+    justifyContent:    'center',
+  },
+  amountPresetText: {
+    fontSize:   15,
+    fontWeight: '700',
+  },
+  supportAmtInput: {
+    height:        52,
+    borderRadius:  14,
+    borderWidth:   1,
+    paddingHorizontal: 16,
+    fontSize:      18,
+    fontWeight:    '600',
+  },
+
   // Shop
   adminShopBanner: {
     flexDirection:  'row',
@@ -2094,11 +2539,32 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     alignItems:     'center',
     justifyContent: 'center',
   },
-  featuredImgLetter: {
-    color:      '#fff',
-    fontSize:   52,
-    fontWeight: '800',
-    opacity:    0.35,
+  productLogoWrap: {
+    width:           60,
+    height:          60,
+    borderRadius:    14,
+    backgroundColor: 'rgba(255,215,0,0.12)',
+    alignItems:      'center',
+    justifyContent:  'center',
+    borderWidth:     1.5,
+    borderColor:     'rgba(255,215,0,0.22)',
+  },
+  productLogoText: {
+    fontSize:      24,
+    fontWeight:    '900',
+    color:         'rgba(255,215,0,0.9)',
+    letterSpacing: -1,
+  },
+  productCategoryLabel: {
+    position:      'absolute',
+    bottom:        8,
+    left:          0,
+    right:         0,
+    textAlign:     'center',
+    fontSize:      9,
+    fontWeight:    '800',
+    color:         'rgba(255,255,255,0.38)',
+    letterSpacing: 1.5,
   },
   featuredInfo: {
     padding: 10,
@@ -2160,11 +2626,22 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     alignItems:     'center',
     justifyContent: 'center',
   },
-  productImgLetter: {
-    color:      '#fff',
-    fontSize:   36,
-    fontWeight: '800',
-    opacity:    0.3,
+  productGridLogo: {
+    fontSize:      18,
+    fontWeight:    '900',
+    color:         'rgba(255,215,0,0.85)',
+    letterSpacing: -0.5,
+  },
+  productGridCategory: {
+    position:      'absolute',
+    bottom:        5,
+    left:          0,
+    right:         0,
+    textAlign:     'center',
+    fontSize:      8,
+    fontWeight:    '800',
+    color:         'rgba(255,255,255,0.32)',
+    letterSpacing: 1,
   },
   limitedBadgeSmall: {
     position:          'absolute',
@@ -2203,11 +2680,28 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     justifyContent:    'center',
     overflow:          'hidden',
   },
-  productSheetImgText: {
+  productSheetLogoWrap: {
+    width:           84,
+    height:          84,
+    borderRadius:    20,
+    backgroundColor: 'rgba(255,215,0,0.1)',
+    alignItems:      'center',
+    justifyContent:  'center',
+    borderWidth:     2,
+    borderColor:     'rgba(255,215,0,0.18)',
+    marginBottom:    10,
+  },
+  productSheetLogo: {
+    fontSize:      34,
+    fontWeight:    '900',
+    color:         'rgba(255,215,0,0.9)',
+    letterSpacing: -1.5,
+  },
+  productSheetName: {
     color:             '#fff',
-    fontSize:          26,
+    fontSize:          17,
     fontWeight:        '700',
-    opacity:           0.55,
+    opacity:           0.85,
     textAlign:         'center',
     paddingHorizontal: 20,
   },
