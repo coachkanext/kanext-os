@@ -9,5 +9,6 @@ export * from './v1-eval-engine';
 export * from './confidence-gates';
 export * from './router';
 export * from './nexus-prompt-builder';
+export * from './skill-prompt';
 export * from './sim/interaction-library';
 export * from './sim/orchestrator';
