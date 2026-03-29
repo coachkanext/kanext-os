@@ -1,5 +1,7 @@
 /**
- * Mock data for Education Hub — Lincoln University demo (HBCU, est. 1854).
+ * Mock data for Education Hub — Lincoln University Oakland (est. 1919).
+ * Hub user: Oluwadara Samuel "Sammy" Kalejaiye — Assistant Basketball Coach &
+ * Recruiting Coordinator, Men's Basketball. STAFF, not a student.
  */
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -87,52 +89,83 @@ export interface EduActivity {
 // ── Education Profile ─────────────────────────────────────────────────────────
 
 export const EDUCATION_PROFILE = {
-  name: 'Lincoln University',
-  tagline: 'Excellence. Integrity. Service.',
-  established: 1854,
-  location: 'Jefferson City, MO',
+  name: 'Lincoln University Oakland',
+  tagline: 'Affordable. Experienced. Career-Ready.',
+  established: 1919,
+  chartered: 1926,
+  location: 'Oakland, CA',
+  address: '401 15th Street, Oakland, CA 94612',
   description:
-    'Lincoln University is a historically Black university committed to providing a comprehensive education to students of diverse backgrounds. We prepare leaders who serve their communities and the world.',
+    'Lincoln University Oakland is a private, non-profit institution founded in 1919 and ' +
+    'chartered in 1926. With a Special Focus in Business & Management, Lincoln serves a ' +
+    'diverse community of 436 undergraduate and graduate students seeking career-oriented ' +
+    'programs in business, finance, and diagnostic medical sonography.',
   mission:
-    'To provide high quality, affordable education that prepares students for careers, graduate study, and engaged citizenship.',
+    'To provide affordable educational programs in selected fields of study, delivered by ' +
+    'experienced educators, and leading to outstanding employment opportunities for American ' +
+    'and international students.',
   avatarInitials: 'LU',
-  coverHue: 28,
-  studentFacultyRatio: '14:1',
-  programs: 42,
-  accreditation: 'HLC',
+  coverHue: 0,
+  colors: { maroon: '#800000', red: '#C41E3A' },
+  mascot: 'Oaklanders',
+  studentFacultyRatio: '15:1',
+  programs: 7,
+  accreditation: 'WSCUC',
   accreditationStatus: 'Good Standing',
-  accreditationNext: 'Spring 2028',
-  website: 'https://lincolnu.edu',
-  admissionsEmail: 'admissions@lincolnu.edu',
-  admissionsPhone: '(573) 681-5599',
+  accreditationSince: '06/26/2020',
+  accreditationNext: '06/26/2026',
+  additionalAccreditation: 'IACBE (Business Programs)',
+  website: 'https://lincolnuca.edu',
+  admissionsEmail: 'admissions@lincolnuca.edu',
+  admissionsPhone: '(510) 628-8010',
+  applicationFee: 95,
+  admissionsPolicy: 'Open Admission',
+  onCampusHousing: false,
+  federalFinancialAid: false,
+  sports: ['Men\'s Basketball (GAAC)', 'Women\'s Basketball', 'Men\'s Soccer', 'Women\'s Soccer'],
+  homeVenue: 'Laney College — 900 Fallon St, Oakland, CA',
+  keyStaff: [
+    { name: 'Dr. Mikhail Brodsky',        title: 'President',                           email: 'president@lincolnuca.edu'          },
+    { name: 'Dr. Themistoclis Pantos',    title: 'Provost / CAO & Director, Business',  email: 'tpantos@lincolnuca.edu'            },
+    { name: 'Dr. Mohamed Tailab',         title: 'Dean of Students',                    email: 'mtailab@lincolnuca.edu'            },
+    { name: 'Dr. Michael Guerra',         title: 'Administrative Vice President',       email: 'mguerra@lincolnuca.edu'            },
+    { name: 'Dr. Alexander Anokhin',      title: 'Director of QA & Accreditation',      email: 'aanokhin@lincolnuca.edu'           },
+    { name: 'Ms. Maggie Hua',             title: 'Director of Admissions & Registrar',  email: 'maggiehua@lincolnuca.edu'          },
+    { name: 'Ms. Reenu Shrestha',         title: 'Assistant to President / HR / PDSO',  email: 'sreenu@lincolnuca.edu'             },
+    { name: 'Ms. Yu Zhu Liang',           title: 'Senior Accounting Analyst',           email: 'accountingassistant@lincolnuca.edu'},
+    { name: 'Ms. Marina Kay',             title: 'Director, Diagnostic Imaging Lab',    email: 'mkay@lincolnuca.edu'               },
+    { name: 'Ms. Nicole Y. Marsh',        title: 'Head Librarian',                      email: 'nmarsh@lincolnuca.edu'             },
+    { name: 'Mr. Desmond Gumbs',          title: 'Director of Athletics',               email: 'dgumbs@lincolnuca.edu'             },
+    { name: 'Coach William Middlebrooks', title: 'Head Men\'s Basketball Coach',        email: 'wmiddlebrooks@lincolnuca.edu'      },
+  ],
 };
 
 // ── Admin Analytics ───────────────────────────────────────────────────────────
 
 export const EDUCATION_ANALYTICS = {
-  totalEnrollment:        3247,
-  enrollmentTrend:        +2.1,
-  retentionRate:          84,
-  retentionTrend:         +1.2,
-  graduationRate:         71,
-  graduationTrend:        +0.8,
+  totalEnrollment:        436,
+  enrollmentTrend:        +2.3,
+  retentionRate:          89,
+  retentionTrend:         +1.0,
+  graduationRate:         69,
+  graduationTrend:        +0.5,
   avgGpa:                 3.1,
-  gpaTrend:               +0.05,
-  financialAid:           4800000,
-  financialAidTrend:      +5.3,
-  applicationsPending:    142,
-  applicationsTrend:      +18.4,
+  gpaTrend:               +0.04,
+  financialAid:           0,
+  financialAidTrend:      0,
+  applicationsPending:    28,
+  applicationsTrend:      +8.2,
 };
 
-// ── Admin Chart (6 semesters) ─────────────────────────────────────────────────
+// ── Admin Chart (6 semesters F21–S24) ────────────────────────────────────────
 
 export const EDUCATION_CHART_DATA: EduChartPoint[] = [
-  { label: 'F21', enrollment: 3050, retention: 81, graduation: 68 },
-  { label: 'S22', enrollment: 2940, retention: 82, graduation: 69 },
-  { label: 'F22', enrollment: 3110, retention: 83, graduation: 70 },
-  { label: 'S23', enrollment: 3020, retention: 83, graduation: 70 },
-  { label: 'F23', enrollment: 3180, retention: 84, graduation: 71 },
-  { label: 'S24', enrollment: 3247, retention: 84, graduation: 71 },
+  { label: 'F21', enrollment: 398, retention: 86, graduation: 66 },
+  { label: 'S22', enrollment: 385, retention: 87, graduation: 67 },
+  { label: 'F22', enrollment: 412, retention: 87, graduation: 67 },
+  { label: 'S23', enrollment: 401, retention: 88, graduation: 68 },
+  { label: 'F23', enrollment: 428, retention: 89, graduation: 69 },
+  { label: 'S24', enrollment: 436, retention: 89, graduation: 69 },
 ];
 
 export function getEduChartMax(metric: EduChartMetric): number {
@@ -143,34 +176,46 @@ export function getEduChartMax(metric: EduChartMetric): number {
 
 export const EDUCATION_DEPARTMENTS: EduDepartment[] = [
   {
-    id: 'dep1', name: 'Business & Economics', chair: 'Dr. Sandra Moore',
-    chairInitials: 'SM', chairHue: 28,
-    facultyCount: 18, studentCount: 620, courseCount: 44,
-    description: 'Preparing future business leaders through rigorous academic programs in accounting, finance, marketing, and entrepreneurship.',
+    id: 'dep1',
+    name: 'Business Programs',
+    chair: 'Dr. Themistoclis Pantos',
+    chairInitials: 'TP',
+    chairHue: 0,
+    facultyCount: 12,
+    studentCount: 230,
+    courseCount: 28,
+    description:
+      'Offering BA Business Administration, MBA, MS International Business & Finance Management, ' +
+      'MS Finance, and DBA programs. Accredited by IACBE. Focused on career-ready outcomes for ' +
+      'domestic and international students.',
   },
   {
-    id: 'dep2', name: 'Natural Sciences', chair: 'Dr. Robert Chen',
-    chairInitials: 'RC', chairHue: 150,
-    facultyCount: 22, studentCount: 480, courseCount: 56,
-    description: 'Advancing scientific inquiry through programs in biology, chemistry, physics, environmental science, and pre-medicine.',
+    id: 'dep2',
+    name: 'Diagnostic Medical Sonography',
+    chair: 'Ms. Marina Kay',
+    chairInitials: 'MK',
+    chairHue: 200,
+    facultyCount: 6,
+    studentCount: 80,
+    courseCount: 18,
+    description:
+      'BS Diagnostic Medical Sonography program preparing students for ARDMS credentialing exams. ' +
+      'Hands-on training in the on-campus Diagnostic Imaging Laboratory with clinical practicum ' +
+      'rotations at partner Bay Area medical facilities.',
   },
   {
-    id: 'dep3', name: 'Liberal Arts & Humanities', chair: 'Dr. James Williams',
-    chairInitials: 'JW', chairHue: 200,
-    facultyCount: 20, studentCount: 540, courseCount: 60,
-    description: 'Cultivating critical thinkers and communicators through English, history, philosophy, communications, and political science.',
-  },
-  {
-    id: 'dep4', name: 'School of Education', chair: 'Dr. Angela Davis',
-    chairInitials: 'AD', chairHue: 280,
-    facultyCount: 14, studentCount: 310, courseCount: 38,
-    description: 'Training the next generation of educators through evidence-based programs in early childhood, K-12, and higher education.',
-  },
-  {
-    id: 'dep5', name: 'Athletics & Physical Ed.', chair: 'Coach Kevin Harris',
-    chairInitials: 'KH', chairHue: 0,
-    facultyCount: 12, studentCount: 245, courseCount: 22,
-    description: 'Developing student athletes who excel in the classroom and in competition. NCAA Division II. 10 varsity sports.',
+    id: 'dep3',
+    name: 'Graduate Programs',
+    chair: 'Dr. Themistoclis Pantos',
+    chairInitials: 'TP',
+    chairHue: 240,
+    facultyCount: 9,
+    studentCount: 126,
+    courseCount: 24,
+    description:
+      'Serving 232 graduate students across MBA, MS Finance, MS International Business & Finance ' +
+      'Management, and DBA programs. Emphasis on applied research, global finance, and executive ' +
+      'leadership development.',
   },
 ];
 
@@ -178,198 +223,245 @@ export const EDUCATION_DEPARTMENTS: EduDepartment[] = [
 
 export const COURSE_CATALOG: Course[] = [
   {
-    id: 'cat1', code: 'ENG-301', title: 'Advanced Composition', credits: 3,
-    instructor: 'Dr. T. Williams', instructorInitials: 'TW', schedule: 'MWF 10:00 AM',
-    room: 'Langston 201', enrollment: 22, capacity: 28,
-    department: 'Liberal Arts', prerequisites: ['ENG-201'],
+    id: 'cat1',
+    code: 'BUS-301',
+    title: 'Business Strategy',
+    credits: 3,
+    instructor: 'Dr. T. Pantos',
+    instructorInitials: 'TP',
+    schedule: 'TTh 10:00 AM',
+    room: 'Room 201',
+    enrollment: 28,
+    capacity: 32,
+    department: 'Business Programs',
+    prerequisites: ['BUS-201'],
   },
   {
-    id: 'cat2', code: 'MATH-305', title: 'Linear Algebra', credits: 3,
-    instructor: 'Prof. R. Chen', instructorInitials: 'RC', schedule: 'TTh 11:00 AM',
-    room: 'Science 104', enrollment: 18, capacity: 24,
-    department: 'Natural Sciences', prerequisites: ['MATH-202'],
+    id: 'cat2',
+    code: 'DI-201',
+    title: 'Sonographic Physics & Instrumentation',
+    credits: 4,
+    instructor: 'Ms. M. Kay',
+    instructorInitials: 'MK',
+    schedule: 'MWF 9:00 AM',
+    room: 'Imaging Lab A',
+    enrollment: 18,
+    capacity: 20,
+    department: 'Diagnostic Medical Sonography',
+    prerequisites: ['BIO-101', 'PHYS-101'],
   },
   {
-    id: 'cat3', code: 'BUS-401', title: 'Strategic Management', credits: 3,
-    instructor: 'Dr. S. Moore', instructorInitials: 'SM', schedule: 'MW 3:30 PM',
-    room: 'Business 302', enrollment: 30, capacity: 35,
-    department: 'Business', prerequisites: ['BUS-315'],
+    id: 'cat3',
+    code: 'MBA-501',
+    title: 'Financial Management',
+    credits: 3,
+    instructor: 'Dr. T. Pantos',
+    instructorInitials: 'TP',
+    schedule: 'MW 6:00 PM',
+    room: 'Room 305',
+    enrollment: 22,
+    capacity: 25,
+    department: 'Graduate Programs',
+    prerequisites: ['MBA-500'],
   },
   {
-    id: 'cat4', code: 'COMM-310', title: 'Mass Media & Society', credits: 3,
-    instructor: 'Prof. P. Davis', instructorInitials: 'PD', schedule: 'TTh 2:00 PM',
-    room: 'Fine Arts 105', enrollment: 25, capacity: 30,
-    department: 'Liberal Arts', prerequisites: [],
+    id: 'cat4',
+    code: 'BUS-401',
+    title: 'International Finance',
+    credits: 3,
+    instructor: 'Prof. A. Reyes',
+    instructorInitials: 'AR',
+    schedule: 'TTh 2:00 PM',
+    room: 'Room 210',
+    enrollment: 20,
+    capacity: 24,
+    department: 'Business Programs',
+    prerequisites: ['BUS-301', 'MBA-501'],
   },
   {
-    id: 'cat5', code: 'BUS-350', title: 'Entrepreneurship', credits: 3,
-    instructor: 'Dr. M. Johnson', instructorInitials: 'MJ', schedule: 'MWF 1:00 PM',
-    room: 'Business 201', enrollment: 28, capacity: 28,
-    department: 'Business', prerequisites: ['BUS-201'],
+    id: 'cat5',
+    code: 'MBA-601',
+    title: 'DBA Research Methods',
+    credits: 3,
+    instructor: 'Dr. M. Brodsky',
+    instructorInitials: 'MB',
+    schedule: 'Sat 9:00 AM',
+    room: 'Room 410',
+    enrollment: 12,
+    capacity: 15,
+    department: 'Graduate Programs',
+    prerequisites: ['MBA-580'],
   },
 ];
 
-// ── Student Courses (Sammy — current semester) ────────────────────────────────
+// ── Staff Courses (Sammy is staff — no enrolled courses) ──────────────────────
 
-export const MY_COURSES: StudentCourse[] = [
-  {
-    id: 'c1', code: 'ENG-201', title: 'English Literature', credits: 3,
-    instructor: 'Dr. T. Williams', instructorInitials: 'TW', schedule: 'TTh 10:00\u201311:15 AM',
-    room: 'Langston Hall 201', enrollment: 26, capacity: 30,
-    department: 'Liberal Arts', prerequisites: ['ENG-101'],
-    grade: 'B+', attendance: 95,
-  },
-  {
-    id: 'c2', code: 'MATH-202', title: 'Calculus II', credits: 4,
-    instructor: 'Prof. R. Chen', instructorInitials: 'RC', schedule: 'MWF 9:00\u20139:50 AM',
-    room: 'Science Hall 104', enrollment: 22, capacity: 25,
-    department: 'Natural Sciences', prerequisites: ['MATH-201'],
-    grade: 'A-', attendance: 92,
-  },
-  {
-    id: 'c3', code: 'BUS-315', title: 'Business Ethics', credits: 3,
-    instructor: 'Dr. M. Johnson', instructorInitials: 'MJ', schedule: 'MW 2:00\u20133:15 PM',
-    room: 'Business Hall 302', enrollment: 28, capacity: 30,
-    department: 'Business', prerequisites: ['BUS-201'],
-    grade: 'A', attendance: 98,
-  },
-  {
-    id: 'c4', code: 'COMM-201', title: 'Public Speaking', credits: 3,
-    instructor: 'Prof. P. Davis', instructorInitials: 'PD', schedule: 'TTh 1:00\u20132:15 PM',
-    room: 'Fine Arts 105', enrollment: 20, capacity: 24,
-    department: 'Liberal Arts', prerequisites: [],
-    grade: 'B', attendance: 88,
-  },
-];
+/** Sammy is staff, not a student. No enrolled courses. */
+export const MY_COURSES: StudentCourse[] = [];
 
-// ── Assignments ───────────────────────────────────────────────────────────────
+// ── Assignments (empty — staff has no course assignments) ─────────────────────
 
-export const COURSE_ASSIGNMENTS: Record<string, Assignment[]> = {
-  c1: [
-    { id: 'a1', title: 'Essay: Symbolism in Modern Lit', dueDate: 'Jul 25', status: 'graded', points: 100, earned: 91 },
-    { id: 'a2', title: 'Reading Quiz 5', dueDate: 'Jul 30', status: 'submitted', points: 25 },
-    { id: 'a3', title: 'Final Research Paper', dueDate: 'Aug 10', status: 'pending', points: 200 },
-  ],
-  c2: [
-    { id: 'a4', title: 'Problem Set 6', dueDate: 'Jul 26', status: 'graded', points: 50, earned: 47 },
-    { id: 'a5', title: 'Quiz 4', dueDate: 'Aug 1', status: 'pending', points: 40 },
-    { id: 'a6', title: 'Midterm Exam', dueDate: 'Aug 8', status: 'pending', points: 150 },
-  ],
-  c3: [
-    { id: 'a7', title: 'Case Study: Corporate Ethics', dueDate: 'Jul 28', status: 'graded', points: 100, earned: 96 },
-    { id: 'a8', title: 'Group Presentation', dueDate: 'Aug 5', status: 'submitted', points: 80 },
-    { id: 'a9', title: 'Final Exam', dueDate: 'Aug 12', status: 'pending', points: 200 },
-  ],
-  c4: [
-    { id: 'a10', title: 'Impromptu Speech 3', dueDate: 'Jul 29', status: 'graded', points: 60, earned: 54 },
-    { id: 'a11', title: 'Debate Participation', dueDate: 'Aug 6', status: 'pending', points: 50 },
-    { id: 'a12', title: 'Persuasive Speech', dueDate: 'Aug 13', status: 'pending', points: 100 },
-  ],
-};
+export const COURSE_ASSIGNMENTS: Record<string, Assignment[]> = {};
 
-// ── Degree Progress ───────────────────────────────────────────────────────────
+// ── Degree Progress (N/A — staff member) ─────────────────────────────────────
 
 export const DEGREE_PROGRESS = {
-  totalCredits: 120,
-  completed: 68,
-  inProgress: 13,
-  gpa: 3.4,
-  expectedGraduation: 'May 2025',
-  requirements: [
-    { name: 'Core Curriculum',    completed: 27, required: 30 },
-    { name: 'Business Major',     completed: 27, required: 48 },
-    { name: 'Comm Minor',         completed: 9,  required: 18 },
-    { name: 'Free Electives',     completed: 5,  required: 24 },
-  ] as DegreeRequirement[],
+  totalCredits: 0,
+  completed: 0,
+  inProgress: 0,
+  gpa: 0,
+  expectedGraduation: 'N/A',
+  requirements: [] as DegreeRequirement[],
 };
 
-// ── Student Profile ───────────────────────────────────────────────────────────
+// ── Staff Profile (Sammy Kalejaiye — Assistant Coach & Recruiting Coordinator) ─
 
 export const STUDENT_PROFILE = {
   name: 'Sammy Kalejaiye',
-  id: 'LU-2021-0847',
-  major: 'Business Administration',
-  minor: 'Communications',
-  year: 'Junior',
-  gpa: 3.4,
-  creditsCompleted: 68,
-  creditsRequired: 120,
-  advisorName: 'Dr. Patricia Moore',
-  advisorHandle: '@pmoore',
-  enrollmentStatus: 'Full-time',
-  deansListSemesters: ['Fall 2022', 'Spring 2023'],
-  housing: { building: 'Morrison Hall', room: '214', roommate: 'Devon Clarke' },
-  financialAid: {
-    grants: 6000,
-    scholarships: 2500,
-    loans: 4000,
-    workstudy: 1500,
-    tuitionCharged: 14200,
-    aidApplied: 14000,
-    balance: 200,
-    dueDate: 'Aug 15, 2024',
-  },
+  id: 'LU-STAFF-0001',
+  major: 'Assistant Basketball Coach',
+  minor: 'Recruiting Coordinator',
+  year: 'Staff',
+  gpa: 0,
+  creditsCompleted: 0,
+  creditsRequired: 0,
+  advisorName: 'William Middlebrooks',
+  advisorHandle: '@wmiddlebrooks',
+  enrollmentStatus: 'Staff \u2014 Full-time',
+  deansListSemesters: [] as string[],
+  housing: null as null,
+  financialAid: null as null,
 };
 
 // ── Campus Organizations ──────────────────────────────────────────────────────
 
 export const CAMPUS_ORGS: CampusOrg[] = [
   {
-    id: 'org1', name: 'Student Government Association', type: 'academic',
-    president: 'Nia Sanders', presidentInitials: 'NS',
-    memberCount: 45, schedule: 'Mondays 5:00 PM, Union 210',
-    description: 'The voice of the student body. SGA advocates for student interests, manages student activity fees, and leads campus-wide initiatives.',
-    isOpen: true, requiresApproval: true,
+    id: 'org1',
+    name: 'Student Council',
+    type: 'academic',
+    president: 'Yuna Park',
+    presidentInitials: 'YP',
+    memberCount: 22,
+    schedule: 'Mondays 5:00 PM, Room 202',
+    description:
+      'The representative voice of Lincoln University students. The Student Council advocates ' +
+      'for student needs, organizes campus events, and collaborates with administration on ' +
+      'institutional matters.',
+    isOpen: true,
+    requiresApproval: true,
   },
   {
-    id: 'org2', name: 'Black Student Union', type: 'cultural',
-    president: 'Marcus Thompson', presidentInitials: 'MT',
-    memberCount: 120, schedule: 'Wednesdays 7:00 PM, Cultural Center',
-    description: 'Celebrating and preserving Black culture, history, and excellence. Hosting campus events, speaker series, and community service.',
-    isOpen: true, requiresApproval: false,
+    id: 'org2',
+    name: 'International Students Association',
+    type: 'cultural',
+    president: 'Karim Benzali',
+    presidentInitials: 'KB',
+    memberCount: 85,
+    schedule: 'Wednesdays 6:00 PM, Lounge A',
+    description:
+      'Supporting the 40% international student population at Lincoln University. Hosts ' +
+      'cultural events, immigration workshops, and peer mentorship to ease the transition ' +
+      'for students from over 30 countries.',
+    isOpen: true,
+    requiresApproval: false,
   },
   {
-    id: 'org3', name: 'Entrepreneurship Club', type: 'academic',
-    president: 'Jordan Williams', presidentInitials: 'JW',
-    memberCount: 38, schedule: 'Thursdays 6:00 PM, Business Hall 202',
-    description: 'Empowering student founders through workshops, pitch competitions, mentorship, and connections to the startup ecosystem.',
-    isOpen: true, requiresApproval: false,
+    id: 'org3',
+    name: 'Business Club',
+    type: 'academic',
+    president: 'Diego Torres',
+    presidentInitials: 'DT',
+    memberCount: 40,
+    schedule: 'Thursdays 5:30 PM, Room 201',
+    description:
+      'Bridging classroom theory and real-world practice through speaker series, case ' +
+      'competitions, and networking events with Oakland Bay Area business professionals. ' +
+      'Open to all Business and Graduate Program students.',
+    isOpen: true,
+    requiresApproval: false,
   },
   {
-    id: 'org4', name: 'Debate Team', type: 'academic',
-    president: 'Alex Kim', presidentInitials: 'AK',
-    memberCount: 22, schedule: 'Tuesdays 4:00 PM, Fine Arts 101',
-    description: 'Competitive debate in NEDA and CEDA formats. Developing critical thinking, research, and public speaking at the regional and national level.',
-    isOpen: false, requiresApproval: true,
-  },
-  {
-    id: 'org5', name: 'Athletics Council', type: 'athletic',
-    president: 'Devon Clarke', presidentInitials: 'DC',
-    memberCount: 60, schedule: 'Fridays 3:00 PM, Rec Center 101',
-    description: 'Connecting student athletes across all Lincoln University varsity and intramural sports. Advocacy, community service, and academic support.',
-    isOpen: true, requiresApproval: false,
+    id: 'org4',
+    name: 'Athletics Boosters',
+    type: 'athletic',
+    president: 'Marcus Webb',
+    presidentInitials: 'MW',
+    memberCount: 30,
+    schedule: 'Fridays 4:00 PM, Gym / Laney College',
+    description:
+      'Supporting Lincoln Oaklanders athletics across Men\'s and Women\'s Basketball and ' +
+      'Soccer. Coordinates fan attendance at Laney College home games, organizes spirit ' +
+      'events, and raises funds for travel and equipment.',
+    isOpen: true,
+    requiresApproval: false,
   },
 ];
 
 // ── Admin Activity Feed ───────────────────────────────────────────────────────
 
 export const ADMIN_ACTIVITY: EduActivity[] = [
-  { id: 'act1', icon: 'person.fill.badge.plus',  message: '8 new applications received',           detail: '+8 apps',        timeAgo: '1h ago',  type: 'application' },
-  { id: 'act2', icon: 'doc.text.fill',            message: 'Grade submissions due in 3 days',        detail: '14 pending',     timeAgo: '2h ago',  type: 'grade'       },
-  { id: 'act3', icon: 'star.fill',                message: 'Dr. Williams submitted final grades',    detail: 'ENG-201',        timeAgo: '4h ago',  type: 'grade'       },
-  { id: 'act4', icon: 'dollarsign.circle.fill',   message: 'Financial aid disbursement processed',   detail: '$240,000',       timeAgo: '8h ago',  type: 'financial'   },
-  { id: 'act5', icon: 'person.fill.badge.plus',  message: '3 new faculty hires approved',           detail: 'Business Dept',  timeAgo: '1d ago',  type: 'faculty'     },
-  { id: 'act6', icon: 'chart.line.uptrend.xyaxis',message: 'Applications up 18% from last cycle',   detail: '142 pending',    timeAgo: '2d ago',  type: 'application' },
+  {
+    id: 'act1',
+    icon: 'person.fill.badge.plus',
+    message: '5 new applications submitted this week',
+    detail: '+5 apps',
+    timeAgo: '2h ago',
+    type: 'application',
+  },
+  {
+    id: 'act2',
+    icon: 'checkmark.seal.fill',
+    message: 'WSCUC accreditation review prep meeting scheduled',
+    detail: 'Jun 2026',
+    timeAgo: '5h ago',
+    type: 'grade',
+  },
+  {
+    id: 'act3',
+    icon: 'doc.text.fill',
+    message: 'Spring 2026 grade submission deadline reminder',
+    detail: 'Due May 16',
+    timeAgo: '1d ago',
+    type: 'grade',
+  },
+  {
+    id: 'act4',
+    icon: 'person.2.fill',
+    message: 'Recruiting prospect visit confirmed — Oakland campus tour',
+    detail: 'Apr 4, 2026',
+    timeAgo: '1d ago',
+    type: 'faculty',
+  },
+  {
+    id: 'act5',
+    icon: 'chart.line.uptrend.xyaxis',
+    message: 'Spring 2026 enrollment steady at 436 students',
+    detail: '204 UG · 232 Grad',
+    timeAgo: '2d ago',
+    type: 'application',
+  },
+  {
+    id: 'act6',
+    icon: 'building.2.fill',
+    message: 'GAAC season schedule finalized — home games at Laney College',
+    detail: '8 home dates',
+    timeAgo: '3d ago',
+    type: 'faculty',
+  },
 ];
 
-// ── Academic Calendar ─────────────────────────────────────────────────────────
+// ── Academic Calendar — Spring 2026 ──────────────────────────────────────────
 
 export const ACADEMIC_CALENDAR = [
-  { label: 'Summer Term Ends',          date: 'Aug 16, 2024' },
-  { label: 'Fall 2024 Registration',    date: 'Jul 29 \u2013 Aug 9' },
-  { label: 'Fall Semester Begins',      date: 'Aug 26, 2024' },
-  { label: 'Labor Day (No Classes)',    date: 'Sep 2, 2024' },
-  { label: 'Midterm Exams',             date: 'Oct 14\u201318, 2024' },
-  { label: 'Thanksgiving Break',        date: 'Nov 27 \u2013 Dec 1' },
-  { label: 'Fall Finals',               date: 'Dec 9\u201313, 2024' },
+  { label: 'Semester Begins / Placement Tests', date: 'Jan 21, 2026'         },
+  { label: 'Advising & Registration',           date: 'Jan 22\u201323, 2026' },
+  { label: 'Classes Begin',                     date: 'Jan 26, 2026'         },
+  { label: 'Add / Drop Deadline',               date: 'Feb 9, 2026'          },
+  { label: 'Presidents\u2019 Day (Holiday)',    date: 'Feb 16, 2026'         },
+  { label: 'Spring Recess',                     date: 'Mar 17\u201321, 2026' },
+  { label: 'Classes Resume',                    date: 'Mar 23, 2026'         },
+  { label: 'Final Examinations',                date: 'May 11\u201316, 2026' },
+  { label: 'Semester Ends',                     date: 'May 16, 2026'         },
+  { label: 'Commencement',                      date: 'May 30, 2026'         },
 ];

@@ -1,6 +1,6 @@
 /**
  * Mock Education Data
- * Howard University information for Education mode.
+ * Lincoln University Oakland — Education mode.
  */
 
 import type {
@@ -18,17 +18,17 @@ import type {
 // =============================================================================
 
 export const KaNeXT_ORGANIZATION: EducationOrganization = {
-  id: 'fmu-001',
-  name: 'Howard University',
+  id: 'lu-oak-001',
+  name: 'Lincoln University',
   mode: 'education',
-  type: 'Private HBCU',
-  location: 'Washington, DC',
+  type: 'Private, not-for-profit',
+  location: 'Oakland, CA',
   description:
-    'Howard University is a private, federally chartered research university located in Washington, DC. Founded on March 2, 1867, Howard is classified as an R1 research university and a premier HBCU, offering undergraduate and graduate programs across 14 schools and colleges rooted in the motto "Veritas et Utilitas" — Truth and Service.',
-  institutionType: 'HBCU',
-  programFormats: ['On-Campus', 'Online', 'Hybrid'],
-  accreditation: 'Middle States Commission on Higher Education (MSCHE)',
-  founded: 1867,
+    'Lincoln University is a private four-year institution located in downtown Oakland, CA, one block from the 12th Street/City Center BART station. Founded in 1919 and chartered under California law in 1926, Lincoln specializes in business administration, diagnostic imaging, and graduate management programs. Accredited by WSCUC since 2020, the university serves a highly international student body from more than 60 countries and offers all programs in-person at its 401 15th Street campus.',
+  institutionType: 'Special Focus: Business & Management',
+  programFormats: ['On-Campus'],
+  accreditation: 'WASC Senior College and University Commission (WSCUC)',
+  founded: 1919,
 };
 
 /** @deprecated Use KaNeXT_ORGANIZATION instead */
@@ -39,13 +39,12 @@ export const KANEXT_UNIVERSITY_ORGANIZATION = KaNeXT_ORGANIZATION;
 // =============================================================================
 
 export const ACADEMIC_TERMS: AcademicTerm[] = [
-  // 2023-2024 Academic Year (Archived)
   {
     id: 'term-fall-2023',
     name: 'Fall 2023',
     type: 'fall',
     academicYear: '2023-2024',
-    startDate: new Date('2023-08-28'),
+    startDate: new Date('2023-08-21'),
     endDate: new Date('2023-12-15'),
     status: 'completed',
   },
@@ -54,8 +53,8 @@ export const ACADEMIC_TERMS: AcademicTerm[] = [
     name: 'Spring 2024',
     type: 'spring',
     academicYear: '2023-2024',
-    startDate: new Date('2024-01-15'),
-    endDate: new Date('2024-05-10'),
+    startDate: new Date('2024-01-22'),
+    endDate: new Date('2024-05-17'),
     status: 'completed',
   },
   {
@@ -63,17 +62,16 @@ export const ACADEMIC_TERMS: AcademicTerm[] = [
     name: 'Summer 2024',
     type: 'summer',
     academicYear: '2023-2024',
-    startDate: new Date('2024-05-27'),
-    endDate: new Date('2024-08-16'),
+    startDate: new Date('2024-06-03'),
+    endDate: new Date('2024-07-26'),
     status: 'completed',
   },
-  // 2024-2025 Academic Year (Archived)
   {
     id: 'term-fall-2024',
     name: 'Fall 2024',
     type: 'fall',
     academicYear: '2024-2025',
-    startDate: new Date('2024-08-26'),
+    startDate: new Date('2024-08-19'),
     endDate: new Date('2024-12-13'),
     status: 'completed',
   },
@@ -82,8 +80,8 @@ export const ACADEMIC_TERMS: AcademicTerm[] = [
     name: 'Spring 2025',
     type: 'spring',
     academicYear: '2024-2025',
-    startDate: new Date('2025-01-13'),
-    endDate: new Date('2025-05-09'),
+    startDate: new Date('2025-01-20'),
+    endDate: new Date('2025-05-16'),
     status: 'completed',
   },
   {
@@ -91,8 +89,8 @@ export const ACADEMIC_TERMS: AcademicTerm[] = [
     name: 'Summer 2025',
     type: 'summer',
     academicYear: '2024-2025',
-    startDate: new Date('2025-05-26'),
-    endDate: new Date('2025-08-15'),
+    startDate: new Date('2025-06-02'),
+    endDate: new Date('2025-07-25'),
     status: 'completed',
   },
   // 2025-2026 Academic Year (Current)
@@ -101,8 +99,8 @@ export const ACADEMIC_TERMS: AcademicTerm[] = [
     name: 'Fall 2025',
     type: 'fall',
     academicYear: '2025-2026',
-    startDate: new Date('2025-08-25'),
-    endDate: new Date('2025-12-12'),
+    startDate: new Date('2025-08-20'),
+    endDate: new Date('2025-12-13'),
     status: 'completed',
   },
   {
@@ -110,8 +108,8 @@ export const ACADEMIC_TERMS: AcademicTerm[] = [
     name: 'Spring 2026',
     type: 'spring',
     academicYear: '2025-2026',
-    startDate: new Date('2026-01-13'),
-    endDate: new Date('2026-05-08'),
+    startDate: new Date('2026-01-21'),
+    endDate: new Date('2026-05-16'),
     status: 'current',
   },
   {
@@ -119,8 +117,8 @@ export const ACADEMIC_TERMS: AcademicTerm[] = [
     name: 'Summer 2026',
     type: 'summer',
     academicYear: '2025-2026',
-    startDate: new Date('2026-05-26'),
-    endDate: new Date('2026-08-14'),
+    startDate: new Date('2026-06-04'),
+    endDate: new Date('2026-07-25'),
     status: 'upcoming',
   },
   // 2026-2027 Academic Year (Upcoming)
@@ -129,71 +127,91 @@ export const ACADEMIC_TERMS: AcademicTerm[] = [
     name: 'Fall 2026',
     type: 'fall',
     academicYear: '2026-2027',
-    startDate: new Date('2026-08-24'),
-    endDate: new Date('2026-12-11'),
+    startDate: new Date('2026-08-19'),
+    endDate: new Date('2026-12-12'),
     status: 'upcoming',
   },
 ];
 
 // =============================================================================
-// ACADEMIC CALENDAR
+// ACADEMIC CALENDAR — from catalog.lincolnuca.edu/academic-calendar/
 // =============================================================================
 
 export const ACADEMIC_CALENDAR: AcademicCalendarEvent[] = [
   // Spring 2026
   {
     id: 'cal-spring-start',
-    title: 'Spring Semester Begins',
+    title: 'Spring Semester Begins — Placement Tests',
     type: 'semester_start',
-    date: new Date('2026-01-13'),
+    date: new Date('2026-01-21'),
     termId: 'term-spring-2026',
   },
   {
-    id: 'cal-mlk-day',
-    title: 'Martin Luther King Jr. Day',
-    description: 'Campus closed',
-    type: 'holiday',
-    date: new Date('2026-01-19'),
+    id: 'cal-spring-advising',
+    title: 'Academic Advising & Registration',
+    description: 'Spring 2026 advising and registration',
+    type: 'registration',
+    date: new Date('2026-01-22'),
+    endDate: new Date('2026-01-23'),
+    termId: 'term-spring-2026',
+  },
+  {
+    id: 'cal-classes-begin',
+    title: 'Classes Begin',
+    type: 'semester_start',
+    date: new Date('2026-01-26'),
+    termId: 'term-spring-2026',
   },
   {
     id: 'cal-add-drop',
     title: 'Add/Drop Deadline',
-    description: 'Last day to add or drop classes without penalty',
+    description: 'Last day to add or drop classes without academic penalty',
     type: 'add_drop',
-    date: new Date('2026-01-27'),
+    date: new Date('2026-02-09'),
     termId: 'term-spring-2026',
   },
   {
-    id: 'cal-spring-break',
-    title: 'Spring Break',
-    description: 'No classes',
-    type: 'break',
-    date: new Date('2026-03-16'),
-    endDate: new Date('2026-03-20'),
-    termId: 'term-spring-2026',
-  },
-  {
-    id: 'cal-easter',
-    title: 'Easter Break',
+    id: 'cal-presidents-day',
+    title: "Presidents' Day",
     description: 'Campus closed',
     type: 'holiday',
-    date: new Date('2026-04-03'),
-    endDate: new Date('2026-04-06'),
+    date: new Date('2026-02-16'),
   },
   {
-    id: 'cal-midterms',
-    title: 'Midterm Examinations',
-    type: 'midterms',
-    date: new Date('2026-03-02'),
-    endDate: new Date('2026-03-06'),
+    id: 'cal-spring-recess',
+    title: 'Spring Recess',
+    description: 'No classes',
+    type: 'break',
+    date: new Date('2026-03-17'),
+    endDate: new Date('2026-03-21'),
     termId: 'term-spring-2026',
+  },
+  {
+    id: 'cal-classes-resume',
+    title: 'Classes Resume',
+    type: 'semester_start',
+    date: new Date('2026-03-23'),
+    termId: 'term-spring-2026',
+  },
+  {
+    id: 'cal-fall-reg',
+    title: 'Fall 2026 Registration Opens',
+    type: 'registration',
+    date: new Date('2026-03-23'),
   },
   {
     id: 'cal-finals',
     title: 'Final Examinations',
     type: 'finals',
-    date: new Date('2026-05-04'),
-    endDate: new Date('2026-05-08'),
+    date: new Date('2026-05-11'),
+    endDate: new Date('2026-05-16'),
+    termId: 'term-spring-2026',
+  },
+  {
+    id: 'cal-spring-end',
+    title: 'Semester Ends',
+    type: 'semester_end',
+    date: new Date('2026-05-16'),
     termId: 'term-spring-2026',
   },
   {
@@ -201,19 +219,59 @@ export const ACADEMIC_CALENDAR: AcademicCalendarEvent[] = [
     title: 'Commencement Ceremony',
     description: 'Class of 2026 graduation',
     type: 'commencement',
-    date: new Date('2026-05-15'),
+    date: new Date('2026-05-30'),
+  },
+  // Summer 2026
+  {
+    id: 'cal-summer-start',
+    title: 'Summer Session Begins — Placement Tests',
+    type: 'semester_start',
+    date: new Date('2026-06-04'),
+    termId: 'term-summer-2026',
   },
   {
-    id: 'cal-summer-reg',
-    title: 'Summer Registration Opens',
+    id: 'cal-summer-advising',
+    title: 'Summer Advising & Registration',
     type: 'registration',
-    date: new Date('2026-03-23'),
+    date: new Date('2026-06-04'),
+    endDate: new Date('2026-06-05'),
+    termId: 'term-summer-2026',
   },
   {
-    id: 'cal-fall-reg',
-    title: 'Fall 2026 Registration Opens',
-    type: 'registration',
-    date: new Date('2026-04-06'),
+    id: 'cal-summer-classes',
+    title: 'Summer Classes Begin',
+    type: 'semester_start',
+    date: new Date('2026-06-08'),
+    termId: 'term-summer-2026',
+  },
+  {
+    id: 'cal-summer-add-drop',
+    title: 'Summer Add/Drop Deadline',
+    type: 'add_drop',
+    date: new Date('2026-06-15'),
+    termId: 'term-summer-2026',
+  },
+  {
+    id: 'cal-independence-day',
+    title: 'Independence Day',
+    description: 'Campus closed',
+    type: 'holiday',
+    date: new Date('2026-07-03'),
+  },
+  {
+    id: 'cal-summer-end',
+    title: 'Summer Session Ends',
+    type: 'semester_end',
+    date: new Date('2026-07-25'),
+    termId: 'term-summer-2026',
+  },
+  // Key institutional event
+  {
+    id: 'cal-wscuc-review',
+    title: 'WSCUC Reaccreditation Review',
+    description: 'WASC Senior College and University Commission institutional review — accreditation expires/renews June 26, 2026',
+    type: 'other',
+    date: new Date('2026-06-26'),
   },
 ];
 
@@ -224,111 +282,95 @@ export const ACADEMIC_CALENDAR: AcademicCalendarEvent[] = [
 export const DEPARTMENTS: Department[] = [
   {
     id: 'dept-business',
-    name: 'School of Business',
+    name: 'Business Programs',
     shortName: 'Business',
-    description: 'Developing the next generation of ethical business leaders and entrepreneurs.',
-    programCount: 6,
-  },
-  {
-    id: 'dept-education',
-    name: 'School of Education',
-    shortName: 'Education',
-    description: 'Preparing transformative educators for diverse communities.',
+    description: 'Undergraduate and graduate business education. BA in Business Administration, MBA, MS in International Business & Finance Management, MS in Finance, and DBA. Ranked 4th among Bay Area MBA programs (SF Business Times).',
     programCount: 4,
   },
   {
-    id: 'dept-arts',
-    name: 'College of Arts & Sciences',
-    shortName: 'Arts & Sciences',
-    description: 'Liberal arts foundation with emphasis on critical thinking and innovation.',
-    programCount: 8,
+    id: 'dept-di',
+    name: 'Diagnostic Imaging',
+    shortName: 'Diagnostic Imaging',
+    description: 'BS in Diagnostic Medical Sonography — one of the few four-year DI programs in California. Fully equipped imaging laboratory at 420 15th Street.',
+    programCount: 1,
   },
   {
-    id: 'dept-engineering',
-    name: 'College of Engineering & Architecture',
-    shortName: 'Engineering',
-    description: 'Engineering, architecture, and computer science programs advancing technology and design.',
-    programCount: 5,
-  },
-  {
-    id: 'dept-communications',
-    name: 'Cathy Hughes School of Communications',
-    shortName: 'Communications',
-    description: 'Journalism, media, film, and communications programs.',
-    programCount: 4,
-  },
-  {
-    id: 'dept-fine-arts',
-    name: 'Chadwick A. Boseman College of Fine Arts',
-    shortName: 'Fine Arts',
-    description: 'Music, theatre, art, and design programs nurturing creative excellence.',
-    programCount: 4,
+    id: 'dept-esl',
+    name: 'English Language Program',
+    shortName: 'ESL',
+    description: 'Intensive English language instruction for international students preparing for degree-level academic study.',
+    programCount: 1,
   },
 ];
 
 // =============================================================================
-// LEADERSHIP / FACULTY
+// LEADERSHIP / FACULTY — from acqa.lincolnuca.edu/staff/
 // =============================================================================
 
 export const FACULTY_LEADERSHIP: FacultyMember[] = [
   {
     id: 'faculty-president',
-    name: 'Dr. Wayne A.I. Frederick',
-    title: 'Interim President',
+    name: 'Dr. Mikhail Brodsky',
+    title: 'President',
     role: 'president',
-    bio: 'Dr. Frederick serves as Interim President of Howard University, driving the institution\'s mission of academic excellence and community impact.',
+    bio: "Dr. Brodsky holds two doctoral degrees from Lomonosov Moscow State University and served for 10 years as a research professor in UC Berkeley's Department of Statistics before joining Lincoln. Under his leadership the university earned WSCUC accreditation in 2020 and expanded its graduate programs. He has built the faculty by recruiting senior professors retiring from state universities who value Lincoln's focused mission.",
   },
   {
     id: 'faculty-provost',
-    name: 'Dr. Angela Nixon',
-    title: 'Provost & VP of Academic Affairs',
+    name: 'Dr. Themistoclis Pantos',
+    title: 'Provost / Chief Academic Officer & Director of Business Programs',
     role: 'provost',
-    bio: 'Dr. Nixon oversees all academic programs, faculty development, and institutional effectiveness at Howard University.',
+    bio: 'Dr. Pantos oversees all academic programs, curriculum development, and faculty affairs. He also serves as Director of Business Programs, guiding the MBA, MS Finance, and DBA curricula.',
   },
   {
-    id: 'faculty-dean-business',
-    name: 'Dr. Alex Morgan',
-    title: 'Dean, School of Business',
+    id: 'faculty-dean-students',
+    name: 'Dr. Mohamed Tailab',
+    title: 'Dean of Students',
     role: 'dean',
-    departmentId: 'dept-business',
-    bio: 'Dr. Thompson leads the School of Business with a focus on entrepreneurship and innovation.',
+    bio: 'Dr. Tailab leads student affairs, academic advising, and student success initiatives.',
   },
   {
-    id: 'faculty-dean-education',
-    name: 'Dr. Patricia Williams',
-    title: 'Dean, School of Education',
-    role: 'dean',
-    departmentId: 'dept-education',
-    bio: 'Dr. Williams brings extensive higher education leadership experience.',
-  },
-  {
-    id: 'faculty-dean-aviation',
-    name: 'Prof. David Carter',
-    title: 'Director, School of Aviation',
-    role: 'dean',
-    departmentId: 'dept-aviation',
-    bio: 'Prof. Carter leads one of the nation\'s premier HBCU aviation programs.',
-  },
-  {
-    id: 'faculty-chair-arts',
-    name: 'Dr. Keisha Robinson',
-    title: 'Chair, School of Arts & Sciences',
+    id: 'faculty-avp',
+    name: 'Dr. Michael Guerra',
+    title: 'Administrative Vice President',
     role: 'chair',
-    departmentId: 'dept-arts',
+    bio: 'Dr. Guerra manages institutional operations, facilities coordination, and administrative compliance.',
   },
   {
-    id: 'faculty-chair-social',
-    name: 'Dr. James Mitchell',
-    title: 'Chair, Department of Social Sciences',
+    id: 'faculty-qa',
+    name: 'Dr. Alexander Anokhin',
+    title: 'Director of Quality Assurance & Accreditation Compliance',
     role: 'chair',
-    departmentId: 'dept-social-sciences',
+    bio: 'Dr. Anokhin leads WSCUC accreditation preparation, institutional self-studies, and academic quality review.',
   },
   {
-    id: 'faculty-chair-stem',
-    name: 'Dr. Sandra Lee',
-    title: 'Chair, Department of STEM',
+    id: 'faculty-admissions',
+    name: 'Ms. Maggie Hua',
+    title: 'Director of Admissions & Registrar',
+    role: 'staff',
+    bio: 'Ms. Hua manages the full admissions pipeline, student records, and registration processes.',
+  },
+  {
+    id: 'faculty-di-lab',
+    name: 'Ms. Marina Kay',
+    title: 'Director of Diagnostic Imaging Laboratory',
     role: 'chair',
-    departmentId: 'dept-stem',
+    departmentId: 'dept-di',
+    bio: 'Ms. Kay directs the Diagnostic Imaging Laboratory and oversees clinical training for BS-DI students.',
+  },
+  {
+    id: 'faculty-library',
+    name: 'Ms. Nicole Y. Marsh',
+    title: 'Head Librarian',
+    role: 'staff',
+    bio: 'Ms. Marsh manages the Lincoln University Library and Academic Success Center tutoring resources.',
+  },
+  {
+    id: 'faculty-athletics',
+    name: 'Mr. Desmond Gumbs',
+    title: 'Director of Athletics',
+    role: 'staff',
+    bio: 'Mr. Gumbs leads the Lincoln University Athletics Department and oversees men\'s and women\'s basketball, soccer, and club sports.',
   },
 ];
 
@@ -338,20 +380,20 @@ export const FACULTY_LEADERSHIP: FacultyMember[] = [
 
 export const INSTITUTIONAL_METRICS: InstitutionalMetrics = {
   enrollment: {
-    total: 14500,
-    undergraduate: 10200,
-    graduate: 4300,
-    yearOverYearChange: 2.8,
+    total: 436,
+    undergraduate: 204,
+    graduate: 232,
+    yearOverYearChange: 1.9,
   },
   academics: {
-    programs: 140,
-    facultyCount: 1100,
-    studentFacultyRatio: '10:1',
+    programs: 6,
+    facultyCount: 27,
+    studentFacultyRatio: '15:1',
   },
   outcomes: {
-    graduationRate: 63,
-    retentionRate: 87,
-    employmentRate: 92,
+    graduationRate: 69,
+    retentionRate: 89,
+    employmentRate: 95,
   },
 };
 
@@ -364,40 +406,40 @@ export const EDUCATION_ACTIVITY: ActivityItem[] = [
     id: 'edu-act-1',
     type: 'calendar_published',
     title: 'Calendar Update',
-    description: 'Spring 2026 final exam schedule published',
+    description: 'Spring 2026 final examination schedule published',
     timestamp: new Date('2026-02-04T08:00:00'),
     sourceType: 'record',
     sourceId: 'cal-finals',
     route: '/organization/schedule',
-    organizationId: 'fmu-001',
+    organizationId: 'lu-oak-001',
     mode: 'education',
     visibility: ['faculty', 'student', 'staff'],
   },
   {
     id: 'edu-act-2',
     type: 'event_updated',
-    title: 'Event Reminder',
-    description: 'Add/Drop deadline approaching - Jan 27',
-    timestamp: new Date('2026-01-24T12:00:00'),
+    title: 'Add/Drop Deadline',
+    description: 'Last day to add or drop classes without penalty — Feb 9',
+    timestamp: new Date('2026-02-06T12:00:00'),
     sourceType: 'event',
     sourceId: 'cal-add-drop',
     route: '/organization/schedule',
-    organizationId: 'fmu-001',
+    organizationId: 'lu-oak-001',
     mode: 'education',
     visibility: ['faculty', 'student', 'staff'],
   },
   {
     id: 'edu-act-3',
     type: 'leadership_updated',
-    title: 'Faculty Update',
-    description: 'Dr. Andrew Palmer joins as Dean of Education',
-    timestamp: new Date('2026-01-15T10:00:00'),
+    title: 'Accreditation Notice',
+    description: 'WSCUC reaccreditation review scheduled June 26, 2026',
+    timestamp: new Date('2026-01-20T10:00:00'),
     sourceType: 'organization',
-    sourceId: 'faculty-dean-education',
+    sourceId: 'cal-wscuc-review',
     route: '/organization/leadership',
-    organizationId: 'fmu-001',
+    organizationId: 'lu-oak-001',
     mode: 'education',
-    visibility: ['faculty', 'student', 'staff'],
+    visibility: ['faculty', 'staff'],
   },
   {
     id: 'edu-act-4',
@@ -408,7 +450,7 @@ export const EDUCATION_ACTIVITY: ActivityItem[] = [
     sourceType: 'record',
     sourceId: 'term-fall-2025',
     route: '/organization/results',
-    organizationId: 'fmu-001',
+    organizationId: 'lu-oak-001',
     mode: 'education',
     visibility: ['faculty', 'staff'],
   },
@@ -497,7 +539,7 @@ export function getFacultyRoleLabel(role: FacultyMember['role']): string {
     president: 'President',
     provost: 'Provost',
     dean: 'Dean',
-    chair: 'Department Chair',
+    chair: 'Director',
     professor: 'Professor',
     instructor: 'Instructor',
     staff: 'Staff',
@@ -510,7 +552,7 @@ export function getFacultyRoleLabel(role: FacultyMember['role']): string {
 // =============================================================================
 
 export interface AcademicYearSummary {
-  year: string; // e.g., "2024-2025"
+  year: string;
   terms: AcademicTerm[];
   enrollment: number;
   graduationRate: number;
@@ -522,25 +564,25 @@ export const ACADEMIC_YEAR_ARCHIVE: AcademicYearSummary[] = [
   {
     year: '2023-2024',
     terms: ACADEMIC_TERMS.filter((t) => t.academicYear === '2023-2024'),
-    enrollment: 856,
-    graduationRate: 52,
-    graduates: 178,
+    enrollment: 418,
+    graduationRate: 67,
+    graduates: 46,
     highlights: [
-      'Launched new Aviation Science minor',
-      'Achieved SACSCOC reaccreditation',
-      'Student center renovation completed',
+      'Men\'s basketball program competed under Head Coach Gary Payton',
+      'MBA program launched International Business & Finance track',
+      'WSCUC interim monitoring review cleared with no findings',
     ],
   },
   {
     year: '2024-2025',
     terms: ACADEMIC_TERMS.filter((t) => t.academicYear === '2024-2025'),
-    enrollment: 872,
-    graduationRate: 53,
-    graduates: 184,
+    enrollment: 432,
+    graduationRate: 69,
+    graduates: 50,
     highlights: [
-      'Record enrollment growth of 1.9%',
-      'New online learning platform launched',
-      'Partnership with Miami-Dade County schools expanded',
+      'GAAC Tournament Champions — men\'s basketball (back-to-back)',
+      'Enrollment growth of 3.3% — highest in five years',
+      'William Middlebrooks hired as head basketball coach (April 2024)',
     ],
   },
 ];
