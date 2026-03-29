@@ -42,7 +42,7 @@ function dealStageBg(stage: DealStage): string {
   const colors: Record<DealStage, string> = {
     New:         'rgba(45,30,18,0.08)',
     Qualified:   '#1D9BF020',
-    Proposal:    '#D9775720',
+    Proposal:    '#3B82F620',
     Negotiation: '#8B634020',
     Won:         '#5A8A6E20',
     Lost:        '#B85C5C20',
@@ -223,7 +223,7 @@ export default function InquiriesScreen() {
           {[
             { label: 'Pipeline',  value: formatCurrency(activePipelineValue, true), color: C.accent },
             { label: 'Open Deals', value: `${DEALS.filter(d => d.stage !== 'Won' && d.stage !== 'Lost').length}`, color: '#1D9BF0' },
-            { label: 'Closing Soon', value: `${closingSoon.length}`, color: '#D97757' },
+            { label: 'Closing Soon', value: `${closingSoon.length}`, color: '#3B82F6' },
           ].map(m => (
             <GlassView tier={1} key={m.label} style={[s.dealMetricChip, { flex: 1 }]}>
               <Text style={[s.bodyMed, { color: m.color, fontSize: 16 }]}>{m.value}</Text>

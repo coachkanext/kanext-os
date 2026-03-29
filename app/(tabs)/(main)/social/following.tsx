@@ -39,7 +39,7 @@ const MODE_COLORS: Record<string, string> = {
   business:  '#1D9BF0',
   education: '#003A63',
   community: '#5A8A6E',
-  personal:  '#D97757',
+  personal:  '#3B82F6',
 };
 
 // ── Main screen ────────────────────────────────────────────────────────────────

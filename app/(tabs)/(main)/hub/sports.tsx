@@ -515,8 +515,8 @@ export default function SportsHubScreen() {
         <View style={[styles.card, { backgroundColor: C.surface, gap: 10 }]}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <Text style={[styles.subLabel, { color: C.label }]}>{sc2.offense.systemName}</Text>
-            <View style={{ backgroundColor: '#D9775720', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 }}>
-              <Text style={{ fontSize: 11, fontWeight: '700', color: '#D97757' }}>Pace {sc2.offense.pace}</Text>
+            <View style={{ backgroundColor: '#3B82F620', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 }}>
+              <Text style={{ fontSize: 11, fontWeight: '700', color: '#3B82F6' }}>Pace {sc2.offense.pace}</Text>
             </View>
           </View>
           <Text style={[styles.scoutDesc, { color: C.secondary }]}>{sc2.offense.description}</Text>
@@ -674,7 +674,7 @@ export default function SportsHubScreen() {
                 {[
                   { label: 'Field Goal %',  value: fgPct,  color: '#5A8A6E' },
                   { label: 'Three-Point %', value: fg3Pct, color: '#1D9BF0' },
-                  { label: 'Free Throw %',  value: ftPct,  color: '#D97757' },
+                  { label: 'Free Throw %',  value: ftPct,  color: '#3B82F6' },
                 ].map(s => (
                   <View key={s.label} style={{ gap: 4 }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -751,7 +751,7 @@ export default function SportsHubScreen() {
             <SectionTitle title="Team KR" C={C} />
             <View style={[styles.card, { backgroundColor: C.surface, gap: 10 }]}>
               {[
-                { label: 'Overall KR',   value: TEAM_KR.overall.toFixed(1),   color: '#D97757' },
+                { label: 'Overall KR',   value: TEAM_KR.overall.toFixed(1),   color: '#3B82F6' },
                 { label: 'Offensive KR', value: TEAM_KR.offensive.toFixed(1), color: '#5A8A6E' },
                 { label: 'Defensive KR', value: TEAM_KR.defensive.toFixed(1), color: '#B85C5C' },
               ].map(s => (

@@ -37,7 +37,7 @@ export default function HomeLayout() {
         animation: 'none' as const,
         gestureEnabled: false,
         fullScreenGestureEnabled: false,
-        contentStyle: { backgroundColor: '#F5EFE4' },
+        contentStyle: { backgroundColor: '#FFFFFF' },
       }}
       screenListeners={({ navigation }) => ({
         focus: () => {

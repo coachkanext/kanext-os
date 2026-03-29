@@ -438,7 +438,7 @@ export default function BusinessHubScreen() {
 
     if (pill === 'Sales') {
       const stageCounts: Record<string, number> = { New: 2, Qualified: 3, Proposal: 3, Negotiation: 3, Won: 2, Lost: 2 };
-      const stageColors: Record<string, string> = { New: 'rgba(45,30,18,0.30)', Qualified: '#1D9BF0', Proposal: '#D97757', Negotiation: '#8B6340', Won: '#5A8A6E', Lost: '#B85C5C' };
+      const stageColors: Record<string, string> = { New: 'rgba(45,30,18,0.30)', Qualified: '#1D9BF0', Proposal: '#3B82F6', Negotiation: '#8B6340', Won: '#5A8A6E', Lost: '#B85C5C' };
       return (
         <View style={{ paddingHorizontal: 16, gap: 16, paddingBottom: 32 }}>
           <GlassView tier={1} style={s.card}>
@@ -837,7 +837,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   progressBarBg: { height: 6, borderRadius: 3, overflow: 'hidden' },
   progressBarFill: { height: 6, borderRadius: 3 },
   projectRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderTopWidth: StyleSheet.hairlineWidth },
-  avatar: { width: 26, height: 26, borderRadius: 13, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#F5EFE4' },
+  avatar: { width: 26, height: 26, borderRadius: 13, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#FFFFFF' },
   avatarText: { fontSize: 9, fontWeight: '700', color: '#fff' },
   avatarSm: { width: 20, height: 20, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
   avatarSmText: { fontSize: 7, fontWeight: '700', color: '#fff' },

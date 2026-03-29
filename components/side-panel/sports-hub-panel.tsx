@@ -70,7 +70,7 @@ export function SportsHubPanel() {
         <View style={{ flexDirection: 'row', gap: 8 }}>
           {[
             { label: 'Available', value: health.available, color: '#5A8A6E' },
-            { label: 'Limited',   value: health.limited,   color: '#D97757' },
+            { label: 'Limited',   value: health.limited,   color: '#3B82F6' },
             { label: 'Out',       value: health.out,       color: '#B85C5C' },
           ].map(item => (
             <View key={item.label} style={{ flex: 1, alignItems: 'center', backgroundColor: C.surfacePressed, borderRadius: 8, paddingVertical: 8 }}>

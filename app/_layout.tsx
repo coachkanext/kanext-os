@@ -38,7 +38,7 @@ import { ThemeProvider as KXThemeProvider } from '@/context/theme-context';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useColors } from '@/hooks/use-colors';
 import { registerSearchOverlayHandlers } from '@/utils/global-search-overlay';
-import { registerSplitNexusHandlers } from '@/utils/global-split-nexus';
+import { registerSplitNexusHandlers, openSplitNexus, setSplitNexusPendingQuery } from '@/utils/global-split-nexus';
 import { registerSettingsPanelHandlers, closeSettingsPanel, isSettingsPanelOpen } from '@/utils/global-settings-panel';
 import { SettingsPanel, SETTINGS_PANEL_WIDTH } from '@/components/settings-panel';
 import { registerSidePanelHandlers, openSidePanel, closeSidePanel, isSidePanelOpen } from '@/utils/global-side-panel';
@@ -52,6 +52,9 @@ import { shouldUseSlideAnimation, registerAnimRerender } from '@/utils/global-fo
 
 import { UniversalFinder } from '@/components/universal-finder';
 import { SplitNexusOverlay } from '@/components/nexus/split-nexus-overlay';
+import { VoiceOverlay } from '@/components/nexus/voice-overlay';
+import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
+import { registerVoiceHandlers } from '@/utils/global-voice';
 import { CallOverlay } from '@/components/call/call-overlay';
 import { IncomingCallOverlay } from '@/components/call/incoming-call-overlay';
 import { ProfileSheet } from '@/components/ui/profile-sheet';
@@ -188,6 +191,27 @@ function AppShell() {
       () => setSplitNexusVisible(false),
     );
   }, []);
+
+  // Voice overlay state (hold on Nexus tab)
+  const [voiceVisible, setVoiceVisible] = useState(false);
+
+  const { voiceState, audioLevel, startListening, stopListening } = useSpeechRecognition({
+    onTranscript: (text, isFinal) => {
+      if (isFinal && text.trim()) {
+        stopListening();
+        setVoiceVisible(false);
+        setSplitNexusPendingQuery(text.trim());
+        openSplitNexus();
+      }
+    },
+  });
+
+  useEffect(() => {
+    registerVoiceHandlers(
+      () => { setVoiceVisible(true); startListening(); },
+      () => { stopListening(); setVoiceVisible(false); },
+    );
+  }, [startListening, stopListening]);
 
   // Settings panel state — slides from LEFT, content shifts RIGHT
   const [settingsPanelVisible, setSettingsPanelVisible] = useState(false);
@@ -368,6 +392,12 @@ function AppShell() {
 
       <UniversalFinder />
       <SplitNexusOverlay visible={splitNexusVisible} onClose={() => setSplitNexusVisible(false)} />
+      <VoiceOverlay
+        visible={voiceVisible}
+        voiceState={voiceState}
+        audioLevel={audioLevel}
+        onStop={() => { stopListening(); setVoiceVisible(false); }}
+      />
       <SearchOverlay visible={searchOverlayVisible} onClose={() => setSearchOverlayVisible(false)} />
       <MultitaskingOverlay />
       <OrgDrawer />
@@ -458,6 +488,6 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5EFE4',
+    backgroundColor: '#FFFFFF',
   },
 });

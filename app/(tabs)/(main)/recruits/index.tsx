@@ -278,7 +278,7 @@ function RecruitDetailSheet({
             </View>
             {recruit.krConf !== undefined && (
               <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontSize: 22, fontWeight: '700', color: '#D97757' }}>
+                <Text style={{ fontSize: 22, fontWeight: '700', color: '#3B82F6' }}>
                   {recruit.krConf}%
                 </Text>
                 <Text style={{ fontSize: 11, color: C.muted }}>Confidence</Text>
@@ -403,7 +403,7 @@ function RecruitDetailSheet({
           <IconSymbol
             name="film.fill"
             size={16}
-            color={recruit.hasFilm ? '#D97757' : C.muted}
+            color={recruit.hasFilm ? '#3B82F6' : C.muted}
           />
           <Text
             style={{
@@ -433,7 +433,7 @@ function RecruitDetailSheet({
               width: 30,
               height: 30,
               borderRadius: 15,
-              backgroundColor: '#D97757' + '18',
+              backgroundColor: '#3B82F6' + '18',
               alignItems: 'center',
               justifyContent: 'center',
             }}
@@ -441,7 +441,7 @@ function RecruitDetailSheet({
             <IconSymbol
               name={contactIcon(recruit.contactType)}
               size={14}
-              color="#D97757"
+              color="#3B82F6"
             />
           </View>
           <Text style={{ fontSize: 13, color: C.secondary }}>
@@ -494,7 +494,7 @@ function RecruitDetailSheet({
                 paddingVertical: 11,
                 borderRadius: 12,
                 backgroundColor:
-                  action === 'Schedule Contact' ? '#D97757' : C.surface,
+                  action === 'Schedule Contact' ? '#3B82F6' : C.surface,
                 borderWidth: action !== 'Schedule Contact' ? 1 : 0,
                 borderColor: C.inputBorder,
                 alignItems: 'center',
@@ -712,14 +712,14 @@ export default function RecruitsScreen() {
             s.rolePill,
             {
               backgroundColor:
-                role === 'Coach' ? '#003A63' + '18' : '#D97757' + '18',
+                role === 'Coach' ? '#003A63' + '18' : '#3B82F6' + '18',
             },
           ]}
         >
           <Text
             style={[
               s.rolePillText,
-              { color: role === 'Coach' ? '#003A63' : '#D97757' },
+              { color: role === 'Coach' ? '#003A63' : '#3B82F6' },
             ]}
           >
             {role}
@@ -753,8 +753,8 @@ export default function RecruitsScreen() {
                   style={[
                     s.pill,
                     {
-                      backgroundColor: active ? '#D97757' : 'transparent',
-                      borderColor: active ? '#D97757' : C.inputBorder,
+                      backgroundColor: active ? '#3B82F6' : 'transparent',
+                      borderColor: active ? '#3B82F6' : C.inputBorder,
                     },
                   ]}
                 >
@@ -790,8 +790,8 @@ export default function RecruitsScreen() {
                   style={[
                     s.pill,
                     {
-                      backgroundColor: active ? '#D97757' : 'transparent',
-                      borderColor: active ? '#D97757' : C.inputBorder,
+                      backgroundColor: active ? '#3B82F6' : 'transparent',
+                      borderColor: active ? '#3B82F6' : C.inputBorder,
                     },
                   ]}
                 >
@@ -826,8 +826,8 @@ export default function RecruitsScreen() {
                   style={[
                     s.pill,
                     {
-                      backgroundColor: active ? '#D97757' : 'transparent',
-                      borderColor: active ? '#D97757' : C.inputBorder,
+                      backgroundColor: active ? '#3B82F6' : 'transparent',
+                      borderColor: active ? '#3B82F6' : C.inputBorder,
                     },
                   ]}
                 >
@@ -864,7 +864,7 @@ export default function RecruitsScreen() {
           </Text>
           <Pressable
             onPress={cycleRole}
-            style={[s.switchBtn, { backgroundColor: '#D97757' }]}
+            style={[s.switchBtn, { backgroundColor: '#3B82F6' }]}
           >
             <Text style={{ color: '#fff', fontWeight: '700', fontSize: 14 }}>
               Switch to Recruit View
@@ -1091,19 +1091,19 @@ export default function RecruitsScreen() {
               width: 36,
               height: 36,
               borderRadius: 18,
-              backgroundColor: '#D97757' + '18',
+              backgroundColor: '#3B82F6' + '18',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <IconSymbol name="sparkles" size={17} color="#D97757" />
+            <IconSymbol name="sparkles" size={17} color="#3B82F6" />
           </View>
           <View style={{ flex: 1 }}>
             <Text
               style={{
                 fontSize: 12,
                 fontWeight: '700',
-                color: '#D97757',
+                color: '#3B82F6',
                 marginBottom: 2,
               }}
             >
@@ -1211,8 +1211,8 @@ export default function RecruitsScreen() {
                 style={[
                   s.filterPill,
                   {
-                    backgroundColor: active ? '#D97757' + '18' : C.surface,
-                    borderColor: active ? '#D97757' : C.inputBorder,
+                    backgroundColor: active ? '#3B82F6' + '18' : C.surface,
+                    borderColor: active ? '#3B82F6' : C.inputBorder,
                   },
                 ]}
               >
@@ -1220,7 +1220,7 @@ export default function RecruitsScreen() {
                   style={{
                     fontSize: 11,
                     fontWeight: active ? '700' : '500',
-                    color: active ? '#D97757' : C.secondary,
+                    color: active ? '#3B82F6' : C.secondary,
                   }}
                 >
                   {opt}
@@ -1304,12 +1304,12 @@ export default function RecruitsScreen() {
                         paddingHorizontal: 10,
                         paddingVertical: 5,
                         borderRadius: 8,
-                        backgroundColor: '#D97757' + '18',
+                        backgroundColor: '#3B82F6' + '18',
                         borderWidth: 1,
-                        borderColor: '#D97757' + '40',
+                        borderColor: '#3B82F6' + '40',
                       }}
                     >
-                      <Text style={{ fontSize: 11, fontWeight: '700', color: '#D97757' }}>
+                      <Text style={{ fontSize: 11, fontWeight: '700', color: '#3B82F6' }}>
                         Evaluate
                       </Text>
                     </Pressable>
@@ -1323,8 +1323,8 @@ export default function RecruitsScreen() {
                         { backgroundColor: C.surface, borderColor: C.inputBorder },
                       ]}
                     >
-                      <IconSymbol name="plus" size={11} color="#D97757" />
-                      <Text style={{ fontSize: 11, fontWeight: '600', color: '#D97757' }}>
+                      <IconSymbol name="plus" size={11} color="#3B82F6" />
+                      <Text style={{ fontSize: 11, fontWeight: '600', color: '#3B82F6' }}>
                         Add
                       </Text>
                     </Pressable>
@@ -1378,7 +1378,7 @@ export default function RecruitsScreen() {
             My Recruiting Profile
           </Text>
           <Text
-            style={{ fontSize: 13, fontWeight: '700', color: '#D97757' }}
+            style={{ fontSize: 13, fontWeight: '700', color: '#3B82F6' }}
           >
             70% complete
           </Text>
@@ -1396,7 +1396,7 @@ export default function RecruitsScreen() {
             style={{
               width: '70%',
               height: '100%',
-              backgroundColor: '#D97757',
+              backgroundColor: '#3B82F6',
               borderRadius: 3,
             }}
           />
@@ -1433,13 +1433,13 @@ export default function RecruitsScreen() {
               paddingHorizontal: 16,
               paddingVertical: 9,
               borderRadius: 10,
-              backgroundColor: '#D97757' + '18',
+              backgroundColor: '#3B82F6' + '18',
               borderWidth: 1,
-              borderColor: '#D97757' + '40',
+              borderColor: '#3B82F6' + '40',
             }}
           >
             <Text
-              style={{ fontSize: 13, fontWeight: '700', color: '#D97757' }}
+              style={{ fontSize: 13, fontWeight: '700', color: '#3B82F6' }}
             >
               Upload Photo
             </Text>
@@ -1545,11 +1545,11 @@ export default function RecruitsScreen() {
               paddingHorizontal: 12,
               paddingVertical: 6,
               borderRadius: 8,
-              backgroundColor: '#D97757' + '18',
+              backgroundColor: '#3B82F6' + '18',
             }}
           >
             <Text
-              style={{ fontSize: 12, fontWeight: '700', color: '#D97757' }}
+              style={{ fontSize: 12, fontWeight: '700', color: '#3B82F6' }}
             >
               Upload
             </Text>
@@ -1876,12 +1876,12 @@ export default function RecruitsScreen() {
                       paddingHorizontal: 10,
                       paddingVertical: 5,
                       borderRadius: 8,
-                      backgroundColor: '#D97757' + '18',
+                      backgroundColor: '#3B82F6' + '18',
                       borderWidth: 1,
-                      borderColor: '#D97757' + '40',
+                      borderColor: '#3B82F6' + '40',
                     }}
                   >
-                    <Text style={{ fontSize: 11, fontWeight: '700', color: '#D97757' }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: '#3B82F6' }}>
                       Evaluate
                     </Text>
                   </Pressable>
@@ -1898,12 +1898,12 @@ export default function RecruitsScreen() {
                       },
                     ]}
                   >
-                    <IconSymbol name="plus" size={11} color="#D97757" />
+                    <IconSymbol name="plus" size={11} color="#3B82F6" />
                     <Text
                       style={{
                         fontSize: 11,
                         fontWeight: '600',
-                        color: '#D97757',
+                        color: '#3B82F6',
                       }}
                     >
                       Add to Board
@@ -1946,7 +1946,7 @@ export default function RecruitsScreen() {
           }
           style={[
             s.fab,
-            { backgroundColor: '#D97757', bottom: insets.bottom + 88 },
+            { backgroundColor: '#3B82F6', bottom: insets.bottom + 88 },
           ]}
         >
           <IconSymbol name="plus" size={24} color="#fff" />

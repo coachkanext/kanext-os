@@ -392,7 +392,7 @@ const reStyles = StyleSheet.create({
   audioHandle: {
     position: 'absolute',
     width: 14, height: '100%',
-    backgroundColor: '#D97757',
+    backgroundColor: '#3B82F6',
     borderRadius: 3,
   },
   audioMute: {

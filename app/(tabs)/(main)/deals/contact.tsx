@@ -30,7 +30,7 @@ import {
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 const STAGE_COLORS: Record<CRMStage, string> = {
-  Lead: 'rgba(45,30,18,0.30)', Contacted: '#D97757', Proposal: '#5A8A6E',
+  Lead: 'rgba(45,30,18,0.30)', Contacted: '#3B82F6', Proposal: '#5A8A6E',
   Negotiation: '#1D9BF0', Won: '#5A8A6E', Lost: '#B85C5C',
 };
 

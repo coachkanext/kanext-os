@@ -33,3 +33,15 @@ export function closeSplitNexus() {
 export function isSplitNexusOpen(): boolean {
   return _isOpen;
 }
+
+let _pendingQuery: string | null = null;
+
+export function setSplitNexusPendingQuery(query: string): void {
+  _pendingQuery = query;
+}
+
+export function consumeSplitNexusPendingQuery(): string | null {
+  const q = _pendingQuery;
+  _pendingQuery = null;
+  return q;
+}

@@ -1,12 +1,10 @@
 /**
- * Phone — universal to all modes.
- * "Calls" header left · Filter icon right (All / Missed / Voicemail / Contacts)
- * Favorites row — horizontal scroll, big avatar cards.
- * Recents list — name, direction arrow, timestamp, quick-call icon.
+ * Phone — universal to all modes. (Section 7, KaNeXT Product Spec)
+ * Centered pill dropdown: Calls | Missed | Voicemail | Contacts
+ * Calls: favorites row + all recents. Missed: missed only (red). Voicemail: voicemail list.
+ * Contacts: my profile card + alpha-grouped list + group filter pills.
  * Two stacked FABs (dialer + search), bottom-right above footer.
- * Search: full-screen overlay, grouped results (Calls / Voicemail / Contacts).
- * Dialer: 90% bottom sheet, iOS-style keypad.
- * Tap person → profile bottom sheet.
+ * Long-press → iOS context menu. Tap contact → profile bottom sheet.
  */
 
 import React, { useState, useMemo, useCallback, useRef } from 'react';
@@ -30,8 +28,7 @@ import {
   type RecentCall, type PhoneContact, type Voicemail, type CallDirection,
 } from '@/data/mock-phone';
 
-type PhoneTab = 'Calls' | 'Contacts';
-type CallsSubFilter = 'All' | 'Missed' | 'Voicemail';
+type PhoneTab = 'Calls' | 'Missed' | 'Voicemail' | 'Contacts';
 type ExpandedSection = 'calls' | 'voicemails' | 'contacts' | null;
 
 type ContextMenuItem = {
@@ -49,7 +46,7 @@ type ContextMenuState = {
 
 type ContactContextMenuState = ContextMenuState & { contact: PhoneContact | null };
 
-const CALLS_PILLS: CallsSubFilter[] = ['All', 'Missed', 'Voicemail'];
+const PHONE_TABS: PhoneTab[] = ['Calls', 'Missed', 'Voicemail', 'Contacts'];
 const FOOTER_HEIGHT = 49;
 const PILLS_ROW_H = 46;
 const SEARCH_BAR_HEIGHT = 52;
@@ -1096,11 +1093,8 @@ export default function PhoneScreen() {
   const activeRole = state.activeContext.derived_role_badge ?? 'Owner';
 
   const [tab, setTab] = useState<PhoneTab>('Calls');
-  const [subFilter, setSubFilter] = useState<CallsSubFilter>('All');
   const [tabDropdownVisible, setTabDropdownVisible] = useState(false);
   const [editDropdownVisible, setEditDropdownVisible] = useState(false);
-  const [filterPillsVisible, setFilterPillsVisible] = useState(false);
-  const pillsRevealAnim = useRef(new Animated.Value(0)).current;
   const [searchActive, setSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedSection, setExpandedSection] = useState<ExpandedSection>(null);
@@ -1152,21 +1146,9 @@ export default function PhoneScreen() {
 
   const missedCalls = useMemo(() => orgCalls.filter(c => c.direction === 'missed' && !deletedCallIds.has(c.id)), [orgCalls, deletedCallIds]);
   const canvasCalls = useMemo(() => {
-    const base = subFilter === 'Missed' ? missedCalls : orgCalls.filter(c => !deletedCallIds.has(c.id));
-    return base;
-  }, [subFilter, missedCalls, orgCalls, deletedCallIds]);
-
-  const toggleFilterPills = useCallback(() => {
-    setFilterPillsVisible(prev => {
-      const next = !prev;
-      Animated.timing(pillsRevealAnim, {
-        toValue: next ? 1 : 0,
-        duration: 200,
-        useNativeDriver: false,
-      }).start();
-      return next;
-    });
-  }, [pillsRevealAnim]);
+    if (tab === 'Missed') return missedCalls;
+    return orgCalls.filter(c => !deletedCallIds.has(c.id));
+  }, [tab, missedCalls, orgCalls, deletedCallIds]);
 
   const toggleContactFilterPills = useCallback(() => {
     setContactFilterPillsVisible(prev => {
@@ -1372,7 +1354,7 @@ export default function PhoneScreen() {
             >
               <Text style={[styles.editBtnText, { color: C.accent }]}>Cancel</Text>
             </Pressable>
-          ) : tab === 'Calls' ? (
+          ) : (tab === 'Calls' || tab === 'Missed') ? (
             <Pressable
               style={styles.filterBtn}
               onPress={() => {
@@ -1419,8 +1401,8 @@ export default function PhoneScreen() {
             )}
           </Pressable>
 
-          {/* Right */}
-          {tab === 'Contacts' ? (
+          {/* Right — Contacts has group filter, other views have no filter icon */}
+          {tab === 'Contacts' && !editFavoritesMode && !selectMode ? (
             <Pressable
               style={styles.filterBtn}
               onPress={() => {
@@ -1436,69 +1418,10 @@ export default function PhoneScreen() {
                 color={contactFilterPillsVisible || contactFilter !== 'All' ? C.accent : C.label}
               />
             </Pressable>
-          ) : tab === 'Calls' && !editFavoritesMode && !selectMode ? (
-            <Pressable
-              style={styles.filterBtn}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                toggleFilterPills();
-                setTabDropdownVisible(false);
-              }}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            >
-              <IconSymbol
-                name={filterPillsVisible || subFilter !== 'All' ? 'line.3.horizontal.decrease.circle.fill' : 'line.3.horizontal.decrease.circle'}
-                size={22}
-                color={filterPillsVisible || subFilter !== 'All' ? C.accent : C.label}
-              />
-            </Pressable>
           ) : (
             <View style={styles.filterBtn} />
           )}
         </View>
-
-        {/* Sub-filter pills — Calls view only, slides in */}
-        {tab === 'Calls' && (
-          <Animated.View style={{
-            height: pillsRevealAnim.interpolate({ inputRange: [0, 1], outputRange: [0, PILLS_ROW_H] }),
-            opacity: pillsRevealAnim,
-            overflow: 'hidden',
-          }}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.pillsRow}
-              style={styles.pillsScroll}
-            >
-              {CALLS_PILLS.map(pill => {
-                const isActive = subFilter === pill;
-                return (
-                  <Pressable
-                    key={pill}
-                    style={[
-                      styles.pill,
-                      isActive
-                        ? { backgroundColor: C.label }
-                        : { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: C.separator },
-                    ]}
-                    onPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                      if (isActive) {
-                        toggleFilterPills();
-                      } else {
-                        setSubFilter(pill);
-                      }
-                    }}
-                  >
-                    <Text style={[styles.pillText, { color: isActive ? C.bg : C.secondary }]}>
-                      {pill}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
-          </Animated.View>
-        )}
 
         {/* Group filter pills — Contacts view only, slides in */}
         {tab === 'Contacts' && (
@@ -1588,7 +1511,7 @@ export default function PhoneScreen() {
             scrollEventThrottle={16}
             contentContainerStyle={{ paddingBottom: insets.bottom + FOOTER_HEIGHT + 150 }}
           >
-            {(displayFavorites.length > 0 || editFavoritesMode) && subFilter === 'All' && !selectMode && (
+            {(displayFavorites.length > 0 || editFavoritesMode) && tab === 'Calls' && !selectMode && (
               <View style={[styles.section, styles.favsSection]}>
                 <ScrollView
                   horizontal
@@ -1614,7 +1537,7 @@ export default function PhoneScreen() {
             )}
 
             <View style={styles.section}>
-              {subFilter === 'Voicemail' ? (
+              {tab === 'Voicemail' ? (
                 <>
                   {orgVoicemails.length === 0
                     ? <Text style={styles.emptyText}>No voicemails</Text>
@@ -1773,7 +1696,7 @@ export default function PhoneScreen() {
         </View>
       )}
 
-      {/* ── Tab dropdown (Calls / Contacts) — centered below pill ── */}
+      {/* ── Tab dropdown (Calls / Missed / Voicemail / Contacts) ── */}
       {tabDropdownVisible && (
         <>
           <Pressable style={StyleSheet.absoluteFill} onPress={() => setTabDropdownVisible(false)} />
@@ -1781,7 +1704,7 @@ export default function PhoneScreen() {
             styles.tabDropdown,
             { top: insets.top + 56, backgroundColor: C.bg, borderColor: C.separator },
           ]}>
-            {(['Calls', 'Contacts'] as PhoneTab[]).map(t => (
+            {PHONE_TABS.map(t => (
               <Pressable
                 key={t}
                 style={({ pressed }) => [styles.tabDropdownOption, pressed && { backgroundColor: C.surfacePressed }]}
@@ -1789,9 +1712,6 @@ export default function PhoneScreen() {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                   if (t !== tab) {
                     setTab(t);
-                    setSubFilter('All');
-                    setFilterPillsVisible(false);
-                    pillsRevealAnim.setValue(0);
                   }
                   setTabDropdownVisible(false);
                 }}

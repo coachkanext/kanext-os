@@ -79,7 +79,7 @@ function appTypeColor(t: ApplicationType): string {
     'early-action':   '#3B82F6',
     regular:          '#6B7280',
     transfer:         '#F59E0B',
-    international:    '#D97757',
+    international:    '#3B82F6',
   };
   return m[t] ?? '#999';
 }
@@ -108,7 +108,7 @@ function campaignTypeLabel(type: CampaignType): string {
 
 function campaignTypeColor(type: CampaignType): string {
   const m: Record<CampaignType, string> = {
-    'campus-visit':   '#D97757',
+    'campus-visit':   '#3B82F6',
     virtual:          '#3B82F6',
     'high-school':    '#8B5CF6',
     digital:          '#F59E0B',
@@ -177,7 +177,7 @@ function flagColor(f: string): string {
     legacy:           '#8B5CF6',
     athlete:          '#22C55E',
     scholarship:      '#F59E0B',
-    international:    '#D97757',
+    international:    '#3B82F6',
     transfer:         '#6B7280',
     underrepresented: '#EC4899',
   };
@@ -760,7 +760,7 @@ export default function AdmissionsScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 {app.reviewerName
                   ? <Text style={{ fontSize: 11, color: C.muted, flex: 1 }}>Reviewed by {app.reviewerName}</Text>
-                  : <Text style={{ fontSize: 11, color: '#D97757', flex: 1 }}>Unassigned</Text>
+                  : <Text style={{ fontSize: 11, color: '#3B82F6', flex: 1 }}>Unassigned</Text>
                 }
                 {app.decision && (
                   <View style={{ paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6, backgroundColor: decisionColor(app.decision) + '22' }}>

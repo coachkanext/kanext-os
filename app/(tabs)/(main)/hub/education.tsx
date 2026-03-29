@@ -114,7 +114,7 @@ function CourseRow({ course, expanded, onToggle, router, C }: {
   course: StudentCourse; expanded: boolean; onToggle: () => void; router: any; C: ComponentColors;
 }) {
   const assignments = COURSE_ASSIGNMENTS[course.id] ?? [];
-  const gradeColor = course.grade.startsWith('A') ? '#5A8A6E' : course.grade.startsWith('B') ? C.label : '#D97757';
+  const gradeColor = course.grade.startsWith('A') ? '#5A8A6E' : course.grade.startsWith('B') ? C.label : '#3B82F6';
   return (
     <Pressable onPress={onToggle} style={[crw.card, { backgroundColor: C.surface }]}>
       <View style={crw.row}>
@@ -291,7 +291,7 @@ function OrgCard({ org, expanded, onToggle, isJoined, onJoin, C }: {
 }) {
   const typeColors: Record<OrgType, string> = {
     academic: '#1D9BF0', social: C.accent, athletic: '#990000',
-    cultural: '#D97757', service: '#5A8A6E',
+    cultural: '#3B82F6', service: '#5A8A6E',
   };
   const tc = typeColors[org.type];
   return (
@@ -737,7 +737,7 @@ export default function EducationHubScreen() {
           </View>
           <View style={[s.finRow, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator, paddingTop: 10, marginTop: 4 }]}>
             <Text style={[s.finLabel, { color: C.label, fontWeight: '700' }]}>Balance Due</Text>
-            <Text style={[s.finBalance, { color: fa.balance > 0 ? '#D97757' : '#5A8A6E' }]}>${fa.balance.toLocaleString()}</Text>
+            <Text style={[s.finBalance, { color: fa.balance > 0 ? '#3B82F6' : '#5A8A6E' }]}>${fa.balance.toLocaleString()}</Text>
           </View>
           <Text style={[s.finDue, { color: C.muted }]}>Due {fa.dueDate}</Text>
           <Pressable style={[s.finBtn, { backgroundColor: C.label }]} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
@@ -858,7 +858,7 @@ export default function EducationHubScreen() {
           <SecH title="Current Semester" C={C} />
           <View style={[s.section, { backgroundColor: C.surface }]}>
             {MY_COURSES.map((c, idx) => {
-              const gc = c.grade.startsWith('A') ? '#5A8A6E' : c.grade.startsWith('B') ? C.label : '#D97757';
+              const gc = c.grade.startsWith('A') ? '#5A8A6E' : c.grade.startsWith('B') ? C.label : '#3B82F6';
               return (
                 <View key={c.id} style={[s.gradeRow, idx < MY_COURSES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
                   <View style={s.gradeInfo}>

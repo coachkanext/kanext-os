@@ -44,7 +44,7 @@ const CONTACTS_PILLS = ['All', 'Active Deals', 'Past Deals', 'New This Month', '
 
 const STAGE_COLORS: Record<CRMStage, string> = {
   Lead:        'rgba(45,30,18,0.30)',
-  Contacted:   '#D97757',
+  Contacted:   '#3B82F6',
   Proposal:    '#5A8A6E',
   Negotiation: '#1D9BF0',
   Won:         '#5A8A6E',

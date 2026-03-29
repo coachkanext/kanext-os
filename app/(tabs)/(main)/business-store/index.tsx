@@ -39,7 +39,7 @@ function productTypeColor(type: ProductType, C: ComponentColors): string {
   switch (type) {
     case 'physical':     return '#1D9BF0';
     case 'digital':      return '#5A8A6E';
-    case 'service':      return '#D97757';
+    case 'service':      return '#3B82F6';
     case 'subscription': return '#8B6340';
     default:             return C.muted as string;
   }
@@ -108,7 +108,7 @@ export default function BusinessStoreScreen() {
   const categoryBreakdown = useMemo(() => {
     const total = PRODUCTS.reduce((s, p) => s + p.revenue, 0);
     return [
-      { label: 'Services',      value: PRODUCTS.filter(p => p.type === 'service').reduce((s, p) => s + p.revenue, 0), color: '#D97757' },
+      { label: 'Services',      value: PRODUCTS.filter(p => p.type === 'service').reduce((s, p) => s + p.revenue, 0), color: '#3B82F6' },
       { label: 'Subscriptions', value: PRODUCTS.filter(p => p.type === 'subscription').reduce((s, p) => s + p.revenue, 0), color: '#8B6340' },
       { label: 'Hardware',      value: PRODUCTS.filter(p => p.type === 'physical').reduce((s, p) => s + p.revenue, 0), color: '#1D9BF0' },
     ].map(c => ({ ...c, pct: Math.round((c.value / total) * 100) }));

@@ -562,7 +562,7 @@ export default function CommunityGiveScreen() {
                   <View style={{ flexDirection: 'row', gap: 12, marginTop: 2 }}>
                     <Text style={{ fontSize: 11, color: C.muted }}>{campaign.donorCount} donors</Text>
                     {campaign.status === 'active' && (
-                      <Text style={{ fontSize: 11, color: days <= 14 ? '#D97757' : C.muted }}>
+                      <Text style={{ fontSize: 11, color: days <= 14 ? '#3B82F6' : C.muted }}>
                         {days > 0 ? `${days} days left` : 'Ended'}
                       </Text>
                     )}
@@ -771,7 +771,7 @@ export default function CommunityGiveScreen() {
                   <Text style={{ fontSize: 11, color: C.muted }}>{campaign.donorCount} donors</Text>
                   {campaign.status === 'active' && (() => {
                     const d = daysRemaining(campaign.deadline);
-                    return <Text style={{ fontSize: 11, color: d <= 14 ? '#D97757' : C.muted }}>{d > 0 ? `${d} days left` : 'Ended'}</Text>;
+                    return <Text style={{ fontSize: 11, color: d <= 14 ? '#3B82F6' : C.muted }}>{d > 0 ? `${d} days left` : 'Ended'}</Text>;
                   })()}
                 </View>
                 {campaign.status === 'active' && (
@@ -1594,7 +1594,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   // Frequency toggle
   freqRow:       { flexDirection: 'row', padding: 4, borderRadius: 14 },
   freqBtn:       { flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: 10 },
-  freqBtnActive: { backgroundColor: '#F5EFE4', shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 4, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  freqBtnActive: { backgroundColor: '#FFFFFF', shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 4, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
   freqBtnText:   { fontSize: 14 },
 
   // Payment method

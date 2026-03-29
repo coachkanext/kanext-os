@@ -1,30 +1,24 @@
 /**
- * Universal Footer — 5-icon persistent footer bar
- * Always visible on every page (hard wall). TAP ONLY — no footer-specific swipe gestures.
- * Horizontal swipes pass through to root layout (open panels) like the rest of the screen.
+ * Universal Footer — 5-icon persistent footer bar (Section 12, KaNeXT Product Spec)
+ * Always visible. Hides on scroll-down, reappears on scroll-up.
  *
- * Layout: 1px divider + 5 icons evenly spaced
- * 49px height + safe area bottom padding
- *
- * Icons (all use existing image assets):
- *   Home (1):         footer-home.png    — tap → navigate home, swipe-up → org drawer, hold → settings
- *   Phone (2):        footer-phone.png   — tap → push phone
- *   Nexus (center):   footer-nexus.png   — tap, double-tap (multitasking), hold (search), swipe-up (split screen)
- *   Messages (4):     footer-messages.png — tap → push messages
- *   Profile (5):      footer-profile.png — tap → push profile, swipe-up → org drawer
+ * Gesture system (only Home and Nexus have multi-gesture):
+ *   Home (1)    — tap → Home screen · hold → Brand Drawer
+ *   Phone (2)   — tap → Phone page
+ *   Nexus (3)   — tap → full Nexus chat · double-tap → half-screen overlay · hold → voice mode
+ *   Messages (4)— tap → Messages page
+ *   Pulse (5)   — tap → Pulse page · badge = unread count
  */
 
-import React, { useRef, useMemo, useCallback, useEffect, useState } from 'react';
-import { View, Text, Pressable, PanResponder, StyleSheet, Animated } from 'react-native';
+import React, { useRef, useCallback, useEffect, useState } from 'react';
+import { View, Text, Pressable, StyleSheet, Animated } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, usePathname } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
-import { openSearchOverlay } from '@/utils/global-search-overlay';
 import { openSplitNexus, closeSplitNexus, isSplitNexusOpen } from '@/utils/global-split-nexus';
-import { openMultitasking, closeMultitasking, isMultitaskingOpen } from '@/utils/global-multitasking';
 import { startGlobalVoice } from '@/utils/global-voice';
 import { openOrgDrawer } from '@/utils/global-org-drawer';
 import { openModeSwitcher } from '@/utils/global-mode-switcher';
@@ -81,13 +75,13 @@ export function UniversalFooter() {
     const now = Date.now();
 
     if (now - lastTapRef.current < 300) {
-      // Double tap → Multitasking
+      // Double tap → Split Nexus overlay
       lastTapRef.current = 0;
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      if (isMultitaskingOpen()) {
-        closeMultitasking();
+      if (isSplitNexusOpen()) {
+        closeSplitNexus();
       } else {
-        openMultitasking();
+        openSplitNexus();
       }
       return;
     }
@@ -97,42 +91,17 @@ export function UniversalFooter() {
       // Single tap → Nexus fullscreen (dead tap if already on Nexus)
       if (pathnameRef.current === '/nexus' || pathnameRef.current.startsWith('/nexus/')) return;
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      if (isMultitaskingOpen()) closeMultitasking();
       if (isSplitNexusOpen()) closeSplitNexus();
 
       router.navigate('/nexus' as any);
     }, 300);
   };
 
-  // ── Nexus long press → voice + search ──
+  // ── Nexus long press → voice only ──
   const handleNexusLongPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     startGlobalVoice();
-    openSearchOverlay();
   };
-
-  // ── Nexus swipe-up PanResponder (split screen toggle) ──
-  // Footer has NO special horizontal swipe gestures — those pass through
-  // to the root layout's panelOpenPanResponder like the rest of the screen.
-  const nexusPanResponder = useMemo(
-    () =>
-      PanResponder.create({
-        onStartShouldSetPanResponder: () => false,
-        onMoveShouldSetPanResponder: (_evt, gs) =>
-          gs.dy < -15 && Math.abs(gs.dy) > Math.abs(gs.dx),
-        onPanResponderRelease: (_evt, gs) => {
-          if (gs.dy < -50) {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            if (isSplitNexusOpen()) {
-              closeSplitNexus();
-            } else {
-              openSplitNexus();
-            }
-          }
-        },
-      }),
-    [],
-  );
 
   /** Shared pre-nav: haptic + footer reset + close split */
   const preNav = useCallback(() => {
@@ -212,17 +181,15 @@ export function UniversalFooter() {
         </Pressable>
 
         {/* 3. Nexus (center) */}
-        <View style={styles.iconButton} {...nexusPanResponder.panHandlers}>
-          <Pressable
-            style={styles.pressableInner}
-            onPress={handleNexusPress}
-            onLongPress={handleNexusLongPress}
-            delayLongPress={400}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <IconSymbol name="sparkles" size={24} color={C.label} />
-          </Pressable>
-        </View>
+        <Pressable
+          style={[styles.iconButton, styles.pressableInner]}
+          onPress={handleNexusPress}
+          onLongPress={handleNexusLongPress}
+          delayLongPress={400}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <IconSymbol name="sparkles" size={24} color={C.label} />
+        </Pressable>
 
         {/* 4. Messages */}
         <Pressable

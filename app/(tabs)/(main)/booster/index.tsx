@@ -91,7 +91,7 @@ function dealTypeBadgeColor(type: string, C: ComponentColors): string {
 
 function nilStatusColor(status: string, C: ComponentColors): string {
   if (status === 'completed' || status === 'approved') return C.green;
-  if (status === 'in-progress' || status === 'pending') return '#D97757';
+  if (status === 'in-progress' || status === 'pending') return '#3B82F6';
   if (status === 'flagged') return C.red;
   return C.secondary as string;
 }
@@ -2412,7 +2412,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   fanBadgeText: {
     fontSize:   11,
     fontWeight: '700',
-    color:      '#D97757',
+    color:      '#3B82F6',
   },
   athleteCard: {
     width:        88,
@@ -2573,7 +2573,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     position:          'absolute',
     top:               8,
     right:             8,
-    backgroundColor:   '#D97757',
+    backgroundColor:   '#3B82F6',
     paddingHorizontal: 6,
     paddingVertical:   3,
     borderRadius:      6,
@@ -2647,7 +2647,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     position:          'absolute',
     top:               6,
     right:             6,
-    backgroundColor:   '#D97757',
+    backgroundColor:   '#3B82F6',
     paddingHorizontal: 5,
     paddingVertical:   2,
     borderRadius:      5,
@@ -2746,7 +2746,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   cartBadgeText: {
     fontSize:   11,
     fontWeight: '800',
-    color:      '#D97757',
+    color:      '#3B82F6',
   },
 
   // Shared

@@ -79,28 +79,28 @@ const SCHOLARSHIP_PCT: Record<string, number> = {
 
 function medicalDot(status: Player['medical']): string {
   if (status === 'available') return '#5A8A6E';
-  if (status === 'limited')   return '#D97757';
+  if (status === 'limited')   return '#3B82F6';
   return '#B85C5C';
 }
 
 function eligDot(status: Player['eligibility']): string {
   if (status === 'eligible')   return '#5A8A6E';
-  if (status === 'warning')    return '#D97757';
+  if (status === 'warning')    return '#3B82F6';
   return '#B85C5C';
 }
 
 function gpaColor(gpa: number): string {
   if (gpa >= 2.5) return '#5A8A6E';
-  if (gpa >= 2.0) return '#D97757';
+  if (gpa >= 2.0) return '#3B82F6';
   return '#B85C5C';
 }
 
 function staffRoleBadgeColor(role: StaffMember['role']): string {
   if (role === 'head-coach') return NAVY;
   if (role === 'asst-coach') return '#1D9BF0';
-  if (role === 'grad-asst')  return '#D97757';
+  if (role === 'grad-asst')  return '#3B82F6';
   if (role === 'trainer')    return '#5A8A6E';
-  if (role === 'strength')   return '#D97757';
+  if (role === 'strength')   return '#3B82F6';
   if (role === 'sid')        return '#8B6340';
   return '#8B6340';
 }
@@ -247,8 +247,8 @@ function PlayerCard({
           <View style={plc.nameRow}>
             <Text style={[plc.name, { color: C.label }]} numberOfLines={1}>{player.name}</Text>
             {player.isRedshirt && (
-              <View style={[plc.rsBadge, { backgroundColor: '#D9775722' }]}>
-                <Text style={[plc.rsText, { color: '#D97757' }]}>RS</Text>
+              <View style={[plc.rsBadge, { backgroundColor: '#3B82F622' }]}>
+                <Text style={[plc.rsText, { color: '#3B82F6' }]}>RS</Text>
               </View>
             )}
           </View>
@@ -729,13 +729,13 @@ function UpcomingSchedule({ C }: { C: ComponentColors }) {
               backgroundColor:
                 game.location === 'H' ? '#5A8A6E22' :
                 game.location === 'A' ? '#B85C5C22' :
-                '#D9775722',
+                '#3B82F622',
             }]}>
               <Text style={[ug.locText, {
                 color:
                   game.location === 'H' ? '#5A8A6E' :
                   game.location === 'A' ? '#B85C5C' :
-                  '#D97757',
+                  '#3B82F6',
               }]}>
                 {game.location === 'H' ? 'HOME' : game.location === 'A' ? 'AWAY' : 'NEUT'}
               </Text>
@@ -868,10 +868,10 @@ function EligSummaryBar({ C }: { C: ComponentColors }) {
         <Text style={[esb.count, { color: '#5A8A6E' }]}>{eligible}</Text>
         <Text style={[esb.label, { color: '#5A8A6E' }]}>eligible</Text>
       </View>
-      <View style={[esb.chip, { backgroundColor: '#D9775720' }]}>
-        <View style={[esb.dot, { backgroundColor: '#D97757' }]} />
-        <Text style={[esb.count, { color: '#D97757' }]}>{warning}</Text>
-        <Text style={[esb.label, { color: '#D97757' }]}>warning</Text>
+      <View style={[esb.chip, { backgroundColor: '#3B82F620' }]}>
+        <View style={[esb.dot, { backgroundColor: '#3B82F6' }]} />
+        <Text style={[esb.count, { color: '#3B82F6' }]}>{warning}</Text>
+        <Text style={[esb.label, { color: '#3B82F6' }]}>warning</Text>
       </View>
       <View style={[esb.chip, { backgroundColor: '#B85C5C20' }]}>
         <View style={[esb.dot, { backgroundColor: '#B85C5C' }]} />

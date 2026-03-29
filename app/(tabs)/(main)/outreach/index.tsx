@@ -112,7 +112,7 @@ function ProspectRow({ prospect, onPress, C, s }: {
             <Text style={{ fontSize: 10, fontWeight: '700', color: stageColor(prospect.stage) }}>{prospect.stage}</Text>
           </View>
         </View>
-        <Text style={{ fontSize: 12, color: overdue ? '#D97757' : C.muted }} numberOfLines={1}>
+        <Text style={{ fontSize: 12, color: overdue ? '#3B82F6' : C.muted }} numberOfLines={1}>
           {overdue ? '⚠ ' : ''}{prospect.nextAction} · {formatDate(prospect.nextActionDue)}
         </Text>
         <Text style={{ fontSize: 11, color: C.muted }} numberOfLines={1}>
@@ -294,7 +294,7 @@ function ProspectDetailSheet({ prospect, isAdmin, onClose, onMoveStage, C, inset
           </View>
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={{ fontSize: 11, color: C.secondary, fontWeight: '600' }}>NEXT ACTION</Text>
-            <Text style={{ fontSize: 13, color: isOverdue(prospect.nextActionDue) ? '#D97757' : C.label }}>
+            <Text style={{ fontSize: 13, color: isOverdue(prospect.nextActionDue) ? '#3B82F6' : C.label }}>
               {formatDate(prospect.nextActionDue)}
             </Text>
           </View>
@@ -589,12 +589,12 @@ export default function CommunityOutreachScreen() {
               {overdue.length > 0 && (
                 <>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                    <IconSymbol name="exclamationmark.triangle.fill" size={13} color="#D97757" />
-                    <Text style={{ fontSize: 11, fontWeight: '700', color: '#D97757', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                    <IconSymbol name="exclamationmark.triangle.fill" size={13} color="#3B82F6" />
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: '#3B82F6', textTransform: 'uppercase', letterSpacing: 0.5 }}>
                       Needs Follow-Up ({overdue.length})
                     </Text>
                   </View>
-                  <View style={{ backgroundColor: '#D9775708', borderRadius: 12, borderWidth: 1, borderColor: '#D9775722', marginBottom: 16, overflow: 'hidden' }}>
+                  <View style={{ backgroundColor: '#3B82F608', borderRadius: 12, borderWidth: 1, borderColor: '#3B82F622', marginBottom: 16, overflow: 'hidden' }}>
                     {overdue.map(p => (
                       <ProspectRow
                         key={p.id}
@@ -761,8 +761,8 @@ export default function CommunityOutreachScreen() {
                       {'/' + campaign.goalConvert + ' conv'}
                     </Text>
                     {volGap > 0 && (
-                      <View style={{ backgroundColor: '#D9775722', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
-                        <Text style={{ fontSize: 10, fontWeight: '700', color: '#D97757' }}>{volGap} vol needed</Text>
+                      <View style={{ backgroundColor: '#3B82F622', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
+                        <Text style={{ fontSize: 10, fontWeight: '700', color: '#3B82F6' }}>{volGap} vol needed</Text>
                       </View>
                     )}
                   </View>
@@ -797,8 +797,8 @@ export default function CommunityOutreachScreen() {
                       Volunteers: <Text style={{ fontWeight: '700', color: C.label }}>{campaign.volunteersJoined} / {campaign.volunteersNeeded}</Text>
                     </Text>
                     {volGap > 0 && (
-                      <View style={{ backgroundColor: '#D9775722', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
-                        <Text style={{ fontSize: 10, fontWeight: '700', color: '#D97757' }}>{volGap} needed</Text>
+                      <View style={{ backgroundColor: '#3B82F622', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
+                        <Text style={{ fontSize: 10, fontWeight: '700', color: '#3B82F6' }}>{volGap} needed</Text>
                       </View>
                     )}
                   </View>
@@ -898,12 +898,12 @@ export default function CommunityOutreachScreen() {
             </Text>
             {volGapCampaigns.map(campaign => (
               <View key={`gap-${campaign.id}`} style={{
-                backgroundColor: '#D9775711', borderRadius: 12,
-                borderWidth: 1, borderColor: '#D9775730',
+                backgroundColor: '#3B82F611', borderRadius: 12,
+                borderWidth: 1, borderColor: '#3B82F630',
                 padding: 14, marginBottom: 8,
                 flexDirection: 'row', alignItems: 'center', gap: 12,
               }}>
-                <IconSymbol name="person.badge.plus" size={18} color="#D97757" />
+                <IconSymbol name="person.badge.plus" size={18} color="#3B82F6" />
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }} numberOfLines={1}>{campaign.name}</Text>
                   <Text style={{ fontSize: 12, color: C.secondary }}>

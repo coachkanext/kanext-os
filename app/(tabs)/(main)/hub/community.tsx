@@ -139,10 +139,10 @@ function EventCard({ event, isAdmin, C }: {
             <View style={[
               evS.volFill,
               { width: `${(event.volunteersFilled / event.volunteersNeeded) * 100}%` as any,
-                backgroundColor: volNeeded > 0 ? '#D97757' : '#5A8A6E' }
+                backgroundColor: volNeeded > 0 ? '#3B82F6' : '#5A8A6E' }
             ]} />
           </View>
-          <Text style={[evS.volText, { color: volNeeded > 0 ? '#D97757' : '#5A8A6E' }]}>
+          <Text style={[evS.volText, { color: volNeeded > 0 ? '#3B82F6' : '#5A8A6E' }]}>
             {volNeeded > 0 ? `${volNeeded} vol needed` : 'Fully staffed'}
           </Text>
         </View>
@@ -182,7 +182,7 @@ const evS = StyleSheet.create({
 function CareRow({ item, C, last }: {
   item: typeof COMMUNITY_CARE_REQUESTS[0]; C: ComponentColors; last: boolean;
 }) {
-  const statusColor = item.status === 'pending' ? '#D97757'
+  const statusColor = item.status === 'pending' ? '#3B82F6'
     : item.status === 'in-progress' ? '#1D9BF0' : '#5A8A6E';
   return (
     <View style={[crS.row, !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
@@ -259,7 +259,7 @@ function DepartmentCard({
         </View>
         <View style={deptS.right}>
           {isAdmin && hasGap && (
-            <View style={[deptS.gapBadge, { backgroundColor: '#D9775718' }]}>
+            <View style={[deptS.gapBadge, { backgroundColor: '#3B82F618' }]}>
               <Text style={deptS.gapText}>vol gap</Text>
             </View>
           )}
@@ -280,7 +280,7 @@ const deptS = StyleSheet.create({
   meeting:     { fontSize: 11 },
   right:       { alignItems: 'flex-end', gap: 6 },
   gapBadge:    { borderRadius: 6, paddingHorizontal: 7, paddingVertical: 3 },
-  gapText:     { fontSize: 10, fontWeight: '700', color: '#D97757' },
+  gapText:     { fontSize: 10, fontWeight: '700', color: '#3B82F6' },
   detail:      { marginTop: 12, paddingTop: 12, borderTopWidth: StyleSheet.hairlineWidth, gap: 12 },
   description: { fontSize: 13, lineHeight: 19 },
   volSection:  { gap: 6 },
@@ -481,7 +481,7 @@ export default function CommunityHubScreen() {
         {(showAll || showVol) && volGaps.length > 0 && (
           <>
             <SecHeader title="Volunteer Gaps" C={C} />
-            <View style={[s.section, { backgroundColor: '#D9775712' }]}>
+            <View style={[s.section, { backgroundColor: '#3B82F612' }]}>
               {volGaps.map((dept, idx) => {
                 const open = dept.volunteerNeeds.filter(n => n.filled < n.needed);
                 return (
@@ -490,7 +490,7 @@ export default function CommunityHubScreen() {
                     style={[s.gapRow, idx < volGaps.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(217,119,87,0.2)' }]}
                   >
                     <Text style={[s.gapDept, { color: C.label }]}>{dept.name}</Text>
-                    <Text style={[s.gapNeeds, { color: '#D97757' }]}>
+                    <Text style={[s.gapNeeds, { color: '#3B82F6' }]}>
                       {open.map(n => `${n.needed - n.filled} ${n.role}`).join(', ')}
                     </Text>
                   </View>
@@ -515,7 +515,7 @@ export default function CommunityHubScreen() {
           <>
             <View style={s.sectionTitleRow}>
               <SecHeader title="Care Requests" C={C} />
-              <Text style={[s.pendingBadge, { color: '#D97757' }]}>
+              <Text style={[s.pendingBadge, { color: '#3B82F6' }]}>
                 {COMMUNITY_CARE_REQUESTS.filter(r => r.status === 'pending').length} pending
               </Text>
             </View>

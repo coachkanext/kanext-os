@@ -680,7 +680,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   statChip: { alignItems: 'center', padding: 10, borderRadius: 12 },
   statChipNum: { fontSize: 18, fontWeight: '800' },
   statChipLabel: { fontSize: 10, fontWeight: '500', marginTop: 2 },
-  avatar: { width: 26, height: 26, borderRadius: 13, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#F5EFE4' },
+  avatar: { width: 26, height: 26, borderRadius: 13, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#FFFFFF' },
   avatarText: { fontSize: 9, fontWeight: '700', color: '#fff' },
   avatarSm: { alignItems: 'center', justifyContent: 'center' },
   avatarSmText: { fontSize: 8, fontWeight: '700', color: '#fff' },

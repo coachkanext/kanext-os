@@ -722,7 +722,7 @@ const styles = StyleSheet.create({
   idleDesc: { fontSize: 14, textAlign: 'center', marginBottom: 32 },
   launchBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    backgroundColor: '#1A1714', borderRadius: 14, paddingVertical: 14, paddingHorizontal: 28,
+    backgroundColor: '#111111', borderRadius: 14, paddingVertical: 14, paddingHorizontal: 28,
   },
   launchBtnText: { fontSize: 16, fontWeight: '700' },
   secondaryBtn: {

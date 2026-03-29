@@ -70,7 +70,7 @@ export function EducationHubPanel() {
         </View>
         <View style={[styles.statDivider, { backgroundColor: C.separator }]} />
         <View style={styles.statItem}>
-          <Text style={[styles.statNum, { color: '#D97757' }]}>{a.applicationsPending}</Text>
+          <Text style={[styles.statNum, { color: '#3B82F6' }]}>{a.applicationsPending}</Text>
           <Text style={[styles.statLabel, { color: C.secondary }]}>Pending Apps</Text>
         </View>
       </View>

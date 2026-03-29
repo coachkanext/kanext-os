@@ -391,7 +391,7 @@ export default function CampusScreen() {
     const c = selectedClub;
     const isJoined = joinedClubs.has(c.id);
     const typeColors: Record<OrgType, string> = {
-      academic: '#1D9BF0', social: C.accent, athletic: '#990000', cultural: '#D97757', service: '#5A8A6E',
+      academic: '#1D9BF0', social: C.accent, athletic: '#990000', cultural: '#3B82F6', service: '#5A8A6E',
     };
     const tc = typeColors[c.type];
     return (
@@ -469,7 +469,7 @@ export default function CampusScreen() {
     const showNews  = showAll || selectedPill === 'News';
 
     const typeColors: Record<OrgType, string> = {
-      academic: '#1D9BF0', social: C.accent, athletic: '#990000', cultural: '#D97757', service: '#5A8A6E',
+      academic: '#1D9BF0', social: C.accent, athletic: '#990000', cultural: '#3B82F6', service: '#5A8A6E',
     };
 
     const filteredClubs = CLUBS.filter(c => {
@@ -831,11 +831,11 @@ export default function CampusScreen() {
         </View>
         <View style={{ paddingHorizontal: 16 }}>
           <View style={bsS.nameRow}>
-            <Text style={[bsS.buildingName, { color: '#1A1714' }]}>{b.name}</Text>
+            <Text style={[bsS.buildingName, { color: '#111111' }]}>{b.name}</Text>
             <TypeBadge label={b.type} color={typeColor} />
           </View>
           {/* Hours */}
-          <View style={[bsS.hoursCard, { backgroundColor: '#F5EFE4' }]}>
+          <View style={[bsS.hoursCard, { backgroundColor: '#FFFFFF' }]}>
             <IconSymbol name="clock" size={14} color="#2D1E1280" />
             <Text style={bsS.hoursTxt}>{b.hours}</Text>
           </View>
@@ -904,22 +904,22 @@ export default function CampusScreen() {
     return (
       <View style={{ paddingHorizontal: 16 }}>
         <View style={dsS.header}>
-          <Text style={[dsS.name, { color: '#1A1714' }]}>{h.name}</Text>
+          <Text style={[dsS.name, { color: '#111111' }]}>{h.name}</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             <View style={[dsS.openDot, { backgroundColor: h.isOpen ? '#5A8A6E' : '#B85C5C' }]} />
             <Text style={[dsS.openTxt, { color: h.isOpen ? '#5A8A6E' : '#B85C5C' }]}>{h.isOpen ? 'Open Now' : 'Closed'}</Text>
           </View>
         </View>
-        <View style={[dsS.hoursCard, { backgroundColor: '#F5EFE4' }]}>
+        <View style={[dsS.hoursCard, { backgroundColor: '#FFFFFF' }]}>
           <Text style={dsS.hoursRow}>Weekday: {h.hours.weekday}</Text>
           <Text style={dsS.hoursRow}>Weekend: {h.hours.weekend}</Text>
         </View>
         {/* Meal selector */}
         <View style={dsS.mealRow}>
           {(['breakfast', 'lunch', 'dinner'] as const).map(m => (
-            <Pressable key={m} style={[dsS.mealPill, selectedMeal === m ? { backgroundColor: '#1A1714' } : { borderColor: 'rgba(139,99,67,0.10)', borderWidth: 1 }]}
+            <Pressable key={m} style={[dsS.mealPill, selectedMeal === m ? { backgroundColor: '#111111' } : { borderColor: 'rgba(139,99,67,0.10)', borderWidth: 1 }]}
               onPress={() => { Haptics.selectionAsync(); setSelectedMeal(m); }}>
-              <Text style={[dsS.mealPillTxt, { color: selectedMeal === m ? '#F5EFE4' : 'rgba(45,30,18,0.50)' }]}>
+              <Text style={[dsS.mealPillTxt, { color: selectedMeal === m ? '#FFFFFF' : 'rgba(45,30,18,0.50)' }]}>
                 {m.charAt(0).toUpperCase() + m.slice(1)}
               </Text>
             </Pressable>
@@ -946,7 +946,7 @@ export default function CampusScreen() {
           ? <Text style={[dsS.emptyTxt, { color: 'rgba(45,30,18,0.30)' }]}>No items match your dietary filters</Text>
           : filtered.map((item, idx) => (
             <View key={idx} style={[dsS.menuItem, { borderBottomColor: 'rgba(139,99,67,0.10)', borderBottomWidth: idx < filtered.length - 1 ? StyleSheet.hairlineWidth : 0 }]}>
-              <Text style={[dsS.menuName, { color: '#1A1714' }]}>{item.name}</Text>
+              <Text style={[dsS.menuName, { color: '#111111' }]}>{item.name}</Text>
               <View style={dsS.tagsRow}>
                 {item.dietaryTags.map(t => (
                   <View key={t} style={[dsS.tagPill, { backgroundColor: `${dietaryTagColors[t] ?? '#888'}18` }]}>
@@ -957,7 +957,7 @@ export default function CampusScreen() {
             </View>
           ))
         }
-        <View style={[dsS.mealPlanRow, { backgroundColor: '#F5EFE4' }]}>
+        <View style={[dsS.mealPlanRow, { backgroundColor: '#FFFFFF' }]}>
           <IconSymbol name="creditcard" size={14} color="rgba(45,30,18,0.50)" />
           <Text style={[dsS.mealPlanTxt, { color: 'rgba(45,30,18,0.50)' }]}>Meal plan: 12 swipes remaining this week</Text>
         </View>
@@ -969,15 +969,15 @@ export default function CampusScreen() {
 
   const renderMaintenanceSheet = () => (
     <View style={{ paddingHorizontal: 16 }}>
-      <Text style={[msS.title, { color: '#1A1714' }]}>Submit Maintenance Request</Text>
+      <Text style={[msS.title, { color: '#111111' }]}>Submit Maintenance Request</Text>
       <Text style={[msS.fieldLabel, { color: 'rgba(45,30,18,0.50)' }]}>Building</Text>
-      <View style={[msS.selectRow, { backgroundColor: '#F5EFE4', borderColor: 'rgba(139,99,67,0.18)' }]}>
-        <Text style={[msS.selectValue, { color: '#1A1714' }]}>{maintForm.building}</Text>
+      <View style={[msS.selectRow, { backgroundColor: '#FFFFFF', borderColor: 'rgba(139,99,67,0.18)' }]}>
+        <Text style={[msS.selectValue, { color: '#111111' }]}>{maintForm.building}</Text>
         <IconSymbol name="chevron.down" size={13} color="rgba(45,30,18,0.30)" />
       </View>
       <Text style={[msS.fieldLabel, { color: 'rgba(45,30,18,0.50)' }]}>Room Number</Text>
       <TextInput
-        style={[msS.input, { color: '#1A1714', borderColor: 'rgba(139,99,67,0.18)', backgroundColor: '#F5EFE4' }]}
+        style={[msS.input, { color: '#111111', borderColor: 'rgba(139,99,67,0.18)', backgroundColor: '#FFFFFF' }]}
         value={maintForm.room}
         onChangeText={v => setMaintForm(f => ({ ...f, room: v }))}
         placeholder="e.g. 214"
@@ -987,15 +987,15 @@ export default function CampusScreen() {
       <View style={msS.categoryGrid}>
         {MAINTENANCE_CATEGORIES.map(cat => (
           <Pressable key={cat} style={[msS.catPill,
-            maintForm.category === cat ? { backgroundColor: '#1A1714' } : { borderColor: 'rgba(139,99,67,0.18)', borderWidth: 1 }]}
+            maintForm.category === cat ? { backgroundColor: '#111111' } : { borderColor: 'rgba(139,99,67,0.18)', borderWidth: 1 }]}
             onPress={() => { Haptics.selectionAsync(); setMaintForm(f => ({ ...f, category: cat })); }}>
-            <Text style={[msS.catPillTxt, { color: maintForm.category === cat ? '#F5EFE4' : 'rgba(45,30,18,0.50)' }]}>{cat}</Text>
+            <Text style={[msS.catPillTxt, { color: maintForm.category === cat ? '#FFFFFF' : 'rgba(45,30,18,0.50)' }]}>{cat}</Text>
           </Pressable>
         ))}
       </View>
       <Text style={[msS.fieldLabel, { color: 'rgba(45,30,18,0.50)' }]}>Description</Text>
       <TextInput
-        style={[msS.textarea, { color: '#1A1714', borderColor: 'rgba(139,99,67,0.18)', backgroundColor: '#F5EFE4' }]}
+        style={[msS.textarea, { color: '#111111', borderColor: 'rgba(139,99,67,0.18)', backgroundColor: '#FFFFFF' }]}
         value={maintForm.description}
         onChangeText={v => setMaintForm(f => ({ ...f, description: v }))}
         placeholder="Describe the issue…"
@@ -1008,14 +1008,14 @@ export default function CampusScreen() {
         {['Normal', 'Urgent'].map(u => (
           <Pressable key={u} style={[msS.urgencyPill,
             maintForm.urgency === u
-              ? { backgroundColor: u === 'Urgent' ? '#B85C5C' : '#1A1714' }
+              ? { backgroundColor: u === 'Urgent' ? '#B85C5C' : '#111111' }
               : { borderColor: 'rgba(139,99,67,0.18)', borderWidth: 1 }]}
             onPress={() => { Haptics.selectionAsync(); setMaintForm(f => ({ ...f, urgency: u })); }}>
             <Text style={[msS.urgencyTxt, { color: maintForm.urgency === u ? '#fff' : 'rgba(45,30,18,0.50)' }]}>{u}</Text>
           </Pressable>
         ))}
       </View>
-      <Pressable style={[msS.submitBtn, { backgroundColor: '#D97757' }]}
+      <Pressable style={[msS.submitBtn, { backgroundColor: '#3B82F6' }]}
         onPress={() => {
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           setMaintForm(f => ({ ...f, category: '', description: '', urgency: 'Normal' }));
@@ -1289,22 +1289,22 @@ const bsS = StyleSheet.create({
   buildingName: { fontSize: 22, fontWeight: '800', flexShrink: 1 },
   hoursCard:    { flexDirection: 'row', alignItems: 'center', gap: 8, borderRadius: 10, padding: 10, marginBottom: 14 },
   hoursTxt:     { fontSize: 13, color: 'rgba(45,30,18,0.70)' },
-  sectionHead:  { fontSize: 13, fontWeight: '700', color: '#1A1714', marginBottom: 8, marginTop: 14 },
+  sectionHead:  { fontSize: 13, fontWeight: '700', color: '#111111', marginBottom: 8, marginTop: 14 },
   deptRow:      { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
   deptDot:      { width: 7, height: 7, borderRadius: 4 },
-  deptName:     { fontSize: 14, color: '#1A1714' },
+  deptName:     { fontSize: 14, color: '#111111' },
   floorToggle:  { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   floorList:    { marginBottom: 8, gap: 4 },
   floorRow:     { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6 },
-  floorNum:     { fontSize: 13, fontWeight: '600', color: '#1A1714' },
+  floorNum:     { fontSize: 13, fontWeight: '600', color: '#111111' },
   floorDetail:  { fontSize: 12, color: 'rgba(45,30,18,0.50)' },
   accessRow:    { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 20 },
   accessPill:   { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 10, backgroundColor: 'rgba(42,138,138,0.10)' },
   accessTxt:    { fontSize: 12, color: '#2A8A8A' },
-  directionsBtn:{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 14, borderRadius: 14, backgroundColor: '#1A1714', marginBottom: 10 },
+  directionsBtn:{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 14, borderRadius: 14, backgroundColor: '#111111', marginBottom: 10 },
   directionsBtnTxt: { fontSize: 15, fontWeight: '700', color: '#fff' },
   adminAction:  { flex: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center', backgroundColor: 'rgba(139,99,67,0.08)' },
-  adminActionTxt:{ fontSize: 13, fontWeight: '700', color: '#D97757' },
+  adminActionTxt:{ fontSize: 13, fontWeight: '700', color: '#3B82F6' },
 });
 
 const dsS = StyleSheet.create({
@@ -1330,7 +1330,7 @@ const dsS = StyleSheet.create({
 });
 
 const msS = StyleSheet.create({
-  title:        { fontSize: 18, fontWeight: '800', marginBottom: 16, color: '#1A1714' },
+  title:        { fontSize: 18, fontWeight: '800', marginBottom: 16, color: '#111111' },
   fieldLabel:   { fontSize: 12, fontWeight: '600', marginBottom: 6, marginTop: 12, textTransform: 'uppercase', letterSpacing: 0.5 },
   selectRow:    { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderRadius: 10, borderWidth: 1, padding: 12 },
   selectValue:  { fontSize: 14 },

@@ -47,7 +47,7 @@ export function SportsRecruitsPanel() {
           {[
             { label: 'Committed', value: committed, color: '#5A8A6E' },
             { label: 'Offered',   value: offered,   color: '#1D9BF0' },
-            { label: 'Eval',      value: evaluating, color: '#D97757' },
+            { label: 'Eval',      value: evaluating, color: '#3B82F6' },
           ].map(item => (
             <View key={item.label} style={{ flex: 1, alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 8, paddingVertical: 8 }}>
               <Text style={{ fontSize: 18, fontWeight: '800', color: item.color }}>{item.value}</Text>
@@ -104,8 +104,8 @@ export function SportsRecruitsPanel() {
               <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }} numberOfLines={1}>{p.name}</Text>
               <Text style={{ fontSize: 11, color: C.secondary }}>{p.position} · {p.prevSchool} · Fit {p.systemFit}</Text>
             </View>
-            <View style={{ paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6, backgroundColor: p.eligible === 'immediately' ? '#5A8A6E18' : '#D9775718' }}>
-              <Text style={{ fontSize: 9, fontWeight: '700', color: p.eligible === 'immediately' ? '#5A8A6E' : '#D97757' }}>
+            <View style={{ paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6, backgroundColor: p.eligible === 'immediately' ? '#5A8A6E18' : '#3B82F618' }}>
+              <Text style={{ fontSize: 9, fontWeight: '700', color: p.eligible === 'immediately' ? '#5A8A6E' : '#3B82F6' }}>
                 {p.eligible === 'immediately' ? 'IMMED' : 'SIT'}
               </Text>
             </View>

@@ -62,7 +62,7 @@ function pillsForTab(tab: MemberTab, isAdmin: boolean): string[] {
 function statusColor(status: CommunityMember['status']): string {
   switch (status) {
     case 'active':   return '#5A8A6E';
-    case 'at_risk':  return '#D97757';
+    case 'at_risk':  return '#3B82F6';
     case 'inactive': return '#B85C5C';
     case 'new':      return '#1D9BF0';
     default:         return 'rgba(45,30,18,0.30)';
@@ -966,7 +966,7 @@ export default function CommunityMembersScreen() {
 
             {/* ── Volunteer Needs ── */}
             <Text style={[s.sectionLabel, { color: C.secondary }]}>Volunteer Needs</Text>
-            <View style={[{ backgroundColor: '#D9775712', borderRadius: 14, marginBottom: 24 }]}>
+            <View style={[{ backgroundColor: '#3B82F612', borderRadius: 14, marginBottom: 24 }]}>
               {VOL_NEEDS.map((vn, idx) => (
                 <View
                   key={vn.id}
@@ -1111,10 +1111,10 @@ export default function CommunityMembersScreen() {
 
         {/* At-risk alert */}
         {atRisk.length > 0 && (
-          <View style={[s.alertCard, { backgroundColor: `hsl(30,80%,97%)`, borderColor: '#D97757' }]}>
+          <View style={[s.alertCard, { backgroundColor: `hsl(30,80%,97%)`, borderColor: '#3B82F6' }]}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#D97757" />
-              <Text style={{ fontSize: 14, fontWeight: '700', color: '#D97757' }}>{atRisk.length} Members At-Risk</Text>
+              <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#3B82F6" />
+              <Text style={{ fontSize: 14, fontWeight: '700', color: '#3B82F6' }}>{atRisk.length} Members At-Risk</Text>
             </View>
             {atRisk.map(m => (
               <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 6 }}>
@@ -1126,7 +1126,7 @@ export default function CommunityMembersScreen() {
                   <Text style={{ fontSize: 12, color: C.secondary }}>Last seen: {formatShortDate(m.lastAttended)}</Text>
                 </View>
                 <Pressable
-                  style={{ backgroundColor: '#D97757', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8 }}
+                  style={{ backgroundColor: '#3B82F6', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8 }}
                   onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.push('/(tabs)/(main)/messages'); }}
                 >
                   <Text style={{ fontSize: 12, fontWeight: '700', color: '#fff' }}>Reach Out</Text>

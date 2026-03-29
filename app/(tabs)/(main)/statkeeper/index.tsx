@@ -52,7 +52,7 @@ const HOME_COLOR = 'hsl(185, 55%, 32%)';
 const AWAY_COLOR = 'hsl(215, 45%, 35%)';
 const GREEN      = '#5A8A6E';
 const RED        = '#B85C5C';
-const CORAL      = '#D97757';
+const CORAL      = '#3B82F6';
 
 const GAME_TYPES: GameType[] = ['Regular', 'Conference', 'Tournament', 'Scrimmage'];
 const HALF_PRESETS = [20, 16] as const;

@@ -9,6 +9,12 @@
  * - Chip tap: sends immediately, no keyboard
  * - NO dividers anywhere — seamless continuous surface
  * - Everything moves together, fluid LayoutAnimation transitions
+ *
+ * Fixes applied:
+ *   Fix 1 — Auto-dismiss when user navigates to a different screen
+ *   Fix 2 — iOS-standard sheet: backdrop dim, rounded corners, correct handle
+ *   Fix 3 — Input bar flush to footer (no gap)
+ *   Feature 5 — Escalation: detect low-confidence replies, append notice, log to AsyncStorage
  */
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
@@ -30,21 +36,100 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { usePathname, useGlobalSearchParams } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Spacing, BorderRadius } from '@/constants/theme';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
-import { sendToGPT, type ChatMessage } from '@/utils/openai';
 import { useMode, useAppContext } from '@/context/app-context';
 import { startGlobalVoice } from '@/utils/global-voice';
+import { consumeSplitNexusPendingQuery } from '@/utils/global-split-nexus';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const FOOTER_HEIGHT = 49;
 const SPLIT_HEIGHT = Math.round(SCREEN_HEIGHT * 0.45);
 const DISMISS_THRESHOLD = 80;
 
-/* ── Contextual suggestion chips by screen ── */
+// ── Feature 5: Escalation detection ──────────────────────────────────────────
+
+const LOW_CONFIDENCE_PHRASES = [
+  "i'm not sure", "i don't have enough information", "i can't determine",
+  "i don't know", "i cannot be certain", "i'm unable to", "i don't have access",
+  "i cannot verify", "i'm not certain", "not sure about", "i cannot confirm",
+  "insufficient data", "not enough context",
+];
+
+function isLowConfidence(text: string): boolean {
+  const lower = text.toLowerCase();
+  return LOW_CONFIDENCE_PHRASES.some((phrase) => lower.includes(phrase));
+}
+
+async function logEscalation(question: string, context: string, answer: string): Promise<void> {
+  try {
+    const entry = {
+      id: `esc-${Date.now()}`,
+      question,
+      context,
+      answer: answer.slice(0, 500),
+      timestamp: new Date().toISOString(),
+    };
+    const raw = await AsyncStorage.getItem('@nexus_escalations');
+    const list: object[] = raw ? JSON.parse(raw) : [];
+    list.unshift(entry);
+    await AsyncStorage.setItem('@nexus_escalations', JSON.stringify(list.slice(0, 50)));
+  } catch {
+    // Silent — escalation logging failure shouldn't surface to user
+  }
+}
+
+const ESCALATION_NOTICE =
+  "I'm not fully confident in this answer — I've flagged it for Coach K to review. You'll get an updated response once confirmed.";
+
+// ── Anthropic helper ──────────────────────────────────────────────────────────
+
+interface ChatMessage { role: 'user' | 'assistant'; content: string; }
+
+async function sendToAnthropic(messages: ChatMessage[], system: string): Promise<string> {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY ?? '',
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      system,
+      messages,
+      max_tokens: 512,
+    }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message ?? 'Anthropic error');
+  return data.content[0]?.text ?? '';
+}
+
+function buildOverlaySystem(
+  mode: string,
+  orgName: string | null,
+  program: string | null,
+  cycleName: string | null,
+  screenContext: string,
+): string {
+  const screen = screenContext.replace(/.*\//, '') || 'home';
+  const lines = [
+    `You are Nexus, KaNeXT's AI assistant. Answer a quick question — the user is on the ${screen} screen.`,
+    `Mode: ${mode}  ·  Org: ${orgName ?? 'KaNeXT'}`,
+  ];
+  if (program) lines.push(`Program: ${program}`);
+  if (cycleName) lines.push(`Season: ${cycleName}`);
+  lines.push('Be concise (2-4 sentences). Direct and actionable.');
+  return lines.join('\n');
+}
+
+// ── Contextual suggestion chips by screen ─────────────────────────────────────
+
 const SCREEN_CHIPS: Record<string, string[]> = {
   season:       ['Sim next game', 'Season stats', 'Compare records'],
   roster:       ['Rate this player', 'Depth chart', 'Injury report'],
@@ -59,27 +144,32 @@ const SCREEN_CHIPS: Record<string, string[]> = {
 
 function getChipsForScreen(context: string): string[] {
   const lower = context.toLowerCase();
-  if (lower.includes('message'))                         return SCREEN_CHIPS.messages;
+  if (lower.includes('message'))                                                      return SCREEN_CHIPS.messages;
   if (lower.includes('season') || lower.includes('calendar') || lower.includes('agenda')) return SCREEN_CHIPS.season;
-  if (lower.includes('roster') || lower.includes('team')) return SCREEN_CHIPS.roster;
-  if (lower.includes('recruit') || lower.includes('prospect')) return SCREEN_CHIPS.recruits;
-  if (lower.includes('store') || lower.includes('give')) return SCREEN_CHIPS.store;
-  if (lower.includes('media'))                           return SCREEN_CHIPS.media;
-  if (lower.includes('gm'))                              return SCREEN_CHIPS.gm;
-  if (lower.includes('organization') || lower.includes('org')) return SCREEN_CHIPS.organization;
+  if (lower.includes('roster') || lower.includes('team'))                            return SCREEN_CHIPS.roster;
+  if (lower.includes('recruit') || lower.includes('prospect'))                       return SCREEN_CHIPS.recruits;
+  if (lower.includes('store') || lower.includes('give'))                             return SCREEN_CHIPS.store;
+  if (lower.includes('media'))                                                        return SCREEN_CHIPS.media;
+  if (lower.includes('gm'))                                                           return SCREEN_CHIPS.gm;
+  if (lower.includes('organization') || lower.includes('org'))                       return SCREEN_CHIPS.organization;
   return SCREEN_CHIPS.home;
 }
+
+// ── Types ─────────────────────────────────────────────────────────────────────
 
 interface SplitMessage {
   id: string;
   role: 'user' | 'assistant';
   content: string;
+  escalated?: boolean;
 }
 
 interface Props {
   visible: boolean;
   onClose: () => void;
 }
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export function SplitNexusOverlay({ visible, onClose }: Props) {
   const C = useColors();
@@ -101,47 +191,41 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
 
   const slideAnim = useRef(new Animated.Value(SPLIT_HEIGHT)).current;
 
-  const footerTotal = FOOTER_HEIGHT + insets.bottom + 1;
+  // Fix 3: flush to footer — no +1 gap
+  const footerTotal = FOOTER_HEIGHT + insets.bottom;
 
   // Derive chips from current screen context
   const screenContext = title ?? pathname;
   const chips = useMemo(() => getChipsForScreen(screenContext), [screenContext]);
 
-  // ── Keyboard tracking ──
+  // ── Keyboard tracking ──────────────────────────────────────────────────────
+
   useEffect(() => {
     const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
     const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
 
     const showSub = Keyboard.addListener(showEvent, (e) => {
-      LayoutAnimation.configureNext(
-        LayoutAnimation.create(250, 'easeInEaseOut', 'opacity'),
-      );
+      LayoutAnimation.configureNext(LayoutAnimation.create(250, 'easeInEaseOut', 'opacity'));
       setKbHeight(e.endCoordinates.height);
     });
-
     const hideSub = Keyboard.addListener(hideEvent, () => {
-      LayoutAnimation.configureNext(
-        LayoutAnimation.create(200, 'easeInEaseOut', 'opacity'),
-      );
+      LayoutAnimation.configureNext(LayoutAnimation.create(200, 'easeInEaseOut', 'opacity'));
       setKbHeight(0);
     });
 
-    return () => {
-      showSub.remove();
-      hideSub.remove();
-    };
+    return () => { showSub.remove(); hideSub.remove(); };
   }, []);
 
-  // ── Computed layout dimensions ──
-  // Keyboard hidden: overlay takes ~45%, sits above footer
-  // Keyboard visible: overlay expands, top screen compresses to ~22%
+  // ── Computed layout dimensions ─────────────────────────────────────────────
+
   const keyboardUp = kbHeight > 0;
   const overlayBottom = keyboardUp ? kbHeight : footerTotal;
   const overlayHeight = keyboardUp
     ? SCREEN_HEIGHT - insets.top - Math.round(SCREEN_HEIGHT * 0.22) - kbHeight
     : SPLIT_HEIGHT;
 
-  // Slide up on open, slide down on close — conversation persists (no clearing)
+  // ── Open / close animation ─────────────────────────────────────────────────
+
   useEffect(() => {
     if (visible) {
       Animated.spring(slideAnim, {
@@ -160,7 +244,43 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
     }
   }, [visible, slideAnim]);
 
-  // Drag-to-dismiss
+  // Consume pending query from voice handoff
+  useEffect(() => {
+    if (visible) {
+      const pending = consumeSplitNexusPendingQuery();
+      if (pending) sendQuery(pending);
+    }
+  }, [visible, sendQuery]);
+
+  const handleClose = useCallback(() => {
+    Keyboard.dismiss();
+    Animated.timing(slideAnim, {
+      toValue: SPLIT_HEIGHT,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => onClose());
+  }, [onClose, slideAnim]);
+
+  // Fix 1: Auto-dismiss when user navigates to a different screen
+  const visibleRef = useRef(visible);
+  useEffect(() => { visibleRef.current = visible; }, [visible]);
+
+  const prevPathnameRef = useRef(pathname);
+  useEffect(() => {
+    const prev = prevPathnameRef.current;
+    prevPathnameRef.current = pathname;
+    if (prev !== pathname && visibleRef.current) {
+      Keyboard.dismiss();
+      Animated.timing(slideAnim, {
+        toValue: SPLIT_HEIGHT,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => onClose());
+    }
+  }, [pathname, onClose, slideAnim]);
+
+  // ── Drag-to-dismiss ────────────────────────────────────────────────────────
+
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => false,
@@ -180,24 +300,15 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
           }).start();
         }
       },
-    })
+    }),
   ).current;
 
-  const handleClose = useCallback(() => {
-    Keyboard.dismiss();
-    Animated.timing(slideAnim, {
-      toValue: SPLIT_HEIGHT,
-      duration: 200,
-      useNativeDriver: true,
-    }).start(() => onClose());
-  }, [onClose, slideAnim]);
+  // ── Send query (Feature 5: escalation detection) ───────────────────────────
 
-  // Send a query (from input or chip tap)
   const sendQuery = useCallback(async (text: string) => {
     const trimmed = text.trim();
     if (!trimmed || isLoading) return;
 
-    // Dismiss keyboard immediately on send
     Keyboard.dismiss();
 
     const userMsg: SplitMessage = { id: `u-${Date.now()}`, role: 'user', content: trimmed };
@@ -208,24 +319,37 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
     historyRef.current.push({ role: 'user', content: trimmed });
 
     try {
-      const response = await sendToGPT({
-        messages: historyRef.current,
-        context: {
-          mode,
-          organization: appState.organization,
-          operatingRole: appState.operatingRole,
-          program: appState.program,
-          cycleName: appState.cycle?.name ?? null,
-        },
-      });
+      const system = buildOverlaySystem(
+        mode,
+        appState.organization?.name ?? null,
+        appState.program?.name ?? null,
+        appState.cycle?.name ?? null,
+        screenContext,
+      );
+      const response = await sendToAnthropic(historyRef.current, system);
       historyRef.current.push({ role: 'assistant', content: response });
-      setMessages((prev) => [...prev, { id: `a-${Date.now()}`, role: 'assistant', content: response }]);
+
+      const escalated = isLowConfidence(response);
+      if (escalated) {
+        logEscalation(trimmed, screenContext, response); // fire-and-forget
+      }
+
+      setMessages((prev) => [...prev, {
+        id: `a-${Date.now()}`,
+        role: 'assistant',
+        content: response,
+        escalated,
+      }]);
     } catch {
-      setMessages((prev) => [...prev, { id: `e-${Date.now()}`, role: 'assistant', content: 'Something went wrong.' }]);
+      setMessages((prev) => [...prev, {
+        id: `e-${Date.now()}`,
+        role: 'assistant',
+        content: 'Something went wrong.',
+      }]);
     }
 
     setIsLoading(false);
-  }, [isLoading, mode, appState]);
+  }, [isLoading, mode, appState, screenContext]);
 
   const handleSend = useCallback(() => sendQuery(inputText), [inputText, sendQuery]);
   const handleChipPress = useCallback((chip: string) => sendQuery(chip), [sendQuery]);
@@ -241,126 +365,160 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
   if (!visible) return null;
 
   return (
-    <Animated.View
-      style={[
-        styles.overlay,
-        {
-          bottom: overlayBottom,
-          height: overlayHeight,
-          transform: [{ translateY: slideAnim }],
-        },
-      ]}
-    >
-      {/* Drag handle — seamless, no borders */}
-      <View {...panResponder.panHandlers} style={styles.handleArea}>
-        <View style={styles.handle} />
-      </View>
+    <>
+      {/* Fix 2: Backdrop — dims content above sheet, tap to dismiss */}
+      <Pressable style={styles.backdrop} onPress={handleClose} />
 
-      <View style={styles.container}>
-        {/* Conversation */}
-        <FlatList
-          ref={flatListRef}
-          data={messages}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          renderItem={({ item }) => (
-            <View style={[styles.msgRow, item.role === 'user' ? styles.userRow : styles.assistantRow]}>
-              <View style={[styles.msgBubble, item.role === 'user' ? styles.userBubble : styles.assistantBubble]}>
-                <Text style={styles.msgText}>{item.content}</Text>
-              </View>
-            </View>
-          )}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>Ask Nexus about what's on screen</Text>
-            </View>
-          }
-          ListFooterComponent={
-            isLoading ? (
-              <View style={styles.loadingRow}>
-                <ActivityIndicator size="small" color={C.muted} />
-              </View>
-            ) : null
-          }
-        />
-
-        {/* Contextual suggestion chips — no divider above */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.chipsRow}
-          style={styles.chipsScroll}
-          keyboardShouldPersistTaps="handled"
-        >
-          {chips.map((chip) => (
-            <Pressable
-              key={chip}
-              style={({ pressed }) => [styles.chip, pressed && styles.chipPressed]}
-              onPress={() => handleChipPress(chip)}
-            >
-              <Text style={styles.chipText}>{chip}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-
-        {/* Input bar — no divider above */}
-        <View style={styles.inputRow}>
-          <Pressable style={styles.micBtn} onPress={handleMicPress}>
-            <IconSymbol name="mic.fill" size={20} color={C.muted} />
-          </Pressable>
-          <TextInput
-            ref={inputRef}
-            style={styles.input}
-            placeholder="Ask Nexus..."
-            placeholderTextColor={C.muted}
-            value={inputText}
-            onChangeText={setInputText}
-            onSubmitEditing={handleSend}
-            returnKeyType="send"
-            blurOnSubmit
-          />
-          <Pressable
-            style={({ pressed }) => [styles.sendBtn, { opacity: pressed ? 0.6 : 1 }]}
-            onPress={handleSend}
-            disabled={!inputText.trim()}
-          >
-            <IconSymbol
-              name="arrow.up.circle.fill"
-              size={28}
-              color={inputText.trim() ? accent : C.muted}
-            />
-          </Pressable>
+      {/* Fix 2: Sheet — rounded top corners, surface bg, overflow:hidden for clean clip */}
+      <Animated.View
+        style={[
+          styles.overlay,
+          {
+            bottom: overlayBottom,
+            height: overlayHeight,
+            transform: [{ translateY: slideAnim }],
+          },
+        ]}
+      >
+        {/* Grab handle */}
+        <View {...panResponder.panHandlers} style={styles.handleArea}>
+          <View style={styles.handle} />
         </View>
-      </View>
-    </Animated.View>
+
+        <View style={styles.container}>
+          {/* Conversation */}
+          <FlatList
+            ref={flatListRef}
+            data={messages}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            renderItem={({ item }) => (
+              <View style={[styles.msgRow, item.role === 'user' ? styles.userRow : styles.assistantRow]}>
+                <View style={[styles.msgBubble, item.role === 'user' ? styles.userBubble : styles.assistantBubble]}>
+                  <Text style={styles.msgText}>{item.content}</Text>
+                  {/* Feature 5: Escalation notice — visually distinct, lighter text */}
+                  {item.escalated && (
+                    <>
+                      <View style={styles.escalationDivider} />
+                      <View style={styles.escalationRow}>
+                        <IconSymbol name="flag" size={12} color={C.secondary} />
+                        <Text style={styles.escalationText}>{ESCALATION_NOTICE}</Text>
+                      </View>
+                    </>
+                  )}
+                </View>
+              </View>
+            )}
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>Ask Nexus about what's on screen</Text>
+              </View>
+            }
+            ListFooterComponent={
+              isLoading ? (
+                <View style={styles.loadingRow}>
+                  <ActivityIndicator size="small" color={C.muted} />
+                </View>
+              ) : null
+            }
+          />
+
+          {/* Contextual suggestion chips */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.chipsRow}
+            style={styles.chipsScroll}
+            keyboardShouldPersistTaps="handled"
+          >
+            {chips.map((chip) => (
+              <Pressable
+                key={chip}
+                style={({ pressed }) => [styles.chip, pressed && styles.chipPressed]}
+                onPress={() => handleChipPress(chip)}
+              >
+                <Text style={styles.chipText}>{chip}</Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+
+          {/* Input bar — Fix 3: sits flush against footer */}
+          <View style={styles.inputRow}>
+            <Pressable style={styles.micBtn} onPress={handleMicPress}>
+              <IconSymbol name="mic.fill" size={20} color={C.muted} />
+            </Pressable>
+            <TextInput
+              ref={inputRef}
+              style={styles.input}
+              placeholder="Ask Nexus..."
+              placeholderTextColor={C.muted}
+              value={inputText}
+              onChangeText={setInputText}
+              onSubmitEditing={handleSend}
+              returnKeyType="send"
+              blurOnSubmit
+              autoCapitalize="sentences"
+            />
+            <Pressable
+              style={({ pressed }) => [styles.sendBtn, { opacity: pressed ? 0.6 : 1 }]}
+              onPress={handleSend}
+              disabled={!inputText.trim()}
+            >
+              <IconSymbol
+                name="arrow.up.circle.fill"
+                size={28}
+                color={inputText.trim() ? accent : C.muted}
+              />
+            </Pressable>
+          </View>
+        </View>
+      </Animated.View>
+    </>
   );
 }
 
+// ── Styles ────────────────────────────────────────────────────────────────────
+
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
+  // Fix 2: Backdrop — full screen, 40% black dim, tap-to-dismiss
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    zIndex: 997,
+  },
+
+  // Fix 2: Sheet — surface bg, rounded top corners, clipped overflow
   overlay: {
     position: 'absolute',
     left: 0,
     right: 0,
     zIndex: 998,
-  },
-  handleArea: {
-    alignItems: 'center',
-    paddingVertical: 8,
     backgroundColor: C.surface,
-  },
-  handle: {
-    width: 36,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: C.surface,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
     overflow: 'hidden',
   },
+
+  handleArea: {
+    alignItems: 'center',
+    paddingTop: 8,
+    paddingBottom: 4,
+  },
+  // Fix 2: Correct grab handle — 5×36, C.muted, borderRadius 2.5
+  handle: {
+    width: 36,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: C.muted,
+  },
+
+  container: {
+    flex: 1,
+    overflow: 'hidden',
+  },
+
   listContent: {
     padding: Spacing.sm,
     flexGrow: 1,
@@ -381,11 +539,11 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     borderRadius: BorderRadius.lg,
   },
   userBubble: {
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: C.bubbleSent,
     borderBottomRightRadius: 4,
   },
   assistantBubble: {
-    backgroundColor: 'rgba(255,255,255,0.04)',
+    backgroundColor: C.bubbleReceived,
     borderBottomLeftRadius: 4,
   },
   msgText: {
@@ -393,6 +551,26 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     lineHeight: 20,
     color: C.label,
   },
+
+  // Feature 5: Escalation notice
+  escalationDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: C.separator,
+    marginTop: 8,
+    marginBottom: 6,
+  },
+  escalationRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 6,
+  },
+  escalationText: {
+    fontSize: 12,
+    lineHeight: 17,
+    color: C.secondary,
+    flex: 1,
+  },
+
   emptyContainer: {
     flex: 1,
     alignItems: 'center',
@@ -408,6 +586,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     paddingVertical: 8,
     alignItems: 'center',
   },
+
   chipsScroll: {
     maxHeight: 44,
   },
@@ -425,13 +604,14 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     borderRadius: 16,
   },
   chipPressed: {
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: C.surfacePressed,
   },
   chipText: {
     fontSize: 13,
     fontWeight: '500',
-    color: 'rgba(255,255,255,0.7)',
+    color: C.secondary,
   },
+
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -449,7 +629,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     paddingHorizontal: 14,
     fontSize: 15,
     color: C.label,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: C.surfacePressed,
   },
   sendBtn: {
     padding: 2,

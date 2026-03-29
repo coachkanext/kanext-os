@@ -2,66 +2,82 @@
  * useColors — Central color palette hook.
  * Returns the correct palette based on resolved color scheme.
  * All component files import { useColors, type ComponentColors } from here.
+ *
+ * Palette: Section 13 of KaNeXT_Product_Knowledge.md (canonical spec).
+ * Light: pure white BG, Apple gray surface, #3B82F6 primary.
+ * Dark: OLED true black, #1A1A1A surface, #60A5FA primary.
  */
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export const LIGHT_PALETTE = {
-  bg: '#F5EFE4',
-  surface: '#EDE5D8',
-  surfacePressed: 'rgba(139,99,67,0.08)',
-  label: '#1A1714',
-  secondary: 'rgba(45,30,18,0.50)',
-  muted: 'rgba(45,30,18,0.30)',
-  separator: 'rgba(139,99,67,0.10)',
-  divider: 'rgba(139,99,67,0.10)',
-  inputBorder: 'rgba(139,99,67,0.18)',
-  // Three accent colors — no others
-  accent: '#D97757',   // Claude coral-orange
-  green: '#5A8A6E',    // positive sage green
-  red: '#B85C5C',      // negative dusty red
-  // Legacy keys mapped to nearest accent — avoids breaking components
-  blue: '#D97757',
-  amber: '#D97757',
-  purple: '#D97757',
-  cyan: '#D97757',
-  orange: '#D97757',
-  pink: '#B85C5C',
-  teal: '#5A8A6E',
-  dotActive: '#1A1714',
-  dotInactive: 'rgba(45,30,18,0.15)',
-  footer: '#EDE5D8',
-  footerDivider: 'rgba(139,99,67,0.18)',
-  bubbleSent: '#EDE5D8',
-  bubbleReceived: 'rgba(139,99,67,0.08)',
+  bg: '#FFFFFF',
+  surface: '#F5F5F7',
+  surfacePressed: 'rgba(0,0,0,0.04)',
+  label: '#111111',
+  secondary: '#6B7280',
+  muted: '#9CA3AF',
+  separator: '#E5E7EB',
+  divider: '#E5E7EB',
+  inputBorder: '#D1D5DB',
+  // Primary / accent
+  accent: '#3B82F6',        // electric blue — primary interactive
+  accentLight: '#60A5FA',   // soft blue
+  // Semantic
+  green: '#22C55E',
+  red: '#EF4444',
+  gold: '#C5A55A',
+  amber: '#F59E0B',
+  // Legacy aliases — keeps existing components working without edits
+  blue: '#3B82F6',
+  purple: '#3B82F6',
+  cyan: '#60A5FA',
+  orange: '#F59E0B',
+  pink: '#EF4444',
+  teal: '#22C55E',
+  // UI chrome
+  dotActive: '#111111',
+  dotInactive: 'rgba(0,0,0,0.15)',
+  footer: '#FFFFFF',
+  footerDivider: '#E5E7EB',
+  // Chat bubbles
+  bubbleSent: '#F5F5F7',
+  bubbleReceived: 'rgba(0,0,0,0.04)',
 } as const;
 
 export const DARK_PALETTE = {
-  bg: '#1C1410',
-  surface: '#261D17',
-  surfacePressed: 'rgba(217,119,87,0.10)',
-  label: '#F0E8DC',
-  secondary: 'rgba(240,232,220,0.50)',
-  muted: 'rgba(240,232,220,0.30)',
-  separator: 'rgba(217,119,87,0.12)',
-  divider: 'rgba(217,119,87,0.12)',
-  inputBorder: 'rgba(217,119,87,0.20)',
-  accent: '#E08B6A',
-  green: '#6FA882',
-  red: '#C97070',
-  blue: '#E08B6A',
-  amber: '#E08B6A',
-  purple: '#E08B6A',
-  cyan: '#E08B6A',
-  orange: '#E08B6A',
-  pink: '#C97070',
-  teal: '#6FA882',
-  dotActive: '#F0E8DC',
-  dotInactive: 'rgba(240,232,220,0.15)',
-  footer: '#261D17',
-  footerDivider: 'rgba(217,119,87,0.20)',
-  bubbleSent: '#261D17',
-  bubbleReceived: 'rgba(217,119,87,0.10)',
+  bg: '#000000',
+  surface: '#1A1A1A',
+  surfacePressed: 'rgba(255,255,255,0.06)',
+  label: '#F5F5F7',
+  secondary: '#6B7280',
+  muted: '#4B5563',
+  separator: '#2A2A2A',
+  divider: '#2A2A2A',
+  inputBorder: '#333333',
+  // Primary / accent
+  accent: '#60A5FA',        // soft blue — primary interactive in dark
+  accentLight: '#93C5FD',
+  // Semantic
+  green: '#4ADE80',
+  red: '#F87171',
+  gold: '#D4B96A',
+  amber: '#FBBF24',
+  // Legacy aliases
+  blue: '#60A5FA',
+  purple: '#60A5FA',
+  cyan: '#93C5FD',
+  orange: '#FBBF24',
+  pink: '#F87171',
+  teal: '#4ADE80',
+  // UI chrome
+  dotActive: '#F5F5F7',
+  dotInactive: 'rgba(255,255,255,0.15)',
+  footer: '#000000',
+  footerDivider: '#2A2A2A',
+  // Chat bubbles
+  bubbleSent: '#1A1A1A',
+  bubbleReceived: 'rgba(255,255,255,0.06)',
 } as const;
 
 export type ComponentColors = typeof LIGHT_PALETTE;

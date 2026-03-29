@@ -59,7 +59,7 @@ type PulseItem = {
 // ── Brand / type data ─────────────────────────────────────────────────────────
 
 const BRANDS = [
-  { id: 'kanext',     name: 'KaNeXT',              initials: 'KN', color: '#D97757' },
+  { id: 'kanext',     name: 'KaNeXT',              initials: 'KN', color: '#3B82F6' },
   { id: 'lincoln',    name: 'Lincoln University',   initials: 'LU', color: '#003A63' },
   { id: 'basketball', name: "LU Men's Basketball",  initials: 'BB', color: '#990000' },
   { id: 'iccla',      name: 'ICCLA',               initials: 'IC', color: '#1D9BF0' },

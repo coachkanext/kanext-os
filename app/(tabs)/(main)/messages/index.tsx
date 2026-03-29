@@ -1776,7 +1776,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   },
   openedReceipt: {
     fontSize: 12,
-    color: '#5A8A6E',
+    color: C.green,
     marginTop: 1,
   },
   swipeStarWrap: {

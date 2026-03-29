@@ -68,7 +68,7 @@ export function CommunityMembersPanel() {
         </View>
         <View style={[s.statDivider, { backgroundColor: C.separator }]} />
         <View style={s.statItem}>
-          <Text style={[s.statNum, { color: '#D97757' }]}>{atRisk.length}</Text>
+          <Text style={[s.statNum, { color: '#3B82F6' }]}>{atRisk.length}</Text>
           <Text style={[s.statLabel, { color: C.secondary }]}>At-Risk</Text>
         </View>
       </View>
@@ -135,7 +135,7 @@ export function CommunityMembersPanel() {
       {atRisk.length > 0 && (
         <>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 16, marginBottom: 6 }}>
-            <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#D97757' }} />
+            <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#3B82F6' }} />
             <Text style={[s.sectionLabel, { color: C.secondary, marginBottom: 0 }]}>
               {atRisk.length} At-Risk
             </Text>
@@ -158,7 +158,7 @@ export function CommunityMembersPanel() {
                 <Text style={[s.alertSub, { color: C.secondary }]}>Last: {formatShortDate(m.lastAttended)}</Text>
               </View>
               <Pressable
-                style={[s.alertBtn, { backgroundColor: '#D97757' }]}
+                style={[s.alertBtn, { backgroundColor: '#3B82F6' }]}
                 onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); closeSidePanel(); setTimeout(() => router.push('/(tabs)/(main)/messages'), 80); }}
               >
                 <Text style={s.alertBtnText}>Reach Out</Text>
