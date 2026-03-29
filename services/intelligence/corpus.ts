@@ -737,451 +737,467 @@ system with adequate supporting cast. Confidence: 70-76%.
 Full evaluation outputs for all three cases are stored as canonical Contextual Mode reference
 cases.`;
 
-export const LEGEND_NCAA_D1_HM = `# COLLEGE PLAYER KR LEGENDS — v3 (REWRITE)
+export const LEGEND_NCAA_D1_HM = `# NCAA DIVISION I -- HIGH-MAJOR PLAYER KR LEGEND v4
+## λ = 1.000
 
-## Calibrated against 152 players across 19 teams at 6 levels (March 2026)
+Interpretation anchor: Power 5 + Big East. Deep rosters, national recruiting, sustained play vs Top-100 opponents. College KR reflects current college role and impact only. No draft language, no pro projection. All ratings assume KLVN normalization.
 
-### Governance Note
-Display legend only. KR values are produced by Nexus. No evaluation, weighting, or normalization logic lives here. College KR describes current college role and impact only. Pro projection lives in the Pro Transition Engine (File 06). No draft language, no pro projection language appears in any college legend tier.
+**98-100 -- National Player of the Year / Transcendent Superstar.**
+Program-orbiting force. Elite usage AND elite efficiency simultaneously. Game-plan warps around stopping them and it still doesn't work. Drives wins against other elites. Conference POY lock. National awards finalist or winner. Reserved for generational single-season performers.
 
----
+**95-97 -- Franchise Anchor / Elite All-American.**
+Team's unquestioned alpha or co-alpha. Primary closer. All-American or Conference POY contender. Carries offensive OR defensive load nightly. 30+ MPG on a team that wins 25+ games or earns a top-4 seed. The team's identity is built around this player. Cannot be replaced.
 
-## NCAA DIVISION I — HIGH-MAJOR (λ = 1.000)
+**92-94 -- High-Impact Starter / Core Winner.**
+Wins games at the highest level. Can be an offensive alpha whose production drives the team or a two-way anchor whose completeness stabilizes everything. Heavy-minute leader. All-Conference caliber. Trusted in late-game situations. Drives outcomes against elite competition.
 
-Interpretation anchor: Power 5 + Big East. Deep rosters, national recruiting, sustained play vs Top-100 opponents. College KR reflects who you are on the floor right now — not recruiting hype, not draft stock, not future potential. All ratings assume KLVN normalization.
+**89-91 -- Solid Starter / Top-Five Rotation Lock.**
+Firmly positive starter value at HM level. 25+ MPG. Consistent two-way impact. All-Conference honorable mention range. The starters on ranked teams who aren't the stars but who you can't win without. Complementary pieces that make the machine work.
 
-**98–100 — National Player of the Year Lock / Transcendent Superstar.**
-Program-orbiting force. Elite usage AND elite efficiency simultaneously. Game-plan warps around stopping them — and it still doesn't work. Drives wins against other elites. Would be the best or second-best player on almost any team in the country. Conference POY lock. National awards finalist or winner.
-*Calibration: No player in the 48-player HM study reached this tier. Reserved for generational single-season performers.*
+**86-88 -- Trusted Rotation / High-Minute Role Player.**
+Winning-role player who thrives in a defined role. 20+ MPG in meaningful games. Value comes from one or more specialties: shooting, rim protection, distribution, perimeter defense, rebounding. Lineups win with them on the floor.
 
-**95–97 — Franchise Anchor / Elite All-American.**
-Clear identity-setter. Team's unquestioned alpha or co-alpha. Primary closer. All-American or Conference POY contender. Carries offensive OR defensive load nightly — the team's identity is built around this player. 30+ MPG. On a team that wins 25+ games or earns a top-4 seed. May have a spike profile (dominant scorer with exploitable gaps) or a complete profile (contributes across every category). What defines this tier: you cannot replace what this player does.
-*Calibration: Lendeborg (96, Michigan — 14.7/6.9/3.2, Big Ten POY, Consensus AA, zero statistical holes). Acuff (96, Arkansas — 23.5/6.4, SEC POY, .440 3P%, first since Maravich to lead SEC in points + assists).*
+**83-85 -- Reliable Bench / Rotation Contributor.**
+True rotation depth on good teams. 15-20 MPG. Consistent energy or specialty. No major drop-off when on the floor. The 6th-7th man on a ranked team.
 
-**92–94 — High-Impact Starter / Core Winner.**
-Wins games at the highest level. Can be the offensive alpha whose production drives the team (spike profile — elite scoring, weaker in other areas) OR the two-way anchor whose completeness stabilizes everything (complete profile — contributes across categories without dominating one). Heavy-minute leader. All-Conference caliber. Trusted in late-game situations. Drives outcomes against elite competition.
-*Calibration: Peterson (93, Kansas — 20.2 PPG, projected #1 pick, spike scorer with weak playmaking). Bradley (94, Arizona — Big 12 POY, clutch, 4.6 APG). Bidunga (92*, Kansas — DPOY candidate, 13/9/2.6 BPG, defensive anchor but limited offense). Haugh (93, Florida — Consensus AA, 17.1/6.1). Condon (92, Florida — 15.1/7.5, All-SEC). Brazile (92, Arkansas — 13.2/7.4 with 3.1 stocks/game). Burries (93, Arizona — 16 PPG as a freshman on a 35-2 team). Peat (92, Arizona — 13.8/5.3/2.7/0.8 BPG as a freshman).*
-*Note: Bidunga at 92 sits at the boundary of this tier and 89-91. His defensive dominance (DPOY, 100th percentile DRAPM) pushes him into 92-94 even though his offensive limitations would typically cap at 89-91. For centers, the OPF weights defense at 44% — defensive dominance carries proportionally more weight.*
+**80-82 -- Situational Specialist / Depth Piece.**
+Matchup- and context-dependent contributor. 10-15 MPG. Role-specific value. The 7th-8th man on a ranked team.
 
-**89–91 — Solid Starter / Top-Five Rotation Lock.**
-Firmly positive starter value at HM level. 25+ MPG. Consistent two-way impact. Can scale up or down depending on lineup needs. All-Conference honorable mention range. The starters on ranked teams who aren't the stars but who you can't win without. Complementary pieces that make the machine work.
-*Calibration: Oweh (91, Kentucky — 18.1 PPG, 1.8 SPG, team alpha but on a .500+ team, not a contender). Bidunga (91*, see note above). Chinyelu (91, Florida — SEC DPOY, 11.2 RPG). Aberdeen (89, Kentucky — 13.2 PPG, .360 3P%). White (89, Kansas — 13.5/6.7, efficient). Burnett (89, Michigan — 12.5 PPG, .380 3P%). Johnson Jr (89, Michigan — 11/7.2, 69.1 TS%). Cadeau (90, Michigan — 5.6 APG, runs the #1 assist offense). Mara (90, Michigan — 7'3", 2.6 BPG, .350 3P% center unicorn). Krivas (90, Arizona — 10.8/8.2/1.8 BPG, rim protector). Thomas (91, Arkansas — 15.4 PPG, 1.5 SPG). Richmond (90, Arkansas — 11.1 PPG, .574 FG%).*
+**77-79 -- Limited Bench / Emergency Depth.**
+Playable only under constraint. 5-10 MPG sporadically. Not trusted in high-leverage moments.
 
-**86–88 — Trusted Rotation / High-Minute Role Player.**
-Winning-role player who thrives in a defined role. 20+ MPG in meaningful games. Clearly trusted by coaching staff. Value comes from one or more specialties: shooting, rim protection, distribution, perimeter defense, rebounding. Can be an elite facilitator whose value is passing (not just a "glue guy"). Lineups win with them on the floor. Not the reason you win — but a reason you don't lose.
-*Calibration: Council (87, Kansas — 5.1 APG, Big 12 Newcomer, elite distributor, poor shooter). Chandler (87, Kentucky — .370 3P%, versatile defender). Lee (88, Florida — 11.6/4.2 APG, poor 3P%). Fland (88, Florida — 11.6 PPG, 1.8 SPG, elite on-ball defender). Klavzar (86, Florida — SEC 6th Man, .402 3P%). Gayle (87, Michigan — 10 PPG, .350 3P%). Kharchenkov (88, Arizona — defensive stopper, guards 1-5). Awaka (88, Arizona — Big 12 6th Man, 9.4/9.5, #1 ORB% nationally). Ewin (87, Arkansas — .585 FG%, 1.0 BPG).*
+**74-76 -- Fringe Roster / Non-Rotation.**
+On the roster, not in the competitive plan. Garbage-time minutes only.
 
-**83–85 — Reliable Bench / Rotation Contributor.**
-True rotation depth on good teams. 15–20 MPG. Consistent energy or specialty (shooting, defense, rebounding). No major drop-off when on the floor. Common profile on Sweet 16 and Final Four rosters. The 6th-7th man on a ranked team. Earns minutes through reliability, not dominance.
-*Calibration: Tiller (84, Kansas — elite physical tools, inconsistent production, benched in key game). Wagner (85, Arkansas — former #1 recruit, 7 PPG on poor shooting, pedigree > production). McKenney (83, Michigan — freshman, .380 3P%, 21-pt debut). Dell'Orso (83, Arizona — .833 FT%, .350 3P%, veteran bench guard). Knox (83, Arkansas — versatile wing, 6.5/4.5). Lowe (83, Kentucky — 9 GP only, injured, All-ACC pedigree from Pitt).*
+**71-73 -- Developmental / Project.**
+Future-oriented roster slot. Physically or skill-wise incomplete. Not currently viable in HM games.
 
-**80–82 — Situational Specialist / Depth Piece.**
-Matchup- and context-dependent contributor. 10–15 MPG. Role-specific value (shooting, defense, pace change, size). Can swing individual games when their specialty is needed. Easily replaced individually, but useful when aligned correctly with the system. The 7th-8th man on a ranked team.
-*Calibration: Jackson (81, Kansas — defensive energy, knee injury comeback, McD AA pedigree). Handlogten (82, Florida — 7'1", elite ORB%, backup C). Jelavic (82, Kentucky — Croatian freshman, .350 3P%). Tschetter (81, Michigan — .360 3P%, big-lineup option). Aristode (81, Arizona — .459 3P% specialist, 12 MPG). Pringle (81, Arkansas — .714 FG%, 12 MPG backup C).*
+**68-70 -- Practice Squad / Walk-On.**
+Roster filler for structure, not competition. No rotation pathway.
 
-**77–79 — Limited Bench / Emergency Depth.**
-Playable only under constraint. 5–10 MPG sporadically. Injury or foul trouble dependent. Neutral to mildly negative impact. Not trusted in high-leverage moments. Can hold the fort for a few minutes without the team collapsing.
-*Calibration: McDowell (78, Kansas — 17.2 MPG but .360/.349 production, floor spacer who doesn't contribute much). Johnson (80, Kentucky — #20 recruit, 12.5 MPG, coach didn't trust him yet). Brown (80, Florida — 14 MPG, functional bench guard).*
-*Note: Some players at 77-80 play more minutes than the label suggests (McDowell at 17 MPG) because roster construction forces coaches to play them, not because their production warrants it.*
+**Below 68 -- Below HM Viability.**
+Below HM competitive threshold.
+`;
 
-**74–76 — Fringe Roster / Non-Rotation.**
-On the roster, not in the competitive plan. Practice and scout value. Garbage-time minutes only. Emergency depth. Net neutral to negative on the floor.
-*Calibration: Rosario (75, Kansas — started 6 games early then lost his role completely, .286 3P%, minutes collapsed throughout season).*
-
-**71–73 — Developmental Redshirt / Project.**
-Future-oriented roster slot. Physically or skill-wise incomplete. Practice-focused. Not currently viable in HM games. May project upward with development or a transfer to a lower level.
-
-**68–70 — Practice Squad / Walk-On.**
-Roster filler for structure, not competition. Scout team body. No rotation pathway. Contribution is off-court (leadership, culture, practice intensity).
-
-**Below 68 — Below HM Viability.**
-Below HM competitive threshold. Negative on-court impact at HM pace and athleticism. Better fit at Mid-Major, D2, NAIA, or JUCO.
-
----
-
-## KEY CHANGES FROM v2 → v3
-
-1. **All draft/pro projection language removed.** No references to "NBA draftable," "NBA first-round certainty," "high-end overseas projection," or any forward-looking pro language in any tier. College KR is present-tense only.
-
-2. **92–94 band rewritten to accommodate both player types.** Now explicitly describes "spike profile" (dominant scorer with gaps) AND "complete profile" (two-way anchor). Both Peterson and Bidunga fit the description.
-
-3. **86–88 renamed from "Big-Minute Glue Guy" to "High-Minute Role Player."** Description now includes "elite facilitator whose value is passing" alongside specialist roles. Council's 5.1 APG profile is covered without being undersold as a "glue guy."
-
-4. **BPR ranges removed entirely.** Multiple players exceeded their tier's stated BPR bands (Peterson 14.1 BPM in the 92-94 tier, Bidunga 11.0 in the 89-91 tier). BPR ranges created false ceilings and floors. The legend describes roles and production patterns, not metric thresholds. Metrics are the pipeline's job, not the legend's.
-
-5. **Calibration examples added to every tier.** Each tier now includes specific players from the 48-player HM study with their stats, showing exactly who belongs at each level. These are reference points, not gates — future players are evaluated by the pipeline, not by comparison to calibration examples.
-
-6. **77-80 note added** about minutes vs production. Some players play more minutes than their KR suggests because coaches have no better option (roster construction forces playing time). The KR reflects production quality, not minutes earned.`;
-
-export const LEGEND_NCAA_D1_MM = `# NCAA DIVISION I — MID-MAJOR PLAYER KR LEGEND v3
+export const LEGEND_NCAA_D1_MM = `# NCAA DIVISION I -- MID-MAJOR PLAYER KR LEGEND v4
 ## λ = 0.958
 
 Interpretation anchor: AAC, A-10, Mountain West, WCC, MVC. Regional/national recruiting mix. Mostly mid-tier opponents with occasional high-major games. Less depth and athletic redundancy than HM.
 
-**95–100 — Mid-Major Player of the Year Lock / Transcendent Star.**
-Program-defining player who dominates the mid-major landscape nationally. Offense and/or defense fully orbits them. Conference POY lock. Scales up against high-majors without collapsing.
+**95-100 -- Mid-Major Player of the Year / Transcendent Star.**
+Conference-transcendent force. Elite production AND efficiency at mid-major level. All-American candidate. Dominates conference and competes with HM talent. Carries team to NCAA Tournament contention.
 
-**92–94 — Franchise Anchor / Elite Mid-Major All-American.**
-Clear #1 option and identity driver. Closes games. Consistent efficiency at high usage. All-Conference POY contender. Can carry a team to conference titles or at-large consideration. Can be a spike scorer or a complete two-way anchor — what matters is they're irreplaceable.
-*Calibration: Murauskas (93, Saint Mary's — 18.8/7.7/2.2, Princeton hub, team identity runs through him).*
+**92-94 -- Franchise Anchor / Conference Star.**
+Clear number-one option and identity driver. Conference POY contender. First Team All-Conference lock. Team is built around this player. 18+ PPG or equivalent impact.
 
-**88–91 — High-Impact Starter / Core Winner.**
-Primary reason teams win at the mid-major level. Heavy minutes leader. All-Conference lock. Game-changer vs peers. Top-3 rotation piece. Offense or defense reliably bends with them on the floor. May be an elite facilitator, a defensive anchor, or a scoring engine.
-*Calibration: Lewis (89, Saint Mary's — 14.2 PPG, .372 3P%, .882 FT%). Dent (89, Saint Mary's — 13/5.7 APG, .401 3P%, .918 FT%). Byrd (88, SDSU — 13.1 PPG, 1.9 SPG, Preseason MW POY). Dixon-Waters (88, SDSU — 13 PPG, .370 3P%, 29.3 MPG).*
+**89-91 -- High-Impact Starter / Core Winner.**
+Primary reason strong mid-major teams win. Heavy minutes leader. All-Conference caliber. Consistent production against conference and non-conference competition.
 
-**85–87 — Solid Starter / Top-Five Rotation Lock.**
-Firmly positive starter value. 25+ MPG. Two-way reliability. Can scale up or down depending on lineup. All-Conference consideration. On winning MM teams, these are the 3rd-4th starters who execute their role without question.
-*Calibration: McDaniel (85, Memphis — 13.9/4.6 APG/1.9 SPG, carries a losing team). Davis (86, SDSU — 11/4/2.5, game-winner in MWC tournament). Gwath (85, SDSU — MW DPOY/FOY prior year, rim protector + .350 3P% unicorn).*
+**86-88 -- Solid Starter / Top-Five Rotation Lock.**
+Reliable starter value at mid-major level. 25+ MPG. Consistent two-way impact. Complementary piece on tournament teams.
 
-**82–84 — Trusted Rotation / Big-Minute Contributor.**
-Winning-role player trusted in pressure moments. Top 6–8 rotation. 20+ MPG. Clear specialist value (shooting, defense, distribution). Holds up against elite mid-majors. May drive specific phases of the offense (bench scoring, secondary distribution) without being the primary engine.
-*Calibration: Parker (82, Memphis — 11.4 PPG, conference surge to 14.4 PPG). Shaw (84, Saint Mary's — .417 3P%, 5.3 RPG as a freshman). Clark (83, Pepperdine — 15.1 PPG on a losing team). Phipps (83, Pepperdine — 13.3/6.1/5.0/1.4). Harrington (83, SDSU — freshman, .360 3P%, #80 recruit).*
+**83-85 -- Trusted Rotation / High-Minute Role Player.**
+Winning-role player. 20+ MPG. Specialist value. Lineups function well with them on the floor.
 
-**79–81 — Reliable Bench / Rotation Piece.**
-Depth that keeps quality intact. 15–20 MPG. Consistent execution. Neutral to slightly positive impact. Common on conference-title teams. Functional contributors who don't hurt you.
-*Calibration: Givens (80, Memphis — .365 3P% team-best, but .661 FT%). Bradshaw (80, Memphis — .536 FG%, former 5-star, unfulfilled pedigree). Cooley (81, Pepperdine — .920 FT%, 11.7 PPG). Compton (81, SDSU — .550 FG% efficient finisher). Wessels (81, Saint Mary's — 1.0 BPG, Pack Line anchor). Campbell (81, Saint Mary's — .489 3P%).*
+**80-82 -- Reliable Bench / Rotation Piece.**
+Depth that maintains quality. 15-20 MPG. Energy or specialty contribution.
 
-**76–78 — Situational Specialist / Depth.**
-Context-dependent contributor. 10–15 MPG. Matchup-specific usage. Energy, shooting bursts, or defensive relief. Cannot be relied on nightly.
-*Calibration: Davis (77, Memphis — .278 3P% liability). Berry (77, Memphis). Hardaway (77, Memphis — .343 3P%, 0.7 BPG). Heide (77, SDSU — broken hand, 4.7 RPG). Cicic (78, Pepperdine — 1.0 BPG, 23/10/4 ceiling game).*
+**77-79 -- Situational Specialist / Depth.**
+Context-dependent contributor. 10-15 MPG.
 
-**73–75 — Limited Bench / Emergency Depth.**
-Playable only under constraint. 5–10 MPG sporadically. Neutral to mildly negative impact. Not trusted in high-leverage moments.
-*Calibration: Hawke (74, Saint Mary's — .222 3P%, 10.7 MPG). Mager (74, Pepperdine). Stosic (74, Pepperdine — Gonzaga pedigree, never established).*
+**74-76 -- Limited Bench / Emergency Depth.**
+Playable only under constraint. 5-10 MPG.
 
-**70–72 — Fringe Roster / Non-Rotation.**
-On the roster, not in the plan. Practice and scout value. Garbage-time minutes only. Emergency depth.
-*Calibration: Vudragovic (71, Pepperdine — 3 PPG, 12 MPG, bottom of WCC).*
+**71-73 -- Fringe Roster / Non-Rotation.**
+On the roster, not in the competitive plan.
 
-**67–69 — Developmental Redshirt / Project.** Future-oriented slot. Not viable in strong MM play yet.
+**68-70 -- Developmental / Project.**
+Future-oriented. Not currently viable in MM games.
 
-**64–66 — Practice Squad / Walk-On.** Roster filler for structure. No competitive pathway.
+**65-67 -- Practice Squad / Walk-On.**
+Roster filler. No competitive pathway.
 
-**Below 64 — Below Mid-Major Viability.** Below MM competitive threshold. Better suited for Low-Major, D2, NAIA, or JUCO.`;
+**Below 65 -- Below MM Viability.**
+Below mid-major competitive threshold.
+`;
 
-export const LEGEND_NCAA_D1_LM = `# NCAA DIVISION I — LOW-MAJOR PLAYER KR LEGEND v3
+export const LEGEND_NCAA_D1_LM = `# NCAA DIVISION I -- LOW-MAJOR PLAYER KR LEGEND v4
 ## λ = 0.917
 
-Interpretation anchor: Big South, Big Sky, Big West, SWAC, MEAC, NEC, Southland, Patriot, etc. Regional/local recruiting. Thin depth; sharp drop-offs after top 6–7. Teams often built around 1–2 primary creators.
+Interpretation anchor: Big South, Big Sky, Big West, SWAC, MEAC, NEC, Southland, Patriot, etc. Regional/local recruiting. Thin depth with sharp drop-offs after top 6-7. Teams often built around 1-2 primary creators.
 
-**92–100 — Low-Major Player of the Year Lock / Dominant Star.**
-Conference-level force who overwhelms the ecosystem. Entire program orbits them. Extreme usage with sustainable efficiency. National low-major recognition. Carries team to auto-bid contention.
+**92-100 -- Low-Major Player of the Year / Dominant Star.**
+Conference-defining force. Elite production at low-major level. All-Conference lock and conference POY. Drives team to conference championship and NCAA Tournament. Transfer value to mid-major or higher.
 
-**88–91 — Franchise Anchor / Elite Low-Major Standout.**
-Clear #1 option and identity driver. Closes games. Leads conference in key categories. Conference POY contender. Wins games against peers through volume and control. On a team that competes for conference titles and NCAA auto-bids. Can be a volume scorer, a complete two-way player, or a defensive anchor who dominates the paint.
-*Calibration: Martin (89, High Point — 15 PPG, 2.3 AST/TO, 1.6 SPG, 30 pts vs Arkansas in NCAA R2). Fletcher (88, High Point — 14/7 on .540 FG%, Kentucky/Xavier pedigree). Dixon (88, UCI — 15.4 PPG, .385 3P%, Preseason All-BW). Evans (88, UCI — anchors 4th-ranked national defense, 8.4 RPG, ~2.5 BPG). Sykes (88, LBSU — 19.4 PPG as a freshman, 39-pt game, Kyle Macy nominee).*
+**89-91 -- Franchise Anchor / Conference Star.**
+Clear number-one option. Conference POY contender. First Team All-Conference. Team identity is built around this player.
 
-**84–87 — High-Impact Starter / Core Winner.**
-Primary reason teams consistently win in-conference. Heavy minutes leader. All-Conference lock. Game-changer vs peer competition. Top-3 rotation piece. Drives conference wins and tournament runs.
-*Calibration: Martinez (86, High Point — .480/.350/.860, 2.92 AST/TO, Arizona pedigree). Aquino (86, High Point — 1.7 BPG + .410 3P% unicorn). Saran (86, UCI — 12 PPG, All-Tournament). Majstorovic (86, LBSU — 15.2/6.4/1.7 SPG, Syracuse pedigree). Saine (86, Weber State — 14/4/1.5, D2 transfer, 29-pt game). Henry (85, UCI — versatile wing, Preseason All-BW). Hennig (84, Weber State — 12/4/2.5 sophomore).*
+**86-88 -- High-Impact Starter / Core Winner.**
+Primary reason strong low-major teams win. Heavy minutes leader. All-Conference caliber. Consistent production across full seasons.
 
-**80–83 — Solid Starter / Top-Five Rotation Lock.**
-Reliable starter value at low-major level. 25+ MPG. Consistent two-way contribution. Versatile role player. All-Conference consideration.
-*Calibration: Washington (83, High Point — founding test case, jumped from 76-79 at CSUN to 83, system-unlock). Tillis (83, UCI — 8/5.5, NIT semifinal double-double). Whiting (83, Weber State — .380 3P%, 3.5 APG, Boise State/UNLV pedigree). Vartiainen (83, Weber State — .391 career 3P%, Finnish Klay Thompson).*
+**83-85 -- Solid Starter / Top-Five Rotation Lock.**
+Reliable starter value at low-major level. 25+ MPG. Consistent two-way contribution. Complementary piece on winning teams.
 
-**77–79 — Trusted Rotation / Big-Minute Contributor.**
-Winning-role player in a thin ecosystem. Top 6–8 rotation. 18–25 MPG. Clear specialist value. Holds up vs top low-major opponents.
-*Calibration: Farrell (77, LBSU). Levillain (78, LBSU — French freshman, 5.0 RPG, double-doubles). Brady (77, High Point — 2.6 AST/TO but .250 3P%). Jester (77, UCI). Hohn (77, UCI — distributor, clutch FT in NIT). Gomma (79, Weber State — rim-running C, 19/13 ceiling game).*
+**80-82 -- Trusted Rotation / High-Minute Role Player.**
+Winning-role player. 20+ MPG. Specialist value in a defined role.
 
-**74–76 — Reliable Bench / Rotation Piece.**
-Depth that keeps teams functional. 12–18 MPG. Energy or specialty. Neutral impact.
-*Calibration: Miller (74, High Point — freshman big, .760 FG%, 15 blocks). Lewis (74, LBSU). Johnson (74, LBSU — 0.7 BPG team leader). Grayson (76, Weber State — 3.0 APG in 14 MPG, 8-assist game).*
+**77-79 -- Reliable Bench / Rotation Piece.**
+Depth that maintains quality. 15-20 MPG.
 
-**71–73 — Situational Specialist / Depth.** Context-dependent bench contributor. 8–12 MPG.
+**74-76 -- Situational Specialist / Depth.**
+Context-dependent contributor. 10-15 MPG.
 
-**68–70 — Limited Bench / Emergency Depth.** Playable only under constraint. 5–10 MPG.
+**71-73 -- Limited Bench / Emergency Depth.**
+Playable only under constraint. 5-10 MPG.
 
-**65–67 — Fringe Roster / Non-Rotation.** On the roster, not in the plan. Practice and scout value.
+**68-70 -- Fringe Roster / Non-Rotation.**
+On the roster, not in the competitive plan.
 
-**62–64 — Developmental Redshirt / Project.** Future-oriented slot. Not viable currently.
+**65-67 -- Developmental / Project.**
+Future-oriented. Not currently viable.
 
-**59–61 — Practice Squad / Walk-On.** Roster filler. No competitive pathway.
+**62-64 -- Practice Squad / Walk-On.**
+Roster filler. No competitive pathway.
 
-**Below 59 — Below Low-Major Viability.** Below D1 competitive threshold. Better suited for D2, NAIA, JUCO.`;
+**Below 62 -- Below LM Viability.**
+Below low-major competitive threshold.
+`;
 
-export const LEGEND_NCAA_D2 = `# NCAA DIVISION II PLAYER KR LEGEND v3
+export const LEGEND_NCAA_D2 = `# NCAA DIVISION II PLAYER KR LEGEND v4
 ## λ = 0.875
 
-Interpretation anchor: Top D2 programs in CCAA, MIAA, G-MAC, Sunshine State, PSAC, RMAC, PacWest. Regional recruiting with some national reach. Majority D2 competition; occasional D1 crossovers. Depth is solid at top programs but drops faster than D1.
+Interpretation anchor: Top D2 programs in CCAA, MIAA, G-MAC, Sunshine State, PSAC, RMAC, PacWest. Regional recruiting with some national reach. Majority D2 competition with occasional D1 crossovers. Depth is solid at top programs but drops faster than D1.
 
-**90–100 — D2 Player of the Year Lock / Dominant National Star.**
-National-level force who overwhelms the D2 ecosystem. Conference and national centerpiece. Elite raw production with sustainable efficiency. Carries team to national title contention.
+**90-100 -- D2 Player of the Year / Dominant National Star.**
+National-level D2 force. Elite production with sustainable efficiency. Carries team to national tournament contention. All-American lock. Transfer value to D1 programs.
 
-**86–89 — Franchise Anchor / Elite D2 Standout.**
-Clear #1 option and identity driver. Defines team success. Closes games. Conference POY contender. All-American candidate. On teams that win 25+ games and compete in the national tournament.
-*Calibration: T. Campbell (89, Cal State East Bay — D2 POY, All-American, .522/.457 shooting, 33-1 team).*
+**87-89 -- Franchise Anchor / Top D2 All-American.**
+Clear number-one option and identity driver. Conference POY contender. First Team All-Conference lock. Team is built around this player.
 
-**82–85 — High-Impact Starter / Core Winner.**
-Primary reason strong D2 teams consistently win. Heavy minutes leader. All-Conference / All-Region lock. Game-changer vs D2 elites. Drives conference titles and tournament runs.
-*Calibration: K. King (85, Chaminade — 15.7/7.3/2.9/2.1, most complete D2 line in study). Bush (85, CSEB — CCAA Tournament MVP, 23-pt championship game). Huff (83, CSEB — .378 3P%, .826 FT%). A. Campbell (83, CSEB — 105 assists team leader, bench general). Medina (82, Chaminade — 16.1 PPG, .847 FT%, but .376 FG%).*
+**84-86 -- High-Impact Starter / Core Winner.**
+Primary reason strong D2 teams win. Heavy minutes leader. All-Conference caliber. Consistent production across full seasons.
 
-**78–81 — Solid Starter / Top-Five Rotation Lock.**
-Reliable starter value at D2 level. 25+ MPG. Consistent two-way contribution. Versatile role player. Trusted in high-leverage games.
-*Calibration: Kr. King (81, Chaminade — 12.4/4.2/2.5/1.7, but .240 3P%). Banks (81, Chaminade — 107 assists, .467 FG%, floor general). MacDonald (80, Chaminade — .579 FG%, 5.7 RPG, 0.7 BPG). Foy (81, CSEB — 5.0 RPG team leader, D1 pedigree). Ijeh (81, CSEB — CCAA DPOY, ~8 RPG, ~2.0 BPG).*
+**81-83 -- Solid Starter / Top-Five Rotation Lock.**
+Reliable starter value at D2 level. 25+ MPG. Consistent two-way contribution. Complementary piece on nationally ranked teams.
 
-**75–77 — Trusted Rotation / Big-Minute Contributor.**
-Winning-role player in competitive D2 environments. Top 6–8 rotation. 18–25 MPG. Clear specialist value. Holds up against strong D2 competition.
-*Calibration: Sasser (75, Chaminade — .432 FG%, bench energy). Haddock (75, Chaminade — 1.5 SPG defensive pest, .333 FG%). Haywood (78, CSEB — .560 FG% efficient finisher). Williams (75, CSEB — bench shooter, key threes in regionals).*
+**78-80 -- Trusted Rotation / High-Minute Role Player.**
+Winning-role player. 20+ MPG. Specialist value in a defined role.
 
-**72–74 — Reliable Bench / Rotation Piece.** Depth that maintains quality. 12–18 MPG. Energy or specialty.
+**75-77 -- Reliable Bench / Rotation Piece.**
+Depth that maintains quality. 15-20 MPG.
 
-**69–71 — Situational Specialist / Depth.** Context-dependent bench contributor. 8–12 MPG.
-*Calibration: Shackelford (70, Chaminade — 2.9 PPG, 9.7 MPG, deep bench big).*
+**72-74 -- Situational Specialist / Depth.**
+Context-dependent contributor. 10-15 MPG.
 
-**66–68 — Limited Bench / Emergency Depth.** Playable only under constraint. 5–10 MPG.
+**69-71 -- Limited Bench / Emergency Depth.**
+Playable only under constraint. 5-10 MPG.
 
-**63–65 — Fringe Roster / Non-Rotation.** On the roster, not in the plan. Practice and scout focus.
+**66-68 -- Fringe Roster / Non-Rotation.**
+On the roster, not in the competitive plan.
 
-**60–62 — Developmental Redshirt / Project.** Future-oriented slot. Not viable at competitive D2 level.
+**63-65 -- Developmental / Project.**
+Future-oriented. Not currently viable.
 
-**57–59 — Practice Squad / Walk-On.** Roster filler. No competitive pathway.
+**60-62 -- Practice Squad / Walk-On.**
+Roster filler. No competitive pathway.
 
-**Below 57 — Below D2 Viability.** Below D2 competitive threshold. Better suited for D3, NAIA, JUCO.`;
+**Below 60 -- Below D2 Viability.**
+Below D2 competitive threshold.
+`;
 
-export const LEGEND_NCAA_D3 = `# NCAA DIVISION III PLAYER KR LEGEND v3
+export const LEGEND_NCAA_D3 = `# NCAA DIVISION III PLAYER KR LEGEND v4
 ## λ = 0.667
 
-Interpretation anchor: NESCAC, ODAC, MIAC, CCC, etc. No athletic scholarships. Academics-first institutions with strong local/regional recruiting. Emphasis on balance, development, and team execution. Depth is solid at top programs but drops quickly after core contributors.
+Interpretation anchor: NESCAC, CNE, MAC Commonwealth, MAC Freedom, ODAC, MIAC, USA South, NAC, etc. No athletic scholarships. Academics-first institutions with strong local/regional recruiting. Emphasis on balance, development, and team execution. Top programs (Endicott, Randolph-Macon, Trine) sustain 8-10 playable pieces; most drop after core contributors.
 
-**80–100 — D3 Player of the Year Lock / Elite National Standout.**
-National-level D3 force who overwhelms the ecosystem. High raw production with sustainable efficiency. Carries team to national title contention.
+**86-100 -- D3 Player of the Year / Generational Talent.**
+National-level D3 force with elite two-way impact. Dominant production with sustainable efficiency on both ends. Leads nationally in multiple statistical categories. NABC All-American. Carries team to NCAA Tournament deep runs. Transfer value to D1 programs.
 
-**76–79 — Franchise Anchor / Top D3 All-American.**
-Clear #1 option and identity driver. Defines team success. Closes games consistently. Conference POY contender. Anchor of nationally ranked programs.
+**83-85 -- Franchise Anchor / Conference Player of the Year.**
+Clear number-one option and identity driver. Defines team success through scoring, defense, or all-around play. Conference POY. First Team All-Conference lock. 20+ PPG or equivalent impact. USBWA Player of the Week caliber. Programs set records around this player.
 
-**72–75 — High-Impact Starter / Core Winner.**
-Primary reason elite D3 teams win. Heavy minutes leader. All-Conference / All-Region lock. Game-changer vs D3 elites. Drives conference titles and national runs.
+**78-82 -- High-Impact Starter / All-Conference.**
+Primary reason strong D3 teams win. Heavy minutes leader. First or Second Team All-Conference. Consistent production across full seasons. 15+ PPG or double-double caliber. Starter on nationally ranked teams.
 
-**68–71 — Solid Starter / Top-Five Rotation Lock.**
-Reliable starter value at D3 level. 25+ MPG. Consistent two-way contribution. Versatile role player. Trusted in high-leverage games.
+**74-77 -- Solid Starter / Top-Five Rotation Lock.**
+Reliable starter value at D3 level. 25+ MPG. Consistent two-way contribution. Specialist value (rim protection, rebounding, outlet passing) that anchors a team identity. All-Conference Honorable Mention caliber.
 
-**65–67 — Trusted Rotation / Big-Minute Contributor.**
-Winning-role player on competitive D3 rosters. Top 6–8 rotation. 18–25 MPG. Clear specialist value.
+**70-73 -- Trusted Rotation / Big-Minute Contributor.**
+Winning-role player on competitive D3 rosters. Top 6-8 rotation. 18-25 MPG. Clear specialist value.
 
-**62–64 — Reliable Bench / Rotation Piece.** Depth that maintains quality. 12–18 MPG. Energy or specialty.
+**67-69 -- Reliable Bench / Rotation Piece.**
+Depth that maintains quality. 12-18 MPG. Energy or specialty contribution.
 
-**59–61 — Situational Specialist / Depth.** Context-dependent bench contributor. 8–12 MPG.
+**63-66 -- Situational Specialist / Depth.**
+Context-dependent bench contributor. 8-14 MPG. One skill that earns minutes.
 
-**56–58 — Limited Bench / Emergency Depth.** Playable only under constraint. 5–10 MPG.
+**59-62 -- Limited Bench / Emergency Depth.**
+Playable only under constraint. 3-10 MPG. Physical tools or instincts may flash in limited time.
 
-**53–55 — Fringe Roster / Non-Rotation.** On the roster, not in the plan.
+**55-58 -- Fringe Roster / Non-Rotation.**
+On the roster, not in the plan.
 
-**50–52 — Developmental Redshirt / Project.** Future-oriented. Not viable at competitive D3 level.
+**51-54 -- Developmental / Project.**
+Future-oriented. Raw physical tools with no current competitive viability. Freshman projects with upside.
 
-**47–49 — Practice Squad / Walk-On.** Roster filler. No competitive pathway.
+**47-50 -- Practice Squad / Walk-On.**
+Roster filler. No competitive pathway at this level.
 
-**Below 47 — Below D3 Viability.** Below D3 competitive threshold.`;
+**Below 47 -- Below D3 Viability.**
+Below D3 competitive threshold.
+`;
 
-export const LEGEND_NAIA = `# NAIA PLAYER KR LEGEND v3
+export const LEGEND_NAIA = `# NAIA PLAYER KR LEGEND v4
 ## λ = 0.810
 
-Interpretation anchor: Cascade, Heart, SSAC, Sun Conference, GPAC, Crossroads, Cal Pac, etc. Scholarship availability with academic-athletic balance. Majority NAIA competition; occasional D2 crossovers. Many players develop with intent to transfer upward. Depth is solid at the top but drops quickly beyond 6–7 contributors.
+Interpretation anchor: Cascade, Heart, SSAC, Sun Conference, GPAC, Crossroads, Cal Pac, etc. Scholarship availability with academic-athletic balance. Majority NAIA competition with occasional D2 crossovers. Many players develop with intent to transfer upward. Depth is solid at the top but drops quickly beyond 6-7 contributors.
 
-**86–100 — NAIA Player of the Year Lock / Elite National Standout.**
-National-level NAIA force who overwhelms the ecosystem. Explosive raw production with sustainable efficiency. Carries team to national tournament contention.
+**86-100 -- NAIA Player of the Year / Elite National Standout.**
+National-level NAIA force who overwhelms the ecosystem. Dominant production with sustainable efficiency or transformative defensive impact. Carries team to national tournament contention. All-American lock.
 
-**82–85 — Franchise Anchor / Top NAIA All-American.**
-Clear #1 option and identity driver. Defines team success. Closes games consistently. Conference POY contender. The player the entire program is built around.
-*Calibration: Parker (82, Simpson — 19.7 PPG, .528 FG%, alpha scorer). Selden (82, FMU — 12.1/5.8/3.0/1.3/0.9, most complete NAIA line in study).*
+**82-85 -- Franchise Anchor / Top NAIA All-American.**
+Clear number-one option and identity driver. Defines team success. Conference POY contender. The player the entire program is built around. 18+ PPG or equivalent impact with elite efficiency.
 
-**78–81 — High-Impact Starter / Core Winner.**
-Primary reason strong NAIA teams win. Heavy minutes leader. All-Conference / All-American consideration. Game-changer vs NAIA elites. Drives conference titles and national runs.
-*Calibration: Allen (78, Simpson — 17.1/5.6/2.6, but .248 3P% and .518 FT% drag). Rolfs (78, Simpson — 8.3 RPG, 3.05 AST/TO, rebounding anchor). Carter (81, FMU — 15.9 PPG, .841 FT%, .355 3P%). Brewer (79, FMU — .609 FG%, only 17 TO in 28 games). Noel (78, FMU — .368 3P%, .851 FT%, shooting specialist).*
+**78-81 -- High-Impact Starter / Core Winner.**
+Primary reason strong NAIA teams win. Heavy minutes leader. All-Conference lock. Game-changer in conference play. Drives conference titles and national runs. Consistent two-way production.
 
-**74–77 — Solid Starter / Top-Five Rotation Lock.**
-Reliable starter value at NAIA level. 25+ MPG. Consistent two-way contribution. Versatile role player. All-Conference caliber. Trusted in high-leverage games.
-*Calibration: Harms (76, Simpson — .357 3P% team-best, 10 PPG). Jillson (75, Simpson — .805 FT%, 9.9 PPG). Mentor (77, FMU — 2.0 SPG, 51 steals, defensive identity).*
+**74-77 -- Solid Starter / Top-Five Rotation Lock.**
+Reliable starter value at NAIA level. 25+ MPG. Consistent two-way contribution. All-Conference caliber. Trusted in high-leverage games.
 
-**71–73 — Trusted Rotation / Big-Minute Contributor.**
-Winning-role player on competitive NAIA rosters. Top 6–8 rotation. 18–25 MPG. Clear specialist value.
-*Calibration: Kilbert (72, Simpson — 2.5 APG distributor, 1.1 SPG). Asceric (71, FMU — 6.8 PPG bench forward).*
+**71-73 -- Trusted Rotation / Big-Minute Contributor.**
+Winning-role player on competitive NAIA rosters. Top 6-8 rotation. 18-25 MPG. Clear specialist value.
 
-**68–70 — Reliable Bench / Rotation Piece.**
-Depth that maintains quality. 12–18 MPG. Energy or specialty contribution.
-*Calibration: Torrey (68, Simpson — .306 3P%, bench guard). Munir-Jones (70, FMU — .241 3P%, .432 FT%, worst efficiency in study). Lewis (69, FMU — .455 FG%, split starter).*
+**68-70 -- Reliable Bench / Rotation Piece.**
+Depth that maintains quality. 12-18 MPG. Energy or specialty contribution.
 
-**65–67 — Situational Specialist / Depth.** Context-dependent bench contributor. 8–12 MPG.
-*Calibration: Attebery (67, Simpson — deep bench forward, 3.5 PPG).*
+**65-67 -- Situational Specialist / Depth.**
+Context-dependent bench contributor. 8-12 MPG.
 
-**62–64 — Limited Bench / Emergency Depth.** Playable only under constraint. 5–10 MPG.
+**62-64 -- Limited Bench / Emergency Depth.**
+Playable only under constraint. 5-10 MPG.
 
-**59–61 — Fringe Roster / Non-Rotation.** On the roster, not in the plan.
+**59-61 -- Fringe Roster / Non-Rotation.**
+On the roster, not in the plan.
 
-**56–58 — Developmental Redshirt / Project.** Future-oriented. Not viable at competitive NAIA level.
+**56-58 -- Developmental / Project.**
+Future-oriented. Not viable at competitive NAIA level.
 
-**53–55 — Practice Squad / Walk-On.** Roster filler. No competitive pathway.
+**53-55 -- Practice Squad / Walk-On.**
+Roster filler. No competitive pathway.
 
-**Below 53 — Below NAIA Viability.** Below NAIA competitive threshold.`;
+**Below 53 -- Below NAIA Viability.**
+Below NAIA competitive threshold.
+`;
 
-export const LEGEND_NJCAA_D1 = `# NJCAA DIVISION I PLAYER KR LEGEND v3
+export const LEGEND_NJCAA_D1 = `# NJCAA DIVISION I PLAYER KR LEGEND v4
 ## λ = 0.833
 
-Interpretation anchor: Top JUCO D1 programs (Snow, Midland, Vincennes, Region 5/8 powers). Full scholarship availability. High athleticism and pace. Players often prioritize transfer value to NCAA D1/D2. Elite teams sustain 8–10 playable pieces, others drop sharply after 6–7.
+Interpretation anchor: Top JUCO D1 programs (South Plains, Triton, Dodge City, Eastern Arizona, Indian Hills, Region 5/8 powers). Full scholarship availability. High athleticism and pace. Players often prioritize transfer value to NCAA D1/D2. Elite teams sustain 8-10 playable pieces, others drop sharply after 6-7. Heavy international recruiting at this level.
 
-**88–100 — NJCAA D1 Player of the Year Lock / Elite National JUCO Star.**
-National-level JUCO force who overwhelms the ecosystem. Explosive raw production with sustainable efficiency. Carries team to nationals and title contention.
+**86-100 -- NJCAA D1 Player of the Year / Elite National JUCO Star.**
+National-level JUCO force who overwhelms the ecosystem. Dominant two-way production or generational specialist skill. Carries team to nationals and title contention. All-American lock. Transfer value to D1 mid-major or higher.
 
-**84–87 — Franchise Anchor / Top NJCAA Standout.**
-Clear #1 option and identity driver. Defines team success. Closes games consistently. Conference POY contender.
+**82-85 -- Franchise Anchor / Top NJCAA D1 Standout.**
+Clear number-one option and identity driver. Defines team success. Conference POY contender. All-Region lock. Double-double production or elite specialist impact (rim protection, scoring efficiency) at starter minutes. Transfer value to D1 low-major or D2 franchise role.
 
-**80–83 — High-Impact Starter / Core Winner.**
-Primary reason elite JUCO teams win. Heavy minutes leader. All-Conference / All-Region lock. Game-changer vs top JUCO competition.
+**78-81 -- High-Impact Starter / Core Winner.**
+Primary reason strong JUCO D1 teams win. Heavy minutes leader. All-Conference caliber. Consistent production across full seasons. D1 transfer experience or equivalent pedigree. Game-changer in conference play.
 
-**76–79 — Solid Starter / Top-Five Rotation Lock.**
-Reliable starter value at high JUCO level. 25+ MPG. Consistent two-way contribution. Versatile role player.
+**74-77 -- Solid Starter / Top-Five Rotation Lock.**
+Reliable starter value at JUCO D1 level. 20+ MPG. Consistent two-way contribution or specialist value (shooting, defense, rebounding). Earns starting spot on competitive rosters.
 
-**73–75 — Trusted Rotation / Big-Minute Contributor.**
-Winning-role player on strong JUCO rosters. Top 6–8 rotation. 18–25 MPG. Clear specialist value.
+**71-73 -- Trusted Rotation / Big-Minute Contributor.**
+Winning-role player on strong JUCO D1 rosters. Top 6-8 rotation. 15-22 MPG. Clear specialist value. Volume scoring with efficiency concerns or defensive role player.
 
-**70–72 — Reliable Bench / Rotation Piece.** Depth that maintains quality. 12–18 MPG.
+**68-70 -- Reliable Bench / Rotation Piece.**
+Depth that maintains quality. 10-18 MPG. Energy or specialty contribution.
 
-**67–69 — Situational Specialist / Depth.** Context-dependent bench contributor. 8–12 MPG.
+**65-67 -- Situational Specialist / Depth.**
+Context-dependent bench contributor. 5-12 MPG. One skill that earns minutes.
 
-**64–66 — Limited Bench / Emergency Depth.** Playable only under constraint. 5–10 MPG.
+**62-64 -- Limited Bench / Emergency Depth.**
+Playable only under constraint. 3-8 MPG. Physical tools may exist but production is minimal.
 
-**61–63 — Fringe Roster / Non-Rotation.** On the roster, not in the plan.
+**59-61 -- Fringe Roster / Non-Rotation.**
+On the roster, not in the plan. International project or developmental redshirt.
 
-**58–60 — Developmental Redshirt / Project.** Future-oriented. Not viable currently.
+**56-58 -- Developmental / Project.**
+Future-oriented. Raw physical tools with no current competitive viability at JUCO D1.
 
-**55–57 — Practice Squad / Walk-On.** Roster filler. No competitive pathway.
+**53-55 -- Practice Squad / Walk-On.**
+Roster filler. No competitive pathway at this level.
 
-**Below 55 — Below NJCAA D1 Viability.** Below JUCO D1 competitive threshold.`;
+**Below 53 -- Below NJCAA D1 Viability.**
+Below JUCO D1 competitive threshold.
+`;
 
-export const LEGEND_NJCAA_D2 = `# NJCAA DIVISION II PLAYER KR LEGEND v3
+export const LEGEND_NJCAA_D2 = `# NJCAA DIVISION II PLAYER KR LEGEND v4
 ## λ = 0.750
 
-Interpretation anchor: Strong programs across Midwest/South regions, including national contenders. Partial scholarships. Regional recruiting focus. Player development emphasized for transfer to NCAA D2 or NAIA.
+Interpretation anchor: MCCAA, Region 12/15/20 programs. Partial or no athletic scholarships. Regional recruiting focus with some national reach. Player development emphasized for transfer to NCAA D2, NAIA, or selective D1. Competition quality varies significantly by region.
 
-**82–100 — NJCAA D2 Player of the Year Lock / Elite National Standout.**
-National-level JUCO D2 force. High raw production with sustainable efficiency. Carries team to national tournament contention.
+**80-100 -- NJCAA D2 Player of the Year / Elite National Standout.**
+National-level JUCO D2 force. Leads the level in major statistical categories. Dominant production with sustainable efficiency. Carries team regardless of supporting cast quality. Transfer value to D2 starter or NAIA franchise role.
 
-**78–81 — Franchise Anchor / Top NJCAA D2 All-American.**
-Clear #1 option and identity driver. Defines team success. Conference POY contender.
+**76-79 -- Franchise Anchor / Top NJCAA D2 All-Region.**
+Clear number-one option and identity driver. Defines team success. Conference POY contender. All-Region lock. 20+ PPG or equivalent defensive impact at high efficiency. National tournament contributor.
 
-**74–77 — High-Impact Starter / Core Winner.**
-Primary reason elite JUCO D2 teams win. Heavy minutes leader. All-Conference / All-Region lock.
+**73-75 -- High-Impact Starter / Core Winner.**
+Primary reason strong JUCO D2 teams win. Heavy minutes leader. All-Conference caliber. Consistent production across full seasons. Efficient scorer, elite per-minute producer, or specialist with clear transfer value.
 
-**70–73 — Solid Starter / Top-Five Rotation Lock.**
-Reliable starter value at JUCO D2 level. 25+ MPG. Consistent two-way contribution.
+**70-72 -- Solid Starter / Top-Five Rotation Lock.**
+Reliable starter value at JUCO D2 level. 20+ MPG. Consistent two-way contribution. Creates or spaces effectively. Earns starting spot on competitive rosters.
 
-**67–69 — Trusted Rotation / Big-Minute Contributor.**
-Winning-role player on strong JUCO D2 rosters. Top 6–8 rotation. 18–25 MPG. Clear specialist value.
+**67-69 -- Trusted Rotation / Big-Minute Contributor.**
+Winning-role player on competitive JUCO D2 rosters. Top 6-8 rotation. 13-20 MPG. Clear specialist value.
 
-**64–66 — Reliable Bench / Rotation Piece.** Depth that maintains quality. 12–18 MPG.
+**64-66 -- Reliable Bench / Rotation Piece.**
+Depth that maintains quality. 10-16 MPG. Role shooter, energy big, or defensive specialist.
 
-**61–63 — Situational Specialist / Depth.** Context-dependent bench contributor. 8–12 MPG.
+**61-63 -- Situational Specialist / Depth.**
+Context-dependent bench contributor. 5-12 MPG.
 
-**58–60 — Limited Bench / Emergency Depth.** Playable only under constraint. 5–10 MPG.
+**58-60 -- Limited Bench / Emergency Depth.**
+Playable only under constraint. 3-8 MPG.
 
-**55–57 — Fringe Roster / Non-Rotation.** On the roster, not in the plan.
+**55-57 -- Fringe Roster / Non-Rotation.**
+On the roster, not in the plan.
 
-**52–54 — Developmental Redshirt / Project.** Future-oriented. Not viable currently.
+**52-54 -- Developmental / Project.**
+Future-oriented. Not viable at competitive JUCO D2 level.
 
-**49–51 — Practice Squad / Walk-On.** Roster filler. No competitive pathway.
+**49-51 -- Practice Squad / Walk-On.**
+Roster filler. No competitive pathway.
 
-**Below 49 — Below NJCAA D2 Viability.** Below JUCO D2 competitive threshold.`;
+**Below 49 -- Below NJCAA D2 Viability.**
+Below JUCO D2 competitive threshold.
+`;
 
-export const LEGEND_NJCAA_D3 = `# NJCAA DIVISION III PLAYER KR LEGEND v3
+export const LEGEND_NJCAA_D3 = `# NJCAA DIVISION III PLAYER KR LEGEND v4
 ## λ = 0.625
 
-Interpretation anchor: No athletic scholarships. Regional recruiting focus. Schedules generally weaker than scholarship JUCO levels. Heavy emphasis on development and upward transfer (NCAA D3 / NAIA).
+Interpretation anchor: No athletic scholarships. Regional recruiting focus. GSAC, Region 19/20/21 programs. Schedules generally weaker than scholarship JUCO levels. Heavy emphasis on development and upward transfer (NJCAA D1/D2, NCAA D3, NAIA). Rosters often thin with sharp drop-offs after 5-6 contributors. Older players and international recruits common.
 
-**78–100 — NJCAA D3 Player of the Year Lock / Elite National JUCO Standout.**
-National-level JUCO D3 force. Dominant raw production relative to schedule. Carries team to national tournament contention.
+**83-100 -- NJCAA D3 Player of the Year / Elite National Standout.**
+National-level JUCO D3 force. Leads all D3 programs in major statistical categories. Dominant two-way production or transformative defensive impact. All-American caliber. Transfer value to D2 starter or NAIA franchise role.
 
-**74–77 — Franchise Anchor / Top NJCAA D3 All-American.**
-Clear #1 option and identity driver. Defines team success. Conference POY contender.
+**80-82 -- Franchise Anchor / Top NJCAA D3 All-Region.**
+Clear number-one option and identity driver. Defines team success. Region POY contender. All-Region First Team. 25+ PPG or equivalent impact. Back-to-back awards caliber.
 
-**70–73 — High-Impact Starter / Core Winner.**
-Primary reason elite JUCO D3 teams win. Heavy minutes leader. All-Conference / All-Region lock.
+**76-79 -- High-Impact Starter / Core Winner.**
+Primary reason strong JUCO D3 teams win. Heavy minutes leader. All-Conference lock. Double-digit scorer with secondary production (rebounding, passing, defense).
 
-**66–69 — Solid Starter / Top-Five Rotation Lock.**
-Reliable starter value at JUCO D3 level. 25+ MPG. Consistent two-way contribution.
+**72-75 -- Solid Starter / Top-Five Rotation Lock.**
+Reliable starter value at JUCO D3 level. 20+ MPG. Consistent contribution on one or both ends.
 
-**63–65 — Trusted Rotation / Big-Minute Contributor.**
-Winning-role player on strong JUCO D3 rosters. Top 6–8 rotation. 18–25 MPG.
+**69-71 -- Trusted Rotation / Big-Minute Contributor.**
+Winning-role player on competitive JUCO D3 rosters. Top 6-8 rotation. 13-20 MPG.
 
-**60–62 — Reliable Bench / Rotation Piece.** Depth that maintains quality. 12–18 MPG.
+**66-68 -- Reliable Bench / Rotation Piece.**
+Depth that maintains quality. 10-15 MPG.
 
-**57–59 — Situational Specialist / Depth.** Context-dependent bench contributor. 8–12 MPG.
+**63-65 -- Situational Specialist / Depth.**
+Context-dependent bench contributor. 5-12 MPG.
 
-**54–56 — Limited Bench / Emergency Depth.** Playable only under constraint. 5–10 MPG.
+**60-62 -- Limited Bench / Emergency Depth.**
+Playable only under constraint. 3-8 MPG.
 
-**51–53 — Fringe Roster / Non-Rotation.** On the roster, not in the plan.
+**57-59 -- Fringe Roster / Non-Rotation.**
+On the roster, not in the plan.
 
-**48–50 — Developmental Redshirt / Project.** Future-oriented. Not viable currently.
+**54-56 -- Developmental / Project.**
+Future-oriented. Not viable currently.
 
-**45–47 — Practice Squad / Walk-On.** Roster filler. No competitive pathway.
+**51-53 -- Practice Squad / Walk-On.**
+Roster filler. No competitive pathway.
 
-**Below 45 — Below NJCAA D3 Viability.** Below JUCO D3 competitive threshold.`;
+**Below 51 -- Below NJCAA D3 Viability.**
+Below JUCO D3 competitive threshold.
+`;
 
-export const LEGEND_CCCAA = `# CCCAA PLAYER KR LEGEND v3
+export const LEGEND_CCCAA = `# CCCAA PLAYER KR LEGEND v4
 ## λ = 0.765
 
-Interpretation anchor: South Coast, Orange Empire, Western State, etc. No athletic scholarships. Strong local/regional recruiting from California HS talent. Majority CCCAA competition. Primary focus on transfer preparation (NAIA / NCAA D2 / selective D1).
+Interpretation anchor: South Coast, Orange Empire, Western State, PCAC, Coast Conference, etc. No athletic scholarships. Strong local/regional recruiting from California HS talent. Majority CCCAA competition. Primary focus on transfer preparation (NAIA, NCAA D2, selective D1). Top programs (CCSF, Citrus, Fullerton, SD City) sustain 8-10 playable pieces; most drop sharply after 6-7.
 
-**84–100 — CCCAA Player of the Year Lock / Elite State-National JUCO Standout.**
-State- or national-level JUCO force who overwhelms the CCCAA ecosystem. Monster raw production with sustainable efficiency. Carries team to state or national contention.
+**84-100 -- CCCAA Player of the Year / Elite State Standout.**
+State-level force who overwhelms the CCCAA ecosystem. Dominant production with sustainable efficiency or transformative defensive impact. Carries team to state tournament contention. Conference and state POY awards. Transfer value to D1 programs.
 
-**80–83 — Franchise Anchor / Top CCCAA All-State.**
-Clear #1 option and identity driver. Defines team success. Conference/state POY contender.
+**80-83 -- Franchise Anchor / Top CCCAA All-State.**
+Clear top-two option and identity driver. Defines team success through scoring, defense, or both. Conference POY contender. First Team All-Conference lock. Programs build around this player.
 
-**76–79 — High-Impact Starter / Core Winner.**
-Primary reason strong CCCAA teams win. Heavy minutes leader. All-Conference / All-State lock.
+**76-79 -- High-Impact Starter / Core Winner.**
+Primary reason strong CCCAA teams win. Heavy minutes leader. First or Second Team All-Conference. Consistent production across full seasons. Starter on state tournament teams.
 
-**72–75 — Solid Starter / Top-Five Rotation Lock.**
-Reliable starter value at CCCAA level. 25+ MPG. Consistent two-way contribution.
+**72-75 -- Solid Starter / Top-Five Rotation Lock.**
+Reliable starter value at CCCAA level. 20+ MPG. Consistent contribution on one or both ends. Honorable Mention All-Conference caliber. Earns starting spot through efficiency, size, or specialist skill.
 
-**69–71 — Trusted Rotation / Big-Minute Contributor.**
-Winning-role player on competitive CCCAA rosters. Top 6–8 rotation. 18–25 MPG.
+**69-71 -- Trusted Rotation / Big-Minute Contributor.**
+Winning-role player on competitive CCCAA rosters. Top 6-8 rotation. 13-20 MPG. Clear specialist value. Per-minute production is real but opportunities are limited.
 
-**66–68 — Reliable Bench / Rotation Piece.** Depth that maintains quality. 12–18 MPG.
+**66-68 -- Reliable Bench / Rotation Piece.**
+Depth that maintains quality. 10-15 MPG. Energy or specialty contribution. Doesn't hurt the team when on the floor.
 
-**63–65 — Situational Specialist / Depth.** Context-dependent bench contributor. 8–12 MPG.
+**63-65 -- Situational Specialist / Depth.**
+Context-dependent bench contributor. 5-12 MPG. One skill that earns minutes in specific matchups.
 
-**60–62 — Limited Bench / Emergency Depth.** Playable only under constraint. 5–10 MPG.
+**60-62 -- Limited Bench / Emergency Depth.**
+Playable only under constraint. 3-8 MPG. Physical tools may exist but production doesn't justify minutes yet.
 
-**57–59 — Fringe Roster / Non-Rotation.** On the roster, not in the plan.
+**57-59 -- Fringe Roster / Non-Rotation.**
+On the roster, not in the plan. Practice player who occasionally sees garbage time.
 
-**54–56 — Developmental Redshirt / Project.** Future-oriented. Not viable currently.
+**54-56 -- Developmental / Project.**
+Future-oriented. Raw physical tools or international background with no current competitive viability.
 
-**51–53 — Practice Squad / Walk-On.** Roster filler. No competitive pathway.
+**51-53 -- Practice Squad / Walk-On.**
+Roster filler. No competitive pathway at this level.
 
-**Below 51 — Below CCCAA Viability.** Below CCCAA competitive threshold.`;
+**Below 51 -- Below CCCAA Viability.**
+Below CCCAA competitive threshold.
+`;
 
-export const LEGEND_NCCAA_D1 = `# NCCAA DIVISION I PLAYER KR LEGEND v3
+export const LEGEND_NCCAA_D1 = `# NCCAA DIVISION I PLAYER KR LEGEND v4
 ## λ = 0.542
 
-Interpretation anchor: Faith-based institutional focus (character, academics, mission). Scholarship variability. Majority competition vs other NCCAA / small Christian / independent programs. Occasional NAIA or NCAA crossover games. Heavy emphasis on development, culture, and upward transfer. Depth is limited; most teams operate 6–8 playable pieces, with very sharp drop-offs.
+Interpretation anchor: Faith-based institutional focus (character, academics, mission). Scholarship variability. Majority competition vs other NCCAA, small Christian, and independent programs. Occasional NAIA or NCAA crossover games. Heavy emphasis on development, culture, and upward transfer. Depth is limited with most teams operating 6-8 playable pieces and sharp drop-offs.
 
-**74–100 — NCCAA D1 Player of the Year Lock / Elite National Standout.**
-National-level NCCAA force who overwhelms the ecosystem. Dominant raw production relative to schedule. Carries team to national tournament contention.
+**74-100 -- NCCAA D1 Player of the Year / Elite National Standout.**
+National-level NCCAA force. Dominant production with sustainable efficiency. Carries team to national tournament contention. Transfer value to NAIA or NCAA D2.
 
-**70–73 — Franchise Anchor / Top NCCAA All-American.**
-Clear #1 option and identity driver. Defines team success. Closes games consistently. Conference POY contender.
+**70-73 -- Franchise Anchor / Top NCCAA D1 All-American.**
+Clear number-one option and identity driver. Conference POY contender. The player the program is built around.
 
-**66–69 — High-Impact Starter / Core Winner.**
-Primary reason elite NCCAA teams win. Heavy minutes leader. All-Conference / All-Region lock.
+**66-69 -- High-Impact Starter / Core Winner.**
+Primary reason strong NCCAA D1 teams win. Heavy minutes leader. All-Conference lock.
 
-**62–65 — Solid Starter / Top-Five Rotation Lock.**
-Reliable starter value at NCCAA level. 25+ MPG. Consistent two-way contribution.
+**62-65 -- Solid Starter / Top-Five Rotation Lock.**
+Reliable starter value. 25+ MPG. Consistent two-way contribution.
 
-**59–61 — Trusted Rotation / Big-Minute Contributor.**
-Winning-role player on competitive NCCAA rosters. Top 6–8 rotation. 18–25 MPG.
+**59-61 -- Trusted Rotation / Big-Minute Contributor.**
+Winning-role player. Top 6-8 rotation. 18-25 MPG.
 
-**56–58 — Reliable Bench / Rotation Piece.** Depth that maintains functionality. 12–18 MPG.
+**56-58 -- Reliable Bench / Rotation Piece.**
+Depth that maintains quality. 12-18 MPG.
 
-**53–55 — Situational Specialist / Depth.** Context-dependent bench contributor. 8–12 MPG.
+**53-55 -- Situational Specialist / Depth.**
+Context-dependent bench contributor. 8-12 MPG.
 
-**50–52 — Limited Bench / Emergency Depth.** Playable only under constraint. 5–10 MPG.
+**50-52 -- Limited Bench / Emergency Depth.**
+Playable only under constraint. 5-10 MPG.
 
-**47–49 — Fringe Roster / Non-Rotation.** On the roster, not in the plan.
+**47-49 -- Fringe Roster / Non-Rotation.**
+On the roster, not in the plan.
 
-**44–46 — Developmental Redshirt / Project.** Future-oriented. Not viable currently.
+**44-46 -- Developmental / Project.**
+Future-oriented. Not viable currently.
 
-**41–43 — Practice Squad / Walk-On.** Roster filler. No competitive pathway.
+**41-43 -- Practice Squad / Walk-On.**
+Roster filler. No competitive pathway.
 
-**Below 41 — Below NCCAA D1 Viability.** Below NCCAA competitive threshold.`;
+**Below 41 -- Below NCCAA D1 Viability.**
+Below NCCAA D1 competitive threshold.
+`;
 
 export const LEGEND_NCCAA_D2 = `# NCCAA DIVISION II PLAYER KR LEGEND v3
 ## λ = 0.500
@@ -1217,44 +1233,47 @@ Winning role player on competitive NCCAA D2 rosters. Top 6–7 rotation piece. 1
 
 **Below 38 — Below NCCAA D2 Viability.** Below NCCAA D2 competitive threshold.`;
 
-export const LEGEND_USCAA = `# USCAA PLAYER KR LEGEND v3
+export const LEGEND_USCAA = `# USCAA PLAYER KR LEGEND v4
 ## λ = 0.583
 
-Interpretation anchor: Small-school and independent program focus. No or very limited athletic scholarships. Majority competition vs USCAA peers; some NAIA / NCAA D3 crossovers. Heavy emphasis on academics, development, and upward transfer. Depth is limited; most teams operate 6–8 playable pieces max, with sharp drop-offs.
+Interpretation anchor: Small-school and independent program focus. No or very limited athletic scholarships. Majority competition vs USCAA peers with some NAIA/NCAA D3 crossovers. Heavy emphasis on academics, development, and upward transfer. Depth is limited with most teams operating 6-8 playable pieces max and sharp drop-offs.
 
-**76–100 — USCAA Player of the Year Lock / Elite National Standout.**
-National-level USCAA force who overwhelms the ecosystem. Dominant raw production relative to schedule. Carries team to national tournament contention.
-*Calibration: Kalejaiye (86, Lincoln — 29.8 PPG at home, 22.4 PPG vs D1, .372 3P% on 78 D1 attempts, POY Lock who transcends the level). Williams (79, Lincoln — 22.0/9.1/3.4/2.2 at home, 14.6 PPG vs D1).*
+**76-100 -- USCAA Player of the Year / Elite National Standout.**
+National-level USCAA force. Dominant production with sustainable efficiency. Carries team to national tournament contention. All-American lock.
 
-**72–75 — Franchise Anchor / Top USCAA All-American.**
-Clear #1 option and identity driver. Defines team success. Closes games consistently. Conference POY contender.
-*Calibration: McKesey (73, Lincoln — 15/7.2/6.0 at home, triple-double threat, but zero jump shot limits ceiling). Chatelain (73, Lincoln — 10.6/7.3/1.5 BPG, scoring holds at D1, rim protection translates).*
+**72-75 -- Franchise Anchor / Top USCAA All-American.**
+Clear number-one option and identity driver. Conference POY contender. The player the program is built around.
 
-**68–71 — High-Impact Starter / Core Winner.**
-Primary reason elite USCAA teams win. Heavy minutes leader. All-Conference lock.
+**68-71 -- High-Impact Starter / Core Winner.**
+Primary reason strong USCAA teams win. Heavy minutes leader. All-Conference lock.
 
-**64–67 — Solid Starter / Top-Five Rotation Lock.**
+**64-67 -- Solid Starter / Top-Five Rotation Lock.**
 Reliable starter value at USCAA level. 25+ MPG. Consistent two-way contribution.
-*Calibration: Hernandez (66, Lincoln — 10.9 PPG, .390 3P% at home, but collapses at D1).*
 
-**61–63 — Trusted Rotation / Big-Minute Contributor.**
-Winning-role player on competitive USCAA rosters. Top 6–8 rotation.
-*Calibration: Plantey (63, Lincoln — 5'8", starts every game, defensive pest, 3 steals vs D1 Pepperdine). Wall (61, Lincoln — .400 3P% at home, bench shooter).*
+**61-63 -- Trusted Rotation / Big-Minute Contributor.**
+Winning-role player. Top 6-8 rotation. 18-25 MPG. Clear specialist value.
 
-**58–60 — Reliable Bench / Rotation Piece.** Depth that maintains functionality. 12–18 MPG.
-*Calibration: Diomande (59, Lincoln — 6'6" backup big, consistent across levels).*
+**58-60 -- Reliable Bench / Rotation Piece.**
+Depth that maintains quality. 12-18 MPG.
 
-**55–57 — Situational Specialist / Depth.** Context-dependent bench contributor. 8–12 MPG.
+**55-57 -- Situational Specialist / Depth.**
+Context-dependent bench contributor. 8-12 MPG.
 
-**52–54 — Limited Bench / Emergency Depth.** Playable only under constraint. 5–10 MPG.
+**52-54 -- Limited Bench / Emergency Depth.**
+Playable only under constraint. 5-10 MPG.
 
-**49–51 — Fringe Roster / Non-Rotation.** On the roster, not in the plan.
+**49-51 -- Fringe Roster / Non-Rotation.**
+On the roster, not in the plan.
 
-**46–48 — Developmental Redshirt / Project.** Future-oriented. Not viable currently.
+**46-48 -- Developmental / Project.**
+Future-oriented. Not viable currently.
 
-**43–45 — Practice Squad / Walk-On.** Roster filler. No competitive pathway.
+**43-45 -- Practice Squad / Walk-On.**
+Roster filler. No competitive pathway.
 
-**Below 43 — Below USCAA Viability.** Below USCAA competitive threshold.`;
+**Below 43 -- Below USCAA Viability.**
+Below USCAA competitive threshold.
+`;
 
 
 export const LEVEL_LEGENDS: Record<string, string> = {
@@ -9409,26 +9428,26 @@ HOW KLVN LAMBDA IS INCORRECTLY USED:
 
 # COLLEGE PLAYER KR LEGENDS
 
-COLLEGE PLAYER KR LEGENDS — v3 (MODULAR)
+COLLEGE PLAYER KR LEGENDS — v4 (MODULAR)
 
 Governance Note: College legends have been moved to individual files per level for modularity and independent calibration. Each file is a standalone legend for one competitive level.
 
 Legend files (14 total, stored as separate project knowledge files):
-- Legend_NCAA_D1_HM_v3.md (λ = 1.000) — Calibrated: 48 players / 6 teams
-- Legend_NCAA_D1_MM_v3.md (λ = 0.958) — Calibrated: 32 players / 4 teams
-- Legend_NCAA_D1_LM_v3.md (λ = 0.917) — Calibrated: 32 players / 4 teams
-- Legend_NCAA_D2_v3.md (λ = 0.875) — Calibrated: 16 players / 2 teams
-- Legend_NCAA_D3_v3.md (λ = 0.667) — Tier breaks set, no calibration data yet
-- Legend_NAIA_v3.md (λ = 0.810) — Calibrated: 16 players / 2 teams
-- Legend_NJCAA_D1_v3.md (λ = 0.833) — Tier breaks set, no calibration data yet
-- Legend_NJCAA_D2_v3.md (λ = 0.750) — Tier breaks set, no calibration data yet
-- Legend_NJCAA_D3_v3.md (λ = 0.625) — Tier breaks set, no calibration data yet
-- Legend_CCCAA_v3.md (λ = 0.765) — Tier breaks set, no calibration data yet
-- Legend_USCAA_v3.md (λ = 0.583) — Calibrated: 8 players / 1 team
-- Legend_NCCAA_D1_v3.md (λ = 0.542) — Tier breaks set, no calibration data yet
+- Legend_NCAA_D1_HM_v4.md (λ = 1.000) — Calibrated: 48 players / 6 teams
+- Legend_NCAA_D1_MM_v4.md (λ = 0.958) — Calibrated: 32 players / 4 teams
+- Legend_NCAA_D1_LM_v4.md (λ = 0.917) — Calibrated: 32 players / 4 teams
+- Legend_NCAA_D2_v4.md (λ = 0.875) — Calibrated: 16 players / 2 teams
+- Legend_NCAA_D3_v4.md (λ = 0.667) — Tier breaks set, no calibration data yet
+- Legend_NAIA_v4.md (λ = 0.810) — Calibrated: 16 players / 2 teams
+- Legend_NJCAA_D1_v4.md (λ = 0.833) — Tier breaks set, no calibration data yet
+- Legend_NJCAA_D2_v4.md (λ = 0.750) — Tier breaks set, no calibration data yet
+- Legend_NJCAA_D3_v4.md (λ = 0.625) — Tier breaks set, no calibration data yet
+- Legend_CCCAA_v4.md (λ = 0.765) — Tier breaks set, no calibration data yet
+- Legend_USCAA_v4.md (λ = 0.583) — Calibrated: 8 players / 1 team
+- Legend_NCCAA_D1_v4.md (λ = 0.542) — Tier breaks set, no calibration data yet
 - Legend_NCCAA_D2_v3.md (λ = 0.500) — Tier breaks set, no calibration data yet
 
-v3 changes from v2 (applied to ALL levels):
+v4 changes from v3 (applied to ALL levels):
 1. All draft/pro projection language removed. College KR is present-tense only.
 2. BPR ranges removed from all tiers. Metrics are the pipeline's job, not the legend's.
 3. 86-88 tier renamed from "Glue Guy" to "High-Minute Role Player" — covers facilitators.
