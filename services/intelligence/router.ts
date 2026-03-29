@@ -152,6 +152,39 @@ const LEGEND_LOOKUP_PATTERNS = [
   /\bkr.*tier\b/i,
 ];
 
+// ── Secondary Basketball Context Patterns ────────────────────────────────────
+// Catch conversational basketball questions that don't trigger primary eval
+// keywords (e.g. "How tall is Arizona's big man?", "Who starts at PG for Duke?").
+// Only checked after all primary patterns fail.
+
+const BASKETBALL_VOCAB_PATTERNS = [
+  /\b(roster|lineup|rotation|starter|starters|bench|starting five|sixth man)\b/i,
+  /\b(recruit|recruiting|transfer portal|portal|commit|committed|offer|offered|decommit)\b/i,
+  /\b(ppg|rpg|apg|mpg|fg%|three[- ]point|three[- ]pointer|free throw|assist[s]?|rebound[s]?|block[s]?|steal[s]?)\b/i,
+  /\b(point guard|shooting guard|small forward|power forward|center|combo guard|big man|wing|stretch|floor general)\b/i,
+  /\b(ncaa|nba|naia|juco|njcaa|uscaa|nccaa|d1|d2|d3|division i|division ii|division iii)\b/i,
+  /\b(sec|acc|big ten|big east|pac[- ]?12|big 12|wcc|aac|mac|sun belt|cusa|mountain west|mvc|a-?10)\b/i,
+  /\b(basketball|hoops|hardwood|game plan|press|zone|man[- ]to[- ]man|pick[- ]and[- ]roll|fast break)\b/i,
+  /\b(usage rate|floor time|playing time|minutes per game|season stats|per game averages?)\b/i,
+  /\b(nil deal|nil value|official visit|unofficial visit|portal entry|eligibility)\b/i,
+  /\b(head coach|assistant coach|coaching staff|program|home court|arena|conference play)\b/i,
+];
+
+const SCHOOL_NAME_PATTERNS = [
+  // High-major programs
+  /\b(kansas|arizona|florida|michigan|arkansas|kentucky|louisville|duke|north carolina|unc|uconn|villanova|gonzaga)\b/i,
+  /\b(ohio state|michigan state|indiana|purdue|iowa|illinois|minnesota|wisconsin|northwestern|penn state|rutgers|nebraska|maryland)\b/i,
+  /\b(alabama|georgia|tennessee|lsu|ole miss|mississippi state|vanderbilt|missouri|south carolina|auburn|florida state|miami)\b/i,
+  /\b(texas|baylor|oklahoma|tcu|texas tech|west virginia|oklahoma state|kansas state|iowa state|cincinnati|houston|ucf|byu)\b/i,
+  /\b(ucla|usc|cal|stanford|oregon|washington|arizona state|colorado|utah|washington state|oregon state)\b/i,
+  /\b(syracuse|providence|georgetown|seton hall|marquette|creighton|butler|xavier|st john)\b/i,
+  // Mid-major programs
+  /\b(pepperdine|saint mary'?s|sdsu|san diego state|memphis|utah state|boise state|nevada|fresno state)\b/i,
+  /\b(dayton|richmond|davidson|loyola|drake|belmont|liberty|furman|samford|east tennessee)\b/i,
+  // Low-major programs
+  /\b(high point|weber state|long beach state|lbsu|uc irvine|uci|cal poly|northern arizona|portland state)\b/i,
+];
+
 function matchesAny(message: string, patterns: RegExp[]): boolean {
   return patterns.some(p => p.test(message));
 }
@@ -172,6 +205,11 @@ export function classifyQuery(message: string, conversationType?: string | null)
   if (matchesAny(message, SCHOLARSHIP_NIL_PATTERNS)) return 'scholarship_nil';
   if (matchesAny(message, SYSTEM_INFERENCE_PATTERNS)) return 'system_inference';
   if (matchesAny(message, LEGEND_LOOKUP_PATTERNS)) return 'legend_lookup';
+
+  // ── Secondary: basketball vocabulary and school name context ──
+  // Catches conversational questions that don't use primary eval keywords.
+  if (matchesAny(message, BASKETBALL_VOCAB_PATTERNS)) return 'general_basketball';
+  if (matchesAny(message, SCHOOL_NAME_PATTERNS))      return 'general_basketball';
 
   return 'unknown';
 }

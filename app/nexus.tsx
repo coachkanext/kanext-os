@@ -18,11 +18,13 @@
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import {
   View, Text, TextInput, Pressable, ScrollView,
-  StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator,
+  StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator, Share,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 import * as Haptics from 'expo-haptics';
+import * as Clipboard from 'expo-clipboard';
+import * as Speech from 'expo-speech';
 
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -40,6 +42,9 @@ import { NexusArtifactBlock } from '@/components/nexus/nexus-artifact-block';
 import { classifyQuery } from '@/services/intelligence/router';
 import { buildIntelligenceSystemPrompt, type SystemPromptParts } from '@/services/intelligence/nexus-intelligence';
 import { MODELS, type ModelTier } from '@/services/intelligence/models';
+import { POOL_TOOLS, handlePoolTool } from '@/services/intelligence/pool-tools';
+import { CORPUS_TOOLS, handleCorpusTool } from '@/services/intelligence/corpus-tools';
+import { APP_DATA_TOOLS, handleAppDataTool } from '@/services/intelligence/app-data-tools';
 import { consumePendingEvalQuery } from '@/utils/global-nexus-state';
 
 // Storage
@@ -54,13 +59,26 @@ import type { NexusArtifact } from '@/services/nexus/nexus-artifact-extractor';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const API_URL     = 'https://kanext-backend-production.up.railway.app/api/nexus/chat';
+const API_URL     = 'https://api.anthropic.com/v1/messages';
 const MAX_TOKENS  = 4096;
 const MAX_HISTORY = 20;
 
 const GENERIC_PROMPT =
   `You are Nexus, KaNeXT's intelligent AI assistant. Be concise, direct, and helpful. ` +
   `You assist coaches, athletes, and administrators with any question.`;
+
+// ── Tool name sets + dispatcher ───────────────────────────────────────────────
+
+const POOL_TOOL_NAMES   = new Set(POOL_TOOLS.map(t => t.name));
+const CORPUS_TOOL_NAMES = new Set(CORPUS_TOOLS.map(t => t.name));
+const APP_TOOL_NAMES    = new Set(APP_DATA_TOOLS.map(t => t.name));
+
+function dispatchTool(name: string, input: Record<string, unknown>): string {
+  if (POOL_TOOL_NAMES.has(name))   return handlePoolTool(name, input);
+  if (CORPUS_TOOL_NAMES.has(name)) return handleCorpusTool(name, input);
+  if (APP_TOOL_NAMES.has(name))    return handleAppDataTool(name, input);
+  return JSON.stringify({ error: `Unknown tool: ${name}` });
+}
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -78,7 +96,17 @@ interface Message {
   streaming?: boolean;
 }
 
-type ApiMessage = { role: 'user' | 'assistant'; content: string };
+type ApiMessage = { role: 'user' | 'assistant'; content: string | any[] };
+
+// SSE stream types for tool-use handling
+type ContentBlock =
+  | { type: 'text';     text: string }
+  | { type: 'tool_use'; id: string; name: string; input: Record<string, unknown> };
+
+interface StreamResult {
+  stopReason: string;
+  blocks:     ContentBlock[];
+}
 
 // ── Response Sanitizer ────────────────────────────────────────────────────────
 // Strips XML tool-call blocks that Claude occasionally emits when it lacks data.
@@ -146,21 +174,21 @@ function MarkdownBlock({ text, C }: { text: string; C: ComponentColors }) {
     const line = lines[i];
     if (line.startsWith('### ')) {
       elements.push(
-        <Text key={i} style={[S.mdH3, { color: C.label }]}>{renderInline(line.slice(4), C, S)}</Text>
+        <Text selectable key={i} style={[S.mdH3, { color: C.label }]}>{renderInline(line.slice(4), C, S)}</Text>
       );
     } else if (line.startsWith('## ')) {
       elements.push(
-        <Text key={i} style={[S.mdH2, { color: C.label }]}>{renderInline(line.slice(3), C, S)}</Text>
+        <Text selectable key={i} style={[S.mdH2, { color: C.label }]}>{renderInline(line.slice(3), C, S)}</Text>
       );
     } else if (line.startsWith('# ')) {
       elements.push(
-        <Text key={i} style={[S.mdH1, { color: C.label }]}>{renderInline(line.slice(2), C, S)}</Text>
+        <Text selectable key={i} style={[S.mdH1, { color: C.label }]}>{renderInline(line.slice(2), C, S)}</Text>
       );
     } else if (/^[-*]\s/.test(line)) {
       elements.push(
         <View key={i} style={S.mdBulletRow}>
           <Text style={[S.mdBulletDot, { color: C.secondary }]}>•</Text>
-          <Text style={[S.mdBody, { color: C.label, flex: 1 }]}>{renderInline(line.slice(2), C, S)}</Text>
+          <Text selectable style={[S.mdBody, { color: C.label, flex: 1 }]}>{renderInline(line.slice(2), C, S)}</Text>
         </View>
       );
     } else if (/^\d+\.\s/.test(line)) {
@@ -168,7 +196,7 @@ function MarkdownBlock({ text, C }: { text: string; C: ComponentColors }) {
       elements.push(
         <View key={i} style={S.mdBulletRow}>
           <Text style={[S.mdBulletDot, { color: C.secondary }]}>{num}.</Text>
-          <Text style={[S.mdBody, { color: C.label, flex: 1 }]}>{renderInline(line.replace(/^\d+\.\s/, ''), C, S)}</Text>
+          <Text selectable style={[S.mdBody, { color: C.label, flex: 1 }]}>{renderInline(line.replace(/^\d+\.\s/, ''), C, S)}</Text>
         </View>
       );
     } else if (/^---+$/.test(line.trim())) {
@@ -179,7 +207,7 @@ function MarkdownBlock({ text, C }: { text: string; C: ComponentColors }) {
       elements.push(<View key={i} style={{ height: 8 }} />);
     } else {
       elements.push(
-        <Text key={i} style={[S.mdBody, { color: C.label }]}>{renderInline(line, C, S)}</Text>
+        <Text selectable key={i} style={[S.mdBody, { color: C.label }]}>{renderInline(line, C, S)}</Text>
       );
     }
     i++;
@@ -207,6 +235,95 @@ function renderInline(text: string, C: ComponentColors, S: ReturnType<typeof mak
   });
 }
 
+// ── Message action bar ────────────────────────────────────────────────────────
+
+function MessageActionBar({
+  message,
+  allMessages,
+  onRetry,
+  C,
+}: {
+  message:     { id: string; raw: string };
+  allMessages: { id: string; raw: string; isMe: boolean }[];
+  onRetry:     (text: string) => void;
+  C:           ComponentColors;
+}) {
+  const [liked,      setLiked]      = useState<'up' | 'down' | null>(null);
+  const [copied,     setCopied]     = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  const handleCopy = async () => {
+    await Clipboard.setStringAsync(message.raw);
+    setCopied(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  const handleShare = () => {
+    Share.share({ message: message.raw });
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
+  const handleTTS = () => {
+    if (isSpeaking) {
+      Speech.stop();
+      setIsSpeaking(false);
+    } else {
+      setIsSpeaking(true);
+      Speech.speak(message.raw, {
+        language: 'en-US',
+        onDone:   () => setIsSpeaking(false),
+        onError:  () => setIsSpeaking(false),
+      });
+    }
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
+  const handleThumb = (val: 'up' | 'down') => {
+    setLiked(prev => (prev === val ? null : val));
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
+  const handleRetry = () => {
+    const myIdx   = allMessages.findIndex(m => m.id === message.id);
+    const prevUser = allMessages.slice(0, myIdx).reverse().find(m => m.isMe);
+    if (prevUser) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      onRetry(prevUser.raw);
+    }
+  };
+
+  const btn = (
+    icon: string,
+    onPress: () => void,
+    opts?: { active?: boolean; tint?: string }
+  ) => (
+    <Pressable
+      key={icon}
+      onPress={onPress}
+      hitSlop={8}
+      style={({ pressed }) => ({ opacity: pressed ? 0.4 : 1, padding: 6 })}
+    >
+      <IconSymbol
+        name={icon as any}
+        size={17}
+        color={opts?.active ? (opts.tint ?? C.accent) : C.muted}
+      />
+    </Pressable>
+  );
+
+  return (
+    <View style={{ flexDirection: 'row', marginTop: 4, marginLeft: 2, gap: 2 }}>
+      {btn(copied ? 'checkmark' : 'doc.on.doc',   handleCopy)}
+      {btn('square.and.arrow.up',                  handleShare)}
+      {btn(isSpeaking ? 'stop.circle' : 'play.circle', handleTTS, { active: isSpeaking })}
+      {btn(liked === 'up'   ? 'hand.thumbsup.fill'   : 'hand.thumbsup',   () => handleThumb('up'),   { active: liked === 'up' })}
+      {btn(liked === 'down' ? 'hand.thumbsdown.fill' : 'hand.thumbsdown', () => handleThumb('down'), { active: liked === 'down' })}
+      {btn('arrow.clockwise', handleRetry)}
+    </View>
+  );
+}
+
 // ── Intent detection ──────────────────────────────────────────────────────────
 
 function isBasketball(msg: string): boolean {
@@ -214,7 +331,8 @@ function isBasketball(msg: string): boolean {
     const qt = classifyQuery(msg);
     if (qt !== 'unknown') return true;
   } catch { /* intelligence layer unavailable */ }
-  return /\b(basketball|player|roster|recruit|transfer|eval|kr|klvn|archetype|shoot|defens|rebound|assist|turnover|minutes|season|game|coach|program|scholarship|nil|draft|pro|roster)\b/i.test(msg);
+  return /\b(evaluat|basketball|player|roster|recruit|transfer|eval|klvn|archetype|shoot|defens|rebound|assist|turnover|season|game|coach|scholarship|draft)/i.test(msg)
+      || /\b(kr|nil|pro|minutes|program)\b/i.test(msg);
 }
 
 // A system content block as Anthropic expects it in the messages API.
@@ -224,9 +342,9 @@ type SystemBlock = { type: 'text'; text: string; cache_control?: { type: 'epheme
  * Builds the `system` field for the API request.
  *
  * Basketball tier — structured array with prompt caching:
- *   Block 0: static content (SKILL_MD + FILE_01 + LEGENDS) — cache_control: ephemeral
- *   Block 1: dynamic content (pool data + validated profiles) — no cache marker
- *   Static block is always ≥ 1.3K tokens, well above Anthropic's 1024-token minimum.
+ *   Block 0: SKILL_MD + TOOLS_INSTRUCTION (~2K tokens) — cache_control: ephemeral
+ *   Block 1: validated profiles (Laolu/Lincoln) — no cache marker, only when matched
+ *   FILE_01, legends, and reference data are fetched by Claude via corpus tools.
  *
  * General tier — plain string (Haiku, small prompt, caching not worthwhile).
  */
@@ -249,7 +367,7 @@ function sseXhr(
   headers: Record<string, string>,
   bodyStr: string,
   onDelta:  (text: string) => void,
-  onDone:   () => void,
+  onDone:   (result: StreamResult) => void,
   onError:  (err: Error) => void,
 ): XMLHttpRequest {
   const xhr = new XMLHttpRequest();
@@ -258,6 +376,12 @@ function sseXhr(
 
   let processedLen = 0;
   let buf          = '';
+  let stopReason   = 'end_turn';
+
+  // Track active content blocks by SSE index (text + tool_use)
+  const blockBuf: Record<number, {
+    type: string; id: string; name: string; text: string; json: string;
+  }> = {};
 
   const flush = () => {
     const chunk = xhr.responseText.slice(processedLen);
@@ -274,9 +398,25 @@ function sseXhr(
       if (!raw || raw === '[DONE]') continue;
       try {
         const evt = JSON.parse(raw);
-        if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta') {
-          onDelta(evt.delta.text as string);
+
+        if (evt.type === 'content_block_start') {
+          const cb = evt.content_block ?? {};
+          blockBuf[evt.index] = { type: cb.type ?? 'text', id: cb.id ?? '', name: cb.name ?? '', text: '', json: '' };
+
+        } else if (evt.type === 'content_block_delta') {
+          const block = blockBuf[evt.index];
+          if (!block) continue;
+          if (evt.delta?.type === 'text_delta') {
+            block.text += evt.delta.text ?? '';
+            onDelta(evt.delta.text as string);
+          } else if (evt.delta?.type === 'input_json_delta') {
+            block.json += evt.delta.partial_json ?? '';
+          }
+
+        } else if (evt.type === 'message_delta') {
+          if (evt.delta?.stop_reason) stopReason = evt.delta.stop_reason;
         }
+
       } catch { /* malformed SSE line — skip */ }
     }
   };
@@ -293,7 +433,17 @@ function sseXhr(
         console.error('[Nexus] API error:', xhr.status, xhr.responseText.slice(0, 300));
         onError(new Error(`${xhr.status} — ${xhr.responseText.slice(0, 200)}`));
       } else {
-        onDone();
+        const blocks: ContentBlock[] = Object.values(blockBuf).map(b => {
+          if (b.type === 'tool_use') {
+            try {
+              return { type: 'tool_use' as const, id: b.id, name: b.name, input: JSON.parse(b.json || '{}') };
+            } catch {
+              return { type: 'tool_use' as const, id: b.id, name: b.name, input: {} };
+            }
+          }
+          return { type: 'text' as const, text: b.text };
+        });
+        onDone({ stopReason, blocks });
       }
     }
   };
@@ -473,50 +623,96 @@ export default function NexusScreen() {
 
     let accumulated = '';
 
-    xhrRef.current = sseXhr(
-      {
-        'Content-Type': 'application/json',
-      },
-      JSON.stringify({
+    // Tool-aware streaming loop — handles multi-step tool chains (max 5 iterations)
+    const streamLoop = (apiMessages: ApiMessage[], iters = 5) => {
+      const toolsForTier =
+        tier === 'BASKETBALL'
+          ? [...POOL_TOOLS, ...CORPUS_TOOLS, ...APP_DATA_TOOLS]
+          : APP_DATA_TOOLS;
+
+      const bodyObj = {
         model,
-        system:   systemField,
-        messages: history,
-      }),
-      (delta) => {
-        if (abortRef.current) return;
-        accumulated += delta;
-        const clean = sanitizeResponse(accumulated);
-        setMessages(prev => prev.map(m =>
-          m.id === assistantId
-            ? { ...m, raw: clean, segments: parseMessage(clean) }
-            : m
-        ));
-        scrollToEnd();
-      },
-      () => {
-        const clean        = sanitizeResponse(accumulated);
-        const finalSegments = parseMessage(clean);
-        setMessages(prev => prev.map(m =>
-          m.id === assistantId
-            ? { ...m, raw: clean, segments: finalSegments, streaming: false }
-            : m
-        ));
-        setIsStreaming(false);
-        xhrRef.current = null;
-        scrollToEnd(true);
-      },
-      (err) => {
-        console.error('[Nexus] stream error:', err.message);
-        const msg = `Sorry, something went wrong — ${err.message}. Please try again.`;
-        setMessages(prev => prev.map(m =>
-          m.id === assistantId
-            ? { ...m, raw: msg, segments: [{ type: 'text', text: msg }], streaming: false }
-            : m
-        ));
-        setIsStreaming(false);
-        xhrRef.current = null;
-      },
-    );
+        system:     systemField,
+        messages:   apiMessages,
+        tools:      toolsForTier,
+        max_tokens: MAX_TOKENS,
+        stream:     true,
+      };
+      const bodyStr = JSON.stringify(bodyObj);
+
+      xhrRef.current = sseXhr(
+        {
+          'Content-Type':      'application/json',
+          'x-api-key':         process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY ?? '',
+          'anthropic-version': '2023-06-01',
+          'anthropic-beta':    'prompt-caching-2024-07-31',
+        },
+        bodyStr,
+        (delta) => {
+          if (abortRef.current) return;
+          accumulated += delta;
+          const clean = sanitizeResponse(accumulated);
+          setMessages(prev => prev.map(m =>
+            m.id === assistantId
+              ? { ...m, raw: clean, segments: parseMessage(clean) }
+              : m
+          ));
+          scrollToEnd();
+        },
+        ({ stopReason, blocks }) => {
+          xhrRef.current = null;
+          console.log('[Nexus] stream done | stopReason:', stopReason, '| blocks:', blocks.map(b => b.type + (b.type === 'tool_use' ? ':' + (b as any).name : '')));
+
+          // Execute all local tool calls, batch their results, re-enter the loop
+          if (stopReason === 'tool_use' && !abortRef.current && iters > 0) {
+            const localTools = blocks.filter(
+              b => b.type === 'tool_use' && (b as any).name !== 'web_search'
+            ) as Array<ContentBlock & { type: 'tool_use' }>;
+
+            if (localTools.length > 0) {
+              const toolResults = localTools.map(tb => {
+                console.log('[Nexus] tool:', tb.name, JSON.stringify(tb.input));
+                return {
+                  type:        'tool_result' as const,
+                  tool_use_id: tb.id,
+                  content:     dispatchTool(tb.name, tb.input),
+                };
+              });
+              streamLoop([
+                ...apiMessages,
+                { role: 'assistant', content: blocks },
+                { role: 'user',      content: toolResults },
+              ], iters - 1);
+              return;
+            }
+          }
+
+          // Normal completion (end_turn, or web_search handled server-side)
+          const clean        = sanitizeResponse(accumulated);
+          const finalSegments = parseMessage(clean);
+          setMessages(prev => prev.map(m =>
+            m.id === assistantId
+              ? { ...m, raw: clean, segments: finalSegments, streaming: false }
+              : m
+          ));
+          setIsStreaming(false);
+          scrollToEnd(true);
+        },
+        (err) => {
+          console.error('[Nexus] stream error:', err.message);
+          const msg = `Sorry, something went wrong — ${err.message}. Please try again.`;
+          setMessages(prev => prev.map(m =>
+            m.id === assistantId
+              ? { ...m, raw: msg, segments: [{ type: 'text', text: msg }], streaming: false }
+              : m
+          ));
+          setIsStreaming(false);
+          xhrRef.current = null;
+        },
+      );
+    };
+
+    streamLoop(history);
   };
 
   handleSendRef.current = handleSend;
@@ -660,6 +856,16 @@ export default function NexusScreen() {
               <Text style={[S.cursor, { color: C.accent }]}>▋</Text>
             )}
           </View>
+
+          {/* Action bar — completed assistant messages only */}
+          {!isUser && !m.streaming && m.raw.length > 0 && (
+            <MessageActionBar
+              message={m}
+              allMessages={messages}
+              onRetry={handleSendRef.current!}
+              C={C}
+            />
+          )}
         </View>
       </View>
     );
@@ -727,9 +933,8 @@ export default function NexusScreen() {
               onChangeText={setText}
               multiline
               maxLength={4000}
-              returnKeyType="default"
               editable={!isStreaming}
-              onSubmitEditing={() => canSend && handleSend()}
+              autoCapitalize="sentences"
             />
 
             {isStreaming ? (
