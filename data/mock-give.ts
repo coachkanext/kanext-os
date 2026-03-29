@@ -185,6 +185,19 @@ export const GIVING_CAMPAIGNS: GivingCampaign[] = [
     status: 'active',
     featured: false,
   },
+  {
+    id: 'gc7',
+    name: 'Sanctuary Sound System Upgrade',
+    description: 'Upgrade the main sanctuary sound system to studio-quality audio for worship and recording. New mixing board, stage monitors, and front-of-house speakers.',
+    fundId: 'building',
+    goalAmount: 8000,
+    raisedAmount: 5200,
+    donorCount: 32,
+    startDate: '2026-02-15',
+    deadline: '2026-06-01',
+    status: 'active',
+    featured: false,
+  },
 ];
 
 // ── Payment Methods ───────────────────────────────────────────────────────────
@@ -280,25 +293,25 @@ export const GIVING_TRANSACTIONS: GivingTransaction[] = [
 // ── Admin Dashboard ───────────────────────────────────────────────────────────
 
 export const ADMIN_DASHBOARD = {
-  thisWeek:  { total: 1840,  givers: 12, avgGift: 153 },
-  thisMonth: { total: 7200,  givers: 58, avgGift: 124 },
-  thisYear:  { total: 19800, givers: 72, avgGift: 275 },
-  recurringCount: 42,
-  oneTimeCount:   16,
+  thisWeek:  { total: 10500, givers: 68, avgGift: 154 },
+  thisMonth: { total: 42000, givers: 198, avgGift: 212 },
+  thisYear:  { total: 168000, givers: 234, avgGift: 718 },
+  recurringCount: 120,
+  oneTimeCount:   78,
   byFund: [
-    { fundId: 'tithe'       as FundId, amount: 2520, percentage: 35 },
-    { fundId: 'building'    as FundId, amount: 2160, percentage: 30 },
-    { fundId: 'general'     as FundId, amount: 1440, percentage: 20 },
-    { fundId: 'missions'    as FundId, amount: 720,  percentage: 10 },
-    { fundId: 'benevolence' as FundId, amount: 360,  percentage: 5  },
+    { fundId: 'tithe'       as FundId, amount: 18900, percentage: 45 },
+    { fundId: 'building'    as FundId, amount: 12600, percentage: 30 },
+    { fundId: 'general'     as FundId, amount: 5040,  percentage: 12 },
+    { fundId: 'missions'    as FundId, amount: 3780,  percentage: 9  },
+    { fundId: 'benevolence' as FundId, amount: 1680,  percentage: 4  },
   ] as FundBreakdown[],
   trendData: [
-    { month: 'Oct', amount: 6840  },
-    { month: 'Nov', amount: 7120  },
-    { month: 'Dec', amount: 12400 },
-    { month: 'Jan', amount: 6900  },
-    { month: 'Feb', amount: 7100  },
-    { month: 'Mar', amount: 7200  },
+    { month: 'Oct', amount: 38400 },
+    { month: 'Nov', amount: 39200 },
+    { month: 'Dec', amount: 58000 },
+    { month: 'Jan', amount: 40100 },
+    { month: 'Feb', amount: 41200 },
+    { month: 'Mar', amount: 42000 },
   ] as GivingChartPoint[],
 };
 

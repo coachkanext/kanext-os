@@ -42,7 +42,7 @@ type OutreachTab = 'Pipeline' | 'Campaigns' | 'Serve';
 
 function pillsForTab(tab: OutreachTab, isAdmin: boolean): string[] {
   if (tab === 'Pipeline')
-    return isAdmin ? ['All', 'First Visit', 'Returned', 'Connected', 'Member'] : [];
+    return isAdmin ? ['All', 'Explorer', 'First Visit', 'Follow-Up Sent', 'Returned', 'Connected', 'Joined Group', 'Member', 'Inactive'] : [];
   if (tab === 'Campaigns')
     return isAdmin ? ['All', 'Active', 'Planning', 'Completed'] : ['Invite', 'Available', 'Leaderboard'];
   return isAdmin ? ['All', 'Teams', 'Opportunities'] : ['My Teams', 'Available', 'Impact'];
@@ -59,6 +59,8 @@ function sourceLabel(source: string): string {
     online: 'Found us online',
     event: 'Community event',
     outreach: 'Outreach program',
+    social: 'Social media',
+    radio: 'Hotline to Heaven radio',
   };
   return map[source] ?? source;
 }
@@ -240,7 +242,7 @@ function ProspectDetailSheet({ prospect, isAdmin, onClose, onMoveStage, C, inset
         <View style={{ marginBottom: 14 }}>
           <Text style={{ fontSize: 11, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Move to Stage</Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-            {(['First Visit', 'Returned', 'Connected', 'Member'] as ProspectStage[]).map(stage => {
+            {(PIPELINE_STAGES.map(s => s.stage)).map(stage => {
               const active = prospect.stage === stage;
               return (
                 <Pressable

@@ -6,11 +6,11 @@
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-export type ProspectStage    = 'First Visit' | 'Returned' | 'Connected' | 'Member';
-export type ProspectSource   = 'walked-in' | 'invited' | 'online' | 'event' | 'outreach';
+export type ProspectStage    = 'Explorer' | 'First Visit' | 'Follow-Up Sent' | 'Returned' | 'Connected' | 'Joined Group' | 'Member' | 'Inactive';
+export type ProspectSource   = 'walked-in' | 'invited' | 'online' | 'event' | 'outreach' | 'social' | 'radio';
 export type CampaignType     = 'event' | 'digital' | 'door_to_door' | 'invite' | 'mailer' | 'social';
 export type CampaignStatus   = 'planning' | 'active' | 'completed';
-export type InteractionType  = 'visit' | 'text' | 'call' | 'note';
+export type InteractionType  = 'visit' | 'text' | 'call' | 'email' | 'note';
 export type OpportunityType  = 'one-time' | 'recurring' | 'project';
 
 export interface Prospect {
@@ -103,21 +103,25 @@ export interface MyOutreachStats {
 // ── Pipeline Stages ───────────────────────────────────────────────────────────
 
 export const PIPELINE_STAGES: { stage: ProspectStage; color: string }[] = [
-  { stage: 'First Visit', color: '#1D9BF0' },
-  { stage: 'Returned',    color: '#D97757' },
-  { stage: 'Connected',   color: '#5A8A6E' },
-  { stage: 'Member',      color: '#3D7A5A' },
+  { stage: 'Explorer',      color: '#9CA3AF' },
+  { stage: 'First Visit',   color: '#1D9BF0' },
+  { stage: 'Follow-Up Sent', color: '#F59E0B' },
+  { stage: 'Returned',      color: '#D97757' },
+  { stage: 'Connected',     color: '#5A8A6E' },
+  { stage: 'Joined Group',  color: '#3B82F6' },
+  { stage: 'Member',        color: '#3D7A5A' },
+  { stage: 'Inactive',      color: '#EF4444' },
 ];
 
 // ── Prospects (8 total) ───────────────────────────────────────────────────────
 
-export const PROSPECTS: Prospect[] = [
+export const PROSPECTS: Prospect[] = [ // 25 prospects total
   // First Visit (3)
   {
     id: 'pr1', name: 'Sarah Chen', initials: 'SC', hue: 195,
     source: 'invited', stage: 'First Visit',
     firstVisit: '2026-03-22', lastInteraction: '2026-03-22', visitCount: 1,
-    assignedTo: 'Deacon Williams', assignedToInitials: 'JW',
+    assignedTo: 'Pastor Nony', assignedToInitials: 'NK',
     nextActionDue: '2026-03-25', nextAction: 'Send welcome text',
     phone: '(310) 555-4001', email: 'sarah.chen@gmail.com',
     heardAboutUs: 'Friend\u2019s invitation',
@@ -157,7 +161,7 @@ export const PROSPECTS: Prospect[] = [
     id: 'pr4', name: 'David Foster', initials: 'DF', hue: 160,
     source: 'online', stage: 'Returned',
     firstVisit: '2026-02-22', lastInteraction: '2026-03-22', visitCount: 4,
-    assignedTo: 'Deacon Williams', assignedToInitials: 'JW',
+    assignedTo: 'Pastor Nony', assignedToInitials: 'NK',
     nextActionDue: '2026-03-30', nextAction: 'Invite to Men\u2019s Fellowship',
     phone: '(310) 555-4004', email: 'd.foster@gmail.com',
     heardAboutUs: 'Found ICCLA on Google',
@@ -188,7 +192,7 @@ export const PROSPECTS: Prospect[] = [
     id: 'pr6', name: 'Andre James', initials: 'AJ', hue: 80,
     source: 'outreach', stage: 'Connected',
     firstVisit: '2026-01-18', lastInteraction: '2026-03-22', visitCount: 9,
-    assignedTo: 'Pastor Davis', assignedToInitials: 'MD',
+    assignedTo: 'Pastor Dipo', assignedToInitials: 'DK',
     nextActionDue: '2026-04-15', nextAction: 'Membership class invitation',
     phone: '(424) 555-4006', email: 'a.james@gmail.com',
     heardAboutUs: 'Community outreach event',
@@ -218,7 +222,7 @@ export const PROSPECTS: Prospect[] = [
     id: 'pr8', name: 'James Morrison', initials: 'JM', hue: 50,
     source: 'walked-in', stage: 'Member',
     firstVisit: '2025-12-07', lastInteraction: '2026-03-22', visitCount: 15,
-    assignedTo: 'Pastor Davis', assignedToInitials: 'MD',
+    assignedTo: 'Pastor Dipo', assignedToInitials: 'DK',
     nextActionDue: '2026-03-30', nextAction: 'Membership ceremony',
     phone: '(310) 555-4008', email: 'j.morrison@gmail.com',
     heardAboutUs: 'Passed by the church',
@@ -227,6 +231,231 @@ export const PROSPECTS: Prospect[] = [
       { date: '2026-01-19', type: 'note', summary: 'Completed membership class.' },
       { date: '2026-02-28', type: 'call', summary: 'Membership interview. Ready to join officially.' },
       { date: '2026-03-22', type: 'visit', summary: 'Attending faithfully. Membership ceremony scheduled.' },
+    ],
+  },
+  // Explorer (found us online / social — 4)
+  {
+    id: 'pr9', name: 'Destiny Okafor', initials: 'DO', hue: 290,
+    source: 'social', stage: 'Explorer',
+    firstVisit: '', lastInteraction: '2026-03-20', visitCount: 0,
+    assignedTo: '', assignedToInitials: '',
+    nextActionDue: '', nextAction: 'No action — tracking online engagement',
+    phone: '', email: 'destiny.okafor@gmail.com',
+    heardAboutUs: 'Instagram (@icclachurch)',
+    interactionLog: [
+      { date: '2026-03-20', type: 'note', summary: 'Filled out digital connect card via Instagram. Interested in young adults ministry.' },
+    ],
+  },
+  {
+    id: 'pr10', name: 'Tyler Brooks', initials: 'TB', hue: 15,
+    source: 'online', stage: 'Explorer',
+    firstVisit: '', lastInteraction: '2026-03-18', visitCount: 0,
+    assignedTo: '', assignedToInitials: '',
+    nextActionDue: '', nextAction: 'Send welcome email with upcoming events',
+    phone: '(323) 555-4010', email: 'tyler.b@gmail.com',
+    heardAboutUs: 'Google search — churches near Hawthorne',
+    interactionLog: [
+      { date: '2026-03-18', type: 'note', summary: 'Submitted website connect card. Looking for a church home after moving to LA.' },
+    ],
+  },
+  {
+    id: 'pr11', name: 'Nicole Adeyemi', initials: 'NA', hue: 110,
+    source: 'radio', stage: 'Explorer',
+    firstVisit: '', lastInteraction: '2026-03-15', visitCount: 0,
+    assignedTo: 'Harvesters Team', assignedToInitials: 'HT',
+    nextActionDue: '2026-03-29', nextAction: 'Follow up on radio listener interest',
+    phone: '(310) 555-4011', email: 'n.adeyemi@gmail.com',
+    heardAboutUs: 'Hotline to Heaven radio',
+    interactionLog: [
+      { date: '2026-03-15', type: 'note', summary: 'Called in to Hotline to Heaven prayer line. Expressed interest in visiting ICCLA.' },
+    ],
+  },
+  {
+    id: 'pr12', name: 'Brandon Nguyen', initials: 'BN', hue: 195,
+    source: 'online', stage: 'Explorer',
+    firstVisit: '', lastInteraction: '2026-03-10', visitCount: 0,
+    assignedTo: '', assignedToInitials: '',
+    nextActionDue: '2026-04-06', nextAction: 'Invite to Easter service',
+    phone: '(424) 555-4012', email: 'b.nguyen@outlook.com',
+    heardAboutUs: 'YouTube — found a sermon from Dr. Dipo',
+    interactionLog: [
+      { date: '2026-03-10', type: 'note', summary: 'Submitted contact form after watching sermon on YouTube. Says the message on grace spoke to him.' },
+    ],
+  },
+  // First Visit (additional 5 — total 8 this month)
+  {
+    id: 'pr13', name: 'Aisha Mensah', initials: 'AM', hue: 55,
+    source: 'invited', stage: 'First Visit',
+    firstVisit: '2026-03-22', lastInteraction: '2026-03-22', visitCount: 1,
+    assignedTo: 'Sister Patricia', assignedToInitials: 'PJ',
+    nextActionDue: '2026-03-26', nextAction: 'Send "glad you came" text',
+    phone: '(310) 555-4013', email: 'a.mensah@gmail.com',
+    heardAboutUs: 'Invited by coworker (ICCLA member)',
+    interactionLog: [
+      { date: '2026-03-22', type: 'visit', summary: 'First visit. Came with coworker. Stayed for the full service and fellowship.' },
+    ],
+  },
+  {
+    id: 'pr14', name: 'Carlos Espinoza', initials: 'CE', hue: 340,
+    source: 'event', stage: 'First Visit',
+    firstVisit: '2026-03-08', lastInteraction: '2026-03-22', visitCount: 1,
+    assignedTo: 'Harvesters Team', assignedToInitials: 'HT',
+    nextActionDue: '2026-03-24', nextAction: 'Personal call from Harvesters volunteer', // overdue
+    phone: '(213) 555-4014', email: 'c.espinoza@gmail.com',
+    heardAboutUs: 'Met Harvesters team at the mall during outreach Saturday',
+    interactionLog: [
+      { date: '2026-03-08', type: 'note', summary: 'Met on outreach Saturday. Accepted a service invite.' },
+      { date: '2026-03-22', type: 'visit', summary: 'Came to Sunday service. Very attentive.' },
+    ],
+  },
+  {
+    id: 'pr15', name: 'Simone Baptiste', initials: 'SB', hue: 225,
+    source: 'walked-in', stage: 'First Visit',
+    firstVisit: '2026-03-15', lastInteraction: '2026-03-15', visitCount: 1,
+    assignedTo: 'Pastor Nony', assignedToInitials: 'NK',
+    nextActionDue: '2026-03-28', nextAction: 'Email from Pastor Nony with welcome resources',
+    phone: '(323) 555-4015', email: 'simone.b@gmail.com',
+    heardAboutUs: 'Saw the banner outside while driving',
+    prayerRequest: 'Healing for family member',
+    interactionLog: [
+      { date: '2026-03-15', type: 'visit', summary: 'Walked in on her own. Submitted prayer request card.' },
+      { date: '2026-03-15', type: 'note', summary: 'Greeter connected her with Pastor Nony after service.' },
+    ],
+  },
+  {
+    id: 'pr16', name: 'Emmanuel & Joy Eze', initials: 'EJ', hue: 150,
+    source: 'invited', stage: 'First Visit',
+    firstVisit: '2026-03-22', lastInteraction: '2026-03-22', visitCount: 1,
+    assignedTo: 'David Eze', assignedToInitials: 'DE',
+    nextActionDue: '2026-03-27', nextAction: 'Invite to T.O.R.C.H. Friday',
+    phone: '(213) 555-4016', email: 'e.eze@gmail.com',
+    heardAboutUs: 'Family connection (David Eze\'s cousins)',
+    interactionLog: [
+      { date: '2026-03-22', type: 'visit', summary: 'First visit. Couple, early 20s. Came with David Eze. Loved the young adults energy.' },
+    ],
+  },
+  {
+    id: 'pr17', name: 'Diane Sutton', initials: 'DS', hue: 260,
+    source: 'online', stage: 'First Visit',
+    firstVisit: '2026-03-22', lastInteraction: '2026-03-22', visitCount: 1,
+    assignedTo: 'Sister Angela', assignedToInitials: 'AB',
+    nextActionDue: '2026-03-26', nextAction: 'Welcome text with service times',
+    phone: '(310) 555-4017', email: 'diane.s@gmail.com',
+    heardAboutUs: 'Found on Google Maps while searching for Sunday service',
+    interactionLog: [
+      { date: '2026-03-22', type: 'visit', summary: 'First visit. Senior woman. Moved to Hawthorne recently, looking for a church.' },
+    ],
+  },
+  // Follow-Up Sent (3)
+  {
+    id: 'pr18', name: 'Rico Patterson', initials: 'RP', hue: 25,
+    source: 'walked-in', stage: 'Follow-Up Sent',
+    firstVisit: '2026-03-08', lastInteraction: '2026-03-11', visitCount: 1,
+    assignedTo: 'Harvesters Team', assignedToInitials: 'HT',
+    nextActionDue: '2026-03-29', nextAction: 'Call if no response to text',
+    phone: '(424) 555-4018', email: 'rico.p@gmail.com',
+    heardAboutUs: 'Walked past the church',
+    interactionLog: [
+      { date: '2026-03-08', type: 'visit', summary: 'First visit. Quiet. Filled out connect card.' },
+      { date: '2026-03-11', type: 'text', summary: 'Welcome text sent. No reply yet.' },
+    ],
+  },
+  {
+    id: 'pr19', name: 'Jasmine Oduya', initials: 'JO', hue: 170,
+    source: 'event', stage: 'Follow-Up Sent',
+    firstVisit: '2026-02-22', lastInteraction: '2026-03-05', visitCount: 1,
+    assignedTo: 'Sister Patricia', assignedToInitials: 'PJ',
+    nextActionDue: '2026-04-06', nextAction: 'Easter Sunday personal invite',
+    phone: '(818) 555-4019', email: 'j.oduya@gmail.com',
+    heardAboutUs: 'Rhythms From The Roots event',
+    interactionLog: [
+      { date: '2026-02-22', type: 'visit', summary: 'Met at Rhythms From The Roots. Came to next Sunday service.' },
+      { date: '2026-03-05', type: 'email', summary: 'Sent follow-up email. Mentioned she has been busy but wants to come back.' },
+    ],
+  },
+  {
+    id: 'pr20', name: 'Darnell King', initials: 'DK', hue: 80,
+    source: 'social', stage: 'Follow-Up Sent',
+    firstVisit: '2026-03-01', lastInteraction: '2026-03-08', visitCount: 1,
+    assignedTo: 'Pastor Dipo', assignedToInitials: 'DK',
+    nextActionDue: '2026-03-25', nextAction: 'Personal call from Pastor Dipo', // overdue
+    phone: '(323) 555-4020', email: 'd.king@gmail.com',
+    heardAboutUs: 'Instagram — clicked on T.O.R.C.H. event post',
+    interactionLog: [
+      { date: '2026-03-01', type: 'visit', summary: 'First visit after seeing T.O.R.C.H. post. Young man, early 20s.' },
+      { date: '2026-03-08', type: 'text', summary: 'Welcome text. Replied "Thanks! I\'ll try to come back." No further contact.' },
+    ],
+  },
+  // Joined Group (2 — one just joined Rooted)
+  {
+    id: 'pr21', name: 'Brianna Cole', initials: 'BC', hue: 200,
+    source: 'invited', stage: 'Joined Group',
+    firstVisit: '2026-01-11', lastInteraction: '2026-03-22', visitCount: 11,
+    assignedTo: 'Pastor Nony', assignedToInitials: 'NK',
+    nextActionDue: '2026-04-12', nextAction: 'Check in after first Rooted session',
+    phone: '(310) 555-4021', email: 'b.cole@gmail.com',
+    heardAboutUs: 'Invited by college roommate',
+    interactionLog: [
+      { date: '2026-01-11', type: 'visit', summary: 'First visit.' },
+      { date: '2026-02-01', type: 'note', summary: 'Started attending regularly. Connected with Women\'s Circle.' },
+      { date: '2026-03-22', type: 'note', summary: 'Just registered for Rooted cohort starting April 5.' },
+    ],
+  },
+  {
+    id: 'pr22', name: 'Isaiah Thomas', initials: 'IT', hue: 310,
+    source: 'outreach', stage: 'Joined Group',
+    firstVisit: '2025-12-14', lastInteraction: '2026-03-15', visitCount: 13,
+    assignedTo: 'David Eze', assignedToInitials: 'DE',
+    nextActionDue: '2026-03-29', nextAction: 'Involve in T.O.R.C.H. leadership track',
+    phone: '(213) 555-4022', email: 'i.thomas@gmail.com',
+    heardAboutUs: 'Met David Eze at community basketball event',
+    interactionLog: [
+      { date: '2025-12-14', type: 'visit', summary: 'First visit. Met at community event.' },
+      { date: '2026-01-10', type: 'note', summary: 'Joined T.O.R.C.H. Nation Friday meetings.' },
+      { date: '2026-03-15', type: 'note', summary: 'Very engaged. Starting to help lead prayer segments.' },
+    ],
+  },
+  // Inactive (needs re-engagement — 3)
+  {
+    id: 'pr23', name: 'Vanessa Hart', initials: 'VH', hue: 345,
+    source: 'invited', stage: 'Inactive',
+    firstVisit: '2026-01-04', lastInteraction: '2026-02-01', visitCount: 4,
+    assignedTo: 'Sister Angela', assignedToInitials: 'AB',
+    nextActionDue: '2026-03-30', nextAction: 'Re-engagement text — "We miss you"',
+    phone: '(310) 555-4023', email: 'v.hart@gmail.com',
+    heardAboutUs: 'Invited by member',
+    interactionLog: [
+      { date: '2026-01-04', type: 'visit', summary: 'Started attending. Very engaged.' },
+      { date: '2026-02-01', type: 'visit', summary: 'Last attendance. No contact since.' },
+      { date: '2026-03-10', type: 'text', summary: '"We miss you" text sent. No reply.' },
+    ],
+  },
+  {
+    id: 'pr24', name: 'Michael Grant', initials: 'MG', hue: 130,
+    source: 'walked-in', stage: 'Inactive',
+    firstVisit: '2025-11-16', lastInteraction: '2026-01-11', visitCount: 6,
+    assignedTo: 'Pastor Nony', assignedToInitials: 'NK',
+    nextActionDue: '2026-04-05', nextAction: 'Personal Easter invitation call',
+    phone: '(424) 555-4024', email: 'm.grant@gmail.com',
+    heardAboutUs: 'Walked by during a community event',
+    interactionLog: [
+      { date: '2025-11-16', type: 'visit', summary: 'First visit.' },
+      { date: '2026-01-11', type: 'visit', summary: 'Sixth visit. Dropped off after this.' },
+      { date: '2026-02-14', type: 'email', summary: 'Valentine\'s service invite sent. No response.' },
+    ],
+  },
+  {
+    id: 'pr25', name: 'Tanya Diaz', initials: 'TD', hue: 65,
+    source: 'social', stage: 'Inactive',
+    firstVisit: '2025-10-12', lastInteraction: '2025-12-07', visitCount: 5,
+    assignedTo: 'Harvesters Team', assignedToInitials: 'HT',
+    nextActionDue: '2026-04-20', nextAction: 'Easter Sunday "Comeback" special invite',
+    phone: '(323) 555-4025', email: 'tanya.d@gmail.com',
+    heardAboutUs: 'Facebook ad',
+    interactionLog: [
+      { date: '2025-10-12', type: 'visit', summary: 'Came after clicking Facebook ad for fall revival.' },
+      { date: '2025-12-07', type: 'visit', summary: 'Christmas service. Last visit.' },
+      { date: '2026-03-01', type: 'text', summary: '"We miss you" text. No reply.' },
     ],
   },
 ];
@@ -242,7 +471,7 @@ export const CAMPAIGNS: Campaign[] = [
     startDate: '2026-04-01',
     endDate: '2026-04-20',
     description: 'A free community block party on Easter Sunday open to all neighbors. Food, games, live music, and a short community message.',
-    targetAudience: 'All Westside community members and neighbors',
+    targetAudience: 'All Hawthorne / South Bay community members and neighbors',
     budget: 2500,
     goalReach: 500,
     goalConvert: 15,
@@ -260,7 +489,7 @@ export const CAMPAIGNS: Campaign[] = [
     startDate: '2026-03-01',
     endDate: '2026-04-30',
     description: 'Targeted digital outreach to new residents in the neighborhood via social ads and welcome mailers. Personal invite links from members.',
-    targetAudience: 'New residents within 2 miles of ICCLA',
+    targetAudience: 'New residents within 2 miles of 12832 Chadron Ave, Hawthorne',
     budget: 800,
     goalReach: 200,
     goalConvert: 10,
@@ -378,6 +607,60 @@ export const CAMPAIGNS: Campaign[] = [
     volunteersNeeded: 10,
     volunteersJoined: 10,
   },
+  {
+    id: 'c9',
+    name: 'Spring Block Party',
+    type: 'event',
+    status: 'completed',
+    startDate: '2026-03-14',
+    endDate: '2026-03-14',
+    description: 'Annual Spring Block Party on the church parking lot — live music, free food, games, and community connection. Rhytms From The Roots cultural performance featured.',
+    targetAudience: 'All South Bay community members',
+    budget: 1800,
+    goalReach: 100,
+    goalConvert: 12,
+    actualReach: 120,
+    actualConvert: 15,
+    assignedTeam: 'Community Outreach Team',
+    volunteersNeeded: 18,
+    volunteersJoined: 18,
+  },
+  {
+    id: 'c10',
+    name: 'Bring a Friend Sunday',
+    type: 'invite',
+    status: 'active',
+    startDate: '2026-03-01',
+    endDate: '2026-04-05',
+    description: "Every member gets a personal invite link to share with friends and family. On Palm Sunday, anyone who brings a first-time guest gets recognized. Tracking invites, clicks, and attendance.",
+    targetAudience: 'Friends and family of ICCLA members',
+    budget: 100,
+    goalReach: 80,
+    goalConvert: 20,
+    actualReach: 45,
+    actualConvert: 8,
+    assignedTeam: 'Welcome Team',
+    volunteersNeeded: 5,
+    volunteersJoined: 5,
+  },
+  {
+    id: 'c11',
+    name: 'Harvesters Saturday Outreach',
+    type: 'door_to_door',
+    status: 'active',
+    startDate: '2026-01-01',
+    endDate: '2026-12-31',
+    description: 'Monthly neighborhood canvassing by the Harvesters ministry. Every last Saturday of the month, teams of 4 visit homes in the Hawthorne area to pray, share the gospel, and invite neighbors.',
+    targetAudience: 'Unreached households within 2 miles',
+    budget: 200,
+    goalReach: 200,
+    goalConvert: 12,
+    actualReach: 87,
+    actualConvert: 6,
+    assignedTeam: 'Harvesters Ministry',
+    volunteersNeeded: 12,
+    volunteersJoined: 8,
+  },
 ];
 
 // ── Volunteer Teams ───────────────────────────────────────────────────────────
@@ -461,11 +744,11 @@ export const MY_OUTREACH_STATS: MyOutreachStats = {
 };
 
 export const INVITE_LEADERBOARD: LeaderboardEntry[] = [
-  { rank: 1, name: 'Marcus Davis',     initials: 'MD', hue: 220, invitesSent: 18, visited: 9  },
-  { rank: 2, name: 'Patricia Johnson', initials: 'PJ', hue: 300, invitesSent: 14, visited: 6  },
-  { rank: 3, name: 'Sammy Kalejaiye',  initials: 'SK', hue: 45,  invitesSent: 12, visited: 4, isMe: true },
-  { rank: 4, name: 'Michael Thomas',   initials: 'MT', hue: 140, invitesSent: 9,  visited: 3  },
-  { rank: 5, name: 'Angela Brown',     initials: 'AB', hue: 260, invitesSent: 7,  visited: 2  },
+  { rank: 1, name: 'Dr. Dipo Kalejaiye', initials: 'DK', hue: 220, invitesSent: 18, visited: 9  },
+  { rank: 2, name: 'David Eze',          initials: 'DE', hue: 40,  invitesSent: 14, visited: 6  },
+  { rank: 3, name: 'Sammy Kalejaiye',    initials: 'SK', hue: 45,  invitesSent: 12, visited: 4, isMe: true },
+  { rank: 4, name: 'Kunle Pinmiloye',    initials: 'KP', hue: 150, invitesSent: 9,  visited: 3  },
+  { rank: 5, name: 'Nony Kalejaiye',     initials: 'NK', hue: 280, invitesSent: 7,  visited: 2  },
 ];
 
 export const MY_VOLUNTEER_TEAM_IDS = ['vt1'];
@@ -477,8 +760,11 @@ export function getProspectsByStage(stage: ProspectStage): Prospect[] {
 }
 
 export function getStageCounts(): Record<ProspectStage, number> {
-  const counts: Record<ProspectStage, number> = { 'First Visit': 0, Returned: 0, Connected: 0, Member: 0 };
-  PROSPECTS.forEach(p => counts[p.stage]++);
+  const counts: Record<ProspectStage, number> = {
+    Explorer: 0, 'First Visit': 0, 'Follow-Up Sent': 0,
+    Returned: 0, Connected: 0, 'Joined Group': 0, Member: 0, Inactive: 0,
+  };
+  PROSPECTS.forEach(p => { if (counts[p.stage] !== undefined) counts[p.stage]++; });
   return counts;
 }
 
