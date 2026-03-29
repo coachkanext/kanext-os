@@ -39,6 +39,7 @@ LEVEL_MAP = {
     "ncaa_d3": "NCAA D3",
     "ncaa_d2": "NCAA D2",
     "ncaa_d1_low_major": "NCAA D1 LM",
+    "ncaa_d1_mid_major": "NCAA D1 MM",
     "ncaa_d1": "NCAA D1",
     "ncaa_d1_high_major": "NCAA D1 HM",
     "professional": "Pro",
