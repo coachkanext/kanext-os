@@ -2272,3 +2272,1140 @@ Content types a church creates in KayStudios: Bible trivia (books of the Bible, 
 - Consumer. Can browse and play public content only. Bible trivia and introductory courses. Cannot access member-only content or required training.
 - Featured: "Explore the Christian Faith" introductory course if available.
 - Filter pills: All, Explore, Trivia, Introductory.
+
+---
+
+## 15. Personal Mode
+
+Personal mode is the operating environment for individual creators, professionals, and personal brands. The demo brand is Sammy Kalejaiye (@sammyk). Personal mode replaces the entire creator tool stack: Linktree, Stan Store, Beacons, Buffer, Sprout Social, Gumroad, Patreon, Kajabi, Calendly, Mailchimp, and every disconnected tool a creator currently pays $200-500+/month to juggle. One app. One grid. One audience you own.
+
+Personal mode RBAC is the simplest of all five modes. Four roles: Owner (R0), Manager/Agent (R2), Moderator (R5), Subscriber/Follower (R9). If you need more complexity, make a Business brand.
+
+Personal mode home grid:
+
+| Hub | Agenda | Social |
+|-----|--------|--------|
+| Network | Deals | Earn |
+| KayTV | KayPay | KayStudios |
+
+### 15.1 Personal Hub
+
+The Hub in Personal mode is the creator command center. It replaces Linktree ($5-50/mo), Buffer ($6-99/mo), Sprout Social ($249/mo), Beacons ($25/mo), and every analytics dashboard and link-in-bio tool. One screen, three tabs, RBAC determines depth.
+
+Tabs: Overview / Content / Links
+
+Side panel (swipe right or menu icon). Owner: analytics dashboard shortcut, content calendar, audience insights, revenue summary, media kit generator, Nexus content assistant shortcut, settings. Manager/Agent: client analytics, content approvals, revenue tracking, deal pipeline shortcut, settings. Moderator: content moderation queue, flagged comments, reported messages, settings. Subscriber: not applicable.
+
+#### Overview Tab
+
+**Owner View (R0):**
+- Creator dashboard at top. Follower/subscriber count with growth trend arrow and number change this week. Total content views across Social and KayTV this month. Engagement rate (likes + comments + shares + saves / impressions). Revenue this month card with amount and trend vs last month.
+- Audience insights section. Demographics: age range distribution (bar chart), gender split, top 5 locations (cities/countries), top active hours (heatmap showing best posting times by day and hour). Audience growth chart (30-day line graph with follower gains and losses). New followers this week. Unfollows this week. Follower sources (where new followers found you: Social feed, KayTV, search, external link, referral).
+- Content performance summary. Top 3 performing posts this week ranked by engagement. Best performing reel with view count. Best performing KayTV video with watch time. Content type breakdown chart: which format drives the most engagement. Posting consistency score.
+- Revenue summary card. Total earned this month. Breakdown by source: digital products, courses, subscriptions/memberships, tips, brand deals, affiliate commissions. Month-over-month trend. Link to Earn tile for full detail.
+- Upcoming section. Next scheduled content, next meeting/call, next deal deadline. At a glance: what needs your attention today.
+- Quick actions row: Create Post, Schedule Content, View Analytics, Update Links, Generate Media Kit.
+- Nexus integration: "How many followers did I gain this week?", "What is my best performing post this month?", "What time should I post today based on my audience?", "Draft a caption for my next post about coaching", "What content should I create this week?"
+- For Sammy demo: 2,400 followers, 12% engagement rate, $1,200 revenue this month (KaNeXT Masterclass course $800, coaching calls $300, tips $100). Top post: basketball coaching reel 8,500 views. Audience: 65% male, 18-34 age range, top cities LA, Oakland, Miami, Lagos, Houston.
+
+**Manager/Agent View (R2):**
+- Same dashboard data. Full read access to all analytics, content performance, and revenue.
+- Content approval queue. Pending approvals count badge.
+- Revenue tracking. Can view all earnings and payment history. Can generate invoices for brand deals. Can update rate card.
+- Deal pipeline overview from Deals tile.
+- Cannot post as the owner without approval. Cannot change account settings or payment information. Cannot withdraw funds.
+
+**Moderator View (R5):**
+- Content moderation queue. Comments flagged by the system or reported by users. Review each: approve, remove, or escalate to owner.
+- Reported messages. DMs or Room messages reported for abuse.
+- Cannot see analytics, revenue, audience data, or deals.
+
+**Subscriber View (R9):**
+- Hub not visible to subscribers. They interact through Social, KayTV, KayStudios, and Messages.
+
+#### Content Tab
+
+**Owner View (R0):**
+- Content calendar. Full-screen calendar view (day/week/month toggle). Each day shows thumbnails of scheduled and published content with platform icon badge. Color-coded: published (green), scheduled (blue), draft (gray). Drag to reschedule. Tap to edit or view performance.
+- Content queue. Set posting frequency ("3 posts per week, Tuesday/Thursday/Saturday at 9am"). Add content to the queue. Queue auto-publishes at the next scheduled slot. Reorder with drag and drop. Replaces Buffer and Later scheduling.
+- Content library. All content ever published across Social and KayTV. Searchable by date, type, caption keywords, hashtags. Each item shows: thumbnail, platform, date, engagement metrics, revenue generated.
+- Drafts. Unpublished content in progress.
+- Content analytics deep dive. Tap any published content for full metrics: impressions, reach, engagement rate, saves, shares, profile visits driven, follower conversions, click-throughs, revenue attributed.
+- Compare mode. Select 2-3 posts to compare side by side.
+- Content templates. Save successful post formats as templates. Reuse caption structures, hashtag sets, or content frameworks.
+- Nexus content assistant: "Draft 5 post ideas about basketball coaching", "Write a caption for this photo", "What hashtags should I use for a coaching reel?", "Repurpose my last KayTV video into 3 Social posts", "What content is trending in my niche right now?"
+
+**Manager/Agent View (R2):**
+- Same content calendar, library, and analytics. Can draft content on behalf of owner (goes to approval queue). Can schedule approved content.
+
+#### Links Tab (Link in Bio)
+
+**Owner View (R0):**
+- Link in bio page builder. Custom micro-landing page accessible at kanext.app/@sammyk. Replaces Linktree, Beacons, Stan Store storefront, and every link-in-bio tool.
+- Page editor. Drag and drop blocks: Link block (title, URL, icon, click tracking), Product block (from Earn with Buy button through KayPay), Video block (embedded KayTV video), Course block (KayStudios enrollment), Booking block (calendar from Agenda, paid bookings through KayPay), Email capture block (subscribers auto-added to Messages list), Tip jar block (preset amounts through KayPay), Social links block (external profile icons), Text block, Image block.
+- Reorder blocks with drag and drop. Toggle blocks visible/hidden.
+- Theme customization. Background color, button style, font weight, accent color. Preview in real-time.
+- Analytics per block. Clicks, click-through rate, conversion rate (for product and booking blocks), revenue generated per block.
+- Custom domain support. Use kanext.app/@sammyk or connect your own domain.
+- QR code generator. Generate QR code for links page. Print on business cards, flyers, or display at events.
+
+**Media kit generator:**
+- Auto-generated one-page media kit built from real analytics data. No manual entry. Always current.
+- Includes: profile photo, name, bio, follower count, engagement rate, audience demographics, top content with metrics, content categories/niche, brand partnerships (from Deals), rate card (customizable pricing).
+- Downloadable as PDF. Shareable via unique link (always up to date). Embeddable in links page.
+- For Sammy demo: 6 link blocks (KaNeXT website, LinkedIn, masterclass on KayStudios, coaching reel on KayTV, Book a Strategy Call, Invest in KaNeXT). 2 product blocks. Tip jar active. Media kit with real demo analytics.
+
+**Manager/Agent View (R2):**
+- Can edit link page and media kit on behalf of owner. Can share media kit with potential brand partners.
+
+---
+
+### 15.2 Personal Agenda
+
+Agenda in Personal mode is the creator's calendar. Same structure as all Agenda tiles (Day/Week/Month views). It combines the content calendar from Hub Content tab with personal scheduling, brand deal deadlines, and public events. It replaces Google Calendar, Calendly, and the scheduling features of Buffer/Later.
+
+Views: Day / Week / Month (centered contextual pill to switch)
+
+Side panel (swipe right or menu icon). Owner: upcoming deadlines sorted by urgency, quick-add event, content schedule overview, booking requests (from Links page Booking block), sync settings (import from Google Calendar, export to iCal). Manager/Agent: client schedule, pending booking requests, deal deliverable deadlines, quick-add on behalf of owner. Moderator: not applicable. Subscriber: upcoming public events.
+
+#### Day / Week / Month Views
+
+**Owner View (R0):**
+- Full personal and professional calendar. Color-coded by type: content (blue, scheduled posts and videos), meetings (green, calls, collaborations, coaching sessions), deals (gold, brand deal deadlines and deliverables), personal (gray, private events), public events (teal, live streams, workshops, meetups), recording/production (orange, shoot days, editing blocks).
+- Content schedule blocks. Synced from Hub Content tab queue. Shows what content is going live when. Tap block to preview the post or edit before publish.
+- Booking slots. Time slots marked as available for bookings (from Links page Booking block). When someone books, it appears as a confirmed meeting with their name, email, and payment status (if paid booking). Manage availability: set which days and times are bookable, buffer time between bookings, maximum bookings per day.
+- Deal deliverable deadlines. Synced from Deals tile. Each brand deal has deliverables with due dates. Deadlines appear on the calendar with deal name and brand.
+- Reminders and notifications. Push notification before events. Configurable: 15 min, 1 hour, 1 day before.
+- Create event. Title, type, date/time, duration, location (physical or video call link), recurring toggle, notes, invite attendees (from Network), attach files.
+- Nexus integration: "What's on my schedule tomorrow?", "Block out Thursday for recording", "When is my next coaching call?", "Move my 3pm to Friday", "What deal deadlines do I have this week?"
+- Filter pills: All, Content, Meetings, Deals, Bookings, Personal, Public Events, This Week.
+- For Sammy demo: weekly content schedule (3 posts Tuesday/Thursday/Saturday), 2 coaching calls this week, 1 brand deal deadline (KaNeXT investor deck video due Friday), 1 recording day blocked (Wednesday), 3 available booking slots, 1 upcoming public event (Instagram Live Q&A Saturday 7pm).
+
+**Manager/Agent View (R2):**
+- Owner's professional calendar visible (content, meetings, deals, bookings). Personal events hidden unless owner shares.
+- Can schedule meetings on behalf of owner. Can adjust booking availability. Can respond to booking requests.
+- Deal deliverable deadlines visible with full context.
+- Filter pills: All, Content, Meetings, Deals, Bookings, Deliverables.
+
+**Moderator View (R5):**
+- Not visible.
+
+**Subscriber View (R9):**
+- Public events only. Live Q&As, workshops, masterclasses, meetups with RSVP/Register button.
+- Filter pills: All, Upcoming, RSVPed.
+
+---
+
+### 15.3 Personal Social
+
+Social in Personal mode is the creator's content platform. For a personal brand, Social IS the product. Every post, reel, and story builds the audience that drives everything else. Same structure as all Social tiles (Feed/Reels/Profile views, scope filter Brand/Mode/All).
+
+Scope filter: Brand (@sammyk only), Mode (all Personal brands), All (everything across all modes).
+
+#### Feed View
+
+**Owner View (R0):**
+- Full feed. Own content and content from people/brands you follow.
+- Create button. Post types: text, photo, video, carousel (multiple images/videos), poll, link share, product feature (embeds an Earn product with Buy button inline in the feed).
+- Post as yourself or cross-post to other brands you own.
+- Schedule posts for future publication (syncs to Agenda and Hub Content calendar).
+- Pin posts to top of your profile (up to 3 pinned).
+- Analytics on every post: impressions, reach, engagement rate, saves, shares, profile visits, follower conversions, link clicks, revenue attributed.
+- Promote post. Boost a post to reach beyond your followers (paid promotion through KayPay). Target by location, age, interests.
+- Filter pills: All, My Posts, Following, Trending, Saved, Drafts.
+
+**Manager/Agent View (R2):**
+- Full feed access. Can draft posts on behalf of owner (goes to approval queue). Can respond to comments if permitted. Analytics visible. Can export performance reports.
+- Filter pills: All, Owner's Posts, Drafts, Scheduled, Analytics.
+
+**Moderator View (R5):**
+- Feed visible. Can hide or remove comments. Can flag posts from other users. Cannot post or draft.
+- Filter pills: All, Flagged, Reported.
+
+**Subscriber View (R9):**
+- Feed shows owner's public content. Like, comment, share, save. Product posts show "Buy" button inline. Tip button on posts.
+- Filter pills: All, Posts, Reels.
+
+#### Reels View
+
+**Owner View (R0):**
+- Short-form video feed. Own reels and reels from followed creators. Create reel with record/upload, music, text overlays, trim, filters, caption, hashtags. Schedule or publish immediately.
+- Reel analytics: views, average watch time, completion rate, shares, saves, follower conversions.
+
+**Subscriber View (R9):**
+- Vertical scroll reel feed. Like, comment, share, save. Follow button.
+
+#### Stories View
+
+- 24-hour ephemeral content. Owner posts: photo/video with text, stickers, polls, questions, countdown timers, link stickers, music.
+- Story highlights. Save to permanent collections on profile. Organize by topic.
+- Story analytics: views, taps forward/back, exits, replies, link clicks.
+- Subscribers view stories at top of feed as circular avatars.
+
+#### Profile View
+
+**Owner View (R0):**
+- Full profile. Avatar, name, bio, follower/following counts, links page button, edit profile. Content grid (3 columns). Pinned posts. Reels tab. KayTV tab. Tagged tab. Profile analytics.
+
+**Subscriber View (R9):**
+- Public profile. Follow/Unfollow, Message, Tip, Subscribe buttons. Content grid. Reels tab. KayTV tab.
+- For Sammy demo: "Founder & CEO @KaNeXT | Asst. Basketball Coach @LincolnU | Building the future of sports, education, and finance" bio. 25 mock posts. 8 reels. 3 pinned posts. Story highlights: "KaNeXT", "Coaching", "Lincoln", "Personal".
+
+---
+
+### 15.4 Personal Network
+
+Network is the people tile for personal brands. Position 4 in the grid. It is the creator's contact book, collaborator directory, subscriber list, and relationship manager. It replaces the contacts app, a CRM, and scattered spreadsheets tracking who you know.
+
+Views: Contacts / Collaborators / Subscribers (centered contextual pill to switch)
+
+Side panel (swipe right or menu icon). Owner: network dashboard (total contacts, subscribers count, subscriber growth, top collaborators), quick search, import contacts, tags manager, export, settings. Manager/Agent: client's network, subscriber analytics, outreach list builder, settings. Moderator: not applicable. Subscriber: not applicable.
+
+#### Contacts View
+
+**Owner View (R0):**
+- Full personal contact book. Each contact card: avatar, name, @handle (if on KaNeXT), phone, email, tags, last interaction date, relationship notes.
+- Search bar. Search by name, company, tag, city.
+- Import contacts from phone. Sync with device contacts. Identify which contacts are on KaNeXT.
+- Tap contact for detail: all contact info, communication log (auto-pulled from Messages, Phone, Email), relationship notes (private), tags, shared brands, deal history (from Deals tile).
+- Tags: "Investor", "Brand Partner", "Coach", "Family", "Media", "Mentor", "Industry". Custom tags.
+- Add contact manually. Quick actions: Call, Message, Email, Add to Deal, Invite to KaNeXT.
+- Filter pills: All, Recent, Investors, Partners, Coaches, Media, Family, Industry, On KaNeXT, Not on KaNeXT.
+- For Sammy demo: 50+ contacts across categories. 30 on KaNeXT, 20 external.
+
+**Manager/Agent View (R2):**
+- Professional contacts visible. Personal/family hidden unless owner shares. Can add contacts, update details, log interactions.
+- Filter pills: All, Investors, Partners, Media, Industry, Recent.
+
+#### Collaborators View
+
+**Owner View (R0):**
+- People you actively work with. Each card: avatar, name, role/specialty, active projects, last collaboration date, notes.
+- Tap for detail: contact info, shared project history, content created together, deals done together, communication log.
+- Collaboration request inbox. Other creators request to collaborate. Accept/decline.
+- Filter pills: All, Active, Past, By Specialty, Pending Requests.
+- For Sammy demo: 5 collaborators (videographer Marcus, designer Sarah, podcast guest Jordan, advisor Patrick, editor Kofi).
+
+**Manager/Agent View (R2):**
+- Collaborator list visible. Can manage on behalf of owner. Can reach out for scheduling.
+- Filter pills: All, Active, Past, Pending.
+
+#### Subscribers View
+
+**Owner View (R0):**
+- Full subscriber/follower list. Subscriber analytics at top: total count, growth this week/month, churn, engagement tier breakdown.
+- Engagement tiers auto-segmented: Super Fans (interact with everything, buy products, share), Active (regular engagement), Casual (follow but rarely interact), Dormant (no engagement 30+ days). Each tier shows count and percentage.
+- Each subscriber row: avatar, name, @handle, engagement tier badge, follower since date, last interaction.
+- Email list. Subscribers who opted in via Links page. Segmentable for email campaigns through Messages.
+- Paying subscriber analytics. Revenue, retention rate, churn.
+- Export subscriber list (CSV).
+- Filter pills: All, Super Fans, Active, Casual, Dormant, Paying, Email List, New This Week, New This Month.
+- For Sammy demo: 2,400 subscribers. 120 super fans, 600 active, 1,200 casual, 480 dormant. 340 on email list. 8 paying subscribers.
+
+**Manager/Agent View (R2):**
+- Subscriber analytics visible. Can view tiers, growth, paying data. Can build targeted lists.
+- Filter pills: All, Super Fans, Active, Paying, Email List, Growth.
+
+---
+
+### 15.5 Personal Deals
+
+Deals is the pipeline tile for personal brands. Position 5 in the grid. Same pattern as Recruits (Sports), Inquiries (Business), Admissions (Education), Outreach (Community). It is where opportunities live before they become revenue. Brand sponsorships, partnerships, collaborations, speaking engagements, consulting gigs, investment conversations. Every opportunity starts here, gets worked through stages, and either closes (revenue flows to Earn and KayPay) or dies.
+
+It replaces email threads with brands, spreadsheets tracking who you pitched, scattered DMs about collaborations, and the chaos of managing opportunities across 5 platforms.
+
+Views: Pipeline / Proposals / Contracts (centered contextual pill to switch)
+
+Side panel (swipe right or menu icon). Owner: deal dashboard (total active deals, total pipeline value, deals won this month, win rate, average deal size), quick-add deal, follow-up reminders (overdue tasks), rate card shortcut, media kit shortcut, settings. Manager/Agent: client's pipeline, proposal drafts, contract tracking, invoice generation, settings. Moderator: not applicable. Subscriber: not applicable.
+
+#### Pipeline View
+
+**Owner View (R0):**
+- Deal pipeline funnel at top. Visual stages with counts and total value per stage: Prospect (someone expressed interest or you identified an opportunity), Pitched (you sent a proposal or they sent an offer), Negotiating (terms being discussed), Contract (agreement drafted, awaiting signatures), Closed Won (deal done, deliverables begin), Closed Lost (didn't work out).
+- Below funnel: list of all active deals sorted by most recent activity. Each deal card: brand/company name with logo, deal title, current stage, deal value, next action due date, assigned contact person.
+- Tap deal for full Deal Detail Page:
+
+**Deal Detail Page:**
+- Header: brand name, deal title, stage badge, value.
+- Contact section: who you're working with at the brand. Name, title, phone, email. Linked to Network contact.
+- Deal timeline: chronological log of all activity. Every interaction auto-pulled from Messages, Phone, Email.
+- Deliverables checklist (Contract or Closed Won stage): what you owe. Each deliverable has status (pending, in progress, submitted, approved).
+- Financials: deal value, payment terms, payment status. Payments auto-tracked through KayPay.
+- Files: contract PDF, brief document, brand guidelines, creative assets.
+- Notes: private notes about the deal.
+- Actions: Send Proposal, Send Invoice, Message Contact, Schedule Call, Move Stage, Mark Won, Mark Lost.
+- Drag and drop between pipeline stages from the main pipeline view.
+- Nexus integration: "How many active deals do I have?", "What's my pipeline value?", "Draft a pitch email to Nike for a coaching content sponsorship", "What deals are closing this week?", "Follow up with Marcus about the partnership."
+- Filter pills: All, Prospect, Pitched, Negotiating, Contract, Closed Won, Closed Lost, This Week, This Month, By Value, Overdue Follow-Ups.
+- For Sammy demo: 8 deals in pipeline. "KaNeXT Fund Raise - Valley Capital" (Negotiating, $250K), "Basketball Coaching Content - Overtime Elite" (Pitched, $5,000), "Speaking Engagement - EdTech Conference" (Prospect, $2,500), "Podcast Appearance - The Basketball Hour" (Closed Won, $0 but exposure), "NIL Platform Partnership" (Contract, $10,000), 3 closed lost for realism.
+
+**Manager/Agent View (R2):**
+- Full pipeline access. Can manage deals on behalf of owner. Can draft proposals, send invoices, update stages, log interactions.
+- Deal analytics: win rate, average deal cycle time, revenue by deal type, best-performing deal sources.
+- Filter pills: All, Active, My Drafts, Pending Approval, Overdue, By Stage, By Value.
+
+**Moderator/Subscriber:** Not visible.
+
+#### Proposals View
+
+**Owner View (R0):**
+- All proposals sent and received. Each card: brand name, deal title, proposal type (sent or received), date, status (draft, sent, viewed, accepted, declined, expired).
+- Create Proposal button. Proposal builder: select from templates or start blank. Sections: introduction (auto-populated from media kit), scope of work (deliverables, timeline), pricing (from rate card or custom), terms (usage rights, exclusivity, revision rounds, payment schedule). Preview as PDF. Send through Messages or generate shareable link.
+- Rate card integration. Pull pricing from Links page media kit. Standard rates for: Social post, Reel, Story set, KayTV integration, Speaking engagement, Consulting hour. Customize per proposal.
+- Proposal analytics: proposals sent count, acceptance rate, average time to response.
+- Filter pills: All, Drafts, Sent, Viewed, Accepted, Declined, Expired.
+- For Sammy demo: 3 proposals. 1 accepted (Overtime Elite), 1 pending (EdTech Conference), 1 draft (Nike coaching content concept).
+
+**Manager/Agent View (R2):**
+- Can draft proposals on behalf of owner. Drafts go to owner for review. Can use rate card and media kit data. Can track status.
+- Filter pills: All, My Drafts, Sent, Pending Owner Approval, Accepted, Declined.
+
+#### Contracts View
+
+**Owner View (R0):**
+- All contracts active and archived. Each card: brand name, deal title, contract status (draft, sent for signature, signed, active, completed, expired), value, start/end dates.
+- Contract management: upload PDF, request e-signature, track signature status, store executed contracts.
+- Active contract tracker: deliverables due, payment milestones, exclusivity periods, usage rights windows. Alerts when deadlines approach.
+- Completed contracts move to archive with full history preserved.
+- Filter pills: All, Draft, Awaiting Signature, Active, Completed, Archived, Expiring Soon.
+- For Sammy demo: 2 active contracts (NIL Platform Partnership, Overtime Elite). 1 completed (Podcast appearance). 1 draft awaiting review.
+
+**Manager/Agent View (R2):**
+- Full contract access. Can upload, track, manage deliverable deadlines. Cannot sign on behalf of owner without explicit authorization.
+- Filter pills: All, Active, Awaiting Signature, Deliverables Due, Completed.
+
+---
+
+### 15.6 Personal Earn
+
+Earn is the storefront and revenue tile for personal brands. Position 6 in the grid. Same pattern as Booster (Sports), Store (Business), Fund (Education), Give (Community). It is where your audience buys from you. It replaces Stan Store ($29-99/mo), Gumroad (10% fees), Patreon (8-12% fees), Teachable ($59-249/mo), Calendly ($8-16/mo for paid bookings), and every disconnected monetization tool. All transactions flow through KayPay. Zero transaction fees on wallet payments.
+
+Views: Products / Subscriptions / Revenue (centered contextual pill to switch)
+
+Side panel (swipe right or menu icon). Owner: revenue dashboard (total this month, by source, trend), top products by sales, subscriber count and MRR, recent purchases, payout history, create product shortcut, settings (payout schedule, tax info, refund policy). Manager/Agent: revenue tracking, product management, invoice generation, payout history, settings. Moderator: not applicable. Subscriber: my purchases, my subscriptions.
+
+#### Products View
+
+**Owner View (R0):**
+- Product catalog. All products listed as cards. Each card: thumbnail, title, price (or "Free"), type badge (Digital, Course, Service, Physical, Affiliate), sales count, revenue generated, rating.
+- Product types: Digital products (PDFs, ebooks, templates, presets, guides). Courses (priced in Earn, plays in KayStudios). Services (coaching calls, consulting, booked through Agenda, paid through KayPay). Physical products (merch, books, shipping address collected at checkout). Affiliate products (recommend others' products, earn commission).
+- Create Product button. Product builder: title, description, price (one-time or payment plan), type, thumbnail/images, files to deliver, availability (always, limited quantity, limited time), tags. Preview. Publish.
+- Product analytics per item: views, conversion rate, total sales, total revenue, refund rate, average rating.
+- Suggested products. If category has no items, system suggests what to create based on audience size and engagement.
+- Filter pills: All, Digital, Courses, Services, Physical, Affiliate, Best Sellers, Free, Drafts.
+- For Sammy demo: "KaNeXT Masterclass - Building an OS" (course, $200, 8 enrolled), "1-on-1 Strategy Call" (service, $150, 12 completed), "Photography Preset Pack" (digital, $19, 62 sold), "Weekly Newsletter" (free, 240 subscribers), "Brand Strategy Template" (digital, $45, 28 sold), "Group Coaching - Spring Cohort" (service, $500, 8 enrolled).
+
+**Manager/Agent View (R2):**
+- Full product catalog access. Can create products on behalf of owner (approval queue). Can update pricing, descriptions, availability. Can view all sales data.
+- Filter pills: All, By Type, Best Sellers, Drafts, Pending Approval.
+
+**Subscriber View (R9):**
+- Product storefront. Browsable catalog. Each shows: thumbnail, title, price, description preview, rating, purchase count. Tap for full product page with Buy button through KayPay.
+- Filter pills: All, Digital, Courses, Services, Free, Popular.
+
+#### Subscriptions View
+
+**Owner View (R0):**
+- Subscription/membership management. Recurring revenue products.
+- Active subscriptions listed. Each shows: name, price per period, active subscriber count, MRR, churn rate, total revenue lifetime.
+- Create Subscription. Name, description, price, billing period (weekly, monthly, yearly), benefits (exclusive content, early access, community Room, direct messaging, monthly calls, behind-the-scenes). Subscriber limit optional. Free trial option.
+- Subscriber management per subscription: list of active subscribers with join date, total paid, engagement level.
+- Exclusive content delivery. Subscriber-only posts in Social (lock icon), subscriber-only KayTV videos, subscriber-only Room in Messages. Content gating per tier.
+- Multiple tiers. Example: "Free Follower" (public only), "Supporter" ($10/mo, exclusive posts + Room), "Insider" ($25/mo, everything + monthly call + early access + DM access).
+- Filter pills: All, Active, By Tier, Churned, Revenue, New This Month.
+- For Sammy demo: "KaNeXT Insider" ($25/mo, 8 subscribers, $200 MRR). Benefits: exclusive content, monthly group call, early access, DM access, subscriber-only Room.
+
+**Manager/Agent View (R2):**
+- Subscription analytics visible. Can manage tiers, update pricing (with approval), view subscriber list.
+- Filter pills: All, Active, By Tier, Revenue, Churned.
+
+**Subscriber View (R9):**
+- Available subscriptions with tier comparison. Subscribe button. Manage my subscription (upgrade, downgrade, cancel, update payment).
+- My active subscription: current tier, next billing date, benefits unlocked.
+
+#### Revenue View
+
+**Owner View (R0):**
+- Revenue dashboard. Total revenue: this week, this month, this year. Month-over-month growth.
+- Revenue by source chart: products, subscriptions, services, tips, brand deals (from Deals tile), affiliate commissions. Pie chart and line graph.
+- Top products by revenue ranked.
+- Transaction list. Every sale: buyer name, product, amount, date, payment method, status. Tap for detail.
+- Payout history. Transfers from Earn to KayPay wallet. Payout schedule (instant, daily, weekly).
+- Tax reporting. Year-end revenue summary by category. Exportable. 1099 data if applicable.
+- Nexus integration: "How much did I earn this month?", "What's my best selling product?", "How many subscribers do I have?", "What's my MRR?", "Generate a revenue report for Q1."
+- Filter pills: All, Products, Subscriptions, Services, Tips, Brand Deals, Affiliate, This Week, This Month, This Year, By Product.
+- For Sammy demo: $1,200 this month. Masterclass $800, coaching calls $300, tips $100. MRR $200. YTD $4,800.
+
+**Manager/Agent View (R2):**
+- Full revenue dashboard. Can generate reports, export, track payouts, invoice brand deal payments.
+- Filter pills: All, By Source, This Month, This Year, Invoiced, Pending.
+
+---
+
+### 15.7 Personal KayTV
+
+KayTV in Personal mode is the creator's video platform. Same structure as all KayTV tiles (Featured/Library/Live views). It replaces YouTube as a hosting and monetization platform. The creator owns the content, owns the audience, and keeps the revenue. YouTube takes 30% of memberships and Super Chats. KayTV through KayPay takes 3% on wallet transactions (and the creator can pass that to the viewer with "cover the fee"). At scale, wallet-to-wallet is 0%.
+
+Views: Featured / Library / Live (centered contextual pill to switch)
+
+#### Featured View
+
+**Owner View (R0):**
+- Hero video at top. Creator selects featured video. Category rows below (creator organizes): Latest Uploads, Most Popular, Series, Behind the Scenes, Coaching (for Sammy), KaNeXT Updates, Collaborations, Shorts/Clips. Admin controls: reorder rows, feature/unfeature, manage free vs subscriber-only.
+
+**Manager/Agent View (R2):**
+- Same view. Can feature/unfeature, reorder rows on behalf of owner.
+
+**Subscriber View (R9):**
+- Featured view with free content visible. Subscriber-only shows lock icon with subscribe prompt. Paying subscribers see all content. Tip button on every video. Product tags on videos with inline Buy button.
+
+#### Library View
+
+**Owner View (R0):**
+- Full video catalog. Upload button with metadata: title, description, tags, thumbnail, series assignment, access level (public, subscribers only, specific tier), monetization settings (tips enabled, product tags), schedule publish date, premiere mode (countdown and live chat at launch).
+- Video analytics per video: views, unique viewers, average watch time, completion rate, traffic source, subscriber conversions, revenue generated (tips, product sales, subscription conversions).
+- Series management. Group videos into named series with art, description, episode order. Series landing page.
+- Content editing. Trim, cut, chapter markers, subtitles/captions (auto-generated or uploaded), end screens.
+- Clip creation. Select highlights from long-form to auto-generate short clips for Social reels. Clip links back to full video.
+- Filter pills: All, Public, Subscriber Only, By Series, Most Viewed, Recent, Drafts, Scheduled.
+- For Sammy demo: 12 videos. "KaNeXT Product Demo" (featured, 2,400 views), "Why I Built an OS" (5,100 views), 8 Lincoln basketball game films, "Coaching Philosophy" (series), "Building KaNeXT Ep. 1-3" (series).
+
+**Manager/Agent View (R2):**
+- Full library. Can upload on behalf of owner (approval queue). Can edit metadata, manage series, schedule. Full analytics.
+- Filter pills: All, Published, Drafts, Scheduled, Pending Approval, By Series.
+
+**Subscriber View (R9):**
+- Library of accessible videos. Free content always available. Subscriber-only unlocked by tier.
+- Filter pills: All, Free, My Subscription, By Series, Most Popular, Recent.
+
+#### Live View
+
+**Owner View (R0):**
+- Go Live button. Title, description, thumbnail, access level, monetization (tips, product spotlights). Camera and mic setup. Countdown option.
+- During live: viewer count, live chat with moderation tools (pin, remove, ban, slow mode), tip feed (real-time tips with amounts and names through KayPay), product spotlight (pin Earn product at bottom of stream, viewers buy without leaving), real-time analytics.
+- Live giving replaces YouTube Super Chat without the 30% cut. Tips flow directly to KayPay wallet.
+- After live: auto-saves as VOD in Library. Can edit, add chapters. Chat replay preserved. Tips appear in Earn and KayPay.
+- Scheduled streams with "Set Reminder" for subscribers.
+
+**Subscriber View (R9):**
+- Watch live. Chat, send tips, tap product spotlights. Set reminders for upcoming streams.
+
+#### Video Player
+
+- Full-screen or inline. Scrub bar with chapter markers. Speed controls. Captions. AirPlay/Chromecast.
+- Tip button persistent on player. Product tags as subtle pop-ups at creator-set timestamps.
+- Share: Messages, Social, copy link, clip creation.
+- Comments below. Creator can pin, heart, reply. Related content from same series or creator.
+
+---
+
+### 15.8 Personal KayPay
+
+KayPay in Personal mode is the creator's financial hub. Same structure as all KayPay tiles (Wallet/Pay/Invest views). For a personal brand, KayPay is where all money lands: product sales from Earn, tips from Social and KayTV, brand deal payments from Deals, subscription revenue, coaching session payments, and peer-to-peer transfers. It replaces Stripe (2.9% + $0.30), PayPal (2.9% + $0.30), Cash App, Venmo, and the AdSense/Payoneer payout nightmare. One balance. One transaction history. One tax export.
+
+Views: Wallet / Pay / Invest (centered contextual pill to switch)
+
+Side panel (swipe right or menu icon). Owner: quick balance, revenue stream breakdown, pending payouts, tax reporting shortcut, linked banks and cards, KaNeXT Card controls, savings goals, transaction export, settings. Manager/Agent: client revenue overview, pending invoices, payout tracking, tax report generation, settings. Moderator: not applicable. Subscriber: personal wallet only.
+
+#### Wallet View
+
+**Owner View (R0):**
+- Balance displayed large at top. 4% APY indicator. Total balance includes all revenue streams.
+- Revenue stream cards below balance. Visual breakdown: Earn Products, Subscriptions, Tips, Brand Deals, Services, Affiliate. Each card tappable to see transactions behind it.
+- KaNeXT Card. Virtual card, Apple Pay, Google Pay. Revenue earned goes directly to the card. No payout cycles.
+- Transaction history. Every transaction across every revenue stream in one chronological list. Each entry: source (Earn, Tips, Deals, Services, P2P), payer name, amount, date, status. Full audit trail. Tap any transaction for detail: who paid, for what, payment method, settlement chain (Event, Rules, Authorization, Payment, Settlement, Audit), receipt.
+- Savings goals. Named goals with auto-save rules. "Tax Reserve" (auto-save 30% of all revenue), "Equipment Fund", "Emergency Fund."
+- Tax dashboard. Real-time tax estimate based on earnings. Categorized by revenue type (1099-K, 1099-NEC, 1099-MISC). Quarterly estimated tax calculator. Year-end export: full transaction list categorized for filing, CSV or PDF. Integrates with tax software.
+- Pending payouts. If external bank linked, shows pending transfers. Schedule: instant (small fee), daily (free), weekly (free).
+- Audit trail. Every dollar traceable. Brand deal payment shows: originated from Deals tile (deal ID), invoice sent (date), payment received (date), deposited to wallet (instant), tax category assigned, available for spend. Nothing ambiguous. Every dollar has a story.
+- Nexus integration: "How much did I earn this month?", "What's my tax estimate for Q1?", "Transfer $1,000 to my bank", "Set aside 30% of every payment for taxes automatically", "Show me all payments from Overtime Elite."
+- Filter pills: All, Earn Products, Subscriptions, Tips, Brand Deals, Services, Affiliate, P2P, Sent, Received, This Week, This Month, This Year, Tax Export.
+- For Sammy demo: wallet balance $8,400. Revenue this month $6,500. KaNeXT Card active. Savings: Tax Reserve $4,200, Equipment Fund $1,200/$2,000. 40+ transactions with full audit trail.
+
+**Manager/Agent View (R2):**
+- Client revenue overview. Can see all revenue streams, transaction history, pending payouts. Can generate invoices for brand deals. Can track paid vs outstanding.
+- Tax report generation. Year-end reports and quarterly estimates on behalf of owner. Export for accountant.
+- Cannot transfer funds. Cannot access KaNeXT Card. Cannot change payout settings.
+- Filter pills: All, By Source, Invoiced, Paid, Outstanding, This Month, This Year, Tax Report.
+
+**Subscriber View (R9):**
+- Personal wallet only. Their purchases from the creator appear in their own transaction history.
+
+#### Pay View
+
+**All roles:**
+- Same P2P send/receive. Send, receive, QR, split, remittance at 0.2%. Inline payments from Messages.
+
+**Owner View (R0) additional:**
+- Invoice creation. Professional invoices for brand deals, consulting, speaking. Builder: client info (from Network), line items, payment terms, notes. Send through Messages or email. Track status (sent, viewed, paid, overdue). Auto-reminder for overdue. Paid invoices auto-reconcile with Deals tile.
+- Batch invoicing for multiple clients.
+- Payment links. Generate unique link for any amount. Share via Social, Messages, or Links page. Anyone with link pays through KayPay.
+
+**Manager/Agent View (R2):**
+- Can create and send invoices on behalf of owner. Can track payment status. Can send reminders.
+
+#### Invest View
+
+**All roles:**
+- Same as all KayPay Invest. Infrastructure Fund, Bitcoin, Capital Points.
+
+**Owner View (R0) additional:**
+- Revenue reinvestment. "Invest 10% of all revenue automatically into Infrastructure Fund." Auto-invest rules that turn earnings into long-term wealth.
+- KaNeXT Capital Fund visibility for accredited/qualified investors.
+
+---
+
+### 15.9 Personal KayStudios
+
+KayStudios in Personal mode is the same cross-mode interactive experiences hub. Same structure (Home/Explore/Library views). For a personal brand, KayStudios is where the creator builds and sells interactive content. Courses priced in Earn actually play here. Quizzes, challenges, and games the creator builds for their audience live here.
+
+The key connection: Earn is the storefront (where you list and price products). KayStudios is the delivery platform (where the buyer actually takes the course or plays the game). Earn tracks the money. KayStudios delivers the experience.
+
+#### RBAC Views
+
+**Owner View (R0):**
+- Full creator access. Build any content type: courses, quizzes, challenges, flashcards, polls, assessments.
+- Courses are the primary product. "KaNeXT Masterclass - Building an OS" listed at $200 in Earn, but the actual 12-lesson course with video modules, text content, embedded quizzes, and completion certificate plays here in KayStudios.
+- Creator dashboard in side panel: my published content, plays/completions, ratings, revenue per item (synced from Earn), drafts in progress.
+- Can feature content to subscribers ("Complete this quiz to unlock a bonus resource").
+- Analytics per item: enrollments, completion rate, average score (for quizzes), time spent, drop-off point (which lesson do people stop at), rating, reviews.
+- Filter pills (creator): All, My Content, Published, Drafts, Analytics, Courses, Quizzes, Challenges.
+- For Sammy demo: "KaNeXT Masterclass - Building an OS" (course, 12 lessons, $200, 8 enrolled, 62% completion rate), "How Well Do You Know KaNeXT?" (quiz, 10 questions, free, 45 plays), "30-Day Creator Challenge" (challenge, 12 participants), "Basketball Coaching IQ Test" (trivia, free, 200+ plays), "Brand Strategy Assessment" (quiz, $25, 15 completions).
+
+**Manager/Agent View (R2):**
+- Can view all published content and analytics. Can draft content on behalf of owner (approval queue). Can manage existing content (update descriptions, pricing adjustments with approval).
+- Filter pills: All, Published, Drafts, Pending Approval, Analytics.
+
+**Moderator View (R5):**
+- Not visible.
+
+**Subscriber View (R9):**
+- Consumer. Browse and play all content the creator has published. Free content available immediately. Paid content requires purchase through KayPay.
+- Course player: full learning experience with modules, video, text, quizzes, progress tracking, certificate on completion.
+- Quiz/trivia: play, score, share results to Social, see leaderboard.
+- Challenges: join, track progress, compete with other subscribers.
+- My Library: in progress items with resume, completed items, purchased items.
+- Filter pills: All, Free, Purchased, Courses, Quizzes, Challenges, In Progress, Completed.
+
+---
+
+## 16. Business Mode
+
+Business mode is the operating environment for companies, startups, agencies, and organizations. The demo brand is KaNeXT (KaNeXT LLC). Business mode replaces the entire business tool stack: HubSpot (CRM), Monday.com (projects), Salesforce (pipeline), QuickBooks (accounting), Slack (team chat), Notion (docs), and every disconnected tool a business pays $200-500+/user/month to juggle.
+
+Business mode RBAC roles: Owner/CEO (R0), Executive (R2), Manager (R3), Employee (R5), Client/Partner (R9).
+
+Business mode home grid:
+
+| Hub | Agenda | Social |
+|-----|--------|--------|
+| Team | Inquiries | Store |
+| KayTV | KayPay | KayStudios |
+
+### 16.1 Business Hub
+
+The Hub in Business mode is the company command center. It replaces Monday.com dashboards, HubSpot reporting, Notion wikis, and every scattered business analytics tool. Three tabs, RBAC determines depth.
+
+Tabs: Overview / Projects / Operations
+
+Side panel (swipe right or menu icon). Owner/CEO: company dashboard (revenue, pipeline, team activity, project status), KPIs, financial summary, quick search, settings. Executive: department dashboard, KPIs for their division, project portfolio, settings. Manager: team dashboard, project status, task assignments, settings. Employee: my tasks, my projects, company announcements, settings. Client/Partner: project status (their projects only), shared files, settings.
+
+#### Overview Tab
+
+**Owner/CEO View (R0):**
+- Company dashboard at top. Revenue this month (from KayPay), pipeline value (from Inquiries), active projects count, team size, burn rate (monthly expenses vs revenue).
+- KPI cards row: MRR, customer count, churn rate, average deal size, team utilization rate, NPS score. Each card tappable for trend chart.
+- Revenue chart. 12-month line graph. Revenue vs expenses. Profit margin trend. Forecast based on pipeline and recurring revenue.
+- Pipeline summary. Stages with counts and values from Inquiries tile. Conversion rate funnel.
+- Project health. All active projects with status badges (on track, at risk, behind, completed).
+- Team activity feed. Recent activity: deals closed, projects completed, tasks finished, new clients onboarded.
+- Company announcements. Pin important messages for the whole team.
+- Nexus integration: "What's our revenue this month?", "How many deals are in the pipeline?", "Which projects are behind schedule?", "What's our burn rate?", "Draft a company announcement about hitting $1M ARR."
+- Filter pills: All, Revenue, Pipeline, Projects, Team, This Week, This Month, This Quarter.
+- For KaNeXT demo: $42,000 MRR, $2.8M pipeline value, 5 active projects, 8 team members, 12 active clients. Revenue trending up 15% MoM.
+
+**Executive View (R2):**
+- Same dashboard scoped to their division. Can see company-level KPIs in read-only. Can drill into department data.
+- Filter pills: All, My Division, Revenue, Projects, This Quarter.
+
+**Manager View (R3):**
+- Team dashboard. Direct reports, task completion rate, active projects, upcoming deadlines. Cannot see company financials.
+- Filter pills: All, My Team, My Projects, Tasks Due, This Week.
+
+**Employee View (R5):**
+- My dashboard. Tasks assigned, projects I'm on, company announcements, upcoming meetings.
+- Filter pills: All, My Tasks, My Projects, Announcements.
+
+**Client/Partner View (R9):**
+- Client portal. Their projects with status updates. Shared files. Messages with account manager.
+- Filter pills: All, My Projects, Shared Files.
+
+#### Projects Tab
+
+**Owner/CEO View (R0):**
+- Full project portfolio. Each card: name, client, project lead, status badge, progress bar, budget (spent vs allocated), deadline, team members.
+- Project views: List (default), Kanban (drag between Planning/In Progress/Review/Completed), Timeline (Gantt with dependencies).
+- Create Project button. Name, description, client, lead, budget, deadline, milestones, team, files. Template library.
+- Project Detail Page: overview, task board (Kanban), milestones timeline, budget tracker (hours, expenses, remaining), files, activity log, client communication thread.
+- Task management. Each task: title, assignee, due date, priority, status, description, subtasks, comments, files. Drag between columns.
+- Time tracking. Log hours against projects/tasks. Billable vs non-billable. Auto-generates invoices for client work through KayPay.
+- Project analytics: on-time delivery rate, budget adherence, team utilization.
+- Filter pills: All, Active, Planning, Completed, By Client, By Lead, At Risk, Over Budget.
+- For KaNeXT demo: "KaNeXT OS v1.0" (internal, In Progress, 65%), "Investor Data Room" (internal, 80%), "Basketball Intelligence API" (Planning), "Lincoln University Pilot" (client, 40%), "ICCLA Community Setup" (client, Planning).
+
+**Manager View (R3):**
+- Projects they lead or their team is on. Can create tasks, assign members, update status, view budget.
+- Filter pills: All, My Projects, My Team's Tasks, Active, Planning.
+
+**Employee View (R5):**
+- Projects assigned to. Update task status, log time, add comments. Cannot create projects or manage budgets.
+- Filter pills: All, My Projects, My Tasks, Due This Week.
+
+**Client/Partner View (R9):**
+- Their project(s) only. Status, milestones, deliverables. Can comment and approve milestones.
+- Filter pills: All, Active, Completed, Deliverables.
+
+#### Operations Tab
+
+**Owner/CEO View (R0):**
+- HR overview. Team size, open positions, recent hires, upcoming reviews.
+- Document library. Company wiki, SOPs, policies, templates, contracts. Organized by department. Replaces Notion/Google Drive.
+- Workflows. Automated processes: client onboarding, employee onboarding, invoice automation.
+- Integrations dashboard.
+- Filter pills: All, HR, Documents, Workflows, Integrations.
+
+**Manager View (R3):**
+- Department documents and SOPs. Team workflows.
+- Filter pills: All, My Department, Documents, Workflows.
+
+**Employee View (R5):**
+- Company documents relevant to role. Onboarding tasks. SOPs.
+- Filter pills: All, My Documents, SOPs, Training.
+
+---
+
+### 16.2 Business Agenda
+
+Agenda in Business mode is the company calendar. Same structure (Day/Week/Month views). It combines team schedules, project deadlines, client meetings, and company events. It replaces Google Calendar for business, Calendly for client bookings, and the calendar features in Monday.com/HubSpot.
+
+Views: Day / Week / Month (centered contextual pill to switch)
+
+Side panel (swipe right or menu icon). Owner/CEO: company calendar, all team schedules, meeting rooms, client meetings, project deadlines, company events, settings. Executive: department calendar, team schedules, client meetings for division. Manager: team calendar, project deadlines, 1:1s, settings. Employee: my calendar, team meetings, project deadlines. Client/Partner: scheduled meetings, project milestones.
+
+#### Day / Week / Month Views
+
+**Owner/CEO View (R0):**
+- Full company calendar. All team members' schedules visible (toggle on/off). Color-coded: client meetings (blue), internal meetings (green), project deadlines (gold), company events (teal), personal (gray), standups (orange).
+- Client meeting scheduler. Send invites, video call links auto-generated. Meeting notes auto-logged to client profile in Inquiries.
+- Project deadline markers synced from Hub Projects tab. Milestones and deliverables visible.
+- Company events. All-hands, socials, launches, board meetings.
+- Resource scheduling. See who is available. Prevent double-booking.
+- Create event. Title, type, date/time, duration, attendees (from Team and Inquiries), location/video link, recurring, notes, files, project link.
+- Nexus integration: "What's on the company calendar this week?", "Schedule a call with Lincoln University for Thursday", "When is the next board meeting?", "Who is free for a client call tomorrow at 2pm?"
+- Filter pills: All, Client Meetings, Internal, Deadlines, Company Events, My Calendar, By Team Member.
+- For KaNeXT demo: weekly standup Monday 9am, 3 client meetings, 2 project deadlines, all-hands Friday, board meeting next week, Sammy's coaching schedule blocked.
+
+**Executive View (R2):**
+- Department calendar plus company events. Team schedules. Client meetings for division.
+- Filter pills: All, My Division, Client Meetings, Deadlines, Company Events, My Calendar.
+
+**Manager View (R3):**
+- Team calendar. Direct reports visible. Project deadlines. 1:1s. Cannot see other departments.
+- Filter pills: All, My Team, Client Meetings, Deadlines, 1:1s, My Calendar.
+
+**Employee View (R5):**
+- Personal calendar. Meetings invited to, task deadlines, company events. Teammates' free/busy only.
+- Filter pills: All, My Meetings, Deadlines, Company Events, My Calendar.
+
+**Client/Partner View (R9):**
+- Meetings with KaNeXT contacts only. Project milestones. Can request meetings.
+- Filter pills: All, Upcoming Meetings, Project Milestones.
+
+---
+
+### 16.3 Business Social
+
+Social in Business mode is the company's public brand page and internal communication feed. Two purposes: external (marketing, brand content, customer engagement) and internal (team updates, company culture). Same structure as all Social tiles (Feed/Reels/Profile views, scope filter Brand/Mode/All).
+
+Scope filter: Brand (KaNeXT only), Mode (all Business brands), All (everything across all modes).
+
+#### Feed View
+
+**Owner/CEO View (R0):**
+- Full feed. Company content and followed brands/people.
+- Create button. Post types: text, photo, video, carousel, poll, product feature (embeds Store product), job posting (embeds open position from Team), company update, press release.
+- Post visibility toggle: Public (marketing, visible to everyone) or Internal (team only R0-R5, "Internal" badge). Schedule posts. Pin up to 3.
+- Analytics on public posts: impressions, reach, engagement, link clicks, leads generated.
+- Cross-post to owner's Personal brand simultaneously.
+- Filter pills: All, Public, Internal, My Posts, Following, Trending, Saved, Drafts.
+
+**Executive View (R2):**
+- Full feed. Can draft public posts (approval queue). Can post internal updates for department directly.
+- Filter pills: All, Public, Internal, My Department, Drafts.
+
+**Manager View (R3):**
+- Full feed. Can post internal updates for team. Cannot post publicly without approval.
+- Filter pills: All, Public, Internal, My Team, Announcements.
+
+**Employee View (R5):**
+- Full feed (public and internal). Can like, comment, share. Can post internal (team-level). Cannot post as company brand publicly.
+- Filter pills: All, Public, Internal, Announcements, My Posts.
+
+**Client/Partner View (R9):**
+- Public content only. Cannot see internal posts.
+- Filter pills: All, Posts, Products, Updates.
+
+#### Reels View
+
+**Owner/CEO View (R0):**
+- Brand short-form video. Product demos, behind-the-scenes, culture, testimonials, industry insights. Full analytics.
+
+**Client/Partner View (R9):**
+- Public reels only.
+
+#### Profile View
+
+**Owner/CEO View (R0):**
+- Full company profile. Logo, name, bio/tagline, follower count, website, contact, edit profile. Content grid. Pinned posts. Reels tab. KayTV tab. Company info: founded, team size, industry, location, mission.
+
+**Client/Partner View (R9):**
+- Public profile. Follow, Message, Visit Store buttons. Content grid.
+- For KaNeXT demo: "KaNeXT - The OS for everything." Bio: "Multi-mode operating system | Communication, Media, Intelligence, Commerce, Finance | Miami, FL." 20 mock posts. 5 reels. Pinned: "KaNeXT OS Launch Announcement", "We're Hiring", "Invest in KaNeXT."
+
+---
+
+### 16.4 Business Team
+
+Team is the people tile for business brands. Position 4 in the grid. It is the employee directory, org chart, HR hub, onboarding system, performance management tool, and workforce dashboard. It replaces BambooHR ($10-20/employee/mo), Gusto ($12/employee/mo), Rippling ($8/employee/mo), and every disconnected HR tool.
+
+Views: Directory / Org Chart / HR (centered contextual pill to switch)
+
+Side panel (swipe right or menu icon). Owner/CEO: workforce dashboard (headcount, departments, open positions, recent hires, upcoming reviews), quick search, add employee, export, settings. Executive: department roster, hiring pipeline for division, settings. Manager: my direct reports, team performance, 1:1 schedule, settings. Employee: my profile, company directory, org chart, settings. Client/Partner: account team contacts only.
+
+#### Directory View
+
+**Owner/CEO View (R0):**
+- Full employee directory. Each card: avatar, name, title, department, email, phone, status (active, on leave, onboarding), start date.
+- Search by name, department, title, skill.
+- Tap person for full Employee Profile: contact info, role, department, manager, direct reports, start date, employment type, compensation, PTO balance, performance review history, skills/certifications, onboarding status, notes (private HR, visible R0-R2 only).
+- Add Employee triggers onboarding workflow: welcome message through Messages, onboarding checklist (docs, benefits, tools, training in KayStudios), manager notified, buddy assigned.
+- Offboarding workflow: access revoked, equipment return, exit interview, knowledge transfer.
+- Filter pills: All, Active, By Department, Managers, Contractors, On Leave, New Hires, Open Positions.
+- For KaNeXT demo: 8 team members (Sammy CEO, CTO, Head of Product, 2 Engineers, Designer, Marketing Lead, Operations). 2 contractors. 2 open positions.
+
+**Executive View (R2):**
+- Full directory. Compensation visible for their department only. Can initiate hiring for department.
+- Filter pills: All, My Department, Active, Contractors, Open Positions.
+
+**Manager View (R3):**
+- Full directory. Profile without compensation (unless direct report). Can see reports' reviews and PTO.
+- Filter pills: All, My Team, By Department, Active.
+
+**Employee View (R5):**
+- Directory of active employees. Name, title, department, contact. No compensation, HR notes, or performance data for others. My Profile editable.
+- Filter pills: All, By Department, Leadership, My Team.
+
+**Client/Partner View (R9):**
+- Account team only. Employees assigned to their project. Name, title, contact. Message, Schedule Call.
+
+#### Org Chart View
+
+**Owner/CEO View (R0):**
+- Visual hierarchical tree. CEO at top, departments branching, teams within, individuals at bottom. Tap node to expand/collapse. Tap person for profile. Department summaries. Drag and drop to reorganize.
+- Filter pills: All, By Department, Managers Only, Leadership.
+
+**Manager View (R3):**
+- Full org chart. Their team highlighted.
+- Filter pills: All, My Team, By Department.
+
+**Employee View (R5):**
+- Full org chart read-only.
+- Filter pills: All, By Department.
+
+**Client/Partner View (R9):**
+- Not visible.
+
+#### HR View
+
+**Owner/CEO View (R0):**
+- HR dashboard. Headcount, by department, by type, attrition rate, average tenure, PTO utilization.
+- Hiring pipeline. Open positions with applicant count and stage (posted, screening, interviewing, offer, hired). Create job posting (flows to Social). Applicant tracking: resume, notes, interview scores, status.
+- Performance management. Review cycles (quarterly, annual). Templates: self-assessment, manager assessment, 360 feedback, goal tracking. Completion tracking.
+- PTO management. Policy, balances, approval queue, calendar view.
+- Document management. Contracts, NDAs, offer letters, tax forms, benefits. Per employee. E-signature.
+- Compensation overview. Salary bands, equity, payroll summary (flows to KayPay).
+- Filter pills: All, Hiring, Performance Reviews, PTO, Documents, Compensation, By Department.
+- For KaNeXT demo: 2 open positions (5 applicants each), Q2 review cycle upcoming, 3 PTO requests pending, all docs signed.
+
+**Executive View (R2):**
+- HR dashboard for department. Hiring, reviews, PTO scoped to division.
+- Filter pills: All, My Department, Hiring, Reviews, PTO.
+
+**Manager View (R3):**
+- Direct reports only. Submit reviews, approve PTO, view onboarding for new hires.
+- Filter pills: All, My Reports, Reviews, PTO Requests.
+
+**Employee View (R5):**
+- My HR: PTO balance and request, my reviews (self-assessment, manager feedback), my documents, onboarding checklist (if new).
+- Filter pills: All, My PTO, My Reviews, My Documents.
+
+---
+
+### 16.5 Business Inquiries
+
+Inquiries is the pipeline tile for business brands. Position 5 in the grid. Same pattern as Recruits (Sports), Admissions (Education), Outreach (Community), Deals (Personal). It is the CRM where leads come in, get qualified, get worked, and close. It replaces HubSpot Sales ($20-890/mo), Salesforce ($25+/user/mo), Pipedrive ($14-99/user/mo), and every disconnected sales tool.
+
+The key difference from Personal Deals: Inquiries is multi-user. Multiple salespeople work the same pipeline with lead assignment, territories, team quotas, and sales analytics across reps.
+
+Views: Pipeline / Leads / Analytics (centered contextual pill to switch)
+
+Side panel (swipe right or menu icon). Owner/CEO: sales dashboard (pipeline value, deals this month, win rate, forecast), lead queue, team performance, quota tracking, automation builder, settings. Executive: division pipeline, team quotas, forecast. Manager: team pipeline, rep performance, coaching notes. Employee (sales rep): my pipeline, my leads, my quota. Client/Partner: not visible.
+
+#### Pipeline View
+
+**Owner/CEO View (R0):**
+- Full sales pipeline Kanban: New Lead, Qualified, Discovery Call, Proposal Sent, Negotiating, Contract, Closed Won, Closed Lost. Each column shows count and total value.
+- Deal cards: company name/logo, deal title, value, assigned rep, days in stage, next action due, probability, health color (green/amber/red). Drag and drop between stages.
+- Tap deal for Detail Page: company info, contacts, value, products quoted, proposal history, all communications (auto-pulled from Messages, Phone, Email), meeting notes, files, activity timeline, next steps, win probability.
+- Deal-to-project conversion. Closed Won one-tap converts to Hub project. All context carries over. Sales-to-delivery handoff solved.
+- Revenue forecast. Weighted pipeline by stage probability. Monthly/quarterly chart. Forecast vs quota.
+- Automation engine. New lead auto-assigns by territory/round-robin, stage change triggers email templates, stale deal creates follow-up task, closed deal auto-generates KayPay invoice and Hub project.
+- Nexus integration: "What's our total pipeline value?", "Which deals are closing this month?", "Draft a follow-up email for the Lincoln University deal", "What's our win rate this quarter?"
+- Filter pills: All, New Lead, Qualified, Discovery, Proposal, Negotiating, Contract, Won, Lost, By Rep, By Value, This Month, This Quarter, Stale Deals, High Value.
+- For KaNeXT demo: 15 deals. "Lincoln University - Full OS Deployment" (Negotiating, $120K), "ICCLA - Community Mode" (Proposal, $48K), "Valley Capital - Fund Investment" (Discovery, $250K), "Oakland USD" (New Lead, $500K), "Overtime Elite - Intelligence API" (Qualified, $85K), 5 mid-stage, 5 closed (3 won, 2 lost).
+
+**Executive View (R2):**
+- Division pipeline. Full deal detail for their territory. Team quota tracking.
+- Filter pills: All, My Division, By Rep, By Stage, This Quarter, Forecast.
+
+**Manager View (R3):**
+- Team pipeline. Can reassign deals. Coaching notes on reps. Rep performance metrics.
+- Filter pills: All, My Team, By Rep, By Stage, Overdue, This Month.
+
+**Employee/Sales Rep View (R5):**
+- My pipeline only. Full CRUD on my deals. My quota tracker with progress bar. Daily task list auto-generated from deal next steps.
+- Filter pills: All, My Deals, New Leads, Follow-Ups Due, Proposals Out, Closing This Month, My Quota.
+
+**Client/Partner View (R9):**
+- Not visible.
+
+#### Leads View
+
+**Owner/CEO View (R0):**
+- All inbound leads. Sources: website form, Social DMs, Phone, email, referrals, events, manual entry.
+- Each card: name, company, source, date, status (new, contacted, qualified, disqualified), assigned to.
+- Lead scoring. Auto-score by company size, industry fit, engagement level, budget. High-score prioritized.
+- Lead routing. Auto-assign by territory, round-robin, product interest, or rep specialty.
+- Convert Lead to pipeline deal (data carries over).
+- Lead analytics: leads by source, conversion rate, response time, cost per lead.
+- Filter pills: All, New, Contacted, Qualified, Disqualified, By Source, By Score, This Week, This Month, Unassigned.
+
+**Manager View (R3):**
+- Team leads. Assign/reassign. Review quality.
+- Filter pills: All, My Team, Unassigned, New, By Source, This Week.
+
+**Employee/Sales Rep View (R5):**
+- My assigned leads. Contact, update status, qualify/disqualify, convert.
+- Filter pills: All, My Leads, New, Contacted, Hot.
+
+#### Analytics View
+
+**Owner/CEO View (R0):**
+- Sales dashboard. Revenue this month/quarter/year. Pipeline velocity (avg days to close). Win rate. Average deal size. Revenue by product and by rep.
+- Funnel analysis. Stage-by-stage conversion rates. Where deals drop off.
+- Rep leaderboard. Ranked by revenue, deals won, pipeline generated, activity.
+- Forecast accuracy. Past forecasts vs actual.
+- Lead source ROI. Which sources produce most revenue. Cost per acquisition.
+- Filter pills: All, Revenue, Pipeline, Win Rate, By Rep, By Product, By Source, This Month, This Quarter, This Year.
+- For KaNeXT demo: $180K closed this quarter, 35% win rate, 45-day cycle, referral top source (60%), Sammy leading all metrics.
+
+**Executive View (R2):**
+- Division analytics. Rep performance for team.
+- Filter pills: All, My Division, Revenue, Win Rate, By Rep, This Quarter.
+
+**Manager View (R3):**
+- Team analytics. Rep comparison. Coaching insights.
+- Filter pills: All, My Team, By Rep, Win Rate, Activity, This Month.
+
+**Employee/Sales Rep View (R5):**
+- My analytics. Personal win rate, deal size, pipeline, activity, quota progress.
+- Filter pills: All, My Performance, This Month, This Quarter.
+
+---
+
+### 16.6 Business Store
+
+Store is the commerce tile for business brands. Position 6 in the grid. Same pattern as Earn (Personal), Give (Community), Fund (Education), Booster (Sports). Full Shopify-level e-commerce engine. Product catalog, inventory management, order management, shipping, subscriptions, B2B wholesale, POS, customer accounts, storefront analytics. It replaces Shopify ($39-399/mo), WooCommerce, BigCommerce, Square, and every disconnected commerce tool. All transactions flow through KayPay.
+
+Views: Products / Orders / Analytics (centered contextual pill to switch)
+
+Side panel (swipe right or menu icon). Owner/CEO: store dashboard (revenue today, orders today, conversion rate, AOV, top products, inventory alerts), quick product add, storefront settings, shipping config, tax settings, discount manager, export. Executive: product line performance. Manager: fulfillment queue, inventory. Employee: fulfillment tasks, product updates. Client/Partner: purchases, order history, account.
+
+#### Products View
+
+**Owner/CEO View (R0):**
+- Full product catalog. Each card: image, title, price, status (active, draft, archived), inventory count, variants, sales this month.
+- Product types: Physical (shipped, weight, dimensions, inventory, SKU), Digital (instant download), Service (booked through Agenda), Subscription (recurring via KayPay, access-gated), Bundle (grouped discount), B2B/Wholesale (volume pricing, MOQ, net terms).
+- Create Product: title, description (rich text), images (up to 10), pricing (compare-at, cost per item for margin), variants (size/color/material each with SKU, price, inventory, image), inventory (quantity per location, low-stock threshold, auto-reorder), shipping (weight, dimensions, HS code, shipping class), SEO (meta title, description, URL), tags, collections, visibility.
+- Inventory management. Multi-location tracking. Transfer between locations. Purchase orders to suppliers (create, track: ordered/in transit/received). Low-stock alerts through Pulse. Inventory history (every adjustment logged). Barcode/SKU management. Bulk CSV import.
+- Collections. Curated groups: auto-collections by rules or manual. "New Arrivals", "Best Sellers", "KaNeXT OS Plans", "API Products", "Merch".
+- Pricing and discounts. Codes (percentage, fixed, free shipping, BXGY). Automatic discounts. Volume pricing for B2B. Sale scheduling.
+- Filter pills: All, Active, Draft, Archived, Physical, Digital, Service, Subscription, B2B, Low Stock, By Collection, Best Sellers.
+- For KaNeXT demo: "KaNeXT OS Free" ($0/mo, 500 users), "KaNeXT OS Pro" ($29/mo, 45 subscribers), "KaNeXT OS Enterprise" (custom, 3 clients), "Basketball Intelligence API Starter" ($99/mo, 12 subs), "API Pro" ($499/mo, 4 subs), "Logo Tee" ($35, 200 stock, 3 variants), "Hoodie" ($65, 100 stock), "Implementation - Education" ($5K flat), "Implementation - Community" ($3K flat), "Custom Dev" ($200/hr).
+
+**Manager View (R3):**
+- Products in their department. Can update inventory, edit details (pricing changes need approval).
+- Filter pills: All, My Products, Active, Low Stock, By Collection.
+
+**Employee View (R5):**
+- Assigned products. Can update inventory counts, mark received, update descriptions (approval queue).
+- Filter pills: All, My Assigned, Low Stock, Needs Update.
+
+**Client/Partner View (R9):**
+- Customer storefront. Browse by collection. Product pages with images, description, variants, Add to Cart, Buy Now through KayPay. B2B clients see wholesale pricing and net terms. Account page: order history, saved payments, addresses, wishlist.
+- Filter pills: All, By Collection, New Arrivals, Best Sellers, On Sale.
+
+#### Orders View
+
+**Owner/CEO View (R0):**
+- Full order management. Each order: number, customer, date, items, total, payment status (paid, pending, refunded), fulfillment status (unfulfilled, partially fulfilled, fulfilled, shipped, delivered, returned).
+- Order Detail: customer info (linked to Inquiries if B2B), line items, shipping address, payment details with KayPay settlement chain, fulfillment details (tracking, carrier), order timeline, notes, refund history.
+- Fulfillment workflow. Pick, pack, ship. Print shipping labels. Mark shipped with tracking. Customer auto-notified through Messages at each stage.
+- Returns and refunds. Approve/deny returns. Generate return label. Receive item. Process refund through KayPay. Auto-restock.
+- Abandoned carts. Customer, items, value, time. Auto-recovery email through Messages. Recovery rate tracked.
+- Draft orders. Manual orders (phone, custom quotes, B2B). Custom pricing. Invoice through KayPay.
+- Subscriptions management. Active subscriptions, subscriber count per plan, MRR, churn. Pause, cancel, upgrade, downgrade.
+- Filter pills: All, Unfulfilled, Fulfilled, Shipped, Delivered, Returned, Refunded, Abandoned Carts, Draft Orders, Subscriptions, Today, This Week, This Month, By Product.
+- For KaNeXT demo: 35 orders this month. 20 subscription renewals, 10 merch orders, 3 service orders, 2 abandoned carts. MRR $6,400.
+
+**Manager View (R3):**
+- Department orders. Fulfillment queue. Process shipments, manage returns.
+- Filter pills: All, My Department Orders, Unfulfilled, Shipped, Returns, Today.
+
+**Employee View (R5):**
+- Fulfillment tasks. Pick lists, packing slips. Update status. Cannot process refunds.
+- Filter pills: All, My Tasks, To Pick, To Pack, To Ship.
+
+**Client/Partner View (R9):**
+- My Orders. Status tracking. Track shipment. Request return. Download invoices.
+- My Subscriptions. Active plans, billing, upgrade/downgrade, cancel.
+- Filter pills: All, Active Orders, Delivered, Returns, Subscriptions.
+
+#### Analytics View
+
+**Owner/CEO View (R0):**
+- Store dashboard. Revenue: today, week, month, year with period comparison. Revenue chart.
+- Conversion funnel. Visits, add to cart, checkout, orders. Rate at each step. Drop-off analysis.
+- Top products by revenue and units. Product performance over time.
+- Customer analytics. New vs returning. CLV, AOV, purchase frequency. Segments (one-time, repeat, VIP, churned).
+- Inventory analytics. Sell-through rate. Days remaining. Dead stock. Reorder recommendations.
+- Subscription analytics. MRR, ARR, growth, churn, ARPU, LTV.
+- Channel analytics. Orders from: direct Store, Social posts, KayTV tags, Links page, external referral.
+- Shipping analytics. Fulfillment time, costs, delivery rate, return rate.
+- Filter pills: All, Revenue, Conversion, Products, Customers, Inventory, Subscriptions, Channels, Shipping, Today, This Week, This Month, This Year.
+
+**Executive View (R2):**
+- Division analytics. Revenue and product performance.
+- Filter pills: All, My Division, Revenue, Products, This Quarter.
+
+**Manager View (R3):**
+- Product analytics. Inventory and fulfillment metrics.
+- Filter pills: All, My Products, Inventory, Fulfillment, This Month.
+
+---
+
+### 16.7 Business KayTV
+
+KayTV in Business mode is the company's video platform. Same structure (Featured/Library/Live views). For a business, video includes product demos, tutorials, webinars, company culture, customer testimonials, investor updates, training, and thought leadership. It replaces YouTube for business, Vimeo Pro, Wistia, Loom, and Zoom webinar recordings.
+
+Views: Featured / Library / Live (centered contextual pill to switch)
+
+#### Featured View
+
+**Owner/CEO View (R0):**
+- Hero video. Category rows: Product Demos, Tutorials, Customer Testimonials, Company Culture, Investor Updates (internal-only), Webinar Recordings, Thought Leadership, Training (internal-only).
+- Admin controls: reorder, feature/unfeature, set access (public, clients only, internal, investors only).
+
+**Employee View (R5):**
+- Featured including internal content (training, culture, all-hands). Cannot see investor-only unless granted.
+
+**Client/Partner View (R9):**
+- Public and client-tier. Demos, tutorials, testimonials, webinars. Cannot see internal or investor content. Self-service onboarding through video.
+
+#### Library View
+
+**Owner/CEO View (R0):**
+- Full catalog. Upload with: title, description, tags, thumbnail, series, access level (public, clients, internal, investors, specific team), category, product association (link to Store product page).
+- Analytics: views, unique viewers, watch time, completion rate, traffic source, leads generated (gated content), product page views driven.
+- Series management. Gated content (email required to watch, auto-adds to Inquiries as lead). Embed codes for external sites.
+- Filter pills: All, Public, Client Only, Internal, Investors, By Series, By Product, Most Viewed, Recent, Drafts.
+- For KaNeXT demo: "KaNeXT OS Product Demo" (public, 3,200 views), "Basketball Intelligence Deep Dive" (client, 800 views), "Q1 Investor Update" (investor-only, 45 views), "Employee Onboarding" (internal, 28 views), "Customer Story: Lincoln University" (public, 1,100 views), "How to Set Up Education Mode" (tutorial series, 3 parts), "All-Hands March 2026" (internal).
+
+**Manager View (R3):**
+- Library visible. Upload for department (approval queue). Department analytics.
+- Filter pills: All, My Department, Public, Internal, By Series.
+
+**Employee View (R5):**
+- Accessible content. Training, culture, public. Not investor-only.
+- Filter pills: All, Training, Public, Internal, By Series.
+
+**Client/Partner View (R9):**
+- Public and client-tier.
+- Filter pills: All, Tutorials, Demos, Testimonials, By Product.
+
+#### Live View
+
+**Owner/CEO View (R0):**
+- Go Live for company broadcasts. Product launches, webinars, all-hands, investor Q&As, customer events.
+- Access control per stream: public, clients, internal, investors.
+- During live: viewer count, chat, Q&A queue (moderator filters questions to presenter), screen sharing, product spotlight (pin Store product).
+- Lead capture on public webinars (email gate, auto-flows to Inquiries).
+- After live: auto-saves as VOD. Attendee list exportable. Follow-up email auto-sent through Messages.
+- Scheduled streams with registration page (name, email, company). Calendar invite and reminders.
+
+**Employee View (R5):**
+- Watch internal streams. Chat and Q&A participation.
+
+**Client/Partner View (R9):**
+- Public and client-tier streams. Chat, Q&A. Register for webinars.
+
+---
+
+### 16.8 Business KayPay
+
+KayPay in Business mode is the company's complete financial operating system. Same structure (Wallet/Pay/Invest views). It handles revenue collection from Store, client invoicing from Inquiries, payroll for Team, vendor payments, expense management, AR, AP, financial reporting, and tax compliance. It replaces QuickBooks ($30-200/mo), Xero ($15-78/mo), Gusto payroll ($40+$12/employee/mo), Bill.com ($45+/user/mo), Stripe (2.9%), Expensify ($5-18/user/mo), and every disconnected financial tool.
+
+Every dollar in and out flows through one system with one audit trail. No reconciliation nightmares.
+
+Views: Wallet / Pay / Invest (centered contextual pill to switch)
+
+Side panel (swipe right or menu icon). Owner/CEO: financial dashboard (cash, revenue, expenses, profit, burn rate, runway), AR, AP, payroll status, tax summary, bank reconciliation, reports, audit log, settings (chart of accounts, approval thresholds, tax config, payroll schedule). Executive: department budget, expense approvals, division reports. Manager: team expenses, project budget, expense approvals. Employee: personal wallet, expense submissions, pay stubs, reimbursements. Client/Partner: personal wallet, invoices, payment history.
+
+#### Wallet View
+
+**Owner/CEO View (R0):**
+
+Personal wallet (same as any user): balance, 4% APY, KaNeXT Card, personal transactions.
+
+Company account (toggle in side panel):
+- Financial dashboard. Cash position (all accounts), revenue this month, expenses this month, net profit/loss, burn rate, runway (months at current burn).
+- Chart of accounts. Full double-entry ledger. Assets (cash, AR, inventory, equipment), Liabilities (AP, loans, deferred revenue), Revenue (products, subscriptions, services, API), Expenses (payroll, rent, software, marketing, travel, professional services), Equity (owner's equity, retained earnings). Each account shows balance with transaction detail.
+- Accounts receivable. Outstanding invoices. Each: client, invoice number, amount, date sent, due date, status (sent, viewed, overdue, paid, partially paid), days overdue. Aging report: current, 30, 60, 90+ days. Auto-reminders. Total AR.
+- Accounts payable. Bills owed. Vendor, invoice, amount, due date, status (pending approval, approved, scheduled, paid). Payment scheduling. Approval workflow (threshold-based chain). Total AP.
+- Payroll. Full management. Employee list: name, title, salary, deductions (taxes, benefits, retirement), net pay, method. Schedule (biweekly, monthly, custom). Run Payroll: calculates gross, federal/state/local withholdings, SS, Medicare, benefits, retirement, net. Direct deposit to employee wallets. History. Tax filings: W-2, 941 quarterly, state unemployment, year-end. Contractor 1099 tracking separate.
+- Expense management. Employee submissions: amount, category, receipt photo, description, project allocation, status (submitted, approved, rejected, reimbursed). Approval chain: employee submits, manager approves, finance reimburses through KayPay. Company card auto-categorization. Spending policies.
+- Budget management. By department, project, or category. Real-time budget vs actual. Alerts on overrun.
+- Bank reconciliation. Connect external accounts. Match transactions. Flag discrepancies.
+- Financial reports. Income Statement (P&L), Balance Sheet, Cash Flow, Budget vs Actual, AR Aging, AP Aging, Payroll Summary, Tax Summary, Department P&L. Export: PDF, CSV, QuickBooks format. Audit-ready.
+- Audit trail. Every transaction, approval, payroll run, invoice, bill, reimbursement. Timestamped, attributed, immutable. Full governed settlement chain: Event, Rules, Authorization, Payment, Settlement, Audit.
+- Tax management. Sales tax auto-calculated by jurisdiction on Store transactions. Income tax quarterly estimates. Payroll tax withholding and filing. 1099 generation. Year-end tax package.
+- Nexus integration: "What's our cash position?", "How much runway do we have?", "Run payroll", "What invoices are overdue?", "What's our burn rate?", "Generate Q1 income statement", "How much did we spend on marketing?"
+- Filter pills: All, Revenue, Expenses, Payroll, AR, AP, By Department, By Project, This Week, This Month, This Quarter, This Year, Tax, Audit Log.
+- For KaNeXT demo: cash $285,000. Revenue $42K/mo. Expenses $38K (payroll $28K, software $3.5K, rent $4K, misc $2.5K). Net $4K. Burn $38K/mo. Runway 7.5 months. AR: $253K (Lincoln $120K, ICCLA $48K, Overtime $85K). AP: $7.5K (rent, AWS, Anthropic API, insurance, legal). 8 employees, 2 contractors on payroll. 30+ transactions with full audit trail.
+
+**Executive View (R2):**
+- Company dashboard read-only. Department budget and spending detail. Approve expenses within limit. Department payroll costs (aggregate, not individual salaries unless direct reports).
+- Filter pills: All, My Department, Budget, Expenses, Revenue, This Month, This Quarter.
+
+**Manager View (R3):**
+- Project/department budget vs actual. Approve direct report expenses up to limit (over-limit escalates). Cannot see company financials, payroll, AR, AP, or audit log.
+- Filter pills: All, My Budget, My Team Expenses, Pending Approvals, This Month.
+
+**Employee View (R5):**
+- Personal wallet. Balance, 4% APY, KaNeXT Card.
+- Pay stubs per period: gross, deductions breakdown (federal, state, SS, Medicare, health, 401k), net, YTD. Downloadable PDF.
+- Expense submission: amount, category, receipt, description, project. Track status. Reimbursements to wallet.
+- Benefits summary. Health, retirement, PTO (synced from Team).
+- Tax documents. W-2, pay stubs. Downloadable.
+- Filter pills: All, Pay Stubs, Expenses, Reimbursements, Tax Documents, This Year.
+
+**Client/Partner View (R9):**
+- Personal wallet.
+- Invoices from KaNeXT. Outstanding and paid. Pay button through KayPay. Receipts. Payment history.
+- Subscription billing management.
+- Filter pills: All, Outstanding, Paid, Subscriptions.
+
+#### Pay View
+
+**All roles:**
+- Same P2P. QR, split, remittance 0.2%. Inline from Messages.
+
+**Owner/CEO View (R0) additional:**
+- Invoice creation. Professional builder: branding, line items (from Store or custom), tax, payment terms (receipt, net 15/30/60), notes, attachments. Send through Messages or email. Track and auto-remind.
+- Batch payments. Multiple vendor bills in one batch.
+- Payroll disbursement. After running payroll, payments to all employee wallets simultaneously.
+- Wire transfers and ACH for large B2B payments.
+
+**Manager View (R3):**
+- Request payments for department. Goes through approval chain.
+
+#### Invest View
+
+**All roles:**
+- Same as all KayPay Invest. Infrastructure Fund, Bitcoin, Capital Points.
+
+**Owner/CEO View (R0) additional:**
+- Company treasury management. Invest idle cash. Set policy (minimum reserve, max allocation). Board-approved strategy.
+- KaNeXT Capital Fund I visibility (Sammy is GP).
+
+---
+
+### 16.9 Business KayStudios
+
+KayStudios in Business mode is where the company builds interactive experiences for customers and employees. Same cross-mode engine. If it's a video, it goes in KayTV. If it's a document, it goes in Hub Operations. If the user interacts with it, it goes in KayStudios.
+
+#### Content Types for a Business
+
+**Customer-Facing Interactive Experiences:**
+- Interactive product demos. The customer actually uses the product in a sandbox. For KaNeXT: "Try Basketball Intelligence" - input a real player, watch KR evaluation run live, explore output, compare players, build a roster.
+- Simulation games. Deep, addictive, Football Manager-style experiences. For KaNeXT: "College Basketball GM" (full spec below). For other businesses: product sandboxes, investment simulators, restaurant management tycoons.
+- Calculators and configurators. User inputs data, gets personalized output. "KaNeXT ROI Calculator", "Plan Recommender", "Team Size Calculator."
+- Customer onboarding courses. Interactive, self-paced, quizzes and hands-on tasks. "Getting Started with KaNeXT OS" (5 modules). Each module has a task completed in the real product. Replaces onboarding calls.
+- Certification programs. Multi-module with proctored assessments. "KaNeXT Certified Administrator" - pass at 80%+, earn badge for KaNeXT profile and LinkedIn.
+- Challenges and competitions. "March Madness Bracket Challenge" powered by KR. "Recruiting Challenge" - best class with fixed budget. Leaderboards drive engagement.
+
+**Employee-Facing Interactive Training:**
+- Interactive onboarding. "Welcome to KaNeXT" - navigate the product, answer questions, complete tasks, take quiz. Auto-assigned from Team tile workflow.
+- Product knowledge. "KaNeXT OS Mastery" - every mode and tile. Sales must score 90%+. Completion tracked in Team HR view.
+- Sales role-play. Nexus AI plays the prospect with real objections. Rep responds. Nexus evaluates and coaches. Repeatable.
+- Compliance and policy. Interactive scenarios with consequences. Not "read and click agree."
+- Skills assessments. Used in hiring from Team tile. Coding challenges, pipeline simulations, timed. Scores feed applicant tracking.
+
+**College Basketball GM (Flagship Experience):**
+
+Football Manager for college basketball, powered by real KaNeXT intelligence.
+
+1. **Choose Your Program.** Any real program or create custom. Set conference, division, budget tier.
+2. **Inherit a Roster.** Real current roster from 37K player pool. Real KR ratings, archetypes, production. See Team KR and System Fit% immediately.
+3. **Get Your Resources.** Scholarship allocation by division (D1: 13, D2: 10, NAIA: variable, JUCO: unlimited). NIL budget by school tier. Recruiting budget. Coaching staff quality affects development speed.
+4. **Set Your System.** Offensive scheme (motion, PnR heavy, post-up, transition, spread) and defensive scheme (man, 2-3 zone, 1-3-1, press). Each has archetype requirements. System Fit% updates in real time.
+5. **Recruit.** Browse portal, high school, JUCO, international from real pool. Filter by position, archetype, KR, location, eligibility. Evaluate with actual KR system. Make offers. Compete against AI programs (realistic prestige and budget). Players choose based on prestige, playing time, NIL, location, system fit.
+6. **Build Your Roster.** Depth chart. Team KR updates live. Archetype balance visualization. Minutes distribution. Walk-on tryouts.
+7. **Develop Players.** Over simulated season, players develop based on coaching, minutes, system fit, natural curves. Freshman KR 72 might reach 78. Wrong system player stagnates.
+8. **Simulate Season.** Week-by-week. Results from Team KR, System Fit%, opponent strength, home/away, fatigue, injuries. Box scores generated. Stats accumulate. Mid-season adjustments possible.
+9. **Postseason.** Conference tournament. NCAA/NAIA/NJCAA bracket if qualified. Single elimination with upset probability.
+10. **Offseason.** Players graduate, transfer, declare for draft. Recruit next class. Multi-season dynasties.
+11. **Leaderboard.** Global. Ranked by: championships, win %, best Team KR, best recruiting class, most improved program. Weekly and all-time. Share to Social.
+12. **The Hook.** Every step teaches KR, System Fit%, archetypes. One season and they understand the product intuitively. GM Mode is a game that IS the product demo.
+
+#### RBAC Views
+
+**Owner/CEO View (R0):**
+- Full creator access. Build any content type. All analytics: plays, completions, leads generated, training completion, certification counts, GM Mode active users.
+- Assign required training (syncs with Team tile). Feature experiences to customers.
+- Filter pills (creator): All, Customer Experiences, Demos, Simulations, Calculators, Courses, Certifications, Internal Training, GM Mode, Published, Drafts, Analytics, Required.
+
+**Executive/Manager View (R2-R3):**
+- Create department content (approval queue). View analytics. Assign department training.
+- Filter pills: All, My Department, Published, Drafts, Training Completion.
+
+**Employee View (R5):**
+- Required training with deadlines. Product knowledge. Skills. Can play customer-facing experiences.
+- Filter pills: All, Required, My Courses, In Progress, Completed, Product Knowledge.
+
+**Client/Partner View (R9):**
+- All customer-facing experiences. Demos, GM Mode, calculators, onboarding, certifications.
+- GM Mode featured. Free to play. Leaderboard. Save states persist.
+- My progress: courses, certifications, GM Mode seasons.
+- Filter pills: All, Demos, Courses, GM Mode, Tools, Certifications, In Progress, Completed.
+- For KaNeXT demo: "College Basketball GM" (500+ active players), "Try KaNeXT Intelligence" (1,200 plays), "Getting Started with Education Mode" (18 completions), "ROI Calculator" (340 uses), "KaNeXT Certified Admin" (8 certified), "Welcome to KaNeXT" (internal, 8/8), "Sales Playbook" (internal, 4/4).
