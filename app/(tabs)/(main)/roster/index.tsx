@@ -1,6 +1,6 @@
 /**
  * Roster Screen — Sports Mode · LU Men's Basketball
- * Tabs: Roster / Staff / Eligibility
+ * Tabs: Players / Depth Chart / Staff
  * Roles: Fan / Coach / Player (cycle via top-right pill)
  */
 
@@ -32,11 +32,11 @@ const TOP_BAR_H  = 52;
 const PILL_ROW_H = 48;
 const NAVY       = '#003A63';
 
-type RosterTab   = 'Roster' | 'Staff' | 'Eligibility';
+type RosterTab   = 'Players' | 'Depth Chart' | 'Staff';
 type RosterRole  = 'Fan' | 'Coach' | 'Player';
 type PosFilter   = 'All' | 'PG' | 'SG' | 'SF' | 'PF' | 'C';
 
-const ROSTER_TABS: RosterTab[]  = ['Roster', 'Staff', 'Eligibility'];
+const ROSTER_TABS: RosterTab[]  = ['Players', 'Depth Chart', 'Staff'];
 const ROLES: RosterRole[]       = ['Fan', 'Coach', 'Player'];
 const POS_FILTERS: PosFilter[]  = ['All', 'PG', 'SG', 'SF', 'PF', 'C'];
 
@@ -971,7 +971,7 @@ export default function RosterScreen() {
   const insets  = useSafeAreaInsets();
 
   // ── Navigation state ──
-  const [activeTab, setActiveTab]       = useState<RosterTab>('Roster');
+  const [activeTab, setActiveTab]       = useState<RosterTab>('Players');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [role, setRole]                 = useState<RosterRole>('Fan');
 
@@ -1041,12 +1041,6 @@ export default function RosterScreen() {
       || String(p.number).includes(searchQuery)
       || p.position.toLowerCase().includes(searchQuery.toLowerCase());
     return posOk && srchOk;
-  });
-
-  // Eligibility sorted: warning first, then ineligible, then eligible
-  const eligPlayers = [...PLAYERS].sort((a, b) => {
-    const order: Record<string, number> = { warning: 0, ineligible: 1, eligible: 2 };
-    return (order[a.eligibility] ?? 2) - (order[b.eligibility] ?? 2);
   });
 
   // ── Staff grouping ──
@@ -1146,9 +1140,6 @@ export default function RosterScreen() {
         </View>
       )}
 
-      {/* Depth Chart */}
-      <DepthChartSection C={C} />
-
       {/* Upcoming schedule (Fan / Player) */}
       {(role === 'Fan' || role === 'Player') && <UpcomingSchedule C={C} />}
     </ScrollView>
@@ -1206,60 +1197,28 @@ export default function RosterScreen() {
     </ScrollView>
   );
 
-  // ── Render Eligibility Tab ─────────────────────────────────────────────────
+  // ── Render Depth Chart Tab ─────────────────────────────────────────────────
 
-  const renderEligibilityTab = () => {
-    if (role !== 'Coach') {
-      return (
-        <View
-          key="elig-locked"
-          style={{
-            flex: 1,
-            paddingTop: topBarH,
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingHorizontal: 40,
-          }}
-        >
-          <View style={[lk.card, { backgroundColor: C.surface }]}>
-            <IconSymbol name="lock.fill" size={36} color={C.muted} />
-            <Text style={[lk.title, { color: C.label }]}>Coach Access Only</Text>
-            <Text style={[lk.sub, { color: C.secondary }]}>
-              Eligibility data is restricted to coaching staff.
-            </Text>
-          </View>
-        </View>
-      );
-    }
-
-    return (
-      <ScrollView
-        key="eligibility"
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingTop: contentPadTop,
-          paddingHorizontal: 16,
-          paddingBottom: 120,
-        }}
-      >
-        <EligSummaryBar C={C} />
-
-        {eligPlayers.map(player => (
-          <EligPlayerCard key={player.id} player={player} C={C} />
-        ))}
-
-        <AcademicCalendarSection C={C} />
-        <CARASection C={C} />
-      </ScrollView>
-    );
-  };
+  const renderDepthChartTab = () => (
+    <ScrollView
+      key="depth-chart"
+      onScroll={handleScroll}
+      scrollEventThrottle={16}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{
+        paddingTop: contentPadTop,
+        paddingHorizontal: 16,
+        paddingBottom: 120,
+      }}
+    >
+      <DepthChartSection C={C} />
+    </ScrollView>
+  );
 
   const renderContent = () => {
-    if (activeTab === 'Roster')      return renderRosterTab();
-    if (activeTab === 'Staff')       return renderStaffTab();
-    return renderEligibilityTab();
+    if (activeTab === 'Players')     return renderRosterTab();
+    if (activeTab === 'Depth Chart') return renderDepthChartTab();
+    return renderStaffTab();
   };
 
   // ── Render ─────────────────────────────────────────────────────────────────
@@ -1300,7 +1259,7 @@ export default function RosterScreen() {
 
           {/* Right: filter toggle + role pill */}
           <View style={[s.topBarSide, s.topBarRight]}>
-            {activeTab === 'Roster' && (
+            {activeTab === 'Players' && (
               <Pressable onPress={toggleFilter} hitSlop={12}>
                 <IconSymbol
                   name={filterVisible || posFilter !== 'All'
@@ -1321,7 +1280,7 @@ export default function RosterScreen() {
         </View>
 
         {/* Filter Pills (Roster tab only) */}
-        {activeTab === 'Roster' && (
+        {activeTab === 'Players' && (
           <Animated.View style={{
             height: pillsAnim.interpolate({ inputRange: [0, 1], outputRange: [0, PILL_ROW_H] }),
             opacity: pillsAnim,
@@ -1385,7 +1344,7 @@ export default function RosterScreen() {
                 ]}>
                   {tab}
                 </Text>
-                {tab === 'Eligibility' && role !== 'Coach' && (
+                {tab === 'Depth Chart' && role !== 'Coach' && (
                   <IconSymbol name="lock.fill" size={12} color={C.muted} />
                 )}
               </Pressable>

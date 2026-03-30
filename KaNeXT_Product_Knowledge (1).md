@@ -4075,3 +4075,169 @@ If it's video, KayTV. If it's a document, Hub. If you interact, KayStudios.
 - All fan experiences. GM Mode featured. Free. Leaderboard. Save states. Multi-season. For recruits: GM Mode teaches the intelligence system.
 - Filter pills: All, GM Mode, Pick'em, Trivia, Brackets, Fantasy, Leaderboard.
 - For LU demo: College Basketball GM (500+ players, GAAC featured), "GAAC Trivia" (200+ plays), "Weekly Pick'em" (45 participants), "Tournament Bracket", "Dream GAAC Team" (fantasy, 30 entries), "Defensive Rotation Trainer" (player course), "NIL Financial Literacy" (15 completions).
+
+---
+
+## 18. Universal Tile Definitions
+
+These definitions explain what each tile IS across all modes. The per-mode sections (4, 14, 15, 16, 17) specify the exact features, RBAC views, and demo data. This section provides the universal understanding.
+
+### 18.1 Hub (Position 1)
+
+Hub is tile position 1. Top-left of every grid. The command center for any institution.
+
+Hub answers: "What is happening right now and what needs my attention?" It is not a feed (Social), not a calendar (Agenda), not a conversation (Messages). It is the operational dashboard with full workspace tools.
+
+Every Hub has tabs. The first tab is always Overview: a KPI dashboard with the metrics that matter most. Remaining tabs are operational workspaces where real work gets done.
+
+**Education Hub:** Academic operations. Enrollment, courses, GPA tracking, student life. Full course management system: create courses with modules, lessons, assignments, quizzes, discussions, and syllabus. Students submit work, take assessments, view grades. Faculty gradebook. Course analytics.
+
+**Community Hub:** Organizational operations. Membership health, event planning, group management, service/meeting planning with volunteer scheduling and drag-and-drop order builder. Works for any community: religious, civic, cultural, nonprofit.
+
+**Sports Hub:** Athletic operations. Team performance, game film analysis with intelligence overlay and telestration, opponent scouting powered by the intelligence system, game day operations with live stat tracking that auto-generates coaching analysis at halftime, postgame reports, and publishable media recaps.
+
+**Business Hub:** Company operations. Revenue, project management with Kanban/timeline/task tracking, internal operations with document library, automated workflows, and HR.
+
+**Personal Hub:** Creator operations. Audience analytics, content calendar with queue-based scheduling, link-in-bio page builder with drag-and-drop blocks and per-block analytics, auto-generated media kit from real data.
+
+Hub has a side panel with quick-access shortcuts, RBAC-scoped per role. Hub is the most mode-specific tile.
+
+### 18.2 Agenda (Position 2)
+
+Agenda is tile position 2. Top-center of every grid. The calendar for any institution.
+
+Agenda answers: "What is scheduled and when?" Three views: Day, Week, Month. Events are color-coded by type. Every event supports attachments, attendees, location (physical or video), and reminders.
+
+Agenda is the LEAST mode-specific tile. A calendar is a calendar. What changes per mode is event types and RBAC visibility:
+
+**Education:** Class schedules, due dates, exams, campus events, office hours, registration deadlines.
+**Community:** Services/gatherings, group meetings, volunteer schedules, events, holidays, outreach.
+**Sports:** Games, practices (drill plans attached), film sessions, travel itineraries, recruiting calendar with compliance period overlay, academic monitoring.
+**Business:** Client meetings, project deadlines, team meetings, company events, resource scheduling.
+**Personal:** Content schedule (synced from Hub), meetings, deal deadlines, booking slots, public events.
+
+RBAC controls who sees which event types. Supports recurring events, external calendar sync, and reminders.
+
+### 18.3 Social (Position 3)
+
+Social is tile position 3. Top-right of every grid. The content and communication platform.
+
+Social answers: "What is my institution saying and what is happening in my community?" Feed (scrollable content), Reels (short-form video), Profile (brand's public page).
+
+Scope filter: Brand (this brand only), Mode (all brands in this mode), All (everything across all modes).
+
+Post types available everywhere: text, photo, video, carousel, poll, link share. Additional types vary by mode.
+
+The critical feature: visibility toggle. Every post is Public (marketing, visible to everyone) or Internal (team communication, visible only to members). Eliminates the need for separate internal comms tools. RBAC controls who can post publicly vs internally vs only consume.
+
+### 18.4 People Tile (Position 4)
+
+Position 4 is the people tile. Middle-left of every grid. The name changes per mode but the pattern is identical: it is the directory of every person connected to the institution.
+
+Mode names: **Roster** (Sports), **Team** (Business), **Campus** (Education), **Members** (Community), **Network** (Personal).
+
+Every people tile has: searchable directory, detailed profiles, and organizational views (depth chart, org chart, households, collaborators depending on mode).
+
+**Sports Roster:** Player profiles with athletic intelligence (rating, archetype, traits, system fit), stats, film, medical, eligibility, scholarship/NIL, development plan. Depth chart. Staff directory.
+**Business Team:** Employee profiles with role, department, manager, reports, reviews, PTO, skills. Org chart. HR workspace with hiring, performance, onboarding/offboarding, compliance.
+**Education Campus:** Student profiles with academic record, enrollment, financial aid, advisor. Faculty profiles. Staff directory.
+**Community Members:** Member profiles with engagement score, milestones, households, volunteer roles, communication log. Household view. Check-in with child safety.
+**Personal Network:** Contacts (imported, synced). Collaborators. Subscribers with engagement tiers and email list.
+
+RBAC is strict. Leaders see full profiles with private data. Peers see public profiles. Outsiders see minimal information. Privacy is structural.
+
+### 18.5 Pipeline Tile (Position 5)
+
+Position 5 is the pipeline tile. Middle-center of every grid. The name changes per mode but the pattern is identical: it is the two-sided marketplace where institutions find people and people find institutions.
+
+Mode names: **Recruits** (Sports), **Inquiries** (Business), **Admissions** (Education), **Outreach** (Community), **Deals** (Personal).
+
+Every pipeline tile connects supply and demand. The institution has needs (roster spots, job openings, enrollment seats, congregation growth, brand partnerships). The individual has goals (play college sports, get a job, find the right school, find a community, monetize their audience). The intelligence system sits in the middle and makes the match.
+
+This is fully built for Sports mode through the basketball intelligence system: coaches search the 37K player pool with ratings, archetype filtering, system fit scoring, and projected team impact. Recruits build profiles, see their evaluation, get "Where Do I Fit?" recommendations showing which programs need their archetype, and track which coaches view their profile. The intelligence makes it democratic - a player at a small JUCO gets the same objective evaluation as a 5-star recruit.
+
+This two-sided intelligence pattern extends to every mode over time:
+
+**Sports Recruits (live):** Coach side: recruiting board, player pool search, portal feed, projected impact, cost analysis. Recruit side: profile with intelligence, school search with fit scores, coach tracking, direct messaging.
+**Business Inquiries (current: CRM; future: talent/client marketplace):** Lead scoring, pipeline, deal-to-project conversion, forecast. Future: businesses and freelancers discover each other through intelligence matching.
+**Education Admissions (current: application pipeline; future: student-school matching):** Application tracking, yield analytics. Future: students get "Where Do I Fit?" for schools based on academic profile, interests, and goals. Faculty recruitment with research fit matching.
+**Community Outreach (current: visitor pipeline; future: community-person matching):** Visitor follow-up, campaigns, re-engagement. Future: people discover communities by values, programs, location, and culture.
+**Personal Deals (current: creator pipeline; future: brand-creator marketplace):** Sponsorship negotiation, proposals, contracts. Future: brands discover creators by audience fit, creators discover opportunities by brand alignment.
+
+The intelligence that powers Sports Recruits becomes the template for every mode. The metrics change but the architecture is identical: a pool of evaluated individuals, institutional needs, and an engine that matches them. Network effects compound as more institutions and individuals join.
+
+### 18.6 Money-In Tile (Position 6)
+
+Position 6 is the money-in tile. Middle-right of every grid. The name changes per mode but the pattern is identical: where money flows into the institution. Every dollar goes through KayPay's governed settlement chain.
+
+Mode names: **Booster** (Sports), **Store** (Business), **Fund** (Education), **Give** (Community), **Earn** (Personal).
+
+**Sports Booster:** Fan donations, NIL contributions and marketplace (brands discover athletes, athletes discover deals, compliance engine built in), ticket sales, merch, play-based pledges (auto-charge per game action), fan challenges (both sides put up money, all goes to program), athlete staking.
+**Business Store:** Full commerce engine. Physical products with inventory and shipping, digital products, services with booking, subscriptions with recurring billing, B2B wholesale, bundles, discounts. Order management, fulfillment, returns, abandoned cart recovery.
+**Education Fund:** Tuition with installment plans, financial aid, scholarships, donor campaigns, alumni giving, grants, endowment management.
+**Community Give:** Donations with fund designation, recurring giving, campaigns, tax receipts. Fund accounting enforced at transaction level - restricted funds cannot be spent on unauthorized purposes.
+**Personal Earn:** Digital products, courses (priced here, delivered in KayStudios), services (booked through Agenda), subscriptions with tiered access, tips, affiliate commissions.
+
+All payments through KayPay. Every transaction has the governed settlement chain. Tax compliance built in.
+
+### 18.7 KayTV (Position 7)
+
+KayTV is tile position 7. Bottom-left of every grid. The name never changes. It is the institution's own video platform. Not YouTube. Not Vimeo. Not Hudl. Yours.
+
+The problem: institutions don't own their video. A church uploads sermons to YouTube next to conspiracy theories and unwanted ads. A small college program can't afford Hudl so game film lives on a coach's phone or doesn't exist. A business puts demos on Vimeo where nobody finds them. A creator uploads to YouTube and the algorithm decides who sees it while YouTube takes 30%. Video is scattered, uncontrolled, and owned by platforms that don't care about your institution.
+
+KayTV changes this. Every institution gets its own clean, organized, branded video platform. Every video in one place. The institution controls access, organization, and distribution. No unwanted ads. No algorithm burying content. No third-party platform tax.
+
+Three views: Featured (curated landing), Library (full searchable catalog), Live (real-time streaming with auto-save to VOD).
+
+**Sports:** The biggest deal. Most sub-NCAA programs have zero broadcast infrastructure. Games played in front of 200 people, no one else sees them. Recruits can't watch film. Fans who can't attend miss everything. KayTV gives EVERY program their own broadcast network. Every game livestreamed and archived. Highlights auto-clipped. Film available for coaching with intelligence overlay. Film exchangeable for scouting. Players build recruiting reels from broadcasts. Podcast network for sub-NCAA sports. The smallest program has the same infrastructure as a Power 5 school.
+
+**Community:** Sermons on YouTube mixed with everything else. Worship recordings, children's content, teaching series scattered or lost. KayTV gives every organization a clean media library. Members find last week's message in one tap. Parents find safe children's content. Worship music alongside teaching. Radio streams live. Visitors watch before they ever walk in. Everything produced is in one place, owned by them.
+
+**Education:** Lectures scattered across Zoom, Drive, YouTube. KayTV consolidates. Students access recordings through courses. Prospective students watch tours. Professional and organized.
+
+**Business:** Demos, testimonials, training, webinars, investor updates across YouTube, Vimeo, Loom, Drive, Zoom. KayTV consolidates. Gated content captures leads. Internal stays internal. Investor-only stays gated.
+
+**Personal:** Creators own every viewer relationship. Tips direct to wallet. Subscriber-only gating. Product tags in videos. No algorithm. No 30% platform cut.
+
+Universal features: chapter markers, speed controls, captions, casting, clip creation, series management, analytics, comments, sharing. Single source of truth for all video - other tiles pull FROM KayTV and layer their own interfaces on top.
+
+### 18.8 KayPay (Position 8)
+
+KayPay is tile position 8. Bottom-center of every grid. The name never changes. The financial infrastructure for every person and every institution.
+
+The problem: money is broken for institutions. A church uses one tool for donations, another for accounting, another for payroll, another for reimbursements. A business uses five to ten financial tools that don't talk to each other. A creator gets paid from five platforms on five different schedules into five different accounts. Nobody has a unified view of where the money is.
+
+KayPay eliminates all of this. One wallet. One ledger. One audit trail. Every dollar that moves flows through the governed settlement chain: Event (what triggered it), Rules (what policies applied), Authorization (who approved), Payment (how processed), Settlement (where it went), Audit (permanent record). No dollar moves without a trail.
+
+Three views: Wallet (dashboard, balance, 4% APY, KaNeXT Card), Pay (send, receive, QR, split, remittance at 0.2%, invoices, vendor payments, payroll), Invest (Infrastructure Fund, Bitcoin, Capital Points).
+
+**Sports:** Program budget tracking, NIL pool with compliance-documented payments, scholarship tracking, booster revenue reconciliation, vendor payments. Player: NIL earnings with tax docs.
+**Business:** Full double-entry accounting, AR with aging and auto-reminders, AP with approval workflows, payroll with tax withholding and filing, expense management with receipt capture and approval chains, budget vs actual, exportable financial reports.
+**Education:** Tuition collection with installment plans, financial aid tracking, scholarship funds, donor fund accounting, department budgets.
+**Community:** Fund accounting with restricted/unrestricted enforcement at the transaction level. Money given to the building fund cannot be spent on payroll. The system prevents it. Designated fund balances, tax receipt generation, clergy-specific payroll (housing allowance), board-ready financial reports.
+**Personal:** Every revenue stream in one wallet. Tax dashboard with real-time estimates by category. Auto-save rules for taxes. Invoice creation. The KaNeXT Card lets creators spend earnings immediately.
+
+What makes KayPay different: everything is connected (revenue from position 6 auto-reconciles, payments from position 5 tracked end-to-end, payroll syncs with position 4). The governed settlement chain is architecture, not a feature. Compliance is structural (fund restrictions enforced at transaction level, NIL documented in settlement chain, tax categorized at moment of transaction).
+
+### 18.9 KayStudios (Position 9)
+
+KayStudios is tile position 9. Bottom-right of every grid. The name never changes. The interactive experiences platform. Play. Build. Solve. Compete. Learn by doing.
+
+The problem: passive content doesn't stick. People watch a video and forget 90%. They read a document and retain less. But when they play a game, make decisions, face consequences, and compete - they remember everything. Simulation-based learning outperforms lecture by 3-5x. People spend thousands of hours in Football Manager learning tactics they'd never read in a textbook. KayStudios brings this to every institution.
+
+The separation from KayTV is absolute: KayTV is watch. KayStudios is do. Training video = KayTV. Training course with quizzes and scenarios = KayStudios. Sermon = KayTV. Bible trivia = KayStudios. Game broadcast = KayTV. College Basketball GM = KayStudios.
+
+KayStudios is the one tile that breaks mode scoping. Content created in any mode is playable from any mode. The engine is universal. The content travels.
+
+**The engine supports:** Courses (multi-lesson, text + video + quiz, progress tracking, certificates). Games (trivia, simulation, strategy, tycoon, adventure, leaderboards, achievements, save states, multiplayer). Simulations (complex decision-making powered by real data). Tools (calculators, configurators, assessments, diagnostics). Challenges (time-limited, competitive, individual or team, leaderboards).
+
+**Sports:** College Basketball GM (Football Manager for college basketball, real 37K player pool, real intelligence data). Tactical draw tool. Player IQ courses. Life skills (NIL financial literacy, media training). Pick'em, brackets, fantasy, trivia. Coach scouting scenario training with AI feedback.
+**Business:** Interactive product demos (sandbox, not video). Customer onboarding courses. Certification programs. Sales role-play with AI. Calculators and configurators. Compliance training with scenarios.
+**Education:** Interactive learning beyond the LMS. Virtual labs and simulations. Study games. Exam prep. Career path simulators. Financial literacy simulators. Faculty build interactive content supplementing lectures and course materials.
+**Community:** Scripture and values-based interactive content. Trivia. New member onboarding courses. Volunteer training with interactive scenarios. Leadership development. Youth games and challenges.
+**Personal:** Creator-built courses (priced in Earn, delivered here). Quizzes, assessments, challenges with leaderboards. Interactive tools for audience.
+
+**Creator tools:** No-code builder for authorized users. Lesson creation, game templates, assessment builders. Content through RBAC approval workflows before publishing.
+
+**Safety model:** KayStudios is not the open internet. Every experience is published by an institution or creator through KaNeXT with RBAC-controlled approval. Content tied to a brand. Brand tied to real people. No anonymous publishing. No unmoderated user-generated content. Safe by architecture, not moderation.

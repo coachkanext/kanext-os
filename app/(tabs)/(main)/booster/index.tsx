@@ -1,6 +1,6 @@
 /**
  * Sports Mode Booster — LU Men's Basketball
- * Three tabs via centered dropdown pill: Support / NIL / Shop
+ * Three tabs via centered dropdown pill: Give / NIL Marketplace / Fan Shop
  * Roles: fan / player / admin — cycle via top-right pill
  *
  * Support tab: Quick Give, Active Campaigns, Tickets, Fan Rewards
@@ -39,7 +39,7 @@ const PAYMENT_METHODS = ['Visa •4242', 'Apple Pay', 'KayPay $847'];
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type BoosterTab  = 'Support' | 'NIL' | 'Shop';
+type BoosterTab  = 'Give' | 'NIL Marketplace' | 'Fan Shop';
 type BoosterRole = 'fan' | 'player' | 'admin';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -49,8 +49,8 @@ function campaignProgress(raised: number, goal: number): number {
 }
 
 function pillsForTab(tab: BoosterTab): string[] {
-  if (tab === 'NIL')  return ['All', 'Approved', 'Pending', 'Flagged'];
-  if (tab === 'Shop') return ['All', 'Apparel', 'Headwear', 'Accessories', 'Special'];
+  if (tab === 'NIL Marketplace') return ['All', 'Approved', 'Pending', 'Flagged'];
+  if (tab === 'Fan Shop')        return ['All', 'Apparel', 'Headwear', 'Accessories', 'Special'];
   return [];
 }
 
@@ -123,7 +123,7 @@ export default function BoosterScreen() {
   const topBarH = insets.top + TOP_BAR_H;
 
   // ── Tab & Role ─────────────────────────────────────────────────────────────
-  const [activeTab,    setActiveTab]    = useState<BoosterTab>('Support');
+  const [activeTab,    setActiveTab]    = useState<BoosterTab>('Give');
   const [role,         setRole]         = useState<BoosterRole>('fan');
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -1881,7 +1881,7 @@ export default function BoosterScreen() {
               },
             ]}
           >
-            {(['Support', 'NIL', 'Shop'] as BoosterTab[]).map(tab => (
+            {(['Give', 'NIL Marketplace', 'Fan Shop'] as BoosterTab[]).map(tab => (
               <Pressable
                 key={tab}
                 onPress={() => changeTab(tab)}
@@ -1911,13 +1911,13 @@ export default function BoosterScreen() {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {activeTab === 'Support' && renderSupportTab()}
-        {activeTab === 'NIL'     && renderNILTab()}
-        {activeTab === 'Shop'    && renderShopTab()}
+        {activeTab === 'Give'            && renderSupportTab()}
+        {activeTab === 'NIL Marketplace' && renderNILTab()}
+        {activeTab === 'Fan Shop'        && renderShopTab()}
       </ScrollView>
 
       {/* ── Cart FAB ─────────────────────────────────────────────────────── */}
-      {activeTab === 'Shop' && cartCount > 0 && (
+      {activeTab === 'Fan Shop' && cartCount > 0 && (
         <Pressable
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
