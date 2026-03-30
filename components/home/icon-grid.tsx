@@ -1,11 +1,9 @@
 /**
  * Home icon grid — 3×3 (9 icons).
- * Messages, Phone, Organization in universal footer bar.
- * All icons visible to ALL roles. No RBAC gating on visibility.
- * 3 columns always. Deep navy rounded-square backgrounds with white glyphs.
- * Positions 2, 3, 6 shift per mode; rest universal.
- * Tap → scale 1.05 lift + soft glow, 150ms.
- * Media in grid position 9 (bottom right). Profile in settings side panel.
+ * Ceramic White aesthetic: white-on-white with subtle shadows.
+ * Tiles are pure white cards with shadow depth. Icons monochrome black.
+ * Content provides color, chrome is monochrome.
+ * Dark mode: obsidian tiles (#1A1A1A) with faint white glow.
  */
 
 import React, { useRef, useCallback, useMemo } from 'react';
@@ -14,7 +12,6 @@ import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { GlassView } from '@/components/ui/glass-view';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useMode } from '@/context/app-context';
@@ -107,21 +104,19 @@ function GridTile({
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
     >
-      <Animated.View style={{ transform: [{ scale }] }}>
-        <GlassView tier={1} radius={20} style={styles.tile}>
-          <IconSymbol name={item.icon} size={28} color={C.secondary} />
-        </GlassView>
+      <Animated.View style={[styles.tileWrap, { transform: [{ scale }] }]}>
+        <View style={styles.tile}>
+          <IconSymbol name={item.icon} size={28} color={C.label} />
+        </View>
         {item.badgeCount != null && item.badgeCount > 0 && (
           <View style={[styles.badge, { backgroundColor: accent }]}>
             <Text style={styles.badgeText}>{item.badgeCount}</Text>
           </View>
         )}
       </Animated.View>
-      <View style={styles.labelPill}>
-        <Text style={styles.labelText} numberOfLines={1}>
-          {item.label}
-        </Text>
-      </View>
+      <Text style={styles.labelText} numberOfLines={1}>
+        {item.label}
+      </Text>
     </Pressable>
   );
 }
@@ -169,58 +164,65 @@ export function IconGrid() {
   );
 }
 
-const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-evenly',
-    backgroundColor: C.bg,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-  },
-  cell: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 6,
-  },
-  tile: {
-    width: 64,
-    height: 64,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  badge: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    minWidth: 20,
-    height: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 5,
-  },
-  badgeText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  labelPill: {
-    marginTop: 7,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minWidth: 58,
-  },
-  labelText: {
-    fontSize: 12,
-    fontWeight: '600',
-    textAlign: 'center',
-    color: C.label,
-  },
-});
+const makeStyles = (C: ComponentColors) => {
+  const isDark = C.bg === '#000000';
+  const tileBg = isDark ? C.surface : '#FFFFFF';
+  const shadowColor = isDark ? '#FFFFFF' : '#000000';
+  const shadowOpacity = isDark ? 0.03 : 0.06;
+
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'space-evenly',
+      backgroundColor: C.bg,
+      paddingHorizontal: 16,
+    },
+    row: {
+      flexDirection: 'row',
+      gap: 12,
+    },
+    cell: {
+      flex: 1,
+      alignItems: 'center',
+    },
+    tileWrap: {
+      width: '100%',
+    },
+    tile: {
+      width: '100%',
+      paddingVertical: 16,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: tileBg,
+      borderRadius: 16,
+      shadowColor,
+      shadowOpacity,
+      shadowRadius: 12,
+      shadowOffset: { width: 0, height: 2 },
+      elevation: 3,
+    },
+    badge: {
+      position: 'absolute',
+      top: 4,
+      right: 4,
+      minWidth: 18,
+      height: 18,
+      borderRadius: 9,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 4,
+    },
+    badgeText: {
+      fontSize: 11,
+      fontWeight: '700',
+      color: '#FFFFFF',
+    },
+    labelText: {
+      marginTop: 6,
+      fontSize: 13,
+      fontWeight: '500',
+      textAlign: 'center',
+      color: C.label,
+    },
+  });
+};
