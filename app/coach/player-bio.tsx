@@ -23,7 +23,7 @@ import {
   getFmuHighlights,
   getFmuAwards,
   getFmuTS,
-  getPGISColor,
+  getBPRColor,
   ROSTER_KR,
 } from '@/data/fmu';
 import { PLAYER_CLUSTERS, getPlayerSubclusters } from '@/data/roster-data';
@@ -264,7 +264,7 @@ export default function PlayerBioScreen() {
                 <Text style={styles.last3HeaderCellNarrow}>REB</Text>
                 <Text style={styles.last3HeaderCellNarrow}>AST</Text>
                 <Text style={styles.last3HeaderCellNarrow}>TS%</Text>
-                <Text style={styles.last3HeaderCellNarrow}>PGIS</Text>
+                <Text style={styles.last3HeaderCellNarrow}>BPR</Text>
               </View>
               {/* Rows */}
               {filtered.map((g, idx) => (
@@ -278,7 +278,7 @@ export default function PlayerBioScreen() {
                     <Text style={styles.last3StatNarrow}>{g.reb}</Text>
                     <Text style={styles.last3StatNarrow}>{g.ast}</Text>
                     <Text style={styles.last3StatNarrow}>{g.tsPct.toFixed(0)}%</Text>
-                    <Text style={[styles.last3StatNarrow, { color: getPGISColor(g.pgis) }]}>
+                    <Text style={[styles.last3StatNarrow, { color: getBPRColor(g.pgis) }]}>
                       {g.pgis > 0 ? '+' : ''}{g.pgis}
                     </Text>
                   </View>
