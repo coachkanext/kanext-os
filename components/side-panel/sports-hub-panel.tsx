@@ -10,7 +10,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { closeSidePanel } from '@/utils/global-side-panel';
 import {
-  TEAM_KR, NEXT_GAME, rosterHealthSummary, PLAYERS,
+  TEAM_INFO, TEAM_KR, NEXT_GAME, rosterHealthSummary, PLAYERS,
   RECRUITS_BOARD, getStageCounts, TODAY_PRACTICE,
 } from '@/data/mock-sports-hub';
 
@@ -61,7 +61,7 @@ export function SportsHubPanel() {
             <Text style={{ fontSize: 11, fontWeight: '700', color: '#fff' }}>{NEXT_GAME.countdown}</Text>
           </View>
         </View>
-        <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>{NEXT_GAME.oppRecord} · {NEXT_GAME.oppConfRec} MEAC</Text>
+        <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>{NEXT_GAME.oppRecord} · {NEXT_GAME.oppConfRec} {TEAM_INFO.conference}</Text>
       </View>
 
       {/* Roster health */}

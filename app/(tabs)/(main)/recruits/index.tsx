@@ -1589,7 +1589,7 @@ export default function RecruitsScreen() {
           {
             school: 'Norfolk State',
             fit: 78,
-            note: 'Guard-heavy system, MEAC contender',
+            note: 'Guard-heavy system, GAAC contender',
           },
         ].map((prog, i, arr) => (
           <View

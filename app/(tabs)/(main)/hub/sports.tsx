@@ -26,23 +26,23 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import {
   PLAYERS, COACHING_STAFF, SEASON_SCHEDULE,
   TEAM_INFO, TEAM_KR, TEAM_SYSTEM, NEXT_GAME,
-  SCOUT_HOWARD, RECRUITS_BOARD,
+  SCOUT_HOLY_NAMES, RECRUITS_BOARD,
   getUpcomingGames, krTierColor,
   type Player,
 } from '@/data/mock-sports-hub';
 
 // Inline news items (no RECENT_NEWS export in mock)
 const RECENT_NEWS = [
-  { id: 'n1', headline: 'LU Clinches MEAC Regular Season Title After Wire-to-Wire Win', source: 'MEAC Sports', date: 'Mar 22' },
-  { id: 'n2', headline: 'Marcus Johnson Named MEAC Player of the Week for Second Time This Season', source: 'Lincoln Athletics', date: 'Mar 20' },
-  { id: 'n3', headline: 'Lions Set Program Record for Three-Pointers in Season Opener vs Savannah State', source: 'HBCU Gameday', date: 'Mar 1' },
+  { id: 'n1', headline: 'LU Oaklanders Clinch Playoff Spot With Win Over Menlo College', source: 'GAAC Sports', date: 'Mar 22' },
+  { id: 'n2', headline: 'Marcus Reed Named GAAC Player of the Week', source: 'Lincoln Athletics', date: 'Mar 20' },
+  { id: 'n3', headline: 'Oaklanders Set Program Record in Comeback Win Over Dominican University', source: 'Oakland Tribune', date: 'Mar 1' },
 ];
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const TOP_BAR_H  = 52;
 const PILL_ROW_H = 48;
-const NAVY       = '#003A63';
+const NAVY       = '#990000';
 
 type SportsTab  = 'Overview' | 'Film Room' | 'Scouting' | 'Game Day';
 type SportsRole = 'Coach' | 'Fan';
@@ -195,11 +195,11 @@ export default function SportsHubScreen() {
       <View style={[styles.teamBanner, { backgroundColor: NAVY }]}>
         <View style={{ flex: 1 }}>
           <Text style={styles.teamName}>LU Men's Basketball</Text>
-          <Text style={styles.teamConf}>MEAC · John B. Anderson Arena</Text>
+          <Text style={styles.teamConf}>{TEAM_INFO.conference} · Laney College</Text>
           <View style={styles.recordRow}>
             <Text style={styles.recordText}>{wins}–{losses}</Text>
             <View style={[styles.confBadge, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
-              <Text style={styles.confBadgeText}>MEAC #2</Text>
+              <Text style={styles.confBadgeText}>{TEAM_INFO.conference} {TEAM_INFO.confStanding}</Text>
             </View>
           </View>
         </View>
@@ -353,14 +353,14 @@ export default function SportsHubScreen() {
   // ── Tab: Film Room ─────────────────────────────────────────────────────────
 
   const FILM_ITEMS = [
-    { id: 'f1', type: 'Games',     title: 'vs Howard University',   date: 'Mar 14', duration: '1h 42m', hasIntel: true,  thumbnail: '#1a3a5c' },
-    { id: 'f2', type: 'Games',     title: 'vs Norfolk State',       date: 'Mar 8',  duration: '1h 38m', hasIntel: true,  thumbnail: '#1a3a5c' },
-    { id: 'f3', type: 'Practice',  title: 'Practice — Halfcourt O', date: 'Mar 18', duration: '48m',    hasIntel: false, thumbnail: '#2a2a2a' },
-    { id: 'f4', type: 'Practice',  title: 'Practice — Zone Attack', date: 'Mar 16', duration: '52m',    hasIntel: false, thumbnail: '#2a2a2a' },
-    { id: 'f5', type: 'Playlists', title: 'Laolu Kalejaiye — Cuts & Finishes', date: 'Mar 20', duration: '14m', hasIntel: true, thumbnail: '#003A63' },
-    { id: 'f6', type: 'Playlists', title: 'Howard Defense — Zone Sets', date: 'Mar 13', duration: '9m', hasIntel: true,  thumbnail: '#003A63' },
-    { id: 'f7', type: 'Highlights', title: 'MEAC Championship Highlights', date: 'Mar 22', duration: '6m', hasIntel: false, thumbnail: '#1a3a5c' },
-    { id: 'f8', type: 'Highlights', title: 'Top Plays — Week 12',   date: 'Mar 10', duration: '4m',    hasIntel: false, thumbnail: '#1a3a5c' },
+    { id: 'f1', type: 'Games',     title: 'vs Menlo College',            date: 'Mar 14', duration: '1h 42m', hasIntel: true,  thumbnail: '#4a1a1a' },
+    { id: 'f2', type: 'Games',     title: 'vs Dominican University CA',   date: 'Mar 8',  duration: '1h 38m', hasIntel: true,  thumbnail: '#4a1a1a' },
+    { id: 'f3', type: 'Practice',  title: 'Practice — Halfcourt O',       date: 'Mar 18', duration: '48m',    hasIntel: false, thumbnail: '#2a2a2a' },
+    { id: 'f4', type: 'Practice',  title: 'Practice — Transition D',      date: 'Mar 16', duration: '52m',    hasIntel: false, thumbnail: '#2a2a2a' },
+    { id: 'f5', type: 'Playlists', title: 'Marcus Reed — PNR Actions',    date: 'Mar 20', duration: '14m',    hasIntel: true,  thumbnail: '#990000' },
+    { id: 'f6', type: 'Playlists', title: 'Holy Names Defense — Zone Sets', date: 'Mar 13', duration: '9m',   hasIntel: true,  thumbnail: '#990000' },
+    { id: 'f7', type: 'Highlights', title: 'GAAC Tournament Highlights',  date: 'Mar 22', duration: '6m',    hasIntel: false, thumbnail: '#4a1a1a' },
+    { id: 'f8', type: 'Highlights', title: 'Top Plays — Week 12',         date: 'Mar 10', duration: '4m',    hasIntel: false, thumbnail: '#4a1a1a' },
   ];
 
   const renderFilmRoom = () => {
@@ -457,7 +457,7 @@ export default function SportsHubScreen() {
       );
     }
 
-    const sc2 = SCOUT_HOWARD;
+    const sc2 = SCOUT_HOLY_NAMES;
     return (
       <View style={{ gap: 12 }}>
 

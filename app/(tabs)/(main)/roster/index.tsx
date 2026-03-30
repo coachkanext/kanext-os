@@ -20,7 +20,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
 import {
-  PLAYERS, COACHING_STAFF,
+  PLAYERS, COACHING_STAFF, TEAM_INFO,
   DEVELOPMENT_PRIORITIES,
   getUpcomingGames, krTierColor,
   type Player, type StaffMember,
@@ -30,7 +30,7 @@ import {
 
 const TOP_BAR_H  = 52;
 const PILL_ROW_H = 48;
-const NAVY       = '#003A63';
+const NAVY       = '#990000';
 
 type RosterTab   = 'Players' | 'Depth Chart' | 'Staff';
 type RosterRole  = 'Fan' | 'Coach' | 'Player';
@@ -41,30 +41,30 @@ const ROLES: RosterRole[]       = ['Fan', 'Coach', 'Player'];
 const POS_FILTERS: PosFilter[]  = ['All', 'PG', 'SG', 'SF', 'PF', 'C'];
 
 const DEPTH_CHART: { pos: string; players: string[] }[] = [
-  { pos: 'PG', players: ['Marcus Johnson',    'Isaiah Brooks',  'Chris Daniels']  },
-  { pos: 'SG', players: ['Devon Hayes',       'Caleb Price',    'Anthony Scott']  },
-  { pos: 'SF', players: ['Elijah Washington', 'Darius King',    'Tyler Moss']     },
-  { pos: 'PF', players: ['Jordan Williams',   'Noah Thomas',    'Ben Carter']     },
-  { pos: 'C',  players: ['Trey Coleman',      'Marcus Reid',    'Robert Green']   },
+  { pos: 'PG', players: ['Marcus Reed',    'Devon Carter',   'Elijah Santos']  },
+  { pos: 'SG', players: ['Claude McKesey', 'Chris Plantey',  'Tyler Quinn']    },
+  { pos: 'SF', players: ['Samuel Manzo',   'Nicholas Bansraj', 'Marcus Webb']  },
+  { pos: 'PF', players: ['Samuel Wall',    'Jordan Blake',   'Kofi Mensah']    },
+  { pos: 'C',  players: ['Paul Diomande',  'Jordan Blake',   'Andre Voss']     },
 ];
 
 // Player bio snippets
 const PLAYER_BIOS: Record<string, string> = {
-  p01: "Marcus is the engine of the Lions offense, leading the team in assists and scoring. A junior from Atlanta, he is widely regarded as one of the premier PNR ball-handlers in the MEAC.",
-  p02: "Devon brings senior leadership and elite shooting to every game. The Baltimore native anchors the Lions scoring rotation and has hit over 39% of his threes this season.",
-  p03: "Elijah has emerged as one of the conference's best two-way wings in just his sophomore year. His length and defensive IQ make him a cornerstone of the Lions switch-heavy scheme.",
-  p04: "Jordan is a versatile 6'8\" forward who can guard four positions. His mid-range game and screen-setting anchor the Lions half-court execution.",
-  p05: "Trey leads the MEAC in blocks and is the defensive anchor of the Lions frontcourt. The senior from Newark is in the running for All-MEAC First Team.",
-  p06: "Isaiah has flourished in a secondary ball-handler role as a true freshman. His vision and finishing ability at the rim project him as a future starter.",
-  p07: "Caleb is the Lions' designated corner specialist, shooting a sterling 41.3% from deep. His off-ball movement creates constant catch-and-shoot opportunities.",
-  p08: "Darius provides elite perimeter defense and length off the bench. The DC native is managing a day-to-day ankle issue but remains an impact rotation player.",
-  p09: "Noah brings energy and motor every minute he's on the floor. The Houston freshman profiles as a high-ceiling four who needs seasoning with his jumper.",
-  p10: "Marcus Reid is a reliable veteran post presence in his final college season. His footwork and touch around the rim round out the Lions frontcourt rotation.",
-  p11: "Anthony is a versatile scorer working to improve his consistency. He is currently focused on meeting academic requirements to maintain full eligibility.",
-  p12: "Tyler is an athletic two-way wing in his freshman year who shows flashes of real upside. Developing his shot and decision-making are his primary focus areas.",
-  p13: "Chris is a crafty floor general who thrives as a third-string playmaker. His high basketball IQ makes him a reliable ball-mover in low-leverage situations.",
-  p14: "Ben is a redshirting junior developing as a stretch four. His shooting mechanics have improved dramatically during the year away from competition.",
-  p15: "Robert is a 6'11\" freshman with rare shot-blocking instincts and enormous upside. He is currently recovering from a stress fracture and projects as a future starter.",
+  p01: "Marcus is the engine of the Oaklanders offense, leading the team in scoring and assists. The junior PG from the Bay Area is one of the premier PNR creators in the GAAC.",
+  p02: "Claude brings length and two-way ability to the wing position. The Oakland native is a cornerstone of the Oaklanders switch-heavy defensive scheme.",
+  p03: "Samuel Manzo is a versatile guard-forward who creates off the bounce and hits the three. His GAAC experience gives the Oaklanders a steady secondary ball-handler.",
+  p04: "Samuel Wall is a physical forward who anchors the Oaklanders frontcourt. His mid-range game and screen-setting are crucial to the team's half-court execution.",
+  p05: "Paul leads the GAAC in blocks and is the defensive anchor of the Oaklanders frontcourt. The big man from Oakland is in the running for All-GAAC honors.",
+  p06: "Devon brings playmaking and pressure defense as the backup PG. His vision and pace give the Oaklanders a different look in two-guard lineups.",
+  p07: "Chris is the Oaklanders' designated spot-up shooter, shooting efficiently from distance. His off-ball movement and catch-and-shoot ability stretch opposing defenses.",
+  p08: "Tyler Quinn is a reliable two-way guard off the bench. His IQ and consistent three-point shooting make him a trusted rotation piece.",
+  p09: "Nicholas brings switchable defense and hustle off the bench. The sophomore wing can guard one through four and provides energy on both ends.",
+  p10: "Jordan is an athletic rim-running big who finishes above the rim. The sophomore is developing a face-up game to complement his interior presence.",
+  p11: "Darius Osei is a freshman guard working his way into the rotation. His burst and scoring instincts project real upside at the next level.",
+  p12: "Marcus Webb is an athletic wing in his freshman year who shows flashes of real upside. Developing his shot selection is his primary focus.",
+  p13: "Elijah Santos is a crafty sophomore PG who provides pace and ball security. His high basketball IQ makes him a reliable option in pick-and-roll situations.",
+  p14: "Kofi is a redshirting sophomore developing as a stretch four. His shooting mechanics have improved dramatically during the year away from competition.",
+  p15: "Andre is recovering from an ankle injury and projecting as a high-ceiling big with shot-blocking instincts.",
 };
 
 const SCHOLARSHIP_PCT: Record<string, number> = {
@@ -765,14 +765,14 @@ function TeamBanner({ C }: { C: ComponentColors }) {
     <View style={[bnr.banner, { backgroundColor: NAVY }]}>
       <View style={bnr.inner}>
         <View>
-          <Text style={bnr.teamName}>LU Lions Basketball</Text>
-          <Text style={bnr.record}>18-9 · MEAC · 2nd Place</Text>
+          <Text style={bnr.teamName}>LU Oaklanders Basketball</Text>
+          <Text style={bnr.record}>{TEAM_INFO.record} · {TEAM_INFO.conference} · {TEAM_INFO.confStanding}</Text>
         </View>
         <View style={bnr.rightCol}>
           <View style={[bnr.confBadge, { backgroundColor: '#ffffff20' }]}>
-            <Text style={bnr.confText}>MEAC</Text>
+            <Text style={bnr.confText}>{TEAM_INFO.conference}</Text>
           </View>
-          <Text style={bnr.confRec}>11-5 conf</Text>
+          <Text style={bnr.confRec}>{TEAM_INFO.conferenceRec} conf</Text>
         </View>
       </View>
     </View>
