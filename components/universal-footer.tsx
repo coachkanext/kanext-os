@@ -150,6 +150,17 @@ export function UniversalFooter() {
     router.push({ pathname: '/(tabs)/(main)/pulse' } as any);
   };
 
+  // Active route detection — exactly one icon is active at a time
+  const p = pathname;
+  const activePhone    = p.includes('phone');
+  const activeNexus    = p === '/nexus' || p.startsWith('/nexus/');
+  const activeMessages = p.includes('messages');
+  const activePulse    = p.includes('pulse');
+  const activeHome     = !activePhone && !activeNexus && !activeMessages && !activePulse;
+
+  const ic = (active: boolean, filled: string, outline: string) =>
+    ({ name: (active ? filled : outline) as any, color: active ? C.label : C.muted });
+
   return (
     <Animated.View style={[styles.wrapper, { transform: [{ translateY }] }]}>
       {/* 1px divider */}
@@ -168,7 +179,7 @@ export function UniversalFooter() {
           delayLongPress={400}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol name="house" size={22} color={C.label} />
+          <IconSymbol size={22} {...ic(activeHome, 'house.fill', 'house')} />
         </Pressable>
 
         {/* 2. Phone */}
@@ -177,7 +188,7 @@ export function UniversalFooter() {
           onPress={handlePhonePress}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol name="phone" size={22} color={C.label} />
+          <IconSymbol size={22} {...ic(activePhone, 'phone.fill', 'phone')} />
         </Pressable>
 
         {/* 3. Nexus (center) */}
@@ -188,7 +199,7 @@ export function UniversalFooter() {
           delayLongPress={400}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol name="sparkles" size={24} color={C.label} />
+          <IconSymbol name="sparkles" size={24} color={activeNexus ? C.label : C.muted} />
         </Pressable>
 
         {/* 4. Messages */}
@@ -197,7 +208,7 @@ export function UniversalFooter() {
           onPress={handleMessagesPress}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol name="message" size={22} color={C.label} />
+          <IconSymbol size={22} {...ic(activeMessages, 'message.fill', 'message')} />
         </Pressable>
 
         {/* 5. Pulse */}
@@ -207,7 +218,7 @@ export function UniversalFooter() {
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <View>
-            <IconSymbol name="bolt" size={22} color={pulseBadge > 0 ? C.accent : C.label} />
+            <IconSymbol size={22} {...ic(activePulse, 'bolt.fill', 'bolt')} />
             {pulseBadge > 0 && (
               <View style={[styles.badge, { backgroundColor: C.red }]}>
                 <Text style={styles.badgeText}>{pulseBadge > 99 ? '99+' : pulseBadge}</Text>
@@ -230,11 +241,6 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     zIndex: 10001,
-    shadowColor: '#8B6343',
-    shadowOffset: { width: 0, height: -3 },
-    shadowOpacity: 0.10,
-    shadowRadius: 8,
-    elevation: 8,
   },
   divider: {
     height: StyleSheet.hairlineWidth,

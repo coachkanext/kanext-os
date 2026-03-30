@@ -187,14 +187,15 @@ const makeStyles = (C: ComponentColors) => {
     },
     tileWrap: {
       width: '100%',
+      aspectRatio: 1,
     },
     tile: {
-      width: '100%',
-      paddingVertical: 16,
+      flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: tileBg,
-      borderRadius: 16,
+      borderRadius: 20,
+      borderCurve: 'continuous' as any,
       shadowColor,
       shadowOpacity,
       shadowRadius: 12,
