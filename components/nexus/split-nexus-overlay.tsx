@@ -21,6 +21,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import {
   View,
   Text,
+  Image,
   TextInput,
   Pressable,
   ScrollView,
@@ -385,6 +386,16 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
           <View style={styles.handle} />
         </View>
 
+        {/* Header */}
+        <View style={styles.overlayHeader}>
+          <Image
+            source={require('@/assets/nexus-icon.png')}
+            style={{ width: 18, height: 18, tintColor: C.label }}
+            resizeMode="contain"
+          />
+          <Text style={[styles.overlayTitle, { color: C.label }]}>Nexus</Text>
+        </View>
+
         <View style={styles.container}>
           {/* Conversation */}
           <FlatList
@@ -512,6 +523,18 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     height: 5,
     borderRadius: 2.5,
     backgroundColor: C.muted,
+  },
+
+  overlayHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 6,
+  },
+  overlayTitle: {
+    fontSize: 14,
+    fontWeight: '600',
   },
 
   container: {

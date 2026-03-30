@@ -11,7 +11,7 @@
  */
 
 import React, { useRef, useCallback, useEffect, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, Animated } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Animated, Image } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -199,7 +199,11 @@ export function UniversalFooter() {
           delayLongPress={400}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <IconSymbol name="sparkles" size={24} color={activeNexus ? C.label : C.muted} />
+          <Image
+            source={require('@/assets/nexus-icon.png')}
+            style={{ width: 24, height: 24, tintColor: activeNexus ? C.label : C.muted }}
+            resizeMode="contain"
+          />
         </Pressable>
 
         {/* 4. Messages */}

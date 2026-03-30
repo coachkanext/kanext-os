@@ -4,11 +4,10 @@
  */
 
 import React, { useMemo } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 
 // ── Suggestion sets ───────────────────────────────────────────────────────────
 
@@ -70,8 +69,12 @@ export function NexusWelcome({ onSend, userName, mode = 'sports' }: NexusWelcome
   return (
     <View style={S.root}>
       {/* Nexus icon */}
-      <View style={[S.iconWrap, { backgroundColor: C.accent + '18' }]}>
-        <IconSymbol name="sparkles" size={36} color={C.accent} />
+      <View style={[S.iconWrap, { backgroundColor: C.surface, borderWidth: 0.75, borderColor: C.cardBorder }]}>
+        <Image
+          source={require('@/assets/nexus-icon.png')}
+          style={{ width: 40, height: 40, tintColor: C.label }}
+          resizeMode="contain"
+        />
       </View>
 
       {/* Greeting */}

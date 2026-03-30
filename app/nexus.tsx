@@ -17,7 +17,7 @@
 
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import {
-  View, Text, TextInput, Pressable, ScrollView,
+  View, Text, TextInput, Pressable, ScrollView, Image,
   StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator, Share,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -828,8 +828,12 @@ export default function NexusScreen() {
     return (
       <View key={m.id} style={[S.bubbleRow, isUser ? S.bubbleRowRight : S.bubbleRowLeft]}>
         {!isUser && (
-          <View style={[S.avatar, { backgroundColor: C.accent }]}>
-            <IconSymbol name="sparkles" size={12} color="#fff" />
+          <View style={[S.avatar, { backgroundColor: C.surface, borderWidth: 0.75, borderColor: C.cardBorder }]}>
+            <Image
+              source={require('@/assets/nexus-icon.png')}
+              style={{ width: 16, height: 16, tintColor: C.label }}
+              resizeMode="contain"
+            />
           </View>
         )}
 

@@ -15,6 +15,7 @@ import {
   Pressable,
   StyleSheet,
   TouchableWithoutFeedback,
+  Image,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
@@ -101,6 +102,11 @@ export function NexusPageTopBar({
             onPress={() => setDropdownOpen((v) => !v)}
             accessibilityLabel="Nexus options"
           >
+            <Image
+              source={require('@/assets/nexus-icon.png')}
+              style={{ width: 20, height: 20, tintColor: C.label }}
+              resizeMode="contain"
+            />
             <Text style={styles.nexusPillText}>Nexus 1.0</Text>
           </Pressable>
         )}
