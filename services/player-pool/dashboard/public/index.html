@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KaNeXT Pool Dashboard</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; font-size: 13px; color: #111; background: #fff; }
+
+/* Layout */
+#header { display: flex; align-items: center; gap: 0; border-bottom: 1px solid #e5e7eb; padding: 0 20px; height: 44px; }
+#header h1 { font-size: 14px; font-weight: 700; color: #111; margin-right: 24px; white-space: nowrap; }
+.main-tabs { display: flex; height: 100%; }
+.main-tab { height: 100%; padding: 0 18px; border: none; background: none; cursor: pointer; font-size: 13px; font-weight: 500; color: #6b7280; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.main-tab.active { color: #111; border-bottom-color: #3b82f6; }
+
+#controls { padding: 8px 20px; background: #f9fafb; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-height: 44px; }
+.view-tabs { display: flex; gap: 2px; }
+.view-tab { padding: 4px 12px; border: 1px solid #e5e7eb; border-radius: 4px; background: white; cursor: pointer; font-size: 12px; font-weight: 500; color: #6b7280; }
+.view-tab.active { background: #111; color: white; border-color: #111; }
+.sep { color: #d1d5db; user-select: none; }
+
+select, input[type=text] { padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 12px; background: white; height: 28px; }
+select:focus, input[type=text]:focus { outline: none; border-color: #3b82f6; }
+.btn { padding: 4px 12px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; height: 28px; font-weight: 500; }
+.btn:hover { background: #2563eb; }
+.btn-ghost { background: white; color: #374151; border: 1px solid #e5e7eb; }
+.btn-ghost:hover { background: #f9fafb; }
+
+#content { padding: 0; }
+
+/* Tables */
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead th { text-align: left; padding: 7px 10px; font-size: 11px; font-weight: 600; color: #6b7280; background: #f9fafb; border-bottom: 1px solid #e5e7eb; white-space: nowrap; cursor: default; user-select: none; }
+thead th.sortable { cursor: pointer; }
+thead th.sortable:hover { color: #111; }
+thead th.sorted { color: #3b82f6; }
+thead th.sorted-desc::after { content: ' ↓'; }
+thead th.sorted-asc::after { content: ' ↑'; }
+tbody tr:hover { background: #f9fafb; }
+tbody td { padding: 6px 10px; border-bottom: 1px solid #f3f4f6; white-space: nowrap; }
+tbody tr:last-child td { border-bottom: none; }
+.num { font-variant-numeric: tabular-nums; text-align: right; }
+thead th.num { text-align: right; }
+
+/* Links */
+a.link { color: #3b82f6; text-decoration: none; cursor: pointer; }
+a.link:hover { text-decoration: underline; }
+
+/* Badges */
+.badge { display: inline-block; padding: 1px 7px; border-radius: 9999px; font-size: 11px; font-weight: 500; white-space: nowrap; }
+.badge-d1hm { background: #dbeafe; color: #1e40af; }
+.badge-d1mm { background: #e0e7ff; color: #3730a3; }
+.badge-d1lm { background: #ede9fe; color: #5b21b6; }
+.badge-d2  { background: #dcfce7; color: #166534; }
+.badge-d3  { background: #f0fdf4; color: #15803d; }
+.badge-naia { background: #fef9c3; color: #854d0e; }
+.badge-njcaa1 { background: #fff7ed; color: #9a3412; }
+.badge-njcaa2 { background: #fff7ed; color: #c2410c; }
+.badge-njcaa3 { background: #fef2f2; color: #b91c1c; }
+.badge-cccaa { background: #fdf4ff; color: #7e22ce; }
+.badge-pro { background: #1d293d; color: #e2e8f0; }
+.new-coach { font-size: 10px; background: #fef3c7; color: #92400e; padding: 1px 5px; border-radius: 3px; margin-left: 4px; }
+
+/* Detail header */
+.detail-bar { padding: 14px 20px; background: #f9fafb; border-bottom: 1px solid #e5e7eb; display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+.detail-bar h2 { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+.detail-bar .meta { color: #6b7280; font-size: 12px; }
+.stat-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 10px; }
+.stat-box { text-align: center; min-width: 52px; }
+.stat-box .val { font-size: 20px; font-weight: 700; line-height: 1; }
+.stat-box .lbl { font-size: 10px; color: #9ca3af; text-transform: uppercase; margin-top: 2px; letter-spacing: 0.05em; }
+.stat-box.adv .val { font-size: 16px; color: #374151; }
+
+/* Section label */
+.section-lbl { padding: 10px 20px 6px; font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em; background: white; }
+
+/* States */
+.loading { padding: 60px 20px; text-align: center; color: #9ca3af; font-size: 14px; }
+.empty { padding: 60px 20px; text-align: center; color: #9ca3af; font-size: 14px; }
+.error { padding: 20px; color: #dc2626; background: #fef2f2; border-bottom: 1px solid #fecaca; font-size: 12px; }
+
+/* Inline search hint */
+.hint { font-size: 12px; color: #9ca3af; }
+
+/* KR scores */
+.kr { font-size: 11px; color: #6b7280; }
+.kr-good { color: #059669; }
+.kr-bad { color: #dc2626; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <h1>KaNeXT Pool</h1>
+  <div class="main-tabs">
+    <button class="main-tab active" onclick="switchTab('college')">College</button>
+    <button class="main-tab" onclick="switchTab('pro')">Pro</button>
+  </div>
+</div>
+
+<div id="controls"></div>
+<div id="content"><div class="loading">Loading…</div></div>
+
+<script>
+// ── State ────────────────────────────────────────────────────────────────────
+
+const S = {
+  tab: 'college',        // 'college' | 'pro'
+  view: 'teams',         // 'teams' | 'players' | 'coaches'
+  detail: null,          // null | { type, id, data }
+  level: 'all',
+  search: '',
+  proSearch: '',
+  proTeam: '',
+  levels: [],
+  sortCol: null,
+  sortDir: 'desc',
+  tableData: [],
+};
+
+// ── Formatting ────────────────────────────────────────────────────────────────
+
+const fmt = {
+  ht: (v) => v ? `${Math.floor(v/12)}'${v%12}"` : '—',
+  pct: (v) => v != null ? (parseFloat(v)*100).toFixed(1)+'%' : '—',
+  n: (v, d=1) => v != null ? parseFloat(v).toFixed(d) : '—',
+  i: (v) => v != null ? String(parseInt(v)) : '—',
+  rec: (w, l) => (w != null && l != null) ? `${w}-${l}` : (w != null ? `${w}-?` : '—'),
+  pos: (arr) => arr && arr.length ? arr.join('/') : '—',
+};
+
+function levelBadge(key, name) {
+  const cls = {
+    ncaa_d1_high_major: 'badge-d1hm',
+    ncaa_d1_mid_major:  'badge-d1mm',
+    ncaa_d1_low_major:  'badge-d1lm',
+    ncaa_d2:  'badge-d2',
+    ncaa_d3:  'badge-d3',
+    naia:     'badge-naia',
+    njcaa_d1: 'badge-njcaa1',
+    njcaa_d2: 'badge-njcaa2',
+    njcaa_d3: 'badge-njcaa3',
+    cccaa:    'badge-cccaa',
+  }[key] || 'badge-d3';
+  return `<span class="badge ${cls}">${name}</span>`;
+}
+
+// ── API ───────────────────────────────────────────────────────────────────────
+
+async function api(path) {
+  const r = await fetch(path);
+  if (!r.ok) throw new Error((await r.json()).error || r.statusText);
+  return r.json();
+}
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+
+function switchTab(tab) {
+  S.tab = tab;
+  S.view = 'teams';
+  S.detail = null;
+  S.search = '';
+  S.proSearch = '';
+  S.proTeam = '';
+  S.sortCol = null;
+  document.querySelectorAll('.main-tab').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === tab));
+  render();
+}
+
+function switchView(view) {
+  S.view = view;
+  S.detail = null;
+  S.sortCol = null;
+  render();
+}
+
+// ── Controls ──────────────────────────────────────────────────────────────────
+
+function renderControls() {
+  const ctrl = document.getElementById('controls');
+
+  if (S.detail) {
+    ctrl.innerHTML = `<button class="btn btn-ghost" onclick="closeDetail()">← Back</button>`;
+    return;
+  }
+
+  if (S.tab === 'college') {
+    // Explicit ordering: D1 subs, D2, D3, NAIA, NJCAA, CCCAA
+    const levelOrder = ['ncaa_d1_high_major','ncaa_d1_mid_major','ncaa_d1_low_major','ncaa_d2','ncaa_d3','naia','njcaa_d1','njcaa_d2','njcaa_d3','cccaa'];
+    const levelMap = Object.fromEntries(S.levels.map(l => [l.level_key, l]));
+    const orderedLevels = levelOrder.map(k => levelMap[k]).filter(Boolean);
+    const levelOpts = `
+      <option value="all">All Levels</option>
+      <option value="ncaa_d1" ${S.level==='ncaa_d1'?'selected':''}>NCAA D1 (All)</option>
+      ${orderedLevels.filter(l => l.level_key.startsWith('ncaa_d1_')).map(l =>
+        `<option value="${l.level_key}" ${S.level===l.level_key?'selected':''}>&nbsp;&nbsp;${l.display_name}</option>`
+      ).join('')}
+      ${orderedLevels.filter(l => !l.level_key.startsWith('ncaa_d1')).map(l =>
+        `<option value="${l.level_key}" ${S.level===l.level_key?'selected':''}>${l.display_name}</option>`
+      ).join('')}
+    `;
+
+    ctrl.innerHTML = `
+      <div class="view-tabs">
+        <button class="view-tab ${S.view==='teams'?'active':''}" onclick="switchView('teams')">Teams</button>
+        <button class="view-tab ${S.view==='players'?'active':''}" onclick="switchView('players')">Players</button>
+        <button class="view-tab ${S.view==='coaches'?'active':''}" onclick="switchView('coaches')">Coaches</button>
+      </div>
+      <span class="sep">|</span>
+      <select id="lvlSel" onchange="S.level=this.value;S.sortCol=null;load()">${levelOpts}</select>
+      <input id="srch" type="text" placeholder="${S.view==='coaches'?'Search coach…':'Search name…'}" value="${S.search}" style="width:200px"
+        onkeydown="if(event.key==='Enter'){S.search=this.value;S.sortCol=null;load()}"
+        oninput="S.search=this.value;if(!this.value)load()">
+      <button class="btn" onclick="S.search=document.getElementById('srch').value;S.sortCol=null;load()">Search</button>
+      ${S.view==='players'?'<span class="hint">Enter name to search (31K players)</span>':''}
+    `;
+  } else {
+    // Pro
+    ctrl.innerHTML = `
+      <div class="view-tabs">
+        <button class="view-tab ${S.view==='teams'?'active':''}" onclick="switchView('teams')">Teams</button>
+        <button class="view-tab ${S.view==='players'?'active':''}" onclick="switchView('players')">Players</button>
+        <button class="view-tab ${S.view==='coaches'?'active':''}" onclick="switchView('coaches')">Coaches</button>
+      </div>
+      ${S.view==='players' ? `
+        <span class="sep">|</span>
+        <input id="proSrch" type="text" placeholder="Search player…" value="${S.proSearch}" style="width:180px"
+          onkeydown="if(event.key==='Enter'){S.proSearch=this.value;S.sortCol=null;load()}"
+          oninput="S.proSearch=this.value;if(!this.value)load()">
+        <input id="proTeam" type="text" placeholder="Team (e.g. LAL)" value="${S.proTeam}" style="width:90px"
+          onkeydown="if(event.key==='Enter'){S.proTeam=this.value;S.sortCol=null;load()}"
+          oninput="S.proTeam=this.value;if(!this.value)load()">
+        <button class="btn" onclick="S.proSearch=document.getElementById('proSrch').value;S.proTeam=document.getElementById('proTeam').value;S.sortCol=null;load()">Search</button>
+      ` : ''}
+    `;
+  }
+}
+
+// ── Sorting ───────────────────────────────────────────────────────────────────
+
+function sortBy(col, defaultDir = 'desc') {
+  if (S.sortCol === col) {
+    S.sortDir = S.sortDir === 'desc' ? 'asc' : 'desc';
+  } else {
+    S.sortCol = col;
+    S.sortDir = defaultDir;
+  }
+  renderTable();
+}
+
+function sortedData() {
+  if (!S.sortCol) return S.tableData;
+  const col = S.sortCol;
+  const dir = S.sortDir === 'asc' ? 1 : -1;
+  return [...S.tableData].sort((a, b) => {
+    const av = a[col], bv = b[col];
+    if (av == null && bv == null) return 0;
+    if (av == null) return 1;
+    if (bv == null) return -1;
+    if (typeof av === 'string') return dir * av.localeCompare(bv);
+    return dir * (parseFloat(av) - parseFloat(bv));
+  });
+}
+
+function th(label, col, align = '') {
+  const isSorted = S.sortCol === col;
+  const cls = ['sortable', isSorted ? 'sorted' : '', isSorted ? `sorted-${S.sortDir}` : '', align].filter(Boolean).join(' ');
+  return `<th class="${cls}" onclick="sortBy('${col}','${align==='num'?'desc':'asc'}')">${label}</th>`;
+}
+
+// ── Render dispatch ───────────────────────────────────────────────────────────
+
+function render() {
+  renderControls();
+  if (S.detail) { renderDetail(); return; }
+  if (S.tab === 'college') {
+    if (S.view === 'teams')   loadCollegeTeams();
+    if (S.view === 'players') loadCollegePlayers();
+    if (S.view === 'coaches') loadCollegeCoaches();
+  } else {
+    if (S.view === 'teams')   loadProTeams();
+    if (S.view === 'players') loadProPlayers();
+    if (S.view === 'coaches') renderProCoaches();
+  }
+}
+
+function load() { renderControls(); render(); }
+
+function setContent(html) { document.getElementById('content').innerHTML = html; }
+
+// ── College: Teams ────────────────────────────────────────────────────────────
+
+async function loadCollegeTeams() {
+  setContent('<div class="loading">Loading…</div>');
+  try {
+    const p = new URLSearchParams({ level: S.level });
+    if (S.search) p.set('search', S.search);
+    S.tableData = await api('/api/college/teams?' + p);
+    renderTable = renderCollegeTeamsTable;
+    renderCollegeTeamsTable();
+  } catch (e) { setContent(`<div class="error">${e.message}</div>`); }
+}
+
+let renderTable = () => {};
+
+function renderCollegeTeamsTable() {
+  const data = sortedData();
+  if (!data.length) { setContent('<div class="empty">No teams found.</div>'); return; }
+  setContent(`
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        ${th('Team', 'name', 'asc')}
+        ${th('Level', 'level', 'asc')}
+        ${th('Conf', 'conf_abbr', 'asc')}
+        ${th('Head Coach', 'head_coach', 'asc')}
+        ${th('Record', 'wins', 'num')}
+        ${th('Conf', 'conf_wins', 'num')}
+        ${th('Roster', 'player_count', 'num')}
+        <th>Location</th>
+      </tr></thead>
+      <tbody>
+      ${data.map(t => `
+        <tr>
+          <td><a class="link" onclick="openTeam('${t.id}')">${t.name}</a></td>
+          <td>${levelBadge(t.level_key, t.level)}</td>
+          <td>${t.conf_abbr || '—'}</td>
+          <td>${t.head_coach || '—'}</td>
+          <td class="num">${fmt.rec(t.wins, t.losses)}</td>
+          <td class="num">${fmt.rec(t.conf_wins, t.conf_losses)}</td>
+          <td class="num">${fmt.i(t.player_count)}</td>
+          <td>${[t.city, t.state].filter(Boolean).join(', ') || '—'}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div>
+    <div style="padding:8px 20px;font-size:11px;color:#9ca3af">${data.length} teams</div>
+  `);
+}
+
+async function openTeam(id) {
+  setContent('<div class="loading">Loading…</div>');
+  try {
+    const data = await api('/api/college/team/' + id);
+    S.detail = { type: 'team', id, data };
+    renderControls();
+    renderTeamDetail(data);
+  } catch (e) { setContent(`<div class="error">${e.message}</div>`); }
+}
+
+function renderTeamDetail({ team: t, roster }) {
+  const recStr = fmt.rec(t.wins, t.losses);
+  const confRecStr = fmt.rec(t.conf_wins, t.conf_losses);
+  const loc = [t.city, t.state].filter(Boolean).join(', ');
+
+  const krColor = (v) => v == null ? '' : parseFloat(v) > 60 ? 'kr-good' : parseFloat(v) < 40 ? 'kr-bad' : 'kr';
+
+  setContent(`
+    <div class="detail-bar">
+      <div style="flex:1">
+        <div class="meta">${levelBadge(t.level_key, t.level)}${t.conf_abbr ? ` &nbsp;${t.conf_abbr}` : ''}${loc ? ' &nbsp;· ' + loc : ''}</div>
+        <h2>${t.name}</h2>
+        <div class="meta">${t.head_coach || 'Coach unknown'}</div>
+        <div class="stat-row">
+          <div class="stat-box"><div class="val">${recStr}</div><div class="lbl">Record</div></div>
+          <div class="stat-box"><div class="val">${confRecStr}</div><div class="lbl">Conf</div></div>
+          ${t.osie_system ? `<div class="stat-box"><div class="val" style="font-size:14px">${t.osie_system}</div><div class="lbl">O-System</div></div>` : ''}
+          ${t.dsie_system ? `<div class="stat-box"><div class="val" style="font-size:14px">${t.dsie_system}</div><div class="lbl">D-System</div></div>` : ''}
+          ${t.team_overall_kr != null ? `<div class="stat-box adv"><div class="val ${krColor(t.team_overall_kr)}">${fmt.n(t.team_overall_kr)}</div><div class="lbl">KR</div></div>` : ''}
+          ${t.team_off_kr != null ? `<div class="stat-box adv"><div class="val ${krColor(t.team_off_kr)}">${fmt.n(t.team_off_kr)}</div><div class="lbl">Off KR</div></div>` : ''}
+          ${t.team_def_kr != null ? `<div class="stat-box adv"><div class="val ${krColor(t.team_def_kr)}">${fmt.n(t.team_def_kr)}</div><div class="lbl">Def KR</div></div>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="section-lbl">Roster — ${roster.length} players</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>#</th><th>Player</th><th>Pos</th><th>Ht</th><th>Yr</th>
+        <th class="num">GP</th><th class="num">MIN</th><th class="num">PTS</th>
+        <th class="num">REB</th><th class="num">AST</th><th class="num">STL</th>
+        <th class="num">BLK</th><th class="num">TO</th>
+        <th class="num">FG%</th><th class="num">3P%</th><th class="num">FT%</th>
+        <th class="num">USG%</th>
+      </tr></thead>
+      <tbody>
+      ${roster.map(p => `
+        <tr>
+          <td style="color:#9ca3af">${p.jersey_number || ''}</td>
+          <td><a class="link" onclick="openCollegePlayer('${p.id}')">${p.full_name}</a></td>
+          <td>${fmt.pos(p.declared_positions)}</td>
+          <td>${fmt.ht(p.height_inches)}</td>
+          <td>${p.class_year || '—'}</td>
+          <td class="num">${fmt.i(p.games_played)}</td>
+          <td class="num">${fmt.n(p.minutes_per_game)}</td>
+          <td class="num"><strong>${fmt.n(p.pts_per_game)}</strong></td>
+          <td class="num">${fmt.n(p.reb_per_game)}</td>
+          <td class="num">${fmt.n(p.ast_per_game)}</td>
+          <td class="num">${fmt.n(p.stl_per_game)}</td>
+          <td class="num">${fmt.n(p.blk_per_game)}</td>
+          <td class="num">${fmt.n(p.to_per_game)}</td>
+          <td class="num">${fmt.pct(p.fg_pct)}</td>
+          <td class="num">${fmt.pct(p.three_pct)}</td>
+          <td class="num">${fmt.pct(p.ft_pct)}</td>
+          <td class="num">${p.usage_rate != null ? fmt.n(p.usage_rate)+'%' : '—'}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div>
+  `);
+}
+
+// ── College: Players ──────────────────────────────────────────────────────────
+
+async function loadCollegePlayers() {
+  if (!S.search && S.level === 'all') {
+    setContent('<div class="empty">Enter a name or select a level to search 31K players.</div>');
+    return;
+  }
+  setContent('<div class="loading">Searching…</div>');
+  try {
+    const p = new URLSearchParams({ level: S.level });
+    if (S.search) p.set('search', S.search);
+    S.tableData = await api('/api/college/players?' + p);
+    renderTable = renderCollegePlayersTable;
+    renderCollegePlayersTable();
+  } catch (e) { setContent(`<div class="error">${e.message}</div>`); }
+}
+
+function renderCollegePlayersTable() {
+  const data = sortedData();
+  if (!data.length) { setContent('<div class="empty">No players found.</div>'); return; }
+  setContent(`
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>#</th>
+        ${th('Player', 'full_name', 'asc')}
+        <th>Pos</th><th>Ht</th>
+        ${th('Team', 'team_name', 'asc')}
+        ${th('Level', 'level', 'asc')}
+        <th>Yr</th>
+        ${th('GP', 'games_played', 'num')}
+        ${th('MIN', 'minutes_per_game', 'num')}
+        ${th('PTS', 'pts_per_game', 'num')}
+        ${th('REB', 'reb_per_game', 'num')}
+        ${th('AST', 'ast_per_game', 'num')}
+        ${th('FG%', 'fg_pct', 'num')}
+        ${th('3P%', 'three_pct', 'num')}
+        ${th('FT%', 'ft_pct', 'num')}
+      </tr></thead>
+      <tbody>
+      ${data.map(p => `
+        <tr>
+          <td style="color:#9ca3af">${p.jersey_number || ''}</td>
+          <td><a class="link" onclick="openCollegePlayer('${p.id}')">${p.full_name}</a></td>
+          <td>${fmt.pos(p.declared_positions)}</td>
+          <td>${fmt.ht(p.height_inches)}</td>
+          <td><a class="link" onclick="openTeam('${p.team_id}')">${p.team_name}</a></td>
+          <td>${levelBadge(p.level_key, p.level)}</td>
+          <td>${p.class_year || '—'}</td>
+          <td class="num">${fmt.i(p.games_played)}</td>
+          <td class="num">${fmt.n(p.minutes_per_game)}</td>
+          <td class="num"><strong>${fmt.n(p.pts_per_game)}</strong></td>
+          <td class="num">${fmt.n(p.reb_per_game)}</td>
+          <td class="num">${fmt.n(p.ast_per_game)}</td>
+          <td class="num">${fmt.pct(p.fg_pct)}</td>
+          <td class="num">${fmt.pct(p.three_pct)}</td>
+          <td class="num">${fmt.pct(p.ft_pct)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div>
+    <div style="padding:8px 20px;font-size:11px;color:#9ca3af">${data.length} players${data.length===200?' (limit 200 — refine search)':''}</div>
+  `);
+}
+
+async function openCollegePlayer(id) {
+  setContent('<div class="loading">Loading…</div>');
+  try {
+    const data = await api('/api/college/player/' + id);
+    S.detail = { type: 'player', id, data };
+    renderControls();
+    renderCollegePlayerDetail(data);
+  } catch (e) { setContent(`<div class="error">${e.message}</div>`); }
+}
+
+function renderCollegePlayerDetail({ player: p, history }) {
+  const current = history[0] || {};
+  const pos = fmt.pos(p.declared_positions);
+  const ht = fmt.ht(p.height_inches);
+  const wt = p.weight_lbs ? p.weight_lbs + ' lbs' : null;
+
+  setContent(`
+    <div class="detail-bar">
+      <div style="flex:1">
+        <div class="meta">${pos}${ht !== '—' ? ' &nbsp;· ' + ht : ''}${wt ? ' &nbsp;· ' + wt : ''}${p.country_origin && p.country_origin !== 'USA' ? ' &nbsp;· ' + p.country_origin : ''}</div>
+        <h2>${p.full_name}</h2>
+        <div class="meta">${current.team_name ? `${current.team_name} &nbsp;·&nbsp; ${current.class_year || ''} &nbsp;·&nbsp; ${current.level || ''}` : 'No current season'}</div>
+        ${current.pts_per_game != null ? `
+        <div class="stat-row">
+          <div class="stat-box"><div class="val">${fmt.n(current.pts_per_game)}</div><div class="lbl">PTS</div></div>
+          <div class="stat-box"><div class="val">${fmt.n(current.reb_per_game)}</div><div class="lbl">REB</div></div>
+          <div class="stat-box"><div class="val">${fmt.n(current.ast_per_game)}</div><div class="lbl">AST</div></div>
+          <div class="stat-box"><div class="val">${fmt.n(current.stl_per_game)}</div><div class="lbl">STL</div></div>
+          <div class="stat-box"><div class="val">${fmt.n(current.blk_per_game)}</div><div class="lbl">BLK</div></div>
+          <div class="stat-box adv"><div class="val">${fmt.pct(current.fg_pct)}</div><div class="lbl">FG%</div></div>
+          <div class="stat-box adv"><div class="val">${fmt.pct(current.three_pct)}</div><div class="lbl">3P%</div></div>
+          <div class="stat-box adv"><div class="val">${fmt.pct(current.ft_pct)}</div><div class="lbl">FT%</div></div>
+          ${current.usage_rate != null ? `<div class="stat-box adv"><div class="val">${fmt.n(current.usage_rate)}%</div><div class="lbl">USG%</div></div>` : ''}
+        </div>` : ''}
+      </div>
+    </div>
+    <div class="section-lbl">Season History</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>Season</th><th>Team</th><th>Level</th><th>Yr</th>
+        <th class="num">GP</th><th class="num">MIN</th>
+        <th class="num">PTS</th><th class="num">REB</th><th class="num">AST</th>
+        <th class="num">STL</th><th class="num">BLK</th><th class="num">TO</th>
+        <th class="num">FGA</th><th class="num">FG%</th>
+        <th class="num">3PA</th><th class="num">3P%</th>
+        <th class="num">FTA</th><th class="num">FT%</th>
+        <th class="num">OREB</th><th class="num">DREB</th>
+        <th class="num">USG%</th>
+      </tr></thead>
+      <tbody>
+      ${history.map(h => `
+        <tr>
+          <td>${h.season}</td>
+          <td><a class="link" onclick="openTeam('${h.team_id}')">${h.team_name}</a></td>
+          <td>${h.level}</td>
+          <td>${h.class_year || '—'}</td>
+          <td class="num">${fmt.i(h.games_played)}</td>
+          <td class="num">${fmt.n(h.minutes_per_game)}</td>
+          <td class="num"><strong>${fmt.n(h.pts_per_game)}</strong></td>
+          <td class="num">${fmt.n(h.reb_per_game)}</td>
+          <td class="num">${fmt.n(h.ast_per_game)}</td>
+          <td class="num">${fmt.n(h.stl_per_game)}</td>
+          <td class="num">${fmt.n(h.blk_per_game)}</td>
+          <td class="num">${fmt.n(h.to_per_game)}</td>
+          <td class="num">${fmt.n(h.fga_per_game)}</td>
+          <td class="num">${fmt.pct(h.fg_pct)}</td>
+          <td class="num">${fmt.n(h.three_pa_per_game)}</td>
+          <td class="num">${fmt.pct(h.three_pct)}</td>
+          <td class="num">${fmt.n(h.fta_per_game)}</td>
+          <td class="num">${fmt.pct(h.ft_pct)}</td>
+          <td class="num">${fmt.n(h.oreb_per_game)}</td>
+          <td class="num">${fmt.n(h.dreb_per_game)}</td>
+          <td class="num">${h.usage_rate != null ? fmt.n(h.usage_rate)+'%' : '—'}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div>
+  `);
+}
+
+// ── College: Coaches ──────────────────────────────────────────────────────────
+
+async function loadCollegeCoaches() {
+  setContent('<div class="loading">Loading…</div>');
+  try {
+    const p = new URLSearchParams({ level: S.level });
+    if (S.search) p.set('search', S.search);
+    S.tableData = await api('/api/college/coaches?' + p);
+    renderTable = renderCollegeCoachesTable;
+    renderCollegeCoachesTable();
+  } catch (e) { setContent(`<div class="error">${e.message}</div>`); }
+}
+
+function renderCollegeCoachesTable() {
+  const data = sortedData();
+  if (!data.length) { setContent('<div class="empty">No coaches found.</div>'); return; }
+  setContent(`
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        ${th('Head Coach', 'head_coach', 'asc')}
+        ${th('Team', 'team_name', 'asc')}
+        ${th('Level', 'level', 'asc')}
+        ${th('Conf', 'conf_abbr', 'asc')}
+        ${th('Record', 'wins', 'num')}
+        ${th('Conf', 'conf_wins', 'num')}
+        <th>Location</th>
+        <th>New</th>
+      </tr></thead>
+      <tbody>
+      ${data.map(c => `
+        <tr>
+          <td><strong>${c.head_coach}</strong></td>
+          <td><a class="link" onclick="openTeam('${c.team_id}')">${c.team_name}</a></td>
+          <td>${levelBadge(c.level_key, c.level)}</td>
+          <td>${c.conf_abbr || '—'}</td>
+          <td class="num">${fmt.rec(c.wins, c.losses)}</td>
+          <td class="num">${fmt.rec(c.conf_wins, c.conf_losses)}</td>
+          <td>${[c.city, c.state].filter(Boolean).join(', ') || '—'}</td>
+          <td>${c.coach_continuity === false ? '<span class="new-coach">NEW</span>' : ''}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div>
+    <div style="padding:8px 20px;font-size:11px;color:#9ca3af">${data.length} coaches</div>
+  `);
+}
+
+// ── Pro: Teams ────────────────────────────────────────────────────────────────
+
+async function loadProTeams() {
+  setContent('<div class="loading">Loading…</div>');
+  try {
+    S.tableData = await api('/api/pro/teams');
+    renderTable = renderProTeamsTable;
+    renderProTeamsTable();
+  } catch (e) { setContent(`<div class="error">${e.message}</div>`); }
+}
+
+function renderProTeamsTable() {
+  const data = sortedData();
+  setContent(`
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        ${th('Team', 'name', 'asc')}
+        ${th('Conf', 'conference', 'asc')}
+        ${th('Division', 'division', 'asc')}
+        ${th('Record', 'wins', 'num')}
+        ${th('NetRtg', 'net_rating', 'num')}
+        ${th('ORtg', 'ortg', 'num')}
+        ${th('DRtg', 'drtg', 'num')}
+        ${th('Pace', 'pace', 'num')}
+        ${th('Roster', 'player_count', 'num')}
+      </tr></thead>
+      <tbody>
+      ${data.map(t => `
+        <tr>
+          <td><a class="link" onclick="openProTeam('${t.id}')">${t.name} <span style="color:#9ca3af">${t.abbreviation}</span></a></td>
+          <td>${t.conference}</td>
+          <td>${t.division}</td>
+          <td class="num">${fmt.rec(t.wins, t.losses)}</td>
+          <td class="num" style="color:${t.net_rating>0?'#059669':t.net_rating<0?'#dc2626':'inherit'}">${fmt.n(t.net_rating)}</td>
+          <td class="num">${fmt.n(t.ortg, 1)}</td>
+          <td class="num">${fmt.n(t.drtg, 1)}</td>
+          <td class="num">${fmt.n(t.pace, 1)}</td>
+          <td class="num">${fmt.i(t.player_count)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div>
+  `);
+}
+
+async function openProTeam(id) {
+  setContent('<div class="loading">Loading…</div>');
+  try {
+    const data = await api('/api/pro/team/' + id);
+    S.detail = { type: 'pro-team', id, data };
+    renderControls();
+    renderProTeamDetail(data);
+  } catch (e) { setContent(`<div class="error">${e.message}</div>`); }
+}
+
+function renderProTeamDetail({ team: t, roster }) {
+  setContent(`
+    <div class="detail-bar">
+      <div style="flex:1">
+        <div class="meta"><span class="badge badge-pro">NBA</span> &nbsp;${t.conference} &nbsp;· ${t.division}</div>
+        <h2>${t.name}</h2>
+        <div class="stat-row">
+          <div class="stat-box"><div class="val">${fmt.rec(t.wins, t.losses)}</div><div class="lbl">Record</div></div>
+          ${t.net_rating != null ? `<div class="stat-box"><div class="val" style="color:${t.net_rating>0?'#059669':'#dc2626'}">${fmt.n(t.net_rating)}</div><div class="lbl">NetRtg</div></div>` : ''}
+          ${t.ortg != null ? `<div class="stat-box adv"><div class="val">${fmt.n(t.ortg, 1)}</div><div class="lbl">ORtg</div></div>` : ''}
+          ${t.drtg != null ? `<div class="stat-box adv"><div class="val">${fmt.n(t.drtg, 1)}</div><div class="lbl">DRtg</div></div>` : ''}
+          ${t.pace != null ? `<div class="stat-box adv"><div class="val">${fmt.n(t.pace, 1)}</div><div class="lbl">Pace</div></div>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="section-lbl">Roster — ${roster.length} players</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="6" style="background:#fff;border-bottom:none;font-size:10px;color:#9ca3af;padding-bottom:2px">BASIC</th>
+          <th colspan="3" style="background:#fff;border-bottom:none;font-size:10px;color:#9ca3af;padding-bottom:2px"></th>
+          <th colspan="8" style="background:#eef2ff;border-bottom:none;font-size:10px;color:#4338ca;padding-bottom:2px;text-align:center">ADVANCED</th>
+        </tr>
+        <tr>
+          <th>#</th><th>Player</th><th>Pos</th><th>Age</th><th>Ht</th>
+          <th class="num">GP</th><th class="num">MIN</th><th class="num">PTS</th>
+          <th class="num">REB</th><th class="num">AST</th>
+          <th class="num">FG%</th><th class="num">3P%</th><th class="num">FT%</th>
+          <th class="num" style="background:#eef2ff">PER</th>
+          <th class="num" style="background:#eef2ff">TS%</th>
+          <th class="num" style="background:#eef2ff">BPM</th>
+          <th class="num" style="background:#eef2ff">VORP</th>
+          <th class="num" style="background:#eef2ff">WS</th>
+          <th class="num" style="background:#eef2ff">WS/48</th>
+          <th class="num" style="background:#eef2ff">USG%</th>
+          <th class="num" style="background:#eef2ff">eFG%</th>
+        </tr>
+      </thead>
+      <tbody>
+      ${roster.map(p => `
+        <tr>
+          <td style="color:#9ca3af">${p.jersey_number || ''}</td>
+          <td><a class="link" onclick="openProPlayer('${p.id}')">${p.full_name}</a></td>
+          <td>${p.position || '—'}</td>
+          <td>${fmt.i(p.age)}</td>
+          <td>${fmt.ht(p.height_inches)}</td>
+          <td class="num">${fmt.i(p.gp)}</td>
+          <td class="num">${fmt.n(p.mpg)}</td>
+          <td class="num"><strong>${fmt.n(p.ppg)}</strong></td>
+          <td class="num">${fmt.n(p.rpg)}</td>
+          <td class="num">${fmt.n(p.apg)}</td>
+          <td class="num">${fmt.pct(p.fg_pct)}</td>
+          <td class="num">${fmt.pct(p.three_pct)}</td>
+          <td class="num">${fmt.pct(p.ft_pct)}</td>
+          <td class="num" style="background:#f5f7ff">${fmt.n(p.per)}</td>
+          <td class="num" style="background:#f5f7ff">${fmt.pct(p.ts_pct)}</td>
+          <td class="num" style="background:#f5f7ff;color:${p.bpm>0?'#059669':p.bpm<-2?'#dc2626':'inherit'}">${fmt.n(p.bpm)}</td>
+          <td class="num" style="background:#f5f7ff">${fmt.n(p.vorp)}</td>
+          <td class="num" style="background:#f5f7ff">${fmt.n(p.ws)}</td>
+          <td class="num" style="background:#f5f7ff">${fmt.n(p.ws_48, 3)}</td>
+          <td class="num" style="background:#f5f7ff">${p.usg_pct != null ? fmt.pct(p.usg_pct) : '—'}</td>
+          <td class="num" style="background:#f5f7ff">${fmt.pct(p.efg_pct)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div>
+  `);
+}
+
+// ── Pro: Players ──────────────────────────────────────────────────────────────
+
+async function loadProPlayers() {
+  setContent('<div class="loading">Loading…</div>');
+  try {
+    const p = new URLSearchParams();
+    if (S.proSearch) p.set('search', S.proSearch);
+    if (S.proTeam) p.set('team', S.proTeam);
+    S.tableData = await api('/api/pro/players?' + p);
+    renderTable = renderProPlayersTable;
+    renderProPlayersTable();
+  } catch (e) { setContent(`<div class="error">${e.message}</div>`); }
+}
+
+function renderProPlayersTable() {
+  const data = sortedData();
+  if (!data.length) { setContent('<div class="empty">No players found.</div>'); return; }
+  setContent(`
+    <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="7" style="background:#fff;border-bottom:none;font-size:10px;color:#9ca3af;padding-bottom:2px">BASIC</th>
+          <th colspan="3" style="background:#fff;border-bottom:none;font-size:10px;color:#9ca3af;padding-bottom:2px"></th>
+          <th colspan="5" style="background:#eef2ff;border-bottom:none;font-size:10px;color:#4338ca;padding-bottom:2px;text-align:center">ADVANCED</th>
+        </tr>
+        <tr>
+          ${th('Player', 'full_name', 'asc')}
+          ${th('Team', 'abbreviation', 'asc')}
+          <th>Pos</th><th>Age</th><th>Ht</th>
+          ${th('GP', 'gp', 'num')}
+          ${th('MIN', 'mpg', 'num')}
+          ${th('PTS', 'ppg', 'num')}
+          ${th('REB', 'rpg', 'num')}
+          ${th('AST', 'apg', 'num')}
+          ${th('FG%', 'fg_pct', 'num')}
+          ${th('3P%', 'three_pct', 'num')}
+          ${th('FT%', 'ft_pct', 'num')}
+          <th class="num" style="background:#eef2ff">PER</th>
+          <th class="num" style="background:#eef2ff">TS%</th>
+          <th class="num" style="background:#eef2ff">BPM</th>
+          <th class="num" style="background:#eef2ff">VORP</th>
+          <th class="num" style="background:#eef2ff">WS</th>
+        </tr>
+      </thead>
+      <tbody>
+      ${data.map(p => `
+        <tr>
+          <td><a class="link" onclick="openProPlayer('${p.id}')">${p.full_name}</a></td>
+          <td>${p.abbreviation || '—'}</td>
+          <td>${p.position || '—'}</td>
+          <td>${fmt.i(p.age)}</td>
+          <td>${fmt.ht(p.height_inches)}</td>
+          <td class="num">${fmt.i(p.gp)}</td>
+          <td class="num">${fmt.n(p.mpg)}</td>
+          <td class="num"><strong>${fmt.n(p.ppg)}</strong></td>
+          <td class="num">${fmt.n(p.rpg)}</td>
+          <td class="num">${fmt.n(p.apg)}</td>
+          <td class="num">${fmt.pct(p.fg_pct)}</td>
+          <td class="num">${fmt.pct(p.three_pct)}</td>
+          <td class="num">${fmt.pct(p.ft_pct)}</td>
+          <td class="num" style="background:#f5f7ff">${fmt.n(p.per)}</td>
+          <td class="num" style="background:#f5f7ff">${fmt.pct(p.ts_pct)}</td>
+          <td class="num" style="background:#f5f7ff;color:${p.bpm>0?'#059669':p.bpm<-2?'#dc2626':'inherit'}">${fmt.n(p.bpm)}</td>
+          <td class="num" style="background:#f5f7ff">${fmt.n(p.vorp)}</td>
+          <td class="num" style="background:#f5f7ff">${fmt.n(p.ws)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div>
+    <div style="padding:8px 20px;font-size:11px;color:#9ca3af">${data.length} players</div>
+  `);
+}
+
+async function openProPlayer(id) {
+  setContent('<div class="loading">Loading…</div>');
+  try {
+    const data = await api('/api/pro/player/' + id);
+    S.detail = { type: 'pro-player', id, data };
+    renderControls();
+    renderProPlayerDetail(data);
+  } catch (e) { setContent(`<div class="error">${e.message}</div>`); }
+}
+
+function renderProPlayerDetail({ player: p, stats, advanced }) {
+  const s = stats[0] || {};
+  const a = advanced[0] || {};
+  setContent(`
+    <div class="detail-bar">
+      <div style="flex:1">
+        <div class="meta"><span class="badge badge-pro">NBA</span> &nbsp;${p.position || ''} &nbsp;·&nbsp; ${fmt.ht(p.height_inches)}${p.weight_lbs?' / '+p.weight_lbs+' lbs':''} &nbsp;·&nbsp; Age ${p.age || '—'}</div>
+        <h2>${p.full_name}</h2>
+        <div class="meta">${p.team_name || '—'} &nbsp;·&nbsp; #${p.jersey_number || '—'} &nbsp;·&nbsp; ${p.conference || ''} ${p.division || ''}</div>
+        ${s.ppg != null ? `
+        <div class="stat-row" style="margin-top:12px">
+          <div class="stat-box"><div class="val">${fmt.n(s.ppg)}</div><div class="lbl">PTS</div></div>
+          <div class="stat-box"><div class="val">${fmt.n(s.rpg)}</div><div class="lbl">REB</div></div>
+          <div class="stat-box"><div class="val">${fmt.n(s.apg)}</div><div class="lbl">AST</div></div>
+          <div class="stat-box"><div class="val">${fmt.n(s.spg)}</div><div class="lbl">STL</div></div>
+          <div class="stat-box"><div class="val">${fmt.n(s.bpg)}</div><div class="lbl">BLK</div></div>
+          <div class="stat-box adv"><div class="val">${fmt.pct(s.fg_pct)}</div><div class="lbl">FG%</div></div>
+          <div class="stat-box adv"><div class="val">${fmt.pct(s.three_pct)}</div><div class="lbl">3P%</div></div>
+          <div class="stat-box adv"><div class="val">${fmt.pct(s.ft_pct)}</div><div class="lbl">FT%</div></div>
+        </div>
+        <div class="stat-row" style="margin-top:8px">
+          ${a.per   != null ? `<div class="stat-box adv"><div class="val">${fmt.n(a.per)}</div><div class="lbl">PER</div></div>` : ''}
+          ${a.ts_pct!= null ? `<div class="stat-box adv"><div class="val">${fmt.pct(a.ts_pct)}</div><div class="lbl">TS%</div></div>` : ''}
+          ${a.bpm   != null ? `<div class="stat-box adv"><div class="val" style="color:${a.bpm>0?'#059669':a.bpm<-2?'#dc2626':'inherit'}">${fmt.n(a.bpm)}</div><div class="lbl">BPM</div></div>` : ''}
+          ${a.obpm  != null ? `<div class="stat-box adv"><div class="val">${fmt.n(a.obpm)}</div><div class="lbl">OBPM</div></div>` : ''}
+          ${a.dbpm  != null ? `<div class="stat-box adv"><div class="val">${fmt.n(a.dbpm)}</div><div class="lbl">DBPM</div></div>` : ''}
+          ${a.vorp  != null ? `<div class="stat-box adv"><div class="val">${fmt.n(a.vorp)}</div><div class="lbl">VORP</div></div>` : ''}
+          ${a.ws    != null ? `<div class="stat-box adv"><div class="val">${fmt.n(a.ws)}</div><div class="lbl">WS</div></div>` : ''}
+          ${a.ws_48 != null ? `<div class="stat-box adv"><div class="val">${fmt.n(a.ws_48,3)}</div><div class="lbl">WS/48</div></div>` : ''}
+          ${a.usg_pct!=null ? `<div class="stat-box adv"><div class="val">${fmt.pct(a.usg_pct)}</div><div class="lbl">USG%</div></div>` : ''}
+          ${a.efg_pct!=null ? `<div class="stat-box adv"><div class="val">${fmt.pct(a.efg_pct)}</div><div class="lbl">eFG%</div></div>` : ''}
+          ${a.ast_pct!=null ? `<div class="stat-box adv"><div class="val">${fmt.pct(a.ast_pct)}</div><div class="lbl">AST%</div></div>` : ''}
+          ${a.ortg  != null ? `<div class="stat-box adv"><div class="val">${fmt.n(a.ortg,1)}</div><div class="lbl">ORtg</div></div>` : ''}
+          ${a.drtg  != null ? `<div class="stat-box adv"><div class="val">${fmt.n(a.drtg,1)}</div><div class="lbl">DRtg</div></div>` : ''}
+        </div>` : '<div style="margin-top:8px;color:#9ca3af;font-size:12px">No stats available</div>'}
+      </div>
+    </div>
+    ${stats.length ? `
+    <div class="section-lbl">Per-Game Stats</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>Season</th>
+        <th class="num">GP</th><th class="num">MIN</th>
+        <th class="num">PTS</th><th class="num">REB</th><th class="num">AST</th>
+        <th class="num">STL</th><th class="num">BLK</th><th class="num">TO</th>
+        <th class="num">FGA</th><th class="num">FG%</th>
+        <th class="num">3PA</th><th class="num">3P%</th>
+        <th class="num">FTA</th><th class="num">FT%</th>
+        <th class="num">OREB</th><th class="num">DREB</th>
+      </tr></thead>
+      <tbody>
+      ${stats.map(s => `
+        <tr>
+          <td>${s.season}</td>
+          <td class="num">${fmt.i(s.gp)}</td>
+          <td class="num">${fmt.n(s.mpg)}</td>
+          <td class="num"><strong>${fmt.n(s.ppg)}</strong></td>
+          <td class="num">${fmt.n(s.rpg)}</td>
+          <td class="num">${fmt.n(s.apg)}</td>
+          <td class="num">${fmt.n(s.spg)}</td>
+          <td class="num">${fmt.n(s.bpg)}</td>
+          <td class="num">${fmt.n(s.to_pg)}</td>
+          <td class="num">${fmt.n(s.fga_pg)}</td>
+          <td class="num">${fmt.pct(s.fg_pct)}</td>
+          <td class="num">${fmt.n(s.three_pa_pg)}</td>
+          <td class="num">${fmt.pct(s.three_pct)}</td>
+          <td class="num">${fmt.n(s.fta_pg)}</td>
+          <td class="num">${fmt.pct(s.ft_pct)}</td>
+          <td class="num">${fmt.n(s.oreb_pg)}</td>
+          <td class="num">${fmt.n(s.dreb_pg)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div>
+    <div class="section-lbl">Advanced Stats</div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>Season</th>
+        <th class="num">PER</th><th class="num">TS%</th><th class="num">eFG%</th>
+        <th class="num">USG%</th><th class="num">AST%</th><th class="num">TOV%</th>
+        <th class="num">ORtg</th><th class="num">DRtg</th><th class="num">NetRtg</th>
+        <th class="num">BPM</th><th class="num">OBPM</th><th class="num">DBPM</th>
+        <th class="num">VORP</th><th class="num">WS</th><th class="num">WS/48</th>
+      </tr></thead>
+      <tbody>
+      ${advanced.map(a => `
+        <tr>
+          <td>${a.season}</td>
+          <td class="num">${fmt.n(a.per)}</td>
+          <td class="num">${fmt.pct(a.ts_pct)}</td>
+          <td class="num">${fmt.pct(a.efg_pct)}</td>
+          <td class="num">${a.usg_pct!=null?fmt.pct(a.usg_pct):'—'}</td>
+          <td class="num">${a.ast_pct!=null?fmt.pct(a.ast_pct):'—'}</td>
+          <td class="num">${a.tov_pct!=null?fmt.pct(a.tov_pct):'—'}</td>
+          <td class="num">${fmt.n(a.ortg,1)}</td>
+          <td class="num">${fmt.n(a.drtg,1)}</td>
+          <td class="num" style="color:${a.net_rating>0?'#059669':a.net_rating<0?'#dc2626':'inherit'}">${fmt.n(a.net_rating,1)}</td>
+          <td class="num" style="color:${a.bpm>0?'#059669':a.bpm<-2?'#dc2626':'inherit'}">${fmt.n(a.bpm)}</td>
+          <td class="num">${fmt.n(a.obpm)}</td>
+          <td class="num">${fmt.n(a.dbpm)}</td>
+          <td class="num">${fmt.n(a.vorp)}</td>
+          <td class="num">${fmt.n(a.ws)}</td>
+          <td class="num">${fmt.n(a.ws_48,3)}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div>` : ''}
+  `);
+}
+
+// ── Pro: Coaches ──────────────────────────────────────────────────────────────
+
+function renderProCoaches() {
+  setContent(`<div class="empty" style="padding:60px 20px">
+    <div style="font-size:32px;margin-bottom:12px">🏀</div>
+    <div style="font-weight:600;margin-bottom:6px">Head coach data not in database</div>
+    <div>NBA coaching staff records are not currently scraped.</div>
+  </div>`);
+}
+
+// ── Detail navigation ─────────────────────────────────────────────────────────
+
+function closeDetail() {
+  S.detail = null;
+  render();
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+async function init() {
+  try {
+    S.levels = await api('/api/college/levels');
+  } catch (e) { console.error('Failed to load levels', e); }
+  render();
+}
+
+init();
+</script>
+</body>
+</html>
