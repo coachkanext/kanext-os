@@ -570,6 +570,22 @@ def merge_player_stats(conn, division: str) -> dict[str, dict]:
         "ORebs": "oreb_raw", "DRebs": "dreb_raw", "REB": "reb_raw",
     })
 
+    # 8b. Offensive Rebounds/G — catches players outside total-reb top-200
+    log.info(f"  Fetching Offensive Rebounds/G rankings...")
+    oreb_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["oreb_pg"], division, ranking_period)
+    log.info(f"    {len(oreb_rows)} players from Offensive RPG")
+    _merge(oreb_rows, {
+        "ORebs": "oreb_raw",
+    })
+
+    # 8c. Defensive Rebounds/G — catches players outside total-reb top-200
+    log.info(f"  Fetching Defensive Rebounds/G rankings...")
+    dreb_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["dreb_pg"], division, ranking_period)
+    log.info(f"    {len(dreb_rows)} players from Defensive RPG")
+    _merge(dreb_rows, {
+        "DRebs": "dreb_raw",
+    })
+
     # 9. A/TO Ratio — gives us AST, TO
     log.info(f"  Fetching Assist/Turnover Ratio rankings...")
     ato_rows = fetch_ranking_page(conn, NCAA_STAT_SEQ["ato"], division, ranking_period)

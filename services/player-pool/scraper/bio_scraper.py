@@ -1012,6 +1012,19 @@ def scrape_level_bios(conn, level_key: str, dry_run: bool = False):
         log.info(f"\n[{i+1}/{len(rows)}] {name}")
 
         url = discover_roster_url(name, slug, cache)
+
+        # PrestoSports may be blocked (HTTP 403). Fall back to web search
+        # for schools that use Sidearm Sports or their own athletics sites.
+        if not url and level_key in ("njcaa_d1", "njcaa_d2", "njcaa_d3",
+                                      "nccaa_d1", "nccaa_d2", "cccaa", "uscaa"):
+            level_label = level_key.upper().replace("_", " ")
+            url = _search_roster_url(name, level_hint=level_label)
+            if url and "espn.com" not in url:
+                cache[slug] = url
+                log.info(f"  Found via web search: {url}")
+            else:
+                url = None
+
         if not url:
             log.info(f"  No roster page found")
             continue
