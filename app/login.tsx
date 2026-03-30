@@ -43,10 +43,13 @@ export default function LoginScreen() {
     ]).start();
   };
 
+  const VALID_CODE = 'KX2026';
+
   const handleChange = (text: string) => {
-    setCode(text);
-    if (text.length >= 4) {
-      if (text.startsWith('K')) {
+    const upper = text.toUpperCase();
+    setCode(upper);
+    if (upper.length >= VALID_CODE.length) {
+      if (upper === VALID_CODE) {
         pulseK(() => {
           router.push('/onboarding');
         });
