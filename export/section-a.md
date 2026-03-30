@@ -647,7 +647,7 @@ import { openTeamCard } from '@/utils/global-entity-sheets';
 // Mock data imports (other modes)
 
 // FMU data
-import { FMU_GAMES, FMU_GAMES_BY_ID, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS, FMU_RECORD, FMU_LAST_GAME, FMU_LAST_GAME_ID, FMU_NEXT_GAME, FMU_NEXT_GAME_ID, FMU_SEASON_COMPLETE, FMU_GAME_BPR, getBPRColor, FMU_GAME_IMPACT, getPGISColor, getTGISColor, tgisToDisplay, FMU_PREGAME, ROSTER_KR, DNA_OFFENSE_POOL, DNA_DEFENSE_POOL, DNA_TEMPO_POOL, jerseyArchetypeMap, POSITIVE_IMPACT, NEGATIVE_IMPACT, type PregameSnapshot, type ClusterRating } from '@/data/fmu';
+import { FMU_GAMES, FMU_GAMES_BY_ID, FMU_LEADERS, FMU_STANDINGS, FMU_NEWS, FMU_RECORD, FMU_LAST_GAME, FMU_LAST_GAME_ID, FMU_NEXT_GAME, FMU_NEXT_GAME_ID, FMU_SEASON_COMPLETE, FMU_GAME_BPR, getBPRColor, FMU_GAME_IMPACT, getBPRColor, getTPQColor, tgisToDisplay, FMU_PREGAME, ROSTER_KR, DNA_OFFENSE_POOL, DNA_DEFENSE_POOL, DNA_TEMPO_POOL, jerseyArchetypeMap, POSITIVE_IMPACT, NEGATIVE_IMPACT, type PregameSnapshot, type ClusterRating } from '@/data/fmu';
 import { TeamQuickSheet } from '@/components/team-quick-sheet';
 import { consumeHomeReset, registerHomeResetCallback } from '@/utils/global-home';
 import { getSportsRole, type SportsRoleLens } from '@/utils/sports-rbac';
@@ -876,8 +876,8 @@ function SportsHome() {
 
   // Recent BPR bottom sheet — always mounted, visibility toggled via animation
   const [recentSheet, setRecentSheet] = useState<{ opponent: string; kr: number; record: string; gameId: string; gameStatus: string; score?: string } | null>(null);
-  const [activeRecentPGIS, setActiveRecentPGIS] = useState(0);
-  const [fullRecentPGISOpen, setFullRecentPGISOpen] = useState(false);
+  const [activeRecentBPR, setActiveRecentBPR] = useState(0);
+  const [fullRecentBPROpen, setFullRecentBPROpen] = useState(false);
   const openRecentSheet = useCallback((data: { opponent: string; kr: number; record: string; gameId: string; gameStatus: string; score?: string }) => {
     setRecentSheet(data);
   }, []);
@@ -1494,7 +1494,7 @@ function SportsHome() {
                   );
                 })()}
 
-                {/* TGIS + PGIS for completed games, Pregame Snapshot for upcoming */}
+                {/* TPQ + BPR for completed games, Pregame Snapshot for upcoming */}
                 {recentImpact ? (
                     <>
                       {/* Postgame Gambling Block */}
@@ -1559,7 +1559,7 @@ function SportsHome() {
                         );
                       })()}
 
-                      {/* Our Depth Chart with PGIS */}
+                      {/* Our Depth Chart with BPR */}
                       <UnitsView
                         depthChart={DEPTH_CHART_BY_SEASON[CURRENT_SEASON]}
                         gameImpact={recentImpact ?? undefined}
@@ -1567,7 +1567,7 @@ function SportsHome() {
                         statLeaders={[...recentImpact.starters, ...recentImpact.bench]
                           .sort((a, b) => b.pgis - a.pgis)
                           .slice(0, 3)
-                          .map((p) => ({ label: 'PGIS', name: p.name.split(' ').slice(1).join(' ') || p.name, value: `${p.pgis > 0 ? '+' : ''}${p.pgis}` }))}
+                          .map((p) => ({ label: 'BPR', name: p.name.split(' ').slice(1).join(' ') || p.name, value: `${p.pgis > 0 ? '+' : ''}${p.pgis}` }))}
                       />
                     </>
                 ) : recentPregame ? (() => {

@@ -7782,33 +7782,31 @@ UI / GOVERNANCE NOTE (keep this line)
 Display legend only. Pro Player KR values are produced by Nexus. No
 evaluation, weighting, or normalization logic lives here.
 
-(PGIS) Player Game Impact Score
+## BPR — Basketball Performance Rating
 
-KaNeXT — Player Game Impact Score (PGIS)
-(Underlying Metric: BPR — Basketball Performance Rating)
+KaNeXT — Basketball Performance Rating (BPR)
+
 Interpretation & Governance Document (Internal)
 Status: Internal / Confidential
 Audience: Founder, Nexus intelligence layer, future system auditors
 Not for: UI, builders, coaches, recruiting staff, or external distribution
-1. Purpose of PGIS
-PGIS (Player Game Impact Score) exists to measure actual on-court impact in a single game,
+1. Purpose of BPR
+BPR (Basketball Performance Rating) exists to measure actual on-court impact in a single game,
 relative to competition level.
 It answers one question only:
 When this player was on the floor in this game, how much better or worse
 was the team because of them, relative to the expected average at that
 level?
-PGIS is a game-only impact anchor, not an evaluation verdict, not a projection, and not a
+BPR is a game-only impact anchor, not an evaluation verdict, not a projection, and not a
 recruiting ranking.
-Important: PGIS is the internal-safe surface name for the underlying audited metric BPR.
-BPR remains the canonical computation name; PGIS is the canonical “single-game player
-impact” object name in the system.
+BPR (Basketball Performance Rating) is the single-game player impact metric. There is no alias or surface name. BPR is BPR.
 2. Core Principles
 2.1 Zero-Centered Meaning
 
-● PGIS (BPR) = 0 → average impact for the player’s competitive level
-● PGIS (BPR) > 0 → positive impact
-● PGIS (BPR) < 0 → negative impact
-PGIS is level-relative, not universal.
+● BPR = 0 → average impact for the player’s competitive level
+● BPR > 0 → positive impact
+● BPR < 0 → negative impact
+BPR is level-relative, not universal.
 A +4 at D1 High Major ≠ a +4 at NAIA.
 2.2 Determinism
 Given the same:
@@ -7817,10 +7815,10 @@ Given the same:
 ● minutes
 ● opponents
 ● outcomes
-PGIS (BPR) must produce the same result every time.
-No coach preference, system choice, or sandbox setting alters PGIS.
-3. What PGIS Is (and Is Not)
-PGIS IS
+BPR must produce the same result every time.
+No coach preference, system choice, or sandbox setting alters BPR.
+3. What BPR Is (and Is Not)
+BPR IS
 ● a single-game player impact signal
 ● outcome-aware
 
@@ -7828,16 +7826,16 @@ PGIS IS
 ● role-aware
 ● possession-aware
 ● offense + defense combined
-PGIS IS NOT
+BPR IS NOT
 ● a box score stat
 ● a skill rating
 ● a projection
 ● a recruiting ranking
 ● a talent ceiling estimate
 ● a stylistic judgment
-PGIS reflects what happened, not what could happen.
+BPR reflects what happened, not what could happen.
 4. Mental Model (Canonical)
-PGIS (BPR) ≈ Box Plus-Minus, adjusted for:
+BPR ≈ Box Plus-Minus, adjusted for:
 ● competition strength
 ● role expectation
 ● efficiency vs. volume
@@ -7846,7 +7844,7 @@ PGIS (BPR) ≈ Box Plus-Minus, adjusted for:
 ● repeatability across games
 If traditional BPM asks:
 “What did you do statistically?”
-PGIS (BPR) asks:
+BPR asks:
 “What happened when you played, given the environment?”
 5. Internal Interpretation Bands (Non-UI)
 These bands are internal anchors only.
@@ -7859,30 +7857,30 @@ They are used to sanity-check KR alignment and postgame narratives.
 ● –6 to –9 → Strong negative impact. Consistently degrades lineup effectiveness.
 ● –10 and below → Severe negative impact. Game-shifting harm.
 (These labels are for internal interpretation only; not UI copy.)
-6. Relationship Between PGIS and KR
+6. Relationship Between BPR and KR
 
 KR = Player Identity
-PGIS = Single-Game On-Court Reality
+BPR = Single-Game On-Court Reality
 They are related but not redundant.
 Scenario Interpretation
-High KR + High PGIS True high-level player; impact translating
-High KR + Low PGIS Skill present; impact not translating
-Low KR + High PGIS Role player outperforming profile
-Low KR + Low PGIS Replacement-level or developmental
-PGIS checks KR.
-KR does not derive from PGIS.
-7. Relationship Between PGIS and TGIS
-TGIS (Team Game Impact Score) is team-level, single-game performance.
-PGIS (Player Game Impact Score) explains who drove the TGIS outcome.
-PGIS rolls up into postgame summaries, but:
-● PGIS does not dictate TGIS directly (team context matters)
-● TGIS does not overwrite PGIS (individual impact is preserved)
+High KR + High BPR True high-level player; impact translating
+High KR + Low BPR Skill present; impact not translating
+Low KR + High BPR Role player outperforming profile
+Low KR + Low BPR Replacement-level or developmental
+BPR checks KR.
+KR does not derive from BPR.
+7. Relationship Between BPR and TPQ
+TPQ (Team Performance Quality) is team-level performance measurement.
+BPR explains who drove the TPQ outcome.
+BPR rolls up into postgame summaries, but:
+● BPR does not dictate TPQ directly (team context matters)
+● TPQ does not overwrite BPR (individual impact is preserved)
 
 8. Governance Rules
-● PGIS (BPR) is never edited manually
-● PGIS (BPR) is never coach-adjustable
-● PGIS (BPR) is never sandbox-editable
-● PGIS (BPR) is never recomputed “on open” as a UI side-effect
+● BPR is never edited manually
+● BPR is never coach-adjustable
+● BPR is never sandbox-editable
+● BPR is never recomputed “on open” as a UI side-effect
 ● Any change to:
 ○ methodology
 ○ inputs
@@ -7890,13 +7888,13 @@ PGIS rolls up into postgame summaries, but:
 ○ normalization
 requires documentation, versioning, and explicit approval
 Outputs must store:
-● pgis_value (same as bpr_value)
-● pgis_version / bpr_version
+● bpr_value
+● bpr_version
 ● inputs_snapshot_hash (or equivalent audit reference)
 
-9. Why PGIS/BPR Is Referenced but Not
+9. Why BPR Is Referenced but Not
 Exposed Raw
-PGIS (BPR) exists to:
+BPR exists to:
 ● keep KR honest
 ● prevent stat padding
 ● anchor evaluation to outcomes
@@ -7906,9 +7904,9 @@ It is intentionally not a default user-facing metric to avoid:
 ● metric chasing
 The system’s job is truth, not comfort.
 10. Canonical Summary (Lock)
-PGIS measures single-game impact, not identity.
+BPR measures single-game impact, not identity.
 Zero is average for level.
 Positive helps you win.
 Negative hurts you win.
-KR tells the story; PGIS keeps it honest.
+KR tells the story; BPR keeps it honest.
 

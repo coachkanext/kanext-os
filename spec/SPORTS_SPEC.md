@@ -384,7 +384,7 @@ Accessed via Dashboard domain cards. Navigation uses state-based drill-down (no 
 |-------|--------------------|------------------------------------------------------|
 | 1     | Game Header        | vs Opponent, home/away, date/time                    |
 | 2     | Confidence Gate    | % (color-coded), data tier label                     |
-| 3     | Base Simulation    | Win %, margin, PGIS, TGIS                            |
+| 3     | Base Simulation    | Win %, margin, BPR, TPQ                            |
 | 4     | Top Drivers        | 3 key factors affecting outcome                      |
 | 5     | Scenario Comparison| Base vs. Foul Trouble vs. Hot/Cold Shooting          |
 | 6     | Lineup Lens        | Position-by-position KR matchup breakdown            |

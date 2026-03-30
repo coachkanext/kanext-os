@@ -456,10 +456,10 @@ for (const [, entries] of bprByGame) {
 
 export const KaNeXT_GAME_BPR: Record<string, PlayerBPR[]> = Object.fromEntries(bprByGame);
 
-// ── 3b) TGIS (Team Game Impact Score) + PGIS (Player Game Impact Score) ──
+// ── 3b) TPQ (Team Performance Quality) + BPR (Basketball Performance Rating) ──
 
-/** PGIS band labels (surfaced in UI instead of BPR) */
-export function getPGISLabel(pgis: number): string {
+/** BPR band labels (surfaced in UI instead of BPR) */
+export function getBPRLabel(pgis: number): string {
   if (pgis >= 8)  return 'Game-Changing';
   if (pgis >= 4)  return 'Strong Positive';
   if (pgis >= 1)  return 'Positive';
@@ -468,8 +468,8 @@ export function getPGISLabel(pgis: number): string {
   return 'Strong Negative';
 }
 
-/** PGIS color */
-export function getPGISColor(pgis: number): string {
+/** BPR color */
+export function getBPRColor(pgis: number): string {
   if (pgis >= 8)  return '#22C55E';
   if (pgis >= 4)  return '#22C55E';
   if (pgis >= 1)  return '#22C55E';
@@ -478,13 +478,13 @@ export function getPGISColor(pgis: number): string {
   return '#EF4444';
 }
 
-/** Convert TGIS (-10 to +10) to canonical 0–10 display scale */
+/** Convert TPQ (-10 to +10) to canonical 0–10 display scale */
 export function tgisToDisplay(tgis: number): number {
   return Math.round(((tgis + 10) / 2) * 10) / 10;
 }
 
-/** TGIS band labels (canonical 0–10 scale from TGIS spec) */
-export function getTGISLabel(tgis: number): string {
+/** TPQ band labels (canonical 0–10 scale from TPQ spec) */
+export function getTPQLabel(tgis: number): string {
   const score = tgisToDisplay(tgis);
   if (score >= 9.0) return 'Dominant';
   if (score >= 8.0) return 'Elite';
@@ -495,8 +495,8 @@ export function getTGISLabel(tgis: number): string {
   return 'Poor';
 }
 
-/** TGIS color (canonical 0–10 scale) */
-export function getTGISColor(tgis: number): string {
+/** TPQ color (canonical 0–10 scale) */
+export function getTPQColor(tgis: number): string {
   const score = tgisToDisplay(tgis);
   if (score >= 9.0) return '#22C55E';
   if (score >= 8.0) return '#22C55E';
@@ -571,7 +571,7 @@ const starterPlayerIds = new Set<string>(
     .map((s) => s.player_id),
 );
 
-export interface PlayerPGIS {
+export interface PlayerBPR {
   name: string;
   archetype: string;
   pgis: number;
@@ -587,16 +587,16 @@ export interface TeamGameImpact {
   tgis: number;
   tgisLabel: string;
   drivers: string[];
-  starters: PlayerPGIS[];
-  bench: PlayerPGIS[];
+  starters: PlayerBPR[];
+  bench: PlayerBPR[];
 }
 
 /**
- * Compute TGIS from team game log stats.
+ * Compute TPQ from team game log stats.
  * Factors: scoring margin, efficiency (eFG%), turnover margin, rebounding margin.
  * Scaled to roughly -10 to +10.
  */
-function calcTGIS(teamStats: { fg: number; fga: number; three_pt: number; ft: number; fta: number; total_rebounds: number; offensive_rebounds: number; turnovers: number; fmu_score: number; opp_score: number }): number {
+function calcTPQ(teamStats: { fg: number; fga: number; three_pt: number; ft: number; fta: number; total_rebounds: number; offensive_rebounds: number; turnovers: number; fmu_score: number; opp_score: number }): number {
   const margin = teamStats.fmu_score - teamStats.opp_score;
   // eFG% (effective field goal percentage) — shooting quality
   const efg = teamStats.fga > 0 ? (teamStats.fg + 0.5 * teamStats.three_pt) / teamStats.fga : 0.45;
@@ -646,7 +646,7 @@ function getTeamDrivers(ts: { fg: number; fga: number; three_pt: number; three_p
   return drivers.slice(0, 3).map((d) => d.text);
 }
 
-// Build TGIS + PGIS per game
+// Build TPQ + BPR per game
 const gameImpactMap = new Map<string, TeamGameImpact>();
 
 for (let i = 0; i < tgl2526.length; i++) {
@@ -666,14 +666,14 @@ for (let i = 0; i < tgl2526.length; i++) {
     opp_score: tg.opp_score ?? 0,
   };
 
-  const tgis = calcTGIS(ts);
+  const tgis = calcTPQ(ts);
   const drivers = getTeamDrivers(ts);
 
-  let starters: PlayerPGIS[] = [];
-  let bench: PlayerPGIS[] = [];
+  let starters: PlayerBPR[] = [];
+  let bench: PlayerBPR[] = [];
 
   if (bprPlayers) {
-    // Build PGIS from BPR data (PGIS = BPR value, just renamed for UI)
+    // Build BPR from BPR data (BPR = BPR value, just renamed for UI)
     // Also attach starter status and impact reason
     // Find matching game log entries to get player_ids for starter lookup
     const rawGameId = [...gameIdToFmuId.entries()].find(([, v]) => v === fmuId)?.[0];
@@ -683,7 +683,7 @@ for (let i = 0; i < tgl2526.length; i++) {
       return [p?.full_name ?? '', gl.player_id] as const;
     }));
 
-    const allPgis: PlayerPGIS[] = bprPlayers.map((p) => {
+    const allPgis: PlayerBPR[] = bprPlayers.map((p) => {
       const playerId = playerIdByName.get(p.name) ?? '';
       const isStarter = starterPlayerIds.has(playerId);
       const pgis = p.bpr;
@@ -694,7 +694,7 @@ for (let i = 0; i < tgl2526.length; i++) {
         name: p.name,
         archetype: p.archetype,
         pgis,
-        pgisLabel: getPGISLabel(pgis),
+        pgisLabel: getBPRLabel(pgis),
         kr: p.kr,
         impactReason: getImpactReason(p.archetype, pgis),
         positives: reasons.positives,
@@ -707,13 +707,13 @@ for (let i = 0; i < tgl2526.length; i++) {
     starters = allPgis.filter((p) => p.isStarter).sort((a, b) => b.pgis - a.pgis);
     bench = allPgis.filter((p) => !p.isStarter).sort((a, b) => b.pgis - a.pgis);
   } else if (tg.fmu_score != null) {
-    // Completed game without individual box scores — synthesize PGIS from season averages
-    // Use TGIS as a scaling factor: positive TGIS means players performed above average
+    // Completed game without individual box scores — synthesize BPR from season averages
+    // Use TPQ as a scaling factor: positive TPQ means players performed above average
     const seasonPlayers = individualSeasonStats
       .filter((s) => s.season === '2025-26' && (s.games_played ?? 0) >= 3)
       .sort((a, b) => (b.points_avg ?? 0) - (a.points_avg ?? 0));
 
-    const allSynthetic: PlayerPGIS[] = seasonPlayers.slice(0, 10).map((s) => {
+    const allSynthetic: PlayerBPR[] = seasonPlayers.slice(0, 10).map((s) => {
       const player = playerMap.get(s.player_id);
       const name = player?.full_name ?? 'Unknown';
       const archetype = playerIdArchetypeMap.get(s.player_id) ?? 'Role Player';
@@ -721,14 +721,14 @@ for (let i = 0; i < tgl2526.length; i++) {
       const jersey = normJersey(roster?.jersey_number ?? '0');
       const kr = ROSTER_KR[jersey] ?? 60;
       const isStarter = starterPlayerIds.has(s.player_id);
-      // Derive PGIS from season PPG, scaled by game TGIS direction
+      // Derive BPR from season PPG, scaled by game TPQ direction
       const basePgis = Math.round(((s.points_avg ?? 8) - 10) * 0.5);
       const pgis = Math.round(basePgis + tgis * 0.3);
       let nh2 = 0; for (let ci = 0; ci < name.length; ci++) nh2 = ((nh2 << 5) - nh2 + name.charCodeAt(ci)) | 0;
       nh2 = Math.abs(nh2);
       const reasons2 = getImpactReasons(archetype, pgis, nh2);
       return {
-        name, archetype, pgis, pgisLabel: getPGISLabel(pgis), kr,
+        name, archetype, pgis, pgisLabel: getBPRLabel(pgis), kr,
         impactReason: getImpactReason(archetype, pgis),
         positives: reasons2.positives, negatives: reasons2.negatives, isStarter,
       };
@@ -738,15 +738,15 @@ for (let i = 0; i < tgl2526.length; i++) {
     bench = allSynthetic.filter((p) => !p.isStarter).sort((a, b) => b.pgis - a.pgis);
   }
 
-  gameImpactMap.set(fmuId, { tgis, tgisLabel: getTGISLabel(tgis), drivers, starters, bench });
+  gameImpactMap.set(fmuId, { tgis, tgisLabel: getTPQLabel(tgis), drivers, starters, bench });
 }
 
 export const KaNeXT_GAME_IMPACT: Record<string, TeamGameImpact> = Object.fromEntries(gameImpactMap);
 
-// ── 3b-ii) Season-average PGIS per player (jersey → avg PGIS) ──
+// ── 3b-ii) Season-average BPR per player (jersey → avg BPR) ──
 
-/** Average each player's per-game PGIS across all completed games. Returns Record<jersey, avgPgis>. */
-export function getPlayerSeasonPGIS(): Record<string, number> {
+/** Average each player's per-game BPR across all completed games. Returns Record<jersey, avgPgis>. */
+export function getPlayerSeasonBPR(): Record<string, number> {
   const totals = new Map<string, { sum: number; count: number }>();
   for (const impact of Object.values(KaNeXT_GAME_IMPACT)) {
     for (const p of [...impact.starters, ...impact.bench]) {

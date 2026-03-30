@@ -464,7 +464,7 @@ More (overflow BottomSheet): Statistics | Game Plan | Simulation | Development |
 - **Games:** Live game pinned, upcoming 2, search bar, completed with streak badges (3W/3L)
 - **Standings:** Scope toggle (College/Global), mode toggle (Traditional/KR), view toggle (Conference/Division/National), division chips
 - **News:** News feed items
-- **Bottom sheets:** Opponent KR sheet (KR, record, game impact, pregame intel), PGIS sheet
+- **Bottom sheets:** Opponent KR sheet (KR, record, game impact, pregame intel), BPR sheet
 
 #### Roster Sub-Tab (Page 2)
 - **Sub-tabs:** Depth Chart | Full Roster | Units
@@ -532,7 +532,7 @@ More (overflow BottomSheet): Statistics | Game Plan | Simulation | Development |
 - Expandable position groups
 - Player rows: name, MPG, archetype, KR badge
 - Starters highlighted; bench grayed
-- Cluster Picker (horizontal scroll): O KR, D KR, SHT, FIN, PLY, OBD, TMD, REB, PHY, PGIS
+- Cluster Picker (horizontal scroll): O KR, D KR, SHT, FIN, PLY, OBD, TMD, REB, PHY, BPR
 
 **List View:**
 - Horizontal scroll table with 10 columns: #, NAME, POS, HT, WT, CLASS, STATUS, AID, NIL, NOTES
@@ -1266,7 +1266,7 @@ More (overflow BottomSheet): Raceweek Ops | Rules | Tech & Compliance | Safety |
 **Purpose:** System-aware depth chart with lineup optimization (largest component — 1,779 lines)
 
 **Lineup Lens System:**
-- 11 lenses: Overall KR, Offense KR, Defense KR, 7 clusters, PGIS
+- 11 lenses: Overall KR, Offense KR, Defense KR, 7 clusters, BPR
 - Auto-optimization: computes best 5-starter lineup (position-constrained) for active lens
 - Spotlight: tap player avatar → shows individual cluster drivers
 - Manual override: tap-select to swap players; "Manual" badge appears
@@ -1293,7 +1293,7 @@ More (overflow BottomSheet): Raceweek Ops | Rules | Tech & Compliance | Safety |
 |---------|-----|------------|
 | Jersey circle | Select/swap | Open PlayerSheet |
 | Name + physicals | Open bio | Open PlayerSheet |
-| KR/PGIS badge | Swap confirmation | — |
+| KR/BPR badge | Swap confirmation | — |
 
 ---
 
@@ -1586,8 +1586,8 @@ Each system defines Critical (A), High (B), Optional (C) archetype requirements 
 - Postgame Confidence Gate
 
 **Game Impact Scores:**
-- PGIS (Player Game Impact Score) — per-player game impact
-- TGIS (Team Game Impact Score) — team-level impact, display scale 0-10
+- BPR (Basketball Performance Rating) — per-player game impact
+- TPQ (Team Performance Quality) — team-level impact, display scale 0-10
 
 ---
 

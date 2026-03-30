@@ -1017,7 +1017,7 @@ Additional: 388 Team KRs, 685 OSIE/DSIE system identity scores.
 4. **Player KR** — Position-weighted KR + archetype derivation
 5. **Team KR** — Participation-weighted team aggregation (53/47 OFF/DEF split)
 6. **OSIE/DSIE** — System identity inference
-7. **PGIS/TGIS** — Player/Team Game Impact Scores
+7. **BPR/TPQ** — Player/Team Performance Qualitys
 8. **Scholarship/NIL** — Allocation recommendations
 
 ### Frontend Adapter
@@ -1296,7 +1296,7 @@ All seeded FMU data is tagged `data_source: 'demo_seed'` to distinguish from rea
 | 4 | `player_kr.py` | Clusters + position | Overall/OFF/DEF KR + archetype |
 | 5 | `team_kr.py` | Player KRs + minutes | Team OFF/DEF/Overall KR |
 | 6 | `osie_dsie.py` | Team stats | Offensive/Defensive System IDs |
-| 7 | `impact_scores.py` | BPR + box scores | PGIS + TGIS |
+| 7 | `impact_scores.py` | BPR + box scores | BPR + TPQ |
 | 8 | `scholarship_nil.py` | Player KR + Team KR | Allocation recommendations |
 
 **Key algorithms:**

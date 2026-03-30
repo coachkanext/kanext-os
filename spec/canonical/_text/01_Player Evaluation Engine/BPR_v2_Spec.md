@@ -322,7 +322,7 @@ BPR applies at two scopes using the same six-stage formula:
 - Game BPR: BPR computed from a single game's box score. Used in postgame analysis.
 - Season BPR: minutes-weighted average of all game BPR values across the season. Used in player evaluation and pool data.
 
-There is no separate metric name for game-level BPR. The term "PGIS" (Player Game Impact Score) is retired. BPR is BPR regardless of scope.
+There is no separate metric name for game-level BPR. The term "BPR" (Basketball Performance Rating) is retired. BPR is BPR regardless of scope.
 
 ---
 

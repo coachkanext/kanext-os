@@ -171,10 +171,10 @@ CREATE TABLE games (
     home_possessions        DECIMAL,
     away_possessions        DECIMAL,
     possession_source       VARCHAR,
-    tgis_home               DECIMAL,
-    tgis_away               DECIMAL,
-    tgis_version            VARCHAR,
-    tgis_mode               VARCHAR,
+    tpq_home               DECIMAL,
+    tpq_away               DECIMAL,
+    tpq_version            VARCHAR,
+    tpq_mode               VARCHAR,
     data_completeness       VARCHAR,
     scraped_at              TIMESTAMPTZ
 );
@@ -241,7 +241,7 @@ CREATE TABLE player_game_stats (
     plus_minus              INTEGER,
     bpr_value               DECIMAL,
     bpr_version             VARCHAR,
-    pgis_value              DECIMAL,
+    bpr_value              DECIMAL,
     UNIQUE (game_id, player_team_season_id)
 );
 
