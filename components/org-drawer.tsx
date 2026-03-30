@@ -43,9 +43,21 @@ const FILTER_PILLS: { key: FilterKey; label: string }[] = [
   { key: 'personal',  label: 'Personal' },
   { key: 'business',  label: 'Business' },
   { key: 'education', label: 'Education' },
-  { key: 'sports',    label: 'Sports' },
   { key: 'community', label: 'Community' },
+  { key: 'sports',    label: 'Sports' },
 ];
+
+const MODE_COLORS: Record<string, string> = {
+  personal:  '#6B7280',
+  business:  '#1D9BF0',
+  education: '#003A63',
+  community: '#7B68A0',
+  sports:    '#990000',
+};
+
+function modeLabel(mode: string): string {
+  return mode.charAt(0).toUpperCase() + mode.slice(1);
+}
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -199,6 +211,7 @@ export function OrgDrawer() {
         {displayOrgs.map(org => {
           const isActiveOrg = org.org_id === activeOrgId;
           const orgMode = org.mode as Mode;
+          const avatarColor = isActiveOrg ? C.accent : (MODE_COLORS[org.mode] ?? C.secondary);
           return (
             <Pressable
               key={org.org_id}
@@ -209,8 +222,8 @@ export function OrgDrawer() {
               ]}
               onPress={() => handleOrgPress(org.org_id, orgMode)}
             >
-              <View style={[styles.orgAvatar, isActiveOrg && styles.orgAvatarActive]}>
-                <Text style={[styles.orgInitials, isActiveOrg && styles.orgInitialsActive]}>
+              <View style={[styles.orgAvatar, { backgroundColor: avatarColor + '22' }]}>
+                <Text style={[styles.orgInitials, { color: avatarColor }]}>
                   {org.initials ?? getInitials(org.org_name)}
                 </Text>
               </View>
@@ -218,6 +231,7 @@ export function OrgDrawer() {
                 <Text style={[styles.orgName, isActiveOrg && styles.orgNameActive]} numberOfLines={1}>
                   {org.org_name}
                 </Text>
+                <Text style={styles.orgMode}>{modeLabel(org.mode)}</Text>
               </View>
               <BrandBadge active={isActiveOrg} activityCount={pulseCounts[org.org_id] ?? 0} C={C} />
             </Pressable>
@@ -229,9 +243,10 @@ export function OrgDrawer() {
           onPress={handleSettings}
         >
           <View style={styles.settingsIcon}>
-            <IconSymbol name="gearshape" size={16} color={C.secondary} />
+            <IconSymbol name="gearshape.fill" size={16} color={C.secondary} />
           </View>
           <Text style={styles.settingsLabel}>Settings</Text>
+          <IconSymbol name="chevron.right" size={14} color={C.muted} />
         </Pressable>
       </View>
 
@@ -324,25 +339,21 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     backgroundColor: C.surfacePressed,
   },
 
-  // Parent avatar
+  // Avatar — circle with mode color
   orgAvatar: {
-    width: 40, height: 40, borderRadius: 12,
-    backgroundColor: C.surfacePressed,
+    width: 40, height: 40, borderRadius: 20,
     alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
-  orgAvatarActive: {
-    backgroundColor: C.accent,
-  },
   orgInitials: {
-    fontSize: 14, fontWeight: '700', color: C.secondary,
+    fontSize: 14, fontWeight: '700',
   },
-  orgInitialsActive: { color: C.bg },
 
   // Org info
-  orgInfo: { flex: 1, minWidth: 0 },
+  orgInfo: { flex: 1, minWidth: 0, gap: 1 },
   orgName: { fontSize: 15, fontWeight: '500', color: C.label },
-  orgNameActive: { fontWeight: '600' },
+  orgNameActive: { fontWeight: '700' },
+  orgMode: { fontSize: 12, color: C.muted },
 
   emptyText: {
     textAlign: 'center', fontSize: 14,
