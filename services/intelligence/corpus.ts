@@ -1772,16 +1772,16 @@ This program is **Test Case #3** in the V1 Calibration Study (21 teams, 168 play
 
 ## ROSTER — KR COMPRESSION TABLE
 
-| # | Player | Pos | Ht | **KR** | USCAA Label | NAIA Label | D2 Label | D1 LM Label |
-|---|---|---|---|---|---|---|---|---|
-| 1 | Kalejaiye, Laolu | G | 5'10 | **86** | POY Lock / Elite Standout | Franchise Anchor | Franchise Anchor | High-Impact Starter |
-| 2 | Williams, Brandon | G | 6'4 | **79** | POY Lock / Elite Standout | High-Impact Starter | Solid Starter | Trusted Rotation |
-| 3 | McKesey, Claude | G | 5'10 | **73** | Franchise Anchor | Trusted Rotation | Situational Specialist | Situational Specialist |
-| 4 | Chatelain, Nathan | F | 6'7 | **73** | Franchise Anchor | Trusted Rotation | Situational Specialist | Situational Specialist |
-| 5 | Hernandez, Adrian | G | 5'11 | **66** | Solid Starter | Situational Specialist | Limited Bench | — |
-| 6 | Plantey, Chris | G | 5'8 | **63** | Trusted Rotation | Limited Bench | — | — |
-| 7 | Wall, Samuel | G | 6'0 | **61** | Trusted Rotation | Fringe Roster | — | — |
-| 8 | Diomande, Paul-Ismael | F | 6'6 | **59** | Reliable Bench | Fringe Roster | — | — |
+| # | Player | Pos | Ht | Wt | **KR** | USCAA Label | NAIA Label | D2 Label | D1 LM Label |
+|---|---|---|---|---|---|---|---|---|---|
+| 11 | Kalejaiye, Laolu | G | 5'10 | 180 | **86** | POY Lock / Elite Standout | Franchise Anchor | Franchise Anchor | High-Impact Starter |
+| 1 | Williams, Brandon | G | 6'4 | 180 | **79** | POY Lock / Elite Standout | High-Impact Starter | Solid Starter | Trusted Rotation |
+| 3 | McKesey, Claude | G | 5'10 | 185 | **73** | Franchise Anchor | Trusted Rotation | Situational Specialist | Situational Specialist |
+| 15 | Chatelain, Nathan | F | 6'7 | 195 | **73** | Franchise Anchor | Trusted Rotation | Situational Specialist | Situational Specialist |
+| 10 | Hernandez, Adrian | G | 5'11 | 175 | **66** | Solid Starter | Situational Specialist | Limited Bench | — |
+| 2 | Plantey, Chris | G | 5'8 | 165 | **63** | Trusted Rotation | Limited Bench | — | — |
+| 6 | Wall, Samuel | G | 6'0 | 190 | **61** | Trusted Rotation | Fringe Roster | — | — |
+| 21 | Diomande, Paul-Ismael | F | 6'6 | 210 | **59** | Reliable Bench | Fringe Roster | — | — |
 
 **Team KR spread: 27 points (86 to 59).** Widest spread in the 21-team study. Classic signature of a USCAA program with one D1-caliber player and a steep talent cliff.
 
