@@ -1,7 +1,7 @@
 /**
  * Roster Screen — Sports Mode · LU Men's Basketball
  * Tabs: Players / Depth Chart / Staff
- * Roles: Fan / Coach / Player (cycle via top-right pill)
+ * Roles: Coach / Player (cycle via top-right pill)
  */
 
 import React, { useState, useCallback, useRef } from 'react';
@@ -16,7 +16,9 @@ import { useFocusEffect } from 'expo-router';
 import { IconSymbol }   from '@/components/ui/icon-symbol';
 import { GlassView }    from '@/components/ui/glass-view';
 import { BottomSheet }  from '@/components/ui/bottom-sheet';
+import { RolePill }     from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useDemoRole }  from '@/utils/demo-role-store';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
 import {
@@ -33,12 +35,13 @@ const PILL_ROW_H = 48;
 const NAVY       = '#990000';
 
 type RosterTab   = 'Players' | 'Depth Chart' | 'Staff';
-type RosterRole  = 'Fan' | 'Coach' | 'Player';
 type PosFilter   = 'All' | 'PG' | 'SG' | 'SF' | 'PF' | 'C';
 
 const ROSTER_TABS: RosterTab[]  = ['Players', 'Depth Chart', 'Staff'];
-const ROLES: RosterRole[]       = ['Fan', 'Coach', 'Player'];
 const POS_FILTERS: PosFilter[]  = ['All', 'PG', 'SG', 'SF', 'PF', 'C'];
+
+// My player profile for the Player view demo
+const MY_PLAYER_ID = 'p01'; // Marcus Reed
 
 const DEPTH_CHART: { pos: string; players: string[] }[] = [
   { pos: 'PG', players: ['Marcus Reed',    'Devon Carter',   'Elijah Santos']  },
@@ -216,11 +219,11 @@ const prg = StyleSheet.create({
   fill:  { height: 6, borderRadius: 3 },
 });
 
-// ── Player Card (Fan / Coach / Player) ────────────────────────────────────────
+// ── Player Card (Fan / Coach) ─────────────────────────────────────────────────
 
 function PlayerCard({
   player, role, onPress, C,
-}: { player: Player; role: RosterRole; onPress: () => void; C: ComponentColors }) {
+}: { player: Player; role: 'Fan' | 'Coach'; onPress: () => void; C: ComponentColors }) {
   const isCoach = role === 'Coach';
   const krColor = krTierColor(player.kr.overall);
 
@@ -331,7 +334,7 @@ const plc = StyleSheet.create({
 function PlayerSheet({
   player, role, visible, onClose, C,
 }: {
-  player: Player | null; role: RosterRole;
+  player: Player | null; role: 'Fan' | 'Coach';
   visible: boolean; onClose: () => void; C: ComponentColors;
 }) {
   if (!player) return null;
@@ -970,10 +973,13 @@ export default function RosterScreen() {
   const C       = useColors();
   const insets  = useSafeAreaInsets();
 
+  // ── RBAC demo role ──
+  const [role, cycleRole] = useDemoRole('sports:roster');
+  const isCoachRole = role === 'Coach';
+
   // ── Navigation state ──
   const [activeTab, setActiveTab]       = useState<RosterTab>('Players');
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [role, setRole]                 = useState<RosterRole>('Fan');
 
   // ── Filter state ──
   const [filterVisible, setFilterVisible] = useState(false);
@@ -1024,14 +1030,6 @@ export default function RosterScreen() {
     pillsAnim.setValue(0);
   }, [pillsAnim]);
 
-  const cycleRole = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setRole(prev => {
-      const idx = ROLES.indexOf(prev);
-      return ROLES[(idx + 1) % ROLES.length];
-    });
-  }, []);
-
   // ── Filtered players ──
   const sortedPlayers = [...PLAYERS].sort((a, b) => a.number - b.number);
   const filteredPlayers = sortedPlayers.filter(p => {
@@ -1051,99 +1049,222 @@ export default function RosterScreen() {
     ['trainer', 'strength', 'sid'].includes(s.role)
   );
 
-  // ── Role pill color ──
-  const rolePillBg = (r: RosterRole) => {
-    if (r === 'Coach')  return NAVY;
-    if (r === 'Player') return '#5A8A6E';
-    return C.accent;
+  // ── My player (for Player role view) ──
+  const myPlayer = PLAYERS.find(p => p.id === MY_PLAYER_ID) ?? PLAYERS[0];
+
+  // ── Render Player View (Player role — Players tab) ────────────────────────
+
+  const renderPlayerView = () => {
+    const p = myPlayer;
+    const krColor = krTierColor(p.kr.overall);
+    const teammates = PLAYERS.filter(t => t.id !== p.id).sort((a, b) => a.number - b.number);
+
+    return (
+      <ScrollView
+        key="player-view"
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingTop: contentPadTop, paddingHorizontal: 16, paddingBottom: 120 }}
+      >
+        {/* My Profile Card */}
+        <GlassView tier={1} style={pv.profileCard}>
+          <View style={pv.profileHeader}>
+            <View style={[pv.numberBadge, { backgroundColor: NAVY }]}>
+              <Text style={pv.numberText}>#{p.number}</Text>
+            </View>
+            <PlayerAvatar p={p} size={64} />
+            <View style={pv.profileInfo}>
+              <Text style={[pv.profileName, { color: C.label }]}>{p.name}</Text>
+              <View style={pv.profileDetails}>
+                <PosBadge pos={p.position} />
+                <Text style={[pv.profileDetail, { color: C.secondary }]}>{p.classYear}</Text>
+              </View>
+              <Text style={[pv.profileDetail, { color: C.secondary }]}>{p.heightFt} · {p.weight} lbs</Text>
+              <Text style={[pv.profileDetail, { color: C.muted }]}>{p.hometown}</Text>
+            </View>
+          </View>
+          {p.badges.length > 0 && (
+            <View style={pv.badgesRow}>
+              {p.badges.map(b => (
+                <View key={b} style={[pv.badge, { backgroundColor: NAVY + '12', borderColor: NAVY + '30', borderWidth: 1 }]}>
+                  <Text style={[pv.badgeText, { color: NAVY }]}>{b}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+        </GlassView>
+
+        {/* My Stats */}
+        <Text style={[sh.title, { color: C.label }]}>My Season Stats</Text>
+        <GlassView tier={1} style={pv.statsCard}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <StatChip label="PPG"  value={p.stats.ppg.toFixed(1)}  C={C} />
+              <StatChip label="RPG"  value={p.stats.rpg.toFixed(1)}  C={C} />
+              <StatChip label="APG"  value={p.stats.apg.toFixed(1)}  C={C} />
+              <StatChip label="FG%"  value={`${p.stats.fgPct.toFixed(1)}%`} C={C} />
+              <StatChip label="3P%"  value={`${p.stats.fg3Pct.toFixed(1)}%`} C={C} />
+              <StatChip label="FT%"  value={`${p.stats.ftPct.toFixed(1)}%`} C={C} />
+              <StatChip label="MPG"  value={p.stats.mpg.toFixed(1)} C={C} />
+            </View>
+          </ScrollView>
+        </GlassView>
+
+        {/* My KR Score */}
+        <Text style={[sh.title, { color: C.label }]}>My KaNeXT Rating</Text>
+        <GlassView tier={1} style={pv.krCard}>
+          <View style={pv.krRow}>
+            <View style={pv.krItem}>
+              <Text style={[pv.krBig, { color: krColor }]}>{p.kr.overall.toFixed(1)}</Text>
+              <Text style={[pv.krLbl, { color: C.muted }]}>Overall</Text>
+            </View>
+            <View style={[pv.krDivider, { backgroundColor: C.separator }]} />
+            <View style={pv.krItem}>
+              <Text style={[pv.krBig, { color: C.label }]}>{p.kr.offensive.toFixed(1)}</Text>
+              <Text style={[pv.krLbl, { color: C.muted }]}>Offense</Text>
+            </View>
+            <View style={[pv.krDivider, { backgroundColor: C.separator }]} />
+            <View style={pv.krItem}>
+              <Text style={[pv.krBig, { color: C.label }]}>{p.kr.defensive.toFixed(1)}</Text>
+              <Text style={[pv.krLbl, { color: C.muted }]}>Defense</Text>
+            </View>
+          </View>
+          <View style={pv.krFooter}>
+            <Text style={[pv.krTier, { color: NAVY }]}>Tier {p.kr.tier}</Text>
+            <Text style={[pv.krTrend, {
+              color: p.kr.trend === 'up' ? '#5A8A6E' : p.kr.trend === 'down' ? '#B85C5C' : C.muted,
+            }]}>
+              {p.kr.trend === 'up' ? '▲' : p.kr.trend === 'down' ? '▼' : '—'}
+              {' '}{Math.abs(p.kr.delta).toFixed(1)} last 5
+            </Text>
+          </View>
+        </GlassView>
+
+        {/* Upcoming schedule */}
+        <UpcomingSchedule C={C} />
+
+        {/* Public Roster — teammates (name, number, position only) */}
+        <Text style={[sh.title, { color: C.label }]}>Teammates</Text>
+        <GlassView tier={1} style={{ borderRadius: 14, overflow: 'hidden', marginBottom: 20 }}>
+          {teammates.map((t, idx) => (
+            <View
+              key={t.id}
+              style={[
+                pv.teammateRow,
+                idx < teammates.length - 1 && {
+                  borderBottomWidth: StyleSheet.hairlineWidth,
+                  borderBottomColor: C.separator,
+                },
+              ]}
+            >
+              <View style={[pv.teammateBadge, { backgroundColor: NAVY + '15' }]}>
+                <Text style={[pv.teammateNum, { color: NAVY }]}>#{t.number}</Text>
+              </View>
+              <PlayerAvatar p={t} size={36} />
+              <View style={pv.teammateInfo}>
+                <Text style={[pv.teammateName, { color: C.label }]}>{t.name}</Text>
+                <Text style={[pv.teammateDetail, { color: C.secondary }]}>{t.classYear}</Text>
+              </View>
+              <PosBadge pos={t.position} />
+            </View>
+          ))}
+        </GlassView>
+      </ScrollView>
+    );
   };
 
   // ── Render Roster Tab ──────────────────────────────────────────────────────
 
-  const renderRosterTab = () => (
-    <ScrollView
-      key="roster"
-      onScroll={handleScroll}
-      scrollEventThrottle={16}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{
-        paddingTop: contentPadTop,
-        paddingHorizontal: 16,
-        paddingBottom: 120,
-      }}
-      keyboardShouldPersistTaps="handled"
-    >
-      <TeamBanner C={C} />
+  const renderRosterTab = () => {
+    // Player role gets their own personalized view
+    if (role === 'Player') return renderPlayerView();
 
-      {/* Search bar */}
-      <View style={[rs.searchBar, { backgroundColor: C.surface, borderColor: C.inputBorder }]}>
-        <IconSymbol name="magnifyingglass" size={16} color={C.muted} />
-        <TextInput
-          style={[rs.searchInput, { color: C.label }]}
-          placeholder="Search players..."
-          placeholderTextColor={C.muted}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          returnKeyType="search"
-        />
-        {searchQuery.length > 0 && (
-          <Pressable onPress={() => setSearchQuery('')} hitSlop={10}>
-            <IconSymbol name="xmark.circle.fill" size={16} color={C.muted} />
-          </Pressable>
+    return (
+      <ScrollView
+        key="roster"
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingTop: contentPadTop,
+          paddingHorizontal: 16,
+          paddingBottom: 120,
+        }}
+        keyboardShouldPersistTaps="handled"
+      >
+        <TeamBanner C={C} />
+
+        {/* Search bar */}
+        <View style={[rs.searchBar, { backgroundColor: C.surface, borderColor: C.inputBorder }]}>
+          <IconSymbol name="magnifyingglass" size={16} color={C.muted} />
+          <TextInput
+            style={[rs.searchInput, { color: C.label }]}
+            placeholder="Search players..."
+            placeholderTextColor={C.muted}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            returnKeyType="search"
+          />
+          {searchQuery.length > 0 && (
+            <Pressable onPress={() => setSearchQuery('')} hitSlop={10}>
+              <IconSymbol name="xmark.circle.fill" size={16} color={C.muted} />
+            </Pressable>
+          )}
+        </View>
+
+        {/* Coach action row */}
+        {isCoachRole && (
+          <View style={rs.coachActions}>
+            <Pressable
+              style={[rs.actionBtn, { backgroundColor: NAVY }]}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+            >
+              <IconSymbol name="person.badge.plus" size={15} color="#fff" />
+              <Text style={rs.actionBtnWhiteText}>Add Player</Text>
+            </Pressable>
+            <Pressable
+              style={[rs.actionBtn, { backgroundColor: C.surface, borderColor: C.separator, borderWidth: 1 }]}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <IconSymbol name="square.and.arrow.up" size={15} color={C.label} />
+              <Text style={[rs.actionBtnText, { color: C.label }]}>Export</Text>
+            </Pressable>
+          </View>
         )}
-      </View>
 
-      {/* Coach action row */}
-      {role === 'Coach' && (
-        <View style={rs.coachActions}>
-          <Pressable
-            style={[rs.actionBtn, { backgroundColor: NAVY }]}
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-          >
-            <IconSymbol name="person.badge.plus" size={15} color="#fff" />
-            <Text style={rs.actionBtnWhiteText}>Add Player</Text>
-          </Pressable>
-          <Pressable
-            style={[rs.actionBtn, { backgroundColor: C.surface, borderColor: C.separator, borderWidth: 1 }]}
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-          >
-            <IconSymbol name="square.and.arrow.up" size={15} color={C.label} />
-            <Text style={[rs.actionBtnText, { color: C.label }]}>Export</Text>
-          </Pressable>
-        </View>
-      )}
+        {/* Count */}
+        <Text style={[rs.countText, { color: C.muted }]}>
+          {filteredPlayers.length} player{filteredPlayers.length !== 1 ? 's' : ''}
+          {posFilter !== 'All' ? ` · ${posFilter}` : ''}
+        </Text>
 
-      {/* Count */}
-      <Text style={[rs.countText, { color: C.muted }]}>
-        {filteredPlayers.length} player{filteredPlayers.length !== 1 ? 's' : ''}
-        {posFilter !== 'All' ? ` · ${posFilter}` : ''}
-      </Text>
+        {/* Player list */}
+        {filteredPlayers.map(player => (
+          <PlayerCard
+            key={player.id}
+            player={player}
+            role={isCoachRole ? 'Coach' : 'Fan'}
+            C={C}
+            onPress={() => {
+              setSelectedPlayer(player);
+              setPlayerSheetOpen(true);
+            }}
+          />
+        ))}
 
-      {/* Player list */}
-      {filteredPlayers.map(player => (
-        <PlayerCard
-          key={player.id}
-          player={player}
-          role={role}
-          C={C}
-          onPress={() => {
-            setSelectedPlayer(player);
-            setPlayerSheetOpen(true);
-          }}
-        />
-      ))}
+        {filteredPlayers.length === 0 && (
+          <View style={rs.emptyState}>
+            <IconSymbol name="person.slash" size={36} color={C.muted} />
+            <Text style={[rs.emptyText, { color: C.muted }]}>No players found</Text>
+          </View>
+        )}
 
-      {filteredPlayers.length === 0 && (
-        <View style={rs.emptyState}>
-          <IconSymbol name="person.slash" size={36} color={C.muted} />
-          <Text style={[rs.emptyText, { color: C.muted }]}>No players found</Text>
-        </View>
-      )}
-
-      {/* Upcoming schedule (Fan / Player) */}
-      {(role === 'Fan' || role === 'Player') && <UpcomingSchedule C={C} />}
-    </ScrollView>
-  );
+        {/* Upcoming schedule (Coach sees it too) */}
+        <UpcomingSchedule C={C} />
+      </ScrollView>
+    );
+  };
 
   // ── Render Staff Tab ───────────────────────────────────────────────────────
 
@@ -1159,7 +1280,7 @@ export default function RosterScreen() {
         paddingBottom: 120,
       }}
     >
-      {role === 'Coach' && (
+      {isCoachRole && (
         <Pressable
           style={[rs.actionBtn, { backgroundColor: NAVY, marginBottom: 16, alignSelf: 'flex-start' }]}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
@@ -1217,7 +1338,21 @@ export default function RosterScreen() {
 
   const renderContent = () => {
     if (activeTab === 'Players')     return renderRosterTab();
-    if (activeTab === 'Depth Chart') return renderDepthChartTab();
+    if (activeTab === 'Depth Chart') {
+      // Depth Chart is Coach-only — Player role sees a locked placeholder
+      if (!isCoachRole) {
+        return (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 40, paddingTop: contentPadTop }}>
+            <IconSymbol name="lock.fill" size={36} color={C.muted} />
+            <Text style={[{ fontSize: 17, fontWeight: '700', color: C.label, marginTop: 12, textAlign: 'center' }]}>Coach View Only</Text>
+            <Text style={[{ fontSize: 14, color: C.secondary, textAlign: 'center', lineHeight: 20, marginTop: 6 }]}>
+              The depth chart is visible to coaching staff only.
+            </Text>
+          </View>
+        );
+      }
+      return renderDepthChartTab();
+    }
     return renderStaffTab();
   };
 
@@ -1259,7 +1394,7 @@ export default function RosterScreen() {
 
           {/* Right: filter toggle + role pill */}
           <View style={[s.topBarSide, s.topBarRight]}>
-            {activeTab === 'Players' && (
+            {activeTab === 'Players' && role !== 'Player' && (
               <Pressable onPress={toggleFilter} hitSlop={12}>
                 <IconSymbol
                   name={filterVisible || posFilter !== 'All'
@@ -1270,12 +1405,12 @@ export default function RosterScreen() {
                 />
               </Pressable>
             )}
-            <Pressable
-              style={[s.rolePill, { backgroundColor: rolePillBg(role) }]}
+            <RolePill
+              role={role}
               onPress={cycleRole}
-            >
-              <Text style={s.rolePillText}>{role}</Text>
-            </Pressable>
+              accentColor={NAVY}
+              isPrimary={isCoachRole}
+            />
           </View>
         </View>
 
@@ -1344,7 +1479,7 @@ export default function RosterScreen() {
                 ]}>
                   {tab}
                 </Text>
-                {tab === 'Depth Chart' && role !== 'Coach' && (
+                {tab === 'Depth Chart' && !isCoachRole && (
                   <IconSymbol name="lock.fill" size={12} color={C.muted} />
                 )}
               </Pressable>
@@ -1356,7 +1491,7 @@ export default function RosterScreen() {
       {/* ── Bottom Sheets ── */}
       <PlayerSheet
         player={selectedPlayer}
-        role={role}
+        role={isCoachRole ? 'Coach' : 'Fan'}
         visible={playerSheetOpen}
         onClose={() => setPlayerSheetOpen(false)}
         C={C}
@@ -1385,6 +1520,38 @@ const rs = StyleSheet.create({
   emptyText:          { fontSize: 15 },
 });
 
+// ── Player Role View Styles ───────────────────────────────────────────────────
+
+const pv = StyleSheet.create({
+  profileCard:    { borderRadius: 16, padding: 16, marginBottom: 16 },
+  profileHeader:  { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  numberBadge:    { width: 38, height: 38, borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  numberText:     { color: '#fff', fontSize: 13, fontWeight: '800' },
+  profileInfo:    { flex: 1, gap: 4 },
+  profileName:    { fontSize: 18, fontWeight: '800' },
+  profileDetails: { flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' },
+  profileDetail:  { fontSize: 13 },
+  badgesRow:      { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 12 },
+  badge:          { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
+  badgeText:      { fontSize: 11, fontWeight: '600' },
+  statsCard:      { borderRadius: 14, padding: 14, marginBottom: 16 },
+  krCard:         { borderRadius: 14, padding: 16, marginBottom: 16 },
+  krRow:          { flexDirection: 'row', alignItems: 'center' },
+  krItem:         { flex: 1, alignItems: 'center', gap: 4 },
+  krBig:          { fontSize: 28, fontWeight: '800' },
+  krLbl:          { fontSize: 11 },
+  krDivider:      { width: 1, height: 40 },
+  krFooter:       { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
+  krTier:         { fontSize: 12, fontWeight: '700' },
+  krTrend:        { fontSize: 12, fontWeight: '600' },
+  teammateRow:    { flexDirection: 'row', alignItems: 'center', padding: 10, gap: 10 },
+  teammateBadge:  { width: 34, height: 34, borderRadius: 8, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  teammateNum:    { fontSize: 12, fontWeight: '800' },
+  teammateInfo:   { flex: 1 },
+  teammateName:   { fontSize: 14, fontWeight: '600' },
+  teammateDetail: { fontSize: 12, marginTop: 1 },
+});
+
 const lk = StyleSheet.create({
   card:  { borderRadius: 16, padding: 28, alignItems: 'center', gap: 12, maxWidth: 280 },
   title: { fontSize: 17, fontWeight: '700' },
@@ -1400,8 +1567,6 @@ const s = StyleSheet.create({
   dropdownWrap:      { flex: 1, alignItems: 'center', justifyContent: 'center' },
   dropdownPill:      { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, gap: 6 },
   dropdownText:      { fontSize: 15, fontWeight: '700' },
-  rolePill:          { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14 },
-  rolePillText:      { color: '#fff', fontSize: 12, fontWeight: '700' },
   pillsRow:          { height: PILL_ROW_H, borderTopWidth: StyleSheet.hairlineWidth },
   pillsContent:      { paddingHorizontal: 16, gap: 8, alignItems: 'center' },
   pill:              { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 16, borderWidth: 1 },

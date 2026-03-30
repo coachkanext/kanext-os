@@ -22,12 +22,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { RolePill } from '@/components/ui/role-pill';
 import { StoriesRow } from '@/components/social/stories-row';
 import { ReelsPage } from '@/components/social/reels-page';
 import { LikeAnimation } from '@/components/social/like-animation';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useAppContext } from '@/context/app-context';
 import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
+import { useDemoRole, MODE_ACCENTS } from '@/utils/demo-role-store';
 import {
   getFeedPosts, getReels, getStories, getSammyPosts, getSammyTaggedPosts, formatPostTime,
   SAMMY_POSTS, SAMMY_REELS, type FeedPost, type SocialReel,
@@ -557,12 +559,12 @@ function CreatePostSheet({
                   style={{
                     paddingHorizontal: 14, paddingVertical: 7,
                     borderRadius: 12, borderWidth: 1.5,
-                    borderColor: active ? C.accent : C.separator,
-                    backgroundColor: active ? C.accent + '18' : 'transparent',
+                    borderColor: active ? C.activePill : C.separator,
+                    backgroundColor: active ? C.activePill + '18' : 'transparent',
                   }}
                   onPress={() => setVisibility(v.key)}
                 >
-                  <Text style={{ fontSize: 13, fontWeight: active ? '600' : '400', color: active ? C.accent : C.secondary }}>
+                  <Text style={{ fontSize: 13, fontWeight: active ? '600' : '400', color: active ? C.activePill : C.secondary }}>
                     {v.label}
                   </Text>
                 </Pressable>
@@ -925,13 +927,27 @@ function ProfileView({ C }: { C: ComponentColors }) {
 
 // ── Social Screen (main) ──────────────────────────────────────────────────────
 
+// ── Social role keys per mode ──────────────────────────────────────────────
+const SOCIAL_ROLE_KEYS: Record<string, string> = {
+  sports:    'sports',
+  education: 'education',
+  community: 'community',
+  business:  'business',
+  personal:  'personal',
+};
+
 export default function SocialScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const styles = useMemo(() => makeStyles(C), [C]);
   const { state } = useAppContext();
-  const mode = state.activeContext.mode;
+  const mode = (state.activeContext?.mode ?? state.mode ?? 'business') as Mode;
+
+  const roleKey = SOCIAL_ROLE_KEYS[mode] ?? 'business';
+  const [role, cycleRole, roleCycles] = useDemoRole(roleKey);
+  const isAdmin = role === roleCycles[0];
+  const accent  = MODE_ACCENTS[mode] ?? C.accent;
 
   const [view, setView] = useState<SocialView>('feed');
   const [feedScope, setFeedScope] = useState<SocialScope>('brand');
@@ -950,12 +966,7 @@ export default function SocialScreen() {
   const [savedPostIds, setSavedPostIds]     = useState<Set<string>>(new Set());
   const [menuTarget, setMenuTarget]         = useState<FeedPost | null>(null);
 
-  const [role, setRole] = useState<'admin' | 'member' | 'visitor'>('admin');
-  const isAdmin = role === 'admin';
-  const cycleRole = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setRole(r => r === 'admin' ? 'member' : r === 'member' ? 'visitor' : 'admin');
-  }, []);
+  // isAdmin and cycleRole come from useDemoRole above
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
@@ -1107,16 +1118,14 @@ export default function SocialScreen() {
             </View>
           </View>
 
-          {/* Right: RBAC pill + filter icon */}
+          {/* Right: RolePill + filter icon */}
           <View style={[styles.topBarSide, { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 8, width: 'auto' as any }]}>
-            <Pressable
-              style={[styles.rbacPill, { backgroundColor: view === 'reels' ? 'rgba(255,255,255,0.15)' : C.surfacePressed }]}
+            <RolePill
+              role={role}
               onPress={cycleRole}
-            >
-              <Text style={[styles.rbacPillText, { color: view === 'reels' ? 'rgba(255,255,255,0.85)' : C.secondary }]}>
-                {role === 'admin' ? 'Admin' : role === 'member' ? 'Member' : 'Visitor'}
-              </Text>
-            </Pressable>
+              accentColor={accent}
+              isPrimary={isAdmin}
+            />
             {view === 'feed' && (
               <Pressable onPress={() => setShowScopeBar(v => !v)}>
                 <IconSymbol
@@ -1160,7 +1169,31 @@ export default function SocialScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 120 }}
           ListHeaderComponent={
-            <StoriesRow stories={stories} onStoryPress={() => {}} />
+            <>
+              {isAdmin && (
+                <View style={{ marginHorizontal: 12, marginTop: 8, marginBottom: 4, backgroundColor: accent + '12', borderRadius: 14, padding: 12, borderWidth: 1, borderColor: accent + '30', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                  <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: accent, alignItems: 'center', justifyContent: 'center' }}>
+                    <IconSymbol name="building.2.fill" size={18} color="#fff" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: accent }}>
+                      {mode === 'sports' ? 'Post as LU Oaklanders' :
+                       mode === 'education' ? 'Post as Lincoln University' :
+                       mode === 'community' ? 'Post as ICCLA' :
+                       mode === 'business' ? 'Post as KaNeXT' : 'Post as Brand'}
+                    </Text>
+                    <Text style={{ fontSize: 11, color: accent + 'CC', marginTop: 1 }}>Internal + public posts · brand management</Text>
+                  </View>
+                  <Pressable
+                    onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                    style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: accent, borderWidth: 1, borderColor: accent }}
+                  >
+                    <Text style={{ fontSize: 12, fontWeight: '700', color: '#fff' }}>Post</Text>
+                  </Pressable>
+                </View>
+              )}
+              <StoriesRow stories={stories} onStoryPress={() => {}} />
+            </>
           }
           renderItem={({ item }) => (
             <PostCard
@@ -1294,8 +1327,8 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     borderColor: C.separator,
   },
   scopePillActive: {
-    backgroundColor: C.label,
-    borderColor: C.label,
+    backgroundColor: C.activePill,
+    borderColor: C.activePill,
   },
   scopePillText: {
     fontSize: 13,
@@ -1303,7 +1336,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     color: C.secondary,
   },
   scopePillTextActive: {
-    color: C.bg,
+    color: C.activePillText,
     fontWeight: '600',
   },
 

@@ -15,9 +15,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { useDemoRole } from '@/utils/demo-role-store';
 import {
   FUNDS, GIVING_CAMPAIGNS, SAVED_PAYMENT_METHODS, MY_RECURRING_GIFTS,
   MY_PLEDGES, ALL_PLEDGES, GIVING_TRANSACTIONS, ADMIN_DASHBOARD,
@@ -67,8 +69,11 @@ export default function CommunityGiveScreen() {
   const topBarH   = insets.top + TOP_BAR_H;
   const pillsAnim = useRef(new Animated.Value(0)).current;
 
+  // ── RBAC role ───────────────────────────────────────────────────────────────
+  const [demoRole, cycleRole] = useDemoRole('community:give');
+  const isAdmin = demoRole === 'Pastor';
+
   // ── Core state ──────────────────────────────────────────────────────────────
-  const [isAdmin,      setIsAdmin]      = useState(true);
   const [activeTab,    setActiveTab]    = useState<GiveTab>('Give');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [pillsVisible, setPillsVisible] = useState(false);
@@ -143,16 +148,7 @@ export default function CommunityGiveScreen() {
     setExpandedCampaignId(null);
   }, [isAdmin, pillsAnim]);
 
-  // ── Role toggle ──────────────────────────────────────────────────────────────
-  const handleRoleToggle = useCallback(() => {
-    Haptics.selectionAsync();
-    const newAdmin = !isAdmin;
-    const newPills = pillsForTab(activeTab, newAdmin);
-    setIsAdmin(newAdmin);
-    setSelectedPill(newPills[0] ?? 'All');
-    setPillsVisible(false);
-    pillsAnim.setValue(0);
-  }, [isAdmin, activeTab, pillsAnim]);
+  // Role toggle now driven by useDemoRole via RolePill
 
   // ── Give submit ──────────────────────────────────────────────────────────────
   const handleGive = useCallback(() => {
@@ -1130,10 +1126,154 @@ export default function CommunityGiveScreen() {
     );
   }
 
+  // ── Pastor Fund Dashboard ────────────────────────────────────────────────────
+
+  function renderPastorFundDashboard() {
+    const YTD_TOTAL   = 287_450;
+    const BUDGET      = 350_000;
+    const budgetPct   = Math.round((YTD_TOTAL / BUDGET) * 100);
+    const TOP_DONORS  = [
+      { initials: 'RJ', name: 'Robert James',  amount: 12_500, hue: 200 },
+      { initials: 'MA', name: 'Mary Akintola', amount:  8_900, hue: 280 },
+      { initials: 'DS', name: 'David Selby',   amount:  6_200, hue: 160 },
+      { initials: 'CW', name: 'C. Williams',   amount:  4_750, hue: 30  },
+    ];
+    const CAMPAIGNS_DATA = [
+      { name: 'Annual Fund',     raised: 91_200,  goal: 125_000, color: '#7B68A0' },
+      { name: 'Capital Campaign', raised: 68_000, goal: 165_000, color: '#3B82F6' },
+      { name: 'Missions Fund',   raised: 41_300,  goal:  60_000, color: '#22C55E' },
+    ];
+    const FUNDS_SPLIT = [
+      { label: 'General / Tithe',    pct: 58, color: '#7B68A0' },
+      { label: 'Building Fund',      pct: 24, color: '#3B82F6' },
+      { label: 'Missions',           pct: 11, color: '#22C55E' },
+      { label: 'Special Needs',      pct:  7, color: '#F59E0B' },
+    ];
+    return (
+      <>
+        {/* YTD summary */}
+        <View style={{ backgroundColor: '#7B68A0', borderRadius: 16, padding: 20, marginBottom: 16 }}>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase', letterSpacing: 0.6 }}>Total Giving YTD</Text>
+          <Text style={{ fontSize: 36, fontWeight: '900', color: '#fff', marginTop: 4 }}>${(YTD_TOTAL / 1000).toFixed(1)}K</Text>
+          <View style={{ marginTop: 10 }}>
+            <View style={{ height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.25)' }}>
+              <View style={{ height: 6, borderRadius: 3, backgroundColor: '#fff', width: `${budgetPct}%` as any }} />
+            </View>
+            <Text style={{ fontSize: 12, color: 'rgba(255,255,255,0.72)', marginTop: 4 }}>{budgetPct}% of ${(BUDGET / 1000).toFixed(0)}K annual budget</Text>
+          </View>
+          <View style={{ flexDirection: 'row', gap: 12, marginTop: 12 }}>
+            {[
+              { label: 'This Month', value: '$24.8K' },
+              { label: 'Givers',     value: '312'    },
+              { label: 'Avg Gift',   value: '$148'   },
+            ].map(stat => (
+              <View key={stat.label} style={{ flex: 1, alignItems: 'center' }}>
+                <Text style={{ fontSize: 16, fontWeight: '800', color: '#fff' }}>{stat.value}</Text>
+                <Text style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', marginTop: 2 }}>{stat.label}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Fund split */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Restricted vs Unrestricted</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 16, gap: 12 }}>
+          {FUNDS_SPLIT.map(f => (
+            <View key={f.label}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: f.color }} />
+                  <Text style={{ fontSize: 13, color: C.label }}>{f.label}</Text>
+                </View>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: f.color }}>{f.pct}%</Text>
+              </View>
+              <View style={{ height: 4, borderRadius: 2, backgroundColor: C.separator }}>
+                <View style={{ height: 4, borderRadius: 2, backgroundColor: f.color, width: `${f.pct}%` as any }} />
+              </View>
+            </View>
+          ))}
+        </View>
+
+        {/* Campaign performance */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Campaign Performance</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden', marginBottom: 16 }}>
+          {CAMPAIGNS_DATA.map((camp, idx) => {
+            const pct = Math.round((camp.raised / camp.goal) * 100);
+            return (
+              <View key={camp.name} style={{
+                padding: 14,
+                borderBottomWidth: idx < CAMPAIGNS_DATA.length - 1 ? StyleSheet.hairlineWidth : 0,
+                borderBottomColor: C.separator, gap: 8,
+              }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{camp.name}</Text>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: camp.color }}>{pct}%</Text>
+                </View>
+                <View style={{ height: 5, borderRadius: 3, backgroundColor: C.separator }}>
+                  <View style={{ height: 5, borderRadius: 3, backgroundColor: camp.color, width: `${pct}%` as any }} />
+                </View>
+                <Text style={{ fontSize: 12, color: C.secondary }}>${(camp.raised / 1000).toFixed(1)}K raised  ·  ${(camp.goal / 1000).toFixed(0)}K goal</Text>
+              </View>
+            );
+          })}
+        </View>
+
+        {/* Top donors */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Top Donors</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden', marginBottom: 16 }}>
+          {TOP_DONORS.map((donor, idx) => (
+            <View key={donor.name} style={{
+              flexDirection: 'row', alignItems: 'center', gap: 12,
+              paddingHorizontal: 14, paddingVertical: 12,
+              borderBottomWidth: idx < TOP_DONORS.length - 1 ? StyleSheet.hairlineWidth : 0,
+              borderBottomColor: C.separator,
+            }}>
+              <View style={{ width: 38, height: 38, borderRadius: 19, backgroundColor: `hsl(${donor.hue},42%,32%)`, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 13, fontWeight: '800', color: '#fff' }}>{donor.initials}</Text>
+              </View>
+              <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: C.label }}>{donor.name}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: '#7B68A0' }}>${(donor.amount / 1000).toFixed(1)}K</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Quick actions */}
+        <View style={{ flexDirection: 'row', gap: 10, marginBottom: 24 }}>
+          {[
+            { label: 'Tax Receipts', icon: 'doc.text.fill'      },
+            { label: 'Export Data',  icon: 'square.and.arrow.up' },
+          ].map(action => (
+            <Pressable
+              key={action.label}
+              style={({ pressed }) => ({
+                flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
+                backgroundColor: pressed ? C.surfacePressed : C.surface,
+                borderRadius: 12, paddingVertical: 13,
+              })}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <IconSymbol name={action.icon as any} size={15} color={C.accent} />
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>{action.label}</Text>
+            </Pressable>
+          ))}
+        </View>
+
+        <View style={{ height: 40 }} />
+      </>
+    );
+  }
+
   function renderContent() {
-    if (activeTab === 'Give')      return renderGiveTab();
-    if (activeTab === 'Campaigns') return isAdmin ? renderCampaignsAdmin() : renderCampaignsMember();
-    return isAdmin ? renderHistoryAdmin() : renderHistoryMember();
+    if (!isAdmin) {
+      // Member: always show the give form
+      if (activeTab === 'Give')      return renderGiveTab();
+      if (activeTab === 'Campaigns') return renderCampaignsMember();
+      return renderHistoryMember();
+    }
+    // Pastor: Give tab shows fund dashboard
+    if (activeTab === 'Give')      return renderPastorFundDashboard();
+    if (activeTab === 'Campaigns') return renderCampaignsAdmin();
+    return renderHistoryAdmin();
   }
 
   // ── Layout ───────────────────────────────────────────────────────────────────
@@ -1189,8 +1329,14 @@ export default function CommunityGiveScreen() {
             </Pressable>
           </View>
 
-          {/* Right */}
-          <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end', gap: 10 }]}>
+          {/* Right: role pill + filter icon */}
+          <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end', gap: 8 }]}>
+            <RolePill
+              role={demoRole}
+              onPress={cycleRole}
+              accentColor="#7B68A0"
+              isPrimary={isAdmin}
+            />
             {pills.length > 0 && (
               <Pressable onPress={togglePills} hitSlop={12}>
                 <IconSymbol

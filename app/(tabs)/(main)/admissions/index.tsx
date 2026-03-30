@@ -17,9 +17,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { useDemoRole } from '@/utils/demo-role-store';
 import {
   APPLICANTS, ENROLLMENT_STAGES, ENROLLMENT_SUMMARY, CAMPAIGNS,
   getApplications, getApplicantHue, MOCK_INTERACTION_LOG, formatAidAmount,
@@ -37,23 +39,24 @@ const DETAIL_H  = 560;
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type AdmTab  = 'Pipeline' | 'Applications' | 'Campaigns';
-type AdmRole = 'Admin' | 'Student' | 'Parent';
+type AdmRole = 'Dean' | 'Prospective'; // kept for local reference; actual role driven by useDemoRole
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function pillsForTab(tab: AdmTab, role: AdmRole): string[] {
+function pillsForTab(tab: AdmTab, role: string): string[] {
+  const isDean = role === 'Dean';
   if (tab === 'Pipeline') {
-    return role === 'Admin'
+    return isDean
       ? ['All', 'Prospect', 'Inquiry', 'Applied', 'Under Review', 'Admitted', 'Deposited', 'Enrolled']
       : [];
   }
   if (tab === 'Applications') {
-    return role === 'Admin'
+    return isDean
       ? ['All', 'Unreviewed', 'In Review', 'Decision Ready', 'Decided']
       : [];
   }
   // Campaigns
-  return role === 'Admin'
+  return isDean
     ? ['All', 'Active', 'Upcoming', 'Completed', 'Planning', 'Campus Visits', 'Virtual', 'Digital', 'Social', 'Transfer', 'Scholarship', 'Alumni']
     : ['Upcoming', 'Campus Visits', 'Virtual'];
 }
@@ -509,7 +512,7 @@ export default function AdmissionsScreen() {
   const detailAnim = useRef(new Animated.Value(0)).current;
   const scrollRef  = useRef<ScrollView>(null);
 
-  const [role,              setRole]              = useState<AdmRole>('Admin');
+  const [role, cycleRole] = useDemoRole('education:admissions');
   const [activeTab,         setActiveTab]         = useState<AdmTab>('Pipeline');
   const [dropdownOpen,      setDropdownOpen]      = useState(false);
   const [pillsVisible,      setPillsVisible]      = useState(false);
@@ -590,17 +593,7 @@ export default function AdmissionsScreen() {
     setExpandedCampaignId(null);
   }, [role, pillsAnim]);
 
-  // Role cycle Admin → Student → Parent → Admin
-  const cycleRole = useCallback(() => {
-    Haptics.selectionAsync();
-    const next: AdmRole = role === 'Admin' ? 'Student' : role === 'Student' ? 'Parent' : 'Admin';
-    const newPills = pillsForTab(activeTab, next);
-    setRole(next);
-    setSelectedPill(newPills[0] ?? 'All');
-    setPillsVisible(false);
-    pillsAnim.setValue(0);
-    setExpandedCampaignId(null);
-  }, [role, activeTab, pillsAnim]);
+  // Role is now driven by useDemoRole('education:admissions')
 
   // Applicant detail
   const openApplicant = useCallback((a: ApplicantCard) => {
@@ -698,6 +691,149 @@ export default function AdmissionsScreen() {
             <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff' }}>View My Application →</Text>
           </Pressable>
         </View>
+        <View style={{ height: 40 }} />
+      </>
+    );
+  }
+
+  // ── Prospective (non-Dean) dashboard ──────────────────────────────────────
+
+  function renderProspectiveDashboard() {
+    const DOCS = [
+      { label: 'Official Transcript',      done: true  },
+      { label: 'SAT / ACT Scores',         done: true  },
+      { label: 'Personal Essay',           done: false },
+      { label: 'Recommendation Letter 1',  done: true  },
+      { label: 'Recommendation Letter 2',  done: false },
+      { label: 'FAFSA',                    done: true  },
+    ];
+    const NEXT_STEPS = [
+      { icon: 'clock.fill',              color: '#003A63', text: 'Decision expected by May 1, 2026' },
+      { icon: 'envelope.fill',           color: '#003A63', text: 'Check your email for updates' },
+      { icon: 'dollarsign.circle.fill',  color: '#22C55E', text: 'Your financial aid estimate is ready' },
+    ];
+    const AID = [
+      { label: 'Merit Scholarship',  amount: '$12,000' },
+      { label: 'Federal Grant',      amount: '$6,800'  },
+      { label: 'Work-Study',         amount: '$2,500'  },
+      { label: 'Subsidized Loan',    amount: '$5,500'  },
+    ];
+    return (
+      <>
+        {/* Status card */}
+        <View style={{ backgroundColor: '#003A6318', borderRadius: 16, padding: 20, marginBottom: 16, borderWidth: 1, borderColor: '#003A6344' }}>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: '#003A63', textTransform: 'uppercase', letterSpacing: 0.6 }}>Application Status</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 10 }}>
+            <View style={{ width: 14, height: 14, borderRadius: 7, backgroundColor: '#003A63' }} />
+            <Text style={{ fontSize: 22, fontWeight: '800', color: '#003A63' }}>Under Review</Text>
+          </View>
+          <Text style={{ fontSize: 13, color: C.secondary, marginTop: 6 }}>Submitted Feb 12, 2026  ·  Application ID: LU-2026-00847</Text>
+          <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
+            <View style={{ flex: 1, backgroundColor: C.surface, borderRadius: 10, padding: 10, alignItems: 'center' }}>
+              <Text style={{ fontSize: 15, fontWeight: '800', color: C.label }}>4.0</Text>
+              <Text style={{ fontSize: 10, color: C.muted, marginTop: 1 }}>GPA</Text>
+            </View>
+            <View style={{ flex: 1, backgroundColor: C.surface, borderRadius: 10, padding: 10, alignItems: 'center' }}>
+              <Text style={{ fontSize: 15, fontWeight: '800', color: C.label }}>1390</Text>
+              <Text style={{ fontSize: 10, color: C.muted, marginTop: 1 }}>SAT</Text>
+            </View>
+            <View style={{ flex: 1, backgroundColor: C.surface, borderRadius: 10, padding: 10, alignItems: 'center' }}>
+              <Text style={{ fontSize: 15, fontWeight: '800', color: C.label }}>Comp Sci</Text>
+              <Text style={{ fontSize: 10, color: C.muted, marginTop: 1 }}>Major</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Document checklist */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Required Documents</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden', marginBottom: 16 }}>
+          {DOCS.map((doc, idx) => (
+            <View key={doc.label} style={{
+              flexDirection: 'row', alignItems: 'center', gap: 12,
+              paddingHorizontal: 14, paddingVertical: 12,
+              borderBottomWidth: idx < DOCS.length - 1 ? StyleSheet.hairlineWidth : 0,
+              borderBottomColor: C.separator,
+            }}>
+              <IconSymbol
+                name={doc.done ? 'checkmark.circle.fill' : 'circle'}
+                size={20}
+                color={doc.done ? '#22C55E' : C.muted}
+              />
+              <Text style={{ flex: 1, fontSize: 14, color: C.label }}>{doc.label}</Text>
+              <Text style={{ fontSize: 12, color: doc.done ? '#22C55E' : '#EF4444', fontWeight: '600' }}>
+                {doc.done ? 'Received' : 'Pending'}
+              </Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Financial aid estimate */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Estimated Aid Package</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 16, gap: 10 }}>
+          {AID.map((item, idx) => (
+            <View key={item.label} style={{
+              flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+              paddingBottom: idx < AID.length - 1 ? 10 : 0,
+              borderBottomWidth: idx < AID.length - 1 ? StyleSheet.hairlineWidth : 0,
+              borderBottomColor: C.separator,
+            }}>
+              <Text style={{ fontSize: 14, color: C.label }}>{item.label}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: '#003A63' }}>{item.amount}</Text>
+            </View>
+          ))}
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingTop: 4 }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>Total Estimated Aid</Text>
+            <Text style={{ fontSize: 16, fontWeight: '800', color: '#22C55E' }}>$26,800</Text>
+          </View>
+        </View>
+
+        {/* Next steps */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Next Steps</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden', marginBottom: 16 }}>
+          {NEXT_STEPS.map((step, idx) => (
+            <View key={idx} style={{
+              flexDirection: 'row', alignItems: 'center', gap: 12,
+              paddingHorizontal: 14, paddingVertical: 13,
+              borderBottomWidth: idx < NEXT_STEPS.length - 1 ? StyleSheet.hairlineWidth : 0,
+              borderBottomColor: C.separator,
+            }}>
+              <View style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: step.color + '18', alignItems: 'center', justifyContent: 'center' }}>
+                <IconSymbol name={step.icon as any} size={15} color={step.color} />
+              </View>
+              <Text style={{ flex: 1, fontSize: 13, color: C.label, lineHeight: 18 }}>{step.text}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* School info */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>About Lincoln University</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 16, gap: 12 }}>
+          {[
+            { label: 'Enrollment',       value: '4,200 students'  },
+            { label: 'Acceptance Rate',  value: '63%'             },
+            { label: 'Avg Financial Aid', value: '$24,000 / yr'   },
+            { label: 'Student/Faculty',  value: '14:1'            },
+          ].map(item => (
+            <View key={item.label} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={{ fontSize: 14, color: C.secondary }}>{item.label}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{item.value}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Contact Admissions CTA */}
+        <Pressable
+          style={({ pressed }) => ({
+            flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+            backgroundColor: pressed ? '#003A63cc' : '#003A63',
+            borderRadius: 12, paddingVertical: 14, marginBottom: 12,
+          })}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        >
+          <IconSymbol name="phone.fill" size={16} color="#fff" />
+          <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff' }}>Contact Admissions Office</Text>
+        </Pressable>
+
         <View style={{ height: 40 }} />
       </>
     );
@@ -1463,17 +1599,17 @@ export default function AdmissionsScreen() {
   }
 
   function renderContent() {
+    const isDean = role === 'Dean';
     if (activeTab === 'Pipeline') {
-      if (role === 'Admin') return renderPipelineAdmin();
-      return renderPipelineLocked(role);
+      if (isDean) return renderPipelineAdmin();
+      return renderProspectiveDashboard();
     }
     if (activeTab === 'Applications') {
-      if (role === 'Admin')   return renderApplicationsAdmin();
-      if (role === 'Student') return renderApplicationsStudent();
-      return renderApplicationsParent();
+      if (isDean) return renderApplicationsAdmin();
+      return renderApplicationsStudent();
     }
     // Campaigns
-    if (role === 'Admin') return renderCampaignsAdmin();
+    if (isDean) return renderCampaignsAdmin();
     return renderCampaignsMember();
   }
 
@@ -1496,7 +1632,7 @@ export default function AdmissionsScreen() {
       </ScrollView>
 
       {/* FAB — Pipeline: Add Prospect */}
-      {role === 'Admin' && activeTab === 'Pipeline' && (
+      {role === 'Dean' && activeTab === 'Pipeline' && (
         <Pressable
           style={[s.fab, { bottom: insets.bottom + 80 }]}
           onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setShowProspectCard(true); }}
@@ -1507,7 +1643,7 @@ export default function AdmissionsScreen() {
       )}
 
       {/* FAB — Campaigns: Create Campaign */}
-      {role === 'Admin' && activeTab === 'Campaigns' && (
+      {role === 'Dean' && activeTab === 'Campaigns' && (
         <Pressable
           style={[s.fab, { bottom: insets.bottom + 80 }]}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
@@ -1520,9 +1656,9 @@ export default function AdmissionsScreen() {
       {/* Absolute top bar */}
       <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         <View style={s.topBar}>
-          {/* Left: hamburger (admin only) */}
+          {/* Left: hamburger (Dean only) */}
           <View style={s.topBarSide}>
-            {role === 'Admin' && (
+            {role === 'Dean' && (
               <Pressable
                 onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
                 hitSlop={12}
@@ -1543,16 +1679,14 @@ export default function AdmissionsScreen() {
             </Pressable>
           </View>
 
-          {/* Right: role cycle pill + filter icon */}
+          {/* Right: role pill + filter icon */}
           <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end', gap: 10 }]}>
-            <Pressable
-              style={[s.rbacToggle, { backgroundColor: role === 'Admin' ? C.accent : C.surfacePressed }]}
+            <RolePill
+              role={role}
               onPress={cycleRole}
-            >
-              <Text style={[s.rbacToggleText, { color: role === 'Admin' ? '#fff' : C.secondary }]}>
-                {role}
-              </Text>
-            </Pressable>
+              accentColor="#003A63"
+              isPrimary={role === 'Dean'}
+            />
             {pills.length > 0 && (
               <Pressable onPress={togglePills} hitSlop={12}>
                 <IconSymbol
@@ -1630,7 +1764,7 @@ export default function AdmissionsScreen() {
             {selectedApplicant && (
               <ApplicantDetailSheet
                 applicant={{ ...selectedApplicant, stage: applicantStages[selectedApplicant.id] ?? selectedApplicant.stage }}
-                isAdmin={role === 'Admin'}
+                isAdmin={role === 'Dean'}
                 onClose={closeDetail}
                 onMoveStage={(stage) => moveStage(selectedApplicant.id, stage)}
                 counselorNotes={counselorNotes}

@@ -23,6 +23,8 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { GlassView } from '@/components/ui/glass-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { RolePill } from '@/components/ui/role-pill';
+import { useDemoRole } from '@/utils/demo-role-store';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { setPendingEvalQuery } from '@/utils/global-nexus-state';
@@ -43,7 +45,6 @@ const TOP_BAR_H  = 52;
 const PILL_ROW_H = 48;
 
 type Tab  = 'Board' | 'Pool' | 'Portal';
-type Role = 'Coach' | 'Recruit';
 const TABS: Tab[]   = ['Board', 'Pool', 'Portal'];
 
 const POSITIONS    = ['All', 'PG', 'SG', 'SF', 'PF', 'C'];
@@ -542,9 +543,12 @@ export default function RecruitsScreen() {
   const s      = useMemo(() => makeStyles(C), [C]);
   const router = useRouter();
 
+  // ── RBAC demo role ──
+  const [role, cycleRole] = useDemoRole('sports:recruits');
+  const isCoachRole = role === 'Coach';
+
   // ── Core state ──
   const [activeTab, setActiveTab]       = useState<Tab>('Board');
-  const [role, setRole]                 = useState<Role>('Coach');
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // ── Board state ──
@@ -593,11 +597,7 @@ export default function RecruitsScreen() {
     [],
   );
 
-  // ── Role cycle ──
-  const cycleRole = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setRole((r) => (r === 'Coach' ? 'Recruit' : 'Coach'));
-  }, []);
+  // cycleRole provided by useDemoRole above
 
   // ── Tab select ──
   const handleTabSelect = useCallback((tab: Tab) => {
@@ -706,25 +706,12 @@ export default function RecruitsScreen() {
         </View>
 
         {/* Right: role pill */}
-        <Pressable
+        <RolePill
+          role={role}
           onPress={cycleRole}
-          style={[
-            s.rolePill,
-            {
-              backgroundColor:
-                role === 'Coach' ? '#003A63' + '18' : '#3B82F6' + '18',
-            },
-          ]}
-        >
-          <Text
-            style={[
-              s.rolePillText,
-              { color: role === 'Coach' ? '#003A63' : '#3B82F6' },
-            ]}
-          >
-            {role}
-          </Text>
-        </Pressable>
+          accentColor="#990000"
+          isPrimary={isCoachRole}
+        />
       </View>
 
       {/* Pill row */}
@@ -851,7 +838,7 @@ export default function RecruitsScreen() {
   // ── Board Tab ──
   const renderBoard = () => {
     // Recruit role: locked
-    if (role === 'Recruit') {
+    if (!isCoachRole) {
       return (
         <View style={s.lockedWrap}>
           <IconSymbol name="lock.fill" size={40} color={C.muted} />
@@ -864,7 +851,7 @@ export default function RecruitsScreen() {
           </Text>
           <Pressable
             onPress={cycleRole}
-            style={[s.switchBtn, { backgroundColor: '#3B82F6' }]}
+            style={[s.switchBtn, { backgroundColor: '#990000' }]}
           >
             <Text style={{ color: '#fff', fontWeight: '700', fontSize: 14 }}>
               Switch to Recruit View
@@ -1364,6 +1351,70 @@ export default function RecruitsScreen() {
   // ── Pool Tab — Recruit View ──
   const renderPoolRecruit = () => (
     <View style={{ paddingHorizontal: 16, gap: 16 }}>
+      {/* Schools Looking At Me */}
+      <GlassView tier={1} style={{ padding: 14 }}>
+        <Text style={{ fontSize: 15, fontWeight: '700', color: C.label, marginBottom: 12 }}>
+          Schools Looking At Me
+        </Text>
+        {[
+          { school: 'Lincoln University', interest: 'Offered',   color: '#5A8A6E' },
+          { school: 'Hampton University', interest: 'Watched',   color: '#3B82F6' },
+          { school: 'Howard University',  interest: 'Contacted', color: '#F59E0B' },
+        ].map((item, i, arr) => (
+          <View
+            key={item.school}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingVertical: 10,
+              borderBottomWidth: i < arr.length - 1 ? StyleSheet.hairlineWidth : 0,
+              borderBottomColor: C.separator,
+            }}
+          >
+            <View style={{
+              width: 36, height: 36, borderRadius: 18,
+              backgroundColor: item.color + '20',
+              alignItems: 'center', justifyContent: 'center', marginRight: 12,
+            }}>
+              <IconSymbol name="building.2.fill" size={16} color={item.color} />
+            </View>
+            <Text style={{ flex: 1, fontSize: 14, fontWeight: '500', color: C.label }}>
+              {item.school}
+            </Text>
+            <View style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, backgroundColor: item.color + '20' }}>
+              <Text style={{ fontSize: 12, fontWeight: '700', color: item.color }}>{item.interest}</Text>
+            </View>
+          </View>
+        ))}
+      </GlassView>
+
+      {/* Coach Activity */}
+      <GlassView tier={1} style={{ padding: 14 }}>
+        <Text style={{ fontSize: 15, fontWeight: '700', color: C.label, marginBottom: 10 }}>
+          Coach Activity
+        </Text>
+        {[
+          { label: 'Last Viewed Profile', value: '2 days ago',  icon: 'eye.fill' },
+          { label: 'Last Message',        value: 'Mar 27',      icon: 'message.fill' },
+          { label: 'Last Call',           value: 'Mar 20',      icon: 'phone.fill' },
+        ].map((row, i, arr) => (
+          <View
+            key={row.label}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingVertical: 8,
+              gap: 10,
+              borderBottomWidth: i < arr.length - 1 ? StyleSheet.hairlineWidth : 0,
+              borderBottomColor: C.separator,
+            }}
+          >
+            <IconSymbol name={row.icon as any} size={14} color={C.accent} />
+            <Text style={{ flex: 1, fontSize: 13, color: C.secondary }}>{row.label}</Text>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>{row.value}</Text>
+          </View>
+        ))}
+      </GlassView>
       {/* Profile completion */}
       <GlassView tier={1} style={{ padding: 16 }}>
         <View
@@ -1934,12 +1985,12 @@ export default function RecruitsScreen() {
         showsVerticalScrollIndicator={false}
       >
         {activeTab === 'Board'  && renderBoard()}
-        {activeTab === 'Pool'   && (role === 'Recruit' ? renderPoolRecruit() : renderPoolCoach())}
+        {activeTab === 'Pool'   && (!isCoachRole ? renderPoolRecruit() : renderPoolCoach())}
         {activeTab === 'Portal' && renderPortal()}
       </ScrollView>
 
       {/* FAB — Board tab, Coach role only */}
-      {activeTab === 'Board' && role === 'Coach' && (
+      {activeTab === 'Board' && isCoachRole && (
         <Pressable
           onPress={() =>
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)

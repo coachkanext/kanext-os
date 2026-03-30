@@ -16,10 +16,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { useDemoRole } from '@/utils/demo-role-store';
 import {
   PROSPECTS, CAMPAIGNS, VOLUNTEER_TEAMS, OUTREACH_OPPORTUNITIES,
   MY_OUTREACH_STATS, INVITE_LEADERBOARD, PIPELINE_STAGES,
@@ -434,7 +436,8 @@ export default function CommunityOutreachScreen() {
   const pillsAnim  = useRef(new Animated.Value(0)).current;
   const detailAnim = useRef(new Animated.Value(0)).current;
 
-  const [isAdmin,            setIsAdmin]            = useState(true);
+  const [demoRole, cycleRole] = useDemoRole('community:outreach');
+  const isAdmin = demoRole === 'Pastor';
   const [activeTab,          setActiveTab]          = useState<OutreachTab>('Pipeline');
   const [dropdownOpen,       setDropdownOpen]       = useState(false);
   const [pillsVisible,       setPillsVisible]       = useState(false);
@@ -443,6 +446,7 @@ export default function CommunityOutreachScreen() {
   const [expandedCampaignId, setExpandedCampaignId] = useState<string | null>(null);
   const [expandedTeamId,     setExpandedTeamId]     = useState<string | null>(null);
   const [showConnectCard,    setShowConnectCard]    = useState(false);
+  const [visitorCheckedIn,   setVisitorCheckedIn]   = useState(false);
   const [prospectStages,     setProspectStages]     = useState<Record<string, ProspectStage>>(
     () => Object.fromEntries(PROSPECTS.map(p => [p.id, p.stage]))
   );
@@ -498,18 +502,7 @@ export default function CommunityOutreachScreen() {
     setExpandedTeamId(null);
   }, [isAdmin, pillsAnim]);
 
-  // Role toggle
-  const handleRoleToggle = useCallback(() => {
-    Haptics.selectionAsync();
-    const newAdmin = !isAdmin;
-    const newPills = pillsForTab(activeTab, newAdmin);
-    setIsAdmin(newAdmin);
-    setSelectedPill(newPills[0] ?? 'All');
-    setPillsVisible(false);
-    pillsAnim.setValue(0);
-    setExpandedCampaignId(null);
-    setExpandedTeamId(null);
-  }, [isAdmin, activeTab, pillsAnim]);
+  // Role toggle is now driven by useDemoRole via RolePill
 
   // Prospect detail
   const openProspect = useCallback((p: Prospect) => {
@@ -661,31 +654,122 @@ export default function CommunityOutreachScreen() {
   }
 
   function renderPipelineMember() {
+    const checkedIn = visitorCheckedIn;
+    const setCheckedIn = setVisitorCheckedIn;
+    const EVENTS = [
+      { name: 'Sunday Worship Service',       date: 'Apr 6, 2026',  time: '10:00 AM' },
+      { name: 'Good Friday Service',          date: 'Apr 18, 2026', time: '7:00 PM'  },
+      { name: 'Easter Celebration',           date: 'Apr 20, 2026', time: '9:00 AM'  },
+    ];
+    const TEAM = [
+      { name: 'Rev. Marcus Adeyemi',  role: 'Senior Pastor',   hue: 200 },
+      { name: 'Deacon Ruth Okafor',   role: 'Community Care',  hue: 160 },
+      { name: 'Sis. Naomi Wright',    role: 'Hospitality Lead', hue: 280 },
+    ];
     return (
       <>
-        <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 20, marginTop: 8, alignItems: 'center', gap: 10 }}>
-          <IconSymbol name="lock.fill" size={28} color={C.muted} />
-          <Text style={{ fontSize: 15, fontWeight: '600', color: C.label }}>Pipeline is admin-only</Text>
-          <Text style={{ fontSize: 13, color: C.secondary, textAlign: 'center', lineHeight: 18 }}>
-            Only pastors and designated leaders can view and manage the visitor pipeline.
+        {/* Welcome + Check-In card */}
+        <View style={{ backgroundColor: '#7B68A0', borderRadius: 16, padding: 20, marginBottom: 16 }}>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase', letterSpacing: 0.6 }}>Welcome</Text>
+          <Text style={{ fontSize: 22, fontWeight: '800', color: '#fff', marginTop: 4 }}>
+            {checkedIn ? "You're checked in!" : 'Glad you\'re here'}
           </Text>
+          <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.72)', marginTop: 4, lineHeight: 18 }}>
+            {checkedIn
+              ? 'Your visit has been recorded. Someone from our welcome team will be in touch soon.'
+              : 'Tap below to check in and let us know you visited today.'}
+          </Text>
+          <Pressable
+            style={{
+              marginTop: 16, borderRadius: 12, paddingVertical: 13, alignItems: 'center',
+              backgroundColor: checkedIn ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.15)',
+              borderWidth: checkedIn ? 0 : 1, borderColor: 'rgba(255,255,255,0.3)',
+            }}
+            onPress={() => {
+              if (!checkedIn) {
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                setCheckedIn(true);
+              }
+            }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              {checkedIn && <IconSymbol name="checkmark.circle.fill" size={18} color="#fff" />}
+              <Text style={{ fontSize: 15, fontWeight: '700', color: '#fff' }}>
+                {checkedIn ? 'Checked In' : "I'm Here Today"}
+              </Text>
+            </View>
+          </Pressable>
         </View>
 
-        <Text style={{ fontSize: 11, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 24, marginBottom: 10 }}>
-          My Invite Impact
-        </Text>
-        <View style={{ flexDirection: 'row', gap: 10 }}>
-          {([
-            { label: 'Invited',  value: MY_OUTREACH_STATS.invitesSent },
-            { label: 'Visited',  value: MY_OUTREACH_STATS.visited },
-            { label: 'Joined',   value: MY_OUTREACH_STATS.joined },
-          ] as const).map(stat => (
-            <View key={stat.label} style={{ flex: 1, backgroundColor: C.surface, borderRadius: 12, padding: 12, alignItems: 'center' }}>
-              <Text style={{ fontSize: 22, fontWeight: '800', color: C.label }}>{stat.value}</Text>
-              <Text style={{ fontSize: 11, color: C.secondary, marginTop: 2 }}>{stat.label}</Text>
+        {/* Community values */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Our Community</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 16, gap: 10 }}>
+          <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>Immanuel Community Church</Text>
+          <Text style={{ fontSize: 13, color: C.secondary, lineHeight: 19 }}>
+            We are a vibrant, multi-cultural church family committed to loving God, loving people, and serving our community. Everyone is welcome here.
+          </Text>
+          {[
+            { icon: 'heart.fill',        color: '#7B68A0', text: 'Authentic community & belonging' },
+            { icon: 'figure.walk',       color: '#7B68A0', text: 'Sunday services at 10:00 AM' },
+            { icon: 'hands.sparkles.fill', color: '#7B68A0', text: 'Dozens of ways to get involved' },
+          ].map(item => (
+            <View key={item.text} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <View style={{ width: 30, height: 30, borderRadius: 9, backgroundColor: item.color + '18', alignItems: 'center', justifyContent: 'center' }}>
+                <IconSymbol name={item.icon as any} size={14} color={item.color} />
+              </View>
+              <Text style={{ flex: 1, fontSize: 13, color: C.label }}>{item.text}</Text>
             </View>
           ))}
         </View>
+
+        {/* Upcoming events */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Upcoming Services</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden', marginBottom: 16 }}>
+          {EVENTS.map((evt, idx) => (
+            <View key={evt.name} style={{
+              flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 13,
+              borderBottomWidth: idx < EVENTS.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator,
+            }}>
+              <View style={{ width: 38, height: 38, borderRadius: 10, backgroundColor: '#7B68A020', alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
+                <IconSymbol name="calendar" size={16} color="#7B68A0" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{evt.name}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>{evt.date}  ·  {evt.time}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+
+        {/* Meet the team */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Meet the Team</Text>
+        <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
+          {TEAM.map(person => (
+            <View key={person.name} style={{ flex: 1, backgroundColor: C.surface, borderRadius: 14, padding: 12, alignItems: 'center', gap: 6 }}>
+              <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: `hsl(${person.hue},42%,32%)`, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 16, fontWeight: '800', color: '#fff' }}>
+                  {person.name.split(' ').map(w => w[0]).slice(0, 2).join('')}
+                </Text>
+              </View>
+              <Text style={{ fontSize: 12, fontWeight: '600', color: C.label, textAlign: 'center' }} numberOfLines={2}>{person.name}</Text>
+              <Text style={{ fontSize: 10, color: C.secondary, textAlign: 'center' }} numberOfLines={1}>{person.role}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Get Connected CTA */}
+        <Pressable
+          style={({ pressed }) => ({
+            flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+            backgroundColor: pressed ? '#7B68A0cc' : '#7B68A0',
+            borderRadius: 12, paddingVertical: 14, marginBottom: 12,
+          })}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        >
+          <IconSymbol name="person.badge.plus" size={16} color="#fff" />
+          <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff' }}>Get Connected</Text>
+        </Pressable>
+
         <View style={{ height: 40 }} />
       </>
     );
@@ -1267,8 +1351,14 @@ export default function CommunityOutreachScreen() {
             </Pressable>
           </View>
 
-          {/* Right: filter icon */}
-          <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end', gap: 10 }]}>
+          {/* Right: role pill + filter icon */}
+          <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end', gap: 8 }]}>
+            <RolePill
+              role={demoRole}
+              onPress={cycleRole}
+              accentColor="#7B68A0"
+              isPrimary={isAdmin}
+            />
             {pills.length > 0 && (
               <Pressable onPress={togglePills} hitSlop={12}>
                 <IconSymbol

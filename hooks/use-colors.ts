@@ -4,31 +4,37 @@
  * All component files import { useColors, type ComponentColors } from here.
  *
  * Palette: Section 13 of KaNeXT_Product_Knowledge.md (canonical spec).
- * Light: pure white BG, Apple gray surface, #3B82F6 primary.
- * Dark: OLED true black, #1A1A1A surface, #60A5FA primary.
+ * THREE COLORS ONLY: white (#FFFFFF), black (#000000), blue (#3B82F6).
+ * Blue = interactive only. Black = text + active icons. White = all surfaces.
+ * Green/red/amber = semantic status only (W/L, success/danger, deltas).
+ * Active pills: black fill, white text. NO mode accent in chrome.
  */
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export const LIGHT_PALETTE = {
   bg: '#FFFFFF',
-  surface: '#F5F5F7',
-  surfacePressed: 'rgba(0,0,0,0.04)',
+  surface: '#FFFFFF',           // cards/tiles — same as bg; use cardBorder to define edges
+  surfacePressed: 'rgba(0,0,0,0.05)',
+  cardBorder: 'rgba(0,0,0,0.08)', // subtle border for white cards on white bg
   label: '#111111',
   secondary: '#6B7280',
   muted: '#9CA3AF',
   separator: '#E5E7EB',
   divider: '#E5E7EB',
   inputBorder: '#D1D5DB',
-  // Primary / accent
-  accent: '#3B82F6',        // electric blue — primary interactive
-  accentLight: '#60A5FA',   // soft blue
-  // Semantic
+  // Interactive — blue ONLY
+  accent: '#3B82F6',            // electric blue — ALL interactive elements
+  accentLight: '#60A5FA',
+  // Active chrome — black fill
+  activePill: '#111111',        // active tab/filter pill bg
+  activePillText: '#FFFFFF',    // active tab/filter pill text
+  // Semantic — status only
   green: '#22C55E',
   red: '#EF4444',
   gold: '#C5A55A',
   amber: '#F59E0B',
-  // Legacy aliases — keeps existing components working without edits
+  // Legacy aliases — keeps existing components compiling
   blue: '#3B82F6',
   purple: '#3B82F6',
   cyan: '#60A5FA',
@@ -41,23 +47,27 @@ export const LIGHT_PALETTE = {
   footer: '#FFFFFF',
   footerDivider: '#E5E7EB',
   // Chat bubbles
-  bubbleSent: '#F5F5F7',
+  bubbleSent: '#F0F0F2',
   bubbleReceived: 'rgba(0,0,0,0.04)',
 } as const;
 
 export const DARK_PALETTE = {
   bg: '#000000',
-  surface: '#1A1A1A',
+  surface: '#111111',           // slightly lighter than bg — subtle card elevation
   surfacePressed: 'rgba(255,255,255,0.06)',
+  cardBorder: 'rgba(255,255,255,0.08)',
   label: '#F5F5F7',
   secondary: '#6B7280',
   muted: '#4B5563',
   separator: '#2A2A2A',
   divider: '#2A2A2A',
   inputBorder: '#333333',
-  // Primary / accent
-  accent: '#60A5FA',        // soft blue — primary interactive in dark
+  // Interactive — blue only
+  accent: '#60A5FA',            // soft blue for dark
   accentLight: '#93C5FD',
+  // Active chrome
+  activePill: '#F5F5F7',        // light fill in dark mode
+  activePillText: '#111111',
   // Semantic
   green: '#4ADE80',
   red: '#F87171',

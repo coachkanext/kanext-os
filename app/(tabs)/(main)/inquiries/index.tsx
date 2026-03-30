@@ -1,6 +1,8 @@
 /**
  * Business Inquiries — Pipeline / Contacts / Campaigns
  * KaNeXT Operations LLC
+ * RBAC demo: CEO sees full CRM pipeline + lead scoring + forecast;
+ * Client sees their engagement card, proposals, invoices, shared docs.
  */
 
 import React, { useState, useRef, useCallback, useMemo } from 'react';
@@ -24,11 +26,12 @@ import {
   type Deal, type DealStage, type BizContact, type Campaign,
 } from '@/data/mock-business-ops';
 
-const TOP_BAR_H = 52;
-const PILLS_H   = 48;
+const TOP_BAR_H  = 52;
+const PILLS_H    = 48;
+const ACCENT_INQ = '#1D9BF0';
 
 type InqTab  = 'Pipeline' | 'Contacts' | 'Campaigns';
-type InqRole = 'Admin' | 'Sales' | 'Employee';
+type InqRole = 'CEO' | 'Client';
 
 const PIPELINE_STAGES: DealStage[] = ['New', 'Qualified', 'Proposal', 'Negotiation', 'Won', 'Lost'];
 
@@ -57,7 +60,7 @@ export default function InquiriesScreen() {
   const topBarH = insets.top + TOP_BAR_H;
 
   const [activeTab,    setActiveTab]    = useState<InqTab>('Pipeline');
-  const [role,         setRole]         = useState<InqRole>('Admin');
+  const [role,         setRole]         = useState<InqRole>('CEO');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [pillsVisible, setPillsVisible] = useState(false);
   const [selectedPill, setSelectedPill] = useState('All');
@@ -68,9 +71,11 @@ export default function InquiriesScreen() {
   const [collapsedStages,   setCollapsedStages]   = useState<Set<DealStage>>(new Set(['Won', 'Lost']));
   const [searchQuery,       setSearchQuery]       = useState('');
 
+  const isCEO = role === 'CEO';
+
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
-  const pills = useMemo(() => pillsForTab(activeTab), [activeTab]);
+  const pills = useMemo(() => (isCEO ? pillsForTab(activeTab) : []), [activeTab, isCEO]);
 
   function togglePills() {
     Haptics.selectionAsync();
@@ -102,7 +107,7 @@ export default function InquiriesScreen() {
     });
   }
 
-  const contentPaddingTop = topBarH + (pillsVisible ? PILLS_H : 0) + 8;
+  const contentPaddingTop = topBarH + (isCEO && pillsVisible ? PILLS_H : 0) + 8;
 
   // ── PIPELINE ─────────────────────────────────────────────────────────────────
 
@@ -786,15 +791,216 @@ export default function InquiriesScreen() {
     );
   }
 
+  // ── CLIENT VIEW ──────────────────────────────────────────────────────────────
+
+  function renderClientView() {
+    const CLIENT_PROPOSALS = [
+      { id: 'p1', title: 'KaNeXT OS — Starter Package',     amount: 4800,  status: 'Accepted',  expiry: '2026-04-15', statusColor: C.green as string },
+      { id: 'p2', title: 'KaNeXT Analytics Add-On',          amount: 1200,  status: 'In Review',  expiry: '2026-04-30', statusColor: '#F59E0B' },
+      { id: 'p3', title: 'Custom Branding & White-Label',     amount: 3500,  status: 'Draft',      expiry: '2026-05-10', statusColor: C.secondary as string },
+    ];
+    const CLIENT_INVOICES = [
+      { id: 'inv1', number: 'INV-1042', desc: 'Onboarding & Setup',       amount: 2400, status: 'Paid',   due: '2026-03-01', statusColor: C.green as string },
+      { id: 'inv2', number: 'INV-1055', desc: 'Monthly Subscription (Apr)', amount: 800,  status: 'Due',    due: '2026-04-01', statusColor: '#F59E0B' },
+      { id: 'inv3', number: 'INV-1061', desc: 'Analytics Add-On (Pro-rate)', amount: 350,  status: 'Pending', due: '2026-04-15', statusColor: C.secondary as string },
+    ];
+    const CLIENT_DOCS = [
+      { id: 'd1', title: 'Master Services Agreement',  type: 'PDF',  icon: 'doc.fill',        date: '2026-01-10' },
+      { id: 'd2', title: 'Statement of Work v2',        type: 'PDF',  icon: 'doc.text.fill',   date: '2026-02-14' },
+      { id: 'd3', title: 'Onboarding Checklist',        type: 'DOC',  icon: 'checklist',        date: '2026-03-05' },
+      { id: 'd4', title: 'Product Roadmap Q2 2026',     type: 'PDF',  icon: 'chart.bar.doc.horizontal', date: '2026-03-18' },
+    ];
+    const CLIENT_ACTIVITY = [
+      { id: 'a1', text: 'Proposal for Analytics Add-On sent for review',      time: '2 days ago' },
+      { id: 'a2', text: 'Onboarding call completed — recording shared',        time: '1 week ago' },
+      { id: 'a3', text: 'INV-1042 marked paid — thank you!',                   time: '2 weeks ago' },
+    ];
+
+    return (
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 120 }}>
+
+        {/* ── My Engagement Card ────────────────────────────────────────── */}
+        <View style={{ marginHorizontal: 16, marginBottom: 16 }}>
+          <GlassView tier={1} style={[s.card, { backgroundColor: '#0D2137', padding: 0, overflow: 'hidden' }]}>
+            {/* Header banner */}
+            <View style={{ backgroundColor: ACCENT_INQ, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 12 }}>
+              <View style={[s.row, { marginBottom: 4, gap: 8 }]}>
+                <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                  <Text style={{ fontSize: 10, fontWeight: '700', color: '#fff', letterSpacing: 0.5 }}>ACTIVE ENGAGEMENT</Text>
+                </View>
+              </View>
+              <Text style={{ fontSize: 18, fontWeight: '800', color: '#fff', marginBottom: 2 }}>Tougaloo College Athletics</Text>
+              <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)' }}>KaNeXT OS — Starter Package</Text>
+            </View>
+
+            {/* Rep + phase */}
+            <View style={{ padding: 16, gap: 12 }}>
+              <View style={[s.row, { gap: 12 }]}>
+                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#1D4E6E', alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff' }}>SR</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: '#fff' }}>Sam Richardson</Text>
+                  <Text style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>Your Account Rep · sam@kanext.co</Text>
+                </View>
+                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                  style={{ backgroundColor: ACCENT_INQ, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10 }}>
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: '#fff' }}>Contact</Text>
+                </Pressable>
+              </View>
+
+              {/* Phase + progress */}
+              <View style={{ gap: 6 }}>
+                <View style={[s.row]}>
+                  <Text style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', flex: 1 }}>Current Phase</Text>
+                  <View style={{ backgroundColor: `${ACCENT_INQ}40`, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: ACCENT_INQ }}>Onboarding</Text>
+                  </View>
+                </View>
+                <View style={{ height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.12)', overflow: 'hidden' }}>
+                  <View style={{ height: 6, borderRadius: 3, backgroundColor: ACCENT_INQ, width: '35%' }} />
+                </View>
+                <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>35% complete · Est. go-live Apr 18</Text>
+              </View>
+            </View>
+          </GlassView>
+        </View>
+
+        {/* ── Recent Activity ────────────────────────────────────────────── */}
+        <View style={{ marginHorizontal: 16, marginBottom: 16 }}>
+          <Text style={[s.subHeader, { color: C.secondary as string, marginBottom: 8, paddingHorizontal: 2 }]}>Recent Activity</Text>
+          <GlassView tier={1} style={{ borderRadius: 16, overflow: 'hidden' }}>
+            {CLIENT_ACTIVITY.map((item, i) => (
+              <View key={item.id} style={[
+                s.row, { padding: 14, gap: 10 },
+                i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string },
+              ]}>
+                <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: ACCENT_INQ, marginTop: 2 }} />
+                <Text style={[s.bodySmall, { color: C.label, flex: 1, lineHeight: 18 }]}>{item.text}</Text>
+                <Text style={[s.bodySmall, { color: C.muted as string, fontSize: 11 }]}>{item.time}</Text>
+              </View>
+            ))}
+          </GlassView>
+        </View>
+
+        {/* ── Proposals & Quotes ─────────────────────────────────────────── */}
+        <View style={{ marginHorizontal: 16, marginBottom: 16 }}>
+          <Text style={[s.subHeader, { color: C.secondary as string, marginBottom: 8, paddingHorizontal: 2 }]}>Proposals & Quotes</Text>
+          <GlassView tier={1} style={{ borderRadius: 16, overflow: 'hidden' }}>
+            {CLIENT_PROPOSALS.map((prop, i) => (
+              <Pressable key={prop.id}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                style={({ pressed }) => [
+                  s.row, { padding: 14, gap: 12 },
+                  i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string },
+                  pressed && { backgroundColor: C.surfacePressed as string },
+                ]}>
+                <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: `${ACCENT_INQ}20`, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name="doc.text.fill" size={16} color={ACCENT_INQ} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[s.bodyMed, { color: C.label }]} numberOfLines={1}>{prop.title}</Text>
+                  <Text style={[s.bodySmall, { color: C.secondary as string, fontSize: 12 }]}>Expires {formatDate(prop.expiry)}</Text>
+                </View>
+                <View style={{ alignItems: 'flex-end', gap: 4 }}>
+                  <Text style={[s.bodyMed, { color: C.accent }]}>{formatCurrency(prop.amount, true)}</Text>
+                  <View style={{ backgroundColor: `${prop.statusColor}20`, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                    <Text style={{ fontSize: 10, fontWeight: '700', color: prop.statusColor }}>{prop.status.toUpperCase()}</Text>
+                  </View>
+                </View>
+              </Pressable>
+            ))}
+          </GlassView>
+        </View>
+
+        {/* ── Invoices ───────────────────────────────────────────────────── */}
+        <View style={{ marginHorizontal: 16, marginBottom: 16 }}>
+          <Text style={[s.subHeader, { color: C.secondary as string, marginBottom: 8, paddingHorizontal: 2 }]}>Invoices</Text>
+          <GlassView tier={1} style={{ borderRadius: 16, overflow: 'hidden' }}>
+            {CLIENT_INVOICES.map((inv, i) => (
+              <Pressable key={inv.id}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                style={({ pressed }) => [
+                  s.row, { padding: 14, gap: 12 },
+                  i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string },
+                  pressed && { backgroundColor: C.surfacePressed as string },
+                ]}>
+                <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: `${inv.statusColor}20`, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name="dollarsign.circle.fill" size={16} color={inv.statusColor} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[s.bodyMed, { color: C.label }]}>{inv.number}</Text>
+                  <Text style={[s.bodySmall, { color: C.secondary as string, fontSize: 12 }]} numberOfLines={1}>{inv.desc}</Text>
+                  <Text style={[s.bodySmall, { color: C.muted as string, fontSize: 11 }]}>Due {formatDate(inv.due)}</Text>
+                </View>
+                <View style={{ alignItems: 'flex-end', gap: 4 }}>
+                  <Text style={[s.bodyMed, { color: C.label }]}>{formatCurrency(inv.amount, false)}</Text>
+                  <View style={{ backgroundColor: `${inv.statusColor}20`, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                    <Text style={{ fontSize: 10, fontWeight: '700', color: inv.statusColor }}>{inv.status.toUpperCase()}</Text>
+                  </View>
+                </View>
+              </Pressable>
+            ))}
+          </GlassView>
+        </View>
+
+        {/* ── Shared Documents ───────────────────────────────────────────── */}
+        <View style={{ marginHorizontal: 16, marginBottom: 16 }}>
+          <Text style={[s.subHeader, { color: C.secondary as string, marginBottom: 8, paddingHorizontal: 2 }]}>Shared Documents</Text>
+          <GlassView tier={1} style={{ borderRadius: 16, overflow: 'hidden' }}>
+            {CLIENT_DOCS.map((doc, i) => (
+              <Pressable key={doc.id}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                style={({ pressed }) => [
+                  s.row, { padding: 14, gap: 12 },
+                  i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string },
+                  pressed && { backgroundColor: C.surfacePressed as string },
+                ]}>
+                <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: `${C.accent}18`, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name={doc.icon as any} size={16} color={C.accent} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[s.bodyMed, { color: C.label }]} numberOfLines={1}>{doc.title}</Text>
+                  <Text style={[s.bodySmall, { color: C.secondary as string, fontSize: 12 }]}>Updated {formatDate(doc.date)}</Text>
+                </View>
+                <View style={[s.row, { gap: 6 }]}>
+                  <View style={{ backgroundColor: C.surfacePressed as string, paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6 }}>
+                    <Text style={{ fontSize: 10, fontWeight: '600', color: C.muted as string }}>{doc.type}</Text>
+                  </View>
+                  <IconSymbol name="arrow.down.circle" size={18} color={C.accent} />
+                </View>
+              </Pressable>
+            ))}
+          </GlassView>
+        </View>
+
+        {/* ── Message Us ─────────────────────────────────────────────────── */}
+        <View style={{ marginHorizontal: 16, marginBottom: 16 }}>
+          <Pressable
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+            style={({ pressed }) => [{
+              backgroundColor: pressed ? '#1585CC' : ACCENT_INQ,
+              borderRadius: 14, padding: 16,
+              flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
+            }]}
+          >
+            <IconSymbol name="message.fill" size={18} color="#fff" />
+            <Text style={{ fontSize: 15, fontWeight: '700', color: '#fff' }}>Message Your Rep</Text>
+          </Pressable>
+        </View>
+
+      </ScrollView>
+    );
+  }
+
   // ── RENDER ───────────────────────────────────────────────────────────────────
 
-  const roles: InqRole[] = ['Admin', 'Sales', 'Employee'];
   function cycleRole() {
     Haptics.selectionAsync();
-    setRole(r => {
-      const idx = roles.indexOf(r);
-      return roles[(idx + 1) % roles.length];
-    });
+    setRole(r => r === 'CEO' ? 'Client' : 'CEO');
+    setActiveTab('Pipeline');
+    setSelectedDealId(null);
+    setSelectedContactId(null);
   }
 
   return (
@@ -807,16 +1013,22 @@ export default function InquiriesScreen() {
             <IconSymbol name="line.3.horizontal" size={20} color={C.label} />
           </Pressable>
 
-          <Pressable
-            onPress={() => { Haptics.selectionAsync(); setDropdownOpen(v => !v); }}
-            style={[s.dropdownPill, { backgroundColor: C.surface, borderColor: C.separator as string }]}
-          >
-            <Text style={[s.dropdownPillText, { color: C.label }]}>{activeTab}</Text>
-            <IconSymbol name={dropdownOpen ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary as string} style={{ marginLeft: 4 }} />
-          </Pressable>
+          {isCEO ? (
+            <Pressable
+              onPress={() => { Haptics.selectionAsync(); setDropdownOpen(v => !v); }}
+              style={[s.dropdownPill, { backgroundColor: C.surface, borderColor: C.separator as string }]}
+            >
+              <Text style={[s.dropdownPillText, { color: C.label }]}>{activeTab}</Text>
+              <IconSymbol name={dropdownOpen ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary as string} style={{ marginLeft: 4 }} />
+            </Pressable>
+          ) : (
+            <View style={[s.dropdownPill, { backgroundColor: C.surface, borderColor: C.separator as string }]}>
+              <Text style={[s.dropdownPillText, { color: C.secondary as string }]}>My Portal</Text>
+            </View>
+          )}
 
           <View style={[s.row, { gap: 8 }]}>
-            {pills.length > 0 && (
+            {isCEO && pills.length > 0 && (
               <Pressable onPress={togglePills} hitSlop={8} style={s.iconBtn}>
                 <IconSymbol
                   name={pillsVisible ? 'line.3.horizontal.decrease.circle.fill' : 'line.3.horizontal.decrease.circle'}
@@ -824,8 +1036,11 @@ export default function InquiriesScreen() {
                 />
               </Pressable>
             )}
-            <Pressable onPress={cycleRole} style={[s.rolePill, { backgroundColor: C.surface, borderColor: C.separator as string }]}>
-              <Text style={[s.rolePillText, { color: C.accent }]}>{role}</Text>
+            <Pressable onPress={cycleRole} style={[s.rolePill, {
+              backgroundColor: isCEO ? ACCENT_INQ : C.surfacePressed as string,
+              borderColor: isCEO ? ACCENT_INQ : C.separator as string,
+            }]}>
+              <Text style={[s.rolePillText, { color: isCEO ? '#fff' : C.secondary as string }]}>{role}</Text>
             </Pressable>
           </View>
         </View>
@@ -851,8 +1066,8 @@ export default function InquiriesScreen() {
         )}
       </View>
 
-      {/* Dropdown */}
-      {dropdownOpen && (
+      {/* Dropdown — CEO only */}
+      {isCEO && dropdownOpen && (
         <>
           <Pressable style={[StyleSheet.absoluteFill, { zIndex: 150 }]} onPress={() => setDropdownOpen(false)} />
           <View style={[s.dropdown, { top: topBarH, backgroundColor: C.surface, borderColor: C.separator as string }]}>
@@ -868,20 +1083,24 @@ export default function InquiriesScreen() {
       )}
 
       {/* Content */}
-      {activeTab === 'Pipeline'  && renderPipeline()}
-      {activeTab === 'Contacts'  && renderContacts()}
-      {activeTab === 'Campaigns' && renderCampaigns()}
+      {!isCEO ? renderClientView() : (
+        <>
+          {activeTab === 'Pipeline'  && renderPipeline()}
+          {activeTab === 'Contacts'  && renderContacts()}
+          {activeTab === 'Campaigns' && renderCampaigns()}
+        </>
+      )}
 
-      {/* FABs */}
-      {activeTab === 'Pipeline' && (role === 'Admin' || role === 'Sales') && !selectedDealId && (
+      {/* FABs — CEO only */}
+      {isCEO && activeTab === 'Pipeline' && !selectedDealId && (
         <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-          style={[s.fab, { backgroundColor: C.accent, bottom: insets.bottom + 88 }]}>
+          style={[s.fab, { backgroundColor: ACCENT_INQ, bottom: insets.bottom + 88 }]}>
           <IconSymbol name="plus" size={22} color="#fff" />
         </Pressable>
       )}
-      {activeTab === 'Campaigns' && role === 'Admin' && (
+      {isCEO && activeTab === 'Campaigns' && (
         <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-          style={[s.fab, { backgroundColor: C.accent, bottom: insets.bottom + 88 }]}>
+          style={[s.fab, { backgroundColor: ACCENT_INQ, bottom: insets.bottom + 88 }]}>
           <IconSymbol name="plus" size={22} color="#fff" />
         </Pressable>
       )}

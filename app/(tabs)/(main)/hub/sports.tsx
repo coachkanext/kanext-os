@@ -169,8 +169,17 @@ export default function SportsHubScreen() {
 
   const cycleRole = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setRole(r => r === 'Coach' ? 'Fan' : 'Coach');
-  }, []);
+    setRole(r => {
+      if (r === 'Coach') {
+        // Fan only has Overview tab
+        setActiveTab('Overview');
+        setDropdownOpen(false);
+        Animated.timing(pillsAnim, { toValue: 0, duration: 180, useNativeDriver: false }).start();
+        return 'Fan';
+      }
+      return 'Coach';
+    });
+  }, [pillsAnim]);
 
   // ── Derived data ──────────────────────────────────────────────────────────
 
@@ -188,7 +197,95 @@ export default function SportsHubScreen() {
 
   // ── Tab: Overview ─────────────────────────────────────────────────────────
 
-  const renderOverview = () => (
+  // ── Fan-only simple overview ─────────────────────────────────────────────
+  const renderFanOverview = () => (
+    <View style={{ gap: 12 }}>
+      {/* Team banner */}
+      <View style={[styles.teamBanner, { backgroundColor: NAVY }]}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.teamName}>LU Oaklanders</Text>
+          <Text style={styles.teamConf}>{TEAM_INFO.conference}</Text>
+          <View style={styles.recordRow}>
+            <Text style={styles.recordText}>{wins}–{losses}</Text>
+            <View style={[styles.confBadge, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
+              <Text style={styles.confBadgeText}>{TEAM_INFO.conference} {TEAM_INFO.confStanding}</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+
+      {/* Next game */}
+      {nextGame && (
+        <>
+          <SectionTitle title="Next Game" C={C} />
+          <View style={[styles.nextGameCard, { backgroundColor: C.surface, borderColor: C.inputBorder }]}>
+            <View style={[styles.locBadgeLg, { backgroundColor: nextGame.location === 'H' ? NAVY : C.surfacePressed }]}>
+              <Text style={[styles.locTextLg, { color: nextGame.location === 'H' ? '#fff' : C.secondary }]}>
+                {nextGame.location === 'H' ? 'HOME' : nextGame.location === 'N' ? 'NEUT' : 'AWAY'}
+              </Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.nextOpp, { color: C.label }]}>{nextGame.opponent}</Text>
+              <Text style={[styles.nextMeta, { color: C.secondary }]}>{nextGame.date} · {nextGame.time}</Text>
+              <Text style={[styles.nextVenue, { color: C.muted }]}>{nextGame.venue}</Text>
+            </View>
+          </View>
+        </>
+      )}
+
+      {/* Schedule — upcoming */}
+      <SectionTitle title="Upcoming Games" C={C} />
+      <View style={[styles.card, { backgroundColor: C.surface, overflow: 'hidden' }]}>
+        {upcoming.map((g, i) => (
+          <View key={g.id} style={[sc.gameRow, { borderBottomColor: C.separator }, i === upcoming.length - 1 && { borderBottomWidth: 0 }]}>
+            <View style={[sc.locBadge, { backgroundColor: g.location === 'H' ? NAVY : C.surfacePressed }]}>
+              <Text style={[sc.locText, { color: g.location === 'H' ? '#fff' : C.secondary }]}>
+                {g.location === 'H' ? 'H' : g.location === 'N' ? 'N' : 'A'}
+              </Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[sc.gameOpp, { color: C.label }]} numberOfLines={1}>{g.opponent}</Text>
+              <Text style={[sc.gameMeta, { color: C.secondary }]}>{g.date} · {g.time}</Text>
+            </View>
+          </View>
+        ))}
+      </View>
+
+      {/* Recent results */}
+      <SectionTitle title="Recent Results" C={C} />
+      <View style={[styles.card, { backgroundColor: C.surface, overflow: 'hidden' }]}>
+        {recentGames.map((g, i) => (
+          <View key={g.id} style={[styles.resultRow, { borderBottomColor: C.separator }, i === recentGames.length - 1 && { borderBottomWidth: 0 }]}>
+            <View style={[styles.resultBadge, { backgroundColor: resultColor(g.result) + '20' }]}>
+              <Text style={[styles.resultLetter, { color: resultColor(g.result) }]}>{g.result}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.gameOpp, { color: C.label }]} numberOfLines={1}>vs {g.opponent}</Text>
+              <Text style={[styles.gameMeta, { color: C.secondary }]}>{g.date}</Text>
+            </View>
+            <Text style={[styles.scoreChip, { color: resultColor(g.result) }]}>{g.score}–{g.oppScore}</Text>
+          </View>
+        ))}
+      </View>
+
+      {/* News */}
+      <SectionTitle title="News" C={C} />
+      {RECENT_NEWS.map((item: NewsItem) => (
+        <Pressable key={item.id} style={({ pressed }) => [styles.newsRow, { backgroundColor: C.surface, borderColor: C.inputBorder }, pressed && { backgroundColor: C.surfacePressed }]}>
+          <View style={{ flex: 1, gap: 4 }}>
+            <Text style={[styles.newsTitle, { color: C.label }]} numberOfLines={2}>{item.headline}</Text>
+            <Text style={[styles.gameMeta, { color: C.muted }]}>{item.source} · {item.date}</Text>
+          </View>
+          <IconSymbol name="chevron.right" size={12} color={C.muted} />
+        </Pressable>
+      ))}
+      <View style={{ height: 20 }} />
+    </View>
+  );
+
+  const renderOverview = () => {
+    if (role === 'Fan') return renderFanOverview();
+    return (
     <View style={{ gap: 12 }}>
 
       {/* Team banner */}
@@ -348,7 +445,8 @@ export default function SportsHubScreen() {
 
       <View style={{ height: 20 }} />
     </View>
-  );
+    );
+  };
 
   // ── Tab: Film Room ─────────────────────────────────────────────────────────
 
@@ -540,7 +638,7 @@ export default function SportsHubScreen() {
               <View style={{ flex: 1, gap: 2 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                   <Text style={[styles.actionName, { color: C.label }]}>{action.name}</Text>
-                  <Text style={[styles.freqText, { color: C.accent }]}>{action.freq}</Text>
+                  <Text style={[styles.freqText, { color: C.secondary }]}>{action.freq}</Text>
                 </View>
                 <Text style={[styles.counterText, { color: '#5A8A6E' }]} numberOfLines={1}>
                   Counter: {action.our_counter}
@@ -599,7 +697,7 @@ export default function SportsHubScreen() {
                 <Text style={[styles.playerName, { color: C.label }]}>{p.name}</Text>
                 <Text style={[styles.gameMeta, { color: C.secondary }]}>{p.archetype}</Text>
               </View>
-              <Text style={[styles.threatText, { color: C.accent }]} numberOfLines={1}>
+              <Text style={[styles.threatText, { color: C.secondary }]} numberOfLines={1}>
                 {p.threat}
               </Text>
             </View>
@@ -793,16 +891,18 @@ export default function SportsHubScreen() {
 
           {/* Dropdown tab pill */}
           <Pressable
-            onPress={() => { Haptics.selectionAsync(); setDropdownOpen(v => !v); }}
+            onPress={() => { if (role === 'Coach') { Haptics.selectionAsync(); setDropdownOpen(v => !v); } }}
             style={[styles.dropdownPill, { backgroundColor: C.surface, borderColor: C.separator }]}
           >
             <Text style={[styles.dropdownText, { color: C.label }]}>{activeTab}</Text>
-            <IconSymbol
-              name={dropdownOpen ? 'chevron.up' : 'chevron.down'}
-              size={12}
-              color={C.secondary as string}
-              style={{ marginLeft: 4 }}
-            />
+            {role === 'Coach' && (
+              <IconSymbol
+                name={dropdownOpen ? 'chevron.up' : 'chevron.down'}
+                size={12}
+                color={C.secondary as string}
+                style={{ marginLeft: 4 }}
+              />
+            )}
           </Pressable>
 
           {/* Filter + role */}
@@ -818,9 +918,9 @@ export default function SportsHubScreen() {
             )}
             <Pressable
               onPress={cycleRole}
-              style={[styles.rolePill, { backgroundColor: role === 'Coach' ? NAVY : C.surface, borderColor: C.separator }]}
+              style={[styles.rolePill, { backgroundColor: role === 'Coach' ? C.activePill : C.surface, borderColor: role === 'Coach' ? C.activePill : C.separator }]}
             >
-              <Text style={[styles.rolePillText, { color: role === 'Coach' ? '#fff' : C.accent }]}>
+              <Text style={[styles.rolePillText, { color: role === 'Coach' ? C.activePillText : C.secondary }]}>
                 {role}
               </Text>
             </Pressable>
@@ -854,12 +954,12 @@ export default function SportsHubScreen() {
                     style={[
                       styles.pill,
                       {
-                        borderColor:     active ? C.accent : C.inputBorder,
-                        backgroundColor: active ? C.accent : 'transparent',
+                        borderColor:     active ? C.activePill : C.inputBorder,
+                        backgroundColor: active ? C.activePill : 'transparent',
                       },
                     ]}
                   >
-                    <Text style={[styles.pillText, { color: active ? '#fff' : C.secondary }]}>
+                    <Text style={[styles.pillText, { color: active ? C.activePillText : C.secondary }]}>
                       {pill}
                     </Text>
                   </Pressable>
@@ -883,7 +983,10 @@ export default function SportsHubScreen() {
               { backgroundColor: C.surface, borderColor: C.separator, top: topBarH, zIndex: 200 },
             ]}
           >
-            {(['Overview', 'Film Room', 'Scouting', 'Game Day'] as SportsTab[]).map(tab => (
+            {(role === 'Coach'
+              ? (['Overview', 'Film Room', 'Scouting', 'Game Day'] as SportsTab[])
+              : (['Overview'] as SportsTab[])
+            ).map(tab => (
               <Pressable
                 key={tab}
                 onPress={() => changeTab(tab)}
@@ -895,10 +998,10 @@ export default function SportsHubScreen() {
                   },
                 ]}
               >
-                <Text style={[styles.dropdownItemText, { color: activeTab === tab ? C.accent : C.label }]}>
+                <Text style={[styles.dropdownItemText, { color: activeTab === tab ? C.activePill : C.label }]}>
                   {tab}
                 </Text>
-                {activeTab === tab && <IconSymbol name="checkmark" size={14} color={C.accent} />}
+                {activeTab === tab && <IconSymbol name="checkmark" size={14} color={C.activePill} />}
                 {tab === 'Scouting' && role !== 'Coach' && (
                   <IconSymbol name="lock.fill" size={12} color={C.muted} />
                 )}

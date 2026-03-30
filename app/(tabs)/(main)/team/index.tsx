@@ -1,6 +1,7 @@
 /**
  * Business Team — Directory / Departments / Org Chart
  * KaNeXT Operations LLC
+ * RBAC demo: CEO sees org chart + hiring pipeline + HR; Employee sees their profile + directory + PTO.
  */
 
 import React, { useState, useRef, useCallback, useMemo } from 'react';
@@ -23,8 +24,10 @@ import {
 const TOP_BAR_H = 52;
 const PILLS_H   = 48;
 
+const ACCENT_TEAM = '#1D9BF0';
+
 type TeamTab  = 'Directory' | 'Departments' | 'Org Chart';
-type TeamRole = 'Admin' | 'Employee';
+type TeamRole = 'CEO' | 'Employee';
 
 function pillsForTab(tab: TeamTab): string[] {
   if (tab === 'Directory') return ['All', 'Active', 'Remote', 'Contractors', 'On Leave'];
@@ -58,7 +61,7 @@ export default function TeamScreen() {
   const topBarH = insets.top + TOP_BAR_H;
 
   const [activeTab,    setActiveTab]    = useState<TeamTab>('Directory');
-  const [role,         setRole]         = useState<TeamRole>('Admin');
+  const [role,         setRole]         = useState<TeamRole>('CEO');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [pillsVisible, setPillsVisible] = useState(false);
   const [selectedPill, setSelectedPill] = useState('All');
@@ -109,10 +112,137 @@ export default function TeamScreen() {
     return list;
   }, [selectedPill, searchQuery]);
 
+  // ── EMPLOYEE PORTAL ──────────────────────────────────────────────────────────
+
+  function renderEmployeePortal() {
+    const me = EMPLOYEES.find(e => e.id === 'e05') ?? EMPLOYEES[0];
+    const myDept = DEPARTMENTS.find(d => d.id === me.department);
+    const myManager = me.manager ? EMPLOYEES.find(e => e.id === me.manager) : null;
+    const teammates = EMPLOYEES.filter(e => e.department === me.department && e.id !== me.id);
+    const isCEORole = role === 'CEO';
+
+    const announcements = [
+      { title: 'Q1 All-Hands Recording Available', detail: 'Watch the full Q1 all-hands recording in the shared drive.', time: '2d ago' },
+      { title: 'Spring Social — Apr 18', detail: 'Team lunch and activities at Riverside Park. RSVP by Apr 10.', time: '3d ago' },
+      { title: 'Benefits Open Enrollment', detail: 'Open enrollment closes Apr 30. Update your selections now.', time: '5d ago' },
+    ];
+
+    const ptoBalance = me.ptoBalance ?? 12;
+    const upcomingPTO = [
+      { label: 'Spring Break', dates: 'Mar 22–26', status: 'Approved' },
+    ];
+
+    return (
+      <View style={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 32, gap: 16 }}>
+        {/* My Profile Card */}
+        <GlassView tier={1} style={[s.card, { flexDirection: 'row', gap: 14, alignItems: 'flex-start' }]}>
+          <View style={[s.avatarLg, { backgroundColor: `hsl(${me.hue},45%,28%)` }]}>
+            <Text style={s.avatarLgText}>{me.initials}</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={[s.sectionTitle, { color: C.label }]}>{me.name}</Text>
+            <Text style={[s.bodySmall, { color: C.secondary as string }]}>{me.title}</Text>
+            <Text style={[s.bodySmall, { color: C.muted as string }]}>{myDept?.name ?? '—'}</Text>
+            <View style={{ flexDirection: 'row', gap: 6, marginTop: 6 }}>
+              <View style={{ backgroundColor: `${ACCENT_TEAM}20`, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                <Text style={{ fontSize: 11, fontWeight: '600', color: ACCENT_TEAM }}>
+                  Since {new Date(me.startDate).getFullYear()}
+                </Text>
+              </View>
+              {myManager && (
+                <View style={{ backgroundColor: C.surfacePressed as string, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                  <Text style={{ fontSize: 11, color: C.secondary as string }}>Reports to {myManager.name.split(' ')[0]}</Text>
+                </View>
+              )}
+            </View>
+          </View>
+        </GlassView>
+
+        {/* My PTO */}
+        <GlassView tier={1} style={s.card}>
+          <View style={[s.row, { marginBottom: 12 }]}>
+            <Text style={[s.sectionTitle, { color: C.label, flex: 1 }]}>My PTO</Text>
+            <View style={{ backgroundColor: `${C.green}20`, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10 }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: C.green }}>{ptoBalance} days left</Text>
+            </View>
+          </View>
+          {upcomingPTO.map((p, i) => (
+            <View key={p.label} style={[s.row, { paddingVertical: 9 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={[s.bodyMed, { color: C.label }]}>{p.label}</Text>
+                <Text style={[s.bodySmall, { color: C.muted as string }]}>{p.dates}</Text>
+              </View>
+              <View style={{ backgroundColor: `${C.green}18`, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: C.green }}>{p.status}</Text>
+              </View>
+            </View>
+          ))}
+          <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+            style={{ marginTop: 12, backgroundColor: ACCENT_TEAM, paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}>
+            <Text style={{ fontSize: 13, fontWeight: '700', color: '#fff' }}>Request PTO</Text>
+          </Pressable>
+        </GlassView>
+
+        {/* Team Directory */}
+        <GlassView tier={1} style={s.card}>
+          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>My Team — {myDept?.name}</Text>
+          {teammates.slice(0, 5).map((emp, i) => (
+            <Pressable key={emp.id}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              style={({ pressed }) => [
+                s.row, { paddingVertical: 10, gap: 12 },
+                i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string },
+                pressed && { backgroundColor: C.surfacePressed as string },
+              ]}>
+              <View style={[s.avatar, { backgroundColor: `hsl(${emp.hue},45%,28%)`, width: 36, height: 36, borderRadius: 18 }]}>
+                <Text style={[s.avatarText, { fontSize: 12 }]}>{emp.initials}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={[s.bodyMed, { color: C.label }]}>{emp.name}</Text>
+                <Text style={[s.bodySmall, { color: C.secondary as string }]}>{emp.title}</Text>
+              </View>
+              <View style={{ alignItems: 'flex-end', gap: 3 }}>
+                <View style={[s.statusDot, { backgroundColor: statusColor(emp.status, C), width: 8, height: 8, borderRadius: 4 }]} />
+                <Text style={{ fontSize: 10, color: C.muted as string }}>{emp.email.split('@')[0]}</Text>
+              </View>
+            </Pressable>
+          ))}
+        </GlassView>
+
+        {/* My Reviews */}
+        <GlassView tier={1} style={s.card}>
+          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>My Reviews</Text>
+          {[
+            { label: 'Last Review',       value: 'Sep 2025 · "Exceeds expectations"', color: C.green },
+            { label: 'Next Review',       value: 'Jun 2026 (scheduled)',              color: ACCENT_TEAM },
+            { label: 'Goal Completion',   value: '4 / 5 goals met',                  color: C.label },
+          ].map((item, i) => (
+            <View key={item.label} style={[s.row, { paddingVertical: 9 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
+              <Text style={[s.bodySmall, { color: C.muted as string, width: 120 }]}>{item.label}</Text>
+              <Text style={[s.bodyMed, { color: item.color, flex: 1 }]}>{item.value}</Text>
+            </View>
+          ))}
+        </GlassView>
+
+        {/* Company Announcements */}
+        <GlassView tier={1} style={s.card}>
+          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Company Announcements</Text>
+          {announcements.map((ann, i) => (
+            <View key={ann.title} style={[{ paddingVertical: 10 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
+              <Text style={[s.bodyMed, { color: C.label }]}>{ann.title}</Text>
+              <Text style={[s.bodySmall, { color: C.secondary as string, marginTop: 2 }]}>{ann.detail}</Text>
+              <Text style={[s.bodySmall, { color: C.muted as string, marginTop: 2 }]}>{ann.time}</Text>
+            </View>
+          ))}
+        </GlassView>
+      </View>
+    );
+  }
+
   // ── DIRECTORY ────────────────────────────────────────────────────────────────
 
   function renderEmployeeProfile(emp: Employee) {
-    const isAdmin    = role === 'Admin';
+    const isAdmin    = role === 'CEO';
     const myProjects = emp.projectIds.map(pid => PROJECTS.find(p => p.id === pid)).filter(Boolean);
     const manager    = emp.manager ? getEmployeeById(emp.manager) : null;
     return (
@@ -529,9 +659,9 @@ export default function TeamScreen() {
             <IconSymbol name={dropdownOpen ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary as string} style={{ marginLeft: 4 }} />
           </Pressable>
           <View style={[s.row, { gap: 8 }]}>
-            <Pressable onPress={() => { Haptics.selectionAsync(); setRole(r => r === 'Admin' ? 'Employee' : 'Admin'); }}
-              style={[s.rolePill, { backgroundColor: C.surface, borderColor: C.separator as string }]}>
-              <Text style={[s.rolePillText, { color: C.accent }]}>{role}</Text>
+            <Pressable onPress={() => { Haptics.selectionAsync(); setRole(r => r === 'CEO' ? 'Employee' : 'CEO'); setActiveTab('Directory'); }}
+              style={[s.rolePill, { backgroundColor: role === 'CEO' ? ACCENT_TEAM : C.surfacePressed, borderColor: role === 'CEO' ? ACCENT_TEAM : C.separator as string }]}>
+              <Text style={[s.rolePillText, { color: role === 'CEO' ? '#fff' : C.secondary as string }]}>{role}</Text>
             </Pressable>
             {pills.length > 0 && (
               <Pressable onPress={togglePills} hitSlop={8} style={s.iconBtn}>
@@ -576,17 +706,25 @@ export default function TeamScreen() {
         </>
       )}
 
-      {activeTab === 'Directory' && (
+      {role === 'Employee' ? (
         <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-          {renderDirectory()}
+          {renderEmployeePortal()}
         </ScrollView>
+      ) : (
+        <>
+          {activeTab === 'Directory' && (
+            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+              {renderDirectory()}
+            </ScrollView>
+          )}
+          {activeTab === 'Departments' && (
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {renderDepartments()}
+            </ScrollView>
+          )}
+          {activeTab === 'Org Chart' && renderOrgChart()}
+        </>
       )}
-      {activeTab === 'Departments' && (
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {renderDepartments()}
-        </ScrollView>
-      )}
-      {activeTab === 'Org Chart' && renderOrgChart()}
 
       {/* ── Org node profile overlay ── */}
       {activeTab === 'Org Chart' && selectedOrgNodeId && (() => {
@@ -617,7 +755,7 @@ export default function TeamScreen() {
               {[
                 { label: 'Started', value: emp.startDate },
                 { label: 'Location', value: emp.location },
-                ...(role === 'Admin' && emp.salary ? [{ label: 'Salary', value: `$${emp.salary.toLocaleString()}/yr` }] : []),
+                ...(role === 'CEO' && emp.salary ? [{ label: 'Salary', value: `$${emp.salary.toLocaleString()}/yr` }] : []),
               ].map((item, i) => (
                 <View key={item.label} style={[s.row, { paddingVertical: 8 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
                   <Text style={[s.bodySmall, { color: C.secondary as string, flex: 1 }]}>{item.label}</Text>
@@ -643,7 +781,7 @@ export default function TeamScreen() {
         );
       })()}
 
-      {activeTab === 'Directory' && role === 'Admin' && !selectedEmployeeId && (
+      {activeTab === 'Directory' && role === 'CEO' && !selectedEmployeeId && (
         <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
           style={[s.fab, { backgroundColor: C.accent, bottom: insets.bottom + 88 }]}>
           <IconSymbol name="person.fill.badge.plus" size={20} color="#fff" />

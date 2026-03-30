@@ -20,7 +20,9 @@ import { useFocusEffect } from 'expo-router';
 import { GlassView } from '@/components/ui/glass-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useDemoRole } from '@/utils/demo-role-store';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import {
@@ -122,9 +124,14 @@ export default function BoosterScreen() {
 
   const topBarH = insets.top + TOP_BAR_H;
 
+  // ── RBAC demo role ──
+  const [demoRole, cycleDemoRole] = useDemoRole('sports:booster');
+  const isCoachRole = demoRole === 'Coach';
+  // Map demo role to internal BoosterRole for existing render functions
+  const role: BoosterRole = isCoachRole ? 'admin' : 'fan';
+
   // ── Tab & Role ─────────────────────────────────────────────────────────────
   const [activeTab,    setActiveTab]    = useState<BoosterTab>('Give');
-  const [role,         setRole]         = useState<BoosterRole>('fan');
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // ── Pills ──────────────────────────────────────────────────────────────────
@@ -182,7 +189,7 @@ export default function BoosterScreen() {
 
   function handleCycleRole() {
     Haptics.selectionAsync();
-    setRole(prev => nextRole(prev));
+    cycleDemoRole();
     setPillsVisible(false);
     pillsAnim.setValue(0);
   }
@@ -608,18 +615,392 @@ export default function BoosterScreen() {
     );
   }
 
-  function renderSupportTab() {
+  // ── Coach Give Tab: NIL Pool, Compliance, PTV, Booster Relations ───────────
+
+  function renderCoachGiveTab() {
     return (
       <>
-        {role === 'admin' && renderAdminGivingDashboard()}
-        <Text style={[s.sectionHeader, { color: C.label }]}>Quick Give</Text>
-        {renderQuickGive()}
-        {role === 'admin' && renderAdminTicketStats()}
-        {renderCampaigns()}
-        {renderTickets()}
-        {renderFanRewards()}
+        {/* NIL Pool Allocation */}
+        <View style={[s.card, { backgroundColor: '#990000', marginBottom: 16, borderRadius: 16 }]}>
+          <Text style={[s.sectionTitle, { color: '#fff', marginBottom: 4 }]}>NIL Pool</Text>
+          <Text style={[s.adminStatBig, { color: '#fff' }]}>$48,500 total pool</Text>
+          <Text style={[s.bodySmall, { color: 'rgba(255,255,255,0.65)', marginBottom: 12 }]}>
+            $31,200 allocated · $17,300 available
+          </Text>
+          <View style={[s.row, { gap: 10 }]}>
+            {[
+              { label: 'Allocated', value: '$31.2K', sub: '64%' },
+              { label: 'Available', value: '$17.3K', sub: '36%' },
+              { label: 'Players',   value: '8',      sub: 'active deals' },
+            ].map(stat => (
+              <View key={stat.label} style={[s.adminStatChip, { flex: 1 }]}>
+                <Text style={s.adminStatChipNum}>{stat.value}</Text>
+                <Text style={s.adminStatChipLabel}>{stat.sub}</Text>
+                <Text style={[s.adminStatChipLabel, { marginTop: 2 }]}>{stat.label}</Text>
+              </View>
+            ))}
+          </View>
+          {/* Per-player NIL allocations */}
+          <View style={{ marginTop: 14 }}>
+            {[
+              { name: 'Marcus Reed',    amount: '$8,200' },
+              { name: 'Paul Diomande',  amount: '$6,500' },
+              { name: 'Claude McKesey', amount: '$5,800' },
+              { name: 'Samuel Wall',    amount: '$4,200' },
+            ].map((item, i, arr) => (
+              <View
+                key={item.name}
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingVertical: 6,
+                  borderBottomWidth: i < arr.length - 1 ? StyleSheet.hairlineWidth : 0,
+                  borderBottomColor: 'rgba(255,255,255,0.15)',
+                }}
+              >
+                <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.80)' }}>{item.name}</Text>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: '#fff' }}>{item.amount}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Compliance Dashboard */}
+        <Text style={[s.sectionHeader, { color: C.label }]}>Compliance</Text>
+        <GlassView tier={1} style={[s.card, { marginBottom: 16 }]}>
+          {[
+            { label: 'CARA Hours This Week',  value: '14 / 20',   color: C.accent },
+            { label: 'CARA Hours Semester',   value: '142 / 168', color: C.accent },
+            { label: 'Reporting Deadline',    value: 'Apr 15',    color: '#F59E0B' },
+            { label: 'Compliance Status',     value: 'All Clear', color: C.green },
+          ].map((row, i, arr) => (
+            <View
+              key={row.label}
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                paddingVertical: 10,
+                borderBottomWidth: i < arr.length - 1 ? StyleSheet.hairlineWidth : 0,
+                borderBottomColor: C.separator as string,
+              }}
+            >
+              <Text style={[s.bodySmall, { color: C.secondary as string }]}>{row.label}</Text>
+              <Text style={[s.bodySmall, { fontWeight: '700', color: row.color as string }]}>{row.value}</Text>
+            </View>
+          ))}
+        </GlassView>
+
+        {/* PTV Analysis */}
+        <Text style={[s.sectionHeader, { color: C.label }]}>Player Transfer Value</Text>
+        <GlassView tier={1} style={[s.card, { marginBottom: 16 }]}>
+          <Text style={[s.bodySmall, { color: C.muted as string, marginBottom: 12, textTransform: 'uppercase', letterSpacing: 0.5, fontWeight: '600' }]}>
+            Top 3 by PTV · Retention Risk
+          </Text>
+          {[
+            { name: 'Marcus Reed',    ptv: 9.2, risk: 'Low',    riskColor: C.green  },
+            { name: 'Paul Diomande',  ptv: 8.7, risk: 'Medium', riskColor: '#F59E0B' },
+            { name: 'Samuel Wall',    ptv: 7.8, risk: 'Low',    riskColor: C.green  },
+          ].map((player, i, arr) => (
+            <View
+              key={player.name}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingVertical: 10,
+                borderBottomWidth: i < arr.length - 1 ? StyleSheet.hairlineWidth : 0,
+                borderBottomColor: C.separator as string,
+                gap: 10,
+              }}
+            >
+              <Text style={[s.bodyMed, { color: C.label, flex: 1 }]}>{player.name}</Text>
+              <View style={[s.adminStatChip, { backgroundColor: '#990000' + '18' as any, flex: 0, paddingHorizontal: 10 }]}>
+                <Text style={[s.bodySmall, { color: '#990000', fontWeight: '800' }]}>PTV {player.ptv}</Text>
+              </View>
+              <View style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8, backgroundColor: (player.riskColor as string) + '22' }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: player.riskColor as string }}>
+                  {player.risk} Risk
+                </Text>
+              </View>
+            </View>
+          ))}
+        </GlassView>
+
+        {/* Booster Relationship Manager */}
+        <Text style={[s.sectionHeader, { color: C.label }]}>Booster Relations</Text>
+        {renderAdminGivingDashboard()}
+
+        {[
+          { name: 'James Tillman',  pledge: '$5,000',  status: 'Confirmed', hue: 215 },
+          { name: 'Patricia Osei',  pledge: '$2,500',  status: 'Pending',   hue: 145 },
+          { name: 'Marcus Henley',  pledge: '$10,000', status: 'Confirmed', hue: 30  },
+        ].map(donor => (
+          <GlassView tier={1} key={donor.name} style={[s.card, { marginBottom: 10 }]}>
+            <View style={[s.row, { alignItems: 'center' }]}>
+              <View style={[s.avatarCircle, { backgroundColor: `hsl(${donor.hue},50%,38%)` }]}>
+                <Text style={s.avatarText}>{donor.name.split(' ').map(n => n[0]).join('')}</Text>
+              </View>
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text style={[s.bodyMed, { color: C.label }]}>{donor.name}</Text>
+                <Text style={[s.bodySmall, { color: C.secondary as string }]}>Pledge: {donor.pledge}</Text>
+              </View>
+              <View style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8, backgroundColor: (donor.status === 'Confirmed' ? C.green : C.accent) + '22' }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: donor.status === 'Confirmed' ? C.green : C.accent as string }}>
+                  {donor.status}
+                </Text>
+              </View>
+            </View>
+          </GlassView>
+        ))}
       </>
     );
+  }
+
+  // ── Fan Give Tab ──────────────────────────────────────────────────────────
+
+  function renderFanGiveTab() {
+    const PRESET_AMOUNTS = [25, 50, 100, 250];
+    const FUNDS = ['General', 'Travel', 'Equipment'];
+
+    return (
+      <>
+        {/* Give section */}
+        <Text style={[s.sectionHeader, { color: C.label }]}>Give</Text>
+        <GlassView tier={1} style={[s.card, { marginBottom: 16 }]}>
+          {/* Preset amounts */}
+          <View style={[s.row, { gap: 8, marginBottom: 12 }]}>
+            {PRESET_AMOUNTS.map(amt => {
+              const isActive = amount === String(amt);
+              return (
+                <Pressable
+                  key={amt}
+                  onPress={() => { Haptics.selectionAsync(); setAmount(String(amt)); }}
+                  style={[
+                    s.freqPill,
+                    {
+                      flex: 1,
+                      borderColor: isActive ? '#990000' : (C.inputBorder as string),
+                      backgroundColor: isActive ? '#990000' : 'transparent',
+                    },
+                  ]}
+                >
+                  <Text style={[s.freqPillText, { color: isActive ? '#fff' : (C.secondary as string) }]}>
+                    ${amt}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          {/* Custom amount */}
+          <View style={[s.amountRow, { justifyContent: 'flex-start', paddingVertical: 4 }]}>
+            <Text style={[s.dollarSign, { fontSize: 32, lineHeight: 40, color: amount ? C.label : (C.muted as string) }]}>$</Text>
+            <TextInput
+              style={[s.amountInput, { fontSize: 36, color: C.label }]}
+              value={amount}
+              onChangeText={setAmount}
+              keyboardType="decimal-pad"
+              placeholder="0"
+              placeholderTextColor={C.muted as string}
+              returnKeyType="done"
+            />
+          </View>
+
+          {/* Fund picker */}
+          <View style={[s.row, { gap: 8, marginTop: 10, marginBottom: 14 }]}>
+            {FUNDS.map(fund => {
+              const isActive = selectedFund === fund;
+              const fc = fundColor(fund, C);
+              return (
+                <Pressable
+                  key={fund}
+                  onPress={() => { Haptics.selectionAsync(); setSelectedFund(fund); }}
+                  style={[
+                    s.fundPill,
+                    { flex: 1, borderColor: isActive ? fc : (C.inputBorder as string), backgroundColor: isActive ? fc : 'transparent' },
+                  ]}
+                >
+                  <Text style={[s.fundPillText, { color: isActive ? '#fff' : (C.secondary as string) }]}>{fund}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          <Pressable
+            onPress={handleGive}
+            style={[
+              s.giveBtn,
+              { backgroundColor: showSuccess ? C.green : '#990000', opacity: parseFloat(amount) > 0 ? 1 : 0.5 },
+            ]}
+          >
+            <Text style={s.giveBtnText}>
+              {showSuccess ? '\u2713  Thank you, Lion Fan!' : 'Support Lions Basketball'}
+            </Text>
+          </Pressable>
+        </GlassView>
+
+        {/* Stake an Athlete */}
+        <Text style={[s.sectionHeader, { color: C.label }]}>Stake an Athlete</Text>
+        <GlassView tier={1} style={[s.card, { marginBottom: 16 }]}>
+          <Text style={[s.bodySmall, { color: C.secondary as string, marginBottom: 12, lineHeight: 18 }]}>
+            Back a player and earn points based on their on-court performance this season.
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 10, paddingRight: 4 }}
+          >
+            {PLAYERS.filter(p => p.role === 'Starter').map(p => (
+              <Pressable
+                key={p.id}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                style={[s.athleteCard]}
+              >
+                <GlassView tier={2} style={{ padding: 12, borderRadius: 16, alignItems: 'center', width: 88 }}>
+                  <View style={[s.athleteAvatar, { backgroundColor: `hsl(${p.hue},55%,35%)` }]}>
+                    <Text style={s.athleteAvatarText}>{p.initials}</Text>
+                  </View>
+                  <Text
+                    style={[s.bodySmall, { color: C.label, marginTop: 6, textAlign: 'center', fontWeight: '600' }]}
+                    numberOfLines={1}
+                  >
+                    {p.name.split(' ')[0]}
+                  </Text>
+                  <Text style={[s.bodySmall, { color: C.secondary as string, textAlign: 'center', fontSize: 11 }]}>
+                    {p.position}
+                  </Text>
+                  <Text style={[s.bodySmall, { color: '#990000', fontWeight: '700', marginTop: 4, textAlign: 'center', fontSize: 11 }]}>
+                    Stake
+                  </Text>
+                </GlassView>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </GlassView>
+
+        {/* Active Challenges */}
+        <Text style={[s.sectionHeader, { color: C.label }]}>Active Challenges</Text>
+        {[
+          {
+            id: 'ch1',
+            title: 'Score 70+ as a Team',
+            desc: 'Unlock a $500 pool match when the Oaklanders hit 70+ points',
+            reward: '$500 match',
+            progress: 64,
+            goal: 70,
+            unit: 'pts',
+          },
+          {
+            id: 'ch2',
+            title: 'Win Streak Challenge',
+            desc: '3 consecutive wins unlocks early ticket access for top donors',
+            reward: 'Early Access',
+            progress: 1,
+            goal: 3,
+            unit: 'wins',
+          },
+        ].map(challenge => (
+          <GlassView tier={1} key={challenge.id} style={[s.card, { marginBottom: 12 }]}>
+            <View style={[s.row, { justifyContent: 'space-between', marginBottom: 6 }]}>
+              <Text style={[s.campaignName, { color: C.label }]}>{challenge.title}</Text>
+              <View style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 8, backgroundColor: '#990000' + '18' }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: '#990000' }}>{challenge.reward}</Text>
+              </View>
+            </View>
+            <Text style={[s.campaignDesc, { color: C.secondary as string, marginBottom: 10 }]}>{challenge.desc}</Text>
+            <View style={[s.thermoBg, { backgroundColor: C.surfacePressed as string }]}>
+              <View
+                style={[s.thermoFill, { width: `${Math.min((challenge.progress / challenge.goal) * 100, 100)}%` as any, backgroundColor: '#990000' }]}
+              />
+            </View>
+            <Text style={[s.bodySmall, { color: C.muted as string, marginTop: 4 }]}>
+              {challenge.progress} / {challenge.goal} {challenge.unit}
+            </Text>
+          </GlassView>
+        ))}
+
+        {/* Merch section */}
+        <Text style={[s.sectionHeader, { color: C.label }]}>LU Oaklanders Gear</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ marginBottom: 20 }}
+          contentContainerStyle={{ gap: 12, paddingRight: 16 }}
+        >
+          {MERCH_PRODUCTS.filter(p => p.isFeatured).map(product => (
+            <Pressable
+              key={product.id}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setSelectedProduct(product);
+                setSelectedColor(product.colors[0]);
+              }}
+            >
+              <GlassView tier={1} style={s.featuredCard}>
+                <View style={[s.featuredImg, { backgroundColor: '#990000' }]}>
+                  <View style={s.productLogoWrap}>
+                    <Text style={s.productLogoText}>LU</Text>
+                  </View>
+                  <Text style={s.productCategoryLabel}>{product.category.toUpperCase()}</Text>
+                </View>
+                <View style={s.featuredInfo}>
+                  <Text style={[s.bodySmall, { color: C.label, fontWeight: '600' }]} numberOfLines={1}>
+                    {product.name}
+                  </Text>
+                  <Text style={[s.bodySmall, { color: C.accent, fontWeight: '700', marginTop: 2 }]}>
+                    ${product.price.toFixed(2)}
+                  </Text>
+                  <Pressable
+                    onPress={() => addToCart(product.id)}
+                    style={[s.addToCartBtn, { backgroundColor: '#990000' }]}
+                  >
+                    <Text style={s.addToCartBtnText}>Add to Cart</Text>
+                  </Pressable>
+                </View>
+              </GlassView>
+            </Pressable>
+          ))}
+        </ScrollView>
+
+        {/* My Giving History */}
+        <Text style={[s.sectionHeader, { color: C.label }]}>My Giving History</Text>
+        <GlassView tier={1} style={[s.card, { marginBottom: 24 }]}>
+          {[
+            { date: 'Mar 15, 2026', amount: '$100', fund: 'General',   label: 'Lions Basketball Fund' },
+            { date: 'Feb 1, 2026',  amount: '$50',  fund: 'Travel',    label: 'Away Game Travel Fund' },
+            { date: 'Jan 12, 2026', amount: '$25',  fund: 'Equipment', label: 'Equipment & Gear' },
+          ].map((item, i, arr) => (
+            <View
+              key={item.date}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingVertical: 10,
+                borderBottomWidth: i < arr.length - 1 ? StyleSheet.hairlineWidth : 0,
+                borderBottomColor: C.separator as string,
+                gap: 12,
+              }}
+            >
+              <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: fundColor(item.fund, C) + '20', alignItems: 'center', justifyContent: 'center' }}>
+                <IconSymbol name="heart.fill" size={14} color={fundColor(item.fund, C)} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={[s.bodySmall, { color: C.label, fontWeight: '600' }]}>{item.label}</Text>
+                <Text style={[s.bodySmall, { color: C.muted as string }]}>{item.date}</Text>
+              </View>
+              <Text style={[s.bodySmall, { color: C.green, fontWeight: '800' }]}>{item.amount}</Text>
+            </View>
+          ))}
+        </GlassView>
+      </>
+    );
+  }
+
+  function renderSupportTab() {
+    // Coach sees the admin-style dashboard
+    if (isCoachRole) return renderCoachGiveTab();
+    // Fan sees the simplified giving + engagement experience
+    return renderFanGiveTab();
   }
 
   // ────────────────────────────────────────────────────────────────────────────
@@ -1254,8 +1635,9 @@ export default function BoosterScreen() {
   }
 
   function renderNILTab() {
-    if (role === 'player') return renderNILPlayerDashboard();
-    if (role === 'admin')  return renderNILAdminView();
+    // Coach sees full NIL compliance + admin view
+    if (isCoachRole) return renderNILAdminView();
+    // Fan sees the fan NIL view (athlete support + deals + experiences)
     return renderNILFanView();
   }
 
@@ -1266,11 +1648,11 @@ export default function BoosterScreen() {
   function renderShopTab() {
     return (
       <>
-        {/* Admin: Manage Products button */}
-        {role === 'admin' && (
+        {/* Coach: Manage Products button */}
+        {isCoachRole && (
           <Pressable
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-            style={[s.adminShopBanner, { backgroundColor: '#003A63' }]}
+            style={[s.adminShopBanner, { backgroundColor: '#990000' }]}
           >
             <IconSymbol name="square.grid.2x2" size={16} color="#fff" />
             <Text style={[s.bodyMed, { color: '#fff', marginLeft: 8, flex: 1 }]}>Manage Products</Text>
@@ -1332,7 +1714,7 @@ export default function BoosterScreen() {
                       <Text style={s.limitedBadgeText}>LIMITED</Text>
                     </View>
                   )}
-                  {role === 'admin' && (
+                  {isCoachRole && (
                     <View style={[s.inventoryBadge, { backgroundColor: 'rgba(0,0,0,0.55)' }]}>
                       <Text style={s.inventoryBadgeText}>
                         {product.inStock ? 'In Stock' : 'Out'}
@@ -1419,7 +1801,7 @@ export default function BoosterScreen() {
                       <Text style={s.limitedBadgeSmallText}>LTD</Text>
                     </View>
                   )}
-                  {role === 'admin' && (
+                  {isCoachRole && (
                     <View style={[s.inventoryBadgeSmall, { backgroundColor: 'rgba(0,0,0,0.55)' }]}>
                       <Text style={s.inventoryBadgeSmallText}>
                         {product.inStock ? 'Stocked' : 'OOS'}
@@ -1797,12 +2179,12 @@ export default function BoosterScreen() {
 
           {/* Right: role cycle pill + filter icon */}
           <View style={[s.row, { gap: 8 }]}>
-            <Pressable
+            <RolePill
+              role={demoRole}
               onPress={handleCycleRole}
-              style={[s.rolePill, { backgroundColor: C.surface, borderColor: C.separator as string }]}
-            >
-              <Text style={[s.rolePillText, { color: C.accent }]}>{roleLabel(role)}</Text>
-            </Pressable>
+              accentColor="#990000"
+              isPrimary={isCoachRole}
+            />
             {pills.length > 0 && (
               <Pressable onPress={togglePills} hitSlop={8} style={s.iconBtn}>
                 <IconSymbol

@@ -1,6 +1,7 @@
 /**
  * Business Hub — Overview / Projects / Reports
  * KaNeXT Operations LLC
+ * RBAC demo: CEO sees full revenue dashboard + kanban + HR; Client sees their project portal.
  */
 
 import React, { useState, useRef, useCallback, useMemo } from 'react';
@@ -24,12 +25,14 @@ import {
 const TOP_BAR_H = 52;
 const PILLS_H   = 48;
 
-type BizHubTab = 'Overview' | 'Projects' | 'Reports';
-type BizRole   = 'Admin' | 'Employee';
+const ACCENT_BIZ = '#1D9BF0';
 
-function pillsForTab(tab: BizHubTab, isAdmin: boolean): string[] {
-  if (tab === 'Projects') return ['All', 'Active', 'Planning', 'On Hold', 'Completed', 'My Projects'];
-  if (tab === 'Reports' && isAdmin) return ['Financial', 'Sales', 'Team'];
+type BizHubTab = 'Overview' | 'Projects' | 'Reports';
+type BizRole   = 'CEO' | 'Client';
+
+function pillsForTab(tab: BizHubTab, isCEO: boolean): string[] {
+  if (tab === 'Projects') return isCEO ? ['All', 'Active', 'Planning', 'On Hold', 'Completed'] : [];
+  if (tab === 'Reports' && isCEO) return ['Financial', 'Sales', 'Team'];
   return [];
 }
 
@@ -70,7 +73,7 @@ export default function BusinessHubScreen() {
   const topBarH = insets.top + TOP_BAR_H;
 
   const [activeTab,    setActiveTab]    = useState<BizHubTab>('Overview');
-  const [role,         setRole]         = useState<BizRole>('Admin');
+  const [role,         setRole]         = useState<BizRole>('CEO');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [pillsVisible, setPillsVisible] = useState(false);
   const [selectedPill, setSelectedPill] = useState('All');
@@ -81,7 +84,8 @@ export default function BusinessHubScreen() {
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
-  const pills = useMemo(() => pillsForTab(activeTab, role === 'Admin'), [activeTab, role]);
+  const isCEO = role === 'CEO';
+  const pills = useMemo(() => pillsForTab(activeTab, isCEO), [activeTab, isCEO]);
 
   function togglePills() {
     Haptics.selectionAsync();
@@ -96,7 +100,7 @@ export default function BusinessHubScreen() {
     setActiveTab(tab);
     setSelectedPill('All');
     setExpandedProjectId(null);
-    const newPills = pillsForTab(tab, role === 'Admin');
+    const newPills = pillsForTab(tab, isCEO);
     if (!newPills.length) {
       setPillsVisible(false);
       pillsAnim.setValue(0);
@@ -105,28 +109,148 @@ export default function BusinessHubScreen() {
 
   function cycleRole() {
     Haptics.selectionAsync();
-    setRole(r => r === 'Admin' ? 'Employee' : 'Admin');
+    setRole(r => r === 'CEO' ? 'Client' : 'CEO');
     setPillsVisible(false);
     pillsAnim.setValue(0);
+    setActiveTab('Overview');
   }
 
   const contentPaddingTop = topBarH + (pillsVisible ? PILLS_H : 0) + 8;
   const maxRevenue = useMemo(() => Math.max(...REVENUE_TREND.map(r => r.revenue)), []);
 
   const filteredProjects = useMemo(() => {
-    const base = role === 'Employee' ? PROJECTS.filter(p => p.teamIds.includes('e01')) : PROJECTS;
-    if (selectedPill === 'All' || selectedPill === 'My Projects') return base;
+    const base = PROJECTS;
+    if (selectedPill === 'All') return base;
     const map: Record<string, string> = { Active: 'active', Planning: 'planning', 'On Hold': 'on-hold', Completed: 'completed' };
     return base.filter(p => p.status === map[selectedPill]);
-  }, [selectedPill, role]);
+  }, [selectedPill]);
+
+  // ── CLIENT PORTAL ─────────────────────────────────────────────────────────────
+
+  function renderClientPortal() {
+    const deliverables = [
+      { name: 'Brand Identity Kit',        status: 'Delivered',  due: 'Mar 1' },
+      { name: 'Landing Page Design',       status: 'In Review',  due: 'Apr 5' },
+      { name: 'Mobile App Prototype',      status: 'In Progress',due: 'Apr 20' },
+      { name: 'Analytics Dashboard',       status: 'Pending',    due: 'May 10' },
+    ];
+    const statusColor = (st: string) => st === 'Delivered' ? C.green : st === 'In Review' ? '#1D9BF0' : st === 'In Progress' ? ACCENT_BIZ : C.muted as string;
+    const updates = [
+      { text: 'Mobile prototype screens completed — review link shared.', time: '2d ago' },
+      { text: 'Landing page copy approved by your team. Moving to dev.', time: '4d ago' },
+      { text: 'Brand kit delivered and signed off.', time: '1 wk ago' },
+    ];
+    return (
+      <View style={{ paddingHorizontal: 16, gap: 16, paddingBottom: 32 }}>
+        {/* My Project Status */}
+        <GlassView tier={1} style={[s.card, { backgroundColor: '#0F2D45', gap: 10 }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+            <View>
+              <Text style={[s.subHeader, { color: 'rgba(255,255,255,0.55)', marginBottom: 4 }]}>Your Project</Text>
+              <Text style={[s.sectionTitle, { color: '#fff', fontSize: 17 }]}>KaNeXT Platform Build</Text>
+              <Text style={[s.bodySmall, { color: 'rgba(255,255,255,0.65)', marginTop: 2 }]}>Assigned rep: Marcus Webb</Text>
+            </View>
+            <View style={{ backgroundColor: 'rgba(29,155,240,0.25)', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 10, borderWidth: 1, borderColor: ACCENT_BIZ }}>
+              <Text style={{ fontSize: 12, fontWeight: '700', color: ACCENT_BIZ }}>In Design</Text>
+            </View>
+          </View>
+          <View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
+              <Text style={[s.bodySmall, { color: 'rgba(255,255,255,0.55)' }]}>Overall Progress</Text>
+              <Text style={[s.bodySmall, { color: ACCENT_BIZ, fontWeight: '700' }]}>42%</Text>
+            </View>
+            <View style={{ height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.12)', overflow: 'hidden' }}>
+              <View style={{ width: '42%', height: 8, borderRadius: 4, backgroundColor: ACCENT_BIZ }} />
+            </View>
+          </View>
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              style={{ flex: 1, backgroundColor: ACCENT_BIZ, paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: '#fff' }}>Message Us</Text>
+            </Pressable>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.1)', paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: 'rgba(255,255,255,0.8)' }}>View Files</Text>
+            </Pressable>
+          </View>
+        </GlassView>
+
+        {/* Deliverables */}
+        <GlassView tier={1} style={s.card}>
+          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 12 }]}>Deliverables</Text>
+          {deliverables.map((d, i) => (
+            <View key={d.name} style={[s.row, { paddingVertical: 11 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={[s.bodyMed, { color: C.label }]}>{d.name}</Text>
+                <Text style={[s.bodySmall, { color: C.muted as string }]}>Due {d.due}</Text>
+              </View>
+              <View style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, backgroundColor: `${statusColor(d.status)}18`, borderWidth: 1, borderColor: statusColor(d.status) }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: statusColor(d.status) }}>{d.status}</Text>
+              </View>
+            </View>
+          ))}
+        </GlassView>
+
+        {/* Recent Activity */}
+        <GlassView tier={1} style={s.card}>
+          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Recent Activity</Text>
+          {updates.map((u, i) => (
+            <View key={i} style={[s.row, { paddingVertical: 9, gap: 10 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
+              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: ACCENT_BIZ, marginTop: 3, flexShrink: 0 }} />
+              <Text style={[s.bodySmall, { color: C.label, flex: 1, lineHeight: 19 }]}>{u.text}</Text>
+              <Text style={[s.bodySmall, { color: C.muted as string }]}>{u.time}</Text>
+            </View>
+          ))}
+        </GlassView>
+
+        {/* Upcoming Meeting */}
+        <GlassView tier={1} style={s.card}>
+          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Upcoming Meeting</Text>
+          <View style={[s.row, { gap: 12 }]}>
+            <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: `${ACCENT_BIZ}20`, alignItems: 'center', justifyContent: 'center' }}>
+              <IconSymbol name="video.fill" size={20} color={ACCENT_BIZ} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[s.bodyMed, { color: C.label }]}>Weekly Sync Call</Text>
+              <Text style={[s.bodySmall, { color: C.secondary as string }]}>Friday, Apr 4 · 2:00 PM EST</Text>
+              <Text style={[s.bodySmall, { color: C.muted as string }]}>With Marcus Webb</Text>
+            </View>
+            <Pressable style={{ backgroundColor: ACCENT_BIZ, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 10 }}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+              <Text style={{ fontSize: 12, fontWeight: '700', color: '#fff' }}>Join</Text>
+            </Pressable>
+          </View>
+        </GlassView>
+
+        {/* Invoice */}
+        <GlassView tier={1} style={s.card}>
+          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Invoice</Text>
+          {[
+            { label: 'Invoice #1042',  amount: '$4,500', status: 'Paid',    due: 'Mar 1' },
+            { label: 'Invoice #1055',  amount: '$3,200', status: 'Due Apr 15', due: 'Apr 15' },
+          ].map((inv, i) => (
+            <View key={inv.label} style={[s.row, { paddingVertical: 10 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={[s.bodyMed, { color: C.label }]}>{inv.label}</Text>
+                <Text style={[s.bodySmall, { color: C.muted as string }]}>{inv.due}</Text>
+              </View>
+              <Text style={[s.bodyMed, { color: inv.status === 'Paid' ? C.green : C.red, marginRight: 10 }]}>{inv.amount}</Text>
+              <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, backgroundColor: inv.status === 'Paid' ? `${C.green}20` : `${C.red}20` }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: inv.status === 'Paid' ? C.green : C.red }}>{inv.status}</Text>
+              </View>
+            </View>
+          ))}
+        </GlassView>
+      </View>
+    );
+  }
 
   // ── OVERVIEW ─────────────────────────────────────────────────────────────────
 
   function renderOverview() {
-    const isAdmin = role === 'Admin';
     return (
       <View style={{ paddingHorizontal: 16, gap: 16, paddingBottom: 32 }}>
-        {isAdmin && (
+        {isCEO && (
           <GlassView tier={1} style={[s.card, { backgroundColor: '#1D3D5C', gap: 6 }]}>
             <Text style={[s.sectionTitle, { color: '#fff' }]}>KaNeXT Operations LLC</Text>
             <Text style={[s.bodySmall, { color: 'rgba(255,255,255,0.7)' }]}>Q1 2026 · Revenue {formatCurrency(BIZ_DASHBOARD.thisMonth.revenue, true)} this month</Text>
@@ -163,7 +287,7 @@ export default function BusinessHubScreen() {
         </ScrollView>
 
         {/* Revenue mini-chart */}
-        {isAdmin && (
+        {isCEO && (
           <GlassView tier={1} style={s.card}>
             <Text style={[s.sectionTitle, { color: C.label, marginBottom: 12 }]}>Revenue (12 months)</Text>
             <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 4, height: 60 }}>
@@ -257,7 +381,7 @@ export default function BusinessHubScreen() {
           ))}
         </GlassView>
 
-        {isAdmin && (
+        {isCEO && (
           <GlassView tier={1} style={[s.card, { flexDirection: 'row', gap: 8 }]}>
             {[
               { label: 'New Deal',   icon: 'plus.circle.fill' },
@@ -377,10 +501,10 @@ export default function BusinessHubScreen() {
 
   function renderReports() {
     const pill = selectedPill || 'Financial';
-    if (role !== 'Admin') return (
+    if (!isCEO) return (
       <View style={{ paddingHorizontal: 16, alignItems: 'center', paddingVertical: 60 }}>
         <IconSymbol name="lock.fill" size={32} color={C.muted as string} />
-        <Text style={[s.bodySmall, { color: C.muted as string, marginTop: 8 }]}>Reports are admin-only</Text>
+        <Text style={[s.bodySmall, { color: C.muted as string, marginTop: 8 }]}>Reports are CEO-only</Text>
       </View>
     );
 
@@ -744,8 +868,8 @@ export default function BusinessHubScreen() {
             <IconSymbol name={dropdownOpen ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary as string} style={{ marginLeft: 4 }} />
           </Pressable>
           <View style={[s.row, { gap: 8 }]}>
-            <Pressable onPress={cycleRole} style={[s.rolePill, { backgroundColor: C.surface, borderColor: C.separator as string }]}>
-              <Text style={[s.rolePillText, { color: C.accent }]}>{role}</Text>
+            <Pressable onPress={cycleRole} style={[s.rolePill, { backgroundColor: isCEO ? C.activePill : C.surfacePressed, borderColor: isCEO ? C.activePill : C.separator as string }]}>
+              <Text style={[s.rolePillText, { color: isCEO ? C.activePillText : C.secondary as string }]}>{role}</Text>
             </Pressable>
             {pills.length > 0 && (
               <Pressable onPress={togglePills} hitSlop={8} style={s.iconBtn}>
@@ -765,8 +889,8 @@ export default function BusinessHubScreen() {
                 const active = selectedPill === pill;
                 return (
                   <Pressable key={pill} onPress={() => { Haptics.selectionAsync(); setSelectedPill(pill); }}
-                    style={[s.pill, { borderColor: active ? C.accent : C.inputBorder as string, backgroundColor: active ? C.accent : 'transparent' }]}>
-                    <Text style={[s.pillText, { color: active ? '#fff' : C.secondary as string }]}>{pill}</Text>
+                    style={[s.pill, { borderColor: active ? C.activePill : C.inputBorder as string, backgroundColor: active ? C.activePill : 'transparent' }]}>
+                    <Text style={[s.pillText, { color: active ? C.activePillText : C.secondary as string }]}>{pill}</Text>
                   </Pressable>
                 );
               })}
@@ -782,8 +906,8 @@ export default function BusinessHubScreen() {
             {(['Overview', 'Projects', 'Reports'] as BizHubTab[]).map(tab => (
               <Pressable key={tab} onPress={() => changeTab(tab)}
                 style={({ pressed }) => [s.dropdownItem, pressed && { backgroundColor: C.surfacePressed as string }, activeTab === tab && { backgroundColor: C.surfacePressed as string }]}>
-                <Text style={[s.dropdownItemText, { color: activeTab === tab ? C.accent : C.label }]}>{tab}</Text>
-                {activeTab === tab && <IconSymbol name="checkmark" size={14} color={C.accent} />}
+                <Text style={[s.dropdownItemText, { color: activeTab === tab ? C.activePill : C.label }]}>{tab}</Text>
+                {activeTab === tab && <IconSymbol name="checkmark" size={14} color={C.activePill} />}
               </Pressable>
             ))}
           </View>
@@ -791,12 +915,16 @@ export default function BusinessHubScreen() {
       )}
 
       <ScrollView contentContainerStyle={{ paddingTop: contentPaddingTop }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-        {activeTab === 'Overview' && renderOverview()}
-        {activeTab === 'Projects' && renderProjects()}
-        {activeTab === 'Reports'  && renderReports()}
+        {!isCEO ? renderClientPortal() : (
+          <>
+            {activeTab === 'Overview' && renderOverview()}
+            {activeTab === 'Projects' && renderProjects()}
+            {activeTab === 'Reports'  && renderReports()}
+          </>
+        )}
       </ScrollView>
 
-      {activeTab === 'Projects' && role === 'Admin' && (
+      {activeTab === 'Projects' && isCEO && (
         <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
           style={[s.fab, { backgroundColor: C.accent, bottom: insets.bottom + 88 }]}>
           <IconSymbol name="plus" size={22} color="#fff" />

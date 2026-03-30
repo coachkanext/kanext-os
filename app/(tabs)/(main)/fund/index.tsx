@@ -15,9 +15,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { useDemoRole } from '@/utils/demo-role-store';
 import {
   FUNDS, FUND_CAMPAIGNS, SAVED_PAYMENT_METHODS, MY_RECURRING_GIFTS,
   MY_PLEDGE, FUND_TRANSACTIONS, ADMIN_DASHBOARD, SCHOLARSHIPS,
@@ -69,8 +71,11 @@ export default function EducationFundScreen() {
   const topBarH   = insets.top + TOP_BAR_H;
   const pillsAnim = useRef(new Animated.Value(0)).current;
 
+  // ── RBAC role ───────────────────────────────────────────────────────────────
+  const [demoRole, cycleRole] = useDemoRole('education:fund');
+  const isAdmin = demoRole === 'Dean';
+
   // ── Navigation state ────────────────────────────────────────────────────────
-  const [isAdmin,      setIsAdmin]      = useState(true);
   const [activeTab,    setActiveTab]    = useState<FundTab>('Give');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [pillsVisible, setPillsVisible] = useState(false);
@@ -1479,10 +1484,115 @@ export default function EducationFundScreen() {
     );
   }
 
+  // ── Student Financial Portal ────────────────────────────────────────────────
+
+  function renderStudentFinancialPortal() {
+    const PAYMENT_PLAN = [
+      { label: 'Fall 2025 Tuition',    amount: 8_250, paid: true,  date: 'Aug 15, 2025' },
+      { label: 'Fall 2025 Housing',    amount: 3_400, paid: true,  date: 'Aug 15, 2025' },
+      { label: 'Spring 2026 Tuition',  amount: 8_250, paid: true,  date: 'Jan 10, 2026' },
+      { label: 'Spring 2026 Housing',  amount: 3_400, paid: false, date: 'Apr 1, 2026'  },
+    ];
+    const AID = [
+      { label: 'Merit Scholarship',   amount: 12_000, type: 'grant' },
+      { label: 'Federal Pell Grant',  amount:  6_895, type: 'grant' },
+      { label: 'Work-Study',          amount:  2_500, type: 'work'  },
+      { label: 'Subsidized Loan',     amount:  5_500, type: 'loan'  },
+    ];
+    const totalAid    = AID.reduce((a, i) => a + i.amount, 0);
+    const amountDue   = 3_400;
+    return (
+      <>
+        {/* Balance due card */}
+        <View style={{ backgroundColor: '#003A63', borderRadius: 16, padding: 20, marginBottom: 16 }}>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase', letterSpacing: 0.6 }}>Balance Due</Text>
+          <Text style={{ fontSize: 36, fontWeight: '900', color: '#fff', marginTop: 4 }}>{formatCurrency(amountDue)}</Text>
+          <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>Spring 2026 Housing  ·  Due Apr 1, 2026</Text>
+          <Pressable
+            style={{ marginTop: 16, backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 12, paddingVertical: 12, alignItems: 'center' }}
+            onPress={() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)}
+          >
+            <Text style={{ fontSize: 15, fontWeight: '700', color: '#fff' }}>Make Payment</Text>
+          </Pressable>
+        </View>
+
+        {/* Payment history */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Payment History</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden', marginBottom: 16 }}>
+          {PAYMENT_PLAN.map((item, idx) => (
+            <View key={item.label} style={{
+              flexDirection: 'row', alignItems: 'center', gap: 12,
+              paddingHorizontal: 14, paddingVertical: 12,
+              borderBottomWidth: idx < PAYMENT_PLAN.length - 1 ? StyleSheet.hairlineWidth : 0,
+              borderBottomColor: C.separator,
+            }}>
+              <View style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: item.paid ? '#22C55E18' : '#EF444418', alignItems: 'center', justifyContent: 'center' }}>
+                <IconSymbol name={item.paid ? 'checkmark.circle.fill' : 'clock.fill'} size={16} color={item.paid ? '#22C55E' : '#EF4444'} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{item.label}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>{item.date}</Text>
+              </View>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: item.paid ? C.label : '#EF4444' }}>{formatCurrency(item.amount)}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Financial Aid Package */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>2025–2026 Financial Aid</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 16, gap: 12 }}>
+          {AID.map((item, idx) => {
+            const color = item.type === 'grant' ? '#22C55E' : item.type === 'loan' ? C.accent : '#F59E0B';
+            return (
+              <View key={item.label} style={{
+                flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+                paddingBottom: idx < AID.length - 1 ? 12 : 0,
+                borderBottomWidth: idx < AID.length - 1 ? StyleSheet.hairlineWidth : 0,
+                borderBottomColor: C.separator,
+              }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: color }} />
+                  <Text style={{ fontSize: 14, color: C.label }}>{item.label}</Text>
+                </View>
+                <Text style={{ fontSize: 14, fontWeight: '700', color }}>{formatCurrency(item.amount)}</Text>
+              </View>
+            );
+          })}
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingTop: 4, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>Total Aid</Text>
+            <Text style={{ fontSize: 16, fontWeight: '800', color: '#22C55E' }}>{formatCurrency(totalAid)}</Text>
+          </View>
+        </View>
+
+        {/* Contact Financial Aid */}
+        <Pressable
+          style={({ pressed }) => ({
+            flexDirection: 'row', alignItems: 'center', gap: 10,
+            backgroundColor: pressed ? C.surfacePressed : C.surface,
+            borderRadius: 14, padding: 16, marginBottom: 24,
+          })}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        >
+          <View style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: '#003A6318', alignItems: 'center', justifyContent: 'center' }}>
+            <IconSymbol name="person.fill.questionmark" size={18} color="#003A63" />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>Contact Financial Aid</Text>
+            <Text style={{ fontSize: 12, color: C.secondary }}>Mon–Fri 8am–5pm  ·  finaid@lincoln.edu</Text>
+          </View>
+          <IconSymbol name="chevron.right" size={14} color={C.muted} />
+        </Pressable>
+
+        <View style={{ height: 40 }} />
+      </>
+    );
+  }
+
   function renderContent() {
+    if (!isAdmin) return renderStudentFinancialPortal();
     if (activeTab === 'Give')      return renderGiveTab();
-    if (activeTab === 'Campaigns') return isAdmin ? renderCampaignsAdmin() : renderCampaignsMember();
-    return isAdmin ? renderHistoryAdmin() : renderHistoryMember();
+    if (activeTab === 'Campaigns') return renderCampaignsAdmin();
+    return renderHistoryAdmin();
   }
 
   // ── Layout ────────────────────────────────────────────────────────────────────
@@ -1535,7 +1645,13 @@ export default function EducationFundScreen() {
             </Pressable>
           </View>
 
-          <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end', gap: 10 }]}>
+          <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end', gap: 8 }]}>
+            <RolePill
+              role={demoRole}
+              onPress={cycleRole}
+              accentColor="#003A63"
+              isPrimary={isAdmin}
+            />
             {pills.length > 0 && (
               <Pressable onPress={togglePills} hitSlop={12}>
                 <IconSymbol

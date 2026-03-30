@@ -16,10 +16,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useAppContext } from '@/context/app-context';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
+import { useDemoRole, MODE_ACCENTS } from '@/utils/demo-role-store';
 import {
   getKayTVFeed, getExploreRows, getWatchHistoryFeed, getWatchLaterFeed,
   getLikedVideosFeed, getPlaylists, KAYTV_CATEGORIES,
@@ -144,12 +146,35 @@ function PlaylistCard({
 
 // ── KayTV Screen ──────────────────────────────────────────────────────────
 
+// ── KayTV role keys per mode ──────────────────────────────────────────────
+const KAYTV_ROLE_KEYS: Record<string, string> = {
+  sports:    'sports',
+  education: 'education',
+  community: 'community',
+  business:  'business',
+  personal:  'personal',
+};
+
+// Admin role labels per mode for content labeling
+const KAYTV_ADMIN_LABELS: Record<string, { header: string; tools: string[] }> = {
+  sports:    { header: 'Film Library',          tools: ['Practice Film', 'Game Film', 'Opponent Film', 'Custom Playlists', 'Intelligence Overlay'] },
+  education: { header: 'Content Management',    tools: ['Upload Video', 'Manage Library', 'Organize Playlists', 'Gate Content', 'Schedule Live Stream'] },
+  community: { header: 'Sermon & Media Hub',    tools: ['Upload Sermon', 'Manage Library', 'Manage Access', 'Schedule Live Stream', 'Organize Series'] },
+  business:  { header: 'Internal Content Hub',  tools: ['Investor Updates', 'Internal Training', 'Demo Library', 'Sales Enablement', 'All-Hands Recordings'] },
+  personal:  { header: 'My Content',            tools: ['Upload Video', 'Manage Channel', 'Analytics', 'Schedule Post'] },
+};
+
 export default function KayTVScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { state } = useAppContext();
-  const mode = state.activeContext.mode as string;
+  const mode = state.activeContext?.mode ?? state.mode ?? 'business';
+
+  const roleKey = KAYTV_ROLE_KEYS[mode] ?? 'business';
+  const [role, cycleRole, roleCycles] = useDemoRole(roleKey);
+  const isAdmin = role === roleCycles[0];
+  const accent  = MODE_ACCENTS[mode] ?? C.accent;
 
   const [activeTab, setActiveTab] = useState<KayTab>('Home');
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -158,7 +183,7 @@ export default function KayTVScreen() {
   const pillsRevealAnim = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
 
-  const canUpload = mode !== 'personal';
+  const canUpload = isAdmin && mode !== 'personal';
   const categories = KAYTV_CATEGORIES[mode] ?? KAYTV_CATEGORIES.sports;
 
   const topBarH = insets.top + TOP_BAR_H;
@@ -229,6 +254,42 @@ export default function KayTVScreen() {
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingTop: contentTop, paddingBottom: 120 }}
+          ListHeaderComponent={
+            isAdmin ? (
+              <View style={{ marginHorizontal: 12, marginTop: 12, marginBottom: 4, backgroundColor: accent + '12', borderRadius: 14, padding: 14, borderWidth: 1, borderColor: accent + '30' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                  <IconSymbol name="play.rectangle.fill" size={16} color={accent} />
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: accent }}>{KAYTV_ADMIN_LABELS[mode]?.header ?? 'Content Tools'}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 7 }}>
+                  {(KAYTV_ADMIN_LABELS[mode]?.tools ?? []).map(tool => (
+                    <Pressable
+                      key={tool}
+                      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                      style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: accent + '20', borderWidth: 1, borderColor: accent + '40' }}
+                    >
+                      <Text style={{ fontSize: 12, fontWeight: '600', color: accent }}>{tool}</Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+            ) : (
+              <View style={{ marginHorizontal: 12, marginTop: 12, marginBottom: 4, backgroundColor: C.surface, borderRadius: 14, padding: 14 }}>
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 4 }}>
+                  {mode === 'sports' ? 'Watch Live & Highlights' :
+                   mode === 'education' ? 'Lectures & Campus Content' :
+                   mode === 'community' ? 'Sermons & Teaching Series' :
+                   mode === 'business' ? 'Demos & Tutorials' : 'Browse Content'}
+                </Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>
+                  {mode === 'sports' ? 'Game broadcasts, highlight reels & podcasts' :
+                   mode === 'education' ? 'Course videos, campus updates & public library' :
+                   mode === 'community' ? 'Worship, devotionals & children\'s content' :
+                   mode === 'business' ? 'Product demos, onboarding & public content' : 'Discover and enjoy content'}
+                </Text>
+              </View>
+            )
+          }
           renderItem={({ item }) => (
             <VideoCard video={item} C={C} onPress={() => navigateToPlayer(item.id)} />
           )}
@@ -361,8 +422,14 @@ export default function KayTVScreen() {
             </Pressable>
           </View>
 
-          {/* Right: filter icon (all tabs) */}
-          <View style={[styles.topBarSide, { alignItems: 'flex-end' }]}>
+          {/* Right: RolePill + filter icon */}
+          <View style={[styles.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end', gap: 8, width: 'auto' as any }]}>
+            <RolePill
+              role={role}
+              onPress={cycleRole}
+              accentColor={accent}
+              isPrimary={isAdmin}
+            />
             <Pressable onPress={toggleFilterPills} hitSlop={12}>
               <IconSymbol
                 name={filterPillsVisible || selectedCategory !== 'All'
@@ -394,13 +461,13 @@ export default function KayTVScreen() {
                   key={cat}
                   style={[
                     styles.pill,
-                    active ? { backgroundColor: C.label } : { borderColor: C.separator },
+                    active ? { backgroundColor: C.activePill } : { borderColor: C.separator },
                   ]}
                   onPress={() => handleCategorySelect(cat)}
                 >
                   <Text style={[
                     styles.pillText,
-                    { color: active ? C.bg : C.secondary },
+                    { color: active ? C.activePillText : C.secondary },
                     active && { fontWeight: '600' },
                   ]}>
                     {cat}

@@ -21,10 +21,12 @@ import { useFocusEffect } from 'expo-router';
 import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { useDemoRole } from '@/utils/demo-role-store';
 import {
   COMMUNITY_MEMBERS, ROLE_DEFINITIONS, ATTENDANCE_CHART,
   ATTENDANCE_EVENTS, ATTENDANCE_STATS, MY_ATTENDANCE_HISTORY,
@@ -564,7 +566,8 @@ export default function CommunityMembersScreen() {
   const detailAnim = useRef(new Animated.Value(0)).current;
   const sectionOffsets = useRef<Record<string, number>>({});
 
-  const [isAdmin,           setIsAdmin]           = useState(true);
+  const [demoRole, cycleRole] = useDemoRole('community:members');
+  const isAdmin = demoRole === 'Pastor';
   const [activeTab,         setActiveTab]         = useState<MemberTab>('Directory');
   const [dropdownOpen,      setDropdownOpen]      = useState(false);
   const [pillsVisible,      setPillsVisible]      = useState(false);
@@ -671,17 +674,16 @@ export default function CommunityMembersScreen() {
     setBulkSelected(new Set());
   }, [pillsAnim]);
 
-  // Role toggle
+  // Role toggle is now driven by useDemoRole; side effects on reset still needed
   const handleRoleToggle = useCallback(() => {
-    Haptics.selectionAsync();
-    setIsAdmin(v => !v);
+    cycleRole();
     setSelectedPill('All');
     setPillsVisible(false);
     pillsAnim.setValue(0);
     setSearchText('');
     setBulkMode(false);
     setBulkSelected(new Set());
-  }, [pillsAnim]);
+  }, [cycleRole, pillsAnim]);
 
   // Member detail open/close
   const openDetail = useCallback((member: CommunityMember) => {
@@ -1276,8 +1278,14 @@ export default function CommunityMembersScreen() {
             </Pressable>
           </View>
 
-          {/* Right: filter icon */}
-          <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end', gap: 10 }]}>
+          {/* Right: role pill + filter icon */}
+          <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end', gap: 8 }]}>
+            <RolePill
+              role={demoRole}
+              onPress={cycleRole}
+              accentColor="#7B68A0"
+              isPrimary={isAdmin}
+            />
             {pills.length > 0 && (
               <Pressable onPress={togglePills} hitSlop={12}>
                 <IconSymbol

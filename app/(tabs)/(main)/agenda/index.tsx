@@ -17,8 +17,10 @@ import { openSidePanel } from '@/utils/global-side-panel';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
-import { useMode } from '@/context/app-context';
+import { useAppContext } from '@/context/app-context';
+import { useDemoRole, MODE_ACCENTS } from '@/utils/demo-role-store';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -364,10 +366,10 @@ function WeekRow({
           return (
             <Pressable key={i} style={styles.dayCell} onPress={() => onSelectDate(d)}>
               <Text style={[styles.dayLabel, isToday && { color: C.accent }]}>{DAY_LABELS[i]}</Text>
-              <View style={[styles.dayNum, isSel && { backgroundColor: C.accent }]}>
+              <View style={[styles.dayNum, isSel && { backgroundColor: C.activePill }]}>
                 <Text style={[
                   styles.dayNumText,
-                  isSel    && { color: '#fff' },
+                  isSel    && { color: C.activePillText },
                   isToday  && !isSel && { color: C.accent },
                 ]}>
                   {d.getDate()}
@@ -443,10 +445,10 @@ function MonthGrid({
                 style={[styles.monthCell, isSel && { backgroundColor: C.surfacePressed }]}
                 onPress={() => onSelectDate(d)}
               >
-                <View style={[styles.dayNum, { width: 26, height: 26 }, isSel && { backgroundColor: C.accent }]}>
+                <View style={[styles.dayNum, { width: 26, height: 26 }, isSel && { backgroundColor: C.activePill }]}>
                   <Text style={[
                     styles.dayNumText, { fontSize: 13 },
-                    isSel   && { color: '#fff' },
+                    isSel   && { color: C.activePillText },
                     isToday && !isSel && { color: C.accent },
                   ]}>
                     {d.getDate()}
@@ -479,7 +481,8 @@ function SharedTimeline({
   C: ComponentColors;
   styles: ReturnType<typeof makeStyles>;
   evAreaWidth: number;
-  role: 'admin' | 'member' | 'parent';
+  role: string;
+  isAdmin: boolean;
 }) {
   const scrollRef  = useRef<ScrollView>(null);
   const isToday    = isSameDay(selectedDate, today());
@@ -593,7 +596,7 @@ function SharedTimeline({
                 {isExp && ev.description && <Text style={[styles.evDesc, { color: color + 'AA' }]}>{ev.description}</Text>}
                 {isExp && (
                   <View style={styles.evActions}>
-                    {role === 'admin' ? (
+                    {isAdmin ? (
                       <>
                         <Pressable style={[styles.evBtn, { borderColor: color + '44' }]}>
                           <Text style={[styles.evBtnText, { color }]}>Edit</Text>
@@ -602,22 +605,13 @@ function SharedTimeline({
                           <Text style={[styles.evBtnText, { color: C.red }]}>Delete</Text>
                         </Pressable>
                       </>
-                    ) : role === 'member' ? (
+                    ) : (
                       <>
                         <Pressable style={[styles.evBtn, { borderColor: C.accent + '44' }]}>
                           <Text style={[styles.evBtnText, { color: C.accent }]}>Accept</Text>
                         </Pressable>
                         <Pressable style={[styles.evBtn, { borderColor: C.separator }]}>
                           <Text style={[styles.evBtnText, { color: C.secondary }]}>Decline</Text>
-                        </Pressable>
-                        <Pressable style={[styles.evBtn, { borderColor: C.separator }]}>
-                          <Text style={[styles.evBtnText, { color: C.secondary }]}>+ Calendar</Text>
-                        </Pressable>
-                      </>
-                    ) : (
-                      <>
-                        <Pressable style={[styles.evBtn, { borderColor: C.accent + '44' }]}>
-                          <Text style={[styles.evBtnText, { color: C.accent }]}>Accept</Text>
                         </Pressable>
                         <Pressable style={[styles.evBtn, { borderColor: C.separator }]}>
                           <Text style={[styles.evBtnText, { color: C.secondary }]}>+ Calendar</Text>
@@ -1309,12 +1303,36 @@ function EditCategoriesSheet({ visible, onClose, C }: { visible: boolean; onClos
 
 // ── AgendaScreen ──────────────────────────────────────────────────────────────
 
+// ── RBAC event type visibility for non-admin roles ───────────────────────────
+const ROLE_VISIBLE_TYPES_AGENDA: Record<string, EventType[]> = {
+  sports:    ['game'],
+  education: ['class', 'exam', 'registration', 'event'],
+  community: ['service', 'event'],
+  business:  ['meeting', 'call', 'event'],
+  personal:  ['event', 'meeting', 'reminder'],
+};
+
+// ── RBAC role pairs per mode (for Agenda: default pair) ─────────────────────
+const AGENDA_ROLE_KEYS: Record<string, string> = {
+  sports:    'sports',
+  education: 'education',
+  community: 'community',
+  business:  'business',
+  personal:  'personal',
+};
+
 export default function AgendaScreen() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
   const { width: screenWidth } = useWindowDimensions();
-  const mode   = useMode();
+  const { state } = useAppContext();
+  const mode   = state.activeContext?.mode ?? state.mode ?? 'business';
   const styles = useMemo(() => makeStyles(C), [C]);
+
+  const roleKey = AGENDA_ROLE_KEYS[mode] ?? 'business';
+  const [role, cycleRole, roleCycles] = useDemoRole(roleKey);
+  const isAdmin = role === roleCycles[0];
+  const accent  = MODE_ACCENTS[mode] ?? C.accent;
 
   const [view,              setView]              = useState<AgendaView>('Day');
   const [selectedDate,      setSelectedDate]      = useState(today);
@@ -1329,23 +1347,15 @@ export default function AgendaScreen() {
   const [selectedEventIds,  setSelectedEventIds]  = useState<Set<string>>(new Set());
   const [editCatVisible,    setEditCatVisible]    = useState(false);
 
-  const [role, setRole] = useState<'admin' | 'member' | 'parent'>('admin');
-  const isAdmin  = role === 'admin';
-  const isParent = role === 'parent';
-  const cycleRole = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setRole(r => {
-      if (mode === 'education') {
-        return r === 'admin' ? 'member' : r === 'member' ? 'parent' : 'admin';
-      }
-      return r === 'admin' ? 'member' : 'admin';
-    });
-  }, [mode]);
-
   const filterPills  = MODE_FILTERS[mode] ?? MODE_FILTERS.personal;
-  const modeEvents   = useMemo(() =>
-    MOCK_EVENTS.filter(e => e.mode === mode && (activeFilter === 'all' || e.type === activeFilter)),
-    [mode, activeFilter]);
+
+  const modeEvents = useMemo(() => {
+    return MOCK_EVENTS.filter(e =>
+      e.mode === mode &&
+      (activeFilter === 'all' || e.type === activeFilter) &&
+      (isAdmin || ROLE_VISIBLE_TYPES_AGENDA[mode]?.includes(e.type as EventType) === true),
+    );
+  }, [mode, activeFilter, isAdmin]);
   const evAreaWidth  = screenWidth - TL_LEFT - 12;
 
   const handleSelectDate    = useCallback((d: Date) => { setSelectedDate(d); setExpandedId(null); }, []);
@@ -1395,14 +1405,12 @@ export default function AgendaScreen() {
               <IconSymbol name="chevron.down" size={11} color={C.label} />
             </Pressable>
             <View style={[styles.topRight, { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 8 }]}>
-              <Pressable
-                style={[styles.rbacPill, { backgroundColor: C.surfacePressed }]}
+              <RolePill
+                role={role}
                 onPress={cycleRole}
-              >
-                <Text style={[styles.rbacPillText, { color: C.secondary }]}>
-                  {role === 'admin' ? 'Admin' : role === 'member' ? 'Member' : 'Parent'}
-                </Text>
-              </Pressable>
+                accentColor={accent}
+                isPrimary={isAdmin}
+              />
               <Pressable
                 hitSlop={8}
                 onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setPillsVisible(v => !v); setShowEditDD(false); setShowViewDD(false); }}
@@ -1477,6 +1485,7 @@ export default function AgendaScreen() {
           styles={styles}
           evAreaWidth={evAreaWidth}
           role={role}
+          isAdmin={isAdmin}
         />
       )}
 
@@ -1489,8 +1498,8 @@ export default function AgendaScreen() {
         />
       )}
 
-      {/* ── FAB ── */}
-      {!isParent && (
+      {/* ── FAB (admin only) ── */}
+      {isAdmin && (
         <Pressable
           style={[styles.fab, { bottom: FOOTER_H + insets.bottom + 16 }]}
           onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setCreateTime(null); setCreateVisible(true); }}
@@ -1513,8 +1522,8 @@ export default function AgendaScreen() {
               style={[styles.ddItem, v === view && { backgroundColor: C.surfacePressed }]}
               onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setView(v); setShowViewDD(false); }}
             >
-              <Text style={[styles.ddText, v === view && { color: C.accent, fontWeight: '600' }]}>{v}</Text>
-              {v === view && <IconSymbol name="checkmark" size={13} color={C.accent} />}
+              <Text style={[styles.ddText, v === view && { color: C.activePill, fontWeight: '600' }]}>{v}</Text>
+              {v === view && <IconSymbol name="checkmark" size={13} color={C.activePill} />}
             </Pressable>
           ))}
         </View>
@@ -1577,9 +1586,9 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   pillsScroll:    { flexShrink: 0, flexGrow: 0, height: 44 },
   pillsContent:   { flexDirection: 'row', gap: 8, paddingHorizontal: 16, alignItems: 'center', height: 44 },
   pill:           { paddingVertical: 7, paddingHorizontal: 16, borderRadius: 20, borderWidth: 1.5, borderColor: C.separator, flexShrink: 0 },
-  pillActive:     { backgroundColor: C.label, borderColor: C.label },
+  pillActive:     { backgroundColor: C.activePill, borderColor: C.activePill },
   pillText:       { fontSize: 13, fontWeight: '500', color: C.secondary },
-  pillTextActive: { color: C.bg, fontWeight: '600' },
+  pillTextActive: { color: C.activePillText, fontWeight: '600' },
 
   // Week row (Day view)
   weekRowWrap: { paddingHorizontal: 4, paddingBottom: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },

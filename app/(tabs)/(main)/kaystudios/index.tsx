@@ -15,9 +15,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useAppContext } from '@/context/app-context';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
+import { useDemoRole, MODE_ACCENTS } from '@/utils/demo-role-store';
 import {
   getFeedContent, getExploreRows, getAllContent, filterByPill,
   STUDIOS_PILLS,
@@ -227,12 +230,38 @@ const DEMO_PROGRESS: Record<string, ProgressEntry> = {
 };
 const DEMO_SAVED_IDS = ['ks-edu-lab-1', 'ks-biz-sim-1', 'ks-edu-trivia-1'];
 
+// ── KayStudios role keys per mode ──────────────────────────────────────────
+const KAYSTUDIOS_ROLE_KEYS: Record<string, string> = {
+  sports:    'sports:kaystudios',
+  education: 'education:kaystudios',
+  community: 'community',
+  business:  'business',
+  personal:  'personal',
+};
+
+// Admin creator tools per mode
+const KAYSTUDIOS_ADMIN_TOOLS: Record<string, { header: string; tools: string[] }> = {
+  sports:    { header: 'Coaching Tools',          tools: ['Tactical Draw Tool', 'Opponent Scouting', 'Team IQ Assessment', 'Film Breakdown', 'Play Designer'] },
+  education: { header: 'Course Builder',           tools: ['Create Course', 'Build Assessment', 'Grade Submissions', 'Student Progress', 'Publish Content'] },
+  community: { header: 'Content Creator',          tools: ['New Member Course', 'Volunteer Training', 'Devotional Creator', 'Trivia Builder', 'Manage Library'] },
+  business:  { header: 'Training Builder',         tools: ['Product Demo Builder', 'Certification Creator', 'Sales Training', 'Onboarding Flow', 'ROI Calculator'] },
+  personal:  { header: 'My Studio',               tools: ['Create Experience', 'Manage Library', 'Analytics', 'Share'] },
+};
+
 // ── KayStudios Screen ───────────────────────────────────────────────────────
 
 export default function KayStudiosScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { state } = useAppContext();
+  const mode = state.activeContext?.mode ?? state.mode ?? 'business';
+
+  const roleKey = KAYSTUDIOS_ROLE_KEYS[mode] ?? 'business';
+  const [role, cycleRole, roleCycles] = useDemoRole(roleKey);
+  const isAdmin = role === roleCycles[0];
+  const accent  = MODE_ACCENTS[mode] ?? C.accent;
+
   const [activeTab, setActiveTab] = useState<KSTab>('Home');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [filterPillsVisible, setFilterPillsVisible] = useState(false);
@@ -357,6 +386,42 @@ export default function KayStudiosScreen() {
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingTop: contentTop + 8, paddingBottom: 120 }}
+          ListHeaderComponent={
+            isAdmin ? (
+              <View style={{ marginHorizontal: 16, marginBottom: 8, backgroundColor: accent + '12', borderRadius: 14, padding: 14, borderWidth: 1, borderColor: accent + '30' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                  <IconSymbol name="plus.rectangle.fill.on.rectangle.fill" size={16} color={accent} />
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: accent }}>{KAYSTUDIOS_ADMIN_TOOLS[mode]?.header ?? 'Creator Tools'}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 7 }}>
+                  {(KAYSTUDIOS_ADMIN_TOOLS[mode]?.tools ?? []).map(tool => (
+                    <Pressable
+                      key={tool}
+                      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                      style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: accent + '20', borderWidth: 1, borderColor: accent + '40' }}
+                    >
+                      <Text style={{ fontSize: 12, fontWeight: '600', color: accent }}>{tool}</Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+            ) : (
+              <View style={{ marginHorizontal: 16, marginBottom: 8, backgroundColor: C.surface, borderRadius: 14, padding: 14 }}>
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 4 }}>
+                  {mode === 'sports' ? 'Your Learning & Development' :
+                   mode === 'education' ? 'Courses & Study Tools' :
+                   mode === 'community' ? 'Grow & Engage' :
+                   mode === 'business' ? 'Onboarding & Certifications' : 'Discover Experiences'}
+                </Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>
+                  {mode === 'sports' ? 'Required IQ courses, life skills & fan games' :
+                   mode === 'education' ? 'Take courses, study games & career simulators' :
+                   mode === 'community' ? 'New member courses, volunteer training & trivia' :
+                   mode === 'business' ? 'Product demos, ROI calculators & onboarding flows' : 'Interactive experiences built for you'}
+                </Text>
+              </View>
+            )
+          }
           ItemSeparatorComponent={() => <View style={[styles.separator, { backgroundColor: C.separator }]} />}
           renderItem={({ item }) => (
             <ContentCard
@@ -448,7 +513,13 @@ export default function KayStudiosScreen() {
               <IconSymbol name="chevron.down" size={12} color={C.secondary} />
             </Pressable>
           </View>
-          <View style={[styles.topBarSide, { alignItems: 'flex-end' }]}>
+          <View style={[styles.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end', gap: 8, width: 'auto' as any }]}>
+            <RolePill
+              role={role}
+              onPress={cycleRole}
+              accentColor={accent}
+              isPrimary={isAdmin}
+            />
             <Pressable onPress={toggleFilterPills} hitSlop={12}>
               <IconSymbol
                 name={filterPillsVisible || selectedPill !== 'All'
@@ -477,10 +548,10 @@ export default function KayStudiosScreen() {
               return (
                 <Pressable
                   key={pill}
-                  style={[styles.pill, active ? { backgroundColor: C.label } : { borderColor: C.separator }]}
+                  style={[styles.pill, active ? { backgroundColor: C.activePill } : { borderColor: C.separator }]}
                   onPress={() => { Haptics.selectionAsync(); setSelectedPill(pill); }}
                 >
-                  <Text style={[styles.pillText, { color: active ? C.bg : C.secondary }, active && { fontWeight: '600' }]}>
+                  <Text style={[styles.pillText, { color: active ? C.activePillText : C.secondary }, active && { fontWeight: '600' }]}>
                     {pill}
                   </Text>
                 </Pressable>

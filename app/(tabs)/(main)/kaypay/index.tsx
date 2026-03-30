@@ -16,9 +16,12 @@ import { useFocusEffect } from 'expo-router';
 import { GlassView } from '@/components/ui/glass-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useAppContext } from '@/context/app-context';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { useDemoRole, MODE_ACCENTS } from '@/utils/demo-role-store';
 import {
   BALANCE, APY_RATE, QUICK_RECIPIENTS, CARD_INFO,
   INFRA_FUND, CAPITAL_POINTS, REMITTANCE_RECIPIENTS,
@@ -38,13 +41,28 @@ type InvestFilterKey='All'|'Fund'|'Crypto'|'Rewards';
 function initialsHue(i:string):string{const h=[215,145,25,330,280,55,180,0];const x=(i.charCodeAt(0)+(i.charCodeAt(1)||0))%h.length;return 'hsl('+h[x]+', 55%, 42%)';}
 function txAmtColor(a:number,C:ComponentColors):string{return a>=0?(C.green as string):(C.red as string);}
 function txSign(a:number):string{return a>=0?'+':'';}
+// ── KayPay role keys per mode ──────────────────────────────────────────────
+const KAYPAY_ROLE_KEYS: Record<string, string> = {
+  sports:    'sports:kaypay',
+  education: 'education',
+  community: 'community',
+  business:  'business:kaypay',
+  personal:  'personal',
+};
+
 export default function KayPayScreen(){
   const C=useColors();
   const insets=useSafeAreaInsets();
   const s=useMemo(()=>makeStyles(C),[C]);
   const topBarH=insets.top+TOP_BAR_H;
+  const { state } = useAppContext();
+  const mode = state.activeContext?.mode ?? state.mode ?? 'business';
+  const roleKey = KAYPAY_ROLE_KEYS[mode] ?? 'business:kaypay';
+  const [role, cycleRole, roleCycles] = useDemoRole(roleKey);
+  const isAdminRole = role === roleCycles[0];
+  const accent = MODE_ACCENTS[mode] ?? C.accent;
+
   const [activeTab,setActiveTab]=useState("Wallet");
-  const [role,setRole]=useState("Personal");
   const [dropdownOpen,setDropdownOpen]=useState(false);
   const [pillsVisible,setPillsVisible]=useState(false);
   const [txFilter,setTxFilter]=useState("all");
@@ -77,8 +95,7 @@ export default function KayPayScreen(){
     if(tab==="Pay"){setPillsVisible(false);pillsAnim.setValue(0);}
   }
   function handleCycleRole(){
-    Haptics.selectionAsync();
-    setRole(prev=>(prev==="Personal"?"Institutional":"Personal"));
+    cycleRole();
     setPillsVisible(false);
     pillsAnim.setValue(0);
   }
@@ -257,7 +274,7 @@ export default function KayPayScreen(){
             {TRANSACTION_FILTERS.map(f=>(
               <Pressable key={f.key} onPress={()=>{Haptics.selectionAsync();setTxFilter(f.key);}}>
                 <GlassView tier={txFilter===f.key?1:2} style={{paddingHorizontal:14,paddingVertical:7,borderRadius:16}}>
-                  <Text style={{fontSize:13,fontWeight:"700",color:txFilter===f.key?C.accent:C.secondary}}>{f.label}</Text>
+                  <Text style={{fontSize:13,fontWeight:"700",color:txFilter===f.key?C.label:C.secondary}}>{f.label}</Text>
                 </GlassView>
               </Pressable>
             ))}
@@ -380,7 +397,7 @@ export default function KayPayScreen(){
     );
   }
 
-  function renderWalletTab(){return role==="Personal"?renderWalletPersonal():renderWalletInstitutional();}
+  function renderWalletTab(){return isAdminRole?renderWalletInstitutional():renderWalletPersonal();}
 
   function renderPayTab(){
     return(
@@ -516,7 +533,7 @@ export default function KayPayScreen(){
           {INVEST_FLTRS.map(f=>(
             <Pressable key={f} onPress={()=>{Haptics.selectionAsync();setInvestFilter(f);}}>
               <GlassView tier={investFilter===f?1:2} style={{paddingHorizontal:14,paddingVertical:7,borderRadius:16}}>
-                <Text style={{fontSize:13,fontWeight:"700",color:investFilter===f?C.accent:C.secondary}}>{f}</Text>
+                <Text style={{fontSize:13,fontWeight:"700",color:investFilter===f?C.label:C.secondary}}>{f}</Text>
               </GlassView>
             </Pressable>
           ))}
@@ -853,11 +870,14 @@ export default function KayPayScreen(){
               </GlassView>
             </Pressable>
           </View>
-          <Pressable onPress={handleCycleRole} style={{marginRight:4}}>
-            <GlassView tier={2} style={s.rolePillInner}>
-              <Text style={{fontSize:12,fontWeight:"700",color:role==="Personal"?C.accent:NAVY}}>{role}</Text>
-            </GlassView>
-          </Pressable>
+          <View style={{marginRight:4}}>
+            <RolePill
+              role={role}
+              onPress={handleCycleRole}
+              accentColor={accent}
+              isPrimary={isAdminRole}
+            />
+          </View>
           {showFilterBtn?(
             <Pressable style={s.iconBtn} onPress={togglePills}>
               <IconSymbol name="slider.horizontal.3" size={20} color={pillsVisible?C.accent:C.label}/>
@@ -872,7 +892,7 @@ export default function KayPayScreen(){
               {INVEST_FLTRS.map(f=>(
                 <Pressable key={f} onPress={()=>{Haptics.selectionAsync();setInvestFilter(f);}}>
                   <GlassView tier={investFilter===f?1:2} style={{paddingHorizontal:14,paddingVertical:7,borderRadius:16}}>
-                    <Text style={{fontSize:13,fontWeight:"700",color:investFilter===f?C.accent:C.secondary}}>{f}</Text>
+                    <Text style={{fontSize:13,fontWeight:"700",color:investFilter===f?C.label:C.secondary}}>{f}</Text>
                   </GlassView>
                 </Pressable>
               ))}
@@ -889,8 +909,8 @@ export default function KayPayScreen(){
           <View style={[s.dropdown,{top:topBarH+4}]}>
             {KAYPAY_TABS.map(tab=>(
               <Pressable key={tab} style={[s.dropItem,tab===activeTab&&s.dropItemActive]} onPress={()=>changeTab(tab)}>
-                <Text style={[s.dropItemText,{color:tab===activeTab?C.accent:C.label}]}>{tab}</Text>
-                {tab===activeTab&&<IconSymbol name="checkmark" size={14} color={C.accent}/>}
+                <Text style={[s.dropItemText,{color:tab===activeTab?C.activePill:C.label}]}>{tab}</Text>
+                {tab===activeTab&&<IconSymbol name="checkmark" size={14} color={C.activePill}/>}
               </Pressable>
             ))}
           </View>

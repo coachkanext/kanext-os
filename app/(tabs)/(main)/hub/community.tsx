@@ -1,6 +1,7 @@
 /**
  * Community Hub — operational center for community/church brands.
- * RBAC flip: admin sees dashboard, member sees public-facing community page.
+ * RBAC demo: Pastor sees full dashboard + service planning + member mgmt;
+ * Member sees upcoming events, groups, announcements, prayer wall.
  * Three views: Overview / Departments / Groups via centered dropdown pill.
  */
 
@@ -25,7 +26,10 @@ import {
   type CommunityChartMetric, type CommunityDepartment, type CommunityGroup,
 } from '@/data/mock-community-hub';
 
-type CommunityTab = 'Overview' | 'Departments' | 'Groups';
+const ACCENT = '#7B68A0';
+
+type CommunityTab  = 'Overview' | 'Departments' | 'Groups';
+type CommunityRole = 'Pastor' | 'Member';
 
 const OVERVIEW_PILLS_ADMIN   = ['All', 'Attendance', 'Giving', 'Volunteers', 'Care'];
 const DEPT_PILLS             = ['All', 'Worship', 'Youth', 'Hospitality', 'Outreach', 'Education'];
@@ -36,10 +40,10 @@ const TOP_BAR_H  = 52;
 const PILL_ROW_H = 48;
 const BAR_MAX_H  = 100;
 
-function pillsForTab(tab: CommunityTab, isAdmin: boolean): string[] {
-  if (tab === 'Overview')    return isAdmin ? OVERVIEW_PILLS_ADMIN : [];
+function pillsForTab(tab: CommunityTab, role: CommunityRole): string[] {
+  if (tab === 'Overview')    return role === 'Pastor' ? OVERVIEW_PILLS_ADMIN : [];
   if (tab === 'Departments') return DEPT_PILLS;
-  return isAdmin ? GROUPS_PILLS_ADMIN : GROUPS_PILLS_MEMBER;
+  return role === 'Pastor' ? GROUPS_PILLS_ADMIN : GROUPS_PILLS_MEMBER;
 }
 
 // ── Stat Card ─────────────────────────────────────────────────────────────────
@@ -368,7 +372,7 @@ export default function CommunityHubScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
-  const [isAdmin, setIsAdmin]           = useState(true);
+  const [role, setRole]                 = useState<CommunityRole>('Pastor');
   const [activeTab, setActiveTab]       = useState<CommunityTab>('Overview');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [filterPillsVisible, setFilterPillsVisible] = useState(false);
@@ -383,7 +387,8 @@ export default function CommunityHubScreen() {
   const topBarH         = insets.top + TOP_BAR_H;
   const contentPaddingTop = topBarH + (filterPillsVisible ? PILL_ROW_H : 0) + 8;
 
-  const pills = pillsForTab(activeTab, isAdmin);
+  const isAdmin = role === 'Pastor';
+  const pills = pillsForTab(activeTab, role);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
@@ -407,6 +412,14 @@ export default function CommunityHubScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setActiveTab(tab);
     setDropdownOpen(false);
+    setSelectedPill('All');
+    setFilterPillsVisible(false);
+    pillsRevealAnim.setValue(0);
+  }, [pillsRevealAnim]);
+
+  const cycleRole = useCallback(() => {
+    Haptics.selectionAsync();
+    setRole(r => r === 'Pastor' ? 'Member' : 'Pastor');
     setSelectedPill('All');
     setFilterPillsVisible(false);
     pillsRevealAnim.setValue(0);
@@ -557,6 +570,9 @@ export default function CommunityHubScreen() {
 
   const renderMemberOverview = () => {
     const p = COMMUNITY_PROFILE;
+    const myGroups = COMMUNITY_GROUPS.filter(g => joinedGroups.has(g.id));
+    const [prayerSubmitted, setPrayerSubmitted] = React.useState(false);
+
     return (
       <ScrollView
         onScroll={handleScroll}
@@ -564,85 +580,119 @@ export default function CommunityHubScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}
       >
-        {/* Hero */}
-        <View style={s.heroCenter}>
-          <View style={[s.heroAvatar, { backgroundColor: `hsl(${p.coverHue},55%,30%)` }]}>
-            <Text style={s.heroAvatarText}>{p.avatarInitials}</Text>
+        {/* Next Service Card */}
+        <View style={[s.nextServiceCard, { backgroundColor: ACCENT }]}>
+          <Text style={s.nextServiceLabel}>Next Service</Text>
+          <Text style={s.nextServiceTitle}>{p.name}</Text>
+          <Text style={s.nextServiceTime}>Sunday, Apr 5 · 10:00 AM</Text>
+          <View style={s.nextServiceLocation}>
+            <IconSymbol name="mappin.circle.fill" size={13} color="rgba(255,255,255,0.7)" />
+            <Text style={s.nextServiceLocationText}>{p.location}</Text>
           </View>
-          <Text style={[s.heroName, { color: C.label }]}>{p.name}</Text>
-          <Text style={[s.heroTagline, { color: C.secondary }]}>{p.tagline}</Text>
-          <View style={s.heroLocation}>
-            <IconSymbol name="mappin.circle.fill" size={14} color={C.muted} />
-            <Text style={[s.heroLocationText, { color: C.muted }]}>{p.location}</Text>
-          </View>
-        </View>
-
-        {/* Get Connected buttons */}
-        <View style={s.connectRow}>
-          {[
-            { label: 'Plan a Visit', icon: 'calendar' },
-            { label: 'Join a Group', icon: 'person.3' },
-            { label: 'Volunteer',    icon: 'hands.and.sparkles' },
-            { label: 'Contact Us',   icon: 'envelope' },
-          ].map(btn => (
-            <Pressable
-              key={btn.label}
-              style={[s.connectBtn, { backgroundColor: C.surface }]}
-              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-            >
-              <IconSymbol name={btn.icon as any} size={20} color={C.accent} />
-              <Text style={[s.connectBtnText, { color: C.label }]}>{btn.label}</Text>
+          <View style={s.nextServiceActions}>
+            <Pressable style={s.nextServiceBtn} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+              <Text style={s.nextServiceBtnText}>RSVP</Text>
             </Pressable>
-          ))}
+            <Pressable style={[s.nextServiceBtn, { backgroundColor: 'rgba(255,255,255,0.15)' }]} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+              <Text style={s.nextServiceBtnText}>Get Directions</Text>
+            </Pressable>
+          </View>
         </View>
 
-        {/* Service Times */}
-        <SecHeader title="Service Times" C={C} />
-        <View style={[s.section, { backgroundColor: C.surface }]}>
-          {p.serviceTimes.map((st, idx) => (
-            <View
-              key={st.label}
-              style={[
-                s.serviceRow,
-                idx < p.serviceTimes.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
-              ]}
-            >
-              <Text style={[s.serviceLabel, { color: C.label }]}>{st.label}</Text>
-              <Text style={[s.serviceTime, { color: C.secondary }]}>{st.time}</Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Leadership */}
-        <SecHeader title="Leadership" C={C} />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 24 }}>
-          {COMMUNITY_LEADERSHIP.map(l => (
-            <LeaderCard key={l.id} leader={l} C={C} />
-          ))}
-        </ScrollView>
-
-        {/* About */}
-        <SecHeader title="About" C={C} />
-        <View style={[s.section, { backgroundColor: C.surface }]}>
-          <Text style={[s.aboutText, { color: C.secondary }]}>{p.description}</Text>
-        </View>
-
-        {/* What We Believe */}
-        <SecHeader title="What We Believe" C={C} />
-        <View style={[s.section, { backgroundColor: C.surface }]}>
-          {p.beliefs.map(b => (
-            <View key={b} style={s.beliefRow}>
-              <IconSymbol name="checkmark.circle.fill" size={14} color="#5A8A6E" />
-              <Text style={[s.beliefText, { color: C.secondary }]}>{b}</Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Upcoming Public Events */}
+        {/* Upcoming Special Events */}
         <SecHeader title="Upcoming Events" C={C} />
-        {COMMUNITY_EVENTS.filter(e => e.isPublic).map(ev => (
+        {COMMUNITY_EVENTS.filter(e => e.isPublic).slice(0, 3).map(ev => (
           <EventCard key={ev.id} event={ev} isAdmin={false} C={C} />
         ))}
+
+        {/* My Groups */}
+        {myGroups.length > 0 && (
+          <>
+            <SecHeader title="My Groups" C={C} />
+            <View style={[s.section, { backgroundColor: C.surface }]}>
+              {myGroups.map((g, idx) => (
+                <Pressable
+                  key={g.id}
+                  style={[
+                    s.myGroupRow,
+                    idx < myGroups.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
+                  ]}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    router.push({ pathname: '/(tabs)/(main)/hub/group-detail', params: { id: g.id } } as any);
+                  }}
+                >
+                  <View style={[s.myGroupDot, { backgroundColor: `hsl(${g.hue},42%,28%)` }]}>
+                    <Text style={s.myGroupInitials}>{g.leaderInitials}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.myGroupName, { color: C.label }]}>{g.name}</Text>
+                    <Text style={[s.myGroupNext, { color: C.accent }]}>{g.nextMeeting}</Text>
+                  </View>
+                  <IconSymbol name="chevron.right" size={14} color={C.muted} />
+                </Pressable>
+              ))}
+            </View>
+          </>
+        )}
+
+        {/* Announcements */}
+        <SecHeader title="Announcements" C={C} />
+        <View style={[s.section, { backgroundColor: C.surface }]}>
+          {[
+            { title: 'Easter Sunday Service', detail: 'Join us April 20 for a special resurrection celebration with live worship.', time: '1d ago' },
+            { title: 'Food Drive — Apr 12–19', detail: 'Bring non-perishable items to the welcome desk. Every donation counts.', time: '2d ago' },
+            { title: 'Youth Summer Camp Registration', detail: 'Registration for Camp Hope is now open. Limited spots available.', time: '3d ago' },
+          ].map((ann, idx) => (
+            <View key={ann.title} style={[s.annRow, idx < 2 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
+              <View style={[s.annIcon, { backgroundColor: `${C.accent}18` }]}>
+                <IconSymbol name="megaphone.fill" size={14} color={C.accent} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={[s.annTitle, { color: C.label }]}>{ann.title}</Text>
+                <Text style={[s.annDetail, { color: C.secondary }]}>{ann.detail}</Text>
+                <Text style={[s.annTime, { color: C.muted }]}>{ann.time}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+
+        {/* Prayer Wall */}
+        <SecHeader title="Prayer Wall" C={C} />
+        <View style={[s.section, { backgroundColor: C.surface }]}>
+          {[
+            { name: 'Anonymous', request: 'Please pray for healing in my family.' },
+            { name: 'Marcus T.', request: 'Praying for a new job opportunity and direction.' },
+            { name: 'Keisha W.', request: 'Grateful for answered prayers — please pray for continued health.' },
+          ].map((p, idx) => (
+            <View key={p.name} style={[s.prayerRow, idx < 2 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
+              <IconSymbol name="hands.sparkles.fill" size={15} color={C.accent} />
+              <View style={{ flex: 1 }}>
+                <Text style={[s.prayerName, { color: C.secondary }]}>{p.name}</Text>
+                <Text style={[s.prayerText, { color: C.label }]}>{p.request}</Text>
+              </View>
+            </View>
+          ))}
+          <Pressable
+            style={[s.prayerSubmitBtn, { backgroundColor: prayerSubmitted ? C.surfacePressed : C.accent, marginTop: 12 }]}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setPrayerSubmitted(true); }}
+          >
+            <IconSymbol name="plus" size={14} color={prayerSubmitted ? C.secondary : '#fff'} />
+            <Text style={[s.prayerSubmitText, { color: prayerSubmitted ? C.secondary : '#fff' }]}>
+              {prayerSubmitted ? 'Request Submitted' : 'Submit Prayer Request'}
+            </Text>
+          </Pressable>
+        </View>
+
+        {/* Quick Give */}
+        <Pressable
+          style={[s.giveBtn, { backgroundColor: `${C.accent}15`, borderColor: C.accent }]}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+        >
+          <IconSymbol name="dollarsign.circle.fill" size={20} color={C.accent} />
+          <Text style={[s.giveBtnText, { color: C.accent }]}>Give Online</Text>
+          <IconSymbol name="chevron.right" size={14} color={C.accent} />
+        </Pressable>
       </ScrollView>
     );
   };
@@ -1025,6 +1075,9 @@ export default function CommunityHubScreen() {
     return isAdmin ? renderAdminGroups() : renderMemberGroups();
   };
 
+  // alias used below for FABs / buttons
+  const isPastor = role === 'Pastor';
+
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
       {renderContent()}
@@ -1043,6 +1096,7 @@ export default function CommunityHubScreen() {
             ) : null}
           </View>
 
+
           {/* Center dropdown pill */}
           <View style={s.dropdownPillWrap}>
             <Pressable
@@ -1054,7 +1108,13 @@ export default function CommunityHubScreen() {
             </Pressable>
           </View>
 
-          <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', gap: 10 }]}>
+          <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', gap: 8 }]}>
+            <Pressable
+              style={[s.roleToggle, { backgroundColor: isAdmin ? C.activePill : C.surfacePressed }]}
+              onPress={cycleRole}
+            >
+              <Text style={[s.roleToggleText, { color: isAdmin ? C.activePillText : C.secondary }]}>{role}</Text>
+            </Pressable>
             {pills.length > 0 && (
               <Pressable onPress={toggleFilterPills} hitSlop={12}>
                 <IconSymbol
@@ -1062,7 +1122,7 @@ export default function CommunityHubScreen() {
                     ? 'line.3.horizontal.decrease.circle.fill'
                     : 'line.3.horizontal.decrease.circle'}
                   size={22}
-                  color={filterPillsVisible || selectedPill !== 'All' ? C.accent : C.label}
+                  color={filterPillsVisible || selectedPill !== 'All' ? C.activePill : C.label}
                 />
               </Pressable>
             )}
@@ -1086,10 +1146,10 @@ export default function CommunityHubScreen() {
               return (
                 <Pressable
                   key={pill}
-                  style={[s.pill, active ? { backgroundColor: C.label } : { borderColor: C.separator }]}
+                  style={[s.pill, active ? { backgroundColor: C.activePill } : { borderColor: C.separator }]}
                   onPress={() => { Haptics.selectionAsync(); setSelectedPill(pill); }}
                 >
-                  <Text style={[s.pillText, { color: active ? C.bg : C.secondary }, active && { fontWeight: '600' }]}>
+                  <Text style={[s.pillText, { color: active ? C.activePillText : C.secondary }, active && { fontWeight: '600' }]}>
                     {pill}
                   </Text>
                 </Pressable>
@@ -1115,46 +1175,32 @@ export default function CommunityHubScreen() {
         </>
       )}
 
-      {/* ── Context-aware FAB (admin) ── */}
-      {isAdmin && activeTab === 'Overview' && (
+      {/* ── Context-aware FAB (Pastor) ── */}
+      {isPastor && activeTab === 'Overview' && (
         <Pressable
-          style={[s.fab, { bottom: insets.bottom + 49 + 16, backgroundColor: C.label }]}
+          style={[s.fab, { bottom: insets.bottom + 49 + 16, backgroundColor: C.accent }]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
             router.push('/(tabs)/(main)/hub/announcement-compose' as any);
           }}
         >
-          <IconSymbol name="megaphone.fill" size={20} color={C.bg} />
+          <IconSymbol name="megaphone.fill" size={20} color="#fff" />
         </Pressable>
       )}
-      {isAdmin && activeTab === 'Departments' && (
+      {isPastor && activeTab === 'Departments' && (
         <Pressable
-          style={[s.fab, { bottom: insets.bottom + 49 + 16, backgroundColor: C.label }]}
+          style={[s.fab, { bottom: insets.bottom + 49 + 16, backgroundColor: C.accent }]}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
         >
-          <IconSymbol name="plus" size={22} color={C.bg} />
+          <IconSymbol name="plus" size={22} color="#fff" />
         </Pressable>
       )}
-      {isAdmin && activeTab === 'Groups' && (
+      {isPastor && activeTab === 'Groups' && (
         <Pressable
-          style={[s.fab, { bottom: insets.bottom + 49 + 16, backgroundColor: C.label }]}
+          style={[s.fab, { bottom: insets.bottom + 49 + 16, backgroundColor: C.accent }]}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
         >
-          <IconSymbol name="plus" size={22} color={C.bg} />
-        </Pressable>
-      )}
-
-      {/* ── Care Request Submit button (member) ── */}
-      {!isAdmin && (
-        <Pressable
-          style={[s.careBtn, { bottom: insets.bottom + 49 + 16, backgroundColor: C.surface, borderColor: C.separator }]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            router.push('/(tabs)/(main)/hub/care-request' as any);
-          }}
-        >
-          <IconSymbol name="heart.fill" size={16} color={C.accent} />
-          <Text style={[s.careBtnText, { color: C.label }]}>Submit Care Request</Text>
+          <IconSymbol name="plus" size={22} color="#fff" />
         </Pressable>
       )}
     </View>
@@ -1190,6 +1236,34 @@ const s = StyleSheet.create({
 
   roleToggle:     { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 12 },
   roleToggleText: { fontSize: 11, fontWeight: '700' },
+
+  // Member Overview new components
+  nextServiceCard:       { borderRadius: 16, padding: 16, marginBottom: 20 },
+  nextServiceLabel:      { fontSize: 11, fontWeight: '700', color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase' as const, letterSpacing: 0.8, marginBottom: 4 },
+  nextServiceTitle:      { fontSize: 20, fontWeight: '800', color: '#fff', marginBottom: 4 },
+  nextServiceTime:       { fontSize: 14, color: 'rgba(255,255,255,0.85)', marginBottom: 4 },
+  nextServiceLocation:   { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 14 },
+  nextServiceLocationText: { fontSize: 13, color: 'rgba(255,255,255,0.65)' },
+  nextServiceActions:    { flexDirection: 'row', gap: 10 },
+  nextServiceBtn:        { paddingHorizontal: 18, paddingVertical: 9, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.22)', alignItems: 'center' },
+  nextServiceBtnText:    { fontSize: 13, fontWeight: '700', color: '#fff' },
+  annRow:    { flexDirection: 'row', alignItems: 'flex-start', gap: 10, paddingVertical: 12 },
+  annIcon:   { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  annTitle:  { fontSize: 14, fontWeight: '600' },
+  annDetail: { fontSize: 12, marginTop: 2, lineHeight: 18 },
+  annTime:   { fontSize: 11, marginTop: 2 },
+  prayerRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, paddingVertical: 11 },
+  prayerName:{ fontSize: 11, fontWeight: '700', marginBottom: 2 },
+  prayerText:{ fontSize: 13, lineHeight: 19 },
+  prayerSubmitBtn:  { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 11, borderRadius: 12 },
+  prayerSubmitText: { fontSize: 13, fontWeight: '700' },
+  giveBtn:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, paddingVertical: 14, borderRadius: 14, borderWidth: 1.5, marginBottom: 24 },
+  giveBtnText:{ fontSize: 15, fontWeight: '700', flex: 1, textAlign: 'center' },
+  myGroupRow:     { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 11 },
+  myGroupDot:     { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  myGroupInitials:{ fontSize: 12, fontWeight: '700', color: '#fff' },
+  myGroupName:    { fontSize: 14, fontWeight: '600' },
+  myGroupNext:    { fontSize: 12, marginTop: 1 },
 
   section:       { borderRadius: 16, padding: 16, marginBottom: 20 },
   sectionTitleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },

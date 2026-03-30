@@ -1,7 +1,6 @@
 /**
  * Education Hub — operational center for schools, universities, training programs.
- * RBAC flip: admin/dean sees enrollment dashboard, student sees campus life,
- * parent sees their student's info.
+ * RBAC demo: Dean sees enrollment dashboard + LMS admin; Student sees courses + grades.
  * Three views: Overview / Academics / Student Life via centered dropdown pill.
  */
 
@@ -26,27 +25,26 @@ import {
   type EduChartMetric, type StudentCourse, type CampusOrg, type OrgType,
 } from '@/data/mock-education-hub';
 
-type EduTab  = 'Overview' | 'Academics' | 'Student Life';
-type EduRole = 'admin' | 'student' | 'parent';
+const ACCENT = '#003A63';
 
-const OVERVIEW_ADMIN_PILLS  = ['All', 'Enrollment', 'Financial', 'Accreditation', 'Applications'];
-const ACADEMICS_ADMIN_PILLS = ['All', 'Departments', 'Courses', 'Grades'];
-const ACADEMICS_STU_PILLS   = ['All', 'My Courses', 'Catalog', 'Grades', 'Degree Progress'];
-const LIFE_ADMIN_PILLS      = ['All', 'Clubs', 'Housing', 'Dining', 'Facilities'];
-const LIFE_STU_PILLS        = ['All', 'Clubs', 'My Orgs', 'Housing', 'Dining', 'Resources'];
+type EduTab  = 'Overview' | 'Academics' | 'Student Life';
+type EduRole = 'Dean' | 'Student';
+
+const OVERVIEW_DEAN_PILLS  = ['All', 'Enrollment', 'Financial', 'Accreditation', 'Applications'];
+const ACADEMICS_DEAN_PILLS = ['All', 'Departments', 'Courses', 'Grades'];
+const ACADEMICS_STU_PILLS  = ['All', 'My Courses', 'Catalog', 'Grades', 'Degree Progress'];
+const LIFE_DEAN_PILLS      = ['All', 'Clubs', 'Housing', 'Dining', 'Facilities'];
+const LIFE_STU_PILLS       = ['All', 'Clubs', 'My Orgs', 'Housing', 'Dining', 'Resources'];
 
 const TOP_BAR_H  = 52;
 const PILL_ROW_H = 48;
 const BAR_MAX_H  = 100;
 
 function pillsForTab(tab: EduTab, role: EduRole): string[] {
-  if (tab === 'Overview')     return role === 'admin' ? OVERVIEW_ADMIN_PILLS : [];
-  if (tab === 'Academics')    return role === 'admin' ? ACADEMICS_ADMIN_PILLS : role === 'student' ? ACADEMICS_STU_PILLS : [];
-  return role === 'admin' ? LIFE_ADMIN_PILLS : role === 'student' ? LIFE_STU_PILLS : [];
+  if (tab === 'Overview')  return role === 'Dean' ? OVERVIEW_DEAN_PILLS : [];
+  if (tab === 'Academics') return role === 'Dean' ? ACADEMICS_DEAN_PILLS : ACADEMICS_STU_PILLS;
+  return role === 'Dean' ? LIFE_DEAN_PILLS : LIFE_STU_PILLS;
 }
-
-function nextRole(r: EduRole): EduRole { return r === 'admin' ? 'student' : r === 'student' ? 'parent' : 'admin'; }
-function roleLabel(r: EduRole): string { return r === 'admin' ? 'Dean' : r === 'student' ? 'Student' : 'Parent'; }
 
 // ── Stat Card ─────────────────────────────────────────────────────────────────
 
@@ -108,13 +106,24 @@ const bcS = StyleSheet.create({
   lbl:    { fontSize: 9, fontWeight: '500' },
 });
 
+// ── Progress Bar ──────────────────────────────────────────────────────────────
+
+function ProgressBar({ pct, color }: { pct: number; color: string }) {
+  return (
+    <View style={{ height: 6, borderRadius: 3, backgroundColor: 'rgba(0,0,0,0.08)', overflow: 'hidden' }}>
+      <View style={{ height: 6, borderRadius: 3, width: `${Math.min(100, pct)}%` as any, backgroundColor: color }} />
+    </View>
+  );
+}
+
 // ── Course Row (student, expandable) ─────────────────────────────────────────
 
 function CourseRow({ course, expanded, onToggle, router, C }: {
   course: StudentCourse; expanded: boolean; onToggle: () => void; router: any; C: ComponentColors;
 }) {
   const assignments = COURSE_ASSIGNMENTS[course.id] ?? [];
-  const gradeColor = course.grade.startsWith('A') ? '#5A8A6E' : course.grade.startsWith('B') ? C.label : '#3B82F6';
+  const gradeColor = course.grade.startsWith('A') ? '#5A8A6E' : course.grade.startsWith('B') ? C.label : C.accent;
+  const pct = course.progress ?? Math.round(Math.random() * 40 + 50);
   return (
     <Pressable onPress={onToggle} style={[crw.card, { backgroundColor: C.surface }]}>
       <View style={crw.row}>
@@ -122,6 +131,13 @@ function CourseRow({ course, expanded, onToggle, router, C }: {
           <Text style={[crw.title, { color: C.label }]}>{course.title}</Text>
           <Text style={[crw.code, { color: C.secondary }]}>{course.code} · {course.credits} cr · {course.instructor}</Text>
           <Text style={[crw.schedule, { color: C.muted }]}>{course.schedule} · {course.room}</Text>
+          <View style={{ marginTop: 8, gap: 4 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={{ fontSize: 11, color: C.muted }}>Progress</Text>
+              <Text style={{ fontSize: 11, fontWeight: '700', color: C.accent }}>{pct}%</Text>
+            </View>
+            <ProgressBar pct={pct} color={C.accent} />
+          </View>
         </View>
         <View style={crw.right}>
           <Text style={[crw.grade, { color: gradeColor }]}>{course.grade}</Text>
@@ -138,7 +154,7 @@ function CourseRow({ course, expanded, onToggle, router, C }: {
                 <IconSymbol
                   name={a.status === 'graded' ? 'checkmark.circle.fill' : a.status === 'submitted' ? 'clock.fill' : 'circle'}
                   size={14}
-                  color={a.status === 'graded' ? '#5A8A6E' : a.status === 'submitted' ? '#1D9BF0' : C.muted}
+                  color={a.status === 'graded' ? '#5A8A6E' : a.status === 'submitted' ? C.accent : C.muted}
                 />
                 <View>
                   <Text style={[crw.asgTitle, { color: C.label }]}>{a.title}</Text>
@@ -183,7 +199,7 @@ const crw = StyleSheet.create({
   roomBtnText:{ fontSize: 13, fontWeight: '600' },
 });
 
-// ── Catalog Course Row (student registration) ──────────────────────────────
+// ── Catalog Course Row ──────────────────────────────────────────────────────
 
 function CatalogCourse({ course, registered, onRegister, C }: {
   course: typeof COURSE_CATALOG[0]; registered: boolean; onRegister: () => void; C: ComponentColors;
@@ -231,7 +247,7 @@ const catS = StyleSheet.create({
   regText:{ fontSize: 12, fontWeight: '700' },
 });
 
-// ── Dept Card (admin, expandable) ─────────────────────────────────────────────
+// ── Dept Card (dean, expandable) ───────────────────────────────────────────────
 
 function DeptCard({ dept, expanded, onToggle, C }: {
   dept: typeof EDUCATION_DEPARTMENTS[0]; expanded: boolean; onToggle: () => void; C: ComponentColors;
@@ -290,7 +306,7 @@ function OrgCard({ org, expanded, onToggle, isJoined, onJoin, C }: {
   isJoined: boolean; onJoin: () => void; C: ComponentColors;
 }) {
   const typeColors: Record<OrgType, string> = {
-    academic: '#1D9BF0', social: C.accent, athletic: '#990000',
+    academic: C.accent, social: C.accent, athletic: '#990000',
     cultural: '#3B82F6', service: '#5A8A6E',
   };
   const tc = typeColors[org.type];
@@ -432,7 +448,7 @@ export default function EducationHubScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
-  const [role, setRole]               = useState<EduRole>('admin');
+  const [role, setRole]               = useState<EduRole>('Dean');
   const [activeTab, setActiveTab]     = useState<EduTab>('Overview');
   const [dropdownOpen, setDropdown]   = useState(false);
   const [filterPillsVisible, setPillsVisible] = useState(false);
@@ -483,18 +499,15 @@ export default function EducationHubScreen() {
 
   const handleRoleChange = useCallback(() => {
     Haptics.selectionAsync();
-    setRole(r => {
-      const next = nextRole(r);
-      setSelectedPill('All');
-      setPillsVisible(false);
-      pillsRevealAnim.setValue(0);
-      return next;
-    });
+    setRole(r => r === 'Dean' ? 'Student' : 'Dean');
+    setSelectedPill('All');
+    setPillsVisible(false);
+    pillsRevealAnim.setValue(0);
   }, [pillsRevealAnim]);
 
-  // ── Admin Overview ────────────────────────────────────────────────────────
+  // ── Dean Overview ─────────────────────────────────────────────────────────
 
-  const renderAdminOverview = () => {
+  const renderDeanOverview = () => {
     const a = EDUCATION_ANALYTICS;
     const showAll  = selectedPill === 'All';
     const showEnrl = showAll || selectedPill === 'Enrollment';
@@ -506,32 +519,75 @@ export default function EducationHubScreen() {
       <ScrollView onScroll={handleScroll} scrollEventThrottle={16} showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}>
 
-        {/* Stats */}
+        {/* Hero banner */}
+        <View style={[s.deanBanner, { backgroundColor: ACCENT }]}>
+          <Text style={s.deanBannerTitle}>Enrollment Dashboard</Text>
+          <Text style={s.deanBannerSub}>Spring 2026 · {a.totalEnrollment.toLocaleString()} students enrolled</Text>
+          <View style={s.deanBannerRow}>
+            {[
+              { label: 'New This Sem', value: '312' },
+              { label: 'At-Risk', value: '47' },
+              { label: 'Graduation Rate', value: `${a.graduationRate}%` },
+            ].map(m => (
+              <View key={m.label} style={s.deanBannerChip}>
+                <Text style={s.deanBannerChipNum}>{m.value}</Text>
+                <Text style={s.deanBannerChipLabel}>{m.label}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Stats row */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }}>
           {(showAll || showEnrl) && <StatCard icon="person.3.fill" value={a.totalEnrollment.toLocaleString()} label="Enrolled" trend={a.enrollmentTrend} C={C} />}
           {showEnrl && <StatCard icon="arrow.up.right.circle.fill" value={`${a.retentionRate}%`} label="Retention" trend={a.retentionTrend} C={C} />}
-          {showEnrl && <StatCard icon="graduationcap.fill" value={`${a.graduationRate}%`} label="Graduation" trend={a.graduationTrend} C={C} />}
           {showEnrl && <StatCard icon="chart.bar.fill" value={String(a.avgGpa)} label="Avg GPA" trend={a.gpaTrend} C={C} />}
           {showFin && <StatCard icon="dollarsign.circle.fill" value={`$${(a.financialAid / 1000000).toFixed(1)}M`} label="Fin Aid" trend={a.financialAidTrend} C={C} />}
           {(showAll || showApps) && <StatCard icon="tray.fill" value={String(a.applicationsPending)} label="Applications" trend={a.applicationsTrend} C={C} />}
         </ScrollView>
 
-        {/* Chart */}
+        {/* Analytics section */}
         {(showAll || showEnrl) && (
           <>
-            <SecH title="Semester Trend" C={C} />
+            <SecH title="Analytics — Semester Trend" C={C} />
             <View style={{ flexDirection: 'row', gap: 8, marginBottom: 10 }}>
               {(['enrollment', 'retention', 'graduation'] as EduChartMetric[]).map(m => (
                 <Pressable key={m}
-                  style={[s.metBtn, chartMetric === m ? { backgroundColor: C.label } : { borderColor: C.separator, borderWidth: 1 }]}
+                  style={[s.metBtn, chartMetric === m ? { backgroundColor: C.activePill } : { borderColor: C.separator, borderWidth: 1 }]}
                   onPress={() => { Haptics.selectionAsync(); setChartMetric(m); }}>
-                  <Text style={[s.metBtnTxt, { color: chartMetric === m ? C.bg : C.secondary }]}>
+                  <Text style={[s.metBtnTxt, { color: chartMetric === m ? C.activePillText : C.secondary }]}>
                     {m.charAt(0).toUpperCase() + m.slice(1)}
                   </Text>
                 </Pressable>
               ))}
             </View>
             <EduBarChart metric={chartMetric} C={C} />
+          </>
+        )}
+
+        {/* Faculty Management */}
+        {(showAll || showEnrl) && (
+          <>
+            <SecH title="Faculty Management" C={C} />
+            <View style={[s.section, { backgroundColor: C.surface }]}>
+              {EDUCATION_DEPARTMENTS.slice(0, 4).map((d, idx) => (
+                <View key={d.id} style={[s.facultyRow, idx < 3 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
+                  <View style={[s.facultyAvatar, { backgroundColor: `hsl(${d.chairHue},42%,28%)` }]}>
+                    <Text style={s.facultyAvatarText}>{d.chairInitials}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.facultyName, { color: C.label }]}>{d.chair}</Text>
+                    <Text style={[s.facultyDept, { color: C.secondary }]}>{d.name} · {d.facultyCount} faculty</Text>
+                  </View>
+                  <View style={s.facultyRight}>
+                    <Text style={[s.facultyCourses, { color: C.accent }]}>{d.courseCount} courses</Text>
+                    <View style={[s.pendingBadge, { backgroundColor: `${C.accent}18` }]}>
+                      <Text style={[s.pendingText, { color: C.accent }]}>0 pending</Text>
+                    </View>
+                  </View>
+                </View>
+              ))}
+            </View>
           </>
         )}
 
@@ -555,8 +611,8 @@ export default function EducationHubScreen() {
           </>
         )}
 
-        {/* Applications */}
-        {(showAll || showApps) && (
+        {/* Quick Actions */}
+        {showAll && (
           <>
             <SecH title="Quick Actions" C={C} />
             <View style={{ flexDirection: 'row', gap: 10, marginBottom: 20 }}>
@@ -600,23 +656,19 @@ export default function EducationHubScreen() {
   // ── Student Overview ──────────────────────────────────────────────────────
 
   const renderStudentOverview = () => {
-    const p = EDUCATION_PROFILE;
     const sp = STUDENT_PROFILE;
+    const dueSoon = [
+      { course: 'CS 301', assignment: 'Problem Set 4', due: 'Tomorrow, 11:59 PM' },
+      { course: 'MATH 201', assignment: 'Chapter 8 Quiz', due: 'Wed, Mar 18' },
+      { course: 'ENG 102', assignment: 'Essay Draft', due: 'Fri, Mar 20' },
+    ];
+
     return (
       <ScrollView onScroll={handleScroll} scrollEventThrottle={16} showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}>
-        {/* Hero */}
-        <View style={s.heroCenter}>
-          <View style={[s.heroAvatar, { backgroundColor: `hsl(${p.coverHue},55%,30%)` }]}>
-            <Text style={s.heroAvatarTxt}>{p.avatarInitials}</Text>
-          </View>
-          <Text style={[s.heroName, { color: C.label }]}>{p.name}</Text>
-          <Text style={[s.heroTagline, { color: C.secondary }]}>{p.tagline}</Text>
-          <Text style={[s.heroEst, { color: C.muted }]}>Est. {p.established} · {p.location}</Text>
-        </View>
 
-        {/* Student card */}
-        <View style={[s.studentCard, { backgroundColor: C.surface, borderColor: C.separator }]}>
+        {/* Student profile card */}
+        <View style={[s.studentCard, { backgroundColor: C.surface, borderColor: `${C.accent}40` }]}>
           <View style={s.studentCardRow}>
             <View>
               <Text style={[s.studentName, { color: C.label }]}>{sp.name}</Text>
@@ -638,19 +690,63 @@ export default function EducationHubScreen() {
           )}
         </View>
 
-        {/* Quick Links */}
-        <SecH title="Quick Access" C={C} />
-        <View style={s.quickGrid}>
+        {/* Submit Work — assignments due */}
+        <SecH title="Submit Work — 3 Due This Week" C={C} />
+        <View style={[s.section, { backgroundColor: `${C.accent}0A`, borderRadius: 16 }]}>
+          {dueSoon.map((a, idx) => (
+            <View key={a.assignment} style={[s.dueRow, idx < dueSoon.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: `${C.accent}20` }]}>
+              <View style={{ flex: 1 }}>
+                <Text style={[s.dueAssignment, { color: C.label }]}>{a.assignment}</Text>
+                <Text style={[s.dueCourse, { color: C.secondary }]}>{a.course}</Text>
+              </View>
+              <View style={{ alignItems: 'flex-end', gap: 4 }}>
+                <Text style={[s.dueDateText, { color: C.accent }]}>{a.due}</Text>
+                <Pressable style={[s.submitBtn, { backgroundColor: C.accent }]}
+                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+                  <Text style={s.submitBtnText}>Submit</Text>
+                </Pressable>
+              </View>
+            </View>
+          ))}
+        </View>
+
+        {/* My Grades summary */}
+        <SecH title="My Grades" C={C} />
+        <View style={[s.section, { backgroundColor: C.surface }]}>
+          <View style={[s.gpaHeader]}>
+            <Text style={[s.gpaBig, { color: C.accent }]}>{sp.gpa}</Text>
+            <Text style={[s.gpaHeaderLbl, { color: C.secondary }]}>Cumulative GPA</Text>
+          </View>
+          {MY_COURSES.map((c, idx) => {
+            const gc = c.grade.startsWith('A') ? '#5A8A6E' : c.grade.startsWith('B') ? C.label : C.accent;
+            return (
+              <View key={c.id} style={[s.gradeRow, idx < MY_COURSES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
+                <View style={s.gradeInfo}>
+                  <Text style={[s.gradeCourse, { color: C.label }]}>{c.title}</Text>
+                  <Text style={[s.gradeCode, { color: C.secondary }]}>{c.code}</Text>
+                </View>
+                <Text style={[s.gradeLetter, { color: gc }]}>{c.grade}</Text>
+              </View>
+            );
+          })}
+        </View>
+
+        {/* Campus Announcements */}
+        <SecH title="Campus Announcements" C={C} />
+        <View style={[s.section, { backgroundColor: C.surface }]}>
           {[
-            { label: 'My Classes',     icon: 'book.fill',                  action: () => { setActiveTab('Academics'); setSelectedPill('My Courses'); } },
-            { label: 'My Grades',      icon: 'chart.bar.fill',             action: () => { setActiveTab('Academics'); setSelectedPill('Grades'); } },
-            { label: 'Financial Aid',  icon: 'dollarsign.circle.fill',     action: () => {} },
-            { label: 'My Advisor',     icon: 'person.crop.circle.badge.checkmark', action: () => {} },
-          ].map(ql => (
-            <Pressable key={ql.label} style={[s.quickBtn, { backgroundColor: C.surface }]} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); ql.action(); }}>
-              <IconSymbol name={ql.icon as any} size={22} color={C.accent} />
-              <Text style={[s.quickBtnTxt, { color: C.label }]}>{ql.label}</Text>
-            </Pressable>
+            { title: 'Spring Break Schedule', detail: 'Campus closed Mar 22-29. Library hours reduced.', time: '2h ago' },
+            { title: 'Registration Opens Monday', detail: 'Fall 2026 course registration begins Mar 31 at 8 AM.', time: '1d ago' },
+            { title: 'Career Fair Next Week', detail: 'Over 40 employers attending. Register at careers.edu', time: '2d ago' },
+          ].map((ann, idx) => (
+            <View key={ann.title} style={[s.annRow, idx < 2 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
+              <IconSymbol name="megaphone.fill" size={14} color={C.accent} />
+              <View style={{ flex: 1 }}>
+                <Text style={[s.annTitle, { color: C.label }]}>{ann.title}</Text>
+                <Text style={[s.annDetail, { color: C.secondary }]}>{ann.detail}</Text>
+                <Text style={[s.annTime, { color: C.muted }]}>{ann.time}</Text>
+              </View>
+            </View>
           ))}
         </View>
 
@@ -660,112 +756,17 @@ export default function EducationHubScreen() {
           {ACADEMIC_CALENDAR.slice(0, 5).map((ev, idx) => (
             <View key={ev.label} style={[s.calRow, idx < 4 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
               <Text style={[s.calLabel, { color: C.label }]}>{ev.label}</Text>
-              <Text style={[s.calDate, { color: C.secondary }]}>{ev.date}</Text>
+              <Text style={[s.calDate, { color: C.accent }]}>{ev.date}</Text>
             </View>
-          ))}
-        </View>
-
-        {/* Stats */}
-        <SecH title="By the Numbers" C={C} />
-        <View style={[s.statsCard, { backgroundColor: C.surface }]}>
-          {[
-            { label: 'Students', value: EDUCATION_ANALYTICS.totalEnrollment.toLocaleString() },
-            { label: 'Programs', value: String(p.programs) },
-            { label: 'Stu:Faculty', value: p.studentFacultyRatio },
-          ].map((st, idx) => (
-            <React.Fragment key={st.label}>
-              {idx > 0 && <View style={[s.statsDivider, { backgroundColor: C.separator }]} />}
-              <View style={s.statsItem}>
-                <Text style={[s.statsNum, { color: C.label }]}>{st.value}</Text>
-                <Text style={[s.statsLbl, { color: C.secondary }]}>{st.label}</Text>
-              </View>
-            </React.Fragment>
           ))}
         </View>
       </ScrollView>
     );
   };
 
-  // ── Parent Overview ───────────────────────────────────────────────────────
+  // ── Dean Academics ────────────────────────────────────────────────────────
 
-  const renderParentOverview = () => {
-    const sp = STUDENT_PROFILE;
-    const fa = sp.financialAid;
-    return (
-      <ScrollView onScroll={handleScroll} scrollEventThrottle={16} showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}>
-        {/* Student Card */}
-        <SecH title="Your Student" C={C} />
-        <View style={[s.studentCard, { backgroundColor: C.surface, borderColor: C.separator }]}>
-          <View style={s.studentCardRow}>
-            <View>
-              <Text style={[s.studentName, { color: C.label }]}>{sp.name}</Text>
-              <Text style={[s.studentMeta, { color: C.secondary }]}>{sp.year} · {sp.major}</Text>
-              <Text style={[s.studentId, { color: C.muted }]}>{sp.enrollmentStatus}</Text>
-            </View>
-            <View style={s.studentCardRight}>
-              <Text style={[s.gpaNum, { color: C.accent }]}>{sp.gpa}</Text>
-              <Text style={[s.gpaLbl, { color: C.secondary }]}>GPA</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Courses */}
-        <SecH title="Current Classes" C={C} />
-        <View style={[s.section, { backgroundColor: C.surface }]}>
-          {MY_COURSES.map((c, idx) => (
-            <View key={c.id} style={[s.parentCourse, idx < MY_COURSES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
-              <Text style={[s.parentCourseName, { color: C.label }]}>{c.title}</Text>
-              <Text style={[s.parentCourseMeta, { color: C.secondary }]}>{c.schedule}</Text>
-              <View style={[s.parentGrade, { backgroundColor: `${C.accent}18` }]}>
-                <Text style={[s.parentGradeText, { color: C.accent }]}>{c.grade}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
-
-        {/* Financial */}
-        <SecH title="Financial Account" C={C} />
-        <View style={[s.finCard, { backgroundColor: C.surface }]}>
-          <View style={s.finRow}>
-            <Text style={[s.finLabel, { color: C.secondary }]}>Tuition Charged</Text>
-            <Text style={[s.finValue, { color: C.label }]}>${fa.tuitionCharged.toLocaleString()}</Text>
-          </View>
-          <View style={s.finRow}>
-            <Text style={[s.finLabel, { color: C.secondary }]}>Aid Applied</Text>
-            <Text style={[s.finValue, { color: '#5A8A6E' }]}>-${fa.aidApplied.toLocaleString()}</Text>
-          </View>
-          <View style={[s.finRow, { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator, paddingTop: 10, marginTop: 4 }]}>
-            <Text style={[s.finLabel, { color: C.label, fontWeight: '700' }]}>Balance Due</Text>
-            <Text style={[s.finBalance, { color: fa.balance > 0 ? '#3B82F6' : '#5A8A6E' }]}>${fa.balance.toLocaleString()}</Text>
-          </View>
-          <Text style={[s.finDue, { color: C.muted }]}>Due {fa.dueDate}</Text>
-          <Pressable style={[s.finBtn, { backgroundColor: C.label }]} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
-            <Text style={[s.finBtnTxt, { color: C.bg }]}>Make Payment</Text>
-          </Pressable>
-        </View>
-
-        {/* Advisor */}
-        <SecH title="Academic Advisor" C={C} />
-        <View style={[s.advisorCard, { backgroundColor: C.surface }]}>
-          <View style={[s.advisorAvatar, { backgroundColor: C.surfacePressed }]}>
-            <Text style={[s.advisorInitials, { color: C.label }]}>PM</Text>
-          </View>
-          <View style={s.advisorInfo}>
-            <Text style={[s.advisorName, { color: C.label }]}>{sp.advisorName}</Text>
-            <Text style={[s.advisorHandle, { color: C.secondary }]}>{sp.advisorHandle}</Text>
-          </View>
-          <Pressable style={[s.advisorBtn, { backgroundColor: C.accent }]} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
-            <Text style={s.advisorBtnTxt}>Contact</Text>
-          </Pressable>
-        </View>
-      </ScrollView>
-    );
-  };
-
-  // ── Admin Academics ───────────────────────────────────────────────────────
-
-  const renderAdminAcademics = () => {
+  const renderDeanAcademics = () => {
     const showAll   = selectedPill === 'All';
     const showDepts = showAll || selectedPill === 'Departments';
     const showCrs   = showAll || selectedPill === 'Courses';
@@ -780,7 +781,7 @@ export default function EducationHubScreen() {
               <DeptCard key={d.id} dept={d} expanded={expandedDeptId === d.id}
                 onToggle={() => setExpandedDeptId(expandedDeptId === d.id ? null : d.id)} C={C} />
             ))}
-            <Pressable style={[s.createBtn, { borderColor: C.separator }]} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}>
+            <Pressable style={[s.createBtn, { borderColor: C.accent }]} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}>
               <IconSymbol name="plus" size={16} color={C.accent} />
               <Text style={[s.createBtnTxt, { color: C.accent }]}>Add Department</Text>
             </Pressable>
@@ -788,12 +789,19 @@ export default function EducationHubScreen() {
         )}
         {showCrs && (
           <>
-            <SecH title="Course Catalog" C={C} />
+            <SecH title="Course Catalog — LMS Admin" C={C} />
             {COURSE_CATALOG.map(c => (
               <View key={c.id} style={[s.adminCourse, { backgroundColor: C.surface }]}>
                 <View style={s.adminCourseLeft}>
                   <Text style={[s.adminCourseTitle, { color: C.label }]}>{c.title}</Text>
                   <Text style={[s.adminCourseMeta, { color: C.secondary }]}>{c.code} · {c.instructor} · {c.schedule}</Text>
+                  <View style={{ marginTop: 6 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }}>
+                      <Text style={{ fontSize: 10, color: C.muted }}>Completion</Text>
+                      <Text style={{ fontSize: 10, fontWeight: '700', color: C.accent }}>68%</Text>
+                    </View>
+                    <ProgressBar pct={68} color={C.accent} />
+                  </View>
                 </View>
                 <View style={s.adminCourseRight}>
                   <Text style={[s.adminSeats, { color: c.enrollment >= c.capacity ? '#B85C5C' : '#5A8A6E' }]}>
@@ -803,9 +811,9 @@ export default function EducationHubScreen() {
                 </View>
               </View>
             ))}
-            <Pressable style={[s.createBtn, { borderColor: C.separator }]} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}>
+            <Pressable style={[s.createBtn, { borderColor: C.accent }]} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}>
               <IconSymbol name="plus" size={16} color={C.accent} />
-              <Text style={[s.createBtnTxt, { color: C.accent }]}>Create Course</Text>
+              <Text style={[s.createBtnTxt, { color: C.accent }]}>+ Create Course</Text>
             </Pressable>
           </>
         )}
@@ -858,7 +866,7 @@ export default function EducationHubScreen() {
           <SecH title="Current Semester" C={C} />
           <View style={[s.section, { backgroundColor: C.surface }]}>
             {MY_COURSES.map((c, idx) => {
-              const gc = c.grade.startsWith('A') ? '#5A8A6E' : c.grade.startsWith('B') ? C.label : '#3B82F6';
+              const gc = c.grade.startsWith('A') ? '#5A8A6E' : c.grade.startsWith('B') ? C.label : C.accent;
               return (
                 <View key={c.id} style={[s.gradeRow, idx < MY_COURSES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
                   <View style={s.gradeInfo}>
@@ -906,31 +914,9 @@ export default function EducationHubScreen() {
     );
   };
 
-  // ── Parent Academics ──────────────────────────────────────────────────────
+  // ── Dean Student Life ─────────────────────────────────────────────────────
 
-  const renderParentAcademics = () => (
-    <ScrollView onScroll={handleScroll} scrollEventThrottle={16} showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}>
-      <SecH title="Current Courses" C={C} />
-      <View style={[s.section, { backgroundColor: C.surface }]}>
-        {MY_COURSES.map((c, idx) => (
-          <View key={c.id} style={[s.parentCourse, idx < MY_COURSES.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
-            <Text style={[s.parentCourseName, { color: C.label }]}>{c.title}</Text>
-            <Text style={[s.parentCourseMeta, { color: C.secondary }]}>{c.schedule} · {c.instructor}</Text>
-            <View style={[s.parentGrade, { backgroundColor: `${C.accent}18` }]}>
-              <Text style={[s.parentGradeText, { color: C.accent }]}>{c.grade}</Text>
-            </View>
-          </View>
-        ))}
-      </View>
-      <SecH title="Degree Progress" C={C} />
-      <DegreeProgressSection C={C} />
-    </ScrollView>
-  );
-
-  // ── Admin Student Life ────────────────────────────────────────────────────
-
-  const renderAdminStudentLife = () => {
+  const renderDeanStudentLife = () => {
     const showAll  = selectedPill === 'All';
     const showClub = showAll || selectedPill === 'Clubs';
     return (
@@ -946,7 +932,7 @@ export default function EducationHubScreen() {
                 <Text style={[s.adminOrgSched, { color: C.muted }]}>{org.schedule}</Text>
               </View>
             ))}
-            <Pressable style={[s.createBtn, { borderColor: C.separator }]} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}>
+            <Pressable style={[s.createBtn, { borderColor: C.accent }]} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}>
               <IconSymbol name="plus" size={16} color={C.accent} />
               <Text style={[s.createBtnTxt, { color: C.accent }]}>Create Organization</Text>
             </Pressable>
@@ -1016,7 +1002,7 @@ export default function EducationHubScreen() {
               </View>
             </View>
             {!showMaintenanceForm ? (
-              <Pressable style={[s.maintBtn, { borderColor: C.separator }]} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowMaint(true); }}>
+              <Pressable style={[s.maintBtn, { borderColor: C.accent }]} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowMaint(true); }}>
                 <IconSymbol name="wrench.and.screwdriver" size={16} color={C.accent} />
                 <Text style={[s.maintBtnTxt, { color: C.accent }]}>Submit Maintenance Request</Text>
               </Pressable>
@@ -1026,7 +1012,7 @@ export default function EducationHubScreen() {
                 <TextInput
                   style={[s.maintInput, { color: C.label, borderColor: C.inputBorder }]}
                   value={maintText} onChangeText={setMaintText}
-                  placeholder="Describe the issue…" placeholderTextColor={C.muted}
+                  placeholder="Describe the issue…" placeholderTextColor={C.muted as string}
                   multiline textAlignVertical="top"
                 />
                 <View style={s.maintFormBtns}>
@@ -1064,14 +1050,14 @@ export default function EducationHubScreen() {
           <>
             <SecH title="Campus Resources" C={C} />
             {[
-              { label: 'Tutoring Center',   detail: 'Mon–Fri 9 AM–6 PM',   icon: 'pencil.and.outline' },
-              { label: 'Library',           detail: 'Open 8 AM–10 PM',     icon: 'books.vertical.fill' },
-              { label: 'Health Services',   detail: 'Campus Clinic Bldg A', icon: 'cross.fill' },
-              { label: 'Career Center',     detail: 'Student Union Rm 110', icon: 'briefcase.fill' },
+              { label: 'Tutoring Center',  detail: 'Mon–Fri 9 AM–6 PM',    icon: 'pencil.and.outline' },
+              { label: 'Library',          detail: 'Open 8 AM–10 PM',      icon: 'books.vertical.fill' },
+              { label: 'Health Services',  detail: 'Campus Clinic Bldg A', icon: 'cross.fill' },
+              { label: 'Career Center',    detail: 'Student Union Rm 110', icon: 'briefcase.fill' },
             ].map(r => (
               <Pressable key={r.label} style={[s.resourceRow, { backgroundColor: C.surface }]}
                 onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
-                <View style={[s.resourceIcon, { backgroundColor: C.surfacePressed }]}>
+                <View style={[s.resourceIcon, { backgroundColor: `${C.accent}18` }]}>
                   <IconSymbol name={r.icon as any} size={18} color={C.accent} />
                 </View>
                 <View style={s.resourceInfo}>
@@ -1087,55 +1073,16 @@ export default function EducationHubScreen() {
     );
   };
 
-  // ── Parent Student Life ───────────────────────────────────────────────────
-
-  const renderParentStudentLife = () => {
-    const sp = STUDENT_PROFILE;
-    return (
-      <ScrollView onScroll={handleScroll} scrollEventThrottle={16} showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}>
-        <SecH title="Housing" C={C} />
-        <View style={[s.section, { backgroundColor: C.surface }]}>
-          <View style={[s.housingRow, { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
-            <Text style={[s.housingName, { color: C.label }]}>{sp.housing.building}</Text>
-            <Text style={[s.housingOcc, { color: C.secondary }]}>Room {sp.housing.room}</Text>
-          </View>
-          <View style={s.housingRow}>
-            <Text style={[s.housingName, { color: C.label }]}>Roommate</Text>
-            <Text style={[s.housingOcc, { color: C.secondary }]}>{sp.housing.roommate}</Text>
-          </View>
-        </View>
-        <SecH title="Meal Plan" C={C} />
-        <View style={[s.section, { backgroundColor: C.surface }]}>
-          <View style={[s.housingRow, { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
-            <Text style={[s.housingName, { color: C.label }]}>Plan</Text>
-            <Text style={[s.housingOcc, { color: C.secondary }]}>14 meals / week</Text>
-          </View>
-          <View style={s.housingRow}>
-            <Text style={[s.housingName, { color: C.label }]}>Dining Balance</Text>
-            <Text style={[s.housingOcc, { color: '#5A8A6E' }]}>$142.50 remaining</Text>
-          </View>
-        </View>
-      </ScrollView>
-    );
-  };
-
   // ── Render ────────────────────────────────────────────────────────────────
 
   const renderContent = () => {
     if (activeTab === 'Overview') {
-      if (role === 'admin')   return renderAdminOverview();
-      if (role === 'student') return renderStudentOverview();
-      return renderParentOverview();
+      return role === 'Dean' ? renderDeanOverview() : renderStudentOverview();
     }
     if (activeTab === 'Academics') {
-      if (role === 'admin')   return renderAdminAcademics();
-      if (role === 'student') return renderStudentAcademics();
-      return renderParentAcademics();
+      return role === 'Dean' ? renderDeanAcademics() : renderStudentAcademics();
     }
-    if (role === 'admin')   return renderAdminStudentLife();
-    if (role === 'student') return renderStudentStudentLife();
-    return renderParentStudentLife();
+    return role === 'Dean' ? renderDeanStudentLife() : renderStudentStudentLife();
   };
 
   return (
@@ -1146,7 +1093,7 @@ export default function EducationHubScreen() {
       <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         <View style={s.topBar}>
           <View style={s.topBarSide}>
-            {role === 'admin' ? (
+            {role === 'Dean' ? (
               <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={12}>
                 <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
               </Pressable>
@@ -1162,10 +1109,11 @@ export default function EducationHubScreen() {
           </View>
 
           <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', gap: 10 }]}>
-            <Pressable style={[s.roleToggle, { backgroundColor: role === 'admin' ? C.accent : role === 'student' ? C.label : C.surfacePressed }]}
+            <Pressable
+              style={[s.roleToggle, { backgroundColor: role === 'Dean' ? C.activePill : C.surfacePressed }]}
               onPress={handleRoleChange}>
-              <Text style={[s.roleToggleTxt, { color: role === 'parent' ? C.secondary : '#fff' }]}>
-                {roleLabel(role)}
+              <Text style={[s.roleToggleTxt, { color: role === 'Dean' ? C.activePillText : C.secondary }]}>
+                {role}
               </Text>
             </Pressable>
             {pills.length > 0 && (
@@ -1173,7 +1121,7 @@ export default function EducationHubScreen() {
                 <IconSymbol
                   name={filterPillsVisible || selectedPill !== 'All' ? 'line.3.horizontal.decrease.circle.fill' : 'line.3.horizontal.decrease.circle'}
                   size={22}
-                  color={filterPillsVisible || selectedPill !== 'All' ? C.accent : C.label}
+                  color={filterPillsVisible || selectedPill !== 'All' ? C.activePill : C.label}
                 />
               </Pressable>
             )}
@@ -1187,9 +1135,9 @@ export default function EducationHubScreen() {
             {pills.map(pill => {
               const active = pill === selectedPill;
               return (
-                <Pressable key={pill} style={[s.pill, active ? { backgroundColor: C.label } : { borderColor: C.separator }]}
+                <Pressable key={pill} style={[s.pill, active ? { backgroundColor: C.activePill } : { borderColor: C.separator }]}
                   onPress={() => { Haptics.selectionAsync(); setSelectedPill(pill); }}>
-                  <Text style={[s.pillTxt, { color: active ? C.bg : C.secondary }, active && { fontWeight: '600' }]}>{pill}</Text>
+                  <Text style={[s.pillTxt, { color: active ? C.activePillText : C.secondary }, active && { fontWeight: '600' }]}>{pill}</Text>
                 </Pressable>
               );
             })}
@@ -1204,7 +1152,7 @@ export default function EducationHubScreen() {
           <View style={[s.dropdown, { top: insets.top + 56, backgroundColor: C.bg, borderColor: C.separator, zIndex: 99 }]}>
             {(['Overview', 'Academics', 'Student Life'] as EduTab[]).map(tab => (
               <Pressable key={tab} style={s.dropdownOption} onPress={() => handleTabSelect(tab)}>
-                <Text style={[s.dropdownOptionTxt, { color: tab === activeTab ? C.label : C.secondary }, tab === activeTab && { fontWeight: '600' }]}>
+                <Text style={[s.dropdownOptionTxt, { color: tab === activeTab ? C.activePill : C.secondary }, tab === activeTab && { fontWeight: '600' }]}>
                   {tab}
                 </Text>
               </Pressable>
@@ -1213,13 +1161,13 @@ export default function EducationHubScreen() {
         </>
       )}
 
-      {/* Admin FAB */}
-      {role === 'admin' && (
+      {/* Dean FAB */}
+      {role === 'Dean' && (
         <Pressable
-          style={[s.fab, { bottom: insets.bottom + 49 + 16, backgroundColor: C.label }]}
+          style={[s.fab, { bottom: insets.bottom + 49 + 16, backgroundColor: C.accent }]}
           onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); router.push('/(tabs)/(main)/hub/edu-announcement' as any); }}
         >
-          <IconSymbol name="megaphone.fill" size={20} color={C.bg} />
+          <IconSymbol name="megaphone.fill" size={20} color="#fff" />
         </Pressable>
       )}
     </View>
@@ -1267,12 +1215,25 @@ const s = StyleSheet.create({
   accrStatus:{ fontSize: 13, marginTop: 2 },
   accrNextLbl: { fontSize: 11 },
   accrNextDate:{ fontSize: 13, fontWeight: '600' },
-  heroCenter:    { alignItems: 'center', paddingTop: 16, paddingBottom: 20 },
-  heroAvatar:    { width: 72, height: 72, borderRadius: 18, alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
-  heroAvatarTxt: { fontSize: 24, fontWeight: '800', color: '#fff' },
-  heroName:      { fontSize: 22, fontWeight: '800', marginBottom: 5 },
-  heroTagline:   { fontSize: 14, lineHeight: 20, textAlign: 'center', marginBottom: 6 },
-  heroEst:       { fontSize: 12 },
+  // Dean banner
+  deanBanner:       { borderRadius: 16, padding: 16, marginBottom: 20 },
+  deanBannerTitle:  { fontSize: 17, fontWeight: '800', color: '#fff', marginBottom: 4 },
+  deanBannerSub:    { fontSize: 13, color: 'rgba(255,255,255,0.75)', marginBottom: 12 },
+  deanBannerRow:    { flexDirection: 'row', gap: 8 },
+  deanBannerChip:   { flex: 1, backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 10, padding: 10, alignItems: 'center' },
+  deanBannerChipNum:{ fontSize: 16, fontWeight: '800', color: '#fff' },
+  deanBannerChipLabel: { fontSize: 10, color: 'rgba(255,255,255,0.7)', marginTop: 2, textAlign: 'center' },
+  // Faculty
+  facultyRow:       { flexDirection: 'row', alignItems: 'center', paddingVertical: 11, gap: 10 },
+  facultyAvatar:    { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  facultyAvatarText:{ fontSize: 13, fontWeight: '700', color: '#fff' },
+  facultyName:      { fontSize: 14, fontWeight: '600' },
+  facultyDept:      { fontSize: 12, marginTop: 1 },
+  facultyRight:     { alignItems: 'flex-end', gap: 4 },
+  facultyCourses:   { fontSize: 13, fontWeight: '700' },
+  pendingBadge:     { borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2 },
+  pendingText:      { fontSize: 10, fontWeight: '700' },
+  // Student cards
   studentCard:   { borderRadius: 16, padding: 16, marginBottom: 20, borderWidth: 1 },
   studentCardRow:{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   studentName:   { fontSize: 17, fontWeight: '700' },
@@ -1283,17 +1244,23 @@ const s = StyleSheet.create({
   gpaLbl:        { fontSize: 12 },
   deansListBadge:{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, marginTop: 10, alignSelf: 'flex-start' },
   deansListText: { fontSize: 12, fontWeight: '600' },
-  quickGrid:     { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 24 },
-  quickBtn:      { width: '47%', borderRadius: 14, padding: 14, alignItems: 'center', gap: 8 },
-  quickBtnTxt:   { fontSize: 12, fontWeight: '600', textAlign: 'center' },
-  calRow:        { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 12 },
-  calLabel:      { fontSize: 14, fontWeight: '500', flex: 1 },
-  calDate:       { fontSize: 13 },
-  statsCard:     { borderRadius: 14, flexDirection: 'row', overflow: 'hidden', marginBottom: 20 },
-  statsItem:     { flex: 1, alignItems: 'center', paddingVertical: 16 },
-  statsNum:      { fontSize: 18, fontWeight: '800' },
-  statsLbl:      { fontSize: 11, marginTop: 2 },
-  statsDivider:  { width: StyleSheet.hairlineWidth },
+  // Due assignments
+  dueRow:        { paddingVertical: 12, flexDirection: 'row', alignItems: 'center', gap: 10 },
+  dueAssignment: { fontSize: 14, fontWeight: '600' },
+  dueCourse:     { fontSize: 12, marginTop: 2 },
+  dueDateText:   { fontSize: 12, fontWeight: '700' },
+  submitBtn:     { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8 },
+  submitBtnText: { fontSize: 12, fontWeight: '700', color: '#fff' },
+  // Announcements
+  annRow:    { flexDirection: 'row', alignItems: 'flex-start', gap: 10, paddingVertical: 12 },
+  annTitle:  { fontSize: 14, fontWeight: '600' },
+  annDetail: { fontSize: 12, marginTop: 2 },
+  annTime:   { fontSize: 11, marginTop: 2 },
+  // Calendar
+  calRow:    { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 12 },
+  calLabel:  { fontSize: 14, fontWeight: '500', flex: 1 },
+  calDate:   { fontSize: 13 },
+  // Grades
   gpaHeader:     { alignItems: 'center', paddingVertical: 8, gap: 4 },
   gpaBig:        { fontSize: 40, fontWeight: '800' },
   gpaHeaderLbl:  { fontSize: 13 },
@@ -1302,19 +1269,7 @@ const s = StyleSheet.create({
   gradeCourse:   { fontSize: 14, fontWeight: '600' },
   gradeCode:     { fontSize: 12, marginTop: 2 },
   gradeLetter:   { fontSize: 22, fontWeight: '800' },
-  parentCourse:  { paddingVertical: 14, flexDirection: 'row', alignItems: 'center' },
-  parentCourseName: { flex: 1, fontSize: 14, fontWeight: '600' },
-  parentCourseMeta: { fontSize: 12, marginTop: 2 },
-  parentGrade:   { borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4 },
-  parentGradeText:{ fontSize: 14, fontWeight: '800' },
-  finCard:       { borderRadius: 16, padding: 16, marginBottom: 20, gap: 8 },
-  finRow:        { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  finLabel:      { fontSize: 14 },
-  finValue:      { fontSize: 14, fontWeight: '600' },
-  finBalance:    { fontSize: 20, fontWeight: '800' },
-  finDue:        { fontSize: 12, textAlign: 'right', marginTop: 2 },
-  finBtn:        { paddingVertical: 12, borderRadius: 12, alignItems: 'center', marginTop: 10 },
-  finBtnTxt:     { fontSize: 14, fontWeight: '700' },
+  // Advisor
   advisorCard:   { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14, borderRadius: 14, marginBottom: 20 },
   advisorAvatar: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   advisorInitials: { fontSize: 14, fontWeight: '700' },
@@ -1323,6 +1278,7 @@ const s = StyleSheet.create({
   advisorHandle: { fontSize: 12, marginTop: 2 },
   advisorBtn:    { paddingHorizontal: 16, paddingVertical: 9, borderRadius: 10 },
   advisorBtnTxt: { fontSize: 13, fontWeight: '700', color: '#fff' },
+  // Admin course list
   adminCourse:   { borderRadius: 12, padding: 12, marginBottom: 8, flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
   adminCourseLeft:  { flex: 1 },
   adminCourseTitle: { fontSize: 13, fontWeight: '600' },
@@ -1330,14 +1286,17 @@ const s = StyleSheet.create({
   adminCourseRight: { alignItems: 'flex-end' },
   adminSeats:    { fontSize: 14, fontWeight: '700' },
   adminSeatsLbl: { fontSize: 10 },
+  // Admin org
   adminOrgCard:  { borderRadius: 12, padding: 12, marginBottom: 8 },
   adminOrgName:  { fontSize: 14, fontWeight: '700' },
   adminOrgMeta:  { fontSize: 12, marginTop: 3 },
   adminOrgSched: { fontSize: 11, marginTop: 2 },
+  // Housing
   housingCard:   { borderRadius: 14, padding: 16, marginBottom: 20 },
   housingRow:    { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 11 },
   housingName:   { fontSize: 14, fontWeight: '600' },
   housingOcc:    { fontSize: 13 },
+  // Maintenance
   maintBtn:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 12, borderRadius: 12, borderWidth: 1.5, borderStyle: 'dashed', marginBottom: 20 },
   maintBtnTxt:   { fontSize: 13, fontWeight: '600' },
   maintForm:     { borderRadius: 14, padding: 14, marginBottom: 20, gap: 10 },
@@ -1346,11 +1305,13 @@ const s = StyleSheet.create({
   maintFormBtns: { flexDirection: 'row', gap: 10 },
   maintFormBtn:  { flex: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center' },
   maintFormBtnTxt:{ fontSize: 13, fontWeight: '700' },
+  // Resources
   resourceRow:   { flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: 12, padding: 12, marginBottom: 8 },
   resourceIcon:  { width: 40, height: 40, borderRadius: 12, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   resourceInfo:  { flex: 1 },
   resourceName:  { fontSize: 14, fontWeight: '600' },
   resourceDetail:{ fontSize: 12, marginTop: 2 },
+  // Create button
   createBtn:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 14, borderRadius: 14, borderWidth: 1.5, borderStyle: 'dashed', marginTop: 4, marginBottom: 24 },
   createBtnTxt:  { fontSize: 14, fontWeight: '600' },
   fab: {

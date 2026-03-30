@@ -15,9 +15,11 @@ import { useFocusEffect } from 'expo-router';
 
 import { GlassView } from '@/components/ui/glass-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { useDemoRole } from '@/utils/demo-role-store';
 import {
   getProducts, getFeaturedBanner, getOrders, getDrops,
   STORE_CATEGORIES, ORDER_FILTERS, DROP_FILTERS, formatPrice,
@@ -199,7 +201,8 @@ export default function StoreScreen() {
 
   const [activeTab,    setActiveTab]    = useState<StoreTab>('Products');
   const [mode]                          = useState<StoreMode>('business');
-  const [role,         setRole]         = useState<StoreRole>('Admin');
+  const [demoRole, cycleRole] = useDemoRole('business:store');
+  const role: StoreRole = demoRole === 'CEO' ? 'Admin' : 'Member';
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [pillsVisible, setPillsVisible] = useState(false);
   const [selectedPill, setSelectedPill] = useState('All');
@@ -226,11 +229,6 @@ export default function StoreScreen() {
       setPillsVisible(false);
       pillsAnim.setValue(0);
     }
-  }
-
-  function cycleRole() {
-    Haptics.selectionAsync();
-    setRole(r => r === 'Admin' ? 'Member' : 'Admin');
   }
 
   const contentPaddingTop = topBarH + (pillsVisible ? PILLS_H : 0) + 8;
@@ -266,6 +264,150 @@ export default function StoreScreen() {
   }, [selectedPill]);
 
   const filteredDrops = useMemo(() => getDrops(dropFilterKey), [dropFilterKey]);
+
+  // ── CEO Store Dashboard ──────────────────────────────────────────────────
+
+  function renderCEOView() {
+    const INVENTORY = [
+      { name: 'Branded Polo Shirt',     sku: 'APP-001', stock: 142, reorder: 50,  price: 59.99,  status: 'ok'    },
+      { name: 'Executive Hoodie',       sku: 'APP-002', stock: 18,  reorder: 30,  price: 89.99,  status: 'low'   },
+      { name: 'Wireless Headset Pro',   sku: 'TECH-01', stock: 7,   reorder: 20,  price: 249.00, status: 'critical' },
+      { name: 'Business Card Pack',     sku: 'PRT-001', stock: 500, reorder: 100, price: 24.99,  status: 'ok'    },
+      { name: 'Custom Tote Bag',        sku: 'ACC-001', stock: 0,   reorder: 40,  price: 34.99,  status: 'oos'   },
+    ];
+    const ORDER_COUNTS = [
+      { label: 'Pending',    value: 12, color: '#F59E0B' },
+      { label: 'Processing', value:  8, color: '#1D9BF0' },
+      { label: 'Shipped',    value: 24, color: '#7B68A0' },
+      { label: 'Delivered',  value: 89, color: '#22C55E' },
+    ];
+    const RECENT_ORDERS = [
+      { id: '#ORD-4821', customer: 'Acme Corp',       items: 3, total: 284.97, status: 'processing' },
+      { id: '#ORD-4820', customer: 'Davis & Partners', items: 1, total:  89.99, status: 'pending'    },
+      { id: '#ORD-4819', customer: 'Marcus Okonkwo',  items: 2, total: 159.98, status: 'shipped'    },
+    ];
+    return (
+      <View style={{ paddingHorizontal: 16, paddingBottom: 40, gap: 20 }}>
+        {/* Revenue KPIs */}
+        <View style={{ backgroundColor: '#1D9BF0', borderRadius: 16, padding: 20 }}>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase', letterSpacing: 0.6 }}>GMV This Month</Text>
+          <Text style={{ fontSize: 34, fontWeight: '900', color: '#fff', marginTop: 4 }}>$48,291</Text>
+          <View style={{ flexDirection: 'row', gap: 16, marginTop: 12 }}>
+            {[
+              { label: 'AOV',        value: '$124' },
+              { label: 'Orders',     value: '389'  },
+              { label: 'Conv Rate',  value: '3.8%' },
+            ].map(k => (
+              <View key={k.label} style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 16, fontWeight: '800', color: '#fff' }}>{k.value}</Text>
+                <Text style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', marginTop: 1 }}>{k.label}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Order status counts */}
+        <View>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Orders Dashboard</Text>
+          <View style={{ flexDirection: 'row', gap: 10 }}>
+            {ORDER_COUNTS.map(oc => (
+              <View key={oc.label} style={{ flex: 1, backgroundColor: C.surface, borderRadius: 12, padding: 12, alignItems: 'center', gap: 4 }}>
+                <Text style={{ fontSize: 22, fontWeight: '800', color: oc.color }}>{oc.value}</Text>
+                <Text style={{ fontSize: 10, color: C.muted, textAlign: 'center' }}>{oc.label}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Recent orders */}
+        <View>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Recent Orders</Text>
+          <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden' }}>
+            {RECENT_ORDERS.map((order, idx) => {
+              const statusColors: Record<string, string> = { pending: '#F59E0B', processing: '#1D9BF0', shipped: '#7B68A0' };
+              const sColor = statusColors[order.status] ?? C.secondary;
+              return (
+                <View key={order.id} style={{
+                  flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 12,
+                  borderBottomWidth: idx < RECENT_ORDERS.length - 1 ? StyleSheet.hairlineWidth : 0,
+                  borderBottomColor: C.separator,
+                }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{order.customer}</Text>
+                    <Text style={{ fontSize: 12, color: C.secondary }}>{order.id}  ·  {order.items} item{order.items !== 1 ? 's' : ''}</Text>
+                  </View>
+                  <View style={{ alignItems: 'flex-end', gap: 4 }}>
+                    <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>${order.total.toFixed(2)}</Text>
+                    <View style={{ paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6, backgroundColor: sColor + '22' }}>
+                      <Text style={{ fontSize: 10, fontWeight: '700', color: sColor, textTransform: 'capitalize' }}>{order.status}</Text>
+                    </View>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* Inventory management */}
+        <View>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Inventory</Text>
+          <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden' }}>
+            {INVENTORY.map((item, idx) => {
+              const stockColor = item.status === 'ok' ? '#22C55E' : item.status === 'low' ? '#F59E0B' : item.status === 'critical' ? '#EF4444' : '#6B7280';
+              return (
+                <View key={item.sku} style={{
+                  paddingHorizontal: 14, paddingVertical: 11,
+                  borderBottomWidth: idx < INVENTORY.length - 1 ? StyleSheet.hairlineWidth : 0,
+                  borderBottomColor: C.separator,
+                }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <View style={{ flex: 1, marginRight: 10 }}>
+                      <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }} numberOfLines={1}>{item.name}</Text>
+                      <Text style={{ fontSize: 11, color: C.muted }}>{item.sku}  ·  ${item.price.toFixed(2)}</Text>
+                    </View>
+                    <View style={{ alignItems: 'flex-end' }}>
+                      <Text style={{ fontSize: 14, fontWeight: '800', color: stockColor }}>{item.stock}</Text>
+                      <Text style={{ fontSize: 10, color: C.muted }}>in stock</Text>
+                    </View>
+                  </View>
+                  {(item.status === 'low' || item.status === 'critical' || item.status === 'oos') && (
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                      <IconSymbol name="exclamationmark.triangle.fill" size={11} color={stockColor} />
+                      <Text style={{ fontSize: 11, color: stockColor, fontWeight: '600' }}>
+                        {item.status === 'oos' ? 'Out of Stock' : `Reorder point: ${item.reorder}`}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* Product management actions */}
+        <View style={{ flexDirection: 'row', gap: 10 }}>
+          {[
+            { label: 'Add Product',    icon: 'plus.circle.fill'     },
+            { label: 'Edit Pricing',   icon: 'tag.fill'             },
+            { label: 'Bundles',        icon: 'shippingbox.fill'     },
+          ].map(action => (
+            <Pressable
+              key={action.label}
+              style={({ pressed }) => ({
+                flex: 1, alignItems: 'center', justifyContent: 'center', gap: 5,
+                backgroundColor: pressed ? C.surfacePressed : C.surface,
+                borderRadius: 12, paddingVertical: 13,
+              })}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <IconSymbol name={action.icon as any} size={18} color={C.accent} />
+              <Text style={{ fontSize: 11, fontWeight: '600', color: C.secondary, textAlign: 'center' }}>{action.label}</Text>
+            </Pressable>
+          ))}
+        </View>
+      </View>
+    );
+  }
 
   // ── Render Products ───────────────────────────────────────────────────────
 
@@ -396,9 +538,12 @@ export default function StoreScreen() {
           </Pressable>
 
           <View style={[s.row, { gap: 8 }]}>
-            <Pressable onPress={cycleRole} style={[s.rolePill, { backgroundColor: C.surface, borderColor: C.separator as string }]}>
-              <Text style={[s.rolePillText, { color: C.accent }]}>{role}</Text>
-            </Pressable>
+            <RolePill
+              role={demoRole}
+              onPress={cycleRole}
+              accentColor="#1D9BF0"
+              isPrimary={role === 'Admin'}
+            />
             {pills.length > 0 && (
               <Pressable onPress={togglePills} hitSlop={8} style={s.iconBtn}>
                 <IconSymbol
@@ -463,9 +608,13 @@ export default function StoreScreen() {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {activeTab === 'Products' && renderProducts()}
-        {activeTab === 'Orders'   && renderOrders()}
-        {activeTab === 'Drops'    && renderDrops()}
+        {role === 'Admin' ? renderCEOView() : (
+          <>
+            {activeTab === 'Products' && renderProducts()}
+            {activeTab === 'Orders'   && renderOrders()}
+            {activeTab === 'Drops'    && renderDrops()}
+          </>
+        )}
       </ScrollView>
 
       {activeTab === 'Products' && role === 'Admin' && (

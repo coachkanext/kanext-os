@@ -1,9 +1,8 @@
 /**
  * Home icon grid — 3×3 (9 icons).
- * Ceramic White aesthetic: white-on-white with subtle shadows.
- * Tiles are pure white cards with shadow depth. Icons monochrome black.
- * Content provides color, chrome is monochrome.
- * Dark mode: obsidian tiles (#1A1A1A) with faint white glow.
+ * Flat + clean: white squircle tiles with subtle border, no shadows.
+ * Icons monochrome black. Blue badge dots only (interactive indicator).
+ * Dark mode: #111111 tiles with faint border glow.
  */
 
 import React, { useRef, useCallback, useMemo } from 'react';
@@ -164,66 +163,57 @@ export function IconGrid() {
   );
 }
 
-const makeStyles = (C: ComponentColors) => {
-  const isDark = C.bg === '#000000';
-  const tileBg = isDark ? C.surface : '#FFFFFF';
-  const shadowColor = isDark ? '#FFFFFF' : '#000000';
-  const shadowOpacity = isDark ? 0.03 : 0.06;
-
-  return StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'space-evenly',
-      backgroundColor: C.bg,
-      paddingHorizontal: 16,
-    },
-    row: {
-      flexDirection: 'row',
-      gap: 12,
-    },
-    cell: {
-      flex: 1,
-      alignItems: 'center',
-    },
-    tileWrap: {
-      width: 72,
-      height: 72,
-    },
-    tile: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: tileBg,
-      borderRadius: 20,
-      borderCurve: 'continuous' as any,
-      shadowColor,
-      shadowOpacity,
-      shadowRadius: 12,
-      shadowOffset: { width: 0, height: 2 },
-      elevation: 3,
-    },
-    badge: {
-      position: 'absolute',
-      top: 4,
-      right: 4,
-      minWidth: 18,
-      height: 18,
-      borderRadius: 9,
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingHorizontal: 4,
-    },
-    badgeText: {
-      fontSize: 11,
-      fontWeight: '700',
-      color: '#FFFFFF',
-    },
-    labelText: {
-      marginTop: 6,
-      fontSize: 13,
-      fontWeight: '500',
-      textAlign: 'center',
-      color: C.label,
-    },
-  });
-};
+const makeStyles = (C: ComponentColors) => StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'space-evenly',
+    backgroundColor: C.bg,
+    paddingHorizontal: 16,
+  },
+  row: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  cell: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  tileWrap: {
+    width: 72,
+    height: 72,
+  },
+  tile: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: C.surface,
+    borderRadius: 20,
+    borderCurve: 'continuous' as any,
+    borderWidth: 0.75,
+    borderColor: C.cardBorder,
+    // No shadows — flat and clean per design spec
+  },
+  badge: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+  },
+  badgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  labelText: {
+    marginTop: 6,
+    fontSize: 13,
+    fontWeight: '500',
+    textAlign: 'center',
+    color: C.label,
+  },
+});
