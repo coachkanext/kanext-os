@@ -77,8 +77,8 @@ export function GameTeamContextSheet({ visible, onClose, game, team, colors, rou
                 <BulletItem colors={colors} text={`Carroll ${game.score.startsWith('W') ? 'won' : 'lost'} ${game.score.replace(/^[WL] /, '').replace('-', '–')}`} />
               )}
               {impact && (() => {
-                const top = [...impact.starters, ...impact.bench].sort((a, b) => b.pgis - a.pgis).slice(0, 2);
-                return <BulletItem colors={colors} text={`PGIS leaders: ${top.map(p => `${p.name.split(' ').pop()} ${p.pgis > 0 ? '+' : ''}${p.pgis}`).join(', ')}`} />;
+                const top = [...impact.starters, ...impact.bench].sort((a, b) => b.bpr - a.bpr).slice(0, 2);
+                return <BulletItem colors={colors} text={`BPR leaders: ${top.map(p => `${p.name.split(' ').pop()} ${p.bpr > 0 ? '+' : ''}${p.bpr}`).join(', ')}`} />;
               })()}
               <BulletItem colors={colors} text={`${game.gameType ?? 'NON-CONF'} · ${game.venue ?? game.location}`} />
             </>

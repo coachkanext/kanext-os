@@ -33,7 +33,7 @@ import { computeFitKR, computePositionKR, computeLineupRating, getClusterDrivers
 import { PlayerSheet } from '@/components/player-sheet';
 import type { PoolPlayer, PoolPosition } from '@/data/playerPool';
 import type { TeamGameImpact } from '@/data/fmu';
-import { getPGISColor, getPlayerSeasonPGIS } from '@/data/fmu';
+import { getBPRColor, getPlayerSeasonBPR } from '@/data/fmu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 
@@ -60,8 +60,8 @@ const CLUSTER_ABBREVS: Record<string, string> = {
   physical: 'PHY',
 };
 
-// Season-average PGIS per jersey (computed once at module level)
-const SEASON_PGIS = getPlayerSeasonPGIS();
+// Season-average BPR per jersey (computed once at module level)
+const SEASON_PGIS = getPlayerSeasonBPR();
 
 // ── Lineup Lens Types & Constants ──
 
@@ -79,7 +79,7 @@ const LENS_ITEMS: { key: LensKey; label: string; section: string }[] = [
   { key: 'team_defense',       label: 'Team Defense',     section: 'Clusters' },
   { key: 'rebounding',        label: 'Rebounding',       section: 'Clusters' },
   { key: 'physical',          label: 'Physical',         section: 'Clusters' },
-  { key: 'pgis',              label: 'PGIS (Impact)',    section: 'Impact' },
+  { key: 'pgis',              label: 'BPR (Impact)',     section: 'Impact' },
 ];
 
 const WHY_TAG_CONFIG: Record<LensKey, { positive: string[]; negative: { tag: string; cluster: keyof ClusterRatings }[] }> = {
@@ -476,8 +476,8 @@ function PlayerRow({
             <Text style={styles.swapArrowText}>⇄</Text>
           </View>
         ) : pgis != null ? (
-          <View style={[badgeStyles.container, { backgroundColor: getPGISColor(pgis) + '20', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3 }]}>
-            <Text style={[badgeStyles.fitValue, { color: getPGISColor(pgis), fontSize: 14 }]}>
+          <View style={[badgeStyles.container, { backgroundColor: getBPRColor(pgis) + '20', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3 }]}>
+            <Text style={[badgeStyles.fitValue, { color: getBPRColor(pgis), fontSize: 14 }]}>
               {pgis > 0 ? '+' : ''}{pgis}
             </Text>
           </View>
@@ -723,12 +723,12 @@ export function UnitsView({
       .sort((a, b) => b.value - a.value);
   }, [spotlightPlayer, clusterMap, teamDrivers]);
 
-  // PGIS lookup: map player name → pgis score (for completed games)
+  // BPR lookup: map player name → bpr score (for completed games)
   const pgisMap = useMemo(() => {
     if (!gameImpact) return {};
     const map: Record<string, number> = {};
     for (const p of [...gameImpact.starters, ...gameImpact.bench]) {
-      map[p.name] = p.pgis;
+      map[p.name] = p.bpr;
     }
     return map;
   }, [gameImpact]);

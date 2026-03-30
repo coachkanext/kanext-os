@@ -44,8 +44,8 @@ import {
   KaNeXT_GAME_BPR,
   KaNeXT_KR,
   getOpponentKR,
-  getPGISColor,
-  getTGISColor,
+  getBPRColor,
+  getTPQColor,
   type BoxScoreLine,
   type PregameSnapshot,
   type TeamGameImpact,
@@ -570,21 +570,21 @@ export function GameSheet({
               <SectionLabel label="GAME IMPACT" colors={colors} />
               <Card colors={colors}>
                 <StatRow
-                  label="Team Game Impact (TGIS)"
-                  value={gameImpact.tgis.toFixed(1)}
+                  label="Team Game Impact (TPQ)"
+                  value={gameImpact.tpq.toFixed(1)}
                   colors={colors}
-                  valueColor={getTGISColor(gameImpact.tgis)}
+                  valueColor={getTPQColor(gameImpact.tpq)}
                 />
                 {[...gameImpact.starters, ...gameImpact.bench]
-                  .sort((a, b) => b.pgis - a.pgis)
+                  .sort((a, b) => b.bpr - a.bpr)
                   .slice(0, 5)
                   .map((pi, i) => (
                   <View key={i} style={[styles.impactRow, { borderTopColor: colors.divider }]}>
                     <Text style={[styles.impactName, { color: colors.text }]}>
                       {pi.name}
                     </Text>
-                    <Text style={[styles.impactValue, { color: getPGISColor(pi.pgis) }]}>
-                      {pi.pgis > 0 ? '+' : ''}{pi.pgis.toFixed(1)} PGIS
+                    <Text style={[styles.impactValue, { color: getBPRColor(pi.bpr) }]}>
+                      {pi.bpr > 0 ? '+' : ''}{pi.bpr.toFixed(1)} BPR
                     </Text>
                   </View>
                 ))}

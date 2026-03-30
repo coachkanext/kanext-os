@@ -21,7 +21,7 @@ import * as Haptics from 'expo-haptics';
 
 import { Spacing, BorderRadius } from '@/constants/theme';
 import { useAppContext } from '@/context/app-context';
-import { KaNeXT_RECORD, KaNeXT_STANDINGS, ROSTER_KR, getPlayerSeasonPGIS, getPGISColor } from '@/data/fmu';
+import { KaNeXT_RECORD, KaNeXT_STANDINGS, ROSTER_KR, getPlayerSeasonBPR, getBPRColor } from '@/data/fmu';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ARCHETYPE_LABELS, type Archetype } from '@/data/system-demand-profiles';
 import { UnitsView } from '@/components/depth-chart/depth-chart-units';
@@ -58,8 +58,8 @@ const HEADSHOTS: Record<string, any> = {
   '55': require('@/assets/images/headshots/munir-jones.png'),
 };
 
-// Season-average PGIS per jersey (computed once at module level)
-const SEASON_PGIS = getPlayerSeasonPGIS();
+// Season-average BPR per jersey (computed once at module level)
+const SEASON_PGIS = getPlayerSeasonBPR();
 
 // Shared data from @/data/roster-data (avoids circular deps with depth-chart components)
 import { TEAM_COLORS, PLAYER_CLUSTERS, PLAYER_PHYSICALS, computeOffKR, computeDefKR, CLUSTER_SUBCLUSTERS, getPlayerSubclusters, ROSTER_META } from '@/data/roster-data';
@@ -101,7 +101,7 @@ const CLUSTER_SEGMENTS: { key: keyof ClusterRatings | 'offKR' | 'defKR' | 'pgis'
   { key: 'team_defense', label: 'TMD', sortKey: 'team_defense' },
   { key: 'rebounding', label: 'REB', sortKey: 'rebounding' },
   { key: 'physical', label: 'PHY', sortKey: 'physical' },
-  { key: 'pgis', label: 'PGIS', sortKey: 'pgis' },
+  { key: 'pgis', label: 'BPR', sortKey: 'pgis' },
 ];
 
 

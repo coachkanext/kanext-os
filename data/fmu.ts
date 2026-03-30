@@ -458,34 +458,14 @@ export const KaNeXT_GAME_BPR: Record<string, PlayerBPR[]> = Object.fromEntries(b
 
 // ── 3b) TPQ (Team Performance Quality) + BPR (Basketball Performance Rating) ──
 
-/** BPR band labels (surfaced in UI instead of BPR) */
-export function getBPRLabel(pgis: number): string {
-  if (pgis >= 8)  return 'Game-Changing';
-  if (pgis >= 4)  return 'Strong Positive';
-  if (pgis >= 1)  return 'Positive';
-  if (pgis >= -1) return 'Neutral';
-  if (pgis >= -4) return 'Negative';
-  return 'Strong Negative';
-}
-
-/** BPR color */
-export function getBPRColor(pgis: number): string {
-  if (pgis >= 8)  return '#22C55E';
-  if (pgis >= 4)  return '#22C55E';
-  if (pgis >= 1)  return '#22C55E';
-  if (pgis >= -1) return '#A1A1AA';
-  if (pgis >= -4) return '#F59E0B';
-  return '#EF4444';
-}
-
 /** Convert TPQ (-10 to +10) to canonical 0–10 display scale */
-export function tgisToDisplay(tgis: number): number {
-  return Math.round(((tgis + 10) / 2) * 10) / 10;
+export function tpqToDisplay(tpq: number): number {
+  return Math.round(((tpq + 10) / 2) * 10) / 10;
 }
 
 /** TPQ band labels (canonical 0–10 scale from TPQ spec) */
-export function getTPQLabel(tgis: number): string {
-  const score = tgisToDisplay(tgis);
+export function getTPQLabel(tpq: number): string {
+  const score = tpqToDisplay(tpq);
   if (score >= 9.0) return 'Dominant';
   if (score >= 8.0) return 'Elite';
   if (score >= 7.0) return 'Strong';
@@ -496,8 +476,8 @@ export function getTPQLabel(tgis: number): string {
 }
 
 /** TPQ color (canonical 0–10 scale) */
-export function getTPQColor(tgis: number): string {
-  const score = tgisToDisplay(tgis);
+export function getTPQColor(tpq: number): string {
+  const score = tpqToDisplay(tpq);
   if (score >= 9.0) return '#22C55E';
   if (score >= 8.0) return '#22C55E';
   if (score >= 7.0) return '#22C55E';
@@ -535,16 +515,16 @@ export const NEGATIVE_IMPACT: Record<string, string[]> = {
   'Versatile Forward': ['Could not find a mismatch', 'Struggled switching onto guards', 'Passive on offense', 'Low rebound activity'],
 };
 
-function getImpactReasons(archetype: string, pgis: number, nameHash: number): { positives: string[]; negatives: string[] } {
+function getImpactReasons(archetype: string, bpr: number, nameHash: number): { positives: string[]; negatives: string[] } {
   const posPool = POSITIVE_IMPACT[archetype] ?? POSITIVE_IMPACT['Role Player'];
   const negPool = NEGATIVE_IMPACT[archetype] ?? NEGATIVE_IMPACT['Role Player'];
-  if (pgis >= 4) {
+  if (bpr >= 4) {
     // Great game: 3 positives
     return { positives: [posPool[0], posPool[1], posPool[2], posPool[nameHash % 2 === 0 ? 3 : 2]], negatives: [] };
-  } else if (pgis >= 1) {
+  } else if (bpr >= 1) {
     // Good game: 3 positives, 1 negative
     return { positives: [posPool[0], posPool[1], posPool[nameHash % 2 === 0 ? 2 : 3]], negatives: [negPool[nameHash % negPool.length]] };
-  } else if (pgis >= -1) {
+  } else if (bpr >= -1) {
     // Neutral: 2 positives, 2 negatives
     return { positives: [posPool[0], posPool[nameHash % 2 === 0 ? 1 : 2]], negatives: [negPool[0], negPool[nameHash % 2 === 0 ? 1 : 2]] };
   } else {
@@ -553,12 +533,12 @@ function getImpactReasons(archetype: string, pgis: number, nameHash: number): { 
   }
 }
 
-function getImpactReason(archetype: string, pgis: number): string {
+function getImpactReason(archetype: string, bpr: number): string {
   const posPool = POSITIVE_IMPACT[archetype] ?? POSITIVE_IMPACT['Role Player'];
   const negPool = NEGATIVE_IMPACT[archetype] ?? NEGATIVE_IMPACT['Role Player'];
-  if (pgis >= 4) return posPool[0];
-  if (pgis >= 1) return posPool[1];
-  if (pgis >= -1) return negPool[0];
+  if (bpr >= 4) return posPool[0];
+  if (bpr >= 1) return posPool[1];
+  if (bpr >= -1) return negPool[0];
   return negPool[1];
 }
 
@@ -574,8 +554,8 @@ const starterPlayerIds = new Set<string>(
 export interface PlayerBPR {
   name: string;
   archetype: string;
-  pgis: number;
-  pgisLabel: string;
+  bpr: number;
+  bprLabel: string;
   kr: number;
   impactReason: string;
   positives: string[];
@@ -584,8 +564,8 @@ export interface PlayerBPR {
 }
 
 export interface TeamGameImpact {
-  tgis: number;
-  tgisLabel: string;
+  tpq: number;
+  tpqLabel: string;
   drivers: string[];
   starters: PlayerBPR[];
   bench: PlayerBPR[];
@@ -666,7 +646,7 @@ for (let i = 0; i < tgl2526.length; i++) {
     opp_score: tg.opp_score ?? 0,
   };
 
-  const tgis = calcTPQ(ts);
+  const tpq = calcTPQ(ts);
   const drivers = getTeamDrivers(ts);
 
   let starters: PlayerBPR[] = [];
@@ -683,20 +663,20 @@ for (let i = 0; i < tgl2526.length; i++) {
       return [p?.full_name ?? '', gl.player_id] as const;
     }));
 
-    const allPgis: PlayerBPR[] = bprPlayers.map((p) => {
+    const allBpr: PlayerBPR[] = bprPlayers.map((p) => {
       const playerId = playerIdByName.get(p.name) ?? '';
       const isStarter = starterPlayerIds.has(playerId);
-      const pgis = p.bpr;
+      const bpr = p.bpr;
       let nh = 0; for (let ci = 0; ci < p.name.length; ci++) nh = ((nh << 5) - nh + p.name.charCodeAt(ci)) | 0;
       nh = Math.abs(nh);
-      const reasons = getImpactReasons(p.archetype, pgis, nh);
+      const reasons = getImpactReasons(p.archetype, bpr, nh);
       return {
         name: p.name,
         archetype: p.archetype,
-        pgis,
-        pgisLabel: getBPRLabel(pgis),
+        bpr,
+        bprLabel: getBPRLabel(bpr),
         kr: p.kr,
-        impactReason: getImpactReason(p.archetype, pgis),
+        impactReason: getImpactReason(p.archetype, bpr),
         positives: reasons.positives,
         negatives: reasons.negatives,
         isStarter,
@@ -704,8 +684,8 @@ for (let i = 0; i < tgl2526.length; i++) {
     });
 
     // Split and sort: all starters, all bench
-    starters = allPgis.filter((p) => p.isStarter).sort((a, b) => b.pgis - a.pgis);
-    bench = allPgis.filter((p) => !p.isStarter).sort((a, b) => b.pgis - a.pgis);
+    starters = allBpr.filter((p) => p.isStarter).sort((a, b) => b.bpr - a.bpr);
+    bench = allBpr.filter((p) => !p.isStarter).sort((a, b) => b.bpr - a.bpr);
   } else if (tg.fmu_score != null) {
     // Completed game without individual box scores — synthesize BPR from season averages
     // Use TPQ as a scaling factor: positive TPQ means players performed above average
@@ -722,23 +702,23 @@ for (let i = 0; i < tgl2526.length; i++) {
       const kr = ROSTER_KR[jersey] ?? 60;
       const isStarter = starterPlayerIds.has(s.player_id);
       // Derive BPR from season PPG, scaled by game TPQ direction
-      const basePgis = Math.round(((s.points_avg ?? 8) - 10) * 0.5);
-      const pgis = Math.round(basePgis + tgis * 0.3);
+      const baseBpr = Math.round(((s.points_avg ?? 8) - 10) * 0.5);
+      const bpr = Math.round(baseBpr + tpq * 0.3);
       let nh2 = 0; for (let ci = 0; ci < name.length; ci++) nh2 = ((nh2 << 5) - nh2 + name.charCodeAt(ci)) | 0;
       nh2 = Math.abs(nh2);
-      const reasons2 = getImpactReasons(archetype, pgis, nh2);
+      const reasons2 = getImpactReasons(archetype, bpr, nh2);
       return {
-        name, archetype, pgis, pgisLabel: getBPRLabel(pgis), kr,
-        impactReason: getImpactReason(archetype, pgis),
+        name, archetype, bpr, bprLabel: getBPRLabel(bpr), kr,
+        impactReason: getImpactReason(archetype, bpr),
         positives: reasons2.positives, negatives: reasons2.negatives, isStarter,
       };
     });
 
-    starters = allSynthetic.filter((p) => p.isStarter).sort((a, b) => b.pgis - a.pgis);
-    bench = allSynthetic.filter((p) => !p.isStarter).sort((a, b) => b.pgis - a.pgis);
+    starters = allSynthetic.filter((p) => p.isStarter).sort((a, b) => b.bpr - a.bpr);
+    bench = allSynthetic.filter((p) => !p.isStarter).sort((a, b) => b.bpr - a.bpr);
   }
 
-  gameImpactMap.set(fmuId, { tgis, tgisLabel: getTPQLabel(tgis), drivers, starters, bench });
+  gameImpactMap.set(fmuId, { tpq, tpqLabel: getTPQLabel(tpq), drivers, starters, bench });
 }
 
 export const KaNeXT_GAME_IMPACT: Record<string, TeamGameImpact> = Object.fromEntries(gameImpactMap);
@@ -757,7 +737,7 @@ export function getPlayerSeasonBPR(): Record<string, number> {
       if (!roster) continue;
       const jersey = normJersey(roster.jersey_number);
       const cur = totals.get(jersey) ?? { sum: 0, count: 0 };
-      cur.sum += p.pgis;
+      cur.sum += p.bpr;
       cur.count += 1;
       totals.set(jersey, cur);
     }
@@ -1521,7 +1501,7 @@ export interface PlayerGameEntry {
   reb: number;
   ast: number;
   tsPct: number;
-  pgis: number;
+  bpr: number;
   isConf: boolean;
 }
 
@@ -1552,7 +1532,7 @@ function mapGameLog(gl: typeof gameLogs[number]): PlayerGameEntry {
     reb: gl.total_rebounds ?? 0,
     ast: gl.assists ?? 0,
     tsPct,
-    pgis: calcBPR(gl as any),
+    bpr: calcBPR(gl as any),
     isConf: isConfGame(opp),
   };
 }

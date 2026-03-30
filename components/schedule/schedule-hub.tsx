@@ -28,7 +28,6 @@ import type { OffensiveStyle, DefensiveStyle } from '@/types';
 import {
   KaNeXT_GAMES, KaNeXT_GAMES_BY_ID, KaNeXT_LEADERS, KaNeXT_STANDINGS, KaNeXT_NEWS,
   KaNeXT_GAME_IMPACT, KaNeXT_PREGAME, ROSTER_KR,
-  getPGISColor, getTGISColor, tgisToDisplay,
   POSITIVE_IMPACT, NEGATIVE_IMPACT,
   type PregameSnapshot, type ClusterRating, type KaNeXTGame,
 } from '@/data/fmu';
@@ -1318,9 +1317,9 @@ export function ScheduleHub({ colors, router, openLiveTrigger, jumpToStandings }
                     gameImpact={impact ?? undefined}
                     hideSystems
                     statLeaders={[...impact.starters, ...impact.bench]
-                      .sort((a, b) => b.pgis - a.pgis)
+                      .sort((a, b) => b.bpr - a.bpr)
                       .slice(0, 3)
-                      .map((p) => ({ label: 'PGIS', name: p.name.split(' ').slice(1).join(' ') || p.name, value: `${p.pgis > 0 ? '+' : ''}${p.pgis}` }))}
+                      .map((p) => ({ label: 'BPR', name: p.name.split(' ').slice(1).join(' ') || p.name, value: `${p.bpr > 0 ? '+' : ''}${p.bpr}` }))}
                   />
                 </>
               ) : pregame ? (() => {

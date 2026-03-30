@@ -278,8 +278,8 @@ export default function PlayerBioScreen() {
                     <Text style={styles.last3StatNarrow}>{g.reb}</Text>
                     <Text style={styles.last3StatNarrow}>{g.ast}</Text>
                     <Text style={styles.last3StatNarrow}>{g.tsPct.toFixed(0)}%</Text>
-                    <Text style={[styles.last3StatNarrow, { color: getBPRColor(g.pgis) }]}>
-                      {g.pgis > 0 ? '+' : ''}{g.pgis}
+                    <Text style={[styles.last3StatNarrow, { color: getBPRColor(g.bpr) }]}>
+                      {g.bpr > 0 ? '+' : ''}{g.bpr}
                     </Text>
                   </View>
                 </View>
