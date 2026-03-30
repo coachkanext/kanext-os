@@ -556,7 +556,7 @@ function ContactsTab({
             borderWidth: 1, borderColor: showFilterPills ? C.accent : C.inputBorder,
           }}
         >
-          <IconSymbol name="line.3.horizontal.decrease" size={16} color={showFilterPills ? '#fff' : C.secondary} />
+          <IconSymbol name="line.3.horizontal.decrease.circle" size={16} color={showFilterPills ? '#fff' : C.secondary} />
         </Pressable>
       </View>
 
@@ -1045,7 +1045,7 @@ export default function DealsScreen() {
         {/* Filter button — only for Pipeline/Insights (Contacts has internal filter) */}
         {tab !== 'Contacts' ? (
           <Pressable onPress={togglePills} style={styles.topBtn}>
-            <IconSymbol name="line.3.horizontal.decrease" size={20} color={showPills ? C.accent : C.label} />
+            <IconSymbol name="line.3.horizontal.decrease.circle" size={20} color={showPills ? C.accent : C.label} />
           </Pressable>
         ) : (
           <View style={styles.topBtn} />

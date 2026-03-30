@@ -938,7 +938,7 @@ export default function NetworkScreen() {
           </Pressable>
           <Pressable onPress={() => setShowPills(v => !v)}>
             <IconSymbol
-              name="line.3.horizontal.decrease"
+              name="line.3.horizontal.decrease.circle"
               size={20}
               color={showPills ? C.accent : C.label}
             />

@@ -135,7 +135,7 @@ export function NexusPageTopBar({
             accessibilityLabel="Filter"
           >
             <IconSymbol
-              name="line.3.horizontal.decrease"
+              name="line.3.horizontal.decrease.circle"
               size={20}
               color={filterActive ? C.label : C.secondary}
             />

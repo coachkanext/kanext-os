@@ -1117,7 +1117,7 @@ export default function EarnScreen() {
         </View>
 
         <Pressable onPress={togglePills} style={styles.topBtn}>
-          <IconSymbol name="line.3.horizontal.decrease" size={20} color={showPills ? C.accent : C.label} />
+          <IconSymbol name="line.3.horizontal.decrease.circle" size={20} color={showPills ? C.accent : C.label} />
         </Pressable>
       </View>
 

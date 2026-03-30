@@ -860,7 +860,7 @@ export default function KayPayScreen(){
       <View style={[s.topBarOuter,{paddingTop:insets.top,height:topBarH+(pillsVisible&&activeTab==="Invest"?PILL_ROW_H:0)}]}>
         <View style={s.topBar}>
           <Pressable style={s.iconBtn} onPress={()=>{Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);openSidePanel();}}>
-            <IconSymbol name="sidebar.left" size={22} color={C.label}/>
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label}/>
           </Pressable>
           <View style={{flex:1,alignItems:"center"}}>
             <Pressable onPress={()=>{Haptics.selectionAsync();setDropdownOpen(p=>!p);}}>
@@ -880,7 +880,7 @@ export default function KayPayScreen(){
           </View>
           {showFilterBtn?(
             <Pressable style={s.iconBtn} onPress={togglePills}>
-              <IconSymbol name="slider.horizontal.3" size={20} color={pillsVisible?C.accent:C.label}/>
+              <IconSymbol name="line.3.horizontal.decrease.circle" size={20} color={pillsVisible?C.accent:C.label}/>
             </Pressable>
           ):(
             <View style={s.iconBtn}/>

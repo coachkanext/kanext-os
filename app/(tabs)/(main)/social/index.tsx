@@ -1129,7 +1129,7 @@ export default function SocialScreen() {
             {view === 'feed' && (
               <Pressable onPress={() => setShowScopeBar(v => !v)}>
                 <IconSymbol
-                  name="line.3.horizontal.decrease"
+                  name="line.3.horizontal.decrease.circle"
                   size={20}
                   color={showScopeBar ? C.accent : C.label}
                 />
