@@ -84,15 +84,29 @@ After responding, flag any corrections or new data discovered for pool update: h
 
 1. **Establish context.** Level, school, conference, position, class, height/weight. Use pool data and web search results from the Data Gathering Protocol.
 
-2. **PHASE 3 -- PRODUCTION ANCHOR (this is the primary KR determinant).** Read the KR Legend at the player's level. Map the player's full production profile (PPG, RPG, APG, efficiency, usage, awards, team success, BPR) against the legend tier descriptions. Find the tier that matches. That tier's KR range IS the anchor. Write it down before doing anything else.
+2. **PHASE 3 -- PRODUCTION ANCHOR (this is the primary KR determinant).** Read the KR Legend at the player's level. Map the player's full production profile (PPG, RPG, APG, efficiency, usage, minutes, team role) against the legend tier descriptions. Find the tier whose PRODUCTION DESCRIPTION matches. That tier's KR range IS the anchor. Write it down before doing anything else.
 
-   Example: A player averaging 22/10/4 on .570/.390/.800 as a freshman starter at D1 HM with All-Conference honors maps to the 95-97 tier ("Franchise Anchor / Elite All-American"). The anchor is 95-97.
+   Example: A player averaging 22/10/4 on .570/.390/.800 as a freshman starter at D1 HM maps to the 95-97 tier based on the production description. The anchor is 95-97.
+
+   **PHASE 3 ANCHORING RULES (apply to ALL evaluations, college and pro):**
+
+   a. **Anchor against PRODUCTION PROFILE NUMBERS, not award labels.** The stats, efficiency, usage, minutes, and team role determine the tier. Awards confirm a tier placement — they do not determine it. A player averaging 15/4/9 is not automatically 95+ because he won national awards. A player averaging 22/10/4 on elite efficiency IS 95+ because the production maps there regardless of awards.
+
+   b. **Awards are confirmation, not input.** All-American, Conference POY, DPOY — these confirm you're in the right tier. They do not push you into a higher tier if the production doesn't support it. A Conference POY who averages 15/4/9 can be a 92, not a 96.
+
+   c. **Pedigree does not inflate current KR.** Five-star recruit, McDonald's All-American, top-3 recruit class — these set ceiling context for development projection (Mode 5/6). They do NOT inflate present-tense college KR. Rate what the player IS, not what he was rated coming out of high school.
+
+   d. **Team success does not inflate individual KR.** A role player on a 35-3 team is still a role player. A star on a .500 team is still a star. Team record provides context (strength of schedule, competition level) but does not override individual production.
+
+   e. **Historical comparisons are irrelevant.** "Best since Zion" or "comparable to Ja Morant's freshman year" — these are narratives, not data. Anchor on THIS player's production against THIS level's legend. Do not anchor on how this player compares to past players.
+
+   f. **Read the numbers first. Check labels second.** When scanning the legend, find the tier where the NUMBERS match. Then read the label to confirm it makes sense. If the numbers say 92-94 but you feel like the player "deserves" 95+ because of awards or narrative, the numbers win.
 
 3. **PHASE 6 -- COMPONENT KRs (this adjusts the anchor, it does not replace it).** Score the four component KRs from the data:
    - OKR (Offensive KR) -- scoring volume, efficiency, shooting, creation, passing
    - DKR (Defensive KR) -- steals, blocks, rebounding, defensive activity, team defense impact
    - TKR (Tools KR) -- height, weight, wingspan, athleticism, motor, endurance
-   - IQKR (IQ KR) -- AST/TO, shot selection, role discipline, decision-making, awards/accolades
+   - IQKR (IQ KR) -- AST/TO, shot selection, role discipline, decision-making, processing under pressure
 
    Each component is a number on the same 0-100 scale. These tell you WHERE the player is strong and weak. The Phase 6 output tells you the DIRECTION within the anchor range -- whether the player sits at the top, middle, or bottom of their tier.
 
@@ -183,7 +197,7 @@ After responding, flag any corrections or new data discovered for pool update: h
 3. Output the 6 outputs: Truth Summary, Placement Targeting, Player Value, Gap Analysis, Development Roadmap, Competitive Landscape.
 
 ### MODE 6: PRO TRANSITION / DRAFT
-**Trigger:** "Should [player] go pro?", "Draft projection", "Pro KR for [player]", any college-to-pro translation request.
+**Trigger:** "Should [player] go pro?", "Draft projection", "Pro KR for [player]", any college-to-pro translation request. Also auto-triggers as a snapshot within Mode 1 for draft-eligible players with KR 90+ at D1 HM (or equivalent top-of-level).
 
 **Files needed:**
 - **06** (Downstream Engines) -- Pro Transition Intelligence Engine
@@ -193,8 +207,21 @@ After responding, flag any corrections or new data discovered for pool update: h
 **Steps:**
 1. Pull File 06. Follow Pro Transition Intelligence Engine structure.
 2. Search File 02 for pro-specific reference tables (Pro Player KR Legend, pro badge gates, pro system risks, pro overrides).
-3. Translate college trait scores through pro positional weights.
-4. Output: Pro Projection KR (Entry), Development Trajectory, Key Development Variable, Archetype Evolution, Draft/Team Fit.
+3. Take the SAME component KRs from the college eval (OKR, DKR, TKR, IQKR). Apply pro-level adjustments (slight docks for NBA competition increase, slight bumps for traits that translate up). Then reweight through PRO positional OPF weights from File 02.
+4. Anchor the Pro Entry KR against the Pro Player KR Legend. The tier whose description matches what this player would realistically be as a ROOKIE determines the anchor.
+5. Output: Pro Entry KR, Year 1 projection, Year 3 scenarios (key variable develops vs doesn't), Peak ceiling, Floor, Pro archetype, Best league fit, Key dev variable, Pro comparable, Salary range.
+
+**PRO ANCHORING RULES:**
+
+a. **Draft position CONFIRMS pro entry tier, it does not determine it.** A #1 pick with DKR 73 does not automatically get a high pro entry just because he goes #1. A second-round pick with elite defensive tools can have a higher pro entry than a lottery pick with holes. Draft slot sets salary expectations, not KR.
+
+b. **Pro Entry KR reflects Day 1 reality, not potential.** What would this player be if dropped into the NBA tomorrow? Most rookies, even lottery picks, are rotation players or young starters. Entry KR should be 82-89 for most first-round picks. An entry KR above 90 is extremely rare -- reserved for generational talents like Wembanyama.
+
+c. **Development trajectory is where ceiling lives.** The 3-year projection, peak, and floor are where pedigree, age, tools, and physical projection matter. A young player with elite tools gets a wider range and higher ceiling. An old player with limited tools gets a narrow range. Separate entry from trajectory.
+
+d. **Age is a trajectory variable, not an entry variable.** An 18-year-old and a 22-year-old with identical stats get the same Pro Entry KR. The 18-year-old gets a higher peak projection because of development runway. Age does not inflate or deflate the entry number.
+
+e. **File 06 rules on development:** Max +8 KR per cluster per year. Max +15 over 3 years. Always show both upside and downside scenarios. Projections are directional, not precise.
 
 ### MODE 7: LEGEND CALIBRATION
 **Trigger:** "Calibrate the legend", "Test KR labels", "Does [KR] match [player's actual role]?", any request to validate or stress-test the KR legend tier labels.
@@ -262,7 +289,6 @@ After responding, flag any corrections or new data discovered for pool update: h
 | Development Intelligence Engine | 06 | "Development Intelligence" |
 | Pro Transition Engine | 06 | "Pro Transition" |
 | Coaching Impact Modifier | 06 | "Coaching Impact" |
-| Pool Enrichment Protocol | 03 | "Pool Enrichment" |
 
 ---
 
@@ -270,7 +296,8 @@ After responding, flag any corrections or new data discovered for pool update: h
 - v1.0: Original monolithic skill
 - v2.0: Updated for System Risks v3.2, Overrides v3, Pro Transition, Suppression Protocol, Roster Decision v2, Physical Mismatch, CIM v1
 - v3.0: Reorganized file structure. Split Player Intelligence megadoc into Process (01) and Reference (02). Separated Team Intelligence (03), Simulation (04), Scouting (05), and Downstream Engines (06) into standalone files. Added Mode 7 (Legend Calibration). Updated all cross-references.
-- v4.0: Added Data Gathering Protocol (pool + web + social sequence). Added Enrichment Writeback rules. Rewrote Mode 1 (Player Evaluation) to enforce anchor-first evaluation: Phase 3 legend anchor is the primary KR determinant, Phase 6 trait math adjusts within +/- 10, never overrides. Nexus now gathers data from three sources before any evaluation or player inquiry and writes corrections back to the pool.`;
+- v4.0: Added Data Gathering Protocol (pool + web + social sequence). Added Enrichment Writeback rules. Rewrote Mode 1 (Player Evaluation) to enforce anchor-first evaluation: Phase 3 legend anchor is the primary KR determinant, Phase 6 trait math adjusts within +/- 10, never overrides. Nexus now gathers data from three sources before any evaluation or player inquiry and writes corrections back to the pool.
+- v4.1: Added Phase 3 Anchoring Rules (6 rules) — anchor on production profile numbers, awards are confirmation not input, pedigree/team success/historical comparisons do not inflate KR. Fixed IQKR definition — removed awards/accolades, replaced with processing under pressure. Rewrote Mode 6 (Pro Transition) — auto-triggers for KR 90+ draft-eligible players, component KRs carried from college eval and reweighted through pro OPF, anchored against Pro Player KR Legend. Added 5 Pro Anchoring Rules (draft position confirms but doesn't determine, entry KR is Day 1 reality, trajectory is where ceiling lives, age is trajectory not entry variable, File 06 dev caps enforced).`;
 
 export const FILE_01 = `# COACH CONTEXT SETUP
 
