@@ -1,12 +1,12 @@
 /**
  * Sports Hub — LU Men's Basketball operational center.
- * Tabs: Overview / Schedule / Scouting / Analytics
+ * Tabs: Overview / Film Room / Scouting / Game Day
  * Roles: Coach / Fan (cycle via top-right pill)
  *
  * Overview:  season record banner, next game countdown, recent results, news
- * Schedule:  full season game list with filter pills
+ * Film Room: film library with intelligence overlay, playlists, opponent/practice film
  * Scouting:  opponent intel (coach-gated), key players, counters
- * Analytics: team stats, per-player breakdown, KR intelligence
+ * Game Day:  StatKeeper launch, completed game reports, Nexus-generated packets
  */
 
 import React, { useState, useCallback, useRef, useMemo } from 'react';
@@ -28,7 +28,7 @@ import {
   TEAM_INFO, TEAM_KR, TEAM_SYSTEM, NEXT_GAME,
   SCOUT_HOWARD, RECRUITS_BOARD,
   getUpcomingGames, krTierColor,
-  type Player, type Game,
+  type Player,
 } from '@/data/mock-sports-hub';
 
 // Inline news items (no RECENT_NEWS export in mock)
@@ -44,15 +44,16 @@ const TOP_BAR_H  = 52;
 const PILL_ROW_H = 48;
 const NAVY       = '#003A63';
 
-type SportsTab  = 'Overview' | 'Schedule' | 'Scouting' | 'Analytics';
+type SportsTab  = 'Overview' | 'Film Room' | 'Scouting' | 'Game Day';
 type SportsRole = 'Coach' | 'Fan';
 
-const SCHEDULE_PILLS  = ['All', 'Home', 'Away', 'Conference', 'Upcoming'];
-const ANALYTICS_PILLS = ['Team', 'Players', 'Advanced'];
+const FILM_PILLS_COACH = ['All', 'Games', 'Practice', 'Playlists'];
+const FILM_PILLS_FAN   = ['All', 'Highlights'];
+const GAME_DAY_PILLS   = ['All', 'Box Scores', 'Staff Packets', 'Media Reports'];
 
 function pillsForTab(tab: SportsTab, role: SportsRole): string[] {
-  if (tab === 'Schedule')  return SCHEDULE_PILLS;
-  if (tab === 'Analytics') return ANALYTICS_PILLS;
+  if (tab === 'Film Room') return role === 'Coach' ? FILM_PILLS_COACH : FILM_PILLS_FAN;
+  if (tab === 'Game Day')  return GAME_DAY_PILLS;
   return [];
 }
 
@@ -78,47 +79,6 @@ function SectionTitle({ title, C }: { title: string; C: ComponentColors }) {
   );
 }
 
-function GameRow({ game, C }: { game: Game; C: ComponentColors }) {
-  const isHome = game.location === 'H';
-  const isNeutral = game.location === 'N';
-  const played = !!game.result;
-  return (
-    <Pressable
-      style={({ pressed }) => [
-        sc.gameRow,
-        { borderBottomColor: C.separator },
-        pressed && { backgroundColor: C.surfacePressed },
-      ]}
-    >
-      <View style={[sc.locBadge, { backgroundColor: isHome ? NAVY : isNeutral ? '#888' : C.surfacePressed }]}>
-        <Text style={[sc.locText, { color: isHome || isNeutral ? '#fff' : C.secondary }]}>
-          {isHome ? 'H' : isNeutral ? 'N' : 'A'}
-        </Text>
-      </View>
-      <View style={{ flex: 1 }}>
-        <Text style={[sc.gameOpp, { color: C.label }]} numberOfLines={1}>
-          {game.opponent}
-        </Text>
-        <Text style={[sc.gameMeta, { color: C.secondary }]}>
-          {game.date} · {game.time}
-          {game.tv ? ` · ${game.tv}` : ''}
-        </Text>
-      </View>
-      {played ? (
-        <View style={{ alignItems: 'flex-end' }}>
-          <Text style={[sc.resultBadge, { color: resultColor(game.result) }]}>
-            {game.result}
-          </Text>
-          <Text style={[sc.scoreText, { color: C.secondary }]}>
-            {game.score}–{game.oppScore}
-          </Text>
-        </View>
-      ) : (
-        <IconSymbol name="chevron.right" size={12} color={C.muted} />
-      )}
-    </Pressable>
-  );
-}
 
 function PlayerStatRow({
   player, rank, C,
@@ -223,16 +183,8 @@ export default function SportsHubScreen() {
     PLAYERS.filter(p => p.role === 'Starter').slice(0, 5), []);
   const headCoach = COACHING_STAFF.find(s => s.role === 'head-coach');
 
-  // ── Schedule filter ───────────────────────────────────────────────────────
-
-  const filteredGames = useMemo(() => {
-    if (selectedPill === 'All')        return SEASON_SCHEDULE;
-    if (selectedPill === 'Home')       return SEASON_SCHEDULE.filter(g => g.location === 'H');
-    if (selectedPill === 'Away')       return SEASON_SCHEDULE.filter(g => g.location === 'A');
-    if (selectedPill === 'Conference') return SEASON_SCHEDULE.filter(g => g.isConference);
-    if (selectedPill === 'Upcoming')   return SEASON_SCHEDULE.filter(g => !g.result);
-    return SEASON_SCHEDULE;
-  }, [selectedPill]);
+  // ── Film / Game Day filter ────────────────────────────────────────────────
+  // (selectedPill is used within renderFilmRoom and renderGameDay)
 
   // ── Tab: Overview ─────────────────────────────────────────────────────────
 
@@ -398,63 +350,90 @@ export default function SportsHubScreen() {
     </View>
   );
 
-  // ── Tab: Schedule ─────────────────────────────────────────────────────────
+  // ── Tab: Film Room ─────────────────────────────────────────────────────────
 
-  const renderSchedule = () => {
-    const played   = filteredGames.filter(g => g.result);
-    const upcoming = filteredGames.filter(g => !g.result);
-    const filtWins = played.filter(g => g.result === 'W').length;
+  const FILM_ITEMS = [
+    { id: 'f1', type: 'Games',     title: 'vs Howard University',   date: 'Mar 14', duration: '1h 42m', hasIntel: true,  thumbnail: '#1a3a5c' },
+    { id: 'f2', type: 'Games',     title: 'vs Norfolk State',       date: 'Mar 8',  duration: '1h 38m', hasIntel: true,  thumbnail: '#1a3a5c' },
+    { id: 'f3', type: 'Practice',  title: 'Practice — Halfcourt O', date: 'Mar 18', duration: '48m',    hasIntel: false, thumbnail: '#2a2a2a' },
+    { id: 'f4', type: 'Practice',  title: 'Practice — Zone Attack', date: 'Mar 16', duration: '52m',    hasIntel: false, thumbnail: '#2a2a2a' },
+    { id: 'f5', type: 'Playlists', title: 'Laolu Kalejaiye — Cuts & Finishes', date: 'Mar 20', duration: '14m', hasIntel: true, thumbnail: '#003A63' },
+    { id: 'f6', type: 'Playlists', title: 'Howard Defense — Zone Sets', date: 'Mar 13', duration: '9m', hasIntel: true,  thumbnail: '#003A63' },
+    { id: 'f7', type: 'Highlights', title: 'MEAC Championship Highlights', date: 'Mar 22', duration: '6m', hasIntel: false, thumbnail: '#1a3a5c' },
+    { id: 'f8', type: 'Highlights', title: 'Top Plays — Week 12',   date: 'Mar 10', duration: '4m',    hasIntel: false, thumbnail: '#1a3a5c' },
+  ];
+
+  const renderFilmRoom = () => {
+    const pill = selectedPill || 'All';
+    const isCoach = role === 'Coach';
+    const items = FILM_ITEMS.filter(f => {
+      if (pill === 'All') return true;
+      if (pill === 'Highlights') return f.type === 'Highlights';
+      return f.type === pill;
+    });
+
     return (
       <View style={{ gap: 12 }}>
 
-        {/* Summary chips */}
-        <View style={[styles.card, { backgroundColor: NAVY, flexDirection: 'row', gap: 0 }]}>
-          {[
-            { label: 'Played',   value: played.length.toString() },
-            { label: 'Wins',     value: filtWins.toString() },
-            { label: 'Losses',   value: (played.length - filtWins).toString() },
-            { label: 'Upcoming', value: upcoming.length.toString() },
-          ].map((s, i) => (
-            <View
-              key={s.label}
-              style={[
-                { flex: 1, alignItems: 'center', paddingVertical: 10 },
-                i < 3 && { borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: 'rgba(255,255,255,0.2)' },
-              ]}
-            >
-              <Text style={{ fontSize: 20, fontWeight: '800', color: '#fff' }}>{s.value}</Text>
-              <Text style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>{s.label}</Text>
+        {/* Hudl import banner (Coach only) */}
+        {isCoach && (
+          <Pressable
+            style={[styles.card, { backgroundColor: NAVY, flexDirection: 'row', alignItems: 'center', gap: 12 }]}
+          >
+            <View style={{ width: 40, height: 40, borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.15)', alignItems: 'center', justifyContent: 'center' }}>
+              <IconSymbol name="arrow.down.circle.fill" size={22} color="#fff" />
             </View>
-          ))}
-        </View>
-
-        {/* Upcoming section */}
-        {upcoming.length > 0 && (
-          <>
-            <Text style={[sc.sectionTitle, { color: C.secondary }]}>Upcoming</Text>
-            <View style={[styles.card, { backgroundColor: C.surface, overflow: 'hidden', padding: 0 }]}>
-              {upcoming.map((g, i) => (
-                <View key={g.id} style={i < upcoming.length - 1 ? { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator } : {}}>
-                  <GameRow game={g} C={C} />
-                </View>
-              ))}
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff' }}>Import from Hudl</Text>
+              <Text style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginTop: 1 }}>Connect your Hudl account to sync film</Text>
             </View>
-          </>
+            <IconSymbol name="chevron.right" size={14} color="rgba(255,255,255,0.4)" />
+          </Pressable>
         )}
 
-        {/* Played section */}
-        {played.length > 0 && (
-          <>
-            <Text style={[sc.sectionTitle, { color: C.secondary }]}>Results</Text>
-            <View style={[styles.card, { backgroundColor: C.surface, overflow: 'hidden', padding: 0 }]}>
-              {[...played].reverse().map((g, i) => (
-                <View key={g.id} style={i < played.length - 1 ? { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator } : {}}>
-                  <GameRow game={g} C={C} />
-                </View>
-              ))}
-            </View>
-          </>
+        {/* Film library */}
+        <SectionTitle title={pill === 'All' ? 'Film Library' : pill} C={C} />
+
+        {items.length === 0 && (
+          <View style={[styles.card, { backgroundColor: C.surface, alignItems: 'center', paddingVertical: 32, gap: 8 }]}>
+            <IconSymbol name="film" size={32} color={C.muted} />
+            <Text style={{ fontSize: 14, color: C.secondary }}>No film in this category</Text>
+          </View>
         )}
+
+        {items.map(item => (
+          <Pressable
+            key={item.id}
+            style={({ pressed }) => [
+              styles.card,
+              { backgroundColor: C.surface, padding: 0, overflow: 'hidden' },
+              pressed && { opacity: 0.85 },
+            ]}
+          >
+            {/* Thumbnail */}
+            <View style={{ height: 90, backgroundColor: item.thumbnail as string, justifyContent: 'flex-end', padding: 10 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name="play.fill" size={13} color="#fff" />
+                </View>
+                <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)', fontWeight: '600' }}>{item.duration}</Text>
+                {item.hasIntel && isCoach && (
+                  <View style={{ marginLeft: 'auto' as any, backgroundColor: '#3B82F6', paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6 }}>
+                    <Text style={{ fontSize: 10, color: '#fff', fontWeight: '700' }}>AI Intel</Text>
+                  </View>
+                )}
+              </View>
+            </View>
+            {/* Info row */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', padding: 12, gap: 10 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }} numberOfLines={1}>{item.title}</Text>
+                <Text style={{ fontSize: 11, color: C.secondary, marginTop: 2 }}>{item.date} · {item.type}</Text>
+              </View>
+              <IconSymbol name="ellipsis" size={16} color={C.muted} />
+            </View>
+          </Pressable>
+        ))}
 
         <View style={{ height: 20 }} />
       </View>
@@ -632,137 +611,133 @@ export default function SportsHubScreen() {
     );
   };
 
-  // ── Tab: Analytics ────────────────────────────────────────────────────────
+  // ── Tab: Game Day ─────────────────────────────────────────────────────────
 
-  const renderAnalytics = () => {
-    const pill = selectedPill || 'Team';
+  const GAME_REPORTS = [
+    {
+      id: 'gr1', opponent: 'vs Howard University', date: 'Mar 14', result: 'W 78–71',
+      hasBoxScore: true, hasStaffPacket: true, hasMediaReport: true,
+      halftimeScore: '38–34 LU',
+    },
+    {
+      id: 'gr2', opponent: 'vs Norfolk State', date: 'Mar 8', result: 'W 84–68',
+      hasBoxScore: true, hasStaffPacket: true, hasMediaReport: true,
+      halftimeScore: '42–28 LU',
+    },
+    {
+      id: 'gr3', opponent: '@ Morgan State', date: 'Mar 1', result: 'L 61–74',
+      hasBoxScore: true, hasStaffPacket: true, hasMediaReport: false,
+      halftimeScore: '31–38 Morgan',
+    },
+    {
+      id: 'gr4', opponent: 'vs Coppin State', date: 'Feb 22', result: 'W 91–77',
+      hasBoxScore: true, hasStaffPacket: false, hasMediaReport: true,
+      halftimeScore: '48–35 LU',
+    },
+  ];
+
+  const renderGameDay = () => {
+    const pill = selectedPill || 'All';
+    const isCoach = role === 'Coach';
+
+    const filteredReports = GAME_REPORTS.filter(r => {
+      if (pill === 'All') return true;
+      if (pill === 'Box Scores') return r.hasBoxScore;
+      if (pill === 'Staff Packets') return r.hasStaffPacket && isCoach;
+      if (pill === 'Media Reports') return r.hasMediaReport;
+      return true;
+    });
+
     return (
       <View style={{ gap: 12 }}>
 
-        {pill === 'Team' && (() => {
-          const sp = PLAYERS.filter(p => p.role === 'Starter');
-          const avg = (fn: (p: Player) => number) => (sp.reduce((s, p) => s + fn(p), 0) / Math.max(sp.length, 1));
-          const ppg = avg(p => p.stats.ppg).toFixed(1);
-          const rpg = avg(p => p.stats.rpg).toFixed(1);
-          const apg = avg(p => p.stats.apg).toFixed(1);
-          const fgPct = avg(p => p.stats.fgPct) / 100;
-          const fg3Pct = avg(p => p.stats.fg3Pct) / 100;
-          const ftPct = avg(p => p.stats.ftPct) / 100;
-          const spg = avg(p => p.stats.spg).toFixed(1);
-          const bpg = avg(p => p.stats.bpg).toFixed(1);
+        {/* StatKeeper launch — if game today / upcoming */}
+        <Pressable
+          onPress={() => router.push('/(tabs)/(main)/statkeeper')}
+          style={[styles.card, { backgroundColor: NAVY, flexDirection: 'row', alignItems: 'center', gap: 12 }]}
+        >
+          <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.15)', alignItems: 'center', justifyContent: 'center' }}>
+            <IconSymbol name="sportscourt.fill" size={22} color="#fff" />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 15, fontWeight: '800', color: '#fff' }}>StatKeeper</Text>
+            <Text style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginTop: 1 }}>
+              {nextGame ? `Next: ${nextGame.opponent}` : 'Live stat tracking'}
+            </Text>
+          </View>
+          <View style={{ backgroundColor: '#22C55E', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8 }}>
+            <Text style={{ fontSize: 12, fontWeight: '700', color: '#fff' }}>Open</Text>
+          </View>
+        </Pressable>
+
+        {/* Nexus packet generator (Coach only) */}
+        {isCoach && (
+          <View style={[styles.card, { backgroundColor: C.surface, gap: 10 }]}>
+            <Text style={[sc.sectionTitle, { color: C.secondary }]}>Nexus Auto-Generate</Text>
+            {[
+              { label: 'Halftime Staff Packet', icon: 'doc.text.fill' as const, color: '#F59E0B' },
+              { label: 'Postgame Staff Packet',  icon: 'doc.fill' as const,      color: '#3B82F6' },
+              { label: 'Media Game Report',      icon: 'megaphone.fill' as const, color: '#22C55E' },
+            ].map(item => (
+              <Pressable
+                key={item.label}
+                style={({ pressed }) => [
+                  { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 4 },
+                  pressed && { opacity: 0.7 },
+                ]}
+              >
+                <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: `${item.color}22`, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name={item.icon} size={18} color={item.color} />
+                </View>
+                <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: C.label }}>{item.label}</Text>
+                <View style={{ backgroundColor: C.surfacePressed, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 }}>
+                  <Text style={{ fontSize: 11, fontWeight: '600', color: C.secondary }}>Generate</Text>
+                </View>
+              </Pressable>
+            ))}
+          </View>
+        )}
+
+        {/* Past game reports */}
+        <SectionTitle title="Game Reports" C={C} />
+
+        {filteredReports.map(r => {
+          const isWin = r.result.startsWith('W');
           return (
-            <>
-              <SectionTitle title="Season Averages" C={C} />
-              <View style={[styles.card, { backgroundColor: NAVY }]}>
-                <View style={{ flexDirection: 'row', gap: 8 }}>
-                  {[
-                    { l: 'PPG', v: ppg },
-                    { l: 'RPG', v: rpg },
-                    { l: 'APG', v: apg },
-                    { l: 'KR',  v: TEAM_KR.overall.toFixed(1) },
-                  ].map(s => (
-                    <View key={s.l} style={{ flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: 8, backgroundColor: 'rgba(255,255,255,0.12)' }}>
-                      <Text style={{ fontSize: 20, fontWeight: '900', color: '#fff' }}>{s.v}</Text>
-                      <Text style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>{s.l}</Text>
-                    </View>
-                  ))}
-                </View>
+            <View key={r.id} style={[styles.card, { backgroundColor: C.surface, gap: 10 }]}>
+              {/* Header */}
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <View style={[{ width: 6, height: 6, borderRadius: 3 }, { backgroundColor: isWin ? '#22C55E' : '#EF4444' }]} />
+                <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: C.label }}>{r.opponent}</Text>
+                <Text style={{ fontSize: 12, fontWeight: '800', color: isWin ? '#22C55E' : '#EF4444' }}>{r.result}</Text>
               </View>
-
-              <SectionTitle title="Shooting" C={C} />
-              <View style={[styles.card, { backgroundColor: C.surface, gap: 12 }]}>
-                {[
-                  { label: 'Field Goal %',  value: fgPct,  color: '#5A8A6E' },
-                  { label: 'Three-Point %', value: fg3Pct, color: '#1D9BF0' },
-                  { label: 'Free Throw %',  value: ftPct,  color: '#3B82F6' },
-                ].map(s => (
-                  <View key={s.label} style={{ gap: 4 }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <Text style={[styles.gameMeta, { color: C.secondary }]}>{s.label}</Text>
-                      <Text style={{ fontSize: 13, fontWeight: '700', color: s.color }}>
-                        {(s.value * 100).toFixed(1)}%
-                      </Text>
-                    </View>
-                    <View style={{ height: 6, backgroundColor: C.surfacePressed, borderRadius: 3, overflow: 'hidden' }}>
-                      <View style={{ height: 6, borderRadius: 3, backgroundColor: s.color, width: `${s.value * 100}%` as any }} />
-                    </View>
-                  </View>
-                ))}
-              </View>
-
-              <SectionTitle title="Other" C={C} />
-              <View style={styles.gridRow}>
-                {[
-                  { label: 'SPG',  value: spg },
-                  { label: 'BPG',  value: bpg },
-                  { label: 'Pace', value: TEAM_SYSTEM.offense.pace.toString() },
-                  { label: 'Conf', value: TEAM_INFO.conferenceRec },
-                ].map(s => (
-                  <View key={s.label} style={[styles.gridChip, { backgroundColor: C.surface }]}>
-                    <Text style={[styles.statVal, { color: C.label }]}>{s.value}</Text>
-                    <Text style={[styles.statLabel, { color: C.secondary }]}>{s.label}</Text>
-                  </View>
-                ))}
-              </View>
-            </>
-          );
-        })()}
-
-        {pill === 'Players' && (
-          <>
-            <SectionTitle title="Player Stats" C={C} />
-            <View style={[styles.card, { backgroundColor: C.surface, overflow: 'hidden', padding: 0 }]}>
-              {starters.map((p, i) => (
-                <View key={p.id} style={i < starters.length - 1 ? { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator } : {}}>
-                  <PlayerStatRow player={p} rank={i + 1} C={C} />
-                </View>
-              ))}
-            </View>
-          </>
-        )}
-
-        {pill === 'Advanced' && (
-          <>
-            <SectionTitle title="KR Intelligence" C={C} />
-            <View style={[styles.card, { backgroundColor: NAVY, gap: 8 }]}>
-              <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-                KR Player Ratings
+              <Text style={{ fontSize: 11, color: C.secondary }}>
+                {r.date}  ·  Halftime: {r.halftimeScore}
               </Text>
-              {PLAYERS.filter(p => p.kr).slice(0, 5).sort((a, b) => (b.kr?.overall ?? 0) - (a.kr?.overall ?? 0)).map(p => (
-                <View key={p.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                  <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: `hsl(${p.hue},40%,30%)`, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ fontSize: 10, fontWeight: '700', color: '#fff' }}>{p.initials}</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: 13, fontWeight: '600', color: '#fff' }} numberOfLines={1}>{p.name}</Text>
-                    <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>{p.position} · #{p.number}</Text>
-                  </View>
-                  <View style={{ alignItems: 'flex-end' }}>
-                    <Text style={{ fontSize: 18, fontWeight: '900', color: krTierColor(p.kr?.overall ?? 0) }}>
-                      {p.kr?.overall.toFixed(1)}
-                    </Text>
-                    <Text style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)' }}>KR</Text>
-                  </View>
-                </View>
-              ))}
+              {/* Action pills */}
+              <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' as any }}>
+                {r.hasBoxScore && (
+                  <Pressable style={[styles.actionPill, { backgroundColor: C.surfacePressed }]}>
+                    <IconSymbol name="tablecells" size={12} color={C.secondary} />
+                    <Text style={{ fontSize: 11, color: C.secondary, fontWeight: '600' }}>Box Score</Text>
+                  </Pressable>
+                )}
+                {r.hasStaffPacket && isCoach && (
+                  <Pressable style={[styles.actionPill, { backgroundColor: '#3B82F622' }]}>
+                    <IconSymbol name="doc.fill" size={12} color="#3B82F6" />
+                    <Text style={{ fontSize: 11, color: '#3B82F6', fontWeight: '600' }}>Staff Packet</Text>
+                  </Pressable>
+                )}
+                {r.hasMediaReport && (
+                  <Pressable style={[styles.actionPill, { backgroundColor: '#22C55E22' }]}>
+                    <IconSymbol name="megaphone.fill" size={12} color="#22C55E" />
+                    <Text style={{ fontSize: 11, color: '#22C55E', fontWeight: '600' }}>Media Report</Text>
+                  </Pressable>
+                )}
+              </View>
             </View>
-
-            {/* Team KR */}
-            <SectionTitle title="Team KR" C={C} />
-            <View style={[styles.card, { backgroundColor: C.surface, gap: 10 }]}>
-              {[
-                { label: 'Overall KR',   value: TEAM_KR.overall.toFixed(1),   color: '#3B82F6' },
-                { label: 'Offensive KR', value: TEAM_KR.offensive.toFixed(1), color: '#5A8A6E' },
-                { label: 'Defensive KR', value: TEAM_KR.defensive.toFixed(1), color: '#B85C5C' },
-              ].map(s => (
-                <View key={s.label} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Text style={{ fontSize: 14, color: C.secondary }}>{s.label}</Text>
-                  <Text style={{ fontSize: 18, fontWeight: '800', color: s.color }}>{s.value}</Text>
-                </View>
-              ))}
-            </View>
-          </>
-        )}
+          );
+        })}
 
         <View style={{ height: 20 }} />
       </View>
@@ -773,9 +748,9 @@ export default function SportsHubScreen() {
 
   const renderContent = () => {
     if (activeTab === 'Overview')  return renderOverview();
-    if (activeTab === 'Schedule')  return renderSchedule();
+    if (activeTab === 'Film Room') return renderFilmRoom();
     if (activeTab === 'Scouting')  return renderScouting();
-    return renderAnalytics();
+    return renderGameDay();
   };
 
   // ── Main return ───────────────────────────────────────────────────────────
@@ -908,7 +883,7 @@ export default function SportsHubScreen() {
               { backgroundColor: C.surface, borderColor: C.separator, top: topBarH, zIndex: 200 },
             ]}
           >
-            {(['Overview', 'Schedule', 'Scouting', 'Analytics'] as SportsTab[]).map(tab => (
+            {(['Overview', 'Film Room', 'Scouting', 'Game Day'] as SportsTab[]).map(tab => (
               <Pressable
                 key={tab}
                 onPress={() => changeTab(tab)}
@@ -1035,4 +1010,5 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   posBadge:    { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
   playerName:  { fontSize: 13, fontWeight: '600' },
   threatText:  { fontSize: 11, fontWeight: '600', maxWidth: 100, textAlign: 'right' },
+  actionPill:  { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 },
 });
