@@ -442,7 +442,7 @@ function sseXhr(
             }
           }
           return { type: 'text' as const, text: b.text };
-        });
+        }).filter(b => b.type !== 'text' || (b as any).text.length > 0);
         onDone({ stopReason, blocks });
       }
     }
