@@ -3,8 +3,8 @@
 KaNeXT KR Computation Engine — V1 (Box-Score)
 Processes all scraped players through:
   1. Season stats aggregation
-  2. BPR + PGIS computation
-  3. TGIS computation
+  2. BPR computation (per-game and season)
+  3. TPQ computation (Team Performance Quality)
   4. Player KR (KLVN + clusters + archetype)
   5. Team KR aggregation
   6. OSIE / DSIE system inference
@@ -33,14 +33,18 @@ import psycopg
 from psycopg.rows import dict_row
 from config import DB_CONFIG
 
-from bpr import compute_bpr, season_bpr
+from bpr import compute_bpr, season_bpr, compute_bpr_trend
 from clusters import compute_all_clusters, compute_derived_lenses
 from player_kr import compute_player_kr, map_position
 from badges import compute_badges
 from team_kr import compute_team_kr
 from osie_dsie import infer_offensive_system, infer_defensive_system
 from klvn import compute_confidence, get_lambda, klvn_translate
-from impact_scores import compute_pgis, compute_tgis, compute_season_pgis
+from impact_scores import compute_game_bpr, compute_tpq, compute_season_game_bpr
+# Retired term aliases kept for any callers not yet updated
+compute_pgis = compute_game_bpr
+compute_tgis = compute_tpq
+compute_season_pgis = compute_season_game_bpr
 from scholarship_nil import run_allocation, SCHOLARSHIP_CAPS
 from context_engine import apply_context_adjustments
 from context_layer import compute_context
@@ -283,16 +287,73 @@ def validate_season_stats(conn) -> set[str]:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# STEP 2: BPR + PGIS Computation (per-game)
+# STEP 2: BPR v2 Computation (per-game and season)
 # ═══════════════════════════════════════════════════════════════════════════
 
 def compute_all_bpr_pgis(conn):
-    """Compute BPR and PGIS for every player game stat row."""
-    print("\n[2/8] Computing BPR + PGIS for all games...")
+    """Compute BPR v2 and PGIS for every player game stat row."""
+    print("\n[2/8] Computing BPR v2 + PGIS for all games...")
 
-    # Get all game stats with team possessions
+    BPR_VERSION = "v2.0"
+
+    # ── Precompute per-player context: position, level_key, season USG% ──
+    print("  Precomputing player context (position / level / USG)...")
+    context_rows = conn.execute("""
+        SELECT pts.id AS pts_id,
+               p.declared_positions,
+               cl.level_key,
+               pss.usage_rate
+        FROM player_team_seasons pts
+        JOIN players p ON pts.player_id = p.id
+        JOIN team_seasons ts ON pts.team_season_id = ts.id
+        JOIN teams t ON ts.team_id = t.id
+        JOIN competitive_levels cl ON t.competitive_level_id = cl.id
+        LEFT JOIN player_season_stats pss ON pss.player_team_season_id = pts.id
+    """).fetchall()
+
+    player_ctx: dict[str, dict] = {}
+    for r in context_rows:
+        raw_pos = (r["declared_positions"] or [None])[0]
+        player_ctx[str(r["pts_id"])] = {
+            "position": map_position(raw_pos),
+            "level_key": r["level_key"] or "ncaa_d3",
+            "usage_rate": float(r["usage_rate"]) if r["usage_rate"] else None,
+        }
+
+    # ── Precompute team depth scores per team_season_id ──
+    print("  Precomputing team depth scores...")
+    depth_rows = conn.execute("""
+        SELECT pts.team_season_id,
+               pts.id AS pts_id,
+               pss.pts_per_game
+        FROM player_team_seasons pts
+        JOIN player_season_stats pss ON pss.player_team_season_id = pts.id
+        WHERE pss.pts_per_game IS NOT NULL
+        ORDER BY pts.team_season_id, pss.pts_per_game DESC
+    """).fetchall()
+
+    # Group PPG by team_season, build top-5-per-player depth scores
+    from collections import defaultdict
+    team_ppg: dict[str, list[tuple[str, float]]] = defaultdict(list)
+    for r in depth_rows:
+        team_ppg[str(r["team_season_id"])].append(
+            (str(r["pts_id"]), float(r["pts_per_game"]))
+        )
+
+    # depth_score[pts_id] = (avg PPG of top-5 excluding self) / 10
+    depth_score: dict[str, float] = {}
+    for ts_id, members in team_ppg.items():
+        # members already sorted descending by ppg
+        for i, (pts_id, _) in enumerate(members):
+            others = [ppg for j, (_, ppg) in enumerate(members) if j != i]
+            top5 = sorted(others, reverse=True)[:5]
+            avg5 = sum(top5) / len(top5) if top5 else 0.0
+            depth_score[pts_id] = avg5 / 10.0
+
+    # ── Main per-game loop ────────────────────────────────────────────────
     rows = conn.execute("""
-        SELECT pgs.id, pgs.minutes, pgs.pts, pgs.fgm, pgs.fga,
+        SELECT pgs.id, pgs.player_team_season_id,
+               pgs.minutes, pgs.pts, pgs.fgm, pgs.fga,
                pgs.ftm, pgs.fta, pgs.three_pm, pgs.three_pa,
                pgs.oreb, pgs.dreb, pgs.ast, pgs.stl, pgs.blk,
                pgs.turnovers, pgs.pf,
@@ -308,6 +369,9 @@ def compute_all_bpr_pgis(conn):
 
     updated = 0
     for r in rows:
+        pts_id = str(r["player_team_season_id"])
+        ctx = player_ctx.get(pts_id, {})
+
         bpr_val = compute_bpr(
             minutes=_f(r["minutes"]), pts=int(r["pts"] or 0),
             fgm=int(r["fgm"] or 0), fga=int(r["fga"] or 0),
@@ -317,9 +381,13 @@ def compute_all_bpr_pgis(conn):
             ast=int(r["ast"] or 0), stl=int(r["stl"] or 0), blk=int(r["blk"] or 0),
             turnovers=int(r["turnovers"] or 0), pf=int(r["pf"] or 0),
             team_poss=_f(r["team_poss"]) if r["team_poss"] else None,
+            position=ctx.get("position", "W"),
+            level_key=ctx.get("level_key", "ncaa_d3"),
+            team_depth_score=depth_score.get(pts_id),
+            usage_rate=ctx.get("usage_rate"),
         )
 
-        pgis_val = compute_pgis(
+        game_bpr_display = compute_game_bpr(
             bpr=bpr_val or 0, minutes=_f(r["minutes"]),
             pts=int(r["pts"] or 0), fgm=int(r["fgm"] or 0), fga=int(r["fga"] or 0),
             ftm=int(r["ftm"] or 0), fta=int(r["fta"] or 0),
@@ -334,48 +402,58 @@ def compute_all_bpr_pgis(conn):
             UPDATE player_game_stats
             SET bpr_value = %s, bpr_version = %s, pgis_value = %s
             WHERE id = %s
-        """, (bpr_val, KR_VERSION, pgis_val, r["id"]))
+        """, (bpr_val, BPR_VERSION, game_bpr_display, r["id"]))
         updated += 1
 
     conn.commit()
-    print(f"  Updated {updated} game stats with BPR + PGIS")
+    print(f"  Updated {updated} game stats with BPR v2 + PGIS")
 
-    # Update season BPR averages
-    conn.execute("""
-        UPDATE player_season_stats pss
-        SET bpr_season_avg = sub.avg_bpr,
-            bpr_trend = sub.avg_bpr - sub.first5_bpr
-        FROM (
-            SELECT pgs.player_team_season_id,
-                   avg(pgs.bpr_value) AS avg_bpr,
-                   coalesce((
-                       SELECT avg(x.bpr_value) FROM (
-                           SELECT pgs2.bpr_value
-                           FROM player_game_stats pgs2
-                           JOIN games g2 ON pgs2.game_id = g2.id
-                           WHERE pgs2.player_team_season_id = pgs.player_team_season_id
-                             AND pgs2.bpr_value IS NOT NULL
-                           ORDER BY g2.game_date ASC
-                           LIMIT 5
-                       ) x
-                   ), avg(pgs.bpr_value)) AS first5_bpr
-            FROM player_game_stats pgs
-            WHERE pgs.bpr_value IS NOT NULL
-            GROUP BY pgs.player_team_season_id
-        ) sub
-        WHERE pss.player_team_season_id = sub.player_team_season_id
-    """)
+    # ── Season BPR: minutes-weighted average + linear regression trend ────
+    print("  Computing season BPR averages and trends...")
+    game_bpr_rows = conn.execute("""
+        SELECT pgs.player_team_season_id,
+               pgs.bpr_value,
+               pgs.minutes,
+               g.game_date
+        FROM player_game_stats pgs
+        JOIN games g ON pgs.game_id = g.id
+        WHERE pgs.bpr_value IS NOT NULL
+        ORDER BY pgs.player_team_season_id, g.game_date ASC
+    """).fetchall()
+
+    # Group by player
+    from collections import defaultdict
+    player_games: dict[str, list[tuple[float, float]]] = defaultdict(list)
+    for r in game_bpr_rows:
+        player_games[str(r["player_team_season_id"])].append(
+            (float(r["bpr_value"]), float(r["minutes"]))
+        )
+
+    season_updates = []
+    for pts_id, games in player_games.items():
+        avg = season_bpr(games)
+        bpr_vals_ordered = [b for b, _ in games]
+        trend = compute_bpr_trend(bpr_vals_ordered)
+        season_updates.append((avg, trend, pts_id))
+
+    with conn.cursor() as cur:
+        cur.executemany("""
+            UPDATE player_season_stats
+            SET bpr_season_avg = %s, bpr_trend = %s
+            WHERE player_team_season_id = %s
+        """, season_updates)
     conn.commit()
-    print("  Updated season BPR averages")
+    print(f"  Updated {len(season_updates)} player season BPR averages and trends")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# STEP 3: TGIS Computation (per-game)
+# STEP 3: TPQ Computation (per-game)
+# Previously called TGIS — term retired per TPQ v1 spec (March 2026)
 # ═══════════════════════════════════════════════════════════════════════════
 
-def compute_all_tgis(conn):
-    """Compute TGIS for every game."""
-    print("\n[3/8] Computing TGIS for all games...")
+def compute_all_tpq(conn):
+    """Compute TPQ (Team Performance Quality) for every game."""
+    print("\n[3/8] Computing TPQ for all games...")
 
     games = conn.execute("""
         SELECT g.id AS game_id,
@@ -403,9 +481,9 @@ def compute_all_tgis(conn):
 
     updated = 0
     for g in games:
-        # Home TGIS
+        # Home TPQ
         if g["h_fga"] and g["h_poss"] and float(g["h_poss"]) > 0:
-            home_tgis = compute_tgis(
+            home_tgis = compute_tpq(
                 team_pts=g["home_score"] or 0, opp_pts=g["away_score"] or 0,
                 team_fgm=g["h_fgm"] or 0, team_fga=g["h_fga"] or 0,
                 team_three_pm=g["h_3pm"] or 0, team_three_pa=g["h_3pa"] or 0,
@@ -419,9 +497,9 @@ def compute_all_tgis(conn):
         else:
             home_tgis = None
 
-        # Away TGIS
+        # Away TPQ
         if g["a_fga"] and g["a_poss"] and float(g["a_poss"]) > 0:
-            away_tgis = compute_tgis(
+            away_tgis = compute_tpq(
                 team_pts=g["away_score"] or 0, opp_pts=g["home_score"] or 0,
                 team_fgm=g["a_fgm"] or 0, team_fga=g["a_fga"] or 0,
                 team_three_pm=g["a_3pm"] or 0, team_three_pa=g["a_3pa"] or 0,
@@ -443,7 +521,7 @@ def compute_all_tgis(conn):
         updated += 1
 
     conn.commit()
-    print(f"  Updated {updated} games with TGIS")
+    print(f"  Updated {updated} games with TPQ")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -2140,8 +2218,8 @@ def main():
         # Step 2: BPR + PGIS
         compute_all_bpr_pgis(conn)
 
-        # Step 3: TGIS
-        compute_all_tgis(conn)
+        # Step 3: TPQ
+        compute_all_tpq(conn)
 
         # Step 4: Player KR
         compute_all_player_kr(conn, season_data, debug_name=args.debug,
@@ -2172,8 +2250,8 @@ def main():
     team_kr_count = conn.execute("SELECT count(*) AS c FROM team_seasons WHERE team_overall_kr IS NOT NULL").fetchone()["c"]
     osie_count = conn.execute("SELECT count(*) AS c FROM team_system_identity").fetchone()["c"]
     bpr_count = conn.execute("SELECT count(*) AS c FROM player_game_stats WHERE bpr_value IS NOT NULL").fetchone()["c"]
-    pgis_count = conn.execute("SELECT count(*) AS c FROM player_game_stats WHERE pgis_value IS NOT NULL").fetchone()["c"]
-    tgis_count = conn.execute("SELECT count(*) AS c FROM games WHERE tgis_home IS NOT NULL").fetchone()["c"]
+    game_bpr_count = conn.execute("SELECT count(*) AS c FROM player_game_stats WHERE pgis_value IS NOT NULL").fetchone()["c"]
+    tpq_count = conn.execute("SELECT count(*) AS c FROM games WHERE tgis_home IS NOT NULL").fetchone()["c"]
 
     sna_count = conn.execute("SELECT count(*) AS c FROM scholarship_nil_allocations").fetchone()["c"]
     tas_count = conn.execute("SELECT count(*) AS c FROM team_allocation_summary").fetchone()["c"]
@@ -2184,8 +2262,8 @@ def main():
 
     print(f"  Player KRs computed:    {kr_count}")
     print(f"  BPR values computed:    {bpr_count}")
-    print(f"  PGIS values computed:   {pgis_count}")
-    print(f"  TGIS values computed:   {tgis_count}")
+    print(f"  Game BPR computed:      {game_bpr_count}")
+    print(f"  TPQ values computed:    {tpq_count}")
     print(f"  Team KRs computed:      {team_kr_count}")
     print(f"  System identities:      {osie_count}")
     print(f"  Badges awarded:         {badge_count} (Gold: {gold_count}, Silver: {silver_count}, Bronze: {bronze_count})")

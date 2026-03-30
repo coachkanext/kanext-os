@@ -1,13 +1,16 @@
 from __future__ import annotations
 """
-Impact Scores — PGIS (Player Game Impact Score) and TGIS (Team Game Impact Score)
+Impact Scores — Game BPR and TPQ (Team Performance Quality)
 Plus Impact Modifiers for system-adjusted context.
 
 Reference:
-  spec/canonical/_text/01_Player Evaluation Engine/Impact Modifiers — System Logic.txt
+  spec/canonical/_text/01_Player Evaluation Engine/BPR_v2_Spec.md
+  spec/canonical/_text/01_Player Evaluation Engine/TPQ_v1_Spec.md
 
-PGIS: Single-number per-game impact score (0-100 scale, 50 = average).
-TGIS: Single-number per-game team impact score.
+Game BPR: Single-game player impact (same six-stage formula as season BPR).
+  Previously named PGIS — retired per BPR v2 spec (March 2026).
+TPQ: Single-game team performance quality (0-10 scale).
+  Previously named TGIS — retired per TPQ v1 spec (March 2026).
 Impact Modifiers: Contextual adjustments based on system, opponent, role.
 """
 
@@ -15,11 +18,13 @@ import math
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# PGIS — Player Game Impact Score
-# Combines BPR + efficiency + volume into a single game-level score.
+# Game BPR — Player Game Impact (0-100 display scale)
+# Wraps the core BPR v2 result into a 0-100 display number.
+# Used for postgame player cards and game log views.
+# Previously called PGIS — term retired March 2026.
 # ═══════════════════════════════════════════════════════════════════════════
 
-def compute_pgis(
+def compute_game_bpr(
     bpr: float,
     minutes: float,
     pts: int, fgm: int, fga: int,
@@ -31,8 +36,9 @@ def compute_pgis(
     team_poss: float | None = None,
 ) -> float:
     """
-    Compute Player Game Impact Score (0-100, 50 = average).
+    Compute game BPR display score (0-100, 50 = average).
     Combines box-score production, efficiency, and BPR into one number.
+    BPR v2 is zero-centered [-10, +10]; this maps it to a 0-100 display scale.
     """
     if not minutes or minutes <= 0:
         return 0.0
@@ -58,48 +64,55 @@ def compute_pgis(
         - pf * 0.4
     )
 
-    # Per-minute game score
     gs_per_min = game_score / minutes if minutes > 0 else 0
 
-    # BPR component (already -15 to +20 scale)
-    # Map to 0-100: BPR 0 → 50, BPR +10 → 80, BPR -10 → 20
+    # BPR v2 is [-10, +10]; map to 0-100: 0 → 50, +10 → 80, -10 → 20
     bpr_component = 50 + (bpr * 3.0)
 
     # Efficiency component: TS% mapped to 0-100
-    # TS% 0.52 → 50, 0.62 → 70, 0.42 → 30
     ts_component = 50 + (ts_pct - 0.52) * 200
 
-    # Volume component: minutes share + usage
-    min_share = minutes / 40.0  # fraction of full game
+    # Volume component
+    min_share = minutes / 40.0
     vol_component = 50 + (min_share - 0.5) * 40 + (gs_per_min - 0.4) * 30
 
-    # Weighted composite
-    pgis = (
+    game_bpr_score = (
         0.40 * bpr_component
         + 0.25 * ts_component
         + 0.20 * vol_component
-        + 0.15 * (50 + game_score * 1.5)  # raw production bonus
+        + 0.15 * (50 + game_score * 1.5)
     )
 
-    return max(0, min(100, round(pgis, 1)))
+    return max(0, min(100, round(game_bpr_score, 1)))
 
 
-def compute_season_pgis(game_pgis_list: list[tuple[float, float]]) -> float:
-    """Season PGIS: minutes-weighted average of game PGIS values.
-    Input: list of (pgis, minutes) tuples."""
-    total_min = sum(m for _, m in game_pgis_list)
+# Keep alias for any callers not yet updated
+compute_pgis = compute_game_bpr
+
+
+def compute_season_game_bpr(game_scores: list[tuple[float, float]]) -> float:
+    """Season game BPR display score: minutes-weighted average.
+    Input: list of (game_bpr_score, minutes) tuples."""
+    total_min = sum(m for _, m in game_scores)
     if total_min <= 0:
         return 50.0
-    weighted = sum(p * m for p, m in game_pgis_list)
+    weighted = sum(p * m for p, m in game_scores)
     return round(weighted / total_min, 1)
 
 
+# Keep alias for any callers not yet updated
+compute_season_pgis = compute_season_game_bpr
+
+
 # ═══════════════════════════════════════════════════════════════════════════
-# TGIS — Team Game Impact Score
-# Composite per-game team performance score.
+# TPQ — Team Performance Quality
+# Single-game team performance score (0-10 scale, 5.0 = expected).
+# Previously called TGIS — term retired per TPQ v1 spec (March 2026).
+# Full TPQ formula (four-component) requires Team KR — not yet implemented.
+# This function is a placeholder that approximates TPQ from box score only.
 # ═══════════════════════════════════════════════════════════════════════════
 
-def compute_tgis(
+def compute_tpq(
     team_pts: int,
     opp_pts: int,
     team_fgm: int, team_fga: int,
@@ -112,11 +125,12 @@ def compute_tgis(
     is_home: bool,
 ) -> float:
     """
-    Compute Team Game Impact Score (0-100, 50 = average).
-    Combines offensive efficiency, defensive performance, and margin.
+    Compute Team Performance Quality score (0-10, 5.0 = expected).
+    Box-score approximation; full TPQ requires Team KR (not yet available).
+    See TPQ_v1_Spec.md for the four-component full formula.
     """
     if team_poss <= 0:
-        return 50.0
+        return 5.0
 
     # Offensive efficiency: PPP
     off_ppp = team_pts / team_poss if team_poss > 0 else 0.0
@@ -134,28 +148,32 @@ def compute_tgis(
     # Margin
     margin = team_pts - opp_pts
 
-    # Offensive component (0-100)
-    off_comp = 50 + (off_ppp - 1.00) * 80  # 1.00 PPP = 50, 1.10 = 58
+    # Offensive component (0-10)
+    off_comp = 5.0 + (off_ppp - 1.00) * 8.0
 
-    # Defensive component (opponent PPP → lower is better)
-    opp_poss = team_poss  # approximate (actual may differ slightly)
+    # Defensive component
+    opp_poss = team_poss
     def_ppp = opp_pts / opp_poss if opp_poss > 0 else 1.0
-    def_comp = 50 - (def_ppp - 1.00) * 80  # 1.00 = 50, 0.90 = 58
+    def_comp = 5.0 - (def_ppp - 1.00) * 8.0
 
     # Margin component
-    margin_comp = 50 + margin * 1.5
+    margin_comp = 5.0 + margin * 0.15
 
-    # Efficiency bonuses
-    eff_comp = 50 + (ts_pct - 0.52) * 100 - tov_rate * 100 + ast_rate * 10
+    # Efficiency component
+    eff_comp = 5.0 + (ts_pct - 0.52) * 10.0 - tov_rate * 10.0 + ast_rate * 1.0
 
-    tgis = (
+    tpq = (
         0.30 * off_comp
         + 0.30 * def_comp
         + 0.25 * margin_comp
         + 0.15 * eff_comp
     )
 
-    return max(0, min(100, round(tgis, 1)))
+    return max(0.0, min(10.0, round(tpq, 2)))
+
+
+# Keep alias for any callers not yet updated
+compute_tgis = compute_tpq
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -165,7 +183,6 @@ def compute_tgis(
 # ═══════════════════════════════════════════════════════════════════════════
 
 # Offensive system impact on cluster importance (adjustment multipliers)
-# Applied after base cluster scoring to produce system-adjusted KR.
 OFF_SYSTEM_MODIFIERS: dict[str, dict[str, float]] = {
     "spread_pick_and_roll":   {"shooting": 1.10, "finishing": 1.05, "playmaking": 1.15, "on_ball_defense": 1.0, "team_defense": 0.95, "rebounding": 0.90, "physical": 0.95},
     "five_out_motion":        {"shooting": 1.15, "finishing": 0.95, "playmaking": 1.10, "on_ball_defense": 1.0, "team_defense": 0.90, "rebounding": 0.90, "physical": 0.95},

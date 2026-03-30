@@ -14,38 +14,27 @@ import { FILE_01, FILE_02, FILE_03, FILE_04, FILE_05, FILE_06, LEVEL_LEGENDS } f
 export const CORPUS_TOOLS = [
   {
     name: 'get_eval_protocol',
-    description:
-      'Get the player evaluation protocol (V1 Protocol / File 01). Contains: Coach Context Setup, ' +
-      'Player Profile template, Confidence Gate, Master Execution Flow, Contextual Mode, ' +
-      'Suppression Detection, Multi-Level Protocol. Call this when evaluating a player.',
+    description: 'Player evaluation protocol (File 01). Use section="v1_protocol" for player evals.',
     input_schema: {
       type: 'object',
       properties: {
         section: {
           type: 'string',
-          description:
-            'Optional — specific section to retrieve: "coach_context", "confidence_gate", ' +
-            '"execution_flow", "contextual_mode", "suppression", "multi_level", "v1_protocol", ' +
-            'or "full" for everything. Defaults to "full".',
-          default: 'full',
+          description: '"v1_protocol" (default), "coach_context", "confidence_gate", "execution_flow", "contextual_mode", "suppression", "multi_level", or "full"',
+          default: 'v1_protocol',
         },
       },
     },
   },
   {
     name: 'get_reference',
-    description:
-      'Look up specific reference data from File 02: trait definitions and scoring bands, ' +
-      'archetype gate rules, system demand profiles, badge specs, overrides, system risks, ' +
-      'KLVN tables, position trait weighting. Use during evaluations to check specific bands.',
+    description: 'Reference data from File 02: trait bands, archetype gates, KLVN tables, system demand profiles, badges, position weights.',
     input_schema: {
       type: 'object',
       properties: {
         lookup: {
           type: 'string',
-          description:
-            'What to look up. Examples: "trait Rim Pressure", "archetype Pick-and-Roll Operator", ' +
-            '"system demand Spread Pick-and-Roll", "badge Sniper", "KLVN table", "position weights PG"',
+          description: 'What to look up, e.g. "trait Rim Pressure", "archetype Pick-and-Roll Operator", "KLVN table", "position weights PG"',
         },
       },
       required: ['lookup'],
@@ -53,18 +42,13 @@ export const CORPUS_TOOLS = [
   },
   {
     name: 'get_legend',
-    description:
-      'Get the KR Legend for a specific competitive level. Shows what each KR range means at that level. ' +
-      'Use this to interpret KR scores and calibrate evaluations to the correct level.',
+    description: 'KR Legend for a competitive level — what each KR range means at that level.',
     input_schema: {
       type: 'object',
       properties: {
         level: {
           type: 'string',
-          description:
-            'Level key: "ncaa_d1_hm", "ncaa_d1_mm", "ncaa_d1_lm", "ncaa_d2", "ncaa_d3", ' +
-            '"naia", "njcaa_d1", "njcaa_d2", "njcaa_d3", "cccaa", "uscaa", "nccaa_d1", ' +
-            '"nccaa_d2", or "all" for the 7 most common levels',
+          description: '"ncaa_d1_hm", "ncaa_d1_mm", "ncaa_d1_lm", "ncaa_d2", "ncaa_d3", "naia", "njcaa_d1", "njcaa_d2", "njcaa_d3", "cccaa", "uscaa", or "all"',
         },
       },
       required: ['level'],
@@ -72,18 +56,13 @@ export const CORPUS_TOOLS = [
   },
   {
     name: 'get_team_intelligence',
-    description:
-      'Get team intelligence protocol (File 03). Contains: Team KR Pipeline, OSIE/DSIE system ' +
-      'inference, Team KR Legends, Scholarship/NIL Allocation Engine, Roster Decision Intelligence. ' +
-      'Pull this for team evaluations, roster analysis, or system identification.',
+    description: 'Team intelligence protocol (File 03): Team KR Pipeline, OSIE/DSIE, Scholarship/NIL Engine, Roster Decision Intelligence.',
     input_schema: {
       type: 'object',
       properties: {
         section: {
           type: 'string',
-          description:
-            'Optional: "team_kr_pipeline", "osie", "dsie", "team_legends", "scholarship_nil", ' +
-            '"roster_decision", or "full"',
+          description: '"team_kr_pipeline", "osie", "dsie", "team_legends", "scholarship_nil", "roster_decision", or "full"',
           default: 'full',
         },
       },
@@ -91,18 +70,13 @@ export const CORPUS_TOOLS = [
   },
   {
     name: 'get_simulation',
-    description:
-      'Get simulation engine data (File 04). Contains: System×System interaction tables (120 entries), ' +
-      'Archetype×System interactions (462 entries), possession simulation math, physical mismatch modifiers. ' +
-      'Pull this for matchup analysis or game simulation.',
+    description: 'Simulation engine (File 04): system×system tables, archetype×system interactions, possession math, mismatch modifiers.',
     input_schema: {
       type: 'object',
       properties: {
         section: {
           type: 'string',
-          description:
-            'Optional: "system_interactions", "archetype_interactions", "simulation_math", ' +
-            '"mismatch_modifiers", or "full"',
+          description: '"system_interactions", "archetype_interactions", "simulation_math", "mismatch_modifiers", or "full"',
           default: 'full',
         },
       },
@@ -110,16 +84,13 @@ export const CORPUS_TOOLS = [
   },
   {
     name: 'get_scouting',
-    description:
-      'Get scouting & game ops protocol (File 05). Contains: Pregame Scout Packet, In-Game Live Ops, ' +
-      'Halftime Staff Packet, Postgame Staff Packet. Pull this for game preparation questions.',
+    description: 'Scouting & game ops (File 05): pregame scout, in-game ops, halftime/postgame packets.',
     input_schema: {
       type: 'object',
       properties: {
         section: {
           type: 'string',
-          description:
-            'Optional: "pregame", "ingame", "halftime", "postgame", "confidence_gates", or "full"',
+          description: '"pregame", "ingame", "halftime", "postgame", "confidence_gates", or "full"',
           default: 'full',
         },
       },
@@ -127,16 +98,13 @@ export const CORPUS_TOOLS = [
   },
   {
     name: 'get_downstream',
-    description:
-      'Get downstream engines (File 06). Contains: Development Intelligence Engine (placement, portal, ' +
-      'development roadmap), Pro Transition Intelligence Engine (draft projection, pro KR translation), ' +
-      'Coaching Impact Modifier. Pull this for development plans or pro projections.',
+    description: 'Downstream engines (File 06): development roadmap, pro transition, draft projection, coaching impact.',
     input_schema: {
       type: 'object',
       properties: {
         section: {
           type: 'string',
-          description: 'Optional: "development", "pro_transition", "coaching_impact", or "full"',
+          description: '"development", "pro_transition", "coaching_impact", or "full"',
           default: 'full',
         },
       },
@@ -170,8 +138,12 @@ export function handleCorpusTool(toolName: string, input: Record<string, unknown
 
 // ── Handlers ──────────────────────────────────────────────────────────────────
 
+// Max chars returned for 'full' requests — prevents blowing the 30K TPM limit.
+// At ~4 chars/token, 32K chars ≈ 8K tokens, leaving room for pool data + tools.
+const FILE_01_FULL_CAP = 32_000;
+
 function getEvalProtocol(section: string): string {
-  if (section === 'full' || !section) return FILE_01;
+  if (section === 'full' || !section) return FILE_01.slice(0, FILE_01_FULL_CAP);
 
   // Section-based extraction: split FILE_01 by major header lines and find matching section
   const sectionMap: Record<string, string[]> = {
@@ -187,15 +159,17 @@ function getEvalProtocol(section: string): string {
   const keywords = sectionMap[section] ?? [];
   if (keywords.length === 0) return FILE_01;
 
-  // Find first matching header in FILE_01 and return ~6000 chars from there
+  // v1_protocol gets a larger slice (the full V1 section); others get 6000 chars
+  const sliceSize = section === 'v1_protocol' ? 12_000 : 6_000;
+
   for (const kw of keywords) {
     const idx = FILE_01.indexOf(kw);
     if (idx >= 0) {
-      return FILE_01.slice(idx, idx + 6000);
+      return FILE_01.slice(idx, idx + sliceSize);
     }
   }
 
-  return FILE_01; // fallback to full
+  return FILE_01.slice(0, FILE_01_FULL_CAP); // capped fallback
 }
 
 // ── Section keyword → header text in FILE_02 ─────────────────────────────────
