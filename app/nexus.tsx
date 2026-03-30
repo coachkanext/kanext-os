@@ -627,7 +627,7 @@ export default function NexusScreen() {
     const streamLoop = (apiMessages: ApiMessage[], iters = 5) => {
       const toolsForTier =
         tier === 'BASKETBALL'
-          ? [...POOL_TOOLS, ...CORPUS_TOOLS, ...APP_DATA_TOOLS]
+          ? [...POOL_TOOLS, ...CORPUS_TOOLS, ...APP_DATA_TOOLS, { type: 'web_search_20250305' }]
           : APP_DATA_TOOLS;
 
       const bodyObj = {
