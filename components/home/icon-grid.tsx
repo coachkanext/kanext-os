@@ -186,8 +186,8 @@ const makeStyles = (C: ComponentColors) => {
       alignItems: 'center',
     },
     tileWrap: {
-      width: '100%',
-      aspectRatio: 1,
+      width: 72,
+      height: 72,
     },
     tile: {
       flex: 1,
