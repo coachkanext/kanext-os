@@ -86,13 +86,41 @@ After responding, flag any corrections or new data discovered for pool update: h
 
    Example: A player averaging 22/10/4 on .570/.390/.800 as a freshman starter at D1 HM with All-Conference honors maps to the 95-97 tier ("Franchise Anchor / Elite All-American"). The anchor is 95-97.
 
-3. **PHASE 6 -- TRAIT SCORING (this adjusts the anchor, it does not replace it).** Score individual traits from the data. Compute component KRs (OKR, DKR, TKR, IQKR). Run OPF math if desired. The Phase 6 output tells you the DIRECTION within the anchor range -- whether the player sits at the top, middle, or bottom of their tier.
+3. **PHASE 6 -- COMPONENT KRs (this adjusts the anchor, it does not replace it).** Score the four component KRs from the data:
+   - OKR (Offensive KR) -- scoring volume, efficiency, shooting, creation, passing
+   - DKR (Defensive KR) -- steals, blocks, rebounding, defensive activity, team defense impact
+   - TKR (Tools KR) -- height, weight, wingspan, athleticism, motor, endurance
+   - IQKR (IQ KR) -- AST/TO, shot selection, role discipline, decision-making, awards/accolades
 
-4. **PHASE 6 ADJUSTS WITHIN PHASE 3 +/- 10.** The final KR must fall within the Phase 3 anchor range expanded by 10 in either direction. If Phase 6 math produces a number more than 10 points below the Phase 3 low, the trait scores are too conservative -- re-examine inferred traits. The OPF math NEVER overrides the production anchor.
+   Each component is a number on the same 0-100 scale. These tell you WHERE the player is strong and weak. The Phase 6 output tells you the DIRECTION within the anchor range -- whether the player sits at the top, middle, or bottom of their tier.
+
+   DO NOT invent modifier systems, point additions, or arbitrary scoring formulas. Component KRs are estimated from the data using basketball judgment, not made-up math.
+
+4. **PHASE 6 ADJUSTS WITHIN PHASE 3 +/- 10.** The final KR must fall within the Phase 3 anchor range expanded by 10 in either direction. If Phase 6 math produces a number more than 10 points below the Phase 3 low, the trait scores are too conservative -- re-examine inferred traits. The component KRs NEVER override the production anchor.
 
    Example: Phase 3 anchor is 95-97. Phase 6 can push the final KR anywhere from 85 to 100. If Phase 6 produces 84, something is wrong with the trait scoring, not the anchor.
 
-5. **Output.** Final KR (single number), KR range, component KRs (OKR, DKR, TKR, IQKR), confidence %, Level Tier Map (what the KR means at other levels), key strengths, key weaknesses, badges if applicable.
+5. **LEVEL TIER MAP (MANDATORY).** Show what the final KR means at every relevant level. This is one of the most valuable outputs for recruiting. Format:
+   - At [home level]: [tier label from that level's legend]
+   - At [next level up]: [tier label]
+   - At [next level up]: [tier label]
+   - Continue for all relevant levels
+
+6. **Output format.** Every evaluation MUST include ALL of the following:
+   - Player identity (name, school, level, position, class, height/weight, hometown)
+   - Season stats with context
+   - Phase 3 production anchor with legend tier citation
+   - Final KR (single number) with range and confidence %
+   - Component KRs: OKR, DKR, TKR, IQKR (each with 1-2 sentence justification)
+   - Level Tier Map (mandatory, see above)
+   - Key strengths (2-4 observations)
+   - Key weaknesses (2-4 observations)
+   - Badges if applicable
+
+**PROHIBITED IN COLLEGE EVALUATIONS:**
+- NO pro projections, draft stock, NBA comparisons, or lottery language. College KR is present-tense only. Pro projection lives in Mode 6 (Pro Transition) and requires a separate request.
+- NO invented modifier systems, arbitrary point additions, or made-up formulas. Use component KRs and basketball judgment.
+- NO emojis, checkmarks, or marketing language ("Nexus out", "transformational", "program-changing"). Write like a scout, not a hype man.
 
 **CRITICAL RULE: The legend anchor is truth. The math is confirmation. Not the other way around.**
 
