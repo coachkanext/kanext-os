@@ -158,6 +158,11 @@ export function OrgDrawer() {
     router.push('/settings');
   }, [router]);
 
+  const handleCreateBrand = useCallback(() => {
+    setVisible(false);
+    router.push('/settings/create-org');
+  }, [router]);
+
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
@@ -237,9 +242,21 @@ export function OrgDrawer() {
             </Pressable>
           );
         })}
+        {/* Create Brand — above Settings */}
+        <Pressable
+          style={({ pressed }) => [styles.settingsRow, { marginTop: 4 }, pressed && { opacity: 0.6 }]}
+          onPress={handleCreateBrand}
+        >
+          <View style={[styles.settingsIcon, { backgroundColor: C.accent + '18' }]}>
+            <IconSymbol name="plus" size={16} color={C.accent} />
+          </View>
+          <Text style={[styles.settingsLabel, { color: C.label, fontWeight: '500' }]}>Create Brand</Text>
+          <IconSymbol name="chevron.right" size={14} color={C.muted} />
+        </Pressable>
+
         {/* Settings — last item */}
         <Pressable
-          style={({ pressed }) => [styles.settingsRow, pressed && { opacity: 0.6 }]}
+          style={({ pressed }) => [styles.settingsRow, { borderTopWidth: 0, marginTop: 2 }, pressed && { opacity: 0.6 }]}
           onPress={handleSettings}
         >
           <View style={styles.settingsIcon}>

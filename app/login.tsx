@@ -1,76 +1,108 @@
-/**
- * Login Screen (Placeholder)
- * Simple stub screen for authentication flow.
- */
-
-import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, TextInput, Pressable, StyleSheet, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors, Spacing, BorderRadius } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useAccentColor } from '@/hooks/use-accent-color';
-import { useAppContext } from '@/context/app-context';
-
 export default function LoginScreen() {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
-  const accent = useAccentColor();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { setAuthState } = useAppContext();
 
-  const handleDemoLogin = () => {
-    setAuthState('owner');
-    router.back();
+  const [code, setCode] = useState('');
+  const [focused, setFocused] = useState(false);
+  const [failCount, setFailCount] = useState(0);
+
+  const kScale = useRef(new Animated.Value(1)).current;
+  const kColor = useRef(new Animated.Value(0)).current;
+  const shakeX = useRef(new Animated.Value(0)).current;
+
+  const inputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  const pulseK = (onDone?: () => void) => {
+    kColor.setValue(0);
+    Animated.sequence([
+      Animated.timing(kScale, { toValue: 1.05, duration: 120, useNativeDriver: true }),
+      Animated.timing(kScale, { toValue: 1, duration: 180, useNativeDriver: true }),
+    ]).start(onDone);
+    Animated.sequence([
+      Animated.timing(kColor, { toValue: 1, duration: 100, useNativeDriver: false }),
+      Animated.timing(kColor, { toValue: 0, duration: 300, useNativeDriver: false }),
+    ]).start();
   };
 
+  const shakeInput = () => {
+    Animated.sequence([
+      Animated.timing(shakeX, { toValue: 8, duration: 50, useNativeDriver: true }),
+      Animated.timing(shakeX, { toValue: -8, duration: 50, useNativeDriver: true }),
+      Animated.timing(shakeX, { toValue: 8, duration: 50, useNativeDriver: true }),
+      Animated.timing(shakeX, { toValue: -8, duration: 50, useNativeDriver: true }),
+      Animated.timing(shakeX, { toValue: 0, duration: 50, useNativeDriver: true }),
+    ]).start();
+  };
+
+  const handleChange = (text: string) => {
+    setCode(text);
+    if (text.length >= 4) {
+      if (text.startsWith('K')) {
+        pulseK(() => {
+          router.push('/onboarding');
+        });
+      } else {
+        const next = failCount + 1;
+        setFailCount(next);
+        shakeInput();
+        if (next >= 2) {
+          setTimeout(() => router.push('/fomo'), 400);
+        }
+      }
+    }
+  };
+
+  const kColorInterpolated = kColor.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#111111', '#3B82F6'],
+  });
+
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Header */}
-      <View style={[styles.header, { paddingTop: insets.top + Spacing.sm }]}>
-        <Pressable onPress={() => router.back()} style={styles.backButton}>
-          <IconSymbol name="chevron.left" size={24} color={colors.text} />
-        </Pressable>
-        <Text style={[styles.headerTitle, { color: colors.text }]}>Log In</Text>
-        <View style={styles.backButton} />
-      </View>
-
-      {/* Content */}
-      <View style={styles.content}>
-        <View
+    <View style={styles.container}>
+      <View style={styles.centerContent}>
+        <Animated.Text
           style={[
-            styles.iconContainer,
-            { backgroundColor: colors.backgroundTertiary },
+            styles.kLogo,
+            { transform: [{ scale: kScale }], color: kColorInterpolated },
           ]}
         >
-          <IconSymbol name="person.crop.circle" size={64} color={colors.icon} />
-        </View>
+          K
+        </Animated.Text>
 
-        <Text style={[styles.title, { color: colors.text }]}>
-          Welcome to KaNeXT
-        </Text>
-        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-          Sign in to access your organization and manage your programs.
-        </Text>
-
-        {/* Demo Login Button */}
-        <Pressable
-          style={({ pressed }) => [
-            styles.loginButton,
-            { backgroundColor: pressed ? accent + 'DD' : accent },
-          ]}
-          onPress={handleDemoLogin}
-        >
-          <Text style={styles.loginButtonText}>Demo Login</Text>
-        </Pressable>
-
-        <Text style={[styles.note, { color: colors.textTertiary }]}>
-          This is a placeholder screen. Full authentication will be implemented in a future update.
-        </Text>
+        <Animated.View style={{ transform: [{ translateX: shakeX }] }}>
+          <TextInput
+            ref={inputRef}
+            style={[
+              styles.codeInput,
+              { borderColor: focused ? '#111111' : '#E5E7EB' },
+            ]}
+            value={code}
+            onChangeText={handleChange}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            autoCapitalize="characters"
+            autoCorrect={false}
+            returnKeyType="done"
+            maxLength={12}
+          />
+        </Animated.View>
       </View>
+
+      <Pressable
+        style={[styles.loginLink, { bottom: insets.bottom + 32 }]}
+        onPress={() => router.push('/onboarding')}
+      >
+        <Text style={styles.loginLinkText}>Log in</Text>
+      </Pressable>
     </View>
   );
 }
@@ -78,66 +110,38 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.md,
-    paddingBottom: Spacing.sm,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-  },
-  content: {
+  centerContent: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: Spacing.xl,
-    paddingBottom: Spacing.xxl,
   },
-  iconContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+  kLogo: {
+    fontSize: 96,
+    fontWeight: '900',
+    color: '#111111',
+    lineHeight: 100,
+  },
+  codeInput: {
+    width: 240,
+    textAlign: 'center',
+    fontSize: 22,
+    borderBottomWidth: 1.5,
+    borderColor: '#E5E7EB',
+    paddingVertical: 8,
+    color: '#111111',
+    marginTop: 32,
+  },
+  loginLink: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.lg,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    textAlign: 'center',
-    marginBottom: Spacing.sm,
-  },
-  subtitle: {
-    fontSize: 16,
-    textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: Spacing.xl,
-  },
-  loginButton: {
-    paddingVertical: 14,
-    paddingHorizontal: Spacing.xl,
-    borderRadius: BorderRadius.lg,
-    marginBottom: Spacing.lg,
-  },
-  loginButtonText: {
-    color: '#FFFFFF',
-    fontSize: 17,
-    fontWeight: '600',
-  },
-  note: {
-    fontSize: 13,
-    textAlign: 'center',
-    lineHeight: 18,
-    maxWidth: 280,
+  loginLinkText: {
+    fontSize: 15,
+    color: '#6B7280',
+    fontWeight: '500',
   },
 });

@@ -4241,3 +4241,143 @@ KayStudios is the one tile that breaks mode scoping. Content created in any mode
 **Creator tools:** No-code builder for authorized users. Lesson creation, game templates, assessment builders. Content through RBAC approval workflows before publishing.
 
 **Safety model:** KayStudios is not the open internet. Every experience is published by an institution or creator through KaNeXT with RBAC-controlled approval. Content tied to a brand. Brand tied to real people. No anonymous publishing. No unmoderated user-generated content. Safe by architecture, not moderation.
+
+---
+
+## 19. Settings
+
+Settings is accessed from the Brand Drawer (bottom of drawer, below brand list). Not a tile. Not a footer page. Full-screen page with back button to return to drawer.
+
+Two sections: Account (personal, across all brands) and Brand (active brand, admin roles only).
+
+### 19.1 Account Settings
+
+Applies to YOU across every brand. Every user sees these.
+
+**Profile:** Full name, profile photo (upload/take, crop to circle), @handle (unique across KaNeXT), email (primary + secondary, verification), phone (primary + secondary, verification, this is your KaNeXT phone number), bio, date of birth (private), location (city/state/country, not public unless enabled).
+
+**Security:** Change password (strength indicator). Two-factor authentication (authenticator app, SMS, email). Biometric login (Face ID / Touch ID toggle). Active sessions (device name, location, last active, log out per session, log out all). Login history (last 10). Account recovery (recovery email, phone, codes).
+
+**Notifications:** Master toggle. Per-category toggles: Messages, Social, KayPay, Agenda, Pulse, Phone, Nexus. Per-brand settings ("Mute Lincoln notifications 24 hours", "KaNeXT notifications business hours only"). Delivery: push, in-app badge, email digest (daily/weekly), SMS critical only. Quiet hours.
+
+**Privacy:** Who can message me (everyone, followers, brand members, no one). Profile visibility. Phone/email discoverability. Directory visibility per brand (show/hide). Activity status (online indicator). Read receipts. Data sharing opt in/out.
+
+**KayPay Settings:** Linked banks (add/remove, set primary). Linked cards. KaNeXT Card controls (freeze, spending limits, international/online toggles, view card number with biometric). Payout preferences (keep for 4% APY, auto-transfer instant/daily/weekly). Default payment method order. Transaction PIN (optional for high amounts). Remittance saved recipients. Tax information (SSN/TIN, filing status, address for 1099s).
+
+**Appearance:** Dark mode (on/off/system, OLED true black). Text size (small/medium/large/XL). Reduce motion. High contrast.
+
+**Language:** App language selection.
+
+**Help & Support:** Searchable help center. Contact support (ticket through Messages). Report bug (screenshot, auto device info). Feature request. Community forum.
+
+**About:** Version number. Terms of Service. Privacy Policy. Open source licenses. KaNeXT website.
+
+**Account Actions:** Log out (this device). Log out all devices. Deactivate (temporary, reversible). Delete account (permanent, 30-day grace period).
+
+### 19.2 Brand Settings
+
+Applies to active brand. Only visible to admin authority (R0 Owner, R1-R2 depending on mode). Not visible if you lack admin authority.
+
+**Brand Profile:** Name (owner only), logo/avatar, description/bio, contact email, contact phone, website URL, physical address, mode (display only, locked after creation), brand code (unique join code).
+
+**Members & Roles:** Member list (name, handle, role, joined, last active, status). Invite by handle, email, phone, share link, QR, brand code. Set role at invite. Change roles. Remove member. Suspend member (temporary disable). Bulk invite via CSV. Pending invites (resend/cancel).
+
+**Brand Customization:** Brand colors (primary/secondary, applied to pills, headers, accents, default KaNeXT blue, customizable per brand). Custom domain for Links page (Personal mode).
+
+**Permissions & Policies:** Content approval workflow on/off. Recruit messaging on/off (Sports). Directory visibility defaults. Content moderation sensitivity.
+
+**Billing & Subscription:** Current plan, features/limits, upgrade/downgrade, payment through KayPay, billing history, cancel.
+
+**Data & Export:** Export all brand data (CSV/JSON). Data retention policy. GDPR/privacy compliance (access requests, right to deletion).
+
+**Integrations:** Connected external tools (Google Calendar, Hudl, QuickBooks). API access. Webhooks.
+
+**Danger Zone:** Transfer ownership. Archive brand (reversible). Delete brand (permanent, 30-day grace, owner password required).
+
+---
+
+## 20. Onboarding & Brand Creation
+
+### 20.1 Launch Screen
+
+First launch. White background (#FFFFFF). KaNeXT "K" logo centered, larger than current build (increase logo size ~40% from current). Code input field directly below the K. Minimal styling: subtle bottom border, no label. Keyboard rises when tapped.
+
+Nothing else. No title. No subtitle. No buttons. No explanation. K and code.
+
+### 20.2 Code Entry
+
+User types a code. Validates against server in real-time after minimum character count.
+
+**Valid code:** Brief success animation (K pulses or glows blue). Transitions to account creation (20.4).
+
+**Invalid code:** Subtle shake on input field. After 2 failed attempts, transitions to FOMO video (20.3).
+
+### 20.3 FOMO Video
+
+Full-screen auto-play. 60-90 seconds. KaNeXT sizzle reel showing OS across modes. No skip for first 10 seconds, then small X top-right.
+
+After video ends or dismissed:
+- K logo centered
+- Code field below K (same as launch)
+- "Join" text link at bottom. Small, understated, not a button.
+
+### 20.4 Account Creation (Valid Code Path)
+
+Three screens, one field each, full screen with large input. Progress dots at top.
+
+Screen 1: "Your name" → full name. Next.
+Screen 2: "Phone or email" → toggle between. Next.
+Screen 3: "Create a password" → with visibility toggle. Done.
+
+No username, no photo, no bio. Get them in fast.
+
+System creates:
+1. User's Personal brand automatically (name from screen 1)
+2. Adds the brand associated with the code (code knows brand + role)
+3. Adds 5 preloaded demo brands as followed (Sammy Kalejaiye, KaNeXT, Lincoln University, LU Men's Basketball, ICCLA) so the app has content from day one
+
+### 20.5 Brand Onboarding Video
+
+Brand-specific video plays after account creation. Depends on the code:
+
+**Investor code:** KaNeXT investor pitch video. Product, vision, intelligence, market, team, ask. After video → Nexus: "Welcome to KaNeXT, [name]. I'm Nexus. I can walk you through the product, the intelligence system, the financials, the team, or anything else. What would you like to explore?"
+
+**Coach code:** Coaching onboarding video. Hub, Film Room, Scouting, StatKeeper, Roster, Recruits. After → Nexus: "Welcome, Coach [name]. I can help you set up your roster, scout your next opponent, evaluate a portal prospect, or walk you through any part of the system."
+
+**Student code:** Student onboarding. Courses, schedule, campus life, wallet. After → Nexus.
+
+**General code (no video configured):** Skip video, land on Home screen of the brand.
+
+Onboarding video is configurable per brand by the brand owner. Church records their welcome. Business records their tour. No custom video = skip to Home.
+
+### 20.6 Join Path (No Code)
+
+User taps "Join" from post-video screen. Minimal form:
+
+- Name (text field)
+- Organization (optional, placeholder: "School, company, team, church...")
+- Submit
+
+No email. No phone. No password. No promises. After submit: K logo. "We'll be in touch." Nothing else.
+
+Submission goes to a review queue. If approved, they receive an invitation code. The platform is brand-first and curated. You don't get in without a code. Join is interest submission, not account creation.
+
+### 20.7 Returning User
+
+After first launch, app opens to Home screen of last active brand. No code screen. Biometric auto-login if enabled, otherwise session persists.
+
+Session expired or logged out: K + code field, plus "Log in" text link at bottom. Tap → email/phone + password → back in.
+
+### 20.8 Brand Creation (Inside App)
+
+Any authenticated user can create a brand from the Brand Drawer.
+
+**Entry:** Brand Drawer → "+" button or "Create Brand" at bottom of brand list, above Settings.
+
+**Step 1: Choose Mode.** Four cards: Sports ("Team, program, or league"), Business ("Company, startup, or agency"), Education ("School, university, or program"), Community ("Church, nonprofit, or organization"). Personal auto-created, cannot create second. Tap to select.
+
+**Step 2: Brand Info.** Name (text). Logo (upload/photo, optional). Description (optional).
+
+**Step 3: Confirmation.** Preview: mode badge, name, logo. "Create Brand" button. Brand created. User is Owner (R0). App switches to new brand. Nexus opens: "Welcome to [Brand Name]. I can help you set up your [mode]. Want to start by inviting your team, or walk through the tools?"
+
+Owner generates invite codes from Brand Settings (19.2) to invite members with specific roles.
