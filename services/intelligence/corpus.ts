@@ -27,6 +27,7 @@ Every output is deterministic: same inputs → same outputs. Claude never invent
 | 04 | Simulation Engine | Interaction Library (System×System 120 entries, Offense Archetype×Defense System 210 entries, Defense Archetype×Offense System 252 entries), Simulation Engine (possession resolution, win probability), Physical Mismatch Modifiers | ~211K | Game simulation, matchup analysis |
 | 05 | Scouting & Game Ops | Scouting Confidence Gates (pregame + postgame), Game Ops 4-phase flow (Pregame Scout Packet, In-Game Live Ops, Halftime Staff Packet, Postgame Staff Packet) | ~20K | Game preparation, live game support, postgame analysis |
 | 06 | Downstream Engines | Development Intelligence Engine, Pro Transition Intelligence Engine, Coaching Impact Modifier v1.0 | ~46K | Player development, transfer portal, pro projection |
+| 07 | Pro KR Calibration | 12 NBA players calibrated across 5 tiers. Component KRs, aging curves, system fit insights, 7 key findings. | ~8K | Pro transition anchoring, calibration checks |
 
 ---
 
@@ -201,27 +202,51 @@ After responding, flag any corrections or new data discovered for pool update: h
 
 **Files needed:**
 - **06** (Downstream Engines) -- Pro Transition Intelligence Engine
-- **02** (Reference) -- Pro Player KR Legend, Pro position weights, Pro badge gates, Pro system risks/overrides
+- **02** (Reference) -- Pro Player KR Legend, Pro position weights, Pro badge gates, Pro system risks/overrides, Pro League Registry, Pro KLVN Lambdas, Pro Salary Framework
+- **07** (Pro KR Calibration) -- 12-player calibration reference, aging curves, system fit insights
 - Player KR outputs (from Mode 1) as input
 
 **Steps:**
 1. Pull File 06. Follow Pro Transition Intelligence Engine structure.
 2. Search File 02 for pro-specific reference tables (Pro Player KR Legend, pro badge gates, pro system risks, pro overrides).
 3. Take the SAME component KRs from the college eval (OKR, DKR, TKR, IQKR). Apply pro-level adjustments (slight docks for NBA competition increase, slight bumps for traits that translate up). Then reweight through PRO positional OPF weights from File 02.
-4. Anchor the Pro Entry KR against the Pro Player KR Legend. The tier whose description matches what this player would realistically be as a ROOKIE determines the anchor.
-5. Output: Pro Entry KR, Year 1 projection, Year 3 scenarios (key variable develops vs doesn't), Peak ceiling, Floor, Pro archetype, Best league fit, Key dev variable, Pro comparable, Salary range.
+4. Compute: Entry KR, 3-Year Projection (Scenario A + B), Peak Ceiling, Floor, Median Outcome.
+5. Determine the player's projected draft range. Use the draft range to decide which KR to LEAD with in the output (see Draft-Range Output Priority below).
+6. Output: All pro KR numbers computed, but presentation order and emphasis shifts by draft range.
+
+**DRAFT-RANGE OUTPUT PRIORITY:**
+
+The PRIMARY KR shown depends on where the player is projected to be drafted. Teams at different draft positions are buying different things.
+
+a. **Top of draft (#1-5) -- Lead with PEAK CEILING.**
+Bad teams drafting here are buying the best possible outcome. Entry KR is almost irrelevant -- every rookie struggles. Show: Peak Ceiling KR first, 3-Year Projection second, Ceiling-Floor spread (the bet range), Key Dev Variable. Entry KR shown but de-emphasized.
+
+b. **Mid-lottery (#6-15) -- Lead with 3-YEAR PROJECTION.**
+These teams likely have a star and need a complementary piece who develops into a second or third option. Show: 3-Year Projection KR first (Scenario A and B), System Fit with likely drafting teams, Peak second. The 3-year version is the realistic outcome these teams are evaluating.
+
+c. **Late first round (#16-30) -- Lead with MEDIAN OUTCOME.**
+Good teams or playoff teams drafting here need contributors. They want the most likely version of the player, not the dream scenario. Show: Median Outcome KR first (midpoint of Scenario A and B at Year 3), Entry KR second (can they contribute now?), System Fit % with specific team, Role projection. Peak shown but de-emphasized.
+
+d. **Second round and undrafted -- Lead with ENTRY KR + ROLE.**
+These players need to earn a roster spot. What can they do Day 1? Show: Entry KR, specific role (3-and-D, floor general, rim protector), Best league fit (NBA, G-League, overseas + specific league), Salary range from Pro Salary Framework.
 
 **PRO ANCHORING RULES:**
 
-a. **Draft position CONFIRMS pro entry tier, it does not determine it.** A #1 pick with DKR 73 does not automatically get a high pro entry just because he goes #1. A second-round pick with elite defensive tools can have a higher pro entry than a lottery pick with holes. Draft slot sets salary expectations, not KR.
+a. **Draft position CONFIRMS pro tier, it does not determine it.** A #1 pick with DKR 73 does not automatically get a high pro KR just because he goes #1. Draft slot sets salary expectations, not KR.
 
-b. **Pro Entry KR reflects Day 1 reality, not potential.** What would this player be if dropped into the NBA tomorrow? Most rookies, even lottery picks, are rotation players or young starters. Entry KR should be 82-89 for most first-round picks. An entry KR above 90 is extremely rare -- reserved for generational talents like Wembanyama.
+b. **Entry KR reflects Day 1 reality.** Most rookies, even lottery picks, are rotation players or young starters. Entry KR should be 82-89 for most first-round picks. An entry KR above 90 is extremely rare.
 
-c. **Development trajectory is where ceiling lives.** The 3-year projection, peak, and floor are where pedigree, age, tools, and physical projection matter. A young player with elite tools gets a wider range and higher ceiling. An old player with limited tools gets a narrow range. Separate entry from trajectory.
+c. **Entry KR does NOT need to correlate with draft order.** A safe late-lottery pick can have a HIGHER entry KR than the #1 overall pick. That's correct -- the #1 pick is drafted for ceiling, not for Day 1 production. The system correctly captures this: same entry, different ceiling = different draft value.
 
-d. **Age is a trajectory variable, not an entry variable.** An 18-year-old and a 22-year-old with identical stats get the same Pro Entry KR. The 18-year-old gets a higher peak projection because of development runway. Age does not inflate or deflate the entry number.
+d. **Peak Ceiling is what separates lottery picks from late picks.** Two players with entry KR 85 can be valued completely differently if one has a peak of 94 and the other peaks at 87. The draft pays for the gap between entry and peak.
 
-e. **File 06 rules on development:** Max +8 KR per cluster per year. Max +15 over 3 years. Always show both upside and downside scenarios. Projections are directional, not precise.
+e. **Age is a trajectory variable, not an entry variable.** An 18-year-old and a 22-year-old with identical stats get the same Entry KR. The 18-year-old gets a higher peak projection because of development runway.
+
+f. **File 06 rules on development:** Max +8 KR per cluster per year. Max +15 over 3 years. Always show both upside and downside scenarios. Projections are directional, not precise.
+
+g. **Salary projection uses cap % from Pro Salary Framework.** NBA salaries shown as % of cap (primary) with dollar amount (secondary). International salaries shown as raw dollars with league context from Pro League Registry.
+
+h. **System fit uses Pro Team Registry.** When projecting to a specific team, reference that team's offensive and defensive system and run the archetype-vs-system interaction from File 04.
 
 ### MODE 7: LEGEND CALIBRATION
 **Trigger:** "Calibrate the legend", "Test KR labels", "Does [KR] match [player's actual role]?", any request to validate or stress-test the KR legend tier labels.
@@ -274,6 +299,11 @@ e. **File 06 rules on development:** Max +8 KR per cluster per year. Max +15 ove
 | KLVN | 02 | "KLVN" |
 | College Player KR Legends | 02 | "COLLEGE PLAYER KR LEGENDS" |
 | Pro Player KR Legend | 02 | "PRO PLAYER KR LEGEND" |
+| Pro Salary Framework | 02 | "PRO SALARY FRAMEWORK" |
+| Pro KLVN Lambdas | 02 | "PRO KLVN LAMBDAS" |
+| Pro League Registry | 02 | "PRO LEAGUE REGISTRY" |
+| Pro Team Registry NBA | 03 | "PRO TEAM REGISTRY" |
+| Pro KR Calibration Reference | 07 | "PRO KR CALIBRATION" |
 | Position Trait Weighting (OPF) | 02 | "Position Trait Weighting" |
 | Team KR Pipeline | 03 | "Team KR" |
 | OSIE | 03 | "Offensive System Inference" |
@@ -297,7 +327,8 @@ e. **File 06 rules on development:** Max +8 KR per cluster per year. Max +15 ove
 - v2.0: Updated for System Risks v3.2, Overrides v3, Pro Transition, Suppression Protocol, Roster Decision v2, Physical Mismatch, CIM v1
 - v3.0: Reorganized file structure. Split Player Intelligence megadoc into Process (01) and Reference (02). Separated Team Intelligence (03), Simulation (04), Scouting (05), and Downstream Engines (06) into standalone files. Added Mode 7 (Legend Calibration). Updated all cross-references.
 - v4.0: Added Data Gathering Protocol (pool + web + social sequence). Added Enrichment Writeback rules. Rewrote Mode 1 (Player Evaluation) to enforce anchor-first evaluation: Phase 3 legend anchor is the primary KR determinant, Phase 6 trait math adjusts within +/- 10, never overrides. Nexus now gathers data from three sources before any evaluation or player inquiry and writes corrections back to the pool.
-- v4.1: Added Phase 3 Anchoring Rules (6 rules) — anchor on production profile numbers, awards are confirmation not input, pedigree/team success/historical comparisons do not inflate KR. Fixed IQKR definition — removed awards/accolades, replaced with processing under pressure. Rewrote Mode 6 (Pro Transition) — auto-triggers for KR 90+ draft-eligible players, component KRs carried from college eval and reweighted through pro OPF, anchored against Pro Player KR Legend. Added 5 Pro Anchoring Rules (draft position confirms but doesn't determine, entry KR is Day 1 reality, trajectory is where ceiling lives, age is trajectory not entry variable, File 06 dev caps enforced).`;
+- v4.1: Added Phase 3 Anchoring Rules (6 rules) — anchor on production profile numbers, awards are confirmation not input, pedigree/team success/historical comparisons do not inflate KR. Fixed IQKR definition — removed awards/accolades, replaced with processing under pressure. Rewrote Mode 6 (Pro Transition) — auto-triggers for KR 90+ draft-eligible players, component KRs carried from college eval and reweighted through pro OPF, anchored against Pro Player KR Legend. Added 5 Pro Anchoring Rules (draft position confirms but doesn't determine, entry KR is Day 1 reality, trajectory is where ceiling lives, age is trajectory not entry variable, File 06 dev caps enforced).
+- v4.2: Added Pro Intelligence Layer v2. Rewrote Mode 6 with Draft-Range Output Priority (#1-5 lead with peak, #6-15 lead with 3-year, #16-30 lead with median, 2nd round lead with entry). Expanded Pro Anchoring Rules from 5 to 8 (entry KR doesn't correlate with draft order, peak ceiling separates lottery from late picks, cap % salary framework, system fit via Pro Team Registry). Added FILE_07 (Pro KR Calibration Reference). Added 6 new pro docs to corpus: Pro KR Legend v2, Pro Salary Framework v2, Pro KLVN Lambdas v2, Pro Team Registry NBA v2, Pro League Registry v2, Pro KR Calibration Reference v1.`;
 
 export const FILE_01 = `# COACH CONTEXT SETUP
 
@@ -9662,153 +9693,100 @@ To read a player's legend: use the player's home level key to select the correct
 For Level Tier Map (cross-level reads): read the same KR against multiple legend files to show what the number means at each level. One KR, multiple legend reads.
 
 
-# PRO PLAYER KR LEGEND
+# PRO PLAYER KR LEGEND -- v2
 
-Pro Player KR Legend
+Reference Cap: 2025-26 NBA Salary Cap = ~$141M
 
-KaNeXT — Pro Player KR Legend
-Global Professional Basketball
-Player-Level Output Interpretation
-Scope:
-This legend provides a universal KaNeXT Rating (KR) for professional basketball players
-worldwide on a 0–100 scale, aligned with college player and team legends.
-What KR Represents:
-KR reflects a player’s global basketball value, role viability, and portability across
-professional environments — not league prestige, fame, or market size.
-Context assumptions:
-● Global pro ecosystem (NBA, EuroLeague, CBA, NBL, B.League, domestic leagues
-worldwide)
-● Modern efficiency metrics adjusted for league strength and SOS (e.g., PER/BPM-style
-signals)
-● Archetype-based evaluation (not strict roster-slot mapping)
-● Broader bands to reflect global variance and churn
-● Economic signals reflect market demand, not KR causality
-Economic reference ranges reflect 2025–2026 realities.
+## KEY CONCEPT: ENTRY vs MEDIAN vs PEAK
+
+- **Entry KR** = Day 1 as a rookie. Almost every rookie is 82-89 regardless of draft position. Entry KR is nearly useless for lottery evaluation.
+- **Median Outcome** = Most likely version by Year 3. Midpoint of best and worst scenarios. What late-first teams draft for.
+- **Peak Ceiling** = Best realistic outcome by Year 3-5. What lottery teams draft for.
+
+Entry KR does NOT correlate with draft order. A safe late-lottery pick can have a HIGHER entry than the #1 overall pick. The #1 pick is drafted for ceiling, not Day 1. Two players with identical entry KR can have completely different draft values because their ceilings differ.
+
+## DRAFT-RANGE OUTPUT PRIORITY
+
+| Draft Range | Primary KR | What Team Is Buying |
+|------------|-----------|-------------------|
+| #1-5 | Peak Ceiling | Best player available. Franchise star potential. Fit/overlap less important -- team is bad, roster will change around this pick. |
+| #6-15 | 3-Year Projection | Complementary star next to existing talent. Fit starts to matter. |
+| #16-30 | Median Outcome | Contributors NOW. High floor, narrow range, role-ready. System fit critical. |
+| 2nd round+ | Entry KR + Role | Earn a roster spot. What can you do Day 1? Specialists. |
 
 PRO PLAYER KR TIERS (DISPLAY / READ-ONLY)
-98–100 — Global Apex / Transcendent Superstar
-Competitive Role Reality:
-● League-defining icon who warps systems and wins titles
-● One of the absolute best players in the world, anywhere
-League Reality:
-● Primarily NBA elites; extremely rare global standouts who could dominate any league
-League Anchors (examples):
-● NBA: Perennial MVP / All-NBA dominators
-● Global: National team legends for top FIBA nations
-Economic Reality:
-● ~$45M–$65M+ (NBA max-level; endorsements can exceed)
-94–97 — Elite Franchise Anchor
-Competitive Role Reality:
-● Primary star who carries teams in elite competition
-● Decisive impact in high-stakes games worldwide
-League Reality:
-● NBA All-Stars; top-tier overseas MVPs with NBA mobility
-League Anchors (examples):
-● NBA: Consistent All-Stars / top-20 caliber players
-● EuroLeague / CBA: Dominant imports or domestic franchise stars
-Economic Reality:
-● ~$20M–$50M (NBA)
-● ~$2M–$6M (top overseas contexts, often net-adjusted)
 
-90–93 — High-Impact Global Star
-Competitive Role Reality:
-● Reliable star starter who closes games and elevates teams
-● Franchise pillar in most pro environments
-League Reality:
-● NBA playoff starters or closers
-● MVP-caliber players in EuroLeague, NBL, CBA, B.League
-League Anchors (examples):
-● NBA: Key starters on contenders
-● EuroLeague / NBL / CBA: All-League selections or MVPs
-Economic Reality:
-● ~$10M–$30M (NBA)
-● ~$800k–$4M (premier overseas leagues)
-86–89 — Core Professional Contributor
-Competitive Role Reality:
-● Trusted high-minute rotation player with system value
-● Starter or high-impact bench piece in strong leagues
-League Reality:
-● NBA rotation players
-● Strong starters in EuroCup, ACB, Turkey, Germany, Italy
-League Anchors (examples):
-● NBA: Solid playoff-rotation contributors
-● EuroCup / ACB / BBL / Turkey: Reliable starters or closers
-Economic Reality:
-● ~$3M–$10M (NBA)
-● ~$300k–$1.5M (upper domestic tiers)
+### 98-100 -- Global Apex / Transcendent Superstar
+**Role:** League-defining icon who warps systems and wins titles.
+**League:** NBA perennial MVP / All-NBA. National team legends.
+**NBA Cap %:** 30-46%
+**NBA Salary:** ~$42M-$65M+
+**Draft context:** PEAK tier only. Almost no rookies enter here. Appears only in Peak Ceiling projections for generational talents. If a prospect's peak projects here, they go #1 regardless of entry KR.
 
-82–85 — Stable Professional Role Player
-Competitive Role Reality:
-● Dependable pro with recurring contracts
-● Starter in mid-level leagues or rotation in elite ones
-League Reality:
-● NBA fringe / G League standouts
-● Core starters in BCL, B.League, NBL, strong domestic leagues
-League Anchors (examples):
-● G League: High contributors
-● BCL / B.League / NBL: Core starters
-Economic Reality:
-● ~$100k–$500k globally
-● G League base ~$45k+
-78–81 — Rotation-Level Professional
-Competitive Role Reality:
-● Established player who fits rotations reliably
-● Starter or bench contributor in lower pro circuits
-League Reality:
-● Lower Euro/domestic leagues
-● G League rotation players
-League Anchors (examples):
-● France LNB / Adriatic / Israel: Starters
-● Domestic leagues worldwide: Key rotation
-Economic Reality:
-● ~$50k–$300k
+### 94-97 -- Elite Franchise Anchor
+**Role:** Primary star who carries teams. All-Star. Top-20 player.
+**League:** NBA All-Stars. EuroLeague franchise imports.
+**NBA Cap %:** 20-35%
+**NBA Salary:** ~$28M-$50M
+**International:** $2M-$6M
+**Draft context:** PEAK tier for top-5 picks who fully develop. The ceiling #1-3 picks are drafted for. A 3-Year Scenario A landing here means the pick hit. Teams picking #1-5 want to see this number in the Peak column.
 
-73–77 — Fringe Professional
-Competitive Role Reality:
-● Edge-of-roster pro with variable job security
-● Starter in weaker leagues or depth in stronger ones
-League Reality:
-● Lower global domestics
-● Injury-fill or churn roles
-League Anchors (examples):
-● Southeast Asia / South America: Starters
-● Minor globals: Rotation or short-term contracts
-Economic Reality:
-● ~$20k–$100k
-68–72 — Entry-Level / Replacement Professional
-Competitive Role Reality:
-● Can land pro deals, but high churn and risk
-● Replacement-level roles across most setups
-League Reality:
-● Bottom-tier global leagues
-● Semi-pro overlap zones
-League Anchors (examples):
-● Low domestic tiers: Temporary starters or replacements
-Economic Reality:
-● Expenses covered to ~$50k
-Note: KR 68–77 represents the global professional churn band.
+### 90-93 -- High-Impact Global Star
+**Role:** Star starter who closes games. Franchise pillar.
+**League:** NBA playoff starters / closers. EuroLeague/NBL MVPs.
+**NBA Cap %:** 10-21%
+**NBA Salary:** ~$14M-$30M
+**International:** $800K-$4M
+**Draft context:** PEAK for picks #3-10. 3-YEAR for top picks developing well. A median outcome here makes a player worth a top-5 pick. Mid-lottery teams (#6-15) want their 3-Year Projection here.
 
-60–67 — Semi-Professional / Local Level
-Competitive Role Reality:
-● Below full pro viability
-● Competitive in semi-pro or local domestic minors
-League Anchors (examples):
-● Semi-pro leagues worldwide
-● High-amateur / lower domestic divisions
-Economic Reality:
-● Stipends / expenses up to ~$20k
-Paid ≠ professional viability.
-Below 60 — Non-Professional
-Competitive Role Reality:
-● Not sustainable at professional levels
-Used For:
-● College or amateur players without pro pathways
-● Global talent pyramid modeling
-Economic Reality:
-● N/A (amateur / non-competitive)
-UI / GOVERNANCE NOTE (keep this line)
-Display legend only. Pro Player KR values are produced by Nexus. No
-evaluation, weighting, or normalization logic lives here.
+### 86-89 -- Core Professional Contributor
+**Role:** Trusted high-minute rotation player. Starter or 6th man.
+**League:** NBA rotation. Strong overseas starters.
+**NBA Cap %:** 3-7%
+**NBA Salary:** ~$4M-$10M
+**International:** $300K-$1.5M
+**Draft context:** ENTRY tier for most lottery picks (this is what rookies actually are Day 1). MEDIAN for mid-lottery. PEAK for late first round. This is what most first-round picks actually become by Year 3 -- a solid NBA career.
+
+### 82-85 -- Stable Professional Role Player
+**Role:** Dependable pro. Mid-level league starter.
+**League:** NBA fringe / G-League standouts. BCL/B.League/NBL starters.
+**NBA Cap %:** 1-3%
+**NBA Salary:** ~$1.5M-$4M
+**International:** $100K-$500K
+**Draft context:** ENTRY for late-first and second-round. FLOOR for lottery picks who stall. Median here = career backup / journeyman.
+
+### 78-81 -- Rotation-Level Professional
+**Role:** Lower league starters. G-League rotation.
+**League:** Lower Euro/domestic starters. G-League.
+**NBA Cap %:** <1% (two-way / minimum)
+**NBA Salary:** ~$500K-$2M
+**International:** $50K-$300K
+**Draft context:** ENTRY for second-round / undrafted. FLOOR for late-first who don't develop. Career overseas pro.
+
+### 73-77 -- Fringe Professional
+**Role:** Edge-of-roster. Variable job security. Churn band.
+**League:** Lower global domestics.
+**International:** $20K-$100K
+**Draft context:** FLOOR for second-round picks. "Didn't work out" for late-first.
+
+### 68-72 -- Entry-Level / Replacement Professional
+**Role:** High churn. Replacement-level.
+**League:** Bottom-tier global. Semi-pro overlap.
+**International:** Expenses to ~$50K
+
+Note: KR 68-77 = global professional churn band.
+
+### 60-67 -- Semi-Professional / Local Level
+**Role:** Below full pro viability.
+**International:** Stipends up to ~$20K.
+
+### Below 60 -- Non-Professional
+**Role:** Not sustainable at professional levels.
+
+---
+
+UI / GOVERNANCE NOTE
+Display legend only. Cap % is the primary economic unit for NBA. Dollar amounts derived from cap % x current cap, updated annually.
 
 (PGIS) Player Game Impact Score
 
@@ -9939,6 +9917,133 @@ Zero is average for level.
 Positive helps you win.
 Negative hurts you win.
 KR tells the story; PGIS keeps it honest.
+
+# PRO SALARY FRAMEWORK -- v2
+
+## Purpose
+Maps Pro KR tiers to salary using cap % as primary unit (NBA) and raw dollars for international. Structured around draft range -- what teams are paying for depends on where they pick.
+
+## Reference Cap: 2025-26 NBA Salary Cap = ~$141M
+
+## WHAT TEAMS PAY FOR BY DRAFT RANGE
+
+| Draft Range | What They're Buying | Primary KR | Salary Basis |
+|------------|-------------------|------------|-------------|
+| #1-5 | Peak ceiling | Peak KR | Rookie scale (fixed by slot) |
+| #6-15 | 3-year development | 3-Year Projection | Rookie scale (fixed by slot) |
+| #16-30 | Median outcome + fit | Median Outcome | Rookie scale (fixed by slot) |
+| 2nd round | Entry role / value | Entry KR | Minimum / two-way |
+| Undrafted | Immediate role | Entry KR | Minimum / overseas market |
+
+All rookies are on fixed salary scales. The PICK determines the salary. The KR determines whether that salary is a good investment.
+
+## NBA ROOKIE SCALE BY DRAFT SLOT (2025-26)
+
+| Pick | Year 1 Salary | Cap % | What You're Buying |
+|------|--------------|-------|-------------------|
+| 1 | ~$12.2M | 8.7% | Peak ceiling 93-95+. Franchise player bet. |
+| 2 | ~$10.9M | 7.7% | Peak ceiling 91-94. Star upside. |
+| 3 | ~$9.8M | 6.9% | Peak ceiling 90-93. High-end starter bet. |
+| 4-5 | ~$7.9-$8.8M | 5.6-6.2% | Peak ceiling 89-92. Starter trajectory. |
+| 6-10 | ~$5M-$7M | 3.5-5.0% | 3-Year 87-90. Complementary star. |
+| 11-14 | ~$3.5M-$5M | 2.5-3.5% | 3-Year 85-88. Quality starter. |
+| 15-20 | ~$2.5M-$3.5M | 1.8-2.5% | Median 84-87. Reliable rotation. |
+| 21-30 | ~$1.8M-$2.5M | 1.3-1.8% | Median 82-86. Role player / specialist. |
+| 31-40 | ~$1.5M-$2M | 1.0-1.4% | Entry 80-84. Contribute now. |
+| 41-58 | ~$1M-$1.5M | 0.7-1.0% | Entry 78-82. Earn a roster spot. |
+| Undrafted | $500K-$1.5M | <1% | Entry 75-80. Specific role or overseas. |
+
+## NBA EXTENSION / SECOND CONTRACT (Year 3-4)
+
+| Pro KR at Extension | Cap % | 2025-26 Dollar | What It Means |
+|--------------------|-------|---------------|---------------|
+| 94+ | 30-35% | $42M-$50M/yr | Designated max. Franchise player. Pick was a home run. |
+| 90-93 | 22-30% | $31M-$42M/yr | Max. All-Star level. Pick hit. |
+| 86-89 | 12-20% | $17M-$28M/yr | Near-max. Quality starter. Solid pick. |
+| 82-85 | 5-10% | $7M-$14M/yr | Mid-level deal. Rotation player. Pick was okay. |
+| 78-81 | 2-4% | $3M-$6M/yr | Role player deal. Below expectations for a first-rounder. |
+| Below 78 | <2% | $1.5M-$3M/yr | Minimum. Pick didn't work out. |
+
+## SALARY OUTPUT FORMAT BY DRAFT RANGE
+
+**Top-5 picks -- show Peak scenario salary:**
+"Peterson's Peak KR projects to 92-94. At peak, that's 22-30% of cap ($31-42M/yr max extension). Rookie salary at #2: $10.9M/yr (7.7% of cap). Total 4-year rookie deal: ~$45M."
+
+**Mid-lottery (#6-15) -- show 3-Year scenario salary:**
+"Acuff's 3-Year Projection (A) is 88.1. Extension at that KR: 12-20% of cap ($17-28M/yr). Scenario B (86.0): still 12-20% low end. Rookie salary at #6: ~$7M/yr."
+
+**Late first (#16-30) -- show Median salary:**
+"Smith's Median Outcome is 86.0. Extension: 12-20% of cap ($17-28M/yr). Even the downside (84.5) earns $7-14M/yr. Rookie salary at #28: ~$2M/yr."
+
+**Second round / undrafted -- show Entry + league salary:**
+"Martin's Entry KR 81.3 projects to $80-200K in France LNB, $100-300K in Israel BSL. G-League: $45-100K. Two-way NBA: ~$560K if earned."
+
+## INTERNATIONAL SALARY BY LEAGUE AND PRO KR
+
+| Pro KR | EuroLeague | ACB/BSL/Serie A | NBL/CBA/B.League | LNB/BBL | Lower Euro | G-League |
+|--------|-----------|----------------|------------------|---------|------------|----------|
+| 94+ | $3M-$6M | $1.5M-$3M | $800K-$2M | $500K-$1.5M | N/A | N/A |
+| 90-93 | $1.5M-$4M | $800K-$2M | $400K-$1M | $300K-$800K | N/A | N/A |
+| 86-89 | $600K-$1.5M | $300K-$1M | $200K-$600K | $150K-$400K | $80K-$200K | $100K-$350K |
+| 82-85 | $200K-$800K | $150K-$500K | $100K-$300K | $80K-$200K | $50K-$120K | $45K-$200K |
+| 78-81 | $100K-$300K | $80K-$200K | $50K-$150K | $40K-$100K | $30K-$80K | $45K-$100K |
+| 73-77 | $50K-$150K | $40K-$100K | $30K-$80K | $20K-$60K | $15K-$50K | N/A |
+| 68-72 | N/A | $20K-$50K | $15K-$40K | $10K-$30K | Stipend | N/A |
+
+## GOVERNANCE
+- Cap figures update annually. International ranges approximate, vary by team budget.
+- Cap % is the stable unit. Dollars = cap % x current cap.
+- Pick salary is fixed by CBA. KR determines whether the investment was worth it.
+
+---
+
+# PRO KLVN LAMBDAS -- v2
+
+## Purpose
+Pro lambdas normalize inputs during trait scoring so that a player's KR reflects actual basketball ability regardless of league. Lambda normalizes INPUTS (production stats) during trait scoring. It does NOT convert KR OUTPUTS. There is no "NBA-equivalent KR."
+
+When evaluating a pro player:
+1. Identify their league
+2. Look up the league lambda
+3. Apply lambda to normalize production stats during trait scoring
+4. Score traits, compute component KRs, produce final KR
+5. Read the KR against the Pro Player KR Legend
+
+## Pro Lambda Table (v0)
+
+| League | Lambda | Tier | Calibration |
+|--------|--------|------|-------------|
+| NBA | 1.000 | 1 | Reference |
+| EuroLeague | 0.920 | 1 | Estimate |
+| ACB Spain | 0.860 | 2 | Estimate |
+| NBL Australia | 0.850 | 2 | Estimate |
+| BSL Turkey | 0.840 | 2 | Estimate |
+| Adriatic ABA | 0.830 | 2 | Estimate |
+| Serie A Italy | 0.830 | 2 | Estimate |
+| LNB France | 0.820 | 2 | Estimate |
+| Israel BSL | 0.810 | 2 | Estimate |
+| EuroCup / BCL | 0.800 | 3 | Estimate |
+| CBA China | 0.800 | 3 | Estimate |
+| BBL Germany | 0.790 | 3 | Estimate |
+| B.League Japan | 0.780 | 3 | Estimate |
+| G-League | 0.780 | 3 | Estimate |
+| KBL South Korea | 0.750 | 3 | Estimate |
+| NBB Brazil | 0.730 | 4 | Estimate |
+| PBA Philippines | 0.720 | 4 | Estimate |
+| LNB France Pro B | 0.720 | 4 | Estimate |
+| Liga Nacional Argentina | 0.720 | 4 | Estimate |
+| Pro A Germany | 0.710 | 4 | Estimate |
+| UK BBL | 0.700 | 4 | Estimate |
+| Lower European domestic | 0.650-0.700 | 4/5 | Estimate |
+| African leagues (BAL, domestic) | 0.600-0.650 | 5 | Estimate |
+| Southeast Asian leagues | 0.620 | 5 | Estimate |
+| Semi-pro / minor leagues | 0.550-0.600 | 5 | Estimate |
+
+## College-to-Pro Note
+There is NO lambda translation from college to pro. These are separate evaluation pipelines. The college-to-pro translation happens through component KR adjustments, pro OPF reweighting, and anchoring against the Pro Player KR Legend. Pro lambdas are for comparing BETWEEN pro leagues only.
+
+## Governance
+- All lambdas v0 provisional. Updates require versioning. NBA lambda always 1.000.
 
 `;
 
@@ -12898,7 +13003,173 @@ equivalency splitting relevant at D2/NAIA only). Added redshirt management with 
 future value computation. Added roster continuity planning (fragility exposure, insurance targets,
 multi-year outlook). Added REDSHIRT CANDIDATE verdict category. Separated resource
 analysis into three layers (roster spot / scholarship / NIL). Consolidated revenue sharing as NIL
-pool input.`;
+pool input.
+
+# PRO TEAM REGISTRY -- NBA (2025-26) v2
+
+## Purpose
+Maps every NBA team's offensive/defensive system, roster context, and team window. Enables system fit % and draft-range-appropriate evaluation for any prospect against any NBA team.
+
+## System Taxonomy
+**Offense (12):** Spread Pick-and-Roll, 5-Out Motion, Read & React, Pace & Space, Dribble Drive, Princeton, Flex, Swing, Inside-Out, Moreyball, Heliocentric, Coach K
+**Defense (10):** Containment Man, Pack Line, Pressure Man, Switch, No-Middle, Zone, Matchup Zone, Full-Court Press, Junk, Coach K
+
+## HOW TEAM WINDOW AFFECTS DRAFT PRIORITY
+
+| Window | Draft Position | What They Draft For |
+|--------|---------------|-------------------|
+| Rebuilding | Lottery (#1-5) | PEAK CEILING. Best player available. Fit/overlap secondary -- roster will change around this pick. |
+| Rising | Mid-lottery (#6-14) | 3-YEAR PROJECTION + FIT. Have a young star, need complementary pieces. |
+| Contending | Late first (#15-30) | MEDIAN OUTCOME + FIT. Need contributors now. High floor, system-ready. |
+| Retooling | Varies | Depends on pick position. If lottery, lean peak. If late, lean fit. |
+
+## EASTERN CONFERENCE
+
+### Atlantic Division
+
+| Team | HC | Offense | Defense | Window | Draft Priority |
+|------|-----|---------|---------|--------|---------------|
+| Boston Celtics | Joe Mazzulla | 5-Out Motion | Switch | Contending | Median + fit |
+| New York Knicks | Tom Thibodeau | Spread PnR | Containment Man | Contending | Median + fit |
+| Philadelphia 76ers | Nick Nurse | Spread PnR / Motion | Switch | Retooling | Depends on slot |
+| Brooklyn Nets | Jordi Fernandez | Pace & Space | Containment Man | Rebuilding | Peak ceiling |
+| Toronto Raptors | Darko Rajakovic | Pace & Space / Read & React | Switch | Rebuilding | Peak ceiling |
+
+### Southeast Division
+
+| Team | HC | Offense | Defense | Window | Draft Priority |
+|------|-----|---------|---------|--------|---------------|
+| Miami Heat | Erik Spoelstra | 5-Out Motion / Spread PnR | Switch / Zone | Contending | Median + fit |
+| Orlando Magic | Jamahl Mosley | Pace & Space | Containment Man / Pack Line | Rising | 3-Year + fit |
+| Atlanta Hawks | Quin Snyder | Spread PnR | Containment Man | Rising | 3-Year + fit. Building around Jalen Johnson (All-Star). Need franchise PG after Trae Young trade. Core: Johnson/Daniels/Risacher/Kuminga/Okongwu. |
+| Charlotte Hornets | Charles Lee | Pace & Space | Switch | Rebuilding | Peak ceiling |
+| Washington Wizards | Brian Keefe | Pace & Space | Containment Man | Rebuilding | Peak ceiling |
+
+### Central Division
+
+| Team | HC | Offense | Defense | Window | Draft Priority |
+|------|-----|---------|---------|--------|---------------|
+| Cleveland Cavaliers | Kenny Atkinson | 5-Out Motion | Pack Line / Switch | Contending | Median + fit |
+| Milwaukee Bucks | Doc Rivers | Heliocentric | Containment Man | Contending | Median + fit |
+| Indiana Pacers | Rick Carlisle | Pace & Space | Containment Man | Rebuilding (Haliburton Achilles) | Peak ceiling. 15-55 record. Haliburton returning. Need two-way wing to pair with Haliburton/Siakam. Core: Haliburton/Nembhard/Nesmith/Siakam/Zubac. |
+| Chicago Bulls | Billy Donovan | Spread PnR | Switch | Rebuilding | Peak ceiling |
+| Detroit Pistons | JB Bickerstaff | Pace & Space | Containment Man | Rebuilding | Peak ceiling |
+
+## WESTERN CONFERENCE
+
+### Northwest Division
+
+| Team | HC | Offense | Defense | Window | Draft Priority |
+|------|-----|---------|---------|--------|---------------|
+| Oklahoma City Thunder | Mark Daigneault | Pace & Space / Motion | Switch | Contending | Median + fit |
+| Denver Nuggets | Michael Malone | Heliocentric | Containment Man | Contending | Median + fit |
+| Minnesota Timberwolves | Chris Finch | Spread PnR | Containment Man | Contending | Median + fit |
+| Utah Jazz | Will Hardy | Pace & Space | Switch | Rebuilding | Peak ceiling |
+| Portland Trail Blazers | Chauncey Billups | Pace & Space | Containment Man | Rebuilding | Peak ceiling |
+
+### Pacific Division
+
+| Team | HC | Offense | Defense | Window | Draft Priority |
+|------|-----|---------|---------|--------|---------------|
+| Golden State Warriors | Steve Kerr | 5-Out Motion | Switch | Retooling | Depends on slot |
+| LA Lakers | JJ Redick | Spread PnR / Motion | Containment Man | Contending | Median + fit |
+| LA Clippers | Ty Lue | Spread PnR | Switch | Retooling | Depends on slot |
+| Phoenix Suns | Mike Budenholzer | Spread PnR | Pack Line | Contending | Median + fit |
+| Sacramento Kings | Doug Christie | Pace & Space / Dribble Drive | Containment Man | Rising | 3-Year + fit |
+
+### Southwest Division
+
+| Team | HC | Offense | Defense | Window | Draft Priority |
+|------|-----|---------|---------|--------|---------------|
+| San Antonio Spurs | Gregg Popovich | Inside-Out / Motion | Containment Man | Rising | 3-Year + fit |
+| Dallas Mavericks | Jason Kidd | Heliocentric / Spread PnR | Switch | Contending | Median + fit |
+| Houston Rockets | Ime Udoka | Pace & Space | Switch / Pressure Man | Rising | 3-Year + fit |
+| Memphis Grizzlies | Taylor Jenkins | Pace & Space | Containment Man | Rebuilding | Peak ceiling |
+| New Orleans Pelicans | Willie Green | Spread PnR | Switch | Retooling | Depends on slot |
+
+## HOW TO USE FOR DRAFT / SYSTEM FIT
+
+1. Identify the prospect's archetype from Mode 1 eval
+2. Look up the drafting team's offensive and defensive system + window + draft priority
+3. If team drafts for PEAK -- rank prospects by Peak Ceiling KR, de-emphasize fit
+4. If team drafts for 3-YEAR -- rank by 3-Year Projection, weight system fit 30-40%
+5. If team drafts for MEDIAN -- rank by Median Outcome, weight system fit 50%+
+6. Run archetype-vs-system interaction from File 04 for fit %
+7. Factor roster overlap (does this player's position conflict with existing core?)
+
+---
+
+# PRO LEAGUE REGISTRY -- v2
+
+## Purpose
+Source-of-truth for all professional basketball leagues worldwide. Provides context for pro evaluation, placement, salary projection, and draft pipeline analysis.
+
+## TIER 1 -- ELITE GLOBAL LEAGUES
+
+### NBA
+- Lambda: 1.000 (reference level) | Country: USA/Canada | Teams: 30
+- Salary cap: ~$141M (2025-26) | Rookie scale: Yes (slotted by draft position)
+- Season: October -- June (82 games + playoffs)
+- Draft pipeline: College (primary), G-League Ignite, international
+
+### EuroLeague
+- Lambda: 0.920 | Region: Europe (multi-country) | Teams: 18
+- Draft pipeline: Regular NBA draft source. Luka, Sabonis, Manu all came through EuroLeague.
+
+## TIER 2 -- STRONG PROFESSIONAL LEAGUES
+
+| League | Lambda | Salary Range | Notes |
+|--------|--------|-------------|-------|
+| ACB Spain | 0.860 | $100K-$3M | Historically deepest European domestic league. Real Madrid/Barcelona feeder. |
+| BSL Turkey | 0.840 | $100K-$2.5M | Strong import market. Fenerbahce/Anadolu Efes in EuroLeague. |
+| Adriatic ABA | 0.830 | $50K-$1.5M | Jokic, Bogdanovic developed here. |
+| Serie A Italy | 0.830 | $80K-$2M | Olimpia Milano, Virtus Bologna in EuroLeague. |
+| LNB France | 0.820 | $80K-$1.5M | Tony Parker, Gobert, Wembanyama. Best development league in Europe. |
+| Israel BSL | 0.810 | $80K-$2M | Strong import spending. Maccabi Tel Aviv in EuroLeague. |
+| NBL Australia | 0.850 | $50K-$800K | Next Stars program. LaMelo, Giddey, Daniels came through. Primary NBA pathway outside NCAA. |
+
+## TIER 3 -- MID-LEVEL PROFESSIONAL LEAGUES
+
+| League | Lambda | Salary Range | Notes |
+|--------|--------|-------------|-------|
+| CBA China | 0.800 | $200K-$4M (imports) | High-paying for imports. Aging veteran destination. |
+| EuroCup / BCL | 0.800 | -- | Second-tier European club competition. |
+| BBL Germany | 0.790 | $50K-$1M | Schroder, Theis developed here. |
+| B.League Japan | 0.780 | $100K-$1.5M | Expanding. Increasing budgets. |
+| G-League | 0.780 | $45K-$560K (two-way) | Direct to NBA via two-way contracts. Primary NBA pathway for undrafted college players. |
+| KBL South Korea | 0.750 | $50K-$500K | 1 import per team. |
+
+## TIER 4 -- LOWER PROFESSIONAL LEAGUES
+
+| League | Lambda | Salary Range |
+|--------|--------|-------------|
+| NBB Brazil | 0.730 | $30K-$300K |
+| PBA Philippines | 0.720 | $20K-$200K |
+| LNB France Pro B | 0.720 | $30K-$200K |
+| Liga Nacional Argentina | 0.720 | $20K-$200K |
+| Pro A Germany | 0.710 | $20K-$150K |
+| UK BBL | 0.700 | $20K-$100K |
+
+## TIER 5 -- ENTRY-LEVEL / SEMI-PROFESSIONAL
+
+| League | Lambda |
+|--------|--------|
+| Southeast Asian leagues (ABL, various) | 0.620 |
+| African leagues (BAL, domestic) | 0.600-0.650 |
+| Lower European domestic | 0.650-0.700 |
+
+## PLACEMENT GUIDANCE
+
+| Pro KR | Best League Fit | Why |
+|--------|----------------|-----|
+| 90+ | NBA | Only league that matches their talent level |
+| 86-89 | NBA rotation or EuroLeague | Can start overseas or rotate in NBA |
+| 82-85 | G-League or strong domestic (ACB, BSL, NBL) | Develop toward NBA or start overseas |
+| 78-81 | Mid-tier domestic (LNB, BBL, Serie A, B.League) | Solid pro career, unlikely NBA |
+| 73-77 | Lower domestic or G-League camp | Edge of pro viability |
+| 68-72 | Entry-level / semi-pro | High churn, short contracts |
+
+`;
 
 
 export const FILE_04 = `Interaction Library
@@ -19442,3 +19713,181 @@ Projection On Whenever Development Intelligence Engine runs a
 application demand projection
 v1.0: Initial locked structure. Standalone governance document. Consumed by Development
 Intelligence Engine (Engine 06) and Pro Transition Intelligence Engine.`;
+
+export const FILE_07 = `# PRO KR CALIBRATION REFERENCE -- v1
+
+## 12 Players | 5 Tiers | 2025-26 Season Data
+
+Calibrated March 30, 2026. All stats from 2025-26 regular season.
+
+---
+
+## TIER VALIDATION SUMMARY
+
+| Tier | KR Range | Players | Validates |
+|------|----------|---------|-----------|
+| 98-100 | Global Apex | Jokic (98.5) | IQKR-driven dominance, passing + efficiency |
+| 94-97 | Elite Franchise Anchor | Wemby (97.8), SGA (97.5), Luka (96.2), Giannis (94.8) | Two-way separates 97+ from 96. DKR is the differentiator. |
+| 90-93 | High-Impact Star | KD (93.0), Cade (92.4), Curry (92.0), Reaves (90.2) | Star starters. Franchise players or elite #2s. |
+| 86-89 | Core Contributor | LeBron (89.5), Knueppel (87.8), Flagg (86.4) | Aging stars declining into this tier + rookies entering here. |
+| 82-85 | Role Player | Not yet calibrated | Next calibration pass needed. |
+
+---
+
+## FULL CALIBRATION DATA
+
+### 1. NIKOLA JOKIC -- 98.5
+Denver Nuggets | C | 6'11" / 284 | Age 31
+28.0/12.9/10.8 | .677 TS% | 3x MVP | Champion
+
+| OKR | DKR | TKR | IQKR |
+|-----|-----|-----|------|
+| 97 | 82 | 85 | 100 |
+
+Best all-around player alive. IQKR 100 (highest ever calibrated). Triple-double machine. Passing vision historically unprecedented for a center. Cap %: 35%+ ($51M).
+
+### 2. VICTOR WEMBANYAMA -- 97.8
+San Antonio Spurs | C/PF | 7'4" / 210 | Age 21
+24.2/11.3/3.1/1.1/3.1 BPG | .623 TS% | Spurs 56-18
+
+| OKR | DKR | TKR | IQKR |
+|-----|-----|-----|------|
+| 93 | 99 | 99 | 90 |
+
+Most physically dominant player alive. DKR/TKR 99 -- unprecedented combination. Led Spurs from lottery to 56-18. IQKR 90 still rising -- by age 25 projects to 99+. First player in history to average 3+ blocks and 3+ threes per game. 8'0" wingspan.
+
+### 3. SHAI GILGEOUS-ALEXANDER -- 97.5
+Oklahoma City Thunder | PG/SG | 6'6" / 195 | Age 27
+31.4/4.3/6.5/1.4 SPG | .551 FG% / .379 3P% / .882 FT% | MVP | Champion | Thunder #1 net rating
+
+| OKR | DKR | TKR | IQKR |
+|-----|-----|-----|------|
+| 97 | 92 | 91 | 96 |
+
+Most BALANCED superstar. Narrowest component spread (6 points). No weakness. Most system-portable -- fits any team. MVP + champion. His floor on any team is 96+. 7'0" wingspan.
+
+### 4. LUKA DONCIC -- 96.2
+Los Angeles Lakers | PG | 6'8" / 230 | Age 27
+33.7/7.8/8.2/1.6 SPG | .476/.366/.776 | Scoring champion | Lakers 48-26
+
+| OKR | DKR | TKR | IQKR |
+|-----|-----|-----|------|
+| 98 | 75 | 88 | 95 |
+
+Best pure scorer alive. OKR 98 highest of anyone calibrated. But DKR 75 is lowest among superstars -- gets targeted defensively. System-dependent: 98-99 impact with elite defense around him, 93-94 without. Widest component spread (23 points) among top tier.
+
+### 5. GIANNIS ANTETOKOUNMPO -- 94.8
+Milwaukee Bucks | PF | 6'11" / 243 | Age 31
+27.6/9.8/5.4 | .624 FG% / .333 3P% / .650 FT% | Bucks 29-44
+
+| OKR | DKR | TKR | IQKR |
+|-----|-----|-----|------|
+| 94 | 88 | 97 | 86 |
+
+Physical freak declining. Peak was 98-99 (back-to-back MVP, DPOY, champion). DKR dropped from 96 to 88 -- defense ages fastest. OKR barely declined (96 to 94). TKR 97 still elite at 31. IQKR 86 was never his strength. Bucks 29-44 reflects roster collapse, not Giannis decline alone.
+
+### 6. KEVIN DURANT -- 93.0
+Houston Rockets | PF/SF | 6'11" / 240 | Age 37
+25.9/5.4/4.6 | .517/.406/.879 | 71 GP
+
+| OKR | DKR | TKR | IQKR |
+|-----|-----|-----|------|
+| 94 | 78 | 92 | 91 |
+
+Ageless scorer. TKR 92 (7-footer mid-range) ages slowest because it was never athleticism-dependent. .406 3P% at 37. 71 games -- most available aging star. Peak was 98 (2017-18 Finals MVP). Declined 5 points over 10 years. Proves: height/length ages better than speed/quickness.
+
+### 7. CADE CUNNINGHAM -- 92.4
+Detroit Pistons | PG | 6'6" / 220 | Age 24
+24.5/5.6/9.9/1.5 SPG/0.9 BPG | .461/.346/.814 | Pistons 54-20
+
+| OKR | DKR | TKR | IQKR |
+|-----|-----|-----|------|
+| 93 | 86 | 89 | 94 |
+
+Franchise PG ascending. 9.9 APG (2nd in NBA). Led Pistons from 28-game losing streak to 54-20 in 2 years. 6'6" 220 with 7'0" wingspan -- the ideal modern PG frame. All-Star starter. Proves the 6'6" PG archetype works (Peterson ceiling comp). Efficiency (.346 3P, 56.7% TS) is the gap between him and the superstars.
+
+### 8. STEPHEN CURRY -- 92.0
+Golden State Warriors | PG | 6'2" / 185 | Age 37
+27.2/3.5/4.8 | .468/.391/.931 | 39 GP (injury-limited)
+
+| OKR | DKR | TKR | IQKR |
+|-----|-----|-----|------|
+| 93 | 72 | 68 | 97 |
+
+GOAT shooter. TKR 68 -- lowest of any player calibrated. Widest component spread (29 points: IQKR 97 vs TKR 68). Entire career is skill-over-tools. Peak was 97 (unanimous MVP). Declined 5 points. Only 39 games -- availability is critical. Proves: low TKR = faster decline.
+
+### 9. AUSTIN REAVES -- 90.2
+Los Angeles Lakers | SG | 6'5" / 197 | Age 27
+24.0/4.8/5.5 | .502/.380/.880 | 64.4% TS | Lakers 48-26
+
+| OKR | DKR | TKR | IQKR |
+|-----|-----|-----|------|
+| 93 | 80 | 76 | 94 |
+
+Suppressed star. Averaged 30+ when Luka and LeBron were out -- proves he's a #1 option, not just a system beneficiary. Undrafted two-way to 90+ KR in 4 years. Skill-over-tools archetype (TKR 76). IQKR 94 reflects ability to scale up as #1 or down as #3 -- rarest basketball skill.
+
+### 10. LEBRON JAMES -- 89.5
+Los Angeles Lakers | SF | 6'9" / 250 | Age 41
+21.1/5.8/6.8 | 59.5% TS | Year 23 | Third option
+
+| OKR | DKR | TKR | IQKR |
+|-----|-----|-----|------|
+| 86 | 78 | 88 | 97 |
+
+GOAT (or second-GOAT). Peak was 99 (Miami 2012-13). Declined 10 points over 12 years. Now the third option behind Luka and Reaves. IQKR 97 barely moved -- basketball mind doesn't age. TKR 88 at 41 is remarkable (was 99 at peak). Full aging curve documented: offense declines slowly, defense declines fast, IQ holds, tools decline medium.
+
+### 11. KON KNUEPPEL -- 87.8
+Charlotte Hornets | SF/SG | 6'7" / 210 | Age 20
+19.0/5.4/3.5 | .487/.436 | 65.3% TS | ROY frontrunner | NBA leader in 3PM
+
+| OKR | DKR | TKR | IQKR |
+|-----|-----|-----|------|
+| 90 | 78 | 80 | 92 |
+
+Elite shooting transforms teams. Hornets from 55 losses to 38-34. .436 3P% leading the league as a rookie. All-time rookie record for threes. Higher current KR than Flagg despite lower physical tools. Proves: shooting + IQ can outperform athleticism + defense in the short term. Peak projection: 91-92 (Klay Thompson tier).
+
+### 12. COOPER FLAGG -- 86.4
+Dallas Mavericks | SF | 6'9" / 205 | Age 19
+20.4/6.6/4.6/1.2/0.9 | .474/.286/.814 | 55.0% TS | #1 pick
+
+| OKR | DKR | TKR | IQKR |
+|-----|-----|-----|------|
+| 85 | 88 | 90 | 86 |
+
+Defense-first rookie. DKR 88 translating immediately. TKR 90 highest among rookies. .286 3P% is the critical development variable -- if it becomes .350+ he's a 95-96 player (Kawhi comp). Validates draft Entry KR projections (84-88 range for first-round picks). Peak projection: 95-96.
+
+---
+
+## KEY INSIGHTS FROM CALIBRATION
+
+### 1. DKR separates tiers at the top
+The difference between 98+ (Jokic, Wemby) and 94-97 (Luka, Giannis) is primarily defense. Luka's DKR 75 caps him at 96. SGA's DKR 92 pushes him to 97.5.
+
+### 2. Offense ages slowest, defense fastest
+Across all aging stars: OKR drops ~2-3 points per decade. DKR drops ~8-10 points. TKR drops ~5-10 points depending on original athleticism. IQKR barely moves.
+
+### 3. TKR predicts aging curve speed
+KD (TKR 92, skill-based height) declining slowest. Curry (TKR 68, speed-based game) declining fastest. Giannis (TKR 97, athleticism-based) will decline fast once explosiveness goes.
+
+### 4. System fit creates 3-5 point impact swing
+Luka: 98-99 on Dallas (defense around him) vs 93-94 on bad defensive team. Reaves: 90+ next to Luka vs 87-88 as solo #1. Knueppel: 87.8 next to LaMelo vs probably 84-85 without elite creator.
+
+### 5. Entry KR for rookies is 84-88 regardless of draft position
+Flagg (#1): 86.4. Knueppel (#4): 87.8. This validates 2026 draft projections (Boozer 86.8, Peterson 87.5, Dybantsa 84.2). Entry doesn't correlate with draft order -- ceiling does.
+
+### 6. Suppression detection matters at pro level too
+Reaves' true talent was hidden by playing with Luka/LeBron. When they sat, he averaged 30+. Always check role context before finalizing OKR.
+
+### 7. Component spread predicts system dependency
+Narrow spread (SGA: 6 points) = system-portable, high floor on any team.
+Wide spread (Luka: 23 points, Curry: 29 points) = system-dependent, needs roster construction around weakness.
+
+---
+
+## GOVERNANCE
+
+- v1 calibration: 12 players, March 2026
+- Next calibration: add 18 more players to cover 82-85 tier and role player tier
+- Update annually with new season data
+- Pro KR Legend tiers validated against all 12 players -- no tier breaks need adjustment
+- Aging curve insights should be incorporated into Mode 6 development projections`;

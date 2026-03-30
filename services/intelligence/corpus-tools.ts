@@ -7,7 +7,7 @@
  * FILE_02–06 are stubs until those files are added to the project.
  */
 
-import { FILE_01, FILE_02, FILE_03, FILE_04, FILE_05, FILE_06, LEVEL_LEGENDS } from './corpus';
+import { FILE_01, FILE_02, FILE_03, FILE_04, FILE_05, FILE_06, FILE_07, LEVEL_LEGENDS } from './corpus';
 
 // ── Tool Definitions ──────────────────────────────────────────────────────────
 
@@ -110,6 +110,14 @@ export const CORPUS_TOOLS = [
       },
     },
   },
+  {
+    name: 'get_pro_calibration',
+    description: 'Pro KR Calibration Reference (File 07): 12 NBA players calibrated across 5 tiers. Component KRs, aging curves, system fit insights, key findings. Use for pro transition anchoring and calibration checks.',
+    input_schema: {
+      type: 'object',
+      properties: {},
+    },
+  },
 ];
 
 // ── Dispatcher ────────────────────────────────────────────────────────────────
@@ -128,6 +136,7 @@ export function handleCorpusTool(toolName: string, input: Record<string, unknown
       case 'get_simulation':       return getSimulation(section);
       case 'get_scouting':         return getScouting(section);
       case 'get_downstream':       return getDownstream(section);
+      case 'get_pro_calibration':  return FILE_07;
       default:
         return JSON.stringify({ error: `Unknown corpus tool: ${toolName}` });
     }
