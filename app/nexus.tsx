@@ -627,7 +627,7 @@ export default function NexusScreen() {
     const streamLoop = (apiMessages: ApiMessage[], iters = 5) => {
       const toolsForTier =
         tier === 'BASKETBALL'
-          ? [...POOL_TOOLS, ...CORPUS_TOOLS, ...APP_DATA_TOOLS, { type: 'web_search_20250305' }]
+          ? [...POOL_TOOLS, ...CORPUS_TOOLS, ...APP_DATA_TOOLS, { type: 'web_search_20250305', name: 'web_search' }]
           : APP_DATA_TOOLS;
 
       const bodyObj = {
@@ -645,7 +645,7 @@ export default function NexusScreen() {
           'Content-Type':      'application/json',
           'x-api-key':         process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY ?? '',
           'anthropic-version': '2023-06-01',
-          'anthropic-beta':    'prompt-caching-2024-07-31',
+          'anthropic-beta':    'prompt-caching-2024-07-31,web-search-2025-03-05',
         },
         bodyStr,
         (delta) => {
