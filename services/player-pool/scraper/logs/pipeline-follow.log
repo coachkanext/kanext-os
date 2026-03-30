@@ -1,0 +1,314 @@
+=== Pipeline follow-on watcher started at Sat Mar 28 14:43:19 PDT 2026 ===
+Waiting for scrape-espn to finish...
+
+=== ESPN scraper done. Running compute_engine.py at Sat Mar 28 15:14:51 PDT 2026 ===
+======================================================================
+KaNeXT KR Computation Engine — V1 (Box-Score)
+Version: v1.0-boxscore
+======================================================================
+
+Data: 40428 player-seasons, 3314 teams, 404037 game stats
+
+[1/8] Computing season stats...
+  Sentinel fix: 14546 game rows with minutes=0/1 → NULL
+  Found 40146 player-team-seasons with game data
+  Inserted 40146 season stat rows
+
+[1.5/8] Validating season stats...
+  Flagged 1 player-seasons as INVALID_SOURCE
+    764d5cb3-d275-4da8-b525-15c58e407086: PTS mismatch: expected=5 actual=4
+
+[2/8] Computing BPR + PGIS for all games...
+  Processing 403963 game stat rows...
+  Updated 403963 game stats with BPR + PGIS
+  Updated season BPR averages
+
+[3/8] Computing TGIS for all games...
+  Updated 20235 games with TGIS
+
+[4/8] Computing Player KR (clusters + archetype)...
+  ... 500 players processed
+  ... 1000 players processed
+  ... 1500 players processed
+  ... 2000 players processed
+  ... 2500 players processed
+  ... 3000 players processed
+  ... 3500 players processed
+  ... 4000 players processed
+  ... 4500 players processed
+  ... 5000 players processed
+  ... 5500 players processed
+  ... 6000 players processed
+  ... 6500 players processed
+  ... 7000 players processed
+  ... 7500 players processed
+  ... 8000 players processed
+  ... 8500 players processed
+  ... 9000 players processed
+  ... 9500 players processed
+  ... 10000 players processed
+  ... 10500 players processed
+  ... 11000 players processed
+  ... 11500 players processed
+  ... 12000 players processed
+  ... 12500 players processed
+  ... 13000 players processed
+  ... 13500 players processed
+  ... 14000 players processed
+  ... 14500 players processed
+  ... 15000 players processed
+  ... 15500 players processed
+  ... 16000 players processed
+  ... 16500 players processed
+  ... 17000 players processed
+  ... 17500 players processed
+  ... 18000 players processed
+  ... 18500 players processed
+  ... 19000 players processed
+  ... 19500 players processed
+  ... 20000 players processed
+  ... 20500 players processed
+  ... 21000 players processed
+  Inserted 21309 player KR records
+
+  ── D1 Conference → Tier Audit ──
+  Conference                     Tier                       Teams
+  ────────────────────────────── ───────────────────────── ──────
+  (no conference)                ncaa_d1_low_major             18
+  ACC                            ncaa_d1_high_major            28
+  America East Conference        ncaa_d1_low_major              9
+  American                       ncaa_d1_mid_major             15
+  American Conference            ncaa_d1_low_major              1
+  Atlantic 10                    ncaa_d1_mid_major             19
+  Atlantic Sun Conference        ncaa_d1_low_major             12
+  Big 12                         ncaa_d1_high_major            23
+  Big East                       ncaa_d1_high_major            12
+  Big Sky Conference             ncaa_d1_low_major              9
+  Big South Conference           ncaa_d1_low_major              9
+  Big Ten                        ncaa_d1_high_major            24
+  Big West Conference            ncaa_d1_low_major             11
+  Coastal Athletic Association   ncaa_d1_low_major             13
+  Conference USA                 ncaa_d1_low_major             11
+  Horizon League                 ncaa_d1_low_major             11
+  MVC                            ncaa_d1_mid_major             17
+  Metro Atlantic Athletic Conference ncaa_d1_low_major             13
+  Mid-American Conference        ncaa_d1_low_major             13
+  Mid-Eastern Athletic Conf.     ncaa_d1_low_major              8
+  Mountain West                  ncaa_d1_mid_major             14
+  Northeast Conference           ncaa_d1_low_major             10
+  Ohio Valley Conference         ncaa_d1_low_major             11
+  Patriot League                 ncaa_d1_low_major             10
+  SEC                            ncaa_d1_high_major            28
+  Southern Conference            ncaa_d1_low_major              9
+  Southland Conference           ncaa_d1_low_major             11
+  Southwestern Athletic Conf.    ncaa_d1_low_major             11
+  Sun Belt Conference            ncaa_d1_low_major             13
+  The Ivy League                 ncaa_d1_low_major              8
+  The Summit League              ncaa_d1_low_major              9
+  WCC                            ncaa_d1_mid_major             15
+  Western Athletic Conference    ncaa_d1_low_major              7
+
+  WARNING: 18 D1 teams missing conference → defaulted to low_major:
+    Akron Zips
+    California Baptist Lancers
+    Furman Paladins
+    Hawai'i Rainbow Warriors
+    High Point Panthers
+    Hofstra Pride
+    Howard Bison
+    Idaho Vandals
+    Kennesaw State Owls
+    Lehigh Mountain Hawks
+    Liberty Flames
+    Navy Midshipmen
+    Pennsylvania Quakers
+    South Alabama Jaguars
+    Troy Trojans
+    UC Irvine Anteaters
+    UMBC Retrievers
+    Yale Bulldogs
+
+[5/8] Computing Team KR...
+  Updated 2117 team seasons with Team KR
+
+[6/8] Running OSIE / DSIE...
+  Inserted 1265 team system identity records
+
+[7/8] Computing Scholarship & NIL Allocations...
+  ... 50 teams processed
+  ... 100 teams processed
+  ... 150 teams processed
+  ... 200 teams processed
+  ... 250 teams processed
+  ... 300 teams processed
+  ... 350 teams processed
+  ... 400 teams processed
+  ... 450 teams processed
+  ... 500 teams processed
+  ... 550 teams processed
+  ... 600 teams processed
+  ... 650 teams processed
+  ... 700 teams processed
+  ... 750 teams processed
+  ... 800 teams processed
+  ... 850 teams processed
+  ... 900 teams processed
+  ... 950 teams processed
+  ... 1000 teams processed
+  ... 1050 teams processed
+  ... 1100 teams processed
+  ... 1150 teams processed
+  ... 1200 teams processed
+  ... 1250 teams processed
+  ... 1300 teams processed
+  ... 1350 teams processed
+  ... 1400 teams processed
+  ... 1450 teams processed
+  ... 1500 teams processed
+  ... 1550 teams processed
+  ... 1600 teams processed
+  ... 1650 teams processed
+  ... 1700 teams processed
+  ... 1750 teams processed
+  ... 1800 teams processed
+  ... 1850 teams processed
+  ... 1900 teams processed
+  ... 1950 teams processed
+  Processed 1976 teams, 19722 player allocations
+
+[8/8] Logging computation...
+
+======================================================================
+KLVN DIAGNOSTICS
+======================================================================
+
+── A) Level Coverage Audit ──
+  level_key                  count       λ
+  ───────────────────────── ──────  ──────
+  naia                        4767   0.810
+  njcaa_d1                    3799   0.833
+  ncaa_d3                     3090   0.667
+  ncaa_d2                     2863   0.875
+  ncaa_d1_low_major           2619   0.917
+  cccaa                       1074   0.765
+  ncaa_d1_high_major          1039   1.000
+  njcaa_d2                     960   0.750
+  ncaa_d1_mid_major            772   0.958
+  njcaa_d3                     326   0.625
+
+── B) Per-Level Distribution ──
+  level_key                     n    max    p99    p95 median
+  ───────────────────────── ───── ────── ────── ────── ──────
+  naia                       4767   94.0   86.9   79.1   48.9
+  njcaa_d1                   3799   94.0   87.4   79.9   50.7
+  ncaa_d3                    3090   94.0   83.9   73.4   48.8
+  ncaa_d2                    2863   91.7   79.3   67.9   46.2
+  ncaa_d1_low_major          2619   95.8   88.4   81.9   51.7
+  cccaa                      1074   93.6   84.1   78.3   48.8
+  ncaa_d1_high_major         1039  100.0   91.1   83.0   51.8
+  njcaa_d2                    960   91.3   88.0   79.1   47.8
+  ncaa_d1_mid_major           772   91.7   86.6   80.4   51.8
+  njcaa_d3                    326   85.2   83.9   75.2   47.9
+
+── C) Global Top 50 ──
+    # Player                    Team                      level_key              league     λ  final
+  ─── ───────────────────────── ───────────────────────── ────────────────────── ────── ───── ──────
+    1 AJ Dybantsa               BYU Cougars               ncaa_d1_high_major       96.0 1.000  100.0
+    2 Yaxel Lendeborg           Michigan Wolverines       ncaa_d1_high_major       93.3 1.000   99.3
+    3 Cameron Boozer            Duke Blue Devils          ncaa_d1_high_major       92.3 1.000   98.3
+    4 Bruce Thornton            Ohio State Buckeyes       ncaa_d1_high_major       91.0 1.000   97.0
+    5 Camren Hunter             Central Arkansas Bears    ncaa_d1_low_major        94.5 0.917   95.8
+    6 Gavin Doty                Siena Saints              ncaa_d1_low_major        95.1 0.917   95.8
+    7 Labaron Philon Jr.        Alabama Crimson Tide      ncaa_d1_high_major       89.2 1.000   95.2
+    8 Sonny Wilson              Toledo Rockets            ncaa_d1_low_major        93.2 0.917   95.1
+    9 Ryan Prather Jr.          Robert Morris Colonials   ncaa_d1_low_major        92.9 0.917   94.8
+   10 Isaiah Johnson            Colorado Buffaloes        ncaa_d1_high_major       88.4 1.000   94.4
+   11 Jayden Stone              Missouri Tigers           ncaa_d1_high_major       88.3 1.000   94.3
+   12 Terrence Shannon          Olive-Harvey College      njcaa_d1                 95.9 0.833   94.0
+   13 Armani "Mani" Henderson   Trinity Valley Community College njcaa_d1                 94.4 0.833   94.0
+   14 Gavin Doty                Siena Saints              naia                     94.8 0.810   94.0
+   15 Sam Grieger               Wis.-La Crosse            ncaa_d3                  94.9 0.667   94.0
+   16 Marcus Montagnino         Endicott                  ncaa_d3                  95.3 0.667   94.0
+   17 Bradley Bunch             Pikeville (KY)            naia                     94.8 0.810   94.0
+   18 Trent Lincoln             Gulf Coast State College  njcaa_d1                 95.3 0.833   94.0
+   19 Blake Davison             Indiana Tech              naia                     94.8 0.810   94.0
+   20 Devontre Chaney           Georgia Gwinnett          naia                     93.9 0.810   93.9
+   21 Zion Yeargin              Chabot                    cccaa                    93.6 0.765   93.6
+   22 Browder Marcus            Olive-Harvey College      njcaa_d1                 93.5 0.833   93.5
+   23 Josh Williams             Coastal Alabama - South   njcaa_d1                 93.4 0.833   93.4
+   24 Tavari Johnson            Akron Zips                ncaa_d1_low_major        90.9 0.917   93.0
+   25 Blue Cain                 Georgia Bulldogs          ncaa_d1_high_major       86.6 1.000   92.6
+   26 Jesse Washington          Williams Baptist (AR)     naia                     92.2 0.810   92.2
+   27 Jamarric Hammond          North American            naia                     92.2 0.810   92.2
+   28 Nick Townsend             Yale Bulldogs             ncaa_d1_low_major        90.0 0.917   92.2
+   29 Zach Wolinski             Wesleyan (CT)             ncaa_d3                  92.2 0.667   92.2
+   30 Michael McNair            Boston University Terriers ncaa_d1_low_major        90.0 0.917   92.2
+   31 Courterius Scott          Southwest Mississippi Community College njcaa_d1                 92.2 0.833   92.2
+   32 B.J. Edwards              SMU Mustangs              ncaa_d1_high_major       86.0 1.000   92.0
+   33 Malik Beauford            Florida College (FL)      naia                     92.0 0.810   92.0
+   34 Dalton Kramer             Campbellsville (KY)       naia                     92.0 0.810   92.0
+   35 Kenyata Carbon            Lindsey Wilson (Ky.)      naia                     91.8 0.810   91.8
+   36 Prophet Johnson           Sacramento State Hornets  ncaa_d1_low_major        89.6 0.917   91.8
+   37 Matthew Biddell           Walsh                     ncaa_d2                  91.7 0.875   91.7
+   38 Mason Falslev             Utah State Aggies         ncaa_d1_mid_major        87.5 0.958   91.7
+   39 Cham Okey                 North Dakota State College of Science njcaa_d1                 91.6 0.833   91.6
+   40 Zevi Samet                Yeshiva                   ncaa_d3                  91.6 0.667   91.6
+   41 LA Walker                 Pikeville (KY)            naia                     91.4 0.810   91.4
+   42 Tijan Saine Jr.           Weber State Wildcats      ncaa_d1_low_major        89.1 0.917   91.4
+   43 Jackson Paveletzke        Ohio Bobcats              ncaa_d1_low_major        89.2 0.917   91.4
+   44 Lence Altenor             Saint Joseph (CT)         ncaa_d3                  91.3 0.667   91.3
+   45 Zack Parks                Mid Michigan College      njcaa_d2                 91.3 0.750   91.3
+   46 Nick Speiser              Oakland Community College njcaa_d2                 91.2 0.750   91.2
+   47 Darian Leslie             Edison State              njcaa_d2                 91.2 0.750   91.2
+   48 Trae Oetting              John Brown                naia                     91.2 0.810   91.2
+   49 Thomas Haugh              Florida Gators            ncaa_d1_high_major       85.1 1.000   91.1
+   50 Brayden Burries           Arizona Wildcats          ncaa_d1_high_major       85.1 1.000   91.1
+
+── D) Sanity Checks ──
+  ncaa_d1_high_major        max= 100.0  [OK]
+  ncaa_d1_mid_major         max=  91.7  [OK]
+  ncaa_d1_low_major         max=  95.8  [WARN]
+  ncaa_d2                   max=  91.7  [OK]
+  njcaa_d1                  max=  94.0  [WARN]
+  naia                      max=  94.0  [OK]
+  njcaa_d2                  max=  91.3  [OK]
+  cccaa                     max=  93.6  [WARN]
+  ncaa_d3                   max=  94.0  [WARN]
+  njcaa_d3                  max=  85.2  [OK]
+  Max KR monotonicity: FAIL — higher tiers should dominate
+
+  Top 25 composition:
+    ncaa_d1_high_major: 8
+    ncaa_d1_low_major: 5
+    njcaa_d1: 5
+    naia: 4
+    ncaa_d3: 2
+    cccaa: 1
+  WARNING: Only 8/25 top players are D1 HM/MM (expected >= 15)
+======================================================================
+
+======================================================================
+DONE in 109.0s
+  Player KRs computed:    21309
+  BPR values computed:    403963
+  PGIS values computed:   403963
+  TGIS values computed:   10332
+  Team KRs computed:      2117
+  System identities:      1265
+  Badges awarded:         65146 (Gold: 3422, Silver: 13416, Bronze: 48308)
+  Scholarship/NIL allocs: 19722
+  Team alloc summaries:   1976
+======================================================================
+
+=== compute_engine.py done. Running export_to_json.py at Sat Mar 28 15:16:40 PDT 2026 ===
+Connecting to PostgreSQL...
+Exporting data...
+  Players: 40428
+  Cluster records: 19175 player-seasons
+  Badge records: 0 across 0 player-seasons
+
+Wrote /Users/sammy/Projects/kanext-os/services/player-pool/../../data/national-pool.json (37.7 MB)
+  40428 players, 19175 with KR, 40146 with stats
+Done.
+
+=== PIPELINE COMPLETE at Sat Mar 28 15:16:44 PDT 2026 ===

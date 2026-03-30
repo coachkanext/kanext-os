@@ -3409,3 +3409,669 @@ Football Manager for college basketball, powered by real KaNeXT intelligence.
 - My progress: courses, certifications, GM Mode seasons.
 - Filter pills: All, Demos, Courses, GM Mode, Tools, Certifications, In Progress, Completed.
 - For KaNeXT demo: "College Basketball GM" (500+ active players), "Try KaNeXT Intelligence" (1,200 plays), "Getting Started with Education Mode" (18 completions), "ROI Calculator" (340 uses), "KaNeXT Certified Admin" (8 certified), "Welcome to KaNeXT" (internal, 8/8), "Sales Playbook" (internal, 4/4).
+
+---
+
+## 17. Sports Mode
+
+Sports mode is the operating environment for athletic programs, teams, and sports organizations. The demo brand is LU Men's Basketball (Lincoln University Oakland). Sports mode replaces the entire athletic department tool stack: Hudl ($900-3,300/year), Synergy Sports, ARMS/JumpForward (recruiting), TeamSnap (team management), and every disconnected coaching, scouting, and recruiting tool. The basketball intelligence system (KR, archetypes, System Fit%, KLVN normalization) is the engine underneath everything.
+
+Sports mode RBAC roles: Head Coach (R0), Assistant Coach (R2), Operations/Analytics (R3), Player (R5), Fan/Recruit/Parent (R9).
+
+Sports mode home grid:
+
+| Hub | Agenda | Social |
+|-----|--------|--------|
+| Roster | Recruits | Booster |
+| KayTV | KayPay | KayStudios |
+
+### 17.1 Sports Hub
+
+The Hub in Sports mode is the coaching command center. It replaces Hudl's coaching dashboard, Synergy's analytics platform, FastScout, FastDraw, and every scouting and game planning tool. Four tabs, RBAC determines depth. The basketball intelligence system powers everything.
+
+Tabs: Overview / Film Room / Scouting / Game Day
+
+Side panel (swipe right or menu icon). Head Coach: team dashboard (record, Team KR, System Fit%, next game), quick access to film, scouting reports, practice plans, recruiting board, game day prep, Nexus intelligence shortcut, settings. Assistant Coach: same minus roster management and budget. Operations/Analytics: film management, stat entry, report generation, scouting assignments, settings. Player: my stats, my film, development plan, practice schedule, settings. Fan/Recruit/Parent: team stats (public), schedule, roster.
+
+#### Overview Tab
+
+**Head Coach View (R0):**
+- Team dashboard. Season record (W-L, conference W-L). Team KR. System Fit%. Conference standing. RPI/NET ranking. Streak indicator.
+- Roster health snapshot. Player availability: healthy, questionable, out. Injury list with return dates. Practice participation.
+- Next game card. Opponent name/logo, date/time, location, opponent Team KR, record, head-to-head, Nexus scouting summary.
+- Recent results. Last 5 games with scores and key stats.
+- Performance trends. Offensive rating, defensive rating, pace, 3P%, turnover rate, rebounding margin over time. Trend arrows.
+- Practice plan for today from Agenda. Drills, time allocation, film clips assigned, focus areas from scouting.
+- Quick actions: Film Room, Scouting Report, Practice Plan, Recruiting Board, Game Day Prep.
+- Nexus integration: "What's our Team KR?", "Show offensive rating trend last 10 games", "What's Cal Maritime's biggest weakness?", "Build a practice plan for transition defense", "Evaluate the transfer portal PG from Citrus College."
+- Filter pills: All, This Week, Last 5 Games, Conference, Home, Away, Wins, Losses.
+- For LU demo: 22-6, back-to-back GAAC champions, Team KR 78, System Fit% 94%, 1st in conference. Laolu KR 86, first team all-conference.
+
+**Assistant Coach View (R2):**
+- Same dashboard. Full coaching data access. Can edit practice plans, create scouting reports, manage film. Cannot change roster or budget.
+
+**Operations/Analytics View (R3):**
+- Team dashboard read-only on coaching decisions. Film upload queue. Stat entry. Report generation. Scouting assignments.
+- Filter pills: All, Film Queue, Stats to Enter, Reports, Assignments.
+
+**Player View (R5):**
+- My dashboard. Personal stats: PPG, RPG, APG, FG%, 3P%, FT%, KR, archetype. Trend charts. My film clips (coach-assigned). Development plan (areas to improve, goals, progress).
+- Practice schedule. Today's plan with my role noted. Team aggregate stats visible.
+- Cannot see scouting reports, opponent intelligence, or recruiting data.
+- Filter pills: All, My Stats, My Film, Development, Practice.
+
+**Fan/Recruit/Parent View (R9):**
+- Public team stats. Record, schedule, roster (name, number, position, class, height). Conference standings.
+- Cannot see KR, System Fit%, scouting, practice plans, or coaching intelligence.
+- Filter pills: All, Schedule, Roster, Stats.
+
+#### Film Room Tab
+
+**Head Coach View (R0):**
+- Full game film library. Every game by date. Film status (raw, tagged, analyzed). KayTV is the video source. Film Room is the intelligence overlay.
+- Film viewer with intelligence overlay: play-by-play tags (every possession: half-court, transition, BLOB, SLOB, ATO, press break), shot chart overlay (toggle, all shots with make/miss and location), player tracking highlights, telestration (arrows, circles, freehand, text), slow motion (0.25x, 0.5x), frame-by-frame.
+- Playlist builder. Create from tagged possessions. "Laolu 3-point attempts", "Opponent PnR defense", "Our transition offense." Shareable to players through Messages or Player view.
+- Auto-tagging powered by intelligence system. Coach can override or add custom tags. Tags linked to box score events.
+- Clip creation. Cut possessions/moments. Add telestration, voiceover, annotations. Share or export.
+- Side-by-side comparison. Two clips simultaneously.
+- Practice film. Same tools for practice footage. Track development week to week.
+- Hudl import. Schools with existing Hudl can import film.
+- Filter pills: All, Games, Practice, By Opponent, By Player, Tagged, Untagged, Playlists, This Season, Last Season.
+- For LU demo: 8 real game films (Pepperdine, Long Beach State, Weber State, LMU, UC Irvine, Cal Maritime, Simpson + 1). Fully tagged with possessions, shot charts, player data. 3 practice films. 5 playlists.
+
+**Assistant Coach View (R2):**
+- Full film room. Upload, tag, create playlists, annotate, share to players.
+
+**Operations/Analytics View (R3):**
+- Full film management. Primary uploader and tagger. Create playlists for coaches. Stat entry from film feeds intelligence system.
+- Filter pills: All, Upload Queue, Tagging Queue, By Game, Completed.
+
+**Player View (R5):**
+- My film only. Coach-assigned clips and playlists. Can add personal notes. Highlight reel builder for recruiting. Export to KayTV or Messages.
+- Filter pills: All, Assigned Clips, My Highlights, Practice.
+
+#### Scouting Tab
+
+**Head Coach View (R0):**
+- Opponent scouting dashboard. Upcoming opponents with game date. Each card: name, record, Team KR, last 5 results, key players.
+- Full Scouting Report per opponent: team overview (record, Team KR, System Fit%, ratings, pace, style), roster breakdown (every player with KR, archetype, stats, tendencies), key players flagged (top 3 with KR, shot chart, strengths, weaknesses, defensive approach), offensive tendencies (play types, frequency, effectiveness, set plays with film clips), defensive tendencies (scheme, PnR defense, weaknesses), matchup analysis (lineup vs lineup, player-by-player with advantage/disadvantage from KR and archetype), game plan suggestions from Nexus.
+- Self-scout. Same analysis for own team. Identify tendencies opponents might exploit.
+- Scouting assignments. Assign staff to scout opponents. Track progress.
+- Historical scouting archived by season and opponent.
+- Nexus is the backbone: "Evaluate Citrus College roster" triggers full Team KR evaluation.
+- Filter pills: All, Upcoming Opponents, Conference, Non-Conference, Completed, Self-Scout, By Date.
+- For LU demo: 3 upcoming scouting reports (Cal Maritime complete, Simpson in progress, exhibition TBD). Self-scout. Historical from Pepperdine and Long Beach State.
+
+**Assistant Coach View (R2):**
+- Full scouting access. Create, edit reports. Can be assigned tasks.
+
+**Operations/Analytics View (R3):**
+- Compile data, pull stats, generate reports for coaches.
+- Filter pills: All, My Assignments, Data to Compile, Completed.
+
+**Player View (R5):**
+- Not visible. Coaches share relevant info through practice plans and clips.
+
+**Fan/Recruit/Parent View (R9):**
+- Not visible. Scouting intelligence is the competitive advantage.
+
+#### Game Day Tab
+
+The Game Day tab is the live operations center during a game. It houses StatKeeper (real-time stat tracking), auto-generated reports (halftime, postgame), and media reports. StatKeeper feeds data into the intelligence system. Nexus consumes the data and generates coaching packets and public-facing reports automatically.
+
+**The Game Day Flow:**
+1. StatKeeper (live) - Operations staff tracks every play in real time
+2. Live Box Score - updates automatically as stats are entered, visible to coaches on the bench
+3. Halftime Staff Packet - auto-generated by Nexus at the halftime buzzer using first-half StatKeeper data + intelligence files (File 05 Scouting Game Ops, halftime section)
+4. Postgame Staff Packet - auto-generated by Nexus at the final buzzer using full-game StatKeeper data + intelligence files
+5. Media Game Report - public-facing ESPN-style game recap auto-generated by Nexus, publishable to Social and KayTV
+
+**StatKeeper:**
+
+Three phases: Setup, Live, Box Score.
+
+Setup phase: select home/away teams (auto-populated from Roster if it's our game). Game type (Regular, Conference, Tournament, Scrimmage). Half length (20 min, 16 min, custom). Roster sections expandable per team. Tap player to toggle starter/bench with count badge showing 5/5. "Start Game" enabled only when both teams have exactly 5 starters.
+
+Live phase (portrait, designed for one-handed operation on the bench): scoreboard at top (home score, away score, period, game clock with play/pause, End Period button). Player selection row: home players as numbered circles (teal), away players as numbered circles (steel gray). Selected player highlighted with accent ring. Make/miss buttons: 3pt make/miss, 2pt make/miss, FT make/miss. Stat buttons: DefReb, OffReb, TO, STL, AST, BLK, Sub, Foul. Play-by-play feed (last 3 entries, tap to expand full log). Undo button for corrections. Sub overlay: two columns (On Court / Bench), tap to swap. Foul overlay: Personal, Shooting, Offensive, Technical, Flagrant. No player selected + action tapped = "Select a player first" toast.
+
+Box Score phase (generated automatically from live data): final score hero, game info. Home/Away tab toggle. Full stat table per team: #, Name, MIN, PTS, FGM-FGA, 3PM-3PA, FTM-FTA, OREB, DREB, REB, AST, STL, BLK, TO, PF. Team totals row. Horizontal scroll with player name fixed left. Export: JSON, CSV, PDF.
+
+**Auto-Generated Reports (powered by Nexus + Intelligence Files):**
+
+Halftime Staff Packet (auto-generated at halftime buzzer):
+- Nexus pulls first-half StatKeeper data and runs it through the Game Ops halftime pipeline (File 05, Section 3)
+- Top-3 Decision Summary: 3 bullets ranked, each "problem to adjustment"
+- Game State Dashboard: score, pace, fouls/bonus, turnovers, OREB, points per possession
+- Five Factors: eFG%, TO%, OREB%, FT rate, transition
+- Plan Adherence vs Pregame: "We said deny X, did we?" Checklist
+- Opponent offense and defense analysis through OSIE/DSIE lens
+- Our offense and defense analysis
+- Lineups/matchups/plus-minus: top 3 lineups, worst 2, matchup pain points
+- Constraints and risk: foul trouble, fatigue, fragility exploitation
+- Simulation projections: win probability from current position + adjustments (if Simulation Engine available)
+- Adjustments Sandbox: 2-5 defensive options, 2-5 offensive options, each with benefit/risk/projected impact
+- Delivered to coaching staff through Nexus overlay or Messages. Coaches see it on their phone/tablet at halftime.
+- Confidence percentage based on data tier (V1 box score only = 55-70%, V2 with film tags = 82-92%)
+
+Postgame Staff Packet (auto-generated at final buzzer):
+- Full game box score with advanced stats
+- Five Factors final
+- Plan adherence audit: what we said we'd do vs what actually happened
+- Opponent analysis: what they did, what worked for them, what didn't
+- Our analysis: what worked, what didn't, key moments
+- Lineup analysis: every lineup combination with plus-minus and minutes
+- Player grades: each player's performance rated against expectations
+- Teaching clips auto-tagged: top 5 positive moments, top 5 correctable moments (linked to film in Film Room if game was recorded)
+- Development notes: which players showed growth, which struggled
+- Next game preview: initial thoughts on upcoming opponent based on intelligence
+- Confidence percentage based on data tier
+- Delivered to coaching staff. Archived for season-long trend tracking.
+
+Media Game Report (auto-generated, public-facing):
+- ESPN-style game recap written by Nexus. Professional sports writing tone.
+- Headline: "Lincoln 89, Cal Maritime 74: Laolu Kalejaiye's 28 Points Power Oaklanders to 23rd Win"
+- Game summary paragraph: flow of the game, key runs, turning points
+- Player of the game with stats and context
+- Key stats box: team comparison table
+- Quotes placeholder (coach can add real quotes before publishing)
+- Box score (simplified, public-friendly format)
+- Publishing options: auto-post to Social as a game recap post, share to KayTV as a graphic overlay on game highlights, export as PDF for media distribution, email to local media contacts from Network
+- School SID (Sports Information Director) can review and edit before publishing. Or set to auto-publish for programs without an SID.
+- For LU demo: 3 completed media game reports from real games (Pepperdine, Long Beach State, Cal Maritime). Each with Nexus-written recap, Laolu as player of the game in Pepperdine report (38 pts, 12 threes).
+
+**Head Coach View (R0):**
+- Full Game Day tab. Can launch StatKeeper (or delegate to operations). Receives halftime and postgame packets. Can edit and approve media reports before publishing.
+- Game history: all games this season with box scores, staff packets, media reports archived. Tap any game to review.
+- Filter pills: All, Upcoming, Completed, Box Scores, Staff Packets, Media Reports, This Season.
+
+**Assistant Coach View (R2):**
+- Full Game Day access. Can operate StatKeeper. Receives all packets. Can contribute to media reports.
+- Filter pills: All, Upcoming, Completed, Box Scores, Packets.
+
+**Operations/Analytics View (R3):**
+- Primary StatKeeper operator. Runs stat tracking during games. Reviews and corrects box scores post-game. Manages media report distribution.
+- Filter pills: All, StatKeeper, Box Scores, Media Reports, Export.
+
+**Player View (R5):**
+- My game stats only. Can see own box score line per game. Season averages. Personal game log.
+- Cannot see staff packets, scouting data, or full team analytics.
+- Filter pills: All, My Games, My Stats.
+
+**Fan/Recruit/Parent View (R9):**
+- Published media reports (public). Box scores (public). Game results.
+- Live box score during games (if enabled by coach - real-time score and stats visible to fans watching the game).
+- Filter pills: All, Results, Box Scores, Reports.
+
+---
+
+### 17.2 Sports Agenda
+
+Agenda in Sports mode is the program calendar. Same structure (Day/Week/Month views). Built around the competitive season: games, practices, travel, recruiting, film sessions, academics, and compliance. Game day operations live in Hub Game Day tab, not here. Agenda is the schedule.
+
+Views: Day / Week / Month (centered contextual pill to switch)
+
+Side panel (swipe right or menu icon). Head Coach: full program calendar, practice plan builder, recruiting calendar with NCAA period overlay, travel itineraries, compliance deadlines, settings. Assistant Coach: program calendar, practice plans, recruiting assignments. Operations/Analytics: film deadlines, travel logistics, facility scheduling. Player: my schedule. Fan/Recruit/Parent: game schedule, visit dates.
+
+#### Day / Week / Month Views
+
+**Head Coach View (R0):**
+- Full program calendar. Color-coded: games (red, home/away), practices (blue, drill plan attached), film sessions (purple, clips attached), travel (orange, itinerary), recruiting (green, visits/calls/evaluation periods), meetings (gray), workouts (teal, S&C), compliance deadlines (gold).
+- Practice planning. Each block expandable: warmup, drills with time and focus, team offense, team defense, scrimmage, cooldown/film. Drills linked to scouting focus. Film Room clips embedded for on-court teaching.
+- Recruiting calendar. NCAA/NAIA/GAAC periods overlaid (contact, evaluation, quiet, dead). Visits, calls, evaluation trips. Compliance guardrails warn on dead period conflicts.
+- Travel itineraries on away games: departure, transport, hotel, venue, game time, return.
+- Player academic monitoring. Midterm/final dates (synced from Education mode if on platform). Tutoring. Advisor meetings. Practice adjustments during exams.
+- Nexus integration: "What's the schedule this week?", "Build a practice plan for Tuesday focused on zone offense", "What recruiting events can I attend this month?", "When are midterms?"
+- Filter pills: All, Games, Practices, Film, Travel, Recruiting, Meetings, Workouts, Compliance, This Week.
+- For LU demo: full GAAC season (28 games). Weekly rhythm: Mon practice+film, Tue practice, Wed shootaround+travel, Thu game/practice, Fri game/off, Sat game/practice, Sun off. 3 recruiting calls. Cal Maritime travel. Midterms next week, 2 players flagged.
+
+**Assistant Coach View (R2):**
+- Full calendar. Edit practice plans and film sessions. Recruiting assignments visible. Cannot change game schedule or compliance.
+- Filter pills: All, Games, Practices, Film, Recruiting, My Assignments, This Week.
+
+**Operations/Analytics View (R3):**
+- Logistics focus. Film deadlines (due within 24 hours of game). Travel logistics. Facility scheduling.
+- Filter pills: All, Film Deadlines, Travel, Logistics, This Week.
+
+**Player View (R5):**
+- My schedule. Games, practices, film sessions, workouts, academic, team meetings. Cannot see recruiting, compliance, staff meetings.
+- Filter pills: All, Games, Practices, Film, Workouts, Academic, This Week.
+
+**Fan/Recruit/Parent View (R9):**
+- Public game schedule with results and KayTV livestream links. Recruits see confirmed visit dates. Parents see child's schedule plus academic dates (if shared through consent gate).
+- Filter pills: All, Upcoming Games, Past Results.
+
+---
+
+### 17.3 Sports Social
+
+Social in Sports mode is the program's public brand and team communication platform. Three audiences: fans (public content, highlights, recruiting announcements), the team (internal communication, film assignments), and recruits (program culture showcase). Same structure (Feed/Reels/Profile, scope filter Brand/Mode/All).
+
+Scope filter: Brand (LU MBB only), Mode (all Sports brands), All (everything).
+
+#### Feed View
+
+**Head Coach View (R0):**
+- Full feed. Post as program brand. Types: text, photo, video, carousel, poll, game result graphic (auto-generated from Game Day box score), recruiting announcement ("Welcome to the family" with commitment graphic), schedule graphic, player spotlight.
+- Visibility: Public (fan-facing, recruiting) or Internal (team only R0-R5, "Team Only" badge).
+- Game result auto-posts from media report. Recruiting commits auto-generate graphic (coach approves).
+- Filter pills: All, Public, Team Only, My Posts, Following, Game Results, Recruiting, Saved.
+
+**Assistant Coach View (R2):**
+- Full feed. Draft public (approval queue). Post internal directly.
+- Filter pills: All, Public, Team Only, Drafts, Game Results.
+
+**Operations/Analytics View (R3):**
+- Full feed. Draft public. Manage game result graphics and scheduling.
+- Filter pills: All, Public, Scheduled, Drafts, Game Results.
+
+**Player View (R5):**
+- Public and internal team posts. Like, comment, share. Can post internal (teammates and coaches only). Cannot post as program brand publicly. Can share Film Room highlight reel to personal brand.
+- Filter pills: All, Public, Team Only, My Posts.
+
+**Fan/Recruit/Parent View (R9):**
+- Public only. Game results, highlights, recruiting, schedule, culture. For recruits: Social IS the program's pitch.
+- Filter pills: All, Game Results, Highlights, Recruiting, Schedule.
+
+#### Reels View
+
+**Head Coach View (R0):**
+- Program short-form: game highlights (auto-clipped from KayTV), practice clips, workouts, recruiting days, culture.
+
+**Fan/Recruit/Parent View (R9):**
+- Public reels. Highlights, spotlights, culture.
+
+#### Profile View
+
+**Head Coach View (R0):**
+- Program profile. Logo, name, record, conference, followers, bio, edit. Content grid. Pinned (up to 3). Reels tab. KayTV tab.
+
+**Fan/Recruit/Parent View (R9):**
+- Public profile. Follow, Message (recruits can DM if enabled). Content grid.
+- For LU demo: "Lincoln University Men's Basketball | GAAC Champions | Oakland, CA" bio. 20 mock posts. 6 reels. Pinned: "Back-to-Back GAAC Champions", "Laolu - First Team All-Conference", season schedule.
+
+---
+
+### 17.4 Sports Roster
+
+Roster is the people tile for sports brands. Position 4 in the grid. Complete roster management: player profiles with KR intelligence, depth chart, eligibility tracker, medical status, scholarship/NIL allocation, and coaching staff directory. It replaces TeamSnap, ARMS, and scattered spreadsheets. The intelligence system (Files 01-03) powers everything. Every player has KR, archetype, badges, confidence. Team KR Pipeline computes overall quality. System Fit% shows if pieces work together.
+
+Views: Players / Depth Chart / Staff (centered contextual pill to switch)
+
+Side panel (swipe right or menu icon). Head Coach: roster dashboard (Team KR, System Fit%, spots used, scholarship allocation, top needs), quick search, add player, eligibility overview, medical report, scholarship budget, NIL tracker, settings. Assistant Coach: roster access, profiles, depth chart, recruiting notes. Operations/Analytics: data management, eligibility paperwork, compliance. Player: my profile, team roster (public). Fan/Recruit/Parent: public roster.
+
+#### Players View
+
+**Head Coach View (R0):**
+- Full roster. Each card: photo, name, number, position, class, KR badge (color by tier), archetype badge, PPG/RPG/APG, medical dot (green/yellow/red), eligibility dot (green/yellow/red).
+- Player Detail Page (coach): profile header (photo, name, number, position, class, height/weight, hometown, previous school). KR Intelligence (coach-only, File 01): KR 0-100 with confidence%, archetype, trait clusters (Shooting, Finishing, Playmaking, Rebounding, On-Ball D, Team D, Physical), badges, system fit%, development trajectory. Season stats (full table + game log). Film clips linked from Film Room. Eligibility (years remaining, GPA, credits, degree progress, transfer history). Medical (status, active injuries, history, clearance). Scholarship/NIL (percentage, compensation, contract dates). Development plan (goals, progress, workout plan, linked to File 06). Notes (private coaching, R0-R2 only).
+- Roster management: edit info, update medical/eligibility, adjust scholarship, depth chart moves, redshirt designation, release.
+- Roster composition: spots used vs max, scholarship equivalencies used vs available, position breakdown.
+- Gap analysis (File 03): top needs by Team KR impact, missing demands, fragility flags (starter-backup gap 10+ KR).
+- Nexus integration: "What's our Team KR?", "Who's our best 3-point shooter?", "Show gap analysis", "What's Laolu's development trajectory?", "Compare our PG depth to Cal Maritime's."
+- Filter pills: All, Starters, Rotation, Bench, Redshirt, By Position, By Class, Healthy, Injured, Eligible, At Risk.
+- For LU demo: 21 players (ESPN roster). Laolu KR 86. Team KR 78. System Fit% 94%. 2 questionable. 1 academic warning. Gap: interior depth fragility flag.
+
+**Assistant Coach View (R2):**
+- Full roster and intelligence. Can update medical and practice notes. Cannot change scholarship or release players.
+
+**Operations/Analytics View (R3):**
+- Roster data. Update player info. Manage eligibility paperwork, compliance forms, medical clearance docs. Cannot see KR, coaching notes, or scholarship.
+- Filter pills: All, Eligibility Paperwork, Medical Clearance, Compliance, By Player.
+
+**Player View (R5):**
+- Team roster public info: name, number, position, class, height/weight, stats. No KR, archetypes, intelligence. My profile: own stats, game log, development plan, academic status.
+- Filter pills: All, By Position, Starters.
+
+**Fan/Recruit/Parent View (R9):**
+- Public roster. Name, number, position, class, height/weight, season averages. No intelligence, medical, eligibility, scholarship.
+- Filter pills: All, By Position, By Class.
+
+#### Depth Chart View
+
+**Head Coach View (R0):**
+- Visual by position (PG, SG/Wing, SF/Wing, PF/Big, C/Big). Starter and backups with KR and medical dot. Starter-to-backup KR gap flagged if 10+ (fragility risk). Drag and drop to rearrange.
+- Lineup builder. Select any 5: combined KR, offensive/defensive split, archetype composition, lineup System Fit%. Compare combinations side by side.
+- Minutes projection. Allocate minutes, see how distribution affects Team KR.
+- Filter pills: All Positions, Guards, Wings, Bigs, Starters Only.
+
+**Player View (R5):**
+- Depth chart visible (name, number, position order). No KR.
+
+**Fan/Recruit/Parent View (R9):**
+- Public depth chart. Starters and key rotation. No intelligence overlay.
+
+#### Staff View
+
+**Head Coach View (R0):**
+- Full staff directory. Photo, name, title, contact, bio. Staff assignments (recruiting territories, film, academics). Manage staff: add/remove, update roles.
+- Filter pills: All, Coaching Staff, Support Staff, Administration.
+
+**Player View (R5):**
+- Staff directory with contact. Reach coaches, trainer, advisor through Messages or Phone.
+- Filter pills: All, Coaches, Support.
+
+**Fan/Recruit/Parent View (R9):**
+- Public staff. Names, titles, photos. Recruiting contact (email or Message only).
+- Filter pills: All, Coaches.
+
+---
+
+### 17.5 Sports Recruits
+
+Recruits is the pipeline tile for sports brands. Position 5 in the grid. Serves two audiences: for coaches, the recruiting command center with 37K player pool and KR intelligence; for recruits/parents, the NCSA replacement with real intelligence. Replaces ARMS/JumpForward ($2,000-5,000/yr), NCSA ($500-3,000 premium), and every recruiting spreadsheet.
+
+Views (coaches): Board / Portal / Search. Views (recruits): Profile / Schools / Interest.
+
+Side panel. Head Coach: recruiting dashboard (board count, offers, commits, spots open, scholarship remaining), player pool search, target list, evaluation queue, compliance calendar. Assistant Coach: territory assignments, prospect communication. Operations: compliance, paperwork, visit coordination. Player: my recruiting profile. Recruit/Parent: my profile, school search, interest tracker.
+
+#### Coach Experience
+
+##### Board View
+
+**Head Coach View (R0):**
+- Recruiting board. Visual by priority: Top Targets, Secondary, Monitoring, Offered, Committed. Each card: name, position, height/weight, school/level, KR badge, archetype badge, system fit% for our system, status (identified, contacted, offered, visiting, committed, signed, passed).
+- Tap for Recruiting Profile (coach): contact info (player, parents/guardians), recruiting timeline (first identified through decision), communication log (auto-pulled from Messages/Phone), evaluation notes, film clips, scholarship offer details, NIL offer, competing schools, academic status.
+- Roster Decision Intelligence (File 03): Team KR Delta, gap analysis, displacement report, resource analysis (spot + scholarship + NIL cost per TKR point), multi-candidate comparison.
+- Add Prospect from pool search or manual entry.
+- Nexus: "Find PGs in portal KR 75+ who fit our system", "Compare Ricketts and Sanchez for our guard spot", "What's Team KR delta adding Ricketts?", "Draft offer letter for Ricketts."
+- Filter pills: All, Top Targets, Secondary, Monitoring, Offered, Committed, Signed, Passed, By Position, By KR, By Level, By Class.
+- For LU demo: 12 prospects. 3 top targets (Citrus PG transfer), 4 secondary, 3 monitoring, 1 offered, 1 committed. Full KR + Team KR delta on each.
+
+**Assistant Coach View (R2):**
+- Full board. Add prospects, update status, log evaluations. Territory assignments visible.
+- Filter pills: All, My Territory, My Prospects, By Priority, By Status.
+
+##### Portal View
+
+**Head Coach View (R0):**
+- Transfer portal live feed from 37K pool. Each: name, position, previous school/level, KR, archetype, entry date, status (in portal, withdrawn, committed), destination.
+- Powered by Global Database Section 4.2. Real-time updates.
+- System fit filter. Fit% computed on demand against our schemes.
+- Nexus recommendations: "Based on gap analysis (need interior depth), top 5 portal bigs for your system ranked by Team KR Delta."
+- Tap for full evaluation with KR, archetype, fit, delta, cost analysis.
+- Filter pills: All, In Portal, By Position, By Archetype, By KR Range, By Level, System Fit 80%+, By Conference, Guards, Wings, Bigs.
+
+##### Search View
+
+**Head Coach View (R0):**
+- Full 37K player pool search. By name or advanced filter: position, height, weight, KR range, archetype, level, conference, state, class, stats, BPR range.
+- Tap for full profile with KR evaluation.
+- Saved searches with notifications when new matches appear.
+- Browse by level, conference, or team.
+- Filter pills: All, By Position, By KR, By Level, By State, By Conference, By Archetype, Portal Only, Available Only.
+
+#### Recruit/Parent Experience
+
+##### Profile View
+
+**Fan/Recruit/Parent View (R9):**
+- My Recruiting Profile. Name, position, class, height/weight, GPA, test scores, school, club team, highlight video (from KayTV), stats, awards, contact.
+- KR Intelligence (public version). If in the 37K pool: KR rating, archetype, trait clusters visible. The game-changer vs NCSA. KaNeXT tells you what level you can play at and which programs need your archetype.
+- "Where Do I Fit?" from Development Intelligence (File 06). Best-fit programs, realistic level, programs with open spots at your position.
+- Profile visibility. Coaches find you in pool searches. Notification when a coach views your profile.
+- Highlight reel from KayTV with stats overlay.
+
+##### Schools View
+
+**Fan/Recruit/Parent View (R9):**
+- School search. Every program in database. Filter: level, state, conference, academic program, scholarship availability, system type.
+- Each card: name, logo, level, conference, record, Team KR, coach, location.
+- Detail: roster (public), staff, system identity, demand gaps (what they need, from coverage map), results, academics.
+- "Fit Score" per school. KR + archetype vs system demands + open needs. "Lincoln University: 92% Fit - they need a shooting guard and run motion offense that maximizes your archetype."
+- Compare 2-3 schools side by side.
+
+##### Interest View
+
+**Fan/Recruit/Parent View (R9):**
+- Interest tracker. Schools reached out or interested in. Status (interested, contacted, visited, offered, committed), last contact, coach, notes.
+- Coach activity. Which coaches viewed your profile (school, date).
+- Message coaches through Messages (if enabled).
+- Organize: Dream Schools, Strong Interest, Exploring, Backup.
+- Filter pills: All, Dream, Strong Interest, Exploring, Offered, By Level.
+
+---
+
+### 17.6 Sports Booster
+
+Booster is the money-in tile for sports brands. Position 6. Replaces Opendorse (NIL marketplace), INFLCR (compliance + analytics), Fanstake (fan crowdfunding), Sportsmo (play pledges), NIL Club (brand marketplace), and every athletics fundraising tool. All through KayPay. Full compliance engine built in.
+
+Three things in one: fan giving platform (donations, tickets, merch, gamified challenges), NIL marketplace (brands find athletes, athletes find deals), and compliance engine (every deal logged, disclosed, auditable).
+
+Views: Give / NIL Marketplace / Fan Shop (centered contextual pill to switch)
+
+Side panel. Head Coach: booster dashboard, NIL allocation powered by PTV, compliance status. Operations: donor management, compliance reporting. Player: NIL profile, deals, earnings, brand opportunities. Fan/Parent: giving, campaigns, challenges, merch, tickets.
+
+#### Give View
+
+**Head Coach View (R0):**
+- Dashboard. Total raised, breakdown: unrestricted donations (tax-deductible), NIL contributions (not tax-deductible), tickets, merch, Fan Challenges, play pledges. Donor management with levels. Campaign management. Tax receipt automation (auto-distinguishes deductible vs non-deductible).
+- Filter pills: All, Donations, NIL Contributions, Tickets, Merch, Fan Challenges, Pledges, By Donor Level, This Month, This Season.
+- For LU demo: $62K raised. 85 donors. NIL pool $18K. Annual fund $28K. Tickets $8K. Merch $5K. Challenges $3K.
+
+**Fan/Parent View (R9):**
+- Clean giving. Presets ($10-$250+custom). Fund picker: Athletic Department (tax-deductible), NIL Fund, Travel, Equipment, active campaign. Recurring toggle.
+- Play-Based Pledges. "$2 per three-pointer", "$5 per win." Auto-charges via KayPay from StatKeeper data. Season total: "Your pledges contributed $84 this season."
+- Stake an Athlete. Browse roster and recruits. Pledge NIL money to specific player. Current players: direct to NIL. Recruits: escrow until commitment (refund if they go elsewhere). Athletes keep 90%+. Full compliance.
+- Fan Challenges. Challenge a friend. Both put up $5-$50. Predict: winner, margin, player stats, team stats. StatKeeper auto-resolves. ALL money to program fund (winner chooses: NIL, department, campaign). Winner gets leaderboard. Loser's money still supports program. Share to Social, tag friends, group challenges, rival school challenges.
+- Leaderboards. Top Challenger, Top NIL Supporter, Top Donor. Badges on Social profile.
+- Impact dashboard. "Your contributions: $340. $200 department, $100 NIL, $40 challenges."
+- Filter pills: All, One-Time, Recurring, Pledges, Stakes, Fan Challenges, Campaigns, My History.
+
+#### NIL Marketplace View
+
+**Head Coach View (R0):**
+- NIL pool dashboard. Balance, sources (fan contributions, collective, revenue sharing). Allocation powered by PTV (File 03).
+- Allocation table. Every player: name, KR, PTV (worth to this team), PMV (market value), current NIL, gap. Nexus: "Laolu PTV $45K, current NIL $12K. Underpaid. Portal risk."
+- Brand deal oversight. All deals visible: player, brand, type, value, dates, deliverables, compliance status.
+- Compliance dashboard. NCAA/NAIA/GAAC rules embedded. Auto-flags: disclosure thresholds, booster conflicts, pay-for-play violations. Compliance officer review. Annual report exportable. Full audit trail on every deal through KayPay.
+- Revenue sharing tracker (House settlement). Institutional allocation, collective NIL, marketplace deals. Total compensation budget.
+- Filter pills: All, Pool Balance, Allocations, Active Deals, By Player, Compliance, Flagged, Revenue Sharing.
+
+**Player View (R5):**
+- My NIL Profile (athlete media kit for brands). Name, sport, school, position, social following, engagement, content examples, audience demographics.
+- Brand Marketplace. Browse available deals: brand, campaign description, compensation ($50-$5K+), deliverables, deadline, exclusivity. Nexus smart matching: "Based on your audience (65% male 18-24, Oakland, basketball), these brands fit you best."
+- Apply for deals. If accepted, contract auto-generated through KayPay with deliverables, terms, compliance disclosure.
+- My Active Deals. Status: deliverables due, content submitted, brand approved, payment status.
+- My Earnings. Total NIL this season. Breakdown: pool allocation, marketplace deals, fan stakes. Payment history. 1099 at year-end.
+- Create content. Integration with Social and KayTV. Tag brand, submit for approval, publish when approved.
+- Compliance checklist per deal. Deal logged, school notified, value reported, conflict check passed. Green/red indicators.
+- Nexus: "What NIL deals are available?", "What's my valuation?", "How much have I earned?", "Am I compliant?"
+- Filter pills: All, Available Deals, My Active Deals, Applied, Earnings, Compliance.
+- For LU demo: Laolu NIL profile (KR 86, 1,200 followers, 15% engagement). 3 available deals. 1 active ($300 clothing brand). Season NIL: $2,400 ($1,800 pool + $600 marketplace).
+
+**Fan/Parent View (R9):**
+- NIL transparency. Aggregate: "LU athletes earned $18K in NIL across 12 deals." Individual details private. Can stake athletes (flows to Give).
+
+#### Fan Shop View
+
+**Head Coach View (R0):**
+- Merch and tickets. Same Store engine scoped to program. Jerseys, tees, hats, posters, signed items. Tickets: single game, season pass, premium, away travel packages.
+
+**Player View (R5):**
+- Player merch. Personal merch under NIL. Revenue direct to player through KayPay.
+
+**Fan/Parent View (R9):**
+- Storefront. Buy through KayPay. Tickets with QR for game day in Pulse/Agenda. Game Day Bundle (ticket + parking + merch discount). Player-specific merch (portion to athlete NIL).
+- Filter pills: All, Merch, Tickets, Season Pass, Player Merch, Bundles.
+
+---
+
+### 17.7 Sports KayTV
+
+KayTV in Sports mode is the YouTube of sub-NCAA sports and the Hudl of game film combined. Broadcast network, film library, scouting tape exchange, highlight factory, and podcast network. For programs that never get on ESPN, KayTV IS their ESPN.
+
+Three content layers: Game Film (coaching, intelligence overlay, RBAC-gated), Broadcasts (fan-facing, live and archived), Network Content (podcasts, docs, original series).
+
+Views: Featured / Library / Live (centered contextual pill to switch)
+
+#### Featured View
+
+**Head Coach View (R0):**
+- Hero: latest broadcast or upcoming livestream. Rows: Our Game Film (coaching-tagged), Opponent Film (scouting), Highlights (auto-clipped), Player Spotlights, Practice Film (internal), Podcasts (KaNeXT Sports Network), Documentaries, Recruiting Videos.
+- Admin: public vs coaching-only vs player-only. Game film with intelligence overlay ALWAYS coaching-only (R0-R3). Raw broadcast public.
+
+**Player View (R5):**
+- Latest broadcast, my highlights, team highlights, podcasts. Coach-assigned "Watch List" at top. Cannot see opponent scouting, intelligence overlays, or practice film.
+
+**Fan/Recruit/Parent View (R9):**
+- Latest broadcast, highlights, spotlights, podcasts, docs, upcoming streams. Every game available. For recruits: game broadcasts are part of evaluating the program.
+
+#### Library View
+
+**Head Coach View (R0):**
+
+**Coaching Film Library (R0-R3 only):**
+- Every game with intelligence overlay from Hub Film Room. Film Room = analysis workspace. KayTV Coaching Library = organized viewing catalog.
+- Opponent film. Other teams' public KayTV broadcasts pulled in for scouting. Tag and clip same as own film.
+- Film exchange. Request from opponents through Messages. Replaces Hudl film exchange.
+- Practice film. Internal, never public.
+
+**Public Media Library (all roles):**
+- Game broadcasts archived as VOD. Highlights auto-generated. Player highlight reels (built by players from coach-assigned clips). Original content (behind-the-scenes, player features, alumni stories).
+
+**KaNeXT Sports Network (podcast + original programming):**
+- Podcast network. Locked On style for sub-NCAA. Each program hosts shows: "Inside LU Basketball" (weekly recap, preview, interviews), "GAAC Weekly" (conference coverage powered by KR intelligence), "The Transfer Portal Report" (portal analysis by KR), "Game Day Preview" (public-safe scouting preview).
+- Documentaries and features. Season docs, player stories, program history.
+- Sports talk and analysis. Commentary, debate, interview series.
+- Network discovery. Browse shows across all KaNeXT programs. Subscribe. Notifications. Podcast RSS for Apple Podcasts, Spotify.
+- Upload: video or audio with metadata. Coaching film auto-tagged from StatKeeper. Broadcasts auto-archived from live. Podcasts: upload audio, show art, episode info.
+- Filter pills (coach): All, Our Film, Opponent Film, Practice, Broadcasts, Highlights, Podcasts, Docs, By Opponent, By Player, This Season, Last Season, Internal, Public.
+
+**Player View (R5):**
+- Public content plus my coach-assigned film. Highlight reel builder. Podcasts and features.
+- Filter pills: All, My Film, My Highlights, Broadcasts, Podcasts, Features.
+
+**Fan/Recruit/Parent View (R9):**
+- All public. Broadcasts, highlights, reels, podcasts, docs, features. Subscribe to podcast.
+- Filter pills: All, Broadcasts, Highlights, Podcasts, Docs, Player Reels, This Season.
+- For LU demo: 8 game broadcasts, auto-highlights per game, Laolu highlight reel (38-pt Pepperdine), "Inside LU Basketball" (6 eps), "GAAC Weekly" (4 eps), "Laolu's Journey" feature (8 min), 3 behind-the-scenes.
+
+#### Live View
+
+**Head Coach View (R0):**
+- Go Live for game broadcasts. Camera setup (KayVision or manual feed). Scoreboard overlay from StatKeeper. Commentary input.
+- During live: viewer count, chat, real-time StatKeeper score overlay, highlight clip button (mark moments for auto-clip), ad break insertion.
+- Multi-camera (KayVision): tactical wide, broadcast follow, baseline. Director switches feeds live. Replay from any angle.
+- After live: auto-saves VOD, highlights auto-generated, box score overlay added.
+
+**Fan/Recruit/Parent View (R9):**
+- Watch live. Chat. Score overlay. Share link. Set reminders. Live giving through Booster. Fan Challenges active during games. Audio-only option for programs without cameras.
+
+---
+
+### 17.8 Sports KayPay
+
+KayPay in Sports mode handles the athletic program's financial infrastructure. Same structure (Wallet/Pay/Invest). Where all money flows: booster donations, NIL payments, tickets, merch, Fan Challenges, scholarship disbursements, travel, equipment, operating budget. Replaces disconnected athletic department financial tools.
+
+Views: Wallet / Pay / Invest (centered contextual pill to switch)
+
+Side panel. Head Coach: program dashboard (budget, revenue, expenses, NIL pool, scholarships), approvals, vendors, travel budgets. Assistant Coach: expense reimbursements. Operations: full financial management, compliance reporting. Player: wallet, NIL earnings, scholarship. Fan/Parent: wallet, giving receipts, purchases.
+
+#### Wallet View
+
+**Head Coach View (R0):**
+
+Personal wallet (same as any user).
+
+Program account (toggle):
+- Dashboard. Budget (from AD/institution), revenue this season (Booster + tickets + merch + broadcast), expenses (travel, equipment, meals, recruiting, operations), remaining budget, NIL pool balance.
+- Revenue breakdown: donations, NIL contributions, tickets, merch, Fan Challenges, pledges, broadcast sponsorships, events. Each tappable.
+- Expense categories: travel (bus, flights, hotels, road meals), equipment (uniforms, gear), recruiting (visits, travel, camps), facilities (gym rental at Laney College), game ops (officials, staff), marketing/media, administrative (compliance, insurance).
+- Budget vs actual by category with alerts.
+- Scholarship tracker. Total budget, per-player allocation, unallocated remaining. Synced with Roster.
+- NIL pool management. Inflows (fans, collective, revenue sharing), outflows (player payments), balance, per-player allocation synced with Booster NIL. Every payment with governed settlement chain.
+- Vendor payments. Equipment, travel, meals, facilities. Invoices, scheduled payments, history.
+- Compliance financial reporting. Every dollar auditable. NCAA/NAIA/GAAC compliance. Scholarship limits. NIL tracked separately. Revenue sharing compliance. Annual report for AD.
+- Full governed settlement chain. Event, Rules, Authorization, Payment, Settlement, Audit.
+- Nexus: "Remaining travel budget?", "Recruiting spend this season?", "NIL pool balance?", "Generate compliance report."
+- Filter pills: All, Revenue, Expenses, NIL, Scholarships, Travel, Recruiting, Equipment, Vendors, This Month, This Season, Budget vs Actual, Compliance.
+- For LU demo: budget $120K. Revenue $62K from Booster. Expenses $85K. NIL pool $18K (8 player allocations). 6 vendors. Full audit trail.
+
+**Assistant Coach View (R2):**
+- Budget overview (read-only). Submit expense reimbursements. Track status.
+- Filter pills: All, My Expenses, Submitted, Approved, Reimbursed.
+
+**Operations View (R3):**
+- Full financial management. Vendor payments, reconciliation, expense approvals, compliance reports, revenue tracking.
+- Filter pills: All, Revenue, Expenses, Vendors, Pending Approvals, Compliance, This Month.
+
+**Player View (R5):**
+- Personal wallet. 4% APY, KaNeXT Card.
+- My NIL earnings. Total, breakdown (pool, marketplace, stakes). Payment history. 1099 year-end.
+- My scholarship status. Amount, disbursement schedule, balance. Synced from Roster.
+- Filter pills: All, My NIL, My Scholarship, Payments, Tax Documents.
+
+**Fan/Parent View (R9):**
+- Personal wallet. Giving receipts (every donation, pledge, challenge, stake). Tax-deductible flagged. Year-end statement. Purchase history (tickets, merch).
+- Filter pills: All, Giving Receipts, Purchases, Tax Deductible, This Season.
+
+#### Pay View
+
+**All roles:**
+- Same P2P. QR, split, remittance 0.2%. Inline from Messages.
+
+**Head Coach View (R0) additional:**
+- Vendor payment initiation. NIL disbursement to player wallets (compliance-documented). Recruiting expense approval. Travel advances with post-trip reconciliation.
+
+**Operations View (R3) additional:**
+- Process approved payments. Batch vendor payments. Purchase orders.
+
+#### Invest View
+
+**All roles:**
+- Same as all KayPay Invest. Infrastructure Fund, Bitcoin, Capital Points.
+
+**Head Coach View (R0) additional:**
+- Program endowment visibility (if applicable).
+
+---
+
+### 17.9 Sports KayStudios
+
+KayStudios in Sports mode is where the intelligence system becomes playable. Same cross-mode engine. Coaches get interactive training and tactical tools, players get development courses and IQ training, fans get College Basketball GM and trivia.
+
+If it's video, KayTV. If it's a document, Hub. If you interact, KayStudios.
+
+#### Content Types
+
+**Coaching Tools (R0-R3):**
+- Tactical draw tool. Interactive whiteboard for play design. Player icons, arrows, screens, cuts. Save to playbook. Share to players. Animate execution sequence. Replaces FastDraw.
+- Practice plan builder (interactive). Drag-and-drop drill blocks linked to film clips and tactical diagrams. Design workspace (vs Agenda which is calendar-based).
+- Coaching certification. "KaNeXT Intelligence System Mastery" - learn KR, System Fit%, archetypes for recruiting and game planning. Scenarios and assessments.
+- Scouting scenario training. Nexus presents scouting situations. Coach evaluates, Nexus provides feedback and optimal analysis.
+
+**Player Development (R5):**
+- Basketball IQ courses. "Reading PnR Coverage" (watch, identify, choose read), "Shot Selection" (situations, choose shot, see expected PPP), "Defensive Rotations" (watch, identify mistake, drag to correct).
+- Film study courses. Coach-created interactive sessions. Watch clip, answer "What should happen next?", see correct read.
+- Physical development tracking. Log workouts, track lifts/vertical/speed. Goals. Progress over time. Synced with S&C staff.
+- Academic support. Study aids, flashcards, time management. Stay eligible (synced with Roster).
+- Life skills. Financial literacy (NIL money management, taxes, agents), media training, nutrition, mental health.
+
+**Fan Experiences (R9):**
+- College Basketball GM. Flagship game. Full spec in Business KayStudios 16.9. Fans play for fun, coaches learn the system. Same leaderboard.
+- Pick'em. Weekly predictions using KR data. "KaNeXT predicts LU by 8. Agree?" Points for correct picks. Season leaderboard.
+- Basketball trivia. KR trivia, team trivia, rules, history. Quick games, leaderboards, shareable.
+- Bracket challenges. Tournament brackets powered by KR.
+- Fantasy roster builder. Dream roster from 37K pool. Salary cap. Compete on Team KR score.
+- Player comparison tool. Pick any two players, see KR comparison, traits, archetype matchup. Interactive and visual.
+
+#### RBAC Views
+
+**Head Coach View (R0):**
+- Full creator. Build coaching tools, diagrams, training. Assign player courses. Analytics on completion and engagement.
+- Filter pills (creator): All, Coaching Tools, Player Courses, Fan Experiences, Draw Tool, Playbook, Published, Drafts, Analytics.
+
+**Assistant Coach View (R2):**
+- Same. Create tactical content and training.
+
+**Operations View (R3):**
+- Create fan content (trivia, challenges). Cannot access coaching tactical tools.
+
+**Player View (R5):**
+- Required development courses (coach-assigned, deadlines). IQ training. Film study. Physical tracking. Academic. Life skills. Can also play fan experiences.
+- Filter pills: All, Required, Basketball IQ, Film Study, Workouts, Academic, Life Skills, Games, In Progress, Completed.
+
+**Fan/Recruit/Parent View (R9):**
+- All fan experiences. GM Mode featured. Free. Leaderboard. Save states. Multi-season. For recruits: GM Mode teaches the intelligence system.
+- Filter pills: All, GM Mode, Pick'em, Trivia, Brackets, Fantasy, Leaderboard.
+- For LU demo: College Basketball GM (500+ players, GAAC featured), "GAAC Trivia" (200+ plays), "Weekly Pick'em" (45 participants), "Tournament Bracket", "Dream GAAC Team" (fantasy, 30 entries), "Defensive Rotation Trainer" (player course), "NIL Financial Literacy" (15 completions).

@@ -12500,3 +12500,52 @@
   Failed URLs (in scrape_log):      1558
 ============================================================
 === ALL NJCAA DONE ===
+=== NJCAA D1 starting ===
+14:40:36 [INFO] Discovering Division I teams from https://njcaastats.prestosports.com/sports/mbkb/2025-26/div1/leaders
+14:40:37 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div1/leaders "HTTP/1.1 403 Forbidden"
+14:40:37 [WARNING] HTTP 403: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div1/leaders
+
+============================================================
+  NJCAA SCRAPER — FINAL SUMMARY
+============================================================
+  Total teams discovered & scraped: 2840
+  Total players in database:        31850
+  Total games with box scores:      27587
+  Total player_game_stats rows:     467049
+  Total team_game_stats rows:       21418
+  Total HTTP requests:              46708
+  Failed URLs (in scrape_log):      569
+============================================================
+=== NJCAA D1 done, starting D2 ===
+14:40:37 [INFO] Discovering Division II teams from https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/leaders
+14:40:38 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/leaders "HTTP/1.1 403 Forbidden"
+14:40:38 [WARNING] HTTP 403: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div2/leaders
+
+============================================================
+  NJCAA SCRAPER — FINAL SUMMARY
+============================================================
+  Total teams discovered & scraped: 2840
+  Total players in database:        31850
+  Total games with box scores:      27587
+  Total player_game_stats rows:     467049
+  Total team_game_stats rows:       21418
+  Total HTTP requests:              46709
+  Failed URLs (in scrape_log):      570
+============================================================
+=== NJCAA D2 done, starting D3 ===
+14:40:38 [INFO] Discovering Division III teams from https://njcaastats.prestosports.com/sports/mbkb/2025-26/div3/leaders
+14:40:38 [INFO] HTTP Request: GET https://njcaastats.prestosports.com/sports/mbkb/2025-26/div3/leaders "HTTP/1.1 403 Forbidden"
+14:40:38 [WARNING] HTTP 403: https://njcaastats.prestosports.com/sports/mbkb/2025-26/div3/leaders
+
+============================================================
+  NJCAA SCRAPER — FINAL SUMMARY
+============================================================
+  Total teams discovered & scraped: 2840
+  Total players in database:        31850
+  Total games with box scores:      27587
+  Total player_game_stats rows:     467049
+  Total team_game_stats rows:       21418
+  Total HTTP requests:              46710
+  Failed URLs (in scrape_log):      571
+============================================================
+=== ALL NJCAA DONE ===

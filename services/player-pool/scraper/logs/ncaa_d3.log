@@ -1,0 +1,66 @@
+14:52:02 [INFO] 
+============================================================
+14:52:02 [INFO]   STARTING NCAA Division III
+14:52:02 [INFO] ============================================================
+14:52:02 [INFO] Discovering NCAA Division III teams from https://stats.ncaa.org/team/inst_team_list
+14:52:02 [INFO] Initializing session (warming up cookies)...
+14:52:08 [INFO] Found 408 teams in NCAA Division III
+14:52:08 [INFO] Mapping conferences via team search API...
+14:54:11 [INFO]   Conference mapping: 50/349 search terms processed
+14:56:17 [INFO]   Conference mapping: 100/349 search terms processed
+14:58:21 [INFO]   Conference mapping: 150/349 search terms processed
+15:00:25 [INFO]   Conference mapping: 200/349 search terms processed
+15:02:30 [INFO]   Conference mapping: 250/349 search terms processed
+15:04:33 [INFO]   Conference mapping: 300/349 search terms processed
+15:06:34 [INFO] Mapped 408/408 teams to conferences
+15:06:35 [INFO] Loaded 408 teams into database
+15:06:35 [INFO] 
+Scraping player season stats from ranking pages...
+15:06:37 [INFO]   Detected ranking period for division 3: 118.0
+15:06:37 [INFO]   Using ranking period: 118.0
+15:06:37 [INFO]   Fetching PPG rankings...
+15:06:40 [INFO]     200 players from PPG
+15:06:40 [INFO]   Fetching FG% rankings...
+15:06:43 [INFO]     200 players from FG%
+15:06:43 [INFO]   Fetching Total FGM rankings...
+15:06:46 [INFO]     200 players from Total FGM
+15:06:46 [INFO]   Fetching 3P% rankings...
+15:06:48 [INFO]     99 players from 3P%
+15:06:48 [INFO]   Fetching Total 3PM rankings...
+15:06:51 [INFO]     200 players from Total 3PM
+15:06:51 [INFO]   Fetching FT% rankings...
+15:06:54 [INFO]     200 players from FT%
+15:06:54 [INFO]   Fetching Total FTM rankings...
+15:06:57 [INFO]     209 players from Total FTM
+15:06:57 [INFO]   Fetching Total Rebounds rankings...
+15:07:03 [INFO]     202 players from Total Rebounds
+15:07:03 [INFO]   Fetching Assist/Turnover Ratio rankings...
+15:07:06 [INFO]     200 players from A/TO Ratio
+15:07:06 [INFO]   Fetching Steals Per Game rankings...
+15:07:12 [INFO]     203 players from SPG
+15:07:12 [INFO]   Fetching Blocks Per Game rankings...
+15:07:18 [INFO]     202 players from BPG
+15:07:18 [INFO]   Fetching Minutes Per Game rankings...
+15:07:23 [INFO]     200 players from MPG
+15:07:23 [INFO]   Fetching Assists Per Game rankings...
+15:07:29 [INFO]     200 players from APG
+15:07:29 [INFO]   Fetching Rebounds Per Game rankings...
+15:07:35 [INFO]     201 players from RPG
+15:07:35 [INFO]   Merged stats for 1061 unique players
+15:07:35 [INFO] 
+Loading player stats into database...
+15:07:41 [INFO] Loaded 1061 players, 27185 synthetic game rows (0 unmatched to teams)
+15:07:41 [INFO] 
+NCAA Division III COMPLETE: 408 teams, 1061 players with stats
+
+============================================================
+  NCAA D3 SCRAPER -- FINAL SUMMARY
+============================================================
+  Total teams discovered & scraped: 3305
+  Total players in database:        31924
+  Total games with box scores:      38248
+  Total player_game_stats rows:     499685
+  Total team_game_stats rows:       21418
+  Total HTTP requests:              48057
+  Failed URLs (in scrape_log):      571
+============================================================
