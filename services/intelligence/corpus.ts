@@ -75,22 +75,26 @@ After responding, flag any corrections or new data discovered for pool update: h
 **Trigger:** "Evaluate [player]", "What's [player]'s KR?", "Rate this player", any request to assess an individual player's basketball identity.
 
 **Files needed:**
-- **01** (Process) -- Follow the pipeline steps
-- **02** (Reference) -- Look up traits, archetypes, badges, legends as needed during pipeline execution
+- **02** (Reference) -- Look up the KR Legend at the player's level
+- **01** (Process) -- Follow the pipeline steps if doing a full trait breakdown
 
-**Steps:**
-1. Pull File 01. Follow Coach Context Setup to establish level/system.
-2. Determine evaluation mode: Full (if trait-level data) or Contextual (if public metrics only).
-3. For Contextual Mode: follow the 6-phase sequence in File 01.
-4. During evaluation, search File 02 for specific reference tables as needed:
-   - "Trait Library" + [cluster name] for scoring bands
-   - "Archetype Library" for gate rules
-   - "Badges" for badge qualification
-   - "System Risks" for risk assessment
-   - "Overrides" for override triggers
-   - "KLVN" for level normalization
-   - "College Player KR Legends" or "Pro Player KR Legend" for final interpretation
-5. Output: KR range, archetype, badges, confidence, legend interpretation.
+**Steps (THIS ORDER IS MANDATORY):**
+
+1. **Establish context.** Level, school, conference, position, class, height/weight. Use pool data and web search results from the Data Gathering Protocol.
+
+2. **PHASE 3 -- PRODUCTION ANCHOR (this is the primary KR determinant).** Read the KR Legend at the player's level. Map the player's full production profile (PPG, RPG, APG, efficiency, usage, awards, team success, BPR) against the legend tier descriptions. Find the tier that matches. That tier's KR range IS the anchor. Write it down before doing anything else.
+
+   Example: A player averaging 22/10/4 on .570/.390/.800 as a freshman starter at D1 HM with All-Conference honors maps to the 95-97 tier ("Franchise Anchor / Elite All-American"). The anchor is 95-97.
+
+3. **PHASE 6 -- TRAIT SCORING (this adjusts the anchor, it does not replace it).** Score individual traits from the data. Compute component KRs (OKR, DKR, TKR, IQKR). Run OPF math if desired. The Phase 6 output tells you the DIRECTION within the anchor range -- whether the player sits at the top, middle, or bottom of their tier.
+
+4. **PHASE 6 ADJUSTS WITHIN PHASE 3 +/- 10.** The final KR must fall within the Phase 3 anchor range expanded by 10 in either direction. If Phase 6 math produces a number more than 10 points below the Phase 3 low, the trait scores are too conservative -- re-examine inferred traits. The OPF math NEVER overrides the production anchor.
+
+   Example: Phase 3 anchor is 95-97. Phase 6 can push the final KR anywhere from 85 to 100. If Phase 6 produces 84, something is wrong with the trait scoring, not the anchor.
+
+5. **Output.** Final KR (single number), KR range, component KRs (OKR, DKR, TKR, IQKR), confidence %, Level Tier Map (what the KR means at other levels), key strengths, key weaknesses, badges if applicable.
+
+**CRITICAL RULE: The legend anchor is truth. The math is confirmation. Not the other way around.**
 
 ### MODE 2: TEAM EVALUATION
 **Trigger:** "Evaluate [team]", "What's [team]'s Team KR?", "Roster analysis", any request to assess a team's collective basketball identity.
@@ -234,7 +238,7 @@ After responding, flag any corrections or new data discovered for pool update: h
 - v1.0: Original monolithic skill
 - v2.0: Updated for System Risks v3.2, Overrides v3, Pro Transition, Suppression Protocol, Roster Decision v2, Physical Mismatch, CIM v1
 - v3.0: Reorganized file structure. Split Player Intelligence megadoc into Process (01) and Reference (02). Separated Team Intelligence (03), Simulation (04), Scouting (05), and Downstream Engines (06) into standalone files. Added Mode 7 (Legend Calibration). Updated all cross-references.
-- v4.0: Added Data Gathering Protocol (pool + web + social sequence). Added Enrichment Writeback rules. Nexus now gathers data from three sources before any evaluation or player inquiry and writes corrections back to the pool.`;
+- v4.0: Added Data Gathering Protocol (pool + web + social sequence). Added Enrichment Writeback rules. Rewrote Mode 1 (Player Evaluation) to enforce anchor-first evaluation: Phase 3 legend anchor is the primary KR determinant, Phase 6 trait math adjusts within +/- 10, never overrides. Nexus now gathers data from three sources before any evaluation or player inquiry and writes corrections back to the pool.`;
 
 export const FILE_01 = `# COACH CONTEXT SETUP
 

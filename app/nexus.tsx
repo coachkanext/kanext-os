@@ -60,7 +60,7 @@ import type { NexusArtifact } from '@/services/nexus/nexus-artifact-extractor';
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const API_URL     = 'https://api.anthropic.com/v1/messages';
-const MAX_TOKENS  = 4096;
+const MAX_TOKENS  = 8192;
 const MAX_HISTORY = 20;
 
 const GENERIC_PROMPT =
@@ -699,6 +699,20 @@ export default function NexusScreen() {
           scrollToEnd(true);
         },
         (err) => {
+          // Auto-retry on 429 rate limit — wait 15s then re-enter the loop
+          if (err.message.startsWith('429') && iters > 0 && !abortRef.current) {
+            console.warn('[Nexus] 429 rate limit — retrying in 60s');
+            const retryMsg = 'Rate limit reached — retrying in 60 seconds…';
+            setMessages(prev => prev.map(m =>
+              m.id === assistantId
+                ? { ...m, raw: retryMsg, segments: [{ type: 'text', text: retryMsg }] }
+                : m
+            ));
+            setTimeout(() => {
+              if (!abortRef.current) streamLoop(apiMessages, iters - 1);
+            }, 60_000);
+            return;
+          }
           console.error('[Nexus] stream error:', err.message);
           const msg = `Sorry, something went wrong — ${err.message}. Please try again.`;
           setMessages(prev => prev.map(m =>
