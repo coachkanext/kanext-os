@@ -1228,11 +1228,11 @@ export default function RecruitsScreen() {
             </Text>
           </View>
         ) : (
-          poolResults.map((p) => {
+          poolResults.map((p, idx) => {
             const initials = initialsFrom(p.fullName);
             const hue      = hueFrom(p.id);
             return (
-              <GlassView key={p.id} tier={1} style={s.poolCard}>
+              <GlassView key={`pool-${idx}`} tier={1} style={s.poolCard}>
                 {/* Row 1: Avatar + info */}
                 <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
                   <AvatarCircle initials={initials} hue={hue} size={42} />
@@ -1787,11 +1787,11 @@ export default function RecruitsScreen() {
             </Text>
           </View>
         ) : (
-          portalResults.map((p) => {
+          portalResults.map((p, idx) => {
             const initials = initialsFrom(p.fullName);
             const hue      = hueFrom(p.id);
             return (
-              <GlassView key={p.id} tier={1} style={s.portalCard}>
+              <GlassView key={`portal-${idx}`} tier={1} style={s.portalCard}>
                 {/* Row 1 */}
                 <View
                   style={{

@@ -252,7 +252,7 @@ export default function KayPayScreen(){
             {MONTHLY_SUMMARY.breakdown.map(cat=>{
               const pct=cat.amount/MONTHLY_SUMMARY.spent;
               return(
-                <View key={cat.label} style={[s.row,{marginBottom:7,gap:8}]}>
+                <View key={cat.category} style={[s.row,{marginBottom:7,gap:8}]}>
                   <Text style={{width:90,fontSize:12,color:C.secondary}}>{cat.label}</Text>
                   <View style={{flex:1,height:6,backgroundColor:C.separator,borderRadius:3,overflow:"hidden"}}>
                     <View style={{width:(Math.round(pct*100))+"%" as any,height:6,backgroundColor:cat.color,borderRadius:3}}/>
