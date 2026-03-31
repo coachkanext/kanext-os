@@ -12,7 +12,7 @@ import React, {
 } from 'react';
 import {
   View, Text, Pressable, ScrollView, TextInput,
-  StyleSheet, Alert,
+  StyleSheet, Alert, Animated,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -47,12 +47,14 @@ interface GameEvent {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const NAVY       = '#1A1714';
-const HOME_COLOR = 'hsl(185, 55%, 32%)';
-const AWAY_COLOR = 'hsl(215, 45%, 35%)';
-const GREEN      = '#5A8A6E';
-const RED        = '#B85C5C';
-const CORAL      = '#1A1714';
+const NAVY        = '#1A1714';
+
+// Semantic event colors (used outside component where C isn't accessible)
+const EV_GAIN     = '#5A8A6E';
+const EV_HEAT     = '#B85C5C';
+const EV_CAUTION  = '#B8943E';
+const EV_CARBON   = '#1A1714';
+const EV_DRIFT    = '#9C9790';
 
 const GAME_TYPES: GameType[] = ['Regular', 'Conference', 'Tournament', 'Scrimmage'];
 const HALF_PRESETS = [20, 16] as const;
@@ -72,15 +74,15 @@ function periodLabel(p: Period): string {
 }
 
 function eventColor(e: GameEvent): string {
-  if (e.eventType === 'shot') return e.result === 'make' ? GREEN : RED;
-  if (e.eventType === 'rebound')  return '#1A1714';
-  if (e.eventType === 'turnover') return '#F5A623';
-  if (e.eventType === 'steal')    return GREEN;
-  if (e.eventType === 'assist')   return '#8B63C8';
-  if (e.eventType === 'block')    return NAVY;
-  if (e.eventType === 'foul')     return '#B85C5C';
-  if (e.eventType === 'sub')      return '#8B9AA8';
-  return '#888';
+  if (e.eventType === 'shot') return e.result === 'make' ? EV_GAIN : EV_HEAT;
+  if (e.eventType === 'rebound')  return EV_CARBON;
+  if (e.eventType === 'turnover') return EV_HEAT;
+  if (e.eventType === 'steal')    return EV_GAIN;
+  if (e.eventType === 'assist')   return EV_CARBON;
+  if (e.eventType === 'block')    return EV_CARBON;
+  if (e.eventType === 'foul')     return EV_CAUTION;
+  if (e.eventType === 'sub')      return EV_DRIFT;
+  return EV_DRIFT;
 }
 
 function eventLabel(e: GameEvent, players: GamePlayer[]): string {
@@ -131,13 +133,15 @@ export default function StatKeeperScreen() {
   const [period,         setPeriod]         = useState<Period>(1);
 
   // ── Overlay state ───────────────────────────────────────────────────────────
-  const [showSubOverlay,  setShowSubOverlay]  = useState(false);
-  const [showFoulOverlay, setShowFoulOverlay] = useState(false);
-  const [showFullPbp,     setShowFullPbp]     = useState(false);
-  const [subTeamId,       setSubTeamId]       = useState<'home' | 'away' | null>(null);
-  const [subIncomingId,   setSubIncomingId]   = useState<string | null>(null);
-  const [boxScoreTeam,    setBoxScoreTeam]    = useState<'home' | 'away'>('home');
-  const [toastMsg,        setToastMsg]        = useState<string | null>(null);
+  const [showSubOverlay,    setShowSubOverlay]    = useState(false);
+  const [showFoulOverlay,   setShowFoulOverlay]   = useState(false);
+  const [showFullPbp,       setShowFullPbp]       = useState(false);
+  const [showScoreBlast,    setShowScoreBlast]    = useState(false);
+  const [showTimeoutSheet,  setShowTimeoutSheet]  = useState(false);
+  const [subTeamId,         setSubTeamId]         = useState<'home' | 'away' | null>(null);
+  const [subIncomingId,     setSubIncomingId]     = useState<string | null>(null);
+  const [boxScoreTeam,      setBoxScoreTeam]      = useState<'home' | 'away'>('home');
+  const [toastMsg,          setToastMsg]          = useState<string | null>(null);
 
   const clockRef    = useRef<ReturnType<typeof setInterval> | null>(null);
   const toastTimer  = useRef<ReturnType<typeof setTimeout>  | null>(null);
@@ -364,13 +368,13 @@ export default function StatKeeperScreen() {
   // ============================================================================
 
   const renderSetup = () => (
-    <View style={{ flex: 1, backgroundColor: C.bg }}>
+    <View style={{ flex: 1, backgroundColor: C.paper }}>
       {/* Top bar */}
-      <View style={[S.setupTopBar, { paddingTop: insets.top, borderBottomColor: C.separator }]}>
+      <View style={[S.setupTopBar, { paddingTop: insets.top, borderBottomColor: C.mist }]}>
         <Pressable hitSlop={8} onPress={() => router.back()} style={S.iconBtn}>
-          <IconSymbol name="chevron.left" size={20} color={C.label} />
+          <IconSymbol name="chevron.left" size={20} color={C.carbon} />
         </Pressable>
-        <Text style={[S.setupTitle, { color: C.label }]}>Game Setup</Text>
+        <Text style={[S.setupTitle, { color: C.carbon }]}>Game Setup</Text>
         <View style={{ width: 36 }} />
       </View>
 
@@ -381,32 +385,32 @@ export default function StatKeeperScreen() {
       >
 
         {/* Team Names */}
-        <Text style={[S.sectionLabel, { color: C.secondary }]}>TEAMS</Text>
-        <View style={[S.card, { backgroundColor: C.surface }]}>
+        <Text style={[S.sectionLabel, { color: C.drift }]}>TEAMS</Text>
+        <View style={[S.card, { backgroundColor: C.linen }]}>
           <View style={S.inputRow}>
-            <View style={[S.teamDot, { backgroundColor: HOME_COLOR }]} />
+            <View style={[S.teamDot, { backgroundColor: C.gain }]} />
             <TextInput
-              style={[S.teamInput, { color: C.label, borderBottomColor: C.separator }]}
+              style={[S.teamInput, { color: C.carbon, borderBottomColor: C.mist }]}
               value={homeName}
               onChangeText={setHomeName}
               placeholder="Home team name"
-              placeholderTextColor={C.muted}
+              placeholderTextColor={C.drift}
             />
           </View>
           <View style={S.inputRow}>
-            <View style={[S.teamDot, { backgroundColor: AWAY_COLOR }]} />
+            <View style={[S.teamDot, { backgroundColor: C.drift }]} />
             <TextInput
-              style={[S.teamInput, { color: C.label, borderBottomColor: C.separator, borderBottomWidth: 0 }]}
+              style={[S.teamInput, { color: C.carbon, borderBottomColor: C.mist, borderBottomWidth: 0 }]}
               value={awayName}
               onChangeText={setAwayName}
               placeholder="Away team name"
-              placeholderTextColor={C.muted}
+              placeholderTextColor={C.drift}
             />
           </View>
         </View>
 
         {/* Game Type */}
-        <Text style={[S.sectionLabel, { color: C.secondary }]}>GAME TYPE</Text>
+        <Text style={[S.sectionLabel, { color: C.drift }]}>GAME TYPE</Text>
         <View style={S.pillRow}>
           {GAME_TYPES.map(gt => {
             const active = gameType === gt;
@@ -415,18 +419,18 @@ export default function StatKeeperScreen() {
                 key={gt}
                 onPress={() => { Haptics.selectionAsync(); setGameType(gt); }}
                 style={[S.pill, {
-                  backgroundColor: active ? NAVY : C.surface,
-                  borderColor: active ? NAVY : C.inputBorder,
+                  backgroundColor: active ? C.carbon : C.linen,
+                  borderColor: active ? C.carbon : C.mist,
                 }]}
               >
-                <Text style={[S.pillText, { color: active ? '#fff' : C.secondary }]}>{gt}</Text>
+                <Text style={[S.pillText, { color: active ? C.paper : C.drift }]}>{gt}</Text>
               </Pressable>
             );
           })}
         </View>
 
         {/* Half Length */}
-        <Text style={[S.sectionLabel, { color: C.secondary }]}>HALF LENGTH</Text>
+        <Text style={[S.sectionLabel, { color: C.drift }]}>HALF LENGTH</Text>
         <View style={S.pillRow}>
           {HALF_PRESETS.map(m => {
             const active = halfMinutes === m;
@@ -435,27 +439,27 @@ export default function StatKeeperScreen() {
                 key={m}
                 onPress={() => { Haptics.selectionAsync(); setHalfMinutes(m); setCustomMinutes(''); }}
                 style={[S.pill, {
-                  backgroundColor: active ? NAVY : C.surface,
-                  borderColor: active ? NAVY : C.inputBorder,
+                  backgroundColor: active ? C.carbon : C.linen,
+                  borderColor: active ? C.carbon : C.mist,
                 }]}
               >
-                <Text style={[S.pillText, { color: active ? '#fff' : C.secondary }]}>{m} min</Text>
+                <Text style={[S.pillText, { color: active ? C.paper : C.drift }]}>{m} min</Text>
               </Pressable>
             );
           })}
           <Pressable
             onPress={() => { Haptics.selectionAsync(); setHalfMinutes(0); }}
             style={[S.pill, {
-              backgroundColor: halfMinutes === 0 ? NAVY : C.surface,
-              borderColor: halfMinutes === 0 ? NAVY : C.inputBorder,
+              backgroundColor: halfMinutes === 0 ? C.carbon : C.linen,
+              borderColor: halfMinutes === 0 ? C.carbon : C.mist,
             }]}
           >
-            <Text style={[S.pillText, { color: halfMinutes === 0 ? '#fff' : C.secondary }]}>Custom</Text>
+            <Text style={[S.pillText, { color: halfMinutes === 0 ? C.paper : C.drift }]}>Custom</Text>
           </Pressable>
         </View>
         {halfMinutes === 0 && (
           <TextInput
-            style={[S.customInput, { backgroundColor: C.surface, color: C.label, borderColor: C.inputBorder }]}
+            style={[S.customInput, { backgroundColor: C.linen, color: C.carbon, borderColor: C.mist }]}
             value={customMinutes}
             onChangeText={t => {
               setCustomMinutes(t);
@@ -463,7 +467,7 @@ export default function StatKeeperScreen() {
               if (!isNaN(n) && n > 0) setHalfMinutes(n);
             }}
             placeholder="Enter minutes"
-            placeholderTextColor={C.muted}
+            placeholderTextColor={C.drift}
             keyboardType="number-pad"
           />
         )}
@@ -478,9 +482,9 @@ export default function StatKeeperScreen() {
         <Pressable
           onPress={startGame}
           disabled={!canStart}
-          style={[S.startBtn, { backgroundColor: canStart ? NAVY : C.surfacePressed }]}
+          style={[S.startBtn, { backgroundColor: canStart ? C.carbon : C.mist }]}
         >
-          <Text style={[S.startBtnText, { color: canStart ? '#fff' : C.muted }]}>
+          <Text style={[S.startBtnText, { color: canStart ? C.paper : C.drift }]}>
             Start Game
           </Text>
         </Pressable>
@@ -505,23 +509,23 @@ export default function StatKeeperScreen() {
       : () => setAwayExpanded(v => !v);
     const starters = players.filter(p => p.isOnCourt).length;
     const name     = teamId === 'home' ? homeName : awayName;
-    const dotColor = teamId === 'home' ? HOME_COLOR : AWAY_COLOR;
+    const dotColor = teamId === 'home' ? C.gain : C.drift;
 
     return (
       <View key={teamId}>
-        <Text style={[S.sectionLabel, { color: C.secondary }]}>
+        <Text style={[S.sectionLabel, { color: C.drift }]}>
           {name.toUpperCase()} ROSTER
         </Text>
-        <View style={[S.card, { backgroundColor: C.surface }]}>
+        <View style={[S.card, { backgroundColor: C.linen }]}>
           <Pressable
             onPress={toggle}
-            style={[S.rosterHeader, { borderBottomColor: expanded ? C.separator : 'transparent' }]}
+            style={[S.rosterHeader, { borderBottomColor: expanded ? C.mist : 'transparent' }]}
           >
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <View style={[S.teamDot, { backgroundColor: dotColor }]} />
-              <Text style={[S.rosterHeaderText, { color: C.label }]}>{name}</Text>
-              <View style={[S.starterBadge, { backgroundColor: starters === 5 ? GREEN + '20' : C.surfacePressed }]}>
-                <Text style={[S.starterBadgeText, { color: starters === 5 ? GREEN : C.secondary }]}>
+              <Text style={[S.rosterHeaderText, { color: C.carbon }]}>{name}</Text>
+              <View style={[S.starterBadge, { backgroundColor: starters === 5 ? C.gain + '20' : C.mist }]}>
+                <Text style={[S.starterBadgeText, { color: starters === 5 ? C.gain : C.drift }]}>
                   {starters}/5
                 </Text>
               </View>
@@ -529,7 +533,7 @@ export default function StatKeeperScreen() {
             <IconSymbol
               name={expanded ? 'chevron.up' : 'chevron.down'}
               size={14}
-              color={C.muted}
+              color={C.drift}
             />
           </Pressable>
           {expanded && players.map((p, i) => (
@@ -538,17 +542,17 @@ export default function StatKeeperScreen() {
               onPress={() => toggleStarter(p.id, teamId)}
               style={[
                 S.playerRow,
-                { borderBottomColor: C.separator },
+                { borderBottomColor: C.mist },
                 i === players.length - 1 && { borderBottomWidth: 0 },
               ]}
             >
-              <View style={[S.jerseyCircle, { backgroundColor: p.isOnCourt ? dotColor : C.surfacePressed }]}>
-                <Text style={[S.jerseyNum, { color: p.isOnCourt ? '#fff' : C.muted }]}>
+              <View style={[S.jerseyCircle, { backgroundColor: p.isOnCourt ? dotColor : C.mist }]}>
+                <Text style={[S.jerseyNum, { color: p.isOnCourt ? C.paper : C.drift }]}>
                   {p.number}
                 </Text>
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={[S.playerName, { color: C.label }]}>
+                <Text style={[S.playerName, { color: C.carbon }]}>
                   {p.firstName} {p.lastName}
                 </Text>
               </View>
@@ -556,9 +560,9 @@ export default function StatKeeperScreen() {
                 S.starterToggle,
                 p.isOnCourt
                   ? { backgroundColor: dotColor }
-                  : { borderWidth: 1.5, borderColor: C.inputBorder },
+                  : { borderWidth: 1.5, borderColor: C.mist },
               ]}>
-                {p.isOnCourt && <IconSymbol name="checkmark" size={12} color="#fff" />}
+                {p.isOnCourt && <IconSymbol name="checkmark" size={12} color={C.paper} />}
               </View>
             </Pressable>
           ))}
@@ -572,62 +576,82 @@ export default function StatKeeperScreen() {
   // ============================================================================
 
   const renderLive = () => (
-    <View style={{ flex: 1, backgroundColor: C.bg }}>
+    <View style={{ flex: 1, backgroundColor: C.paper }}>
 
       {/* Top bar */}
-      <View style={[S.liveTopBar, { paddingTop: insets.top, backgroundColor: NAVY }]}>
-        <Pressable hitSlop={8} onPress={handleLiveBack} style={S.iconBtn}>
-          <IconSymbol name="chevron.left" size={20} color="rgba(255,255,255,0.8)" />
+      <View style={[S.liveTopBar, { paddingTop: insets.top, backgroundColor: C.paper, borderBottomColor: C.mist, borderBottomWidth: StyleSheet.hairlineWidth }]}>
+        {/* Exit button */}
+        <Pressable hitSlop={8} onPress={handleLiveBack} style={S.topBarIconBtn}>
+          <View style={[S.topBarCircle, { backgroundColor: C.mist }]}>
+            <IconSymbol name="chevron.left" size={16} color={C.carbon} />
+          </View>
+          <Text style={[S.topBarBtnLabel, { color: C.drift }]}>Exit</Text>
         </Pressable>
-        <Text style={S.liveTopTitle}>StatKeeper</Text>
-        <Pressable hitSlop={8} onPress={undoLast} style={S.iconBtn} disabled={events.length === 0}>
-          <IconSymbol
-            name="arrow.uturn.backward"
-            size={18}
-            color={events.length > 0 ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.25)'}
-          />
+
+        <Text style={[S.liveTopTitle, { color: C.carbon }]}>StatKeeper</Text>
+
+        {/* Undo button */}
+        <Pressable hitSlop={8} onPress={undoLast} style={S.topBarIconBtn} disabled={events.length === 0}>
+          <View style={[S.topBarCircle, { backgroundColor: events.length > 0 ? C.mist : C.paper, borderWidth: 1, borderColor: C.mist }]}>
+            <IconSymbol name="arrow.uturn.backward" size={14} color={events.length > 0 ? C.carbon : C.drift} />
+          </View>
+          <Text style={[S.topBarBtnLabel, { color: C.drift }]}>Undo</Text>
         </Pressable>
       </View>
 
+      {/* Current Five strip */}
+      <View style={[S.currentFiveStrip, { backgroundColor: C.paper, borderBottomColor: C.mist }]}>
+        {homeOnCourt.slice(0, 5).map(p => (
+          <View key={p.id} style={[S.currentFivePill, { backgroundColor: C.linen, borderColor: C.mist }]}>
+            <Text style={[S.currentFiveNum, { color: C.carbon }]}>{p.number}</Text>
+          </View>
+        ))}
+      </View>
+
       {/* Scoreboard */}
-      <View style={[S.scoreboard, { backgroundColor: NAVY }]}>
+      <View style={[S.scoreboard, { backgroundColor: C.paper, borderBottomColor: C.mist, borderBottomWidth: StyleSheet.hairlineWidth }]}>
         <View style={S.scoreTeam}>
-          <Text style={S.scoreTeamName} numberOfLines={1}>{homeName}</Text>
-          <Text style={S.scoreDigits}>{homeScore}</Text>
+          <Text style={[S.scoreTeamName, { color: C.drift }]} numberOfLines={1}>{homeName}</Text>
+          <Text style={[S.scoreDigits, { color: C.carbon }]}>{homeScore}</Text>
         </View>
         <View style={S.scoreMid}>
-          <Text style={S.periodText}>{periodLabel(period)}</Text>
+          {/* Period pill */}
+          <View style={[S.periodPill, { backgroundColor: C.linen, borderColor: C.mist }]}>
+            <Text style={[S.periodText, { color: C.carbon }]}>{periodLabel(period)}</Text>
+          </View>
           <View style={S.clockRow}>
-            <Text style={S.clockText}>{formatClock(clockSeconds)}</Text>
+            <Text style={[S.clockText, { color: C.carbon }]}>{formatClock(clockSeconds)}</Text>
             <Pressable
               hitSlop={8}
               onPress={() => { setClockRunning(r => !r); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
               style={S.clockBtn}
             >
-              <IconSymbol
-                name={clockRunning ? 'pause.fill' : 'play.fill'}
-                size={16}
-                color={CORAL}
-              />
+              <IconSymbol name={clockRunning ? 'pause.fill' : 'play.fill'} size={14} color={C.carbon} />
             </Pressable>
           </View>
-          <Pressable
-            onPress={endPeriod}
-            style={[S.endPeriodBtn, { borderColor: 'rgba(255,255,255,0.3)' }]}
-          >
-            <Text style={S.endPeriodText}>
-              {period === 2 || period === 'OT2' ? 'End Game' : 'End Period'}
-            </Text>
-          </Pressable>
+          {/* Score Blast + Timeout + End Period row */}
+          <View style={{ flexDirection: 'row', gap: 6, marginTop: 2 }}>
+            <Pressable onPress={() => setShowScoreBlast(true)} style={[S.scoreMidIconBtn, { backgroundColor: C.linen, borderColor: C.mist }]}>
+              <IconSymbol name="bell.fill" size={12} color={C.carbon} />
+            </Pressable>
+            <Pressable onPress={() => setShowTimeoutSheet(true)} style={[S.scoreMidIconBtn, { backgroundColor: C.linen, borderColor: C.mist }]}>
+              <IconSymbol name="clock.fill" size={12} color={C.carbon} />
+            </Pressable>
+            <Pressable onPress={endPeriod} style={[S.endPeriodBtn, { backgroundColor: C.carbon }]}>
+              <Text style={[S.endPeriodText, { color: C.paper }]}>
+                {period === 2 || period === 'OT2' ? 'End Game' : 'End Half'}
+              </Text>
+            </Pressable>
+          </View>
         </View>
         <View style={[S.scoreTeam, { alignItems: 'flex-end' }]}>
-          <Text style={S.scoreTeamName} numberOfLines={1}>{awayName}</Text>
-          <Text style={S.scoreDigits}>{awayScore}</Text>
+          <Text style={[S.scoreTeamName, { color: C.drift }]} numberOfLines={1}>{awayName}</Text>
+          <Text style={[S.scoreDigits, { color: C.carbon }]}>{awayScore}</Text>
         </View>
       </View>
 
       {/* Player selection */}
-      <View style={[S.playerSelect, { borderBottomColor: C.separator }]}>
+      <View style={[S.playerSelect, { borderBottomColor: C.mist }]}>
         {renderPlayerRow('home', homeOnCourt)}
         {renderPlayerRow('away', awayOnCourt)}
       </View>
@@ -637,73 +661,92 @@ export default function StatKeeperScreen() {
 
         {/* Left: Make / Miss */}
         <View style={S.makeMissPanel}>
+          {/* Column headers */}
+          <View style={S.shotHeaders}>
+            <Text style={[S.shotHeaderMake, { color: C.gain }]}>MAKE</Text>
+            <Text style={[S.shotHeaderMiss, { color: C.heat }]}>MISS</Text>
+          </View>
           {[
-            { sub: '3pt',  label: '3PT' },
-            { sub: '2pt',  label: '2PT' },
-            { sub: 'ft',   label: 'FT'  },
+            { sub: '3pt', label: '3PT' },
+            { sub: '2pt', label: '2PT' },
+            { sub: 'ft',  label: 'FT'  },
           ].map(({ sub, label }) => (
             <View key={sub} style={S.shotRow}>
+              {/* Make button: Gain stroke, Paper fill */}
               <Pressable
                 onPress={() => logEvent('shot', sub, 'make')}
-                style={[S.shotBtn, { borderColor: GREEN }]}
+                style={[S.shotCircle, { borderColor: C.gain, backgroundColor: C.paper }]}
               >
-                <Text style={[S.shotBtnMark, { color: GREEN }]}>✓</Text>
-                <Text style={[S.shotBtnLabel, { color: GREEN }]}>{label}</Text>
+                <Text style={[S.shotCircleLabel, { color: C.carbon }]}>{label}</Text>
               </Pressable>
+              {/* Miss button: Heat stroke, Paper fill */}
               <Pressable
                 onPress={() => logEvent('shot', sub, 'miss')}
-                style={[S.shotBtn, { borderColor: RED }]}
+                style={[S.shotCircle, { borderColor: C.heat, backgroundColor: C.paper }]}
               >
-                <Text style={[S.shotBtnMark, { color: RED }]}>✗</Text>
-                <Text style={[S.shotBtnLabel, { color: RED }]}>{label}</Text>
+                <Text style={[S.shotCircleLabel, { color: C.carbon }]}>{label}</Text>
               </Pressable>
             </View>
           ))}
         </View>
 
         {/* Divider */}
-        <View style={[S.panelDivider, { backgroundColor: C.separator }]} />
+        <View style={[S.panelDivider, { backgroundColor: C.mist }]} />
 
         {/* Right: Stat buttons */}
         <View style={S.statPanel}>
-          {[
-            [
-              { label: 'D-Reb', onPress: () => logEvent('rebound', 'def', null) },
-              { label: 'O-Reb', onPress: () => logEvent('rebound', 'off', null) },
-            ],
-            [
-              { label: 'TO',    onPress: () => logEvent('turnover', null, null) },
-              { label: 'STL',   onPress: () => logEvent('steal', null, null) },
-            ],
-            [
-              { label: 'AST',   onPress: () => logEvent('assist', null, null) },
-              { label: 'BLK',   onPress: () => logEvent('block', null, null) },
-            ],
-            [
-              { label: 'Sub',   onPress: () => {
+          {/* DEF Reb / OFF Reb */}
+          <View style={S.statRow}>
+            <Pressable onPress={() => logEvent('rebound', 'def', null)} style={[S.statCircle, { backgroundColor: C.linen, borderColor: C.mist }]}>
+              <Text style={[S.statCircleTop, { color: C.carbon }]}>DEF</Text>
+              <Text style={[S.statCircleBot, { color: C.drift }]}>reb</Text>
+            </Pressable>
+            <Pressable onPress={() => logEvent('rebound', 'off', null)} style={[S.statCircle, { backgroundColor: C.linen, borderColor: C.mist }]}>
+              <Text style={[S.statCircleTop, { color: C.carbon }]}>OFF</Text>
+              <Text style={[S.statCircleBot, { color: C.drift }]}>reb</Text>
+            </Pressable>
+          </View>
+          {/* TO / STL */}
+          <View style={S.statRow}>
+            <Pressable onPress={() => logEvent('turnover', null, null)} style={[S.statCircle, { backgroundColor: C.linen, borderColor: C.mist }]}>
+              <Text style={[S.statCircleTop, { color: C.carbon }]}>TO</Text>
+            </Pressable>
+            <Pressable onPress={() => logEvent('steal', null, null)} style={[S.statCircle, { backgroundColor: C.linen, borderColor: C.mist }]}>
+              <Text style={[S.statCircleTop, { color: C.carbon }]}>STL</Text>
+            </Pressable>
+          </View>
+          {/* AST / BLK */}
+          <View style={S.statRow}>
+            <Pressable onPress={() => logEvent('assist', null, null)} style={[S.statCircle, { backgroundColor: C.linen, borderColor: C.mist }]}>
+              <Text style={[S.statCircleTop, { color: C.carbon }]}>AST</Text>
+            </Pressable>
+            <Pressable onPress={() => logEvent('block', null, null)} style={[S.statCircle, { backgroundColor: C.linen, borderColor: C.mist }]}>
+              <Text style={[S.statCircleTop, { color: C.carbon }]}>BLK</Text>
+            </Pressable>
+          </View>
+          {/* Sub / Foul - pills */}
+          <View style={S.statRow}>
+            <Pressable
+              onPress={() => {
                 if (!selectedPlayer) { showToast('Select a player first'); return; }
                 setSubTeamId(selectedPlayer.teamId);
                 setSubIncomingId(null);
                 setShowSubOverlay(true);
-              }},
-              { label: 'Foul',  onPress: () => {
+              }}
+              style={[S.statPill, { backgroundColor: C.linen, borderColor: C.mist }]}
+            >
+              <Text style={[S.statPillLabel, { color: C.carbon }]}>Sub</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => {
                 if (!selectedPlayer) { showToast('Select a player first'); return; }
                 setShowFoulOverlay(true);
-              }},
-            ],
-          ].map((row, ri) => (
-            <View key={ri} style={S.statRow}>
-              {row.map(({ label, onPress }) => (
-                <Pressable
-                  key={label}
-                  onPress={onPress}
-                  style={[S.statBtn, { borderColor: NAVY }]}
-                >
-                  <Text style={[S.statBtnLabel, { color: NAVY }]}>{label}</Text>
-                </Pressable>
-              ))}
-            </View>
-          ))}
+              }}
+              style={[S.statPill, { backgroundColor: C.linen, borderColor: C.heat }]}
+            >
+              <Text style={[S.statPillLabel, { color: C.carbon }]}>Foul</Text>
+            </Pressable>
+          </View>
         </View>
 
       </View>
@@ -711,33 +754,39 @@ export default function StatKeeperScreen() {
       {/* Play-by-play bar */}
       <Pressable
         onPress={() => setShowFullPbp(true)}
-        style={[S.pbpBar, { borderTopColor: C.separator, backgroundColor: C.surface }]}
+        style={[S.pbpBar, { borderTopColor: C.mist, backgroundColor: C.paper }]}
       >
         <View style={S.pbpBarHeader}>
-          <Text style={[S.pbpBarTitle, { color: C.secondary }]}>PLAY BY PLAY</Text>
-          <IconSymbol name="chevron.up" size={12} color={C.muted} />
+          <Text style={[S.pbpBarTitle, { color: C.drift }]}>PLAY BY PLAY</Text>
+          <IconSymbol name="chevron.up" size={12} color={C.drift} />
         </View>
         {events.slice(0, 3).map(e => (
           <View key={e.id} style={S.pbpRow}>
-            <Text style={[S.pbpClock, { color: C.muted }]}>{e.gameClock}</Text>
+            <Text style={[S.pbpClock, { color: C.drift }]}>{e.gameClock}</Text>
             <Text style={[S.pbpText, { color: eventColor(e) }]} numberOfLines={1}>
               {eventLabel(e, allPlayers)}
             </Text>
           </View>
         ))}
         {events.length === 0 && (
-          <Text style={[S.pbpEmpty, { color: C.muted }]}>No events yet</Text>
+          <Text style={[S.pbpEmpty, { color: C.drift }]}>No events yet</Text>
         )}
       </Pressable>
 
       {/* Bottom safe area */}
-      <View style={{ height: insets.bottom, backgroundColor: C.surface }} />
+      <View style={{ height: insets.bottom, backgroundColor: C.paper }} />
 
       {/* Sub overlay */}
       {showSubOverlay && subTeamId && renderSubOverlay()}
 
       {/* Foul overlay */}
       {showFoulOverlay && renderFoulOverlay()}
+
+      {/* Score Blast modal */}
+      {renderScoreBlastModal()}
+
+      {/* Timeout sheet */}
+      {renderTimeoutSheet()}
 
       {/* Full PBP bottom sheet */}
       <BottomSheet
@@ -747,7 +796,7 @@ export default function StatKeeperScreen() {
         title="Play by Play"
       >
         {events.length === 0 ? (
-          <Text style={[S.pbpEmpty, { color: C.muted, textAlign: 'center', marginTop: 24 }]}>
+          <Text style={[S.pbpEmpty, { color: C.drift, textAlign: 'center', marginTop: 24 }]}>
             No events yet
           </Text>
         ) : (
@@ -769,14 +818,14 @@ export default function StatKeeperScreen() {
                   ],
                 );
               }}
-              style={[S.pbpFullRow, { borderBottomColor: C.separator }]}
+              style={[S.pbpFullRow, { borderBottomColor: C.mist }]}
             >
               <View style={S.pbpFullLeft}>
-                <Text style={[S.pbpClock, { color: C.muted }]}>{e.gameClock}</Text>
-                <Text style={[S.pbpPeriod, { color: C.muted }]}>{periodLabel(e.period)}</Text>
+                <Text style={[S.pbpClock, { color: C.drift }]}>{e.gameClock}</Text>
+                <Text style={[S.pbpPeriod, { color: C.drift }]}>{periodLabel(e.period)}</Text>
               </View>
               <View style={[S.pbpDot, { backgroundColor: eventColor(e) }]} />
-              <Text style={[S.pbpFullText, { color: C.label }]} numberOfLines={2}>
+              <Text style={[S.pbpFullText, { color: C.carbon }]} numberOfLines={2}>
                 {eventLabel(e, allPlayers)}
               </Text>
             </Pressable>
@@ -796,17 +845,16 @@ export default function StatKeeperScreen() {
 
   // ── Player row (on-court circles) ──────────────────────────────────────────
   const renderPlayerRow = (teamId: 'home' | 'away', players: GamePlayer[]) => {
-    const color = teamId === 'home' ? HOME_COLOR : AWAY_COLOR;
     const label = teamId === 'home' ? homeName.slice(0, 4).toUpperCase() : awayName.slice(0, 4).toUpperCase();
     return (
       <View style={S.playerSelectRow}>
-        <Text style={[S.teamTag, { color: teamId === 'home' ? HOME_COLOR : AWAY_COLOR }]}>
-          {label}
-        </Text>
+        <Text style={[S.teamTag, { color: C.drift }]}>{label}</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flex: 1 }}>
           <View style={S.playerCircles}>
             {players.map(p => {
               const isSelected = selectedPlayer?.id === p.id;
+              const bgColor = isSelected ? C.carbon : (teamId === 'home' ? C.linen : C.mist);
+              const textColor = isSelected ? C.paper : C.carbon;
               return (
                 <Pressable
                   key={p.id}
@@ -814,13 +862,14 @@ export default function StatKeeperScreen() {
                     Haptics.selectionAsync();
                     setSelectedPlayer(prev => prev?.id === p.id ? null : p);
                   }}
-                  style={[
-                    S.playerCircle,
-                    { backgroundColor: color },
-                    isSelected && { borderWidth: 3, borderColor: CORAL },
-                  ]}
+                  style={S.playerCircleWrap}
                 >
-                  <Text style={S.playerCircleNum}>{p.number}</Text>
+                  <View style={[S.playerCircle, { backgroundColor: bgColor, borderColor: isSelected ? C.carbon : C.mist }]}>
+                    <Text style={[S.playerCircleNum, { color: textColor }]}>{p.number}</Text>
+                    {/* on-court dot */}
+                    <View style={[S.onCourtDot, { backgroundColor: C.carbon }]} />
+                  </View>
+                  <Text style={[S.playerCircleName, { color: C.drift }]} numberOfLines={1}>{p.firstName}</Text>
                 </Pressable>
               );
             })}
@@ -841,16 +890,16 @@ export default function StatKeeperScreen() {
           style={[StyleSheet.absoluteFill, { zIndex: 200, backgroundColor: 'rgba(0,0,0,0.6)' }]}
           onPress={() => { setShowSubOverlay(false); setSubIncomingId(null); }}
         />
-        <View style={[S.overlayPanel, { zIndex: 201, backgroundColor: C.bg }]}>
-          <Text style={[S.overlayTitle, { color: C.label }]}>Substitution</Text>
-          <Text style={[S.overlayInstr, { color: C.secondary }]}>
+        <View style={[S.overlayPanel, { zIndex: 201, backgroundColor: C.paper }]}>
+          <Text style={[S.overlayTitle, { color: C.carbon }]}>Substitution</Text>
+          <Text style={[S.overlayInstr, { color: C.drift }]}>
             {subIncomingId ? 'Tap the player leaving the court' : 'Tap the player entering the game'}
           </Text>
           <View style={S.subCols}>
             <View style={{ flex: 1 }}>
-              <Text style={[S.subColLabel, { color: C.secondary }]}>BENCH</Text>
+              <Text style={[S.subColLabel, { color: C.drift }]}>BENCH</Text>
               {bench.length === 0 && (
-                <Text style={[S.subEmptyNote, { color: C.muted }]}>No bench players</Text>
+                <Text style={[S.subEmptyNote, { color: C.drift }]}>No bench players</Text>
               )}
               {bench.map(p => (
                 <Pressable
@@ -858,18 +907,18 @@ export default function StatKeeperScreen() {
                   onPress={() => { Haptics.selectionAsync(); setSubIncomingId(p.id); }}
                   style={[
                     S.subPlayerRow,
-                    { backgroundColor: C.surface, borderColor: C.separator },
-                    subIncomingId === p.id && { backgroundColor: GREEN + '20', borderColor: GREEN },
+                    { backgroundColor: C.linen, borderColor: C.mist },
+                    subIncomingId === p.id && { backgroundColor: C.gain + '20', borderColor: C.gain },
                   ]}
                 >
-                  <Text style={[S.subNum, { color: C.label }]}>#{p.number}</Text>
-                  <Text style={[S.subName, { color: C.label }]} numberOfLines={1}>{p.lastName}</Text>
+                  <Text style={[S.subNum, { color: C.carbon }]}>#{p.number}</Text>
+                  <Text style={[S.subName, { color: C.carbon }]} numberOfLines={1}>{p.lastName}</Text>
                 </Pressable>
               ))}
             </View>
-            <View style={[S.subColDivider, { backgroundColor: C.separator }]} />
+            <View style={[S.subColDivider, { backgroundColor: C.mist }]} />
             <View style={{ flex: 1 }}>
-              <Text style={[S.subColLabel, { color: C.secondary }]}>ON COURT</Text>
+              <Text style={[S.subColLabel, { color: C.carbon }]}>ON COURT</Text>
               {onCourt.map(p => (
                 <Pressable
                   key={p.id}
@@ -877,13 +926,13 @@ export default function StatKeeperScreen() {
                   style={[
                     S.subPlayerRow,
                     {
-                      backgroundColor: C.surface,
-                      borderColor: subIncomingId ? RED + '60' : C.separator,
+                      backgroundColor: C.linen,
+                      borderColor: subIncomingId ? C.heat + '60' : C.mist,
                     },
                   ]}
                 >
-                  <Text style={[S.subNum, { color: C.label }]}>#{p.number}</Text>
-                  <Text style={[S.subName, { color: C.label }]} numberOfLines={1}>{p.lastName}</Text>
+                  <Text style={[S.subNum, { color: C.carbon }]}>#{p.number}</Text>
+                  <Text style={[S.subName, { color: C.carbon }]} numberOfLines={1}>{p.lastName}</Text>
                 </Pressable>
               ))}
             </View>
@@ -900,22 +949,58 @@ export default function StatKeeperScreen() {
         style={[StyleSheet.absoluteFill, { zIndex: 200, backgroundColor: 'rgba(0,0,0,0.6)' }]}
         onPress={() => setShowFoulOverlay(false)}
       />
-      <View style={[S.overlayPanel, { zIndex: 201, backgroundColor: C.bg }]}>
-        <Text style={[S.overlayTitle, { color: C.label }]}>Foul Type</Text>
-        {['Personal', 'Shooting', 'Offensive', 'Technical', 'Flagrant'].map(ft => (
-          <Pressable
-            key={ft}
-            onPress={() => {
-              logEvent('foul', ft.toLowerCase(), null);
-              setShowFoulOverlay(false);
-            }}
-            style={[S.foulBtn, { borderColor: C.inputBorder, backgroundColor: C.surface }]}
-          >
-            <Text style={[S.foulBtnText, { color: C.label }]}>{ft}</Text>
-          </Pressable>
-        ))}
+      <View style={[S.overlayPanel, { zIndex: 201, backgroundColor: C.paper }]}>
+        <Text style={[S.overlayTitle, { color: C.carbon }]}>Foul Type</Text>
+        {['Personal', 'Shooting', 'Offensive', 'Technical', 'Flagrant'].map(ft => {
+          const isHeat = ft === 'Technical' || ft === 'Flagrant';
+          return (
+            <Pressable
+              key={ft}
+              onPress={() => {
+                logEvent('foul', ft.toLowerCase(), null);
+                setShowFoulOverlay(false);
+              }}
+              style={[S.foulBtn, { borderColor: isHeat ? C.heat : C.mist, backgroundColor: C.linen }]}
+            >
+              <Text style={[S.foulBtnText, { color: C.carbon }]}>{ft}</Text>
+            </Pressable>
+          );
+        })}
       </View>
     </>
+  );
+
+  // ── Score Blast modal ──────────────────────────────────────────────────────
+  const renderScoreBlastModal = () => (
+    showScoreBlast ? (
+      <>
+        <Pressable style={[StyleSheet.absoluteFill, { zIndex: 300, backgroundColor: 'rgba(0,0,0,0.4)' }]} onPress={() => setShowScoreBlast(false)} />
+        <View style={[S.scoreBlastCard, { zIndex: 301, backgroundColor: C.linen }]}>
+          <Text style={[S.scoreBlastTitle, { color: C.carbon }]}>Send score blast?</Text>
+          <Text style={[S.scoreBlastSub, { color: C.drift }]}>Push a live score update to all followers</Text>
+          <View style={S.scoreBlastBtns}>
+            <Pressable onPress={() => setShowScoreBlast(false)} style={[S.scoreBlastCancel, { backgroundColor: C.linen, borderColor: C.mist }]}>
+              <Text style={[{ color: C.carbon, fontSize: 15, fontWeight: '600' }]}>Cancel</Text>
+            </Pressable>
+            <Pressable onPress={() => { setShowScoreBlast(false); showToast('Score blast sent!'); }} style={[S.scoreBlastSend, { backgroundColor: C.carbon }]}>
+              <Text style={[{ color: C.paper, fontSize: 15, fontWeight: '700' }]}>Send</Text>
+            </Pressable>
+          </View>
+        </View>
+      </>
+    ) : null
+  );
+
+  // ── Timeout sheet ──────────────────────────────────────────────────────────
+  const renderTimeoutSheet = () => (
+    <BottomSheet visible={showTimeoutSheet} onClose={() => setShowTimeoutSheet(false)} useModal title="Timeout">
+      <Pressable onPress={() => { logEvent('timeout', 'home', null); setShowTimeoutSheet(false); }} style={[S.timeoutRow, { backgroundColor: C.linen, borderColor: C.mist }]}>
+        <Text style={[{ color: C.carbon, fontSize: 15 }]}>{homeName}</Text>
+      </Pressable>
+      <Pressable onPress={() => { logEvent('timeout', 'away', null); setShowTimeoutSheet(false); }} style={[S.timeoutRow, { backgroundColor: C.linen, borderColor: C.mist, marginTop: 4 }]}>
+        <Text style={[{ color: C.carbon, fontSize: 15 }]}>{awayName}</Text>
+      </Pressable>
+    </BottomSheet>
   );
 
   // ============================================================================
@@ -968,10 +1053,19 @@ export default function StatKeeperScreen() {
       return '';
     };
 
-    return (
-      <View style={{ flex: 1, backgroundColor: C.bg }}>
+    const cellColor = (key: string, row: typeof boxData[0]): string => {
+      if (key === 'pts' && row.pts >= 20) return C.gain;
+      if (key === 'pf'  && row.pf  >= 5)  return C.heat;
+      if (key === 'tov' && row.tov >= 5)  return C.heat;
+      if (key === 'reb' && row.reb >= 10) return C.gain;
+      if (key === 'ast' && row.ast >= 10) return C.gain;
+      return C.carbon;
+    };
 
-        {/* Navy hero */}
+    return (
+      <View style={{ flex: 1, backgroundColor: C.paper }}>
+
+        {/* Navy hero — kept as-is */}
         <View style={[S.bsHero, { paddingTop: insets.top + 12 }]}>
           <Text style={S.bsFinal}>FINAL</Text>
           <View style={S.bsScoreRow}>
@@ -989,7 +1083,7 @@ export default function StatKeeperScreen() {
         </View>
 
         {/* Team tab */}
-        <View style={[S.bsTabRow, { borderBottomColor: C.separator, backgroundColor: C.surface }]}>
+        <View style={[S.bsTabRow, { borderBottomColor: C.mist, backgroundColor: C.linen }]}>
           {(['home', 'away'] as const).map(t => {
             const active = boxScoreTeam === t;
             const name   = t === 'home' ? homeName : awayName;
@@ -997,9 +1091,9 @@ export default function StatKeeperScreen() {
               <Pressable
                 key={t}
                 onPress={() => { Haptics.selectionAsync(); setBoxScoreTeam(t); }}
-                style={[S.bsTab, active && { borderBottomColor: CORAL, borderBottomWidth: 2 }]}
+                style={[S.bsTab, active && { borderBottomColor: C.carbon, borderBottomWidth: 2 }]}
               >
-                <Text style={[S.bsTabText, { color: active ? CORAL : C.secondary }]}>{name}</Text>
+                <Text style={[S.bsTabText, { color: active ? C.carbon : C.drift }]}>{name}</Text>
               </Pressable>
             );
           })}
@@ -1010,11 +1104,11 @@ export default function StatKeeperScreen() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View>
               {/* Header */}
-              <View style={[S.bsTableRow, { backgroundColor: C.surface, borderBottomColor: C.separator }]}>
+              <View style={[S.bsTableRow, { backgroundColor: C.linen, borderBottomColor: C.mist }]}>
                 {COLS.map(col => (
                   <Text
                     key={col.key}
-                    style={[S.bsHeaderCell, { width: col.width, color: C.secondary }]}
+                    style={[S.bsHeaderCell, { width: col.width, color: C.carbon }]}
                     numberOfLines={1}
                   >
                     {col.label}
@@ -1028,14 +1122,14 @@ export default function StatKeeperScreen() {
                   key={row.player.id}
                   style={[
                     S.bsTableRow,
-                    { borderBottomColor: C.separator },
-                    i % 2 === 1 && { backgroundColor: C.surfacePressed },
+                    { borderBottomColor: C.mist },
+                    i % 2 === 0 ? { backgroundColor: C.paper } : { backgroundColor: C.linen },
                   ]}
                 >
                   {COLS.map(col => (
                     <Text
                       key={col.key}
-                      style={[S.bsCell, { width: col.width, color: C.label }]}
+                      style={[S.bsCell, { width: col.width, color: cellColor(col.key, row) }]}
                       numberOfLines={1}
                     >
                       {cellVal(col.key, row)}
@@ -1063,8 +1157,8 @@ export default function StatKeeperScreen() {
           </ScrollView>
 
           {/* Export row */}
-          <View style={[S.exportRow, { borderTopColor: C.separator }]}>
-            <Text style={[S.exportLabel, { color: C.secondary }]}>Export</Text>
+          <View style={[S.exportRow, { borderTopColor: C.mist }]}>
+            <Text style={[S.exportLabel, { color: C.drift }]}>Export</Text>
             {['JSON', 'CSV', 'PDF'].map(fmt => (
               <Pressable
                 key={fmt}
@@ -1072,9 +1166,9 @@ export default function StatKeeperScreen() {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                   showToast('Coming soon');
                 }}
-                style={[S.exportBtn, { borderColor: C.inputBorder, backgroundColor: C.surface }]}
+                style={[S.exportBtn, { borderColor: C.mist, backgroundColor: C.linen }]}
               >
-                <Text style={[S.exportBtnText, { color: C.label }]}>{fmt}</Text>
+                <Text style={[S.exportBtnText, { color: C.carbon }]}>{fmt}</Text>
               </Pressable>
             ))}
           </View>
@@ -1082,9 +1176,9 @@ export default function StatKeeperScreen() {
           {/* New Game */}
           <Pressable
             onPress={resetGame}
-            style={[S.newGameBtn, { backgroundColor: NAVY, marginBottom: insets.bottom + 24 }]}
+            style={[S.newGameBtn, { backgroundColor: C.carbon, marginBottom: insets.bottom + 24 }]}
           >
-            <Text style={S.newGameText}>New Game</Text>
+            <Text style={[S.newGameText, { color: C.paper }]}>New Game</Text>
           </Pressable>
 
         </ScrollView>
@@ -1114,122 +1208,151 @@ export default function StatKeeperScreen() {
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
 
   // Setup
-  setupTopBar:    { flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 10, borderBottomWidth: StyleSheet.hairlineWidth },
-  setupTitle:     { flex: 1, textAlign: 'center', fontSize: 16, fontWeight: '700' },
-  sectionLabel:   { fontSize: 11, fontWeight: '600', letterSpacing: 0.6, textTransform: 'uppercase', marginTop: 20, marginBottom: 6 },
-  card:           { borderRadius: 14, overflow: 'hidden' },
-  inputRow:       { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 12, gap: 10 },
-  teamDot:        { width: 10, height: 10, borderRadius: 5 },
-  teamInput:      { flex: 1, fontSize: 15, fontWeight: '500', paddingBottom: 4, borderBottomWidth: StyleSheet.hairlineWidth },
-  pillRow:        { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 4 },
-  pill:           { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, borderWidth: 1 },
-  pillText:       { fontSize: 13, fontWeight: '600' },
-  customInput:    { marginTop: 8, borderRadius: 10, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 10, fontSize: 15 },
-  rosterHeader:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 14, borderBottomWidth: StyleSheet.hairlineWidth },
+  setupTopBar:      { flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 10, borderBottomWidth: StyleSheet.hairlineWidth },
+  setupTitle:       { flex: 1, textAlign: 'center', fontSize: 16, fontWeight: '700' },
+  sectionLabel:     { fontSize: 11, fontWeight: '600', letterSpacing: 0.6, textTransform: 'uppercase', marginTop: 20, marginBottom: 6 },
+  card:             { borderRadius: 14, overflow: 'hidden' },
+  inputRow:         { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 12, gap: 10 },
+  teamDot:          { width: 10, height: 10, borderRadius: 5 },
+  teamInput:        { flex: 1, fontSize: 15, fontWeight: '500', paddingBottom: 4, borderBottomWidth: StyleSheet.hairlineWidth },
+  pillRow:          { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 4 },
+  pill:             { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, borderWidth: 1 },
+  pillText:         { fontSize: 13, fontWeight: '600' },
+  customInput:      { marginTop: 8, borderRadius: 10, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 10, fontSize: 15 },
+  rosterHeader:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 14, borderBottomWidth: StyleSheet.hairlineWidth },
   rosterHeaderText: { fontSize: 14, fontWeight: '700' },
-  starterBadge:   { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
+  starterBadge:     { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
   starterBadgeText: { fontSize: 12, fontWeight: '700' },
-  playerRow:      { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 10, gap: 10, borderBottomWidth: StyleSheet.hairlineWidth },
-  jerseyCircle:   { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
-  jerseyNum:      { fontSize: 12, fontWeight: '800' },
-  playerName:     { fontSize: 14, fontWeight: '500' },
-  starterToggle:  { width: 22, height: 22, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
-  startBtn:       { marginTop: 28, borderRadius: 14, paddingVertical: 16, alignItems: 'center' },
-  startBtnText:   { fontSize: 16, fontWeight: '800', letterSpacing: 0.4 },
+  playerRow:        { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 10, gap: 10, borderBottomWidth: StyleSheet.hairlineWidth },
+  jerseyCircle:     { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
+  jerseyNum:        { fontSize: 12, fontWeight: '800' },
+  playerName:       { fontSize: 14, fontWeight: '500' },
+  starterToggle:    { width: 22, height: 22, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
+  startBtn:         { marginTop: 28, borderRadius: 14, paddingVertical: 16, alignItems: 'center' },
+  startBtnText:     { fontSize: 16, fontWeight: '800', letterSpacing: 0.4 },
 
   // Live top bar
-  liveTopBar:     { flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 10, height: undefined },
-  liveTopTitle:   { flex: 1, textAlign: 'center', fontSize: 15, fontWeight: '700', color: '#fff', marginBottom: 2 },
-  iconBtn:        { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
+  liveTopBar:       { flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 12, paddingBottom: 8 },
+  liveTopTitle:     { flex: 1, textAlign: 'center', fontSize: 15, fontWeight: '700' },
+  topBarIconBtn:    { alignItems: 'center', gap: 3, minWidth: 40 },
+  topBarCircle:     { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
+  topBarBtnLabel:   { fontSize: 9, fontWeight: '600', letterSpacing: 0.3 },
+  iconBtn:          { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
+
+  // Current Five
+  currentFiveStrip: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth },
+  currentFivePill:  { width: 28, height: 20, borderRadius: 10, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  currentFiveNum:   { fontSize: 11, fontWeight: '600' },
 
   // Scoreboard
-  scoreboard:     { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 10 },
-  scoreTeam:      { flex: 1, alignItems: 'flex-start' },
-  scoreTeamName:  { fontSize: 11, fontWeight: '600', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 0.5 },
-  scoreDigits:    { fontSize: 40, fontWeight: '900', color: '#fff', fontVariant: ['tabular-nums'], lineHeight: 46 },
-  scoreMid:       { alignItems: 'center', gap: 2, paddingHorizontal: 8 },
-  periodText:     { fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 0.5 },
-  clockRow:       { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  clockText:      { fontSize: 28, fontWeight: '700', color: '#fff', fontVariant: ['tabular-nums'] },
-  clockBtn:       { width: 28, height: 28, alignItems: 'center', justifyContent: 'center' },
-  endPeriodBtn:   { borderWidth: 1, borderRadius: 10, paddingHorizontal: 10, paddingVertical: 4, marginTop: 2 },
-  endPeriodText:  { fontSize: 10, fontWeight: '700', color: 'rgba(255,255,255,0.75)', letterSpacing: 0.3 },
+  scoreboard:       { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 8 },
+  scoreTeam:        { flex: 1, alignItems: 'flex-start' },
+  scoreTeamName:    { fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 },
+  scoreDigits:      { fontSize: 32, fontWeight: '500', fontVariant: ['tabular-nums'], lineHeight: 38 },
+  scoreMid:         { alignItems: 'center', gap: 2, paddingHorizontal: 8 },
+  periodPill:       { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10, borderWidth: 1 },
+  periodText:       { fontSize: 10, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 },
+  clockRow:         { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  clockText:        { fontSize: 28, fontWeight: '700', fontVariant: ['tabular-nums'] },
+  clockBtn:         { width: 28, height: 28, alignItems: 'center', justifyContent: 'center' },
+  scoreMidIconBtn:  { width: 26, height: 26, borderRadius: 13, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  endPeriodBtn:     { borderRadius: 8, paddingHorizontal: 8, paddingVertical: 4, marginTop: 0 },
+  endPeriodText:    { fontSize: 9, fontWeight: '700', letterSpacing: 0.3 },
 
   // Player selection
-  playerSelect:   { borderBottomWidth: StyleSheet.hairlineWidth, paddingVertical: 6 },
-  playerSelectRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, gap: 6, paddingVertical: 2 },
-  teamTag:        { fontSize: 9, fontWeight: '800', letterSpacing: 0.5, width: 30 },
-  playerCircles:  { flexDirection: 'row', gap: 6, paddingHorizontal: 2, paddingVertical: 2 },
-  playerCircle:   { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  playerCircleNum: { fontSize: 12, fontWeight: '800', color: '#fff' },
+  playerSelect:     { borderBottomWidth: StyleSheet.hairlineWidth, paddingVertical: 6 },
+  playerSelectRow:  { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, gap: 6, paddingVertical: 2 },
+  teamTag:          { fontSize: 9, fontWeight: '800', letterSpacing: 0.5, width: 30 },
+  playerCircles:    { flexDirection: 'row', gap: 6, paddingHorizontal: 2, paddingVertical: 2 },
+  playerCircleWrap: { alignItems: 'center', gap: 3 },
+  playerCircle:     { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', borderWidth: 1, overflow: 'visible' },
+  playerCircleNum:  { fontSize: 12, fontWeight: '800' },
+  playerCircleName: { fontSize: 8, fontWeight: '500', maxWidth: 40 },
+  onCourtDot:       { position: 'absolute', top: 1, right: 1, width: 6, height: 6, borderRadius: 3 },
 
   // Action area
-  actionArea:     { flex: 1, flexDirection: 'row' },
-  makeMissPanel:  { flex: 1, padding: 8, gap: 4 },
-  shotRow:        { flex: 1, flexDirection: 'row', gap: 6 },
-  shotBtn:        { flex: 1, borderWidth: 2, borderRadius: 10, alignItems: 'center', justifyContent: 'center', gap: 2 },
-  shotBtnMark:    { fontSize: 18, fontWeight: '800', lineHeight: 22 },
-  shotBtnLabel:   { fontSize: 11, fontWeight: '700', letterSpacing: 0.3 },
-  panelDivider:   { width: 1 },
-  statPanel:      { flex: 1, padding: 8, gap: 4 },
-  statRow:        { flex: 1, flexDirection: 'row', gap: 6 },
-  statBtn:        { flex: 1, borderWidth: 2, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
-  statBtnLabel:   { fontSize: 11, fontWeight: '700', letterSpacing: 0.3 },
+  actionArea:       { flex: 1, flexDirection: 'row' },
+  makeMissPanel:    { flex: 1, padding: 8, gap: 4 },
+  shotHeaders:      { flexDirection: 'row', paddingHorizontal: 4, marginBottom: 2 },
+  shotHeaderMake:   { flex: 1, textAlign: 'center', fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  shotHeaderMiss:   { flex: 1, textAlign: 'center', fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  shotRow:          { flex: 1, flexDirection: 'row', gap: 6 },
+  shotCircle:       { flex: 1, borderWidth: 1.5, borderRadius: 10, alignItems: 'center', justifyContent: 'center', minHeight: 0 },
+  shotCircleLabel:  { fontSize: 11, fontWeight: '700', letterSpacing: 0.3 },
+  panelDivider:     { width: 1 },
+  statPanel:        { flex: 1, padding: 8, gap: 4 },
+  statRow:          { flex: 1, flexDirection: 'row', gap: 6 },
+  statCircle:       { flex: 1, borderWidth: 1, borderRadius: 10, alignItems: 'center', justifyContent: 'center', minHeight: 0 },
+  statCircleTop:    { fontSize: 11, fontWeight: '700', letterSpacing: 0.3 },
+  statCircleBot:    { fontSize: 9, fontWeight: '500' },
+  statPill:         { flex: 1, borderWidth: 1, borderRadius: 20, alignItems: 'center', justifyContent: 'center', paddingVertical: 4 },
+  statPillLabel:    { fontSize: 11, fontWeight: '700', letterSpacing: 0.3 },
 
   // PBP bar
-  pbpBar:         { borderTopWidth: StyleSheet.hairlineWidth, paddingHorizontal: 12, paddingTop: 6, paddingBottom: 4, minHeight: 80 },
-  pbpBarHeader:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 },
-  pbpBarTitle:    { fontSize: 9, fontWeight: '700', letterSpacing: 0.6, textTransform: 'uppercase' },
-  pbpRow:         { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 },
-  pbpClock:       { fontSize: 10, fontVariant: ['tabular-nums'], width: 32 },
-  pbpText:        { flex: 1, fontSize: 12, fontWeight: '500' },
-  pbpEmpty:       { fontSize: 12 },
+  pbpBar:           { borderTopWidth: StyleSheet.hairlineWidth, paddingHorizontal: 12, paddingTop: 6, paddingBottom: 4, minHeight: 80 },
+  pbpBarHeader:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 },
+  pbpBarTitle:      { fontSize: 9, fontWeight: '700', letterSpacing: 0.6, textTransform: 'uppercase' },
+  pbpRow:           { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 },
+  pbpClock:         { fontSize: 10, fontVariant: ['tabular-nums'], width: 32 },
+  pbpText:          { flex: 1, fontSize: 12, fontWeight: '500' },
+  pbpEmpty:         { fontSize: 12 },
 
   // Full PBP sheet rows
-  pbpFullRow:     { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, gap: 10 },
-  pbpFullLeft:    { width: 52, gap: 2 },
-  pbpPeriod:      { fontSize: 9, letterSpacing: 0.3 },
-  pbpDot:         { width: 8, height: 8, borderRadius: 4 },
-  pbpFullText:    { flex: 1, fontSize: 13 },
+  pbpFullRow:       { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, gap: 10 },
+  pbpFullLeft:      { width: 52, gap: 2 },
+  pbpPeriod:        { fontSize: 9, letterSpacing: 0.3 },
+  pbpDot:           { width: 8, height: 8, borderRadius: 4 },
+  pbpFullText:      { flex: 1, fontSize: 13 },
 
   // Overlays
-  overlayPanel:   { position: 'absolute', bottom: 0, left: 0, right: 0, borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20, paddingBottom: 32, shadowColor: '#000', shadowOpacity: 0.3, shadowRadius: 20, shadowOffset: { width: 0, height: -4 }, elevation: 10 },
-  overlayTitle:   { fontSize: 18, fontWeight: '800', marginBottom: 4 },
-  overlayInstr:   { fontSize: 13, marginBottom: 16 },
-  subCols:        { flexDirection: 'row', gap: 12 },
-  subColLabel:    { fontSize: 10, fontWeight: '700', letterSpacing: 0.6, textTransform: 'uppercase', marginBottom: 8 },
-  subColDivider:  { width: 1 },
-  subPlayerRow:   { borderRadius: 10, borderWidth: 1, padding: 10, marginBottom: 6, flexDirection: 'row', alignItems: 'center', gap: 8 },
-  subNum:         { fontSize: 13, fontWeight: '800', width: 28 },
-  subName:        { flex: 1, fontSize: 13, fontWeight: '500' },
-  subEmptyNote:   { fontSize: 12, fontStyle: 'italic', marginTop: 4 },
-  foulBtn:        { borderRadius: 12, borderWidth: 1, paddingVertical: 14, paddingHorizontal: 16, marginBottom: 8, alignItems: 'center' },
-  foulBtnText:    { fontSize: 15, fontWeight: '600' },
+  overlayPanel:     { position: 'absolute', bottom: 0, left: 0, right: 0, borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20, paddingBottom: 32, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 20, shadowOffset: { width: 0, height: -4 }, elevation: 10 },
+  overlayTitle:     { fontSize: 18, fontWeight: '800', marginBottom: 4 },
+  overlayInstr:     { fontSize: 13, marginBottom: 16 },
+  subCols:          { flexDirection: 'row', gap: 12 },
+  subColLabel:      { fontSize: 10, fontWeight: '700', letterSpacing: 0.6, textTransform: 'uppercase', marginBottom: 8 },
+  subColDivider:    { width: 1 },
+  subPlayerRow:     { borderRadius: 10, borderWidth: 1, padding: 10, marginBottom: 6, flexDirection: 'row', alignItems: 'center', gap: 8 },
+  subNum:           { fontSize: 13, fontWeight: '800', width: 28 },
+  subName:          { flex: 1, fontSize: 13, fontWeight: '500' },
+  subEmptyNote:     { fontSize: 12, fontStyle: 'italic', marginTop: 4 },
+  foulBtn:          { borderRadius: 12, borderWidth: 1, paddingVertical: 14, paddingHorizontal: 16, marginBottom: 8, alignItems: 'center' },
+  foulBtnText:      { fontSize: 15, fontWeight: '600' },
+
+  // Score blast modal
+  scoreBlastCard:   { position: 'absolute', zIndex: 301, top: '40%', left: 24, right: 24, borderRadius: 16, padding: 20, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 2, shadowOffset: { width: 0, height: 2 } },
+  scoreBlastTitle:  { fontSize: 18, fontWeight: '600', marginBottom: 6 },
+  scoreBlastSub:    { fontSize: 14, marginBottom: 20 },
+  scoreBlastBtns:   { flexDirection: 'row', gap: 10 },
+  scoreBlastCancel: { flex: 1, borderRadius: 10, borderWidth: 1, paddingVertical: 12, alignItems: 'center' },
+  scoreBlastSend:   { flex: 1, borderRadius: 10, paddingVertical: 12, alignItems: 'center' },
+
+  // Timeout
+  timeoutRow:       { borderRadius: 10, borderWidth: 1, paddingVertical: 14, paddingHorizontal: 16, marginBottom: 4 },
 
   // Box score
-  bsHero:         { backgroundColor: NAVY, paddingHorizontal: 24, paddingBottom: 20, alignItems: 'center' },
-  bsFinal:        { fontSize: 10, fontWeight: '800', color: 'rgba(255,255,255,0.5)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 },
-  bsScoreRow:     { flexDirection: 'row', alignItems: 'center', gap: 16, width: '100%', justifyContent: 'space-between' },
-  bsTeamBlock:    { flex: 1 },
-  bsTeamName:     { fontSize: 13, fontWeight: '600', color: 'rgba(255,255,255,0.6)', marginBottom: 2 },
-  bsBigScore:     { fontSize: 52, fontWeight: '900', color: '#fff', fontVariant: ['tabular-nums'] },
-  bsDash:         { fontSize: 24, color: 'rgba(255,255,255,0.3)', fontWeight: '300' },
-  bsMeta:         { fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 6 },
-  bsTabRow:       { flexDirection: 'row', borderBottomWidth: StyleSheet.hairlineWidth },
-  bsTab:          { flex: 1, paddingVertical: 12, alignItems: 'center', borderBottomWidth: 2, borderBottomColor: 'transparent' },
-  bsTabText:      { fontSize: 14, fontWeight: '700' },
-  bsTableRow:     { flexDirection: 'row', borderBottomWidth: StyleSheet.hairlineWidth, paddingVertical: 10 },
-  bsHeaderCell:   { fontSize: 10, fontWeight: '700', letterSpacing: 0.4, paddingHorizontal: 4, textAlign: 'center' },
-  bsCell:         { fontSize: 13, fontWeight: '500', paddingHorizontal: 4, textAlign: 'center' },
-  bsTotalCell:    { fontWeight: '800' },
-  exportRow:      { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 16, borderTopWidth: StyleSheet.hairlineWidth },
-  exportLabel:    { fontSize: 12, fontWeight: '600', marginRight: 4 },
-  exportBtn:      { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10, borderWidth: 1 },
-  exportBtnText:  { fontSize: 13, fontWeight: '600' },
-  newGameBtn:     { marginHorizontal: 16, borderRadius: 14, paddingVertical: 16, alignItems: 'center' },
-  newGameText:    { fontSize: 16, fontWeight: '800', color: '#fff' },
+  bsHero:           { backgroundColor: NAVY, paddingHorizontal: 24, paddingBottom: 20, alignItems: 'center' },
+  bsFinal:          { fontSize: 10, fontWeight: '800', color: 'rgba(255,255,255,0.5)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 },
+  bsScoreRow:       { flexDirection: 'row', alignItems: 'center', gap: 16, width: '100%', justifyContent: 'space-between' },
+  bsTeamBlock:      { flex: 1 },
+  bsTeamName:       { fontSize: 13, fontWeight: '600', color: 'rgba(255,255,255,0.6)', marginBottom: 2 },
+  bsBigScore:       { fontSize: 52, fontWeight: '900', color: '#fff', fontVariant: ['tabular-nums'] },
+  bsDash:           { fontSize: 24, color: 'rgba(255,255,255,0.3)', fontWeight: '300' },
+  bsMeta:           { fontSize: 11, color: 'rgba(255,255,255,0.45)', marginTop: 6 },
+  bsTabRow:         { flexDirection: 'row', borderBottomWidth: StyleSheet.hairlineWidth },
+  bsTab:            { flex: 1, paddingVertical: 12, alignItems: 'center', borderBottomWidth: 2, borderBottomColor: 'transparent' },
+  bsTabText:        { fontSize: 14, fontWeight: '700' },
+  bsTableRow:       { flexDirection: 'row', borderBottomWidth: StyleSheet.hairlineWidth, paddingVertical: 10 },
+  bsHeaderCell:     { fontSize: 10, fontWeight: '700', letterSpacing: 0.4, paddingHorizontal: 4, textAlign: 'center' },
+  bsCell:           { fontSize: 13, fontWeight: '500', paddingHorizontal: 4, textAlign: 'center' },
+  bsTotalCell:      { fontWeight: '800' },
+  exportRow:        { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 16, borderTopWidth: StyleSheet.hairlineWidth },
+  exportLabel:      { fontSize: 12, fontWeight: '600', marginRight: 4 },
+  exportBtn:        { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10, borderWidth: 1 },
+  exportBtnText:    { fontSize: 13, fontWeight: '600' },
+  newGameBtn:       { marginHorizontal: 16, borderRadius: 14, paddingVertical: 16, alignItems: 'center' },
+  newGameText:      { fontSize: 16, fontWeight: '800' },
 
   // Toast
-  toast:          { position: 'absolute', alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.75)', paddingHorizontal: 18, paddingVertical: 10, borderRadius: 20 },
-  toastText:      { color: '#fff', fontSize: 13, fontWeight: '600' },
+  toast:            { position: 'absolute', alignSelf: 'center', backgroundColor: 'rgba(0,0,0,0.75)', paddingHorizontal: 18, paddingVertical: 10, borderRadius: 20 },
+  toastText:        { color: '#fff', fontSize: 13, fontWeight: '600' },
 });

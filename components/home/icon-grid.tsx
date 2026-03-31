@@ -6,7 +6,7 @@
  */
 
 import React, { useRef, useCallback, useMemo } from 'react';
-import { View, Text, StyleSheet, Animated, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Animated, Pressable, Image } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 
@@ -38,6 +38,11 @@ const MODE_ICONS: Record<string, Partial<Record<Mode, string>>> = {
   p4: { personal: 'person.2.fill', business: 'person.2.fill', education: 'building.fill', sports: 'person.3.fill', community: 'person.2.fill' },
   p5: { personal: 'tag.fill',      business: 'envelope.fill', education: 'doc.text.fill', sports: 'person.badge.plus', community: 'megaphone.fill' },
   p6: { personal: 'dollarsign.circle.fill', business: 'storefront.fill', education: 'dollarsign.circle.fill', sports: 'bag.fill', community: 'heart.fill' },
+};
+
+/** Custom image overrides per mode (replaces SF Symbol when set) */
+const MODE_IMAGES: Record<string, Partial<Record<Mode, any>>> = {
+  p4: { sports: require('@/assets/images/icons/roster-jerseys.png') },
 };
 
 const ROWS: GridIcon[][] = [
@@ -104,9 +109,12 @@ function GridTile({
       onPressOut={handlePressOut}
     >
       <Animated.View style={[styles.tileWrap, { transform: [{ scale }] }]}>
-        <View style={styles.tile}>
-          <IconSymbol name={item.icon} size={28} color={C.label} />
-        </View>
+        {item.image
+          ? <Image source={item.image} style={styles.tileImage} resizeMode="cover" />
+          : <View style={styles.tile}>
+              <IconSymbol name={item.icon} size={28} color={C.label} />
+            </View>
+        }
         {item.badgeCount != null && item.badgeCount > 0 && (
           <View style={[styles.badge, { backgroundColor: accent }]}>
             <Text style={styles.badgeText}>{item.badgeCount}</Text>
@@ -147,10 +155,11 @@ export function IconGrid() {
           {row.map((item) => {
             const label = MODE_LABELS[item.id]?.[mode] ?? item.label;
             const icon  = MODE_ICONS[item.id]?.[mode] ?? item.icon;
+            const image = MODE_IMAGES[item.id]?.[mode] ?? undefined;
             return (
               <GridTile
                 key={item.id}
-                item={{ ...item, label, icon }}
+                item={{ ...item, label, icon, image }}
                 accent={accent}
                 onPress={handlePress}
                 styles={styles}
@@ -192,6 +201,13 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     borderWidth: 0.75,
     borderColor: C.cardBorder,
     // No shadows — flat and clean per design spec
+  },
+  tileImage: {
+    width: 72,
+    height: 72,
+    borderRadius: 20,
+    borderCurve: 'continuous' as any,
+    overflow: 'hidden' as any,
   },
   badge: {
     position: 'absolute',
