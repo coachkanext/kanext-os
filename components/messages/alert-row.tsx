@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   },
   sourceText: {
     fontSize: 11,
-    color: '#A1A1AA',
+    color: '#9C9790',
     fontWeight: '500',
   },
   assignedText: {
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   },
   timestamp: {
     fontSize: 12,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   ctaPill: {
     backgroundColor: '#0B0F14',

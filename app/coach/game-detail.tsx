@@ -730,7 +730,7 @@ export default function GameDetailScreen() {
                 {game.status === 'live' && (
                   <View style={styles.liveIndicator}>
                     <View style={styles.liveDot} />
-                    <Text style={[styles.liveText, { color: '#EF4444' }]}>
+                    <Text style={[styles.liveText, { color: '#B85C5C' }]}>
                       LIVE · {game.clock}
                     </Text>
                   </View>
@@ -1532,10 +1532,10 @@ export default function GameDetailScreen() {
                   const fmuShots = filterShots(allFmuShots);
                   const oppShots = filterShots(allOppShots);
 
-                  const COURT_COLOR = '#A1A1AA';
-                  const LINE_COLOR = '#A1A1AA';
+                  const COURT_COLOR = '#9C9790';
+                  const LINE_COLOR = '#9C9790';
                   const KaNeXT_COLOR = colors.text;
-                  const OPP_COLOR = '#A1A1AA';
+                  const OPP_COLOR = '#9C9790';
 
                   return (
                     <>
@@ -1621,7 +1621,7 @@ export default function GameDetailScreen() {
                             router.navigate({ pathname: '/coach/play-by-play' as any, params: { gameId: gameId ?? '' } });
                           }}
                         >
-                          <Text style={[styles.glFullLinkText, { color: '#EF4444' }]}>Full Play-By-Play</Text>
+                          <Text style={[styles.glFullLinkText, { color: '#B85C5C' }]}>Full Play-By-Play</Text>
                         </Pressable>
                       </View>
                     </>
@@ -1741,7 +1741,7 @@ export default function GameDetailScreen() {
                             router.navigate({ pathname: '/coach/team-stats' as any, params: { gameId: gameId ?? '' } });
                           }}
                         >
-                          <Text style={[styles.compFullLinkText, { color: '#EF4444' }]}>Full Team Stats</Text>
+                          <Text style={[styles.compFullLinkText, { color: '#B85C5C' }]}>Full Team Stats</Text>
                         </Pressable>
                       </View>
                     </>
@@ -2068,7 +2068,7 @@ function GameFlowChart({ snapshots, colors }: { snapshots: ScoreSnapshot[]; colo
             <Text
               style={[
                 styles.flowMargin,
-                { color: margin > 0 ? '#FFFFFF' : margin < 0 ? '#EF4444' : colors.textTertiary },
+                { color: margin > 0 ? '#FFFFFF' : margin < 0 ? '#B85C5C' : colors.textTertiary },
               ]}
             >
               {margin > 0 ? `+${margin}` : margin === 0 ? 'TIE' : `${margin}`}
@@ -2155,7 +2155,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
   },
   liveText: {
     fontSize: 13,
@@ -2313,13 +2313,13 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
   },
   liveBadgeText: {
     fontSize: 12,
     fontWeight: '800',
     letterSpacing: 0.5,
-    color: '#EF4444',
+    color: '#B85C5C',
   },
   liveClockText: {
     fontSize: 16,
@@ -2431,7 +2431,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
     letterSpacing: 0.5,
-    color: '#EF4444',
+    color: '#B85C5C',
   },
   resultOutcome: {
     fontSize: 20,
@@ -2513,7 +2513,7 @@ const styles = StyleSheet.create({
   },
   espnTabActive: {
     borderBottomWidth: 2,
-    borderBottomColor: '#EF4444',
+    borderBottomColor: '#B85C5C',
   },
   espnTabText: {
     fontSize: 13,
@@ -3238,7 +3238,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
     marginHorizontal: Spacing.md,
     marginBottom: Spacing.md,
     paddingVertical: 12,
@@ -3264,7 +3264,7 @@ const styles = StyleSheet.create({
   },
   liveTabActive: {
     borderBottomWidth: 2,
-    borderBottomColor: '#EF4444',
+    borderBottomColor: '#B85C5C',
   },
   liveTabText: {
     fontSize: 13,

@@ -248,7 +248,7 @@ export function RecruitingDatabaseV2({ colors }: Props) {
               {player.fullName}
             </ThemedText>
             {topBadge && (
-              <View style={[styles.badgeDot, { backgroundColor: topBadge.level === 'Gold' ? accent : '#A1A1AA' }]} />
+              <View style={[styles.badgeDot, { backgroundColor: topBadge.level === 'Gold' ? accent : '#9C9790' }]} />
             )}
           </View>
           <ThemedText style={[styles.school, { color: colors.textSecondary }]} numberOfLines={1}>

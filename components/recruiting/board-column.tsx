@@ -9,7 +9,7 @@ import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { BOARD_COLUMN_COLORS, type BoardStatus } from '@/data/recruitingBoard';
 
 const WHITE = '#FFFFFF';
-const GRAY = '#A1A1AA';
+const GRAY = '#9C9790';
 const DIVIDER = '#0B0F14';
 
 export interface BoardColumnProps {

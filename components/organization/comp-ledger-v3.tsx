@@ -169,8 +169,8 @@ const PENDING_ITEMS: PendingItem[] = [
 
 const PENDING_STATUS_COLORS: Record<string, string> = {
   Processing: ACCENT,
-  Due: '#F59E0B',
-  Awaiting: '#EF4444',
+  Due: '#B8943E',
+  Awaiting: '#B85C5C',
 };
 
 interface Receipt {
@@ -216,11 +216,11 @@ function StatusBadge({ label, color }: { label: string; color: string }) {
 function DirectionIndicator({ direction }: { direction: TxDirection }) {
   const isIn = direction === 'inflow';
   return (
-    <View style={[s.directionBadge, { backgroundColor: isIn ? '#22C55E20' : '#EF444420' }]}>
+    <View style={[s.directionBadge, { backgroundColor: isIn ? '#5A8A6E20' : '#B85C5C20' }]}>
       <IconSymbol
         name={isIn ? 'chevron.down' : 'chevron.up'}
         size={10}
-        color={isIn ? '#22C55E' : '#EF4444'}
+        color={isIn ? '#5A8A6E' : '#B85C5C'}
       />
     </View>
   );
@@ -288,7 +288,7 @@ function TransactionsView({ colors, accentColor }: { colors: typeof Colors.light
               <ThemedText
                 style={[
                   s.txAmount,
-                  { color: tx.direction === 'inflow' ? '#22C55E' : colors.text },
+                  { color: tx.direction === 'inflow' ? '#5A8A6E' : colors.text },
                 ]}
               >
                 {tx.direction === 'inflow' ? '+' : '-'}{tx.amount}
@@ -328,12 +328,12 @@ function PendingView({ colors, accentColor }: { colors: typeof Colors.light; acc
                 {item.counterparty}
               </ThemedText>
             </View>
-            <ThemedText style={[s.pendingAmount, { color: '#F59E0B' }]}>{item.amount}</ThemedText>
+            <ThemedText style={[s.pendingAmount, { color: '#B8943E' }]}>{item.amount}</ThemedText>
           </View>
           <View style={[s.pendingFooter, { borderTopColor: colors.border }]}>
             <StatusBadge
               label={item.status.toUpperCase()}
-              color={PENDING_STATUS_COLORS[item.status] || '#A1A1AA'}
+              color={PENDING_STATUS_COLORS[item.status] || '#9C9790'}
             />
             <ThemedText style={[s.pendingDue, { color: colors.textSecondary }]}>Due: {item.dueDate}</ThemedText>
           </View>

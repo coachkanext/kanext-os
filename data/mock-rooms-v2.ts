@@ -263,7 +263,7 @@ const SPORTS_ROOMS: Room[] = [
       { id: 'a2', action: 'member_added', actor: 'Alex Morgan', detail: 'Added Marcus Johnson', timestamp: 'Aug 15, 2025', timestamp_ms: 1723712400000 },
       { id: 'a3', action: 'member_added', actor: 'Alex Morgan', detail: 'Added Chris Williams', timestamp: 'Aug 16, 2025', timestamp_ms: 1723795200000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Updated the rotation for tomorrow\'s practice',
   },
   {
@@ -297,7 +297,7 @@ const SPORTS_ROOMS: Room[] = [
       { id: 'a4', action: 'room_created', actor: 'Alex Morgan', detail: 'Created room', timestamp: 'Aug 15, 2025', timestamp_ms: 1723708800000 },
       { id: 'a5', action: 'member_added', actor: 'System', detail: 'Auto-enrolled 14 team members', timestamp: 'Aug 15, 2025', timestamp_ms: 1723712400000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Film session at 3pm — bring your notebooks',
   },
   {
@@ -327,7 +327,7 @@ const SPORTS_ROOMS: Room[] = [
       { id: 'a6', action: 'room_created', actor: 'Alex Morgan', detail: 'Created room', timestamp: 'Sep 1, 2025', timestamp_ms: 1725148800000 },
       { id: 'a7', action: 'share_link', actor: 'Marcus Johnson', detail: 'Shared scouting report link', timestamp: 'Feb 14, 2026', timestamp_ms: Date.now() - 172800000 },
     ],
-    avatarColor: '#22C55E',
+    avatarColor: '#5A8A6E',
     lastMessage: 'Got updated film on the PG from Westside — looks legit',
   },
   {
@@ -355,7 +355,7 @@ const SPORTS_ROOMS: Room[] = [
     audit_log: [
       { id: 'a8', action: 'room_created', actor: 'Jaylen Carter', detail: 'Created room', timestamp: 'Aug 20, 2025', timestamp_ms: 1724140800000 },
     ],
-    avatarColor: '#F59E0B',
+    avatarColor: '#B8943E',
     lastMessage: 'Who\'s hitting the gym at 6am tomorrow?',
   },
   {
@@ -387,7 +387,7 @@ const SPORTS_ROOMS: Room[] = [
       { id: 'a9', action: 'room_created', actor: 'System', detail: 'Auto-created for game', timestamp: 'Feb 10, 2026', timestamp_ms: Date.now() - 518400000 },
       { id: 'a10', action: 'member_added', actor: 'System', detail: 'Added game-day staff', timestamp: 'Feb 10, 2026', timestamp_ms: Date.now() - 518300000 },
     ],
-    avatarColor: '#EF4444',
+    avatarColor: '#B85C5C',
     lastMessage: 'Bus departs at 4:30pm — be in the lobby by 4:15',
   },
   {
@@ -417,7 +417,7 @@ const SPORTS_ROOMS: Room[] = [
       { id: 'a11', action: 'room_created', actor: 'Chris Williams', detail: 'Created room', timestamp: 'Sep 5, 2025', timestamp_ms: 1725494400000 },
       { id: 'a12', action: 'permission_changed', actor: 'Alex Morgan', detail: 'Set posting to everyone', timestamp: 'Sep 6, 2025', timestamp_ms: 1725580800000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Tagged 12 clips from last night — check the PnR set',
   },
   {
@@ -449,7 +449,7 @@ const SPORTS_ROOMS: Room[] = [
       { id: 'a13', action: 'room_created', actor: 'Marcus Johnson', detail: 'Created room', timestamp: 'Sep 10, 2025', timestamp_ms: 1725926400000 },
       { id: 'a14', action: 'member_added', actor: 'Marcus Johnson', detail: 'Added Tyler Green', timestamp: 'Sep 11, 2025', timestamp_ms: 1726012800000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Posted updated shooting drill progressions for Week 22',
   },
 ];
@@ -484,7 +484,7 @@ const EDUCATION_ROOMS: Room[] = [
       { id: 'a1', action: 'room_created', actor: 'Dr. Patricia Wells', detail: 'Created room', timestamp: 'Jul 1, 2025', timestamp_ms: 1719792000000 },
       { id: 'a2', action: 'member_added', actor: 'Dr. Patricia Wells', detail: 'Added cabinet members', timestamp: 'Jul 1, 2025', timestamp_ms: 1719795600000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Accreditation visit confirmed for March 10-12',
   },
   {
@@ -513,7 +513,7 @@ const EDUCATION_ROOMS: Room[] = [
     audit_log: [
       { id: 'a3', action: 'room_created', actor: 'Karen Mitchell', detail: 'Created room', timestamp: 'Jul 15, 2025', timestamp_ms: 1721001600000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Spring add/drop deadline extended to Feb 21',
   },
   {
@@ -545,7 +545,7 @@ const EDUCATION_ROOMS: Room[] = [
       { id: 'a4', action: 'room_created', actor: 'Rachel Kim', detail: 'Created room', timestamp: 'Aug 1, 2025', timestamp_ms: 1722470400000 },
       { id: 'a5', action: 'share_link', actor: 'David Park', detail: 'Shared enrollment report', timestamp: 'Feb 12, 2026', timestamp_ms: Date.now() - 345600000 },
     ],
-    avatarColor: '#F59E0B',
+    avatarColor: '#B8943E',
     lastMessage: 'Fall 2026 applications up 12% over last year',
   },
   {
@@ -574,7 +574,7 @@ const EDUCATION_ROOMS: Room[] = [
     audit_log: [
       { id: 'a6', action: 'room_created', actor: 'Dr. Alan Foster', detail: 'Created room', timestamp: 'Aug 10, 2025', timestamp_ms: 1723248000000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Adjunct hiring approved for CSCI-301 section B',
   },
   {
@@ -605,7 +605,7 @@ const EDUCATION_ROOMS: Room[] = [
       { id: 'a7', action: 'room_created', actor: 'Dr. Maria Santos', detail: 'Created room', timestamp: 'Jan 10, 2026', timestamp_ms: Date.now() - 3196800000 },
       { id: 'a8', action: 'member_added', actor: 'Dr. Maria Santos', detail: 'Added Jake Torres', timestamp: 'Jan 10, 2026', timestamp_ms: Date.now() - 3193200000 },
     ],
-    avatarColor: '#22C55E',
+    avatarColor: '#5A8A6E',
     lastMessage: 'Midterm grading due by Friday 5pm',
   },
   {
@@ -635,7 +635,7 @@ const EDUCATION_ROOMS: Room[] = [
     audit_log: [
       { id: 'a9', action: 'room_created', actor: 'System', detail: 'Auto-created from course roster', timestamp: 'Jan 10, 2026', timestamp_ms: Date.now() - 3196800000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Lab 5 submission link is now live on the portal',
   },
   {
@@ -663,7 +663,7 @@ const EDUCATION_ROOMS: Room[] = [
     audit_log: [
       { id: 'a10', action: 'room_created', actor: 'System', detail: 'Created room', timestamp: 'Aug 1, 2025', timestamp_ms: 1722470400000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Anyone up for the faculty golf scramble next Saturday?',
   },
 ];
@@ -698,7 +698,7 @@ const CHURCH_ROOMS: Room[] = [
       { id: 'a1', action: 'room_created', actor: 'Pastor Philip Anthony Mitchell', detail: 'Created room', timestamp: 'Jan 1, 2025', timestamp_ms: 1704067200000 },
       { id: 'a2', action: 'member_added', actor: 'Pastor Philip Anthony Mitchell', detail: 'Added pastoral team', timestamp: 'Jan 1, 2025', timestamp_ms: 1704070800000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Lenten series outline is attached — review by Wednesday',
   },
   {
@@ -728,7 +728,7 @@ const CHURCH_ROOMS: Room[] = [
     audit_log: [
       { id: 'a3', action: 'room_created', actor: 'Deacon Mary Thompson', detail: 'Created room', timestamp: 'Jan 5, 2025', timestamp_ms: 1704412800000 },
     ],
-    avatarColor: '#F59E0B',
+    avatarColor: '#B8943E',
     lastMessage: 'Please keep the Johnson family in your prayers this week',
   },
   {
@@ -758,7 +758,7 @@ const CHURCH_ROOMS: Room[] = [
       { id: 'a4', action: 'room_created', actor: 'Pastor Lisa Brooks', detail: 'Created room', timestamp: 'Feb 1, 2025', timestamp_ms: 1706745600000 },
       { id: 'a5', action: 'permission_changed', actor: 'Pastor Philip Anthony Mitchell', detail: 'Set visibility to private', timestamp: 'Feb 2, 2025', timestamp_ms: 1706832000000 },
     ],
-    avatarColor: '#EF4444',
+    avatarColor: '#B85C5C',
     lastMessage: 'Hospital visit scheduled for Brother Taiwo — Room 412',
   },
   {
@@ -789,7 +789,7 @@ const CHURCH_ROOMS: Room[] = [
     audit_log: [
       { id: 'a6', action: 'room_created', actor: 'David Brooks', detail: 'Created room', timestamp: 'Mar 1, 2025', timestamp_ms: 1709251200000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Sunday setlist is finalized — rehearsal Thursday 7pm',
   },
   {
@@ -816,7 +816,7 @@ const CHURCH_ROOMS: Room[] = [
     audit_log: [
       { id: 'a7', action: 'room_created', actor: 'Elder James Wright', detail: 'Created room', timestamp: 'Apr 1, 2025', timestamp_ms: 1711929600000 },
     ],
-    avatarColor: '#22C55E',
+    avatarColor: '#5A8A6E',
     lastMessage: 'Next Saturday — breakfast devotional at 8am',
   },
   {
@@ -847,7 +847,7 @@ const CHURCH_ROOMS: Room[] = [
       { id: 'a8', action: 'room_created', actor: 'Minister David Balogun', detail: 'Created room', timestamp: 'May 1, 2025', timestamp_ms: 1714521600000 },
       { id: 'a9', action: 'member_added', actor: 'Minister David Balogun', detail: 'Added Nneka Obi & Emeka Udoh', timestamp: 'May 2, 2025', timestamp_ms: 1714608000000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Youth retreat registration closes this Friday!',
   },
   {
@@ -876,7 +876,7 @@ const CHURCH_ROOMS: Room[] = [
     audit_log: [
       { id: 'a10', action: 'room_created', actor: 'Pastor Lisa Brooks', detail: 'Created room', timestamp: 'Jun 1, 2025', timestamp_ms: 1717200000000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Welcome to 2819 Church! Next orientation is Sunday March 1 after service.',
   },
 ];
@@ -912,7 +912,7 @@ const BUSINESS_ROOMS: Room[] = [
       { id: 'a1', action: 'room_created', actor: 'Alex Rivera', detail: 'Created room', timestamp: 'Jan 1, 2025', timestamp_ms: 1704067200000 },
       { id: 'a2', action: 'permission_changed', actor: 'Alex Rivera', detail: 'Set posting to admins-only', timestamp: 'Jan 1, 2025', timestamp_ms: 1704070800000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Q1 all-hands meeting moved to Friday 3pm — see you there',
   },
   {
@@ -943,7 +943,7 @@ const BUSINESS_ROOMS: Room[] = [
     audit_log: [
       { id: 'a3', action: 'room_created', actor: 'Alex Rivera', detail: 'Created room', timestamp: 'Jan 1, 2025', timestamp_ms: 1704067200000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Board meeting prep — need revenue slides by Thursday',
   },
   {
@@ -974,7 +974,7 @@ const BUSINESS_ROOMS: Room[] = [
       { id: 'a4', action: 'room_created', actor: 'Jordan Lee', detail: 'Created room', timestamp: 'Feb 1, 2025', timestamp_ms: 1706745600000 },
       { id: 'a5', action: 'member_added', actor: 'Jordan Lee', detail: 'Added ops team', timestamp: 'Feb 1, 2025', timestamp_ms: 1706749200000 },
     ],
-    avatarColor: '#22C55E',
+    avatarColor: '#5A8A6E',
     lastMessage: 'Vendor contract renewal — need sign-off by EOW',
   },
   {
@@ -1005,7 +1005,7 @@ const BUSINESS_ROOMS: Room[] = [
     audit_log: [
       { id: 'a6', action: 'room_created', actor: 'Priya Patel', detail: 'Created room', timestamp: 'Feb 15, 2025', timestamp_ms: 1707955200000 },
     ],
-    avatarColor: '#F59E0B',
+    avatarColor: '#B8943E',
     lastMessage: 'Deploy freeze lifted — ship when ready',
   },
   {
@@ -1036,7 +1036,7 @@ const BUSINESS_ROOMS: Room[] = [
       { id: 'a7', action: 'room_created', actor: 'Sam Okafor', detail: 'Created room', timestamp: 'Nov 1, 2025', timestamp_ms: 1730419200000 },
       { id: 'a8', action: 'share_link', actor: 'Casey Rodriguez', detail: 'Shared architecture diagram', timestamp: 'Feb 10, 2026', timestamp_ms: Date.now() - 518400000 },
     ],
-    avatarColor: '#EF4444',
+    avatarColor: '#B85C5C',
     lastMessage: 'Migration script passed staging tests — ready for prod',
   },
   {
@@ -1066,7 +1066,7 @@ const BUSINESS_ROOMS: Room[] = [
     audit_log: [
       { id: 'a9', action: 'room_created', actor: 'Jamie Torres', detail: 'Created deal room', timestamp: 'Jan 15, 2026', timestamp_ms: Date.now() - 2764800000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Legal review on MSA complete — ready for signature',
   },
   {
@@ -1095,7 +1095,7 @@ const BUSINESS_ROOMS: Room[] = [
     audit_log: [
       { id: 'a10', action: 'room_created', actor: 'Drew Singh', detail: 'Created client room', timestamp: 'Jun 1, 2025', timestamp_ms: 1717200000000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Integration issue resolved — ticket #4521 closed',
   },
 ];
@@ -1130,7 +1130,7 @@ const COMMUNITY_ROOMS: Room[] = [
       { id: 'a1', action: 'room_created', actor: 'Director Marcus Hall', detail: 'Created room', timestamp: 'Oct 1, 2025', timestamp_ms: 1727740800000 },
       { id: 'a2', action: 'member_added', actor: 'Director Marcus Hall', detail: 'Added ops staff', timestamp: 'Oct 1, 2025', timestamp_ms: 1727744400000 },
     ],
-    avatarColor: '#EF4444',
+    avatarColor: '#B85C5C',
     lastMessage: 'Track inspection complete — all clear for qualifying',
   },
   {
@@ -1160,7 +1160,7 @@ const COMMUNITY_ROOMS: Room[] = [
     audit_log: [
       { id: 'a3', action: 'room_created', actor: 'Sarah Nakamura', detail: 'Created room', timestamp: 'Oct 15, 2025', timestamp_ms: 1728950400000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Updated pit allocation map posted — check your assignments',
   },
   {
@@ -1191,7 +1191,7 @@ const COMMUNITY_ROOMS: Room[] = [
       { id: 'a4', action: 'room_created', actor: 'Chief Stewart Roberts', detail: 'Created room', timestamp: 'Nov 1, 2025', timestamp_ms: 1730419200000 },
       { id: 'a5', action: 'permission_changed', actor: 'Director Marcus Hall', detail: 'Set to private/invite', timestamp: 'Nov 2, 2025', timestamp_ms: 1730505600000 },
     ],
-    avatarColor: '#F59E0B',
+    avatarColor: '#B8943E',
     lastMessage: 'Incident report from Lap 12 — under review',
   },
   {
@@ -1222,7 +1222,7 @@ const COMMUNITY_ROOMS: Room[] = [
     audit_log: [
       { id: 'a6', action: 'room_created', actor: 'System', detail: 'Auto-created for Round 3', timestamp: 'Feb 1, 2026', timestamp_ms: Date.now() - 1296000000 },
     ],
-    avatarColor: '#22C55E',
+    avatarColor: '#5A8A6E',
     lastMessage: 'Vendor load-in starts Friday 6am — gate codes sent via DM',
   },
   {
@@ -1251,7 +1251,7 @@ const COMMUNITY_ROOMS: Room[] = [
     audit_log: [
       { id: 'a7', action: 'room_created', actor: 'Chris Donovan', detail: 'Created room', timestamp: 'Nov 15, 2025', timestamp_ms: 1731628800000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'Camera positions locked in — doing test stream at 2pm',
   },
   {
@@ -1281,7 +1281,7 @@ const COMMUNITY_ROOMS: Room[] = [
       { id: 'a8', action: 'room_created', actor: 'Dana Wells', detail: 'Created room', timestamp: 'Oct 1, 2025', timestamp_ms: 1727740800000 },
       { id: 'a9', action: 'share_link', actor: 'Ryan Cole', detail: 'Shared brand guidelines', timestamp: 'Jan 20, 2026', timestamp_ms: Date.now() - 2332800000 },
     ],
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
     lastMessage: 'TechFlow confirmed as title sponsor for Round 4',
   },
 ];

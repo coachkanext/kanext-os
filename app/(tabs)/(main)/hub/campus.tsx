@@ -295,7 +295,7 @@ export default function CampusScreen() {
                   }}
                 >
                   {hasAlert && (
-                    <View style={[mapS.alertDot, { backgroundColor: CAMPUS_ALERTS.find(a => a.buildingId === b.id)?.color ?? '#C4872A' }]} />
+                    <View style={[mapS.alertDot, { backgroundColor: CAMPUS_ALERTS.find(a => a.buildingId === b.id)?.color ?? '#B8943E' }]} />
                   )}
                 </Pressable>
               );
@@ -375,7 +375,7 @@ export default function CampusScreen() {
               </View>
             ))}
             <View style={mapS.legendItem}>
-              <View style={[mapS.legendDot, { backgroundColor: '#007AFF' }]} />
+              <View style={[mapS.legendDot, { backgroundColor: '#1A1714' }]} />
               <Text style={[mapS.legendTxt, { color: C.secondary }]}>Your Location</Text>
             </View>
           </View>
@@ -391,7 +391,7 @@ export default function CampusScreen() {
     const c = selectedClub;
     const isJoined = joinedClubs.has(c.id);
     const typeColors: Record<OrgType, string> = {
-      academic: '#1D9BF0', social: C.accent, athletic: '#990000', cultural: '#3B82F6', service: '#5A8A6E',
+      academic: '#1A1714', social: C.accent, athletic: '#1A1714', cultural: '#1A1714', service: '#5A8A6E',
     };
     const tc = typeColors[c.type];
     return (
@@ -469,7 +469,7 @@ export default function CampusScreen() {
     const showNews  = showAll || selectedPill === 'News';
 
     const typeColors: Record<OrgType, string> = {
-      academic: '#1D9BF0', social: C.accent, athletic: '#990000', cultural: '#3B82F6', service: '#5A8A6E',
+      academic: '#1A1714', social: C.accent, athletic: '#1A1714', cultural: '#1A1714', service: '#5A8A6E',
     };
 
     const filteredClubs = CLUBS.filter(c => {
@@ -867,7 +867,7 @@ export default function CampusScreen() {
           <View style={bsS.accessRow}>
             {b.accessibility.map(a => (
               <View key={a} style={bsS.accessPill}>
-                <IconSymbol name={a === 'Elevator' ? 'arrow.up.arrow.down' : a === 'Wheelchair Ramp' ? 'figure.roll' : 'figure.stand'} size={13} color="#2A8A8A" />
+                <IconSymbol name={a === 'Elevator' ? 'arrow.up.arrow.down' : a === 'Wheelchair Ramp' ? 'figure.roll' : 'figure.stand'} size={13} color="#9C9790" />
                 <Text style={bsS.accessTxt}>{a}</Text>
               </View>
             ))}
@@ -900,7 +900,7 @@ export default function CampusScreen() {
     const filtered = dietaryFilter.length > 0
       ? meals.filter(m => dietaryFilter.every(f => m.dietaryTags.includes(f)))
       : meals;
-    const dietaryTagColors: Record<string, string> = { Vegetarian: '#5A8A6E', Vegan: '#3A7A5A', 'Gluten-Free': '#C4872A', Halal: '#1D9BF0' };
+    const dietaryTagColors: Record<string, string> = { Vegetarian: '#5A8A6E', Vegan: '#3A7A5A', 'Gluten-Free': '#B8943E', Halal: '#1A1714' };
     return (
       <View style={{ paddingHorizontal: 16 }}>
         <View style={dsS.header}>
@@ -1015,7 +1015,7 @@ export default function CampusScreen() {
           </Pressable>
         ))}
       </View>
-      <Pressable style={[msS.submitBtn, { backgroundColor: '#3B82F6' }]}
+      <Pressable style={[msS.submitBtn, { backgroundColor: '#1A1714' }]}
         onPress={() => {
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           setMaintForm(f => ({ ...f, category: '', description: '', urgency: 'Normal' }));
@@ -1172,7 +1172,7 @@ const mapS = StyleSheet.create({
   pinLabel:       { position: 'absolute', fontSize: 9, fontWeight: '600', textAlign: 'center', width: 104 },
   alertDot:       { position: 'absolute', top: -5, right: -5, width: 11, height: 11, borderRadius: 5.5, borderWidth: 2, borderColor: '#fff' },
   userHalo:       { position: 'absolute', width: 32, height: 32, borderRadius: 16, backgroundColor: 'rgba(0,122,255,0.18)' },
-  userDot:        { position: 'absolute', width: 12, height: 12, borderRadius: 6, backgroundColor: '#007AFF', borderWidth: 2.5, borderColor: '#fff' },
+  userDot:        { position: 'absolute', width: 12, height: 12, borderRadius: 6, backgroundColor: '#1A1714', borderWidth: 2.5, borderColor: '#fff' },
   legendBtn:      { position: 'absolute', bottom: 12, right: 12, flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 10 },
   legendBtnTxt:   { fontSize: 11, fontWeight: '600' },
   legendPanel:    { position: 'absolute', bottom: 46, right: 12, borderRadius: 12, padding: 12, gap: 7, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 8, elevation: 4 },
@@ -1300,11 +1300,11 @@ const bsS = StyleSheet.create({
   floorDetail:  { fontSize: 12, color: 'rgba(45,30,18,0.50)' },
   accessRow:    { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 20 },
   accessPill:   { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 10, backgroundColor: 'rgba(42,138,138,0.10)' },
-  accessTxt:    { fontSize: 12, color: '#2A8A8A' },
+  accessTxt:    { fontSize: 12, color: '#9C9790' },
   directionsBtn:{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 14, borderRadius: 14, backgroundColor: '#111111', marginBottom: 10 },
   directionsBtnTxt: { fontSize: 15, fontWeight: '700', color: '#fff' },
   adminAction:  { flex: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center', backgroundColor: 'rgba(139,99,67,0.08)' },
-  adminActionTxt:{ fontSize: 13, fontWeight: '700', color: '#3B82F6' },
+  adminActionTxt:{ fontSize: 13, fontWeight: '700', color: '#1A1714' },
 });
 
 const dsS = StyleSheet.create({

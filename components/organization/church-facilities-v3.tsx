@@ -163,19 +163,19 @@ function Card({ colors, children }: { colors: typeof Colors.light; children: Rea
 }
 
 const ROOM_STATUS_COLOR: Record<RoomStatus, string> = {
-  Open: '#22C55E',
-  Limited: '#F59E0B',
-  Closed: '#EF4444',
+  Open: '#5A8A6E',
+  Limited: '#B8943E',
+  Closed: '#B85C5C',
 };
 
 const FAC_STATUS_COLOR: Record<FacilityStatus, string> = {
-  Operational: '#22C55E',
-  'Needs Attention': '#F59E0B',
-  'Under Review': '#EF4444',
+  Operational: '#5A8A6E',
+  'Needs Attention': '#B8943E',
+  'Under Review': '#B85C5C',
 };
 
 function StatusChip({ status, colorMap }: { status: string; colorMap: Record<string, string> }) {
-  const color = colorMap[status] ?? '#A1A1AA';
+  const color = colorMap[status] ?? '#9C9790';
   return (
     <View style={[s.chip, { backgroundColor: color + '18' }]}>
       <ThemedText style={[s.chipText, { color }]}>{status}</ThemedText>
@@ -292,7 +292,7 @@ function IssueReportSheet({
   const [urgency, setUrgency] = useState<'Low' | 'Medium' | 'High'>('Medium');
 
   const urgencies: ('Low' | 'Medium' | 'High')[] = ['Low', 'Medium', 'High'];
-  const urgencyColor: Record<string, string> = { Low: '#A1A1AA', Medium: '#F59E0B', High: '#EF4444' };
+  const urgencyColor: Record<string, string> = { Low: '#9C9790', Medium: '#B8943E', High: '#B85C5C' };
 
   const handleSubmit = useCallback(() => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);

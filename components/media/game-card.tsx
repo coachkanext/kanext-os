@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 13,
-    color: '#A1A1AA',
+    color: '#9C9790',
     marginBottom: 2,
   },
   statsRow: {

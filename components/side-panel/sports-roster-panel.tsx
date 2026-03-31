@@ -39,7 +39,7 @@ export function SportsRosterPanel() {
     <View style={{ gap: 8 }}>
 
       {/* Roster summary */}
-      <View style={{ backgroundColor: '#003A63', borderRadius: 12, padding: 14 }}>
+      <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14 }}>
         <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Roster</Text>
         <View style={{ flexDirection: 'row', gap: 8 }}>
           {[
@@ -61,7 +61,7 @@ export function SportsRosterPanel() {
         <View style={{ flexDirection: 'row', gap: 8 }}>
           {[
             { label: 'Available', value: health.available, color: '#5A8A6E' },
-            { label: 'Limited',   value: health.limited,   color: '#3B82F6' },
+            { label: 'Limited',   value: health.limited,   color: '#1A1714' },
             { label: 'Out',       value: health.out,       color: '#B85C5C' },
           ].map(item => (
             <View key={item.label} style={{ flex: 1, alignItems: 'center', backgroundColor: C.surfacePressed, borderRadius: 8, paddingVertical: 8 }}>

@@ -104,13 +104,13 @@ export interface MyOutreachStats {
 
 export const PIPELINE_STAGES: { stage: ProspectStage; color: string }[] = [
   { stage: 'Explorer',      color: '#9CA3AF' },
-  { stage: 'First Visit',   color: '#1D9BF0' },
-  { stage: 'Follow-Up Sent', color: '#F59E0B' },
+  { stage: 'First Visit',   color: '#1A1714' },
+  { stage: 'Follow-Up Sent', color: '#B8943E' },
   { stage: 'Returned',      color: '#D97757' },
   { stage: 'Connected',     color: '#5A8A6E' },
-  { stage: 'Joined Group',  color: '#3B82F6' },
+  { stage: 'Joined Group',  color: '#1A1714' },
   { stage: 'Member',        color: '#3D7A5A' },
-  { stage: 'Inactive',      color: '#EF4444' },
+  { stage: 'Inactive',      color: '#B85C5C' },
 ];
 
 // ── Prospects (8 total) ───────────────────────────────────────────────────────

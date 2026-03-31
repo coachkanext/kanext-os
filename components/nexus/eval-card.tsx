@@ -28,8 +28,8 @@ interface ImpactMeterProps {
 function ImpactMeter({ value, colors }: ImpactMeterProps) {
   const getImpactColor = (v: number) => {
     if (v >= 80) return '#FFFFFF';
-    if (v >= 60) return '#A1A1AA';
-    if (v >= 40) return '#A1A1AA';
+    if (v >= 60) return '#9C9790';
+    if (v >= 40) return '#9C9790';
     return '#52525B';
   };
 
@@ -129,7 +129,7 @@ export function EvalCard({ evalSnapshot, onViewFull, onSave }: EvalCardProps) {
           title="Growth Areas"
           items={evalSnapshot.areasForGrowth}
           icon="arrow.up.circle.fill"
-          iconColor="#A1A1AA"
+          iconColor="#9C9790"
           colors={colors}
         />
       </View>

@@ -131,7 +131,7 @@ export const DEAL_STAGES: DealStage[] = [
 
 export const DEAL_TYPE_COLORS: Record<DealType, string> = {
   EQUITY: '#6366F1',
-  DEBT: '#2563EB',
+  DEBT: '#1A1714',
   GRANT: '#059669',
   PARTNERSHIP: '#78716C',
   ACQUISITION: '#D97706',
@@ -139,11 +139,11 @@ export const DEAL_TYPE_COLORS: Record<DealType, string> = {
 };
 
 export const STAGE_COLORS: Record<DealStage, string> = {
-  'Prospecting': '#A1A1AA',
-  'In Discussion': '#F59E0B',
-  'Term Sheet': '#2563EB',
+  'Prospecting': '#9C9790',
+  'In Discussion': '#B8943E',
+  'Term Sheet': '#1A1714',
   'Diligence': '#D97706',
-  'Pending Close': '#22C55E',
+  'Pending Close': '#5A8A6E',
 };
 
 // =============================================================================

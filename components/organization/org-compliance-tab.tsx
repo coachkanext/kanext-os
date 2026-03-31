@@ -90,7 +90,7 @@ function ChecklistStatusBadge({ status }: { status: ComplianceChecklist['status'
 }
 
 function SeverityBadge({ severity }: { severity: string }) {
-  const fg = SEVERITY_COLOR[severity] ?? '#A1A1AA';
+  const fg = SEVERITY_COLOR[severity] ?? '#9C9790';
   return (
     <View style={[s.badge, { backgroundColor: fg + '33' }]}>
       <ThemedText style={[s.badgeText, { color: fg }]}>{severity}</ThemedText>
@@ -124,10 +124,10 @@ const MODE_LABELS: Record<Mode, string> = {
 // =============================================================================
 
 const ACTION_STATUS_COLOR: Record<ComplianceAction['status'], string> = {
-  pending: '#F59E0B',
-  'in-progress': '#1D9BF0',
-  completed: '#22C55E',
-  verified: '#1D9BF0',
+  pending: '#B8943E',
+  'in-progress': '#1A1714',
+  completed: '#5A8A6E',
+  verified: '#1A1714',
 };
 
 // =============================================================================
@@ -135,10 +135,10 @@ const ACTION_STATUS_COLOR: Record<ComplianceAction['status'], string> = {
 // =============================================================================
 
 const TRAINING_STATUS_COLOR: Record<ComplianceTraining['status'], string> = {
-  assigned: '#A1A1AA',
-  'in-progress': '#1D9BF0',
-  completed: '#22C55E',
-  overdue: '#EF4444',
+  assigned: '#9C9790',
+  'in-progress': '#1A1714',
+  completed: '#5A8A6E',
+  overdue: '#B85C5C',
 };
 
 // =============================================================================
@@ -146,10 +146,10 @@ const TRAINING_STATUS_COLOR: Record<ComplianceTraining['status'], string> = {
 // =============================================================================
 
 const POLICY_STATUS_COLOR: Record<CompliancePolicy['status'], string> = {
-  active: '#22C55E',
-  'under-review': '#F59E0B',
-  draft: '#A1A1AA',
-  archived: '#A1A1AA',
+  active: '#5A8A6E',
+  'under-review': '#B8943E',
+  draft: '#9C9790',
+  archived: '#9C9790',
 };
 
 // =============================================================================
@@ -157,10 +157,10 @@ const POLICY_STATUS_COLOR: Record<CompliancePolicy['status'], string> = {
 // =============================================================================
 
 const DEADLINE_STATUS_COLOR: Record<ComplianceDeadline['status'], string> = {
-  upcoming: '#22C55E',
-  'due-soon': '#F59E0B',
-  overdue: '#EF4444',
-  completed: '#A1A1AA',
+  upcoming: '#5A8A6E',
+  'due-soon': '#B8943E',
+  overdue: '#B85C5C',
+  completed: '#9C9790',
 };
 
 // =============================================================================
@@ -168,9 +168,9 @@ const DEADLINE_STATUS_COLOR: Record<ComplianceDeadline['status'], string> = {
 // =============================================================================
 
 const REPORT_FORMAT_COLOR: Record<ComplianceReport['format'], string> = {
-  PDF: '#1D9BF0',
-  CSV: '#22C55E',
-  XLSX: '#F59E0B',
+  PDF: '#1A1714',
+  CSV: '#5A8A6E',
+  XLSX: '#B8943E',
 };
 
 // =============================================================================
@@ -193,15 +193,15 @@ function auditIcon(action: string): string {
 
 function auditColor(action: string): string {
   switch (action) {
-    case 'requirement_verified': return '#1D9BF0';
-    case 'evidence_submitted': return '#1D9BF0';
-    case 'incident_opened': return '#EF4444';
-    case 'checklist_completed': return '#22C55E';
-    case 'policy_updated': return '#F59E0B';
-    case 'training_completed': return '#1D9BF0';
-    case 'deadline_met': return '#22C55E';
-    case 'action_verified': return '#1D9BF0';
-    default: return '#A1A1AA';
+    case 'requirement_verified': return '#1A1714';
+    case 'evidence_submitted': return '#1A1714';
+    case 'incident_opened': return '#B85C5C';
+    case 'checklist_completed': return '#5A8A6E';
+    case 'policy_updated': return '#B8943E';
+    case 'training_completed': return '#1A1714';
+    case 'deadline_met': return '#5A8A6E';
+    case 'action_verified': return '#1A1714';
+    default: return '#9C9790';
   }
 }
 
@@ -363,7 +363,7 @@ export function OrgComplianceTab({ mode, colors, accentColor }: Props) {
                 <ThemedText
                   style={[
                     s.listCardSub,
-                    { color: isOverdue ? '#EF4444' : colors.textTertiary },
+                    { color: isOverdue ? '#B85C5C' : colors.textTertiary },
                   ]}
                 >
                   Due: {item.dueDate}
@@ -435,7 +435,7 @@ export function OrgComplianceTab({ mode, colors, accentColor }: Props) {
         const typeColor =
           item.type === 'document' ? accentColor :
           item.type === 'link' ? accentColor :
-          item.type === 'attestation' ? '#F59E0B' :
+          item.type === 'attestation' ? '#B8943E' :
           accentColor; // certificate
         const expiresDateSoon = item.expiresDate != null && new Date(item.expiresDate).getTime() - Date.now() < 60 * 86400000;
         return (
@@ -467,7 +467,7 @@ export function OrgComplianceTab({ mode, colors, accentColor }: Props) {
                   <ThemedText
                     style={[
                       s.listCardSub,
-                      { color: expiresDateSoon ? '#F59E0B' : colors.textTertiary },
+                      { color: expiresDateSoon ? '#B8943E' : colors.textTertiary },
                     ]}
                   >
                     Expires: {item.expiresDate}
@@ -538,7 +538,7 @@ export function OrgComplianceTab({ mode, colors, accentColor }: Props) {
       ListEmptyComponent={<EmptyState icon="bolt.fill" text="No actions" colors={colors} />}
       renderItem={({ item }) => {
         const statusColor = ACTION_STATUS_COLOR[item.status];
-        const priorityColor = SEVERITY_COLOR[item.priority] ?? '#A1A1AA';
+        const priorityColor = SEVERITY_COLOR[item.priority] ?? '#9C9790';
         const isOverdue = (item.status === 'pending' || item.status === 'in-progress') && new Date(item.dueDate) < new Date();
         return (
           <View style={[s.listCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -567,7 +567,7 @@ export function OrgComplianceTab({ mode, colors, accentColor }: Props) {
                 <ThemedText
                   style={[
                     s.listCardSub,
-                    { color: isOverdue ? '#EF4444' : colors.textTertiary },
+                    { color: isOverdue ? '#B85C5C' : colors.textTertiary },
                   ]}
                 >
                   Due: {item.dueDate}{isOverdue ? ' (OVERDUE)' : ''}
@@ -722,13 +722,13 @@ export function OrgComplianceTab({ mode, colors, accentColor }: Props) {
                   )}
                   {item.proofSubmitted ? (
                     <View style={s.deadlineIndicator}>
-                      <IconSymbol name="checkmark.circle.fill" size={12} color="#22C55E" />
-                      <ThemedText style={[s.listCardSub, { color: '#22C55E' }]}>Submitted</ThemedText>
+                      <IconSymbol name="checkmark.circle.fill" size={12} color="#5A8A6E" />
+                      <ThemedText style={[s.listCardSub, { color: '#5A8A6E' }]}>Submitted</ThemedText>
                     </View>
                   ) : item.proofRequired ? (
                     <View style={s.deadlineIndicator}>
-                      <IconSymbol name="clock" size={12} color="#F59E0B" />
-                      <ThemedText style={[s.listCardSub, { color: '#F59E0B' }]}>Pending</ThemedText>
+                      <IconSymbol name="clock" size={12} color="#B8943E" />
+                      <ThemedText style={[s.listCardSub, { color: '#B8943E' }]}>Pending</ThemedText>
                     </View>
                   ) : null}
                 </View>
@@ -959,7 +959,7 @@ export function OrgComplianceTab({ mode, colors, accentColor }: Props) {
           <ThemedText style={[s.filterSectionTitle, { color: colors.textSecondary }]}>Status</ThemedText>
           <View style={s.filterChipsWrap}>
             {(['due-soon', 'overdue', 'compliant', 'waived']).map((st) => {
-              const fg = REQUIREMENT_STATUS_COLOR[st as keyof typeof REQUIREMENT_STATUS_COLOR] ?? '#A1A1AA';
+              const fg = REQUIREMENT_STATUS_COLOR[st as keyof typeof REQUIREMENT_STATUS_COLOR] ?? '#9C9790';
               const selected = filterStatuses.includes(st);
               return (
                 <Pressable
@@ -989,7 +989,7 @@ export function OrgComplianceTab({ mode, colors, accentColor }: Props) {
           <ThemedText style={[s.filterSectionTitle, { color: colors.textSecondary }]}>Severity</ThemedText>
           <View style={s.filterChipsWrap}>
             {(['critical', 'high', 'medium', 'low']).map((sev) => {
-              const fg = SEVERITY_COLOR[sev] ?? '#A1A1AA';
+              const fg = SEVERITY_COLOR[sev] ?? '#9C9790';
               const selected = filterSeverities.includes(sev);
               return (
                 <Pressable

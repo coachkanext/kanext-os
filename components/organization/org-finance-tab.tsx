@@ -46,8 +46,8 @@ export function OrgFinanceTab({ mode, colors, accentColor }: Props) {
                   s.kpiDelta,
                   {
                     color:
-                      kpi.deltaType === 'up' ? '#22C55E' :
-                      kpi.deltaType === 'down' ? '#EF4444' :
+                      kpi.deltaType === 'up' ? '#5A8A6E' :
+                      kpi.deltaType === 'down' ? '#B85C5C' :
                       colors.textSecondary,
                   },
                 ]}
@@ -96,7 +96,7 @@ export function OrgFinanceTab({ mode, colors, accentColor }: Props) {
               <ThemedText
                 style={[
                   s.ledgerAmount,
-                  { color: entry.type === 'revenue' ? '#22C55E' : '#EF4444' },
+                  { color: entry.type === 'revenue' ? '#5A8A6E' : '#B85C5C' },
                 ]}
               >
                 {entry.type === 'expense' ? '-' : '+'}{formatAmount(entry.amount)}

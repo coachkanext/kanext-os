@@ -233,14 +233,14 @@ export interface ComplianceSummary {
 // =============================================================================
 
 export const TEAM_STANDINGS: TeamStanding[] = [
-  { teamId: 't-1', position: 1, teamName: 'Apex Basketball', abbreviation: 'APX', teamColor: '#EF4444', points: 312, wins: 4, podiums: 9, reliability: 96, gap: 'Leader' },
-  { teamId: 't-2', position: 2, teamName: 'Velocity Works', abbreviation: 'VEL', teamColor: '#1D9BF0', points: 287, wins: 3, podiums: 8, reliability: 92, gap: '−25' },
-  { teamId: 't-3', position: 3, teamName: 'Phoenix Motorsport', abbreviation: 'PHX', teamColor: '#F59E0B', points: 256, wins: 2, podiums: 7, reliability: 88, gap: '−56' },
-  { teamId: 't-4', position: 4, teamName: 'Zenith Basketball', abbreviation: 'ZEN', teamColor: '#22C55E', points: 241, wins: 2, podiums: 6, reliability: 94, gap: '−71' },
-  { teamId: 't-5', position: 5, teamName: 'Shadow GP', abbreviation: 'SHD', teamColor: '#1D9BF0', points: 198, wins: 1, podiums: 4, reliability: 85, gap: '−114' },
-  { teamId: 't-6', position: 6, teamName: 'Titan Basketball', abbreviation: 'TTN', teamColor: '#1D9BF0', points: 167, wins: 0, podiums: 3, reliability: 90, gap: '−145' },
-  { teamId: 't-7', position: 7, teamName: 'Nova Speed', abbreviation: 'NVA', teamColor: '#1D9BF0', points: 145, wins: 0, podiums: 1, reliability: 82, gap: '−167' },
-  { teamId: 't-8', position: 8, teamName: 'Iron Circuit', abbreviation: 'IRC', teamColor: '#A1A1AA', points: 132, wins: 0, podiums: 1, reliability: 78, gap: '−180' },
+  { teamId: 't-1', position: 1, teamName: 'Apex Basketball', abbreviation: 'APX', teamColor: '#B85C5C', points: 312, wins: 4, podiums: 9, reliability: 96, gap: 'Leader' },
+  { teamId: 't-2', position: 2, teamName: 'Velocity Works', abbreviation: 'VEL', teamColor: '#1A1714', points: 287, wins: 3, podiums: 8, reliability: 92, gap: '−25' },
+  { teamId: 't-3', position: 3, teamName: 'Phoenix Motorsport', abbreviation: 'PHX', teamColor: '#B8943E', points: 256, wins: 2, podiums: 7, reliability: 88, gap: '−56' },
+  { teamId: 't-4', position: 4, teamName: 'Zenith Basketball', abbreviation: 'ZEN', teamColor: '#5A8A6E', points: 241, wins: 2, podiums: 6, reliability: 94, gap: '−71' },
+  { teamId: 't-5', position: 5, teamName: 'Shadow GP', abbreviation: 'SHD', teamColor: '#1A1714', points: 198, wins: 1, podiums: 4, reliability: 85, gap: '−114' },
+  { teamId: 't-6', position: 6, teamName: 'Titan Basketball', abbreviation: 'TTN', teamColor: '#1A1714', points: 167, wins: 0, podiums: 3, reliability: 90, gap: '−145' },
+  { teamId: 't-7', position: 7, teamName: 'Nova Speed', abbreviation: 'NVA', teamColor: '#1A1714', points: 145, wins: 0, podiums: 1, reliability: 82, gap: '−167' },
+  { teamId: 't-8', position: 8, teamName: 'Iron Circuit', abbreviation: 'IRC', teamColor: '#9C9790', points: 132, wins: 0, podiums: 1, reliability: 78, gap: '−180' },
 ];
 
 // =============================================================================
@@ -248,14 +248,14 @@ export const TEAM_STANDINGS: TeamStanding[] = [
 // =============================================================================
 
 export const CREW_STANDINGS: CrewStanding[] = [
-  { position: 1, name: 'Mike Chen', role: 'Lead Engineer', teamName: 'Apex Basketball', teamColor: '#EF4444', points: 142 },
-  { position: 2, name: 'Sarah Mills', role: 'Lead Engineer', teamName: 'Velocity Works', teamColor: '#1D9BF0', points: 128 },
-  { position: 3, name: 'Raj Patel', role: 'Game Strategist', teamName: 'Phoenix Motorsport', teamColor: '#F59E0B', points: 115 },
-  { position: 4, name: 'Elena Rossi', role: 'Game Strategist', teamName: 'Zenith Basketball', teamColor: '#22C55E', points: 108 },
-  { position: 5, name: 'Tom Harris', role: 'Lead Mechanic', teamName: 'Apex Basketball', teamColor: '#EF4444', points: 96 },
-  { position: 6, name: 'Ana Gutierrez', role: 'Pit Crew Chief', teamName: 'Shadow GP', teamColor: '#1D9BF0', points: 89 },
-  { position: 7, name: 'James Wright', role: 'Lead Engineer', teamName: 'Titan Basketball', teamColor: '#1D9BF0', points: 76 },
-  { position: 8, name: 'Yuki Sato', role: 'Data Analyst', teamName: 'Nova Speed', teamColor: '#1D9BF0', points: 64 },
+  { position: 1, name: 'Mike Chen', role: 'Lead Engineer', teamName: 'Apex Basketball', teamColor: '#B85C5C', points: 142 },
+  { position: 2, name: 'Sarah Mills', role: 'Lead Engineer', teamName: 'Velocity Works', teamColor: '#1A1714', points: 128 },
+  { position: 3, name: 'Raj Patel', role: 'Game Strategist', teamName: 'Phoenix Motorsport', teamColor: '#B8943E', points: 115 },
+  { position: 4, name: 'Elena Rossi', role: 'Game Strategist', teamName: 'Zenith Basketball', teamColor: '#5A8A6E', points: 108 },
+  { position: 5, name: 'Tom Harris', role: 'Lead Mechanic', teamName: 'Apex Basketball', teamColor: '#B85C5C', points: 96 },
+  { position: 6, name: 'Ana Gutierrez', role: 'Pit Crew Chief', teamName: 'Shadow GP', teamColor: '#1A1714', points: 89 },
+  { position: 7, name: 'James Wright', role: 'Lead Engineer', teamName: 'Titan Basketball', teamColor: '#1A1714', points: 76 },
+  { position: 8, name: 'Yuki Sato', role: 'Data Analyst', teamName: 'Nova Speed', teamColor: '#1A1714', points: 64 },
 ];
 
 // =============================================================================
@@ -269,10 +269,10 @@ export const POINTS_SWING_SCENARIOS: PointsSwingScenario[] = [
     description: 'If Leo Vasquez wins the final 3 games and Nadia Patel finishes outside the top 5, Vasquez clinches the title at the Lonestar GP.',
     probability: 'medium',
     impacts: [
-      { playerName: 'Leo Vasquez', teamColor: '#EF4444', currentPos: 1, projectedPos: 1, delta: 0 },
-      { playerName: 'Nadia Patel', teamColor: '#1D9BF0', currentPos: 2, projectedPos: 3, delta: -1 },
-      { playerName: 'Yuki Tanaka', teamColor: '#F59E0B', currentPos: 3, projectedPos: 2, delta: 1 },
-      { playerName: 'Sofia Torres', teamColor: '#22C55E', currentPos: 4, projectedPos: 4, delta: 0 },
+      { playerName: 'Leo Vasquez', teamColor: '#B85C5C', currentPos: 1, projectedPos: 1, delta: 0 },
+      { playerName: 'Nadia Patel', teamColor: '#1A1714', currentPos: 2, projectedPos: 3, delta: -1 },
+      { playerName: 'Yuki Tanaka', teamColor: '#B8943E', currentPos: 3, projectedPos: 2, delta: 1 },
+      { playerName: 'Sofia Torres', teamColor: '#5A8A6E', currentPos: 4, projectedPos: 4, delta: 0 },
     ],
   },
   {
@@ -281,10 +281,10 @@ export const POINTS_SWING_SCENARIOS: PointsSwingScenario[] = [
     description: 'A mechanical failure for Vasquez at Portland coupled with a Patel victory would narrow the championship lead to just 3 points.',
     probability: 'low',
     impacts: [
-      { playerName: 'Nadia Patel', teamColor: '#1D9BF0', currentPos: 2, projectedPos: 1, delta: 1 },
-      { playerName: 'Leo Vasquez', teamColor: '#EF4444', currentPos: 1, projectedPos: 2, delta: -1 },
-      { playerName: 'Yuki Tanaka', teamColor: '#F59E0B', currentPos: 3, projectedPos: 3, delta: 0 },
-      { playerName: 'Jake Morrison', teamColor: '#EF4444', currentPos: 5, projectedPos: 4, delta: 1 },
+      { playerName: 'Nadia Patel', teamColor: '#1A1714', currentPos: 2, projectedPos: 1, delta: 1 },
+      { playerName: 'Leo Vasquez', teamColor: '#B85C5C', currentPos: 1, projectedPos: 2, delta: -1 },
+      { playerName: 'Yuki Tanaka', teamColor: '#B8943E', currentPos: 3, projectedPos: 3, delta: 0 },
+      { playerName: 'Jake Morrison', teamColor: '#B85C5C', currentPos: 5, projectedPos: 4, delta: 1 },
     ],
   },
   {
@@ -293,10 +293,10 @@ export const POINTS_SWING_SCENARIOS: PointsSwingScenario[] = [
     description: 'If the top 4 players each finish in their current championship position at the remaining games, Vasquez takes the title by 22+ points.',
     probability: 'high',
     impacts: [
-      { playerName: 'Leo Vasquez', teamColor: '#EF4444', currentPos: 1, projectedPos: 1, delta: 0 },
-      { playerName: 'Nadia Patel', teamColor: '#1D9BF0', currentPos: 2, projectedPos: 2, delta: 0 },
-      { playerName: 'Yuki Tanaka', teamColor: '#F59E0B', currentPos: 3, projectedPos: 3, delta: 0 },
-      { playerName: 'Sofia Torres', teamColor: '#22C55E', currentPos: 4, projectedPos: 4, delta: 0 },
+      { playerName: 'Leo Vasquez', teamColor: '#B85C5C', currentPos: 1, projectedPos: 1, delta: 0 },
+      { playerName: 'Nadia Patel', teamColor: '#1A1714', currentPos: 2, projectedPos: 2, delta: 0 },
+      { playerName: 'Yuki Tanaka', teamColor: '#B8943E', currentPos: 3, projectedPos: 3, delta: 0 },
+      { playerName: 'Sofia Torres', teamColor: '#5A8A6E', currentPos: 4, projectedPos: 4, delta: 0 },
     ],
   },
 ];
@@ -306,12 +306,12 @@ export const POINTS_SWING_SCENARIOS: PointsSwingScenario[] = [
 // =============================================================================
 
 export const PENALTY_LEDGER: PenaltyLedgerEntry[] = [
-  { id: 'pl-1', date: 'Jul 18', playerName: 'Carlos Mendez', teamColor: '#1D9BF0', infraction: 'Causing a collision — Turn 8 contact with Fletcher', penalty: '5-second time penalty', game: 'Mountain Circuit', pointsDeducted: 2 },
-  { id: 'pl-2', date: 'Jul 4', playerName: 'Jake Morrison', teamColor: '#EF4444', infraction: 'Court limits abuse — 5 violations in qualifying', penalty: 'Qualifying quarter deleted, grid penalty -2', game: 'Independence GP', pointsDeducted: 0 },
-  { id: 'pl-3', date: 'Jun 28', playerName: 'Ggame Kim', teamColor: '#1D9BF0', infraction: 'Unsafe release from pit box', penalty: '10-second stop-go penalty', game: 'Summer Showdown', pointsDeducted: 1 },
-  { id: 'pl-4', date: 'Jun 14', playerName: 'Ryan Fletcher', teamColor: '#1D9BF0', infraction: 'Ignoring blue flags — 4 marshalling posts', penalty: '5-second time penalty', game: 'Virginia Classic', pointsDeducted: 1 },
-  { id: 'pl-5', date: 'May 31', playerName: 'Tyler Brooks', teamColor: '#A1A1AA', infraction: 'Pit lane speeding — 48 km/h (limit 40)', penalty: 'Drive-through penalty', game: 'Sebring Sprint', pointsDeducted: 0 },
-  { id: 'pl-6', date: 'May 17', playerName: 'Yuki Tanaka', teamColor: '#F59E0B', infraction: 'Jump start — transponder confirmed early movement', penalty: 'Drive-through penalty', game: 'Barber Invitational', pointsDeducted: 1 },
+  { id: 'pl-1', date: 'Jul 18', playerName: 'Carlos Mendez', teamColor: '#1A1714', infraction: 'Causing a collision — Turn 8 contact with Fletcher', penalty: '5-second time penalty', game: 'Mountain Circuit', pointsDeducted: 2 },
+  { id: 'pl-2', date: 'Jul 4', playerName: 'Jake Morrison', teamColor: '#B85C5C', infraction: 'Court limits abuse — 5 violations in qualifying', penalty: 'Qualifying quarter deleted, grid penalty -2', game: 'Independence GP', pointsDeducted: 0 },
+  { id: 'pl-3', date: 'Jun 28', playerName: 'Ggame Kim', teamColor: '#1A1714', infraction: 'Unsafe release from pit box', penalty: '10-second stop-go penalty', game: 'Summer Showdown', pointsDeducted: 1 },
+  { id: 'pl-4', date: 'Jun 14', playerName: 'Ryan Fletcher', teamColor: '#1A1714', infraction: 'Ignoring blue flags — 4 marshalling posts', penalty: '5-second time penalty', game: 'Virginia Classic', pointsDeducted: 1 },
+  { id: 'pl-5', date: 'May 31', playerName: 'Tyler Brooks', teamColor: '#9C9790', infraction: 'Pit lane speeding — 48 km/h (limit 40)', penalty: 'Drive-through penalty', game: 'Sebring Sprint', pointsDeducted: 0 },
+  { id: 'pl-6', date: 'May 17', playerName: 'Yuki Tanaka', teamColor: '#B8943E', infraction: 'Jump start — transponder confirmed early movement', penalty: 'Drive-through penalty', game: 'Barber Invitational', pointsDeducted: 1 },
 ];
 
 // =============================================================================
@@ -322,8 +322,8 @@ export const LEVERAGE_BATTLES: LeverageBattle[] = [
   {
     id: 'lb-1',
     title: 'Championship Battle',
-    player1: { name: 'Leo Vasquez', team: 'Apex Basketball', color: '#EF4444', points: 178 },
-    player2: { name: 'Nadia Patel', team: 'Velocity Works', color: '#1D9BF0', points: 156 },
+    player1: { name: 'Leo Vasquez', team: 'Apex Basketball', color: '#B85C5C', points: 178 },
+    player2: { name: 'Nadia Patel', team: 'Velocity Works', color: '#1A1714', points: 156 },
     gap: '22 pts',
     gamesRemaining: 3,
     clinchScenario: 'Vasquez clinches with a win + Patel P5 or worse at Portland',
@@ -331,8 +331,8 @@ export const LEVERAGE_BATTLES: LeverageBattle[] = [
   {
     id: 'lb-2',
     title: 'Fight for P3',
-    player1: { name: 'Yuki Tanaka', team: 'Phoenix Motorsport', color: '#F59E0B', points: 148 },
-    player2: { name: 'Sofia Torres', team: 'Zenith Basketball', color: '#22C55E', points: 142 },
+    player1: { name: 'Yuki Tanaka', team: 'Phoenix Motorsport', color: '#B8943E', points: 148 },
+    player2: { name: 'Sofia Torres', team: 'Zenith Basketball', color: '#5A8A6E', points: 142 },
     gap: '6 pts',
     gamesRemaining: 3,
     clinchScenario: 'Either player can clinch P3 with 2 consecutive podiums + rival outside top 6',
@@ -340,8 +340,8 @@ export const LEVERAGE_BATTLES: LeverageBattle[] = [
   {
     id: 'lb-3',
     title: 'Midfield Battle',
-    player1: { name: 'Jake Morrison', team: 'Apex Basketball', color: '#EF4444', points: 134 },
-    player2: { name: 'Marcus Bell', team: 'Velocity Works', color: '#1D9BF0', points: 131 },
+    player1: { name: 'Jake Morrison', team: 'Apex Basketball', color: '#B85C5C', points: 134 },
+    player2: { name: 'Marcus Bell', team: 'Velocity Works', color: '#1A1714', points: 131 },
     gap: '3 pts',
     gamesRemaining: 3,
     clinchScenario: 'Razor-thin margin — any single position swap changes the order',
@@ -353,14 +353,14 @@ export const LEVERAGE_BATTLES: LeverageBattle[] = [
 // =============================================================================
 
 export const TEAMS_V2: TeamV2[] = [
-  { id: 't-1', name: 'Apex Basketball', abbreviation: 'APX', primaryColor: '#EF4444', owner: 'Marcus Kane', homeCourt: 'COTA', wins: 4, points: 312, founded: 2019, budget: '$2.4M', championships: 2, principal: 'Marcus Kane', headquarters: 'Austin, TX' },
-  { id: 't-2', name: 'Velocity Works', abbreviation: 'VEL', primaryColor: '#1D9BF0', owner: 'Lisa Grant', homeCourt: 'Laguna Seca', wins: 3, points: 287, founded: 2020, budget: '$2.1M', championships: 1, principal: 'Lisa Grant', headquarters: 'Monterey, CA' },
-  { id: 't-3', name: 'Phoenix Motorsport', abbreviation: 'PHX', primaryColor: '#F59E0B', owner: 'David Okafor', homeCourt: 'Road Atlanta', wins: 2, points: 256, founded: 2018, budget: '$1.9M', championships: 1, principal: 'David Okafor', headquarters: 'Rock Hill, SC' },
-  { id: 't-4', name: 'Zenith Basketball', abbreviation: 'ZEN', primaryColor: '#22C55E', owner: 'Anna Petrov', homeCourt: 'Watkins Glen', wins: 2, points: 241, founded: 2021, budget: '$1.8M', championships: 0, principal: 'Anna Petrov', headquarters: 'Ithaca, NY' },
-  { id: 't-5', name: 'Shadow GP', abbreviation: 'SHD', primaryColor: '#1D9BF0', owner: 'James Wright', homeCourt: 'Barber Motorsports', wins: 1, points: 198, founded: 2020, budget: '$1.6M', championships: 0, principal: 'James Wright', headquarters: 'Birmingham, AL' },
-  { id: 't-6', name: 'Titan Basketball', abbreviation: 'TTN', primaryColor: '#1D9BF0', owner: 'Lisa Rodriguez', homeCourt: 'Mid-Ohio', wins: 0, points: 167, founded: 2022, budget: '$1.4M', championships: 0, principal: 'Lisa Rodriguez', headquarters: 'Columbus, OH' },
-  { id: 't-7', name: 'Nova Speed', abbreviation: 'NVA', primaryColor: '#1D9BF0', owner: 'Kai Tanaka', homeCourt: 'Sebring', wins: 0, points: 145, founded: 2023, budget: '$1.2M', championships: 0, principal: 'Kai Tanaka', headquarters: 'Sebring, FL' },
-  { id: 't-8', name: 'Iron Circuit', abbreviation: 'IRC', primaryColor: '#A1A1AA', owner: 'Mike Thompson', homeCourt: 'VIR', wins: 0, points: 132, founded: 2022, budget: '$1.1M', championships: 0, principal: 'Mike Thompson', headquarters: 'Charlottesville, VA' },
+  { id: 't-1', name: 'Apex Basketball', abbreviation: 'APX', primaryColor: '#B85C5C', owner: 'Marcus Kane', homeCourt: 'COTA', wins: 4, points: 312, founded: 2019, budget: '$2.4M', championships: 2, principal: 'Marcus Kane', headquarters: 'Austin, TX' },
+  { id: 't-2', name: 'Velocity Works', abbreviation: 'VEL', primaryColor: '#1A1714', owner: 'Lisa Grant', homeCourt: 'Laguna Seca', wins: 3, points: 287, founded: 2020, budget: '$2.1M', championships: 1, principal: 'Lisa Grant', headquarters: 'Monterey, CA' },
+  { id: 't-3', name: 'Phoenix Motorsport', abbreviation: 'PHX', primaryColor: '#B8943E', owner: 'David Okafor', homeCourt: 'Road Atlanta', wins: 2, points: 256, founded: 2018, budget: '$1.9M', championships: 1, principal: 'David Okafor', headquarters: 'Rock Hill, SC' },
+  { id: 't-4', name: 'Zenith Basketball', abbreviation: 'ZEN', primaryColor: '#5A8A6E', owner: 'Anna Petrov', homeCourt: 'Watkins Glen', wins: 2, points: 241, founded: 2021, budget: '$1.8M', championships: 0, principal: 'Anna Petrov', headquarters: 'Ithaca, NY' },
+  { id: 't-5', name: 'Shadow GP', abbreviation: 'SHD', primaryColor: '#1A1714', owner: 'James Wright', homeCourt: 'Barber Motorsports', wins: 1, points: 198, founded: 2020, budget: '$1.6M', championships: 0, principal: 'James Wright', headquarters: 'Birmingham, AL' },
+  { id: 't-6', name: 'Titan Basketball', abbreviation: 'TTN', primaryColor: '#1A1714', owner: 'Lisa Rodriguez', homeCourt: 'Mid-Ohio', wins: 0, points: 167, founded: 2022, budget: '$1.4M', championships: 0, principal: 'Lisa Rodriguez', headquarters: 'Columbus, OH' },
+  { id: 't-7', name: 'Nova Speed', abbreviation: 'NVA', primaryColor: '#1A1714', owner: 'Kai Tanaka', homeCourt: 'Sebring', wins: 0, points: 145, founded: 2023, budget: '$1.2M', championships: 0, principal: 'Kai Tanaka', headquarters: 'Sebring, FL' },
+  { id: 't-8', name: 'Iron Circuit', abbreviation: 'IRC', primaryColor: '#9C9790', owner: 'Mike Thompson', homeCourt: 'VIR', wins: 0, points: 132, founded: 2022, budget: '$1.1M', championships: 0, principal: 'Mike Thompson', headquarters: 'Charlottesville, VA' },
 ];
 
 // =============================================================================
@@ -407,35 +407,35 @@ export const TEAM_PERSONNEL: Record<string, TeamPerson[]> = {
 
 export const TEAM_CARS: Record<string, TeamCar[]> = {
   't-1': [
-    { id: 'tc-1', carNumber: '7', playerName: 'Leo Vasquez', liveryColor: '#EF4444', chassis: 'APX-K1 Mk4', engine: 'Rotax 125cc Evo', weight: '170 kg', topSpeed: '148 km/h' },
-    { id: 'tc-2', carNumber: '11', playerName: 'Jake Morrison', liveryColor: '#EF4444', chassis: 'APX-K1 Mk4', engine: 'Rotax 125cc Evo', weight: '170 kg', topSpeed: '147 km/h' },
+    { id: 'tc-1', carNumber: '7', playerName: 'Leo Vasquez', liveryColor: '#B85C5C', chassis: 'APX-K1 Mk4', engine: 'Rotax 125cc Evo', weight: '170 kg', topSpeed: '148 km/h' },
+    { id: 'tc-2', carNumber: '11', playerName: 'Jake Morrison', liveryColor: '#B85C5C', chassis: 'APX-K1 Mk4', engine: 'Rotax 125cc Evo', weight: '170 kg', topSpeed: '147 km/h' },
   ],
   't-2': [
-    { id: 'tc-3', carNumber: '22', playerName: 'Nadia Patel', liveryColor: '#1D9BF0', chassis: 'VEL-Sprint S3', engine: 'Rotax 125cc Evo', weight: '171 kg', topSpeed: '146 km/h' },
-    { id: 'tc-4', carNumber: '5', playerName: 'Marcus Bell', liveryColor: '#1D9BF0', chassis: 'VEL-Sprint S3', engine: 'Rotax 125cc Evo', weight: '172 kg', topSpeed: '145 km/h' },
+    { id: 'tc-3', carNumber: '22', playerName: 'Nadia Patel', liveryColor: '#1A1714', chassis: 'VEL-Sprint S3', engine: 'Rotax 125cc Evo', weight: '171 kg', topSpeed: '146 km/h' },
+    { id: 'tc-4', carNumber: '5', playerName: 'Marcus Bell', liveryColor: '#1A1714', chassis: 'VEL-Sprint S3', engine: 'Rotax 125cc Evo', weight: '172 kg', topSpeed: '145 km/h' },
   ],
   't-3': [
-    { id: 'tc-5', carNumber: '33', playerName: 'Yuki Tanaka', liveryColor: '#F59E0B', chassis: 'PHX-Raptor R2', engine: 'Rotax 125cc Evo', weight: '170 kg', topSpeed: '147 km/h' },
-    { id: 'tc-6', carNumber: '8', playerName: 'Andre Williams', liveryColor: '#F59E0B', chassis: 'PHX-Raptor R2', engine: 'Rotax 125cc Evo', weight: '171 kg', topSpeed: '145 km/h' },
+    { id: 'tc-5', carNumber: '33', playerName: 'Yuki Tanaka', liveryColor: '#B8943E', chassis: 'PHX-Raptor R2', engine: 'Rotax 125cc Evo', weight: '170 kg', topSpeed: '147 km/h' },
+    { id: 'tc-6', carNumber: '8', playerName: 'Andre Williams', liveryColor: '#B8943E', chassis: 'PHX-Raptor R2', engine: 'Rotax 125cc Evo', weight: '171 kg', topSpeed: '145 km/h' },
   ],
   't-4': [
-    { id: 'tc-7', carNumber: '44', playerName: 'Sofia Torres', liveryColor: '#22C55E', chassis: 'ZEN-Pulse P1', engine: 'Rotax 125cc Evo', weight: '170 kg', topSpeed: '146 km/h' },
-    { id: 'tc-8', carNumber: '16', playerName: 'Emma Lindqvist', liveryColor: '#22C55E', chassis: 'ZEN-Pulse P1', engine: 'Rotax 125cc Evo', weight: '171 kg', topSpeed: '144 km/h' },
+    { id: 'tc-7', carNumber: '44', playerName: 'Sofia Torres', liveryColor: '#5A8A6E', chassis: 'ZEN-Pulse P1', engine: 'Rotax 125cc Evo', weight: '170 kg', topSpeed: '146 km/h' },
+    { id: 'tc-8', carNumber: '16', playerName: 'Emma Lindqvist', liveryColor: '#5A8A6E', chassis: 'ZEN-Pulse P1', engine: 'Rotax 125cc Evo', weight: '171 kg', topSpeed: '144 km/h' },
   ],
   't-5': [
-    { id: 'tc-9', carNumber: '99', playerName: 'Carlos Mendez', liveryColor: '#1D9BF0', chassis: 'SHD-Phantom V2', engine: 'Rotax 125cc Evo', weight: '172 kg', topSpeed: '145 km/h' },
-    { id: 'tc-10', carNumber: '18', playerName: 'Ggame Kim', liveryColor: '#1D9BF0', chassis: 'SHD-Phantom V2', engine: 'Rotax 125cc Evo', weight: '170 kg', topSpeed: '144 km/h' },
+    { id: 'tc-9', carNumber: '99', playerName: 'Carlos Mendez', liveryColor: '#1A1714', chassis: 'SHD-Phantom V2', engine: 'Rotax 125cc Evo', weight: '172 kg', topSpeed: '145 km/h' },
+    { id: 'tc-10', carNumber: '18', playerName: 'Ggame Kim', liveryColor: '#1A1714', chassis: 'SHD-Phantom V2', engine: 'Rotax 125cc Evo', weight: '170 kg', topSpeed: '144 km/h' },
   ],
   't-6': [
-    { id: 'tc-11', carNumber: '3', playerName: 'Ryan Fletcher', liveryColor: '#1D9BF0', chassis: 'TTN-Force F1', engine: 'Rotax 125cc Evo', weight: '171 kg', topSpeed: '144 km/h' },
-    { id: 'tc-12', carNumber: '27', playerName: 'Mia Santos', liveryColor: '#1D9BF0', chassis: 'TTN-Force F1', engine: 'Rotax 125cc Evo', weight: '170 kg', topSpeed: '143 km/h' },
+    { id: 'tc-11', carNumber: '3', playerName: 'Ryan Fletcher', liveryColor: '#1A1714', chassis: 'TTN-Force F1', engine: 'Rotax 125cc Evo', weight: '171 kg', topSpeed: '144 km/h' },
+    { id: 'tc-12', carNumber: '27', playerName: 'Mia Santos', liveryColor: '#1A1714', chassis: 'TTN-Force F1', engine: 'Rotax 125cc Evo', weight: '170 kg', topSpeed: '143 km/h' },
   ],
   't-7': [
-    { id: 'tc-13', carNumber: '41', playerName: 'Zach Cooper', liveryColor: '#1D9BF0', chassis: 'NVA-Bolt B1', engine: 'Rotax 125cc Evo', weight: '172 kg', topSpeed: '143 km/h' },
-    { id: 'tc-14', carNumber: '14', playerName: 'Priya Sharma', liveryColor: '#1D9BF0', chassis: 'NVA-Bolt B1', engine: 'Rotax 125cc Evo', weight: '171 kg', topSpeed: '142 km/h' },
+    { id: 'tc-13', carNumber: '41', playerName: 'Zach Cooper', liveryColor: '#1A1714', chassis: 'NVA-Bolt B1', engine: 'Rotax 125cc Evo', weight: '172 kg', topSpeed: '143 km/h' },
+    { id: 'tc-14', carNumber: '14', playerName: 'Priya Sharma', liveryColor: '#1A1714', chassis: 'NVA-Bolt B1', engine: 'Rotax 125cc Evo', weight: '171 kg', topSpeed: '142 km/h' },
   ],
   't-8': [
-    { id: 'tc-15', carNumber: '21', playerName: 'Tyler Brooks', liveryColor: '#A1A1AA', chassis: 'IRC-Stealth X1', engine: 'Rotax 125cc Evo', weight: '173 kg', topSpeed: '142 km/h' },
+    { id: 'tc-15', carNumber: '21', playerName: 'Tyler Brooks', liveryColor: '#9C9790', chassis: 'IRC-Stealth X1', engine: 'Rotax 125cc Evo', weight: '173 kg', topSpeed: '142 km/h' },
     { id: 'tc-16', carNumber: '36', playerName: 'Olivia Dunn', liveryColor: '#52525B', chassis: 'IRC-Stealth X1', engine: 'Rotax 125cc Evo', weight: '170 kg', topSpeed: '141 km/h' },
   ],
 };
@@ -504,14 +504,14 @@ export const RACE_WEEK_SESSIONS: GameWeekSession[] = [
 // =============================================================================
 
 export const TEAM_READINESS: TeamReadiness[] = [
-  { teamId: 't-1', teamName: 'Apex Basketball', abbreviation: 'APX', teamColor: '#EF4444', overallReady: true, techInspection: 'pass', safetyCheck: 'pass', credentialing: 'pass' },
-  { teamId: 't-2', teamName: 'Velocity Works', abbreviation: 'VEL', teamColor: '#1D9BF0', overallReady: true, techInspection: 'pass', safetyCheck: 'pass', credentialing: 'pass' },
-  { teamId: 't-3', teamName: 'Phoenix Motorsport', abbreviation: 'PHX', teamColor: '#F59E0B', overallReady: true, techInspection: 'pass', safetyCheck: 'pass', credentialing: 'pass' },
-  { teamId: 't-4', teamName: 'Zenith Basketball', abbreviation: 'ZEN', teamColor: '#22C55E', overallReady: true, techInspection: 'pass', safetyCheck: 'pass', credentialing: 'pass' },
-  { teamId: 't-5', teamName: 'Shadow GP', abbreviation: 'SHD', teamColor: '#1D9BF0', overallReady: false, techInspection: 'fail', safetyCheck: 'pass', credentialing: 'pass' },
-  { teamId: 't-6', teamName: 'Titan Basketball', abbreviation: 'TTN', teamColor: '#1D9BF0', overallReady: true, techInspection: 'pass', safetyCheck: 'pass', credentialing: 'pass' },
-  { teamId: 't-7', teamName: 'Nova Speed', abbreviation: 'NVA', teamColor: '#1D9BF0', overallReady: false, techInspection: 'pass', safetyCheck: 'pending', credentialing: 'pending' },
-  { teamId: 't-8', teamName: 'Iron Circuit', abbreviation: 'IRC', teamColor: '#A1A1AA', overallReady: true, techInspection: 'pass', safetyCheck: 'pass', credentialing: 'pass' },
+  { teamId: 't-1', teamName: 'Apex Basketball', abbreviation: 'APX', teamColor: '#B85C5C', overallReady: true, techInspection: 'pass', safetyCheck: 'pass', credentialing: 'pass' },
+  { teamId: 't-2', teamName: 'Velocity Works', abbreviation: 'VEL', teamColor: '#1A1714', overallReady: true, techInspection: 'pass', safetyCheck: 'pass', credentialing: 'pass' },
+  { teamId: 't-3', teamName: 'Phoenix Motorsport', abbreviation: 'PHX', teamColor: '#B8943E', overallReady: true, techInspection: 'pass', safetyCheck: 'pass', credentialing: 'pass' },
+  { teamId: 't-4', teamName: 'Zenith Basketball', abbreviation: 'ZEN', teamColor: '#5A8A6E', overallReady: true, techInspection: 'pass', safetyCheck: 'pass', credentialing: 'pass' },
+  { teamId: 't-5', teamName: 'Shadow GP', abbreviation: 'SHD', teamColor: '#1A1714', overallReady: false, techInspection: 'fail', safetyCheck: 'pass', credentialing: 'pass' },
+  { teamId: 't-6', teamName: 'Titan Basketball', abbreviation: 'TTN', teamColor: '#1A1714', overallReady: true, techInspection: 'pass', safetyCheck: 'pass', credentialing: 'pass' },
+  { teamId: 't-7', teamName: 'Nova Speed', abbreviation: 'NVA', teamColor: '#1A1714', overallReady: false, techInspection: 'pass', safetyCheck: 'pending', credentialing: 'pending' },
+  { teamId: 't-8', teamName: 'Iron Circuit', abbreviation: 'IRC', teamColor: '#9C9790', overallReady: true, techInspection: 'pass', safetyCheck: 'pass', credentialing: 'pass' },
 ];
 
 // =============================================================================
@@ -598,27 +598,27 @@ export const POINTS_TABLE: PointsTableEntry[] = [
 
 export const COMPLIANCE_ENTITIES: ComplianceEntity[] = [
   // Eligibility
-  { id: 'ce-1', workspace: 'eligibility', name: 'Leo Vasquez', type: 'Player License', status: 'approved', teamName: 'Apex Basketball', teamColor: '#EF4444', lastInspected: 'Jul 15, 2026', expiresAt: 'Dec 31, 2026' },
-  { id: 'ce-2', workspace: 'eligibility', name: 'Nadia Patel', type: 'Player License', status: 'approved', teamName: 'Velocity Works', teamColor: '#1D9BF0', lastInspected: 'Jul 15, 2026', expiresAt: 'Dec 31, 2026' },
-  { id: 'ce-3', workspace: 'eligibility', name: 'Andre Williams', type: 'Player License', status: 'pending', teamName: 'Phoenix Motorsport', teamColor: '#F59E0B', lastInspected: 'Jul 10, 2026', expiresAt: 'Aug 30, 2026', notes: 'Medical recertification required after Turn 11 incident' },
-  { id: 'ce-4', workspace: 'eligibility', name: 'Ggame Kim', type: 'Player License', status: 'approved', teamName: 'Shadow GP', teamColor: '#1D9BF0', lastInspected: 'Jul 14, 2026', expiresAt: 'Dec 31, 2026' },
+  { id: 'ce-1', workspace: 'eligibility', name: 'Leo Vasquez', type: 'Player License', status: 'approved', teamName: 'Apex Basketball', teamColor: '#B85C5C', lastInspected: 'Jul 15, 2026', expiresAt: 'Dec 31, 2026' },
+  { id: 'ce-2', workspace: 'eligibility', name: 'Nadia Patel', type: 'Player License', status: 'approved', teamName: 'Velocity Works', teamColor: '#1A1714', lastInspected: 'Jul 15, 2026', expiresAt: 'Dec 31, 2026' },
+  { id: 'ce-3', workspace: 'eligibility', name: 'Andre Williams', type: 'Player License', status: 'pending', teamName: 'Phoenix Motorsport', teamColor: '#B8943E', lastInspected: 'Jul 10, 2026', expiresAt: 'Aug 30, 2026', notes: 'Medical recertification required after Turn 11 incident' },
+  { id: 'ce-4', workspace: 'eligibility', name: 'Ggame Kim', type: 'Player License', status: 'approved', teamName: 'Shadow GP', teamColor: '#1A1714', lastInspected: 'Jul 14, 2026', expiresAt: 'Dec 31, 2026' },
   // Homologation
-  { id: 'ce-5', workspace: 'homologation', name: 'APX-K1 Mk4 Chassis', type: 'Chassis', status: 'approved', teamName: 'Apex Basketball', teamColor: '#EF4444', lastInspected: 'Jul 18, 2026', expiresAt: 'Dec 31, 2026' },
-  { id: 'ce-6', workspace: 'homologation', name: 'VEL-Sprint S3 Chassis', type: 'Chassis', status: 'approved', teamName: 'Velocity Works', teamColor: '#1D9BF0', lastInspected: 'Jul 18, 2026', expiresAt: 'Dec 31, 2026' },
-  { id: 'ce-7', workspace: 'homologation', name: 'NVA-Bolt B1 Chassis', type: 'Chassis', status: 'flagged', teamName: 'Nova Speed', teamColor: '#1D9BF0', lastInspected: 'Jul 16, 2026', expiresAt: 'Aug 15, 2026', notes: 'Front wing non-standard — requires re-homologation' },
-  { id: 'ce-8', workspace: 'homologation', name: 'SHD-Phantom V2 Engine', type: 'Engine', status: 'flagged', teamName: 'Shadow GP', teamColor: '#1D9BF0', lastInspected: 'Jul 18, 2026', expiresAt: 'Jul 31, 2026', notes: 'Seal #4 showed signs of tampering — under review' },
+  { id: 'ce-5', workspace: 'homologation', name: 'APX-K1 Mk4 Chassis', type: 'Chassis', status: 'approved', teamName: 'Apex Basketball', teamColor: '#B85C5C', lastInspected: 'Jul 18, 2026', expiresAt: 'Dec 31, 2026' },
+  { id: 'ce-6', workspace: 'homologation', name: 'VEL-Sprint S3 Chassis', type: 'Chassis', status: 'approved', teamName: 'Velocity Works', teamColor: '#1A1714', lastInspected: 'Jul 18, 2026', expiresAt: 'Dec 31, 2026' },
+  { id: 'ce-7', workspace: 'homologation', name: 'NVA-Bolt B1 Chassis', type: 'Chassis', status: 'flagged', teamName: 'Nova Speed', teamColor: '#1A1714', lastInspected: 'Jul 16, 2026', expiresAt: 'Aug 15, 2026', notes: 'Front wing non-standard — requires re-homologation' },
+  { id: 'ce-8', workspace: 'homologation', name: 'SHD-Phantom V2 Engine', type: 'Engine', status: 'flagged', teamName: 'Shadow GP', teamColor: '#1A1714', lastInspected: 'Jul 18, 2026', expiresAt: 'Jul 31, 2026', notes: 'Seal #4 showed signs of tampering — under review' },
   // Cost Cap
-  { id: 'ce-9', workspace: 'cost_cap', name: 'Apex Basketball — 2026 Budget', type: 'Budget Report', status: 'approved', teamName: 'Apex Basketball', teamColor: '#EF4444', lastInspected: 'Jul 1, 2026', expiresAt: 'Dec 31, 2026' },
-  { id: 'ce-10', workspace: 'cost_cap', name: 'Shadow GP — 2026 Budget', type: 'Budget Report', status: 'pending', teamName: 'Shadow GP', teamColor: '#1D9BF0', lastInspected: 'Jun 15, 2026', expiresAt: 'Sep 30, 2026', notes: 'Q2 report overdue — awaiting submission' },
-  { id: 'ce-11', workspace: 'cost_cap', name: 'Nova Speed — 2026 Budget', type: 'Budget Report', status: 'approved', teamName: 'Nova Speed', teamColor: '#1D9BF0', lastInspected: 'Jul 1, 2026', expiresAt: 'Dec 31, 2026' },
+  { id: 'ce-9', workspace: 'cost_cap', name: 'Apex Basketball — 2026 Budget', type: 'Budget Report', status: 'approved', teamName: 'Apex Basketball', teamColor: '#B85C5C', lastInspected: 'Jul 1, 2026', expiresAt: 'Dec 31, 2026' },
+  { id: 'ce-10', workspace: 'cost_cap', name: 'Shadow GP — 2026 Budget', type: 'Budget Report', status: 'pending', teamName: 'Shadow GP', teamColor: '#1A1714', lastInspected: 'Jun 15, 2026', expiresAt: 'Sep 30, 2026', notes: 'Q2 report overdue — awaiting submission' },
+  { id: 'ce-11', workspace: 'cost_cap', name: 'Nova Speed — 2026 Budget', type: 'Budget Report', status: 'approved', teamName: 'Nova Speed', teamColor: '#1A1714', lastInspected: 'Jul 1, 2026', expiresAt: 'Dec 31, 2026' },
   // Safety Certification
-  { id: 'ce-12', workspace: 'safety_cert', name: 'Portland International Gameway', type: 'Court Cert', status: 'approved', teamName: '3SSB Circuit', teamColor: '#22C55E', lastInspected: 'Jul 25, 2026', expiresAt: 'Jan 31, 2027' },
-  { id: 'ce-13', workspace: 'safety_cert', name: 'Medical Crew — Portland', type: 'Medical Team', status: 'approved', teamName: '3SSB Circuit', teamColor: '#22C55E', lastInspected: 'Jul 28, 2026', expiresAt: 'Aug 2, 2026' },
-  { id: 'ce-14', workspace: 'safety_cert', name: 'Fire Suppression Systems', type: 'Safety Equipment', status: 'expired', teamName: '3SSB Circuit', teamColor: '#22C55E', lastInspected: 'Jun 1, 2026', expiresAt: 'Jul 15, 2026', notes: 'Annual re-certification overdue — scheduled for Jul 29' },
+  { id: 'ce-12', workspace: 'safety_cert', name: 'Portland International Gameway', type: 'Court Cert', status: 'approved', teamName: '3SSB Circuit', teamColor: '#5A8A6E', lastInspected: 'Jul 25, 2026', expiresAt: 'Jan 31, 2027' },
+  { id: 'ce-13', workspace: 'safety_cert', name: 'Medical Crew — Portland', type: 'Medical Team', status: 'approved', teamName: '3SSB Circuit', teamColor: '#5A8A6E', lastInspected: 'Jul 28, 2026', expiresAt: 'Aug 2, 2026' },
+  { id: 'ce-14', workspace: 'safety_cert', name: 'Fire Suppression Systems', type: 'Safety Equipment', status: 'expired', teamName: '3SSB Circuit', teamColor: '#5A8A6E', lastInspected: 'Jun 1, 2026', expiresAt: 'Jul 15, 2026', notes: 'Annual re-certification overdue — scheduled for Jul 29' },
   // Sponsorship
-  { id: 'ce-15', workspace: 'sponsorship', name: 'adidas — Title Sponsor', type: 'Title Sponsor', status: 'approved', teamName: '3SSB Circuit', teamColor: '#22C55E', lastInspected: 'Jul 1, 2026', expiresAt: 'Dec 31, 2027' },
-  { id: 'ce-16', workspace: 'sponsorship', name: 'Red Bull — Energy Partner', type: 'Associate Sponsor', status: 'approved', teamName: '3SSB Circuit', teamColor: '#22C55E', lastInspected: 'Jul 1, 2026', expiresAt: 'Dec 31, 2026' },
-  { id: 'ce-17', workspace: 'sponsorship', name: 'Pirelli — Tire Supplier', type: 'Technical Partner', status: 'pending', teamName: '3SSB Circuit', teamColor: '#22C55E', lastInspected: 'Jun 20, 2026', expiresAt: 'Sep 30, 2026', notes: '2027 renewal under negotiation' },
+  { id: 'ce-15', workspace: 'sponsorship', name: 'adidas — Title Sponsor', type: 'Title Sponsor', status: 'approved', teamName: '3SSB Circuit', teamColor: '#5A8A6E', lastInspected: 'Jul 1, 2026', expiresAt: 'Dec 31, 2027' },
+  { id: 'ce-16', workspace: 'sponsorship', name: 'Red Bull — Energy Partner', type: 'Associate Sponsor', status: 'approved', teamName: '3SSB Circuit', teamColor: '#5A8A6E', lastInspected: 'Jul 1, 2026', expiresAt: 'Dec 31, 2026' },
+  { id: 'ce-17', workspace: 'sponsorship', name: 'Pirelli — Tire Supplier', type: 'Technical Partner', status: 'pending', teamName: '3SSB Circuit', teamColor: '#5A8A6E', lastInspected: 'Jun 20, 2026', expiresAt: 'Sep 30, 2026', notes: '2027 renewal under negotiation' },
 ];
 
 // =============================================================================
@@ -883,18 +883,18 @@ export const SERIES_LIST: SeriesObject[] = [
 // =============================================================================
 
 export const ENTRANT_LIST: EntrantObject[] = [
-  { id: 'ent-1', seriesId: 'series-k1', name: 'Apex Basketball #1', type: 'entry', rank: 1, points: 312, status: 'active', teamColor: '#EF4444', contactRep: 'Marcus Kane', recentResults: [{ event: 'Rd 1', finish: 1 }, { event: 'Rd 2', finish: 2 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$125,000', payoutStatus: 'released', sponsorDeliverablesDue: 0, atRiskFlags: [] },
-  { id: 'ent-2', seriesId: 'series-k1', name: 'Apex Basketball #2', type: 'entry', rank: 5, points: 198, status: 'active', teamColor: '#EF4444', contactRep: 'Marcus Kane', recentResults: [{ event: 'Rd 1', finish: 4 }, { event: 'Rd 2', finish: 6 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$45,000', payoutStatus: 'released', sponsorDeliverablesDue: 0, atRiskFlags: [] },
-  { id: 'ent-3', seriesId: 'series-k1', name: 'Velocity Works #3', type: 'entry', rank: 2, points: 287, status: 'active', teamColor: '#1D9BF0', contactRep: 'Nadia Patel', recentResults: [{ event: 'Rd 1', finish: 2 }, { event: 'Rd 2', finish: 1 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$110,000', payoutStatus: 'released', sponsorDeliverablesDue: 1, atRiskFlags: [] },
-  { id: 'ent-4', seriesId: 'series-k1', name: 'Velocity Works #4', type: 'entry', rank: 7, points: 145, status: 'active', teamColor: '#1D9BF0', contactRep: 'Nadia Patel', recentResults: [{ event: 'Rd 1', finish: 8 }, { event: 'Rd 2', finish: 5 }], credentialsStatus: 'complete', complianceDocsComplete: 7, complianceDocsTotal: 8, payoutEligible: '$30,000', payoutStatus: 'pending', sponsorDeliverablesDue: 0, atRiskFlags: [] },
-  { id: 'ent-5', seriesId: 'series-k1', name: 'Phoenix Motorsport #5', type: 'entry', rank: 3, points: 256, status: 'active', teamColor: '#F59E0B', contactRep: 'Andre Williams', recentResults: [{ event: 'Rd 1', finish: 3 }, { event: 'Rd 2', finish: 3 }], credentialsStatus: 'pending', complianceDocsComplete: 6, complianceDocsTotal: 8, payoutEligible: '$85,000', payoutStatus: 'released', sponsorDeliverablesDue: 0, atRiskFlags: ['Medical recertification required'] },
-  { id: 'ent-6', seriesId: 'series-k1', name: 'Zenith Basketball #6', type: 'entry', rank: 4, points: 241, status: 'active', teamColor: '#22C55E', contactRep: 'Sofia Torres', recentResults: [{ event: 'Rd 1', finish: 5 }, { event: 'Rd 2', finish: 4 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$70,000', payoutStatus: 'released', sponsorDeliverablesDue: 0, atRiskFlags: [] },
-  { id: 'ent-7', seriesId: 'series-k1', name: 'Shadow GP #7', type: 'entry', rank: 6, points: 167, status: 'under_review', teamColor: '#1D9BF0', contactRep: 'Ggame Kim', recentResults: [{ event: 'Rd 1', finish: 6 }, { event: 'Rd 2', finish: 7 }], credentialsStatus: 'pending', complianceDocsComplete: 5, complianceDocsTotal: 8, payoutEligible: '$55,000', payoutStatus: 'hold', sponsorDeliverablesDue: 1, atRiskFlags: ['Engine seal under review', 'Missing compliance docs'] },
-  { id: 'ent-8', seriesId: 'series-k1', name: 'Shadow GP #8', type: 'entry', rank: 10, points: 89, status: 'active', teamColor: '#1D9BF0', contactRep: 'Ggame Kim', recentResults: [{ event: 'Rd 1', finish: 10 }, { event: 'Rd 2', finish: 9 }], credentialsStatus: 'complete', complianceDocsComplete: 7, complianceDocsTotal: 8, payoutEligible: '$15,000', payoutStatus: 'pending', sponsorDeliverablesDue: 0, atRiskFlags: [] },
-  { id: 'ent-9', seriesId: 'series-k1', name: 'Titan Basketball #9', type: 'entry', rank: 8, points: 132, status: 'active', teamColor: '#1D9BF0', contactRep: 'Diego Mendez', recentResults: [{ event: 'Rd 1', finish: 7 }, { event: 'Rd 2', finish: 8 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$25,000', payoutStatus: 'released', sponsorDeliverablesDue: 0, atRiskFlags: [] },
-  { id: 'ent-10', seriesId: 'series-k1', name: 'Nova Speed #10', type: 'entry', rank: 9, points: 112, status: 'active', teamColor: '#1D9BF0', contactRep: 'Yuki Sato', recentResults: [{ event: 'Rd 1', finish: 9 }, { event: 'Rd 2', finish: 10 }], credentialsStatus: 'complete', complianceDocsComplete: 7, complianceDocsTotal: 8, payoutEligible: '$20,000', payoutStatus: 'pending', sponsorDeliverablesDue: 0, atRiskFlags: ['Front wing non-standard'] },
-  { id: 'ent-11', seriesId: 'series-k1', name: 'Iron Circuit #11', type: 'entry', rank: 11, points: 76, status: 'active', teamColor: '#A1A1AA', contactRep: 'Tom Harris', recentResults: [{ event: 'Rd 1', finish: 11 }, { event: 'Rd 2', finish: 11 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$10,000', payoutStatus: 'pending', sponsorDeliverablesDue: 0, atRiskFlags: [] },
-  { id: 'ent-12', seriesId: 'series-k1', name: 'Iron Circuit #12', type: 'entry', rank: 12, points: 56, status: 'active', teamColor: '#A1A1AA', contactRep: 'Tom Harris', recentResults: [{ event: 'Rd 1', finish: 12 }, { event: 'Rd 2', finish: 12 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$5,000', payoutStatus: 'pending', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+  { id: 'ent-1', seriesId: 'series-k1', name: 'Apex Basketball #1', type: 'entry', rank: 1, points: 312, status: 'active', teamColor: '#B85C5C', contactRep: 'Marcus Kane', recentResults: [{ event: 'Rd 1', finish: 1 }, { event: 'Rd 2', finish: 2 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$125,000', payoutStatus: 'released', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+  { id: 'ent-2', seriesId: 'series-k1', name: 'Apex Basketball #2', type: 'entry', rank: 5, points: 198, status: 'active', teamColor: '#B85C5C', contactRep: 'Marcus Kane', recentResults: [{ event: 'Rd 1', finish: 4 }, { event: 'Rd 2', finish: 6 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$45,000', payoutStatus: 'released', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+  { id: 'ent-3', seriesId: 'series-k1', name: 'Velocity Works #3', type: 'entry', rank: 2, points: 287, status: 'active', teamColor: '#1A1714', contactRep: 'Nadia Patel', recentResults: [{ event: 'Rd 1', finish: 2 }, { event: 'Rd 2', finish: 1 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$110,000', payoutStatus: 'released', sponsorDeliverablesDue: 1, atRiskFlags: [] },
+  { id: 'ent-4', seriesId: 'series-k1', name: 'Velocity Works #4', type: 'entry', rank: 7, points: 145, status: 'active', teamColor: '#1A1714', contactRep: 'Nadia Patel', recentResults: [{ event: 'Rd 1', finish: 8 }, { event: 'Rd 2', finish: 5 }], credentialsStatus: 'complete', complianceDocsComplete: 7, complianceDocsTotal: 8, payoutEligible: '$30,000', payoutStatus: 'pending', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+  { id: 'ent-5', seriesId: 'series-k1', name: 'Phoenix Motorsport #5', type: 'entry', rank: 3, points: 256, status: 'active', teamColor: '#B8943E', contactRep: 'Andre Williams', recentResults: [{ event: 'Rd 1', finish: 3 }, { event: 'Rd 2', finish: 3 }], credentialsStatus: 'pending', complianceDocsComplete: 6, complianceDocsTotal: 8, payoutEligible: '$85,000', payoutStatus: 'released', sponsorDeliverablesDue: 0, atRiskFlags: ['Medical recertification required'] },
+  { id: 'ent-6', seriesId: 'series-k1', name: 'Zenith Basketball #6', type: 'entry', rank: 4, points: 241, status: 'active', teamColor: '#5A8A6E', contactRep: 'Sofia Torres', recentResults: [{ event: 'Rd 1', finish: 5 }, { event: 'Rd 2', finish: 4 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$70,000', payoutStatus: 'released', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+  { id: 'ent-7', seriesId: 'series-k1', name: 'Shadow GP #7', type: 'entry', rank: 6, points: 167, status: 'under_review', teamColor: '#1A1714', contactRep: 'Ggame Kim', recentResults: [{ event: 'Rd 1', finish: 6 }, { event: 'Rd 2', finish: 7 }], credentialsStatus: 'pending', complianceDocsComplete: 5, complianceDocsTotal: 8, payoutEligible: '$55,000', payoutStatus: 'hold', sponsorDeliverablesDue: 1, atRiskFlags: ['Engine seal under review', 'Missing compliance docs'] },
+  { id: 'ent-8', seriesId: 'series-k1', name: 'Shadow GP #8', type: 'entry', rank: 10, points: 89, status: 'active', teamColor: '#1A1714', contactRep: 'Ggame Kim', recentResults: [{ event: 'Rd 1', finish: 10 }, { event: 'Rd 2', finish: 9 }], credentialsStatus: 'complete', complianceDocsComplete: 7, complianceDocsTotal: 8, payoutEligible: '$15,000', payoutStatus: 'pending', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+  { id: 'ent-9', seriesId: 'series-k1', name: 'Titan Basketball #9', type: 'entry', rank: 8, points: 132, status: 'active', teamColor: '#1A1714', contactRep: 'Diego Mendez', recentResults: [{ event: 'Rd 1', finish: 7 }, { event: 'Rd 2', finish: 8 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$25,000', payoutStatus: 'released', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+  { id: 'ent-10', seriesId: 'series-k1', name: 'Nova Speed #10', type: 'entry', rank: 9, points: 112, status: 'active', teamColor: '#1A1714', contactRep: 'Yuki Sato', recentResults: [{ event: 'Rd 1', finish: 9 }, { event: 'Rd 2', finish: 10 }], credentialsStatus: 'complete', complianceDocsComplete: 7, complianceDocsTotal: 8, payoutEligible: '$20,000', payoutStatus: 'pending', sponsorDeliverablesDue: 0, atRiskFlags: ['Front wing non-standard'] },
+  { id: 'ent-11', seriesId: 'series-k1', name: 'Iron Circuit #11', type: 'entry', rank: 11, points: 76, status: 'active', teamColor: '#9C9790', contactRep: 'Tom Harris', recentResults: [{ event: 'Rd 1', finish: 11 }, { event: 'Rd 2', finish: 11 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$10,000', payoutStatus: 'pending', sponsorDeliverablesDue: 0, atRiskFlags: [] },
+  { id: 'ent-12', seriesId: 'series-k1', name: 'Iron Circuit #12', type: 'entry', rank: 12, points: 56, status: 'active', teamColor: '#9C9790', contactRep: 'Tom Harris', recentResults: [{ event: 'Rd 1', finish: 12 }, { event: 'Rd 2', finish: 12 }], credentialsStatus: 'complete', complianceDocsComplete: 8, complianceDocsTotal: 8, payoutEligible: '$5,000', payoutStatus: 'pending', sponsorDeliverablesDue: 0, atRiskFlags: [] },
 ];
 
 // =============================================================================

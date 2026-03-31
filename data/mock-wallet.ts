@@ -405,10 +405,10 @@ export const MONTHLY_SUMMARY: MonthlySummary = {
   received: 3_200,
   saved:    412,
   breakdown: [
-    { category: 'Bills',         amount: 645, color: '#003A63' },
+    { category: 'Bills',         amount: 645, color: '#1A1714' },
     { category: 'Food',          amount: 380, color: '#D97757' },
-    { category: 'Shopping',      amount: 290, color: '#8B6340' },
-    { category: 'Transport',     amount: 185, color: '#1D9BF0' },
+    { category: 'Shopping',      amount: 290, color: '#1A1714' },
+    { category: 'Transport',     amount: 185, color: '#1A1714' },
     { category: 'Entertainment', amount: 180, color: '#8B63C8' },
     { category: 'Other',         amount: 167, color: '#5A8A6E' },
   ],

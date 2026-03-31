@@ -13,9 +13,9 @@ import { PROGRAM_SEASONS } from '@/data/mock-program-v2';
 import type { SeasonStatus } from '@/data/mock-program-v2';
 
 const STATUS_CONFIG: Record<SeasonStatus, { label: string; color: string; bg: string }> = {
-  active: { label: 'ACTIVE', color: '#22C55E', bg: '#22C55E' + '20' },
+  active: { label: 'ACTIVE', color: '#5A8A6E', bg: '#5A8A6E' + '20' },
   completed: { label: 'COMPLETED', color: '#FFFFFF', bg: '#FFFFFF' + '15' },
-  archived: { label: 'ARCHIVED', color: '#A1A1AA', bg: '#A1A1AA' + '15' },
+  archived: { label: 'ARCHIVED', color: '#9C9790', bg: '#9C9790' + '15' },
 };
 
 export function ProgramSeasons() {
@@ -40,7 +40,7 @@ export function ProgramSeasons() {
               styles.card,
               {
                 backgroundColor: colors.card,
-                borderColor: isActive ? '#22C55E' + '40' : colors.border,
+                borderColor: isActive ? '#5A8A6E' + '40' : colors.border,
               },
             ]}
           >
@@ -58,8 +58,8 @@ export function ProgramSeasons() {
             {isActive && (
               <View style={styles.currentIndicator}>
                 <View style={styles.currentRow}>
-                  <View style={[styles.currentDot, { backgroundColor: '#22C55E' }]} />
-                  <ThemedText style={[styles.currentLabel, { color: '#22C55E' }]}>
+                  <View style={[styles.currentDot, { backgroundColor: '#5A8A6E' }]} />
+                  <ThemedText style={[styles.currentLabel, { color: '#5A8A6E' }]}>
                     Current Season
                   </ThemedText>
                 </View>
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   progressFill: {
     height: 4,
     borderRadius: 2,
-    backgroundColor: '#22C55E',
+    backgroundColor: '#5A8A6E',
   },
 
   // Stats

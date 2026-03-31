@@ -101,16 +101,16 @@ const GOVERNANCE = {
 };
 
 const COMPLIANCE_STATUS_COLOR: Record<string, string> = {
-  Met: '#22C55E',
-  'Partially Met': '#F59E0B',
-  'Not Met': '#EF4444',
-  Compliant: '#22C55E',
-  Current: '#22C55E',
-  'Under Review': '#F59E0B',
-  Complete: '#22C55E',
+  Met: '#5A8A6E',
+  'Partially Met': '#B8943E',
+  'Not Met': '#B85C5C',
+  Compliant: '#5A8A6E',
+  Current: '#5A8A6E',
+  'Under Review': '#B8943E',
+  Complete: '#5A8A6E',
   'In Progress': ACCENT,
-  Submitted: '#22C55E',
-  Upcoming: '#F59E0B',
+  Submitted: '#5A8A6E',
+  Upcoming: '#B8943E',
 };
 
 // =============================================================================
@@ -146,7 +146,7 @@ function AccreditationView({ colors, accentColor }: { colors: typeof Colors.ligh
       <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>SACSCOC STATUS</ThemedText>
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.accredHeader}>
-          <IconSymbol name="checkmark.seal.fill" size={24} color="#22C55E" />
+          <IconSymbol name="checkmark.seal.fill" size={24} color="#5A8A6E" />
           <View style={{ flex: 1 }}>
             <ThemedText style={[s.accredTitle, { color: colors.text }]}>Accredited</ThemedText>
             <ThemedText style={[s.accredSub, { color: colors.textSecondary }]}>
@@ -253,7 +253,7 @@ function RegulatoryView({ colors, accentColor }: { colors: typeof Colors.light; 
       <ThemedText style={[s.sectionHeader, { color: colors.textSecondary }]}>AUDIT FINDINGS</ThemedText>
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.auditRow}>
-          <IconSymbol name="checkmark.circle.fill" size={20} color="#22C55E" />
+          <IconSymbol name="checkmark.circle.fill" size={20} color="#5A8A6E" />
           <View style={{ flex: 1 }}>
             <ThemedText style={[s.auditTitle, { color: colors.text }]}>0 Findings</ThemedText>
             <ThemedText style={[s.auditSub, { color: colors.textSecondary }]}>

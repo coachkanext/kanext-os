@@ -47,12 +47,12 @@ interface GameEvent {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const NAVY       = '#003A63';
+const NAVY       = '#1A1714';
 const HOME_COLOR = 'hsl(185, 55%, 32%)';
 const AWAY_COLOR = 'hsl(215, 45%, 35%)';
 const GREEN      = '#5A8A6E';
 const RED        = '#B85C5C';
-const CORAL      = '#3B82F6';
+const CORAL      = '#1A1714';
 
 const GAME_TYPES: GameType[] = ['Regular', 'Conference', 'Tournament', 'Scrimmage'];
 const HALF_PRESETS = [20, 16] as const;
@@ -73,12 +73,12 @@ function periodLabel(p: Period): string {
 
 function eventColor(e: GameEvent): string {
   if (e.eventType === 'shot') return e.result === 'make' ? GREEN : RED;
-  if (e.eventType === 'rebound')  return '#1D9BF0';
+  if (e.eventType === 'rebound')  return '#1A1714';
   if (e.eventType === 'turnover') return '#F5A623';
   if (e.eventType === 'steal')    return GREEN;
   if (e.eventType === 'assist')   return '#8B63C8';
   if (e.eventType === 'block')    return NAVY;
-  if (e.eventType === 'foul')     return '#E07B9A';
+  if (e.eventType === 'foul')     return '#B85C5C';
   if (e.eventType === 'sub')      return '#8B9AA8';
   return '#888';
 }

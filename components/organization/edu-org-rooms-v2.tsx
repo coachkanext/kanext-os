@@ -277,8 +277,8 @@ function DirectoryTab({
             </View>
             <View style={s.roomMetaRight}>
               {item.pendingItems > 0 && (
-                <View style={[s.pendingPill, { backgroundColor: hasUrgent ? '#EF444420' : accentColor + '20' }]}>
-                  <ThemedText style={[s.pendingPillText, { color: hasUrgent ? '#EF4444' : accentColor }]}>
+                <View style={[s.pendingPill, { backgroundColor: hasUrgent ? '#B85C5C20' : accentColor + '20' }]}>
+                  <ThemedText style={[s.pendingPillText, { color: hasUrgent ? '#B85C5C' : accentColor }]}>
                     {item.pendingItems} pending{hasUrgent ? ` (${item.urgentItems} urgent)` : ''}
                   </ThemedText>
                 </View>
@@ -380,7 +380,7 @@ function DomainMapTab({
                       </ThemedText>
                     </View>
                     {room.pendingItems > 0 && (
-                      <ThemedText style={[s.domainRoomPending, { color: room.urgentItems > 0 ? '#EF4444' : colors.textSecondary }]}>
+                      <ThemedText style={[s.domainRoomPending, { color: room.urgentItems > 0 ? '#B85C5C' : colors.textSecondary }]}>
                         {room.pendingItems}
                       </ThemedText>
                     )}
@@ -446,11 +446,11 @@ function GovernanceTab({
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Rooms</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: totals.decisions > 0 ? '#F59E0B' : colors.text }]}>{totals.decisions}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: totals.decisions > 0 ? '#B8943E' : colors.text }]}>{totals.decisions}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Decisions</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: totals.approvals > 0 ? '#EF4444' : colors.text }]}>{totals.approvals}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: totals.approvals > 0 ? '#B85C5C' : colors.text }]}>{totals.approvals}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Approvals</ThemedText>
         </View>
       </View>
@@ -496,14 +496,14 @@ function GovernanceTab({
                   </View>
                 </View>
                 <View style={[s.govDetailItem, { backgroundColor: colors.background }]}>
-                  <IconSymbol name="questionmark.circle.fill" size={14} color="#F59E0B" />
+                  <IconSymbol name="questionmark.circle.fill" size={14} color="#B8943E" />
                   <View>
                     <ThemedText style={[s.govDetailValue, { color: colors.text }]}>{gov.pendingDecisions}</ThemedText>
                     <ThemedText style={[s.govDetailLabel, { color: colors.textSecondary }]}>Decisions</ThemedText>
                   </View>
                 </View>
                 <View style={[s.govDetailItem, { backgroundColor: colors.background }]}>
-                  <IconSymbol name="checkmark.circle.fill" size={14} color="#EF4444" />
+                  <IconSymbol name="checkmark.circle.fill" size={14} color="#B85C5C" />
                   <View>
                     <ThemedText style={[s.govDetailValue, { color: colors.text }]}>{gov.pendingApprovals}</ThemedText>
                     <ThemedText style={[s.govDetailLabel, { color: colors.textSecondary }]}>Approvals</ThemedText>
@@ -624,7 +624,7 @@ function RoomDetailSheet({
             <ThemedText style={[s.sheetWorkLabel, { color: colors.textSecondary }]}>Pending Items</ThemedText>
           </View>
           <View style={[s.sheetWorkItem, { backgroundColor: colors.background }]}>
-            <ThemedText style={[s.sheetWorkValue, { color: room.urgentItems > 0 ? '#EF4444' : colors.text }]}>
+            <ThemedText style={[s.sheetWorkValue, { color: room.urgentItems > 0 ? '#B85C5C' : colors.text }]}>
               {room.urgentItems}
             </ThemedText>
             <ThemedText style={[s.sheetWorkLabel, { color: colors.textSecondary }]}>Urgent Items</ThemedText>
@@ -640,13 +640,13 @@ function RoomDetailSheet({
               </ThemedText>
             </View>
             <View style={s.sheetGovItem}>
-              <IconSymbol name="questionmark.circle.fill" size={14} color="#F59E0B" />
+              <IconSymbol name="questionmark.circle.fill" size={14} color="#B8943E" />
               <ThemedText style={[s.sheetGovText, { color: colors.text }]}>
                 {room.governance.pendingDecisions} Pending Decision{room.governance.pendingDecisions !== 1 ? 's' : ''}
               </ThemedText>
             </View>
             <View style={s.sheetGovItem}>
-              <IconSymbol name="checkmark.circle.fill" size={14} color="#EF4444" />
+              <IconSymbol name="checkmark.circle.fill" size={14} color="#B85C5C" />
               <ThemedText style={[s.sheetGovText, { color: colors.text }]}>
                 {room.governance.pendingApprovals} Pending Approval{room.governance.pendingApprovals !== 1 ? 's' : ''}
               </ThemedText>
@@ -821,7 +821,7 @@ const s = StyleSheet.create({
   badgeText: { fontSize: 11, fontWeight: '600' },
 
   // Progress bar
-  progressTrack: { height: 4, backgroundColor: '#A1A1AA', borderRadius: 2, overflow: 'hidden', marginBottom: Spacing.sm },
+  progressTrack: { height: 4, backgroundColor: '#9C9790', borderRadius: 2, overflow: 'hidden', marginBottom: Spacing.sm },
   progressFill: { height: 4, borderRadius: 2 },
 
   // Scope strip

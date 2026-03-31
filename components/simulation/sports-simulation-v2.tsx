@@ -175,16 +175,16 @@ function OverviewTab({ ctx, colors, accent, krVis }: TabProps) {
       {/* Win Probability */}
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>WIN PROBABILITY</ThemedText>
       <View style={styles.rangeRow}>
-        <RangeChip label="Low" value={`${sg.win_pct.low}%`} color="#EF4444" colors={colors} />
-        <RangeChip label="Base" value={`${sg.win_pct.mid}%`} color="#22C55E" colors={colors} />
+        <RangeChip label="Low" value={`${sg.win_pct.low}%`} color="#B85C5C" colors={colors} />
+        <RangeChip label="Base" value={`${sg.win_pct.mid}%`} color="#5A8A6E" colors={colors} />
         <RangeChip label="High" value={`${sg.win_pct.high}%`} color={accent} colors={colors} />
       </View>
 
       {/* Projected Score / Pace */}
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>PROJECTED MARGIN & PACE</ThemedText>
       <View style={styles.rangeRow}>
-        <RangeChip label="Margin Low" value={`${sg.margin.low > 0 ? '+' : ''}${sg.margin.low}`} color="#F59E0B" colors={colors} />
-        <RangeChip label="Margin Mid" value={`+${sg.margin.mid}`} color="#22C55E" colors={colors} />
+        <RangeChip label="Margin Low" value={`${sg.margin.low > 0 ? '+' : ''}${sg.margin.low}`} color="#B8943E" colors={colors} />
+        <RangeChip label="Margin Mid" value={`+${sg.margin.mid}`} color="#5A8A6E" colors={colors} />
         <RangeChip label="Pace" value={`${sg.projected_pace}`} color={accent} colors={colors} />
       </View>
 
@@ -202,7 +202,7 @@ function OverviewTab({ ctx, colors, accent, krVis }: TabProps) {
             <ThemedText style={[styles.tdText, { flex: 0.4, color: colors.text }]}>{f.factor}</ThemedText>
             <ThemedText style={[styles.tdText, { flex: 0.2, textAlign: 'center', color: colors.text }]}>{f.team_a}</ThemedText>
             <ThemedText style={[styles.tdText, { flex: 0.2, textAlign: 'center', color: colors.text }]}>{f.team_b}</ThemedText>
-            <ThemedText style={[styles.tdText, { flex: 0.2, textAlign: 'center', color: f.advantage === 'A' ? '#22C55E' : f.advantage === 'B' ? '#EF4444' : '#F59E0B', fontWeight: '700' }]}>
+            <ThemedText style={[styles.tdText, { flex: 0.2, textAlign: 'center', color: f.advantage === 'A' ? '#5A8A6E' : f.advantage === 'B' ? '#B85C5C' : '#B8943E', fontWeight: '700' }]}>
               {f.advantage === 'A' ? 'Carroll' : f.advantage === 'B' ? 'OPP' : 'EVEN'}
             </ThemedText>
           </View>
@@ -213,7 +213,7 @@ function OverviewTab({ ctx, colors, accent, krVis }: TabProps) {
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>TOP DRIVERS</ThemedText>
       {positiveDrivers.map((d) => (
         <View key={d.rank} style={[styles.driverRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <View style={[styles.driverDot, { backgroundColor: '#22C55E' }]} />
+          <View style={[styles.driverDot, { backgroundColor: '#5A8A6E' }]} />
           <View style={{ flex: 1 }}>
             <ThemedText style={[styles.driverLabel, { color: colors.text }]}>{d.driver}</ThemedText>
             <ThemedText style={[styles.driverNote, { color: colors.textSecondary }]}>{d.explanation}</ThemedText>
@@ -225,7 +225,7 @@ function OverviewTab({ ctx, colors, accent, krVis }: TabProps) {
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>KEY RISKS</ThemedText>
       {risks.map((d) => (
         <View key={d.rank} style={[styles.driverRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <View style={[styles.driverDot, { backgroundColor: '#EF4444' }]} />
+          <View style={[styles.driverDot, { backgroundColor: '#B85C5C' }]} />
           <View style={{ flex: 1 }}>
             <ThemedText style={[styles.driverLabel, { color: colors.text }]}>{d.driver}</ThemedText>
             <ThemedText style={[styles.driverNote, { color: colors.textSecondary }]}>{d.explanation}</ThemedText>
@@ -275,7 +275,7 @@ function SystemTab({ ctx, colors, accent }: TabProps) {
           </View>
           <ThemedText style={[styles.vsText, { color: colors.textSecondary }]}>vs</ThemedText>
           <View style={styles.systemSide}>
-            <ThemedText style={[styles.systemTeam, { color: '#EF4444' }]}>OPP</ThemedText>
+            <ThemedText style={[styles.systemTeam, { color: '#B85C5C' }]}>OPP</ThemedText>
             <ThemedText style={[styles.systemLabel, { color: colors.text }]}>{ctx.oppDefense}</ThemedText>
           </View>
         </View>
@@ -285,7 +285,7 @@ function SystemTab({ ctx, colors, accent }: TabProps) {
         {offTraces.slice(0, 2).map((t) => (
           <View key={t.id} style={styles.miniTraceRow}>
             <ThemedText style={[styles.miniTraceKey, { color: colors.text }]}>{t.key}</ThemedText>
-            <ThemedText style={[styles.miniTraceDelta, { color: t.bounded_delta > 0 ? '#22C55E' : '#EF4444' }]}>
+            <ThemedText style={[styles.miniTraceDelta, { color: t.bounded_delta > 0 ? '#5A8A6E' : '#B85C5C' }]}>
               {t.bounded_delta > 0 ? '+' : ''}{t.bounded_delta}
             </ThemedText>
           </View>
@@ -297,7 +297,7 @@ function SystemTab({ ctx, colors, accent }: TabProps) {
       <View style={[styles.systemCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={styles.systemVsRow}>
           <View style={styles.systemSide}>
-            <ThemedText style={[styles.systemTeam, { color: '#EF4444' }]}>OPP</ThemedText>
+            <ThemedText style={[styles.systemTeam, { color: '#B85C5C' }]}>OPP</ThemedText>
             <ThemedText style={[styles.systemLabel, { color: colors.text }]}>{ctx.oppOffense}</ThemedText>
           </View>
           <ThemedText style={[styles.vsText, { color: colors.textSecondary }]}>vs</ThemedText>
@@ -312,7 +312,7 @@ function SystemTab({ ctx, colors, accent }: TabProps) {
         {defTraces.slice(0, 2).map((t) => (
           <View key={t.id} style={styles.miniTraceRow}>
             <ThemedText style={[styles.miniTraceKey, { color: colors.text }]}>{t.key}</ThemedText>
-            <ThemedText style={[styles.miniTraceDelta, { color: t.bounded_delta > 0 ? '#22C55E' : '#EF4444' }]}>
+            <ThemedText style={[styles.miniTraceDelta, { color: t.bounded_delta > 0 ? '#5A8A6E' : '#B85C5C' }]}>
               {t.bounded_delta > 0 ? '+' : ''}{t.bounded_delta}
             </ThemedText>
           </View>
@@ -326,15 +326,15 @@ function SystemTab({ ctx, colors, accent }: TabProps) {
           Test alternative Carroll systems against the opponent
         </ThemedText>
         <Pressable
-          style={[styles.swapBtn, { backgroundColor: swapSystems ? '#EF4444' + '22' : accent + '22' }]}
+          style={[styles.swapBtn, { backgroundColor: swapSystems ? '#B85C5C' + '22' : accent + '22' }]}
           onPress={() => setSwapSystems(!swapSystems)}
         >
-          <Text style={[styles.swapBtnText, { color: swapSystems ? '#EF4444' : accent }]}>
+          <Text style={[styles.swapBtnText, { color: swapSystems ? '#B85C5C' : accent }]}>
             {swapSystems ? 'Reset to Default' : 'Try: Zone Motion + Switch'}
           </Text>
         </Pressable>
         {swapSystems && (
-          <ThemedText style={[styles.swapNote, { color: '#F59E0B' }]}>
+          <ThemedText style={[styles.swapNote, { color: '#B8943E' }]}>
             Projected win% change: -3.2% (Zone Motion less effective vs {ctx.oppDefense})
           </ThemedText>
         )}
@@ -354,11 +354,11 @@ function PossessionTab({ ctx, colors, accent }: TabProps) {
 
   // Mock outcome distribution
   const outcomes = [
-    { label: 'Carroll Win (Comfortable)', pct: 32, color: '#22C55E' },
-    { label: 'Carroll Win (Close)', pct: 26, color: '#22C55E' },
-    { label: 'Toss-Up', pct: 14, color: '#F59E0B' },
-    { label: 'OPP Win (Close)', pct: 18, color: '#EF4444' },
-    { label: 'OPP Win (Comfortable)', pct: 10, color: '#EF4444' },
+    { label: 'Carroll Win (Comfortable)', pct: 32, color: '#5A8A6E' },
+    { label: 'Carroll Win (Close)', pct: 26, color: '#5A8A6E' },
+    { label: 'Toss-Up', pct: 14, color: '#B8943E' },
+    { label: 'OPP Win (Close)', pct: 18, color: '#B85C5C' },
+    { label: 'OPP Win (Comfortable)', pct: 10, color: '#B85C5C' },
   ];
 
   // Mock possession sample
@@ -392,7 +392,7 @@ function PossessionTab({ ctx, colors, accent }: TabProps) {
         <View key={p.id} style={[styles.possessionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={styles.possessionHeader}>
             <ThemedText style={[styles.possessionAction, { color: colors.text }]}>{p.action}</ThemedText>
-            <ThemedText style={[styles.possessionPts, { color: p.pts > 0 ? '#22C55E' : '#EF4444' }]}>{p.pts} pts</ThemedText>
+            <ThemedText style={[styles.possessionPts, { color: p.pts > 0 ? '#5A8A6E' : '#B85C5C' }]}>{p.pts} pts</ThemedText>
           </View>
           <ThemedText style={[styles.possessionResult, { color: colors.textSecondary }]}>{p.result}</ThemedText>
           <ThemedText style={[styles.possessionPPP, { color: accent }]}>{p.ppp.toFixed(2)} PPP</ThemedText>
@@ -414,7 +414,7 @@ function PossessionTab({ ctx, colors, accent }: TabProps) {
                 <ThemedText style={[styles.stepText, { color: accent }]}>Step {trace.step_order}</ThemedText>
               </View>
               <ThemedText style={[styles.traceKey, { color: colors.text }]}>{trace.key}</ThemedText>
-              <ThemedText style={[styles.traceDeltaSmall, { color: trace.bounded_delta > 0 ? '#22C55E' : '#EF4444' }]}>
+              <ThemedText style={[styles.traceDeltaSmall, { color: trace.bounded_delta > 0 ? '#5A8A6E' : '#B85C5C' }]}>
                 {trace.bounded_delta > 0 ? '+' : ''}{trace.bounded_delta}
               </ThemedText>
             </View>
@@ -423,9 +423,9 @@ function PossessionTab({ ctx, colors, accent }: TabProps) {
                 <ThemedText style={[styles.traceSource, { color: colors.textSecondary }]}>{trace.source_doc}</ThemedText>
                 <View style={styles.traceDeltaRow}>
                   <ThemedText style={[styles.traceDeltaLabel, { color: colors.textSecondary }]}>Raw: </ThemedText>
-                  <ThemedText style={[styles.traceDeltaVal, { color: trace.raw_delta > 0 ? '#22C55E' : '#EF4444' }]}>{trace.raw_delta > 0 ? '+' : ''}{trace.raw_delta}</ThemedText>
+                  <ThemedText style={[styles.traceDeltaVal, { color: trace.raw_delta > 0 ? '#5A8A6E' : '#B85C5C' }]}>{trace.raw_delta > 0 ? '+' : ''}{trace.raw_delta}</ThemedText>
                   <ThemedText style={[styles.traceDeltaLabel, { color: colors.textSecondary }]}>  Bounded: </ThemedText>
-                  <ThemedText style={[styles.traceDeltaVal, { color: trace.bounded_delta > 0 ? '#22C55E' : '#EF4444' }]}>{trace.bounded_delta > 0 ? '+' : ''}{trace.bounded_delta}</ThemedText>
+                  <ThemedText style={[styles.traceDeltaVal, { color: trace.bounded_delta > 0 ? '#5A8A6E' : '#B85C5C' }]}>{trace.bounded_delta > 0 ? '+' : ''}{trace.bounded_delta}</ThemedText>
                 </View>
                 <View style={styles.traceTargets}>
                   {trace.targets_modified.map((t) => (
@@ -481,8 +481,8 @@ function MatchupTab({ ctx, colors, accent, krVis }: TabProps) {
               <ThemedText style={[styles.archetypeName, { color: colors.text }]}>{a.player}</ThemedText>
               <ThemedText style={[styles.archetypeType, { color: colors.textSecondary }]}>{a.archetype}</ThemedText>
             </View>
-            <View style={[styles.impactChip, { backgroundColor: a.netImpact > 0 ? '#22C55E22' : '#EF444422' }]}>
-              <ThemedText style={[styles.impactValue, { color: a.netImpact > 0 ? '#22C55E' : '#EF4444' }]}>
+            <View style={[styles.impactChip, { backgroundColor: a.netImpact > 0 ? '#5A8A6E22' : '#B85C5C22' }]}>
+              <ThemedText style={[styles.impactValue, { color: a.netImpact > 0 ? '#5A8A6E' : '#B85C5C' }]}>
                 {a.netImpact > 0 ? '+' : ''}{a.netImpact}
               </ThemedText>
             </View>
@@ -500,8 +500,8 @@ function MatchupTab({ ctx, colors, accent, krVis }: TabProps) {
               <ThemedText style={[styles.archetypeName, { color: colors.text }]}>{a.player}</ThemedText>
               <ThemedText style={[styles.archetypeType, { color: colors.textSecondary }]}>{a.archetype}</ThemedText>
             </View>
-            <View style={[styles.impactChip, { backgroundColor: '#22C55E22' }]}>
-              <ThemedText style={[styles.impactValue, { color: '#22C55E' }]}>{a.netImpact}</ThemedText>
+            <View style={[styles.impactChip, { backgroundColor: '#5A8A6E22' }]}>
+              <ThemedText style={[styles.impactValue, { color: '#5A8A6E' }]}>{a.netImpact}</ThemedText>
             </View>
           </View>
           <ThemedText style={[styles.archetypeSystem, { color: accent }]}>{a.system}</ThemedText>
@@ -526,8 +526,8 @@ function MatchupTab({ ctx, colors, accent, krVis }: TabProps) {
             <View key={p.name} style={styles.tableRow}>
               <ThemedText style={[styles.tdText, { flex: 0.1, color: colors.textSecondary }]}>{i + 1}</ThemedText>
               <ThemedText style={[styles.tdText, { flex: 0.35, color: colors.text, fontWeight: '600' }]}>{p.name}</ThemedText>
-              <ThemedText style={[styles.tdText, { flex: 0.2, textAlign: 'center', color: '#22C55E' }]}>+{offImpact.toFixed(1)}</ThemedText>
-              <ThemedText style={[styles.tdText, { flex: 0.2, textAlign: 'center', color: '#22C55E' }]}>+{defImpact.toFixed(1)}</ThemedText>
+              <ThemedText style={[styles.tdText, { flex: 0.2, textAlign: 'center', color: '#5A8A6E' }]}>+{offImpact.toFixed(1)}</ThemedText>
+              <ThemedText style={[styles.tdText, { flex: 0.2, textAlign: 'center', color: '#5A8A6E' }]}>+{defImpact.toFixed(1)}</ThemedText>
               <ThemedText style={[styles.tdText, { flex: 0.15, textAlign: 'center', color: accent, fontWeight: '700' }]}>+{net.toFixed(1)}</ThemedText>
             </View>
           );
@@ -586,9 +586,9 @@ function BoxScoreTab({ ctx, colors, accent }: TabProps) {
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>TEAM TOTALS — {teamLabel}</ThemedText>
       <View style={styles.rangeRow}>
         <RangeChip label="PTS" value={`${totals.pts}`} color={accent} colors={colors} />
-        <RangeChip label="REB" value={`${totals.reb}`} color="#22C55E" colors={colors} />
+        <RangeChip label="REB" value={`${totals.reb}`} color="#5A8A6E" colors={colors} />
         <RangeChip label="AST" value={`${totals.ast}`} color={accent} colors={colors} />
-        <RangeChip label="TO" value={`${totals.to}`} color="#EF4444" colors={colors} />
+        <RangeChip label="TO" value={`${totals.to}`} color="#B85C5C" colors={colors} />
       </View>
 
       {/* Player Box Score Table */}
@@ -633,7 +633,7 @@ function BoxScoreTab({ ctx, colors, accent }: TabProps) {
       {MOCK_CONSTRAINTS.what_if_toggles.map((t) => (
         <View key={t.id} style={[styles.toggleItemRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <ThemedText style={[styles.toggleItemLabel, { color: colors.text }]}>{t.label}</ThemedText>
-          <View style={[styles.toggleIndicator, { backgroundColor: t.enabled ? '#22C55E' : '#A1A1AA' }]}>
+          <View style={[styles.toggleIndicator, { backgroundColor: t.enabled ? '#5A8A6E' : '#9C9790' }]}>
             <ThemedText style={styles.toggleIndicatorText}>{t.enabled ? 'ON' : 'OFF'}</ThemedText>
           </View>
         </View>
@@ -673,7 +673,7 @@ function ScenariosTab({ ctx, colors, accent }: TabProps) {
             <ThemedText style={[styles.projLabel, { color: colors.textSecondary }]}>Projected</ThemedText>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <ThemedText style={[styles.projValue, { color: '#22C55E' }]}>{MOCK_SEASON_PROJECTION.tournament_probability}%</ThemedText>
+            <ThemedText style={[styles.projValue, { color: '#5A8A6E' }]}>{MOCK_SEASON_PROJECTION.tournament_probability}%</ThemedText>
             <ThemedText style={[styles.projLabel, { color: colors.textSecondary }]}>Tournament</ThemedText>
           </View>
           <View style={{ alignItems: 'center' }}>
@@ -700,11 +700,11 @@ function ScenariosTab({ ctx, colors, accent }: TabProps) {
           </View>
           <ThemedText style={[styles.portalArrow, { color: accent }]}>→</ThemedText>
           <View style={{ alignItems: 'center' }}>
-            <ThemedText style={[styles.portalKRValue, { color: '#22C55E' }]}>{MOCK_TRANSFER_PORTAL_IMPACT.team_kr_after}</ThemedText>
+            <ThemedText style={[styles.portalKRValue, { color: '#5A8A6E' }]}>{MOCK_TRANSFER_PORTAL_IMPACT.team_kr_after}</ThemedText>
             <ThemedText style={[styles.portalKRLabel, { color: colors.textSecondary }]}>After</ThemedText>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <ThemedText style={[styles.portalKRValue, { color: '#22C55E' }]}>+{MOCK_TRANSFER_PORTAL_IMPACT.team_kr_delta}</ThemedText>
+            <ThemedText style={[styles.portalKRValue, { color: '#5A8A6E' }]}>+{MOCK_TRANSFER_PORTAL_IMPACT.team_kr_delta}</ThemedText>
             <ThemedText style={[styles.portalKRLabel, { color: colors.textSecondary }]}>Delta</ThemedText>
           </View>
           <View style={{ alignItems: 'center' }}>
@@ -726,11 +726,11 @@ function ScenariosTab({ ctx, colors, accent }: TabProps) {
           >
             <View style={styles.savedRunHeader}>
               <ThemedText style={[styles.savedRunLabel, { color: colors.text }]}>{run.label}</ThemedText>
-              {run.locked && <IconSymbol name="lock.fill" size={12} color="#22C55E" />}
+              {run.locked && <IconSymbol name="lock.fill" size={12} color="#5A8A6E" />}
             </View>
             <View style={styles.savedRunMeta}>
               <ThemedText style={[styles.savedRunDetail, { color: colors.textSecondary }]}>{run.version} · {run.confidence}% conf</ThemedText>
-              <ThemedText style={[styles.savedRunDetail, { color: '#22C55E' }]}>{run.win_pct}% win · +{run.margin}</ThemedText>
+              <ThemedText style={[styles.savedRunDetail, { color: '#5A8A6E' }]}>{run.win_pct}% win · +{run.margin}</ThemedText>
             </View>
             <ThemedText style={[styles.savedRunDate, { color: colors.textSecondary }]}>{run.created}</ThemedText>
             {expanded && (

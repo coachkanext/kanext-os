@@ -235,12 +235,12 @@ function OverviewTab({
   const tiles = data.overviewTiles;
 
   const healthTiles: { label: string; value: number; color: string; icon: string }[] = [
-    { label: 'Open Work Orders', value: tiles.openWorkOrders, color: '#F59E0B', icon: 'wrench.and.screwdriver.fill' },
-    { label: 'Critical Issues', value: tiles.criticalIssues, color: '#EF4444', icon: 'exclamationmark.triangle.fill' },
+    { label: 'Open Work Orders', value: tiles.openWorkOrders, color: '#B8943E', icon: 'wrench.and.screwdriver.fill' },
+    { label: 'Critical Issues', value: tiles.criticalIssues, color: '#B85C5C', icon: 'exclamationmark.triangle.fill' },
     { label: 'Inspections Due', value: tiles.upcomingInspections, color: ACCENT, icon: 'checkmark.shield.fill' },
-    { label: 'Today Bookings', value: tiles.todayBookings, color: '#22C55E', icon: 'calendar' },
+    { label: 'Today Bookings', value: tiles.todayBookings, color: '#5A8A6E', icon: 'calendar' },
     { label: 'Conflicts', value: tiles.conflicts, color: ACCENT, icon: 'exclamationmark.2' },
-    { label: 'SLA Breaches', value: tiles.vendorSlaBreaches, color: tiles.vendorSlaBreaches > 0 ? '#EF4444' : '#22C55E', icon: 'clock.badge.exclamationmark' },
+    { label: 'SLA Breaches', value: tiles.vendorSlaBreaches, color: tiles.vendorSlaBreaches > 0 ? '#B85C5C' : '#5A8A6E', icon: 'clock.badge.exclamationmark' },
   ];
 
   const todayBookings = data.bookings
@@ -256,13 +256,13 @@ function OverviewTab({
 
   // Risk flags
   const riskFlags: { label: string; color: string }[] = [];
-  if (tiles.criticalIssues > 0) riskFlags.push({ label: `${tiles.criticalIssues} critical work order(s)`, color: '#EF4444' });
+  if (tiles.criticalIssues > 0) riskFlags.push({ label: `${tiles.criticalIssues} critical work order(s)`, color: '#B85C5C' });
   const overdueInspections = data.inspections.filter((i) => i.status === 'overdue');
-  if (overdueInspections.length > 0) riskFlags.push({ label: `${overdueInspections.length} overdue inspection(s)`, color: '#F59E0B' });
+  if (overdueInspections.length > 0) riskFlags.push({ label: `${overdueInspections.length} overdue inspection(s)`, color: '#B8943E' });
   const expiringVendors = data.vendors.filter((v) => v.contractStatus === 'expiring');
-  if (expiringVendors.length > 0) riskFlags.push({ label: `${expiringVendors.length} vendor contract(s) expiring`, color: '#F59E0B' });
+  if (expiringVendors.length > 0) riskFlags.push({ label: `${expiringVendors.length} vendor contract(s) expiring`, color: '#B8943E' });
   const noCoi = data.vendors.filter((v) => !v.insuranceCoi);
-  if (noCoi.length > 0) riskFlags.push({ label: `${noCoi.length} vendor(s) missing COI`, color: '#EF4444' });
+  if (noCoi.length > 0) riskFlags.push({ label: `${noCoi.length} vendor(s) missing COI`, color: '#B85C5C' });
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
@@ -307,14 +307,14 @@ function OverviewTab({
               {booking.riskFlags.length > 0 && (
                 <View style={s.triageFlagsRow}>
                   {booking.riskFlags.map((flag, i) => (
-                    <StatusBadge key={i} label={flag.toUpperCase().replace(/_/g, ' ')} color="#F59E0B" />
+                    <StatusBadge key={i} label={flag.toUpperCase().replace(/_/g, ' ')} color="#B8943E" />
                   ))}
                 </View>
               )}
             </View>
             <StatusBadge
               label={BOOKING_STATUS_LABELS[booking.status]?.toUpperCase() ?? booking.status.toUpperCase()}
-              color={BOOKING_STATUS_COLORS[booking.status] ?? '#A1A1AA'}
+              color={BOOKING_STATUS_COLORS[booking.status] ?? '#9C9790'}
             />
           </View>
         ))
@@ -335,8 +335,8 @@ function OverviewTab({
               key={req.id}
               style={[s.triageCard, { backgroundColor: colors.card, borderColor: colors.border }]}
             >
-              <View style={[s.requestTypeIcon, { backgroundColor: (REQUEST_TYPE_COLORS[req.type as keyof typeof REQUEST_TYPE_COLORS] ?? '#A1A1AA') + '18' }]}>
-                <IconSymbol name="doc.text.fill" size={16} color={REQUEST_TYPE_COLORS[req.type as keyof typeof REQUEST_TYPE_COLORS] ?? '#A1A1AA'} />
+              <View style={[s.requestTypeIcon, { backgroundColor: (REQUEST_TYPE_COLORS[req.type as keyof typeof REQUEST_TYPE_COLORS] ?? '#9C9790') + '18' }]}>
+                <IconSymbol name="doc.text.fill" size={16} color={REQUEST_TYPE_COLORS[req.type as keyof typeof REQUEST_TYPE_COLORS] ?? '#9C9790'} />
               </View>
               <View style={s.triageContent}>
                 <ThemedText style={[s.triageTitle, { color: colors.text }]} numberOfLines={1}>
@@ -348,7 +348,7 @@ function OverviewTab({
               </View>
               <StatusBadge
                 label={REQUEST_STATUS_LABELS[req.status as keyof typeof REQUEST_STATUS_LABELS]?.toUpperCase() ?? req.status.toUpperCase()}
-                color={REQUEST_STATUS_COLORS[req.status as keyof typeof REQUEST_STATUS_COLORS] ?? '#A1A1AA'}
+                color={REQUEST_STATUS_COLORS[req.status as keyof typeof REQUEST_STATUS_COLORS] ?? '#9C9790'}
               />
             </View>
           ))}
@@ -364,16 +364,16 @@ function OverviewTab({
           {criticalWorkOrders.map((wo) => (
             <View
               key={wo.id}
-              style={[s.alertCard, { backgroundColor: '#EF444410', borderColor: '#EF444430' }]}
+              style={[s.alertCard, { backgroundColor: '#B85C5C10', borderColor: '#B85C5C30' }]}
             >
-              <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#EF4444" />
+              <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#B85C5C" />
               <View style={s.alertTextCol}>
                 <ThemedText style={[s.alertTitle, { color: colors.text }]}>{wo.title}</ThemedText>
                 <ThemedText style={[s.alertSubtitle, { color: colors.textSecondary }]} numberOfLines={2}>
                   {wo.spaceName} — SLA: {formatDate(wo.slaTargetDate)}
                 </ThemedText>
               </View>
-              <StatusBadge label="CRITICAL" color="#EF4444" />
+              <StatusBadge label="CRITICAL" color="#B85C5C" />
             </View>
           ))}
         </>
@@ -477,7 +477,7 @@ function SpacesTab({
               <ThemedText style={[s.spaceDetailLabel, { color: colors.textTertiary }]}>Last Inspection</ThemedText>
             </View>
             <View style={s.spaceDetailItem}>
-              <ThemedText style={[s.spaceDetailValue, { color: item.lastIncidentDate ? '#EF4444' : '#22C55E' }]}>
+              <ThemedText style={[s.spaceDetailValue, { color: item.lastIncidentDate ? '#B85C5C' : '#5A8A6E' }]}>
                 {item.lastIncidentDate ? formatDate(item.lastIncidentDate) : 'None'}
               </ThemedText>
               <ThemedText style={[s.spaceDetailLabel, { color: colors.textTertiary }]}>Last Incident</ThemedText>
@@ -602,14 +602,14 @@ function SchedulingTab({
                     </ThemedText>
                     <StatusBadge
                       label={BOOKING_STATUS_LABELS[booking.status]?.toUpperCase() ?? booking.status.toUpperCase()}
-                      color={BOOKING_STATUS_COLORS[booking.status] ?? '#A1A1AA'}
+                      color={BOOKING_STATUS_COLORS[booking.status] ?? '#9C9790'}
                     />
                   </View>
                   {booking.riskFlags.length > 0 && (
                     <View style={s.bookingFlagsRow}>
-                      <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#F59E0B" />
+                      <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#B8943E" />
                       {booking.riskFlags.map((flag, i) => (
-                        <ThemedText key={i} style={[s.bookingFlagText, { color: '#F59E0B' }]}>
+                        <ThemedText key={i} style={[s.bookingFlagText, { color: '#B8943E' }]}>
                           {flag.replace(/_/g, ' ')}
                         </ThemedText>
                       ))}
@@ -617,8 +617,8 @@ function SchedulingTab({
                   )}
                   {booking.checklistRequired && (
                     <View style={s.bookingChecklistRow}>
-                      <IconSymbol name="checklist" size={11} color="#22C55E" />
-                      <ThemedText style={[s.bookingChecklistText, { color: '#22C55E' }]}>
+                      <IconSymbol name="checklist" size={11} color="#5A8A6E" />
+                      <ThemedText style={[s.bookingChecklistText, { color: '#5A8A6E' }]}>
                         Checklist required
                       </ThemedText>
                     </View>
@@ -648,8 +648,8 @@ function RequestsTab({
 }) {
   const renderItem = useCallback(
     ({ item }: { item: FacilityRequest }) => {
-      const typeColor = REQUEST_TYPE_COLORS[item.type as keyof typeof REQUEST_TYPE_COLORS] ?? '#A1A1AA';
-      const statusColor = REQUEST_STATUS_COLORS[item.status as keyof typeof REQUEST_STATUS_COLORS] ?? '#A1A1AA';
+      const typeColor = REQUEST_TYPE_COLORS[item.type as keyof typeof REQUEST_TYPE_COLORS] ?? '#9C9790';
+      const statusColor = REQUEST_STATUS_COLORS[item.status as keyof typeof REQUEST_STATUS_COLORS] ?? '#9C9790';
       return (
         <View style={[s.requestCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={s.requestCardHeader}>
@@ -729,7 +729,7 @@ function WorkOrdersTab({
     ({ item }: { item: WorkOrder }) => {
       const sevColor = WORK_ORDER_SEVERITY_COLORS[item.severity];
       const statusColor = WORK_ORDER_STATUS_COLORS[item.status];
-      const catColor = WO_CATEGORY_COLORS[item.category] ?? '#A1A1AA';
+      const catColor = WO_CATEGORY_COLORS[item.category] ?? '#9C9790';
       return (
         <View style={[s.woCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           {/* Severity bar */}
@@ -763,13 +763,13 @@ function WorkOrdersTab({
               </ThemedText>
             )}
             <View style={s.woFooter}>
-              <ThemedText style={[s.woSla, { color: daysUntil(item.slaTargetDate) <= 2 ? '#EF4444' : colors.textTertiary }]}>
+              <ThemedText style={[s.woSla, { color: daysUntil(item.slaTargetDate) <= 2 ? '#B85C5C' : colors.textTertiary }]}>
                 SLA: {formatDate(item.slaTargetDate)}
               </ThemedText>
               {item.impactTags.length > 0 && (
                 <View style={s.woImpactRow}>
                   {item.impactTags.slice(0, 2).map((tag, i) => (
-                    <StatusBadge key={i} label={tag.toUpperCase().replace(/_/g, ' ')} color="#F59E0B" />
+                    <StatusBadge key={i} label={tag.toUpperCase().replace(/_/g, ' ')} color="#B8943E" />
                   ))}
                 </View>
               )}
@@ -853,11 +853,11 @@ function VendorsTab({
               <ThemedText style={[s.vendorFooterLabel, { color: colors.textTertiary }]}>Open WOs</ThemedText>
             </View>
             <View style={s.vendorFooterItem}>
-              <View style={[s.coiIndicator, { backgroundColor: item.insuranceCoi ? '#22C55E20' : '#EF444420' }]}>
+              <View style={[s.coiIndicator, { backgroundColor: item.insuranceCoi ? '#5A8A6E20' : '#B85C5C20' }]}>
                 <IconSymbol
                   name={item.insuranceCoi ? 'checkmark.shield.fill' : 'xmark.shield.fill'}
                   size={14}
-                  color={item.insuranceCoi ? '#22C55E' : '#EF4444'}
+                  color={item.insuranceCoi ? '#5A8A6E' : '#B85C5C'}
                 />
               </View>
               <ThemedText style={[s.vendorFooterLabel, { color: colors.textTertiary }]}>COI</ThemedText>
@@ -911,7 +911,7 @@ function SafetyTab({
       </ThemedText>
 
       {sorted.map((insp) => {
-        const statusColor = INSPECTION_STATUS_COLORS[insp.status] ?? '#A1A1AA';
+        const statusColor = INSPECTION_STATUS_COLORS[insp.status] ?? '#9C9790';
         return (
           <View
             key={insp.id}
@@ -976,7 +976,7 @@ function AssetsTab({
   const renderItem = useCallback(
     ({ item }: { item: FacilityAsset }) => {
       const condColor = ASSET_CONDITION_COLORS[item.condition];
-      const catColor = ASSET_CATEGORY_COLORS[item.category as keyof typeof ASSET_CATEGORY_COLORS] ?? '#A1A1AA';
+      const catColor = ASSET_CATEGORY_COLORS[item.category as keyof typeof ASSET_CATEGORY_COLORS] ?? '#9C9790';
       return (
         <View style={[s.assetCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={s.assetHeader}>
@@ -1247,8 +1247,8 @@ function SpaceDetailSheet({
           <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Allowed Uses</ThemedText>
           <View style={s.amenitiesGrid}>
             {space.allowedUses.map((use, i) => (
-              <View key={i} style={[s.amenityChip, { backgroundColor: '#22C55E12' }]}>
-                <ThemedText style={[s.amenityChipText, { color: '#22C55E' }]}>{use}</ThemedText>
+              <View key={i} style={[s.amenityChip, { backgroundColor: '#5A8A6E12' }]}>
+                <ThemedText style={[s.amenityChipText, { color: '#5A8A6E' }]}>{use}</ThemedText>
               </View>
             ))}
           </View>
@@ -1364,7 +1364,7 @@ function VendorDetailSheet({
         />
         <StatusBadge
           label={vendor.insuranceCoi ? 'COI ON FILE' : 'COI MISSING'}
-          color={vendor.insuranceCoi ? '#22C55E' : '#EF4444'}
+          color={vendor.insuranceCoi ? '#5A8A6E' : '#B85C5C'}
         />
       </View>
 

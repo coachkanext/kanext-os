@@ -46,14 +46,14 @@ export interface CommsEntry {
 // ── Icon + color mapping per entry type ──
 
 export const COMMS_TYPE_META: Record<CommsEntryType, { icon: string; color: string }> = {
-  message:       { icon: '\u{1F4AC}', color: '#1D9BF0' },  // blue
-  note:          { icon: '\u270F\uFE0F', color: '#F59E0B' }, // orange
-  mention:       { icon: '@',        color: '#1D9BF0' },  // purple
-  film_share:    { icon: '\u25B6',   color: '#22C55E' },  // green
-  meeting:       { icon: '\u{1F4C5}', color: '#1D9BF0' },  // teal
-  touch:         { icon: '\u{1F4DE}', color: '#F59E0B' },  // yellow
-  status_change: { icon: '\u2191',   color: '#F59E0B' },  // gradient-ish orange
-  key_date:      { icon: '\u2691',   color: '#EF4444' },  // red
+  message:       { icon: '\u{1F4AC}', color: '#1A1714' },  // blue
+  note:          { icon: '\u270F\uFE0F', color: '#B8943E' }, // orange
+  mention:       { icon: '@',        color: '#1A1714' },  // purple
+  film_share:    { icon: '\u25B6',   color: '#5A8A6E' },  // green
+  meeting:       { icon: '\u{1F4C5}', color: '#1A1714' },  // teal
+  touch:         { icon: '\u{1F4DE}', color: '#B8943E' },  // yellow
+  status_change: { icon: '\u2191',   color: '#B8943E' },  // gradient-ish orange
+  key_date:      { icon: '\u2691',   color: '#B85C5C' },  // red
 };
 
 // ── Helpers ──

@@ -87,9 +87,9 @@ const CATEGORY_ICONS: Record<LedgerCategory, string> = {
 };
 
 const STATUS_COLOR: Record<LedgerStatus, string> = {
-  PENDING: '#F59E0B',
-  SETTLED: '#22C55E',
-  FAILED: '#EF4444',
+  PENDING: '#B8943E',
+  SETTLED: '#5A8A6E',
+  FAILED: '#B85C5C',
 };
 
 const QUICK_VIEWS: QuickView[] = ['All', 'NIL', 'Scholarships', 'Travel', 'Vendors'];
@@ -156,9 +156,9 @@ function BalancesSnapshot({ colors, accentColor, entries }: { colors: typeof Col
   const net = totalIn - totalOut;
 
   const cards = [
-    { label: 'Inflows', value: totalIn, color: '#22C55E' },
-    { label: 'Outflows', value: totalOut, color: '#EF4444' },
-    { label: 'Net', value: net, color: net >= 0 ? '#22C55E' : '#EF4444' },
+    { label: 'Inflows', value: totalIn, color: '#5A8A6E' },
+    { label: 'Outflows', value: totalOut, color: '#B85C5C' },
+    { label: 'Net', value: net, color: net >= 0 ? '#5A8A6E' : '#B85C5C' },
   ];
 
   return (
@@ -234,7 +234,7 @@ function LedgerFeed({ colors, accentColor, entries, onSelect }: {
 
               {/* Right — amount + status */}
               <View style={s.entryRight}>
-                <ThemedText style={[s.entryAmount, { color: entry.direction === 'inflow' ? '#22C55E' : '#EF4444' }]}>
+                <ThemedText style={[s.entryAmount, { color: entry.direction === 'inflow' ? '#5A8A6E' : '#B85C5C' }]}>
                   {entry.direction === 'inflow' ? '+' : '-'}{fmt(entry.amountCents)}
                 </ThemedText>
                 <StatusChip label={entry.status} color={STATUS_COLOR[entry.status]} />
@@ -275,7 +275,7 @@ function EntryDetailSheet({ visible, onClose, entry, colors, accentColor }: {
   };
 
   const rows: { label: string; value: string; color?: string }[] = [
-    { label: 'Amount', value: `${entry.direction === 'inflow' ? '+' : '-'}${fmtFull(entry.amountCents)}`, color: entry.direction === 'inflow' ? '#22C55E' : '#EF4444' },
+    { label: 'Amount', value: `${entry.direction === 'inflow' ? '+' : '-'}${fmtFull(entry.amountCents)}`, color: entry.direction === 'inflow' ? '#5A8A6E' : '#B85C5C' },
     { label: 'Direction', value: entry.direction === 'inflow' ? 'Inflow' : 'Outflow' },
     { label: 'Category', value: entry.category },
     { label: 'Counterparty', value: entry.counterpartyName },

@@ -229,10 +229,10 @@ export const RESOURCE_STATUS_LABELS: Record<ResourceStatus, string> = {
 };
 
 export const RESOURCE_STATUS_COLORS: Record<ResourceStatus, string> = {
-  draft: '#A1A1AA',
-  in_review: '#F59E0B',
-  published: '#22C55E',
-  archived: '#A1A1AA',
+  draft: '#9C9790',
+  in_review: '#B8943E',
+  published: '#5A8A6E',
+  archived: '#9C9790',
 };
 
 export const VISIBILITY_LABELS: Record<ResourceVisibility, string> = {
@@ -264,15 +264,15 @@ export const MINISTRY_TAG_LABELS: Record<MinistryTag, string> = {
 };
 
 export const MINISTRY_TAG_COLORS: Record<MinistryTag, string> = {
-  worship: '#1D9BF0',
-  kids: '#F59E0B',
-  youth: '#EF4444',
-  outreach: '#22C55E',
-  admin: '#1D9BF0',
-  facilities: '#A1A1AA',
-  prayer: '#1D9BF0',
-  discipleship: '#22C55E',
-  general: '#A1A1AA',
+  worship: '#1A1714',
+  kids: '#B8943E',
+  youth: '#B85C5C',
+  outreach: '#5A8A6E',
+  admin: '#1A1714',
+  facilities: '#9C9790',
+  prayer: '#1A1714',
+  discipleship: '#5A8A6E',
+  general: '#9C9790',
 };
 
 export const TRAINING_STATUS_LABELS: Record<TrainingStatus, string> = {
@@ -283,10 +283,10 @@ export const TRAINING_STATUS_LABELS: Record<TrainingStatus, string> = {
 };
 
 export const TRAINING_STATUS_COLORS: Record<TrainingStatus, string> = {
-  not_started: '#A1A1AA',
-  in_progress: '#1D9BF0',
-  completed: '#22C55E',
-  expired: '#EF4444',
+  not_started: '#9C9790',
+  in_progress: '#1A1714',
+  completed: '#5A8A6E',
+  expired: '#B85C5C',
 };
 
 export const PACK_STATUS_LABELS: Record<PackStatus, string> = {
@@ -296,9 +296,9 @@ export const PACK_STATUS_LABELS: Record<PackStatus, string> = {
 };
 
 export const PACK_STATUS_COLORS: Record<PackStatus, string> = {
-  published: '#22C55E',
-  needs_review: '#F59E0B',
-  draft: '#A1A1AA',
+  published: '#5A8A6E',
+  needs_review: '#B8943E',
+  draft: '#9C9790',
 };
 
 export const REQUEST_STATUS_LABELS: Record<RequestStatus, string> = {
@@ -310,18 +310,18 @@ export const REQUEST_STATUS_LABELS: Record<RequestStatus, string> = {
 };
 
 export const REQUEST_STATUS_COLORS: Record<RequestStatus, string> = {
-  new: '#1D9BF0',
-  under_review: '#F59E0B',
-  in_progress: '#1D9BF0',
-  delivered: '#22C55E',
-  closed: '#A1A1AA',
+  new: '#1A1714',
+  under_review: '#B8943E',
+  in_progress: '#1A1714',
+  delivered: '#5A8A6E',
+  closed: '#9C9790',
 };
 
 export const REQUEST_PRIORITY_COLORS: Record<RequestPriority, string> = {
-  low: '#22C55E',
-  normal: '#1D9BF0',
-  high: '#F59E0B',
-  urgent: '#EF4444',
+  low: '#5A8A6E',
+  normal: '#1A1714',
+  high: '#B8943E',
+  urgent: '#B85C5C',
 };
 
 // =============================================================================

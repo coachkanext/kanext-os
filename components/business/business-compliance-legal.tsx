@@ -86,7 +86,7 @@ function severityColor(sev: string): string {
     case 'critical':
       return BP.red;
     case 'high':
-      return '#F59E0B';
+      return '#B8943E';
     case 'medium':
       return BP.amber;
     case 'low':
@@ -634,7 +634,7 @@ const AUDIT_FINDINGS: Record<string, AuditFinding[]> = {
 function findingSeverityColor(sev: string): string {
   switch (sev) {
     case 'Critical': return BP.red;
-    case 'High': return '#F59E0B';
+    case 'High': return '#B8943E';
     case 'Medium': return BP.amber;
     case 'Low': return BP.emerald;
     default: return BP.ash;

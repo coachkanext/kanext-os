@@ -30,10 +30,10 @@ import {
 // =============================================================================
 
 const PARTICIPANT_STATUS_COLORS: Record<ParticipantStatus, string> = {
-  Invited: '#A1A1AA',
-  Accepted: '#22C55E',
-  Declined: '#EF4444',
-  Attended: '#1D9BF0',
+  Invited: '#9C9790',
+  Accepted: '#5A8A6E',
+  Declined: '#B85C5C',
+  Attended: '#1A1714',
 };
 
 // =============================================================================
@@ -161,15 +161,15 @@ export function BizRoomDetailSheet({ room, visible, onClose, colors }: Props) {
 
           <View style={s.controlsGrid}>
             {room.status === 'Scheduled' && (
-              <Pressable style={[s.controlBtn, { backgroundColor: '#22C55E' + '15' }]} onPress={handleAction}>
-                <IconSymbol name="play.fill" size={16} color="#22C55E" />
-                <ThemedText style={[s.controlBtnText, { color: '#22C55E' }]}>Start Room</ThemedText>
+              <Pressable style={[s.controlBtn, { backgroundColor: '#5A8A6E' + '15' }]} onPress={handleAction}>
+                <IconSymbol name="play.fill" size={16} color="#5A8A6E" />
+                <ThemedText style={[s.controlBtnText, { color: '#5A8A6E' }]}>Start Room</ThemedText>
               </Pressable>
             )}
             {room.status === 'Live' && (
-              <Pressable style={[s.controlBtn, { backgroundColor: '#EF4444' + '15' }]} onPress={handleAction}>
-                <IconSymbol name="stop.fill" size={16} color="#EF4444" />
-                <ThemedText style={[s.controlBtnText, { color: '#EF4444' }]}>End Room</ThemedText>
+              <Pressable style={[s.controlBtn, { backgroundColor: '#B85C5C' + '15' }]} onPress={handleAction}>
+                <IconSymbol name="stop.fill" size={16} color="#B85C5C" />
+                <ThemedText style={[s.controlBtnText, { color: '#B85C5C' }]}>End Room</ThemedText>
               </Pressable>
             )}
             {room.status !== 'Completed' && (
@@ -190,9 +190,9 @@ export function BizRoomDetailSheet({ room, visible, onClose, colors }: Props) {
                   <IconSymbol name="doc" size={16} color={colors.text} />
                   <ThemedText style={[s.controlBtnText, { color: colors.text }]}>Link to Obligation</ThemedText>
                 </Pressable>
-                <Pressable style={[s.controlBtn, { backgroundColor: room.recordingEnabled ? '#22C55E15' : colors.backgroundTertiary }]} onPress={handleAction}>
-                  <IconSymbol name="record.circle" size={16} color={room.recordingEnabled ? '#22C55E' : colors.textTertiary} />
-                  <ThemedText style={[s.controlBtnText, { color: room.recordingEnabled ? '#22C55E' : colors.textTertiary }]}>
+                <Pressable style={[s.controlBtn, { backgroundColor: room.recordingEnabled ? '#5A8A6E15' : colors.backgroundTertiary }]} onPress={handleAction}>
+                  <IconSymbol name="record.circle" size={16} color={room.recordingEnabled ? '#5A8A6E' : colors.textTertiary} />
+                  <ThemedText style={[s.controlBtnText, { color: room.recordingEnabled ? '#5A8A6E' : colors.textTertiary }]}>
                     Recording {room.recordingEnabled ? 'On' : 'Off'}
                   </ThemedText>
                 </Pressable>

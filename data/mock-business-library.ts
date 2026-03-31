@@ -63,12 +63,12 @@ export interface BizLibraryVideo {
 // =============================================================================
 
 export const TYPE_COLORS: Record<BizLibraryVideoType, string> = {
-  Executive: '#8B5CF6',
-  Capital: '#F59E0B',
-  Board: '#EF4444',
-  Internal: '#1D9BF0',
-  Product: '#22C55E',
-  Promotional: '#EC4899',
+  Executive: '#1A1714',
+  Capital: '#B8943E',
+  Board: '#B85C5C',
+  Internal: '#1A1714',
+  Product: '#5A8A6E',
+  Promotional: '#1A1714',
 };
 
 export const VISIBILITY_LABELS: Record<number, string> = {
@@ -79,10 +79,10 @@ export const VISIBILITY_LABELS: Record<number, string> = {
 };
 
 export const VISIBILITY_COLORS: Record<number, string> = {
-  0: '#22C55E',
-  1: '#1D9BF0',
-  2: '#F59E0B',
-  3: '#EF4444',
+  0: '#5A8A6E',
+  1: '#1A1714',
+  2: '#B8943E',
+  3: '#B85C5C',
 };
 
 // =============================================================================
@@ -94,7 +94,7 @@ export const BIZ_LIBRARY_SECTIONS: BizLibrarySection[] = [
     id: 'executive',
     name: 'Executive',
     icon: 'person.fill',
-    colorStrip: '#8B5CF6',
+    colorStrip: '#1A1714',
     itemCount: 10,
     visibilityClass: 3,
   },
@@ -102,7 +102,7 @@ export const BIZ_LIBRARY_SECTIONS: BizLibrarySection[] = [
     id: 'capital',
     name: 'Capital',
     icon: 'banknote.fill',
-    colorStrip: '#F59E0B',
+    colorStrip: '#B8943E',
     itemCount: 9,
     visibilityClass: 2,
   },
@@ -110,7 +110,7 @@ export const BIZ_LIBRARY_SECTIONS: BizLibrarySection[] = [
     id: 'governance',
     name: 'Governance',
     icon: 'building.columns.fill',
-    colorStrip: '#EF4444',
+    colorStrip: '#B85C5C',
     itemCount: 8,
     visibilityClass: 2,
   },
@@ -118,7 +118,7 @@ export const BIZ_LIBRARY_SECTIONS: BizLibrarySection[] = [
     id: 'operations',
     name: 'Operations',
     icon: 'gearshape.fill',
-    colorStrip: '#1D9BF0',
+    colorStrip: '#1A1714',
     itemCount: 10,
     visibilityClass: 1,
   },
@@ -126,7 +126,7 @@ export const BIZ_LIBRARY_SECTIONS: BizLibrarySection[] = [
     id: 'product',
     name: 'Product',
     icon: 'cube.fill',
-    colorStrip: '#22C55E',
+    colorStrip: '#5A8A6E',
     itemCount: 8,
     visibilityClass: 1,
   },
@@ -134,7 +134,7 @@ export const BIZ_LIBRARY_SECTIONS: BizLibrarySection[] = [
     id: 'promotional',
     name: 'Promotional',
     icon: 'megaphone.fill',
-    colorStrip: '#EC4899',
+    colorStrip: '#1A1714',
     itemCount: 7,
     visibilityClass: 0,
   },
@@ -150,7 +150,7 @@ export const BIZ_LIBRARY_SECTIONS: BizLibrarySection[] = [
     id: 'saved',
     name: 'Saved',
     icon: 'bookmark.fill',
-    colorStrip: '#1D9BF0',
+    colorStrip: '#1A1714',
     itemCount: 5,
     visibilityClass: 0,
   },

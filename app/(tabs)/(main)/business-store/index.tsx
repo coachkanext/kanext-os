@@ -37,10 +37,10 @@ function pillsForTab(tab: StoreTab): string[] {
 
 function productTypeColor(type: ProductType, C: ComponentColors): string {
   switch (type) {
-    case 'physical':     return '#1D9BF0';
+    case 'physical':     return '#1A1714';
     case 'digital':      return '#5A8A6E';
-    case 'service':      return '#3B82F6';
-    case 'subscription': return '#8B6340';
+    case 'service':      return '#1A1714';
+    case 'subscription': return '#1A1714';
     default:             return C.muted as string;
   }
 }
@@ -48,7 +48,7 @@ function productTypeColor(type: ProductType, C: ComponentColors): string {
 function invoiceStatusBg(status: InvoiceStatus): string {
   switch (status) {
     case 'paid':    return '#5A8A6E20';
-    case 'sent':    return '#1D9BF020';
+    case 'sent':    return '#1A171420';
     case 'overdue': return '#B85C5C20';
     default:        return 'rgba(45,30,18,0.06)';
   }
@@ -108,9 +108,9 @@ export default function BusinessStoreScreen() {
   const categoryBreakdown = useMemo(() => {
     const total = PRODUCTS.reduce((s, p) => s + p.revenue, 0);
     return [
-      { label: 'Services',      value: PRODUCTS.filter(p => p.type === 'service').reduce((s, p) => s + p.revenue, 0), color: '#3B82F6' },
-      { label: 'Subscriptions', value: PRODUCTS.filter(p => p.type === 'subscription').reduce((s, p) => s + p.revenue, 0), color: '#8B6340' },
-      { label: 'Hardware',      value: PRODUCTS.filter(p => p.type === 'physical').reduce((s, p) => s + p.revenue, 0), color: '#1D9BF0' },
+      { label: 'Services',      value: PRODUCTS.filter(p => p.type === 'service').reduce((s, p) => s + p.revenue, 0), color: '#1A1714' },
+      { label: 'Subscriptions', value: PRODUCTS.filter(p => p.type === 'subscription').reduce((s, p) => s + p.revenue, 0), color: '#1A1714' },
+      { label: 'Hardware',      value: PRODUCTS.filter(p => p.type === 'physical').reduce((s, p) => s + p.revenue, 0), color: '#1A1714' },
     ].map(c => ({ ...c, pct: Math.round((c.value / total) * 100) }));
   }, []);
 
@@ -127,7 +127,7 @@ export default function BusinessStoreScreen() {
             { label: 'This Month',  value: formatCurrency(BIZ_DASHBOARD.thisMonth.revenue, true),  color: C.green },
             { label: 'This Year',   value: formatCurrency(BIZ_DASHBOARD.thisYear.revenue, true),   color: C.label },
             { label: 'Net Profit',  value: formatCurrency(BIZ_DASHBOARD.thisMonth.profit, true),   color: C.accent },
-            { label: 'Outstanding', value: formatCurrency(INVOICES.filter(i => i.status === 'sent' || i.status === 'overdue').reduce((s, i) => s + i.total, 0), true), color: '#1D9BF0' },
+            { label: 'Outstanding', value: formatCurrency(INVOICES.filter(i => i.status === 'sent' || i.status === 'overdue').reduce((s, i) => s + i.total, 0), true), color: '#1A1714' },
             { label: 'Overdue',     value: formatCurrency(INVOICES.filter(i => i.status === 'overdue').reduce((s, i) => s + i.total, 0), true), color: C.red },
           ].map(m => (
             <GlassView tier={1} key={m.label} style={[s.metricCard, { gap: 2 }]}>
@@ -465,7 +465,7 @@ export default function BusinessStoreScreen() {
         {/* Stats row */}
         <View style={[s.row, { gap: 8, paddingHorizontal: 16, marginBottom: 12, flexWrap: 'wrap' }]}>
           {[
-            { label: 'Outstanding', value: formatCurrency(outstandingAmt, true), color: '#1D9BF0' },
+            { label: 'Outstanding', value: formatCurrency(outstandingAmt, true), color: '#1A1714' },
             { label: 'Overdue',     value: formatCurrency(overdueAmt, true),     color: C.red },
             { label: 'Paid YTD',    value: formatCurrency(paidAmt, true),        color: C.green },
             { label: 'Avg Days',    value: `${avgDays}d`,                        color: C.label },

@@ -20,7 +20,7 @@ import type { Archetype } from '@/data/system-demand-profiles';
 const BG = '#0B0F14';
 const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#A1A1AA';
+const GRAY = '#9C9790';
 const DIVIDER = '#0B0F14';
 
 // ─── Filter State ───

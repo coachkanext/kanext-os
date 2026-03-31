@@ -583,7 +583,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: '6:30 PM',
     status: 'active',
     category: 'youth',
-    color: '#F59E0B',
+    color: '#B8943E',
   },
   {
     id: 'min-002',
@@ -596,7 +596,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: '9:30 AM',
     status: 'active',
     category: 'youth',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'min-003',
@@ -609,7 +609,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: '7:30 PM',
     status: 'active',
     category: 'youth',
-    color: '#EF4444',
+    color: '#B85C5C',
   },
   {
     id: 'min-004',
@@ -622,7 +622,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: '1:00 PM',
     status: 'active',
     category: 'fellowship',
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
   {
     id: 'min-005',
@@ -635,7 +635,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: 'Various',
     status: 'active',
     category: 'fellowship',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'min-006',
@@ -648,7 +648,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: '7:00 PM',
     status: 'active',
     category: 'worship',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'min-007',
@@ -661,7 +661,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: '6:30 PM',
     status: 'active',
     category: 'fellowship',
-    color: '#F59E0B',
+    color: '#B8943E',
   },
   {
     id: 'min-008',
@@ -674,7 +674,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: '8:00 AM',
     status: 'active',
     category: 'outreach',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'min-009',
@@ -687,7 +687,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: '6:00 AM',
     status: 'active',
     category: 'service',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'min-010',
@@ -700,7 +700,7 @@ export const CHURCH_MINISTRIES: Ministry[] = [
     meetingTime: '9:00 AM',
     status: 'active',
     category: 'service',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
 ];
 
@@ -836,18 +836,18 @@ export interface ScheduleSlot {
 }
 
 export const MINISTRY_SCHEDULE: ScheduleSlot[] = [
-  { id: 'sch-001', day: 'Sun', time: '9:30 AM', ministry: 'Sunday Worship', location: 'Main Sanctuary', color: '#1D9BF0' },
-  { id: 'sch-002', day: 'Sun', time: '9:30 AM', ministry: 'Formation Kids', location: 'Children\'s Wing', color: '#1D9BF0' },
-  { id: 'sch-003', day: 'Sun', time: '1:00 PM', ministry: 'Rooted (Bi-weekly)', location: 'Conference Room B', color: '#22C55E' },
-  { id: 'sch-004', day: 'Tue', time: '6:00 AM', ministry: 'Morning Prayer Line', location: 'Prayer Chapel', color: '#1D9BF0' },
-  { id: 'sch-005', day: 'Tue', time: '7:30 PM', ministry: 'Ignite Youth', location: 'Fellowship Hall', color: '#EF4444' },
-  { id: 'sch-006', day: 'Wed', time: '7:00 PM', ministry: 'Midweek Bible Study', location: 'Fellowship Hall', color: '#1D9BF0' },
-  { id: 'sch-007', day: 'Thu', time: '7:00 PM', ministry: 'Worship Team Rehearsal', location: 'Main Sanctuary', color: '#1D9BF0' },
-  { id: 'sch-008', day: 'Fri', time: '6:00 AM', ministry: 'Morning Prayer Line', location: 'Prayer Chapel', color: '#1D9BF0' },
-  { id: 'sch-009', day: 'Fri', time: '6:30 PM', ministry: 'Catalyst Youth Night', location: 'Youth Center', color: '#F59E0B' },
-  { id: 'sch-010', day: 'Sat', time: '8:00 AM', ministry: 'Community Outreach (2nd Sat)', location: 'Offsite', color: '#1D9BF0' },
-  { id: 'sch-011', day: 'Sat', time: '9:00 AM', ministry: 'Kingdom Builders (1st Sat)', location: 'Conference Room A', color: '#1D9BF0' },
-  { id: 'sch-012', day: 'Fri', time: '6:30 PM', ministry: 'Single & Purposeful (1st Fri)', location: 'Fellowship Hall', color: '#F59E0B' },
+  { id: 'sch-001', day: 'Sun', time: '9:30 AM', ministry: 'Sunday Worship', location: 'Main Sanctuary', color: '#1A1714' },
+  { id: 'sch-002', day: 'Sun', time: '9:30 AM', ministry: 'Formation Kids', location: 'Children\'s Wing', color: '#1A1714' },
+  { id: 'sch-003', day: 'Sun', time: '1:00 PM', ministry: 'Rooted (Bi-weekly)', location: 'Conference Room B', color: '#5A8A6E' },
+  { id: 'sch-004', day: 'Tue', time: '6:00 AM', ministry: 'Morning Prayer Line', location: 'Prayer Chapel', color: '#1A1714' },
+  { id: 'sch-005', day: 'Tue', time: '7:30 PM', ministry: 'Ignite Youth', location: 'Fellowship Hall', color: '#B85C5C' },
+  { id: 'sch-006', day: 'Wed', time: '7:00 PM', ministry: 'Midweek Bible Study', location: 'Fellowship Hall', color: '#1A1714' },
+  { id: 'sch-007', day: 'Thu', time: '7:00 PM', ministry: 'Worship Team Rehearsal', location: 'Main Sanctuary', color: '#1A1714' },
+  { id: 'sch-008', day: 'Fri', time: '6:00 AM', ministry: 'Morning Prayer Line', location: 'Prayer Chapel', color: '#1A1714' },
+  { id: 'sch-009', day: 'Fri', time: '6:30 PM', ministry: 'Catalyst Youth Night', location: 'Youth Center', color: '#B8943E' },
+  { id: 'sch-010', day: 'Sat', time: '8:00 AM', ministry: 'Community Outreach (2nd Sat)', location: 'Offsite', color: '#1A1714' },
+  { id: 'sch-011', day: 'Sat', time: '9:00 AM', ministry: 'Kingdom Builders (1st Sat)', location: 'Conference Room A', color: '#1A1714' },
+  { id: 'sch-012', day: 'Fri', time: '6:30 PM', ministry: 'Single & Purposeful (1st Fri)', location: 'Fellowship Hall', color: '#B8943E' },
 ];
 
 // =============================================================================
@@ -867,12 +867,12 @@ export interface PipelinePerson {
 }
 
 export const PIPELINE_STAGES: { key: ChurchPipelineStage; label: string; color: string; count: number }[] = [
-  { key: 'first_time', label: 'First-Time', color: '#A1A1AA', count: 12 },
-  { key: 'returning', label: 'Returning', color: '#F59E0B', count: 8 },
-  { key: 'connected', label: 'Connected', color: '#1D9BF0', count: 15 },
-  { key: 'serving', label: 'Serving', color: '#1D9BF0', count: 22 },
-  { key: 'member', label: 'Member', color: '#22C55E', count: 180 },
-  { key: 'leader', label: 'Leader', color: '#EF4444', count: 28 },
+  { key: 'first_time', label: 'First-Time', color: '#9C9790', count: 12 },
+  { key: 'returning', label: 'Returning', color: '#B8943E', count: 8 },
+  { key: 'connected', label: 'Connected', color: '#1A1714', count: 15 },
+  { key: 'serving', label: 'Serving', color: '#1A1714', count: 22 },
+  { key: 'member', label: 'Member', color: '#5A8A6E', count: 180 },
+  { key: 'leader', label: 'Leader', color: '#B85C5C', count: 28 },
 ];
 
 export const PIPELINE_PEOPLE: PipelinePerson[] = [
@@ -1252,9 +1252,9 @@ export const CHURCH_HERO: ChurchHeroData = {
 };
 
 export const CHURCH_COMMERCE: ChurchCommerceCard[] = [
-  { id: 'give', title: 'Give', icon: 'heart.fill', color: '#EF4444' },
-  { id: 'watch', title: 'Watch Sermons', icon: 'play.rectangle.fill', color: '#1D9BF0' },
-  { id: 'prayer', title: 'Prayer Request', icon: 'hands.sparkles.fill', color: '#1D9BF0' },
+  { id: 'give', title: 'Give', icon: 'heart.fill', color: '#B85C5C' },
+  { id: 'watch', title: 'Watch Sermons', icon: 'play.rectangle.fill', color: '#1A1714' },
+  { id: 'prayer', title: 'Prayer Request', icon: 'hands.sparkles.fill', color: '#1A1714' },
 ];
 
 // =============================================================================
@@ -1262,12 +1262,12 @@ export const CHURCH_COMMERCE: ChurchCommerceCard[] = [
 // =============================================================================
 
 export const PIPELINE_STAGE_COLORS: Record<ChurchPipelineStage, string> = {
-  first_time: '#A1A1AA',
-  returning: '#F59E0B',
-  connected: '#1D9BF0',
-  serving: '#1D9BF0',
-  member: '#22C55E',
-  leader: '#EF4444',
+  first_time: '#9C9790',
+  returning: '#B8943E',
+  connected: '#1A1714',
+  serving: '#1A1714',
+  member: '#5A8A6E',
+  leader: '#B85C5C',
 };
 
 // =============================================================================
@@ -1339,7 +1339,7 @@ export const CURRENT_SERIES: SermonSeries = {
   name: 'Cross to Commission',
   totalParts: 6,
   currentPart: 4,
-  color: '#1D9BF0',
+  color: '#1A1714',
 };
 
 export interface SermonEntry {
@@ -1376,12 +1376,12 @@ export const PRAYER_CATEGORY_LABELS: Record<PrayerCategory, string> = {
 };
 
 export const PRAYER_CATEGORY_COLORS: Record<PrayerCategory, string> = {
-  healing: '#EF4444',
-  provision: '#1D9BF0',
-  family: '#1D9BF0',
-  guidance: '#1D9BF0',
-  praise: '#1D9BF0',
-  other: '#A1A1AA',
+  healing: '#B85C5C',
+  provision: '#1A1714',
+  family: '#1A1714',
+  guidance: '#1A1714',
+  praise: '#1A1714',
+  other: '#9C9790',
 };
 
 export interface PrayerRequest {

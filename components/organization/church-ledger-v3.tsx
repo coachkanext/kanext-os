@@ -64,15 +64,15 @@ const CATEGORY_ICONS: Record<LedgerCategory, string> = {
 };
 
 const CATEGORY_COLORS: Record<LedgerCategory, string> = {
-  TITHES: '#22C55E',
-  OFFERINGS: '#22C55E',
-  MISSIONS: '#3B82F6',
-  DESIGNATED: '#8B5CF6',
-  FACILITIES: '#F59E0B',
-  STAFF: '#EF4444',
+  TITHES: '#5A8A6E',
+  OFFERINGS: '#5A8A6E',
+  MISSIONS: '#1A1714',
+  DESIGNATED: '#1A1714',
+  FACILITIES: '#B8943E',
+  STAFF: '#B85C5C',
   OUTREACH: '#06B6D4',
-  MINISTRY_EXPENSE: '#F97316',
-  OPERATIONS: '#A1A1AA',
+  MINISTRY_EXPENSE: '#B8943E',
+  OPERATIONS: '#9C9790',
   OTHER: '#6B7280',
 };
 
@@ -199,7 +199,7 @@ function EntryDetailSheet({
         <ThemedText style={[s.sheetTitle, { color: colors.text }]}>{entry.title}</ThemedText>
 
         {/* Amount */}
-        <ThemedText style={[s.detailAmount, { color: isInflow ? '#22C55E' : '#EF4444' }]}>
+        <ThemedText style={[s.detailAmount, { color: isInflow ? '#5A8A6E' : '#B85C5C' }]}>
           {isInflow ? '+' : '-'}{formatCurrency(entry.amount)}
         </ThemedText>
 
@@ -232,7 +232,7 @@ function EntryDetailSheet({
           <ThemedText style={[s.detailLabel, { color: colors.textSecondary }]}>Status</ThemedText>
           <StatusChip
             status={entry.status}
-            color={entry.status === 'Settled' ? '#22C55E' : '#F59E0B'}
+            color={entry.status === 'Settled' ? '#5A8A6E' : '#B8943E'}
           />
         </View>
 
@@ -383,15 +383,15 @@ export function ChurchLedger({ colors, accentColor, role }: Props) {
         <Card colors={colors}>
           <View style={s.balanceGrid}>
             <View style={s.balanceCell}>
-              <ThemedText style={[s.balanceValue, { color: '#22C55E' }]}>{formatCurrency(totalInflows)}</ThemedText>
+              <ThemedText style={[s.balanceValue, { color: '#5A8A6E' }]}>{formatCurrency(totalInflows)}</ThemedText>
               <ThemedText style={[s.balanceLabel, { color: colors.textSecondary }]}>Total Inflows</ThemedText>
             </View>
             <View style={s.balanceCell}>
-              <ThemedText style={[s.balanceValue, { color: '#EF4444' }]}>{formatCurrency(totalOutflows)}</ThemedText>
+              <ThemedText style={[s.balanceValue, { color: '#B85C5C' }]}>{formatCurrency(totalOutflows)}</ThemedText>
               <ThemedText style={[s.balanceLabel, { color: colors.textSecondary }]}>Total Outflows</ThemedText>
             </View>
             <View style={s.balanceCell}>
-              <ThemedText style={[s.balanceValue, { color: net >= 0 ? '#22C55E' : '#EF4444' }]}>
+              <ThemedText style={[s.balanceValue, { color: net >= 0 ? '#5A8A6E' : '#B85C5C' }]}>
                 {net >= 0 ? '+' : ''}{formatCurrency(net)}
               </ThemedText>
               <ThemedText style={[s.balanceLabel, { color: colors.textSecondary }]}>Net</ThemedText>
@@ -399,7 +399,7 @@ export function ChurchLedger({ colors, accentColor, role }: Props) {
           </View>
           <View style={[s.statusBar, { borderColor: colors.border }]}>
             <ThemedText style={[s.statusBarLabel, { color: colors.textSecondary }]}>Financial Status</ThemedText>
-            <StatusChip status="Healthy" color="#22C55E" />
+            <StatusChip status="Healthy" color="#5A8A6E" />
           </View>
         </Card>
 
@@ -429,7 +429,7 @@ export function ChurchLedger({ colors, accentColor, role }: Props) {
         <View style={s.statusFilterRow}>
           {STATUS_FILTER_OPTIONS.map((st) => {
             const active = statusFilter === st;
-            const color = st === 'Settled' ? '#22C55E' : st === 'Pending' ? '#F59E0B' : ACCENT;
+            const color = st === 'Settled' ? '#5A8A6E' : st === 'Pending' ? '#B8943E' : ACCENT;
             return (
               <Pressable
                 key={st}
@@ -492,12 +492,12 @@ export function ChurchLedger({ colors, accentColor, role }: Props) {
 
                       {/* Right: Amount + Status */}
                       <View style={s.entryRight}>
-                        <ThemedText style={[s.entryAmount, { color: isInflow ? '#22C55E' : '#EF4444' }]}>
+                        <ThemedText style={[s.entryAmount, { color: isInflow ? '#5A8A6E' : '#B85C5C' }]}>
                           {isInflow ? '+' : '-'}{formatCurrency(entry.amount)}
                         </ThemedText>
                         <StatusChip
                           status={entry.status}
-                          color={entry.status === 'Settled' ? '#22C55E' : '#F59E0B'}
+                          color={entry.status === 'Settled' ? '#5A8A6E' : '#B8943E'}
                         />
                       </View>
                     </Pressable>

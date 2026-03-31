@@ -192,13 +192,13 @@ export const RESOURCE_TYPE_LABELS: Record<ResourceType, string> = {
 };
 
 export const RESOURCE_TYPE_COLORS: Record<ResourceType, string> = {
-  template: '#1D9BF0',
-  sop: '#1D9BF0',
-  guide: '#22C55E',
-  checklist: '#F59E0B',
-  policy_link: '#1D9BF0',
-  video: '#EF4444',
-  form: '#A1A1AA',
+  template: '#1A1714',
+  sop: '#1A1714',
+  guide: '#5A8A6E',
+  checklist: '#B8943E',
+  policy_link: '#1A1714',
+  video: '#B85C5C',
+  form: '#9C9790',
 };
 
 export const RESOURCE_STATUS_LABELS: Record<ResourceStatus, string> = {
@@ -208,9 +208,9 @@ export const RESOURCE_STATUS_LABELS: Record<ResourceStatus, string> = {
 };
 
 export const RESOURCE_STATUS_COLORS: Record<ResourceStatus, string> = {
-  canonical: '#22C55E',
-  draft: '#F59E0B',
-  archived: '#A1A1AA',
+  canonical: '#5A8A6E',
+  draft: '#B8943E',
+  archived: '#9C9790',
 };
 
 export const RESOURCE_AUDIENCE_LABELS: Record<ResourceAudience, string> = {
@@ -221,10 +221,10 @@ export const RESOURCE_AUDIENCE_LABELS: Record<ResourceAudience, string> = {
 };
 
 export const RESOURCE_AUDIENCE_COLORS: Record<ResourceAudience, string> = {
-  staff: '#1D9BF0',
-  students: '#22C55E',
-  public: '#22C55E',
-  restricted: '#EF4444',
+  staff: '#1A1714',
+  students: '#5A8A6E',
+  public: '#5A8A6E',
+  restricted: '#B85C5C',
 };
 
 export const DEPARTMENT_SCOPE_LABELS: Record<DepartmentScope, string> = {
@@ -238,13 +238,13 @@ export const DEPARTMENT_SCOPE_LABELS: Record<DepartmentScope, string> = {
 };
 
 export const DEPARTMENT_SCOPE_COLORS: Record<DepartmentScope, string> = {
-  admissions: '#1D9BF0',
-  academics: '#1D9BF0',
-  housing: '#F59E0B',
-  finance: '#22C55E',
-  athletics: '#EF4444',
-  admin: '#A1A1AA',
-  institution: '#1D9BF0',
+  admissions: '#1A1714',
+  academics: '#1A1714',
+  housing: '#B8943E',
+  finance: '#5A8A6E',
+  athletics: '#B85C5C',
+  admin: '#9C9790',
+  institution: '#1A1714',
 };
 
 export const PACK_STATUS_LABELS: Record<PackStatus, string> = {
@@ -254,9 +254,9 @@ export const PACK_STATUS_LABELS: Record<PackStatus, string> = {
 };
 
 export const PACK_STATUS_COLORS: Record<PackStatus, string> = {
-  active: '#22C55E',
-  draft: '#F59E0B',
-  archived: '#A1A1AA',
+  active: '#5A8A6E',
+  draft: '#B8943E',
+  archived: '#9C9790',
 };
 
 export const PACK_AUDIENCE_LABELS: Record<PackAudience, string> = {
@@ -266,9 +266,9 @@ export const PACK_AUDIENCE_LABELS: Record<PackAudience, string> = {
 };
 
 export const PACK_AUDIENCE_COLORS: Record<PackAudience, string> = {
-  staff: '#1D9BF0',
-  students: '#22C55E',
-  external: '#1D9BF0',
+  staff: '#1A1714',
+  students: '#5A8A6E',
+  external: '#1A1714',
 };
 
 export const SOP_STATUS_LABELS: Record<SOPStatus, string> = {
@@ -277,8 +277,8 @@ export const SOP_STATUS_LABELS: Record<SOPStatus, string> = {
 };
 
 export const SOP_STATUS_COLORS: Record<SOPStatus, string> = {
-  canonical: '#22C55E',
-  draft: '#F59E0B',
+  canonical: '#5A8A6E',
+  draft: '#B8943E',
 };
 
 export const ROLE_KIT_TYPE_LABELS: Record<RoleKitType, string> = {
@@ -292,13 +292,13 @@ export const ROLE_KIT_TYPE_LABELS: Record<RoleKitType, string> = {
 };
 
 export const ROLE_KIT_TYPE_COLORS: Record<RoleKitType, string> = {
-  admissions_counselor: '#1D9BF0',
-  registrar: '#1D9BF0',
-  housing_director: '#F59E0B',
-  ra: '#22C55E',
-  faculty: '#1D9BF0',
-  athletics_admin: '#EF4444',
-  finance_ops: '#22C55E',
+  admissions_counselor: '#1A1714',
+  registrar: '#1A1714',
+  housing_director: '#B8943E',
+  ra: '#5A8A6E',
+  faculty: '#1A1714',
+  athletics_admin: '#B85C5C',
+  finance_ops: '#5A8A6E',
 };
 
 export const REQUEST_TYPE_LABELS: Record<RequestType, string> = {
@@ -309,10 +309,10 @@ export const REQUEST_TYPE_LABELS: Record<RequestType, string> = {
 };
 
 export const REQUEST_TYPE_COLORS: Record<RequestType, string> = {
-  new_sop: '#1D9BF0',
-  update_template: '#1D9BF0',
-  new_pack: '#22C55E',
-  access_request: '#F59E0B',
+  new_sop: '#1A1714',
+  update_template: '#1A1714',
+  new_pack: '#5A8A6E',
+  access_request: '#B8943E',
 };
 
 export const REQUEST_STATUS_LABELS: Record<RequestStatus, string> = {
@@ -324,11 +324,11 @@ export const REQUEST_STATUS_LABELS: Record<RequestStatus, string> = {
 };
 
 export const REQUEST_STATUS_COLORS: Record<RequestStatus, string> = {
-  new: '#1D9BF0',
-  in_review: '#F59E0B',
-  approved: '#22C55E',
-  published: '#22C55E',
-  closed: '#A1A1AA',
+  new: '#1A1714',
+  in_review: '#B8943E',
+  approved: '#5A8A6E',
+  published: '#5A8A6E',
+  closed: '#9C9790',
 };
 
 export const REQUEST_PRIORITY_LABELS: Record<RequestPriority, string> = {
@@ -338,9 +338,9 @@ export const REQUEST_PRIORITY_LABELS: Record<RequestPriority, string> = {
 };
 
 export const REQUEST_PRIORITY_COLORS: Record<RequestPriority, string> = {
-  high: '#EF4444',
-  normal: '#1D9BF0',
-  low: '#22C55E',
+  high: '#B85C5C',
+  normal: '#1A1714',
+  low: '#5A8A6E',
 };
 
 export const CHANGE_TYPE_LABELS: Record<ChangeType, string> = {
@@ -351,10 +351,10 @@ export const CHANGE_TYPE_LABELS: Record<ChangeType, string> = {
 };
 
 export const CHANGE_TYPE_COLORS: Record<ChangeType, string> = {
-  created: '#22C55E',
-  updated: '#1D9BF0',
-  retired: '#A1A1AA',
-  version_bump: '#1D9BF0',
+  created: '#5A8A6E',
+  updated: '#1A1714',
+  retired: '#9C9790',
+  version_bump: '#1A1714',
 };
 
 // =============================================================================

@@ -292,13 +292,13 @@ export default function BoxScoreScreen() {
                     setShowAllStats((v) => !v);
                   }}
                 >
-                  <Text style={[styles.allStatsText, { color: '#EF4444' }]}>
+                  <Text style={[styles.allStatsText, { color: '#B85C5C' }]}>
                     {showAllStats ? 'Less' : 'All Stats'}
                   </Text>
                   <IconSymbol
                     name={showAllStats ? 'chevron.left' : 'chevron.right'}
                     size={12}
-                    color="#EF4444"
+                    color="#B85C5C"
                   />
                 </Pressable>
               </View>
@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
   },
   espnTabActive: {
     borderBottomWidth: 2,
-    borderBottomColor: '#EF4444',
+    borderBottomColor: '#B85C5C',
   },
   espnTabText: {
     fontSize: 13,

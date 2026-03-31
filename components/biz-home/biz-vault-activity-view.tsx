@@ -26,12 +26,12 @@ const ACCENT = MODE_ACCENT.business;
 // =============================================================================
 
 const ACTIVITY_CONFIG: Record<VaultActivityType, { icon: string; color: string; label: string }> = {
-  created: { icon: 'plus.circle.fill', color: '#22C55E', label: 'Document Created' },
-  version_uploaded: { icon: 'arrow.up.circle.fill', color: '#2563EB', label: 'Version Uploaded' },
-  archived: { icon: 'archivebox.fill', color: '#A1A1AA', label: 'Document Archived' },
-  access_changed: { icon: 'person.crop.circle.badge.checkmark', color: '#F59E0B', label: 'Access Changed' },
-  locked: { icon: 'lock.fill', color: '#EF4444', label: 'Locked' },
-  unlocked: { icon: 'lock.open.fill', color: '#22C55E', label: 'Unlocked' },
+  created: { icon: 'plus.circle.fill', color: '#5A8A6E', label: 'Document Created' },
+  version_uploaded: { icon: 'arrow.up.circle.fill', color: '#1A1714', label: 'Version Uploaded' },
+  archived: { icon: 'archivebox.fill', color: '#9C9790', label: 'Document Archived' },
+  access_changed: { icon: 'person.crop.circle.badge.checkmark', color: '#B8943E', label: 'Access Changed' },
+  locked: { icon: 'lock.fill', color: '#B85C5C', label: 'Locked' },
+  unlocked: { icon: 'lock.open.fill', color: '#5A8A6E', label: 'Unlocked' },
 };
 
 // =============================================================================

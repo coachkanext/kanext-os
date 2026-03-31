@@ -48,8 +48,8 @@ const TREND_ICON: Record<string, string> = {
   stable: 'minus',
 };
 const TREND_COLOR: Record<string, string> = {
-  rising: '#22C55E',
-  falling: '#EF4444',
+  rising: '#5A8A6E',
+  falling: '#B85C5C',
   stable: '#52525B',
 };
 

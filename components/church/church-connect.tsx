@@ -322,29 +322,29 @@ export function ChurchConnect({ colors, accent, role, onSwitchTab }: Props) {
             <QuickAction
               icon="envelope.fill"
               label="Message"
-              color="#1D9BF0"
-              bgColor="#1D9BF018"
+              color="#1A1714"
+              bgColor="#1A171418"
               onPress={() => handleQuickAction('message')}
             />
             <QuickAction
               icon="hands.sparkles.fill"
               label="Prayer"
-              color="#8B5CF6"
-              bgColor="#8B5CF618"
+              color="#1A1714"
+              bgColor="#1A171418"
               onPress={() => handleQuickAction('prayer')}
             />
             <QuickAction
               icon="star.fill"
               label="Serve"
-              color="#F59E0B"
-              bgColor="#F59E0B18"
+              color="#B8943E"
+              bgColor="#B8943E18"
               onPress={() => handleQuickAction('serve')}
             />
             <QuickAction
               icon="person.3.fill"
               label="Groups"
-              color="#22C55E"
-              bgColor="#22C55E18"
+              color="#5A8A6E"
+              bgColor="#5A8A6E18"
               onPress={() => handleQuickAction('groups')}
             />
           </View>
@@ -423,8 +423,8 @@ export function ChurchConnect({ colors, accent, role, onSwitchTab }: Props) {
               ]}
               onPress={handlePrayerRequest}
             >
-              <View style={[s.careIcon, { backgroundColor: '#8B5CF618' }]}>
-                <IconSymbol name="hands.sparkles.fill" size={24} color="#8B5CF6" />
+              <View style={[s.careIcon, { backgroundColor: '#1A171418' }]}>
+                <IconSymbol name="hands.sparkles.fill" size={24} color="#1A1714" />
               </View>
               <ThemedText style={[s.careTitle, { color: colors.text }]}>Request Prayer</ThemedText>
               <ThemedText style={[s.careDesc, { color: colors.textSecondary }]}>
@@ -440,8 +440,8 @@ export function ChurchConnect({ colors, accent, role, onSwitchTab }: Props) {
               ]}
               onPress={handleCareRequest}
             >
-              <View style={[s.careIcon, { backgroundColor: '#EF444418' }]}>
-                <IconSymbol name="heart.circle.fill" size={24} color="#EF4444" />
+              <View style={[s.careIcon, { backgroundColor: '#B85C5C18' }]}>
+                <IconSymbol name="heart.circle.fill" size={24} color="#B85C5C" />
               </View>
               <ThemedText style={[s.careTitle, { color: colors.text }]}>Request Care</ThemedText>
               <ThemedText style={[s.careDesc, { color: colors.textSecondary }]}>

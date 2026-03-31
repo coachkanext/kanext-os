@@ -217,7 +217,7 @@ function CircularScore({
 
   // Use View-based approach: background circle + overlay arcs
   const scoreColor =
-    score >= 80 ? '#22C55E' : score >= 60 ? '#F59E0B' : '#EF4444';
+    score >= 80 ? '#5A8A6E' : score >= 60 ? '#B8943E' : '#B85C5C';
 
   return (
     <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
@@ -614,11 +614,11 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                 <View
                   style={[
                     st.scoreTrendBadge,
-                    { backgroundColor: '#22C55E' + '15' },
+                    { backgroundColor: '#5A8A6E' + '15' },
                   ]}
                 >
-                  <IconSymbol name="arrow.up.right" size={10} color="#22C55E" />
-                  <ThemedText style={[st.scoreTrendText, { color: '#22C55E' }]}>
+                  <IconSymbol name="arrow.up.right" size={10} color="#5A8A6E" />
+                  <ThemedText style={[st.scoreTrendText, { color: '#5A8A6E' }]}>
                     +3 pts this quarter
                   </ThemedText>
                 </View>
@@ -630,8 +630,8 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
         {/* 6 stat cards — 2x3 grid */}
         <View style={st.statsGrid}>
           <View style={[st.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <View style={[st.statIconCircle, { backgroundColor: '#22C55E' + '15' }]}>
-              <IconSymbol name="doc.text.fill" size={16} color="#22C55E" />
+            <View style={[st.statIconCircle, { backgroundColor: '#5A8A6E' + '15' }]}>
+              <IconSymbol name="doc.text.fill" size={16} color="#5A8A6E" />
             </View>
             <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>
               Active Policies
@@ -642,13 +642,13 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
           </View>
 
           <View style={[st.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <View style={[st.statIconCircle, { backgroundColor: '#EF4444' + '15' }]}>
-              <IconSymbol name="shield.lefthalf.filled" size={16} color="#EF4444" />
+            <View style={[st.statIconCircle, { backgroundColor: '#B85C5C' + '15' }]}>
+              <IconSymbol name="shield.lefthalf.filled" size={16} color="#B85C5C" />
             </View>
             <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>
               Open Risks
             </ThemedText>
-            <ThemedText style={[st.statValue, { color: ov.openRisks > 0 ? '#EF4444' : colors.text }]}>
+            <ThemedText style={[st.statValue, { color: ov.openRisks > 0 ? '#B85C5C' : colors.text }]}>
               {ov.openRisks}
             </ThemedText>
           </View>
@@ -666,8 +666,8 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
           </View>
 
           <View style={[st.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <View style={[st.statIconCircle, { backgroundColor: '#F59E0B' + '15' }]}>
-              <IconSymbol name="magnifyingglass.circle.fill" size={16} color="#F59E0B" />
+            <View style={[st.statIconCircle, { backgroundColor: '#B8943E' + '15' }]}>
+              <IconSymbol name="magnifyingglass.circle.fill" size={16} color="#B8943E" />
             </View>
             <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>
               Upcoming Audits
@@ -678,13 +678,13 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
           </View>
 
           <View style={[st.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <View style={[st.statIconCircle, { backgroundColor: '#EF4444' + '15' }]}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#EF4444" />
+            <View style={[st.statIconCircle, { backgroundColor: '#B85C5C' + '15' }]}>
+              <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#B85C5C" />
             </View>
             <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>
               Recent Incidents
             </ThemedText>
-            <ThemedText style={[st.statValue, { color: ov.recentIncidents > 0 ? '#EF4444' : colors.text }]}>
+            <ThemedText style={[st.statValue, { color: ov.recentIncidents > 0 ? '#B85C5C' : colors.text }]}>
               {ov.recentIncidents}
             </ThemedText>
           </View>
@@ -958,7 +958,7 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
             style={({ pressed }) => [
               st.listCard,
               { backgroundColor: colors.card, borderColor: colors.border },
-              item.canBlockRails && { borderLeftWidth: 3, borderLeftColor: '#EF4444' },
+              item.canBlockRails && { borderLeftWidth: 3, borderLeftColor: '#B85C5C' },
               pressed && { opacity: 0.85 },
             ]}
             onPress={() => handleControlPress(item)}
@@ -984,9 +984,9 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                     color={testColor}
                   />
                   {item.canBlockRails && (
-                    <View style={[st.blocksRailsBadge, { backgroundColor: '#EF4444' + '18' }]}>
-                      <IconSymbol name="xmark.octagon.fill" size={10} color="#EF4444" />
-                      <ThemedText style={[st.blocksRailsText, { color: '#EF4444' }]}>
+                    <View style={[st.blocksRailsBadge, { backgroundColor: '#B85C5C' + '18' }]}>
+                      <IconSymbol name="xmark.octagon.fill" size={10} color="#B85C5C" />
+                      <ThemedText style={[st.blocksRailsText, { color: '#B85C5C' }]}>
                         Blocks Rails
                       </ThemedText>
                     </View>
@@ -1137,7 +1137,7 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                   {item.findings > 0 && (
                     <StatusBadge
                       label={`${item.findings} finding${item.findings !== 1 ? 's' : ''}`}
-                      color="#EF4444"
+                      color="#B85C5C"
                     />
                   )}
                 </View>
@@ -1254,9 +1254,9 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                     </ThemedText>
                   </View>
                   {isClosed && item.immutableOnceClosed && (
-                    <View style={[st.immutableBadge, { backgroundColor: '#A1A1AA' + '20' }]}>
-                      <IconSymbol name="lock.fill" size={10} color="#A1A1AA" />
-                      <ThemedText style={[st.immutableText, { color: '#A1A1AA' }]}>
+                    <View style={[st.immutableBadge, { backgroundColor: '#9C9790' + '20' }]}>
+                      <IconSymbol name="lock.fill" size={10} color="#9C9790" />
+                      <ThemedText style={[st.immutableText, { color: '#9C9790' }]}>
                         IMMUTABLE
                       </ThemedText>
                     </View>
@@ -1357,7 +1357,7 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                       style={[
                         st.cardStatText,
                         {
-                          color: item.status === 'expired' ? '#A1A1AA' : colors.textSecondary,
+                          color: item.status === 'expired' ? '#9C9790' : colors.textSecondary,
                         },
                       ]}
                     >
@@ -1705,9 +1705,9 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
             </View>
 
             {selectedControl.canBlockRails && (
-              <View style={[st.railsWarning, { backgroundColor: '#EF4444' + '12' }]}>
-                <IconSymbol name="xmark.octagon.fill" size={14} color="#EF4444" />
-                <ThemedText style={[st.railsWarningText, { color: '#EF4444' }]}>
+              <View style={[st.railsWarning, { backgroundColor: '#B85C5C' + '12' }]}>
+                <IconSymbol name="xmark.octagon.fill" size={14} color="#B85C5C" />
+                <ThemedText style={[st.railsWarningText, { color: '#B85C5C' }]}>
                   This control can BLOCK Payment Rails release if it fails
                 </ThemedText>
               </View>
@@ -1845,13 +1845,13 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
               <Pressable
                 style={({ pressed }) => [
                   st.detailActionBtn,
-                  { backgroundColor: '#22C55E' + '15' },
+                  { backgroundColor: '#5A8A6E' + '15' },
                   pressed && { opacity: 0.7 },
                 ]}
                 onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
               >
-                <IconSymbol name="checkmark.circle" size={16} color="#22C55E" />
-                <ThemedText style={[st.detailActionText, { color: '#22C55E' }]}>Accept</ThemedText>
+                <IconSymbol name="checkmark.circle" size={16} color="#5A8A6E" />
+                <ThemedText style={[st.detailActionText, { color: '#5A8A6E' }]}>Accept</ThemedText>
               </Pressable>
             </View>
           </View>
@@ -1911,7 +1911,7 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                 style={[
                   st.detailValue,
                   {
-                    color: selectedAudit.findings > 0 ? '#EF4444' : '#22C55E',
+                    color: selectedAudit.findings > 0 ? '#B85C5C' : '#5A8A6E',
                     fontVariant: ['tabular-nums'],
                   },
                 ]}
@@ -1994,9 +1994,9 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                 color={INCIDENT_STATUS_COLOR[selectedIncident.status]}
               />
               {selectedIncident.status === 'closed' && selectedIncident.immutableOnceClosed && (
-                <View style={[st.immutableBadge, { backgroundColor: '#A1A1AA' + '20' }]}>
-                  <IconSymbol name="lock.fill" size={10} color="#A1A1AA" />
-                  <ThemedText style={[st.immutableText, { color: '#A1A1AA' }]}>IMMUTABLE</ThemedText>
+                <View style={[st.immutableBadge, { backgroundColor: '#9C9790' + '20' }]}>
+                  <IconSymbol name="lock.fill" size={10} color="#9C9790" />
+                  <ThemedText style={[st.immutableText, { color: '#9C9790' }]}>IMMUTABLE</ThemedText>
                 </View>
               )}
             </View>
@@ -2055,13 +2055,13 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                 <Pressable
                   style={({ pressed }) => [
                     st.detailActionBtn,
-                    { backgroundColor: '#22C55E' + '15' },
+                    { backgroundColor: '#5A8A6E' + '15' },
                     pressed && { opacity: 0.7 },
                   ]}
                   onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
                 >
-                  <IconSymbol name="checkmark.circle" size={16} color="#22C55E" />
-                  <ThemedText style={[st.detailActionText, { color: '#22C55E' }]}>Resolve</ThemedText>
+                  <IconSymbol name="checkmark.circle" size={16} color="#5A8A6E" />
+                  <ThemedText style={[st.detailActionText, { color: '#5A8A6E' }]}>Resolve</ThemedText>
                 </Pressable>
               )}
             </View>
@@ -2118,7 +2118,7 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                 style={[
                   st.detailValue,
                   {
-                    color: selectedException.status === 'expired' ? '#A1A1AA' : colors.text,
+                    color: selectedException.status === 'expired' ? '#9C9790' : colors.text,
                   },
                 ]}
               >
@@ -2155,13 +2155,13 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
                 <Pressable
                   style={({ pressed }) => [
                     st.detailActionBtn,
-                    { backgroundColor: '#EF4444' + '15' },
+                    { backgroundColor: '#B85C5C' + '15' },
                     pressed && { opacity: 0.7 },
                   ]}
                   onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
                 >
-                  <IconSymbol name="xmark.circle" size={16} color="#EF4444" />
-                  <ThemedText style={[st.detailActionText, { color: '#EF4444' }]}>Revoke</ThemedText>
+                  <IconSymbol name="xmark.circle" size={16} color="#B85C5C" />
+                  <ThemedText style={[st.detailActionText, { color: '#B85C5C' }]}>Revoke</ThemedText>
                 </Pressable>
               )}
             </View>
@@ -2179,21 +2179,21 @@ export function BizOrgComplianceV2({ colors, accentColor, role = 'B1' }: Props) 
 function getActivityColor(type: ComplianceActivity['type']): string {
   switch (type) {
     case 'incident':
-      return '#EF4444';
+      return '#B85C5C';
     case 'risk':
-      return '#F59E0B';
+      return '#B8943E';
     case 'control':
       return ACCENT;
     case 'audit':
       return ACCENT;
     case 'evidence':
-      return '#22C55E';
+      return '#5A8A6E';
     case 'policy':
       return ACCENT;
     case 'exception':
-      return '#F59E0B';
+      return '#B8943E';
     default:
-      return '#A1A1AA';
+      return '#9C9790';
   }
 }
 
@@ -2790,7 +2790,7 @@ const st = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: BorderRadius.sm,

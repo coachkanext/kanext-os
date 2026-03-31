@@ -30,8 +30,8 @@ import {
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 const STAGE_COLORS: Record<CRMStage, string> = {
-  Lead: 'rgba(45,30,18,0.30)', Contacted: '#3B82F6', Proposal: '#5A8A6E',
-  Negotiation: '#1D9BF0', Won: '#5A8A6E', Lost: '#B85C5C',
+  Lead: 'rgba(45,30,18,0.30)', Contacted: '#1A1714', Proposal: '#5A8A6E',
+  Negotiation: '#1A1714', Won: '#5A8A6E', Lost: '#B85C5C',
 };
 
 function Avatar({ initials, hue, size = 36 }: { initials: string; hue: number; size?: number }) {

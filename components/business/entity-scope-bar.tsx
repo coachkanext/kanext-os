@@ -34,19 +34,19 @@ function getStatusColor(status: string): string {
     case 'green':
     case 'healthy':
     case 'operational':
-      return '#22C55E';
+      return '#5A8A6E';
     case 'warning':
     case 'yellow':
     case 'at_risk':
     case 'review':
-      return '#F59E0B';
+      return '#B8943E';
     case 'critical':
     case 'red':
     case 'blocked':
     case 'inactive':
-      return '#EF4444';
+      return '#B85C5C';
     default:
-      return '#22C55E';
+      return '#5A8A6E';
   }
 }
 

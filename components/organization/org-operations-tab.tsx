@@ -24,13 +24,13 @@ function SectionLabel({ title, colors }: { title: string; colors: typeof Colors.
 
 function StatusBadge({ status, colors }: { status: string; colors: typeof Colors.light }) {
   const map: Record<string, { bg: string; fg: string }> = {
-    active: { bg: '#22C55E20', fg: '#22C55E' },
+    active: { bg: '#5A8A6E20', fg: '#5A8A6E' },
     completed: { bg: `${accent}20`, fg: accent },
-    blocked: { bg: '#EF444420', fg: '#EF4444' },
-    scheduled: { bg: '#F59E0B20', fg: '#F59E0B' },
-    compliant: { bg: '#22C55E20', fg: '#22C55E' },
-    review: { bg: '#F59E0B20', fg: '#F59E0B' },
-    action_required: { bg: '#EF444420', fg: '#EF4444' },
+    blocked: { bg: '#B85C5C20', fg: '#B85C5C' },
+    scheduled: { bg: '#B8943E20', fg: '#B8943E' },
+    compliant: { bg: '#5A8A6E20', fg: '#5A8A6E' },
+    review: { bg: '#B8943E20', fg: '#B8943E' },
+    action_required: { bg: '#B85C5C20', fg: '#B85C5C' },
   };
   const c = map[status] ?? { bg: colors.backgroundTertiary, fg: colors.textSecondary };
   return (

@@ -44,9 +44,9 @@ const CONTACTS_PILLS = ['All', 'Active Deals', 'Past Deals', 'New This Month', '
 
 const STAGE_COLORS: Record<CRMStage, string> = {
   Lead:        'rgba(45,30,18,0.30)',
-  Contacted:   '#3B82F6',
+  Contacted:   '#1A1714',
   Proposal:    '#5A8A6E',
-  Negotiation: '#1D9BF0',
+  Negotiation: '#1A1714',
   Won:         '#5A8A6E',
   Lost:        '#B85C5C',
 };
@@ -367,7 +367,7 @@ function ContactRow({
   const statusDot =
     contact.active.length > 0 ? C.green :
     contact.allDeals.length > 0 ? C.muted :
-    '#1D9BF0';
+    '#1A1714';
   const statusText =
     contact.active.length > 0 ? `${contact.active.length} active deal${contact.active.length !== 1 ? 's' : ''}` :
     contact.allDeals.length > 0 ? 'No active deals' :

@@ -24,7 +24,7 @@ import {
 const TOP_BAR_H = 52;
 const PILLS_H   = 48;
 
-const ACCENT_TEAM = '#1D9BF0';
+const ACCENT_TEAM = '#1A1714';
 
 type TeamTab  = 'Directory' | 'Departments' | 'Org Chart';
 type TeamRole = 'CEO' | 'Employee';
@@ -37,8 +37,8 @@ function pillsForTab(tab: TeamTab): string[] {
 function statusColor(status: string, C: ComponentColors): string {
   switch (status) {
     case 'active':     return C.green;
-    case 'remote':     return '#1D9BF0';
-    case 'pto':        return '#8B6340';
+    case 'remote':     return '#1A1714';
+    case 'pto':        return '#1A1714';
     case 'contractor': return C.muted as string;
     default:           return C.muted as string;
   }
@@ -318,7 +318,7 @@ export default function TeamScreen() {
         <View style={[s.row, { gap: 8, paddingHorizontal: 16, marginBottom: 12 }]}>
           {[
             { label: 'Total',       value: EMPLOYEES.length,                                  color: C.label },
-            { label: 'Depts',       value: DEPARTMENTS.length,                                color: '#1D9BF0' },
+            { label: 'Depts',       value: DEPARTMENTS.length,                                color: '#1A1714' },
             { label: 'Contractors', value: EMPLOYEES.filter(e => e.status === 'contractor').length, color: C.muted as string },
             { label: 'New',         value: EMPLOYEES.filter(e => e.isNew).length,             color: C.green },
           ].map(m => (
@@ -597,8 +597,8 @@ export default function TeamScreen() {
               {[
                 { label: 'Total',       value: totalEmp,                                                            color: C.accent },
                 { label: 'Full-time',   value: EMPLOYEES.filter(e => e.status !== 'contractor').length,             color: C.green },
-                { label: 'Contractors', value: EMPLOYEES.filter(e => e.status === 'contractor').length,             color: '#8B6340' },
-                { label: 'Remote',      value: EMPLOYEES.filter(e => e.status === 'remote').length,                 color: '#1D9BF0' },
+                { label: 'Contractors', value: EMPLOYEES.filter(e => e.status === 'contractor').length,             color: '#1A1714' },
+                { label: 'Remote',      value: EMPLOYEES.filter(e => e.status === 'remote').length,                 color: '#1A1714' },
                 { label: 'On PTO',      value: EMPLOYEES.filter(e => e.status === 'pto').length,                    color: C.red },
               ].map(stat => (
                 <View key={stat.label} style={{ alignItems: 'center' }}>
@@ -632,8 +632,8 @@ export default function TeamScreen() {
                   <Text style={[s.bodyMed, { color: C.label }]}>{pos.title}</Text>
                   <Text style={[s.bodySmall, { color: C.muted as string }]}>{pos.dept}</Text>
                 </View>
-                <View style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10, borderWidth: 1, borderColor: '#1D9BF0', backgroundColor: 'rgba(29,155,240,0.08)' }}>
-                  <Text style={{ fontSize: 11, color: '#1D9BF0', fontWeight: '600' }}>{pos.applicants} applicants</Text>
+                <View style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10, borderWidth: 1, borderColor: '#1A1714', backgroundColor: 'rgba(29,155,240,0.08)' }}>
+                  <Text style={{ fontSize: 11, color: '#1A1714', fontWeight: '600' }}>{pos.applicants} applicants</Text>
                 </View>
               </View>
             ))}
@@ -766,7 +766,7 @@ export default function TeamScreen() {
               <View style={[s.row, { gap: 10, marginTop: 14 }]}>
                 {[
                   { icon: 'phone.fill',   label: 'Call',    color: C.green },
-                  { icon: 'envelope.fill', label: 'Email',  color: '#1D9BF0' },
+                  { icon: 'envelope.fill', label: 'Email',  color: '#1A1714' },
                   { icon: 'message.fill', label: 'Message', color: C.accent },
                 ].map(a => (
                   <Pressable key={a.label} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}

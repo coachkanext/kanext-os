@@ -167,61 +167,61 @@ export const COMP_OPS_SCOPE_CHIPS = ['All Ops', 'Events', 'Logistics', 'Venues',
 // =============================================================================
 
 export const EVENT_STATUS_COLOR: Record<CompEvent['status'], string> = {
-  scheduled: '#1D9BF0',
-  setup: '#F59E0B',
-  live: '#22C55E',
-  completed: '#A1A1AA',
-  cancelled: '#EF4444',
+  scheduled: '#1A1714',
+  setup: '#B8943E',
+  live: '#5A8A6E',
+  completed: '#9C9790',
+  cancelled: '#B85C5C',
 };
 
 export const LOGISTICS_STATUS_COLOR: Record<LogisticsItem['status'], string> = {
-  pending: '#F59E0B',
-  confirmed: '#22C55E',
-  'in-transit': '#1D9BF0',
-  delivered: '#A1A1AA',
-  issue: '#EF4444',
+  pending: '#B8943E',
+  confirmed: '#5A8A6E',
+  'in-transit': '#1A1714',
+  delivered: '#9C9790',
+  issue: '#B85C5C',
 };
 
 export const VENUE_STATUS_COLOR: Record<CompVenue['status'], string> = {
-  available: '#22C55E',
-  booked: '#1D9BF0',
-  maintenance: '#F59E0B',
-  unavailable: '#EF4444',
+  available: '#5A8A6E',
+  booked: '#1A1714',
+  maintenance: '#B8943E',
+  unavailable: '#B85C5C',
 };
 
 export const TASK_PRIORITY_COLOR: Record<OpsTask['priority'], string> = {
-  low: '#A1A1AA',
-  medium: '#1D9BF0',
-  high: '#F59E0B',
-  urgent: '#EF4444',
+  low: '#9C9790',
+  medium: '#1A1714',
+  high: '#B8943E',
+  urgent: '#B85C5C',
 };
 
 export const INCIDENT_SEVERITY_COLOR: Record<Incident['severity'], string> = {
-  low: '#A1A1AA',
-  medium: '#F59E0B',
-  high: '#EF4444',
-  critical: '#EF4444',
+  low: '#9C9790',
+  medium: '#B8943E',
+  high: '#B85C5C',
+  critical: '#B85C5C',
 };
 
 export const TASK_STATUS_COLOR: Record<OpsTask['status'], string> = {
-  todo: '#A1A1AA',
-  'in-progress': '#1D9BF0',
-  done: '#22C55E',
-  blocked: '#EF4444',
+  todo: '#9C9790',
+  'in-progress': '#1A1714',
+  done: '#5A8A6E',
+  blocked: '#B85C5C',
 };
 
 export const INCIDENT_STATUS_COLOR: Record<Incident['status'], string> = {
-  open: '#EF4444',
-  investigating: '#F59E0B',
-  resolved: '#22C55E',
-  closed: '#A1A1AA',
+  open: '#B85C5C',
+  investigating: '#B8943E',
+  resolved: '#5A8A6E',
+  closed: '#9C9790',
 };
 
 export const EQUIPMENT_CONDITION_COLOR: Record<Equipment['condition'], string> = {
-  excellent: '#22C55E',
-  good: '#1D9BF0',
-  fair: '#F59E0B',
-  'needs-repair': '#EF4444',
+  excellent: '#5A8A6E',
+  good: '#1A1714',
+  fair: '#B8943E',
+  'needs-repair': '#B85C5C',
 };
 
 // =============================================================================
@@ -229,12 +229,12 @@ export const EQUIPMENT_CONDITION_COLOR: Record<Equipment['condition'], string> =
 // =============================================================================
 
 const MOCK_DASHBOARD: OpsDashboardBlock[] = [
-  { id: 'dash-1', label: 'Upcoming Events', value: 8, delta: '+2 this week', icon: 'calendar.badge.clock', color: '#1D9BF0' },
-  { id: 'dash-2', label: 'Active Logistics', value: 14, delta: '3 in-transit', icon: 'shippingbox.fill', color: '#F59E0B' },
-  { id: 'dash-3', label: 'Venue Utilization', value: '82%', delta: '+6% vs last month', icon: 'building.2.fill', color: '#22C55E' },
-  { id: 'dash-4', label: 'Open Incidents', value: 3, delta: '1 critical', icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
-  { id: 'dash-5', label: 'Tasks Due Today', value: 5, delta: '2 urgent', icon: 'checkmark.circle.fill', color: '#1D9BF0' },
-  { id: 'dash-6', label: 'Equipment Health', value: '94%', delta: '2 need repair', icon: 'wrench.and.screwdriver.fill', color: '#22C55E' },
+  { id: 'dash-1', label: 'Upcoming Events', value: 8, delta: '+2 this week', icon: 'calendar.badge.clock', color: '#1A1714' },
+  { id: 'dash-2', label: 'Active Logistics', value: 14, delta: '3 in-transit', icon: 'shippingbox.fill', color: '#B8943E' },
+  { id: 'dash-3', label: 'Venue Utilization', value: '82%', delta: '+6% vs last month', icon: 'building.2.fill', color: '#5A8A6E' },
+  { id: 'dash-4', label: 'Open Incidents', value: 3, delta: '1 critical', icon: 'exclamationmark.triangle.fill', color: '#B85C5C' },
+  { id: 'dash-5', label: 'Tasks Due Today', value: 5, delta: '2 urgent', icon: 'checkmark.circle.fill', color: '#1A1714' },
+  { id: 'dash-6', label: 'Equipment Health', value: '94%', delta: '2 need repair', icon: 'wrench.and.screwdriver.fill', color: '#5A8A6E' },
 ];
 
 const MOCK_EVENTS: CompEvent[] = [
@@ -402,14 +402,14 @@ export interface ActivityFeedItem {
 }
 
 const MOCK_ACTIVITY_FEED: ActivityFeedItem[] = [
-  { id: 'af-1', description: 'Replay server crash reported at 3SSB Center', timestamp: '12 min ago', icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
-  { id: 'af-2', description: 'Scoreboard transport crate shipped — ETA Mar 11', timestamp: '34 min ago', icon: 'shippingbox.fill', color: '#1D9BF0' },
-  { id: 'af-3', description: 'Hawk-Eye system calibration test completed', timestamp: '1h ago', icon: 'checkmark.circle.fill', color: '#22C55E' },
-  { id: 'af-4', description: 'Hotel block rooming list verified (148 rooms)', timestamp: '2h ago', icon: 'building.2.fill', color: '#1D9BF0' },
-  { id: 'af-5', description: '3SSB Invitational Opening Ceremony marked complete', timestamp: '3h ago', icon: 'calendar.badge.clock', color: '#22C55E' },
-  { id: 'af-6', description: 'Security detail for 2819 Church finals still pending approval', timestamp: '4h ago', icon: 'shield.fill', color: '#F59E0B' },
-  { id: 'af-7', description: 'Awards & trophies shipment now in transit', timestamp: '5h ago', icon: 'shippingbox.fill', color: '#1D9BF0' },
-  { id: 'af-8', description: 'AED inspection completed across all venues', timestamp: '6h ago', icon: 'checkmark.circle.fill', color: '#22C55E' },
+  { id: 'af-1', description: 'Replay server crash reported at 3SSB Center', timestamp: '12 min ago', icon: 'exclamationmark.triangle.fill', color: '#B85C5C' },
+  { id: 'af-2', description: 'Scoreboard transport crate shipped — ETA Mar 11', timestamp: '34 min ago', icon: 'shippingbox.fill', color: '#1A1714' },
+  { id: 'af-3', description: 'Hawk-Eye system calibration test completed', timestamp: '1h ago', icon: 'checkmark.circle.fill', color: '#5A8A6E' },
+  { id: 'af-4', description: 'Hotel block rooming list verified (148 rooms)', timestamp: '2h ago', icon: 'building.2.fill', color: '#1A1714' },
+  { id: 'af-5', description: '3SSB Invitational Opening Ceremony marked complete', timestamp: '3h ago', icon: 'calendar.badge.clock', color: '#5A8A6E' },
+  { id: 'af-6', description: 'Security detail for 2819 Church finals still pending approval', timestamp: '4h ago', icon: 'shield.fill', color: '#B8943E' },
+  { id: 'af-7', description: 'Awards & trophies shipment now in transit', timestamp: '5h ago', icon: 'shippingbox.fill', color: '#1A1714' },
+  { id: 'af-8', description: 'AED inspection completed across all venues', timestamp: '6h ago', icon: 'checkmark.circle.fill', color: '#5A8A6E' },
 ];
 
 // =============================================================================

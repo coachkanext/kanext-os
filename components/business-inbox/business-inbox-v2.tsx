@@ -141,7 +141,7 @@ export function BusinessInboxV2({ search: searchProp = '' }: BusinessInboxV2Prop
             <View style={styles.sectionHeader}>
               <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>ESCALATIONS</Text>
               {pendingEscalations > 0 && (
-                <View style={[styles.countBadge, { backgroundColor: '#EF4444' }]}>
+                <View style={[styles.countBadge, { backgroundColor: '#B85C5C' }]}>
                   <Text style={styles.countText}>{pendingEscalations}</Text>
                 </View>
               )}
@@ -166,7 +166,7 @@ export function BusinessInboxV2({ search: searchProp = '' }: BusinessInboxV2Prop
             <View style={styles.sectionHeader}>
               <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>APPROVALS</Text>
               {pendingApprovals > 0 && (
-                <View style={[styles.countBadge, { backgroundColor: '#F59E0B' }]}>
+                <View style={[styles.countBadge, { backgroundColor: '#B8943E' }]}>
                   <Text style={styles.countText}>{pendingApprovals}</Text>
                 </View>
               )}
@@ -610,10 +610,10 @@ function EscalationDetail({
             Propose → Validate → Confirm → Commit
           </ThemedText>
           <View style={styles.actionRow}>
-            <Pressable style={[styles.actionBtn, { backgroundColor: '#22C55E' }]} onPress={onAction}>
+            <Pressable style={[styles.actionBtn, { backgroundColor: '#5A8A6E' }]} onPress={onAction}>
               <ThemedText style={styles.actionBtnText}>Approve</ThemedText>
             </Pressable>
-            <Pressable style={[styles.actionBtn, { backgroundColor: '#EF4444' }]} onPress={onAction}>
+            <Pressable style={[styles.actionBtn, { backgroundColor: '#B85C5C' }]} onPress={onAction}>
               <ThemedText style={styles.actionBtnText}>Reject</ThemedText>
             </Pressable>
             <Pressable
@@ -659,7 +659,7 @@ function ApprovalDetail({
           </View>
           <View style={styles.detailMetaRow}>
             <ThemedText style={[styles.detailMetaLabel, { color: colors.textTertiary }]}>Validation</ThemedText>
-            <ThemedText style={[styles.detailMetaValue, { color: '#22C55E' }]}>{approval.validationStatus}</ThemedText>
+            <ThemedText style={[styles.detailMetaValue, { color: '#5A8A6E' }]}>{approval.validationStatus}</ThemedText>
           </View>
           <View style={styles.detailMetaRow}>
             <ThemedText style={[styles.detailMetaLabel, { color: colors.textTertiary }]}>Type</ThemedText>
@@ -705,10 +705,10 @@ function ApprovalDetail({
             Propose → Validate → Confirm → Commit
           </ThemedText>
           <View style={styles.actionRow}>
-            <Pressable style={[styles.actionBtn, { backgroundColor: '#22C55E' }]} onPress={onAction}>
+            <Pressable style={[styles.actionBtn, { backgroundColor: '#5A8A6E' }]} onPress={onAction}>
               <ThemedText style={styles.actionBtnText}>Approve</ThemedText>
             </Pressable>
-            <Pressable style={[styles.actionBtn, { backgroundColor: '#EF4444' }]} onPress={onAction}>
+            <Pressable style={[styles.actionBtn, { backgroundColor: '#B85C5C' }]} onPress={onAction}>
               <ThemedText style={styles.actionBtnText}>Reject</ThemedText>
             </Pressable>
             <Pressable
@@ -815,7 +815,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#1D9BF0',
+    backgroundColor: '#1A1714',
     marginTop: 4,
   },
 

@@ -45,7 +45,7 @@ export function KRDetailsSheet({ visible, onClose }: KRDetailsSheetProps) {
   const colors = Colors[colorScheme];
 
   const fitColor = (val: number) =>
-    val >= 75 ? '#22C55E' : val >= 60 ? '#F59E0B' : '#EF4444';
+    val >= 75 ? '#5A8A6E' : val >= 60 ? '#B8943E' : '#B85C5C';
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title="Team KR Breakdown">
@@ -145,7 +145,7 @@ export function KRDetailsSheet({ visible, onClose }: KRDetailsSheetProps) {
           <ThemedText style={[styles.cardRowLabel, { color: colors.text }]}>
             {KR_DATA.primaryGap}
           </ThemedText>
-          <ThemedText style={[styles.gapTag, { color: '#F59E0B' }]}>
+          <ThemedText style={[styles.gapTag, { color: '#B8943E' }]}>
             under-covered
           </ThemedText>
         </View>

@@ -45,19 +45,19 @@ const TAB_PILLS: { key: RulesTab; label: string }[] = [
 const CATEGORY_COLORS: Record<RuleArticle['category'], string> = {
   race: ACCENT,
   technical: ACCENT,
-  safety: '#EF4444',
-  sporting: '#22C55E',
+  safety: '#B85C5C',
+  sporting: '#5A8A6E',
 };
 
 const MEDAL_COLORS: Record<number, string> = {
-  1: '#F59E0B', // Gold
-  2: '#A1A1AA', // Silver
-  3: '#F59E0B', // Bronze
+  1: '#B8943E', // Gold
+  2: '#9C9790', // Silver
+  3: '#B8943E', // Bronze
 };
 
 const FACTOR_COLORS: Record<PenaltyFactor['type'], string> = {
-  aggravating: '#EF4444',
-  mitigating: '#22C55E',
+  aggravating: '#B85C5C',
+  mitigating: '#5A8A6E',
 };
 
 // =============================================================================
@@ -287,7 +287,7 @@ function DirectivesTab({ colors }: { colors: typeof Colors.light }) {
   return (
     <>
       {TECHNICAL_DIRECTIVES.map((td) => {
-        const catColor = TD_CATEGORY_COLOR[td.category] ?? '#A1A1AA';
+        const catColor = TD_CATEGORY_COLOR[td.category] ?? '#9C9790';
         const allAcknowledged = td.acknowledged >= td.totalTeams;
         const ackPct = td.totalTeams > 0 ? (td.acknowledged / td.totalTeams) * 100 : 0;
 
@@ -352,12 +352,12 @@ function DirectivesTab({ colors }: { colors: typeof Colors.light }) {
                     styles.ackBarFill,
                     {
                       width: `${ackPct}%`,
-                      backgroundColor: allAcknowledged ? '#22C55E' : '#F59E0B',
+                      backgroundColor: allAcknowledged ? '#5A8A6E' : '#B8943E',
                     },
                   ]}
                 />
               </View>
-              <ThemedText style={[styles.ackBarText, { color: allAcknowledged ? '#22C55E' : '#F59E0B' }]}>
+              <ThemedText style={[styles.ackBarText, { color: allAcknowledged ? '#5A8A6E' : '#B8943E' }]}>
                 {td.acknowledged}/{td.totalTeams} teams acknowledged
               </ThemedText>
             </View>
@@ -428,7 +428,7 @@ function CaseLawTab({ colors }: { colors: typeof Colors.light }) {
           <ThemedText style={[styles.rulingLabel, { color: colors.textTertiary, marginTop: 10 }]}>
             Penalty:
           </ThemedText>
-          <ThemedText style={[styles.rulingBody, { color: '#F59E0B' }]}>
+          <ThemedText style={[styles.rulingBody, { color: '#B8943E' }]}>
             {ruling.penalty}
           </ThemedText>
 
@@ -527,8 +527,8 @@ function RulesHeader({ colors }: { colors: typeof Colors.light }) {
         </ThemedText>
       </View>
       <View style={styles.trustRow}>
-        <View style={[styles.trustBadge, { backgroundColor: '#22C55E20' }]}>
-          <ThemedText style={[styles.trustBadgeText, { color: '#22C55E' }]}>RATIFIED</ThemedText>
+        <View style={[styles.trustBadge, { backgroundColor: '#5A8A6E20' }]}>
+          <ThemedText style={[styles.trustBadgeText, { color: '#5A8A6E' }]}>RATIFIED</ThemedText>
         </View>
         <View style={[styles.trustBadge, { backgroundColor: `${ACCENT}20` }]}>
           <ThemedText style={[styles.trustBadgeText, { color: ACCENT }]}>PUBLISHED</ThemedText>
@@ -568,8 +568,8 @@ function QuickIndex({ colors }: { colors: typeof Colors.light }) {
               {cat.lastUpdated}
             </ThemedText>
             {cat.activeDirectives > 0 && (
-              <View style={[styles.directiveCountBadge, { backgroundColor: '#F59E0B20' }]}>
-                <ThemedText style={[styles.directiveCountText, { color: '#F59E0B' }]}>
+              <View style={[styles.directiveCountBadge, { backgroundColor: '#B8943E20' }]}>
+                <ThemedText style={[styles.directiveCountText, { color: '#B8943E' }]}>
                   {cat.activeDirectives} active
                 </ThemedText>
               </View>
@@ -589,9 +589,9 @@ function ActiveDirectivesSection({ colors }: { colors: typeof Colors.light }) {
   if (ACTIVE_DIRECTIVES.length === 0) return null;
 
   const DIRECTIVE_STATUS_COLOR: Record<string, string> = {
-    draft: '#F59E0B',
-    published: '#22C55E',
-    expired: '#A1A1AA',
+    draft: '#B8943E',
+    published: '#5A8A6E',
+    expired: '#9C9790',
   };
 
   return (
@@ -600,7 +600,7 @@ function ActiveDirectivesSection({ colors }: { colors: typeof Colors.light }) {
         Active Directives
       </ThemedText>
       {ACTIVE_DIRECTIVES.map((dir: ActiveDirective) => {
-        const statusColor = DIRECTIVE_STATUS_COLOR[dir.status] ?? '#A1A1AA';
+        const statusColor = DIRECTIVE_STATUS_COLOR[dir.status] ?? '#9C9790';
         return (
           <View key={dir.id} style={[styles.directiveRow, { borderBottomColor: colors.border }]}>
             <View style={styles.directiveInfo}>
@@ -620,8 +620,8 @@ function ActiveDirectivesSection({ colors }: { colors: typeof Colors.light }) {
               {dir.impactFlags.length > 0 && (
                 <View style={styles.directiveTagsRow}>
                   {dir.impactFlags.map((flag) => (
-                    <View key={flag} style={[styles.directiveTag, { backgroundColor: '#EF444418' }]}>
-                      <ThemedText style={[styles.directiveTagText, { color: '#EF4444' }]}>{flag}</ThemedText>
+                    <View key={flag} style={[styles.directiveTag, { backgroundColor: '#B85C5C18' }]}>
+                      <ThemedText style={[styles.directiveTagText, { color: '#B85C5C' }]}>{flag}</ThemedText>
                     </View>
                   ))}
                 </View>
@@ -680,9 +680,9 @@ function InterpretationsSection({ colors }: { colors: typeof Colors.light }) {
 
 const CHANGE_TYPE_COLOR: Record<string, string> = {
   amendment: ACCENT,
-  bulletin: '#F59E0B',
+  bulletin: '#B8943E',
   interpretation: ACCENT,
-  directive: '#22C55E',
+  directive: '#5A8A6E',
 };
 
 function ChangeLogSection({ colors }: { colors: typeof Colors.light }) {
@@ -694,7 +694,7 @@ function ChangeLogSection({ colors }: { colors: typeof Colors.light }) {
         Change Log
       </ThemedText>
       {RULE_CHANGE_LOG.map((entry: RuleChangeLog) => {
-        const typeColor = CHANGE_TYPE_COLOR[entry.type] ?? '#A1A1AA';
+        const typeColor = CHANGE_TYPE_COLOR[entry.type] ?? '#9C9790';
         return (
           <View key={entry.id} style={[styles.changeLogRow, { borderBottomColor: colors.border }]}>
             <View style={styles.changeLogInfo}>
@@ -1161,13 +1161,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 3,
     borderRadius: 999,
-    backgroundColor: '#F59E0B20',
+    backgroundColor: '#B8943E20',
   },
   precedentBadgeText: {
     fontSize: 10,
     fontWeight: '800',
     letterSpacing: 0.5,
-    color: '#F59E0B',
+    color: '#B8943E',
   },
 
   // Points Table

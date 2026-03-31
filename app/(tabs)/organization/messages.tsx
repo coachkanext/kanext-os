@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
     marginRight: 6,
   },
   liveText: {

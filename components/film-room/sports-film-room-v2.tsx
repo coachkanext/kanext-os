@@ -124,10 +124,10 @@ function formatDate(d: Date): string {
 }
 
 const TYPE_BADGE_COLORS: Record<RoomFeedItem['type'], string> = {
-  game: '#22C55E',
-  clip: '#1D9BF0',
-  practice: '#F59E0B',
-  recruit_clip: '#EF4444',
+  game: '#5A8A6E',
+  clip: '#1A1714',
+  practice: '#B8943E',
+  recruit_clip: '#B85C5C',
 };
 
 const TYPE_BADGE_LABELS: Record<RoomFeedItem['type'], string> = {
@@ -178,7 +178,7 @@ function RoomFeedCard({
           <View
             style={[
               feedStyles.resultBadge,
-              { backgroundColor: item.result === 'W' ? '#22C55E' : '#EF4444' },
+              { backgroundColor: item.result === 'W' ? '#5A8A6E' : '#B85C5C' },
             ]}
           >
             <ThemedText style={feedStyles.resultText}>

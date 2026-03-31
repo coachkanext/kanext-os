@@ -93,9 +93,9 @@ const SGA_OFFICERS = [
 ];
 
 const TENURE_COLOR: Record<TenureStatus, string> = {
-  'Tenured': '#22C55E',
+  'Tenured': '#5A8A6E',
   'Tenure-Track': ACCENT,
-  'Adjunct': '#F59E0B',
+  'Adjunct': '#B8943E',
 };
 
 // =============================================================================

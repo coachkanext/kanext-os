@@ -96,27 +96,27 @@ const DEFERRED_MAINTENANCE = [
 ];
 
 const CONDITION_COLOR: Record<Condition, string> = {
-  Good: '#22C55E',
-  Fair: '#F59E0B',
-  Poor: '#EF4444',
+  Good: '#5A8A6E',
+  Fair: '#B8943E',
+  Poor: '#B85C5C',
 };
 
 const PRIORITY_COLOR: Record<Priority, string> = {
-  Urgent: '#EF4444',
+  Urgent: '#B85C5C',
   Normal: ACCENT,
-  Low: '#22C55E',
+  Low: '#5A8A6E',
 };
 
 const BOOKING_TYPE_COLOR: Record<BookingType, string> = {
   Recurring: ACCENT,
-  'One-Time': '#F59E0B',
+  'One-Time': '#B8943E',
   Event: ACCENT,
 };
 
 const STATUS_COLOR: Record<string, string> = {
-  Open: '#F59E0B',
+  Open: '#B8943E',
   'In Progress': ACCENT,
-  Scheduled: '#22C55E',
+  Scheduled: '#5A8A6E',
 };
 
 // =============================================================================

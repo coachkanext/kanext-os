@@ -85,17 +85,17 @@ const COVERAGE_CATEGORY_LABELS: Record<string, string> = {
 };
 
 function getCoverageColor(filled: number, total: number): string {
-  if (total === 0) return '#A1A1AA';
+  if (total === 0) return '#9C9790';
   const pct = (filled / total) * 100;
-  if (pct >= 80) return '#22C55E';
-  if (pct >= 50) return '#F59E0B';
-  return '#EF4444';
+  if (pct >= 80) return '#5A8A6E';
+  if (pct >= 50) return '#B8943E';
+  return '#B85C5C';
 }
 
 const SENSITIVE_ACCESS_COLOR: Record<string, string> = {
-  full: '#EF4444',
-  partial: '#F59E0B',
-  none: '#A1A1AA',
+  full: '#B85C5C',
+  partial: '#B8943E',
+  none: '#9C9790',
 };
 
 // =============================================================================
@@ -188,16 +188,16 @@ function EntityBadge({ name, accentColor }: { name: string; accentColor: string 
 
 function VacantBadge() {
   return (
-    <View style={[s.badge, { backgroundColor: '#EF4444' + '20' }]}>
-      <ThemedText style={[s.badgeText, { color: '#EF4444' }]}>VACANT</ThemedText>
+    <View style={[s.badge, { backgroundColor: '#B85C5C' + '20' }]}>
+      <ThemedText style={[s.badgeText, { color: '#B85C5C' }]}>VACANT</ThemedText>
     </View>
   );
 }
 
 function CriticalBadge() {
   return (
-    <View style={[s.badge, { backgroundColor: '#EF4444' + '20' }]}>
-      <ThemedText style={[s.badgeText, { color: '#EF4444' }]}>CRITICAL</ThemedText>
+    <View style={[s.badge, { backgroundColor: '#B85C5C' + '20' }]}>
+      <ThemedText style={[s.badgeText, { color: '#B85C5C' }]}>CRITICAL</ThemedText>
     </View>
   );
 }
@@ -457,7 +457,7 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
           <ThemedText style={[s.summaryStatLabel, { color: colors.textSecondary }]}>
             Active
           </ThemedText>
-          <ThemedText style={[s.summaryStatValue, { color: '#22C55E', fontVariant: ['tabular-nums'] }]}>
+          <ThemedText style={[s.summaryStatValue, { color: '#5A8A6E', fontVariant: ['tabular-nums'] }]}>
             {activeCount}
           </ThemedText>
         </View>
@@ -466,7 +466,7 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
           <ThemedText style={[s.summaryStatLabel, { color: colors.textSecondary }]}>
             On Leave
           </ThemedText>
-          <ThemedText style={[s.summaryStatValue, { color: '#F59E0B', fontVariant: ['tabular-nums'] }]}>
+          <ThemedText style={[s.summaryStatValue, { color: '#B8943E', fontVariant: ['tabular-nums'] }]}>
             {onLeaveCount}
           </ThemedText>
         </View>
@@ -533,15 +533,15 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
                 {(isFounder(role) || isBoardLevel(role)) && (
                   <View style={s.authorityStrip}>
                     <View style={s.authorityItem}>
-                      <View style={[s.authorityDot, { backgroundColor: item.canApprove ? '#22C55E' : '#EF4444' }]} />
+                      <View style={[s.authorityDot, { backgroundColor: item.canApprove ? '#5A8A6E' : '#B85C5C' }]} />
                       <ThemedText style={[s.authorityLabel, { color: colors.textTertiary }]}>
                         Approve: {item.canApprove ? '\u2713' : '\u2717'}
                       </ThemedText>
                     </View>
                     <View style={[s.authoritySep, { backgroundColor: colors.divider }]} />
                     <View style={s.authorityItem}>
-                      <View style={[s.authorityDot, { backgroundColor: item.canRelease ? '#F59E0B' : '#A1A1AA' }]} />
-                      <ThemedText style={[s.authorityLabel, { color: item.canRelease ? '#F59E0B' : colors.textTertiary }]}>
+                      <View style={[s.authorityDot, { backgroundColor: item.canRelease ? '#B8943E' : '#9C9790' }]} />
+                      <ThemedText style={[s.authorityLabel, { color: item.canRelease ? '#B8943E' : colors.textTertiary }]}>
                         Release: {item.canRelease ? '\u2713' : '\u2717'}
                       </ThemedText>
                     </View>
@@ -585,7 +585,7 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
           <ThemedText style={[s.summaryStatLabel, { color: colors.textSecondary }]}>
             Filled
           </ThemedText>
-          <ThemedText style={[s.summaryStatValue, { color: '#22C55E', fontVariant: ['tabular-nums'] }]}>
+          <ThemedText style={[s.summaryStatValue, { color: '#5A8A6E', fontVariant: ['tabular-nums'] }]}>
             {filledCount}
           </ThemedText>
         </View>
@@ -594,7 +594,7 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
           <ThemedText style={[s.summaryStatLabel, { color: colors.textSecondary }]}>
             Vacant
           </ThemedText>
-          <ThemedText style={[s.summaryStatValue, { color: '#EF4444', fontVariant: ['tabular-nums'] }]}>
+          <ThemedText style={[s.summaryStatValue, { color: '#B85C5C', fontVariant: ['tabular-nums'] }]}>
             {vacantCount}
           </ThemedText>
         </View>
@@ -634,7 +634,7 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
                       {
                         backgroundColor: colors.card,
                         borderColor: node.vacant
-                          ? '#EF4444' + '40'
+                          ? '#B85C5C' + '40'
                           : colors.border,
                         borderStyle: node.vacant ? 'dashed' as any : 'solid' as any,
                       },
@@ -655,7 +655,7 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
                           s.avatarCircle,
                           {
                             backgroundColor: node.vacant
-                              ? '#EF4444' + '15'
+                              ? '#B85C5C' + '15'
                               : accentColor + '25',
                           },
                         ]}
@@ -664,7 +664,7 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
                           style={[
                             s.avatarText,
                             {
-                              color: node.vacant ? '#EF4444' : accentColor,
+                              color: node.vacant ? '#B85C5C' : accentColor,
                             },
                           ]}
                         >
@@ -809,20 +809,20 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
               s.coverageBarFill,
               {
                 width: `${coveragePercent}%`,
-                backgroundColor: coveragePercent >= 80 ? '#22C55E' : coveragePercent >= 60 ? '#F59E0B' : '#EF4444',
+                backgroundColor: coveragePercent >= 80 ? '#5A8A6E' : coveragePercent >= 60 ? '#B8943E' : '#B85C5C',
               },
             ]}
           />
         </View>
         <View style={s.coverageStatsRow}>
           <ThemedText style={[s.coverageStat, { color: colors.textSecondary }]}>
-            <ThemedText style={[s.coverageStatValue, { color: '#22C55E' }]}>{filledCount}</ThemedText> filled
+            <ThemedText style={[s.coverageStatValue, { color: '#5A8A6E' }]}>{filledCount}</ThemedText> filled
           </ThemedText>
           <ThemedText style={[s.coverageStat, { color: colors.textSecondary }]}>
-            <ThemedText style={[s.coverageStatValue, { color: '#EF4444' }]}>{vacantCount}</ThemedText> vacant
+            <ThemedText style={[s.coverageStatValue, { color: '#B85C5C' }]}>{vacantCount}</ThemedText> vacant
           </ThemedText>
           <ThemedText style={[s.coverageStat, { color: colors.textSecondary }]}>
-            <ThemedText style={[s.coverageStatValue, { color: '#EF4444' }]}>{vacantCriticalCount}</ThemedText> critical open
+            <ThemedText style={[s.coverageStatValue, { color: '#B85C5C' }]}>{vacantCriticalCount}</ThemedText> critical open
           </ThemedText>
         </View>
       </View>
@@ -842,7 +842,7 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
                 s.roleCard,
                 {
                   backgroundColor: colors.card,
-                  borderColor: isVacant && item.critical ? '#EF4444' + '60' : colors.border,
+                  borderColor: isVacant && item.critical ? '#B85C5C' + '60' : colors.border,
                 },
                 pressed && { opacity: 0.85 },
               ]}
@@ -979,7 +979,7 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
               <View style={s.pkgActionsCol}>
                 {item.actions.map((action) => (
                   <View key={action} style={s.pkgActionRow}>
-                    <IconSymbol name="checkmark.circle.fill" size={12} color="#22C55E" />
+                    <IconSymbol name="checkmark.circle.fill" size={12} color="#5A8A6E" />
                     <ThemedText style={[s.pkgActionText, { color: colors.textSecondary }]}>
                       {action}
                     </ThemedText>
@@ -1261,13 +1261,13 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
             <Pressable
               style={({ pressed }) => [
                 s.detailActionBtn,
-                { backgroundColor: '#22C55E' + '15' },
+                { backgroundColor: '#5A8A6E' + '15' },
                 pressed && { opacity: 0.7 },
               ]}
               onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
             >
-              <IconSymbol name="person.badge.plus" size={16} color="#22C55E" />
-              <ThemedText style={[s.detailActionText, { color: '#22C55E' }]}>Assign Person</ThemedText>
+              <IconSymbol name="person.badge.plus" size={16} color="#5A8A6E" />
+              <ThemedText style={[s.detailActionText, { color: '#5A8A6E' }]}>Assign Person</ThemedText>
             </Pressable>
           ) : (
             <Pressable
@@ -1340,7 +1340,7 @@ export function BizOrgPeopleV2({ colors, accentColor, role = 'B1' }: Props) {
         <View style={s.pkgActionsCol}>
           {selectedPackage.actions.map((action) => (
             <View key={action} style={s.pkgActionRow}>
-              <IconSymbol name="checkmark.circle.fill" size={14} color="#22C55E" />
+              <IconSymbol name="checkmark.circle.fill" size={14} color="#5A8A6E" />
               <ThemedText style={[s.pkgActionTextLarge, { color: colors.text }]}>
                 {action}
               </ThemedText>
@@ -2136,7 +2136,7 @@ const s = StyleSheet.create({
     marginTop: 4,
   },
   riskFlagChip: {
-    backgroundColor: '#EF4444' + '18',
+    backgroundColor: '#B85C5C' + '18',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: BorderRadius.full,
@@ -2144,7 +2144,7 @@ const s = StyleSheet.create({
   riskFlagText: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#EF4444',
+    color: '#B85C5C',
   },
 
   // === Coverage Dashboard (Roles & Coverage tab) ===

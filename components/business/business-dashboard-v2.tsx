@@ -101,7 +101,7 @@ const CONTEXT_KPIS: KPIChip[] = [
     exactValue: 'Green',
     bandedValue: 'Green',
     icon: 'checkmark.shield.fill',
-    dotColor: '#22C55E',
+    dotColor: '#5A8A6E',
   },
   {
     id: 'rails',
@@ -109,7 +109,7 @@ const CONTEXT_KPIS: KPIChip[] = [
     exactValue: 'Green',
     bandedValue: 'Green',
     icon: 'creditcard.fill',
-    dotColor: '#22C55E',
+    dotColor: '#5A8A6E',
   },
 ];
 
@@ -162,7 +162,7 @@ const NEXT_ITEM: NextItem = {
   participants: 'PBD / Tom',
   countdown: '3 days',
   readiness: 'At Risk',
-  readinessColor: '#F59E0B',
+  readinessColor: '#B8943E',
 };
 
 // --- Block 3: Alerts Strip ---
@@ -246,13 +246,13 @@ const ALERTS: AlertItem[] = [
 ];
 
 const ALERT_SEVERITY_COLOR: Record<AlertSeverity, string> = {
-  blocker: '#EF4444',
-  approval: '#F59E0B',
-  due_24h: '#F59E0B',
-  rails_exception: '#EF4444',
+  blocker: '#B85C5C',
+  approval: '#B8943E',
+  due_24h: '#B8943E',
+  rails_exception: '#B85C5C',
   compliance: ACCENT,
   investor_risk: ACCENT,
-  partner_risk: '#F59E0B',
+  partner_risk: '#B8943E',
   people_risk: ACCENT,
 };
 
@@ -353,11 +353,11 @@ interface PinnedItem {
 }
 
 const PINNED_SHELF: PinnedItem[] = [
-  { id: 'pin-1', title: 'Board Room', icon: 'person.3.fill', badge: 'DUE SOON', badgeColor: '#F59E0B', targetTab: 5 },
+  { id: 'pin-1', title: 'Board Room', icon: 'person.3.fill', badge: 'DUE SOON', badgeColor: '#B8943E', targetTab: 5 },
   { id: 'pin-2', title: 'Fundraising Workspace', icon: 'briefcase.fill', targetTab: 8 },
-  { id: 'pin-3', title: 'Term Sheet', icon: 'doc.text.fill', badge: 'BLOCKER', badgeColor: '#EF4444', targetTab: 8 },
+  { id: 'pin-3', title: 'Term Sheet', icon: 'doc.text.fill', badge: 'BLOCKER', badgeColor: '#B85C5C', targetTab: 8 },
   { id: 'pin-4', title: 'Budget', icon: 'dollarsign.circle.fill', targetTab: 3 },
-  { id: 'pin-5', title: 'Settlement Queue', icon: 'creditcard.fill', badge: 'DUE SOON', badgeColor: '#F59E0B', targetTab: 4 },
+  { id: 'pin-5', title: 'Settlement Queue', icon: 'creditcard.fill', badge: 'DUE SOON', badgeColor: '#B8943E', targetTab: 4 },
 ];
 
 // =============================================================================
@@ -554,8 +554,8 @@ function TodayNextBlock({ colors, role: _role }: { colors: typeof Colors.light; 
                   {item.title}
                 </ThemedText>
                 {item.badge && (
-                  <View style={[s.decisionBadge, { backgroundColor: '#F59E0B20' }]}>
-                    <ThemedText style={[s.decisionBadgeText, { color: '#F59E0B' }]}>
+                  <View style={[s.decisionBadge, { backgroundColor: '#B8943E20' }]}>
+                    <ThemedText style={[s.decisionBadgeText, { color: '#B8943E' }]}>
                       {item.badge}
                     </ThemedText>
                   </View>
@@ -818,8 +818,8 @@ function PinnedShelf({
               {item.title}
             </ThemedText>
             {item.badge && (
-              <View style={[s.shelfBadge, { backgroundColor: (item.badgeColor ?? '#F59E0B') + '20' }]}>
-                <ThemedText style={[s.shelfBadgeText, { color: item.badgeColor ?? '#F59E0B' }]}>
+              <View style={[s.shelfBadge, { backgroundColor: (item.badgeColor ?? '#B8943E') + '20' }]}>
+                <ThemedText style={[s.shelfBadgeText, { color: item.badgeColor ?? '#B8943E' }]}>
                   {item.badge}
                 </ThemedText>
               </View>

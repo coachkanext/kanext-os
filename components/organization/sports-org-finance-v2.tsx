@@ -187,7 +187,7 @@ function OverviewTab({
 }) {
   const overview = useMemo(() => getFinanceOverview(), []);
 
-  const varianceColor = overview.variancePercent >= 0 ? '#22C55E' : '#EF4444';
+  const varianceColor = overview.variancePercent >= 0 ? '#5A8A6E' : '#B85C5C';
   const budgetUsedPercent = overview.totalBudget > 0
     ? Math.round((overview.totalActual / overview.totalBudget) * 100)
     : 0;
@@ -217,7 +217,7 @@ function OverviewTab({
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Variance</ThemedText>
           </View>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: overview.bucketsOverBudget > 0 ? '#EF4444' : '#22C55E' }]}>
+            <ThemedText style={[s.kpiValue, { color: overview.bucketsOverBudget > 0 ? '#B85C5C' : '#5A8A6E' }]}>
               {overview.bucketsOverBudget}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Over Budget</ThemedText>
@@ -236,12 +236,12 @@ function OverviewTab({
       {/* Approvals & Flags */}
       <View style={[s.statusStrip, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#F59E0B' }]} />
+          <View style={[s.statusDot, { backgroundColor: '#B8943E' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{overview.pendingApprovals}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Pending</ThemedText>
         </View>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#EF4444' }]} />
+          <View style={[s.statusDot, { backgroundColor: '#B85C5C' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{overview.flaggedTransactions}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Flagged</ThemedText>
         </View>
@@ -259,13 +259,13 @@ function OverviewTab({
       <View style={[s.overviewCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.kpiGrid}>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: overview.vendorsExpiring > 0 ? '#F59E0B' : '#22C55E' }]}>
+            <ThemedText style={[s.kpiValue, { color: overview.vendorsExpiring > 0 ? '#B8943E' : '#5A8A6E' }]}>
               {overview.vendorsExpiring}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Expiring Vendors</ThemedText>
           </View>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: overview.vendorsPastDue > 0 ? '#EF4444' : '#22C55E' }]}>
+            <ThemedText style={[s.kpiValue, { color: overview.vendorsPastDue > 0 ? '#B85C5C' : '#5A8A6E' }]}>
               {overview.vendorsPastDue}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Past Due</ThemedText>
@@ -289,7 +289,7 @@ function OverviewTab({
       <View style={[s.overviewCard, { backgroundColor: colors.card, borderColor: colors.border, marginTop: Spacing.md }]}>
         <View style={s.kpiGrid}>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: overview.openPurchaseRequests > 0 ? '#F59E0B' : '#22C55E' }]}>
+            <ThemedText style={[s.kpiValue, { color: overview.openPurchaseRequests > 0 ? '#B8943E' : '#5A8A6E' }]}>
               {overview.openPurchaseRequests}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Open Purchase Requests</ThemedText>
@@ -317,7 +317,7 @@ function BudgetTab({
       const isOverBudget = item.actual > item.planned;
       const catColor = BUDGET_CATEGORY_COLORS[item.category];
       const catLabel = BUDGET_CATEGORY_LABELS[item.category];
-      const barColor = isOverBudget ? '#EF4444' : catColor;
+      const barColor = isOverBudget ? '#B85C5C' : catColor;
 
       return (
         <View style={[s.listCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -334,13 +334,13 @@ function BudgetTab({
             </View>
             <View style={s.budgetAmountItem}>
               <ThemedText style={[s.budgetAmountLabel, { color: colors.textTertiary }]}>Actual</ThemedText>
-              <ThemedText style={[s.budgetAmountValue, { color: isOverBudget ? '#EF4444' : colors.text }]}>
+              <ThemedText style={[s.budgetAmountValue, { color: isOverBudget ? '#B85C5C' : colors.text }]}>
                 {formatCurrency(item.actual)}
               </ThemedText>
             </View>
             <View style={s.budgetAmountItem}>
               <ThemedText style={[s.budgetAmountLabel, { color: colors.textTertiary }]}>Used</ThemedText>
-              <ThemedText style={[s.budgetAmountValue, { color: isOverBudget ? '#EF4444' : accentColor }]}>
+              <ThemedText style={[s.budgetAmountValue, { color: isOverBudget ? '#B85C5C' : accentColor }]}>
                 {percent}%
               </ThemedText>
             </View>
@@ -619,13 +619,13 @@ function TravelSpendTab({
               </View>
             )}
             {item.ground > 0 && (
-              <View style={[s.costChip, { backgroundColor: '#22C55E20' }]}>
-                <ThemedText style={[s.costChipText, { color: '#22C55E' }]}>Ground {formatCurrency(item.ground)}</ThemedText>
+              <View style={[s.costChip, { backgroundColor: '#5A8A6E20' }]}>
+                <ThemedText style={[s.costChipText, { color: '#5A8A6E' }]}>Ground {formatCurrency(item.ground)}</ThemedText>
               </View>
             )}
             {item.meals > 0 && (
-              <View style={[s.costChip, { backgroundColor: '#F59E0B20' }]}>
-                <ThemedText style={[s.costChipText, { color: '#F59E0B' }]}>Meals {formatCurrency(item.meals)}</ThemedText>
+              <View style={[s.costChip, { backgroundColor: '#B8943E20' }]}>
+                <ThemedText style={[s.costChipText, { color: '#B8943E' }]}>Meals {formatCurrency(item.meals)}</ThemedText>
               </View>
             )}
           </View>
@@ -737,7 +737,7 @@ function PurchasingTab({
           <View style={s.listCardBadgeRow}>
             <StatusBadge label={statusLabel.toUpperCase()} color={statusColor} />
             {item.receiptAttached && (
-              <StatusBadge label="RECEIPT" color="#22C55E" />
+              <StatusBadge label="RECEIPT" color="#5A8A6E" />
             )}
           </View>
           <View style={s.listCardMeta}>
@@ -810,13 +810,13 @@ function ReportingTab({
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Spent to Date</ThemedText>
           </View>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: projectedEndOfYear > overview.totalBudget ? '#EF4444' : '#22C55E' }]}>
+            <ThemedText style={[s.kpiValue, { color: projectedEndOfYear > overview.totalBudget ? '#B85C5C' : '#5A8A6E' }]}>
               {formatCurrency(Math.round(projectedEndOfYear))}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Projected EOY</ThemedText>
           </View>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: burnRate > 75 ? '#F59E0B' : accentColor }]}>
+            <ThemedText style={[s.kpiValue, { color: burnRate > 75 ? '#B8943E' : accentColor }]}>
               {burnRate}%
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Burn Rate</ThemedText>
@@ -839,7 +839,7 @@ function ReportingTab({
           </ThemedText>
         </View>
         <View style={s.insightRow}>
-          <IconSymbol name="exclamationmark.triangle.fill" size={14} color={overview.pendingApprovals > 0 ? '#F59E0B' : '#22C55E'} />
+          <IconSymbol name="exclamationmark.triangle.fill" size={14} color={overview.pendingApprovals > 0 ? '#B8943E' : '#5A8A6E'} />
           <ThemedText style={[s.insightText, { color: colors.textSecondary }]}>
             {overview.pendingApprovals} pending approval{overview.pendingApprovals !== 1 ? 's' : ''} totaling {formatCurrency(overview.pendingApprovalAmount)}
           </ThemedText>

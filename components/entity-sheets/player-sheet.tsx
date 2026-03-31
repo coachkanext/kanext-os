@@ -107,7 +107,7 @@ export function PlayerSheet({ visible, onClose, data }: Props) {
   const topRisk = [...clusterEntries].sort((a, b) => a.score - b.score).slice(0, 1).filter(c => c.score < 50);
 
   // Status chip color
-  const statusColor = data.status === 'Injured' ? C.red : data.status === 'Out' ? C.secondary : data.status === 'RS' ? '#F59E0B' : C.green;
+  const statusColor = data.status === 'Injured' ? C.red : data.status === 'Out' ? C.secondary : data.status === 'RS' ? '#B8943E' : C.green;
 
   return (
     <BottomSheet visible={visible} onClose={onClose} useModal>

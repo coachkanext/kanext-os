@@ -164,13 +164,13 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
   },
   liveBadgeText: {
     fontSize: 11,
     fontWeight: '800',
     letterSpacing: 0.5,
-    color: '#EF4444',
+    color: '#B85C5C',
   },
   title: {
     fontSize: 16,

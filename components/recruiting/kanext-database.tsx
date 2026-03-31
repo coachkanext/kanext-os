@@ -34,7 +34,7 @@ import { useAccentColor } from '@/hooks/use-accent-color';
 
 const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#A1A1AA';
+const GRAY = '#9C9790';
 const DIVIDER = '#0B0F14';
 const BG = '#0B0F14';
 
@@ -784,7 +784,7 @@ export function KaNeXTDatabase({
             <PlayerRatingCard player={player} offStyle={offStyle} defStyle={defStyle} onPress={() => onPlayerPress(player)} />
             {!alreadyOnBoard ? (
               <Pressable style={styles.addToBoardBtn} onPress={() => openAddSheet(player)}>
-                <IconSymbol name="plus.circle.fill" size={24} color="#22C55E" />
+                <IconSymbol name="plus.circle.fill" size={24} color="#5A8A6E" />
               </Pressable>
             ) : (
               <Pressable style={styles.addToBoardBtn} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onRemoveFromBoard(existingEntry.id); }}>

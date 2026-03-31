@@ -191,7 +191,7 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
           style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
           onPress={handleSignOut}
         >
-          <IconSymbol name="rectangle.portrait.and.arrow.right" size={20} color="#EF4444" />
+          <IconSymbol name="rectangle.portrait.and.arrow.right" size={20} color="#B85C5C" />
           <Text style={[styles.menuItemText, styles.logOutText]}>Log Out</Text>
         </Pressable>
       </ScrollView>

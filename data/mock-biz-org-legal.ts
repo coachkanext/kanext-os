@@ -127,29 +127,29 @@ export const AGREEMENT_TYPE_LABEL: Record<AgreementType, string> = {
 };
 
 export const AGREEMENT_TYPE_COLOR: Record<AgreementType, string> = {
-  nda: '#1D9BF0',
-  msa: '#1D9BF0',
-  sow: '#1D9BF0',
-  license: '#1D9BF0',
-  employment: '#1D9BF0',
-  lease: '#F59E0B',
-  partnership: '#22C55E',
-  loan: '#EF4444',
+  nda: '#1A1714',
+  msa: '#1A1714',
+  sow: '#1A1714',
+  license: '#1A1714',
+  employment: '#1A1714',
+  lease: '#B8943E',
+  partnership: '#5A8A6E',
+  loan: '#B85C5C',
 };
 
 export const AGREEMENT_STATUS_COLOR: Record<AgreementStatus, string> = {
-  draft: '#A1A1AA',
-  negotiation: '#F59E0B',
-  active: '#22C55E',
-  expired: '#EF4444',
-  terminated: '#EF4444',
+  draft: '#9C9790',
+  negotiation: '#B8943E',
+  active: '#5A8A6E',
+  expired: '#B85C5C',
+  terminated: '#B85C5C',
 };
 
 export const OBLIGATION_STATUS_COLOR: Record<LegalObligation['status'], string> = {
-  pending: '#F59E0B',
-  met: '#22C55E',
-  overdue: '#EF4444',
-  waived: '#A1A1AA',
+  pending: '#B8943E',
+  met: '#5A8A6E',
+  overdue: '#B85C5C',
+  waived: '#9C9790',
 };
 
 export const REQUEST_TYPE_LABEL: Record<LegalRequest['type'], string> = {
@@ -160,23 +160,23 @@ export const REQUEST_TYPE_LABEL: Record<LegalRequest['type'], string> = {
 };
 
 export const REQUEST_TYPE_COLOR: Record<LegalRequest['type'], string> = {
-  review: '#1D9BF0',
-  draft: '#1D9BF0',
-  negotiate: '#F59E0B',
-  opinion: '#1D9BF0',
+  review: '#1A1714',
+  draft: '#1A1714',
+  negotiate: '#B8943E',
+  opinion: '#1A1714',
 };
 
 export const REQUEST_PRIORITY_COLOR: Record<LegalRequest['priority'], string> = {
-  urgent: '#EF4444',
-  high: '#F59E0B',
-  normal: '#1D9BF0',
-  low: '#A1A1AA',
+  urgent: '#B85C5C',
+  high: '#B8943E',
+  normal: '#1A1714',
+  low: '#9C9790',
 };
 
 export const REQUEST_STATUS_COLOR: Record<LegalRequest['status'], string> = {
-  open: '#F59E0B',
-  in_progress: '#1D9BF0',
-  completed: '#22C55E',
+  open: '#B8943E',
+  in_progress: '#1A1714',
+  completed: '#5A8A6E',
 };
 
 // =============================================================================

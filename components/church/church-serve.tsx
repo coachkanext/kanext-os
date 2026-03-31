@@ -87,7 +87,7 @@ interface ServeKPI {
 const SERVE_KPIS: ServeKPI[] = [
   { label: 'Active Volunteers', value: '320', icon: 'person.2.fill' },
   { label: 'Ministry Teams', value: '28', icon: 'rectangle.3.group.fill' },
-  { label: 'Open Positions', value: '14', icon: 'exclamationmark.circle.fill', color: '#F59E0B' },
+  { label: 'Open Positions', value: '14', icon: 'exclamationmark.circle.fill', color: '#B8943E' },
   { label: 'Serve Hours (Month)', value: '2,400', icon: 'clock.fill' },
   { label: 'Retention Rate', value: '84%', icon: 'arrow.triangle.2.circlepath' },
   { label: 'New Volunteers (Qtr)', value: '18', icon: 'person.badge.plus' },
@@ -124,11 +124,11 @@ interface PipelineStage {
 }
 
 const VOLUNTEER_PIPELINE: PipelineStage[] = [
-  { label: 'Prospects', count: 24, color: '#A1A1AA' },
+  { label: 'Prospects', count: 24, color: '#9C9790' },
   { label: 'Applied', count: 16, color: ACCENT },
-  { label: 'BGC', count: 8, color: '#F59E0B' },
+  { label: 'BGC', count: 8, color: '#B8943E' },
   { label: 'Trained', count: 6, color: ACCENT },
-  { label: 'Active', count: 320, color: '#22C55E' },
+  { label: 'Active', count: 320, color: '#5A8A6E' },
 ];
 
 // =============================================================================
@@ -159,22 +159,22 @@ interface ServeTeam {
 }
 
 const SERVE_TEAMS: ServeTeam[] = [
-  { id: 'st-1', name: 'Greeting Team', ministry: 'Hospitality', leader: 'Deacon Martinez', activeMembers: 12, capacity: 12, meetingCadence: 'Monthly', description: 'Welcome guests at all entrance points before and after services. First impression ministry.', health: 'fully-staffed', icon: 'hand.wave.fill', color: '#22C55E', roles: [{ role: 'Lead Greeter', required: 2, filled: 2 }, { role: 'Greeter', required: 8, filled: 8 }, { role: 'Info Desk', required: 2, filled: 2 }] },
-  { id: 'st-2', name: 'Parking Team', ministry: 'Hospitality', leader: 'Brother Williams', activeMembers: 5, capacity: 8, meetingCadence: 'Quarterly', description: 'Direct traffic, assist with parking, and welcome guests in the lot. Rain or shine servants.', health: 'understaffed', icon: 'car.fill', color: '#F59E0B', roles: [{ role: 'Lot Captain', required: 1, filled: 1 }, { role: 'Lot Attendant', required: 5, filled: 3 }, { role: 'Shuttle Driver', required: 2, filled: 1 }] },
+  { id: 'st-1', name: 'Greeting Team', ministry: 'Hospitality', leader: 'Deacon Martinez', activeMembers: 12, capacity: 12, meetingCadence: 'Monthly', description: 'Welcome guests at all entrance points before and after services. First impression ministry.', health: 'fully-staffed', icon: 'hand.wave.fill', color: '#5A8A6E', roles: [{ role: 'Lead Greeter', required: 2, filled: 2 }, { role: 'Greeter', required: 8, filled: 8 }, { role: 'Info Desk', required: 2, filled: 2 }] },
+  { id: 'st-2', name: 'Parking Team', ministry: 'Hospitality', leader: 'Brother Williams', activeMembers: 5, capacity: 8, meetingCadence: 'Quarterly', description: 'Direct traffic, assist with parking, and welcome guests in the lot. Rain or shine servants.', health: 'understaffed', icon: 'car.fill', color: '#B8943E', roles: [{ role: 'Lot Captain', required: 1, filled: 1 }, { role: 'Lot Attendant', required: 5, filled: 3 }, { role: 'Shuttle Driver', required: 2, filled: 1 }] },
   { id: 'st-3', name: 'Children\'s Ministry', ministry: 'Next Gen', leader: 'Sister Angela Davis', activeMembers: 20, capacity: 24, meetingCadence: 'Weekly', description: 'Nursery through 5th grade care and curriculum. Background check required for all volunteers.', health: 'understaffed', icon: 'figure.and.child.holdinghands', color: ACCENT, roles: [{ role: 'Director', required: 1, filled: 1 }, { role: 'Nursery Lead', required: 2, filled: 2 }, { role: 'Nursery Helper', required: 4, filled: 3 }, { role: 'K-2nd Lead', required: 2, filled: 2 }, { role: '3rd-5th Lead', required: 2, filled: 2 }, { role: 'Check-In', required: 3, filled: 2 }] },
   { id: 'st-4', name: 'Youth Ministry', ministry: 'Next Gen', leader: 'Pastor Alex Kim', activeMembers: 14, capacity: 16, meetingCadence: 'Weekly', description: 'Middle school, high school, and young adult programming. Small group leaders and event support.', health: 'understaffed', icon: 'person.3.fill', color: ACCENT, roles: [{ role: 'Youth Pastor', required: 1, filled: 1 }, { role: 'MS Lead', required: 2, filled: 2 }, { role: 'HS Lead', required: 2, filled: 2 }, { role: 'Young Adult Lead', required: 2, filled: 1 }, { role: 'Small Group Leader', required: 6, filled: 5 }, { role: 'Event Support', required: 3, filled: 3 }] },
   { id: 'st-5', name: 'Worship Team', ministry: 'Worship & Creative Arts', leader: 'Marcus Johnson', activeMembers: 15, capacity: 15, meetingCadence: 'Weekly', description: 'Praise band, vocalists, choir, and dance ministry. Rehearsals every Thursday 7PM.', health: 'fully-staffed', icon: 'music.note.list', color: ACCENT, roles: [{ role: 'Worship Leader', required: 1, filled: 1 }, { role: 'Vocalist', required: 4, filled: 4 }, { role: 'Keys', required: 2, filled: 2 }, { role: 'Guitar', required: 2, filled: 2 }, { role: 'Bass', required: 1, filled: 1 }, { role: 'Drums', required: 1, filled: 1 }, { role: 'Choir', required: 4, filled: 4 }] },
-  { id: 'st-6', name: 'AV/Media', ministry: 'Worship & Creative Arts', leader: 'David Park', activeMembers: 4, capacity: 6, meetingCadence: 'Bi-weekly', description: 'Sound engineering, livestream, cameras, projection, and social media. Technical training provided.', health: 'critical', icon: 'video.fill', color: '#EF4444', roles: [{ role: 'FOH', required: 1, filled: 1 }, { role: 'Livestream', required: 1, filled: 1 }, { role: 'Camera Op', required: 2, filled: 1 }, { role: 'Slides', required: 1, filled: 1 }, { role: 'Tracks', required: 1, filled: 0 }] },
+  { id: 'st-6', name: 'AV/Media', ministry: 'Worship & Creative Arts', leader: 'David Park', activeMembers: 4, capacity: 6, meetingCadence: 'Bi-weekly', description: 'Sound engineering, livestream, cameras, projection, and social media. Technical training provided.', health: 'critical', icon: 'video.fill', color: '#B85C5C', roles: [{ role: 'FOH', required: 1, filled: 1 }, { role: 'Livestream', required: 1, filled: 1 }, { role: 'Camera Op', required: 2, filled: 1 }, { role: 'Slides', required: 1, filled: 1 }, { role: 'Tracks', required: 1, filled: 0 }] },
   { id: 'st-7', name: 'Hospitality/Ushers', ministry: 'Hospitality', leader: 'Elder Thompson', activeMembers: 8, capacity: 10, meetingCadence: 'Monthly', description: 'Seat guests, collect offerings, distribute bulletins, and maintain sanctuary order during services.', health: 'understaffed', icon: 'heart.fill', color: ACCENT, roles: [{ role: 'Head Usher', required: 1, filled: 1 }, { role: 'Usher', required: 6, filled: 5 }, { role: 'Offering Counter', required: 2, filled: 1 }, { role: 'Bulletin Prep', required: 1, filled: 1 }] },
-  { id: 'st-8', name: 'Prayer Team', ministry: 'Prayer Ministry', leader: 'Mother Johnson', activeMembers: 8, capacity: 8, meetingCadence: 'Weekly', description: 'Altar call prayer, intercessory prayer meetings, and prayer chain coordination.', health: 'fully-staffed', icon: 'hands.sparkles.fill', color: '#F59E0B', roles: [{ role: 'Prayer Lead', required: 1, filled: 1 }, { role: 'Altar Ministry', required: 3, filled: 3 }, { role: 'Intercessor', required: 3, filled: 3 }, { role: 'Prayer Chain Coord', required: 1, filled: 1 }] },
+  { id: 'st-8', name: 'Prayer Team', ministry: 'Prayer Ministry', leader: 'Mother Johnson', activeMembers: 8, capacity: 8, meetingCadence: 'Weekly', description: 'Altar call prayer, intercessory prayer meetings, and prayer chain coordination.', health: 'fully-staffed', icon: 'hands.sparkles.fill', color: '#B8943E', roles: [{ role: 'Prayer Lead', required: 1, filled: 1 }, { role: 'Altar Ministry', required: 3, filled: 3 }, { role: 'Intercessor', required: 3, filled: 3 }, { role: 'Prayer Chain Coord', required: 1, filled: 1 }] },
   { id: 'st-9', name: 'Outreach', ministry: 'Missions & Outreach', leader: 'Minister Lewis', activeMembers: 8, capacity: 10, meetingCadence: 'Monthly', description: 'Community food pantry, neighborhood outreach, evangelism, and missions trip coordination.', health: 'understaffed', icon: 'globe.americas.fill', color: ACCENT, roles: [{ role: 'Director', required: 1, filled: 1 }, { role: 'Food Pantry', required: 3, filled: 3 }, { role: 'Neighborhood', required: 3, filled: 2 }, { role: 'Missions Coord', required: 1, filled: 1 }, { role: 'Evangelism', required: 2, filled: 1 }] },
-  { id: 'st-10', name: 'Campus Care', ministry: 'Facilities', leader: 'Brother Harris', activeMembers: 3, capacity: 6, meetingCadence: 'As needed', description: 'Building setup/teardown, maintenance requests, grounds keeping, and security coordination.', health: 'critical', icon: 'wrench.fill', color: '#EF4444', roles: [{ role: 'Setup Lead', required: 1, filled: 1 }, { role: 'Teardown', required: 2, filled: 1 }, { role: 'Maintenance', required: 1, filled: 0 }, { role: 'Grounds', required: 1, filled: 1 }, { role: 'Security', required: 1, filled: 0 }] },
+  { id: 'st-10', name: 'Campus Care', ministry: 'Facilities', leader: 'Brother Harris', activeMembers: 3, capacity: 6, meetingCadence: 'As needed', description: 'Building setup/teardown, maintenance requests, grounds keeping, and security coordination.', health: 'critical', icon: 'wrench.fill', color: '#B85C5C', roles: [{ role: 'Setup Lead', required: 1, filled: 1 }, { role: 'Teardown', required: 2, filled: 1 }, { role: 'Maintenance', required: 1, filled: 0 }, { role: 'Grounds', required: 1, filled: 1 }, { role: 'Security', required: 1, filled: 0 }] },
 ];
 
 const TEAM_HEALTH_COLOR: Record<TeamHealth, string> = {
-  'fully-staffed': '#22C55E',
-  understaffed: '#F59E0B',
-  critical: '#EF4444',
+  'fully-staffed': '#5A8A6E',
+  understaffed: '#B8943E',
+  critical: '#B85C5C',
 };
 
 const TEAM_HEALTH_LABEL: Record<TeamHealth, string> = {
@@ -276,9 +276,9 @@ const SCHEDULE_DAYS: ScheduleDay[] = [
 ];
 
 const CONFIRM_STATUS_COLOR: Record<ConfirmStatus, string> = {
-  confirmed: '#22C55E',
-  pending: '#F59E0B',
-  declined: '#EF4444',
+  confirmed: '#5A8A6E',
+  pending: '#B8943E',
+  declined: '#B85C5C',
 };
 
 // =============================================================================
@@ -330,8 +330,8 @@ const VOLUNTEERS: Volunteer[] = [
 ];
 
 const VOLUNTEER_STATUS_COLOR: Record<string, string> = {
-  active: '#22C55E',
-  inactive: '#A1A1AA',
+  active: '#5A8A6E',
+  inactive: '#9C9790',
   new: ACCENT,
   training: ACCENT,
 };
@@ -402,10 +402,10 @@ const READINESS_COUNTS: ReadinessCount[] = [
 ];
 
 const READINESS_COLOR: Record<ReadinessLevel, string> = {
-  ready: '#22C55E',
-  'needs-training': '#F59E0B',
+  ready: '#5A8A6E',
+  'needs-training': '#B8943E',
   'in-training': ACCENT,
-  expired: '#EF4444',
+  expired: '#B85C5C',
 };
 
 // =============================================================================
@@ -446,14 +446,14 @@ const REQUEST_TYPE_LABEL: Record<RequestType, string> = {
 
 const REQUEST_TYPE_COLOR: Record<RequestType, string> = {
   swap: ACCENT,
-  cover: '#F59E0B',
+  cover: '#B8943E',
   'time-off': ACCENT,
 };
 
 const REQUEST_STATUS_COLOR: Record<RequestStatus, string> = {
-  pending: '#F59E0B',
-  approved: '#22C55E',
-  denied: '#EF4444',
+  pending: '#B8943E',
+  approved: '#5A8A6E',
+  denied: '#B85C5C',
 };
 
 // =============================================================================
@@ -560,18 +560,18 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Chu
           {/* Summary row */}
           <View style={s.coverageSummaryRow}>
             <View style={s.coveragePieContainer}>
-              <View style={[s.coveragePieOuter, { borderColor: coveragePct >= 90 ? '#22C55E' : coveragePct >= 70 ? '#F59E0B' : '#EF4444' }]}>
+              <View style={[s.coveragePieOuter, { borderColor: coveragePct >= 90 ? '#5A8A6E' : coveragePct >= 70 ? '#B8943E' : '#B85C5C' }]}>
                 <ThemedText style={[s.coveragePiePct, { color: colors.text }]}>{coveragePct}%</ThemedText>
                 <ThemedText style={[s.coveragePieLabel, { color: colors.textSecondary }]}>filled</ThemedText>
               </View>
             </View>
             <View style={s.coverageSummaryStats}>
               <View style={s.coverageStat}>
-                <ThemedText style={[s.coverageStatValue, { color: '#22C55E' }]}>{totalFilled}</ThemedText>
+                <ThemedText style={[s.coverageStatValue, { color: '#5A8A6E' }]}>{totalFilled}</ThemedText>
                 <ThemedText style={[s.coverageStatLabel, { color: colors.textSecondary }]}>Filled</ThemedText>
               </View>
               <View style={s.coverageStat}>
-                <ThemedText style={[s.coverageStatValue, { color: '#EF4444' }]}>{totalSlots - totalFilled}</ThemedText>
+                <ThemedText style={[s.coverageStatValue, { color: '#B85C5C' }]}>{totalSlots - totalFilled}</ThemedText>
                 <ThemedText style={[s.coverageStatLabel, { color: colors.textSecondary }]}>Open</ThemedText>
               </View>
               <View style={s.coverageStat}>
@@ -586,7 +586,7 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Chu
             <View style={s.coverageBreakdown}>
               {NEXT_SUNDAY_COVERAGE.map((slot) => {
                 const pct = Math.round((slot.filled / slot.total) * 100);
-                const barColor = pct >= 100 ? '#22C55E' : pct >= 75 ? '#F59E0B' : '#EF4444';
+                const barColor = pct >= 100 ? '#5A8A6E' : pct >= 75 ? '#B8943E' : '#B85C5C';
                 return (
                   <View key={slot.ministry} style={s.coverageRow}>
                     <ThemedText style={[s.coverageMinistry, { color: colors.text }]} numberOfLines={1}>
@@ -614,8 +614,8 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Chu
           <SectionHeader title="MOST NEEDED" colors={colors} />
           <Card colors={colors}>
             <View style={s.mostNeededRow}>
-              <View style={[s.mostNeededIcon, { backgroundColor: '#EF444420' }]}>
-                <IconSymbol name="exclamationmark.triangle.fill" size={18} color="#EF4444" />
+              <View style={[s.mostNeededIcon, { backgroundColor: '#B85C5C20' }]}>
+                <IconSymbol name="exclamationmark.triangle.fill" size={18} color="#B85C5C" />
               </View>
               <View style={s.mostNeededInfo}>
                 <ThemedText style={[s.mostNeededTeam, { color: colors.text }]}>{mostNeeded.ministry}</ThemedText>
@@ -722,7 +722,7 @@ function TeamsView({ colors, role }: { colors: typeof Colors.light; role: Church
                   <View style={s.roleBreakdown}>
                     {team.roles.map((r) => {
                       const isFull = r.filled >= r.required;
-                      const roleColor = isFull ? '#22C55E' : r.filled === 0 ? '#EF4444' : '#F59E0B';
+                      const roleColor = isFull ? '#5A8A6E' : r.filled === 0 ? '#B85C5C' : '#B8943E';
                       return (
                         <View key={r.role} style={s.roleRow}>
                           <View style={[s.roleDot, { backgroundColor: roleColor }]} />
@@ -806,17 +806,17 @@ function ScheduleView({ colors, role }: { colors: typeof Colors.light; role: Chu
                   <ThemedText style={[s.scheduleDayDate, { color: colors.textSecondary }]}>{day.date}</ThemedText>
                 </View>
                 <View style={s.scheduleDaySummary}>
-                  <View style={[s.scheduleStatusChip, { backgroundColor: '#22C55E20' }]}>
-                    <ThemedText style={[s.scheduleStatusChipText, { color: '#22C55E' }]}>{confirmedCount}</ThemedText>
+                  <View style={[s.scheduleStatusChip, { backgroundColor: '#5A8A6E20' }]}>
+                    <ThemedText style={[s.scheduleStatusChipText, { color: '#5A8A6E' }]}>{confirmedCount}</ThemedText>
                   </View>
                   {pendingCount > 0 && (
-                    <View style={[s.scheduleStatusChip, { backgroundColor: '#F59E0B20' }]}>
-                      <ThemedText style={[s.scheduleStatusChipText, { color: '#F59E0B' }]}>{pendingCount}</ThemedText>
+                    <View style={[s.scheduleStatusChip, { backgroundColor: '#B8943E20' }]}>
+                      <ThemedText style={[s.scheduleStatusChipText, { color: '#B8943E' }]}>{pendingCount}</ThemedText>
                     </View>
                   )}
                   {declinedCount > 0 && (
-                    <View style={[s.scheduleStatusChip, { backgroundColor: '#EF444420' }]}>
-                      <ThemedText style={[s.scheduleStatusChipText, { color: '#EF4444' }]}>{declinedCount}</ThemedText>
+                    <View style={[s.scheduleStatusChip, { backgroundColor: '#B85C5C20' }]}>
+                      <ThemedText style={[s.scheduleStatusChipText, { color: '#B85C5C' }]}>{declinedCount}</ThemedText>
                     </View>
                   )}
                   <IconSymbol
@@ -831,13 +831,13 @@ function ScheduleView({ colors, role }: { colors: typeof Colors.light; role: Chu
                 <>
                   {/* Coverage gaps */}
                   {day.coverageGaps.length > 0 && isStaffLevel(role) && (
-                    <View style={[s.coverageGapsContainer, { backgroundColor: '#EF444410', borderColor: '#EF444430' }]}>
+                    <View style={[s.coverageGapsContainer, { backgroundColor: '#B85C5C10', borderColor: '#B85C5C30' }]}>
                       <View style={s.coverageGapsHeader}>
-                        <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
-                        <ThemedText style={[s.coverageGapsTitle, { color: '#EF4444' }]}>COVERAGE GAPS</ThemedText>
+                        <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B85C5C" />
+                        <ThemedText style={[s.coverageGapsTitle, { color: '#B85C5C' }]}>COVERAGE GAPS</ThemedText>
                       </View>
                       {day.coverageGaps.map((gap, idx) => (
-                        <ThemedText key={idx} style={[s.coverageGapItem, { color: '#EF4444' }]}>
+                        <ThemedText key={idx} style={[s.coverageGapItem, { color: '#B85C5C' }]}>
                           {'\u2022'} {gap}
                         </ThemedText>
                       ))}
@@ -928,7 +928,7 @@ function VolunteersView({ colors, role }: { colors: typeof Colors.light; role: C
         <Card colors={colors}>
           {filtered.map((vol, idx) => {
             const statusColor = VOLUNTEER_STATUS_COLOR[vol.status];
-            const reliabilityColor = vol.reliabilityScore >= 90 ? '#22C55E' : vol.reliabilityScore >= 70 ? '#F59E0B' : vol.reliabilityScore > 0 ? '#EF4444' : '#A1A1AA';
+            const reliabilityColor = vol.reliabilityScore >= 90 ? '#5A8A6E' : vol.reliabilityScore >= 70 ? '#B8943E' : vol.reliabilityScore > 0 ? '#B85C5C' : '#9C9790';
 
             return (
               <Pressable
@@ -983,7 +983,7 @@ function VolunteersView({ colors, role }: { colors: typeof Colors.light; role: C
                       {vol.attendanceRate != null && (
                         <View style={s.volunteerAnalyticItem}>
                           <ThemedText style={[s.volunteerAnalyticLabel, { color: colors.textTertiary }]}>Attendance</ThemedText>
-                          <ThemedText style={[s.volunteerAnalyticValue, { color: vol.attendanceRate >= 90 ? '#22C55E' : vol.attendanceRate >= 70 ? '#F59E0B' : '#EF4444' }]}>
+                          <ThemedText style={[s.volunteerAnalyticValue, { color: vol.attendanceRate >= 90 ? '#5A8A6E' : vol.attendanceRate >= 70 ? '#B8943E' : '#B85C5C' }]}>
                             {vol.attendanceRate}%
                           </ThemedText>
                         </View>
@@ -1034,7 +1034,7 @@ function TrainingView({ colors, role }: { colors: typeof Colors.light; role: Chu
         <SectionHeader title="TRAINING PROGRAMS" colors={colors} count={TRAINING_PROGRAMS.length} />
 
         {TRAINING_PROGRAMS.map((prog) => {
-          const completionColor = prog.completionRate >= 90 ? '#22C55E' : prog.completionRate >= 70 ? '#F59E0B' : '#EF4444';
+          const completionColor = prog.completionRate >= 90 ? '#5A8A6E' : prog.completionRate >= 70 ? '#B8943E' : '#B85C5C';
 
           return (
             <Card key={prog.id} colors={colors}>
@@ -1117,7 +1117,7 @@ function TrainingView({ colors, role }: { colors: typeof Colors.light; role: Chu
                         </ThemedText>
                       )}
                       {rec.expiryDate && (
-                        <ThemedText style={[s.trainingRecordDate, { color: rec.status === 'expired' ? '#EF4444' : colors.textTertiary }]}>
+                        <ThemedText style={[s.trainingRecordDate, { color: rec.status === 'expired' ? '#B85C5C' : colors.textTertiary }]}>
                           {rec.status === 'expired' ? 'Expired' : 'Expires'}: {rec.expiryDate}
                         </ThemedText>
                       )}
@@ -1239,18 +1239,18 @@ function RequestsView({ colors, role }: { colors: typeof Colors.light; role: Chu
                   {canApprove && req.status === 'pending' && (
                     <View style={s.requestActions}>
                       <Pressable
-                        style={[s.requestActionBtn, { backgroundColor: '#22C55E20', borderColor: '#22C55E30' }]}
+                        style={[s.requestActionBtn, { backgroundColor: '#5A8A6E20', borderColor: '#5A8A6E30' }]}
                         onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
                       >
-                        <IconSymbol name="checkmark" size={12} color="#22C55E" />
-                        <ThemedText style={[s.requestActionText, { color: '#22C55E' }]}>Approve</ThemedText>
+                        <IconSymbol name="checkmark" size={12} color="#5A8A6E" />
+                        <ThemedText style={[s.requestActionText, { color: '#5A8A6E' }]}>Approve</ThemedText>
                       </Pressable>
                       <Pressable
-                        style={[s.requestActionBtn, { backgroundColor: '#EF444420', borderColor: '#EF444430' }]}
+                        style={[s.requestActionBtn, { backgroundColor: '#B85C5C20', borderColor: '#B85C5C30' }]}
                         onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
                       >
-                        <IconSymbol name="xmark" size={12} color="#EF4444" />
-                        <ThemedText style={[s.requestActionText, { color: '#EF4444' }]}>Deny</ThemedText>
+                        <IconSymbol name="xmark" size={12} color="#B85C5C" />
+                        <ThemedText style={[s.requestActionText, { color: '#B85C5C' }]}>Deny</ThemedText>
                       </Pressable>
                     </View>
                   )}

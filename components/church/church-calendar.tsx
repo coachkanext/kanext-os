@@ -95,10 +95,10 @@ function sortAgendaByPriority(events: AgendaEvent[]): AgendaEvent[] {
 const EVENT_TYPE_COLOR: Record<AgendaEventType, string> = {
   service: ACCENT,
   ministry: ACCENT,
-  class: '#22C55E',
-  volunteer: '#F59E0B',
-  deadline: '#EF4444',
-  facility: '#A1A1AA',
+  class: '#5A8A6E',
+  volunteer: '#B8943E',
+  deadline: '#B85C5C',
+  facility: '#9C9790',
 };
 
 const EVENT_TYPE_LABEL: Record<AgendaEventType, string> = {
@@ -177,9 +177,9 @@ interface ServiceEntry {
 }
 
 const CONFIRM_COLOR: Record<ConfirmStatus, string> = {
-  confirmed: '#22C55E',
-  partial: '#F59E0B',
-  pending: '#EF4444',
+  confirmed: '#5A8A6E',
+  partial: '#B8943E',
+  pending: '#B85C5C',
 };
 
 const WEEKLY_SERVICES: ServiceEntry[] = [
@@ -321,8 +321,8 @@ interface NewsItem {
 const NEWS_CATEGORY_COLOR: Record<NewsCategory, string> = {
   announcement: ACCENT,
   event: ACCENT,
-  testimony: '#F59E0B',
-  update: '#22C55E',
+  testimony: '#B8943E',
+  update: '#5A8A6E',
 };
 
 const NEWS_CATEGORY_LABEL: Record<NewsCategory, string> = {
@@ -590,23 +590,23 @@ function AgendaDayBlock({ dayLabel, events, colors, role }: { dayLabel: string; 
                 </View>
               )}
               {ev.leaderOnly && (
-                <View style={[s.staffBadge, { backgroundColor: '#F59E0B20' }]}>
-                  <ThemedText style={[s.staffBadgeText, { color: '#F59E0B' }]}>LEADERSHIP</ThemedText>
+                <View style={[s.staffBadge, { backgroundColor: '#B8943E20' }]}>
+                  <ThemedText style={[s.staffBadgeText, { color: '#B8943E' }]}>LEADERSHIP</ThemedText>
                 </View>
               )}
               {ev.isBlocked && (
-                <View style={[s.staffBadge, { backgroundColor: '#EF444420' }]}>
-                  <ThemedText style={[s.staffBadgeText, { color: '#EF4444' }]}>BLOCKED</ThemedText>
+                <View style={[s.staffBadge, { backgroundColor: '#B85C5C20' }]}>
+                  <ThemedText style={[s.staffBadgeText, { color: '#B85C5C' }]}>BLOCKED</ThemedText>
                 </View>
               )}
               {ev.decisionRequired && (
-                <View style={[s.staffBadge, { backgroundColor: '#F59E0B20' }]}>
-                  <ThemedText style={[s.staffBadgeText, { color: '#F59E0B' }]}>DECISION REQ.</ThemedText>
+                <View style={[s.staffBadge, { backgroundColor: '#B8943E20' }]}>
+                  <ThemedText style={[s.staffBadgeText, { color: '#B8943E' }]}>DECISION REQ.</ThemedText>
                 </View>
               )}
               {ev.dueWithin24h && (
-                <View style={[s.staffBadge, { backgroundColor: '#EF444420' }]}>
-                  <ThemedText style={[s.staffBadgeText, { color: '#EF4444' }]}>DUE &lt;24H</ThemedText>
+                <View style={[s.staffBadge, { backgroundColor: '#B85C5C20' }]}>
+                  <ThemedText style={[s.staffBadgeText, { color: '#B85C5C' }]}>DUE &lt;24H</ThemedText>
                 </View>
               )}
             </View>
@@ -653,13 +653,13 @@ function AgendaView({ colors, role }: { colors: typeof Colors.light; role: Churc
               <ThemedText style={[s.agendaSummaryLabel, { color: colors.textSecondary }]}>Services</ThemedText>
             </View>
             <View style={s.agendaSummaryStat}>
-              <ThemedText style={[s.agendaSummaryValue, { color: '#F59E0B' }]}>
+              <ThemedText style={[s.agendaSummaryValue, { color: '#B8943E' }]}>
                 {volunteerCount}
               </ThemedText>
               <ThemedText style={[s.agendaSummaryLabel, { color: colors.textSecondary }]}>Volunteer</ThemedText>
             </View>
             <View style={s.agendaSummaryStat}>
-              <ThemedText style={[s.agendaSummaryValue, { color: '#EF4444' }]}>
+              <ThemedText style={[s.agendaSummaryValue, { color: '#B85C5C' }]}>
                 {deadlineCount}
               </ThemedText>
               <ThemedText style={[s.agendaSummaryLabel, { color: colors.textSecondary }]}>Deadlines</ThemedText>
@@ -727,7 +727,7 @@ function ServicesView({ colors, role }: { colors: typeof Colors.light; role: Chu
             </View>
             {isElderLevel(role) && (
               <View style={s.agendaSummaryStat}>
-                <ThemedText style={[s.agendaSummaryValue, { color: gapCount > 0 ? '#F59E0B' : '#22C55E' }]}>
+                <ThemedText style={[s.agendaSummaryValue, { color: gapCount > 0 ? '#B8943E' : '#5A8A6E' }]}>
                   {gapCount}
                 </ThemedText>
                 <ThemedText style={[s.agendaSummaryLabel, { color: colors.textSecondary }]}>Gaps</ThemedText>
@@ -774,11 +774,11 @@ function ServicesView({ colors, role }: { colors: typeof Colors.light; role: Chu
                     <View style={[s.readinessTrack, { backgroundColor: colors.backgroundTertiary }]}>
                       <View style={[s.readinessFill, {
                         width: `${svc.readinessScore}%`,
-                        backgroundColor: svc.readinessScore >= 85 ? '#22C55E' : svc.readinessScore >= 70 ? '#F59E0B' : '#EF4444',
+                        backgroundColor: svc.readinessScore >= 85 ? '#5A8A6E' : svc.readinessScore >= 70 ? '#B8943E' : '#B85C5C',
                       }]} />
                     </View>
                     <ThemedText style={[s.readinessValue, {
-                      color: svc.readinessScore >= 85 ? '#22C55E' : svc.readinessScore >= 70 ? '#F59E0B' : '#EF4444',
+                      color: svc.readinessScore >= 85 ? '#5A8A6E' : svc.readinessScore >= 70 ? '#B8943E' : '#B85C5C',
                     }]}>{svc.readinessScore}%</ThemedText>
                   </View>
                 )}
@@ -806,9 +806,9 @@ function ServicesView({ colors, role }: { colors: typeof Colors.light; role: Chu
 
                 {/* Gap warning for C1/C2 */}
                 {hasGap && isElderLevel(role) && (
-                  <View style={[s.gapBanner, { backgroundColor: '#F59E0B15' }]}>
-                    <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#F59E0B" />
-                    <ThemedText style={[s.gapText, { color: '#F59E0B' }]}>{svc.staffGap}</ThemedText>
+                  <View style={[s.gapBanner, { backgroundColor: '#B8943E15' }]}>
+                    <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B8943E" />
+                    <ThemedText style={[s.gapText, { color: '#B8943E' }]}>{svc.staffGap}</ThemedText>
                   </View>
                 )}
 
@@ -821,7 +821,7 @@ function ServicesView({ colors, role }: { colors: typeof Colors.light; role: Chu
                         <ThemedText style={[s.serviceTeamsTitle, { color: colors.textSecondary }]}>KEY ASSETS</ThemedText>
                         <View style={s.assetsRow}>
                           {svc.keyAssets.map((asset) => {
-                            const assetColor = asset.status === 'ready' ? '#22C55E' : asset.status === 'pending' ? '#F59E0B' : '#EF4444';
+                            const assetColor = asset.status === 'ready' ? '#5A8A6E' : asset.status === 'pending' ? '#B8943E' : '#B85C5C';
                             return (
                               <View key={asset.name} style={[s.assetChip, { backgroundColor: assetColor + '15', borderColor: assetColor + '30' }]}>
                                 <View style={[s.assetDot, { backgroundColor: assetColor }]} />

@@ -219,19 +219,19 @@ function OverviewTab({
       <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Tasks</ThemedText>
       <View style={s.kpiRow}>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: overview.openTasks > 0 ? '#F59E0B' : '#22C55E' }]}>
+          <ThemedText style={[s.kpiValue, { color: overview.openTasks > 0 ? '#B8943E' : '#5A8A6E' }]}>
             {overview.openTasks}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Open</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: overview.blockedTasks > 0 ? '#EF4444' : '#22C55E' }]}>
+          <ThemedText style={[s.kpiValue, { color: overview.blockedTasks > 0 ? '#B85C5C' : '#5A8A6E' }]}>
             {overview.blockedTasks}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Blocked</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: overview.criticalTasks > 0 ? '#EF4444' : '#22C55E' }]}>
+          <ThemedText style={[s.kpiValue, { color: overview.criticalTasks > 0 ? '#B85C5C' : '#5A8A6E' }]}>
             {overview.criticalTasks}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Critical</ThemedText>
@@ -248,13 +248,13 @@ function OverviewTab({
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Trips</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: overview.tripsWithMissingDocs > 0 ? '#F59E0B' : '#22C55E' }]}>
+          <ThemedText style={[s.kpiValue, { color: overview.tripsWithMissingDocs > 0 ? '#B8943E' : '#5A8A6E' }]}>
             {overview.tripsWithMissingDocs}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Missing Docs</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: overview.facilityConflicts > 0 ? '#EF4444' : '#22C55E' }]}>
+          <ThemedText style={[s.kpiValue, { color: overview.facilityConflicts > 0 ? '#B85C5C' : '#5A8A6E' }]}>
             {overview.facilityConflicts}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Conflicts</ThemedText>
@@ -267,19 +267,19 @@ function OverviewTab({
       </ThemedText>
       <View style={s.kpiRow}>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: overview.equipmentInMaintenance > 0 ? '#F59E0B' : '#22C55E' }]}>
+          <ThemedText style={[s.kpiValue, { color: overview.equipmentInMaintenance > 0 ? '#B8943E' : '#5A8A6E' }]}>
             {overview.equipmentInMaintenance}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Maintenance</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: overview.vendorsExpiring > 0 ? '#F59E0B' : '#22C55E' }]}>
+          <ThemedText style={[s.kpiValue, { color: overview.vendorsExpiring > 0 ? '#B8943E' : '#5A8A6E' }]}>
             {overview.vendorsExpiring}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Expiring</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: overview.vendorsOverdue > 0 ? '#EF4444' : '#22C55E' }]}>
+          <ThemedText style={[s.kpiValue, { color: overview.vendorsOverdue > 0 ? '#B85C5C' : '#5A8A6E' }]}>
             {overview.vendorsOverdue}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Overdue</ThemedText>
@@ -292,13 +292,13 @@ function OverviewTab({
       </ThemedText>
       <View style={s.kpiRow}>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: overview.openPlayerTickets > 0 ? '#F59E0B' : '#22C55E' }]}>
+          <ThemedText style={[s.kpiValue, { color: overview.openPlayerTickets > 0 ? '#B8943E' : '#5A8A6E' }]}>
             {overview.openPlayerTickets}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Open Tickets</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: overview.pendingApprovals > 0 ? '#F59E0B' : '#22C55E' }]}>
+          <ThemedText style={[s.kpiValue, { color: overview.pendingApprovals > 0 ? '#B8943E' : '#5A8A6E' }]}>
             {overview.pendingApprovals}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Approvals</ThemedText>
@@ -447,7 +447,7 @@ function TravelTab({
           <View style={s.travelBadgeRow}>
             <StatusBadge label={`${item.teamSize} TRAVELERS`} color={accentColor} />
             {item.missingDocs > 0 && (
-              <StatusBadge label={`${item.missingDocs} MISSING DOCS`} color="#EF4444" />
+              <StatusBadge label={`${item.missingDocs} MISSING DOCS`} color="#B85C5C" />
             )}
           </View>
           {/* Budget bar */}
@@ -458,7 +458,7 @@ function TravelTab({
                 {formatCurrency(item.spent)} / {formatCurrency(item.budget)}
               </ThemedText>
             </View>
-            <ProgressBar percent={budgetPct} color={budgetPct > 90 ? '#EF4444' : accentColor} />
+            <ProgressBar percent={budgetPct} color={budgetPct > 90 ? '#B85C5C' : accentColor} />
           </View>
         </Pressable>
       );
@@ -501,7 +501,7 @@ function BookingsTab({
             s.card,
             {
               backgroundColor: colors.card,
-              borderColor: item.conflict ? '#EF4444' + '60' : colors.border,
+              borderColor: item.conflict ? '#B85C5C' + '60' : colors.border,
               marginBottom: Spacing.sm,
             },
           ]}
@@ -516,7 +516,7 @@ function BookingsTab({
               </ThemedText>
             </View>
             {item.conflict && (
-              <StatusBadge label="CONFLICT" color="#EF4444" />
+              <StatusBadge label="CONFLICT" color="#B85C5C" />
             )}
           </View>
           <View style={[s.bookingFooter, { borderTopColor: colors.border }]}>
@@ -762,7 +762,7 @@ function AnnouncementsTab({
       const audColor = ANNOUNCEMENT_AUDIENCE_COLORS[item.audience];
       const audLabel = ANNOUNCEMENT_AUDIENCE_LABELS[item.audience];
       const confirmPct = Math.round(item.confirmationRate * 100);
-      const confirmColor = confirmPct >= 100 ? '#22C55E' : confirmPct >= 70 ? '#F59E0B' : '#EF4444';
+      const confirmColor = confirmPct >= 100 ? '#5A8A6E' : confirmPct >= 70 ? '#B8943E' : '#B85C5C';
       return (
         <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border, marginBottom: Spacing.sm }]}>
           <View style={s.announcementCardTop}>
@@ -775,7 +775,7 @@ function AnnouncementsTab({
           <View style={s.announcementBadgeRow}>
             <StatusBadge label={audLabel.toUpperCase()} color={audColor} />
             {item.requiredRead && (
-              <StatusBadge label="REQUIRED" color="#EF4444" />
+              <StatusBadge label="REQUIRED" color="#B85C5C" />
             )}
           </View>
           <View style={[s.announcementFooter, { borderTopColor: colors.border }]}>
@@ -861,10 +861,10 @@ function ApprovalsTab({
               <StatusBadge
                 label={item.urgency.toUpperCase()}
                 color={
-                  item.urgency === 'critical' ? '#EF4444'
-                    : item.urgency === 'high' ? '#F59E0B'
+                  item.urgency === 'critical' ? '#B85C5C'
+                    : item.urgency === 'high' ? '#B8943E'
                       : item.urgency === 'medium' ? ACCENT
-                        : '#A1A1AA'
+                        : '#9C9790'
                 }
               />
             )}
@@ -1066,7 +1066,7 @@ function TripDetailSheet({
         <StatusBadge label={statusLabel.toUpperCase()} color={statusColor} />
         <StatusBadge label={`${trip.teamSize} TRAVELERS`} color={accentColor} />
         {trip.missingDocs > 0 && (
-          <StatusBadge label={`${trip.missingDocs} MISSING DOCS`} color="#EF4444" />
+          <StatusBadge label={`${trip.missingDocs} MISSING DOCS`} color="#B85C5C" />
         )}
       </View>
 
@@ -1087,7 +1087,7 @@ function TripDetailSheet({
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Team Size</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: trip.missingDocs > 0 ? '#EF4444' : '#22C55E' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: trip.missingDocs > 0 ? '#B85C5C' : '#5A8A6E' }]}>
               {trip.missingDocs}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Missing Docs</ThemedText>
@@ -1104,14 +1104,14 @@ function TripDetailSheet({
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Total Budget</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: budgetPct > 90 ? '#EF4444' : colors.text }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: budgetPct > 90 ? '#B85C5C' : colors.text }]}>
               {formatCurrency(trip.spent)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Spent</ThemedText>
           </View>
         </View>
         <View style={{ marginTop: Spacing.sm }}>
-          <ProgressBar percent={budgetPct} color={budgetPct > 90 ? '#EF4444' : accentColor} />
+          <ProgressBar percent={budgetPct} color={budgetPct > 90 ? '#B85C5C' : accentColor} />
         </View>
       </View>
 
@@ -1163,10 +1163,10 @@ function ApprovalDetailSheet({
           <StatusBadge
             label={approval.urgency.toUpperCase()}
             color={
-              approval.urgency === 'critical' ? '#EF4444'
-                : approval.urgency === 'high' ? '#F59E0B'
+              approval.urgency === 'critical' ? '#B85C5C'
+                : approval.urgency === 'high' ? '#B8943E'
                   : approval.urgency === 'medium' ? ACCENT
-                    : '#A1A1AA'
+                    : '#9C9790'
             }
           />
         )}

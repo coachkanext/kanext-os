@@ -902,8 +902,8 @@ const POLICY_UPDATES: PolicyUpdate[] = [
 ];
 
 const CHANGE_TYPE_COLOR: Record<string, string> = {
-  new: '#22C55E',
-  major_revision: '#F59E0B',
+  new: '#5A8A6E',
+  major_revision: '#B8943E',
   minor_update: ACCENT,
   review_scheduled: ACCENT,
 };
@@ -1028,17 +1028,17 @@ const ENFORCEMENT_ACTIONS: EnforcementAction[] = [
 ];
 
 const ENFORCEMENT_STATUS_COLOR: Record<string, string> = {
-  active: '#F59E0B',
-  resolved: '#22C55E',
+  active: '#B8943E',
+  resolved: '#5A8A6E',
   appeal_pending: ACCENT,
-  under_investigation: '#EF4444',
+  under_investigation: '#B85C5C',
 };
 
 const ENFORCEMENT_SEVERITY_COLOR: Record<string, string> = {
-  low: '#A1A1AA',
-  moderate: '#F59E0B',
-  high: '#F59E0B',
-  critical: '#EF4444',
+  low: '#9C9790',
+  moderate: '#B8943E',
+  high: '#B8943E',
+  critical: '#B85C5C',
 };
 
 // =============================================================================
@@ -1153,9 +1153,9 @@ const COMPLIANCE_AREAS: ComplianceArea[] = [
 ];
 
 const COMPLIANCE_STATUS_COLOR: Record<string, string> = {
-  compliant: '#22C55E',
-  at_risk: '#F59E0B',
-  non_compliant: '#EF4444',
+  compliant: '#5A8A6E',
+  at_risk: '#B8943E',
+  non_compliant: '#B85C5C',
   under_review: ACCENT,
 };
 
@@ -1178,10 +1178,10 @@ const AUDIT_SCHEDULE: AuditItem[] = [
 ];
 
 const AUDIT_STATUS_COLOR: Record<string, string> = {
-  completed: '#22C55E',
+  completed: '#5A8A6E',
   in_progress: ACCENT,
-  scheduled: '#A1A1AA',
-  overdue: '#EF4444',
+  scheduled: '#9C9790',
+  overdue: '#B85C5C',
 };
 
 // =============================================================================
@@ -1302,30 +1302,30 @@ const POLICY_CATEGORY_LABEL: Record<string, string> = {
 
 const POLICY_CATEGORY_COLOR: Record<string, string> = {
   academic: ACCENT,
-  conduct: '#F59E0B',
-  safety: '#EF4444',
+  conduct: '#B8943E',
+  safety: '#B85C5C',
   hr: ACCENT,
   it: ACCENT,
-  financial: '#22C55E',
+  financial: '#5A8A6E',
 };
 
 const POLICY_STATUS_COLOR: Record<string, string> = {
-  active: '#22C55E',
+  active: '#5A8A6E',
   draft: ACCENT,
-  under_review: '#F59E0B',
-  archived: '#A1A1AA',
+  under_review: '#B8943E',
+  archived: '#9C9790',
 };
 
 const SEVERITY_COLOR: Record<string, string> = {
-  minor: '#F59E0B',
-  major: '#F59E0B',
-  critical: '#EF4444',
+  minor: '#B8943E',
+  major: '#B8943E',
+  critical: '#B85C5C',
 };
 
 const DOC_STATUS_COLOR: Record<string, string> = {
-  published: '#22C55E',
+  published: '#5A8A6E',
   draft: ACCENT,
-  internal: '#F59E0B',
+  internal: '#B8943E',
 };
 
 // =============================================================================
@@ -1480,8 +1480,8 @@ function PolicyLibraryView({ colors, role }: { colors: typeof Colors.light; role
                       {policy.title}
                     </ThemedText>
                     <View style={s.policyBadgeRow}>
-                      <View style={[s.categoryBadge, { backgroundColor: (POLICY_CATEGORY_COLOR[policy.category] || '#A1A1AA') + '20' }]}>
-                        <ThemedText style={[s.categoryText, { color: POLICY_CATEGORY_COLOR[policy.category] || '#A1A1AA' }]}>
+                      <View style={[s.categoryBadge, { backgroundColor: (POLICY_CATEGORY_COLOR[policy.category] || '#9C9790') + '20' }]}>
+                        <ThemedText style={[s.categoryText, { color: POLICY_CATEGORY_COLOR[policy.category] || '#9C9790' }]}>
                           {POLICY_CATEGORY_LABEL[policy.category] || policy.category}
                         </ThemedText>
                       </View>
@@ -1565,7 +1565,7 @@ function AcknowledgementsView({ colors, role }: { colors: typeof Colors.light; r
               label="Avg Completion"
               value={`${Math.round(visibleAcks.reduce((a, b) => a + Math.round((b.completed / b.totalRequired) * 100), 0) / visibleAcks.length)}%`}
               colors={colors}
-              valueColor="#22C55E"
+              valueColor="#5A8A6E"
             />
             <StatBox
               label="Overdue"
@@ -1574,7 +1574,7 @@ function AcknowledgementsView({ colors, role }: { colors: typeof Colors.light; r
                 return rate < 80;
               }).length)}
               colors={colors}
-              valueColor="#F59E0B"
+              valueColor="#B8943E"
             />
           </View>
         </Card>
@@ -1584,7 +1584,7 @@ function AcknowledgementsView({ colors, role }: { colors: typeof Colors.light; r
       {visibleAcks.map((ack) => {
         const rate = Math.round((ack.completed / ack.totalRequired) * 100);
         const isExpanded = expandedId === ack.id;
-        const barColor = rate >= 90 ? '#22C55E' : rate >= 70 ? '#F59E0B' : '#EF4444';
+        const barColor = rate >= 90 ? '#5A8A6E' : rate >= 70 ? '#B8943E' : '#B85C5C';
 
         return (
           <Pressable
@@ -1622,7 +1622,7 @@ function AcknowledgementsView({ colors, role }: { colors: typeof Colors.light; r
                       <View key={i} style={s.ackDeptRow}>
                         <ThemedText style={[s.ackDeptName, { color: colors.textSecondary }]} numberOfLines={1}>{dept.name}</ThemedText>
                         <View style={s.ackDeptBar}>
-                          <ProgressBar percentage={deptRate} color={deptRate >= 90 ? '#22C55E' : deptRate >= 70 ? '#F59E0B' : '#EF4444'} colors={colors} />
+                          <ProgressBar percentage={deptRate} color={deptRate >= 90 ? '#5A8A6E' : deptRate >= 70 ? '#B8943E' : '#B85C5C'} colors={colors} />
                         </View>
                         <ThemedText style={[s.ackDeptRate, { color: colors.textTertiary }]}>{deptRate}%</ThemedText>
                       </View>
@@ -1637,7 +1637,7 @@ function AcknowledgementsView({ colors, role }: { colors: typeof Colors.light; r
                       <View key={i} style={s.ackDeptRow}>
                         <ThemedText style={[s.ackDeptName, { color: colors.textSecondary }]} numberOfLines={1}>{r.role}</ThemedText>
                         <View style={s.ackDeptBar}>
-                          <ProgressBar percentage={roleRate} color={roleRate >= 90 ? '#22C55E' : roleRate >= 70 ? '#F59E0B' : '#EF4444'} colors={colors} />
+                          <ProgressBar percentage={roleRate} color={roleRate >= 90 ? '#5A8A6E' : roleRate >= 70 ? '#B8943E' : '#B85C5C'} colors={colors} />
                         </View>
                         <ThemedText style={[s.ackDeptRate, { color: colors.textTertiary }]}>{roleRate}%</ThemedText>
                       </View>
@@ -1666,7 +1666,7 @@ function PolicyUpdatesView({ colors, role }: { colors: typeof Colors.light; role
 
       {POLICY_UPDATES.map((update) => {
         const isExpanded = expandedId === update.id;
-        const typeColor = CHANGE_TYPE_COLOR[update.changeType] || '#A1A1AA';
+        const typeColor = CHANGE_TYPE_COLOR[update.changeType] || '#9C9790';
 
         return (
           <Pressable
@@ -1749,10 +1749,10 @@ function EnforcementView({ colors, role }: { colors: typeof Colors.light; role: 
       {/* Summary strip */}
       <Card colors={colors}>
         <View style={s.statsRow}>
-          <StatBox label="Active" value={String(totalActive)} colors={colors} valueColor="#F59E0B" />
+          <StatBox label="Active" value={String(totalActive)} colors={colors} valueColor="#B8943E" />
           <StatBox label="Appeals" value={String(totalAppeals)} colors={colors} valueColor={ACCENT} />
-          <StatBox label="Resolved" value={String(totalResolved)} colors={colors} valueColor="#22C55E" />
-          <StatBox label="Critical" value={String(totalCritical)} colors={colors} valueColor="#EF4444" />
+          <StatBox label="Resolved" value={String(totalResolved)} colors={colors} valueColor="#5A8A6E" />
+          <StatBox label="Critical" value={String(totalCritical)} colors={colors} valueColor="#B85C5C" />
         </View>
       </Card>
 
@@ -1783,8 +1783,8 @@ function EnforcementView({ colors, role }: { colors: typeof Colors.light; role: 
       <SectionHeader title="ENFORCEMENT ACTIONS" colors={colors} count={filtered.length} />
 
       {filtered.map((action) => {
-        const statusColor = ENFORCEMENT_STATUS_COLOR[action.status] || '#A1A1AA';
-        const sevColor = ENFORCEMENT_SEVERITY_COLOR[action.severity] || '#A1A1AA';
+        const statusColor = ENFORCEMENT_STATUS_COLOR[action.status] || '#9C9790';
+        const sevColor = ENFORCEMENT_SEVERITY_COLOR[action.severity] || '#9C9790';
 
         return (
           <Card key={action.id} colors={colors}>
@@ -1849,9 +1849,9 @@ function ComplianceDashboardView({ colors, role }: { colors: typeof Colors.light
       {/* Overview strip */}
       <Card colors={colors}>
         <View style={s.statsRow}>
-          <StatBox label="Avg Score" value={`${avgScore}%`} colors={colors} valueColor={avgScore >= 90 ? '#22C55E' : '#F59E0B'} />
-          <StatBox label="Training Avg" value={`${avgTraining}%`} colors={colors} valueColor={avgTraining >= 90 ? '#22C55E' : '#F59E0B'} />
-          <StatBox label="Open Findings" value={String(totalOpenFindings)} colors={colors} valueColor={totalOpenFindings === 0 ? '#22C55E' : '#F59E0B'} />
+          <StatBox label="Avg Score" value={`${avgScore}%`} colors={colors} valueColor={avgScore >= 90 ? '#5A8A6E' : '#B8943E'} />
+          <StatBox label="Training Avg" value={`${avgTraining}%`} colors={colors} valueColor={avgTraining >= 90 ? '#5A8A6E' : '#B8943E'} />
+          <StatBox label="Open Findings" value={String(totalOpenFindings)} colors={colors} valueColor={totalOpenFindings === 0 ? '#5A8A6E' : '#B8943E'} />
           {!isLimited && (
             <StatBox label="Areas" value={String(COMPLIANCE_AREAS.length)} colors={colors} />
           )}
@@ -1863,7 +1863,7 @@ function ComplianceDashboardView({ colors, role }: { colors: typeof Colors.light
 
       {COMPLIANCE_AREAS.map((area) => {
         const isExpanded = expandedId === area.id;
-        const statusColor = COMPLIANCE_STATUS_COLOR[area.status] || '#A1A1AA';
+        const statusColor = COMPLIANCE_STATUS_COLOR[area.status] || '#9C9790';
 
         return (
           <Pressable
@@ -1885,7 +1885,7 @@ function ComplianceDashboardView({ colors, role }: { colors: typeof Colors.light
                         {area.status.replace(/_/g, ' ').toUpperCase()}
                       </ThemedText>
                     </View>
-                    <ThemedText style={[s.compScore, { color: area.score >= 90 ? '#22C55E' : area.score >= 70 ? '#F59E0B' : '#EF4444' }]}>
+                    <ThemedText style={[s.compScore, { color: area.score >= 90 ? '#5A8A6E' : area.score >= 70 ? '#B8943E' : '#B85C5C' }]}>
                       {area.score}%
                     </ThemedText>
                   </View>
@@ -1896,7 +1896,7 @@ function ComplianceDashboardView({ colors, role }: { colors: typeof Colors.light
               <View style={s.compBarRow}>
                 <ThemedText style={[s.compBarLabel, { color: colors.textTertiary }]}>Training</ThemedText>
                 <View style={s.compBar}>
-                  <ProgressBar percentage={area.trainingCompletion} color={area.trainingCompletion >= 90 ? '#22C55E' : area.trainingCompletion >= 70 ? '#F59E0B' : '#EF4444'} colors={colors} />
+                  <ProgressBar percentage={area.trainingCompletion} color={area.trainingCompletion >= 90 ? '#5A8A6E' : area.trainingCompletion >= 70 ? '#B8943E' : '#B85C5C'} colors={colors} />
                 </View>
                 <ThemedText style={[s.compBarValue, { color: colors.textSecondary }]}>{area.trainingCompletion}%</ThemedText>
               </View>
@@ -1916,7 +1916,7 @@ function ComplianceDashboardView({ colors, role }: { colors: typeof Colors.light
 
                   <ThemedText style={[s.compMetricsLabel, { color: colors.text }]}>Key Metrics:</ThemedText>
                   {area.keyMetrics.map((metric, i) => {
-                    const metricColor = metric.status === 'good' ? '#22C55E' : metric.status === 'warn' ? '#F59E0B' : '#EF4444';
+                    const metricColor = metric.status === 'good' ? '#5A8A6E' : metric.status === 'warn' ? '#B8943E' : '#B85C5C';
                     return (
                       <View key={i} style={s.compMetricRow}>
                         <View style={[s.statusDot, { backgroundColor: metricColor, marginTop: 4 }]} />
@@ -1938,7 +1938,7 @@ function ComplianceDashboardView({ colors, role }: { colors: typeof Colors.light
           <SectionHeader title="AUDIT SCHEDULE" colors={colors} count={AUDIT_SCHEDULE.length} />
           <Card colors={colors}>
             {AUDIT_SCHEDULE.map((audit, idx) => {
-              const auditColor = AUDIT_STATUS_COLOR[audit.status] || '#A1A1AA';
+              const auditColor = AUDIT_STATUS_COLOR[audit.status] || '#9C9790';
               return (
                 <View
                   key={audit.id}
@@ -1988,7 +1988,7 @@ function PolicyPacksView({ colors, role }: { colors: typeof Colors.light; role: 
 
       {visiblePacks.map((pack) => {
         const isExpanded = expandedId === pack.id;
-        const barColor = pack.completionRate >= 80 ? '#22C55E' : pack.completionRate >= 50 ? '#F59E0B' : '#EF4444';
+        const barColor = pack.completionRate >= 80 ? '#5A8A6E' : pack.completionRate >= 50 ? '#B8943E' : '#B85C5C';
         const ackCount = pack.requiredReadings.filter((r) => r.acknowledged).length;
         const totalRequired = pack.requiredReadings.filter((r) => r.required).length;
         const totalMinutes = pack.requiredReadings.reduce((a, b) => a + b.estimatedMinutes, 0);
@@ -2027,13 +2027,13 @@ function PolicyPacksView({ colors, role }: { colors: typeof Colors.light; role: 
                 <View style={s.packExpanded}>
                   <ThemedText style={[s.packReadingsLabel, { color: colors.text }]}>Required Readings:</ThemedText>
                   {pack.requiredReadings.map((reading) => {
-                    const catColor = POLICY_CATEGORY_COLOR[reading.category] || '#A1A1AA';
+                    const catColor = POLICY_CATEGORY_COLOR[reading.category] || '#9C9790';
                     return (
                       <View key={reading.id} style={s.readingRow}>
                         <IconSymbol
                           name={reading.acknowledged ? 'checkmark.circle.fill' : 'circle' as any}
                           size={16}
-                          color={reading.acknowledged ? '#22C55E' : colors.textTertiary}
+                          color={reading.acknowledged ? '#5A8A6E' : colors.textTertiary}
                         />
                         <View style={{ flex: 1 }}>
                           <ThemedText
@@ -2056,7 +2056,7 @@ function PolicyPacksView({ colors, role }: { colors: typeof Colors.light; role: 
                               ~{reading.estimatedMinutes} min
                             </ThemedText>
                             {reading.required && (
-                              <ThemedText style={[s.readingRequired, { color: '#EF4444' }]}>Required</ThemedText>
+                              <ThemedText style={[s.readingRequired, { color: '#B85C5C' }]}>Required</ThemedText>
                             )}
                           </View>
                         </View>

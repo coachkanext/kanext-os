@@ -45,10 +45,10 @@ const OPS_PILLS: { key: OpsPill; label: string }[] = [
 ];
 
 const SESSION_STATUS_COLOR: Record<RaceWeekSession['status'], string> = {
-  completed: '#22C55E',
-  live: '#F59E0B',
-  upcoming: '#A1A1AA',
-  delayed: '#EF4444',
+  completed: '#5A8A6E',
+  live: '#B8943E',
+  upcoming: '#9C9790',
+  delayed: '#B85C5C',
 };
 
 const SESSION_TYPE_LABEL: Record<RaceWeekSession['type'], string> = {
@@ -61,14 +61,14 @@ const SESSION_TYPE_LABEL: Record<RaceWeekSession['type'], string> = {
 
 const SEVERITY_COLOR: Record<RaceIncident['severity'], string> = {
   minor: ACCENT,
-  moderate: '#F59E0B',
-  major: '#EF4444',
+  moderate: '#B8943E',
+  major: '#B85C5C',
 };
 
 const INCIDENT_STATUS_COLOR: Record<RaceIncident['status'], string> = {
-  under_review: '#F59E0B',
-  decided: '#22C55E',
-  no_action: '#A1A1AA',
+  under_review: '#B8943E',
+  decided: '#5A8A6E',
+  no_action: '#9C9790',
 };
 
 const INCIDENT_STATUS_LABEL: Record<RaceIncident['status'], string> = {
@@ -78,23 +78,23 @@ const INCIDENT_STATUS_LABEL: Record<RaceIncident['status'], string> = {
 };
 
 const CHECK_STATUS_ICON: Record<'pass' | 'fail' | 'pending', { name: 'checkmark.circle.fill' | 'xmark.circle.fill' | 'clock.fill'; color: string }> = {
-  pass: { name: 'checkmark.circle.fill', color: '#22C55E' },
-  fail: { name: 'xmark.circle.fill', color: '#EF4444' },
-  pending: { name: 'clock.fill', color: '#F59E0B' },
+  pass: { name: 'checkmark.circle.fill', color: '#5A8A6E' },
+  fail: { name: 'xmark.circle.fill', color: '#B85C5C' },
+  pending: { name: 'clock.fill', color: '#B8943E' },
 };
 
 const URGENCY_COLOR: Record<string, string> = {
-  critical: '#EF4444',
-  high: '#F59E0B',
+  critical: '#B85C5C',
+  high: '#B8943E',
   normal: ACCENT,
 };
 
 const RANK_COLOR: Record<number, string> = {
-  1: '#F59E0B',
-  2: '#F59E0B',
-  3: '#F59E0B',
-  4: '#A1A1AA',
-  5: '#A1A1AA',
+  1: '#B8943E',
+  2: '#B8943E',
+  3: '#B8943E',
+  4: '#9C9790',
+  5: '#9C9790',
 };
 
 // =============================================================================
@@ -131,8 +131,8 @@ function CEOTop5Strip({ colors }: { colors: typeof Colors.light }) {
   return (
     <View style={styles.top5Container}>
       {CEO_TOP_5.map((item) => {
-        const sevColor = CEO_SEVERITY_COLOR[item.severity] ?? '#A1A1AA';
-        const rankColor = RANK_COLOR[item.rank] ?? '#A1A1AA';
+        const sevColor = CEO_SEVERITY_COLOR[item.severity] ?? '#9C9790';
+        const rankColor = RANK_COLOR[item.rank] ?? '#9C9790';
 
         return (
           <View
@@ -270,7 +270,7 @@ function ReadinessSection({ colors }: { colors: typeof Colors.light }) {
         </ThemedText>
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <ThemedText style={[styles.statValue, { color: '#22C55E' }]}>
+            <ThemedText style={[styles.statValue, { color: '#5A8A6E' }]}>
               {readyCount}
             </ThemedText>
             <ThemedText style={[styles.statLabel, { color: colors.textTertiary }]}>
@@ -278,7 +278,7 @@ function ReadinessSection({ colors }: { colors: typeof Colors.light }) {
             </ThemedText>
           </View>
           <View style={styles.statItem}>
-            <ThemedText style={[styles.statValue, { color: '#EF4444' }]}>
+            <ThemedText style={[styles.statValue, { color: '#B85C5C' }]}>
               {notReadyCount}
             </ThemedText>
             <ThemedText style={[styles.statLabel, { color: colors.textTertiary }]}>
@@ -315,14 +315,14 @@ function ReadinessSection({ colors }: { colors: typeof Colors.light }) {
                 style={[
                   styles.readyBadge,
                   {
-                    backgroundColor: team.overallReady ? '#22C55E20' : '#EF444420',
+                    backgroundColor: team.overallReady ? '#5A8A6E20' : '#B85C5C20',
                   },
                 ]}
               >
                 <ThemedText
                   style={[
                     styles.readyBadgeText,
-                    { color: team.overallReady ? '#22C55E' : '#EF4444' },
+                    { color: team.overallReady ? '#5A8A6E' : '#B85C5C' },
                   ]}
                 >
                   {team.overallReady ? 'READY' : 'NOT READY'}
@@ -367,7 +367,7 @@ function IncidentsSection({ colors }: { colors: typeof Colors.light }) {
         </ThemedText>
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <ThemedText style={[styles.statValue, { color: '#EF4444' }]}>
+            <ThemedText style={[styles.statValue, { color: '#B85C5C' }]}>
               {majorCount}
             </ThemedText>
             <ThemedText style={[styles.statLabel, { color: colors.textTertiary }]}>
@@ -375,7 +375,7 @@ function IncidentsSection({ colors }: { colors: typeof Colors.light }) {
             </ThemedText>
           </View>
           <View style={styles.statItem}>
-            <ThemedText style={[styles.statValue, { color: '#F59E0B' }]}>
+            <ThemedText style={[styles.statValue, { color: '#B8943E' }]}>
               {moderateCount}
             </ThemedText>
             <ThemedText style={[styles.statLabel, { color: colors.textTertiary }]}>
@@ -476,8 +476,8 @@ function ApprovalsSection({ colors }: { colors: typeof Colors.light }) {
       </View>
 
       {CEO_APPROVALS.map((approval) => {
-        const catColor = APPROVAL_CATEGORY_COLOR[approval.category] ?? '#A1A1AA';
-        const urgColor = URGENCY_COLOR[approval.urgency] ?? '#A1A1AA';
+        const catColor = APPROVAL_CATEGORY_COLOR[approval.category] ?? '#9C9790';
+        const urgColor = URGENCY_COLOR[approval.urgency] ?? '#9C9790';
         const isPending = approval.status === 'pending';
 
         return (
@@ -508,7 +508,7 @@ function ApprovalsSection({ colors }: { colors: typeof Colors.light }) {
                     styles.badge,
                     {
                       backgroundColor:
-                        approval.status === 'approved' ? '#22C55E20' : '#EF444420',
+                        approval.status === 'approved' ? '#5A8A6E20' : '#B85C5C20',
                     },
                   ]}
                 >
@@ -516,7 +516,7 @@ function ApprovalsSection({ colors }: { colors: typeof Colors.light }) {
                     style={[
                       styles.badgeText,
                       {
-                        color: approval.status === 'approved' ? '#22C55E' : '#EF4444',
+                        color: approval.status === 'approved' ? '#5A8A6E' : '#B85C5C',
                       },
                     ]}
                   >
@@ -542,18 +542,18 @@ function ApprovalsSection({ colors }: { colors: typeof Colors.light }) {
             {isPending && (
               <View style={styles.approvalActions}>
                 <Pressable
-                  style={[styles.approveButton, { backgroundColor: '#22C55E20' }]}
+                  style={[styles.approveButton, { backgroundColor: '#5A8A6E20' }]}
                   onPress={handleApprove}
                 >
-                  <ThemedText style={[styles.actionButtonText, { color: '#22C55E' }]}>
+                  <ThemedText style={[styles.actionButtonText, { color: '#5A8A6E' }]}>
                     Approve
                   </ThemedText>
                 </Pressable>
                 <Pressable
-                  style={[styles.denyButton, { backgroundColor: '#EF444420' }]}
+                  style={[styles.denyButton, { backgroundColor: '#B85C5C20' }]}
                   onPress={handleDeny}
                 >
-                  <ThemedText style={[styles.actionButtonText, { color: '#EF4444' }]}>
+                  <ThemedText style={[styles.actionButtonText, { color: '#B85C5C' }]}>
                     Deny
                   </ThemedText>
                 </Pressable>
@@ -583,8 +583,8 @@ function BulletinsSection({ colors }: { colors: typeof Colors.light }) {
       </View>
 
       {BULLETINS.map((bulletin) => {
-        const typeColor = BULLETIN_TYPE_COLOR[bulletin.type] ?? '#A1A1AA';
-        const statusColor = BULLETIN_STATUS_COLOR[bulletin.status] ?? '#A1A1AA';
+        const typeColor = BULLETIN_TYPE_COLOR[bulletin.type] ?? '#9C9790';
+        const statusColor = BULLETIN_STATUS_COLOR[bulletin.status] ?? '#9C9790';
         const isDraft = bulletin.status === 'draft';
         const isPublished = bulletin.status === 'published';
 
@@ -596,7 +596,7 @@ function BulletinsSection({ colors }: { colors: typeof Colors.light }) {
               {
                 backgroundColor: colors.card,
                 borderColor: isDraft ? colors.border : colors.border,
-                borderLeftColor: isPublished ? '#22C55E' : colors.border,
+                borderLeftColor: isPublished ? '#5A8A6E' : colors.border,
                 borderLeftWidth: isPublished ? 3 : 1,
               },
             ]}
@@ -655,12 +655,12 @@ function ExecutiveSnapshot({ colors }: { colors: typeof Colors.light }) {
   const openIncidents = EVENT_INCIDENTS.filter((i) => i.status === 'under_review').length;
 
   const snapItems: { label: string; value: string; color: string }[] = [
-    { label: 'Blockers', value: String(blockerTasks.length), color: blockerTasks.length > 0 ? '#EF4444' : '#22C55E' },
-    { label: 'Approvals Queue', value: String(pendingApprovals), color: pendingApprovals > 0 ? '#F59E0B' : '#22C55E' },
-    { label: 'Integrity Signals', value: String(openIncidents), color: openIncidents > 0 ? '#EF4444' : '#22C55E' },
-    { label: 'Payouts Ready', value: `${releasedPayouts}/${PAYOUT_ITEMS.length}`, color: holdPayouts > 0 ? '#F59E0B' : '#22C55E' },
-    { label: 'Broadcast Health', value: 'On Track', color: '#22C55E' },
-    { label: 'Sponsor Delivery', value: atRiskDeliverables > 0 ? `${atRiskDeliverables} at risk` : 'On Track', color: atRiskDeliverables > 0 ? '#F59E0B' : '#22C55E' },
+    { label: 'Blockers', value: String(blockerTasks.length), color: blockerTasks.length > 0 ? '#B85C5C' : '#5A8A6E' },
+    { label: 'Approvals Queue', value: String(pendingApprovals), color: pendingApprovals > 0 ? '#B8943E' : '#5A8A6E' },
+    { label: 'Integrity Signals', value: String(openIncidents), color: openIncidents > 0 ? '#B85C5C' : '#5A8A6E' },
+    { label: 'Payouts Ready', value: `${releasedPayouts}/${PAYOUT_ITEMS.length}`, color: holdPayouts > 0 ? '#B8943E' : '#5A8A6E' },
+    { label: 'Broadcast Health', value: 'On Track', color: '#5A8A6E' },
+    { label: 'Sponsor Delivery', value: atRiskDeliverables > 0 ? `${atRiskDeliverables} at risk` : 'On Track', color: atRiskDeliverables > 0 ? '#B8943E' : '#5A8A6E' },
   ];
 
   return (
@@ -685,7 +685,7 @@ function ExecutiveSnapshot({ colors }: { colors: typeof Colors.light }) {
           </ThemedText>
           {blockerTasks.slice(0, 3).map((task) => (
             <View key={task.id} style={styles.blockerItem}>
-              <View style={[styles.blockerDot, { backgroundColor: '#EF4444' }]} />
+              <View style={[styles.blockerDot, { backgroundColor: '#B85C5C' }]} />
               <ThemedText style={[styles.blockerItemText, { color: colors.text }]} numberOfLines={1}>
                 {task.title}
               </ThemedText>
@@ -704,7 +704,7 @@ function ExecutiveSnapshot({ colors }: { colors: typeof Colors.light }) {
         </ThemedText>
         {OPS_TASKS.filter((t) => t.status !== 'done').slice(0, 3).map((task) => (
           <View key={task.id} style={styles.blockerItem}>
-            <View style={[styles.blockerDot, { backgroundColor: task.status === 'blocker' ? '#EF4444' : '#F59E0B' }]} />
+            <View style={[styles.blockerDot, { backgroundColor: task.status === 'blocker' ? '#B85C5C' : '#B8943E' }]} />
             <ThemedText style={[styles.blockerItemText, { color: colors.text }]} numberOfLines={1}>
               {task.title}
             </ThemedText>
@@ -727,8 +727,8 @@ function CommandPanels({ colors }: { colors: typeof Colors.light }) {
   const tiles: { title: string; icon: string; count: number; color: string }[] = [
     { title: 'Ops Command', icon: 'antenna.radiowaves.left.and.right', count: OPS_TASKS.filter((t) => t.status !== 'done').length, color: ACCENT },
     { title: 'Tech & Compliance', icon: 'checkmark.shield.fill', count: TEAM_READINESS.filter((t) => !t.overallReady).length, color: ACCENT },
-    { title: 'Broadcast Ops', icon: 'play.rectangle.fill', count: 0, color: '#F59E0B' },
-    { title: 'Sponsor Delivery', icon: 'gift.fill', count: SPONSOR_DELIVERABLES.filter((d) => d.status === 'at_risk').length, color: '#22C55E' },
+    { title: 'Broadcast Ops', icon: 'play.rectangle.fill', count: 0, color: '#B8943E' },
+    { title: 'Sponsor Delivery', icon: 'gift.fill', count: SPONSOR_DELIVERABLES.filter((d) => d.status === 'at_risk').length, color: '#5A8A6E' },
   ];
 
   return (
@@ -770,10 +770,10 @@ function ParticipantsBlock({ colors }: { colors: typeof Colors.light }) {
   const entries = ENTRANT_LIST.filter((e) => e.seriesId === 'series-k1').slice(0, 8);
 
   const ENTRANT_STATUS_COLOR: Record<string, string> = {
-    active: '#22C55E',
-    under_review: '#F59E0B',
-    suspended: '#EF4444',
-    withdrawn: '#A1A1AA',
+    active: '#5A8A6E',
+    under_review: '#B8943E',
+    suspended: '#B85C5C',
+    withdrawn: '#9C9790',
   };
 
   return (
@@ -782,7 +782,7 @@ function ParticipantsBlock({ colors }: { colors: typeof Colors.light }) {
         Participants & Teams
       </ThemedText>
       {entries.map((entry: EntrantObject) => {
-        const statusColor = ENTRANT_STATUS_COLOR[entry.status] ?? '#A1A1AA';
+        const statusColor = ENTRANT_STATUS_COLOR[entry.status] ?? '#9C9790';
         return (
           <View key={entry.id} style={[styles.entrantRow, { borderBottomColor: colors.border }]}>
             <View style={[styles.entrantDot, { backgroundColor: entry.teamColor }]} />
@@ -801,8 +801,8 @@ function ParticipantsBlock({ colors }: { colors: typeof Colors.light }) {
                 </ThemedText>
               </View>
               {entry.atRiskFlags.length > 0 && (
-                <View style={[styles.badge, { backgroundColor: '#EF444420' }]}>
-                  <ThemedText style={[styles.badgeText, { color: '#EF4444' }]}>
+                <View style={[styles.badge, { backgroundColor: '#B85C5C20' }]}>
+                  <ThemedText style={[styles.badgeText, { color: '#B85C5C' }]}>
                     {entry.atRiskFlags.length} FLAG{entry.atRiskFlags.length !== 1 ? 'S' : ''}
                   </ThemedText>
                 </View>
@@ -822,8 +822,8 @@ function ParticipantsBlock({ colors }: { colors: typeof Colors.light }) {
 function IncidentsRequestsBlock({ colors }: { colors: typeof Colors.light }) {
   const incidents = EVENT_INCIDENTS;
   const INCIDENT_TYPE_COLOR: Record<string, string> = {
-    protest: '#F59E0B',
-    penalty: '#EF4444',
+    protest: '#B8943E',
+    penalty: '#B85C5C',
     safety: ACCENT,
   };
 
@@ -833,8 +833,8 @@ function IncidentsRequestsBlock({ colors }: { colors: typeof Colors.light }) {
         Incidents & Requests
       </ThemedText>
       {incidents.map((incident: EventIncident) => {
-        const typeColor = INCIDENT_TYPE_COLOR[incident.type] ?? '#A1A1AA';
-        const statusColor = incident.status === 'decided' ? '#22C55E' : incident.status === 'under_review' ? '#F59E0B' : '#A1A1AA';
+        const typeColor = INCIDENT_TYPE_COLOR[incident.type] ?? '#9C9790';
+        const statusColor = incident.status === 'decided' ? '#5A8A6E' : incident.status === 'under_review' ? '#B8943E' : '#9C9790';
         return (
           <View key={incident.id} style={[styles.incidentBlockRow, { borderBottomColor: colors.border }]}>
             <View style={styles.incidentBlockInfo}>
@@ -1365,7 +1365,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingTop: 10,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#A1A1AA30',
+    borderTopColor: '#9C979030',
     gap: 6,
   },
   blockersListTitle: {

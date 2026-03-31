@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
   },
   roleLabel: {
     fontSize: 12,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   roleValue: {
     fontSize: 16,

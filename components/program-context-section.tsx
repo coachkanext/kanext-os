@@ -812,7 +812,7 @@ export function ProgramContextSection() {
                           styles.focusPill,
                           {
                             backgroundColor:
-                              item.status === 'Critical' ? '#52525B' + '15' : '#A1A1AA' + '15',
+                              item.status === 'Critical' ? '#52525B' + '15' : '#9C9790' + '15',
                           },
                         ]}
                       >
@@ -820,7 +820,7 @@ export function ProgramContextSection() {
                           style={[
                             styles.focusPillText,
                             {
-                              color: item.status === 'Critical' ? '#FFFFFF' : '#A1A1AA',
+                              color: item.status === 'Critical' ? '#FFFFFF' : '#9C9790',
                             },
                           ]}
                         >

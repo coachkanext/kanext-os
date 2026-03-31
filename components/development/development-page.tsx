@@ -63,7 +63,7 @@ function getStatusLabel(status: ProgressLevel): string {
 function getPriorityColor(rank: number): string {
   if (rank <= 1) return Brand.error;
   if (rank <= 3) return Brand.warning;
-  return '#A1A1AA';
+  return '#9C9790';
 }
 
 function getPriorityLabel(rank: number): string {
@@ -77,13 +77,13 @@ function getEvidenceTagColor(type: string): string {
     case 'clip': return Brand.primary;
     case 'stat': return Brand.success;
     case 'note': return Brand.warning;
-    default: return '#A1A1AA';
+    default: return '#9C9790';
   }
 }
 
 function getEvidenceStatusColor(status: EvidenceStatus): string {
   switch (status) {
-    case 'pending': return '#A1A1AA';
+    case 'pending': return '#9C9790';
     case 'reviewed': return Brand.success;
     case 'flagged': return Brand.error;
   }

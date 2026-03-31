@@ -241,22 +241,22 @@ function EmptyFolder({ colors, label }: { colors: typeof Colors.light; label: st
 // =============================================================================
 
 function getResultColor(result?: 'W' | 'L'): string {
-  if (result === 'W') return '#22C55E';
-  if (result === 'L') return '#EF4444';
-  return '#A1A1AA';
+  if (result === 'W') return '#5A8A6E';
+  if (result === 'L') return '#B85C5C';
+  return '#9C9790';
 }
 
 const TAG_COLORS: Record<string, string> = {
-  Shooting: '#F59E0B',
+  Shooting: '#B8943E',
   Install: '#A855F7',
-  Scrimmage: '#22C55E',
-  'Pre-game': '#1D9BF0',
+  Scrimmage: '#5A8A6E',
+  'Pre-game': '#1A1714',
 };
 
 const SAVED_TYPE_COLORS: Record<string, string> = {
-  game: '#22C55E',
-  clip: '#1D9BF0',
-  practice: '#F59E0B',
+  game: '#5A8A6E',
+  clip: '#1A1714',
+  practice: '#B8943E',
   reel: '#A855F7',
 };
 
@@ -521,7 +521,7 @@ function PracticeContent({
           title={item.title}
           meta={`${item.date} · ${item.duration}`}
           badge={item.tag}
-          badgeColor={item.tag ? (TAG_COLORS[item.tag] ?? '#A1A1AA') : undefined}
+          badgeColor={item.tag ? (TAG_COLORS[item.tag] ?? '#9C9790') : undefined}
           onPress={onTap}
           onLongPress={() => onLongPress(item.title)}
         />
@@ -678,7 +678,7 @@ function SavedContent({
           title={item.title}
           meta={`${item.source} · ${item.date} · ${item.duration}`}
           badge={item.type.toUpperCase()}
-          badgeColor={SAVED_TYPE_COLORS[item.type] ?? '#A1A1AA'}
+          badgeColor={SAVED_TYPE_COLORS[item.type] ?? '#9C9790'}
           onPress={onTap}
           onLongPress={() => onLongPress(item.title)}
         />

@@ -145,8 +145,8 @@ export const CONTROL_CATEGORY_LABEL: Record<ControlCategory, string> = {
 };
 
 export const CONTROL_CATEGORY_COLOR: Record<ControlCategory, string> = {
-  eligibility: '#1D9BF0',
-  'travel-docs': '#1D9BF0',
+  eligibility: '#1A1714',
+  'travel-docs': '#1A1714',
   payments: '#f59e0b',
   training: '#22c55e',
   'data-privacy': '#ef4444',
@@ -175,9 +175,9 @@ export const HOLD_TYPE_LABEL: Record<HoldType, string> = {
 export const HOLD_TYPE_COLOR: Record<HoldType, string> = {
   eligibility: '#ef4444',
   document: '#f59e0b',
-  training: '#1D9BF0',
-  payment: '#1D9BF0',
-  travel: '#A1A1AA',
+  training: '#1A1714',
+  payment: '#1A1714',
+  travel: '#9C9790',
 };
 
 export const HOLD_SEVERITY_LABEL: Record<HoldSeverity, string> = {
@@ -190,8 +190,8 @@ export const HOLD_SEVERITY_LABEL: Record<HoldSeverity, string> = {
 export const HOLD_SEVERITY_COLOR: Record<HoldSeverity, string> = {
   critical: '#ef4444',
   high: '#f59e0b',
-  medium: '#1D9BF0',
-  low: '#A1A1AA',
+  medium: '#1A1714',
+  low: '#9C9790',
 };
 
 export const DEADLINE_AUDIENCE_LABEL: Record<DeadlineAudience, string> = {
@@ -201,8 +201,8 @@ export const DEADLINE_AUDIENCE_LABEL: Record<DeadlineAudience, string> = {
 };
 
 export const DEADLINE_AUDIENCE_COLOR: Record<DeadlineAudience, string> = {
-  staff: '#1D9BF0',
-  players: '#1D9BF0',
+  staff: '#1A1714',
+  players: '#1A1714',
   all: '#22c55e',
 };
 
@@ -213,9 +213,9 @@ export const DEADLINE_TYPE_LABEL: Record<DeadlineType, string> = {
 };
 
 export const DEADLINE_TYPE_COLOR: Record<DeadlineType, string> = {
-  training: '#1D9BF0',
+  training: '#1A1714',
   document: '#f59e0b',
-  attestation: '#1D9BF0',
+  attestation: '#1A1714',
 };
 
 export const EVIDENCE_TYPE_LABEL: Record<EvidenceType, string> = {
@@ -226,9 +226,9 @@ export const EVIDENCE_TYPE_LABEL: Record<EvidenceType, string> = {
 };
 
 export const EVIDENCE_TYPE_COLOR: Record<EvidenceType, string> = {
-  document: '#1D9BF0',
+  document: '#1A1714',
   certificate: '#22c55e',
-  photo: '#1D9BF0',
+  photo: '#1A1714',
   'signed-form': '#f59e0b',
 };
 
@@ -243,7 +243,7 @@ export const EVIDENCE_STATUS_COLOR: Record<EvidenceStatus, string> = {
   accepted: '#22c55e',
   'needs-review': '#f59e0b',
   missing: '#ef4444',
-  stale: '#A1A1AA',
+  stale: '#9C9790',
 };
 
 export const EXCEPTION_STATUS_LABEL: Record<ExceptionStatus, string> = {

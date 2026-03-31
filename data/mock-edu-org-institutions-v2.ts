@@ -80,10 +80,10 @@ export const INSTITUTION_STATUS_LABELS: Record<InstitutionStatus, string> = {
 };
 
 export const INSTITUTION_STATUS_COLORS: Record<InstitutionStatus, string> = {
-  active: '#22C55E',
-  partner: '#1D9BF0',
-  pipeline: '#F59E0B',
-  archived: '#A1A1AA',
+  active: '#5A8A6E',
+  partner: '#1A1714',
+  pipeline: '#B8943E',
+  archived: '#9C9790',
 };
 
 export const INSTITUTION_TYPE_LABELS: Record<InstitutionType, string> = {
@@ -101,9 +101,9 @@ export const INSTITUTION_TYPE_ICONS: Record<InstitutionType, string> = {
 };
 
 export const HEALTH_LEVEL_COLORS: Record<HealthLevel, string> = {
-  green: '#22C55E',
-  yellow: '#F59E0B',
-  red: '#EF4444',
+  green: '#5A8A6E',
+  yellow: '#B8943E',
+  red: '#B85C5C',
 };
 
 export const HEALTH_CATEGORY_LABELS: Record<HealthCategory, string> = {
@@ -134,10 +134,10 @@ export const PIPELINE_STAGE_LABELS: Record<PipelineStage, string> = {
 };
 
 export const PIPELINE_STAGE_COLORS: Record<PipelineStage, string> = {
-  discovery: '#A1A1AA',
-  review: '#F59E0B',
-  loi: '#1D9BF0',
-  active: '#22C55E',
+  discovery: '#9C9790',
+  review: '#B8943E',
+  loi: '#1A1714',
+  active: '#5A8A6E',
 };
 
 export const PRIORITY_LABELS: Record<PriorityLevel, string> = {
@@ -147,9 +147,9 @@ export const PRIORITY_LABELS: Record<PriorityLevel, string> = {
 };
 
 export const PRIORITY_COLORS: Record<PriorityLevel, string> = {
-  highest: '#EF4444',
-  high: '#F59E0B',
-  normal: '#22C55E',
+  highest: '#B85C5C',
+  high: '#B8943E',
+  normal: '#5A8A6E',
 };
 
 export const RISK_LABELS: Record<RiskLevel, string> = {
@@ -159,9 +159,9 @@ export const RISK_LABELS: Record<RiskLevel, string> = {
 };
 
 export const RISK_COLORS: Record<RiskLevel, string> = {
-  at_risk: '#EF4444',
-  needs_review: '#F59E0B',
-  stable: '#22C55E',
+  at_risk: '#B85C5C',
+  needs_review: '#B8943E',
+  stable: '#5A8A6E',
 };
 
 export const TODAY_TYPE_LABELS: Record<TodayItem['type'], string> = {
@@ -173,17 +173,17 @@ export const TODAY_TYPE_LABELS: Record<TodayItem['type'], string> = {
 };
 
 export const TODAY_TYPE_COLORS: Record<TodayItem['type'], string> = {
-  deadline: '#EF4444',
-  inspection: '#F59E0B',
-  batch: '#1D9BF0',
-  meeting: '#1D9BF0',
-  review: '#22C55E',
+  deadline: '#B85C5C',
+  inspection: '#B8943E',
+  batch: '#1A1714',
+  meeting: '#1A1714',
+  review: '#5A8A6E',
 };
 
 export const TODAY_PRIORITY_COLORS: Record<TodayItem['priority'], string> = {
-  urgent: '#EF4444',
-  high: '#F59E0B',
-  normal: '#22C55E',
+  urgent: '#B85C5C',
+  high: '#B8943E',
+  normal: '#5A8A6E',
 };
 
 // =============================================================================

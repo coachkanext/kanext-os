@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   tabCount: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#A1A1AA',
+    color: '#9C9790',
     marginTop: 1,
   },
   tabCountActive: {

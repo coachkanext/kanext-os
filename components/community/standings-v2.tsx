@@ -60,7 +60,7 @@ import type { K1StandingEntry } from '@/data/mock-community';
 
 
 const ACCENT = MODE_ACCENT.competition;
-const ACCENT_GOLD = '#F59E0B';
+const ACCENT_GOLD = '#B8943E';
 
 const VIEW_PILLS: { key: StandingsView; label: string }[] = [
   { key: 'drivers', label: 'Drivers' },
@@ -70,9 +70,9 @@ const VIEW_PILLS: { key: StandingsView; label: string }[] = [
 ];
 
 const PROBABILITY_COLORS: Record<string, string> = {
-  high: '#22C55E',
-  medium: '#F59E0B',
-  low: '#EF4444',
+  high: '#5A8A6E',
+  medium: '#B8943E',
+  low: '#B85C5C',
 };
 
 // =============================================================================
@@ -151,7 +151,7 @@ function FormBadges({ form }: { form: string[] }) {
   return (
     <View style={styles.formRow}>
       {form.slice(-5).map((result, idx) => {
-        const bg = FORM_COLOR[result] ?? '#A1A1AA';
+        const bg = FORM_COLOR[result] ?? '#9C9790';
         return (
           <View key={idx} style={[styles.formSquare, { backgroundColor: bg }]}>
             <ThemedText style={styles.formSquareText}>
@@ -177,7 +177,7 @@ function DeltaIndicator({ delta, colors }: { delta: number; colors: typeof Color
     );
   }
   const isUp = delta > 0;
-  const color = isUp ? '#22C55E' : '#EF4444';
+  const color = isUp ? '#5A8A6E' : '#B85C5C';
   const arrow = isUp ? '\u25B2' : '\u25BC';
   return (
     <ThemedText style={[styles.deltaText, { color }]}>
@@ -271,7 +271,7 @@ function DriversIntegrityView({ colors }: { colors: typeof Colors.light }) {
             <ThemedText
               style={[
                 styles.positionBadge,
-                { color: entry.penaltyPoints > 0 ? '#EF4444' : colors.textTertiary },
+                { color: entry.penaltyPoints > 0 ? '#B85C5C' : colors.textTertiary },
               ]}
             >
               {idx + 1}
@@ -288,7 +288,7 @@ function DriversIntegrityView({ colors }: { colors: typeof Colors.light }) {
             <View style={styles.standingRightExtended}>
               <View style={styles.integrityRightRow}>
                 {entry.penaltyPoints > 0 ? (
-                  <StatusBadge label={`${entry.penaltyPoints} PEN`} color="#EF4444" />
+                  <StatusBadge label={`${entry.penaltyPoints} PEN`} color="#B85C5C" />
                 ) : (
                   <ThemedText style={[styles.cleanBadge, { color: colors.textTertiary }]}>
                     CLEAN
@@ -306,10 +306,10 @@ function DriversIntegrityView({ colors }: { colors: typeof Colors.light }) {
         <View
           style={[
             styles.card,
-            { backgroundColor: '#EF4444' + '10', borderColor: '#EF4444' + '40' },
+            { backgroundColor: '#B85C5C' + '10', borderColor: '#B85C5C' + '40' },
           ]}
         >
-          <ThemedText style={[styles.sectionTitle, { color: '#EF4444' }]}>
+          <ThemedText style={[styles.sectionTitle, { color: '#B85C5C' }]}>
             Integrity Watch
           </ThemedText>
           {flaggedDrivers.map((d) => (
@@ -318,7 +318,7 @@ function DriversIntegrityView({ colors }: { colors: typeof Colors.light }) {
               <ThemedText style={[styles.integrityStripName, { color: colors.text }]}>
                 {d.driverName}
               </ThemedText>
-              <StatusBadge label={`${d.penaltyPoints} pts`} color="#EF4444" />
+              <StatusBadge label={`${d.penaltyPoints} pts`} color="#B85C5C" />
             </View>
           ))}
         </View>
@@ -367,7 +367,7 @@ function DriversMoneyView({ colors }: { colors: typeof Colors.light }) {
           Payout Standings
         </ThemedText>
         {sorted.map((entry: CEODriverStanding, idx: number) => {
-          const tierColor = PAYOUT_TIER_COLOR[entry.payoutTier] ?? '#A1A1AA';
+          const tierColor = PAYOUT_TIER_COLOR[entry.payoutTier] ?? '#9C9790';
           return (
             <View key={entry.driverId} style={styles.standingRow}>
               <ThemedText
@@ -629,7 +629,7 @@ function PointsSwingContent({ colors }: { colors: typeof Colors.light }) {
               </View>
               {/* Table rows */}
               {scenario.impacts.map((impact, idx) => {
-                const deltaColor = impact.delta > 0 ? '#22C55E' : impact.delta < 0 ? '#EF4444' : colors.textTertiary;
+                const deltaColor = impact.delta > 0 ? '#5A8A6E' : impact.delta < 0 ? '#B85C5C' : colors.textTertiary;
                 const deltaPrefix = impact.delta > 0 ? '+' : '';
                 return (
                   <View key={idx} style={styles.impactRow}>
@@ -787,15 +787,15 @@ function LeverageBattlesContent({ colors }: { colors: typeof Colors.light }) {
 // =============================================================================
 
 const GATE_STATE_COLOR: Record<string, string> = {
-  cleared: '#22C55E',
-  pending: '#F59E0B',
-  blocked: '#EF4444',
+  cleared: '#5A8A6E',
+  pending: '#B8943E',
+  blocked: '#B85C5C',
 };
 
 const STANDINGS_STATE_COLOR: Record<StandingsState, string> = {
-  provisional: '#F59E0B',
+  provisional: '#B8943E',
   under_review: ACCENT,
-  official: '#22C55E',
+  official: '#5A8A6E',
 };
 
 function RaceWeekPulseStrip({ colors }: { colors: typeof Colors.light }) {
@@ -817,13 +817,13 @@ function RaceWeekPulseStrip({ colors }: { colors: typeof Colors.light }) {
         </View>
         <View style={styles.pulseItem}>
           <ThemedText style={[styles.pulseLabel, { color: colors.textTertiary }]}>Blockers</ThemedText>
-          <ThemedText style={[styles.pulseValue, { color: blockers.length > 0 ? '#EF4444' : '#22C55E' }]}>
+          <ThemedText style={[styles.pulseValue, { color: blockers.length > 0 ? '#B85C5C' : '#5A8A6E' }]}>
             {blockers.length}
           </ThemedText>
         </View>
         <View style={styles.pulseItem}>
           <ThemedText style={[styles.pulseLabel, { color: colors.textTertiary }]}>Results Lock</ThemedText>
-          <ThemedText style={[styles.pulseValue, { color: allGatesCleared ? '#22C55E' : '#F59E0B' }]}>
+          <ThemedText style={[styles.pulseValue, { color: allGatesCleared ? '#5A8A6E' : '#B8943E' }]}>
             {allGatesCleared ? 'Locked' : 'Pending'}
           </ThemedText>
         </View>
@@ -857,9 +857,9 @@ function GovernedControls({ colors }: { colors: typeof Colors.light }) {
   if (!isFullAccess(role)) return null;
 
   const actions = [
-    { label: 'Lock Results', color: '#22C55E' },
+    { label: 'Lock Results', color: '#5A8A6E' },
     { label: 'Mark Under Review', color: ACCENT },
-    { label: 'Finalize Official', color: '#F59E0B' },
+    { label: 'Finalize Official', color: '#B8943E' },
     { label: 'Initiate Payout Release', color: ACCENT },
   ];
 
@@ -903,7 +903,7 @@ function GatesPanel({ colors }: { colors: typeof Colors.light }) {
         </ThemedText>
       </View>
       {STANDINGS_GATES.map((gate: StandingsGate) => {
-        const gateColor = GATE_STATE_COLOR[gate.status] ?? '#A1A1AA';
+        const gateColor = GATE_STATE_COLOR[gate.status] ?? '#9C9790';
         return (
           <View key={gate.id} style={[styles.gateRow, { borderBottomColor: colors.border }]}>
             <View style={[styles.gateDot, { backgroundColor: gateColor }]} />
@@ -1448,7 +1448,7 @@ const styles = StyleSheet.create({
   penaltyPointsDeducted: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#EF4444',
+    color: '#B85C5C',
   },
   penaltyInfraction: {
     fontSize: 13,

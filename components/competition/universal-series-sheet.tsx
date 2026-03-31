@@ -61,12 +61,12 @@ interface UniversalSeriesSheetProps {
 
 const FORMAT_COLORS: Record<string, string> = {
   league: ACCENT,
-  tournament: '#F59E0B',
+  tournament: '#B8943E',
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  preseason: '#A1A1AA',
-  live: '#22C55E',
+  preseason: '#9C9790',
+  live: '#5A8A6E',
   completed: '#52525B',
   upcoming: ACCENT,
 };
@@ -81,30 +81,30 @@ const OPS_READINESS_ITEMS = [
 ] as const;
 
 const DELIVERABLE_STATUS_COLORS: Record<string, string> = {
-  on_track: '#22C55E',
-  at_risk: '#F59E0B',
-  overdue: '#EF4444',
+  on_track: '#5A8A6E',
+  at_risk: '#B8943E',
+  overdue: '#B85C5C',
   delivered: ACCENT,
 };
 
 const PAYOUT_STATUS_COLORS: Record<string, string> = {
-  released: '#22C55E',
-  pending: '#F59E0B',
-  hold: '#EF4444',
-  locked: '#A1A1AA',
+  released: '#5A8A6E',
+  pending: '#B8943E',
+  hold: '#B85C5C',
+  locked: '#9C9790',
 };
 
 const COMPLIANCE_STATUS_COLORS: Record<string, string> = {
-  approved: '#22C55E',
-  pending: '#F59E0B',
-  flagged: '#EF4444',
-  expired: '#A1A1AA',
+  approved: '#5A8A6E',
+  pending: '#B8943E',
+  flagged: '#B85C5C',
+  expired: '#9C9790',
 };
 
 const EVENT_STATUS_COLORS: Record<string, string> = {
   upcoming: ACCENT,
-  live: '#22C55E',
-  completed: '#A1A1AA',
+  live: '#5A8A6E',
+  completed: '#9C9790',
 };
 
 // =============================================================================
@@ -243,13 +243,13 @@ function SeriesHeader({
         <View
           style={[
             styles.formatPill,
-            { backgroundColor: (FORMAT_COLORS[series.format] ?? '#A1A1AA') + '1A' },
+            { backgroundColor: (FORMAT_COLORS[series.format] ?? '#9C9790') + '1A' },
           ]}
         >
           <ThemedText
             style={[
               styles.formatPillText,
-              { color: FORMAT_COLORS[series.format] ?? '#A1A1AA' },
+              { color: FORMAT_COLORS[series.format] ?? '#9C9790' },
             ]}
           >
             {series.format === 'league' ? 'League' : 'Tournament'}
@@ -258,19 +258,19 @@ function SeriesHeader({
         <View
           style={[
             styles.statusPill,
-            { backgroundColor: (STATUS_COLORS[series.status] ?? '#A1A1AA') + '1A' },
+            { backgroundColor: (STATUS_COLORS[series.status] ?? '#9C9790') + '1A' },
           ]}
         >
           <View
             style={[
               styles.statusDot,
-              { backgroundColor: STATUS_COLORS[series.status] ?? '#A1A1AA' },
+              { backgroundColor: STATUS_COLORS[series.status] ?? '#9C9790' },
             ]}
           />
           <ThemedText
             style={[
               styles.statusPillText,
-              { color: STATUS_COLORS[series.status] ?? '#A1A1AA' },
+              { color: STATUS_COLORS[series.status] ?? '#9C9790' },
             ]}
           >
             {series.status.charAt(0).toUpperCase() + series.status.slice(1)}
@@ -287,9 +287,9 @@ function SeriesHeader({
       {fullAccess && (
         <View style={styles.quickChipRow}>
           {series.opsBlockers > 0 && (
-            <View style={[styles.quickChip, { backgroundColor: '#EF444422' }]}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
-              <ThemedText style={[styles.quickChipText, { color: '#EF4444' }]}>
+            <View style={[styles.quickChip, { backgroundColor: '#B85C5C22' }]}>
+              <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B85C5C" />
+              <ThemedText style={[styles.quickChipText, { color: '#B85C5C' }]}>
                 {series.opsBlockers} Ops Blocker{series.opsBlockers > 1 ? 's' : ''}
               </ThemedText>
             </View>
@@ -298,28 +298,28 @@ function SeriesHeader({
             style={[
               styles.quickChip,
               {
-                backgroundColor: series.financeReady ? '#22C55E22' : '#F59E0B22',
+                backgroundColor: series.financeReady ? '#5A8A6E22' : '#B8943E22',
               },
             ]}
           >
             <IconSymbol
               name="dollarsign.circle.fill"
               size={12}
-              color={series.financeReady ? '#22C55E' : '#F59E0B'}
+              color={series.financeReady ? '#5A8A6E' : '#B8943E'}
             />
             <ThemedText
               style={[
                 styles.quickChipText,
-                { color: series.financeReady ? '#22C55E' : '#F59E0B' },
+                { color: series.financeReady ? '#5A8A6E' : '#B8943E' },
               ]}
             >
               {series.financeReady ? 'Finance Ready' : 'Finance Pending'}
             </ThemedText>
           </View>
           {series.complianceIncidents > 0 && (
-            <View style={[styles.quickChip, { backgroundColor: '#F59E0B22' }]}>
-              <IconSymbol name="shield.fill" size={12} color="#F59E0B" />
-              <ThemedText style={[styles.quickChipText, { color: '#F59E0B' }]}>
+            <View style={[styles.quickChip, { backgroundColor: '#B8943E22' }]}>
+              <IconSymbol name="shield.fill" size={12} color="#B8943E" />
+              <ThemedText style={[styles.quickChipText, { color: '#B8943E' }]}>
                 {series.complianceIncidents} Compliance
               </ThemedText>
             </View>
@@ -397,7 +397,7 @@ function DashboardTab({
                 <ThemedText
                   style={[
                     styles.opsReadinessIcon,
-                    { color: item.ok ? '#22C55E' : '#F59E0B' },
+                    { color: item.ok ? '#5A8A6E' : '#B8943E' },
                   ]}
                 >
                   {item.ok ? '\u2705' : '\u26A0\uFE0F'}
@@ -417,13 +417,13 @@ function DashboardTab({
           <StatBlock
             label="Open Incidents"
             value={String(incidents)}
-            color={incidents > 0 ? '#F59E0B' : '#22C55E'}
+            color={incidents > 0 ? '#B8943E' : '#5A8A6E'}
             colors={colors}
           />
           <StatBlock
             label="Blockers"
             value={String(blockers.length)}
-            color={blockers.length > 0 ? '#EF4444' : '#22C55E'}
+            color={blockers.length > 0 ? '#B85C5C' : '#5A8A6E'}
             colors={colors}
           />
           <StatBlock
@@ -450,7 +450,7 @@ function DashboardTab({
               <View
                 style={[
                   styles.deliverableStatusDot,
-                  { backgroundColor: DELIVERABLE_STATUS_COLORS[d.status] ?? '#A1A1AA' },
+                  { backgroundColor: DELIVERABLE_STATUS_COLORS[d.status] ?? '#9C9790' },
                 ]}
               />
               <View style={{ flex: 1 }}>
@@ -464,7 +464,7 @@ function DashboardTab({
               <ThemedText
                 style={[
                   styles.statusLabel,
-                  { color: DELIVERABLE_STATUS_COLORS[d.status] ?? '#A1A1AA' },
+                  { color: DELIVERABLE_STATUS_COLORS[d.status] ?? '#9C9790' },
                 ]}
               >
                 {d.status.replace('_', ' ').toUpperCase()}
@@ -589,7 +589,7 @@ function CalendarTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.calendarStatusBar,
-                { backgroundColor: EVENT_STATUS_COLORS[evt.status] ?? '#A1A1AA' },
+                { backgroundColor: EVENT_STATUS_COLORS[evt.status] ?? '#9C9790' },
               ]}
             />
             <View style={{ flex: 1, marginLeft: Spacing.sm }}>
@@ -603,7 +603,7 @@ function CalendarTab({ colors }: { colors: typeof Colors.light }) {
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: EVENT_STATUS_COLORS[evt.status] ?? '#A1A1AA' },
+                { color: EVENT_STATUS_COLORS[evt.status] ?? '#9C9790' },
               ]}
             >
               {evt.status.toUpperCase()}
@@ -647,7 +647,7 @@ function EventsTab({
               <View
                 style={[
                   styles.eventStatusDot,
-                  { backgroundColor: EVENT_STATUS_COLORS[evt.status] ?? '#A1A1AA' },
+                  { backgroundColor: EVENT_STATUS_COLORS[evt.status] ?? '#9C9790' },
                 ]}
               />
               <View style={{ flex: 1 }}>
@@ -665,13 +665,13 @@ function EventsTab({
                 <ThemedText
                   style={[
                     styles.statusLabel,
-                    { color: EVENT_STATUS_COLORS[evt.status] ?? '#A1A1AA' },
+                    { color: EVENT_STATUS_COLORS[evt.status] ?? '#9C9790' },
                   ]}
                 >
                   {evt.status.toUpperCase()}
                 </ThemedText>
                 {evt.opsBlockers > 0 && (
-                  <ThemedText style={[styles.captionText, { color: '#EF4444' }]}>
+                  <ThemedText style={[styles.captionText, { color: '#B85C5C' }]}>
                     {evt.opsBlockers} blocker{evt.opsBlockers > 1 ? 's' : ''}
                   </ThemedText>
                 )}
@@ -739,7 +739,7 @@ function OpsTab({ colors }: { colors: typeof Colors.light }) {
 
 function OpsTaskRow({ task, colors }: { task: OpsTask; colors: typeof Colors.light }) {
   const statusColor =
-    task.status === 'blocker' ? '#EF4444' : task.status === 'done' ? '#22C55E' : '#F59E0B';
+    task.status === 'blocker' ? '#B85C5C' : task.status === 'done' ? '#5A8A6E' : '#B8943E';
 
   return (
     <View style={[styles.listRow, { borderBottomColor: colors.border }]}>
@@ -758,8 +758,8 @@ function OpsTaskRow({ task, colors }: { task: OpsTask; colors: typeof Colors.lig
         {task.impactFlags.length > 0 && (
           <View style={styles.flagRow}>
             {task.impactFlags.map((flag) => (
-              <View key={flag} style={[styles.impactFlag, { backgroundColor: '#EF444422' }]}>
-                <ThemedText style={[styles.impactFlagText, { color: '#EF4444' }]}>
+              <View key={flag} style={[styles.impactFlag, { backgroundColor: '#B85C5C22' }]}>
+                <ThemedText style={[styles.impactFlagText, { color: '#B85C5C' }]}>
                   {flag}
                 </ThemedText>
               </View>
@@ -800,7 +800,7 @@ function RulesTab({ colors }: { colors: typeof Colors.light }) {
                 styles.visibilityBadge,
                 {
                   backgroundColor:
-                    cat.visibility === 'public' ? '#22C55E22' : '#F59E0B22',
+                    cat.visibility === 'public' ? '#5A8A6E22' : '#B8943E22',
                 },
               ]}
             >
@@ -808,7 +808,7 @@ function RulesTab({ colors }: { colors: typeof Colors.light }) {
                 style={[
                   styles.visibilityText,
                   {
-                    color: cat.visibility === 'public' ? '#22C55E' : '#F59E0B',
+                    color: cat.visibility === 'public' ? '#5A8A6E' : '#B8943E',
                   },
                 ]}
               >
@@ -847,7 +847,7 @@ function TechComplianceTab({ colors }: { colors: typeof Colors.light }) {
               <View
                 style={[
                   styles.complianceDot,
-                  { backgroundColor: COMPLIANCE_STATUS_COLORS[entity.status] ?? '#A1A1AA' },
+                  { backgroundColor: COMPLIANCE_STATUS_COLORS[entity.status] ?? '#9C9790' },
                 ]}
               />
               <View style={{ flex: 1 }}>
@@ -858,7 +858,7 @@ function TechComplianceTab({ colors }: { colors: typeof Colors.light }) {
                   {entity.type} · {entity.teamName}
                 </ThemedText>
                 {entity.notes && (
-                  <ThemedText style={[styles.captionText, { color: '#EF4444' }]}>
+                  <ThemedText style={[styles.captionText, { color: '#B85C5C' }]}>
                     {entity.notes}
                   </ThemedText>
                 )}
@@ -866,7 +866,7 @@ function TechComplianceTab({ colors }: { colors: typeof Colors.light }) {
               <ThemedText
                 style={[
                   styles.statusLabel,
-                  { color: COMPLIANCE_STATUS_COLORS[entity.status] ?? '#A1A1AA' },
+                  { color: COMPLIANCE_STATUS_COLORS[entity.status] ?? '#9C9790' },
                 ]}
               >
                 {entity.status.toUpperCase()}
@@ -891,7 +891,7 @@ function TechComplianceTab({ colors }: { colors: typeof Colors.light }) {
               <View
                 style={[
                   styles.complianceDot,
-                  { backgroundColor: COMPLIANCE_STATUS_COLORS[entity.status] ?? '#A1A1AA' },
+                  { backgroundColor: COMPLIANCE_STATUS_COLORS[entity.status] ?? '#9C9790' },
                 ]}
               />
               <View style={{ flex: 1 }}>
@@ -902,7 +902,7 @@ function TechComplianceTab({ colors }: { colors: typeof Colors.light }) {
                   {entity.type} · {entity.teamName} · Expires: {entity.expiresAt}
                 </ThemedText>
                 {entity.notes && (
-                  <ThemedText style={[styles.captionText, { color: '#F59E0B' }]}>
+                  <ThemedText style={[styles.captionText, { color: '#B8943E' }]}>
                     {entity.notes}
                   </ThemedText>
                 )}
@@ -957,7 +957,7 @@ function FinanceTab({
             label="Total Revenue"
             value="$2.4M"
             subtitle="Season to date"
-            color="#22C55E"
+            color="#5A8A6E"
             colors={colors}
           />
           <FinanceCard
@@ -976,14 +976,14 @@ function FinanceTab({
             label="Total Expenses"
             value="$1.8M"
             subtitle="Season to date"
-            color="#EF4444"
+            color="#B85C5C"
             colors={colors}
           />
           <FinanceCard
             label="Prize Pool"
             value="$600K"
             subtitle="Allocated across 8 events"
-            color="#F59E0B"
+            color="#B8943E"
             colors={colors}
           />
         </View>
@@ -991,12 +991,12 @@ function FinanceTab({
 
       <SectionCard title="Budget Health" colors={colors}>
         <View style={styles.statRow}>
-          <StatBlock label="Net" value="+$600K" color="#22C55E" colors={colors} />
+          <StatBlock label="Net" value="+$600K" color="#5A8A6E" colors={colors} />
           <StatBlock label="Runway" value="16 wks" color={ACCENT} colors={colors} />
           <StatBlock
             label="Status"
             value={series.financeReady ? 'Ready' : 'Pending'}
-            color={series.financeReady ? '#22C55E' : '#F59E0B'}
+            color={series.financeReady ? '#5A8A6E' : '#B8943E'}
             colors={colors}
           />
         </View>
@@ -1047,13 +1047,13 @@ function PaymentRailsTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.payoutStatusBadge,
-                { backgroundColor: (PAYOUT_STATUS_COLORS[item.status] ?? '#A1A1AA') + '22' },
+                { backgroundColor: (PAYOUT_STATUS_COLORS[item.status] ?? '#9C9790') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.payoutStatusText,
-                  { color: PAYOUT_STATUS_COLORS[item.status] ?? '#A1A1AA' },
+                  { color: PAYOUT_STATUS_COLORS[item.status] ?? '#9C9790' },
                 ]}
               >
                 {item.status.toUpperCase()}
@@ -1067,7 +1067,7 @@ function PaymentRailsTab({ colors }: { colors: typeof Colors.light }) {
                 {item.amount} · Gates: {item.gatesCleared}/{item.gatesTotal}
               </ThemedText>
               {item.reason && (
-                <ThemedText style={[styles.captionText, { color: '#F59E0B' }]}>
+                <ThemedText style={[styles.captionText, { color: '#B8943E' }]}>
                   {item.reason}
                 </ThemedText>
               )}
@@ -1155,7 +1155,7 @@ function SponsorsTab({ colors }: { colors: typeof Colors.light }) {
                 styles.sponsorStatusBadge,
                 {
                   backgroundColor:
-                    sponsor.status === 'active' ? '#22C55E22' : '#F59E0B22',
+                    sponsor.status === 'active' ? '#5A8A6E22' : '#B8943E22',
                 },
               ]}
             >
@@ -1163,7 +1163,7 @@ function SponsorsTab({ colors }: { colors: typeof Colors.light }) {
                 style={[
                   styles.sponsorStatusText,
                   {
-                    color: sponsor.status === 'active' ? '#22C55E' : '#F59E0B',
+                    color: sponsor.status === 'active' ? '#5A8A6E' : '#B8943E',
                   },
                 ]}
               >
@@ -1184,7 +1184,7 @@ function SponsorsTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.deliverableStatusDot,
-                { backgroundColor: DELIVERABLE_STATUS_COLORS[d.status] ?? '#A1A1AA' },
+                { backgroundColor: DELIVERABLE_STATUS_COLORS[d.status] ?? '#9C9790' },
               ]}
             />
             <View style={{ flex: 1 }}>
@@ -1198,7 +1198,7 @@ function SponsorsTab({ colors }: { colors: typeof Colors.light }) {
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: DELIVERABLE_STATUS_COLORS[d.status] ?? '#A1A1AA' },
+                { color: DELIVERABLE_STATUS_COLORS[d.status] ?? '#9C9790' },
               ]}
             >
               {d.status.replace('_', ' ').toUpperCase()}

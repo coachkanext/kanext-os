@@ -233,10 +233,10 @@ export default function PlayByPlayScreen() {
   const fmuShots = filterShots(allFmuShots);
   const oppShots = filterShots(allOppShots);
 
-  const COURT_COLOR = '#A1A1AA';
-  const LINE_COLOR = '#A1A1AA';
+  const COURT_COLOR = '#9C9790';
+  const LINE_COLOR = '#9C9790';
   const KaNeXT_COLOR = colors.text;
-  const OPP_COLOR = '#A1A1AA';
+  const OPP_COLOR = '#9C9790';
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -433,7 +433,7 @@ export default function PlayByPlayScreen() {
                 </View>
                 <View style={[
                   styles.pbpTeamDot,
-                  { backgroundColor: entry.team === 'fmu' ? colors.text : '#A1A1AA' },
+                  { backgroundColor: entry.team === 'fmu' ? colors.text : '#9C9790' },
                 ]} />
                 <View style={styles.pbpContent}>
                   <Text style={[styles.pbpText, { color: colors.text }]}>{entry.text}</Text>
@@ -629,7 +629,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.md,
   },
   espnTab: { flex: 1, alignItems: 'center', paddingVertical: 10 },
-  espnTabActive: { borderBottomWidth: 2, borderBottomColor: '#EF4444' },
+  espnTabActive: { borderBottomWidth: 2, borderBottomColor: '#B85C5C' },
   espnTabText: { fontSize: 13, fontWeight: '500' },
   espnTabTextActive: { fontWeight: '700' },
   playTypePills: {

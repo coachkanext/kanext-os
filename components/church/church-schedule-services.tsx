@@ -63,9 +63,9 @@ interface DaySection {
 // =============================================================================
 
 const TYPE_CONFIG: Record<ServiceTypeLabel, { color: string; icon: IconSymbolName }> = {
-  'Sunday Service': { color: '#1D9BF0', icon: 'play.circle.fill' },
-  'Midweek Service': { color: '#8B5CF6', icon: 'book.fill' },
-  'Special Service': { color: '#F59E0B', icon: 'star.fill' },
+  'Sunday Service': { color: '#1A1714', icon: 'play.circle.fill' },
+  'Midweek Service': { color: '#1A1714', icon: 'book.fill' },
+  'Special Service': { color: '#B8943E', icon: 'star.fill' },
 };
 
 const DAY_NAMES = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
@@ -350,7 +350,7 @@ export function ChurchScheduleServices({ colors, accent }: Props) {
         contentContainerStyle={s.listContent}
         ListEmptyComponent={
           <View style={s.empty}>
-            <IconSymbol name="play.circle.fill" size={32} color="#A1A1AA" />
+            <IconSymbol name="play.circle.fill" size={32} color="#9C9790" />
             <ThemedText style={[s.emptyTitle, { color: colors.text }]}>No Services</ThemedText>
             <ThemedText style={[s.emptyDesc, { color: colors.textSecondary }]}>
               No upcoming services for your campus.
@@ -444,7 +444,7 @@ const s = StyleSheet.create({
 
   // Serving badge
   servingBadge: {
-    backgroundColor: '#22C55E',
+    backgroundColor: '#5A8A6E',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,

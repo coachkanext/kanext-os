@@ -50,13 +50,13 @@ function getConfidenceColor(pct: number): string {
 
 function getWinColor(pct: number): string {
   if (pct >= 55) return Brand.success;
-  if (pct >= 45) return '#A1A1AA';
+  if (pct >= 45) return '#9C9790';
   return Brand.error;
 }
 
 function getMarginColor(margin: number): string {
   if (margin > 0) return Brand.success;
-  if (margin === 0) return '#A1A1AA';
+  if (margin === 0) return '#9C9790';
   return Brand.error;
 }
 
@@ -329,7 +329,7 @@ export function SimulationPage({ onBack, gameId: gameIdProp }: SimulationPagePro
   const projScoreA = baseScoreA + Math.ceil(scenario.marginDelta / 2);
   const projScoreB = baseScoreB - Math.floor(scenario.marginDelta / 2);
 
-  const confColor = sim ? getConfidenceColor(sim.sim_confidence_pct) : '#A1A1AA';
+  const confColor = sim ? getConfidenceColor(sim.sim_confidence_pct) : '#9C9790';
   const dataTier = sim ? getDataTier(sim.sim_confidence_pct) : 'Stats Only';
   const swingFactor =
     scenario.id === 'base'

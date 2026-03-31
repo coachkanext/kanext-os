@@ -32,7 +32,7 @@ import {
 
 const TOP_BAR_H  = 52;
 const PILL_ROW_H = 48;
-const NAVY       = '#990000';
+const NAVY       = '#1A1714';
 
 type RosterTab   = 'Players' | 'Depth Chart' | 'Staff';
 type PosFilter   = 'All' | 'PG' | 'SG' | 'SF' | 'PF' | 'C';
@@ -82,30 +82,30 @@ const SCHOLARSHIP_PCT: Record<string, number> = {
 
 function medicalDot(status: Player['medical']): string {
   if (status === 'available') return '#5A8A6E';
-  if (status === 'limited')   return '#3B82F6';
+  if (status === 'limited')   return '#1A1714';
   return '#B85C5C';
 }
 
 function eligDot(status: Player['eligibility']): string {
   if (status === 'eligible')   return '#5A8A6E';
-  if (status === 'warning')    return '#3B82F6';
+  if (status === 'warning')    return '#1A1714';
   return '#B85C5C';
 }
 
 function gpaColor(gpa: number): string {
   if (gpa >= 2.5) return '#5A8A6E';
-  if (gpa >= 2.0) return '#3B82F6';
+  if (gpa >= 2.0) return '#1A1714';
   return '#B85C5C';
 }
 
 function staffRoleBadgeColor(role: StaffMember['role']): string {
   if (role === 'head-coach') return NAVY;
-  if (role === 'asst-coach') return '#1D9BF0';
-  if (role === 'grad-asst')  return '#3B82F6';
+  if (role === 'asst-coach') return '#1A1714';
+  if (role === 'grad-asst')  return '#1A1714';
   if (role === 'trainer')    return '#5A8A6E';
-  if (role === 'strength')   return '#3B82F6';
-  if (role === 'sid')        return '#8B6340';
-  return '#8B6340';
+  if (role === 'strength')   return '#1A1714';
+  if (role === 'sid')        return '#1A1714';
+  return '#1A1714';
 }
 
 function staffRoleLabel(role: StaffMember['role']): string {
@@ -250,8 +250,8 @@ function PlayerCard({
           <View style={plc.nameRow}>
             <Text style={[plc.name, { color: C.label }]} numberOfLines={1}>{player.name}</Text>
             {player.isRedshirt && (
-              <View style={[plc.rsBadge, { backgroundColor: '#3B82F622' }]}>
-                <Text style={[plc.rsText, { color: '#3B82F6' }]}>RS</Text>
+              <View style={[plc.rsBadge, { backgroundColor: '#1A171422' }]}>
+                <Text style={[plc.rsText, { color: '#1A1714' }]}>RS</Text>
               </View>
             )}
           </View>
@@ -732,13 +732,13 @@ function UpcomingSchedule({ C }: { C: ComponentColors }) {
               backgroundColor:
                 game.location === 'H' ? '#5A8A6E22' :
                 game.location === 'A' ? '#B85C5C22' :
-                '#3B82F622',
+                '#1A171422',
             }]}>
               <Text style={[ug.locText, {
                 color:
                   game.location === 'H' ? '#5A8A6E' :
                   game.location === 'A' ? '#B85C5C' :
-                  '#3B82F6',
+                  '#1A1714',
               }]}>
                 {game.location === 'H' ? 'HOME' : game.location === 'A' ? 'AWAY' : 'NEUT'}
               </Text>
@@ -871,10 +871,10 @@ function EligSummaryBar({ C }: { C: ComponentColors }) {
         <Text style={[esb.count, { color: '#5A8A6E' }]}>{eligible}</Text>
         <Text style={[esb.label, { color: '#5A8A6E' }]}>eligible</Text>
       </View>
-      <View style={[esb.chip, { backgroundColor: '#3B82F620' }]}>
-        <View style={[esb.dot, { backgroundColor: '#3B82F6' }]} />
-        <Text style={[esb.count, { color: '#3B82F6' }]}>{warning}</Text>
-        <Text style={[esb.label, { color: '#3B82F6' }]}>warning</Text>
+      <View style={[esb.chip, { backgroundColor: '#1A171420' }]}>
+        <View style={[esb.dot, { backgroundColor: '#1A1714' }]} />
+        <Text style={[esb.count, { color: '#1A1714' }]}>{warning}</Text>
+        <Text style={[esb.label, { color: '#1A1714' }]}>warning</Text>
       </View>
       <View style={[esb.chip, { backgroundColor: '#B85C5C20' }]}>
         <View style={[esb.dot, { backgroundColor: '#B85C5C' }]} />

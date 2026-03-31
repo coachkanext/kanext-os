@@ -25,7 +25,7 @@ const TYPE_COLORS: Record<ConversationType, string> = {
   chat: '#FFFFFF',
   eval: '#FFFFFF',
   sim: '#FFFFFF',
-  'game-ops': '#A1A1AA',
+  'game-ops': '#9C9790',
 };
 
 interface ConversationRowProps {

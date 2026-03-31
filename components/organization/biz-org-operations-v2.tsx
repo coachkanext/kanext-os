@@ -86,14 +86,14 @@ type OpsFilterChipId =
   | 'completed';
 
 const OPS_FILTER_CHIPS: Array<{ id: OpsFilterChipId; label: string; icon: string; color: string }> = [
-  { id: 'needs_attention', label: 'Attention', icon: 'exclamationmark.triangle.fill', color: '#F59E0B' },
-  { id: 'blocked', label: 'Blocked', icon: 'xmark.octagon.fill', color: '#EF4444' },
-  { id: 'decisions_needed', label: 'Decisions', icon: 'hand.raised.fill', color: '#F59E0B' },
+  { id: 'needs_attention', label: 'Attention', icon: 'exclamationmark.triangle.fill', color: '#B8943E' },
+  { id: 'blocked', label: 'Blocked', icon: 'xmark.octagon.fill', color: '#B85C5C' },
+  { id: 'decisions_needed', label: 'Decisions', icon: 'hand.raised.fill', color: '#B8943E' },
   { id: 'due_7d', label: 'Due <7d', icon: 'clock.fill', color: ACCENT },
-  { id: 'at_risk', label: 'At Risk', icon: 'exclamationmark.circle.fill', color: '#EF4444' },
+  { id: 'at_risk', label: 'At Risk', icon: 'exclamationmark.circle.fill', color: '#B85C5C' },
   { id: 'by_owner', label: 'By Owner', icon: 'person.fill', color: ACCENT },
   { id: 'by_type', label: 'By Type', icon: 'tag.fill', color: ACCENT },
-  { id: 'completed', label: 'Completed', icon: 'checkmark.circle.fill', color: '#22C55E' },
+  { id: 'completed', label: 'Completed', icon: 'checkmark.circle.fill', color: '#5A8A6E' },
 ];
 
 // =============================================================================
@@ -132,8 +132,8 @@ function opsFeedTypeIcon(type: OpsFeedItem['type']): string {
 function opsFeedTypeColor(type: OpsFeedItem['type']): string {
   switch (type) {
     case 'initiative_moved': return ACCENT;
-    case 'blocker_created': return '#EF4444';
-    case 'decision_approved': return '#22C55E';
+    case 'blocker_created': return '#B85C5C';
+    case 'decision_approved': return '#5A8A6E';
     case 'deliverable_shipped': return ACCENT;
   }
 }
@@ -166,10 +166,10 @@ interface Props {
 // =============================================================================
 
 function progressColor(progress: number): string {
-  if (progress >= 75) return '#22C55E';
+  if (progress >= 75) return '#5A8A6E';
   if (progress >= 40) return ACCENT;
-  if (progress >= 15) return '#F59E0B';
-  return '#A1A1AA';
+  if (progress >= 15) return '#B8943E';
+  return '#9C9790';
 }
 
 function priorityLabel(priority: OpsTask['priority']): string {
@@ -483,7 +483,7 @@ function TriageTab({
         title="Critical Blockers"
         count={criticalBlockers.length}
         icon="exclamationmark.octagon.fill"
-        color="#EF4444"
+        color="#B85C5C"
         colors={colors}
       />
       {criticalBlockers.length === 0 ? (
@@ -503,7 +503,7 @@ function TriageTab({
         title="Decisions Needed"
         count={decisionsNeeded.length}
         icon="hand.raised.fill"
-        color="#F59E0B"
+        color="#B8943E"
         colors={colors}
       />
       {decisionsNeeded.length === 0 ? (
@@ -523,7 +523,7 @@ function TriageTab({
         title="Due Soon"
         count={dueSoon.length}
         icon="clock.fill"
-        color="#F59E0B"
+        color="#B8943E"
         colors={colors}
       />
       {dueSoon.length === 0 ? (

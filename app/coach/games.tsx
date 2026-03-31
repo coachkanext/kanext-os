@@ -100,8 +100,8 @@ const TABS: { key: Tab; label: string }[] = [
 const STANDINGS = KaNeXT_STANDINGS;
 
 const STATUS_COLORS: Record<GameStatus, string> = {
-  upcoming: '#A1A1AA',
-  live: '#EF4444',
+  upcoming: '#9C9790',
+  live: '#B85C5C',
   final: '#FFFFFF',
 };
 
@@ -164,7 +164,7 @@ function GameRow({
                 styles.scoreText,
                 {
                   color: game.status === 'final'
-                    ? game.score.startsWith('W') ? '#FFFFFF' : game.score.startsWith('L') ? '#EF4444' : colors.text
+                    ? game.score.startsWith('W') ? '#FFFFFF' : game.score.startsWith('L') ? '#B85C5C' : colors.text
                     : colors.text,
                 },
               ]}
@@ -514,7 +514,7 @@ export default function GamesScreen() {
                                     FINAL
                                   </Text>
                                 </View>
-                                <Text style={[styles.recentScore, { color: isWin ? '#FFFFFF' : isLoss ? '#EF4444' : colors.text }]}>
+                                <Text style={[styles.recentScore, { color: isWin ? '#FFFFFF' : isLoss ? '#B85C5C' : colors.text }]}>
                                   {scoreDisplay}
                                 </Text>
                               </Pressable>
@@ -669,7 +669,7 @@ export default function GamesScreen() {
                               {game.opponent}
                             </Text>
                           </View>
-                          <Text style={[styles.recentScore, { color: game.score?.startsWith('W') ? '#FFFFFF' : game.score?.startsWith('L') ? '#EF4444' : colors.text }]}>
+                          <Text style={[styles.recentScore, { color: game.score?.startsWith('W') ? '#FFFFFF' : game.score?.startsWith('L') ? '#B85C5C' : colors.text }]}>
                             {game.score?.replace('-', '–') ?? ''}
                           </Text>
                           <IconSymbol name="chevron.right" size={16} color={colors.textTertiary} style={{ marginLeft: 8 }} />
@@ -769,7 +769,7 @@ export default function GamesScreen() {
                       <Text style={[styles.standingsRecord, { color: colors.textSecondary }]}>
                         {row.overallW}-{row.overallL}
                       </Text>
-                      <Text style={[styles.standingsStreak, { color: row.streak.startsWith('W') ? '#FFFFFF' : '#EF4444' }]}>
+                      <Text style={[styles.standingsStreak, { color: row.streak.startsWith('W') ? '#FFFFFF' : '#B85C5C' }]}>
                         {row.streak}
                       </Text>
                     </View>
@@ -845,8 +845,8 @@ const styles = StyleSheet.create({
   livePlayBtn: { width: 56, height: 56, borderRadius: 28, backgroundColor: 'rgba(255,255,255,0.15)', justifyContent: 'center', alignItems: 'center' },
   liveInfoRow: { flexDirection: 'row', alignItems: 'center', padding: 12 },
   liveBadgeRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 },
-  liveCardDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#EF4444' },
-  liveCardLabel: { fontSize: 11, fontWeight: '800', letterSpacing: 0.5, color: '#EF4444' },
+  liveCardDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#B85C5C' },
+  liveCardLabel: { fontSize: 11, fontWeight: '800', letterSpacing: 0.5, color: '#B85C5C' },
   liveOpponentText: { fontSize: 16, fontWeight: '700' },
   liveScoreText: { fontSize: 18, fontWeight: '700' },
 
@@ -1025,7 +1025,7 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
   },
 
   // Recent-style completed game rows

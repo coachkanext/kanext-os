@@ -129,15 +129,15 @@ export interface DocCategoryDef {
 
 export const DOC_CATEGORIES: DocCategoryDef[] = [
   { id: 'pitch', label: 'Corporate & Governance', color: '#FFFFFF', icon: 'megaphone.fill' },
-  { id: 'financial', label: 'Finance', color: '#22C55E', icon: 'dollarsign.circle.fill' },
-  { id: 'legal', label: 'Legal', color: '#F59E0B', icon: 'doc.text.fill' },
-  { id: 'product', label: 'Product', color: '#1D9BF0', icon: 'app.fill' },
-  { id: 'governance', label: 'Governance', color: '#A1A1AA', icon: 'building.columns.fill' },
-  { id: 'team', label: 'Operations', color: '#A1A1AA', icon: 'person.2.fill' },
-  { id: 'proof', label: 'Proof', color: '#EF4444', icon: 'checkmark.seal.fill' },
-  { id: 'compliance', label: 'Compliance', color: '#F59E0B', icon: 'checkmark.shield.fill' },
-  { id: 'payment_rails', label: 'Payment Rails', color: '#22C55E', icon: 'creditcard.fill' },
-  { id: 'media_proof', label: 'Media/Proof', color: '#1D9BF0', icon: 'play.rectangle.fill' },
+  { id: 'financial', label: 'Finance', color: '#5A8A6E', icon: 'dollarsign.circle.fill' },
+  { id: 'legal', label: 'Legal', color: '#B8943E', icon: 'doc.text.fill' },
+  { id: 'product', label: 'Product', color: '#1A1714', icon: 'app.fill' },
+  { id: 'governance', label: 'Governance', color: '#9C9790', icon: 'building.columns.fill' },
+  { id: 'team', label: 'Operations', color: '#9C9790', icon: 'person.2.fill' },
+  { id: 'proof', label: 'Proof', color: '#B85C5C', icon: 'checkmark.seal.fill' },
+  { id: 'compliance', label: 'Compliance', color: '#B8943E', icon: 'checkmark.shield.fill' },
+  { id: 'payment_rails', label: 'Payment Rails', color: '#5A8A6E', icon: 'creditcard.fill' },
+  { id: 'media_proof', label: 'Media/Proof', color: '#1A1714', icon: 'play.rectangle.fill' },
 ];
 
 // =============================================================================

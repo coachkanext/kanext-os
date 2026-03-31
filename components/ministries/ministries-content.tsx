@@ -52,13 +52,13 @@ import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 // ── Color Maps ──
 
 const MINISTRY_CATEGORY_COLORS: Record<MinistryCategory, string> = {
-  worship: '#3B82F6',
-  children: '#F59E0B',
-  youth: '#22C55E',
-  hospitality: '#8B5CF6',
+  worship: '#1A1714',
+  children: '#B8943E',
+  youth: '#5A8A6E',
+  hospitality: '#1A1714',
   tech: '#6366F1',
-  outreach: '#EC4899',
-  custom: '#A1A1AA',
+  outreach: '#1A1714',
+  custom: '#9C9790',
 };
 
 const MINISTRY_CATEGORY_LABELS: Record<MinistryCategory, string> = {
@@ -72,8 +72,8 @@ const MINISTRY_CATEGORY_LABELS: Record<MinistryCategory, string> = {
 };
 
 const STAFFING_STATUS_COLORS: Record<StaffingStatus, string> = {
-  'fully-staffed': '#22C55E',
-  'needs-volunteers': '#F59E0B',
+  'fully-staffed': '#5A8A6E',
+  'needs-volunteers': '#B8943E',
 };
 
 const STAFFING_STATUS_LABELS: Record<StaffingStatus, string> = {
@@ -82,14 +82,14 @@ const STAFFING_STATUS_LABELS: Record<StaffingStatus, string> = {
 };
 
 const GROUP_TYPE_COLORS: Record<GroupType, string> = {
-  'life-groups': '#3B82F6',
-  'bible-study': '#8B5CF6',
+  'life-groups': '#1A1714',
+  'bible-study': '#1A1714',
   mens: '#6366F1',
-  womens: '#EC4899',
-  youth: '#22C55E',
-  couples: '#F59E0B',
-  recovery: '#EF4444',
-  custom: '#A1A1AA',
+  womens: '#1A1714',
+  youth: '#5A8A6E',
+  couples: '#B8943E',
+  recovery: '#B85C5C',
+  custom: '#9C9790',
 };
 
 const GROUP_TYPE_LABELS: Record<GroupType, string> = {
@@ -104,7 +104,7 @@ const GROUP_TYPE_LABELS: Record<GroupType, string> = {
 };
 
 const GROUP_OPENNESS_COLORS: Record<GroupOpenness, string> = {
-  open: '#22C55E',
+  open: '#5A8A6E',
   closed: '#52525B',
 };
 
@@ -114,9 +114,9 @@ const GROUP_OPENNESS_LABELS: Record<GroupOpenness, string> = {
 };
 
 const RSVP_STATUS_COLORS: Record<RsvpStatus, string> = {
-  confirmed: '#22C55E',
-  declined: '#EF4444',
-  'no-response': '#F59E0B',
+  confirmed: '#5A8A6E',
+  declined: '#B85C5C',
+  'no-response': '#B8943E',
 };
 
 const RSVP_STATUS_LABELS: Record<RsvpStatus, string> = {
@@ -126,10 +126,10 @@ const RSVP_STATUS_LABELS: Record<RsvpStatus, string> = {
 };
 
 const CHURCH_TRAINING_STATUS_COLORS: Record<ChurchTrainingStatus, string> = {
-  'not-started': '#A1A1AA',
-  'in-progress': '#3B82F6',
-  completed: '#22C55E',
-  expired: '#EF4444',
+  'not-started': '#9C9790',
+  'in-progress': '#1A1714',
+  completed: '#5A8A6E',
+  expired: '#B85C5C',
 };
 
 const CHURCH_TRAINING_STATUS_LABELS: Record<ChurchTrainingStatus, string> = {
@@ -140,10 +140,10 @@ const CHURCH_TRAINING_STATUS_LABELS: Record<ChurchTrainingStatus, string> = {
 };
 
 const BG_CHECK_STATUS_COLORS: Record<BgCheckStatus, string> = {
-  cleared: '#22C55E',
-  pending: '#F59E0B',
-  expired: '#EF4444',
-  'not-submitted': '#A1A1AA',
+  cleared: '#5A8A6E',
+  pending: '#B8943E',
+  expired: '#B85C5C',
+  'not-submitted': '#9C9790',
 };
 
 const BG_CHECK_STATUS_LABELS: Record<BgCheckStatus, string> = {
@@ -154,12 +154,12 @@ const BG_CHECK_STATUS_LABELS: Record<BgCheckStatus, string> = {
 };
 
 const PIPELINE_STAGE_COLORS: Record<PipelineStage, string> = {
-  serving: '#A1A1AA',
-  identified: '#F59E0B',
-  mentoring: '#3B82F6',
-  training: '#8B5CF6',
+  serving: '#9C9790',
+  identified: '#B8943E',
+  mentoring: '#1A1714',
+  training: '#1A1714',
   ready: '#6366F1',
-  placed: '#22C55E',
+  placed: '#5A8A6E',
 };
 
 const PIPELINE_STAGE_LABELS: Record<PipelineStage, string> = {
@@ -172,9 +172,9 @@ const PIPELINE_STAGE_LABELS: Record<PipelineStage, string> = {
 };
 
 const HEALTH_SCORE_COLORS: Record<string, string> = {
-  healthy: '#22C55E',
-  watch: '#F59E0B',
-  'at-risk': '#EF4444',
+  healthy: '#5A8A6E',
+  watch: '#B8943E',
+  'at-risk': '#B85C5C',
 };
 
 const HEALTH_SCORE_LABELS: Record<string, string> = {
@@ -190,9 +190,9 @@ const TREND_ARROWS: Record<string, string> = {
 };
 
 const TREND_COLORS: Record<string, string> = {
-  up: '#22C55E',
-  down: '#EF4444',
-  flat: '#A1A1AA',
+  up: '#5A8A6E',
+  down: '#B85C5C',
+  flat: '#9C9790',
 };
 
 // ─── Page Top Bar ────────────────────────────────────────────────────────────

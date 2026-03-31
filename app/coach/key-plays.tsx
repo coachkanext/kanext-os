@@ -305,7 +305,7 @@ export default function KeyPlaysScreen() {
           const prevHalf = idx > 0 ? keyPlays[idx - 1].half : null;
           const showHalfHeader = play.half !== prevHalf;
           const isFmu = play.team === 'fmu';
-          const dotColor = isFmu ? colors.text : '#A1A1AA';
+          const dotColor = isFmu ? colors.text : '#9C9790';
 
           return (
             <View key={idx}>
@@ -336,8 +336,8 @@ export default function KeyPlaysScreen() {
                   </Text>
                   <Text style={[styles.keyPlayScore, { color: colors.textTertiary }]}>{play.score}</Text>
                   {play.impact === 'high' && (
-                    <View style={[styles.impactBadge, { backgroundColor: '#EF4444' + '20' }]}>
-                      <Text style={[styles.impactText, { color: '#EF4444' }]}>Key Moment</Text>
+                    <View style={[styles.impactBadge, { backgroundColor: '#B85C5C' + '20' }]}>
+                      <Text style={[styles.impactText, { color: '#B85C5C' }]}>Key Moment</Text>
                     </View>
                   )}
                 </View>
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.md,
   },
   espnTab: { flex: 1, alignItems: 'center', paddingVertical: 10 },
-  espnTabActive: { borderBottomWidth: 2, borderBottomColor: '#EF4444' },
+  espnTabActive: { borderBottomWidth: 2, borderBottomColor: '#B85C5C' },
   espnTabText: { fontSize: 13, fontWeight: '500' },
   espnTabTextActive: { fontWeight: '700' },
   playTypePills: {
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 6,
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
     alignItems: 'center',
     justifyContent: 'center',
   },

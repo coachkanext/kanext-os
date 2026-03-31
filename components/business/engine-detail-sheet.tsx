@@ -48,8 +48,8 @@ export function EngineDetailSheet({ visible, onClose, engine }: EngineDetailShee
         <ThemedText style={[styles.sectionLabel, { color: colors.textSecondary }]}>Outputs</ThemedText>
         {engine.outputs.map((output, i) => (
           <View key={i} style={styles.bulletRow}>
-            <View style={[styles.bulletIcon, { backgroundColor: '#22C55E15' }]}>
-              <IconSymbol name="arrow.right" size={10} color="#22C55E" />
+            <View style={[styles.bulletIcon, { backgroundColor: '#5A8A6E15' }]}>
+              <IconSymbol name="arrow.right" size={10} color="#5A8A6E" />
             </View>
             <ThemedText style={[styles.bulletText, { color: colors.text }]}>{output}</ThemedText>
           </View>

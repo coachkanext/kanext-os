@@ -202,9 +202,9 @@ function renderStars(rating: number): string {
 }
 
 function starColor(rating: number): string {
-  if (rating >= 4) return '#22C55E';
-  if (rating >= 3) return '#F59E0B';
-  return '#EF4444';
+  if (rating >= 4) return '#5A8A6E';
+  if (rating >= 3) return '#B8943E';
+  return '#B85C5C';
 }
 
 // =============================================================================
@@ -252,12 +252,12 @@ function AssetHealthStrip({ health }: { health: AssetHealth }) {
     { key: 'compliance', label: 'Comp' },
     { key: 'payments', label: 'Pay' },
   ] as const;
-  const colorMap: Record<string, string> = { green: '#22C55E', yellow: '#F59E0B', red: '#EF4444' };
+  const colorMap: Record<string, string> = { green: '#5A8A6E', yellow: '#B8943E', red: '#B85C5C' };
   return (
     <View style={s.assetHealthStrip}>
       {dims.map((d) => (
         <View key={d.key} style={s.assetHealthItem}>
-          <View style={[s.assetHealthDot, { backgroundColor: colorMap[health[d.key]] || '#22C55E' }]} />
+          <View style={[s.assetHealthDot, { backgroundColor: colorMap[health[d.key]] || '#5A8A6E' }]} />
           <ThemedText style={[s.assetHealthLabel, { color: BP.ash }]}>{d.label}</ThemedText>
         </View>
       ))}
@@ -311,23 +311,23 @@ function RequestLifecycleBar({ currentStage }: { currentStage: RequestLifecycle 
         return (
           <React.Fragment key={stage.key}>
             {idx > 0 && (
-              <View style={[s.lifecycleLine, { backgroundColor: isActive ? '#22C55E' : BP.ash + '40' }]} />
+              <View style={[s.lifecycleLine, { backgroundColor: isActive ? '#5A8A6E' : BP.ash + '40' }]} />
             )}
             <View style={s.lifecycleStep}>
               <View
                 style={[
                   s.lifecycleDot,
                   {
-                    backgroundColor: isCurrent ? '#22C55E' : isActive ? '#22C55E80' : BP.ash + '40',
+                    backgroundColor: isCurrent ? '#5A8A6E' : isActive ? '#5A8A6E80' : BP.ash + '40',
                     borderWidth: isCurrent ? 2 : 0,
-                    borderColor: isCurrent ? '#22C55E' : 'transparent',
+                    borderColor: isCurrent ? '#5A8A6E' : 'transparent',
                   },
                 ]}
               />
               <ThemedText
                 style={[
                   s.lifecycleLabel,
-                  { color: isCurrent ? '#22C55E' : isActive ? BP.smoke : BP.ash },
+                  { color: isCurrent ? '#5A8A6E' : isActive ? BP.smoke : BP.ash },
                 ]}
                 numberOfLines={1}
               >
@@ -618,7 +618,7 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
             label="Total Asset Value"
             value={formatCurrency(ov.totalValue)}
             icon="chart.line.uptrend.xyaxis"
-            iconColor="#22C55E"
+            iconColor="#5A8A6E"
             colors={colors}
           />
           <StatCard
@@ -639,14 +639,14 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
             label="Maintenance Due"
             value={String(ov.maintenanceDue)}
             icon="wrench.and.screwdriver"
-            iconColor={ov.maintenanceDue > 0 ? '#EF4444' : '#22C55E'}
+            iconColor={ov.maintenanceDue > 0 ? '#B85C5C' : '#5A8A6E'}
             colors={colors}
           />
           <StatCard
             label="Insurance Expiry Alerts"
             value={String(ov.insuranceExpiryAlerts)}
             icon="shield.checkered"
-            iconColor={ov.insuranceExpiryAlerts > 0 ? '#F59E0B' : '#22C55E'}
+            iconColor={ov.insuranceExpiryAlerts > 0 ? '#B8943E' : '#5A8A6E'}
             colors={colors}
           />
           <StatCard
@@ -666,11 +666,11 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
             {overdueMaintenanceItems.map((m) => (
               <Pressable
                 key={m.id}
-                style={[s.alertCard, { backgroundColor: colors.card, borderColor: colors.border, borderLeftColor: '#EF4444' }]}
+                style={[s.alertCard, { backgroundColor: colors.card, borderColor: colors.border, borderLeftColor: '#B85C5C' }]}
                 onPress={() => handleMaintenancePress(m)}
               >
-                <View style={[s.alertIconWrap, { backgroundColor: '#EF444415' }]}>
-                  <IconSymbol name="wrench.and.screwdriver" size={16} color="#EF4444" />
+                <View style={[s.alertIconWrap, { backgroundColor: '#B85C5C15' }]}>
+                  <IconSymbol name="wrench.and.screwdriver" size={16} color="#B85C5C" />
                 </View>
                 <View style={{ flex: 1 }}>
                   <ThemedText style={[s.alertTitle, { color: colors.text }]}>
@@ -687,11 +687,11 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
             {expiringInsuranceItems.map((ins) => (
               <Pressable
                 key={ins.id}
-                style={[s.alertCard, { backgroundColor: colors.card, borderColor: colors.border, borderLeftColor: '#F59E0B' }]}
+                style={[s.alertCard, { backgroundColor: colors.card, borderColor: colors.border, borderLeftColor: '#B8943E' }]}
                 onPress={() => handleInsurancePress(ins)}
               >
-                <View style={[s.alertIconWrap, { backgroundColor: '#F59E0B15' }]}>
-                  <IconSymbol name="shield.checkered" size={16} color="#F59E0B" />
+                <View style={[s.alertIconWrap, { backgroundColor: '#B8943E15' }]}>
+                  <IconSymbol name="shield.checkered" size={16} color="#B8943E" />
                 </View>
                 <View style={{ flex: 1 }}>
                   <ThemedText style={[s.alertTitle, { color: colors.text }]}>
@@ -723,7 +723,7 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
               <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>
                 Active
               </ThemedText>
-              <ThemedText style={[s.summaryValue, { color: '#22C55E' }]}>
+              <ThemedText style={[s.summaryValue, { color: '#5A8A6E' }]}>
                 {data.assets.filter((a) => a.status === 'active').length}
               </ThemedText>
             </View>
@@ -731,7 +731,7 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
               <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>
                 Pending
               </ThemedText>
-              <ThemedText style={[s.summaryValue, { color: '#F59E0B' }]}>
+              <ThemedText style={[s.summaryValue, { color: '#B8943E' }]}>
                 {data.assets.filter((a) => a.status === 'pending').length}
               </ThemedText>
             </View>
@@ -1145,7 +1145,7 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
                       <ThemedText style={[s.listCardFooterLabel, { color: colors.textTertiary }]}>
                         Completed
                       </ThemedText>
-                      <ThemedText style={[s.listCardFooterValue, { color: '#22C55E' }]}>
+                      <ThemedText style={[s.listCardFooterValue, { color: '#5A8A6E' }]}>
                         {item.completedDate}
                       </ThemedText>
                     </View>
@@ -1225,13 +1225,13 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
                 <View style={s.listCardBadgeRow}>
                   <InsuranceTypeBadge type={item.type} />
                   {item.renewalAlert && (
-                    <View style={[s.badge, { backgroundColor: '#F59E0B20' }]}>
-                      <ThemedText style={[s.badgeText, { color: '#F59E0B' }]}>Renewal Alert</ThemedText>
+                    <View style={[s.badge, { backgroundColor: '#B8943E20' }]}>
+                      <ThemedText style={[s.badgeText, { color: '#B8943E' }]}>Renewal Alert</ThemedText>
                     </View>
                   )}
                   {item.coiTracking && (
-                    <View style={[s.badge, { backgroundColor: '#22C55E20' }]}>
-                      <ThemedText style={[s.badgeText, { color: '#22C55E' }]}>COI Tracked</ThemedText>
+                    <View style={[s.badge, { backgroundColor: '#5A8A6E20' }]}>
+                      <ThemedText style={[s.badgeText, { color: '#5A8A6E' }]}>COI Tracked</ThemedText>
                     </View>
                   )}
                 </View>
@@ -1260,7 +1260,7 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
                     <ThemedText
                       style={[
                         s.listCardFooterValue,
-                        { color: item.renewalAlert ? '#F59E0B' : colors.textSecondary },
+                        { color: item.renewalAlert ? '#B8943E' : colors.textSecondary },
                       ]}
                     >
                       {item.expiryDate}
@@ -1375,7 +1375,7 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
         <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Templates</ThemedText>
         {DILIGENCE_TEMPLATES.map((tpl) => {
           const pct = tpl.itemCount > 0 ? Math.round((tpl.completedCount / tpl.itemCount) * 100) : 0;
-          const barClr = pct >= 80 ? '#22C55E' : pct >= 40 ? '#F59E0B' : '#EF4444';
+          const barClr = pct >= 80 ? '#5A8A6E' : pct >= 40 ? '#B8943E' : '#B85C5C';
           const typeBg = TEMPLATE_TYPE_COLOR[tpl.type] || ACCENT;
           return (
             <View key={tpl.id} style={[s.templateCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -1406,7 +1406,7 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
         <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Active Checklists</ThemedText>
         {diligenceByAcquisition.map((group) => {
           const completionPercent = Math.round((group.completedCount / group.totalCount) * 100);
-          const barColor = completionPercent >= 80 ? '#22C55E' : completionPercent >= 50 ? '#F59E0B' : '#EF4444';
+          const barColor = completionPercent >= 80 ? '#5A8A6E' : completionPercent >= 50 ? '#B8943E' : '#B85C5C';
 
           return (
             <View key={group.acquisitionId} style={{ marginBottom: Spacing.lg }}>
@@ -1448,8 +1448,8 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
                       style={[
                         s.diligenceCheckbox,
                         {
-                          backgroundColor: item.completed ? '#22C55E' : 'transparent',
-                          borderColor: item.completed ? '#22C55E' : colors.textTertiary,
+                          backgroundColor: item.completed ? '#5A8A6E' : 'transparent',
+                          borderColor: item.completed ? '#5A8A6E' : colors.textTertiary,
                         },
                       ]}
                     >
@@ -1697,11 +1697,11 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
               <ThemedText style={[s.detailActionText, { color: accentColor }]}>Edit</ThemedText>
             </Pressable>
             <Pressable
-              style={[s.detailActionBtn, { backgroundColor: '#EF444415' }]}
+              style={[s.detailActionBtn, { backgroundColor: '#B85C5C15' }]}
               onPress={() => setAssetDetailVisible(false)}
             >
-              <IconSymbol name="trash" size={14} color="#EF4444" />
-              <ThemedText style={[s.detailActionText, { color: '#EF4444' }]}>Dispose</ThemedText>
+              <IconSymbol name="trash" size={14} color="#B85C5C" />
+              <ThemedText style={[s.detailActionText, { color: '#B85C5C' }]}>Dispose</ThemedText>
             </Pressable>
           </View>
         </View>
@@ -1880,7 +1880,7 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
           {selectedMaintenance.completedDate && (
             <View style={s.detailRow}>
               <ThemedText style={[s.detailLabel, { color: colors.textSecondary }]}>Completed Date</ThemedText>
-              <ThemedText style={[s.detailValue, { color: '#22C55E' }]}>
+              <ThemedText style={[s.detailValue, { color: '#5A8A6E' }]}>
                 {selectedMaintenance.completedDate}
               </ThemedText>
             </View>
@@ -1900,11 +1900,11 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
 
           <View style={s.detailActions}>
             <Pressable
-              style={[s.detailActionBtn, { backgroundColor: '#22C55E15' }]}
+              style={[s.detailActionBtn, { backgroundColor: '#5A8A6E15' }]}
               onPress={() => setMaintenanceDetailVisible(false)}
             >
-              <IconSymbol name="checkmark.circle" size={14} color="#22C55E" />
-              <ThemedText style={[s.detailActionText, { color: '#22C55E' }]}>Mark Complete</ThemedText>
+              <IconSymbol name="checkmark.circle" size={14} color="#5A8A6E" />
+              <ThemedText style={[s.detailActionText, { color: '#5A8A6E' }]}>Mark Complete</ThemedText>
             </Pressable>
             <Pressable
               style={[s.detailActionBtn, { backgroundColor: accentColor + '15' }]}
@@ -1935,13 +1935,13 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
           <View style={s.detailBadgeRow}>
             <InsuranceTypeBadge type={selectedInsurance.type} />
             {selectedInsurance.renewalAlert && (
-              <View style={[s.badge, { backgroundColor: '#F59E0B20' }]}>
-                <ThemedText style={[s.badgeText, { color: '#F59E0B' }]}>Renewal Alert</ThemedText>
+              <View style={[s.badge, { backgroundColor: '#B8943E20' }]}>
+                <ThemedText style={[s.badgeText, { color: '#B8943E' }]}>Renewal Alert</ThemedText>
               </View>
             )}
             {selectedInsurance.coiTracking && (
-              <View style={[s.badge, { backgroundColor: '#22C55E20' }]}>
-                <ThemedText style={[s.badgeText, { color: '#22C55E' }]}>COI Tracked</ThemedText>
+              <View style={[s.badge, { backgroundColor: '#5A8A6E20' }]}>
+                <ThemedText style={[s.badgeText, { color: '#5A8A6E' }]}>COI Tracked</ThemedText>
               </View>
             )}
           </View>
@@ -1955,8 +1955,8 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
                 Coverage
               </ThemedText>
             </View>
-            <View style={[s.detailValueCard, { backgroundColor: '#F59E0B10' }]}>
-              <ThemedText style={[s.detailValueNumber, { color: '#F59E0B' }]}>
+            <View style={[s.detailValueCard, { backgroundColor: '#B8943E10' }]}>
+              <ThemedText style={[s.detailValueNumber, { color: '#B8943E' }]}>
                 {formatCurrency(selectedInsurance.premium)}
               </ThemedText>
               <ThemedText style={[s.detailValueLabel, { color: colors.textSecondary }]}>
@@ -1976,7 +1976,7 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
             <ThemedText
               style={[
                 s.detailValue,
-                { color: selectedInsurance.renewalAlert ? '#F59E0B' : colors.text },
+                { color: selectedInsurance.renewalAlert ? '#B8943E' : colors.text },
               ]}
             >
               {selectedInsurance.expiryDate}
@@ -1985,11 +1985,11 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
 
           <View style={s.detailActions}>
             <Pressable
-              style={[s.detailActionBtn, { backgroundColor: '#22C55E15' }]}
+              style={[s.detailActionBtn, { backgroundColor: '#5A8A6E15' }]}
               onPress={() => setInsuranceDetailVisible(false)}
             >
-              <IconSymbol name="arrow.clockwise" size={14} color="#22C55E" />
-              <ThemedText style={[s.detailActionText, { color: '#22C55E' }]}>Renew</ThemedText>
+              <IconSymbol name="arrow.clockwise" size={14} color="#5A8A6E" />
+              <ThemedText style={[s.detailActionText, { color: '#5A8A6E' }]}>Renew</ThemedText>
             </Pressable>
             <Pressable
               style={[s.detailActionBtn, { backgroundColor: `${ACCENT}15` }]}
@@ -2061,7 +2061,7 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
             );
             if (!group) return null;
             const pct = Math.round((group.completedCount / group.totalCount) * 100);
-            const barClr = pct >= 80 ? '#22C55E' : pct >= 50 ? '#F59E0B' : '#EF4444';
+            const barClr = pct >= 80 ? '#5A8A6E' : pct >= 50 ? '#B8943E' : '#B85C5C';
             return (
               <View style={{ alignSelf: 'stretch', marginTop: Spacing.sm }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
@@ -2154,18 +2154,18 @@ export function BizOrgAssetsV2({ colors, accentColor, role = 'B1' }: Props) {
           {selectedRequest.status === 'pending' && (
             <View style={s.detailActions}>
               <Pressable
-                style={[s.detailActionBtn, { backgroundColor: '#22C55E15' }]}
+                style={[s.detailActionBtn, { backgroundColor: '#5A8A6E15' }]}
                 onPress={() => setRequestDetailVisible(false)}
               >
-                <IconSymbol name="checkmark.circle" size={14} color="#22C55E" />
-                <ThemedText style={[s.detailActionText, { color: '#22C55E' }]}>Approve</ThemedText>
+                <IconSymbol name="checkmark.circle" size={14} color="#5A8A6E" />
+                <ThemedText style={[s.detailActionText, { color: '#5A8A6E' }]}>Approve</ThemedText>
               </Pressable>
               <Pressable
-                style={[s.detailActionBtn, { backgroundColor: '#EF444415' }]}
+                style={[s.detailActionBtn, { backgroundColor: '#B85C5C15' }]}
                 onPress={() => setRequestDetailVisible(false)}
               >
-                <IconSymbol name="xmark.circle" size={14} color="#EF4444" />
-                <ThemedText style={[s.detailActionText, { color: '#EF4444' }]}>Reject</ThemedText>
+                <IconSymbol name="xmark.circle" size={14} color="#B85C5C" />
+                <ThemedText style={[s.detailActionText, { color: '#B85C5C' }]}>Reject</ThemedText>
               </Pressable>
             </View>
           )}

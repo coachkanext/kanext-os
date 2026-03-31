@@ -56,7 +56,7 @@ export function TeamPanel() {
               {[
                 { label: 'Total',   value: EMPLOYEES.length.toString(), color: C.label },
                 { label: 'Active',  value: EMPLOYEES.filter(e => e.status === 'active').length.toString(), color: C.green },
-                { label: 'Remote',  value: EMPLOYEES.filter(e => e.status === 'remote').length.toString(), color: '#1D9BF0' },
+                { label: 'Remote',  value: EMPLOYEES.filter(e => e.status === 'remote').length.toString(), color: '#1A1714' },
               ].map(m => (
                 <View key={m.label} style={{ flex: 1, alignItems: 'center', backgroundColor: C.surfacePressed as string, borderRadius: 8, paddingVertical: 8 }}>
                   <Text style={{ fontSize: 18, fontWeight: '800', color: m.color }}>{m.value}</Text>
@@ -89,7 +89,7 @@ export function TeamPanel() {
                       <Text style={{ fontSize: 9, fontWeight: '700', color: '#fff' }}>{emp.initials}</Text>
                     </View>
                     <Text style={[s.navLabel, { color: C.label }]}>{emp.name}</Text>
-                    <Text style={[s.navDetail, { color: '#8B6340' }]}>PTO</Text>
+                    <Text style={[s.navDetail, { color: '#1A1714' }]}>PTO</Text>
                   </Pressable>
                 ))}
               </View>

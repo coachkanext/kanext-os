@@ -50,9 +50,9 @@ import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 // ── Color Maps ──
 
 const ROLE_COLORS: Record<CommunityRole, string> = {
-  student: '#3B82F6',
-  faculty: '#8B5CF6',
-  staff: '#F59E0B',
+  student: '#1A1714',
+  faculty: '#1A1714',
+  staff: '#B8943E',
 };
 
 const ROLE_LABELS: Record<CommunityRole, string> = {
@@ -62,10 +62,10 @@ const ROLE_LABELS: Record<CommunityRole, string> = {
 };
 
 const CLASS_YEAR_COLORS: Record<NonNullable<ClassYear>, string> = {
-  freshman: '#22C55E',
-  sophomore: '#3B82F6',
-  junior: '#F59E0B',
-  senior: '#8B5CF6',
+  freshman: '#5A8A6E',
+  sophomore: '#1A1714',
+  junior: '#B8943E',
+  senior: '#1A1714',
   grad: '#6366F1',
 };
 
@@ -78,14 +78,14 @@ const CLASS_YEAR_LABELS: Record<NonNullable<ClassYear>, string> = {
 };
 
 const ORG_CATEGORY_COLORS: Record<OrgCategory, string> = {
-  clubs: '#3B82F6',
-  'greek-life': '#8B5CF6',
+  clubs: '#1A1714',
+  'greek-life': '#1A1714',
   academic: '#6366F1',
-  'sports-clubs': '#22C55E',
-  arts: '#EC4899',
-  service: '#F59E0B',
-  religious: '#EF4444',
-  'student-gov': '#A1A1AA',
+  'sports-clubs': '#5A8A6E',
+  arts: '#1A1714',
+  service: '#B8943E',
+  religious: '#B85C5C',
+  'student-gov': '#9C9790',
 };
 
 const ORG_CATEGORY_LABELS: Record<OrgCategory, string> = {
@@ -100,9 +100,9 @@ const ORG_CATEGORY_LABELS: Record<OrgCategory, string> = {
 };
 
 const ORG_STATUS_COLORS: Record<OrgStatus, string> = {
-  active: '#22C55E',
+  active: '#5A8A6E',
   inactive: '#52525B',
-  pending: '#F59E0B',
+  pending: '#B8943E',
 };
 
 const ORG_STATUS_LABELS: Record<OrgStatus, string> = {
@@ -112,9 +112,9 @@ const ORG_STATUS_LABELS: Record<OrgStatus, string> = {
 };
 
 const JOB_TYPE_COLORS: Record<JobType, string> = {
-  internship: '#3B82F6',
-  'part-time': '#F59E0B',
-  'full-time': '#22C55E',
+  internship: '#1A1714',
+  'part-time': '#B8943E',
+  'full-time': '#5A8A6E',
 };
 
 const JOB_TYPE_LABELS: Record<JobType, string> = {
@@ -124,9 +124,9 @@ const JOB_TYPE_LABELS: Record<JobType, string> = {
 };
 
 const MENTORING_TYPE_COLORS: Record<MentoringType, string> = {
-  peer: '#22C55E',
-  faculty: '#3B82F6',
-  alumni: '#8B5CF6',
+  peer: '#5A8A6E',
+  faculty: '#1A1714',
+  alumni: '#1A1714',
 };
 
 const MENTORING_TYPE_LABELS: Record<MentoringType, string> = {
@@ -136,10 +136,10 @@ const MENTORING_TYPE_LABELS: Record<MentoringType, string> = {
 };
 
 const WELLNESS_CATEGORY_COLORS: Record<WellnessCategory, string> = {
-  health: '#22C55E',
-  counseling: '#3B82F6',
-  programs: '#8B5CF6',
-  crisis: '#EF4444',
+  health: '#5A8A6E',
+  counseling: '#1A1714',
+  programs: '#1A1714',
+  crisis: '#B85C5C',
 };
 
 const WELLNESS_CATEGORY_LABELS: Record<WellnessCategory, string> = {
@@ -150,9 +150,9 @@ const WELLNESS_CATEGORY_LABELS: Record<WellnessCategory, string> = {
 };
 
 const ALERT_SEVERITY_COLORS: Record<AlertSeverity, string> = {
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#A1A1AA',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#9C9790',
 };
 
 const ALERT_SEVERITY_LABELS: Record<AlertSeverity, string> = {

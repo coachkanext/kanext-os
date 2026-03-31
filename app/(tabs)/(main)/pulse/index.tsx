@@ -59,10 +59,10 @@ type PulseItem = {
 // ── Brand / type data ─────────────────────────────────────────────────────────
 
 const BRANDS = [
-  { id: 'kanext',     name: 'KaNeXT',              initials: 'KN', color: '#3B82F6' },
-  { id: 'lincoln',    name: 'Lincoln University',   initials: 'LU', color: '#003A63' },
-  { id: 'basketball', name: "LU Men's Basketball",  initials: 'BB', color: '#990000' },
-  { id: 'iccla',      name: 'ICCLA',               initials: 'IC', color: '#1D9BF0' },
+  { id: 'kanext',     name: 'KaNeXT',              initials: 'KN', color: '#1A1714' },
+  { id: 'lincoln',    name: 'Lincoln University',   initials: 'LU', color: '#1A1714' },
+  { id: 'basketball', name: "LU Men's Basketball",  initials: 'BB', color: '#1A1714' },
+  { id: 'iccla',      name: 'ICCLA',               initials: 'IC', color: '#1A1714' },
   { id: 'sammy',      name: 'Sammy Kalejaiye',      initials: 'SK', color: '#5A8A6E' },
 ];
 
@@ -482,7 +482,7 @@ function PulseItemRow({ item, isExpanded, pinned, onPress, onLongPress,
   );
 
   const renderLeftActions = () => (
-    <Pressable style={[s.swipeAction, { backgroundColor: pinned ? '#888' : '#F59E0B', width: 72 }]}
+    <Pressable style={[s.swipeAction, { backgroundColor: pinned ? '#888' : '#B8943E', width: 72 }]}
       onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onPin(item.id); }}>
       <IconSymbol name={pinned ? 'pin.slash.fill' : 'pin.fill'} size={16} color="#fff" />
       <Text style={s.swipeLabel}>{pinned ? 'Unpin' : 'Pin'}</Text>

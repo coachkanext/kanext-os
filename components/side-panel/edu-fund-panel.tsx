@@ -36,7 +36,7 @@ export function EduFundPanel() {
       <Text style={[s.navLabel, { color: C.label }]}>{label}</Text>
       {detail && <Text style={[s.navDetail, { color: C.muted }]}>{detail}</Text>}
       {badgeCount != null && badgeCount > 0 && (
-        <View style={{ backgroundColor: '#E8884A', borderRadius: 8, minWidth: 18, height: 18, paddingHorizontal: 4, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ backgroundColor: '#B8943E', borderRadius: 8, minWidth: 18, height: 18, paddingHorizontal: 4, alignItems: 'center', justifyContent: 'center' }}>
           <Text style={{ fontSize: 10, fontWeight: '800', color: '#fff' }}>{badgeCount}</Text>
         </View>
       )}

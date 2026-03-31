@@ -45,9 +45,9 @@ function getInitials(name: string): string {
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  active: { label: 'Active', color: '#22C55E' },
-  on_leave: { label: 'On Leave', color: '#F59E0B' },
-  visiting: { label: 'Visiting', color: '#8B5CF6' },
+  active: { label: 'Active', color: '#5A8A6E' },
+  on_leave: { label: 'On Leave', color: '#B8943E' },
+  visiting: { label: 'Visiting', color: '#1A1714' },
 };
 
 // =============================================================================

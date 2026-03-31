@@ -16,16 +16,16 @@ import { openTeamCard } from '@/utils/global-entity-sheets';
 
 const ACCENT = MODE_ACCENT.competition;
 const CATEGORY_COLORS: Record<TeamCategory, string> = {
-  oem_works: '#22C55E',
+  oem_works: '#5A8A6E',
   premier_tuner: ACCENT,
-  league_owned: '#F59E0B',
+  league_owned: '#B8943E',
   kanext_works: ACCENT,
 };
 
 const HOMOLOGATION_COLORS: Record<GridTeam['homologation'], string> = {
-  approved: '#22C55E',
-  pending: '#F59E0B',
-  expired: '#EF4444',
+  approved: '#5A8A6E',
+  pending: '#B8943E',
+  expired: '#B85C5C',
 };
 
 const HOMOLOGATION_LABELS: Record<GridTeam['homologation'], string> = {

@@ -27,9 +27,9 @@ import {
 } from '@/data/mock-game-plan-v2';
 
 const STATUS_COLORS: Record<string, string> = {
-  draft: '#A1A1AA',
-  'in-review': '#F59E0B',
-  locked: '#22C55E',
+  draft: '#9C9790',
+  'in-review': '#B8943E',
+  locked: '#5A8A6E',
   archived: '#52525B',
 };
 
@@ -127,7 +127,7 @@ function OverviewTab({ plan, colors, accent, krVis }: TabProps) {
   const oppKR = getOppKR(plan);
   const oppSys = getOppSystems(plan);
   const fmuKR = 74;
-  const winPctColor = h.simWinPct >= 60 ? '#22C55E' : h.simWinPct >= 45 ? '#F59E0B' : '#EF4444';
+  const winPctColor = h.simWinPct >= 60 ? '#5A8A6E' : h.simWinPct >= 45 ? '#B8943E' : '#B85C5C';
 
   // Key matchup advantages
   const advantages = plan.matchups.filter(m => m.advantageRating > 0).slice(0, 4).map(m => m.notes);
@@ -181,7 +181,7 @@ function OverviewTab({ plan, colors, accent, krVis }: TabProps) {
         <CompareRow label="Defense" fmu={plan.defense.primarySystem} opp={oppSys.def} colors={colors} />
         <CompareRow label="Tempo" fmu={plan.offense.tempoTarget} opp="Moderate" colors={colors} />
         <CompareRow label="Pace" fmu={`${plan.offense.paceTarget}`} opp="68" colors={colors} />
-        <CompareRow label="Sim Margin" fmu={`+${h.simMargin}`} opp="" colors={colors} fmuColor="#22C55E" />
+        <CompareRow label="Sim Margin" fmu={`+${h.simMargin}`} opp="" colors={colors} fmuColor="#5A8A6E" />
       </View>
 
       {/* Key Matchup Advantages */}
@@ -190,7 +190,7 @@ function OverviewTab({ plan, colors, accent, krVis }: TabProps) {
           <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>KEY ADVANTAGES</Text>
           {advantages.map((adv, i) => (
             <View key={i} style={styles.advantageRow}>
-              <Text style={[styles.advantageDot, { color: '#22C55E' }]}>●</Text>
+              <Text style={[styles.advantageDot, { color: '#5A8A6E' }]}>●</Text>
               <Text style={[styles.advantageText, { color: colors.text }]}>{adv}</Text>
             </View>
           ))}
@@ -201,7 +201,7 @@ function OverviewTab({ plan, colors, accent, krVis }: TabProps) {
       <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>SCOUTING CONFIDENCE</Text>
         <View style={styles.confRow}>
-          <Text style={[styles.confPct, { color: confPct >= 70 ? '#22C55E' : confPct >= 50 ? '#F59E0B' : '#EF4444' }]}>{confPct}%</Text>
+          <Text style={[styles.confPct, { color: confPct >= 70 ? '#5A8A6E' : confPct >= 50 ? '#B8943E' : '#B85C5C' }]}>{confPct}%</Text>
           <Text style={[styles.confSource, { color: colors.textSecondary }]}>{confSource}</Text>
         </View>
         <Text style={[styles.confDetail, { color: colors.textTertiary }]}>{scoutConf} of {totalNotes} scout notes rated high confidence</Text>
@@ -250,8 +250,8 @@ function OffenseTab({ plan, colors, accent }: TabProps) {
         <View key={play.id} style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={styles.playHeader}>
             <Text style={[styles.playName, { color: colors.text }]}>{play.name}</Text>
-            <View style={[styles.priorityBadge, { backgroundColor: play.priority === 'primary' ? accent + '22' : play.priority === 'secondary' ? '#F59E0B22' : '#A1A1AA22' }]}>
-              <Text style={[styles.priorityText, { color: play.priority === 'primary' ? accent : play.priority === 'secondary' ? '#F59E0B' : '#A1A1AA' }]}>{play.priority}</Text>
+            <View style={[styles.priorityBadge, { backgroundColor: play.priority === 'primary' ? accent + '22' : play.priority === 'secondary' ? '#B8943E22' : '#9C979022' }]}>
+              <Text style={[styles.priorityText, { color: play.priority === 'primary' ? accent : play.priority === 'secondary' ? '#B8943E' : '#9C9790' }]}>{play.priority}</Text>
             </View>
           </View>
           <Text style={[styles.playNotes, { color: colors.textSecondary }]}>{play.notes}</Text>
@@ -301,7 +301,7 @@ function DefenseTab({ plan, colors, accent }: TabProps) {
         <>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>OPPONENT KEY THREATS</Text>
           {keyPlayers.map((kp) => (
-            <View key={kp.id} style={[styles.card, { backgroundColor: colors.card, borderColor: '#EF444444' }]}>
+            <View key={kp.id} style={[styles.card, { backgroundColor: colors.card, borderColor: '#B85C5C44' }]}>
               <Text style={[styles.threatName, { color: colors.text }]}>{kp.title}</Text>
               <Text style={[styles.threatDetail, { color: colors.textSecondary }]}>{kp.detail}</Text>
             </View>
@@ -315,8 +315,8 @@ function DefenseTab({ plan, colors, accent }: TabProps) {
         <View key={rule.id} style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={styles.playHeader}>
             <Text style={[styles.playName, { color: colors.text, flex: 1 }]}>{rule.rule}</Text>
-            <View style={[styles.priorityBadge, { backgroundColor: rule.priority === 'must' ? '#EF444422' : rule.priority === 'should' ? '#F59E0B22' : '#A1A1AA22' }]}>
-              <Text style={[styles.priorityText, { color: rule.priority === 'must' ? '#EF4444' : rule.priority === 'should' ? '#F59E0B' : '#A1A1AA' }]}>{rule.priority}</Text>
+            <View style={[styles.priorityBadge, { backgroundColor: rule.priority === 'must' ? '#B85C5C22' : rule.priority === 'should' ? '#B8943E22' : '#9C979022' }]}>
+              <Text style={[styles.priorityText, { color: rule.priority === 'must' ? '#B85C5C' : rule.priority === 'should' ? '#B8943E' : '#9C9790' }]}>{rule.priority}</Text>
             </View>
           </View>
         </View>
@@ -356,7 +356,7 @@ function MatchupsTab({ plan, colors, accent, krVis }: TabProps) {
 
       {plan.matchups.map((m) => {
         const expanded = expandedId === m.id;
-        const advColor = m.advantageRating > 0 ? '#22C55E' : m.advantageRating < 0 ? '#EF4444' : '#F59E0B';
+        const advColor = m.advantageRating > 0 ? '#5A8A6E' : m.advantageRating < 0 ? '#B85C5C' : '#B8943E';
         const advLabel = m.advantageRating > 0 ? `+${m.advantageRating}` : `${m.advantageRating}`;
         return (
           <Pressable key={m.id} onPress={() => setExpandedId(expanded ? null : m.id)} style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -423,8 +423,8 @@ function RotationTab({ plan, colors, accent }: TabProps) {
       })}
 
       {/* Foul Trouble Contingency */}
-      <View style={[styles.card, { backgroundColor: '#0B0F14', borderColor: '#F59E0B44' }]}>
-        <Text style={[styles.sectionLabel, { color: '#F59E0B' }]}>FOUL TROUBLE CONTINGENCY</Text>
+      <View style={[styles.card, { backgroundColor: '#0B0F14', borderColor: '#B8943E44' }]}>
+        <Text style={[styles.sectionLabel, { color: '#B8943E' }]}>FOUL TROUBLE CONTINGENCY</Text>
         {plan.offense.adjustments.filter(a => a.toLowerCase().includes('foul')).map((a, i) => (
           <Text key={i} style={[styles.contingencyText, { color: '#ccc' }]}>● {a}</Text>
         ))}
@@ -440,7 +440,7 @@ function RotationTab({ plan, colors, accent }: TabProps) {
 
 // ─── Tab 6: Scout ───
 function ScoutTab({ plan, colors, accent, krVis }: TabProps) {
-  const catColors: Record<string, string> = { tendency: '#F59E0B', weakness: '#EF4444', strength: '#22C55E', 'key-player': accent, situational: accent };
+  const catColors: Record<string, string> = { tendency: '#B8943E', weakness: '#B85C5C', strength: '#5A8A6E', 'key-player': accent, situational: accent };
   const oppKR = getOppKR(plan);
 
   return (
@@ -465,11 +465,11 @@ function ScoutTab({ plan, colors, accent, krVis }: TabProps) {
       {plan.scoutNotes.map((note) => (
         <View key={note.id} style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={styles.scoutHeader}>
-            <View style={[styles.catBadge, { backgroundColor: (catColors[note.category] ?? '#A1A1AA') + '22' }]}>
-              <Text style={[styles.catText, { color: catColors[note.category] ?? '#A1A1AA' }]}>{note.category}</Text>
+            <View style={[styles.catBadge, { backgroundColor: (catColors[note.category] ?? '#9C9790') + '22' }]}>
+              <Text style={[styles.catText, { color: catColors[note.category] ?? '#9C9790' }]}>{note.category}</Text>
             </View>
-            <View style={[styles.confBadge, { backgroundColor: note.confidence === 'high' ? '#22C55E22' : note.confidence === 'medium' ? '#F59E0B22' : '#EF444422' }]}>
-              <Text style={[styles.confBadgeText, { color: note.confidence === 'high' ? '#22C55E' : note.confidence === 'medium' ? '#F59E0B' : '#EF4444' }]}>{note.confidence}</Text>
+            <View style={[styles.confBadge, { backgroundColor: note.confidence === 'high' ? '#5A8A6E22' : note.confidence === 'medium' ? '#B8943E22' : '#B85C5C22' }]}>
+              <Text style={[styles.confBadgeText, { color: note.confidence === 'high' ? '#5A8A6E' : note.confidence === 'medium' ? '#B8943E' : '#B85C5C' }]}>{note.confidence}</Text>
             </View>
           </View>
           <Text style={[styles.scoutTitle, { color: colors.text }]}>{note.title}</Text>

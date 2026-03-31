@@ -174,10 +174,10 @@ export const SPONSOR_TIER_LABEL: Record<SponsorTier, string> = {
 
 export const SPONSOR_TIER_COLOR: Record<SponsorTier, string> = {
   title: '#f59e0b',
-  gold: '#F59E0B',
-  silver: '#A1A1AA',
+  gold: '#B8943E',
+  silver: '#9C9790',
   local: '#22c55e',
-  'in-kind': '#1D9BF0',
+  'in-kind': '#1A1714',
 };
 
 export const SPONSOR_STATUS_LABEL: Record<SponsorStatus, string> = {
@@ -204,14 +204,14 @@ export const PIPELINE_STAGE_LABEL: Record<PipelineStage, string> = {
 };
 
 export const PIPELINE_STAGE_COLOR: Record<PipelineStage, string> = {
-  prospect: '#A1A1AA',
-  contacted: '#1D9BF0',
-  'meeting-set': '#1D9BF0',
+  prospect: '#9C9790',
+  contacted: '#1A1714',
+  'meeting-set': '#1A1714',
   'proposal-sent': '#f59e0b',
   negotiation: '#ef4444',
   active: '#22c55e',
-  renewal: '#1D9BF0',
-  churned: '#A1A1AA',
+  renewal: '#1A1714',
+  churned: '#9C9790',
 };
 
 export const PIPELINE_PRIORITY_LABEL: Record<PipelinePriority, string> = {
@@ -223,7 +223,7 @@ export const PIPELINE_PRIORITY_LABEL: Record<PipelinePriority, string> = {
 export const PIPELINE_PRIORITY_COLOR: Record<PipelinePriority, string> = {
   high: '#ef4444',
   medium: '#f59e0b',
-  low: '#A1A1AA',
+  low: '#9C9790',
 };
 
 export const DELIVERABLE_TYPE_LABEL: Record<DeliverableType, string> = {
@@ -236,12 +236,12 @@ export const DELIVERABLE_TYPE_LABEL: Record<DeliverableType, string> = {
 };
 
 export const DELIVERABLE_TYPE_COLOR: Record<DeliverableType, string> = {
-  signage: '#1D9BF0',
-  'jersey-patch': '#1D9BF0',
+  signage: '#1A1714',
+  'jersey-patch': '#1A1714',
   'social-post': '#22c55e',
   'in-game-read': '#f59e0b',
   'event-activation': '#ef4444',
-  content: '#A1A1AA',
+  content: '#9C9790',
 };
 
 export const DELIVERABLE_STATUS_LABEL: Record<DeliverableStatus, string> = {
@@ -252,7 +252,7 @@ export const DELIVERABLE_STATUS_LABEL: Record<DeliverableStatus, string> = {
 };
 
 export const DELIVERABLE_STATUS_COLOR: Record<DeliverableStatus, string> = {
-  'not-started': '#A1A1AA',
+  'not-started': '#9C9790',
   'in-progress': '#f59e0b',
   complete: '#22c55e',
   blocked: '#ef4444',
@@ -266,9 +266,9 @@ export const PROOF_TYPE_LABEL: Record<ProofType, string> = {
 };
 
 export const PROOF_TYPE_COLOR: Record<ProofType, string> = {
-  photo: '#1D9BF0',
+  photo: '#1A1714',
   link: '#22c55e',
-  'video-timestamp': '#1D9BF0',
+  'video-timestamp': '#1A1714',
   attendance: '#f59e0b',
 };
 
@@ -293,7 +293,7 @@ export const INVOICE_STATUS_LABEL: Record<InvoiceStatus, string> = {
 
 export const INVOICE_STATUS_COLOR: Record<InvoiceStatus, string> = {
   paid: '#22c55e',
-  issued: '#1D9BF0',
+  issued: '#1A1714',
   'past-due': '#ef4444',
   blocked: '#f59e0b',
 };

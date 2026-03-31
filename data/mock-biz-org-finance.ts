@@ -173,9 +173,9 @@ export const BIZ_FINANCE_V2_TABS: { id: BizFinanceV2TabId; label: string }[] = [
 // =============================================================================
 
 export const BUDGET_STATUS_COLOR: Record<FinanceBudget['status'], string> = {
-  on_track: '#22C55E',
-  at_risk: '#F59E0B',
-  over_budget: '#EF4444',
+  on_track: '#5A8A6E',
+  at_risk: '#B8943E',
+  over_budget: '#B85C5C',
 };
 
 export const BUDGET_STATUS_LABEL: Record<FinanceBudget['status'], string> = {
@@ -185,10 +185,10 @@ export const BUDGET_STATUS_LABEL: Record<FinanceBudget['status'], string> = {
 };
 
 export const COMMITMENT_STATUS_COLOR: Record<FinanceCommitment['status'], string> = {
-  pending: '#F59E0B',
-  active: '#1D9BF0',
-  fulfilled: '#22C55E',
-  cancelled: '#A1A1AA',
+  pending: '#B8943E',
+  active: '#1A1714',
+  fulfilled: '#5A8A6E',
+  cancelled: '#9C9790',
 };
 
 export const COMMITMENT_STATUS_LABEL: Record<FinanceCommitment['status'], string> = {
@@ -199,43 +199,43 @@ export const COMMITMENT_STATUS_LABEL: Record<FinanceCommitment['status'], string
 };
 
 export const SOURCE_TAB_COLOR: Record<string, string> = {
-  legal: '#1D9BF0',
-  operations: '#1D9BF0',
-  people: '#1D9BF0',
-  compliance: '#F59E0B',
+  legal: '#1A1714',
+  operations: '#1A1714',
+  people: '#1A1714',
+  compliance: '#B8943E',
 };
 
 export const CONTROL_STATUS_COLOR: Record<FinanceControl['status'], string> = {
-  active: '#22C55E',
-  disabled: '#A1A1AA',
+  active: '#5A8A6E',
+  disabled: '#9C9790',
 };
 
 export const AUDIT_TYPE_COLOR: Record<string, string> = {
-  approval: '#1D9BF0',
-  authorization: '#1D9BF0',
-  creation: '#1D9BF0',
-  amendment: '#F59E0B',
-  release: '#22C55E',
-  rejection: '#EF4444',
-  control_change: '#1D9BF0',
-  budget_alert: '#F59E0B',
-  reconciliation: '#1D9BF0',
+  approval: '#1A1714',
+  authorization: '#1A1714',
+  creation: '#1A1714',
+  amendment: '#B8943E',
+  release: '#5A8A6E',
+  rejection: '#B85C5C',
+  control_change: '#1A1714',
+  budget_alert: '#B8943E',
+  reconciliation: '#1A1714',
 };
 
 export const LEDGER_CATEGORY_COLOR: Record<string, string> = {
-  payroll: '#1D9BF0',
-  infrastructure: '#1D9BF0',
-  marketing: '#1D9BF0',
-  legal: '#F59E0B',
-  operations: '#1D9BF0',
-  consulting: '#1D9BF0',
-  licensing: '#22C55E',
-  subscription: '#1D9BF0',
-  'r&d': '#1D9BF0',
-  travel: '#F59E0B',
-  office: '#A1A1AA',
-  partnership: '#1D9BF0',
-  acquisition: '#EF4444',
+  payroll: '#1A1714',
+  infrastructure: '#1A1714',
+  marketing: '#1A1714',
+  legal: '#B8943E',
+  operations: '#1A1714',
+  consulting: '#1A1714',
+  licensing: '#5A8A6E',
+  subscription: '#1A1714',
+  'r&d': '#1A1714',
+  travel: '#B8943E',
+  office: '#9C9790',
+  partnership: '#1A1714',
+  acquisition: '#B85C5C',
 };
 
 // =============================================================================
@@ -248,42 +248,42 @@ const TRUTH_CHIPS: FinanceTruthChip[] = [
     label: 'Cash Position',
     value: '$2.4M',
     icon: 'building.columns.fill',
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
   {
     id: 'tc-burn',
     label: 'Burn Rate',
     value: '$180K/mo',
     icon: 'flame.fill',
-    color: '#EF4444',
+    color: '#B85C5C',
   },
   {
     id: 'tc-runway',
     label: 'Runway',
     value: '13.3 months',
     icon: 'hourglass',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'tc-revenue',
     label: 'Revenue MTD',
     value: '$420K',
     icon: 'arrow.up.circle.fill',
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
   {
     id: 'tc-committed',
     label: 'Committed Not Released',
     value: '$340K',
     icon: 'lock.fill',
-    color: '#F59E0B',
+    color: '#B8943E',
   },
   {
     id: 'tc-pending',
     label: 'Pending Approvals',
     value: '3',
     icon: 'clock.fill',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
 ];
 

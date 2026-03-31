@@ -147,9 +147,9 @@ export function getMomentumLabel(m: Momentum): string {
 
 export function getMomentumColor(m: Momentum): string {
   switch (m) {
-    case 'up': return '#22C55E';
-    case 'down': return '#EF4444';
-    default: return '#A1A1AA';
+    case 'up': return '#5A8A6E';
+    case 'down': return '#B85C5C';
+    default: return '#9C9790';
   }
 }
 

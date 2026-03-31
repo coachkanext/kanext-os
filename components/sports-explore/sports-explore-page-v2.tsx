@@ -88,7 +88,7 @@ function TileCard({
         </View>
         {/* Type badge */}
         <View style={[styles.tileTypeBadge, {
-          backgroundColor: tile.type === 'Game' ? 'rgba(0,0,0,0.6)' : tile.type === 'Clip' ? '#1D9BF0' : '#22C55E',
+          backgroundColor: tile.type === 'Game' ? 'rgba(0,0,0,0.6)' : tile.type === 'Clip' ? '#1A1714' : '#5A8A6E',
         }]}>
           <ThemedText style={styles.tileTypeText}>{tile.type.toUpperCase()}</ThemedText>
         </View>

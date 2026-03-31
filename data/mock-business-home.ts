@@ -554,7 +554,7 @@ export const BIZ_NEWS: BizNewsItem[] = [
     category: 'founder',
     speaker: 'Alex',
     duration: '12:15',
-    thumbnailColor: '#1D9BF0',
+    thumbnailColor: '#1A1714',
   },
   {
     id: 'bn-4',
@@ -595,7 +595,7 @@ export const BIZ_NEWS: BizNewsItem[] = [
     category: 'product',
     speaker: 'Alex',
     duration: '5:18',
-    thumbnailColor: '#1D9BF0',
+    thumbnailColor: '#1A1714',
   },
 ];
 
@@ -909,14 +909,14 @@ export const DEALS: Deal[] = [
 // =============================================================================
 
 export const DEAL_STAGES: { key: string; label: string; color: string; count: number }[] = [
-  { key: 'lead', label: 'Lead', color: '#A1A1AA', count: 1 },
-  { key: 'contacted', label: 'Contacted', color: '#1D9BF0', count: 1 },
-  { key: 'meeting_set', label: 'Meeting Set', color: '#1D9BF0', count: 2 },
-  { key: 'proposal_sent', label: 'Proposal Sent', color: '#F59E0B', count: 1 },
-  { key: 'negotiating', label: 'Negotiating', color: '#F59E0B', count: 1 },
-  { key: 'due_diligence', label: 'Due Diligence', color: '#1D9BF0', count: 1 },
-  { key: 'closed_won', label: 'Closed Won', color: '#22C55E', count: 1 },
-  { key: 'closed_lost', label: 'Closed Lost', color: '#EF4444', count: 0 },
+  { key: 'lead', label: 'Lead', color: '#9C9790', count: 1 },
+  { key: 'contacted', label: 'Contacted', color: '#1A1714', count: 1 },
+  { key: 'meeting_set', label: 'Meeting Set', color: '#1A1714', count: 2 },
+  { key: 'proposal_sent', label: 'Proposal Sent', color: '#B8943E', count: 1 },
+  { key: 'negotiating', label: 'Negotiating', color: '#B8943E', count: 1 },
+  { key: 'due_diligence', label: 'Due Diligence', color: '#1A1714', count: 1 },
+  { key: 'closed_won', label: 'Closed Won', color: '#5A8A6E', count: 1 },
+  { key: 'closed_lost', label: 'Closed Lost', color: '#B85C5C', count: 0 },
 ];
 
 // =============================================================================
@@ -1082,9 +1082,9 @@ export interface BizCommerceCard {
 }
 
 export const BIZ_COMMERCE: BizCommerceCard[] = [
-  { id: 'bcc-1', title: 'Invoice', icon: 'doc.text.fill', color: '#22C55E' },
-  { id: 'bcc-2', title: 'Expense', icon: 'creditcard.fill', color: '#1D9BF0' },
-  { id: 'bcc-3', title: 'Reports', icon: 'chart.bar.fill', color: '#1D9BF0' },
+  { id: 'bcc-1', title: 'Invoice', icon: 'doc.text.fill', color: '#5A8A6E' },
+  { id: 'bcc-2', title: 'Expense', icon: 'creditcard.fill', color: '#1A1714' },
+  { id: 'bcc-3', title: 'Reports', icon: 'chart.bar.fill', color: '#1A1714' },
 ];
 
 // =============================================================================
@@ -1114,9 +1114,9 @@ export interface BizActionCard {
 }
 
 export const BIZ_ACTION_ROW: BizActionCard[] = [
-  { id: 'deck', title: 'Deck', detail: 'Pitch Deck & Overview', icon: 'doc.richtext.fill', color: '#1D9BF0' },
-  { id: 'data_room', title: 'Data Room', detail: 'Due Diligence & Proof', icon: 'folder.fill', color: '#1D9BF0' },
-  { id: 'invest', title: 'Invest', detail: 'Back Valuetainment', icon: 'dollarsign.circle.fill', color: '#22C55E' },
+  { id: 'deck', title: 'Deck', detail: 'Pitch Deck & Overview', icon: 'doc.richtext.fill', color: '#1A1714' },
+  { id: 'data_room', title: 'Data Room', detail: 'Due Diligence & Proof', icon: 'folder.fill', color: '#1A1714' },
+  { id: 'invest', title: 'Invest', detail: 'Back Valuetainment', icon: 'dollarsign.circle.fill', color: '#5A8A6E' },
 ];
 
 // =============================================================================
@@ -1216,9 +1216,9 @@ export interface BizDomainCard {
 }
 
 export const BIZ_DOMAIN_CARDS: BizDomainCard[] = [
-  { id: 'cap_table', title: 'Cap Table', icon: 'chart.pie.fill', accent: '#1D9BF0', preview: '85% founder · 5% advisor · 8% ESOP · 2% SAFE' },
-  { id: 'metrics', title: 'Metrics', icon: 'chart.line.uptrend.xyaxis', accent: '#1D9BF0', preview: '3 institutions · 5 active views · 5 engines built' },
-  { id: 'updates', title: 'Updates', icon: 'megaphone.fill', accent: '#F59E0B', preview: 'Latest: Sports Mode v2 approved for expanded rollout' },
+  { id: 'cap_table', title: 'Cap Table', icon: 'chart.pie.fill', accent: '#1A1714', preview: '85% founder · 5% advisor · 8% ESOP · 2% SAFE' },
+  { id: 'metrics', title: 'Metrics', icon: 'chart.line.uptrend.xyaxis', accent: '#1A1714', preview: '3 institutions · 5 active views · 5 engines built' },
+  { id: 'updates', title: 'Updates', icon: 'megaphone.fill', accent: '#B8943E', preview: 'Latest: Sports Mode v2 approved for expanded rollout' },
 ];
 
 // =============================================================================

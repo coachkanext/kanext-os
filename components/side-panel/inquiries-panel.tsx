@@ -70,7 +70,7 @@ export function InquiriesPanel() {
       {isPrivileged ? (
         <>
           {/* Pipeline snapshot */}
-          <View style={{ backgroundColor: '#1D3D5C', borderRadius: 12, padding: 14, gap: 6 }}>
+          <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14, gap: 6 }}>
             <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: 0.5 }}>Pipeline</Text>
             <Text style={{ fontSize: 26, fontWeight: '900', color: '#fff', lineHeight: 30 }}>{formatCurrency(pipelineVal, true)}</Text>
             <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>{openDeals.length} open deals · {BIZ_DASHBOARD.pipeline.closingSoon} closing soon</Text>

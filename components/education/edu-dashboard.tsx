@@ -94,16 +94,16 @@ interface TodayStripItem {
 
 const TODAY_STRIP_ADMIN: TodayStripItem[] = [
   { id: 'ts-1', title: 'Board of Trustees Meeting', badge: 'MEETING', badgeColor: ACCENT, owner: 'President\'s Office', time: '9:00 AM', type: 'meeting' },
-  { id: 'ts-2', title: 'Spring Registration Deadline', badge: 'DEADLINE', badgeColor: '#EF4444', owner: 'Registrar', time: '5:00 PM', type: 'deadline' },
+  { id: 'ts-2', title: 'Spring Registration Deadline', badge: 'DEADLINE', badgeColor: '#B85C5C', owner: 'Registrar', time: '5:00 PM', type: 'deadline' },
   { id: 'ts-3', title: 'Faculty Senate Session', badge: 'EVENT', badgeColor: ACCENT, owner: 'Provost', time: '2:00 PM', type: 'meeting' },
-  { id: 'ts-4', title: 'Accreditation Self-Study Review', badge: 'DUE TODAY', badgeColor: '#F59E0B', owner: 'Academic Affairs', time: '4:00 PM', type: 'deadline' },
-  { id: 'ts-5', title: 'Financial Aid Batch Approval', badge: 'DECISION', badgeColor: '#22C55E', owner: 'Financial Aid', time: '11:00 AM', type: 'decision' },
+  { id: 'ts-4', title: 'Accreditation Self-Study Review', badge: 'DUE TODAY', badgeColor: '#B8943E', owner: 'Academic Affairs', time: '4:00 PM', type: 'deadline' },
+  { id: 'ts-5', title: 'Financial Aid Batch Approval', badge: 'DECISION', badgeColor: '#5A8A6E', owner: 'Financial Aid', time: '11:00 AM', type: 'decision' },
 ];
 
 const TODAY_STRIP_STUDENT: TodayStripItem[] = [
   { id: 'ts-s1', title: 'Organic Chemistry II', badge: 'CLASS', badgeColor: ACCENT, owner: 'Dr. Chen · Sci 204', time: '10:00 AM', type: 'class' },
-  { id: 'ts-s2', title: 'Research Paper Due', badge: 'DEADLINE', badgeColor: '#EF4444', owner: 'ENG 302', time: '11:59 PM', type: 'deadline' },
-  { id: 'ts-s3', title: 'Study Group — Linear Algebra', badge: 'EVENT', badgeColor: '#22C55E', owner: 'Library 204', time: '3:00 PM', type: 'event' },
+  { id: 'ts-s2', title: 'Research Paper Due', badge: 'DEADLINE', badgeColor: '#B85C5C', owner: 'ENG 302', time: '11:59 PM', type: 'deadline' },
+  { id: 'ts-s3', title: 'Study Group — Linear Algebra', badge: 'EVENT', badgeColor: '#5A8A6E', owner: 'Library 204', time: '3:00 PM', type: 'event' },
   { id: 'ts-s4', title: 'Advising Appointment', badge: 'MEETING', badgeColor: ACCENT, owner: 'Dr. Williams', time: '1:00 PM', type: 'meeting' },
 ];
 
@@ -122,7 +122,7 @@ const NEXT_EVENT_ADMIN: NextEvent = {
   participants: 'Provost / Events',
   countdown: '5 days',
   readiness: 'On Track',
-  readinessColor: '#22C55E',
+  readinessColor: '#5A8A6E',
 };
 
 const NEXT_EVENT_STUDENT: NextEvent = {
@@ -131,7 +131,7 @@ const NEXT_EVENT_STUDENT: NextEvent = {
   participants: 'Prof. Williams',
   countdown: '2 days',
   readiness: 'Study Needed',
-  readinessColor: '#F59E0B',
+  readinessColor: '#B8943E',
 };
 
 // --- Block 2: Approvals & Decisions ---
@@ -166,9 +166,9 @@ const APPROVAL_TYPE_ICON: Record<string, string> = {
 };
 
 const URGENCY_COLOR: Record<string, string> = {
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#22C55E',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#5A8A6E',
 };
 
 // --- Block 3: Enrollment Funnel Pulse ---
@@ -191,7 +191,7 @@ const ENROLLMENT_KPIS: EnrollmentKPI[] = [
   { id: 'graduation-rate', label: 'Graduation', exactValue: '72.8%', bandedValue: '70–75%', icon: 'graduationcap.fill', trend: 'stable', trendLabel: '0.0%', adminOnly: true },
   { id: 'gpa-avg', label: 'Avg GPA', exactValue: '3.24', bandedValue: '3.2–3.3', icon: 'chart.bar.fill', trend: 'up', trendLabel: '+0.04' },
   { id: 'faculty-ratio', label: 'Student:Faculty', exactValue: '14:1', bandedValue: '14:1', icon: 'person.2.fill' },
-  { id: 'financial-aid', label: 'Aid Rate', exactValue: '78%', bandedValue: '75–80%', icon: 'dollarsign.circle.fill', dotColor: '#22C55E', adminOnly: true },
+  { id: 'financial-aid', label: 'Aid Rate', exactValue: '78%', bandedValue: '75–80%', icon: 'dollarsign.circle.fill', dotColor: '#5A8A6E', adminOnly: true },
 ];
 
 interface FunnelStage {
@@ -205,8 +205,8 @@ interface FunnelStage {
 const ENROLLMENT_FUNNEL: FunnelStage[] = [
   { id: 'fn-1', label: 'Inquiries', count: 24800, conversionPct: 100, color: ACCENT },
   { id: 'fn-2', label: 'Applications', count: 14200, conversionPct: 57, color: ACCENT },
-  { id: 'fn-3', label: 'Admits', count: 8400, conversionPct: 59, color: '#22C55E' },
-  { id: 'fn-4', label: 'Deposits', count: 3200, conversionPct: 38, color: '#F59E0B' },
+  { id: 'fn-3', label: 'Admits', count: 8400, conversionPct: 59, color: '#5A8A6E' },
+  { id: 'fn-4', label: 'Deposits', count: 3200, conversionPct: 38, color: '#B8943E' },
   { id: 'fn-5', label: 'Enrolled', count: 2840, conversionPct: 89, color: ACCENT },
 ];
 
@@ -222,9 +222,9 @@ interface SuccessMetric {
 }
 
 const SUCCESS_METRICS: SuccessMetric[] = [
-  { id: 'sm-1', label: 'At-Risk Students', value: '284', icon: 'exclamationmark.triangle.fill', color: '#EF4444', trend: '-12 from last term' },
-  { id: 'sm-2', label: 'On Probation', value: '142', icon: 'exclamationmark.circle.fill', color: '#F59E0B', trend: '-8 from last term' },
-  { id: 'sm-3', label: 'Dean\'s List', value: '1,847', icon: 'star.fill', color: '#22C55E', trend: '+124 from last term' },
+  { id: 'sm-1', label: 'At-Risk Students', value: '284', icon: 'exclamationmark.triangle.fill', color: '#B85C5C', trend: '-12 from last term' },
+  { id: 'sm-2', label: 'On Probation', value: '142', icon: 'exclamationmark.circle.fill', color: '#B8943E', trend: '-8 from last term' },
+  { id: 'sm-3', label: 'Dean\'s List', value: '1,847', icon: 'star.fill', color: '#5A8A6E', trend: '+124 from last term' },
   { id: 'sm-4', label: 'Avg Credits/Student', value: '14.8', icon: 'book.fill', color: ACCENT },
   { id: 'sm-5', label: 'Advising Completion', value: '84%', icon: 'checkmark.circle.fill', color: ACCENT, trend: '+6% from last term' },
   { id: 'sm-6', label: 'Course Completion', value: '94.2%', icon: 'graduationcap.fill', color: ACCENT },
@@ -276,9 +276,9 @@ const ISSUE_TYPE_ICON: Record<string, string> = {
 };
 
 const ISSUE_STATUS_COLOR: Record<string, string> = {
-  active: '#EF4444',
-  monitoring: '#F59E0B',
-  resolved: '#22C55E',
+  active: '#B85C5C',
+  monitoring: '#B8943E',
+  resolved: '#5A8A6E',
 };
 
 interface SafetyStat {
@@ -288,9 +288,9 @@ interface SafetyStat {
 }
 
 const SAFETY_STATS: SafetyStat[] = [
-  { label: 'Open Work Orders', value: '32', color: '#F59E0B' },
-  { label: 'Active Incidents', value: '3', color: '#EF4444' },
-  { label: 'Days Without Incident', value: '14', color: '#22C55E' },
+  { label: 'Open Work Orders', value: '32', color: '#B8943E' },
+  { label: 'Active Incidents', value: '3', color: '#B85C5C' },
+  { label: 'Days Without Incident', value: '14', color: '#5A8A6E' },
   { label: 'Safety Score', value: '94', color: ACCENT },
 ];
 
@@ -306,10 +306,10 @@ interface FinancialKPI {
 }
 
 const FINANCIAL_KPIS: FinancialKPI[] = [
-  { id: 'fk-1', label: 'Revenue YTD', value: '$142.8M', trend: '+4.2% vs plan', trendColor: '#22C55E', icon: 'arrow.up.circle.fill' },
-  { id: 'fk-2', label: 'Expenses YTD', value: '$134.6M', trend: '-1.8% vs budget', trendColor: '#22C55E', icon: 'arrow.down.circle.fill' },
+  { id: 'fk-1', label: 'Revenue YTD', value: '$142.8M', trend: '+4.2% vs plan', trendColor: '#5A8A6E', icon: 'arrow.up.circle.fill' },
+  { id: 'fk-2', label: 'Expenses YTD', value: '$134.6M', trend: '-1.8% vs budget', trendColor: '#5A8A6E', icon: 'arrow.down.circle.fill' },
   { id: 'fk-3', label: 'Net Position', value: '+$8.2M', icon: 'chart.line.uptrend.xyaxis' },
-  { id: 'fk-4', label: 'Endowment', value: '$1.28B', trend: '+8.4% YTD', trendColor: '#22C55E', icon: 'building.columns.fill' },
+  { id: 'fk-4', label: 'Endowment', value: '$1.28B', trend: '+8.4% YTD', trendColor: '#5A8A6E', icon: 'building.columns.fill' },
   { id: 'fk-5', label: 'Cash Reserves', value: '$42.8M', trend: '2.2 mo runway', icon: 'banknote.fill' },
   { id: 'fk-6', label: 'Aid Disbursed', value: '$84.1M', trend: '78% of students', icon: 'dollarsign.circle.fill' },
 ];
@@ -324,9 +324,9 @@ interface HousingMetric {
 
 const HOUSING_METRICS: HousingMetric[] = [
   { label: 'Total Beds', value: '3,200', color: ACCENT },
-  { label: 'Occupancy', value: '93.1%', color: '#22C55E' },
-  { label: 'Waitlist', value: '142', color: '#F59E0B' },
-  { label: 'Open Maint.', value: '32', color: '#EF4444' },
+  { label: 'Occupancy', value: '93.1%', color: '#5A8A6E' },
+  { label: 'Waitlist', value: '142', color: '#B8943E' },
+  { label: 'Open Maint.', value: '32', color: '#B85C5C' },
 ];
 
 interface HousingHall {
@@ -355,9 +355,9 @@ interface CoverageMetric {
 
 const PEOPLE_COVERAGE: CoverageMetric[] = [
   { label: 'Faculty Seats', filled: 486, total: 520, color: ACCENT },
-  { label: 'Staff Positions', filled: 842, total: 880, color: '#22C55E' },
+  { label: 'Staff Positions', filled: 842, total: 880, color: '#5A8A6E' },
   { label: 'RA Positions', filled: 54, total: 58, color: ACCENT },
-  { label: 'Admin Roles', filled: 124, total: 130, color: '#F59E0B' },
+  { label: 'Admin Roles', filled: 124, total: 130, color: '#B8943E' },
 ];
 
 interface OpenPosition {
@@ -377,9 +377,9 @@ const OPEN_POSITIONS: OpenPosition[] = [
 ];
 
 const PRIORITY_COLOR: Record<string, string> = {
-  critical: '#EF4444',
-  high: '#F59E0B',
-  normal: '#22C55E',
+  critical: '#B85C5C',
+  high: '#B8943E',
+  normal: '#5A8A6E',
 };
 
 // --- Block 9: Announcements ---
@@ -660,8 +660,8 @@ function EnrollmentFunnelPulse({ colors, role }: { colors: typeof Colors.light; 
   });
 
   const trendColor = (trend?: 'up' | 'down' | 'stable') => {
-    if (trend === 'up') return '#22C55E';
-    if (trend === 'down') return '#EF4444';
+    if (trend === 'up') return '#5A8A6E';
+    if (trend === 'down') return '#B85C5C';
     return colors.textSecondary;
   };
 
@@ -784,7 +784,7 @@ function StudentSuccessRadar({ colors, role }: { colors: typeof Colors.light; ro
                 idx < EARLY_ALERTS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
               ]}
             >
-              <View style={[s.earlyAlertDot, { backgroundColor: alert.severity === 'high' ? '#EF4444' : '#F59E0B' }]} />
+              <View style={[s.earlyAlertDot, { backgroundColor: alert.severity === 'high' ? '#B85C5C' : '#B8943E' }]} />
               <View style={s.earlyAlertContent}>
                 <ThemedText style={[s.earlyAlertStudent, { color: colors.text }]}>{alert.student}</ThemedText>
                 <ThemedText style={[s.earlyAlertIssue, { color: colors.textSecondary }]} numberOfLines={1}>
@@ -916,7 +916,7 @@ function HousingSnapshot({ colors, role }: { colors: typeof Colors.light; role: 
         <Card colors={colors}>
           {HOUSING_HALLS_QUICK.map((hall, idx) => {
             const pct = hall.capacity > 0 ? Math.round((hall.occupancy / hall.capacity) * 100) : 0;
-            const barColor = hall.status === 'renovation' ? '#F59E0B' : pct >= 95 ? '#EF4444' : pct >= 85 ? '#F59E0B' : '#22C55E';
+            const barColor = hall.status === 'renovation' ? '#B8943E' : pct >= 95 ? '#B85C5C' : pct >= 85 ? '#B8943E' : '#5A8A6E';
             return (
               <View
                 key={hall.name}
@@ -1037,7 +1037,7 @@ function AnnouncementsBlock({ colors, role }: { colors: typeof Colors.light; rol
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           >
             {item.pinned && (
-              <IconSymbol name="pin.fill" size={10} color="#F59E0B" />
+              <IconSymbol name="pin.fill" size={10} color="#B8943E" />
             )}
             <View style={s.announcementContent}>
               <ThemedText style={[s.announcementText, { color: colors.text }]} numberOfLines={1}>

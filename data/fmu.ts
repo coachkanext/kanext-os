@@ -381,11 +381,11 @@ export function getBPRLabel(bpr: number): string {
 
 /** BPR sign color */
 export function getBPRColor(bpr: number): string {
-  if (bpr >= 6)  return '#22C55E'; // green
-  if (bpr >= 3)  return '#22C55E'; // light green
-  if (bpr >= -2) return '#A1A1AA'; // neutral gray
-  if (bpr >= -5) return '#F59E0B'; // orange
-  return '#EF4444';                // red
+  if (bpr >= 6)  return '#5A8A6E'; // green
+  if (bpr >= 3)  return '#5A8A6E'; // light green
+  if (bpr >= -2) return '#9C9790'; // neutral gray
+  if (bpr >= -5) return '#B8943E'; // orange
+  return '#B85C5C';                // red
 }
 
 export interface PlayerBPR {
@@ -478,13 +478,13 @@ export function getTPQLabel(tpq: number): string {
 /** TPQ color (canonical 0–10 scale) */
 export function getTPQColor(tpq: number): string {
   const score = tpqToDisplay(tpq);
-  if (score >= 9.0) return '#22C55E';
-  if (score >= 8.0) return '#22C55E';
-  if (score >= 7.0) return '#22C55E';
-  if (score >= 6.0) return '#F59E0B';
-  if (score >= 5.0) return '#A1A1AA';
-  if (score >= 4.0) return '#F59E0B';
-  return '#EF4444';
+  if (score >= 9.0) return '#5A8A6E';
+  if (score >= 8.0) return '#5A8A6E';
+  if (score >= 7.0) return '#5A8A6E';
+  if (score >= 6.0) return '#B8943E';
+  if (score >= 5.0) return '#9C9790';
+  if (score >= 4.0) return '#B8943E';
+  return '#B85C5C';
 }
 
 /** Positive impact reason phrases per archetype */

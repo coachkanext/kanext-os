@@ -43,9 +43,9 @@ import {
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const CLASS_STATUS_COLORS: Record<ClassStatus, string> = {
-  active: '#3B82F6',
-  upcoming: '#F59E0B',
-  completed: '#22C55E',
+  active: '#1A1714',
+  upcoming: '#B8943E',
+  completed: '#5A8A6E',
 };
 
 const CLASS_STATUS_LABELS: Record<ClassStatus, string> = {
@@ -55,11 +55,11 @@ const CLASS_STATUS_LABELS: Record<ClassStatus, string> = {
 };
 
 const DEGREE_COLORS: Record<DegreeType, string> = {
-  BS: '#3B82F6',
-  BA: '#3B82F6',
-  MS: '#8B5CF6',
-  MBA: '#8B5CF6',
-  Certificate: '#F59E0B',
+  BS: '#1A1714',
+  BA: '#1A1714',
+  MS: '#1A1714',
+  MBA: '#1A1714',
+  Certificate: '#B8943E',
 };
 
 // ─── Page Top Bar ────────────────────────────────────────────────────────────

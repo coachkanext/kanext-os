@@ -183,12 +183,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: BorderRadius.sm,
-    backgroundColor: '#F59E0B20',
+    backgroundColor: '#B8943E20',
   },
   escalatedText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#F59E0B',
+    color: '#B8943E',
   },
   title: {
     fontSize: 18,
@@ -216,12 +216,12 @@ const styles = StyleSheet.create({
   },
   sourceText: {
     fontSize: 12,
-    color: '#A1A1AA',
+    color: '#9C9790',
     fontWeight: '500',
   },
   timestamp: {
     fontSize: 12,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   assignedRow: {
     flexDirection: 'row',
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   },
   assignedLabel: {
     fontSize: 13,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   assignedName: {
     fontSize: 13,
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
   historyTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#A1A1AA',
+    color: '#9C9790',
     marginBottom: Spacing.sm,
   },
   historyRow: {
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   },
   historyTime: {
     fontSize: 11,
-    color: '#A1A1AA',
+    color: '#9C9790',
     marginTop: 2,
   },
   deepLinkSection: {
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
   deepLinkTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#A1A1AA',
+    color: '#9C9790',
     marginBottom: Spacing.sm,
   },
   deepLinkRow: {
@@ -329,6 +329,6 @@ const styles = StyleSheet.create({
   deepLinkText: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
 });

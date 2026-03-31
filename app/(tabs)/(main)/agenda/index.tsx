@@ -180,11 +180,11 @@ function timeDuration(start: Date, end: Date): number {
 }
 function eventColor(type: EventType): string {
   switch (type) {
-    case 'game':                                       return '#990000';
+    case 'game':                                       return '#1A1714';
     case 'deadline': case 'exam':                      return '#B85C5C';
     case 'service': case 'call': case 'volunteer':     return '#5A8A6E';
-    case 'class': case 'registration':                 return '#003A63';
-    default:                                           return '#3B82F6';
+    case 'class': case 'registration':                 return '#1A1714';
+    default:                                           return '#1A1714';
   }
 }
 
@@ -683,7 +683,7 @@ function ListView({ events, C, styles }: {
 
   const DEADLINES = [
     { title: 'Q1 Report',      due: 'Friday', icon: 'doc.text.fill',       color: '#B85C5C' },
-    { title: 'Investor Deck',  due: 'Monday', icon: 'chart.bar.fill',       color: '#3B82F6' },
+    { title: 'Investor Deck',  due: 'Monday', icon: 'chart.bar.fill',       color: '#1A1714' },
     { title: 'Tax Filing',     due: 'Apr 15', icon: 'dollarsign.circle.fill', color: '#5A8A6E' },
   ];
 

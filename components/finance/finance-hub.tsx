@@ -35,22 +35,22 @@ const INVOICE_FILTERS = ['All', 'Pending', 'Paid', 'Overdue'] as const;
 type InvoiceFilter = (typeof INVOICE_FILTERS)[number];
 
 const BUDGET_STATUS_COLORS: Record<string, string> = {
-  'on-track': '#22C55E',
-  'warning': '#F59E0B',
-  'over-budget': '#EF4444',
+  'on-track': '#5A8A6E',
+  'warning': '#B8943E',
+  'over-budget': '#B85C5C',
 };
 
 const INVOICE_STATUS_COLORS: Record<string, string> = {
-  paid: '#22C55E',
-  pending: '#F59E0B',
-  overdue: '#EF4444',
-  draft: '#A1A1AA',
+  paid: '#5A8A6E',
+  pending: '#B8943E',
+  overdue: '#B85C5C',
+  draft: '#9C9790',
 };
 
 const TX_STATUS_COLORS: Record<string, string> = {
-  completed: '#22C55E',
-  pending: '#F59E0B',
-  failed: '#EF4444',
+  completed: '#5A8A6E',
+  pending: '#B8943E',
+  failed: '#B85C5C',
 };
 
 // =============================================================================
@@ -188,10 +188,10 @@ export function FinanceHub() {
                       width: `${Math.min((budgetTotals.totalSpent / budgetTotals.totalAllocated) * 100, 100)}%`,
                       backgroundColor:
                         budgetTotals.totalSpent / budgetTotals.totalAllocated > 0.9
-                          ? '#EF4444'
+                          ? '#B85C5C'
                           : budgetTotals.totalSpent / budgetTotals.totalAllocated > 0.75
-                            ? '#F59E0B'
-                            : '#22C55E',
+                            ? '#B8943E'
+                            : '#5A8A6E',
                     },
                   ]}
                 />
@@ -420,7 +420,7 @@ function TransactionCard({
   colors: typeof Colors.light;
 }) {
   const isIncome = transaction.type === 'income';
-  const amountColor = isIncome ? '#22C55E' : '#EF4444';
+  const amountColor = isIncome ? '#5A8A6E' : '#B85C5C';
   const statusColor = TX_STATUS_COLORS[transaction.status] || colors.textSecondary;
 
   return (
@@ -564,7 +564,7 @@ function ReportSummaryCard({
         <ThemedText
           style={[
             styles.reportValue,
-            { color: positive !== undefined ? (positive ? '#22C55E' : '#EF4444') : colors.text },
+            { color: positive !== undefined ? (positive ? '#5A8A6E' : '#B85C5C') : colors.text },
           ]}
         >
           {value}

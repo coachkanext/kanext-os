@@ -28,8 +28,8 @@ type GridCategory = 'OEM Works' | 'Premier Tuner' | 'League-Owned' | '3SSB Selec
 
 const CATEGORY_COLOR: Record<GridCategory, string> = {
   'OEM Works': ACCENT,
-  'Premier Tuner': '#F59E0B',
-  'League-Owned': '#A1A1AA',
+  'Premier Tuner': '#B8943E',
+  'League-Owned': '#9C9790',
   '3SSB Select': ACCENT,
 };
 
@@ -213,7 +213,7 @@ function OfficialsView({ colors, accentColor }: { colors: typeof Colors.light; a
               <ThemedText style={[s.assignName, { color: colors.text }]}>{assign.official}</ThemedText>
               <ThemedText style={[s.assignRole, { color: colors.textSecondary }]}>{assign.role}</ThemedText>
             </View>
-            <StatusBadge label="CONFIRMED" color="#22C55E" />
+            <StatusBadge label="CONFIRMED" color="#5A8A6E" />
           </View>
         ))}
       </View>
@@ -256,8 +256,8 @@ function TeamsView({ colors, accentColor }: { colors: typeof Colors.light; accen
           </View>
 
           <View style={s.teamStatusRow}>
-            <StatusBadge label={team.capStatus === 'Compliant' ? 'CAP: COMPLIANT' : 'CAP: REVIEW'} color={team.capStatus === 'Compliant' ? '#22C55E' : '#F59E0B'} />
-            <StatusBadge label={team.homologation === 'Approved' ? 'HOMOLOGATED' : 'PENDING'} color={team.homologation === 'Approved' ? '#22C55E' : '#F59E0B'} />
+            <StatusBadge label={team.capStatus === 'Compliant' ? 'CAP: COMPLIANT' : 'CAP: REVIEW'} color={team.capStatus === 'Compliant' ? '#5A8A6E' : '#B8943E'} />
+            <StatusBadge label={team.homologation === 'Approved' ? 'HOMOLOGATED' : 'PENDING'} color={team.homologation === 'Approved' ? '#5A8A6E' : '#B8943E'} />
           </View>
         </Pressable>
       ))}

@@ -27,16 +27,16 @@ interface Props {
 type StageFilter = 'all' | string;
 
 const DEAL_TYPE_COLORS: Record<string, string> = {
-  investor: '#22C55E',
+  investor: '#5A8A6E',
   partner: ACCENT,
   client: ACCENT,
-  licensing: '#F59E0B',
+  licensing: '#B8943E',
 };
 
 const PRIORITY_COLORS: Record<string, string> = {
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#A1A1AA',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#9C9790',
 };
 
 function formatValue(value?: number): string {
@@ -86,11 +86,11 @@ export function BizDealsPipelineView({ colors, accent }: Props) {
             <ThemedText style={[styles.summaryLabel, { color: colors.textSecondary }]}>Proposal</ThemedText>
           </View>
           <View style={styles.summaryItem}>
-            <ThemedText style={[styles.summaryValue, { color: '#F59E0B' }]}>{PIPELINE_SUMMARY.negotiating}</ThemedText>
+            <ThemedText style={[styles.summaryValue, { color: '#B8943E' }]}>{PIPELINE_SUMMARY.negotiating}</ThemedText>
             <ThemedText style={[styles.summaryLabel, { color: colors.textSecondary }]}>Negotiating</ThemedText>
           </View>
           <View style={styles.summaryItem}>
-            <ThemedText style={[styles.summaryValue, { color: '#22C55E' }]}>
+            <ThemedText style={[styles.summaryValue, { color: '#5A8A6E' }]}>
               {formatPipelineTotal(PIPELINE_SUMMARY.totalPipelineValue)}
             </ThemedText>
             <ThemedText style={[styles.summaryLabel, { color: colors.textSecondary }]}>Pipeline</ThemedText>
@@ -134,10 +134,10 @@ export function BizDealsPipelineView({ colors, accent }: Props) {
 
       {/* Deal rows */}
       {filteredDeals.map((deal: Deal) => {
-        const typeColor = DEAL_TYPE_COLORS[deal.dealType] ?? '#A1A1AA';
-        const sColor = stageColorMap[deal.stage] ?? '#A1A1AA';
+        const typeColor = DEAL_TYPE_COLORS[deal.dealType] ?? '#9C9790';
+        const sColor = stageColorMap[deal.stage] ?? '#9C9790';
         const sLabel = stageLabelMap[deal.stage] ?? deal.stage;
-        const priColor = PRIORITY_COLORS[deal.priority] ?? '#A1A1AA';
+        const priColor = PRIORITY_COLORS[deal.priority] ?? '#9C9790';
 
         return (
           <Pressable

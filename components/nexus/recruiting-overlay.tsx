@@ -177,7 +177,7 @@ function ProspectRow({ target, onPress, colors, accentColor }: ProspectRowProps)
             </View>
           )}
           {target.priority === 'B' && (
-            <View style={[styles.priorityBadge, { backgroundColor: '#A1A1AA' }]}>
+            <View style={[styles.priorityBadge, { backgroundColor: '#9C9790' }]}>
               <ThemedText style={styles.priorityBadgeText}>B</ThemedText>
             </View>
           )}

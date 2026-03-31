@@ -113,7 +113,7 @@ const MESSAGE_THREADS: MessageThread[] = [
 ];
 
 const PRIORITY_ORDER: Record<ThreadPriority, number> = { emergency: 0, 'schedule-change': 1, standard: 2 };
-const PRIORITY_COLOR: Record<ThreadPriority, string> = { emergency: '#EF4444', 'schedule-change': '#F59E0B', standard: ACCENT };
+const PRIORITY_COLOR: Record<ThreadPriority, string> = { emergency: '#B85C5C', 'schedule-change': '#B8943E', standard: ACCENT };
 const CATEGORY_ICON: Record<ThreadCategory, string> = {
   announcement: 'megaphone.fill',
   ministry: 'heart.fill',
@@ -187,11 +187,11 @@ const CHAT_ROOMS: ChatRoom[] = [
 ];
 
 const SCOPE_COLOR: Record<AudienceScope, string> = {
-  Public: '#22C55E',
+  Public: '#5A8A6E',
   'Church-wide': ACCENT,
   Ministry: ACCENT,
-  Leadership: '#F59E0B',
-  Custom: '#A1A1AA',
+  Leadership: '#B8943E',
+  Custom: '#9C9790',
 };
 
 // --- Requests: Pastoral Intake ---
@@ -234,9 +234,9 @@ const REQUEST_TYPE_ICON: Record<PastoralRequestType, string> = {
 
 const STATUS_COLOR: Record<RequestStatus, string> = {
   new: ACCENT,
-  assigned: '#F59E0B',
+  assigned: '#B8943E',
   'in-progress': ACCENT,
-  closed: '#22C55E',
+  closed: '#5A8A6E',
 };
 
 const PRIVACY_LABEL: Record<PrivacyRouting, string> = {
@@ -271,8 +271,8 @@ interface PinnedItem {
 }
 
 const PIN_SOURCE_COLOR: Record<PinSource, string> = {
-  emergency: '#EF4444',
-  'service-change': '#F59E0B',
+  emergency: '#B85C5C',
+  'service-change': '#B8943E',
   manual: ACCENT,
 };
 
@@ -444,7 +444,7 @@ function InboxView({ colors, role }: { colors: typeof Colors.light; role: Church
                   </View>
                 )}
                 {thread.mentioned && thread.unreadCount === 0 && (
-                  <View style={[s.mentionDot, { backgroundColor: '#F59E0B' }]} />
+                  <View style={[s.mentionDot, { backgroundColor: '#B8943E' }]} />
                 )}
               </View>
             </Pressable>
@@ -482,7 +482,7 @@ function RoomsView({ colors, role }: { colors: typeof Colors.light; role: Church
         {totalUnread > 0 && (
           <Card colors={colors}>
             <View style={s.summaryRow}>
-              <IconSymbol name="bell.badge.fill" size={16} color="#F59E0B" />
+              <IconSymbol name="bell.badge.fill" size={16} color="#B8943E" />
               <ThemedText style={[s.summaryText, { color: colors.text }]}>
                 {totalUnread} unread message{totalUnread !== 1 ? 's' : ''} across {visibleRooms.filter((r) => r.unreadCount > 0).length} room{visibleRooms.filter((r) => r.unreadCount > 0).length !== 1 ? 's' : ''}
               </ThemedText>
@@ -558,8 +558,8 @@ function RoomsView({ colors, role }: { colors: typeof Colors.light; role: Church
             </Pressable>
             <View style={{ borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }} />
             <Pressable style={s.adminActionRow} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
-              <View style={[s.adminActionIcon, { backgroundColor: '#F59E0B20' }]}>
-                <IconSymbol name="person.badge.plus" size={16} color="#F59E0B" />
+              <View style={[s.adminActionIcon, { backgroundColor: '#B8943E20' }]}>
+                <IconSymbol name="person.badge.plus" size={16} color="#B8943E" />
               </View>
               <ThemedText style={[s.adminActionText, { color: colors.text }]}>Manage Members & Permissions</ThemedText>
               <IconSymbol name="chevron.right" size={12} color={colors.textTertiary} />
@@ -614,7 +614,7 @@ function RequestsView({ colors, role }: { colors: typeof Colors.light; role: Chu
               <ThemedText style={[s.requestKpiLabel, { color: colors.textSecondary }]}>New</ThemedText>
             </View>
             <View style={s.requestKpi}>
-              <ThemedText style={[s.requestKpiValue, { color: '#F59E0B' }]}>
+              <ThemedText style={[s.requestKpiValue, { color: '#B8943E' }]}>
                 {roleFiltered.filter((r) => r.status === 'assigned').length}
               </ThemedText>
               <ThemedText style={[s.requestKpiLabel, { color: colors.textSecondary }]}>Assigned</ThemedText>
@@ -626,7 +626,7 @@ function RequestsView({ colors, role }: { colors: typeof Colors.light; role: Chu
               <ThemedText style={[s.requestKpiLabel, { color: colors.textSecondary }]}>In Progress</ThemedText>
             </View>
             <View style={s.requestKpi}>
-              <ThemedText style={[s.requestKpiValue, { color: '#22C55E' }]}>
+              <ThemedText style={[s.requestKpiValue, { color: '#5A8A6E' }]}>
                 {roleFiltered.filter((r) => r.status === 'closed').length}
               </ThemedText>
               <ThemedText style={[s.requestKpiLabel, { color: colors.textSecondary }]}>Closed</ThemedText>
@@ -703,7 +703,7 @@ function RequestsView({ colors, role }: { colors: typeof Colors.light; role: Chu
                 )}
                 <View style={s.reqDetailRow}>
                   <ThemedText style={[s.reqDetailLabel, { color: colors.textTertiary }]}>SLA</ThemedText>
-                  <ThemedText style={[s.reqDetailValue, { color: slaOverdue ? '#EF4444' : colors.textSecondary }]}>
+                  <ThemedText style={[s.reqDetailValue, { color: slaOverdue ? '#B85C5C' : colors.textSecondary }]}>
                     {slaOverdue ? `OVERDUE (${req.elapsedHours}h / ${req.slaHours}h)` : `${req.elapsedHours}h / ${req.slaHours}h`}
                   </ThemedText>
                 </View>
@@ -726,11 +726,11 @@ function RequestsView({ colors, role }: { colors: typeof Colors.light; role: Chu
                     <ThemedText style={[s.reqActionText, { color: ACCENT }]}>Assign</ThemedText>
                   </Pressable>
                   <Pressable
-                    style={[s.reqActionBtn, { backgroundColor: '#22C55E20' }]}
+                    style={[s.reqActionBtn, { backgroundColor: '#5A8A6E20' }]}
                     onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
                   >
-                    <IconSymbol name="checkmark" size={12} color="#22C55E" />
-                    <ThemedText style={[s.reqActionText, { color: '#22C55E' }]}>Respond</ThemedText>
+                    <IconSymbol name="checkmark" size={12} color="#5A8A6E" />
+                    <ThemedText style={[s.reqActionText, { color: '#5A8A6E' }]}>Respond</ThemedText>
                   </Pressable>
                 </View>
               )}

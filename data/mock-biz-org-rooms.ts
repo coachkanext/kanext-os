@@ -163,15 +163,15 @@ export const ROOM_TEMPLATES: RoomTemplateInfo[] = [
 // =============================================================================
 
 export const TEMPLATE_COLORS: Record<RoomTemplate, string> = {
-  executive_ops: '#1D9BF0',
-  fundraising: '#22C55E',
-  board_governance: '#1D9BF0',
-  partner: '#F59E0B',
-  acquisition_diligence: '#EF4444',
-  finance_close: '#1D9BF0',
-  payment_rails_launch: '#1D9BF0',
-  compliance_legal: '#1D9BF0',
-  proof_demo: '#F59E0B',
+  executive_ops: '#1A1714',
+  fundraising: '#5A8A6E',
+  board_governance: '#1A1714',
+  partner: '#B8943E',
+  acquisition_diligence: '#B85C5C',
+  finance_close: '#1A1714',
+  payment_rails_launch: '#1A1714',
+  compliance_legal: '#1A1714',
+  proof_demo: '#B8943E',
 };
 
 export const TEMPLATE_LABELS: Record<RoomTemplate, string> = {
@@ -191,9 +191,9 @@ export const TEMPLATE_LABELS: Record<RoomTemplate, string> = {
 // =============================================================================
 
 export const ROOM_STATUS_COLORS: Record<BizRoom['status'], string> = {
-  active: '#22C55E',
-  paused: '#F59E0B',
-  archived: '#A1A1AA',
+  active: '#5A8A6E',
+  paused: '#B8943E',
+  archived: '#9C9790',
 };
 
 // =============================================================================

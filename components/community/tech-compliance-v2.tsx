@@ -59,10 +59,10 @@ const TABS: { key: TabKey; label: string }[] = [
 // =============================================================================
 
 const STATUS_COLOR: Record<ComplianceEntity['status'], string> = {
-  approved: '#22C55E',
-  pending: '#F59E0B',
-  flagged: '#EF4444',
-  expired: '#A1A1AA',
+  approved: '#5A8A6E',
+  pending: '#B8943E',
+  flagged: '#B85C5C',
+  expired: '#9C9790',
 };
 
 const DOMAIN_LABELS: { key: keyof ClearanceBoardEntry['domains']; label: string }[] = [
@@ -83,10 +83,10 @@ function getSummary(workspace: ComplianceWorkspace): ComplianceSummary | undefin
 
 function getAuditDotColor(action: string): string {
   const lower = action.toLowerCase();
-  if (lower.includes('approved') || lower.includes('pass')) return '#22C55E';
-  if (lower.includes('flagged')) return '#EF4444';
-  if (lower.includes('pending') || lower.includes('submitted') || lower.includes('started') || lower.includes('initiated')) return '#F59E0B';
-  return '#A1A1AA';
+  if (lower.includes('approved') || lower.includes('pass')) return '#5A8A6E';
+  if (lower.includes('flagged')) return '#B85C5C';
+  if (lower.includes('pending') || lower.includes('submitted') || lower.includes('started') || lower.includes('initiated')) return '#B8943E';
+  return '#9C9790';
 }
 
 // =============================================================================
@@ -185,7 +185,7 @@ function ClearanceCard({
   entry: ClearanceBoardEntry;
   colors: typeof Colors.light;
 }) {
-  const statusColor = CLEARANCE_STATUS_COLOR[entry.clearanceStatus] ?? '#A1A1AA';
+  const statusColor = CLEARANCE_STATUS_COLOR[entry.clearanceStatus] ?? '#9C9790';
   const statusLabel = CLEARANCE_STATUS_LABEL[entry.clearanceStatus] ?? entry.clearanceStatus;
 
   return (
@@ -219,7 +219,7 @@ function ClearanceCard({
       <View style={styles.domainRow}>
         {DOMAIN_LABELS.map(({ key, label }) => {
           const domainStatus = entry.domains[key];
-          const domainColor = DOMAIN_STATUS_COLOR[domainStatus] ?? '#A1A1AA';
+          const domainColor = DOMAIN_STATUS_COLOR[domainStatus] ?? '#9C9790';
           return (
             <View key={key} style={styles.domainIndicator}>
               <View style={[styles.domainCircle, { backgroundColor: domainColor }]} />
@@ -236,7 +236,7 @@ function ClearanceCard({
         <View style={styles.blockerList}>
           {entry.blockers.map((blocker, idx) => (
             <View key={idx} style={styles.blockerRow}>
-              <View style={[styles.blockerDot, { backgroundColor: '#EF4444' }]} />
+              <View style={[styles.blockerDot, { backgroundColor: '#B85C5C' }]} />
               <ThemedText style={[styles.blockerText, { color: colors.textSecondary }]}>
                 {blocker}
               </ThemedText>
@@ -274,7 +274,7 @@ function ScrutineeringCard({
   item: ScrutineeringItem;
   colors: typeof Colors.light;
 }) {
-  const stageColor = SCRUTINEERING_STAGE_COLOR[item.stage] ?? '#A1A1AA';
+  const stageColor = SCRUTINEERING_STAGE_COLOR[item.stage] ?? '#9C9790';
   const stageLabel = SCRUTINEERING_STAGE_LABEL[item.stage] ?? item.stage;
   const isInProgress = item.stage === 'in_progress';
 
@@ -930,7 +930,7 @@ const styles = StyleSheet.create({
   },
   inProgressBorder: {
     borderLeftWidth: 3,
-    borderLeftColor: '#F59E0B',
+    borderLeftColor: '#B8943E',
   },
   notesText: {
     fontSize: 12,

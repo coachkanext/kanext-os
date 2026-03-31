@@ -45,39 +45,39 @@ const DETAIL_PILLS: { key: DetailTab; label: string }[] = [
 ];
 
 const STATUS_COLORS: Record<string, string> = {
-  compliant: '#22C55E',
-  warning: '#F59E0B',
-  non_compliant: '#EF4444',
-  pending: '#A1A1AA',
-  fulfilled: '#22C55E',
-  overdue: '#EF4444',
-  confirmed: '#22C55E',
-  issue: '#EF4444',
-  valid: '#22C55E',
-  expired: '#EF4444',
-  delivered: '#22C55E',
-  in_transit: '#F59E0B',
-  paid: '#22C55E',
-  current: '#22C55E',
-  delinquent: '#EF4444',
+  compliant: '#5A8A6E',
+  warning: '#B8943E',
+  non_compliant: '#B85C5C',
+  pending: '#9C9790',
+  fulfilled: '#5A8A6E',
+  overdue: '#B85C5C',
+  confirmed: '#5A8A6E',
+  issue: '#B85C5C',
+  valid: '#5A8A6E',
+  expired: '#B85C5C',
+  delivered: '#5A8A6E',
+  in_transit: '#B8943E',
+  paid: '#5A8A6E',
+  current: '#5A8A6E',
+  delinquent: '#B85C5C',
 };
 
 const SPONSOR_DOT_COLOR: Record<string, string> = {
-  green: '#22C55E',
-  yellow: '#F59E0B',
-  red: '#EF4444',
+  green: '#5A8A6E',
+  yellow: '#B8943E',
+  red: '#B85C5C',
 };
 
 const FINANCIAL_STATUS_COLOR: Record<string, string> = {
-  current: '#22C55E',
-  overdue: '#F59E0B',
-  delinquent: '#EF4444',
+  current: '#5A8A6E',
+  overdue: '#B8943E',
+  delinquent: '#B85C5C',
 };
 
 const SEVERITY_COLORS: Record<string, string> = {
-  critical: '#EF4444',
-  elevated: '#F59E0B',
-  monitoring: '#A1A1AA',
+  critical: '#B85C5C',
+  elevated: '#B8943E',
+  monitoring: '#9C9790',
 };
 
 // =============================================================================
@@ -85,7 +85,7 @@ const SEVERITY_COLORS: Record<string, string> = {
 // =============================================================================
 
 function StatusBadge({ label, status, colors }: { label: string; status: string; colors: typeof Colors.light }) {
-  const badgeColor = STATUS_COLORS[status] ?? '#A1A1AA';
+  const badgeColor = STATUS_COLORS[status] ?? '#9C9790';
   return (
     <View style={[styles.statusBadge, { backgroundColor: badgeColor + '20' }]}>
       <ThemedText style={[styles.statusBadgeText, { color: badgeColor }]}>
@@ -134,7 +134,7 @@ function OverviewTab({ team, colors }: { team: CEOTeamCard; colors: typeof Color
           <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>Risk Flags</ThemedText>
           {team.riskFlags.map((flag, idx) => (
             <View key={idx} style={[styles.riskFlagRow, idx < team.riskFlags.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }]}>
-              <View style={[styles.riskDot, { backgroundColor: '#EF4444' }]} />
+              <View style={[styles.riskDot, { backgroundColor: '#B85C5C' }]} />
               <ThemedText style={[styles.riskFlagText, { color: colors.text }]}>{flag}</ThemedText>
             </View>
           ))}
@@ -292,7 +292,7 @@ function ComplianceTab({ team, colors }: { team: CEOTeamCard; colors: typeof Col
         </ThemedText>
       ) : (
         issues.map((issue, idx) => {
-          const statusColor = STATUS_COLORS[issue.status] ?? '#A1A1AA';
+          const statusColor = STATUS_COLORS[issue.status] ?? '#9C9790';
           const statusLabel = issue.status === 'non_compliant' ? 'NON-COMPLIANT' : issue.status.toUpperCase();
           return (
             <View key={idx} style={[styles.complianceRow, { borderBottomColor: colors.border }]}>
@@ -332,7 +332,7 @@ function OpsTab({ team, colors }: { team: CEOTeamCard; colors: typeof Colors.lig
       <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>Operations</ThemedText>
         {opsLogistics.map((item, idx) => {
-          const statusColor = STATUS_COLORS[item.status] ?? '#A1A1AA';
+          const statusColor = STATUS_COLORS[item.status] ?? '#9C9790';
           return (
             <View key={idx} style={[styles.opsRow, { borderBottomColor: colors.border }]}>
               <View style={styles.opsInfo}>
@@ -358,7 +358,7 @@ function OpsTab({ team, colors }: { team: CEOTeamCard; colors: typeof Colors.lig
         <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>Freight</ThemedText>
           {freight.map((item, idx) => {
-            const statusColor = STATUS_COLORS[item.status] ?? '#A1A1AA';
+            const statusColor = STATUS_COLORS[item.status] ?? '#9C9790';
             return (
               <View key={idx} style={[styles.opsRow, { borderBottomColor: colors.border }]}>
                 <View style={styles.opsInfo}>
@@ -387,7 +387,7 @@ function OpsTab({ team, colors }: { team: CEOTeamCard; colors: typeof Colors.lig
         <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>Credentials</ThemedText>
           {credentials.map((item, idx) => {
-            const statusColor = STATUS_COLORS[item.status] ?? '#A1A1AA';
+            const statusColor = STATUS_COLORS[item.status] ?? '#9C9790';
             return (
               <View key={idx} style={[styles.opsRow, { borderBottomColor: colors.border }]}>
                 <View style={styles.opsInfo}>
@@ -430,14 +430,14 @@ function FinanceTab({ team, colors }: { team: CEOTeamCard; colors: typeof Colors
               {stat.label}
             </ThemedText>
             <View style={styles.financeValueRow}>
-              <ThemedText style={[styles.financeValue, { color: stat.value === 'OVERDUE' ? '#EF4444' : colors.text }]}>
+              <ThemedText style={[styles.financeValue, { color: stat.value === 'OVERDUE' ? '#B85C5C' : colors.text }]}>
                 {stat.value}
               </ThemedText>
               {stat.trend && (
                 <IconSymbol
                   name={stat.trend === 'up' ? 'arrow.up.right' : 'arrow.down.right'}
                   size={12}
-                  color={stat.trend === 'up' ? '#F59E0B' : '#EF4444'}
+                  color={stat.trend === 'up' ? '#B8943E' : '#B85C5C'}
                 />
               )}
             </View>
@@ -450,7 +450,7 @@ function FinanceTab({ team, colors }: { team: CEOTeamCard; colors: typeof Colors
         <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>Fees & Levies</ThemedText>
           {fees.map((fee, idx) => {
-            const feeColor = STATUS_COLORS[fee.status] ?? '#A1A1AA';
+            const feeColor = STATUS_COLORS[fee.status] ?? '#9C9790';
             return (
               <View key={idx} style={[styles.feeRow, idx < fees.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }]}>
                 <View style={styles.feeInfo}>
@@ -487,7 +487,7 @@ function MediaTab({ team, colors }: { team: CEOTeamCard; colors: typeof Colors.l
         </ThemedText>
       ) : (
         obligations.map((item, idx) => {
-          const statusColor = STATUS_COLORS[item.status] ?? '#A1A1AA';
+          const statusColor = STATUS_COLORS[item.status] ?? '#9C9790';
           return (
             <View key={idx} style={[styles.mediaRow, { borderBottomColor: colors.border }]}>
               <View style={styles.mediaInfo}>
@@ -553,7 +553,7 @@ function HistoryTab({ team, colors }: { team: CEOTeamCard; colors: typeof Colors
         <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>Active Risks</ThemedText>
           {risks.map((risk) => {
-            const sevColor = SEVERITY_COLORS[risk.severity] ?? '#A1A1AA';
+            const sevColor = SEVERITY_COLORS[risk.severity] ?? '#9C9790';
             return (
               <View key={risk.id} style={[styles.riskRow, { borderBottomColor: colors.border }]}>
                 <View style={[styles.riskSeverityDot, { backgroundColor: sevColor }]} />
@@ -768,15 +768,15 @@ function RoundReadinessPulse({ colors }: { colors: typeof Colors.light }) {
       </ThemedText>
       <View style={readinessStyles.pulseStatsRow}>
         <View style={readinessStyles.pulseStat}>
-          <ThemedText style={[readinessStyles.pulseStatValue, { color: '#22C55E' }]}>{readyCount}</ThemedText>
+          <ThemedText style={[readinessStyles.pulseStatValue, { color: '#5A8A6E' }]}>{readyCount}</ThemedText>
           <ThemedText style={[readinessStyles.pulseStatLabel, { color: colors.textTertiary }]}>Ready</ThemedText>
         </View>
         <View style={readinessStyles.pulseStat}>
-          <ThemedText style={[readinessStyles.pulseStatValue, { color: '#F59E0B' }]}>{atRiskCount}</ThemedText>
+          <ThemedText style={[readinessStyles.pulseStatValue, { color: '#B8943E' }]}>{atRiskCount}</ThemedText>
           <ThemedText style={[readinessStyles.pulseStatLabel, { color: colors.textTertiary }]}>At Risk</ThemedText>
         </View>
         <View style={readinessStyles.pulseStat}>
-          <ThemedText style={[readinessStyles.pulseStatValue, { color: '#EF4444' }]}>{nonCompliantCount}</ThemedText>
+          <ThemedText style={[readinessStyles.pulseStatValue, { color: '#B85C5C' }]}>{nonCompliantCount}</ThemedText>
           <ThemedText style={[readinessStyles.pulseStatLabel, { color: colors.textTertiary }]}>Non-Compliant</ThemedText>
         </View>
       </View>
@@ -787,7 +787,7 @@ function RoundReadinessPulse({ colors }: { colors: typeof Colors.light }) {
           </ThemedText>
           {topBlockers.map((blocker, idx) => (
             <View key={idx} style={readinessStyles.blockerRow}>
-              <View style={[readinessStyles.blockerDot, { backgroundColor: '#EF4444' }]} />
+              <View style={[readinessStyles.blockerDot, { backgroundColor: '#B85C5C' }]} />
               <ThemedText style={[readinessStyles.blockerText, { color: colors.textSecondary }]} numberOfLines={1}>
                 {blocker}
               </ThemedText>
@@ -982,21 +982,21 @@ function TeamListView({
               {/* Ops Readiness / Compliance / Payout status chips */}
               <View style={readinessStyles.opsChipsRow}>
                 {/* Ops Readiness */}
-                <View style={[readinessStyles.opsChip, { backgroundColor: (team.readiness.ops >= 80 ? '#22C55E' : team.readiness.ops >= 50 ? '#F59E0B' : '#EF4444') + '18' }]}>
-                  <ThemedText style={[readinessStyles.opsChipText, { color: team.readiness.ops >= 80 ? '#22C55E' : team.readiness.ops >= 50 ? '#F59E0B' : '#EF4444' }]}>
+                <View style={[readinessStyles.opsChip, { backgroundColor: (team.readiness.ops >= 80 ? '#5A8A6E' : team.readiness.ops >= 50 ? '#B8943E' : '#B85C5C') + '18' }]}>
+                  <ThemedText style={[readinessStyles.opsChipText, { color: team.readiness.ops >= 80 ? '#5A8A6E' : team.readiness.ops >= 50 ? '#B8943E' : '#B85C5C' }]}>
                     Ops: {team.readiness.ops >= 80 ? 'Ready' : team.readiness.ops >= 50 ? 'At Risk' : 'Blocked'}
                   </ThemedText>
                 </View>
                 {/* Compliance */}
-                <View style={[readinessStyles.opsChip, { backgroundColor: (team.readiness.compliance >= 80 ? '#22C55E' : team.readiness.compliance >= 50 ? '#F59E0B' : '#EF4444') + '18' }]}>
-                  <ThemedText style={[readinessStyles.opsChipText, { color: team.readiness.compliance >= 80 ? '#22C55E' : team.readiness.compliance >= 50 ? '#F59E0B' : '#EF4444' }]}>
+                <View style={[readinessStyles.opsChip, { backgroundColor: (team.readiness.compliance >= 80 ? '#5A8A6E' : team.readiness.compliance >= 50 ? '#B8943E' : '#B85C5C') + '18' }]}>
+                  <ThemedText style={[readinessStyles.opsChipText, { color: team.readiness.compliance >= 80 ? '#5A8A6E' : team.readiness.compliance >= 50 ? '#B8943E' : '#B85C5C' }]}>
                     Comp: {team.readiness.compliance >= 80 ? 'OK' : team.readiness.compliance >= 50 ? 'Warning' : 'Non-Compliant'}
                   </ThemedText>
                 </View>
                 {/* Payout (C1/C2 only) */}
                 {isFullAccess(role) && (
-                  <View style={[readinessStyles.opsChip, { backgroundColor: team.business.financialStatus === 'current' ? '#22C55E18' : '#EF444418' }]}>
-                    <ThemedText style={[readinessStyles.opsChipText, { color: team.business.financialStatus === 'current' ? '#22C55E' : '#EF4444' }]}>
+                  <View style={[readinessStyles.opsChip, { backgroundColor: team.business.financialStatus === 'current' ? '#5A8A6E18' : '#B85C5C18' }]}>
+                    <ThemedText style={[readinessStyles.opsChipText, { color: team.business.financialStatus === 'current' ? '#5A8A6E' : '#B85C5C' }]}>
                       Payout: {team.business.financialStatus === 'current' ? 'Eligible' : 'Hold'}
                     </ThemedText>
                   </View>
@@ -1006,8 +1006,8 @@ function TeamListView({
               {/* Risk flags */}
               {team.riskFlags.length > 0 && (
                 <View style={styles.riskBadgeRow}>
-                  <View style={[styles.riskCountBadge, { backgroundColor: '#EF4444' + '20' }]}>
-                    <ThemedText style={[styles.riskCountText, { color: '#EF4444' }]}>
+                  <View style={[styles.riskCountBadge, { backgroundColor: '#B85C5C' + '20' }]}>
+                    <ThemedText style={[styles.riskCountText, { color: '#B85C5C' }]}>
                       {team.riskFlags.length} risk{team.riskFlags.length !== 1 ? 's' : ''}
                     </ThemedText>
                   </View>
@@ -1701,7 +1701,7 @@ const readinessStyles = StyleSheet.create({
     marginTop: 10,
     paddingTop: 10,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#A1A1AA30',
+    borderTopColor: '#9C979030',
   },
   blockersLabel: {
     fontSize: 11,

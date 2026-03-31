@@ -64,9 +64,9 @@ function accountTypeColor(type: PaymentAccount['type']): string {
   switch (type) {
     case 'operating': return ACCENT;
     case 'escrow': return ACCENT;
-    case 'prize-fund': return '#F59E0B';
+    case 'prize-fund': return '#B8943E';
     case 'sponsor-holding': return ACCENT;
-    case 'petty-cash': return '#22C55E';
+    case 'petty-cash': return '#5A8A6E';
   }
 }
 
@@ -81,10 +81,10 @@ function payoutTypeLabel(type: PayoutBatch['type']): string {
 
 function payoutTypeColor(type: PayoutBatch['type']): string {
   switch (type) {
-    case 'prize': return '#F59E0B';
+    case 'prize': return '#B8943E';
     case 'official': return ACCENT;
     case 'vendor': return ACCENT;
-    case 'refund': return '#EF4444';
+    case 'refund': return '#B85C5C';
   }
 }
 
@@ -100,10 +100,10 @@ function feeTypeLabel(type: FeeSchedule['type']): string {
 
 function feeTypeColor(type: FeeSchedule['type']): string {
   switch (type) {
-    case 'entry-fee': return '#22C55E';
+    case 'entry-fee': return '#5A8A6E';
     case 'registration': return ACCENT;
     case 'licensing': return ACCENT;
-    case 'facility': return '#F59E0B';
+    case 'facility': return '#B8943E';
     case 'broadcast': return ACCENT;
   }
 }
@@ -119,9 +119,9 @@ function frequencyLabel(freq: FeeSchedule['frequency']): string {
 
 function reconciliationStatusColor(status: ReconciliationEntry['status']): string {
   switch (status) {
-    case 'matched': return '#22C55E';
-    case 'variance': return '#EF4444';
-    case 'pending': return '#F59E0B';
+    case 'matched': return '#5A8A6E';
+    case 'variance': return '#B85C5C';
+    case 'pending': return '#B8943E';
   }
 }
 
@@ -183,7 +183,7 @@ function DashboardTab({
             <ThemedText
               style={[
                 s.kpiDelta,
-                { color: block.delta.startsWith('+') ? '#22C55E' : block.delta.startsWith('-') ? '#EF4444' : colors.textTertiary },
+                { color: block.delta.startsWith('+') ? '#5A8A6E' : block.delta.startsWith('-') ? '#B85C5C' : colors.textTertiary },
               ]}
             >
               {block.delta}
@@ -208,7 +208,7 @@ function DashboardTab({
                 index < 4 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
               ]}
             >
-              <View style={[s.activityDot, { backgroundColor: isCredit ? '#22C55E' : '#EF4444' }]} />
+              <View style={[s.activityDot, { backgroundColor: isCredit ? '#5A8A6E' : '#B85C5C' }]} />
               <View style={s.activityTextCol}>
                 <ThemedText style={[s.activityText, { color: colors.text }]} numberOfLines={1}>
                   {txn.description}
@@ -223,7 +223,7 @@ function DashboardTab({
               <ThemedText
                 style={[
                   s.activityAmount,
-                  { color: isCredit ? '#22C55E' : '#EF4444' },
+                  { color: isCredit ? '#5A8A6E' : '#B85C5C' },
                 ]}
               >
                 {isCredit ? '+' : '-'}{formatCurrency(txn.amount)}
@@ -440,14 +440,14 @@ function TransactionsTab({
         <View style={[s.txnSummaryRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={s.txnSummaryItem}>
             <ThemedText style={[s.txnSummaryLabel, { color: colors.textTertiary }]}>Credits</ThemedText>
-            <ThemedText style={[s.txnSummaryValue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.txnSummaryValue, { color: '#5A8A6E' }]}>
               +{formatCurrency(totalCredits)}
             </ThemedText>
           </View>
           <View style={[s.txnSummaryDivider, { backgroundColor: colors.border }]} />
           <View style={s.txnSummaryItem}>
             <ThemedText style={[s.txnSummaryLabel, { color: colors.textTertiary }]}>Debits</ThemedText>
-            <ThemedText style={[s.txnSummaryValue, { color: '#EF4444' }]}>
+            <ThemedText style={[s.txnSummaryValue, { color: '#B85C5C' }]}>
               -{formatCurrency(totalDebits)}
             </ThemedText>
           </View>
@@ -457,7 +457,7 @@ function TransactionsTab({
             <ThemedText
               style={[
                 s.txnSummaryValue,
-                { color: totalCredits - totalDebits >= 0 ? '#22C55E' : '#EF4444' },
+                { color: totalCredits - totalDebits >= 0 ? '#5A8A6E' : '#B85C5C' },
               ]}
             >
               {totalCredits - totalDebits >= 0 ? '+' : '-'}{formatCurrency(Math.abs(totalCredits - totalDebits))}
@@ -477,7 +477,7 @@ function TransactionsTab({
             }}
           >
             <View style={s.txnCardTop}>
-              <View style={[s.txnTypeIndicator, { backgroundColor: isCredit ? '#22C55E' : '#EF4444' }]} />
+              <View style={[s.txnTypeIndicator, { backgroundColor: isCredit ? '#5A8A6E' : '#B85C5C' }]} />
               <View style={s.txnCardInfo}>
                 <ThemedText style={[s.txnDescription, { color: colors.text }]} numberOfLines={2}>
                   {item.description}
@@ -490,7 +490,7 @@ function TransactionsTab({
               <ThemedText
                 style={[
                   s.txnAmount,
-                  { color: isCredit ? '#22C55E' : '#EF4444' },
+                  { color: isCredit ? '#5A8A6E' : '#B85C5C' },
                 ]}
               >
                 {isCredit ? '+' : '-'}{formatCurrency(item.amount)}
@@ -632,21 +632,21 @@ function InvoicesTab({
         <View style={[s.txnSummaryRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={s.txnSummaryItem}>
             <ThemedText style={[s.txnSummaryLabel, { color: colors.textTertiary }]}>Paid</ThemedText>
-            <ThemedText style={[s.txnSummaryValue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.txnSummaryValue, { color: '#5A8A6E' }]}>
               {formatCurrency(totalPaid)}
             </ThemedText>
           </View>
           <View style={[s.txnSummaryDivider, { backgroundColor: colors.border }]} />
           <View style={s.txnSummaryItem}>
             <ThemedText style={[s.txnSummaryLabel, { color: colors.textTertiary }]}>Outstanding</ThemedText>
-            <ThemedText style={[s.txnSummaryValue, { color: '#F59E0B' }]}>
+            <ThemedText style={[s.txnSummaryValue, { color: '#B8943E' }]}>
               {formatCurrency(totalOutstanding)}
             </ThemedText>
           </View>
           <View style={[s.txnSummaryDivider, { backgroundColor: colors.border }]} />
           <View style={s.txnSummaryItem}>
             <ThemedText style={[s.txnSummaryLabel, { color: colors.textTertiary }]}>Overdue</ThemedText>
-            <ThemedText style={[s.txnSummaryValue, { color: '#EF4444' }]}>
+            <ThemedText style={[s.txnSummaryValue, { color: '#B85C5C' }]}>
               {overdueCount}
             </ThemedText>
           </View>
@@ -826,17 +826,17 @@ function ReconciliationTab({
       ListHeaderComponent={
         <View style={[s.reconSummaryRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={s.reconSummaryItem}>
-            <View style={[s.reconSummaryDot, { backgroundColor: '#22C55E' }]} />
+            <View style={[s.reconSummaryDot, { backgroundColor: '#5A8A6E' }]} />
             <ThemedText style={[s.reconSummaryValue, { color: colors.text }]}>{matchedCount}</ThemedText>
             <ThemedText style={[s.reconSummaryLabel, { color: colors.textTertiary }]}>Matched</ThemedText>
           </View>
           <View style={s.reconSummaryItem}>
-            <View style={[s.reconSummaryDot, { backgroundColor: '#EF4444' }]} />
+            <View style={[s.reconSummaryDot, { backgroundColor: '#B85C5C' }]} />
             <ThemedText style={[s.reconSummaryValue, { color: colors.text }]}>{varianceCount}</ThemedText>
             <ThemedText style={[s.reconSummaryLabel, { color: colors.textTertiary }]}>Variance</ThemedText>
           </View>
           <View style={s.reconSummaryItem}>
-            <View style={[s.reconSummaryDot, { backgroundColor: '#F59E0B' }]} />
+            <View style={[s.reconSummaryDot, { backgroundColor: '#B8943E' }]} />
             <ThemedText style={[s.reconSummaryValue, { color: colors.text }]}>{pendingCount}</ThemedText>
             <ThemedText style={[s.reconSummaryLabel, { color: colors.textTertiary }]}>Pending</ThemedText>
           </View>
@@ -898,7 +898,7 @@ function ReconciliationTab({
                         <ThemedText style={[s.reconBalanceLabel, { color: colors.textTertiary }]}>
                           Variance
                         </ThemedText>
-                        <ThemedText style={[s.reconBalanceValue, { color: '#EF4444' }]}>
+                        <ThemedText style={[s.reconBalanceValue, { color: '#B85C5C' }]}>
                           {entry.variance > 0 ? '+' : ''}{formatCurrency(entry.variance)}
                         </ThemedText>
                       </View>
@@ -949,7 +949,7 @@ function DisputesTab({
         <View style={[s.disputeSummaryContainer, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={s.disputeSummaryGrid}>
             <View style={s.disputeSummaryGridItem}>
-              <View style={[s.disputeSummaryDot, { backgroundColor: '#F59E0B' }]} />
+              <View style={[s.disputeSummaryDot, { backgroundColor: '#B8943E' }]} />
               <ThemedText style={[s.disputeSummaryGridValue, { color: colors.text }]}>{openCount}</ThemedText>
               <ThemedText style={[s.disputeSummaryGridLabel, { color: colors.textTertiary }]}>Open</ThemedText>
             </View>
@@ -959,12 +959,12 @@ function DisputesTab({
               <ThemedText style={[s.disputeSummaryGridLabel, { color: colors.textTertiary }]}>Review</ThemedText>
             </View>
             <View style={s.disputeSummaryGridItem}>
-              <View style={[s.disputeSummaryDot, { backgroundColor: '#EF4444' }]} />
+              <View style={[s.disputeSummaryDot, { backgroundColor: '#B85C5C' }]} />
               <ThemedText style={[s.disputeSummaryGridValue, { color: colors.text }]}>{escalatedCount}</ThemedText>
               <ThemedText style={[s.disputeSummaryGridLabel, { color: colors.textTertiary }]}>Escalated</ThemedText>
             </View>
             <View style={s.disputeSummaryGridItem}>
-              <View style={[s.disputeSummaryDot, { backgroundColor: '#22C55E' }]} />
+              <View style={[s.disputeSummaryDot, { backgroundColor: '#5A8A6E' }]} />
               <ThemedText style={[s.disputeSummaryGridValue, { color: colors.text }]}>{resolvedCount}</ThemedText>
               <ThemedText style={[s.disputeSummaryGridLabel, { color: colors.textTertiary }]}>Resolved</ThemedText>
             </View>
@@ -1251,7 +1251,7 @@ function TransactionDetailSheet({
       {/* Amount */}
       <View style={s.sheetAmountContainer}>
         <ThemedText
-          style={[s.sheetAmountValue, { color: isCredit ? '#22C55E' : '#EF4444' }]}
+          style={[s.sheetAmountValue, { color: isCredit ? '#5A8A6E' : '#B85C5C' }]}
         >
           {isCredit ? '+' : '-'}{formatCurrency(transaction.amount)}
         </ThemedText>
@@ -1259,7 +1259,7 @@ function TransactionDetailSheet({
 
       {/* Badges */}
       <View style={s.sheetBadgeRow}>
-        <StatusBadge label={transaction.type.toUpperCase()} color={isCredit ? '#22C55E' : '#EF4444'} />
+        <StatusBadge label={transaction.type.toUpperCase()} color={isCredit ? '#5A8A6E' : '#B85C5C'} />
         <StatusBadge label={transaction.category.toUpperCase()} color={accentColor} />
         <StatusBadge label={transaction.status.toUpperCase()} color={stColor} />
       </View>
@@ -1515,7 +1515,7 @@ function DisputeDetailSheet({
     <BottomSheet visible={visible} onClose={onClose} title="Dispute Detail" useModal>
       {/* Amount */}
       <View style={s.sheetAmountContainer}>
-        <ThemedText style={[s.sheetAmountValue, { color: '#EF4444' }]}>
+        <ThemedText style={[s.sheetAmountValue, { color: '#B85C5C' }]}>
           {formatCurrency(dispute.amount)}
         </ThemedText>
       </View>

@@ -38,13 +38,13 @@ export interface VideoStripCard {
 }
 
 export const VIDEO_STRIP_CARDS: VideoStripCard[] = [
-  { id: 'vs-1', title: 'Providence Scout Breakdown', tag: 'SCOUT', timestamp: '2h ago', duration: '8:42', sourceBadge: 'Staff', thumbnailColor: '#1D9BF0', rbac: 'R5' },
+  { id: 'vs-1', title: 'Providence Scout Breakdown', tag: 'SCOUT', timestamp: '2h ago', duration: '8:42', sourceBadge: 'Staff', thumbnailColor: '#1A1714', rbac: 'R5' },
   { id: 'vs-2', title: 'Tuesday Practice \u2014 Half-Court Sets', tag: 'PRACTICE', timestamp: '5h ago', duration: '14:20', sourceBadge: 'Carroll Film', thumbnailColor: '#0B0F14', rbac: 'R5' },
   { id: 'vs-3', title: 'Carter Development \u2014 Pull-Up 3s', tag: 'DEV', timestamp: '1d ago', duration: '6:15', sourceBadge: 'Dev Lab', thumbnailColor: '#0B0F14', rbac: 'R5' },
   { id: 'vs-4', title: KaNeXT_LAST_GAME ? `vs ${KaNeXT_LAST_GAME.opponent} \u2014 Full Game` : 'Season Highlights \u2014 Full Game', tag: 'GAME', timestamp: '3d ago', duration: '1:42:08', sourceBadge: 'Carroll Film', thumbnailColor: '#0B0F14', rbac: 'R4' },
   { id: 'vs-5', title: 'Coach K Pregame \u2014 Weekly Presser', tag: 'CONNECTCAST', timestamp: '4d ago', duration: '22:35', sourceBadge: 'ConnectCast', thumbnailColor: '#0B0F14', rbac: 'R1' },
   { id: 'vs-6', title: 'Fighting Saints Gameday Hype \u2014 Social Cut', tag: 'MEDIA', timestamp: '5d ago', duration: '1:12', sourceBadge: 'Media Dept', thumbnailColor: '#0B0F14', rbac: 'R1' },
-  { id: 'vs-7', title: 'Southeastern Film \u2014 Transition D', tag: 'SCOUT', timestamp: '6d ago', duration: '11:05', sourceBadge: 'Staff', thumbnailColor: '#1D9BF0', rbac: 'R5' },
+  { id: 'vs-7', title: 'Southeastern Film \u2014 Transition D', tag: 'SCOUT', timestamp: '6d ago', duration: '11:05', sourceBadge: 'Staff', thumbnailColor: '#1A1714', rbac: 'R5' },
   { id: 'vs-8', title: 'Strength Session \u2014 Pre-Game Lift', tag: 'PRACTICE', timestamp: '1w ago', duration: '18:40', sourceBadge: 'S&C', thumbnailColor: '#0B0F14', rbac: 'R4' },
 ];
 
@@ -255,8 +255,8 @@ export const MY_WORK_QUEUE: WorkQueueItem[] = [
 // =============================================================================
 
 export function getVideoTagColor(tag: VideoTag): string {
-  const colors: Record<VideoTag, string> = { SCOUT: '#1D9BF0', PRACTICE: '#1D9BF0', DEV: '#22c55e', GAME: '#f59e0b', CONNECTCAST: '#1D9BF0', MEDIA: '#1D9BF0' };
-  return colors[tag] ?? '#A1A1AA';
+  const colors: Record<VideoTag, string> = { SCOUT: '#1A1714', PRACTICE: '#1A1714', DEV: '#22c55e', GAME: '#f59e0b', CONNECTCAST: '#1A1714', MEDIA: '#1A1714' };
+  return colors[tag] ?? '#9C9790';
 }
 
 export function getWorkItemIcon(type: WorkItemType): string {
@@ -265,6 +265,6 @@ export function getWorkItemIcon(type: WorkItemType): string {
 }
 
 export function getWorkPriorityColor(priority: WorkPriority): string {
-  const colors: Record<WorkPriority, string> = { high: '#ef4444', medium: '#f59e0b', low: '#A1A1AA' };
-  return colors[priority] ?? '#A1A1AA';
+  const colors: Record<WorkPriority, string> = { high: '#ef4444', medium: '#f59e0b', low: '#9C9790' };
+  return colors[priority] ?? '#9C9790';
 }

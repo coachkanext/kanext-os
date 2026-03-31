@@ -205,7 +205,7 @@ export function SupportSheet({ visible, onClose, colors }: Props) {
             </View>
             <View style={styles.confirmRow}>
               <Text style={[styles.confirmLabel, { color: colors.textSecondary }]}>Status</Text>
-              <Text style={[styles.statusText, { color: '#22C55E' }]}>Settled</Text>
+              <Text style={[styles.statusText, { color: '#5A8A6E' }]}>Settled</Text>
             </View>
           </View>
 
@@ -217,7 +217,7 @@ export function SupportSheet({ visible, onClose, colors }: Props) {
             <Text style={[styles.sectionLabel, { color: colors.textTertiary }]}>PAYMENT CHAIN</Text>
             {chain.chain.map((step, i) => (
               <View key={i} style={styles.chainRow}>
-                <View style={[styles.chainDot, { backgroundColor: '#22C55E' }]} />
+                <View style={[styles.chainDot, { backgroundColor: '#5A8A6E' }]} />
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.chainStage, { color: colors.text }]}>{step.stage}</Text>
                   <Text style={[styles.chainDetail, { color: colors.textSecondary }]}>{step.detail}</Text>
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   freqPillActive: {
-    backgroundColor: '#1D9BF0',
+    backgroundColor: '#1A1714',
   },
   freqPillText: {
     fontSize: 13,
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
 
   // CTA
   ctaButton: {
-    backgroundColor: '#22C55E',
+    backgroundColor: '#5A8A6E',
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',

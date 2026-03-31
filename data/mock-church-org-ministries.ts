@@ -69,10 +69,10 @@ export const MINISTRY_STATUS_LABELS: Record<MinistryStatus, string> = {
 };
 
 export const MINISTRY_STATUS_COLORS: Record<MinistryStatus, string> = {
-  active: '#22C55E',
-  growing: '#1D9BF0',
-  needs_attention: '#F59E0B',
-  on_hold: '#A1A1AA',
+  active: '#5A8A6E',
+  growing: '#1A1714',
+  needs_attention: '#B8943E',
+  on_hold: '#9C9790',
 };
 
 export const SEAT_STATUS_LABELS: Record<SeatStatus, string> = {
@@ -82,21 +82,21 @@ export const SEAT_STATUS_LABELS: Record<SeatStatus, string> = {
 };
 
 export const SEAT_STATUS_COLORS: Record<SeatStatus, string> = {
-  filled: '#22C55E',
-  vacant: '#EF4444',
-  interim: '#F59E0B',
+  filled: '#5A8A6E',
+  vacant: '#B85C5C',
+  interim: '#B8943E',
 };
 
 export const HEALTH_COLORS: Record<HealthScore, string> = {
-  green: '#22C55E',
-  yellow: '#F59E0B',
-  red: '#EF4444',
+  green: '#5A8A6E',
+  yellow: '#B8943E',
+  red: '#B85C5C',
 };
 
 export const STAFFING_STATUS_COLORS: Record<string, string> = {
-  fully_staffed: '#22C55E',
-  needs_volunteers: '#F59E0B',
-  critical: '#EF4444',
+  fully_staffed: '#5A8A6E',
+  needs_volunteers: '#B8943E',
+  critical: '#B85C5C',
 };
 
 export const STAFFING_STATUS_LABELS: Record<string, string> = {

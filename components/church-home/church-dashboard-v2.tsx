@@ -71,12 +71,12 @@ interface DomainItem {
 }
 
 const DOMAIN_ITEMS: DomainItem[] = [
-  { id: 'services', label: 'Services', icon: 'play.circle.fill', color: '#1D9BF0' },
-  { id: 'ministries', label: 'Ministries', icon: 'heart.fill', color: '#EF4444' },
-  { id: 'community', label: 'Community', icon: 'person.3.fill', color: '#22C55E' },
-  { id: 'teaching', label: 'Teaching', icon: 'book.fill', color: '#F59E0B' },
-  { id: 'prayer', label: 'Prayer', icon: 'hands.sparkles.fill', color: '#8B5CF6' },
-  { id: 'care', label: 'Care', icon: 'heart.circle.fill', color: '#EC4899' },
+  { id: 'services', label: 'Services', icon: 'play.circle.fill', color: '#1A1714' },
+  { id: 'ministries', label: 'Ministries', icon: 'heart.fill', color: '#B85C5C' },
+  { id: 'community', label: 'Community', icon: 'person.3.fill', color: '#5A8A6E' },
+  { id: 'teaching', label: 'Teaching', icon: 'book.fill', color: '#B8943E' },
+  { id: 'prayer', label: 'Prayer', icon: 'hands.sparkles.fill', color: '#1A1714' },
+  { id: 'care', label: 'Care', icon: 'heart.circle.fill', color: '#1A1714' },
 ];
 
 // =============================================================================
@@ -112,7 +112,7 @@ export function ChurchDashboardV2({ colors, accent, role = 'C8', onSwitchTab }: 
 
   if (liveService) {
     heroBadge = 'LIVE';
-    heroBadgeColor = '#EF4444';
+    heroBadgeColor = '#B85C5C';
     heroTitle = liveService.title;
     heroSubtitle = `${liveService.speaker} · LIVE NOW`;
   } else if (nextService) {
@@ -122,7 +122,7 @@ export function ChurchDashboardV2({ colors, accent, role = 'C8', onSwitchTab }: 
     heroSubtitle = `${nextService.speaker} · ${nextService.date} · ${nextService.time}`;
   } else if (lastService) {
     heroBadge = 'RECAP';
-    heroBadgeColor = '#A1A1AA';
+    heroBadgeColor = '#9C9790';
     heroTitle = lastService.topic || lastService.title;
     heroSubtitle = `${lastService.speaker} · ${lastService.date}`;
   } else {
@@ -236,7 +236,7 @@ export function ChurchDashboardV2({ colors, accent, role = 'C8', onSwitchTab }: 
             }}
           >
             <View style={[s.engagementIcon, { backgroundColor: 'rgba(239,68,68,0.15)' }]}>
-              <IconSymbol name="heart.fill" size={20} color="#EF4444" />
+              <IconSymbol name="heart.fill" size={20} color="#B85C5C" />
             </View>
             <ThemedText style={s.engagementLabel}>Give</ThemedText>
           </Pressable>
@@ -249,7 +249,7 @@ export function ChurchDashboardV2({ colors, accent, role = 'C8', onSwitchTab }: 
             }}
           >
             <View style={[s.engagementIcon, { backgroundColor: 'rgba(29,155,240,0.15)' }]}>
-              <IconSymbol name="calendar" size={20} color="#1D9BF0" />
+              <IconSymbol name="calendar" size={20} color="#1A1714" />
             </View>
             <ThemedText style={s.engagementLabel}>Events</ThemedText>
           </Pressable>
@@ -262,7 +262,7 @@ export function ChurchDashboardV2({ colors, accent, role = 'C8', onSwitchTab }: 
             }}
           >
             <View style={[s.engagementIcon, { backgroundColor: 'rgba(34,197,94,0.15)' }]}>
-              <IconSymbol name="hand.raised.fill" size={20} color="#22C55E" />
+              <IconSymbol name="hand.raised.fill" size={20} color="#5A8A6E" />
             </View>
             <ThemedText style={s.engagementLabel}>Serve</ThemedText>
           </Pressable>
@@ -288,23 +288,23 @@ export function ChurchDashboardV2({ colors, accent, role = 'C8', onSwitchTab }: 
 
             <View style={s.snapshotGrid}>
               <View style={s.snapshotItem}>
-                <IconSymbol name="calendar" size={14} color="#A1A1AA" />
+                <IconSymbol name="calendar" size={14} color="#9C9790" />
                 <ThemedText style={s.snapshotItemLabel}>Next Class</ThemedText>
                 <ThemedText style={s.snapshotItemValue}>{MINISTRY_SNAPSHOT.nextClassDate}</ThemedText>
                 <ThemedText style={s.snapshotItemDetail}>{MINISTRY_SNAPSHOT.nextClassTime}</ThemedText>
               </View>
               <View style={s.snapshotItem}>
-                <IconSymbol name="door.left.hand.open" size={14} color="#A1A1AA" />
+                <IconSymbol name="door.left.hand.open" size={14} color="#9C9790" />
                 <ThemedText style={s.snapshotItemLabel}>Room</ThemedText>
                 <ThemedText style={s.snapshotItemValue}>{MINISTRY_SNAPSHOT.room}</ThemedText>
               </View>
               <View style={s.snapshotItem}>
-                <IconSymbol name="person.3.fill" size={14} color="#A1A1AA" />
+                <IconSymbol name="person.3.fill" size={14} color="#9C9790" />
                 <ThemedText style={s.snapshotItemLabel}>Volunteers</ThemedText>
                 <ThemedText style={s.snapshotItemValue}>{MINISTRY_SNAPSHOT.volunteerCount}</ThemedText>
               </View>
               <View style={s.snapshotItem}>
-                <IconSymbol name="figure.and.child.holdinghands" size={14} color="#A1A1AA" />
+                <IconSymbol name="figure.and.child.holdinghands" size={14} color="#9C9790" />
                 <ThemedText style={s.snapshotItemLabel}>Children</ThemedText>
                 <ThemedText style={s.snapshotItemValue}>{MINISTRY_SNAPSHOT.childrenCount}</ThemedText>
               </View>

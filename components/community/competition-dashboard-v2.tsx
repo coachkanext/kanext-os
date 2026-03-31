@@ -85,33 +85,33 @@ const SEVERITY_ICON: Record<string, string> = {
 };
 
 const SEVERITY_BADGE_COLOR: Record<string, string> = {
-  urgent: '#EF4444',
-  important: '#F59E0B',
+  urgent: '#B85C5C',
+  important: '#B8943E',
   info: ACCENT,
 };
 
 const AUDIENCE_COLOR: Record<string, string> = {
   staff: ACCENT,
   teams: ACCENT,
-  public: '#22C55E',
+  public: '#5A8A6E',
 };
 
 const TASK_STATUS_COLOR: Record<string, string> = {
-  blocker: '#EF4444',
-  open: '#F59E0B',
-  done: '#22C55E',
+  blocker: '#B85C5C',
+  open: '#B8943E',
+  done: '#5A8A6E',
 };
 
 const GATE_COLOR: Record<string, string> = {
-  cleared: '#22C55E',
-  pending: '#F59E0B',
-  blocked: '#EF4444',
+  cleared: '#5A8A6E',
+  pending: '#B8943E',
+  blocked: '#B85C5C',
 };
 
 const DELIVERABLE_STATUS_COLOR: Record<string, string> = {
-  on_track: '#22C55E',
-  at_risk: '#F59E0B',
-  overdue: '#EF4444',
+  on_track: '#5A8A6E',
+  at_risk: '#B8943E',
+  overdue: '#B85C5C',
   delivered: ACCENT,
 };
 
@@ -249,7 +249,7 @@ function TodayNext({ colors }: { colors: typeof Colors.light }) {
             <IconSymbol
               name={item.icon as any}
               size={16}
-              color={item.urgency === 'critical' ? '#EF4444' : item.urgency === 'high' ? '#F59E0B' : colors.textSecondary}
+              color={item.urgency === 'critical' ? '#B85C5C' : item.urgency === 'high' ? '#B8943E' : colors.textSecondary}
             />
             <View style={s.todayText}>
               <ThemedText style={[s.todayLabel, { color: colors.text }]}>{item.label}</ThemedText>
@@ -302,7 +302,7 @@ function LiveStatusPanel({ colors }: { colors: typeof Colors.light }) {
       <Card colors={colors}>
         {liveSessions.map((session) => (
           <View key={session.id} style={s.liveSessionRow}>
-            <IconSymbol name={session.icon as any} size={16} color="#EF4444" />
+            <IconSymbol name={session.icon as any} size={16} color="#B85C5C" />
             <View style={s.todayText}>
               <ThemedText style={[s.todayLabel, { color: colors.text }]}>{session.name}</ThemedText>
               <ThemedText style={[s.todayDetail, { color: colors.textSecondary }]}>
@@ -316,10 +316,10 @@ function LiveStatusPanel({ colors }: { colors: typeof Colors.light }) {
       {/* Alerts strip */}
       {alerts.length > 0 && (
         <Card colors={colors}>
-          <ThemedText style={[s.cardHeading, { color: '#EF4444' }]}>Alerts</ThemedText>
+          <ThemedText style={[s.cardHeading, { color: '#B85C5C' }]}>Alerts</ThemedText>
           {alerts.map((a) => (
             <View key={a.id} style={s.alertRow}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#EF4444" />
+              <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#B85C5C" />
               <ThemedText style={[s.alertText, { color: colors.text }]} numberOfLines={2}>
                 {a.label} {'\u2014'} {a.detail}
               </ThemedText>
@@ -428,7 +428,7 @@ function StandingsBracket({ colors }: { colors: typeof Colors.light }) {
             </View>
             <ThemedText style={[s.standingsColPts, { color: colors.text }]}>{team.points}</ThemedText>
             <ThemedText style={[s.standingsColWins, { color: colors.textSecondary }]}>{team.wins}</ThemedText>
-            <ThemedText style={[s.standingsColGap, { color: team.gap === 'Leader' ? '#22C55E' : colors.textSecondary }]}>
+            <ThemedText style={[s.standingsColGap, { color: team.gap === 'Leader' ? '#5A8A6E' : colors.textSecondary }]}>
               {team.gap}
             </ThemedText>
           </View>
@@ -595,8 +595,8 @@ function OpsTaskboard({ colors }: { colors: typeof Colors.light }) {
             {task.impactFlags.length > 0 && (
               <View style={s.impactRow}>
                 {task.impactFlags.map((flag) => (
-                  <View key={flag} style={[s.impactBadge, { backgroundColor: '#EF444420' }]}>
-                    <ThemedText style={[s.impactBadgeText, { color: '#EF4444' }]}>{flag}</ThemedText>
+                  <View key={flag} style={[s.impactBadge, { backgroundColor: '#B85C5C20' }]}>
+                    <ThemedText style={[s.impactBadgeText, { color: '#B85C5C' }]}>{flag}</ThemedText>
                   </View>
                 ))}
               </View>
@@ -674,12 +674,12 @@ function OfficialsCompliance({ colors }: { colors: typeof Colors.light }) {
       <Card colors={colors}>
         <View style={s.complianceKPIRow}>
           <View style={s.complianceKPIItem}>
-            <ThemedText style={[s.complianceKPIValue, { color: '#EF4444' }]}>{incidents}</ThemedText>
+            <ThemedText style={[s.complianceKPIValue, { color: '#B85C5C' }]}>{incidents}</ThemedText>
             <ThemedText style={[s.complianceKPILabel, { color: colors.textSecondary }]}>Flagged</ThemedText>
           </View>
           <View style={[s.complianceDivider, { backgroundColor: colors.border }]} />
           <View style={s.complianceKPIItem}>
-            <ThemedText style={[s.complianceKPIValue, { color: '#F59E0B' }]}>{pending}</ThemedText>
+            <ThemedText style={[s.complianceKPIValue, { color: '#B8943E' }]}>{pending}</ThemedText>
             <ThemedText style={[s.complianceKPILabel, { color: colors.textSecondary }]}>Pending</ThemedText>
           </View>
           <View style={[s.complianceDivider, { backgroundColor: colors.border }]} />
@@ -705,8 +705,8 @@ function OfficialsCompliance({ colors }: { colors: typeof Colors.light }) {
 function SponsorsRevenue({ colors }: { colors: typeof Colors.light }) {
   const sponsors = [
     { name: 'Nike', type: 'Title Sponsor', color: '#FFFFFF' },
-    { name: 'Red Bull', type: 'Energy Partner', color: '#EF4444' },
-    { name: 'Pirelli', type: 'Tire Supplier', color: '#F59E0B' },
+    { name: 'Red Bull', type: 'Energy Partner', color: '#B85C5C' },
+    { name: 'Pirelli', type: 'Tire Supplier', color: '#B8943E' },
   ];
 
   return (
@@ -744,7 +744,7 @@ function SponsorsRevenue({ colors }: { colors: typeof Colors.light }) {
               <ThemedText style={[s.revenueLabel, { color: colors.textSecondary }]}>Media</ThemedText>
             </View>
             <View style={s.revenueItem}>
-              <ThemedText style={[s.revenueValue, { color: '#22C55E' }]}>$4.8M</ThemedText>
+              <ThemedText style={[s.revenueValue, { color: '#5A8A6E' }]}>$4.8M</ThemedText>
               <ThemedText style={[s.revenueLabel, { color: colors.textSecondary }]}>Total YTD</ThemedText>
             </View>
           </View>
@@ -793,8 +793,8 @@ function GovernanceModule({ colors }: { colors: typeof Colors.light }) {
       <Card colors={colors}>
         <View style={s.approvalHeaderRow}>
           <ThemedText style={[s.cardHeading, { color: colors.text }]}>Approvals Queue</ThemedText>
-          <View style={[s.approvalCountBadge, { backgroundColor: '#EF444420' }]}>
-            <ThemedText style={[s.approvalCountText, { color: '#EF4444' }]}>{pendingApprovals.length}</ThemedText>
+          <View style={[s.approvalCountBadge, { backgroundColor: '#B85C5C20' }]}>
+            <ThemedText style={[s.approvalCountText, { color: '#B85C5C' }]}>{pendingApprovals.length}</ThemedText>
           </View>
         </View>
         {pendingApprovals.slice(0, 3).map((ap, idx) => (
@@ -835,12 +835,12 @@ function AuditTrailModule({ colors }: { colors: typeof Colors.light }) {
 
   const actionColor = (action: string): string => {
     switch (action) {
-      case 'Flagged': return '#EF4444';
-      case 'Approved': return '#22C55E';
+      case 'Flagged': return '#B85C5C';
+      case 'Approved': return '#5A8A6E';
       case 'Submitted': return ACCENT;
-      case 'Pending': return '#F59E0B';
+      case 'Pending': return '#B8943E';
       case 'Initiated': return ACCENT;
-      default: return '#A1A1AA';
+      default: return '#9C9790';
     }
   };
 
@@ -1115,7 +1115,7 @@ const s = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
   },
   liveSessionRow: {
     flexDirection: 'row',

@@ -162,21 +162,21 @@ export const BIZ_REPORTS_V2_TABS: BizReportsV2Tab[] = [
 // =============================================================================
 
 export const REPORT_STATUS_COLOR: Record<ReportItem['status'], string> = {
-  generated: '#22C55E',
-  generating: '#1D9BF0',
-  scheduled: '#1D9BF0',
-  draft: '#F59E0B',
-  failed: '#EF4444',
+  generated: '#5A8A6E',
+  generating: '#1A1714',
+  scheduled: '#1A1714',
+  draft: '#B8943E',
+  failed: '#B85C5C',
 };
 
 export const REPORT_CATEGORY_COLOR: Record<ReportCategory, string> = {
-  finance: '#22C55E',
-  rails: '#1D9BF0',
-  operations: '#F59E0B',
-  compliance_legal: '#1D9BF0',
-  people: '#1D9BF0',
-  assets: '#1D9BF0',
-  media_proof: '#F59E0B',
+  finance: '#5A8A6E',
+  rails: '#1A1714',
+  operations: '#B8943E',
+  compliance_legal: '#1A1714',
+  people: '#1A1714',
+  assets: '#1A1714',
+  media_proof: '#B8943E',
 };
 
 export const REPORT_CATEGORY_LABEL: Record<ReportCategory, string> = {
@@ -190,17 +190,17 @@ export const REPORT_CATEGORY_LABEL: Record<ReportCategory, string> = {
 };
 
 export const REPORT_FORMAT_COLOR: Record<ReportItem['format'], string> = {
-  pdf: '#EF4444',
-  xlsx: '#22C55E',
-  csv: '#1D9BF0',
-  dashboard: '#1D9BF0',
+  pdf: '#B85C5C',
+  xlsx: '#5A8A6E',
+  csv: '#1A1714',
+  dashboard: '#1A1714',
 };
 
 export const ACCESS_LEVEL_COLOR: Record<DataRoomDocument['accessLevel'], string> = {
-  founder_only: '#EF4444',
-  board: '#1D9BF0',
-  retail: '#1D9BF0',
-  public: '#22C55E',
+  founder_only: '#B85C5C',
+  board: '#1A1714',
+  retail: '#1A1714',
+  public: '#5A8A6E',
 };
 
 export const ACCESS_LEVEL_LABEL: Record<DataRoomDocument['accessLevel'], string> = {

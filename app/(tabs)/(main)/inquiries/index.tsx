@@ -28,7 +28,7 @@ import {
 
 const TOP_BAR_H  = 52;
 const PILLS_H    = 48;
-const ACCENT_INQ = '#1D9BF0';
+const ACCENT_INQ = '#1A1714';
 
 type InqTab  = 'Pipeline' | 'Contacts' | 'Campaigns';
 type InqRole = 'CEO' | 'Client';
@@ -44,9 +44,9 @@ function pillsForTab(tab: InqTab): string[] {
 function dealStageBg(stage: DealStage): string {
   const colors: Record<DealStage, string> = {
     New:         'rgba(45,30,18,0.08)',
-    Qualified:   '#1D9BF020',
-    Proposal:    '#3B82F620',
-    Negotiation: '#8B634020',
+    Qualified:   '#1A171420',
+    Proposal:    '#1A171420',
+    Negotiation: '#1A171420',
     Won:         '#5A8A6E20',
     Lost:        '#B85C5C20',
   };
@@ -177,7 +177,7 @@ export default function InquiriesScreen() {
           <Text style={[s.subHeader, { color: C.secondary as string, marginBottom: 8 }]}>Timeline</Text>
           {[
             { label: 'Deal added',          date: '2026-01-15', color: C.muted as string },
-            { label: 'First contact made',  date: '2026-01-22', color: '#1D9BF0' },
+            { label: 'First contact made',  date: '2026-01-22', color: '#1A1714' },
             { label: 'Proposal sent',       date: deal.stage !== 'New' ? '2026-02-10' : '—', color: C.accent },
           ].map((tl, i) => (
             <View key={i} style={[s.row, { gap: 10, paddingVertical: 7 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
@@ -227,8 +227,8 @@ export default function InquiriesScreen() {
         <View style={[s.row, { gap: 8, paddingHorizontal: 16, marginBottom: 12 }]}>
           {[
             { label: 'Pipeline',  value: formatCurrency(activePipelineValue, true), color: C.accent },
-            { label: 'Open Deals', value: `${DEALS.filter(d => d.stage !== 'Won' && d.stage !== 'Lost').length}`, color: '#1D9BF0' },
-            { label: 'Closing Soon', value: `${closingSoon.length}`, color: '#3B82F6' },
+            { label: 'Open Deals', value: `${DEALS.filter(d => d.stage !== 'Won' && d.stage !== 'Lost').length}`, color: '#1A1714' },
+            { label: 'Closing Soon', value: `${closingSoon.length}`, color: '#1A1714' },
           ].map(m => (
             <GlassView tier={1} key={m.label} style={[s.dealMetricChip, { flex: 1 }]}>
               <Text style={[s.bodyMed, { color: m.color, fontSize: 16 }]}>{m.value}</Text>
@@ -276,7 +276,7 @@ export default function InquiriesScreen() {
                           pressed && { backgroundColor: C.surfacePressed as string },
                         ]}
                       >
-                        <View style={[s.avatarMd, { backgroundColor: contact ? `hsl(${contact.hue},45%,28%)` : '#8B6340' }]}>
+                        <View style={[s.avatarMd, { backgroundColor: contact ? `hsl(${contact.hue},45%,28%)` : '#1A1714' }]}>
                           <Text style={s.avatarMdText}>{contact?.initials ?? '??'}</Text>
                         </View>
                         <View style={{ flex: 1 }}>
@@ -452,10 +452,10 @@ export default function InquiriesScreen() {
 
   const campTypeColor = (type: string): string => {
     switch (type) {
-      case 'email':   return '#1D9BF0';
+      case 'email':   return '#1A1714';
       case 'text':    return C.green as string;
-      case 'phone':   return '#8B6340';
-      case 'digital': return '#7C5CBF';
+      case 'phone':   return '#1A1714';
+      case 'digital': return '#1A1714';
       case 'event':   return C.accent as string;
       default: return C.accent as string;
     }
@@ -494,15 +494,15 @@ export default function InquiriesScreen() {
 
   const SCHEDULED_SENDS = [
     { id: 'ss1', campaign: 'Minnect Outreach',             action: 'Follow-up batch (8 texts)',   time: 'Tomorrow 9 AM',   icon: 'message.fill',   color: C.green as string },
-    { id: 'ss2', campaign: 'School Network Cold Outreach', action: 'Batch #2 (45 emails)',        time: 'Mar 28, 10 AM',   icon: 'envelope.fill',  color: '#1D9BF0' },
-    { id: 'ss3', campaign: 'NAIA Mandate Outreach',        action: 'Batch #4 (30 emails)',        time: 'Mar 30, 8 AM',    icon: 'envelope.fill',  color: '#1D9BF0' },
-    { id: 'ss4', campaign: 'LinkedIn Investor Campaign',   action: 'Product update post',         time: 'Mar 28, 2 PM',    icon: 'network',        color: '#7C5CBF' },
+    { id: 'ss2', campaign: 'School Network Cold Outreach', action: 'Batch #2 (45 emails)',        time: 'Mar 28, 10 AM',   icon: 'envelope.fill',  color: '#1A1714' },
+    { id: 'ss3', campaign: 'NAIA Mandate Outreach',        action: 'Batch #4 (30 emails)',        time: 'Mar 30, 8 AM',    icon: 'envelope.fill',  color: '#1A1714' },
+    { id: 'ss4', campaign: 'LinkedIn Investor Campaign',   action: 'Product update post',         time: 'Mar 28, 2 PM',    icon: 'network',        color: '#1A1714' },
   ];
 
   const SUGGESTED_ACTIONS = [
     { id: 'sa1', label: '5 contacts not followed up in 7+ days', icon: 'clock.badge.exclamationmark', color: C.red as string, cta: 'View Contacts' },
-    { id: 'sa2', label: 'NAIA Mandate Outreach reply rate below target — consider phone follow-up', icon: 'phone.badge.plus', color: '#8B6340', cta: 'Log Call' },
-    { id: 'sa3', label: '12 new LinkedIn connections — send intro DMs now while warm', icon: 'person.2.badge.plus', color: '#7C5CBF', cta: 'Draft DM' },
+    { id: 'sa2', label: 'NAIA Mandate Outreach reply rate below target — consider phone follow-up', icon: 'phone.badge.plus', color: '#1A1714', cta: 'Log Call' },
+    { id: 'sa3', label: '12 new LinkedIn connections — send intro DMs now while warm', icon: 'person.2.badge.plus', color: '#1A1714', cta: 'Draft DM' },
     { id: 'sa4', label: 'Governing Body Direct: 2 meetings scheduled — add to pipeline', icon: 'arrow.right.circle.fill', color: C.accent as string, cta: 'Add Deals' },
   ];
 
@@ -516,7 +516,7 @@ export default function InquiriesScreen() {
             { label: 'Active',      value: `${CAMPAIGNS.filter(c => c.status === 'active').length}`,       color: C.green },
             { label: 'Total Sent',  value: `${totalSent}`,                                                  color: C.label },
             { label: 'Replies',     value: `${totalReplied}`,                                               color: C.accent },
-            { label: 'Reply Rate',  value: `${replyRatePct}%`,                                              color: '#1D9BF0' },
+            { label: 'Reply Rate',  value: `${replyRatePct}%`,                                              color: '#1A1714' },
           ].map(m => (
             <GlassView tier={1} key={m.label} style={[s.dealMetricChip, { flex: 1 }]}>
               <Text style={[s.bodyMed, { color: m.color, fontSize: 16 }]}>{m.value}</Text>
@@ -796,12 +796,12 @@ export default function InquiriesScreen() {
   function renderClientView() {
     const CLIENT_PROPOSALS = [
       { id: 'p1', title: 'KaNeXT OS — Starter Package',     amount: 4800,  status: 'Accepted',  expiry: '2026-04-15', statusColor: C.green as string },
-      { id: 'p2', title: 'KaNeXT Analytics Add-On',          amount: 1200,  status: 'In Review',  expiry: '2026-04-30', statusColor: '#F59E0B' },
+      { id: 'p2', title: 'KaNeXT Analytics Add-On',          amount: 1200,  status: 'In Review',  expiry: '2026-04-30', statusColor: '#B8943E' },
       { id: 'p3', title: 'Custom Branding & White-Label',     amount: 3500,  status: 'Draft',      expiry: '2026-05-10', statusColor: C.secondary as string },
     ];
     const CLIENT_INVOICES = [
       { id: 'inv1', number: 'INV-1042', desc: 'Onboarding & Setup',       amount: 2400, status: 'Paid',   due: '2026-03-01', statusColor: C.green as string },
-      { id: 'inv2', number: 'INV-1055', desc: 'Monthly Subscription (Apr)', amount: 800,  status: 'Due',    due: '2026-04-01', statusColor: '#F59E0B' },
+      { id: 'inv2', number: 'INV-1055', desc: 'Monthly Subscription (Apr)', amount: 800,  status: 'Due',    due: '2026-04-01', statusColor: '#B8943E' },
       { id: 'inv3', number: 'INV-1061', desc: 'Analytics Add-On (Pro-rate)', amount: 350,  status: 'Pending', due: '2026-04-15', statusColor: C.secondary as string },
     ];
     const CLIENT_DOCS = [
@@ -821,7 +821,7 @@ export default function InquiriesScreen() {
 
         {/* ── My Engagement Card ────────────────────────────────────────── */}
         <View style={{ marginHorizontal: 16, marginBottom: 16 }}>
-          <GlassView tier={1} style={[s.card, { backgroundColor: '#0D2137', padding: 0, overflow: 'hidden' }]}>
+          <GlassView tier={1} style={[s.card, { backgroundColor: '#1A1714', padding: 0, overflow: 'hidden' }]}>
             {/* Header banner */}
             <View style={{ backgroundColor: ACCENT_INQ, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 12 }}>
               <View style={[s.row, { marginBottom: 4, gap: 8 }]}>
@@ -836,7 +836,7 @@ export default function InquiriesScreen() {
             {/* Rep + phase */}
             <View style={{ padding: 16, gap: 12 }}>
               <View style={[s.row, { gap: 12 }]}>
-                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#1D4E6E', alignItems: 'center', justifyContent: 'center' }}>
+                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#1A1714', alignItems: 'center', justifyContent: 'center' }}>
                   <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff' }}>SR</Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -979,7 +979,7 @@ export default function InquiriesScreen() {
           <Pressable
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
             style={({ pressed }) => [{
-              backgroundColor: pressed ? '#1585CC' : ACCENT_INQ,
+              backgroundColor: pressed ? '#1A1714' : ACCENT_INQ,
               borderRadius: 14, padding: 16,
               flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
             }]}

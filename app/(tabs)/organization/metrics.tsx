@@ -55,12 +55,12 @@ function MetricCard({
           <IconSymbol
             name={trendPositive ? 'arrow.up' : 'arrow.up'}
             size={12}
-            color={trendPositive ? '#22C55E' : '#EF4444'}
+            color={trendPositive ? '#5A8A6E' : '#B85C5C'}
           />
           <ThemedText
             style={[
               styles.trendText,
-              { color: trendPositive ? '#22C55E' : '#EF4444' },
+              { color: trendPositive ? '#5A8A6E' : '#B85C5C' },
             ]}
           >
             {trend}

@@ -31,12 +31,12 @@ const FILTER_MAP: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  call: '#22C55E',
+  call: '#5A8A6E',
   email: ACCENT,
   meeting: ACCENT,
-  document: '#F59E0B',
-  stage_change: '#EF4444',
-  note: '#A1A1AA',
+  document: '#B8943E',
+  stage_change: '#B85C5C',
+  note: '#9C9790',
 };
 
 const TYPE_ICONS: Record<string, string> = {
@@ -103,7 +103,7 @@ export function BizDealsActivityView({ colors, accent }: Props) {
       {/* Timeline feed */}
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {filteredActivity.map((entry: ActivityEntry) => {
-          const typeColor = TYPE_COLORS[entry.type] ?? '#A1A1AA';
+          const typeColor = TYPE_COLORS[entry.type] ?? '#9C9790';
           const icon = TYPE_ICONS[entry.type] ?? '\u25CF';
 
           return (

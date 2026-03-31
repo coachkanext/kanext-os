@@ -409,7 +409,7 @@ export function CompPeopleV2({ colors, accentColor }: Props) {
             style={[
               s.quickStatValue,
               {
-                color: pendingCredCount > 0 ? '#F59E0B' : colors.text,
+                color: pendingCredCount > 0 ? '#B8943E' : colors.text,
                 fontVariant: ['tabular-nums'],
               },
             ]}
@@ -426,7 +426,7 @@ export function CompPeopleV2({ colors, accentColor }: Props) {
             style={[
               s.quickStatValue,
               {
-                color: pendingAssignmentCount > 0 ? '#EF4444' : colors.text,
+                color: pendingAssignmentCount > 0 ? '#B85C5C' : colors.text,
                 fontVariant: ['tabular-nums'],
               },
             ]}
@@ -532,7 +532,7 @@ export function CompPeopleV2({ colors, accentColor }: Props) {
                 </ThemedText>
               </View>
               <View style={s.officialStat}>
-                <ThemedText style={[s.ratingText, { color: '#F59E0B' }]}>
+                <ThemedText style={[s.ratingText, { color: '#B8943E' }]}>
                   {renderStars(item.rating)}
                 </ThemedText>
                 <ThemedText style={[s.ratingNumber, { color: colors.textSecondary }]}>
@@ -727,9 +727,9 @@ export function CompPeopleV2({ colors, accentColor }: Props) {
                   {
                     color:
                       item.status === 'expired'
-                        ? '#EF4444'
+                        ? '#B85C5C'
                         : item.status === 'revoked'
-                          ? '#A1A1AA'
+                          ? '#9C9790'
                           : colors.textTertiary,
                   },
                 ]}
@@ -1137,7 +1137,7 @@ export function CompPeopleV2({ colors, accentColor }: Props) {
             <View style={s.detailRow}>
               <ThemedText style={[s.detailLabel, { color: colors.textSecondary }]}>Rating</ThemedText>
               <View style={s.officialRatingRow}>
-                <ThemedText style={[s.ratingText, { color: '#F59E0B' }]}>
+                <ThemedText style={[s.ratingText, { color: '#B8943E' }]}>
                   {renderStars(selectedOfficial.rating)}
                 </ThemedText>
                 <ThemedText style={[s.ratingNumber, { color: colors.text }]}>

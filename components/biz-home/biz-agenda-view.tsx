@@ -115,20 +115,20 @@ const EVENTS: AgendaEvent[] = [
 // =============================================================================
 
 const TYPE_COLORS: Record<EventType, string> = {
-  BOARD: '#8B5CF6',
-  INVESTOR: '#22C55E',
-  CAPITAL: '#3B82F6',
-  COMPLIANCE: '#F59E0B',
-  CONTRACT: '#A1A1AA',
-  PAYROLL: '#EF4444',
+  BOARD: '#1A1714',
+  INVESTOR: '#5A8A6E',
+  CAPITAL: '#1A1714',
+  COMPLIANCE: '#B8943E',
+  CONTRACT: '#9C9790',
+  PAYROLL: '#B85C5C',
   OPERATIONS: ACCENT,
 };
 
 const STATUS_COLORS: Record<EventStatus, string> = {
-  Scheduled: '#22C55E',
-  Pending: '#F59E0B',
-  Completed: '#A1A1AA',
-  Overdue: '#EF4444',
+  Scheduled: '#5A8A6E',
+  Pending: '#B8943E',
+  Completed: '#9C9790',
+  Overdue: '#B85C5C',
 };
 
 const DATE_GROUP_LABELS: Record<string, string> = {

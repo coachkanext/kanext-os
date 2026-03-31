@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', borderTopWidth: StyleSheet.hairlineWidth, marginTop: Spacing.md,
   },
   espnTab: { flex: 1, alignItems: 'center', paddingVertical: 10 },
-  espnTabActive: { borderBottomWidth: 2, borderBottomColor: '#EF4444' },
+  espnTabActive: { borderBottomWidth: 2, borderBottomColor: '#B85C5C' },
   espnTabText: { fontSize: 13, fontWeight: '500' },
   espnTabTextActive: { fontWeight: '700' },
   scrollView: { flex: 1, paddingHorizontal: Spacing.md },

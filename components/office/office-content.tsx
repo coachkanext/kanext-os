@@ -45,10 +45,10 @@ import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const STATUS_COLORS: Record<ProjectStatus, string> = {
-  active: '#3B82F6',
-  'on-hold': '#F59E0B',
-  completed: '#22C55E',
-  'at-risk': '#EF4444',
+  active: '#1A1714',
+  'on-hold': '#B8943E',
+  completed: '#5A8A6E',
+  'at-risk': '#B85C5C',
 };
 
 const STATUS_LABELS: Record<ProjectStatus, string> = {
@@ -59,9 +59,9 @@ const STATUS_LABELS: Record<ProjectStatus, string> = {
 };
 
 const PRIORITY_COLORS: Record<string, string> = {
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#22C55E',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#5A8A6E',
 };
 
 const TASK_STATUS_LABELS: Record<TaskStatus, string> = {

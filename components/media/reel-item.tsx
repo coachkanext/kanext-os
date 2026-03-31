@@ -101,7 +101,7 @@ export function ReelItem({ reel, height, onShare }: ReelItemProps) {
           <IconSymbol
             name="heart.fill"
             size={28}
-            color={liked ? '#EF4444' : '#fff'}
+            color={liked ? '#B85C5C' : '#fff'}
           />
           <ThemedText style={styles.actionCount}>
             {liked ? reel.likes + 1 : reel.likes}
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
     borderRadius: 9,
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
     justifyContent: 'center',
     alignItems: 'center',
   },

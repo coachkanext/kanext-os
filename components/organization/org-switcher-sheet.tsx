@@ -48,7 +48,7 @@ export function OrgSwitcherSheet({ visible, onClose, mode, currentOrgId, onSelec
                   <ThemedText style={[s.name, isCurrent && { fontWeight: '700' }]}>{org.name}</ThemedText>
                   <ThemedText style={[s.subtitle, { color: colors.textSecondary }]}>{org.subtitle}</ThemedText>
                 </View>
-                {isCurrent && <IconSymbol name="checkmark" size={18} color="#22C55E" />}
+                {isCurrent && <IconSymbol name="checkmark" size={18} color="#5A8A6E" />}
               </Pressable>
               {i < orgs.length - 1 && <View style={[s.divider, { backgroundColor: colors.divider }]} />}
             </React.Fragment>

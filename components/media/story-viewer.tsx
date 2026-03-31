@@ -150,16 +150,16 @@ export function StoryViewer({ visible, onClose, stories, initialIndex }: StoryVi
 
   const tagLabel = currentClip.tag;
   const tagColor =
-    tagLabel === 'Game' ? '#EF4444' :
-    tagLabel === 'Practice' ? '#22C55E' :
-    tagLabel === 'Recruiting' ? '#F59E0B' :
-    tagLabel === 'Service' ? '#1D9BF0' :
-    tagLabel === 'Sermon' ? '#1D9BF0' :
-    tagLabel === 'Worship' ? '#8B5CF6' :
-    tagLabel === 'Event' ? '#22C55E' :
-    tagLabel === 'Training' ? '#F59E0B' :
-    tagLabel === 'Announcement' ? '#F59E0B' :
-    '#1D9BF0';
+    tagLabel === 'Game' ? '#B85C5C' :
+    tagLabel === 'Practice' ? '#5A8A6E' :
+    tagLabel === 'Recruiting' ? '#B8943E' :
+    tagLabel === 'Service' ? '#1A1714' :
+    tagLabel === 'Sermon' ? '#1A1714' :
+    tagLabel === 'Worship' ? '#1A1714' :
+    tagLabel === 'Event' ? '#5A8A6E' :
+    tagLabel === 'Training' ? '#B8943E' :
+    tagLabel === 'Announcement' ? '#B8943E' :
+    '#1A1714';
 
   return (
     <Modal

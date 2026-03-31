@@ -196,7 +196,7 @@ function RoomRow({
 
       {/* Unread badge */}
       {room.unread && room.unreadCount && (
-        <View style={[styles.unreadBadge, { backgroundColor: '#1D9BF0' }]}>
+        <View style={[styles.unreadBadge, { backgroundColor: '#1A1714' }]}>
           <Text style={styles.unreadBadgeText}>{room.unreadCount}</Text>
         </View>
       )}

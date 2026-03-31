@@ -526,11 +526,11 @@ export function formatDate(d: string): string {
 export function campaignTypeColor(type: CampaignType): string {
   const map: Record<CampaignType, string> = {
     'giving-day':       '#D97757',
-    'capital':          '#003A63',
+    'capital':          '#1A1714',
     'class-gift':       '#5A8A6E',
     'scholarship-drive':'#7B5EA7',
-    'annual-fund':      '#1D9BF0',
-    'p2p':              '#E8884A',
+    'annual-fund':      '#1A1714',
+    'p2p':              '#B8943E',
   };
   return map[type] ?? '#888';
 }

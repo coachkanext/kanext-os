@@ -41,9 +41,9 @@ function getConfidenceColor(pct: number): string {
 type PacketStatus = 'draft' | 'in_review' | 'locked' | 'archived';
 
 const STATUS_COLORS: Record<PacketStatus, string> = {
-  draft: '#A1A1AA',
-  in_review: '#F59E0B',
-  locked: '#22C55E',
+  draft: '#9C9790',
+  in_review: '#B8943E',
+  locked: '#5A8A6E',
   archived: '#52525B',
 };
 
@@ -122,7 +122,7 @@ export function GamePlanPage({ onBack, gameId: gameIdProp }: GamePlanPageProps) 
   );
 
   const status = packet ? deriveStatus(packet.scoutConfidence) : 'draft';
-  const confColor = packet ? getConfidenceColor(packet.scoutConfidence.pct) : '#A1A1AA';
+  const confColor = packet ? getConfidenceColor(packet.scoutConfidence.pct) : '#9C9790';
 
   const handleShare = useCallback(async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

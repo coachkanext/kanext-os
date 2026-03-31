@@ -17,13 +17,13 @@ import type { ClusterType } from '@/types';
 
 const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#A1A1AA';
+const GRAY = '#9C9790';
 const DIVIDER = '#0B0F14';
 
 const PRIORITY_COLORS: Record<string, string> = {
-  A: '#22C55E',
-  B: '#F59E0B',
-  C: '#A1A1AA',
+  A: '#5A8A6E',
+  B: '#B8943E',
+  C: '#9C9790',
 };
 
 export interface BoardCardProps {
@@ -107,12 +107,12 @@ export function BoardCard({ entry, onPress, onLongPress, fullWidth }: BoardCardP
       <View style={styles.chipRow}>
         {offKR !== null && (
           <View style={[styles.odChip, { backgroundColor: '#0B0F14' }]}>
-            <Text style={[styles.odChipText, { color: '#22C55E' }]}>OFF {offKR}</Text>
+            <Text style={[styles.odChipText, { color: '#5A8A6E' }]}>OFF {offKR}</Text>
           </View>
         )}
         {defKR !== null && (
           <View style={[styles.odChip, { backgroundColor: '#0B0F14' }]}>
-            <Text style={[styles.odChipText, { color: '#EF4444' }]}>DEF {defKR}</Text>
+            <Text style={[styles.odChipText, { color: '#B85C5C' }]}>DEF {defKR}</Text>
           </View>
         )}
       </View>
@@ -231,6 +231,6 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 10,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
 });

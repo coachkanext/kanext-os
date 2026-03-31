@@ -70,11 +70,11 @@ interface MinistrySection {
 // =============================================================================
 
 const TYPE_CONFIG: Record<MinistryEventType, { label: string; color: string; icon: IconSymbolName }> = {
-  CLASS: { label: 'Class', color: '#1D9BF0', icon: 'book.fill' },
-  SMALL_GROUP: { label: 'Small Group', color: '#22C55E', icon: 'person.3.fill' },
-  PLANNING: { label: 'Planning', color: '#8B5CF6', icon: 'list.clipboard.fill' },
-  OUTREACH: { label: 'Outreach', color: '#F59E0B', icon: 'hand.raised.fill' },
-  TRAINING: { label: 'Training', color: '#EC4899', icon: 'star.fill' },
+  CLASS: { label: 'Class', color: '#1A1714', icon: 'book.fill' },
+  SMALL_GROUP: { label: 'Small Group', color: '#5A8A6E', icon: 'person.3.fill' },
+  PLANNING: { label: 'Planning', color: '#1A1714', icon: 'list.clipboard.fill' },
+  OUTREACH: { label: 'Outreach', color: '#B8943E', icon: 'hand.raised.fill' },
+  TRAINING: { label: 'Training', color: '#1A1714', icon: 'star.fill' },
 };
 
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -90,7 +90,7 @@ const USER_MINISTRIES_ICCLA: MinistryInfo[] = [
     name: 'Formation Kids',
     leader: 'Sister Angela Davis',
     description: 'Children ages 3–12 — Bible teaching, worship, and creative learning.',
-    color: '#1D9BF0',
+    color: '#1A1714',
     icon: 'heart.circle.fill',
   },
   {
@@ -98,7 +98,7 @@ const USER_MINISTRIES_ICCLA: MinistryInfo[] = [
     name: 'Single & Purposeful',
     leader: 'Minister Desiree Hamilton',
     description: 'Fellowship, community, and spiritual growth for singles.',
-    color: '#F59E0B',
+    color: '#B8943E',
     icon: 'person.2.fill',
   },
 ];
@@ -109,7 +109,7 @@ const USER_MINISTRIES_ICCIE: MinistryInfo[] = [
     name: 'Formation Kids',
     leader: 'Sister Angela Davis',
     description: 'Children ages 3–12 — Bible teaching, worship, and creative learning.',
-    color: '#1D9BF0',
+    color: '#1A1714',
     icon: 'heart.circle.fill',
   },
 ];
@@ -441,7 +441,7 @@ export function ChurchScheduleMinistry({ colors, accent }: Props) {
         contentContainerStyle={s.listContent}
         ListEmptyComponent={
           <View style={s.empty}>
-            <IconSymbol name="heart.fill" size={32} color="#A1A1AA" />
+            <IconSymbol name="heart.fill" size={32} color="#9C9790" />
             <ThemedText style={[s.emptyTitle, { color: colors.text }]}>No Ministries</ThemedText>
             <ThemedText style={[s.emptyDesc, { color: colors.textSecondary }]}>
               You are not part of any ministries at this campus.
@@ -541,7 +541,7 @@ const s = StyleSheet.create({
 
   // Serving badge
   servingBadge: {
-    backgroundColor: '#22C55E',
+    backgroundColor: '#5A8A6E',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,

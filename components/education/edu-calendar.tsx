@@ -87,9 +87,9 @@ interface AgendaEvent {
 const EVENT_TYPE_COLOR: Record<AgendaEventType, string> = {
   class: ACCENT,
   meeting: ACCENT,
-  event: '#F59E0B',
-  deadline: '#EF4444',
-  'office-hours': '#22C55E',
+  event: '#B8943E',
+  deadline: '#B85C5C',
+  'office-hours': '#5A8A6E',
   admin: ACCENT,
   chapel: ACCENT,
 };
@@ -296,10 +296,10 @@ interface CampusRoom {
 }
 
 const ROOM_STATUS_COLOR: Record<RoomStatus, string> = {
-  available: '#22C55E',
-  occupied: '#EF4444',
-  reserved: '#F59E0B',
-  maintenance: '#A1A1AA',
+  available: '#5A8A6E',
+  occupied: '#B85C5C',
+  reserved: '#B8943E',
+  maintenance: '#9C9790',
 };
 
 const CAMPUS_ROOMS: CampusRoom[] = [
@@ -342,9 +342,9 @@ const RECENT_BOOKINGS: RoomBooking[] = [
 ];
 
 const BOOKING_STATUS_COLOR: Record<string, string> = {
-  confirmed: '#22C55E',
-  pending: '#F59E0B',
-  cancelled: '#EF4444',
+  confirmed: '#5A8A6E',
+  pending: '#B8943E',
+  cancelled: '#B85C5C',
 };
 
 // =============================================================================
@@ -368,8 +368,8 @@ interface AcademicDeadline {
 const DEADLINE_CATEGORY_COLOR: Record<DeadlineCategory, string> = {
   academic: ACCENT,
   registration: ACCENT,
-  financial: '#22C55E',
-  administrative: '#F59E0B',
+  financial: '#5A8A6E',
+  administrative: '#B8943E',
   ceremony: ACCENT,
 };
 
@@ -522,7 +522,7 @@ function AgendaView({ colors, role }: { colors: typeof Colors.light; role: Educa
               <ThemedText style={[s.agendaSummaryLabel, { color: colors.textSecondary }]}>Classes</ThemedText>
             </View>
             <View style={s.agendaSummaryStat}>
-              <ThemedText style={[s.agendaSummaryValue, { color: '#EF4444' }]}>
+              <ThemedText style={[s.agendaSummaryValue, { color: '#B85C5C' }]}>
                 {TODAY_AGENDA.filter((e) => e.type === 'deadline').length + TOMORROW_AGENDA.filter((e) => e.type === 'deadline').length}
               </ThemedText>
               <ThemedText style={[s.agendaSummaryLabel, { color: colors.textSecondary }]}>Deadlines</ThemedText>
@@ -826,17 +826,17 @@ function RoomsView({ colors, role }: { colors: typeof Colors.light; role: Educat
         <Card colors={colors}>
           <View style={s.roomSummaryRow}>
             <View style={s.roomSummaryStat}>
-              <ThemedText style={[s.roomSummaryValue, { color: '#22C55E' }]}>{availableCount}</ThemedText>
+              <ThemedText style={[s.roomSummaryValue, { color: '#5A8A6E' }]}>{availableCount}</ThemedText>
               <ThemedText style={[s.roomSummaryLabel, { color: colors.textSecondary }]}>Available</ThemedText>
             </View>
             <View style={s.roomSummaryStat}>
-              <ThemedText style={[s.roomSummaryValue, { color: '#EF4444' }]}>
+              <ThemedText style={[s.roomSummaryValue, { color: '#B85C5C' }]}>
                 {CAMPUS_ROOMS.filter((rm) => rm.status === 'occupied' && (!rm.adminOnly || isDeanLevel(role))).length}
               </ThemedText>
               <ThemedText style={[s.roomSummaryLabel, { color: colors.textSecondary }]}>Occupied</ThemedText>
             </View>
             <View style={s.roomSummaryStat}>
-              <ThemedText style={[s.roomSummaryValue, { color: '#F59E0B' }]}>
+              <ThemedText style={[s.roomSummaryValue, { color: '#B8943E' }]}>
                 {CAMPUS_ROOMS.filter((rm) => rm.status === 'reserved' && (!rm.adminOnly || isDeanLevel(role))).length}
               </ThemedText>
               <ThemedText style={[s.roomSummaryLabel, { color: colors.textSecondary }]}>Reserved</ThemedText>
@@ -914,7 +914,7 @@ function RoomsView({ colors, role }: { colors: typeof Colors.light; role: Educat
                   </ThemedText>
                 )}
                 {room.nextAvailable && room.status !== 'available' && (
-                  <ThemedText style={[s.roomNextAvail, { color: '#22C55E' }]}>
+                  <ThemedText style={[s.roomNextAvail, { color: '#5A8A6E' }]}>
                     Next available: {room.nextAvailable}
                   </ThemedText>
                 )}
@@ -1042,9 +1042,9 @@ function DeadlinesView({ colors, role }: { colors: typeof Colors.light; role: Ed
         <View style={s.moduleContainer}>
           <Card colors={colors} highlight>
             <View style={s.urgentBanner}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={18} color="#EF4444" />
+              <IconSymbol name="exclamationmark.triangle.fill" size={18} color="#B85C5C" />
               <View style={s.urgentBannerContent}>
-                <ThemedText style={[s.urgentBannerTitle, { color: '#EF4444' }]}>
+                <ThemedText style={[s.urgentBannerTitle, { color: '#B85C5C' }]}>
                   {urgentDeadlines.length} Urgent Deadline{urgentDeadlines.length !== 1 ? 's' : ''}
                 </ThemedText>
                 <ThemedText style={[s.urgentBannerSub, { color: colors.textSecondary }]}>
@@ -1095,8 +1095,8 @@ function DeadlinesView({ colors, role }: { colors: typeof Colors.light; role: Ed
                 ]}
                 onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
               >
-                <View style={[s.deadlineDateBox, { backgroundColor: '#EF444420' }]}>
-                  <ThemedText style={[s.deadlineDaysAway, { color: '#EF4444' }]}>
+                <View style={[s.deadlineDateBox, { backgroundColor: '#B85C5C20' }]}>
+                  <ThemedText style={[s.deadlineDaysAway, { color: '#B85C5C' }]}>
                     {dl.daysAway === 0 ? 'TODAY' : dl.daysAway === 1 ? '1 day' : `${dl.daysAway} days`}
                   </ThemedText>
                 </View>

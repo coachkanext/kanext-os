@@ -151,16 +151,16 @@ const ACTIVE_SPORTS: ActiveSport[] = [
 ];
 
 const SEASON_COLOR: Record<SportSeason, string> = {
-  fall: '#F59E0B',
+  fall: '#B8943E',
   winter: ACCENT,
-  spring: '#22C55E',
+  spring: '#5A8A6E',
   'year-round': ACCENT,
 };
 
 const STATUS_COLOR: Record<string, string> = {
-  'in-season': '#22C55E',
-  'off-season': '#A1A1AA',
-  postseason: '#F59E0B',
+  'in-season': '#5A8A6E',
+  'off-season': '#9C9790',
+  postseason: '#B8943E',
 };
 
 // --- Upcoming Games ---
@@ -214,9 +214,9 @@ const RECENT_RESULTS: GameResult[] = [
 ];
 
 const RESULT_COLOR: Record<string, string> = {
-  W: '#22C55E',
-  L: '#EF4444',
-  T: '#F59E0B',
+  W: '#5A8A6E',
+  L: '#B85C5C',
+  T: '#B8943E',
 };
 
 // --- Student-Athlete Spotlight ---
@@ -314,9 +314,9 @@ const ACADEMIC_SUPPORT_SERVICES: AcademicSupportService[] = [
 const SUPPORT_TYPE_COLOR: Record<string, string> = {
   tutoring: ACCENT,
   advising: ACCENT,
-  'study-hall': '#F59E0B',
+  'study-hall': '#B8943E',
   'mental-health': ACCENT,
-  career: '#22C55E',
+  career: '#5A8A6E',
 };
 
 interface GPASnapshot {
@@ -441,9 +441,9 @@ const WAIVERS: WaiverRecord[] = [
 ];
 
 const WAIVER_STATUS_COLOR: Record<string, string> = {
-  approved: '#22C55E',
-  pending: '#F59E0B',
-  denied: '#EF4444',
+  approved: '#5A8A6E',
+  pending: '#B8943E',
+  denied: '#B85C5C',
 };
 
 // =============================================================================
@@ -527,9 +527,9 @@ const FACILITY_INVESTMENTS: FacilityInvestment[] = [
 ];
 
 const INVEST_STATUS_COLOR: Record<string, string> = {
-  completed: '#22C55E',
+  completed: '#5A8A6E',
   'in-progress': ACCENT,
-  planned: '#F59E0B',
+  planned: '#B8943E',
 };
 
 // --- Season Highlights (Overview) ---
@@ -594,7 +594,7 @@ function ProgressBar({ percent, color, colors }: { percent: number; color: strin
 
 function TrendIndicator({ trend, colors }: { trend: 'up' | 'down' | 'stable'; colors: typeof Colors.light }) {
   const icon = trend === 'up' ? 'arrow.up.right' : trend === 'down' ? 'arrow.down.right' : 'arrow.right';
-  const color = trend === 'up' ? '#22C55E' : trend === 'down' ? '#EF4444' : colors.textTertiary;
+  const color = trend === 'up' ? '#5A8A6E' : trend === 'down' ? '#B85C5C' : colors.textTertiary;
   return <IconSymbol name={icon as any} size={10} color={color} />;
 }
 
@@ -635,7 +635,7 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Edu
             {isDeanLevel(role) && (
               <KPIBox label="Budget" value={ATHLETIC_DEPT.athleticBudget} colors={colors} />
             )}
-            <KPIBox label="Compliance" value={ATHLETIC_DEPT.ncaaCompliance === 'Good Standing' ? 'Good' : 'Alert'} colors={colors} accent={ATHLETIC_DEPT.ncaaCompliance === 'Good Standing' ? '#22C55E' : '#EF4444'} />
+            <KPIBox label="Compliance" value={ATHLETIC_DEPT.ncaaCompliance === 'Good Standing' ? 'Good' : 'Alert'} colors={colors} accent={ATHLETIC_DEPT.ncaaCompliance === 'Good Standing' ? '#5A8A6E' : '#B85C5C'} />
           </View>
           {isFacultyLevel(role) && (
             <View style={s.deptExtraRow}>
@@ -822,8 +822,8 @@ function TeamsView({ colors, role }: { colors: typeof Colors.light; role: Educat
                     {sport.gender !== 'Coed' ? `${sport.gender}'s ` : ''}{sport.name}
                   </ThemedText>
                   {sport.ranking && (
-                    <View style={[s.rankBadge, { backgroundColor: '#F59E0B20' }]}>
-                      <ThemedText style={[s.rankText, { color: '#F59E0B' }]}>#{sport.ranking}</ThemedText>
+                    <View style={[s.rankBadge, { backgroundColor: '#B8943E20' }]}>
+                      <ThemedText style={[s.rankText, { color: '#B8943E' }]}>#{sport.ranking}</ThemedText>
                     </View>
                   )}
                 </View>
@@ -892,8 +892,8 @@ function TeamsView({ colors, role }: { colors: typeof Colors.light; role: Educat
                   )}
                 </View>
                 <View style={s.gameBadgeRow}>
-                  <View style={[s.homeAwayBadge, { backgroundColor: game.homeAway === 'Home' ? '#22C55E20' : game.homeAway === 'Away' ? ACCENT + '20' : '#F59E0B20' }]}>
-                    <ThemedText style={[s.homeAwayText, { color: game.homeAway === 'Home' ? '#22C55E' : game.homeAway === 'Away' ? ACCENT : '#F59E0B' }]}>
+                  <View style={[s.homeAwayBadge, { backgroundColor: game.homeAway === 'Home' ? '#5A8A6E20' : game.homeAway === 'Away' ? ACCENT + '20' : '#B8943E20' }]}>
+                    <ThemedText style={[s.homeAwayText, { color: game.homeAway === 'Home' ? '#5A8A6E' : game.homeAway === 'Away' ? ACCENT : '#B8943E' }]}>
                       {game.homeAway.toUpperCase()}
                     </ThemedText>
                   </View>
@@ -904,8 +904,8 @@ function TeamsView({ colors, role }: { colors: typeof Colors.light; role: Educat
                     </View>
                   )}
                   {game.ticketsAvailable && (
-                    <View style={[s.ticketBadge, { backgroundColor: '#22C55E20' }]}>
-                      <ThemedText style={[s.ticketText, { color: '#22C55E' }]}>TICKETS</ThemedText>
+                    <View style={[s.ticketBadge, { backgroundColor: '#5A8A6E20' }]}>
+                      <ThemedText style={[s.ticketText, { color: '#5A8A6E' }]}>TICKETS</ThemedText>
                     </View>
                   )}
                 </View>
@@ -969,8 +969,8 @@ function TeamsView({ colors, role }: { colors: typeof Colors.light; role: Educat
               <View style={s.facilityContent}>
                 <View style={s.facilityNameRow}>
                   <ThemedText style={[s.facilityName, { color: colors.text }]}>{fac.name}</ThemedText>
-                  <View style={[s.facilityStatusBadge, { backgroundColor: (fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : ACCENT) + '20' }]}>
-                    <ThemedText style={[s.facilityStatusText, { color: fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : ACCENT }]}>
+                  <View style={[s.facilityStatusBadge, { backgroundColor: (fac.status === 'operational' ? '#5A8A6E' : fac.status === 'renovation' ? '#B8943E' : ACCENT) + '20' }]}>
+                    <ThemedText style={[s.facilityStatusText, { color: fac.status === 'operational' ? '#5A8A6E' : fac.status === 'renovation' ? '#B8943E' : ACCENT }]}>
                       {fac.status.toUpperCase()}
                     </ThemedText>
                   </View>
@@ -1009,8 +1009,8 @@ function AthleteSupportView({ colors, role }: { colors: typeof Colors.light; rol
         <Card colors={colors}>
           <View style={s.kpiRow}>
             <KPIBox label="Dept GPA" value={deptGPA} colors={colors} accent={ACCENT} />
-            <KPIBox label="Below 2.5" value={totalBelow} colors={colors} accent={totalBelow > 0 ? '#EF4444' : '#22C55E'} />
-            <KPIBox label="Above 3.5" value={totalAbove} colors={colors} accent="#22C55E" />
+            <KPIBox label="Below 2.5" value={totalBelow} colors={colors} accent={totalBelow > 0 ? '#B85C5C' : '#5A8A6E'} />
+            <KPIBox label="Above 3.5" value={totalAbove} colors={colors} accent="#5A8A6E" />
             <KPIBox label="Study Hall %" value={`${totalStudyReq > 0 ? Math.round((totalStudyComp / totalStudyReq) * 100) : 100}%`} colors={colors} accent={ACCENT} />
           </View>
         </Card>
@@ -1041,10 +1041,10 @@ function AthleteSupportView({ colors, role }: { colors: typeof Colors.light; rol
                 )}
               </View>
               <View style={s.gpaRight}>
-                <ThemedText style={[s.gpaValue, { color: gpa.teamGPA >= 3.0 ? '#22C55E' : gpa.teamGPA >= 2.5 ? '#F59E0B' : '#EF4444' }]}>
+                <ThemedText style={[s.gpaValue, { color: gpa.teamGPA >= 3.0 ? '#5A8A6E' : gpa.teamGPA >= 2.5 ? '#B8943E' : '#B85C5C' }]}>
                   {gpa.teamGPA.toFixed(2)}
                 </ThemedText>
-                <ProgressBar percent={(gpa.teamGPA / 4.0) * 100} color={gpa.teamGPA >= 3.0 ? '#22C55E' : gpa.teamGPA >= 2.5 ? '#F59E0B' : '#EF4444'} colors={colors} />
+                <ProgressBar percent={(gpa.teamGPA / 4.0) * 100} color={gpa.teamGPA >= 3.0 ? '#5A8A6E' : gpa.teamGPA >= 2.5 ? '#B8943E' : '#B85C5C'} colors={colors} />
               </View>
             </View>
           ))}
@@ -1078,7 +1078,7 @@ function AthleteSupportView({ colors, role }: { colors: typeof Colors.light; rol
                   <View style={s.serviceUtilRow}>
                     <ThemedText style={[s.serviceUtilLabel, { color: colors.textTertiary }]}>Utilization:</ThemedText>
                     <View style={{ flex: 1 }}>
-                      <ProgressBar percent={svc.utilization} color={svc.utilization >= 80 ? '#22C55E' : svc.utilization >= 50 ? '#F59E0B' : '#EF4444'} colors={colors} />
+                      <ProgressBar percent={svc.utilization} color={svc.utilization >= 80 ? '#5A8A6E' : svc.utilization >= 50 ? '#B8943E' : '#B85C5C'} colors={colors} />
                     </View>
                     <ThemedText style={[s.serviceUtilValue, { color: colors.textSecondary }]}>{svc.utilization}%</ThemedText>
                   </View>
@@ -1133,7 +1133,7 @@ function AthleteSupportView({ colors, role }: { colors: typeof Colors.light; rol
               <ThemedText style={[s.spotlightSport, { color: colors.textSecondary }]}>
                 {athlete.sport} {'\u00B7'} {athlete.year}
               </ThemedText>
-              <ThemedText style={[s.spotlightStats, { color: '#22C55E' }]}>
+              <ThemedText style={[s.spotlightStats, { color: '#5A8A6E' }]}>
                 GPA: {athlete.gpa}
               </ThemedText>
               <ThemedText style={[s.spotlightAchievement, { color: colors.textTertiary }]} numberOfLines={1}>
@@ -1164,10 +1164,10 @@ function ComplianceView({ colors, role }: { colors: typeof Colors.light; role: E
         <SectionHeader title="NCAA COMPLIANCE DASHBOARD" colors={colors} />
         <Card colors={colors}>
           <View style={s.kpiRow}>
-            <KPIBox label="NCAA Status" value={COMPLIANCE_DASHBOARD.ncaaStatus === 'Good Standing' ? 'Good' : 'Alert'} colors={colors} accent={COMPLIANCE_DASHBOARD.ncaaStatus === 'Good Standing' ? '#22C55E' : '#EF4444'} />
-            <KPIBox label="Eligible" value={`${Math.round((totalEligible / totalAthletes) * 100)}%`} colors={colors} accent="#22C55E" />
-            <KPIBox label="Pending" value={totalPending} colors={colors} accent="#F59E0B" />
-            <KPIBox label="Ineligible" value={totalIneligible} colors={colors} accent={totalIneligible > 0 ? '#EF4444' : '#22C55E'} />
+            <KPIBox label="NCAA Status" value={COMPLIANCE_DASHBOARD.ncaaStatus === 'Good Standing' ? 'Good' : 'Alert'} colors={colors} accent={COMPLIANCE_DASHBOARD.ncaaStatus === 'Good Standing' ? '#5A8A6E' : '#B85C5C'} />
+            <KPIBox label="Eligible" value={`${Math.round((totalEligible / totalAthletes) * 100)}%`} colors={colors} accent="#5A8A6E" />
+            <KPIBox label="Pending" value={totalPending} colors={colors} accent="#B8943E" />
+            <KPIBox label="Ineligible" value={totalIneligible} colors={colors} accent={totalIneligible > 0 ? '#B85C5C' : '#5A8A6E'} />
           </View>
           {isDeanLevel(role) && (
             <View style={s.complianceExtraRow}>
@@ -1177,7 +1177,7 @@ function ComplianceView({ colors, role }: { colors: typeof Colors.light; role: E
               </View>
               <View style={s.complianceExtraItem}>
                 <ThemedText style={[s.complianceExtraLabel, { color: colors.textTertiary }]}>Title IX</ThemedText>
-                <ThemedText style={[s.complianceExtraValue, { color: '#22C55E' }]}>{COMPLIANCE_DASHBOARD.titleIXStatus}</ThemedText>
+                <ThemedText style={[s.complianceExtraValue, { color: '#5A8A6E' }]}>{COMPLIANCE_DASHBOARD.titleIXStatus}</ThemedText>
               </View>
               <View style={s.complianceExtraItem}>
                 <ThemedText style={[s.complianceExtraLabel, { color: colors.textTertiary }]}>Scholarship Util.</ThemedText>
@@ -1213,14 +1213,14 @@ function ComplianceView({ colors, role }: { colors: typeof Colors.light; role: E
                 </ThemedText>
                 <View style={s.eligibilityAPRRow}>
                   <ThemedText style={[s.eligibilityAPRLabel, { color: colors.textTertiary }]}>APR: </ThemedText>
-                  <ThemedText style={[s.eligibilityAPRValue, { color: el.aprScore >= 980 ? '#22C55E' : el.aprScore >= 960 ? '#F59E0B' : '#EF4444' }]}>
+                  <ThemedText style={[s.eligibilityAPRValue, { color: el.aprScore >= 980 ? '#5A8A6E' : el.aprScore >= 960 ? '#B8943E' : '#B85C5C' }]}>
                     {el.aprScore}
                   </ThemedText>
                   <TrendIndicator trend={el.aprTrend} colors={colors} />
                   {isDeanLevel(role) && (
                     <>
                       <ThemedText style={[s.eligibilityAPRLabel, { color: colors.textTertiary }]}>  GSR: </ThemedText>
-                      <ThemedText style={[s.eligibilityAPRValue, { color: el.gsr >= 90 ? '#22C55E' : el.gsr >= 75 ? '#F59E0B' : '#EF4444' }]}>
+                      <ThemedText style={[s.eligibilityAPRValue, { color: el.gsr >= 90 ? '#5A8A6E' : el.gsr >= 75 ? '#B8943E' : '#B85C5C' }]}>
                         {el.gsr}%
                       </ThemedText>
                     </>
@@ -1228,7 +1228,7 @@ function ComplianceView({ colors, role }: { colors: typeof Colors.light; role: E
                 </View>
               </View>
               <View style={s.eligibilityRight}>
-                <ProgressBar percent={(el.eligible / el.totalAthletes) * 100} color={el.ineligible === 0 ? '#22C55E' : '#F59E0B'} colors={colors} />
+                <ProgressBar percent={(el.eligible / el.totalAthletes) * 100} color={el.ineligible === 0 ? '#5A8A6E' : '#B8943E'} colors={colors} />
               </View>
             </View>
           ))}
@@ -1263,7 +1263,7 @@ function ComplianceView({ colors, role }: { colors: typeof Colors.light; role: E
                   </ThemedText>
                 </View>
                 <View style={s.scholarshipRight}>
-                  <ProgressBar percent={(sl.current / sl.ncaaMax) * 100} color={sl.available === 0 ? '#EF4444' : '#22C55E'} colors={colors} />
+                  <ProgressBar percent={(sl.current / sl.ncaaMax) * 100} color={sl.available === 0 ? '#B85C5C' : '#5A8A6E'} colors={colors} />
                 </View>
               </View>
             ))}
@@ -1322,10 +1322,10 @@ function RecruitingView({ colors, role }: { colors: typeof Colors.light; role: E
         <SectionHeader title="RECRUITING PIPELINE" colors={colors} />
         <Card colors={colors}>
           <View style={s.kpiRow}>
-            <KPIBox label="Commits" value={totalCommits} colors={colors} accent="#22C55E" />
+            <KPIBox label="Commits" value={totalCommits} colors={colors} accent="#5A8A6E" />
             <KPIBox label="Offers Out" value={totalOffers} colors={colors} accent={ACCENT} />
             <KPIBox label="Visits" value={totalVisits} colors={colors} accent={ACCENT} />
-            <KPIBox label="NLI Signed" value={totalNLI} colors={colors} accent="#F59E0B" />
+            <KPIBox label="NLI Signed" value={totalNLI} colors={colors} accent="#B8943E" />
           </View>
         </Card>
       </View>
@@ -1346,14 +1346,14 @@ function RecruitingView({ colors, role }: { colors: typeof Colors.light; role: E
                 <View style={s.recruitHeaderRow}>
                   <ThemedText style={[s.recruitSport, { color: colors.text }]}>{rec.sport}</ThemedText>
                   {rec.classRanking && (
-                    <View style={[s.classRankBadge, { backgroundColor: '#F59E0B20' }]}>
-                      <ThemedText style={[s.classRankText, { color: '#F59E0B' }]}>{rec.classRanking}</ThemedText>
+                    <View style={[s.classRankBadge, { backgroundColor: '#B8943E20' }]}>
+                      <ThemedText style={[s.classRankText, { color: '#B8943E' }]}>{rec.classRanking}</ThemedText>
                     </View>
                   )}
                 </View>
                 <View style={s.recruitStatsRow}>
                   <View style={s.recruitStatItem}>
-                    <ThemedText style={[s.recruitStatValue, { color: '#22C55E' }]}>{rec.commitsThisCycle}</ThemedText>
+                    <ThemedText style={[s.recruitStatValue, { color: '#5A8A6E' }]}>{rec.commitsThisCycle}</ThemedText>
                     <ThemedText style={[s.recruitStatLabel, { color: colors.textTertiary }]}>Commits</ThemedText>
                   </View>
                   <View style={s.recruitStatItem}>
@@ -1365,7 +1365,7 @@ function RecruitingView({ colors, role }: { colors: typeof Colors.light; role: E
                     <ThemedText style={[s.recruitStatLabel, { color: colors.textTertiary }]}>Visits</ThemedText>
                   </View>
                   <View style={s.recruitStatItem}>
-                    <ThemedText style={[s.recruitStatValue, { color: '#F59E0B' }]}>{rec.nliSigned || 0}</ThemedText>
+                    <ThemedText style={[s.recruitStatValue, { color: '#B8943E' }]}>{rec.nliSigned || 0}</ThemedText>
                     <ThemedText style={[s.recruitStatLabel, { color: colors.textTertiary }]}>NLI</ThemedText>
                   </View>
                 </View>
@@ -1377,7 +1377,7 @@ function RecruitingView({ colors, role }: { colors: typeof Colors.light; role: E
                 <ThemedText style={[s.recruitDeadline, { color: colors.textTertiary }]}>
                   Signing day: {rec.signingDay}
                 </ThemedText>
-                <ProgressBar percent={(rec.commitsThisCycle / rec.offersOut) * 100} color="#22C55E" colors={colors} />
+                <ProgressBar percent={(rec.commitsThisCycle / rec.offersOut) * 100} color="#5A8A6E" colors={colors} />
               </View>
             </View>
           ))}
@@ -1429,11 +1429,11 @@ function BudgetView({ colors, role }: { colors: typeof Colors.light; role: Educa
                 )}
                 <ProgressBar
                   percent={cat.percentUsed}
-                  color={cat.percentUsed >= 90 ? '#EF4444' : cat.percentUsed >= 70 ? '#F59E0B' : '#22C55E'}
+                  color={cat.percentUsed >= 90 ? '#B85C5C' : cat.percentUsed >= 70 ? '#B8943E' : '#5A8A6E'}
                   colors={colors}
                 />
               </View>
-              <ThemedText style={[s.budgetPercent, { color: cat.percentUsed >= 90 ? '#EF4444' : cat.percentUsed >= 70 ? '#F59E0B' : '#22C55E' }]}>
+              <ThemedText style={[s.budgetPercent, { color: cat.percentUsed >= 90 ? '#B85C5C' : cat.percentUsed >= 70 ? '#B8943E' : '#5A8A6E' }]}>
                 {cat.percentUsed}%
               </ThemedText>
             </View>
@@ -1487,7 +1487,7 @@ function BudgetView({ colors, role }: { colors: typeof Colors.light; role: Educa
                     Rev: {rs.revenue} {'\u00B7'} Exp: {rs.expenses}
                   </ThemedText>
                 </View>
-                <ThemedText style={[s.revBySportNet, { color: rs.profitable ? '#22C55E' : '#EF4444' }]}>
+                <ThemedText style={[s.revBySportNet, { color: rs.profitable ? '#5A8A6E' : '#B85C5C' }]}>
                   {rs.netIncome}
                 </ThemedText>
               </View>
@@ -1548,8 +1548,8 @@ function BudgetView({ colors, role }: { colors: typeof Colors.light; role: Educa
               <View style={s.facilityContent}>
                 <View style={s.facilityNameRow}>
                   <ThemedText style={[s.facilityName, { color: colors.text }]}>{fac.name}</ThemedText>
-                  <View style={[s.facilityStatusBadge, { backgroundColor: (fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : ACCENT) + '20' }]}>
-                    <ThemedText style={[s.facilityStatusText, { color: fac.status === 'operational' ? '#22C55E' : fac.status === 'renovation' ? '#F59E0B' : ACCENT }]}>
+                  <View style={[s.facilityStatusBadge, { backgroundColor: (fac.status === 'operational' ? '#5A8A6E' : fac.status === 'renovation' ? '#B8943E' : ACCENT) + '20' }]}>
+                    <ThemedText style={[s.facilityStatusText, { color: fac.status === 'operational' ? '#5A8A6E' : fac.status === 'renovation' ? '#B8943E' : ACCENT }]}>
                       {fac.status.toUpperCase()}
                     </ThemedText>
                   </View>

@@ -30,12 +30,12 @@ const FILTER_MAP: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  investor: '#22C55E',
+  investor: '#5A8A6E',
   partner: ACCENT,
   client: ACCENT,
-  advisor: '#F59E0B',
-  press: '#EF4444',
-  vendor: '#A1A1AA',
+  advisor: '#B8943E',
+  press: '#B85C5C',
+  vendor: '#9C9790',
 };
 
 function getInitials(name: string): string {
@@ -104,7 +104,7 @@ export function BizDealsContactsView({ colors, accent }: Props) {
       {/* Contact rows */}
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {filteredContacts.map((contact: BizContact) => {
-          const typeColor = TYPE_COLORS[contact.relationshipType] ?? '#A1A1AA';
+          const typeColor = TYPE_COLORS[contact.relationshipType] ?? '#9C9790';
           const initials = getInitials(contact.name);
           return (
             <Pressable

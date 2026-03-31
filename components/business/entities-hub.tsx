@@ -80,12 +80,12 @@ const FILTER_OPTIONS: { id: FilterType; label: string }[] = [
 ];
 
 const STAGE_COLORS: Record<EntityOpportunity['stage'], string> = {
-  prospect: '#A1A1AA',
+  prospect: '#9C9790',
   qualified: ACCENT,
-  proposal: '#F59E0B',
+  proposal: '#B8943E',
   negotiation: ACCENT,
-  'closed-won': '#22C55E',
-  'closed-lost': '#EF4444',
+  'closed-won': '#5A8A6E',
+  'closed-lost': '#B85C5C',
 };
 
 // =============================================================================
@@ -95,11 +95,11 @@ const STAGE_COLORS: Record<EntityOpportunity['stage'], string> = {
 function StatusBadge({ status, colors }: { status: string; colors: typeof Colors.light }) {
   const statusColor =
     status === 'active' || status === 'completed' || status === 'closed-won'
-      ? '#22C55E'
+      ? '#5A8A6E'
       : status === 'planning' || status === 'in-progress' || status === 'on-hold'
-        ? '#F59E0B'
+        ? '#B8943E'
         : status === 'archived' || status === 'closed-lost'
-          ? '#EF4444'
+          ? '#B85C5C'
           : colors.textTertiary;
 
   return (
@@ -112,7 +112,7 @@ function StatusBadge({ status, colors }: { status: string; colors: typeof Colors
 }
 
 function PriorityBadge({ priority }: { priority: 'high' | 'medium' | 'low' }) {
-  const color = priority === 'high' ? '#EF4444' : priority === 'medium' ? '#F59E0B' : '#A1A1AA';
+  const color = priority === 'high' ? '#B85C5C' : priority === 'medium' ? '#B8943E' : '#9C9790';
   return (
     <View style={[s.badge, { backgroundColor: color + '18' }]}>
       <ThemedText style={[s.badgeText, { color }]}>{priority.toUpperCase()}</ThemedText>
@@ -127,8 +127,8 @@ function TypeBadge({ type, colors }: { type: Entity['type']; colors: typeof Colo
       : type === 'department'
         ? ACCENT
         : type === 'team'
-          ? '#22C55E'
-          : '#F59E0B';
+          ? '#5A8A6E'
+          : '#B8943E';
   return (
     <View style={[s.badge, { backgroundColor: color + '18' }]}>
       <ThemedText style={[s.badgeText, { color }]}>{type.toUpperCase()}</ThemedText>
@@ -170,7 +170,7 @@ function EntityCard({
             {entity.headCount} people
           </ThemedText>
           {entity.revenue != null && (
-            <ThemedText style={[s.entityRevenue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.entityRevenue, { color: '#5A8A6E' }]}>
               ${entity.revenue.toLocaleString()}
             </ThemedText>
           )}
@@ -338,7 +338,7 @@ function OverviewTab({ entity, colors }: { entity: Entity; colors: typeof Colors
         {entity.revenue != null && (
           <View style={s.detailRow}>
             <ThemedText style={[s.detailLabel, { color: colors.textTertiary }]}>Revenue</ThemedText>
-            <ThemedText style={[s.detailValue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.detailValue, { color: '#5A8A6E' }]}>
               ${entity.revenue.toLocaleString()}
             </ThemedText>
           </View>
@@ -381,12 +381,12 @@ function ProjectsTab({ entity, colors }: { entity: Entity; colors: typeof Colors
       renderItem={({ item }) => {
         const statusColor =
           item.status === 'active'
-            ? '#22C55E'
+            ? '#5A8A6E'
             : item.status === 'completed'
               ? ACCENT
               : item.status === 'on-hold'
-                ? '#F59E0B'
-                : '#A1A1AA';
+                ? '#B8943E'
+                : '#9C9790';
 
         return (
           <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -490,7 +490,7 @@ function OpportunitiesTab({ entity, colors }: { entity: Entity; colors: typeof C
               <ThemedText style={[s.itemTitle, { color: colors.text }]} numberOfLines={1}>
                 {item.title}
               </ThemedText>
-              <ThemedText style={[s.oppValue, { color: '#22C55E' }]}>
+              <ThemedText style={[s.oppValue, { color: '#5A8A6E' }]}>
                 ${item.value.toLocaleString()}
               </ThemedText>
             </View>

@@ -153,7 +153,7 @@ function TeamRatingBlock({ colors, accentColor }: { colors: typeof Colors.light;
               <ThemedText style={[s.miniBarLabel, { color: colors.textSecondary }]}>Fit</ThemedText>
               <ThemedText style={[s.miniBarPct, { color: colors.text }]}>{TEAM_RATING.fitPct}%</ThemedText>
             </View>
-            <ProgressBar value={TEAM_RATING.fitPct} max={100} color="#22C55E" colors={colors} />
+            <ProgressBar value={TEAM_RATING.fitPct} max={100} color="#5A8A6E" colors={colors} />
           </View>
           <View style={s.miniBarCol}>
             <View style={s.miniBarHeader}>
@@ -196,7 +196,7 @@ function TeamRatingBlock({ colors, accentColor }: { colors: typeof Colors.light;
 // =============================================================================
 
 function TeamSystemBlock({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
-  const statusColor = TEAM_SYSTEM.status === 'PROVISIONAL' ? '#F59E0B' : '#22C55E';
+  const statusColor = TEAM_SYSTEM.status === 'PROVISIONAL' ? '#B8943E' : '#5A8A6E';
 
   return (
     <>
@@ -243,7 +243,7 @@ function RecruitingConstraintsBlock({ colors, accentColor }: { colors: typeof Co
   const rc = RECRUITING_CONSTRAINTS;
   const nilRemaining = rc.nilBudget - rc.nilSpent;
   const scholarshipPct = rc.scholarshipsUsed / rc.scholarshipsTotal;
-  const scholarshipColor = scholarshipPct >= 0.9 ? '#F59E0B' : '#22C55E';
+  const scholarshipColor = scholarshipPct >= 0.9 ? '#B8943E' : '#5A8A6E';
 
   return (
     <>
@@ -284,10 +284,10 @@ function RecruitingConstraintsBlock({ colors, accentColor }: { colors: typeof Co
 
 function AvailabilityBlock({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
   const counts = [
-    { label: 'Available', value: AVAILABILITY.available, color: '#22C55E' },
-    { label: 'Injured', value: AVAILABILITY.injured, color: '#EF4444' },
-    { label: 'Out', value: AVAILABILITY.out, color: '#F59E0B' },
-    { label: 'Redshirt', value: AVAILABILITY.redshirt, color: '#A1A1AA' },
+    { label: 'Available', value: AVAILABILITY.available, color: '#5A8A6E' },
+    { label: 'Injured', value: AVAILABILITY.injured, color: '#B85C5C' },
+    { label: 'Out', value: AVAILABILITY.out, color: '#B8943E' },
+    { label: 'Redshirt', value: AVAILABILITY.redshirt, color: '#9C9790' },
   ];
 
   const handlePlayerTap = (player: RotationPlayer) => {
@@ -512,8 +512,8 @@ function DataCoverageBlock({ colors, accentColor }: { colors: typeof Colors.ligh
           <View style={[s.missingSection, { borderTopColor: colors.border }]}>
             {DATA_COVERAGE.missingNotes.map((note, idx) => (
               <View key={idx} style={s.missingRow}>
-                <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#F59E0B" />
-                <ThemedText style={[s.missingText, { color: '#F59E0B' }]}>{note}</ThemedText>
+                <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B8943E" />
+                <ThemedText style={[s.missingText, { color: '#B8943E' }]}>{note}</ThemedText>
               </View>
             ))}
           </View>

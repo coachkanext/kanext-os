@@ -73,9 +73,9 @@ const DETAIL_TABS: { id: DetailTab; label: string }[] = [
 function StatusBadge({ status, colors }: { status: string; colors: typeof Colors.light }) {
   const statusColor =
     status === 'active' || status === 'completed'
-      ? '#22C55E'
+      ? '#5A8A6E'
       : status === 'planning' || status === 'in-progress'
-        ? '#F59E0B'
+        ? '#B8943E'
         : status === 'seasonal'
           ? ACCENT
           : colors.textTertiary;
@@ -94,7 +94,7 @@ function StatusBadge({ status, colors }: { status: string; colors: typeof Colors
 // =============================================================================
 
 function PriorityBadge({ priority }: { priority: 'high' | 'medium' | 'low' }) {
-  const color = priority === 'high' ? '#EF4444' : priority === 'medium' ? '#F59E0B' : '#A1A1AA';
+  const color = priority === 'high' ? '#B85C5C' : priority === 'medium' ? '#B8943E' : '#9C9790';
   return (
     <View style={[s.badge, { backgroundColor: color + '18' }]}>
       <ThemedText style={[s.badgeText, { color }]}>{priority.toUpperCase()}</ThemedText>
@@ -107,7 +107,7 @@ function PriorityBadge({ priority }: { priority: 'high' | 'medium' | 'low' }) {
 // =============================================================================
 
 function EventTypeBadge({ type }: { type: 'regular' | 'special' | 'outreach' }) {
-  const color = type === 'regular' ? '#A1A1AA' : type === 'special' ? ACCENT : ACCENT;
+  const color = type === 'regular' ? '#9C9790' : type === 'special' ? ACCENT : ACCENT;
   return (
     <View style={[s.badge, { backgroundColor: color + '18' }]}>
       <ThemedText style={[s.badgeText, { color }]}>{type.toUpperCase()}</ThemedText>

@@ -87,13 +87,13 @@ export type CommunityHubTab =
 // =============================================================================
 
 export const K1_TEAMS: K1Team[] = [
-  { id: 't-1', name: 'Apex Basketball', abbreviation: 'APX', primaryColor: '#EF4444', owner: 'Marcus Kane', homeCourt: 'Circuit of the Americas', playerCount: 2, wins: 4, points: 312 },
-  { id: 't-2', name: 'Velocity Works', abbreviation: 'VEL', primaryColor: '#1D9BF0', owner: 'Lisa Grant', homeCourt: 'Laguna Seca', playerCount: 2, wins: 3, points: 287 },
-  { id: 't-3', name: 'Phoenix Motorsport', abbreviation: 'PHX', primaryColor: '#F59E0B', owner: 'David Okafor', homeCourt: 'Road Atlanta', playerCount: 2, wins: 2, points: 256 },
-  { id: 't-4', name: 'Zenith Basketball', abbreviation: 'ZEN', primaryColor: '#22C55E', owner: 'Anna Petrov', homeCourt: 'Watkins Glen', playerCount: 2, wins: 2, points: 241 },
-  { id: 't-5', name: 'Shadow GP', abbreviation: 'SHD', primaryColor: '#1D9BF0', owner: 'James Wright', homeCourt: 'Barber Motorsports', playerCount: 2, wins: 1, points: 198 },
-  { id: 't-6', name: 'Titan Basketball', abbreviation: 'TTN', primaryColor: '#1D9BF0', owner: 'Lisa Rodriguez', homeCourt: 'Mid-Ohio', playerCount: 2, wins: 0, points: 167 },
-  { id: 't-7', name: 'Nova Speed', abbreviation: 'NVA', primaryColor: '#1D9BF0', owner: 'Kai Tanaka', homeCourt: 'Sebring', playerCount: 2, wins: 0, points: 145 },
+  { id: 't-1', name: 'Apex Basketball', abbreviation: 'APX', primaryColor: '#B85C5C', owner: 'Marcus Kane', homeCourt: 'Circuit of the Americas', playerCount: 2, wins: 4, points: 312 },
+  { id: 't-2', name: 'Velocity Works', abbreviation: 'VEL', primaryColor: '#1A1714', owner: 'Lisa Grant', homeCourt: 'Laguna Seca', playerCount: 2, wins: 3, points: 287 },
+  { id: 't-3', name: 'Phoenix Motorsport', abbreviation: 'PHX', primaryColor: '#B8943E', owner: 'David Okafor', homeCourt: 'Road Atlanta', playerCount: 2, wins: 2, points: 256 },
+  { id: 't-4', name: 'Zenith Basketball', abbreviation: 'ZEN', primaryColor: '#5A8A6E', owner: 'Anna Petrov', homeCourt: 'Watkins Glen', playerCount: 2, wins: 2, points: 241 },
+  { id: 't-5', name: 'Shadow GP', abbreviation: 'SHD', primaryColor: '#1A1714', owner: 'James Wright', homeCourt: 'Barber Motorsports', playerCount: 2, wins: 1, points: 198 },
+  { id: 't-6', name: 'Titan Basketball', abbreviation: 'TTN', primaryColor: '#1A1714', owner: 'Lisa Rodriguez', homeCourt: 'Mid-Ohio', playerCount: 2, wins: 0, points: 167 },
+  { id: 't-7', name: 'Nova Speed', abbreviation: 'NVA', primaryColor: '#1A1714', owner: 'Kai Tanaka', homeCourt: 'Sebring', playerCount: 2, wins: 0, points: 145 },
   { id: 't-8', name: 'Iron Circuit', abbreviation: 'IRC', primaryColor: '#FFFFFF', owner: 'Mike Thompson', homeCourt: 'VIR', playerCount: 2, wins: 0, points: 132 },
 ];
 
@@ -102,20 +102,20 @@ export const K1_TEAMS: K1Team[] = [
 // =============================================================================
 
 export const K1_DRIVERS: K1Player[] = [
-  { id: 'd-1', name: 'Leo Vasquez', initials: 'LV', number: '7', teamId: 't-1', teamName: 'Apex Basketball', teamColor: '#EF4444', nationality: 'USA', age: 24, wins: 3, podiums: 7, points: 178, avgFinish: 2.8, fastestQuarters: 4 },
-  { id: 'd-2', name: 'Nadia Patel', initials: 'NP', number: '22', teamId: 't-2', teamName: 'Velocity Works', teamColor: '#1D9BF0', nationality: 'GBR', age: 26, wins: 2, podiums: 6, points: 156, avgFinish: 3.2, fastestQuarters: 3 },
-  { id: 'd-3', name: 'Jake Morrison', initials: 'JM', number: '11', teamId: 't-1', teamName: 'Apex Basketball', teamColor: '#EF4444', nationality: 'AUS', age: 22, wins: 1, podiums: 4, points: 134, avgFinish: 4.1, fastestQuarters: 2 },
-  { id: 'd-4', name: 'Yuki Tanaka', initials: 'YT', number: '33', teamId: 't-3', teamName: 'Phoenix Motorsport', teamColor: '#F59E0B', nationality: 'JPN', age: 23, wins: 2, podiums: 5, points: 148, avgFinish: 3.5, fastestQuarters: 3 },
-  { id: 'd-5', name: 'Marcus Bell', initials: 'MB', number: '5', teamId: 't-2', teamName: 'Velocity Works', teamColor: '#1D9BF0', nationality: 'USA', age: 28, wins: 1, podiums: 5, points: 131, avgFinish: 3.8, fastestQuarters: 1 },
-  { id: 'd-6', name: 'Sofia Torres', initials: 'ST', number: '44', teamId: 't-4', teamName: 'Zenith Basketball', teamColor: '#22C55E', nationality: 'ESP', age: 25, wins: 2, podiums: 4, points: 142, avgFinish: 3.6, fastestQuarters: 2 },
-  { id: 'd-7', name: 'Andre Williams', initials: 'AW', number: '8', teamId: 't-3', teamName: 'Phoenix Motorsport', teamColor: '#F59E0B', nationality: 'USA', age: 21, wins: 0, podiums: 3, points: 108, avgFinish: 5.2, fastestQuarters: 1 },
-  { id: 'd-8', name: 'Emma Lindqvist', initials: 'EL', number: '16', teamId: 't-4', teamName: 'Zenith Basketball', teamColor: '#22C55E', nationality: 'SWE', age: 27, wins: 0, podiums: 2, points: 99, avgFinish: 5.8, fastestQuarters: 0 },
-  { id: 'd-9', name: 'Carlos Mendez', initials: 'CM', number: '99', teamId: 't-5', teamName: 'Shadow GP', teamColor: '#1D9BF0', nationality: 'MEX', age: 24, wins: 1, podiums: 3, points: 112, avgFinish: 4.5, fastestQuarters: 2 },
-  { id: 'd-10', name: 'Ggame Kim', initials: 'GK', number: '18', teamId: 't-5', teamName: 'Shadow GP', teamColor: '#1D9BF0', nationality: 'KOR', age: 23, wins: 0, podiums: 1, points: 86, avgFinish: 6.1, fastestQuarters: 0 },
-  { id: 'd-11', name: 'Ryan Fletcher', initials: 'RF', number: '3', teamId: 't-6', teamName: 'Titan Basketball', teamColor: '#1D9BF0', nationality: 'CAN', age: 26, wins: 0, podiums: 2, points: 94, avgFinish: 5.4, fastestQuarters: 1 },
-  { id: 'd-12', name: 'Mia Santos', initials: 'MS', number: '27', teamId: 't-6', teamName: 'Titan Basketball', teamColor: '#1D9BF0', nationality: 'BRA', age: 22, wins: 0, podiums: 1, points: 73, avgFinish: 6.8, fastestQuarters: 0 },
-  { id: 'd-13', name: 'Zach Cooper', initials: 'ZC', number: '41', teamId: 't-7', teamName: 'Nova Speed', teamColor: '#1D9BF0', nationality: 'USA', age: 25, wins: 0, podiums: 1, points: 81, avgFinish: 6.3, fastestQuarters: 1 },
-  { id: 'd-14', name: 'Priya Sharma', initials: 'PS', number: '14', teamId: 't-7', teamName: 'Nova Speed', teamColor: '#1D9BF0', nationality: 'IND', age: 24, wins: 0, podiums: 0, points: 64, avgFinish: 7.2, fastestQuarters: 0 },
+  { id: 'd-1', name: 'Leo Vasquez', initials: 'LV', number: '7', teamId: 't-1', teamName: 'Apex Basketball', teamColor: '#B85C5C', nationality: 'USA', age: 24, wins: 3, podiums: 7, points: 178, avgFinish: 2.8, fastestQuarters: 4 },
+  { id: 'd-2', name: 'Nadia Patel', initials: 'NP', number: '22', teamId: 't-2', teamName: 'Velocity Works', teamColor: '#1A1714', nationality: 'GBR', age: 26, wins: 2, podiums: 6, points: 156, avgFinish: 3.2, fastestQuarters: 3 },
+  { id: 'd-3', name: 'Jake Morrison', initials: 'JM', number: '11', teamId: 't-1', teamName: 'Apex Basketball', teamColor: '#B85C5C', nationality: 'AUS', age: 22, wins: 1, podiums: 4, points: 134, avgFinish: 4.1, fastestQuarters: 2 },
+  { id: 'd-4', name: 'Yuki Tanaka', initials: 'YT', number: '33', teamId: 't-3', teamName: 'Phoenix Motorsport', teamColor: '#B8943E', nationality: 'JPN', age: 23, wins: 2, podiums: 5, points: 148, avgFinish: 3.5, fastestQuarters: 3 },
+  { id: 'd-5', name: 'Marcus Bell', initials: 'MB', number: '5', teamId: 't-2', teamName: 'Velocity Works', teamColor: '#1A1714', nationality: 'USA', age: 28, wins: 1, podiums: 5, points: 131, avgFinish: 3.8, fastestQuarters: 1 },
+  { id: 'd-6', name: 'Sofia Torres', initials: 'ST', number: '44', teamId: 't-4', teamName: 'Zenith Basketball', teamColor: '#5A8A6E', nationality: 'ESP', age: 25, wins: 2, podiums: 4, points: 142, avgFinish: 3.6, fastestQuarters: 2 },
+  { id: 'd-7', name: 'Andre Williams', initials: 'AW', number: '8', teamId: 't-3', teamName: 'Phoenix Motorsport', teamColor: '#B8943E', nationality: 'USA', age: 21, wins: 0, podiums: 3, points: 108, avgFinish: 5.2, fastestQuarters: 1 },
+  { id: 'd-8', name: 'Emma Lindqvist', initials: 'EL', number: '16', teamId: 't-4', teamName: 'Zenith Basketball', teamColor: '#5A8A6E', nationality: 'SWE', age: 27, wins: 0, podiums: 2, points: 99, avgFinish: 5.8, fastestQuarters: 0 },
+  { id: 'd-9', name: 'Carlos Mendez', initials: 'CM', number: '99', teamId: 't-5', teamName: 'Shadow GP', teamColor: '#1A1714', nationality: 'MEX', age: 24, wins: 1, podiums: 3, points: 112, avgFinish: 4.5, fastestQuarters: 2 },
+  { id: 'd-10', name: 'Ggame Kim', initials: 'GK', number: '18', teamId: 't-5', teamName: 'Shadow GP', teamColor: '#1A1714', nationality: 'KOR', age: 23, wins: 0, podiums: 1, points: 86, avgFinish: 6.1, fastestQuarters: 0 },
+  { id: 'd-11', name: 'Ryan Fletcher', initials: 'RF', number: '3', teamId: 't-6', teamName: 'Titan Basketball', teamColor: '#1A1714', nationality: 'CAN', age: 26, wins: 0, podiums: 2, points: 94, avgFinish: 5.4, fastestQuarters: 1 },
+  { id: 'd-12', name: 'Mia Santos', initials: 'MS', number: '27', teamId: 't-6', teamName: 'Titan Basketball', teamColor: '#1A1714', nationality: 'BRA', age: 22, wins: 0, podiums: 1, points: 73, avgFinish: 6.8, fastestQuarters: 0 },
+  { id: 'd-13', name: 'Zach Cooper', initials: 'ZC', number: '41', teamId: 't-7', teamName: 'Nova Speed', teamColor: '#1A1714', nationality: 'USA', age: 25, wins: 0, podiums: 1, points: 81, avgFinish: 6.3, fastestQuarters: 1 },
+  { id: 'd-14', name: 'Priya Sharma', initials: 'PS', number: '14', teamId: 't-7', teamName: 'Nova Speed', teamColor: '#1A1714', nationality: 'IND', age: 24, wins: 0, podiums: 0, points: 64, avgFinish: 7.2, fastestQuarters: 0 },
   { id: 'd-15', name: 'Tyler Brooks', initials: 'TB', number: '21', teamId: 't-8', teamName: 'Iron Circuit', teamColor: '#FFFFFF', nationality: 'USA', age: 29, wins: 0, podiums: 1, points: 72, avgFinish: 6.5, fastestQuarters: 0 },
   { id: 'd-16', name: 'Olivia Dunn', initials: 'OD', number: '36', teamId: 't-8', teamName: 'Iron Circuit', teamColor: '#FFFFFF', nationality: 'IRL', age: 23, wins: 0, podiums: 0, points: 60, avgFinish: 7.8, fastestQuarters: 0 },
 ];
@@ -333,12 +333,12 @@ export const OPS_CATEGORY_LABELS: Record<OpsCategory, string> = {
 };
 
 export const OPS_CATEGORY_COLORS: Record<OpsCategory, string> = {
-  logistics: '#1D9BF0',
-  court_prep: '#F59E0B',
-  safety: '#EF4444',
-  media: '#1D9BF0',
-  hospitality: '#1D9BF0',
-  tech_inspection: '#1D9BF0',
-  timing: '#1D9BF0',
-  medical: '#22C55E',
+  logistics: '#1A1714',
+  court_prep: '#B8943E',
+  safety: '#B85C5C',
+  media: '#1A1714',
+  hospitality: '#1A1714',
+  tech_inspection: '#1A1714',
+  timing: '#1A1714',
+  medical: '#5A8A6E',
 };

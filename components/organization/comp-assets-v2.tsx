@@ -115,9 +115,9 @@ function stockLevel(item: InventoryItem): 'ok' | 'low' | 'critical' {
 
 function stockLevelColor(level: 'ok' | 'low' | 'critical'): string {
   switch (level) {
-    case 'ok': return '#22C55E';
-    case 'low': return '#F59E0B';
-    case 'critical': return '#EF4444';
+    case 'ok': return '#5A8A6E';
+    case 'low': return '#B8943E';
+    case 'critical': return '#B85C5C';
   }
 }
 
@@ -201,25 +201,25 @@ function DashboardTab({
       </ThemedText>
       <View style={[s.alertsCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={[s.alertRow, { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }]}>
-          <View style={[s.alertDot, { backgroundColor: '#EF4444' }]} />
+          <View style={[s.alertDot, { backgroundColor: '#B85C5C' }]} />
           <ThemedText style={[s.alertText, { color: colors.text }]}>
             {physicalNeedsRepair} physical asset{physicalNeedsRepair !== 1 ? 's' : ''} need repair
           </ThemedText>
         </View>
         <View style={[s.alertRow, { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }]}>
-          <View style={[s.alertDot, { backgroundColor: '#EF4444' }]} />
+          <View style={[s.alertDot, { backgroundColor: '#B85C5C' }]} />
           <ThemedText style={[s.alertText, { color: colors.text }]}>
             {overdueMaintenances} overdue maintenance task{overdueMaintenances !== 1 ? 's' : ''}
           </ThemedText>
         </View>
         <View style={[s.alertRow, { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }]}>
-          <View style={[s.alertDot, { backgroundColor: '#F59E0B' }]} />
+          <View style={[s.alertDot, { backgroundColor: '#B8943E' }]} />
           <ThemedText style={[s.alertText, { color: colors.text }]}>
             {expiringInsurance} insurance polic{expiringInsurance !== 1 ? 'ies' : 'y'} need attention
           </ThemedText>
         </View>
         <View style={s.alertRow}>
-          <View style={[s.alertDot, { backgroundColor: '#F59E0B' }]} />
+          <View style={[s.alertDot, { backgroundColor: '#B8943E' }]} />
           <ThemedText style={[s.alertText, { color: colors.text }]}>
             {lowStockItems} inventory item{lowStockItems !== 1 ? 's' : ''} below reorder point
           </ThemedText>
@@ -232,12 +232,12 @@ function DashboardTab({
       </ThemedText>
       <View style={s.quickActionsGrid}>
         {[
-          { id: 'qa-1', label: 'Add Asset', icon: 'plus.circle', color: '#22C55E' },
+          { id: 'qa-1', label: 'Add Asset', icon: 'plus.circle', color: '#5A8A6E' },
           { id: 'qa-2', label: 'Run Audit', icon: 'checkmark.shield', color: ACCENT },
-          { id: 'qa-3', label: 'Schedule Maintenance', icon: 'hammer', color: '#F59E0B' },
+          { id: 'qa-3', label: 'Schedule Maintenance', icon: 'hammer', color: '#B8943E' },
           { id: 'qa-4', label: 'Upload Digital', icon: 'arrow.up.doc', color: ACCENT },
-          { id: 'qa-5', label: 'Reorder Inventory', icon: 'shippingbox', color: '#EF4444' },
-          { id: 'qa-6', label: 'Export Report', icon: 'square.and.arrow.up', color: '#A1A1AA' },
+          { id: 'qa-5', label: 'Reorder Inventory', icon: 'shippingbox', color: '#B85C5C' },
+          { id: 'qa-6', label: 'Export Report', icon: 'square.and.arrow.up', color: '#9C9790' },
         ].map((action) => (
           <Pressable
             key={action.id}
@@ -543,12 +543,12 @@ function EquipmentTab({
                 <IconSymbol
                   name="exclamationmark.triangle.fill"
                   size={12}
-                  color={isOverdue ? '#EF4444' : colors.textTertiary}
+                  color={isOverdue ? '#B85C5C' : colors.textTertiary}
                 />
                 <ThemedText
                   style={[
                     s.equipmentServiceText,
-                    { color: isOverdue ? '#EF4444' : colors.textSecondary },
+                    { color: isOverdue ? '#B85C5C' : colors.textSecondary },
                     isOverdue && { fontWeight: '700' },
                   ]}
                 >
@@ -1278,7 +1278,7 @@ function EquipmentDetailSheet({
           <ThemedText
             style={[
               s.sheetKpiValue,
-              { color: isOverdue ? '#EF4444' : colors.text },
+              { color: isOverdue ? '#B85C5C' : colors.text },
               isOverdue && { fontWeight: '800' },
             ]}
           >

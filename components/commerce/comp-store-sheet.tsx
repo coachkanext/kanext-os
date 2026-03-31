@@ -144,7 +144,7 @@ export function CompStoreSheet({ visible, onClose, colors }: Props) {
             </View>
             <View style={styles.confirmRow}>
               <Text style={[styles.confirmLabel, { color: colors.textSecondary }]}>Status</Text>
-              <Text style={[styles.statusText, { color: '#22C55E' }]}>Settled</Text>
+              <Text style={[styles.statusText, { color: '#5A8A6E' }]}>Settled</Text>
             </View>
           </View>
 
@@ -152,7 +152,7 @@ export function CompStoreSheet({ visible, onClose, colors }: Props) {
             <Text style={[styles.sectionLabel, { color: colors.textTertiary }]}>PAYMENT CHAIN</Text>
             {chain.chain.map((step, i) => (
               <View key={i} style={styles.chainRow}>
-                <View style={[styles.chainDot, { backgroundColor: '#22C55E' }]} />
+                <View style={[styles.chainDot, { backgroundColor: '#5A8A6E' }]} />
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.chainStage, { color: colors.text }]}>{step.stage}</Text>
                   <Text style={[styles.chainDetail, { color: colors.textSecondary }]}>{step.detail}</Text>
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   addButtonText: { color: '#fff', fontSize: 11, fontWeight: '700', letterSpacing: 0.5 },
 
   footerContainer: { paddingHorizontal: Spacing.md, paddingBottom: Spacing.md },
-  checkoutButton: { backgroundColor: '#22C55E', paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
+  checkoutButton: { backgroundColor: '#5A8A6E', paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
   checkoutButtonText: { color: '#fff', fontSize: 15, fontWeight: '700', letterSpacing: -0.2 },
 
   confirmCard: { borderRadius: 16, borderWidth: StyleSheet.hairlineWidth, padding: Spacing.md, gap: 12 },
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   statusText: { fontSize: 13, fontWeight: '700', letterSpacing: 0.5 },
   divider: { height: StyleSheet.hairlineWidth, marginVertical: 6 },
 
-  ctaButton: { backgroundColor: '#22C55E', paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
+  ctaButton: { backgroundColor: '#5A8A6E', paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
   ctaButtonText: { color: '#fff', fontSize: 15, fontWeight: '700', letterSpacing: -0.2 },
   cancelButton: { borderWidth: StyleSheet.hairlineWidth, paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
   cancelButtonText: { fontSize: 15, fontWeight: '700', letterSpacing: -0.2 },

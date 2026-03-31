@@ -57,11 +57,11 @@ export const ROOM_TYPE_LABELS: Record<EduRoomType, string> = {
 };
 
 export const ROOM_TYPE_COLORS: Record<EduRoomType, string> = {
-  ops: '#1D9BF0',
-  governance: '#1D9BF0',
-  incident: '#EF4444',
-  project: '#F59E0B',
-  committee: '#22C55E',
+  ops: '#1A1714',
+  governance: '#1A1714',
+  incident: '#B85C5C',
+  project: '#B8943E',
+  committee: '#5A8A6E',
 };
 
 export const ROOM_DOMAIN_LABELS: Record<RoomDomain, string> = {
@@ -74,12 +74,12 @@ export const ROOM_DOMAIN_LABELS: Record<RoomDomain, string> = {
 };
 
 export const ROOM_DOMAIN_COLORS: Record<RoomDomain, string> = {
-  admissions: '#1D9BF0',
-  academics: '#1D9BF0',
-  campus: '#22C55E',
-  athletics: '#F59E0B',
-  financial: '#EF4444',
-  policies: '#1D9BF0',
+  admissions: '#1A1714',
+  academics: '#1A1714',
+  campus: '#5A8A6E',
+  athletics: '#B8943E',
+  financial: '#B85C5C',
+  policies: '#1A1714',
 };
 
 export const ROOM_DOMAIN_ICONS: Record<RoomDomain, string> = {
@@ -98,9 +98,9 @@ export const ROOM_STATUS_LABELS: Record<RoomStatus, string> = {
 };
 
 export const ROOM_STATUS_COLORS: Record<RoomStatus, string> = {
-  active: '#22C55E',
-  quiet: '#F59E0B',
-  archived: '#A1A1AA',
+  active: '#5A8A6E',
+  quiet: '#B8943E',
+  archived: '#9C9790',
 };
 
 export const ROOM_ACCESS_LABELS: Record<RoomAccess, string> = {
@@ -110,9 +110,9 @@ export const ROOM_ACCESS_LABELS: Record<RoomAccess, string> = {
 };
 
 export const ROOM_ACCESS_COLORS: Record<RoomAccess, string> = {
-  open: '#22C55E',
-  restricted: '#F59E0B',
-  confidential: '#EF4444',
+  open: '#5A8A6E',
+  restricted: '#B8943E',
+  confidential: '#B85C5C',
 };
 
 export const ROOM_SCOPE_LABELS: Record<RoomScope, string> = {
@@ -122,15 +122,15 @@ export const ROOM_SCOPE_LABELS: Record<RoomScope, string> = {
 };
 
 export const ROOM_SCOPE_COLORS: Record<RoomScope, string> = {
-  organization: '#1D9BF0',
-  institution: '#1D9BF0',
-  department: '#22C55E',
+  organization: '#1A1714',
+  institution: '#1A1714',
+  department: '#5A8A6E',
 };
 
 export const INCIDENT_SEVERITY_COLORS: Record<string, string> = {
-  critical: '#EF4444',
-  high: '#F59E0B',
-  medium: '#1D9BF0',
+  critical: '#B85C5C',
+  high: '#B8943E',
+  medium: '#1A1714',
 };
 
 export const INCIDENT_SEVERITY_LABELS: Record<string, string> = {

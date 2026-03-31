@@ -173,13 +173,13 @@ export const FILM_ITEMS: FilmItem[] = [
   { id: 'f7', title: 'Practice — Transition D', category: 'practice', date: 'Feb 18', duration: '1:12:00', hasPlayVision: true, thumbnailColor: '#1A3D2A', thumbnailUri: u('photo-1511886929837-354d827aae26') },
   { id: 'f8', title: 'Practice — Free Throws', category: 'practice', date: 'Feb 14', duration: '0:35:20', hasPlayVision: false, thumbnailColor: '#3D3A1A', thumbnailUri: u('photo-1608245449230-4ac19066d2d0') },
   // Scouting — opponent analysis / whiteboard / film room
-  { id: 'f9', title: 'Oakridge Scout — Offense', category: 'scouting', date: 'Feb 26', duration: '0:42:15', hasPlayVision: true, thumbnailColor: '#0D2137', thumbnailUri: u('photo-1540747913346-19e32dc3e97e') },
+  { id: 'f9', title: 'Oakridge Scout — Offense', category: 'scouting', date: 'Feb 26', duration: '0:42:15', hasPlayVision: true, thumbnailColor: '#1A1714', thumbnailUri: u('photo-1540747913346-19e32dc3e97e') },
   { id: 'f10', title: 'Bayshore Scout — Defense', category: 'scouting', date: 'Feb 28', duration: '0:38:40', hasPlayVision: true, thumbnailColor: '#37210D', thumbnailUri: u('photo-1587280501635-68a0e82cd5ff') },
   { id: 'f11', title: 'Ironwood Scout — Key Players', category: 'scouting', date: 'Mar 2', duration: '0:28:10', hasPlayVision: false, thumbnailColor: '#21370D', thumbnailUri: u('photo-1517649763962-0c623066013b') },
   // Clips — player highlights, dunks, plays
   { id: 'f12', title: 'Rodriguez — Scoring Highlights', category: 'clips', date: 'Feb 25', duration: '0:08:45', hasPlayVision: false, thumbnailColor: '#371B0D', thumbnailUri: u('photo-1628779238951-be2c9f2a59f4') },
   { id: 'f13', title: 'Johnson — Rebound Reel', category: 'clips', date: 'Feb 23', duration: '0:06:20', hasPlayVision: false, thumbnailColor: '#0D3721', thumbnailUri: u('photo-1471295253337-3ceaaedca402') },
-  { id: 'f14', title: 'White — Assist Compilation', category: 'clips', date: 'Feb 21', duration: '0:05:50', hasPlayVision: false, thumbnailColor: '#0D2137', thumbnailUri: u('photo-1475403614135-5f1aa0eb5015') },
+  { id: 'f14', title: 'White — Assist Compilation', category: 'clips', date: 'Feb 21', duration: '0:05:50', hasPlayVision: false, thumbnailColor: '#1A1714', thumbnailUri: u('photo-1475403614135-5f1aa0eb5015') },
   { id: 'f15', title: 'Team — Top 10 Plays Feb', category: 'clips', date: 'Feb 28', duration: '0:03:30', hasPlayVision: false, thumbnailColor: '#37110D', thumbnailUri: u('photo-1577471488278-16eec37ffcc2') },
 ];
 

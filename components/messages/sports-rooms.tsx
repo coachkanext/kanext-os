@@ -103,13 +103,13 @@ function RoomRow({ room, colors }: { room: SportsRoom; colors: typeof Colors.lig
             {room.title}
           </ThemedText>
           {room.hasBlocker && (
-            <View style={[styles.indicator, { backgroundColor: '#EF4444' + '1A' }]}>
-              <ThemedText style={[styles.indicatorText, { color: '#EF4444' }]}>BLOCKER</ThemedText>
+            <View style={[styles.indicator, { backgroundColor: '#B85C5C' + '1A' }]}>
+              <ThemedText style={[styles.indicatorText, { color: '#B85C5C' }]}>BLOCKER</ThemedText>
             </View>
           )}
           {room.hasDeadline && !room.hasBlocker && (
-            <View style={[styles.indicator, { backgroundColor: '#F59E0B' + '1A' }]}>
-              <ThemedText style={[styles.indicatorText, { color: '#F59E0B' }]}>DEADLINE</ThemedText>
+            <View style={[styles.indicator, { backgroundColor: '#B8943E' + '1A' }]}>
+              <ThemedText style={[styles.indicatorText, { color: '#B8943E' }]}>DEADLINE</ThemedText>
             </View>
           )}
         </View>

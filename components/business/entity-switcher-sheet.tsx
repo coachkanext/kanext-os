@@ -106,7 +106,7 @@ export function EntitySwitcherSheet({ visible, onClose }: EntitySwitcherSheetPro
         ]}
         onPress={() => handleSelect(entity.id)}
       >
-        <View style={[s.statusDot, { backgroundColor: entity.status === 'active' ? '#22C55E' : entity.status === 'pending' ? '#F59E0B' : '#A1A1AA' }]} />
+        <View style={[s.statusDot, { backgroundColor: entity.status === 'active' ? '#5A8A6E' : entity.status === 'pending' ? '#B8943E' : '#9C9790' }]} />
         <View style={{ flex: 1 }}>
           <ThemedText style={[s.entityName, { color: BP.smoke }]} numberOfLines={1}>
             {entity.name}

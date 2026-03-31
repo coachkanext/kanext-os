@@ -76,7 +76,7 @@ export default function FiltersScreen() {
             <Switch
               value={filters[opt.key]}
               onValueChange={() => toggleFilter(opt.key)}
-              trackColor={{ false: '#39393D', true: accent }}
+              trackColor={{ false: '#3D352E', true: accent }}
               thumbColor="#FFFFFF"
             />
           </View>

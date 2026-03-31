@@ -16,9 +16,9 @@ import type { TeamLevel } from '@/data/mock-program-v2';
 
 const LEVEL_COLORS: Record<TeamLevel, string> = {
   varsity: '#FFFFFF',
-  jv: '#1D9BF0',
-  prep: '#F59E0B',
-  dev: '#1D9BF0',
+  jv: '#1A1714',
+  prep: '#B8943E',
+  dev: '#1A1714',
 };
 
 const LEVEL_LABELS: Record<TeamLevel, string> = {
@@ -63,19 +63,19 @@ export function ProgramTeams() {
               <View
                 style={[
                   styles.statusBadge,
-                  { backgroundColor: isActive ? '#22C55E' + '20' : colors.backgroundTertiary },
+                  { backgroundColor: isActive ? '#5A8A6E' + '20' : colors.backgroundTertiary },
                 ]}
               >
                 <View
                   style={[
                     styles.statusDot,
-                    { backgroundColor: isActive ? '#22C55E' : colors.textTertiary },
+                    { backgroundColor: isActive ? '#5A8A6E' : colors.textTertiary },
                   ]}
                 />
                 <ThemedText
                   style={[
                     styles.statusText,
-                    { color: isActive ? '#22C55E' : colors.textTertiary },
+                    { color: isActive ? '#5A8A6E' : colors.textTertiary },
                   ]}
                 >
                   {isActive ? 'Active' : 'Offseason'}

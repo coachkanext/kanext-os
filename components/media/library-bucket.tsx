@@ -33,7 +33,7 @@ export function LibraryBucket({ icon, label, count, children }: LibraryBucketPro
           setExpanded(!expanded);
         }}
       >
-        <IconSymbol name={icon} size={20} color="#A1A1AA" />
+        <IconSymbol name={icon} size={20} color="#9C9790" />
         <ThemedText style={styles.label}>{label}</ThemedText>
         <View style={styles.countBadge}>
           <ThemedText style={styles.countText}>{count}</ThemedText>
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   countText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   expandedContent: {
     paddingLeft: Spacing.md,

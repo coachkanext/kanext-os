@@ -314,7 +314,7 @@ function SupportStaffSection({ colors, accentColor }: { colors: typeof Colors.li
                   <ThemedText style={[s.supportName, { color: colors.text }]}>{entry.name}</ThemedText>
                   <ThemedText style={[s.supportRole, { color: colors.textSecondary }]}>{entry.role}</ThemedText>
                 </View>
-                <RoleTag label="Active" color="#22C55E" />
+                <RoleTag label="Active" color="#5A8A6E" />
               </Pressable>
             ))}
           </View>

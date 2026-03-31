@@ -382,7 +382,7 @@ export function getChartMax(points: ChartPoint[]): number {
 export const SOURCE_COLORS: Record<RevenueSource, string> = {
   Subscriptions: '#5A8A6E',
   Tips:          '#D97757',
-  Sales:         '#1D9BF0',
+  Sales:         '#1A1714',
   Deals:         '#B85C5C',
   Content:       '#8B6AAD',
 };

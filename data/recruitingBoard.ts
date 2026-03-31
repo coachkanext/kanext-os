@@ -22,16 +22,16 @@ export const BOARD_COLUMNS: BoardStatus[] = [
 ];
 
 export const BOARD_COLUMN_COLORS: Record<BoardStatus, string> = {
-  Watchlist: '#F59E0B',
-  Evaluating: '#1D9BF0',
-  Contacted: '#1D9BF0',
-  Priority: '#22C55E',
-  'Visit Planned': '#1D9BF0',
-  Visited: '#1D9BF0',
-  'Offer Out': '#1D9BF0',
-  Committed: '#1D9BF0',
-  Signed: '#1D9BF0',
-  Missed: '#A1A1AA',
+  Watchlist: '#B8943E',
+  Evaluating: '#1A1714',
+  Contacted: '#1A1714',
+  Priority: '#5A8A6E',
+  'Visit Planned': '#1A1714',
+  Visited: '#1A1714',
+  'Offer Out': '#1A1714',
+  Committed: '#1A1714',
+  Signed: '#1A1714',
+  Missed: '#9C9790',
 };
 
 /** Migration map: old status values → new pipeline stages */
@@ -48,10 +48,10 @@ export type Priority = 'A' | 'B' | 'C';
 export type NeedsTier = 'Must Get' | 'Primary' | 'Secondary' | 'Watch';
 export const NEEDS_TIERS: NeedsTier[] = ['Must Get', 'Primary', 'Secondary', 'Watch'];
 export const NEEDS_TIER_COLORS: Record<NeedsTier, string> = {
-  'Must Get': '#EF4444',
-  Primary: '#F59E0B',
-  Secondary: '#1D9BF0',
-  Watch: '#A1A1AA',
+  'Must Get': '#B85C5C',
+  Primary: '#B8943E',
+  Secondary: '#1A1714',
+  Watch: '#9C9790',
 };
 
 // ─── Position slots (Helio) ───
@@ -62,9 +62,9 @@ export const POSITION_SLOTS: PositionSlot[] = ['PG', 'CG', 'W', 'F', 'B'];
 export type InterestLevel = 'Low' | 'Med' | 'High';
 export const INTEREST_LEVELS: InterestLevel[] = ['Low', 'Med', 'High'];
 export const INTEREST_COLORS: Record<InterestLevel, string> = {
-  Low: '#A1A1AA',
-  Med: '#F59E0B',
-  High: '#22C55E',
+  Low: '#9C9790',
+  Med: '#B8943E',
+  High: '#5A8A6E',
 };
 
 // ─── Big Board sections ───
@@ -84,18 +84,18 @@ export type BoardTag = typeof BOARD_TAGS[number];
 // ─── Temperature (workflow sentiment) ───
 export type Temperature = 'Ice' | 'Warm' | 'Hot' | 'Close';
 export const TEMPERATURE_COLORS: Record<Temperature, string> = {
-  Ice: '#1D9BF0',
-  Warm: '#F59E0B',
-  Hot: '#EF4444',
-  Close: '#22C55E',
+  Ice: '#1A1714',
+  Warm: '#B8943E',
+  Hot: '#B85C5C',
+  Close: '#5A8A6E',
 };
 
 // ─── Risk ───
 export type RiskLevel = 'Low' | 'Medium' | 'High';
 export const RISK_LEVEL_COLORS: Record<RiskLevel, string> = {
-  Low: '#22C55E',
-  Medium: '#F59E0B',
-  High: '#EF4444',
+  Low: '#5A8A6E',
+  Medium: '#B8943E',
+  High: '#B85C5C',
 };
 
 export const RISK_FLAG_OPTIONS = [
@@ -177,15 +177,15 @@ export type LogEntryType =
   | 'NIL' | 'Decision Date' | 'Campus Visit' | 'Status';
 
 export const LOG_TYPE_META: Record<LogEntryType, { icon: string; color: string }> = {
-  Call: { icon: '\u{1F4DE}', color: '#1D9BF0' },
-  Text: { icon: '\u{1F4AC}', color: '#22C55E' },
-  Visit: { icon: '\u{1F3EB}', color: '#1D9BF0' },
-  Note: { icon: '\u270F\uFE0F', color: '#F59E0B' },
-  Offer: { icon: '\u{1F4E8}', color: '#22C55E' },
-  NIL: { icon: '$', color: '#F59E0B' },
-  'Decision Date': { icon: '\u{1F4C5}', color: '#EF4444' },
-  'Campus Visit': { icon: '\u{1F3D4}\uFE0F', color: '#1D9BF0' },
-  Status: { icon: '\u2191', color: '#1D9BF0' },
+  Call: { icon: '\u{1F4DE}', color: '#1A1714' },
+  Text: { icon: '\u{1F4AC}', color: '#5A8A6E' },
+  Visit: { icon: '\u{1F3EB}', color: '#1A1714' },
+  Note: { icon: '\u270F\uFE0F', color: '#B8943E' },
+  Offer: { icon: '\u{1F4E8}', color: '#5A8A6E' },
+  NIL: { icon: '$', color: '#B8943E' },
+  'Decision Date': { icon: '\u{1F4C5}', color: '#B85C5C' },
+  'Campus Visit': { icon: '\u{1F3D4}\uFE0F', color: '#1A1714' },
+  Status: { icon: '\u2191', color: '#1A1714' },
 };
 
 export interface RecruitingLogEntry {
@@ -209,14 +209,14 @@ export const PIPELINE_STAGES_V2: PipelineStageV2[] = [
 ];
 
 export const STAGE_COLORS: Record<PipelineStageV2, string> = {
-  Prospect: '#F59E0B',
-  'Contact Made': '#1D9BF0',
-  'Eval Sent': '#1D9BF0',
-  'Visit Scheduled': '#1D9BF0',
-  'Offer Out': '#1D9BF0',
-  Committed: '#22C55E',
-  Signed: '#1D9BF0',
-  Dead: '#A1A1AA',
+  Prospect: '#B8943E',
+  'Contact Made': '#1A1714',
+  'Eval Sent': '#1A1714',
+  'Visit Scheduled': '#1A1714',
+  'Offer Out': '#1A1714',
+  Committed: '#5A8A6E',
+  Signed: '#1A1714',
+  Dead: '#9C9790',
 };
 
 /** Map old 10-stage → new 8-stage */

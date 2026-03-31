@@ -688,7 +688,7 @@ function DirectoryView({ colors, role }: { colors: typeof Colors.light; role: Ed
             const initials = person.name.split(' ').map((n) => n[0]).join('').slice(0, 2);
             const categoryColor =
               person.category === 'faculty' ? ACCENT :
-              person.category === 'staff' ? '#F59E0B' : '#22C55E';
+              person.category === 'staff' ? '#B8943E' : '#5A8A6E';
 
             return (
               <Pressable
@@ -769,7 +769,7 @@ function DirectoryView({ colors, role }: { colors: typeof Colors.light; role: Ed
                       )}
                       {person.rating != null && (
                         <View style={s.detailRow}>
-                          <IconSymbol name="star.fill" size={11} color="#F59E0B" />
+                          <IconSymbol name="star.fill" size={11} color="#B8943E" />
                           <ThemedText style={[s.detailText, { color: colors.textSecondary }]}>{person.rating}/5.0 rating</ThemedText>
                         </View>
                       )}
@@ -818,7 +818,7 @@ function OrgNodeRow({ node, colors, role, depth, expandedIds, onToggle }: {
 }) {
   const isExpanded = expandedIds.has(node.id);
   const hasChildren = (node.children?.length ?? 0) > 0;
-  const levelColor = node.level === 'president' ? '#EF4444' : node.level === 'provost' ? '#F59E0B' : node.level === 'dean' ? ACCENT : '#22C55E';
+  const levelColor = node.level === 'president' ? '#B85C5C' : node.level === 'provost' ? '#B8943E' : node.level === 'dean' ? ACCENT : '#5A8A6E';
   const levelLabel = node.level === 'president' ? 'PRES' : node.level === 'provost' ? 'VP' : node.level === 'dean' ? 'DEAN' : 'CHAIR';
 
   return (
@@ -893,7 +893,7 @@ function OrgStructureView({ colors, role }: { colors: typeof Colors.light; role:
 
       {/* Legend + Expand/Collapse */}
       <View style={[s.legendRow, { marginBottom: Spacing.sm }]}>
-        {[{ label: 'President', color: '#EF4444' }, { label: 'VP', color: '#F59E0B' }, { label: 'Dean', color: ACCENT }, { label: 'Chair', color: '#22C55E' }].map((item) => (
+        {[{ label: 'President', color: '#B85C5C' }, { label: 'VP', color: '#B8943E' }, { label: 'Dean', color: ACCENT }, { label: 'Chair', color: '#5A8A6E' }].map((item) => (
           <View key={item.label} style={s.legendItem}>
             <View style={[s.legendDot, { backgroundColor: item.color }]} />
             <ThemedText style={[s.legendText, { color: colors.textSecondary }]}>{item.label}</ThemedText>
@@ -961,8 +961,8 @@ function CoverageView({ colors, role }: { colors: typeof Colors.light; role: Edu
             {[
               { v: COVERAGE_SUMMARY.totalPositions.toLocaleString(), l: 'Total Seats', c: colors.text },
               { v: COVERAGE_SUMMARY.totalFilled.toLocaleString(), l: 'Filled', c: colors.text },
-              { v: `${COVERAGE_SUMMARY.overallVacancy}%`, l: 'Vacancy', c: COVERAGE_SUMMARY.overallVacancy > 10 ? '#EF4444' : '#F59E0B' },
-              { v: String(COVERAGE_SUMMARY.criticalGaps), l: 'Critical', c: '#EF4444' },
+              { v: `${COVERAGE_SUMMARY.overallVacancy}%`, l: 'Vacancy', c: COVERAGE_SUMMARY.overallVacancy > 10 ? '#B85C5C' : '#B8943E' },
+              { v: String(COVERAGE_SUMMARY.criticalGaps), l: 'Critical', c: '#B85C5C' },
             ].map((item) => (
               <View key={item.l} style={s.summaryStat}>
                 <ThemedText style={[s.summaryValue, { color: item.c }]}>{item.v}</ThemedText>
@@ -986,7 +986,7 @@ function CoverageView({ colors, role }: { colors: typeof Colors.light; role: Edu
         {COVERAGE_CATEGORIES.map((cat) => {
           const isExpanded = expandedId === cat.id;
           const fillPct = Math.round((cat.seatsFilled / cat.seatsTotal) * 100);
-          const barColor = cat.critical ? '#EF4444' : fillPct >= 95 ? '#22C55E' : fillPct >= 85 ? '#F59E0B' : '#EF4444';
+          const barColor = cat.critical ? '#B85C5C' : fillPct >= 95 ? '#5A8A6E' : fillPct >= 85 ? '#B8943E' : '#B85C5C';
 
           return (
             <Pressable
@@ -1002,8 +1002,8 @@ function CoverageView({ colors, role }: { colors: typeof Colors.light; role: Edu
                     <View style={s.coverageNameRow}>
                       <ThemedText style={[s.coverageName, { color: colors.text }]}>{cat.name}</ThemedText>
                       {cat.critical && (
-                        <View style={[s.criticalBadge, { backgroundColor: '#EF444420' }]}>
-                          <ThemedText style={[s.criticalBadgeText, { color: '#EF4444' }]}>CRITICAL</ThemedText>
+                        <View style={[s.criticalBadge, { backgroundColor: '#B85C5C20' }]}>
+                          <ThemedText style={[s.criticalBadgeText, { color: '#B85C5C' }]}>CRITICAL</ThemedText>
                         </View>
                       )}
                     </View>
@@ -1052,10 +1052,10 @@ function CoverageView({ colors, role }: { colors: typeof Colors.light; role: Edu
       {isDeanLevel(role) && (
         <View style={s.moduleContainer}>
           <SectionHeader title="CRITICAL GAPS" colors={colors} icon="exclamationmark.triangle.fill" />
-          <Card colors={colors} style={{ borderColor: '#EF444440' }}>
+          <Card colors={colors} style={{ borderColor: '#B85C5C40' }}>
             {COVERAGE_CATEGORIES.filter((c) => c.critical).map((cat, idx, arr) => (
               <View key={cat.id} style={[s.criticalGapRow, idx < arr.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }]}>
-                <ThemedText style={[s.criticalGapName, { color: '#EF4444' }]}>{cat.name}</ThemedText>
+                <ThemedText style={[s.criticalGapName, { color: '#B85C5C' }]}>{cat.name}</ThemedText>
                 <ThemedText style={[s.criticalGapDetail, { color: colors.textSecondary }]}>
                   {cat.seatsTotal - cat.seatsFilled} vacancies {'\u00B7'} {cat.vacancyRate}% rate {'\u00B7'} Avg fill: {cat.avgTimeToFill}d
                 </ThemedText>
@@ -1087,10 +1087,10 @@ function PermissionsView({ colors, role }: { colors: typeof Colors.light; role: 
         {PERMISSION_PACKAGES.map((pkg) => {
           const isExpanded = expandedId === pkg.id;
           const levelColor =
-            pkg.level === 'E1' ? '#EF4444' :
-            pkg.level === 'E2' ? '#F59E0B' :
+            pkg.level === 'E1' ? '#B85C5C' :
+            pkg.level === 'E2' ? '#B8943E' :
             pkg.level === 'E7' ? ACCENT :
-            pkg.level === 'E11' ? '#22C55E' : colors.textTertiary;
+            pkg.level === 'E11' ? '#5A8A6E' : colors.textTertiary;
 
           return (
             <Pressable
@@ -1122,10 +1122,10 @@ function PermissionsView({ colors, role }: { colors: typeof Colors.light; role: 
                 {isExpanded && (
                   <View style={s.permExpanded}>
                     {/* Capabilities */}
-                    <ThemedText style={[s.permSubheader, { color: '#22C55E' }]}>Capabilities</ThemedText>
+                    <ThemedText style={[s.permSubheader, { color: '#5A8A6E' }]}>Capabilities</ThemedText>
                     {pkg.capabilities.map((cap, idx) => (
                       <View key={idx} style={s.permCapRow}>
-                        <IconSymbol name="checkmark.circle.fill" size={11} color="#22C55E" />
+                        <IconSymbol name="checkmark.circle.fill" size={11} color="#5A8A6E" />
                         <ThemedText style={[s.permCapText, { color: colors.textSecondary }]}>{cap}</ThemedText>
                       </View>
                     ))}
@@ -1133,10 +1133,10 @@ function PermissionsView({ colors, role }: { colors: typeof Colors.light; role: 
                     {/* Restrictions */}
                     {pkg.restrictions.length > 0 && (
                       <>
-                        <ThemedText style={[s.permSubheader, { color: '#EF4444', marginTop: Spacing.sm }]}>Restrictions</ThemedText>
+                        <ThemedText style={[s.permSubheader, { color: '#B85C5C', marginTop: Spacing.sm }]}>Restrictions</ThemedText>
                         {pkg.restrictions.map((res, idx) => (
                           <View key={idx} style={s.permCapRow}>
-                            <IconSymbol name="xmark.circle.fill" size={11} color="#EF4444" />
+                            <IconSymbol name="xmark.circle.fill" size={11} color="#B85C5C" />
                             <ThemedText style={[s.permCapText, { color: colors.textSecondary }]}>{res}</ThemedText>
                           </View>
                         ))}
@@ -1193,9 +1193,9 @@ function PermissionsView({ colors, role }: { colors: typeof Colors.light; role: 
               {(['E1', 'E5', 'E7', 'E11', 'E12'] as const).map((lvl) => {
                 const value = row[lvl];
                 const cellColor =
-                  value === 'Full' ? '#22C55E' :
-                  value === 'Dept' || value === 'Course' || value === 'Own' || value === 'View' || value === 'Enroll' || value === 'Public' ? '#F59E0B' :
-                  '#EF4444';
+                  value === 'Full' ? '#5A8A6E' :
+                  value === 'Dept' || value === 'Course' || value === 'Own' || value === 'View' || value === 'Enroll' || value === 'Public' ? '#B8943E' :
+                  '#B85C5C';
 
                 return (
                   <View key={lvl} style={s.matrixLevelCell}>
@@ -1216,7 +1216,7 @@ function PermissionsView({ colors, role }: { colors: typeof Colors.light; role: 
           <SectionHeader title="RBAC OVERVIEW" colors={colors} />
           <Card colors={colors}>
             <View style={s.summaryGrid}>
-              {[{ v: '14', l: 'Role Levels', c: colors.text }, { v: '9', l: 'Resources', c: colors.text }, { v: '13,332', l: 'Total Seats', c: colors.text }, { v: '98.2%', l: 'Compliant', c: '#22C55E' }].map((item) => (
+              {[{ v: '14', l: 'Role Levels', c: colors.text }, { v: '9', l: 'Resources', c: colors.text }, { v: '13,332', l: 'Total Seats', c: colors.text }, { v: '98.2%', l: 'Compliant', c: '#5A8A6E' }].map((item) => (
                 <View key={item.l} style={s.summaryStat}>
                   <ThemedText style={[s.summaryValue, { color: item.c }]}>{item.v}</ThemedText>
                   <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>{item.l}</ThemedText>

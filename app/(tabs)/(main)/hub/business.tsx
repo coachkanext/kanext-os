@@ -25,7 +25,7 @@ import {
 const TOP_BAR_H = 52;
 const PILLS_H   = 48;
 
-const ACCENT_BIZ = '#1D9BF0';
+const ACCENT_BIZ = '#1A1714';
 
 type BizHubTab = 'Overview' | 'Projects' | 'Reports';
 type BizRole   = 'CEO' | 'Client';
@@ -40,7 +40,7 @@ function taskStatusColor(status: TaskStatus, C: ComponentColors): string {
   switch (status) {
     case 'done':        return C.green;
     case 'in-progress': return C.accent;
-    case 'review':      return '#1D9BF0';
+    case 'review':      return '#1A1714';
     default:            return C.muted as string;
   }
 }
@@ -48,8 +48,8 @@ function taskStatusColor(status: TaskStatus, C: ComponentColors): string {
 function projectStatusColor(status: string, C: ComponentColors): string {
   switch (status) {
     case 'active':    return C.accent;
-    case 'planning':  return '#1D9BF0';
-    case 'on-hold':   return '#8B6340';
+    case 'planning':  return '#1A1714';
+    case 'on-hold':   return '#1A1714';
     case 'completed': return C.green;
     default:          return C.muted as string;
   }
@@ -59,9 +59,9 @@ function activityIconColor(type: string, C: ComponentColors): string {
   switch (type) {
     case 'deal':     return C.accent;
     case 'invoice':  return C.green;
-    case 'project':  return '#1D9BF0';
-    case 'team':     return '#8B6340';
-    case 'campaign': return '#003A63';
+    case 'project':  return '#1A1714';
+    case 'team':     return '#1A1714';
+    case 'campaign': return '#1A1714';
     default:         return C.secondary as string;
   }
 }
@@ -134,7 +134,7 @@ export default function BusinessHubScreen() {
       { name: 'Mobile App Prototype',      status: 'In Progress',due: 'Apr 20' },
       { name: 'Analytics Dashboard',       status: 'Pending',    due: 'May 10' },
     ];
-    const statusColor = (st: string) => st === 'Delivered' ? C.green : st === 'In Review' ? '#1D9BF0' : st === 'In Progress' ? ACCENT_BIZ : C.muted as string;
+    const statusColor = (st: string) => st === 'Delivered' ? C.green : st === 'In Review' ? '#1A1714' : st === 'In Progress' ? ACCENT_BIZ : C.muted as string;
     const updates = [
       { text: 'Mobile prototype screens completed — review link shared.', time: '2d ago' },
       { text: 'Landing page copy approved by your team. Moving to dev.', time: '4d ago' },
@@ -143,7 +143,7 @@ export default function BusinessHubScreen() {
     return (
       <View style={{ paddingHorizontal: 16, gap: 16, paddingBottom: 32 }}>
         {/* My Project Status */}
-        <GlassView tier={1} style={[s.card, { backgroundColor: '#0F2D45', gap: 10 }]}>
+        <GlassView tier={1} style={[s.card, { backgroundColor: '#1A1714', gap: 10 }]}>
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
             <View>
               <Text style={[s.subHeader, { color: 'rgba(255,255,255,0.55)', marginBottom: 4 }]}>Your Project</Text>
@@ -251,13 +251,13 @@ export default function BusinessHubScreen() {
     return (
       <View style={{ paddingHorizontal: 16, gap: 16, paddingBottom: 32 }}>
         {isCEO && (
-          <GlassView tier={1} style={[s.card, { backgroundColor: '#1D3D5C', gap: 6 }]}>
+          <GlassView tier={1} style={[s.card, { backgroundColor: '#1A1714', gap: 6 }]}>
             <Text style={[s.sectionTitle, { color: '#fff' }]}>KaNeXT Operations LLC</Text>
             <Text style={[s.bodySmall, { color: 'rgba(255,255,255,0.7)' }]}>Q1 2026 · Revenue {formatCurrency(BIZ_DASHBOARD.thisMonth.revenue, true)} this month</Text>
             <View style={[s.row, { marginTop: 8, gap: 8 }]}>
               {[
                 { label: 'Revenue',  value: formatCurrency(BIZ_DASHBOARD.thisMonth.revenue, true), color: '#5A8A6E' },
-                { label: 'Profit',   value: formatCurrency(BIZ_DASHBOARD.thisMonth.profit, true),  color: '#7EB8D4' },
+                { label: 'Profit',   value: formatCurrency(BIZ_DASHBOARD.thisMonth.profit, true),  color: '#1A1714' },
                 { label: 'Pipeline', value: formatCurrency(BIZ_DASHBOARD.pipeline.totalValue, true), color: C.accent },
               ].map(m => (
                 <View key={m.label} style={[s.metricChip, { backgroundColor: 'rgba(255,255,255,0.1)', flex: 1 }]}>
@@ -274,8 +274,8 @@ export default function BusinessHubScreen() {
           {[
             { label: 'MRR',        value: '$12,285',     icon: 'arrow.up.right',              color: C.green },
             { label: 'Open Deals', value: `${BIZ_DASHBOARD.pipeline.dealCount}`,              icon: 'briefcase.fill', color: C.accent },
-            { label: 'Team',       value: `${EMPLOYEES.filter(e=>e.status!=='contractor').length}`, icon: 'person.2.fill', color: '#1D9BF0' },
-            { label: 'Projects',   value: `${PROJECTS.filter(p=>p.status==='active').length} active`, icon: 'checkmark.circle.fill', color: '#8B6340' },
+            { label: 'Team',       value: `${EMPLOYEES.filter(e=>e.status!=='contractor').length}`, icon: 'person.2.fill', color: '#1A1714' },
+            { label: 'Projects',   value: `${PROJECTS.filter(p=>p.status==='active').length} active`, icon: 'checkmark.circle.fill', color: '#1A1714' },
             { label: 'Overdue',    value: '2 invoices',  icon: 'exclamationmark.circle.fill', color: C.red },
           ].map(m => (
             <GlassView tier={1} key={m.label} style={[s.metricCard, { gap: 4 }]}>
@@ -349,8 +349,8 @@ export default function BusinessHubScreen() {
           <View style={[s.row, { gap: 8 }]}>
             {[
               { label: 'Active',      value: BIZ_DASHBOARD.teamPulse.activeToday, color: C.green },
-              { label: 'On PTO',      value: BIZ_DASHBOARD.teamPulse.onPTO,       color: '#8B6340' },
-              { label: 'Contractors', value: BIZ_DASHBOARD.teamPulse.contractors, color: '#1D9BF0' },
+              { label: 'On PTO',      value: BIZ_DASHBOARD.teamPulse.onPTO,       color: '#1A1714' },
+              { label: 'Contractors', value: BIZ_DASHBOARD.teamPulse.contractors, color: '#1A1714' },
               { label: 'Openings',    value: BIZ_DASHBOARD.teamPulse.openings,    color: C.red },
             ].map(item => (
               <View key={item.label} style={[s.metricChip, { flex: 1, backgroundColor: C.surfacePressed as string }]}>
@@ -534,7 +534,7 @@ export default function BusinessHubScreen() {
               { label: 'Total Revenue',  value: formatCurrency(totalRevenue),  color: C.green },
               { label: 'Total Expenses', value: formatCurrency(totalExpenses), color: C.red },
               { label: 'Net Profit',     value: formatCurrency(totalRevenue - totalExpenses), color: C.accent },
-              { label: 'Profit Margin',  value: `${Math.round(((totalRevenue - totalExpenses) / totalRevenue) * 100)}%`, color: '#1D9BF0' },
+              { label: 'Profit Margin',  value: `${Math.round(((totalRevenue - totalExpenses) / totalRevenue) * 100)}%`, color: '#1A1714' },
             ].map((item, i) => (
               <View key={item.label} style={[s.row, { paddingVertical: 10 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
                 <Text style={[s.bodyMed, { color: C.label, flex: 1 }]}>{item.label}</Text>
@@ -562,16 +562,16 @@ export default function BusinessHubScreen() {
 
     if (pill === 'Sales') {
       const stageCounts: Record<string, number> = { New: 2, Qualified: 3, Proposal: 3, Negotiation: 3, Won: 2, Lost: 2 };
-      const stageColors: Record<string, string> = { New: 'rgba(45,30,18,0.30)', Qualified: '#1D9BF0', Proposal: '#3B82F6', Negotiation: '#8B6340', Won: '#5A8A6E', Lost: '#B85C5C' };
+      const stageColors: Record<string, string> = { New: 'rgba(45,30,18,0.30)', Qualified: '#1A1714', Proposal: '#1A1714', Negotiation: '#1A1714', Won: '#5A8A6E', Lost: '#B85C5C' };
       return (
         <View style={{ paddingHorizontal: 16, gap: 16, paddingBottom: 32 }}>
           <GlassView tier={1} style={s.card}>
             <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Pipeline</Text>
             {[
               { label: 'Total Value',   value: formatCurrency(413000, true), color: C.accent },
-              { label: 'Open Deals',    value: '13',                        color: '#1D9BF0' },
+              { label: 'Open Deals',    value: '13',                        color: '#1A1714' },
               { label: 'Won This Year', value: '2',                         color: C.green },
-              { label: 'Avg Deal Size', value: formatCurrency(31769, true), color: '#8B6340' },
+              { label: 'Avg Deal Size', value: formatCurrency(31769, true), color: '#1A1714' },
             ].map((item, i) => (
               <View key={item.label} style={[s.row, { paddingVertical: 10 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
                 <Text style={[s.bodyMed, { color: C.label, flex: 1 }]}>{item.label}</Text>
@@ -614,15 +614,15 @@ export default function BusinessHubScreen() {
 
     const recentChanges = [
       { icon: 'person.badge.plus',      color: C.green,              text: 'Zara Patel joined Engineering', time: '2 days ago' },
-      { icon: 'arrow.up.circle.fill',   color: '#1D9BF0',            text: 'Marcus Webb promoted to Head of Product', time: 'last week' },
+      { icon: 'arrow.up.circle.fill',   color: '#1A1714',            text: 'Marcus Webb promoted to Head of Product', time: 'last week' },
       { icon: 'person.fill.xmark',      color: C.accent,             text: 'Brianna Fox on PTO until Friday', time: 'this week' },
       { icon: 'person.badge.plus',      color: C.green,              text: 'Miles Grant joined Growth', time: '3 months ago' },
     ];
 
     const teamActivity = [
-      { label: 'Hours logged this week', value: '347 hrs',  icon: 'clock.fill',          color: '#1D9BF0' },
+      { label: 'Hours logged this week', value: '347 hrs',  icon: 'clock.fill',          color: '#1A1714' },
       { label: 'Active projects',        value: `${PROJECTS.filter(p => p.status === 'active').length}`, icon: 'checkmark.circle.fill', color: C.accent },
-      { label: 'Meetings this week',     value: '12',       icon: 'calendar.badge.clock', color: '#8B6340' },
+      { label: 'Meetings this week',     value: '12',       icon: 'calendar.badge.clock', color: '#1A1714' },
       { label: 'Open tasks',             value: '18',       icon: 'square.and.pencil',    color: C.green },
     ];
 
@@ -653,8 +653,8 @@ export default function BusinessHubScreen() {
           </View>
           {[
             { label: 'Full-Time',   value: fullTime,    color: C.accent },
-            { label: 'Contractors', value: contractors, color: '#8B6340' },
-            { label: 'Remote',      value: remote,      color: '#1D9BF0' },
+            { label: 'Contractors', value: contractors, color: '#1A1714' },
+            { label: 'Remote',      value: remote,      color: '#1A1714' },
             { label: 'On PTO',      value: onPto,       color: C.red },
           ].map((item, i) => (
             <View key={item.label} style={[s.row, { paddingVertical: 9 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
@@ -720,7 +720,7 @@ export default function BusinessHubScreen() {
                           <Text style={[s.bodySmall, { color: C.muted as string }]}>{emp.title}</Text>
                         </View>
                         <View style={[s.statusDot, {
-                          backgroundColor: emp.status === 'pto' ? C.red : emp.status === 'remote' ? '#1D9BF0' : emp.status === 'contractor' ? '#8B6340' : C.green,
+                          backgroundColor: emp.status === 'pto' ? C.red : emp.status === 'remote' ? '#1A1714' : emp.status === 'contractor' ? '#1A1714' : C.green,
                         }]} />
                       </View>
                     ))}
@@ -757,8 +757,8 @@ export default function BusinessHubScreen() {
                 <Text style={[s.bodyMed, { color: C.label }]}>{pos.title}</Text>
                 <Text style={[s.bodySmall, { color: C.muted as string }]}>{pos.dept}</Text>
               </View>
-              <View style={[s.statusBadge, { backgroundColor: 'rgba(29,155,240,0.12)', borderColor: '#1D9BF0' }]}>
-                <Text style={[s.statusBadgeText, { color: '#1D9BF0' }]}>{pos.applicants} applicants</Text>
+              <View style={[s.statusBadge, { backgroundColor: 'rgba(29,155,240,0.12)', borderColor: '#1A1714' }]}>
+                <Text style={[s.statusBadgeText, { color: '#1A1714' }]}>{pos.applicants} applicants</Text>
               </View>
             </View>
           ))}
@@ -806,7 +806,7 @@ export default function BusinessHubScreen() {
         </GlassView>
 
         {/* ── Compensation Summary (admin only) ── */}
-        <GlassView tier={1} style={[s.card, { backgroundColor: '#1D3D5C' }]}>
+        <GlassView tier={1} style={[s.card, { backgroundColor: '#1A1714' }]}>
           <Text style={[s.sectionTitle, { color: '#fff', marginBottom: 4 }]}>Compensation Summary</Text>
           <Text style={[s.bodySmall, { color: 'rgba(255,255,255,0.6)', marginBottom: 12 }]}>Total payroll: {formatCurrency(totalPayroll)}/yr · 13 employees</Text>
           {deptCompensation.filter(d => d.avg > 0).map((d, i) => (
@@ -833,10 +833,10 @@ export default function BusinessHubScreen() {
           <Text style={[s.sectionTitle, { color: C.label, marginBottom: 12 }]}>Quick Actions</Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
             {[
-              { label: 'Post a Job',       icon: 'person.badge.plus',         color: '#1D9BF0' },
+              { label: 'Post a Job',       icon: 'person.badge.plus',         color: '#1A1714' },
               { label: 'Run Payroll',      icon: 'dollarsign.circle.fill',    color: C.green },
               { label: 'Schedule Review',  icon: 'calendar.badge.clock',      color: C.accent },
-              { label: 'Export Report',    icon: 'square.and.arrow.up',       color: '#8B6340' },
+              { label: 'Export Report',    icon: 'square.and.arrow.up',       color: '#1A1714' },
             ].map(action => (
               <Pressable key={action.label}
                 style={({ pressed }) => [{ flex: 1, minWidth: '44%', flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 12, borderRadius: 10, borderWidth: 1, borderColor: C.inputBorder as string, backgroundColor: pressed ? C.surfacePressed as string : 'transparent' }]}

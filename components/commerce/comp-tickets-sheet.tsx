@@ -165,7 +165,7 @@ export function CompTicketsSheet({ visible, onClose, colors }: Props) {
             </View>
             <View style={styles.confirmRow}>
               <Text style={[styles.confirmLabel, { color: colors.textSecondary }]}>Status</Text>
-              <Text style={[styles.statusText, { color: '#22C55E' }]}>Settled</Text>
+              <Text style={[styles.statusText, { color: '#5A8A6E' }]}>Settled</Text>
             </View>
           </View>
 
@@ -173,7 +173,7 @@ export function CompTicketsSheet({ visible, onClose, colors }: Props) {
             <Text style={[styles.sectionLabel, { color: colors.textTertiary }]}>PAYMENT CHAIN</Text>
             {chain.chain.map((step, i) => (
               <View key={i} style={styles.chainRow}>
-                <View style={[styles.chainDot, { backgroundColor: '#22C55E' }]} />
+                <View style={[styles.chainDot, { backgroundColor: '#5A8A6E' }]} />
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.chainStage, { color: colors.text }]}>{step.stage}</Text>
                   <Text style={[styles.chainDetail, { color: colors.textSecondary }]}>{step.detail}</Text>
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   amountText: { fontSize: 24, fontWeight: '800', letterSpacing: -0.3 },
   statusText: { fontSize: 13, fontWeight: '700', letterSpacing: 0.5 },
 
-  ctaButton: { backgroundColor: '#22C55E', paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
+  ctaButton: { backgroundColor: '#5A8A6E', paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
   ctaButtonText: { color: '#fff', fontSize: 15, fontWeight: '700', letterSpacing: -0.2 },
   cancelButton: { borderWidth: StyleSheet.hairlineWidth, paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
   cancelButtonText: { fontSize: 15, fontWeight: '700', letterSpacing: -0.2 },

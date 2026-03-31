@@ -230,9 +230,9 @@ export function getImportanceColor(importance: string): string {
     case 'critical':
       return '#FFFFFF';
     case 'high':
-      return '#A1A1AA';
+      return '#9C9790';
     case 'medium':
-      return '#A1A1AA';
+      return '#9C9790';
     case 'low':
       return '#52525B';
     default:

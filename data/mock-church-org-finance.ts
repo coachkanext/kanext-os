@@ -186,14 +186,14 @@ export const FUND_TYPE_LABELS: Record<FundType, string> = {
 };
 
 export const FUND_TYPE_COLORS: Record<FundType, string> = {
-  general: '#22C55E',
-  missions: '#1D9BF0',
-  benevolence: '#1D9BF0',
-  building: '#F59E0B',
-  youth: '#EF4444',
-  kids: '#1D9BF0',
-  events: '#22C55E',
-  worship: '#F59E0B',
+  general: '#5A8A6E',
+  missions: '#1A1714',
+  benevolence: '#1A1714',
+  building: '#B8943E',
+  youth: '#B85C5C',
+  kids: '#1A1714',
+  events: '#5A8A6E',
+  worship: '#B8943E',
 };
 
 export const FUND_TYPE_ICONS: Record<FundType, string> = {
@@ -220,15 +220,15 @@ export const REQUEST_STATUS_LABELS: Record<RequestStatus, string> = {
 };
 
 export const REQUEST_STATUS_COLORS: Record<RequestStatus, string> = {
-  draft: '#A1A1AA',
-  submitted: '#1D9BF0',
-  pending_approval: '#F59E0B',
-  approved: '#22C55E',
-  scheduled: '#22C55E',
-  released: '#1D9BF0',
-  paid: '#22C55E',
-  held: '#EF4444',
-  rejected: '#EF4444',
+  draft: '#9C9790',
+  submitted: '#1A1714',
+  pending_approval: '#B8943E',
+  approved: '#5A8A6E',
+  scheduled: '#5A8A6E',
+  released: '#1A1714',
+  paid: '#5A8A6E',
+  held: '#B85C5C',
+  rejected: '#B85C5C',
 };
 
 export const REQUEST_TYPE_LABELS: Record<RequestType, string> = {
@@ -280,10 +280,10 @@ export const AUDIT_STATUS_LABELS: Record<AuditStatus, string> = {
 };
 
 export const AUDIT_STATUS_COLORS: Record<AuditStatus, string> = {
-  complete: '#22C55E',
-  incomplete: '#F59E0B',
-  missing_docs: '#EF4444',
-  flagged: '#EF4444',
+  complete: '#5A8A6E',
+  incomplete: '#B8943E',
+  missing_docs: '#B85C5C',
+  flagged: '#B85C5C',
 };
 
 // =============================================================================
@@ -901,12 +901,12 @@ export function getChurchFinanceData() {
     auditTrail: AUDIT_TRAIL,
     reports: REPORTS,
     healthTiles: [
-      { label: 'Total Funds', value: '$570,200', subValue: '5 funds', color: '#22C55E', icon: 'banknote.fill' },
-      { label: 'Committed', value: '$88,200', subValue: 'approved not paid', color: '#F59E0B', icon: 'clock.fill' },
-      { label: 'Spend MTD', value: '$23,400', subValue: 'vs $28,000 budget', color: '#1D9BF0', icon: 'chart.bar.fill' },
-      { label: 'Benevolence Cases', value: '3', subValue: 'active', color: '#1D9BF0', icon: 'heart.fill' },
-      { label: 'Exceptions', value: '2', subValue: 'held/missing docs', color: '#EF4444', icon: 'exclamationmark.triangle.fill' },
-      { label: 'Audit Score', value: '94%', subValue: 'receipts + approvals', color: '#22C55E', icon: 'checkmark.shield.fill' },
+      { label: 'Total Funds', value: '$570,200', subValue: '5 funds', color: '#5A8A6E', icon: 'banknote.fill' },
+      { label: 'Committed', value: '$88,200', subValue: 'approved not paid', color: '#B8943E', icon: 'clock.fill' },
+      { label: 'Spend MTD', value: '$23,400', subValue: 'vs $28,000 budget', color: '#1A1714', icon: 'chart.bar.fill' },
+      { label: 'Benevolence Cases', value: '3', subValue: 'active', color: '#1A1714', icon: 'heart.fill' },
+      { label: 'Exceptions', value: '2', subValue: 'held/missing docs', color: '#B85C5C', icon: 'exclamationmark.triangle.fill' },
+      { label: 'Audit Score', value: '94%', subValue: 'receipts + approvals', color: '#5A8A6E', icon: 'checkmark.shield.fill' },
     ],
   };
 }

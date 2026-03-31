@@ -27,12 +27,12 @@ type CategoryFilter = (typeof CATEGORIES)[number];
 function getCategoryColor(cat: ChurchNewsItem['category']): string {
   switch (cat) {
     case 'sermon': return ACCENT;
-    case 'testimony': return '#22C55E';
+    case 'testimony': return '#5A8A6E';
     case 'ministry_highlight': return ACCENT;
-    case 'announcement': return '#F59E0B';
+    case 'announcement': return '#B8943E';
     case 'outreach': return ACCENT;
     case 'worship': return ACCENT;
-    default: return '#A1A1AA';
+    default: return '#9C9790';
   }
 }
 

@@ -57,40 +57,40 @@ interface UniversalServiceSheetProps {
 
 const SERVICE_STATUS_COLORS: Record<string, string> = {
   upcoming: ACCENT,
-  live: '#22C55E',
-  completed: '#A1A1AA',
+  live: '#5A8A6E',
+  completed: '#9C9790',
 };
 
 const AGENDA_TYPE_COLORS: Record<string, string> = {
-  setup: '#A1A1AA',
+  setup: '#9C9790',
   doors: ACCENT,
   worship: ACCENT,
-  teaching: '#F59E0B',
-  small_groups: '#22C55E',
-  teardown: '#A1A1AA',
-  offering: '#F59E0B',
+  teaching: '#B8943E',
+  small_groups: '#5A8A6E',
+  teardown: '#9C9790',
+  offering: '#B8943E',
   announcements: ACCENT,
 };
 
 const INCIDENT_TYPE_COLORS: Record<string, string> = {
-  child_safety: '#EF4444',
-  medical: '#F59E0B',
+  child_safety: '#B85C5C',
+  medical: '#B8943E',
   conflict: ACCENT,
-  property: '#A1A1AA',
-  other: '#A1A1AA',
+  property: '#9C9790',
+  other: '#9C9790',
 };
 
 const SENSITIVITY_COLORS: Record<string, string> = {
-  public: '#22C55E',
-  restricted: '#F59E0B',
-  confidential: '#EF4444',
+  public: '#5A8A6E',
+  restricted: '#B8943E',
+  confidential: '#B85C5C',
 };
 
 const INCIDENT_STATUS_COLORS: Record<string, string> = {
-  open: '#EF4444',
-  investigating: '#F59E0B',
-  resolved: '#22C55E',
-  closed: '#A1A1AA',
+  open: '#B85C5C',
+  investigating: '#B8943E',
+  resolved: '#5A8A6E',
+  closed: '#9C9790',
 };
 
 // =============================================================================
@@ -295,26 +295,26 @@ function ServiceHeader({
         <View
           style={[
             styles.statusPill,
-            { backgroundColor: (SERVICE_STATUS_COLORS[service.status] ?? '#A1A1AA') + '1A' },
+            { backgroundColor: (SERVICE_STATUS_COLORS[service.status] ?? '#9C9790') + '1A' },
           ]}
         >
           {service.status === 'live' && (
             <View style={styles.liveDotOuter}>
-              <View style={[styles.liveDot, { backgroundColor: '#22C55E' }]} />
+              <View style={[styles.liveDot, { backgroundColor: '#5A8A6E' }]} />
             </View>
           )}
           {service.status !== 'live' && (
             <View
               style={[
                 styles.statusDot,
-                { backgroundColor: SERVICE_STATUS_COLORS[service.status] ?? '#A1A1AA' },
+                { backgroundColor: SERVICE_STATUS_COLORS[service.status] ?? '#9C9790' },
               ]}
             />
           )}
           <ThemedText
             style={[
               styles.statusPillText,
-              { color: SERVICE_STATUS_COLORS[service.status] ?? '#A1A1AA' },
+              { color: SERVICE_STATUS_COLORS[service.status] ?? '#9C9790' },
             ]}
           >
             {service.status.charAt(0).toUpperCase() + service.status.slice(1)}
@@ -331,9 +331,9 @@ function ServiceHeader({
       {seniorPastor && (
         <View style={styles.chipRow}>
           {staffingMissing > 0 && (
-            <View style={[styles.chip, { backgroundColor: '#EF444422' }]}>
-              <IconSymbol name="person.fill.questionmark" size={12} color="#EF4444" />
-              <ThemedText style={[styles.chipText, { color: '#EF4444' }]}>
+            <View style={[styles.chip, { backgroundColor: '#B85C5C22' }]}>
+              <IconSymbol name="person.fill.questionmark" size={12} color="#B85C5C" />
+              <ThemedText style={[styles.chipText, { color: '#B85C5C' }]}>
                 Staffing: {staffingMissing} missing
               </ThemedText>
             </View>
@@ -341,18 +341,18 @@ function ServiceHeader({
           <View
             style={[
               styles.chip,
-              { backgroundColor: service.safetyCleared ? '#22C55E22' : '#F59E0B22' },
+              { backgroundColor: service.safetyCleared ? '#5A8A6E22' : '#B8943E22' },
             ]}
           >
             <IconSymbol
               name="shield.fill"
               size={12}
-              color={service.safetyCleared ? '#22C55E' : '#F59E0B'}
+              color={service.safetyCleared ? '#5A8A6E' : '#B8943E'}
             />
             <ThemedText
               style={[
                 styles.chipText,
-                { color: service.safetyCleared ? '#22C55E' : '#F59E0B' },
+                { color: service.safetyCleared ? '#5A8A6E' : '#B8943E' },
               ]}
             >
               Safety: {service.safetyCleared ? 'OK' : 'Review'}
@@ -400,7 +400,7 @@ function AgendaTab({
               <View
                 style={[
                   styles.agendaTimelineBar,
-                  { backgroundColor: AGENDA_TYPE_COLORS[block.type] ?? '#A1A1AA' },
+                  { backgroundColor: AGENDA_TYPE_COLORS[block.type] ?? '#9C9790' },
                 ]}
               />
               <View style={[styles.agendaTimeCol]}>
@@ -456,7 +456,7 @@ function AssignmentsTab({
             <View
               style={[
                 styles.roleFillIndicator,
-                { backgroundColor: role.filled ? '#22C55E' : '#EF4444' },
+                { backgroundColor: role.filled ? '#5A8A6E' : '#B85C5C' },
               ]}
             />
             <View style={{ flex: 1 }}>
@@ -466,7 +466,7 @@ function AssignmentsTab({
               <ThemedText
                 style={[
                   styles.captionText,
-                  { color: role.filled ? colors.textSecondary : '#EF4444' },
+                  { color: role.filled ? colors.textSecondary : '#B85C5C' },
                 ]}
               >
                 {role.filled ? role.assigned : 'UNFILLED — needs assignment'}
@@ -476,8 +476,8 @@ function AssignmentsTab({
               <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
             )}
             {!role.filled && (
-              <View style={[styles.unfilledBadge, { backgroundColor: '#EF444422' }]}>
-                <ThemedText style={[styles.unfilledBadgeText, { color: '#EF4444' }]}>
+              <View style={[styles.unfilledBadge, { backgroundColor: '#B85C5C22' }]}>
+                <ThemedText style={[styles.unfilledBadgeText, { color: '#B85C5C' }]}>
                   MISSING
                 </ThemedText>
               </View>
@@ -498,13 +498,13 @@ function AssignmentsTab({
           <StatBlock
             label="Filled"
             value={String(SERVICE_ROLES_NEEDED.filter((r) => r.filled).length)}
-            color="#22C55E"
+            color="#5A8A6E"
             colors={colors}
           />
           <StatBlock
             label="Missing"
             value={String(SERVICE_ROLES_NEEDED.filter((r) => !r.filled).length)}
-            color={SERVICE_ROLES_NEEDED.some((r) => !r.filled) ? '#EF4444' : '#22C55E'}
+            color={SERVICE_ROLES_NEEDED.some((r) => !r.filled) ? '#B85C5C' : '#5A8A6E'}
             colors={colors}
           />
         </View>
@@ -570,9 +570,9 @@ function RunOfShowTab({
                   </View>
                 )}
                 {segment.mediaLink && (
-                  <View style={[styles.mediaLinkChip, { backgroundColor: '#F59E0B22' }]}>
-                    <IconSymbol name="play.rectangle.fill" size={10} color="#F59E0B" />
-                    <ThemedText style={[styles.mediaLinkText, { color: '#F59E0B' }]}>
+                  <View style={[styles.mediaLinkChip, { backgroundColor: '#B8943E22' }]}>
+                    <IconSymbol name="play.rectangle.fill" size={10} color="#B8943E" />
+                    <ThemedText style={[styles.mediaLinkText, { color: '#B8943E' }]}>
                       Media
                     </ThemedText>
                   </View>
@@ -622,7 +622,7 @@ function OpsChecklistTab({
                 <IconSymbol
                   name={item.completed ? 'checkmark.circle.fill' : 'circle' as any}
                   size={18}
-                  color={item.completed ? '#22C55E' : colors.textTertiary}
+                  color={item.completed ? '#5A8A6E' : colors.textTertiary}
                 />
                 <View style={{ flex: 1, marginLeft: Spacing.sm }}>
                   <ThemedText style={[styles.bodyText, { color: colors.text }]}>
@@ -654,7 +654,7 @@ function OpsChecklistTab({
                 key={item.id}
                 style={[styles.listRow, { borderBottomColor: colors.border }]}
               >
-                <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#F59E0B" />
+                <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#B8943E" />
                 <View style={{ flex: 1, marginLeft: Spacing.sm }}>
                   <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
                     {item.item}
@@ -729,13 +729,13 @@ function AttendanceTab({
             <View
               style={[
                 styles.followUpStatusBadge,
-                { backgroundColor: target.status === 'contacted' ? '#22C55E22' : '#F59E0B22' },
+                { backgroundColor: target.status === 'contacted' ? '#5A8A6E22' : '#B8943E22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.followUpStatusText,
-                  { color: target.status === 'contacted' ? '#22C55E' : '#F59E0B' },
+                  { color: target.status === 'contacted' ? '#5A8A6E' : '#B8943E' },
                 ]}
               >
                 {target.status.toUpperCase()}
@@ -788,13 +788,13 @@ function IncidentsTab({
                 <View
                   style={[
                     styles.incidentTypeBadge,
-                    { backgroundColor: (INCIDENT_TYPE_COLORS[inc.type] ?? '#A1A1AA') + '22' },
+                    { backgroundColor: (INCIDENT_TYPE_COLORS[inc.type] ?? '#9C9790') + '22' },
                   ]}
                 >
                   <ThemedText
                     style={[
                       styles.incidentTypeText,
-                      { color: INCIDENT_TYPE_COLORS[inc.type] ?? '#A1A1AA' },
+                      { color: INCIDENT_TYPE_COLORS[inc.type] ?? '#9C9790' },
                     ]}
                   >
                     {inc.type.replace('_', ' ').toUpperCase()}
@@ -803,13 +803,13 @@ function IncidentsTab({
                 <View
                   style={[
                     styles.sensitivityBadge,
-                    { backgroundColor: (SENSITIVITY_COLORS[inc.sensitivity] ?? '#A1A1AA') + '22' },
+                    { backgroundColor: (SENSITIVITY_COLORS[inc.sensitivity] ?? '#9C9790') + '22' },
                   ]}
                 >
                   <ThemedText
                     style={[
                       styles.sensitivityText,
-                      { color: SENSITIVITY_COLORS[inc.sensitivity] ?? '#A1A1AA' },
+                      { color: SENSITIVITY_COLORS[inc.sensitivity] ?? '#9C9790' },
                     ]}
                   >
                     {inc.sensitivity.toUpperCase()}
@@ -833,13 +833,13 @@ function IncidentsTab({
                 <View
                   style={[
                     styles.incidentStatusBadge,
-                    { backgroundColor: (INCIDENT_STATUS_COLORS[inc.status] ?? '#A1A1AA') + '22' },
+                    { backgroundColor: (INCIDENT_STATUS_COLORS[inc.status] ?? '#9C9790') + '22' },
                   ]}
                 >
                   <ThemedText
                     style={[
                       styles.incidentStatusText,
-                      { color: INCIDENT_STATUS_COLORS[inc.status] ?? '#A1A1AA' },
+                      { color: INCIDENT_STATUS_COLORS[inc.status] ?? '#9C9790' },
                     ]}
                   >
                     {inc.status.toUpperCase()}
@@ -903,13 +903,13 @@ function RecapFollowUpTab({
             <View
               style={[
                 styles.actionTypeBadge,
-                { backgroundColor: action.type === 'follow_up' ? `${ACCENT}22` : '#F59E0B22' },
+                { backgroundColor: action.type === 'follow_up' ? `${ACCENT}22` : '#B8943E22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.actionTypeText,
-                  { color: action.type === 'follow_up' ? ACCENT : '#F59E0B' },
+                  { color: action.type === 'follow_up' ? ACCENT : '#B8943E' },
                 ]}
               >
                 {action.type === 'follow_up' ? 'FOLLOW-UP' : 'TASK'}
@@ -934,7 +934,7 @@ function RecapFollowUpTab({
             key={idx}
             style={[styles.adjustmentRow, { borderBottomColor: colors.border }]}
           >
-            <IconSymbol name="arrow.right.circle.fill" size={16} color="#22C55E" />
+            <IconSymbol name="arrow.right.circle.fill" size={16} color="#5A8A6E" />
             <ThemedText style={[styles.bodyText, { color: colors.text, flex: 1, marginLeft: Spacing.sm }]}>
               {adj}
             </ThemedText>
@@ -1090,7 +1090,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#22C55E33',
+    backgroundColor: '#5A8A6E33',
     alignItems: 'center',
     justifyContent: 'center',
   },

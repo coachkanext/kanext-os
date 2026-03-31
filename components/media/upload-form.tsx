@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#A1A1AA',
+    color: '#9C9790',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   },
   tagText: {
     fontSize: 13,
-    color: '#A1A1AA',
+    color: '#9C9790',
     fontWeight: '500',
   },
   toggleRow: {
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   toggleText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   toggleActiveText: {
     color: '#000',

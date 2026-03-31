@@ -28,8 +28,8 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
 ];
 
 const STATUS_COLORS: Record<string, string> = {
-  injured: '#EF4444',
-  suspended: '#F59E0B',
+  injured: '#B85C5C',
+  suspended: '#B8943E',
 };
 
 interface Props {
@@ -131,8 +131,8 @@ export function CompGridDriversView({ colors, accent }: Props) {
                   <ThemedText style={styles.starIcon}>★</ThemedText>
                 )}
                 {driver.status !== 'active' && (
-                  <View style={[styles.statusBadge, { backgroundColor: (STATUS_COLORS[driver.status] ?? '#A1A1AA') + '20' }]}>
-                    <ThemedText style={[styles.statusText, { color: STATUS_COLORS[driver.status] ?? '#A1A1AA' }]}>
+                  <View style={[styles.statusBadge, { backgroundColor: (STATUS_COLORS[driver.status] ?? '#9C9790') + '20' }]}>
+                    <ThemedText style={[styles.statusText, { color: STATUS_COLORS[driver.status] ?? '#9C9790' }]}>
                       {driver.status.charAt(0).toUpperCase() + driver.status.slice(1)}
                     </ThemedText>
                   </View>
@@ -148,8 +148,8 @@ export function CompGridDriversView({ colors, accent }: Props) {
               <ThemedText style={[styles.pointsText, { color: colors.text }]}>{driver.points} pts</ThemedText>
               <View style={styles.statsRow}>
                 {driver.wins > 0 && (
-                  <View style={[styles.statBadge, { backgroundColor: '#22C55E20' }]}>
-                    <ThemedText style={[styles.statBadgeText, { color: '#22C55E' }]}>{driver.wins}W</ThemedText>
+                  <View style={[styles.statBadge, { backgroundColor: '#5A8A6E20' }]}>
+                    <ThemedText style={[styles.statBadgeText, { color: '#5A8A6E' }]}>{driver.wins}W</ThemedText>
                   </View>
                 )}
                 {driver.podiums > 0 && (
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   nameCol: { flex: 1 },
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: 4, flexWrap: 'wrap' },
   driverName: { fontSize: 14, fontWeight: '600' },
-  starIcon: { fontSize: 12, color: '#F59E0B' },
+  starIcon: { fontSize: 12, color: '#B8943E' },
   teamLabel: { fontSize: 11, marginTop: 2 },
   statusBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
   statusText: { fontSize: 9, fontWeight: '700', textTransform: 'uppercase' },

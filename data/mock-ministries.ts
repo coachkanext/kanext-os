@@ -73,7 +73,7 @@ export const MINISTRIES_V2: MinistryV2[] = [
     status: 'active',
     meetingDay: 'Sundays',
     meetingTime: '8:00 AM',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'min-youth',
@@ -85,7 +85,7 @@ export const MINISTRIES_V2: MinistryV2[] = [
     status: 'active',
     meetingDay: 'Fridays',
     meetingTime: '6:30 PM',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'min-women',
@@ -97,7 +97,7 @@ export const MINISTRIES_V2: MinistryV2[] = [
     status: 'active',
     meetingDay: '1st & 3rd Saturdays',
     meetingTime: '10:00 AM',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'min-men',
@@ -109,7 +109,7 @@ export const MINISTRIES_V2: MinistryV2[] = [
     status: 'active',
     meetingDay: '2nd Saturdays',
     meetingTime: '8:00 AM',
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
   {
     id: 'min-children',
@@ -121,7 +121,7 @@ export const MINISTRIES_V2: MinistryV2[] = [
     status: 'active',
     meetingDay: 'Sundays',
     meetingTime: '10:30 AM',
-    color: '#F59E0B',
+    color: '#B8943E',
   },
   {
     id: 'min-prayer',
@@ -133,7 +133,7 @@ export const MINISTRIES_V2: MinistryV2[] = [
     status: 'active',
     meetingDay: 'Wednesdays',
     meetingTime: '7:00 PM',
-    color: '#EF4444',
+    color: '#B85C5C',
   },
   {
     id: 'min-media',
@@ -145,7 +145,7 @@ export const MINISTRIES_V2: MinistryV2[] = [
     status: 'active',
     meetingDay: 'Sundays',
     meetingTime: '7:30 AM',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'min-missions',
@@ -157,7 +157,7 @@ export const MINISTRIES_V2: MinistryV2[] = [
     status: 'active',
     meetingDay: 'Monthly (last Saturday)',
     meetingTime: '9:00 AM',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
 ];
 

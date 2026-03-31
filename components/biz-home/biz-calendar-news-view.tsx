@@ -16,9 +16,9 @@ import { BIZ_NEWS, type BizNewsItem } from '@/data/mock-business-home';
 const ACCENT = MODE_ACCENT.business;
 const CATEGORY_COLORS: Record<BizNewsItem['category'], string> = {
   product: ACCENT,
-  founder: '#F59E0B',
-  press: '#EF4444',
-  investor: '#22C55E',
+  founder: '#B8943E',
+  press: '#B85C5C',
+  investor: '#5A8A6E',
   partnership: ACCENT,
 };
 

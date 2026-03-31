@@ -28,7 +28,7 @@ import type { PositionNeed } from '@/data/team-needs';
 
 const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#A1A1AA';
+const GRAY = '#9C9790';
 const DIVIDER = '#0B0F14';
 const BG = '#0B0F14';
 
@@ -183,7 +183,7 @@ function CRMRow({
       <Text style={[styles.cell, styles.cellSmall]}>{entry.slot ?? player.position}</Text>
       <Text style={[styles.cell, styles.cellSmall]}>{player.height}</Text>
       <Text style={[styles.cell, styles.cellSmall]}>{player.classYear}</Text>
-      <Text style={[styles.cell, styles.cellKR, { color: kr >= 75 ? '#22C55E' : kr >= 60 ? '#F59E0B' : GRAY, fontWeight: '800' }]}>
+      <Text style={[styles.cell, styles.cellKR, { color: kr >= 75 ? '#5A8A6E' : kr >= 60 ? '#B8943E' : GRAY, fontWeight: '800' }]}>
         {kr}
       </Text>
       <View style={[styles.cellTier, { justifyContent: 'center' }]}>

@@ -48,9 +48,9 @@ interface Props {
 
 
 const STATUS_DOT: Record<string, string> = {
-  green: '#22C55E',
-  amber: '#F59E0B',
-  red: '#EF4444',
+  green: '#5A8A6E',
+  amber: '#B8943E',
+  red: '#B85C5C',
 };
 
 // =============================================================================
@@ -173,7 +173,7 @@ export function EduDashboardV2({ colors, accent, role = 'E10' }: Props) {
                 </View>
                 {school.alerts.map((alert, i) => (
                   <View key={i} style={styles.alertRow}>
-                    <View style={[styles.alertDot, { backgroundColor: '#F59E0B' }]} />
+                    <View style={[styles.alertDot, { backgroundColor: '#B8943E' }]} />
                     <ThemedText style={styles.alertText}>{alert}</ThemedText>
                   </View>
                 ))}
@@ -192,8 +192,8 @@ export function EduDashboardV2({ colors, accent, role = 'E10' }: Props) {
                 <ThemedText style={styles.domainTitle}>Student Success</ThemedText>
               </View>
               <View style={styles.domainPills}>
-                <DomainPill label={`${STUDENT_SUCCESS_SUMMARY.atRiskCount} At-Risk`} color="#EF4444" />
-                <DomainPill label={`${STUDENT_SUCCESS_SUMMARY.interventionRate}% Intervention`} color="#22C55E" />
+                <DomainPill label={`${STUDENT_SUCCESS_SUMMARY.atRiskCount} At-Risk`} color="#B85C5C" />
+                <DomainPill label={`${STUDENT_SUCCESS_SUMMARY.interventionRate}% Intervention`} color="#5A8A6E" />
               </View>
             </View>
           </View>
@@ -217,15 +217,15 @@ export function EduDashboardV2({ colors, accent, role = 'E10' }: Props) {
 
         {canSee('advancement') && (
           <View style={styles.domainCard}>
-            <View style={[styles.domainAccent, { backgroundColor: '#F59E0B' }]} />
+            <View style={[styles.domainAccent, { backgroundColor: '#B8943E' }]} />
             <View style={styles.domainContent}>
               <View style={styles.domainHeader}>
-                <IconSymbol name="gift.fill" size={18} color="#F59E0B" />
+                <IconSymbol name="gift.fill" size={18} color="#B8943E" />
                 <ThemedText style={styles.domainTitle}>Advancement</ThemedText>
               </View>
               <View style={styles.domainPills}>
-                <DomainPill label={`$${(ADVANCEMENT_SUMMARY.annualGivingTotal / 1_000_000).toFixed(1)}M / $${(ADVANCEMENT_SUMMARY.goal / 1_000_000).toFixed(1)}M`} color="#F59E0B" />
-                <DomainPill label={`${ADVANCEMENT_SUMMARY.majorGiftProspects} Major Prospects`} color="#F59E0B" />
+                <DomainPill label={`$${(ADVANCEMENT_SUMMARY.annualGivingTotal / 1_000_000).toFixed(1)}M / $${(ADVANCEMENT_SUMMARY.goal / 1_000_000).toFixed(1)}M`} color="#B8943E" />
+                <DomainPill label={`${ADVANCEMENT_SUMMARY.majorGiftProspects} Major Prospects`} color="#B8943E" />
               </View>
             </View>
           </View>
@@ -233,10 +233,10 @@ export function EduDashboardV2({ colors, accent, role = 'E10' }: Props) {
 
         {canSee('accreditation') && (
           <View style={styles.domainCard}>
-            <View style={[styles.domainAccent, { backgroundColor: '#22C55E' }]} />
+            <View style={[styles.domainAccent, { backgroundColor: '#5A8A6E' }]} />
             <View style={styles.domainContent}>
               <View style={styles.domainHeader}>
-                <IconSymbol name="checkmark.seal.fill" size={18} color="#22C55E" />
+                <IconSymbol name="checkmark.seal.fill" size={18} color="#5A8A6E" />
                 <ThemedText style={styles.domainTitle}>Accreditation</ThemedText>
               </View>
               <ThemedText style={styles.domainStatus}>{ACCREDITATION_SUMMARY.status}</ThemedText>
@@ -268,7 +268,7 @@ function MetricCell({ label, value, trend, status }: { label: string; value: str
         {trend && <ThemedText style={styles.metricTrend}>{trend}</ThemedText>}
       </View>
       <View style={styles.metricLabelRow}>
-        <View style={[styles.statusDot, { backgroundColor: STATUS_DOT[status] ?? '#A1A1AA' }]} />
+        <View style={[styles.statusDot, { backgroundColor: STATUS_DOT[status] ?? '#9C9790' }]} />
         <ThemedText style={styles.metricLabel}>{label}</ThemedText>
       </View>
     </View>
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   },
   liveBadge: {
     position: 'absolute', top: 12, left: 12,
-    backgroundColor: '#EF4444', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20,
+    backgroundColor: '#B85C5C', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20,
   },
   liveText: { color: '#fff', fontSize: 11, fontWeight: '800', letterSpacing: 1.2 },
   heroOverlay: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 16 },
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   metricCell: { width: '33.33%', paddingVertical: 10, paddingHorizontal: 4 },
   metricValueRow: { flexDirection: 'row', alignItems: 'baseline', gap: 4 },
   metricValue: { color: '#fff', fontSize: 18, fontWeight: '800', letterSpacing: -0.3 },
-  metricTrend: { color: '#22C55E', fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  metricTrend: { color: '#5A8A6E', fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
   metricLabelRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 3 },
   statusDot: { width: 6, height: 6, borderRadius: 3 },
   metricLabel: { color: 'rgba(255,255,255,0.5)', fontSize: 10, letterSpacing: 0.3 },
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
   schoolStats: { color: 'rgba(255,255,255,0.5)', fontSize: 10, marginTop: 2, letterSpacing: 0.2 },
   alertRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 4 },
   alertDot: { width: 6, height: 6, borderRadius: 3, marginTop: 4 },
-  alertText: { color: '#F59E0B', fontSize: 11, flex: 1, letterSpacing: 0.1 },
+  alertText: { color: '#B8943E', fontSize: 11, flex: 1, letterSpacing: 0.1 },
 
   // Domain Cards
   domainCard: {

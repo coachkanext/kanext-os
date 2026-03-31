@@ -129,10 +129,10 @@ export const TASK_PRIORITY_LABELS: Record<OpsTask['priority'], string> = {
 };
 
 export const TASK_PRIORITY_COLORS: Record<OpsTask['priority'], string> = {
-  critical: '#EF4444',
-  high: '#F59E0B',
-  medium: '#1D9BF0',
-  low: '#A1A1AA',
+  critical: '#B85C5C',
+  high: '#B8943E',
+  medium: '#1A1714',
+  low: '#9C9790',
 };
 
 export const TASK_STATUS_LABELS: Record<OpsTask['status'], string> = {
@@ -143,10 +143,10 @@ export const TASK_STATUS_LABELS: Record<OpsTask['status'], string> = {
 };
 
 export const TASK_STATUS_COLORS: Record<OpsTask['status'], string> = {
-  open: '#A1A1AA',
-  'in-progress': '#1D9BF0',
-  blocked: '#EF4444',
-  done: '#22C55E',
+  open: '#9C9790',
+  'in-progress': '#1A1714',
+  blocked: '#B85C5C',
+  done: '#5A8A6E',
 };
 
 export const TRIP_STATUS_LABELS: Record<TravelTrip['status'], string> = {
@@ -157,10 +157,10 @@ export const TRIP_STATUS_LABELS: Record<TravelTrip['status'], string> = {
 };
 
 export const TRIP_STATUS_COLORS: Record<TravelTrip['status'], string> = {
-  planning: '#F59E0B',
-  booked: '#1D9BF0',
-  'in-transit': '#1D9BF0',
-  completed: '#22C55E',
+  planning: '#B8943E',
+  booked: '#1A1714',
+  'in-transit': '#1A1714',
+  completed: '#5A8A6E',
 };
 
 export const EQUIPMENT_STATUS_LABELS: Record<EquipmentItem['status'], string> = {
@@ -171,10 +171,10 @@ export const EQUIPMENT_STATUS_LABELS: Record<EquipmentItem['status'], string> = 
 };
 
 export const EQUIPMENT_STATUS_COLORS: Record<EquipmentItem['status'], string> = {
-  available: '#22C55E',
-  'checked-out': '#1D9BF0',
-  maintenance: '#F59E0B',
-  lost: '#EF4444',
+  available: '#5A8A6E',
+  'checked-out': '#1A1714',
+  maintenance: '#B8943E',
+  lost: '#B85C5C',
 };
 
 export const VENDOR_STATUS_LABELS: Record<VendorService['status'], string> = {
@@ -184,9 +184,9 @@ export const VENDOR_STATUS_LABELS: Record<VendorService['status'], string> = {
 };
 
 export const VENDOR_STATUS_COLORS: Record<VendorService['status'], string> = {
-  active: '#22C55E',
-  expiring: '#F59E0B',
-  overdue: '#EF4444',
+  active: '#5A8A6E',
+  expiring: '#B8943E',
+  overdue: '#B85C5C',
 };
 
 export const TICKET_STATUS_LABELS: Record<PlayerServiceTicket['status'], string> = {
@@ -196,9 +196,9 @@ export const TICKET_STATUS_LABELS: Record<PlayerServiceTicket['status'], string>
 };
 
 export const TICKET_STATUS_COLORS: Record<PlayerServiceTicket['status'], string> = {
-  open: '#F59E0B',
-  'in-progress': '#1D9BF0',
-  resolved: '#22C55E',
+  open: '#B8943E',
+  'in-progress': '#1A1714',
+  resolved: '#5A8A6E',
 };
 
 export const TICKET_TYPE_LABELS: Record<PlayerServiceTicket['type'], string> = {
@@ -209,10 +209,10 @@ export const TICKET_TYPE_LABELS: Record<PlayerServiceTicket['type'], string> = {
 };
 
 export const TICKET_TYPE_COLORS: Record<PlayerServiceTicket['type'], string> = {
-  housing: '#1D9BF0',
-  meals: '#22C55E',
-  transport: '#1D9BF0',
-  'id-passport': '#F59E0B',
+  housing: '#1A1714',
+  meals: '#5A8A6E',
+  transport: '#1A1714',
+  'id-passport': '#B8943E',
 };
 
 export const ANNOUNCEMENT_AUDIENCE_LABELS: Record<OpsAnnouncement['audience'], string> = {
@@ -222,9 +222,9 @@ export const ANNOUNCEMENT_AUDIENCE_LABELS: Record<OpsAnnouncement['audience'], s
 };
 
 export const ANNOUNCEMENT_AUDIENCE_COLORS: Record<OpsAnnouncement['audience'], string> = {
-  all: '#1D9BF0',
-  staff: '#1D9BF0',
-  players: '#22C55E',
+  all: '#1A1714',
+  staff: '#1A1714',
+  players: '#5A8A6E',
 };
 
 export const APPROVAL_STATUS_LABELS: Record<OpsApproval['status'], string> = {
@@ -234,9 +234,9 @@ export const APPROVAL_STATUS_LABELS: Record<OpsApproval['status'], string> = {
 };
 
 export const APPROVAL_STATUS_COLORS: Record<OpsApproval['status'], string> = {
-  pending: '#F59E0B',
-  approved: '#22C55E',
-  denied: '#EF4444',
+  pending: '#B8943E',
+  approved: '#5A8A6E',
+  denied: '#B85C5C',
 };
 
 // =============================================================================

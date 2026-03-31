@@ -22,7 +22,7 @@ const SOURCE_COLORS: Record<ConstraintSource, string> = {
   medical: Brand.error,
   foul: Brand.warning,
   matchup: Brand.precision,
-  scheme: '#1D9BF0',
+  scheme: '#1A1714',
 };
 
 const SOURCE_LABELS: Record<ConstraintSource, string> = {

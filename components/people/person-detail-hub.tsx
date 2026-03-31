@@ -26,10 +26,10 @@ const TABS: Tab[] = ['Overview', 'Roles & Access', 'Assignments', 'Rooms', 'Evid
 // =============================================================================
 
 const STATUS_COLORS: Record<PersonStatus, string> = {
-  active: '#22C55E',
-  inactive: '#A1A1AA',
-  pending: '#F59E0B',
-  away: '#1D9BF0',
+  active: '#5A8A6E',
+  inactive: '#9C9790',
+  pending: '#B8943E',
+  away: '#1A1714',
 };
 
 const STATUS_LABELS: Record<PersonStatus, string> = {
@@ -324,7 +324,7 @@ function RolesAccessTab({ person, colors }: { person: Person; colors: typeof Col
             </View>
             <Switch
               value={perm.enabled}
-              trackColor={{ false: colors.backgroundTertiary, true: '#22C55E' }}
+              trackColor={{ false: colors.backgroundTertiary, true: '#5A8A6E' }}
               thumbColor="#FFFFFF"
               disabled
             />
@@ -342,9 +342,9 @@ function RolesAccessTab({ person, colors }: { person: Person; colors: typeof Col
 // =============================================================================
 
 const ASSIGNMENT_STATUS_COLORS: Record<string, string> = {
-  active: '#22C55E',
-  completed: '#A1A1AA',
-  upcoming: '#1D9BF0',
+  active: '#5A8A6E',
+  completed: '#9C9790',
+  upcoming: '#1A1714',
 };
 
 function AssignmentsTab({ colors }: { colors: typeof Colors.dark }) {

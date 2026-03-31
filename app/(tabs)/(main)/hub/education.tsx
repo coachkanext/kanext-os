@@ -25,7 +25,7 @@ import {
   type EduChartMetric, type StudentCourse, type CampusOrg, type OrgType,
 } from '@/data/mock-education-hub';
 
-const ACCENT = '#003A63';
+const ACCENT = '#1A1714';
 
 type EduTab  = 'Overview' | 'Academics' | 'Student Life';
 type EduRole = 'Dean' | 'Student';
@@ -306,8 +306,8 @@ function OrgCard({ org, expanded, onToggle, isJoined, onJoin, C }: {
   isJoined: boolean; onJoin: () => void; C: ComponentColors;
 }) {
   const typeColors: Record<OrgType, string> = {
-    academic: C.accent, social: C.accent, athletic: '#990000',
-    cultural: '#3B82F6', service: '#5A8A6E',
+    academic: C.accent, social: C.accent, athletic: '#1A1714',
+    cultural: '#1A1714', service: '#5A8A6E',
   };
   const tc = typeColors[org.type];
   return (

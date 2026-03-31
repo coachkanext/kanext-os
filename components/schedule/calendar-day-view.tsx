@@ -87,7 +87,7 @@ export function CalendarDayView({ date, events, colors, onEventPress }: Calendar
                 <Text style={[styles.eventLocation, { color: colors.textTertiary }]} numberOfLines={1}>{event.location}</Text>
               )}
               {event.gameScore && (
-                <Text style={[styles.gameScore, { color: event.gameScore.startsWith('W') ? '#22C55E' : '#EF4444' }]}>
+                <Text style={[styles.gameScore, { color: event.gameScore.startsWith('W') ? '#5A8A6E' : '#B85C5C' }]}>
                   {event.gameScore.replace('-', '–')}
                 </Text>
               )}
@@ -106,8 +106,8 @@ const styles = StyleSheet.create({
   timeLabel: { fontSize: 10, fontWeight: '500' },
   contentCol: { flex: 1 },
   nowLine: { position: 'absolute', left: 44, right: 0, flexDirection: 'row', alignItems: 'center', zIndex: 10 },
-  nowDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#EF4444' },
-  nowLineBar: { flex: 1, height: 1.5, backgroundColor: '#EF4444' },
+  nowDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#B85C5C' },
+  nowLineBar: { flex: 1, height: 1.5, backgroundColor: '#B85C5C' },
   eventCard: { position: 'absolute', borderLeftWidth: 4, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 6, overflow: 'hidden' },
   eventBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 2 },
   eventBadgeDot: { width: 6, height: 6, borderRadius: 3 },

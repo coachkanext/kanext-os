@@ -34,7 +34,7 @@ export function VideoHeader({ title, rightContent, onSearch, onNotifications }: 
           }}
           style={styles.iconBtn}
         >
-          <IconSymbol name="magnifyingglass" size={16} color="#A1A1AA" />
+          <IconSymbol name="magnifyingglass" size={16} color="#9C9790" />
         </Pressable>
         <Pressable
           onPress={() => {
@@ -43,7 +43,7 @@ export function VideoHeader({ title, rightContent, onSearch, onNotifications }: 
           }}
           style={styles.iconBtn}
         >
-          <IconSymbol name="bell.fill" size={16} color="#A1A1AA" />
+          <IconSymbol name="bell.fill" size={16} color="#9C9790" />
         </Pressable>
       </View>
     </View>

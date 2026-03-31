@@ -153,63 +153,63 @@ export interface AssetSettingToggle {
 // =============================================================================
 
 export const CONDITION_COLOR: Record<PhysicalAsset['condition'], string> = {
-  excellent: '#22C55E',
-  good: '#1D9BF0',
-  fair: '#F59E0B',
-  'needs-repair': '#EF4444',
-  retired: '#A1A1AA',
+  excellent: '#5A8A6E',
+  good: '#1A1714',
+  fair: '#B8943E',
+  'needs-repair': '#B85C5C',
+  retired: '#9C9790',
 };
 
 export const MAINTENANCE_STATUS_COLOR: Record<MaintenanceRecord['status'], string> = {
-  completed: '#22C55E',
-  scheduled: '#1D9BF0',
-  overdue: '#EF4444',
-  'in-progress': '#F59E0B',
+  completed: '#5A8A6E',
+  scheduled: '#1A1714',
+  overdue: '#B85C5C',
+  'in-progress': '#B8943E',
 };
 
 export const INSURANCE_STATUS_COLOR: Record<InsurancePolicy['status'], string> = {
-  active: '#22C55E',
-  'expiring-soon': '#F59E0B',
-  expired: '#EF4444',
-  'pending-renewal': '#1D9BF0',
+  active: '#5A8A6E',
+  'expiring-soon': '#B8943E',
+  expired: '#B85C5C',
+  'pending-renewal': '#1A1714',
 };
 
 export const LEASE_COLOR: Record<VenueAsset['ownedOrLeased'], string> = {
-  owned: '#22C55E',
-  leased: '#1D9BF0',
-  partnership: '#1D9BF0',
+  owned: '#5A8A6E',
+  leased: '#1A1714',
+  partnership: '#1A1714',
 };
 
 export const DIGITAL_TYPE_COLOR: Record<DigitalAsset['type'], string> = {
-  logo: '#1D9BF0',
-  template: '#22C55E',
-  video: '#EF4444',
-  photo: '#F59E0B',
-  document: '#1D9BF0',
-  'brand-guide': '#A1A1AA',
+  logo: '#1A1714',
+  template: '#5A8A6E',
+  video: '#B85C5C',
+  photo: '#B8943E',
+  document: '#1A1714',
+  'brand-guide': '#9C9790',
 };
 
 export const EQUIPMENT_CATEGORY_COLOR: Record<EquipmentAsset['category'], string> = {
-  scoring: '#1D9BF0',
-  timing: '#22C55E',
-  broadcast: '#F59E0B',
-  safety: '#EF4444',
-  av: '#1D9BF0',
-  medical: '#1D9BF0',
+  scoring: '#1A1714',
+  timing: '#5A8A6E',
+  broadcast: '#B8943E',
+  safety: '#B85C5C',
+  av: '#1A1714',
+  medical: '#1A1714',
 };
 
 export const INVENTORY_CATEGORY_COLOR: Record<InventoryItem['category'], string> = {
-  medals: '#F59E0B',
-  certificates: '#1D9BF0',
-  merchandise: '#22C55E',
-  consumables: '#A1A1AA',
-  uniforms: '#1D9BF0',
+  medals: '#B8943E',
+  certificates: '#1A1714',
+  merchandise: '#5A8A6E',
+  consumables: '#9C9790',
+  uniforms: '#1A1714',
 };
 
 export const REPORT_FORMAT_COLOR: Record<AssetReport['format'], string> = {
-  PDF: '#EF4444',
-  CSV: '#22C55E',
-  XLSX: '#1D9BF0',
+  PDF: '#B85C5C',
+  CSV: '#5A8A6E',
+  XLSX: '#1A1714',
 };
 
 // =============================================================================
@@ -248,7 +248,7 @@ const DASHBOARD_BLOCKS: AssetsDashboardBlock[] = [
     value: '284',
     delta: '+8 this quarter',
     icon: 'cube',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'db-2',
@@ -256,7 +256,7 @@ const DASHBOARD_BLOCKS: AssetsDashboardBlock[] = [
     value: '$4.2M',
     delta: '+$180K YoY',
     icon: 'chart.line.uptrend.xyaxis',
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
   {
     id: 'db-3',
@@ -264,7 +264,7 @@ const DASHBOARD_BLOCKS: AssetsDashboardBlock[] = [
     value: '7',
     delta: '3 urgent',
     icon: 'wrench.and.screwdriver',
-    color: '#EF4444',
+    color: '#B85C5C',
   },
   {
     id: 'db-4',
@@ -272,7 +272,7 @@ const DASHBOARD_BLOCKS: AssetsDashboardBlock[] = [
     value: '96%',
     delta: '2 expiring soon',
     icon: 'shield.checkered',
-    color: '#F59E0B',
+    color: '#B8943E',
   },
   {
     id: 'db-5',
@@ -280,7 +280,7 @@ const DASHBOARD_BLOCKS: AssetsDashboardBlock[] = [
     value: '1,248',
     delta: '+62 this month',
     icon: 'doc.on.doc',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'db-6',
@@ -288,7 +288,7 @@ const DASHBOARD_BLOCKS: AssetsDashboardBlock[] = [
     value: '4',
     delta: '2 below reorder',
     icon: 'shippingbox',
-    color: '#EF4444',
+    color: '#B85C5C',
   },
 ];
 

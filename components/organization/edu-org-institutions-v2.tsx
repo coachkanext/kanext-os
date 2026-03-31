@@ -241,7 +241,7 @@ function OverviewTab({
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Housing</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: overviewTiles.complianceAlerts > 0 ? '#F59E0B' : '#22C55E' }]}>
+          <ThemedText style={[s.kpiValue, { color: overviewTiles.complianceAlerts > 0 ? '#B8943E' : '#5A8A6E' }]}>
             {overviewTiles.complianceAlerts}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Alerts</ThemedText>
@@ -467,7 +467,7 @@ function CoverageTab({
         const catIcon = HEALTH_CATEGORY_ICONS[cat];
         const scores = institutions.map((inst) => inst.healthBars[cat]?.score ?? 0);
         const avgScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
-        const avgColor = avgScore >= 75 ? '#22C55E' : avgScore >= 50 ? '#F59E0B' : '#EF4444';
+        const avgColor = avgScore >= 75 ? '#5A8A6E' : avgScore >= 50 ? '#B8943E' : '#B85C5C';
         return (
           <View key={cat} style={[s.coverageRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.coverageLeft}>
@@ -479,7 +479,7 @@ function CoverageTab({
                 {institutions.map((inst) => {
                   const h = inst.healthBars[cat];
                   return (
-                    <View key={inst.id} style={[s.coverageDot, { backgroundColor: h ? HEALTH_LEVEL_COLORS[h.level] : '#A1A1AA' }]} />
+                    <View key={inst.id} style={[s.coverageDot, { backgroundColor: h ? HEALTH_LEVEL_COLORS[h.level] : '#9C9790' }]} />
                   );
                 })}
               </View>
@@ -590,7 +590,7 @@ function AcademicsTab({
                   .filter((a) => a.action.toLowerCase().includes('accredit') || a.action.toLowerCase().includes('curriculum') || a.action.toLowerCase().includes('academic'))
                   .map((a, i) => (
                     <View key={`${inst.id}-acad-${i}`} style={s.acadActionRow}>
-                      <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#F59E0B" />
+                      <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B8943E" />
                       <ThemedText style={[s.acadActionText, { color: colors.textSecondary }]} numberOfLines={1}>
                         {a.action}
                       </ThemedText>
@@ -624,7 +624,7 @@ function HousingTab({
       {institutions.map((inst) => {
         const housingHealth = inst.healthBars.housing;
         const healthColor = HEALTH_LEVEL_COLORS[housingHealth.level];
-        const occColor = inst.housingOccupancy >= 85 ? '#22C55E' : inst.housingOccupancy >= 60 ? '#F59E0B' : '#EF4444';
+        const occColor = inst.housingOccupancy >= 85 ? '#5A8A6E' : inst.housingOccupancy >= 60 ? '#B8943E' : '#B85C5C';
         return (
           <View key={inst.id} style={[s.housingCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.housingHeader}>
@@ -672,7 +672,7 @@ function ComplianceTab({
       {sorted.map((inst) => {
         const compHealth = inst.healthBars.compliance;
         const healthColor = HEALTH_LEVEL_COLORS[compHealth.level];
-        const alertColor = inst.complianceAlerts > 3 ? '#EF4444' : inst.complianceAlerts > 0 ? '#F59E0B' : '#22C55E';
+        const alertColor = inst.complianceAlerts > 3 ? '#B85C5C' : inst.complianceAlerts > 0 ? '#B8943E' : '#5A8A6E';
         return (
           <View key={inst.id} style={[s.compCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.compHeader}>
@@ -691,7 +691,7 @@ function ComplianceTab({
               .filter((a) => a.action.toLowerCase().includes('compliance') || a.action.toLowerCase().includes('sacscoc') || a.action.toLowerCase().includes('accreditation'))
               .map((a, i) => (
                 <View key={`${inst.id}-comp-${i}`} style={s.compActionRow}>
-                  <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#F59E0B" />
+                  <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B8943E" />
                   <ThemedText style={[s.compActionText, { color: colors.textSecondary }]} numberOfLines={1}>
                     {a.action} — {formatDate(a.due)}
                   </ThemedText>
@@ -738,7 +738,7 @@ function DeadlinesTab({
       {overviewTiles.deadlines.map((d, i) => (
         <View key={`deadline-${i}`} style={[s.deadlineCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={s.deadlineLeft}>
-            <IconSymbol name="calendar.badge.exclamationmark" size={16} color="#EF4444" />
+            <IconSymbol name="calendar.badge.exclamationmark" size={16} color="#B85C5C" />
             <View style={s.deadlineTextCol}>
               <ThemedText style={[s.deadlineTitle, { color: colors.text }]}>{d.title}</ThemedText>
               <ThemedText style={[s.deadlineInst, { color: colors.textTertiary }]}>{d.institution}</ThemedText>

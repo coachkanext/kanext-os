@@ -16,9 +16,9 @@ interface Props {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  active: '#22C55E',
-  inactive: '#A1A1AA',
-  ad_hoc: '#F59E0B',
+  active: '#5A8A6E',
+  inactive: '#9C9790',
+  ad_hoc: '#B8943E',
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -48,7 +48,7 @@ export function EduFacultySenateView({ colors, accent }: Props) {
   return (
     <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
       {sorted.map((committee) => {
-        const statusColor = STATUS_COLORS[committee.status] ?? '#A1A1AA';
+        const statusColor = STATUS_COLORS[committee.status] ?? '#9C9790';
         const statusLabel = STATUS_LABELS[committee.status] ?? committee.status;
 
         return (

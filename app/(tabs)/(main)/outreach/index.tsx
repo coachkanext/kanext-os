@@ -78,7 +78,7 @@ function isOverdue(dateStr: string): boolean {
 
 function statusColor(status: CampaignStatus): string {
   if (status === 'active')    return '#5A8A6E';
-  if (status === 'planning')  return '#1D9BF0';
+  if (status === 'planning')  return '#1A1714';
   return 'rgba(45,30,18,0.40)';
 }
 
@@ -116,7 +116,7 @@ function ProspectRow({ prospect, onPress, C, s }: {
             <Text style={{ fontSize: 10, fontWeight: '700', color: stageColor(prospect.stage) }}>{prospect.stage}</Text>
           </View>
         </View>
-        <Text style={{ fontSize: 12, color: overdue ? '#3B82F6' : C.muted }} numberOfLines={1}>
+        <Text style={{ fontSize: 12, color: overdue ? '#1A1714' : C.muted }} numberOfLines={1}>
           {overdue ? '⚠ ' : ''}{prospect.nextAction} · {formatDate(prospect.nextActionDue)}
         </Text>
         <Text style={{ fontSize: 11, color: C.muted }} numberOfLines={1}>
@@ -298,7 +298,7 @@ function ProspectDetailSheet({ prospect, isAdmin, onClose, onMoveStage, C, inset
           </View>
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={{ fontSize: 11, color: C.secondary, fontWeight: '600' }}>NEXT ACTION</Text>
-            <Text style={{ fontSize: 13, color: isOverdue(prospect.nextActionDue) ? '#3B82F6' : C.label }}>
+            <Text style={{ fontSize: 13, color: isOverdue(prospect.nextActionDue) ? '#1A1714' : C.label }}>
               {formatDate(prospect.nextActionDue)}
             </Text>
           </View>
@@ -584,12 +584,12 @@ export default function CommunityOutreachScreen() {
               {overdue.length > 0 && (
                 <>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                    <IconSymbol name="exclamationmark.triangle.fill" size={13} color="#3B82F6" />
-                    <Text style={{ fontSize: 11, fontWeight: '700', color: '#3B82F6', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                    <IconSymbol name="exclamationmark.triangle.fill" size={13} color="#1A1714" />
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: '#1A1714', textTransform: 'uppercase', letterSpacing: 0.5 }}>
                       Needs Follow-Up ({overdue.length})
                     </Text>
                   </View>
-                  <View style={{ backgroundColor: '#3B82F608', borderRadius: 12, borderWidth: 1, borderColor: '#3B82F622', marginBottom: 16, overflow: 'hidden' }}>
+                  <View style={{ backgroundColor: '#1A171408', borderRadius: 12, borderWidth: 1, borderColor: '#1A171422', marginBottom: 16, overflow: 'hidden' }}>
                     {overdue.map(p => (
                       <ProspectRow
                         key={p.id}
@@ -669,7 +669,7 @@ export default function CommunityOutreachScreen() {
     return (
       <>
         {/* Welcome + Check-In card */}
-        <View style={{ backgroundColor: '#7B68A0', borderRadius: 16, padding: 20, marginBottom: 16 }}>
+        <View style={{ backgroundColor: '#1A1714', borderRadius: 16, padding: 20, marginBottom: 16 }}>
           <Text style={{ fontSize: 11, fontWeight: '700', color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase', letterSpacing: 0.6 }}>Welcome</Text>
           <Text style={{ fontSize: 22, fontWeight: '800', color: '#fff', marginTop: 4 }}>
             {checkedIn ? "You're checked in!" : 'Glad you\'re here'}
@@ -709,9 +709,9 @@ export default function CommunityOutreachScreen() {
             We are a vibrant, multi-cultural church family committed to loving God, loving people, and serving our community. Everyone is welcome here.
           </Text>
           {[
-            { icon: 'heart.fill',        color: '#7B68A0', text: 'Authentic community & belonging' },
-            { icon: 'figure.walk',       color: '#7B68A0', text: 'Sunday services at 10:00 AM' },
-            { icon: 'hands.sparkles.fill', color: '#7B68A0', text: 'Dozens of ways to get involved' },
+            { icon: 'heart.fill',        color: '#1A1714', text: 'Authentic community & belonging' },
+            { icon: 'figure.walk',       color: '#1A1714', text: 'Sunday services at 10:00 AM' },
+            { icon: 'hands.sparkles.fill', color: '#1A1714', text: 'Dozens of ways to get involved' },
           ].map(item => (
             <View key={item.text} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <View style={{ width: 30, height: 30, borderRadius: 9, backgroundColor: item.color + '18', alignItems: 'center', justifyContent: 'center' }}>
@@ -730,8 +730,8 @@ export default function CommunityOutreachScreen() {
               flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 13,
               borderBottomWidth: idx < EVENTS.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator,
             }}>
-              <View style={{ width: 38, height: 38, borderRadius: 10, backgroundColor: '#7B68A020', alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
-                <IconSymbol name="calendar" size={16} color="#7B68A0" />
+              <View style={{ width: 38, height: 38, borderRadius: 10, backgroundColor: '#1A171420', alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
+                <IconSymbol name="calendar" size={16} color="#1A1714" />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{evt.name}</Text>
@@ -761,7 +761,7 @@ export default function CommunityOutreachScreen() {
         <Pressable
           style={({ pressed }) => ({
             flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
-            backgroundColor: pressed ? '#7B68A0cc' : '#7B68A0',
+            backgroundColor: pressed ? '#1A1714cc' : '#1A1714',
             borderRadius: 12, paddingVertical: 14, marginBottom: 12,
           })}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
@@ -796,7 +796,7 @@ export default function CommunityOutreachScreen() {
         >
           {([
             { label: 'Active',        value: activeCampaigns.length.toString(), color: '#5A8A6E' },
-            { label: 'Total Reached', value: totalReached.toLocaleString(),     color: '#1D9BF0' },
+            { label: 'Total Reached', value: totalReached.toLocaleString(),     color: '#1A1714' },
             { label: 'Conversions',   value: totalConverted.toString(),         color: '#5A8A6E' },
             { label: 'Volunteers',    value: `${totalVolJoined}/${totalVolNeeded}`, color: C.accent },
             { label: 'Campaigns',     value: CAMPAIGNS.length.toString(),       color: C.secondary },
@@ -839,7 +839,7 @@ export default function CommunityOutreachScreen() {
                   {/* Inline metrics */}
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 2 }}>
                     <Text style={{ fontSize: 11, color: C.secondary }}>
-                      <Text style={{ fontWeight: '700', color: '#1D9BF0' }}>{campaign.actualReach}</Text>
+                      <Text style={{ fontWeight: '700', color: '#1A1714' }}>{campaign.actualReach}</Text>
                       {'/' + campaign.goalReach + ' reached'}
                     </Text>
                     <Text style={{ fontSize: 11, color: C.secondary }}>
@@ -847,8 +847,8 @@ export default function CommunityOutreachScreen() {
                       {'/' + campaign.goalConvert + ' conv'}
                     </Text>
                     {volGap > 0 && (
-                      <View style={{ backgroundColor: '#3B82F622', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
-                        <Text style={{ fontSize: 10, fontWeight: '700', color: '#3B82F6' }}>{volGap} vol needed</Text>
+                      <View style={{ backgroundColor: '#1A171422', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
+                        <Text style={{ fontSize: 10, fontWeight: '700', color: '#1A1714' }}>{volGap} vol needed</Text>
                       </View>
                     )}
                   </View>
@@ -862,7 +862,7 @@ export default function CommunityOutreachScreen() {
 
                   {/* Progress bars */}
                   {([
-                    { label: `Reach: ${campaign.actualReach} / ${campaign.goalReach}`, pct: reachPct, color: '#1D9BF0' },
+                    { label: `Reach: ${campaign.actualReach} / ${campaign.goalReach}`, pct: reachPct, color: '#1A1714' },
                     { label: `Convert: ${campaign.actualConvert} / ${campaign.goalConvert}`, pct: convertPct, color: '#5A8A6E' },
                   ] as const).map(prog => (
                     <View key={prog.label}>
@@ -883,8 +883,8 @@ export default function CommunityOutreachScreen() {
                       Volunteers: <Text style={{ fontWeight: '700', color: C.label }}>{campaign.volunteersJoined} / {campaign.volunteersNeeded}</Text>
                     </Text>
                     {volGap > 0 && (
-                      <View style={{ backgroundColor: '#3B82F622', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
-                        <Text style={{ fontSize: 10, fontWeight: '700', color: '#3B82F6' }}>{volGap} needed</Text>
+                      <View style={{ backgroundColor: '#1A171422', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
+                        <Text style={{ fontSize: 10, fontWeight: '700', color: '#1A1714' }}>{volGap} needed</Text>
                       </View>
                     )}
                   </View>
@@ -930,7 +930,7 @@ export default function CommunityOutreachScreen() {
               {/* Totals row */}
               <View style={{ flexDirection: 'row' }}>
                 {([
-                  { label: 'Reached',    value: totalReached,   color: '#1D9BF0' },
+                  { label: 'Reached',    value: totalReached,   color: '#1A1714' },
                   { label: 'Converted',  value: totalConverted, color: '#5A8A6E' },
                   { label: 'Campaigns',  value: CAMPAIGNS.length, color: C.accent },
                 ] as const).map((item, i) => (
@@ -968,7 +968,7 @@ export default function CommunityOutreachScreen() {
                       <Text style={{ fontSize: 11, color: C.secondary }}>Top Campaign by Reach</Text>
                       <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>{top.name}</Text>
                     </View>
-                    <Text style={{ fontSize: 13, fontWeight: '700', color: '#1D9BF0' }}>{top.actualReach.toLocaleString()}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: '#1A1714' }}>{top.actualReach.toLocaleString()}</Text>
                   </View>
                 ) : null;
               })()}
@@ -984,12 +984,12 @@ export default function CommunityOutreachScreen() {
             </Text>
             {volGapCampaigns.map(campaign => (
               <View key={`gap-${campaign.id}`} style={{
-                backgroundColor: '#3B82F611', borderRadius: 12,
-                borderWidth: 1, borderColor: '#3B82F630',
+                backgroundColor: '#1A171411', borderRadius: 12,
+                borderWidth: 1, borderColor: '#1A171430',
                 padding: 14, marginBottom: 8,
                 flexDirection: 'row', alignItems: 'center', gap: 12,
               }}>
-                <IconSymbol name="person.badge.plus" size={18} color="#3B82F6" />
+                <IconSymbol name="person.badge.plus" size={18} color="#1A1714" />
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }} numberOfLines={1}>{campaign.name}</Text>
                   <Text style={{ fontSize: 12, color: C.secondary }}>
@@ -1356,7 +1356,7 @@ export default function CommunityOutreachScreen() {
             <RolePill
               role={demoRole}
               onPress={cycleRole}
-              accentColor="#7B68A0"
+              accentColor="#1A1714"
               isPrimary={isAdmin}
             />
             {pills.length > 0 && (

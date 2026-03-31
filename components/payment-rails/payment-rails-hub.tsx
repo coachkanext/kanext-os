@@ -41,16 +41,16 @@ const HUB_TABS: { id: HubTab; label: string }[] = [
 ];
 
 const STATUS_COLORS: Record<string, string> = {
-  completed: '#22C55E',
-  pending: '#F59E0B',
-  failed: '#EF4444',
-  processing: '#1D9BF0',
-  refunded: '#A1A1AA',
-  settled: '#22C55E',
-  'in-progress': '#1D9BF0',
-  approved: '#22C55E',
-  denied: '#EF4444',
-  processed: '#22C55E',
+  completed: '#5A8A6E',
+  pending: '#B8943E',
+  failed: '#B85C5C',
+  processing: '#1A1714',
+  refunded: '#9C9790',
+  settled: '#5A8A6E',
+  'in-progress': '#1A1714',
+  approved: '#5A8A6E',
+  denied: '#B85C5C',
+  processed: '#5A8A6E',
 };
 
 const METHOD_LABELS: Record<PaymentMethod, string> = {
@@ -66,7 +66,7 @@ const METHOD_LABELS: Record<PaymentMethod, string> = {
 // =============================================================================
 
 function StatusBadge({ status }: { status: string }) {
-  const color = STATUS_COLORS[status] ?? '#A1A1AA';
+  const color = STATUS_COLORS[status] ?? '#9C9790';
   return (
     <View style={[styles.statusBadge, { backgroundColor: color + '18' }]}>
       <ThemedText style={[styles.statusBadgeText, { color }]}>
@@ -197,9 +197,9 @@ function HomeView() {
   );
 
   const metrics = [
-    { label: 'Total Collected', value: `$${snapshot.totalCollected.toLocaleString()}`, color: '#22C55E' },
-    { label: 'Total Paid Out', value: `$${snapshot.totalPaidOut.toLocaleString()}`, color: '#EF4444' },
-    { label: 'Pending', value: String(snapshot.pendingPayments), color: '#F59E0B' },
+    { label: 'Total Collected', value: `$${snapshot.totalCollected.toLocaleString()}`, color: '#5A8A6E' },
+    { label: 'Total Paid Out', value: `$${snapshot.totalPaidOut.toLocaleString()}`, color: '#B85C5C' },
+    { label: 'Pending', value: String(snapshot.pendingPayments), color: '#B8943E' },
     { label: 'Refunds', value: String(snapshot.refundsProcessed), color: accent },
     { label: 'Net Balance', value: `$${snapshot.settlementBalance.toLocaleString()}`, color: '#FFFFFF' },
   ];
@@ -225,7 +225,7 @@ function HomeView() {
           <PaymentRow
             key={p.id}
             payment={p}
-            amountColor={p.type === 'collect' ? '#22C55E' : '#EF4444'}
+            amountColor={p.type === 'collect' ? '#5A8A6E' : '#B85C5C'}
           />
         ))}
       </Card>
@@ -239,7 +239,7 @@ function HomeView() {
               <PaymentRow
                 key={p.id}
                 payment={p}
-                amountColor={p.type === 'collect' ? '#22C55E' : '#EF4444'}
+                amountColor={p.type === 'collect' ? '#5A8A6E' : '#B85C5C'}
               />
             ))}
           </Card>
@@ -274,7 +274,7 @@ function CollectView() {
           <EmptyState message="No payments match this filter." />
         ) : (
           collectPayments.map((p) => (
-            <PaymentRow key={p.id} payment={p} amountColor="#22C55E" />
+            <PaymentRow key={p.id} payment={p} amountColor="#5A8A6E" />
           ))
         )}
       </Card>
@@ -306,7 +306,7 @@ function PayoutsView() {
           <EmptyState message="No payouts match this filter." />
         ) : (
           payoutPayments.map((p) => (
-            <PaymentRow key={p.id} payment={p} amountColor="#EF4444" />
+            <PaymentRow key={p.id} payment={p} amountColor="#B85C5C" />
           ))
         )}
       </Card>
@@ -339,7 +339,7 @@ function SettlementsView() {
 
             <View style={styles.settlementAmounts}>
               <View style={styles.settlementAmountCol}>
-                <ThemedText style={[styles.settlementAmountValue, { color: '#22C55E' }]}>
+                <ThemedText style={[styles.settlementAmountValue, { color: '#5A8A6E' }]}>
                   ${s.totalCollected.toLocaleString()}
                 </ThemedText>
                 <ThemedText style={[styles.settlementAmountLabel, { color: colors.textSecondary }]}>
@@ -347,7 +347,7 @@ function SettlementsView() {
                 </ThemedText>
               </View>
               <View style={styles.settlementAmountCol}>
-                <ThemedText style={[styles.settlementAmountValue, { color: '#EF4444' }]}>
+                <ThemedText style={[styles.settlementAmountValue, { color: '#B85C5C' }]}>
                   ${s.totalPaidOut.toLocaleString()}
                 </ThemedText>
                 <ThemedText style={[styles.settlementAmountLabel, { color: colors.textSecondary }]}>
@@ -355,7 +355,7 @@ function SettlementsView() {
                 </ThemedText>
               </View>
               <View style={styles.settlementAmountCol}>
-                <ThemedText style={[styles.settlementAmountValue, { color: s.netAmount >= 0 ? '#22C55E' : '#EF4444' }]}>
+                <ThemedText style={[styles.settlementAmountValue, { color: s.netAmount >= 0 ? '#5A8A6E' : '#B85C5C' }]}>
                   ${Math.abs(s.netAmount).toLocaleString()}
                 </ThemedText>
                 <ThemedText style={[styles.settlementAmountLabel, { color: colors.textSecondary }]}>
@@ -407,7 +407,7 @@ function RefundsView() {
         filteredRefunds.map((r) => (
           <Card key={r.id}>
             <View style={styles.refundHeader}>
-              <ThemedText style={[styles.refundAmount, { color: '#EF4444' }]}>
+              <ThemedText style={[styles.refundAmount, { color: '#B85C5C' }]}>
                 -${r.amount.toLocaleString()}
               </ThemedText>
               <StatusBadge status={r.status} />
@@ -458,11 +458,11 @@ function ReconciliationView() {
       {/* Summary Card */}
       <Card>
         <View style={styles.reconSummary}>
-          <View style={[styles.reconIcon, { backgroundColor: isReconciled ? '#22C55E18' : '#F59E0B18' }]}>
+          <View style={[styles.reconIcon, { backgroundColor: isReconciled ? '#5A8A6E18' : '#B8943E18' }]}>
             <IconSymbol
               name={isReconciled ? 'checkmark.circle.fill' : 'exclamationmark.triangle.fill'}
               size={28}
-              color={isReconciled ? '#22C55E' : '#F59E0B'}
+              color={isReconciled ? '#5A8A6E' : '#B8943E'}
             />
           </View>
           <ThemedText style={[styles.reconTitle, { color: colors.text }]}>
@@ -497,7 +497,7 @@ function ReconciliationView() {
                   </View>
                 </View>
                 <View style={styles.reconItemRight}>
-                  <ThemedText style={[styles.reconItemAmount, { color: p.type === 'collect' ? '#22C55E' : '#EF4444' }]}>
+                  <ThemedText style={[styles.reconItemAmount, { color: p.type === 'collect' ? '#5A8A6E' : '#B85C5C' }]}>
                     {p.type === 'collect' ? '+' : '-'}${p.amount.toLocaleString()}
                   </ThemedText>
                   <Pressable
@@ -797,7 +797,7 @@ const styles = StyleSheet.create({
   settlementBarCollected: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#22C55E',
+    backgroundColor: '#5A8A6E',
   },
   settlementDate: {
     fontSize: 11,

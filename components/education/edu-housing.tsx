@@ -268,9 +268,9 @@ const HALL_TYPE_LABEL: Record<string, string> = {
 };
 
 const HALL_STATUS_COLOR: Record<string, string> = {
-  operational: '#22C55E',
-  renovation: '#F59E0B',
-  closed: '#EF4444',
+  operational: '#5A8A6E',
+  renovation: '#B8943E',
+  closed: '#B85C5C',
 };
 
 // --- Room Assignment (E4 view) ---
@@ -372,9 +372,9 @@ const HOUSING_TIMELINE: TimelineEvent[] = [
 ];
 
 const TIMELINE_STATUS_COLOR: Record<string, string> = {
-  completed: '#22C55E',
+  completed: '#5A8A6E',
   current: ACCENT,
-  upcoming: '#A1A1AA',
+  upcoming: '#9C9790',
 };
 
 // --- RA Contacts ---
@@ -430,10 +430,10 @@ const ADMIN_ASSIGNMENTS: AdminAssignment[] = [
 ];
 
 const ASSIGNMENT_STATUS_COLOR: Record<string, string> = {
-  confirmed: '#22C55E',
-  pending: '#F59E0B',
+  confirmed: '#5A8A6E',
+  pending: '#B8943E',
   waitlisted: ACCENT,
-  cancelled: '#EF4444',
+  cancelled: '#B85C5C',
 };
 
 // =============================================================================
@@ -551,9 +551,9 @@ const MOVE_EVENTS: MoveEvent[] = [
 ];
 
 const MOVE_STATUS_COLOR: Record<string, string> = {
-  completed: '#22C55E',
+  completed: '#5A8A6E',
   'in-progress': ACCENT,
-  scheduled: '#A1A1AA',
+  scheduled: '#9C9790',
 };
 
 interface KeyTracking {
@@ -605,18 +605,18 @@ const WORK_ORDERS: WorkOrder[] = [
 ];
 
 const PRIORITY_COLOR: Record<string, string> = {
-  critical: '#EF4444',
-  high: '#F59E0B',
+  critical: '#B85C5C',
+  high: '#B8943E',
   medium: ACCENT,
-  low: '#A1A1AA',
+  low: '#9C9790',
 };
 
 const WO_STATUS_COLOR: Record<string, string> = {
-  open: '#F59E0B',
+  open: '#B8943E',
   assigned: ACCENT,
   'in-progress': ACCENT,
-  completed: '#22C55E',
-  deferred: '#A1A1AA',
+  completed: '#5A8A6E',
+  deferred: '#9C9790',
 };
 
 // =============================================================================
@@ -648,9 +648,9 @@ const INSPECTIONS: Inspection[] = [
 ];
 
 const INSPECTION_STATUS_COLOR: Record<string, string> = {
-  passed: '#22C55E',
-  failed: '#EF4444',
-  scheduled: '#A1A1AA',
+  passed: '#5A8A6E',
+  failed: '#B85C5C',
+  scheduled: '#9C9790',
   'in-progress': ACCENT,
 };
 
@@ -707,14 +707,14 @@ const INCIDENT_LOG: IncidentLog[] = [
 ];
 
 const INCIDENT_SEVERITY_COLOR: Record<string, string> = {
-  low: '#22C55E',
-  medium: '#F59E0B',
-  high: '#EF4444',
+  low: '#5A8A6E',
+  medium: '#B8943E',
+  high: '#B85C5C',
 };
 
 const INCIDENT_STATUS_COLOR: Record<string, string> = {
-  resolved: '#22C55E',
-  open: '#F59E0B',
+  resolved: '#5A8A6E',
+  open: '#B8943E',
   referred: ACCENT,
 };
 
@@ -736,8 +736,8 @@ const COUNSELING_REFERRALS: CounselingReferral[] = [
 
 const REFERRAL_STATUS_COLOR: Record<string, string> = {
   scheduled: ACCENT,
-  completed: '#22C55E',
-  pending: '#F59E0B',
+  completed: '#5A8A6E',
+  pending: '#B8943E',
 };
 
 interface ResLifeProgram {
@@ -762,9 +762,9 @@ const RESLIFE_PROGRAMS: ResLifeProgram[] = [
 const PROGRAM_CAT_COLOR: Record<string, string> = {
   social: ACCENT,
   educational: ACCENT,
-  wellness: '#22C55E',
+  wellness: '#5A8A6E',
   diversity: ACCENT,
-  community: '#F59E0B',
+  community: '#B8943E',
 };
 
 // =============================================================================
@@ -842,7 +842,7 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Edu
             <View style={s.kpiGrid}>
               <KPIStat value={HOUSING_SUMMARY.totalBeds.toLocaleString()} label="Total Beds" colors={colors} />
               <KPIStat value={`${HOUSING_SUMMARY.occupancyRate}%`} label="Occupancy" colors={colors} />
-              <KPIStat value={String(HOUSING_SUMMARY.waitlistCount)} label="Waitlist" colors={colors} valueColor="#F59E0B" />
+              <KPIStat value={String(HOUSING_SUMMARY.waitlistCount)} label="Waitlist" colors={colors} valueColor="#B8943E" />
               <KPIStat value={String(HOUSING_SUMMARY.totalHalls)} label="Halls" colors={colors} />
             </View>
             {isAdmin && (
@@ -902,7 +902,7 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Edu
               return (
                 <View style={s.progressContainer}>
                   <View style={[s.progressBg, { backgroundColor: colors.backgroundTertiary }]}>
-                    <View style={[s.progressFill, { width: `${mealsPct}%`, backgroundColor: mealsPct < 30 ? '#EF4444' : mealsPct < 50 ? '#F59E0B' : '#22C55E' }]} />
+                    <View style={[s.progressFill, { width: `${mealsPct}%`, backgroundColor: mealsPct < 30 ? '#B85C5C' : mealsPct < 50 ? '#B8943E' : '#5A8A6E' }]} />
                   </View>
                   <ThemedText style={[s.progressLabel, { color: colors.textSecondary }]}>
                     {STUDENT_MEAL.mealsRemaining}/{STUDENT_MEAL.mealsTotal} meals remaining
@@ -934,7 +934,7 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Edu
               {isStaff && hall.occupancy > 0 && (
                 <View style={s.progressContainer}>
                   <View style={[s.progressBg, { backgroundColor: colors.backgroundTertiary }]}>
-                    <View style={[s.progressFill, { width: `${occPct}%`, backgroundColor: occPct >= 95 ? '#EF4444' : occPct >= 85 ? '#F59E0B' : '#22C55E' }]} />
+                    <View style={[s.progressFill, { width: `${occPct}%`, backgroundColor: occPct >= 95 ? '#B85C5C' : occPct >= 85 ? '#B8943E' : '#5A8A6E' }]} />
                   </View>
                   <ThemedText style={[s.progressLabel, { color: colors.textSecondary }]}>
                     {hall.occupancy}/{hall.capacity} ({occPct}%)
@@ -991,8 +991,8 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Edu
               <View style={s.mealPlanNameRow}>
                 <ThemedText style={[s.mealPlanTitle, { color: colors.text }]}>{plan.name}</ThemedText>
                 {plan.popular && (
-                  <View style={[shrd.statusBadge, { backgroundColor: '#22C55E20' }]}>
-                    <ThemedText style={[shrd.statusText, { color: '#22C55E' }]}>POPULAR</ThemedText>
+                  <View style={[shrd.statusBadge, { backgroundColor: '#5A8A6E20' }]}>
+                    <ThemedText style={[shrd.statusText, { color: '#5A8A6E' }]}>POPULAR</ThemedText>
                   </View>
                 )}
               </View>
@@ -1109,7 +1109,7 @@ function AssignmentsView({ colors, role }: { colors: typeof Colors.light; role: 
                   {asgn.roommates.length > 0 ? ` \u00B7 w/ ${asgn.roommates.join(', ')}` : ''}
                 </ThemedText>
                 {asgn.matchScore != null && (
-                  <ThemedText style={[s.listRowSub, { color: asgn.matchScore >= 85 ? '#22C55E' : asgn.matchScore >= 70 ? '#F59E0B' : '#EF4444' }]}>
+                  <ThemedText style={[s.listRowSub, { color: asgn.matchScore >= 85 ? '#5A8A6E' : asgn.matchScore >= 70 ? '#B8943E' : '#B85C5C' }]}>
                     Roommate Match: {asgn.matchScore}%
                   </ThemedText>
                 )}
@@ -1140,7 +1140,7 @@ function InventoryView({ colors }: { colors: typeof Colors.light }) {
             <KPIStat value={totalBeds.toLocaleString()} label="Total Beds" colors={colors} />
             <KPIStat value={String(totalADA)} label="ADA Rooms" colors={colors} />
             <KPIStat value={String(HALL_INVENTORY.length)} label="Halls" colors={colors} />
-            <KPIStat value={String(totalReplace)} label="Needs Replace" colors={colors} valueColor={totalReplace > 50 ? '#EF4444' : '#F59E0B'} />
+            <KPIStat value={String(totalReplace)} label="Needs Replace" colors={colors} valueColor={totalReplace > 50 ? '#B85C5C' : '#B8943E'} />
           </View>
         </Card>
       </View>
@@ -1181,7 +1181,7 @@ function InventoryView({ colors }: { colors: typeof Colors.light }) {
                 <ThemedText style={[s.inventoryLabel, { color: colors.textSecondary }]}>Desks</ThemedText>
               </View>
               <View style={s.inventoryItem}>
-                <ThemedText style={[s.inventoryValue, { color: inv.needsReplacement > 20 ? '#EF4444' : colors.text }]}>{inv.needsReplacement}</ThemedText>
+                <ThemedText style={[s.inventoryValue, { color: inv.needsReplacement > 20 ? '#B85C5C' : colors.text }]}>{inv.needsReplacement}</ThemedText>
                 <ThemedText style={[s.inventoryLabel, { color: colors.textSecondary }]}>Replace</ThemedText>
               </View>
             </View>
@@ -1217,8 +1217,8 @@ function OccupancyView({ colors }: { colors: typeof Colors.light }) {
           <View style={s.kpiGrid}>
             <KPIStat value={`${overallPct}%`} label="Occupancy Rate" colors={colors} />
             <KPIStat value={totalOcc.toLocaleString()} label="Occupied" colors={colors} />
-            <KPIStat value={String(emptyBeds)} label="Empty Beds" colors={colors} valueColor={emptyBeds > 100 ? '#F59E0B' : '#22C55E'} />
-            <KPIStat value={String(HOUSING_SUMMARY.waitlistCount)} label="Waitlist" colors={colors} valueColor="#F59E0B" />
+            <KPIStat value={String(emptyBeds)} label="Empty Beds" colors={colors} valueColor={emptyBeds > 100 ? '#B8943E' : '#5A8A6E'} />
+            <KPIStat value={String(HOUSING_SUMMARY.waitlistCount)} label="Waitlist" colors={colors} valueColor="#B8943E" />
           </View>
         </Card>
       </View>
@@ -1228,7 +1228,7 @@ function OccupancyView({ colors }: { colors: typeof Colors.light }) {
         <SectionHeader title="BY HALL (FLOOR DETAIL)" colors={colors} count={HALL_OCCUPANCY.length} />
         {HALL_OCCUPANCY.map((ho) => {
           const pct = Math.round((ho.totalOccupied / ho.totalCapacity) * 100);
-          const trendColor = ho.utilizationTrend === 'up' ? '#22C55E' : ho.utilizationTrend === 'down' ? '#EF4444' : '#A1A1AA';
+          const trendColor = ho.utilizationTrend === 'up' ? '#5A8A6E' : ho.utilizationTrend === 'down' ? '#B85C5C' : '#9C9790';
           return (
             <Card key={ho.hallId} colors={colors}>
               <View style={s.hallHeader}>
@@ -1240,7 +1240,7 @@ function OccupancyView({ colors }: { colors: typeof Colors.light }) {
               </View>
               <View style={s.progressContainer}>
                 <View style={[s.progressBg, { backgroundColor: colors.backgroundTertiary }]}>
-                  <View style={[s.progressFill, { width: `${pct}%`, backgroundColor: pct >= 95 ? '#EF4444' : pct >= 85 ? '#F59E0B' : '#22C55E' }]} />
+                  <View style={[s.progressFill, { width: `${pct}%`, backgroundColor: pct >= 95 ? '#B85C5C' : pct >= 85 ? '#B8943E' : '#5A8A6E' }]} />
                 </View>
                 <ThemedText style={[s.progressLabel, { color: colors.textSecondary }]}>
                   {ho.totalOccupied}/{ho.totalCapacity} ({pct}%)
@@ -1253,11 +1253,11 @@ function OccupancyView({ colors }: { colors: typeof Colors.light }) {
                     <ThemedText style={[s.floorLabel, { color: colors.textSecondary }]}>Floor {fl.floor}</ThemedText>
                     <View style={s.floorBarWrap}>
                       <View style={[s.floorBarBg, { backgroundColor: colors.backgroundTertiary }]}>
-                        <View style={[s.floorBarFill, { width: `${flPct}%`, backgroundColor: flPct >= 95 ? '#EF4444' : flPct >= 85 ? '#F59E0B' : '#22C55E' }]} />
+                        <View style={[s.floorBarFill, { width: `${flPct}%`, backgroundColor: flPct >= 95 ? '#B85C5C' : flPct >= 85 ? '#B8943E' : '#5A8A6E' }]} />
                       </View>
                     </View>
                     <ThemedText style={[s.floorPct, { color: colors.textSecondary }]}>{flPct}%</ThemedText>
-                    <ThemedText style={[s.floorEmpty, { color: fl.emptyBeds > 5 ? '#F59E0B' : colors.textTertiary }]}>
+                    <ThemedText style={[s.floorEmpty, { color: fl.emptyBeds > 5 ? '#B8943E' : colors.textTertiary }]}>
                       {fl.emptyBeds} empty
                     </ThemedText>
                   </View>
@@ -1282,7 +1282,7 @@ function OccupancyView({ colors }: { colors: typeof Colors.light }) {
                 <View style={s.listRowContent}>
                   <View style={s.listRowHeader}>
                     <ThemedText style={[s.listRowTitle, { color: colors.text }]}>{hall.name}</ThemedText>
-                    <ThemedText style={[s.occupancyPct, { color: pct >= 95 ? '#EF4444' : pct >= 85 ? '#F59E0B' : '#22C55E' }]}>{pct}%</ThemedText>
+                    <ThemedText style={[s.occupancyPct, { color: pct >= 95 ? '#B85C5C' : pct >= 85 ? '#B8943E' : '#5A8A6E' }]}>{pct}%</ThemedText>
                   </View>
                   <ThemedText style={[s.listRowMeta, { color: colors.textSecondary }]}>
                     {hall.occupancy}/{hall.capacity} beds {'\u00B7'} {hall.capacity - hall.occupancy} empty
@@ -1328,7 +1328,7 @@ function MoveView({ colors }: { colors: typeof Colors.light }) {
           <Card key={mv.id} colors={colors}>
             <View style={s.listRowHeader}>
               <View style={s.hallNameRow}>
-                <IconSymbol name={mv.type === 'move-in' ? 'arrow.down.to.line' : 'arrow.up.to.line'} size={14} color={mv.type === 'move-in' ? '#22C55E' : '#F59E0B'} />
+                <IconSymbol name={mv.type === 'move-in' ? 'arrow.down.to.line' : 'arrow.up.to.line'} size={14} color={mv.type === 'move-in' ? '#5A8A6E' : '#B8943E'} />
                 <ThemedText style={[s.listRowTitle, { color: colors.text }]}>{mv.hall}</ThemedText>
               </View>
               <StatusBadge label={mv.status} color={MOVE_STATUS_COLOR[mv.status]} />
@@ -1338,7 +1338,7 @@ function MoveView({ colors }: { colors: typeof Colors.light }) {
             </ThemedText>
             <View style={s.progressContainer}>
               <View style={[s.progressBg, { backgroundColor: colors.backgroundTertiary }]}>
-                <View style={[s.progressFill, { width: `${Math.round((mv.checklistCompleted / mv.checklistItems) * 100)}%`, backgroundColor: '#22C55E' }]} />
+                <View style={[s.progressFill, { width: `${Math.round((mv.checklistCompleted / mv.checklistItems) * 100)}%`, backgroundColor: '#5A8A6E' }]} />
               </View>
               <ThemedText style={[s.progressLabel, { color: colors.textSecondary }]}>
                 Checklist: {mv.checklistCompleted}/{mv.checklistItems} items
@@ -1368,7 +1368,7 @@ function MoveView({ colors }: { colors: typeof Colors.light }) {
                   Total: {kt.totalKeys} {'\u00B7'} Issued: {kt.issued} {'\u00B7'} Returned: {kt.returned}
                 </ThemedText>
                 {kt.lost > 0 && (
-                  <ThemedText style={[s.listRowSub, { color: '#EF4444' }]}>
+                  <ThemedText style={[s.listRowSub, { color: '#B85C5C' }]}>
                     Lost: {kt.lost} {'\u00B7'} Replacements: {kt.replacements}
                   </ThemedText>
                 )}
@@ -1409,9 +1409,9 @@ function WorkOrdersView({ colors, role }: { colors: typeof Colors.light; role: E
           <Card colors={colors}>
             <View style={s.kpiGrid}>
               <KPIStat value={String(HOUSING_SUMMARY.maintenanceRequests)} label="Total YTD" colors={colors} />
-              <KPIStat value={String(openCount)} label="Open" colors={colors} valueColor="#F59E0B" />
+              <KPIStat value={String(openCount)} label="Open" colors={colors} valueColor="#B8943E" />
               <KPIStat value={String(inProgressCount)} label="In Progress" colors={colors} valueColor={ACCENT} />
-              <KPIStat value={String(completedCount)} label="Completed" colors={colors} valueColor="#22C55E" />
+              <KPIStat value={String(completedCount)} label="Completed" colors={colors} valueColor="#5A8A6E" />
             </View>
           </Card>
         </View>
@@ -1472,7 +1472,7 @@ function WorkOrdersView({ colors, role }: { colors: typeof Colors.light; role: E
               </ThemedText>
             )}
             {wo.resolvedDate && (
-              <ThemedText style={[s.listRowSub, { color: '#22C55E' }]}>Resolved: {wo.resolvedDate}</ThemedText>
+              <ThemedText style={[s.listRowSub, { color: '#5A8A6E' }]}>Resolved: {wo.resolvedDate}</ThemedText>
             )}
           </Card>
         ))}
@@ -1500,9 +1500,9 @@ function InspectionsView({ colors }: { colors: typeof Colors.light }) {
         <Card colors={colors}>
           <View style={s.kpiGrid}>
             <KPIStat value={String(INSPECTIONS.length)} label="Total" colors={colors} />
-            <KPIStat value={String(passCount)} label="Passed" colors={colors} valueColor="#22C55E" />
-            <KPIStat value={String(failCount)} label="Failed" colors={colors} valueColor="#EF4444" />
-            <KPIStat value={String(schedCount)} label="Scheduled" colors={colors} valueColor="#A1A1AA" />
+            <KPIStat value={String(passCount)} label="Passed" colors={colors} valueColor="#5A8A6E" />
+            <KPIStat value={String(failCount)} label="Failed" colors={colors} valueColor="#B85C5C" />
+            <KPIStat value={String(schedCount)} label="Scheduled" colors={colors} valueColor="#9C9790" />
           </View>
         </Card>
       </View>
@@ -1545,8 +1545,8 @@ function InspectionsView({ colors }: { colors: typeof Colors.light }) {
               <View style={s.violationList}>
                 {insp.violations.map((v, i) => (
                   <View key={i} style={s.violationRow}>
-                    <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#EF4444" />
-                    <ThemedText style={[s.violationText, { color: '#EF4444' }]}>{v}</ThemedText>
+                    <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#B85C5C" />
+                    <ThemedText style={[s.violationText, { color: '#B85C5C' }]}>{v}</ThemedText>
                   </View>
                 ))}
               </View>
@@ -1612,8 +1612,8 @@ function ResidentSupportView({ colors, role }: { colors: typeof Colors.light; ro
                 <View style={s.listRowContent}>
                   <View style={s.listRowHeader}>
                     <ThemedText style={[s.listRowTitle, { color: colors.text }]}>{ds.raName}</ThemedText>
-                    <View style={[shrd.statusBadge, { backgroundColor: ds.type === 'on-duty' ? '#22C55E20' : '#F59E0B20' }]}>
-                      <ThemedText style={[shrd.statusText, { color: ds.type === 'on-duty' ? '#22C55E' : '#F59E0B' }]}>
+                    <View style={[shrd.statusBadge, { backgroundColor: ds.type === 'on-duty' ? '#5A8A6E20' : '#B8943E20' }]}>
+                      <ThemedText style={[shrd.statusText, { color: ds.type === 'on-duty' ? '#5A8A6E' : '#B8943E' }]}>
                         {ds.type === 'on-duty' ? 'ON DUTY' : 'ON CALL'}
                       </ThemedText>
                     </View>

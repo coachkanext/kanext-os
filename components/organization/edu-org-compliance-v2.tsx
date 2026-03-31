@@ -233,25 +233,25 @@ function OverviewTab({
         </View>
         <View style={s.postureKpiGrid}>
           <View style={s.postureKpiItem}>
-            <ThemedText style={[s.postureKpiValue, { color: posture.criticalRisks > 0 ? '#EF4444' : '#22C55E' }]}>
+            <ThemedText style={[s.postureKpiValue, { color: posture.criticalRisks > 0 ? '#B85C5C' : '#5A8A6E' }]}>
               {posture.criticalRisks}
             </ThemedText>
             <ThemedText style={[s.postureKpiLabel, { color: colors.textSecondary }]}>Critical Risks</ThemedText>
           </View>
           <View style={s.postureKpiItem}>
-            <ThemedText style={[s.postureKpiValue, { color: posture.openIncidents > 0 ? '#F59E0B' : '#22C55E' }]}>
+            <ThemedText style={[s.postureKpiValue, { color: posture.openIncidents > 0 ? '#B8943E' : '#5A8A6E' }]}>
               {posture.openIncidents}
             </ThemedText>
             <ThemedText style={[s.postureKpiLabel, { color: colors.textSecondary }]}>Open Incidents</ThemedText>
           </View>
           <View style={s.postureKpiItem}>
-            <ThemedText style={[s.postureKpiValue, { color: posture.openFindings > 0 ? '#F59E0B' : '#22C55E' }]}>
+            <ThemedText style={[s.postureKpiValue, { color: posture.openFindings > 0 ? '#B8943E' : '#5A8A6E' }]}>
               {posture.openFindings}
             </ThemedText>
             <ThemedText style={[s.postureKpiLabel, { color: colors.textSecondary }]}>Open Findings</ThemedText>
           </View>
           <View style={s.postureKpiItem}>
-            <ThemedText style={[s.postureKpiValue, { color: posture.activeExceptions > 0 ? ACCENT : '#22C55E' }]}>
+            <ThemedText style={[s.postureKpiValue, { color: posture.activeExceptions > 0 ? ACCENT : '#5A8A6E' }]}>
               {posture.activeExceptions}
             </ThemedText>
             <ThemedText style={[s.postureKpiLabel, { color: colors.textSecondary }]}>Active Exceptions</ThemedText>
@@ -270,17 +270,17 @@ function OverviewTab({
       {/* Control Status Strip */}
       <View style={[s.statusStrip, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#22C55E' }]} />
+          <View style={[s.statusDot, { backgroundColor: '#5A8A6E' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{onTrackCount}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>On Track</ThemedText>
         </View>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#F59E0B' }]} />
+          <View style={[s.statusDot, { backgroundColor: '#B8943E' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{atRiskCount}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>At Risk</ThemedText>
         </View>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#EF4444' }]} />
+          <View style={[s.statusDot, { backgroundColor: '#B85C5C' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{failedCount}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Failed</ThemedText>
         </View>
@@ -323,13 +323,13 @@ function OverviewTab({
       <View style={[s.integrityPanel, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.integrityRow}>
           <View style={s.integrityItem}>
-            <ThemedText style={[s.integrityValue, { color: financeIntegrity.complianceHolds > 0 ? '#F59E0B' : '#22C55E' }]}>
+            <ThemedText style={[s.integrityValue, { color: financeIntegrity.complianceHolds > 0 ? '#B8943E' : '#5A8A6E' }]}>
               {financeIntegrity.complianceHolds}
             </ThemedText>
             <ThemedText style={[s.integrityLabel, { color: colors.textSecondary }]}>Compliance Holds</ThemedText>
           </View>
           <View style={s.integrityItem}>
-            <ThemedText style={[s.integrityValue, { color: financeIntegrity.restrictedFundsPolicy ? '#22C55E' : '#EF4444' }]}>
+            <ThemedText style={[s.integrityValue, { color: financeIntegrity.restrictedFundsPolicy ? '#5A8A6E' : '#B85C5C' }]}>
               {financeIntegrity.restrictedFundsPolicy ? 'Yes' : 'No'}
             </ThemedText>
             <ThemedText style={[s.integrityLabel, { color: colors.textSecondary }]}>Restricted Funds</ThemedText>
@@ -431,7 +431,7 @@ function PoliciesTab({
                     {item.attestationRequired && (
                       <StatusBadge
                         label="ATTESTATION"
-                        color={item.attestationAudience ? '#22C55E' : '#F59E0B'}
+                        color={item.attestationAudience ? '#5A8A6E' : '#B8943E'}
                       />
                     )}
                   </View>
@@ -605,18 +605,18 @@ function EvidenceTab({
           {isDeanLevel(role) && item.status === 'submitted' && (
             <View style={s.evidenceReviewActions}>
               <Pressable
-                style={[s.evidenceReviewBtn, { backgroundColor: '#22C55E18', borderColor: '#22C55E40' }]}
+                style={[s.evidenceReviewBtn, { backgroundColor: '#5A8A6E18', borderColor: '#5A8A6E40' }]}
                 onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
               >
-                <IconSymbol name="checkmark.circle.fill" size={12} color="#22C55E" />
-                <ThemedText style={[s.evidenceReviewBtnText, { color: '#22C55E' }]}>Verify</ThemedText>
+                <IconSymbol name="checkmark.circle.fill" size={12} color="#5A8A6E" />
+                <ThemedText style={[s.evidenceReviewBtnText, { color: '#5A8A6E' }]}>Verify</ThemedText>
               </Pressable>
               <Pressable
-                style={[s.evidenceReviewBtn, { backgroundColor: '#EF444418', borderColor: '#EF444440' }]}
+                style={[s.evidenceReviewBtn, { backgroundColor: '#B85C5C18', borderColor: '#B85C5C40' }]}
                 onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
               >
-                <IconSymbol name="xmark.circle.fill" size={12} color="#EF4444" />
-                <ThemedText style={[s.evidenceReviewBtnText, { color: '#EF4444' }]}>Reject</ThemedText>
+                <IconSymbol name="xmark.circle.fill" size={12} color="#B85C5C" />
+                <ThemedText style={[s.evidenceReviewBtnText, { color: '#B85C5C' }]}>Reject</ThemedText>
               </Pressable>
             </View>
           )}
@@ -686,7 +686,7 @@ function RiskRegisterTab({
               <View style={s.riskBadgeRow}>
                 <StatusBadge label={catLabel.toUpperCase()} color={accentColor} />
                 <StatusBadge label={sevLabel.toUpperCase()} color={sevColor} />
-                <StatusBadge label={likelihoodLabel.toUpperCase()} color={risk.likelihood === 'high' ? '#EF4444' : risk.likelihood === 'medium' ? '#F59E0B' : '#22C55E'} />
+                <StatusBadge label={likelihoodLabel.toUpperCase()} color={risk.likelihood === 'high' ? '#B85C5C' : risk.likelihood === 'medium' ? '#B8943E' : '#5A8A6E'} />
               </View>
               <View style={s.riskMetaRow}>
                 <IconSymbol name="person.fill" size={11} color={colors.textTertiary} />
@@ -784,7 +784,7 @@ function AuditsTab({
 
             {audit.findingsCount > 0 && (
               <View style={s.findingsCountRow}>
-                <StatusBadge label={`${audit.findingsCount} FINDING${audit.findingsCount !== 1 ? 'S' : ''}`} color="#F59E0B" />
+                <StatusBadge label={`${audit.findingsCount} FINDING${audit.findingsCount !== 1 ? 'S' : ''}`} color="#B8943E" />
               </View>
             )}
 
@@ -802,7 +802,7 @@ function AuditsTab({
                     <ThemedText style={[s.auditDetailLabel, { color: colors.textSecondary }]}>Controls</ThemedText>
                   </View>
                   <View style={s.auditDetailItem}>
-                    <ThemedText style={[s.auditDetailValue, { color: audit.findingsCount > 0 ? '#F59E0B' : '#22C55E' }]}>
+                    <ThemedText style={[s.auditDetailValue, { color: audit.findingsCount > 0 ? '#B8943E' : '#5A8A6E' }]}>
                       {audit.findingsCount}
                     </ThemedText>
                     <ThemedText style={[s.auditDetailLabel, { color: colors.textSecondary }]}>Findings</ThemedText>
@@ -1017,7 +1017,7 @@ function IncidentsTab({
               <View style={s.incidentBadgeRow}>
                 <StatusBadge label={typeLabel.toUpperCase()} color={accentColor} />
                 <StatusBadge label={statusLabel.toUpperCase()} color={statusColor} />
-                {isClosed && <StatusBadge label="IMMUTABLE" color="#A1A1AA" />}
+                {isClosed && <StatusBadge label="IMMUTABLE" color="#9C9790" />}
                 {hasAddenda && (
                   <StatusBadge label={`${incident.addenda!.length} ADDENDA`} color={ACCENT} />
                 )}
@@ -1337,7 +1337,7 @@ function PolicyDetailSheet({
           {policyAttestations.length > 0 && (
             <View style={{ marginTop: Spacing.sm }}>
               {policyAttestations.map((att) => {
-                const attColor = att.status === 'completed' ? '#22C55E' : att.status === 'overdue' ? '#EF4444' : '#F59E0B';
+                const attColor = att.status === 'completed' ? '#5A8A6E' : att.status === 'overdue' ? '#B85C5C' : '#B8943E';
                 return (
                   <View key={att.id} style={s.sheetListRow}>
                     <View style={[s.timelineDot, { backgroundColor: attColor }]} />
@@ -1581,7 +1581,7 @@ function RiskDetailSheet({
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={catLabel.toUpperCase()} color={accentColor} />
         <StatusBadge label={sevLabel.toUpperCase()} color={sevColor} />
-        <StatusBadge label={`LIKELIHOOD: ${risk.likelihood.toUpperCase()}`} color={risk.likelihood === 'high' ? '#EF4444' : risk.likelihood === 'medium' ? '#F59E0B' : '#22C55E'} />
+        <StatusBadge label={`LIKELIHOOD: ${risk.likelihood.toUpperCase()}`} color={risk.likelihood === 'high' ? '#B85C5C' : risk.likelihood === 'medium' ? '#B8943E' : '#5A8A6E'} />
       </View>
 
       {/* Details */}

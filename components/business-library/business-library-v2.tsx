@@ -200,7 +200,7 @@ function VideoRow({
   onLongPress: () => void;
 }) {
   const typeColor = TYPE_COLORS[video.type];
-  const visColor = VISIBILITY_COLORS[video.visibilityClass] ?? '#A1A1AA';
+  const visColor = VISIBILITY_COLORS[video.visibilityClass] ?? '#9C9790';
   const visLabel = VISIBILITY_LABELS[video.visibilityClass] ?? '';
 
   return (
@@ -684,8 +684,8 @@ function FounderQuickActionsSheet({
         </Pressable>
 
         <Pressable style={styles.sheetAction} onPress={onAction}>
-          <IconSymbol name="archivebox" size={20} color="#EF4444" />
-          <ThemedText style={[styles.sheetActionText, { color: '#EF4444' }]}>Archive</ThemedText>
+          <IconSymbol name="archivebox" size={20} color="#B85C5C" />
+          <ThemedText style={[styles.sheetActionText, { color: '#B85C5C' }]}>Archive</ThemedText>
         </Pressable>
       </View>
     </BottomSheet>

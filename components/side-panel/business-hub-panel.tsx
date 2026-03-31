@@ -57,7 +57,7 @@ export function BusinessHubPanel() {
       {isAdmin ? (
         <>
           {/* Revenue banner */}
-          <View style={{ backgroundColor: '#1D3D5C', borderRadius: 12, padding: 14, gap: 4 }}>
+          <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14, gap: 4 }}>
             <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: 0.5 }}>This Month</Text>
             <Text style={{ fontSize: 28, fontWeight: '900', color: '#fff', lineHeight: 32 }}>{formatCurrency(revenueMonth, true)}</Text>
             <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>Pipeline: {formatCurrency(pipelineVal, true)} · {BIZ_DASHBOARD.pipeline.dealCount} deals</Text>

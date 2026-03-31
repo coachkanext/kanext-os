@@ -226,7 +226,7 @@ function CoverageTab({
       const fillPercent = item.totalSeats > 0
         ? Math.round((item.filledSeats / item.totalSeats) * 100)
         : 0;
-      const barColor = fillPercent >= 80 ? '#22C55E' : fillPercent >= 50 ? '#F59E0B' : '#EF4444';
+      const barColor = fillPercent >= 80 ? '#5A8A6E' : fillPercent >= 50 ? '#B8943E' : '#B85C5C';
 
       return (
         <Pressable
@@ -268,7 +268,7 @@ function CoverageTab({
               <ThemedText
                 style={[
                   s.coverageStatValue,
-                  { color: item.vacantLeadership > 0 ? '#EF4444' : colors.text },
+                  { color: item.vacantLeadership > 0 ? '#B85C5C' : colors.text },
                 ]}
               >
                 {item.vacantLeadership}
@@ -281,7 +281,7 @@ function CoverageTab({
               <ThemedText
                 style={[
                   s.coverageStatValue,
-                  { color: item.volunteerGaps > 0 ? '#F59E0B' : colors.text },
+                  { color: item.volunteerGaps > 0 ? '#B8943E' : colors.text },
                 ]}
               >
                 {item.volunteerGaps}
@@ -296,7 +296,7 @@ function CoverageTab({
           {item.vacantLeadership > 0 && (
             <View style={{ paddingHorizontal: Spacing.md, paddingBottom: Spacing.sm }}>
               <View style={s.coverageFlagRow}>
-                <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
+                <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B85C5C" />
                 <ThemedText style={s.coverageFlagText}>Leadership vacancy</ThemedText>
               </View>
             </View>
@@ -327,7 +327,7 @@ function CoverageTab({
               </ThemedText>
             </View>
             <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <ThemedText style={[s.kpiValue, { color: '#EF4444' }]}>
+              <ThemedText style={[s.kpiValue, { color: '#B85C5C' }]}>
                 {tiles.vacantLeadership}
               </ThemedText>
               <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>
@@ -335,7 +335,7 @@ function CoverageTab({
               </ThemedText>
             </View>
             <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <ThemedText style={[s.kpiValue, { color: '#F59E0B' }]}>
+              <ThemedText style={[s.kpiValue, { color: '#B8943E' }]}>
                 {tiles.volunteerGaps}
               </ThemedText>
               <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>
@@ -346,7 +346,7 @@ function CoverageTab({
               <ThemedText
                 style={[
                   s.kpiValue,
-                  { color: tiles.complianceFlags > 0 ? '#EF4444' : '#22C55E' },
+                  { color: tiles.complianceFlags > 0 ? '#B85C5C' : '#5A8A6E' },
                 ]}
               >
                 {tiles.complianceFlags}
@@ -462,7 +462,7 @@ function CalendarTab({
       {/* Events for selected date */}
       {dayEvents.length > 0 ? (
         dayEvents.map((ev) => {
-          const staffColor = STAFFING_STATUS_COLORS[ev.staffingStatus] || '#A1A1AA';
+          const staffColor = STAFFING_STATUS_COLORS[ev.staffingStatus] || '#9C9790';
           const staffLabel = STAFFING_STATUS_LABELS[ev.staffingStatus] || ev.staffingStatus;
           return (
             <View
@@ -514,7 +514,7 @@ function CalendarTab({
             All ministry events for this week
           </ThemedText>
           {weekEvents.map((ev) => {
-            const staffColor = STAFFING_STATUS_COLORS[ev.staffingStatus] || '#A1A1AA';
+            const staffColor = STAFFING_STATUS_COLORS[ev.staffingStatus] || '#9C9790';
             const staffLabel = STAFFING_STATUS_LABELS[ev.staffingStatus] || ev.staffingStatus;
             return (
               <View
@@ -569,7 +569,7 @@ function CalendarTab({
           </ThemedText>
           <View style={s.staffingSummaryRow}>
             <View style={[s.staffingSummaryCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <View style={[s.staffingSummaryDot, { backgroundColor: '#22C55E' }]} />
+              <View style={[s.staffingSummaryDot, { backgroundColor: '#5A8A6E' }]} />
               <ThemedText style={[s.staffingSummaryValue, { color: colors.text }]}>
                 {weekEvents.filter((e) => e.staffingStatus === 'fully_staffed').length}
               </ThemedText>
@@ -578,7 +578,7 @@ function CalendarTab({
               </ThemedText>
             </View>
             <View style={[s.staffingSummaryCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <View style={[s.staffingSummaryDot, { backgroundColor: '#F59E0B' }]} />
+              <View style={[s.staffingSummaryDot, { backgroundColor: '#B8943E' }]} />
               <ThemedText style={[s.staffingSummaryValue, { color: colors.text }]}>
                 {weekEvents.filter((e) => e.staffingStatus === 'needs_volunteers').length}
               </ThemedText>
@@ -587,7 +587,7 @@ function CalendarTab({
               </ThemedText>
             </View>
             <View style={[s.staffingSummaryCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <View style={[s.staffingSummaryDot, { backgroundColor: '#EF4444' }]} />
+              <View style={[s.staffingSummaryDot, { backgroundColor: '#B85C5C' }]} />
               <ThemedText style={[s.staffingSummaryValue, { color: colors.text }]}>
                 {weekEvents.filter((e) => e.staffingStatus === 'critical').length}
               </ThemedText>
@@ -632,11 +632,11 @@ function HealthTab({
     ({ item }: { item: MinistryHealthCard }) => {
       const healthColor = HEALTH_COLORS[item.overallHealth];
       const trendPositive = item.attendanceTrend >= 0;
-      const trendColor = trendPositive ? '#22C55E' : '#EF4444';
+      const trendColor = trendPositive ? '#5A8A6E' : '#B85C5C';
       const trendIcon = trendPositive ? 'arrow.up.right' : 'arrow.down.right';
-      const coverageColor = item.volunteerCoverage >= 75 ? '#22C55E' : item.volunteerCoverage >= 50 ? '#F59E0B' : '#EF4444';
-      const followUpColor = item.followUpThroughput >= 75 ? '#22C55E' : item.followUpThroughput >= 50 ? '#F59E0B' : '#EF4444';
-      const budgetColor = item.budgetVariance >= 0 ? '#22C55E' : '#EF4444';
+      const coverageColor = item.volunteerCoverage >= 75 ? '#5A8A6E' : item.volunteerCoverage >= 50 ? '#B8943E' : '#B85C5C';
+      const followUpColor = item.followUpThroughput >= 75 ? '#5A8A6E' : item.followUpThroughput >= 50 ? '#B8943E' : '#B85C5C';
+      const budgetColor = item.budgetVariance >= 0 ? '#5A8A6E' : '#B85C5C';
 
       return (
         <View style={[s.healthCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -733,8 +733,8 @@ function HealthTab({
               </ThemedText>
               {item.riskNotes.map((note, idx) => (
                 <View key={`risk-${idx}`} style={s.healthRiskItem}>
-                  <IconSymbol name="exclamationmark.circle.fill" size={12} color="#EF4444" />
-                  <ThemedText style={[s.healthRiskText, { color: '#EF4444' }]} numberOfLines={3}>
+                  <IconSymbol name="exclamationmark.circle.fill" size={12} color="#B85C5C" />
+                  <ThemedText style={[s.healthRiskText, { color: '#B85C5C' }]} numberOfLines={3}>
                     {note}
                   </ThemedText>
                 </View>
@@ -759,7 +759,7 @@ function HealthTab({
           {/* Health Summary KPIs */}
           <View style={s.healthSummaryRow}>
             <View style={[s.healthSummaryCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <View style={[s.healthSummaryDot, { backgroundColor: '#22C55E' }]} />
+              <View style={[s.healthSummaryDot, { backgroundColor: '#5A8A6E' }]} />
               <ThemedText style={[s.healthSummaryValue, { color: colors.text }]}>
                 {healthCards.filter((h) => h.overallHealth === 'green').length}
               </ThemedText>
@@ -768,7 +768,7 @@ function HealthTab({
               </ThemedText>
             </View>
             <View style={[s.healthSummaryCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <View style={[s.healthSummaryDot, { backgroundColor: '#F59E0B' }]} />
+              <View style={[s.healthSummaryDot, { backgroundColor: '#B8943E' }]} />
               <ThemedText style={[s.healthSummaryValue, { color: colors.text }]}>
                 {healthCards.filter((h) => h.overallHealth === 'yellow').length}
               </ThemedText>
@@ -777,7 +777,7 @@ function HealthTab({
               </ThemedText>
             </View>
             <View style={[s.healthSummaryCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <View style={[s.healthSummaryDot, { backgroundColor: '#EF4444' }]} />
+              <View style={[s.healthSummaryDot, { backgroundColor: '#B85C5C' }]} />
               <ThemedText style={[s.healthSummaryValue, { color: colors.text }]}>
                 {healthCards.filter((h) => h.overallHealth === 'red').length}
               </ThemedText>
@@ -823,7 +823,7 @@ function HealthTab({
                   </View>
                   {ministry.riskNotes.map((note, idx) => (
                     <View key={`rr-note-${idx}`} style={s.riskCardNoteRow}>
-                      <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#EF4444" />
+                      <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#B85C5C" />
                       <ThemedText style={[s.riskCardNote, { color: colors.textSecondary }]} numberOfLines={2}>
                         {note}
                       </ThemedText>
@@ -881,13 +881,13 @@ function MinistrySeatSheet({
         {vacantCount > 0 && (
           <StatusBadge
             label={`${vacantCount} VACANT`}
-            color="#EF4444"
+            color="#B85C5C"
           />
         )}
         {interimCount > 0 && (
           <StatusBadge
             label={`${interimCount} INTERIM`}
-            color="#F59E0B"
+            color="#B8943E"
           />
         )}
       </View>
@@ -915,7 +915,7 @@ function MinistrySeatSheet({
                   </ThemedText>
                   {seat.critical && (
                     <View style={s.sheetCriticalIcon}>
-                      <IconSymbol name="exclamationmark.shield.fill" size={12} color="#EF4444" />
+                      <IconSymbol name="exclamationmark.shield.fill" size={12} color="#B85C5C" />
                     </View>
                   )}
                 </View>
@@ -923,7 +923,7 @@ function MinistrySeatSheet({
                   style={[
                     s.sheetSeatHolder,
                     {
-                      color: seat.holder ? colors.textSecondary : '#EF4444',
+                      color: seat.holder ? colors.textSecondary : '#B85C5C',
                       fontWeight: seat.holder ? '400' : '700',
                     },
                   ]}
@@ -1253,7 +1253,7 @@ const s = StyleSheet.create({
   coverageFlagText: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#EF4444',
+    color: '#B85C5C',
   },
 
   // -- Calendar: Day Row --

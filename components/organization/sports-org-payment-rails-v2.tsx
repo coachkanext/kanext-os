@@ -194,13 +194,13 @@ function RailsHealthStrip({
     <View style={[s.healthStrip, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <View style={s.healthRow}>
         <View style={s.healthStatsRow}>
-          <View style={[s.countBadge, { backgroundColor: '#F59E0B20' }]}>
-            <ThemedText style={[s.countBadgeText, { color: '#F59E0B' }]}>
+          <View style={[s.countBadge, { backgroundColor: '#B8943E20' }]}>
+            <ThemedText style={[s.countBadgeText, { color: '#B8943E' }]}>
               Pending {formatCurrency(health.pendingAmount)}
             </ThemedText>
           </View>
-          <View style={[s.countBadge, { backgroundColor: '#EF444420' }]}>
-            <ThemedText style={[s.countBadgeText, { color: '#EF4444' }]}>
+          <View style={[s.countBadge, { backgroundColor: '#B85C5C20' }]}>
+            <ThemedText style={[s.countBadgeText, { color: '#B85C5C' }]}>
               Failed {health.failedCount}
             </ThemedText>
           </View>
@@ -254,7 +254,7 @@ function NowTab({
           }}
         >
           <View style={s.listCardHeader}>
-            <View style={[s.actionTypeDot, { backgroundColor: isBlocked ? '#EF4444' : '#F59E0B' }]} />
+            <View style={[s.actionTypeDot, { backgroundColor: isBlocked ? '#B85C5C' : '#B8943E' }]} />
             <ThemedText style={[s.listCardTitle, { color: colors.text }]} numberOfLines={2}>
               {item.title}
             </ThemedText>
@@ -265,7 +265,7 @@ function NowTab({
           <View style={s.listCardBadgeRow}>
             <StatusBadge
               label={isBlocked ? 'BLOCKED' : 'APPROVAL'}
-              color={isBlocked ? '#EF4444' : '#F59E0B'}
+              color={isBlocked ? '#B85C5C' : '#B8943E'}
             />
             <StatusBadge label={PRIORITY_LABELS[item.priority].toUpperCase()} color={priorityColor} />
           </View>
@@ -472,7 +472,7 @@ function ExceptionsTab({
             <ThemedText style={[s.listCardTitle, { color: colors.text }]} numberOfLines={2}>
               {item.title}
             </ThemedText>
-            <ThemedText style={[s.amountText, { color: '#EF4444' }]}>
+            <ThemedText style={[s.amountText, { color: '#B85C5C' }]}>
               {formatCurrency(item.amount)}
             </ThemedText>
           </View>
@@ -717,7 +717,7 @@ function PaymentOverviewTab({
                 s.healthDot,
                 {
                   backgroundColor:
-                    rail.status === 'green' ? '#22C55E' : rail.status === 'yellow' ? '#F59E0B' : '#EF4444',
+                    rail.status === 'green' ? '#5A8A6E' : rail.status === 'yellow' ? '#B8943E' : '#B85C5C',
                 },
               ]}
             />
@@ -733,19 +733,19 @@ function PaymentOverviewTab({
       <ThemedText style={[s.sectionTitle, { color: colors.text, marginTop: 20 }]}>Key Metrics</ThemedText>
       <View style={s.kpiGrid}>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: activeStreams > 0 ? accentColor : '#A1A1AA' }]}>
+          <ThemedText style={[s.kpiValue, { color: activeStreams > 0 ? accentColor : '#9C9790' }]}>
             {activeStreams}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Active Streams</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: failedCount > 0 ? '#EF4444' : '#22C55E' }]}>
+          <ThemedText style={[s.kpiValue, { color: failedCount > 0 ? '#B85C5C' : '#5A8A6E' }]}>
             {failedCount}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Blocked</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: pendingCount > 0 ? '#F59E0B' : '#22C55E' }]}>
+          <ThemedText style={[s.kpiValue, { color: pendingCount > 0 ? '#B8943E' : '#5A8A6E' }]}>
             {pendingCount}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Pending Approval</ThemedText>
@@ -923,7 +923,7 @@ export function SportsOrgPaymentRailsV2({ colors, accentColor, role = 'R3' }: Pr
               <ThemedText style={[s.sheetLabel, { color: colors.textSecondary }]}>Type</ThemedText>
               <StatusBadge
                 label={(selectedPayment as PaymentAction).type === 'blocked' ? 'BLOCKED' : 'APPROVAL'}
-                color={(selectedPayment as PaymentAction).type === 'blocked' ? '#EF4444' : '#F59E0B'}
+                color={(selectedPayment as PaymentAction).type === 'blocked' ? '#B85C5C' : '#B8943E'}
               />
             </View>
             <View style={[s.sheetRow, { borderColor: colors.border }]}>
@@ -1086,7 +1086,7 @@ export function SportsOrgPaymentRailsV2({ colors, accentColor, role = 'R3' }: Pr
           <View style={s.sheetContent}>
             <View style={[s.sheetRow, { borderColor: colors.border }]}>
               <ThemedText style={[s.sheetLabel, { color: colors.textSecondary }]}>Amount Blocked</ThemedText>
-              <ThemedText style={[s.sheetValue, { color: '#EF4444' }]}>
+              <ThemedText style={[s.sheetValue, { color: '#B85C5C' }]}>
                 {formatCurrency(selectedException.amount)}
               </ThemedText>
             </View>

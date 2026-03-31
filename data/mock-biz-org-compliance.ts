@@ -162,10 +162,10 @@ export const COMPLIANCE_SUB_TABS: ComplianceSubTab[] = [
 // =============================================================================
 
 export const POLICY_STATUS_COLOR: Record<CompliancePolicy['status'], string> = {
-  active: '#22C55E',
-  draft: '#1D9BF0',
-  under_review: '#F59E0B',
-  archived: '#A1A1AA',
+  active: '#5A8A6E',
+  draft: '#1A1714',
+  under_review: '#B8943E',
+  archived: '#9C9790',
 };
 
 export const POLICY_STATUS_LABEL: Record<CompliancePolicy['status'], string> = {
@@ -176,12 +176,12 @@ export const POLICY_STATUS_LABEL: Record<CompliancePolicy['status'], string> = {
 };
 
 export const POLICY_CATEGORY_COLOR: Record<CompliancePolicy['category'], string> = {
-  data_privacy: '#1D9BF0',
-  financial: '#F59E0B',
-  operational: '#22C55E',
-  hr: '#1D9BF0',
-  security: '#EF4444',
-  regulatory: '#1D9BF0',
+  data_privacy: '#1A1714',
+  financial: '#B8943E',
+  operational: '#5A8A6E',
+  hr: '#1A1714',
+  security: '#B85C5C',
+  regulatory: '#1A1714',
 };
 
 export const POLICY_CATEGORY_LABEL: Record<CompliancePolicy['category'], string> = {
@@ -194,21 +194,21 @@ export const POLICY_CATEGORY_LABEL: Record<CompliancePolicy['category'], string>
 };
 
 export const RISK_LIKELIHOOD_COLOR: Record<ComplianceRisk['likelihood'], string> = {
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#22C55E',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#5A8A6E',
 };
 
 export const RISK_IMPACT_COLOR: Record<ComplianceRisk['impact'], string> = {
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#22C55E',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#5A8A6E',
 };
 
 export const MITIGATION_STATUS_COLOR: Record<ComplianceRisk['mitigationStatus'], string> = {
-  mitigated: '#22C55E',
-  in_progress: '#F59E0B',
-  unmitigated: '#EF4444',
+  mitigated: '#5A8A6E',
+  in_progress: '#B8943E',
+  unmitigated: '#B85C5C',
 };
 
 export const MITIGATION_STATUS_LABEL: Record<ComplianceRisk['mitigationStatus'], string> = {
@@ -218,9 +218,9 @@ export const MITIGATION_STATUS_LABEL: Record<ComplianceRisk['mitigationStatus'],
 };
 
 export const CONTROL_TYPE_COLOR: Record<ComplianceControl['type'], string> = {
-  preventive: '#1D9BF0',
-  detective: '#F59E0B',
-  corrective: '#1D9BF0',
+  preventive: '#1A1714',
+  detective: '#B8943E',
+  corrective: '#1A1714',
 };
 
 export const CONTROL_TYPE_LABEL: Record<ComplianceControl['type'], string> = {
@@ -230,9 +230,9 @@ export const CONTROL_TYPE_LABEL: Record<ComplianceControl['type'], string> = {
 };
 
 export const EFFECTIVENESS_COLOR: Record<ComplianceControl['effectiveness'], string> = {
-  effective: '#22C55E',
-  partially_effective: '#F59E0B',
-  ineffective: '#EF4444',
+  effective: '#5A8A6E',
+  partially_effective: '#B8943E',
+  ineffective: '#B85C5C',
 };
 
 export const EFFECTIVENESS_LABEL: Record<ComplianceControl['effectiveness'], string> = {
@@ -242,9 +242,9 @@ export const EFFECTIVENESS_LABEL: Record<ComplianceControl['effectiveness'], str
 };
 
 export const TEST_RESULT_COLOR: Record<ComplianceControl['testResult'], string> = {
-  pass: '#22C55E',
-  fail: '#EF4444',
-  partial: '#F59E0B',
+  pass: '#5A8A6E',
+  fail: '#B85C5C',
+  partial: '#B8943E',
 };
 
 export const TEST_RESULT_LABEL: Record<ComplianceControl['testResult'], string> = {
@@ -254,10 +254,10 @@ export const TEST_RESULT_LABEL: Record<ComplianceControl['testResult'], string> 
 };
 
 export const EVIDENCE_TYPE_COLOR: Record<ComplianceEvidence['type'], string> = {
-  document: '#1D9BF0',
-  screenshot: '#1D9BF0',
-  log: '#1D9BF0',
-  attestation: '#22C55E',
+  document: '#1A1714',
+  screenshot: '#1A1714',
+  log: '#1A1714',
+  attestation: '#5A8A6E',
 };
 
 export const EVIDENCE_TYPE_LABEL: Record<ComplianceEvidence['type'], string> = {
@@ -268,10 +268,10 @@ export const EVIDENCE_TYPE_LABEL: Record<ComplianceEvidence['type'], string> = {
 };
 
 export const EVIDENCE_REVIEW_COLOR: Record<ComplianceEvidence['reviewStatus'], string> = {
-  pending: '#F59E0B',
-  reviewed: '#1D9BF0',
-  accepted: '#22C55E',
-  rejected: '#EF4444',
+  pending: '#B8943E',
+  reviewed: '#1A1714',
+  accepted: '#5A8A6E',
+  rejected: '#B85C5C',
 };
 
 export const EVIDENCE_REVIEW_LABEL: Record<ComplianceEvidence['reviewStatus'], string> = {
@@ -282,9 +282,9 @@ export const EVIDENCE_REVIEW_LABEL: Record<ComplianceEvidence['reviewStatus'], s
 };
 
 export const AUDIT_TYPE_COLOR: Record<ComplianceAudit['type'], string> = {
-  internal: '#1D9BF0',
-  external: '#1D9BF0',
-  regulatory: '#EF4444',
+  internal: '#1A1714',
+  external: '#1A1714',
+  regulatory: '#B85C5C',
 };
 
 export const AUDIT_TYPE_LABEL: Record<ComplianceAudit['type'], string> = {
@@ -294,10 +294,10 @@ export const AUDIT_TYPE_LABEL: Record<ComplianceAudit['type'], string> = {
 };
 
 export const AUDIT_STATUS_COLOR: Record<ComplianceAudit['status'], string> = {
-  scheduled: '#1D9BF0',
-  in_progress: '#F59E0B',
-  completed: '#22C55E',
-  remediation: '#EF4444',
+  scheduled: '#1A1714',
+  in_progress: '#B8943E',
+  completed: '#5A8A6E',
+  remediation: '#B85C5C',
 };
 
 export const AUDIT_STATUS_LABEL: Record<ComplianceAudit['status'], string> = {
@@ -308,17 +308,17 @@ export const AUDIT_STATUS_LABEL: Record<ComplianceAudit['status'], string> = {
 };
 
 export const INCIDENT_SEVERITY_COLOR: Record<ComplianceIncident['severity'], string> = {
-  critical: '#EF4444',
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#22C55E',
+  critical: '#B85C5C',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#5A8A6E',
 };
 
 export const INCIDENT_STATUS_COLOR: Record<ComplianceIncident['status'], string> = {
-  open: '#EF4444',
-  investigating: '#F59E0B',
-  resolved: '#22C55E',
-  closed: '#A1A1AA',
+  open: '#B85C5C',
+  investigating: '#B8943E',
+  resolved: '#5A8A6E',
+  closed: '#9C9790',
 };
 
 export const INCIDENT_STATUS_LABEL: Record<ComplianceIncident['status'], string> = {
@@ -329,9 +329,9 @@ export const INCIDENT_STATUS_LABEL: Record<ComplianceIncident['status'], string>
 };
 
 export const EXCEPTION_STATUS_COLOR: Record<ComplianceException['status'], string> = {
-  active: '#22C55E',
-  expired: '#A1A1AA',
-  revoked: '#EF4444',
+  active: '#5A8A6E',
+  expired: '#9C9790',
+  revoked: '#B85C5C',
 };
 
 export const EXCEPTION_STATUS_LABEL: Record<ComplianceException['status'], string> = {
@@ -341,10 +341,10 @@ export const EXCEPTION_STATUS_LABEL: Record<ComplianceException['status'], strin
 };
 
 export const EXPORT_FORMAT_COLOR: Record<ComplianceExportOption['format'], string> = {
-  PDF: '#EF4444',
-  CSV: '#22C55E',
-  XLSX: '#1D9BF0',
-  JSON: '#F59E0B',
+  PDF: '#B85C5C',
+  CSV: '#5A8A6E',
+  XLSX: '#1A1714',
+  JSON: '#B8943E',
 };
 
 // =============================================================================
@@ -989,7 +989,7 @@ export interface BizComplianceV2Data {
 const railsReadiness: RailsReadiness = {
   score: 72,
   label: 'On Track',
-  color: '#F59E0B',
+  color: '#B8943E',
 };
 
 // =============================================================================

@@ -78,7 +78,7 @@ export function ThreadRow({ thread, onPress }: ThreadRowProps) {
       <View style={styles.rightCol}>
         <View style={styles.rightTopRow}>
           {thread.pinned && (
-            <IconSymbol name="pin.fill" size={10} color="#A1A1AA" />
+            <IconSymbol name="pin.fill" size={10} color="#9C9790" />
           )}
           {thread.muted && (
             <IconSymbol name="bell.slash.fill" size={10} color="#555" />
@@ -163,12 +163,12 @@ const styles = StyleSheet.create({
   },
   countText: {
     fontSize: 11,
-    color: '#A1A1AA',
+    color: '#9C9790',
     fontWeight: '500',
   },
   preview: {
     fontSize: 14,
-    color: '#A1A1AA',
+    color: '#9C9790',
     lineHeight: 18,
   },
   contextSub: {
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   },
   timestamp: {
     fontSize: 12,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   unreadDot: {
     width: 8,

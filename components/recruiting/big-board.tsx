@@ -24,7 +24,7 @@ import type { OffensiveStyle, DefensiveStyle } from '@/types';
 const BG = '#0B0F14';
 const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#A1A1AA';
+const GRAY = '#9C9790';
 const DIVIDER = '#0B0F14';
 
 type SortKey = 'kr' | 'fit' | 'rank';
@@ -223,7 +223,7 @@ function BigBoardRow({
           {entry.slot ?? player.position} {'\u00B7'} {player.height} {'\u00B7'} {player.classYear} {'\u00B7'} {player.currentSchool}
         </Text>
       </View>
-      <Text style={[styles.rowKR, { color: kr >= 75 ? '#22C55E' : kr >= 60 ? '#F59E0B' : GRAY }]}>
+      <Text style={[styles.rowKR, { color: kr >= 75 ? '#5A8A6E' : kr >= 60 ? '#B8943E' : GRAY }]}>
         {kr}
       </Text>
       {interest && (

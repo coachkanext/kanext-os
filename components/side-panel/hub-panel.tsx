@@ -27,7 +27,7 @@ const SETTINGS_ITEMS = [
 
 const NOTIFICATIONS = [
   { icon: 'person.fill.badge.plus', label: '12 new followers',   color: '#5A8A6E' },
-  { icon: 'star.fill',              label: '2 new subscribers',  color: '#3B82F6' },
+  { icon: 'star.fill',              label: '2 new subscribers',  color: '#1A1714' },
   { icon: 'dollarsign.circle.fill', label: '$340 payout ready',  color: '#5A8A6E' },
 ] as const;
 

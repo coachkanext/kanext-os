@@ -103,27 +103,27 @@ function revenueTypeLabel(type: SponsorRevenue['type']): string {
 
 function revenueTypeColor(type: SponsorRevenue['type']): string {
   switch (type) {
-    case 'cash': return '#22C55E';
+    case 'cash': return '#5A8A6E';
     case 'in-kind': return ACCENT;
-    case 'bonus': return '#F59E0B';
+    case 'bonus': return '#B8943E';
     case 'renewal': return ACCENT;
   }
 }
 
 function revenueStatusColor(status: SponsorRevenue['status']): string {
   switch (status) {
-    case 'received': return '#22C55E';
+    case 'received': return '#5A8A6E';
     case 'invoiced': return ACCENT;
-    case 'overdue': return '#EF4444';
-    case 'projected': return '#A1A1AA';
+    case 'overdue': return '#B85C5C';
+    case 'projected': return '#9C9790';
   }
 }
 
 function assetStatusColor(status: SponsorAsset['status']): string {
   switch (status) {
-    case 'approved': return '#22C55E';
-    case 'pending': return '#F59E0B';
-    case 'rejected': return '#EF4444';
+    case 'approved': return '#5A8A6E';
+    case 'pending': return '#B8943E';
+    case 'rejected': return '#B85C5C';
   }
 }
 
@@ -378,9 +378,9 @@ function PackagesTab({
         const statusLabel = item.status === 'sold-out' ? 'SOLD OUT'
           : item.status === 'custom' ? 'CUSTOM'
           : 'AVAILABLE';
-        const statusColor = item.status === 'sold-out' ? '#EF4444'
+        const statusColor = item.status === 'sold-out' ? '#B85C5C'
           : item.status === 'custom' ? ACCENT
-          : '#22C55E';
+          : '#5A8A6E';
         return (
           <View style={[s.packageCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.packageHeader}>
@@ -767,7 +767,7 @@ function RevenueTab({
           <View style={[s.revenueSummaryCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.revenueSummaryRow}>
               <View style={s.revenueSummaryItem}>
-                <ThemedText style={[s.revenueSummaryValue, { color: '#22C55E' }]}>
+                <ThemedText style={[s.revenueSummaryValue, { color: '#5A8A6E' }]}>
                   {formatCurrency(totals.received)}
                 </ThemedText>
                 <ThemedText style={[s.revenueSummaryLabel, { color: colors.textTertiary }]}>
@@ -783,7 +783,7 @@ function RevenueTab({
                 </ThemedText>
               </View>
               <View style={s.revenueSummaryItem}>
-                <ThemedText style={[s.revenueSummaryValue, { color: '#EF4444' }]}>
+                <ThemedText style={[s.revenueSummaryValue, { color: '#B85C5C' }]}>
                   {formatCurrency(totals.overdue)}
                 </ThemedText>
                 <ThemedText style={[s.revenueSummaryLabel, { color: colors.textTertiary }]}>
@@ -791,7 +791,7 @@ function RevenueTab({
                 </ThemedText>
               </View>
               <View style={s.revenueSummaryItem}>
-                <ThemedText style={[s.revenueSummaryValue, { color: '#A1A1AA' }]}>
+                <ThemedText style={[s.revenueSummaryValue, { color: '#9C9790' }]}>
                   {formatCurrency(totals.projected)}
                 </ThemedText>
                 <ThemedText style={[s.revenueSummaryLabel, { color: colors.textTertiary }]}>
@@ -1969,7 +1969,7 @@ const s = StyleSheet.create({
   packageCapacityBar: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#A1A1AA',
+    backgroundColor: '#9C9790',
     marginBottom: 4,
     overflow: 'hidden',
   },

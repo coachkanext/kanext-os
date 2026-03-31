@@ -23,8 +23,8 @@ function getTypeBadgeColor(type: ChurchService['type']): string {
     case 'sunday_morning': return ACCENT;
     case 'sunday_evening': return ACCENT;
     case 'midweek': return ACCENT;
-    case 'special': return '#F59E0B';
-    default: return '#A1A1AA';
+    case 'special': return '#B8943E';
+    default: return '#9C9790';
   }
 }
 
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   cardTop: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
   typeBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
   typeBadgeText: { fontSize: 10, fontWeight: '700' },
-  liveBadge: { backgroundColor: '#EF4444', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
+  liveBadge: { backgroundColor: '#B85C5C', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
   liveText: { color: '#fff', fontSize: 10, fontWeight: '800' },
   title: { fontSize: 15, fontWeight: '700', marginBottom: 2 },
   seriesLabel: { fontSize: 11, fontWeight: '600', fontStyle: 'italic', marginBottom: 2 },

@@ -105,9 +105,9 @@ function OverviewTab({
 }) {
   const kpis = [
     { id: 'total', label: 'Total Rooms', value: `${overview.totalRooms}`, icon: 'building.2.fill', color: ACCENT },
-    { id: 'available', label: 'Available Now', value: `${overview.availableNow}`, icon: 'checkmark.circle.fill', color: '#22C55E' },
-    { id: 'booked', label: 'Booked Today', value: `${overview.bookedToday}`, icon: 'calendar', color: '#F59E0B' },
-    { id: 'maint', label: 'Maintenance', value: `${overview.underMaintenance}`, icon: 'wrench.and.screwdriver.fill', color: '#EF4444' },
+    { id: 'available', label: 'Available Now', value: `${overview.availableNow}`, icon: 'checkmark.circle.fill', color: '#5A8A6E' },
+    { id: 'booked', label: 'Booked Today', value: `${overview.bookedToday}`, icon: 'calendar', color: '#B8943E' },
+    { id: 'maint', label: 'Maintenance', value: `${overview.underMaintenance}`, icon: 'wrench.and.screwdriver.fill', color: '#B85C5C' },
     { id: 'buildings', label: 'Buildings', value: `${overview.totalBuildings}`, icon: 'building.fill', color: ACCENT },
     { id: 'occupancy', label: 'Avg Occupancy', value: `${overview.avgOccupancy}%`, icon: 'chart.bar.fill', color: ACCENT },
   ];
@@ -201,7 +201,7 @@ function OverviewTab({
       <View style={[s.accessSummaryCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.accessSummaryRow}>
           <View style={s.accessSummaryItem}>
-            <ThemedText style={[s.accessSummaryValue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.accessSummaryValue, { color: '#5A8A6E' }]}>
               {overview.accessibleRooms}
             </ThemedText>
             <ThemedText style={[s.accessSummaryLabel, { color: colors.textTertiary }]}>
@@ -209,7 +209,7 @@ function OverviewTab({
             </ThemedText>
           </View>
           <View style={s.accessSummaryItem}>
-            <ThemedText style={[s.accessSummaryValue, { color: '#EF4444' }]}>
+            <ThemedText style={[s.accessSummaryValue, { color: '#B85C5C' }]}>
               {overview.totalRooms - overview.accessibleRooms}
             </ThemedText>
             <ThemedText style={[s.accessSummaryLabel, { color: colors.textTertiary }]}>
@@ -314,8 +314,8 @@ function DirectoryTab({
                   </View>
                   {facility.accessibility && (
                     <View style={s.facilityMetaItem}>
-                      <IconSymbol name="figure.roll" size={12} color="#22C55E" />
-                      <ThemedText style={[s.facilityMetaText, { color: '#22C55E' }]}>
+                      <IconSymbol name="figure.roll" size={12} color="#5A8A6E" />
+                      <ThemedText style={[s.facilityMetaText, { color: '#5A8A6E' }]}>
                         ADA
                       </ThemedText>
                     </View>
@@ -621,7 +621,7 @@ function AccessibilityTab({
       <View style={[s.complianceSummary, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.complianceRow}>
           <View style={s.complianceItem}>
-            <ThemedText style={[s.complianceValue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.complianceValue, { color: '#5A8A6E' }]}>
               {accessible.length}
             </ThemedText>
             <ThemedText style={[s.complianceLabel, { color: colors.textTertiary }]}>
@@ -629,7 +629,7 @@ function AccessibilityTab({
             </ThemedText>
           </View>
           <View style={s.complianceItem}>
-            <ThemedText style={[s.complianceValue, { color: '#EF4444' }]}>
+            <ThemedText style={[s.complianceValue, { color: '#B85C5C' }]}>
               {nonAccessible.length}
             </ThemedText>
             <ThemedText style={[s.complianceLabel, { color: colors.textTertiary }]}>
@@ -651,7 +651,7 @@ function AccessibilityTab({
           <View
             style={[
               s.complianceBarFill,
-              { backgroundColor: '#22C55E', width: `${complianceRate}%` },
+              { backgroundColor: '#5A8A6E', width: `${complianceRate}%` },
             ]}
           />
         </View>
@@ -671,8 +671,8 @@ function AccessibilityTab({
                 style={[s.accessCard, { backgroundColor: colors.card, borderColor: colors.border }]}
               >
                 <View style={s.accessCardTop}>
-                  <View style={[s.accessIconCircle, { backgroundColor: '#EF4444' + '18' }]}>
-                    <IconSymbol name="xmark.circle.fill" size={16} color="#EF4444" />
+                  <View style={[s.accessIconCircle, { backgroundColor: '#B85C5C' + '18' }]}>
+                    <IconSymbol name="xmark.circle.fill" size={16} color="#B85C5C" />
                   </View>
                   <View style={s.accessCardInfo}>
                     <ThemedText style={[s.accessRoomName, { color: colors.text }]} numberOfLines={1}>
@@ -702,8 +702,8 @@ function AccessibilityTab({
             style={[s.accessCard, { backgroundColor: colors.card, borderColor: colors.border }]}
           >
             <View style={s.accessCardTop}>
-              <View style={[s.accessIconCircle, { backgroundColor: '#22C55E' + '18' }]}>
-                <IconSymbol name="checkmark.circle.fill" size={16} color="#22C55E" />
+              <View style={[s.accessIconCircle, { backgroundColor: '#5A8A6E' + '18' }]}>
+                <IconSymbol name="checkmark.circle.fill" size={16} color="#5A8A6E" />
               </View>
               <View style={s.accessCardInfo}>
                 <ThemedText style={[s.accessRoomName, { color: colors.text }]} numberOfLines={1}>
@@ -750,7 +750,7 @@ function FacilityDetailSheet({
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={FACILITY_TYPE_LABEL[facility.type]} color={tColor} />
         <StatusBadge label={FACILITY_STATUS_LABEL[facility.status]} color={stColor} />
-        {facility.accessibility && <StatusBadge label="ADA" color="#22C55E" />}
+        {facility.accessibility && <StatusBadge label="ADA" color="#5A8A6E" />}
       </View>
 
       {/* KPIs */}
@@ -1564,7 +1564,7 @@ const s = StyleSheet.create({
   complianceBar: {
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#A1A1AA',
+    backgroundColor: '#9C9790',
     overflow: 'hidden',
   },
   complianceBarFill: {

@@ -63,7 +63,7 @@ export function LinkCard({ item }: LinkCardProps) {
       </View>
 
       {/* External link icon */}
-      <IconSymbol name="arrow.up.right.square" size={16} color="#A1A1AA" />
+      <IconSymbol name="arrow.up.right.square" size={16} color="#9C9790" />
     </Pressable>
   );
 }
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   creator: {
     fontSize: 12,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   tagsRow: {
     flexDirection: 'row',
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
   tagText: {
     fontSize: 10,
-    color: '#A1A1AA',
+    color: '#9C9790',
     fontWeight: '500',
   },
   notes: {

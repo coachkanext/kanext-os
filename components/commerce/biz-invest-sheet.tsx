@@ -20,7 +20,7 @@ import { Spacing, BorderRadius } from '@/constants/theme';
 
 type Stage = 'overview' | 'tier_select' | 'confirm' | 'receipt';
 
-const ACCENT = '#22C55E';
+const ACCENT = '#5A8A6E';
 
 interface Props {
   visible: boolean;
@@ -188,8 +188,8 @@ export function BizInvestSheet({ visible, onClose, colors }: Props) {
           </Pressable>
 
           {/* RegD Disclaimer */}
-          <View style={[styles.disclaimerBox, { backgroundColor: '#F59E0B15' }]}>
-            <Text style={[styles.disclaimerText, { color: '#F59E0B' }]}>
+          <View style={[styles.disclaimerBox, { backgroundColor: '#B8943E15' }]}>
+            <Text style={[styles.disclaimerText, { color: '#B8943E' }]}>
               {SAFE_TERMS.regDDisclaimer}
             </Text>
           </View>
@@ -248,8 +248,8 @@ export function BizInvestSheet({ visible, onClose, colors }: Props) {
           </View>
 
           {/* RegD Footer */}
-          <View style={[styles.disclaimerBox, { backgroundColor: '#F59E0B15' }]}>
-            <Text style={[styles.disclaimerText, { color: '#F59E0B' }]}>
+          <View style={[styles.disclaimerBox, { backgroundColor: '#B8943E15' }]}>
+            <Text style={[styles.disclaimerText, { color: '#B8943E' }]}>
               Securities offered under Regulation D Rule 506(b). Not a public offering.
             </Text>
           </View>

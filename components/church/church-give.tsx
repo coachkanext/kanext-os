@@ -144,11 +144,11 @@ const ACTIVE_FUNDS: Fund[] = [
   },
   {
     id: 'fund-4', name: 'Youth Summer Camp', description: 'Send 150 youth to summer camp with scholarships for families in need.',
-    goal: 25000, raised: 18000, ongoing: false, deadline: 'May 2026', donorCount: 128, trend: '+22.4%', color: '#F59E0B', icon: 'sun.max.fill',
+    goal: 25000, raised: 18000, ongoing: false, deadline: 'May 2026', donorCount: 128, trend: '+22.4%', color: '#B8943E', icon: 'sun.max.fill',
   },
   {
     id: 'fund-5', name: 'Benevolence Fund', description: 'Emergency assistance for church members and community families in crisis.',
-    goal: null, raised: 12000, ongoing: true, deadline: null, donorCount: 195, trend: '+3.1%', color: '#22C55E', icon: 'hands.sparkles.fill',
+    goal: null, raised: 12000, ongoing: true, deadline: null, donorCount: 195, trend: '+3.1%', color: '#5A8A6E', icon: 'hands.sparkles.fill',
   },
   {
     id: 'fund-6', name: 'Easter Special Offering', description: 'Annual Easter offering supporting local outreach and church planting.',
@@ -208,8 +208,8 @@ const YTD_SUMMARY: YTDSummary = {
 };
 
 const TX_STATUS_COLOR: Record<string, string> = {
-  completed: '#22C55E',
-  pending: '#F59E0B',
+  completed: '#5A8A6E',
+  pending: '#B8943E',
   recurring: ACCENT,
 };
 
@@ -248,13 +248,13 @@ const ACTIVE_PLEDGES: Pledge[] = [
   {
     id: 'pledge-4', fund: 'Youth Summer Camp', pledgedAmount: '$500', fulfilledAmount: '$500',
     fulfilledPct: 100, frequency: 'One-Time', startDate: 'Jan 2026', endDate: 'Jan 2026',
-    status: 'completed', nextPayment: '\u2014', color: '#F59E0B',
+    status: 'completed', nextPayment: '\u2014', color: '#B8943E',
   },
 ];
 
 const PLEDGE_STATUS_COLOR: Record<string, string> = {
-  'on-track': '#22C55E',
-  behind: '#EF4444',
+  'on-track': '#5A8A6E',
+  behind: '#B85C5C',
   completed: ACCENT,
   ahead: ACCENT,
 };
@@ -272,12 +272,12 @@ interface ConsoleKPI {
 }
 
 const CONSOLE_KPIS: ConsoleKPI[] = [
-  { id: 'ck-1', label: 'Monthly Giving', value: '$185,200', detail: 'Feb 2026', trend: '+4.2%', trendUp: true, color: '#22C55E' },
+  { id: 'ck-1', label: 'Monthly Giving', value: '$185,200', detail: 'Feb 2026', trend: '+4.2%', trendUp: true, color: '#5A8A6E' },
   { id: 'ck-2', label: 'YTD Total', value: '$1.12M', detail: 'vs $1.08M last year', trend: '+3.7%', trendUp: true, color: ACCENT },
   { id: 'ck-3', label: 'Average Gift', value: '$142', detail: '1,304 gifts this month', trend: '+$8', trendUp: true, color: ACCENT },
   { id: 'ck-4', label: 'Unique Donors', value: '312', detail: 'This month', trend: '+18', trendUp: true, color: ACCENT },
   { id: 'ck-5', label: 'Recurring Ratio', value: '68%', detail: 'vs 32% one-time', trend: '+2%', trendUp: true, color: ACCENT },
-  { id: 'ck-6', label: 'Donor Retention', value: '84%', detail: '12-month rolling', trend: '+1.2%', trendUp: true, color: '#F59E0B' },
+  { id: 'ck-6', label: 'Donor Retention', value: '84%', detail: '12-month rolling', trend: '+1.2%', trendUp: true, color: '#B8943E' },
 ];
 
 interface MonthlyGiving {
@@ -306,8 +306,8 @@ const TOP_FUNDS_BY_VOLUME: TopFund[] = [
   { id: 'tf-1', name: 'General Tithes & Offering', amount: '$842K', percentage: 62.4, color: ACCENT },
   { id: 'tf-2', name: 'Building Fund', amount: '$248K', percentage: 18.4, color: ACCENT },
   { id: 'tf-3', name: 'Missions Fund', amount: '$89K', percentage: 6.6, color: ACCENT },
-  { id: 'tf-4', name: 'Youth Programs', amount: '$52K', percentage: 3.9, color: '#F59E0B' },
-  { id: 'tf-5', name: 'Benevolence', amount: '$38K', percentage: 2.8, color: '#22C55E' },
+  { id: 'tf-4', name: 'Youth Programs', amount: '$52K', percentage: 3.9, color: '#B8943E' },
+  { id: 'tf-5', name: 'Benevolence', amount: '$38K', percentage: 2.8, color: '#5A8A6E' },
   { id: 'tf-6', name: 'Other / Special', amount: '$79K', percentage: 5.9, color: ACCENT },
 ];
 
@@ -350,9 +350,9 @@ const FINANCIAL_POLICIES: GovernancePolicy[] = [
 ];
 
 const POLICY_STATUS_COLOR: Record<string, string> = {
-  active: '#22C55E',
-  'pending-review': '#F59E0B',
-  archived: '#A1A1AA',
+  active: '#5A8A6E',
+  'pending-review': '#B8943E',
+  archived: '#9C9790',
 };
 
 interface FundConfig {
@@ -375,7 +375,7 @@ const MANAGED_FUNDS: FundConfig[] = [
 
 const FUND_TYPE_COLOR: Record<string, string> = {
   permanent: ACCENT,
-  campaign: '#F59E0B',
+  campaign: '#B8943E',
   designated: ACCENT,
 };
 
@@ -477,7 +477,7 @@ function GiveNowView({ colors, role }: { colors: typeof Colors.light; role: Chur
         <View style={s.moduleContainer}>
           <Card colors={colors}>
             <View style={{ alignItems: 'center', gap: Spacing.md, paddingVertical: Spacing.md }}>
-              <IconSymbol name="checkmark.circle.fill" size={48} color="#22C55E" />
+              <IconSymbol name="checkmark.circle.fill" size={48} color="#5A8A6E" />
               <ThemedText style={[{ fontSize: 20, fontWeight: '800' }, { color: colors.text }]}>Thank You!</ThemedText>
               <ThemedText style={[{ fontSize: 14, textAlign: 'center' }, { color: colors.textSecondary }]}>
                 Your gift of ${activeAmount.toLocaleString()} to {fundLabel} has been received.
@@ -676,7 +676,7 @@ function GiveNowView({ colors, role }: { colors: typeof Colors.light; role: Chur
             style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}
             onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setCoverFees(!coverFees); }}
           >
-            <View style={[s.toggleTrack, { backgroundColor: coverFees ? '#22C55E' : colors.backgroundTertiary }]}>
+            <View style={[s.toggleTrack, { backgroundColor: coverFees ? '#5A8A6E' : colors.backgroundTertiary }]}>
               <View style={[s.toggleThumb, { transform: [{ translateX: coverFees ? 16 : 0 }] }]} />
             </View>
             <View style={{ flex: 1 }}>
@@ -708,7 +708,7 @@ function GiveNowView({ colors, role }: { colors: typeof Colors.light; role: Chur
         <View style={s.moduleContainer}>
           <Card colors={colors}>
             <View style={s.lastGiftRow}>
-              <IconSymbol name="checkmark.circle.fill" size={16} color="#22C55E" />
+              <IconSymbol name="checkmark.circle.fill" size={16} color="#5A8A6E" />
               <ThemedText style={[s.lastGiftText, { color: colors.textSecondary }]}>
                 Last gift: $250 {'\u2014'} Tithes {'\u2014'} Feb 14
               </ThemedText>
@@ -812,8 +812,8 @@ function FundsView({ colors, role }: { colors: typeof Colors.light; role: Church
                     </ThemedText>
                   </View>
                   <View style={s.fundLeaderItem}>
-                    <IconSymbol name="arrow.up.right" size={10} color={fund.trend === 'New' ? ACCENT : '#22C55E'} />
-                    <ThemedText style={[s.fundLeaderText, { color: fund.trend === 'New' ? ACCENT : '#22C55E' }]}>
+                    <IconSymbol name="arrow.up.right" size={10} color={fund.trend === 'New' ? ACCENT : '#5A8A6E'} />
+                    <ThemedText style={[s.fundLeaderText, { color: fund.trend === 'New' ? ACCENT : '#5A8A6E' }]}>
                       {fund.trend}
                     </ThemedText>
                   </View>
@@ -896,7 +896,7 @@ function HistoryView({ colors, role }: { colors: typeof Colors.light; role: Chur
         <SectionHeader title="GIVING HISTORY" colors={colors} count={GIVING_HISTORY.length} action="Filter" />
         <Card colors={colors}>
           {GIVING_HISTORY.map((tx, idx) => {
-            const statusColor = TX_STATUS_COLOR[tx.status] ?? '#A1A1AA';
+            const statusColor = TX_STATUS_COLOR[tx.status] ?? '#9C9790';
             const isExpanded = expandedTx === tx.id;
             return (
               <Pressable
@@ -913,8 +913,8 @@ function HistoryView({ colors, role }: { colors: typeof Colors.light; role: Chur
                     <View style={s.txHeaderLine}>
                       <ThemedText style={[s.txFund, { color: colors.text }]}>{tx.fund}</ThemedText>
                       {tx.taxDeductible && (
-                        <View style={[s.taxBadge, { backgroundColor: '#22C55E20' }]}>
-                          <ThemedText style={[s.taxBadgeText, { color: '#22C55E' }]}>TAX</ThemedText>
+                        <View style={[s.taxBadge, { backgroundColor: '#5A8A6E20' }]}>
+                          <ThemedText style={[s.taxBadgeText, { color: '#5A8A6E' }]}>TAX</ThemedText>
                         </View>
                       )}
                     </View>
@@ -956,7 +956,7 @@ function HistoryView({ colors, role }: { colors: typeof Colors.light; role: Chur
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                       <ThemedText style={{ fontSize: 11, color: colors.textTertiary }}>Tax Deductible</ThemedText>
-                      <ThemedText style={{ fontSize: 11, fontWeight: '600', color: tx.taxDeductible ? '#22C55E' : colors.textTertiary }}>{tx.taxDeductible ? 'Yes' : 'No'}</ThemedText>
+                      <ThemedText style={{ fontSize: 11, fontWeight: '600', color: tx.taxDeductible ? '#5A8A6E' : colors.textTertiary }}>{tx.taxDeductible ? 'Yes' : 'No'}</ThemedText>
                     </View>
                     <ThemedText style={{ fontSize: 9, color: colors.textTertiary, marginTop: 4, fontStyle: 'italic' }}>
                       International Church of Christ LA is a 501(c)(3) organization. EIN: 95-1234567.
@@ -983,7 +983,7 @@ function PledgesView({ colors, role }: { colors: typeof Colors.light; role: Chur
       <View style={s.moduleContainer}>
         <SectionHeader title="ACTIVE PLEDGES" colors={colors} count={ACTIVE_PLEDGES.filter(p => p.status !== 'completed').length} />
         {ACTIVE_PLEDGES.map((pledge) => {
-          const statusColor = PLEDGE_STATUS_COLOR[pledge.status] ?? '#A1A1AA';
+          const statusColor = PLEDGE_STATUS_COLOR[pledge.status] ?? '#9C9790';
           return (
             <Card key={pledge.id} colors={colors}>
               <View style={s.pledgeHeader}>
@@ -1033,11 +1033,11 @@ function PledgesView({ colors, role }: { colors: typeof Colors.light; role: Chur
                     <ThemedText style={{ fontSize: 11, fontWeight: '600', color: colors.textSecondary }}>Modify</ThemedText>
                   </Pressable>
                   <Pressable
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: BorderRadius.md, backgroundColor: '#EF444410' }}
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: BorderRadius.md, backgroundColor: '#B85C5C10' }}
                     onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
                   >
-                    <IconSymbol name="xmark" size={11} color="#EF4444" />
-                    <ThemedText style={{ fontSize: 11, fontWeight: '600', color: '#EF4444' }}>Cancel</ThemedText>
+                    <IconSymbol name="xmark" size={11} color="#B85C5C" />
+                    <ThemedText style={{ fontSize: 11, fontWeight: '600', color: '#B85C5C' }}>Cancel</ThemedText>
                   </Pressable>
                 </View>
               )}
@@ -1092,9 +1092,9 @@ function FinanceConsoleView({ colors, role }: { colors: typeof Colors.light; rol
                   <IconSymbol
                     name={kpi.trendUp ? 'arrow.up.right' : 'arrow.down.right'}
                     size={9}
-                    color={kpi.trendUp ? '#22C55E' : '#EF4444'}
+                    color={kpi.trendUp ? '#5A8A6E' : '#B85C5C'}
                   />
-                  <ThemedText style={[s.consoleKPITrend, { color: kpi.trendUp ? '#22C55E' : '#EF4444' }]}>
+                  <ThemedText style={[s.consoleKPITrend, { color: kpi.trendUp ? '#5A8A6E' : '#B85C5C' }]}>
                     {kpi.trend}
                   </ThemedText>
                 </View>
@@ -1160,7 +1160,7 @@ function FinanceConsoleView({ colors, role }: { colors: typeof Colors.light; rol
         <SectionHeader title="BUDGET VS ACTUAL (MONTHLY)" colors={colors} count={BUDGET_VS_ACTUAL.length} />
         <Card colors={colors}>
           {BUDGET_VS_ACTUAL.map((bva, idx) => {
-            const varianceColor = bva.variance.startsWith('+') ? '#F59E0B' : bva.variance === '$0' ? '#22C55E' : '#22C55E';
+            const varianceColor = bva.variance.startsWith('+') ? '#B8943E' : bva.variance === '$0' ? '#5A8A6E' : '#5A8A6E';
             return (
               <View
                 key={bva.id}
@@ -1177,7 +1177,7 @@ function FinanceConsoleView({ colors, role }: { colors: typeof Colors.light; rol
                 </View>
                 <View style={s.bvaRight}>
                   <ThemedText style={[s.bvaVariance, { color: varianceColor }]}>{bva.variance}</ThemedText>
-                  <ThemedText style={[s.bvaPct, { color: bva.pct > 105 ? '#F59E0B' : bva.pct < 95 ? ACCENT : colors.textSecondary }]}>
+                  <ThemedText style={[s.bvaPct, { color: bva.pct > 105 ? '#B8943E' : bva.pct < 95 ? ACCENT : colors.textSecondary }]}>
                     {bva.pct}%
                   </ThemedText>
                 </View>
@@ -1194,10 +1194,10 @@ function FinanceConsoleView({ colors, role }: { colors: typeof Colors.light; rol
           <Card colors={colors}>
             <View style={s.donorHealthGrid}>
               {[
-                { v: '84%', l: 'Retention Rate', c: '#22C55E' },
+                { v: '84%', l: 'Retention Rate', c: '#5A8A6E' },
                 { v: '312', l: 'Active Donors', c: ACCENT },
                 { v: '28', l: 'New This Month', c: ACCENT },
-                { v: '14', l: 'Lapsed (90d)', c: '#F59E0B' },
+                { v: '14', l: 'Lapsed (90d)', c: '#B8943E' },
               ].map(item => (
                 <View key={item.l} style={s.donorHealthCell}>
                   <ThemedText style={[s.donorHealthValue, { color: item.c }]}>{item.v}</ThemedText>
@@ -1215,9 +1215,9 @@ function FinanceConsoleView({ colors, role }: { colors: typeof Colors.light; rol
         <Card colors={colors}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: Spacing.sm }}>
             {[
-              { v: '12', l: 'Unreconciled', c: '#F59E0B' },
-              { v: '84', l: 'Receipts Generated', c: '#22C55E' },
-              { v: '3', l: 'Exceptions', c: '#EF4444' },
+              { v: '12', l: 'Unreconciled', c: '#B8943E' },
+              { v: '84', l: 'Receipts Generated', c: '#5A8A6E' },
+              { v: '3', l: 'Exceptions', c: '#B85C5C' },
             ].map(item => (
               <View key={item.l} style={{ alignItems: 'center' }}>
                 <ThemedText style={{ fontSize: 20, fontWeight: '800', color: item.c }}>{item.v}</ThemedText>
@@ -1240,8 +1240,8 @@ function FinanceConsoleView({ colors, role }: { colors: typeof Colors.light; rol
         <SectionHeader title="EXCEPTIONS QUEUE" colors={colors} count={3} />
         <Card colors={colors}>
           {[
-            { id: 'ex-1', category: 'Failed Payment', reason: 'Insufficient funds — Visa ****8890', action: 'Contact donor', amount: '$250', color: '#EF4444' },
-            { id: 'ex-2', category: 'Chargeback', reason: 'Disputed transaction — Jan 28', action: 'Review documentation', amount: '$100', color: '#F59E0B' },
+            { id: 'ex-1', category: 'Failed Payment', reason: 'Insufficient funds — Visa ****8890', action: 'Contact donor', amount: '$250', color: '#B85C5C' },
+            { id: 'ex-2', category: 'Chargeback', reason: 'Disputed transaction — Jan 28', action: 'Review documentation', amount: '$100', color: '#B8943E' },
             { id: 'ex-3', category: 'Refund Request', reason: 'Duplicate gift — Feb 12', action: 'Process refund', amount: '$500', color: ACCENT },
           ].map((ex, idx) => (
             <View
@@ -1279,7 +1279,7 @@ function SettingsView({ colors, role }: { colors: typeof Colors.light; role: Chu
         <SectionHeader title="FINANCIAL POLICIES" colors={colors} count={FINANCIAL_POLICIES.length} />
         <Card colors={colors}>
           {FINANCIAL_POLICIES.map((pol, idx) => {
-            const statusColor = POLICY_STATUS_COLOR[pol.status] ?? '#A1A1AA';
+            const statusColor = POLICY_STATUS_COLOR[pol.status] ?? '#9C9790';
             return (
               <View
                 key={pol.id}
@@ -1315,7 +1315,7 @@ function SettingsView({ colors, role }: { colors: typeof Colors.light; role: Chu
         <SectionHeader title="FUND MANAGEMENT" colors={colors} count={MANAGED_FUNDS.length} action="+ Create Fund" />
         <Card colors={colors}>
           {MANAGED_FUNDS.map((mf, idx) => {
-            const typeColor = FUND_TYPE_COLOR[mf.type] ?? '#A1A1AA';
+            const typeColor = FUND_TYPE_COLOR[mf.type] ?? '#9C9790';
             return (
               <View
                 key={mf.id}
@@ -1418,7 +1418,7 @@ function SettingsView({ colors, role }: { colors: typeof Colors.light; role: Chu
             <View key={toggle.label}>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 10 }}>
                 <ThemedText style={{ fontSize: 13, color: colors.text }}>{toggle.label}</ThemedText>
-                <View style={[s.toggleTrack, { backgroundColor: toggle.enabled ? '#22C55E' : colors.backgroundTertiary }]}>
+                <View style={[s.toggleTrack, { backgroundColor: toggle.enabled ? '#5A8A6E' : colors.backgroundTertiary }]}>
                   <View style={[s.toggleThumb, { transform: [{ translateX: toggle.enabled ? 16 : 0 }] }]} />
                 </View>
               </View>

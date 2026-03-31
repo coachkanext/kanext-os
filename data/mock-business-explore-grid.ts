@@ -38,19 +38,19 @@ export const VISIBILITY_LABELS: Record<BizVisibilityClass, string> = {
 };
 
 export const VISIBILITY_COLORS: Record<BizVisibilityClass, string> = {
-  0: '#22C55E',
-  1: '#1D9BF0',
-  2: '#F59E0B',
-  3: '#EF4444',
+  0: '#5A8A6E',
+  1: '#1A1714',
+  2: '#B8943E',
+  3: '#B85C5C',
 };
 
 export const TYPE_COLORS: Record<BizExploreType, string> = {
-  Executive: '#8B5CF6',
-  Promotional: '#22C55E',
-  Capital: '#F59E0B',
-  Product: '#1D9BF0',
-  Board: '#EF4444',
-  Internal: '#A1A1AA',
+  Executive: '#1A1714',
+  Promotional: '#5A8A6E',
+  Capital: '#B8943E',
+  Product: '#1A1714',
+  Board: '#B85C5C',
+  Internal: '#9C9790',
 };
 
 export interface BizExploreTile {
@@ -118,7 +118,7 @@ export const BIZ_EXPLORE_TILES: BizExploreTile[] = [
     visibilityClass: 0,
     publishedAt: new Date('2026-02-24'),
     duration: '14:08',
-    thumbnailColor: '#1D4ED8',
+    thumbnailColor: '#1A1714',
     isPinned: false,
   },
   {
@@ -144,7 +144,7 @@ export const BIZ_EXPLORE_TILES: BizExploreTile[] = [
     visibilityClass: 0,
     publishedAt: new Date('2026-02-21'),
     duration: '8:22',
-    thumbnailColor: '#7C3AED',
+    thumbnailColor: '#1A1714',
     isPinned: false,
   },
   {
@@ -227,7 +227,7 @@ export const BIZ_EXPLORE_TILES: BizExploreTile[] = [
     visibilityClass: 1,
     publishedAt: new Date('2026-02-14'),
     duration: '45:00',
-    thumbnailColor: '#1D4ED8',
+    thumbnailColor: '#1A1714',
     isPinned: false,
   },
   {

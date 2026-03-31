@@ -510,7 +510,7 @@ function RosterControls({
                     setSelectedSubcluster(null);
                   }}
                 >
-                  <IconSymbol name="xmark" size={10} color="#EF4444" />
+                  <IconSymbol name="xmark" size={10} color="#B85C5C" />
                 </Pressable>
               )}
             </ScrollView>
@@ -645,9 +645,9 @@ const CLASS_ABBREV: Record<string, string> = {
 
 const STATUS_COLORS: Record<PlayerStatus, { bg: string; text: string }> = {
   available: { bg: '#0B0F1480', text: '#999' },
-  injured:   { bg: '#EF444430', text: '#EF4444' },
-  out:       { bg: '#EF444430', text: '#EF4444' },
-  redshirt:  { bg: '#F59E0B30', text: '#F59E0B' },
+  injured:   { bg: '#B85C5C30', text: '#B85C5C' },
+  out:       { bg: '#B85C5C30', text: '#B85C5C' },
+  redshirt:  { bg: '#B8943E30', text: '#B8943E' },
 };
 
 const STATUS_LABEL: Record<PlayerStatus, string> = {
@@ -991,7 +991,7 @@ const listStyles = StyleSheet.create({
   nilYes: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
 });
 
@@ -1178,8 +1178,8 @@ export function RosterContent({ onViewChange, teamKR, offKR, defKR, onLogoLongPr
             <View style={styles.teamRecordRow}>
               <Text style={styles.teamRecord}>{KaNeXT_TEAM.record}</Text>
               <Text style={styles.teamConfRecord}>({KaNeXT_TEAM.confRecord})</Text>
-              <View style={{ backgroundColor: KaNeXT_TEAM.streak.startsWith('W') ? '#22C55E20' : '#EF444420', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
-                <Text style={{ fontSize: 11, fontWeight: '700', color: KaNeXT_TEAM.streak.startsWith('W') ? '#22C55E' : '#EF4444' }}>
+              <View style={{ backgroundColor: KaNeXT_TEAM.streak.startsWith('W') ? '#5A8A6E20' : '#B85C5C20', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: KaNeXT_TEAM.streak.startsWith('W') ? '#5A8A6E' : '#B85C5C' }}>
                   {KaNeXT_TEAM.streak}
                 </Text>
               </View>
@@ -1949,7 +1949,7 @@ const styles = StyleSheet.create({
   cardLevelText: {
     fontSize: 9,
     fontWeight: '700',
-    color: '#A1A1AA',
+    color: '#9C9790',
     letterSpacing: 0.3,
   },
   cardPosBadge: {

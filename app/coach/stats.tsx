@@ -164,20 +164,20 @@ for (const clusterKey of CLUSTER_KEYS) {
 // ── Helpers ──
 
 function barColor(v: number): string {
-  if (v >= 75) return '#22C55E';
-  if (v >= 60) return '#F59E0B';
-  return '#EF4444';
+  if (v >= 75) return '#5A8A6E';
+  if (v >= 60) return '#B8943E';
+  return '#B85C5C';
 }
 
 function percentileColor(p: number): string {
-  if (p >= 75) return '#22C55E';
-  if (p >= 50) return '#F59E0B';
-  return '#EF4444';
+  if (p >= 75) return '#5A8A6E';
+  if (p >= 50) return '#B8943E';
+  return '#B85C5C';
 }
 
 function netColor(v: number): string {
-  if (v > 0) return '#22C55E';
-  if (v < 0) return '#EF4444';
+  if (v > 0) return '#5A8A6E';
+  if (v < 0) return '#B85C5C';
   return '#888';
 }
 
@@ -1930,7 +1930,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   coverageBarFill: {
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#F59E0B',
+    backgroundColor: '#B8943E',
   },
   coverageFreq: {
     fontSize: 12,

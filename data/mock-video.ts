@@ -105,7 +105,7 @@ export function formatDuration(seconds: number): string {
 }
 
 export function getResultColor(result: 'W' | 'L'): string {
-  return result === 'W' ? '#22C55E' : '#EF4444';
+  return result === 'W' ? '#5A8A6E' : '#B85C5C';
 }
 
 export const VIDEO_FILTERS: { key: VideoFilter; label: string }[] = [
@@ -139,7 +139,7 @@ export const MOCK_VIDEO_GAMES: VideoGame[] = [
     result: 'L',
     score: '69-72',
     tags: ['Conference', 'Away'],
-    thumbnailColor: '#1D9BF0',
+    thumbnailColor: '#1A1714',
     clipCount: 18,
     duration: 6840,
   },
@@ -150,7 +150,7 @@ export const MOCK_VIDEO_GAMES: VideoGame[] = [
     result: 'W',
     score: '77-65',
     tags: ['Conference', 'Home'],
-    thumbnailColor: '#EF4444',
+    thumbnailColor: '#B85C5C',
     clipCount: 21,
     duration: 6600,
   },
@@ -172,7 +172,7 @@ export const MOCK_VIDEO_GAMES: VideoGame[] = [
     result: 'W',
     score: '72-61',
     tags: ['Conference', 'Home'],
-    thumbnailColor: '#1D9BF0',
+    thumbnailColor: '#1A1714',
     clipCount: 16,
     duration: 6420,
   },
@@ -183,7 +183,7 @@ export const MOCK_VIDEO_GAMES: VideoGame[] = [
     result: 'L',
     score: '64-70',
     tags: ['Conference', 'Away'],
-    thumbnailColor: '#22C55E',
+    thumbnailColor: '#5A8A6E',
     clipCount: 20,
     duration: 6780,
   },
@@ -194,7 +194,7 @@ export const MOCK_VIDEO_GAMES: VideoGame[] = [
     result: 'W',
     score: '88-75',
     tags: ['Conference', 'Home'],
-    thumbnailColor: '#A1A1AA',
+    thumbnailColor: '#9C9790',
     clipCount: 22,
     duration: 6960,
   },
@@ -216,7 +216,7 @@ export const MOCK_VIDEO_GAMES: VideoGame[] = [
     result: 'W',
     score: '79-73',
     tags: ['Conference', 'Away'],
-    thumbnailColor: '#1D9BF0',
+    thumbnailColor: '#1A1714',
     clipCount: 17,
     duration: 6660,
   },
@@ -227,7 +227,7 @@ export const MOCK_VIDEO_GAMES: VideoGame[] = [
     result: 'W',
     score: '76-71',
     tags: ['Conference', 'Home'],
-    thumbnailColor: '#F59E0B',
+    thumbnailColor: '#B8943E',
     clipCount: 23,
     duration: 7140,
   },
@@ -274,7 +274,7 @@ export const MOCK_VIDEO_CLIPS: VideoClip[] = [
     duration: 480,
     source: 'Synergy',
     tags: ['Scout', 'Opponent'],
-    thumbnailColor: '#F59E0B',
+    thumbnailColor: '#B8943E',
   },
   {
     id: 'vc-5',
@@ -284,7 +284,7 @@ export const MOCK_VIDEO_CLIPS: VideoClip[] = [
     duration: 87,
     source: 'Hudl',
     tags: ['Defense', 'Player Highlight'],
-    thumbnailColor: '#EF4444',
+    thumbnailColor: '#B85C5C',
   },
   {
     id: 'vc-6',
@@ -360,7 +360,7 @@ export const MOCK_VIDEO_CLIPS: VideoClip[] = [
     duration: 445,
     source: 'Hudl',
     tags: ['Review', 'Coaching'],
-    thumbnailColor: '#1D9BF0',
+    thumbnailColor: '#1A1714',
   },
   {
     id: 'vc-14',
@@ -378,7 +378,7 @@ export const MOCK_VIDEO_CLIPS: VideoClip[] = [
     duration: 390,
     source: 'Synergy',
     tags: ['Scout', 'Opponent'],
-    thumbnailColor: '#22C55E',
+    thumbnailColor: '#5A8A6E',
   },
   {
     id: 'vc-16',
@@ -420,7 +420,7 @@ export const MOCK_SCOUT_PACKS: ScoutPack[] = [
     opponent: 'Campbell',
     date: 'Feb 15, 2026',
     clipCount: 12,
-    coverColor: '#F59E0B',
+    coverColor: '#B8943E',
     tags: ['Next Game', 'Conference'],
   },
   {
@@ -428,7 +428,7 @@ export const MOCK_SCOUT_PACKS: ScoutPack[] = [
     opponent: 'Longwood',
     date: 'Feb 19, 2026',
     clipCount: 8,
-    coverColor: '#1D9BF0',
+    coverColor: '#1A1714',
     tags: ['Upcoming', 'Conference'],
   },
   {
@@ -444,7 +444,7 @@ export const MOCK_SCOUT_PACKS: ScoutPack[] = [
     opponent: 'Gardner-Webb',
     date: 'Feb 26, 2026',
     clipCount: 6,
-    coverColor: '#A1A1AA',
+    coverColor: '#9C9790',
     tags: ['Upcoming', 'Conference'],
   },
   {
@@ -452,7 +452,7 @@ export const MOCK_SCOUT_PACKS: ScoutPack[] = [
     opponent: 'UNC Asheville',
     date: 'Mar 1, 2026',
     clipCount: 14,
-    coverColor: '#1D9BF0',
+    coverColor: '#1A1714',
     tags: ['Revenge', 'Conference'],
   },
 ];
@@ -498,7 +498,7 @@ export const MOCK_REELS: Reel[] = [
     title: 'Deon Williams Block Party',
     caption: '5 blocks in one half. Built different.',
     duration: 32,
-    thumbnailColor: '#EF4444',
+    thumbnailColor: '#B85C5C',
     playerTag: { name: 'Deon Williams', number: '23' },
     teamTag: 'Carroll Athletics',
     tags: ['Defense', 'Blocks'],
@@ -553,7 +553,7 @@ export const MOCK_REELS: Reel[] = [
     title: 'Chris Thompson Double-Double',
     caption: '14 pts, 12 rebs. Dominant in the paint.',
     duration: 42,
-    thumbnailColor: '#1D9BF0',
+    thumbnailColor: '#1A1714',
     playerTag: { name: 'Chris Thompson', number: '44' },
     teamTag: 'Carroll Athletics',
     tags: ['Offense', 'Rebounding'],
@@ -580,7 +580,7 @@ export const MOCK_REELS: Reel[] = [
     title: 'Jamal Peterson Crossover Sequence',
     caption: 'Ankles were broken. No recovery.',
     duration: 18,
-    thumbnailColor: '#A1A1AA',
+    thumbnailColor: '#9C9790',
     playerTag: { name: 'Jamal Peterson', number: '11' },
     teamTag: 'Carroll Athletics',
     tags: ['Offense', 'Handles'],
@@ -621,7 +621,7 @@ export const MOCK_REELS: Reel[] = [
     title: 'Brandon Lewis Putback Dunks',
     caption: 'Second-chance points machine.',
     duration: 30,
-    thumbnailColor: '#1D9BF0',
+    thumbnailColor: '#1A1714',
     playerTag: { name: 'Brandon Lewis', number: '32' },
     teamTag: 'Carroll Athletics',
     tags: ['Offense', 'Dunks'],
@@ -635,7 +635,7 @@ export const MOCK_REELS: Reel[] = [
     title: 'End-of-Game Execution',
     caption: 'Down 3 with 30 seconds left. Ice in their veins.',
     duration: 48,
-    thumbnailColor: '#F59E0B',
+    thumbnailColor: '#B8943E',
     teamTag: 'Carroll Athletics',
     tags: ['Clutch', 'Highlight'],
     source: 'YouTube',
@@ -653,11 +653,11 @@ export const MOCK_WATCH_HISTORY: WatchHistoryItem[] = [
   { id: 'wh-1', contentId: 'vg-1', contentType: 'game', title: 'vs Coastal Carolina', thumbnailColor: '#0B0F14', duration: 7200, watchedAt: '2026-02-13', progress: 65 },
   { id: 'wh-2', contentId: 'vc-2', contentType: 'clip', title: 'Transition Defense Breakdown', thumbnailColor: '#0B0F14', duration: 312, watchedAt: '2026-02-13', progress: 100 },
   { id: 'wh-3', contentId: 'reel-1', contentType: 'reel', title: 'MJ 22-pt Performance', thumbnailColor: '#0B0F14', duration: 45, watchedAt: '2026-02-12', progress: 100 },
-  { id: 'wh-4', contentId: 'vg-2', contentType: 'game', title: 'vs UNC Asheville', thumbnailColor: '#1D9BF0', duration: 6840, watchedAt: '2026-02-10', progress: 40 },
+  { id: 'wh-4', contentId: 'vg-2', contentType: 'game', title: 'vs UNC Asheville', thumbnailColor: '#1A1714', duration: 6840, watchedAt: '2026-02-10', progress: 40 },
   { id: 'wh-5', contentId: 'vc-7', contentType: 'clip', title: 'Pick & Roll Execution', thumbnailColor: '#0B0F14', duration: 268, watchedAt: '2026-02-09', progress: 80 },
   { id: 'wh-6', contentId: 'reel-4', contentType: 'reel', title: 'Top 10 Plays — January', thumbnailColor: '#0B0F14', duration: 60, watchedAt: '2026-02-08', progress: 100 },
-  { id: 'wh-7', contentId: 'vg-3', contentType: 'game', title: 'vs Radford', thumbnailColor: '#EF4444', duration: 6600, watchedAt: '2026-02-06', progress: 100 },
-  { id: 'wh-8', contentId: 'vc-13', contentType: 'clip', title: 'UNC Asheville — Loss Review', thumbnailColor: '#1D9BF0', duration: 445, watchedAt: '2026-02-05', progress: 55 },
+  { id: 'wh-7', contentId: 'vg-3', contentType: 'game', title: 'vs Radford', thumbnailColor: '#B85C5C', duration: 6600, watchedAt: '2026-02-06', progress: 100 },
+  { id: 'wh-8', contentId: 'vc-13', contentType: 'clip', title: 'UNC Asheville — Loss Review', thumbnailColor: '#1A1714', duration: 445, watchedAt: '2026-02-05', progress: 55 },
 ];
 
 // =============================================================================
@@ -704,11 +704,11 @@ const CHURCH_VIDEO_CLIPS: VideoClip[] = [
 ];
 
 const CHURCH_SCOUT_PACKS: ScoutPack[] = [
-  { id: 'csp-1', opponent: 'Easter Service Planning', date: 'Apr 20, 2026', clipCount: 8, coverColor: '#1D9BF0', tags: ['Upcoming', 'Special'] },
-  { id: 'csp-2', opponent: 'Revival Week', date: 'Mar 15, 2026', clipCount: 12, coverColor: '#EF4444', tags: ['Upcoming', 'Revival'] },
-  { id: 'csp-3', opponent: 'Community Outreach — March', date: 'Mar 8, 2026', clipCount: 6, coverColor: '#22C55E', tags: ['Upcoming', 'Outreach'] },
-  { id: 'csp-4', opponent: 'Youth Conference', date: 'Mar 22, 2026', clipCount: 10, coverColor: '#1D9BF0', tags: ['Youth', 'Conference'] },
-  { id: 'csp-5', opponent: 'Worship Night', date: 'Feb 28, 2026', clipCount: 5, coverColor: '#1D9BF0', tags: ['Next Event', 'Worship'] },
+  { id: 'csp-1', opponent: 'Easter Service Planning', date: 'Apr 20, 2026', clipCount: 8, coverColor: '#1A1714', tags: ['Upcoming', 'Special'] },
+  { id: 'csp-2', opponent: 'Revival Week', date: 'Mar 15, 2026', clipCount: 12, coverColor: '#B85C5C', tags: ['Upcoming', 'Revival'] },
+  { id: 'csp-3', opponent: 'Community Outreach — March', date: 'Mar 8, 2026', clipCount: 6, coverColor: '#5A8A6E', tags: ['Upcoming', 'Outreach'] },
+  { id: 'csp-4', opponent: 'Youth Conference', date: 'Mar 22, 2026', clipCount: 10, coverColor: '#1A1714', tags: ['Youth', 'Conference'] },
+  { id: 'csp-5', opponent: 'Worship Night', date: 'Feb 28, 2026', clipCount: 5, coverColor: '#1A1714', tags: ['Next Event', 'Worship'] },
 ];
 
 const CHURCH_PLAYER_CHANNELS: PlayerChannel[] = [
@@ -771,11 +771,11 @@ const EDUCATION_VIDEO_CLIPS: VideoClip[] = [
 ];
 
 const EDUCATION_SCOUT_PACKS: ScoutPack[] = [
-  { id: 'esp-1', opponent: 'Spring Commencement', date: 'May 10, 2026', clipCount: 6, coverColor: '#1D9BF0', tags: ['Upcoming', 'Ceremony'] },
-  { id: 'esp-2', opponent: 'STEM Fair', date: 'Mar 20, 2026', clipCount: 10, coverColor: '#22C55E', tags: ['Upcoming', 'Academic'] },
-  { id: 'esp-3', opponent: 'Alumni Weekend', date: 'Mar 14, 2026', clipCount: 8, coverColor: '#F59E0B', tags: ['Upcoming', 'Alumni'] },
-  { id: 'esp-4', opponent: 'Spring Athletic Awards', date: 'Apr 25, 2026', clipCount: 5, coverColor: '#EF4444', tags: ['Athletics', 'Ceremony'] },
-  { id: 'esp-5', opponent: 'Research Symposium — Spring', date: 'Apr 8, 2026', clipCount: 14, coverColor: '#1D9BF0', tags: ['Research', 'Academic'] },
+  { id: 'esp-1', opponent: 'Spring Commencement', date: 'May 10, 2026', clipCount: 6, coverColor: '#1A1714', tags: ['Upcoming', 'Ceremony'] },
+  { id: 'esp-2', opponent: 'STEM Fair', date: 'Mar 20, 2026', clipCount: 10, coverColor: '#5A8A6E', tags: ['Upcoming', 'Academic'] },
+  { id: 'esp-3', opponent: 'Alumni Weekend', date: 'Mar 14, 2026', clipCount: 8, coverColor: '#B8943E', tags: ['Upcoming', 'Alumni'] },
+  { id: 'esp-4', opponent: 'Spring Athletic Awards', date: 'Apr 25, 2026', clipCount: 5, coverColor: '#B85C5C', tags: ['Athletics', 'Ceremony'] },
+  { id: 'esp-5', opponent: 'Research Symposium — Spring', date: 'Apr 8, 2026', clipCount: 14, coverColor: '#1A1714', tags: ['Research', 'Academic'] },
 ];
 
 const EDUCATION_PLAYER_CHANNELS: PlayerChannel[] = [
@@ -838,11 +838,11 @@ const BUSINESS_VIDEO_CLIPS: VideoClip[] = [
 ];
 
 const BUSINESS_SCOUT_PACKS: ScoutPack[] = [
-  { id: 'bsp-1', opponent: 'Series A Prep', date: 'Mar 15, 2026', clipCount: 8, coverColor: '#22C55E', tags: ['Finance', 'Milestone'] },
-  { id: 'bsp-2', opponent: 'Product Hunt Launch', date: 'Mar 1, 2026', clipCount: 6, coverColor: '#EF4444', tags: ['Marketing', 'Launch'] },
-  { id: 'bsp-3', opponent: 'SXSW Conference', date: 'Mar 8, 2026', clipCount: 12, coverColor: '#F59E0B', tags: ['Conference', 'External'] },
-  { id: 'bsp-4', opponent: 'Q2 Planning Offsite', date: 'Mar 20, 2026', clipCount: 10, coverColor: '#1D9BF0', tags: ['Strategy', 'Company'] },
-  { id: 'bsp-5', opponent: 'Customer Advisory Board', date: 'Feb 28, 2026', clipCount: 5, coverColor: '#1D9BF0', tags: ['Customer', 'Feedback'] },
+  { id: 'bsp-1', opponent: 'Series A Prep', date: 'Mar 15, 2026', clipCount: 8, coverColor: '#5A8A6E', tags: ['Finance', 'Milestone'] },
+  { id: 'bsp-2', opponent: 'Product Hunt Launch', date: 'Mar 1, 2026', clipCount: 6, coverColor: '#B85C5C', tags: ['Marketing', 'Launch'] },
+  { id: 'bsp-3', opponent: 'SXSW Conference', date: 'Mar 8, 2026', clipCount: 12, coverColor: '#B8943E', tags: ['Conference', 'External'] },
+  { id: 'bsp-4', opponent: 'Q2 Planning Offsite', date: 'Mar 20, 2026', clipCount: 10, coverColor: '#1A1714', tags: ['Strategy', 'Company'] },
+  { id: 'bsp-5', opponent: 'Customer Advisory Board', date: 'Feb 28, 2026', clipCount: 5, coverColor: '#1A1714', tags: ['Customer', 'Feedback'] },
 ];
 
 const BUSINESS_PLAYER_CHANNELS: PlayerChannel[] = [
@@ -905,11 +905,11 @@ const COMMUNITY_VIDEO_CLIPS: VideoClip[] = [
 ];
 
 const COMMUNITY_SCOUT_PACKS: ScoutPack[] = [
-  { id: 'ksp-1', opponent: 'Race 7 — Mid-Ohio', date: 'Feb 28, 2026', clipCount: 10, coverColor: '#EF4444', tags: ['Next Race', 'Championship'] },
-  { id: 'ksp-2', opponent: 'Race 8 — VIR', date: 'Mar 14, 2026', clipCount: 8, coverColor: '#22C55E', tags: ['Upcoming', 'Championship'] },
-  { id: 'ksp-3', opponent: 'Reeves — Rival Analysis', date: 'Feb 20, 2026', clipCount: 12, coverColor: '#1D9BF0', tags: ['Rival', 'Analysis'] },
-  { id: 'ksp-4', opponent: 'Tanaka — Rival Analysis', date: 'Feb 22, 2026', clipCount: 9, coverColor: '#F59E0B', tags: ['Rival', 'Analysis'] },
-  { id: 'ksp-5', opponent: 'Wet Weather Prep', date: 'Feb 25, 2026', clipCount: 6, coverColor: '#1D9BF0', tags: ['Preparation', 'Weather'] },
+  { id: 'ksp-1', opponent: 'Race 7 — Mid-Ohio', date: 'Feb 28, 2026', clipCount: 10, coverColor: '#B85C5C', tags: ['Next Race', 'Championship'] },
+  { id: 'ksp-2', opponent: 'Race 8 — VIR', date: 'Mar 14, 2026', clipCount: 8, coverColor: '#5A8A6E', tags: ['Upcoming', 'Championship'] },
+  { id: 'ksp-3', opponent: 'Reeves — Rival Analysis', date: 'Feb 20, 2026', clipCount: 12, coverColor: '#1A1714', tags: ['Rival', 'Analysis'] },
+  { id: 'ksp-4', opponent: 'Tanaka — Rival Analysis', date: 'Feb 22, 2026', clipCount: 9, coverColor: '#B8943E', tags: ['Rival', 'Analysis'] },
+  { id: 'ksp-5', opponent: 'Wet Weather Prep', date: 'Feb 25, 2026', clipCount: 6, coverColor: '#1A1714', tags: ['Preparation', 'Weather'] },
 ];
 
 const COMMUNITY_PLAYER_CHANNELS: PlayerChannel[] = [

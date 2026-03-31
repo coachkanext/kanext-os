@@ -79,8 +79,8 @@ export function EventDetailSheet({ visible, onClose, event, colors, router }: Ev
 
         {/* Game score */}
         {event.gameScore && (
-          <View style={[styles.scoreBadge, { backgroundColor: event.gameScore.startsWith('W') ? '#22C55E15' : '#EF444415' }]}>
-            <ThemedText style={[styles.scoreText, { color: event.gameScore.startsWith('W') ? '#22C55E' : '#EF4444' }]}>
+          <View style={[styles.scoreBadge, { backgroundColor: event.gameScore.startsWith('W') ? '#5A8A6E15' : '#B85C5C15' }]}>
+            <ThemedText style={[styles.scoreText, { color: event.gameScore.startsWith('W') ? '#5A8A6E' : '#B85C5C' }]}>
               {event.gameScore.replace('-', '–')}
             </ThemedText>
           </View>

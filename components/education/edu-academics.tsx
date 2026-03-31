@@ -376,11 +376,11 @@ function Card({ colors, children }: { colors: typeof Colors.light; children: Rea
 
 function StatusDot({ status }: { status: string }) {
   const color =
-    status === 'active' || status === 'accredited' || status === 'strong' || status === 'good_standing' || status === 'completed' ? '#22C55E' :
+    status === 'active' || status === 'accredited' || status === 'strong' || status === 'good_standing' || status === 'completed' ? '#5A8A6E' :
     status === 'proposed' || status === 'pending' || status === 'stable' || status === 'info' ? ACCENT :
-    status === 'under_review' || status === 'conditional' || status === 'watch' || status === 'academic_warning' || status === 'warning' || status === 'scheduled' || status === 'in_progress' ? '#F59E0B' :
-    status === 'suspended' || status === 'expired' || status === 'probation' || status === 'critical' || status === 'escalated' || status === 'urgent' ? '#EF4444' :
-    status === 'honors' ? ACCENT : '#A1A1AA';
+    status === 'under_review' || status === 'conditional' || status === 'watch' || status === 'academic_warning' || status === 'warning' || status === 'scheduled' || status === 'in_progress' ? '#B8943E' :
+    status === 'suspended' || status === 'expired' || status === 'probation' || status === 'critical' || status === 'escalated' || status === 'urgent' ? '#B85C5C' :
+    status === 'honors' ? ACCENT : '#9C9790';
   return <View style={[sh.statusDot, { backgroundColor: color }]} />;
 }
 
@@ -439,10 +439,10 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Edu
                 <IconSymbol name={tile.icon as any} size={16} color={colors.textSecondary} />
                 <View style={[
                   s.tileDelta,
-                  { backgroundColor: tile.deltaType === 'positive' ? '#22C55E20' : tile.deltaType === 'negative' ? '#EF444420' : colors.backgroundTertiary },
+                  { backgroundColor: tile.deltaType === 'positive' ? '#5A8A6E20' : tile.deltaType === 'negative' ? '#B85C5C20' : colors.backgroundTertiary },
                 ]}>
                   <ThemedText style={[s.tileDeltaText, {
-                    color: tile.deltaType === 'positive' ? '#22C55E' : tile.deltaType === 'negative' ? '#EF4444' : colors.textSecondary,
+                    color: tile.deltaType === 'positive' ? '#5A8A6E' : tile.deltaType === 'negative' ? '#B85C5C' : colors.textSecondary,
                   }]}>
                     {tile.delta}
                   </ThemedText>
@@ -484,7 +484,7 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Edu
                   </ThemedText>
                 </View>
                 <ThemedText style={[s.deptPerfStat, { color: colors.text }]}>{dept.avgGPA.toFixed(2)}</ThemedText>
-                <ThemedText style={[s.deptPerfStat, { color: dept.retentionRate < 85 ? '#F59E0B' : colors.text }]}>
+                <ThemedText style={[s.deptPerfStat, { color: dept.retentionRate < 85 ? '#B8943E' : colors.text }]}>
                   {dept.retentionRate}%
                 </ThemedText>
                 {isDeanLevel(role) && (
@@ -537,13 +537,13 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Edu
 
           {isDeanLevel(role) && (
             <View style={s.termStatusRow}>
-              <View style={[s.termStatusChip, { backgroundColor: '#F59E0B20' }]}>
-                <ThemedText style={[s.termStatusText, { color: '#F59E0B' }]}>
+              <View style={[s.termStatusChip, { backgroundColor: '#B8943E20' }]}>
+                <ThemedText style={[s.termStatusText, { color: '#B8943E' }]}>
                   Midterms: {TERM_SUMMARY.midtermStatus}
                 </ThemedText>
               </View>
-              <View style={[s.termStatusChip, { backgroundColor: '#22C55E20' }]}>
-                <ThemedText style={[s.termStatusText, { color: '#22C55E' }]}>
+              <View style={[s.termStatusChip, { backgroundColor: '#5A8A6E20' }]}>
+                <ThemedText style={[s.termStatusText, { color: '#5A8A6E' }]}>
                   Registration: {TERM_SUMMARY.registrationStatus}
                 </ThemedText>
               </View>
@@ -573,7 +573,7 @@ function CoursesView({ colors, role }: { colors: typeof Colors.light; role: Educ
   });
 
   const riskColor = (level: CourseRecord['riskLevel']) =>
-    level === 'high' ? '#EF4444' : level === 'moderate' ? '#F59E0B' : '#22C55E';
+    level === 'high' ? '#B85C5C' : level === 'moderate' ? '#B8943E' : '#5A8A6E';
 
   return (
     <>
@@ -620,7 +620,7 @@ function CoursesView({ colors, role }: { colors: typeof Colors.light; role: Educ
         <Card colors={colors}>
           {filtered.map((course, idx) => {
             const fillPct = Math.round((course.enrollment / course.capacity) * 100);
-            const fillColor = fillPct >= 95 ? '#EF4444' : fillPct >= 80 ? '#F59E0B' : '#22C55E';
+            const fillColor = fillPct >= 95 ? '#B85C5C' : fillPct >= 80 ? '#B8943E' : '#5A8A6E';
 
             return (
               <View
@@ -698,10 +698,10 @@ function CoursesView({ colors, role }: { colors: typeof Colors.light; role: Educ
                   <StatusDot status={course.riskLevel === 'high' ? 'critical' : 'warning'} />
                   <ThemedText style={[s.riskTableCode, { color: colors.text }]}>{course.code}</ThemedText>
                 </View>
-                <ThemedText style={[s.riskTableStat, { color: course.failRate > 10 ? '#EF4444' : '#F59E0B' }]}>
+                <ThemedText style={[s.riskTableStat, { color: course.failRate > 10 ? '#B85C5C' : '#B8943E' }]}>
                   {course.failRate}%
                 </ThemedText>
-                <ThemedText style={[s.riskTableStat, { color: course.dfwRate > 20 ? '#EF4444' : '#F59E0B' }]}>
+                <ThemedText style={[s.riskTableStat, { color: course.dfwRate > 20 ? '#B85C5C' : '#B8943E' }]}>
                   {course.dfwRate}%
                 </ThemedText>
                 <ThemedText style={[s.riskTableStat, { color: colors.textSecondary }]}>
@@ -756,10 +756,10 @@ function StudentsView({ colors, role }: { colors: typeof Colors.light; role: Edu
                 <IconSymbol
                   name={m.trend === 'up' ? 'arrow.up.right' : m.trend === 'down' ? 'arrow.down.right' : 'arrow.right' as any}
                   size={10}
-                  color={m.trend === 'up' ? '#22C55E' : m.trend === 'down' ? '#EF4444' : colors.textTertiary}
+                  color={m.trend === 'up' ? '#5A8A6E' : m.trend === 'down' ? '#B85C5C' : colors.textTertiary}
                 />
                 <ThemedText style={[s.metricTrend, {
-                  color: m.trend === 'up' ? '#22C55E' : m.trend === 'down' ? '#EF4444' : colors.textTertiary,
+                  color: m.trend === 'up' ? '#5A8A6E' : m.trend === 'down' ? '#B85C5C' : colors.textTertiary,
                 }]}>
                   {m.trend === 'up' ? 'Improving' : m.trend === 'down' ? 'Declining' : 'Stable'}
                 </ThemedText>
@@ -794,11 +794,11 @@ function StudentsView({ colors, role }: { colors: typeof Colors.light; role: Edu
           <Pressable
             style={[
               s.filterPill,
-              { backgroundColor: showAtRiskOnly ? '#EF444420' : 'transparent', borderColor: colors.border },
+              { backgroundColor: showAtRiskOnly ? '#B85C5C20' : 'transparent', borderColor: colors.border },
             ]}
             onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowAtRiskOnly(true); }}
           >
-            <ThemedText style={[s.filterPillText, { color: showAtRiskOnly ? '#EF4444' : colors.textSecondary }]}>At-Risk</ThemedText>
+            <ThemedText style={[s.filterPillText, { color: showAtRiskOnly ? '#B85C5C' : colors.textSecondary }]}>At-Risk</ThemedText>
           </Pressable>
         </View>
       </View>
@@ -825,7 +825,7 @@ function StudentsView({ colors, role }: { colors: typeof Colors.light; role: Edu
                       {stu.name}
                     </ThemedText>
                     {stu.atRisk && (
-                      <View style={[s.atRiskChip, { backgroundColor: '#EF444420' }]}>
+                      <View style={[s.atRiskChip, { backgroundColor: '#B85C5C20' }]}>
                         <ThemedText style={s.atRiskChipText}>AT RISK</ThemedText>
                       </View>
                     )}
@@ -838,12 +838,12 @@ function StudentsView({ colors, role }: { colors: typeof Colors.light; role: Edu
                   </ThemedText>
                 </View>
                 <View style={s.studentRight}>
-                  <ThemedText style={[s.studentGPA, { color: stu.gpa < 2.0 ? '#EF4444' : stu.gpa < 2.5 ? '#F59E0B' : colors.text }]}>
+                  <ThemedText style={[s.studentGPA, { color: stu.gpa < 2.0 ? '#B85C5C' : stu.gpa < 2.5 ? '#B8943E' : colors.text }]}>
                     {stu.gpa.toFixed(2)}
                   </ThemedText>
                   <ThemedText style={[s.studentGPALabel, { color: colors.textTertiary }]}>GPA</ThemedText>
                   <View style={s.studentProgressBar}>
-                    <View style={[s.studentProgressFill, { width: `${progressPct}%`, backgroundColor: '#22C55E' }]} />
+                    <View style={[s.studentProgressFill, { width: `${progressPct}%`, backgroundColor: '#5A8A6E' }]} />
                   </View>
                   <ThemedText style={[s.studentProgressText, { color: colors.textTertiary }]}>
                     {progressPct}%
@@ -877,7 +877,7 @@ function AdvisingView({ colors, role }: { colors: typeof Colors.light; role: Edu
   });
 
   const priorityColor = (p: AdvisingQueueItem['priority']) =>
-    p === 'urgent' ? '#EF4444' : p === 'normal' ? '#F59E0B' : ACCENT;
+    p === 'urgent' ? '#B85C5C' : p === 'normal' ? '#B8943E' : ACCENT;
 
   const statusLabel = (s: AdvisingQueueItem['status']) =>
     s === 'pending' ? 'Pending' : s === 'scheduled' ? 'Scheduled' : 'In Progress';
@@ -908,11 +908,11 @@ function AdvisingView({ colors, role }: { colors: typeof Colors.light; role: Edu
               key={f}
               style={[
                 s.filterPill,
-                { backgroundColor: queueFilter === f ? (f === 'urgent' ? '#EF444420' : colors.text + '15') : 'transparent', borderColor: colors.border },
+                { backgroundColor: queueFilter === f ? (f === 'urgent' ? '#B85C5C20' : colors.text + '15') : 'transparent', borderColor: colors.border },
               ]}
               onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setQueueFilter(f); }}
             >
-              <ThemedText style={[s.filterPillText, { color: queueFilter === f ? (f === 'urgent' ? '#EF4444' : colors.text) : colors.textSecondary }]}>
+              <ThemedText style={[s.filterPillText, { color: queueFilter === f ? (f === 'urgent' ? '#B85C5C' : colors.text) : colors.textSecondary }]}>
                 {f === 'all' ? 'All' : f === 'urgent' ? 'Urgent' : 'Pending'}
               </ThemedText>
             </Pressable>
@@ -982,10 +982,10 @@ function AdvisingView({ colors, role }: { colors: typeof Colors.light; role: Edu
                 <ThemedText style={[s.caseloadDept, { color: colors.textTertiary }]}>{advisor.department}</ThemedText>
               </View>
               <ThemedText style={[s.caseloadStat, { color: colors.text }]}>{advisor.totalStudents}</ThemedText>
-              <ThemedText style={[s.caseloadStat, { color: advisor.activeAlerts > 3 ? '#EF4444' : advisor.activeAlerts > 0 ? '#F59E0B' : '#22C55E' }]}>
+              <ThemedText style={[s.caseloadStat, { color: advisor.activeAlerts > 3 ? '#B85C5C' : advisor.activeAlerts > 0 ? '#B8943E' : '#5A8A6E' }]}>
                 {advisor.activeAlerts}
               </ThemedText>
-              <ThemedText style={[s.caseloadStat, { color: advisor.satisfaction >= 4.5 ? '#22C55E' : colors.text }]}>
+              <ThemedText style={[s.caseloadStat, { color: advisor.satisfaction >= 4.5 ? '#5A8A6E' : colors.text }]}>
                 {advisor.satisfaction}
               </ThemedText>
             </Pressable>
@@ -1010,7 +1010,7 @@ function RiskView({ colors, role }: { colors: typeof Colors.light; role: Educati
   });
 
   const riskScoreColor = (score: number) =>
-    score >= 80 ? '#EF4444' : score >= 60 ? '#F59E0B' : ACCENT;
+    score >= 80 ? '#B85C5C' : score >= 60 ? '#B8943E' : ACCENT;
 
   const interventionTypeLabel = (type: Intervention['type']) => {
     switch (type) {
@@ -1024,10 +1024,10 @@ function RiskView({ colors, role }: { colors: typeof Colors.light; role: Educati
   };
 
   const interventionStatusColor = (status: Intervention['status']) =>
-    status === 'active' ? '#22C55E' : status === 'completed' ? ACCENT : status === 'pending' ? '#F59E0B' : '#EF4444';
+    status === 'active' ? '#5A8A6E' : status === 'completed' ? ACCENT : status === 'pending' ? '#B8943E' : '#B85C5C';
 
   const alertSeverityColor = (sev: EarlyAlert['severity']) =>
-    sev === 'critical' ? '#EF4444' : sev === 'warning' ? '#F59E0B' : ACCENT;
+    sev === 'critical' ? '#B85C5C' : sev === 'warning' ? '#B8943E' : ACCENT;
 
   const alertTypeLabel = (type: EarlyAlert['alertType']) => {
     switch (type) {
@@ -1062,7 +1062,7 @@ function RiskView({ colors, role }: { colors: typeof Colors.light; role: Educati
             {/* Risk Factors */}
             <View style={s.riskFactorsRow}>
               {student.riskFactors.map((factor, i) => (
-                <View key={i} style={[s.riskFactorChip, { backgroundColor: '#EF444415' }]}>
+                <View key={i} style={[s.riskFactorChip, { backgroundColor: '#B85C5C15' }]}>
                   <ThemedText style={s.riskFactorText}>{factor}</ThemedText>
                 </View>
               ))}
@@ -1165,7 +1165,7 @@ function RiskView({ colors, role }: { colors: typeof Colors.light; role: Educati
                     Filed by: {alert.filedBy}
                   </ThemedText>
                   {alert.resolved && (
-                    <View style={[s.alertResolvedBadge, { backgroundColor: '#22C55E20' }]}>
+                    <View style={[s.alertResolvedBadge, { backgroundColor: '#5A8A6E20' }]}>
                       <ThemedText style={s.alertResolvedText}>RESOLVED</ThemedText>
                     </View>
                   )}
@@ -1361,7 +1361,7 @@ const s = StyleSheet.create({
   studentProgressFill: { height: '100%', borderRadius: 2 },
   studentProgressText: { fontSize: 9 },
   atRiskChip: { paddingHorizontal: 5, paddingVertical: 1, borderRadius: BorderRadius.sm },
-  atRiskChipText: { fontSize: 8, fontWeight: '800', color: '#EF4444', letterSpacing: 0.3 },
+  atRiskChipText: { fontSize: 8, fontWeight: '800', color: '#B85C5C', letterSpacing: 0.3 },
 
   // Metrics row
   metricsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
@@ -1404,7 +1404,7 @@ const s = StyleSheet.create({
   riskStudentMeta: { fontSize: 12 },
   riskFactorsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: Spacing.sm },
   riskFactorChip: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: BorderRadius.sm },
-  riskFactorText: { fontSize: 10, fontWeight: '600', color: '#EF4444' },
+  riskFactorText: { fontSize: 10, fontWeight: '600', color: '#B85C5C' },
   riskStudentFooter: { flexDirection: 'row', justifyContent: 'space-between' },
   riskStudentFooterText: { fontSize: 10 },
 
@@ -1433,7 +1433,7 @@ const s = StyleSheet.create({
   alertBottomRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   alertFiler: { fontSize: 10 },
   alertResolvedBadge: { paddingHorizontal: 5, paddingVertical: 1, borderRadius: BorderRadius.sm },
-  alertResolvedText: { fontSize: 8, fontWeight: '800', color: '#22C55E', letterSpacing: 0.3 },
+  alertResolvedText: { fontSize: 8, fontWeight: '800', color: '#5A8A6E', letterSpacing: 0.3 },
 
   // Empty state
   emptyText: { fontSize: 13, textAlign: 'center', paddingVertical: Spacing.lg },

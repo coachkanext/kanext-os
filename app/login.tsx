@@ -66,7 +66,7 @@ export default function LoginScreen() {
 
   const kColorInterpolated = kColor.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#111111', '#3B82F6'],
+    outputRange: ['#111111', '#1A1714'],
   });
 
   return (

@@ -53,9 +53,9 @@ import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 // ── Color Maps ──
 
 const SCHOLARSHIP_COLORS: Record<ScholarshipType, string> = {
-  full: '#22C55E',
-  partial: '#F59E0B',
-  'walk-on': '#A1A1AA',
+  full: '#5A8A6E',
+  partial: '#B8943E',
+  'walk-on': '#9C9790',
 };
 
 const SCHOLARSHIP_LABELS: Record<ScholarshipType, string> = {
@@ -65,9 +65,9 @@ const SCHOLARSHIP_LABELS: Record<ScholarshipType, string> = {
 };
 
 const ELIGIBILITY_COLORS: Record<EligibilityStatus, string> = {
-  eligible: '#22C55E',
-  warning: '#F59E0B',
-  ineligible: '#EF4444',
+  eligible: '#5A8A6E',
+  warning: '#B8943E',
+  ineligible: '#B85C5C',
 };
 
 const ELIGIBILITY_LABELS: Record<EligibilityStatus, string> = {
@@ -77,9 +77,9 @@ const ELIGIBILITY_LABELS: Record<EligibilityStatus, string> = {
 };
 
 const HEALTH_COLORS: Record<HealthStatus, string> = {
-  healthy: '#22C55E',
-  'day-to-day': '#F59E0B',
-  out: '#EF4444',
+  healthy: '#5A8A6E',
+  'day-to-day': '#B8943E',
+  out: '#B85C5C',
 };
 
 const HEALTH_LABELS: Record<HealthStatus, string> = {
@@ -89,10 +89,10 @@ const HEALTH_LABELS: Record<HealthStatus, string> = {
 };
 
 const SQUAD_COLORS: Record<SquadType, string> = {
-  varsity: '#3B82F6',
-  jv: '#8B5CF6',
-  practice: '#F59E0B',
-  redshirt: '#A1A1AA',
+  varsity: '#1A1714',
+  jv: '#1A1714',
+  practice: '#B8943E',
+  redshirt: '#9C9790',
   inactive: '#52525B',
 };
 
@@ -105,10 +105,10 @@ const SQUAD_LABELS: Record<SquadType, string> = {
 };
 
 const NIL_STATUS_COLORS: Record<NILStatus, string> = {
-  active: '#22C55E',
-  pending: '#F59E0B',
-  completed: '#3B82F6',
-  expired: '#A1A1AA',
+  active: '#5A8A6E',
+  pending: '#B8943E',
+  completed: '#1A1714',
+  expired: '#9C9790',
 };
 
 const NIL_STATUS_LABELS: Record<NILStatus, string> = {
@@ -119,9 +119,9 @@ const NIL_STATUS_LABELS: Record<NILStatus, string> = {
 };
 
 const COMPLIANCE_STATUS_COLORS: Record<ComplianceStatus, string> = {
-  approved: '#22C55E',
-  'under-review': '#F59E0B',
-  flagged: '#EF4444',
+  approved: '#5A8A6E',
+  'under-review': '#B8943E',
+  flagged: '#B85C5C',
 };
 
 const COMPLIANCE_STATUS_LABELS: Record<ComplianceStatus, string> = {
@@ -131,17 +131,17 @@ const COMPLIANCE_STATUS_LABELS: Record<ComplianceStatus, string> = {
 };
 
 const COMPLIANCE_ITEM_COLORS: Record<'ok' | 'warning' | 'violation', string> = {
-  ok: '#22C55E',
-  warning: '#F59E0B',
-  violation: '#EF4444',
+  ok: '#5A8A6E',
+  warning: '#B8943E',
+  violation: '#B85C5C',
 };
 
 const PIPELINE_COLORS: Record<PipelineStage, string> = {
-  watching: '#A1A1AA',
-  contacted: '#F59E0B',
-  visited: '#3B82F6',
-  offered: '#8B5CF6',
-  committed: '#22C55E',
+  watching: '#9C9790',
+  contacted: '#B8943E',
+  visited: '#1A1714',
+  offered: '#1A1714',
+  committed: '#5A8A6E',
 };
 
 const PIPELINE_LABELS: Record<PipelineStage, string> = {
@@ -270,8 +270,8 @@ function PlayerRow({
           <Text style={s.jerseyNumber}>#{player.jerseyNumber}</Text>
         </View>
         <View style={s.playerMetaRow}>
-          <View style={[s.positionPill, { backgroundColor: '#3B82F6' + '22' }]}>
-            <Text style={[s.positionPillText, { color: '#3B82F6' }]}>{player.position}</Text>
+          <View style={[s.positionPill, { backgroundColor: '#1A1714' + '22' }]}>
+            <Text style={[s.positionPillText, { color: '#1A1714' }]}>{player.position}</Text>
           </View>
           <Text style={s.playerMeta}>{player.classYear}</Text>
           <Text style={s.playerDot}>·</Text>
@@ -299,7 +299,7 @@ function ScholarshipRow({ entry }: { entry: typeof SCHOLARSHIP_ENTRIES[0] }) {
   const C = useColors();
   const s = useMemo(() => makeStyles(C), [C]);
   const typeColor = SCHOLARSHIP_COLORS[entry.type];
-  const statusColor = entry.status === 'active' ? '#22C55E' : entry.status === 'expiring' ? '#F59E0B' : '#3B82F6';
+  const statusColor = entry.status === 'active' ? '#5A8A6E' : entry.status === 'expiring' ? '#B8943E' : '#1A1714';
   const statusLabel = entry.status === 'active' ? 'Active' : entry.status === 'expiring' ? 'Expiring' : 'Renewed';
 
   return (
@@ -412,8 +412,8 @@ function SquadSection() {
                 <View style={{ flex: 1 }}>
                   <Text style={s.mgmtName}>{entry.playerName}</Text>
                   <View style={s.mgmtMetaRow}>
-                    <View style={[s.microBadge, { backgroundColor: '#3B82F6' + '22' }]}>
-                      <Text style={[s.microBadgeText, { color: '#3B82F6' }]}>{entry.position}</Text>
+                    <View style={[s.microBadge, { backgroundColor: '#1A1714' + '22' }]}>
+                      <Text style={[s.microBadgeText, { color: '#1A1714' }]}>{entry.position}</Text>
                     </View>
                     <Text style={s.mgmtMeta}>{entry.classYear}</Text>
                   </View>
@@ -432,7 +432,7 @@ function SquadSection() {
 function HousingRow({ entry }: { entry: typeof HOUSING_ENTRIES[0] }) {
   const C = useColors();
   const s = useMemo(() => makeStyles(C), [C]);
-  const rentColor = entry.rentStatus === 'paid' ? '#22C55E' : entry.rentStatus === 'overdue' ? '#EF4444' : '#F59E0B';
+  const rentColor = entry.rentStatus === 'paid' ? '#5A8A6E' : entry.rentStatus === 'overdue' ? '#B85C5C' : '#B8943E';
   const rentLabel = entry.rentStatus === 'paid' ? 'Paid' : entry.rentStatus === 'overdue' ? 'Overdue' : 'Due';
 
   return (
@@ -543,8 +543,8 @@ function ProspectCardView({
       <View style={{ flex: 1 }}>
         <View style={s.playerNameRow}>
           <Text style={s.mgmtName}>{prospect.name}</Text>
-          <View style={[s.positionPill, { backgroundColor: '#3B82F6' + '22' }]}>
-            <Text style={[s.positionPillText, { color: '#3B82F6' }]}>{prospect.position}</Text>
+          <View style={[s.positionPill, { backgroundColor: '#1A1714' + '22' }]}>
+            <Text style={[s.positionPillText, { color: '#1A1714' }]}>{prospect.position}</Text>
           </View>
         </View>
         <View style={s.mgmtMetaRow}>
@@ -556,8 +556,8 @@ function ProspectCardView({
         </View>
         <View style={s.mgmtMetaRow}>
           {prospect.inPortal && (
-            <View style={[s.microBadge, { backgroundColor: '#8B5CF6' + '22' }]}>
-              <Text style={[s.microBadgeText, { color: '#8B5CF6' }]}>Portal</Text>
+            <View style={[s.microBadge, { backgroundColor: '#1A1714' + '22' }]}>
+              <Text style={[s.microBadgeText, { color: '#1A1714' }]}>Portal</Text>
             </View>
           )}
           <Text style={s.prospectAction}>{prospect.lastAction}</Text>

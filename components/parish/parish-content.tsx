@@ -47,9 +47,9 @@ import {
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 
 const SERVICE_STATUS_COLORS: Record<ServiceStatus, string> = {
-  planning: '#F59E0B',
-  ready: '#22C55E',
-  completed: '#3B82F6',
+  planning: '#B8943E',
+  ready: '#5A8A6E',
+  completed: '#1A1714',
 };
 
 const SERVICE_STATUS_LABELS: Record<ServiceStatus, string> = {
@@ -59,16 +59,16 @@ const SERVICE_STATUS_LABELS: Record<ServiceStatus, string> = {
 };
 
 const SERVICE_TYPE_COLORS: Record<ServiceType, string> = {
-  'sunday-morning': '#3B82F6',
-  'wednesday-night': '#8B5CF6',
-  'special-event': '#F59E0B',
-  holiday: '#22C55E',
+  'sunday-morning': '#1A1714',
+  'wednesday-night': '#1A1714',
+  'special-event': '#B8943E',
+  holiday: '#5A8A6E',
 };
 
 const PRAYER_STATUS_COLORS: Record<PrayerStatus, string> = {
-  active: '#3B82F6',
-  answered: '#22C55E',
-  ongoing: '#F59E0B',
+  active: '#1A1714',
+  answered: '#5A8A6E',
+  ongoing: '#B8943E',
 };
 
 const PRAYER_STATUS_LABELS: Record<PrayerStatus, string> = {
@@ -78,9 +78,9 @@ const PRAYER_STATUS_LABELS: Record<PrayerStatus, string> = {
 };
 
 const VISIT_LOCATION_COLORS: Record<VisitLocation, string> = {
-  hospital: '#EF4444',
-  home: '#3B82F6',
-  office: '#F59E0B',
+  hospital: '#B85C5C',
+  home: '#1A1714',
+  office: '#B8943E',
   other: '#52525B',
 };
 
@@ -92,11 +92,11 @@ const VISIT_LOCATION_LABELS: Record<VisitLocation, string> = {
 };
 
 const MILESTONE_TYPE_COLORS: Record<MilestoneType, string> = {
-  baptism: '#3B82F6',
-  salvation: '#22C55E',
-  dedication: '#F59E0B',
-  marriage: '#EC4899',
-  membership: '#8B5CF6',
+  baptism: '#1A1714',
+  salvation: '#5A8A6E',
+  dedication: '#B8943E',
+  marriage: '#1A1714',
+  membership: '#1A1714',
 };
 
 const MILESTONE_TYPE_LABELS: Record<MilestoneType, string> = {
@@ -108,11 +108,11 @@ const MILESTONE_TYPE_LABELS: Record<MilestoneType, string> = {
 };
 
 const FOLLOW_UP_STAGE_COLORS: Record<FollowUpStage, string> = {
-  'first-visit': '#F59E0B',
+  'first-visit': '#B8943E',
   contacted: '#E8A317',
   'second-visit': '#A3B518',
   connected: '#5DC726',
-  member: '#22C55E',
+  member: '#5A8A6E',
 };
 
 const FOLLOW_UP_STAGE_LABELS: Record<FollowUpStage, string> = {
@@ -124,11 +124,11 @@ const FOLLOW_UP_STAGE_LABELS: Record<FollowUpStage, string> = {
 };
 
 const DISCIPLESHIP_STAGE_COLORS: Record<DiscipleshipStage, string> = {
-  'new-believer': '#F59E0B',
+  'new-believer': '#B8943E',
   foundations: '#E8A317',
   'small-group': '#A3B518',
   serving: '#5DC726',
-  leading: '#22C55E',
+  leading: '#5A8A6E',
 };
 
 const DISCIPLESHIP_STAGE_LABELS: Record<DiscipleshipStage, string> = {

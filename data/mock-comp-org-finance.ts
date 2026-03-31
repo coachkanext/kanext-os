@@ -168,68 +168,68 @@ export const COMP_FINANCE_SCOPE_CHIPS = [
 // =============================================================================
 
 export const REVENUE_STATUS_COLOR: Record<RevenueItem['status'], string> = {
-  received: '#22C55E',
-  pending: '#F59E0B',
-  projected: '#1D9BF0',
+  received: '#5A8A6E',
+  pending: '#B8943E',
+  projected: '#1A1714',
 };
 
 export const EXPENSE_STATUS_COLOR: Record<ExpenseItem['status'], string> = {
-  paid: '#22C55E',
-  pending: '#F59E0B',
-  approved: '#1D9BF0',
-  overdue: '#EF4444',
+  paid: '#5A8A6E',
+  pending: '#B8943E',
+  approved: '#1A1714',
+  overdue: '#B85C5C',
 };
 
 export const BUDGET_STATUS_COLOR: Record<Budget['status'], string> = {
-  'on-track': '#22C55E',
-  'at-risk': '#F59E0B',
-  'over-budget': '#EF4444',
+  'on-track': '#5A8A6E',
+  'at-risk': '#B8943E',
+  'over-budget': '#B85C5C',
 };
 
 export const PAYOUT_STATUS_COLOR: Record<PayoutRecord['status'], string> = {
-  completed: '#22C55E',
-  pending: '#F59E0B',
-  processing: '#1D9BF0',
-  failed: '#EF4444',
+  completed: '#5A8A6E',
+  pending: '#B8943E',
+  processing: '#1A1714',
+  failed: '#B85C5C',
 };
 
 export const PRIZE_STATUS_COLOR: Record<PrizeAllocation['status'], string> = {
-  allocated: '#1D9BF0',
-  paid: '#22C55E',
-  held: '#F59E0B',
+  allocated: '#1A1714',
+  paid: '#5A8A6E',
+  held: '#B8943E',
 };
 
 export const SPONSORSHIP_STATUS_COLOR: Record<SponsorshipRevenue['status'], string> = {
-  active: '#22C55E',
-  pending: '#F59E0B',
-  expired: '#EF4444',
+  active: '#5A8A6E',
+  pending: '#B8943E',
+  expired: '#B85C5C',
 };
 
 export const PAYOUT_TYPE_COLOR: Record<PayoutRecord['type'], string> = {
-  prize: '#1D9BF0',
-  official: '#1D9BF0',
-  vendor: '#F59E0B',
-  refund: '#EF4444',
+  prize: '#1A1714',
+  official: '#1A1714',
+  vendor: '#B8943E',
+  refund: '#B85C5C',
 };
 
 export const REVENUE_CATEGORY_COLOR: Record<RevenueItem['category'], string> = {
-  ticketing: '#1D9BF0',
-  sponsorship: '#1D9BF0',
-  broadcast: '#1D9BF0',
-  merchandise: '#F59E0B',
-  licensing: '#1D9BF0',
-  'entry-fees': '#22C55E',
+  ticketing: '#1A1714',
+  sponsorship: '#1A1714',
+  broadcast: '#1A1714',
+  merchandise: '#B8943E',
+  licensing: '#1A1714',
+  'entry-fees': '#5A8A6E',
 };
 
 export const EXPENSE_CATEGORY_COLOR: Record<ExpenseItem['category'], string> = {
-  venue: '#1D9BF0',
-  staff: '#1D9BF0',
-  equipment: '#1D9BF0',
-  travel: '#F59E0B',
-  marketing: '#1D9BF0',
-  insurance: '#EF4444',
-  officials: '#22C55E',
-  prizes: '#F59E0B',
+  venue: '#1A1714',
+  staff: '#1A1714',
+  equipment: '#1A1714',
+  travel: '#B8943E',
+  marketing: '#1A1714',
+  insurance: '#B85C5C',
+  officials: '#5A8A6E',
+  prizes: '#B8943E',
 };
 
 // =============================================================================
@@ -261,14 +261,14 @@ export function getCapacityPercentage(sold: number, capacity: number): number {
 // =============================================================================
 
 const DASHBOARD_BLOCKS: FinanceDashboardBlock[] = [
-  { id: 'db-1', label: 'Total Revenue', value: '$2.4M', delta: '+12.3%', icon: 'arrow.up.circle.fill', color: '#22C55E' },
-  { id: 'db-2', label: 'Total Expenses', value: '$1.8M', delta: '+8.1%', icon: 'arrow.down.circle.fill', color: '#EF4444' },
-  { id: 'db-3', label: 'Net Profit', value: '$612K', delta: '+22.4%', icon: 'chart.line.uptrend.xyaxis', color: '#22C55E' },
-  { id: 'db-4', label: 'Prize Pool', value: '$500K', delta: '—', icon: 'trophy.fill', color: '#1D9BF0' },
-  { id: 'db-5', label: 'Ticket Revenue', value: '$850K', delta: '+15.7%', icon: 'ticket.fill', color: '#1D9BF0' },
-  { id: 'db-6', label: 'Sponsorship', value: '$625K', delta: '+9.2%', icon: 'star.fill', color: '#F59E0B' },
-  { id: 'db-7', label: 'Budget Utilization', value: '74%', delta: 'On Track', icon: 'chart.pie.fill', color: '#1D9BF0' },
-  { id: 'db-8', label: 'Pending Payouts', value: '$127K', delta: '14 items', icon: 'creditcard.fill', color: '#F59E0B' },
+  { id: 'db-1', label: 'Total Revenue', value: '$2.4M', delta: '+12.3%', icon: 'arrow.up.circle.fill', color: '#5A8A6E' },
+  { id: 'db-2', label: 'Total Expenses', value: '$1.8M', delta: '+8.1%', icon: 'arrow.down.circle.fill', color: '#B85C5C' },
+  { id: 'db-3', label: 'Net Profit', value: '$612K', delta: '+22.4%', icon: 'chart.line.uptrend.xyaxis', color: '#5A8A6E' },
+  { id: 'db-4', label: 'Prize Pool', value: '$500K', delta: '—', icon: 'trophy.fill', color: '#1A1714' },
+  { id: 'db-5', label: 'Ticket Revenue', value: '$850K', delta: '+15.7%', icon: 'ticket.fill', color: '#1A1714' },
+  { id: 'db-6', label: 'Sponsorship', value: '$625K', delta: '+9.2%', icon: 'star.fill', color: '#B8943E' },
+  { id: 'db-7', label: 'Budget Utilization', value: '74%', delta: 'On Track', icon: 'chart.pie.fill', color: '#1A1714' },
+  { id: 'db-8', label: 'Pending Payouts', value: '$127K', delta: '14 items', icon: 'creditcard.fill', color: '#B8943E' },
 ];
 
 const REVENUE_ITEMS: RevenueItem[] = [

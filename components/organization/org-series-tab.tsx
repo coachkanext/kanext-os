@@ -167,14 +167,14 @@ const AUDIT_ACTION_ICON: Record<string, string> = {
 };
 
 const AUDIT_ACTION_COLOR: Record<string, string> = {
-  created: '#22C55E',
-  added: '#1D9BF0',
-  seeded: '#F59E0B',
-  published: '#1D9BF0',
-  assigned: '#1D9BF0',
-  completed: '#22C55E',
-  filed: '#1D9BF0',
-  default: '#A1A1AA',
+  created: '#5A8A6E',
+  added: '#1A1714',
+  seeded: '#B8943E',
+  published: '#1A1714',
+  assigned: '#1A1714',
+  completed: '#5A8A6E',
+  filed: '#1A1714',
+  default: '#9C9790',
 };
 
 function getAuditActionKey(action: string): string {
@@ -263,8 +263,8 @@ function SeriesCard({
                   {
                     backgroundColor:
                       series.compliancePulse.toLowerCase().includes('100%')
-                        ? '#22C55E'
-                        : '#F59E0B',
+                        ? '#5A8A6E'
+                        : '#B8943E',
                   },
                 ]}
               />
@@ -446,8 +446,8 @@ function OverviewTab({
                 s.complianceDot,
                 {
                   backgroundColor: series.compliancePulse.toLowerCase().includes('100%')
-                    ? '#22C55E'
-                    : '#F59E0B',
+                    ? '#5A8A6E'
+                    : '#B8943E',
                 },
               ]}
             />
@@ -495,8 +495,8 @@ function ScheduleTab({
   const gameStatusColor = (st: SeriesGame['status']): string => {
     switch (st) {
       case 'scheduled': return accent;
-      case 'live': return '#EF4444';
-      case 'final': return '#22C55E';
+      case 'live': return '#B85C5C';
+      case 'final': return '#5A8A6E';
     }
   };
 
@@ -886,8 +886,8 @@ function ComplianceTab({
                 s.complianceDot,
                 {
                   backgroundColor: series.compliancePulse.toLowerCase().includes('100%')
-                    ? '#22C55E'
-                    : '#F59E0B',
+                    ? '#5A8A6E'
+                    : '#B8943E',
                 },
               ]}
             />

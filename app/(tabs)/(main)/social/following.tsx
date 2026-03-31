@@ -35,11 +35,11 @@ const FOLLOWING: FollowEntry[] = [
 ];
 
 const MODE_COLORS: Record<string, string> = {
-  sports:    '#990000',
-  business:  '#1D9BF0',
-  education: '#003A63',
+  sports:    '#1A1714',
+  business:  '#1A1714',
+  education: '#1A1714',
   community: '#5A8A6E',
-  personal:  '#3B82F6',
+  personal:  '#1A1714',
 };
 
 // ── Main screen ────────────────────────────────────────────────────────────────

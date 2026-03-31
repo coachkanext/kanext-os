@@ -291,7 +291,7 @@ export function FeedCard({ post }: FeedCardProps) {
                 <IconSymbol
                   name="exclamationmark.shield.fill"
                   size={14}
-                  color={post.complianceUrgent ? '#EF4444' : colors.textTertiary}
+                  color={post.complianceUrgent ? '#B85C5C' : colors.textTertiary}
                 />
                 <ThemedText style={[styles.complianceTitle, { color: colors.text }]}>
                   {post.complianceTitle}
@@ -407,7 +407,7 @@ export function FeedCard({ post }: FeedCardProps) {
               <IconSymbol
                 name={liked ? 'heart.fill' : 'heart'}
                 size={15}
-                color={liked ? '#EF4444' : colors.textTertiary}
+                color={liked ? '#B85C5C' : colors.textTertiary}
               />
             </Pressable>
             <Pressable style={styles.engageBtn} hitSlop={6} onPress={handleSave}>
@@ -710,7 +710,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   urgentBadge: {
-    backgroundColor: '#EF444420',
+    backgroundColor: '#B85C5C20',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
@@ -718,7 +718,7 @@ const styles = StyleSheet.create({
   urgentText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#EF4444',
+    color: '#B85C5C',
   },
 
   // System — gold-tinted card

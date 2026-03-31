@@ -21,11 +21,11 @@ interface Props {
 }
 
 const CATEGORY_COLORS: Record<CompNewsItem['category'], string> = {
-  race_recap: '#EF4444',
+  race_recap: '#B85C5C',
   onboard: ACCENT,
   interview: ACCENT,
-  technical: '#F59E0B',
-  wildcard: '#22C55E',
+  technical: '#B8943E',
+  wildcard: '#5A8A6E',
 };
 
 type FilterCategory = 'all' | CompNewsItem['category'];

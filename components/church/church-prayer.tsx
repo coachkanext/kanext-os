@@ -91,14 +91,14 @@ interface FeedPrayer {
 }
 
 const CATEGORY_COLORS: Record<PrayerCategory, string> = {
-  health: '#EF4444',
+  health: '#B85C5C',
   family: ACCENT,
-  financial: '#22C55E',
+  financial: '#5A8A6E',
   guidance: ACCENT,
-  gratitude: '#F59E0B',
+  gratitude: '#B8943E',
   church: ACCENT,
   world: ACCENT,
-  other: '#A1A1AA',
+  other: '#9C9790',
 };
 
 const CATEGORY_LABELS: Record<PrayerCategory, string> = {
@@ -120,10 +120,10 @@ const PRIVACY_LABELS: Record<PrayerPrivacy, string> = {
 };
 
 const PRIVACY_COLORS: Record<PrayerPrivacy, string> = {
-  public: '#22C55E',
+  public: '#5A8A6E',
   church: ACCENT,
-  leadership: '#F59E0B',
-  private: '#EF4444',
+  leadership: '#B8943E',
+  private: '#B85C5C',
 };
 
 const FEED_PRAYERS: FeedPrayer[] = [
@@ -261,8 +261,8 @@ const MY_REQUESTS: MyPrayerRequest[] = [
 
 const STATUS_COLORS: Record<RequestStatus, string> = {
   active: ACCENT,
-  answered: '#22C55E',
-  archived: '#A1A1AA',
+  answered: '#5A8A6E',
+  archived: '#9C9790',
 };
 
 const STATUS_LABELS: Record<RequestStatus, string> = {
@@ -338,17 +338,17 @@ const QUEUE_ITEMS: QueueItem[] = [
 ];
 
 const URGENCY_COLORS: Record<QueueUrgency, string> = {
-  urgent: '#EF4444',
-  normal: '#F59E0B',
-  low: '#A1A1AA',
+  urgent: '#B85C5C',
+  normal: '#B8943E',
+  low: '#9C9790',
 };
 
 const FOLLOW_UP_COLORS: Record<FollowUpStatus, string> = {
   new: ACCENT,
-  'in-progress': '#F59E0B',
+  'in-progress': '#B8943E',
   contacted: ACCENT,
-  resolved: '#22C55E',
-  escalated: '#EF4444',
+  resolved: '#5A8A6E',
+  escalated: '#B85C5C',
 };
 
 const FOLLOW_UP_LABELS: Record<FollowUpStatus, string> = {
@@ -639,8 +639,8 @@ function FeedView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
               </View>
               <View style={s.feedBadgeRow}>
                 {prayer.isUrgent && (
-                  <View style={[s.badgeSmall, { backgroundColor: '#EF444420' }]}>
-                    <ThemedText style={[s.badgeSmallText, { color: '#EF4444' }]}>URGENT</ThemedText>
+                  <View style={[s.badgeSmall, { backgroundColor: '#B85C5C20' }]}>
+                    <ThemedText style={[s.badgeSmallText, { color: '#B85C5C' }]}>URGENT</ThemedText>
                   </View>
                 )}
                 <View style={[s.badgeSmall, { backgroundColor: privColor + '20' }]}>
@@ -791,11 +791,11 @@ function MyRequestsView({ colors, role }: { colors: typeof Colors.light; role: C
                   <ThemedText style={[s.myReqEditText, { color: colors.textSecondary }]}>Edit</ThemedText>
                 </Pressable>
                 <Pressable
-                  style={[s.myReqEditBtn, { borderColor: '#EF444430' }]}
+                  style={[s.myReqEditBtn, { borderColor: '#B85C5C30' }]}
                   onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
                 >
-                  <IconSymbol name="trash" size={11} color="#EF4444" />
-                  <ThemedText style={[s.myReqEditText, { color: '#EF4444' }]}>Delete</ThemedText>
+                  <IconSymbol name="trash" size={11} color="#B85C5C" />
+                  <ThemedText style={[s.myReqEditText, { color: '#B85C5C' }]}>Delete</ThemedText>
                 </Pressable>
               </View>
             )}
@@ -868,11 +868,11 @@ function QueueView({ colors, role }: { colors: typeof Colors.light; role: Church
             <ThemedText style={[s.statLabel, { color: colors.textSecondary }]}>New This Week</ThemedText>
           </View>
           <View style={s.statBox}>
-            <ThemedText style={[s.statValue, { color: '#F59E0B' }]}>{QUEUE_STATS.inProgress}</ThemedText>
+            <ThemedText style={[s.statValue, { color: '#B8943E' }]}>{QUEUE_STATS.inProgress}</ThemedText>
             <ThemedText style={[s.statLabel, { color: colors.textSecondary }]}>In Progress</ThemedText>
           </View>
           <View style={s.statBox}>
-            <ThemedText style={[s.statValue, { color: '#22C55E' }]}>{QUEUE_STATS.resolvedThisMonth}</ThemedText>
+            <ThemedText style={[s.statValue, { color: '#5A8A6E' }]}>{QUEUE_STATS.resolvedThisMonth}</ThemedText>
             <ThemedText style={[s.statLabel, { color: colors.textSecondary }]}>Resolved (Month)</ThemedText>
           </View>
         </View>
@@ -967,11 +967,11 @@ function QueueView({ colors, role }: { colors: typeof Colors.light; role: Church
                   </Pressable>
                 )}
                 <Pressable
-                  style={[s.queueActionBtn, { borderColor: '#22C55E40' }]}
+                  style={[s.queueActionBtn, { borderColor: '#5A8A6E40' }]}
                   onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
                 >
-                  <IconSymbol name="checkmark.circle.fill" size={12} color="#22C55E" />
-                  <ThemedText style={[s.queueActionText, { color: '#22C55E' }]}>Resolve</ThemedText>
+                  <IconSymbol name="checkmark.circle.fill" size={12} color="#5A8A6E" />
+                  <ThemedText style={[s.queueActionText, { color: '#5A8A6E' }]}>Resolve</ThemedText>
                 </Pressable>
               </View>
             )}
@@ -987,11 +987,11 @@ function QueueView({ colors, role }: { colors: typeof Colors.light; role: Church
                   <ThemedText style={[s.queueActionText, { color: colors.textSecondary }]}>Contact</ThemedText>
                 </Pressable>
                 <Pressable
-                  style={[s.queueActionBtn, { borderColor: '#22C55E40' }]}
+                  style={[s.queueActionBtn, { borderColor: '#5A8A6E40' }]}
                   onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
                 >
-                  <IconSymbol name="checkmark.circle.fill" size={12} color="#22C55E" />
-                  <ThemedText style={[s.queueActionText, { color: '#22C55E' }]}>Mark Resolved</ThemedText>
+                  <IconSymbol name="checkmark.circle.fill" size={12} color="#5A8A6E" />
+                  <ThemedText style={[s.queueActionText, { color: '#5A8A6E' }]}>Mark Resolved</ThemedText>
                 </Pressable>
               </View>
             )}
@@ -1042,8 +1042,8 @@ function TeamsView({ colors, role }: { colors: typeof Colors.light; role: Church
               <View style={s.teamHealthItem}>
                 <ThemedText style={[s.teamHealthLabel, { color: colors.textTertiary }]}>Attendance</ThemedText>
                 <View style={s.teamHealthValueRow}>
-                  <View style={[s.teamHealthDot, { backgroundColor: attendanceOk ? '#22C55E' : '#F59E0B' }]} />
-                  <ThemedText style={[s.teamHealthValue, { color: attendanceOk ? '#22C55E' : '#F59E0B' }]}>
+                  <View style={[s.teamHealthDot, { backgroundColor: attendanceOk ? '#5A8A6E' : '#B8943E' }]} />
+                  <ThemedText style={[s.teamHealthValue, { color: attendanceOk ? '#5A8A6E' : '#B8943E' }]}>
                     {team.attendanceRate}%
                   </ThemedText>
                 </View>
@@ -1051,8 +1051,8 @@ function TeamsView({ colors, role }: { colors: typeof Colors.light; role: Church
               <View style={s.teamHealthItem}>
                 <ThemedText style={[s.teamHealthLabel, { color: colors.textTertiary }]}>Active Rate</ThemedText>
                 <View style={s.teamHealthValueRow}>
-                  <View style={[s.teamHealthDot, { backgroundColor: activeOk ? '#22C55E' : '#F59E0B' }]} />
-                  <ThemedText style={[s.teamHealthValue, { color: activeOk ? '#22C55E' : '#F59E0B' }]}>
+                  <View style={[s.teamHealthDot, { backgroundColor: activeOk ? '#5A8A6E' : '#B8943E' }]} />
+                  <ThemedText style={[s.teamHealthValue, { color: activeOk ? '#5A8A6E' : '#B8943E' }]}>
                     {team.activeRate}%
                   </ThemedText>
                 </View>
@@ -1136,7 +1136,7 @@ function PraiseView({ colors, role }: { colors: typeof Colors.light; role: Churc
           <Card key={report.id} colors={colors}>
             {/* Title & author */}
             <View style={s.praiseHeader}>
-              <IconSymbol name="star.fill" size={16} color="#F59E0B" />
+              <IconSymbol name="star.fill" size={16} color="#B8943E" />
               <View style={s.praiseHeaderInfo}>
                 <ThemedText style={[s.praiseTitle, { color: colors.text }]}>{report.title}</ThemedText>
                 <ThemedText style={[s.praiseAuthor, { color: colors.textTertiary }]}>
@@ -1178,11 +1178,11 @@ function PraiseView({ colors, role }: { colors: typeof Colors.light; role: Churc
             {/* Reaction row */}
             <View style={s.praiseReactionRow}>
               <Pressable
-                style={[s.praiseReactionBtn, { borderColor: '#F59E0B40' }]}
+                style={[s.praiseReactionBtn, { borderColor: '#B8943E40' }]}
                 onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
               >
                 <ThemedText style={s.praiseEmoji}>Praise</ThemedText>
-                <ThemedText style={[s.praiseReactionCount, { color: '#F59E0B' }]}>{report.praiseCount}</ThemedText>
+                <ThemedText style={[s.praiseReactionCount, { color: '#B8943E' }]}>{report.praiseCount}</ThemedText>
               </Pressable>
               <Pressable
                 style={[s.praiseReactionBtn, { borderColor: `${ACCENT}40` }]}
@@ -1206,7 +1206,7 @@ function PraiseView({ colors, role }: { colors: typeof Colors.light; role: Churc
       {/* Share Testimony CTA */}
       {isMember(role) && (
         <Pressable
-          style={({ pressed }) => [s.floatingCta, { backgroundColor: '#F59E0B', opacity: pressed ? 0.8 : 1 }]}
+          style={({ pressed }) => [s.floatingCta, { backgroundColor: '#B8943E', opacity: pressed ? 0.8 : 1 }]}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
         >
           <IconSymbol name="star.fill" size={16} color="#FFFFFF" />

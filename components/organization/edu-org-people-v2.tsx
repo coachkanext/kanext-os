@@ -117,9 +117,9 @@ function formatDate(dateStr: string): string {
 }
 
 function coverageColor(pct: number): string {
-  if (pct < 60) return '#EF4444';
-  if (pct < 80) return '#F59E0B';
-  return '#22C55E';
+  if (pct < 60) return '#B85C5C';
+  if (pct < 80) return '#B8943E';
+  return '#5A8A6E';
 }
 
 // =============================================================================
@@ -240,10 +240,10 @@ function OverviewTab({
 
   const tileData = [
     { label: 'Total People', value: String(tiles.totalPeople), icon: 'person.3.fill', color: ACCENT },
-    { label: 'Active', value: String(tiles.activePeople), icon: 'checkmark.circle.fill', color: '#22C55E' },
-    { label: 'Vacant Critical Seats', value: String(tiles.vacantCriticalSeats), icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
+    { label: 'Active', value: String(tiles.activePeople), icon: 'checkmark.circle.fill', color: '#5A8A6E' },
+    { label: 'Vacant Critical Seats', value: String(tiles.vacantCriticalSeats), icon: 'exclamationmark.triangle.fill', color: '#B85C5C' },
     { label: 'Coverage Score', value: `${tiles.coverageScore}%`, icon: 'chart.bar.fill', color: accentColor },
-    { label: 'Pending Invites', value: String(tiles.pendingInvites), icon: 'envelope.fill', color: '#F59E0B' },
+    { label: 'Pending Invites', value: String(tiles.pendingInvites), icon: 'envelope.fill', color: '#B8943E' },
     { label: 'Risk Flags', value: String(tiles.riskFlags), icon: 'exclamationmark.shield.fill', color: ACCENT },
   ];
 
@@ -313,9 +313,9 @@ function OverviewTab({
           {flaggedPeople.map((person) => (
             <View
               key={person.id}
-              style={[s.alertCard, { backgroundColor: '#EF444410', borderColor: '#EF444430' }]}
+              style={[s.alertCard, { backgroundColor: '#B85C5C10', borderColor: '#B85C5C30' }]}
             >
-              <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#EF4444" />
+              <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#B85C5C" />
               <View style={s.alertTextCol}>
                 <ThemedText style={[s.alertTitle, { color: colors.text }]} numberOfLines={1}>
                   {person.name}
@@ -582,16 +582,16 @@ function OrgChartTab({
             style={[
               s.orgNode,
               {
-                backgroundColor: isVacant ? '#EF444408' : colors.card,
-                borderColor: isVacant ? '#EF444440' : colors.border,
-                borderLeftColor: node.isCritical ? '#EF4444' : accentColor,
+                backgroundColor: isVacant ? '#B85C5C08' : colors.card,
+                borderColor: isVacant ? '#B85C5C40' : colors.border,
+                borderLeftColor: node.isCritical ? '#B85C5C' : accentColor,
                 borderLeftWidth: 3,
                 marginLeft: indent,
               },
             ]}
           >
             <View style={{ flex: 1 }}>
-              <ThemedText style={[s.orgNodeName, { color: isVacant ? '#EF4444' : colors.text }]} numberOfLines={1}>
+              <ThemedText style={[s.orgNodeName, { color: isVacant ? '#B85C5C' : colors.text }]} numberOfLines={1}>
                 {isVacant ? 'VACANT' : node.personName}
               </ThemedText>
               <ThemedText style={[s.orgNodeRole, { color: colors.textSecondary }]} numberOfLines={1}>
@@ -611,7 +611,7 @@ function OrgChartTab({
                 <IconSymbol name="dollarsign.circle.fill" size={14} color={AUTHORITY_COLORS.release} />
               )}
               {isVacant && node.isCritical && (
-                <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#EF4444" />
+                <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#B85C5C" />
               )}
             </View>
           </View>
@@ -658,8 +658,8 @@ function SeatsCoverageTab({
           style={[
             s.seatCard,
             {
-              backgroundColor: item.isVacant ? '#EF444408' : colors.card,
-              borderColor: item.isVacant ? '#EF444440' : colors.border,
+              backgroundColor: item.isVacant ? '#B85C5C08' : colors.card,
+              borderColor: item.isVacant ? '#B85C5C40' : colors.border,
             },
           ]}
           onPress={() => {
@@ -684,10 +684,10 @@ function SeatsCoverageTab({
             <IconSymbol
               name={item.isVacant ? 'person.fill.questionmark' as any : 'person.fill' as any}
               size={12}
-              color={item.isVacant ? '#EF4444' : '#22C55E'}
+              color={item.isVacant ? '#B85C5C' : '#5A8A6E'}
             />
             <ThemedText
-              style={[s.seatAssignedText, { color: item.isVacant ? '#EF4444' : colors.text }]}
+              style={[s.seatAssignedText, { color: item.isVacant ? '#B85C5C' : colors.text }]}
               numberOfLines={1}
             >
               {item.isVacant ? 'VACANT' : item.assignedName}
@@ -713,8 +713,8 @@ function SeatsCoverageTab({
           {/* Risk notes */}
           {item.riskNotes && (
             <View style={s.seatRiskRow}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={10} color="#EF4444" />
-              <ThemedText style={[s.seatRiskText, { color: '#EF4444' }]} numberOfLines={2}>
+              <IconSymbol name="exclamationmark.triangle.fill" size={10} color="#B85C5C" />
+              <ThemedText style={[s.seatRiskText, { color: '#B85C5C' }]} numberOfLines={2}>
                 {item.riskNotes}
               </ThemedText>
             </View>
@@ -840,10 +840,10 @@ function PermissionsTab({
                 {/* Read Scopes */}
                 {pkg.readScopes.length > 0 && (
                   <View style={s.scopeSection}>
-                    <ThemedText style={[s.scopeTitle, { color: '#22C55E' }]}>Read</ThemedText>
+                    <ThemedText style={[s.scopeTitle, { color: '#5A8A6E' }]}>Read</ThemedText>
                     {pkg.readScopes.map((scope, i) => (
                       <View key={`r-${i}`} style={s.scopeItem}>
-                        <View style={[s.scopeDot, { backgroundColor: '#22C55E' }]} />
+                        <View style={[s.scopeDot, { backgroundColor: '#5A8A6E' }]} />
                         <ThemedText style={[s.scopeText, { color: colors.textSecondary }]}>{scope}</ThemedText>
                       </View>
                     ))}
@@ -866,10 +866,10 @@ function PermissionsTab({
                 {/* Approve Scopes */}
                 {pkg.approveScopes.length > 0 && (
                   <View style={s.scopeSection}>
-                    <ThemedText style={[s.scopeTitle, { color: '#F59E0B' }]}>Approve</ThemedText>
+                    <ThemedText style={[s.scopeTitle, { color: '#B8943E' }]}>Approve</ThemedText>
                     {pkg.approveScopes.map((scope, i) => (
                       <View key={`a-${i}`} style={s.scopeItem}>
-                        <View style={[s.scopeDot, { backgroundColor: '#F59E0B' }]} />
+                        <View style={[s.scopeDot, { backgroundColor: '#B8943E' }]} />
                         <ThemedText style={[s.scopeText, { color: colors.textSecondary }]}>{scope}</ThemedText>
                       </View>
                     ))}
@@ -892,11 +892,11 @@ function PermissionsTab({
                 {/* Sensitive Fields */}
                 {pkg.sensitiveFields.length > 0 && (
                   <View style={s.scopeSection}>
-                    <ThemedText style={[s.scopeTitle, { color: '#EF4444' }]}>Sensitive Fields</ThemedText>
+                    <ThemedText style={[s.scopeTitle, { color: '#B85C5C' }]}>Sensitive Fields</ThemedText>
                     {pkg.sensitiveFields.map((field, i) => (
                       <View key={`sf-${i}`} style={s.sensitiveItem}>
-                        <IconSymbol name="exclamationmark.shield.fill" size={10} color="#EF4444" />
-                        <ThemedText style={[s.sensitiveText, { color: '#EF4444' }]}>{field}</ThemedText>
+                        <IconSymbol name="exclamationmark.shield.fill" size={10} color="#B85C5C" />
+                        <ThemedText style={[s.sensitiveText, { color: '#B85C5C' }]}>{field}</ThemedText>
                       </View>
                     ))}
                   </View>
@@ -989,7 +989,7 @@ function DomainsTab({
                 {dd.peopleCount} people
               </ThemedText>
               {dd.vacantCount > 0 && (
-                <ThemedText style={[s.domainStatText, { color: '#EF4444' }]}>
+                <ThemedText style={[s.domainStatText, { color: '#B85C5C' }]}>
                   {dd.vacantCount} vacant seat{dd.vacantCount > 1 ? 's' : ''}
                 </ThemedText>
               )}
@@ -1276,10 +1276,10 @@ function ReportsTab({
   accentColor: string;
 }) {
   const reports = [
-    { id: 'coverage', title: 'Coverage Report', description: 'Full seat coverage analysis across all domains and institutions.', icon: 'chart.bar.fill', color: '#22C55E' },
+    { id: 'coverage', title: 'Coverage Report', description: 'Full seat coverage analysis across all domains and institutions.', icon: 'chart.bar.fill', color: '#5A8A6E' },
     { id: 'permission-audit', title: 'Permission Audit', description: 'Review of all permission packages, access tiers, and sensitive field exposure.', icon: 'lock.shield.fill', color: ACCENT },
     { id: 'seat-utilization', title: 'Seat Utilization', description: 'Filled vs. vacant seats, dual-hat analysis, and succession readiness.', icon: 'person.crop.rectangle.stack.fill', color: ACCENT },
-    { id: 'risk-assessment', title: 'Risk Assessment', description: 'Over-permissioned users, single points of failure, and coverage gaps.', icon: 'exclamationmark.shield.fill', color: '#EF4444' },
+    { id: 'risk-assessment', title: 'Risk Assessment', description: 'Over-permissioned users, single points of failure, and coverage gaps.', icon: 'exclamationmark.shield.fill', color: '#B85C5C' },
   ];
 
   return (
@@ -1361,13 +1361,13 @@ function PersonDetailSheet({
         <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Authority & Access</ThemedText>
         <View style={s.sheetDetailRow}>
           <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Can Approve</ThemedText>
-          <ThemedText style={[s.sheetDetailValue, { color: person.canApprove ? '#22C55E' : colors.textTertiary }]}>
+          <ThemedText style={[s.sheetDetailValue, { color: person.canApprove ? '#5A8A6E' : colors.textTertiary }]}>
             {person.canApprove ? 'Yes' : 'No'}
           </ThemedText>
         </View>
         <View style={s.sheetDetailRow}>
           <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Can Release Funds</ThemedText>
-          <ThemedText style={[s.sheetDetailValue, { color: person.canReleaseFunds ? '#22C55E' : colors.textTertiary }]}>
+          <ThemedText style={[s.sheetDetailValue, { color: person.canReleaseFunds ? '#5A8A6E' : colors.textTertiary }]}>
             {person.canReleaseFunds ? 'Yes' : 'No'}
           </ThemedText>
         </View>
@@ -1399,7 +1399,7 @@ function PersonDetailSheet({
         </View>
         <View style={s.sheetDetailRow}>
           <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Pending Approvals</ThemedText>
-          <ThemedText style={[s.sheetDetailValue, { color: person.pendingApprovals > 0 ? '#F59E0B' : colors.textTertiary }]}>
+          <ThemedText style={[s.sheetDetailValue, { color: person.pendingApprovals > 0 ? '#B8943E' : colors.textTertiary }]}>
             {person.pendingApprovals}
           </ThemedText>
         </View>
@@ -1424,7 +1424,7 @@ function PersonDetailSheet({
       {/* Risk Flags */}
       {person.riskFlags.length > 0 && (
         <View style={[s.sheetSection, { borderBottomColor: colors.border }]}>
-          <ThemedText style={[s.sheetSectionTitle, { color: '#EF4444' }]}>Risk Flags</ThemedText>
+          <ThemedText style={[s.sheetSectionTitle, { color: '#B85C5C' }]}>Risk Flags</ThemedText>
           {person.riskFlags.map((flag, idx) => (
             <View key={`rf-${idx}`} style={s.sheetDetailRow}>
               <IconSymbol name="exclamationmark.triangle.fill" size={12} color={RISK_FLAG_COLORS[flag]} />
@@ -1504,10 +1504,10 @@ function SeatDetailSheet({
           <IconSymbol
             name={seat.isVacant ? 'person.fill.questionmark' as any : 'person.fill' as any}
             size={14}
-            color={seat.isVacant ? '#EF4444' : '#22C55E'}
+            color={seat.isVacant ? '#B85C5C' : '#5A8A6E'}
           />
           <ThemedText
-            style={[s.sheetDetailValue, { color: seat.isVacant ? '#EF4444' : colors.text }]}
+            style={[s.sheetDetailValue, { color: seat.isVacant ? '#B85C5C' : colors.text }]}
           >
             {seat.isVacant ? 'VACANT' : seat.assignedName}
           </ThemedText>
@@ -1547,10 +1547,10 @@ function SeatDetailSheet({
       {/* Risk Notes */}
       {seat.riskNotes && (
         <View style={[s.sheetSection, { borderBottomColor: colors.border }]}>
-          <ThemedText style={[s.sheetSectionTitle, { color: '#EF4444' }]}>Risk Notes</ThemedText>
+          <ThemedText style={[s.sheetSectionTitle, { color: '#B85C5C' }]}>Risk Notes</ThemedText>
           <View style={s.sheetDetailRow}>
-            <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
-            <ThemedText style={[s.sheetDetailValue, { color: '#EF4444' }]}>
+            <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B85C5C" />
+            <ThemedText style={[s.sheetDetailValue, { color: '#B85C5C' }]}>
               {seat.riskNotes}
             </ThemedText>
           </View>

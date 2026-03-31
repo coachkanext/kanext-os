@@ -81,7 +81,7 @@ const STATUS_LABEL: Record<string, string> = {
 
 const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   starter: { bg: '#22c55e22', text: '#22c55e' },
-  rotation: { bg: `${'#1D9BF0'}22`, text: '#1D9BF0' },
+  rotation: { bg: `${'#1A1714'}22`, text: '#1A1714' },
   bench: { bg: '#0B0F1480', text: '#999' },
   injured: { bg: '#ef444430', text: '#ef4444' },
   redshirt: { bg: '#f59e0b30', text: '#f59e0b' },

@@ -1070,8 +1070,8 @@ export function getRecruitingStatusLabel(status: RecruitingStatus): string {
 export function getRecruitingStatusColor(status: RecruitingStatus): string {
   const colors: Record<RecruitingStatus, string> = {
     watching: '#52525B',
-    priority: '#A1A1AA',
-    contacted: '#A1A1AA',
+    priority: '#9C9790',
+    contacted: '#9C9790',
     offered: '#ffffff',
     committed: '#FFFFFF',
     archived: '#52525B',

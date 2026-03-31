@@ -132,7 +132,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: '#1D9BF0',
+    backgroundColor: '#1A1714',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,

@@ -43,17 +43,17 @@ interface Props {
 // =============================================================================
 
 const EVENT_TYPE_CONFIG: Record<string, { label: string; color: string; icon: IconSymbolName }> = {
-  SERVICE: { label: 'Service', color: '#1D9BF0', icon: 'play.circle.fill' },
-  MINISTRY: { label: 'Ministry', color: '#22C55E', icon: 'heart.fill' },
-  OUTREACH: { label: 'Outreach', color: '#F59E0B', icon: 'hand.raised.fill' },
-  OTHER: { label: 'Event', color: '#A1A1AA', icon: 'calendar' },
+  SERVICE: { label: 'Service', color: '#1A1714', icon: 'play.circle.fill' },
+  MINISTRY: { label: 'Ministry', color: '#5A8A6E', icon: 'heart.fill' },
+  OUTREACH: { label: 'Outreach', color: '#B8943E', icon: 'hand.raised.fill' },
+  OTHER: { label: 'Event', color: '#9C9790', icon: 'calendar' },
 };
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  upcoming: { label: 'Upcoming', color: '#1D9BF0' },
-  live: { label: 'Live', color: '#EF4444' },
-  completed: { label: 'Completed', color: '#A1A1AA' },
-  cancelled: { label: 'Cancelled', color: '#EF4444' },
+  upcoming: { label: 'Upcoming', color: '#1A1714' },
+  live: { label: 'Live', color: '#B85C5C' },
+  completed: { label: 'Completed', color: '#9C9790' },
+  cancelled: { label: 'Cancelled', color: '#B85C5C' },
 };
 
 const MEDIA_ICON: Record<string, IconSymbolName> = {
@@ -229,10 +229,10 @@ export function ChurchEventDetailSheet({ visible, onClose, event, colors, accent
                 {
                   backgroundColor:
                     rsvpStatus === 'GOING'
-                      ? '#22C55E15'
+                      ? '#5A8A6E15'
                       : rsvpStatus === 'MAYBE'
-                        ? '#F59E0B15'
-                        : '#EF444415',
+                        ? '#B8943E15'
+                        : '#B85C5C15',
                 },
               ]}
             >
@@ -242,10 +242,10 @@ export function ChurchEventDetailSheet({ visible, onClose, event, colors, accent
                   {
                     color:
                       rsvpStatus === 'GOING'
-                        ? '#22C55E'
+                        ? '#5A8A6E'
                         : rsvpStatus === 'MAYBE'
-                          ? '#F59E0B'
-                          : '#EF4444',
+                          ? '#B8943E'
+                          : '#B85C5C',
                   },
                 ]}
               >
@@ -264,7 +264,7 @@ export function ChurchEventDetailSheet({ visible, onClose, event, colors, accent
                 s.rsvpBtn,
                 {
                   backgroundColor:
-                    rsvpStatus === 'GOING' ? '#22C55E' : colors.backgroundSecondary,
+                    rsvpStatus === 'GOING' ? '#5A8A6E' : colors.backgroundSecondary,
                 },
                 pressed && { opacity: 0.7 },
               ]}
@@ -273,7 +273,7 @@ export function ChurchEventDetailSheet({ visible, onClose, event, colors, accent
               <IconSymbol
                 name="checkmark.circle.fill"
                 size={16}
-                color={rsvpStatus === 'GOING' ? '#fff' : '#22C55E'}
+                color={rsvpStatus === 'GOING' ? '#fff' : '#5A8A6E'}
               />
               <ThemedText
                 style={[
@@ -290,7 +290,7 @@ export function ChurchEventDetailSheet({ visible, onClose, event, colors, accent
                 s.rsvpBtn,
                 {
                   backgroundColor:
-                    rsvpStatus === 'MAYBE' ? '#F59E0B' : colors.backgroundSecondary,
+                    rsvpStatus === 'MAYBE' ? '#B8943E' : colors.backgroundSecondary,
                 },
                 pressed && { opacity: 0.7 },
               ]}
@@ -299,7 +299,7 @@ export function ChurchEventDetailSheet({ visible, onClose, event, colors, accent
               <IconSymbol
                 name="questionmark.circle.fill"
                 size={16}
-                color={rsvpStatus === 'MAYBE' ? '#fff' : '#F59E0B'}
+                color={rsvpStatus === 'MAYBE' ? '#fff' : '#B8943E'}
               />
               <ThemedText
                 style={[
@@ -316,7 +316,7 @@ export function ChurchEventDetailSheet({ visible, onClose, event, colors, accent
                 s.rsvpBtn,
                 {
                   backgroundColor:
-                    rsvpStatus === 'NOT_GOING' ? '#EF4444' : colors.backgroundSecondary,
+                    rsvpStatus === 'NOT_GOING' ? '#B85C5C' : colors.backgroundSecondary,
                 },
                 pressed && { opacity: 0.7 },
               ]}
@@ -325,7 +325,7 @@ export function ChurchEventDetailSheet({ visible, onClose, event, colors, accent
               <IconSymbol
                 name="xmark.circle.fill"
                 size={16}
-                color={rsvpStatus === 'NOT_GOING' ? '#fff' : '#EF4444'}
+                color={rsvpStatus === 'NOT_GOING' ? '#fff' : '#B85C5C'}
               />
               <ThemedText
                 style={[

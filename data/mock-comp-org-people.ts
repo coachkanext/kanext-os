@@ -143,66 +143,66 @@ export interface PeopleSettingToggle {
 // =============================================================================
 
 export const STAFF_STATUS_COLOR: Record<StaffMember['status'], string> = {
-  active: '#22C55E',
-  'on-leave': '#F59E0B',
-  inactive: '#A1A1AA',
+  active: '#5A8A6E',
+  'on-leave': '#B8943E',
+  inactive: '#9C9790',
 };
 
 export const OFFICIAL_STATUS_COLOR: Record<Official['status'], string> = {
-  active: '#22C55E',
-  suspended: '#EF4444',
-  retired: '#A1A1AA',
+  active: '#5A8A6E',
+  suspended: '#B85C5C',
+  retired: '#9C9790',
 };
 
 export const VOLUNTEER_STATUS_COLOR: Record<Volunteer['status'], string> = {
-  active: '#22C55E',
-  pending: '#F59E0B',
-  inactive: '#A1A1AA',
+  active: '#5A8A6E',
+  pending: '#B8943E',
+  inactive: '#9C9790',
 };
 
 export const CREDENTIAL_STATUS_COLOR: Record<Credential['status'], string> = {
-  active: '#22C55E',
-  expired: '#EF4444',
-  pending: '#F59E0B',
-  revoked: '#A1A1AA',
+  active: '#5A8A6E',
+  expired: '#B85C5C',
+  pending: '#B8943E',
+  revoked: '#9C9790',
 };
 
 export const ASSIGNMENT_STATUS_COLOR: Record<Assignment['status'], string> = {
-  confirmed: '#22C55E',
-  pending: '#F59E0B',
-  declined: '#EF4444',
+  confirmed: '#5A8A6E',
+  pending: '#B8943E',
+  declined: '#B85C5C',
 };
 
 export const COMM_STATUS_COLOR: Record<Communication['status'], string> = {
-  sent: '#22C55E',
-  draft: '#F59E0B',
-  failed: '#EF4444',
+  sent: '#5A8A6E',
+  draft: '#B8943E',
+  failed: '#B85C5C',
 };
 
 export const COMM_TYPE_COLOR: Record<Communication['type'], string> = {
-  email: '#1D9BF0',
-  sms: '#22C55E',
-  push: '#F59E0B',
-  'in-app': '#1D9BF0',
+  email: '#1A1714',
+  sms: '#5A8A6E',
+  push: '#B8943E',
+  'in-app': '#1A1714',
 };
 
 export const CREDENTIAL_TYPE_COLOR: Record<Credential['type'], string> = {
-  badge: '#1D9BF0',
-  pass: '#22C55E',
-  certification: '#F59E0B',
-  license: '#1D9BF0',
+  badge: '#1A1714',
+  pass: '#5A8A6E',
+  certification: '#B8943E',
+  license: '#1A1714',
 };
 
 export const REPORT_FORMAT_COLOR: Record<PeopleReport['format'], string> = {
-  PDF: '#EF4444',
-  CSV: '#22C55E',
-  XLSX: '#1D9BF0',
+  PDF: '#B85C5C',
+  CSV: '#5A8A6E',
+  XLSX: '#1A1714',
 };
 
 export const OFFICIAL_LEVEL_COLOR: Record<Official['level'], string> = {
-  national: '#1D9BF0',
-  regional: '#F59E0B',
-  local: '#A1A1AA',
+  national: '#1A1714',
+  regional: '#B8943E',
+  local: '#9C9790',
 };
 
 // =============================================================================
@@ -233,7 +233,7 @@ const DASHBOARD_BLOCKS: PeopleDashboardBlock[] = [
     value: '347',
     delta: '+12 this week',
     icon: 'person.3',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'db-2',
@@ -241,7 +241,7 @@ const DASHBOARD_BLOCKS: PeopleDashboardBlock[] = [
     value: '42',
     delta: '+3 certified',
     icon: 'shield.checkered',
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
   {
     id: 'db-3',
@@ -249,7 +249,7 @@ const DASHBOARD_BLOCKS: PeopleDashboardBlock[] = [
     value: '94%',
     delta: '+2% vs last month',
     icon: 'chart.line.uptrend.xyaxis',
-    color: '#F59E0B',
+    color: '#B8943E',
   },
   {
     id: 'db-4',
@@ -257,7 +257,7 @@ const DASHBOARD_BLOCKS: PeopleDashboardBlock[] = [
     value: '97%',
     delta: '8 expiring soon',
     icon: 'checkmark.shield',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'db-5',
@@ -265,7 +265,7 @@ const DASHBOARD_BLOCKS: PeopleDashboardBlock[] = [
     value: '86',
     delta: '+14 new signups',
     icon: 'hand.raised',
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
   {
     id: 'db-6',
@@ -273,7 +273,7 @@ const DASHBOARD_BLOCKS: PeopleDashboardBlock[] = [
     value: '23',
     delta: '5 need confirmation',
     icon: 'calendar.badge.clock',
-    color: '#EF4444',
+    color: '#B85C5C',
   },
 ];
 

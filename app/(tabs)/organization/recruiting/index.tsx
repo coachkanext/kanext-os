@@ -284,7 +284,7 @@ export default function RecruitingBoardScreen() {
         </View>
         <View style={[styles.summaryDivider, { backgroundColor: colors.divider }]} />
         <View style={styles.summaryItem}>
-          <ThemedText style={[styles.summaryValue, { color: '#A1A1AA' }]}>
+          <ThemedText style={[styles.summaryValue, { color: '#9C9790' }]}>
             {priorityACount}
           </ThemedText>
           <ThemedText style={[styles.summaryLabel, { color: colors.textTertiary }]}>

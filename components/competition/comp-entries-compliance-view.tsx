@@ -25,9 +25,9 @@ const FILTER_PILLS: { key: FilterKey; label: string }[] = [
 
 function getHomologationColor(status: ComplianceRow['homologation']): string {
   switch (status) {
-    case 'approved': return '#22C55E';
-    case 'pending': return '#F59E0B';
-    case 'expired': return '#EF4444';
+    case 'approved': return '#5A8A6E';
+    case 'pending': return '#B8943E';
+    case 'expired': return '#B85C5C';
   }
 }
 
@@ -41,9 +41,9 @@ function getHomologationLabel(status: ComplianceRow['homologation']): string {
 
 function getCapColor(status: ComplianceRow['capCompliance']): string {
   switch (status) {
-    case 'green': return '#22C55E';
-    case 'under_review': return '#F59E0B';
-    case 'flagged': return '#EF4444';
+    case 'green': return '#5A8A6E';
+    case 'under_review': return '#B8943E';
+    case 'flagged': return '#B85C5C';
   }
 }
 
@@ -57,9 +57,9 @@ function getCapLabel(status: ComplianceRow['capCompliance']): string {
 
 function getScrutColor(status: ComplianceRow['scrutineering']): string {
   switch (status) {
-    case 'passed': return '#22C55E';
-    case 'pending': return '#F59E0B';
-    case 'failed': return '#EF4444';
+    case 'passed': return '#5A8A6E';
+    case 'pending': return '#B8943E';
+    case 'failed': return '#B85C5C';
   }
 }
 
@@ -102,11 +102,11 @@ export function CompEntriesComplianceView({ colors, accent }: Props) {
         </ThemedText>
         <View style={styles.summaryRow}>
           <View style={styles.summaryItem}>
-            <ThemedText style={[styles.summaryValue, { color: '#22C55E' }]}>{compliantCount}</ThemedText>
+            <ThemedText style={[styles.summaryValue, { color: '#5A8A6E' }]}>{compliantCount}</ThemedText>
             <ThemedText style={[styles.summaryLabel, { color: colors.textSecondary }]}>Compliant</ThemedText>
           </View>
           <View style={styles.summaryItem}>
-            <ThemedText style={[styles.summaryValue, { color: '#EF4444' }]}>
+            <ThemedText style={[styles.summaryValue, { color: '#B85C5C' }]}>
               {COMPLIANCE_DATA.length - compliantCount}
             </ThemedText>
             <ThemedText style={[styles.summaryLabel, { color: colors.textSecondary }]}>Issues</ThemedText>
@@ -201,8 +201,8 @@ export function CompEntriesComplianceView({ colors, accent }: Props) {
 
           {/* Tech Delegate */}
           <View style={styles.dotCol}>
-            <View style={[styles.statusDot, { backgroundColor: row.techDelegateSignoff ? '#22C55E' : '#EF4444' }]} />
-            <ThemedText style={[styles.dotLabel, { color: row.techDelegateSignoff ? '#22C55E' : '#EF4444' }]}>
+            <View style={[styles.statusDot, { backgroundColor: row.techDelegateSignoff ? '#5A8A6E' : '#B85C5C' }]} />
+            <ThemedText style={[styles.dotLabel, { color: row.techDelegateSignoff ? '#5A8A6E' : '#B85C5C' }]}>
               {row.techDelegateSignoff ? 'Yes' : 'No'}
             </ThemedText>
           </View>
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginBottom: 4,
   },
-  tableRowIssue: { borderLeftWidth: 3, borderLeftColor: '#EF4444' },
+  tableRowIssue: { borderLeftWidth: 3, borderLeftColor: '#B85C5C' },
   driverCol: { flex: 1 },
   driverName: { fontSize: 13, fontWeight: '600' },
   teamName: { fontSize: 10, marginTop: 1 },

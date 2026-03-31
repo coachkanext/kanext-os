@@ -20,9 +20,9 @@ interface Props {
 const TYPE_COLORS: Record<OutreachEventType, string> = {
   high_school_visit: ACCENT,
   college_fair: ACCENT,
-  open_house: '#22C55E',
-  virtual_info_session: '#F59E0B',
-  community_event: '#EF4444',
+  open_house: '#5A8A6E',
+  virtual_info_session: '#B8943E',
+  community_event: '#B85C5C',
 };
 
 const TYPE_LABELS: Record<OutreachEventType, string> = {
@@ -103,7 +103,7 @@ export function EduAdmissionsOutreachView({ colors, accent }: Props) {
         {/* Status indicator */}
         {!isCompleted && (
           <View style={styles.statusRow}>
-            <View style={[styles.statusDot, { backgroundColor: '#22C55E' }]} />
+            <View style={[styles.statusDot, { backgroundColor: '#5A8A6E' }]} />
             <ThemedText style={[styles.statusLabel, { color: colors.textSecondary }]}>Scheduled</ThemedText>
           </View>
         )}

@@ -30,11 +30,11 @@ import type { OffensiveStyle, DefensiveStyle } from '@/types';
 
 const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#A1A1AA';
+const GRAY = '#9C9790';
 const DIVIDER = '#0B0F14';
 
-const metricColor = (val: number) => val >= 75 ? '#22C55E' : val >= 60 ? '#F59E0B' : val >= 45 ? '#A1A1AA' : '#EF4444';
-const confColor = (val: number) => val >= 75 ? '#22C55E' : val >= 55 ? '#F59E0B' : '#EF4444';
+const metricColor = (val: number) => val >= 75 ? '#5A8A6E' : val >= 60 ? '#B8943E' : val >= 45 ? '#9C9790' : '#B85C5C';
+const confColor = (val: number) => val >= 75 ? '#5A8A6E' : val >= 55 ? '#B8943E' : '#B85C5C';
 
 export function PlayerRatingCard({
   player,

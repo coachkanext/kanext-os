@@ -104,7 +104,7 @@ function formatViews(views: number): string {
 // STORY CIRCLES (Premium gradient rings)
 // =============================================================================
 
-const GRADIENT_COLORS: [string, string, string] = ['#FFFFFF', '#1D9BF0', '#1D9BF0'];
+const GRADIENT_COLORS: [string, string, string] = ['#FFFFFF', '#1A1714', '#1A1714'];
 
 function StoryAvatar({ story, colors, onPress }: { story: StoryCircle; colors: typeof Colors.light; onPress?: () => void }) {
   const ringColors: [string, string, ...string[]] = story.hasNew
@@ -284,7 +284,7 @@ function FeedPost({ post, colors }: { post: VideoFeedPost; colors: typeof Colors
             <IconSymbol name="play.fill" size={24} color="#fff" />
           </View>
           <View style={[styles.mediaTypeBadge, {
-            backgroundColor: post.media.type === 'reel' ? '#1D9BF0' : 'rgba(0,0,0,0.6)',
+            backgroundColor: post.media.type === 'reel' ? '#1A1714' : 'rgba(0,0,0,0.6)',
           }]}>
             <ThemedText style={styles.mediaTypeText}>
               {post.media.type.toUpperCase()}
@@ -334,7 +334,7 @@ function FeedPost({ post, colors }: { post: VideoFeedPost; colors: typeof Colors
             <IconSymbol
               name={liked ? 'heart.fill' : 'heart'}
               size={20}
-              color={liked ? '#EF4444' : colors.textSecondary}
+              color={liked ? '#B85C5C' : colors.textSecondary}
             />
             <ThemedText style={[styles.actionCount, { color: colors.textTertiary }]}>
               {liked ? post.likes + 1 : post.likes}
@@ -925,6 +925,6 @@ const styles = StyleSheet.create({
   commentPostBtn: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
 });

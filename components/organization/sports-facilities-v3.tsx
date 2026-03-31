@@ -117,9 +117,9 @@ const EQUIPMENT_HIGHLIGHTS: EquipmentHighlight[] = [
 ];
 
 const ROOM_STATUS_COLOR: Record<RoomStatus, string> = {
-  Open: '#22C55E',
-  Limited: '#F59E0B',
-  Closed: '#EF4444',
+  Open: '#5A8A6E',
+  Limited: '#B8943E',
+  Closed: '#B85C5C',
 };
 
 // =============================================================================
@@ -237,7 +237,7 @@ function IssuesBlock({ colors }: { colors: typeof Colors.light }) {
       <SectionHeader label="ISSUES / REQUESTS" colors={colors} />
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.issueRow}>
-          <IconSymbol name="checkmark.seal.fill" size={16} color="#22C55E" />
+          <IconSymbol name="checkmark.seal.fill" size={16} color="#5A8A6E" />
           <ThemedText style={[s.issueText, { color: colors.textSecondary }]}>No issues logged.</ThemedText>
         </View>
       </View>

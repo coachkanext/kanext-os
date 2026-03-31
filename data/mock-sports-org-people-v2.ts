@@ -133,11 +133,11 @@ export const PERSON_TYPE_LABELS: Record<PersonRecord['type'], string> = {
 };
 
 export const PERSON_TYPE_COLORS: Record<PersonRecord['type'], string> = {
-  staff: '#1D9BF0',
-  player: '#22C55E',
-  recruit: '#1D9BF0',
-  parent: '#F59E0B',
-  admin: '#1D9BF0',
+  staff: '#1A1714',
+  player: '#5A8A6E',
+  recruit: '#1A1714',
+  parent: '#B8943E',
+  admin: '#1A1714',
 };
 
 export const PERSON_STATUS_LABELS: Record<PersonRecord['status'], string> = {
@@ -147,9 +147,9 @@ export const PERSON_STATUS_LABELS: Record<PersonRecord['status'], string> = {
 };
 
 export const PERSON_STATUS_COLORS: Record<PersonRecord['status'], string> = {
-  active: '#22C55E',
-  inactive: '#A1A1AA',
-  pending: '#F59E0B',
+  active: '#5A8A6E',
+  inactive: '#9C9790',
+  pending: '#B8943E',
 };
 
 export const WORKLOAD_LABELS: Record<StaffSeat['workload'], string> = {
@@ -159,9 +159,9 @@ export const WORKLOAD_LABELS: Record<StaffSeat['workload'], string> = {
 };
 
 export const WORKLOAD_COLORS: Record<StaffSeat['workload'], string> = {
-  normal: '#22C55E',
-  heavy: '#F59E0B',
-  overloaded: '#EF4444',
+  normal: '#5A8A6E',
+  heavy: '#B8943E',
+  overloaded: '#B85C5C',
 };
 
 export const AVAILABILITY_LABELS: Record<PlayerAvailability['availability'], string> = {
@@ -172,10 +172,10 @@ export const AVAILABILITY_LABELS: Record<PlayerAvailability['availability'], str
 };
 
 export const AVAILABILITY_COLORS: Record<PlayerAvailability['availability'], string> = {
-  available: '#22C55E',
-  limited: '#F59E0B',
-  unavailable: '#EF4444',
-  hold: '#1D9BF0',
+  available: '#5A8A6E',
+  limited: '#B8943E',
+  unavailable: '#B85C5C',
+  hold: '#1A1714',
 };
 
 export const RECRUIT_STAGE_LABELS: Record<RecruitRecord['stage'], string> = {
@@ -188,12 +188,12 @@ export const RECRUIT_STAGE_LABELS: Record<RecruitRecord['stage'], string> = {
 };
 
 export const RECRUIT_STAGE_COLORS: Record<RecruitRecord['stage'], string> = {
-  prospect: '#A1A1AA',
-  contacted: '#1D9BF0',
-  'visit-scheduled': '#1D9BF0',
-  offered: '#F59E0B',
-  committed: '#22C55E',
-  signed: '#22C55E',
+  prospect: '#9C9790',
+  contacted: '#1A1714',
+  'visit-scheduled': '#1A1714',
+  offered: '#B8943E',
+  committed: '#5A8A6E',
+  signed: '#5A8A6E',
 };
 
 export const MEDICAL_TYPE_LABELS: Record<MedicalEntry['type'], string> = {
@@ -204,10 +204,10 @@ export const MEDICAL_TYPE_LABELS: Record<MedicalEntry['type'], string> = {
 };
 
 export const MEDICAL_TYPE_COLORS: Record<MedicalEntry['type'], string> = {
-  treatment: '#1D9BF0',
-  limitation: '#F59E0B',
-  rtp: '#22C55E',
-  watchlist: '#1D9BF0',
+  treatment: '#1A1714',
+  limitation: '#B8943E',
+  rtp: '#5A8A6E',
+  watchlist: '#1A1714',
 };
 
 export const MEDICAL_SEVERITY_LABELS: Record<MedicalEntry['severity'], string> = {
@@ -217,9 +217,9 @@ export const MEDICAL_SEVERITY_LABELS: Record<MedicalEntry['severity'], string> =
 };
 
 export const MEDICAL_SEVERITY_COLORS: Record<MedicalEntry['severity'], string> = {
-  low: '#22C55E',
-  moderate: '#F59E0B',
-  high: '#EF4444',
+  low: '#5A8A6E',
+  moderate: '#B8943E',
+  high: '#B85C5C',
 };
 
 export const MEDICAL_STATUS_LABELS: Record<MedicalEntry['status'], string> = {
@@ -228,14 +228,14 @@ export const MEDICAL_STATUS_LABELS: Record<MedicalEntry['status'], string> = {
 };
 
 export const MEDICAL_STATUS_COLORS: Record<MedicalEntry['status'], string> = {
-  active: '#F59E0B',
-  resolved: '#22C55E',
+  active: '#B8943E',
+  resolved: '#5A8A6E',
 };
 
 export const ONBOARDING_STATUS_COLORS: Record<string, string> = {
-  complete: '#22C55E',
-  'in-progress': '#1D9BF0',
-  blocked: '#EF4444',
+  complete: '#5A8A6E',
+  'in-progress': '#1A1714',
+  blocked: '#B85C5C',
 };
 
 // =============================================================================
@@ -261,35 +261,35 @@ export const PEOPLE_SUB_TABS: PeopleSubTab[] = [
 
 export const DIRECTORY: PersonRecord[] = [
   // Staff — Carroll College MBB 2025-26 (9 staff + 1 admin)
-  { id: 'p-1', name: 'Alex Morgan', type: 'staff', role: 'Head Coach / GM / AD', email: 'skalejaiye@carroll.edu', phone: '(406) 626-3161', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
-  { id: 'p-2', name: 'Coach Marcus Davis', type: 'staff', role: 'Assistant Coach — Recruiting Coordinator', email: 'mdavis@carroll.edu', phone: '(406) 626-3162', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
-  { id: 'p-3', name: 'Coach Andre Williams', type: 'staff', role: 'Assistant Coach — Player Development', email: 'awilliams@carroll.edu', phone: '(406) 626-3163', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
-  { id: 'p-4', name: 'Tyler Brooks', type: 'staff', role: 'Graduate Assistant', email: 'tbrooks@carroll.edu', phone: '(406) 626-3164', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
-  { id: 'p-5', name: 'Dr. Nicole Patterson', type: 'staff', role: 'Athletic Trainer', email: 'npatterson@carroll.edu', phone: '(406) 626-3175', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
-  { id: 'p-6', name: 'Mike Reeves', type: 'staff', role: 'Strength & Conditioning Coach', email: 'mreeves@carroll.edu', phone: '(406) 626-3180', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
-  { id: 'p-7', name: 'Jordan Mitchell', type: 'staff', role: 'Video Coordinator / Analyst', email: 'jmitchell@carroll.edu', phone: '(406) 626-3185', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
-  { id: 'p-8', name: 'Lisa Chen', type: 'staff', role: 'Compliance Liaison', email: 'lchen@carroll.edu', phone: '(406) 626-3190', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
-  { id: 'p-9', name: 'Dr. Robert Hayes', type: 'staff', role: 'Academic Advisor (University-shared)', email: 'rhayes@carroll.edu', phone: '(406) 626-3200', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
-  { id: 'p-10', name: 'Alex Morgan', type: 'admin', role: 'Athletic Director', email: 'skalejaiye@carroll.edu', phone: '(406) 626-3100', status: 'active', avatarColor: '#1D9BF0', data_source: 'demo_seed' },
+  { id: 'p-1', name: 'Alex Morgan', type: 'staff', role: 'Head Coach / GM / AD', email: 'skalejaiye@carroll.edu', phone: '(406) 626-3161', status: 'active', avatarColor: '#1A1714', data_source: 'demo_seed' },
+  { id: 'p-2', name: 'Coach Marcus Davis', type: 'staff', role: 'Assistant Coach — Recruiting Coordinator', email: 'mdavis@carroll.edu', phone: '(406) 626-3162', status: 'active', avatarColor: '#1A1714', data_source: 'demo_seed' },
+  { id: 'p-3', name: 'Coach Andre Williams', type: 'staff', role: 'Assistant Coach — Player Development', email: 'awilliams@carroll.edu', phone: '(406) 626-3163', status: 'active', avatarColor: '#1A1714', data_source: 'demo_seed' },
+  { id: 'p-4', name: 'Tyler Brooks', type: 'staff', role: 'Graduate Assistant', email: 'tbrooks@carroll.edu', phone: '(406) 626-3164', status: 'active', avatarColor: '#1A1714', data_source: 'demo_seed' },
+  { id: 'p-5', name: 'Dr. Nicole Patterson', type: 'staff', role: 'Athletic Trainer', email: 'npatterson@carroll.edu', phone: '(406) 626-3175', status: 'active', avatarColor: '#1A1714', data_source: 'demo_seed' },
+  { id: 'p-6', name: 'Mike Reeves', type: 'staff', role: 'Strength & Conditioning Coach', email: 'mreeves@carroll.edu', phone: '(406) 626-3180', status: 'active', avatarColor: '#1A1714', data_source: 'demo_seed' },
+  { id: 'p-7', name: 'Jordan Mitchell', type: 'staff', role: 'Video Coordinator / Analyst', email: 'jmitchell@carroll.edu', phone: '(406) 626-3185', status: 'active', avatarColor: '#1A1714', data_source: 'demo_seed' },
+  { id: 'p-8', name: 'Lisa Chen', type: 'staff', role: 'Compliance Liaison', email: 'lchen@carroll.edu', phone: '(406) 626-3190', status: 'active', avatarColor: '#1A1714', data_source: 'demo_seed' },
+  { id: 'p-9', name: 'Dr. Robert Hayes', type: 'staff', role: 'Academic Advisor (University-shared)', email: 'rhayes@carroll.edu', phone: '(406) 626-3200', status: 'active', avatarColor: '#1A1714', data_source: 'demo_seed' },
+  { id: 'p-10', name: 'Alex Morgan', type: 'admin', role: 'Athletic Director', email: 'skalejaiye@carroll.edu', phone: '(406) 626-3100', status: 'active', avatarColor: '#1A1714', data_source: 'demo_seed' },
 
   // Players — Carroll College MBB 2025-26 Roster (17)
-  { id: 'p-11', name: 'Jalen Carter', type: 'player', role: 'Guard — #1', email: 'jcarter@carroll.edu', phone: '(406) 555-0101', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-12', name: 'Kadyn Selden', type: 'player', role: 'Guard — #2', email: 'kselden@carroll.edu', phone: '(406) 555-0102', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-13', name: 'Jean Mentor', type: 'player', role: 'Guard — #3', email: 'jmentor@carroll.edu', phone: '(406) 555-0103', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-14', name: 'Woody Noel', type: 'player', role: 'Forward — #4', email: 'wnoel@carroll.edu', phone: '(406) 555-0104', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-15', name: 'Terrence Brewer', type: 'player', role: 'Guard — #5', email: 'tbrewer@carroll.edu', phone: '(406) 555-0105', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-16', name: 'Kaleb Munir-Jones', type: 'player', role: 'Forward — #10', email: 'kmunirjones@carroll.edu', phone: '(406) 555-0106', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-17', name: 'Jaylen Thomas', type: 'player', role: 'Forward — #11', email: 'jthomas@carroll.edu', phone: '(406) 555-0107', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-18', name: 'Amar Asceric', type: 'player', role: 'Center — #12', email: 'aasceric@carroll.edu', phone: '(406) 555-0108', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-19', name: 'Brandon Lewis', type: 'player', role: 'Guard — #14', email: 'blewis@carroll.edu', phone: '(406) 555-0109', status: 'pending', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-20', name: 'Jermaine Thompson', type: 'player', role: 'Guard — #15', email: 'jthompson@carroll.edu', phone: '(406) 555-0110', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-21', name: 'Esteban Moratinos', type: 'player', role: 'Forward — #20', email: 'emoratinos@carroll.edu', phone: '(406) 555-0111', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-22', name: 'Darnell Benbo', type: 'player', role: 'Guard — #21', email: 'dbenbo@carroll.edu', phone: '(406) 555-0112', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-23', name: 'Kameron Morris', type: 'player', role: 'Forward — #22', email: 'kmorris@carroll.edu', phone: '(406) 555-0113', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-24', name: 'Devon Turner', type: 'player', role: 'Guard — #24', email: 'dturner@carroll.edu', phone: '(406) 555-0114', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-25', name: 'Trevon Morgan', type: 'player', role: 'Center — #30', email: 'tmorgan@carroll.edu', phone: '(406) 555-0115', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-26', name: 'Marcus Dues', type: 'player', role: 'Forward — #33', email: 'mdues@carroll.edu', phone: '(406) 555-0116', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
-  { id: 'p-27', name: 'Joshua Laird', type: 'player', role: 'Center — #44', email: 'jlaird@carroll.edu', phone: '(406) 555-0117', status: 'active', avatarColor: '#22C55E', data_source: 'demo_seed' },
+  { id: 'p-11', name: 'Jalen Carter', type: 'player', role: 'Guard — #1', email: 'jcarter@carroll.edu', phone: '(406) 555-0101', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-12', name: 'Kadyn Selden', type: 'player', role: 'Guard — #2', email: 'kselden@carroll.edu', phone: '(406) 555-0102', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-13', name: 'Jean Mentor', type: 'player', role: 'Guard — #3', email: 'jmentor@carroll.edu', phone: '(406) 555-0103', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-14', name: 'Woody Noel', type: 'player', role: 'Forward — #4', email: 'wnoel@carroll.edu', phone: '(406) 555-0104', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-15', name: 'Terrence Brewer', type: 'player', role: 'Guard — #5', email: 'tbrewer@carroll.edu', phone: '(406) 555-0105', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-16', name: 'Kaleb Munir-Jones', type: 'player', role: 'Forward — #10', email: 'kmunirjones@carroll.edu', phone: '(406) 555-0106', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-17', name: 'Jaylen Thomas', type: 'player', role: 'Forward — #11', email: 'jthomas@carroll.edu', phone: '(406) 555-0107', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-18', name: 'Amar Asceric', type: 'player', role: 'Center — #12', email: 'aasceric@carroll.edu', phone: '(406) 555-0108', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-19', name: 'Brandon Lewis', type: 'player', role: 'Guard — #14', email: 'blewis@carroll.edu', phone: '(406) 555-0109', status: 'pending', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-20', name: 'Jermaine Thompson', type: 'player', role: 'Guard — #15', email: 'jthompson@carroll.edu', phone: '(406) 555-0110', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-21', name: 'Esteban Moratinos', type: 'player', role: 'Forward — #20', email: 'emoratinos@carroll.edu', phone: '(406) 555-0111', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-22', name: 'Darnell Benbo', type: 'player', role: 'Guard — #21', email: 'dbenbo@carroll.edu', phone: '(406) 555-0112', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-23', name: 'Kameron Morris', type: 'player', role: 'Forward — #22', email: 'kmorris@carroll.edu', phone: '(406) 555-0113', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-24', name: 'Devon Turner', type: 'player', role: 'Guard — #24', email: 'dturner@carroll.edu', phone: '(406) 555-0114', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-25', name: 'Trevon Morgan', type: 'player', role: 'Center — #30', email: 'tmorgan@carroll.edu', phone: '(406) 555-0115', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-26', name: 'Marcus Dues', type: 'player', role: 'Forward — #33', email: 'mdues@carroll.edu', phone: '(406) 555-0116', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
+  { id: 'p-27', name: 'Joshua Laird', type: 'player', role: 'Center — #44', email: 'jlaird@carroll.edu', phone: '(406) 555-0117', status: 'active', avatarColor: '#5A8A6E', data_source: 'demo_seed' },
 ];
 
 export const STAFF_SEATS: StaffSeat[] = [

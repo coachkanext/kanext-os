@@ -77,7 +77,7 @@ export function SimulationSnapshot({ simulation, onViewFull }: SimulationSnapsho
           <ThemedText
             style={[
               styles.statValue,
-              { color: simulation.projectedMargin >= 0 ? '#FFFFFF' : '#A1A1AA' },
+              { color: simulation.projectedMargin >= 0 ? '#FFFFFF' : '#9C9790' },
             ]}
           >
             {formatMargin(simulation.projectedMargin)}

@@ -51,9 +51,9 @@ interface Props {
 
 function formDotColor(result: 'W' | 'L' | 'D'): string {
   switch (result) {
-    case 'W': return '#22C55E';
-    case 'L': return '#EF4444';
-    case 'D': return '#A1A1AA';
+    case 'W': return '#5A8A6E';
+    case 'L': return '#B85C5C';
+    case 'D': return '#9C9790';
   }
 }
 
@@ -464,7 +464,7 @@ function EntrantsTab({
             <ThemedText
               style={[
                 s.entrantGD,
-                { color: item.gd > 0 ? '#22C55E' : item.gd < 0 ? '#EF4444' : colors.textTertiary },
+                { color: item.gd > 0 ? '#5A8A6E' : item.gd < 0 ? '#B85C5C' : colors.textTertiary },
               ]}
             >
               {item.gd > 0 ? '+' : ''}{item.gd}
@@ -527,7 +527,7 @@ function StandingsTab({
           <ThemedText
             style={[
               s.standingsGD,
-              { color: item.gd > 0 ? '#22C55E' : item.gd < 0 ? '#EF4444' : colors.textTertiary },
+              { color: item.gd > 0 ? '#5A8A6E' : item.gd < 0 ? '#B85C5C' : colors.textTertiary },
             ]}
           >
             {item.gd > 0 ? '+' : ''}{item.gd}
@@ -744,7 +744,7 @@ function HistoryTab({
 
           <View style={s.historyRow}>
             <View style={s.historyItem}>
-              <IconSymbol name="crown.fill" size={14} color="#F59E0B" />
+              <IconSymbol name="crown.fill" size={14} color="#B8943E" />
               <View style={s.historyItemText}>
                 <ThemedText style={[s.historyLabel, { color: colors.textTertiary }]}>
                   Champion
@@ -755,7 +755,7 @@ function HistoryTab({
               </View>
             </View>
             <View style={s.historyItem}>
-              <IconSymbol name="star.fill" size={14} color="#A1A1AA" />
+              <IconSymbol name="star.fill" size={14} color="#9C9790" />
               <View style={s.historyItemText}>
                 <ThemedText style={[s.historyLabel, { color: colors.textTertiary }]}>
                   Runner-Up

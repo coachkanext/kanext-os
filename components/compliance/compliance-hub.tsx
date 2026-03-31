@@ -44,30 +44,30 @@ const HUB_TABS: { id: HubTab; label: string }[] = [
 ];
 
 const getComplianceStatusColors = (accent: string): Record<ComplianceStatus, string> => ({
-  compliant: '#22C55E',
-  warning: '#F59E0B',
-  violation: '#EF4444',
+  compliant: '#5A8A6E',
+  warning: '#B8943E',
+  violation: '#B85C5C',
   'pending-review': accent,
 });
 
 const getAuditStatusColors = (accent: string): Record<AuditStatus, string> => ({
-  passed: '#22C55E',
-  failed: '#EF4444',
+  passed: '#5A8A6E',
+  failed: '#B85C5C',
   'in-progress': accent,
-  scheduled: '#F59E0B',
+  scheduled: '#B8943E',
 });
 
 const SEVERITY_COLORS: Record<string, string> = {
-  critical: '#EF4444',
-  major: '#F59E0B',
-  minor: '#F59E0B',
+  critical: '#B85C5C',
+  major: '#B8943E',
+  minor: '#B8943E',
 };
 
 const INCIDENT_STATUS_COLORS: Record<string, string> = {
-  open: '#EF4444',
-  investigating: '#F59E0B',
-  resolved: '#22C55E',
-  closed: '#A1A1AA',
+  open: '#B85C5C',
+  investigating: '#B8943E',
+  resolved: '#5A8A6E',
+  closed: '#9C9790',
 };
 
 const CATEGORY_LABELS: Record<PolicyCategory, string> = {
@@ -230,7 +230,7 @@ function HomeView() {
           <ThemedText style={[styles.metricLabel, { color: colors.textSecondary }]}>Policies</ThemedText>
         </Card>
         <Card style={styles.metricCard}>
-          <ThemedText style={[styles.metricValue, { color: snapshot.openIncidents > 0 ? '#F59E0B' : '#22C55E' }]}>
+          <ThemedText style={[styles.metricValue, { color: snapshot.openIncidents > 0 ? '#B8943E' : '#5A8A6E' }]}>
             {snapshot.openIncidents}
           </ThemedText>
           <ThemedText style={[styles.metricLabel, { color: colors.textSecondary }]}>Open Incidents</ThemedText>
@@ -240,7 +240,7 @@ function HomeView() {
           <ThemedText style={[styles.metricLabel, { color: colors.textSecondary }]}>Upcoming Audits</ThemedText>
         </Card>
         <Card style={styles.metricCard}>
-          <ThemedText style={[styles.metricValue, { color: snapshot.trainingCompliance >= 90 ? '#22C55E' : '#F59E0B' }]}>
+          <ThemedText style={[styles.metricValue, { color: snapshot.trainingCompliance >= 90 ? '#5A8A6E' : '#B8943E' }]}>
             {snapshot.trainingCompliance}%
           </ThemedText>
           <ThemedText style={[styles.metricLabel, { color: colors.textSecondary }]}>Training</ThemedText>
@@ -253,7 +253,7 @@ function HomeView() {
           <SectionHeader title="Action Required" />
           <Card>
             {actionItems.map((item, i) => {
-              const sevColor = SEVERITY_COLORS[item.severity] ?? '#F59E0B';
+              const sevColor = SEVERITY_COLORS[item.severity] ?? '#B8943E';
               return (
                 <View key={item.id} style={[styles.actionRow, i < actionItems.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }]}>
                   <View style={[styles.actionDot, { backgroundColor: sevColor }]} />
@@ -383,7 +383,7 @@ function AuditsView() {
             </ThemedText>
             <View style={styles.auditFindings}>
               <View style={styles.auditFindingItem}>
-                <ThemedText style={[styles.auditFindingValue, { color: audit.findings > 0 ? '#F59E0B' : '#22C55E' }]}>
+                <ThemedText style={[styles.auditFindingValue, { color: audit.findings > 0 ? '#B8943E' : '#5A8A6E' }]}>
                   {audit.findings}
                 </ThemedText>
                 <ThemedText style={[styles.auditFindingLabel, { color: colors.textSecondary }]}>
@@ -391,7 +391,7 @@ function AuditsView() {
                 </ThemedText>
               </View>
               <View style={styles.auditFindingItem}>
-                <ThemedText style={[styles.auditFindingValue, { color: audit.criticalFindings > 0 ? '#EF4444' : '#22C55E' }]}>
+                <ThemedText style={[styles.auditFindingValue, { color: audit.criticalFindings > 0 ? '#B85C5C' : '#5A8A6E' }]}>
                   {audit.criticalFindings}
                 </ThemedText>
                 <ThemedText style={[styles.auditFindingLabel, { color: colors.textSecondary }]}>
@@ -430,8 +430,8 @@ function IncidentsView() {
         <Card><EmptyState message="No incidents match this filter." /></Card>
       ) : (
         filteredIncidents.map((incident) => {
-          const sevColor = SEVERITY_COLORS[incident.severity] ?? '#F59E0B';
-          const incStatusColor = INCIDENT_STATUS_COLORS[incident.status] ?? '#A1A1AA';
+          const sevColor = SEVERITY_COLORS[incident.severity] ?? '#B8943E';
+          const incStatusColor = INCIDENT_STATUS_COLORS[incident.status] ?? '#9C9790';
           return (
             <Card key={incident.id}>
               <View style={styles.incidentHeader}>
@@ -476,7 +476,7 @@ function TrainingView() {
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
       {training.map((item) => {
-        const progressColor = item.completionRate >= 90 ? '#22C55E' : item.completionRate >= 75 ? '#F59E0B' : '#EF4444';
+        const progressColor = item.completionRate >= 90 ? '#5A8A6E' : item.completionRate >= 75 ? '#B8943E' : '#B85C5C';
         return (
           <Card key={item.id}>
             <View style={styles.trainingHeader}>
@@ -548,19 +548,19 @@ function ReportsView() {
       title: 'Policy Adherence',
       value: String(policyAdherence),
       suffix: '%',
-      color: policyAdherence >= 90 ? '#22C55E' : policyAdherence >= 75 ? '#F59E0B' : '#EF4444',
+      color: policyAdherence >= 90 ? '#5A8A6E' : policyAdherence >= 75 ? '#B8943E' : '#B85C5C',
     },
     {
       title: 'Training Completion',
       value: String(avgTraining),
       suffix: '%',
-      color: avgTraining >= 90 ? '#22C55E' : avgTraining >= 75 ? '#F59E0B' : '#EF4444',
+      color: avgTraining >= 90 ? '#5A8A6E' : avgTraining >= 75 ? '#B8943E' : '#B85C5C',
     },
     {
       title: 'Incident Rate',
       value: `${openIncidents}/${totalIncidents}`,
       suffix: ' open',
-      color: openIncidents === 0 ? '#22C55E' : '#F59E0B',
+      color: openIncidents === 0 ? '#5A8A6E' : '#B8943E',
     },
   ];
 

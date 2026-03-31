@@ -96,9 +96,9 @@ export function isAdminRole(key: string, role: string): boolean {
 
 /** Mode accent hex for role pill coloring */
 export const MODE_ACCENTS: Record<string, string> = {
-  sports:    '#990000',
-  education: '#003A63',
-  community: '#7B68A0',
-  business:  '#1D9BF0',
-  personal:  '#3B82F6',
+  sports:    '#1A1714',
+  education: '#1A1714',
+  community: '#1A1714',
+  business:  '#1A1714',
+  personal:  '#1A1714',
 };

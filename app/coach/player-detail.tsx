@@ -28,7 +28,7 @@ import type { ClusterType } from '@/types';
 const BG = '#0B0F14';
 const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#A1A1AA';
+const GRAY = '#9C9790';
 const DIVIDER = '#0B0F14';
 
 export default function PlayerDetailScreen() {
@@ -181,7 +181,7 @@ export default function PlayerDetailScreen() {
             const isExpanded = expandedCluster === cluster;
             const clusterVal = ratings?.clusters[cluster];
             const valColor = clusterVal != null
-              ? (clusterVal >= 70 ? '#22C55E' : clusterVal >= 55 ? '#F59E0B' : '#EF4444')
+              ? (clusterVal >= 70 ? '#5A8A6E' : clusterVal >= 55 ? '#B8943E' : '#B85C5C')
               : GRAY;
             const subclusters = isExpanded && ratings
               ? getPoolPlayerSubclusters(player.id, cluster, clusterVal!)
@@ -212,7 +212,7 @@ export default function PlayerDetailScreen() {
                 {isExpanded && (
                   <View style={styles.subTraitList}>
                     {subclusters.map((sc) => {
-                      const scColor = sc.rating >= 70 ? '#22C55E' : sc.rating >= 55 ? '#F59E0B' : '#EF4444';
+                      const scColor = sc.rating >= 70 ? '#5A8A6E' : sc.rating >= 55 ? '#B8943E' : '#B85C5C';
                       return (
                         <View key={sc.name} style={styles.subTraitRow}>
                           <ThemedText style={styles.subTraitLabel}>{sc.name}</ThemedText>

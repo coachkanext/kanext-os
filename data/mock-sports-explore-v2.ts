@@ -73,7 +73,7 @@ export interface TrendingItem {
 }
 
 export const SPORTS_TRENDING: TrendingItem[] = [
-  { id: 'st-1', title: 'Carroll College vs MSU-Northern Christian — Full Highlights', subtitle: 'Season Opener · Frontier Conference', thumbnailColor: '#1D9BF0', viewCount: 5200, badge: 'featured', duration: '8:42' },
+  { id: 'st-1', title: 'Carroll College vs MSU-Northern Christian — Full Highlights', subtitle: 'Season Opener · Frontier Conference', thumbnailColor: '#1A1714', viewCount: 5200, badge: 'featured', duration: '8:42' },
   { id: 'st-2', title: 'Jaylen Carter 32-Point Explosion', subtitle: 'Career High · Feb 14', thumbnailColor: '#0B0F14', viewCount: 3800, badge: 'trending', duration: '4:15' },
   { id: 'st-3', title: 'Dunk of the Week: Carter Poster', subtitle: 'Frontier Conference Honors', thumbnailColor: '#0B0F14', viewCount: 7100, badge: 'trending', duration: '0:48' },
 ];
@@ -89,7 +89,7 @@ export const SPORTS_EXPLORE_SHELVES: ExploreShelf[] = [
     title: 'Official Releases',
     rbacSection: 'explore_official_releases',
     items: [
-      { id: 'or-1', title: 'Carroll College Season Opener Highlights', subtitle: 'vs MSU-Northern Christian', thumbnailColor: '#1D9BF0', duration: '4:32', badge: 'NEW', date: 'Feb 14', viewCount: 2840, source: 'Carroll Athletics' },
+      { id: 'or-1', title: 'Carroll College Season Opener Highlights', subtitle: 'vs MSU-Northern Christian', thumbnailColor: '#1A1714', duration: '4:32', badge: 'NEW', date: 'Feb 14', viewCount: 2840, source: 'Carroll Athletics' },
       { id: 'or-2', title: 'Media Day 2025-26', subtitle: 'Men\'s Basketball', thumbnailColor: '#0B0F14', duration: '12:15', date: 'Oct 3', viewCount: 1520, source: 'Carroll Athletics' },
       { id: 'or-3', title: 'Press Conference: Coach Carter', subtitle: 'Postseason Update', thumbnailColor: '#0B0F14', duration: '18:42', date: 'Feb 10', viewCount: 890, source: 'Carroll Media' },
       { id: 'or-4', title: 'Senior Night Ceremony', subtitle: 'Honoring the Class of 2026', thumbnailColor: '#0B0F14', duration: '8:55', date: 'Feb 8', viewCount: 3200, source: 'Carroll Athletics' },
@@ -104,7 +104,7 @@ export const SPORTS_EXPLORE_SHELVES: ExploreShelf[] = [
     title: 'Game Center',
     rbacSection: 'explore_game_center',
     items: [
-      { id: 'gc-1', title: 'Carroll College vs MSU-Northern Christian', subtitle: 'Frontier Conference', thumbnailColor: '#1D9BF0', duration: '1:48:22', badge: 'FULL GAME', date: 'Feb 14', viewCount: 420, source: 'Game Film' },
+      { id: 'gc-1', title: 'Carroll College vs MSU-Northern Christian', subtitle: 'Frontier Conference', thumbnailColor: '#1A1714', duration: '1:48:22', badge: 'FULL GAME', date: 'Feb 14', viewCount: 420, source: 'Game Film' },
       { id: 'gc-2', title: 'Carroll College vs SW Assemblies', subtitle: 'Frontier Conference', thumbnailColor: '#0B0F14', duration: '1:52:10', date: 'Feb 8', viewCount: 380, source: 'Game Film' },
       { id: 'gc-3', title: 'Carroll College vs Mid-America Nazarene', subtitle: 'Frontier Conference', thumbnailColor: '#0B0F14', duration: '1:45:33', date: 'Feb 1', viewCount: 310, source: 'Game Film' },
       { id: 'gc-4', title: 'Carroll College vs Oklahoma Panhandle', subtitle: 'Non-Conference', thumbnailColor: '#0B0F14', duration: '1:50:08', date: 'Jan 25', viewCount: 290, source: 'Game Film' },
@@ -119,7 +119,7 @@ export const SPORTS_EXPLORE_SHELVES: ExploreShelf[] = [
     rbacSection: 'explore_player_hub',
     items: [
       { id: 'ph-1', title: 'Jaylen Carter Highlights', subtitle: 'Season Compilation', thumbnailColor: '#0B0F14', duration: '6:18', badge: 'UPDATED', date: 'Feb 14', viewCount: 1200, source: 'Player Channel' },
-      { id: 'ph-2', title: 'Alex Morgan: 3PT Reel', subtitle: '42% from deep', thumbnailColor: '#1D9BF0', duration: '3:45', date: 'Feb 10', viewCount: 780, source: 'Player Channel' },
+      { id: 'ph-2', title: 'Alex Morgan: 3PT Reel', subtitle: '42% from deep', thumbnailColor: '#1A1714', duration: '3:45', date: 'Feb 10', viewCount: 780, source: 'Player Channel' },
       { id: 'ph-3', title: 'Devon Williams: Defense Showcase', subtitle: 'On-Ball + Help Side', thumbnailColor: '#0B0F14', duration: '5:22', date: 'Feb 7', viewCount: 560, source: 'Player Channel' },
       { id: 'ph-4', title: 'Chris Anderson: Playmaking', subtitle: 'Assists + Court Vision', thumbnailColor: '#0B0F14', duration: '4:55', date: 'Feb 5', viewCount: 430, source: 'Player Channel' },
       { id: 'ph-5', title: 'Team Transition Package', subtitle: 'Fast Break Highlights', thumbnailColor: '#0B0F14', duration: '7:10', date: 'Feb 3', viewCount: 920, source: 'Coaching Staff' },
@@ -136,7 +136,7 @@ export const SPORTS_EXPLORE_SHELVES: ExploreShelf[] = [
       { id: 'pi-1', title: 'Practice: Feb 13 — Transition D', subtitle: 'Full session, 5-on-5 segment', thumbnailColor: '#0B0F14', duration: '45:20', badge: 'TODAY', date: 'Feb 13', viewCount: 12, source: 'Practice Film' },
       { id: 'pi-2', title: 'Install: Motion Offense v2', subtitle: 'Horns Entry + Flex Action', thumbnailColor: '#0B0F14', duration: '22:15', date: 'Feb 11', viewCount: 18, source: 'Install Clips' },
       { id: 'pi-3', title: 'Install: Press Break vs 2-2-1', subtitle: 'Primary + Secondary Options', thumbnailColor: '#0B0F14', duration: '15:42', date: 'Feb 9', viewCount: 15, source: 'Install Clips' },
-      { id: 'pi-4', title: 'Practice: Feb 6 — Shooting Drills', subtitle: 'Spot-up + Movement Shooting', thumbnailColor: '#1D9BF0', duration: '38:10', date: 'Feb 6', viewCount: 9, source: 'Practice Film' },
+      { id: 'pi-4', title: 'Practice: Feb 6 — Shooting Drills', subtitle: 'Spot-up + Movement Shooting', thumbnailColor: '#1A1714', duration: '38:10', date: 'Feb 6', viewCount: 9, source: 'Practice Film' },
       { id: 'pi-5', title: 'Install: BLOB Package', subtitle: '4 Sets — Stagger, Rip, Lob, Flat', thumbnailColor: '#0B0F14', duration: '18:30', date: 'Feb 4', viewCount: 14, source: 'Install Clips' },
     ],
   },
@@ -149,7 +149,7 @@ export const SPORTS_EXPLORE_SHELVES: ExploreShelf[] = [
     items: [
       { id: 'so-1', title: 'MSU-Northern Christian Scout Report', subtitle: 'Next Opponent — Feb 21', thumbnailColor: '#0B0F14', duration: '28:15', badge: 'PRIORITY', date: 'Feb 13', viewCount: 8, source: 'Scout Team' },
       { id: 'so-2', title: 'LC Tendencies: Half-Court O', subtitle: 'Top 5 Sets + Triggers', thumbnailColor: '#0B0F14', duration: '14:30', date: 'Feb 12', viewCount: 6, source: 'Scout Team' },
-      { id: 'so-3', title: 'LC Key Players: #3 Davis, #11 Hill', subtitle: 'Usage + Shooting Zones', thumbnailColor: '#1D9BF0', duration: '12:18', date: 'Feb 11', viewCount: 5, source: 'Scout Team' },
+      { id: 'so-3', title: 'LC Key Players: #3 Davis, #11 Hill', subtitle: 'Usage + Shooting Zones', thumbnailColor: '#1A1714', duration: '12:18', date: 'Feb 11', viewCount: 5, source: 'Scout Team' },
       { id: 'so-4', title: 'SW Assemblies Post-Mortem', subtitle: 'What Worked + Adjustments', thumbnailColor: '#0B0F14', duration: '20:45', date: 'Feb 9', viewCount: 11, source: 'Coaching Staff' },
       { id: 'so-5', title: 'Conference Opponent Overview', subtitle: 'Frontier Conference Top 5 Teams', thumbnailColor: '#0B0F14', duration: '35:20', date: 'Feb 1', viewCount: 22, source: 'Scout Team' },
     ],
@@ -162,7 +162,7 @@ export const SPORTS_EXPLORE_SHELVES: ExploreShelf[] = [
     rbacSection: 'explore_recruiting_targets',
     items: [
       { id: 'rt-1', title: 'Elijah Moore — PG Prospect', subtitle: 'AAU Summer Tape', thumbnailColor: '#0B0F14', duration: '8:42', badge: 'S1', date: 'Feb 10', viewCount: 4, source: 'Recruiting' },
-      { id: 'rt-2', title: 'Jordan Hayes — Wing', subtitle: 'HS Junior Season Highlights', thumbnailColor: '#1D9BF0', duration: '6:15', badge: 'S2', date: 'Feb 8', viewCount: 3, source: 'Recruiting' },
+      { id: 'rt-2', title: 'Jordan Hayes — Wing', subtitle: 'HS Junior Season Highlights', thumbnailColor: '#1A1714', duration: '6:15', badge: 'S2', date: 'Feb 8', viewCount: 3, source: 'Recruiting' },
       { id: 'rt-3', title: 'Marcus Bell — Big Man', subtitle: 'Post + Face-Up Game', thumbnailColor: '#0B0F14', duration: '7:30', date: 'Feb 5', viewCount: 5, source: 'Recruiting' },
       { id: 'rt-4', title: 'Transfer Portal: K. Williams', subtitle: 'D2 Guard — 18.3 PPG', thumbnailColor: '#0B0F14', duration: '5:55', badge: 'PORTAL', date: 'Feb 3', viewCount: 7, source: 'Recruiting' },
       { id: 'rt-5', title: 'Showcase: OKC Exposure Camp', subtitle: 'Top 10 Performers', thumbnailColor: '#0B0F14', duration: '15:20', date: 'Jan 28', viewCount: 12, source: 'Recruiting' },
@@ -176,7 +176,7 @@ export const SPORTS_EXPLORE_SHELVES: ExploreShelf[] = [
     rbacSection: 'explore_development_clips',
     items: [
       { id: 'dc-1', title: 'Carter: Finishing Through Contact', subtitle: 'Pre/Post Comparison', thumbnailColor: '#0B0F14', duration: '4:18', badge: 'GROWTH', date: 'Feb 12', viewCount: 6, source: 'Player Dev' },
-      { id: 'dc-2', title: 'Thompson: Catch-and-Shoot Mechanics', subtitle: 'Footwork Adjustment', thumbnailColor: '#1D9BF0', duration: '3:45', date: 'Feb 9', viewCount: 4, source: 'Player Dev' },
+      { id: 'dc-2', title: 'Thompson: Catch-and-Shoot Mechanics', subtitle: 'Footwork Adjustment', thumbnailColor: '#1A1714', duration: '3:45', date: 'Feb 9', viewCount: 4, source: 'Player Dev' },
       { id: 'dc-3', title: 'Williams: Closeout Technique', subtitle: 'Short Closeout vs Long', thumbnailColor: '#0B0F14', duration: '5:10', date: 'Feb 6', viewCount: 5, source: 'Player Dev' },
       { id: 'dc-4', title: 'Anderson: Ball Screen Reads', subtitle: 'Reject vs Snake vs Split', thumbnailColor: '#0B0F14', duration: '6:22', date: 'Feb 3', viewCount: 3, source: 'Player Dev' },
       { id: 'dc-5', title: 'Brooks: Rim Protection Timing', subtitle: 'Help Side Rotations', thumbnailColor: '#0B0F14', duration: '4:55', date: 'Jan 30', viewCount: 4, source: 'Player Dev' },
@@ -190,7 +190,7 @@ export const SPORTS_EXPLORE_SHELVES: ExploreShelf[] = [
     rbacSection: 'explore_conference_league',
     items: [
       { id: 'cl-1', title: 'Frontier Conference Week 14 Recap', subtitle: 'Standings + Top Plays', thumbnailColor: '#0B0F14', duration: '8:30', badge: 'NEW', date: 'Feb 14', viewCount: 1800, source: 'Frontier Conference' },
-      { id: 'cl-2', title: 'NAIA Top 25 Poll Update', subtitle: 'Carroll College Moves to #8', thumbnailColor: '#1D9BF0', duration: '5:15', date: 'Feb 12', viewCount: 2400, source: 'NAIA' },
+      { id: 'cl-2', title: 'NAIA Top 25 Poll Update', subtitle: 'Carroll College Moves to #8', thumbnailColor: '#1A1714', duration: '5:15', date: 'Feb 12', viewCount: 2400, source: 'NAIA' },
       { id: 'cl-3', title: 'Player of the Week: J. Carter', subtitle: 'Frontier Conference Honors', thumbnailColor: '#0B0F14', duration: '2:45', date: 'Feb 10', viewCount: 3100, source: 'Frontier Conference' },
       { id: 'cl-4', title: 'Conference Tournament Preview', subtitle: 'Bracket Projections', thumbnailColor: '#0B0F14', duration: '12:20', date: 'Feb 8', viewCount: 1500, source: 'Frontier Conference' },
       { id: 'cl-5', title: 'NAA Conference Tournament Info', subtitle: 'Qualifying + Format', thumbnailColor: '#0B0F14', duration: '6:45', date: 'Feb 1', viewCount: 4200, source: 'NAIA' },

@@ -111,19 +111,19 @@ const CATEGORY_CONFIG: Record<CalendarCategory, { label: string; color: string; 
   board: { label: 'Board', color: ACCENT, icon: 'person.3.fill' },
   fundraising: { label: 'Fundraising', color: ACCENT, icon: 'banknote.fill' },
   product: { label: 'Product', color: ACCENT, icon: 'app.fill' },
-  operations: { label: 'Operations', color: '#A1A1AA', icon: 'gearshape.fill' },
-  sales: { label: 'Sales', color: '#F59E0B', icon: 'cart.fill' },
-  finance: { label: 'Finance', color: '#22C55E', icon: 'dollarsign.circle.fill' },
+  operations: { label: 'Operations', color: '#9C9790', icon: 'gearshape.fill' },
+  sales: { label: 'Sales', color: '#B8943E', icon: 'cart.fill' },
+  finance: { label: 'Finance', color: '#5A8A6E', icon: 'dollarsign.circle.fill' },
   rails: { label: 'Rails', color: ACCENT, icon: 'arrow.left.arrow.right.circle.fill' },
-  compliance: { label: 'Compliance', color: '#F59E0B', icon: 'checkmark.shield.fill' },
+  compliance: { label: 'Compliance', color: '#B8943E', icon: 'checkmark.shield.fill' },
   people: { label: 'People', color: ACCENT, icon: 'person.2.fill' },
   public: { label: 'Public', color: ACCENT, icon: 'globe' },
 };
 
 const STATUS_CONFIG: Record<EventStatus, { label: string; color: string }> = {
-  on_track: { label: 'On Track', color: '#22C55E' },
-  at_risk: { label: 'At Risk', color: '#F59E0B' },
-  blocked: { label: 'Blocked', color: '#EF4444' },
+  on_track: { label: 'On Track', color: '#5A8A6E' },
+  at_risk: { label: 'At Risk', color: '#B8943E' },
+  blocked: { label: 'Blocked', color: '#B85C5C' },
   done: { label: 'Done', color: ACCENT },
 };
 
@@ -492,8 +492,8 @@ function CategoryTag({ category }: { category: CalendarCategory }) {
 function DuePill({ label, dueHours, colors }: { label: string; dueHours: number; colors: typeof Colors.light }) {
   const urgent = dueHours < 24;
   const soon = dueHours < 48;
-  const bg = urgent ? '#EF444420' : soon ? '#F59E0B20' : colors.backgroundTertiary;
-  const fg = urgent ? '#EF4444' : soon ? '#F59E0B' : colors.textSecondary;
+  const bg = urgent ? '#B85C5C20' : soon ? '#B8943E20' : colors.backgroundTertiary;
+  const fg = urgent ? '#B85C5C' : soon ? '#B8943E' : colors.textSecondary;
 
   return (
     <View style={[st.duePill, { backgroundColor: bg }]}>
@@ -504,7 +504,7 @@ function DuePill({ label, dueHours, colors }: { label: string; dueHours: number;
 }
 
 function SeverityBadge({ severity }: { severity: 'critical' | 'high' | 'medium' }) {
-  const color = severity === 'critical' ? '#EF4444' : severity === 'high' ? '#F59E0B' : ACCENT;
+  const color = severity === 'critical' ? '#B85C5C' : severity === 'high' ? '#B8943E' : ACCENT;
   return (
     <View style={[st.severityBadge, { backgroundColor: color + '20' }]}>
       <ThemedText style={[st.severityBadgeText, { color }]}>
@@ -573,7 +573,7 @@ function MilestoneDetails({ event, colors }: { event: CalendarEvent; colors: typ
               st.progressFill,
               {
                 width: `${progress}%`,
-                backgroundColor: progress >= 80 ? '#22C55E' : progress >= 50 ? '#F59E0B' : '#EF4444',
+                backgroundColor: progress >= 80 ? '#5A8A6E' : progress >= 50 ? '#B8943E' : '#B85C5C',
               },
             ]}
           />
@@ -612,13 +612,13 @@ function ApprovalWindowDetails({ event, colors }: { event: CalendarEvent; colors
     <View style={st.objectDetails}>
       <View style={st.approvalTimeRow}>
         <View style={st.objectDetailRow}>
-          <IconSymbol name="play.fill" size={10} color="#22C55E" />
+          <IconSymbol name="play.fill" size={10} color="#5A8A6E" />
           <ThemedText style={[st.objectDetailText, { color: colors.textSecondary }]}>
             Opens: {event.opensAt}
           </ThemedText>
         </View>
         <View style={st.objectDetailRow}>
-          <IconSymbol name="stop.fill" size={10} color="#EF4444" />
+          <IconSymbol name="stop.fill" size={10} color="#B85C5C" />
           <ThemedText style={[st.objectDetailText, { color: colors.textSecondary }]}>
             Closes: {event.closesAt}
           </ThemedText>
@@ -664,9 +664,9 @@ function CommitmentDetails({ event, colors }: { event: CalendarEvent; colors: ty
         </View>
       )}
       {event.riskFlag && (
-        <View style={[st.riskFlagBadge, { backgroundColor: '#EF444420' }]}>
-          <IconSymbol name="exclamationmark.triangle.fill" size={10} color="#EF4444" />
-          <ThemedText style={[st.riskFlagText, { color: '#EF4444' }]}>Risk Flagged</ThemedText>
+        <View style={[st.riskFlagBadge, { backgroundColor: '#B85C5C20' }]}>
+          <IconSymbol name="exclamationmark.triangle.fill" size={10} color="#B85C5C" />
+          <ThemedText style={[st.riskFlagText, { color: '#B85C5C' }]}>Risk Flagged</ThemedText>
         </View>
       )}
     </View>
@@ -964,17 +964,17 @@ function RSVPChip({ colors }: { colors: typeof Colors.light }) {
       style={[
         st.rsvpChip,
         {
-          backgroundColor: rsvpd ? '#22C55E20' : colors.backgroundTertiary,
-          borderColor: rsvpd ? '#22C55E' : colors.border,
+          backgroundColor: rsvpd ? '#5A8A6E20' : colors.backgroundTertiary,
+          borderColor: rsvpd ? '#5A8A6E' : colors.border,
         },
       ]}
     >
       <IconSymbol
         name={rsvpd ? 'checkmark.circle.fill' : 'calendar.badge.plus' as any}
         size={12}
-        color={rsvpd ? '#22C55E' : colors.textSecondary}
+        color={rsvpd ? '#5A8A6E' : colors.textSecondary}
       />
-      <ThemedText style={[st.rsvpChipText, { color: rsvpd ? '#22C55E' : colors.textSecondary }]}>
+      <ThemedText style={[st.rsvpChipText, { color: rsvpd ? '#5A8A6E' : colors.textSecondary }]}>
         {rsvpd ? "RSVP'd" : 'RSVP'}
       </ThemedText>
     </Pressable>
@@ -1193,13 +1193,13 @@ function CalendarStats({ events, colors }: { events: CalendarEvent[]; colors: ty
         <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>Total</ThemedText>
       </View>
       <View style={[st.statTile, { backgroundColor: colors.backgroundTertiary }]}>
-        <ThemedText style={[st.statValue, { color: blocked > 0 ? '#EF4444' : colors.textTertiary }]}>
+        <ThemedText style={[st.statValue, { color: blocked > 0 ? '#B85C5C' : colors.textTertiary }]}>
           {blocked}
         </ThemedText>
         <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>Blocked</ThemedText>
       </View>
       <View style={[st.statTile, { backgroundColor: colors.backgroundTertiary }]}>
-        <ThemedText style={[st.statValue, { color: atRisk > 0 ? '#F59E0B' : colors.textTertiary }]}>
+        <ThemedText style={[st.statValue, { color: atRisk > 0 ? '#B8943E' : colors.textTertiary }]}>
           {atRisk}
         </ThemedText>
         <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>At Risk</ThemedText>
@@ -1211,7 +1211,7 @@ function CalendarStats({ events, colors }: { events: CalendarEvent[]; colors: ty
         <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>Decisions</ThemedText>
       </View>
       <View style={[st.statTile, { backgroundColor: colors.backgroundTertiary }]}>
-        <ThemedText style={[st.statValue, { color: dueSoon > 0 ? '#F59E0B' : colors.textTertiary }]}>
+        <ThemedText style={[st.statValue, { color: dueSoon > 0 ? '#B8943E' : colors.textTertiary }]}>
           {dueSoon}
         </ThemedText>
         <ThemedText style={[st.statLabel, { color: colors.textSecondary }]}>{'Due <48h'}</ThemedText>
@@ -1313,10 +1313,10 @@ function WeekPreview({ events, colors }: { events: CalendarEvent[]; colors: type
                         count === 0
                           ? 'transparent'
                           : hasBlocked
-                            ? '#EF4444'
+                            ? '#B85C5C'
                             : hasDecision
                               ? ACCENT
-                              : '#22C55E',
+                              : '#5A8A6E',
                     },
                   ]}
                 />

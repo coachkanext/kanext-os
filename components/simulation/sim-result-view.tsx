@@ -36,7 +36,7 @@ function getImpactIcon(impact: 'positive' | 'neutral' | 'negative'): string {
 function getImpactColor(impact: 'positive' | 'neutral' | 'negative'): string {
   if (impact === 'positive') return Brand.success;
   if (impact === 'negative') return Brand.error;
-  return '#A1A1AA';
+  return '#9C9790';
 }
 
 // ---------------------------------------------------------------------------
@@ -188,9 +188,9 @@ function SimTypeBadge({ simType, colors }: { simType: string; colors: typeof Col
   const typeMap: Record<string, { label: string; color: string }> = {
     game: { label: 'Game Sim', color: ACCENT },
     segment: { label: 'Segment', color: ACCENT },
-    'end-game': { label: 'End-Game', color: '#EF4444' },
-    'system-sweep': { label: 'System Sweep', color: '#F59E0B' },
-    'lineup-sandbox': { label: 'Lineup Sandbox', color: '#22C55E' },
+    'end-game': { label: 'End-Game', color: '#B85C5C' },
+    'system-sweep': { label: 'System Sweep', color: '#B8943E' },
+    'lineup-sandbox': { label: 'Lineup Sandbox', color: '#5A8A6E' },
     season: { label: 'Season', color: '#FFFFFF' },
     'conference-postseason': { label: 'Conf / Postseason', color: ACCENT },
     'counterfactual-roster': { label: 'Counterfactual', color: ACCENT },

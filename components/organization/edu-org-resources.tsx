@@ -86,9 +86,9 @@ function LibraryTab({
   const kpis = [
     { id: 'volumes', label: 'Total Volumes', value: formatNumber(stats.totalVolumes), icon: 'book.fill', color: ACCENT },
     { id: 'digital', label: 'Digital Resources', value: formatNumber(stats.digitalResources), icon: 'icloud.fill', color: ACCENT },
-    { id: 'loans', label: 'Active Loans', value: formatNumber(stats.activeLoans), icon: 'arrow.right.circle.fill', color: '#22C55E' },
-    { id: 'overdue', label: 'Overdue Items', value: `${stats.overdueItems}`, icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
-    { id: 'visitors', label: 'Daily Visitors', value: `${stats.dailyVisitors}`, icon: 'person.3.fill', color: '#F59E0B' },
+    { id: 'loans', label: 'Active Loans', value: formatNumber(stats.activeLoans), icon: 'arrow.right.circle.fill', color: '#5A8A6E' },
+    { id: 'overdue', label: 'Overdue Items', value: `${stats.overdueItems}`, icon: 'exclamationmark.triangle.fill', color: '#B85C5C' },
+    { id: 'visitors', label: 'Daily Visitors', value: `${stats.dailyVisitors}`, icon: 'person.3.fill', color: '#B8943E' },
     { id: 'study', label: 'Study Rooms', value: `${stats.studyRoomsAvailable}/${stats.studyRooms}`, icon: 'door.left.hand.open', color: ACCENT },
   ];
 
@@ -139,13 +139,13 @@ function LibraryTab({
       <View style={[s.loanSummary, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.loanSummaryRow}>
           <View style={s.loanSummaryItem}>
-            <ThemedText style={[s.loanSummaryValue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.loanSummaryValue, { color: '#5A8A6E' }]}>
               {formatNumber(stats.activeLoans)}
             </ThemedText>
             <ThemedText style={[s.loanSummaryLabel, { color: colors.textTertiary }]}>Active</ThemedText>
           </View>
           <View style={s.loanSummaryItem}>
-            <ThemedText style={[s.loanSummaryValue, { color: '#EF4444' }]}>
+            <ThemedText style={[s.loanSummaryValue, { color: '#B85C5C' }]}>
               {stats.overdueItems}
             </ThemedText>
             <ThemedText style={[s.loanSummaryLabel, { color: colors.textTertiary }]}>Overdue</ThemedText>
@@ -178,7 +178,7 @@ function TechnologyTab({
   const devices = [
     { label: 'Laptops', ...inventory.laptops, icon: 'laptopcomputer', color: ACCENT },
     { label: 'Tablets', ...inventory.tablets, icon: 'ipad', color: ACCENT },
-    { label: 'Projectors', ...inventory.projectors, icon: 'rectangle.inset.filled', color: '#F59E0B' },
+    { label: 'Projectors', ...inventory.projectors, icon: 'rectangle.inset.filled', color: '#B8943E' },
   ];
 
   return (
@@ -212,7 +212,7 @@ function TechnologyTab({
             </View>
             <View style={s.deviceStats}>
               <View style={s.deviceStatItem}>
-                <ThemedText style={[s.deviceStatValue, { color: '#22C55E' }]}>{device.available}</ThemedText>
+                <ThemedText style={[s.deviceStatValue, { color: '#5A8A6E' }]}>{device.available}</ThemedText>
                 <ThemedText style={[s.deviceStatLabel, { color: colors.textTertiary }]}>Available</ThemedText>
               </View>
               <View style={s.deviceStatItem}>
@@ -353,7 +353,7 @@ function SoftwareTab({
       }
       renderItem={({ item }) => {
         const usagePct = item.total > 0 ? Math.round((item.used / item.total) * 100) : 0;
-        const barColor = usagePct > 90 ? '#EF4444' : usagePct > 70 ? '#F59E0B' : '#22C55E';
+        const barColor = usagePct > 90 ? '#B85C5C' : usagePct > 70 ? '#B8943E' : '#5A8A6E';
         return (
           <View style={[s.licenseCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.licenseCardTop}>
@@ -374,7 +374,7 @@ function SoftwareTab({
             </View>
             <View style={s.licenseStats}>
               <View style={s.licenseStatItem}>
-                <ThemedText style={[s.licenseStatValue, { color: '#22C55E' }]}>
+                <ThemedText style={[s.licenseStatValue, { color: '#5A8A6E' }]}>
                   {item.total - item.used}
                 </ThemedText>
                 <ThemedText style={[s.licenseStatLabel, { color: colors.textTertiary }]}>Available</ThemedText>
@@ -477,10 +477,10 @@ function CheckoutTab({
                 {role && isFacultyLevel(role) && item.status === 'overdue' && (
                   <View style={s.checkoutActionRow}>
                     <Pressable
-                      style={[s.checkoutActionBtn, { borderColor: '#EF4444' }]}
+                      style={[s.checkoutActionBtn, { borderColor: '#B85C5C' }]}
                       onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
                     >
-                      <ThemedText style={[s.checkoutActionBtnText, { color: '#EF4444' }]}>
+                      <ThemedText style={[s.checkoutActionBtnText, { color: '#B85C5C' }]}>
                         Send Reminder
                       </ThemedText>
                     </Pressable>
@@ -548,7 +548,7 @@ function BudgetTab({
                 </ThemedText>
               </View>
               <View style={s.budgetSummaryItem}>
-                <ThemedText style={[s.budgetSummaryValue, { color: '#EF4444' }]}>
+                <ThemedText style={[s.budgetSummaryValue, { color: '#B85C5C' }]}>
                   {formatCurrency(totalSpent)}
                 </ThemedText>
                 <ThemedText style={[s.budgetSummaryLabel, { color: colors.textTertiary }]}>
@@ -556,7 +556,7 @@ function BudgetTab({
                 </ThemedText>
               </View>
               <View style={s.budgetSummaryItem}>
-                <ThemedText style={[s.budgetSummaryValue, { color: '#22C55E' }]}>
+                <ThemedText style={[s.budgetSummaryValue, { color: '#5A8A6E' }]}>
                   {formatCurrency(totalRemaining)}
                 </ThemedText>
                 <ThemedText style={[s.budgetSummaryLabel, { color: colors.textTertiary }]}>
@@ -569,7 +569,7 @@ function BudgetTab({
       }
       renderItem={({ item }) => {
         const spentPct = item.allocated > 0 ? Math.round((item.spent / item.allocated) * 100) : 0;
-        const barColor = spentPct > 90 ? '#EF4444' : spentPct > 70 ? '#F59E0B' : '#22C55E';
+        const barColor = spentPct > 90 ? '#B85C5C' : spentPct > 70 ? '#B8943E' : '#5A8A6E';
         return (
           <View style={[s.budgetCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.budgetCardTop}>
@@ -594,13 +594,13 @@ function BudgetTab({
                 <ThemedText style={[s.budgetStatLabel, { color: colors.textTertiary }]}>Budget</ThemedText>
               </View>
               <View style={s.budgetStatItem}>
-                <ThemedText style={[s.budgetStatValue, { color: '#EF4444' }]}>
+                <ThemedText style={[s.budgetStatValue, { color: '#B85C5C' }]}>
                   {formatCurrency(item.spent)}
                 </ThemedText>
                 <ThemedText style={[s.budgetStatLabel, { color: colors.textTertiary }]}>Spent</ThemedText>
               </View>
               <View style={s.budgetStatItem}>
-                <ThemedText style={[s.budgetStatValue, { color: '#22C55E' }]}>
+                <ThemedText style={[s.budgetStatValue, { color: '#5A8A6E' }]}>
                   {formatCurrency(item.remaining)}
                 </ThemedText>
                 <ThemedText style={[s.budgetStatLabel, { color: colors.textTertiary }]}>Left</ThemedText>
@@ -1165,7 +1165,7 @@ const s = StyleSheet.create({
   deviceBar: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#A1A1AA',
+    backgroundColor: '#9C9790',
     marginBottom: 4,
     overflow: 'hidden',
   },
@@ -1290,7 +1290,7 @@ const s = StyleSheet.create({
   licenseBar: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#A1A1AA',
+    backgroundColor: '#9C9790',
     overflow: 'hidden',
   },
   licenseBarFill: {
@@ -1438,7 +1438,7 @@ const s = StyleSheet.create({
   budgetBar: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#A1A1AA',
+    backgroundColor: '#9C9790',
     marginBottom: 4,
     overflow: 'hidden',
   },

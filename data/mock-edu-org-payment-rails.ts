@@ -188,9 +188,9 @@ export interface EduRailsReceipt {
 // =============================================================================
 
 export const EDU_RAILS_STATUS_COLORS: Record<EduRailsStatus, string> = {
-  green: '#22C55E',
-  yellow: '#F59E0B',
-  red: '#EF4444',
+  green: '#5A8A6E',
+  yellow: '#B8943E',
+  red: '#B85C5C',
 };
 
 export const EDU_RAIL_METHOD_LABELS: Record<EduRailMethod, string> = {
@@ -226,19 +226,19 @@ export const EDU_TRANSACTION_STATE_LABELS: Record<EduTransactionState, string> =
 };
 
 export const EDU_TRANSACTION_STATE_COLORS: Record<EduTransactionState, string> = {
-  draft: '#A1A1AA',
-  proposed: '#1D9BF0',
-  rule_checked: '#1D9BF0',
-  authorized: '#22C55E',
-  scheduled: '#1D9BF0',
-  released: '#22C55E',
-  in_flight: '#F59E0B',
-  settled: '#22C55E',
-  held: '#F59E0B',
-  failed: '#EF4444',
-  returned: '#EF4444',
-  disputed: '#EF4444',
-  reversed: '#1D9BF0',
+  draft: '#9C9790',
+  proposed: '#1A1714',
+  rule_checked: '#1A1714',
+  authorized: '#5A8A6E',
+  scheduled: '#1A1714',
+  released: '#5A8A6E',
+  in_flight: '#B8943E',
+  settled: '#5A8A6E',
+  held: '#B8943E',
+  failed: '#B85C5C',
+  returned: '#B85C5C',
+  disputed: '#B85C5C',
+  reversed: '#1A1714',
 };
 
 export const EDU_BATCH_TYPE_LABELS: Record<EduBatchType, string> = {
@@ -260,11 +260,11 @@ export const EDU_EXCEPTION_TYPE_LABELS: Record<EduExceptionType, string> = {
 };
 
 export const EDU_EXCEPTION_TYPE_COLORS: Record<EduExceptionType, string> = {
-  held: '#F59E0B',
-  failed: '#EF4444',
-  returned: '#EF4444',
-  disputed: '#EF4444',
-  reversal: '#1D9BF0',
+  held: '#B8943E',
+  failed: '#B85C5C',
+  returned: '#B85C5C',
+  disputed: '#B85C5C',
+  reversal: '#1A1714',
 };
 
 export const EDU_EXCEPTION_CAUSE_LABELS: Record<EduExceptionCause, string> = {
@@ -287,13 +287,13 @@ export const EDU_WALLET_TYPE_LABELS: Record<EduWalletType, string> = {
 };
 
 export const EDU_WALLET_TYPE_COLORS: Record<EduWalletType, string> = {
-  operating: '#1D9BF0',
-  payroll: '#22C55E',
-  tuition_receipts: '#1D9BF0',
-  housing_receipts: '#F59E0B',
-  aid_disbursement: '#22C55E',
-  athletics_ops: '#1D9BF0',
-  restricted_funds: '#1D9BF0',
+  operating: '#1A1714',
+  payroll: '#5A8A6E',
+  tuition_receipts: '#1A1714',
+  housing_receipts: '#B8943E',
+  aid_disbursement: '#5A8A6E',
+  athletics_ops: '#1A1714',
+  restricted_funds: '#1A1714',
 };
 
 // =============================================================================
@@ -640,7 +640,7 @@ const RECEIPTS: EduRailsReceipt[] = [
     rulesApplied: 'Title IV compliance verified; SAP standing confirmed; enrollment census date passed',
     approvalChain: 'Financial Aid Director (initiated) → Controller (budget check) → VP Finance (authorized)',
     releaseAuth: 'VP Finance released via ACH batch — dual authorization confirmed',
-    settlementRecord: 'ACH settled 2026-01-15 — Trace #1D9BF0500098765',
+    settlementRecord: 'ACH settled 2026-01-15 — Trace #1A1714500098765',
     ledgerPostings: 'DR Aid Disbursement — Pell Grants $1,380,000; CR Student Accounts Receivable $1,380,000',
     amount: 1380000,
     settledDate: '2026-01-15',
@@ -654,7 +654,7 @@ const RECEIPTS: EduRailsReceipt[] = [
     rulesApplied: 'Emergency expenditure policy — single approval allowed; Operating Fund budget check passed',
     approvalChain: 'Facilities Manager (requestor) → VP Operations (emergency approval) → Controller (budget confirmed)',
     releaseAuth: 'Controller released via ACH — expedited processing',
-    settlementRecord: 'ACH settled 2026-02-05 — Trace #1D9BF0500034567',
+    settlementRecord: 'ACH settled 2026-02-05 — Trace #1A1714500034567',
     ledgerPostings: 'DR Operating — Facilities Maintenance $45,200; CR Operating Cash $45,200',
     amount: 45200,
     settledDate: '2026-02-05',

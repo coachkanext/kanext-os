@@ -35,15 +35,15 @@ function SectionLabel({ text, colors }: { text: string; colors: typeof Colors.li
 }
 
 function getHealthColor(value: number): string {
-  if (value >= 80) return '#22C55E';
-  if (value >= 60) return '#F59E0B';
-  return '#EF4444';
+  if (value >= 80) return '#5A8A6E';
+  if (value >= 60) return '#B8943E';
+  return '#B85C5C';
 }
 
 function getComplianceColor(status: string): string {
-  if (status === 'compliant') return '#22C55E';
-  if (status === 'warning') return '#F59E0B';
-  return '#EF4444';
+  if (status === 'compliant') return '#5A8A6E';
+  if (status === 'warning') return '#B8943E';
+  return '#B85C5C';
 }
 
 function getComplianceLabel(status: string): string {
@@ -169,8 +169,8 @@ export function ProgramOverview() {
         </View>
         <View style={[styles.divider, { backgroundColor: colors.divider }]} />
         <View style={styles.todayRow}>
-          <View style={[styles.todayIcon, { backgroundColor: '#22C55E' + '20' }]}>
-            <IconSymbol name="checkmark.circle.fill" size={16} color="#22C55E" />
+          <View style={[styles.todayIcon, { backgroundColor: '#5A8A6E' + '20' }]}>
+            <IconSymbol name="checkmark.circle.fill" size={16} color="#5A8A6E" />
           </View>
           <View style={styles.todayInfo}>
             <ThemedText style={styles.todayLabel}>Last Result</ThemedText>
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textTransform: 'uppercase',
     letterSpacing: 0.3,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   todayValue: {
     fontSize: 14,

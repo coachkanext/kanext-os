@@ -102,9 +102,9 @@ function daysRemainingLabel(dateStr: string): string {
 
 function daysRemainingColor(dateStr: string): string {
   const days = daysUntil(dateStr);
-  if (days < 0) return '#EF4444';
-  if (days <= 3) return '#F59E0B';
-  return '#22C55E';
+  if (days < 0) return '#B85C5C';
+  if (days <= 3) return '#B8943E';
+  return '#5A8A6E';
 }
 
 // =============================================================================
@@ -238,17 +238,17 @@ function OverviewTab({
       <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Controls Summary</ThemedText>
       <View style={[s.statusStrip, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#22C55E' }]} />
+          <View style={[s.statusDot, { backgroundColor: '#5A8A6E' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{overview.ok}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>On Track</ThemedText>
         </View>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#F59E0B' }]} />
+          <View style={[s.statusDot, { backgroundColor: '#B8943E' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{overview.atRisk}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>At Risk</ThemedText>
         </View>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#EF4444' }]} />
+          <View style={[s.statusDot, { backgroundColor: '#B85C5C' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{overview.overdue}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Overdue</ThemedText>
         </View>
@@ -257,22 +257,22 @@ function OverviewTab({
       {/* KPI Grid */}
       <View style={s.kpiGrid}>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <IconSymbol name="exclamationmark.triangle.fill" size={20} color={overview.holds > 0 ? '#EF4444' : '#22C55E'} />
-          <ThemedText style={[s.kpiValue, { color: overview.holds > 0 ? '#EF4444' : '#22C55E' }]}>
+          <IconSymbol name="exclamationmark.triangle.fill" size={20} color={overview.holds > 0 ? '#B85C5C' : '#5A8A6E'} />
+          <ThemedText style={[s.kpiValue, { color: overview.holds > 0 ? '#B85C5C' : '#5A8A6E' }]}>
             {overview.holds}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Active Holds</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <IconSymbol name="calendar.badge.clock" size={20} color={upcoming7 > 3 ? '#F59E0B' : accentColor} />
-          <ThemedText style={[s.kpiValue, { color: upcoming7 > 3 ? '#F59E0B' : accentColor }]}>
+          <IconSymbol name="calendar.badge.clock" size={20} color={upcoming7 > 3 ? '#B8943E' : accentColor} />
+          <ThemedText style={[s.kpiValue, { color: upcoming7 > 3 ? '#B8943E' : accentColor }]}>
             {upcoming7}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Due in 7 Days</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <IconSymbol name="doc.text.magnifyingglass" size={20} color={needsReview > 0 ? '#F59E0B' : '#22C55E'} />
-          <ThemedText style={[s.kpiValue, { color: needsReview > 0 ? '#F59E0B' : '#22C55E' }]}>
+          <IconSymbol name="doc.text.magnifyingglass" size={20} color={needsReview > 0 ? '#B8943E' : '#5A8A6E'} />
+          <ThemedText style={[s.kpiValue, { color: needsReview > 0 ? '#B8943E' : '#5A8A6E' }]}>
             {needsReview}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Evidence Review</ThemedText>
@@ -293,15 +293,15 @@ function OverviewTab({
       <View style={[s.severityPanel, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.severityRow}>
           <View style={s.severityItem}>
-            <View style={[s.statusDot, { backgroundColor: '#EF4444' }]} />
-            <ThemedText style={[s.severityValue, { color: criticalHolds > 0 ? '#EF4444' : colors.text }]}>
+            <View style={[s.statusDot, { backgroundColor: '#B85C5C' }]} />
+            <ThemedText style={[s.severityValue, { color: criticalHolds > 0 ? '#B85C5C' : colors.text }]}>
               {criticalHolds}
             </ThemedText>
             <ThemedText style={[s.severityLabel, { color: colors.textSecondary }]}>Critical</ThemedText>
           </View>
           <View style={s.severityItem}>
-            <View style={[s.statusDot, { backgroundColor: '#F59E0B' }]} />
-            <ThemedText style={[s.severityValue, { color: highHolds > 0 ? '#F59E0B' : colors.text }]}>
+            <View style={[s.statusDot, { backgroundColor: '#B8943E' }]} />
+            <ThemedText style={[s.severityValue, { color: highHolds > 0 ? '#B8943E' : colors.text }]}>
               {highHolds}
             </ThemedText>
             <ThemedText style={[s.severityLabel, { color: colors.textSecondary }]}>High</ThemedText>
@@ -314,7 +314,7 @@ function OverviewTab({
             <ThemedText style={[s.severityLabel, { color: colors.textSecondary }]}>Medium</ThemedText>
           </View>
           <View style={s.severityItem}>
-            <View style={[s.statusDot, { backgroundColor: '#A1A1AA' }]} />
+            <View style={[s.statusDot, { backgroundColor: '#9C9790' }]} />
             <ThemedText style={[s.severityValue, { color: colors.text }]}>
               {lowHolds}
             </ThemedText>
@@ -463,7 +463,7 @@ function HoldsTab({
                 {item.impactedPerson}
               </ThemedText>
               {item.escalated && (
-                <StatusBadge label="ESCALATED" color="#EF4444" />
+                <StatusBadge label="ESCALATED" color="#B85C5C" />
               )}
             </View>
             <ThemedText style={[s.holdImpact, { color: colors.textSecondary }]} numberOfLines={2}>
@@ -540,7 +540,7 @@ function DeadlinesTab({
       const audLabel = DEADLINE_AUDIENCE_LABEL[item.audience];
       const typeColor = DEADLINE_TYPE_COLOR[item.type];
       const typeLabel = DEADLINE_TYPE_LABEL[item.type];
-      const rateColor = item.completionRate < 80 ? '#EF4444' : '#22C55E';
+      const rateColor = item.completionRate < 80 ? '#B85C5C' : '#5A8A6E';
       const dayColor = daysRemainingColor(item.dueDate);
       return (
         <Pressable
@@ -940,7 +940,7 @@ function HoldDetailSheet({
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={typeLabel.toUpperCase()} color={typeColor} />
         <StatusBadge label={sevLabel.toUpperCase()} color={sevColor} />
-        {hold.escalated && <StatusBadge label="ESCALATED" color="#EF4444" />}
+        {hold.escalated && <StatusBadge label="ESCALATED" color="#B85C5C" />}
       </View>
 
       {/* Person */}
@@ -1039,7 +1039,7 @@ function DeadlineDetailSheet({
   const audLabel = DEADLINE_AUDIENCE_LABEL[deadline.audience];
   const typeColor = DEADLINE_TYPE_COLOR[deadline.type];
   const typeLabel = DEADLINE_TYPE_LABEL[deadline.type];
-  const rateColor = deadline.completionRate < 80 ? '#EF4444' : '#22C55E';
+  const rateColor = deadline.completionRate < 80 ? '#B85C5C' : '#5A8A6E';
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title={deadline.title} useModal>

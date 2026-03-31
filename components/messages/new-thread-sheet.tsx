@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    color: '#A1A1AA',
+    color: '#9C9790',
     marginBottom: Spacing.md,
   },
   templateRow: {
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   },
   templateDesc: {
     fontSize: 13,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   emptyText: {
     fontSize: 15,

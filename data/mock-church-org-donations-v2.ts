@@ -156,14 +156,14 @@ export const FUND_TYPE_LABELS: Record<FundType, string> = {
 };
 
 export const FUND_TYPE_COLORS: Record<FundType, string> = {
-  general: '#1D9BF0',
-  benevolence: '#1D9BF0',
-  building: '#F59E0B',
-  missions: '#1D9BF0',
-  youth: '#EF4444',
-  kids: '#22C55E',
-  worship: '#22C55E',
-  outreach: '#F59E0B',
+  general: '#1A1714',
+  benevolence: '#1A1714',
+  building: '#B8943E',
+  missions: '#1A1714',
+  youth: '#B85C5C',
+  kids: '#5A8A6E',
+  worship: '#5A8A6E',
+  outreach: '#B8943E',
 };
 
 export const FUND_TYPE_ICONS: Record<FundType, string> = {
@@ -197,10 +197,10 @@ export const CAMPAIGN_STATUS_LABELS: Record<CampaignStatus, string> = {
 };
 
 export const CAMPAIGN_STATUS_COLORS: Record<CampaignStatus, string> = {
-  active: '#22C55E',
-  completed: '#1D9BF0',
-  paused: '#F59E0B',
-  draft: '#A1A1AA',
+  active: '#5A8A6E',
+  completed: '#1A1714',
+  paused: '#B8943E',
+  draft: '#9C9790',
 };
 
 export const GIFT_FREQUENCY_LABELS: Record<GiftFrequency, string> = {
@@ -235,10 +235,10 @@ export const RECEIPT_STATUS_LABELS: Record<ReceiptStatus, string> = {
 };
 
 export const RECEIPT_STATUS_COLORS: Record<ReceiptStatus, string> = {
-  generated: '#1D9BF0',
-  sent: '#22C55E',
-  pending: '#F59E0B',
-  failed: '#EF4444',
+  generated: '#1A1714',
+  sent: '#5A8A6E',
+  pending: '#B8943E',
+  failed: '#B85C5C',
 };
 
 export const RECONCILIATION_STATUS_LABELS: Record<ReconciliationStatus, string> = {
@@ -250,11 +250,11 @@ export const RECONCILIATION_STATUS_LABELS: Record<ReconciliationStatus, string> 
 };
 
 export const RECONCILIATION_STATUS_COLORS: Record<ReconciliationStatus, string> = {
-  processed: '#22C55E',
-  pending: '#F59E0B',
-  failed: '#EF4444',
-  returned: '#1D9BF0',
-  needs_action: '#F59E0B',
+  processed: '#5A8A6E',
+  pending: '#B8943E',
+  failed: '#B85C5C',
+  returned: '#1A1714',
+  needs_action: '#B8943E',
 };
 
 export const DONOR_STATUS_LABELS: Record<DonorStatus, string> = {
@@ -264,9 +264,9 @@ export const DONOR_STATUS_LABELS: Record<DonorStatus, string> = {
 };
 
 export const DONOR_STATUS_COLORS: Record<DonorStatus, string> = {
-  active: '#22C55E',
-  lapsed: '#EF4444',
-  new: '#1D9BF0',
+  active: '#5A8A6E',
+  lapsed: '#B85C5C',
+  new: '#1A1714',
 };
 
 // =============================================================================

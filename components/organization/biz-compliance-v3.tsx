@@ -102,22 +102,22 @@ const LEGAL_MATTERS: {
 // Status color mapping
 const STATUS_COLOR: Record<string, string> = {
   // Filing
-  Pending: '#F59E0B',
-  Submitted: '#3B82F6',
-  Accepted: '#22C55E',
-  Overdue: '#EF4444',
+  Pending: '#B8943E',
+  Submitted: '#1A1714',
+  Accepted: '#5A8A6E',
+  Overdue: '#B85C5C',
   // License
-  Active: '#22C55E',
-  Expiring: '#F59E0B',
-  Expired: '#EF4444',
-  'Renewal Required': '#F59E0B',
+  Active: '#5A8A6E',
+  Expiring: '#B8943E',
+  Expired: '#B85C5C',
+  'Renewal Required': '#B8943E',
   // Insurance (reuses Active, Expiring)
   // Legal
-  Open: '#F59E0B',
-  'Under Review': '#3B82F6',
-  Resolved: '#22C55E',
+  Open: '#B8943E',
+  'Under Review': '#1A1714',
+  Resolved: '#5A8A6E',
   // Registration
-  'In Good Standing': '#22C55E',
+  'In Good Standing': '#5A8A6E',
 };
 
 // =============================================================================
@@ -176,7 +176,7 @@ export function BizCompliance({ colors, onNavigateTab }: Props) {
       >
         <ThemedText style={[s.subLabel, { color: colors.textSecondary }]}>Registered Jurisdictions</ThemedText>
         {REGISTRATION.jurisdictions.map((j) => {
-          const color = STATUS_COLOR[j.status] ?? '#22C55E';
+          const color = STATUS_COLOR[j.status] ?? '#5A8A6E';
           return (
             <View key={j.state} style={s.jurisdictionRow}>
               <ThemedText style={[s.fieldValue, { color: colors.text }]}>{j.state}</ThemedText>
@@ -196,7 +196,7 @@ export function BizCompliance({ colors, onNavigateTab }: Props) {
       {/* Block 2 — Filing & Deadline Queue */}
       <ThemedText style={[s.sectionLabel, { color: colors.textTertiary }]}>FILING & DEADLINE QUEUE</ThemedText>
       {FILINGS.map((filing) => {
-        const color = STATUS_COLOR[filing.status] ?? '#F59E0B';
+        const color = STATUS_COLOR[filing.status] ?? '#B8943E';
         return (
           <Pressable
             key={filing.id}
@@ -229,7 +229,7 @@ export function BizCompliance({ colors, onNavigateTab }: Props) {
       {/* Block 3 — Licenses & Permits */}
       <ThemedText style={[s.sectionLabel, { color: colors.textTertiary }]}>LICENSES & PERMITS</ThemedText>
       {LICENSES.map((license) => {
-        const color = STATUS_COLOR[license.status] ?? '#22C55E';
+        const color = STATUS_COLOR[license.status] ?? '#5A8A6E';
         return (
           <Pressable
             key={license.id}
@@ -262,7 +262,7 @@ export function BizCompliance({ colors, onNavigateTab }: Props) {
       {/* Block 4 — Insurance Coverage */}
       <ThemedText style={[s.sectionLabel, { color: colors.textTertiary }]}>INSURANCE COVERAGE</ThemedText>
       {INSURANCE.map((policy) => {
-        const color = STATUS_COLOR[policy.status] ?? '#22C55E';
+        const color = STATUS_COLOR[policy.status] ?? '#5A8A6E';
         return (
           <Pressable
             key={policy.id}
@@ -295,7 +295,7 @@ export function BizCompliance({ colors, onNavigateTab }: Props) {
       {/* Block 5 — Legal Matters (Status Only) */}
       <ThemedText style={[s.sectionLabel, { color: colors.textTertiary }]}>LEGAL MATTERS</ThemedText>
       {LEGAL_MATTERS.map((matter) => {
-        const color = STATUS_COLOR[matter.status] ?? '#F59E0B';
+        const color = STATUS_COLOR[matter.status] ?? '#B8943E';
         return (
           <Pressable
             key={matter.id}

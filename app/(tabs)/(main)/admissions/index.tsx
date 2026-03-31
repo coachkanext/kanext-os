@@ -78,11 +78,11 @@ function appTypeLabel(t: ApplicationType): string {
 
 function appTypeColor(t: ApplicationType): string {
   const m: Record<ApplicationType, string> = {
-    'early-decision': '#8B5CF6',
-    'early-action':   '#3B82F6',
+    'early-decision': '#1A1714',
+    'early-action':   '#1A1714',
     regular:          '#6B7280',
-    transfer:         '#F59E0B',
-    international:    '#3B82F6',
+    transfer:         '#B8943E',
+    international:    '#1A1714',
   };
   return m[t] ?? '#999';
 }
@@ -90,7 +90,7 @@ function appTypeColor(t: ApplicationType): string {
 function decisionColor(d: Decision): string {
   if (d === 'accepted')  return '#5A8A6E';
   if (d === 'denied')    return '#B85C5C';
-  if (d === 'waitlisted') return '#F59E0B';
+  if (d === 'waitlisted') return '#B8943E';
   return '#6B7280';
 }
 
@@ -111,15 +111,15 @@ function campaignTypeLabel(type: CampaignType): string {
 
 function campaignTypeColor(type: CampaignType): string {
   const m: Record<CampaignType, string> = {
-    'campus-visit':   '#3B82F6',
-    virtual:          '#3B82F6',
-    'high-school':    '#8B5CF6',
-    digital:          '#F59E0B',
+    'campus-visit':   '#1A1714',
+    virtual:          '#1A1714',
+    'high-school':    '#1A1714',
+    digital:          '#B8943E',
     'direct-mail':    '#6B7280',
-    'transfer-fair':  '#0EA5E9',
-    'alumni-referral':'#10B981',
-    scholarship:      '#F97316',
-    'social-media':   '#EC4899',
+    'transfer-fair':  '#1A1714',
+    'alumni-referral':'#5A8A6E',
+    scholarship:      '#B8943E',
+    'social-media':   '#1A1714',
   };
   return m[type] ?? '#6B7280';
 }
@@ -141,8 +141,8 @@ function campaignTypeIcon(type: CampaignType): string {
 
 function campaignStatusColor(s: AdmCampaignStatus): string {
   if (s === 'active')   return '#5A8A6E';
-  if (s === 'upcoming') return '#1D9BF0';
-  if (s === 'planning') return '#F59E0B';
+  if (s === 'upcoming') return '#1A1714';
+  if (s === 'planning') return '#B8943E';
   return 'rgba(45,30,18,0.40)';
 }
 
@@ -176,13 +176,13 @@ function flagLabel(f: string): string {
 
 function flagColor(f: string): string {
   const m: Record<string, string> = {
-    'first-gen':      '#3B82F6',
-    legacy:           '#8B5CF6',
-    athlete:          '#22C55E',
-    scholarship:      '#F59E0B',
-    international:    '#3B82F6',
+    'first-gen':      '#1A1714',
+    legacy:           '#1A1714',
+    athlete:          '#5A8A6E',
+    scholarship:      '#B8943E',
+    international:    '#1A1714',
     transfer:         '#6B7280',
-    underrepresented: '#EC4899',
+    underrepresented: '#1A1714',
   };
   return m[f] ?? '#999';
 }
@@ -408,7 +408,7 @@ function ApplicantDetailSheet({ applicant, isAdmin, onClose, onMoveStage, counse
           <View style={{ flexDirection: 'row', gap: 8 }}>
             {([
               { label: 'Accept',    stage: 'Admitted'     as EnrollmentStage, color: '#5A8A6E' },
-              { label: 'Waitlist',  stage: 'Under Review' as EnrollmentStage, color: '#F59E0B' },
+              { label: 'Waitlist',  stage: 'Under Review' as EnrollmentStage, color: '#B8943E' },
               { label: 'Defer',     stage: 'Under Review' as EnrollmentStage, color: '#6B7280' },
               { label: 'Deny',      stage: 'Prospect'     as EnrollmentStage, color: '#B85C5C' },
             ] as const).map(btn => (
@@ -708,9 +708,9 @@ export default function AdmissionsScreen() {
       { label: 'FAFSA',                    done: true  },
     ];
     const NEXT_STEPS = [
-      { icon: 'clock.fill',              color: '#003A63', text: 'Decision expected by May 1, 2026' },
-      { icon: 'envelope.fill',           color: '#003A63', text: 'Check your email for updates' },
-      { icon: 'dollarsign.circle.fill',  color: '#22C55E', text: 'Your financial aid estimate is ready' },
+      { icon: 'clock.fill',              color: '#1A1714', text: 'Decision expected by May 1, 2026' },
+      { icon: 'envelope.fill',           color: '#1A1714', text: 'Check your email for updates' },
+      { icon: 'dollarsign.circle.fill',  color: '#5A8A6E', text: 'Your financial aid estimate is ready' },
     ];
     const AID = [
       { label: 'Merit Scholarship',  amount: '$12,000' },
@@ -721,11 +721,11 @@ export default function AdmissionsScreen() {
     return (
       <>
         {/* Status card */}
-        <View style={{ backgroundColor: '#003A6318', borderRadius: 16, padding: 20, marginBottom: 16, borderWidth: 1, borderColor: '#003A6344' }}>
-          <Text style={{ fontSize: 11, fontWeight: '700', color: '#003A63', textTransform: 'uppercase', letterSpacing: 0.6 }}>Application Status</Text>
+        <View style={{ backgroundColor: '#1A171418', borderRadius: 16, padding: 20, marginBottom: 16, borderWidth: 1, borderColor: '#1A171444' }}>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: '#1A1714', textTransform: 'uppercase', letterSpacing: 0.6 }}>Application Status</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 10 }}>
-            <View style={{ width: 14, height: 14, borderRadius: 7, backgroundColor: '#003A63' }} />
-            <Text style={{ fontSize: 22, fontWeight: '800', color: '#003A63' }}>Under Review</Text>
+            <View style={{ width: 14, height: 14, borderRadius: 7, backgroundColor: '#1A1714' }} />
+            <Text style={{ fontSize: 22, fontWeight: '800', color: '#1A1714' }}>Under Review</Text>
           </View>
           <Text style={{ fontSize: 13, color: C.secondary, marginTop: 6 }}>Submitted Feb 12, 2026  ·  Application ID: LU-2026-00847</Text>
           <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
@@ -757,10 +757,10 @@ export default function AdmissionsScreen() {
               <IconSymbol
                 name={doc.done ? 'checkmark.circle.fill' : 'circle'}
                 size={20}
-                color={doc.done ? '#22C55E' : C.muted}
+                color={doc.done ? '#5A8A6E' : C.muted}
               />
               <Text style={{ flex: 1, fontSize: 14, color: C.label }}>{doc.label}</Text>
-              <Text style={{ fontSize: 12, color: doc.done ? '#22C55E' : '#EF4444', fontWeight: '600' }}>
+              <Text style={{ fontSize: 12, color: doc.done ? '#5A8A6E' : '#B85C5C', fontWeight: '600' }}>
                 {doc.done ? 'Received' : 'Pending'}
               </Text>
             </View>
@@ -778,12 +778,12 @@ export default function AdmissionsScreen() {
               borderBottomColor: C.separator,
             }}>
               <Text style={{ fontSize: 14, color: C.label }}>{item.label}</Text>
-              <Text style={{ fontSize: 14, fontWeight: '700', color: '#003A63' }}>{item.amount}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: '#1A1714' }}>{item.amount}</Text>
             </View>
           ))}
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingTop: 4 }}>
             <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>Total Estimated Aid</Text>
-            <Text style={{ fontSize: 16, fontWeight: '800', color: '#22C55E' }}>$26,800</Text>
+            <Text style={{ fontSize: 16, fontWeight: '800', color: '#5A8A6E' }}>$26,800</Text>
           </View>
         </View>
 
@@ -825,7 +825,7 @@ export default function AdmissionsScreen() {
         <Pressable
           style={({ pressed }) => ({
             flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
-            backgroundColor: pressed ? '#003A63cc' : '#003A63',
+            backgroundColor: pressed ? '#1A1714cc' : '#1A1714',
             borderRadius: 12, paddingVertical: 14, marginBottom: 12,
           })}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
@@ -849,7 +849,7 @@ export default function AdmissionsScreen() {
     return (
       <>
         {apps.map(app => {
-          const completenessColor = app.completeness >= 90 ? '#5A8A6E' : app.completeness >= 70 ? '#F59E0B' : '#B85C5C';
+          const completenessColor = app.completeness >= 90 ? '#5A8A6E' : app.completeness >= 70 ? '#B8943E' : '#B85C5C';
           const tColor = appTypeColor(app.applicationType);
           const applicant = APPLICANTS.find(a => a.name === app.studentName);
 
@@ -896,7 +896,7 @@ export default function AdmissionsScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 {app.reviewerName
                   ? <Text style={{ fontSize: 11, color: C.muted, flex: 1 }}>Reviewed by {app.reviewerName}</Text>
-                  : <Text style={{ fontSize: 11, color: '#3B82F6', flex: 1 }}>Unassigned</Text>
+                  : <Text style={{ fontSize: 11, color: '#1A1714', flex: 1 }}>Unassigned</Text>
                 }
                 {app.decision && (
                   <View style={{ paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6, backgroundColor: decisionColor(app.decision) + '22' }}>
@@ -1294,10 +1294,10 @@ export default function AdmissionsScreen() {
 
     const statCards = [
       { label: 'Active', value: String(activeCount), icon: 'megaphone.fill', color: '#5A8A6E' },
-      { label: 'Prospects Reached', value: stats.totalReach.toLocaleString(), icon: 'person.3.fill', color: '#3B82F6' },
-      { label: 'Applications', value: String(stats.totalApplications), icon: 'doc.fill', color: '#F59E0B' },
+      { label: 'Prospects Reached', value: stats.totalReach.toLocaleString(), icon: 'person.3.fill', color: '#1A1714' },
+      { label: 'Applications', value: String(stats.totalApplications), icon: 'doc.fill', color: '#B8943E' },
       { label: 'Conversion', value: `${stats.conversionRate}%`, icon: 'chart.line.uptrend.xyaxis', color: C.accent },
-      { label: 'Campus RSVPs', value: String(stats.totalRsvps), icon: 'person.fill.checkmark', color: '#8B5CF6' },
+      { label: 'Campus RSVPs', value: String(stats.totalRsvps), icon: 'person.fill.checkmark', color: '#1A1714' },
     ];
 
     return (
@@ -1386,9 +1386,9 @@ export default function AdmissionsScreen() {
                   {/* Full funnel */}
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                     {[
-                      { label: 'Reached',   value: campaign.reach,                  color: '#3B82F6' },
-                      { label: 'Inquiries', value: campaign.inquiriesGenerated,      color: '#8B5CF6' },
-                      { label: 'Applied',   value: campaign.applicationsGenerated,   color: '#F59E0B' },
+                      { label: 'Reached',   value: campaign.reach,                  color: '#1A1714' },
+                      { label: 'Inquiries', value: campaign.inquiriesGenerated,      color: '#1A1714' },
+                      { label: 'Applied',   value: campaign.applicationsGenerated,   color: '#B8943E' },
                     ].map((step, idx) => (
                       <React.Fragment key={step.label}>
                         <View style={{ flex: 1, alignItems: 'center' }}>
@@ -1476,9 +1476,9 @@ export default function AdmissionsScreen() {
         <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 12, gap: 10 }}>
           <Text style={{ fontSize: 13, fontWeight: '600', color: C.label, marginBottom: 4 }}>Application Funnel (All Campaigns)</Text>
           {[
-            { label: 'Prospects Reached', value: stats.totalReach, max: stats.totalReach, color: '#3B82F6' },
-            { label: 'Inquiries',         value: stats.totalInquiries,    max: stats.totalReach, color: '#8B5CF6' },
-            { label: 'Applications',      value: stats.totalApplications, max: stats.totalReach, color: '#F59E0B' },
+            { label: 'Prospects Reached', value: stats.totalReach, max: stats.totalReach, color: '#1A1714' },
+            { label: 'Inquiries',         value: stats.totalInquiries,    max: stats.totalReach, color: '#1A1714' },
+            { label: 'Applications',      value: stats.totalApplications, max: stats.totalReach, color: '#B8943E' },
           ].map(row => (
             <View key={row.label} style={{ gap: 4 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -1495,7 +1495,7 @@ export default function AdmissionsScreen() {
         {/* Top performing campaign */}
         <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <IconSymbol name="trophy.fill" size={14} color="#F59E0B" />
+            <IconSymbol name="trophy.fill" size={14} color="#B8943E" />
             <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Top Campaign</Text>
           </View>
           <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{top.name}</Text>
@@ -1507,9 +1507,9 @@ export default function AdmissionsScreen() {
         {/* Suggested campaigns */}
         <Text style={{ fontSize: 16, fontWeight: '700', color: C.label, marginBottom: 12 }}>Suggested Campaigns</Text>
         {[
-          { label: 'HBCU Consortium Fair', reason: 'Spring fair season — high ROI for transfer prospects', icon: 'arrow.triangle.2.circlepath', color: '#0EA5E9' },
+          { label: 'HBCU Consortium Fair', reason: 'Spring fair season — high ROI for transfer prospects', icon: 'arrow.triangle.2.circlepath', color: '#1A1714' },
           { label: 'Yield Email Sequence', reason: '47 admitted students haven\'t deposited yet', icon: 'envelope.fill', color: '#6B7280' },
-          { label: 'Financial Aid Webinar', reason: 'Reduce summer melt for low-income admits', icon: 'dollarsign.circle.fill', color: '#10B981' },
+          { label: 'Financial Aid Webinar', reason: 'Reduce summer melt for low-income admits', icon: 'dollarsign.circle.fill', color: '#5A8A6E' },
         ].map(sug => (
           <Pressable
             key={sug.label}
@@ -1684,7 +1684,7 @@ export default function AdmissionsScreen() {
             <RolePill
               role={role}
               onPress={cycleRole}
-              accentColor="#003A63"
+              accentColor="#1A1714"
               isPrimary={role === 'Dean'}
             />
             {pills.length > 0 && (

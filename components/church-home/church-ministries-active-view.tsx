@@ -24,15 +24,15 @@ const CATEGORY_FILTERS: { key: 'all' | MinistryCategory; label: string }[] = [
 
 const CATEGORY_BADGE_COLORS: Record<MinistryCategory, string> = {
   worship: ACCENT,
-  youth: '#F59E0B',
+  youth: '#B8943E',
   fellowship: ACCENT,
   outreach: ACCENT,
   service: ACCENT,
 };
 
 const STATUS_COLORS: Record<Ministry['status'], string> = {
-  active: '#22C55E',
-  seasonal: '#F59E0B',
+  active: '#5A8A6E',
+  seasonal: '#B8943E',
   launching: ACCENT,
 };
 
@@ -95,8 +95,8 @@ export function ChurchMinistriesActiveView({ colors, accent }: Props) {
               </ThemedText>
               <View style={styles.badgeRow}>
                 {/* Category Badge */}
-                <View style={[styles.categoryBadge, { backgroundColor: (CATEGORY_BADGE_COLORS[m.category] ?? '#A1A1AA') + '22' }]}>
-                  <ThemedText style={[styles.categoryBadgeText, { color: CATEGORY_BADGE_COLORS[m.category] ?? '#A1A1AA' }]}>
+                <View style={[styles.categoryBadge, { backgroundColor: (CATEGORY_BADGE_COLORS[m.category] ?? '#9C9790') + '22' }]}>
+                  <ThemedText style={[styles.categoryBadgeText, { color: CATEGORY_BADGE_COLORS[m.category] ?? '#9C9790' }]}>
                     {MINISTRY_CATEGORY_LABELS[m.category]}
                   </ThemedText>
                 </View>

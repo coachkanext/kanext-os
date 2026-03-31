@@ -324,23 +324,23 @@ const FILTER_CHIPS: { id: FilterChip; label: string }[] = [
 
 const EVENT_TYPE_COLOR: Record<EventType, string> = {
   worship: ACCENT,
-  fellowship: '#22C55E',
+  fellowship: '#5A8A6E',
   outreach: ACCENT,
-  conference: '#F59E0B',
+  conference: '#B8943E',
   class: ACCENT,
-  retreat: '#F59E0B',
+  retreat: '#B8943E',
 };
 
 const REG_STATUS_COLOR: Record<string, string> = {
-  open: '#22C55E',
-  full: '#EF4444',
-  waitlist: '#F59E0B',
+  open: '#5A8A6E',
+  full: '#B85C5C',
+  waitlist: '#B8943E',
 };
 
 const VISIBILITY_COLOR: Record<EventVisibility, string> = {
-  public: '#22C55E',
+  public: '#5A8A6E',
   members: ACCENT,
-  leaders: '#F59E0B',
+  leaders: '#B8943E',
 };
 
 // =============================================================================
@@ -395,15 +395,15 @@ const MY_EVENTS_PAST: PastMyEvent[] = [
 ];
 
 const RSVP_COLOR: Record<string, string> = {
-  going: '#22C55E',
-  maybe: '#F59E0B',
-  declined: '#EF4444',
+  going: '#5A8A6E',
+  maybe: '#B8943E',
+  declined: '#B85C5C',
 };
 
 const ROLE_BADGE_COLOR: Record<string, string> = {
   attendee: ACCENT,
   volunteer: ACCENT,
-  host: '#F59E0B',
+  host: '#B8943E',
 };
 
 // =============================================================================
@@ -650,9 +650,9 @@ const VOLUNTEER_EVENTS: VolunteerEvent[] = [
 ];
 
 const COVERAGE_CONFIG: Record<CoverageStatus, { label: string; color: string; icon: string }> = {
-  covered: { label: 'Fully Covered', color: '#22C55E', icon: 'checkmark.circle.fill' },
-  'needs-help': { label: 'Needs Help', color: '#F59E0B', icon: 'exclamationmark.triangle.fill' },
-  critical: { label: 'Critical', color: '#EF4444', icon: 'xmark.circle.fill' },
+  covered: { label: 'Fully Covered', color: '#5A8A6E', icon: 'checkmark.circle.fill' },
+  'needs-help': { label: 'Needs Help', color: '#B8943E', icon: 'exclamationmark.triangle.fill' },
+  critical: { label: 'Critical', color: '#B85C5C', icon: 'xmark.circle.fill' },
 };
 
 // =============================================================================
@@ -712,7 +712,7 @@ const RECENT_CHECKINS: RecentCheckIn[] = [
 const CHECKIN_TYPE_COLOR: Record<string, string> = {
   member: ACCENT,
   child: ACCENT,
-  visitor: '#22C55E',
+  visitor: '#5A8A6E',
 };
 
 // =============================================================================
@@ -745,7 +745,7 @@ interface AttendanceBreakdown {
 const ATTENDANCE_BREAKDOWN: AttendanceBreakdown[] = [
   { label: 'Adults', value: 348, color: ACCENT },
   { label: 'Children', value: 82, color: ACCENT },
-  { label: 'First-Time Visitors', value: 11, color: '#22C55E' },
+  { label: 'First-Time Visitors', value: 11, color: '#5A8A6E' },
   { label: 'Returning Visitors', value: 4, color: ACCENT },
 ];
 
@@ -791,15 +791,15 @@ const FOLLOWUP_ITEMS: FollowUpItem[] = [
 ];
 
 const FOLLOWUP_TYPE_COLOR: Record<FollowUpType, string> = {
-  'first-time': '#22C55E',
-  absent: '#F59E0B',
+  'first-time': '#5A8A6E',
+  absent: '#B8943E',
   returning: ACCENT,
 };
 
 const FOLLOWUP_STATUS_COLOR: Record<string, string> = {
-  pending: '#F59E0B',
+  pending: '#B8943E',
   'in-progress': ACCENT,
-  completed: '#22C55E',
+  completed: '#5A8A6E',
 };
 
 // =============================================================================
@@ -892,8 +892,8 @@ function BrowseView({ colors, role }: { colors: typeof Colors.light; role: Churc
           <Card colors={colors}>
             <View style={s.statsRow}>
               <StatBox label="Total Events" value={String(totalEvents)} colors={colors} />
-              <StatBox label="Open Reg." value={String(openEvents)} colors={colors} valueColor="#22C55E" />
-              <StatBox label="Full" value={String(fullEvents)} colors={colors} valueColor="#EF4444" />
+              <StatBox label="Open Reg." value={String(openEvents)} colors={colors} valueColor="#5A8A6E" />
+              <StatBox label="Full" value={String(fullEvents)} colors={colors} valueColor="#B85C5C" />
               <StatBox label="Registered" value={totalRegistered.toLocaleString()} colors={colors} valueColor={ACCENT} />
             </View>
           </Card>
@@ -1075,8 +1075,8 @@ function MyEventsView({ colors, role }: { colors: typeof Colors.light; role: Chu
             </View>
           </View>
           <View style={s.reminderRow}>
-            <IconSymbol name={event.reminderOn ? 'bell.fill' : 'bell.slash' as any} size={12} color={event.reminderOn ? '#22C55E' : colors.textTertiary} />
-            <ThemedText style={[s.reminderText, { color: event.reminderOn ? '#22C55E' : colors.textTertiary }]}>
+            <IconSymbol name={event.reminderOn ? 'bell.fill' : 'bell.slash' as any} size={12} color={event.reminderOn ? '#5A8A6E' : colors.textTertiary} />
+            <ThemedText style={[s.reminderText, { color: event.reminderOn ? '#5A8A6E' : colors.textTertiary }]}>
               Reminder {event.reminderOn ? 'On' : 'Off'}
             </ThemedText>
           </View>
@@ -1260,12 +1260,12 @@ function ServicePlanView({ colors, role }: { colors: typeof Colors.light; role: 
                 </View>
                 <View style={{ alignItems: 'flex-end', gap: 4 }}>
                   <View style={s.planStatusRow}>
-                    <View style={[s.statusBadgeSm, { backgroundColor: '#22C55E20' }]}>
-                      <ThemedText style={[s.statusBadgeSmText, { color: '#22C55E' }]}>{confirmedCount} confirmed</ThemedText>
+                    <View style={[s.statusBadgeSm, { backgroundColor: '#5A8A6E20' }]}>
+                      <ThemedText style={[s.statusBadgeSmText, { color: '#5A8A6E' }]}>{confirmedCount} confirmed</ThemedText>
                     </View>
                     {tbdCount > 0 && (
-                      <View style={[s.statusBadgeSm, { backgroundColor: '#F59E0B20' }]}>
-                        <ThemedText style={[s.statusBadgeSmText, { color: '#F59E0B' }]}>{tbdCount} TBD</ThemedText>
+                      <View style={[s.statusBadgeSm, { backgroundColor: '#B8943E20' }]}>
+                        <ThemedText style={[s.statusBadgeSmText, { color: '#B8943E' }]}>{tbdCount} TBD</ThemedText>
                       </View>
                     )}
                   </View>
@@ -1293,7 +1293,7 @@ function ServicePlanView({ colors, role }: { colors: typeof Colors.light; role: 
                   <ThemedText style={[s.planOrderLabel, { color: colors.text }]}>Order of Service:</ThemedText>
                   {plan.elements.map((element, idx) => {
                     const isConfirmed = element.status === 'confirmed';
-                    const statusColor = isConfirmed ? '#22C55E' : '#F59E0B';
+                    const statusColor = isConfirmed ? '#5A8A6E' : '#B8943E';
 
                     return (
                       <View
@@ -1371,9 +1371,9 @@ function VolunteersView({ colors, role }: { colors: typeof Colors.light; role: C
                 {/* Stats strip */}
                 <View style={s.volStatsRow}>
                   <StatBox label="Needed" value={String(event.neededVolunteers)} colors={colors} />
-                  <StatBox label="Confirmed" value={String(event.confirmed)} colors={colors} valueColor="#22C55E" />
-                  <StatBox label="Pending" value={String(event.pending)} colors={colors} valueColor="#F59E0B" />
-                  <StatBox label="Open" value={String(openSlots)} colors={colors} valueColor={openSlots > 0 ? '#EF4444' : '#22C55E'} />
+                  <StatBox label="Confirmed" value={String(event.confirmed)} colors={colors} valueColor="#5A8A6E" />
+                  <StatBox label="Pending" value={String(event.pending)} colors={colors} valueColor="#B8943E" />
+                  <StatBox label="Open" value={String(openSlots)} colors={colors} valueColor={openSlots > 0 ? '#B85C5C' : '#5A8A6E'} />
                 </View>
 
                 {/* Coverage badge */}
@@ -1405,11 +1405,11 @@ function VolunteersView({ colors, role }: { colors: typeof Colors.light; role: C
                           <IconSymbol
                             name={isFilled ? 'checkmark.circle.fill' : 'circle' as any}
                             size={14}
-                            color={isFilled ? '#22C55E' : '#EF4444'}
+                            color={isFilled ? '#5A8A6E' : '#B85C5C'}
                           />
                           <View style={{ flex: 1 }}>
                             <ThemedText style={[s.slotRole, { color: colors.text }]}>{slot.role}</ThemedText>
-                            <ThemedText style={[s.slotPerson, { color: isFilled ? colors.textSecondary : '#EF4444' }]}>
+                            <ThemedText style={[s.slotPerson, { color: isFilled ? colors.textSecondary : '#B85C5C' }]}>
                               {slot.person ?? 'Open - Needs Volunteer'}
                             </ThemedText>
                           </View>
@@ -1445,7 +1445,7 @@ function CheckInView({ colors, role }: { colors: typeof Colors.light; role: Chur
   const currentEvent = CHECKIN_EVENTS.find((e) => e.id === selectedEvent) ?? CHECKIN_EVENTS[0];
   const totalCheckedIn = CHECKIN_STATIONS.reduce((a, b) => a + b.checkedIn, 0);
   const capacityPct = Math.round((totalCheckedIn / currentEvent.capacity) * 100);
-  const capacityColor = capacityPct >= 90 ? '#EF4444' : capacityPct >= 70 ? '#F59E0B' : '#22C55E';
+  const capacityColor = capacityPct >= 90 ? '#B85C5C' : capacityPct >= 70 ? '#B8943E' : '#5A8A6E';
 
   return (
     <View>
@@ -1496,7 +1496,7 @@ function CheckInView({ colors, role }: { colors: typeof Colors.light; role: Chur
         <View style={s.statsRow}>
           <StatBox label="Total Checked In" value={String(CHECKIN_STATS.totalCheckedIn)} colors={colors} valueColor={ACCENT} />
           <StatBox label="Children" value={String(CHECKIN_STATS.childrenCheckedIn)} colors={colors} valueColor={ACCENT} />
-          <StatBox label="First-Time" value={String(CHECKIN_STATS.firstTimeVisitors)} colors={colors} valueColor="#22C55E" />
+          <StatBox label="First-Time" value={String(CHECKIN_STATS.firstTimeVisitors)} colors={colors} valueColor="#5A8A6E" />
         </View>
       </Card>
 
@@ -1532,10 +1532,10 @@ function CheckInView({ colors, role }: { colors: typeof Colors.light; role: Chur
                 idx < CHECKIN_STATIONS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
               ]}
             >
-              <View style={[s.stationDot, { backgroundColor: isActive ? '#22C55E' : '#EF4444' }]} />
+              <View style={[s.stationDot, { backgroundColor: isActive ? '#5A8A6E' : '#B85C5C' }]} />
               <View style={{ flex: 1 }}>
                 <ThemedText style={[s.stationName, { color: colors.text }]}>{station.name}</ThemedText>
-                <ThemedText style={[s.stationStatus, { color: isActive ? '#22C55E' : '#EF4444' }]}>
+                <ThemedText style={[s.stationStatus, { color: isActive ? '#5A8A6E' : '#B85C5C' }]}>
                   {isActive ? 'Active' : 'Idle'}
                 </ThemedText>
               </View>
@@ -1604,8 +1604,8 @@ function AttendanceView({ colors, role }: { colors: typeof Colors.light; role: C
         <View style={s.statsRow}>
           <StatBox label="6-Week Avg" value={String(avgAttendance)} colors={colors} valueColor={ACCENT} />
           <StatBox label="Last Sunday" value={String(WEEKLY_ATTENDANCE[WEEKLY_ATTENDANCE.length - 1]?.attendance ?? 0)} colors={colors} />
-          <StatBox label="Peak" value={String(maxAttendance)} colors={colors} valueColor="#22C55E" />
-          <StatBox label="Pending F/U" value={String(pendingCount)} colors={colors} valueColor="#F59E0B" />
+          <StatBox label="Peak" value={String(maxAttendance)} colors={colors} valueColor="#5A8A6E" />
+          <StatBox label="Pending F/U" value={String(pendingCount)} colors={colors} valueColor="#B8943E" />
         </View>
       </Card>
 
@@ -1655,7 +1655,7 @@ function AttendanceView({ colors, role }: { colors: typeof Colors.light; role: C
       <Card colors={colors}>
         {SERVICE_ATTENDANCE.map((svc, idx) => {
           const fillPct = Math.round((svc.attendance / svc.capacity) * 100);
-          const fillColor = fillPct >= 80 ? '#F59E0B' : fillPct >= 50 ? ACCENT : '#A1A1AA';
+          const fillColor = fillPct >= 80 ? '#B8943E' : fillPct >= 50 ? ACCENT : '#9C9790';
           return (
             <View
               key={svc.id}
@@ -1686,8 +1686,8 @@ function AttendanceView({ colors, role }: { colors: typeof Colors.light; role: C
       {/* Summary strip */}
       <Card colors={colors}>
         <View style={s.statsRow}>
-          <StatBox label="First-Time" value={String(firstTimeCount)} colors={colors} valueColor="#22C55E" />
-          <StatBox label="Absent (3+ wk)" value={String(absentCount)} colors={colors} valueColor="#F59E0B" />
+          <StatBox label="First-Time" value={String(firstTimeCount)} colors={colors} valueColor="#5A8A6E" />
+          <StatBox label="Absent (3+ wk)" value={String(absentCount)} colors={colors} valueColor="#B8943E" />
           <StatBox label="Returning" value={String(returningCount)} colors={colors} valueColor={ACCENT} />
         </View>
       </Card>
@@ -1888,7 +1888,7 @@ const s = StyleSheet.create({
   featuredDetailText: { color: 'rgba(255,255,255,0.6)', fontSize: 12 },
   featuredRegRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 8 },
   featuredRegBadge: { backgroundColor: 'rgba(34,197,94,0.3)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 4 },
-  featuredRegText: { color: '#22C55E', fontSize: 10, fontWeight: '700', letterSpacing: 0.3 },
+  featuredRegText: { color: '#5A8A6E', fontSize: 10, fontWeight: '700', letterSpacing: 0.3 },
   featuredSpotsText: { color: 'rgba(255,255,255,0.5)', fontSize: 11 },
 
   // ============= Browse View =============
@@ -1978,7 +1978,7 @@ const s = StyleSheet.create({
   quickAddText: { fontSize: 14, fontWeight: '600' },
   quickAddHint: { fontSize: 11, marginTop: 4 },
   liveBanner: {
-    backgroundColor: '#22C55E20',
+    backgroundColor: '#5A8A6E20',
     borderRadius: BorderRadius.lg,
     padding: Spacing.md,
     marginBottom: Spacing.sm,
@@ -1987,8 +1987,8 @@ const s = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 8,
   },
-  liveDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#22C55E' },
-  liveText: { color: '#22C55E', fontSize: 12, fontWeight: '700', letterSpacing: 0.5 },
+  liveDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#5A8A6E' },
+  liveText: { color: '#5A8A6E', fontSize: 12, fontWeight: '700', letterSpacing: 0.5 },
   liveServiceText: { fontSize: 11 },
   stationRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 10 },
   stationDot: { width: 8, height: 8, borderRadius: 4 },

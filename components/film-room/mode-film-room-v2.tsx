@@ -123,7 +123,7 @@ function GameRow({ game, colors }: { game: VideoGame; colors: typeof Colors.ligh
 }
 
 function ClipRow({ clip, colors }: { clip: VideoClip; colors: typeof Colors.light }) {
-  const typeColor = clip.type === 'highlight' ? '#22C55E' : clip.type === 'breakdown' ? accent : clip.type === 'scout' ? '#F59E0B' : accent;
+  const typeColor = clip.type === 'highlight' ? '#5A8A6E' : clip.type === 'breakdown' ? accent : clip.type === 'scout' ? '#B8943E' : accent;
   return (
     <Pressable
       style={({ pressed }) => [

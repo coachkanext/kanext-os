@@ -193,11 +193,11 @@ function OverviewTab({
 
   const kpiCards = [
     { label: 'Total Rooms', value: overview.totalRooms, icon: 'rectangle.3.group.fill', color: accentColor },
-    { label: 'Unread Messages', value: overview.totalUnread, icon: 'envelope.badge.fill', color: overview.totalUnread > 10 ? '#F59E0B' : '#22C55E' },
-    { label: 'Low Confirmation', value: overview.announcementsBelowThreshold, icon: 'exclamationmark.circle.fill', color: overview.announcementsBelowThreshold > 0 ? '#EF4444' : '#22C55E' },
+    { label: 'Unread Messages', value: overview.totalUnread, icon: 'envelope.badge.fill', color: overview.totalUnread > 10 ? '#B8943E' : '#5A8A6E' },
+    { label: 'Low Confirmation', value: overview.announcementsBelowThreshold, icon: 'exclamationmark.circle.fill', color: overview.announcementsBelowThreshold > 0 ? '#B85C5C' : '#5A8A6E' },
     { label: 'Pinned Items', value: overview.pinnedMessages, icon: 'pin.fill', color: accentColor },
-    { label: 'Open Escalations', value: overview.openEscalations, icon: 'exclamationmark.triangle.fill', color: overview.openEscalations > 0 ? '#EF4444' : '#22C55E' },
-    { label: 'Req. Confirmation', value: overview.requiringConfirmation, icon: 'checkmark.circle.fill', color: overview.requiringConfirmation > 0 ? '#F59E0B' : '#22C55E' },
+    { label: 'Open Escalations', value: overview.openEscalations, icon: 'exclamationmark.triangle.fill', color: overview.openEscalations > 0 ? '#B85C5C' : '#5A8A6E' },
+    { label: 'Req. Confirmation', value: overview.requiringConfirmation, icon: 'checkmark.circle.fill', color: overview.requiringConfirmation > 0 ? '#B8943E' : '#5A8A6E' },
   ];
 
   return (
@@ -220,7 +220,7 @@ function OverviewTab({
       {/* Most Active Room */}
       <View style={[s.highlightCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.highlightRow}>
-          <IconSymbol name="flame.fill" size={16} color="#F59E0B" />
+          <IconSymbol name="flame.fill" size={16} color="#B8943E" />
           <ThemedText style={[s.highlightLabel, { color: colors.textSecondary }]}>Most Active Room</ThemedText>
         </View>
         <ThemedText style={[s.highlightValue, { color: colors.text }]}>{overview.mostActiveRoom}</ThemedText>
@@ -296,7 +296,7 @@ function OfficialRoomsTab({
             <StatusBadge label={typeLabel.toUpperCase()} color={typeColor} />
             <StatusBadge label={`${item.memberCount} MEMBERS`} color={colors.textSecondary} />
             {item.requiredReadPending > 0 && (
-              <StatusBadge label={`${item.requiredReadPending} PENDING`} color="#F59E0B" />
+              <StatusBadge label={`${item.requiredReadPending} PENDING`} color="#B8943E" />
             )}
           </View>
           <View style={[s.roomMeta, { borderTopColor: colors.border }]}>
@@ -345,7 +345,7 @@ function AnnouncementsTab({
       const audColor = ANNOUNCEMENT_AUDIENCE_COLORS[item.audience];
       const audLabel = ANNOUNCEMENT_AUDIENCE_LABELS[item.audience];
       const ratePercent = Math.round(item.confirmationRate * 100);
-      const rateColor = item.confirmationRate < 0.8 ? '#EF4444' : '#22C55E';
+      const rateColor = item.confirmationRate < 0.8 ? '#B85C5C' : '#5A8A6E';
       return (
         <View
           style={[s.announcementCard, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -510,7 +510,7 @@ function EscalationsTab({
               <StatusBadge label={typeLabel.toUpperCase()} color={typeColor} />
               <StatusBadge
                 label={item.resolved ? 'RESOLVED' : 'OPEN'}
-                color={item.resolved ? '#22C55E' : '#EF4444'}
+                color={item.resolved ? '#5A8A6E' : '#B85C5C'}
               />
             </View>
             <ThemedText style={[s.escalationMessage, { color: colors.text }]} numberOfLines={3}>
@@ -628,7 +628,7 @@ function RoomDetailSheet({
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={typeLabel.toUpperCase()} color={typeColor} />
         {room.unread > 0 && (
-          <StatusBadge label={`${room.unread} UNREAD`} color="#F59E0B" />
+          <StatusBadge label={`${room.unread} UNREAD`} color="#B8943E" />
         )}
       </View>
 
@@ -649,7 +649,7 @@ function RoomDetailSheet({
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Members</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: room.requiredReadPending > 0 ? '#F59E0B' : '#22C55E' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: room.requiredReadPending > 0 ? '#B8943E' : '#5A8A6E' }]}>
               {room.requiredReadPending}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Pending Reads</ThemedText>
@@ -670,7 +670,7 @@ function RoomDetailSheet({
           </View>
         </View>
         <View style={s.sheetListRow}>
-          <IconSymbol name="envelope.badge.fill" size={14} color={room.unread > 0 ? '#F59E0B' : '#22C55E'} />
+          <IconSymbol name="envelope.badge.fill" size={14} color={room.unread > 0 ? '#B8943E' : '#5A8A6E'} />
           <View style={s.sheetListTextCol}>
             <ThemedText style={[s.sheetListTitle, { color: colors.text }]}>Unread Messages</ThemedText>
             <ThemedText style={[s.sheetListSubtitle, { color: colors.textSecondary }]}>
@@ -725,7 +725,7 @@ function EscalationDetailSheet({
         <StatusBadge label={typeLabel.toUpperCase()} color={typeColor} />
         <StatusBadge
           label={escalation.resolved ? 'RESOLVED' : 'OPEN'}
-          color={escalation.resolved ? '#22C55E' : '#EF4444'}
+          color={escalation.resolved ? '#5A8A6E' : '#B85C5C'}
         />
       </View>
 
@@ -770,7 +770,7 @@ function EscalationDetailSheet({
       <View style={s.sheetSection}>
         <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Status</ThemedText>
         <View style={s.sheetListRow}>
-          <View style={[s.timelineDot, { backgroundColor: escalation.resolved ? '#22C55E' : '#EF4444' }]} />
+          <View style={[s.timelineDot, { backgroundColor: escalation.resolved ? '#5A8A6E' : '#B85C5C' }]} />
           <ThemedText style={[s.sheetBodyText, { color: colors.textSecondary }]}>
             {escalation.resolved ? 'This escalation has been resolved' : 'This escalation is currently open and requires attention'}
           </ThemedText>

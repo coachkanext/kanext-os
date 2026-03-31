@@ -277,9 +277,9 @@ function DirectoryTab({
           {hasRisk && (
             <View style={s.riskFlagRow}>
               {item.riskFlags.map((flag, idx) => (
-                <View key={`risk-${idx}`} style={[s.riskFlag, { backgroundColor: '#EF444418' }]}>
-                  <IconSymbol name="exclamationmark.triangle.fill" size={10} color="#EF4444" />
-                  <ThemedText style={[s.riskFlagText, { color: '#EF4444' }]}>{flag}</ThemedText>
+                <View key={`risk-${idx}`} style={[s.riskFlag, { backgroundColor: '#B85C5C18' }]}>
+                  <IconSymbol name="exclamationmark.triangle.fill" size={10} color="#B85C5C" />
+                  <ThemedText style={[s.riskFlagText, { color: '#B85C5C' }]}>{flag}</ThemedText>
                 </View>
               ))}
             </View>
@@ -443,9 +443,9 @@ function RolesTab({
   };
 }) {
   const coverageColor = (pct: number) => {
-    if (pct < 70) return '#EF4444';
-    if (pct < 90) return '#F59E0B';
-    return '#22C55E';
+    if (pct < 70) return '#B85C5C';
+    if (pct < 90) return '#B8943E';
+    return '#5A8A6E';
   };
 
   const renderCoverageRow = useCallback(
@@ -459,10 +459,10 @@ function RolesTab({
             <ThemedText style={[s.coverageStatText, { color: colors.textSecondary }]}>
               {item.criticalSeats} critical
             </ThemedText>
-            <ThemedText style={[s.coverageStatText, { color: '#22C55E' }]}>
+            <ThemedText style={[s.coverageStatText, { color: '#5A8A6E' }]}>
               {item.filled} filled
             </ThemedText>
-            <ThemedText style={[s.coverageStatText, { color: item.vacant > 0 ? '#EF4444' : colors.textTertiary }]}>
+            <ThemedText style={[s.coverageStatText, { color: item.vacant > 0 ? '#B85C5C' : colors.textTertiary }]}>
               {item.vacant} vacant
             </ThemedText>
           </View>
@@ -488,11 +488,11 @@ function RolesTab({
               <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Critical Seats Filled</ThemedText>
             </View>
             <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <ThemedText style={[s.kpiValue, { color: '#EF4444' }]}>{tiles.vacantLeadership}</ThemedText>
+              <ThemedText style={[s.kpiValue, { color: '#B85C5C' }]}>{tiles.vacantLeadership}</ThemedText>
               <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Vacant Leadership</ThemedText>
             </View>
             <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <ThemedText style={[s.kpiValue, { color: '#22C55E' }]}>{tiles.youthCareAccess}</ThemedText>
+              <ThemedText style={[s.kpiValue, { color: '#5A8A6E' }]}>{tiles.youthCareAccess}</ThemedText>
               <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Youth/Care Coverage</ThemedText>
             </View>
             <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -559,7 +559,7 @@ function PermissionsTab({
         {/* Capabilities (first 3) */}
         {item.capabilities.slice(0, 3).map((cap, idx) => (
           <View key={`cap-${idx}`} style={s.capabilityItem}>
-            <View style={[s.capabilityDot, { backgroundColor: '#22C55E' }]} />
+            <View style={[s.capabilityDot, { backgroundColor: '#5A8A6E' }]} />
             <ThemedText style={[s.capabilityText, { color: colors.textSecondary }]} numberOfLines={1}>
               {cap}
             </ThemedText>
@@ -576,14 +576,14 @@ function PermissionsTab({
           <View style={{ marginTop: Spacing.sm }}>
             {item.sensitiveFields.slice(0, 2).map((field, idx) => (
               <View key={`sf-${idx}`} style={s.sensitiveItem}>
-                <IconSymbol name="exclamationmark.shield.fill" size={10} color="#EF4444" />
-                <ThemedText style={[s.sensitiveText, { color: '#EF4444' }]} numberOfLines={1}>
+                <IconSymbol name="exclamationmark.shield.fill" size={10} color="#B85C5C" />
+                <ThemedText style={[s.sensitiveText, { color: '#B85C5C' }]} numberOfLines={1}>
                   {field}
                 </ThemedText>
               </View>
             ))}
             {item.sensitiveFields.length > 2 && (
-              <ThemedText style={[s.sensitiveText, { color: '#EF444480', marginLeft: 14, marginTop: 2 }]}>
+              <ThemedText style={[s.sensitiveText, { color: '#B85C5C80', marginLeft: 14, marginTop: 2 }]}>
                 +{item.sensitiveFields.length - 2} more sensitive fields
               </ThemedText>
             )}
@@ -670,7 +670,7 @@ function SafeguardsTab({
             s.safeguardRow,
             {
               backgroundColor: colors.card,
-              borderColor: hasMissing ? '#EF444440' : colors.border,
+              borderColor: hasMissing ? '#B85C5C40' : colors.border,
             },
           ]}
         >
@@ -689,21 +689,21 @@ function SafeguardsTab({
             <IconSymbol
               name={'figure.and.child.holdinghands' as any}
               size={14}
-              color={item.youthAccess ? '#22C55E' : colors.textTertiary}
+              color={item.youthAccess ? '#5A8A6E' : colors.textTertiary}
               style={item.youthAccess ? s.safeguardIconActive : s.safeguardIconInactive}
             />
             {/* Care */}
             <IconSymbol
               name={'heart.fill' as any}
               size={14}
-              color={item.careAccess ? '#22C55E' : colors.textTertiary}
+              color={item.careAccess ? '#5A8A6E' : colors.textTertiary}
               style={item.careAccess ? s.safeguardIconActive : s.safeguardIconInactive}
             />
             {/* Finance */}
             <IconSymbol
               name={'dollarsign.circle.fill' as any}
               size={14}
-              color={item.financeAccess ? '#22C55E' : colors.textTertiary}
+              color={item.financeAccess ? '#5A8A6E' : colors.textTertiary}
               style={item.financeAccess ? s.safeguardIconActive : s.safeguardIconInactive}
             />
           </View>
@@ -713,9 +713,9 @@ function SafeguardsTab({
 
           {/* Safeguard Acknowledged */}
           {item.safeguardAcknowledged ? (
-            <IconSymbol name="checkmark.circle.fill" size={16} color="#22C55E" />
+            <IconSymbol name="checkmark.circle.fill" size={16} color="#5A8A6E" />
           ) : (
-            <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#EF4444" />
+            <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#B85C5C" />
           )}
         </View>
       );
@@ -743,11 +743,11 @@ function SafeguardsTab({
               <ThemedText style={[s.safeguardTileLabel, { color: colors.textSecondary }]}>Care Access</ThemedText>
             </View>
             <View style={[s.safeguardTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-              <ThemedText style={[s.safeguardTileValue, { color: '#22C55E' }]}>{financeCount}</ThemedText>
+              <ThemedText style={[s.safeguardTileValue, { color: '#5A8A6E' }]}>{financeCount}</ThemedText>
               <ThemedText style={[s.safeguardTileLabel, { color: colors.textSecondary }]}>Finance Access</ThemedText>
             </View>
-            <View style={[s.safeguardTile, { backgroundColor: colors.card, borderColor: missingAck > 0 ? '#EF444440' : colors.border }]}>
-              <ThemedText style={[s.safeguardTileValue, { color: '#EF4444' }]}>{missingAck}</ThemedText>
+            <View style={[s.safeguardTile, { backgroundColor: colors.card, borderColor: missingAck > 0 ? '#B85C5C40' : colors.border }]}>
+              <ThemedText style={[s.safeguardTileValue, { color: '#B85C5C' }]}>{missingAck}</ThemedText>
               <ThemedText style={[s.safeguardTileLabel, { color: colors.textSecondary }]}>Missing Items</ThemedText>
             </View>
           </View>
@@ -830,21 +830,21 @@ function PersonDetailSheet({
 
         <View style={s.sheetDetailRow}>
           <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Youth Access</ThemedText>
-          <ThemedText style={[s.sheetDetailValue, { color: person.youthAccess ? '#22C55E' : colors.textTertiary }]}>
+          <ThemedText style={[s.sheetDetailValue, { color: person.youthAccess ? '#5A8A6E' : colors.textTertiary }]}>
             {person.youthAccess ? 'Yes' : 'No'}
           </ThemedText>
         </View>
 
         <View style={s.sheetDetailRow}>
           <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Care Access</ThemedText>
-          <ThemedText style={[s.sheetDetailValue, { color: person.careAccess ? '#22C55E' : colors.textTertiary }]}>
+          <ThemedText style={[s.sheetDetailValue, { color: person.careAccess ? '#5A8A6E' : colors.textTertiary }]}>
             {person.careAccess ? 'Yes' : 'No'}
           </ThemedText>
         </View>
 
         <View style={s.sheetDetailRow}>
           <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Finance Access</ThemedText>
-          <ThemedText style={[s.sheetDetailValue, { color: person.financeAccess ? '#22C55E' : colors.textTertiary }]}>
+          <ThemedText style={[s.sheetDetailValue, { color: person.financeAccess ? '#5A8A6E' : colors.textTertiary }]}>
             {person.financeAccess ? 'Yes' : 'No'}
           </ThemedText>
         </View>
@@ -857,9 +857,9 @@ function PersonDetailSheet({
         <View style={s.sheetDetailRow}>
           <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Safeguard Acknowledged</ThemedText>
           {person.safeguardAcknowledged ? (
-            <IconSymbol name="checkmark.circle.fill" size={16} color="#22C55E" />
+            <IconSymbol name="checkmark.circle.fill" size={16} color="#5A8A6E" />
           ) : (
-            <IconSymbol name="xmark.circle.fill" size={16} color="#EF4444" />
+            <IconSymbol name="xmark.circle.fill" size={16} color="#B85C5C" />
           )}
         </View>
       </View>
@@ -867,11 +867,11 @@ function PersonDetailSheet({
       {/* Risk Flags */}
       {person.riskFlags.length > 0 && (
         <View style={[s.sheetSection, { borderBottomColor: colors.border }]}>
-          <ThemedText style={[s.sheetSectionTitle, { color: '#EF4444' }]}>Risk Flags</ThemedText>
+          <ThemedText style={[s.sheetSectionTitle, { color: '#B85C5C' }]}>Risk Flags</ThemedText>
           {person.riskFlags.map((flag, idx) => (
             <View key={`rf-${idx}`} style={s.sheetDetailRow}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
-              <ThemedText style={[s.sheetDetailValue, { color: '#EF4444' }]}>{flag}</ThemedText>
+              <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B85C5C" />
+              <ThemedText style={[s.sheetDetailValue, { color: '#B85C5C' }]}>{flag}</ThemedText>
             </View>
           ))}
         </View>
@@ -941,7 +941,7 @@ function PermissionDetailSheet({
         <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Capabilities</ThemedText>
         {pkg.capabilities.map((cap, idx) => (
           <View key={`cap-${idx}`} style={s.capabilityItem}>
-            <View style={[s.capabilityDot, { backgroundColor: '#22C55E' }]} />
+            <View style={[s.capabilityDot, { backgroundColor: '#5A8A6E' }]} />
             <ThemedText style={[s.capabilityText, { color: colors.textSecondary }]}>{cap}</ThemedText>
           </View>
         ))}
@@ -950,11 +950,11 @@ function PermissionDetailSheet({
       {/* Sensitive Fields */}
       {pkg.sensitiveFields.length > 0 && (
         <View style={[s.sheetSection, { borderBottomColor: colors.border }]}>
-          <ThemedText style={[s.sheetSectionTitle, { color: '#EF4444' }]}>Sensitive Fields</ThemedText>
+          <ThemedText style={[s.sheetSectionTitle, { color: '#B85C5C' }]}>Sensitive Fields</ThemedText>
           {pkg.sensitiveFields.map((field, idx) => (
             <View key={`sf-${idx}`} style={s.sensitiveItem}>
-              <IconSymbol name="exclamationmark.shield.fill" size={12} color="#EF4444" />
-              <ThemedText style={[s.sensitiveText, { color: '#EF4444' }]}>{field}</ThemedText>
+              <IconSymbol name="exclamationmark.shield.fill" size={12} color="#B85C5C" />
+              <ThemedText style={[s.sensitiveText, { color: '#B85C5C' }]}>{field}</ThemedText>
             </View>
           ))}
         </View>

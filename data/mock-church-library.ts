@@ -55,7 +55,7 @@ export const CHURCH_LIBRARY_SECTIONS: ChurchLibrarySection[] = [
     id: 'services',
     name: 'Services',
     icon: 'building.columns.fill',
-    colorStrip: '#1D9BF0',
+    colorStrip: '#1A1714',
     itemCount: 14,
     visibilityClass: 0,
   },
@@ -63,7 +63,7 @@ export const CHURCH_LIBRARY_SECTIONS: ChurchLibrarySection[] = [
     id: 'sermons',
     name: 'Sermons',
     icon: 'book.fill',
-    colorStrip: '#22C55E',
+    colorStrip: '#5A8A6E',
     itemCount: 12,
     visibilityClass: 0,
   },
@@ -71,7 +71,7 @@ export const CHURCH_LIBRARY_SECTIONS: ChurchLibrarySection[] = [
     id: 'ministries',
     name: 'Ministries',
     icon: 'person.3.fill',
-    colorStrip: '#EF4444',
+    colorStrip: '#B85C5C',
     itemCount: 8,
     visibilityClass: 3,
     requiresMinistry: true,
@@ -80,7 +80,7 @@ export const CHURCH_LIBRARY_SECTIONS: ChurchLibrarySection[] = [
     id: 'training',
     name: 'Training',
     icon: 'graduationcap.fill',
-    colorStrip: '#F59E0B',
+    colorStrip: '#B8943E',
     itemCount: 7,
     visibilityClass: 2,
   },
@@ -88,7 +88,7 @@ export const CHURCH_LIBRARY_SECTIONS: ChurchLibrarySection[] = [
     id: 'playlists',
     name: 'Playlists',
     icon: 'text.badge.plus',
-    colorStrip: '#8B5CF6',
+    colorStrip: '#1A1714',
     itemCount: 3,
     visibilityClass: 0,
   },
@@ -96,7 +96,7 @@ export const CHURCH_LIBRARY_SECTIONS: ChurchLibrarySection[] = [
     id: 'saved',
     name: 'Saved',
     icon: 'bookmark.fill',
-    colorStrip: '#1D9BF0',
+    colorStrip: '#1A1714',
     itemCount: 5,
     visibilityClass: 0,
   },
@@ -160,81 +160,81 @@ const SERVICES_2025: ChurchLibraryVideo[] = [
 ];
 
 const SERMONS_BY_SPEAKER: ChurchLibraryVideo[] = [
-  { id: 'ssl-1', title: 'Walking in Faith', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(4), duration: '42:15', thumbnailColor: '#1D9BF0', visibilityClass: 0, series: 'Faith Forward' },
-  { id: 'ssl-2', title: 'Grace Under Pressure', speaker: 'Elder Arik Hayes', date: daysAgo(18), duration: '36:30', thumbnailColor: '#EF4444', visibilityClass: 0, series: 'Resilience' },
-  { id: 'ssl-3', title: "The Shepherd's Voice", speaker: 'Tatjuana Phillips', date: daysAgo(46), duration: '33:50', thumbnailColor: '#8B5CF6', visibilityClass: 0, series: 'Listening' },
-  { id: 'ssl-4', title: 'Strength in Surrender', speaker: 'Pastor Lonnell Dawson Williams', date: daysAgo(31), duration: '35:45', thumbnailColor: '#22C55E', visibilityClass: 0, series: 'Resilience' },
+  { id: 'ssl-1', title: 'Walking in Faith', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(4), duration: '42:15', thumbnailColor: '#1A1714', visibilityClass: 0, series: 'Faith Forward' },
+  { id: 'ssl-2', title: 'Grace Under Pressure', speaker: 'Elder Arik Hayes', date: daysAgo(18), duration: '36:30', thumbnailColor: '#B85C5C', visibilityClass: 0, series: 'Resilience' },
+  { id: 'ssl-3', title: "The Shepherd's Voice", speaker: 'Tatjuana Phillips', date: daysAgo(46), duration: '33:50', thumbnailColor: '#1A1714', visibilityClass: 0, series: 'Listening' },
+  { id: 'ssl-4', title: 'Strength in Surrender', speaker: 'Pastor Lonnell Dawson Williams', date: daysAgo(31), duration: '35:45', thumbnailColor: '#5A8A6E', visibilityClass: 0, series: 'Resilience' },
 ];
 
 const SERMONS_BY_SERIES: ChurchLibraryVideo[] = [
-  { id: 'sse-1', title: 'Walking in Faith', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(4), duration: '42:15', thumbnailColor: '#1D9BF0', visibilityClass: 0, series: 'Faith Forward' },
-  { id: 'sse-2', title: 'The Power of Prayer', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(11), duration: '38:20', thumbnailColor: '#1D9BF0', visibilityClass: 0, series: 'Faith Forward' },
-  { id: 'sse-3', title: 'Grace Under Pressure', speaker: 'Elder Arik Hayes', date: daysAgo(18), duration: '36:30', thumbnailColor: '#22C55E', visibilityClass: 0, series: 'Resilience' },
-  { id: 'sse-4', title: 'Strength in Surrender', speaker: 'Elder Arik Hayes', date: daysAgo(31), duration: '35:45', thumbnailColor: '#EF4444', visibilityClass: 0, series: 'Resilience' },
-  { id: 'sse-5', title: 'Building on the Rock', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(39), duration: '44:00', thumbnailColor: '#1D9BF0', visibilityClass: 0, series: 'Foundations' },
+  { id: 'sse-1', title: 'Walking in Faith', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(4), duration: '42:15', thumbnailColor: '#1A1714', visibilityClass: 0, series: 'Faith Forward' },
+  { id: 'sse-2', title: 'The Power of Prayer', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(11), duration: '38:20', thumbnailColor: '#1A1714', visibilityClass: 0, series: 'Faith Forward' },
+  { id: 'sse-3', title: 'Grace Under Pressure', speaker: 'Elder Arik Hayes', date: daysAgo(18), duration: '36:30', thumbnailColor: '#5A8A6E', visibilityClass: 0, series: 'Resilience' },
+  { id: 'sse-4', title: 'Strength in Surrender', speaker: 'Elder Arik Hayes', date: daysAgo(31), duration: '35:45', thumbnailColor: '#B85C5C', visibilityClass: 0, series: 'Resilience' },
+  { id: 'sse-5', title: 'Building on the Rock', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(39), duration: '44:00', thumbnailColor: '#1A1714', visibilityClass: 0, series: 'Foundations' },
 ];
 
 const SERMONS_BY_TOPIC: ChurchLibraryVideo[] = [
-  { id: 'sst-1', title: 'Love Your Neighbor', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(25), duration: '40:10', thumbnailColor: '#F59E0B', visibilityClass: 0, tags: ['Community', 'Love'] },
-  { id: 'sst-2', title: 'The Power of Prayer', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(11), duration: '38:20', thumbnailColor: '#1D9BF0', visibilityClass: 0, tags: ['Prayer', 'Faith'] },
-  { id: 'sst-3', title: 'New Year, New Purpose', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(53), duration: '41:25', thumbnailColor: '#22C55E', visibilityClass: 0, tags: ['Purpose', 'Vision'] },
+  { id: 'sst-1', title: 'Love Your Neighbor', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(25), duration: '40:10', thumbnailColor: '#B8943E', visibilityClass: 0, tags: ['Community', 'Love'] },
+  { id: 'sst-2', title: 'The Power of Prayer', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(11), duration: '38:20', thumbnailColor: '#1A1714', visibilityClass: 0, tags: ['Prayer', 'Faith'] },
+  { id: 'sst-3', title: 'New Year, New Purpose', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(53), duration: '41:25', thumbnailColor: '#5A8A6E', visibilityClass: 0, tags: ['Purpose', 'Vision'] },
 ];
 
 const MINISTRY_CHILDREN: ChurchLibraryVideo[] = [
-  { id: 'mlc-1', title: 'Curriculum Walkthrough — March', date: daysAgo(3), duration: '18:00', thumbnailColor: '#1D9BF0', visibilityClass: 3, ministryName: "Children's Ministry" },
-  { id: 'mlc-2', title: 'Volunteer Safety Protocols', date: daysAgo(8), duration: '22:30', thumbnailColor: '#F59E0B', visibilityClass: 3, ministryName: "Children's Ministry" },
-  { id: 'mlc-3', title: "Children's Church Recap — Feb 22", date: daysAgo(4), duration: '28:00', thumbnailColor: '#EF4444', visibilityClass: 3, ministryName: "Children's Ministry" },
-  { id: 'mlc-4', title: 'VBS Planning Meeting', date: daysAgo(15), duration: '40:00', thumbnailColor: '#22C55E', visibilityClass: 3, ministryName: "Children's Ministry" },
+  { id: 'mlc-1', title: 'Curriculum Walkthrough — March', date: daysAgo(3), duration: '18:00', thumbnailColor: '#1A1714', visibilityClass: 3, ministryName: "Children's Ministry" },
+  { id: 'mlc-2', title: 'Volunteer Safety Protocols', date: daysAgo(8), duration: '22:30', thumbnailColor: '#B8943E', visibilityClass: 3, ministryName: "Children's Ministry" },
+  { id: 'mlc-3', title: "Children's Church Recap — Feb 22", date: daysAgo(4), duration: '28:00', thumbnailColor: '#B85C5C', visibilityClass: 3, ministryName: "Children's Ministry" },
+  { id: 'mlc-4', title: 'VBS Planning Meeting', date: daysAgo(15), duration: '40:00', thumbnailColor: '#5A8A6E', visibilityClass: 3, ministryName: "Children's Ministry" },
 ];
 
 const MINISTRY_SINGLES: ChurchLibraryVideo[] = [
-  { id: 'mls-1', title: 'Singles Retreat Recap', date: daysAgo(10), duration: '12:00', thumbnailColor: '#8B5CF6', visibilityClass: 3, ministryName: 'Singles Ministry' },
-  { id: 'mls-2', title: 'Fellowship Night Highlights', date: daysAgo(20), duration: '8:30', thumbnailColor: '#1D9BF0', visibilityClass: 3, ministryName: 'Singles Ministry' },
-  { id: 'mls-3', title: 'Discussion: Navigating Faith', speaker: 'Elder Arik Hayes', date: daysAgo(28), duration: '35:00', thumbnailColor: '#22C55E', visibilityClass: 3, ministryName: 'Singles Ministry' },
-  { id: 'mls-4', title: 'Singles Ministry Orientation', date: daysAgo(40), duration: '20:00', thumbnailColor: '#F59E0B', visibilityClass: 3, ministryName: 'Singles Ministry' },
+  { id: 'mls-1', title: 'Singles Retreat Recap', date: daysAgo(10), duration: '12:00', thumbnailColor: '#1A1714', visibilityClass: 3, ministryName: 'Singles Ministry' },
+  { id: 'mls-2', title: 'Fellowship Night Highlights', date: daysAgo(20), duration: '8:30', thumbnailColor: '#1A1714', visibilityClass: 3, ministryName: 'Singles Ministry' },
+  { id: 'mls-3', title: 'Discussion: Navigating Faith', speaker: 'Elder Arik Hayes', date: daysAgo(28), duration: '35:00', thumbnailColor: '#5A8A6E', visibilityClass: 3, ministryName: 'Singles Ministry' },
+  { id: 'mls-4', title: 'Singles Ministry Orientation', date: daysAgo(40), duration: '20:00', thumbnailColor: '#B8943E', visibilityClass: 3, ministryName: 'Singles Ministry' },
 ];
 
 const TRAINING_SAFETY: ChurchLibraryVideo[] = [
-  { id: 'trs-1', title: 'Fire Safety & Evacuation', date: daysAgo(14), duration: '15:00', thumbnailColor: '#EF4444', visibilityClass: 2 },
-  { id: 'trs-2', title: 'Child Protection Protocols', date: daysAgo(22), duration: '28:00', thumbnailColor: '#F59E0B', visibilityClass: 2 },
-  { id: 'trs-3', title: 'First Aid Basics', date: daysAgo(35), duration: '20:00', thumbnailColor: '#22C55E', visibilityClass: 2 },
+  { id: 'trs-1', title: 'Fire Safety & Evacuation', date: daysAgo(14), duration: '15:00', thumbnailColor: '#B85C5C', visibilityClass: 2 },
+  { id: 'trs-2', title: 'Child Protection Protocols', date: daysAgo(22), duration: '28:00', thumbnailColor: '#B8943E', visibilityClass: 2 },
+  { id: 'trs-3', title: 'First Aid Basics', date: daysAgo(35), duration: '20:00', thumbnailColor: '#5A8A6E', visibilityClass: 2 },
 ];
 
 const TRAINING_LEADERSHIP: ChurchLibraryVideo[] = [
-  { id: 'trl-1', title: 'Conflict Resolution', speaker: 'Elder Arik Hayes', date: daysAgo(8), duration: '55:00', thumbnailColor: '#F59E0B', visibilityClass: 2 },
-  { id: 'trl-2', title: 'Servant Leadership Principles', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(30), duration: '48:00', thumbnailColor: '#1D9BF0', visibilityClass: 2 },
+  { id: 'trl-1', title: 'Conflict Resolution', speaker: 'Elder Arik Hayes', date: daysAgo(8), duration: '55:00', thumbnailColor: '#B8943E', visibilityClass: 2 },
+  { id: 'trl-2', title: 'Servant Leadership Principles', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(30), duration: '48:00', thumbnailColor: '#1A1714', visibilityClass: 2 },
 ];
 
 const TRAINING_ORIENTATION: ChurchLibraryVideo[] = [
-  { id: 'tro-1', title: 'New Volunteer Onboarding 2026', date: daysAgo(12), duration: '32:00', thumbnailColor: '#1D9BF0', visibilityClass: 2 },
-  { id: 'tro-2', title: 'Campus Tour & Policies', date: daysAgo(45), duration: '18:00', thumbnailColor: '#22C55E', visibilityClass: 2 },
+  { id: 'tro-1', title: 'New Volunteer Onboarding 2026', date: daysAgo(12), duration: '32:00', thumbnailColor: '#1A1714', visibilityClass: 2 },
+  { id: 'tro-2', title: 'Campus Tour & Policies', date: daysAgo(45), duration: '18:00', thumbnailColor: '#5A8A6E', visibilityClass: 2 },
 ];
 
 const PLAYLIST_CHILDREN: ChurchLibraryVideo[] = [
-  { id: 'plc-1', title: 'Week 1: Creation Story', date: daysAgo(10), duration: '15:00', thumbnailColor: '#1D9BF0', visibilityClass: 0 },
-  { id: 'plc-2', title: 'Week 1: Activity Time', date: daysAgo(10), duration: '8:00', thumbnailColor: '#22C55E', visibilityClass: 0 },
-  { id: 'plc-3', title: 'Week 1: Worship Song', date: daysAgo(10), duration: '4:30', thumbnailColor: '#8B5CF6', visibilityClass: 0 },
-  { id: 'plc-4', title: 'Week 1: Closing Prayer', date: daysAgo(10), duration: '2:00', thumbnailColor: '#F59E0B', visibilityClass: 0 },
+  { id: 'plc-1', title: 'Week 1: Creation Story', date: daysAgo(10), duration: '15:00', thumbnailColor: '#1A1714', visibilityClass: 0 },
+  { id: 'plc-2', title: 'Week 1: Activity Time', date: daysAgo(10), duration: '8:00', thumbnailColor: '#5A8A6E', visibilityClass: 0 },
+  { id: 'plc-3', title: 'Week 1: Worship Song', date: daysAgo(10), duration: '4:30', thumbnailColor: '#1A1714', visibilityClass: 0 },
+  { id: 'plc-4', title: 'Week 1: Closing Prayer', date: daysAgo(10), duration: '2:00', thumbnailColor: '#B8943E', visibilityClass: 0 },
 ];
 
 const PLAYLIST_SINGLES: ChurchLibraryVideo[] = [
-  { id: 'pls-1', title: 'Retreat Welcome Video', date: daysAgo(12), duration: '3:00', thumbnailColor: '#8B5CF6', visibilityClass: 0 },
-  { id: 'pls-2', title: 'Session 1: Finding Purpose', speaker: 'Elder Arik Hayes', date: daysAgo(12), duration: '35:00', thumbnailColor: '#22C55E', visibilityClass: 0 },
-  { id: 'pls-3', title: 'Worship Highlights', date: daysAgo(12), duration: '12:00', thumbnailColor: '#1D9BF0', visibilityClass: 0 },
+  { id: 'pls-1', title: 'Retreat Welcome Video', date: daysAgo(12), duration: '3:00', thumbnailColor: '#1A1714', visibilityClass: 0 },
+  { id: 'pls-2', title: 'Session 1: Finding Purpose', speaker: 'Elder Arik Hayes', date: daysAgo(12), duration: '35:00', thumbnailColor: '#5A8A6E', visibilityClass: 0 },
+  { id: 'pls-3', title: 'Worship Highlights', date: daysAgo(12), duration: '12:00', thumbnailColor: '#1A1714', visibilityClass: 0 },
 ];
 
 const PLAYLIST_WORSHIP: ChurchLibraryVideo[] = [
-  { id: 'plw-1', title: '"How Great Is Our God"', date: daysAgo(22), duration: '5:50', thumbnailColor: '#EF4444', visibilityClass: 0 },
-  { id: 'plw-2', title: '"Great Is Thy Faithfulness"', date: daysAgo(15), duration: '6:20', thumbnailColor: '#22C55E', visibilityClass: 0 },
-  { id: 'plw-3', title: 'Acoustic Worship Session', date: daysAgo(29), duration: '22:10', thumbnailColor: '#8B5CF6', visibilityClass: 0 },
+  { id: 'plw-1', title: '"How Great Is Our God"', date: daysAgo(22), duration: '5:50', thumbnailColor: '#B85C5C', visibilityClass: 0 },
+  { id: 'plw-2', title: '"Great Is Thy Faithfulness"', date: daysAgo(15), duration: '6:20', thumbnailColor: '#5A8A6E', visibilityClass: 0 },
+  { id: 'plw-3', title: 'Acoustic Worship Session', date: daysAgo(29), duration: '22:10', thumbnailColor: '#1A1714', visibilityClass: 0 },
 ];
 
 const SAVED_ITEMS: ChurchLibraryVideo[] = [
-  { id: 'sav-1', title: 'Walking in Faith', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(4), duration: '42:15', thumbnailColor: '#1D9BF0', visibilityClass: 0, series: 'Faith Forward' },
-  { id: 'sav-2', title: 'Sunday Morning Worship Set', date: daysAgo(4), duration: '18:30', thumbnailColor: '#8B5CF6', visibilityClass: 0 },
-  { id: 'sav-3', title: 'Baptism Sunday Highlights', date: daysAgo(12), duration: '8:45', thumbnailColor: '#22C55E', visibilityClass: 0 },
-  { id: 'sav-4', title: 'Conflict Resolution', speaker: 'Elder Arik Hayes', date: daysAgo(8), duration: '55:00', thumbnailColor: '#F59E0B', visibilityClass: 2 },
-  { id: 'sav-5', title: "Children's Church Recap — Feb 22", date: daysAgo(4), duration: '28:00', thumbnailColor: '#EF4444', visibilityClass: 3, ministryName: "Children's Ministry" },
+  { id: 'sav-1', title: 'Walking in Faith', speaker: 'Pastor Philip Anthony Mitchell', date: daysAgo(4), duration: '42:15', thumbnailColor: '#1A1714', visibilityClass: 0, series: 'Faith Forward' },
+  { id: 'sav-2', title: 'Sunday Morning Worship Set', date: daysAgo(4), duration: '18:30', thumbnailColor: '#1A1714', visibilityClass: 0 },
+  { id: 'sav-3', title: 'Baptism Sunday Highlights', date: daysAgo(12), duration: '8:45', thumbnailColor: '#5A8A6E', visibilityClass: 0 },
+  { id: 'sav-4', title: 'Conflict Resolution', speaker: 'Elder Arik Hayes', date: daysAgo(8), duration: '55:00', thumbnailColor: '#B8943E', visibilityClass: 2 },
+  { id: 'sav-5', title: "Children's Church Recap — Feb 22", date: daysAgo(4), duration: '28:00', thumbnailColor: '#B85C5C', visibilityClass: 3, ministryName: "Children's Ministry" },
 ];
 
 // =============================================================================

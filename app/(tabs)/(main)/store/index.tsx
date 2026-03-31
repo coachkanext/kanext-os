@@ -45,7 +45,7 @@ function orderStatusColor(status: OrderItem['status'], C: ComponentColors): stri
   switch (status) {
     case 'delivered':        return C.green;
     case 'out_for_delivery': return C.accent;
-    case 'shipped':          return '#1D9BF0';
+    case 'shipped':          return '#1A1714';
     case 'processing':       return C.amber as string;
     case 'cancelled':        return C.red;
     default:                 return C.muted as string;
@@ -276,10 +276,10 @@ export default function StoreScreen() {
       { name: 'Custom Tote Bag',        sku: 'ACC-001', stock: 0,   reorder: 40,  price: 34.99,  status: 'oos'   },
     ];
     const ORDER_COUNTS = [
-      { label: 'Pending',    value: 12, color: '#F59E0B' },
-      { label: 'Processing', value:  8, color: '#1D9BF0' },
-      { label: 'Shipped',    value: 24, color: '#7B68A0' },
-      { label: 'Delivered',  value: 89, color: '#22C55E' },
+      { label: 'Pending',    value: 12, color: '#B8943E' },
+      { label: 'Processing', value:  8, color: '#1A1714' },
+      { label: 'Shipped',    value: 24, color: '#1A1714' },
+      { label: 'Delivered',  value: 89, color: '#5A8A6E' },
     ];
     const RECENT_ORDERS = [
       { id: '#ORD-4821', customer: 'Acme Corp',       items: 3, total: 284.97, status: 'processing' },
@@ -289,7 +289,7 @@ export default function StoreScreen() {
     return (
       <View style={{ paddingHorizontal: 16, paddingBottom: 40, gap: 20 }}>
         {/* Revenue KPIs */}
-        <View style={{ backgroundColor: '#1D9BF0', borderRadius: 16, padding: 20 }}>
+        <View style={{ backgroundColor: '#1A1714', borderRadius: 16, padding: 20 }}>
           <Text style={{ fontSize: 11, fontWeight: '700', color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase', letterSpacing: 0.6 }}>GMV This Month</Text>
           <Text style={{ fontSize: 34, fontWeight: '900', color: '#fff', marginTop: 4 }}>$48,291</Text>
           <View style={{ flexDirection: 'row', gap: 16, marginTop: 12 }}>
@@ -324,7 +324,7 @@ export default function StoreScreen() {
           <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Recent Orders</Text>
           <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden' }}>
             {RECENT_ORDERS.map((order, idx) => {
-              const statusColors: Record<string, string> = { pending: '#F59E0B', processing: '#1D9BF0', shipped: '#7B68A0' };
+              const statusColors: Record<string, string> = { pending: '#B8943E', processing: '#1A1714', shipped: '#1A1714' };
               const sColor = statusColors[order.status] ?? C.secondary;
               return (
                 <View key={order.id} style={{
@@ -353,7 +353,7 @@ export default function StoreScreen() {
           <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Inventory</Text>
           <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden' }}>
             {INVENTORY.map((item, idx) => {
-              const stockColor = item.status === 'ok' ? '#22C55E' : item.status === 'low' ? '#F59E0B' : item.status === 'critical' ? '#EF4444' : '#6B7280';
+              const stockColor = item.status === 'ok' ? '#5A8A6E' : item.status === 'low' ? '#B8943E' : item.status === 'critical' ? '#B85C5C' : '#6B7280';
               return (
                 <View key={item.sku} style={{
                   paddingHorizontal: 14, paddingVertical: 11,
@@ -449,7 +449,7 @@ export default function StoreScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10, paddingRight: 4 }}>
           {[
             { label: 'Total Spent', value: '$435.46', icon: 'dollarsign.circle.fill', color: C.accent },
-            { label: 'Orders',      value: '7',       icon: 'bag.fill',               color: '#1D9BF0' },
+            { label: 'Orders',      value: '7',       icon: 'bag.fill',               color: '#1A1714' },
             { label: 'Delivered',   value: '3',       icon: 'checkmark.seal.fill',    color: C.green },
             { label: 'Active',      value: '3',       icon: 'shippingbox.fill',       color: C.amber as string },
           ].map(m => (
@@ -541,7 +541,7 @@ export default function StoreScreen() {
             <RolePill
               role={demoRole}
               onPress={cycleRole}
-              accentColor="#1D9BF0"
+              accentColor="#1A1714"
               isPrimary={role === 'Admin'}
             />
             {pills.length > 0 && (

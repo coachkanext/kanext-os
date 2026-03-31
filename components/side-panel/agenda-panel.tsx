@@ -42,21 +42,21 @@ const EVENT_DAYS: Record<string, number[]> = {
 
 // Event-type colours — aligned with agenda/index.tsx eventColor()
 const CATEGORIES: { id: string; label: string; color: string; count: number }[] = [
-  { id: 'game',        label: 'Games',       color: '#990000', count: 2 },
-  { id: 'practice',    label: 'Practices',   color: '#3B82F6', count: 5 },
-  { id: 'meeting',     label: 'Meetings',    color: '#3B82F6', count: 4 },
+  { id: 'game',        label: 'Games',       color: '#1A1714', count: 2 },
+  { id: 'practice',    label: 'Practices',   color: '#1A1714', count: 5 },
+  { id: 'meeting',     label: 'Meetings',    color: '#1A1714', count: 4 },
   { id: 'deadline',    label: 'Deadlines',   color: '#B85C5C', count: 1 },
   { id: 'service',     label: 'Service',     color: '#5A8A6E', count: 2 },
-  { id: 'class',       label: 'Classes',     color: '#003A63', count: 3 },
-  { id: 'event',       label: 'Events',      color: '#3B82F6', count: 3 },
+  { id: 'class',       label: 'Classes',     color: '#1A1714', count: 3 },
+  { id: 'event',       label: 'Events',      color: '#1A1714', count: 3 },
 ];
 
 // Today's upcoming events (snapshot — chronological, all-day first)
 const TODAY_EVENTS = [
-  { id: 'e1', time: 'All Day',  title: 'Conference Day',   color: '#3B82F6' },
-  { id: 'e2', time: '7:00 AM',  title: 'Morning Practice', color: '#3B82F6' },
-  { id: 'e3', time: '9:00 AM',  title: 'Weekly Standup',   color: '#3B82F6' },
-  { id: 'e4', time: '2:00 PM',  title: 'Film Session',     color: '#3B82F6' },
+  { id: 'e1', time: 'All Day',  title: 'Conference Day',   color: '#1A1714' },
+  { id: 'e2', time: '7:00 AM',  title: 'Morning Practice', color: '#1A1714' },
+  { id: 'e3', time: '9:00 AM',  title: 'Weekly Standup',   color: '#1A1714' },
+  { id: 'e4', time: '2:00 PM',  title: 'Film Session',     color: '#1A1714' },
 ];
 
 const ADMIN_ROLES = new Set(['founder', 'head_coach', 'athletic_director', 'principal', 'admin', 'owner']);

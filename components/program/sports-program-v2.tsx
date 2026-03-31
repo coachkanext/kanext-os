@@ -104,17 +104,17 @@ function OverviewView({ colors, accent }: { colors: typeof Colors.light; accent:
       {/* Health */}
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>PROGRAM HEALTH</ThemedText>
       <View style={styles.healthRow}>
-        <SnapChip label="Availability" value={`${health.availability}%`} color="#22C55E" colors={colors} />
-        <SnapChip label="Compliance" value={health.compliance} color={health.compliance === 'compliant' ? '#22C55E' : '#EF4444'} colors={colors} />
-        <SnapChip label="Rotation" value={`${health.rotationStability}%`} color="#F59E0B" colors={colors} />
+        <SnapChip label="Availability" value={`${health.availability}%`} color="#5A8A6E" colors={colors} />
+        <SnapChip label="Compliance" value={health.compliance} color={health.compliance === 'compliant' ? '#5A8A6E' : '#B85C5C'} colors={colors} />
+        <SnapChip label="Rotation" value={`${health.rotationStability}%`} color="#B8943E" colors={colors} />
       </View>
 
       {/* Roster Availability */}
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>ROSTER AVAILABILITY</ThemedText>
       <View style={styles.healthRow}>
-        <SnapChip label="Available" value={String(ROSTER_AVAILABILITY.available)} color="#22C55E" colors={colors} />
-        <SnapChip label="Injured" value={String(ROSTER_AVAILABILITY.injured)} color="#EF4444" colors={colors} />
-        <SnapChip label="Redshirt" value={String(ROSTER_AVAILABILITY.redshirt)} color="#A1A1AA" colors={colors} />
+        <SnapChip label="Available" value={String(ROSTER_AVAILABILITY.available)} color="#5A8A6E" colors={colors} />
+        <SnapChip label="Injured" value={String(ROSTER_AVAILABILITY.injured)} color="#B85C5C" colors={colors} />
+        <SnapChip label="Redshirt" value={String(ROSTER_AVAILABILITY.redshirt)} color="#9C9790" colors={colors} />
       </View>
 
       {/* Today/Next */}
@@ -177,8 +177,8 @@ function PeopleView({ colors, accent }: { colors: typeof Colors.light; accent: s
             <ThemedText style={[styles.personName, { color: colors.text }]}>{s.name}</ThemedText>
             <ThemedText style={[styles.personRole, { color: colors.textSecondary }]}>{s.role} · {s.teamAssignment}</ThemedText>
           </View>
-          <View style={[styles.tierBadge, { backgroundColor: s.permissionTier === 'admin' ? '#EF444422' : s.permissionTier === 'coach' ? accent + '22' : '#A1A1AA22' }]}>
-            <ThemedText style={[styles.tierText, { color: s.permissionTier === 'admin' ? '#EF4444' : s.permissionTier === 'coach' ? accent : '#A1A1AA' }]}>{s.permissionTier}</ThemedText>
+          <View style={[styles.tierBadge, { backgroundColor: s.permissionTier === 'admin' ? '#B85C5C22' : s.permissionTier === 'coach' ? accent + '22' : '#9C979022' }]}>
+            <ThemedText style={[styles.tierText, { color: s.permissionTier === 'admin' ? '#B85C5C' : s.permissionTier === 'coach' ? accent : '#9C9790' }]}>{s.permissionTier}</ThemedText>
           </View>
         </View>
       ))}
@@ -207,8 +207,8 @@ function TeamsView({ colors, accent }: { colors: typeof Colors.light; accent: st
         <View key={team.id} style={[styles.teamCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={styles.teamHeader}>
             <ThemedText style={[styles.teamName, { color: colors.text }]}>{team.name}</ThemedText>
-            <View style={[styles.statusBadge, { backgroundColor: team.status === 'active' ? '#22C55E22' : '#A1A1AA22' }]}>
-              <ThemedText style={[styles.statusText, { color: team.status === 'active' ? '#22C55E' : '#A1A1AA' }]}>{team.status}</ThemedText>
+            <View style={[styles.statusBadge, { backgroundColor: team.status === 'active' ? '#5A8A6E22' : '#9C979022' }]}>
+              <ThemedText style={[styles.statusText, { color: team.status === 'active' ? '#5A8A6E' : '#9C9790' }]}>{team.status}</ThemedText>
             </View>
           </View>
           <ThemedText style={[styles.teamMeta, { color: colors.textSecondary }]}>HC: {team.headCoach} · Record: {team.record} · Roster: {team.rosterCount}</ThemedText>
@@ -220,7 +220,7 @@ function TeamsView({ colors, accent }: { colors: typeof Colors.light; accent: st
 }
 
 function SeasonsView({ colors, accent }: { colors: typeof Colors.light; accent: string }) {
-  const statusColors = { active: '#22C55E', completed: accent, archived: '#A1A1AA' };
+  const statusColors = { active: '#5A8A6E', completed: accent, archived: '#9C9790' };
   return (
     <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
       {PROGRAM_SEASONS.map((season) => (
@@ -303,7 +303,7 @@ function SettingsView({ colors, accent }: { colors: typeof Colors.light; accent:
                 <ThemedText style={[styles.settingDesc, { color: colors.textSecondary }]}>{setting.description}</ThemedText>
               </View>
               {setting.type === 'toggle' && (
-                <View style={[styles.toggleIndicator, { backgroundColor: setting.enabled ? '#22C55E' : '#A1A1AA' }]}>
+                <View style={[styles.toggleIndicator, { backgroundColor: setting.enabled ? '#5A8A6E' : '#9C9790' }]}>
                   <ThemedText style={styles.toggleText}>{setting.enabled ? 'ON' : 'OFF'}</ThemedText>
                 </View>
               )}

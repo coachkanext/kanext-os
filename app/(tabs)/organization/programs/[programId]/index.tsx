@@ -632,7 +632,7 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     alignItems: 'center',
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#A1A1AA',
+    borderTopColor: '#9C9790',
   },
   viewAllText: {
     fontSize: 14,

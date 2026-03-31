@@ -79,10 +79,10 @@ function formatCurrency(n: number): string {
 
 function getStatusColor(status: string): string {
   switch (status) {
-    case 'live': return '#22C55E';
-    case 'final': return '#A1A1AA';
+    case 'live': return '#5A8A6E';
+    case 'final': return '#9C9790';
     case 'upcoming': return accent;
-    default: return '#A1A1AA';
+    default: return '#9C9790';
   }
 }
 
@@ -97,10 +97,10 @@ function getStatusLabel(status: string): string {
 
 function getSeverityColor(severity: string): string {
   switch (severity) {
-    case 'high': return '#EF4444';
-    case 'medium': return '#F59E0B';
-    case 'low': return '#22C55E';
-    default: return '#A1A1AA';
+    case 'high': return '#B85C5C';
+    case 'medium': return '#B8943E';
+    case 'low': return '#5A8A6E';
+    default: return '#9C9790';
   }
 }
 
@@ -240,11 +240,11 @@ export function GameSheet({
         {/* Score (if available) */}
         {game.score && (
           <View style={styles.scoreRow}>
-            <Text style={[styles.score, { color: game.score.startsWith('W') ? '#22C55E' : '#EF4444' }]}>
+            <Text style={[styles.score, { color: game.score.startsWith('W') ? '#5A8A6E' : '#B85C5C' }]}>
               {game.score}
             </Text>
             {game.clock && game.status === 'live' && (
-              <Text style={[styles.clock, { color: '#22C55E' }]}>{game.clock}</Text>
+              <Text style={[styles.clock, { color: '#5A8A6E' }]}>{game.clock}</Text>
             )}
           </View>
         )}
@@ -352,7 +352,7 @@ export function GameSheet({
                   <SectionLabel label="OUR EDGE" colors={colors} />
                   <Card colors={colors}>
                     {pregame.ourEdge.map((e, i) => (
-                      <Text key={i} style={[styles.dnaItem, { color: '#22C55E' }]}>▲ {e}</Text>
+                      <Text key={i} style={[styles.dnaItem, { color: '#5A8A6E' }]}>▲ {e}</Text>
                     ))}
                   </Card>
                 </>
@@ -364,7 +364,7 @@ export function GameSheet({
                   <SectionLabel label="CLUSTER RATINGS" colors={colors} />
                   <Card colors={colors}>
                     {pregame.clusterRatings.map((cr, i) => {
-                      const barColor = cr.rating >= 70 ? '#22C55E' : cr.rating >= 55 ? '#F59E0B' : '#EF4444';
+                      const barColor = cr.rating >= 70 ? '#5A8A6E' : cr.rating >= 55 ? '#B8943E' : '#B85C5C';
                       const pct = Math.min(cr.rating, 100);
                       return (
                         <View key={i} style={styles.clusterRow}>
@@ -420,7 +420,7 @@ export function GameSheet({
                         <Text style={[styles.threatName, { color: colors.text }]}>
                           {t.name} — {t.archetype}
                         </Text>
-                        <Text style={[styles.threatRule, { color: '#EF4444' }]}>{t.rule}</Text>
+                        <Text style={[styles.threatRule, { color: '#B85C5C' }]}>{t.rule}</Text>
                       </View>
                     ))}
                   </Card>
@@ -447,7 +447,7 @@ export function GameSheet({
               <SectionLabel label="MODEL NOTES" colors={colors} />
               <Card colors={colors}>
                 <StatRow label="Upset Path" value={pregame.modelNotes.upsetPath} colors={colors} />
-                <StatRow label="Risk" value={pregame.modelNotes.risk} colors={colors} valueColor="#EF4444" />
+                <StatRow label="Risk" value={pregame.modelNotes.risk} colors={colors} valueColor="#B85C5C" />
               </Card>
             </>
           ) : (
@@ -472,7 +472,7 @@ export function GameSheet({
                     {game.score ?? '0-0'}
                   </Text>
                   {game.clock && (
-                    <Text style={[styles.liveClock, { color: '#22C55E' }]}>{game.clock}</Text>
+                    <Text style={[styles.liveClock, { color: '#5A8A6E' }]}>{game.clock}</Text>
                   )}
                 </View>
               </Card>
@@ -486,7 +486,7 @@ export function GameSheet({
                       {gameFlow.slice(-10).map((snap, i) => (
                         <View key={i} style={styles.flowPoint}>
                           <View style={[styles.flowDot, {
-                            backgroundColor: snap.fmu > snap.opp ? '#22C55E' : snap.fmu < snap.opp ? '#EF4444' : '#F59E0B'
+                            backgroundColor: snap.fmu > snap.opp ? '#5A8A6E' : snap.fmu < snap.opp ? '#B85C5C' : '#B8943E'
                           }]} />
                           <Text style={[styles.flowScore, { color: colors.textSecondary }]}>
                             {snap.fmu}-{snap.opp}
@@ -598,7 +598,7 @@ export function GameSheet({
               <SectionLabel label="PLAYER PERFORMANCE (BPR)" colors={colors} />
               <Card colors={colors}>
                 {gameBPR.slice(0, 5).map((p, i) => {
-                  const bprColor = p.bpr >= 5 ? '#22C55E' : p.bpr >= 0 ? '#F59E0B' : '#EF4444';
+                  const bprColor = p.bpr >= 5 ? '#5A8A6E' : p.bpr >= 0 ? '#B8943E' : '#B85C5C';
                   return (
                     <View key={i} style={[styles.bprRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}>
                       <Text style={[styles.bprName, { color: colors.text }]}>{p.name}</Text>
@@ -621,7 +621,7 @@ export function GameSheet({
                   {gameFlow.map((snap, i) => (
                     <View key={i} style={styles.flowPoint}>
                       <View style={[styles.flowDot, {
-                        backgroundColor: snap.fmu > snap.opp ? '#22C55E' : snap.fmu < snap.opp ? '#EF4444' : '#F59E0B'
+                        backgroundColor: snap.fmu > snap.opp ? '#5A8A6E' : snap.fmu < snap.opp ? '#B85C5C' : '#B8943E'
                       }]} />
                       <Text style={[styles.flowScore, { color: colors.textSecondary }]}>
                         {snap.fmu}-{snap.opp}
@@ -645,7 +645,7 @@ export function GameSheet({
             <StatRow label="Merchandise" value={formatCurrency(revenue.merchandise)} colors={colors} />
             <StatRow label="Sponsor Activations" value={formatCurrency(revenue.sponsorActivations)} colors={colors} />
             <View style={[styles.divider, { backgroundColor: colors.divider }]} />
-            <StatRow label="Total Revenue" value={formatCurrency(revenue.total)} colors={colors} valueColor="#22C55E" />
+            <StatRow label="Total Revenue" value={formatCurrency(revenue.total)} colors={colors} valueColor="#5A8A6E" />
           </Card>
 
           <SectionLabel label="ATTENDANCE" colors={colors} />
@@ -656,14 +656,14 @@ export function GameSheet({
               label="Fill Rate"
               value={`${Math.round((revenue.attendance / revenue.capacity) * 100)}%`}
               colors={colors}
-              valueColor={revenue.attendance / revenue.capacity > 0.7 ? '#22C55E' : '#F59E0B'}
+              valueColor={revenue.attendance / revenue.capacity > 0.7 ? '#5A8A6E' : '#B8943E'}
             />
             {/* Fill bar */}
             <View style={styles.fillBar}>
               <View style={[styles.fillBarTrack, { backgroundColor: colors.border }]}>
                 <View style={[styles.fillBarFill, {
                   width: `${Math.min((revenue.attendance / revenue.capacity) * 100, 100)}%`,
-                  backgroundColor: revenue.attendance / revenue.capacity > 0.7 ? '#22C55E' : '#F59E0B',
+                  backgroundColor: revenue.attendance / revenue.capacity > 0.7 ? '#5A8A6E' : '#B8943E',
                 }]} />
               </View>
             </View>
@@ -697,7 +697,7 @@ export function GameSheet({
                     <View style={styles.incidentMeta}>
                       <Text style={[styles.incidentTime, { color: colors.textTertiary }]}>{inc.time}</Text>
                       <Text style={[styles.incidentResolved, {
-                        color: inc.resolved ? '#22C55E' : '#F59E0B'
+                        color: inc.resolved ? '#5A8A6E' : '#B8943E'
                       }]}>
                         {inc.resolved ? 'Resolved' : 'Open'}
                       </Text>

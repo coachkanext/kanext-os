@@ -105,7 +105,7 @@ function AgendaTab({ colors }: { colors: typeof Colors.light }) {
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <SectionHeader title="CEO NOW" colors={colors} />
         {CEO_NOW.map((item) => {
-          const urgencyColor = SEVERITY_COLOR[item.urgency] ?? '#A1A1AA';
+          const urgencyColor = SEVERITY_COLOR[item.urgency] ?? '#9C9790';
           return (
             <View key={item.id} style={[s.nowRow, { borderBottomColor: colors.border }]}>
               <StatusDot color={urgencyColor} />
@@ -165,8 +165,8 @@ function AgendaTab({ colors }: { colors: typeof Colors.light }) {
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <SectionHeader title="Approvals Due" count={CEO_APPROVALS.filter((a) => a.status === 'pending').length} colors={colors} />
         {CEO_APPROVALS.filter((a) => a.status === 'pending').map((approval) => {
-          const catColor = APPROVAL_CATEGORY_COLOR[approval.category] ?? '#A1A1AA';
-          const urgencyColor = SEVERITY_COLOR[approval.urgency] ?? '#A1A1AA';
+          const catColor = APPROVAL_CATEGORY_COLOR[approval.category] ?? '#9C9790';
+          const urgencyColor = SEVERITY_COLOR[approval.urgency] ?? '#9C9790';
           return (
             <View key={approval.id} style={[s.approvalRow, { borderBottomColor: colors.border }]}>
               <StatusDot color={urgencyColor} />
@@ -191,7 +191,7 @@ function AgendaTab({ colors }: { colors: typeof Colors.light }) {
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <SectionHeader title="Risk Watch" count={RISK_WATCH.length} colors={colors} />
         {RISK_WATCH.map((risk) => {
-          const riskColor = SEVERITY_COLOR[risk.riskLevel] ?? '#A1A1AA';
+          const riskColor = SEVERITY_COLOR[risk.riskLevel] ?? '#9C9790';
           return (
             <View key={risk.id} style={[s.riskRow, { borderBottomColor: colors.border }]}>
               <View style={s.riskHeader}>
@@ -256,7 +256,7 @@ function SessionsTab({ colors }: { colors: typeof Colors.light }) {
                   style={[
                     s.gateProgressFill,
                     {
-                      backgroundColor: clearedGates === totalGates ? '#22C55E' : '#F59E0B',
+                      backgroundColor: clearedGates === totalGates ? '#5A8A6E' : '#B8943E',
                       width: `${totalGates > 0 ? (clearedGates / totalGates) * 100 : 0}%`,
                     },
                   ]}
@@ -284,7 +284,7 @@ function SessionsTab({ colors }: { colors: typeof Colors.light }) {
             {/* Notes */}
             {session.notes && (
               <View style={[s.rosNoteRow, { borderTopColor: colors.border }]}>
-                <ThemedText style={[s.rosNote, { color: '#EF4444' }]}>
+                <ThemedText style={[s.rosNote, { color: '#B85C5C' }]}>
                   {session.notes}
                 </ThemedText>
               </View>
@@ -311,11 +311,11 @@ function EventsTab({ colors }: { colors: typeof Colors.light }) {
         <SectionHeader title="Season Progress" colors={colors} />
         <View style={s.seasonProgressRow}>
           <View style={s.seasonStat}>
-            <ThemedText style={[s.seasonStatValue, { color: '#22C55E' }]}>{completed.length}</ThemedText>
+            <ThemedText style={[s.seasonStatValue, { color: '#5A8A6E' }]}>{completed.length}</ThemedText>
             <ThemedText style={[s.seasonStatLabel, { color: colors.textTertiary }]}>Completed</ThemedText>
           </View>
           <View style={s.seasonStat}>
-            <ThemedText style={[s.seasonStatValue, { color: '#F59E0B' }]}>
+            <ThemedText style={[s.seasonStatValue, { color: '#B8943E' }]}>
               {liveOrUpcoming.filter((e) => e.status === 'live').length}
             </ThemedText>
             <ThemedText style={[s.seasonStatLabel, { color: colors.textTertiary }]}>Live</ThemedText>
@@ -328,7 +328,7 @@ function EventsTab({ colors }: { colors: typeof Colors.light }) {
           </View>
         </View>
         <View style={[s.seasonBarContainer, { backgroundColor: colors.backgroundTertiary }]}>
-          <View style={[s.seasonBarFill, { width: `${(completed.length / EVENT_READINESS_MAP.length) * 100}%`, backgroundColor: '#22C55E' }]} />
+          <View style={[s.seasonBarFill, { width: `${(completed.length / EVENT_READINESS_MAP.length) * 100}%`, backgroundColor: '#5A8A6E' }]} />
         </View>
       </View>
 
@@ -368,7 +368,7 @@ function EventsTab({ colors }: { colors: typeof Colors.light }) {
                             s.readinessBarFill,
                             {
                               width: `${r.value}%`,
-                              backgroundColor: r.value >= 90 ? '#22C55E' : r.value >= 70 ? '#F59E0B' : '#EF4444',
+                              backgroundColor: r.value >= 90 ? '#5A8A6E' : r.value >= 70 ? '#B8943E' : '#B85C5C',
                             },
                           ]}
                         />
@@ -401,7 +401,7 @@ function EventsTab({ colors }: { colors: typeof Colors.light }) {
               </ThemedText>
             </View>
             <View style={s.completedScoreContainer}>
-              <ThemedText style={[s.readinessScore, { color: '#22C55E' }]}>{event.readinessScore}</ThemedText>
+              <ThemedText style={[s.readinessScore, { color: '#5A8A6E' }]}>{event.readinessScore}</ThemedText>
             </View>
           </View>
         ))}
@@ -459,15 +459,15 @@ function CommandView({ colors }: { colors: typeof Colors.light }) {
         <SectionHeader title="Command Center" colors={colors} />
         <View style={s.commandSummary}>
           <View style={s.commandStat}>
-            <ThemedText style={[s.commandStatValue, { color: '#22C55E' }]}>{greenCount}</ThemedText>
+            <ThemedText style={[s.commandStatValue, { color: '#5A8A6E' }]}>{greenCount}</ThemedText>
             <ThemedText style={[s.commandStatLabel, { color: colors.textTertiary }]}>Green</ThemedText>
           </View>
           <View style={s.commandStat}>
-            <ThemedText style={[s.commandStatValue, { color: '#F59E0B' }]}>{yellowCount}</ThemedText>
+            <ThemedText style={[s.commandStatValue, { color: '#B8943E' }]}>{yellowCount}</ThemedText>
             <ThemedText style={[s.commandStatLabel, { color: colors.textTertiary }]}>Yellow</ThemedText>
           </View>
           <View style={s.commandStat}>
-            <ThemedText style={[s.commandStatValue, { color: '#EF4444' }]}>{redCount}</ThemedText>
+            <ThemedText style={[s.commandStatValue, { color: '#B85C5C' }]}>{redCount}</ThemedText>
             <ThemedText style={[s.commandStatLabel, { color: colors.textTertiary }]}>Red</ThemedText>
           </View>
         </View>
@@ -476,7 +476,7 @@ function CommandView({ colors }: { colors: typeof Colors.light }) {
       {/* Status board */}
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         {COMMAND_ITEMS.map((item) => {
-          const statusColor = item.status === 'green' ? '#22C55E' : item.status === 'yellow' ? '#F59E0B' : '#EF4444';
+          const statusColor = item.status === 'green' ? '#5A8A6E' : item.status === 'yellow' ? '#B8943E' : '#B85C5C';
           return (
             <View key={item.id} style={[s.commandRow, { borderBottomColor: colors.border }]}>
               <StatusDot color={statusColor} />
@@ -505,9 +505,9 @@ function BoardView({ colors }: { colors: typeof Colors.light }) {
     <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <SectionHeader title="Executive Board" count={BOARD_ITEMS.length} colors={colors} />
       {BOARD_ITEMS.map((item) => {
-        const catColor = BOARD_CATEGORY_COLOR[item.category] ?? '#A1A1AA';
-        const priColor = BOARD_PRIORITY_COLOR[item.priority] ?? '#A1A1AA';
-        const statusColor = item.status === 'completed' ? '#22C55E' : item.status === 'in_progress' ? '#F59E0B' : item.status === 'deferred' ? '#A1A1AA' : ACCENT;
+        const catColor = BOARD_CATEGORY_COLOR[item.category] ?? '#9C9790';
+        const priColor = BOARD_PRIORITY_COLOR[item.priority] ?? '#9C9790';
+        const statusColor = item.status === 'completed' ? '#5A8A6E' : item.status === 'in_progress' ? '#B8943E' : item.status === 'deferred' ? '#9C9790' : ACCENT;
         return (
           <View key={item.id} style={[s.boardRow, { borderBottomColor: colors.border }]}>
             <StatusDot color={priColor} />
@@ -537,7 +537,7 @@ function ApprovalsView({ colors }: { colors: typeof Colors.light }) {
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <SectionHeader title="Pending Approvals" count={pending.length} colors={colors} />
         {pending.map((item) => {
-          const catColor = APPROVAL_CATEGORY_COLOR[item.category] ?? '#A1A1AA';
+          const catColor = APPROVAL_CATEGORY_COLOR[item.category] ?? '#9C9790';
           return (
             <View key={item.id} style={[s.opsApprovalRow, { borderBottomColor: colors.border }]}>
               <View style={s.flex1}>
@@ -550,16 +550,16 @@ function ApprovalsView({ colors }: { colors: typeof Colors.light }) {
               <StatusBadge label={item.category} color={catColor} />
               <View style={s.approvalActions}>
                 <Pressable
-                  style={[s.approveBtn, { backgroundColor: '#22C55E20' }]}
+                  style={[s.approveBtn, { backgroundColor: '#5A8A6E20' }]}
                   onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
                 >
-                  <ThemedText style={[s.approveBtnText, { color: '#22C55E' }]}>Approve</ThemedText>
+                  <ThemedText style={[s.approveBtnText, { color: '#5A8A6E' }]}>Approve</ThemedText>
                 </Pressable>
                 <Pressable
-                  style={[s.denyBtn, { backgroundColor: '#EF444420' }]}
+                  style={[s.denyBtn, { backgroundColor: '#B85C5C20' }]}
                   onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
                 >
-                  <ThemedText style={[s.denyBtnText, { color: '#EF4444' }]}>Deny</ThemedText>
+                  <ThemedText style={[s.denyBtnText, { color: '#B85C5C' }]}>Deny</ThemedText>
                 </Pressable>
               </View>
             </View>
@@ -571,7 +571,7 @@ function ApprovalsView({ colors }: { colors: typeof Colors.light }) {
         <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <SectionHeader title="Recently Resolved" count={resolved.length} colors={colors} />
           {resolved.map((item) => {
-            const catColor = APPROVAL_CATEGORY_COLOR[item.category] ?? '#A1A1AA';
+            const catColor = APPROVAL_CATEGORY_COLOR[item.category] ?? '#9C9790';
             return (
               <View key={item.id} style={[s.opsApprovalRow, { borderBottomColor: colors.border }]}>
                 <View style={s.flex1}>
@@ -580,7 +580,7 @@ function ApprovalsView({ colors }: { colors: typeof Colors.light }) {
                     {item.requestedBy} · {item.submittedAt}
                   </ThemedText>
                 </View>
-                <StatusBadge label={item.status.toUpperCase()} color={item.status === 'approved' ? '#22C55E' : '#EF4444'} />
+                <StatusBadge label={item.status.toUpperCase()} color={item.status === 'approved' ? '#5A8A6E' : '#B85C5C'} />
               </View>
             );
           })}
@@ -597,14 +597,14 @@ function LiveLogView({ colors }: { colors: typeof Colors.light }) {
     <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <SectionHeader title="Live Operations Log" count={LIVE_LOG.length} colors={colors} />
       {unacknowledgedCount > 0 && (
-        <View style={[s.unacknowledgedBanner, { backgroundColor: '#EF444415' }]}>
-          <ThemedText style={[s.unacknowledgedText, { color: '#EF4444' }]}>
+        <View style={[s.unacknowledgedBanner, { backgroundColor: '#B85C5C15' }]}>
+          <ThemedText style={[s.unacknowledgedText, { color: '#B85C5C' }]}>
             {unacknowledgedCount} unacknowledged {unacknowledgedCount === 1 ? 'entry' : 'entries'}
           </ThemedText>
         </View>
       )}
       {LIVE_LOG.map((entry) => {
-        const sevColor = SEVERITY_COLOR[entry.severity] ?? '#A1A1AA';
+        const sevColor = SEVERITY_COLOR[entry.severity] ?? '#9C9790';
         return (
           <View
             key={entry.id}

@@ -476,9 +476,9 @@ export default function CommunityGiveScreen() {
                     </View>
                     <View style={{
                       paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6,
-                      backgroundColor: pledge.status === 'active' ? '#5A8A6E22' : pledge.status === 'fulfilled' ? '#1D9BF022' : C.surfacePressed,
+                      backgroundColor: pledge.status === 'active' ? '#5A8A6E22' : pledge.status === 'fulfilled' ? '#1A171422' : C.surfacePressed,
                     }}>
-                      <Text style={{ fontSize: 11, fontWeight: '700', color: pledge.status === 'active' ? '#5A8A6E' : pledge.status === 'fulfilled' ? '#1D9BF0' : C.secondary }}>
+                      <Text style={{ fontSize: 11, fontWeight: '700', color: pledge.status === 'active' ? '#5A8A6E' : pledge.status === 'fulfilled' ? '#1A1714' : C.secondary }}>
                         {pledge.status.charAt(0).toUpperCase() + pledge.status.slice(1)}
                       </Text>
                     </View>
@@ -558,7 +558,7 @@ export default function CommunityGiveScreen() {
                   <View style={{ flexDirection: 'row', gap: 12, marginTop: 2 }}>
                     <Text style={{ fontSize: 11, color: C.muted }}>{campaign.donorCount} donors</Text>
                     {campaign.status === 'active' && (
-                      <Text style={{ fontSize: 11, color: days <= 14 ? '#3B82F6' : C.muted }}>
+                      <Text style={{ fontSize: 11, color: days <= 14 ? '#1A1714' : C.muted }}>
                         {days > 0 ? `${days} days left` : 'Ended'}
                       </Text>
                     )}
@@ -594,9 +594,9 @@ export default function CommunityGiveScreen() {
                           </View>
                           <View style={{
                             paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6,
-                            backgroundColor: pledge.status === 'active' ? '#5A8A6E22' : pledge.status === 'fulfilled' ? '#1D9BF022' : C.surfacePressed,
+                            backgroundColor: pledge.status === 'active' ? '#5A8A6E22' : pledge.status === 'fulfilled' ? '#1A171422' : C.surfacePressed,
                           }}>
-                            <Text style={{ fontSize: 10, fontWeight: '700', color: pledge.status === 'active' ? '#5A8A6E' : pledge.status === 'fulfilled' ? '#1D9BF0' : C.secondary }}>
+                            <Text style={{ fontSize: 10, fontWeight: '700', color: pledge.status === 'active' ? '#5A8A6E' : pledge.status === 'fulfilled' ? '#1A1714' : C.secondary }}>
                               {pledge.status.charAt(0).toUpperCase() + pledge.status.slice(1)}
                             </Text>
                           </View>
@@ -767,7 +767,7 @@ export default function CommunityGiveScreen() {
                   <Text style={{ fontSize: 11, color: C.muted }}>{campaign.donorCount} donors</Text>
                   {campaign.status === 'active' && (() => {
                     const d = daysRemaining(campaign.deadline);
-                    return <Text style={{ fontSize: 11, color: d <= 14 ? '#3B82F6' : C.muted }}>{d > 0 ? `${d} days left` : 'Ended'}</Text>;
+                    return <Text style={{ fontSize: 11, color: d <= 14 ? '#1A1714' : C.muted }}>{d > 0 ? `${d} days left` : 'Ended'}</Text>;
                   })()}
                 </View>
                 {campaign.status === 'active' && (
@@ -1139,20 +1139,20 @@ export default function CommunityGiveScreen() {
       { initials: 'CW', name: 'C. Williams',   amount:  4_750, hue: 30  },
     ];
     const CAMPAIGNS_DATA = [
-      { name: 'Annual Fund',     raised: 91_200,  goal: 125_000, color: '#7B68A0' },
-      { name: 'Capital Campaign', raised: 68_000, goal: 165_000, color: '#3B82F6' },
-      { name: 'Missions Fund',   raised: 41_300,  goal:  60_000, color: '#22C55E' },
+      { name: 'Annual Fund',     raised: 91_200,  goal: 125_000, color: '#1A1714' },
+      { name: 'Capital Campaign', raised: 68_000, goal: 165_000, color: '#1A1714' },
+      { name: 'Missions Fund',   raised: 41_300,  goal:  60_000, color: '#5A8A6E' },
     ];
     const FUNDS_SPLIT = [
-      { label: 'General / Tithe',    pct: 58, color: '#7B68A0' },
-      { label: 'Building Fund',      pct: 24, color: '#3B82F6' },
-      { label: 'Missions',           pct: 11, color: '#22C55E' },
-      { label: 'Special Needs',      pct:  7, color: '#F59E0B' },
+      { label: 'General / Tithe',    pct: 58, color: '#1A1714' },
+      { label: 'Building Fund',      pct: 24, color: '#1A1714' },
+      { label: 'Missions',           pct: 11, color: '#5A8A6E' },
+      { label: 'Special Needs',      pct:  7, color: '#B8943E' },
     ];
     return (
       <>
         {/* YTD summary */}
-        <View style={{ backgroundColor: '#7B68A0', borderRadius: 16, padding: 20, marginBottom: 16 }}>
+        <View style={{ backgroundColor: '#1A1714', borderRadius: 16, padding: 20, marginBottom: 16 }}>
           <Text style={{ fontSize: 11, fontWeight: '700', color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase', letterSpacing: 0.6 }}>Total Giving YTD</Text>
           <Text style={{ fontSize: 36, fontWeight: '900', color: '#fff', marginTop: 4 }}>${(YTD_TOTAL / 1000).toFixed(1)}K</Text>
           <View style={{ marginTop: 10 }}>
@@ -1232,7 +1232,7 @@ export default function CommunityGiveScreen() {
                 <Text style={{ fontSize: 13, fontWeight: '800', color: '#fff' }}>{donor.initials}</Text>
               </View>
               <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: C.label }}>{donor.name}</Text>
-              <Text style={{ fontSize: 14, fontWeight: '700', color: '#7B68A0' }}>${(donor.amount / 1000).toFixed(1)}K</Text>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: '#1A1714' }}>${(donor.amount / 1000).toFixed(1)}K</Text>
             </View>
           ))}
         </View>
@@ -1334,7 +1334,7 @@ export default function CommunityGiveScreen() {
             <RolePill
               role={demoRole}
               onPress={cycleRole}
-              accentColor="#7B68A0"
+              accentColor="#1A1714"
               isPrimary={isAdmin}
             />
             {pills.length > 0 && (

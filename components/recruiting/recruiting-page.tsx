@@ -100,9 +100,9 @@ const PORTAL_STATUS_OPTIONS: { key: PortalStatus; label: string }[] = [
 ];
 
 const PORTAL_STATUS_COLORS: Record<PortalStatus, string> = {
-  available: '#22C55E',
-  committed: '#F59E0B',
-  withdrawn: '#A1A1AA',
+  available: '#5A8A6E',
+  committed: '#B8943E',
+  withdrawn: '#9C9790',
 };
 
 const POS_OPTIONS: { key: string; label: string }[] = [
@@ -122,12 +122,12 @@ type PortalPickerTarget = 'level' | 'position' | null;
 type BoardColumnId = 'Watchlist' | 'Contacted' | 'Warm' | 'Visit' | 'Committed' | 'Signed';
 
 const BOARD_COLUMN_DEFS: { id: BoardColumnId; label: string; color: string }[] = [
-  { id: 'Watchlist', label: 'Watchlist', color: '#F59E0B' },
-  { id: 'Contacted', label: 'Contacted', color: '#1D9BF0' },
-  { id: 'Warm', label: 'Warm', color: '#F59E0B' },
-  { id: 'Visit', label: 'Visit', color: '#1D9BF0' },
-  { id: 'Committed', label: 'Committed', color: '#22C55E' },
-  { id: 'Signed', label: 'Signed', color: '#1D9BF0' },
+  { id: 'Watchlist', label: 'Watchlist', color: '#B8943E' },
+  { id: 'Contacted', label: 'Contacted', color: '#1A1714' },
+  { id: 'Warm', label: 'Warm', color: '#B8943E' },
+  { id: 'Visit', label: 'Visit', color: '#1A1714' },
+  { id: 'Committed', label: 'Committed', color: '#5A8A6E' },
+  { id: 'Signed', label: 'Signed', color: '#1A1714' },
 ];
 
 /** Map old 10-stage statuses to new 6-column layout */
@@ -530,11 +530,11 @@ export function RecruitingPage({ colors }: Props) {
                 </View>
                 <View style={styles.budgetLine}>
                   <Text style={[styles.budgetLabel, { color: colors.textTertiary }]}>Committed</Text>
-                  <Text style={[styles.budgetValue, { color: '#F59E0B' }]}>${boardBudget.committedNIL.toLocaleString()}</Text>
+                  <Text style={[styles.budgetValue, { color: '#B8943E' }]}>${boardBudget.committedNIL.toLocaleString()}</Text>
                 </View>
                 <View style={styles.budgetLine}>
                   <Text style={[styles.budgetLabel, { color: colors.textTertiary }]}>Remaining</Text>
-                  <Text style={[styles.budgetValue, { color: '#22C55E' }]}>${boardBudget.remainingNIL.toLocaleString()}</Text>
+                  <Text style={[styles.budgetValue, { color: '#5A8A6E' }]}>${boardBudget.remainingNIL.toLocaleString()}</Text>
                 </View>
               </View>
               <View style={[styles.budgetDivider, { backgroundColor: colors.border }]} />
@@ -546,7 +546,7 @@ export function RecruitingPage({ colors }: Props) {
                 </View>
                 <View style={styles.budgetLine}>
                   <Text style={[styles.budgetLabel, { color: colors.textTertiary }]}>Remaining</Text>
-                  <Text style={[styles.budgetValue, { color: '#22C55E' }]}>{boardBudget.remainingScholarships.toFixed(1)}</Text>
+                  <Text style={[styles.budgetValue, { color: '#5A8A6E' }]}>{boardBudget.remainingScholarships.toFixed(1)}</Text>
                 </View>
               </View>
             </View>
@@ -625,8 +625,8 @@ export function RecruitingPage({ colors }: Props) {
                   onPress={() => handleBoardRemove(boardLongPress)}
                   style={[styles.actionItem, { borderBottomColor: colors.border }]}
                 >
-                  <IconSymbol name="trash" size={18} color="#EF4444" />
-                  <Text style={[styles.actionItemText, { color: '#EF4444' }]}>Remove from Board</Text>
+                  <IconSymbol name="trash" size={18} color="#B85C5C" />
+                  <Text style={[styles.actionItemText, { color: '#B85C5C' }]}>Remove from Board</Text>
                 </Pressable>
                 <Pressable
                   onPress={() => { setBoardLongPress(null); setShowMovePicker(false); }}
@@ -769,7 +769,7 @@ export function RecruitingPage({ colors }: Props) {
                   {/* Clear */}
                   {(portalLevel || portalPosition) && (
                     <Pressable onPress={clearPortalFilters} hitSlop={8} style={[styles.filterPill, { borderColor: colors.border, backgroundColor: colors.card, marginLeft: 8 }]}>
-                      <Text style={[styles.filterPillText, { color: '#EF4444' }]}>Clear</Text>
+                      <Text style={[styles.filterPillText, { color: '#B85C5C' }]}>Clear</Text>
                     </Pressable>
                   )}
                 </View>
@@ -1002,7 +1002,7 @@ export function RecruitingPage({ colors }: Props) {
                     {/* Clear — outside ScrollView so touch always works */}
                     {(selectedLevel || selectedConference || selectedTeam) && (
                       <Pressable onPress={clearFilters} hitSlop={8} style={[styles.filterPill, { borderColor: colors.border, backgroundColor: colors.card, marginLeft: 8 }]}>
-                        <Text style={[styles.filterPillText, { color: '#EF4444' }]}>Clear</Text>
+                        <Text style={[styles.filterPillText, { color: '#B85C5C' }]}>Clear</Text>
                       </Pressable>
                     )}
                   </View>

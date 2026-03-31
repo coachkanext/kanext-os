@@ -55,7 +55,7 @@ function ProofEventCard({ event }: { event: ProofEvent }) {
                   <IconSymbol
                     name={kpi.trend === 'up' ? 'arrow.up.right' : kpi.trend === 'down' ? 'arrow.down.right' : 'arrow.right'}
                     size={12}
-                    color={kpi.trend === 'up' ? '#22C55E' : kpi.trend === 'down' ? '#EF4444' : colors.textTertiary}
+                    color={kpi.trend === 'up' ? '#5A8A6E' : kpi.trend === 'down' ? '#B85C5C' : colors.textTertiary}
                   />
                 )}
               </View>

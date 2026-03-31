@@ -87,9 +87,9 @@ export interface VaultActivityEvent {
 // =============================================================================
 
 export const STATUS_COLORS: Record<VaultDocStatus, string> = {
-  Draft: '#F59E0B',
-  Active: '#22C55E',
-  Archived: '#A1A1AA',
+  Draft: '#B8943E',
+  Active: '#5A8A6E',
+  Archived: '#9C9790',
   Superseded: '#78716C',
 };
 

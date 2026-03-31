@@ -239,7 +239,7 @@ function ReadinessStrip({
             key={item.key}
             name={item.icon as any}
             size={14}
-            color={active ? '#22C55E' : colors.textTertiary}
+            color={active ? '#5A8A6E' : colors.textTertiary}
             style={active ? s.readinessIconActive : s.readinessIconInactive}
           />
         );
@@ -305,7 +305,7 @@ function DirectoryTab({
             </ThemedText>
           </View>
           <View style={[s.directoryKpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <ThemedText style={[s.directoryKpiValue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.directoryKpiValue, { color: '#5A8A6E' }]}>
               {availableCount}
             </ThemedText>
             <ThemedText style={[s.directoryKpiLabel, { color: colors.textSecondary }]}>
@@ -341,7 +341,7 @@ function DirectoryTab({
         {/* Status Legend */}
         <View style={s.directoryLegend}>
           <View style={s.directoryLegendItem}>
-            <View style={[s.directoryLegendDot, { backgroundColor: '#22C55E' }]} />
+            <View style={[s.directoryLegendDot, { backgroundColor: '#5A8A6E' }]} />
             <ThemedText style={[s.directoryLegendText, { color: colors.textTertiary }]}>
               Available ({availableCount})
             </ThemedText>
@@ -360,7 +360,7 @@ function DirectoryTab({
           </View>
           {offlineCount > 0 && (
             <View style={s.directoryLegendItem}>
-              <View style={[s.directoryLegendDot, { backgroundColor: '#EF4444' }]} />
+              <View style={[s.directoryLegendDot, { backgroundColor: '#B85C5C' }]} />
               <ThemedText style={[s.directoryLegendText, { color: colors.textTertiary }]}>
                 Offline ({offlineCount})
               </ThemedText>
@@ -578,7 +578,7 @@ function ScheduleTab({
           </ThemedText>
           {conflictCount > 0 && (
             <View style={s.scheduleConflictBadge}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={10} color="#EF4444" />
+              <IconSymbol name="exclamationmark.triangle.fill" size={10} color="#B85C5C" />
               <ThemedText style={s.scheduleConflictText}>
                 {pluralize(conflictCount, 'conflict')}
               </ThemedText>
@@ -622,7 +622,7 @@ function ScheduleTab({
                   s.bookingCard,
                   {
                     backgroundColor: colors.card,
-                    borderColor: booking.hasConflict ? '#EF444440' : colors.border,
+                    borderColor: booking.hasConflict ? '#B85C5C40' : colors.border,
                   },
                 ]}
               >
@@ -668,11 +668,11 @@ function ScheduleTab({
                     <IconSymbol
                       name="exclamationmark.triangle.fill"
                       size={14}
-                      color="#EF4444"
+                      color="#B85C5C"
                       style={s.conflictIcon}
                     />
                     <ThemedText
-                      style={[s.conflictText, { color: '#EF4444' }]}
+                      style={[s.conflictText, { color: '#B85C5C' }]}
                       numberOfLines={3}
                     >
                       {booking.conflictNote}
@@ -787,7 +787,7 @@ function AccessTab({
             </View>
             {entry.canBook.map((name) => (
               <View key={`book-${entry.roomId}-${name}`} style={s.accessPersonRow}>
-                <View style={[s.accessPersonDot, { backgroundColor: '#22C55E' }]} />
+                <View style={[s.accessPersonDot, { backgroundColor: '#5A8A6E' }]} />
                 <ThemedText style={[s.accessPersonName, { color: colors.text }]}>
                   {name}
                 </ThemedText>
@@ -823,7 +823,7 @@ function AccessTab({
             </View>
             {entry.canUnlock.map((name) => (
               <View key={`unlock-${entry.roomId}-${name}`} style={s.accessPersonRow}>
-                <View style={[s.accessPersonDot, { backgroundColor: '#F59E0B' }]} />
+                <View style={[s.accessPersonDot, { backgroundColor: '#B8943E' }]} />
                 <ThemedText style={[s.accessPersonName, { color: colors.text }]}>
                   {name}
                 </ThemedText>
@@ -944,13 +944,13 @@ function MaintenanceTab({
               <IconSymbol
                 name="wrench.and.screwdriver.fill"
                 size={11}
-                color={item.assignedTo ? colors.textSecondary : '#F59E0B'}
+                color={item.assignedTo ? colors.textSecondary : '#B8943E'}
               />
               <ThemedText
                 style={[
                   s.ticketMetaText,
                   {
-                    color: item.assignedTo ? colors.textSecondary : '#F59E0B',
+                    color: item.assignedTo ? colors.textSecondary : '#B8943E',
                     fontWeight: item.assignedTo ? '400' : '600',
                   },
                 ]}
@@ -972,13 +972,13 @@ function MaintenanceTab({
         <View style={[s.ticketSummary, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={s.ticketSummaryRow}>
             <View style={s.ticketSummaryItem}>
-              <View style={[s.ticketSummaryDot, { backgroundColor: '#EF4444' }]} />
+              <View style={[s.ticketSummaryDot, { backgroundColor: '#B85C5C' }]} />
               <ThemedText style={[s.ticketSummaryText, { color: colors.text }]}>
                 {pluralize(openCount, 'open ticket')}
               </ThemedText>
             </View>
             <View style={s.ticketSummaryItem}>
-              <View style={[s.ticketSummaryDot, { backgroundColor: '#F59E0B' }]} />
+              <View style={[s.ticketSummaryDot, { backgroundColor: '#B8943E' }]} />
               <ThemedText style={[s.ticketSummaryText, { color: colors.text }]}>
                 {pluralize(inProgressCount, 'in progress', 'in progress')}
               </ThemedText>
@@ -986,15 +986,15 @@ function MaintenanceTab({
           </View>
           <View style={s.ticketSummaryRow}>
             <View style={s.ticketSummaryItem}>
-              <View style={[s.ticketSummaryDot, { backgroundColor: '#22C55E' }]} />
+              <View style={[s.ticketSummaryDot, { backgroundColor: '#5A8A6E' }]} />
               <ThemedText style={[s.ticketSummaryText, { color: colors.text }]}>
                 {pluralize(resolvedCount, 'resolved', 'resolved')}
               </ThemedText>
             </View>
             {offlineRooms > 0 && (
               <View style={s.ticketSummaryItem}>
-                <View style={[s.ticketSummaryDot, { backgroundColor: '#EF4444' }]} />
-                <ThemedText style={[s.ticketSummaryText, { color: '#EF4444' }]}>
+                <View style={[s.ticketSummaryDot, { backgroundColor: '#B85C5C' }]} />
+                <ThemedText style={[s.ticketSummaryText, { color: '#B85C5C' }]}>
                   {pluralize(offlineRooms, 'room')} offline
                 </ThemedText>
               </View>
@@ -1002,8 +1002,8 @@ function MaintenanceTab({
           </View>
           {unassignedCount > 0 && (
             <View style={[s.ticketSummaryAlert, { borderTopColor: colors.border }]}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#F59E0B" />
-              <ThemedText style={[s.ticketSummaryAlertText, { color: '#F59E0B' }]}>
+              <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B8943E" />
+              <ThemedText style={[s.ticketSummaryAlertText, { color: '#B8943E' }]}>
                 {pluralize(unassignedCount, 'ticket')} unassigned
               </ThemedText>
             </View>
@@ -1196,7 +1196,7 @@ function RoomDetailSheet({
                 <IconSymbol
                   name={item.icon as any}
                   size={14}
-                  color={active ? '#22C55E' : '#EF4444'}
+                  color={active ? '#5A8A6E' : '#B85C5C'}
                 />
                 <ThemedText style={[s.sheetReadinessLabel, { color: colors.textSecondary }]}>
                   {item.label}
@@ -1204,7 +1204,7 @@ function RoomDetailSheet({
                 <ThemedText
                   style={[
                     s.sheetReadinessStatus,
-                    { color: active ? '#22C55E' : '#EF4444' },
+                    { color: active ? '#5A8A6E' : '#B85C5C' },
                   ]}
                 >
                   {active ? 'Ready' : 'Not Ready'}
@@ -1217,7 +1217,7 @@ function RoomDetailSheet({
                     : ('xmark.circle.fill' as any)
                 }
                 size={16}
-                color={active ? '#22C55E' : '#EF4444'}
+                color={active ? '#5A8A6E' : '#B85C5C'}
               />
             </View>
           );
@@ -1346,7 +1346,7 @@ function RoomDetailSheet({
                   </ThemedText>
                 )}
                 {!ticket.assignedTo && (
-                  <ThemedText style={[s.sheetBookingMeta, { color: '#F59E0B', fontWeight: '600' }]}>
+                  <ThemedText style={[s.sheetBookingMeta, { color: '#B8943E', fontWeight: '600' }]}>
                     Unassigned
                   </ThemedText>
                 )}
@@ -1782,7 +1782,7 @@ const s = StyleSheet.create({
   scheduleConflictText: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#EF4444',
+    color: '#B85C5C',
   },
 
   // -- Schedule Section --
@@ -1858,7 +1858,7 @@ const s = StyleSheet.create({
     alignItems: 'flex-start',
     marginTop: Spacing.sm,
     padding: Spacing.sm,
-    backgroundColor: '#EF444410',
+    backgroundColor: '#B85C5C10',
     borderRadius: BorderRadius.md,
     gap: Spacing.xs,
   },

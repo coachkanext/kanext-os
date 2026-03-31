@@ -214,11 +214,11 @@ export const FEED_SORTS: { key: FeedSort; label: string }[] = [
 export function getSeverityColor(severity: AlertSeverity): string {
   switch (severity) {
     case 'low':
-      return '#A1A1AA';
+      return '#9C9790';
     case 'medium':
-      return '#F59E0B';
+      return '#B8943E';
     case 'high':
-      return '#EF4444';
+      return '#B85C5C';
   }
 }
 
@@ -280,12 +280,12 @@ export function sortFeed(posts: FeedPost[], sort: FeedSort): FeedPost[] {
 
 const AUTHORS = {
   headCoach: { name: 'Coach Davis', initials: 'CD', role: 'Head Coach', roleBadgeColor: '#FFFFFF' },
-  assistant: { name: 'Coach Miller', initials: 'CM', role: 'Assistant', roleBadgeColor: '#A1A1AA' },
-  videoCoord: { name: 'Coach Brooks', initials: 'CB', role: 'Video Coord', roleBadgeColor: '#A1A1AA' },
+  assistant: { name: 'Coach Miller', initials: 'CM', role: 'Assistant', roleBadgeColor: '#9C9790' },
+  videoCoord: { name: 'Coach Brooks', initials: 'CB', role: 'Video Coord', roleBadgeColor: '#9C9790' },
   system: { name: 'System', initials: 'SY', role: 'System', roleBadgeColor: '#52525B' },
   player: { name: 'Marcus Johnson', initials: 'MJ', role: 'Player', roleBadgeColor: '#52525B' },
-  strength: { name: 'Coach Turner', initials: 'CT', role: 'Strength', roleBadgeColor: '#A1A1AA' },
-  compliance: { name: 'Lisa Chen', initials: 'LC', role: 'Compliance', roleBadgeColor: '#A1A1AA' },
+  strength: { name: 'Coach Turner', initials: 'CT', role: 'Strength', roleBadgeColor: '#9C9790' },
+  compliance: { name: 'Lisa Chen', initials: 'LC', role: 'Compliance', roleBadgeColor: '#9C9790' },
 } as const;
 
 // =============================================================================
@@ -334,7 +334,7 @@ export const MOCK_FEED: FeedPost[] = [
     filter: 'player_dev',
     playerDevMetric: '3PT Shooting %',
     playerDevDelta: '+4.2%',
-    playerDevDeltaColor: '#22C55E',
+    playerDevDeltaColor: '#5A8A6E',
     body: 'Marcus Johnson — 7-day rolling average up from 34.1% to 38.3%. Extra reps paying off.',
     commentCount: 3,
   },
@@ -366,7 +366,7 @@ export const MOCK_FEED: FeedPost[] = [
     filter: 'recruiting',
     recruitName: 'Jaylen Carter',
     recruitStatus: 'Official Visit Scheduled',
-    recruitStatusColor: '#22C55E',
+    recruitStatusColor: '#5A8A6E',
     commentCount: 2,
   },
   {
@@ -444,7 +444,7 @@ export const MOCK_FEED: FeedPost[] = [
     filter: 'recruiting',
     recruitName: 'Devon Williams',
     recruitStatus: 'Offer Extended',
-    recruitStatusColor: '#F59E0B',
+    recruitStatusColor: '#B8943E',
     commentCount: 0,
   },
   {
@@ -1501,20 +1501,20 @@ export function getModeRooms(mode: Mode): ChatThread[] {
 export function getSourceTagColor(sourceTag: string): { bg: string; text: string } {
   switch (sourceTag) {
     case 'Culture':
-      return { bg: '#1D9BF020', text: '#1D9BF0' };
+      return { bg: '#1A171420', text: '#1A1714' };
     case 'Film':
     case 'Game Ops':
-      return { bg: '#EF444420', text: '#EF4444' };
+      return { bg: '#B85C5C20', text: '#B85C5C' };
     case 'Player Dev':
-      return { bg: '#F59E0B20', text: '#F59E0B' };
+      return { bg: '#B8943E20', text: '#B8943E' };
     case 'Recruiting':
-      return { bg: '#22C55E20', text: '#22C55E' };
+      return { bg: '#5A8A6E20', text: '#5A8A6E' };
     case 'Mention':
-      return { bg: '#1D9BF020', text: '#1D9BF0' };
+      return { bg: '#1A171420', text: '#1A1714' };
     case 'System':
-      return { bg: '#A1A1AA20', text: '#A1A1AA' };
+      return { bg: '#9C979020', text: '#9C9790' };
     default:
-      return { bg: '#1D9BF020', text: '#1D9BF0' };
+      return { bg: '#1A171420', text: '#1A1714' };
   }
 }
 

@@ -217,7 +217,7 @@ function SummaryTab({
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Checked Out</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: '#EF4444' }]}>{needsRepair}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: '#B85C5C' }]}>{needsRepair}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Needs Repair</ThemedText>
         </View>
       </View>
@@ -242,9 +242,9 @@ function SummaryTab({
           {overdueCheckouts.map((co) => (
             <View
               key={co.id}
-              style={[s.alertCard, { backgroundColor: '#EF444410', borderColor: '#EF444430' }]}
+              style={[s.alertCard, { backgroundColor: '#B85C5C10', borderColor: '#B85C5C30' }]}
             >
-              <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#EF4444" />
+              <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#B85C5C" />
               <View style={s.alertTextCol}>
                 <ThemedText style={[s.alertTitle, { color: colors.text }]}>{co.resourceName}</ThemedText>
                 <ThemedText style={[s.alertSubtitle, { color: colors.textSecondary }]}>
@@ -412,7 +412,7 @@ function ByCategoryTab({
               {formatCurrency(item.value)}
             </ThemedText>
           </View>
-          <ProgressBar percent={availPct} color={availPct > 50 ? '#22C55E' : availPct > 20 ? '#F59E0B' : '#EF4444'} />
+          <ProgressBar percent={availPct} color={availPct > 50 ? '#5A8A6E' : availPct > 20 ? '#B8943E' : '#B85C5C'} />
 
           {/* Location */}
           <View style={[s.resourceFooter, { borderTopColor: colors.border }]}>
@@ -586,8 +586,8 @@ function OverdueTab({
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
       {/* Alert banner */}
       {overdueItems.length > 0 && (
-        <View style={[s.overdueBanner, { backgroundColor: '#EF444410', borderColor: '#EF444430' }]}>
-          <IconSymbol name="exclamationmark.triangle.fill" size={20} color="#EF4444" />
+        <View style={[s.overdueBanner, { backgroundColor: '#B85C5C10', borderColor: '#B85C5C30' }]}>
+          <IconSymbol name="exclamationmark.triangle.fill" size={20} color="#B85C5C" />
           <View style={s.overdueBannerText}>
             <ThemedText style={[s.overdueBannerTitle, { color: colors.text }]}>
               {overdueItems.length} Overdue Item{overdueItems.length !== 1 ? 's' : ''}
@@ -605,7 +605,7 @@ function OverdueTab({
           style={[s.overdueCard, { backgroundColor: colors.card, borderColor: colors.border }]}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
         >
-          <View style={[s.overdueCardBar, { backgroundColor: '#EF4444' }]} />
+          <View style={[s.overdueCardBar, { backgroundColor: '#B85C5C' }]} />
           <View style={s.overdueCardContent}>
             <ThemedText style={[s.overdueCardName, { color: colors.text }]}>{co.resourceName}</ThemedText>
             <View style={s.overdueCardMeta}>
@@ -623,14 +623,14 @@ function OverdueTab({
               </View>
             </View>
             <View style={[s.overdueCardFooter, { borderTopColor: colors.border }]}>
-              <ThemedText style={[s.overdueCardDue, { color: '#EF4444' }]}>
+              <ThemedText style={[s.overdueCardDue, { color: '#B85C5C' }]}>
                 Due: {formatDate(co.returnDate)}
               </ThemedText>
               <Pressable
-                style={[s.overdueActionButton, { backgroundColor: '#EF444418' }]}
+                style={[s.overdueActionButton, { backgroundColor: '#B85C5C18' }]}
                 onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
               >
-                <ThemedText style={[s.overdueActionText, { color: '#EF4444' }]}>Send Reminder</ThemedText>
+                <ThemedText style={[s.overdueActionText, { color: '#B85C5C' }]}>Send Reminder</ThemedText>
               </Pressable>
             </View>
           </View>
@@ -639,7 +639,7 @@ function OverdueTab({
 
       {overdueItems.length === 0 && (
         <View style={s.emptyContainer}>
-          <IconSymbol name="checkmark.circle.fill" size={48} color="#22C55E" />
+          <IconSymbol name="checkmark.circle.fill" size={48} color="#5A8A6E" />
           <ThemedText style={[s.emptyText, { color: colors.text, marginTop: Spacing.md }]}>
             No Overdue Items
           </ThemedText>
@@ -824,7 +824,7 @@ function ResourceDetailSheet({
             <ThemedText style={[s.sheetAvailLabel, { color: colors.textSecondary }]}>Total</ThemedText>
           </View>
         </View>
-        <ProgressBar percent={availPct} color={availPct > 50 ? '#22C55E' : availPct > 20 ? '#F59E0B' : '#EF4444'} />
+        <ProgressBar percent={availPct} color={availPct > 50 ? '#5A8A6E' : availPct > 20 ? '#B8943E' : '#B85C5C'} />
       </View>
 
       {/* Details */}

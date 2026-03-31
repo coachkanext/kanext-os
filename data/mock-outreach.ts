@@ -37,10 +37,10 @@ export interface VisitorCard {
 
 export const VISITOR_STAGES: { stage: VisitorStage; color: string }[] = [
   { stage: 'First Visit', color: '#6B7280' },
-  { stage: 'Contacted',   color: '#3B82F6' },
-  { stage: 'Returned',    color: '#8B5CF6' },
-  { stage: 'Connected',   color: '#F59E0B' },
-  { stage: 'Member',      color: '#22C55E' },
+  { stage: 'Contacted',   color: '#1A1714' },
+  { stage: 'Returned',    color: '#1A1714' },
+  { stage: 'Connected',   color: '#B8943E' },
+  { stage: 'Member',      color: '#5A8A6E' },
 ];
 
 export const VISITOR_SUMMARY: VisitorSummary = {

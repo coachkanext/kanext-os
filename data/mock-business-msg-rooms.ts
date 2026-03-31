@@ -72,7 +72,7 @@ const PINNED_ROOMS: BizMsgRoom[] = [
     pinned: true,
     pinnedMessage: 'Q1 Strategy Deck — final version attached. All execs review before Friday.',
     locked: true,
-    color: '#8B5CF6',
+    color: '#1A1714',
     initials: 'EX',
   },
   {
@@ -88,7 +88,7 @@ const PINNED_ROOMS: BizMsgRoom[] = [
     pinned: true,
     pinnedMessage: 'Board Meeting — March 4, 2026. Agenda and pre-read materials linked.',
     locked: true,
-    color: '#EF4444',
+    color: '#B85C5C',
     initials: 'BD',
   },
   {
@@ -103,7 +103,7 @@ const PINNED_ROOMS: BizMsgRoom[] = [
     pinned: true,
     pinnedMessage: 'Series B — Status: Active. Lead: Valley Capital. Target close: Q1 2026.',
     locked: true,
-    color: '#F59E0B',
+    color: '#B8943E',
     initials: 'CA',
   },
 ];
@@ -126,7 +126,7 @@ const EXECUTIVE_ROOMS: BizMsgRoom[] = [
     pinned: true,
     pinnedMessage: 'Q1 Strategy Deck — final version attached. All execs review before Friday.',
     locked: true,
-    color: '#8B5CF6',
+    color: '#1A1714',
     initials: 'EX',
   },
   {
@@ -142,7 +142,7 @@ const EXECUTIVE_ROOMS: BizMsgRoom[] = [
     pinned: true,
     pinnedMessage: 'Board Meeting — March 4, 2026. Agenda and pre-read materials linked.',
     locked: true,
-    color: '#EF4444',
+    color: '#B85C5C',
     initials: 'BD',
   },
   {
@@ -156,7 +156,7 @@ const EXECUTIVE_ROOMS: BizMsgRoom[] = [
     unread: false,
     pinned: false,
     locked: true,
-    color: '#F59E0B',
+    color: '#B8943E',
     initials: 'FL',
   },
   {
@@ -170,7 +170,7 @@ const EXECUTIVE_ROOMS: BizMsgRoom[] = [
     unread: false,
     pinned: false,
     locked: true,
-    color: '#EF4444',
+    color: '#B85C5C',
     initials: 'CL',
   },
   {
@@ -185,7 +185,7 @@ const EXECUTIVE_ROOMS: BizMsgRoom[] = [
     pinned: true,
     pinnedMessage: 'Series B — Status: Active. Lead: Valley Capital. Target close: Q1 2026.',
     locked: true,
-    color: '#F59E0B',
+    color: '#B8943E',
     initials: 'CA',
   },
   {
@@ -199,7 +199,7 @@ const EXECUTIVE_ROOMS: BizMsgRoom[] = [
     unread: false,
     pinned: false,
     locked: true,
-    color: '#22C55E',
+    color: '#5A8A6E',
     initials: 'ST',
   },
 ];
@@ -222,7 +222,7 @@ const DEPARTMENT_ROOMS: BizMsgRoom[] = [
     unreadCount: 2,
     pinned: false,
     locked: false,
-    color: '#1D9BF0',
+    color: '#1A1714',
     initials: 'OP',
   },
   {
@@ -239,7 +239,7 @@ const DEPARTMENT_ROOMS: BizMsgRoom[] = [
     pinned: false,
     pinnedMessage: 'v3.0 Feature Spec — Final. P0: Payments + Enterprise SSO.',
     locked: false,
-    color: '#8B5CF6',
+    color: '#1A1714',
     initials: 'PR',
   },
   {
@@ -254,7 +254,7 @@ const DEPARTMENT_ROOMS: BizMsgRoom[] = [
     unread: false,
     pinned: false,
     locked: false,
-    color: '#EF4444',
+    color: '#B85C5C',
     initials: 'LG',
   },
   {
@@ -284,7 +284,7 @@ const DEPARTMENT_ROOMS: BizMsgRoom[] = [
     unread: false,
     pinned: false,
     locked: false,
-    color: '#EC4899',
+    color: '#1A1714',
     initials: 'MK',
   },
   {
@@ -300,7 +300,7 @@ const DEPARTMENT_ROOMS: BizMsgRoom[] = [
     unreadCount: 1,
     pinned: false,
     locked: true,
-    color: '#F59E0B',
+    color: '#B8943E',
     initials: 'IR',
   },
 ];
@@ -324,7 +324,7 @@ const PROJECT_ROOMS: BizMsgRoom[] = [
     pinned: false,
     pinnedMessage: 'Target: $18M. Lead: Valley Capital. Close: Q1 2026.',
     locked: true,
-    color: '#F59E0B',
+    color: '#B8943E',
     initials: 'SB',
   },
   {
@@ -339,7 +339,7 @@ const PROJECT_ROOMS: BizMsgRoom[] = [
     unread: false,
     pinned: false,
     locked: true,
-    color: '#8B5CF6',
+    color: '#1A1714',
     initials: 'NT',
   },
   {
@@ -356,7 +356,7 @@ const PROJECT_ROOMS: BizMsgRoom[] = [
     pinned: false,
     pinnedMessage: 'Launch target: March 15. Blockers tracked in Jira.',
     locked: false,
-    color: '#22C55E',
+    color: '#5A8A6E',
     initials: 'V3',
   },
   {

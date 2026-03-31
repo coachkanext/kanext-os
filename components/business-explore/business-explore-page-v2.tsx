@@ -527,8 +527,8 @@ export function BusinessExplorePageV2() {
               <ThemedText style={[styles.sheetActionText, { color: colors.text }]}>Link to Vault</ThemedText>
             </Pressable>
             <Pressable style={styles.sheetAction} onPress={handleArchive}>
-              <IconSymbol name="archivebox" size={20} color="#EF4444" />
-              <ThemedText style={[styles.sheetActionText, { color: '#EF4444' }]}>Archive</ThemedText>
+              <IconSymbol name="archivebox" size={20} color="#B85C5C" />
+              <ThemedText style={[styles.sheetActionText, { color: '#B85C5C' }]}>Archive</ThemedText>
             </Pressable>
           </View>
         )}

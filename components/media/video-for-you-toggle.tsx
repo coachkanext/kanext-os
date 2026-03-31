@@ -40,7 +40,7 @@ export function VideoForYouToggle({ activeMode, onModeChange }: VideoForYouToggl
               }}
             >
               <ThemedText
-                style={[styles.tabText, { color: isActive ? '#FFFFFF' : '#A1A1AA' }]}
+                style={[styles.tabText, { color: isActive ? '#FFFFFF' : '#9C9790' }]}
               >
                 {tab.label}
               </ThemedText>

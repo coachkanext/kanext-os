@@ -108,9 +108,9 @@ const LOCATIONS = [
 const INFO_NOTE = 'Primary headquarters located in Miami, FL. Secondary operational footprint in Nashville, TN.';
 
 const STATUS_COLOR: Record<LocationStatus, string> = {
-  Active: '#22C55E',
+  Active: '#5A8A6E',
   Inactive: '#9CA3AF',
-  'Under Development': '#F59E0B',
+  'Under Development': '#B8943E',
 };
 
 const OWNERSHIP_ICON: Record<OwnershipType, string> = {

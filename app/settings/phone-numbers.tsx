@@ -50,7 +50,7 @@ export default function PhoneNumbersScreen() {
                         <View style={styles.modePill}>
                           <Text style={styles.modePillText}>{mode}</Text>
                         </View>
-                        <View style={[styles.statusBadge, { backgroundColor: '#D1FAE5' }]}>
+                        <View style={[styles.statusBadge, { backgroundColor: '#F5F0EA' }]}>
                           <Text style={[styles.statusText, { color: '#065F46' }]}>{active.status}</Text>
                         </View>
                       </View>

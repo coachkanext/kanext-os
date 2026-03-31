@@ -94,58 +94,58 @@ interface OrgFacilitiesTabProps {
 // =============================================================================
 
 const SPACE_STATUS_COLOR: Record<string, string> = {
-  open: '#22C55E',
-  booked: '#1D9BF0',
-  maintenance: '#F59E0B',
-  closed: '#EF4444',
+  open: '#5A8A6E',
+  booked: '#1A1714',
+  maintenance: '#B8943E',
+  closed: '#B85C5C',
 };
 
 const WORK_ORDER_STATUS_COLOR: Record<string, string> = {
-  requested: '#A1A1AA',
-  approved: '#1D9BF0',
-  assigned: '#F59E0B',
-  in_progress: '#F59E0B',
-  completed: '#22C55E',
-  closed: '#A1A1AA',
+  requested: '#9C9790',
+  approved: '#1A1714',
+  assigned: '#B8943E',
+  in_progress: '#B8943E',
+  completed: '#5A8A6E',
+  closed: '#9C9790',
 };
 
 const SEVERITY_COLOR: Record<string, string> = {
-  P0: '#EF4444',
-  P1: '#F59E0B',
-  P2: '#1D9BF0',
-  P3: '#A1A1AA',
-  critical: '#EF4444',
-  high: '#F59E0B',
-  medium: '#1D9BF0',
-  low: '#A1A1AA',
+  P0: '#B85C5C',
+  P1: '#B8943E',
+  P2: '#1A1714',
+  P3: '#9C9790',
+  critical: '#B85C5C',
+  high: '#B8943E',
+  medium: '#1A1714',
+  low: '#9C9790',
 };
 
 const ISSUE_STATUS_COLOR: Record<string, string> = {
-  open: '#EF4444',
-  investigating: '#F59E0B',
-  resolved: '#22C55E',
-  closed: '#A1A1AA',
+  open: '#B85C5C',
+  investigating: '#B8943E',
+  resolved: '#5A8A6E',
+  closed: '#9C9790',
 };
 
 const SAFETY_STATUS_COLOR: Record<string, string> = {
-  compliant: '#22C55E',
-  due_soon: '#F59E0B',
-  overdue: '#EF4444',
+  compliant: '#5A8A6E',
+  due_soon: '#B8943E',
+  overdue: '#B85C5C',
 };
 
 const CONDITION_COLOR: Record<string, string> = {
-  good: '#22C55E',
-  needs_service: '#F59E0B',
-  out: '#EF4444',
+  good: '#5A8A6E',
+  needs_service: '#B8943E',
+  out: '#B85C5C',
 };
 
 const BOOKING_TYPE_COLOR: Record<string, string> = {
-  practice: '#1D9BF0',
-  game: '#EF4444',
-  meeting: '#1D9BF0',
-  event: '#F59E0B',
-  maintenance: '#F59E0B',
-  other: '#A1A1AA',
+  practice: '#1A1714',
+  game: '#B85C5C',
+  meeting: '#1A1714',
+  event: '#B8943E',
+  maintenance: '#B8943E',
+  other: '#9C9790',
 };
 
 // =============================================================================
@@ -182,27 +182,27 @@ function auditIcon(action: string): string {
 function auditColor(action: string): string {
   switch (action) {
     case 'space_booked':
-      return '#1D9BF0';
+      return '#1A1714';
     case 'work_order_created':
-      return '#F59E0B';
+      return '#B8943E';
     case 'issue_reported':
-      return '#EF4444';
+      return '#B85C5C';
     case 'issue_resolved':
-      return '#22C55E';
+      return '#5A8A6E';
     case 'inspection_completed':
-      return '#1D9BF0';
+      return '#1A1714';
     case 'asset_updated':
-      return '#1D9BF0';
+      return '#1A1714';
     case 'vendor_added':
-      return '#1D9BF0';
+      return '#1A1714';
     case 'setting_changed':
-      return '#A1A1AA';
+      return '#9C9790';
     case 'booking_cancelled':
-      return '#EF4444';
+      return '#B85C5C';
     case 'work_order_completed':
-      return '#22C55E';
+      return '#5A8A6E';
     default:
-      return '#A1A1AA';
+      return '#9C9790';
   }
 }
 
@@ -320,13 +320,13 @@ export function OrgFacilitiesTab({ colors, accentColor }: OrgFacilitiesTabProps)
                   <View
                     style={[
                       s.badge,
-                      { backgroundColor: (BOOKING_TYPE_COLOR[booking.type] ?? '#A1A1AA') + '33' },
+                      { backgroundColor: (BOOKING_TYPE_COLOR[booking.type] ?? '#9C9790') + '33' },
                     ]}
                   >
                     <ThemedText
                       style={[
                         s.badgeText,
-                        { color: BOOKING_TYPE_COLOR[booking.type] ?? '#A1A1AA' },
+                        { color: BOOKING_TYPE_COLOR[booking.type] ?? '#9C9790' },
                       ]}
                     >
                       {booking.type}
@@ -380,7 +380,7 @@ export function OrgFacilitiesTab({ colors, accentColor }: OrgFacilitiesTabProps)
             <ThemedText style={[s.pulseLabel, { color: colors.textTertiary }]}>
               Open Work Orders
             </ThemedText>
-            <ThemedText style={[s.pulseDetail, { color: '#F59E0B' }]}>
+            <ThemedText style={[s.pulseDetail, { color: '#B8943E' }]}>
               {p0p1Count} P0/P1
             </ThemedText>
           </View>
@@ -391,7 +391,7 @@ export function OrgFacilitiesTab({ colors, accentColor }: OrgFacilitiesTabProps)
             <ThemedText style={[s.pulseLabel, { color: colors.textTertiary }]}>
               Open Issues
             </ThemedText>
-            <ThemedText style={[s.pulseDetail, { color: '#EF4444' }]}>
+            <ThemedText style={[s.pulseDetail, { color: '#B85C5C' }]}>
               {critHighCount} critical/high
             </ThemedText>
           </View>
@@ -412,8 +412,8 @@ export function OrgFacilitiesTab({ colors, accentColor }: OrgFacilitiesTabProps)
                 <ThemedText style={[s.cardTitle, { color: colors.text, flex: 1 }]} numberOfLines={1}>
                   {space.name}
                 </ThemedText>
-                <View style={[s.badge, { backgroundColor: (SPACE_STATUS_COLOR[space.status] ?? '#A1A1AA') + '33' }]}>
-                  <ThemedText style={[s.badgeText, { color: SPACE_STATUS_COLOR[space.status] ?? '#A1A1AA' }]}>
+                <View style={[s.badge, { backgroundColor: (SPACE_STATUS_COLOR[space.status] ?? '#9C9790') + '33' }]}>
+                  <ThemedText style={[s.badgeText, { color: SPACE_STATUS_COLOR[space.status] ?? '#9C9790' }]}>
                     {space.status}
                   </ThemedText>
                 </View>
@@ -438,7 +438,7 @@ export function OrgFacilitiesTab({ colors, accentColor }: OrgFacilitiesTabProps)
         </ThemedText>
         <View style={s.pulseRow}>
           <View style={[s.pulseCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <ThemedText style={[s.pulseValue, { color: '#F59E0B' }]}>
+            <ThemedText style={[s.pulseValue, { color: '#B8943E' }]}>
               {safetyDueSoon}
             </ThemedText>
             <ThemedText style={[s.pulseLabel, { color: colors.textTertiary }]}>
@@ -446,7 +446,7 @@ export function OrgFacilitiesTab({ colors, accentColor }: OrgFacilitiesTabProps)
             </ThemedText>
           </View>
           <View style={[s.pulseCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <ThemedText style={[s.pulseValue, { color: '#EF4444' }]}>
+            <ThemedText style={[s.pulseValue, { color: '#B85C5C' }]}>
               {safetyOverdue}
             </ThemedText>
             <ThemedText style={[s.pulseLabel, { color: colors.textTertiary }]}>
@@ -481,7 +481,7 @@ export function OrgFacilitiesTab({ colors, accentColor }: OrgFacilitiesTabProps)
       keyExtractor={(item) => item.id}
       contentContainerStyle={s.listContent}
       renderItem={({ item }) => {
-        const statusColor = SPACE_STATUS_COLOR[item.status] ?? '#A1A1AA';
+        const statusColor = SPACE_STATUS_COLOR[item.status] ?? '#9C9790';
         return (
           <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.cardInfo}>
@@ -574,13 +574,13 @@ export function OrgFacilitiesTab({ colors, accentColor }: OrgFacilitiesTabProps)
                     <View
                       style={[
                         s.badge,
-                        { backgroundColor: (BOOKING_TYPE_COLOR[booking.type] ?? '#A1A1AA') + '33' },
+                        { backgroundColor: (BOOKING_TYPE_COLOR[booking.type] ?? '#9C9790') + '33' },
                       ]}
                     >
                       <ThemedText
                         style={[
                           s.badgeText,
-                          { color: BOOKING_TYPE_COLOR[booking.type] ?? '#A1A1AA' },
+                          { color: BOOKING_TYPE_COLOR[booking.type] ?? '#9C9790' },
                         ]}
                       >
                         {booking.type}
@@ -615,8 +615,8 @@ export function OrgFacilitiesTab({ colors, accentColor }: OrgFacilitiesTabProps)
       keyExtractor={(item) => item.id}
       contentContainerStyle={s.listContent}
       renderItem={({ item }) => {
-        const sevColor = SEVERITY_COLOR[item.severity] ?? '#A1A1AA';
-        const statusColor = WORK_ORDER_STATUS_COLOR[item.status] ?? '#A1A1AA';
+        const sevColor = SEVERITY_COLOR[item.severity] ?? '#9C9790';
+        const statusColor = WORK_ORDER_STATUS_COLOR[item.status] ?? '#9C9790';
         return (
           <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.cardInfo}>
@@ -670,8 +670,8 @@ export function OrgFacilitiesTab({ colors, accentColor }: OrgFacilitiesTabProps)
       keyExtractor={(item) => item.id}
       contentContainerStyle={s.listContent}
       renderItem={({ item }) => {
-        const sevColor = SEVERITY_COLOR[item.severity] ?? '#A1A1AA';
-        const statusColor = ISSUE_STATUS_COLOR[item.status] ?? '#A1A1AA';
+        const sevColor = SEVERITY_COLOR[item.severity] ?? '#9C9790';
+        const statusColor = ISSUE_STATUS_COLOR[item.status] ?? '#9C9790';
         return (
           <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.cardInfo}>
@@ -737,7 +737,7 @@ export function OrgFacilitiesTab({ colors, accentColor }: OrgFacilitiesTabProps)
           </ThemedText>
         )}
         renderItem={({ item }) => {
-          const condColor = CONDITION_COLOR[item.condition] ?? '#A1A1AA';
+          const condColor = CONDITION_COLOR[item.condition] ?? '#9C9790';
           return (
             <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <View style={s.cardInfo}>
@@ -800,8 +800,8 @@ export function OrgFacilitiesTab({ colors, accentColor }: OrgFacilitiesTabProps)
                   {item.name}
                 </ThemedText>
                 {openWOCount > 0 && (
-                  <View style={[s.badge, { backgroundColor: '#F59E0B33' }]}>
-                    <ThemedText style={[s.badgeText, { color: '#F59E0B' }]}>
+                  <View style={[s.badge, { backgroundColor: '#B8943E33' }]}>
+                    <ThemedText style={[s.badgeText, { color: '#B8943E' }]}>
                       {openWOCount} open WO
                     </ThemedText>
                   </View>
@@ -844,7 +844,7 @@ export function OrgFacilitiesTab({ colors, accentColor }: OrgFacilitiesTabProps)
       keyExtractor={(item) => item.id}
       contentContainerStyle={s.listContent}
       renderItem={({ item }) => {
-        const statusColor = SAFETY_STATUS_COLOR[item.status] ?? '#A1A1AA';
+        const statusColor = SAFETY_STATUS_COLOR[item.status] ?? '#9C9790';
         return (
           <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.cardInfo}>

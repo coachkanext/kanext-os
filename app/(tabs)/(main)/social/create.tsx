@@ -39,8 +39,8 @@ const TAB_BAR_HEIGHT = 52;
 const TOOL_SIZE = 44;
 
 const TEXT_BG_COLORS = [
-  '#1A1A2E', '#2C2C2C', '#E94560', '#0F3460',
-  '#533483', '#05445E', '#1B4332', '#7D1D1D',
+  '#1A1A2E', '#2C2C2C', '#E94560', '#1A1714',
+  '#533483', '#1A1714', '#1B4332', '#7D1D1D',
 ];
 const TEXT_FONTS = [
   { label: 'Aa', weight: '400' as const, style: 'normal' as const },

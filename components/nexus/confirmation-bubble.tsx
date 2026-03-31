@@ -25,9 +25,9 @@ export function ConfirmationBubble({ confirmation, onConfirm, onCancel }: Props)
   // Already resolved
   if (confirmation.state === 'confirmed') {
     return (
-      <View style={[styles.container, styles.resolved, { borderLeftColor: '#22C55E' }]}>
+      <View style={[styles.container, styles.resolved, { borderLeftColor: '#5A8A6E' }]}>
         <View style={styles.resolvedRow}>
-          <IconSymbol name="checkmark.circle.fill" size={14} color="#22C55E" />
+          <IconSymbol name="checkmark.circle.fill" size={14} color="#5A8A6E" />
           <ThemedText style={[styles.resolvedText, { color: colors.textTertiary }]}>
             Confirmed: {confirmation.action_summary}
           </ThemedText>
@@ -51,9 +51,9 @@ export function ConfirmationBubble({ confirmation, onConfirm, onCancel }: Props)
 
   // Pending state — show full confirmation
   return (
-    <View style={[styles.container, { borderLeftColor: '#F59E0B', backgroundColor: 'rgba(245,158,11,0.06)' }]}>
+    <View style={[styles.container, { borderLeftColor: '#B8943E', backgroundColor: 'rgba(245,158,11,0.06)' }]}>
       <View style={styles.header}>
-        <IconSymbol name="exclamationmark.shield.fill" size={16} color="#F59E0B" />
+        <IconSymbol name="exclamationmark.shield.fill" size={16} color="#B8943E" />
         <ThemedText style={[styles.confirmLabel, { color: colors.textTertiary }]}>
           Confirm
         </ThemedText>
@@ -72,7 +72,7 @@ export function ConfirmationBubble({ confirmation, onConfirm, onCancel }: Props)
       </ThemedText>
 
       {confirmation.requires_audit_note && (
-        <ThemedText style={[styles.auditNote, { color: '#F59E0B' }]}>
+        <ThemedText style={[styles.auditNote, { color: '#B8943E' }]}>
           An audit note will be required.
         </ThemedText>
       )}
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   confirmBtn: {
-    backgroundColor: '#22C55E',
+    backgroundColor: '#5A8A6E',
   },
   confirmBtnText: {
     color: '#FFFFFF',

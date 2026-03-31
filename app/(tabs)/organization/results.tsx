@@ -58,14 +58,14 @@ function TermResultCard({ term, colors, accentColor }: TermResultCardProps) {
           style={[
             styles.statusBadge,
             {
-              backgroundColor: isCompleted ? '#22C55E' + '20' : colors.backgroundSecondary,
+              backgroundColor: isCompleted ? '#5A8A6E' + '20' : colors.backgroundSecondary,
             },
           ]}
         >
           <ThemedText
             style={[
               styles.statusText,
-              { color: isCompleted ? '#22C55E' : colors.textSecondary },
+              { color: isCompleted ? '#5A8A6E' : colors.textSecondary },
             ]}
           >
             {getTermStatusLabel(term.status)}

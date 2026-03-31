@@ -112,10 +112,10 @@ export const EMPLOYEES: Employee[] = [
 // ── Departments (5) ────────────────────────────────────────────────────────────
 
 export const DEPARTMENTS: Department[] = [
-  { id:'leadership',  name:'Leadership',  headId:'e01', memberCount:1, color:'#1D9BF0', icon:'star.fill',                      budget:150000, spent:120000 },
+  { id:'leadership',  name:'Leadership',  headId:'e01', memberCount:1, color:'#1A1714', icon:'star.fill',                      budget:150000, spent:120000 },
   { id:'product',     name:'Product',     headId:'e02', memberCount:3, color:'#D97757', icon:'square.grid.2x2.fill',           budget:280000, spent:195000 },
   { id:'engineering', name:'Engineering', headId:'e03', memberCount:4, color:'#5A8A6E', icon:'hammer.fill',                    budget:450000, spent:310000 },
-  { id:'operations',  name:'Operations',  headId:'e08', memberCount:1, color:'#8B6340', icon:'gearshape.fill',                 budget:120000, spent:88000 },
+  { id:'operations',  name:'Operations',  headId:'e08', memberCount:1, color:'#1A1714', icon:'gearshape.fill',                 budget:120000, spent:88000 },
   { id:'growth',      name:'Growth',      headId:'e04', memberCount:4, color:'#B85C5C', icon:'chart.line.uptrend.xyaxis',      budget:200000, spent:142000 },
 ];
 
@@ -321,9 +321,9 @@ export function formatDate(iso: string): string {
 export function stageColor(stage: DealStage): string {
   switch (stage) {
     case 'New':         return 'rgba(45,30,18,0.30)';
-    case 'Qualified':   return '#1D9BF0';
+    case 'Qualified':   return '#1A1714';
     case 'Proposal':    return '#D97757';
-    case 'Negotiation': return '#8B6340';
+    case 'Negotiation': return '#1A1714';
     case 'Won':         return '#5A8A6E';
     case 'Lost':        return '#B85C5C';
     default:            return 'rgba(45,30,18,0.30)';
@@ -333,7 +333,7 @@ export function stageColor(stage: DealStage): string {
 export function invoiceStatusColor(status: InvoiceStatus): string {
   switch (status) {
     case 'paid':    return '#5A8A6E';
-    case 'sent':    return '#1D9BF0';
+    case 'sent':    return '#1A1714';
     case 'overdue': return '#B85C5C';
     default:        return 'rgba(45,30,18,0.30)';
   }

@@ -211,11 +211,11 @@ function OverviewTab({
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Total Spaces</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: '#22C55E' }]}>{availableCount}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: '#5A8A6E' }]}>{availableCount}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Available</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: '#F59E0B' }]}>{maintenanceCount}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: '#B8943E' }]}>{maintenanceCount}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Maintenance</ThemedText>
         </View>
       </View>
@@ -246,7 +246,7 @@ function OverviewTab({
             </ThemedText>
           </View>
           <View style={s.capacityItem}>
-            <View style={[s.capacityDot, { backgroundColor: '#22C55E' }]} />
+            <View style={[s.capacityDot, { backgroundColor: '#5A8A6E' }]} />
             <ThemedText style={[s.capacityItemText, { color: colors.textSecondary }]}>
               {availableCount} Open
             </ThemedText>
@@ -265,9 +265,9 @@ function OverviewTab({
             .map((req) => (
               <View
                 key={req.id}
-                style={[s.alertCard, { backgroundColor: '#EF444410', borderColor: '#EF444430' }]}
+                style={[s.alertCard, { backgroundColor: '#B85C5C10', borderColor: '#B85C5C30' }]}
               >
-                <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#EF4444" />
+                <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#B85C5C" />
                 <View style={s.alertTextCol}>
                   <ThemedText style={[s.alertTitle, { color: colors.text }]}>{req.facilityName}</ThemedText>
                   <ThemedText style={[s.alertSubtitle, { color: colors.textSecondary }]} numberOfLines={2}>
@@ -283,10 +283,10 @@ function OverviewTab({
       {/* Open Maintenance Requests */}
       <View style={[s.sectionCard, { backgroundColor: colors.card, borderColor: colors.border, marginTop: Spacing.lg }]}>
         <View style={s.sectionCardHeader}>
-          <IconSymbol name="wrench.and.screwdriver.fill" size={16} color="#F59E0B" />
+          <IconSymbol name="wrench.and.screwdriver.fill" size={16} color="#B8943E" />
           <ThemedText style={[s.sectionCardTitle, { color: colors.text }]}>Maintenance Queue</ThemedText>
-          <View style={[s.countBadge, { backgroundColor: '#F59E0B20' }]}>
-            <ThemedText style={[s.countBadgeText, { color: '#F59E0B' }]}>{openRequests}</ThemedText>
+          <View style={[s.countBadge, { backgroundColor: '#B8943E20' }]}>
+            <ThemedText style={[s.countBadgeText, { color: '#B8943E' }]}>{openRequests}</ThemedText>
           </View>
         </View>
         {data.maintenanceRequests
@@ -323,7 +323,7 @@ function OverviewTab({
       </ThemedText>
       {data.inspections.slice(0, 3).map((insp) => {
         const days = daysUntil(insp.scheduledDate);
-        const urgencyColor = days <= 7 ? '#EF4444' : days <= 14 ? '#F59E0B' : '#22C55E';
+        const urgencyColor = days <= 7 ? '#B85C5C' : days <= 14 ? '#B8943E' : '#5A8A6E';
         return (
           <View
             key={insp.id}
@@ -636,7 +636,7 @@ function InspectionsTab({
 
       {inspections.map((insp) => {
         const days = daysUntil(insp.scheduledDate);
-        const urgencyColor = days <= 7 ? '#EF4444' : days <= 14 ? '#F59E0B' : '#22C55E';
+        const urgencyColor = days <= 7 ? '#B85C5C' : days <= 14 ? '#B8943E' : '#5A8A6E';
         return (
           <Pressable
             key={insp.id}

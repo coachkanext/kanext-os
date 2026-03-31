@@ -65,8 +65,8 @@ export function CompEntriesConfirmedView({ colors, accent }: Props) {
       </View>
 
       {/* Entry deadline */}
-      <View style={[styles.deadlineCard, { backgroundColor: '#F59E0B15', borderColor: '#F59E0B30' }]}>
-        <ThemedText style={[styles.deadlineText, { color: '#F59E0B' }]}>
+      <View style={[styles.deadlineCard, { backgroundColor: '#B8943E15', borderColor: '#B8943E30' }]}>
+        <ThemedText style={[styles.deadlineText, { color: '#B8943E' }]}>
           Entry Deadline: {ENTRY_DEADLINE} · {deadlineDays} day{deadlineDays !== 1 ? 's' : ''}
         </ThemedText>
       </View>
@@ -87,26 +87,26 @@ export function CompEntriesConfirmedView({ colors, accent }: Props) {
           <View
             style={[
               styles.typeBadge,
-              { backgroundColor: entry.type === 'permanent' ? `${ACCENT}20` : '#F59E0B20' },
+              { backgroundColor: entry.type === 'permanent' ? `${ACCENT}20` : '#B8943E20' },
             ]}
           >
             <ThemedText
               style={[
                 styles.typeText,
-                { color: entry.type === 'permanent' ? ACCENT : '#F59E0B' },
+                { color: entry.type === 'permanent' ? ACCENT : '#B8943E' },
               ]}
             >
               {entry.type === 'permanent' ? 'Permanent' : 'Wildcard'}
             </ThemedText>
           </View>
-          <View style={[styles.statusDot, { backgroundColor: '#22C55E' }]} />
+          <View style={[styles.statusDot, { backgroundColor: '#5A8A6E' }]} />
         </Pressable>
       ))}
 
       {/* Pending entries */}
       {pending.length > 0 && (
         <>
-          <ThemedText style={[styles.sectionHeader, { color: '#F59E0B', marginTop: 20 }]}>PENDING</ThemedText>
+          <ThemedText style={[styles.sectionHeader, { color: '#B8943E', marginTop: 20 }]}>PENDING</ThemedText>
           {pending.map((entry) => (
             <Pressable
               key={entry.id}
@@ -118,10 +118,10 @@ export function CompEntriesConfirmedView({ colors, accent }: Props) {
                 <ThemedText style={[styles.entryDriver, { color: colors.text }]}>{entry.driver}</ThemedText>
                 <ThemedText style={[styles.entryTeam, { color: colors.textSecondary }]}>{entry.team}</ThemedText>
               </View>
-              <View style={[styles.typeBadge, { backgroundColor: '#F59E0B20' }]}>
-                <ThemedText style={[styles.typeText, { color: '#F59E0B' }]}>Wildcard</ThemedText>
+              <View style={[styles.typeBadge, { backgroundColor: '#B8943E20' }]}>
+                <ThemedText style={[styles.typeText, { color: '#B8943E' }]}>Wildcard</ThemedText>
               </View>
-              <View style={[styles.statusDot, { backgroundColor: '#F59E0B' }]} />
+              <View style={[styles.statusDot, { backgroundColor: '#B8943E' }]} />
             </Pressable>
           ))}
         </>
@@ -130,7 +130,7 @@ export function CompEntriesConfirmedView({ colors, accent }: Props) {
       {/* Withdrawn entries */}
       {withdrawn.length > 0 && (
         <>
-          <ThemedText style={[styles.sectionHeader, { color: '#EF4444', marginTop: 20 }]}>WITHDRAWN</ThemedText>
+          <ThemedText style={[styles.sectionHeader, { color: '#B85C5C', marginTop: 20 }]}>WITHDRAWN</ThemedText>
           {withdrawn.map((entry) => (
             <Pressable
               key={entry.id}
@@ -142,10 +142,10 @@ export function CompEntriesConfirmedView({ colors, accent }: Props) {
                 <ThemedText style={[styles.entryDriver, { color: colors.text }]}>{entry.driver}</ThemedText>
                 <ThemedText style={[styles.entryTeam, { color: colors.textSecondary }]}>{entry.team}</ThemedText>
               </View>
-              <View style={[styles.typeBadge, { backgroundColor: '#EF444420' }]}>
-                <ThemedText style={[styles.typeText, { color: '#EF4444' }]}>Withdrawn</ThemedText>
+              <View style={[styles.typeBadge, { backgroundColor: '#B85C5C20' }]}>
+                <ThemedText style={[styles.typeText, { color: '#B85C5C' }]}>Withdrawn</ThemedText>
               </View>
-              <View style={[styles.statusDot, { backgroundColor: '#EF4444' }]} />
+              <View style={[styles.statusDot, { backgroundColor: '#B85C5C' }]} />
             </Pressable>
           ))}
         </>

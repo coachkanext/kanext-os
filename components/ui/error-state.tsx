@@ -29,7 +29,7 @@ export function ErrorState({
 }: ErrorStateProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
-  const errorColor = '#EF4444';
+  const errorColor = '#B85C5C';
 
   return (
     <View style={styles.container}>

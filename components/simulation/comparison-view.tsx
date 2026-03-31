@@ -22,7 +22,7 @@ const MAX_COMPARE = 3;
 // ---------------------------------------------------------------------------
 
 function deltaColor(value: number, higherIsBetter: boolean): string {
-  if (value === 0) return '#A1A1AA';
+  if (value === 0) return '#9C9790';
   if (higherIsBetter) return value > 0 ? Brand.success : Brand.error;
   return value < 0 ? Brand.success : Brand.error;
 }

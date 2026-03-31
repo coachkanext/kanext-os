@@ -41,8 +41,8 @@ import { CLUSTER_ORDER } from '@/utils/kr-display';
 // Constants
 // ---------------------------------------------------------------------------
 
-const PROGRESS_COLORS: Record<string, string> = { 'needs-work': '#EF4444', progressing: '#F59E0B', achieved: '#22C55E' };
-const SESSION_COLORS: Record<string, string> = { practice: '#22C55E', lift: '#F59E0B', film: '#1D9BF0', individual: '#1D9BF0', rest: '#A1A1AA' };
+const PROGRESS_COLORS: Record<string, string> = { 'needs-work': '#B85C5C', progressing: '#B8943E', achieved: '#5A8A6E' };
+const SESSION_COLORS: Record<string, string> = { practice: '#5A8A6E', lift: '#B8943E', film: '#1A1714', individual: '#1A1714', rest: '#9C9790' };
 
 // Mock KR data for players (would come from national pool in production)
 const PLAYER_KR_DATA: Record<string, { kr: number; okr: number; dkr: number; archetype: string; clusters: number[] }> = {
@@ -154,19 +154,19 @@ function OverviewTab({ colors, accent }: TabProps) {
             <ThemedText style={[styles.snapLabel, { color: colors.textSecondary }]}>Overall</ThemedText>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <ThemedText style={[styles.snapDelta, { color: '#22C55E' }]}>+{snap.deltaFromLastWeek}</ThemedText>
+            <ThemedText style={[styles.snapDelta, { color: '#5A8A6E' }]}>+{snap.deltaFromLastWeek}</ThemedText>
             <ThemedText style={[styles.snapLabel, { color: colors.textSecondary }]}>vs Last Week</ThemedText>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <ThemedText style={[styles.snapScore, { color: '#22C55E' }]}>{snap.achievedCount}</ThemedText>
+            <ThemedText style={[styles.snapScore, { color: '#5A8A6E' }]}>{snap.achievedCount}</ThemedText>
             <ThemedText style={[styles.snapLabel, { color: colors.textSecondary }]}>Achieved</ThemedText>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <ThemedText style={[styles.snapScore, { color: '#F59E0B' }]}>{snap.progressingCount}</ThemedText>
+            <ThemedText style={[styles.snapScore, { color: '#B8943E' }]}>{snap.progressingCount}</ThemedText>
             <ThemedText style={[styles.snapLabel, { color: colors.textSecondary }]}>Progressing</ThemedText>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <ThemedText style={[styles.snapScore, { color: '#EF4444' }]}>{snap.needsWorkCount}</ThemedText>
+            <ThemedText style={[styles.snapScore, { color: '#B85C5C' }]}>{snap.needsWorkCount}</ThemedText>
             <ThemedText style={[styles.snapLabel, { color: colors.textSecondary }]}>Needs Work</ThemedText>
           </View>
         </View>
@@ -176,7 +176,7 @@ function OverviewTab({ colors, accent }: TabProps) {
       {/* Player Alerts */}
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>PLAYER ALERTS</ThemedText>
       {PLAYER_ALERTS.map((alert) => {
-        const alertColor = alert.type === 'regression' ? '#EF4444' : alert.type === 'injury' ? '#F59E0B' : alert.type === 'breakout' ? '#22C55E' : accent;
+        const alertColor = alert.type === 'regression' ? '#B85C5C' : alert.type === 'injury' ? '#B8943E' : alert.type === 'breakout' ? '#5A8A6E' : accent;
         return (
           <View key={alert.id} style={[styles.alertCard, { backgroundColor: colors.card, borderColor: alertColor + '44' }]}>
             <View style={styles.alertHeader}>
@@ -203,7 +203,7 @@ function OverviewTab({ colors, accent }: TabProps) {
           </View>
           <ThemedText style={[styles.priorityDesc, { color: colors.textSecondary }]}>{tp.description}</ThemedText>
           <View style={styles.progressBarBg}>
-            <View style={[styles.progressBarFill, { width: `${tp.progress}%`, backgroundColor: tp.coverageTier === 'strong' ? '#22C55E' : tp.coverageTier === 'adequate' ? '#F59E0B' : '#EF4444' }]} />
+            <View style={[styles.progressBarFill, { width: `${tp.progress}%`, backgroundColor: tp.coverageTier === 'strong' ? '#5A8A6E' : tp.coverageTier === 'adequate' ? '#B8943E' : '#B85C5C' }]} />
           </View>
         </View>
       ))}
@@ -214,7 +214,7 @@ function OverviewTab({ colors, accent }: TabProps) {
         {POSITION_GROUPS.map((pg) => (
           <View key={pg.id} style={[styles.posGroupCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <ThemedText style={[styles.posGroupName, { color: colors.text }]}>{pg.name}</ThemedText>
-            <ThemedText style={[styles.posGroupHealth, { color: pg.healthScore >= 70 ? '#22C55E' : pg.healthScore >= 50 ? '#F59E0B' : '#EF4444' }]}>{pg.healthScore}</ThemedText>
+            <ThemedText style={[styles.posGroupHealth, { color: pg.healthScore >= 70 ? '#5A8A6E' : pg.healthScore >= 50 ? '#B8943E' : '#B85C5C' }]}>{pg.healthScore}</ThemedText>
             <ThemedText style={[styles.posGroupFocus, { color: colors.textSecondary }]}>{pg.topFocus}</ThemedText>
           </View>
         ))}
@@ -290,7 +290,7 @@ function KRProfileTab({ player, colors, accent, krVis }: TabProps) {
         {krData.clusters.map((score, i) => {
           if (score < 90) return null;
           const tier = score >= 97 ? 'Gold' : score >= 94 ? 'Silver' : 'Bronze';
-          const tierColor = tier === 'Gold' ? accent : tier === 'Silver' ? '#A1A1AA' : accent;
+          const tierColor = tier === 'Gold' ? accent : tier === 'Silver' ? '#9C9790' : accent;
           return (
             <View key={i} style={[styles.badgeChip, { backgroundColor: tierColor + '22' }]}>
               <ThemedText style={[styles.badgeChipText, { color: tierColor }]}>{tier} · {clusterLabels[i]}</ThemedText>
@@ -306,7 +306,7 @@ function KRProfileTab({ player, colors, accent, krVis }: TabProps) {
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>DEVELOPMENT GAPS</ThemedText>
       {player.topGaps.map((gap, i) => (
         <View key={i} style={[styles.gapRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <View style={[styles.gapDot, { backgroundColor: '#EF4444' }]} />
+          <View style={[styles.gapDot, { backgroundColor: '#B85C5C' }]} />
           <ThemedText style={[styles.gapText, { color: colors.text }]}>{gap}</ThemedText>
         </View>
       ))}
@@ -376,7 +376,7 @@ function PathwayTab({ player, colors, accent }: TabProps) {
             <ThemedText style={[styles.measCurrent, { color: colors.textSecondary }]}>{m.current}</ThemedText>
             <ThemedText style={[styles.measArrow, { color: colors.textSecondary }]}>→</ThemedText>
             <ThemedText style={[styles.measTarget, { color: accent }]}>{m.target}</ThemedText>
-            <ThemedText style={[styles.measDelta, { color: '#22C55E' }]}>{m.delta}</ThemedText>
+            <ThemedText style={[styles.measDelta, { color: '#5A8A6E' }]}>{m.delta}</ThemedText>
           </View>
         ))}
       </View>
@@ -392,7 +392,7 @@ function PathwayTab({ player, colors, accent }: TabProps) {
               <View key={pt.week} style={styles.timelinePoint}>
                 <ThemedText style={[styles.timelineScore, { color: accent }]}>{pt.score}</ThemedText>
                 {i > 0 && (
-                  <ThemedText style={[styles.timelineDelta, { color: delta >= 0 ? '#22C55E' : '#EF4444' }]}>
+                  <ThemedText style={[styles.timelineDelta, { color: delta >= 0 ? '#5A8A6E' : '#B85C5C' }]}>
                     {delta >= 0 ? '+' : ''}{delta}
                   </ThemedText>
                 )}
@@ -437,7 +437,7 @@ function WeeklyPlanTab({ colors, accent }: TabProps) {
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>NON-NEGOTIABLES</ThemedText>
       {WEEKLY_NON_NEGOTIABLES.map((nn) => (
         <View key={nn.id} style={[styles.nnRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <IconSymbol name="checkmark.seal.fill" size={14} color="#22C55E" />
+          <IconSymbol name="checkmark.seal.fill" size={14} color="#5A8A6E" />
           <ThemedText style={[styles.nnText, { color: colors.text }]}>{nn.rule}</ThemedText>
         </View>
       ))}
@@ -449,7 +449,7 @@ function WeeklyPlanTab({ colors, accent }: TabProps) {
           {day.sessions.map((session) => (
             <View key={session.id} style={[styles.sessionCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <View style={styles.sessionHeader}>
-                <View style={[styles.sessionDot, { backgroundColor: SESSION_COLORS[session.type] ?? '#A1A1AA' }]} />
+                <View style={[styles.sessionDot, { backgroundColor: SESSION_COLORS[session.type] ?? '#9C9790' }]} />
                 <ThemedText style={[styles.sessionTitle, { color: colors.text }]}>{session.title}</ThemedText>
                 <ThemedText style={[styles.sessionTime, { color: colors.textSecondary }]}>{session.time}</ThemedText>
               </View>
@@ -462,7 +462,7 @@ function WeeklyPlanTab({ colors, accent }: TabProps) {
       {/* Drill Assignments */}
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>DRILL ASSIGNMENTS</ThemedText>
       {DRILL_ASSIGNMENTS.slice(0, 5).map((da) => {
-        const statusColor = da.status === 'completed' ? '#22C55E' : da.status === 'in-progress' ? '#F59E0B' : '#A1A1AA';
+        const statusColor = da.status === 'completed' ? '#5A8A6E' : da.status === 'in-progress' ? '#B8943E' : '#9C9790';
         return (
           <View key={da.id} style={[styles.drillAssignCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={styles.drillAssignHeader}>
@@ -492,7 +492,7 @@ function WeeklyPlanTab({ colors, accent }: TabProps) {
 
 function EvidenceTab({ player, colors, accent }: TabProps) {
   if (!player) return null;
-  const statusColors: Record<string, string> = { pending: '#F59E0B', reviewed: '#22C55E', flagged: '#EF4444' };
+  const statusColors: Record<string, string> = { pending: '#B8943E', reviewed: '#5A8A6E', flagged: '#B85C5C' };
 
   // Filter evidence for selected player (or show all)
   const playerEvidence = EVIDENCE_QUEUE_EXTENDED.filter((ev) => ev.playerId === player.playerId);
@@ -584,7 +584,7 @@ function ProReadinessTab({ player, colors, accent, krVis }: TabProps) {
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>STRENGTHS THAT TRANSLATE</ThemedText>
       {proData.strengthsForPro.map((s, i) => (
         <View key={i} style={[styles.proItemRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <View style={[styles.proItemDot, { backgroundColor: '#22C55E' }]} />
+          <View style={[styles.proItemDot, { backgroundColor: '#5A8A6E' }]} />
           <ThemedText style={[styles.proItemText, { color: colors.text }]}>{s}</ThemedText>
         </View>
       ))}
@@ -593,7 +593,7 @@ function ProReadinessTab({ player, colors, accent, krVis }: TabProps) {
       <ThemedText style={[styles.sectionTitle, { color: colors.text }]}>GAPS TO CLOSE</ThemedText>
       {proData.gaps.map((g, i) => (
         <View key={i} style={[styles.proItemRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <View style={[styles.proItemDot, { backgroundColor: '#EF4444' }]} />
+          <View style={[styles.proItemDot, { backgroundColor: '#B85C5C' }]} />
           <ThemedText style={[styles.proItemText, { color: colors.text }]}>{g}</ThemedText>
         </View>
       ))}
@@ -631,7 +631,7 @@ function ProReadinessTab({ player, colors, accent, krVis }: TabProps) {
 // ---------------------------------------------------------------------------
 
 function TransferTab({ colors, accent }: TabProps) {
-  const transferColors: Record<string, string> = { positive: '#22C55E', neutral: '#F59E0B', negative: '#EF4444', emerging: accent };
+  const transferColors: Record<string, string> = { positive: '#5A8A6E', neutral: '#B8943E', negative: '#B85C5C', emerging: accent };
 
   // Group by transfer label
   const negative = TRANSFER_METRICS.filter((t) => t.transferLabel === 'negative');
@@ -656,7 +656,7 @@ function TransferTab({ colors, accent }: TabProps) {
             <View style={styles.transferScores}>
               <ThemedText style={[styles.transferScore, { color: colors.textSecondary }]}>Practice: {tm.practiceScore}</ThemedText>
               <ThemedText style={[styles.transferScore, { color: colors.textSecondary }]}>Game: {tm.gameScore}</ThemedText>
-              <ThemedText style={[styles.transferDelta, { color: tm.delta >= 0 ? '#22C55E' : '#EF4444' }]}>Δ {tm.delta > 0 ? '+' : ''}{tm.delta}</ThemedText>
+              <ThemedText style={[styles.transferDelta, { color: tm.delta >= 0 ? '#5A8A6E' : '#B85C5C' }]}>Δ {tm.delta > 0 ? '+' : ''}{tm.delta}</ThemedText>
             </View>
             {/* Practice→Game transfer bar */}
             <View style={styles.transferBarContainer}>
@@ -679,7 +679,7 @@ function TransferTab({ colors, accent }: TabProps) {
       <View style={[styles.transferSummary, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={styles.transferSummaryRow}>
           <View style={{ alignItems: 'center' }}>
-            <ThemedText style={[styles.transferSummaryValue, { color: '#22C55E' }]}>{positive.length}</ThemedText>
+            <ThemedText style={[styles.transferSummaryValue, { color: '#5A8A6E' }]}>{positive.length}</ThemedText>
             <ThemedText style={[styles.transferSummaryLabel, { color: colors.textSecondary }]}>Positive</ThemedText>
           </View>
           <View style={{ alignItems: 'center' }}>
@@ -687,20 +687,20 @@ function TransferTab({ colors, accent }: TabProps) {
             <ThemedText style={[styles.transferSummaryLabel, { color: colors.textSecondary }]}>Emerging</ThemedText>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <ThemedText style={[styles.transferSummaryValue, { color: '#F59E0B' }]}>{neutral.length}</ThemedText>
+            <ThemedText style={[styles.transferSummaryValue, { color: '#B8943E' }]}>{neutral.length}</ThemedText>
             <ThemedText style={[styles.transferSummaryLabel, { color: colors.textSecondary }]}>Neutral</ThemedText>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <ThemedText style={[styles.transferSummaryValue, { color: '#EF4444' }]}>{negative.length}</ThemedText>
+            <ThemedText style={[styles.transferSummaryValue, { color: '#B85C5C' }]}>{negative.length}</ThemedText>
             <ThemedText style={[styles.transferSummaryLabel, { color: colors.textSecondary }]}>Negative</ThemedText>
           </View>
         </View>
       </View>
 
-      {renderGroup('Negative', negative, '#EF4444')}
+      {renderGroup('Negative', negative, '#B85C5C')}
       {renderGroup('Emerging', emerging, accent)}
-      {renderGroup('Neutral', neutral, '#F59E0B')}
-      {renderGroup('Positive', positive, '#22C55E')}
+      {renderGroup('Neutral', neutral, '#B8943E')}
+      {renderGroup('Positive', positive, '#5A8A6E')}
 
       <View style={{ height: 120 }} />
     </ScrollView>

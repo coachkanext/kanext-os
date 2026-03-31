@@ -50,14 +50,14 @@ function Card({ colors, children }: { colors: typeof Colors.light; children: Rea
 
 type CompStatus = 'Good' | 'Review' | 'Action Needed' | 'Active' | 'Current' | 'Cleared' | 'Pending' | 'Expired';
 const STATUS_COLOR: Record<CompStatus, string> = {
-  Good: '#22C55E',
-  Active: '#22C55E',
-  Current: '#22C55E',
-  Cleared: '#22C55E',
-  Review: '#F59E0B',
-  Pending: '#F59E0B',
-  'Action Needed': '#EF4444',
-  Expired: '#EF4444',
+  Good: '#5A8A6E',
+  Active: '#5A8A6E',
+  Current: '#5A8A6E',
+  Cleared: '#5A8A6E',
+  Review: '#B8943E',
+  Pending: '#B8943E',
+  'Action Needed': '#B85C5C',
+  Expired: '#B85C5C',
 };
 
 // =============================================================================
@@ -167,8 +167,8 @@ function VolunteerClearanceBlock({ colors, isA2 }: { colors: typeof Colors.light
           </View>
           <View style={s.clearanceItem}>
             <ThemedText style={[s.clearanceLabel, { color: colors.textTertiary }]}>Training Completed</ThemedText>
-            <View style={[s.clearanceBadge, { backgroundColor: MY_CLEARANCE.trainingCompleted ? '#22C55E20' : '#F59E0B20' }]}>
-              <ThemedText style={[s.clearanceBadgeText, { color: MY_CLEARANCE.trainingCompleted ? '#22C55E' : '#F59E0B' }]}>
+            <View style={[s.clearanceBadge, { backgroundColor: MY_CLEARANCE.trainingCompleted ? '#5A8A6E20' : '#B8943E20' }]}>
+              <ThemedText style={[s.clearanceBadgeText, { color: MY_CLEARANCE.trainingCompleted ? '#5A8A6E' : '#B8943E' }]}>
                 {MY_CLEARANCE.trainingCompleted ? 'Yes' : 'No'}
               </ThemedText>
             </View>
@@ -199,9 +199,9 @@ function VolunteerClearanceBlock({ colors, isA2 }: { colors: typeof Colors.light
 
 function AtRiskBlock({ colors }: { colors: typeof Colors.light }) {
   const items = [
-    { label: 'Pending Clearances', count: AT_RISK.pendingClearances, color: AT_RISK.pendingClearances > 0 ? '#F59E0B' : '#22C55E' },
-    { label: 'Expiring Background Checks', count: AT_RISK.expiringBackgroundChecks, color: AT_RISK.expiringBackgroundChecks > 0 ? '#F59E0B' : '#22C55E' },
-    { label: 'Open Risk Reports', count: AT_RISK.openRiskReports, color: AT_RISK.openRiskReports > 0 ? '#EF4444' : '#22C55E' },
+    { label: 'Pending Clearances', count: AT_RISK.pendingClearances, color: AT_RISK.pendingClearances > 0 ? '#B8943E' : '#5A8A6E' },
+    { label: 'Expiring Background Checks', count: AT_RISK.expiringBackgroundChecks, color: AT_RISK.expiringBackgroundChecks > 0 ? '#B8943E' : '#5A8A6E' },
+    { label: 'Open Risk Reports', count: AT_RISK.openRiskReports, color: AT_RISK.openRiskReports > 0 ? '#B85C5C' : '#5A8A6E' },
   ];
 
   return (
@@ -249,12 +249,12 @@ function DocumentsBlock({ colors }: { colors: typeof Colors.light }) {
           </View>
           <View style={[s.docDivider, { backgroundColor: colors.border }]} />
           <View style={s.docCell}>
-            <ThemedText style={[s.docValue, { color: '#F59E0B' }]}>{DOCUMENTS.submitted}</ThemedText>
+            <ThemedText style={[s.docValue, { color: '#B8943E' }]}>{DOCUMENTS.submitted}</ThemedText>
             <ThemedText style={[s.docLabel, { color: colors.textTertiary }]}>Submitted</ThemedText>
           </View>
           <View style={[s.docDivider, { backgroundColor: colors.border }]} />
           <View style={s.docCell}>
-            <ThemedText style={[s.docValue, { color: '#22C55E' }]}>{DOCUMENTS.verified}</ThemedText>
+            <ThemedText style={[s.docValue, { color: '#5A8A6E' }]}>{DOCUMENTS.verified}</ThemedText>
             <ThemedText style={[s.docLabel, { color: colors.textTertiary }]}>Verified</ThemedText>
           </View>
         </View>

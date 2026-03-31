@@ -119,9 +119,9 @@ const MODE_LABELS: Record<Mode, string> = {
 // =============================================================================
 
 const ACCOUNT_STATUS_COLOR: Record<PayRailsAccount['status'], string> = {
-  active: '#22C55E',
-  frozen: '#EF4444',
-  'pending-verification': '#F59E0B',
+  active: '#5A8A6E',
+  frozen: '#B85C5C',
+  'pending-verification': '#B8943E',
 };
 
 // =============================================================================
@@ -129,10 +129,10 @@ const ACCOUNT_STATUS_COLOR: Record<PayRailsAccount['status'], string> = {
 // =============================================================================
 
 const TAX_FORM_STATUS_COLOR: Record<PayRailsTaxForm['status'], string> = {
-  draft: '#A1A1AA',
-  ready: '#1D9BF0',
-  filed: '#22C55E',
-  corrected: '#F59E0B',
+  draft: '#9C9790',
+  ready: '#1A1714',
+  filed: '#5A8A6E',
+  corrected: '#B8943E',
 };
 
 // =============================================================================
@@ -140,9 +140,9 @@ const TAX_FORM_STATUS_COLOR: Record<PayRailsTaxForm['status'], string> = {
 // =============================================================================
 
 const DISPUTE_TYPE_COLOR: Record<PayRailsDispute['type'], string> = {
-  chargeback: '#F59E0B',
-  inquiry: '#1D9BF0',
-  'failed-payout': '#EF4444',
+  chargeback: '#B8943E',
+  inquiry: '#1A1714',
+  'failed-payout': '#B85C5C',
 };
 
 // =============================================================================
@@ -150,9 +150,9 @@ const DISPUTE_TYPE_COLOR: Record<PayRailsDispute['type'], string> = {
 // =============================================================================
 
 const EXPORT_FORMAT_COLOR: Record<PayRailsExport['format'], string> = {
-  PDF: '#1D9BF0',
-  CSV: '#22C55E',
-  XLSX: '#F59E0B',
+  PDF: '#1A1714',
+  CSV: '#5A8A6E',
+  XLSX: '#B8943E',
 };
 
 // =============================================================================
@@ -175,15 +175,15 @@ function auditIcon(action: string): string {
 
 function auditColor(action: string): string {
   switch (action) {
-    case 'charge_received': return '#22C55E';
-    case 'payout_initiated': return '#EF4444';
+    case 'charge_received': return '#5A8A6E';
+    case 'payout_initiated': return '#B85C5C';
     case 'settlement_closed': return accent;
-    case 'refund_processed': return '#F59E0B';
-    case 'control_updated': return '#A1A1AA';
+    case 'refund_processed': return '#B8943E';
+    case 'control_updated': return '#9C9790';
     case 'account_created': return accent;
     case 'transfer_completed': return accent;
-    case 'dispute_opened': return '#F59E0B';
-    default: return '#A1A1AA';
+    case 'dispute_opened': return '#B8943E';
+    default: return '#9C9790';
   }
 }
 
@@ -299,12 +299,12 @@ export function OrgPaymentRailsTab({ mode, colors, accentColor }: Props) {
                 <IconSymbol
                   name={block.trendUp ? 'arrow.up.right' : 'arrow.down.right' as any}
                   size={12}
-                  color={block.trendUp ? '#22C55E' : '#EF4444'}
+                  color={block.trendUp ? '#5A8A6E' : '#B85C5C'}
                 />
                 <ThemedText
                   style={[
                     s.overviewTrendText,
-                    { color: block.trendUp ? '#22C55E' : '#EF4444' },
+                    { color: block.trendUp ? '#5A8A6E' : '#B85C5C' },
                   ]}
                 >
                   {block.trend}
@@ -340,13 +340,13 @@ export function OrgPaymentRailsTab({ mode, colors, accentColor }: Props) {
                 <View
                   style={[
                     s.badge,
-                    { backgroundColor: isPrimary ? '#22C55E20' : `${accent}20` },
+                    { backgroundColor: isPrimary ? '#5A8A6E20' : `${accent}20` },
                   ]}
                 >
                   <ThemedText
                     style={[
                       s.badgeText,
-                      { color: isPrimary ? '#22C55E' : accent },
+                      { color: isPrimary ? '#5A8A6E' : accent },
                     ]}
                   >
                     {item.type}
@@ -457,7 +457,7 @@ export function OrgPaymentRailsTab({ mode, colors, accentColor }: Props) {
                   <ThemedText
                     style={[
                       s.listCardSub,
-                      { color: isOverdue ? '#EF4444' : colors.textTertiary },
+                      { color: isOverdue ? '#B85C5C' : colors.textTertiary },
                     ]}
                   >
                     Due: {item.dueDate}{isOverdue ? ' (OVERDUE)' : ''}
@@ -534,7 +534,7 @@ export function OrgPaymentRailsTab({ mode, colors, accentColor }: Props) {
               </View>
               <View style={s.settlementBreakdownRow}>
                 <ThemedText style={[s.settlementLabel, { color: colors.textSecondary }]}>Fees</ThemedText>
-                <ThemedText style={[s.settlementValue, { color: '#EF4444' }]}>
+                <ThemedText style={[s.settlementValue, { color: '#B85C5C' }]}>
                   -{formatCurrency(item.fees)}
                 </ThemedText>
               </View>
@@ -570,7 +570,7 @@ export function OrgPaymentRailsTab({ mode, colors, accentColor }: Props) {
       contentContainerStyle={s.listContent}
       ListEmptyComponent={<EmptyState icon="arrow.uturn.backward.circle" text="No refunds" colors={colors} />}
       renderItem={({ item }) => {
-        const typeColor = item.type === 'full' ? '#EF4444' : '#F59E0B';
+        const typeColor = item.type === 'full' ? '#B85C5C' : '#B8943E';
         return (
           <View style={[s.listCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.listCardInfo}>
@@ -615,7 +615,7 @@ export function OrgPaymentRailsTab({ mode, colors, accentColor }: Props) {
       contentContainerStyle={s.listContent}
       ListEmptyComponent={<EmptyState icon="checkmark.circle" text="No reconciliation records" colors={colors} />}
       renderItem={({ item }) => {
-        const varianceColor = item.variance < 0 ? '#EF4444' : '#22C55E';
+        const varianceColor = item.variance < 0 ? '#B85C5C' : '#5A8A6E';
         return (
           <View style={[s.listCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.listCardInfo}>
@@ -644,7 +644,7 @@ export function OrgPaymentRailsTab({ mode, colors, accentColor }: Props) {
                 <ThemedText style={[s.listCardSub, { color: colors.textSecondary }]}>
                   Matched: {item.itemsMatched}
                 </ThemedText>
-                <ThemedText style={[s.listCardSub, { color: item.itemsUnmatched > 0 ? '#EF4444' : colors.textSecondary }]}>
+                <ThemedText style={[s.listCardSub, { color: item.itemsUnmatched > 0 ? '#B85C5C' : colors.textSecondary }]}>
                   Unmatched: {item.itemsUnmatched}
                 </ThemedText>
               </View>
@@ -694,7 +694,7 @@ export function OrgPaymentRailsTab({ mode, colors, accentColor }: Props) {
                   <ThemedText
                     style={[
                       s.listCardSub,
-                      { color: respondBySoon ? '#EF4444' : colors.textTertiary },
+                      { color: respondBySoon ? '#B85C5C' : colors.textTertiary },
                     ]}
                   >
                     Respond by: {item.respondBy}
@@ -1333,7 +1333,7 @@ const s = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     fontVariant: ['tabular-nums'],
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
   chargeFee: {
     fontSize: 11,
@@ -1361,7 +1361,7 @@ const s = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     fontVariant: ['tabular-nums'],
-    color: '#EF4444',
+    color: '#B85C5C',
   },
   payoutMetaRow: {
     flexDirection: 'row',
@@ -1443,7 +1443,7 @@ const s = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     fontVariant: ['tabular-nums'],
-    color: '#EF4444',
+    color: '#B85C5C',
   },
   refundMetaRow: {
     flexDirection: 'row',

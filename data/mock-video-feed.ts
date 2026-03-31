@@ -75,7 +75,7 @@ export const STORY_CIRCLES: StoryCircle[] = [
   { id: 'st-you', name: 'Your Story', initials: 'AM', hasNew: false, isYou: true, ringColor: '#FFFFFF',
     orgId: MOCK_ORG, programId: MOCK_PROGRAM },
   {
-    id: 'st-2', name: 'Coach Brooks', initials: 'CB', hasNew: true, ringColor: '#1D9BF0',
+    id: 'st-2', name: 'Coach Brooks', initials: 'CB', hasNew: true, ringColor: '#1A1714',
     tag: 'Game', visibilityClass: 0,
     orgId: MOCK_ORG, programId: MOCK_PROGRAM,
     publishedAt: hoursAgo(1), expiresAt: expires(hoursAgo(1)),
@@ -86,7 +86,7 @@ export const STORY_CIRCLES: StoryCircle[] = [
     ],
   },
   {
-    id: 'st-1', name: 'Coach Miller', initials: 'CM', hasNew: true, ringColor: '#1D9BF0',
+    id: 'st-1', name: 'Coach Miller', initials: 'CM', hasNew: true, ringColor: '#1A1714',
     tag: 'Practice', visibilityClass: 3,
     orgId: MOCK_ORG, programId: MOCK_PROGRAM,
     publishedAt: hoursAgo(2), expiresAt: expires(hoursAgo(2)),
@@ -96,7 +96,7 @@ export const STORY_CIRCLES: StoryCircle[] = [
     ],
   },
   {
-    id: 'st-7', name: 'Staff Room', initials: 'SR', hasNew: true, ringColor: '#F59E0B',
+    id: 'st-7', name: 'Staff Room', initials: 'SR', hasNew: true, ringColor: '#B8943E',
     tag: 'Recruiting', visibilityClass: 3,
     orgId: MOCK_ORG, programId: MOCK_PROGRAM,
     publishedAt: hoursAgo(3), expiresAt: expires(hoursAgo(3)),
@@ -105,7 +105,7 @@ export const STORY_CIRCLES: StoryCircle[] = [
     ],
   },
   {
-    id: 'st-3', name: 'E. Carter', initials: 'EC', hasNew: true, ringColor: '#22C55E',
+    id: 'st-3', name: 'E. Carter', initials: 'EC', hasNew: true, ringColor: '#5A8A6E',
     tag: 'Clip', visibilityClass: 0,
     orgId: MOCK_ORG, programId: MOCK_PROGRAM,
     publishedAt: hoursAgo(5), expiresAt: expires(hoursAgo(5)),
@@ -114,7 +114,7 @@ export const STORY_CIRCLES: StoryCircle[] = [
     ],
   },
   {
-    id: 'st-5', name: 'K. Mentor', initials: 'KM', hasNew: true, ringColor: '#1D9BF0',
+    id: 'st-5', name: 'K. Mentor', initials: 'KM', hasNew: true, ringColor: '#1A1714',
     tag: 'Practice', visibilityClass: 3,
     orgId: MOCK_ORG, programId: MOCK_PROGRAM,
     publishedAt: hoursAgo(8), expiresAt: expires(hoursAgo(8)),
@@ -253,7 +253,7 @@ const CHURCH_STORY_CIRCLES: StoryCircle[] = [
   { id: 'cs-you', name: 'Your Story', initials: 'AM', hasNew: false, isYou: true, ringColor: '#FFFFFF',
     orgId: CHURCH_ORG, programId: CHURCH_CAMPUS },
   {
-    id: 'cs-1', name: 'Pastor Philip', initials: 'PM', hasNew: true, ringColor: '#1D9BF0',
+    id: 'cs-1', name: 'Pastor Philip', initials: 'PM', hasNew: true, ringColor: '#1A1714',
     tag: 'Sermon', visibilityClass: 0,
     orgId: CHURCH_ORG, programId: CHURCH_CAMPUS,
     publishedAt: hoursAgo(1), expiresAt: expires(hoursAgo(1)),
@@ -263,7 +263,7 @@ const CHURCH_STORY_CIRCLES: StoryCircle[] = [
     ],
   },
   {
-    id: 'cs-2', name: 'Worship Team', initials: 'WT', hasNew: true, ringColor: '#1D9BF0',
+    id: 'cs-2', name: 'Worship Team', initials: 'WT', hasNew: true, ringColor: '#1A1714',
     tag: 'Worship', visibilityClass: 0,
     orgId: CHURCH_ORG, programId: CHURCH_CAMPUS,
     publishedAt: hoursAgo(2), expiresAt: expires(hoursAgo(2)),
@@ -273,7 +273,7 @@ const CHURCH_STORY_CIRCLES: StoryCircle[] = [
     ],
   },
   {
-    id: 'cs-3', name: 'Youth Dir.', initials: 'YD', hasNew: true, ringColor: '#22C55E',
+    id: 'cs-3', name: 'Youth Dir.', initials: 'YD', hasNew: true, ringColor: '#5A8A6E',
     tag: 'Event', visibilityClass: 3,
     orgId: CHURCH_ORG, programId: CHURCH_CAMPUS,
     publishedAt: hoursAgo(4), expiresAt: expires(hoursAgo(4)),
@@ -291,7 +291,7 @@ const CHURCH_STORY_CIRCLES: StoryCircle[] = [
     ],
   },
   {
-    id: 'cs-5', name: 'Outreach', initials: 'OR', hasNew: true, ringColor: '#F59E0B',
+    id: 'cs-5', name: 'Outreach', initials: 'OR', hasNew: true, ringColor: '#B8943E',
     tag: 'Event', visibilityClass: 0,
     orgId: CHURCH_ORG, programId: CHURCH_CAMPUS,
     publishedAt: hoursAgo(8), expiresAt: expires(hoursAgo(8)),
@@ -301,7 +301,7 @@ const CHURCH_STORY_CIRCLES: StoryCircle[] = [
     ],
   },
   {
-    id: 'cs-6', name: 'Women Min.', initials: 'WM', hasNew: true, ringColor: '#1D9BF0',
+    id: 'cs-6', name: 'Women Min.', initials: 'WM', hasNew: true, ringColor: '#1A1714',
     tag: 'Event', visibilityClass: 2,
     orgId: CHURCH_ORG, programId: CHURCH_CAMPUS,
     publishedAt: hoursAgo(10), expiresAt: expires(hoursAgo(10)),
@@ -319,7 +319,7 @@ const CHURCH_STORY_CIRCLES: StoryCircle[] = [
     ],
   },
   {
-    id: 'cs-8', name: '2819 Church Live', initials: 'IC', hasNew: true, ringColor: '#1D9BF0',
+    id: 'cs-8', name: '2819 Church Live', initials: 'IC', hasNew: true, ringColor: '#1A1714',
     tag: 'Service', visibilityClass: 0,
     orgId: CHURCH_ORG, programId: CHURCH_CAMPUS,
     publishedAt: hoursAgo(3), expiresAt: expires(hoursAgo(3)),
@@ -425,13 +425,13 @@ const CHURCH_FEED_POSTS: VideoFeedPost[] = [
 
 const EDUCATION_STORY_CIRCLES: StoryCircle[] = [
   { id: 'es-you', name: 'Your Story', initials: 'AM', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
-  { id: 'es-1', name: 'Dean Morris', initials: 'DM', hasNew: true, ringColor: '#1D9BF0' },
-  { id: 'es-2', name: 'Prof. Adebayo', initials: 'PA', hasNew: true, ringColor: '#22C55E' },
-  { id: 'es-3', name: 'Student Gov', initials: 'SG', hasNew: true, ringColor: '#F59E0B' },
-  { id: 'es-4', name: 'Howard Athletics', initials: 'HA', hasNew: true, ringColor: '#EF4444' },
+  { id: 'es-1', name: 'Dean Morris', initials: 'DM', hasNew: true, ringColor: '#1A1714' },
+  { id: 'es-2', name: 'Prof. Adebayo', initials: 'PA', hasNew: true, ringColor: '#5A8A6E' },
+  { id: 'es-3', name: 'Student Gov', initials: 'SG', hasNew: true, ringColor: '#B8943E' },
+  { id: 'es-4', name: 'Howard Athletics', initials: 'HA', hasNew: true, ringColor: '#B85C5C' },
   { id: 'es-5', name: 'Campus Life', initials: 'CL', hasNew: false },
   { id: 'es-6', name: 'Library', initials: 'LB', hasNew: false },
-  { id: 'es-7', name: 'Aviation Dept', initials: 'AV', hasNew: true, ringColor: '#1D9BF0' },
+  { id: 'es-7', name: 'Aviation Dept', initials: 'AV', hasNew: true, ringColor: '#1A1714' },
   { id: 'es-8', name: 'Alumni Assoc', initials: 'AA', hasNew: false },
 ];
 
@@ -524,13 +524,13 @@ const EDUCATION_FEED_POSTS: VideoFeedPost[] = [
 
 const BUSINESS_STORY_CIRCLES: StoryCircle[] = [
   { id: 'bs-you', name: 'Your Story', initials: 'AM', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
-  { id: 'bs-1', name: 'Alex M.', initials: 'AM', hasNew: true, ringColor: '#1D9BF0' },
-  { id: 'bs-2', name: 'Product', initials: 'PR', hasNew: true, ringColor: '#22C55E' },
-  { id: 'bs-3', name: 'Demo Day', initials: 'DD', hasNew: true, ringColor: '#F59E0B' },
-  { id: 'bs-4', name: 'Engineering', initials: 'EN', hasNew: true, ringColor: '#1D9BF0' },
+  { id: 'bs-1', name: 'Alex M.', initials: 'AM', hasNew: true, ringColor: '#1A1714' },
+  { id: 'bs-2', name: 'Product', initials: 'PR', hasNew: true, ringColor: '#5A8A6E' },
+  { id: 'bs-3', name: 'Demo Day', initials: 'DD', hasNew: true, ringColor: '#B8943E' },
+  { id: 'bs-4', name: 'Engineering', initials: 'EN', hasNew: true, ringColor: '#1A1714' },
   { id: 'bs-5', name: 'Marketing', initials: 'MK', hasNew: false },
   { id: 'bs-6', name: 'Investors', initials: 'IV', hasNew: false },
-  { id: 'bs-7', name: 'Press', initials: 'PS', hasNew: true, ringColor: '#1D9BF0' },
+  { id: 'bs-7', name: 'Press', initials: 'PS', hasNew: true, ringColor: '#1A1714' },
   { id: 'bs-8', name: 'Culture', initials: 'CU', hasNew: false },
 ];
 
@@ -622,13 +622,13 @@ const BUSINESS_FEED_POSTS: VideoFeedPost[] = [
 
 const COMMUNITY_STORY_CIRCLES: StoryCircle[] = [
   { id: 'ks-you', name: 'Your Story', initials: 'AM', hasNew: false, isYou: true, ringColor: '#FFFFFF' },
-  { id: 'ks-1', name: 'Race Dir.', initials: 'RD', hasNew: true, ringColor: '#EF4444' },
-  { id: 'ks-2', name: 'M. Kane', initials: 'MK', hasNew: true, ringColor: '#F59E0B' },
-  { id: 'ks-3', name: 'Apex Racing', initials: 'AR', hasNew: true, ringColor: '#22C55E' },
-  { id: 'ks-4', name: 'Onboards', initials: 'OB', hasNew: true, ringColor: '#1D9BF0' },
+  { id: 'ks-1', name: 'Race Dir.', initials: 'RD', hasNew: true, ringColor: '#B85C5C' },
+  { id: 'ks-2', name: 'M. Kane', initials: 'MK', hasNew: true, ringColor: '#B8943E' },
+  { id: 'ks-3', name: 'Apex Racing', initials: 'AR', hasNew: true, ringColor: '#5A8A6E' },
+  { id: 'ks-4', name: 'Onboards', initials: 'OB', hasNew: true, ringColor: '#1A1714' },
   { id: 'ks-5', name: 'Stewards', initials: 'ST', hasNew: false },
   { id: 'ks-6', name: 'Grid Girls', initials: 'GG', hasNew: false },
-  { id: 'ks-7', name: '3SSB Live', initials: '3S', hasNew: true, ringColor: '#1D9BF0' },
+  { id: 'ks-7', name: '3SSB Live', initials: '3S', hasNew: true, ringColor: '#1A1714' },
   { id: 'ks-8', name: 'Fan Zone', initials: 'FZ', hasNew: false },
 ];
 

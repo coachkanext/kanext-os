@@ -367,130 +367,130 @@ export const PROJECT_STATUS_LABELS: Record<ProjectStatus, string> = {
 // =============================================================================
 
 export const BUILDING_TYPE_COLORS: Record<BuildingType, string> = {
-  dorm: '#1D9BF0',
-  academic: '#1D9BF0',
-  athletics: '#EF4444',
-  admin: '#F59E0B',
-  dining: '#22C55E',
-  worship: '#A1A1AA',
-  multipurpose: '#1D9BF0',
-  maintenance: '#A1A1AA',
+  dorm: '#1A1714',
+  academic: '#1A1714',
+  athletics: '#B85C5C',
+  admin: '#B8943E',
+  dining: '#5A8A6E',
+  worship: '#9C9790',
+  multipurpose: '#1A1714',
+  maintenance: '#9C9790',
 };
 
 export const BUILDING_STATUS_COLORS: Record<BuildingStatus, string> = {
-  good: '#22C55E',
-  watch: '#F59E0B',
-  at_risk: '#EF4444',
-  down: '#EF4444',
+  good: '#5A8A6E',
+  watch: '#B8943E',
+  at_risk: '#B85C5C',
+  down: '#B85C5C',
 };
 
 export const SYSTEM_TYPE_COLORS: Record<SystemType, string> = {
-  hvac: '#1D9BF0',
-  electrical: '#F59E0B',
-  plumbing: '#22C55E',
-  internet: '#1D9BF0',
-  fire: '#EF4444',
-  security: '#1D9BF0',
+  hvac: '#1A1714',
+  electrical: '#B8943E',
+  plumbing: '#5A8A6E',
+  internet: '#1A1714',
+  fire: '#B85C5C',
+  security: '#1A1714',
 };
 
 export const ROOM_TYPE_COLORS: Record<RoomType, string> = {
-  classroom: '#1D9BF0',
-  lab: '#1D9BF0',
-  office: '#F59E0B',
-  gym: '#EF4444',
-  dorm_floor: '#1D9BF0',
-  chapel: '#A1A1AA',
-  auditorium: '#22C55E',
-  dining: '#22C55E',
-  conference: '#F59E0B',
+  classroom: '#1A1714',
+  lab: '#1A1714',
+  office: '#B8943E',
+  gym: '#B85C5C',
+  dorm_floor: '#1A1714',
+  chapel: '#9C9790',
+  auditorium: '#5A8A6E',
+  dining: '#5A8A6E',
+  conference: '#B8943E',
 };
 
 export const ROOM_STATUS_COLORS: Record<RoomStatus, string> = {
-  available: '#22C55E',
-  limited: '#F59E0B',
-  down: '#EF4444',
+  available: '#5A8A6E',
+  limited: '#B8943E',
+  down: '#B85C5C',
 };
 
 export const ACCESS_LEVEL_COLORS: Record<AccessLevel, string> = {
-  public: '#22C55E',
-  restricted: '#F59E0B',
-  secured: '#EF4444',
+  public: '#5A8A6E',
+  restricted: '#B8943E',
+  secured: '#B85C5C',
 };
 
 export const ASSET_CATEGORY_COLORS: Record<AssetCategory, string> = {
-  hvac_unit: '#1D9BF0',
-  scoreboard: '#EF4444',
-  bus: '#F59E0B',
-  laundry: '#1D9BF0',
-  security_camera: '#1D9BF0',
-  kitchen_equipment: '#22C55E',
-  lab_equipment: '#1D9BF0',
-  av_system: '#A1A1AA',
+  hvac_unit: '#1A1714',
+  scoreboard: '#B85C5C',
+  bus: '#B8943E',
+  laundry: '#1A1714',
+  security_camera: '#1A1714',
+  kitchen_equipment: '#5A8A6E',
+  lab_equipment: '#1A1714',
+  av_system: '#9C9790',
 };
 
 export const ASSET_CONDITION_COLORS: Record<AssetCondition, string> = {
-  ok: '#22C55E',
-  watch: '#F59E0B',
-  failed: '#EF4444',
+  ok: '#5A8A6E',
+  watch: '#B8943E',
+  failed: '#B85C5C',
 };
 
 export const WORK_ORDER_CATEGORY_COLORS: Record<WorkOrderCategory, string> = {
-  safety: '#EF4444',
-  electrical: '#F59E0B',
-  plumbing: '#22C55E',
-  hvac: '#1D9BF0',
-  it: '#1D9BF0',
-  general: '#A1A1AA',
+  safety: '#B85C5C',
+  electrical: '#B8943E',
+  plumbing: '#5A8A6E',
+  hvac: '#1A1714',
+  it: '#1A1714',
+  general: '#9C9790',
 };
 
 export const WORK_ORDER_PRIORITY_COLORS: Record<WorkOrderPriority, string> = {
-  critical: '#EF4444',
-  high: '#EF4444',
-  normal: '#F59E0B',
+  critical: '#B85C5C',
+  high: '#B85C5C',
+  normal: '#B8943E',
 };
 
 export const WORK_ORDER_STATUS_COLORS: Record<WorkOrderStatus, string> = {
-  new: '#F59E0B',
-  assigned: '#1D9BF0',
-  in_progress: '#1D9BF0',
-  waiting: '#F59E0B',
-  complete: '#22C55E',
-  closed: '#A1A1AA',
+  new: '#B8943E',
+  assigned: '#1A1714',
+  in_progress: '#1A1714',
+  waiting: '#B8943E',
+  complete: '#5A8A6E',
+  closed: '#9C9790',
 };
 
 export const MAINTENANCE_STATUS_COLORS: Record<MaintenanceStatus, string> = {
-  scheduled: '#1D9BF0',
-  done: '#22C55E',
-  missed: '#EF4444',
+  scheduled: '#1A1714',
+  done: '#5A8A6E',
+  missed: '#B85C5C',
 };
 
 export const INSPECTION_TYPE_COLORS: Record<InspectionType, string> = {
-  fire: '#EF4444',
-  housing: '#1D9BF0',
-  health: '#22C55E',
-  ada: '#1D9BF0',
-  athletics: '#F59E0B',
-  insurance: '#A1A1AA',
+  fire: '#B85C5C',
+  housing: '#1A1714',
+  health: '#5A8A6E',
+  ada: '#1A1714',
+  athletics: '#B8943E',
+  insurance: '#9C9790',
 };
 
 export const INSPECTION_STATUS_COLORS: Record<InspectionStatus, string> = {
-  due: '#F59E0B',
-  scheduled: '#1D9BF0',
-  completed: '#22C55E',
-  failed: '#EF4444',
+  due: '#B8943E',
+  scheduled: '#1A1714',
+  completed: '#5A8A6E',
+  failed: '#B85C5C',
 };
 
 export const VENDOR_STATUS_COLORS: Record<VendorStatus, string> = {
-  active: '#22C55E',
-  expiring: '#F59E0B',
-  inactive: '#EF4444',
+  active: '#5A8A6E',
+  expiring: '#B8943E',
+  inactive: '#B85C5C',
 };
 
 export const PROJECT_STATUS_COLORS: Record<ProjectStatus, string> = {
-  planned: '#F59E0B',
-  in_progress: '#1D9BF0',
-  at_risk: '#EF4444',
-  complete: '#22C55E',
+  planned: '#B8943E',
+  in_progress: '#1A1714',
+  at_risk: '#B85C5C',
+  complete: '#5A8A6E',
 };
 
 // =============================================================================

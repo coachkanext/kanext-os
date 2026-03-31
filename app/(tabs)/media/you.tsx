@@ -367,7 +367,7 @@ function RecruitDiscoveryContent() {
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           >
             <ThemedText style={styles.filterChipText}>{f}</ThemedText>
-            <IconSymbol name="chevron.down" size={10} color="#A1A1AA" />
+            <IconSymbol name="chevron.down" size={10} color="#9C9790" />
           </Pressable>
         ))}
       </ScrollView>
@@ -449,7 +449,7 @@ export default function YouScreen() {
                   setActiveTab(tab.key);
                 }}
               >
-                <ThemedText style={[styles.toggleText, { color: isActive ? '#FFFFFF' : '#A1A1AA' }]}>
+                <ThemedText style={[styles.toggleText, { color: isActive ? '#FFFFFF' : '#9C9790' }]}>
                   {tab.label}
                 </ThemedText>
               </Pressable>
@@ -542,7 +542,7 @@ const styles = StyleSheet.create({
   seeAll: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
 
   // Horizontal scrolls
@@ -586,7 +586,7 @@ const styles = StyleSheet.create({
   },
   historyMeta: {
     fontSize: 12,
-    color: '#A1A1AA',
+    color: '#9C9790',
     textTransform: 'capitalize',
   },
   historyProgress: {
@@ -686,7 +686,7 @@ const styles = StyleSheet.create({
   filterChipText: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   addCta: {
     flexDirection: 'row',

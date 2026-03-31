@@ -996,7 +996,7 @@ export default function CoachProgramContextScreen() {
             styles.saveButton,
             {
               backgroundColor: colorScheme === 'dark'
-                ? pressed ? '#A1A1AA' : '#ffffff'
+                ? pressed ? '#9C9790' : '#ffffff'
                 : pressed ? '#0B0F14' : '#0B0F14',
             },
           ]}
@@ -1154,7 +1154,7 @@ function PresetPreview({
                   <Text
                     style={[
                       styles.previewDelta,
-                      { color: delta >= 0 ? '#FFFFFF' : '#A1A1AA' },
+                      { color: delta >= 0 ? '#FFFFFF' : '#9C9790' },
                     ]}
                   >
                     {' '}({deltaSign}{delta.toFixed(1)})

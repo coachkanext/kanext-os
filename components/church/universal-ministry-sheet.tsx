@@ -53,21 +53,21 @@ interface UniversalMinistrySheetProps {
 // =============================================================================
 
 const MINISTRY_STATUS_COLORS: Record<string, string> = {
-  active: '#22C55E',
+  active: '#5A8A6E',
   seasonal: ACCENT,
-  paused: '#A1A1AA',
+  paused: '#9C9790',
 };
 
 const BUDGET_STATUS_COLORS: Record<string, string> = {
-  on_track: '#22C55E',
-  over_budget: '#EF4444',
+  on_track: '#5A8A6E',
+  over_budget: '#B85C5C',
   under_budget: ACCENT,
 };
 
 const CONTENT_TYPE_COLORS: Record<string, string> = {
   lesson_plan: ACCENT,
   announcement: ACCENT,
-  media_asset: '#F59E0B',
+  media_asset: '#B8943E',
 };
 
 // =============================================================================
@@ -266,19 +266,19 @@ function MinistryHeader({
         <View
           style={[
             styles.statusPill,
-            { backgroundColor: (MINISTRY_STATUS_COLORS[ministry.status] ?? '#A1A1AA') + '1A' },
+            { backgroundColor: (MINISTRY_STATUS_COLORS[ministry.status] ?? '#9C9790') + '1A' },
           ]}
         >
           <View
             style={[
               styles.statusDot,
-              { backgroundColor: MINISTRY_STATUS_COLORS[ministry.status] ?? '#A1A1AA' },
+              { backgroundColor: MINISTRY_STATUS_COLORS[ministry.status] ?? '#9C9790' },
             ]}
           />
           <ThemedText
             style={[
               styles.statusPillText,
-              { color: MINISTRY_STATUS_COLORS[ministry.status] ?? '#A1A1AA' },
+              { color: MINISTRY_STATUS_COLORS[ministry.status] ?? '#9C9790' },
             ]}
           >
             {ministry.status.charAt(0).toUpperCase() + ministry.status.slice(1)}
@@ -309,7 +309,7 @@ function MinistryHeader({
             <ThemedText
               style={[
                 styles.quickMetricValue,
-                { color: ministry.openBlockers > 0 ? '#EF4444' : '#22C55E' },
+                { color: ministry.openBlockers > 0 ? '#B85C5C' : '#5A8A6E' },
               ]}
             >
               {ministry.openBlockers}
@@ -385,7 +385,7 @@ function OverviewTab({
             key={idx}
             style={[styles.listRow, { borderBottomColor: colors.border }]}
           >
-            <IconSymbol name="exclamationmark.circle.fill" size={16} color="#F59E0B" />
+            <IconSymbol name="exclamationmark.circle.fill" size={16} color="#B8943E" />
             <View style={{ flex: 1, marginLeft: Spacing.sm }}>
               <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
                 {need.label}
@@ -485,8 +485,8 @@ function PeopleTab({
                   styles.safetyBadge,
                   {
                     backgroundColor:
-                      vol.safetyClearance === 'cleared' ? '#22C55E22' :
-                      vol.safetyClearance === 'pending' ? '#F59E0B22' : '#EF444422',
+                      vol.safetyClearance === 'cleared' ? '#5A8A6E22' :
+                      vol.safetyClearance === 'pending' ? '#B8943E22' : '#B85C5C22',
                   },
                 ]}
               >
@@ -495,8 +495,8 @@ function PeopleTab({
                     styles.safetyBadgeText,
                     {
                       color:
-                        vol.safetyClearance === 'cleared' ? '#22C55E' :
-                        vol.safetyClearance === 'pending' ? '#F59E0B' : '#EF4444',
+                        vol.safetyClearance === 'cleared' ? '#5A8A6E' :
+                        vol.safetyClearance === 'pending' ? '#B8943E' : '#B85C5C',
                     },
                   ]}
                 >
@@ -616,13 +616,13 @@ function ScheduleTab({
                         <View
                           style={[
                             styles.assignStatusBadge,
-                            { backgroundColor: a.status === 'confirmed' ? '#22C55E22' : '#F59E0B22' },
+                            { backgroundColor: a.status === 'confirmed' ? '#5A8A6E22' : '#B8943E22' },
                           ]}
                         >
                           <ThemedText
                             style={[
                               styles.assignStatusText,
-                              { color: a.status === 'confirmed' ? '#22C55E' : '#F59E0B' },
+                              { color: a.status === 'confirmed' ? '#5A8A6E' : '#B8943E' },
                             ]}
                           >
                             {a.status.toUpperCase()}
@@ -677,7 +677,7 @@ function OperationsTab({
               <IconSymbol
                 name={item.completed ? 'checkmark.circle.fill' : 'circle' as any}
                 size={18}
-                color={item.completed ? '#22C55E' : colors.textTertiary}
+                color={item.completed ? '#5A8A6E' : colors.textTertiary}
               />
               <View style={{ flex: 1, marginLeft: Spacing.sm }}>
                 <ThemedText style={[styles.bodyText, { color: colors.text }]}>
@@ -707,13 +707,13 @@ function OperationsTab({
               <View
                 style={[
                   styles.opsTaskBadge,
-                  { backgroundColor: task.status === 'open' ? '#F59E0B22' : `${ACCENT}22` },
+                  { backgroundColor: task.status === 'open' ? '#B8943E22' : `${ACCENT}22` },
                 ]}
               >
                 <ThemedText
                   style={[
                     styles.opsTaskBadgeText,
-                    { color: task.status === 'open' ? '#F59E0B' : ACCENT },
+                    { color: task.status === 'open' ? '#B8943E' : ACCENT },
                   ]}
                 >
                   {task.status.replace('_', ' ').toUpperCase()}
@@ -744,7 +744,7 @@ function OperationsTab({
               key={task.id}
               style={[styles.listRow, { borderBottomColor: colors.border }]}
             >
-              <IconSymbol name="checkmark.circle.fill" size={18} color="#22C55E" />
+              <IconSymbol name="checkmark.circle.fill" size={18} color="#5A8A6E" />
               <View style={{ flex: 1, marginLeft: Spacing.sm }}>
                 <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
                   {task.title}
@@ -766,7 +766,7 @@ function OperationsTab({
               key={blocker.id}
               style={[styles.listRow, { borderBottomColor: colors.border }]}
             >
-              <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#EF4444" />
+              <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#B85C5C" />
               <View style={{ flex: 1, marginLeft: Spacing.sm }}>
                 <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
                   {blocker.title}
@@ -812,13 +812,13 @@ function SafetyComplianceTab({
           <StatBlock
             label="Completion"
             value={`${data.trainingCompletionPct}%`}
-            color={data.trainingCompletionPct >= 80 ? '#22C55E' : '#F59E0B'}
+            color={data.trainingCompletionPct >= 80 ? '#5A8A6E' : '#B8943E'}
             colors={colors}
           />
           <StatBlock
             label="BG Checks Pending"
             value={String(data.backgroundChecksPending)}
-            color={data.backgroundChecksPending > 0 ? '#EF4444' : '#22C55E'}
+            color={data.backgroundChecksPending > 0 ? '#B85C5C' : '#5A8A6E'}
             colors={colors}
           />
         </View>
@@ -832,7 +832,7 @@ function SafetyComplianceTab({
           </ThemedText>
         ) : (
           <View style={[styles.listRow, { borderBottomColor: colors.border }]}>
-            <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#EF4444" />
+            <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#B85C5C" />
             <View style={{ flex: 1, marginLeft: Spacing.sm }}>
               <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
                 1 volunteer awaiting background check results
@@ -855,7 +855,7 @@ function SafetyComplianceTab({
             <IconSymbol
               name={item.completed ? 'checkmark.circle.fill' : 'circle' as any}
               size={18}
-              color={item.completed ? '#22C55E' : colors.textTertiary}
+              color={item.completed ? '#5A8A6E' : colors.textTertiary}
             />
             <ThemedText style={[styles.bodyText, { color: colors.text, flex: 1, marginLeft: Spacing.sm }]}>
               {item.label}
@@ -898,12 +898,12 @@ function BudgetTab({
             label="Spent"
             value={`$${(totalSpent / 1000).toFixed(1)}K`}
             subtitle="Year to date"
-            color={totalSpent > totalAllocated ? '#EF4444' : '#F59E0B'}
+            color={totalSpent > totalAllocated ? '#B85C5C' : '#B8943E'}
             colors={colors}
           />
         </View>
         <View style={[styles.budgetRemaining, { marginTop: Spacing.sm }]}>
-          <ThemedText style={[styles.captionText, { color: remaining >= 0 ? '#22C55E' : '#EF4444' }]}>
+          <ThemedText style={[styles.captionText, { color: remaining >= 0 ? '#5A8A6E' : '#B85C5C' }]}>
             Remaining: ${(remaining / 1000).toFixed(1)}K
           </ThemedText>
         </View>
@@ -927,13 +927,13 @@ function BudgetTab({
             <View
               style={[
                 styles.budgetStatusBadge,
-                { backgroundColor: (BUDGET_STATUS_COLORS[item.status] ?? '#A1A1AA') + '22' },
+                { backgroundColor: (BUDGET_STATUS_COLORS[item.status] ?? '#9C9790') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.budgetStatusText,
-                  { color: BUDGET_STATUS_COLORS[item.status] ?? '#A1A1AA' },
+                  { color: BUDGET_STATUS_COLORS[item.status] ?? '#9C9790' },
                 ]}
               >
                 {item.status.replace('_', ' ').toUpperCase()}
@@ -946,7 +946,7 @@ function BudgetTab({
       {/* Requests Pending */}
       <SectionCard title="Requests Pending" colors={colors}>
         <View style={[styles.listRow, { borderBottomColor: colors.border }]}>
-          <IconSymbol name="clock.fill" size={16} color="#F59E0B" />
+          <IconSymbol name="clock.fill" size={16} color="#B8943E" />
           <View style={{ flex: 1, marginLeft: Spacing.sm }}>
             <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
               VBS Additional Supplies Request
@@ -957,7 +957,7 @@ function BudgetTab({
           </View>
         </View>
         <View style={[styles.listRow, { borderBottomColor: colors.border }]}>
-          <IconSymbol name="clock.fill" size={16} color="#F59E0B" />
+          <IconSymbol name="clock.fill" size={16} color="#B8943E" />
           <View style={{ flex: 1, marginLeft: Spacing.sm }}>
             <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
               Sound Equipment Upgrade
@@ -1040,7 +1040,7 @@ function ContentMediaTab({
               key={asset.id}
               style={[styles.listRow, { borderBottomColor: colors.border }]}
             >
-              <IconSymbol name="play.rectangle.fill" size={18} color="#F59E0B" />
+              <IconSymbol name="play.rectangle.fill" size={18} color="#B8943E" />
               <View style={{ flex: 1, marginLeft: Spacing.sm }}>
                 <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
                   {asset.title}

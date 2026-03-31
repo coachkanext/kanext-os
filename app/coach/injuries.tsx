@@ -53,8 +53,8 @@ const HEALTHY_PLAYERS = [
 ];
 
 const STATUS_COLORS: Record<string, string> = {
-  out: '#EF4444',
-  questionable: '#A1A1AA',
+  out: '#B85C5C',
+  questionable: '#9C9790',
   probable: '#FFFFFF',
 };
 
@@ -116,7 +116,7 @@ export default function CoachInjuriesScreen() {
           </View>
           <View style={[styles.summaryDivider, { backgroundColor: colors.divider }]} />
           <View style={styles.summaryItem}>
-            <Text style={[styles.summaryValue, { color: '#EF4444' }]}>
+            <Text style={[styles.summaryValue, { color: '#B85C5C' }]}>
               {DEMO_INJURIES.length}
             </Text>
             <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>Injured</Text>

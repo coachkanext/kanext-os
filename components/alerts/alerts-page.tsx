@@ -37,7 +37,7 @@ function getSeverityColor(severity: AlertSeverity): string {
   switch (severity) {
     case 'High': return Brand.error;
     case 'Medium': return Brand.warning;
-    case 'Low': return '#A1A1AA';
+    case 'Low': return '#9C9790';
   }
 }
 

@@ -60,9 +60,9 @@ const SUB_TABS = [
 
 const FUND_COLORS: Record<FundType, string> = {
   general: ACCENT,
-  missions: '#22C55E',
+  missions: '#5A8A6E',
   benevolence: ACCENT,
-  building: '#F59E0B',
+  building: '#B8943E',
   youth: ACCENT,
 };
 
@@ -233,7 +233,7 @@ function RailsHealthStrip({
             <View
               style={[
                 s.healthMethodDot,
-                { backgroundColor: cm.active ? '#22C55E' : '#EF4444' },
+                { backgroundColor: cm.active ? '#5A8A6E' : '#B85C5C' },
               ]}
             />
             <ThemedText style={[s.healthMethodText, { color: colors.textSecondary }]}>
@@ -254,7 +254,7 @@ function RailsHealthStrip({
           Holds: {health.holdsCount}
         </ThemedText>
         <ThemedText style={[s.healthStatDivider, { color: colors.textTertiary }]}>|</ThemedText>
-        <ThemedText style={[s.healthStat, { color: health.failedCount24h > 0 ? '#EF4444' : colors.textTertiary }]}>
+        <ThemedText style={[s.healthStat, { color: health.failedCount24h > 0 ? '#B85C5C' : colors.textTertiary }]}>
           Failed: {health.failedCount24h}
         </ThemedText>
         <ThemedText style={[s.healthStatDivider, { color: colors.textTertiary }]}>|</ThemedText>
@@ -376,10 +376,10 @@ function ControlTowerTab({
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
-      {renderLane('Needs Approval', '#F59E0B', needsApproval, 3)}
+      {renderLane('Needs Approval', '#B8943E', needsApproval, 3)}
       {renderLane('Ready to Release', ACCENT, readyToRelease, 3)}
-      {renderLane('In Flight', '#22C55E', inFlight, 3)}
-      {renderLane('Exceptions', '#EF4444', exceptions, 3)}
+      {renderLane('In Flight', '#5A8A6E', inFlight, 3)}
+      {renderLane('Exceptions', '#B85C5C', exceptions, 3)}
     </ScrollView>
   );
 }
@@ -425,7 +425,7 @@ function WalletsTab({
           {/* Balance breakdown */}
           <View style={[s.walletBalances, { borderTopColor: colors.border }]}>
             <View style={s.walletBalanceItem}>
-              <ThemedText style={[s.walletBalanceValue, { color: '#22C55E' }]}>
+              <ThemedText style={[s.walletBalanceValue, { color: '#5A8A6E' }]}>
                 {formatCurrency(item.available)}
               </ThemedText>
               <ThemedText style={[s.walletBalanceLabel, { color: colors.textTertiary }]}>
@@ -433,7 +433,7 @@ function WalletsTab({
               </ThemedText>
             </View>
             <View style={s.walletBalanceItem}>
-              <ThemedText style={[s.walletBalanceValue, { color: '#F59E0B' }]}>
+              <ThemedText style={[s.walletBalanceValue, { color: '#B8943E' }]}>
                 {formatCurrency(item.committed)}
               </ThemedText>
               <ThemedText style={[s.walletBalanceLabel, { color: colors.textTertiary }]}>
@@ -449,7 +449,7 @@ function WalletsTab({
               </ThemedText>
             </View>
             <View style={s.walletBalanceItem}>
-              <ThemedText style={[s.walletBalanceValue, { color: '#F59E0B' }]}>
+              <ThemedText style={[s.walletBalanceValue, { color: '#B8943E' }]}>
                 {formatCurrency(item.pendingOutflows)}
               </ThemedText>
               <ThemedText style={[s.walletBalanceLabel, { color: colors.textTertiary }]}>
@@ -468,7 +468,7 @@ function WalletsTab({
             {item.exceptionsCount > 0 && (
               <StatusBadge
                 label={`${item.exceptionsCount} EXCEPTION${item.exceptionsCount > 1 ? 'S' : ''}`}
-                color="#EF4444"
+                color="#B85C5C"
               />
             )}
             <View style={s.walletRailIcons}>
@@ -565,7 +565,7 @@ function BatchesTab({
               <ThemedText
                 style={[
                   s.batchDetailValue,
-                  { color: item.exceptionsCount > 0 ? '#EF4444' : colors.text },
+                  { color: item.exceptionsCount > 0 ? '#B85C5C' : colors.text },
                 ]}
               >
                 {item.exceptionsCount}
@@ -644,7 +644,7 @@ function ApprovalsTab({
             {appr.missingRequirements.length > 0 && (
               <View style={s.approvalMissing}>
                 {appr.missingRequirements.map((req, i) => (
-                  <ThemedText key={`req-${i}`} style={[s.approvalMissingText, { color: '#EF4444' }]}>
+                  <ThemedText key={`req-${i}`} style={[s.approvalMissingText, { color: '#B85C5C' }]}>
                     {'\u2022'} {req}
                   </ThemedText>
                 ))}
@@ -652,20 +652,20 @@ function ApprovalsTab({
             )}
 
             {appr.auditNote && (
-              <View style={[s.approvalAuditNote, { backgroundColor: '#F59E0B18' }]}>
-                <IconSymbol name="doc.text.fill" size={12} color="#F59E0B" />
-                <ThemedText style={[s.approvalAuditNoteText, { color: '#F59E0B' }]}>
+              <View style={[s.approvalAuditNote, { backgroundColor: '#B8943E18' }]}>
+                <IconSymbol name="doc.text.fill" size={12} color="#B8943E" />
+                <ThemedText style={[s.approvalAuditNoteText, { color: '#B8943E' }]}>
                   {appr.auditNote}
                 </ThemedText>
               </View>
             )}
 
             <View style={s.approvalActions}>
-              <View style={[s.approvalActionBadge, { backgroundColor: '#22C55E20' }]}>
-                <ThemedText style={[s.approvalActionText, { color: '#22C55E' }]}>Approve</ThemedText>
+              <View style={[s.approvalActionBadge, { backgroundColor: '#5A8A6E20' }]}>
+                <ThemedText style={[s.approvalActionText, { color: '#5A8A6E' }]}>Approve</ThemedText>
               </View>
-              <View style={[s.approvalActionBadge, { backgroundColor: '#EF444420' }]}>
-                <ThemedText style={[s.approvalActionText, { color: '#EF4444' }]}>Reject</ThemedText>
+              <View style={[s.approvalActionBadge, { backgroundColor: '#B85C5C20' }]}>
+                <ThemedText style={[s.approvalActionText, { color: '#B85C5C' }]}>Reject</ThemedText>
               </View>
             </View>
           </Pressable>
@@ -728,9 +728,9 @@ function ReleasesTab({
               </ThemedText>
             )}
             {rel.requiresSecondApprover && (
-              <View style={[s.releaseWarning, { backgroundColor: '#F59E0B18' }]}>
-                <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#F59E0B" />
-                <ThemedText style={[s.releaseWarningText, { color: '#F59E0B' }]}>
+              <View style={[s.releaseWarning, { backgroundColor: '#B8943E18' }]}>
+                <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B8943E" />
+                <ThemedText style={[s.releaseWarningText, { color: '#B8943E' }]}>
                   Requires 2nd Approver
                 </ThemedText>
               </View>
@@ -877,10 +877,10 @@ function ReturnsTab({
     resolved: 'Resolved',
   };
   const STAGE_COLORS: Record<RailsReturn['stage'], string> = {
-    received: '#EF4444',
-    evidence_requested: '#F59E0B',
+    received: '#B85C5C',
+    evidence_requested: '#B8943E',
     submitted: ACCENT,
-    resolved: '#22C55E',
+    resolved: '#5A8A6E',
   };
 
   return (
@@ -989,7 +989,7 @@ function ReceiptsTab({
                     <View
                       style={[
                         s.receiptChainDot,
-                        { backgroundColor: isCompleted ? '#22C55E' : colors.textTertiary },
+                        { backgroundColor: isCompleted ? '#5A8A6E' : colors.textTertiary },
                       ]}
                     >
                       {isCompleted && (
@@ -1132,13 +1132,13 @@ function WalletDetailSheet({
         <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Balance Breakdown</ThemedText>
         <View style={s.sheetDetailsGrid}>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: '#5A8A6E' }]}>
               {formatCurrency(wallet.available)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Available</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: '#F59E0B' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: '#B8943E' }]}>
               {formatCurrency(wallet.committed)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Committed</ThemedText>
@@ -1150,7 +1150,7 @@ function WalletDetailSheet({
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Pending In</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: '#F59E0B' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: '#B8943E' }]}>
               {formatCurrency(wallet.pendingOutflows)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Pending Out</ThemedText>
@@ -1420,7 +1420,7 @@ function TransactionDetailSheet({
           {STATE_MACHINE.map((state, idx) => {
             const reached = !isException && idx <= currentIdx;
             const isCurrent = !isException && idx === currentIdx;
-            const dotColor = reached ? '#22C55E' : colors.textTertiary;
+            const dotColor = reached ? '#5A8A6E' : colors.textTertiary;
             return (
               <View key={state} style={s.timelineStep}>
                 <View style={s.timelineDotRow}>
@@ -1438,7 +1438,7 @@ function TransactionDetailSheet({
                     <View
                       style={[
                         s.timelineConnector,
-                        { backgroundColor: reached ? '#22C55E' : colors.border },
+                        { backgroundColor: reached ? '#5A8A6E' : colors.border },
                       ]}
                     />
                   )}

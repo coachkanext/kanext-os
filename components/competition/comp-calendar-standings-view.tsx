@@ -34,10 +34,10 @@ type StandingsToggle = (typeof TOGGLES)[number];
 
 function DeltaIndicator({ delta, colors }: { delta: number; colors: typeof Colors.light }) {
   if (delta > 0) {
-    return <ThemedText style={[styles.delta, { color: '#22C55E' }]}>{'\u25B2'} {delta}</ThemedText>;
+    return <ThemedText style={[styles.delta, { color: '#5A8A6E' }]}>{'\u25B2'} {delta}</ThemedText>;
   }
   if (delta < 0) {
-    return <ThemedText style={[styles.delta, { color: '#EF4444' }]}>{'\u25BC'} {Math.abs(delta)}</ThemedText>;
+    return <ThemedText style={[styles.delta, { color: '#B85C5C' }]}>{'\u25BC'} {Math.abs(delta)}</ThemedText>;
   }
   return <ThemedText style={[styles.delta, { color: colors.textTertiary }]}>{'\u2014'}</ThemedText>;
 }
@@ -91,8 +91,8 @@ const CATEGORY_LABELS: Record<ConstructorStanding['category'], string> = {
 
 const CATEGORY_COLORS: Record<ConstructorStanding['category'], string> = {
   oem_works: ACCENT,
-  premier_tuner: '#F59E0B',
-  league_owned: '#A1A1AA',
+  premier_tuner: '#B8943E',
+  league_owned: '#9C9790',
   kanext_works: ACCENT,
 };
 
@@ -175,9 +175,9 @@ function CrewTable({ colors, accent }: { colors: typeof Colors.light; accent: st
 
 function WildcardTable({ colors, accent }: { colors: typeof Colors.light; accent: string }) {
   const statusColor = (status: string) => {
-    if (status === 'qualified') return '#22C55E';
+    if (status === 'qualified') return '#5A8A6E';
     if (status === 'active') return ACCENT;
-    return '#A1A1AA';
+    return '#9C9790';
   };
 
   return (

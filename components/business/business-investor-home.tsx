@@ -119,10 +119,10 @@ const V2_DOMAINS: DomainItem[] = [
 
 function getDomainStatusColor(status: string): string {
   switch (status) {
-    case 'live': return '#22C55E';
-    case 'read-only': return '#F59E0B';
-    case 'v2': return '#A1A1AA';
-    default: return '#A1A1AA';
+    case 'live': return '#5A8A6E';
+    case 'read-only': return '#B8943E';
+    case 'v2': return '#9C9790';
+    default: return '#9C9790';
   }
 }
 
@@ -275,7 +275,7 @@ export function BusinessInvestorHome({ onSwitchTab }: BusinessInvestorHomeProps)
               ${(COMPANY_METRICS.mrr / 1000).toFixed(0)}K
             </ThemedText>
             <ThemedText style={[styles.metricLabel, { color: colors.textTertiary }]}>MRR</ThemedText>
-            <ThemedText style={[styles.metricDelta, { color: '#22C55E' }]}>
+            <ThemedText style={[styles.metricDelta, { color: '#5A8A6E' }]}>
               +{COMPANY_METRICS.mrrGrowth}%
             </ThemedText>
           </View>
@@ -352,8 +352,8 @@ export function BusinessInvestorHome({ onSwitchTab }: BusinessInvestorHomeProps)
           <View key={stream.id} style={styles.revenueRow}>
             <View style={styles.revenueHeader}>
               <ThemedText style={styles.revenueName}>{stream.name}</ThemedText>
-              <View style={[styles.revenueStatusPill, { backgroundColor: stream.status === 'beta' ? '#22C55E20' : colors.backgroundTertiary }]}>
-                <ThemedText style={[styles.revenueStatusText, { color: stream.status === 'beta' ? '#22C55E' : colors.textTertiary }]}>
+              <View style={[styles.revenueStatusPill, { backgroundColor: stream.status === 'beta' ? '#5A8A6E20' : colors.backgroundTertiary }]}>
+                <ThemedText style={[styles.revenueStatusText, { color: stream.status === 'beta' ? '#5A8A6E' : colors.textTertiary }]}>
                   {stream.status.toUpperCase()}
                 </ThemedText>
               </View>

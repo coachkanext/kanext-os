@@ -198,9 +198,9 @@ const SET_STATUS_LABEL: Record<SetStatus, string> = {
 };
 
 const SET_STATUS_COLOR: Record<SetStatus, string> = {
-  draft: '#F59E0B',
+  draft: '#B8943E',
   ready: ACCENT,
-  published: '#22C55E',
+  published: '#5A8A6E',
 };
 
 const SET_STATUS_ICON: Record<SetStatus, string> = {
@@ -327,9 +327,9 @@ const REHEARSALS: Rehearsal[] = [
 ];
 
 const RSVP_COLOR: Record<RSVPStatus, string> = {
-  confirmed: '#22C55E',
-  pending: '#F59E0B',
-  declined: '#EF4444',
+  confirmed: '#5A8A6E',
+  pending: '#B8943E',
+  declined: '#B85C5C',
 };
 
 // =============================================================================
@@ -368,16 +368,16 @@ const WORSHIP_TEAM_MEMBERS: WorshipTeamMember[] = [
 ];
 
 const TEAM_STATUS_COLOR: Record<TeamStatus, string> = {
-  active: '#22C55E',
-  'on-break': '#F59E0B',
+  active: '#5A8A6E',
+  'on-break': '#B8943E',
   training: ACCENT,
 };
 
 const SKILL_LEVEL_COLOR: Record<SkillLevel, string> = {
-  beginner: '#A1A1AA',
+  beginner: '#9C9790',
   intermediate: ACCENT,
   advanced: ACCENT,
-  expert: '#22C55E',
+  expert: '#5A8A6E',
 };
 
 const TEAM_ROLE_ORDER = [
@@ -471,10 +471,10 @@ const SONG_LIBRARY: LibrarySong[] = [
 
 const CATEGORY_COLOR: Record<SongCategory, string> = {
   'Praise & Worship': ACCENT,
-  Hymns: '#F59E0B',
+  Hymns: '#B8943E',
   Contemporary: ACCENT,
   Gospel: ACCENT,
-  Special: '#22C55E',
+  Special: '#5A8A6E',
 };
 
 const CATEGORIES_ORDERED: SongCategory[] = ['Praise & Worship', 'Hymns', 'Contemporary', 'Gospel', 'Special'];
@@ -561,7 +561,7 @@ function SetsView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
                 label="Avg Readiness"
                 value={`${avgReadiness}%`}
                 colors={colors}
-                accent={avgReadiness >= 80 ? '#22C55E' : avgReadiness >= 60 ? '#F59E0B' : '#EF4444'}
+                accent={avgReadiness >= 80 ? '#5A8A6E' : avgReadiness >= 60 ? '#B8943E' : '#B85C5C'}
               />
             </View>
           </Card>
@@ -601,11 +601,11 @@ function SetsView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
                 <View style={[s.setReadinessTrack, { backgroundColor: colors.backgroundTertiary }]}>
                   <View style={[s.setReadinessFill, {
                     width: `${ws.readinessScore}%`,
-                    backgroundColor: ws.readinessScore >= 85 ? '#22C55E' : ws.readinessScore >= 60 ? '#F59E0B' : '#EF4444',
+                    backgroundColor: ws.readinessScore >= 85 ? '#5A8A6E' : ws.readinessScore >= 60 ? '#B8943E' : '#B85C5C',
                   }]} />
                 </View>
                 <ThemedText style={[s.setReadinessValue, {
-                  color: ws.readinessScore >= 85 ? '#22C55E' : ws.readinessScore >= 60 ? '#F59E0B' : '#EF4444',
+                  color: ws.readinessScore >= 85 ? '#5A8A6E' : ws.readinessScore >= 60 ? '#B8943E' : '#B85C5C',
                 }]}>{ws.readinessScore}%</ThemedText>
               </View>
             )}
@@ -681,7 +681,7 @@ function SetsView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
               <Pressable
                 style={({ pressed }) => [
                   s.approveButton,
-                  { backgroundColor: ws.status === 'draft' ? ACCENT : '#22C55E', opacity: pressed ? 0.8 : 1 },
+                  { backgroundColor: ws.status === 'draft' ? ACCENT : '#5A8A6E', opacity: pressed ? 0.8 : 1 },
                 ]}
                 onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
               >
@@ -733,8 +733,8 @@ function RehearsalsView({ colors, role }: { colors: typeof Colors.light; role: C
         <Card colors={colors}>
           <View style={s.kpiRow}>
             <KPIBox label="Upcoming" value={totalRehearsals} colors={colors} accent={ACCENT} />
-            <KPIBox label="Confirmed" value={totalConfirmed} colors={colors} accent="#22C55E" />
-            <KPIBox label="Pending" value={totalAttendees - totalConfirmed - REHEARSALS.reduce((sum, r) => sum + r.attendees.filter((a) => a.rsvp === 'declined').length, 0)} colors={colors} accent="#F59E0B" />
+            <KPIBox label="Confirmed" value={totalConfirmed} colors={colors} accent="#5A8A6E" />
+            <KPIBox label="Pending" value={totalAttendees - totalConfirmed - REHEARSALS.reduce((sum, r) => sum + r.attendees.filter((a) => a.rsvp === 'declined').length, 0)} colors={colors} accent="#B8943E" />
             <KPIBox label="Avg Size" value={Math.round(totalAttendees / totalRehearsals)} colors={colors} />
           </View>
         </Card>
@@ -764,16 +764,16 @@ function RehearsalsView({ colors, role }: { colors: typeof Colors.light; role: C
                 </View>
                 <View style={s.rehearsalRSVPSummary}>
                   <View style={s.rsvpSummaryRow}>
-                    <View style={[s.rsvpDot, { backgroundColor: '#22C55E' }]} />
+                    <View style={[s.rsvpDot, { backgroundColor: '#5A8A6E' }]} />
                     <ThemedText style={[s.rsvpCount, { color: colors.text }]}>{confirmed}</ThemedText>
                   </View>
                   <View style={s.rsvpSummaryRow}>
-                    <View style={[s.rsvpDot, { backgroundColor: '#F59E0B' }]} />
+                    <View style={[s.rsvpDot, { backgroundColor: '#B8943E' }]} />
                     <ThemedText style={[s.rsvpCount, { color: colors.text }]}>{pending}</ThemedText>
                   </View>
                   {declined > 0 && (
                     <View style={s.rsvpSummaryRow}>
-                      <View style={[s.rsvpDot, { backgroundColor: '#EF4444' }]} />
+                      <View style={[s.rsvpDot, { backgroundColor: '#B85C5C' }]} />
                       <ThemedText style={[s.rsvpCount, { color: colors.text }]}>{declined}</ThemedText>
                     </View>
                   )}
@@ -877,8 +877,8 @@ function TeamView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
         <Card colors={colors}>
           <View style={s.kpiRow}>
             <KPIBox label="Total" value={WORSHIP_TEAM_MEMBERS.length} colors={colors} accent={ACCENT} />
-            <KPIBox label="Active" value={activeCount} colors={colors} accent="#22C55E" />
-            <KPIBox label="On Break" value={onBreakCount} colors={colors} accent="#F59E0B" />
+            <KPIBox label="Active" value={activeCount} colors={colors} accent="#5A8A6E" />
+            <KPIBox label="On Break" value={onBreakCount} colors={colors} accent="#B8943E" />
             <KPIBox label="Training" value={trainingCount} colors={colors} accent={ACCENT} />
           </View>
         </Card>
@@ -893,9 +893,9 @@ function TeamView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
               {NEXT_SERVICE_COVERAGE.map((slot) => {
                 const isFilled = slot.filled !== null;
                 return (
-                  <View key={slot.role} style={[s.coverageCell, { backgroundColor: isFilled ? '#22C55E10' : '#EF444410', borderColor: isFilled ? '#22C55E30' : '#EF444430' }]}>
-                    <ThemedText style={[s.coverageRole, { color: isFilled ? '#22C55E' : '#EF4444' }]}>{slot.role}</ThemedText>
-                    <ThemedText style={[s.coverageName, { color: isFilled ? colors.text : '#EF4444' }]} numberOfLines={1}>
+                  <View key={slot.role} style={[s.coverageCell, { backgroundColor: isFilled ? '#5A8A6E10' : '#B85C5C10', borderColor: isFilled ? '#5A8A6E30' : '#B85C5C30' }]}>
+                    <ThemedText style={[s.coverageRole, { color: isFilled ? '#5A8A6E' : '#B85C5C' }]}>{slot.role}</ThemedText>
+                    <ThemedText style={[s.coverageName, { color: isFilled ? colors.text : '#B85C5C' }]} numberOfLines={1}>
                       {slot.filled ?? 'OPEN'}
                     </ThemedText>
                   </View>
@@ -906,7 +906,7 @@ function TeamView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
               <ThemedText style={[s.coverageSummaryText, { color: colors.textTertiary }]}>
                 {NEXT_SERVICE_COVERAGE.filter((s2) => s2.filled).length}/{NEXT_SERVICE_COVERAGE.length} filled
               </ThemedText>
-              <ThemedText style={[s.coverageSummaryText, { color: '#EF4444' }]}>
+              <ThemedText style={[s.coverageSummaryText, { color: '#B85C5C' }]}>
                 {NEXT_SERVICE_COVERAGE.filter((s2) => !s2.filled).length} open
               </ThemedText>
             </View>
@@ -1030,7 +1030,7 @@ function LibraryView({ colors, role }: { colors: typeof Colors.light; role: Chur
             <KPIBox label="Total Songs" value={totalSongs} colors={colors} accent={ACCENT} />
             <KPIBox label="Categories" value={CATEGORIES_ORDERED.length} colors={colors} />
             <KPIBox label="Total Plays" value={totalPlays} colors={colors} accent={ACCENT} />
-            <KPIBox label="Avg Rating" value={avgRating} colors={colors} accent="#F59E0B" />
+            <KPIBox label="Avg Rating" value={avgRating} colors={colors} accent="#B8943E" />
           </View>
         </Card>
       </View>
@@ -1109,8 +1109,8 @@ function LibraryView({ colors, role }: { colors: typeof Colors.light; role: Chur
                           </View>
                         )}
                         {song.hasLyrics && (
-                          <View style={[s.libraryAssetBadge, { backgroundColor: '#22C55E20' }]}>
-                            <ThemedText style={[s.libraryAssetText, { color: '#22C55E' }]}>Lyrics</ThemedText>
+                          <View style={[s.libraryAssetBadge, { backgroundColor: '#5A8A6E20' }]}>
+                            <ThemedText style={[s.libraryAssetText, { color: '#5A8A6E' }]}>Lyrics</ThemedText>
                           </View>
                         )}
                         {song.hasStems && (
@@ -1131,8 +1131,8 @@ function LibraryView({ colors, role }: { colors: typeof Colors.light; role: Chur
                           {song.timesPlayed} plays
                         </ThemedText>
                         <View style={s.libraryRatingRow}>
-                          <IconSymbol name="star.fill" size={10} color="#F59E0B" />
-                          <ThemedText style={[s.librarySongRating, { color: '#F59E0B' }]}>
+                          <IconSymbol name="star.fill" size={10} color="#B8943E" />
+                          <ThemedText style={[s.librarySongRating, { color: '#B8943E' }]}>
                             {song.avgRating.toFixed(1)}
                           </ThemedText>
                         </View>

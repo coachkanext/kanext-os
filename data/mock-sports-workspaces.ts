@@ -70,9 +70,9 @@ export interface FilmNote {
 
 export function getWorkspaceStatusColor(status: WorkspaceStatus): string {
   switch (status) {
-    case 'active': return '#22C55E';
-    case 'draft': return '#F59E0B';
-    case 'archived': return '#A1A1AA';
+    case 'active': return '#5A8A6E';
+    case 'draft': return '#B8943E';
+    case 'archived': return '#9C9790';
   }
 }
 
@@ -86,10 +86,10 @@ export function getWorkspaceStatusLabel(status: WorkspaceStatus): string {
 
 export function getAssignmentStatusColor(status: AssignmentStatus): string {
   switch (status) {
-    case 'not_started': return '#A1A1AA';
-    case 'in_progress': return '#1D9BF0';
-    case 'completed': return '#22C55E';
-    case 'overdue': return '#EF4444';
+    case 'not_started': return '#9C9790';
+    case 'in_progress': return '#1A1714';
+    case 'completed': return '#5A8A6E';
+    case 'overdue': return '#B85C5C';
   }
 }
 
@@ -112,9 +112,9 @@ export function getNoteTypeLabel(type: FilmNoteType): string {
 
 export function getNoteTypeColor(type: FilmNoteType): string {
   switch (type) {
-    case 'timestamp': return '#1D9BF0';
-    case 'clip': return '#1D9BF0';
-    case 'series': return '#F59E0B';
+    case 'timestamp': return '#1A1714';
+    case 'clip': return '#1A1714';
+    case 'series': return '#B8943E';
   }
 }
 
@@ -130,14 +130,14 @@ export const MOCK_WORKSPACES: Workspace[] = [
     owner: 'Coach Carter',
     ownerInitials: 'SK',
     participants: [
-      { initials: 'AM', color: '#1D9BF0' },
+      { initials: 'AM', color: '#1A1714' },
       { initials: 'LC', color: '#0B0F14' },
       { initials: 'DW', color: '#0B0F14' },
     ],
     linkedObjects: ['MSU-Northern Christian', 'Feb 21 Game'],
     clipCount: 34,
     lastActivity: '2h ago',
-    colorStrip: '#EF4444',
+    colorStrip: '#B85C5C',
     rbacSection: 'filmroom_workspaces',
   },
   {
@@ -147,14 +147,14 @@ export const MOCK_WORKSPACES: Workspace[] = [
     owner: 'Coach Carter',
     ownerInitials: 'SK',
     participants: [
-      { initials: 'AM', color: '#1D9BF0' },
+      { initials: 'AM', color: '#1A1714' },
       { initials: 'MT', color: '#0B0F14' },
       { initials: 'JC', color: '#0B0F14' },
     ],
     linkedObjects: ['vs SW Assemblies', 'W 78-65'],
     clipCount: 48,
     lastActivity: '6h ago',
-    colorStrip: '#22C55E',
+    colorStrip: '#5A8A6E',
     rbacSection: 'filmroom_workspaces',
   },
   {
@@ -165,12 +165,12 @@ export const MOCK_WORKSPACES: Workspace[] = [
     ownerInitials: 'CL',
     participants: [
       { initials: 'CL', color: '#0B0F14' },
-      { initials: 'AM', color: '#1D9BF0' },
+      { initials: 'AM', color: '#1A1714' },
     ],
     linkedObjects: ['Motion v2', 'Horns Entry'],
     clipCount: 22,
     lastActivity: '1d ago',
-    colorStrip: '#1D9BF0',
+    colorStrip: '#1A1714',
     rbacSection: 'filmroom_workspaces',
   },
   {
@@ -181,13 +181,13 @@ export const MOCK_WORKSPACES: Workspace[] = [
     ownerInitials: 'CD',
     participants: [
       { initials: 'CD', color: '#0B0F14' },
-      { initials: 'AM', color: '#1D9BF0' },
+      { initials: 'AM', color: '#1A1714' },
       { initials: 'CL', color: '#0B0F14' },
     ],
     linkedObjects: ['2-3 Zone', 'Switch Rules'],
     clipCount: 18,
     lastActivity: '1d ago',
-    colorStrip: '#1D9BF0',
+    colorStrip: '#1A1714',
     rbacSection: 'filmroom_workspaces',
   },
   {
@@ -203,7 +203,7 @@ export const MOCK_WORKSPACES: Workspace[] = [
     linkedObjects: ['Jaylen Carter', 'Finishing'],
     clipCount: 15,
     lastActivity: '2d ago',
-    colorStrip: '#F59E0B',
+    colorStrip: '#B8943E',
     rbacSection: 'filmroom_workspaces',
   },
   {
@@ -213,12 +213,12 @@ export const MOCK_WORKSPACES: Workspace[] = [
     owner: 'Coach Carter',
     ownerInitials: 'SK',
     participants: [
-      { initials: 'AM', color: '#1D9BF0' },
+      { initials: 'AM', color: '#1A1714' },
     ],
     linkedObjects: ['Fast Break', 'Secondary Break'],
     clipCount: 8,
     lastActivity: '3d ago',
-    colorStrip: '#A1A1AA',
+    colorStrip: '#9C9790',
     rbacSection: 'filmroom_workspaces',
   },
   {
@@ -229,12 +229,12 @@ export const MOCK_WORKSPACES: Workspace[] = [
     ownerInitials: 'CD',
     participants: [
       { initials: 'CD', color: '#0B0F14' },
-      { initials: 'AM', color: '#1D9BF0' },
+      { initials: 'AM', color: '#1A1714' },
     ],
     linkedObjects: ['2-2-1 Break', '1-2-2 Break'],
     clipCount: 12,
     lastActivity: '4d ago',
-    colorStrip: '#1D9BF0',
+    colorStrip: '#1A1714',
     rbacSection: 'filmroom_workspaces',
   },
   {
@@ -244,14 +244,14 @@ export const MOCK_WORKSPACES: Workspace[] = [
     owner: 'Coach Carter',
     ownerInitials: 'SK',
     participants: [
-      { initials: 'AM', color: '#1D9BF0' },
+      { initials: 'AM', color: '#1A1714' },
       { initials: 'CL', color: '#0B0F14' },
       { initials: 'CD', color: '#0B0F14' },
     ],
     linkedObjects: ['ATO', 'SLOB', 'BLOB'],
     clipCount: 28,
     lastActivity: '1w ago',
-    colorStrip: '#A1A1AA',
+    colorStrip: '#9C9790',
     rbacSection: 'filmroom_workspaces',
   },
 ];
@@ -358,7 +358,7 @@ export const MOCK_FILM_ASSIGNMENTS: FilmAssignment[] = [
     id: 'fa-2',
     title: 'Review Own Defensive Possessions vs SWA',
     assignedTo: [
-      { name: 'Devon Williams', initials: 'DW', color: '#1D9BF0' },
+      { name: 'Devon Williams', initials: 'DW', color: '#1A1714' },
     ],
     dueDate: 'Feb 16',
     isOverdue: true,
@@ -387,7 +387,7 @@ export const MOCK_FILM_ASSIGNMENTS: FilmAssignment[] = [
     title: 'PNR Coverage Study — ICE vs Drop',
     assignedTo: [
       { name: 'Alex Morgan', initials: 'MT', color: '#0B0F14' },
-      { name: 'Devon Williams', initials: 'DW', color: '#1D9BF0' },
+      { name: 'Devon Williams', initials: 'DW', color: '#1A1714' },
     ],
     dueDate: 'Feb 20',
     isOverdue: false,
@@ -555,7 +555,7 @@ export interface PracticeFilmItem {
 export const MOCK_PRACTICE_FILM: PracticeFilmItem[] = [
   { id: 'pf-1', date: 'Feb 18, 2026', practiceType: 'Full Practice', duration: '1:45:00', thumbnailColor: '#0B0F14', notes: 'Transition defense focus' },
   { id: 'pf-2', date: 'Feb 17, 2026', practiceType: 'Shootaround', duration: '0:45:00', thumbnailColor: '#0B0F14', notes: 'Pre-game prep vs MSU-Northern Christian' },
-  { id: 'pf-3', date: 'Feb 15, 2026', practiceType: 'Full Practice', duration: '2:00:00', thumbnailColor: '#1D9BF0', notes: '5-on-5 scrimmage + press break install' },
+  { id: 'pf-3', date: 'Feb 15, 2026', practiceType: 'Full Practice', duration: '2:00:00', thumbnailColor: '#1A1714', notes: '5-on-5 scrimmage + press break install' },
   { id: 'pf-4', date: 'Feb 13, 2026', practiceType: 'Walkthrough', duration: '0:55:00', thumbnailColor: '#0B0F14', notes: 'Motion offense v2 walkthrough' },
   { id: 'pf-5', date: 'Feb 12, 2026', practiceType: 'Individual', duration: '1:10:00', thumbnailColor: '#0B0F14', notes: 'Carter finishing drills + Thompson shooting' },
   { id: 'pf-6', date: 'Feb 10, 2026', practiceType: 'Film Session', duration: '0:40:00', thumbnailColor: '#0B0F14', notes: 'SW Assemblies post-mortem review' },

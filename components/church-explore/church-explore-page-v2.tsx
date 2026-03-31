@@ -48,11 +48,11 @@ type TypeFilter = 'All' | ChurchExploreType;
 // =============================================================================
 
 const TYPE_BADGE_COLOR: Record<ChurchExploreType, string> = {
-  Sermon: '#1D9BF0',
-  Worship: '#8B5CF6',
-  Event: '#22C55E',
-  Training: '#F59E0B',
-  Clip: '#1D9BF0',
+  Sermon: '#1A1714',
+  Worship: '#1A1714',
+  Event: '#5A8A6E',
+  Training: '#B8943E',
+  Clip: '#1A1714',
 };
 
 // =============================================================================

@@ -233,23 +233,23 @@ function OverviewTab({
   // KPI Tiles
   const healthTiles = [
     { icon: 'banknote.fill', label: 'Cash Position', value: formatCompactCurrency(truthStrip.cashPosition), color: accentColor },
-    { icon: 'lock.fill', label: 'Commitments', value: formatCompactCurrency(truthStrip.commitments), color: '#F59E0B' },
+    { icon: 'lock.fill', label: 'Commitments', value: formatCompactCurrency(truthStrip.commitments), color: '#B8943E' },
     { icon: 'arrow.down.circle.fill', label: 'Receivables', value: formatCompactCurrency(truthStrip.receivables), color: ACCENT },
-    { icon: 'arrow.up.circle.fill', label: 'Payables', value: formatCompactCurrency(truthStrip.payables), color: '#EF4444' },
-    { icon: 'exclamationmark.triangle.fill', label: 'Holds', value: String(truthStrip.holds), color: '#F59E0B' },
-    { icon: 'checkmark.shield.fill', label: 'Audit', value: `${truthStrip.auditCompleteness}%`, color: '#22C55E' },
+    { icon: 'arrow.up.circle.fill', label: 'Payables', value: formatCompactCurrency(truthStrip.payables), color: '#B85C5C' },
+    { icon: 'exclamationmark.triangle.fill', label: 'Holds', value: String(truthStrip.holds), color: '#B8943E' },
+    { icon: 'checkmark.shield.fill', label: 'Audit', value: `${truthStrip.auditCompleteness}%`, color: '#5A8A6E' },
   ];
 
   const urgencyColors: Record<string, string> = {
-    high: '#EF4444',
-    medium: '#F59E0B',
+    high: '#B85C5C',
+    medium: '#B8943E',
     low: ACCENT,
   };
 
   const getBurnColor = (burn: number): string => {
-    if (burn > 90) return '#EF4444';
-    if (burn > 80) return '#F59E0B';
-    return '#22C55E';
+    if (burn > 90) return '#B85C5C';
+    if (burn > 80) return '#B8943E';
+    return '#5A8A6E';
   };
 
   return (
@@ -293,13 +293,13 @@ function OverviewTab({
               <ThemedText style={[s.fundSnapshotAmountLabel, { color: colors.textTertiary }]}>Enrolled</ThemedText>
             </View>
             <View style={s.fundSnapshotValueItem}>
-              <ThemedText style={[s.fundSnapshotAmount, { color: '#22C55E' }]}>
+              <ThemedText style={[s.fundSnapshotAmount, { color: '#5A8A6E' }]}>
                 {formatCompactCurrency(snap.tuitionRevenue)}
               </ThemedText>
               <ThemedText style={[s.fundSnapshotAmountLabel, { color: colors.textTertiary }]}>Tuition Rev</ThemedText>
             </View>
             <View style={s.fundSnapshotValueItem}>
-              <ThemedText style={[s.fundSnapshotAmount, { color: '#F59E0B' }]}>
+              <ThemedText style={[s.fundSnapshotAmount, { color: '#B8943E' }]}>
                 {formatCompactCurrency(snap.aidDisbursed)}
               </ThemedText>
               <ThemedText style={[s.fundSnapshotAmountLabel, { color: colors.textTertiary }]}>Aid Disbursed</ThemedText>
@@ -307,7 +307,7 @@ function OverviewTab({
           </View>
           <View style={[s.fundSnapshotValues, { marginTop: Spacing.sm }]}>
             <View style={s.fundSnapshotValueItem}>
-              <ThemedText style={[s.fundSnapshotAmount, { color: snap.netPosition >= 0 ? '#22C55E' : '#EF4444' }]}>
+              <ThemedText style={[s.fundSnapshotAmount, { color: snap.netPosition >= 0 ? '#5A8A6E' : '#B85C5C' }]}>
                 {formatCompactCurrency(snap.netPosition)}
               </ThemedText>
               <ThemedText style={[s.fundSnapshotAmountLabel, { color: colors.textTertiary }]}>Net Position</ThemedText>
@@ -319,7 +319,7 @@ function OverviewTab({
               <ThemedText style={[s.fundSnapshotAmountLabel, { color: colors.textTertiary }]}>Housing Rev</ThemedText>
             </View>
             <View style={s.fundSnapshotValueItem}>
-              <ThemedText style={[s.fundSnapshotAmount, { color: '#EF4444' }]}>
+              <ThemedText style={[s.fundSnapshotAmount, { color: '#B85C5C' }]}>
                 {formatCompactCurrency(snap.operatingExpenses)}
               </ThemedText>
               <ThemedText style={[s.fundSnapshotAmountLabel, { color: colors.textTertiary }]}>Op Expenses</ThemedText>
@@ -337,7 +337,7 @@ function OverviewTab({
       </ThemedText>
 
       {needsDecision.map((item) => {
-        const dotColor = urgencyColors[item.urgency] || '#A1A1AA';
+        const dotColor = urgencyColors[item.urgency] || '#9C9790';
         return (
           <View
             key={item.id}
@@ -423,19 +423,19 @@ function OverviewTab({
 
       {exceptionRisks.map((risk) => {
         const severityColors: Record<string, string> = {
-          critical: '#EF4444',
-          warning: '#F59E0B',
+          critical: '#B85C5C',
+          warning: '#B8943E',
           info: ACCENT,
         };
-        const sevColor = severityColors[risk.severity] || '#A1A1AA';
+        const sevColor = severityColors[risk.severity] || '#9C9790';
         return (
           <View
             key={risk.id}
             style={[
               s.sectionCard,
               {
-                backgroundColor: risk.severity === 'critical' ? '#EF444408' : colors.card,
-                borderColor: risk.severity === 'critical' ? '#EF444430' : colors.border,
+                backgroundColor: risk.severity === 'critical' ? '#B85C5C08' : colors.card,
+                borderColor: risk.severity === 'critical' ? '#B85C5C30' : colors.border,
                 marginBottom: Spacing.sm,
               },
             ]}
@@ -549,7 +549,7 @@ function LedgerTruthTab({
 
           <View style={s.fundMetaRow}>
             <View style={s.fundMetaItem}>
-              <IconSymbol name="arrow.right.circle.fill" size={11} color="#22C55E" />
+              <IconSymbol name="arrow.right.circle.fill" size={11} color="#5A8A6E" />
               <ThemedText style={[s.fundMetaText, { color: colors.textTertiary }]} numberOfLines={1}>
                 DR: {item.debitAccount}
               </ThemedText>
@@ -643,15 +643,15 @@ function BudgetsTab({
 
   const getBudgetColor = (spent: number, budgeted: number): string => {
     const ratio = budgeted > 0 ? spent / budgeted : 0;
-    if (ratio > 1) return '#EF4444';
-    if (ratio >= 0.8) return '#F59E0B';
-    return '#22C55E';
+    if (ratio > 1) return '#B85C5C';
+    if (ratio >= 0.8) return '#B8943E';
+    return '#5A8A6E';
   };
 
   const getBurnColor = (burn: number): string => {
-    if (burn > 90) return '#EF4444';
-    if (burn > 80) return '#F59E0B';
-    return '#22C55E';
+    if (burn > 90) return '#B85C5C';
+    if (burn > 80) return '#B8943E';
+    return '#5A8A6E';
   };
 
   return (
@@ -722,10 +722,10 @@ function BudgetsTab({
                         {item.name}
                       </ThemedText>
                       {item.hardCap && (
-                        <StatusBadge label="HARD CAP" color="#EF4444" />
+                        <StatusBadge label="HARD CAP" color="#B85C5C" />
                       )}
                       {!item.hardCap && (
-                        <StatusBadge label="SOFT CAP" color="#F59E0B" />
+                        <StatusBadge label="SOFT CAP" color="#B8943E" />
                       )}
                     </View>
                     <ThemedText style={[s.budgetCategoryCap, { color: colors.textTertiary }]}>
@@ -737,10 +737,10 @@ function BudgetsTab({
                     <ThemedText style={[s.budgetCategoryValueText, { color: itemColor }]}>
                       Spent: {formatCurrency(item.spent)}
                     </ThemedText>
-                    <ThemedText style={[s.budgetCategoryValueText, { color: '#F59E0B' }]}>
+                    <ThemedText style={[s.budgetCategoryValueText, { color: '#B8943E' }]}>
                       Cmtd: {formatCurrency(item.committed)}
                     </ThemedText>
-                    <ThemedText style={[s.budgetCategoryValueText, { color: remaining >= 0 ? '#22C55E' : '#EF4444' }]}>
+                    <ThemedText style={[s.budgetCategoryValueText, { color: remaining >= 0 ? '#5A8A6E' : '#B85C5C' }]}>
                       Rem: {formatCurrency(remaining)}
                     </ThemedText>
                   </View>
@@ -795,11 +795,11 @@ function ReceivablesTab({
   }, [receivables, role]);
 
   const statusColors: Record<string, string> = {
-    outstanding: '#F59E0B',
+    outstanding: '#B8943E',
     partial: ACCENT,
-    paid: '#22C55E',
-    overdue: '#EF4444',
-    waived: '#A1A1AA',
+    paid: '#5A8A6E',
+    overdue: '#B85C5C',
+    waived: '#9C9790',
   };
 
   const statusLabels: Record<string, string> = {
@@ -814,7 +814,7 @@ function ReceivablesTab({
     ({ item }: { item: Receivable }) => {
       const typeColor = RECEIVABLE_TYPE_COLORS[item.type];
       const typeLabel = RECEIVABLE_TYPE_LABELS[item.type];
-      const sColor = statusColors[item.status] || '#A1A1AA';
+      const sColor = statusColors[item.status] || '#9C9790';
       const sLabel = statusLabels[item.status] || item.status;
 
       return (
@@ -836,7 +836,7 @@ function ReceivablesTab({
               <StatusBadge label={typeLabel.toUpperCase()} color={typeColor} />
               <StatusBadge label={sLabel.toUpperCase()} color={sColor} />
               {item.holdFlag && (
-                <StatusBadge label="HOLD" color="#EF4444" />
+                <StatusBadge label="HOLD" color="#B85C5C" />
               )}
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 }}>
@@ -853,8 +853,8 @@ function ReceivablesTab({
             </View>
             {item.holdFlag && item.holdReason && (
               <View style={s.holdWarning}>
-                <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#EF4444" />
-                <ThemedText style={[s.holdWarningText, { color: '#EF4444' }]} numberOfLines={2}>
+                <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#B85C5C" />
+                <ThemedText style={[s.holdWarningText, { color: '#B85C5C' }]} numberOfLines={2}>
                   {item.holdReason}
                 </ThemedText>
               </View>
@@ -901,11 +901,11 @@ function PayablesTab({
   onSelectPayable: (payable: Payable) => void;
 }) {
   const statusColors: Record<string, string> = {
-    pending: '#F59E0B',
-    approved: '#22C55E',
+    pending: '#B8943E',
+    approved: '#5A8A6E',
     scheduled: ACCENT,
-    paid: '#22C55E',
-    held: '#EF4444',
+    paid: '#5A8A6E',
+    held: '#B85C5C',
   };
 
   const statusLabels: Record<string, string> = {
@@ -922,10 +922,10 @@ function PayablesTab({
       const typeLabel = PAYABLE_TYPE_LABELS[item.type];
       const fundColor = EDU_FUND_TYPE_COLORS[item.fundType];
       const fundLabel = EDU_FUND_TYPE_LABELS[item.fundType];
-      const sColor = statusColors[item.status] || '#A1A1AA';
+      const sColor = statusColors[item.status] || '#9C9790';
       const sLabel = statusLabels[item.status] || item.status;
       const docsPct = item.docsRequired > 0 ? (item.docsComplete / item.docsRequired) * 100 : 0;
-      const docsColor = docsPct >= 100 ? '#22C55E' : docsPct >= 60 ? '#F59E0B' : '#EF4444';
+      const docsColor = docsPct >= 100 ? '#5A8A6E' : docsPct >= 60 ? '#B8943E' : '#B85C5C';
 
       return (
         <Pressable
@@ -1090,7 +1090,7 @@ function AidAwardsTab({
           <View style={{ paddingHorizontal: Spacing.md, marginBottom: Spacing.sm }}>
             {item.eligibilityRules.map((rule, i) => (
               <View key={`rule-${i}`} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginBottom: 2 }}>
-                <IconSymbol name="checkmark.circle.fill" size={11} color="#22C55E" />
+                <IconSymbol name="checkmark.circle.fill" size={11} color="#5A8A6E" />
                 <ThemedText style={{ fontSize: 11, color: colors.textSecondary, flex: 1 }}>
                   {rule}
                 </ThemedText>
@@ -1111,9 +1111,9 @@ function AidAwardsTab({
                 <IconSymbol
                   name={item.disbursed ? 'checkmark.circle.fill' : 'clock.fill'}
                   size={14}
-                  color={item.disbursed ? '#22C55E' : '#F59E0B'}
+                  color={item.disbursed ? '#5A8A6E' : '#B8943E'}
                 />
-                <ThemedText style={[s.fundValueAmount, { color: item.disbursed ? '#22C55E' : '#F59E0B' }]}>
+                <ThemedText style={[s.fundValueAmount, { color: item.disbursed ? '#5A8A6E' : '#B8943E' }]}>
                   {item.disbursed ? 'Disbursed' : 'Pending'}
                 </ThemedText>
               </View>
@@ -1124,7 +1124,7 @@ function AidAwardsTab({
           {/* Compliance Tags */}
           <View style={s.fundMetaRow}>
             {item.complianceTags.map((tag, i) => (
-              <StatusBadge key={`tag-${i}`} label={tag.toUpperCase()} color="#22C55E" />
+              <StatusBadge key={`tag-${i}`} label={tag.toUpperCase()} color="#5A8A6E" />
             ))}
           </View>
         </Pressable>
@@ -1210,7 +1210,7 @@ function ApprovalsTab({
     const fundLabel = EDU_FUND_TYPE_LABELS[item.fundType];
     const statusColor = APPROVAL_STATUS_COLORS[item.status];
     const statusLabel = APPROVAL_STATUS_LABELS[item.status];
-    const indicatorColor = queueType === 'approval' ? '#F59E0B' : ACCENT;
+    const indicatorColor = queueType === 'approval' ? '#B8943E' : ACCENT;
     const indicatorLabel = queueType === 'approval' ? 'Needs Approval' : 'Needs Release';
 
     return (
@@ -1309,10 +1309,10 @@ function AuditTab({
         const evidenceLabel = AUDIT_EVIDENCE_LABELS[entry.evidenceStatus];
         const hasPolicyException = entry.policyException;
         const cardBg = entry.evidenceStatus === 'missing' || entry.evidenceStatus === 'flagged'
-          ? '#EF444408'
+          ? '#B85C5C08'
           : colors.card;
         const cardBorder = entry.evidenceStatus === 'missing' || entry.evidenceStatus === 'flagged'
-          ? '#EF444430'
+          ? '#B85C5C30'
           : colors.border;
 
         return (
@@ -1377,8 +1377,8 @@ function AuditTab({
               {/* Policy Exception Warning */}
               {hasPolicyException && (
                 <View style={s.holdWarning}>
-                  <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
-                  <ThemedText style={[s.holdWarningText, { color: '#EF4444' }]}>
+                  <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B85C5C" />
+                  <ThemedText style={[s.holdWarningText, { color: '#B85C5C' }]}>
                     Policy Exception
                   </ThemedText>
                 </View>
@@ -1526,11 +1526,11 @@ function ReceivableDetailSheet({
   const typeLabel = RECEIVABLE_TYPE_LABELS[receivable.type];
 
   const statusColors: Record<string, string> = {
-    outstanding: '#F59E0B',
+    outstanding: '#B8943E',
     partial: ACCENT,
-    paid: '#22C55E',
-    overdue: '#EF4444',
-    waived: '#A1A1AA',
+    paid: '#5A8A6E',
+    overdue: '#B85C5C',
+    waived: '#9C9790',
   };
   const statusLabels: Record<string, string> = {
     outstanding: 'Outstanding',
@@ -1539,7 +1539,7 @@ function ReceivableDetailSheet({
     overdue: 'Overdue',
     waived: 'Waived',
   };
-  const sColor = statusColors[receivable.status] || '#A1A1AA';
+  const sColor = statusColors[receivable.status] || '#9C9790';
   const sLabel = statusLabels[receivable.status] || receivable.status;
 
   return (
@@ -1580,10 +1580,10 @@ function ReceivableDetailSheet({
       {/* Hold Section */}
       {receivable.holdFlag && (
         <View style={[s.sheetSection, { borderBottomColor: colors.border }]}>
-          <ThemedText style={[s.sheetSectionTitle, { color: '#EF4444' }]}>Financial Hold</ThemedText>
+          <ThemedText style={[s.sheetSectionTitle, { color: '#B85C5C' }]}>Financial Hold</ThemedText>
           <View style={s.holdWarning}>
-            <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#EF4444" />
-            <ThemedText style={[s.holdWarningText, { color: '#EF4444', fontSize: 13 }]}>
+            <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#B85C5C" />
+            <ThemedText style={[s.holdWarningText, { color: '#B85C5C', fontSize: 13 }]}>
               {receivable.holdReason || 'Financial hold applied to this account'}
             </ThemedText>
           </View>
@@ -1631,11 +1631,11 @@ function PayableDetailSheet({
   const fundLabel = EDU_FUND_TYPE_LABELS[payable.fundType];
 
   const statusColors: Record<string, string> = {
-    pending: '#F59E0B',
-    approved: '#22C55E',
+    pending: '#B8943E',
+    approved: '#5A8A6E',
     scheduled: ACCENT,
-    paid: '#22C55E',
-    held: '#EF4444',
+    paid: '#5A8A6E',
+    held: '#B85C5C',
   };
   const statusLabels: Record<string, string> = {
     pending: 'Pending',
@@ -1644,11 +1644,11 @@ function PayableDetailSheet({
     paid: 'Paid',
     held: 'Held',
   };
-  const sColor = statusColors[payable.status] || '#A1A1AA';
+  const sColor = statusColors[payable.status] || '#9C9790';
   const sLabel = statusLabels[payable.status] || payable.status;
 
   const docsPct = payable.docsRequired > 0 ? (payable.docsComplete / payable.docsRequired) * 100 : 0;
-  const docsColor = docsPct >= 100 ? '#22C55E' : docsPct >= 60 ? '#F59E0B' : '#EF4444';
+  const docsColor = docsPct >= 100 ? '#5A8A6E' : docsPct >= 60 ? '#B8943E' : '#B85C5C';
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title={payable.vendorName} useModal>
@@ -1786,9 +1786,9 @@ function AidAwardDetailSheet({
               <IconSymbol
                 name={award.disbursed ? 'checkmark.circle.fill' : 'clock.fill'}
                 size={14}
-                color={award.disbursed ? '#22C55E' : '#F59E0B'}
+                color={award.disbursed ? '#5A8A6E' : '#B8943E'}
               />
-              <ThemedText style={[s.sheetDetailValue, { color: award.disbursed ? '#22C55E' : '#F59E0B' }]}>
+              <ThemedText style={[s.sheetDetailValue, { color: award.disbursed ? '#5A8A6E' : '#B8943E' }]}>
                 {award.disbursed ? 'Disbursed' : 'Pending'}
               </ThemedText>
             </View>
@@ -1802,7 +1802,7 @@ function AidAwardDetailSheet({
         <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Eligibility Rules</ThemedText>
         {award.eligibilityRules.map((rule, i) => (
           <View key={`rule-${i}`} style={s.sheetListRow}>
-            <IconSymbol name="checkmark.circle.fill" size={14} color="#22C55E" />
+            <IconSymbol name="checkmark.circle.fill" size={14} color="#5A8A6E" />
             <View style={s.sheetListTextCol}>
               <ThemedText style={[s.sheetListTitle, { color: colors.text }]}>{rule}</ThemedText>
             </View>
@@ -1815,7 +1815,7 @@ function AidAwardDetailSheet({
         <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Compliance</ThemedText>
         <View style={s.sheetBadgeRow}>
           {award.complianceTags.map((tag, i) => (
-            <StatusBadge key={`ctag-${i}`} label={tag.toUpperCase()} color="#22C55E" />
+            <StatusBadge key={`ctag-${i}`} label={tag.toUpperCase()} color="#5A8A6E" />
           ))}
         </View>
       </View>
@@ -2827,7 +2827,7 @@ const s = StyleSheet.create({
     gap: 6,
     marginTop: Spacing.sm,
     padding: Spacing.sm,
-    backgroundColor: '#EF444410',
+    backgroundColor: '#B85C5C10',
     borderRadius: BorderRadius.md,
   },
   holdWarningText: {

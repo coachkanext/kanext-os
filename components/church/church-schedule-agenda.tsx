@@ -61,11 +61,11 @@ interface DaySection {
 // =============================================================================
 
 const TYPE_CONFIG: Record<AgendaEventType, { label: string; color: string; icon: IconSymbolName }> = {
-  SERVICE: { label: 'Service', color: '#1D9BF0', icon: 'play.circle.fill' },
-  MINISTRY: { label: 'Ministry', color: '#22C55E', icon: 'heart.fill' },
-  OUTREACH: { label: 'Outreach', color: '#F59E0B', icon: 'hand.raised.fill' },
-  MEETING: { label: 'Meeting', color: '#8B5CF6', icon: 'person.3.fill' },
-  OTHER: { label: 'Event', color: '#A1A1AA', icon: 'calendar' },
+  SERVICE: { label: 'Service', color: '#1A1714', icon: 'play.circle.fill' },
+  MINISTRY: { label: 'Ministry', color: '#5A8A6E', icon: 'heart.fill' },
+  OUTREACH: { label: 'Outreach', color: '#B8943E', icon: 'hand.raised.fill' },
+  MEETING: { label: 'Meeting', color: '#1A1714', icon: 'person.3.fill' },
+  OTHER: { label: 'Event', color: '#9C9790', icon: 'calendar' },
 };
 
 const DAY_NAMES = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
@@ -289,7 +289,7 @@ export function ChurchScheduleAgenda({ colors, accent }: Props) {
         contentContainerStyle={s.listContent}
         ListEmptyComponent={
           <View style={s.empty}>
-            <IconSymbol name="calendar" size={32} color="#A1A1AA" />
+            <IconSymbol name="calendar" size={32} color="#9C9790" />
             <ThemedText style={[s.emptyTitle, { color: colors.text }]}>No Events</ThemedText>
             <ThemedText style={[s.emptyDesc, { color: colors.textSecondary }]}>
               There are no scheduled events for your campus.

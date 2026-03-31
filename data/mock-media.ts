@@ -64,7 +64,7 @@ const SPORTS_BROWSE: BrowseCategory[] = [
     id: 'sb-live',
     label: 'Live Now',
     videos: [
-      { id: 'sbv-1', title: 'Carroll vs Campbell — LIVE', creator: 'Fighting Saints TV', creatorInitials: 'FS', thumbnailColor: '#EF4444', thumbnailUrl: u('photo-1546519638-68e109498ffc'), duration: 0, viewCount: 1240, timestamp: 'Streaming now', isLive: true },
+      { id: 'sbv-1', title: 'Carroll vs Campbell — LIVE', creator: 'Fighting Saints TV', creatorInitials: 'FS', thumbnailColor: '#B85C5C', thumbnailUrl: u('photo-1546519638-68e109498ffc'), duration: 0, viewCount: 1240, timestamp: 'Streaming now', isLive: true },
       { id: 'sbv-2', title: 'Halftime Show — Marching Band', creator: 'Carroll Athletics', creatorInitials: 'CA', thumbnailColor: '#0B0F14', thumbnailUrl: u('photo-1471295253337-3ceaaedca402'), duration: 0, viewCount: 430, timestamp: 'Streaming now', isLive: true },
     ],
   },
@@ -73,7 +73,7 @@ const SPORTS_BROWSE: BrowseCategory[] = [
     label: 'Your Team',
     videos: [
       { id: 'sbv-3', title: 'Marcus Johnson 22-pt Performance', creator: 'Carroll Athletics', creatorInitials: 'CA', thumbnailColor: '#0B0F14', thumbnailUrl: u('photo-1504450758481-7338eba7524a'), duration: 194, viewCount: 2340, timestamp: '3 days ago' },
-      { id: 'sbv-4', title: 'Deon Williams Block Party', creator: 'Carroll Athletics', creatorInitials: 'CA', thumbnailColor: '#EF4444', thumbnailUrl: u('photo-1519861531473-9200262188bf'), duration: 87, viewCount: 1890, timestamp: '1 week ago' },
+      { id: 'sbv-4', title: 'Deon Williams Block Party', creator: 'Carroll Athletics', creatorInitials: 'CA', thumbnailColor: '#B85C5C', thumbnailUrl: u('photo-1519861531473-9200262188bf'), duration: 87, viewCount: 1890, timestamp: '1 week ago' },
       { id: 'sbv-5', title: 'Tyler Roberts — Playmaking Cuts', creator: 'Carroll Athletics', creatorInitials: 'CA', thumbnailColor: '#0B0F14', thumbnailUrl: u('photo-1574623452334-9e0bd3668cae'), duration: 154, viewCount: 1560, timestamp: '2 weeks ago' },
       { id: 'sbv-6', title: 'Top 10 Plays — January', creator: 'Carroll Athletics', creatorInitials: 'CA', thumbnailColor: '#0B0F14', thumbnailUrl: u('photo-1608245449230-4ac19066d2d0'), duration: 180, viewCount: 4120, timestamp: '3 weeks ago' },
     ],
@@ -82,10 +82,10 @@ const SPORTS_BROWSE: BrowseCategory[] = [
     id: 'sb-trending',
     label: 'Trending',
     videos: [
-      { id: 'sbv-7', title: 'Conference Tournament Preview', creator: 'Big South Network', creatorInitials: 'BS', thumbnailColor: '#1D9BF0', thumbnailUrl: u('photo-1540747913346-19e32dc3e97e'), duration: 720, viewCount: 12400, timestamp: '1 day ago' },
+      { id: 'sbv-7', title: 'Conference Tournament Preview', creator: 'Big South Network', creatorInitials: 'BS', thumbnailColor: '#1A1714', thumbnailUrl: u('photo-1540747913346-19e32dc3e97e'), duration: 720, viewCount: 12400, timestamp: '1 day ago' },
       { id: 'sbv-8', title: 'March Madness Bracket Breakdown', creator: 'NCAA', creatorInitials: 'NC', thumbnailColor: '#0B0F14', thumbnailUrl: u('photo-1587280501635-68a0e82cd5ff'), duration: 1200, viewCount: 89000, timestamp: '2 days ago' },
       { id: 'sbv-9', title: 'Transition Defense Masterclass', creator: 'Coaching Clinic', creatorInitials: 'CC', thumbnailColor: '#0B0F14', thumbnailUrl: u('photo-1559692048-79a3f837883d'), duration: 480, viewCount: 5600, timestamp: '4 days ago' },
-      { id: 'sbv-10', title: 'Top Dunks of the Week', creator: 'Dunk Central', creatorInitials: 'DC', thumbnailColor: '#F59E0B', thumbnailUrl: u('photo-1628779238951-be2c9f2a59f4'), duration: 300, viewCount: 34000, timestamp: '5 days ago' },
+      { id: 'sbv-10', title: 'Top Dunks of the Week', creator: 'Dunk Central', creatorInitials: 'DC', thumbnailColor: '#B8943E', thumbnailUrl: u('photo-1628779238951-be2c9f2a59f4'), duration: 300, viewCount: 34000, timestamp: '5 days ago' },
     ],
   },
   {
@@ -102,8 +102,8 @@ const SPORTS_BROWSE: BrowseCategory[] = [
     label: 'Full Games',
     videos: [
       { id: 'sbv-14', title: 'vs Coastal Carolina — Full Game', creator: 'Fighting Saints TV', creatorInitials: 'FS', thumbnailColor: '#0B0F14', thumbnailUrl: u('photo-1505666287802-931dc83948e5'), duration: 7200, viewCount: 3400, timestamp: '3 days ago' },
-      { id: 'sbv-15', title: 'vs UNC Asheville — Full Game', creator: 'Fighting Saints TV', creatorInitials: 'FS', thumbnailColor: '#1D9BF0', thumbnailUrl: u('photo-1459865264687-595d652de67e'), duration: 6840, viewCount: 2100, timestamp: '1 week ago' },
-      { id: 'sbv-16', title: 'vs Radford — Full Game', creator: 'Fighting Saints TV', creatorInitials: 'FS', thumbnailColor: '#EF4444', thumbnailUrl: u('photo-1577471488278-16eec37ffcc2'), duration: 6600, viewCount: 1800, timestamp: '2 weeks ago' },
+      { id: 'sbv-15', title: 'vs UNC Asheville — Full Game', creator: 'Fighting Saints TV', creatorInitials: 'FS', thumbnailColor: '#1A1714', thumbnailUrl: u('photo-1459865264687-595d652de67e'), duration: 6840, viewCount: 2100, timestamp: '1 week ago' },
+      { id: 'sbv-16', title: 'vs Radford — Full Game', creator: 'Fighting Saints TV', creatorInitials: 'FS', thumbnailColor: '#B85C5C', thumbnailUrl: u('photo-1577471488278-16eec37ffcc2'), duration: 6600, viewCount: 1800, timestamp: '2 weeks ago' },
     ],
   },
   {
@@ -122,7 +122,7 @@ const SPORTS_FEATURED: BrowseVideo = {
   title: 'Carroll vs Campbell — LIVE',
   creator: 'Fighting Saints TV',
   creatorInitials: 'FS',
-  thumbnailColor: '#EF4444',
+  thumbnailColor: '#B85C5C',
   thumbnailUrl: u('photo-1504450758481-7338eba7524a', 800, 400),
   duration: 0,
   viewCount: 1240,
@@ -139,7 +139,7 @@ const CHURCH_BROWSE: BrowseCategory[] = [
     id: 'cb-live',
     label: 'Live Now',
     videos: [
-      { id: 'cbv-1', title: 'Sunday Service — LIVE', creator: '2819 Church', creatorInitials: '28', thumbnailColor: '#EF4444', thumbnailUrl: u('photo-1438032005730-c779502df39b'), duration: 0, viewCount: 320, timestamp: 'Streaming now', isLive: true },
+      { id: 'cbv-1', title: 'Sunday Service — LIVE', creator: '2819 Church', creatorInitials: '28', thumbnailColor: '#B85C5C', thumbnailUrl: u('photo-1438032005730-c779502df39b'), duration: 0, viewCount: 320, timestamp: 'Streaming now', isLive: true },
     ],
   },
   {
@@ -158,7 +158,7 @@ const CHURCH_BROWSE: BrowseCategory[] = [
     videos: [
       { id: 'cbv-6', title: 'Don\'t Quit — 1 Min Encouragement', creator: 'Pastor Mitchell', creatorInitials: 'PM', thumbnailColor: '#0B0F14', thumbnailUrl: u('photo-1470071459604-3b5ec3a7fe05'), duration: 60, viewCount: 6120, timestamp: '4 days ago' },
       { id: 'cbv-7', title: 'Easter Worship Prep — BTS', creator: '2819 Worship', creatorInitials: '2W', thumbnailColor: '#0B0F14', thumbnailUrl: u('photo-1508672019048-805c876b67e2'), duration: 180, viewCount: 1450, timestamp: '2 days ago' },
-      { id: 'cbv-8', title: 'Community Outreach Recap', creator: '2819 Church', creatorInitials: '28', thumbnailColor: '#22C55E', thumbnailUrl: u('photo-1469571486292-0ba58a3f068b'), duration: 420, viewCount: 1980, timestamp: '1 week ago' },
+      { id: 'cbv-8', title: 'Community Outreach Recap', creator: '2819 Church', creatorInitials: '28', thumbnailColor: '#5A8A6E', thumbnailUrl: u('photo-1469571486292-0ba58a3f068b'), duration: 420, viewCount: 1980, timestamp: '1 week ago' },
     ],
   },
   {
@@ -193,7 +193,7 @@ const CHURCH_FEATURED: BrowseVideo = {
   title: 'Sunday Service — LIVE',
   creator: '2819 Church',
   creatorInitials: '28',
-  thumbnailColor: '#0081CA',
+  thumbnailColor: '#1A1714',
   thumbnailUrl: u('photo-1438032005730-c779502df39b', 800, 400),
   duration: 0,
   viewCount: 320,
@@ -210,7 +210,7 @@ const EDUCATION_BROWSE: BrowseCategory[] = [
     id: 'eb-live',
     label: 'Live Now',
     videos: [
-      { id: 'ebv-1', title: 'CS 401 — Machine Learning (Live)', creator: 'Prof. Adebayo', creatorInitials: 'PA', thumbnailColor: '#EF4444', thumbnailUrl: u('photo-1517694712202-14dd9538aa97'), duration: 0, viewCount: 89, timestamp: 'Streaming now', isLive: true },
+      { id: 'ebv-1', title: 'CS 401 — Machine Learning (Live)', creator: 'Prof. Adebayo', creatorInitials: 'PA', thumbnailColor: '#B85C5C', thumbnailUrl: u('photo-1517694712202-14dd9538aa97'), duration: 0, viewCount: 89, timestamp: 'Streaming now', isLive: true },
     ],
   },
   {
@@ -265,7 +265,7 @@ const EDUCATION_FEATURED: BrowseVideo = {
   title: 'Solo Flight Day — 6 Cadets Soar',
   creator: 'Howard Aviation Program',
   creatorInitials: 'HA',
-  thumbnailColor: '#003A63',
+  thumbnailColor: '#1A1714',
   thumbnailUrl: u('photo-1540962351504-03099e0a754b', 800, 400),
   duration: 525,
   viewCount: 3400,
@@ -281,7 +281,7 @@ const BUSINESS_BROWSE: BrowseCategory[] = [
     id: 'bb-live',
     label: 'Live Now',
     videos: [
-      { id: 'bbv-1', title: 'All-Hands — February (Live)', creator: 'Valuetainment', creatorInitials: 'VT', thumbnailColor: '#EF4444', thumbnailUrl: u('photo-1515187029135-18ee286d815b'), duration: 0, viewCount: 32, timestamp: 'Streaming now', isLive: true },
+      { id: 'bbv-1', title: 'All-Hands — February (Live)', creator: 'Valuetainment', creatorInitials: 'VT', thumbnailColor: '#B85C5C', thumbnailUrl: u('photo-1515187029135-18ee286d815b'), duration: 0, viewCount: 32, timestamp: 'Streaming now', isLive: true },
     ],
   },
   {
@@ -334,7 +334,7 @@ const BUSINESS_FEATURED: BrowseVideo = {
   title: 'Valuetainment V2 — Full Product Demo',
   creator: 'Product Team',
   creatorInitials: 'PT',
-  thumbnailColor: '#1D9BF0',
+  thumbnailColor: '#1A1714',
   thumbnailUrl: u('photo-1531482615713-2afd69097998', 800, 400),
   duration: 900,
   viewCount: 2100,
@@ -364,16 +364,16 @@ export const FEATURED_BY_MODE: Record<Mode, BrowseVideo> = {
 // =============================================================================
 
 export const PLAYLISTS: PlaylistItem[] = [
-  { id: 'pl-1', name: 'Favorites', videoCount: 24, thumbnailColors: ['#EF4444', '#1D9BF0', '#0B0F14', '#22C55E'] },
-  { id: 'pl-2', name: 'Watch Later', videoCount: 12, thumbnailColors: ['#0B0F14', '#F59E0B', '#0B0F14', '#1D9BF0'] },
-  { id: 'pl-3', name: 'Coaching Film', videoCount: 18, thumbnailColors: ['#0B0F14', '#0B0F14', '#EF4444', '#0B0F14'] },
-  { id: 'pl-4', name: 'Top Plays', videoCount: 8, thumbnailColors: ['#F59E0B', '#0B0F14', '#1D9BF0', '#EF4444'] },
-  { id: 'pl-5', name: 'Opponent Prep', videoCount: 15, thumbnailColors: ['#1D9BF0', '#22C55E', '#0B0F14', '#A1A1AA'] },
+  { id: 'pl-1', name: 'Favorites', videoCount: 24, thumbnailColors: ['#B85C5C', '#1A1714', '#0B0F14', '#5A8A6E'] },
+  { id: 'pl-2', name: 'Watch Later', videoCount: 12, thumbnailColors: ['#0B0F14', '#B8943E', '#0B0F14', '#1A1714'] },
+  { id: 'pl-3', name: 'Coaching Film', videoCount: 18, thumbnailColors: ['#0B0F14', '#0B0F14', '#B85C5C', '#0B0F14'] },
+  { id: 'pl-4', name: 'Top Plays', videoCount: 8, thumbnailColors: ['#B8943E', '#0B0F14', '#1A1714', '#B85C5C'] },
+  { id: 'pl-5', name: 'Opponent Prep', videoCount: 15, thumbnailColors: ['#1A1714', '#5A8A6E', '#0B0F14', '#9C9790'] },
 ];
 
 export const SAVED_VIDEOS: BrowseVideo[] = [
   { id: 'sv-1', title: 'Marcus Johnson 22-pt Performance', creator: 'Carroll Athletics', creatorInitials: 'CA', thumbnailColor: '#0B0F14', thumbnailUrl: u('photo-1504450758481-7338eba7524a'), duration: 194, viewCount: 2340, timestamp: '3 days ago' },
-  { id: 'sv-2', title: 'Conference Tournament Preview', creator: 'Big South Network', creatorInitials: 'BS', thumbnailColor: '#1D9BF0', thumbnailUrl: u('photo-1540747913346-19e32dc3e97e'), duration: 720, viewCount: 12400, timestamp: '1 day ago' },
+  { id: 'sv-2', title: 'Conference Tournament Preview', creator: 'Big South Network', creatorInitials: 'BS', thumbnailColor: '#1A1714', thumbnailUrl: u('photo-1540747913346-19e32dc3e97e'), duration: 720, viewCount: 12400, timestamp: '1 day ago' },
   { id: 'sv-3', title: 'Pick & Roll Execution vs Winthrop', creator: 'Coach Film', creatorInitials: 'CF', thumbnailColor: '#0B0F14', thumbnailUrl: u('photo-1475403614135-5f1aa0eb5015'), duration: 268, viewCount: 560, timestamp: '2 weeks ago' },
   { id: 'sv-4', title: 'March Madness Bracket Breakdown', creator: 'NCAA', creatorInitials: 'NC', thumbnailColor: '#0B0F14', thumbnailUrl: u('photo-1587280501635-68a0e82cd5ff'), duration: 1200, viewCount: 89000, timestamp: '2 days ago' },
   { id: 'sv-5', title: 'Transition Defense Masterclass', creator: 'Coaching Clinic', creatorInitials: 'CC', thumbnailColor: '#0B0F14', thumbnailUrl: u('photo-1559692048-79a3f837883d'), duration: 480, viewCount: 5600, timestamp: '4 days ago' },

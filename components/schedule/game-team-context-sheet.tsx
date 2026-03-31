@@ -59,7 +59,7 @@ export function GameTeamContextSheet({ visible, onClose, game, team, colors, rou
             )}
           </View>
           {isCompleted && game.score && (
-            <ThemedText style={[styles.score, { color: game.score.startsWith('W') ? '#22C55E' : '#EF4444' }]}>
+            <ThemedText style={[styles.score, { color: game.score.startsWith('W') ? '#5A8A6E' : '#B85C5C' }]}>
               {game.score.replace('-', '–')}
             </ThemedText>
           )}

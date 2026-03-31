@@ -36,10 +36,10 @@ interface Props {
 }
 
 const ACCESS_COLORS: Record<string, string> = {
-  public: '#22C55E',
+  public: '#5A8A6E',
   investor: ACCENT,
   board: ACCENT,
-  founder_only: '#EF4444',
+  founder_only: '#B85C5C',
 };
 
 const ACCESS_LABELS: Record<string, string> = {
@@ -115,7 +115,7 @@ export function BizVaultFoldersView({ colors, accent }: Props) {
       {VAULT_FOLDERS.filter((f) => activeFolderIds.has(f.id)).map((folder: VaultFolder) => {
         const isExpanded = expandedId === folder.id;
         const docs = filteredDocs.filter((d: VaultDocument) => d.folderId === folder.id);
-        const accessColor = ACCESS_COLORS[folder.accessLevel] ?? '#A1A1AA';
+        const accessColor = ACCESS_COLORS[folder.accessLevel] ?? '#9C9790';
 
         return (
           <View key={folder.id}>
@@ -145,7 +145,7 @@ export function BizVaultFoldersView({ colors, accent }: Props) {
 
             {/* Expanded document list */}
             {isExpanded && docs.map((doc: VaultDocument) => {
-              const docAccessColor = ACCESS_COLORS[doc.accessLevel] ?? '#A1A1AA';
+              const docAccessColor = ACCESS_COLORS[doc.accessLevel] ?? '#9C9790';
               return (
                 <Pressable
                   key={doc.id}

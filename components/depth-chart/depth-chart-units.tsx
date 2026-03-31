@@ -336,7 +336,7 @@ function computeBestLineup(
 
 function FitBadge({ baseKR, fitKR, hideDelta }: { baseKR: number; fitKR: number; hideDelta?: boolean }) {
   const delta = fitKR - baseKR;
-  const deltaColor = delta > 0 ? '#22C55E' : delta < 0 ? '#EF4444' : TEAM_COLORS.gray;
+  const deltaColor = delta > 0 ? '#5A8A6E' : delta < 0 ? '#B85C5C' : TEAM_COLORS.gray;
   const deltaText = delta > 0 ? `+${delta}` : delta < 0 ? `${delta}` : '—';
 
   return (
@@ -1426,7 +1426,7 @@ const styles = StyleSheet.create({
   jerseyNumber: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
 
   // Player info
@@ -1507,7 +1507,7 @@ const styles = StyleSheet.create({
   krSubValue: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#A1A1AA',
+    color: '#9C9790',
     marginTop: 4,
   },
   sectionDivider: {
@@ -1662,7 +1662,7 @@ const styles = StyleSheet.create({
   keysNumberText: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   keysText: {
     fontSize: 13,
@@ -1743,7 +1743,7 @@ const styles = StyleSheet.create({
     color: '#888',
   },
   whyTagTextNeg: {
-    color: '#EF4444',
+    color: '#B85C5C',
   },
 
   // Lens Dropdown

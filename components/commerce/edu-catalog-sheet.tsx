@@ -20,9 +20,9 @@ interface Props {
 const ACCENT = MODE_ACCENT.education;
 
 const STATUS_COLORS: Record<string, string> = {
-  open: '#22C55E',
-  waitlisted: '#F59E0B',
-  closed: '#EF4444',
+  open: '#5A8A6E',
+  waitlisted: '#B8943E',
+  closed: '#B85C5C',
 };
 
 export function EduCatalogSheet({ visible, onClose, colors }: Props) {
@@ -108,7 +108,7 @@ export function EduCatalogSheet({ visible, onClose, colors }: Props) {
                     </Text>
                   </View>
                 </View>
-                <View style={[styles.statusDot, { backgroundColor: STATUS_COLORS[prog.status] ?? '#A1A1AA' }]} />
+                <View style={[styles.statusDot, { backgroundColor: STATUS_COLORS[prog.status] ?? '#9C9790' }]} />
               </View>
 
               {expanded && (

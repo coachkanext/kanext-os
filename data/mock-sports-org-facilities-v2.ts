@@ -139,13 +139,13 @@ export const FACILITY_TYPE_LABEL: Record<FacilityType, string> = {
 };
 
 export const FACILITY_TYPE_COLOR: Record<FacilityType, string> = {
-  court: '#1D9BF0',
+  court: '#1A1714',
   'weight-room': '#ef4444',
   'training-room': '#22c55e',
-  'locker-room': '#1D9BF0',
+  'locker-room': '#1A1714',
   'film-room': '#f59e0b',
-  'meeting-room': '#A1A1AA',
-  office: '#1D9BF0',
+  'meeting-room': '#9C9790',
+  office: '#1A1714',
 };
 
 export const WORK_ORDER_SEVERITY_LABEL: Record<WorkOrderSeverity, string> = {
@@ -158,8 +158,8 @@ export const WORK_ORDER_SEVERITY_LABEL: Record<WorkOrderSeverity, string> = {
 export const WORK_ORDER_SEVERITY_COLOR: Record<WorkOrderSeverity, string> = {
   urgent: '#ef4444',
   high: '#f59e0b',
-  normal: '#1D9BF0',
-  low: '#A1A1AA',
+  normal: '#1A1714',
+  low: '#9C9790',
 };
 
 export const WORK_ORDER_STATUS_LABEL: Record<WorkOrderStatus, string> = {
@@ -170,7 +170,7 @@ export const WORK_ORDER_STATUS_LABEL: Record<WorkOrderStatus, string> = {
 };
 
 export const WORK_ORDER_STATUS_COLOR: Record<WorkOrderStatus, string> = {
-  new: '#1D9BF0',
+  new: '#1A1714',
   'in-progress': '#f59e0b',
   blocked: '#ef4444',
   complete: '#22c55e',
@@ -186,12 +186,12 @@ export const GAME_DAY_CATEGORY_LABEL: Record<GameDayCategory, string> = {
 };
 
 export const GAME_DAY_CATEGORY_COLOR: Record<GameDayCategory, string> = {
-  setup: '#1D9BF0',
-  tech: '#1D9BF0',
+  setup: '#1A1714',
+  tech: '#1A1714',
   medical: '#22c55e',
   security: '#ef4444',
   officials: '#f59e0b',
-  media: '#A1A1AA',
+  media: '#9C9790',
 };
 
 export const GAME_DAY_STATUS_LABEL: Record<GameDayItemStatus, string> = {
@@ -204,7 +204,7 @@ export const GAME_DAY_STATUS_LABEL: Record<GameDayItemStatus, string> = {
 export const GAME_DAY_STATUS_COLOR: Record<GameDayItemStatus, string> = {
   ready: '#22c55e',
   'in-progress': '#f59e0b',
-  'not-started': '#A1A1AA',
+  'not-started': '#9C9790',
   blocked: '#ef4444',
 };
 

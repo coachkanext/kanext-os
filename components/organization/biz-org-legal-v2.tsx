@@ -77,11 +77,11 @@ const PIPELINE_STAGES: {
   label: string;
   color: string;
 }[] = [
-  { key: 'draft', label: 'Draft', color: '#A1A1AA' },
-  { key: 'review', label: 'Review', color: '#F59E0B' },
+  { key: 'draft', label: 'Draft', color: '#9C9790' },
+  { key: 'review', label: 'Review', color: '#B8943E' },
   { key: 'sent', label: 'Sent', color: ACCENT },
-  { key: 'executed', label: 'Executed', color: '#22C55E' },
-  { key: 'expiring', label: 'Expiring', color: '#EF4444' },
+  { key: 'executed', label: 'Executed', color: '#5A8A6E' },
+  { key: 'expiring', label: 'Expiring', color: '#B85C5C' },
 ];
 
 const SAMPLE_KEY_TERMS = [
@@ -93,15 +93,15 @@ const SAMPLE_KEY_TERMS = [
 
 const AUTHORITY_TYPES = [
   { type: 'contract_signing', label: 'Contract Signing', color: ACCENT, threshold: '$500K' },
-  { type: 'spend_approval', label: 'Spend Approval', color: '#22C55E', threshold: '$100K' },
+  { type: 'spend_approval', label: 'Spend Approval', color: '#5A8A6E', threshold: '$100K' },
   { type: 'policy_signoff', label: 'Policy Sign-off', color: ACCENT, threshold: 'N/A' },
 ];
 
 const OBLIGATION_LINKAGE: Record<string, { label: string; color: string }> = {
-  payment: { label: '\u2192 Finance', color: '#22C55E' },
+  payment: { label: '\u2192 Finance', color: '#5A8A6E' },
   compliance: { label: '\u2192 Compliance', color: ACCENT },
   deliverable: { label: '\u2192 Operations', color: ACCENT },
-  renewal: { label: '\u2192 Legal', color: '#F59E0B' },
+  renewal: { label: '\u2192 Legal', color: '#B8943E' },
 };
 
 // =============================================================================
@@ -168,13 +168,13 @@ function obligationStatusVariant(status: LegalObligation['status']): 'success' |
 function deadlineUrgencyColor(urgency: LegalDeadline['urgency']): string {
   switch (urgency) {
     case 'overdue':
-      return '#EF4444';
+      return '#B85C5C';
     case 'critical':
-      return '#F59E0B';
+      return '#B8943E';
     case 'soon':
       return ACCENT;
     case 'normal':
-      return '#22C55E';
+      return '#5A8A6E';
   }
 }
 
@@ -232,21 +232,21 @@ function OverviewTab({
       label: 'Active Agreements',
       value: String(stats.activeAgreements),
       icon: 'doc.text.fill',
-      color: '#22C55E',
+      color: '#5A8A6E',
     },
     {
       id: 'stat-2',
       label: 'Pending Signatures',
       value: String(stats.pendingSignatures),
       icon: 'pencil.line',
-      color: '#F59E0B',
+      color: '#B8943E',
     },
     {
       id: 'stat-3',
       label: 'Upcoming Obligations',
       value: String(stats.upcomingObligations),
       icon: 'exclamationmark.triangle.fill',
-      color: '#EF4444',
+      color: '#B85C5C',
     },
     {
       id: 'stat-4',
@@ -733,7 +733,7 @@ function SignaturesTab({
                   s.signatureAmountText,
                   {
                     color:
-                      item.maxAmount === 'Unlimited' ? '#22C55E' : accentColor,
+                      item.maxAmount === 'Unlimited' ? '#5A8A6E' : accentColor,
                     fontVariant: ['tabular-nums'],
                   },
                 ]}
@@ -928,7 +928,7 @@ function ObligationsTab({
                     {
                       color:
                         item.status === 'overdue'
-                          ? '#EF4444'
+                          ? '#B85C5C'
                           : colors.textSecondary,
                       fontVariant: ['tabular-nums'],
                     },
@@ -968,7 +968,7 @@ function ObligationsTab({
                     <IconSymbol
                       name="dollarsign.circle.fill"
                       size={14}
-                      color="#F59E0B"
+                      color="#B8943E"
                     />
                     <ThemedText
                       style={[
@@ -979,7 +979,7 @@ function ObligationsTab({
                       Financial Impact:{' '}
                       <ThemedText
                         style={{
-                          color: '#F59E0B',
+                          color: '#B8943E',
                           fontWeight: '700',
                           fontVariant: ['tabular-nums'],
                         }}
@@ -994,7 +994,7 @@ function ObligationsTab({
                     <IconSymbol
                       name="exclamationmark.shield.fill"
                       size={14}
-                      color="#EF4444"
+                      color="#B85C5C"
                     />
                     <ThemedText
                       style={[
@@ -1004,7 +1004,7 @@ function ObligationsTab({
                       numberOfLines={2}
                     >
                       Compliance:{' '}
-                      <ThemedText style={{ color: '#EF4444', fontWeight: '600' }}>
+                      <ThemedText style={{ color: '#B85C5C', fontWeight: '600' }}>
                         {item.complianceImpact}
                       </ThemedText>
                     </ThemedText>
@@ -1280,7 +1280,7 @@ function RequestsTab({
                     {
                       color: item.assignee
                         ? colors.textSecondary
-                        : '#F59E0B',
+                        : '#B8943E',
                     },
                   ]}
                 >

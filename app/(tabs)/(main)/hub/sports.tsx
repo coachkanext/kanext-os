@@ -42,7 +42,7 @@ const RECENT_NEWS = [
 
 const TOP_BAR_H  = 52;
 const PILL_ROW_H = 48;
-const NAVY       = '#990000';
+const NAVY       = '#1A1714';
 
 type SportsTab  = 'Overview' | 'Film Room' | 'Scouting' | 'Game Day';
 type SportsRole = 'Coach' | 'Fan';
@@ -325,8 +325,8 @@ export default function SportsHubScreen() {
               <Text style={[styles.nextVenue, { color: C.muted }]}>{nextGame.venue}</Text>
             </View>
             {nextGame.tv && (
-              <View style={[styles.tvBadge, { backgroundColor: '#1D9BF020' }]}>
-                <Text style={[styles.tvText, { color: '#1D9BF0' }]}>{nextGame.tv}</Text>
+              <View style={[styles.tvBadge, { backgroundColor: '#1A171420' }]}>
+                <Text style={[styles.tvText, { color: '#1A1714' }]}>{nextGame.tv}</Text>
               </View>
             )}
           </Pressable>
@@ -393,7 +393,7 @@ export default function SportsHubScreen() {
             {[
               { label: 'Total',     value: RECRUITS_BOARD.length.toString(),                                          color: C.label },
               { label: 'Committed', value: RECRUITS_BOARD.filter(r => ['Committed','Signed','Verbal'].includes(r.stage)).length.toString(), color: '#5A8A6E' },
-              { label: 'Offered',   value: RECRUITS_BOARD.filter(r => r.stage === 'Offered').length.toString(),       color: '#1D9BF0' },
+              { label: 'Offered',   value: RECRUITS_BOARD.filter(r => r.stage === 'Offered').length.toString(),       color: '#1A1714' },
             ].map(item => (
               <View key={item.label} style={{ flex: 1, alignItems: 'center' }}>
                 <Text style={[styles.statVal, { color: item.color, fontSize: 20 }]}>{item.value}</Text>
@@ -455,8 +455,8 @@ export default function SportsHubScreen() {
     { id: 'f2', type: 'Games',     title: 'vs Dominican University CA',   date: 'Mar 8',  duration: '1h 38m', hasIntel: true,  thumbnail: '#4a1a1a' },
     { id: 'f3', type: 'Practice',  title: 'Practice — Halfcourt O',       date: 'Mar 18', duration: '48m',    hasIntel: false, thumbnail: '#2a2a2a' },
     { id: 'f4', type: 'Practice',  title: 'Practice — Transition D',      date: 'Mar 16', duration: '52m',    hasIntel: false, thumbnail: '#2a2a2a' },
-    { id: 'f5', type: 'Playlists', title: 'Marcus Reed — PNR Actions',    date: 'Mar 20', duration: '14m',    hasIntel: true,  thumbnail: '#990000' },
-    { id: 'f6', type: 'Playlists', title: 'Holy Names Defense — Zone Sets', date: 'Mar 13', duration: '9m',   hasIntel: true,  thumbnail: '#990000' },
+    { id: 'f5', type: 'Playlists', title: 'Marcus Reed — PNR Actions',    date: 'Mar 20', duration: '14m',    hasIntel: true,  thumbnail: '#1A1714' },
+    { id: 'f6', type: 'Playlists', title: 'Holy Names Defense — Zone Sets', date: 'Mar 13', duration: '9m',   hasIntel: true,  thumbnail: '#1A1714' },
     { id: 'f7', type: 'Highlights', title: 'GAAC Tournament Highlights',  date: 'Mar 22', duration: '6m',    hasIntel: false, thumbnail: '#4a1a1a' },
     { id: 'f8', type: 'Highlights', title: 'Top Plays — Week 12',         date: 'Mar 10', duration: '4m',    hasIntel: false, thumbnail: '#4a1a1a' },
   ];
@@ -516,7 +516,7 @@ export default function SportsHubScreen() {
                 </View>
                 <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)', fontWeight: '600' }}>{item.duration}</Text>
                 {item.hasIntel && isCoach && (
-                  <View style={{ marginLeft: 'auto' as any, backgroundColor: '#3B82F6', paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6 }}>
+                  <View style={{ marginLeft: 'auto' as any, backgroundColor: '#1A1714', paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6 }}>
                     <Text style={{ fontSize: 10, color: '#fff', fontWeight: '700' }}>AI Intel</Text>
                   </View>
                 )}
@@ -592,8 +592,8 @@ export default function SportsHubScreen() {
         <View style={[styles.card, { backgroundColor: C.surface, gap: 10 }]}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <Text style={[styles.subLabel, { color: C.label }]}>{sc2.offense.systemName}</Text>
-            <View style={{ backgroundColor: '#3B82F620', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 }}>
-              <Text style={{ fontSize: 11, fontWeight: '700', color: '#3B82F6' }}>Pace {sc2.offense.pace}</Text>
+            <View style={{ backgroundColor: '#1A171420', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 }}>
+              <Text style={{ fontSize: 11, fontWeight: '700', color: '#1A1714' }}>Pace {sc2.offense.pace}</Text>
             </View>
           </View>
           <Text style={[styles.scoutDesc, { color: C.secondary }]}>{sc2.offense.description}</Text>
@@ -763,7 +763,7 @@ export default function SportsHubScreen() {
               {nextGame ? `Next: ${nextGame.opponent}` : 'Live stat tracking'}
             </Text>
           </View>
-          <View style={{ backgroundColor: '#22C55E', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8 }}>
+          <View style={{ backgroundColor: '#5A8A6E', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8 }}>
             <Text style={{ fontSize: 12, fontWeight: '700', color: '#fff' }}>Open</Text>
           </View>
         </Pressable>
@@ -773,9 +773,9 @@ export default function SportsHubScreen() {
           <View style={[styles.card, { backgroundColor: C.surface, gap: 10 }]}>
             <Text style={[sc.sectionTitle, { color: C.secondary }]}>Nexus Auto-Generate</Text>
             {[
-              { label: 'Halftime Staff Packet', icon: 'doc.text.fill' as const, color: '#F59E0B' },
-              { label: 'Postgame Staff Packet',  icon: 'doc.fill' as const,      color: '#3B82F6' },
-              { label: 'Media Game Report',      icon: 'megaphone.fill' as const, color: '#22C55E' },
+              { label: 'Halftime Staff Packet', icon: 'doc.text.fill' as const, color: '#B8943E' },
+              { label: 'Postgame Staff Packet',  icon: 'doc.fill' as const,      color: '#1A1714' },
+              { label: 'Media Game Report',      icon: 'megaphone.fill' as const, color: '#5A8A6E' },
             ].map(item => (
               <Pressable
                 key={item.label}
@@ -805,9 +805,9 @@ export default function SportsHubScreen() {
             <View key={r.id} style={[styles.card, { backgroundColor: C.surface, gap: 10 }]}>
               {/* Header */}
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <View style={[{ width: 6, height: 6, borderRadius: 3 }, { backgroundColor: isWin ? '#22C55E' : '#EF4444' }]} />
+                <View style={[{ width: 6, height: 6, borderRadius: 3 }, { backgroundColor: isWin ? '#5A8A6E' : '#B85C5C' }]} />
                 <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: C.label }}>{r.opponent}</Text>
-                <Text style={{ fontSize: 12, fontWeight: '800', color: isWin ? '#22C55E' : '#EF4444' }}>{r.result}</Text>
+                <Text style={{ fontSize: 12, fontWeight: '800', color: isWin ? '#5A8A6E' : '#B85C5C' }}>{r.result}</Text>
               </View>
               <Text style={{ fontSize: 11, color: C.secondary }}>
                 {r.date}  ·  Halftime: {r.halftimeScore}
@@ -821,15 +821,15 @@ export default function SportsHubScreen() {
                   </Pressable>
                 )}
                 {r.hasStaffPacket && isCoach && (
-                  <Pressable style={[styles.actionPill, { backgroundColor: '#3B82F622' }]}>
-                    <IconSymbol name="doc.fill" size={12} color="#3B82F6" />
-                    <Text style={{ fontSize: 11, color: '#3B82F6', fontWeight: '600' }}>Staff Packet</Text>
+                  <Pressable style={[styles.actionPill, { backgroundColor: '#1A171422' }]}>
+                    <IconSymbol name="doc.fill" size={12} color="#1A1714" />
+                    <Text style={{ fontSize: 11, color: '#1A1714', fontWeight: '600' }}>Staff Packet</Text>
                   </Pressable>
                 )}
                 {r.hasMediaReport && (
-                  <Pressable style={[styles.actionPill, { backgroundColor: '#22C55E22' }]}>
-                    <IconSymbol name="megaphone.fill" size={12} color="#22C55E" />
-                    <Text style={{ fontSize: 11, color: '#22C55E', fontWeight: '600' }}>Media Report</Text>
+                  <Pressable style={[styles.actionPill, { backgroundColor: '#5A8A6E22' }]}>
+                    <IconSymbol name="megaphone.fill" size={12} color="#5A8A6E" />
+                    <Text style={{ fontSize: 11, color: '#5A8A6E', fontWeight: '600' }}>Media Report</Text>
                   </Pressable>
                 )}
               </View>

@@ -145,7 +145,7 @@ export function CalendarWeekView({ selectedDate, events, colors, onEventPress, o
 const styles = StyleSheet.create({
   dayHeaderRow: { flexDirection: 'row', borderBottomWidth: StyleSheet.hairlineWidth, paddingBottom: 6 },
   dayHeaderCell: { flex: 1, alignItems: 'center', paddingVertical: 4 },
-  dayHeaderToday: { backgroundColor: '#EF4444', borderRadius: 8, marginHorizontal: 2 },
+  dayHeaderToday: { backgroundColor: '#B85C5C', borderRadius: 8, marginHorizontal: 2 },
   dayLabel: { fontSize: 10, fontWeight: '600', letterSpacing: 0.3 },
   dayNum: { fontSize: 14, fontWeight: '700' },
   grid: { position: 'relative', minHeight: 17 * HOUR_HEIGHT },
@@ -157,5 +157,5 @@ const styles = StyleSheet.create({
   eventTitle: { fontSize: 10, fontWeight: '600' },
   eventTime: { fontSize: 9 },
   nowLine: { position: 'absolute', left: TIME_COL_WIDTH, right: 0, flexDirection: 'row', alignItems: 'center', zIndex: 10 },
-  nowLineBar: { flex: 1, height: 1.5, backgroundColor: '#EF4444' },
+  nowLineBar: { flex: 1, height: 1.5, backgroundColor: '#B85C5C' },
 });

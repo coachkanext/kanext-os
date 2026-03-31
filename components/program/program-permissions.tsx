@@ -15,8 +15,8 @@ import type { PermissionTier } from '@/data/mock-program-v2';
 
 const TIER_COLORS: Record<PermissionTier, string> = {
   admin: '#FFFFFF',
-  coach: '#1D9BF0',
-  staff: '#F59E0B',
+  coach: '#1A1714',
+  staff: '#B8943E',
   viewer: '#52525B',
 };
 

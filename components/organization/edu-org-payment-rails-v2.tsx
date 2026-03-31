@@ -228,18 +228,18 @@ function RailsHealthStrip({
             Approvals {health.pendingApprovals}
           </ThemedText>
         </View>
-        <View style={[s.countBadge, { backgroundColor: '#22C55E20' }]}>
-          <ThemedText style={[s.countBadgeText, { color: '#22C55E' }]}>
+        <View style={[s.countBadge, { backgroundColor: '#5A8A6E20' }]}>
+          <ThemedText style={[s.countBadgeText, { color: '#5A8A6E' }]}>
             Releases {health.pendingReleases}
           </ThemedText>
         </View>
-        <View style={[s.countBadge, { backgroundColor: '#F59E0B20' }]}>
-          <ThemedText style={[s.countBadgeText, { color: '#F59E0B' }]}>
+        <View style={[s.countBadge, { backgroundColor: '#B8943E20' }]}>
+          <ThemedText style={[s.countBadgeText, { color: '#B8943E' }]}>
             In Flight {health.inFlight}
           </ThemedText>
         </View>
-        <View style={[s.countBadge, { backgroundColor: '#EF444420' }]}>
-          <ThemedText style={[s.countBadgeText, { color: '#EF4444' }]}>
+        <View style={[s.countBadge, { backgroundColor: '#B85C5C20' }]}>
+          <ThemedText style={[s.countBadgeText, { color: '#B85C5C' }]}>
             Exceptions {health.exceptions}
           </ThemedText>
         </View>
@@ -340,7 +340,7 @@ function ControlTowerTab({
                 <ThemedText
                   style={[
                     s.laneDeadline,
-                    { color: isOverdue ? '#EF4444' : colors.textTertiary },
+                    { color: isOverdue ? '#B85C5C' : colors.textTertiary },
                   ]}
                 >
                   {isOverdue ? 'OVERDUE ' : 'Due: '}{formatDate(txn.deadline)}
@@ -377,9 +377,9 @@ function ControlTowerTab({
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
       {renderLane('Needs Approval', ACCENT, needsApproval, 4)}
-      {renderLane('Ready to Release', '#22C55E', readyToRelease, 4)}
-      {renderLane('In Flight', '#F59E0B', inFlight, 4)}
-      {renderLane('Exceptions', '#EF4444', exceptions, 4)}
+      {renderLane('Ready to Release', '#5A8A6E', readyToRelease, 4)}
+      {renderLane('In Flight', '#B8943E', inFlight, 4)}
+      {renderLane('Exceptions', '#B85C5C', exceptions, 4)}
     </ScrollView>
   );
 }
@@ -430,7 +430,7 @@ function WalletsTab({
           {/* Balance breakdown */}
           <View style={[s.walletBalances, { borderTopColor: colors.border }]}>
             <View style={s.walletBalanceItem}>
-              <ThemedText style={[s.walletBalanceValue, { color: '#22C55E' }]}>
+              <ThemedText style={[s.walletBalanceValue, { color: '#5A8A6E' }]}>
                 {formatCurrency(item.available)}
               </ThemedText>
               <ThemedText style={[s.walletBalanceLabel, { color: colors.textTertiary }]}>
@@ -438,7 +438,7 @@ function WalletsTab({
               </ThemedText>
             </View>
             <View style={s.walletBalanceItem}>
-              <ThemedText style={[s.walletBalanceValue, { color: '#F59E0B' }]}>
+              <ThemedText style={[s.walletBalanceValue, { color: '#B8943E' }]}>
                 {formatCurrency(item.committed)}
               </ThemedText>
               <ThemedText style={[s.walletBalanceLabel, { color: colors.textTertiary }]}>
@@ -454,7 +454,7 @@ function WalletsTab({
               </ThemedText>
             </View>
             <View style={s.walletBalanceItem}>
-              <ThemedText style={[s.walletBalanceValue, { color: '#F59E0B' }]}>
+              <ThemedText style={[s.walletBalanceValue, { color: '#B8943E' }]}>
                 {formatCurrency(item.pendingOutflows)}
               </ThemedText>
               <ThemedText style={[s.walletBalanceLabel, { color: colors.textTertiary }]}>
@@ -489,7 +489,7 @@ function WalletsTab({
             {item.exceptionsCount > 0 && (
               <StatusBadge
                 label={`${item.exceptionsCount} EXCEPTION${item.exceptionsCount > 1 ? 'S' : ''}`}
-                color="#EF4444"
+                color="#B85C5C"
               />
             )}
             <View style={{ flex: 1 }} />
@@ -535,8 +535,8 @@ function BatchesTab({
       const stateColor = EDU_TRANSACTION_STATE_COLORS[item.state];
       const typeLabel = EDU_BATCH_TYPE_LABELS[item.type];
       const approvalColor =
-        item.approvalStatus === 'approved' ? '#22C55E' :
-        item.approvalStatus === 'partial' ? '#F59E0B' : ACCENT;
+        item.approvalStatus === 'approved' ? '#5A8A6E' :
+        item.approvalStatus === 'partial' ? '#B8943E' : ACCENT;
       return (
         <Pressable
           style={[s.batchCard, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -585,7 +585,7 @@ function BatchesTab({
               <ThemedText
                 style={[
                   s.batchDetailValue,
-                  { color: item.exceptionsCount > 0 ? '#EF4444' : colors.text },
+                  { color: item.exceptionsCount > 0 ? '#B85C5C' : colors.text },
                 ]}
               >
                 {item.exceptionsCount}
@@ -671,7 +671,7 @@ function ApprovalsTab({
             {appr.missingRequirements.length > 0 && (
               <View style={s.approvalMissing}>
                 {appr.missingRequirements.map((req, i) => (
-                  <ThemedText key={`req-${i}`} style={[s.approvalMissingText, { color: '#EF4444' }]}>
+                  <ThemedText key={`req-${i}`} style={[s.approvalMissingText, { color: '#B85C5C' }]}>
                     {'\u2022'} {req}
                   </ThemedText>
                 ))}
@@ -679,9 +679,9 @@ function ApprovalsTab({
             )}
 
             {appr.auditNote && (
-              <View style={[s.approvalAuditNote, { backgroundColor: '#F59E0B18' }]}>
-                <IconSymbol name="doc.text.fill" size={12} color="#F59E0B" />
-                <ThemedText style={[s.approvalAuditNoteText, { color: '#F59E0B' }]}>
+              <View style={[s.approvalAuditNote, { backgroundColor: '#B8943E18' }]}>
+                <IconSymbol name="doc.text.fill" size={12} color="#B8943E" />
+                <ThemedText style={[s.approvalAuditNoteText, { color: '#B8943E' }]}>
                   {appr.auditNote}
                 </ThemedText>
               </View>
@@ -692,11 +692,11 @@ function ApprovalsTab({
             </ThemedText>
 
             <View style={s.approvalActions}>
-              <View style={[s.approvalActionBadge, { backgroundColor: '#22C55E20' }]}>
-                <ThemedText style={[s.approvalActionText, { color: '#22C55E' }]}>Approve</ThemedText>
+              <View style={[s.approvalActionBadge, { backgroundColor: '#5A8A6E20' }]}>
+                <ThemedText style={[s.approvalActionText, { color: '#5A8A6E' }]}>Approve</ThemedText>
               </View>
-              <View style={[s.approvalActionBadge, { backgroundColor: '#EF444420' }]}>
-                <ThemedText style={[s.approvalActionText, { color: '#EF4444' }]}>Reject</ThemedText>
+              <View style={[s.approvalActionBadge, { backgroundColor: '#B85C5C20' }]}>
+                <ThemedText style={[s.approvalActionText, { color: '#B85C5C' }]}>Reject</ThemedText>
               </View>
             </View>
           </Pressable>
@@ -759,9 +759,9 @@ function ReleasesTab({
               </ThemedText>
             )}
             {rel.requiresSecondApprover && (
-              <View style={[s.releaseWarning, { backgroundColor: '#F59E0B18' }]}>
-                <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#F59E0B" />
-                <ThemedText style={[s.releaseWarningText, { color: '#F59E0B' }]}>
+              <View style={[s.releaseWarning, { backgroundColor: '#B8943E18' }]}>
+                <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B8943E" />
+                <ThemedText style={[s.releaseWarningText, { color: '#B8943E' }]}>
                   Requires 2nd Approver
                 </ThemedText>
               </View>
@@ -908,16 +908,16 @@ function ReturnsTab({
     resolved: 'Resolved',
   };
   const STAGE_COLORS: Record<EduRailsReturn['stage'], string> = {
-    received: '#EF4444',
-    evidence_requested: '#F59E0B',
+    received: '#B85C5C',
+    evidence_requested: '#B8943E',
     submitted: ACCENT,
-    resolved: '#22C55E',
+    resolved: '#5A8A6E',
   };
 
   const getAgingColor = (aging: number): string => {
-    if (aging > 5) return '#EF4444';
-    if (aging > 3) return '#F59E0B';
-    return '#22C55E';
+    if (aging > 5) return '#B85C5C';
+    if (aging > 3) return '#B8943E';
+    return '#5A8A6E';
   };
 
   return (
@@ -1042,7 +1042,7 @@ function ReceiptsTab({
                     <View
                       style={[
                         s.receiptChainDot,
-                        { backgroundColor: '#22C55E' },
+                        { backgroundColor: '#5A8A6E' },
                       ]}
                     >
                       <IconSymbol name="checkmark" size={8} color="#000" />
@@ -1068,7 +1068,7 @@ function ReceiptsTab({
                 <View
                   style={[
                     s.receiptChainDot,
-                    { backgroundColor: '#22C55E' },
+                    { backgroundColor: '#5A8A6E' },
                   ]}
                 >
                   <IconSymbol name="checkmark" size={8} color="#000" />
@@ -1155,13 +1155,13 @@ function AdminTab({
               <View
                 style={[
                   s.adminRowDot,
-                  { backgroundColor: proc.active ? '#22C55E' : '#EF4444' },
+                  { backgroundColor: proc.active ? '#5A8A6E' : '#B85C5C' },
                 ]}
               />
               <ThemedText style={[s.adminRowText, { color: colors.textSecondary }]}>
                 {proc.name}
               </ThemedText>
-              <ThemedText style={[s.adminRowStatus, { color: proc.active ? '#22C55E' : '#EF4444' }]}>
+              <ThemedText style={[s.adminRowStatus, { color: proc.active ? '#5A8A6E' : '#B85C5C' }]}>
                 {proc.active ? 'Active' : 'Inactive'}
               </ThemedText>
             </View>
@@ -1308,13 +1308,13 @@ function WalletDetailSheet({
         <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Balance Breakdown</ThemedText>
         <View style={s.sheetDetailsGrid}>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: '#5A8A6E' }]}>
               {formatCurrency(wallet.available)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Available</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: '#F59E0B' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: '#B8943E' }]}>
               {formatCurrency(wallet.committed)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Committed</ThemedText>
@@ -1326,7 +1326,7 @@ function WalletDetailSheet({
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Pending In</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: '#F59E0B' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: '#B8943E' }]}>
               {formatCurrency(wallet.pendingOutflows)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Pending Out</ThemedText>
@@ -1444,8 +1444,8 @@ function BatchDetailSheet({
 
   const stateColor = EDU_TRANSACTION_STATE_COLORS[batch.state];
   const approvalColor =
-    batch.approvalStatus === 'approved' ? '#22C55E' :
-    batch.approvalStatus === 'partial' ? '#F59E0B' : ACCENT;
+    batch.approvalStatus === 'approved' ? '#5A8A6E' :
+    batch.approvalStatus === 'partial' ? '#B8943E' : ACCENT;
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title={batch.name} useModal>
@@ -1486,7 +1486,7 @@ function BatchDetailSheet({
             <ThemedText
               style={[
                 s.sheetDetailValue,
-                { color: batch.exceptionsCount > 0 ? '#EF4444' : colors.text },
+                { color: batch.exceptionsCount > 0 ? '#B85C5C' : colors.text },
               ]}
             >
               {batch.exceptionsCount}
@@ -1504,9 +1504,9 @@ function BatchDetailSheet({
 
       {batch.exceptionsCount > 0 && (
         <View style={s.sheetSection}>
-          <View style={[s.releaseWarning, { backgroundColor: '#EF444418' }]}>
-            <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
-            <ThemedText style={[s.releaseWarningText, { color: '#EF4444' }]}>
+          <View style={[s.releaseWarning, { backgroundColor: '#B85C5C18' }]}>
+            <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B85C5C" />
+            <ThemedText style={[s.releaseWarningText, { color: '#B85C5C' }]}>
               {batch.exceptionsCount} exception{batch.exceptionsCount > 1 ? 's' : ''} require resolution before processing
             </ThemedText>
           </View>
@@ -1642,7 +1642,7 @@ function TransactionDetailSheet({
           {HAPPY_PATH.map((state, idx) => {
             const reached = !isException && idx <= currentIdx;
             const isCurrent = !isException && idx === currentIdx;
-            const dotColor = reached ? '#22C55E' : colors.textTertiary;
+            const dotColor = reached ? '#5A8A6E' : colors.textTertiary;
             return (
               <View key={state} style={s.stateTimelineStep}>
                 <View
@@ -1658,7 +1658,7 @@ function TransactionDetailSheet({
                   <View
                     style={[
                       s.stateTimelineLine,
-                      { backgroundColor: reached ? '#22C55E' : colors.border },
+                      { backgroundColor: reached ? '#5A8A6E' : colors.border },
                     ]}
                   />
                 )}
@@ -1702,7 +1702,7 @@ function TransactionDetailSheet({
           <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>
             {transaction.holdReason ? 'Hold Reason' : 'Fail Reason'}
           </ThemedText>
-          <ThemedText style={[s.sheetControlsText, { color: '#EF4444' }]}>
+          <ThemedText style={[s.sheetControlsText, { color: '#B85C5C' }]}>
             {transaction.holdReason || transaction.failReason}
           </ThemedText>
         </View>

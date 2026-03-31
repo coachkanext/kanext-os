@@ -38,7 +38,7 @@ export function ListChannelRow({
       }}
     >
       <View style={styles.iconCircle}>
-        <IconSymbol name={icon} size={20} color="#A1A1AA" />
+        <IconSymbol name={icon} size={20} color="#9C9790" />
       </View>
       <View style={styles.content}>
         <ThemedText style={styles.title}>{title}</ThemedText>
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 13,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   badge: {
     backgroundColor: '#FFFFFF',

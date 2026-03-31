@@ -93,11 +93,11 @@ export const INITIATIVE_STATUS_LABELS: Record<InitiativeStatus, string> = {
 };
 
 export const INITIATIVE_STATUS_COLORS: Record<InitiativeStatus, string> = {
-  on_track: '#22C55E',
-  at_risk: '#F59E0B',
-  blocked: '#EF4444',
-  completed: '#1D9BF0',
-  paused: '#A1A1AA',
+  on_track: '#5A8A6E',
+  at_risk: '#B8943E',
+  blocked: '#B85C5C',
+  completed: '#1A1714',
+  paused: '#9C9790',
 };
 
 export const WORKFLOW_STATUS_LABELS: Record<WorkflowStatus, string> = {
@@ -108,10 +108,10 @@ export const WORKFLOW_STATUS_LABELS: Record<WorkflowStatus, string> = {
 };
 
 export const WORKFLOW_STATUS_COLORS: Record<WorkflowStatus, string> = {
-  active: '#22C55E',
-  idle: '#A1A1AA',
-  bottleneck: '#EF4444',
-  completed: '#1D9BF0',
+  active: '#5A8A6E',
+  idle: '#9C9790',
+  bottleneck: '#B85C5C',
+  completed: '#1A1714',
 };
 
 export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
@@ -123,11 +123,11 @@ export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
 };
 
 export const TASK_STATUS_COLORS: Record<TaskStatus, string> = {
-  pending: '#A1A1AA',
-  in_progress: '#1D9BF0',
-  blocked: '#EF4444',
-  completed: '#22C55E',
-  overdue: '#F59E0B',
+  pending: '#9C9790',
+  in_progress: '#1A1714',
+  blocked: '#B85C5C',
+  completed: '#5A8A6E',
+  overdue: '#B8943E',
 };
 
 export const TASK_PRIORITY_LABELS: Record<TaskPriority, string> = {
@@ -138,10 +138,10 @@ export const TASK_PRIORITY_LABELS: Record<TaskPriority, string> = {
 };
 
 export const TASK_PRIORITY_COLORS: Record<TaskPriority, string> = {
-  critical: '#EF4444',
-  high: '#F59E0B',
-  normal: '#1D9BF0',
-  low: '#A1A1AA',
+  critical: '#B85C5C',
+  high: '#B8943E',
+  normal: '#1A1714',
+  low: '#9C9790',
 };
 
 export const GATE_STATUS_LABELS: Record<GateStatus, string> = {
@@ -152,10 +152,10 @@ export const GATE_STATUS_LABELS: Record<GateStatus, string> = {
 };
 
 export const GATE_STATUS_COLORS: Record<GateStatus, string> = {
-  pending: '#F59E0B',
-  approved: '#22C55E',
-  rejected: '#EF4444',
-  escalated: '#1D9BF0',
+  pending: '#B8943E',
+  approved: '#5A8A6E',
+  rejected: '#B85C5C',
+  escalated: '#1A1714',
 };
 
 export const OPS_DOMAIN_LABELS: Record<OpsDomain, string> = {
@@ -168,12 +168,12 @@ export const OPS_DOMAIN_LABELS: Record<OpsDomain, string> = {
 };
 
 export const OPS_DOMAIN_COLORS: Record<OpsDomain, string> = {
-  admissions: '#1D9BF0',
-  academics: '#1D9BF0',
-  campus: '#22C55E',
-  athletics: '#F59E0B',
-  financial: '#EF4444',
-  policies: '#1D9BF0',
+  admissions: '#1A1714',
+  academics: '#1A1714',
+  campus: '#5A8A6E',
+  athletics: '#B8943E',
+  financial: '#B85C5C',
+  policies: '#1A1714',
 };
 
 export const OPS_DOMAIN_ICONS: Record<OpsDomain, string> = {

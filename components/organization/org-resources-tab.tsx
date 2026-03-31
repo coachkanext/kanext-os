@@ -59,9 +59,9 @@ interface OrgResourcesTabProps {
 // =============================================================================
 
 const REPORT_FORMAT_COLOR: Record<ResourceReport['format'], string> = {
-  PDF: '#1D9BF0',
-  CSV: '#22C55E',
-  XLSX: '#F59E0B',
+  PDF: '#1A1714',
+  CSV: '#5A8A6E',
+  XLSX: '#B8943E',
 };
 
 // =============================================================================
@@ -94,11 +94,11 @@ function auditIcon(action: string): string {
 function auditColor(action: string): string {
   switch (action) {
     case 'resource_created':
-      return '#22C55E';
+      return '#5A8A6E';
     case 'resource_updated':
       return accent;
     case 'pack_created':
-      return '#F59E0B';
+      return '#B8943E';
     case 'template_cloned':
       return accent;
     case 'form_acknowledged':
@@ -106,11 +106,11 @@ function auditColor(action: string): string {
     case 'link_added':
       return accent;
     case 'snapshot_saved':
-      return '#EF4444';
+      return '#B85C5C';
     case 'setting_changed':
-      return '#A1A1AA';
+      return '#9C9790';
     default:
-      return '#A1A1AA';
+      return '#9C9790';
   }
 }
 
@@ -386,7 +386,7 @@ export function OrgResourcesTab({ colors, accentColor }: OrgResourcesTabProps) {
             style={[
               s.listCard,
               { backgroundColor: colors.card },
-              isDraft && { borderLeftWidth: 3, borderLeftColor: '#F59E0B' },
+              isDraft && { borderLeftWidth: 3, borderLeftColor: '#B8943E' },
             ]}
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           >

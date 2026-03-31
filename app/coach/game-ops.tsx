@@ -1060,7 +1060,7 @@ export default function GameOpsScreen() {
                   setShowEndGamePrompt(true);
                 }}
               >
-                <Text style={[styles.dropUpItemText, { color: '#EF4444' }]}>End Game</Text>
+                <Text style={[styles.dropUpItemText, { color: '#B85C5C' }]}>End Game</Text>
               </Pressable>
             </View>
           )}

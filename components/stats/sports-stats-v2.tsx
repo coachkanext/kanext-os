@@ -524,7 +524,7 @@ function KRIntelligenceView({ colors, accent, krVis }: { colors: typeof Colors.l
                   return (
                     <View style={[styles.row, { flexWrap: 'wrap', gap: 6, marginTop: 8 }]}>
                       {badges.map((b, i) => {
-                        const badgeColor = b.level === 'Gold' ? accent : b.level === 'Silver' ? '#A1A1AA' : accent;
+                        const badgeColor = b.level === 'Gold' ? accent : b.level === 'Silver' ? '#9C9790' : accent;
                         return (
                           <View key={i} style={[styles.badgeChip, { borderColor: badgeColor }]}>
                             <ThemedText style={{ fontSize: 10, fontWeight: '700', color: badgeColor }}>{b.level[0]}</ThemedText>

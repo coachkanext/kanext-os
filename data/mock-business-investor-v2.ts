@@ -613,30 +613,30 @@ export function getCategoryLabelV2(category: DocumentCategory): string {
 
 export function getStageColor(stage: string): string {
   switch (stage) {
-    case 'planning': return '#A1A1AA';
-    case 'active': return '#22C55E';
+    case 'planning': return '#9C9790';
+    case 'active': return '#5A8A6E';
     case 'completed': return '#FFFFFF';
-    case 'paused': return '#F59E0B';
-    default: return '#A1A1AA';
+    case 'paused': return '#B8943E';
+    default: return '#9C9790';
   }
 }
 
 export function getMilestoneStatusColor(status: string): string {
   switch (status) {
-    case 'completed': return '#22C55E';
+    case 'completed': return '#5A8A6E';
     case 'in_progress': return '#FFFFFF';
-    case 'blocked': return '#EF4444';
-    case 'pending': return '#A1A1AA';
-    default: return '#A1A1AA';
+    case 'blocked': return '#B85C5C';
+    case 'pending': return '#9C9790';
+    default: return '#9C9790';
   }
 }
 
 export function getRiskSeverityColor(severity: string): string {
   switch (severity) {
-    case 'critical': return '#EF4444';
-    case 'high': return '#F59E0B';
-    case 'medium': return '#F59E0B';
-    case 'low': return '#22C55E';
-    default: return '#A1A1AA';
+    case 'critical': return '#B85C5C';
+    case 'high': return '#B8943E';
+    case 'medium': return '#B8943E';
+    case 'low': return '#5A8A6E';
+    default: return '#9C9790';
   }
 }

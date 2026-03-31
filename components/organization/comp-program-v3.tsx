@@ -46,9 +46,9 @@ const RACE_CARDS: { id: string; round: string; venue: string; status: RaceStatus
 ];
 
 const RACE_STATUS_COLOR: Record<RaceStatus, string> = {
-  completed: '#22C55E',
-  next: '#F59E0B',
-  upcoming: '#A1A1AA',
+  completed: '#5A8A6E',
+  next: '#B8943E',
+  upcoming: '#9C9790',
 };
 
 const RACE_STATUS_LABEL: Record<RaceStatus, string> = {
@@ -87,11 +87,11 @@ const OPS_TASKS: { id: string; title: string; status: TaskStatus; detail: string
 ];
 
 const TASK_STATUS_COLOR: Record<TaskStatus, string> = {
-  due_soon: '#F59E0B',
-  overdue: '#EF4444',
+  due_soon: '#B8943E',
+  overdue: '#B85C5C',
   in_progress: ACCENT,
-  upcoming: '#22C55E',
-  pending: '#F59E0B',
+  upcoming: '#5A8A6E',
+  pending: '#B8943E',
 };
 
 const TASK_STATUS_LABEL: Record<TaskStatus, string> = {
@@ -188,11 +188,11 @@ function IdentityView({ colors, accentColor }: { colors: typeof Colors.light; ac
         </View>
         <View style={s.detailRow}>
           <ThemedText style={[s.detailLabel, { color: colors.textSecondary }]}>Prototypes</ThemedText>
-          <ThemedText style={[s.detailValue, { color: '#EF4444' }]}>Prohibited</ThemedText>
+          <ThemedText style={[s.detailValue, { color: '#B85C5C' }]}>Prohibited</ThemedText>
         </View>
         <View style={[s.detailRow, { borderBottomWidth: 0 }]}>
           <ThemedText style={[s.detailLabel, { color: colors.textSecondary }]}>Balance of Performance</ThemedText>
-          <ThemedText style={[s.detailValue, { color: '#EF4444' }]}>None</ThemedText>
+          <ThemedText style={[s.detailValue, { color: '#B85C5C' }]}>None</ThemedText>
         </View>
       </View>
 
@@ -318,8 +318,8 @@ function SeasonView({ colors, accentColor }: { colors: typeof Colors.light; acce
           )}
           {race.status === 'next' && (
             <View style={s.raceCountdown}>
-              <IconSymbol name="timer" size={12} color="#F59E0B" />
-              <ThemedText style={[s.countdownText, { color: '#F59E0B' }]}>Countdown active</ThemedText>
+              <IconSymbol name="timer" size={12} color="#B8943E" />
+              <ThemedText style={[s.countdownText, { color: '#B8943E' }]}>Countdown active</ThemedText>
             </View>
           )}
         </Pressable>
@@ -356,7 +356,7 @@ function OperationsView({ colors, accentColor }: { colors: typeof Colors.light; 
             <ThemedText style={[s.listRowTitle, { color: colors.text }]} numberOfLines={1}>
               {item.title}
             </ThemedText>
-            <StatusBadge label={item.type.toUpperCase()} color="#F59E0B" />
+            <StatusBadge label={item.type.toUpperCase()} color="#B8943E" />
           </View>
         </View>
       ))}
@@ -377,7 +377,7 @@ function OperationsView({ colors, accentColor }: { colors: typeof Colors.light; 
             <IconSymbol
               name={item.done ? 'checkmark.circle.fill' : 'circle.fill'}
               size={16}
-              color={item.done ? '#22C55E' : colors.textTertiary}
+              color={item.done ? '#5A8A6E' : colors.textTertiary}
             />
             <ThemedText style={[s.checklistText, { color: item.done ? colors.textSecondary : colors.text }]}>
               {item.item}

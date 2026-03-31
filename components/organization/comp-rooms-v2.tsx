@@ -66,14 +66,14 @@ function fileTypeIcon(type: RoomFile['type']): string {
 function fileTypeColor(type: RoomFile['type']): string {
   switch (type) {
     case 'document': return ACCENT;
-    case 'image': return '#22C55E';
-    case 'video': return '#EF4444';
-    case 'spreadsheet': return '#F59E0B';
+    case 'image': return '#5A8A6E';
+    case 'video': return '#B85C5C';
+    case 'spreadsheet': return '#B8943E';
   }
 }
 
 function changeDirectionColor(dir: 'up' | 'down' | 'flat'): string {
-  return dir === 'up' ? '#22C55E' : dir === 'down' ? '#EF4444' : '#A1A1AA';
+  return dir === 'up' ? '#5A8A6E' : dir === 'down' ? '#B85C5C' : '#9C9790';
 }
 
 function changeDirectionArrow(dir: 'up' | 'down' | 'flat'): string {
@@ -140,12 +140,12 @@ function DashboardTab({
   data: ReturnType<typeof getCompRoomsData>;
 }) {
   const breakdownRows: { label: string; count: number; color: string }[] = [
-    { label: 'War Rooms', count: data.warRooms.length, color: '#EF4444' },
-    { label: 'Broadcast', count: data.broadcastRooms.length, color: '#F59E0B' },
+    { label: 'War Rooms', count: data.warRooms.length, color: '#B85C5C' },
+    { label: 'Broadcast', count: data.broadcastRooms.length, color: '#B8943E' },
     { label: 'Officials', count: data.officialRooms.length, color: ACCENT },
     { label: 'Media', count: data.mediaRooms.length, color: ACCENT },
-    { label: 'VIP', count: data.vipRooms.length, color: '#22C55E' },
-    { label: 'Operations', count: data.opsRooms.length, color: '#A1A1AA' },
+    { label: 'VIP', count: data.vipRooms.length, color: '#5A8A6E' },
+    { label: 'Operations', count: data.opsRooms.length, color: '#9C9790' },
   ];
 
   return (
@@ -357,13 +357,13 @@ function BroadcastTab({
                 <View
                   style={[
                     s.roomIcon,
-                    { backgroundColor: item.isLive ? '#EF444420' : stColor + '20' },
+                    { backgroundColor: item.isLive ? '#B85C5C20' : stColor + '20' },
                   ]}
                 >
                   <IconSymbol
                     name="antenna.radiowaves.left.and.right"
                     size={20}
-                    color={item.isLive ? '#EF4444' : stColor}
+                    color={item.isLive ? '#B85C5C' : stColor}
                   />
                 </View>
                 <View style={s.roomMid}>
@@ -371,7 +371,7 @@ function BroadcastTab({
                     {item.name}
                   </ThemedText>
                   <View style={s.roomBadges}>
-                    {item.isLive && <StatusBadge label="LIVE" color="#EF4444" />}
+                    {item.isLive && <StatusBadge label="LIVE" color="#B85C5C" />}
                     <StatusBadge label={item.status.toUpperCase()} color={stColor} />
                   </View>
                 </View>
@@ -461,7 +461,7 @@ function OfficialsTab({
                   <View style={s.roomBadges}>
                     <StatusBadge label={item.status.toUpperCase()} color={stColor} />
                     {item.rulingsPending > 0 && (
-                      <StatusBadge label={`${item.rulingsPending} PENDING`} color="#F59E0B" />
+                      <StatusBadge label={`${item.rulingsPending} PENDING`} color="#B8943E" />
                     )}
                   </View>
                 </View>
@@ -808,16 +808,16 @@ function ArchiveTab({
           <View style={[s.roomCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.roomTop}>
               <View style={s.roomInfo}>
-                <View style={[s.roomIcon, { backgroundColor: '#A1A1AA20' }]}>
-                  <IconSymbol name="archivebox.fill" size={20} color="#A1A1AA" />
+                <View style={[s.roomIcon, { backgroundColor: '#9C979020' }]}>
+                  <IconSymbol name="archivebox.fill" size={20} color="#9C9790" />
                 </View>
                 <View style={s.roomMid}>
                   <ThemedText style={[s.roomName, { color: colors.text }]} numberOfLines={1}>
                     {item.name}
                   </ThemedText>
                   <View style={s.roomBadges}>
-                    <StatusBadge label="ARCHIVED" color="#A1A1AA" />
-                    <StatusBadge label={typeLabel.toUpperCase()} color="#A1A1AA" />
+                    <StatusBadge label="ARCHIVED" color="#9C9790" />
+                    <StatusBadge label={typeLabel.toUpperCase()} color="#9C9790" />
                   </View>
                 </View>
               </View>
@@ -1096,7 +1096,7 @@ function RoomDetailSheet({
         <StatusBadge label={room.status.toUpperCase()} color={stColor} />
         <StatusBadge label={room.accessLevel.toUpperCase()} color={acColor} />
         <StatusBadge label={ROOM_TYPE_LABEL[room.type].toUpperCase()} color={accentColor} />
-        {bRoom?.isLive && <StatusBadge label="LIVE" color="#EF4444" />}
+        {bRoom?.isLive && <StatusBadge label="LIVE" color="#B85C5C" />}
       </View>
 
       {/* KPIs */}
@@ -1187,7 +1187,7 @@ function RoomDetailSheet({
                 <ThemedText style={[s.sheetMsgSender, { color: colors.text }]}>
                   {msg.sender}
                 </ThemedText>
-                {msg.pinned && <IconSymbol name="pin.fill" size={10} color="#F59E0B" />}
+                {msg.pinned && <IconSymbol name="pin.fill" size={10} color="#B8943E" />}
                 <ThemedText style={[s.sheetMsgTime, { color: colors.textTertiary }]}>
                   {formatTimestamp(msg.timestamp)}
                 </ThemedText>
@@ -1231,7 +1231,7 @@ function RoomDetailSheet({
       {/* Actions */}
       <View style={s.sheetActions}>
         <Pressable
-          style={[s.sheetBtn, { backgroundColor: bRoom?.isLive ? '#EF4444' : accentColor }]}
+          style={[s.sheetBtn, { backgroundColor: bRoom?.isLive ? '#B85C5C' : accentColor }]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
             onClose();
@@ -1827,7 +1827,7 @@ const s = StyleSheet.create({
   // ── Live stripe ──
   liveStripe: {
     height: 3,
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
   },
 
   // ── Tri-stat row ──

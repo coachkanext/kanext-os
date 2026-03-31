@@ -251,12 +251,12 @@ const styles = StyleSheet.create({
   ctaText: { fontSize: 15, fontWeight: '700', letterSpacing: -0.2 },
 
   successBlock: {
-    backgroundColor: '#22C55E12',
+    backgroundColor: '#5A8A6E12',
     borderRadius: 14,
     padding: 16,
     alignItems: 'center',
   },
-  successText: { color: '#22C55E', fontSize: 14, fontWeight: '700', textAlign: 'center', letterSpacing: -0.2 },
+  successText: { color: '#5A8A6E', fontSize: 14, fontWeight: '700', textAlign: 'center', letterSpacing: -0.2 },
 
   requestCard: {
     borderRadius: 16,

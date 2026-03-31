@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   content: {
     flex: 1,
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   },
   context: {
     fontSize: 13,
-    color: '#A1A1AA',
+    color: '#9C9790',
     marginBottom: 4,
   },
   message: {
@@ -169,10 +169,10 @@ const styles = StyleSheet.create({
   ignoreBtnText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   approvedBadge: {
-    backgroundColor: '#22C55E20',
+    backgroundColor: '#5A8A6E20',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: BorderRadius.full,
@@ -180,6 +180,6 @@ const styles = StyleSheet.create({
   approvedText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
 });

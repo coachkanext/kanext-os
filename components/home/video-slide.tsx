@@ -115,7 +115,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   },
   badgeContainer: {
     alignSelf: 'flex-start',
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 4,

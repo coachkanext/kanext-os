@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
   },
   cwProgressFill: {
     height: '100%',
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
   },
   cwDuration: {
     position: 'absolute',

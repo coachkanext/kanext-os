@@ -103,16 +103,16 @@ function getAuditActionKey(action: string): string {
 }
 
 const AUDIT_ACTION_COLOR: Record<string, string> = {
-  created: '#22C55E',
-  status: '#1D9BF0',
-  linked: '#1D9BF0',
-  moved: '#F59E0B',
-  assigned: '#1D9BF0',
-  attached: '#1D9BF0',
-  updated: '#F59E0B',
-  approved: '#22C55E',
-  revised: '#1D9BF0',
-  default: '#A1A1AA',
+  created: '#5A8A6E',
+  status: '#1A1714',
+  linked: '#1A1714',
+  moved: '#B8943E',
+  assigned: '#1A1714',
+  attached: '#1A1714',
+  updated: '#B8943E',
+  approved: '#5A8A6E',
+  revised: '#1A1714',
+  default: '#9C9790',
 };
 
 // =============================================================================
@@ -453,7 +453,7 @@ function EntityDetailView({
           <View style={[s.detailCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Linked Objects</ThemedText>
             {linkedObjects.map((lo) => {
-              const loColor = TYPE_COLOR_MAP[lo.type as keyof typeof TYPE_COLOR_MAP] ?? '#A1A1AA';
+              const loColor = TYPE_COLOR_MAP[lo.type as keyof typeof TYPE_COLOR_MAP] ?? '#9C9790';
               const loStatus = STATUS_COLOR_MAP[lo.status];
               return (
                 <View key={lo.id} style={s.linkedRow}>
@@ -537,8 +537,8 @@ function EntityDetailView({
             style={[s.settingsButton, { borderColor: colors.border }]}
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           >
-            <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#EF4444" />
-            <ThemedText style={[s.settingsButtonText, { color: '#EF4444' }]}>
+            <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#B85C5C" />
+            <ThemedText style={[s.settingsButtonText, { color: '#B85C5C' }]}>
               Delete
             </ThemedText>
           </Pressable>
@@ -1386,7 +1386,7 @@ const s = StyleSheet.create({
   identityValue: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#22C55E',
+    color: '#5A8A6E',
     marginTop: 4,
     fontVariant: ['tabular-nums'],
   },

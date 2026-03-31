@@ -14,13 +14,13 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import type { ReceiptPayload, LinkChip } from '@/types/nexus-v2';
 
 const STATUS_CONFIG: Record<string, { icon: IconSymbolName; color: string; label: string }> = {
-  done: { icon: 'checkmark.circle.fill', color: '#22C55E', label: 'Done' },
-  created: { icon: 'plus.circle.fill', color: '#1D9BF0', label: 'Created' },
-  posted: { icon: 'paperplane.fill', color: '#1D9BF0', label: 'Posted' },
-  updated: { icon: 'arrow.triangle.2.circlepath', color: '#F59E0B', label: 'Updated' },
-  blocked: { icon: 'xmark.circle.fill', color: '#EF4444', label: 'Blocked' },
-  escalated: { icon: 'arrow.up.right.circle.fill', color: '#F59E0B', label: 'Escalated' },
-  failed: { icon: 'exclamationmark.triangle.fill', color: '#EF4444', label: 'Failed' },
+  done: { icon: 'checkmark.circle.fill', color: '#5A8A6E', label: 'Done' },
+  created: { icon: 'plus.circle.fill', color: '#1A1714', label: 'Created' },
+  posted: { icon: 'paperplane.fill', color: '#1A1714', label: 'Posted' },
+  updated: { icon: 'arrow.triangle.2.circlepath', color: '#B8943E', label: 'Updated' },
+  blocked: { icon: 'xmark.circle.fill', color: '#B85C5C', label: 'Blocked' },
+  escalated: { icon: 'arrow.up.right.circle.fill', color: '#B8943E', label: 'Escalated' },
+  failed: { icon: 'exclamationmark.triangle.fill', color: '#B85C5C', label: 'Failed' },
 };
 
 interface Props {

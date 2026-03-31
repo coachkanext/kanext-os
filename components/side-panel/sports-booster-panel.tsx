@@ -42,7 +42,7 @@ export function SportsBoosterPanel() {
     <View style={{ gap: 8 }}>
 
       {/* Fundraising summary */}
-      <View style={{ backgroundColor: '#003A63', borderRadius: 12, padding: 14, gap: 4 }}>
+      <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14, gap: 4 }}>
         <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 0.5 }}>Campaigns</Text>
         <Text style={{ fontSize: 28, fontWeight: '900', color: '#fff', lineHeight: 32 }}>{formatCurrency(totalRaised)}</Text>
         <View style={{ height: 4, backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 2, marginTop: 4 }}>
@@ -88,7 +88,7 @@ export function SportsBoosterPanel() {
           {[
             { label: 'Active Deals', value: activeNIL.toString(),              color: '#5A8A6E' },
             { label: 'Total Value',  value: formatCurrency(nilValue),          color: C.accent },
-            { label: 'Open Opps',    value: NIL_OPPORTUNITIES.length.toString(), color: '#1D9BF0' },
+            { label: 'Open Opps',    value: NIL_OPPORTUNITIES.length.toString(), color: '#1A1714' },
           ].map(item => (
             <View key={item.label} style={{ flex: 1, alignItems: 'center', backgroundColor: C.surfacePressed, borderRadius: 8, paddingVertical: 8 }}>
               <Text style={{ fontSize: 15, fontWeight: '800', color: item.color }}>{item.value}</Text>
@@ -113,8 +113,8 @@ export function SportsBoosterPanel() {
               ]}
               onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); closeSidePanel(); }}
             >
-              <View style={{ width: 28, height: 28, borderRadius: 8, backgroundColor: '#003A6340', alignItems: 'center', justifyContent: 'center' }}>
-                <IconSymbol name="ticket.fill" size={12} color="#003A63" />
+              <View style={{ width: 28, height: 28, borderRadius: 8, backgroundColor: '#1A171440', alignItems: 'center', justifyContent: 'center' }}>
+                <IconSymbol name="ticket.fill" size={12} color="#1A1714" />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }} numberOfLines={1}>vs {g.opponent}</Text>

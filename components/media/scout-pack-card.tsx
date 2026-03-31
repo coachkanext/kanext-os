@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 12,
-    color: '#A1A1AA',
+    color: '#9C9790',
     marginBottom: 2,
   },
   clips: {
@@ -90,6 +90,6 @@ const styles = StyleSheet.create({
   nextText: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
 });

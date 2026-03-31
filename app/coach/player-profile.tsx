@@ -20,8 +20,8 @@ import { EVAL_SNAPSHOTS } from '@/data/evalSnapshots';
 import { TabFooter } from '@/components/tab-footer';
 
 const STATUS_COLORS: Record<string, string> = {
-  Watching: '#A1A1AA',
-  Contacted: '#A1A1AA',
+  Watching: '#9C9790',
+  Contacted: '#9C9790',
   Offered: '#ffffff',
   Committed: '#FFFFFF',
   Archived: '#52525B',
@@ -125,8 +125,8 @@ export default function PlayerProfileScreen() {
             <Text style={[styles.actionBtnText, { color: '#ffffff' }]}>Open in Nexus</Text>
           </Pressable>
           {evals.length > 0 && (
-            <Pressable style={[styles.actionBtn, { backgroundColor: '#A1A1AA20' }]}>
-              <Text style={[styles.actionBtnText, { color: '#A1A1AA' }]}>{evals.length} Evaluation{evals.length > 1 ? 's' : ''}</Text>
+            <Pressable style={[styles.actionBtn, { backgroundColor: '#9C979020' }]}>
+              <Text style={[styles.actionBtnText, { color: '#9C9790' }]}>{evals.length} Evaluation{evals.length > 1 ? 's' : ''}</Text>
             </Pressable>
           )}
         </View>
@@ -190,10 +190,10 @@ export default function PlayerProfileScreen() {
           <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>MEDIA & LINKS</Text>
           <View style={[styles.card, { backgroundColor: colors.backgroundSecondary }]}>
             {[
-              { label: 'Game Film (Hudl)', icon: 'play.rectangle.fill' as const, color: '#EF4444' },
-              { label: 'Highlights (YouTube)', icon: 'play.fill' as const, color: '#EF4444' },
+              { label: 'Game Film (Hudl)', icon: 'play.rectangle.fill' as const, color: '#B85C5C' },
+              { label: 'Highlights (YouTube)', icon: 'play.fill' as const, color: '#B85C5C' },
               { label: 'School Bio', icon: 'person.fill' as const, color: '#ffffff' },
-              { label: 'Social Media', icon: 'bubble.left.fill' as const, color: '#A1A1AA' },
+              { label: 'Social Media', icon: 'bubble.left.fill' as const, color: '#9C9790' },
             ].map((link, idx) => (
               <View key={link.label}>
                 {idx > 0 && <View style={[styles.divider, { backgroundColor: colors.divider }]} />}

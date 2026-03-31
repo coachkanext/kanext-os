@@ -101,18 +101,18 @@ export const EDU_SPONSORS_SCOPE_CHIPS = [
 // =============================================================================
 
 export const SPONSOR_TIER_COLOR: Record<EduSponsor['tier'], string> = {
-  platinum: '#A1A1AA',
-  gold: '#F59E0B',
-  silver: '#A1A1AA',
-  bronze: '#1D9BF0',
+  platinum: '#9C9790',
+  gold: '#B8943E',
+  silver: '#9C9790',
+  bronze: '#1A1714',
 };
 
 export const SPONSOR_TYPE_COLOR: Record<EduSponsor['type'], string> = {
-  individual: '#1D9BF0',
-  corporate: '#1D9BF0',
-  foundation: '#22C55E',
-  alumni: '#F59E0B',
-  government: '#A1A1AA',
+  individual: '#1A1714',
+  corporate: '#1A1714',
+  foundation: '#5A8A6E',
+  alumni: '#B8943E',
+  government: '#9C9790',
 };
 
 export const SPONSOR_TYPE_LABEL: Record<EduSponsor['type'], string> = {
@@ -124,21 +124,21 @@ export const SPONSOR_TYPE_LABEL: Record<EduSponsor['type'], string> = {
 };
 
 export const SPONSOR_STATUS_COLOR: Record<EduSponsor['status'], string> = {
-  active: '#22C55E',
-  lapsed: '#EF4444',
-  prospect: '#F59E0B',
+  active: '#5A8A6E',
+  lapsed: '#B85C5C',
+  prospect: '#B8943E',
 };
 
 export const CAMPAIGN_STATUS_COLOR: Record<Campaign['status'], string> = {
-  active: '#22C55E',
-  completed: '#1D9BF0',
-  upcoming: '#F59E0B',
+  active: '#5A8A6E',
+  completed: '#1A1714',
+  upcoming: '#B8943E',
 };
 
 export const PARTNERSHIP_STATUS_COLOR: Record<PartnershipOpportunity['status'], string> = {
-  open: '#22C55E',
-  in_discussion: '#F59E0B',
-  closed: '#A1A1AA',
+  open: '#5A8A6E',
+  in_discussion: '#B8943E',
+  closed: '#9C9790',
 };
 
 // =============================================================================

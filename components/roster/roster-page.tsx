@@ -151,10 +151,10 @@ const STATUS_LABELS: Record<PlayerStatus, string> = {
 };
 
 const STATUS_COLORS: Record<PlayerStatus, string> = {
-  available: '#22C55E',
-  injured: '#F59E0B',
-  out: '#EF4444',
-  redshirt: '#A1A1AA',
+  available: '#5A8A6E',
+  injured: '#B8943E',
+  out: '#B85C5C',
+  redshirt: '#9C9790',
 };
 
 // Status sort priority: injured/out first
@@ -595,11 +595,11 @@ export function RosterPage({ colors: propColors }: RosterPageProps) {
             </View>
             <View style={[
               s.depthStatusChip,
-              { backgroundColor: DEPTH_STATUS === 'LOCKED' ? '#EF4444' + '18' : '#F59E0B' + '18' },
+              { backgroundColor: DEPTH_STATUS === 'LOCKED' ? '#B85C5C' + '18' : '#B8943E' + '18' },
             ]}>
               <Text style={[
                 s.depthStatusText,
-                { color: DEPTH_STATUS === 'LOCKED' ? '#EF4444' : '#F59E0B' },
+                { color: DEPTH_STATUS === 'LOCKED' ? '#B85C5C' : '#B8943E' },
               ]}>
                 {DEPTH_STATUS}
               </Text>

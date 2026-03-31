@@ -72,7 +72,7 @@ export function SportsRequestCard({ request }: SportsRequestCardProps) {
         <ThemedText
           style={[
             styles.dueDate,
-            { color: request.isOverdue ? '#EF4444' : colors.textTertiary },
+            { color: request.isOverdue ? '#B85C5C' : colors.textTertiary },
           ]}
         >
           Due: {request.dueDate}{request.isOverdue ? ' (OVERDUE)' : ''}
@@ -84,8 +84,8 @@ export function SportsRequestCard({ request }: SportsRequestCardProps) {
         <View style={styles.flagRow}>
           <ThemedText style={[styles.flagLabel, { color: colors.textTertiary }]}>Blocks:</ThemedText>
           {request.impactFlags.map((flag) => (
-            <View key={flag} style={[styles.flagChip, { backgroundColor: '#EF4444' + '1A' }]}>
-              <ThemedText style={[styles.flagText, { color: '#EF4444' }]}>
+            <View key={flag} style={[styles.flagChip, { backgroundColor: '#B85C5C' + '1A' }]}>
+              <ThemedText style={[styles.flagText, { color: '#B85C5C' }]}>
                 {getImpactFlagLabel(flag)}
               </ThemedText>
             </View>

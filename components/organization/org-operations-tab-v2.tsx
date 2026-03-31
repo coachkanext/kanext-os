@@ -125,9 +125,9 @@ function assetCategoryIcon(category: OpsAsset['category']): string {
 // =============================================================================
 
 const FACILITY_STATUS_COLORS: Record<string, { bg: string; fg: string }> = {
-  operational: { bg: '#22C55E20', fg: '#22C55E' },
-  partial: { bg: '#F59E0B20', fg: '#F59E0B' },
-  offline: { bg: '#EF444420', fg: '#EF4444' },
+  operational: { bg: '#5A8A6E20', fg: '#5A8A6E' },
+  partial: { bg: '#B8943E20', fg: '#B8943E' },
+  offline: { bg: '#B85C5C20', fg: '#B85C5C' },
 };
 
 // =============================================================================
@@ -135,10 +135,10 @@ const FACILITY_STATUS_COLORS: Record<string, { bg: string; fg: string }> = {
 // =============================================================================
 
 const TRAVEL_STATUS_COLORS: Record<string, { bg: string; fg: string }> = {
-  planned: { bg: '#A1A1AA20', fg: '#A1A1AA' },
-  booked: { bg: '#22C55E20', fg: '#22C55E' },
-  'in-transit': { bg: '#F59E0B20', fg: '#F59E0B' },
-  completed: { bg: '#1D9BF020', fg: '#1D9BF0' },
+  planned: { bg: '#9C979020', fg: '#9C9790' },
+  booked: { bg: '#5A8A6E20', fg: '#5A8A6E' },
+  'in-transit': { bg: '#B8943E20', fg: '#B8943E' },
+  completed: { bg: '#1A171420', fg: '#1A1714' },
 };
 
 // =============================================================================
@@ -146,9 +146,9 @@ const TRAVEL_STATUS_COLORS: Record<string, { bg: string; fg: string }> = {
 // =============================================================================
 
 const VENDOR_STATUS_COLORS: Record<string, { bg: string; fg: string }> = {
-  active: { bg: '#22C55E20', fg: '#22C55E' },
-  'pending-renewal': { bg: '#F59E0B20', fg: '#F59E0B' },
-  expired: { bg: '#EF444420', fg: '#EF4444' },
+  active: { bg: '#5A8A6E20', fg: '#5A8A6E' },
+  'pending-renewal': { bg: '#B8943E20', fg: '#B8943E' },
+  expired: { bg: '#B85C5C20', fg: '#B85C5C' },
 };
 
 // =============================================================================
@@ -320,7 +320,7 @@ export function OrgOperationsTab({ mode, colors, accentColor }: Props) {
             {data.tasks.filter((t) => t.status !== 'complete' && t.status !== 'archived').length}
           </ThemedText>
           {(p0p1Count.p0 > 0 || p0p1Count.p1 > 0) && (
-            <ThemedText style={[s.quickStatHighlight, { color: '#EF4444' }]}>
+            <ThemedText style={[s.quickStatHighlight, { color: '#B85C5C' }]}>
               {p0p1Count.p0} P0 / {p0p1Count.p1} P1
             </ThemedText>
           )}
@@ -332,7 +332,7 @@ export function OrgOperationsTab({ mode, colors, accentColor }: Props) {
             {data.issues.filter((i) => i.status !== 'complete' && i.status !== 'archived').length}
           </ThemedText>
           {criticalIssueCount > 0 && (
-            <ThemedText style={[s.quickStatHighlight, { color: '#EF4444' }]}>
+            <ThemedText style={[s.quickStatHighlight, { color: '#B85C5C' }]}>
               {criticalIssueCount} critical
             </ThemedText>
           )}
@@ -534,7 +534,7 @@ export function OrgOperationsTab({ mode, colors, accentColor }: Props) {
                   <ThemedText
                     style={[
                       s.taskDue,
-                      { color: item.activeTickets > 0 ? '#F59E0B' : colors.textTertiary, fontVariant: ['tabular-nums'] },
+                      { color: item.activeTickets > 0 ? '#B8943E' : colors.textTertiary, fontVariant: ['tabular-nums'] },
                     ]}
                   >
                     {item.activeTickets} active ticket{item.activeTickets !== 1 ? 's' : ''}
@@ -575,7 +575,7 @@ export function OrgOperationsTab({ mode, colors, accentColor }: Props) {
                   <ThemedText
                     style={[
                       s.taskDue,
-                      { color: item.maintenanceQueue > 0 ? '#F59E0B' : colors.textTertiary, fontVariant: ['tabular-nums'] },
+                      { color: item.maintenanceQueue > 0 ? '#B8943E' : colors.textTertiary, fontVariant: ['tabular-nums'] },
                     ]}
                   >
                     {item.maintenanceQueue} in maintenance queue
@@ -703,11 +703,11 @@ export function OrgOperationsTab({ mode, colors, accentColor }: Props) {
         contentContainerStyle={s.listContent}
         ListEmptyComponent={<EmptyState icon="clock.fill" text="No audit entries" colors={colors} />}
         renderItem={({ item }) => {
-          const auditColor = item.action.includes('issue') ? '#EF4444'
-            : item.action.includes('task') ? '#22C55E'
+          const auditColor = item.action.includes('issue') ? '#B85C5C'
+            : item.action.includes('task') ? '#5A8A6E'
             : item.action.includes('sop') || item.action.includes('report') ? accent
-            : item.action.includes('vendor') || item.action.includes('asset') ? '#F59E0B'
-            : '#A1A1AA';
+            : item.action.includes('vendor') || item.action.includes('asset') ? '#B8943E'
+            : '#9C9790';
           const auditIcon = item.action.includes('issue') ? 'exclamationmark.triangle.fill'
             : item.action.includes('task') ? 'checkmark.circle.fill'
             : item.action.includes('work-order') ? 'doc.on.clipboard'

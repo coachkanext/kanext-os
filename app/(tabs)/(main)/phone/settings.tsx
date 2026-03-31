@@ -32,7 +32,7 @@ function ToggleRow({ label, value, onToggle, accent, styles }: { label: string; 
   return (
     <View style={styles.toggleRow}>
       <Text style={styles.toggleLabel}>{label}</Text>
-      <Switch value={value} onValueChange={onToggle} trackColor={{ false: '#39393D', true: accent }} thumbColor="#FFFFFF" />
+      <Switch value={value} onValueChange={onToggle} trackColor={{ false: '#3D352E', true: accent }} thumbColor="#FFFFFF" />
     </View>
   );
 }
@@ -104,7 +104,7 @@ export default function PhoneSettingsScreen() {
                 <Switch
                   value={!!dndModes[num.mode]}
                   onValueChange={() => setDndModes((prev) => ({ ...prev, [num.mode]: !prev[num.mode] }))}
-                  trackColor={{ false: '#39393D', true: accent }}
+                  trackColor={{ false: '#3D352E', true: accent }}
                   thumbColor="#FFFFFF"
                 />
               </View>
@@ -159,7 +159,7 @@ export default function PhoneSettingsScreen() {
                 <Switch
                   value={!!callerIdModes[num.mode]}
                   onValueChange={() => setCallerIdModes((prev) => ({ ...prev, [num.mode]: !prev[num.mode] }))}
-                  trackColor={{ false: '#39393D', true: accent }}
+                  trackColor={{ false: '#3D352E', true: accent }}
                   thumbColor="#FFFFFF"
                 />
               </View>

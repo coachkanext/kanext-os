@@ -84,10 +84,10 @@ export function getPriorityOrder(priority: ThreadPriority): number {
 
 export function getPriorityColor(priority: ThreadPriority): string {
   switch (priority) {
-    case 'blocker': return '#EF4444';
-    case 'approval': return '#F59E0B';
-    case 'due_24h': return '#1D9BF0';
-    case 'normal': return '#A1A1AA';
+    case 'blocker': return '#B85C5C';
+    case 'approval': return '#B8943E';
+    case 'due_24h': return '#1A1714';
+    case 'normal': return '#9C9790';
   }
 }
 
@@ -102,10 +102,10 @@ export function getPriorityLabel(priority: ThreadPriority): string {
 
 export function getUrgencyColor(urgency: ThreadUrgency): string {
   switch (urgency) {
-    case 'critical': return '#EF4444';
-    case 'high': return '#F59E0B';
-    case 'medium': return '#1D9BF0';
-    case 'low': return '#A1A1AA';
+    case 'critical': return '#B85C5C';
+    case 'high': return '#B8943E';
+    case 'medium': return '#1A1714';
+    case 'low': return '#9C9790';
   }
 }
 
@@ -123,22 +123,22 @@ export function getRequestTypeLabel(type: RequestType): string {
 
 export function getRequestTypeColor(type: RequestType): string {
   switch (type) {
-    case 'approval': return '#F59E0B';
-    case 'roster': return '#1D9BF0';
-    case 'schedule': return '#1D9BF0';
-    case 'recruiting': return '#1D9BF0';
-    case 'eligibility': return '#EF4444';
-    case 'finance': return '#22C55E';
-    case 'incident': return '#EF4444';
+    case 'approval': return '#B8943E';
+    case 'roster': return '#1A1714';
+    case 'schedule': return '#1A1714';
+    case 'recruiting': return '#1A1714';
+    case 'eligibility': return '#B85C5C';
+    case 'finance': return '#5A8A6E';
+    case 'incident': return '#B85C5C';
   }
 }
 
 export function getRequestStatusColor(status: RequestStatus): string {
   switch (status) {
-    case 'pending': return '#F59E0B';
-    case 'approved': return '#22C55E';
-    case 'denied': return '#EF4444';
-    case 'escalated': return '#1D9BF0';
+    case 'pending': return '#B8943E';
+    case 'approved': return '#5A8A6E';
+    case 'denied': return '#B85C5C';
+    case 'escalated': return '#1A1714';
   }
 }
 
@@ -242,7 +242,7 @@ export const SPORTS_INBOX_THREADS: SportsInboxThread[] = [
 export const SPORTS_ROOMS: SportsRoom[] = [
   {
     id: 'sr-1', title: 'Program Command', category: 'command',
-    avatarInitials: 'PC', avatarColor: '#1D9BF0',
+    avatarInitials: 'PC', avatarColor: '#1A1714',
     lastMessage: 'Bus delay confirmed. Updated departure at 1:30 PM.',
     lastMessageTime: '25m', unreadCount: 8, hasBlocker: true, hasDeadline: false,
     memberCount: 4, rbacSection: 'rooms_command',
@@ -277,42 +277,42 @@ export const SPORTS_ROOMS: SportsRoom[] = [
   },
   {
     id: 'sr-6', title: 'Recruiting War Room', category: 'recruiting',
-    avatarInitials: 'RW', avatarColor: '#1D9BF0',
+    avatarInitials: 'RW', avatarColor: '#1A1714',
     lastMessage: 'Elijah Moore visit locked in for Feb 22. Full itinerary attached.',
     lastMessageTime: '4h', unreadCount: 4, hasBlocker: false, hasDeadline: true,
     memberCount: 4, rbacSection: 'rooms_recruiting',
   },
   {
     id: 'sr-7', title: 'Visit Ops', category: 'ops_travel',
-    avatarInitials: 'VO', avatarColor: '#1D9BF0',
+    avatarInitials: 'VO', avatarColor: '#1A1714',
     lastMessage: 'Hotel reservation confirmed for Moore visit.',
     lastMessageTime: '5h', unreadCount: 1, hasBlocker: false, hasDeadline: false,
     memberCount: 3, rbacSection: 'rooms_ops_travel',
   },
   {
     id: 'sr-8', title: 'Travel Ops', category: 'ops_travel',
-    avatarInitials: 'TO', avatarColor: '#F59E0B',
+    avatarInitials: 'TO', avatarColor: '#B8943E',
     lastMessage: 'Updated bus schedule attached. New departure 1:30 PM.',
     lastMessageTime: '30m', unreadCount: 6, hasBlocker: true, hasDeadline: false,
     memberCount: 5, rbacSection: 'rooms_ops_travel',
   },
   {
     id: 'sr-9', title: 'Academic / Eligibility Liaison', category: 'compliance',
-    avatarInitials: 'AE', avatarColor: '#EF4444',
+    avatarInitials: 'AE', avatarColor: '#B85C5C',
     lastMessage: 'Carter transcript status: request sent to registrar. ETA 24-48h.',
     lastMessageTime: '1h', unreadCount: 2, hasBlocker: true, hasDeadline: false,
     memberCount: 3, rbacSection: 'rooms_compliance',
   },
   {
     id: 'sr-10', title: 'Media Ops', category: 'media',
-    avatarInitials: 'MO', avatarColor: '#1D9BF0',
+    avatarInitials: 'MO', avatarColor: '#1A1714',
     lastMessage: 'Highlight reel draft uploaded. Awaiting coach review.',
     lastMessageTime: '6h', unreadCount: 1, hasBlocker: false, hasDeadline: true,
     memberCount: 4, rbacSection: 'rooms_media',
   },
   {
     id: 'sr-11', title: 'Sports Med + Performance', category: 'staff',
-    avatarInitials: 'SP', avatarColor: '#22C55E',
+    avatarInitials: 'SP', avatarColor: '#5A8A6E',
     lastMessage: 'Williams ankle: MRI clean. Cleared for non-contact.',
     lastMessageTime: '3h', unreadCount: 1, hasBlocker: false, hasDeadline: false,
     memberCount: 4, rbacSection: 'rooms_staff',

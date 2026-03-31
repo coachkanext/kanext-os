@@ -64,11 +64,11 @@ export interface KanextNumber {
 // ── Mode colors for badges ──
 
 export const MODE_BADGE_COLORS: Record<Mode, string> = {
-  sports: '#3B82F6',
-  business: '#8B5CF6',
-  community: '#F59E0B',
-  education: '#10B981',
-  personal: '#A78BFA',
+  sports: '#1A1714',
+  business: '#1A1714',
+  community: '#B8943E',
+  education: '#5A8A6E',
+  personal: '#1A1714',
 };
 
 export const MODE_BADGE_LABELS: Record<Mode, string> = {

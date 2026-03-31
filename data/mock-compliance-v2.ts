@@ -250,45 +250,45 @@ export const COMPLIANCE_SCOPE_CHIPS: Record<Mode, ComplianceScopeChip[]> = {
 };
 
 export const REQUIREMENT_STATUS_COLOR: Record<RequirementStatus, string> = {
-  compliant: '#22C55E',
-  'due-soon': '#F59E0B',
-  overdue: '#EF4444',
-  waived: '#A1A1AA',
-  'not-applicable': '#A1A1AA',
+  compliant: '#5A8A6E',
+  'due-soon': '#B8943E',
+  overdue: '#B85C5C',
+  waived: '#9C9790',
+  'not-applicable': '#9C9790',
 };
 
 export const EVIDENCE_STATUS_COLOR: Record<EvidenceStatus, string> = {
-  pending: '#F59E0B',
-  submitted: '#1D9BF0',
-  verified: '#22C55E',
-  rejected: '#EF4444',
+  pending: '#B8943E',
+  submitted: '#1A1714',
+  verified: '#5A8A6E',
+  rejected: '#B85C5C',
 };
 
 export const INCIDENT_STATUS_COLOR: Record<IncidentStatus, string> = {
-  open: '#EF4444',
-  investigating: '#F59E0B',
-  resolved: '#22C55E',
-  closed: '#A1A1AA',
+  open: '#B85C5C',
+  investigating: '#B8943E',
+  resolved: '#5A8A6E',
+  closed: '#9C9790',
 };
 
 export const SEVERITY_COLOR: Record<string, string> = {
-  critical: '#EF4444',
-  high: '#F59E0B',
-  medium: '#F59E0B',
-  low: '#A1A1AA',
+  critical: '#B85C5C',
+  high: '#B8943E',
+  medium: '#B8943E',
+  low: '#9C9790',
 };
 
 export const CHECKLIST_STATUS_COLOR: Record<ComplianceChecklist['status'], string> = {
-  complete: '#22C55E',
-  'in-progress': '#1D9BF0',
-  'not-started': '#A1A1AA',
-  overdue: '#EF4444',
+  complete: '#5A8A6E',
+  'in-progress': '#1A1714',
+  'not-started': '#9C9790',
+  overdue: '#B85C5C',
 };
 
 export const DASHBOARD_STATUS_COLOR: Record<ComplianceDashboardBlock['status'], string> = {
-  good: '#22C55E',
-  warning: '#F59E0B',
-  critical: '#EF4444',
+  good: '#5A8A6E',
+  warning: '#B8943E',
+  critical: '#B85C5C',
 };
 
 // =============================================================================

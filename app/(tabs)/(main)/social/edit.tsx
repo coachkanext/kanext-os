@@ -256,7 +256,7 @@ function StoryEditPanel({ C }: { C: ComponentColors }) {
         <View style={seStyles.drawHint}>
           <Text style={seStyles.drawHintText}>Draw on your story above</Text>
           <View style={seStyles.colorRow}>
-            {['#fff', '#ff3b30', '#ff9500', '#34c759', '#007aff', '#af52de', '#000'].map((col) => (
+            {['#fff', '#ff3b30', '#ff9500', '#34c759', '#1A1714', '#af52de', '#000'].map((col) => (
               <Pressable
                 key={col}
                 style={[seStyles.colorDot, { backgroundColor: col }]}
@@ -392,7 +392,7 @@ const reStyles = StyleSheet.create({
   audioHandle: {
     position: 'absolute',
     width: 14, height: '100%',
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#1A1714',
     borderRadius: 3,
   },
   audioMute: {

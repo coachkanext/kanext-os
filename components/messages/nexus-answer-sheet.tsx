@@ -45,9 +45,9 @@ export function NexusAnswerSheet({ escalation, onClose }: NexusAnswerSheetProps)
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
             {/* Resolved banner */}
             {isResolved && escalation.resolvedAnswer && (
-              <View style={[styles.resolvedBanner, { backgroundColor: '#22C55E15' }]}>
+              <View style={[styles.resolvedBanner, { backgroundColor: '#5A8A6E15' }]}>
                 <View style={styles.resolvedHeader}>
-                  <IconSymbol name="checkmark.seal.fill" size={16} color="#22C55E" />
+                  <IconSymbol name="checkmark.seal.fill" size={16} color="#5A8A6E" />
                   <ThemedText style={styles.resolvedTitle}>Resolved Answer</ThemedText>
                   {escalation.answeredBy && (
                     <ThemedText style={[styles.resolvedBy, { color: colors.textTertiary }]}>
@@ -105,8 +105,8 @@ export function NexusAnswerSheet({ escalation, onClose }: NexusAnswerSheetProps)
             {escalation.nexusAttempt && (
               <View style={styles.replyBlock}>
                 <View style={styles.replyHeader}>
-                  <View style={[styles.nexusIcon, { backgroundColor: '#8B5CF620' }]}>
-                    <IconSymbol name="sparkles" size={14} color="#8B5CF6" />
+                  <View style={[styles.nexusIcon, { backgroundColor: '#1A171420' }]}>
+                    <IconSymbol name="sparkles" size={14} color="#1A1714" />
                   </View>
                   <View style={styles.replyHeaderInfo}>
                     <ThemedText style={[styles.replyName, { color: colors.text }]}>
@@ -121,9 +121,9 @@ export function NexusAnswerSheet({ escalation, onClose }: NexusAnswerSheetProps)
                   {escalation.nexusAttempt}
                 </ThemedText>
                 {escalation.escalationTarget && escalation.status === 'escalated' && (
-                  <View style={[styles.escalationNote, { backgroundColor: '#F59E0B15' }]}>
-                    <IconSymbol name="arrow.up.right" size={12} color="#F59E0B" />
-                    <ThemedText style={[styles.escalationText, { color: '#F59E0B' }]}>
+                  <View style={[styles.escalationNote, { backgroundColor: '#B8943E15' }]}>
+                    <IconSymbol name="arrow.up.right" size={12} color="#B8943E" />
+                    <ThemedText style={[styles.escalationText, { color: '#B8943E' }]}>
                       Escalated to {escalation.escalationTarget}
                     </ThemedText>
                   </View>
@@ -169,7 +169,7 @@ export function NexusAnswerSheet({ escalation, onClose }: NexusAnswerSheetProps)
               <Pressable
                 style={({ pressed }) => [
                   styles.resolveBtn,
-                  { backgroundColor: '#22C55E', opacity: pressed ? 0.8 : 1 },
+                  { backgroundColor: '#5A8A6E', opacity: pressed ? 0.8 : 1 },
                 ]}
                 onPress={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     gap: 8,
     borderLeftWidth: 3,
-    borderLeftColor: '#22C55E',
+    borderLeftColor: '#5A8A6E',
   },
   resolvedHeader: {
     flexDirection: 'row',
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   resolvedTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
   resolvedBy: {
     fontSize: 12,

@@ -234,17 +234,17 @@ function OverviewTab({
       {/* Status Strip */}
       <View style={[s.statusStrip, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#22C55E' }]} />
+          <View style={[s.statusDot, { backgroundColor: '#5A8A6E' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{greenCount}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Current</ThemedText>
         </View>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#F59E0B' }]} />
+          <View style={[s.statusDot, { backgroundColor: '#B8943E' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{yellowCount}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Pending</ThemedText>
         </View>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#EF4444' }]} />
+          <View style={[s.statusDot, { backgroundColor: '#B85C5C' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{redCount}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Rejected</ThemedText>
         </View>
@@ -257,11 +257,11 @@ function OverviewTab({
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Policies</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: highRisks > 0 ? '#EF4444' : '#22C55E' }]}>{highRisks}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: highRisks > 0 ? '#B85C5C' : '#5A8A6E' }]}>{highRisks}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>High Risks</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: openIncidents > 0 ? '#F59E0B' : '#22C55E' }]}>{openIncidents}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: openIncidents > 0 ? '#B8943E' : '#5A8A6E' }]}>{openIncidents}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Incidents</ThemedText>
         </View>
       </View>
@@ -281,7 +281,7 @@ function OverviewTab({
         Top Actions
       </ThemedText>
       {topActions.map((action) => {
-        const urgencyColor = action.urgency === 'high' ? '#EF4444' : action.urgency === 'medium' ? '#F59E0B' : '#22C55E';
+        const urgencyColor = action.urgency === 'high' ? '#B85C5C' : action.urgency === 'medium' ? '#B8943E' : '#5A8A6E';
         return (
           <View
             key={action.id}
@@ -369,7 +369,7 @@ function PoliciesTab({
             </View>
             {item.attestationRequired && (
               <View style={s.policyMetaItem}>
-                <IconSymbol name="checkmark.seal.fill" size={11} color={item.attestationAudience ? '#22C55E' : '#F59E0B'} />
+                <IconSymbol name="checkmark.seal.fill" size={11} color={item.attestationAudience ? '#5A8A6E' : '#B8943E'} />
                 <ThemedText style={[s.policyMetaText, { color: colors.textTertiary }]}>Attestation</ThemedText>
               </View>
             )}
@@ -568,7 +568,7 @@ function AuditsTab({
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
       {audits.map((audit) => {
         const isExpanded = expandedAudit === audit.id;
-        const statusColor = audit.status === 'completed' ? '#22C55E' : audit.status === 'in_progress' ? '#F59E0B' : ACCENT;
+        const statusColor = audit.status === 'completed' ? '#5A8A6E' : audit.status === 'in_progress' ? '#B8943E' : ACCENT;
         const statusLabel = audit.status === 'completed' ? 'Completed' : audit.status === 'in_progress' ? 'In Progress' : 'Scheduled';
 
         // Finding counts by severity
@@ -607,10 +607,10 @@ function AuditsTab({
               </View>
               {audit.findings.length > 0 && (
                 <View style={s.findingsCountRow}>
-                  {critCount > 0 && <StatusBadge label={`${critCount} CRIT`} color="#EF4444" />}
-                  {highCount > 0 && <StatusBadge label={`${highCount} HIGH`} color="#EF4444" />}
-                  {medCount > 0 && <StatusBadge label={`${medCount} MED`} color="#F59E0B" />}
-                  {lowCount > 0 && <StatusBadge label={`${lowCount} LOW`} color="#22C55E" />}
+                  {critCount > 0 && <StatusBadge label={`${critCount} CRIT`} color="#B85C5C" />}
+                  {highCount > 0 && <StatusBadge label={`${highCount} HIGH`} color="#B85C5C" />}
+                  {medCount > 0 && <StatusBadge label={`${medCount} MED`} color="#B8943E" />}
+                  {lowCount > 0 && <StatusBadge label={`${lowCount} LOW`} color="#5A8A6E" />}
                 </View>
               )}
             </View>
@@ -634,7 +634,7 @@ function AuditsTab({
                       </ThemedText>
                       <View style={s.findingBadgeRow}>
                         <StatusBadge label={finding.severity.toUpperCase()} color={sevColor} />
-                        <StatusBadge label={fStatusLabel.toUpperCase()} color={finding.status === 'remediated' || finding.status === 'closed' ? '#22C55E' : '#F59E0B'} />
+                        <StatusBadge label={fStatusLabel.toUpperCase()} color={finding.status === 'remediated' || finding.status === 'closed' ? '#5A8A6E' : '#B8943E'} />
                       </View>
                       <ThemedText style={[s.findingPlan, { color: colors.textSecondary }]} numberOfLines={2}>
                         {finding.remediationPlan}
@@ -711,7 +711,7 @@ function RiskRegisterTab({
               <View style={s.riskBadgeRow}>
                 <StatusBadge label={catLabel.toUpperCase()} color={accentColor} />
                 <StatusBadge label={sevLabel.toUpperCase()} color={sevColor} />
-                <StatusBadge label={likelihoodLabel.toUpperCase()} color={risk.likelihood === 'high' ? '#EF4444' : risk.likelihood === 'medium' ? '#F59E0B' : '#22C55E'} />
+                <StatusBadge label={likelihoodLabel.toUpperCase()} color={risk.likelihood === 'high' ? '#B85C5C' : risk.likelihood === 'medium' ? '#B8943E' : '#5A8A6E'} />
               </View>
               <View style={s.riskMetaRow}>
                 <IconSymbol name="person.fill" size={11} color={colors.textTertiary} />
@@ -790,7 +790,7 @@ function IncidentsTab({
               <View style={s.incidentBadgeRow}>
                 <StatusBadge label={typeLabel.toUpperCase()} color={accentColor} />
                 <StatusBadge label={statusLabel.toUpperCase()} color={statusColor} />
-                {isClosed && <StatusBadge label="IMMUTABLE" color="#A1A1AA" />}
+                {isClosed && <StatusBadge label="IMMUTABLE" color="#9C9790" />}
               </View>
               <View style={s.incidentMetaRow}>
                 <View style={s.incidentMetaItem}>

@@ -25,12 +25,12 @@ import { MOCK_FINDER_INDEX } from '@/data/mock-finder';
 import type { FinderResult, FinderResultType } from '@/data/mock-finder';
 
 const TYPE_COLORS: Record<FinderResultType, string> = {
-  player: '#1D9BF0',
-  recruit: '#22C55E',
-  team: '#F59E0B',
-  game: '#EF4444',
-  clip: '#1D9BF0',
-  post: '#A1A1AA',
+  player: '#1A1714',
+  recruit: '#5A8A6E',
+  team: '#B8943E',
+  game: '#B85C5C',
+  clip: '#1A1714',
+  post: '#9C9790',
 };
 
 function TypeBadge({ type }: { type: FinderResultType }) {
@@ -119,7 +119,7 @@ export function UniversalFinder() {
         >
           {/* Search Bar */}
           <View style={styles.searchBar}>
-            <IconSymbol name="magnifyingglass" size={18} color="#A1A1AA" />
+            <IconSymbol name="magnifyingglass" size={18} color="#9C9790" />
             <TextInput
               ref={inputRef}
               style={styles.searchInput}
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   closeBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   resultRow: {
     flexDirection: 'row',
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   },
   resultSubtitle: {
     fontSize: 12,
-    color: '#A1A1AA',
+    color: '#9C9790',
     marginTop: 1,
   },
   typeBadge: {

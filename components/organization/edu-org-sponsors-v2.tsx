@@ -219,10 +219,10 @@ function OverviewTab({
 
   const riskColor = (level: string): string => {
     switch (level) {
-      case 'high': return '#EF4444';
-      case 'medium': return '#F59E0B';
-      case 'low': return '#22C55E';
-      default: return '#A1A1AA';
+      case 'high': return '#B85C5C';
+      case 'medium': return '#B8943E';
+      case 'low': return '#5A8A6E';
+      default: return '#9C9790';
     }
   };
 
@@ -239,15 +239,15 @@ function OverviewTab({
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Pipeline Value</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: kpiStrip.deliverablesDueSoon > 3 ? '#F59E0B' : '#22C55E' }]}>{kpiStrip.deliverablesDueSoon}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: kpiStrip.deliverablesDueSoon > 3 ? '#B8943E' : '#5A8A6E' }]}>{kpiStrip.deliverablesDueSoon}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Due Soon</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: kpiStrip.atRiskAgreements > 0 ? '#EF4444' : '#22C55E' }]}>{kpiStrip.atRiskAgreements}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: kpiStrip.atRiskAgreements > 0 ? '#B85C5C' : '#5A8A6E' }]}>{kpiStrip.atRiskAgreements}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>At Risk</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: kpiStrip.latePayments > 0 ? '#EF4444' : '#22C55E' }]}>{kpiStrip.latePayments}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: kpiStrip.latePayments > 0 ? '#B85C5C' : '#5A8A6E' }]}>{kpiStrip.latePayments}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Late Payments</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -271,7 +271,7 @@ function OverviewTab({
         This Month's Priorities
       </ThemedText>
       {priorities.map((pri, idx) => {
-        const urgencyColor = pri.urgency === 'critical' ? '#EF4444' : pri.urgency === 'high' ? '#F59E0B' : '#22C55E';
+        const urgencyColor = pri.urgency === 'critical' ? '#B85C5C' : pri.urgency === 'high' ? '#B8943E' : '#5A8A6E';
         return (
           <View
             key={pri.id}
@@ -348,7 +348,7 @@ function SponsorsTab({
       const typeLabel = SPONSOR_TYPE_LABELS[item.type];
       const statusColor = SPONSOR_STATUS_COLORS[item.status];
       const statusLabel = SPONSOR_STATUS_LABELS[item.status];
-      const riskC = item.riskLevel === 'high' ? '#EF4444' : item.riskLevel === 'medium' ? '#F59E0B' : '#22C55E';
+      const riskC = item.riskLevel === 'high' ? '#B85C5C' : item.riskLevel === 'medium' ? '#B8943E' : '#5A8A6E';
       return (
         <Pressable
           style={[s.sponsorCard, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -507,8 +507,8 @@ function PipelineTab({
           </ThemedText>
           {item.blockers ? (
             <View style={s.pipelineBlockerRow}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#EF4444" />
-              <ThemedText style={[s.pipelineBlockerText, { color: '#EF4444' }]} numberOfLines={2}>
+              <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#B85C5C" />
+              <ThemedText style={[s.pipelineBlockerText, { color: '#B85C5C' }]} numberOfLines={2}>
                 {item.blockers}
               </ThemedText>
             </View>
@@ -605,7 +605,7 @@ function AgreementsTab({
             </View>
             {item.complianceReview && (
               <View style={s.agreementMetaItem}>
-                <IconSymbol name="checkmark.shield.fill" size={11} color="#F59E0B" />
+                <IconSymbol name="checkmark.shield.fill" size={11} color="#B8943E" />
                 <ThemedText style={[s.agreementMetaText, { color: colors.textTertiary }]}>
                   Compliance
                 </ThemedText>
@@ -698,7 +698,7 @@ function DeliverablesTab({
           </View>
           {item.riskIfMissed ? (
             <View style={s.deliverableRiskRow}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#EF4444" />
+              <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#B85C5C" />
               <ThemedText style={[s.deliverableRiskText, { color: colors.textSecondary }]} numberOfLines={2}>
                 {item.riskIfMissed}
               </ThemedText>
@@ -750,7 +750,7 @@ function ProofTab({
         const typeLabel = PROOF_TYPE_LABELS[proof.type];
         const statusColor = PROOF_STATUS_COLORS[proof.status];
         const statusLabel = PROOF_STATUS_LABELS[proof.status];
-        const typeColor = proof.type === 'photo' ? ACCENT : proof.type === 'video' ? ACCENT : proof.type === 'pdf' ? '#EF4444' : proof.type === 'screenshot' ? '#22C55E' : '#F59E0B';
+        const typeColor = proof.type === 'photo' ? ACCENT : proof.type === 'video' ? ACCENT : proof.type === 'pdf' ? '#B85C5C' : proof.type === 'screenshot' ? '#5A8A6E' : '#B8943E';
         return (
           <View
             key={proof.id}
@@ -791,7 +791,7 @@ function ProofTab({
               ) : null}
               {proof.verifiedBy ? (
                 <View style={s.proofMetaItem}>
-                  <IconSymbol name="checkmark.seal.fill" size={11} color="#22C55E" />
+                  <IconSymbol name="checkmark.seal.fill" size={11} color="#5A8A6E" />
                   <ThemedText style={[s.proofMetaText, { color: colors.textTertiary }]}>
                     {proof.verifiedBy} — {proof.verifiedDate ? formatDate(proof.verifiedDate) : '--'}
                   </ThemedText>
@@ -808,18 +808,18 @@ function ProofTab({
             {isDeanLevel(role) && (proof.status === 'submitted' || proof.status === 'draft') && (
               <View style={s.proofActionsRow}>
                 <Pressable
-                  style={[s.proofActionButton, { backgroundColor: '#22C55E18', borderColor: '#22C55E40' }]}
+                  style={[s.proofActionButton, { backgroundColor: '#5A8A6E18', borderColor: '#5A8A6E40' }]}
                   onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
                 >
-                  <IconSymbol name="checkmark.circle.fill" size={14} color="#22C55E" />
-                  <ThemedText style={[s.proofActionText, { color: '#22C55E' }]}>Verify</ThemedText>
+                  <IconSymbol name="checkmark.circle.fill" size={14} color="#5A8A6E" />
+                  <ThemedText style={[s.proofActionText, { color: '#5A8A6E' }]}>Verify</ThemedText>
                 </Pressable>
                 <Pressable
-                  style={[s.proofActionButton, { backgroundColor: '#EF444418', borderColor: '#EF444440' }]}
+                  style={[s.proofActionButton, { backgroundColor: '#B85C5C18', borderColor: '#B85C5C40' }]}
                   onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
                 >
-                  <IconSymbol name="xmark.circle.fill" size={14} color="#EF4444" />
-                  <ThemedText style={[s.proofActionText, { color: '#EF4444' }]}>Reject</ThemedText>
+                  <IconSymbol name="xmark.circle.fill" size={14} color="#B85C5C" />
+                  <ThemedText style={[s.proofActionText, { color: '#B85C5C' }]}>Reject</ThemedText>
                 </Pressable>
               </View>
             )}
@@ -1112,7 +1112,7 @@ function ReportsTab({
       </ThemedText>
 
       {reports.map((report) => {
-        const typeColor = report.type === 'financial' ? '#22C55E' : report.type === 'compliance' ? '#F59E0B' : report.type === 'strategic' ? ACCENT : report.type === 'operational' ? ACCENT : ACCENT;
+        const typeColor = report.type === 'financial' ? '#5A8A6E' : report.type === 'compliance' ? '#B8943E' : report.type === 'strategic' ? ACCENT : report.type === 'operational' ? ACCENT : ACCENT;
         return (
           <View
             key={report.id}
@@ -1179,7 +1179,7 @@ function SponsorDetailSheet({
   const typeLabel = SPONSOR_TYPE_LABELS[sponsor.type];
   const statusColor = SPONSOR_STATUS_COLORS[sponsor.status];
   const statusLabel = SPONSOR_STATUS_LABELS[sponsor.status];
-  const riskC = sponsor.riskLevel === 'high' ? '#EF4444' : sponsor.riskLevel === 'medium' ? '#F59E0B' : '#22C55E';
+  const riskC = sponsor.riskLevel === 'high' ? '#B85C5C' : sponsor.riskLevel === 'medium' ? '#B8943E' : '#5A8A6E';
 
   const sponsorAgreements = agreements.filter((a) => a.sponsorId === sponsor.id);
   const sponsorDeliverables = deliverables.filter((d) => d.agreementId && sponsorAgreements.some((a) => a.id === d.agreementId));
@@ -1550,7 +1550,7 @@ function DeliverableDetailSheet({
       {deliverable.riskIfMissed ? (
         <View style={[s.sheetSection, { borderBottomColor: colors.border }]}>
           <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Risk if Missed</ThemedText>
-          <ThemedText style={[s.sheetBodyText, { color: '#EF4444' }]}>
+          <ThemedText style={[s.sheetBodyText, { color: '#B85C5C' }]}>
             {deliverable.riskIfMissed}
           </ThemedText>
         </View>
@@ -1684,7 +1684,7 @@ function PipelineDetailSheet({
       {deal.blockers ? (
         <View style={[s.sheetSection, { borderBottomColor: colors.border }]}>
           <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Blockers</ThemedText>
-          <ThemedText style={[s.sheetBodyText, { color: '#EF4444' }]}>
+          <ThemedText style={[s.sheetBodyText, { color: '#B85C5C' }]}>
             {deal.blockers}
           </ThemedText>
         </View>

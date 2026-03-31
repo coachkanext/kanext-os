@@ -222,23 +222,23 @@ export const SPACE_TYPE_ICONS: Record<SpaceType, string> = {
 };
 
 export const SPACE_TYPE_COLORS: Record<SpaceType, string> = {
-  worship_hall: '#1D9BF0',
-  classroom: '#22C55E',
-  office: '#F59E0B',
-  nursery: '#1D9BF0',
-  kitchen: '#F59E0B',
-  gym: '#EF4444',
-  outdoor: '#22C55E',
-  fellowship_hall: '#1D9BF0',
-  parking: '#A1A1AA',
-  storage: '#A1A1AA',
+  worship_hall: '#1A1714',
+  classroom: '#5A8A6E',
+  office: '#B8943E',
+  nursery: '#1A1714',
+  kitchen: '#B8943E',
+  gym: '#B85C5C',
+  outdoor: '#5A8A6E',
+  fellowship_hall: '#1A1714',
+  parking: '#9C9790',
+  storage: '#9C9790',
 };
 
 export const SPACE_STATUS_COLORS: Record<SpaceStatus, string> = {
-  available: '#22C55E',
-  booked: '#1D9BF0',
-  closed: '#A1A1AA',
-  under_repair: '#F59E0B',
+  available: '#5A8A6E',
+  booked: '#1A1714',
+  closed: '#9C9790',
+  under_repair: '#B8943E',
 };
 
 export const SPACE_STATUS_LABELS: Record<SpaceStatus, string> = {
@@ -249,55 +249,55 @@ export const SPACE_STATUS_LABELS: Record<SpaceStatus, string> = {
 };
 
 export const BOOKING_STATUS_COLORS: Record<BookingStatus, string> = {
-  requested: '#F59E0B',
-  approved: '#22C55E',
-  scheduled: '#1D9BF0',
-  completed: '#A1A1AA',
-  cancelled: '#EF4444',
+  requested: '#B8943E',
+  approved: '#5A8A6E',
+  scheduled: '#1A1714',
+  completed: '#9C9790',
+  cancelled: '#B85C5C',
 };
 
 export const WORK_ORDER_SEVERITY_COLORS: Record<WorkOrderSeverity, string> = {
-  critical: '#EF4444',
-  high: '#EF4444',
-  normal: '#F59E0B',
-  low: '#22C55E',
+  critical: '#B85C5C',
+  high: '#B85C5C',
+  normal: '#B8943E',
+  low: '#5A8A6E',
 };
 
 export const WORK_ORDER_STATUS_COLORS: Record<WorkOrderStatus, string> = {
-  new: '#F59E0B',
-  assigned: '#1D9BF0',
-  in_progress: '#1D9BF0',
-  waiting: '#F59E0B',
-  completed: '#22C55E',
-  closed: '#A1A1AA',
+  new: '#B8943E',
+  assigned: '#1A1714',
+  in_progress: '#1A1714',
+  waiting: '#B8943E',
+  completed: '#5A8A6E',
+  closed: '#9C9790',
 };
 
 export const VENDOR_STATUS_COLORS: Record<VendorStatus, string> = {
-  active: '#22C55E',
-  expiring: '#F59E0B',
-  no_contract: '#EF4444',
+  active: '#5A8A6E',
+  expiring: '#B8943E',
+  no_contract: '#B85C5C',
 };
 
 export const INSPECTION_STATUS_COLORS: Record<string, string> = {
-  scheduled: '#1D9BF0',
-  passed: '#22C55E',
-  failed: '#EF4444',
-  overdue: '#EF4444',
+  scheduled: '#1A1714',
+  passed: '#5A8A6E',
+  failed: '#B85C5C',
+  overdue: '#B85C5C',
 };
 
 export const ASSET_CONDITION_COLORS: Record<AssetCondition, string> = {
-  excellent: '#22C55E',
-  good: '#1D9BF0',
-  fair: '#F59E0B',
-  poor: '#EF4444',
-  needs_replacement: '#EF4444',
+  excellent: '#5A8A6E',
+  good: '#1A1714',
+  fair: '#B8943E',
+  poor: '#B85C5C',
+  needs_replacement: '#B85C5C',
 };
 
 export const PROJECT_STATUS_COLORS: Record<ProjectStatus, string> = {
-  planning: '#F59E0B',
-  approved: '#1D9BF0',
-  in_progress: '#1D9BF0',
-  complete: '#22C55E',
+  planning: '#B8943E',
+  approved: '#1A1714',
+  in_progress: '#1A1714',
+  complete: '#5A8A6E',
 };
 
 export const ACCESS_LEVEL_LABELS: Record<AccessLevel, string> = {
@@ -307,9 +307,9 @@ export const ACCESS_LEVEL_LABELS: Record<AccessLevel, string> = {
 };
 
 export const ACCESS_LEVEL_COLORS: Record<AccessLevel, string> = {
-  public: '#22C55E',
-  staff: '#1D9BF0',
-  restricted: '#EF4444',
+  public: '#5A8A6E',
+  staff: '#1A1714',
+  restricted: '#B85C5C',
 };
 
 export const BOOKING_STATUS_LABELS: Record<BookingStatus, string> = {
@@ -329,11 +329,11 @@ export const REQUEST_TYPE_LABELS: Record<string, string> = {
 };
 
 export const REQUEST_TYPE_COLORS: Record<string, string> = {
-  booking: '#1D9BF0',
-  maintenance: '#F59E0B',
-  setup: '#1D9BF0',
-  access: '#1D9BF0',
-  equipment: '#F59E0B',
+  booking: '#1A1714',
+  maintenance: '#B8943E',
+  setup: '#1A1714',
+  access: '#1A1714',
+  equipment: '#B8943E',
 };
 
 export const REQUEST_STATUS_LABELS: Record<string, string> = {
@@ -344,10 +344,10 @@ export const REQUEST_STATUS_LABELS: Record<string, string> = {
 };
 
 export const REQUEST_STATUS_COLORS: Record<string, string> = {
-  pending: '#F59E0B',
-  approved: '#22C55E',
-  denied: '#EF4444',
-  completed: '#A1A1AA',
+  pending: '#B8943E',
+  approved: '#5A8A6E',
+  denied: '#B85C5C',
+  completed: '#9C9790',
 };
 
 export const WO_CATEGORY_LABELS: Record<WorkOrderCategory, string> = {
@@ -361,13 +361,13 @@ export const WO_CATEGORY_LABELS: Record<WorkOrderCategory, string> = {
 };
 
 export const WO_CATEGORY_COLORS: Record<WorkOrderCategory, string> = {
-  hvac: '#1D9BF0',
-  electrical: '#F59E0B',
-  plumbing: '#22C55E',
-  cleaning: '#1D9BF0',
-  security: '#EF4444',
-  av: '#1D9BF0',
-  general: '#A1A1AA',
+  hvac: '#1A1714',
+  electrical: '#B8943E',
+  plumbing: '#5A8A6E',
+  cleaning: '#1A1714',
+  security: '#B85C5C',
+  av: '#1A1714',
+  general: '#9C9790',
 };
 
 export const WO_SEVERITY_LABELS: Record<WorkOrderSeverity, string> = {
@@ -416,11 +416,11 @@ export const ASSET_CATEGORY_LABELS: Record<AssetCategory, string> = {
 };
 
 export const ASSET_CATEGORY_COLORS: Record<AssetCategory, string> = {
-  av_gear: '#1D9BF0',
-  furniture: '#F59E0B',
-  keys_access: '#1D9BF0',
-  maintenance_equipment: '#1D9BF0',
-  vehicle: '#22C55E',
+  av_gear: '#1A1714',
+  furniture: '#B8943E',
+  keys_access: '#1A1714',
+  maintenance_equipment: '#1A1714',
+  vehicle: '#5A8A6E',
 };
 
 export const PROJECT_STATUS_LABELS: Record<ProjectStatus, string> = {

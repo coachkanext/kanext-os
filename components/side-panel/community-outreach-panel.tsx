@@ -43,8 +43,8 @@ export function CommunityOutreachPanel() {
         <Text style={[s.sectionHeader, { color: C.secondary }]}>Pipeline</Text>
         <View style={{ flexDirection: 'row', gap: 6 }}>
           {([
-            { label: '1st Visit', count: stageCounts['First Visit'], color: '#1D9BF0' },
-            { label: 'Returned',  count: stageCounts['Returned'],    color: '#3B82F6' },
+            { label: '1st Visit', count: stageCounts['First Visit'], color: '#1A1714' },
+            { label: 'Returned',  count: stageCounts['Returned'],    color: '#1A1714' },
             { label: 'Connected', count: stageCounts['Connected'],   color: '#5A8A6E' },
             { label: 'Member',    count: stageCounts['Member'],      color: '#3D7A5A' },
           ] as const).map(item => (

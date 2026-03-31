@@ -99,8 +99,8 @@ interface HealthKPI {
 const HEALTH_KPIS: HealthKPI[] = [
   { label: 'Total Members', value: '4,200', icon: 'person.3.fill', color: ACCENT },
   { label: 'Active Small Groups', value: '42', icon: 'person.2.circle.fill', color: ACCENT },
-  { label: 'Weekly Attendance', value: '2,850', icon: 'building.2.fill', color: '#F59E0B' },
-  { label: 'New Members (Q1)', value: '38', icon: 'person.badge.plus', color: '#22C55E' },
+  { label: 'Weekly Attendance', value: '2,850', icon: 'building.2.fill', color: '#B8943E' },
+  { label: 'New Members (Q1)', value: '38', icon: 'person.badge.plus', color: '#5A8A6E' },
   { label: 'Baptisms YTD', value: '12', icon: 'drop.fill', color: ACCENT },
   { label: 'Connected Rate', value: '78%', icon: 'link', color: ACCENT },
 ];
@@ -129,8 +129,8 @@ interface CommunityEvent {
 }
 
 const RECENT_EVENTS: CommunityEvent[] = [
-  { id: 'evt-1', title: 'Community Dinner & Fellowship', date: 'Feb 21, 2026 \u00B7 6:00 PM', location: 'Downtown Campus \u2014 Fellowship Hall', type: 'Fellowship', typeColor: '#F59E0B' },
-  { id: 'evt-2', title: 'New Members Luncheon', date: 'Feb 22, 2026 \u00B7 12:30 PM', location: 'Westside Campus \u2014 Lounge', type: 'Welcome', typeColor: '#22C55E' },
+  { id: 'evt-1', title: 'Community Dinner & Fellowship', date: 'Feb 21, 2026 \u00B7 6:00 PM', location: 'Downtown Campus \u2014 Fellowship Hall', type: 'Fellowship', typeColor: '#B8943E' },
+  { id: 'evt-2', title: 'New Members Luncheon', date: 'Feb 22, 2026 \u00B7 12:30 PM', location: 'Westside Campus \u2014 Lounge', type: 'Welcome', typeColor: '#5A8A6E' },
   { id: 'evt-3', title: 'Marriage Retreat Weekend', date: 'Mar 7\u20138, 2026', location: 'Lake Arrowhead Conference Center', type: 'Retreat', typeColor: ACCENT },
 ];
 
@@ -160,8 +160,8 @@ interface QuickAction {
 }
 
 const OVERVIEW_QUICK_ACTIONS: QuickAction[] = [
-  { id: 'qa-1', label: 'Log Visit', icon: 'person.fill.checkmark', color: '#22C55E' },
-  { id: 'qa-2', label: 'New Care Case', icon: 'heart.text.square.fill', color: '#EF4444' },
+  { id: 'qa-1', label: 'Log Visit', icon: 'person.fill.checkmark', color: '#5A8A6E' },
+  { id: 'qa-2', label: 'New Care Case', icon: 'heart.text.square.fill', color: '#B85C5C' },
   { id: 'qa-3', label: 'Send Message', icon: 'paperplane.fill', color: ACCENT },
   { id: 'qa-4', label: 'Schedule Follow-up', icon: 'calendar.badge.plus', color: ACCENT },
 ];
@@ -189,10 +189,10 @@ interface PersonEntry {
 }
 
 const FOLLOW_UP_COLORS: Record<FollowUpStatus, string> = {
-  none: '#A1A1AA',
-  due: '#EF4444',
-  'in-progress': '#F59E0B',
-  completed: '#22C55E',
+  none: '#9C9790',
+  due: '#B85C5C',
+  'in-progress': '#B8943E',
+  completed: '#5A8A6E',
 };
 
 const FOLLOW_UP_LABELS: Record<FollowUpStatus, string> = {
@@ -266,9 +266,9 @@ interface SmallGroup {
 }
 
 const GROUP_HEALTH_COLOR: Record<GroupHealth, string> = {
-  healthy: '#22C55E',
-  'at-risk': '#F59E0B',
-  inactive: '#EF4444',
+  healthy: '#5A8A6E',
+  'at-risk': '#B8943E',
+  inactive: '#B85C5C',
 };
 
 const GROUP_HEALTH_LABEL: Record<GroupHealth, string> = {
@@ -299,11 +299,11 @@ const GROUP_TYPE_COLORS: Record<string, string> = {
   'Men\'s': ACCENT,
   'Women\'s': ACCENT,
   'Young Adults': ACCENT,
-  Couples: '#F59E0B',
-  Prayer: '#F59E0B',
-  Foundations: '#22C55E',
+  Couples: '#B8943E',
+  Prayer: '#B8943E',
+  Foundations: '#5A8A6E',
   Support: ACCENT,
-  Outreach: '#22C55E',
+  Outreach: '#5A8A6E',
   Seniors: ACCENT,
 };
 
@@ -348,25 +348,25 @@ const CARE_STATS = {
 };
 
 const CARE_TYPE_COLORS: Record<CareType, string> = {
-  hospital: '#EF4444',
+  hospital: '#B85C5C',
   grief: ACCENT,
   counseling: ACCENT,
-  'new-member-followup': '#22C55E',
-  'prayer-request': '#F59E0B',
+  'new-member-followup': '#5A8A6E',
+  'prayer-request': '#B8943E',
   homebound: ACCENT,
-  crisis: '#EF4444',
+  crisis: '#B85C5C',
 };
 
 const PRIORITY_COLORS: Record<CarePriority, string> = {
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#22C55E',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#5A8A6E',
 };
 
 const STATUS_COLORS: Record<CareStatus, string> = {
   active: ACCENT,
-  pending: '#F59E0B',
-  resolved: '#22C55E',
+  pending: '#B8943E',
+  resolved: '#5A8A6E',
 };
 
 // =============================================================================
@@ -385,11 +385,11 @@ interface VolunteerTeam {
 const VOLUNTEER_TEAMS: VolunteerTeam[] = [
   { id: 'vt-1', name: 'Worship & Music', headcount: 34, needed: 4, lead: 'Jessica Williams', color: ACCENT },
   { id: 'vt-2', name: 'Children\'s Ministry', headcount: 28, needed: 6, lead: 'Marcus Rivera', color: ACCENT },
-  { id: 'vt-3', name: 'Hospitality & Ushers', headcount: 22, needed: 3, lead: 'Terrance Brooks', color: '#F59E0B' },
+  { id: 'vt-3', name: 'Hospitality & Ushers', headcount: 22, needed: 3, lead: 'Terrance Brooks', color: '#B8943E' },
   { id: 'vt-4', name: 'Production & Tech', headcount: 16, needed: 5, lead: 'Carlos Martinez', color: ACCENT },
-  { id: 'vt-5', name: 'Community Outreach', headcount: 22, needed: 8, lead: 'Deacon Marcus Rivera', color: '#22C55E' },
-  { id: 'vt-6', name: 'Parking & Security', headcount: 14, needed: 2, lead: 'Deacon Williams', color: '#A1A1AA' },
-  { id: 'vt-7', name: 'Prayer Ministry', headcount: 20, needed: 0, lead: 'Mother Johnson', color: '#F59E0B' },
+  { id: 'vt-5', name: 'Community Outreach', headcount: 22, needed: 8, lead: 'Deacon Marcus Rivera', color: '#5A8A6E' },
+  { id: 'vt-6', name: 'Parking & Security', headcount: 14, needed: 2, lead: 'Deacon Williams', color: '#9C9790' },
+  { id: 'vt-7', name: 'Prayer Ministry', headcount: 20, needed: 0, lead: 'Mother Johnson', color: '#B8943E' },
   { id: 'vt-8', name: 'Media & Communications', headcount: 8, needed: 4, lead: 'Linda Park', color: ACCENT },
 ];
 
@@ -525,10 +525,10 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Chu
         <View style={s.moduleContainer}>
           <SectionHeader title="ALERTS" colors={colors} icon="exclamationmark.triangle.fill" count={OVERVIEW_ALERTS.length} />
           {OVERVIEW_ALERTS.map((alert) => (
-            <Card key={alert.id} colors={colors} style={{ borderColor: alert.severity === 'warning' ? '#F59E0B40' : colors.border }}>
+            <Card key={alert.id} colors={colors} style={{ borderColor: alert.severity === 'warning' ? '#B8943E40' : colors.border }}>
               <View style={s.alertRow}>
-                <View style={[s.alertIconWrap, { backgroundColor: alert.severity === 'warning' ? '#F59E0B20' : `${ACCENT}20` }]}>
-                  <IconSymbol name={alert.icon as any} size={14} color={alert.severity === 'warning' ? '#F59E0B' : ACCENT} />
+                <View style={[s.alertIconWrap, { backgroundColor: alert.severity === 'warning' ? '#B8943E20' : `${ACCENT}20` }]}>
+                  <IconSymbol name={alert.icon as any} size={14} color={alert.severity === 'warning' ? '#B8943E' : ACCENT} />
                 </View>
                 <View style={s.alertContent}>
                   <ThemedText style={[s.alertLabel, { color: colors.text }]}>{alert.label}</ThemedText>
@@ -589,10 +589,10 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Chu
       {/* Community Spotlight */}
       <View style={s.moduleContainer}>
         <SectionHeader title="COMMUNITY SPOTLIGHT" colors={colors} icon="sparkles" />
-        <Card colors={colors} style={{ borderColor: '#F59E0B40' }}>
+        <Card colors={colors} style={{ borderColor: '#B8943E40' }}>
           <View style={s.spotlightHeader}>
-            <View style={[s.spotlightAvatar, { backgroundColor: '#F59E0B20' }]}>
-              <ThemedText style={[s.spotlightInitials, { color: '#F59E0B' }]}>MJ</ThemedText>
+            <View style={[s.spotlightAvatar, { backgroundColor: '#B8943E20' }]}>
+              <ThemedText style={[s.spotlightInitials, { color: '#B8943E' }]}>MJ</ThemedText>
             </View>
             <View style={s.spotlightHeaderText}>
               <ThemedText style={[s.spotlightName, { color: colors.text }]}>{COMMUNITY_SPOTLIGHT.name}</ThemedText>
@@ -646,7 +646,7 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Chu
               style={({ pressed }) => [s.ctaButton, { borderColor: colors.border, opacity: pressed ? 0.7 : 1 }]}
               onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
             >
-              <IconSymbol name="heart.fill" size={14} color="#22C55E" />
+              <IconSymbol name="heart.fill" size={14} color="#5A8A6E" />
               <ThemedText style={[s.ctaButtonText, { color: colors.text }]}>Start Serving</ThemedText>
             </Pressable>
           </View>
@@ -706,12 +706,12 @@ function PeopleView({ colors, role }: { colors: typeof Colors.light; role: Churc
 
   const categoryColor = (cat: PersonEntry['category']): string => {
     switch (cat) {
-      case 'leader': return '#F59E0B';
+      case 'leader': return '#B8943E';
       case 'staff': return ACCENT;
-      case 'member': return '#22C55E';
+      case 'member': return '#5A8A6E';
       case 'new-member': return ACCENT;
       case 'visitor': return ACCENT;
-      default: return '#A1A1AA';
+      default: return '#9C9790';
     }
   };
 
@@ -843,9 +843,9 @@ function PeopleView({ colors, role }: { colors: typeof Colors.light; role: Churc
                         </View>
                       )}
                       {person.sensitivity === 'restricted' && (
-                        <View style={[s.fuBadge, { backgroundColor: '#EF444420' }]}>
-                          <IconSymbol name="lock.fill" size={8} color="#EF4444" />
-                          <ThemedText style={[s.fuBadgeText, { color: '#EF4444' }]}>RESTRICTED</ThemedText>
+                        <View style={[s.fuBadge, { backgroundColor: '#B85C5C20' }]}>
+                          <IconSymbol name="lock.fill" size={8} color="#B85C5C" />
+                          <ThemedText style={[s.fuBadgeText, { color: '#B85C5C' }]}>RESTRICTED</ThemedText>
                         </View>
                       )}
                     </View>
@@ -977,7 +977,7 @@ function GroupsView({ colors, role }: { colors: typeof Colors.light; role: Churc
         {filtered.map((group) => {
           const isExpanded = expandedId === group.id;
           const isFull = group.currentMembers >= group.capacity;
-          const typeColor = GROUP_TYPE_COLORS[group.type] ?? '#A1A1AA';
+          const typeColor = GROUP_TYPE_COLORS[group.type] ?? '#9C9790';
           const fillPct = Math.round((group.currentMembers / group.capacity) * 100);
 
           return (
@@ -1020,23 +1020,23 @@ function GroupsView({ colors, role }: { colors: typeof Colors.light; role: Churc
                     </View>
                   )}
                   {isFull ? (
-                    <View style={[s.groupStatusBadge, { backgroundColor: '#EF444420' }]}>
-                      <ThemedText style={[s.groupStatusText, { color: '#EF4444' }]}>FULL</ThemedText>
+                    <View style={[s.groupStatusBadge, { backgroundColor: '#B85C5C20' }]}>
+                      <ThemedText style={[s.groupStatusText, { color: '#B85C5C' }]}>FULL</ThemedText>
                     </View>
                   ) : group.status === 'open' ? (
-                    <View style={[s.groupStatusBadge, { backgroundColor: '#22C55E20' }]}>
-                      <ThemedText style={[s.groupStatusText, { color: '#22C55E' }]}>OPEN</ThemedText>
+                    <View style={[s.groupStatusBadge, { backgroundColor: '#5A8A6E20' }]}>
+                      <ThemedText style={[s.groupStatusText, { color: '#5A8A6E' }]}>OPEN</ThemedText>
                     </View>
                   ) : (
-                    <View style={[s.groupStatusBadge, { backgroundColor: '#F59E0B20' }]}>
-                      <ThemedText style={[s.groupStatusText, { color: '#F59E0B' }]}>CLOSED</ThemedText>
+                    <View style={[s.groupStatusBadge, { backgroundColor: '#B8943E20' }]}>
+                      <ThemedText style={[s.groupStatusText, { color: '#B8943E' }]}>CLOSED</ThemedText>
                     </View>
                   )}
                 </View>
 
                 {/* Fill bar */}
                 <View style={[s.progressBarBg, { backgroundColor: colors.backgroundTertiary }]}>
-                  <View style={[s.progressBarFill, { width: `${fillPct}%`, backgroundColor: isFull ? '#EF4444' : typeColor }]} />
+                  <View style={[s.progressBarFill, { width: `${fillPct}%`, backgroundColor: isFull ? '#B85C5C' : typeColor }]} />
                 </View>
 
                 {/* Expanded details */}
@@ -1059,7 +1059,7 @@ function GroupsView({ colors, role }: { colors: typeof Colors.light; role: Churc
                         <IconSymbol
                           name={group.trend === 'up' ? 'arrow.up.right' : group.trend === 'down' ? 'arrow.down.right' : 'arrow.right' as any}
                           size={11}
-                          color={group.trend === 'up' ? '#22C55E' : group.trend === 'down' ? '#EF4444' : '#F59E0B'}
+                          color={group.trend === 'up' ? '#5A8A6E' : group.trend === 'down' ? '#B85C5C' : '#B8943E'}
                         />
                         <ThemedText style={[s.detailText, { color: colors.textSecondary }]}>
                           Trend: {group.trend === 'up' ? 'Growing' : group.trend === 'down' ? 'Declining' : 'Stable'}
@@ -1126,9 +1126,9 @@ function CareView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
           <View style={s.summaryGrid}>
             {[
               { v: String(CARE_STATS.activeCases), l: 'Active Cases', c: ACCENT },
-              { v: String(CARE_STATS.resolvedThisMonth), l: 'Resolved (Mo)', c: '#22C55E' },
+              { v: String(CARE_STATS.resolvedThisMonth), l: 'Resolved (Mo)', c: '#5A8A6E' },
               { v: CARE_STATS.avgResponseTime, l: 'Avg Response', c: colors.text },
-              { v: String(CARE_STATS.pendingAssignment), l: 'Pending', c: '#F59E0B' },
+              { v: String(CARE_STATS.pendingAssignment), l: 'Pending', c: '#B8943E' },
             ].map((item) => (
               <View key={item.l} style={s.summaryStat}>
                 <ThemedText style={[s.summaryValue, { color: item.c }]}>{item.v}</ThemedText>
@@ -1191,7 +1191,7 @@ function CareView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
 
         const renderCareCard = (cc: CareCase) => {
           const isExpanded = expandedId === cc.id;
-          const typeColor = CARE_TYPE_COLORS[cc.type] ?? '#A1A1AA';
+          const typeColor = CARE_TYPE_COLORS[cc.type] ?? '#9C9790';
           const priorityColor = PRIORITY_COLORS[cc.priority];
           const statusColor = STATUS_COLORS[cc.status];
 
@@ -1264,9 +1264,9 @@ function CareView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
             {newVisitors.length > 0 && (
               <View style={s.moduleContainer}>
                 <SectionHeader title="NEW VISITOR QUEUE" colors={colors} count={newVisitors.length} icon="person.badge.plus" />
-                <View style={[s.slaBanner, { backgroundColor: '#F59E0B15', borderColor: '#F59E0B30' }]}>
-                  <IconSymbol name="clock.fill" size={11} color="#F59E0B" />
-                  <ThemedText style={[s.slaBannerText, { color: '#F59E0B' }]}>48h SLA — contact within 48 hours of first visit</ThemedText>
+                <View style={[s.slaBanner, { backgroundColor: '#B8943E15', borderColor: '#B8943E30' }]}>
+                  <IconSymbol name="clock.fill" size={11} color="#B8943E" />
+                  <ThemedText style={[s.slaBannerText, { color: '#B8943E' }]}>48h SLA — contact within 48 hours of first visit</ThemedText>
                 </View>
                 {newVisitors.map(renderCareCard)}
               </View>
@@ -1284,9 +1284,9 @@ function CareView({ colors, role }: { colors: typeof Colors.light; role: ChurchR
             {careRestricted.length > 0 && isElderLevel(role) && (
               <View style={s.moduleContainer}>
                 <SectionHeader title="CARE REQUESTS" colors={colors} count={careRestricted.length} icon="lock.fill" />
-                <View style={[s.slaBanner, { backgroundColor: '#EF444415', borderColor: '#EF444430' }]}>
-                  <IconSymbol name="lock.fill" size={11} color="#EF4444" />
-                  <ThemedText style={[s.slaBannerText, { color: '#EF4444' }]}>Restricted — pastoral care cases visible to C1/C2 only</ThemedText>
+                <View style={[s.slaBanner, { backgroundColor: '#B85C5C15', borderColor: '#B85C5C30' }]}>
+                  <IconSymbol name="lock.fill" size={11} color="#B85C5C" />
+                  <ThemedText style={[s.slaBannerText, { color: '#B85C5C' }]}>Restricted — pastoral care cases visible to C1/C2 only</ThemedText>
                 </View>
                 {careRestricted.map(renderCareCard)}
               </View>
@@ -1324,8 +1324,8 @@ function ServeView({ colors, role }: { colors: typeof Colors.light; role: Church
           <View style={s.summaryGrid}>
             {[
               { v: String(SERVE_STATS.totalVolunteers), l: 'Total Volunteers', c: colors.text },
-              { v: String(SERVE_STATS.openPositionsThisWeek), l: 'Open This Week', c: '#F59E0B' },
-              { v: String(SERVE_STATS.newVolunteersThisMonth), l: 'New (Mo)', c: '#22C55E' },
+              { v: String(SERVE_STATS.openPositionsThisWeek), l: 'Open This Week', c: '#B8943E' },
+              { v: String(SERVE_STATS.newVolunteersThisMonth), l: 'New (Mo)', c: '#5A8A6E' },
               ...(showAnalytics ? [{ v: SERVE_STATS.retentionRate, l: 'Retention', c: ACCENT }] : [{ v: SERVE_STATS.avgHoursPerMonth, l: 'Avg Hrs/Mo', c: colors.text }]),
             ].map((item) => (
               <View key={item.l} style={s.summaryStat}>
@@ -1375,8 +1375,8 @@ function ServeView({ colors, role }: { colors: typeof Colors.light; role: Church
 
               {team.needed > 0 && (
                 <View style={s.teamNeededRow}>
-                  <IconSymbol name="exclamationmark.circle.fill" size={11} color="#F59E0B" />
-                  <ThemedText style={[s.teamNeededText, { color: '#F59E0B' }]}>
+                  <IconSymbol name="exclamationmark.circle.fill" size={11} color="#B8943E" />
+                  <ThemedText style={[s.teamNeededText, { color: '#B8943E' }]}>
                     {team.needed} position{team.needed !== 1 ? 's' : ''} needed
                   </ThemedText>
                 </View>
@@ -1398,7 +1398,7 @@ function ServeView({ colors, role }: { colors: typeof Colors.light; role: Church
       <View style={s.moduleContainer}>
         <Card colors={colors}>
           <View style={s.serveCTAContent}>
-            <IconSymbol name="heart.fill" size={24} color="#22C55E" />
+            <IconSymbol name="heart.fill" size={24} color="#5A8A6E" />
             <ThemedText style={[s.serveCTATitle, { color: colors.text }]}>Ready to Serve?</ThemedText>
             <ThemedText style={[s.serveCTADescription, { color: colors.textSecondary }]}>
               Use your gifts to make a difference. Every team needs people like you. Sign up and we will connect you to the right ministry.
@@ -1407,7 +1407,7 @@ function ServeView({ colors, role }: { colors: typeof Colors.light; role: Church
               style={({ pressed }) => [s.serveCTAButton, { borderColor: colors.border, opacity: pressed ? 0.7 : 1 }]}
               onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
             >
-              <IconSymbol name="hand.raised.fill" size={14} color="#22C55E" />
+              <IconSymbol name="hand.raised.fill" size={14} color="#5A8A6E" />
               <ThemedText style={[s.serveCTAButtonText, { color: colors.text }]}>Sign Up to Serve</ThemedText>
             </Pressable>
           </View>
@@ -1423,9 +1423,9 @@ function ServeView({ colors, role }: { colors: typeof Colors.light; role: Church
               {[
                 { label: 'Total Hrs (MTD)', value: '2,034', color: ACCENT },
                 { label: 'Avg Engagement', value: '4.2/wk', color: ACCENT },
-                { label: 'New Sign-ups (Q1)', value: '24', color: '#22C55E' },
-                { label: 'Burnout Risk', value: '6%', color: '#EF4444' },
-                { label: 'First-Time Servers', value: '12', color: '#F59E0B' },
+                { label: 'New Sign-ups (Q1)', value: '24', color: '#5A8A6E' },
+                { label: 'Burnout Risk', value: '6%', color: '#B85C5C' },
+                { label: 'First-Time Servers', value: '12', color: '#B8943E' },
                 { label: 'Returning Rate', value: '91%', color: ACCENT },
               ].map((item) => (
                 <View key={item.label} style={[s.analyticsCell, { borderColor: colors.border }]}>

@@ -26,10 +26,10 @@ import {
 const ACCENT = MODE_ACCENT.business;
 
 const STATUS_COLORS: Record<string, string> = {
-  Active: '#22C55E',
-  'Pending Close': '#F59E0B',
-  Closed: '#A1A1AA',
-  Cancelled: '#EF4444',
+  Active: '#5A8A6E',
+  'Pending Close': '#B8943E',
+  Closed: '#9C9790',
+  Cancelled: '#B85C5C',
 };
 
 const DOC_TYPE_ICONS: Record<string, string> = {
@@ -73,7 +73,7 @@ export function BizDealDetailSheet({ deal, visible, onClose, colors }: Props) {
 
   const typeColor = DEAL_TYPE_COLORS[deal.type];
   const stageColor = STAGE_COLORS[deal.stage];
-  const statusColor = STATUS_COLORS[deal.status] ?? '#A1A1AA';
+  const statusColor = STATUS_COLORS[deal.status] ?? '#9C9790';
   const isReadOnly = deal.lifecycle === 'closed' || deal.lifecycle === 'archive';
   const hasCapital = deal.capitalOverview != null;
   const hasDocs = deal.linkedDocs.length > 0;
@@ -148,15 +148,15 @@ export function BizDealDetailSheet({ deal, visible, onClose, colors }: Props) {
                   <ThemedText style={[s.capitalLabel, { color: colors.textTertiary }]}>Target</ThemedText>
                 </View>
                 <View style={[s.capitalCell, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <ThemedText style={[s.capitalAmount, { color: '#2563EB' }]}>{deal.capitalOverview!.committedAmount}</ThemedText>
+                  <ThemedText style={[s.capitalAmount, { color: '#1A1714' }]}>{deal.capitalOverview!.committedAmount}</ThemedText>
                   <ThemedText style={[s.capitalLabel, { color: colors.textTertiary }]}>Committed</ThemedText>
                 </View>
                 <View style={[s.capitalCell, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <ThemedText style={[s.capitalAmount, { color: '#22C55E' }]}>{deal.capitalOverview!.receivedAmount}</ThemedText>
+                  <ThemedText style={[s.capitalAmount, { color: '#5A8A6E' }]}>{deal.capitalOverview!.receivedAmount}</ThemedText>
                   <ThemedText style={[s.capitalLabel, { color: colors.textTertiary }]}>Received</ThemedText>
                 </View>
                 <View style={[s.capitalCell, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                  <ThemedText style={[s.capitalAmount, { color: '#F59E0B' }]}>{deal.capitalOverview!.remaining}</ThemedText>
+                  <ThemedText style={[s.capitalAmount, { color: '#B8943E' }]}>{deal.capitalOverview!.remaining}</ThemedText>
                   <ThemedText style={[s.capitalLabel, { color: colors.textTertiary }]}>Remaining</ThemedText>
                 </View>
               </View>
@@ -218,9 +218,9 @@ export function BizDealDetailSheet({ deal, visible, onClose, colors }: Props) {
             const isComplete = ms.status === 'Completed';
             return (
               <View key={i} style={s.milestoneRow}>
-                <View style={[s.milestoneIcon, { backgroundColor: isComplete ? '#22C55E' + '20' : colors.card }]}>
+                <View style={[s.milestoneIcon, { backgroundColor: isComplete ? '#5A8A6E' + '20' : colors.card }]}>
                   {isComplete ? (
-                    <IconSymbol name="checkmark" size={10} color="#22C55E" />
+                    <IconSymbol name="checkmark" size={10} color="#5A8A6E" />
                   ) : (
                     <View style={[s.milestoneDot, { backgroundColor: colors.textTertiary }]} />
                   )}
@@ -233,7 +233,7 @@ export function BizDealDetailSheet({ deal, visible, onClose, colors }: Props) {
                     <ThemedText style={[s.milestoneDate, { color: colors.textTertiary }]}>{ms.date}</ThemedText>
                   )}
                 </View>
-                <ThemedText style={[s.milestoneStatus, { color: isComplete ? '#22C55E' : colors.textTertiary }]}>
+                <ThemedText style={[s.milestoneStatus, { color: isComplete ? '#5A8A6E' : colors.textTertiary }]}>
                   {ms.status}
                 </ThemedText>
               </View>
@@ -291,16 +291,16 @@ export function BizDealDetailSheet({ deal, visible, onClose, colors }: Props) {
                     style={[s.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
                     onPress={() => handleAction('Cancel Deal')}
                   >
-                    <IconSymbol name="xmark" size={13} color="#EF4444" />
-                    <ThemedText style={[s.actionBtnText, { color: '#EF4444' }]}>Cancel Deal</ThemedText>
+                    <IconSymbol name="xmark" size={13} color="#B85C5C" />
+                    <ThemedText style={[s.actionBtnText, { color: '#B85C5C' }]}>Cancel Deal</ThemedText>
                   </Pressable>
                   {deal.status !== 'Closed' && (
                     <Pressable
                       style={[s.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
                       onPress={() => handleAction('Mark Closed')}
                     >
-                      <IconSymbol name="checkmark" size={13} color="#22C55E" />
-                      <ThemedText style={[s.actionBtnText, { color: '#22C55E' }]}>Mark Closed</ThemedText>
+                      <IconSymbol name="checkmark" size={13} color="#5A8A6E" />
+                      <ThemedText style={[s.actionBtnText, { color: '#5A8A6E' }]}>Mark Closed</ThemedText>
                     </Pressable>
                   )}
                 </View>
@@ -348,8 +348,8 @@ export function BizDealDetailSheet({ deal, visible, onClose, colors }: Props) {
           <>
             <View style={[s.divider, { backgroundColor: colors.border }]} />
             <View style={s.section}>
-              <View style={[s.readOnlyBadge, { backgroundColor: '#EF4444' + '12' }]}>
-                <ThemedText style={[s.readOnlyText, { color: '#EF4444' }]}>
+              <View style={[s.readOnlyBadge, { backgroundColor: '#B85C5C' + '12' }]}>
+                <ThemedText style={[s.readOnlyText, { color: '#B85C5C' }]}>
                   Read-Only — Deal {deal.status === 'Cancelled' ? 'Cancelled' : 'Archived'}
                 </ThemedText>
               </View>

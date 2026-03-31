@@ -44,10 +44,10 @@ export interface UniversalEntrantSheetProps {
 
 function getStatusColor(status: EntrantObject['status']): string {
   switch (status) {
-    case 'active': return '#22C55E';
-    case 'under_review': return '#F59E0B';
-    case 'suspended': return '#EF4444';
-    case 'withdrawn': return '#A1A1AA';
+    case 'active': return '#5A8A6E';
+    case 'under_review': return '#B8943E';
+    case 'suspended': return '#B85C5C';
+    case 'withdrawn': return '#9C9790';
   }
 }
 
@@ -62,10 +62,10 @@ function getStatusLabel(status: EntrantObject['status']): string {
 
 function getPayoutStatusColor(status: EntrantObject['payoutStatus']): string {
   switch (status) {
-    case 'released': return '#22C55E';
-    case 'pending': return '#F59E0B';
-    case 'hold': return '#EF4444';
-    case 'locked': return '#A1A1AA';
+    case 'released': return '#5A8A6E';
+    case 'pending': return '#B8943E';
+    case 'hold': return '#B85C5C';
+    case 'locked': return '#9C9790';
   }
 }
 
@@ -80,9 +80,9 @@ function getPayoutStatusLabel(status: EntrantObject['payoutStatus']): string {
 
 function getCredentialColor(status: EntrantObject['credentialsStatus']): string {
   switch (status) {
-    case 'complete': return '#22C55E';
-    case 'pending': return '#F59E0B';
-    case 'missing': return '#EF4444';
+    case 'complete': return '#5A8A6E';
+    case 'pending': return '#B8943E';
+    case 'missing': return '#B85C5C';
   }
 }
 
@@ -204,7 +204,7 @@ function ChecklistRow({
       <IconSymbol
         name={done ? 'checkmark.circle.fill' : 'circle.fill'}
         size={16}
-        color={done ? '#22C55E' : colors.textTertiary}
+        color={done ? '#5A8A6E' : colors.textTertiary}
       />
       <Text style={[styles.checklistLabel, { color: done ? colors.text : colors.textSecondary }]}>
         {label}
@@ -320,9 +320,9 @@ export function UniversalEntrantSheet({
 
           {/* At-risk badge */}
           {entrant.atRiskFlags.length > 0 && (
-            <View style={[styles.statusPill, { backgroundColor: '#EF4444' + '20' }]}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
-              <Text style={[styles.statusText, { color: '#EF4444' }]}>
+            <View style={[styles.statusPill, { backgroundColor: '#B85C5C' + '20' }]}>
+              <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B85C5C" />
+              <Text style={[styles.statusText, { color: '#B85C5C' }]}>
                 {entrant.atRiskFlags.length} Flag{entrant.atRiskFlags.length > 1 ? 's' : ''}
               </Text>
             </View>
@@ -456,7 +456,7 @@ export function UniversalEntrantSheet({
                     label={r.event}
                     value={getFinishOrdinal(r.finish)}
                     colors={colors}
-                    valueColor={r.finish <= 3 ? '#22C55E' : undefined}
+                    valueColor={r.finish <= 3 ? '#5A8A6E' : undefined}
                   />
                 ))
               )}
@@ -469,8 +469,8 @@ export function UniversalEntrantSheet({
                 <Card colors={colors}>
                   {entrant.atRiskFlags.map((flag, i) => (
                     <View key={`flag-${i}`} style={styles.flagRow}>
-                      <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#EF4444" />
-                      <Text style={[styles.flagText, { color: '#EF4444' }]}>{flag}</Text>
+                      <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#B85C5C" />
+                      <Text style={[styles.flagText, { color: '#B85C5C' }]}>{flag}</Text>
                     </View>
                   ))}
                 </Card>
@@ -554,11 +554,11 @@ export function UniversalEntrantSheet({
                       <Text style={[styles.finishEvent, { color: colors.textSecondary }]}>{r.event}</Text>
                       <View style={[
                         styles.finishBadge,
-                        { backgroundColor: r.finish <= 3 ? '#22C55E' + '20' : colors.backgroundTertiary },
+                        { backgroundColor: r.finish <= 3 ? '#5A8A6E' + '20' : colors.backgroundTertiary },
                       ]}>
                         <Text style={[
                           styles.finishBadgeText,
-                          { color: r.finish <= 3 ? '#22C55E' : colors.text },
+                          { color: r.finish <= 3 ? '#5A8A6E' : colors.text },
                         ]}>
                           {getFinishOrdinal(r.finish)}
                         </Text>
@@ -572,10 +572,10 @@ export function UniversalEntrantSheet({
             <SectionLabel label="SUMMARY" colors={colors} />
             <Card colors={colors}>
               <StatRow label="Average Finish" value={avgFinish} colors={colors} />
-              <StatRow label="Best Finish" value={bestFinish} colors={colors} valueColor="#22C55E" />
+              <StatRow label="Best Finish" value={bestFinish} colors={colors} valueColor="#5A8A6E" />
               <StatRow label="Worst Finish" value={worstFinish} colors={colors} />
               <Divider colors={colors} />
-              <StatRow label="Total Penalties" value={`${penaltiesCount}`} colors={colors} valueColor={penaltiesCount > 0 ? '#EF4444' : undefined} />
+              <StatRow label="Total Penalties" value={`${penaltiesCount}`} colors={colors} valueColor={penaltiesCount > 0 ? '#B85C5C' : undefined} />
             </Card>
 
             <SectionLabel label="CONSISTENCY TREND" colors={colors} />
@@ -584,7 +584,7 @@ export function UniversalEntrantSheet({
                 <IconSymbol
                   name={consistency === 'Very Consistent' || consistency === 'Consistent' ? 'checkmark.circle.fill' : 'exclamationmark.triangle.fill'}
                   size={18}
-                  color={consistency === 'Very Consistent' || consistency === 'Consistent' ? '#22C55E' : '#F59E0B'}
+                  color={consistency === 'Very Consistent' || consistency === 'Consistent' ? '#5A8A6E' : '#B8943E'}
                 />
                 <View style={{ flex: 1, marginLeft: Spacing.sm }}>
                   <Text style={[styles.trendLabel, { color: colors.text }]}>{consistency}</Text>
@@ -606,7 +606,7 @@ export function UniversalEntrantSheet({
                 label="Completion"
                 value={`${entrant.complianceDocsComplete}/${entrant.complianceDocsTotal}`}
                 colors={colors}
-                valueColor={entrant.complianceDocsComplete === entrant.complianceDocsTotal ? '#22C55E' : '#F59E0B'}
+                valueColor={entrant.complianceDocsComplete === entrant.complianceDocsTotal ? '#5A8A6E' : '#B8943E'}
               />
               <Divider colors={colors} />
               {complianceDocs.map((doc) => (
@@ -633,16 +633,16 @@ export function UniversalEntrantSheet({
                       <View style={[
                         styles.severityBadge,
                         {
-                          backgroundColor: inc.severity === 'major' ? '#EF4444' + '20'
-                            : inc.severity === 'moderate' ? '#F59E0B' + '20'
+                          backgroundColor: inc.severity === 'major' ? '#B85C5C' + '20'
+                            : inc.severity === 'moderate' ? '#B8943E' + '20'
                             : colors.backgroundTertiary,
                         },
                       ]}>
                         <Text style={[
                           styles.severityText,
                           {
-                            color: inc.severity === 'major' ? '#EF4444'
-                              : inc.severity === 'moderate' ? '#F59E0B'
+                            color: inc.severity === 'major' ? '#B85C5C'
+                              : inc.severity === 'moderate' ? '#B8943E'
                               : colors.textSecondary,
                           },
                         ]}>
@@ -661,9 +661,9 @@ export function UniversalEntrantSheet({
             <Card colors={colors}>
               {entrant.status === 'under_review' || entrant.status === 'suspended' ? (
                 <View style={styles.holdRow}>
-                  <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#EF4444" />
+                  <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#B85C5C" />
                   <View style={{ flex: 1, marginLeft: Spacing.sm }}>
-                    <Text style={[styles.holdTitle, { color: '#EF4444' }]}>
+                    <Text style={[styles.holdTitle, { color: '#B85C5C' }]}>
                       {entrant.status === 'suspended' ? 'Suspension Active' : 'Under Review'}
                     </Text>
                     <Text style={[styles.holdSub, { color: colors.textSecondary }]}>
@@ -675,7 +675,7 @@ export function UniversalEntrantSheet({
                 </View>
               ) : (
                 <View style={styles.clearRow}>
-                  <IconSymbol name="checkmark.circle.fill" size={16} color="#22C55E" />
+                  <IconSymbol name="checkmark.circle.fill" size={16} color="#5A8A6E" />
                   <Text style={[styles.clearText, { color: colors.textSecondary }]}>
                     No active holds or sanctions
                   </Text>
@@ -702,7 +702,7 @@ export function UniversalEntrantSheet({
                 label="Holds"
                 value={entrant.payoutStatus === 'hold' ? '1 Active' : 'None'}
                 colors={colors}
-                valueColor={entrant.payoutStatus === 'hold' ? '#EF4444' : '#22C55E'}
+                valueColor={entrant.payoutStatus === 'hold' ? '#B85C5C' : '#5A8A6E'}
               />
             </Card>
 
@@ -752,7 +752,7 @@ export function UniversalEntrantSheet({
                 value={`${MOCK_PAYOUT_GATES.filter((g) => g.cleared).length}/${MOCK_PAYOUT_GATES.length}`}
                 colors={colors}
                 valueColor={
-                  MOCK_PAYOUT_GATES.every((g) => g.cleared) ? '#22C55E' : '#F59E0B'
+                  MOCK_PAYOUT_GATES.every((g) => g.cleared) ? '#5A8A6E' : '#B8943E'
                 }
               />
             </Card>
@@ -772,7 +772,7 @@ export function UniversalEntrantSheet({
                     <IconSymbol
                       name={isDone ? 'checkmark.circle.fill' : isRisk ? 'exclamationmark.triangle.fill' : 'clock.fill'}
                       size={16}
-                      color={isDone ? '#22C55E' : isRisk ? '#EF4444' : '#F59E0B'}
+                      color={isDone ? '#5A8A6E' : isRisk ? '#B85C5C' : '#B8943E'}
                     />
                     <View style={{ flex: 1, marginLeft: Spacing.sm }}>
                       <Text style={[styles.obligationTitle, { color: colors.text }]}>
@@ -785,17 +785,17 @@ export function UniversalEntrantSheet({
                     <View style={[
                       styles.obligationStatusBadge,
                       {
-                        backgroundColor: isDone ? '#22C55E' + '20'
-                          : isRisk ? '#EF4444' + '20'
-                          : '#F59E0B' + '20',
+                        backgroundColor: isDone ? '#5A8A6E' + '20'
+                          : isRisk ? '#B85C5C' + '20'
+                          : '#B8943E' + '20',
                       },
                     ]}>
                       <Text style={[
                         styles.obligationStatusText,
                         {
-                          color: isDone ? '#22C55E'
-                            : isRisk ? '#EF4444'
-                            : '#F59E0B',
+                          color: isDone ? '#5A8A6E'
+                            : isRisk ? '#B85C5C'
+                            : '#B8943E',
                         },
                       ]}>
                         {isDone ? 'Delivered' : isRisk ? 'At Risk' : 'On Track'}
@@ -810,16 +810,16 @@ export function UniversalEntrantSheet({
             <Card colors={colors}>
               {entrant.sponsorDeliverablesDue === 0 ? (
                 <View style={styles.clearRow}>
-                  <IconSymbol name="checkmark.circle.fill" size={16} color="#22C55E" />
+                  <IconSymbol name="checkmark.circle.fill" size={16} color="#5A8A6E" />
                   <Text style={[styles.clearText, { color: colors.textSecondary }]}>
                     No missed deliverables
                   </Text>
                 </View>
               ) : (
                 <View style={styles.holdRow}>
-                  <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#EF4444" />
+                  <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#B85C5C" />
                   <View style={{ flex: 1, marginLeft: Spacing.sm }}>
-                    <Text style={[styles.holdTitle, { color: '#EF4444' }]}>
+                    <Text style={[styles.holdTitle, { color: '#B85C5C' }]}>
                       {entrant.sponsorDeliverablesDue} Overdue Deliverable{entrant.sponsorDeliverablesDue > 1 ? 's' : ''}
                     </Text>
                     <Text style={[styles.holdSub, { color: colors.textSecondary }]}>
@@ -841,19 +841,19 @@ export function UniversalEntrantSheet({
                 label="Delivered"
                 value={`${MOCK_MEDIA_OBLIGATIONS.filter((o) => o.status === 'delivered').length}`}
                 colors={colors}
-                valueColor="#22C55E"
+                valueColor="#5A8A6E"
               />
               <StatRow
                 label="At Risk"
                 value={`${MOCK_MEDIA_OBLIGATIONS.filter((o) => o.status === 'at_risk').length}`}
                 colors={colors}
-                valueColor={MOCK_MEDIA_OBLIGATIONS.some((o) => o.status === 'at_risk') ? '#EF4444' : undefined}
+                valueColor={MOCK_MEDIA_OBLIGATIONS.some((o) => o.status === 'at_risk') ? '#B85C5C' : undefined}
               />
               <StatRow
                 label="Sponsor Deliverables Due"
                 value={`${entrant.sponsorDeliverablesDue}`}
                 colors={colors}
-                valueColor={entrant.sponsorDeliverablesDue > 0 ? '#EF4444' : '#22C55E'}
+                valueColor={entrant.sponsorDeliverablesDue > 0 ? '#B85C5C' : '#5A8A6E'}
               />
             </Card>
           </View>

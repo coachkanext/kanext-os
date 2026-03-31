@@ -98,10 +98,10 @@ function OverviewTab({
   const progressPct = stats.goalAmount > 0 ? Math.round((stats.totalRaised / stats.goalAmount) * 100) : 0;
 
   const kpis = [
-    { id: 'raised', label: 'Total Raised', value: formatCurrency(stats.totalRaised), icon: 'dollarsign.circle.fill', color: '#22C55E' },
+    { id: 'raised', label: 'Total Raised', value: formatCurrency(stats.totalRaised), icon: 'dollarsign.circle.fill', color: '#5A8A6E' },
     { id: 'goal', label: 'Goal Amount', value: formatCurrency(stats.goalAmount), icon: 'flag.fill', color: ACCENT },
     { id: 'donors', label: 'Total Donors', value: `${stats.donorCount}`, icon: 'person.2.fill', color: ACCENT },
-    { id: 'new', label: 'New Donors', value: `${stats.newDonors}`, icon: 'person.badge.plus', color: '#F59E0B' },
+    { id: 'new', label: 'New Donors', value: `${stats.newDonors}`, icon: 'person.badge.plus', color: '#B8943E' },
     { id: 'endowment', label: 'Endowment', value: formatCurrency(stats.endowmentTotal), icon: 'building.columns.fill', color: ACCENT },
     { id: 'annual', label: 'Annual Fund', value: formatCurrency(stats.annualFundTotal), icon: 'chart.bar.fill', color: ACCENT },
   ];
@@ -112,7 +112,7 @@ function OverviewTab({
       <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Fundraising Progress</ThemedText>
       <View style={[s.progressCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.progressHeader}>
-          <ThemedText style={[s.progressRaised, { color: '#22C55E' }]}>
+          <ThemedText style={[s.progressRaised, { color: '#5A8A6E' }]}>
             {formatCurrency(stats.totalRaised)}
           </ThemedText>
           <ThemedText style={[s.progressGoal, { color: colors.textTertiary }]}>
@@ -121,7 +121,7 @@ function OverviewTab({
         </View>
         <View style={s.progressBarContainer}>
           <View style={s.progressBar}>
-            <View style={[s.progressBarFill, { backgroundColor: '#22C55E', width: `${Math.min(progressPct, 100)}%` }]} />
+            <View style={[s.progressBarFill, { backgroundColor: '#5A8A6E', width: `${Math.min(progressPct, 100)}%` }]} />
           </View>
           <ThemedText style={[s.progressPercent, { color: accentColor }]}>
             {progressPct}%
@@ -160,7 +160,7 @@ function OverviewTab({
             </ThemedText>
           </View>
           <View style={s.retentionSummaryItem}>
-            <ThemedText style={[s.retentionSummaryValue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.retentionSummaryValue, { color: '#5A8A6E' }]}>
               {stats.newDonors}
             </ThemedText>
             <ThemedText style={[s.retentionSummaryLabel, { color: colors.textTertiary }]}>
@@ -318,7 +318,7 @@ function EndowmentsTab({
                 </ThemedText>
               </View>
               <View style={s.endowmentSummaryItem}>
-                <ThemedText style={[s.endowmentSummaryValue, { color: '#22C55E' }]}>
+                <ThemedText style={[s.endowmentSummaryValue, { color: '#5A8A6E' }]}>
                   {formatCurrency(totalDistribution)}
                 </ThemedText>
                 <ThemedText style={[s.endowmentSummaryLabel, { color: colors.textTertiary }]}>
@@ -360,7 +360,7 @@ function EndowmentsTab({
               </ThemedText>
             </View>
             <View style={s.endowmentMetaItem}>
-              <ThemedText style={[s.endowmentMetaValue, { color: '#22C55E' }]}>
+              <ThemedText style={[s.endowmentMetaValue, { color: '#5A8A6E' }]}>
                 {formatCurrency(item.annualDistribution)}
               </ThemedText>
               <ThemedText style={[s.endowmentMetaLabel, { color: colors.textTertiary }]}>
@@ -402,7 +402,7 @@ function CampaignsTab({
       renderItem={({ item }) => {
         const stColor = CAMPAIGN_STATUS_COLOR[item.status];
         const progressPct = item.goal > 0 ? Math.round((item.raised / item.goal) * 100) : 0;
-        const barColor = progressPct >= 100 ? '#22C55E' : accentColor;
+        const barColor = progressPct >= 100 ? '#5A8A6E' : accentColor;
         return (
           <View style={[s.campaignCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.campaignCardTop}>
@@ -424,7 +424,7 @@ function CampaignsTab({
             {/* Progress */}
             <View style={s.campaignProgress}>
               <View style={s.campaignProgressHeader}>
-                <ThemedText style={[s.campaignRaised, { color: '#22C55E' }]}>
+                <ThemedText style={[s.campaignRaised, { color: '#5A8A6E' }]}>
                   {formatCurrency(item.raised)}
                 </ThemedText>
                 <ThemedText style={[s.campaignGoal, { color: colors.textTertiary }]}>
@@ -481,14 +481,14 @@ function RetentionTab({
   }
 
   const tierRetention = [
-    { tier: 'Platinum', rate: retentionMetrics.platinumRetention, color: '#A1A1AA' },
-    { tier: 'Gold', rate: retentionMetrics.goldRetention, color: '#F59E0B' },
-    { tier: 'Silver', rate: retentionMetrics.silverRetention, color: '#A1A1AA' },
+    { tier: 'Platinum', rate: retentionMetrics.platinumRetention, color: '#9C9790' },
+    { tier: 'Gold', rate: retentionMetrics.goldRetention, color: '#B8943E' },
+    { tier: 'Silver', rate: retentionMetrics.silverRetention, color: '#9C9790' },
     { tier: 'Bronze', rate: retentionMetrics.bronzeRetention, color: ACCENT },
   ];
 
   const channelRetention = [
-    { channel: 'Alumni', rate: retentionMetrics.alumniRetention, color: '#F59E0B' },
+    { channel: 'Alumni', rate: retentionMetrics.alumniRetention, color: '#B8943E' },
     { channel: 'Corporate', rate: retentionMetrics.corporateRetention, color: ACCENT },
     { channel: 'First-Time', rate: retentionMetrics.firstTimeRetention, color: ACCENT },
   ];
@@ -508,7 +508,7 @@ function RetentionTab({
             </ThemedText>
           </View>
           <View style={s.overallRetentionItem}>
-            <ThemedText style={[s.overallRetentionValue, { color: '#EF4444' }]}>
+            <ThemedText style={[s.overallRetentionValue, { color: '#B85C5C' }]}>
               {retentionMetrics.lapsedDonors}
             </ThemedText>
             <ThemedText style={[s.overallRetentionLabel, { color: colors.textTertiary }]}>
@@ -516,7 +516,7 @@ function RetentionTab({
             </ThemedText>
           </View>
           <View style={s.overallRetentionItem}>
-            <ThemedText style={[s.overallRetentionValue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.overallRetentionValue, { color: '#5A8A6E' }]}>
               {retentionMetrics.reactivated}
             </ThemedText>
             <ThemedText style={[s.overallRetentionLabel, { color: colors.textTertiary }]}>
@@ -1276,7 +1276,7 @@ const s = StyleSheet.create({
     flex: 1,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#A1A1AA',
+    backgroundColor: '#9C9790',
     overflow: 'hidden',
   },
   progressBarFill: {
@@ -1534,7 +1534,7 @@ const s = StyleSheet.create({
   campaignProgressBar: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#A1A1AA',
+    backgroundColor: '#9C9790',
     marginBottom: 4,
     overflow: 'hidden',
   },
@@ -1608,7 +1608,7 @@ const s = StyleSheet.create({
     flex: 1,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#A1A1AA',
+    backgroundColor: '#9C9790',
     overflow: 'hidden',
   },
   retentionTierBarFill: {
@@ -1647,7 +1647,7 @@ const s = StyleSheet.create({
   trendBar: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#A1A1AA',
+    backgroundColor: '#9C9790',
     overflow: 'hidden',
   },
   trendBarFill: {

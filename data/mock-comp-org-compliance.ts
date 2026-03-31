@@ -150,64 +150,64 @@ export const COMP_COMPLIANCE_SCOPE_CHIPS = [
 // =============================================================================
 
 export const RULE_STATUS_COLOR: Record<CompRule['status'], string> = {
-  active: '#22C55E',
-  proposed: '#1D9BF0',
-  suspended: '#F59E0B',
-  archived: '#A1A1AA',
+  active: '#5A8A6E',
+  proposed: '#1A1714',
+  suspended: '#B8943E',
+  archived: '#9C9790',
 };
 
 export const ELIGIBILITY_STATUS_COLOR: Record<EligibilityRecord['status'], string> = {
-  eligible: '#22C55E',
-  ineligible: '#EF4444',
-  'under-review': '#F59E0B',
-  waived: '#1D9BF0',
+  eligible: '#5A8A6E',
+  ineligible: '#B85C5C',
+  'under-review': '#B8943E',
+  waived: '#1A1714',
 };
 
 export const TEST_RESULT_COLOR: Record<DrugTest['result'], string> = {
-  negative: '#22C55E',
-  positive: '#EF4444',
-  pending: '#F59E0B',
-  inconclusive: '#A1A1AA',
+  negative: '#5A8A6E',
+  positive: '#B85C5C',
+  pending: '#B8943E',
+  inconclusive: '#9C9790',
 };
 
 export const EQUIPMENT_STATUS_COLOR: Record<EquipmentStandard['status'], string> = {
-  compliant: '#22C55E',
-  'non-compliant': '#EF4444',
-  'waiver-granted': '#1D9BF0',
+  compliant: '#5A8A6E',
+  'non-compliant': '#B85C5C',
+  'waiver-granted': '#1A1714',
 };
 
 export const INCIDENT_SEVERITY_COLOR: Record<ComplianceIncident['severity'], string> = {
-  minor: '#F59E0B',
-  major: '#EF4444',
-  critical: '#EF4444',
+  minor: '#B8943E',
+  major: '#B85C5C',
+  critical: '#B85C5C',
 };
 
 export const INCIDENT_STATUS_COLOR: Record<ComplianceIncident['status'], string> = {
-  open: '#EF4444',
-  investigating: '#F59E0B',
-  resolved: '#22C55E',
-  appealed: '#1D9BF0',
+  open: '#B85C5C',
+  investigating: '#B8943E',
+  resolved: '#5A8A6E',
+  appealed: '#1A1714',
 };
 
 export const APPEAL_STATUS_COLOR: Record<Appeal['status'], string> = {
-  filed: '#F59E0B',
-  'hearing-scheduled': '#1D9BF0',
-  upheld: '#22C55E',
-  overturned: '#1D9BF0',
-  dismissed: '#A1A1AA',
+  filed: '#B8943E',
+  'hearing-scheduled': '#1A1714',
+  upheld: '#5A8A6E',
+  overturned: '#1A1714',
+  dismissed: '#9C9790',
 };
 
 export const CERT_STATUS_COLOR: Record<Certification['status'], string> = {
-  valid: '#22C55E',
-  'expiring-soon': '#F59E0B',
-  expired: '#EF4444',
-  revoked: '#A1A1AA',
+  valid: '#5A8A6E',
+  'expiring-soon': '#B8943E',
+  expired: '#B85C5C',
+  revoked: '#9C9790',
 };
 
 export const REPORT_FORMAT_COLOR: Record<ComplianceReport['format'], string> = {
-  PDF: '#1D9BF0',
-  CSV: '#22C55E',
-  XLSX: '#F59E0B',
+  PDF: '#1A1714',
+  CSV: '#5A8A6E',
+  XLSX: '#B8943E',
 };
 
 // =============================================================================
@@ -215,14 +215,14 @@ export const REPORT_FORMAT_COLOR: Record<ComplianceReport['format'], string> = {
 // =============================================================================
 
 const dashboardBlocks: ComplianceDashBlock[] = [
-  { id: 'db-1', label: 'Active Rules', value: '142', delta: '+3 this quarter', icon: 'book.fill', color: '#22C55E' },
-  { id: 'db-2', label: 'Eligible Athletes', value: '1,284', delta: '+18 cleared', icon: 'person.badge.shield.checkmark.fill', color: '#22C55E' },
-  { id: 'db-3', label: 'Pending Tests', value: '23', delta: '-5 from last week', icon: 'testtube.2', color: '#F59E0B' },
-  { id: 'db-4', label: 'Open Incidents', value: '7', delta: '+2 new', icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
-  { id: 'db-5', label: 'Equipment Compliance', value: '96.4%', delta: '+1.2% improved', icon: 'wrench.fill', color: '#22C55E' },
-  { id: 'db-6', label: 'Active Appeals', value: '3', delta: '1 hearing this week', icon: 'doc.text.magnifyingglass', color: '#1D9BF0' },
-  { id: 'db-7', label: 'Expiring Certs', value: '11', delta: '4 within 30 days', icon: 'checkmark.seal.fill', color: '#F59E0B' },
-  { id: 'db-8', label: 'Compliance Score', value: '94.2%', delta: '+0.8% from Q3', icon: 'chart.bar.fill', color: '#22C55E' },
+  { id: 'db-1', label: 'Active Rules', value: '142', delta: '+3 this quarter', icon: 'book.fill', color: '#5A8A6E' },
+  { id: 'db-2', label: 'Eligible Athletes', value: '1,284', delta: '+18 cleared', icon: 'person.badge.shield.checkmark.fill', color: '#5A8A6E' },
+  { id: 'db-3', label: 'Pending Tests', value: '23', delta: '-5 from last week', icon: 'testtube.2', color: '#B8943E' },
+  { id: 'db-4', label: 'Open Incidents', value: '7', delta: '+2 new', icon: 'exclamationmark.triangle.fill', color: '#B85C5C' },
+  { id: 'db-5', label: 'Equipment Compliance', value: '96.4%', delta: '+1.2% improved', icon: 'wrench.fill', color: '#5A8A6E' },
+  { id: 'db-6', label: 'Active Appeals', value: '3', delta: '1 hearing this week', icon: 'doc.text.magnifyingglass', color: '#1A1714' },
+  { id: 'db-7', label: 'Expiring Certs', value: '11', delta: '4 within 30 days', icon: 'checkmark.seal.fill', color: '#B8943E' },
+  { id: 'db-8', label: 'Compliance Score', value: '94.2%', delta: '+0.8% from Q3', icon: 'chart.bar.fill', color: '#5A8A6E' },
 ];
 
 const rules: CompRule[] = [

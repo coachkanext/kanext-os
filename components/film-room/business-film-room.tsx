@@ -103,7 +103,7 @@ function TrainingCard({ item }: { item: TrainingVideo }) {
   const colors = Colors[colorScheme];
 
   const progressColor =
-    item.completionPct >= 100 ? '#22C55E' : item.completionPct > 0 ? '#F59E0B' : '#52525B';
+    item.completionPct >= 100 ? '#5A8A6E' : item.completionPct > 0 ? '#B8943E' : '#52525B';
 
   return (
     <Pressable

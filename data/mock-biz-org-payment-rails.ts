@@ -125,17 +125,17 @@ export const WALLET_TYPE_LABELS: Record<WalletType, string> = {
 };
 
 export const WALLET_TYPE_COLORS: Record<WalletType, string> = {
-  checking: '#1D9BF0',
-  savings: '#22C55E',
-  operating: '#1D9BF0',
-  reserve: '#F59E0B',
-  escrow: '#1D9BF0',
+  checking: '#1A1714',
+  savings: '#5A8A6E',
+  operating: '#1A1714',
+  reserve: '#B8943E',
+  escrow: '#1A1714',
 };
 
 export const WALLET_STATUS_COLORS: Record<WalletStatus, string> = {
-  connected: '#22C55E',
-  limited: '#F59E0B',
-  offline: '#EF4444',
+  connected: '#5A8A6E',
+  limited: '#B8943E',
+  offline: '#B85C5C',
 };
 
 // =============================================================================
@@ -180,9 +180,9 @@ export interface RailsApproval {
 }
 
 export const URGENCY_COLORS: Record<ApprovalUrgency, string> = {
-  critical: '#EF4444',
-  high: '#F59E0B',
-  normal: '#1D9BF0',
+  critical: '#B85C5C',
+  high: '#B8943E',
+  normal: '#1A1714',
 };
 
 export const URGENCY_LABELS: Record<ApprovalUrgency, string> = {
@@ -227,9 +227,9 @@ export interface RailsException {
 }
 
 export const EXCEPTION_TYPE_COLORS: Record<ExceptionType, string> = {
-  failed: '#EF4444',
-  disputed: '#F59E0B',
-  returned: '#F59E0B',
+  failed: '#B85C5C',
+  disputed: '#B8943E',
+  returned: '#B8943E',
 };
 
 export const EXCEPTION_TYPE_LABELS: Record<ExceptionType, string> = {
@@ -264,10 +264,10 @@ export interface RailsDispute {
 }
 
 export const DISPUTE_STATUS_COLORS: Record<DisputeStatus, string> = {
-  open: '#EF4444',
-  investigating: '#F59E0B',
-  resolved: '#22C55E',
-  closed: '#A1A1AA',
+  open: '#B85C5C',
+  investigating: '#B8943E',
+  resolved: '#5A8A6E',
+  closed: '#9C9790',
 };
 
 export const DISPUTE_STATUS_LABELS: Record<DisputeStatus, string> = {
@@ -292,10 +292,10 @@ export interface RailsAdminConfig {
 }
 
 export const ADMIN_CATEGORY_COLORS: Record<AdminConfigCategory, string> = {
-  provider: '#1D9BF0',
-  webhook: '#1D9BF0',
-  limit: '#F59E0B',
-  general: '#A1A1AA',
+  provider: '#1A1714',
+  webhook: '#1A1714',
+  limit: '#B8943E',
+  general: '#9C9790',
 };
 
 export const ADMIN_CATEGORY_LABELS: Record<AdminConfigCategory, string> = {
@@ -911,7 +911,7 @@ const NOW_SUMMARIES: RailsNowSummary[] = [
     label: 'In-Flight Total',
     value: '$70,000',
     icon: 'paperplane.fill',
-    color: '#1D9BF0',
+    color: '#1A1714',
     delta: '2 batches',
     impactTag: 'Blocks Vendor',
   },
@@ -920,7 +920,7 @@ const NOW_SUMMARIES: RailsNowSummary[] = [
     label: 'Pending Approval',
     value: '$298,590',
     icon: 'clock.fill',
-    color: '#F59E0B',
+    color: '#B8943E',
     delta: '4 items',
     impactTag: 'Blocks Payroll',
   },
@@ -929,7 +929,7 @@ const NOW_SUMMARIES: RailsNowSummary[] = [
     label: 'Settled (This Week)',
     value: '$163,000',
     icon: 'checkmark.circle.fill',
-    color: '#22C55E',
+    color: '#5A8A6E',
     delta: '1 batch',
   },
   {
@@ -937,7 +937,7 @@ const NOW_SUMMARIES: RailsNowSummary[] = [
     label: 'Open Exceptions',
     value: '3',
     icon: 'exclamationmark.triangle.fill',
-    color: '#EF4444',
+    color: '#B85C5C',
     delta: '$101,700 at risk',
     impactTag: 'Blocks Close',
   },
@@ -946,7 +946,7 @@ const NOW_SUMMARIES: RailsNowSummary[] = [
     label: 'Total Wallet Balance',
     value: '$10.48M',
     icon: 'banknote.fill',
-    color: '#1D9BF0',
+    color: '#1A1714',
     delta: '6 wallets',
   },
   {
@@ -954,7 +954,7 @@ const NOW_SUMMARIES: RailsNowSummary[] = [
     label: 'Awaiting Release',
     value: '$2.77M',
     icon: 'arrow.up.circle.fill',
-    color: '#1D9BF0',
+    color: '#1A1714',
     delta: '3 batches',
     impactTag: 'Blocks Vendor',
   },
@@ -1011,12 +1011,12 @@ export const RECEIPT_TYPE_LABELS: Record<BizReceipt['type'], string> = {
 };
 
 export const RECEIPT_TYPE_COLORS: Record<BizReceipt['type'], string> = {
-  approval: '#22C55E',
-  release: '#1D9BF0',
-  decision: '#F59E0B',
-  signature: '#1D9BF0',
-  transfer: '#1D9BF0',
-  creation: '#1D9BF0',
-  amendment: '#F59E0B',
-  compliance: '#1D9BF0',
+  approval: '#5A8A6E',
+  release: '#1A1714',
+  decision: '#B8943E',
+  signature: '#1A1714',
+  transfer: '#1A1714',
+  creation: '#1A1714',
+  amendment: '#B8943E',
+  compliance: '#1A1714',
 };

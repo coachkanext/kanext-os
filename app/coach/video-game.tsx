@@ -123,7 +123,7 @@ export default function VideoGameScreen() {
               <ThemedText
                 style={[
                   styles.tabPillText,
-                  { color: isActive ? '#000' : '#A1A1AA' },
+                  { color: isActive ? '#000' : '#9C9790' },
                 ]}
               >
                 {tab.label}
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     fontSize: 14,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
 
   // Sub-tabs
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
-    color: '#A1A1AA',
+    color: '#9C9790',
     marginBottom: 4,
   },
   statValue: {
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   },
   scoutTime: {
     fontSize: 12,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   scoutNote: {
     fontSize: 14,
@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 15,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
 
   // Notes tab
@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 14,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   detailValue: {
     fontSize: 14,

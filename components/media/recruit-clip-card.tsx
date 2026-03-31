@@ -55,7 +55,7 @@ export function RecruitClipCard({ clip }: RecruitClipCardProps) {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           }}
         >
-          <IconSymbol name="play.fill" size={12} color="#A1A1AA" />
+          <IconSymbol name="play.fill" size={12} color="#9C9790" />
           <ThemedText style={styles.actionLabel}>Watch</ThemedText>
         </Pressable>
         <Pressable
@@ -65,7 +65,7 @@ export function RecruitClipCard({ clip }: RecruitClipCardProps) {
             router.push(`/coach/player-detail?id=${clip.recruitId}` as any);
           }}
         >
-          <IconSymbol name="person.fill" size={12} color="#A1A1AA" />
+          <IconSymbol name="person.fill" size={12} color="#9C9790" />
           <ThemedText style={styles.actionLabel}>Profile</ThemedText>
         </Pressable>
         <Pressable
@@ -75,7 +75,7 @@ export function RecruitClipCard({ clip }: RecruitClipCardProps) {
             Alert.alert('Saved', `${clip.recruitName} saved to board`);
           }}
         >
-          <IconSymbol name="bookmark.fill" size={12} color="#A1A1AA" />
+          <IconSymbol name="bookmark.fill" size={12} color="#9C9790" />
           <ThemedText style={styles.actionLabel}>Save</ThemedText>
         </Pressable>
         <Pressable
@@ -85,7 +85,7 @@ export function RecruitClipCard({ clip }: RecruitClipCardProps) {
             Alert.alert('Coming Soon', 'Thread messaging coming soon');
           }}
         >
-          <IconSymbol name="bubble.left.fill" size={12} color="#A1A1AA" />
+          <IconSymbol name="bubble.left.fill" size={12} color="#9C9790" />
           <ThemedText style={styles.actionLabel}>Thread</ThemedText>
         </Pressable>
       </View>
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   },
   meta: {
     fontSize: 12,
-    color: '#A1A1AA',
+    color: '#9C9790',
     marginBottom: 2,
   },
   kr: {
@@ -175,6 +175,6 @@ const styles = StyleSheet.create({
   actionLabel: {
     fontSize: 10,
     fontWeight: '500',
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
 });

@@ -57,7 +57,7 @@ export function ComposeSheet() {
                 setPostType(pt.key);
               }}
             >
-              <ThemedText style={[styles.pillText, { color: isActive ? '#000' : '#A1A1AA' }]}>
+              <ThemedText style={[styles.pillText, { color: isActive ? '#000' : '#9C9790' }]}>
                 {pt.label}
               </ThemedText>
             </Pressable>
@@ -95,7 +95,7 @@ export function ComposeSheet() {
                 setAudience(a.key);
               }}
             >
-              <ThemedText style={[styles.pillText, { color: isActive ? '#000' : '#A1A1AA' }]}>
+              <ThemedText style={[styles.pillText, { color: isActive ? '#000' : '#9C9790' }]}>
                 {a.label}
               </ThemedText>
             </Pressable>
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#A1A1AA',
+    color: '#9C9790',
     marginBottom: Spacing.xs,
   },
   pillScroll: {

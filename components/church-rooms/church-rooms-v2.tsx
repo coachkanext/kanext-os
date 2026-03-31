@@ -47,12 +47,12 @@ const MOCK_USER_HAS_MINISTRY = true;
 // =============================================================================
 
 const TYPE_BADGE_COLORS: Record<ChurchRoomFeedItem['type'], string> = {
-  service: '#1D9BF0',
-  sermon: '#22C55E',
-  worship: '#8B5CF6',
-  training: '#F59E0B',
-  clip: '#1D9BF0',
-  event: '#22C55E',
+  service: '#1A1714',
+  sermon: '#5A8A6E',
+  worship: '#1A1714',
+  training: '#B8943E',
+  clip: '#1A1714',
+  event: '#5A8A6E',
 };
 
 const TYPE_BADGE_LABELS: Record<ChurchRoomFeedItem['type'], string> = {

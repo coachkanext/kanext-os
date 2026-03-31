@@ -50,11 +50,11 @@ export interface ApplicantCard {
 
 export const ENROLLMENT_STAGES: { stage: EnrollmentStage; color: string }[] = [
   { stage: 'Prospect',     color: '#6B7280' },
-  { stage: 'Inquiry',      color: '#3B82F6' },
-  { stage: 'Applied',      color: '#8B5CF6' },
-  { stage: 'Under Review', color: '#F59E0B' },
-  { stage: 'Admitted',     color: '#22C55E' },
-  { stage: 'Deposited',    color: '#10B981' },
+  { stage: 'Inquiry',      color: '#1A1714' },
+  { stage: 'Applied',      color: '#1A1714' },
+  { stage: 'Under Review', color: '#B8943E' },
+  { stage: 'Admitted',     color: '#5A8A6E' },
+  { stage: 'Deposited',    color: '#5A8A6E' },
   { stage: 'Enrolled',     color: '#14B8A6' },
 ];
 

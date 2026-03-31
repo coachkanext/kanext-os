@@ -103,9 +103,9 @@ function getCategoryIcon(category: string): string {
 }
 
 function getReadinessScoreColor(score: number): string {
-  if (score >= 85) return '#22C55E';
-  if (score >= 70) return '#F59E0B';
-  return '#EF4444';
+  if (score >= 85) return '#5A8A6E';
+  if (score >= 70) return '#B8943E';
+  return '#B85C5C';
 }
 
 // =============================================================================
@@ -367,8 +367,8 @@ function CommandTab({
       {/* ---- Ops Queue ---- */}
       <View style={s.opsQueueHeader}>
         <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Open Tasks</ThemedText>
-        <View style={[s.opsQueueCountBadge, { backgroundColor: '#F59E0B20' }]}>
-          <ThemedText style={[s.opsQueueCount, { color: '#F59E0B' }]}>
+        <View style={[s.opsQueueCountBadge, { backgroundColor: '#B8943E20' }]}>
+          <ThemedText style={[s.opsQueueCount, { color: '#B8943E' }]}>
             {sortedTasks.length}
           </ThemedText>
         </View>
@@ -693,7 +693,7 @@ function TeamsTab({
                     </ThemedText>
                     {slot.critical && (
                       <View style={s.slotCriticalFlag}>
-                        <IconSymbol name="exclamationmark.circle.fill" size={10} color="#EF4444" />
+                        <IconSymbol name="exclamationmark.circle.fill" size={10} color="#B85C5C" />
                       </View>
                     )}
                   </View>
@@ -701,7 +701,7 @@ function TeamsTab({
                     style={[
                       s.slotAssignee,
                       {
-                        color: slot.assignee ? colors.textSecondary : '#EF4444',
+                        color: slot.assignee ? colors.textSecondary : '#B85C5C',
                         fontWeight: slot.assignee ? '400' : '700',
                       },
                     ]}
@@ -741,19 +741,19 @@ function TeamsTab({
           <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Total</ThemedText>
         </View>
         <View style={[s.summaryTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.summaryValue, { color: '#22C55E' }]}>
+          <ThemedText style={[s.summaryValue, { color: '#5A8A6E' }]}>
             {summary.filled}
           </ThemedText>
           <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Filled</ThemedText>
         </View>
         <View style={[s.summaryTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.summaryValue, { color: '#EF4444' }]}>
+          <ThemedText style={[s.summaryValue, { color: '#B85C5C' }]}>
             {summary.vacant}
           </ThemedText>
           <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Vacant</ThemedText>
         </View>
         <View style={[s.summaryTile, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.summaryValue, { color: '#F59E0B' }]}>
+          <ThemedText style={[s.summaryValue, { color: '#B8943E' }]}>
             {summary.tentative}
           </ThemedText>
           <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>Tentative</ThemedText>
@@ -819,7 +819,7 @@ function ChecklistsTab({
       {checklists.map((cl) => {
         const isExpanded = expandedChecklists.has(cl.id);
         const percent = cl.totalCount > 0 ? Math.round((cl.completedCount / cl.totalCount) * 100) : 0;
-        const clColor = percent === 100 ? '#22C55E' : percent >= 50 ? '#F59E0B' : '#EF4444';
+        const clColor = percent === 100 ? '#5A8A6E' : percent >= 50 ? '#B8943E' : '#B85C5C';
         return (
           <View key={cl.id}>
             <Pressable
@@ -858,7 +858,7 @@ function ChecklistsTab({
                       <IconSymbol
                         name={item.completed ? 'checkmark.circle.fill' : 'circle'}
                         size={18}
-                        color={item.completed ? '#22C55E' : colors.textTertiary}
+                        color={item.completed ? '#5A8A6E' : colors.textTertiary}
                       />
                       <View style={s.checklistItemTextCol}>
                         <ThemedText
@@ -987,10 +987,10 @@ function IncidentsTab({
 
               {/* Resolution (if resolved) */}
               {inc.resolution && (
-                <View style={[s.resolutionSection, { backgroundColor: '#22C55E10' }]}>
+                <View style={[s.resolutionSection, { backgroundColor: '#5A8A6E10' }]}>
                   <View style={s.resolutionHeader}>
-                    <IconSymbol name="checkmark.circle.fill" size={12} color="#22C55E" />
-                    <ThemedText style={[s.resolutionTitle, { color: '#22C55E' }]}>
+                    <IconSymbol name="checkmark.circle.fill" size={12} color="#5A8A6E" />
+                    <ThemedText style={[s.resolutionTitle, { color: '#5A8A6E' }]}>
                       Resolution
                     </ThemedText>
                   </View>

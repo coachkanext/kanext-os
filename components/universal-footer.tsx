@@ -224,7 +224,7 @@ export function UniversalFooter() {
           <View>
             <IconSymbol size={22} {...ic(activePulse, 'bolt.fill', 'bolt')} />
             {pulseBadge > 0 && (
-              <View style={[styles.badge, { backgroundColor: C.red }]}>
+              <View style={[styles.badge, { backgroundColor: C.ember }]}>
                 <Text style={styles.badgeText}>{pulseBadge > 99 ? '99+' : pulseBadge}</Text>
               </View>
             )}

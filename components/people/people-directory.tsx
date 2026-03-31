@@ -20,10 +20,10 @@ import type { Person, PersonStatus } from '@/data/mock-people-v2';
 // =============================================================================
 
 const STATUS_COLORS: Record<PersonStatus, string> = {
-  active: '#22C55E',
-  inactive: '#A1A1AA',
-  pending: '#F59E0B',
-  away: '#1D9BF0',
+  active: '#5A8A6E',
+  inactive: '#9C9790',
+  pending: '#B8943E',
+  away: '#1A1714',
 };
 
 const STATUS_LABELS: Record<PersonStatus, string> = {

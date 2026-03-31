@@ -3,11 +3,11 @@
  *
  * Light and dark palettes. Follows iOS system setting via useColorScheme().
  * Per-org accent colors via MODE_ACCENT / MODE_ACCENT_SECONDARY (same in both themes).
- * KaNeXT Blue (#1D9BF0) is the system/infrastructure fallback only.
+ * KaNeXT Blue (#1A1714) is the system/infrastructure fallback only.
  *
  * Dark:  Background #000000, Surface #0B0F14, Text #FFFFFF
  * Light: Background #FFFFFF, Surface #F2F2F7, Text #000000
- * System accent: #1D9BF0 (login, onboarding, Nexus)
+ * System accent: #1A1714 (login, onboarding, Nexus)
  */
 
 import { Platform } from 'react-native';
@@ -18,18 +18,18 @@ import type { Mode } from '@/types';
 // =============================================================================
 
 export const Brand = {
-  /** KaNeXT Blue — the ONLY accent color in the entire OS */
-  primary: '#1D9BF0',
-  /** Alias for primary accent */
-  precision: '#1D9BF0',
-  /** Alias for primary accent — used by Nexus UI components */
-  nexus: '#1D9BF0',
-  /** Success / positive */
-  success: '#22C55E',
-  /** Warning */
-  warning: '#F59E0B',
-  /** Error / destructive */
-  error: '#EF4444',
+  /** KaNeXT Carbon — monochrome. No accent color. */
+  primary: '#1A1714',
+  /** Alias for primary */
+  precision: '#1A1714',
+  /** Alias for primary — used by Nexus UI components */
+  nexus: '#1A1714',
+  /** Success / positive — Gain (muted sage) */
+  success: '#5A8A6E',
+  /** Warning — Caution (muted amber) */
+  warning: '#B8943E',
+  /** Error / destructive — Heat (muted burgundy) */
+  error: '#B85C5C',
 };
 
 // =============================================================================
@@ -38,9 +38,9 @@ export const Brand = {
 
 const uniformMode = {
   primary: '#FFFFFF',
-  secondary: '#A1A1AA',
+  secondary: '#9C9790',
   nexusGlyph: '#FFFFFF',
-  nexusGlyphDim: '#A1A1AA',
+  nexusGlyphDim: '#9C9790',
 };
 
 export const ModeColors: Record<Mode, { primary: string; secondary: string; nexusGlyph: string; nexusGlyphDim: string }> = {
@@ -55,24 +55,21 @@ export const ModeColors: Record<Mode, { primary: string; secondary: string; nexu
 // MODE ACCENT — Per-org primary accent colors
 // =============================================================================
 
+// MODE ACCENT — All Carbon. No per-mode colors. Monochrome system.
 export const MODE_ACCENT: Record<Mode, string> = {
-  sports:     '#990000',   // Lincoln University Maroon
-  business:   '#1D9BF0',   // KaNeXT Blue
-  community:  '#0081CA',   // Community Blue
-  education:  '#003A63',   // Howard Navy
-  personal:   '#7C3AED',   // Personal Brand Violet
+  sports:     '#1A1714',
+  business:   '#1A1714',
+  community:  '#1A1714',
+  education:  '#1A1714',
+  personal:   '#1A1714',
 };
 
-// =============================================================================
-// MODE ACCENT SECONDARY — Per-org secondary accent colors
-// =============================================================================
-
 export const MODE_ACCENT_SECONDARY: Record<Mode, string> = {
-  sports:     '#DFA414',   // Lincoln University Gold
-  business:   '#1D9BF0',   // KaNeXT Blue (same)
-  community:  '#004C7A',   // Community Navy
-  education:  '#E51937',   // Howard Crimson
-  personal:   '#A78BFA',   // Personal Brand Lavender
+  sports:     '#1A1714',
+  business:   '#1A1714',
+  community:  '#1A1714',
+  education:  '#1A1714',
+  personal:   '#1A1714',
 };
 
 // =============================================================================
@@ -80,83 +77,83 @@ export const MODE_ACCENT_SECONDARY: Record<Mode, string> = {
 // =============================================================================
 
 const darkPalette = {
-  // Text
-  text: '#FFFFFF',
-  textSecondary: '#A1A1AA',
-  textTertiary: '#52525B',
+  // Text — Carbon dark (#F0E8DC) / Drift dark (#8A837C)
+  text: '#F0E8DC',
+  textSecondary: '#8A837C',
+  textTertiary: '#8A837C',
 
-  // Backgrounds
-  background: '#000000',
-  backgroundSecondary: '#0B0F14',
-  backgroundTertiary: '#0B0F14',
+  // Backgrounds — Paper dark / Linen dark
+  background: '#1C1410',
+  backgroundSecondary: '#261D17',
+  backgroundTertiary: '#261D17',
 
-  // Borders & Dividers
-  border: '#2F3336',
-  borderStrong: '#2F3336',
-  divider: '#2F3336',
+  // Borders & Dividers — Mist dark
+  border: '#3D352E',
+  borderStrong: '#3D352E',
+  divider: '#3D352E',
 
-  // Interactive
-  tint: '#1D9BF0',
-  icon: '#A1A1AA',
-  iconActive: '#FFFFFF',
+  // Interactive — Carbon dark
+  tint: '#F0E8DC',
+  icon: '#8A837C',
+  iconActive: '#F0E8DC',
 
   // Tab Bar
-  tabBar: '#000000',
-  tabIconDefault: '#A1A1AA',
-  tabIconSelected: '#1D9BF0',
+  tabBar: '#1C1410',
+  tabIconDefault: '#8A837C',
+  tabIconSelected: '#F0E8DC',
 
-  // Cards & Surfaces
-  card: '#0B0F14',
-  cardElevated: '#0B0F14',
+  // Cards & Surfaces — Linen dark
+  card: '#261D17',
+  cardElevated: '#261D17',
 
   // Overlays
   overlay: 'rgba(0, 0, 0, 0.7)',
   scrim: 'rgba(0, 0, 0, 0.5)',
 
-  // Status
-  success: '#22C55E',
-  warning: '#F59E0B',
-  error: '#EF4444',
+  // Status — semantic only
+  success: '#6B9E80',
+  warning: '#D4AE5A',
+  error: '#D47A7A',
 };
 
 const lightPalette = {
-  // Text
-  text: '#000000',
-  textSecondary: '#636366',
-  textTertiary: '#AEAEB2',
+  // Text — Carbon (#1A1714) / Drift (#9C9790)
+  text: '#1A1714',
+  textSecondary: '#9C9790',
+  textTertiary: '#9C9790',
 
-  // Backgrounds
+  // Backgrounds — Paper / Linen
   background: '#FFFFFF',
-  backgroundSecondary: '#0B1220',
-  backgroundTertiary: '#E5E5EA',
+  backgroundSecondary: '#F5F0EA',
+  backgroundTertiary: '#F5F0EA',
 
-  // Borders & Dividers
-  border: '#D1D1D6',
-  borderStrong: '#C7C7CC',
-  divider: '#E5E5EA',
+  // Borders & Dividers — Mist
+  border: '#E0DBD4',
+  borderStrong: '#E0DBD4',
+  divider: '#E0DBD4',
 
-  // Interactive
-  tint: '#1D9BF0',
-  icon: '#8E8E93',
-  iconActive: '#000000',
+  // Interactive — Carbon
+  tint: '#1A1714',
+  icon: '#9C9790',
+  iconActive: '#1A1714',
 
   // Tab Bar
   tabBar: '#FFFFFF',
-  tabIconDefault: '#8E8E93',
-  tabIconSelected: '#1D9BF0',
+  tabIconDefault: '#9C9790',
+  tabIconSelected: '#1A1714',
 
-  // Cards & Surfaces
-  card: '#0B1220',
+  // Cards & Surfaces — Linen
+  card: '#F5F0EA',
   cardElevated: '#FFFFFF',
 
   // Overlays
   overlay: 'rgba(0, 0, 0, 0.4)',
   scrim: 'rgba(0, 0, 0, 0.3)',
 
-  // Status
-  success: '#22C55E',
-  warning: '#F59E0B',
-  error: '#EF4444',
+  // Status — semantic only
+  success: '#5A8A6E',
+  warning: '#B8943E',
+  error: '#B85C5C',
 };
 
 export const Colors = {
@@ -170,16 +167,16 @@ export const Colors = {
 // =============================================================================
 
 export const BusinessPalette = {
-  obsidian: '#000000',
-  carbon: '#0B0F14',
-  graphite: '#2F3336',
+  obsidian: '#1A1714',
+  carbon: '#1A1714',
+  graphite: '#3D352E',
   smoke: '#FFFFFF',
-  ash: '#A1A1AA',
-  champagneGold: MODE_ACCENT.business,
-  platinum: '#A1A1AA',
-  emerald: '#22C55E',
-  amber: '#F59E0B',
-  red: '#EF4444',
+  ash: '#9C9790',
+  champagneGold: '#1A1714',
+  platinum: '#9C9790',
+  emerald: '#5A8A6E',
+  amber: '#B8943E',
+  red: '#B85C5C',
   glass: 'rgba(255,255,255,0.04)',
   sheetBackdrop: 'rgba(0,0,0,0.55)',
 };

@@ -37,9 +37,9 @@ function getInitials(name: string): string {
 }
 
 function getPitScoreColor(score: number): string {
-  if (score >= 93) return '#22C55E';
+  if (score >= 93) return '#5A8A6E';
   if (score >= 88) return ACCENT;
-  return '#F59E0B';
+  return '#B8943E';
 }
 
 export function CompGridCrewView({ colors, accent }: Props) {
@@ -116,7 +116,7 @@ export function CompGridCrewView({ colors, accent }: Props) {
                   <ThemedText
                     style={[
                       styles.metaText,
-                      { color: crew.unsafeReleases > 0 ? '#EF4444' : colors.textSecondary },
+                      { color: crew.unsafeReleases > 0 ? '#B85C5C' : colors.textSecondary },
                     ]}
                   >
                     UR: {crew.unsafeReleases}

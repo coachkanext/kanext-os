@@ -91,8 +91,8 @@ function payoutTypeLabel(type: PayoutRecord['type']): string {
 
 function reportFormatColor(format: FinanceReport['format']): string {
   switch (format) {
-    case 'PDF': return '#EF4444';
-    case 'CSV': return '#22C55E';
+    case 'PDF': return '#B85C5C';
+    case 'CSV': return '#5A8A6E';
     case 'XLSX': return ACCENT;
   }
 }
@@ -175,19 +175,19 @@ function DashboardTab({
       <View style={[s.revExpCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.revExpRow}>
           <View style={s.revExpItem}>
-            <View style={[s.revExpDot, { backgroundColor: '#22C55E' }]} />
+            <View style={[s.revExpDot, { backgroundColor: '#5A8A6E' }]} />
             <View style={s.revExpInfo}>
               <ThemedText style={[s.revExpLabel, { color: colors.textSecondary }]}>Total Revenue</ThemedText>
-              <ThemedText style={[s.revExpValue, { color: '#22C55E' }]}>
+              <ThemedText style={[s.revExpValue, { color: '#5A8A6E' }]}>
                 {formatCurrency(totalRevenue)}
               </ThemedText>
             </View>
           </View>
           <View style={s.revExpItem}>
-            <View style={[s.revExpDot, { backgroundColor: '#EF4444' }]} />
+            <View style={[s.revExpDot, { backgroundColor: '#B85C5C' }]} />
             <View style={s.revExpInfo}>
               <ThemedText style={[s.revExpLabel, { color: colors.textSecondary }]}>Total Expenses</ThemedText>
-              <ThemedText style={[s.revExpValue, { color: '#EF4444' }]}>
+              <ThemedText style={[s.revExpValue, { color: '#B85C5C' }]}>
                 {formatCurrency(totalExpenses)}
               </ThemedText>
             </View>
@@ -196,7 +196,7 @@ function DashboardTab({
         <View style={[s.revExpNetRow, { borderTopColor: colors.border }]}>
           <ThemedText style={[s.revExpNetLabel, { color: colors.textSecondary }]}>Net Profit</ThemedText>
           <ThemedText
-            style={[s.revExpNetValue, { color: netProfit >= 0 ? '#22C55E' : '#EF4444' }]}
+            style={[s.revExpNetValue, { color: netProfit >= 0 ? '#5A8A6E' : '#B85C5C' }]}
           >
             {netProfit >= 0 ? '+' : ''}{formatCurrency(netProfit)}
           </ThemedText>
@@ -249,11 +249,11 @@ function DashboardTab({
       </ThemedText>
       <View style={s.quickActionsGrid}>
         {[
-          { id: 'qa-1', label: 'Add Revenue', icon: 'plus.circle.fill', color: '#22C55E' },
-          { id: 'qa-2', label: 'Log Expense', icon: 'minus.circle.fill', color: '#EF4444' },
+          { id: 'qa-1', label: 'Add Revenue', icon: 'plus.circle.fill', color: '#5A8A6E' },
+          { id: 'qa-2', label: 'Log Expense', icon: 'minus.circle.fill', color: '#B85C5C' },
           { id: 'qa-3', label: 'New Budget', icon: 'chart.pie.fill', color: ACCENT },
           { id: 'qa-4', label: 'Process Payout', icon: 'creditcard.fill', color: ACCENT },
-          { id: 'qa-5', label: 'Generate Report', icon: 'doc.text.fill', color: '#F59E0B' },
+          { id: 'qa-5', label: 'Generate Report', icon: 'doc.text.fill', color: '#B8943E' },
           { id: 'qa-6', label: 'Add Sponsor', icon: 'star.fill', color: ACCENT },
         ].map((action) => (
           <Pressable
@@ -660,7 +660,7 @@ function TicketingTab({
       showsVerticalScrollIndicator={false}
       renderItem={({ item }) => {
         const capPct = getCapacityPercentage(item.ticketsSold, item.capacity);
-        const capColor = capPct >= 90 ? '#22C55E' : capPct >= 60 ? '#F59E0B' : ACCENT;
+        const capColor = capPct >= 90 ? '#5A8A6E' : capPct >= 60 ? '#B8943E' : ACCENT;
         return (
           <Pressable
             style={[s.ticketCard, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -824,7 +824,7 @@ function BudgetsTab({
                 <ThemedText
                   style={[
                     s.budgetFooterValue,
-                    { color: item.remaining >= 0 ? '#22C55E' : '#EF4444' },
+                    { color: item.remaining >= 0 ? '#5A8A6E' : '#B85C5C' },
                   ]}
                 >
                   {formatCurrency(Math.abs(item.remaining))}
@@ -1511,7 +1511,7 @@ function BudgetDetailSheet({
         <ThemedText
           style={[
             s.sheetSectionBody,
-            { color: item.remaining >= 0 ? '#22C55E' : '#EF4444' },
+            { color: item.remaining >= 0 ? '#5A8A6E' : '#B85C5C' },
           ]}
         >
           {item.remaining >= 0 ? formatCurrencyFull(item.remaining) : `-${formatCurrencyFull(Math.abs(item.remaining))}`}

@@ -55,75 +55,75 @@ interface UniversalProgramSheetProps {
 // =============================================================================
 
 const LEVEL_COLORS: Record<string, string> = {
-  certificate: '#A1A1AA',
+  certificate: '#9C9790',
   associate: ACCENT,
-  bachelor: '#22C55E',
-  master: '#F59E0B',
-  doctoral: '#EF4444',
+  bachelor: '#5A8A6E',
+  master: '#B8943E',
+  doctoral: '#B85C5C',
 };
 
 const PROGRAM_STATUS_COLORS: Record<string, string> = {
-  active: '#22C55E',
-  inactive: '#A1A1AA',
-  under_review: '#F59E0B',
+  active: '#5A8A6E',
+  inactive: '#9C9790',
+  under_review: '#B8943E',
 };
 
 const STUDENT_STATUS_COLORS: Record<string, string> = {
   applicant: ACCENT,
-  enrolled: '#22C55E',
-  leave: '#F59E0B',
-  withdrawn: '#EF4444',
-  alumni: '#A1A1AA',
+  enrolled: '#5A8A6E',
+  leave: '#B8943E',
+  withdrawn: '#B85C5C',
+  alumni: '#9C9790',
 };
 
 const COURSE_STATUS_COLORS: Record<string, string> = {
-  active: '#22C55E',
-  completed: '#A1A1AA',
+  active: '#5A8A6E',
+  completed: '#9C9790',
   planned: ACCENT,
-  cancelled: '#EF4444',
+  cancelled: '#B85C5C',
 };
 
 const HOLD_TYPE_COLORS: Record<string, string> = {
-  financial: '#EF4444',
-  academic: '#F59E0B',
-  conduct: '#EF4444',
+  financial: '#B85C5C',
+  academic: '#B8943E',
+  conduct: '#B85C5C',
 };
 
 const RISK_COLORS: Record<string, string> = {
-  low: '#22C55E',
-  medium: '#F59E0B',
-  high: '#EF4444',
+  low: '#5A8A6E',
+  medium: '#B8943E',
+  high: '#B85C5C',
 };
 
 const BUDGET_CATEGORY_COLORS: Record<string, string> = {
   personnel: ACCENT,
-  facilities: '#F59E0B',
-  technology: '#22C55E',
-  scholarships: '#EF4444',
-  operations: '#A1A1AA',
+  facilities: '#B8943E',
+  technology: '#5A8A6E',
+  scholarships: '#B85C5C',
+  operations: '#9C9790',
   marketing: ACCENT,
 };
 
 const PAYMENT_STATUS_COLORS: Record<string, string> = {
-  current: '#22C55E',
-  delinquent: '#EF4444',
-  deferred: '#F59E0B',
-  paid_in_full: '#22C55E',
+  current: '#5A8A6E',
+  delinquent: '#B85C5C',
+  deferred: '#B8943E',
+  paid_in_full: '#5A8A6E',
 };
 
 const COMPLIANCE_STATUS_COLORS: Record<string, string> = {
-  compliant: '#22C55E',
-  pending: '#F59E0B',
-  non_compliant: '#EF4444',
+  compliant: '#5A8A6E',
+  pending: '#B8943E',
+  non_compliant: '#B85C5C',
   under_review: ACCENT,
-  not_applicable: '#A1A1AA',
+  not_applicable: '#9C9790',
 };
 
 const ACCREDITATION_STATUS_COLORS: Record<string, string> = {
-  accredited: '#22C55E',
-  provisional: '#F59E0B',
+  accredited: '#5A8A6E',
+  provisional: '#B8943E',
   under_review: ACCENT,
-  revoked: '#EF4444',
+  revoked: '#B85C5C',
 };
 
 // =============================================================================
@@ -154,9 +154,9 @@ const MOCK_KEY_DATES = [
 ];
 
 const DATE_STATUS_COLORS: Record<string, string> = {
-  passed: '#A1A1AA',
+  passed: '#9C9790',
   upcoming: ACCENT,
-  today: '#22C55E',
+  today: '#5A8A6E',
 };
 
 const MOCK_CONTACT_INFO = {
@@ -238,10 +238,10 @@ const MOCK_CALENDAR = [
 
 const CALENDAR_TYPE_COLORS: Record<string, string> = {
   registration: ACCENT,
-  academic: '#22C55E',
-  exam: '#EF4444',
-  break: '#F59E0B',
-  ceremony: '#A1A1AA',
+  academic: '#5A8A6E',
+  exam: '#B85C5C',
+  break: '#B8943E',
+  ceremony: '#9C9790',
 };
 
 const MOCK_OPERATIONS = {
@@ -272,21 +272,21 @@ const MOCK_OPERATIONS = {
 };
 
 const EQUIPMENT_STATUS_COLORS: Record<string, string> = {
-  operational: '#22C55E',
-  maintenance: '#F59E0B',
-  broken: '#EF4444',
+  operational: '#5A8A6E',
+  maintenance: '#B8943E',
+  broken: '#B85C5C',
 };
 
 const BUDGET_REQUEST_STATUS_COLORS: Record<string, string> = {
-  approved: '#22C55E',
-  pending: '#F59E0B',
-  denied: '#EF4444',
+  approved: '#5A8A6E',
+  pending: '#B8943E',
+  denied: '#B85C5C',
 };
 
 const STAFFING_STATUS_COLORS: Record<string, string> = {
-  filled: '#22C55E',
-  searching: '#F59E0B',
-  urgent: '#EF4444',
+  filled: '#5A8A6E',
+  searching: '#B8943E',
+  urgent: '#B85C5C',
 };
 
 const MOCK_FINANCE = {
@@ -295,10 +295,10 @@ const MOCK_FINANCE = {
   budgetRemaining: '$470,000',
   spendByCategory: [
     { category: 'Personnel', amount: '$520,000', percentage: 67, color: ACCENT },
-    { category: 'Facilities', amount: '$95,000', percentage: 12, color: '#F59E0B' },
-    { category: 'Technology', amount: '$65,000', percentage: 8, color: '#22C55E' },
-    { category: 'Scholarships', amount: '$60,000', percentage: 8, color: '#EF4444' },
-    { category: 'Operations', amount: '$25,000', percentage: 3, color: '#A1A1AA' },
+    { category: 'Facilities', amount: '$95,000', percentage: 12, color: '#B8943E' },
+    { category: 'Technology', amount: '$65,000', percentage: 8, color: '#5A8A6E' },
+    { category: 'Scholarships', amount: '$60,000', percentage: 8, color: '#B85C5C' },
+    { category: 'Operations', amount: '$25,000', percentage: 3, color: '#9C9790' },
     { category: 'Marketing', amount: '$15,000', percentage: 2, color: ACCENT },
   ],
   scholarshipFunds: {
@@ -334,10 +334,10 @@ const MOCK_PAYMENT_RAILS = {
 };
 
 const REFUND_STATUS_COLORS: Record<string, string> = {
-  pending: '#F59E0B',
+  pending: '#B8943E',
   processing: ACCENT,
-  completed: '#22C55E',
-  denied: '#EF4444',
+  completed: '#5A8A6E',
+  denied: '#B85C5C',
 };
 
 const MOCK_COMPLIANCE = {
@@ -372,9 +372,9 @@ const MOCK_COMPLIANCE = {
 
 const AUDIT_STATUS_COLORS: Record<string, string> = {
   in_progress: ACCENT,
-  not_started: '#A1A1AA',
-  completed: '#22C55E',
-  overdue: '#EF4444',
+  not_started: '#9C9790',
+  completed: '#5A8A6E',
+  overdue: '#B85C5C',
 };
 
 const MOCK_REPORTS = {
@@ -544,13 +544,13 @@ function ProgramHeader({
         <View
           style={[
             styles.levelPill,
-            { backgroundColor: (LEVEL_COLORS[program.level] ?? '#A1A1AA') + '1A' },
+            { backgroundColor: (LEVEL_COLORS[program.level] ?? '#9C9790') + '1A' },
           ]}
         >
           <ThemedText
             style={[
               styles.levelPillText,
-              { color: LEVEL_COLORS[program.level] ?? '#A1A1AA' },
+              { color: LEVEL_COLORS[program.level] ?? '#9C9790' },
             ]}
           >
             {program.level.charAt(0).toUpperCase() + program.level.slice(1)}
@@ -559,19 +559,19 @@ function ProgramHeader({
         <View
           style={[
             styles.statusPill,
-            { backgroundColor: (PROGRAM_STATUS_COLORS[program.status] ?? '#A1A1AA') + '1A' },
+            { backgroundColor: (PROGRAM_STATUS_COLORS[program.status] ?? '#9C9790') + '1A' },
           ]}
         >
           <View
             style={[
               styles.statusDot,
-              { backgroundColor: PROGRAM_STATUS_COLORS[program.status] ?? '#A1A1AA' },
+              { backgroundColor: PROGRAM_STATUS_COLORS[program.status] ?? '#9C9790' },
             ]}
           />
           <ThemedText
             style={[
               styles.statusPillText,
-              { color: PROGRAM_STATUS_COLORS[program.status] ?? '#A1A1AA' },
+              { color: PROGRAM_STATUS_COLORS[program.status] ?? '#9C9790' },
             ]}
           >
             {program.status.charAt(0).toUpperCase() + program.status.slice(1)}
@@ -589,16 +589,16 @@ function ProgramHeader({
             </ThemedText>
           </View>
           {atRiskCount > 0 && (
-            <View style={[styles.quickChip, { backgroundColor: '#EF444422' }]}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
-              <ThemedText style={[styles.quickChipText, { color: '#EF4444' }]}>
+            <View style={[styles.quickChip, { backgroundColor: '#B85C5C22' }]}>
+              <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B85C5C" />
+              <ThemedText style={[styles.quickChipText, { color: '#B85C5C' }]}>
                 {atRiskCount} At Risk
               </ThemedText>
             </View>
           )}
-          <View style={[styles.quickChip, { backgroundColor: '#22C55E22' }]}>
-            <IconSymbol name="book.fill" size={12} color="#22C55E" />
-            <ThemedText style={[styles.quickChipText, { color: '#22C55E' }]}>
+          <View style={[styles.quickChip, { backgroundColor: '#5A8A6E22' }]}>
+            <IconSymbol name="book.fill" size={12} color="#5A8A6E" />
+            <ThemedText style={[styles.quickChipText, { color: '#5A8A6E' }]}>
               {program.creditsRequired} Credits Req
             </ThemedText>
           </View>
@@ -674,8 +674,8 @@ function OverviewTab({
         <InfoRow label="Body" value={MOCK_ACCREDITATION.body} colors={colors} />
         <View style={[styles.infoRow, { borderBottomColor: colors.border }]}>
           <ThemedText style={[styles.infoLabel, { color: colors.textSecondary }]}>Status</ThemedText>
-          <View style={[styles.accreditationBadge, { backgroundColor: (ACCREDITATION_STATUS_COLORS[MOCK_ACCREDITATION.status] ?? '#A1A1AA') + '22' }]}>
-            <ThemedText style={[styles.accreditationText, { color: ACCREDITATION_STATUS_COLORS[MOCK_ACCREDITATION.status] ?? '#A1A1AA' }]}>
+          <View style={[styles.accreditationBadge, { backgroundColor: (ACCREDITATION_STATUS_COLORS[MOCK_ACCREDITATION.status] ?? '#9C9790') + '22' }]}>
+            <ThemedText style={[styles.accreditationText, { color: ACCREDITATION_STATUS_COLORS[MOCK_ACCREDITATION.status] ?? '#9C9790' }]}>
               {MOCK_ACCREDITATION.status.toUpperCase()}
             </ThemedText>
           </View>
@@ -697,7 +697,7 @@ function OverviewTab({
             <View
               style={[
                 styles.calendarStatusBar,
-                { backgroundColor: DATE_STATUS_COLORS[kd.status] ?? '#A1A1AA' },
+                { backgroundColor: DATE_STATUS_COLORS[kd.status] ?? '#9C9790' },
               ]}
             />
             <View style={{ flex: 1, marginLeft: Spacing.sm }}>
@@ -711,7 +711,7 @@ function OverviewTab({
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: DATE_STATUS_COLORS[kd.status] ?? '#A1A1AA' },
+                { color: DATE_STATUS_COLORS[kd.status] ?? '#9C9790' },
               ]}
             >
               {kd.status.toUpperCase()}
@@ -820,8 +820,8 @@ function CoursesTab({
                 {course.instructor} · {course.enrolled}/{course.capacity} enrolled
               </ThemedText>
             </View>
-            <View style={[styles.enrollmentBadge, { backgroundColor: course.enrolled >= course.capacity * 0.9 ? '#F59E0B22' : '#22C55E22' }]}>
-              <ThemedText style={[styles.enrollmentText, { color: course.enrolled >= course.capacity * 0.9 ? '#F59E0B' : '#22C55E' }]}>
+            <View style={[styles.enrollmentBadge, { backgroundColor: course.enrolled >= course.capacity * 0.9 ? '#B8943E22' : '#5A8A6E22' }]}>
+              <ThemedText style={[styles.enrollmentText, { color: course.enrolled >= course.capacity * 0.9 ? '#B8943E' : '#5A8A6E' }]}>
                 {Math.round((course.enrolled / course.capacity) * 100)}%
               </ThemedText>
             </View>
@@ -846,7 +846,7 @@ function CoursesTab({
                 {course.instructor} · {course.term} · Avg: {course.avgGrade}
               </ThemedText>
             </View>
-            <IconSymbol name="checkmark.circle.fill" size={16} color="#22C55E" />
+            <IconSymbol name="checkmark.circle.fill" size={16} color="#5A8A6E" />
           </Pressable>
         ))}
       </SectionCard>
@@ -966,7 +966,7 @@ function StudentsTab({
                   {student.name}
                 </ThemedText>
                 {student.holds.length > 0 && (
-                  <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
+                  <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B85C5C" />
                 )}
               </View>
               <ThemedText style={[styles.captionText, { color: colors.textSecondary }]}>
@@ -980,13 +980,13 @@ function StudentsTab({
                 <View
                   style={[
                     styles.riskBadge,
-                    { backgroundColor: (RISK_COLORS[student.riskLevel] ?? '#A1A1AA') + '22' },
+                    { backgroundColor: (RISK_COLORS[student.riskLevel] ?? '#9C9790') + '22' },
                   ]}
                 >
                   <ThemedText
                     style={[
                       styles.riskText,
-                      { color: RISK_COLORS[student.riskLevel] ?? '#A1A1AA' },
+                      { color: RISK_COLORS[student.riskLevel] ?? '#9C9790' },
                     ]}
                   >
                     {student.riskLevel.toUpperCase()}
@@ -1018,7 +1018,7 @@ function CalendarTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.calendarStatusBar,
-                { backgroundColor: CALENDAR_TYPE_COLORS[event.type] ?? '#A1A1AA' },
+                { backgroundColor: CALENDAR_TYPE_COLORS[event.type] ?? '#9C9790' },
               ]}
             />
             <View style={{ flex: 1, marginLeft: Spacing.sm }}>
@@ -1032,13 +1032,13 @@ function CalendarTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.calendarTypeBadge,
-                { backgroundColor: (CALENDAR_TYPE_COLORS[event.type] ?? '#A1A1AA') + '22' },
+                { backgroundColor: (CALENDAR_TYPE_COLORS[event.type] ?? '#9C9790') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.calendarTypeText,
-                  { color: CALENDAR_TYPE_COLORS[event.type] ?? '#A1A1AA' },
+                  { color: CALENDAR_TYPE_COLORS[event.type] ?? '#9C9790' },
                 ]}
               >
                 {event.type.toUpperCase()}
@@ -1093,13 +1093,13 @@ function OperationsTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.equipmentBadge,
-                { backgroundColor: (EQUIPMENT_STATUS_COLORS[eq.status] ?? '#A1A1AA') + '22' },
+                { backgroundColor: (EQUIPMENT_STATUS_COLORS[eq.status] ?? '#9C9790') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.equipmentText,
-                  { color: EQUIPMENT_STATUS_COLORS[eq.status] ?? '#A1A1AA' },
+                  { color: EQUIPMENT_STATUS_COLORS[eq.status] ?? '#9C9790' },
                 ]}
               >
                 {eq.status.toUpperCase()}
@@ -1127,13 +1127,13 @@ function OperationsTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.budgetReqBadge,
-                { backgroundColor: (BUDGET_REQUEST_STATUS_COLORS[req.status] ?? '#A1A1AA') + '22' },
+                { backgroundColor: (BUDGET_REQUEST_STATUS_COLORS[req.status] ?? '#9C9790') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.budgetReqText,
-                  { color: BUDGET_REQUEST_STATUS_COLORS[req.status] ?? '#A1A1AA' },
+                  { color: BUDGET_REQUEST_STATUS_COLORS[req.status] ?? '#9C9790' },
                 ]}
               >
                 {req.status.toUpperCase()}
@@ -1158,13 +1158,13 @@ function OperationsTab({ colors }: { colors: typeof Colors.light }) {
             <View
               style={[
                 styles.staffingBadge,
-                { backgroundColor: (STAFFING_STATUS_COLORS[need.status] ?? '#A1A1AA') + '22' },
+                { backgroundColor: (STAFFING_STATUS_COLORS[need.status] ?? '#9C9790') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.staffingText,
-                  { color: STAFFING_STATUS_COLORS[need.status] ?? '#A1A1AA' },
+                  { color: STAFFING_STATUS_COLORS[need.status] ?? '#9C9790' },
                 ]}
               >
                 {need.status.toUpperCase()}
@@ -1206,13 +1206,13 @@ function FinanceTab({
             label="Spent"
             value={MOCK_FINANCE.budgetSpent}
             subtitle={`${Math.round(780000 / 1250000 * 100)}% utilized`}
-            color="#F59E0B"
+            color="#B8943E"
             colors={colors}
           />
         </View>
-        <View style={[styles.remainingHighlight, { backgroundColor: '#22C55E22', borderColor: '#22C55E33' }]}>
-          <ThemedText style={[styles.remainingLabel, { color: '#22C55E' }]}>Remaining</ThemedText>
-          <ThemedText style={[styles.remainingValue, { color: '#22C55E' }]}>{MOCK_FINANCE.budgetRemaining}</ThemedText>
+        <View style={[styles.remainingHighlight, { backgroundColor: '#5A8A6E22', borderColor: '#5A8A6E33' }]}>
+          <ThemedText style={[styles.remainingLabel, { color: '#5A8A6E' }]}>Remaining</ThemedText>
+          <ThemedText style={[styles.remainingValue, { color: '#5A8A6E' }]}>{MOCK_FINANCE.budgetRemaining}</ThemedText>
         </View>
       </SectionCard>
 
@@ -1243,8 +1243,8 @@ function FinanceTab({
       <SectionCard title="Scholarship Funds" colors={colors}>
         <View style={styles.statRow}>
           <StatBlock label="Total" value={MOCK_FINANCE.scholarshipFunds.total} color={ACCENT} colors={colors} />
-          <StatBlock label="Awarded" value={MOCK_FINANCE.scholarshipFunds.awarded} color="#22C55E" colors={colors} />
-          <StatBlock label="Remaining" value={MOCK_FINANCE.scholarshipFunds.remaining} color="#F59E0B" colors={colors} />
+          <StatBlock label="Awarded" value={MOCK_FINANCE.scholarshipFunds.awarded} color="#5A8A6E" colors={colors} />
+          <StatBlock label="Remaining" value={MOCK_FINANCE.scholarshipFunds.remaining} color="#B8943E" colors={colors} />
         </View>
         <ThemedText style={[styles.captionText, { color: colors.textSecondary, textAlign: 'center', marginTop: Spacing.xs }]}>
           {MOCK_FINANCE.scholarshipFunds.recipients} scholarship recipients this academic year
@@ -1255,9 +1255,9 @@ function FinanceTab({
       {isDetailedView && (
         <SectionCard title="Outstanding Student Balances" colors={colors}>
           <View style={styles.statRow}>
-            <StatBlock label="Total Owed" value={MOCK_FINANCE.outstandingBalances.total} color="#EF4444" colors={colors} />
-            <StatBlock label="Students" value={String(MOCK_FINANCE.outstandingBalances.students)} color="#F59E0B" colors={colors} />
-            <StatBlock label="Avg Balance" value={MOCK_FINANCE.outstandingBalances.averageBalance} color="#EF4444" colors={colors} />
+            <StatBlock label="Total Owed" value={MOCK_FINANCE.outstandingBalances.total} color="#B85C5C" colors={colors} />
+            <StatBlock label="Students" value={String(MOCK_FINANCE.outstandingBalances.students)} color="#B8943E" colors={colors} />
+            <StatBlock label="Avg Balance" value={MOCK_FINANCE.outstandingBalances.averageBalance} color="#B85C5C" colors={colors} />
           </View>
         </SectionCard>
       )}
@@ -1284,17 +1284,17 @@ function PaymentRailsTab({
       <SectionCard title="Payment Plans Overview" colors={colors}>
         <View style={styles.statRow}>
           <StatBlock label="Active Plans" value={String(MOCK_PAYMENT_RAILS.activePlans)} color={ACCENT} colors={colors} />
-          <StatBlock label="Current" value={String(MOCK_PAYMENT_RAILS.currentPlans)} color="#22C55E" colors={colors} />
-          <StatBlock label="Delinquent" value={String(MOCK_PAYMENT_RAILS.delinquentAccounts)} color="#EF4444" colors={colors} />
+          <StatBlock label="Current" value={String(MOCK_PAYMENT_RAILS.currentPlans)} color="#5A8A6E" colors={colors} />
+          <StatBlock label="Delinquent" value={String(MOCK_PAYMENT_RAILS.delinquentAccounts)} color="#B85C5C" colors={colors} />
         </View>
       </SectionCard>
 
       {/* Delinquent Accounts */}
       <SectionCard title="Delinquent Accounts" colors={colors}>
-        <View style={[styles.delinquentHighlight, { backgroundColor: '#EF444422', borderColor: '#EF444433' }]}>
-          <ThemedText style={[styles.delinquentLabel, { color: '#EF4444' }]}>Total Delinquent</ThemedText>
-          <ThemedText style={[styles.delinquentValue, { color: '#EF4444' }]}>{MOCK_PAYMENT_RAILS.delinquentTotal}</ThemedText>
-          <ThemedText style={[styles.captionText, { color: '#EF4444' }]}>
+        <View style={[styles.delinquentHighlight, { backgroundColor: '#B85C5C22', borderColor: '#B85C5C33' }]}>
+          <ThemedText style={[styles.delinquentLabel, { color: '#B85C5C' }]}>Total Delinquent</ThemedText>
+          <ThemedText style={[styles.delinquentValue, { color: '#B85C5C' }]}>{MOCK_PAYMENT_RAILS.delinquentTotal}</ThemedText>
+          <ThemedText style={[styles.captionText, { color: '#B85C5C' }]}>
             {MOCK_PAYMENT_RAILS.delinquentAccounts} accounts require follow-up
           </ThemedText>
         </View>
@@ -1316,13 +1316,13 @@ function PaymentRailsTab({
                 <View
                   style={[
                     styles.refundStatusBadge,
-                    { backgroundColor: (REFUND_STATUS_COLORS[refund.status] ?? '#A1A1AA') + '22' },
+                    { backgroundColor: (REFUND_STATUS_COLORS[refund.status] ?? '#9C9790') + '22' },
                   ]}
                 >
                   <ThemedText
                     style={[
                       styles.refundStatusText,
-                      { color: REFUND_STATUS_COLORS[refund.status] ?? '#A1A1AA' },
+                      { color: REFUND_STATUS_COLORS[refund.status] ?? '#9C9790' },
                     ]}
                   >
                     {refund.status.toUpperCase()}
@@ -1345,7 +1345,7 @@ function PaymentRailsTab({
       {/* Financial Aid Status */}
       <SectionCard title="Financial Aid Summary" colors={colors}>
         <View style={styles.statRow}>
-          <StatBlock label="Total Awarded" value={MOCK_PAYMENT_RAILS.financialAid.totalAwarded} color="#22C55E" colors={colors} />
+          <StatBlock label="Total Awarded" value={MOCK_PAYMENT_RAILS.financialAid.totalAwarded} color="#5A8A6E" colors={colors} />
           <StatBlock label="Recipients" value={String(MOCK_PAYMENT_RAILS.financialAid.studentsReceiving)} color={ACCENT} colors={colors} />
         </View>
         {isDetailedView && (
@@ -1386,7 +1386,7 @@ function ComplianceTab({
             <IconSymbol
               name={req.status === 'compliant' ? 'checkmark.shield.fill' : 'shield.fill'}
               size={16}
-              color={COMPLIANCE_STATUS_COLORS[req.status] ?? '#A1A1AA'}
+              color={COMPLIANCE_STATUS_COLORS[req.status] ?? '#9C9790'}
             />
             <View style={{ flex: 1, marginLeft: Spacing.sm }}>
               <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
@@ -1399,13 +1399,13 @@ function ComplianceTab({
             <View
               style={[
                 styles.complianceBadge,
-                { backgroundColor: (COMPLIANCE_STATUS_COLORS[req.status] ?? '#A1A1AA') + '22' },
+                { backgroundColor: (COMPLIANCE_STATUS_COLORS[req.status] ?? '#9C9790') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.complianceText,
-                  { color: COMPLIANCE_STATUS_COLORS[req.status] ?? '#A1A1AA' },
+                  { color: COMPLIANCE_STATUS_COLORS[req.status] ?? '#9C9790' },
                 ]}
               >
                 {req.status.replace('_', ' ').toUpperCase()}
@@ -1419,8 +1419,8 @@ function ComplianceTab({
       <SectionCard title="FERPA Compliance" colors={colors}>
         <View style={[styles.infoRow, { borderBottomColor: colors.border }]}>
           <ThemedText style={[styles.infoLabel, { color: colors.textSecondary }]}>Status</ThemedText>
-          <View style={[styles.complianceBadge, { backgroundColor: (COMPLIANCE_STATUS_COLORS[MOCK_COMPLIANCE.ferpa.status] ?? '#A1A1AA') + '22' }]}>
-            <ThemedText style={[styles.complianceText, { color: COMPLIANCE_STATUS_COLORS[MOCK_COMPLIANCE.ferpa.status] ?? '#A1A1AA' }]}>
+          <View style={[styles.complianceBadge, { backgroundColor: (COMPLIANCE_STATUS_COLORS[MOCK_COMPLIANCE.ferpa.status] ?? '#9C9790') + '22' }]}>
+            <ThemedText style={[styles.complianceText, { color: COMPLIANCE_STATUS_COLORS[MOCK_COMPLIANCE.ferpa.status] ?? '#9C9790' }]}>
               {MOCK_COMPLIANCE.ferpa.status.toUpperCase()}
             </ThemedText>
           </View>
@@ -1434,8 +1434,8 @@ function ComplianceTab({
       <SectionCard title="Title IX" colors={colors}>
         <View style={[styles.infoRow, { borderBottomColor: colors.border }]}>
           <ThemedText style={[styles.infoLabel, { color: colors.textSecondary }]}>Status</ThemedText>
-          <View style={[styles.complianceBadge, { backgroundColor: (COMPLIANCE_STATUS_COLORS[MOCK_COMPLIANCE.titleIX.status] ?? '#A1A1AA') + '22' }]}>
-            <ThemedText style={[styles.complianceText, { color: COMPLIANCE_STATUS_COLORS[MOCK_COMPLIANCE.titleIX.status] ?? '#A1A1AA' }]}>
+          <View style={[styles.complianceBadge, { backgroundColor: (COMPLIANCE_STATUS_COLORS[MOCK_COMPLIANCE.titleIX.status] ?? '#9C9790') + '22' }]}>
+            <ThemedText style={[styles.complianceText, { color: COMPLIANCE_STATUS_COLORS[MOCK_COMPLIANCE.titleIX.status] ?? '#9C9790' }]}>
               {MOCK_COMPLIANCE.titleIX.status.toUpperCase()}
             </ThemedText>
           </View>
@@ -1455,7 +1455,7 @@ function ComplianceTab({
               <View
                 style={[
                   styles.auditDot,
-                  { backgroundColor: AUDIT_STATUS_COLORS[item.status] ?? '#A1A1AA' },
+                  { backgroundColor: AUDIT_STATUS_COLORS[item.status] ?? '#9C9790' },
                 ]}
               />
               <View style={{ flex: 1 }}>
@@ -1469,7 +1469,7 @@ function ComplianceTab({
               <ThemedText
                 style={[
                   styles.statusLabel,
-                  { color: AUDIT_STATUS_COLORS[item.status] ?? '#A1A1AA' },
+                  { color: AUDIT_STATUS_COLORS[item.status] ?? '#9C9790' },
                 ]}
               >
                 {item.status.replace('_', ' ').toUpperCase()}
@@ -1508,7 +1508,7 @@ function ReportsTab({ colors }: { colors: typeof Colors.light }) {
             <ThemedText style={[styles.tableCell, styles.numColSm, { color: colors.text, fontWeight: '600' }]}>
               {term.enrolled}
             </ThemedText>
-            <ThemedText style={[styles.tableCell, styles.numColSm, { color: '#22C55E' }]}>
+            <ThemedText style={[styles.tableCell, styles.numColSm, { color: '#5A8A6E' }]}>
               +{term.new}
             </ThemedText>
             <ThemedText style={[styles.tableCell, styles.numColSm, { color: colors.textSecondary }]}>
@@ -1521,9 +1521,9 @@ function ReportsTab({ colors }: { colors: typeof Colors.light }) {
       {/* Retention Metrics */}
       <SectionCard title="Retention Metrics" colors={colors}>
         <View style={styles.statRow}>
-          <StatBlock label="1st → 2nd Year" value={`${MOCK_REPORTS.retentionMetrics.firstToSecondYear}%`} color="#22C55E" colors={colors} />
+          <StatBlock label="1st → 2nd Year" value={`${MOCK_REPORTS.retentionMetrics.firstToSecondYear}%`} color="#5A8A6E" colors={colors} />
           <StatBlock label="Overall" value={`${MOCK_REPORTS.retentionMetrics.overallRetention}%`} color={ACCENT} colors={colors} />
-          <StatBlock label="Attrition" value={`${MOCK_REPORTS.retentionMetrics.attritionRate}%`} color="#EF4444" colors={colors} />
+          <StatBlock label="Attrition" value={`${MOCK_REPORTS.retentionMetrics.attritionRate}%`} color="#B85C5C" colors={colors} />
         </View>
       </SectionCard>
 
@@ -1541,7 +1541,7 @@ function ReportsTab({ colors }: { colors: typeof Colors.light }) {
             <ThemedText style={[styles.bodyText, { color: colors.text, flex: 1 }]}>
               {year.year}
             </ThemedText>
-            <ThemedText style={[styles.gpaInline, { color: year.gpa >= 3.0 ? '#22C55E' : '#F59E0B' }]}>
+            <ThemedText style={[styles.gpaInline, { color: year.gpa >= 3.0 ? '#5A8A6E' : '#B8943E' }]}>
               {year.gpa.toFixed(2)}
             </ThemedText>
           </View>
@@ -1551,9 +1551,9 @@ function ReportsTab({ colors }: { colors: typeof Colors.light }) {
       {/* Graduation Rates */}
       <SectionCard title="Graduation Rates" colors={colors}>
         <View style={styles.statRow}>
-          <StatBlock label="4-Year" value={`${MOCK_REPORTS.graduationRates.fourYear}%`} color="#22C55E" colors={colors} />
+          <StatBlock label="4-Year" value={`${MOCK_REPORTS.graduationRates.fourYear}%`} color="#5A8A6E" colors={colors} />
           <StatBlock label="5-Year" value={`${MOCK_REPORTS.graduationRates.fiveYear}%`} color={ACCENT} colors={colors} />
-          <StatBlock label="6-Year" value={`${MOCK_REPORTS.graduationRates.sixYear}%`} color="#F59E0B" colors={colors} />
+          <StatBlock label="6-Year" value={`${MOCK_REPORTS.graduationRates.sixYear}%`} color="#B8943E" colors={colors} />
         </View>
         <ThemedText style={[styles.captionText, { color: colors.textSecondary, textAlign: 'center', marginTop: Spacing.sm }]}>
           {MOCK_REPORTS.graduationRates.totalGraduates} total graduates · Avg time: {MOCK_REPORTS.graduationRates.averageTimeToGraduation}

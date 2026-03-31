@@ -35,46 +35,46 @@ const TASK_FILTERS = ['All', 'Pending', 'In Progress', 'Completed'] as const;
 type TaskFilter = (typeof TASK_FILTERS)[number];
 
 const PRIORITY_COLORS: Record<string, string> = {
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#22C55E',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#5A8A6E',
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  completed: '#22C55E',
-  pending: '#F59E0B',
-  overdue: '#EF4444',
-  'in-progress': '#1D9BF0',
+  completed: '#5A8A6E',
+  pending: '#B8943E',
+  overdue: '#B85C5C',
+  'in-progress': '#1A1714',
 };
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
-  practice: '#1D9BF0',
-  game: '#EF4444',
-  meeting: '#F59E0B',
-  travel: '#1D9BF0',
-  service: '#22C55E',
-  class: '#1D9BF0',
-  event: '#1D9BF0',
-  deadline: '#EF4444',
+  practice: '#1A1714',
+  game: '#B85C5C',
+  meeting: '#B8943E',
+  travel: '#1A1714',
+  service: '#5A8A6E',
+  class: '#1A1714',
+  event: '#1A1714',
+  deadline: '#B85C5C',
 };
 
 const FACILITY_STATUS_COLORS: Record<string, string> = {
-  available: '#22C55E',
-  booked: '#F59E0B',
-  maintenance: '#EF4444',
+  available: '#5A8A6E',
+  booked: '#B8943E',
+  maintenance: '#B85C5C',
 };
 
 const CONDITION_COLORS: Record<string, string> = {
-  good: '#22C55E',
-  fair: '#F59E0B',
-  poor: '#EF4444',
-  'needs-repair': '#EF4444',
+  good: '#5A8A6E',
+  fair: '#B8943E',
+  poor: '#B85C5C',
+  'needs-repair': '#B85C5C',
 };
 
 const TRAVEL_STATUS_COLORS: Record<string, string> = {
-  planned: '#F59E0B',
-  booked: '#22C55E',
-  completed: '#A1A1AA',
+  planned: '#B8943E',
+  booked: '#5A8A6E',
+  completed: '#9C9790',
 };
 
 // =============================================================================
@@ -345,7 +345,7 @@ function EventCard({
   showDate?: boolean;
 }) {
   const typeColor = EVENT_TYPE_COLORS[event.type] || colors.textSecondary;
-  const statusDot = event.status === 'cancelled' ? '#EF4444' : event.status === 'tentative' ? '#F59E0B' : '#22C55E';
+  const statusDot = event.status === 'cancelled' ? '#B85C5C' : event.status === 'tentative' ? '#B8943E' : '#5A8A6E';
 
   return (
     <View style={[styles.eventCard, { backgroundColor: colors.card, borderColor: colors.border }]}>

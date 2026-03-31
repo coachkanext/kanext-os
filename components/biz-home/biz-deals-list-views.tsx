@@ -26,10 +26,10 @@ import { BizDealDetailSheet } from '@/components/biz-home/biz-deal-detail-sheet'
 const ACCENT = MODE_ACCENT.business;
 
 const STATUS_COLORS: Record<string, string> = {
-  Active: '#22C55E',
-  'Pending Close': '#F59E0B',
-  Closed: '#A1A1AA',
-  Cancelled: '#EF4444',
+  Active: '#5A8A6E',
+  'Pending Close': '#B8943E',
+  Closed: '#9C9790',
+  Cancelled: '#B85C5C',
 };
 
 // =============================================================================
@@ -45,7 +45,7 @@ interface CardProps {
 
 function DealCard({ deal, colors, onPress, variant }: CardProps) {
   const typeColor = DEAL_TYPE_COLORS[deal.type];
-  const statusColor = STATUS_COLORS[deal.status] ?? '#A1A1AA';
+  const statusColor = STATUS_COLORS[deal.status] ?? '#9C9790';
 
   return (
     <Pressable
@@ -85,7 +85,7 @@ function DealCard({ deal, colors, onPress, variant }: CardProps) {
             {deal.remainingValue != null && (
               <View style={s.footerItem}>
                 <ThemedText style={[s.footerLabel, { color: colors.textTertiary }]}>Remaining</ThemedText>
-                <ThemedText style={[s.footerValue, { color: '#F59E0B' }]}>
+                <ThemedText style={[s.footerValue, { color: '#B8943E' }]}>
                   {formatDealValue(deal.remainingValue)}
                 </ThemedText>
               </View>

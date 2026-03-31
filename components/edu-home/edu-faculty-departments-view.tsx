@@ -30,15 +30,15 @@ const FILTER_PILLS: { key: FilterKey; label: string }[] = [
 
 const CATEGORY_COLORS: Record<DepartmentCategory, string> = {
   arts_sciences: ACCENT,
-  business: '#F59E0B',
-  education: '#22C55E',
+  business: '#B8943E',
+  education: '#5A8A6E',
   professional: ACCENT,
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  active: '#22C55E',
-  under_review: '#F59E0B',
-  probation: '#EF4444',
+  active: '#5A8A6E',
+  under_review: '#B8943E',
+  probation: '#B85C5C',
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -86,7 +86,7 @@ export function EduFacultyDepartmentsView({ colors, accent }: Props) {
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {filtered.map((dept) => {
           const catColor = CATEGORY_COLORS[dept.category];
-          const statusColor = STATUS_COLORS[dept.status] ?? '#A1A1AA';
+          const statusColor = STATUS_COLORS[dept.status] ?? '#9C9790';
           const statusLabel = STATUS_LABELS[dept.status] ?? dept.status;
 
           return (

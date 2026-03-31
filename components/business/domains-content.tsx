@@ -95,10 +95,10 @@ const V2_DOMAINS: DomainItem[] = [
 
 function getStatusColor(status: string): string {
   switch (status) {
-    case 'live': return '#22C55E';
-    case 'read-only': return '#F59E0B';
-    case 'v2': return '#A1A1AA';
-    default: return '#A1A1AA';
+    case 'live': return '#5A8A6E';
+    case 'read-only': return '#B8943E';
+    case 'v2': return '#9C9790';
+    default: return '#9C9790';
   }
 }
 

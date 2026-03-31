@@ -169,7 +169,7 @@ function RevenueView({ colors, accentColor }: { colors: typeof Colors.light; acc
       {/* Total Revenue */}
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <ThemedText style={[s.summaryLabel, { color: colors.textSecondary }]}>TOTAL REVENUE</ThemedText>
-        <ThemedText style={[s.summaryAmount, { color: '#22C55E' }]}>{formatCurrency(REVENUE_TOTAL)}</ThemedText>
+        <ThemedText style={[s.summaryAmount, { color: '#5A8A6E' }]}>{formatCurrency(REVENUE_TOTAL)}</ThemedText>
         <ThemedText style={[s.summarySubtext, { color: colors.textSecondary }]}>
           Net operating margin: {formatCurrency(REVENUE_TOTAL - BUDGET_TOTAL)} ({Math.round(((REVENUE_TOTAL - BUDGET_TOTAL) / REVENUE_TOTAL) * 100)}%)
         </ThemedText>

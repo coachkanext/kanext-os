@@ -148,9 +148,9 @@ function txnStateVariant(state: BizTxnState): 'success' | 'warning' | 'error' | 
 const IMPACT_TAG_KEYS = ['blocks_payroll', 'blocks_close', 'blocks_vendor', 'blocks_transfer'] as const;
 
 const IMPACT_TAGS: Record<string, { label: string; color: string }> = {
-  blocks_payroll: { label: 'Blocks Payroll', color: '#EF4444' },
-  blocks_close: { label: 'Blocks Close', color: '#F59E0B' },
-  blocks_vendor: { label: 'Blocks Vendor', color: '#F59E0B' },
+  blocks_payroll: { label: 'Blocks Payroll', color: '#B85C5C' },
+  blocks_close: { label: 'Blocks Close', color: '#B8943E' },
+  blocks_vendor: { label: 'Blocks Vendor', color: '#B8943E' },
   blocks_transfer: { label: 'Blocks Transfer', color: ACCENT },
 };
 
@@ -160,8 +160,8 @@ const IMPACT_TAGS: Record<string, { label: string; color: string }> = {
 
 const EXCEPTION_ENHANCEMENTS = [
   { rootCause: 'Authority', color: ACCENT, failingRule: 'Release requires dual authorization', nextSteps: ['Obtain second signatory', 'Update authority matrix'] },
-  { rootCause: 'Budget', color: '#F59E0B', failingRule: 'Amount exceeds quarterly budget cap', nextSteps: ['Request budget increase', 'Submit to CFO for override'] },
-  { rootCause: 'Compliance', color: '#EF4444', failingRule: 'KYC verification incomplete', nextSteps: ['Complete KYC form', 'Upload supporting docs', 'Re-submit for review'] },
+  { rootCause: 'Budget', color: '#B8943E', failingRule: 'Amount exceeds quarterly budget cap', nextSteps: ['Request budget increase', 'Submit to CFO for override'] },
+  { rootCause: 'Compliance', color: '#B85C5C', failingRule: 'KYC verification incomplete', nextSteps: ['Complete KYC form', 'Upload supporting docs', 'Re-submit for review'] },
   { rootCause: 'Technical', color: ACCENT, failingRule: 'ACH routing validation failed', nextSteps: ['Verify routing number', 'Contact processor support'] },
 ];
 
@@ -788,8 +788,8 @@ function ApprovalsTab({
               onApprove(item.id);
             }}
           >
-            <IconSymbol name="checkmark.circle.fill" size={16} color="#22C55E" />
-            <ThemedText style={[s.actionButtonText, { color: '#22C55E' }]}>
+            <IconSymbol name="checkmark.circle.fill" size={16} color="#5A8A6E" />
+            <ThemedText style={[s.actionButtonText, { color: '#5A8A6E' }]}>
               Approve
             </ThemedText>
           </Pressable>
@@ -800,8 +800,8 @@ function ApprovalsTab({
               onReject(item.id);
             }}
           >
-            <IconSymbol name="xmark.circle.fill" size={16} color="#EF4444" />
-            <ThemedText style={[s.actionButtonText, { color: '#EF4444' }]}>
+            <IconSymbol name="xmark.circle.fill" size={16} color="#B85C5C" />
+            <ThemedText style={[s.actionButtonText, { color: '#B85C5C' }]}>
               Reject
             </ThemedText>
           </Pressable>
@@ -1028,9 +1028,9 @@ function ExceptionsTab({
               <View style={s.batchMetaItem}>
                 {item.resolution ? (
                   <>
-                    <IconSymbol name="checkmark.circle.fill" size={12} color="#22C55E" />
+                    <IconSymbol name="checkmark.circle.fill" size={12} color="#5A8A6E" />
                     <ThemedText
-                      style={[s.batchMetaText, { color: '#22C55E' }]}
+                      style={[s.batchMetaText, { color: '#5A8A6E' }]}
                       numberOfLines={1}
                     >
                       Resolution in progress
@@ -1038,8 +1038,8 @@ function ExceptionsTab({
                   </>
                 ) : (
                   <>
-                    <IconSymbol name="exclamationmark.circle.fill" size={12} color="#EF4444" />
-                    <ThemedText style={[s.batchMetaText, { color: '#EF4444' }]}>
+                    <IconSymbol name="exclamationmark.circle.fill" size={12} color="#B85C5C" />
+                    <ThemedText style={[s.batchMetaText, { color: '#B85C5C' }]}>
                       Unresolved
                     </ThemedText>
                   </>
@@ -1064,8 +1064,8 @@ function ExceptionsTab({
         <View style={s.exceptionSummaryRow}>
           <BizCard style={{ flex: 1, marginRight: Spacing.sm }}>
             <View style={s.exceptionSummaryCard}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={20} color="#EF4444" />
-              <ThemedText style={[s.exceptionSummaryValue, { color: '#EF4444' }]}>
+              <IconSymbol name="exclamationmark.triangle.fill" size={20} color="#B85C5C" />
+              <ThemedText style={[s.exceptionSummaryValue, { color: '#B85C5C' }]}>
                 {openCount}
               </ThemedText>
               <ThemedText style={[s.exceptionSummaryLabel, { color: BP.ash }]}>
@@ -1075,8 +1075,8 @@ function ExceptionsTab({
           </BizCard>
           <BizCard style={{ flex: 1, marginLeft: Spacing.sm }}>
             <View style={s.exceptionSummaryCard}>
-              <IconSymbol name="checkmark.circle.fill" size={20} color="#22C55E" />
-              <ThemedText style={[s.exceptionSummaryValue, { color: '#22C55E' }]}>
+              <IconSymbol name="checkmark.circle.fill" size={20} color="#5A8A6E" />
+              <ThemedText style={[s.exceptionSummaryValue, { color: '#5A8A6E' }]}>
                 {resolvedCount}
               </ThemedText>
               <ThemedText style={[s.exceptionSummaryLabel, { color: BP.ash }]}>
@@ -1679,14 +1679,14 @@ function ExceptionDetailSheet({
         <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Resolution</ThemedText>
         {exception.resolution ? (
           <View style={s.resolutionBox}>
-            <IconSymbol name="checkmark.circle.fill" size={14} color="#22C55E" />
+            <IconSymbol name="checkmark.circle.fill" size={14} color="#5A8A6E" />
             <ThemedText style={[s.resolutionText, { color: BP.smoke }]}>
               {exception.resolution}
             </ThemedText>
           </View>
         ) : (
           <View style={s.resolutionBox}>
-            <IconSymbol name="exclamationmark.circle.fill" size={14} color="#EF4444" />
+            <IconSymbol name="exclamationmark.circle.fill" size={14} color="#B85C5C" />
             <ThemedText style={[s.resolutionText, { color: BP.ash }]}>
               No resolution yet. Awaiting action.
             </ThemedText>
@@ -2439,12 +2439,12 @@ const s = StyleSheet.create({
     borderWidth: 1,
   },
   approveButton: {
-    borderColor: '#22C55E30',
-    backgroundColor: '#22C55E10',
+    borderColor: '#5A8A6E30',
+    backgroundColor: '#5A8A6E10',
   },
   rejectButton: {
-    borderColor: '#EF444430',
-    backgroundColor: '#EF444410',
+    borderColor: '#B85C5C30',
+    backgroundColor: '#B85C5C10',
   },
   releaseButton: {
     borderColor: `${ACCENT}30`,

@@ -336,7 +336,7 @@ export const WEDGES: WedgeData[] = [
     name: '2819 Church',
     orgName: '2819 Church',
     icon: 'heart.fill',
-    color: '#A1A1AA',
+    color: '#9C9790',
     summary: 'Church OS wedge — multi-campus ministry operations with giving, connect groups, and ministry intelligence. "Morning Prayer Line" concept: AI-powered pastoral care surface.',
     proofEvents: [
       '40 Days Prayer & Fasting Intelligence',
@@ -355,7 +355,7 @@ export const WEDGES: WedgeData[] = [
     name: 'Valuetainment',
     orgName: 'Valuetainment Media League',
     icon: 'flag.checkered',
-    color: '#EF4444',
+    color: '#B85C5C',
     summary: 'LeagueOS wedge — full motorsport league management with teams, drivers, standings, race operations, and cap enforcement. Decision audit concept for governed competition.',
     proofEvents: [
       'Season 1 Race Calendar (14 events)',

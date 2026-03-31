@@ -110,7 +110,7 @@ const PIPELINE_STAGES: PipelineStage[] = [
     id: 'admitted',
     label: 'Admitted',
     count: 8640,
-    color: '#22C55E',
+    color: '#5A8A6E',
     conversionRate: 47.7,
     weekChange: 216,
     recentActivity: [
@@ -123,7 +123,7 @@ const PIPELINE_STAGES: PipelineStage[] = [
     id: 'deposited',
     label: 'Deposited',
     count: 4120,
-    color: '#F59E0B',
+    color: '#B8943E',
     conversionRate: 79.6,
     weekChange: 94,
     recentActivity: [
@@ -136,7 +136,7 @@ const PIPELINE_STAGES: PipelineStage[] = [
     id: 'enrolled',
     label: 'Enrolled',
     count: 3280,
-    color: '#22C55E',
+    color: '#5A8A6E',
     conversionRate: 100,
     weekChange: 68,
     recentActivity: [
@@ -208,17 +208,17 @@ const INBOX_SUMMARY = {
 };
 
 const PRIORITY_COLOR: Record<InboxPriority, string> = {
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#A1A1AA',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#9C9790',
 };
 
 const STATUS_COLOR: Record<InboxStatus, string> = {
-  pending: '#A1A1AA',
+  pending: '#9C9790',
   assigned: ACCENT,
   'in-review': ACCENT,
-  'needs-info': '#F59E0B',
-  escalated: '#EF4444',
+  'needs-info': '#B8943E',
+  escalated: '#B85C5C',
 };
 
 const STATUS_LABEL: Record<InboxStatus, string> = {
@@ -279,13 +279,13 @@ const COHORTS: Cohort[] = [
     demographics: [
       { label: 'In-State', value: 58, color: ACCENT },
       { label: 'Out-of-State', value: 31, color: ACCENT },
-      { label: 'International', value: 11, color: '#22C55E' },
+      { label: 'International', value: 11, color: '#5A8A6E' },
     ],
     diversityTargets: [
-      { label: 'First-Generation', target: 35, actual: 34, color: '#F59E0B' },
+      { label: 'First-Generation', target: 35, actual: 34, color: '#B8943E' },
       { label: 'Underrepresented Minority', target: 30, actual: 28, color: ACCENT },
       { label: 'Pell Eligible', target: 25, actual: 23, color: ACCENT },
-      { label: 'Rural/Underserved', target: 15, actual: 12, color: '#22C55E' },
+      { label: 'Rural/Underserved', target: 15, actual: 12, color: '#5A8A6E' },
       { label: 'STEM Interest', target: 40, actual: 42, color: ACCENT },
     ],
     topStates: [
@@ -314,13 +314,13 @@ const COHORTS: Cohort[] = [
     demographics: [
       { label: 'In-State', value: 72, color: ACCENT },
       { label: 'Out-of-State', value: 24, color: ACCENT },
-      { label: 'International', value: 4, color: '#22C55E' },
+      { label: 'International', value: 4, color: '#5A8A6E' },
     ],
     diversityTargets: [
-      { label: 'First-Generation', target: 40, actual: 38, color: '#F59E0B' },
+      { label: 'First-Generation', target: 40, actual: 38, color: '#B8943E' },
       { label: 'Underrepresented Minority', target: 32, actual: 30, color: ACCENT },
       { label: 'Pell Eligible', target: 30, actual: 28, color: ACCENT },
-      { label: 'Community College', target: 65, actual: 68, color: '#22C55E' },
+      { label: 'Community College', target: 65, actual: 68, color: '#5A8A6E' },
       { label: 'STEM Interest', target: 35, actual: 31, color: ACCENT },
     ],
     topStates: [
@@ -356,8 +356,8 @@ const YOY_TRENDS: YoYTrend[] = [
 const GEOGRAPHIC_DISTRIBUTION = [
   { region: 'Southeast', percentage: 48, count: 8840, color: ACCENT },
   { region: 'Northeast', percentage: 18, count: 3316, color: ACCENT },
-  { region: 'Midwest', percentage: 12, count: 2210, color: '#22C55E' },
-  { region: 'West', percentage: 10, count: 1842, color: '#F59E0B' },
+  { region: 'Midwest', percentage: 12, count: 2210, color: '#5A8A6E' },
+  { region: 'West', percentage: 10, count: 1842, color: '#B8943E' },
   { region: 'Southwest', percentage: 6, count: 1105, color: ACCENT },
   { region: 'International', percentage: 6, count: 1107, color: ACCENT },
 ];
@@ -506,17 +506,17 @@ function PipelineView({ colors, role }: { colors: typeof Colors.light; role: Edu
               <View style={s.statBox}>
                 <ThemedText style={[s.statValue, { color: colors.text }]}>42,850</ThemedText>
                 <ThemedText style={[s.statLabel, { color: colors.textSecondary }]}>Inquiries</ThemedText>
-                <ThemedText style={[s.statChange, { color: '#22C55E' }]}>+12% YoY</ThemedText>
+                <ThemedText style={[s.statChange, { color: '#5A8A6E' }]}>+12% YoY</ThemedText>
               </View>
               <View style={s.statBox}>
                 <ThemedText style={[s.statValue, { color: colors.text }]}>18,420</ThemedText>
                 <ThemedText style={[s.statLabel, { color: colors.textSecondary }]}>Applied</ThemedText>
-                <ThemedText style={[s.statChange, { color: '#22C55E' }]}>+8.2% YoY</ThemedText>
+                <ThemedText style={[s.statChange, { color: '#5A8A6E' }]}>+8.2% YoY</ThemedText>
               </View>
               <View style={s.statBox}>
                 <ThemedText style={[s.statValue, { color: colors.text }]}>3,280</ThemedText>
                 <ThemedText style={[s.statLabel, { color: colors.textSecondary }]}>Enrolled</ThemedText>
-                <ThemedText style={[s.statChange, { color: '#22C55E' }]}>+4.2% YoY</ThemedText>
+                <ThemedText style={[s.statChange, { color: '#5A8A6E' }]}>+4.2% YoY</ThemedText>
               </View>
               <View style={s.statBox}>
                 <ThemedText style={[s.statValue, { color: colors.text }]}>46.9%</ThemedText>
@@ -565,7 +565,7 @@ function PipelineView({ colors, role }: { colors: typeof Colors.light; role: Edu
                       <ThemedText style={[s.conversionLabel, { color: colors.textTertiary }]}>conv.</ThemedText>
                     </View>
                   )}
-                  <ThemedText style={[s.weekChange, { color: stage.weekChange >= 0 ? '#22C55E' : '#EF4444' }]}>
+                  <ThemedText style={[s.weekChange, { color: stage.weekChange >= 0 ? '#5A8A6E' : '#B85C5C' }]}>
                     {stage.weekChange >= 0 ? '+' : ''}{stage.weekChange}/wk
                   </ThemedText>
                 </View>
@@ -666,7 +666,7 @@ function InboxView({ colors, role }: { colors: typeof Colors.light; role: Educat
             <ThemedText style={[s.statLabel, { color: colors.textSecondary }]}>Pending</ThemedText>
           </View>
           <View style={s.statBox}>
-            <ThemedText style={[s.statValue, { color: INBOX_SUMMARY.slaBreaches > 10 ? '#EF4444' : colors.text }]}>
+            <ThemedText style={[s.statValue, { color: INBOX_SUMMARY.slaBreaches > 10 ? '#B85C5C' : colors.text }]}>
               {INBOX_SUMMARY.slaBreaches}
             </ThemedText>
             <ThemedText style={[s.statLabel, { color: colors.textSecondary }]}>SLA Breaches</ThemedText>
@@ -699,7 +699,7 @@ function InboxView({ colors, role }: { colors: typeof Colors.light; role: Educat
                 s.progressBarFill,
                 {
                   width: `${Math.min((INBOX_SUMMARY.reviewedToday / INBOX_SUMMARY.targetReviewsPerDay) * 100, 100)}%`,
-                  backgroundColor: INBOX_SUMMARY.reviewedToday >= INBOX_SUMMARY.targetReviewsPerDay ? '#22C55E' : ACCENT,
+                  backgroundColor: INBOX_SUMMARY.reviewedToday >= INBOX_SUMMARY.targetReviewsPerDay ? '#5A8A6E' : ACCENT,
                 },
               ]}
             />
@@ -744,8 +744,8 @@ function InboxView({ colors, role }: { colors: typeof Colors.light; role: Educat
               <View style={[s.priorityDot, { backgroundColor: PRIORITY_COLOR[app.priority] }]} />
               <ThemedText style={[s.inboxName, { color: colors.text }]}>{app.name}</ThemedText>
               {app.slaBreached && (
-                <View style={[s.slaBadge, { backgroundColor: '#EF444420' }]}>
-                  <ThemedText style={[s.slaText, { color: '#EF4444' }]}>SLA</ThemedText>
+                <View style={[s.slaBadge, { backgroundColor: '#B85C5C20' }]}>
+                  <ThemedText style={[s.slaText, { color: '#B85C5C' }]}>SLA</ThemedText>
                 </View>
               )}
             </View>
@@ -773,7 +773,7 @@ function InboxView({ colors, role }: { colors: typeof Colors.light; role: Educat
             </View>
             <View style={s.inboxDetailRow}>
               <ThemedText style={[s.inboxDetailLabel, { color: colors.textTertiary }]}>Queue</ThemedText>
-              <ThemedText style={[s.inboxDetailValue, { color: app.daysInQueue >= 7 ? '#EF4444' : colors.textSecondary }]}>
+              <ThemedText style={[s.inboxDetailValue, { color: app.daysInQueue >= 7 ? '#B85C5C' : colors.textSecondary }]}>
                 {app.daysInQueue}d
               </ThemedText>
             </View>
@@ -793,9 +793,9 @@ function InboxView({ colors, role }: { colors: typeof Colors.light; role: Educat
           </ThemedText>
 
           {!app.documentsComplete && (
-            <View style={[s.missingDocsBadge, { backgroundColor: '#F59E0B20' }]}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#F59E0B" />
-              <ThemedText style={[s.missingDocsText, { color: '#F59E0B' }]}>Documents incomplete</ThemedText>
+            <View style={[s.missingDocsBadge, { backgroundColor: '#B8943E20' }]}>
+              <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#B8943E" />
+              <ThemedText style={[s.missingDocsText, { color: '#B8943E' }]}>Documents incomplete</ThemedText>
             </View>
           )}
 
@@ -827,8 +827,8 @@ function CohortsView({ colors, role }: { colors: typeof Colors.light; role: Educ
             <Card colors={colors}>
               <View style={s.cohortHeaderRow}>
                 <ThemedText style={[s.cohortTerm, { color: colors.text }]}>{cohort.term}</ThemedText>
-                <View style={[s.trackBadge, { backgroundColor: onTrack ? '#22C55E20' : '#F59E0B20' }]}>
-                  <ThemedText style={[s.trackText, { color: onTrack ? '#22C55E' : '#F59E0B' }]}>
+                <View style={[s.trackBadge, { backgroundColor: onTrack ? '#5A8A6E20' : '#B8943E20' }]}>
+                  <ThemedText style={[s.trackText, { color: onTrack ? '#5A8A6E' : '#B8943E' }]}>
                     {onTrack ? 'On Track' : 'Behind Target'}
                   </ThemedText>
                 </View>
@@ -868,7 +868,7 @@ function CohortsView({ colors, role }: { colors: typeof Colors.light; role: Educ
                   <ThemedText style={[s.cohortProgressPct, { color: colors.text }]}>{fillPct}%</ThemedText>
                 </View>
                 <View style={[s.progressBarBg, { backgroundColor: colors.backgroundTertiary }]}>
-                  <View style={[s.progressBarFill, { width: `${fillPct}%`, backgroundColor: onTrack ? '#22C55E' : '#F59E0B' }]} />
+                  <View style={[s.progressBarFill, { width: `${fillPct}%`, backgroundColor: onTrack ? '#5A8A6E' : '#B8943E' }]} />
                 </View>
               </View>
 
@@ -917,11 +917,11 @@ function CohortsView({ colors, role }: { colors: typeof Colors.light; role: Educ
                           {/* Target marker */}
                           <View style={[s.diversityTargetMarker, { left: `${dt.target}%`, backgroundColor: colors.textTertiary }]} />
                           {/* Actual fill */}
-                          <View style={[s.diversityBarFill, { width: `${dt.actual}%`, backgroundColor: met ? '#22C55E' : dt.color }]} />
+                          <View style={[s.diversityBarFill, { width: `${dt.actual}%`, backgroundColor: met ? '#5A8A6E' : dt.color }]} />
                         </View>
                       </View>
                       <View style={s.diversityValues}>
-                        <ThemedText style={[s.diversityActual, { color: met ? '#22C55E' : dt.color }]}>{dt.actual}%</ThemedText>
+                        <ThemedText style={[s.diversityActual, { color: met ? '#5A8A6E' : dt.color }]}>{dt.actual}%</ThemedText>
                         <ThemedText style={[s.diversityTarget, { color: colors.textTertiary }]}>/ {dt.target}%</ThemedText>
                       </View>
                     </View>
@@ -971,7 +971,7 @@ function AnalyticsView({ colors, role }: { colors: typeof Colors.light; role: Ed
           <View style={s.statBox}>
             <ThemedText style={[s.statValue, { color: colors.text }]}>{ANALYTICS_SUMMARY.totalApps.toLocaleString()}</ThemedText>
             <ThemedText style={[s.statLabel, { color: colors.textSecondary }]}>Applications</ThemedText>
-            <ThemedText style={[s.statChange, { color: '#22C55E' }]}>{ANALYTICS_SUMMARY.yoyGrowth}</ThemedText>
+            <ThemedText style={[s.statChange, { color: '#5A8A6E' }]}>{ANALYTICS_SUMMARY.yoyGrowth}</ThemedText>
           </View>
           <View style={s.statBox}>
             <ThemedText style={[s.statValue, { color: colors.text }]}>{ANALYTICS_SUMMARY.admitRate}%</ThemedText>
@@ -1229,10 +1229,10 @@ function StudentPortalCTA({ colors }: { colors: typeof Colors.light }) {
           ].map((step, idx) => (
             <View key={step.label} style={s.timelineRow}>
               <View style={s.timelineIconCol}>
-                <View style={[s.timelineCircle, { backgroundColor: step.complete ? '#22C55E' : colors.backgroundTertiary, borderColor: step.complete ? '#22C55E' : colors.border }]}>
+                <View style={[s.timelineCircle, { backgroundColor: step.complete ? '#5A8A6E' : colors.backgroundTertiary, borderColor: step.complete ? '#5A8A6E' : colors.border }]}>
                   {step.complete && <IconSymbol name="checkmark" size={10} color="#FFFFFF" />}
                 </View>
-                {idx < 3 && <View style={[s.timelineLine, { backgroundColor: step.complete ? '#22C55E' : colors.border }]} />}
+                {idx < 3 && <View style={[s.timelineLine, { backgroundColor: step.complete ? '#5A8A6E' : colors.border }]} />}
               </View>
               <View style={s.timelineContent}>
                 <ThemedText style={[s.timelineLabel, { color: step.complete ? colors.text : colors.textSecondary }]}>{step.label}</ThemedText>

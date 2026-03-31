@@ -80,7 +80,7 @@ export const LIBRARY_FOLDERS: LibraryFolder[] = [
     name: 'Games',
     description: 'Full game film grouped by season',
     icon: 'sportscourt.fill',
-    colorStrip: '#22C55E',
+    colorStrip: '#5A8A6E',
     itemCount: 14,
   },
   {
@@ -88,7 +88,7 @@ export const LIBRARY_FOLDERS: LibraryFolder[] = [
     name: 'Practice',
     description: 'Practice sessions grouped by date',
     icon: 'figure.run',
-    colorStrip: '#1D9BF0',
+    colorStrip: '#1A1714',
     itemCount: 10,
   },
   {
@@ -96,7 +96,7 @@ export const LIBRARY_FOLDERS: LibraryFolder[] = [
     name: 'Clips',
     description: 'Tagged clips organized by category',
     icon: 'scissors',
-    colorStrip: '#F59E0B',
+    colorStrip: '#B8943E',
     itemCount: 18,
   },
   {
@@ -112,7 +112,7 @@ export const LIBRARY_FOLDERS: LibraryFolder[] = [
     name: 'Saved',
     description: 'Videos saved from Feed, Explore, and Rooms',
     icon: 'bookmark.fill',
-    colorStrip: '#EF4444',
+    colorStrip: '#B85C5C',
     itemCount: 8,
   },
 ];

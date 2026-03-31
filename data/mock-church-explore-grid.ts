@@ -54,7 +54,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 0,
     publishedAt: new Date('2026-02-22T10:00:00'),
     duration: '42:15',
-    thumbnailColor: '#1D9BF0',
+    thumbnailColor: '#1A1714',
   },
   {
     id: 'cet-2',
@@ -66,7 +66,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 0,
     publishedAt: new Date('2026-02-22T11:00:00'),
     duration: '18:30',
-    thumbnailColor: '#8B5CF6',
+    thumbnailColor: '#1A1714',
   },
   {
     id: 'cet-3',
@@ -79,7 +79,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 0,
     publishedAt: new Date('2026-02-15T10:00:00'),
     duration: '38:20',
-    thumbnailColor: '#1D9BF0',
+    thumbnailColor: '#1A1714',
   },
   {
     id: 'cet-4',
@@ -91,7 +91,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 0,
     publishedAt: new Date('2026-02-14T14:00:00'),
     duration: '8:45',
-    thumbnailColor: '#22C55E',
+    thumbnailColor: '#5A8A6E',
   },
   {
     id: 'cet-5',
@@ -104,7 +104,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 0,
     publishedAt: new Date('2026-02-08T10:00:00'),
     duration: '36:30',
-    thumbnailColor: '#EF4444',
+    thumbnailColor: '#B85C5C',
   },
   {
     id: 'cet-6',
@@ -116,7 +116,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 0,
     publishedAt: new Date('2026-02-07T16:00:00'),
     duration: '5:50',
-    thumbnailColor: '#1D9BF0',
+    thumbnailColor: '#1A1714',
   },
   {
     id: 'cet-7',
@@ -128,7 +128,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 0,
     publishedAt: new Date('2026-02-06T20:00:00'),
     duration: '12:45',
-    thumbnailColor: '#F59E0B',
+    thumbnailColor: '#B8943E',
   },
   {
     id: 'cet-8',
@@ -140,7 +140,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 0,
     publishedAt: new Date('2026-02-01T12:00:00'),
     duration: '6:20',
-    thumbnailColor: '#22C55E',
+    thumbnailColor: '#5A8A6E',
   },
 
   // ── V0 PUBLIC — Westside Campus ──
@@ -155,7 +155,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 0,
     publishedAt: new Date('2026-02-22T10:30:00'),
     duration: '35:45',
-    thumbnailColor: '#22C55E',
+    thumbnailColor: '#5A8A6E',
   },
   {
     id: 'cet-10',
@@ -167,7 +167,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 0,
     publishedAt: new Date('2026-02-15T11:00:00'),
     duration: '20:10',
-    thumbnailColor: '#8B5CF6',
+    thumbnailColor: '#1A1714',
   },
   {
     id: 'cet-11',
@@ -180,7 +180,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 0,
     publishedAt: new Date('2026-02-08T10:30:00'),
     duration: '33:50',
-    thumbnailColor: '#F59E0B',
+    thumbnailColor: '#B8943E',
   },
   {
     id: 'cet-12',
@@ -192,7 +192,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 0,
     publishedAt: new Date('2026-02-04T09:00:00'),
     duration: '1:30',
-    thumbnailColor: '#1D9BF0',
+    thumbnailColor: '#1A1714',
   },
 
   // ── V2 CAMPUS-INTERNAL — Main Campus ──
@@ -207,7 +207,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 2,
     publishedAt: new Date('2026-02-20T19:00:00'),
     duration: '48:30',
-    thumbnailColor: '#F59E0B',
+    thumbnailColor: '#B8943E',
   },
   {
     id: 'cet-14',
@@ -220,7 +220,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 2,
     publishedAt: new Date('2026-02-18T18:00:00'),
     duration: '55:00',
-    thumbnailColor: '#F59E0B',
+    thumbnailColor: '#B8943E',
   },
   {
     id: 'cet-15',
@@ -232,7 +232,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 2,
     publishedAt: new Date('2026-02-16T20:00:00'),
     duration: '32:10',
-    thumbnailColor: '#22C55E',
+    thumbnailColor: '#5A8A6E',
   },
   {
     id: 'cet-16',
@@ -245,7 +245,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 2,
     publishedAt: new Date('2026-02-13T19:00:00'),
     duration: '51:20',
-    thumbnailColor: '#1D9BF0',
+    thumbnailColor: '#1A1714',
   },
   {
     id: 'cet-17',
@@ -257,7 +257,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 2,
     publishedAt: new Date('2026-02-10T14:00:00'),
     duration: '28:00',
-    thumbnailColor: '#22C55E',
+    thumbnailColor: '#5A8A6E',
   },
 
   // ── V3 MINISTRY-PRIVATE — Main Campus ──
@@ -273,7 +273,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 3,
     publishedAt: new Date('2026-02-19T17:00:00'),
     duration: '40:15',
-    thumbnailColor: '#EF4444',
+    thumbnailColor: '#B85C5C',
   },
   {
     id: 'cet-19',
@@ -287,7 +287,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 3,
     publishedAt: new Date('2026-02-15T15:00:00'),
     duration: '14:20',
-    thumbnailColor: '#8B5CF6',
+    thumbnailColor: '#1A1714',
   },
   {
     id: 'cet-20',
@@ -301,7 +301,7 @@ export const CHURCH_EXPLORE_TILES: ChurchExploreTile[] = [
     visibilityClass: 3,
     publishedAt: new Date('2026-02-12T18:30:00'),
     duration: '1:02:00',
-    thumbnailColor: '#22C55E',
+    thumbnailColor: '#5A8A6E',
   },
 ];
 

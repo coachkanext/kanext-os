@@ -202,13 +202,13 @@ function OverviewTab({
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Total People</ThemedText>
           </View>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.kpiValue, { color: '#5A8A6E' }]}>
               {overview.activePeople}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Active</ThemedText>
           </View>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: overview.pendingPeople > 0 ? '#F59E0B' : '#22C55E' }]}>
+            <ThemedText style={[s.kpiValue, { color: overview.pendingPeople > 0 ? '#B8943E' : '#5A8A6E' }]}>
               {overview.pendingPeople}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Pending</ThemedText>
@@ -225,17 +225,17 @@ function OverviewTab({
       {/* Staff Status Strip */}
       <View style={[s.statusStrip, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#22C55E' }]} />
+          <View style={[s.statusDot, { backgroundColor: '#5A8A6E' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{overview.filledStaffSeats}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Filled</ThemedText>
         </View>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#EF4444' }]} />
+          <View style={[s.statusDot, { backgroundColor: '#B85C5C' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{overview.vacantStaffSeats}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Vacant</ThemedText>
         </View>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: '#F59E0B' }]} />
+          <View style={[s.statusDot, { backgroundColor: '#B8943E' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{overview.overloadedStaff}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Overloaded</ThemedText>
         </View>
@@ -248,19 +248,19 @@ function OverviewTab({
       <View style={[s.overviewCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.kpiGrid}>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.kpiValue, { color: '#5A8A6E' }]}>
               {overview.playersAvailable}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Available</ThemedText>
           </View>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: '#F59E0B' }]}>
+            <ThemedText style={[s.kpiValue, { color: '#B8943E' }]}>
               {overview.playersLimited}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Limited</ThemedText>
           </View>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: '#EF4444' }]}>
+            <ThemedText style={[s.kpiValue, { color: '#B85C5C' }]}>
               {overview.playersUnavailable}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Unavailable</ThemedText>
@@ -287,19 +287,19 @@ function OverviewTab({
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Active Recruits</ThemedText>
           </View>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: overview.recruitsAtRisk > 0 ? '#EF4444' : '#22C55E' }]}>
+            <ThemedText style={[s.kpiValue, { color: overview.recruitsAtRisk > 0 ? '#B85C5C' : '#5A8A6E' }]}>
               {overview.recruitsAtRisk}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>At Risk</ThemedText>
           </View>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: overview.activeMedicalCases > 0 ? '#F59E0B' : '#22C55E' }]}>
+            <ThemedText style={[s.kpiValue, { color: overview.activeMedicalCases > 0 ? '#B8943E' : '#5A8A6E' }]}>
               {overview.activeMedicalCases}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Medical Cases</ThemedText>
           </View>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: overview.highSeverityCases > 0 ? '#EF4444' : '#22C55E' }]}>
+            <ThemedText style={[s.kpiValue, { color: overview.highSeverityCases > 0 ? '#B85C5C' : '#5A8A6E' }]}>
               {overview.highSeverityCases}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>High Severity</ThemedText>
@@ -313,17 +313,17 @@ function OverviewTab({
       </ThemedText>
       <View style={[s.statusStrip, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: overview.overPermissionedRoles > 0 ? '#F59E0B' : '#22C55E' }]} />
+          <View style={[s.statusDot, { backgroundColor: overview.overPermissionedRoles > 0 ? '#B8943E' : '#5A8A6E' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{overview.overPermissionedRoles}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Over-Permissioned</ThemedText>
         </View>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: overview.onboardingBlockers > 0 ? '#EF4444' : '#22C55E' }]} />
+          <View style={[s.statusDot, { backgroundColor: overview.onboardingBlockers > 0 ? '#B85C5C' : '#5A8A6E' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{overview.onboardingBlockers}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Onboard Blockers</ThemedText>
         </View>
         <View style={s.statusStripItem}>
-          <View style={[s.statusDot, { backgroundColor: overview.staleContacts > 0 ? '#F59E0B' : '#22C55E' }]} />
+          <View style={[s.statusDot, { backgroundColor: overview.staleContacts > 0 ? '#B8943E' : '#5A8A6E' }]} />
           <ThemedText style={[s.statusCount, { color: colors.text }]}>{overview.staleContacts}</ThemedText>
           <ThemedText style={[s.statusLabel, { color: colors.textSecondary }]}>Stale Contacts</ThemedText>
         </View>
@@ -422,14 +422,14 @@ function StaffTab({
               {item.title}
             </ThemedText>
             {item.isCritical && (
-              <StatusBadge label="CRITICAL" color="#EF4444" />
+              <StatusBadge label="CRITICAL" color="#B85C5C" />
             )}
           </View>
           <View style={s.staffNameRow}>
             <ThemedText
               style={[
                 s.staffName,
-                { color: isVacant ? '#EF4444' : colors.text },
+                { color: isVacant ? '#B85C5C' : colors.text },
               ]}
             >
               {isVacant ? 'VACANT' : item.name}
@@ -505,8 +505,8 @@ function PlayersTab({
           {item.clearances.length > 0 && (
             <View style={s.clearancesRow}>
               {item.clearances.map((clearance) => (
-                <View key={clearance} style={[s.clearanceChip, { backgroundColor: '#22C55E20' }]}>
-                  <ThemedText style={[s.clearanceChipText, { color: '#22C55E' }]}>
+                <View key={clearance} style={[s.clearanceChip, { backgroundColor: '#5A8A6E20' }]}>
+                  <ThemedText style={[s.clearanceChipText, { color: '#5A8A6E' }]}>
                     {clearance.toUpperCase()}
                   </ThemedText>
                 </View>
@@ -515,7 +515,7 @@ function PlayersTab({
           )}
           {item.holdReason && (
             <View style={[s.holdReasonRow, { borderTopColor: colors.border }]}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#F59E0B" />
+              <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#B8943E" />
               <ThemedText style={[s.holdReasonText, { color: colors.textSecondary }]} numberOfLines={2}>
                 {item.holdReason}
               </ThemedText>
@@ -584,7 +584,7 @@ function RecruitsTab({
             <View style={s.recruitBadges}>
               <StatusBadge label={stageLabel.toUpperCase()} color={stageColor} />
               {item.riskFlag && (
-                <StatusBadge label="AT RISK" color="#EF4444" />
+                <StatusBadge label="AT RISK" color="#B85C5C" />
               )}
             </View>
           </View>
@@ -728,7 +728,7 @@ function RolesAccessTab({
               {item.person}
             </ThemedText>
             {item.overPermissioned && (
-              <StatusBadge label="OVER-PERMISSIONED" color="#F59E0B" />
+              <StatusBadge label="OVER-PERMISSIONED" color="#B8943E" />
             )}
           </View>
           <View style={s.listCardBadgeRow}>
@@ -778,7 +778,7 @@ function OnboardingTab({
     ({ item }: { item: OnboardingCase }) => {
       const percent = item.totalSteps > 0 ? Math.round((item.completedSteps / item.totalSteps) * 100) : 0;
       const isBlocked = item.blockers.length > 0;
-      const barColor = isBlocked ? '#F59E0B' : accentColor;
+      const barColor = isBlocked ? '#B8943E' : accentColor;
 
       return (
         <View style={[s.listCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -787,7 +787,7 @@ function OnboardingTab({
               {item.person}
             </ThemedText>
             {isBlocked && (
-              <StatusBadge label={`${item.blockers.length} BLOCKER${item.blockers.length > 1 ? 'S' : ''}`} color="#EF4444" />
+              <StatusBadge label={`${item.blockers.length} BLOCKER${item.blockers.length > 1 ? 'S' : ''}`} color="#B85C5C" />
             )}
           </View>
           <ThemedText style={[s.listCardSubtitle, { color: colors.textSecondary }]}>
@@ -807,7 +807,7 @@ function OnboardingTab({
               <ThemedText style={[s.blockersTitle, { color: colors.textTertiary }]}>Blockers:</ThemedText>
               {item.blockers.map((blocker, i) => (
                 <View key={`${item.id}-blocker-${i}`} style={s.blockerRow}>
-                  <IconSymbol name="exclamationmark.triangle.fill" size={10} color="#EF4444" />
+                  <IconSymbol name="exclamationmark.triangle.fill" size={10} color="#B85C5C" />
                   <ThemedText style={[s.blockerText, { color: colors.textSecondary }]} numberOfLines={1}>
                     {blocker}
                   </ThemedText>
@@ -863,7 +863,7 @@ function ContactsTab({
               {item.name}
             </ThemedText>
             {item.isStale && (
-              <StatusBadge label="STALE" color="#F59E0B" />
+              <StatusBadge label="STALE" color="#B8943E" />
             )}
           </View>
           <ThemedText style={[s.listCardSubtitle, { color: colors.textSecondary }]}>
@@ -1068,7 +1068,7 @@ function RecruitDetailSheet({
         <StatusBadge label={stageLabel.toUpperCase()} color={stageColor} />
         <StatusBadge label={recruit.position.toUpperCase()} color={accentColor} />
         {recruit.riskFlag && (
-          <StatusBadge label="AT RISK" color="#EF4444" />
+          <StatusBadge label="AT RISK" color="#B85C5C" />
         )}
       </View>
 
@@ -1155,8 +1155,8 @@ function RecruitDetailSheet({
       {recruit.riskFlag && (
         <View style={[s.sheetSection, { borderBottomColor: colors.border }]}>
           <View style={s.sheetListRow}>
-            <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#EF4444" />
-            <ThemedText style={[s.sheetBodyText, { color: '#EF4444' }]}>
+            <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#B85C5C" />
+            <ThemedText style={[s.sheetBodyText, { color: '#B85C5C' }]}>
               This recruit has been flagged as at-risk
             </ThemedText>
           </View>

@@ -267,31 +267,31 @@ export const PAYRAILS_SCOPE_CHIPS: Record<Mode, PayRailsScopeChip[]> = {
 };
 
 export const PAYRAILS_STATUS_COLOR: Record<PayRailsStatus, string> = {
-  pending: '#F59E0B',
-  succeeded: '#22C55E',
-  failed: '#EF4444',
-  disputed: '#F59E0B',
-  reconciled: '#1D9BF0',
+  pending: '#B8943E',
+  succeeded: '#5A8A6E',
+  failed: '#B85C5C',
+  disputed: '#B8943E',
+  reconciled: '#1A1714',
 };
 
 export const SETTLEMENT_STATUS_COLOR: Record<PayRailsSettlement['status'], string> = {
-  open: '#F59E0B',
-  processing: '#1D9BF0',
-  settled: '#22C55E',
-  exception: '#EF4444',
+  open: '#B8943E',
+  processing: '#1A1714',
+  settled: '#5A8A6E',
+  exception: '#B85C5C',
 };
 
 export const DISPUTE_STATUS_COLOR: Record<PayRailsDispute['status'], string> = {
-  open: '#F59E0B',
-  'under-review': '#1D9BF0',
-  won: '#22C55E',
-  lost: '#EF4444',
+  open: '#B8943E',
+  'under-review': '#1A1714',
+  won: '#5A8A6E',
+  lost: '#B85C5C',
 };
 
 export const RECON_STATUS_COLOR: Record<PayRailsReconciliation['status'], string> = {
-  matched: '#22C55E',
-  variance: '#F59E0B',
-  pending: '#A1A1AA',
+  matched: '#5A8A6E',
+  variance: '#B8943E',
+  pending: '#9C9790',
 };
 
 // =============================================================================

@@ -37,11 +37,11 @@ export interface LeadDeal {
 
 export const PIPELINE_STAGES: { stage: LeadPipelineStage; color: string }[] = [
   { stage: 'Lead',         color: '#6B7280' },
-  { stage: 'Contacted',    color: '#3B82F6' },
-  { stage: 'Qualified',    color: '#8B5CF6' },
-  { stage: 'Proposal',     color: '#F59E0B' },
-  { stage: 'Negotiation',  color: '#F97316' },
-  { stage: 'Closed Won',   color: '#22C55E' },
+  { stage: 'Contacted',    color: '#1A1714' },
+  { stage: 'Qualified',    color: '#1A1714' },
+  { stage: 'Proposal',     color: '#B8943E' },
+  { stage: 'Negotiation',  color: '#B8943E' },
+  { stage: 'Closed Won',   color: '#5A8A6E' },
 ];
 
 export const PIPELINE_SUMMARY: PipelineSummary = {

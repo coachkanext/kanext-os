@@ -237,14 +237,14 @@ export const EDU_FUND_TYPE_LABELS: Record<EduFundType, string> = {
 };
 
 export const EDU_FUND_TYPE_COLORS: Record<EduFundType, string> = {
-  operating: '#22C55E',
-  tuition_revenue: '#1D9BF0',
-  housing_revenue: '#1D9BF0',
-  financial_aid: '#F59E0B',
-  athletics: '#EF4444',
-  restricted_grants: '#1D9BF0',
-  endowment: '#22C55E',
-  auxiliary: '#F59E0B',
+  operating: '#5A8A6E',
+  tuition_revenue: '#1A1714',
+  housing_revenue: '#1A1714',
+  financial_aid: '#B8943E',
+  athletics: '#B85C5C',
+  restricted_grants: '#1A1714',
+  endowment: '#5A8A6E',
+  auxiliary: '#B8943E',
 };
 
 export const RECEIVABLE_TYPE_LABELS: Record<ReceivableType, string> = {
@@ -259,14 +259,14 @@ export const RECEIVABLE_TYPE_LABELS: Record<ReceivableType, string> = {
 };
 
 export const RECEIVABLE_TYPE_COLORS: Record<ReceivableType, string> = {
-  tuition: '#1D9BF0',
-  fees: '#1D9BF0',
-  housing: '#22C55E',
-  meal_plan: '#F59E0B',
-  parking: '#A1A1AA',
-  lab_fees: '#1D9BF0',
-  deposit: '#22C55E',
-  library_fines: '#EF4444',
+  tuition: '#1A1714',
+  fees: '#1A1714',
+  housing: '#5A8A6E',
+  meal_plan: '#B8943E',
+  parking: '#9C9790',
+  lab_fees: '#1A1714',
+  deposit: '#5A8A6E',
+  library_fines: '#B85C5C',
 };
 
 export const PAYABLE_TYPE_LABELS: Record<PayableType, string> = {
@@ -281,14 +281,14 @@ export const PAYABLE_TYPE_LABELS: Record<PayableType, string> = {
 };
 
 export const PAYABLE_TYPE_COLORS: Record<PayableType, string> = {
-  vendor: '#1D9BF0',
-  contractor: '#F59E0B',
-  payroll: '#22C55E',
-  utilities: '#1D9BF0',
-  insurance: '#1D9BF0',
-  equipment: '#F59E0B',
-  services: '#22C55E',
-  travel: '#1D9BF0',
+  vendor: '#1A1714',
+  contractor: '#B8943E',
+  payroll: '#5A8A6E',
+  utilities: '#1A1714',
+  insurance: '#1A1714',
+  equipment: '#B8943E',
+  services: '#5A8A6E',
+  travel: '#1A1714',
 };
 
 export const AID_TYPE_LABELS: Record<AidType, string> = {
@@ -302,13 +302,13 @@ export const AID_TYPE_LABELS: Record<AidType, string> = {
 };
 
 export const AID_TYPE_COLORS: Record<AidType, string> = {
-  merit: '#22C55E',
-  need: '#1D9BF0',
-  athletic: '#EF4444',
-  pell: '#1D9BF0',
-  state: '#F59E0B',
-  external: '#22C55E',
-  work_study: '#F59E0B',
+  merit: '#5A8A6E',
+  need: '#1A1714',
+  athletic: '#B85C5C',
+  pell: '#1A1714',
+  state: '#B8943E',
+  external: '#5A8A6E',
+  work_study: '#B8943E',
 };
 
 export const POSTING_STATE_LABELS: Record<PostingState, string> = {
@@ -320,11 +320,11 @@ export const POSTING_STATE_LABELS: Record<PostingState, string> = {
 };
 
 export const POSTING_STATE_COLORS: Record<PostingState, string> = {
-  posted: '#22C55E',
-  pending: '#F59E0B',
-  held: '#EF4444',
-  reversed: '#A1A1AA',
-  adjusting: '#1D9BF0',
+  posted: '#5A8A6E',
+  pending: '#B8943E',
+  held: '#B85C5C',
+  reversed: '#9C9790',
+  adjusting: '#1A1714',
 };
 
 export const APPROVAL_STATUS_LABELS: Record<ApprovalStatus, string> = {
@@ -335,10 +335,10 @@ export const APPROVAL_STATUS_LABELS: Record<ApprovalStatus, string> = {
 };
 
 export const APPROVAL_STATUS_COLORS: Record<ApprovalStatus, string> = {
-  pending: '#F59E0B',
-  approved: '#22C55E',
-  rejected: '#EF4444',
-  escalated: '#1D9BF0',
+  pending: '#B8943E',
+  approved: '#5A8A6E',
+  rejected: '#B85C5C',
+  escalated: '#1A1714',
 };
 
 export const AUDIT_EVIDENCE_LABELS: Record<AuditEvidenceStatus, string> = {
@@ -349,10 +349,10 @@ export const AUDIT_EVIDENCE_LABELS: Record<AuditEvidenceStatus, string> = {
 };
 
 export const AUDIT_EVIDENCE_COLORS: Record<AuditEvidenceStatus, string> = {
-  complete: '#22C55E',
-  partial: '#F59E0B',
-  missing: '#EF4444',
-  flagged: '#EF4444',
+  complete: '#5A8A6E',
+  partial: '#B8943E',
+  missing: '#B85C5C',
+  flagged: '#B85C5C',
 };
 
 export const TERM_WINDOW_LABELS: Record<TermWindow, string> = {

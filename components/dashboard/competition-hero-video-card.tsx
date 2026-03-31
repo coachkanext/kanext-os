@@ -126,9 +126,9 @@ function getBroadcastCTA(role: CompetitionRoleLens, status: BroadcastStatus): st
 function getStatusConfig(status: BroadcastStatus): { label: string; color: string; bgColor: string } {
   switch (status) {
     case 'live':
-      return { label: 'LIVE', color: '#fff', bgColor: '#EF4444' };
+      return { label: 'LIVE', color: '#fff', bgColor: '#B85C5C' };
     case 'upcoming':
-      return { label: 'UPCOMING', color: '#fff', bgColor: '#F59E0B' };
+      return { label: 'UPCOMING', color: '#fff', bgColor: '#B8943E' };
     case 'replay':
       return { label: 'REPLAY', color: '#fff', bgColor: accent };
   }

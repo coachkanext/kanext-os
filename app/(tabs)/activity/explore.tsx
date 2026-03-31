@@ -80,7 +80,7 @@ export default function ExploreScreen() {
               }}
             >
               <ThemedText
-                style={[styles.chipText, { color: isActive ? '#000' : '#A1A1AA' }]}
+                style={[styles.chipText, { color: isActive ? '#000' : '#9C9790' }]}
               >
                 {s.label}
               </ThemedText>

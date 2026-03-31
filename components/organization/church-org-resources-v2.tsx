@@ -230,11 +230,11 @@ function OverviewTab({
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>New (7d)</ThemedText>
         </View>
         <View style={[s.tileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.tileValue, { color: '#F59E0B' }]}>{tiles.policiesAwaitingApproval}</ThemedText>
+          <ThemedText style={[s.tileValue, { color: '#B8943E' }]}>{tiles.policiesAwaitingApproval}</ThemedText>
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Policies Pending</ThemedText>
         </View>
         <View style={[s.tileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.tileValue, { color: '#22C55E' }]}>{tiles.trainingCompletion30d}</ThemedText>
+          <ThemedText style={[s.tileValue, { color: '#5A8A6E' }]}>{tiles.trainingCompletion30d}</ThemedText>
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Training (30d)</ThemedText>
         </View>
         <View style={[s.tileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -244,7 +244,7 @@ function OverviewTab({
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Top Pack</ThemedText>
         </View>
         <View style={[s.tileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.tileValue, { color: '#EF4444' }]}>{tiles.expiringItems}</ThemedText>
+          <ThemedText style={[s.tileValue, { color: '#B85C5C' }]}>{tiles.expiringItems}</ThemedText>
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Expiring</ThemedText>
         </View>
       </ScrollView>
@@ -280,7 +280,7 @@ function OverviewTab({
 
       {isMember(role) && (
         <View style={[s.startCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <IconSymbol name="tray.full.fill" size={18} color="#22C55E" />
+          <IconSymbol name="tray.full.fill" size={18} color="#5A8A6E" />
           <View style={s.startCardTextCol}>
             <ThemedText style={[s.startCardTitle, { color: colors.text }]}>Explore Resource Packs</ThemedText>
             <ThemedText style={[s.startCardSubtitle, { color: colors.textSecondary }]}>
@@ -323,8 +323,8 @@ function OverviewTab({
           <ThemedText style={[s.sectionTitle, { color: colors.text, marginTop: Spacing.lg }]}>
             Gap Detector
           </ThemedText>
-          <View style={[s.alertCard, { backgroundColor: '#F59E0B10', borderColor: '#F59E0B30' }]}>
-            <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#F59E0B" />
+          <View style={[s.alertCard, { backgroundColor: '#B8943E10', borderColor: '#B8943E30' }]}>
+            <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#B8943E" />
             <View style={s.alertTextCol}>
               <ThemedText style={[s.alertTitle, { color: colors.text }]}>
                 {data.requests.filter((r) => r.status === 'new').length} New Resource Requests
@@ -378,12 +378,12 @@ function getAuditActionLabel(action: string): string {
 
 function getAuditActionColor(action: string): string {
   const map: Record<string, string> = {
-    published: '#22C55E',
+    published: '#5A8A6E',
     version_bump: ACCENT,
-    visibility_changed: '#F59E0B',
+    visibility_changed: '#B8943E',
     acknowledged: ACCENT,
   };
-  return map[action] || '#A1A1AA';
+  return map[action] || '#9C9790';
 }
 
 // =============================================================================
@@ -443,9 +443,9 @@ function LibraryTab({
             {item.tags.map((tag) => (
               <View
                 key={tag}
-                style={[s.ministryChip, { backgroundColor: (MINISTRY_TAG_COLORS[tag] || '#A1A1AA') + '18' }]}
+                style={[s.ministryChip, { backgroundColor: (MINISTRY_TAG_COLORS[tag] || '#9C9790') + '18' }]}
               >
-                <ThemedText style={[s.ministryChipText, { color: MINISTRY_TAG_COLORS[tag] || '#A1A1AA' }]}>
+                <ThemedText style={[s.ministryChipText, { color: MINISTRY_TAG_COLORS[tag] || '#9C9790' }]}>
                   {MINISTRY_TAG_LABELS[tag] || tag}
                 </ThemedText>
               </View>
@@ -525,13 +525,13 @@ function LibraryTab({
 
 function getVisibilityColor(visibility: string): string {
   const map: Record<string, string> = {
-    public: '#22C55E',
+    public: '#5A8A6E',
     org: ACCENT,
-    ministry: '#F59E0B',
+    ministry: '#B8943E',
     role_specific: ACCENT,
-    restricted: '#EF4444',
+    restricted: '#B85C5C',
   };
-  return map[visibility] || '#A1A1AA';
+  return map[visibility] || '#9C9790';
 }
 
 // =============================================================================
@@ -552,7 +552,7 @@ function PacksTab({
   const renderItem = useCallback(
     ({ item }: { item: ResourcePack }) => {
       const statusColor = PACK_STATUS_COLORS[item.status];
-      const ministryColor = MINISTRY_TAG_COLORS[item.ministry] || '#A1A1AA';
+      const ministryColor = MINISTRY_TAG_COLORS[item.ministry] || '#9C9790';
       return (
         <Pressable
           style={[s.packCard, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -635,7 +635,7 @@ function PoliciesTab({
 }) {
   const renderItem = useCallback(
     ({ item }: { item: PolicyPlaybook }) => {
-      const statusColor = RESOURCE_STATUS_COLORS[item.status] || '#A1A1AA';
+      const statusColor = RESOURCE_STATUS_COLORS[item.status] || '#9C9790';
       const ackPercent = item.totalRequired > 0
         ? Math.round((item.acknowledgedCount / item.totalRequired) * 100)
         : 0;
@@ -652,8 +652,8 @@ function PoliciesTab({
               </View>
             </View>
             {item.status === 'in_review' && (
-              <View style={[s.approvalFlag, { backgroundColor: '#F59E0B20' }]}>
-                <ThemedText style={[s.approvalFlagText, { color: '#F59E0B' }]}>NEEDS APPROVAL</ThemedText>
+              <View style={[s.approvalFlag, { backgroundColor: '#B8943E20' }]}>
+                <ThemedText style={[s.approvalFlagText, { color: '#B8943E' }]}>NEEDS APPROVAL</ThemedText>
               </View>
             )}
           </View>
@@ -677,7 +677,7 @@ function PoliciesTab({
                   {item.acknowledgedCount}/{item.totalRequired}
                 </ThemedText>
               </View>
-              <ProgressBar percent={ackPercent} color={ackPercent >= 100 ? '#22C55E' : accentColor} />
+              <ProgressBar percent={ackPercent} color={ackPercent >= 100 ? '#5A8A6E' : accentColor} />
             </View>
           )}
         </View>
@@ -715,7 +715,7 @@ function TrainingTab({
 }) {
   const renderItem = useCallback(
     ({ item }: { item: TrainingModule }) => {
-      const statusColor = RESOURCE_STATUS_COLORS[item.status] || '#A1A1AA';
+      const statusColor = RESOURCE_STATUS_COLORS[item.status] || '#9C9790';
       const completionPercent = item.totalAssigned > 0
         ? Math.round((item.completionCount / item.totalAssigned) * 100)
         : 0;
@@ -761,7 +761,7 @@ function TrainingTab({
                 {item.completionCount}/{item.totalAssigned}
               </ThemedText>
             </View>
-            <ProgressBar percent={completionPercent} color={completionPercent >= 100 ? '#22C55E' : accentColor} />
+            <ProgressBar percent={completionPercent} color={completionPercent >= 100 ? '#5A8A6E' : accentColor} />
           </View>
         </View>
       );
@@ -798,7 +798,7 @@ function FormsTab({
 }) {
   const renderItem = useCallback(
     ({ item }: { item: FormTemplate }) => {
-      const statusColor = item.status === 'published' ? '#22C55E' : '#F59E0B';
+      const statusColor = item.status === 'published' ? '#5A8A6E' : '#B8943E';
       return (
         <View style={[s.formCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={s.formHeader}>
@@ -882,17 +882,17 @@ function MediaTab({
     const map: Record<string, string> = {
       logo: ACCENT,
       slide_template: ACCENT,
-      lyric_template: '#F59E0B',
-      photo_guideline: '#22C55E',
+      lyric_template: '#B8943E',
+      photo_guideline: '#5A8A6E',
       announcement_graphic: ACCENT,
-      audio_reference: '#EF4444',
+      audio_reference: '#B85C5C',
     };
-    return map[type] || '#A1A1AA';
+    return map[type] || '#9C9790';
   };
 
   const renderItem = useCallback(
     ({ item }: { item: MediaAsset }) => {
-      const statusColor = RESOURCE_STATUS_COLORS[item.status] || '#A1A1AA';
+      const statusColor = RESOURCE_STATUS_COLORS[item.status] || '#9C9790';
       const typeColor = getMediaTypeColor(item.type);
       return (
         <View style={[s.mediaCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -990,7 +990,7 @@ function PermissionsTab({
       </ThemedText>
 
       {queue.map((item) => {
-        const statusColor = item.status === 'pending' ? '#F59E0B' : item.status === 'approved' ? '#22C55E' : '#EF4444';
+        const statusColor = item.status === 'pending' ? '#B8943E' : item.status === 'approved' ? '#5A8A6E' : '#B85C5C';
         return (
           <View
             key={item.id}
@@ -1120,7 +1120,7 @@ function RequestsTab({
     ({ item }: { item: ResourceRequest }) => {
       const statusColor = REQUEST_STATUS_COLORS[item.status];
       const priorityColor = REQUEST_PRIORITY_COLORS[item.priority];
-      const ministryColor = MINISTRY_TAG_COLORS[item.ministry] || '#A1A1AA';
+      const ministryColor = MINISTRY_TAG_COLORS[item.ministry] || '#9C9790';
       return (
         <View style={[s.requestCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           {/* Priority bar */}
@@ -1252,9 +1252,9 @@ function ResourceDetailSheet({
           {resource.tags.map((tag) => (
             <View
               key={tag}
-              style={[s.ministryChip, { backgroundColor: (MINISTRY_TAG_COLORS[tag] || '#A1A1AA') + '18' }]}
+              style={[s.ministryChip, { backgroundColor: (MINISTRY_TAG_COLORS[tag] || '#9C9790') + '18' }]}
             >
-              <ThemedText style={[s.ministryChipText, { color: MINISTRY_TAG_COLORS[tag] || '#A1A1AA' }]}>
+              <ThemedText style={[s.ministryChipText, { color: MINISTRY_TAG_COLORS[tag] || '#9C9790' }]}>
                 {MINISTRY_TAG_LABELS[tag] || tag}
               </ThemedText>
             </View>
@@ -1326,7 +1326,7 @@ function PackDetailSheet({
   if (!pack) return null;
 
   const statusColor = PACK_STATUS_COLORS[pack.status];
-  const ministryColor = MINISTRY_TAG_COLORS[pack.ministry] || '#A1A1AA';
+  const ministryColor = MINISTRY_TAG_COLORS[pack.ministry] || '#9C9790';
   const includedResources = resources.filter((r) => pack.includedResourceIds.includes(r.id));
 
   return (

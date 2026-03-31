@@ -160,10 +160,10 @@ export const SPONSOR_TYPE_LABELS: Record<SponsorType, string> = {
 };
 
 export const SPONSOR_TYPE_COLORS: Record<SponsorType, string> = {
-  sponsor: '#1D9BF0',
-  partner: '#1D9BF0',
-  donor: '#22C55E',
-  vendor_partner: '#F59E0B',
+  sponsor: '#1A1714',
+  partner: '#1A1714',
+  donor: '#5A8A6E',
+  vendor_partner: '#B8943E',
 };
 
 // =============================================================================
@@ -179,11 +179,11 @@ export const SPONSOR_SCOPE_LABELS: Record<SponsorScope, string> = {
 };
 
 export const SPONSOR_SCOPE_COLORS: Record<SponsorScope, string> = {
-  athletics: '#EF4444',
-  admissions: '#1D9BF0',
-  campus: '#1D9BF0',
-  institution: '#22C55E',
-  housing: '#F59E0B',
+  athletics: '#B85C5C',
+  admissions: '#1A1714',
+  campus: '#1A1714',
+  institution: '#5A8A6E',
+  housing: '#B8943E',
 };
 
 // =============================================================================
@@ -198,10 +198,10 @@ export const SPONSOR_STATUS_LABELS: Record<SponsorStatus, string> = {
 };
 
 export const SPONSOR_STATUS_COLORS: Record<SponsorStatus, string> = {
-  active: '#22C55E',
-  negotiating: '#F59E0B',
-  ended: '#A1A1AA',
-  paused: '#1D9BF0',
+  active: '#5A8A6E',
+  negotiating: '#B8943E',
+  ended: '#9C9790',
+  paused: '#1A1714',
 };
 
 // =============================================================================
@@ -219,13 +219,13 @@ export const PIPELINE_STAGE_LABELS: Record<PipelineStage, string> = {
 };
 
 export const PIPELINE_STAGE_COLORS: Record<PipelineStage, string> = {
-  prospect: '#A1A1AA',
-  contacted: '#1D9BF0',
-  proposal_sent: '#1D9BF0',
-  negotiating: '#F59E0B',
-  verbal: '#1D9BF0',
-  contract_ready: '#22C55E',
-  signed: '#22C55E',
+  prospect: '#9C9790',
+  contacted: '#1A1714',
+  proposal_sent: '#1A1714',
+  negotiating: '#B8943E',
+  verbal: '#1A1714',
+  contract_ready: '#5A8A6E',
+  signed: '#5A8A6E',
 };
 
 // =============================================================================
@@ -249,11 +249,11 @@ export const AGREEMENT_STATUS_LABELS: Record<AgreementStatus, string> = {
 };
 
 export const AGREEMENT_STATUS_COLORS: Record<AgreementStatus, string> = {
-  draft: '#A1A1AA',
-  in_review: '#F59E0B',
-  executed: '#22C55E',
-  expiring: '#EF4444',
-  archived: '#1D9BF0',
+  draft: '#9C9790',
+  in_review: '#B8943E',
+  executed: '#5A8A6E',
+  expiring: '#B85C5C',
+  archived: '#1A1714',
 };
 
 // =============================================================================
@@ -269,11 +269,11 @@ export const DELIVERABLE_STATUS_LABELS: Record<DeliverableStatus, string> = {
 };
 
 export const DELIVERABLE_STATUS_COLORS: Record<DeliverableStatus, string> = {
-  planned: '#A1A1AA',
-  in_progress: '#1D9BF0',
-  submitted: '#F59E0B',
-  verified: '#22C55E',
-  completed: '#22C55E',
+  planned: '#9C9790',
+  in_progress: '#1A1714',
+  submitted: '#B8943E',
+  verified: '#5A8A6E',
+  completed: '#5A8A6E',
 };
 
 // =============================================================================
@@ -296,10 +296,10 @@ export const PROOF_STATUS_LABELS: Record<ProofStatus, string> = {
 };
 
 export const PROOF_STATUS_COLORS: Record<ProofStatus, string> = {
-  draft: '#A1A1AA',
-  submitted: '#1D9BF0',
-  verified: '#22C55E',
-  rejected: '#EF4444',
+  draft: '#9C9790',
+  submitted: '#1A1714',
+  verified: '#5A8A6E',
+  rejected: '#B85C5C',
 };
 
 // =============================================================================
@@ -315,11 +315,11 @@ export const PAYMENT_STATUS_LABELS: Record<PaymentExpectationStatus, string> = {
 };
 
 export const PAYMENT_STATUS_COLORS: Record<PaymentExpectationStatus, string> = {
-  expected: '#A1A1AA',
-  invoiced: '#1D9BF0',
-  received: '#22C55E',
-  late: '#EF4444',
-  disputed: '#EF4444',
+  expected: '#9C9790',
+  invoiced: '#1A1714',
+  received: '#5A8A6E',
+  late: '#B85C5C',
+  disputed: '#B85C5C',
 };
 
 // =============================================================================
@@ -341,16 +341,16 @@ export const RISK_STATUS_LABELS: Record<RiskStatus, string> = {
 };
 
 export const RISK_STATUS_COLORS: Record<RiskStatus, string> = {
-  open: '#EF4444',
-  mitigating: '#F59E0B',
-  closed: '#22C55E',
+  open: '#B85C5C',
+  mitigating: '#B8943E',
+  closed: '#5A8A6E',
 };
 
 export const RISK_SEVERITY_COLORS: Record<'critical' | 'high' | 'medium' | 'low', string> = {
-  critical: '#EF4444',
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#22C55E',
+  critical: '#B85C5C',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#5A8A6E',
 };
 
 // =============================================================================

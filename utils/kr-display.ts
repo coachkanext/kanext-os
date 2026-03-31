@@ -18,25 +18,25 @@ export interface KRColorBand {
 }
 
 export const KR_COLOR_BANDS: KRColorBand[] = [
-  { min: 97, max: 100, color: '#1D9BF0', label: 'Elite/Transcendent' },
-  { min: 94, max: 96,  color: '#A1A1AA', label: 'Franchise Anchor' },
-  { min: 90, max: 93,  color: '#1D9BF0', label: 'High-Impact' },
-  { min: 86, max: 89,  color: '#1D9BF0', label: 'Solid Starter' },
-  { min: 82, max: 85,  color: '#1D9BF0', label: 'Trusted Rotation' },
-  { min: 78, max: 81,  color: '#22C55E', label: 'Reliable Bench' },
-  { min: 74, max: 77,  color: '#F59E0B', label: 'Situational' },
-  { min: 70, max: 73,  color: '#F59E0B', label: 'Limited' },
-  { min: 66, max: 69,  color: '#EF4444', label: 'Fringe/Project' },
-  { min: 0,  max: 65,  color: '#A1A1AA', label: 'Below Viability' },
+  { min: 97, max: 100, color: '#1A1714', label: 'Elite/Transcendent' },
+  { min: 94, max: 96,  color: '#9C9790', label: 'Franchise Anchor' },
+  { min: 90, max: 93,  color: '#1A1714', label: 'High-Impact' },
+  { min: 86, max: 89,  color: '#1A1714', label: 'Solid Starter' },
+  { min: 82, max: 85,  color: '#1A1714', label: 'Trusted Rotation' },
+  { min: 78, max: 81,  color: '#5A8A6E', label: 'Reliable Bench' },
+  { min: 74, max: 77,  color: '#B8943E', label: 'Situational' },
+  { min: 70, max: 73,  color: '#B8943E', label: 'Limited' },
+  { min: 66, max: 69,  color: '#B85C5C', label: 'Fringe/Project' },
+  { min: 0,  max: 65,  color: '#9C9790', label: 'Below Viability' },
 ];
 
 /** Get KR color for a given score */
 export function getKRColor(kr: number | null | undefined): string {
-  if (kr == null) return '#A1A1AA';
+  if (kr == null) return '#9C9790';
   for (const band of KR_COLOR_BANDS) {
     if (kr >= band.min) return band.color;
   }
-  return '#A1A1AA';
+  return '#9C9790';
 }
 
 /** Get KR color band label (universal) */
@@ -292,15 +292,15 @@ export function getArchetypeDisplay(archetype: string | null | undefined): strin
 export type BadgeLevel = 'Bronze' | 'Silver' | 'Gold';
 
 export const BADGE_COLORS: Record<BadgeLevel, string> = {
-  Bronze: '#1D9BF0',
-  Silver: '#A1A1AA',
-  Gold: '#1D9BF0',
+  Bronze: '#1A1714',
+  Silver: '#9C9790',
+  Gold: '#1A1714',
 };
 
 export const BADGE_BG_COLORS: Record<BadgeLevel, string> = {
-  Bronze: '#1D9BF020',
-  Silver: '#A1A1AA20',
-  Gold: '#1D9BF020',
+  Bronze: '#1A171420',
+  Silver: '#9C979020',
+  Gold: '#1A171420',
 };
 
 /** Badge thresholds — College mode */

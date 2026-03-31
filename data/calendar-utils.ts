@@ -8,14 +8,14 @@ import type { ProgramCalendarEvent, ProgramCalendarEventType } from '@/types';
 
 // ── Event type badge colors ──
 export const EVENT_TYPE_COLORS: Record<ProgramCalendarEventType, string> = {
-  game: '#EF4444',
-  practice: '#22C55E',
-  lift: '#F59E0B',
-  travel: '#1D9BF0',
-  meeting: '#1D9BF0',
-  recruiting: '#F59E0B',
-  academic: '#1D9BF0',
-  admin_deadline: '#A1A1AA',
+  game: '#B85C5C',
+  practice: '#5A8A6E',
+  lift: '#B8943E',
+  travel: '#1A1714',
+  meeting: '#1A1714',
+  recruiting: '#B8943E',
+  academic: '#1A1714',
+  admin_deadline: '#9C9790',
 };
 
 export const EVENT_TYPE_LABELS: Record<ProgramCalendarEventType, string> = {

@@ -74,7 +74,7 @@ function GameFilmCard({ item }: { item: GameFilm }) {
               <ThemedText
                 style={[
                   styles.resultText,
-                  { color: item.result === 'W' ? '#22C55E' : '#EF4444' },
+                  { color: item.result === 'W' ? '#5A8A6E' : '#B85C5C' },
                 ]}
               >
                 {item.result} {item.score}

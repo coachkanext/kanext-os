@@ -18,8 +18,8 @@ const CATEGORY_COLORS: Record<ConnectGroup['category'], string> = {
   married: ACCENT,
   men: ACCENT,
   women: ACCENT,
-  mixed: '#22C55E',
-  seniors: '#F59E0B',
+  mixed: '#5A8A6E',
+  seniors: '#B8943E',
 };
 
 const CATEGORY_LABELS: Record<ConnectGroup['category'], string> = {
@@ -32,9 +32,9 @@ const CATEGORY_LABELS: Record<ConnectGroup['category'], string> = {
 };
 
 const STATUS_COLORS: Record<ConnectGroup['status'], string> = {
-  open: '#22C55E',
-  full: '#EF4444',
-  forming: '#F59E0B',
+  open: '#5A8A6E',
+  full: '#B85C5C',
+  forming: '#B8943E',
 };
 
 const GROUP_CATEGORY_FILTERS: { key: 'all' | ConnectGroup['category']; label: string }[] = [
@@ -135,7 +135,7 @@ export function ChurchConnectGroupsView({ colors, accent }: Props) {
                   style={[
                     styles.barFill,
                     {
-                      backgroundColor: pct >= 0.9 ? '#EF4444' : catColor,
+                      backgroundColor: pct >= 0.9 ? '#B85C5C' : catColor,
                       width: `${pct * 100}%`,
                     },
                   ]}

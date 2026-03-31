@@ -197,11 +197,11 @@ const CATEGORY_ICON: Record<Category, string> = {
 
 const STATUS_COLOR: Record<EntryStatus, string> = {
   DRAFT: '#9CA3AF',
-  AUTHORIZED: '#3B82F6',
-  SCHEDULED: '#8B5CF6',
-  SETTLED: '#22C55E',
-  REVERSED: '#F59E0B',
-  FAILED: '#EF4444',
+  AUTHORIZED: '#1A1714',
+  SCHEDULED: '#1A1714',
+  SETTLED: '#5A8A6E',
+  REVERSED: '#B8943E',
+  FAILED: '#B85C5C',
 };
 
 // Tab indices: 0=Program, 1=People, 2=Finance, 3=Compliance, 4=Facilities, 5=Ledger
@@ -354,19 +354,19 @@ export function BizLedger({ colors, accentColor, onNavigateTab }: Props) {
         <View style={[s.block, { borderColor: colors.border }]}>
           <View style={s.balancesGrid}>
             <View style={s.balanceItem}>
-              <ThemedText style={[s.balanceValue, { color: '#22C55E' }]}>
+              <ThemedText style={[s.balanceValue, { color: '#5A8A6E' }]}>
                 {formatCents(totalInflows)}
               </ThemedText>
               <ThemedText style={[s.balanceLabel, { color: colors.textSecondary }]}>Total Inflows</ThemedText>
             </View>
             <View style={s.balanceItem}>
-              <ThemedText style={[s.balanceValue, { color: '#EF4444' }]}>
+              <ThemedText style={[s.balanceValue, { color: '#B85C5C' }]}>
                 {formatCents(totalOutflows)}
               </ThemedText>
               <ThemedText style={[s.balanceLabel, { color: colors.textSecondary }]}>Total Outflows</ThemedText>
             </View>
             <View style={s.balanceItem}>
-              <ThemedText style={[s.balanceValue, { color: net >= 0 ? '#22C55E' : '#EF4444' }]}>
+              <ThemedText style={[s.balanceValue, { color: net >= 0 ? '#5A8A6E' : '#B85C5C' }]}>
                 {net >= 0 ? '+' : ''}{formatCents(net)}
               </ThemedText>
               <ThemedText style={[s.balanceLabel, { color: colors.textSecondary }]}>Net</ThemedText>
@@ -453,7 +453,7 @@ export function BizLedger({ colors, accentColor, onNavigateTab }: Props) {
               {entries.map((entry) => {
                 const isInflow = entry.direction === 'inflow';
                 const isTransfer = entry.direction === 'internal_transfer';
-                const amountColor = isTransfer ? '#8B5CF6' : isInflow ? '#22C55E' : '#EF4444';
+                const amountColor = isTransfer ? '#1A1714' : isInflow ? '#5A8A6E' : '#B85C5C';
                 const statusColor = STATUS_COLOR[entry.status];
 
                 return (
@@ -527,17 +527,17 @@ export function BizLedger({ colors, accentColor, onNavigateTab }: Props) {
             <View style={s.detailAmountRow}>
               <ThemedText style={[
                 s.detailAmount,
-                { color: selectedEntry.direction === 'inflow' ? '#22C55E' : '#EF4444' },
+                { color: selectedEntry.direction === 'inflow' ? '#5A8A6E' : '#B85C5C' },
               ]}>
                 {selectedEntry.direction === 'inflow' ? '+' : '-'}{formatCents(selectedEntry.amountCents)}
               </ThemedText>
               <View style={[
                 s.directionChip,
-                { backgroundColor: (selectedEntry.direction === 'inflow' ? '#22C55E' : '#EF4444') + '20' },
+                { backgroundColor: (selectedEntry.direction === 'inflow' ? '#5A8A6E' : '#B85C5C') + '20' },
               ]}>
                 <ThemedText style={[
                   s.directionChipText,
-                  { color: selectedEntry.direction === 'inflow' ? '#22C55E' : '#EF4444' },
+                  { color: selectedEntry.direction === 'inflow' ? '#5A8A6E' : '#B85C5C' },
                 ]}>
                   {selectedEntry.direction === 'inflow' ? 'INFLOW' : selectedEntry.direction === 'outflow' ? 'OUTFLOW' : 'TRANSFER'}
                 </ThemedText>

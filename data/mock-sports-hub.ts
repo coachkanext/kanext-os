@@ -253,7 +253,7 @@ export const TEAM_INFO = {
   record:         '14-11',
   conferenceRec:  '8-7',
   hue:            0,
-  colors:         { primary: '#990000', secondary: '#CC0000' },
+  colors:         { primary: '#1A1714', secondary: '#CC0000' },
   conference:     'GAAC',
   confStanding:   '4th',
 };
@@ -764,7 +764,7 @@ export function formatKR(kr: number): string {
 
 export function krTierColor(overall: number): string {
   if (overall >= 80) return '#5A8A6E';
-  if (overall >= 72) return '#1D9BF0';
+  if (overall >= 72) return '#1A1714';
   if (overall >= 62) return '#D97757';
   return '#B85C5C';
 }
@@ -778,19 +778,19 @@ export function formatCurrency(n: number): string {
 export function stageColor(stage: RecruitStage): string {
   switch (stage) {
     case 'Committed': case 'Signed':    return '#5A8A6E';
-    case 'Offered':   case 'Verbal':    return '#1D9BF0';
+    case 'Offered':   case 'Verbal':    return '#1A1714';
     case 'Evaluating':                  return '#D97757';
-    case 'Identified':                  return '#8B6340';
+    case 'Identified':                  return '#1A1714';
     case 'Declined':                    return '#B85C5C';
-    default:                            return '#8B6340';
+    default:                            return '#1A1714';
   }
 }
 
 export function priorityColor(p: RecruitPriority): string {
   switch (p) {
     case 'Target': return '#D97757';
-    case 'Offer':  return '#1D9BF0';
-    case 'Watch':  return '#8B6340';
+    case 'Offer':  return '#1A1714';
+    case 'Watch':  return '#1A1714';
     case 'Backup': return '#B85C5C';
   }
 }

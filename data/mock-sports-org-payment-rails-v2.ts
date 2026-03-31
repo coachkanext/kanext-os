@@ -229,10 +229,10 @@ export const STREAM_STATUS_LABELS: Record<StreamStatus, string> = {
 };
 
 export const STREAM_STATUS_COLORS: Record<StreamStatus, string> = {
-  active: '#22C55E',
-  paused: '#F59E0B',
-  failed: '#EF4444',
-  'pending-setup': '#A1A1AA',
+  active: '#5A8A6E',
+  paused: '#B8943E',
+  failed: '#B85C5C',
+  'pending-setup': '#9C9790',
 };
 
 export const STREAM_CATEGORY_LABELS: Record<StreamCategory, string> = {
@@ -243,10 +243,10 @@ export const STREAM_CATEGORY_LABELS: Record<StreamCategory, string> = {
 };
 
 export const STREAM_CATEGORY_COLORS: Record<StreamCategory, string> = {
-  vendor: '#1D9BF0',
-  travel: '#1D9BF0',
-  'player-services': '#1D9BF0',
-  'misc-ops': '#A1A1AA',
+  vendor: '#1A1714',
+  travel: '#1A1714',
+  'player-services': '#1A1714',
+  'misc-ops': '#9C9790',
 };
 
 export const METHOD_LABELS: Record<PaymentMethod, string> = {
@@ -271,10 +271,10 @@ export const PRIORITY_LABELS: Record<ActionPriority, string> = {
 };
 
 export const PRIORITY_COLORS: Record<ActionPriority, string> = {
-  critical: '#EF4444',
-  high: '#F59E0B',
-  medium: '#1D9BF0',
-  low: '#A1A1AA',
+  critical: '#B85C5C',
+  high: '#B8943E',
+  medium: '#1A1714',
+  low: '#9C9790',
 };
 
 export const APPROVAL_STATUS_LABELS: Record<ApprovalStatus, string> = {
@@ -284,9 +284,9 @@ export const APPROVAL_STATUS_LABELS: Record<ApprovalStatus, string> = {
 };
 
 export const APPROVAL_STATUS_COLORS: Record<ApprovalStatus, string> = {
-  pending: '#F59E0B',
-  approved: '#22C55E',
-  denied: '#EF4444',
+  pending: '#B8943E',
+  approved: '#5A8A6E',
+  denied: '#B85C5C',
 };
 
 export const EXCEPTION_TYPE_LABELS: Record<ExceptionType, string> = {
@@ -298,11 +298,11 @@ export const EXCEPTION_TYPE_LABELS: Record<ExceptionType, string> = {
 };
 
 export const EXCEPTION_TYPE_COLORS: Record<ExceptionType, string> = {
-  compliance: '#EF4444',
-  receipt: '#F59E0B',
-  document: '#F59E0B',
-  limit: '#1D9BF0',
-  account: '#A1A1AA',
+  compliance: '#B85C5C',
+  receipt: '#B8943E',
+  document: '#B8943E',
+  limit: '#1A1714',
+  account: '#9C9790',
 };
 
 export const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
@@ -315,12 +315,12 @@ export const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
 };
 
 export const AUDIT_ACTION_COLORS: Record<AuditAction, string> = {
-  initiated: '#1D9BF0',
-  approved: '#22C55E',
-  rejected: '#EF4444',
-  released: '#1D9BF0',
-  failed: '#EF4444',
-  reversed: '#F59E0B',
+  initiated: '#1A1714',
+  approved: '#5A8A6E',
+  rejected: '#B85C5C',
+  released: '#1A1714',
+  failed: '#B85C5C',
+  reversed: '#B8943E',
 };
 
 export const DISBURSEMENT_STATUS_LABELS: Record<DisbursementStatus, string> = {
@@ -331,10 +331,10 @@ export const DISBURSEMENT_STATUS_LABELS: Record<DisbursementStatus, string> = {
 };
 
 export const DISBURSEMENT_STATUS_COLORS: Record<DisbursementStatus, string> = {
-  paid: '#22C55E',
-  pending: '#F59E0B',
-  processing: '#1D9BF0',
-  failed: '#EF4444',
+  paid: '#5A8A6E',
+  pending: '#B8943E',
+  processing: '#1A1714',
+  failed: '#B85C5C',
 };
 
 export const DISBURSEMENT_TYPE_LABELS: Record<DisbursementType, string> = {
@@ -352,9 +352,9 @@ export const WALLET_STATUS_LABELS: Record<WalletStatus, string> = {
 };
 
 export const WALLET_STATUS_COLORS: Record<WalletStatus, string> = {
-  active: '#22C55E',
-  frozen: '#EF4444',
-  'low-balance': '#F59E0B',
+  active: '#5A8A6E',
+  frozen: '#B85C5C',
+  'low-balance': '#B8943E',
 };
 
 // =============================================================================

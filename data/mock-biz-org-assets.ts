@@ -186,12 +186,12 @@ export interface AssetExportOption {
 // =============================================================================
 
 export const ASSET_TYPE_COLOR: Record<AssetType, string> = {
-  real_estate: '#1D9BF0',
-  vehicles: '#F59E0B',
-  equipment: '#22C55E',
-  digital: '#1D9BF0',
-  financial: '#1D9BF0',
-  institutional: '#1D9BF0',
+  real_estate: '#1A1714',
+  vehicles: '#B8943E',
+  equipment: '#5A8A6E',
+  digital: '#1A1714',
+  financial: '#1A1714',
+  institutional: '#1A1714',
 };
 
 export const ASSET_TYPE_LABEL: Record<AssetType, string> = {
@@ -204,16 +204,16 @@ export const ASSET_TYPE_LABEL: Record<AssetType, string> = {
 };
 
 export const ASSET_STATUS_COLOR: Record<AssetItem['status'], string> = {
-  active: '#22C55E',
-  inactive: '#A1A1AA',
-  disposed: '#EF4444',
-  pending: '#F59E0B',
+  active: '#5A8A6E',
+  inactive: '#9C9790',
+  disposed: '#B85C5C',
+  pending: '#B8943E',
 };
 
 export const LEASE_STATUS_COLOR: Record<AssetLocation['leaseStatus'], string> = {
-  owned: '#22C55E',
-  leased: '#1D9BF0',
-  month_to_month: '#F59E0B',
+  owned: '#5A8A6E',
+  leased: '#1A1714',
+  month_to_month: '#B8943E',
 };
 
 export const LEASE_STATUS_LABEL: Record<AssetLocation['leaseStatus'], string> = {
@@ -223,30 +223,30 @@ export const LEASE_STATUS_LABEL: Record<AssetLocation['leaseStatus'], string> = 
 };
 
 export const VENDOR_CONTRACT_COLOR: Record<AssetVendor['contractStatus'], string> = {
-  active: '#22C55E',
-  expired: '#EF4444',
-  negotiating: '#F59E0B',
+  active: '#5A8A6E',
+  expired: '#B85C5C',
+  negotiating: '#B8943E',
 };
 
 export const MAINTENANCE_TYPE_COLOR: Record<AssetMaintenance['type'], string> = {
-  preventive: '#1D9BF0',
-  corrective: '#F59E0B',
-  inspection: '#1D9BF0',
+  preventive: '#1A1714',
+  corrective: '#B8943E',
+  inspection: '#1A1714',
 };
 
 export const MAINTENANCE_STATUS_COLOR: Record<AssetMaintenance['status'], string> = {
-  scheduled: '#1D9BF0',
-  overdue: '#EF4444',
-  completed: '#22C55E',
+  scheduled: '#1A1714',
+  overdue: '#B85C5C',
+  completed: '#5A8A6E',
 };
 
 export const INSURANCE_TYPE_COLOR: Record<AssetInsurance['type'], string> = {
-  general_liability: '#1D9BF0',
-  property: '#22C55E',
-  cyber: '#1D9BF0',
-  dno: '#1D9BF0',
-  workers_comp: '#F59E0B',
-  vehicle: '#1D9BF0',
+  general_liability: '#1A1714',
+  property: '#5A8A6E',
+  cyber: '#1A1714',
+  dno: '#1A1714',
+  workers_comp: '#B8943E',
+  vehicle: '#1A1714',
 };
 
 export const INSURANCE_TYPE_LABEL: Record<AssetInsurance['type'], string> = {
@@ -259,11 +259,11 @@ export const INSURANCE_TYPE_LABEL: Record<AssetInsurance['type'], string> = {
 };
 
 export const ACQUISITION_STAGE_COLOR: Record<AcquisitionStage, string> = {
-  prospect: '#A1A1AA',
-  loi: '#1D9BF0',
-  diligence: '#F59E0B',
-  negotiation: '#1D9BF0',
-  closed: '#22C55E',
+  prospect: '#9C9790',
+  loi: '#1A1714',
+  diligence: '#B8943E',
+  negotiation: '#1A1714',
+  closed: '#5A8A6E',
 };
 
 export const ACQUISITION_STAGE_LABEL: Record<AcquisitionStage, string> = {
@@ -275,21 +275,21 @@ export const ACQUISITION_STAGE_LABEL: Record<AcquisitionStage, string> = {
 };
 
 export const REQUEST_TYPE_COLOR: Record<AssetRequest['type'], string> = {
-  purchase: '#22C55E',
-  lease: '#1D9BF0',
-  dispose: '#EF4444',
+  purchase: '#5A8A6E',
+  lease: '#1A1714',
+  dispose: '#B85C5C',
 };
 
 export const REQUEST_STATUS_COLOR: Record<AssetRequest['status'], string> = {
-  pending: '#F59E0B',
-  approved: '#22C55E',
-  rejected: '#EF4444',
+  pending: '#B8943E',
+  approved: '#5A8A6E',
+  rejected: '#B85C5C',
 };
 
 export const EXPORT_FORMAT_COLOR: Record<AssetExportOption['format'], string> = {
-  PDF: '#EF4444',
-  CSV: '#22C55E',
-  XLSX: '#1D9BF0',
+  PDF: '#B85C5C',
+  CSV: '#5A8A6E',
+  XLSX: '#1A1714',
 };
 
 // =============================================================================

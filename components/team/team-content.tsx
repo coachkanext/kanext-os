@@ -52,13 +52,13 @@ import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 // ── Color Maps ──
 
 const DEPARTMENT_COLORS: Record<Department, string> = {
-  product: '#3B82F6',
-  sales: '#22C55E',
-  marketing: '#8B5CF6',
-  operations: '#F59E0B',
-  leadership: '#EF4444',
+  product: '#1A1714',
+  sales: '#5A8A6E',
+  marketing: '#1A1714',
+  operations: '#B8943E',
+  leadership: '#B85C5C',
   engineering: '#6366F1',
-  design: '#EC4899',
+  design: '#1A1714',
 };
 
 const DEPARTMENT_LABELS: Record<Department, string> = {
@@ -72,11 +72,11 @@ const DEPARTMENT_LABELS: Record<Department, string> = {
 };
 
 const MEMBER_STATUS_COLORS: Record<MemberStatus, string> = {
-  active: '#22C55E',
-  'on-leave': '#F59E0B',
-  probation: '#EF4444',
-  remote: '#3B82F6',
-  'in-office': '#22C55E',
+  active: '#5A8A6E',
+  'on-leave': '#B8943E',
+  probation: '#B85C5C',
+  remote: '#1A1714',
+  'in-office': '#5A8A6E',
 };
 
 const MEMBER_STATUS_LABELS: Record<MemberStatus, string> = {
@@ -88,9 +88,9 @@ const MEMBER_STATUS_LABELS: Record<MemberStatus, string> = {
 };
 
 const REVIEW_CYCLE_COLORS: Record<ReviewCycleStatus, string> = {
-  upcoming: '#F59E0B',
-  'in-progress': '#3B82F6',
-  completed: '#22C55E',
+  upcoming: '#B8943E',
+  'in-progress': '#1A1714',
+  completed: '#5A8A6E',
 };
 
 const REVIEW_CYCLE_LABELS: Record<ReviewCycleStatus, string> = {
@@ -100,10 +100,10 @@ const REVIEW_CYCLE_LABELS: Record<ReviewCycleStatus, string> = {
 };
 
 const GOAL_STATUS_COLORS: Record<GoalStatus, string> = {
-  'on-track': '#22C55E',
-  'at-risk': '#F59E0B',
-  behind: '#EF4444',
-  completed: '#3B82F6',
+  'on-track': '#5A8A6E',
+  'at-risk': '#B8943E',
+  behind: '#B85C5C',
+  completed: '#1A1714',
 };
 
 const GOAL_STATUS_LABELS: Record<GoalStatus, string> = {
@@ -114,9 +114,9 @@ const GOAL_STATUS_LABELS: Record<GoalStatus, string> = {
 };
 
 const GOAL_LEVEL_COLORS: Record<GoalLevel, string> = {
-  company: '#8B5CF6',
-  department: '#3B82F6',
-  individual: '#A1A1AA',
+  company: '#1A1714',
+  department: '#1A1714',
+  individual: '#9C9790',
 };
 
 const GOAL_LEVEL_LABELS: Record<GoalLevel, string> = {
@@ -126,10 +126,10 @@ const GOAL_LEVEL_LABELS: Record<GoalLevel, string> = {
 };
 
 const TIME_OFF_TYPE_COLORS: Record<TimeOffType, string> = {
-  pto: '#3B82F6',
-  sick: '#EF4444',
-  personal: '#F59E0B',
-  parental: '#8B5CF6',
+  pto: '#1A1714',
+  sick: '#B85C5C',
+  personal: '#B8943E',
+  parental: '#1A1714',
 };
 
 const TIME_OFF_TYPE_LABELS: Record<TimeOffType, string> = {
@@ -140,9 +140,9 @@ const TIME_OFF_TYPE_LABELS: Record<TimeOffType, string> = {
 };
 
 const TIME_OFF_REQUEST_COLORS: Record<TimeOffRequestStatus, string> = {
-  pending: '#F59E0B',
-  approved: '#22C55E',
-  denied: '#EF4444',
+  pending: '#B8943E',
+  approved: '#5A8A6E',
+  denied: '#B85C5C',
 };
 
 const TIME_OFF_REQUEST_LABELS: Record<TimeOffRequestStatus, string> = {
@@ -152,10 +152,10 @@ const TIME_OFF_REQUEST_LABELS: Record<TimeOffRequestStatus, string> = {
 };
 
 const TRAINING_STATUS_COLORS: Record<TrainingStatus, string> = {
-  'not-started': '#A1A1AA',
-  'in-progress': '#3B82F6',
-  completed: '#22C55E',
-  overdue: '#EF4444',
+  'not-started': '#9C9790',
+  'in-progress': '#1A1714',
+  completed: '#5A8A6E',
+  overdue: '#B85C5C',
 };
 
 const TRAINING_STATUS_LABELS: Record<TrainingStatus, string> = {
@@ -166,12 +166,12 @@ const TRAINING_STATUS_LABELS: Record<TrainingStatus, string> = {
 };
 
 const HIRING_STAGE_COLORS: Record<HiringStage, string> = {
-  posted: '#A1A1AA',
-  applications: '#F59E0B',
-  screened: '#3B82F6',
-  interviewed: '#8B5CF6',
+  posted: '#9C9790',
+  applications: '#B8943E',
+  screened: '#1A1714',
+  interviewed: '#1A1714',
   offered: '#6366F1',
-  hired: '#22C55E',
+  hired: '#5A8A6E',
 };
 
 const HIRING_STAGE_LABELS: Record<HiringStage, string> = {
@@ -184,10 +184,10 @@ const HIRING_STAGE_LABELS: Record<HiringStage, string> = {
 };
 
 const SOURCE_COLORS: Record<CandidateSource, string> = {
-  referral: '#22C55E',
-  'job-board': '#3B82F6',
-  inbound: '#8B5CF6',
-  recruiter: '#F59E0B',
+  referral: '#5A8A6E',
+  'job-board': '#1A1714',
+  inbound: '#1A1714',
+  recruiter: '#B8943E',
 };
 
 const SOURCE_LABELS: Record<CandidateSource, string> = {
@@ -297,7 +297,7 @@ function MemberRow({
   const s = useMemo(() => makeStyles(C), [C]);
   const deptColor = DEPARTMENT_COLORS[member.department];
   const statusColor = MEMBER_STATUS_COLORS[member.status];
-  const onlineColor = member.isOnline ? '#22C55E' : '#52525B';
+  const onlineColor = member.isOnline ? '#5A8A6E' : '#52525B';
 
   return (
     <Pressable
@@ -342,8 +342,8 @@ function ReviewRow({ entry }: { entry: typeof REVIEW_ENTRIES[0] }) {
   const C = useColors();
   const s = useMemo(() => makeStyles(C), [C]);
   const cycleColor = REVIEW_CYCLE_COLORS[entry.cycleStatus];
-  const selfColor = entry.selfAssessment === 'submitted' ? '#22C55E' : '#F59E0B';
-  const mgrColor = entry.managerAssessment === 'submitted' ? '#22C55E' : '#F59E0B';
+  const selfColor = entry.selfAssessment === 'submitted' ? '#5A8A6E' : '#B8943E';
+  const mgrColor = entry.managerAssessment === 'submitted' ? '#5A8A6E' : '#B8943E';
 
   return (
     <View style={s.mgmtRow}>
@@ -413,7 +413,7 @@ function OnboardingRow({ entry }: { entry: typeof ONBOARDING_ENTRIES[0] }) {
   const C = useColors();
   const s = useMemo(() => makeStyles(C), [C]);
   const pct = Math.round((entry.tasksCompleted / entry.tasksTotal) * 100);
-  const progressColor = pct >= 80 ? '#22C55E' : pct >= 50 ? '#F59E0B' : '#3B82F6';
+  const progressColor = pct >= 80 ? '#5A8A6E' : pct >= 50 ? '#B8943E' : '#1A1714';
 
   return (
     <View style={s.mgmtRow}>
@@ -491,8 +491,8 @@ function TrainingRow({ entry }: { entry: typeof TRAINING_ENTRIES[0] }) {
           {entry.certification && (
             <>
               <Text style={s.mgmtDot}>·</Text>
-              <View style={[s.microBadge, { backgroundColor: '#8B5CF6' + '22' }]}>
-                <Text style={[s.microBadgeText, { color: '#8B5CF6' }]}>Cert</Text>
+              <View style={[s.microBadge, { backgroundColor: '#1A1714' + '22' }]}>
+                <Text style={[s.microBadgeText, { color: '#1A1714' }]}>Cert</Text>
               </View>
             </>
           )}

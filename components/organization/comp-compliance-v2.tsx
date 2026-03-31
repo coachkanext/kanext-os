@@ -104,11 +104,11 @@ function ruleCategoryLabel(category: CompRule['category']): string {
 function ruleCategoryColor(category: CompRule['category']): string {
   switch (category) {
     case 'gameplay': return ACCENT;
-    case 'conduct': return '#F59E0B';
-    case 'eligibility': return '#22C55E';
+    case 'conduct': return '#B8943E';
+    case 'eligibility': return '#5A8A6E';
     case 'equipment': return ACCENT;
     case 'venue': return ACCENT;
-    case 'media': return '#A1A1AA';
+    case 'media': return '#9C9790';
   }
 }
 
@@ -939,7 +939,7 @@ function CertificationsTab({
           group.type === 'official' ? ACCENT
           : group.type === 'venue' ? ACCENT
           : group.type === 'equipment' ? ACCENT
-          : '#22C55E';
+          : '#5A8A6E';
         return (
           <View style={s.certGroup}>
             <View style={s.certGroupHeader}>
@@ -1665,7 +1665,7 @@ function CertDetailSheet({
     cert.type === 'official' ? ACCENT
     : cert.type === 'venue' ? ACCENT
     : cert.type === 'equipment' ? ACCENT
-    : '#22C55E';
+    : '#5A8A6E';
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title="Certification Detail" useModal>

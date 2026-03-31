@@ -728,7 +728,7 @@ function ProductsTab({
                           <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: C.label }} numberOfLines={1}>
                             {product.title}
                           </Text>
-                          {isBest && <IconSymbol name="star.fill" size={12} color="#3B82F6" />}
+                          {isBest && <IconSymbol name="star.fill" size={12} color="#1A1714" />}
                         </View>
 
                         {/* Type badge + price */}

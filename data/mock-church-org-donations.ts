@@ -72,17 +72,17 @@ export const METHOD_ICONS: Record<DonationMethod, string> = {
 };
 
 export const METHOD_COLORS: Record<DonationMethod, string> = {
-  online: '#1D9BF0',
-  cash: '#22C55E',
-  check: '#F59E0B',
-  mobile: '#1D9BF0',
-  recurring: '#1D9BF0',
+  online: '#1A1714',
+  cash: '#5A8A6E',
+  check: '#B8943E',
+  mobile: '#1A1714',
+  recurring: '#1A1714',
 };
 
 export const CAMPAIGN_STATUS_COLOR: Record<CampaignStatus, string> = {
-  active: '#22C55E',
-  completed: '#1D9BF0',
-  upcoming: '#F59E0B',
+  active: '#5A8A6E',
+  completed: '#1A1714',
+  upcoming: '#B8943E',
 };
 
 export const CAMPAIGN_STATUS_LABELS: Record<CampaignStatus, string> = {
@@ -111,11 +111,11 @@ const GIVING_STATS: GivingStats = {
 // =============================================================================
 
 const FUND_ALLOCATIONS: FundAllocation[] = [
-  { id: 'fund-001', name: 'General Tithes', amount: 212400, percent: 62, color: '#1D9BF0' },
-  { id: 'fund-002', name: 'Offerings', amount: 85645, percent: 25, color: '#1D9BF0' },
-  { id: 'fund-003', name: 'Building Fund', amount: 22240, percent: 6.5, color: '#F59E0B' },
-  { id: 'fund-004', name: 'Missions', amount: 13703, percent: 4, color: '#22C55E' },
-  { id: 'fund-005', name: 'Benevolence', amount: 8592, percent: 2.5, color: '#1D9BF0' },
+  { id: 'fund-001', name: 'General Tithes', amount: 212400, percent: 62, color: '#1A1714' },
+  { id: 'fund-002', name: 'Offerings', amount: 85645, percent: 25, color: '#1A1714' },
+  { id: 'fund-003', name: 'Building Fund', amount: 22240, percent: 6.5, color: '#B8943E' },
+  { id: 'fund-004', name: 'Missions', amount: 13703, percent: 4, color: '#5A8A6E' },
+  { id: 'fund-005', name: 'Benevolence', amount: 8592, percent: 2.5, color: '#1A1714' },
 ];
 
 // =============================================================================

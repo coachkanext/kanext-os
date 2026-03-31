@@ -164,11 +164,11 @@ export const POLICY_STATUS_LABELS: Record<PolicyStatus, string> = {
 };
 
 export const POLICY_STATUS_COLORS: Record<PolicyStatus, string> = {
-  draft: '#A1A1AA',
-  in_review: '#F59E0B',
-  approved: '#1D9BF0',
-  published: '#22C55E',
-  superseded: '#1D9BF0',
+  draft: '#9C9790',
+  in_review: '#B8943E',
+  approved: '#1A1714',
+  published: '#5A8A6E',
+  superseded: '#1A1714',
 };
 
 export const POLICY_CATEGORY_LABELS: Record<PolicyCategory, string> = {
@@ -206,10 +206,10 @@ export const LEGAL_DOC_STATUS_LABELS: Record<LegalDocStatus, string> = {
 };
 
 export const LEGAL_DOC_STATUS_COLORS: Record<LegalDocStatus, string> = {
-  draft: '#A1A1AA',
-  executed: '#22C55E',
-  expiring: '#F59E0B',
-  needs_signature: '#EF4444',
+  draft: '#9C9790',
+  executed: '#5A8A6E',
+  expiring: '#B8943E',
+  needs_signature: '#B85C5C',
 };
 
 export const SENSITIVITY_LABELS: Record<LegalDocSensitivity, string> = {
@@ -219,9 +219,9 @@ export const SENSITIVITY_LABELS: Record<LegalDocSensitivity, string> = {
 };
 
 export const SENSITIVITY_COLORS: Record<LegalDocSensitivity, string> = {
-  internal: '#1D9BF0',
-  confidential: '#F59E0B',
-  restricted: '#EF4444',
+  internal: '#1A1714',
+  confidential: '#B8943E',
+  restricted: '#B85C5C',
 };
 
 export const CONTROL_FREQUENCY_LABELS: Record<ControlFrequency, string> = {
@@ -246,17 +246,17 @@ export const EVIDENCE_STATUS_LABELS: Record<EvidenceStatus, string> = {
 };
 
 export const EVIDENCE_STATUS_COLORS: Record<EvidenceStatus, string> = {
-  pending: '#A1A1AA',
-  submitted: '#1D9BF0',
-  accepted: '#22C55E',
-  rejected: '#EF4444',
+  pending: '#9C9790',
+  submitted: '#1A1714',
+  accepted: '#5A8A6E',
+  rejected: '#B85C5C',
 };
 
 export const AUDIT_FINDING_SEVERITY_COLORS: Record<AuditFindingSeverity, string> = {
-  critical: '#EF4444',
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#22C55E',
+  critical: '#B85C5C',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#5A8A6E',
 };
 
 export const AUDIT_FINDING_STATUS_LABELS: Record<AuditFindingStatus, string> = {
@@ -276,10 +276,10 @@ export const RISK_CATEGORY_LABELS: Record<RiskCategory, string> = {
 };
 
 export const RISK_SEVERITY_COLORS: Record<RiskSeverity, string> = {
-  critical: '#EF4444',
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#22C55E',
+  critical: '#B85C5C',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#5A8A6E',
 };
 
 export const RISK_SEVERITY_LABELS: Record<RiskSeverity, string> = {
@@ -304,10 +304,10 @@ export const INCIDENT_STATUS_LABELS: Record<IncidentStatus, string> = {
 };
 
 export const INCIDENT_STATUS_COLORS: Record<IncidentStatus, string> = {
-  open: '#EF4444',
-  investigating: '#F59E0B',
-  resolved: '#1D9BF0',
-  closed: '#22C55E',
+  open: '#B85C5C',
+  investigating: '#B8943E',
+  resolved: '#1A1714',
+  closed: '#5A8A6E',
 };
 
 export const EXCEPTION_STATUS_LABELS: Record<ExceptionStatus, string> = {
@@ -320,12 +320,12 @@ export const EXCEPTION_STATUS_LABELS: Record<ExceptionStatus, string> = {
 };
 
 export const EXCEPTION_STATUS_COLORS: Record<ExceptionStatus, string> = {
-  requested: '#1D9BF0',
-  reviewed: '#F59E0B',
-  approved: '#22C55E',
-  denied: '#EF4444',
-  expired: '#A1A1AA',
-  archived: '#1D9BF0',
+  requested: '#1A1714',
+  reviewed: '#B8943E',
+  approved: '#5A8A6E',
+  denied: '#B85C5C',
+  expired: '#9C9790',
+  archived: '#1A1714',
 };
 
 // =============================================================================

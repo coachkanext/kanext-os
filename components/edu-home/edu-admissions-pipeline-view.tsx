@@ -29,10 +29,10 @@ interface Props {
 type FilterKey = 'all' | AdmissionsStage;
 
 const AID_STATUS_COLORS: Record<string, { bg: string; text: string }> = {
-  approved: { bg: '#22C55E22', text: '#22C55E' },
-  pending: { bg: '#F59E0B22', text: '#F59E0B' },
-  not_applied: { bg: '#A1A1AA22', text: '#A1A1AA' },
-  denied: { bg: '#EF444422', text: '#EF4444' },
+  approved: { bg: '#5A8A6E22', text: '#5A8A6E' },
+  pending: { bg: '#B8943E22', text: '#B8943E' },
+  not_applied: { bg: '#9C979022', text: '#9C9790' },
+  denied: { bg: '#B85C5C22', text: '#B85C5C' },
 };
 
 const AID_STATUS_LABELS: Record<string, string> = {

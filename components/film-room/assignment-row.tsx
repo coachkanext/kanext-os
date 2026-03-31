@@ -68,7 +68,7 @@ export function AssignmentRow({ assignment }: AssignmentRowProps) {
         <ThemedText
           style={[
             styles.dueText,
-            { color: assignment.isOverdue ? '#EF4444' : colors.textTertiary },
+            { color: assignment.isOverdue ? '#B85C5C' : colors.textTertiary },
           ]}
         >
           Due: {assignment.dueDate}

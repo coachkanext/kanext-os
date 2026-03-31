@@ -29,9 +29,9 @@ export interface EduEvent {
 export const EDU_EVENT_CATEGORY_COLORS: Record<EduEventCategory, string> = {
   academic: '#800000',
   campus_life: '#C41E3A',
-  athletics: '#EF4444',
-  administrative: '#A1A1AA',
-  accreditation: '#F59E0B',
+  athletics: '#B85C5C',
+  administrative: '#9C9790',
+  accreditation: '#B8943E',
 };
 
 // =============================================================================
@@ -198,10 +198,10 @@ export interface EduNewsItem {
 export const EDU_NEWS_CATEGORY_COLORS: Record<EduNewsCategoryTag, string> = {
   campus: '#800000',
   student: '#C41E3A',
-  faculty: '#22C55E',
-  alumni: '#F59E0B',
-  athletics: '#EF4444',
-  institutional: '#A1A1AA',
+  faculty: '#5A8A6E',
+  alumni: '#B8943E',
+  athletics: '#B85C5C',
+  institutional: '#9C9790',
 };
 
 export const EDU_NEWS: EduNewsItem[] = [
@@ -290,7 +290,7 @@ export const ENROLLMENT_DATA: EnrollmentData = {
   target: 460,
   retentionRate: 0.89,
   byClassYear: [
-    { label: 'Undergraduate', count: 204, color: '#003A63' },
+    { label: 'Undergraduate', count: 204, color: '#1A1714' },
     { label: 'Graduate', count: 232, color: '#800000' },
   ],
 };
@@ -394,9 +394,9 @@ export const EDU_DEPARTMENT_LABELS: Record<DepartmentCategory, string> = {
 };
 
 export const EDU_DEPARTMENT_COLORS: Record<DepartmentCategory, string> = {
-  arts_sciences: '#003A63',
+  arts_sciences: '#1A1714',
   business: '#800000',
-  education: '#22C55E',
+  education: '#5A8A6E',
   professional: '#C41E3A',
 };
 
@@ -490,12 +490,12 @@ export interface OutreachEvent {
 // =============================================================================
 
 export const ADMISSIONS_STAGES: { key: AdmissionsStage; label: string; color: string }[] = [
-  { key: 'Inquiry', label: 'Inquiry', color: '#A1A1AA' },
+  { key: 'Inquiry', label: 'Inquiry', color: '#9C9790' },
   { key: 'Applied', label: 'Applied', color: '#800000' },
   { key: 'Accepted', label: 'Accepted', color: '#C41E3A' },
-  { key: 'Deposited', label: 'Deposited', color: '#F59E0B' },
-  { key: 'Enrolled', label: 'Enrolled', color: '#22C55E' },
-  { key: 'Registered', label: 'Registered', color: '#22C55E' },
+  { key: 'Deposited', label: 'Deposited', color: '#B8943E' },
+  { key: 'Enrolled', label: 'Enrolled', color: '#5A8A6E' },
+  { key: 'Registered', label: 'Registered', color: '#5A8A6E' },
 ];
 
 // =============================================================================
@@ -811,7 +811,7 @@ export function getStageCount(stage: AdmissionsStage): number {
 }
 
 export function getStageColor(stage: AdmissionsStage): string {
-  return ADMISSIONS_STAGES.find((s) => s.key === stage)?.color ?? '#A1A1AA';
+  return ADMISSIONS_STAGES.find((s) => s.key === stage)?.color ?? '#9C9790';
 }
 
 // =============================================================================

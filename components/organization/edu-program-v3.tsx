@@ -84,11 +84,11 @@ const CALENDAR_MILESTONES = [
 ];
 
 const TASK_STATUS_COLOR: Record<TaskStatus, string> = {
-  due_tomorrow: '#F59E0B',
-  overdue: '#EF4444',
+  due_tomorrow: '#B8943E',
+  overdue: '#B85C5C',
   in_progress: ACCENT,
-  upcoming: '#22C55E',
-  completed: '#22C55E',
+  upcoming: '#5A8A6E',
+  completed: '#5A8A6E',
 };
 
 const TASK_STATUS_LABEL: Record<TaskStatus, string> = {
@@ -122,7 +122,7 @@ function StatusBadge({ label, color }: { label: string; color: string }) {
 }
 
 function AccreditationBadge({ status }: { status: string }) {
-  const color = status === 'Accredited' ? '#22C55E' : status === 'Under Review' ? '#F59E0B' : ACCENT;
+  const color = status === 'Accredited' ? '#5A8A6E' : status === 'Under Review' ? '#B8943E' : ACCENT;
   return <StatusBadge label={status.toUpperCase()} color={color} />;
 }
 
@@ -142,7 +142,7 @@ function IdentityView({ colors, accentColor }: { colors: typeof Colors.light; ac
         </ThemedText>
         <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
           <StatusBadge label="University" color={accentColor} />
-          <StatusBadge label="SACSCOC" color="#22C55E" />
+          <StatusBadge label="SACSCOC" color="#5A8A6E" />
         </View>
       </View>
 
@@ -284,7 +284,7 @@ function OperationsView({ colors, accentColor }: { colors: typeof Colors.light; 
               </ThemedText>
               <ThemedText style={[s.listRowSub, { color: colors.textTertiary }]}>{item.type}</ThemedText>
             </View>
-            <StatusBadge label="PENDING" color="#F59E0B" />
+            <StatusBadge label="PENDING" color="#B8943E" />
           </View>
         </View>
       ))}

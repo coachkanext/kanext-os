@@ -95,12 +95,12 @@ export const EDU_RESOURCES_SCOPE_CHIPS = [
 // =============================================================================
 
 export const RESOURCE_CATEGORY_COLOR: Record<EduResource['category'], string> = {
-  library: '#22C55E',
-  technology: '#1D9BF0',
-  lab_equipment: '#1D9BF0',
-  media: '#F59E0B',
-  software: '#1D9BF0',
-  athletic_equipment: '#EF4444',
+  library: '#5A8A6E',
+  technology: '#1A1714',
+  lab_equipment: '#1A1714',
+  media: '#B8943E',
+  software: '#1A1714',
+  athletic_equipment: '#B85C5C',
 };
 
 export const RESOURCE_CATEGORY_LABEL: Record<EduResource['category'], string> = {
@@ -113,10 +113,10 @@ export const RESOURCE_CATEGORY_LABEL: Record<EduResource['category'], string> = 
 };
 
 export const CONDITION_COLOR: Record<EduResource['condition'], string> = {
-  new: '#22C55E',
-  good: '#1D9BF0',
-  fair: '#F59E0B',
-  needs_replacement: '#EF4444',
+  new: '#5A8A6E',
+  good: '#1A1714',
+  fair: '#B8943E',
+  needs_replacement: '#B85C5C',
 };
 
 export const CONDITION_LABEL: Record<EduResource['condition'], string> = {
@@ -127,10 +127,10 @@ export const CONDITION_LABEL: Record<EduResource['condition'], string> = {
 };
 
 export const CHECKOUT_STATUS_COLOR: Record<CheckoutRequest['status'], string> = {
-  checked_out: '#1D9BF0',
-  pending: '#F59E0B',
-  returned: '#22C55E',
-  overdue: '#EF4444',
+  checked_out: '#1A1714',
+  pending: '#B8943E',
+  returned: '#5A8A6E',
+  overdue: '#B85C5C',
 };
 
 export const CHECKOUT_STATUS_LABEL: Record<CheckoutRequest['status'], string> = {

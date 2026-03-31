@@ -10,9 +10,9 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 function passwordStrength(p: string): { label: string; color: string; width: number } {
   if (p.length === 0) return { label: '', color: '#E5E7EB', width: 0 };
-  if (p.length < 6) return { label: 'Weak', color: '#EF4444', width: 0.25 };
-  if (p.length < 10) return { label: 'Medium', color: '#F59E0B', width: 0.6 };
-  return { label: 'Strong', color: '#22C55E', width: 1 };
+  if (p.length < 6) return { label: 'Weak', color: '#B85C5C', width: 0.25 };
+  if (p.length < 10) return { label: 'Medium', color: '#B8943E', width: 0.6 };
+  return { label: 'Strong', color: '#5A8A6E', width: 1 };
 }
 
 export default function PasswordSecurityScreen() {
@@ -201,7 +201,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   },
   rowIcon: { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
   rowLabel: { flex: 1, fontSize: 15, fontWeight: '500' },
-  disableText: { flex: 1, fontSize: 15, fontWeight: '500', color: '#EF4444', textAlign: 'center' },
+  disableText: { flex: 1, fontSize: 15, fontWeight: '500', color: '#B85C5C', textAlign: 'center' },
   sessionHeader: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   sessionDevice: { fontSize: 15, fontWeight: '500' },
   currentBadge: {
@@ -215,7 +215,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     paddingHorizontal: 10, paddingVertical: 6,
   },
   signOutText: { fontSize: 13, fontWeight: '500', color: '#374151' },
-  signOutAllText: { fontSize: 15, fontWeight: '500', color: '#EF4444' },
+  signOutAllText: { fontSize: 15, fontWeight: '500', color: '#B85C5C' },
   saveBtn: {
     marginHorizontal: 16, marginTop: 12,
     backgroundColor: '#111', borderRadius: 14,

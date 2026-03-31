@@ -366,10 +366,10 @@ export function getGamingFriends(): GamingFriend[] {
 // =============================================================================
 
 export const CATEGORY_COLORS: Record<GameCategory, string> = {
-  sports: '#3B82F6',
-  education: '#22C55E',
+  sports: '#1A1714',
+  education: '#5A8A6E',
   faith: '#A855F7',
-  business: '#F59E0B',
+  business: '#B8943E',
   course: '#06B6D4',
 };
 

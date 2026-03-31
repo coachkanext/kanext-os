@@ -86,10 +86,10 @@ export const ROOM_STATUS_LABELS: Record<RoomStatus, string> = {
 };
 
 export const ROOM_STATUS_COLORS: Record<RoomStatus, string> = {
-  available: '#22C55E',
-  in_use: '#1D9BF0',
-  reserved: '#1D9BF0',
-  offline: '#EF4444',
+  available: '#5A8A6E',
+  in_use: '#1A1714',
+  reserved: '#1A1714',
+  offline: '#B85C5C',
 };
 
 export const BOOKING_STATUS_LABELS: Record<BookingStatus, string> = {
@@ -99,9 +99,9 @@ export const BOOKING_STATUS_LABELS: Record<BookingStatus, string> = {
 };
 
 export const BOOKING_STATUS_COLORS: Record<BookingStatus, string> = {
-  confirmed: '#22C55E',
-  pending: '#F59E0B',
-  cancelled: '#A1A1AA',
+  confirmed: '#5A8A6E',
+  pending: '#B8943E',
+  cancelled: '#9C9790',
 };
 
 export const SEVERITY_LABELS: Record<MaintenanceSeverity, string> = {
@@ -112,10 +112,10 @@ export const SEVERITY_LABELS: Record<MaintenanceSeverity, string> = {
 };
 
 export const SEVERITY_COLORS: Record<MaintenanceSeverity, string> = {
-  low: '#A1A1AA',
-  medium: '#F59E0B',
-  high: '#EF4444',
-  critical: '#EF4444',
+  low: '#9C9790',
+  medium: '#B8943E',
+  high: '#B85C5C',
+  critical: '#B85C5C',
 };
 
 export const TICKET_STATUS_LABELS: Record<TicketStatus, string> = {
@@ -125,9 +125,9 @@ export const TICKET_STATUS_LABELS: Record<TicketStatus, string> = {
 };
 
 export const TICKET_STATUS_COLORS: Record<TicketStatus, string> = {
-  open: '#EF4444',
-  in_progress: '#F59E0B',
-  resolved: '#22C55E',
+  open: '#B85C5C',
+  in_progress: '#B8943E',
+  resolved: '#5A8A6E',
 };
 
 // =============================================================================

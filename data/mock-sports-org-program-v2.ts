@@ -117,9 +117,9 @@ export const COVERAGE_LABELS: Record<LeadershipSeat['coverage'], string> = {
 };
 
 export const COVERAGE_COLORS: Record<LeadershipSeat['coverage'], string> = {
-  filled: '#22C55E',
-  vacant: '#EF4444',
-  overloaded: '#F59E0B',
+  filled: '#5A8A6E',
+  vacant: '#B85C5C',
+  overloaded: '#B8943E',
 };
 
 export const CONTEXT_CATEGORY_LABELS: Record<ProgramContext['category'], string> = {
@@ -129,9 +129,9 @@ export const CONTEXT_CATEGORY_LABELS: Record<ProgramContext['category'], string>
 };
 
 export const CONTEXT_CATEGORY_COLORS: Record<ProgramContext['category'], string> = {
-  system: '#1D9BF0',
-  style: '#1D9BF0',
-  constraint: '#F59E0B',
+  system: '#1A1714',
+  style: '#1A1714',
+  constraint: '#B8943E',
 };
 
 export const RULE_CATEGORY_LABELS: Record<OperatingRule['category'], string> = {
@@ -143,11 +143,11 @@ export const RULE_CATEGORY_LABELS: Record<OperatingRule['category'], string> = {
 };
 
 export const RULE_CATEGORY_COLORS: Record<OperatingRule['category'], string> = {
-  availability: '#1D9BF0',
-  travel: '#1D9BF0',
-  practice: '#22C55E',
-  comms: '#F59E0B',
-  approval: '#EF4444',
+  availability: '#1A1714',
+  travel: '#1A1714',
+  practice: '#5A8A6E',
+  comms: '#B8943E',
+  approval: '#B85C5C',
 };
 
 export const RULE_SEVERITY_LABELS: Record<OperatingRule['severity'], string> = {
@@ -156,8 +156,8 @@ export const RULE_SEVERITY_LABELS: Record<OperatingRule['severity'], string> = {
 };
 
 export const RULE_SEVERITY_COLORS: Record<OperatingRule['severity'], string> = {
-  hard: '#EF4444',
-  soft: '#F59E0B',
+  hard: '#B85C5C',
+  soft: '#B8943E',
 };
 
 export const MILESTONE_TYPE_LABELS: Record<CalendarMilestone['type'], string> = {
@@ -169,11 +169,11 @@ export const MILESTONE_TYPE_LABELS: Record<CalendarMilestone['type'], string> = 
 };
 
 export const MILESTONE_TYPE_COLORS: Record<CalendarMilestone['type'], string> = {
-  season: '#1D9BF0',
-  travel: '#1D9BF0',
-  recruiting: '#22C55E',
-  compliance: '#EF4444',
-  deadline: '#F59E0B',
+  season: '#1A1714',
+  travel: '#1A1714',
+  recruiting: '#5A8A6E',
+  compliance: '#B85C5C',
+  deadline: '#B8943E',
 };
 
 export const MILESTONE_STATUS_LABELS: Record<CalendarMilestone['status'], string> = {
@@ -183,9 +183,9 @@ export const MILESTONE_STATUS_LABELS: Record<CalendarMilestone['status'], string
 };
 
 export const MILESTONE_STATUS_COLORS: Record<CalendarMilestone['status'], string> = {
-  completed: '#22C55E',
-  upcoming: '#1D9BF0',
-  overdue: '#EF4444',
+  completed: '#5A8A6E',
+  upcoming: '#1A1714',
+  overdue: '#B85C5C',
 };
 
 export const DECISION_CATEGORY_LABELS: Record<PendingDecision['category'], string> = {
@@ -196,10 +196,10 @@ export const DECISION_CATEGORY_LABELS: Record<PendingDecision['category'], strin
 };
 
 export const DECISION_CATEGORY_COLORS: Record<PendingDecision['category'], string> = {
-  budget: '#F59E0B',
-  ops: '#1D9BF0',
-  compliance: '#EF4444',
-  personnel: '#1D9BF0',
+  budget: '#B8943E',
+  ops: '#1A1714',
+  compliance: '#B85C5C',
+  personnel: '#1A1714',
 };
 
 export const DECISION_URGENCY_LABELS: Record<PendingDecision['urgency'], string> = {
@@ -210,10 +210,10 @@ export const DECISION_URGENCY_LABELS: Record<PendingDecision['urgency'], string>
 };
 
 export const DECISION_URGENCY_COLORS: Record<PendingDecision['urgency'], string> = {
-  critical: '#EF4444',
-  high: '#F59E0B',
-  medium: '#1D9BF0',
-  low: '#A1A1AA',
+  critical: '#B85C5C',
+  high: '#B8943E',
+  medium: '#1A1714',
+  low: '#9C9790',
 };
 
 export const ASSET_CATEGORY_LABELS: Record<ProgramAsset['category'], string> = {
@@ -225,11 +225,11 @@ export const ASSET_CATEGORY_LABELS: Record<ProgramAsset['category'], string> = {
 };
 
 export const ASSET_CATEGORY_COLORS: Record<ProgramAsset['category'], string> = {
-  uniforms: '#1D9BF0',
-  gear: '#22C55E',
-  devices: '#1D9BF0',
-  'film-tools': '#F59E0B',
-  vehicles: '#1D9BF0',
+  uniforms: '#1A1714',
+  gear: '#5A8A6E',
+  devices: '#1A1714',
+  'film-tools': '#B8943E',
+  vehicles: '#1A1714',
 };
 
 export const ASSET_CONDITION_LABELS: Record<ProgramAsset['condition'], string> = {
@@ -240,10 +240,10 @@ export const ASSET_CONDITION_LABELS: Record<ProgramAsset['condition'], string> =
 };
 
 export const ASSET_CONDITION_COLORS: Record<ProgramAsset['condition'], string> = {
-  excellent: '#22C55E',
-  good: '#1D9BF0',
-  fair: '#F59E0B',
-  'needs-replacement': '#EF4444',
+  excellent: '#5A8A6E',
+  good: '#1A1714',
+  fair: '#B8943E',
+  'needs-replacement': '#B85C5C',
 };
 
 export const PARTNER_TYPE_LABELS: Record<ProgramPartner['type'], string> = {
@@ -255,11 +255,11 @@ export const PARTNER_TYPE_LABELS: Record<ProgramPartner['type'], string> = {
 };
 
 export const PARTNER_TYPE_COLORS: Record<ProgramPartner['type'], string> = {
-  vendor: '#1D9BF0',
-  trainer: '#22C55E',
-  facility: '#1D9BF0',
-  'nil-collective': '#F59E0B',
-  medical: '#EF4444',
+  vendor: '#1A1714',
+  trainer: '#5A8A6E',
+  facility: '#1A1714',
+  'nil-collective': '#B8943E',
+  medical: '#B85C5C',
 };
 
 export const PARTNER_STATUS_LABELS: Record<ProgramPartner['status'], string> = {
@@ -269,9 +269,9 @@ export const PARTNER_STATUS_LABELS: Record<ProgramPartner['status'], string> = {
 };
 
 export const PARTNER_STATUS_COLORS: Record<ProgramPartner['status'], string> = {
-  active: '#22C55E',
-  expiring: '#F59E0B',
-  'at-risk': '#EF4444',
+  active: '#5A8A6E',
+  expiring: '#B8943E',
+  'at-risk': '#B85C5C',
 };
 
 // =============================================================================
@@ -301,7 +301,7 @@ export const PROGRAM_IDENTITY: ProgramIdentity = {
   level: 'NAIA Division II',
   conference: 'Frontier Conference',
   season: '2025-26',
-  colors: { primary: '#1D9BF0', secondary: '#F59E0B' },
+  colors: { primary: '#1A1714', secondary: '#B8943E' },
   logoUrl: 'https://fmusports.com/images/logos/fmu-athletics.png',
   websiteUrl: 'https://fmusports.com/sports/mens-basketball',
 };

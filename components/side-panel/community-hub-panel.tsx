@@ -62,7 +62,7 @@ export function CommunityHubPanel() {
         </View>
         <View style={[styles.statDivider, { backgroundColor: C.separator }]} />
         <View style={styles.statItem}>
-          <Text style={[styles.statNum, { color: '#3B82F6' }]}>{a.careRequests}</Text>
+          <Text style={[styles.statNum, { color: '#1A1714' }]}>{a.careRequests}</Text>
           <Text style={[styles.statLabel, { color: C.secondary }]}>Care Reqs</Text>
         </View>
       </View>

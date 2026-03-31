@@ -32,14 +32,14 @@ const HUMAN_ANSWER_LABEL: Record<Mode, string> = {
 function getStatusConfig(status: NexusEscalationStatus, accent: string, mode: Mode) {
   switch (status) {
     case 'answered_by_nexus':
-      return { label: 'Answered by Nexus', color: '#22C55E', bg: '#22C55E20' };
+      return { label: 'Answered by Nexus', color: '#5A8A6E', bg: '#5A8A6E20' };
     case 'answered_by_coach':
       return { label: HUMAN_ANSWER_LABEL[mode], color: accent, bg: `${accent}20` };
     case 'escalated':
-      return { label: 'Escalated', color: '#F59E0B', bg: '#F59E0B20' };
+      return { label: 'Escalated', color: '#B8943E', bg: '#B8943E20' };
     case 'unanswered':
     default:
-      return { label: 'Unanswered', color: '#F59E0B', bg: '#F59E0B20' };
+      return { label: 'Unanswered', color: '#B8943E', bg: '#B8943E20' };
   }
 }
 

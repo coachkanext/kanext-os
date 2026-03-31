@@ -25,16 +25,16 @@ const VIEWS: { id: ViewId; label: string }[] = [
 type ComplianceStatus = 'Compliant' | 'Approved' | 'Passed' | 'Current' | 'Ready' | 'Active' | 'Pending' | 'Registered' | 'Licensed' | 'Certified';
 
 const STATUS_COLORS: Record<string, string> = {
-  Compliant: '#22C55E',
-  Approved: '#22C55E',
-  Passed: '#22C55E',
-  Current: '#22C55E',
-  Ready: '#22C55E',
-  Active: '#22C55E',
-  Registered: '#22C55E',
-  Licensed: '#22C55E',
-  Certified: '#22C55E',
-  Pending: '#F59E0B',
+  Compliant: '#5A8A6E',
+  Approved: '#5A8A6E',
+  Passed: '#5A8A6E',
+  Current: '#5A8A6E',
+  Ready: '#5A8A6E',
+  Active: '#5A8A6E',
+  Registered: '#5A8A6E',
+  Licensed: '#5A8A6E',
+  Certified: '#5A8A6E',
+  Pending: '#B8943E',
 };
 
 const CAP_COMPLIANCE = [
@@ -152,7 +152,7 @@ function StatusBadge({ label, color }: { label: string; color: string }) {
 }
 
 function ComplianceBadge({ status }: { status: ComplianceStatus }) {
-  const color = STATUS_COLORS[status] || '#A1A1AA';
+  const color = STATUS_COLORS[status] || '#9C9790';
   return <StatusBadge label={status.toUpperCase()} color={color} />;
 }
 
@@ -214,7 +214,7 @@ function TechnicalView({ colors, accentColor }: { colors: typeof Colors.light; a
             <View style={s.inspInfo}>
               <ThemedText style={[s.compTeam, { color: colors.text }]}>{insp.race}</ThemedText>
               {insp.issues > 0 && (
-                <ThemedText style={[s.issueCount, { color: '#F59E0B' }]}>{insp.issues} issue noted</ThemedText>
+                <ThemedText style={[s.issueCount, { color: '#B8943E' }]}>{insp.issues} issue noted</ThemedText>
               )}
             </View>
             <ComplianceBadge status={insp.result} />
@@ -242,7 +242,7 @@ function TechnicalView({ colors, accentColor }: { colors: typeof Colors.light; a
         <View key={pen.id} style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={s.penaltyHeader}>
             <ThemedText style={[s.penaltyTeam, { color: colors.text }]}>{pen.team}</ThemedText>
-            <StatusBadge label={pen.penalty.toUpperCase()} color="#EF4444" />
+            <StatusBadge label={pen.penalty.toUpperCase()} color="#B85C5C" />
           </View>
           <ThemedText style={[s.penaltyDetail, { color: colors.textSecondary }]}>
             {pen.race} · {pen.reason}
@@ -317,7 +317,7 @@ function SafetyView({ colors, accentColor }: { colors: typeof Colors.light; acce
         <View key={ir.id} style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={s.incidentHeader}>
             <ThemedText style={[s.incidentRace, { color: colors.text }]}>{ir.race}</ThemedText>
-            <StatusBadge label={ir.severity.toUpperCase()} color={ir.severity === 'Low' ? '#22C55E' : '#F59E0B'} />
+            <StatusBadge label={ir.severity.toUpperCase()} color={ir.severity === 'Low' ? '#5A8A6E' : '#B8943E'} />
           </View>
           <ThemedText style={[s.incidentDesc, { color: colors.textSecondary }]}>{ir.desc}</ThemedText>
         </View>
@@ -328,11 +328,11 @@ function SafetyView({ colors, accentColor }: { colors: typeof Colors.light; acce
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.marshalRow}>
           <View style={s.marshalStat}>
-            <ThemedText style={[s.marshalCount, { color: '#22C55E' }]}>{MARSHAL_TRAINING.certified}</ThemedText>
+            <ThemedText style={[s.marshalCount, { color: '#5A8A6E' }]}>{MARSHAL_TRAINING.certified}</ThemedText>
             <ThemedText style={[s.marshalLabel, { color: colors.textSecondary }]}>Certified</ThemedText>
           </View>
           <View style={s.marshalStat}>
-            <ThemedText style={[s.marshalCount, { color: '#F59E0B' }]}>{MARSHAL_TRAINING.pending}</ThemedText>
+            <ThemedText style={[s.marshalCount, { color: '#B8943E' }]}>{MARSHAL_TRAINING.pending}</ThemedText>
             <ThemedText style={[s.marshalLabel, { color: colors.textSecondary }]}>Pending</ThemedText>
           </View>
         </View>

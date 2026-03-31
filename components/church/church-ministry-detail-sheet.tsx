@@ -117,9 +117,9 @@ const MINISTRY_MEMBERS: Record<string, MinistryMember[]> = {
 // =============================================================================
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  active: { label: 'Active', color: '#22C55E' },
-  seasonal: { label: 'Seasonal', color: '#F59E0B' },
-  launching: { label: 'Launching', color: '#8B5CF6' },
+  active: { label: 'Active', color: '#5A8A6E' },
+  seasonal: { label: 'Seasonal', color: '#B8943E' },
+  launching: { label: 'Launching', color: '#1A1714' },
 };
 
 const CATEGORY_ICONS: Record<string, IconSymbolName> = {
@@ -320,7 +320,7 @@ export function ChurchMinistryDetailSheet({
           style={({ pressed }) => [
             s.joinBtn,
             memberJoined
-              ? { backgroundColor: '#EF4444' + '18' }
+              ? { backgroundColor: '#B85C5C' + '18' }
               : { backgroundColor: accent },
             pressed && { opacity: 0.7 },
           ]}
@@ -329,12 +329,12 @@ export function ChurchMinistryDetailSheet({
           <IconSymbol
             name={memberJoined ? 'xmark.circle.fill' : 'plus.circle.fill'}
             size={16}
-            color={memberJoined ? '#EF4444' : '#000'}
+            color={memberJoined ? '#B85C5C' : '#000'}
           />
           <ThemedText
             style={[
               s.joinText,
-              { color: memberJoined ? '#EF4444' : '#000' },
+              { color: memberJoined ? '#B85C5C' : '#000' },
             ]}
           >
             {memberJoined ? 'Leave Ministry' : 'Join Ministry'}

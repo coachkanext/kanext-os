@@ -50,9 +50,9 @@ function formatCurrency(n: number): string {
 }
 
 function getHealthColor(value: number): string {
-  if (value >= 80) return '#22C55E';
-  if (value >= 60) return '#F59E0B';
-  return '#EF4444';
+  if (value >= 80) return '#5A8A6E';
+  if (value >= 60) return '#B8943E';
+  return '#B85C5C';
 }
 
 // =============================================================================
@@ -186,8 +186,8 @@ export function OrgProgramTab({ colors, accentColor }: Props) {
               <View style={[s.badge, { backgroundColor: accentColor + '15' }]}>
                 <ThemedText style={[s.badgeText, { color: accentColor }]}>2025–26</ThemedText>
               </View>
-              <View style={[s.badge, { backgroundColor: '#22C55E20' }]}>
-                <ThemedText style={[s.badgeText, { color: '#22C55E' }]}>Active</ThemedText>
+              <View style={[s.badge, { backgroundColor: '#5A8A6E20' }]}>
+                <ThemedText style={[s.badgeText, { color: '#5A8A6E' }]}>Active</ThemedText>
               </View>
             </View>
           </View>
@@ -261,22 +261,22 @@ export function OrgProgramTab({ colors, accentColor }: Props) {
         </ThemedText>
         <View style={s.availabilityRow}>
           <View style={s.availChip}>
-            <View style={[s.availDot, { backgroundColor: '#22C55E' }]} />
+            <View style={[s.availDot, { backgroundColor: '#5A8A6E' }]} />
             <ThemedText style={[s.availText, { color: colors.text }]}>{ROSTER_AVAILABILITY.available}</ThemedText>
             <ThemedText style={[s.availLabel, { color: colors.textTertiary }]}>Available</ThemedText>
           </View>
           <View style={s.availChip}>
-            <View style={[s.availDot, { backgroundColor: '#F59E0B' }]} />
+            <View style={[s.availDot, { backgroundColor: '#B8943E' }]} />
             <ThemedText style={[s.availText, { color: colors.text }]}>{ROSTER_AVAILABILITY.injured}</ThemedText>
             <ThemedText style={[s.availLabel, { color: colors.textTertiary }]}>Injured</ThemedText>
           </View>
           <View style={s.availChip}>
-            <View style={[s.availDot, { backgroundColor: '#EF4444' }]} />
+            <View style={[s.availDot, { backgroundColor: '#B85C5C' }]} />
             <ThemedText style={[s.availText, { color: colors.text }]}>{ROSTER_AVAILABILITY.out}</ThemedText>
             <ThemedText style={[s.availLabel, { color: colors.textTertiary }]}>Out</ThemedText>
           </View>
           <View style={s.availChip}>
-            <View style={[s.availDot, { backgroundColor: '#A1A1AA' }]} />
+            <View style={[s.availDot, { backgroundColor: '#9C9790' }]} />
             <ThemedText style={[s.availText, { color: colors.text }]}>{ROSTER_AVAILABILITY.redshirt}</ThemedText>
             <ThemedText style={[s.availLabel, { color: colors.textTertiary }]}>RS</ThemedText>
           </View>
@@ -295,8 +295,8 @@ export function OrgProgramTab({ colors, accentColor }: Props) {
               {PROGRAM_SYSTEMS.offenseSystem}
             </ThemedText>
             {PROGRAM_SYSTEMS.offenseProvisional && (
-              <View style={[s.provBadge, { backgroundColor: '#F59E0B20' }]}>
-                <ThemedText style={[s.provText, { color: '#F59E0B' }]}>Provisional</ThemedText>
+              <View style={[s.provBadge, { backgroundColor: '#B8943E20' }]}>
+                <ThemedText style={[s.provText, { color: '#B8943E' }]}>Provisional</ThemedText>
               </View>
             )}
           </View>
@@ -307,8 +307,8 @@ export function OrgProgramTab({ colors, accentColor }: Props) {
               {PROGRAM_SYSTEMS.defenseSystem}
             </ThemedText>
             {PROGRAM_SYSTEMS.defenseProvisional && (
-              <View style={[s.provBadge, { backgroundColor: '#F59E0B20' }]}>
-                <ThemedText style={[s.provText, { color: '#F59E0B' }]}>Provisional</ThemedText>
+              <View style={[s.provBadge, { backgroundColor: '#B8943E20' }]}>
+                <ThemedText style={[s.provText, { color: '#B8943E' }]}>Provisional</ThemedText>
               </View>
             )}
           </View>
@@ -348,7 +348,7 @@ export function OrgProgramTab({ colors, accentColor }: Props) {
         {UPCOMING_GAMES.map((game, i) => (
           <View key={game.id}>
             <View style={s.gameRow}>
-              <View style={[s.gameDot, { backgroundColor: game.location === 'Home' ? '#22C55E' : accent }]} />
+              <View style={[s.gameDot, { backgroundColor: game.location === 'Home' ? '#5A8A6E' : accent }]} />
               <View style={s.gameInfo}>
                 <ThemedText style={[s.gameName, { color: colors.text }]}>
                   {game.location === 'Home' ? 'vs' : '@'} {game.opponent}
@@ -379,14 +379,14 @@ export function OrgProgramTab({ colors, accentColor }: Props) {
         <PulseRow
           label="Open P0 tasks"
           value={String(OPS_PULSE.openTasksP0)}
-          valueColor={OPS_PULSE.openTasksP0 > 0 ? '#EF4444' : '#22C55E'}
+          valueColor={OPS_PULSE.openTasksP0 > 0 ? '#B85C5C' : '#5A8A6E'}
           colors={colors}
         />
         <PulseRow label="Open P1 tasks" value={String(OPS_PULSE.openTasksP1)} colors={colors} />
         {OPS_PULSE.nextTrip && (
           <PulseRow label="Next Trip" value={OPS_PULSE.nextTrip} colors={colors} />
         )}
-        <PulseRow label="Facility Issues" value={String(OPS_PULSE.facilityIssues)} valueColor="#22C55E" colors={colors} />
+        <PulseRow label="Facility Issues" value={String(OPS_PULSE.facilityIssues)} valueColor="#5A8A6E" colors={colors} />
         <View style={[s.divider, { backgroundColor: colors.divider }]} />
         <QuickActionButton label="Open Operations" icon="gearshape.fill" colors={colors} accentColor={accentColor} />
       </View>
@@ -404,7 +404,7 @@ export function OrgProgramTab({ colors, accentColor }: Props) {
         <View style={s.barTrack}>
           <View style={[s.barFill, { width: `${budgetPct}%`, backgroundColor: getHealthColor(100 - budgetPct) }]} />
         </View>
-        <PulseRow label="Pending Approvals" value={String(FINANCE_PULSE.pendingApprovals)} valueColor={FINANCE_PULSE.pendingApprovals > 0 ? '#F59E0B' : '#22C55E'} colors={colors} />
+        <PulseRow label="Pending Approvals" value={String(FINANCE_PULSE.pendingApprovals)} valueColor={FINANCE_PULSE.pendingApprovals > 0 ? '#B8943E' : '#5A8A6E'} colors={colors} />
         <PulseRow label="Payables Due Soon" value={String(FINANCE_PULSE.payablesDueSoon)} colors={colors} />
         <View style={[s.divider, { backgroundColor: colors.divider }]} />
         <QuickActionButton label="Open Finance" icon="dollarsign.circle.fill" colors={colors} accentColor={accentColor} />
@@ -420,7 +420,7 @@ export function OrgProgramTab({ colors, accentColor }: Props) {
         <PulseRow
           label="Settlement Ready"
           value={PAYMENT_RAILS_PULSE.settlementReady ? 'Yes' : 'No'}
-          valueColor={PAYMENT_RAILS_PULSE.settlementReady ? '#22C55E' : '#F59E0B'}
+          valueColor={PAYMENT_RAILS_PULSE.settlementReady ? '#5A8A6E' : '#B8943E'}
           colors={colors}
         />
         <View style={[s.divider, { backgroundColor: colors.divider }]} />
@@ -432,10 +432,10 @@ export function OrgProgramTab({ colors, accentColor }: Props) {
       {/* ================================================================= */}
       <SectionLabel text="COMPLIANCE PULSE" colors={colors} />
       <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <PulseRow label="Due Soon" value={String(COMPLIANCE_PULSE.dueSoon)} valueColor={COMPLIANCE_PULSE.dueSoon > 0 ? '#F59E0B' : '#22C55E'} colors={colors} />
-        <PulseRow label="Overdue" value={String(COMPLIANCE_PULSE.overdue)} valueColor={COMPLIANCE_PULSE.overdue > 0 ? '#EF4444' : '#22C55E'} colors={colors} />
+        <PulseRow label="Due Soon" value={String(COMPLIANCE_PULSE.dueSoon)} valueColor={COMPLIANCE_PULSE.dueSoon > 0 ? '#B8943E' : '#5A8A6E'} colors={colors} />
+        <PulseRow label="Overdue" value={String(COMPLIANCE_PULSE.overdue)} valueColor={COMPLIANCE_PULSE.overdue > 0 ? '#B85C5C' : '#5A8A6E'} colors={colors} />
         <PulseRow label="Training Completion" value={`${COMPLIANCE_PULSE.trainingCompletion}%`} valueColor={getHealthColor(COMPLIANCE_PULSE.trainingCompletion)} colors={colors} />
-        <PulseRow label="Open Incidents" value={String(COMPLIANCE_PULSE.openIncidents)} valueColor="#22C55E" colors={colors} />
+        <PulseRow label="Open Incidents" value={String(COMPLIANCE_PULSE.openIncidents)} valueColor="#5A8A6E" colors={colors} />
         <View style={[s.divider, { backgroundColor: colors.divider }]} />
         <QuickActionButton label="Open Compliance" icon="checkmark.shield.fill" colors={colors} accentColor={accentColor} />
       </View>
@@ -565,7 +565,7 @@ function SettingsSheet({
               {setting.type === 'toggle' ? (
                 <Switch
                   value={setting.enabled}
-                  trackColor={{ false: colors.backgroundTertiary, true: '#22C55E' }}
+                  trackColor={{ false: colors.backgroundTertiary, true: '#5A8A6E' }}
                   thumbColor="#FFFFFF"
                   onValueChange={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
                 />
@@ -640,7 +640,7 @@ const s = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: '#1D9BF0',
+    backgroundColor: '#1A1714',
     alignItems: 'center',
     justifyContent: 'center',
   },

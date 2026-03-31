@@ -42,7 +42,7 @@ const TEAL = '#ffffff';
 const BG = '#0B0F14';
 const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#A1A1AA';
+const GRAY = '#9C9790';
 const DIVIDER = '#0B0F14';
 
 // ─── Headshots (same map as roster-content) ──────────────────────────────────
@@ -464,7 +464,7 @@ export default function PlayerBioScreen() {
                               const clusters = PLAYER_CLUSTERS[jersey];
                               const value = clusters?.[key] ?? 0;
                               const label = CLUSTER_LABELS[key as ClusterType]?.label ?? key;
-                              const barColor = value >= 70 ? '#22C55E' : value >= 55 ? '#F59E0B' : '#EF4444';
+                              const barColor = value >= 70 ? '#5A8A6E' : value >= 55 ? '#B8943E' : '#B85C5C';
                               const pct = Math.min(value, 100);
                               const clusterExpanded = expandedClusters.has(key);
                               const subclusters = clusterExpanded ? getPlayerSubclusters(jersey, key as keyof ClusterRatings) : [];
@@ -491,7 +491,7 @@ export default function PlayerBioScreen() {
                                     <Text style={styles.clusterChevron}>{clusterExpanded ? '▾' : '›'}</Text>
                                   </Pressable>
                                   {clusterExpanded && subclusters.map((sc) => {
-                                    const scColor = sc.rating >= 70 ? '#22C55E' : sc.rating >= 55 ? '#F59E0B' : '#EF4444';
+                                    const scColor = sc.rating >= 70 ? '#5A8A6E' : sc.rating >= 55 ? '#B8943E' : '#B85C5C';
                                     const scPct = Math.min(sc.rating, 100);
                                     return (
                                       <View key={sc.name} style={styles.subclusterRow}>
@@ -1109,7 +1109,7 @@ const styles = StyleSheet.create({
   },
   clusterChevron: {
     fontSize: 11,
-    color: '#A1A1AA',
+    color: '#9C9790',
     width: 16,
     textAlign: 'center',
     marginLeft: 2,

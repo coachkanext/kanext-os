@@ -59,10 +59,10 @@ function pillsForTab(tab: BoosterTab): string[] {
 function fundColor(fund: string, C: ComponentColors): string {
   switch (fund) {
     case 'General':      return C.accent;
-    case 'Scholarship':  return '#003A63';
+    case 'Scholarship':  return '#1A1714';
     case 'Facilities':   return '#5A8A6E';
-    case 'Equipment':    return '#8B6340';
-    case 'Travel':       return '#1D9BF0';
+    case 'Equipment':    return '#1A1714';
+    case 'Travel':       return '#1A1714';
     case 'Unrestricted': return C.muted as string;
     default:             return C.accent;
   }
@@ -82,18 +82,18 @@ function nextRole(role: BoosterRole): BoosterRole {
 
 function dealTypeBadgeColor(type: string, C: ComponentColors): string {
   switch (type) {
-    case 'ambassador':  return '#003A63';
+    case 'ambassador':  return '#1A1714';
     case 'endorsement': return C.accent;
-    case 'social-post': return '#1D9BF0';
+    case 'social-post': return '#1A1714';
     case 'appearance':  return '#5A8A6E';
-    case 'content':     return '#8B6340';
+    case 'content':     return '#1A1714';
     default:            return C.muted as string;
   }
 }
 
 function nilStatusColor(status: string, C: ComponentColors): string {
   if (status === 'completed' || status === 'approved') return C.green;
-  if (status === 'in-progress' || status === 'pending') return '#3B82F6';
+  if (status === 'in-progress' || status === 'pending') return '#1A1714';
   if (status === 'flagged') return C.red;
   return C.secondary as string;
 }
@@ -242,7 +242,7 @@ export default function BoosterScreen() {
 
   function renderAdminGivingDashboard() {
     return (
-      <GlassView tier={1} style={[s.card, { backgroundColor: '#003A63', marginBottom: 16 }]}>
+      <GlassView tier={1} style={[s.card, { backgroundColor: '#1A1714', marginBottom: 16 }]}>
         <Text style={[s.sectionTitle, { color: '#fff', marginBottom: 4 }]}>Giving Dashboard</Text>
         <Text style={[s.adminStatBig, { color: '#fff' }]}>$284,200 raised this year</Text>
         <Text style={[s.bodySmall, { color: 'rgba(255,255,255,0.65)', marginBottom: 12 }]}>
@@ -276,7 +276,7 @@ export default function BoosterScreen() {
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           style={{ marginTop: 12 }}
         >
-          <Text style={[s.linkText, { color: '#7EB8D4' }]}>{'View Full Report \u2192'}</Text>
+          <Text style={[s.linkText, { color: '#1A1714' }]}>{'View Full Report \u2192'}</Text>
         </Pressable>
       </GlassView>
     );
@@ -506,7 +506,7 @@ export default function BoosterScreen() {
                 <Text style={[s.bodySmall, { color: C.secondary as string }]}>{game.venue}</Text>
               </View>
               {game.isAway && (
-                <View style={[s.locationBadge, { backgroundColor: '#1D9BF0' }]}>
+                <View style={[s.locationBadge, { backgroundColor: '#1A1714' }]}>
                   <Text style={s.locationBadgeText}>A</Text>
                 </View>
               )}
@@ -621,7 +621,7 @@ export default function BoosterScreen() {
     return (
       <>
         {/* NIL Pool Allocation */}
-        <View style={[s.card, { backgroundColor: '#990000', marginBottom: 16, borderRadius: 16 }]}>
+        <View style={[s.card, { backgroundColor: '#1A1714', marginBottom: 16, borderRadius: 16 }]}>
           <Text style={[s.sectionTitle, { color: '#fff', marginBottom: 4 }]}>NIL Pool</Text>
           <Text style={[s.adminStatBig, { color: '#fff' }]}>$48,500 total pool</Text>
           <Text style={[s.bodySmall, { color: 'rgba(255,255,255,0.65)', marginBottom: 12 }]}>
@@ -671,7 +671,7 @@ export default function BoosterScreen() {
           {[
             { label: 'CARA Hours This Week',  value: '14 / 20',   color: C.accent },
             { label: 'CARA Hours Semester',   value: '142 / 168', color: C.accent },
-            { label: 'Reporting Deadline',    value: 'Apr 15',    color: '#F59E0B' },
+            { label: 'Reporting Deadline',    value: 'Apr 15',    color: '#B8943E' },
             { label: 'Compliance Status',     value: 'All Clear', color: C.green },
           ].map((row, i, arr) => (
             <View
@@ -699,7 +699,7 @@ export default function BoosterScreen() {
           </Text>
           {[
             { name: 'Marcus Reed',    ptv: 9.2, risk: 'Low',    riskColor: C.green  },
-            { name: 'Paul Diomande',  ptv: 8.7, risk: 'Medium', riskColor: '#F59E0B' },
+            { name: 'Paul Diomande',  ptv: 8.7, risk: 'Medium', riskColor: '#B8943E' },
             { name: 'Samuel Wall',    ptv: 7.8, risk: 'Low',    riskColor: C.green  },
           ].map((player, i, arr) => (
             <View
@@ -714,8 +714,8 @@ export default function BoosterScreen() {
               }}
             >
               <Text style={[s.bodyMed, { color: C.label, flex: 1 }]}>{player.name}</Text>
-              <View style={[s.adminStatChip, { backgroundColor: '#990000' + '18' as any, flex: 0, paddingHorizontal: 10 }]}>
-                <Text style={[s.bodySmall, { color: '#990000', fontWeight: '800' }]}>PTV {player.ptv}</Text>
+              <View style={[s.adminStatChip, { backgroundColor: '#1A1714' + '18' as any, flex: 0, paddingHorizontal: 10 }]}>
+                <Text style={[s.bodySmall, { color: '#1A1714', fontWeight: '800' }]}>PTV {player.ptv}</Text>
               </View>
               <View style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8, backgroundColor: (player.riskColor as string) + '22' }}>
                 <Text style={{ fontSize: 11, fontWeight: '700', color: player.riskColor as string }}>
@@ -779,8 +779,8 @@ export default function BoosterScreen() {
                     s.freqPill,
                     {
                       flex: 1,
-                      borderColor: isActive ? '#990000' : (C.inputBorder as string),
-                      backgroundColor: isActive ? '#990000' : 'transparent',
+                      borderColor: isActive ? '#1A1714' : (C.inputBorder as string),
+                      backgroundColor: isActive ? '#1A1714' : 'transparent',
                     },
                   ]}
                 >
@@ -830,7 +830,7 @@ export default function BoosterScreen() {
             onPress={handleGive}
             style={[
               s.giveBtn,
-              { backgroundColor: showSuccess ? C.green : '#990000', opacity: parseFloat(amount) > 0 ? 1 : 0.5 },
+              { backgroundColor: showSuccess ? C.green : '#1A1714', opacity: parseFloat(amount) > 0 ? 1 : 0.5 },
             ]}
           >
             <Text style={s.giveBtnText}>
@@ -869,7 +869,7 @@ export default function BoosterScreen() {
                   <Text style={[s.bodySmall, { color: C.secondary as string, textAlign: 'center', fontSize: 11 }]}>
                     {p.position}
                   </Text>
-                  <Text style={[s.bodySmall, { color: '#990000', fontWeight: '700', marginTop: 4, textAlign: 'center', fontSize: 11 }]}>
+                  <Text style={[s.bodySmall, { color: '#1A1714', fontWeight: '700', marginTop: 4, textAlign: 'center', fontSize: 11 }]}>
                     Stake
                   </Text>
                 </GlassView>
@@ -903,14 +903,14 @@ export default function BoosterScreen() {
           <GlassView tier={1} key={challenge.id} style={[s.card, { marginBottom: 12 }]}>
             <View style={[s.row, { justifyContent: 'space-between', marginBottom: 6 }]}>
               <Text style={[s.campaignName, { color: C.label }]}>{challenge.title}</Text>
-              <View style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 8, backgroundColor: '#990000' + '18' }}>
-                <Text style={{ fontSize: 11, fontWeight: '700', color: '#990000' }}>{challenge.reward}</Text>
+              <View style={{ paddingHorizontal: 10, paddingVertical: 3, borderRadius: 8, backgroundColor: '#1A1714' + '18' }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: '#1A1714' }}>{challenge.reward}</Text>
               </View>
             </View>
             <Text style={[s.campaignDesc, { color: C.secondary as string, marginBottom: 10 }]}>{challenge.desc}</Text>
             <View style={[s.thermoBg, { backgroundColor: C.surfacePressed as string }]}>
               <View
-                style={[s.thermoFill, { width: `${Math.min((challenge.progress / challenge.goal) * 100, 100)}%` as any, backgroundColor: '#990000' }]}
+                style={[s.thermoFill, { width: `${Math.min((challenge.progress / challenge.goal) * 100, 100)}%` as any, backgroundColor: '#1A1714' }]}
               />
             </View>
             <Text style={[s.bodySmall, { color: C.muted as string, marginTop: 4 }]}>
@@ -937,7 +937,7 @@ export default function BoosterScreen() {
               }}
             >
               <GlassView tier={1} style={s.featuredCard}>
-                <View style={[s.featuredImg, { backgroundColor: '#990000' }]}>
+                <View style={[s.featuredImg, { backgroundColor: '#1A1714' }]}>
                   <View style={s.productLogoWrap}>
                     <Text style={s.productLogoText}>LU</Text>
                   </View>
@@ -952,7 +952,7 @@ export default function BoosterScreen() {
                   </Text>
                   <Pressable
                     onPress={() => addToCart(product.id)}
-                    style={[s.addToCartBtn, { backgroundColor: '#990000' }]}
+                    style={[s.addToCartBtn, { backgroundColor: '#1A1714' }]}
                   >
                     <Text style={s.addToCartBtnText}>Add to Cart</Text>
                   </Pressable>
@@ -1626,7 +1626,7 @@ export default function BoosterScreen() {
 
         <Pressable
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-          style={[s.giveBtn, { backgroundColor: '#003A63', marginBottom: 24 }]}
+          style={[s.giveBtn, { backgroundColor: '#1A1714', marginBottom: 24 }]}
         >
           <Text style={s.giveBtnText}>Export Report</Text>
         </Pressable>
@@ -1652,7 +1652,7 @@ export default function BoosterScreen() {
         {isCoachRole && (
           <Pressable
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-            style={[s.adminShopBanner, { backgroundColor: '#990000' }]}
+            style={[s.adminShopBanner, { backgroundColor: '#1A1714' }]}
           >
             <IconSymbol name="square.grid.2x2" size={16} color="#fff" />
             <Text style={[s.bodyMed, { color: '#fff', marginLeft: 8, flex: 1 }]}>Manage Products</Text>
@@ -1704,7 +1704,7 @@ export default function BoosterScreen() {
               }}
             >
               <GlassView tier={1} style={s.featuredCard}>
-                <View style={[s.featuredImg, { backgroundColor: '#003A63' }]}>
+                <View style={[s.featuredImg, { backgroundColor: '#1A1714' }]}>
                   <View style={s.productLogoWrap}>
                     <Text style={s.productLogoText}>LU</Text>
                   </View>
@@ -1733,7 +1733,7 @@ export default function BoosterScreen() {
                     <Text style={[s.bodySmall, { color: C.accent, fontWeight: '700' }]}>
                       ${product.price.toFixed(2)}
                     </Text>
-                    <Text style={{ fontSize: 11, color: '#F4A934' }}>
+                    <Text style={{ fontSize: 11, color: '#B8943E' }}>
                       {starString(product.rating)}
                     </Text>
                   </View>
@@ -1793,7 +1793,7 @@ export default function BoosterScreen() {
               }}
             >
               <GlassView tier={1} style={s.productCard}>
-                <View style={[s.productImg, { backgroundColor: '#003A63' }]}>
+                <View style={[s.productImg, { backgroundColor: '#1A1714' }]}>
                   <Text style={s.productGridLogo}>LU</Text>
                   <Text style={s.productGridCategory}>{product.category.toUpperCase()}</Text>
                   {product.isLimited && (
@@ -1856,7 +1856,7 @@ export default function BoosterScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* Large product photo placeholder */}
-          <View style={[s.productSheetImg, { backgroundColor: '#003A63' }]}>
+          <View style={[s.productSheetImg, { backgroundColor: '#1A1714' }]}>
             <View style={s.productSheetLogoWrap}>
               <Text style={s.productSheetLogo}>LU</Text>
             </View>
@@ -1883,7 +1883,7 @@ export default function BoosterScreen() {
             <Text style={[s.adminStatBig, { color: C.accent }]}>
               ${selectedProduct.price.toFixed(2)}
             </Text>
-            <Text style={{ color: '#F4A934', fontSize: 16 }}>
+            <Text style={{ color: '#B8943E', fontSize: 16 }}>
               {starString(selectedProduct.rating)}
             </Text>
             <Text style={[s.bodySmall, { color: C.muted as string }]}>
@@ -2182,7 +2182,7 @@ export default function BoosterScreen() {
             <RolePill
               role={demoRole}
               onPress={handleCycleRole}
-              accentColor="#990000"
+              accentColor="#1A1714"
               isPrimary={isCoachRole}
             />
             {pills.length > 0 && (
@@ -2794,7 +2794,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   fanBadgeText: {
     fontSize:   11,
     fontWeight: '700',
-    color:      '#3B82F6',
+    color:      '#1A1714',
   },
   athleteCard: {
     width:        88,
@@ -2955,7 +2955,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     position:          'absolute',
     top:               8,
     right:             8,
-    backgroundColor:   '#3B82F6',
+    backgroundColor:   '#1A1714',
     paddingHorizontal: 6,
     paddingVertical:   3,
     borderRadius:      6,
@@ -3029,7 +3029,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     position:          'absolute',
     top:               6,
     right:             6,
-    backgroundColor:   '#3B82F6',
+    backgroundColor:   '#1A1714',
     paddingHorizontal: 5,
     paddingVertical:   2,
     borderRadius:      5,
@@ -3128,7 +3128,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   cartBadgeText: {
     fontSize:   11,
     fontWeight: '800',
-    color:      '#3B82F6',
+    color:      '#1A1714',
   },
 
   // Shared

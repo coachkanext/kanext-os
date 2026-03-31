@@ -96,7 +96,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   },
   balanceLabel: { fontSize: 13, marginBottom: 6 },
   balanceAmount: { fontSize: 36, fontWeight: '700' },
-  apy: { fontSize: 13, fontWeight: '600', color: '#22C55E', marginTop: 6 },
+  apy: { fontSize: 13, fontWeight: '600', color: '#5A8A6E', marginTop: 6 },
   sectionLabel: {
     fontSize: 12, fontWeight: '600', textTransform: 'uppercase',
     letterSpacing: 0.7, paddingHorizontal: 32, paddingTop: 20, paddingBottom: 6,

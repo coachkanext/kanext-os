@@ -53,7 +53,7 @@ interface CalendarEvent {
 const TYPE_COLORS: Record<EventType, string> = {
   BOARD: '#6366F1',     // deep indigo — strategic
   INVESTOR: '#059669',  // deep green — strategic
-  CAPITAL: '#2563EB',   // deep blue — strategic
+  CAPITAL: '#1A1714',   // deep blue — strategic
   COMPLIANCE: '#D97706', // amber — regulatory
   CONTRACT: '#78716C',  // neutral stone — regulatory
   PAYROLL: '#9CA3AF',   // neutral gray — operational
@@ -61,9 +61,9 @@ const TYPE_COLORS: Record<EventType, string> = {
 };
 
 const STATUS_COLORS: Record<EventStatus, string> = {
-  Scheduled: '#22C55E',
-  Pending: '#F59E0B',
-  Overdue: '#EF4444',
+  Scheduled: '#5A8A6E',
+  Pending: '#B8943E',
+  Overdue: '#B85C5C',
 };
 
 // =============================================================================

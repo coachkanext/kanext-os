@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   headerInfo: {
     flex: 1,
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   },
   context: {
     fontSize: 14,
-    color: '#A1A1AA',
+    color: '#9C9790',
     marginBottom: Spacing.md,
   },
   messageBox: {
@@ -188,18 +188,18 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   dangerBtn: {
-    backgroundColor: '#EF444420',
+    backgroundColor: '#B85C5C20',
   },
   dangerBtnText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#EF4444',
+    color: '#B85C5C',
   },
   approvedRow: {
     marginTop: Spacing.sm,
   },
   approvedBadge: {
-    backgroundColor: '#22C55E20',
+    backgroundColor: '#5A8A6E20',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: BorderRadius.full,
@@ -208,6 +208,6 @@ const styles = StyleSheet.create({
   approvedText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
 });

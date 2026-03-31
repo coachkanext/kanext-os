@@ -77,7 +77,7 @@ export default function HelpSupportScreen() {
         <Text style={[styles.sectionLabel, { color: C.muted }]}>CONTACT</Text>
         <View style={[styles.group, { backgroundColor: C.surface }]}>
           <Pressable style={styles.row}>
-            <View style={[styles.rowIcon, { backgroundColor: '#007AFF' }]}>
+            <View style={[styles.rowIcon, { backgroundColor: '#1A1714' }]}>
               <IconSymbol name="bubble.left" size={16} color="#FFF" />
             </View>
             <Text style={[styles.rowLabel, { color: C.label }]}>Contact Support</Text>

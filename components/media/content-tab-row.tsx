@@ -62,7 +62,7 @@ export function ContentTabRow({ activeTab, onTabChange, mode }: ContentTabRowPro
             <ThemedText
               style={[
                 styles.pillText,
-                { color: isActive ? '#000' : '#A1A1AA' },
+                { color: isActive ? '#000' : '#9C9790' },
               ]}
             >
               {labels[tab]}

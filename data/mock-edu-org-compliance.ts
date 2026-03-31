@@ -217,9 +217,9 @@ export const COMPLIANCE_STATUS_LABELS: Record<ComplianceStatus, string> = {
 };
 
 export const COMPLIANCE_STATUS_COLORS: Record<ComplianceStatus, string> = {
-  green: '#22C55E',
-  yellow: '#F59E0B',
-  red: '#EF4444',
+  green: '#5A8A6E',
+  yellow: '#B8943E',
+  red: '#B85C5C',
 };
 
 export const COMPLIANCE_DOMAIN_LABELS: Record<ComplianceDomain, string> = {
@@ -281,11 +281,11 @@ export const POLICY_STATUS_LABELS: Record<PolicyStatus, string> = {
 };
 
 export const POLICY_STATUS_COLORS: Record<PolicyStatus, string> = {
-  draft: '#A1A1AA',
-  review: '#F59E0B',
-  approved: '#1D9BF0',
-  published: '#22C55E',
-  superseded: '#1D9BF0',
+  draft: '#9C9790',
+  review: '#B8943E',
+  approved: '#1A1714',
+  published: '#5A8A6E',
+  superseded: '#1A1714',
 };
 
 export const CONTROL_FREQUENCY_LABELS: Record<ControlFrequency, string> = {
@@ -302,9 +302,9 @@ export const CONTROL_STATUS_LABELS: Record<ControlStatus, string> = {
 };
 
 export const CONTROL_STATUS_COLORS: Record<ControlStatus, string> = {
-  on_track: '#22C55E',
-  at_risk: '#F59E0B',
-  failed: '#EF4444',
+  on_track: '#5A8A6E',
+  at_risk: '#B8943E',
+  failed: '#B85C5C',
 };
 
 export const EVIDENCE_TYPE_LABELS: Record<EvidenceType, string> = {
@@ -324,10 +324,10 @@ export const EVIDENCE_STATUS_LABELS: Record<EvidenceStatus, string> = {
 };
 
 export const EVIDENCE_STATUS_COLORS: Record<EvidenceStatus, string> = {
-  draft: '#A1A1AA',
-  submitted: '#1D9BF0',
-  verified: '#22C55E',
-  rejected: '#EF4444',
+  draft: '#9C9790',
+  submitted: '#1A1714',
+  verified: '#5A8A6E',
+  rejected: '#B85C5C',
 };
 
 export const RISK_CATEGORY_LABELS: Record<RiskCategory, string> = {
@@ -348,10 +348,10 @@ export const RISK_SEVERITY_LABELS: Record<RiskSeverity, string> = {
 };
 
 export const RISK_SEVERITY_COLORS: Record<RiskSeverity, string> = {
-  critical: '#EF4444',
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#22C55E',
+  critical: '#B85C5C',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#5A8A6E',
 };
 
 export const AUDIT_STATUS_LABELS: Record<AuditStatus, string> = {
@@ -362,10 +362,10 @@ export const AUDIT_STATUS_LABELS: Record<AuditStatus, string> = {
 };
 
 export const AUDIT_STATUS_COLORS: Record<AuditStatus, string> = {
-  planned: '#A1A1AA',
-  in_progress: '#F59E0B',
-  reported: '#1D9BF0',
-  closed: '#22C55E',
+  planned: '#9C9790',
+  in_progress: '#B8943E',
+  reported: '#1A1714',
+  closed: '#5A8A6E',
 };
 
 export const FINDING_SEVERITY_LABELS: Record<FindingSeverity, string> = {
@@ -376,10 +376,10 @@ export const FINDING_SEVERITY_LABELS: Record<FindingSeverity, string> = {
 };
 
 export const FINDING_SEVERITY_COLORS: Record<FindingSeverity, string> = {
-  critical: '#EF4444',
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#22C55E',
+  critical: '#B85C5C',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#5A8A6E',
 };
 
 export const FINDING_STATUS_LABELS: Record<FindingStatus, string> = {
@@ -391,11 +391,11 @@ export const FINDING_STATUS_LABELS: Record<FindingStatus, string> = {
 };
 
 export const FINDING_STATUS_COLORS: Record<FindingStatus, string> = {
-  open: '#EF4444',
-  assigned: '#F59E0B',
-  remediation: '#1D9BF0',
-  proof_uploaded: '#1D9BF0',
-  closed: '#22C55E',
+  open: '#B85C5C',
+  assigned: '#B8943E',
+  remediation: '#1A1714',
+  proof_uploaded: '#1A1714',
+  closed: '#5A8A6E',
 };
 
 export const INCIDENT_TYPE_LABELS: Record<IncidentType, string> = {
@@ -415,11 +415,11 @@ export const INCIDENT_STATUS_LABELS: Record<IncidentStatus, string> = {
 };
 
 export const INCIDENT_STATUS_COLORS: Record<IncidentStatus, string> = {
-  open: '#EF4444',
-  investigating: '#F59E0B',
-  contained: '#1D9BF0',
-  resolved: '#1D9BF0',
-  closed: '#22C55E',
+  open: '#B85C5C',
+  investigating: '#B8943E',
+  contained: '#1A1714',
+  resolved: '#1A1714',
+  closed: '#5A8A6E',
 };
 
 export const EXCEPTION_STATUS_LABELS: Record<ExceptionStatus, string> = {
@@ -432,12 +432,12 @@ export const EXCEPTION_STATUS_LABELS: Record<ExceptionStatus, string> = {
 };
 
 export const EXCEPTION_STATUS_COLORS: Record<ExceptionStatus, string> = {
-  requested: '#1D9BF0',
-  reviewed: '#F59E0B',
-  approved: '#22C55E',
-  denied: '#EF4444',
-  expired: '#A1A1AA',
-  archived: '#1D9BF0',
+  requested: '#1A1714',
+  reviewed: '#B8943E',
+  approved: '#5A8A6E',
+  denied: '#B85C5C',
+  expired: '#9C9790',
+  archived: '#1A1714',
 };
 
 export const EXPORT_PACKET_TYPE_LABELS: Record<ExportPacketType, string> = {

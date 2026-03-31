@@ -94,10 +94,10 @@ export const EDU_FACILITIES_SCOPE_CHIPS = [
 // =============================================================================
 
 export const FACILITY_STATUS_COLOR: Record<EduFacility['status'], string> = {
-  available: '#22C55E',
-  in_use: '#1D9BF0',
-  maintenance: '#EF4444',
-  reserved: '#F59E0B',
+  available: '#5A8A6E',
+  in_use: '#1A1714',
+  maintenance: '#B85C5C',
+  reserved: '#B8943E',
 };
 
 export const FACILITY_STATUS_LABEL: Record<EduFacility['status'], string> = {
@@ -108,15 +108,15 @@ export const FACILITY_STATUS_LABEL: Record<EduFacility['status'], string> = {
 };
 
 export const FACILITY_TYPE_COLOR: Record<EduFacility['type'], string> = {
-  classroom: '#1D9BF0',
-  lab: '#1D9BF0',
-  library: '#22C55E',
-  admin: '#A1A1AA',
-  athletic: '#EF4444',
-  dining: '#F59E0B',
-  residence: '#1D9BF0',
-  student_center: '#1D9BF0',
-  auditorium: '#F59E0B',
+  classroom: '#1A1714',
+  lab: '#1A1714',
+  library: '#5A8A6E',
+  admin: '#9C9790',
+  athletic: '#B85C5C',
+  dining: '#B8943E',
+  residence: '#1A1714',
+  student_center: '#1A1714',
+  auditorium: '#B8943E',
 };
 
 export const FACILITY_TYPE_LABEL: Record<EduFacility['type'], string> = {
@@ -132,22 +132,22 @@ export const FACILITY_TYPE_LABEL: Record<EduFacility['type'], string> = {
 };
 
 export const BOOKING_STATUS_COLOR: Record<RoomBooking['status'], string> = {
-  confirmed: '#22C55E',
-  pending: '#F59E0B',
-  cancelled: '#EF4444',
+  confirmed: '#5A8A6E',
+  pending: '#B8943E',
+  cancelled: '#B85C5C',
 };
 
 export const MAINTENANCE_PRIORITY_COLOR: Record<MaintenanceRequest['priority'], string> = {
-  critical: '#EF4444',
-  high: '#F59E0B',
-  medium: '#1D9BF0',
-  low: '#A1A1AA',
+  critical: '#B85C5C',
+  high: '#B8943E',
+  medium: '#1A1714',
+  low: '#9C9790',
 };
 
 export const MAINTENANCE_STATUS_COLOR: Record<MaintenanceRequest['status'], string> = {
-  open: '#EF4444',
-  in_progress: '#F59E0B',
-  resolved: '#22C55E',
+  open: '#B85C5C',
+  in_progress: '#B8943E',
+  resolved: '#5A8A6E',
 };
 
 // =============================================================================

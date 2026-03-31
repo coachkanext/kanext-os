@@ -151,10 +151,10 @@ export const DATA_COVERAGE: DataCoverage = {
 // =============================================================================
 
 export const AVAILABILITY_STATUS_COLORS: Record<RotationPlayer['status'], string> = {
-  available: '#22C55E',
-  injured: '#EF4444',
-  out: '#F59E0B',
-  redshirt: '#A1A1AA',
+  available: '#5A8A6E',
+  injured: '#B85C5C',
+  out: '#B8943E',
+  redshirt: '#9C9790',
 };
 
 export const EVENT_TYPE_ICONS: Record<UpcomingEvent['type'], string> = {

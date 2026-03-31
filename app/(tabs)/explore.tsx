@@ -12,11 +12,11 @@ import { Fonts } from '@/constants/theme';
 export default function TabTwoScreen() {
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1A1AA', dark: '#2F3336' }}
+      headerBackgroundColor={{ light: '#9C9790', dark: '#2F3336' }}
       headerImage={
         <IconSymbol
           size={310}
-          color="#A1A1AA"
+          color="#9C9790"
           name="chevron.left.forwardslash.chevron.right"
           style={styles.headerImage}
         />
@@ -100,7 +100,7 @@ export default function TabTwoScreen() {
 
 const styles = StyleSheet.create({
   headerImage: {
-    color: '#A1A1AA',
+    color: '#9C9790',
     bottom: -90,
     left: -35,
     position: 'absolute',

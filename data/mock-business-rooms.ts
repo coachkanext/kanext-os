@@ -24,11 +24,11 @@ export type RecordingStatus = 'Recorded' | 'Not Recorded' | 'Recording';
 export type LinkedDomain = 'Finance' | 'Compliance' | 'Operations' | 'Strategy' | 'Capital' | 'Multi-domain';
 
 export const ROOM_TYPE_COLORS: Record<BizRoomType, string> = {
-  BOARD: '#EF4444',
-  CAPITAL: '#F59E0B',
-  EXECUTIVE: '#8B5CF6',
-  PUBLIC: '#22C55E',
-  INTERNAL: '#1D9BF0',
+  BOARD: '#B85C5C',
+  CAPITAL: '#B8943E',
+  EXECUTIVE: '#1A1714',
+  PUBLIC: '#5A8A6E',
+  INTERNAL: '#1A1714',
 };
 
 export const VISIBILITY_LABELS: Record<BizVisibilityClass, string> = {
@@ -39,22 +39,22 @@ export const VISIBILITY_LABELS: Record<BizVisibilityClass, string> = {
 };
 
 export const VISIBILITY_COLORS: Record<BizVisibilityClass, string> = {
-  0: '#22C55E',
-  1: '#1D9BF0',
-  2: '#F59E0B',
-  3: '#EF4444',
+  0: '#5A8A6E',
+  1: '#1A1714',
+  2: '#B8943E',
+  3: '#B85C5C',
 };
 
 export const STATUS_COLORS: Record<BizRoomStatus, string> = {
-  Live: '#22C55E',
-  Scheduled: '#1D9BF0',
-  Completed: '#A1A1AA',
+  Live: '#5A8A6E',
+  Scheduled: '#1A1714',
+  Completed: '#9C9790',
 };
 
 export const RECORDING_COLORS: Record<RecordingStatus, string> = {
-  Recorded: '#22C55E',
-  'Not Recorded': '#A1A1AA',
-  Recording: '#EF4444',
+  Recorded: '#5A8A6E',
+  'Not Recorded': '#9C9790',
+  Recording: '#B85C5C',
 };
 
 export interface BizRoomParticipant {

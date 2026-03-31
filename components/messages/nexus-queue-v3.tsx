@@ -150,7 +150,7 @@ export function NexusQueueV3({ mode, onSelectEscalation }: NexusQueueV3Props) {
       {/* List or empty state */}
       {sections.length === 0 ? (
         <View style={styles.emptyState}>
-          <IconSymbol name="checkmark.circle" size={32} color="#22C55E" />
+          <IconSymbol name="checkmark.circle" size={32} color="#5A8A6E" />
           <ThemedText style={[styles.emptyTitle, { color: colors.text }]}>
             {activePill === 'escalations' ? 'No escalations' : activePill === 'answered' ? 'No resolved questions' : 'All caught up'}
           </ThemedText>

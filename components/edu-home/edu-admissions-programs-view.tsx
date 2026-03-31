@@ -28,10 +28,10 @@ const FILTER_PILLS: { key: FilterKey; label: string }[] = [
 ];
 
 const STATUS_COLORS: Record<string, string> = {
-  open: '#22C55E',
-  waitlisted: '#F59E0B',
-  waitlist: '#F59E0B',
-  closed: '#EF4444',
+  open: '#5A8A6E',
+  waitlisted: '#B8943E',
+  waitlist: '#B8943E',
+  closed: '#B85C5C',
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -44,11 +44,11 @@ const STATUS_LABELS: Record<string, string> = {
 const DEGREE_BADGE_COLOR: Record<string, string> = {
   'B.A.': ACCENT,
   'B.S.': ACCENT,
-  'M.A.': '#22C55E',
-  'M.S.': '#22C55E',
-  'M.B.A.': '#F59E0B',
-  'Ed.D.': '#EF4444',
-  Certificate: '#A1A1AA',
+  'M.A.': '#5A8A6E',
+  'M.S.': '#5A8A6E',
+  'M.B.A.': '#B8943E',
+  'Ed.D.': '#B85C5C',
+  Certificate: '#9C9790',
 };
 
 export function EduAdmissionsProgramsView({ colors, accent }: Props) {
@@ -95,9 +95,9 @@ export function EduAdmissionsProgramsView({ colors, accent }: Props) {
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {filtered.map((prog) => {
           const enrollStatus = prog.enrollmentStatus ?? prog.status;
-          const statusColor = STATUS_COLORS[enrollStatus] ?? '#A1A1AA';
+          const statusColor = STATUS_COLORS[enrollStatus] ?? '#9C9790';
           const statusLabel = STATUS_LABELS[enrollStatus] ?? enrollStatus;
-          const degreeColor = DEGREE_BADGE_COLOR[prog.degreeType] ?? '#A1A1AA';
+          const degreeColor = DEGREE_BADGE_COLOR[prog.degreeType] ?? '#9C9790';
 
           return (
             <View

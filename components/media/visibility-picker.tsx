@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   activeLabel: {
     color: '#000',

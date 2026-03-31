@@ -50,7 +50,7 @@ function KayTVSlate({ opacity }: { opacity: Animated.Value }) {
     <Animated.View style={[styles.slate, { opacity }]} pointerEvents="none">
       <View style={styles.slateInner}>
         <View style={styles.slateIconWrap}>
-          <IconSymbol name="play.tv.fill" size={22} color="#3B82F6" />
+          <IconSymbol name="play.tv.fill" size={22} color="#1A1714" />
         </View>
         <Text style={styles.slateTitle}>
           <Text style={styles.slateTitleWhite}>Kay</Text>
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.95)',
   },
   slateTitleCoral: {
-    color: '#3B82F6',
+    color: '#1A1714',
   },
   slateNext: {
     fontSize: 11,

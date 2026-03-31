@@ -90,7 +90,7 @@ export default function TeamChannelScreen() {
               }}
             >
               <ThemedText
-                style={[styles.tabLabel, { color: isActive ? '#FFFFFF' : '#A1A1AA' }]}
+                style={[styles.tabLabel, { color: isActive ? '#FFFFFF' : '#9C9790' }]}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
               </ThemedText>
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
   teamSub: {
     fontSize: 13,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
 
   // Tabs
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   },
   aboutText: {
     fontSize: 14,
-    color: '#A1A1AA',
+    color: '#9C9790',
     lineHeight: 22,
   },
 });

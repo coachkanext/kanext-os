@@ -81,31 +81,31 @@ export interface BizThreadMessage {
 // =============================================================================
 
 export const ESCALATION_TYPE_COLORS: Record<EscalationType, string> = {
-  Budget: '#F59E0B',
-  Contract: '#8B5CF6',
-  Compliance: '#EF4444',
-  Personnel: '#1D9BF0',
-  Strategic: '#22C55E',
+  Budget: '#B8943E',
+  Contract: '#1A1714',
+  Compliance: '#B85C5C',
+  Personnel: '#1A1714',
+  Strategic: '#5A8A6E',
 };
 
 export const ESCALATION_STATUS_COLORS: Record<EscalationStatus, string> = {
-  'Needs Review': '#EF4444',
-  'Pending Info': '#F59E0B',
-  Resolved: '#22C55E',
+  'Needs Review': '#B85C5C',
+  'Pending Info': '#B8943E',
+  Resolved: '#5A8A6E',
 };
 
 export const APPROVAL_TYPE_COLORS: Record<ApprovalObjectType, string> = {
-  Deal: '#8B5CF6',
-  Payment: '#F59E0B',
-  Policy: '#EF4444',
-  Hire: '#1D9BF0',
-  Obligation: '#22C55E',
+  Deal: '#1A1714',
+  Payment: '#B8943E',
+  Policy: '#B85C5C',
+  Hire: '#1A1714',
+  Obligation: '#5A8A6E',
 };
 
 export const APPROVAL_STATUS_COLORS: Record<ApprovalStatus, string> = {
-  Pending: '#F59E0B',
-  Approved: '#22C55E',
-  Rejected: '#EF4444',
+  Pending: '#B8943E',
+  Approved: '#5A8A6E',
+  Rejected: '#B85C5C',
 };
 
 // =============================================================================

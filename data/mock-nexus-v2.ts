@@ -455,10 +455,10 @@ export const DEMO_V2_MESSAGES: MessageV2[] = [
       {
         type: 'stat_row',
         stats: [
-          { label: 'Blockers', value: '1', color: '#EF4444' },
-          { label: 'In Progress', value: '2', color: '#F59E0B' },
-          { label: 'Waiting', value: '1', color: '#8B5CF6' },
-          { label: 'Open', value: '3', color: '#3B82F6' },
+          { label: 'Blockers', value: '1', color: '#B85C5C' },
+          { label: 'In Progress', value: '2', color: '#B8943E' },
+          { label: 'Waiting', value: '1', color: '#1A1714' },
+          { label: 'Open', value: '3', color: '#1A1714' },
         ],
       },
     ],
@@ -573,10 +573,10 @@ export const DEMO_V2_MESSAGES: MessageV2[] = [
       {
         type: 'stat_row',
         stats: [
-          { label: 'Transition PPP', value: '1.14', color: '#22C55E' },
-          { label: 'Half-Court PPP', value: '0.91', color: '#F59E0B' },
-          { label: 'Trans Freq', value: '19%', color: '#3B82F6' },
-          { label: 'HC Freq', value: '81%', color: '#3B82F6' },
+          { label: 'Transition PPP', value: '1.14', color: '#5A8A6E' },
+          { label: 'Half-Court PPP', value: '0.91', color: '#B8943E' },
+          { label: 'Trans Freq', value: '19%', color: '#1A1714' },
+          { label: 'HC Freq', value: '81%', color: '#1A1714' },
         ],
       },
       {

@@ -103,9 +103,9 @@ export const PERSON_STATUS_LABELS: Record<PersonStatus, string> = {
 };
 
 export const PERSON_STATUS_COLORS: Record<PersonStatus, string> = {
-  active: '#22C55E',
-  invited: '#F59E0B',
-  suspended: '#EF4444',
+  active: '#5A8A6E',
+  invited: '#B8943E',
+  suspended: '#B85C5C',
 };
 
 export const ACCESS_TIER_LABELS: Record<AccessTier, string> = {
@@ -117,11 +117,11 @@ export const ACCESS_TIER_LABELS: Record<AccessTier, string> = {
 };
 
 export const ACCESS_TIER_COLORS: Record<AccessTier, string> = {
-  founder: '#1D9BF0',
-  board: '#1D9BF0',
-  executive: '#1D9BF0',
-  operator: '#F59E0B',
-  viewer: '#A1A1AA',
+  founder: '#1A1714',
+  board: '#1A1714',
+  executive: '#1A1714',
+  operator: '#B8943E',
+  viewer: '#9C9790',
 };
 
 export const DOMAIN_LABELS: Record<Domain, string> = {
@@ -134,12 +134,12 @@ export const DOMAIN_LABELS: Record<Domain, string> = {
 };
 
 export const DOMAIN_COLORS: Record<Domain, string> = {
-  admissions: '#1D9BF0',
-  academics: '#1D9BF0',
-  housing: '#22C55E',
-  athletics: '#F59E0B',
-  finance: '#F59E0B',
-  compliance: '#EF4444',
+  admissions: '#1A1714',
+  academics: '#1A1714',
+  housing: '#5A8A6E',
+  athletics: '#B8943E',
+  finance: '#B8943E',
+  compliance: '#B85C5C',
 };
 
 export const DOMAIN_ICONS: Record<Domain, string> = {
@@ -158,9 +158,9 @@ export const SEAT_CRITICALITY_LABELS: Record<SeatCriticality, string> = {
 };
 
 export const SEAT_CRITICALITY_COLORS: Record<SeatCriticality, string> = {
-  critical: '#EF4444',
-  high: '#F59E0B',
-  normal: '#22C55E',
+  critical: '#B85C5C',
+  high: '#B8943E',
+  normal: '#5A8A6E',
 };
 
 export const COVERAGE_CATEGORY_LABELS: Record<CoverageCategory, string> = {
@@ -191,10 +191,10 @@ export const AUTHORITY_LABELS: Record<AuthorityLevel, string> = {
 };
 
 export const AUTHORITY_COLORS: Record<AuthorityLevel, string> = {
-  approve: '#1D9BF0',
-  release: '#22C55E',
-  admin: '#1D9BF0',
-  none: '#A1A1AA',
+  approve: '#1A1714',
+  release: '#5A8A6E',
+  admin: '#1A1714',
+  none: '#9C9790',
 };
 
 export const SENSITIVE_ACCESS_LABELS: Record<SensitiveAccess, string> = {
@@ -204,9 +204,9 @@ export const SENSITIVE_ACCESS_LABELS: Record<SensitiveAccess, string> = {
 };
 
 export const SENSITIVE_ACCESS_COLORS: Record<SensitiveAccess, string> = {
-  low: '#22C55E',
-  medium: '#F59E0B',
-  high: '#EF4444',
+  low: '#5A8A6E',
+  medium: '#B8943E',
+  high: '#B85C5C',
 };
 
 export const RISK_FLAG_LABELS: Record<RiskFlag, string> = {
@@ -217,10 +217,10 @@ export const RISK_FLAG_LABELS: Record<RiskFlag, string> = {
 };
 
 export const RISK_FLAG_COLORS: Record<RiskFlag, string> = {
-  over_permissioned: '#F59E0B',
-  missing_coverage: '#EF4444',
-  single_point_failure: '#1D9BF0',
-  privileged_inactive: '#1D9BF0',
+  over_permissioned: '#B8943E',
+  missing_coverage: '#B85C5C',
+  single_point_failure: '#1A1714',
+  privileged_inactive: '#1A1714',
 };
 
 export const PERMISSION_SCOPE_LABELS: Record<PermissionScope, string> = {
@@ -238,10 +238,10 @@ export const AUDIT_CATEGORY_LABELS: Record<AuditEntry['category'], string> = {
 };
 
 export const AUDIT_CATEGORY_COLORS: Record<AuditEntry['category'], string> = {
-  seat_assignment: '#1D9BF0',
-  permission_change: '#1D9BF0',
-  invite: '#22C55E',
-  release_authority: '#F59E0B',
+  seat_assignment: '#1A1714',
+  permission_change: '#1A1714',
+  invite: '#5A8A6E',
+  release_authority: '#B8943E',
 };
 
 // =============================================================================

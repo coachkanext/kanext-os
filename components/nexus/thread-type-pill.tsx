@@ -19,7 +19,7 @@ const TYPE_CONFIG: Record<ConversationType, { label: string; color: string }> = 
   chat: { label: 'Chat', color: '#FFFFFF' },
   eval: { label: 'Eval', color: '#FFFFFF' },
   sim: { label: 'Sim', color: '#FFFFFF' },
-  'game-ops': { label: 'Game Ops', color: '#A1A1AA' },
+  'game-ops': { label: 'Game Ops', color: '#9C9790' },
 };
 
 export function ThreadTypePill({ type, size = 'default' }: ThreadTypePillProps) {

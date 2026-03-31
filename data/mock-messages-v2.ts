@@ -347,7 +347,7 @@ const SPORTS_ROOMS: MsgRoom[] = [
     lastMessage: 'See everyone at 3:30 for film.',
     lastActivity: '3h ago',
     unreadCount: 5,
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
   },
   {
     id: 'sr-3',
@@ -357,7 +357,7 @@ const SPORTS_ROOMS: MsgRoom[] = [
     lastMessage: 'Jaylen Carter OV confirmed for Feb 21.',
     lastActivity: '5h ago',
     unreadCount: 1,
-    avatarColor: '#22C55E',
+    avatarColor: '#5A8A6E',
   },
   {
     id: 'sr-4',
@@ -367,7 +367,7 @@ const SPORTS_ROOMS: MsgRoom[] = [
     lastMessage: 'Transition defense clips uploaded.',
     lastActivity: '6h ago',
     unreadCount: 3,
-    avatarColor: '#EF4444',
+    avatarColor: '#B85C5C',
   },
   {
     id: 'sr-5',
@@ -377,7 +377,7 @@ const SPORTS_ROOMS: MsgRoom[] = [
     lastMessage: 'Bus departs 10 AM Saturday — Campbell.',
     lastActivity: '1d ago',
     unreadCount: 0,
-    avatarColor: '#F59E0B',
+    avatarColor: '#B8943E',
   },
 ];
 
@@ -588,7 +588,7 @@ const CHURCH_ROOMS: MsgRoom[] = [
     lastMessage: 'Setlist for Sunday locked in.',
     lastActivity: '4h ago',
     unreadCount: 1,
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
   },
   {
     id: 'cr-3',
@@ -598,7 +598,7 @@ const CHURCH_ROOMS: MsgRoom[] = [
     lastMessage: 'Retreat registration closes Friday.',
     lastActivity: '6h ago',
     unreadCount: 0,
-    avatarColor: '#F59E0B',
+    avatarColor: '#B8943E',
   },
   {
     id: 'cr-4',
@@ -608,7 +608,7 @@ const CHURCH_ROOMS: MsgRoom[] = [
     lastMessage: '3 new prayer requests added.',
     lastActivity: '2d ago',
     unreadCount: 3,
-    avatarColor: '#22C55E',
+    avatarColor: '#5A8A6E',
   },
 ];
 
@@ -829,7 +829,7 @@ const EDUCATION_ROOMS: MsgRoom[] = [
     lastMessage: 'Research paper outline due Friday.',
     lastActivity: '2h ago',
     unreadCount: 4,
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
   },
   {
     id: 'er-3',
@@ -839,7 +839,7 @@ const EDUCATION_ROOMS: MsgRoom[] = [
     lastMessage: 'Spring fest volunteer signups are live.',
     lastActivity: '1d ago',
     unreadCount: 0,
-    avatarColor: '#22C55E',
+    avatarColor: '#5A8A6E',
   },
   {
     id: 'er-4',
@@ -849,7 +849,7 @@ const EDUCATION_ROOMS: MsgRoom[] = [
     lastMessage: 'New transfer inquiry received.',
     lastActivity: '2d ago',
     unreadCount: 1,
-    avatarColor: '#F59E0B',
+    avatarColor: '#B8943E',
   },
 ];
 
@@ -1075,7 +1075,7 @@ const BUSINESS_ROOMS: MsgRoom[] = [
     lastMessage: 'V2 sprint review at 2 PM today.',
     lastActivity: '1h ago',
     unreadCount: 3,
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
   },
   {
     id: 'br-3',
@@ -1085,7 +1085,7 @@ const BUSINESS_ROOMS: MsgRoom[] = [
     lastMessage: 'Library v2 feature flag deployed to staging.',
     lastActivity: '1d ago',
     unreadCount: 0,
-    avatarColor: '#22C55E',
+    avatarColor: '#5A8A6E',
   },
   {
     id: 'br-4',
@@ -1095,7 +1095,7 @@ const BUSINESS_ROOMS: MsgRoom[] = [
     lastMessage: 'Pilot deal with school district signed.',
     lastActivity: '2d ago',
     unreadCount: 0,
-    avatarColor: '#F59E0B',
+    avatarColor: '#B8943E',
   },
   {
     id: 'br-5',
@@ -1105,7 +1105,7 @@ const BUSINESS_ROOMS: MsgRoom[] = [
     lastMessage: 'Monthly all-hands meeting notes posted.',
     lastActivity: '3d ago',
     unreadCount: 0,
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
   },
 ];
 
@@ -1309,7 +1309,7 @@ const COMMUNITY_ROOMS: MsgRoom[] = [
     lastMessage: 'Laguna Seca setup checklist posted.',
     lastActivity: '1h ago',
     unreadCount: 3,
-    avatarColor: '#EF4444',
+    avatarColor: '#B85C5C',
   },
   {
     id: 'kr-2',
@@ -1319,7 +1319,7 @@ const COMMUNITY_ROOMS: MsgRoom[] = [
     lastMessage: 'Kart 7 passed tech inspection.',
     lastActivity: '4h ago',
     unreadCount: 1,
-    avatarColor: '#1D9BF0',
+    avatarColor: '#1A1714',
   },
   {
     id: 'kr-3',
@@ -1329,7 +1329,7 @@ const COMMUNITY_ROOMS: MsgRoom[] = [
     lastMessage: 'Great racing last weekend. Congrats to the winners!',
     lastActivity: '1d ago',
     unreadCount: 0,
-    avatarColor: '#22C55E',
+    avatarColor: '#5A8A6E',
   },
   {
     id: 'kr-4',
@@ -1339,7 +1339,7 @@ const COMMUNITY_ROOMS: MsgRoom[] = [
     lastMessage: 'Updated tire compound regs for Round 7.',
     lastActivity: '1d ago',
     unreadCount: 2,
-    avatarColor: '#F59E0B',
+    avatarColor: '#B8943E',
   },
 ];
 

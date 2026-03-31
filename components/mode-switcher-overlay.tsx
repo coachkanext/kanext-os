@@ -174,6 +174,6 @@ const styles = StyleSheet.create({
   modeLabel: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
 });

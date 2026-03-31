@@ -202,7 +202,7 @@ function MessageRow({ message, colors, showRequestActions }: MessageRowProps) {
         {showRequestActions && message.isRequest && (
           <View style={styles.requestActions}>
             <Pressable
-              style={[styles.acceptBtn, { backgroundColor: '#22C55E20' }]}
+              style={[styles.acceptBtn, { backgroundColor: '#5A8A6E20' }]}
               onPress={() =>
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
               }
@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
   acceptText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
   declineBtn: {
     borderRadius: BorderRadius.md,

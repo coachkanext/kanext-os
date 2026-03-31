@@ -49,10 +49,10 @@ const FILTER_PILLS: { key: FilterKey; label: string }[] = [
 
 const MODE_COLORS: Record<string, string> = {
   personal:  '#6B7280',
-  business:  '#1D9BF0',
-  education: '#003A63',
-  community: '#7B68A0',
-  sports:    '#990000',
+  business:  '#1A1714',
+  education: '#1A1714',
+  community: '#1A1714',
+  sports:    '#1A1714',
 };
 
 function modeLabel(mode: string): string {

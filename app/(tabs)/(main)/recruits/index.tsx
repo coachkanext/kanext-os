@@ -133,7 +133,7 @@ function StarRow({ stars, C }: { stars: number; C: ComponentColors }) {
             key={i}
             name="star.fill"
             size={11}
-            color={i < stars ? '#B8942C' : C.muted}
+            color={i < stars ? '#B8943E' : C.muted}
           />
         ))}
     </View>
@@ -272,14 +272,14 @@ function RecruitDetailSheet({
           </Text>
           <View style={{ flexDirection: 'row', gap: 20, marginBottom: 10 }}>
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: 30, fontWeight: '900', color: '#003A63' }}>
+              <Text style={{ fontSize: 30, fontWeight: '900', color: '#1A1714' }}>
                 {recruit.kr.toFixed(1)}
               </Text>
               <Text style={{ fontSize: 11, color: C.muted }}>Overall KR</Text>
             </View>
             {recruit.krConf !== undefined && (
               <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontSize: 22, fontWeight: '700', color: '#3B82F6' }}>
+                <Text style={{ fontSize: 22, fontWeight: '700', color: '#1A1714' }}>
                   {recruit.krConf}%
                 </Text>
                 <Text style={{ fontSize: 11, color: C.muted }}>Confidence</Text>
@@ -404,7 +404,7 @@ function RecruitDetailSheet({
           <IconSymbol
             name="film.fill"
             size={16}
-            color={recruit.hasFilm ? '#3B82F6' : C.muted}
+            color={recruit.hasFilm ? '#1A1714' : C.muted}
           />
           <Text
             style={{
@@ -434,7 +434,7 @@ function RecruitDetailSheet({
               width: 30,
               height: 30,
               borderRadius: 15,
-              backgroundColor: '#3B82F6' + '18',
+              backgroundColor: '#1A1714' + '18',
               alignItems: 'center',
               justifyContent: 'center',
             }}
@@ -442,7 +442,7 @@ function RecruitDetailSheet({
             <IconSymbol
               name={contactIcon(recruit.contactType)}
               size={14}
-              color="#3B82F6"
+              color="#1A1714"
             />
           </View>
           <Text style={{ fontSize: 13, color: C.secondary }}>
@@ -495,7 +495,7 @@ function RecruitDetailSheet({
                 paddingVertical: 11,
                 borderRadius: 12,
                 backgroundColor:
-                  action === 'Schedule Contact' ? '#3B82F6' : C.surface,
+                  action === 'Schedule Contact' ? '#1A1714' : C.surface,
                 borderWidth: action !== 'Schedule Contact' ? 1 : 0,
                 borderColor: C.inputBorder,
                 alignItems: 'center',
@@ -709,7 +709,7 @@ export default function RecruitsScreen() {
         <RolePill
           role={role}
           onPress={cycleRole}
-          accentColor="#990000"
+          accentColor="#1A1714"
           isPrimary={isCoachRole}
         />
       </View>
@@ -740,8 +740,8 @@ export default function RecruitsScreen() {
                   style={[
                     s.pill,
                     {
-                      backgroundColor: active ? '#3B82F6' : 'transparent',
-                      borderColor: active ? '#3B82F6' : C.inputBorder,
+                      backgroundColor: active ? '#1A1714' : 'transparent',
+                      borderColor: active ? '#1A1714' : C.inputBorder,
                     },
                   ]}
                 >
@@ -777,8 +777,8 @@ export default function RecruitsScreen() {
                   style={[
                     s.pill,
                     {
-                      backgroundColor: active ? '#3B82F6' : 'transparent',
-                      borderColor: active ? '#3B82F6' : C.inputBorder,
+                      backgroundColor: active ? '#1A1714' : 'transparent',
+                      borderColor: active ? '#1A1714' : C.inputBorder,
                     },
                   ]}
                 >
@@ -813,8 +813,8 @@ export default function RecruitsScreen() {
                   style={[
                     s.pill,
                     {
-                      backgroundColor: active ? '#3B82F6' : 'transparent',
-                      borderColor: active ? '#3B82F6' : C.inputBorder,
+                      backgroundColor: active ? '#1A1714' : 'transparent',
+                      borderColor: active ? '#1A1714' : C.inputBorder,
                     },
                   ]}
                 >
@@ -851,7 +851,7 @@ export default function RecruitsScreen() {
           </Text>
           <Pressable
             onPress={cycleRole}
-            style={[s.switchBtn, { backgroundColor: '#990000' }]}
+            style={[s.switchBtn, { backgroundColor: '#1A1714' }]}
           >
             <Text style={{ color: '#fff', fontWeight: '700', fontSize: 14 }}>
               Switch to Recruit View
@@ -959,14 +959,14 @@ export default function RecruitsScreen() {
                         <View
                           style={[
                             s.posBadge,
-                            { backgroundColor: '#003A63' + '18' },
+                            { backgroundColor: '#1A1714' + '18' },
                           ]}
                         >
                           <Text
                             style={{
                               fontSize: 11,
                               fontWeight: '700',
-                              color: '#003A63',
+                              color: '#1A1714',
                             }}
                           >
                             {r.position}
@@ -1009,7 +1009,7 @@ export default function RecruitsScreen() {
                           style={{
                             fontSize: 11,
                             fontWeight: '800',
-                            color: '#003A63',
+                            color: '#1A1714',
                           }}
                         >
                           KR {r.kr.toFixed(1)}
@@ -1078,19 +1078,19 @@ export default function RecruitsScreen() {
               width: 36,
               height: 36,
               borderRadius: 18,
-              backgroundColor: '#3B82F6' + '18',
+              backgroundColor: '#1A1714' + '18',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <IconSymbol name="sparkles" size={17} color="#3B82F6" />
+            <IconSymbol name="sparkles" size={17} color="#1A1714" />
           </View>
           <View style={{ flex: 1 }}>
             <Text
               style={{
                 fontSize: 12,
                 fontWeight: '700',
-                color: '#3B82F6',
+                color: '#1A1714',
                 marginBottom: 2,
               }}
             >
@@ -1159,8 +1159,8 @@ export default function RecruitsScreen() {
                 style={[
                   s.filterPill,
                   {
-                    backgroundColor: active ? '#003A63' + '18' : C.surface,
-                    borderColor: active ? '#003A63' : C.inputBorder,
+                    backgroundColor: active ? '#1A1714' + '18' : C.surface,
+                    borderColor: active ? '#1A1714' : C.inputBorder,
                   },
                 ]}
               >
@@ -1168,7 +1168,7 @@ export default function RecruitsScreen() {
                   style={{
                     fontSize: 11,
                     fontWeight: active ? '700' : '500',
-                    color: active ? '#003A63' : C.secondary,
+                    color: active ? '#1A1714' : C.secondary,
                   }}
                 >
                   {lvl}
@@ -1198,8 +1198,8 @@ export default function RecruitsScreen() {
                 style={[
                   s.filterPill,
                   {
-                    backgroundColor: active ? '#3B82F6' + '18' : C.surface,
-                    borderColor: active ? '#3B82F6' : C.inputBorder,
+                    backgroundColor: active ? '#1A1714' + '18' : C.surface,
+                    borderColor: active ? '#1A1714' : C.inputBorder,
                   },
                 ]}
               >
@@ -1207,7 +1207,7 @@ export default function RecruitsScreen() {
                   style={{
                     fontSize: 11,
                     fontWeight: active ? '700' : '500',
-                    color: active ? '#3B82F6' : C.secondary,
+                    color: active ? '#1A1714' : C.secondary,
                   }}
                 >
                   {opt}
@@ -1241,8 +1241,8 @@ export default function RecruitsScreen() {
                       <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>
                         {p.fullName}
                       </Text>
-                      <View style={[s.posBadge, { backgroundColor: '#003A63' + '18' }]}>
-                        <Text style={{ fontSize: 10, fontWeight: '700', color: '#003A63' }}>
+                      <View style={[s.posBadge, { backgroundColor: '#1A1714' + '18' }]}>
+                        <Text style={{ fontSize: 10, fontWeight: '700', color: '#1A1714' }}>
                           {p.position}
                         </Text>
                       </View>
@@ -1291,12 +1291,12 @@ export default function RecruitsScreen() {
                         paddingHorizontal: 10,
                         paddingVertical: 5,
                         borderRadius: 8,
-                        backgroundColor: '#3B82F6' + '18',
+                        backgroundColor: '#1A1714' + '18',
                         borderWidth: 1,
-                        borderColor: '#3B82F6' + '40',
+                        borderColor: '#1A1714' + '40',
                       }}
                     >
-                      <Text style={{ fontSize: 11, fontWeight: '700', color: '#3B82F6' }}>
+                      <Text style={{ fontSize: 11, fontWeight: '700', color: '#1A1714' }}>
                         Evaluate
                       </Text>
                     </Pressable>
@@ -1310,8 +1310,8 @@ export default function RecruitsScreen() {
                         { backgroundColor: C.surface, borderColor: C.inputBorder },
                       ]}
                     >
-                      <IconSymbol name="plus" size={11} color="#3B82F6" />
-                      <Text style={{ fontSize: 11, fontWeight: '600', color: '#3B82F6' }}>
+                      <IconSymbol name="plus" size={11} color="#1A1714" />
+                      <Text style={{ fontSize: 11, fontWeight: '600', color: '#1A1714' }}>
                         Add
                       </Text>
                     </Pressable>
@@ -1358,8 +1358,8 @@ export default function RecruitsScreen() {
         </Text>
         {[
           { school: 'Lincoln University', interest: 'Offered',   color: '#5A8A6E' },
-          { school: 'Hampton University', interest: 'Watched',   color: '#3B82F6' },
-          { school: 'Howard University',  interest: 'Contacted', color: '#F59E0B' },
+          { school: 'Hampton University', interest: 'Watched',   color: '#1A1714' },
+          { school: 'Howard University',  interest: 'Contacted', color: '#B8943E' },
         ].map((item, i, arr) => (
           <View
             key={item.school}
@@ -1429,7 +1429,7 @@ export default function RecruitsScreen() {
             My Recruiting Profile
           </Text>
           <Text
-            style={{ fontSize: 13, fontWeight: '700', color: '#3B82F6' }}
+            style={{ fontSize: 13, fontWeight: '700', color: '#1A1714' }}
           >
             70% complete
           </Text>
@@ -1447,7 +1447,7 @@ export default function RecruitsScreen() {
             style={{
               width: '70%',
               height: '100%',
-              backgroundColor: '#3B82F6',
+              backgroundColor: '#1A1714',
               borderRadius: 3,
             }}
           />
@@ -1484,13 +1484,13 @@ export default function RecruitsScreen() {
               paddingHorizontal: 16,
               paddingVertical: 9,
               borderRadius: 10,
-              backgroundColor: '#3B82F6' + '18',
+              backgroundColor: '#1A1714' + '18',
               borderWidth: 1,
-              borderColor: '#3B82F6' + '40',
+              borderColor: '#1A1714' + '40',
             }}
           >
             <Text
-              style={{ fontSize: 13, fontWeight: '700', color: '#3B82F6' }}
+              style={{ fontSize: 13, fontWeight: '700', color: '#1A1714' }}
             >
               Upload Photo
             </Text>
@@ -1596,11 +1596,11 @@ export default function RecruitsScreen() {
               paddingHorizontal: 12,
               paddingVertical: 6,
               borderRadius: 8,
-              backgroundColor: '#3B82F6' + '18',
+              backgroundColor: '#1A1714' + '18',
             }}
           >
             <Text
-              style={{ fontSize: 12, fontWeight: '700', color: '#3B82F6' }}
+              style={{ fontSize: 12, fontWeight: '700', color: '#1A1714' }}
             >
               Upload
             </Text>
@@ -1721,7 +1721,7 @@ export default function RecruitsScreen() {
                 width: 30,
                 height: 30,
                 borderRadius: 15,
-                backgroundColor: '#003A63' + '18',
+                backgroundColor: '#1A1714' + '18',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
@@ -1729,7 +1729,7 @@ export default function RecruitsScreen() {
               <IconSymbol
                 name="building.2.fill"
                 size={14}
-                color="#003A63"
+                color="#1A1714"
               />
             </View>
             <Text
@@ -1750,7 +1750,7 @@ export default function RecruitsScreen() {
       <View
         style={[
           s.portalBanner,
-          { backgroundColor: '#003A63', marginHorizontal: 16, marginBottom: 16 },
+          { backgroundColor: '#1A1714', marginHorizontal: 16, marginBottom: 16 },
         ]}
       >
         <View
@@ -1761,7 +1761,7 @@ export default function RecruitsScreen() {
             marginBottom: 8,
           }}
         >
-          <IconSymbol name="sparkles" size={16} color="#B8942C" />
+          <IconSymbol name="sparkles" size={16} color="#B8943E" />
           <Text style={{ fontSize: 14, fontWeight: '800', color: '#fff' }}>
             Portal Intelligence
           </Text>
@@ -1822,14 +1822,14 @@ export default function RecruitsScreen() {
                       <View
                         style={[
                           s.posBadge,
-                          { backgroundColor: '#003A63' + '18' },
+                          { backgroundColor: '#1A1714' + '18' },
                         ]}
                       >
                         <Text
                           style={{
                             fontSize: 11,
                             fontWeight: '700',
-                            color: '#003A63',
+                            color: '#1A1714',
                           }}
                         >
                           {p.position}
@@ -1927,12 +1927,12 @@ export default function RecruitsScreen() {
                       paddingHorizontal: 10,
                       paddingVertical: 5,
                       borderRadius: 8,
-                      backgroundColor: '#3B82F6' + '18',
+                      backgroundColor: '#1A1714' + '18',
                       borderWidth: 1,
-                      borderColor: '#3B82F6' + '40',
+                      borderColor: '#1A1714' + '40',
                     }}
                   >
-                    <Text style={{ fontSize: 11, fontWeight: '700', color: '#3B82F6' }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: '#1A1714' }}>
                       Evaluate
                     </Text>
                   </Pressable>
@@ -1949,12 +1949,12 @@ export default function RecruitsScreen() {
                       },
                     ]}
                   >
-                    <IconSymbol name="plus" size={11} color="#3B82F6" />
+                    <IconSymbol name="plus" size={11} color="#1A1714" />
                     <Text
                       style={{
                         fontSize: 11,
                         fontWeight: '600',
-                        color: '#3B82F6',
+                        color: '#1A1714',
                       }}
                     >
                       Add to Board
@@ -1997,7 +1997,7 @@ export default function RecruitsScreen() {
           }
           style={[
             s.fab,
-            { backgroundColor: '#3B82F6', bottom: insets.bottom + 88 },
+            { backgroundColor: '#1A1714', bottom: insets.bottom + 88 },
           ]}
         >
           <IconSymbol name="plus" size={24} color="#fff" />

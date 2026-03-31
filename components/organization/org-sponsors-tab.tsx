@@ -61,9 +61,9 @@ interface OrgSponsorsTabProps {
 // =============================================================================
 
 const REPORT_FORMAT_COLOR: Record<SponsorReport['format'], string> = {
-  PDF: '#1D9BF0',
-  CSV: '#22C55E',
-  XLSX: '#F59E0B',
+  PDF: '#1A1714',
+  CSV: '#5A8A6E',
+  XLSX: '#B8943E',
 };
 
 // =============================================================================
@@ -108,21 +108,21 @@ function auditIcon(action: string): string {
 function auditColor(action: string): string {
   switch (action) {
     case 'sponsor_created':
-      return '#22C55E';
+      return '#5A8A6E';
     case 'contract_signed':
       return accent;
     case 'fulfillment_logged':
       return accent;
     case 'fulfillment_verified':
-      return '#22C55E';
+      return '#5A8A6E';
     case 'invoice_sent':
-      return '#F59E0B';
+      return '#B8943E';
     case 'invoice_overdue':
-      return '#EF4444';
+      return '#B85C5C';
     case 'asset_uploaded':
       return accent;
     default:
-      return '#A1A1AA';
+      return '#9C9790';
   }
 }
 
@@ -154,9 +154,9 @@ const DASHBOARD_SECTIONS: { title: string; ids: string[] }[] = [
 // =============================================================================
 
 const STATUS_DOT_COLOR: Record<string, string> = {
-  good: '#22C55E',
-  warning: '#F59E0B',
-  critical: '#EF4444',
+  good: '#5A8A6E',
+  warning: '#B8943E',
+  critical: '#B85C5C',
 };
 
 // =============================================================================
@@ -446,8 +446,8 @@ export function OrgSponsorsTab({ colors, accentColor }: OrgSponsorsTabProps) {
                 </View>
                 {item.approvalRequired && (
                   <View style={s.badgeRow}>
-                    <View style={[s.badge, { backgroundColor: '#F59E0B' + '33' }]}>
-                      <ThemedText style={[s.badgeText, { color: '#F59E0B' }]}>
+                    <View style={[s.badge, { backgroundColor: '#B8943E' + '33' }]}>
+                      <ThemedText style={[s.badgeText, { color: '#B8943E' }]}>
                         Approval Required
                       </ThemedText>
                     </View>
@@ -559,8 +559,8 @@ export function OrgSponsorsTab({ colors, accentColor }: OrgSponsorsTabProps) {
                   {item.priceGuidance} | {item.duration}
                 </ThemedText>
                 {item.soldTo != null && (
-                  <View style={[s.badge, { backgroundColor: '#22C55E' + '33', alignSelf: 'flex-start' }]}>
-                    <ThemedText style={[s.badgeText, { color: '#22C55E' }]}>
+                  <View style={[s.badge, { backgroundColor: '#5A8A6E' + '33', alignSelf: 'flex-start' }]}>
+                    <ThemedText style={[s.badgeText, { color: '#5A8A6E' }]}>
                       {item.soldTo}
                     </ThemedText>
                   </View>
@@ -625,8 +625,8 @@ export function OrgSponsorsTab({ colors, accentColor }: OrgSponsorsTabProps) {
                 </ThemedText>
               )}
               {item.renewalReminderDate != null && (
-                <View style={[s.badge, { backgroundColor: '#F59E0B' + '33', alignSelf: 'flex-start', marginTop: 4 }]}>
-                  <ThemedText style={[s.badgeText, { color: '#F59E0B' }]}>
+                <View style={[s.badge, { backgroundColor: '#B8943E' + '33', alignSelf: 'flex-start', marginTop: 4 }]}>
+                  <ThemedText style={[s.badgeText, { color: '#B8943E' }]}>
                     Renewal: {item.renewalReminderDate}
                   </ThemedText>
                 </View>
@@ -805,7 +805,7 @@ export function OrgSponsorsTab({ colors, accentColor }: OrgSponsorsTabProps) {
                       <IconSymbol
                         name="checkmark.circle.fill"
                         size={14}
-                        color="#22C55E"
+                        color="#5A8A6E"
                       />
                     )}
                   </View>
@@ -884,7 +884,7 @@ export function OrgSponsorsTab({ colors, accentColor }: OrgSponsorsTabProps) {
                 Issued: {item.issuedDate} | Due: {item.dueDate}
               </ThemedText>
               {item.paidDate != null && (
-                <ThemedText style={[s.listCardSub, { color: '#22C55E' }]}>
+                <ThemedText style={[s.listCardSub, { color: '#5A8A6E' }]}>
                   Paid: {item.paidDate}
                 </ThemedText>
               )}
@@ -897,7 +897,7 @@ export function OrgSponsorsTab({ colors, accentColor }: OrgSponsorsTabProps) {
                 <IconSymbol
                   name={item.reconciled ? 'checkmark.circle.fill' : 'xmark.circle.fill'}
                   size={14}
-                  color={item.reconciled ? '#22C55E' : '#EF4444'}
+                  color={item.reconciled ? '#5A8A6E' : '#B85C5C'}
                 />
                 <ThemedText style={[s.listCardSub, { color: colors.textSecondary }]}>
                   {item.reconciled ? 'Reconciled' : 'Not Reconciled'}

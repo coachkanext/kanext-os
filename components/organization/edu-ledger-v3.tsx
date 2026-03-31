@@ -90,16 +90,16 @@ const CATEGORY_COLOR: Record<Exclude<TxCategory, 'All'>, string> = {
   Tuition: ACCENT,
   Aid: ACCENT,
   Payroll: ACCENT,
-  Grants: '#22C55E',
-  Vendors: '#F59E0B',
+  Grants: '#5A8A6E',
+  Vendors: '#B8943E',
   Donations: ACCENT,
-  Athletics: '#EF4444',
+  Athletics: '#B85C5C',
 };
 
 const PENDING_STATUS_COLOR: Record<string, string> = {
-  'Awaiting Approval': '#F59E0B',
+  'Awaiting Approval': '#B8943E',
   Processing: ACCENT,
-  Scheduled: '#22C55E',
+  Scheduled: '#5A8A6E',
 };
 
 // =============================================================================
@@ -181,7 +181,7 @@ function TransactionsView({ colors, accentColor }: { colors: typeof Colors.light
               <ThemedText
                 style={[
                   s.txAmount,
-                  { color: tx.direction === 'credit' ? '#22C55E' : colors.text },
+                  { color: tx.direction === 'credit' ? '#5A8A6E' : colors.text },
                 ]}
               >
                 {tx.direction === 'credit' ? '+' : '-'}{formatCurrency(tx.amount)}
@@ -281,7 +281,7 @@ function ReceiptsView({ colors, accentColor }: { colors: typeof Colors.light; ac
                     <ThemedText style={[s.receiptRef, { color: colors.textTertiary }]}>{rc.reference}</ThemedText>
                   </View>
                   <View style={s.receiptAmountWrap}>
-                    <ThemedText style={[s.receiptAmount, { color: '#22C55E' }]}>
+                    <ThemedText style={[s.receiptAmount, { color: '#5A8A6E' }]}>
                       {formatCurrency(rc.amount)}
                     </ThemedText>
                     <ThemedText style={[s.receiptDate, { color: colors.textSecondary }]}>{rc.date}</ThemedText>

@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   gameDayBadge: {
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 6,

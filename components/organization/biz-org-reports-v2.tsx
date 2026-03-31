@@ -107,15 +107,15 @@ const AUDIT_LOG = [
 ];
 
 const TRUTH_STATUS_COLOR: Record<string, string> = {
-  green: '#22C55E',
-  yellow: '#F59E0B',
-  red: '#EF4444',
+  green: '#5A8A6E',
+  yellow: '#B8943E',
+  red: '#B85C5C',
 };
 
 const SEVERITY_BORDER_COLOR: Record<string, string> = {
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#A1A1AA',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#9C9790',
 };
 
 const AUDIT_ACTION_ICON: Record<string, string> = {
@@ -126,9 +126,9 @@ const AUDIT_ACTION_ICON: Record<string, string> = {
 };
 
 function readinessColor(value: number): string {
-  if (value >= 80) return '#22C55E';
-  if (value >= 50) return '#F59E0B';
-  return '#EF4444';
+  if (value >= 80) return '#5A8A6E';
+  if (value >= 50) return '#B8943E';
+  return '#B85C5C';
 }
 
 // =============================================================================
@@ -215,9 +215,9 @@ function OverviewTab({
 }) {
   const statCards: { label: string; value: number; icon: string; color: string }[] = [
     { label: 'Total Reports', value: stats.totalReports, icon: 'doc.text.fill', color: ACCENT },
-    { label: 'Recently Generated', value: stats.recentlyGenerated, icon: 'checkmark.circle.fill', color: '#22C55E' },
+    { label: 'Recently Generated', value: stats.recentlyGenerated, icon: 'checkmark.circle.fill', color: '#5A8A6E' },
     { label: 'Scheduled', value: stats.scheduled, icon: 'clock.arrow.2.circlepath', color: ACCENT },
-    { label: 'Data Room Docs', value: stats.dataRoomDocs, icon: 'folder.fill', color: '#F59E0B' },
+    { label: 'Data Room Docs', value: stats.dataRoomDocs, icon: 'folder.fill', color: '#B8943E' },
     { label: 'Pack Templates', value: stats.packTemplates, icon: 'doc.on.doc.fill', color: ACCENT },
   ];
 
@@ -1263,7 +1263,7 @@ function ReportDetailSheet({
         )}
         {report.status === 'failed' && (
           <Pressable
-            style={[s.sheetActionButton, { backgroundColor: '#EF4444' }]}
+            style={[s.sheetActionButton, { backgroundColor: '#B85C5C' }]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
               onClose();

@@ -240,16 +240,16 @@ function MentionsPicker({
 
 const makeMpStyles = (C: ComponentColors) => StyleSheet.create({
   container: {
-    backgroundColor: '#2C2C2E', borderRadius: 12, marginHorizontal: 12,
+    backgroundColor: '#261D17', borderRadius: 12, marginHorizontal: 12,
     marginBottom: 4, overflow: 'hidden',
   },
   row: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
     paddingHorizontal: 12, paddingVertical: 8,
-    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#48484A',
+    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#8A837C',
   },
   avatar: {
-    width: 28, height: 28, borderRadius: 14, backgroundColor: '#1C1C1E',
+    width: 28, height: 28, borderRadius: 14, backgroundColor: '#1C1410',
     alignItems: 'center', justifyContent: 'center',
   },
   initials: { fontSize: 10, fontWeight: '600', color: C.label },
@@ -316,7 +316,7 @@ const rbStyles = StyleSheet.create({
   backdrop: { flex: 1 },
   bar: {
     position: 'absolute', alignSelf: 'center',
-    flexDirection: 'row', backgroundColor: '#2C2C2E', borderRadius: 24,
+    flexDirection: 'row', backgroundColor: '#261D17', borderRadius: 24,
     paddingHorizontal: 8, paddingVertical: 6, gap: 2,
     shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4, shadowRadius: 8, elevation: 10,
@@ -439,14 +439,14 @@ const makeTpStyles = (C: ComponentColors) => StyleSheet.create({
   dim: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.50)' },
   panel: {
     position: 'absolute', top: 0, bottom: 0, right: 0, width: SCREEN_W * 0.88,
-    backgroundColor: '#0A0A0A', borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: C.divider,
+    backgroundColor: '#1C1410', borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: C.divider,
   },
   header: {
     flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16,
     paddingVertical: 12, gap: 10,
   },
   closeBtn: {
-    width: 28, height: 28, borderRadius: 14, backgroundColor: '#2C2C2E',
+    width: 28, height: 28, borderRadius: 14, backgroundColor: '#261D17',
     alignItems: 'center', justifyContent: 'center',
   },
   headerTitle: { fontSize: 17, fontWeight: '600', color: C.label, flex: 1 },
@@ -456,7 +456,7 @@ const makeTpStyles = (C: ComponentColors) => StyleSheet.create({
   },
   senderRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
   senderAvatar: {
-    width: 24, height: 24, borderRadius: 12, backgroundColor: '#2C2C2E',
+    width: 24, height: 24, borderRadius: 12, backgroundColor: '#261D17',
     alignItems: 'center', justifyContent: 'center',
   },
   senderAvatarText: { fontSize: 9, fontWeight: '600', color: C.label },
@@ -469,7 +469,7 @@ const makeTpStyles = (C: ComponentColors) => StyleSheet.create({
     flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 10, gap: 10,
   },
   replySenderAvatar: {
-    width: 24, height: 24, borderRadius: 12, backgroundColor: '#2C2C2E',
+    width: 24, height: 24, borderRadius: 12, backgroundColor: '#261D17',
     alignItems: 'center', justifyContent: 'center', marginTop: 2,
   },
   replySenderText: { fontSize: 9, fontWeight: '600', color: C.label },
@@ -1252,7 +1252,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   },
   reactionChip: {
     flexDirection: 'row', alignItems: 'center', gap: 3,
-    backgroundColor: '#1C1C1E', borderRadius: 12,
+    backgroundColor: '#1C1410', borderRadius: 12,
     paddingHorizontal: 8, paddingVertical: 3,
     borderWidth: 1, borderColor: 'transparent',
   },
@@ -1272,7 +1272,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   },
   emptyTitle: { fontSize: 18, fontWeight: '700', color: C.label, marginBottom: 4 },
   emptySub: { fontSize: 14, color: C.secondary, marginBottom: 8 },
-  emptyHint: { fontSize: 14, color: '#48484A' },
+  emptyHint: { fontSize: 14, color: '#8A837C' },
 
   // Composer
   composerWrap: {

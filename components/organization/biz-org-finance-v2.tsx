@@ -93,15 +93,15 @@ const APPROVAL_QUEUE = [
 ];
 
 const URGENCY_COLORS: Record<'high' | 'medium' | 'low', string> = {
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#A1A1AA',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#9C9790',
 };
 
 const IMPACT_COLORS: Record<'high' | 'medium' | 'low', string> = {
   high: ACCENT,
   medium: ACCENT,
-  low: '#A1A1AA',
+  low: '#9C9790',
 };
 
 type TimeFilter = 'MTD' | 'QTD' | 'YTD' | 'Custom';
@@ -235,10 +235,10 @@ function OverviewTab({
         : 'arrow.right';
   const burnTrendColor =
     FINANCE_HEALTH.burnTrend === 'increasing'
-      ? '#EF4444'
+      ? '#B85C5C'
       : FINANCE_HEALTH.burnTrend === 'decreasing'
-        ? '#22C55E'
-        : '#F59E0B';
+        ? '#5A8A6E'
+        : '#B8943E';
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.tabScroll}>
@@ -247,14 +247,14 @@ function OverviewTab({
       <View style={[s.healthSnapshotCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={s.healthSnapshotRow}>
           <View style={s.healthSnapshotItem}>
-            <ThemedText style={[s.healthSnapshotValue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.healthSnapshotValue, { color: '#5A8A6E' }]}>
               {formatCurrencyCompact(FINANCE_HEALTH.cashPosition)}
             </ThemedText>
             <ThemedText style={[s.healthSnapshotLabel, { color: colors.textTertiary }]}>Cash Position</ThemedText>
           </View>
           <View style={s.healthSnapshotItem}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <ThemedText style={[s.healthSnapshotValue, { color: '#EF4444' }]}>
+              <ThemedText style={[s.healthSnapshotValue, { color: '#B85C5C' }]}>
                 {formatCurrencyCompact(FINANCE_HEALTH.monthlyBurn)}
               </ThemedText>
               <IconSymbol name={burnTrendIcon as any} size={12} color={burnTrendColor} />
@@ -295,7 +295,7 @@ function OverviewTab({
                       {aq.requester}
                     </ThemedText>
                   </View>
-                  <ThemedText style={[s.driverAmount, { color: '#EF4444' }]}>
+                  <ThemedText style={[s.driverAmount, { color: '#B85C5C' }]}>
                     {formatCurrencyCompact(aq.amount)}
                   </ThemedText>
                   <View style={[s.urgencyBadge, { backgroundColor: uColor + '20' }]}>
@@ -322,15 +322,15 @@ function OverviewTab({
             key={driver.id}
             style={[s.driverRow, { backgroundColor: colors.card, borderColor: colors.border }]}
           >
-            <View style={[s.driverRank, { backgroundColor: (isRevenue ? '#22C55E' : '#EF4444') + '15' }]}>
-              <ThemedText style={{ fontSize: 13, fontWeight: '700', color: isRevenue ? '#22C55E' : '#EF4444' }}>
+            <View style={[s.driverRank, { backgroundColor: (isRevenue ? '#5A8A6E' : '#B85C5C') + '15' }]}>
+              <ThemedText style={{ fontSize: 13, fontWeight: '700', color: isRevenue ? '#5A8A6E' : '#B85C5C' }}>
                 {idx + 1}
               </ThemedText>
             </View>
             <ThemedText style={[s.driverLabel, { color: colors.text }]} numberOfLines={1}>
               {driver.label}
             </ThemedText>
-            <ThemedText style={[s.driverAmount, { color: isRevenue ? '#22C55E' : '#EF4444' }]}>
+            <ThemedText style={[s.driverAmount, { color: isRevenue ? '#5A8A6E' : '#B85C5C' }]}>
               {isRevenue ? '+' : '-'}{formatCurrencyCompact(driver.amount)}
             </ThemedText>
             <View style={[s.badge, { backgroundColor: impactColor + '20' }]}>
@@ -387,20 +387,20 @@ function OverviewTab({
             </View>
             <View style={[s.entitySummaryMetrics, { borderTopColor: colors.border }]}>
               <View style={s.entitySummaryMetric}>
-                <ThemedText style={[s.entityMetricValue, { color: '#22C55E' }]}>
+                <ThemedText style={[s.entityMetricValue, { color: '#5A8A6E' }]}>
                   {formatCurrencyCompact(entity.revenue)}
                 </ThemedText>
                 <ThemedText style={[s.entityMetricLabel, { color: colors.textTertiary }]}>Revenue</ThemedText>
               </View>
               <View style={s.entitySummaryMetric}>
-                <ThemedText style={[s.entityMetricValue, { color: '#EF4444' }]}>
+                <ThemedText style={[s.entityMetricValue, { color: '#B85C5C' }]}>
                   {formatCurrencyCompact(entity.expenses)}
                 </ThemedText>
                 <ThemedText style={[s.entityMetricLabel, { color: colors.textTertiary }]}>Expenses</ThemedText>
               </View>
               <View style={s.entitySummaryMetric}>
                 <ThemedText
-                  style={[s.entityMetricValue, { color: entity.net >= 0 ? '#22C55E' : '#EF4444' }]}
+                  style={[s.entityMetricValue, { color: entity.net >= 0 ? '#5A8A6E' : '#B85C5C' }]}
                 >
                   {entity.net >= 0 ? '+' : '-'}{formatCurrencyCompact(Math.abs(entity.net))}
                 </ThemedText>
@@ -474,7 +474,7 @@ function LedgerTab({
           >
             {/* Top row */}
             <View style={s.ledgerCardTop}>
-              <View style={[s.ledgerTypeDot, { backgroundColor: isCredit ? '#22C55E' : '#EF4444' }]} />
+              <View style={[s.ledgerTypeDot, { backgroundColor: isCredit ? '#5A8A6E' : '#B85C5C' }]} />
               <View style={s.ledgerCardInfo}>
                 <ThemedText style={[s.ledgerDescription, { color: colors.text }]} numberOfLines={2}>
                   {item.description}
@@ -486,11 +486,11 @@ function LedgerTab({
               </View>
               <View style={s.ledgerAmountCol}>
                 <ThemedText
-                  style={[s.ledgerAmount, { color: isCredit ? '#22C55E' : '#EF4444' }]}
+                  style={[s.ledgerAmount, { color: isCredit ? '#5A8A6E' : '#B85C5C' }]}
                 >
                   {isCredit ? '+' : '-'}{formatCurrencyFull(item.amount)}
                 </ThemedText>
-                <ThemedText style={[s.ledgerType, { color: isCredit ? '#22C55E' : '#EF4444' }]}>
+                <ThemedText style={[s.ledgerType, { color: isCredit ? '#5A8A6E' : '#B85C5C' }]}>
                   {isCredit ? 'CREDIT' : 'DEBIT'}
                 </ThemedText>
               </View>
@@ -545,13 +545,13 @@ function LedgerDetailSheet({
       <View style={s.sheetBadgeRow}>
         <TxnStateBadge state={entry.state} />
         <StatusBadge label={entry.category.toUpperCase()} color={catColor} />
-        <StatusBadge label={entry.type.toUpperCase()} color={isCredit ? '#22C55E' : '#EF4444'} />
+        <StatusBadge label={entry.type.toUpperCase()} color={isCredit ? '#5A8A6E' : '#B85C5C'} />
       </View>
 
       {/* Amount KPI */}
       <View style={[s.sheetKpiRow, { borderColor: colors.border }]}>
         <View style={s.sheetKpiItem}>
-          <ThemedText style={[s.sheetKpiValue, { color: isCredit ? '#22C55E' : '#EF4444' }]}>
+          <ThemedText style={[s.sheetKpiValue, { color: isCredit ? '#5A8A6E' : '#B85C5C' }]}>
             {isCredit ? '+' : '-'}{formatCurrencyFull(entry.amount)}
           </ThemedText>
           <ThemedText style={[s.sheetKpiLabel, { color: colors.textTertiary }]}>Amount</ThemedText>
@@ -606,8 +606,8 @@ function LedgerDetailSheet({
 
       {/* Released By */}
       <View style={[s.sheetProvenanceRow, { borderColor: colors.border }]}>
-        <View style={[s.sheetProvenanceIcon, { backgroundColor: '#22C55E' + '15' }]}>
-          <IconSymbol name="arrow.right.circle.fill" size={14} color="#22C55E" />
+        <View style={[s.sheetProvenanceIcon, { backgroundColor: '#5A8A6E' + '15' }]}>
+          <IconSymbol name="arrow.right.circle.fill" size={14} color="#5A8A6E" />
         </View>
         <View style={s.sheetProvenanceMid}>
           <ThemedText style={[s.sheetProvenanceLabel, { color: colors.textSecondary }]}>
@@ -622,8 +622,8 @@ function LedgerDetailSheet({
       {/* Linked Commitment */}
       {entry.commitmentId && (
         <View style={[s.sheetProvenanceRow, { borderColor: colors.border }]}>
-          <View style={[s.sheetProvenanceIcon, { backgroundColor: '#F59E0B' + '15' }]}>
-            <IconSymbol name="link" size={14} color="#F59E0B" />
+          <View style={[s.sheetProvenanceIcon, { backgroundColor: '#B8943E' + '15' }]}>
+            <IconSymbol name="link" size={14} color="#B8943E" />
           </View>
           <View style={s.sheetProvenanceMid}>
             <ThemedText style={[s.sheetProvenanceLabel, { color: colors.textSecondary }]}>
@@ -758,7 +758,7 @@ function BudgetsTab({
                 <ThemedText
                   style={[
                     s.budgetStatValue,
-                    { color: isOver ? '#EF4444' : '#22C55E' },
+                    { color: isOver ? '#B85C5C' : '#5A8A6E' },
                   ]}
                 >
                   {isOver ? '+' : ''}{formatCurrencyCompact(item.variance)}
@@ -771,7 +771,7 @@ function BudgetsTab({
                 <ThemedText
                   style={[
                     s.budgetStatValue,
-                    { color: isOver ? '#EF4444' : '#22C55E' },
+                    { color: isOver ? '#B85C5C' : '#5A8A6E' },
                   ]}
                 >
                   {item.variancePct > 0 ? '+' : ''}{item.variancePct.toFixed(1)}%
@@ -880,8 +880,8 @@ const SCENARIO_LABELS: Record<ForecastScenario, string> = {
 
 const SCENARIO_COLORS: Record<ForecastScenario, string> = {
   base: ACCENT,
-  bull: '#22C55E',
-  bear: '#EF4444',
+  bull: '#5A8A6E',
+  bear: '#B85C5C',
 };
 
 function ForecastTab({
@@ -990,17 +990,17 @@ function ForecastTab({
             <ThemedText style={[s.forecastCell, s.forecastMonthCell, { color: colors.text }]}>
               {item.month}
             </ThemedText>
-            <ThemedText style={[s.forecastCell, s.forecastNumCell, { color: '#22C55E' }]}>
+            <ThemedText style={[s.forecastCell, s.forecastNumCell, { color: '#5A8A6E' }]}>
               {formatCurrencyCompact(item.revenue)}
             </ThemedText>
-            <ThemedText style={[s.forecastCell, s.forecastNumCell, { color: '#EF4444' }]}>
+            <ThemedText style={[s.forecastCell, s.forecastNumCell, { color: '#B85C5C' }]}>
               {formatCurrencyCompact(item.expenses)}
             </ThemedText>
             <ThemedText
               style={[
                 s.forecastCell,
                 s.forecastNumCell,
-                { color: item.net >= 0 ? '#22C55E' : '#EF4444' },
+                { color: item.net >= 0 ? '#5A8A6E' : '#B85C5C' },
               ]}
             >
               {item.net >= 0 ? '+' : ''}{formatCurrencyCompact(item.net)}
@@ -1015,20 +1015,20 @@ function ForecastTab({
           </ThemedText>
           <View style={s.forecastTotalValues}>
             <View style={s.forecastTotalItem}>
-              <ThemedText style={[s.forecastTotalValue, { color: '#22C55E' }]}>
+              <ThemedText style={[s.forecastTotalValue, { color: '#5A8A6E' }]}>
                 {formatCurrencyCompact(totals.revenue)}
               </ThemedText>
               <ThemedText style={[s.forecastTotalMeta, { color: colors.textTertiary }]}>Revenue</ThemedText>
             </View>
             <View style={s.forecastTotalItem}>
-              <ThemedText style={[s.forecastTotalValue, { color: '#EF4444' }]}>
+              <ThemedText style={[s.forecastTotalValue, { color: '#B85C5C' }]}>
                 {formatCurrencyCompact(totals.expenses)}
               </ThemedText>
               <ThemedText style={[s.forecastTotalMeta, { color: colors.textTertiary }]}>Expenses</ThemedText>
             </View>
             <View style={s.forecastTotalItem}>
               <ThemedText
-                style={[s.forecastTotalValue, { color: totals.net >= 0 ? '#22C55E' : '#EF4444' }]}
+                style={[s.forecastTotalValue, { color: totals.net >= 0 ? '#5A8A6E' : '#B85C5C' }]}
               >
                 {totals.net >= 0 ? '+' : ''}{formatCurrencyCompact(totals.net)}
               </ThemedText>

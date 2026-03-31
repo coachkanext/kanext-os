@@ -132,23 +132,23 @@ const PIPELINE_STAGES: string[] = [
 
 function getStatusColor(status: string): string {
   switch (status) {
-    case 'available': return '#22C55E';
-    case 'questionable': case 'day_to_day': return '#F59E0B';
-    case 'injured': case 'out': case 'doubtful': return '#EF4444';
+    case 'available': return '#5A8A6E';
+    case 'questionable': case 'day_to_day': return '#B8943E';
+    case 'injured': case 'out': case 'doubtful': return '#B85C5C';
     case 'redshirt': return accent;
-    default: return '#A1A1AA';
+    default: return '#9C9790';
   }
 }
 
 function getEligibilityColor(s: string): string {
-  switch (s) { case 'clear': return '#22C55E'; case 'pending': return '#F59E0B'; case 'hold': case 'expired': return '#EF4444'; default: return '#A1A1AA'; }
+  switch (s) { case 'clear': return '#5A8A6E'; case 'pending': return '#B8943E'; case 'hold': case 'expired': return '#B85C5C'; default: return '#9C9790'; }
 }
 
 function getGoalIcon(s: string): string {
   switch (s) { case 'complete': return '✓'; case 'in_progress': return '◉'; default: return '○'; }
 }
 function getGoalColor(s: string): string {
-  switch (s) { case 'complete': return '#22C55E'; case 'in_progress': return '#F59E0B'; default: return '#A1A1AA'; }
+  switch (s) { case 'complete': return '#5A8A6E'; case 'in_progress': return '#B8943E'; default: return '#9C9790'; }
 }
 
 // =============================================================================
@@ -160,7 +160,7 @@ function ClusterBar({ clusterKey, value, playerId, jerseyNumber, expanded, onTog
   jerseyNumber?: string; expanded: boolean; onToggle: () => void;
 }) {
   const label = CLUSTER_LABELS[clusterKey as ClusterType]?.label ?? clusterKey;
-  const barColor = value >= 70 ? '#22C55E' : value >= 55 ? '#F59E0B' : '#EF4444';
+  const barColor = value >= 70 ? '#5A8A6E' : value >= 55 ? '#B8943E' : '#B85C5C';
   const pct = Math.min(value, 100);
   const subclusters = expanded
     ? jerseyNumber ? getPlayerSubclusters(jerseyNumber, clusterKey) : getPoolPlayerSubclusters(playerId, clusterKey, value)
@@ -174,7 +174,7 @@ function ClusterBar({ clusterKey, value, playerId, jerseyNumber, expanded, onTog
         <Text style={barStyles.chevron}>{expanded ? '\u25BE' : '\u203A'}</Text>
       </Pressable>
       {expanded && subclusters.map((sc) => {
-        const scColor = sc.rating >= 70 ? '#22C55E' : sc.rating >= 55 ? '#F59E0B' : '#EF4444';
+        const scColor = sc.rating >= 70 ? '#5A8A6E' : sc.rating >= 55 ? '#B8943E' : '#B85C5C';
         return (
           <View key={sc.name} style={barStyles.subRow}>
             <Text style={barStyles.subLabel}>{sc.name}</Text>
@@ -194,7 +194,7 @@ const barStyles = StyleSheet.create({
   barTrack: { flex: 1, height: 8, backgroundColor: '#0B0F14', borderRadius: 4, overflow: 'hidden', marginHorizontal: 8 },
   barFill: { height: '100%', borderRadius: 4 },
   value: { fontSize: 13, fontWeight: '700', width: 28, textAlign: 'right' },
-  chevron: { fontSize: 11, color: '#A1A1AA', width: 16, textAlign: 'center', marginLeft: 2 },
+  chevron: { fontSize: 11, color: '#9C9790', width: 16, textAlign: 'center', marginLeft: 2 },
   subRow: { flexDirection: 'row', alignItems: 'center', paddingLeft: 20, marginBottom: 6 },
   subLabel: { fontSize: 10, color: '#999', width: 100 },
   subBarTrack: { flex: 1, height: 5, backgroundColor: '#222', borderRadius: 3, overflow: 'hidden', marginHorizontal: 6 },
@@ -322,7 +322,7 @@ export function PlayerSheet({
 
   const baseKR = baseKROverride ?? ratings?.overall ?? 0;
   const delta = fitKR - baseKR;
-  const deltaColor = delta > 0 ? '#22C55E' : delta < 0 ? '#EF4444' : '#A1A1AA';
+  const deltaColor = delta > 0 ? '#5A8A6E' : delta < 0 ? '#B85C5C' : '#9C9790';
   const deltaText = delta > 0 ? `+${delta}` : `${delta}`;
   const helioPos = TRADITIONAL_TO_HELIO[player.position];
   const posLabel = HELIO_POSITION_LABELS[helioPos] ?? player.position;
@@ -497,8 +497,8 @@ export function PlayerSheet({
             <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Defense</Text><Text style={[s.statValue, { color: colors.text }]}>{defStyleLabel}</Text></View>
             {krVisibility !== 'hidden' && (<><View style={[s.divider, { backgroundColor: colors.divider }]} /><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Base KR</Text><Text style={[s.statValue, { color: colors.text }]}>{formatKR(baseKR, krVisibility)}</Text></View><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Fit KR</Text><Text style={[s.statValue, { color: deltaColor }]}>{formatKR(fitKR, krVisibility)}</Text></View><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Delta</Text><Text style={[s.statValue, { color: deltaColor }]}>{deltaText}</Text></View></>)}
           </View>
-          {drivers.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>FIT DRIVERS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{drivers.map((d, i) => (<View key={i} style={s.driverRow}><Text style={{ color: '#22C55E', fontSize: 12 }}>▲</Text><Text style={[s.driverText, { color: colors.text }]}>{d.reason}</Text><Text style={{ color: '#22C55E', fontSize: 13, fontWeight: '700' }}>+{d.delta}</Text></View>))}</View></>)}
-          {risks.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>FIT RISKS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{risks.map((r, i) => (<View key={i} style={s.driverRow}><Text style={{ color: '#EF4444', fontSize: 12 }}>▼</Text><Text style={[s.driverText, { color: colors.text }]}>{r.reason}</Text><Text style={{ color: '#EF4444', fontSize: 13, fontWeight: '700' }}>{r.delta}</Text></View>))}</View></>)}
+          {drivers.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>FIT DRIVERS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{drivers.map((d, i) => (<View key={i} style={s.driverRow}><Text style={{ color: '#5A8A6E', fontSize: 12 }}>▲</Text><Text style={[s.driverText, { color: colors.text }]}>{d.reason}</Text><Text style={{ color: '#5A8A6E', fontSize: 13, fontWeight: '700' }}>+{d.delta}</Text></View>))}</View></>)}
+          {risks.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>FIT RISKS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{risks.map((r, i) => (<View key={i} style={s.driverRow}><Text style={{ color: '#B85C5C', fontSize: 12 }}>▼</Text><Text style={[s.driverText, { color: colors.text }]}>{r.reason}</Text><Text style={{ color: '#B85C5C', fontSize: 13, fontWeight: '700' }}>{r.delta}</Text></View>))}</View></>)}
           <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>USAGE + ROLE</Text>
           <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>
             <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Archetype</Text><Text style={[s.statValue, { color: colors.text }]}>{archetypeLabel}</Text></View>
@@ -536,13 +536,13 @@ export function PlayerSheet({
             <Text style={[s.healthNote, { color: colors.textSecondary }]}>{health.statusNote}</Text>
           </View>
           {health.timeline.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>TIMELINE</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{health.timeline.map((t, i) => (<View key={i} style={[s.timelineRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={[s.timelineDate, { color: colors.textTertiary }]}>{t.date}</Text><Text style={[s.timelineEvent, { color: colors.text }]}>{t.event}</Text></View>))}</View></>)}
-          {health.restrictions.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>RESTRICTIONS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{health.restrictions.map((r, i) => (<Text key={i} style={{ fontSize: 13, color: '#EF4444', marginBottom: 4 }}>• {r}</Text>))}</View></>)}
-          {health.returnCheckpoints.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>RETURN-TO-PLAY</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{health.returnCheckpoints.map((cp, i) => (<View key={i} style={[s.checkpointRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={{ fontSize: 14, width: 18, textAlign: 'center', color: cp.completed ? '#22C55E' : colors.textTertiary }}>{cp.completed ? '✓' : '○'}</Text><Text style={[{ fontSize: 13, flex: 1 }, { color: colors.text }]}>{cp.label}</Text>{cp.date && <Text style={{ fontSize: 11, color: colors.textTertiary }}>{cp.date}</Text>}</View>))}</View></>)}
+          {health.restrictions.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>RESTRICTIONS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{health.restrictions.map((r, i) => (<Text key={i} style={{ fontSize: 13, color: '#B85C5C', marginBottom: 4 }}>• {r}</Text>))}</View></>)}
+          {health.returnCheckpoints.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>RETURN-TO-PLAY</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{health.returnCheckpoints.map((cp, i) => (<View key={i} style={[s.checkpointRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={{ fontSize: 14, width: 18, textAlign: 'center', color: cp.completed ? '#5A8A6E' : colors.textTertiary }}>{cp.completed ? '✓' : '○'}</Text><Text style={[{ fontSize: 13, flex: 1 }, { color: colors.text }]}>{cp.label}</Text>{cp.date && <Text style={{ fontSize: 11, color: colors.textTertiary }}>{cp.date}</Text>}</View>))}</View></>)}
           <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>7-DAY PRACTICE</Text>
           <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>
             <View style={s.practiceRow}>
               {health.practiceAvailability.map((d, i) => {
-                const pColor = d.status === 'full' ? '#22C55E' : d.status === 'limited' ? '#F59E0B' : d.status === 'rest' ? accent : '#EF4444';
+                const pColor = d.status === 'full' ? '#5A8A6E' : d.status === 'limited' ? '#B8943E' : d.status === 'rest' ? accent : '#B85C5C';
                 return (<View key={i} style={s.practiceDay}><Text style={[s.practiceDayLabel, { color: colors.textTertiary }]}>{d.day}</Text><View style={[s.practiceDot, { backgroundColor: pColor }]} /><Text style={[s.practiceDayStatus, { color: pColor }]}>{d.status}</Text></View>);
               })}
             </View>
@@ -561,7 +561,7 @@ export function PlayerSheet({
           <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Status</Text><Text style={[s.statValue, { color: colors.text }]}>{admin.nil.status}</Text></View><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Deals</Text><Text style={[s.statValue, { color: colors.text }]}>{admin.nil.dealCount}</Text></View><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Value Band</Text><Text style={[s.statValue, { color: colors.text }]}>{admin.nil.valueBand}</Text></View>{admin.nil.topDeal && <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Top Deal</Text><Text style={[s.statValue, { color: colors.text }]}>{admin.nil.topDeal}</Text></View>}</View>
           <Text style={[s.sectionLabel, { color: colors.textTertiary }]}>ACADEMICS</Text>
           <View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>GPA</Text><Text style={[s.statValue, { color: colors.text }]}>{admin.gpa.toFixed(1)}</Text></View></View>
-          {admin.complianceHolds.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>COMPLIANCE HOLDS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{admin.complianceHolds.map((h, i) => (<View key={h.id} style={[s.holdRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><View style={[s.holdDot, { backgroundColor: h.severity === 'high' ? '#EF4444' : h.severity === 'medium' ? '#F59E0B' : '#22C55E' }]} /><View style={{ flex: 1 }}><Text style={[{ fontSize: 13 }, { color: colors.text }]}>{h.label}</Text><Text style={{ fontSize: 11, marginTop: 1, color: colors.textTertiary }}>{h.date}</Text></View><Text style={{ fontSize: 11, fontWeight: '600', color: h.resolved ? '#22C55E' : '#EF4444' }}>{h.resolved ? 'Resolved' : 'Active'}</Text></View>))}</View></>)}
+          {admin.complianceHolds.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>COMPLIANCE HOLDS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{admin.complianceHolds.map((h, i) => (<View key={h.id} style={[s.holdRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><View style={[s.holdDot, { backgroundColor: h.severity === 'high' ? '#B85C5C' : h.severity === 'medium' ? '#B8943E' : '#5A8A6E' }]} /><View style={{ flex: 1 }}><Text style={[{ fontSize: 13 }, { color: colors.text }]}>{h.label}</Text><Text style={{ fontSize: 11, marginTop: 1, color: colors.textTertiary }}>{h.date}</Text></View><Text style={{ fontSize: 11, fontWeight: '600', color: h.resolved ? '#5A8A6E' : '#B85C5C' }}>{h.resolved ? 'Resolved' : 'Active'}</Text></View>))}</View></>)}
         </View>
       )}
 
@@ -575,7 +575,7 @@ export function PlayerSheet({
                 {PIPELINE_STAGES.map((stage, i) => {
                   const isActive = boardEntry.status === stage;
                   const isPast = PIPELINE_STAGES.indexOf(boardEntry.status) > i;
-                  const color = isActive ? (BOARD_COLUMN_COLORS as any)[stage] ?? '#FFF' : isPast ? '#22C55E' : '#333';
+                  const color = isActive ? (BOARD_COLUMN_COLORS as any)[stage] ?? '#FFF' : isPast ? '#5A8A6E' : '#333';
                   return (<View key={stage} style={s.pipelineStage}><View style={[s.pipelineDot, { backgroundColor: color }]} /><Text style={[s.pipelineLabel, { color: isActive ? '#FFF' : '#666' }]}>{stage}</Text></View>);
                 })}
               </ScrollView>
@@ -589,7 +589,7 @@ export function PlayerSheet({
               {boardEntry.nextStep && <View style={s.statRow}><Text style={[s.statLabel, { color: colors.textSecondary }]}>Next Step</Text><Text style={[s.statValue, { color: colors.text }]}>{boardEntry.nextStep}</Text></View>}
             </View>
             {boardEntry.shortNotes ? <><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>NOTES</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><Text style={[s.aboutText, { color: colors.textSecondary }]}>{boardEntry.shortNotes}</Text></View></> : null}
-            {commsEntries.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>COMMS TIMELINE</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{commsEntries.slice(0, 5).map((c, i) => { const meta = COMMS_TYPE_META[c.type]; return (<View key={i} style={[s.commsRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><View style={[s.commsDot, { backgroundColor: meta?.color ?? '#A1A1AA' }]} /><View style={{ flex: 1 }}><Text style={[s.commsMethod, { color: colors.text }]}>{c.type.replace(/_/g, ' ')}</Text><Text style={[s.commsNote, { color: colors.textSecondary }]} numberOfLines={2}>{c.body}</Text></View><Text style={[s.commsDate, { color: colors.textTertiary }]}>{c.timestamp.toLocaleDateString()}</Text></View>); })}</View></>)}
+            {commsEntries.length > 0 && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>COMMS TIMELINE</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}>{commsEntries.slice(0, 5).map((c, i) => { const meta = COMMS_TYPE_META[c.type]; return (<View key={i} style={[s.commsRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}><View style={[s.commsDot, { backgroundColor: meta?.color ?? '#9C9790' }]} /><View style={{ flex: 1 }}><Text style={[s.commsMethod, { color: colors.text }]}>{c.type.replace(/_/g, ' ')}</Text><Text style={[s.commsNote, { color: colors.textSecondary }]} numberOfLines={2}>{c.body}</Text></View><Text style={[s.commsDate, { color: colors.textTertiary }]}>{c.timestamp.toLocaleDateString()}</Text></View>); })}</View></>)}
             {adminActions && onMoveOnBoard && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>BOARD ACTIONS</Text><View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.boardActionRow}>{BOARD_COLUMNS.filter((st) => st !== boardEntry.status).slice(0, 4).map((st) => (<Pressable key={st} style={[s.boardActionPill, { borderColor: (BOARD_COLUMN_COLORS as any)[st] ?? colors.border }]} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onMoveOnBoard(boardEntry.id, st); }}><Text style={[s.boardActionText, { color: (BOARD_COLUMN_COLORS as any)[st] ?? colors.text }]}>{st}</Text></Pressable>))}</ScrollView>{onRemoveFromBoard && (<Pressable style={s.removeBtn} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); onRemoveFromBoard(boardEntry.id); }}><Text style={s.removeBtnText}>Remove from Board</Text></Pressable>)}</View></>)}
           </>) : (<View style={[s.card, { backgroundColor: colors.backgroundSecondary }]}><Text style={[s.emptyText, { color: colors.textSecondary }]}>Not on recruiting board.</Text></View>)}
           {coachActions && (<><Text style={[s.sectionLabel, { color: colors.textTertiary }]}>COACH NOTE</Text><TextInput style={[s.noteInput, { backgroundColor: colors.backgroundSecondary, color: colors.text, borderColor: colors.border }]} value={coachNote} onChangeText={onCoachNoteChange} placeholder="Add recruiting notes..." placeholderTextColor={colors.textTertiary} multiline /></>)}
@@ -621,7 +621,7 @@ const s = StyleSheet.create({
   deltaText: { fontSize: 13, fontWeight: '700' },
   badgeStrip: { flexDirection: 'row', gap: 6, marginTop: 8, flexWrap: 'wrap' },
   badgeStripPill: { borderLeftWidth: 3, paddingLeft: 8, paddingVertical: 3, backgroundColor: '#0B0F14', borderRadius: 6, paddingRight: 10 },
-  badgeStripName: { fontSize: 11, fontWeight: '600', color: '#A1A1AA' },
+  badgeStripName: { fontSize: 11, fontWeight: '600', color: '#9C9790' },
   badgeStripOverflow: { paddingHorizontal: 8, paddingVertical: 3, backgroundColor: '#222', borderRadius: 6 },
   badgeStripOverflowText: { fontSize: 11, fontWeight: '600', color: '#888' },
   quickActions: { flexDirection: 'row', gap: 8, marginTop: 10 },
@@ -672,7 +672,7 @@ const s = StyleSheet.create({
   priorityRow: { paddingVertical: 8 },
   priorityCluster: { fontSize: 13, fontWeight: '600' },
   priorityDesc: { fontSize: 12, marginTop: 2 },
-  priorityDelta: { fontSize: 12, fontWeight: '600', marginTop: 2, color: '#22C55E' },
+  priorityDelta: { fontSize: 12, fontWeight: '600', marginTop: 2, color: '#5A8A6E' },
   checkinRow: { paddingVertical: 8 },
   checkinDate: { fontSize: 11, marginBottom: 2 },
   checkinNote: { fontSize: 13, lineHeight: 19 },
@@ -705,6 +705,6 @@ const s = StyleSheet.create({
   boardActionRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
   boardActionPill: { paddingHorizontal: 12, paddingVertical: 7, borderRadius: 12, borderWidth: 1, backgroundColor: '#0B0F14' },
   boardActionText: { fontSize: 12, fontWeight: '600' },
-  removeBtn: { alignItems: 'center', paddingVertical: 10, borderRadius: 10, backgroundColor: '#EF444415' },
-  removeBtnText: { fontSize: 13, fontWeight: '600', color: '#EF4444' },
+  removeBtn: { alignItems: 'center', paddingVertical: 10, borderRadius: 10, backgroundColor: '#B85C5C15' },
+  removeBtnText: { fontSize: 13, fontWeight: '600', color: '#B85C5C' },
 });

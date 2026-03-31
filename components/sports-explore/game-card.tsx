@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   liveBadge: {
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
   },
   badgeText: {
     fontSize: 9,

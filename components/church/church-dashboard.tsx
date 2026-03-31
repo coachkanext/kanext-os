@@ -135,13 +135,13 @@ interface TodayItem {
 const TODAY_STAFF: TodayItem[] = [
   { id: 'ts-1', title: 'Staff Prayer Meeting', badge: 'DAILY', badgeColor: ACCENT, owner: 'Pastoral Team', time: '8:00 AM', location: 'Room 201' },
   { id: 'ts-2', title: 'Worship Rehearsal', badge: 'REHEARSAL', badgeColor: ACCENT, owner: 'Praise Team', time: '4:00 PM', location: 'Sanctuary', prepRequired: true, volunteerGaps: 1 },
-  { id: 'ts-3', title: 'Facilities Setup', badgeColor: '#F59E0B', owner: 'Operations', time: '5:00 PM', location: 'Main Campus' },
+  { id: 'ts-3', title: 'Facilities Setup', badgeColor: '#B8943E', owner: 'Operations', time: '5:00 PM', location: 'Main Campus' },
   { id: 'ts-4', title: 'Marriage Counseling \u2014 Jones Family', badge: 'PASTORAL', badgeColor: ACCENT, owner: 'Pastor Williams', time: '6:00 PM', location: 'Office 104' },
-  { id: 'ts-5', title: 'Elder Board Call', badge: 'LEADERSHIP', badgeColor: '#EF4444', owner: 'Elder Board', time: '7:00 PM', location: 'Zoom' },
+  { id: 'ts-5', title: 'Elder Board Call', badge: 'LEADERSHIP', badgeColor: '#B85C5C', owner: 'Elder Board', time: '7:00 PM', location: 'Zoom' },
 ];
 
 const TODAY_MEMBER: TodayItem[] = [
-  { id: 'tm-1', title: 'Small Group \u2014 West Side', badge: 'GROUP', badgeColor: '#22C55E', owner: 'Michael Chen', time: '7:00 PM', location: 'Chen Home' },
+  { id: 'tm-1', title: 'Small Group \u2014 West Side', badge: 'GROUP', badgeColor: '#5A8A6E', owner: 'Michael Chen', time: '7:00 PM', location: 'Chen Home' },
   { id: 'tm-2', title: 'Serve: Parking Team', badge: 'SERVE', badgeColor: ACCENT, owner: 'Operations Ministry', time: 'Sunday 9:00 AM', location: 'Lot B' },
   { id: 'tm-3', title: 'Youth Bible Study', badge: 'WEEKLY', badgeColor: ACCENT, owner: 'Youth Ministry', time: '6:30 PM', location: 'Youth Room' },
 ];
@@ -167,7 +167,7 @@ const NEXT_EVENT_STAFF: NextEvent = {
   countdown: '4 days',
   countdownHours: 96,
   readiness: 'At Risk',
-  readinessColor: '#F59E0B',
+  readinessColor: '#B8943E',
 };
 
 const NEXT_EVENT_MEMBER: NextEvent = {
@@ -177,7 +177,7 @@ const NEXT_EVENT_MEMBER: NextEvent = {
   countdown: '4 days',
   countdownHours: 96,
   readiness: 'Confirmed',
-  readinessColor: '#22C55E',
+  readinessColor: '#5A8A6E',
 };
 
 const NEXT_EVENT_VISITOR: NextEvent = {
@@ -248,9 +248,9 @@ const READINESS_STATUS_ICON: Record<string, string> = {
 };
 
 const READINESS_STATUS_COLOR: Record<string, string> = {
-  ready: '#22C55E',
-  pending: '#F59E0B',
-  issue: '#EF4444',
+  ready: '#5A8A6E',
+  pending: '#B8943E',
+  issue: '#B85C5C',
 };
 
 // Service times data for C4/C5 views
@@ -348,8 +348,8 @@ function sortAlerts(alerts: AlertItem[]): AlertItem[] {
 }
 
 const ALERT_LEVEL_COLOR: Record<AlertLevel, string> = {
-  red: '#EF4444',
-  amber: '#F59E0B',
+  red: '#B85C5C',
+  amber: '#B8943E',
   blue: ACCENT,
 };
 
@@ -413,8 +413,8 @@ const FEED_POSTS: FeedPost[] = [
 const FEED_TYPE_COLOR: Record<string, string> = {
   announcement: ACCENT,
   devotional: ACCENT,
-  update: '#22C55E',
-  ministry: '#F59E0B',
+  update: '#5A8A6E',
+  ministry: '#B8943E',
   prayer: ACCENT,
   event: ACCENT,
 };
@@ -467,10 +467,10 @@ function sortPinned(items: PinnedItem[]): PinnedItem[] {
 const PINNED_TYPE_COLOR: Record<PinnedType, string> = {
   'ministry': ACCENT,
   'service-plan': ACCENT,
-  'worship-plan': '#F59E0B',
-  'kids-curriculum': '#22C55E',
+  'worship-plan': '#B8943E',
+  'kids-curriculum': '#5A8A6E',
   'volunteer-roster': ACCENT,
-  'facility-checklist': '#EF4444',
+  'facility-checklist': '#B85C5C',
   'prayer-list': ACCENT,
 };
 
@@ -512,8 +512,8 @@ const sh = StyleSheet.create({
 // =============================================================================
 
 const HERO_BADGE_COLOR: Record<HeroBadge, string> = {
-  LIVE: '#EF4444',
-  NEW: '#22C55E',
+  LIVE: '#B85C5C',
+  NEW: '#5A8A6E',
   REPLAY: ACCENT,
 };
 
@@ -651,7 +651,7 @@ function WeeklyThemeBlock({ colors }: { colors: typeof Colors.light }) {
 
         {/* Memory verse */}
         <View style={s.verseContainer}>
-          <IconSymbol name="text.quote" size={14} color="#F59E0B" />
+          <IconSymbol name="text.quote" size={14} color="#B8943E" />
           <View style={s.verseTextBlock}>
             <ThemedText style={[s.verseText, { color: colors.text }]} numberOfLines={3}>
               {'\u201C'}{MEMORY_VERSE.text}{'\u201D'}
@@ -687,7 +687,7 @@ function WeeklyThemeBlock({ colors }: { colors: typeof Colors.light }) {
         ]}
         onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
       >
-        <IconSymbol name="sun.max.fill" size={16} color="#F59E0B" />
+        <IconSymbol name="sun.max.fill" size={16} color="#B8943E" />
         <ThemedText style={[s.devoCTAText, { color: colors.text }]}>Daily Devotional</ThemedText>
         <IconSymbol name="chevron.right" size={12} color={colors.textSecondary} />
       </Pressable>
@@ -745,13 +745,13 @@ function TodayNextBlock({ colors, role }: { colors: typeof Colors.light; role: C
               {(item.prepRequired || (item.volunteerGaps != null && item.volunteerGaps > 0)) && (
                 <View style={s.todayFlagsRow}>
                   {item.prepRequired && (
-                    <View style={[s.todayFlag, { backgroundColor: '#F59E0B20' }]}>
-                      <ThemedText style={[s.todayFlagText, { color: '#F59E0B' }]}>PREP</ThemedText>
+                    <View style={[s.todayFlag, { backgroundColor: '#B8943E20' }]}>
+                      <ThemedText style={[s.todayFlagText, { color: '#B8943E' }]}>PREP</ThemedText>
                     </View>
                   )}
                   {item.volunteerGaps != null && item.volunteerGaps > 0 && (
-                    <View style={[s.todayFlag, { backgroundColor: '#EF444420' }]}>
-                      <ThemedText style={[s.todayFlagText, { color: '#EF4444' }]}>{item.volunteerGaps} GAP</ThemedText>
+                    <View style={[s.todayFlag, { backgroundColor: '#B85C5C20' }]}>
+                      <ThemedText style={[s.todayFlagText, { color: '#B85C5C' }]}>{item.volunteerGaps} GAP</ThemedText>
                     </View>
                   )}
                 </View>
@@ -856,7 +856,7 @@ function ServiceReadinessBlock({ colors, role }: { colors: typeof Colors.light; 
           style={({ pressed }) => [s.devoCTA, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 }]}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
         >
-          <IconSymbol name="hands.sparkles.fill" size={16} color="#22C55E" />
+          <IconSymbol name="hands.sparkles.fill" size={16} color="#5A8A6E" />
           <ThemedText style={[s.devoCTAText, { color: colors.text }]}>How to Serve</ThemedText>
           <IconSymbol name="chevron.right" size={12} color={colors.textSecondary} />
         </Pressable>
@@ -865,7 +865,7 @@ function ServiceReadinessBlock({ colors, role }: { colors: typeof Colors.light; 
   }
 
   // C0-C6 — full readiness view (staff level)
-  const scoreColor = READINESS_SCORE >= 80 ? '#22C55E' : READINESS_SCORE >= 60 ? '#F59E0B' : '#EF4444';
+  const scoreColor = READINESS_SCORE >= 80 ? '#5A8A6E' : READINESS_SCORE >= 60 ? '#B8943E' : '#B85C5C';
 
   // C3-C6: only show teams they're assigned to (filter mock — show first 3)
   const visibleTeams = (isStaffLevel(role) && !isElderLevel(role)) ? VOLUNTEER_COVERAGE.slice(0, 3) : VOLUNTEER_COVERAGE;
@@ -917,7 +917,7 @@ function ServiceReadinessBlock({ colors, role }: { colors: typeof Colors.light; 
         </ThemedText>
         {visibleTeams.map((team, idx) => {
           const full = team.filled >= team.required;
-          const teamColor = full ? '#22C55E' : '#EF4444';
+          const teamColor = full ? '#5A8A6E' : '#B85C5C';
           return (
             <View
               key={team.id}
@@ -1057,7 +1057,7 @@ function MinistryPulseBlock({ colors, role, onSwitchTab }: { colors: typeof Colo
               <IconSymbol
                 name={team.trend === 'up' ? 'arrow.up.right' : team.trend === 'down' ? 'arrow.down.right' : ('arrow.right' as any)}
                 size={14}
-                color={team.trend === 'up' ? '#22C55E' : team.trend === 'down' ? '#EF4444' : colors.textSecondary}
+                color={team.trend === 'up' ? '#5A8A6E' : team.trend === 'down' ? '#B85C5C' : colors.textSecondary}
               />
             </View>
           ))}
@@ -1096,10 +1096,10 @@ function MinistryPulseBlock({ colors, role, onSwitchTab }: { colors: typeof Colo
                 <IconSymbol
                   name={kpi.trendUp ? 'arrow.up.right' : ('arrow.down.right' as any)}
                   size={9}
-                  color={kpi.trendUp ? '#22C55E' : '#EF4444'}
+                  color={kpi.trendUp ? '#5A8A6E' : '#B85C5C'}
                 />
                 <ThemedText
-                  style={[s.kpiTrendText, { color: kpi.trendUp ? '#22C55E' : '#EF4444' }]}
+                  style={[s.kpiTrendText, { color: kpi.trendUp ? '#5A8A6E' : '#B85C5C' }]}
                 >
                   {kpi.trend}
                 </ThemedText>
@@ -1139,7 +1139,7 @@ function MinistryPulseBlock({ colors, role, onSwitchTab }: { colors: typeof Colo
             <IconSymbol
               name={ministry.trend === 'up' ? 'arrow.up.right' : ministry.trend === 'down' ? 'arrow.down.right' : ('arrow.right' as any)}
               size={14}
-              color={ministry.trend === 'up' ? '#22C55E' : ministry.trend === 'down' ? '#EF4444' : colors.textSecondary}
+              color={ministry.trend === 'up' ? '#5A8A6E' : ministry.trend === 'down' ? '#B85C5C' : colors.textSecondary}
             />
           </View>
         ))}
@@ -1322,7 +1322,7 @@ function PinnedShelfBlock({ colors }: { colors: typeof Colors.light }) {
                 s.pinnedCard,
                 {
                   backgroundColor: colors.card,
-                  borderColor: item.isBlocker ? '#EF4444' : colors.border,
+                  borderColor: item.isBlocker ? '#B85C5C' : colors.border,
                   borderWidth: item.isBlocker ? 1.5 : StyleSheet.hairlineWidth,
                   opacity: pressed ? 0.7 : 1,
                 },
@@ -1666,7 +1666,7 @@ const s = StyleSheet.create({
     position: 'absolute',
     top: 4,
     right: 4,
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
     paddingHorizontal: 4,
     paddingVertical: 1,
     borderRadius: BorderRadius.sm,

@@ -39,10 +39,10 @@ function getRequestTypeLabel(type: RequestType): string {
 
 function getRequestTypeColor(type: RequestType): string {
   switch (type) {
-    case 'recruit_inbound': return '#22C55E';
-    case 'parent_inbound': return '#1D9BF0';
-    case 'unknown_contact': return '#A1A1AA';
-    case 'scout_inquiry': return '#F59E0B';
+    case 'recruit_inbound': return '#5A8A6E';
+    case 'parent_inbound': return '#1A1714';
+    case 'unknown_contact': return '#9C9790';
+    case 'scout_inquiry': return '#B8943E';
   }
 }
 

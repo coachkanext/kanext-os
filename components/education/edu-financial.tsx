@@ -108,11 +108,11 @@ interface RevenueSource {
 
 const REVENUE_SOURCES: RevenueSource[] = [
   { id: 'rev-1', source: 'Tuition & Fees', amount: '$128.4M', percentage: 51.6, change: '+4.2%', color: ACCENT },
-  { id: 'rev-2', source: 'State Appropriations', amount: '$38.2M', percentage: 15.4, change: '+2.1%', color: '#22C55E' },
+  { id: 'rev-2', source: 'State Appropriations', amount: '$38.2M', percentage: 15.4, change: '+2.1%', color: '#5A8A6E' },
   { id: 'rev-3', source: 'Research Grants', amount: '$32.8M', percentage: 13.2, change: '+12.4%', color: ACCENT },
-  { id: 'rev-4', source: 'Auxiliary Services', amount: '$22.6M', percentage: 9.1, change: '+1.8%', color: '#F59E0B' },
+  { id: 'rev-4', source: 'Auxiliary Services', amount: '$22.6M', percentage: 9.1, change: '+1.8%', color: '#B8943E' },
   { id: 'rev-5', source: 'Endowment Income', amount: '$14.2M', percentage: 5.7, change: '+8.4%', color: ACCENT },
-  { id: 'rev-6', source: 'Gifts & Donations', amount: '$8.4M', percentage: 3.4, change: '-2.1%', color: '#F59E0B' },
+  { id: 'rev-6', source: 'Gifts & Donations', amount: '$8.4M', percentage: 3.4, change: '-2.1%', color: '#B8943E' },
   { id: 'rev-7', source: 'Athletics Revenue', amount: '$4.0M', percentage: 1.6, change: '+15.2%', color: ACCENT },
 ];
 
@@ -131,12 +131,12 @@ interface ExpenseCategory {
 const EXPENSE_CATEGORIES: ExpenseCategory[] = [
   { id: 'exp-1', category: 'Instruction', amount: '$82.4M', percentage: 35.2, budgeted: '$84.0M', variance: '-$1.6M', color: ACCENT },
   { id: 'exp-2', category: 'Research', amount: '$28.6M', percentage: 12.2, budgeted: '$27.0M', variance: '+$1.6M', color: ACCENT },
-  { id: 'exp-3', category: 'Student Services', amount: '$24.8M', percentage: 10.6, budgeted: '$25.0M', variance: '-$0.2M', color: '#22C55E' },
-  { id: 'exp-4', category: 'Institutional Support', amount: '$22.2M', percentage: 9.5, budgeted: '$22.5M', variance: '-$0.3M', color: '#F59E0B' },
+  { id: 'exp-3', category: 'Student Services', amount: '$24.8M', percentage: 10.6, budgeted: '$25.0M', variance: '-$0.2M', color: '#5A8A6E' },
+  { id: 'exp-4', category: 'Institutional Support', amount: '$22.2M', percentage: 9.5, budgeted: '$22.5M', variance: '-$0.3M', color: '#B8943E' },
   { id: 'exp-5', category: 'Academic Support', amount: '$18.4M', percentage: 7.9, budgeted: '$18.0M', variance: '+$0.4M', color: ACCENT },
-  { id: 'exp-6', category: 'Athletics', amount: '$18.2M', percentage: 7.8, budgeted: '$18.0M', variance: '+$0.2M', color: '#F59E0B' },
+  { id: 'exp-6', category: 'Athletics', amount: '$18.2M', percentage: 7.8, budgeted: '$18.0M', variance: '+$0.2M', color: '#B8943E' },
   { id: 'exp-7', category: 'Facilities & Maintenance', amount: '$16.8M', percentage: 7.2, budgeted: '$16.5M', variance: '+$0.3M', color: ACCENT },
-  { id: 'exp-8', category: 'Financial Aid (Institutional)', amount: '$14.6M', percentage: 6.2, budgeted: '$14.8M', variance: '-$0.2M', color: '#22C55E' },
+  { id: 'exp-8', category: 'Financial Aid (Institutional)', amount: '$14.6M', percentage: 6.2, budgeted: '$14.8M', variance: '-$0.2M', color: '#5A8A6E' },
   { id: 'exp-9', category: 'Debt Service', amount: '$8.1M', percentage: 3.4, budgeted: '$8.1M', variance: '$0.0M', color: ACCENT },
 ];
 
@@ -185,8 +185,8 @@ const AID_DISBURSEMENTS: AidDisbursement[] = [
 ];
 
 const AID_STATUS_COLOR: Record<string, string> = {
-  disbursed: '#22C55E',
-  pending: '#F59E0B',
+  disbursed: '#5A8A6E',
+  pending: '#B8943E',
   processing: ACCENT,
 };
 
@@ -232,10 +232,10 @@ const AUDIT_LOG: AuditItem[] = [
 ];
 
 const AUDIT_STATUS_COLOR: Record<string, string> = {
-  completed: '#22C55E',
+  completed: '#5A8A6E',
   in_progress: ACCENT,
   scheduled: ACCENT,
-  pending: '#F59E0B',
+  pending: '#B8943E',
 };
 
 // --- Financial Health KPIs (for Overview) ---
@@ -249,7 +249,7 @@ const FINANCIAL_HEALTH = [
   { id: 'fh-6', label: 'Debt Coverage', value: '2.1x', target: '1.5x+', status: 'good' as const },
 ];
 
-const HEALTH_STATUS_COLOR: Record<string, string> = { good: '#22C55E', warning: '#F59E0B', critical: '#EF4444' };
+const HEALTH_STATUS_COLOR: Record<string, string> = { good: '#5A8A6E', warning: '#B8943E', critical: '#B85C5C' };
 
 // --- Payment Plans (for Student Accounts) ---
 
@@ -358,7 +358,7 @@ function BudgetOverviewBlock({ colors, role }: { colors: typeof Colors.light; ro
             <ThemedText style={[s.budgetLabel, { color: colors.textSecondary }]}>Expenses</ThemedText>
           </View>
           <View style={s.budgetStat}>
-            <ThemedText style={[s.budgetValue, { color: '#22C55E' }]}>{BUDGET.netPosition}</ThemedText>
+            <ThemedText style={[s.budgetValue, { color: '#5A8A6E' }]}>{BUDGET.netPosition}</ThemedText>
             <ThemedText style={[s.budgetLabel, { color: colors.textSecondary }]}>Net Position</ThemedText>
           </View>
           <View style={s.budgetStat}>
@@ -420,7 +420,7 @@ function RevenueSources({ colors, role }: { colors: typeof Colors.light; role: E
             </View>
             <View style={s.revenueRight}>
               <ThemedText style={[s.revenueAmount, { color: colors.text }]}>{src.amount}</ThemedText>
-              <ThemedText style={[s.revenueChange, { color: src.change.startsWith('+') ? '#22C55E' : '#EF4444' }]}>
+              <ThemedText style={[s.revenueChange, { color: src.change.startsWith('+') ? '#5A8A6E' : '#B85C5C' }]}>
                 {src.change}
               </ThemedText>
             </View>
@@ -441,7 +441,7 @@ function ExpenseCategoriesBlock({ colors, role }: { colors: typeof Colors.light;
       <SectionHeader title="EXPENSE CATEGORIES" colors={colors} count={EXPENSE_CATEGORIES.length} />
       <Card colors={colors}>
         {EXPENSE_CATEGORIES.map((exp, idx) => {
-          const varianceColor = exp.variance.startsWith('+') ? '#F59E0B' : exp.variance === '$0.0M' ? '#22C55E' : '#22C55E';
+          const varianceColor = exp.variance.startsWith('+') ? '#B8943E' : exp.variance === '$0.0M' ? '#5A8A6E' : '#5A8A6E';
           return (
             <View
               key={exp.id}
@@ -572,7 +572,7 @@ function ScholarshipFundsBlock({ colors, role }: { colors: typeof Colors.light; 
               </View>
               <View style={s.fundBarContainer}>
                 <View style={[s.fundBarBg, { backgroundColor: colors.backgroundTertiary }]}>
-                  <View style={[s.fundBarFill, { width: `${fund.utilizationPct}%`, backgroundColor: fund.utilizationPct >= 85 ? '#EF4444' : fund.utilizationPct >= 70 ? '#F59E0B' : '#22C55E' }]} />
+                  <View style={[s.fundBarFill, { width: `${fund.utilizationPct}%`, backgroundColor: fund.utilizationPct >= 85 ? '#B85C5C' : fund.utilizationPct >= 70 ? '#B8943E' : '#5A8A6E' }]} />
                 </View>
                 <ThemedText style={[s.fundPct, { color: colors.textSecondary }]}>
                   {fund.utilizationPct}% utilized
@@ -613,7 +613,7 @@ function AuditStatusBlock({ colors, role }: { colors: typeof Colors.light; role:
                 {audit.period} {'\u00B7'} {audit.auditor}
               </ThemedText>
               {audit.findings > 0 && (
-                <ThemedText style={[s.auditFindings, { color: '#F59E0B' }]}>
+                <ThemedText style={[s.auditFindings, { color: '#B8943E' }]}>
                   {audit.findings} finding(s)
                 </ThemedText>
               )}
@@ -635,8 +635,8 @@ function AuditStatusBlock({ colors, role }: { colors: typeof Colors.light; role:
 // =============================================================================
 
 function StudentAccountBlock({ colors, role }: { colors: typeof Colors.light; role: EducationRoleLens }) {
-  const balanceColor = STUDENT_ACCOUNT.balanceStatus === 'overdue' ? '#EF4444' :
-    STUDENT_ACCOUNT.balanceStatus === 'credit' ? '#22C55E' : colors.text;
+  const balanceColor = STUDENT_ACCOUNT.balanceStatus === 'overdue' ? '#B85C5C' :
+    STUDENT_ACCOUNT.balanceStatus === 'credit' ? '#5A8A6E' : colors.text;
 
   return (
     <View style={s.moduleContainer}>
@@ -678,11 +678,11 @@ function StudentAccountBlock({ colors, role }: { colors: typeof Colors.light; ro
         <ThemedText style={[s.accountSubheading, { color: colors.text }]}>Credits</ThemedText>
         <View style={s.accountLine}>
           <ThemedText style={[s.accountLineLabel, { color: colors.textSecondary }]}>Financial Aid</ThemedText>
-          <ThemedText style={[s.accountLineValue, { color: '#22C55E' }]}>{STUDENT_ACCOUNT.aidApplied}</ThemedText>
+          <ThemedText style={[s.accountLineValue, { color: '#5A8A6E' }]}>{STUDENT_ACCOUNT.aidApplied}</ThemedText>
         </View>
         <View style={s.accountLine}>
           <ThemedText style={[s.accountLineLabel, { color: colors.textSecondary }]}>Payments</ThemedText>
-          <ThemedText style={[s.accountLineValue, { color: '#22C55E' }]}>{STUDENT_ACCOUNT.paymentsReceived}</ThemedText>
+          <ThemedText style={[s.accountLineValue, { color: '#5A8A6E' }]}>{STUDENT_ACCOUNT.paymentsReceived}</ThemedText>
         </View>
 
         <View style={[s.divider, { backgroundColor: colors.border }]} />
@@ -841,21 +841,21 @@ function StudentAccountsView({ colors, role }: { colors: typeof Colors.light; ro
             {isStudent(role) ? (
               ACCOUNT_HOLDS.map((hold, idx) => (
                 <View key={hold.id} style={[s.holdRow, idx < ACCOUNT_HOLDS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border }]}>
-                  <View style={[s.holdDot, { backgroundColor: hold.severity === 'high' ? '#EF4444' : '#F59E0B' }]} />
+                  <View style={[s.holdDot, { backgroundColor: hold.severity === 'high' ? '#B85C5C' : '#B8943E' }]} />
                   <View style={s.holdContent}>
                     <ThemedText style={[s.holdType, { color: colors.text }]}>{hold.type} Hold</ThemedText>
                     <ThemedText style={[s.holdReason, { color: colors.textSecondary }]}>{hold.reason} {'\u00B7'} Since {hold.since}</ThemedText>
                   </View>
-                  <ThemedText style={[s.holdAmount, { color: hold.severity === 'high' ? '#EF4444' : colors.text }]}>{hold.amount}</ThemedText>
+                  <ThemedText style={[s.holdAmount, { color: hold.severity === 'high' ? '#B85C5C' : colors.text }]}>{hold.amount}</ThemedText>
                 </View>
               ))
             ) : (
               <View style={s.budgetGrid}>
                 {[
-                  { v: '342', l: 'Active Holds', c: '#EF4444' },
-                  { v: '128', l: 'Tuition Holds', c: '#EF4444' },
-                  { v: '98', l: 'Library Holds', c: '#F59E0B' },
-                  { v: '116', l: 'Other Holds', c: '#F59E0B' },
+                  { v: '342', l: 'Active Holds', c: '#B85C5C' },
+                  { v: '128', l: 'Tuition Holds', c: '#B85C5C' },
+                  { v: '98', l: 'Library Holds', c: '#B8943E' },
+                  { v: '116', l: 'Other Holds', c: '#B8943E' },
                 ].map(item => (
                   <View key={item.l} style={s.budgetStat}>
                     <ThemedText style={[s.budgetValue, { color: item.c, fontSize: 18 }]}>{item.v}</ThemedText>
@@ -977,10 +977,10 @@ function AuditControlsView({ colors, role }: { colors: typeof Colors.light; role
           <Card colors={colors}>
             <View style={s.budgetGrid}>
               {[
-                { v: '100%', l: 'Title IV', c: '#22C55E' },
-                { v: '100%', l: 'A-133', c: '#22C55E' },
-                { v: 'On Track', l: 'SACSCOC', c: '#22C55E' },
-                { v: '1 Finding', l: 'Open Issues', c: '#F59E0B' },
+                { v: '100%', l: 'Title IV', c: '#5A8A6E' },
+                { v: '100%', l: 'A-133', c: '#5A8A6E' },
+                { v: 'On Track', l: 'SACSCOC', c: '#5A8A6E' },
+                { v: '1 Finding', l: 'Open Issues', c: '#B8943E' },
               ].map(item => (
                 <View key={item.l} style={s.budgetStat}>
                   <ThemedText style={[s.budgetValue, { color: item.c, fontSize: 16 }]}>{item.v}</ThemedText>

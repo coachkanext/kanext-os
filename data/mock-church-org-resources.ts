@@ -67,20 +67,20 @@ export const RESOURCE_CATEGORY_ICONS: Record<ResourceCategory, string> = {
 };
 
 export const RESOURCE_CATEGORY_COLORS: Record<ResourceCategory, string> = {
-  av_equipment: '#1D9BF0',
-  musical_instruments: '#1D9BF0',
-  furniture: '#F59E0B',
-  supplies: '#22C55E',
-  vehicles: '#EF4444',
-  technology: '#1D9BF0',
-  kitchen: '#22C55E',
+  av_equipment: '#1A1714',
+  musical_instruments: '#1A1714',
+  furniture: '#B8943E',
+  supplies: '#5A8A6E',
+  vehicles: '#B85C5C',
+  technology: '#1A1714',
+  kitchen: '#5A8A6E',
 };
 
 export const CONDITION_COLOR: Record<ResourceCondition, string> = {
-  excellent: '#22C55E',
-  good: '#1D9BF0',
-  fair: '#F59E0B',
-  needs_repair: '#EF4444',
+  excellent: '#5A8A6E',
+  good: '#1A1714',
+  fair: '#B8943E',
+  needs_repair: '#B85C5C',
 };
 
 export const CONDITION_LABELS: Record<ResourceCondition, string> = {
@@ -91,9 +91,9 @@ export const CONDITION_LABELS: Record<ResourceCondition, string> = {
 };
 
 export const CHECKOUT_STATUS_COLOR: Record<CheckoutStatus, string> = {
-  active: '#1D9BF0',
-  returned: '#22C55E',
-  overdue: '#EF4444',
+  active: '#1A1714',
+  returned: '#5A8A6E',
+  overdue: '#B85C5C',
 };
 
 export const CHECKOUT_STATUS_LABELS: Record<CheckoutStatus, string> = {

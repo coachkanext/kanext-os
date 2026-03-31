@@ -27,7 +27,7 @@ import type { ClusterType } from '@/types';
 const BG = '#0B0F14';
 const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#A1A1AA';
+const GRAY = '#9C9790';
 const DIVIDER = '#0B0F14';
 
 export default function TeamDetailScreen() {
@@ -126,7 +126,7 @@ export default function TeamDetailScreen() {
           {CLUSTER_ORDER.map((cluster) => {
             const isExpanded = expandedCluster === cluster;
             const val = teamStats.clusters[cluster];
-            const valColor = val >= 70 ? '#22C55E' : val >= 55 ? '#F59E0B' : '#EF4444';
+            const valColor = val >= 70 ? '#5A8A6E' : val >= 55 ? '#B8943E' : '#B85C5C';
             // Top 3 contributors for this cluster
             const contributors = isExpanded
               ? roster
@@ -163,7 +163,7 @@ export default function TeamDetailScreen() {
                 {isExpanded && (
                   <View style={styles.contributorList}>
                     {contributors.map((c) => {
-                      const cColor = c.val >= 70 ? '#22C55E' : c.val >= 55 ? '#F59E0B' : '#EF4444';
+                      const cColor = c.val >= 70 ? '#5A8A6E' : c.val >= 55 ? '#B8943E' : '#B85C5C';
                       return (
                         <View key={c.name} style={styles.contributorRow}>
                           <ThemedText style={styles.contributorName}>

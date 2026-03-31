@@ -36,10 +36,10 @@ const HERO = {
 };
 
 const BADGE_COLORS: Record<string, string> = {
-  LIVE: '#EF4444',
+  LIVE: '#B85C5C',
   UPDATE: ACCENT,
-  ANNOUNCEMENT: '#F59E0B',
-  INVESTOR: '#22C55E',
+  ANNOUNCEMENT: '#B8943E',
+  INVESTOR: '#5A8A6E',
 };
 
 const FOCUS = {
@@ -189,7 +189,7 @@ export function BizDashboardV2({ colors, accent }: Props) {
               <ThemedText style={[s.capitalMeta, { color: colors.textSecondary }]}>Exec Filled</ThemedText>
             </View>
             <View style={s.peopleStat}>
-              <ThemedText style={[s.peopleStatValue, { color: PEOPLE.openCriticalRoles > 0 ? '#F59E0B' : colors.text }]}>
+              <ThemedText style={[s.peopleStatValue, { color: PEOPLE.openCriticalRoles > 0 ? '#B8943E' : colors.text }]}>
                 {PEOPLE.openCriticalRoles}
               </ThemedText>
               <ThemedText style={[s.capitalMeta, { color: colors.textSecondary }]}>Open Critical</ThemedText>

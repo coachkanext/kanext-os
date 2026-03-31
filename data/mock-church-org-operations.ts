@@ -126,47 +126,47 @@ export interface OpsIncident {
 // =============================================================================
 
 export const SERVICE_STATUS_COLORS: Record<ServiceStatus, string> = {
-  upcoming: '#1D9BF0',
-  in_progress: '#22C55E',
-  completed: '#A1A1AA',
+  upcoming: '#1A1714',
+  in_progress: '#5A8A6E',
+  completed: '#9C9790',
 };
 
 export const READINESS_COLORS: Record<ReadinessLevel, string> = {
-  green: '#22C55E',
-  yellow: '#F59E0B',
-  red: '#EF4444',
+  green: '#5A8A6E',
+  yellow: '#B8943E',
+  red: '#B85C5C',
 };
 
 export const TASK_PRIORITY_COLORS: Record<TaskPriority, string> = {
-  low: '#A1A1AA',
-  medium: '#1D9BF0',
-  high: '#F59E0B',
-  urgent: '#EF4444',
+  low: '#9C9790',
+  medium: '#1A1714',
+  high: '#B8943E',
+  urgent: '#B85C5C',
 };
 
 export const TASK_STATUS_COLORS: Record<TaskStatus, string> = {
-  pending: '#F59E0B',
-  in_progress: '#1D9BF0',
-  done: '#22C55E',
+  pending: '#B8943E',
+  in_progress: '#1A1714',
+  done: '#5A8A6E',
 };
 
 export const SLOT_STATUS_COLORS: Record<TeamSlotStatus, string> = {
-  filled: '#22C55E',
-  vacant: '#EF4444',
-  tentative: '#F59E0B',
+  filled: '#5A8A6E',
+  vacant: '#B85C5C',
+  tentative: '#B8943E',
 };
 
 export const INCIDENT_SEVERITY_COLORS: Record<IncidentSeverity, string> = {
-  minor: '#A1A1AA',
-  moderate: '#F59E0B',
-  major: '#EF4444',
-  critical: '#EF4444',
+  minor: '#9C9790',
+  moderate: '#B8943E',
+  major: '#B85C5C',
+  critical: '#B85C5C',
 };
 
 export const INCIDENT_STATUS_COLORS: Record<IncidentStatus, string> = {
-  open: '#EF4444',
-  investigating: '#F59E0B',
-  resolved: '#22C55E',
+  open: '#B85C5C',
+  investigating: '#B8943E',
+  resolved: '#5A8A6E',
 };
 
 export const SEGMENT_TYPE_LABELS: Record<SegmentType, string> = {
@@ -181,14 +181,14 @@ export const SEGMENT_TYPE_LABELS: Record<SegmentType, string> = {
 };
 
 export const SEGMENT_TYPE_COLORS: Record<SegmentType, string> = {
-  pre_service: '#A1A1AA',
-  welcome: '#1D9BF0',
-  worship: '#1D9BF0',
-  offering: '#22C55E',
-  sermon: '#F59E0B',
-  altar_call: '#1D9BF0',
-  benediction: '#1D9BF0',
-  post_service: '#A1A1AA',
+  pre_service: '#9C9790',
+  welcome: '#1A1714',
+  worship: '#1A1714',
+  offering: '#5A8A6E',
+  sermon: '#B8943E',
+  altar_call: '#1A1714',
+  benediction: '#1A1714',
+  post_service: '#9C9790',
 };
 
 // =============================================================================
@@ -508,7 +508,7 @@ const OPS_TEAMS: OpsTeam[] = [
     id: 'team-001',
     name: 'AV',
     icon: 'video.fill',
-    color: '#1D9BF0',
+    color: '#1A1714',
     slots: [
       {
         id: 'ts-001',
@@ -553,7 +553,7 @@ const OPS_TEAMS: OpsTeam[] = [
     id: 'team-002',
     name: 'Worship',
     icon: 'music.note.list',
-    color: '#1D9BF0',
+    color: '#1A1714',
     slots: [
       {
         id: 'ts-005',
@@ -607,7 +607,7 @@ const OPS_TEAMS: OpsTeam[] = [
     id: 'team-003',
     name: 'Ushers',
     icon: 'person.2.fill',
-    color: '#F59E0B',
+    color: '#B8943E',
     slots: [
       {
         id: 'ts-010',
@@ -652,7 +652,7 @@ const OPS_TEAMS: OpsTeam[] = [
     id: 'team-004',
     name: 'Kids Ministry',
     icon: 'figure.and.child.holdinghands',
-    color: '#1D9BF0',
+    color: '#1A1714',
     slots: [
       {
         id: 'ts-014',
@@ -697,7 +697,7 @@ const OPS_TEAMS: OpsTeam[] = [
     id: 'team-005',
     name: 'Security',
     icon: 'shield.checkered',
-    color: '#EF4444',
+    color: '#B85C5C',
     slots: [
       {
         id: 'ts-018',
@@ -733,7 +733,7 @@ const OPS_TEAMS: OpsTeam[] = [
     id: 'team-006',
     name: 'Facilities',
     icon: 'wrench.and.screwdriver.fill',
-    color: '#22C55E',
+    color: '#5A8A6E',
     slots: [
       {
         id: 'ts-021',
@@ -1193,12 +1193,12 @@ export const TASK_CATEGORIES = [
 export type TaskCategory = (typeof TASK_CATEGORIES)[number];
 
 export const TASK_CATEGORY_COLORS: Record<string, string> = {
-  AV: '#1D9BF0',
-  Facilities: '#22C55E',
-  Worship: '#1D9BF0',
-  Security: '#EF4444',
-  Kids: '#1D9BF0',
-  Parking: '#F59E0B',
+  AV: '#1A1714',
+  Facilities: '#5A8A6E',
+  Worship: '#1A1714',
+  Security: '#B85C5C',
+  Kids: '#1A1714',
+  Parking: '#B8943E',
 };
 
 // =============================================================================
@@ -1294,42 +1294,42 @@ function buildCommandTiles(): CommandTile[] {
       label: 'Readiness Score',
       value: `${avgReadiness}%`,
       icon: 'gauge.with.dots.needle.33percent',
-      color: avgReadiness >= 85 ? '#22C55E' : avgReadiness >= 70 ? '#F59E0B' : '#EF4444',
+      color: avgReadiness >= 85 ? '#5A8A6E' : avgReadiness >= 70 ? '#B8943E' : '#B85C5C',
     },
     {
       id: 'ct-next-service',
       label: 'Next Service',
       value: nextService.name,
       icon: 'clock.fill',
-      color: '#1D9BF0',
+      color: '#1A1714',
     },
     {
       id: 'ct-open-tasks',
       label: 'Open Tasks',
       value: `${openTasks}/${totalTasks}`,
       icon: 'checklist',
-      color: openTasks > 6 ? '#F59E0B' : '#22C55E',
+      color: openTasks > 6 ? '#B8943E' : '#5A8A6E',
     },
     {
       id: 'ct-team-vacancies',
       label: 'Team Vacancies',
       value: `${teamVacancies}`,
       icon: 'person.fill.questionmark',
-      color: teamVacancies > 0 ? '#EF4444' : '#22C55E',
+      color: teamVacancies > 0 ? '#B85C5C' : '#5A8A6E',
     },
     {
       id: 'ct-checklists',
       label: 'Checklists',
       value: `${checklistProgress.done}/${checklistProgress.total}`,
       icon: 'checkmark.square.fill',
-      color: '#1D9BF0',
+      color: '#1A1714',
     },
     {
       id: 'ct-incidents',
       label: 'Open Incidents',
       value: `${openIncidents}`,
       icon: 'exclamationmark.triangle.fill',
-      color: openIncidents > 0 ? '#EF4444' : '#22C55E',
+      color: openIncidents > 0 ? '#B85C5C' : '#5A8A6E',
     },
   ];
 }

@@ -43,15 +43,15 @@ interface EntityHealthPanelProps {
 // =============================================================================
 
 const TRAFFIC_LIGHT: Record<string, string> = {
-  green: '#22C55E',
-  yellow: '#F59E0B',
-  red: '#EF4444',
+  green: '#5A8A6E',
+  yellow: '#B8943E',
+  red: '#B85C5C',
 };
 
 const RAILS_STATUS_COLOR: Record<string, string> = {
-  connected: '#22C55E',
-  limited: '#F59E0B',
-  offline: '#EF4444',
+  connected: '#5A8A6E',
+  limited: '#B8943E',
+  offline: '#B85C5C',
 };
 
 const RAILS_LABEL: Record<string, string> = {
@@ -161,7 +161,7 @@ export function EntityHealthPanel({ entity, colors }: EntityHealthPanelProps) {
         {/* Docs */}
         <StatusChip
           label="Docs"
-          dotColor={entity.docs.missing > 0 ? '#F59E0B' : '#22C55E'}
+          dotColor={entity.docs.missing > 0 ? '#B8943E' : '#5A8A6E'}
           detail={docsDetail}
           colors={colors}
         />

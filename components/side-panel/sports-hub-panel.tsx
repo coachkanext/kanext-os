@@ -37,7 +37,7 @@ export function SportsHubPanel() {
     <View style={{ gap: 8 }}>
 
       {/* Team KR */}
-      <View style={{ backgroundColor: '#003A63', borderRadius: 12, padding: 14, gap: 4 }}>
+      <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14, gap: 4 }}>
         <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 0.5 }}>Team KR</Text>
         <Text style={{ fontSize: 36, fontWeight: '900', color: '#fff', lineHeight: 40 }}>{TEAM_KR.overall}</Text>
         <View style={{ flexDirection: 'row', gap: 12 }}>
@@ -70,7 +70,7 @@ export function SportsHubPanel() {
         <View style={{ flexDirection: 'row', gap: 8 }}>
           {[
             { label: 'Available', value: health.available, color: '#5A8A6E' },
-            { label: 'Limited',   value: health.limited,   color: '#3B82F6' },
+            { label: 'Limited',   value: health.limited,   color: '#1A1714' },
             { label: 'Out',       value: health.out,       color: '#B85C5C' },
           ].map(item => (
             <View key={item.label} style={{ flex: 1, alignItems: 'center', backgroundColor: C.surfacePressed, borderRadius: 8, paddingVertical: 8 }}>
@@ -107,7 +107,7 @@ export function SportsHubPanel() {
           {[
             { label: 'Board',     value: RECRUITS_BOARD.length.toString() },
             { label: 'Committed', value: newCommits.toString(), color: '#5A8A6E' },
-            { label: 'Offered',   value: (stageCounts['Offered'] ?? 0).toString(), color: '#1D9BF0' },
+            { label: 'Offered',   value: (stageCounts['Offered'] ?? 0).toString(), color: '#1A1714' },
           ].map(item => (
             <View key={item.label} style={{ flex: 1, alignItems: 'center', backgroundColor: C.surfacePressed, borderRadius: 8, paddingVertical: 8 }}>
               <Text style={{ fontSize: 16, fontWeight: '800', color: (item as any).color ?? C.label }}>{item.value}</Text>

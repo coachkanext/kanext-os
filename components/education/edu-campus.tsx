@@ -118,7 +118,7 @@ const CAMPUS_ALERTS: { id: string; message: string; severity: 'info' | 'warning'
   { id: 'alert-3', message: 'Tornado drill scheduled for Feb 26 at 10:00 AM', severity: 'info', timestamp: '1d ago' },
 ];
 
-const ALERT_SEVERITY_COLOR: Record<string, string> = { info: ACCENT, warning: '#F59E0B', urgent: '#EF4444' };
+const ALERT_SEVERITY_COLOR: Record<string, string> = { info: ACCENT, warning: '#B8943E', urgent: '#B85C5C' };
 
 // --- Campus Services ---
 
@@ -254,7 +254,7 @@ const CAMPUS_SERVICES: CampusService[] = [
   },
 ];
 
-const SERVICE_STATUS_COLOR: Record<string, string> = { open: '#22C55E', limited: '#F59E0B', closed: '#EF4444' };
+const SERVICE_STATUS_COLOR: Record<string, string> = { open: '#5A8A6E', limited: '#B8943E', closed: '#B85C5C' };
 
 // --- Facilities / Buildings ---
 
@@ -315,7 +315,7 @@ const BUILDING_TYPE_LABEL: Record<BuildingType, string> = {
   parking: 'Parking',
 };
 
-const BUILDING_STATUS_COLOR: Record<string, string> = { operational: '#22C55E', renovation: '#F59E0B', construction: ACCENT, closed: '#EF4444' };
+const BUILDING_STATUS_COLOR: Record<string, string> = { operational: '#5A8A6E', renovation: '#B8943E', construction: ACCENT, closed: '#B85C5C' };
 
 const WORK_ORDERS: { id: string; title: string; building: string; priority: 'low' | 'medium' | 'high' | 'critical'; status: 'open' | 'in_progress' | 'pending_parts' | 'completed'; submittedBy: string; submittedDate: string; assignedTo?: string; category: string; estimatedCompletion?: string }[] = [
   { id: 'wo-1', title: 'HVAC unit failure \u2014 Room 302', building: 'Founders Library', priority: 'high', status: 'in_progress', submittedBy: 'Dr. Williams', submittedDate: 'Feb 14', assignedTo: 'Mike Torres', category: 'HVAC', estimatedCompletion: 'Feb 19' },
@@ -326,9 +326,9 @@ const WORK_ORDERS: { id: string; title: string; building: string; priority: 'low
   { id: 'wo-6', title: 'Fire alarm panel maintenance', building: 'Morrison Science Center', priority: 'high', status: 'completed', submittedBy: 'Fire Marshal', submittedDate: 'Feb 8', assignedTo: 'Fire Systems Inc.', category: 'Fire Safety', estimatedCompletion: 'Feb 13' },
 ];
 
-const WORK_ORDER_PRIORITY_COLOR: Record<string, string> = { low: '#A1A1AA', medium: '#F59E0B', high: '#F59E0B', critical: '#EF4444' };
+const WORK_ORDER_PRIORITY_COLOR: Record<string, string> = { low: '#9C9790', medium: '#B8943E', high: '#B8943E', critical: '#B85C5C' };
 const WORK_ORDER_STATUS_LABEL: Record<string, string> = { open: 'Open', in_progress: 'In Progress', pending_parts: 'Pending Parts', completed: 'Completed' };
-const WORK_ORDER_STATUS_COLOR: Record<string, string> = { open: ACCENT, in_progress: '#F59E0B', pending_parts: ACCENT, completed: '#22C55E' };
+const WORK_ORDER_STATUS_COLOR: Record<string, string> = { open: ACCENT, in_progress: '#B8943E', pending_parts: ACCENT, completed: '#5A8A6E' };
 
 // --- Renovation Tracker ---
 
@@ -339,7 +339,7 @@ const RENOVATIONS = [
 ];
 
 const RENOVATION_STATUS_COLOR: Record<string, string> = {
-  on_track: '#22C55E', delayed: '#EF4444', ahead: ACCENT, completed: '#22C55E',
+  on_track: '#5A8A6E', delayed: '#B85C5C', ahead: ACCENT, completed: '#5A8A6E',
 };
 
 const SAFETY_STATS = {
@@ -364,8 +364,8 @@ const SAFETY_INCIDENTS: { id: string; type: string; date: string; location: stri
   { id: 'inc-4', type: 'Fire Alarm', date: 'Feb 6', location: 'Robinson Hall', severity: 'minor', status: 'resolved', description: 'False alarm triggered by cooking smoke' },
 ];
 
-const INCIDENT_SEVERITY_COLOR: Record<string, string> = { minor: '#F59E0B', moderate: '#F59E0B', major: '#EF4444' };
-const INCIDENT_STATUS_COLOR: Record<string, string> = { resolved: '#22C55E', under_investigation: '#F59E0B', open: ACCENT };
+const INCIDENT_SEVERITY_COLOR: Record<string, string> = { minor: '#B8943E', moderate: '#B8943E', major: '#B85C5C' };
+const INCIDENT_STATUS_COLOR: Record<string, string> = { resolved: '#5A8A6E', under_investigation: '#B8943E', open: ACCENT };
 
 const EMERGENCY_CONTACTS: { id: string; name: string; phone: string; icon: string; available: string }[] = [
   { id: 'em-1', name: 'Campus Police', phone: '(404) 555-9111', icon: 'shield.fill', available: '24/7' },
@@ -405,7 +405,7 @@ const INTRAMURAL_SPORTS: { id: string; name: string; season: string; teams: numb
   { id: 'im-4', name: 'Soccer (Outdoor)', season: 'Spring', teams: 0, participants: 0, registrationDeadline: 'Mar 15', status: 'upcoming' },
 ];
 
-const INTRAMURAL_STATUS_COLOR: Record<string, string> = { active: '#22C55E', registration_open: ACCENT, upcoming: ACCENT, completed: '#A1A1AA' };
+const INTRAMURAL_STATUS_COLOR: Record<string, string> = { active: '#5A8A6E', registration_open: ACCENT, upcoming: ACCENT, completed: '#9C9790' };
 
 const GREEK_ORGS: { id: string; name: string; letters: string; council: string; type: 'fraternity' | 'sorority'; members: number; founded: string; gpa: number; serviceHours: number }[] = [
   { id: 'gk-1', name: 'Alpha Phi Alpha', letters: '\u0391\u03A6\u0391', council: 'NPHC', type: 'fraternity', members: 32, founded: '1906', gpa: 3.24, serviceHours: 480 },
@@ -423,7 +423,7 @@ const ENGAGEMENT_SIGNALS: { id: string; label: string; value: string; icon: stri
   { id: 'eng-5', label: 'Community Service Hours', value: '3,200', icon: 'hands.sparkles.fill', trend: 'up', trendValue: '+22%' },
 ];
 
-const TREND_COLOR: Record<string, string> = { up: '#22C55E', down: '#EF4444', flat: '#A1A1AA' };
+const TREND_COLOR: Record<string, string> = { up: '#5A8A6E', down: '#B85C5C', flat: '#9C9790' };
 
 // =============================================================================
 // SHARED SUB-COMPONENTS
@@ -516,14 +516,14 @@ function OverviewView({ colors, role }: { colors: typeof Colors.light; role: Edu
         <SectionHeader title="SUSTAINABILITY" colors={colors} />
         <Card colors={colors}>
           <View style={s.sustainRow}>
-            <IconSymbol name="leaf.fill" size={20} color="#22C55E" />
+            <IconSymbol name="leaf.fill" size={20} color="#5A8A6E" />
             <View style={s.sustainContent}>
               <ThemedText style={[s.sustainTitle, { color: colors.text }]}>{CAMPUS.sustainability}</ThemedText>
               <View style={s.sustainScoreRow}>
                 <View style={[s.sustainBarBg, { backgroundColor: colors.backgroundTertiary }]}>
-                  <View style={[s.sustainBarFill, { width: `${CAMPUS.sustainabilityScore}%`, backgroundColor: '#22C55E' }]} />
+                  <View style={[s.sustainBarFill, { width: `${CAMPUS.sustainabilityScore}%`, backgroundColor: '#5A8A6E' }]} />
                 </View>
-                <ThemedText style={[s.sustainScore, { color: '#22C55E' }]}>{CAMPUS.sustainabilityScore}/100</ThemedText>
+                <ThemedText style={[s.sustainScore, { color: '#5A8A6E' }]}>{CAMPUS.sustainabilityScore}/100</ThemedText>
               </View>
             </View>
           </View>
@@ -924,8 +924,8 @@ function SafetyView({ colors, role }: { colors: typeof Colors.light; role: Educa
           </View>
           {isFacultyLevel(role) && (
             <View style={s.safetyTrend}>
-              <IconSymbol name="arrow.down.right" size={12} color="#22C55E" />
-              <ThemedText style={[s.safetyTrendText, { color: '#22C55E' }]}>
+              <IconSymbol name="arrow.down.right" size={12} color="#5A8A6E" />
+              <ThemedText style={[s.safetyTrendText, { color: '#5A8A6E' }]}>
                 {SAFETY_STATS.incidentsTrend}
               </ThemedText>
             </View>
@@ -958,8 +958,8 @@ function SafetyView({ colors, role }: { colors: typeof Colors.light; role: Educa
               ]}
               onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
             >
-              <View style={[s.contactIcon, { backgroundColor: '#EF444420' }]}>
-                <IconSymbol name={contact.icon as any} size={14} color="#EF4444" />
+              <View style={[s.contactIcon, { backgroundColor: '#B85C5C20' }]}>
+                <IconSymbol name={contact.icon as any} size={14} color="#B85C5C" />
               </View>
               <View style={s.contactContent}>
                 <ThemedText style={[s.contactName, { color: colors.text }]}>{contact.name}</ThemedText>
@@ -991,8 +991,8 @@ function SafetyView({ colors, role }: { colors: typeof Colors.light; role: Educa
                 <ThemedText style={[s.drillType, { color: colors.text }]}>{drill.type}</ThemedText>
                 <ThemedText style={[s.drillLocation, { color: colors.textSecondary }]}>{drill.location}</ThemedText>
                 {drill.mandatory && (
-                  <View style={[s.mandatoryBadge, { backgroundColor: '#EF444420' }]}>
-                    <ThemedText style={[s.mandatoryText, { color: '#EF4444' }]}>MANDATORY</ThemedText>
+                  <View style={[s.mandatoryBadge, { backgroundColor: '#B85C5C20' }]}>
+                    <ThemedText style={[s.mandatoryText, { color: '#B85C5C' }]}>MANDATORY</ThemedText>
                   </View>
                 )}
               </View>
@@ -1159,8 +1159,8 @@ function StudentLifeView({ colors, role }: { colors: typeof Colors.light; role: 
                 <ThemedText style={[s.eventLocation, { color: colors.textTertiary }]}>{evt.location}</ThemedText>
               </View>
               {evt.free ? (
-                <View style={[s.freeBadge, { backgroundColor: '#22C55E20' }]}>
-                  <ThemedText style={[s.freeText, { color: '#22C55E' }]}>FREE</ThemedText>
+                <View style={[s.freeBadge, { backgroundColor: '#5A8A6E20' }]}>
+                  <ThemedText style={[s.freeText, { color: '#5A8A6E' }]}>FREE</ThemedText>
                 </View>
               ) : (
                 <View style={[s.freeBadge, { backgroundColor: colors.backgroundTertiary }]}>

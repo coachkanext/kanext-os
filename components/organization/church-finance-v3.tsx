@@ -116,9 +116,9 @@ const OPERATIONAL_BUCKETS = [
 
 type BudgetStatus = 'Healthy' | 'Review' | 'Restricted';
 const STATUS_COLOR: Record<BudgetStatus, string> = {
-  Healthy: '#22C55E',
-  Review: '#F59E0B',
-  Restricted: '#EF4444',
+  Healthy: '#5A8A6E',
+  Review: '#B8943E',
+  Restricted: '#B85C5C',
 };
 
 // =============================================================================
@@ -142,8 +142,8 @@ function HeaderBlock({ colors }: { colors: typeof Colors.light }) {
 
 function RestrictionNotice({ colors }: { colors: typeof Colors.light }) {
   return (
-    <View style={[s.restrictionBanner, { backgroundColor: '#F59E0B10', borderColor: '#F59E0B30' }]}>
-      <IconSymbol name="lock.fill" size={13} color="#F59E0B" />
+    <View style={[s.restrictionBanner, { backgroundColor: '#B8943E10', borderColor: '#B8943E30' }]}>
+      <IconSymbol name="lock.fill" size={13} color="#B8943E" />
       <ThemedText style={[s.restrictionText, { color: colors.textSecondary }]}>
         Detailed financial controls restricted. You see high-level summaries only.
       </ThemedText>
@@ -170,7 +170,7 @@ function BudgetSummaryBlock({ colors, canSeeDollars }: { colors: typeof Colors.l
                 <ThemedText style={[s.budgetLabel, { color: colors.textTertiary }]}>Operating Budget</ThemedText>
               </View>
               <View style={s.budgetCell}>
-                <ThemedText style={[s.budgetValue, { color: '#22C55E' }]}>{fmtShort(BUDGET.totalGivingReceived)}</ThemedText>
+                <ThemedText style={[s.budgetValue, { color: '#5A8A6E' }]}>{fmtShort(BUDGET.totalGivingReceived)}</ThemedText>
                 <ThemedText style={[s.budgetLabel, { color: colors.textTertiary }]}>Giving Received</ThemedText>
               </View>
               <View style={s.budgetCell}>
@@ -178,7 +178,7 @@ function BudgetSummaryBlock({ colors, canSeeDollars }: { colors: typeof Colors.l
                 <ThemedText style={[s.budgetLabel, { color: colors.textTertiary }]}>Allocated</ThemedText>
               </View>
               <View style={s.budgetCell}>
-                <ThemedText style={[s.budgetValue, { color: '#22C55E' }]}>{fmtShort(BUDGET.remaining)}</ThemedText>
+                <ThemedText style={[s.budgetValue, { color: '#5A8A6E' }]}>{fmtShort(BUDGET.remaining)}</ThemedText>
                 <ThemedText style={[s.budgetLabel, { color: colors.textTertiary }]}>Remaining</ThemedText>
               </View>
             </View>
@@ -275,11 +275,11 @@ function MinistryAllocationsBlock({ colors, isA2 }: { colors: typeof Colors.ligh
                       <ThemedText style={[s.allocStatLabel, { color: colors.textTertiary }]}>Allocated</ThemedText>
                     </View>
                     <View style={s.allocStat}>
-                      <ThemedText style={[s.allocStatValue, { color: '#F59E0B' }]}>{fmtShort(alloc.spent)}</ThemedText>
+                      <ThemedText style={[s.allocStatValue, { color: '#B8943E' }]}>{fmtShort(alloc.spent)}</ThemedText>
                       <ThemedText style={[s.allocStatLabel, { color: colors.textTertiary }]}>Spent</ThemedText>
                     </View>
                     <View style={s.allocStat}>
-                      <ThemedText style={[s.allocStatValue, { color: '#22C55E' }]}>{fmtShort(alloc.remaining)}</ThemedText>
+                      <ThemedText style={[s.allocStatValue, { color: '#5A8A6E' }]}>{fmtShort(alloc.remaining)}</ThemedText>
                       <ThemedText style={[s.allocStatLabel, { color: colors.textTertiary }]}>Remaining</ThemedText>
                     </View>
                   </View>

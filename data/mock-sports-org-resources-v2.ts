@@ -140,8 +140,8 @@ export const PACK_CATEGORY_LABEL: Record<PackCategory, string> = {
 };
 
 export const PACK_CATEGORY_COLOR: Record<PackCategory, string> = {
-  sop: '#1D9BF0',
-  travel: '#1D9BF0',
+  sop: '#1A1714',
+  travel: '#1A1714',
   recruiting: '#22c55e',
   gameday: '#f59e0b',
   compliance: '#ef4444',
@@ -155,10 +155,10 @@ export const ROLE_KIT_ITEM_TYPE_LABEL: Record<RoleKitItemType, string> = {
 };
 
 export const ROLE_KIT_ITEM_TYPE_COLOR: Record<RoleKitItemType, string> = {
-  checklist: '#1D9BF0',
+  checklist: '#1A1714',
   template: '#22c55e',
   script: '#f59e0b',
-  protocol: '#1D9BF0',
+  protocol: '#1A1714',
 };
 
 export const KB_CATEGORY_LABEL: Record<KnowledgeBaseCategory, string> = {
@@ -171,10 +171,10 @@ export const KB_CATEGORY_LABEL: Record<KnowledgeBaseCategory, string> = {
 
 export const KB_CATEGORY_COLOR: Record<KnowledgeBaseCategory, string> = {
   recruiting: '#22c55e',
-  ops: '#1D9BF0',
+  ops: '#1A1714',
   medical: '#ef4444',
   compliance: '#f59e0b',
-  'game-ops': '#1D9BF0',
+  'game-ops': '#1A1714',
 };
 
 export const REVIEW_FLAG_REASON_LABEL: Record<ReviewFlagReason, string> = {
@@ -187,8 +187,8 @@ export const REVIEW_FLAG_REASON_LABEL: Record<ReviewFlagReason, string> = {
 export const REVIEW_FLAG_REASON_COLOR: Record<ReviewFlagReason, string> = {
   stale: '#f59e0b',
   'missing-owner': '#ef4444',
-  duplicate: '#A1A1AA',
-  unacknowledged: '#1D9BF0',
+  duplicate: '#9C9790',
+  unacknowledged: '#1A1714',
 };
 
 // =============================================================================

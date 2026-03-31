@@ -77,7 +77,7 @@ export default function ChannelManagementScreen() {
             <Switch
               value={!mutedIds.has(ch.id)}
               onValueChange={() => toggleMute(ch.id)}
-              trackColor={{ false: '#39393D', true: accent }}
+              trackColor={{ false: '#3D352E', true: accent }}
               thumbColor="#FFFFFF"
               style={styles.miniSwitch}
             />
@@ -138,7 +138,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   channelInitials: { fontSize: 12, fontWeight: '700', color: C.label },
   lockBadge: {
     position: 'absolute', bottom: -2, right: -2, width: 14, height: 14, borderRadius: 7,
-    backgroundColor: '#2C2C2E', alignItems: 'center', justifyContent: 'center',
+    backgroundColor: '#261D17', alignItems: 'center', justifyContent: 'center',
   },
   channelInfo: { flex: 1 },
   channelName: { fontSize: 15, fontWeight: '600', color: C.label },

@@ -125,8 +125,8 @@ function artifactIcon(type: string): string {
 
 function artifactIconColor(type: string): string {
   switch (type) {
-    case 'spreadsheet': return '#22C55E';
-    case 'presentation': return '#F59E0B';
+    case 'spreadsheet': return '#5A8A6E';
+    case 'presentation': return '#B8943E';
     case 'document': return ACCENT;
     case 'video': return ACCENT;
     default: return BP.ash;
@@ -135,10 +135,10 @@ function artifactIconColor(type: string): string {
 
 function decisionStatusColor(status: RoomDecision['status']): string {
   switch (status) {
-    case 'approved': return '#22C55E';
+    case 'approved': return '#5A8A6E';
     case 'open': return ACCENT;
-    case 'draft': return '#F59E0B';
-    case 'rejected': return '#EF4444';
+    case 'draft': return '#B8943E';
+    case 'rejected': return '#B85C5C';
   }
 }
 
@@ -167,13 +167,13 @@ function receiptTypeIcon(type: BizReceipt['type']): string {
 
 function receiptTypeColor(type: BizReceipt['type']): string {
   switch (type) {
-    case 'approval': return '#22C55E';
+    case 'approval': return '#5A8A6E';
     case 'release': return ACCENT;
     case 'decision': return ACCENT;
-    case 'signature': return '#F59E0B';
+    case 'signature': return '#B8943E';
     case 'transfer': return ACCENT;
     case 'creation': return ACCENT;
-    case 'amendment': return '#F59E0B';
+    case 'amendment': return '#B8943E';
     case 'compliance': return ACCENT;
     default: return BP.ash;
   }
@@ -294,8 +294,8 @@ function RoomHealthStrip({ room }: { room: BizRoom }) {
   const updates = room.timeline?.length ?? 0;
 
   const items: { icon: string; label: string; value: number; color: string }[] = [
-    { icon: 'checklist', label: 'Tasks', value: tasks > 0 ? done : 0, color: '#22C55E' },
-    { icon: 'exclamationmark.triangle.fill', label: 'Blockers', value: blockers, color: blockers > 0 ? '#F59E0B' : BP.ash },
+    { icon: 'checklist', label: 'Tasks', value: tasks > 0 ? done : 0, color: '#5A8A6E' },
+    { icon: 'exclamationmark.triangle.fill', label: 'Blockers', value: blockers, color: blockers > 0 ? '#B8943E' : BP.ash },
     { icon: 'list.bullet.clipboard.fill', label: 'Decisions', value: decisions, color: ACCENT },
     { icon: 'bell.fill', label: 'Updates', value: updates, color: ACCENT },
   ];
@@ -442,8 +442,8 @@ function ActiveRoomsTab({
                   </ThemedText>
                 </View>
                 <View style={st.cardMetric}>
-                  <IconSymbol name="exclamationmark.circle.fill" size={12} color={item.openItems > 0 ? '#F59E0B' : BP.ash} />
-                  <ThemedText style={[st.cardMetricText, { color: item.openItems > 0 ? '#F59E0B' : BP.ash }]}>
+                  <IconSymbol name="exclamationmark.circle.fill" size={12} color={item.openItems > 0 ? '#B8943E' : BP.ash} />
+                  <ThemedText style={[st.cardMetricText, { color: item.openItems > 0 ? '#B8943E' : BP.ash }]}>
                     {item.openItems} open
                   </ThemedText>
                 </View>
@@ -671,7 +671,7 @@ function DetailOverview({ room }: { room: BizRoom }) {
             <ThemedText style={[st.metricLabel, { color: BP.ash }]}>Members</ThemedText>
           </View>
           <View style={[st.metricCard, { backgroundColor: BP.glass, borderColor: BP.graphite }]}>
-            <ThemedText style={[st.metricValue, { color: room.openItems > 0 ? '#F59E0B' : BP.smoke }]}>{room.openItems}</ThemedText>
+            <ThemedText style={[st.metricValue, { color: room.openItems > 0 ? '#B8943E' : BP.smoke }]}>{room.openItems}</ThemedText>
             <ThemedText style={[st.metricLabel, { color: BP.ash }]}>Open Items</ThemedText>
           </View>
           <View style={[st.metricCard, { backgroundColor: BP.glass, borderColor: BP.graphite }]}>
@@ -827,9 +827,9 @@ function DetailDecisions({ room }: { room: BizRoom }) {
             </ThemedText>
 
             {decision.receiptId && (
-              <View style={[st.decisionReceiptLink, { backgroundColor: '#22C55E' + '10', borderColor: '#22C55E' + '25' }]}>
-                <IconSymbol name="checkmark.seal.fill" size={14} color="#22C55E" />
-                <ThemedText style={[st.decisionReceiptLinkText, { color: '#22C55E' }]}>
+              <View style={[st.decisionReceiptLink, { backgroundColor: '#5A8A6E' + '10', borderColor: '#5A8A6E' + '25' }]}>
+                <IconSymbol name="checkmark.seal.fill" size={14} color="#5A8A6E" />
+                <ThemedText style={[st.decisionReceiptLinkText, { color: '#5A8A6E' }]}>
                   Receipt: {decision.receiptId}
                 </ThemedText>
               </View>

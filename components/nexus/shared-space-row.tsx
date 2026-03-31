@@ -132,7 +132,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#1D9BF0',
+    backgroundColor: '#1A1714',
   },
   icon: {
     width: 44,

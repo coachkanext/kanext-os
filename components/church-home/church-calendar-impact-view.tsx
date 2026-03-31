@@ -46,7 +46,7 @@ export function ChurchCalendarImpactView({ colors, accent }: Props) {
           <ThemedText style={[styles.summaryValue, { color: colors.text }]}>
             {fmt(latestAttendance.total)}
           </ThemedText>
-          <ThemedText style={[styles.trendText, { color: attendanceTrend === 'up' ? '#22C55E' : '#EF4444' }]}>
+          <ThemedText style={[styles.trendText, { color: attendanceTrend === 'up' ? '#5A8A6E' : '#B85C5C' }]}>
             {attendanceTrend === 'up' ? '\u2191' : '\u2193'} {Math.abs(attendanceDelta)}
           </ThemedText>
         </View>

@@ -67,7 +67,7 @@ export default function ReelViewerScreen() {
               setLiked(!liked);
             }}
           >
-            <IconSymbol name="heart.fill" size={28} color={liked ? '#EF4444' : '#fff'} />
+            <IconSymbol name="heart.fill" size={28} color={liked ? '#B85C5C' : '#fff'} />
             <ThemedText style={styles.actionCount}>{liked ? reel.likes + 1 : reel.likes}</ThemedText>
           </Pressable>
 

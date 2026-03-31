@@ -167,45 +167,45 @@ export const COMP_RAILS_SCOPE_CHIPS = [
 // =============================================================================
 
 export const ACCOUNT_STATUS_COLOR: Record<PaymentAccount['status'], string> = {
-  active: '#22C55E',
-  frozen: '#EF4444',
-  'pending-verification': '#F59E0B',
+  active: '#5A8A6E',
+  frozen: '#B85C5C',
+  'pending-verification': '#B8943E',
 };
 
 export const TRANSACTION_STATUS_COLOR: Record<Transaction['status'], string> = {
-  completed: '#22C55E',
-  pending: '#F59E0B',
-  failed: '#EF4444',
-  reversed: '#A1A1AA',
+  completed: '#5A8A6E',
+  pending: '#B8943E',
+  failed: '#B85C5C',
+  reversed: '#9C9790',
 };
 
 export const PAYOUT_STATUS_COLOR: Record<PayoutBatch['status'], string> = {
-  draft: '#A1A1AA',
-  approved: '#1D9BF0',
-  processing: '#F59E0B',
-  completed: '#22C55E',
-  failed: '#EF4444',
+  draft: '#9C9790',
+  approved: '#1A1714',
+  processing: '#B8943E',
+  completed: '#5A8A6E',
+  failed: '#B85C5C',
 };
 
 export const INVOICE_STATUS_COLOR: Record<Invoice['status'], string> = {
-  draft: '#A1A1AA',
-  sent: '#1D9BF0',
-  paid: '#22C55E',
-  overdue: '#EF4444',
-  cancelled: '#A1A1AA',
+  draft: '#9C9790',
+  sent: '#1A1714',
+  paid: '#5A8A6E',
+  overdue: '#B85C5C',
+  cancelled: '#9C9790',
 };
 
 export const DISPUTE_STATUS_COLOR: Record<Dispute['status'], string> = {
-  open: '#F59E0B',
-  'under-review': '#1D9BF0',
-  resolved: '#22C55E',
-  escalated: '#EF4444',
+  open: '#B8943E',
+  'under-review': '#1A1714',
+  resolved: '#5A8A6E',
+  escalated: '#B85C5C',
 };
 
 export const REPORT_FORMAT_COLOR: Record<RailsReport['format'], string> = {
-  PDF: '#1D9BF0',
-  CSV: '#22C55E',
-  XLSX: '#F59E0B',
+  PDF: '#1A1714',
+  CSV: '#5A8A6E',
+  XLSX: '#B8943E',
 };
 
 // =============================================================================
@@ -221,12 +221,12 @@ export function formatCurrency(amount: number): string {
 // =============================================================================
 
 const DASHBOARD_BLOCKS: RailsDashboardBlock[] = [
-  { id: 'cr-dash-1', label: 'Total Balance', value: '$2,040,000.00', delta: '+3.2%', icon: 'banknote.fill', color: '#22C55E' },
-  { id: 'cr-dash-2', label: 'Transaction Volume', value: '$487,320.00', delta: '+12.8%', icon: 'arrow.left.arrow.right', color: '#1D9BF0' },
-  { id: 'cr-dash-3', label: 'Pending Payouts', value: '$78,500.00', delta: '-5.1%', icon: 'clock.fill', color: '#F59E0B' },
-  { id: 'cr-dash-4', label: 'Open Disputes', value: '4', delta: '+1', icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
-  { id: 'cr-dash-5', label: 'Outstanding Invoices', value: '$156,800.00', delta: '+8.4%', icon: 'doc.text.fill', color: '#1D9BF0' },
-  { id: 'cr-dash-6', label: 'Monthly Revenue', value: '$312,450.00', delta: '+18.2%', icon: 'chart.line.uptrend.xyaxis', color: '#1D9BF0' },
+  { id: 'cr-dash-1', label: 'Total Balance', value: '$2,040,000.00', delta: '+3.2%', icon: 'banknote.fill', color: '#5A8A6E' },
+  { id: 'cr-dash-2', label: 'Transaction Volume', value: '$487,320.00', delta: '+12.8%', icon: 'arrow.left.arrow.right', color: '#1A1714' },
+  { id: 'cr-dash-3', label: 'Pending Payouts', value: '$78,500.00', delta: '-5.1%', icon: 'clock.fill', color: '#B8943E' },
+  { id: 'cr-dash-4', label: 'Open Disputes', value: '4', delta: '+1', icon: 'exclamationmark.triangle.fill', color: '#B85C5C' },
+  { id: 'cr-dash-5', label: 'Outstanding Invoices', value: '$156,800.00', delta: '+8.4%', icon: 'doc.text.fill', color: '#1A1714' },
+  { id: 'cr-dash-6', label: 'Monthly Revenue', value: '$312,450.00', delta: '+18.2%', icon: 'chart.line.uptrend.xyaxis', color: '#1A1714' },
 ];
 
 // =============================================================================

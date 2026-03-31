@@ -19,17 +19,17 @@ interface Props {
 }
 
 const STAKEHOLDER_COLORS: string[] = [
-  '#F59E0B', // Founder
+  '#B8943E', // Founder
   ACCENT, // Advisors
   ACCENT, // Employee pool
-  '#22C55E', // Angel investors
-  '#EF4444', // Extra
+  '#5A8A6E', // Angel investors
+  '#B85C5C', // Extra
   ACCENT,
 ];
 
 const CLASS_COLORS: Record<string, string> = {
-  common: '#F59E0B',
-  preferred: '#22C55E',
+  common: '#B8943E',
+  preferred: '#5A8A6E',
   options: ACCENT,
 };
 
@@ -81,7 +81,7 @@ export function BizVaultCapTableView({ colors, accent }: Props) {
         STAKEHOLDERS
       </ThemedText>
       {CAP_TABLE.map((entry: CapTableEntry, idx: number) => {
-        const classColor = CLASS_COLORS[entry.shareClass] ?? '#A1A1AA';
+        const classColor = CLASS_COLORS[entry.shareClass] ?? '#9C9790';
         return (
           <Pressable
             key={entry.id}

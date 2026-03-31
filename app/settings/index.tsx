@@ -37,44 +37,44 @@ const SECTIONS: SettingsSection[] = [
   {
     title: 'Account',
     rows: [
-      { id: 'profile',   label: 'Edit Profile',        icon: 'person.fill',           iconBg: '#3B82F6', route: '/settings/profile-edit' },
+      { id: 'profile',   label: 'Edit Profile',        icon: 'person.fill',           iconBg: '#1A1714', route: '/settings/profile-edit' },
       { id: 'username',  label: 'Username',             icon: 'at',                    iconBg: '#6B7280', route: '/settings/username' },
-      { id: 'phone',     label: 'Phone Numbers',        icon: 'phone.fill',            iconBg: '#22C55E', route: '/settings/phone-numbers' },
-      { id: 'security',  label: 'Password & Security',  icon: 'lock.fill',             iconBg: '#F59E0B', route: '/settings/password-security' },
+      { id: 'phone',     label: 'Phone Numbers',        icon: 'phone.fill',            iconBg: '#5A8A6E', route: '/settings/phone-numbers' },
+      { id: 'security',  label: 'Password & Security',  icon: 'lock.fill',             iconBg: '#B8943E', route: '/settings/password-security' },
     ],
   },
   {
     title: 'Wallet & Payments',
     rows: [
-      { id: 'wallet',  label: 'Wallet Settings', icon: 'creditcard.fill',    iconBg: '#3B82F6', route: '/settings/wallet-settings' },
-      { id: 'cards',   label: 'Linked Cards & Banks', icon: 'banknote.fill', iconBg: '#22C55E', route: '/settings/linked-cards' },
+      { id: 'wallet',  label: 'Wallet Settings', icon: 'creditcard.fill',    iconBg: '#1A1714', route: '/settings/wallet-settings' },
+      { id: 'cards',   label: 'Linked Cards & Banks', icon: 'banknote.fill', iconBg: '#5A8A6E', route: '/settings/linked-cards' },
     ],
   },
   {
     title: 'Notifications',
     rows: [
-      { id: 'push',    label: 'Push Notifications',   icon: 'bell.fill',      iconBg: '#F59E0B', route: '/settings/push-notifications' },
+      { id: 'push',    label: 'Push Notifications',   icon: 'bell.fill',      iconBg: '#B8943E', route: '/settings/push-notifications' },
       { id: 'inapp',   label: 'In-App Notifications',  icon: 'bell.badge.fill', iconBg: '#6B7280', route: '/settings/in-app-notifications' },
-      { id: 'quiet',   label: 'Quiet Hours',           icon: 'moon.fill',      iconBg: '#7B68A0', route: '/settings/quiet-hours' },
+      { id: 'quiet',   label: 'Quiet Hours',           icon: 'moon.fill',      iconBg: '#1A1714', route: '/settings/quiet-hours' },
     ],
   },
   {
     title: 'Preferences',
     rows: [
-      { id: 'mode',     label: 'Default Mode',    icon: 'square.grid.2x2.fill', iconBg: '#1D9BF0', route: '/settings/default-mode' },
-      { id: 'language', label: 'Language & Region', icon: 'globe',              iconBg: '#22C55E', route: '/settings/language-region' },
+      { id: 'mode',     label: 'Default Mode',    icon: 'square.grid.2x2.fill', iconBg: '#1A1714', route: '/settings/default-mode' },
+      { id: 'language', label: 'Language & Region', icon: 'globe',              iconBg: '#5A8A6E', route: '/settings/language-region' },
     ],
   },
   {
     title: 'Organizations',
     rows: [
-      { id: 'create-org', label: 'Create Organization', icon: 'building.2.fill', iconBg: '#990000', route: '/settings/create-org' },
+      { id: 'create-org', label: 'Create Organization', icon: 'building.2.fill', iconBg: '#1A1714', route: '/settings/create-org' },
     ],
   },
   {
     title: 'Legal',
     rows: [
-      { id: 'help',  label: 'Help & Support',  icon: 'questionmark.circle.fill', iconBg: '#3B82F6', route: '/settings/help-support' },
+      { id: 'help',  label: 'Help & Support',  icon: 'questionmark.circle.fill', iconBg: '#1A1714', route: '/settings/help-support' },
       { id: 'terms', label: 'Terms & Privacy',  icon: 'doc.text.fill',            iconBg: '#6B7280', route: '/settings/terms-privacy' },
     ],
   },
@@ -161,10 +161,10 @@ export default function SettingsScreen() {
               style={({ pressed }) => [s.row, pressed && { backgroundColor: C.surfacePressed }]}
               onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); }}
             >
-              <View style={[s.rowIcon, { backgroundColor: '#EF4444' }]}>
+              <View style={[s.rowIcon, { backgroundColor: '#B85C5C' }]}>
                 <IconSymbol name="rectangle.portrait.and.arrow.right" size={16} color="#fff" />
               </View>
-              <Text style={[s.rowLabel, { color: '#EF4444' }]}>Sign Out</Text>
+              <Text style={[s.rowLabel, { color: '#B85C5C' }]}>Sign Out</Text>
             </Pressable>
           </View>
         </View>

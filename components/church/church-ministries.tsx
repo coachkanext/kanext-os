@@ -73,7 +73,7 @@ const SINGLES_MINISTRY: Ministry = {
   meetingTime: '7:00 PM',
   status: 'active',
   category: 'fellowship',
-  color: '#F59E0B',
+  color: '#B8943E',
 };
 
 /** All ministries including supplemental ones for directory display */
@@ -311,7 +311,7 @@ export function ChurchMinistries({ colors, accent, role }: Props) {
 
           {displayMinistries.length === 0 ? (
             <View style={s.empty}>
-              <IconSymbol name="magnifyingglass" size={24} color="#A1A1AA" />
+              <IconSymbol name="magnifyingglass" size={24} color="#9C9790" />
               <ThemedText style={[s.emptyTitle, { color: colors.text }]}>No Ministries Found</ThemedText>
               <ThemedText style={[s.emptyDesc, { color: colors.textSecondary }]}>
                 {filter === 'my'

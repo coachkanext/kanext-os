@@ -130,6 +130,6 @@ const styles = StyleSheet.create({
   },
   meta: {
     fontSize: 10,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
 });

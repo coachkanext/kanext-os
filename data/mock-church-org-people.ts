@@ -114,11 +114,11 @@ export const LANE_LABELS: Record<OrgChartLane, string> = {
 };
 
 export const LANE_COLORS: Record<OrgChartLane, string> = {
-  clergy: '#1D9BF0',
-  ministry_leadership: '#1D9BF0',
-  operations: '#F59E0B',
-  finance: '#22C55E',
-  volunteers: '#1D9BF0',
+  clergy: '#1A1714',
+  ministry_leadership: '#1A1714',
+  operations: '#B8943E',
+  finance: '#5A8A6E',
+  volunteers: '#1A1714',
 };
 
 // =============================================================================
@@ -133,10 +133,10 @@ export const AUTHORITY_LABELS: Record<AuthorityLevel, string> = {
 };
 
 export const AUTHORITY_COLORS: Record<AuthorityLevel, string> = {
-  lead: '#1D9BF0',
-  approve: '#1D9BF0',
-  sensitive: '#EF4444',
-  view: '#A1A1AA',
+  lead: '#1A1714',
+  approve: '#1A1714',
+  sensitive: '#B85C5C',
+  view: '#9C9790',
 };
 
 // =============================================================================
@@ -151,10 +151,10 @@ export const BG_CHECK_LABELS: Record<BackgroundCheckStatus, string> = {
 };
 
 export const BG_CHECK_COLORS: Record<BackgroundCheckStatus, string> = {
-  cleared: '#22C55E',
-  pending: '#F59E0B',
-  expired: '#EF4444',
-  not_required: '#A1A1AA',
+  cleared: '#5A8A6E',
+  pending: '#B8943E',
+  expired: '#B85C5C',
+  not_required: '#9C9790',
 };
 
 // =============================================================================

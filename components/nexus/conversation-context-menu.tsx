@@ -353,7 +353,7 @@ export function ConversationContextMenu({
                   <ThemedText
                     style={[
                       styles.optionLabel,
-                      option.destructive && { color: '#EF4444' },
+                      option.destructive && { color: '#B85C5C' },
                     ]}
                   >
                     {label}
@@ -361,7 +361,7 @@ export function ConversationContextMenu({
                   <IconSymbol
                     name={icon}
                     size={18}
-                    color={option.destructive ? '#EF4444' : colors.textSecondary}
+                    color={option.destructive ? '#B85C5C' : colors.textSecondary}
                   />
                 </Pressable>
               );
@@ -487,7 +487,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   confirmButtonDestructive: {
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
   },
   confirmButtonText: {
     fontSize: 15,

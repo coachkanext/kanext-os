@@ -186,8 +186,8 @@ const TYPE_COLORS: Record<ObligationType, string> = {
 };
 
 const STATUS_COLORS: Record<ObligationStatus, string> = {
-  Active: '#A1A1AA',
-  Overdue: '#EF4444',
+  Active: '#9C9790',
+  Overdue: '#B85C5C',
   Fulfilled: '#6B7280',
 };
 
@@ -370,7 +370,7 @@ function ObligationDetailSheet({
               <ThemedText style={[s.detailDateLabel, { color: colors.textTertiary }]}>Due Date</ThemedText>
               <View style={s.detailDateValueRow}>
                 {isOverdue && <View style={s.overdueIndicator} />}
-                <ThemedText style={[s.detailDateValue, { color: isOverdue ? '#EF4444' : colors.text }]}>
+                <ThemedText style={[s.detailDateValue, { color: isOverdue ? '#B85C5C' : colors.text }]}>
                   {obligation.dueDate}
                 </ThemedText>
               </View>
@@ -505,16 +505,16 @@ function ObligationDetailSheet({
                   style={[s.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
                   onPress={() => handleAction('Mark Fulfilled')}
                 >
-                  <IconSymbol name="checkmark" size={13} color="#22C55E" />
-                  <ThemedText style={[s.actionBtnText, { color: '#22C55E' }]}>Mark Fulfilled</ThemedText>
+                  <IconSymbol name="checkmark" size={13} color="#5A8A6E" />
+                  <ThemedText style={[s.actionBtnText, { color: '#5A8A6E' }]}>Mark Fulfilled</ThemedText>
                 </Pressable>
               )}
               <Pressable
                 style={[s.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
                 onPress={() => handleAction('Initiate Termination')}
               >
-                <IconSymbol name="xmark" size={13} color="#EF4444" />
-                <ThemedText style={[s.actionBtnText, { color: '#EF4444' }]}>Initiate Termination</ThemedText>
+                <IconSymbol name="xmark" size={13} color="#B85C5C" />
+                <ThemedText style={[s.actionBtnText, { color: '#B85C5C' }]}>Initiate Termination</ThemedText>
               </Pressable>
               <Pressable
                 style={[s.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -770,7 +770,7 @@ export function BizObligationsView({ colors, accent }: Props) {
                     {isOverdueSection && <View style={s.overdueHeaderDot} />}
                     <ThemedText style={[
                       s.horizonLabel,
-                      { color: isOverdueSection ? '#EF4444' : colors.textSecondary },
+                      { color: isOverdueSection ? '#B85C5C' : colors.textSecondary },
                     ]}>
                       {group.label}
                     </ThemedText>
@@ -789,7 +789,7 @@ export function BizObligationsView({ colors, accent }: Props) {
                       key={obl.id}
                       style={[
                         s.oblCard,
-                        { backgroundColor: colors.card, borderColor: isOverdue ? '#EF444440' : colors.border },
+                        { backgroundColor: colors.card, borderColor: isOverdue ? '#B85C5C40' : colors.border },
                       ]}
                       onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSelectedObligation(obl); }}
                     >
@@ -804,7 +804,7 @@ export function BizObligationsView({ colors, accent }: Props) {
                             <View style={[s.typePill, { backgroundColor: '#78716C15' }]}>
                               <ThemedText style={[s.typePillText, { color: '#78716C' }]}>{obl.type}</ThemedText>
                             </View>
-                            <ThemedText style={[s.oblDueDate, { color: isOverdue ? '#EF4444' : colors.textTertiary }]}>
+                            <ThemedText style={[s.oblDueDate, { color: isOverdue ? '#B85C5C' : colors.textTertiary }]}>
                               Due {obl.dueDate}
                             </ThemedText>
                           </View>
@@ -885,7 +885,7 @@ const s = StyleSheet.create({
   horizonLabel: { fontSize: 12, fontWeight: '700', letterSpacing: 0.4, textTransform: 'uppercase' },
   horizonRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   horizonCount: { fontSize: 11, fontWeight: '600' },
-  overdueHeaderDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#EF4444' },
+  overdueHeaderDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#B85C5C' },
 
   // -- Obligation Card --
   oblCard: { borderRadius: 12, borderWidth: 1, padding: 14, marginBottom: 8 },
@@ -894,7 +894,7 @@ const s = StyleSheet.create({
   oblTitle: { fontSize: 14, fontWeight: '700', flex: 1 },
   oblSubRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   oblDueDate: { fontSize: 11 },
-  overdueIndicator: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#EF4444' },
+  overdueIndicator: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#B85C5C' },
 
   // -- Type Pill --
   typePill: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: BorderRadius.full },
@@ -917,7 +917,7 @@ const s = StyleSheet.create({
 
   // -- Detail Sheet --
   sheetContent: { padding: Spacing.md, paddingBottom: 40 },
-  overdueBar: { height: 3, backgroundColor: '#EF4444', borderRadius: 2, marginBottom: 12 },
+  overdueBar: { height: 3, backgroundColor: '#B85C5C', borderRadius: 2, marginBottom: 12 },
   detailSection: { paddingVertical: 8 },
   detailSectionLabel: { fontSize: 9, fontWeight: '700', letterSpacing: 0.6, marginBottom: 10 },
   detailDivider: { height: StyleSheet.hairlineWidth },

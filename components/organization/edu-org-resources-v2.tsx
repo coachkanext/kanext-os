@@ -228,11 +228,11 @@ function OverviewTab({
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Resources</ThemedText>
         </View>
         <View style={[s.tileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.tileValue, { color: '#22C55E' }]}>{publishedCount}</ThemedText>
+          <ThemedText style={[s.tileValue, { color: '#5A8A6E' }]}>{publishedCount}</ThemedText>
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Published</ThemedText>
         </View>
         <View style={[s.tileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.tileValue, { color: '#F59E0B' }]}>{draftCount}</ThemedText>
+          <ThemedText style={[s.tileValue, { color: '#B8943E' }]}>{draftCount}</ThemedText>
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Drafts</ThemedText>
         </View>
         <View style={[s.tileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -240,7 +240,7 @@ function OverviewTab({
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Active SOPs</ThemedText>
         </View>
         <View style={[s.tileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.tileValue, { color: '#EF4444' }]}>{newRequests}</ThemedText>
+          <ThemedText style={[s.tileValue, { color: '#B85C5C' }]}>{newRequests}</ThemedText>
           <ThemedText style={[s.tileLabel, { color: colors.textSecondary }]}>Open Requests</ThemedText>
         </View>
       </ScrollView>
@@ -249,8 +249,8 @@ function OverviewTab({
       <ThemedText style={[s.sectionTitle, { color: colors.text }]}>Start Here</ThemedText>
 
       {pinnedResources.map((item) => {
-        const deptColor = DEPARTMENT_SCOPE_COLORS[item.department] || '#A1A1AA';
-        const typeColor = RESOURCE_TYPE_COLORS[item.type] || '#A1A1AA';
+        const deptColor = DEPARTMENT_SCOPE_COLORS[item.department] || '#9C9790';
+        const typeColor = RESOURCE_TYPE_COLORS[item.type] || '#9C9790';
         return (
           <View
             key={item.id}
@@ -351,8 +351,8 @@ function OverviewTab({
           <ThemedText style={[s.sectionTitle, { color: colors.text, marginTop: Spacing.lg }]}>
             Missing / Needed
           </ThemedText>
-          <View style={[s.alertCard, { backgroundColor: '#F59E0B10', borderColor: '#F59E0B30' }]}>
-            <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#F59E0B" />
+          <View style={[s.alertCard, { backgroundColor: '#B8943E10', borderColor: '#B8943E30' }]}>
+            <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#B8943E" />
             <View style={s.alertTextCol}>
               <ThemedText style={[s.alertTitle, { color: colors.text }]}>
                 {newRequests} New Resource Requests
@@ -451,9 +451,9 @@ function LibraryTab({
   const renderItem = useCallback(
     ({ item }: { item: Resource }) => {
       const statusColor = RESOURCE_STATUS_COLORS[item.status];
-      const deptColor = DEPARTMENT_SCOPE_COLORS[item.department] || '#A1A1AA';
-      const typeColor = RESOURCE_TYPE_COLORS[item.type] || '#A1A1AA';
-      const audienceColor = RESOURCE_AUDIENCE_COLORS[item.audience] || '#A1A1AA';
+      const deptColor = DEPARTMENT_SCOPE_COLORS[item.department] || '#9C9790';
+      const typeColor = RESOURCE_TYPE_COLORS[item.type] || '#9C9790';
+      const audienceColor = RESOURCE_AUDIENCE_COLORS[item.audience] || '#9C9790';
       return (
         <Pressable
           style={[s.resourceCard, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -577,8 +577,8 @@ function PacksTab({
   const renderItem = useCallback(
     ({ item }: { item: ResourcePack }) => {
       const statusColor = PACK_STATUS_COLORS[item.status];
-      const audienceColor = PACK_AUDIENCE_COLORS[item.audience] || '#A1A1AA';
-      const deptColor = DEPARTMENT_SCOPE_COLORS[item.department] || '#A1A1AA';
+      const audienceColor = PACK_AUDIENCE_COLORS[item.audience] || '#9C9790';
+      const deptColor = DEPARTMENT_SCOPE_COLORS[item.department] || '#9C9790';
       return (
         <Pressable
           style={[s.packCard, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -652,7 +652,7 @@ function TemplatesTab({
 }) {
   const renderItem = useCallback(
     ({ item }: { item: Template }) => {
-      const deptColor = DEPARTMENT_SCOPE_COLORS[item.department] || '#A1A1AA';
+      const deptColor = DEPARTMENT_SCOPE_COLORS[item.department] || '#9C9790';
       return (
         <View style={[s.templateCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <View style={s.templateHeader}>
@@ -669,7 +669,7 @@ function TemplatesTab({
                   </ThemedText>
                 </View>
                 {item.outdated && (
-                  <StatusBadge label="OUTDATED" color="#F59E0B" />
+                  <StatusBadge label="OUTDATED" color="#B8943E" />
                 )}
               </View>
             </View>
@@ -733,7 +733,7 @@ function SOPsTab({
   const renderItem = useCallback(
     ({ item }: { item: SOP }) => {
       const statusColor = SOP_STATUS_COLORS[item.status];
-      const deptColor = DEPARTMENT_SCOPE_COLORS[item.department] || '#A1A1AA';
+      const deptColor = DEPARTMENT_SCOPE_COLORS[item.department] || '#9C9790';
       return (
         <Pressable
           style={[s.sopCard, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -776,7 +776,7 @@ function SOPsTab({
           {/* Failure Points preview */}
           {item.failurePoints.length > 0 && (
             <View style={s.sopFailurePreview}>
-              <ThemedText style={[s.sopFailureLabel, { color: '#EF4444' }]}>
+              <ThemedText style={[s.sopFailureLabel, { color: '#B85C5C' }]}>
                 {item.failurePoints.length} failure points identified
               </ThemedText>
             </View>
@@ -836,7 +836,7 @@ function PoliciesTab({
             Policies updated in the last 30 days
           </ThemedText>
           {recentlyUpdated.slice(0, 3).map((policy) => {
-            const deptColor = DEPARTMENT_SCOPE_COLORS[policy.department] || '#A1A1AA';
+            const deptColor = DEPARTMENT_SCOPE_COLORS[policy.department] || '#9C9790';
             return (
               <View
                 key={`recent-${policy.id}`}
@@ -866,7 +866,7 @@ function PoliciesTab({
       </ThemedText>
 
       {sorted.map((policy) => {
-        const deptColor = DEPARTMENT_SCOPE_COLORS[policy.department] || '#A1A1AA';
+        const deptColor = DEPARTMENT_SCOPE_COLORS[policy.department] || '#9C9790';
         return (
           <View
             key={policy.id}
@@ -926,7 +926,7 @@ function RoleKitsTab({
 }) {
   const renderItem = useCallback(
     ({ item }: { item: RoleKit }) => {
-      const typeColor = ROLE_KIT_TYPE_COLORS[item.type] || '#A1A1AA';
+      const typeColor = ROLE_KIT_TYPE_COLORS[item.type] || '#9C9790';
       return (
         <Pressable
           style={[s.kitCard, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -965,7 +965,7 @@ function RoleKitsTab({
               </ThemedText>
             </View>
             <View style={s.kitStatItem}>
-              <ThemedText style={[s.kitStatValue, { color: '#22C55E' }]}>
+              <ThemedText style={[s.kitStatValue, { color: '#5A8A6E' }]}>
                 {item.templates.length}
               </ThemedText>
               <ThemedText style={[s.kitStatLabel, { color: colors.textSecondary }]}>
@@ -973,7 +973,7 @@ function RoleKitsTab({
               </ThemedText>
             </View>
             <View style={s.kitStatItem}>
-              <ThemedText style={[s.kitStatValue, { color: '#EF4444' }]}>
+              <ThemedText style={[s.kitStatValue, { color: '#B85C5C' }]}>
                 {item.emergencyActions.length}
               </ThemedText>
               <ThemedText style={[s.kitStatLabel, { color: colors.textSecondary }]}>
@@ -981,7 +981,7 @@ function RoleKitsTab({
               </ThemedText>
             </View>
             <View style={s.kitStatItem}>
-              <ThemedText style={[s.kitStatValue, { color: '#F59E0B' }]}>
+              <ThemedText style={[s.kitStatValue, { color: '#B8943E' }]}>
                 {item.contacts.length}
               </ThemedText>
               <ThemedText style={[s.kitStatLabel, { color: colors.textSecondary }]}>
@@ -1026,7 +1026,7 @@ function RequestsTab({
     ({ item }: { item: ResourceRequest }) => {
       const statusColor = REQUEST_STATUS_COLORS[item.status];
       const priorityColor = REQUEST_PRIORITY_COLORS[item.priority];
-      const typeColor = REQUEST_TYPE_COLORS[item.type] || '#A1A1AA';
+      const typeColor = REQUEST_TYPE_COLORS[item.type] || '#9C9790';
       return (
         <View style={[s.requestCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
           {/* Priority bar */}
@@ -1301,9 +1301,9 @@ function ResourceDetailSheet({
   if (!resource) return null;
 
   const statusColor = RESOURCE_STATUS_COLORS[resource.status];
-  const typeColor = RESOURCE_TYPE_COLORS[resource.type] || '#A1A1AA';
-  const deptColor = DEPARTMENT_SCOPE_COLORS[resource.department] || '#A1A1AA';
-  const audienceColor = RESOURCE_AUDIENCE_COLORS[resource.audience] || '#A1A1AA';
+  const typeColor = RESOURCE_TYPE_COLORS[resource.type] || '#9C9790';
+  const deptColor = DEPARTMENT_SCOPE_COLORS[resource.department] || '#9C9790';
+  const audienceColor = RESOURCE_AUDIENCE_COLORS[resource.audience] || '#9C9790';
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title={resource.title} useModal>
@@ -1412,8 +1412,8 @@ function PackDetailSheet({
   if (!pack) return null;
 
   const statusColor = PACK_STATUS_COLORS[pack.status];
-  const audienceColor = PACK_AUDIENCE_COLORS[pack.audience] || '#A1A1AA';
-  const deptColor = DEPARTMENT_SCOPE_COLORS[pack.department] || '#A1A1AA';
+  const audienceColor = PACK_AUDIENCE_COLORS[pack.audience] || '#9C9790';
+  const deptColor = DEPARTMENT_SCOPE_COLORS[pack.department] || '#9C9790';
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title={pack.name} useModal>
@@ -1442,7 +1442,7 @@ function PackDetailSheet({
           Contents ({pack.items.length})
         </ThemedText>
         {pack.items.map((item) => {
-          const itemTypeColor = RESOURCE_TYPE_COLORS[item.type] || '#A1A1AA';
+          const itemTypeColor = RESOURCE_TYPE_COLORS[item.type] || '#9C9790';
           return (
             <View key={item.resourceId} style={s.sheetListRow}>
               <View style={[s.sheetListDot, { backgroundColor: itemTypeColor }]} />
@@ -1453,9 +1453,9 @@ function PackDetailSheet({
                 <View style={s.sheetListBadgeRow}>
                   <StatusBadge label={RESOURCE_TYPE_LABELS[item.type].toUpperCase()} color={itemTypeColor} />
                   {item.required ? (
-                    <StatusBadge label="REQUIRED" color="#EF4444" />
+                    <StatusBadge label="REQUIRED" color="#B85C5C" />
                   ) : (
-                    <StatusBadge label="OPTIONAL" color="#A1A1AA" />
+                    <StatusBadge label="OPTIONAL" color="#9C9790" />
                   )}
                 </View>
               </View>
@@ -1535,7 +1535,7 @@ function SOPDetailSheet({
   if (!sop) return null;
 
   const statusColor = SOP_STATUS_COLORS[sop.status];
-  const deptColor = DEPARTMENT_SCOPE_COLORS[sop.department] || '#A1A1AA';
+  const deptColor = DEPARTMENT_SCOPE_COLORS[sop.department] || '#9C9790';
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title={sop.title} useModal>
@@ -1548,7 +1548,7 @@ function SOPDetailSheet({
           </ThemedText>
         </View>
         <StatusBadge label={`${sop.stepsCount} STEPS`} color={accentColor} />
-        <StatusBadge label={`~${sop.estimatedMinutes} MIN`} color="#A1A1AA" />
+        <StatusBadge label={`~${sop.estimatedMinutes} MIN`} color="#9C9790" />
       </View>
 
       {/* Preconditions */}
@@ -1556,7 +1556,7 @@ function SOPDetailSheet({
         <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Preconditions</ThemedText>
         {sop.preconditions.map((pre, idx) => (
           <View key={idx} style={s.sheetChecklistRow}>
-            <IconSymbol name="checkmark.circle.fill" size={14} color="#22C55E" />
+            <IconSymbol name="checkmark.circle.fill" size={14} color="#5A8A6E" />
             <ThemedText style={[s.sheetChecklistText, { color: colors.textSecondary }]}>
               {pre}
             </ThemedText>
@@ -1593,7 +1593,7 @@ function SOPDetailSheet({
         <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Failure Points</ThemedText>
         {sop.failurePoints.map((fp, idx) => (
           <View key={idx} style={s.sheetChecklistRow}>
-            <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#EF4444" />
+            <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#B85C5C" />
             <ThemedText style={[s.sheetChecklistText, { color: colors.textSecondary }]}>
               {fp}
             </ThemedText>
@@ -1653,7 +1653,7 @@ function RoleKitDetailSheet({
 }) {
   if (!kit) return null;
 
-  const typeColor = ROLE_KIT_TYPE_COLORS[kit.type] || '#A1A1AA';
+  const typeColor = ROLE_KIT_TYPE_COLORS[kit.type] || '#9C9790';
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title={kit.label} useModal>
@@ -1703,7 +1703,7 @@ function RoleKitDetailSheet({
         </ThemedText>
         {kit.templates.map((tmpl, idx) => (
           <View key={idx} style={s.sheetListRow}>
-            <IconSymbol name="doc.on.doc.fill" size={14} color="#22C55E" />
+            <IconSymbol name="doc.on.doc.fill" size={14} color="#5A8A6E" />
             <View style={s.sheetListTextCol}>
               <ThemedText style={[s.sheetListTitle, { color: colors.text }]} numberOfLines={1}>
                 {tmpl}
@@ -1725,7 +1725,7 @@ function RoleKitDetailSheet({
         </ThemedText>
         {kit.emergencyActions.map((action, idx) => (
           <View key={idx} style={s.sheetChecklistRow}>
-            <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#EF4444" />
+            <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#B85C5C" />
             <ThemedText style={[s.sheetChecklistText, { color: colors.textSecondary }]}>
               {action}
             </ThemedText>
@@ -1740,7 +1740,7 @@ function RoleKitDetailSheet({
         </ThemedText>
         {kit.contacts.map((contact, idx) => (
           <View key={idx} style={s.sheetListRow}>
-            <IconSymbol name="person.fill" size={14} color="#F59E0B" />
+            <IconSymbol name="person.fill" size={14} color="#B8943E" />
             <View style={s.sheetListTextCol}>
               <ThemedText style={[s.sheetListTitle, { color: colors.text }]} numberOfLines={1}>
                 {contact}

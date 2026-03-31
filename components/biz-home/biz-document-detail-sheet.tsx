@@ -90,9 +90,9 @@ export function BizDocumentDetailSheet({ document: doc, visible, onClose, colors
               <ThemedText style={[s.statusPillText, { color: statusColor }]}>{doc.status}</ThemedText>
             </View>
             {doc.locked && (
-              <View style={[s.lockPill, { backgroundColor: '#EF4444' + '15' }]}>
-                <IconSymbol name="lock.fill" size={10} color="#EF4444" />
-                <ThemedText style={[s.lockPillText, { color: '#EF4444' }]}>Locked</ThemedText>
+              <View style={[s.lockPill, { backgroundColor: '#B85C5C' + '15' }]}>
+                <IconSymbol name="lock.fill" size={10} color="#B85C5C" />
+                <ThemedText style={[s.lockPillText, { color: '#B85C5C' }]}>Locked</ThemedText>
               </View>
             )}
           </View>
@@ -207,8 +207,8 @@ export function BizDocumentDetailSheet({ document: doc, visible, onClose, colors
                       v{v.version}
                     </ThemedText>
                     {isLatest && (
-                      <View style={[s.latestBadge, { backgroundColor: '#22C55E' + '15' }]}>
-                        <ThemedText style={[s.latestBadgeText, { color: '#22C55E' }]}>CURRENT</ThemedText>
+                      <View style={[s.latestBadge, { backgroundColor: '#5A8A6E' + '15' }]}>
+                        <ThemedText style={[s.latestBadgeText, { color: '#5A8A6E' }]}>CURRENT</ThemedText>
                       </View>
                     )}
                   </View>

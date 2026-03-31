@@ -77,7 +77,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 12, gap: 12 },
   icon: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center', opacity: 0.6 },
   channelShape: { borderRadius: 10, backgroundColor: C.surface },
-  dmShape: { borderRadius: 20, backgroundColor: '#1C1C1E' },
+  dmShape: { borderRadius: 20, backgroundColor: '#1C1410' },
   initials: { fontSize: 13, fontWeight: '700', color: C.label },
   info: { flex: 1 },
   name: { fontSize: 16, fontWeight: '500', color: C.label },

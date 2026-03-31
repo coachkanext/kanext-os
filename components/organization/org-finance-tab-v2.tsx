@@ -87,7 +87,7 @@ function ContractStatusBadge({ status }: { status: FinanceContract['status'] }) 
 function AmountText({ amount, type }: { amount: number; type: 'income' | 'expense' | 'receivable' | 'payable' | 'neutral' }) {
   const isPositive = type === 'income' || type === 'receivable';
   const isNegative = type === 'expense' || type === 'payable';
-  const color = isPositive ? '#22C55E' : isNegative ? '#EF4444' : '#FFFFFF';
+  const color = isPositive ? '#5A8A6E' : isNegative ? '#B85C5C' : '#FFFFFF';
   const prefix = isPositive ? '+' : isNegative ? '-' : '';
   return (
     <ThemedText style={[s.amountText, { color }]}>
@@ -135,10 +135,10 @@ const MODE_LABELS: Record<Mode, string> = {
 // =============================================================================
 
 const PAYROLL_TYPE_COLOR: Record<string, string> = {
-  salary: '#1D9BF0',
-  stipend: '#22C55E',
-  contractor: '#F59E0B',
-  honorarium: '#1D9BF0',
+  salary: '#1A1714',
+  stipend: '#5A8A6E',
+  contractor: '#B8943E',
+  honorarium: '#1A1714',
 };
 
 // =============================================================================
@@ -147,12 +147,12 @@ const PAYROLL_TYPE_COLOR: Record<string, string> = {
 
 function auditEntryColor(action: string): string {
   if (action.includes('payment') || action.includes('payroll')) return accent;
-  if (action.includes('revenue') || action.includes('giving') || action.includes('tuition') || action.includes('grant') || action.includes('sponsorship')) return '#22C55E';
-  if (action.includes('alert') || action.includes('overdue')) return '#EF4444';
-  if (action.includes('approval') || action.includes('reimbursement')) return '#F59E0B';
+  if (action.includes('revenue') || action.includes('giving') || action.includes('tuition') || action.includes('grant') || action.includes('sponsorship')) return '#5A8A6E';
+  if (action.includes('alert') || action.includes('overdue')) return '#B85C5C';
+  if (action.includes('approval') || action.includes('reimbursement')) return '#B8943E';
   if (action.includes('contract') || action.includes('insurance')) return accent;
-  if (action.includes('control')) return '#A1A1AA';
-  return '#A1A1AA';
+  if (action.includes('control')) return '#9C9790';
+  return '#9C9790';
 }
 
 function auditEntryIcon(action: string): string {
@@ -305,7 +305,7 @@ export function OrgFinanceTab({ mode, colors, accentColor }: Props) {
           <ThemedText
             style={[
               s.quickStatValue,
-              { color: overduePayableCount > 0 ? '#EF4444' : colors.text, fontVariant: ['tabular-nums'] },
+              { color: overduePayableCount > 0 ? '#B85C5C' : colors.text, fontVariant: ['tabular-nums'] },
             ]}
           >
             {overduePayableCount}
@@ -430,7 +430,7 @@ export function OrgFinanceTab({ mode, colors, accentColor }: Props) {
                 <Pressable
                   style={({ pressed }) => [
                     s.approveBtn,
-                    { backgroundColor: '#22C55E' },
+                    { backgroundColor: '#5A8A6E' },
                     pressed && { opacity: 0.8 },
                   ]}
                   onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
@@ -440,7 +440,7 @@ export function OrgFinanceTab({ mode, colors, accentColor }: Props) {
                 <Pressable
                   style={({ pressed }) => [
                     s.rejectBtn,
-                    { backgroundColor: '#EF4444' },
+                    { backgroundColor: '#B85C5C' },
                     pressed && { opacity: 0.8 },
                   ]}
                   onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
@@ -484,7 +484,7 @@ export function OrgFinanceTab({ mode, colors, accentColor }: Props) {
               <ThemedText
                 style={[
                   s.listCardSub,
-                  { color: (item.status === 'overdue' || (item.status === 'pending' && new Date(item.dueDate) < new Date())) ? '#EF4444' : colors.textTertiary },
+                  { color: (item.status === 'overdue' || (item.status === 'pending' && new Date(item.dueDate) < new Date())) ? '#B85C5C' : colors.textTertiary },
                 ]}
               >
                 Due: {item.dueDate}{(item.status === 'overdue' || (item.status === 'pending' && new Date(item.dueDate) < new Date())) ? ' (OVERDUE)' : ''}
@@ -553,7 +553,7 @@ export function OrgFinanceTab({ mode, colors, accentColor }: Props) {
               <ThemedText
                 style={[
                   s.listCardSub,
-                  { color: item.status === 'expiring' ? '#F59E0B' : colors.textTertiary },
+                  { color: item.status === 'expiring' ? '#B8943E' : colors.textTertiary },
                 ]}
               >
                 Renewal: {item.renewalDate}{item.status === 'expiring' ? ' (soon)' : ''}
@@ -611,7 +611,7 @@ export function OrgFinanceTab({ mode, colors, accentColor }: Props) {
       contentContainerStyle={s.listContent}
       ListEmptyComponent={<EmptyState icon="person.2" text="No payroll items" colors={colors} />}
       renderItem={({ item }) => {
-        const typeColor = PAYROLL_TYPE_COLOR[item.type] ?? '#A1A1AA';
+        const typeColor = PAYROLL_TYPE_COLOR[item.type] ?? '#9C9790';
         return (
           <View style={[s.listCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.listCardRow}>
@@ -1421,7 +1421,7 @@ const s = StyleSheet.create({
   receivableAmount: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
   receivableBottomRow: {
     flexDirection: 'row',

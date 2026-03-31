@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
   rowDuration: {
     fontSize: 12,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   sourceBadge: {
     backgroundColor: '#0B0F14',
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   sourceText: {
     fontSize: 10,
-    color: '#A1A1AA',
+    color: '#9C9790',
     fontWeight: '500',
   },
   typeBadge: {
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   },
   typeText: {
     fontSize: 11,
-    color: '#A1A1AA',
+    color: '#9C9790',
     fontWeight: '500',
     textTransform: 'capitalize',
   },
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   },
   gridSource: {
     fontSize: 10,
-    color: '#A1A1AA',
+    color: '#9C9790',
     paddingHorizontal: 6,
     paddingBottom: 6,
     paddingTop: 2,

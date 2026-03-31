@@ -206,7 +206,7 @@ function ContactRow({
     client: C.green,
     partner: C.purple,
     vendor: C.amber,
-    investor: '#EC4899',
+    investor: '#1A1714',
   };
   const typeColor = TYPE_COLORS[contact.type] || C.muted;
 

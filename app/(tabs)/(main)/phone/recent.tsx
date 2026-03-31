@@ -71,8 +71,8 @@ function CallActionPopup({
   if (!visible || !call) return null;
 
   const actions = [
-    { icon: 'phone.fill', label: 'Audio Call', color: '#34D399', onPress: () => { initiateCall({ contactName: call.name, contactInitials: call.initials, mode: call.mode, type: 'audio' }); onClose(); } },
-    { icon: 'video.fill', label: 'Video Call', color: '#34D399', onPress: () => { initiateCall({ contactName: call.name, contactInitials: call.initials, mode: call.mode, type: 'video' }); onClose(); } },
+    { icon: 'phone.fill', label: 'Audio Call', color: '#5A8A6E', onPress: () => { initiateCall({ contactName: call.name, contactInitials: call.initials, mode: call.mode, type: 'audio' }); onClose(); } },
+    { icon: 'video.fill', label: 'Video Call', color: '#5A8A6E', onPress: () => { initiateCall({ contactName: call.name, contactInitials: call.initials, mode: call.mode, type: 'video' }); onClose(); } },
     { icon: 'bubble.left.fill', label: 'Message', color: accent, onPress: onClose },
     { icon: 'person.circle', label: 'View Profile', color: C.secondary, onPress: onClose },
     { icon: 'trash.fill', label: 'Delete', color: C.red, onPress: onClose },

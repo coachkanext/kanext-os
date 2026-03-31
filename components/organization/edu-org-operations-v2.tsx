@@ -52,9 +52,9 @@ const SUB_TABS = [
 ];
 
 const HEALTH_DOT_COLORS: Record<string, string> = {
-  green: '#22C55E',
-  yellow: '#F59E0B',
-  red: '#EF4444',
+  green: '#5A8A6E',
+  yellow: '#B8943E',
+  red: '#B85C5C',
 };
 
 // =============================================================================
@@ -198,11 +198,11 @@ function DashboardTab({
       {/* Risk Strip */}
       <View style={s.kpiRow}>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: '#EF4444' }]}>{dashboardTiles.blockedInitiatives}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: '#B85C5C' }]}>{dashboardTiles.blockedInitiatives}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Blocked</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: '#F59E0B' }]}>{dashboardTiles.atRiskInitiatives}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: '#B8943E' }]}>{dashboardTiles.atRiskInitiatives}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>At Risk</ThemedText>
         </View>
       </View>
@@ -230,13 +230,13 @@ function DashboardTab({
       <ThemedText style={[s.sectionTitle, { color: colors.text, marginTop: Spacing.lg }]}>Operations Pulse</ThemedText>
       <View style={s.kpiRow}>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: dashboardTiles.approvalPressure > 3 ? '#F59E0B' : colors.text }]}>
+          <ThemedText style={[s.kpiValue, { color: dashboardTiles.approvalPressure > 3 ? '#B8943E' : colors.text }]}>
             {dashboardTiles.approvalPressure}
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Approval Pressure</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: dashboardTiles.ownerCoverage >= 90 ? '#22C55E' : '#F59E0B' }]}>
+          <ThemedText style={[s.kpiValue, { color: dashboardTiles.ownerCoverage >= 90 ? '#5A8A6E' : '#B8943E' }]}>
             {dashboardTiles.ownerCoverage}%
           </ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Owner Coverage</ThemedText>
@@ -246,9 +246,9 @@ function DashboardTab({
       {/* SLA Breaches */}
       <View style={[s.sectionCard, { backgroundColor: colors.card, borderColor: colors.border, marginTop: Spacing.sm }]}>
         <View style={s.sectionCardHeader}>
-          <IconSymbol name="exclamationmark.triangle.fill" size={16} color={dashboardTiles.slaBreaches > 0 ? '#EF4444' : '#22C55E'} />
+          <IconSymbol name="exclamationmark.triangle.fill" size={16} color={dashboardTiles.slaBreaches > 0 ? '#B85C5C' : '#5A8A6E'} />
           <ThemedText style={[s.sectionCardTitle, { color: colors.text }]}>SLA Breaches</ThemedText>
-          <ThemedText style={[s.percentLabel, { color: dashboardTiles.slaBreaches > 0 ? '#EF4444' : '#22C55E' }]}>
+          <ThemedText style={[s.percentLabel, { color: dashboardTiles.slaBreaches > 0 ? '#B85C5C' : '#5A8A6E' }]}>
             {dashboardTiles.slaBreaches}
           </ThemedText>
         </View>
@@ -349,10 +349,10 @@ function InitiativesTab({
           {/* Blockers */}
           {item.blockers.length > 0 && (
             <View style={[s.blockersSection, { borderTopColor: colors.border }]}>
-              <ThemedText style={[s.blockerTitle, { color: '#EF4444' }]}>Blockers</ThemedText>
+              <ThemedText style={[s.blockerTitle, { color: '#B85C5C' }]}>Blockers</ThemedText>
               {item.blockers.map((b, i) => (
                 <View key={`${item.id}-blocker-${i}`} style={s.blockerRow}>
-                  <IconSymbol name="xmark.octagon.fill" size={12} color="#EF4444" />
+                  <IconSymbol name="xmark.octagon.fill" size={12} color="#B85C5C" />
                   <ThemedText style={[s.blockerText, { color: colors.textSecondary }]} numberOfLines={2}>{b}</ThemedText>
                 </View>
               ))}
@@ -455,14 +455,14 @@ function WorkflowsTab({
                   <ProgressBar percent={stepPct} color={accentColor} />
                   <View style={s.cardDetailRow}>
                     <ThemedText style={[s.cardDetailLabel, { color: colors.textSecondary }]}>Avg Days</ThemedText>
-                    <ThemedText style={[s.cardDetailValue, { color: wf.avgCompletionDays > wf.slaTarget ? '#EF4444' : colors.text }]}>
+                    <ThemedText style={[s.cardDetailValue, { color: wf.avgCompletionDays > wf.slaTarget ? '#B85C5C' : colors.text }]}>
                       {wf.avgCompletionDays}d / {wf.slaTarget}d SLA
                     </ThemedText>
                   </View>
                   {wf.slaBreaches > 0 && (
                     <View style={s.cardDetailRow}>
                       <ThemedText style={[s.cardDetailLabel, { color: colors.textSecondary }]}>SLA Breaches</ThemedText>
-                      <ThemedText style={[s.cardDetailValue, { color: '#EF4444', fontWeight: '700' }]}>
+                      <ThemedText style={[s.cardDetailValue, { color: '#B85C5C', fontWeight: '700' }]}>
                         {wf.slaBreaches}
                       </ThemedText>
                     </View>
@@ -473,8 +473,8 @@ function WorkflowsTab({
                   </View>
                   {wf.bottleneckStep && (
                     <View style={[s.bottleneckRow, { borderTopColor: colors.border }]}>
-                      <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
-                      <ThemedText style={[s.bottleneckText, { color: '#EF4444' }]}>
+                      <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B85C5C" />
+                      <ThemedText style={[s.bottleneckText, { color: '#B85C5C' }]}>
                         Bottleneck: {wf.bottleneckStep}
                       </ThemedText>
                     </View>
@@ -606,7 +606,7 @@ function QueueTab({
             </View>
             <View style={s.queueMeta}>
               <ThemedText style={[s.queueMetaText, { color: colors.textSecondary }]}>{t.assignee}</ThemedText>
-              <ThemedText style={[s.queueMetaText, { color: t.status === 'overdue' ? '#EF4444' : colors.textTertiary }]}>
+              <ThemedText style={[s.queueMetaText, { color: t.status === 'overdue' ? '#B85C5C' : colors.textTertiary }]}>
                 Due {formatDate(t.dueDate)}
               </ThemedText>
             </View>
@@ -735,7 +735,7 @@ function ScorecardsTab({
               const pct = kpi.target !== 0 ? Math.round((kpi.current / Math.abs(kpi.target)) * 100) : 100;
               const clampedPct = Math.min(Math.max(pct, 0), 100);
               const trendIcon = kpi.trend === 'up' ? 'arrow.up' : kpi.trend === 'down' ? 'arrow.down' : 'arrow.right';
-              const trendColor = kpi.trend === 'up' ? '#22C55E' : kpi.trend === 'down' ? '#EF4444' : '#A1A1AA';
+              const trendColor = kpi.trend === 'up' ? '#5A8A6E' : kpi.trend === 'down' ? '#B85C5C' : '#9C9790';
               return (
                 <View key={`${sc.domain}-kpi-${i}`} style={s.scorecardKpiRow}>
                   <View style={s.scorecardKpiHeader}>
@@ -844,7 +844,7 @@ function InitiativeDetailSheet({
           <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Blockers</ThemedText>
           {initiative.blockers.map((b, i) => (
             <View key={`sheet-blocker-${i}`} style={s.sheetListRow}>
-              <IconSymbol name="xmark.octagon.fill" size={14} color="#EF4444" />
+              <IconSymbol name="xmark.octagon.fill" size={14} color="#B85C5C" />
               <ThemedText style={[s.sheetListText, { color: colors.textSecondary }]}>{b}</ThemedText>
             </View>
           ))}
@@ -932,13 +932,13 @@ function WorkflowDetailSheet({
         <ProgressBar percent={stepPct} color={accentColor} />
         <View style={s.sheetDetailRow}>
           <ThemedText style={[s.sheetDetailLabel, { color: colors.textTertiary }]}>Avg Completion</ThemedText>
-          <ThemedText style={[s.sheetDetailValue, { color: workflow.avgCompletionDays > workflow.slaTarget ? '#EF4444' : colors.text }]}>
+          <ThemedText style={[s.sheetDetailValue, { color: workflow.avgCompletionDays > workflow.slaTarget ? '#B85C5C' : colors.text }]}>
             {workflow.avgCompletionDays} days (SLA: {workflow.slaTarget}d)
           </ThemedText>
         </View>
         <View style={s.sheetDetailRow}>
           <ThemedText style={[s.sheetDetailLabel, { color: colors.textTertiary }]}>SLA Breaches</ThemedText>
-          <ThemedText style={[s.sheetDetailValue, { color: workflow.slaBreaches > 0 ? '#EF4444' : '#22C55E' }]}>
+          <ThemedText style={[s.sheetDetailValue, { color: workflow.slaBreaches > 0 ? '#B85C5C' : '#5A8A6E' }]}>
             {workflow.slaBreaches}
           </ThemedText>
         </View>
@@ -949,8 +949,8 @@ function WorkflowDetailSheet({
         <View style={[s.sheetSection, { borderBottomColor: colors.border }]}>
           <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Bottleneck</ThemedText>
           <View style={s.sheetListRow}>
-            <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#EF4444" />
-            <ThemedText style={[s.sheetListText, { color: '#EF4444' }]}>{workflow.bottleneckStep}</ThemedText>
+            <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#B85C5C" />
+            <ThemedText style={[s.sheetListText, { color: '#B85C5C' }]}>{workflow.bottleneckStep}</ThemedText>
           </View>
         </View>
       )}
@@ -1034,7 +1034,7 @@ function TaskDetailSheet({
         </View>
         <View style={s.sheetDetailRow}>
           <ThemedText style={[s.sheetDetailLabel, { color: colors.textTertiary }]}>Due Date</ThemedText>
-          <ThemedText style={[s.sheetDetailValue, { color: task.status === 'overdue' ? '#EF4444' : colors.text }]}>
+          <ThemedText style={[s.sheetDetailValue, { color: task.status === 'overdue' ? '#B85C5C' : colors.text }]}>
             {formatDate(task.dueDate)}
           </ThemedText>
         </View>

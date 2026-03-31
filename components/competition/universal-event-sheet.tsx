@@ -66,8 +66,8 @@ interface UniversalEventSheetProps {
 
 function getStatusColor(status: 'upcoming' | 'live' | 'completed'): string {
   switch (status) {
-    case 'live': return '#22C55E';
-    case 'completed': return '#A1A1AA';
+    case 'live': return '#5A8A6E';
+    case 'completed': return '#9C9790';
     case 'upcoming': return ACCENT;
   }
 }
@@ -95,12 +95,12 @@ function getSessionTypeIcon(type: SessionType): string {
 
 function getSessionStatusColor(status: SessionStatus): string {
   switch (status) {
-    case 'live': return '#22C55E';
-    case 'delayed': return '#F59E0B';
-    case 'red_flag': return '#EF4444';
-    case 'complete': return '#A1A1AA';
+    case 'live': return '#5A8A6E';
+    case 'delayed': return '#B8943E';
+    case 'red_flag': return '#B85C5C';
+    case 'complete': return '#9C9790';
     case 'scheduled': return ACCENT;
-    default: return '#A1A1AA';
+    default: return '#9C9790';
   }
 }
 
@@ -118,31 +118,31 @@ function getSessionStatusLabel(status: SessionStatus): string {
 function getIncidentStatusColor(status: IncidentStatus): string {
   switch (status) {
     case 'new': return ACCENT;
-    case 'assigned': return '#F59E0B';
-    case 'under_review': return '#F59E0B';
-    case 'decided': return '#22C55E';
-    case 'closed': return '#A1A1AA';
-    default: return '#A1A1AA';
+    case 'assigned': return '#B8943E';
+    case 'under_review': return '#B8943E';
+    case 'decided': return '#5A8A6E';
+    case 'closed': return '#9C9790';
+    default: return '#9C9790';
   }
 }
 
 function getPayoutStatusColor(status: PayoutStatus): string {
   switch (status) {
-    case 'released': return '#22C55E';
-    case 'hold': return '#EF4444';
-    case 'pending': return '#F59E0B';
-    case 'locked': return '#A1A1AA';
-    default: return '#A1A1AA';
+    case 'released': return '#5A8A6E';
+    case 'hold': return '#B85C5C';
+    case 'pending': return '#B8943E';
+    case 'locked': return '#9C9790';
+    default: return '#9C9790';
   }
 }
 
 function getDeliverableStatusColor(status: DeliverableStatus): string {
   switch (status) {
-    case 'on_track': return '#22C55E';
-    case 'at_risk': return '#F59E0B';
-    case 'overdue': return '#EF4444';
-    case 'delivered': return '#A1A1AA';
-    default: return '#A1A1AA';
+    case 'on_track': return '#5A8A6E';
+    case 'at_risk': return '#B8943E';
+    case 'overdue': return '#B85C5C';
+    case 'delivered': return '#9C9790';
+    default: return '#9C9790';
   }
 }
 
@@ -187,18 +187,18 @@ const LIVE_CONTROL_ITEMS = [
 // =============================================================================
 
 const MOCK_RESULTS = [
-  { entrantId: 'ent-1', name: 'Apex Racing #1', session: 'Qualifying', position: 1, gap: 'POLE', teamColor: '#EF4444' },
+  { entrantId: 'ent-1', name: 'Apex Racing #1', session: 'Qualifying', position: 1, gap: 'POLE', teamColor: '#B85C5C' },
   { entrantId: 'ent-3', name: 'Velocity Works #3', session: 'Qualifying', position: 2, gap: '+0.234s', teamColor: ACCENT },
-  { entrantId: 'ent-5', name: 'Phoenix Motorsport #5', session: 'Qualifying', position: 3, gap: '+0.512s', teamColor: '#F59E0B' },
-  { entrantId: 'ent-6', name: 'Zenith Racing #6', session: 'Qualifying', position: 4, gap: '+0.718s', teamColor: '#22C55E' },
-  { entrantId: 'ent-2', name: 'Apex Racing #2', session: 'Qualifying', position: 5, gap: '+0.892s', teamColor: '#EF4444' },
+  { entrantId: 'ent-5', name: 'Phoenix Motorsport #5', session: 'Qualifying', position: 3, gap: '+0.512s', teamColor: '#B8943E' },
+  { entrantId: 'ent-6', name: 'Zenith Racing #6', session: 'Qualifying', position: 4, gap: '+0.718s', teamColor: '#5A8A6E' },
+  { entrantId: 'ent-2', name: 'Apex Racing #2', session: 'Qualifying', position: 5, gap: '+0.892s', teamColor: '#B85C5C' },
   { entrantId: 'ent-7', name: 'Shadow GP #7', session: 'Qualifying', position: 6, gap: '+1.103s', teamColor: ACCENT },
   { entrantId: 'ent-4', name: 'Velocity Works #4', session: 'Qualifying', position: 7, gap: '+1.324s', teamColor: ACCENT },
   { entrantId: 'ent-9', name: 'Titan Racing #9', session: 'Qualifying', position: 8, gap: '+1.567s', teamColor: ACCENT },
   { entrantId: 'ent-10', name: 'Nova Speed #10', session: 'Qualifying', position: 9, gap: '+1.801s', teamColor: ACCENT },
   { entrantId: 'ent-8', name: 'Shadow GP #8', session: 'Qualifying', position: 10, gap: '+2.045s', teamColor: ACCENT },
-  { entrantId: 'ent-11', name: 'Iron Circuit #11', session: 'Qualifying', position: 11, gap: '+2.312s', teamColor: '#A1A1AA' },
-  { entrantId: 'ent-12', name: 'Iron Circuit #12', session: 'Qualifying', position: 12, gap: '+2.798s', teamColor: '#A1A1AA' },
+  { entrantId: 'ent-11', name: 'Iron Circuit #11', session: 'Qualifying', position: 11, gap: '+2.312s', teamColor: '#9C9790' },
+  { entrantId: 'ent-12', name: 'Iron Circuit #12', session: 'Qualifying', position: 12, gap: '+2.798s', teamColor: '#9C9790' },
 ];
 
 // =============================================================================
@@ -275,9 +275,9 @@ export function UniversalEventSheet({
 
           {/* Ops Blockers (C1/C2 only) */}
           {fullAccess && event.opsBlockers > 0 && (
-            <View style={[styles.chip, { backgroundColor: '#EF444418', borderColor: '#EF444440' }]}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
-              <Text style={[styles.chipText, { color: '#EF4444' }]}>
+            <View style={[styles.chip, { backgroundColor: '#B85C5C18', borderColor: '#B85C5C40' }]}>
+              <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B85C5C" />
+              <Text style={[styles.chipText, { color: '#B85C5C' }]}>
                 {event.opsBlockers} Blocker{event.opsBlockers !== 1 ? 's' : ''}
               </Text>
             </View>
@@ -523,15 +523,15 @@ export function UniversalEventSheet({
                     key={task.id}
                     style={[
                       styles.opsTaskRow,
-                      { borderColor: isBlocker ? '#EF444440' : colors.border },
-                      isBlocker && { backgroundColor: '#EF444408' },
+                      { borderColor: isBlocker ? '#B85C5C40' : colors.border },
+                      isBlocker && { backgroundColor: '#B85C5C08' },
                     ]}
                   >
                     <View style={styles.opsTaskLeft}>
                       <IconSymbol
                         name={isDone ? 'checkmark.circle.fill' : isBlocker ? 'exclamationmark.triangle.fill' : 'circle.fill'}
                         size={14}
-                        color={isDone ? '#22C55E' : isBlocker ? '#EF4444' : colors.textTertiary}
+                        color={isDone ? '#5A8A6E' : isBlocker ? '#B85C5C' : colors.textTertiary}
                       />
                       <View style={{ flex: 1 }}>
                         <Text style={[styles.opsTaskTitle, { color: colors.text }]}>{task.title}</Text>
@@ -541,8 +541,8 @@ export function UniversalEventSheet({
                       </View>
                     </View>
                     {isBlocker && (
-                      <View style={[styles.miniPill, { backgroundColor: '#EF444418' }]}>
-                        <Text style={[styles.miniPillText, { color: '#EF4444' }]}>Blocker</Text>
+                      <View style={[styles.miniPill, { backgroundColor: '#B85C5C18' }]}>
+                        <Text style={[styles.miniPillText, { color: '#B85C5C' }]}>Blocker</Text>
                       </View>
                     )}
                   </View>
@@ -557,18 +557,18 @@ export function UniversalEventSheet({
           <>
             <SectionLabel label="BLOCKERS" colors={colors} />
             {blockers.map((b) => (
-              <View key={b.id} style={[styles.blockerCard, { backgroundColor: '#EF444410', borderColor: '#EF444430' }]}>
-                <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#EF4444" />
+              <View key={b.id} style={[styles.blockerCard, { backgroundColor: '#B85C5C10', borderColor: '#B85C5C30' }]}>
+                <IconSymbol name="exclamationmark.triangle.fill" size={14} color="#B85C5C" />
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.blockerTitle, { color: '#EF4444' }]}>{b.title}</Text>
+                  <Text style={[styles.blockerTitle, { color: '#B85C5C' }]}>{b.title}</Text>
                   <Text style={[styles.blockerMeta, { color: colors.textSecondary }]}>
                     {b.owner} {'\u00B7'} Due: {b.deadline}
                   </Text>
                   {b.impactFlags.length > 0 && (
                     <View style={styles.flagRow}>
                       {b.impactFlags.map((f, i) => (
-                        <View key={i} style={[styles.flagChip, { backgroundColor: '#EF444418' }]}>
-                          <Text style={[styles.flagText, { color: '#EF4444' }]}>{f}</Text>
+                        <View key={i} style={[styles.flagChip, { backgroundColor: '#B85C5C18' }]}>
+                          <Text style={[styles.flagText, { color: '#B85C5C' }]}>{f}</Text>
                         </View>
                       ))}
                     </View>
@@ -584,7 +584,7 @@ export function UniversalEventSheet({
           <View style={styles.opsActions}>
             <ActionButton label="Create Ops Task" icon="plus.circle.fill" colors={colors} />
             <ActionButton label="Assign Owner" icon="person.badge.plus" colors={colors} />
-            <ActionButton label="Mark Blocker" icon="exclamationmark.triangle.fill" colors={colors} accent="#EF4444" />
+            <ActionButton label="Mark Blocker" icon="exclamationmark.triangle.fill" colors={colors} accent="#B85C5C" />
           </View>
         )}
       </View>
@@ -608,14 +608,14 @@ export function UniversalEventSheet({
             <IconSymbol
               name={isCleared ? 'checkmark.circle.fill' : 'circle.fill'}
               size={18}
-              color={isCleared ? '#22C55E' : '#F59E0B'}
+              color={isCleared ? '#5A8A6E' : '#B8943E'}
             />
             <View style={{ flex: 1 }}>
               <Text style={[styles.liveControlLabel, { color: colors.text }]}>{item.label}</Text>
               <Text style={[styles.liveControlOwner, { color: colors.textSecondary }]}>{item.owner}</Text>
             </View>
-            <View style={[styles.miniPill, { backgroundColor: isCleared ? '#22C55E18' : '#F59E0B18' }]}>
-              <Text style={[styles.miniPillText, { color: isCleared ? '#22C55E' : '#F59E0B' }]}>
+            <View style={[styles.miniPill, { backgroundColor: isCleared ? '#5A8A6E18' : '#B8943E18' }]}>
+              <Text style={[styles.miniPillText, { color: isCleared ? '#5A8A6E' : '#B8943E' }]}>
                 {isCleared ? 'Cleared' : 'Pending'}
               </Text>
             </View>
@@ -630,9 +630,9 @@ export function UniversalEventSheet({
         <View style={{ height: Spacing.sm }} />
         <ActionButton label="Lock Results (Provisional)" icon="checkmark.seal.fill" colors={colors} />
         <View style={{ height: Spacing.sm }} />
-        <ActionButton label="Route Incident" icon="exclamationmark.triangle.fill" colors={colors} accent="#F59E0B" />
+        <ActionButton label="Route Incident" icon="exclamationmark.triangle.fill" colors={colors} accent="#B8943E" />
         <View style={{ height: Spacing.sm }} />
-        <ActionButton label="Broadcast — Go Live" icon="video.fill" colors={colors} accent="#22C55E" />
+        <ActionButton label="Broadcast — Go Live" icon="video.fill" colors={colors} accent="#5A8A6E" />
       </View>
     </View>
   );
@@ -709,8 +709,8 @@ export function UniversalEventSheet({
                 {inc.impactFlags.length > 0 && (
                   <View style={styles.flagRow}>
                     {inc.impactFlags.map((f, i) => (
-                      <View key={i} style={[styles.flagChip, { backgroundColor: '#F59E0B18' }]}>
-                        <Text style={[styles.flagText, { color: '#F59E0B' }]}>{f}</Text>
+                      <View key={i} style={[styles.flagChip, { backgroundColor: '#B8943E18' }]}>
+                        <Text style={[styles.flagText, { color: '#B8943E' }]}>{f}</Text>
                       </View>
                     ))}
                   </View>
@@ -734,7 +734,7 @@ export function UniversalEventSheet({
         const statusCol = getPayoutStatusColor(item.status);
         const isHold = item.status === 'hold';
         return (
-          <View key={item.id} style={[styles.payoutCard, { backgroundColor: colors.card, borderColor: isHold ? '#EF444430' : colors.border }]}>
+          <View key={item.id} style={[styles.payoutCard, { backgroundColor: colors.card, borderColor: isHold ? '#B85C5C30' : colors.border }]}>
             <View style={styles.payoutHeader}>
               <Text style={[styles.payoutName, { color: colors.text }]}>{item.entrantName}</Text>
               <Text style={[styles.payoutAmount, { color: colors.text }]}>{item.amount}</Text>
@@ -750,17 +750,17 @@ export function UniversalEventSheet({
               </Text>
             </View>
             {item.reason && (
-              <Text style={[styles.payoutReason, { color: isHold ? '#EF4444' : colors.textSecondary }]}>
+              <Text style={[styles.payoutReason, { color: isHold ? '#B85C5C' : colors.textSecondary }]}>
                 {item.reason}
               </Text>
             )}
             {isHold && fullAccess && (
               <Pressable
-                style={[styles.releaseButton, { borderColor: '#F59E0B40' }]}
+                style={[styles.releaseButton, { borderColor: '#B8943E40' }]}
                 onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
               >
-                <IconSymbol name="lock.fill" size={12} color="#F59E0B" />
-                <Text style={[styles.releaseButtonText, { color: '#F59E0B' }]}>Release Hold (Approval Required)</Text>
+                <IconSymbol name="lock.fill" size={12} color="#B8943E" />
+                <Text style={[styles.releaseButtonText, { color: '#B8943E' }]}>Release Hold (Approval Required)</Text>
               </Pressable>
             )}
           </View>
@@ -823,27 +823,27 @@ export function UniversalEventSheet({
           <Text style={[styles.deliverableSponsorName, { color: colors.text }]}>Broadcast</Text>
         </View>
         <View style={[styles.deliverableRow, { borderColor: colors.border }]}>
-          <IconSymbol name="checkmark.circle.fill" size={14} color="#22C55E" />
+          <IconSymbol name="checkmark.circle.fill" size={14} color="#5A8A6E" />
           <View style={{ flex: 1 }}>
             <Text style={[styles.deliverableTitle, { color: colors.text }]}>Pre-race driver intro package</Text>
             <Text style={[styles.deliverableMeta, { color: colors.textSecondary }]}>
               Broadcast Producer {'\u00B7'} Due: Sun 1:30 PM
             </Text>
           </View>
-          <View style={[styles.miniPill, { backgroundColor: '#22C55E18' }]}>
-            <Text style={[styles.miniPillText, { color: '#22C55E' }]}>Delivered</Text>
+          <View style={[styles.miniPill, { backgroundColor: '#5A8A6E18' }]}>
+            <Text style={[styles.miniPillText, { color: '#5A8A6E' }]}>Delivered</Text>
           </View>
         </View>
         <View style={[styles.deliverableRow, { borderColor: colors.border }]}>
-          <IconSymbol name="circle.fill" size={14} color="#F59E0B" />
+          <IconSymbol name="circle.fill" size={14} color="#B8943E" />
           <View style={{ flex: 1 }}>
             <Text style={[styles.deliverableTitle, { color: colors.text }]}>Post-race highlight reel</Text>
             <Text style={[styles.deliverableMeta, { color: colors.textSecondary }]}>
               Media Director {'\u00B7'} Due: Sun 6:00 PM
             </Text>
           </View>
-          <View style={[styles.miniPill, { backgroundColor: '#F59E0B18' }]}>
-            <Text style={[styles.miniPillText, { color: '#F59E0B' }]}>At Risk</Text>
+          <View style={[styles.miniPill, { backgroundColor: '#B8943E18' }]}>
+            <Text style={[styles.miniPillText, { color: '#B8943E' }]}>At Risk</Text>
           </View>
         </View>
       </View>

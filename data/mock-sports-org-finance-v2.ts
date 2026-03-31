@@ -119,16 +119,16 @@ export const BUDGET_CATEGORY_LABELS: Record<BudgetBucket['category'], string> = 
 };
 
 export const BUDGET_CATEGORY_COLORS: Record<BudgetBucket['category'], string> = {
-  travel: '#1D9BF0',
-  staffing: '#1D9BF0',
-  recruiting: '#22C55E',
-  gear: '#F59E0B',
-  facilities: '#1D9BF0',
-  medical: '#EF4444',
-  ops: '#1D9BF0',
-  scholarships: '#1D9BF0',
-  gameday: '#F59E0B',
-  misc: '#A1A1AA',
+  travel: '#1A1714',
+  staffing: '#1A1714',
+  recruiting: '#5A8A6E',
+  gear: '#B8943E',
+  facilities: '#1A1714',
+  medical: '#B85C5C',
+  ops: '#1A1714',
+  scholarships: '#1A1714',
+  gameday: '#B8943E',
+  misc: '#9C9790',
 };
 
 export const SPEND_STATUS_LABELS: Record<SpendTransaction['status'], string> = {
@@ -138,9 +138,9 @@ export const SPEND_STATUS_LABELS: Record<SpendTransaction['status'], string> = {
 };
 
 export const SPEND_STATUS_COLORS: Record<SpendTransaction['status'], string> = {
-  posted: '#22C55E',
-  pending: '#F59E0B',
-  flagged: '#EF4444',
+  posted: '#5A8A6E',
+  pending: '#B8943E',
+  flagged: '#B85C5C',
 };
 
 export const FINANCE_APPROVAL_URGENCY_LABELS: Record<FinanceApproval['urgency'], string> = {
@@ -151,10 +151,10 @@ export const FINANCE_APPROVAL_URGENCY_LABELS: Record<FinanceApproval['urgency'],
 };
 
 export const FINANCE_APPROVAL_URGENCY_COLORS: Record<FinanceApproval['urgency'], string> = {
-  critical: '#EF4444',
-  high: '#F59E0B',
-  medium: '#1D9BF0',
-  low: '#A1A1AA',
+  critical: '#B85C5C',
+  high: '#B8943E',
+  medium: '#1A1714',
+  low: '#9C9790',
 };
 
 export const FINANCE_APPROVAL_STATUS_LABELS: Record<FinanceApproval['status'], string> = {
@@ -164,9 +164,9 @@ export const FINANCE_APPROVAL_STATUS_LABELS: Record<FinanceApproval['status'], s
 };
 
 export const FINANCE_APPROVAL_STATUS_COLORS: Record<FinanceApproval['status'], string> = {
-  pending: '#F59E0B',
-  approved: '#22C55E',
-  denied: '#EF4444',
+  pending: '#B8943E',
+  approved: '#5A8A6E',
+  denied: '#B85C5C',
 };
 
 export const VENDOR_COMMITMENT_STATUS_LABELS: Record<VendorCommitment['status'], string> = {
@@ -176,9 +176,9 @@ export const VENDOR_COMMITMENT_STATUS_LABELS: Record<VendorCommitment['status'],
 };
 
 export const VENDOR_COMMITMENT_STATUS_COLORS: Record<VendorCommitment['status'], string> = {
-  current: '#22C55E',
-  expiring: '#F59E0B',
-  'past-due': '#EF4444',
+  current: '#5A8A6E',
+  expiring: '#B8943E',
+  'past-due': '#B85C5C',
 };
 
 export const PURCHASE_STATUS_LABELS: Record<PurchaseRequest['status'], string> = {
@@ -189,10 +189,10 @@ export const PURCHASE_STATUS_LABELS: Record<PurchaseRequest['status'], string> =
 };
 
 export const PURCHASE_STATUS_COLORS: Record<PurchaseRequest['status'], string> = {
-  submitted: '#F59E0B',
-  approved: '#1D9BF0',
-  reimbursed: '#22C55E',
-  denied: '#EF4444',
+  submitted: '#B8943E',
+  approved: '#1A1714',
+  reimbursed: '#5A8A6E',
+  denied: '#B85C5C',
 };
 
 // =============================================================================

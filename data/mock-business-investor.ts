@@ -437,11 +437,11 @@ export function getDomainStatusColor(status: Domain['status']): string {
     case 'active':
       return '#FFFFFF';
     case 'development':
-      return '#A1A1AA';
+      return '#9C9790';
     case 'planned':
-      return '#A1A1AA';
+      return '#9C9790';
     default:
-      return '#A1A1AA';
+      return '#9C9790';
   }
 }
 

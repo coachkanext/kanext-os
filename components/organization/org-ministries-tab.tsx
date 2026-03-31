@@ -101,46 +101,46 @@ const RESOURCE_TYPE_ICON: Record<string, string> = {
 
 /** Event type badge color mapping */
 const EVENT_TYPE_COLOR: Record<string, string> = {
-  regular: '#A1A1AA',
-  special: '#1D9BF0',
-  outreach: '#1D9BF0',
-  retreat: '#F59E0B',
+  regular: '#9C9790',
+  special: '#1A1714',
+  outreach: '#1A1714',
+  retreat: '#B8943E',
 };
 
 /** Teaching type badge color mapping */
 const TEACHING_TYPE_COLOR: Record<string, string> = {
-  sermon: '#1D9BF0',
-  lesson: '#1D9BF0',
-  devotional: '#22C55E',
-  training: '#F59E0B',
+  sermon: '#1A1714',
+  lesson: '#1A1714',
+  devotional: '#5A8A6E',
+  training: '#B8943E',
 };
 
 /** Pack status color mapping */
 const PACK_STATUS_COLOR: Record<string, string> = {
-  active: '#22C55E',
-  upcoming: '#1D9BF0',
-  completed: '#A1A1AA',
+  active: '#5A8A6E',
+  upcoming: '#1A1714',
+  completed: '#9C9790',
 };
 
 /** Action status icon mapping */
 const ACTION_STATUS_ICON_COLOR: Record<string, string> = {
-  pending: '#F59E0B',
-  'in-progress': '#1D9BF0',
-  completed: '#22C55E',
+  pending: '#B8943E',
+  'in-progress': '#1A1714',
+  completed: '#5A8A6E',
 };
 
 /** Action type badge color */
 const ACTION_TYPE_COLOR: Record<string, string> = {
-  discipleship: '#1D9BF0',
-  volunteer: '#1D9BF0',
-  admin: '#A1A1AA',
+  discipleship: '#1A1714',
+  volunteer: '#1A1714',
+  admin: '#9C9790',
 };
 
 /** Priority badge color */
 const PRIORITY_COLOR: Record<string, string> = {
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#A1A1AA',
+  high: '#B85C5C',
+  medium: '#B8943E',
+  low: '#9C9790',
 };
 
 /** Audit action icon mapping */
@@ -155,13 +155,13 @@ const AUDIT_ACTION_ICON: Record<string, string> = {
 };
 
 const AUDIT_ACTION_COLOR: Record<string, string> = {
-  created: '#22C55E',
-  added: '#1D9BF0',
-  updated: '#F59E0B',
-  published: '#1D9BF0',
-  scheduled: '#1D9BF0',
-  joined: '#1D9BF0',
-  default: '#A1A1AA',
+  created: '#5A8A6E',
+  added: '#1A1714',
+  updated: '#B8943E',
+  published: '#1A1714',
+  scheduled: '#1A1714',
+  joined: '#1A1714',
+  default: '#9C9790',
 };
 
 function getAuditActionKey(action: string): string {
@@ -494,7 +494,7 @@ function EventsTab({
       contentContainerStyle={s.tabScroll}
       showsVerticalScrollIndicator={false}
       renderItem={({ item }) => {
-        const typeColor = EVENT_TYPE_COLOR[item.type] ?? '#A1A1AA';
+        const typeColor = EVENT_TYPE_COLOR[item.type] ?? '#9C9790';
         const dateParts = item.date.split('-');
         const month = new Date(item.date + 'T00:00:00').toLocaleString('en-US', { month: 'short' });
         const day = dateParts[2];
@@ -559,7 +559,7 @@ function TeachingsTab({
       contentContainerStyle={s.tabScroll}
       showsVerticalScrollIndicator={false}
       renderItem={({ item }) => {
-        const typeColor = TEACHING_TYPE_COLOR[item.type] ?? '#A1A1AA';
+        const typeColor = TEACHING_TYPE_COLOR[item.type] ?? '#9C9790';
         return (
           <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.teachingRow}>
@@ -627,7 +627,7 @@ function PacksTab({
       contentContainerStyle={s.tabScroll}
       showsVerticalScrollIndicator={false}
       renderItem={({ item }) => {
-        const statusColor = PACK_STATUS_COLOR[item.status] ?? '#A1A1AA';
+        const statusColor = PACK_STATUS_COLOR[item.status] ?? '#9C9790';
         return (
           <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.packRow}>
@@ -689,9 +689,9 @@ function ActionsTab({
       contentContainerStyle={s.tabScroll}
       showsVerticalScrollIndicator={false}
       renderItem={({ item }) => {
-        const statusIconColor = ACTION_STATUS_ICON_COLOR[item.status] ?? '#A1A1AA';
-        const priorityColor = PRIORITY_COLOR[item.priority] ?? '#A1A1AA';
-        const typeColor = ACTION_TYPE_COLOR[item.type] ?? '#A1A1AA';
+        const statusIconColor = ACTION_STATUS_ICON_COLOR[item.status] ?? '#9C9790';
+        const priorityColor = PRIORITY_COLOR[item.priority] ?? '#9C9790';
+        const typeColor = ACTION_TYPE_COLOR[item.type] ?? '#9C9790';
         return (
           <View style={[s.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={s.actionRow}>

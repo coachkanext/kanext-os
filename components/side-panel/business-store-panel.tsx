@@ -55,7 +55,7 @@ export function BusinessStorePanel() {
       {isAdmin ? (
         <>
           {/* Revenue banner */}
-          <View style={{ backgroundColor: '#1D3D5C', borderRadius: 12, padding: 14, gap: 4 }}>
+          <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14, gap: 4 }}>
             <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: 0.5 }}>Revenue This Month</Text>
             <Text style={{ fontSize: 28, fontWeight: '900', color: '#fff', lineHeight: 32 }}>{formatCurrency(BIZ_DASHBOARD.thisMonth.revenue, true)}</Text>
             <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>Profit: {formatCurrency(BIZ_DASHBOARD.thisMonth.profit, true)} · Expenses: {formatCurrency(BIZ_DASHBOARD.thisMonth.expenses, true)}</Text>
@@ -65,7 +65,7 @@ export function BusinessStorePanel() {
           <View style={{ backgroundColor: C.surface, borderRadius: 12, padding: 14 }}>
             <View style={{ flexDirection: 'row', gap: 8 }}>
               {[
-                { label: 'Outstanding', value: formatCurrency(outstanding, true),  color: '#1D9BF0' },
+                { label: 'Outstanding', value: formatCurrency(outstanding, true),  color: '#1A1714' },
                 { label: 'Overdue',     value: formatCurrency(overdueAmt, true),   color: C.red },
                 { label: 'Products',    value: PRODUCTS.length.toString(),         color: C.accent },
               ].map(m => (

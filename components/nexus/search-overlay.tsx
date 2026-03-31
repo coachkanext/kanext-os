@@ -34,7 +34,7 @@ const dk = {
   surface: '#0B0F14',
   surfaceSecondary: '#151A22',
   text: '#FFFFFF',
-  textSecondary: '#A1A1AA',
+  textSecondary: '#9C9790',
   textTertiary: '#71717A',
   border: 'rgba(255,255,255,0.1)',
 };
@@ -201,7 +201,7 @@ export function SearchOverlay({ visible, onClose }: Props) {
               <IconSymbol
                 name={voiceState !== 'idle' ? 'mic.fill' : 'mic'}
                 size={20}
-                color={voiceState !== 'idle' ? '#EF4444' : dk.textSecondary}
+                color={voiceState !== 'idle' ? '#B85C5C' : dk.textSecondary}
               />
             </Pressable>
             <Pressable onPress={handleClose} style={styles.closeBtn}>
@@ -269,11 +269,11 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
   },
   listeningText: {
     fontSize: 13,
-    color: '#EF4444',
+    color: '#B85C5C',
     fontWeight: '500',
   },
   resultsCard: {

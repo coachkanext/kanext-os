@@ -127,9 +127,9 @@ export interface OrgChartNode {
 // =============================================================================
 
 export const PERSON_STATUS_COLOR: Record<BizPerson['status'], string> = {
-  active: '#22C55E',
-  on_leave: '#F59E0B',
-  terminated: '#EF4444',
+  active: '#5A8A6E',
+  on_leave: '#B8943E',
+  terminated: '#B85C5C',
 };
 
 export const PERSON_STATUS_LABEL: Record<BizPerson['status'], string> = {
@@ -139,10 +139,10 @@ export const PERSON_STATUS_LABEL: Record<BizPerson['status'], string> = {
 };
 
 export const SIGNATURE_AUTHORITY_COLOR: Record<SignatureAuthority, string> = {
-  approve: '#1D9BF0',
-  release: '#1D9BF0',
-  both: '#22C55E',
-  none: '#A1A1AA',
+  approve: '#1A1714',
+  release: '#1A1714',
+  both: '#5A8A6E',
+  none: '#9C9790',
 };
 
 export const SIGNATURE_AUTHORITY_LABEL: Record<SignatureAuthority, string> = {
@@ -153,20 +153,20 @@ export const SIGNATURE_AUTHORITY_LABEL: Record<SignatureAuthority, string> = {
 };
 
 export const RBAC_LEVEL_COLOR: Record<RBACLevel, string> = {
-  B0: '#22C55E',
-  B1: '#22C55E',
-  B2: '#1D9BF0',
-  B3: '#F59E0B',
-  B4: '#A1A1AA',
-  B5: '#A1A1AA',
-  B6: '#1D9BF0',
-  B7: '#1D9BF0',
-  B8: '#F59E0B',
-  B9: '#1D9BF0',
-  B10: '#EF4444',
-  B11: '#A1A1AA',
-  B12: '#A1A1AA',
-  B13: '#22C55E',
+  B0: '#5A8A6E',
+  B1: '#5A8A6E',
+  B2: '#1A1714',
+  B3: '#B8943E',
+  B4: '#9C9790',
+  B5: '#9C9790',
+  B6: '#1A1714',
+  B7: '#1A1714',
+  B8: '#B8943E',
+  B9: '#1A1714',
+  B10: '#B85C5C',
+  B11: '#9C9790',
+  B12: '#9C9790',
+  B13: '#5A8A6E',
 };
 
 export const RBAC_LEVEL_LABEL: Record<RBACLevel, string> = {
@@ -189,11 +189,11 @@ export const RBAC_LEVEL_LABEL: Record<RBACLevel, string> = {
 export const ORG_LEVEL_ORDER: OrgChartLevel[] = ['C-Suite', 'VP', 'Director', 'Manager', 'IC'];
 
 export const ORG_LEVEL_COLOR: Record<OrgChartLevel, string> = {
-  'C-Suite': '#22C55E',
-  'VP': '#1D9BF0',
-  'Director': '#1D9BF0',
-  'Manager': '#F59E0B',
-  'IC': '#A1A1AA',
+  'C-Suite': '#5A8A6E',
+  'VP': '#1A1714',
+  'Director': '#1A1714',
+  'Manager': '#B8943E',
+  'IC': '#9C9790',
 };
 
 // =============================================================================

@@ -120,8 +120,8 @@ interface SpiritualHabit {
 const SPIRITUAL_HABITS: SpiritualHabit[] = [
   { id: 'sh-1', label: 'Bible Reading Streak', value: '14 days', icon: 'book.fill', color: ACCENT },
   { id: 'sh-2', label: 'Prayer Journal', value: '8 entries this month', icon: 'hands.sparkles.fill', color: ACCENT },
-  { id: 'sh-3', label: 'Scripture Memory', value: '3 verses', icon: 'text.book.closed.fill', color: '#22C55E' },
-  { id: 'sh-4', label: 'Service Hours', value: '6h this month', icon: 'heart.fill', color: '#F59E0B' },
+  { id: 'sh-3', label: 'Scripture Memory', value: '3 verses', icon: 'text.book.closed.fill', color: '#5A8A6E' },
+  { id: 'sh-4', label: 'Service Hours', value: '6h this month', icon: 'heart.fill', color: '#B8943E' },
 ];
 
 interface GrowthMilestone {
@@ -161,11 +161,11 @@ interface JourneyStageInfo {
 }
 
 const JOURNEY_STAGES: JourneyStageInfo[] = [
-  { id: 'explore', label: 'Explore', icon: 'magnifyingglass', color: '#A1A1AA' },
+  { id: 'explore', label: 'Explore', icon: 'magnifyingglass', color: '#9C9790' },
   { id: 'foundations', label: 'Foundations', icon: 'book.fill', color: ACCENT },
   { id: 'practices', label: 'Practices', icon: 'hands.sparkles.fill', color: ACCENT },
-  { id: 'community', label: 'Community', icon: 'person.2.fill', color: '#22C55E' },
-  { id: 'serve', label: 'Serve', icon: 'heart.fill', color: '#F59E0B' },
+  { id: 'community', label: 'Community', icon: 'person.2.fill', color: '#5A8A6E' },
+  { id: 'serve', label: 'Serve', icon: 'heart.fill', color: '#B8943E' },
   { id: 'lead', label: 'Lead', icon: 'star.fill', color: ACCENT },
 ];
 
@@ -198,8 +198,8 @@ const ENROLLMENT_TYPE_LABELS: Record<EnrollmentType, string> = {
 };
 
 const ENROLLMENT_TYPE_COLORS: Record<EnrollmentType, string> = {
-  open: '#22C55E',
-  approval: '#F59E0B',
+  open: '#5A8A6E',
+  approval: '#B8943E',
   'invite-only': ACCENT,
 };
 
@@ -279,14 +279,14 @@ const DISCIPLESHIP_PATHWAYS: DiscipleshipPathway[] = [
 ];
 
 const PATHWAY_TYPE_COLORS: Record<string, string> = {
-  foundations: '#22C55E',
+  foundations: '#5A8A6E',
   growth: ACCENT,
   leadership: ACCENT,
-  specialized: '#F59E0B',
+  specialized: '#B8943E',
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {
-  beginner: '#22C55E',
+  beginner: '#5A8A6E',
   intermediate: ACCENT,
   advanced: ACCENT,
 };
@@ -319,8 +319,8 @@ const JOIN_TYPE_LABELS: Record<GroupJoinType, string> = {
 };
 
 const JOIN_TYPE_COLORS: Record<GroupJoinType, string> = {
-  open: '#22C55E',
-  request: '#F59E0B',
+  open: '#5A8A6E',
+  request: '#B8943E',
   'invite-only': ACCENT,
 };
 
@@ -342,8 +342,8 @@ const DISCIPLESHIP_GROUPS: DiscipleshipGroup[] = [
 const GROUP_TYPE_COLORS: Record<string, string> = {
   'Bible Study': ACCENT,
   'Book Study': ACCENT,
-  'Mentoring': '#22C55E',
-  'Accountability': '#F59E0B',
+  'Mentoring': '#5A8A6E',
+  'Accountability': '#B8943E',
   'Discussion': ACCENT,
 };
 
@@ -391,10 +391,10 @@ const DISCIPLESHIP_RESOURCES: DiscipleshipResource[] = [
 
 const RESOURCE_TYPE_COLORS: Record<string, string> = {
   'Book': ACCENT,
-  'Video Series': '#EF4444',
-  'Study Guide': '#22C55E',
+  'Video Series': '#B85C5C',
+  'Study Guide': '#5A8A6E',
   'Devotional': ACCENT,
-  'Worksheet': '#F59E0B',
+  'Worksheet': '#B8943E',
   'External Link': ACCENT,
 };
 
@@ -458,9 +458,9 @@ const LEADER_PIPELINE: LeaderPipelineItem[] = [
 ];
 
 const PIPELINE_STATUS_COLORS: Record<string, string> = {
-  'in-training': '#F59E0B',
+  'in-training': '#B8943E',
   'ready': ACCENT,
-  'leading': '#22C55E',
+  'leading': '#5A8A6E',
 };
 
 // Placement Queue — unplaced members
@@ -516,8 +516,8 @@ const COHORTS: Cohort[] = [
 
 const COHORT_STATUS_COLORS: Record<string, string> = {
   active: ACCENT,
-  upcoming: '#F59E0B',
-  completed: '#22C55E',
+  upcoming: '#B8943E',
+  completed: '#5A8A6E',
 };
 
 interface GrowthTrend {
@@ -571,10 +571,10 @@ function Card({ colors, children }: { colors: typeof Colors.light; children: Rea
 
 function StatusDot({ status }: { status: string }) {
   const color =
-    status === 'active' || status === 'completed' || status === 'open' || status === 'leading' ? '#22C55E' :
+    status === 'active' || status === 'completed' || status === 'open' || status === 'leading' ? '#5A8A6E' :
     status === 'ready' || status === 'in-progress' ? ACCENT :
-    status === 'in-training' || status === 'paused' || status === 'closed' ? '#F59E0B' :
-    '#A1A1AA';
+    status === 'in-training' || status === 'paused' || status === 'closed' ? '#B8943E' :
+    '#9C9790';
   return <View style={[sh.statusDot, { backgroundColor: color }]} />;
 }
 
@@ -638,8 +638,8 @@ function MyPathView({ colors, role }: { colors: typeof Colors.light; role: Churc
               const isCompleted = idx < stageIdx;
               const isCurrent = idx === stageIdx;
               const isFuture = idx > stageIdx;
-              const dotColor = isCompleted ? '#22C55E' : isCurrent ? stage.color : colors.backgroundTertiary;
-              const labelColor = isCompleted ? '#22C55E' : isCurrent ? stage.color : colors.textTertiary;
+              const dotColor = isCompleted ? '#5A8A6E' : isCurrent ? stage.color : colors.backgroundTertiary;
+              const labelColor = isCompleted ? '#5A8A6E' : isCurrent ? stage.color : colors.textTertiary;
 
               return (
                 <React.Fragment key={stage.id}>
@@ -655,7 +655,7 @@ function MyPathView({ colors, role }: { colors: typeof Colors.light; role: Churc
                     <ThemedText style={[s.journeyLabel, { color: labelColor }]}>{stage.label}</ThemedText>
                   </View>
                   {idx < JOURNEY_STAGES.length - 1 && (
-                    <View style={[s.journeyConnector, { backgroundColor: isCompleted ? '#22C55E' : colors.backgroundTertiary }]} />
+                    <View style={[s.journeyConnector, { backgroundColor: isCompleted ? '#5A8A6E' : colors.backgroundTertiary }]} />
                   )}
                 </React.Fragment>
               );
@@ -687,7 +687,7 @@ function MyPathView({ colors, role }: { colors: typeof Colors.light; role: Churc
             </View>
           </View>
           <View style={[s.pathwayMilestone, { backgroundColor: colors.backgroundTertiary }]}>
-            <IconSymbol name="flag.fill" size={12} color="#F59E0B" />
+            <IconSymbol name="flag.fill" size={12} color="#B8943E" />
             <ThemedText style={[s.pathwayMilestoneText, { color: colors.textSecondary }]}>
               Next: {MY_PATHWAY_PROGRESS.nextMilestone}
             </ThemedText>
@@ -766,8 +766,8 @@ function MyPathView({ colors, role }: { colors: typeof Colors.light; role: Churc
               <View style={[
                 s.milestoneCheck,
                 {
-                  backgroundColor: milestone.completed ? '#22C55E' : 'transparent',
-                  borderColor: milestone.completed ? '#22C55E' : colors.border,
+                  backgroundColor: milestone.completed ? '#5A8A6E' : 'transparent',
+                  borderColor: milestone.completed ? '#5A8A6E' : colors.border,
                 },
               ]}>
                 {milestone.completed && <IconSymbol name="checkmark" size={10} color="#fff" />}
@@ -825,8 +825,8 @@ function PathwaysView({ colors, role }: { colors: typeof Colors.light; role: Chu
       <View style={s.moduleContainer}>
         <SectionHeader title="DISCIPLESHIP PATHWAYS" colors={colors} count={DISCIPLESHIP_PATHWAYS.length} />
         {DISCIPLESHIP_PATHWAYS.map((pathway) => {
-          const typeColor = PATHWAY_TYPE_COLORS[pathway.type] ?? '#A1A1AA';
-          const diffColor = DIFFICULTY_COLORS[pathway.difficulty] ?? '#A1A1AA';
+          const typeColor = PATHWAY_TYPE_COLORS[pathway.type] ?? '#9C9790';
+          const diffColor = DIFFICULTY_COLORS[pathway.difficulty] ?? '#9C9790';
 
           return (
             <Pressable
@@ -945,7 +945,7 @@ function GroupsView({ colors, role }: { colors: typeof Colors.light; role: Churc
             ]}
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           >
-            <IconSymbol name="plus.circle.fill" size={20} color="#22C55E" />
+            <IconSymbol name="plus.circle.fill" size={20} color="#5A8A6E" />
             <ThemedText style={[s.startGroupBtnText, { color: colors.text }]}>Start a New Group</ThemedText>
           </Pressable>
         </View>
@@ -981,7 +981,7 @@ function GroupsView({ colors, role }: { colors: typeof Colors.light; role: Churc
       <View style={s.moduleContainer}>
         <SectionHeader title="DISCIPLESHIP GROUPS" colors={colors} count={filtered.length} />
         {filtered.map((group) => {
-          const typeColor = GROUP_TYPE_COLORS[group.type] ?? '#A1A1AA';
+          const typeColor = GROUP_TYPE_COLORS[group.type] ?? '#9C9790';
           const fillPct = Math.round((group.currentMembers / group.capacity) * 100);
           const isFull = group.currentMembers >= group.capacity;
 
@@ -1034,9 +1034,9 @@ function GroupsView({ colors, role }: { colors: typeof Colors.light; role: Churc
                 <View style={s.groupBottomRow}>
                   <View style={s.groupCapacity}>
                     <View style={s.groupCapacityBar}>
-                      <View style={[s.groupCapacityFill, { width: `${fillPct}%`, backgroundColor: isFull ? '#EF4444' : '#22C55E' }]} />
+                      <View style={[s.groupCapacityFill, { width: `${fillPct}%`, backgroundColor: isFull ? '#B85C5C' : '#5A8A6E' }]} />
                     </View>
-                    <ThemedText style={[s.groupCapacityText, { color: isFull ? '#EF4444' : colors.textTertiary }]}>
+                    <ThemedText style={[s.groupCapacityText, { color: isFull ? '#B85C5C' : colors.textTertiary }]}>
                       {group.currentMembers}/{group.capacity} members
                     </ThemedText>
                   </View>
@@ -1047,7 +1047,7 @@ function GroupsView({ colors, role }: { colors: typeof Colors.light; role: Churc
                       <ThemedText style={[s.groupHealthText, { color: colors.textTertiary }]}>
                         Att: {group.avgAttendance}%
                       </ThemedText>
-                      <ThemedText style={[s.groupHealthText, { color: group.engagementScore >= 90 ? '#22C55E' : group.engagementScore >= 80 ? ACCENT : '#F59E0B' }]}>
+                      <ThemedText style={[s.groupHealthText, { color: group.engagementScore >= 90 ? '#5A8A6E' : group.engagementScore >= 80 ? ACCENT : '#B8943E' }]}>
                         Eng: {group.engagementScore}
                       </ThemedText>
                     </View>
@@ -1122,7 +1122,7 @@ function ResourcesView({ colors, role }: { colors: typeof Colors.light; role: Ch
         <View style={s.moduleContainer}>
           <SectionHeader title="FEATURED" colors={colors} />
           {featured.map((res) => {
-            const typeColor = RESOURCE_TYPE_COLORS[res.type] ?? '#A1A1AA';
+            const typeColor = RESOURCE_TYPE_COLORS[res.type] ?? '#9C9790';
             return (
               <Pressable
                 key={res.id}
@@ -1221,8 +1221,8 @@ function ResourcesView({ colors, role }: { colors: typeof Colors.light; role: Ch
         <SectionHeader title="RESOURCE LIBRARY" colors={colors} count={filtered.length} />
         <Card colors={colors}>
           {filtered.map((res, idx) => {
-            const typeColor = RESOURCE_TYPE_COLORS[res.type] ?? '#A1A1AA';
-            const diffColor = DIFFICULTY_COLORS[res.difficulty] ?? '#A1A1AA';
+            const typeColor = RESOURCE_TYPE_COLORS[res.type] ?? '#9C9790';
+            const diffColor = DIFFICULTY_COLORS[res.difficulty] ?? '#9C9790';
 
             return (
               <Pressable
@@ -1336,8 +1336,8 @@ function LeaderToolsView({ colors, role }: { colors: typeof Colors.light; role: 
               </ThemedText>
               <ThemedText style={[s.perfTableStat, { color: colors.text }]}>{pw.enrolled}</ThemedText>
               <ThemedText style={[s.perfTableStat, { color: colors.text }]}>{pw.active}</ThemedText>
-              <ThemedText style={[s.perfTableStat, { color: '#22C55E' }]}>{pw.completed}</ThemedText>
-              <ThemedText style={[s.perfTableStat, { color: pw.dropOffRate >= 15 ? '#EF4444' : pw.dropOffRate >= 10 ? '#F59E0B' : colors.textSecondary }]}>
+              <ThemedText style={[s.perfTableStat, { color: '#5A8A6E' }]}>{pw.completed}</ThemedText>
+              <ThemedText style={[s.perfTableStat, { color: pw.dropOffRate >= 15 ? '#B85C5C' : pw.dropOffRate >= 10 ? '#B8943E' : colors.textSecondary }]}>
                 {pw.dropOffRate}%
               </ThemedText>
             </View>
@@ -1351,23 +1351,23 @@ function LeaderToolsView({ colors, role }: { colors: typeof Colors.light; role: 
 
         {/* Pipeline summary */}
         <View style={s.pipelineSummaryRow}>
-          <View style={[s.pipelineSummaryItem, { backgroundColor: '#F59E0B20' }]}>
-            <ThemedText style={[s.pipelineSummaryValue, { color: '#F59E0B' }]}>{inTraining}</ThemedText>
-            <ThemedText style={[s.pipelineSummaryLabel, { color: '#F59E0B' }]}>In Training</ThemedText>
+          <View style={[s.pipelineSummaryItem, { backgroundColor: '#B8943E20' }]}>
+            <ThemedText style={[s.pipelineSummaryValue, { color: '#B8943E' }]}>{inTraining}</ThemedText>
+            <ThemedText style={[s.pipelineSummaryLabel, { color: '#B8943E' }]}>In Training</ThemedText>
           </View>
           <View style={[s.pipelineSummaryItem, { backgroundColor: `${ACCENT}20` }]}>
             <ThemedText style={[s.pipelineSummaryValue, { color: ACCENT }]}>{ready}</ThemedText>
             <ThemedText style={[s.pipelineSummaryLabel, { color: ACCENT }]}>Ready to Lead</ThemedText>
           </View>
-          <View style={[s.pipelineSummaryItem, { backgroundColor: '#22C55E20' }]}>
-            <ThemedText style={[s.pipelineSummaryValue, { color: '#22C55E' }]}>{leading}</ThemedText>
-            <ThemedText style={[s.pipelineSummaryLabel, { color: '#22C55E' }]}>Currently Leading</ThemedText>
+          <View style={[s.pipelineSummaryItem, { backgroundColor: '#5A8A6E20' }]}>
+            <ThemedText style={[s.pipelineSummaryValue, { color: '#5A8A6E' }]}>{leading}</ThemedText>
+            <ThemedText style={[s.pipelineSummaryLabel, { color: '#5A8A6E' }]}>Currently Leading</ThemedText>
           </View>
         </View>
 
         <Card colors={colors}>
           {LEADER_PIPELINE.map((leader, idx) => {
-            const statusColor = PIPELINE_STATUS_COLORS[leader.status] ?? '#A1A1AA';
+            const statusColor = PIPELINE_STATUS_COLORS[leader.status] ?? '#9C9790';
             const progress = Math.round((leader.completedModules / leader.totalModules) * 100);
 
             return (
@@ -1417,7 +1417,7 @@ function LeaderToolsView({ colors, role }: { colors: typeof Colors.light; role: 
         <SectionHeader title="PLACEMENT QUEUE" colors={colors} count={UNPLACED_MEMBERS.filter((m) => m.status !== 'placed').length} />
         <Card colors={colors}>
           {UNPLACED_MEMBERS.map((member, idx) => {
-            const statusColor = member.status === 'awaiting' ? '#F59E0B' : member.status === 'contacted' ? ACCENT : '#22C55E';
+            const statusColor = member.status === 'awaiting' ? '#B8943E' : member.status === 'contacted' ? ACCENT : '#5A8A6E';
             return (
               <View
                 key={member.id}
@@ -1448,7 +1448,7 @@ function LeaderToolsView({ colors, role }: { colors: typeof Colors.light; role: 
         <SectionHeader title="AT-RISK MEMBERS" colors={colors} count={AT_RISK_MEMBERS.length} />
         <Card colors={colors}>
           {AT_RISK_MEMBERS.map((member, idx) => {
-            const riskColor = member.riskLevel === 'critical' ? '#EF4444' : '#F59E0B';
+            const riskColor = member.riskLevel === 'critical' ? '#B85C5C' : '#B8943E';
             return (
               <View
                 key={member.id}
@@ -1473,7 +1473,7 @@ function LeaderToolsView({ colors, role }: { colors: typeof Colors.light; role: 
       <View style={s.moduleContainer}>
         <SectionHeader title="COHORT MANAGEMENT" colors={colors} count={COHORTS.length} />
         {COHORTS.map((cohort) => {
-          const statusColor = COHORT_STATUS_COLORS[cohort.status] ?? '#A1A1AA';
+          const statusColor = COHORT_STATUS_COLORS[cohort.status] ?? '#9C9790';
           return (
             <Card key={cohort.id} colors={colors}>
               <View style={s.cohortHeader}>
@@ -1521,8 +1521,8 @@ function LeaderToolsView({ colors, role }: { colors: typeof Colors.light; role: 
             >
               <ThemedText style={[s.trendTableMonth, { color: colors.text }]}>{trend.month}</ThemedText>
               <ThemedText style={[s.trendTableStat, { color: ACCENT }]}>{trend.newEnrollments}</ThemedText>
-              <ThemedText style={[s.trendTableStat, { color: '#22C55E' }]}>{trend.completions}</ThemedText>
-              <ThemedText style={[s.trendTableStat, { color: trend.engagement >= 80 ? '#22C55E' : trend.engagement >= 75 ? '#F59E0B' : '#EF4444' }]}>
+              <ThemedText style={[s.trendTableStat, { color: '#5A8A6E' }]}>{trend.completions}</ThemedText>
+              <ThemedText style={[s.trendTableStat, { color: trend.engagement >= 80 ? '#5A8A6E' : trend.engagement >= 75 ? '#B8943E' : '#B85C5C' }]}>
                 {trend.engagement}%
               </ThemedText>
             </View>

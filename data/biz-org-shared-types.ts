@@ -42,19 +42,19 @@ export const BIZ_TXN_STATE_LABELS: Record<BizTxnState, string> = {
 };
 
 export const BIZ_TXN_STATE_COLORS: Record<BizTxnState, string> = {
-  draft: '#A1A1AA',
-  proposed: '#F59E0B',
-  rule_checked: '#1D9BF0',
-  authorized: '#1D9BF0',
-  scheduled: '#1D9BF0',
-  released: '#1D9BF0',
-  in_flight: '#1D9BF0',
-  settled: '#22C55E',
-  hold: '#F59E0B',
-  failed: '#EF4444',
-  disputed: '#EF4444',
-  returned: '#F59E0B',
-  reversed: '#A1A1AA',
+  draft: '#9C9790',
+  proposed: '#B8943E',
+  rule_checked: '#1A1714',
+  authorized: '#1A1714',
+  scheduled: '#1A1714',
+  released: '#1A1714',
+  in_flight: '#1A1714',
+  settled: '#5A8A6E',
+  hold: '#B8943E',
+  failed: '#B85C5C',
+  disputed: '#B85C5C',
+  returned: '#B8943E',
+  reversed: '#9C9790',
 };
 
 // =============================================================================
@@ -80,9 +80,9 @@ export interface BizReceipt {
 export type TrafficLight = 'green' | 'yellow' | 'red';
 
 export const TRAFFIC_LIGHT_COLORS: Record<TrafficLight, string> = {
-  green: '#22C55E',
-  yellow: '#F59E0B',
-  red: '#EF4444',
+  green: '#5A8A6E',
+  yellow: '#B8943E',
+  red: '#B85C5C',
 };
 
 export function trafficLightLabel(value: TrafficLight): string {
@@ -115,12 +115,12 @@ export const ENTITY_STATUS_LABELS: Record<EntityStatus, string> = {
 };
 
 export const ENTITY_STATUS_COLORS: Record<EntityStatus, string> = {
-  active: '#22C55E',
-  under_evaluation: '#F59E0B',
-  negotiating: '#1D9BF0',
-  closed: '#A1A1AA',
-  dormant: '#A1A1AA',
-  flagged: '#EF4444',
+  active: '#5A8A6E',
+  under_evaluation: '#B8943E',
+  negotiating: '#1A1714',
+  closed: '#9C9790',
+  dormant: '#9C9790',
+  flagged: '#B85C5C',
 };
 
 // =============================================================================
@@ -162,13 +162,13 @@ export const BIZ_ENTITY_TYPE_LABELS: Record<BizEntityType, string> = {
 };
 
 export const BIZ_ENTITY_TYPE_COLORS: Record<BizEntityType, string> = {
-  internal: '#1D9BF0',
-  holdco: '#1D9BF0',
-  partner: '#1D9BF0',
-  relationship: '#F59E0B',
-  asset: '#1D9BF0',
-  deal_acquisition: '#EF4444',
-  project: '#1D9BF0',
+  internal: '#1A1714',
+  holdco: '#1A1714',
+  partner: '#1A1714',
+  relationship: '#B8943E',
+  asset: '#1A1714',
+  deal_acquisition: '#B85C5C',
+  project: '#1A1714',
 };
 
 // =============================================================================

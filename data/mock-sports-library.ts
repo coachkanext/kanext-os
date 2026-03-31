@@ -53,10 +53,10 @@ export interface LibrarySectionConfig {
 
 export function getAccessLevelColor(level: AccessLevel): string {
   switch (level) {
-    case 'public': return '#22C55E';
-    case 'team': return '#1D9BF0';
-    case 'staff': return '#F59E0B';
-    case 'ad_only': return '#EF4444';
+    case 'public': return '#5A8A6E';
+    case 'team': return '#1A1714';
+    case 'staff': return '#B8943E';
+    case 'ad_only': return '#B85C5C';
   }
 }
 
@@ -102,7 +102,7 @@ export const SPORTS_LIBRARY_RECORDS: LibraryRecord[] = [
     id: 'lr-1', title: 'Carroll College vs MSU-Northern Christian — Full Game', section: 'official_games', type: 'game_film',
     accessLevel: 'team', owner: 'Carroll Athletics', date: 'Feb 14', opponent: 'MSU-Northern Christian',
     tags: ['Frontier Conference', 'Home', 'Win'], clipCount: 1, duration: '1:48:22',
-    thumbnailColor: '#1D9BF0', workspaceRef: 'Last Game Review', exportable: true, rbacSection: 'library_official_games',
+    thumbnailColor: '#1A1714', workspaceRef: 'Last Game Review', exportable: true, rbacSection: 'library_official_games',
     downloaded: true, downloadSize: '1.8 GB',
   },
   {
@@ -134,7 +134,7 @@ export const SPORTS_LIBRARY_RECORDS: LibraryRecord[] = [
     id: 'lr-6', title: 'Carroll College vs John Brown — Full Game', section: 'official_games', type: 'game_film',
     accessLevel: 'team', owner: 'Carroll Athletics', date: 'Jan 11', opponent: 'John Brown',
     tags: ['Frontier Conference', 'Home', 'Win'], clipCount: 1, duration: '1:44:50',
-    thumbnailColor: '#1D9BF0', exportable: true, rbacSection: 'library_official_games',
+    thumbnailColor: '#1A1714', exportable: true, rbacSection: 'library_official_games',
   },
   {
     id: 'lr-7', title: 'Carroll College vs Wayland Baptist', section: 'official_games', type: 'game_film',
@@ -173,7 +173,7 @@ export const SPORTS_LIBRARY_RECORDS: LibraryRecord[] = [
     id: 'lr-12', title: 'Practice — Feb 6: Shooting Drills', section: 'practices_install', type: 'practice',
     accessLevel: 'staff', owner: 'Coach Avery', date: 'Feb 6',
     tags: ['Practice', 'Shooting', 'Drills'], clipCount: 1, duration: '38:10',
-    thumbnailColor: '#1D9BF0', exportable: false, rbacSection: 'library_practices_install',
+    thumbnailColor: '#1A1714', exportable: false, rbacSection: 'library_practices_install',
   },
 
   // Player Development (4)
@@ -187,7 +187,7 @@ export const SPORTS_LIBRARY_RECORDS: LibraryRecord[] = [
     id: 'lr-14', title: 'Thompson: Catch-and-Shoot Mechanics', section: 'player_development', type: 'dev_clip',
     accessLevel: 'staff', owner: 'Coach Avery', date: 'Feb 9',
     tags: ['Development', 'Shooting', 'Thompson'], clipCount: 6, duration: '3:45',
-    thumbnailColor: '#1D9BF0', exportable: false, rbacSection: 'library_player_development',
+    thumbnailColor: '#1A1714', exportable: false, rbacSection: 'library_player_development',
   },
   {
     id: 'lr-15', title: 'Williams: Closeout Technique', section: 'player_development', type: 'dev_clip',
@@ -207,7 +207,7 @@ export const SPORTS_LIBRARY_RECORDS: LibraryRecord[] = [
     id: 'lr-17', title: 'Season Opener Highlights', section: 'public_media', type: 'highlight',
     accessLevel: 'public', owner: 'Carroll Athletics', date: 'Feb 14',
     tags: ['Highlights', 'Public', 'Social'], clipCount: 1, duration: '4:32',
-    thumbnailColor: '#1D9BF0', exportable: true, rbacSection: 'library_public_media',
+    thumbnailColor: '#1A1714', exportable: true, rbacSection: 'library_public_media',
   },
   {
     id: 'lr-18', title: 'Media Day 2025-26 — Behind the Scenes', section: 'public_media', type: 'interview',

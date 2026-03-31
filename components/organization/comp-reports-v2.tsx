@@ -101,16 +101,16 @@ function frequencyLabel(freq: ScheduledReport['frequency']): string {
 }
 
 function utilizationColor(pct: number): string {
-  if (pct >= 90) return '#22C55E';
-  if (pct >= 70) return '#F59E0B';
+  if (pct >= 90) return '#5A8A6E';
+  if (pct >= 70) return '#B8943E';
   if (pct >= 50) return ACCENT;
-  return '#EF4444';
+  return '#B85C5C';
 }
 
 function changeColor(change: number): string {
-  if (change > 0) return '#22C55E';
-  if (change < 0) return '#EF4444';
-  return '#A1A1AA';
+  if (change > 0) return '#5A8A6E';
+  if (change < 0) return '#B85C5C';
+  return '#9C9790';
 }
 
 // =============================================================================
@@ -201,8 +201,8 @@ function DashboardTab({
       <View style={[s.breakdownCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         {[
           { label: 'Operational', count: totalOperational, color: ACCENT, icon: 'gearshape.2' },
-          { label: 'Financial', count: totalFinancial, color: '#22C55E', icon: 'dollarsign.circle' },
-          { label: 'Compliance', count: totalCompliance, color: '#F59E0B', icon: 'checkmark.shield' },
+          { label: 'Financial', count: totalFinancial, color: '#5A8A6E', icon: 'dollarsign.circle' },
+          { label: 'Compliance', count: totalCompliance, color: '#B8943E', icon: 'checkmark.shield' },
           { label: 'Performance', count: totalPerformance, color: ACCENT, icon: 'chart.line.uptrend.xyaxis' },
         ].map((cat, idx, arr) => (
           <View
@@ -232,13 +232,13 @@ function DashboardTab({
       </ThemedText>
       <View style={s.quickStatsGrid}>
         <View style={[s.quickStatCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.quickStatValue, { color: '#EF4444' }]}>{issuesFound}</ThemedText>
+          <ThemedText style={[s.quickStatValue, { color: '#B85C5C' }]}>{issuesFound}</ThemedText>
           <ThemedText style={[s.quickStatLabel, { color: colors.textTertiary }]}>
             Compliance Issues
           </ThemedText>
         </View>
         <View style={[s.quickStatCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.quickStatValue, { color: '#22C55E' }]}>{scheduledActive}</ThemedText>
+          <ThemedText style={[s.quickStatValue, { color: '#5A8A6E' }]}>{scheduledActive}</ThemedText>
           <ThemedText style={[s.quickStatLabel, { color: colors.textTertiary }]}>
             Scheduled Active
           </ThemedText>
@@ -569,8 +569,8 @@ function ComplianceTab({
                 </View>
                 {item.findings > 0 && (
                   <View style={s.findingsContainer}>
-                    <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
-                    <ThemedText style={[s.findingsText, { color: '#EF4444' }]}>
+                    <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B85C5C" />
+                    <ThemedText style={[s.findingsText, { color: '#B85C5C' }]}>
                       {item.findings} finding{item.findings !== 1 ? 's' : ''}
                     </ThemedText>
                   </View>
@@ -742,7 +742,7 @@ function AttendanceTab({
                 </ThemedText>
               </View>
               <View style={s.attendanceStat}>
-                <ThemedText style={[s.attendanceStatValue, { color: '#22C55E' }]}>
+                <ThemedText style={[s.attendanceStatValue, { color: '#5A8A6E' }]}>
                   {formatCurrency(item.revenue)}
                 </ThemedText>
                 <ThemedText style={[s.attendanceStatLabel, { color: colors.textTertiary }]}>
@@ -997,7 +997,7 @@ function ScheduledTab({
                   <StatusBadge label={frequencyLabel(item.frequency)} color={freqColor} />
                   <FormatBadge format={item.format} />
                   {!item.enabled && (
-                    <StatusBadge label="PAUSED" color="#A1A1AA" />
+                    <StatusBadge label="PAUSED" color="#9C9790" />
                   )}
                 </View>
               </View>
@@ -1296,7 +1296,7 @@ function ComplianceDetailSheet({
       {/* KPIs */}
       <View style={[s.sheetKpiRow, { borderColor: colors.border }]}>
         <View style={s.sheetKpiItem}>
-          <ThemedText style={[s.sheetKpiValue, { color: report.findings > 0 ? '#EF4444' : '#22C55E' }]}>
+          <ThemedText style={[s.sheetKpiValue, { color: report.findings > 0 ? '#B85C5C' : '#5A8A6E' }]}>
             {report.findings}
           </ThemedText>
           <ThemedText style={[s.sheetKpiLabel, { color: colors.textTertiary }]}>Findings</ThemedText>
@@ -1459,7 +1459,7 @@ function AttendanceDetailSheet({
           <ThemedText style={[s.sheetKpiLabel, { color: colors.textTertiary }]}>Utilization</ThemedText>
         </View>
         <View style={s.sheetKpiItem}>
-          <ThemedText style={[s.sheetKpiValue, { color: '#22C55E' }]}>
+          <ThemedText style={[s.sheetKpiValue, { color: '#5A8A6E' }]}>
             {formatCurrency(report.revenue)}
           </ThemedText>
           <ThemedText style={[s.sheetKpiLabel, { color: colors.textTertiary }]}>Revenue</ThemedText>
@@ -1740,7 +1740,7 @@ function ScheduledDetailSheet({
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={frequencyLabel(report.frequency)} color={freqColor} />
         <FormatBadge format={report.format} />
-        {!report.enabled && <StatusBadge label="PAUSED" color="#A1A1AA" />}
+        {!report.enabled && <StatusBadge label="PAUSED" color="#9C9790" />}
       </View>
 
       {/* KPIs */}

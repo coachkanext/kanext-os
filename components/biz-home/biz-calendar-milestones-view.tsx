@@ -16,9 +16,9 @@ interface Props {
 }
 
 const STATUS_ICON: Record<string, { symbol: string; color: string }> = {
-  completed: { symbol: '\u2713', color: '#22C55E' },
-  in_progress: { symbol: '\u25CB', color: '#F59E0B' },
-  upcoming: { symbol: '\u25CB', color: '#A1A1AA' },
+  completed: { symbol: '\u2713', color: '#5A8A6E' },
+  in_progress: { symbol: '\u25CB', color: '#B8943E' },
+  upcoming: { symbol: '\u25CB', color: '#9C9790' },
 };
 
 export function BizCalendarMilestonesView({ colors, accent }: Props) {
@@ -75,7 +75,7 @@ export function BizCalendarMilestonesView({ colors, accent }: Props) {
             ${(fm.raised / 1000).toFixed(0)}K / ${(fm.target / 1_000_000).toFixed(0)}M raised
           </ThemedText>
           <View style={[styles.progressTrack, { backgroundColor: colors.border }]}>
-            <View style={[styles.progressFill, { width: `${Math.min(raisedPct * 100, 100)}%`, backgroundColor: '#22C55E' }]} />
+            <View style={[styles.progressFill, { width: `${Math.min(raisedPct * 100, 100)}%`, backgroundColor: '#5A8A6E' }]} />
           </View>
         </View>
 

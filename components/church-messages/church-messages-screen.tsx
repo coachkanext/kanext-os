@@ -299,7 +299,7 @@ export function ChurchMessagesScreen() {
                 <>
                   <View style={styles.sectionHeader}>
                     <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>ESCALATIONS</Text>
-                    <View style={[styles.countBadge, { backgroundColor: '#F59E0B' }]}>
+                    <View style={[styles.countBadge, { backgroundColor: '#B8943E' }]}>
                       <Text style={styles.countText}>
                         {escalations.filter((e) => e.status === 'needs_reply').length}
                       </Text>
@@ -320,8 +320,8 @@ export function ChurchMessagesScreen() {
                         setSelectedEscalation(esc);
                       }}
                     >
-                      <View style={[styles.escalationIcon, { backgroundColor: '#F59E0B1A' }]}>
-                        <IconSymbol name="exclamationmark.bubble.fill" size={18} color="#F59E0B" />
+                      <View style={[styles.escalationIcon, { backgroundColor: '#B8943E1A' }]}>
+                        <IconSymbol name="exclamationmark.bubble.fill" size={18} color="#B8943E" />
                       </View>
                       <View style={styles.escalationContent}>
                         <View style={styles.escalationTopLine}>
@@ -333,7 +333,7 @@ export function ChurchMessagesScreen() {
                           </Text>
                           <View style={[
                             styles.statusChip,
-                            { backgroundColor: esc.status === 'needs_reply' ? '#F59E0B' : '#22C55E' },
+                            { backgroundColor: esc.status === 'needs_reply' ? '#B8943E' : '#5A8A6E' },
                           ]}>
                             <Text style={styles.statusChipText}>
                               {esc.status === 'needs_reply' ? 'Needs Reply' : 'Replied'}
@@ -608,7 +608,7 @@ export function ChurchMessagesScreen() {
               </View>
               <View style={[
                 styles.statusChip,
-                { backgroundColor: selectedEscalation.status === 'needs_reply' ? '#F59E0B' : '#22C55E' },
+                { backgroundColor: selectedEscalation.status === 'needs_reply' ? '#B8943E' : '#5A8A6E' },
               ]}>
                 <Text style={styles.statusChipText}>
                   {selectedEscalation.status === 'needs_reply' ? 'Needs Reply' : 'Replied'}

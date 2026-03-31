@@ -255,7 +255,7 @@ const tierStyles = StyleSheet.create({
 // ── Subscriber Row ────────────────────────────────────────────────────────────
 
 function SubscriberRow({ sub, C, last }: { sub: typeof HUB_SUBSCRIBERS[0]; C: ComponentColors; last: boolean }) {
-  const tierColor = sub.tierId === 'inner-circle' ? C.accent : sub.tierId === 'vip' ? '#3B82F6' : C.secondary;
+  const tierColor = sub.tierId === 'inner-circle' ? C.accent : sub.tierId === 'vip' ? '#1A1714' : C.secondary;
   return (
     <View style={[subStyles.row, !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
       <View style={[subStyles.avatar, { backgroundColor: C.surfacePressed }]}>

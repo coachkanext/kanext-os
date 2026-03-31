@@ -78,13 +78,13 @@ export function TeamHeader({
         <View
           style={[
             styles.streakChip,
-            { backgroundColor: isWinStreak ? '#22C55E20' : '#EF444420' },
+            { backgroundColor: isWinStreak ? '#5A8A6E20' : '#B85C5C20' },
           ]}
         >
           <ThemedText
             style={[
               styles.streakText,
-              { color: isWinStreak ? '#22C55E' : '#EF4444' },
+              { color: isWinStreak ? '#5A8A6E' : '#B85C5C' },
             ]}
           >
             {streak}
@@ -107,7 +107,7 @@ export function TeamHeader({
               onShare?.();
             }}
           >
-            <IconSymbol name="square.and.arrow.up" size={16} color="#A1A1AA" />
+            <IconSymbol name="square.and.arrow.up" size={16} color="#9C9790" />
           </Pressable>
           <Pressable
             style={styles.actionBtn}
@@ -116,7 +116,7 @@ export function TeamHeader({
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             }}
           >
-            <IconSymbol name="person.badge.plus" size={16} color="#A1A1AA" />
+            <IconSymbol name="person.badge.plus" size={16} color="#9C9790" />
           </Pressable>
         </View>
       </View>
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 13,
     fontWeight: '600',
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   actions: {
     flexDirection: 'row',

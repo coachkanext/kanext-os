@@ -66,8 +66,8 @@ export interface ProofWedge {
 
 export const PROOF_WEDGES: ProofWedge[] = [
   { id: 'w-fmu', name: 'Valuetainment', orgName: 'Valuetainment Media', icon: 'sportscourt.fill', color: '#FFFFFF', stat: '$53M–$157M', statLabel: 'Media Value Y1' },
-  { id: 'w-iccla', name: '2819 Church', orgName: "Int'l Church of Christ LA", icon: 'heart.fill', color: '#A1A1AA', stat: '3', statLabel: 'Campuses' },
-  { id: 'w-k1', name: 'Valuetainment', orgName: 'PBD Podcast', icon: 'flag.checkered', color: '#EF4444', stat: '14', statLabel: 'Race Season' },
+  { id: 'w-iccla', name: '2819 Church', orgName: "Int'l Church of Christ LA", icon: 'heart.fill', color: '#9C9790', stat: '3', statLabel: 'Campuses' },
+  { id: 'w-k1', name: 'Valuetainment', orgName: 'PBD Podcast', icon: 'flag.checkered', color: '#B85C5C', stat: '14', statLabel: 'Race Season' },
 ];
 
 // =============================================================================

@@ -169,49 +169,49 @@ export const COMP_SPONSORS_SCOPE_CHIPS = [
 // =============================================================================
 
 export const TIER_COLOR: Record<CompSponsor['tier'], string> = {
-  title: '#F59E0B',
-  gold: '#F59E0B',
-  silver: '#A1A1AA',
-  bronze: '#1D9BF0',
-  'in-kind': '#1D9BF0',
+  title: '#B8943E',
+  gold: '#B8943E',
+  silver: '#9C9790',
+  bronze: '#1A1714',
+  'in-kind': '#1A1714',
 };
 
 export const SPONSOR_STATUS_COLOR: Record<CompSponsor['status'], string> = {
-  active: '#22C55E',
-  pending: '#F59E0B',
-  expired: '#EF4444',
-  paused: '#A1A1AA',
+  active: '#5A8A6E',
+  pending: '#B8943E',
+  expired: '#B85C5C',
+  paused: '#9C9790',
 };
 
 export const ACTIVATION_STATUS_COLOR: Record<Activation['status'], string> = {
-  active: '#22C55E',
-  scheduled: '#1D9BF0',
-  completed: '#A1A1AA',
-  draft: '#A1A1AA',
+  active: '#5A8A6E',
+  scheduled: '#1A1714',
+  completed: '#9C9790',
+  draft: '#9C9790',
 };
 
 export const CONTRACT_STATUS_COLOR: Record<SponsorContract['status'], string> = {
-  active: '#22C55E',
-  negotiation: '#F59E0B',
-  expired: '#EF4444',
-  'pending-renewal': '#1D9BF0',
+  active: '#5A8A6E',
+  negotiation: '#B8943E',
+  expired: '#B85C5C',
+  'pending-renewal': '#1A1714',
 };
 
 export const FULFILLMENT_STATUS_COLOR: Record<FulfillmentItem['status'], string> = {
-  completed: '#22C55E',
-  'in-progress': '#1D9BF0',
-  overdue: '#EF4444',
-  upcoming: '#F59E0B',
+  completed: '#5A8A6E',
+  'in-progress': '#1A1714',
+  overdue: '#B85C5C',
+  upcoming: '#B8943E',
 };
 
 export const PROSPECT_STAGE_COLOR: Record<Prospect['stage'], string> = {
-  lead: '#A1A1AA',
-  outreach: '#1D9BF0',
-  meeting: '#F59E0B',
-  proposal: '#1D9BF0',
-  negotiation: '#F59E0B',
-  'closed-won': '#22C55E',
-  'closed-lost': '#EF4444',
+  lead: '#9C9790',
+  outreach: '#1A1714',
+  meeting: '#B8943E',
+  proposal: '#1A1714',
+  negotiation: '#B8943E',
+  'closed-won': '#5A8A6E',
+  'closed-lost': '#B85C5C',
 };
 
 // =============================================================================
@@ -221,21 +221,21 @@ export const PROSPECT_STAGE_COLOR: Record<Prospect['stage'], string> = {
 export function getCompSponsorsData(_scope: string) {
   // ── Dashboard ──
   const dashboard: SponsorsDashboardBlock[] = [
-    { id: 'ds-1', label: 'Total Sponsors', value: '5', delta: '+1 this quarter', icon: 'building.2.fill', color: '#1D9BF0' },
-    { id: 'ds-2', label: 'Annual Revenue', value: '$720K', delta: '+$95K vs last year', icon: 'dollarsign.circle.fill', color: '#22C55E' },
-    { id: 'ds-3', label: 'Active Activations', value: '18', delta: '6 launching this month', icon: 'bolt.fill', color: '#F59E0B' },
-    { id: 'ds-4', label: 'Fulfillment Rate', value: '87%', delta: '+4% from last quarter', icon: 'checkmark.seal.fill', color: '#1D9BF0' },
-    { id: 'ds-5', label: 'Pipeline Value', value: '$340K', delta: '3 proposals pending', icon: 'binoculars.fill', color: '#EF4444' },
-    { id: 'ds-6', label: 'Assets Delivered', value: '42', delta: '8 pending approval', icon: 'photo.stack.fill', color: '#1D9BF0' },
+    { id: 'ds-1', label: 'Total Sponsors', value: '5', delta: '+1 this quarter', icon: 'building.2.fill', color: '#1A1714' },
+    { id: 'ds-2', label: 'Annual Revenue', value: '$720K', delta: '+$95K vs last year', icon: 'dollarsign.circle.fill', color: '#5A8A6E' },
+    { id: 'ds-3', label: 'Active Activations', value: '18', delta: '6 launching this month', icon: 'bolt.fill', color: '#B8943E' },
+    { id: 'ds-4', label: 'Fulfillment Rate', value: '87%', delta: '+4% from last quarter', icon: 'checkmark.seal.fill', color: '#1A1714' },
+    { id: 'ds-5', label: 'Pipeline Value', value: '$340K', delta: '3 proposals pending', icon: 'binoculars.fill', color: '#B85C5C' },
+    { id: 'ds-6', label: 'Assets Delivered', value: '42', delta: '8 pending approval', icon: 'photo.stack.fill', color: '#1A1714' },
   ];
 
   const quickActions = [
-    { id: 'qa-1', label: 'Add Sponsor', icon: 'plus.circle.fill', color: '#1D9BF0' },
-    { id: 'qa-2', label: 'New Package', icon: 'shippingbox.fill', color: '#22C55E' },
-    { id: 'qa-3', label: 'Create Activation', icon: 'bolt.fill', color: '#F59E0B' },
-    { id: 'qa-4', label: 'Revenue Report', icon: 'chart.bar.fill', color: '#1D9BF0' },
-    { id: 'qa-5', label: 'Send Invoice', icon: 'paperplane.fill', color: '#EF4444' },
-    { id: 'qa-6', label: 'Upload Asset', icon: 'arrow.up.doc.fill', color: '#1D9BF0' },
+    { id: 'qa-1', label: 'Add Sponsor', icon: 'plus.circle.fill', color: '#1A1714' },
+    { id: 'qa-2', label: 'New Package', icon: 'shippingbox.fill', color: '#5A8A6E' },
+    { id: 'qa-3', label: 'Create Activation', icon: 'bolt.fill', color: '#B8943E' },
+    { id: 'qa-4', label: 'Revenue Report', icon: 'chart.bar.fill', color: '#1A1714' },
+    { id: 'qa-5', label: 'Send Invoice', icon: 'paperplane.fill', color: '#B85C5C' },
+    { id: 'qa-6', label: 'Upload Asset', icon: 'arrow.up.doc.fill', color: '#1A1714' },
   ];
 
   const recentActivity = [

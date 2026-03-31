@@ -235,7 +235,7 @@ export function CalendarGrid({ selectedDate, onSelectedDateChange, onDateSelect,
                       const source = deriveSource(nextEvent);
                       const icon = getSourceIcon(source);
                       if (!icon) return null;
-                      return <IconSymbol name={icon as any} size={12} color="#1D9BF0" style={styles.heroSourceIcon} />;
+                      return <IconSymbol name={icon as any} size={12} color="#1A1714" style={styles.heroSourceIcon} />;
                     })()}
                   </View>
                 )}

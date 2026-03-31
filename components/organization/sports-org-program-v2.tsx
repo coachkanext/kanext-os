@@ -230,13 +230,13 @@ function OverviewTab({
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Filled</ThemedText>
           </View>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: overview.vacantSeats > 0 ? '#EF4444' : '#22C55E' }]}>
+            <ThemedText style={[s.kpiValue, { color: overview.vacantSeats > 0 ? '#B85C5C' : '#5A8A6E' }]}>
               {overview.vacantSeats}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Vacant</ThemedText>
           </View>
           <View style={s.kpiItem}>
-            <ThemedText style={[s.kpiValue, { color: overview.overloadedSeats > 0 ? '#F59E0B' : '#22C55E' }]}>
+            <ThemedText style={[s.kpiValue, { color: overview.overloadedSeats > 0 ? '#B8943E' : '#5A8A6E' }]}>
               {overview.overloadedSeats}
             </ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Overloaded</ThemedText>
@@ -257,19 +257,19 @@ function OverviewTab({
       </ThemedText>
       <View style={s.metricsStrip}>
         <View style={[s.metricCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.metricValue, { color: overview.upcomingMilestones > 0 ? ACCENT : '#22C55E' }]}>
+          <ThemedText style={[s.metricValue, { color: overview.upcomingMilestones > 0 ? ACCENT : '#5A8A6E' }]}>
             {overview.upcomingMilestones}
           </ThemedText>
           <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Upcoming</ThemedText>
         </View>
         <View style={[s.metricCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.metricValue, { color: overview.pendingDecisions > 0 ? '#F59E0B' : '#22C55E' }]}>
+          <ThemedText style={[s.metricValue, { color: overview.pendingDecisions > 0 ? '#B8943E' : '#5A8A6E' }]}>
             {overview.pendingDecisions}
           </ThemedText>
           <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Decisions</ThemedText>
         </View>
         <View style={[s.metricCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.metricValue, { color: overview.criticalDecisions > 0 ? '#EF4444' : '#22C55E' }]}>
+          <ThemedText style={[s.metricValue, { color: overview.criticalDecisions > 0 ? '#B85C5C' : '#5A8A6E' }]}>
             {overview.criticalDecisions}
           </ThemedText>
           <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Critical</ThemedText>
@@ -281,13 +281,13 @@ function OverviewTab({
           <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Assets</ThemedText>
         </View>
         <View style={[s.metricCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.metricValue, { color: overview.assetsNeedingReplacement > 0 ? '#EF4444' : '#22C55E' }]}>
+          <ThemedText style={[s.metricValue, { color: overview.assetsNeedingReplacement > 0 ? '#B85C5C' : '#5A8A6E' }]}>
             {overview.assetsNeedingReplacement}
           </ThemedText>
           <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Replace</ThemedText>
         </View>
         <View style={[s.metricCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.metricValue, { color: overview.expiringPartners > 0 ? '#F59E0B' : '#22C55E' }]}>
+          <ThemedText style={[s.metricValue, { color: overview.expiringPartners > 0 ? '#B8943E' : '#5A8A6E' }]}>
             {overview.expiringPartners}
           </ThemedText>
           <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>At-Risk Partners</ThemedText>
@@ -419,7 +419,7 @@ function LeadershipTab({
                 <View style={s.leadershipCardTop}>
                   <View style={s.leadershipTextCol}>
                     <ThemedText style={[s.leadershipTitle, { color: colors.text }]}>{seat.title}</ThemedText>
-                    <ThemedText style={[s.leadershipName, { color: isVacant ? '#EF4444' : colors.textSecondary }]}>
+                    <ThemedText style={[s.leadershipName, { color: isVacant ? '#B85C5C' : colors.textSecondary }]}>
                       {seat.name || 'VACANT'}
                     </ThemedText>
                   </View>
@@ -531,7 +531,7 @@ function RulesTab({
             <StatusBadge label={catLabel.toUpperCase()} color={catColor} />
             <StatusBadge label={sevLabel.toUpperCase()} color={sevColor} />
             {item.exceptions > 0 && (
-              <StatusBadge label={`${item.exceptions} EXCEPTION${item.exceptions > 1 ? 'S' : ''}`} color="#F59E0B" />
+              <StatusBadge label={`${item.exceptions} EXCEPTION${item.exceptions > 1 ? 'S' : ''}`} color="#B8943E" />
             )}
           </View>
           <View style={[s.ruleFooter, { borderTopColor: colors.border }]}>
@@ -748,8 +748,8 @@ function AssetsTab({
             </View>
             {item.replacementDate && (
               <View style={s.assetMetaItem}>
-                <IconSymbol name="arrow.triangle.2.circlepath" size={11} color="#EF4444" />
-                <ThemedText style={[s.assetMetaText, { color: '#EF4444' }]}>
+                <IconSymbol name="arrow.triangle.2.circlepath" size={11} color="#B85C5C" />
+                <ThemedText style={[s.assetMetaText, { color: '#B85C5C' }]}>
                   Replace by {formatDate(item.replacementDate)}
                 </ThemedText>
               </View>
@@ -1021,7 +1021,7 @@ function AssetDetailSheet({
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Last Inspected</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: asset.replacementDate ? '#EF4444' : '#22C55E' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: asset.replacementDate ? '#B85C5C' : '#5A8A6E' }]}>
               {asset.replacementDate ? formatDate(asset.replacementDate) : 'N/A'}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Replacement Date</ThemedText>

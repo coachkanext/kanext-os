@@ -153,7 +153,7 @@ function BudgetSummaryBlock({ colors }: { colors: typeof Colors.light }) {
 function ScholarshipsBlock({ colors, accentColor }: { colors: typeof Colors.light; accentColor: string }) {
   const d = SCHOLARSHIP_DATA;
   const pct = d.used / d.equivalencies;
-  const barColor = pct >= 0.9 ? '#F59E0B' : '#22C55E';
+  const barColor = pct >= 0.9 ? '#B8943E' : '#5A8A6E';
 
   return (
     <>
@@ -170,7 +170,7 @@ function ScholarshipsBlock({ colors, accentColor }: { colors: typeof Colors.ligh
             <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Used</ThemedText>
           </View>
           <View style={s.metricItem}>
-            <ThemedText style={[s.metricValue, { color: d.remaining > 0 ? '#22C55E' : '#EF4444' }]}>{d.remaining}</ThemedText>
+            <ThemedText style={[s.metricValue, { color: d.remaining > 0 ? '#5A8A6E' : '#B85C5C' }]}>{d.remaining}</ThemedText>
             <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Remaining</ThemedText>
           </View>
         </View>
@@ -201,7 +201,7 @@ function ScholarshipsBlock({ colors, accentColor }: { colors: typeof Colors.ligh
 function NILBudgetBlock({ colors, accentColor, onOpenSheet }: { colors: typeof Colors.light; accentColor: string; onOpenSheet: () => void }) {
   const d = NIL_DATA;
   const allocatedPct = d.allocated / d.poolTotal;
-  const barColor = allocatedPct >= 0.85 ? '#F59E0B' : accentColor;
+  const barColor = allocatedPct >= 0.85 ? '#B8943E' : accentColor;
 
   return (
     <>
@@ -224,7 +224,7 @@ function NILBudgetBlock({ colors, accentColor, onOpenSheet }: { colors: typeof C
               <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Allocated</ThemedText>
             </View>
             <View style={s.metricItem}>
-              <ThemedText style={[s.metricValue, { color: d.remaining > 5000 ? '#22C55E' : '#F59E0B' }]}>{fmt(d.remaining)}</ThemedText>
+              <ThemedText style={[s.metricValue, { color: d.remaining > 5000 ? '#5A8A6E' : '#B8943E' }]}>{fmt(d.remaining)}</ThemedText>
               <ThemedText style={[s.metricLabel, { color: colors.textSecondary }]}>Remaining</ThemedText>
             </View>
           </View>
@@ -261,7 +261,7 @@ function NILSummarySheet({ visible, onClose, colors, accentColor }: { visible: b
             <ThemedText style={[s.sheetMetricLabel, { color: colors.textSecondary }]}>Allocated Total</ThemedText>
           </View>
           <View style={s.sheetMetricItem}>
-            <ThemedText style={[s.sheetMetricValue, { color: d.remaining > 5000 ? '#22C55E' : '#F59E0B' }]}>{fmtFull(d.remaining)}</ThemedText>
+            <ThemedText style={[s.sheetMetricValue, { color: d.remaining > 5000 ? '#5A8A6E' : '#B8943E' }]}>{fmtFull(d.remaining)}</ThemedText>
             <ThemedText style={[s.sheetMetricLabel, { color: colors.textSecondary }]}>Remaining Available</ThemedText>
           </View>
         </View>

@@ -17,7 +17,7 @@ const FILTERS = ['All', 'Pending', 'Contacted', 'Scheduled', 'Completed'] as con
 type Filter = (typeof FILTERS)[number];
 
 const STATUS_COLORS: Record<RecentVisitor['followUpStatus'], string> = {
-  pending: '#F59E0B', contacted: ACCENT, scheduled: ACCENT, completed: '#22C55E',
+  pending: '#B8943E', contacted: ACCENT, scheduled: ACCENT, completed: '#5A8A6E',
 };
 
 const HOW_HEARD_LABELS: Record<RecentVisitor['howHeard'], string> = {

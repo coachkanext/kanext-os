@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#A1A1AA',
+    color: '#9C9790',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
     paddingHorizontal: Spacing.lg,
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#1D9BF0',
+    backgroundColor: '#1A1714',
   },
   listContent: {
     paddingBottom: 100,

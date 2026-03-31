@@ -19,8 +19,8 @@ interface Props {
 const MODE_COLORS: Record<string, string> = {
   sports: ACCENT,
   church: ACCENT,
-  education: '#22C55E',
-  competition: '#EF4444',
+  education: '#5A8A6E',
+  competition: '#B85C5C',
 };
 
 const MODE_LABELS: Record<string, string> = {
@@ -31,10 +31,10 @@ const MODE_LABELS: Record<string, string> = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  live: '#22C55E',
-  onboarding: '#F59E0B',
+  live: '#5A8A6E',
+  onboarding: '#B8943E',
   signed: ACCENT,
-  prospect: '#A1A1AA',
+  prospect: '#9C9790',
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -49,8 +49,8 @@ export function BizVaultProofView({ colors, accent }: Props) {
     <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
       <ThemedText style={[styles.sectionLabel, { color: accent }]}>INSTITUTIONS</ThemedText>
       {PROOF_INSTITUTIONS.map((inst: ProofInstitution) => {
-        const modeColor = MODE_COLORS[inst.mode] ?? '#A1A1AA';
-        const statusColor = STATUS_COLORS[inst.status] ?? '#A1A1AA';
+        const modeColor = MODE_COLORS[inst.mode] ?? '#9C9790';
+        const statusColor = STATUS_COLORS[inst.status] ?? '#9C9790';
         const isLive = inst.status === 'live';
 
         return (
@@ -62,7 +62,7 @@ export function BizVaultProofView({ colors, accent }: Props) {
                 backgroundColor: colors.card,
                 borderColor: colors.border,
               },
-              isLive && { borderLeftColor: '#22C55E', borderLeftWidth: 3 },
+              isLive && { borderLeftColor: '#5A8A6E', borderLeftWidth: 3 },
             ]}
           >
             <View style={styles.cardTop}>

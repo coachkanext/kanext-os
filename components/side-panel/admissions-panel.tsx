@@ -164,8 +164,8 @@ export function AdmissionsPanel() {
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>My Application</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                <View style={{ paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6, backgroundColor: '#8B5CF622', borderWidth: 1, borderColor: '#8B5CF6' }}>
-                  <Text style={{ fontSize: 10, fontWeight: '700', color: '#8B5CF6' }}>Applied</Text>
+                <View style={{ paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6, backgroundColor: '#1A171422', borderWidth: 1, borderColor: '#1A1714' }}>
+                  <Text style={{ fontSize: 10, fontWeight: '700', color: '#1A1714' }}>Applied</Text>
                 </View>
               </View>
             </View>
@@ -221,7 +221,7 @@ export function AdmissionsPanel() {
             <IconSymbol name="dollarsign.circle.fill" size={16} color={C.secondary} />
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: 14, color: C.label, fontWeight: '600' }}>Financial Aid</Text>
-              <Text style={{ fontSize: 12, color: '#F59E0B' }}>Award Pending</Text>
+              <Text style={{ fontSize: 12, color: '#B8943E' }}>Award Pending</Text>
             </View>
           </View>
 

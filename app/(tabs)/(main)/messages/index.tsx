@@ -410,7 +410,7 @@ function EmailRow({
           <IconSymbol
             name={starred ? 'star.fill' : 'star'}
             size={18}
-            color={starred ? '#F59E0B' : C.muted}
+            color={starred ? '#B8943E' : C.muted}
           />
         </Pressable>
       </Pressable>
@@ -1781,7 +1781,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   },
   swipeStarWrap: {
     width: 80,
-    backgroundColor: '#F59E0B',
+    backgroundColor: '#B8943E',
     justifyContent: 'center',
     alignItems: 'center',
   },

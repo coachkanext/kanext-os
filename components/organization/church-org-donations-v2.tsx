@@ -228,12 +228,12 @@ function OverviewTab({
   const isFinanceLevel = isElderLevel(role);
 
   const tileData = [
-    { label: 'Total Giving MTD', value: tiles.totalGivingMTD, icon: 'dollarsign.circle.fill', color: '#22C55E' },
+    { label: 'Total Giving MTD', value: tiles.totalGivingMTD, icon: 'dollarsign.circle.fill', color: '#5A8A6E' },
     { label: 'Total Giving YTD', value: tiles.totalGivingYTD, icon: 'chart.line.uptrend.xyaxis', color: ACCENT },
     { label: 'Active Recurring', value: String(tiles.activeRecurring), icon: 'arrow.triangle.2.circlepath', color: ACCENT },
-    { label: 'Fund Balances', value: isFinanceLevel ? formatCurrency(data.funds.reduce((s, f) => s + f.balance, 0)) : '---', icon: 'banknote.fill', color: '#F59E0B' },
+    { label: 'Fund Balances', value: isFinanceLevel ? formatCurrency(data.funds.reduce((s, f) => s + f.balance, 0)) : '---', icon: 'banknote.fill', color: '#B8943E' },
     { label: 'Campaign Progress', value: `${data.campaigns.filter((c) => c.status === 'active').length} Active`, icon: 'flag.fill', color: ACCENT },
-    { label: 'Exception Flags', value: String(tiles.exceptionFlags), icon: 'exclamationmark.triangle.fill', color: '#EF4444' },
+    { label: 'Exception Flags', value: String(tiles.exceptionFlags), icon: 'exclamationmark.triangle.fill', color: '#B85C5C' },
   ];
 
   // Attention items for C1/C2
@@ -249,7 +249,7 @@ function OverviewTab({
           id: r.id,
           title: 'Failed Recurring Gift',
           description: `${r.donorName} — ${formatCurrencyFull(r.amount)} ${GIFT_FREQUENCY_LABELS[r.frequency]} to ${FUND_TYPE_LABELS[r.designation]}`,
-          color: '#EF4444',
+          color: '#B85C5C',
         }))),
       ]
     : [];
@@ -582,8 +582,8 @@ function FundsTab({
               </ThemedText>
               <View style={s.fundBadgeRow}>
                 <StatusBadge label={FUND_TYPE_LABELS[item.type].toUpperCase()} color={typeColor} />
-                <StatusBadge label={FUND_RESTRICTION_LABELS[item.restriction].toUpperCase()} color={item.restriction === 'unrestricted' ? '#22C55E' : item.restriction === 'designated' ? ACCENT : '#F59E0B'} />
-                <StatusBadge label={FUND_STATUS_LABELS[item.status].toUpperCase()} color={item.status === 'active' ? '#22C55E' : '#A1A1AA'} />
+                <StatusBadge label={FUND_RESTRICTION_LABELS[item.restriction].toUpperCase()} color={item.restriction === 'unrestricted' ? '#5A8A6E' : item.restriction === 'designated' ? ACCENT : '#B8943E'} />
+                <StatusBadge label={FUND_STATUS_LABELS[item.status].toUpperCase()} color={item.status === 'active' ? '#5A8A6E' : '#9C9790'} />
               </View>
             </View>
           </View>
@@ -685,7 +685,7 @@ function CampaignsTab({
             </ThemedText>
             <View style={s.campaignBadgeRow}>
               <StatusBadge label={CAMPAIGN_STATUS_LABELS[item.status].toUpperCase()} color={statusColor} />
-              <StatusBadge label={item.isPublic ? 'PUBLIC' : 'PRIVATE'} color={item.isPublic ? '#22C55E' : '#F59E0B'} />
+              <StatusBadge label={item.isPublic ? 'PUBLIC' : 'PRIVATE'} color={item.isPublic ? '#5A8A6E' : '#B8943E'} />
             </View>
           </View>
 
@@ -811,7 +811,7 @@ function DonorsTab({
               <IconSymbol
                 name={item.taxStatementReady ? 'checkmark.circle.fill' : 'clock.fill'}
                 size={16}
-                color={item.taxStatementReady ? '#22C55E' : '#F59E0B'}
+                color={item.taxStatementReady ? '#5A8A6E' : '#B8943E'}
               />
               <ThemedText style={[s.donorDetailLabel, { color: colors.textTertiary }]}>Tax Stmt</ThemedText>
             </View>
@@ -879,11 +879,11 @@ function RecurringTab({
       {isFinanceLevel && (
         <View style={s.kpiRow}>
           <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <ThemedText style={[s.kpiValue, { color: '#22C55E' }]}>{activeCount}</ThemedText>
+            <ThemedText style={[s.kpiValue, { color: '#5A8A6E' }]}>{activeCount}</ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Active</ThemedText>
           </View>
           <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <ThemedText style={[s.kpiValue, { color: '#EF4444' }]}>{failedCount}</ThemedText>
+            <ThemedText style={[s.kpiValue, { color: '#B85C5C' }]}>{failedCount}</ThemedText>
             <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Failed</ThemedText>
           </View>
           <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -898,7 +898,7 @@ function RecurringTab({
       </ThemedText>
 
       {visibleGifts.map((gift) => {
-        const statusColor = gift.status === 'active' ? '#22C55E' : gift.status === 'paused' ? '#F59E0B' : gift.status === 'failed' ? '#EF4444' : '#A1A1AA';
+        const statusColor = gift.status === 'active' ? '#5A8A6E' : gift.status === 'paused' ? '#B8943E' : gift.status === 'failed' ? '#B85C5C' : '#9C9790';
         return (
           <View
             key={gift.id}
@@ -952,7 +952,7 @@ function RecurringTab({
                   style={[s.recurringActionBtn, { borderColor: colors.border }]}
                   onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
                 >
-                  <ThemedText style={[s.recurringActionText, { color: '#F59E0B' }]}>
+                  <ThemedText style={[s.recurringActionText, { color: '#B8943E' }]}>
                     {gift.status === 'paused' ? 'Resume' : 'Pause'}
                   </ThemedText>
                 </Pressable>
@@ -1056,8 +1056,8 @@ function ReceiptsTab({
 
             {receipt.taxDeductible && (
               <View style={s.taxDeductibleRow}>
-                <IconSymbol name="checkmark.seal.fill" size={12} color="#22C55E" />
-                <ThemedText style={[s.taxDeductibleText, { color: '#22C55E' }]}>Tax Deductible</ThemedText>
+                <IconSymbol name="checkmark.seal.fill" size={12} color="#5A8A6E" />
+                <ThemedText style={[s.taxDeductibleText, { color: '#5A8A6E' }]}>Tax Deductible</ThemedText>
               </View>
             )}
           </View>
@@ -1148,15 +1148,15 @@ function ReconciliationTab({
       {/* Reconciliation Bridge */}
       <View style={s.kpiRow}>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: '#22C55E' }]}>{processedCount}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: '#5A8A6E' }]}>{processedCount}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Processed</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: '#F59E0B' }]}>{pendingCount}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: '#B8943E' }]}>{pendingCount}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Pending</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <ThemedText style={[s.kpiValue, { color: '#EF4444' }]}>{failedCount}</ThemedText>
+          <ThemedText style={[s.kpiValue, { color: '#B85C5C' }]}>{failedCount}</ThemedText>
           <ThemedText style={[s.kpiLabel, { color: colors.textSecondary }]}>Failed</ThemedText>
         </View>
         <View style={[s.kpiCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -1236,7 +1236,7 @@ function ControlsTab({
       </ThemedText>
 
       {controls.map((ctrl) => {
-        const statusColor = ctrl.status === 'active' ? '#22C55E' : '#F59E0B';
+        const statusColor = ctrl.status === 'active' ? '#5A8A6E' : '#B8943E';
         const statusLabel = ctrl.status === 'active' ? 'ACTIVE' : 'NEEDS REVIEW';
         return (
           <View
@@ -1301,8 +1301,8 @@ function FundDetailSheet({
       {/* Status Row */}
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={FUND_TYPE_LABELS[fund.type].toUpperCase()} color={typeColor} />
-        <StatusBadge label={FUND_RESTRICTION_LABELS[fund.restriction].toUpperCase()} color={fund.restriction === 'unrestricted' ? '#22C55E' : fund.restriction === 'designated' ? ACCENT : '#F59E0B'} />
-        <StatusBadge label={FUND_STATUS_LABELS[fund.status].toUpperCase()} color={fund.status === 'active' ? '#22C55E' : '#A1A1AA'} />
+        <StatusBadge label={FUND_RESTRICTION_LABELS[fund.restriction].toUpperCase()} color={fund.restriction === 'unrestricted' ? '#5A8A6E' : fund.restriction === 'designated' ? ACCENT : '#B8943E'} />
+        <StatusBadge label={FUND_STATUS_LABELS[fund.status].toUpperCase()} color={fund.status === 'active' ? '#5A8A6E' : '#9C9790'} />
       </View>
 
       {/* Balance */}
@@ -1374,7 +1374,7 @@ function FundDetailSheet({
         </ThemedText>
         {recentGifts.map((gift) => (
           <View key={gift.id} style={s.sheetListRow}>
-            <IconSymbol name="dollarsign.circle.fill" size={14} color="#22C55E" />
+            <IconSymbol name="dollarsign.circle.fill" size={14} color="#5A8A6E" />
             <View style={s.sheetListTextCol}>
               <ThemedText style={[s.sheetListTitle, { color: colors.text }]} numberOfLines={1}>
                 {isFinanceLevel ? gift.donorName : 'Donor'} — {formatCurrencyFull(gift.amount)}
@@ -1450,7 +1450,7 @@ function CampaignDetailSheet({
       {/* Status Row */}
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={CAMPAIGN_STATUS_LABELS[campaign.status].toUpperCase()} color={statusColor} />
-        <StatusBadge label={campaign.isPublic ? 'PUBLIC' : 'PRIVATE'} color={campaign.isPublic ? '#22C55E' : '#F59E0B'} />
+        <StatusBadge label={campaign.isPublic ? 'PUBLIC' : 'PRIVATE'} color={campaign.isPublic ? '#5A8A6E' : '#B8943E'} />
         <StatusBadge label={campaign.fundName.toUpperCase()} color={accentColor} />
       </View>
 
@@ -1617,7 +1617,7 @@ function DonorDetailSheet({
             <IconSymbol
               name={donor.taxStatementReady ? 'checkmark.circle.fill' : 'clock.fill'}
               size={16}
-              color={donor.taxStatementReady ? '#22C55E' : '#F59E0B'}
+              color={donor.taxStatementReady ? '#5A8A6E' : '#B8943E'}
             />
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Tax Statement</ThemedText>
           </View>
@@ -1651,7 +1651,7 @@ function DonorDetailSheet({
           Recurring Gifts ({donorRecurring.length})
         </ThemedText>
         {donorRecurring.map((rec) => {
-          const recStatusColor = rec.status === 'active' ? '#22C55E' : rec.status === 'failed' ? '#EF4444' : '#F59E0B';
+          const recStatusColor = rec.status === 'active' ? '#5A8A6E' : rec.status === 'failed' ? '#B85C5C' : '#B8943E';
           return (
             <View key={rec.id} style={s.sheetListRow}>
               <IconSymbol name="arrow.triangle.2.circlepath" size={14} color={recStatusColor} />

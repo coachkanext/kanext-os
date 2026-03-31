@@ -154,7 +154,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   resultRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10, gap: 12 },
   channelIcon: { width: 40, height: 40, borderRadius: 10, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' },
   channelInitials: { fontSize: 13, fontWeight: '700', color: C.label },
-  dmIcon: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#1C1C1E', alignItems: 'center', justifyContent: 'center' },
+  dmIcon: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#1C1410', alignItems: 'center', justifyContent: 'center' },
   dmInitials: { fontSize: 13, fontWeight: '600', color: C.label },
   resultInfo: { flex: 1 },
   resultName: { fontSize: 16, fontWeight: '600', color: C.label },

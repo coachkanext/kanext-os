@@ -332,23 +332,23 @@ export function CompDashboardV2({ colors, accent, role = 'CO6' }: Props) {
 
 function getTeamColor(teamName: string): string {
   const team = GRID_TEAMS.find((t) => t.name === teamName);
-  return team?.color ?? '#A1A1AA';
+  return team?.color ?? '#9C9790';
 }
 
 function LastRaceBadge({ result }: { result: number | 'DNF' | 'DNS' }) {
   let bg: string;
   let label: string;
   if (result === 'DNF') {
-    bg = '#EF4444';
+    bg = '#B85C5C';
     label = 'DNF';
   } else if (result === 'DNS') {
-    bg = '#A1A1AA';
+    bg = '#9C9790';
     label = 'DNS';
   } else if (result === 1) {
     bg = ACCENT;
     label = 'P1';
   } else if (result === 2) {
-    bg = '#A1A1AA';
+    bg = '#9C9790';
     label = 'P2';
   } else if (result === 3) {
     bg = ACCENT;
@@ -381,10 +381,10 @@ const badgeStyles = StyleSheet.create({
 
 function DeltaIndicator({ delta, colors }: { delta: number; colors: typeof Colors.light }) {
   if (delta > 0) {
-    return <ThemedText style={[styles.delta, { color: '#22C55E' }]}>{'\u25B2'}{delta}</ThemedText>;
+    return <ThemedText style={[styles.delta, { color: '#5A8A6E' }]}>{'\u25B2'}{delta}</ThemedText>;
   }
   if (delta < 0) {
-    return <ThemedText style={[styles.delta, { color: '#EF4444' }]}>{'\u25BC'}{Math.abs(delta)}</ThemedText>;
+    return <ThemedText style={[styles.delta, { color: '#B85C5C' }]}>{'\u25BC'}{Math.abs(delta)}</ThemedText>;
   }
   return <ThemedText style={[styles.delta, { color: colors.textTertiary }]}>{'\u2014'}</ThemedText>;
 }
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
   },
   liveBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 20,

@@ -69,9 +69,9 @@ const ASSETS: Asset[] = [
 ];
 
 const CONDITION_COLORS: Record<AssetCondition, string> = {
-  Excellent: '#22C55E',
+  Excellent: '#5A8A6E',
   Good: ACCENT,
-  Fair: '#F59E0B',
+  Fair: '#B8943E',
 };
 
 type CheckStatus = 'complete' | 'pending';
@@ -125,8 +125,8 @@ const TEAM_FREIGHT = [
 
 const FREIGHT_STATUS_COLOR: Record<string, string> = {
   Shipped: ACCENT,
-  'In Transit': '#F59E0B',
-  Delivered: '#22C55E',
+  'In Transit': '#B8943E',
+  Delivered: '#5A8A6E',
 };
 
 const TEARDOWN_SCHEDULE = [
@@ -179,7 +179,7 @@ function VenuesView({ colors, accentColor }: { colors: typeof Colors.light; acce
             <ThemedText style={[s.venueName, { color: colors.text }]}>{venue.name}</ThemedText>
             <StatusBadge
               label={venue.status.toUpperCase()}
-              color={venue.status === 'Confirmed' ? '#22C55E' : '#F59E0B'}
+              color={venue.status === 'Confirmed' ? '#5A8A6E' : '#B8943E'}
             />
           </View>
           <View style={[s.venueMeta, { borderTopColor: colors.border }]}>
@@ -249,7 +249,7 @@ function LogisticsView({ colors, accentColor }: { colors: typeof Colors.light; a
           <IconSymbol name="airplane" size={16} color={accentColor} />
           <ThemedText style={[s.shippingRoute, { color: colors.text }]}>Miami HQ → Suzuka Circuit</ThemedText>
         </View>
-        <StatusBadge label="IN TRANSIT" color="#F59E0B" />
+        <StatusBadge label="IN TRANSIT" color="#B8943E" />
       </View>
 
       {/* Venue Setup Checklist */}
@@ -268,7 +268,7 @@ function LogisticsView({ colors, accentColor }: { colors: typeof Colors.light; a
             <IconSymbol
               name={item.status === 'complete' ? 'checkmark.circle.fill' : 'circle.fill'}
               size={16}
-              color={item.status === 'complete' ? '#22C55E' : colors.textTertiary}
+              color={item.status === 'complete' ? '#5A8A6E' : colors.textTertiary}
             />
             <ThemedText style={[s.checkText, { color: item.status === 'complete' ? colors.textSecondary : colors.text }]}>
               {item.task}
@@ -293,7 +293,7 @@ function LogisticsView({ colors, accentColor }: { colors: typeof Colors.light; a
             <ThemedText style={[s.travelName, { color: colors.text }]}>{official.name}</ThemedText>
             <StatusBadge
               label={official.status.toUpperCase()}
-              color={official.status === 'Confirmed' ? '#22C55E' : '#F59E0B'}
+              color={official.status === 'Confirmed' ? '#5A8A6E' : '#B8943E'}
             />
           </View>
         ))}
@@ -308,7 +308,7 @@ function LogisticsView({ colors, accentColor }: { colors: typeof Colors.light; a
             <ThemedText style={[s.accomTitle, { color: colors.text }]}>Suzuka Circuit Hotel</ThemedText>
             <ThemedText style={[s.accomDetail, { color: colors.textSecondary }]}>12 rooms · Apr 4-8 · Booked</ThemedText>
           </View>
-          <StatusBadge label="BOOKED" color="#22C55E" />
+          <StatusBadge label="BOOKED" color="#5A8A6E" />
         </View>
       </View>
 
@@ -327,7 +327,7 @@ function LogisticsView({ colors, accentColor }: { colors: typeof Colors.light; a
               <ThemedText style={[s.freightTeam, { color: colors.text }]}>{tf.team}</ThemedText>
               <ThemedText style={[s.freightEta, { color: colors.textSecondary }]}>ETA: {tf.eta}</ThemedText>
             </View>
-            <StatusBadge label={tf.status.toUpperCase()} color={FREIGHT_STATUS_COLOR[tf.status] || '#A1A1AA'} />
+            <StatusBadge label={tf.status.toUpperCase()} color={FREIGHT_STATUS_COLOR[tf.status] || '#9C9790'} />
           </View>
         ))}
       </View>

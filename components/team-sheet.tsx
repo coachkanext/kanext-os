@@ -94,17 +94,17 @@ function formatPct(spent: number, allocated: number): string {
 
 function getComplianceColor(status: string): string {
   switch (status) {
-    case 'clear': return '#22C55E';
-    case 'pending': return '#F59E0B';
-    case 'violation': return '#EF4444';
-    default: return '#A1A1AA';
+    case 'clear': return '#5A8A6E';
+    case 'pending': return '#B8943E';
+    case 'violation': return '#B85C5C';
+    default: return '#9C9790';
   }
 }
 
 function getNetRatingColor(nr: number): string {
-  if (nr >= 5) return '#22C55E';
-  if (nr >= 0) return '#F59E0B';
-  return '#EF4444';
+  if (nr >= 5) return '#5A8A6E';
+  if (nr >= 0) return '#B8943E';
+  return '#B85C5C';
 }
 
 // =============================================================================
@@ -404,10 +404,10 @@ export function TeamSheet({
             </View>
             {rosterPlayers.map((p) => {
               const statusColor =
-                p.meta?.status === 'available' ? '#22C55E' :
-                p.meta?.status === 'injured' ? '#EF4444' :
-                p.meta?.status === 'out' ? '#EF4444' :
-                p.meta?.status === 'redshirt' ? accent : '#A1A1AA';
+                p.meta?.status === 'available' ? '#5A8A6E' :
+                p.meta?.status === 'injured' ? '#B85C5C' :
+                p.meta?.status === 'out' ? '#B85C5C' :
+                p.meta?.status === 'redshirt' ? accent : '#9C9790';
               return (
                 <View key={p.jersey} style={[styles.rosterRow, { borderTopColor: colors.divider }]}>
                   <Text style={[styles.rosterCol, { color: colors.textSecondary }]}>{p.jersey}</Text>
@@ -477,7 +477,7 @@ export function TeamSheet({
             {recentResults.map((g, i) => (
               <View key={g.id} style={[styles.gameRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}>
                 <Text style={[styles.gameOpp, { color: colors.text }]} numberOfLines={1}>{g.opponent}</Text>
-                <Text style={[styles.gameScore, { color: g.score?.startsWith('W') ? '#22C55E' : '#EF4444' }]}>
+                <Text style={[styles.gameScore, { color: g.score?.startsWith('W') ? '#5A8A6E' : '#B85C5C' }]}>
                   {g.score ?? '—'}
                 </Text>
               </View>
@@ -561,7 +561,7 @@ export function TeamSheet({
                   <Text style={[styles.gameOpp, { color: colors.text }]}>{g.opponent}</Text>
                   <Text style={[styles.gameSub, { color: colors.textTertiary }]}>{g.date}</Text>
                 </View>
-                <Text style={[styles.gameScore, { color: g.score?.startsWith('W') ? '#22C55E' : '#EF4444' }]}>
+                <Text style={[styles.gameScore, { color: g.score?.startsWith('W') ? '#5A8A6E' : '#B85C5C' }]}>
                   {g.score ?? '—'}
                 </Text>
               </View>
@@ -609,8 +609,8 @@ export function TeamSheet({
                     <Text style={[styles.travelDetail, { color: colors.textTertiary }]}>{t.hotel}</Text>
                   )}
                 </View>
-                <View style={[styles.travelStatus, { backgroundColor: t.status === 'confirmed' ? '#22C55E20' : '#F59E0B20' }]}>
-                  <Text style={[styles.travelStatusText, { color: t.status === 'confirmed' ? '#22C55E' : '#F59E0B' }]}>
+                <View style={[styles.travelStatus, { backgroundColor: t.status === 'confirmed' ? '#5A8A6E20' : '#B8943E20' }]}>
+                  <Text style={[styles.travelStatusText, { color: t.status === 'confirmed' ? '#5A8A6E' : '#B8943E' }]}>
                     {t.status}
                   </Text>
                 </View>
@@ -625,10 +625,10 @@ export function TeamSheet({
               <View key={i} style={[styles.facilityRow, i > 0 && { borderTopColor: colors.divider, borderTopWidth: StyleSheet.hairlineWidth }]}>
                 <Text style={[styles.facilityName, { color: colors.text }]}>{f.name}</Text>
                 <View style={[styles.facilityStatus, {
-                  backgroundColor: f.status === 'available' ? '#22C55E20' : f.status === 'maintenance' ? '#EF444420' : '#F59E0B20'
+                  backgroundColor: f.status === 'available' ? '#5A8A6E20' : f.status === 'maintenance' ? '#B85C5C20' : '#B8943E20'
                 }]}>
                   <Text style={[styles.facilityStatusText, {
-                    color: f.status === 'available' ? '#22C55E' : f.status === 'maintenance' ? '#EF4444' : '#F59E0B'
+                    color: f.status === 'available' ? '#5A8A6E' : f.status === 'maintenance' ? '#B85C5C' : '#B8943E'
                   }]}>
                     {f.status}
                   </Text>
@@ -647,10 +647,10 @@ export function TeamSheet({
                   <Text style={[styles.equipCategory, { color: colors.textTertiary }]}>{e.category} · Qty: {e.quantity}</Text>
                 </View>
                 <View style={[styles.equipCondition, {
-                  backgroundColor: e.condition === 'good' ? '#22C55E20' : e.condition === 'fair' ? '#F59E0B20' : '#EF444420'
+                  backgroundColor: e.condition === 'good' ? '#5A8A6E20' : e.condition === 'fair' ? '#B8943E20' : '#B85C5C20'
                 }]}>
                   <Text style={[styles.equipConditionText, {
-                    color: e.condition === 'good' ? '#22C55E' : e.condition === 'fair' ? '#F59E0B' : '#EF4444'
+                    color: e.condition === 'good' ? '#5A8A6E' : e.condition === 'fair' ? '#B8943E' : '#B85C5C'
                   }]}>
                     {e.condition}
                   </Text>
@@ -670,7 +670,7 @@ export function TeamSheet({
             <StatRow label="Total Spent" value={formatCurrency(KaNeXT_FINANCE.breakdown.reduce((s, b) => s + b.spent, 0))} colors={colors} />
             <StatRow label="Scholarship Allocation" value={formatCurrency(KaNeXT_FINANCE.scholarshipTotal)} colors={colors} />
             <StatRow label="NIL Pool" value={formatCurrency(KaNeXT_FINANCE.nilPoolTotal)} colors={colors} />
-            <StatRow label="Revenue YTD" value={formatCurrency(KaNeXT_FINANCE.revenueYTD)} colors={colors} valueColor="#22C55E" />
+            <StatRow label="Revenue YTD" value={formatCurrency(KaNeXT_FINANCE.revenueYTD)} colors={colors} valueColor="#5A8A6E" />
           </Card>
 
           <SectionLabel label="BUDGET BREAKDOWN" colors={colors} />
@@ -685,7 +685,7 @@ export function TeamSheet({
                   <View style={styles.budgetBar}>
                     <View style={[styles.budgetBarFill, {
                       width: `${Math.min((b.spent / b.allocated) * 100, 100)}%`,
-                      backgroundColor: b.spent / b.allocated > 0.9 ? '#EF4444' : b.spent / b.allocated > 0.7 ? '#F59E0B' : '#22C55E',
+                      backgroundColor: b.spent / b.allocated > 0.9 ? '#B85C5C' : b.spent / b.allocated > 0.7 ? '#B8943E' : '#5A8A6E',
                     }]} />
                   </View>
                 </View>

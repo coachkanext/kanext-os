@@ -238,11 +238,11 @@ function OverviewTab({
 
   // Health tiles
   const healthTiles: { label: string; value: number; color: string; icon: string }[] = [
-    { label: 'Critical WOs', value: posture.criticalWorkOrders, color: '#EF4444', icon: 'exclamationmark.triangle.fill' },
+    { label: 'Critical WOs', value: posture.criticalWorkOrders, color: '#B85C5C', icon: 'exclamationmark.triangle.fill' },
     { label: 'Inspections Due', value: posture.inspectionsDue, color: ACCENT, icon: 'checkmark.shield.fill' },
-    { label: 'Areas Down', value: posture.areasDown, color: '#EF4444', icon: 'nosign' },
-    { label: 'Buildings', value: data.buildings.length, color: '#22C55E', icon: 'building.2.fill' },
-    { label: 'Open WOs', value: data.workOrders.filter((w) => w.status !== 'complete' && w.status !== 'closed').length, color: '#F59E0B', icon: 'wrench.and.screwdriver.fill' },
+    { label: 'Areas Down', value: posture.areasDown, color: '#B85C5C', icon: 'nosign' },
+    { label: 'Buildings', value: data.buildings.length, color: '#5A8A6E', icon: 'building.2.fill' },
+    { label: 'Open WOs', value: data.workOrders.filter((w) => w.status !== 'complete' && w.status !== 'closed').length, color: '#B8943E', icon: 'wrench.and.screwdriver.fill' },
     { label: 'Vendors', value: data.vendors.length, color: ACCENT, icon: 'person.2.fill' },
   ];
 
@@ -252,27 +252,27 @@ function OverviewTab({
   // Top Risks
   const riskFlags: { label: string; color: string }[] = [];
   if (posture.criticalWorkOrders > 0) {
-    riskFlags.push({ label: `${posture.criticalWorkOrders} critical work order(s)`, color: '#EF4444' });
+    riskFlags.push({ label: `${posture.criticalWorkOrders} critical work order(s)`, color: '#B85C5C' });
   }
   const failedInspections = data.inspections.filter((i) => i.status === 'failed');
   if (failedInspections.length > 0) {
-    riskFlags.push({ label: `${failedInspections.length} failed inspection(s)`, color: '#EF4444' });
+    riskFlags.push({ label: `${failedInspections.length} failed inspection(s)`, color: '#B85C5C' });
   }
   const dueInspections = data.inspections.filter((i) => i.status === 'due');
   if (dueInspections.length > 0) {
-    riskFlags.push({ label: `${dueInspections.length} inspection(s) coming due`, color: '#F59E0B' });
+    riskFlags.push({ label: `${dueInspections.length} inspection(s) coming due`, color: '#B8943E' });
   }
   const expiringVendors = data.vendors.filter((v) => v.status === 'expiring');
   if (expiringVendors.length > 0) {
-    riskFlags.push({ label: `${expiringVendors.length} vendor contract(s) expiring`, color: '#F59E0B' });
+    riskFlags.push({ label: `${expiringVendors.length} vendor contract(s) expiring`, color: '#B8943E' });
   }
   const missedMaint = data.maintenance.filter((m) => m.status === 'missed');
   if (missedMaint.length > 0) {
-    riskFlags.push({ label: `${missedMaint.length} missed maintenance task(s)`, color: '#EF4444' });
+    riskFlags.push({ label: `${missedMaint.length} missed maintenance task(s)`, color: '#B85C5C' });
   }
   const unverifiedVendors = data.vendors.filter((v) => !v.insuranceVerified);
   if (unverifiedVendors.length > 0) {
-    riskFlags.push({ label: `${unverifiedVendors.length} vendor(s) insurance not verified`, color: '#EF4444' });
+    riskFlags.push({ label: `${unverifiedVendors.length} vendor(s) insurance not verified`, color: '#B85C5C' });
   }
 
   // Quick Actions
@@ -409,7 +409,7 @@ function BuildingsTab({
     ({ item }: { item: Building }) => {
       const typeColor = BUILDING_TYPE_COLORS[item.type];
       const statusColor = BUILDING_STATUS_COLORS[item.status];
-      const conditionColor = item.condition >= 80 ? '#22C55E' : item.condition >= 60 ? '#F59E0B' : '#EF4444';
+      const conditionColor = item.condition >= 80 ? '#5A8A6E' : item.condition >= 60 ? '#B8943E' : '#B85C5C';
       return (
         <Pressable
           style={[s.buildingCard, { backgroundColor: colors.card, borderColor: colors.border }]}
@@ -640,7 +640,7 @@ function AssetsTab({
           <View style={s.assetDetailsGrid}>
             <View style={s.assetDetailCol}>
               <ThemedText style={[s.assetDetailLabel, { color: colors.textTertiary }]}>Warranty</ThemedText>
-              <ThemedText style={[s.assetDetailValue, { color: warrantyExpired ? '#EF4444' : colors.text }]}>
+              <ThemedText style={[s.assetDetailValue, { color: warrantyExpired ? '#B85C5C' : colors.text }]}>
                 {warrantyExpired ? 'EXPIRED' : formatDate(item.warrantyExpiry)}
               </ThemedText>
             </View>
@@ -748,13 +748,13 @@ function WorkOrdersTab({
               {item.description}
             </ThemedText>
             <View style={s.woFooter}>
-              <ThemedText style={[s.woSla, { color: slaDays <= 1 ? '#EF4444' : colors.textTertiary }]}>
+              <ThemedText style={[s.woSla, { color: slaDays <= 1 ? '#B85C5C' : colors.textTertiary }]}>
                 SLA: {item.slaHours}h — Due: {formatDate(item.dueDate)}
               </ThemedText>
               {item.requiresEvidence && (
                 <View style={s.woEvidenceRow}>
-                  <IconSymbol name="camera.fill" size={10} color="#F59E0B" />
-                  <ThemedText style={[s.woEvidenceText, { color: '#F59E0B' }]}>
+                  <IconSymbol name="camera.fill" size={10} color="#B8943E" />
+                  <ThemedText style={[s.woEvidenceText, { color: '#B8943E' }]}>
                     Evidence required
                   </ThemedText>
                 </View>
@@ -821,8 +821,8 @@ function MaintenanceTab({
             style={[
               s.maintCard,
               {
-                backgroundColor: isMissed ? '#EF444408' : colors.card,
-                borderColor: isMissed ? '#EF444430' : colors.border,
+                backgroundColor: isMissed ? '#B85C5C08' : colors.card,
+                borderColor: isMissed ? '#B85C5C30' : colors.border,
               },
             ]}
           >
@@ -855,8 +855,8 @@ function MaintenanceTab({
               </View>
               {isMissed && (
                 <View style={s.maintAlertRow}>
-                  <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#EF4444" />
-                  <ThemedText style={[s.maintAlertText, { color: '#EF4444' }]}>
+                  <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#B85C5C" />
+                  <ThemedText style={[s.maintAlertText, { color: '#B85C5C' }]}>
                     MISSED — Requires immediate rescheduling
                   </ThemedText>
                 </View>
@@ -908,8 +908,8 @@ function InspectionsTab({
           style={[
             s.inspectionCard,
             {
-              backgroundColor: isFailed ? '#EF444408' : colors.card,
-              borderColor: isFailed ? '#EF444430' : colors.border,
+              backgroundColor: isFailed ? '#B85C5C08' : colors.card,
+              borderColor: isFailed ? '#B85C5C30' : colors.border,
             },
           ]}
           onPress={() => {
@@ -944,8 +944,8 @@ function InspectionsTab({
             )}
             {isFailed && item.remediationWorkOrderId && (
               <View style={s.inspectionComplianceRow}>
-                <IconSymbol name="link" size={11} color="#EF4444" />
-                <ThemedText style={[s.inspectionComplianceText, { color: '#EF4444' }]}>
+                <IconSymbol name="link" size={11} color="#B85C5C" />
+                <ThemedText style={[s.inspectionComplianceText, { color: '#B85C5C' }]}>
                   Linked to Work Order {item.remediationWorkOrderId}
                 </ThemedText>
               </View>
@@ -1016,11 +1016,11 @@ function VendorsTab({
               <ThemedText style={[s.vendorFooterLabel, { color: colors.textTertiary }]}>Jobs Done</ThemedText>
             </View>
             <View style={s.vendorFooterItem}>
-              <View style={[s.coiIndicator, { backgroundColor: item.insuranceVerified ? '#22C55E20' : '#EF444420' }]}>
+              <View style={[s.coiIndicator, { backgroundColor: item.insuranceVerified ? '#5A8A6E20' : '#B85C5C20' }]}>
                 <IconSymbol
                   name={item.insuranceVerified ? 'checkmark.shield.fill' : 'xmark.shield.fill'}
                   size={14}
-                  color={item.insuranceVerified ? '#22C55E' : '#EF4444'}
+                  color={item.insuranceVerified ? '#5A8A6E' : '#B85C5C'}
                 />
               </View>
               <ThemedText style={[s.vendorFooterLabel, { color: colors.textTertiary }]}>Insurance</ThemedText>
@@ -1030,7 +1030,7 @@ function VendorsTab({
           {item.riskFlags.length > 0 && (
             <View style={s.vendorRiskRow}>
               {item.riskFlags.map((flag, i) => (
-                <StatusBadge key={i} label={flag.replace(/_/g, ' ').toUpperCase()} color="#F59E0B" />
+                <StatusBadge key={i} label={flag.replace(/_/g, ' ').toUpperCase()} color="#B8943E" />
               ))}
             </View>
           )}
@@ -1081,7 +1081,7 @@ function SafetyAccessTab({
 
       {safetyZones.map((zone) => {
         const buildingName = getBuildingName(zone.buildingId, buildings);
-        const typeColor = zone.type === 'hazmat' ? '#EF4444' : zone.type === 'secured' ? ACCENT : '#F59E0B';
+        const typeColor = zone.type === 'hazmat' ? '#B85C5C' : zone.type === 'secured' ? ACCENT : '#B8943E';
         return (
           <View
             key={zone.id}
@@ -1159,7 +1159,7 @@ function SafetyAccessTab({
         Emergency Procedures
       </ThemedText>
       <View style={[s.stubCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <IconSymbol name="exclamationmark.triangle.fill" size={24} color="#EF4444" />
+        <IconSymbol name="exclamationmark.triangle.fill" size={24} color="#B85C5C" />
         <View style={s.stubTextCol}>
           <ThemedText style={[s.stubTitle, { color: colors.text }]}>Emergency Response Plan</ThemedText>
           <ThemedText style={[s.stubText, { color: colors.textSecondary }]}>
@@ -1168,7 +1168,7 @@ function SafetyAccessTab({
         </View>
       </View>
       <View style={[s.stubCard, { backgroundColor: colors.card, borderColor: colors.border, marginTop: Spacing.sm }]}>
-        <IconSymbol name="phone.fill" size={24} color="#F59E0B" />
+        <IconSymbol name="phone.fill" size={24} color="#B8943E" />
         <View style={s.stubTextCol}>
           <ThemedText style={[s.stubTitle, { color: colors.text }]}>Emergency Contacts</ThemedText>
           <ThemedText style={[s.stubText, { color: colors.textSecondary }]}>
@@ -1203,7 +1203,7 @@ function ProjectsTab({
         const statusColor = PROJECT_STATUS_COLORS[project.status];
         const buildingName = getBuildingName(project.buildingId, buildings);
         const spentPercent = project.budget > 0 ? Math.round((project.spent / project.budget) * 100) : 0;
-        const budgetColor = spentPercent >= 90 ? '#EF4444' : spentPercent >= 70 ? '#F59E0B' : accentColor;
+        const budgetColor = spentPercent >= 90 ? '#B85C5C' : spentPercent >= 70 ? '#B8943E' : accentColor;
         return (
           <View
             key={project.id}
@@ -1253,7 +1253,7 @@ function ProjectsTab({
                 <ThemedText style={[s.projectLabel, { color: colors.textTertiary }]}>Risks:</ThemedText>
                 {project.risks.map((risk, i) => (
                   <View key={i} style={s.projectRiskRow}>
-                    <View style={[s.projectRiskDot, { backgroundColor: '#F59E0B' }]} />
+                    <View style={[s.projectRiskDot, { backgroundColor: '#B8943E' }]} />
                     <ThemedText style={[s.projectRiskText, { color: colors.textSecondary }]}>{risk}</ThemedText>
                   </View>
                 ))}
@@ -1295,7 +1295,7 @@ function BuildingDetailSheet({
 
   const typeColor = BUILDING_TYPE_COLORS[building.type];
   const statusColor = BUILDING_STATUS_COLORS[building.status];
-  const conditionColor = building.condition >= 80 ? '#22C55E' : building.condition >= 60 ? '#F59E0B' : '#EF4444';
+  const conditionColor = building.condition >= 80 ? '#5A8A6E' : building.condition >= 60 ? '#B8943E' : '#B85C5C';
   const buildingRooms = rooms.filter((r) => r.buildingId === building.id);
   const buildingWorkOrders = workOrders.filter(
     (w) => w.buildingId === building.id && w.status !== 'complete' && w.status !== 'closed',
@@ -1480,7 +1480,7 @@ function AssetDetailSheet({
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Location</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: warrantyExpired ? '#EF4444' : colors.text }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: warrantyExpired ? '#B85C5C' : colors.text }]}>
               {warrantyExpired ? 'Expired' : formatDate(asset.warrantyExpiry)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Warranty</ThemedText>
@@ -1603,7 +1603,7 @@ function WorkOrderDetailSheet({
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Created</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: slaDays <= 1 ? '#EF4444' : colors.text }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: slaDays <= 1 ? '#B85C5C' : colors.text }]}>
               {formatDate(workOrder.dueDate)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Due Date</ThemedText>
@@ -1614,7 +1614,7 @@ function WorkOrderDetailSheet({
       {/* SLA */}
       <View style={[s.sheetSection, { borderBottomColor: colors.border }]}>
         <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>SLA</ThemedText>
-        <ThemedText style={[s.woSheetSlaText, { color: slaDays <= 1 ? '#EF4444' : colors.textSecondary }]}>
+        <ThemedText style={[s.woSheetSlaText, { color: slaDays <= 1 ? '#B85C5C' : colors.textSecondary }]}>
           {workOrder.slaHours}-hour SLA target — {slaDays <= 0 ? 'OVERDUE' : `${slaDays} day(s) remaining`}
         </ThemedText>
       </View>
@@ -1631,8 +1631,8 @@ function WorkOrderDetailSheet({
       {workOrder.requiresEvidence && (
         <View style={[s.sheetSection, { borderBottomColor: colors.border }]}>
           <View style={s.woEvidenceIndicator}>
-            <IconSymbol name="camera.fill" size={14} color="#F59E0B" />
-            <ThemedText style={[s.woEvidenceIndicatorText, { color: '#F59E0B' }]}>
+            <IconSymbol name="camera.fill" size={14} color="#B8943E" />
+            <ThemedText style={[s.woEvidenceIndicatorText, { color: '#B8943E' }]}>
               Photo/video evidence required to close this work order
             </ThemedText>
           </View>
@@ -1743,8 +1743,8 @@ function InspectionDetailSheet({
         <View style={[s.sheetSection, { borderBottomColor: colors.border }]}>
           <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Compliance</ThemedText>
           <View style={s.inspComplianceRow}>
-            <IconSymbol name="link" size={14} color="#EF4444" />
-            <ThemedText style={[s.inspComplianceText, { color: '#EF4444' }]}>
+            <IconSymbol name="link" size={14} color="#B85C5C" />
+            <ThemedText style={[s.inspComplianceText, { color: '#B85C5C' }]}>
               Remediation Work Order: {inspection.remediationWorkOrderId}
             </ThemedText>
           </View>

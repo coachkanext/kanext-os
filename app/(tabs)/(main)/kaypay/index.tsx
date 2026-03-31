@@ -30,7 +30,7 @@ import {
   type Transaction, type QuickRecipient, type TransactionFilterKey,
 } from '@/data/mock-wallet';
 
-const NAVY='#003A63';
+const NAVY='#1A1714';
 const TOP_BAR_H=52;
 const PILL_ROW_H=48;
 const KAYPAY_TABS=['Wallet','Pay','Invest'] as const;

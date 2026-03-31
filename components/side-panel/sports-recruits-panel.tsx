@@ -41,13 +41,13 @@ export function SportsRecruitsPanel() {
     <View style={{ gap: 8 }}>
 
       {/* Board summary */}
-      <View style={{ backgroundColor: '#003A63', borderRadius: 12, padding: 14 }}>
+      <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14 }}>
         <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>Recruiting Board</Text>
         <View style={{ flexDirection: 'row', gap: 8 }}>
           {[
             { label: 'Committed', value: committed, color: '#5A8A6E' },
-            { label: 'Offered',   value: offered,   color: '#1D9BF0' },
-            { label: 'Eval',      value: evaluating, color: '#3B82F6' },
+            { label: 'Offered',   value: offered,   color: '#1A1714' },
+            { label: 'Eval',      value: evaluating, color: '#1A1714' },
           ].map(item => (
             <View key={item.label} style={{ flex: 1, alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 8, paddingVertical: 8 }}>
               <Text style={{ fontSize: 18, fontWeight: '800', color: item.color }}>{item.value}</Text>
@@ -104,8 +104,8 @@ export function SportsRecruitsPanel() {
               <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }} numberOfLines={1}>{p.name}</Text>
               <Text style={{ fontSize: 11, color: C.secondary }}>{p.position} · {p.prevSchool} · Fit {p.systemFit}</Text>
             </View>
-            <View style={{ paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6, backgroundColor: p.eligible === 'immediately' ? '#5A8A6E18' : '#3B82F618' }}>
-              <Text style={{ fontSize: 9, fontWeight: '700', color: p.eligible === 'immediately' ? '#5A8A6E' : '#3B82F6' }}>
+            <View style={{ paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6, backgroundColor: p.eligible === 'immediately' ? '#5A8A6E18' : '#1A171418' }}>
+              <Text style={{ fontSize: 9, fontWeight: '700', color: p.eligible === 'immediately' ? '#5A8A6E' : '#1A1714' }}>
                 {p.eligible === 'immediately' ? 'IMMED' : 'SIT'}
               </Text>
             </View>

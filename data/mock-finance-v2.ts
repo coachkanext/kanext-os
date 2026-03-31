@@ -235,25 +235,25 @@ export const FINANCE_SCOPE_CHIPS: Record<Mode, FinanceScopeChip[]> = {
 };
 
 export const FINANCE_STATUS_COLOR: Record<FinanceStatus, string> = {
-  pending: '#F59E0B',
-  approved: '#22C55E',
-  paid: '#1D9BF0',
-  overdue: '#EF4444',
-  rejected: '#A1A1AA',
-  draft: '#A1A1AA',
+  pending: '#B8943E',
+  approved: '#5A8A6E',
+  paid: '#1A1714',
+  overdue: '#B85C5C',
+  rejected: '#9C9790',
+  draft: '#9C9790',
 };
 
 export const BUDGET_STATUS_COLOR: Record<FinanceBudget['status'], string> = {
-  'on-track': '#22C55E',
-  'at-risk': '#F59E0B',
-  'over-budget': '#EF4444',
+  'on-track': '#5A8A6E',
+  'at-risk': '#B8943E',
+  'over-budget': '#B85C5C',
 };
 
 export const CONTRACT_STATUS_COLOR: Record<FinanceContract['status'], string> = {
-  active: '#22C55E',
-  expiring: '#F59E0B',
-  expired: '#EF4444',
-  renewed: '#1D9BF0',
+  active: '#5A8A6E',
+  expiring: '#B8943E',
+  expired: '#B85C5C',
+  renewed: '#1A1714',
 };
 
 // =============================================================================
@@ -261,14 +261,14 @@ export const CONTRACT_STATUS_COLOR: Record<FinanceContract['status'], string> = 
 // =============================================================================
 
 const SPORTS_DASHBOARD: FinanceDashboardBlock[] = [
-  { id: 'sd-1', label: 'Run Rate vs Budget', icon: 'chart.bar.fill', value: '$62K / $85K', subValue: '73% utilized', color: '#22C55E' },
-  { id: 'sd-2', label: 'Pending Approvals', icon: 'clock.badge.checkmark.fill', value: '4', subValue: '$8,200 total', color: '#F59E0B' },
-  { id: 'sd-3', label: 'Travel Spend', icon: 'airplane', value: '$18,000', subValue: '82% of budget', color: '#1D9BF0' },
-  { id: 'sd-4', label: 'Recruiting Spend', icon: 'person.badge.plus', value: '$12,000', subValue: '80% of budget', color: '#1D9BF0' },
-  { id: 'sd-5', label: 'Equipment', icon: 'sportscourt.fill', value: '$6,500', subValue: '81% of budget', color: '#F59E0B' },
-  { id: 'sd-6', label: 'Payroll Snapshot', icon: 'banknote.fill', value: '$14,800', subValue: '6 stipend recipients', color: '#1D9BF0' },
-  { id: 'sd-7', label: 'Reimbursements', icon: 'arrow.uturn.left.circle.fill', value: '$1,240', subValue: '3 pending claims', color: '#1D9BF0' },
-  { id: 'sd-8', label: 'Reports Due', icon: 'doc.text.fill', value: '2', subValue: 'Monthly close Feb 28', color: '#1D9BF0' },
+  { id: 'sd-1', label: 'Run Rate vs Budget', icon: 'chart.bar.fill', value: '$62K / $85K', subValue: '73% utilized', color: '#5A8A6E' },
+  { id: 'sd-2', label: 'Pending Approvals', icon: 'clock.badge.checkmark.fill', value: '4', subValue: '$8,200 total', color: '#B8943E' },
+  { id: 'sd-3', label: 'Travel Spend', icon: 'airplane', value: '$18,000', subValue: '82% of budget', color: '#1A1714' },
+  { id: 'sd-4', label: 'Recruiting Spend', icon: 'person.badge.plus', value: '$12,000', subValue: '80% of budget', color: '#1A1714' },
+  { id: 'sd-5', label: 'Equipment', icon: 'sportscourt.fill', value: '$6,500', subValue: '81% of budget', color: '#B8943E' },
+  { id: 'sd-6', label: 'Payroll Snapshot', icon: 'banknote.fill', value: '$14,800', subValue: '6 stipend recipients', color: '#1A1714' },
+  { id: 'sd-7', label: 'Reimbursements', icon: 'arrow.uturn.left.circle.fill', value: '$1,240', subValue: '3 pending claims', color: '#1A1714' },
+  { id: 'sd-8', label: 'Reports Due', icon: 'doc.text.fill', value: '2', subValue: 'Monthly close Feb 28', color: '#1A1714' },
 ];
 
 // =============================================================================
@@ -428,14 +428,14 @@ const SPORTS_AUDIT: FinanceAuditEntry[] = [
 // =============================================================================
 
 const EDUCATION_DASHBOARD: FinanceDashboardBlock[] = [
-  { id: 'ed-1', label: 'Institutional Budget', icon: 'building.columns.fill', value: '$2.5M', subValue: '72% utilized YTD', color: '#22C55E' },
-  { id: 'ed-2', label: 'Pending Approvals', icon: 'clock.badge.checkmark.fill', value: '7', subValue: '$34,500 total', color: '#F59E0B' },
-  { id: 'ed-3', label: 'Tuition Receivable', icon: 'graduationcap.fill', value: '$245K', subValue: 'Spring batch deposited', color: '#1D9BF0' },
-  { id: 'ed-4', label: 'Financial Aid Disbursed', icon: 'gift.fill', value: '$420K', subValue: '76% of allocation', color: '#1D9BF0' },
-  { id: 'ed-5', label: 'Facilities Spend', icon: 'wrench.and.screwdriver.fill', value: '$280K', subValue: '62% of budget', color: '#F59E0B' },
-  { id: 'ed-6', label: 'Payroll', icon: 'banknote.fill', value: '$310K', subValue: '74% of annual', color: '#1D9BF0' },
-  { id: 'ed-7', label: 'Grants Received', icon: 'doc.text.fill', value: '$147K', subValue: 'Federal + State', color: '#1D9BF0' },
-  { id: 'ed-8', label: 'Outstanding Invoices', icon: 'envelope.open.fill', value: '3', subValue: '$49,700 total', color: '#1D9BF0' },
+  { id: 'ed-1', label: 'Institutional Budget', icon: 'building.columns.fill', value: '$2.5M', subValue: '72% utilized YTD', color: '#5A8A6E' },
+  { id: 'ed-2', label: 'Pending Approvals', icon: 'clock.badge.checkmark.fill', value: '7', subValue: '$34,500 total', color: '#B8943E' },
+  { id: 'ed-3', label: 'Tuition Receivable', icon: 'graduationcap.fill', value: '$245K', subValue: 'Spring batch deposited', color: '#1A1714' },
+  { id: 'ed-4', label: 'Financial Aid Disbursed', icon: 'gift.fill', value: '$420K', subValue: '76% of allocation', color: '#1A1714' },
+  { id: 'ed-5', label: 'Facilities Spend', icon: 'wrench.and.screwdriver.fill', value: '$280K', subValue: '62% of budget', color: '#B8943E' },
+  { id: 'ed-6', label: 'Payroll', icon: 'banknote.fill', value: '$310K', subValue: '74% of annual', color: '#1A1714' },
+  { id: 'ed-7', label: 'Grants Received', icon: 'doc.text.fill', value: '$147K', subValue: 'Federal + State', color: '#1A1714' },
+  { id: 'ed-8', label: 'Outstanding Invoices', icon: 'envelope.open.fill', value: '3', subValue: '$49,700 total', color: '#1A1714' },
 ];
 
 // =============================================================================
@@ -594,14 +594,14 @@ const EDUCATION_AUDIT: FinanceAuditEntry[] = [
 // =============================================================================
 
 const CHURCH_DASHBOARD: FinanceDashboardBlock[] = [
-  { id: 'cd-1', label: 'Monthly Giving', icon: 'heart.fill', value: '$33,500', subValue: 'Tithes + offerings MTD', color: '#22C55E' },
-  { id: 'cd-2', label: 'Budget Utilization', icon: 'chart.bar.fill', value: '68%', subValue: '$56K of $83K', color: '#1D9BF0' },
-  { id: 'cd-3', label: 'Pending Approvals', icon: 'clock.badge.checkmark.fill', value: '3', subValue: '$11,300 total', color: '#F59E0B' },
-  { id: 'cd-4', label: 'Benevolence Fund', icon: 'hand.raised.fill', value: '$5,000', subValue: '$2,100 disbursed', color: '#1D9BF0' },
-  { id: 'cd-5', label: 'Building Fund', icon: 'building.fill', value: '$8,200', subValue: 'Pledges received', color: '#F59E0B' },
-  { id: 'cd-6', label: 'Staff Payroll', icon: 'banknote.fill', value: '$25,000', subValue: '5 staff + 3 contractors', color: '#1D9BF0' },
-  { id: 'cd-7', label: 'Outstanding Payables', icon: 'envelope.open.fill', value: '2', subValue: '$11,300 total', color: '#1D9BF0' },
-  { id: 'cd-8', label: 'Designated Gifts', icon: 'gift.fill', value: '$4,800', subValue: 'Missions + Youth', color: '#1D9BF0' },
+  { id: 'cd-1', label: 'Monthly Giving', icon: 'heart.fill', value: '$33,500', subValue: 'Tithes + offerings MTD', color: '#5A8A6E' },
+  { id: 'cd-2', label: 'Budget Utilization', icon: 'chart.bar.fill', value: '68%', subValue: '$56K of $83K', color: '#1A1714' },
+  { id: 'cd-3', label: 'Pending Approvals', icon: 'clock.badge.checkmark.fill', value: '3', subValue: '$11,300 total', color: '#B8943E' },
+  { id: 'cd-4', label: 'Benevolence Fund', icon: 'hand.raised.fill', value: '$5,000', subValue: '$2,100 disbursed', color: '#1A1714' },
+  { id: 'cd-5', label: 'Building Fund', icon: 'building.fill', value: '$8,200', subValue: 'Pledges received', color: '#B8943E' },
+  { id: 'cd-6', label: 'Staff Payroll', icon: 'banknote.fill', value: '$25,000', subValue: '5 staff + 3 contractors', color: '#1A1714' },
+  { id: 'cd-7', label: 'Outstanding Payables', icon: 'envelope.open.fill', value: '2', subValue: '$11,300 total', color: '#1A1714' },
+  { id: 'cd-8', label: 'Designated Gifts', icon: 'gift.fill', value: '$4,800', subValue: 'Missions + Youth', color: '#1A1714' },
 ];
 
 // =============================================================================
@@ -760,14 +760,14 @@ const CHURCH_AUDIT: FinanceAuditEntry[] = [
 // =============================================================================
 
 const BUSINESS_DASHBOARD: FinanceDashboardBlock[] = [
-  { id: 'end-1', label: 'Monthly Burn Rate', icon: 'flame.fill', value: '$42K', subValue: '18-mo runway', color: '#EF4444' },
-  { id: 'end-2', label: 'Revenue MTD', icon: 'chart.line.uptrend.xyaxis', value: '$32K', subValue: '+12% MoM', color: '#22C55E' },
-  { id: 'end-3', label: 'Pending Approvals', icon: 'clock.badge.checkmark.fill', value: '5', subValue: '$18,200 total', color: '#F59E0B' },
-  { id: 'end-4', label: 'Cloud / Tools', icon: 'cloud.fill', value: '$12,000', subValue: 'AWS + SaaS stack', color: '#1D9BF0' },
-  { id: 'end-5', label: 'Payroll', icon: 'banknote.fill', value: '$180K', subValue: '12 FTE + 4 contractors', color: '#1D9BF0' },
-  { id: 'end-6', label: 'AR Outstanding', icon: 'envelope.open.fill', value: '$48K', subValue: '6 open invoices', color: '#1D9BF0' },
-  { id: 'end-7', label: 'Contractor Spend', icon: 'person.2.fill', value: '$45K', subValue: 'Q1 2026 YTD', color: '#F59E0B' },
-  { id: 'end-8', label: 'Compliance Filings', icon: 'checkmark.seal.fill', value: '1 due', subValue: 'Q4 990 — Mar 15', color: '#1D9BF0' },
+  { id: 'end-1', label: 'Monthly Burn Rate', icon: 'flame.fill', value: '$42K', subValue: '18-mo runway', color: '#B85C5C' },
+  { id: 'end-2', label: 'Revenue MTD', icon: 'chart.line.uptrend.xyaxis', value: '$32K', subValue: '+12% MoM', color: '#5A8A6E' },
+  { id: 'end-3', label: 'Pending Approvals', icon: 'clock.badge.checkmark.fill', value: '5', subValue: '$18,200 total', color: '#B8943E' },
+  { id: 'end-4', label: 'Cloud / Tools', icon: 'cloud.fill', value: '$12,000', subValue: 'AWS + SaaS stack', color: '#1A1714' },
+  { id: 'end-5', label: 'Payroll', icon: 'banknote.fill', value: '$180K', subValue: '12 FTE + 4 contractors', color: '#1A1714' },
+  { id: 'end-6', label: 'AR Outstanding', icon: 'envelope.open.fill', value: '$48K', subValue: '6 open invoices', color: '#1A1714' },
+  { id: 'end-7', label: 'Contractor Spend', icon: 'person.2.fill', value: '$45K', subValue: 'Q1 2026 YTD', color: '#B8943E' },
+  { id: 'end-8', label: 'Compliance Filings', icon: 'checkmark.seal.fill', value: '1 due', subValue: 'Q4 990 — Mar 15', color: '#1A1714' },
 ];
 
 // =============================================================================
@@ -928,14 +928,14 @@ const BUSINESS_AUDIT: FinanceAuditEntry[] = [
 // =============================================================================
 
 const COMMUNITY_DASHBOARD: FinanceDashboardBlock[] = [
-  { id: 'cod-1', label: 'Season Budget', icon: 'chart.bar.fill', value: '$90K', subValue: '58% utilized', color: '#22C55E' },
-  { id: 'cod-2', label: 'Pending Approvals', icon: 'clock.badge.checkmark.fill', value: '3', subValue: '$6,400 total', color: '#F59E0B' },
-  { id: 'cod-3', label: 'Venue Spend', icon: 'mappin.and.ellipse', value: '$30K', subValue: '3 events booked', color: '#1D9BF0' },
-  { id: 'cod-4', label: 'Entry Fee Revenue', icon: 'ticket.fill', value: '$18K', subValue: '45 teams registered', color: '#1D9BF0' },
-  { id: 'cod-5', label: 'Sponsorship Revenue', icon: 'megaphone.fill', value: '$22K', subValue: '3 sponsors signed', color: '#F59E0B' },
-  { id: 'cod-6', label: 'Officials Expense', icon: 'person.badge.shield.checkmark.fill', value: '$15K', subValue: '12 officials contracted', color: '#1D9BF0' },
-  { id: 'cod-7', label: 'Staffing', icon: 'person.3.fill', value: '$10K', subValue: '8 event staff', color: '#1D9BF0' },
-  { id: 'cod-8', label: 'Outstanding Payables', icon: 'envelope.open.fill', value: '4', subValue: '$12,800 total', color: '#1D9BF0' },
+  { id: 'cod-1', label: 'Season Budget', icon: 'chart.bar.fill', value: '$90K', subValue: '58% utilized', color: '#5A8A6E' },
+  { id: 'cod-2', label: 'Pending Approvals', icon: 'clock.badge.checkmark.fill', value: '3', subValue: '$6,400 total', color: '#B8943E' },
+  { id: 'cod-3', label: 'Venue Spend', icon: 'mappin.and.ellipse', value: '$30K', subValue: '3 events booked', color: '#1A1714' },
+  { id: 'cod-4', label: 'Entry Fee Revenue', icon: 'ticket.fill', value: '$18K', subValue: '45 teams registered', color: '#1A1714' },
+  { id: 'cod-5', label: 'Sponsorship Revenue', icon: 'megaphone.fill', value: '$22K', subValue: '3 sponsors signed', color: '#B8943E' },
+  { id: 'cod-6', label: 'Officials Expense', icon: 'person.badge.shield.checkmark.fill', value: '$15K', subValue: '12 officials contracted', color: '#1A1714' },
+  { id: 'cod-7', label: 'Staffing', icon: 'person.3.fill', value: '$10K', subValue: '8 event staff', color: '#1A1714' },
+  { id: 'cod-8', label: 'Outstanding Payables', icon: 'envelope.open.fill', value: '4', subValue: '$12,800 total', color: '#1A1714' },
 ];
 
 // =============================================================================

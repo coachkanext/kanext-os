@@ -27,7 +27,7 @@ import { TARGET_DEPTH, type PositionNeed } from '@/data/team-needs';
 const BG = '#0B0F14';
 const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#A1A1AA';
+const GRAY = '#9C9790';
 const DIVIDER = '#0B0F14';
 
 export function NeedsBoard({
@@ -196,7 +196,7 @@ function NeedsBoardRow({
       </View>
 
       {/* KR */}
-      <Text style={[styles.rowKR, { color: kr >= 75 ? '#22C55E' : kr >= 60 ? '#F59E0B' : GRAY }]}>
+      <Text style={[styles.rowKR, { color: kr >= 75 ? '#5A8A6E' : kr >= 60 ? '#B8943E' : GRAY }]}>
         {kr}
       </Text>
 
@@ -273,21 +273,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   needBadge: {
-    backgroundColor: '#F59E0B20',
+    backgroundColor: '#B8943E20',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
   },
   needBadgeSatisfied: {
-    backgroundColor: '#22C55E20',
+    backgroundColor: '#5A8A6E20',
   },
   needBadgeText: {
     fontSize: 10,
     fontWeight: '700',
-    color: '#F59E0B',
+    color: '#B8943E',
   },
   needBadgeTextSatisfied: {
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
   tierSection: {
     marginLeft: 12,

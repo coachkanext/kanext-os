@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 12,
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   actions: {
     flexDirection: 'row',
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   btnText: {
     fontSize: 11,
     fontWeight: '500',
-    color: '#A1A1AA',
+    color: '#9C9790',
   },
   ctaBtn: {
     flexDirection: 'row',

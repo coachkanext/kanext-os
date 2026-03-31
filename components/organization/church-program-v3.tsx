@@ -103,14 +103,14 @@ const QUICK_LINKS: { label: string; icon: string; targetTab: number }[] = [
 // =============================================================================
 
 const HEALTH_COLOR: Record<HealthStatus, string> = {
-  Healthy: '#22C55E',
-  Good: '#22C55E',
-  Operational: '#22C55E',
-  Review: '#F59E0B',
-  'Pending Docs': '#F59E0B',
-  'Issue Logged': '#F59E0B',
-  Restricted: '#EF4444',
-  Risk: '#EF4444',
+  Healthy: '#5A8A6E',
+  Good: '#5A8A6E',
+  Operational: '#5A8A6E',
+  Review: '#B8943E',
+  'Pending Docs': '#B8943E',
+  'Issue Logged': '#B8943E',
+  Restricted: '#B85C5C',
+  Risk: '#B85C5C',
 };
 
 function SectionLabel({ label, colors }: { label: string; colors: typeof Colors.light }) {
@@ -151,9 +151,9 @@ function HeaderBlock({ colors }: { colors: typeof Colors.light }) {
       <ThemedText style={[s.campusName, { color: colors.text }]}>{CAMPUS.name}</ThemedText>
       <ThemedText style={[s.campusCity, { color: colors.textSecondary }]}>{CAMPUS.city}</ThemedText>
       <ThemedText style={[s.campusServices, { color: colors.textTertiary }]}>{CAMPUS.serviceSummary}</ThemedText>
-      <View style={[s.statusPill, { backgroundColor: '#22C55E20' }]}>
-        <View style={[s.statusDot, { backgroundColor: '#22C55E' }]} />
-        <ThemedText style={[s.statusPillText, { color: '#22C55E' }]}>{CAMPUS.status}</ThemedText>
+      <View style={[s.statusPill, { backgroundColor: '#5A8A6E20' }]}>
+        <View style={[s.statusDot, { backgroundColor: '#5A8A6E' }]} />
+        <ThemedText style={[s.statusPillText, { color: '#5A8A6E' }]}>{CAMPUS.status}</ThemedText>
       </View>
       <View style={s.headerMeta}>
         <ThemedText style={[s.headerMetaText, { color: colors.textTertiary }]}>
@@ -297,8 +297,8 @@ function VolunteerSnapshotBlock({ colors, canSeeDetail }: { colors: typeof Color
           <StatCell label="Worship Team" value={VOLUNTEER_SNAPSHOT.worshipTeam} colors={colors} />
         </View>
         {VOLUNTEER_SNAPSHOT.openPositions > 0 && (
-          <View style={[s.openPositions, { backgroundColor: '#F59E0B10', borderColor: '#F59E0B30' }]}>
-            <IconSymbol name="exclamationmark.triangle" size={13} color="#F59E0B" />
+          <View style={[s.openPositions, { backgroundColor: '#B8943E10', borderColor: '#B8943E30' }]}>
+            <IconSymbol name="exclamationmark.triangle" size={13} color="#B8943E" />
             <ThemedText style={[s.openPositionsText, { color: colors.text }]}>
               {VOLUNTEER_SNAPSHOT.openPositions} open positions
             </ThemedText>

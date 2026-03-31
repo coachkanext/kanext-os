@@ -22,10 +22,10 @@ const TABS: { key: Tab; label: string }[] = [
 ];
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
-  game: '#EF4444',
-  practice: '#22C55E',
-  meeting: '#1D9BF0',
-  other: '#A1A1AA',
+  game: '#B85C5C',
+  practice: '#5A8A6E',
+  meeting: '#1A1714',
+  other: '#9C9790',
 };
 
 interface Props {

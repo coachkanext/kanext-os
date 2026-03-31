@@ -47,7 +47,7 @@ export function MessagesSegmentedControl({ state, navigation }: BottomTabBarProp
               <ThemedText
                 style={[
                   styles.pillText,
-                  { color: isFocused ? '#000' : '#A1A1AA' },
+                  { color: isFocused ? '#000' : '#9C9790' },
                 ]}
               >
                 {label}

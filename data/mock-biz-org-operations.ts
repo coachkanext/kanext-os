@@ -131,49 +131,49 @@ export const OPS_SUB_TABS: OpsSubTab[] = [
 // =============================================================================
 
 export const INITIATIVE_STATUS_COLOR: Record<OpsInitiative['status'], string> = {
-  active: '#22C55E',
-  paused: '#F59E0B',
-  completed: '#A1A1AA',
+  active: '#5A8A6E',
+  paused: '#B8943E',
+  completed: '#9C9790',
 };
 
 export const PROJECT_STATUS_COLOR: Record<OpsProject['status'], string> = {
-  active: '#22C55E',
-  at_risk: '#F59E0B',
-  blocked: '#EF4444',
-  completed: '#A1A1AA',
+  active: '#5A8A6E',
+  at_risk: '#B8943E',
+  blocked: '#B85C5C',
+  completed: '#9C9790',
 };
 
 export const TASK_PRIORITY_COLOR: Record<OpsTask['priority'], string> = {
-  critical: '#EF4444',
-  high: '#F59E0B',
-  medium: '#1D9BF0',
-  low: '#A1A1AA',
+  critical: '#B85C5C',
+  high: '#B8943E',
+  medium: '#1A1714',
+  low: '#9C9790',
 };
 
 export const TASK_STATUS_COLOR: Record<OpsTask['status'], string> = {
-  todo: '#A1A1AA',
-  in_progress: '#1D9BF0',
-  review: '#1D9BF0',
-  done: '#22C55E',
+  todo: '#9C9790',
+  in_progress: '#1A1714',
+  review: '#1A1714',
+  done: '#5A8A6E',
 };
 
 export const BLOCKER_SEVERITY_COLOR: Record<OpsBlocker['severity'], string> = {
-  critical: '#EF4444',
-  high: '#F59E0B',
-  medium: '#1D9BF0',
+  critical: '#B85C5C',
+  high: '#B8943E',
+  medium: '#1A1714',
 };
 
 export const BLOCKER_STATUS_COLOR: Record<OpsBlocker['status'], string> = {
-  open: '#EF4444',
-  investigating: '#F59E0B',
-  resolved: '#22C55E',
+  open: '#B85C5C',
+  investigating: '#B8943E',
+  resolved: '#5A8A6E',
 };
 
 export const DECISION_STATUS_COLOR: Record<OpsDecision['status'], string> = {
-  draft: '#A1A1AA',
-  open: '#F59E0B',
-  approved: '#22C55E',
-  rejected: '#EF4444',
+  draft: '#9C9790',
+  open: '#B8943E',
+  approved: '#5A8A6E',
+  rejected: '#B85C5C',
 };
 
 // =============================================================================
@@ -186,42 +186,42 @@ const MOCK_SUMMARY_TILES: OpsSummaryTile[] = [
     label: 'Active Initiatives',
     value: '4',
     icon: 'flag.fill',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'tile-open-projects',
     label: 'Open Projects',
     value: '8',
     icon: 'folder.fill',
-    color: '#1D9BF0',
+    color: '#1A1714',
   },
   {
     id: 'tile-pending-tasks',
     label: 'Pending Tasks',
     value: '23',
     icon: 'checkmark.circle.fill',
-    color: '#22C55E',
+    color: '#5A8A6E',
   },
   {
     id: 'tile-critical-blockers',
     label: 'Critical Blockers',
     value: '2',
     icon: 'exclamationmark.octagon.fill',
-    color: '#EF4444',
+    color: '#B85C5C',
   },
   {
     id: 'tile-decisions-needed',
     label: 'Decisions Needed',
     value: '3',
     icon: 'hand.raised.fill',
-    color: '#F59E0B',
+    color: '#B8943E',
   },
   {
     id: 'tile-due-soon',
     label: 'Due Soon',
     value: '5',
     icon: 'clock.fill',
-    color: '#F59E0B',
+    color: '#B8943E',
   },
 ];
 

@@ -60,7 +60,7 @@ export interface EventDetailData {
 const TYPE_COLORS: Record<EventType, string> = {
   BOARD: '#6366F1',
   INVESTOR: '#059669',
-  CAPITAL: '#2563EB',
+  CAPITAL: '#1A1714',
   COMPLIANCE: '#D97706',
   CONTRACT: '#78716C',
   PAYROLL: '#9CA3AF',
@@ -68,10 +68,10 @@ const TYPE_COLORS: Record<EventType, string> = {
 };
 
 const STATUS_COLORS: Record<EventStatus, string> = {
-  Scheduled: '#22C55E',
-  Pending: '#F59E0B',
-  Completed: '#A1A1AA',
-  Overdue: '#EF4444',
+  Scheduled: '#5A8A6E',
+  Pending: '#B8943E',
+  Completed: '#9C9790',
+  Overdue: '#B85C5C',
 };
 
 const LINKED_OBJ_ICONS: Record<string, string> = {
@@ -274,16 +274,16 @@ export function BizEventDetailSheet({ event, visible, onClose, colors }: Props) 
                 style={[s.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
                 onPress={() => handleAction('Cancel Event')}
               >
-                <IconSymbol name="xmark" size={13} color="#EF4444" />
-                <ThemedText style={[s.actionBtnText, { color: '#EF4444' }]}>Cancel Event</ThemedText>
+                <IconSymbol name="xmark" size={13} color="#B85C5C" />
+                <ThemedText style={[s.actionBtnText, { color: '#B85C5C' }]}>Cancel Event</ThemedText>
               </Pressable>
               {event.status !== 'Completed' && (
                 <Pressable
                   style={[s.actionBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
                   onPress={() => handleAction('Mark Complete')}
                 >
-                  <IconSymbol name="checkmark" size={13} color="#22C55E" />
-                  <ThemedText style={[s.actionBtnText, { color: '#22C55E' }]}>Mark Complete</ThemedText>
+                  <IconSymbol name="checkmark" size={13} color="#5A8A6E" />
+                  <ThemedText style={[s.actionBtnText, { color: '#5A8A6E' }]}>Mark Complete</ThemedText>
                 </Pressable>
               )}
               {hasLinkedObject && (

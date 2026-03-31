@@ -306,18 +306,18 @@ export default function EducationFundScreen() {
         {/* Giving Day mini-card */}
         {givingDayCampaign && (
           <Pressable
-            style={[s.givingDayCard, { backgroundColor: '#E8884A18', borderColor: '#E8884A44' }]}
+            style={[s.givingDayCard, { backgroundColor: '#B8943E18', borderColor: '#B8943E44' }]}
             onPress={() => { Haptics.selectionAsync(); changeTab('Campaigns'); }}
           >
             <View style={{ flex: 1, gap: 2 }}>
-              <Text style={{ fontSize: 11, fontWeight: '800', color: '#E8884A', textTransform: 'uppercase', letterSpacing: 0.6 }}>
+              <Text style={{ fontSize: 11, fontWeight: '800', color: '#B8943E', textTransform: 'uppercase', letterSpacing: 0.6 }}>
                 Lincoln Giving Day · Live
               </Text>
               <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>
                 {givingDayCountdown || formatTimeRemaining(givingDayCampaign.endDatetime ?? '')} remaining
               </Text>
             </View>
-            <Text style={{ fontSize: 12, color: '#E8884A', fontWeight: '600' }}>View →</Text>
+            <Text style={{ fontSize: 12, color: '#B8943E', fontWeight: '600' }}>View →</Text>
           </Pressable>
         )}
 
@@ -547,7 +547,7 @@ export default function EducationFundScreen() {
         <Text style={[s.sectionLabel, { color: C.secondary, marginBottom: 10 }]}>Scholarships</Text>
         {SCHOLARSHIPS.map(sc => {
           const expanded = expandedScholarshipId === sc.id;
-          const statusColor = sc.status === 'awarded' ? '#5A8A6E' : sc.status === 'reviewing' ? '#E8884A' : sc.status === 'open' ? C.accent : C.muted;
+          const statusColor = sc.status === 'awarded' ? '#5A8A6E' : sc.status === 'reviewing' ? '#B8943E' : sc.status === 'open' ? C.accent : C.muted;
           return (
             <Pressable
               key={sc.id}
@@ -668,12 +668,12 @@ export default function EducationFundScreen() {
           return (
             <Pressable
               key={campaign.id}
-              style={[s.campaignCard, { backgroundColor: C.surface }, isLive && { borderWidth: 1.5, borderColor: '#E8884A40' }]}
+              style={[s.campaignCard, { backgroundColor: C.surface }, isLive && { borderWidth: 1.5, borderColor: '#B8943E40' }]}
               onPress={() => { Haptics.selectionAsync(); setExpandedCampaignId(expanded ? null : campaign.id); }}
             >
               {/* Giving Day LIVE banner with pulsing dot */}
               {isLive && (
-                <View style={{ backgroundColor: '#E8884A', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 7, marginBottom: 10, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <View style={{ backgroundColor: '#B8943E', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 7, marginBottom: 10, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                   <Animated.View style={{ width: 9, height: 9, borderRadius: 4.5, backgroundColor: '#fff', opacity: pulseAnim }} />
                   <Text style={{ flex: 1, fontSize: 12, fontWeight: '800', color: '#fff', textTransform: 'uppercase', letterSpacing: 0.8 }}>
                     Giving Day — Live
@@ -686,9 +686,9 @@ export default function EducationFundScreen() {
 
               {/* Upcoming badge */}
               {isUpcoming && (
-                <View style={{ backgroundColor: '#1D9BF015', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, marginBottom: 10, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <IconSymbol name="clock.fill" size={12} color="#1D9BF0" />
-                  <Text style={{ fontSize: 12, fontWeight: '700', color: '#1D9BF0' }}>
+                <View style={{ backgroundColor: '#1A171415', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, marginBottom: 10, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <IconSymbol name="clock.fill" size={12} color="#1A1714" />
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: '#1A1714' }}>
                     Starts {formatDate(campaign.startDate)}
                   </Text>
                 </View>
@@ -740,7 +740,7 @@ export default function EducationFundScreen() {
                       style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 2 }}
                       onPress={() => { Haptics.selectionAsync(); setExpandedCampaignId(expanded ? null : campaign.id); }}
                     >
-                      <IconSymbol name="trophy.fill" size={10} color="#F59E0B" />
+                      <IconSymbol name="trophy.fill" size={10} color="#B8943E" />
                       <Text style={{ fontSize: 11, color: C.secondary }} numberOfLines={1}>
                         {campaign.classLeaderboard.map(cl => `'${String(cl.classYear).slice(2)} (${formatCurrency(cl.totalRaised)})`).join('  ·  ')}
                       </Text>
@@ -756,12 +756,12 @@ export default function EducationFundScreen() {
 
                   {/* Giving Day challenge bar */}
                   {isLive && campaign.challengeGoalDonors && (
-                    <View style={{ backgroundColor: '#E8884A12', borderRadius: 10, padding: 12, gap: 6 }}>
-                      <Text style={{ fontSize: 13, fontWeight: '700', color: '#E8884A' }}>
+                    <View style={{ backgroundColor: '#B8943E12', borderRadius: 10, padding: 12, gap: 6 }}>
+                      <Text style={{ fontSize: 13, fontWeight: '700', color: '#B8943E' }}>
                         Donor Challenge: {(campaign.challengeCurrentDonors ?? 0) + Math.floor(liveCountTick / 8)} / {campaign.challengeGoalDonors} donors
                       </Text>
                       <View style={{ height: 8, borderRadius: 4, backgroundColor: C.separator }}>
-                        <View style={{ height: 8, borderRadius: 4, backgroundColor: '#E8884A', width: `${Math.min(100, (((campaign.challengeCurrentDonors ?? 0) + Math.floor(liveCountTick / 8)) / campaign.challengeGoalDonors) * 100)}%` as any }} />
+                        <View style={{ height: 8, borderRadius: 4, backgroundColor: '#B8943E', width: `${Math.min(100, (((campaign.challengeCurrentDonors ?? 0) + Math.floor(liveCountTick / 8)) / campaign.challengeGoalDonors) * 100)}%` as any }} />
                       </View>
                       <Text style={{ fontSize: 12, color: C.secondary }}>
                         {formatCurrency(campaign.challengeMatchAmount ?? 0)} match unlocks at {campaign.challengeGoalDonors} donors
@@ -916,15 +916,15 @@ export default function EducationFundScreen() {
         {/* Class leaderboard */}
         <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 16, gap: 8 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-            <IconSymbol name="trophy.fill" size={14} color="#F59E0B" />
+            <IconSymbol name="trophy.fill" size={14} color="#B8943E" />
             <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Class Leaderboard</Text>
           </View>
           {ADMIN_DASHBOARD.classLeaderboard.slice(0, 5).map((cls, idx) => (
             <View key={cls.classYear} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Text style={{ fontSize: 13, fontWeight: '800', color: idx === 0 ? '#F59E0B' : C.muted, width: 18 }}>{idx + 1}</Text>
+              <Text style={{ fontSize: 13, fontWeight: '800', color: idx === 0 ? '#B8943E' : C.muted, width: 18 }}>{idx + 1}</Text>
               <Text style={{ fontSize: 13, color: C.secondary, width: 42 }}>Class of '{String(cls.classYear).slice(2)}</Text>
               <View style={{ flex: 1, height: 5, backgroundColor: C.bg, borderRadius: 3 }}>
-                <View style={{ height: 5, width: `${(cls.totalRaised / ADMIN_DASHBOARD.classLeaderboard[0].totalRaised) * 100}%` as any, backgroundColor: idx === 0 ? '#F59E0B' : C.accent + '80', borderRadius: 3 }} />
+                <View style={{ height: 5, width: `${(cls.totalRaised / ADMIN_DASHBOARD.classLeaderboard[0].totalRaised) * 100}%` as any, backgroundColor: idx === 0 ? '#B8943E' : C.accent + '80', borderRadius: 3 }} />
               </View>
               <Text style={{ fontSize: 12, fontWeight: '700', color: C.label, width: 64, textAlign: 'right' }}>{formatCurrency(cls.totalRaised)}</Text>
             </View>
@@ -997,9 +997,9 @@ export default function EducationFundScreen() {
           return (
             <View key={campaign.id} style={[s.campaignCard, { backgroundColor: C.surface }]}>
               {isUpcoming && (
-                <View style={{ backgroundColor: '#1D9BF015', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, marginBottom: 8, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <IconSymbol name="clock.fill" size={12} color="#1D9BF0" />
-                  <Text style={{ fontSize: 12, fontWeight: '700', color: '#1D9BF0' }}>Coming {formatDate(campaign.startDate)}</Text>
+                <View style={{ backgroundColor: '#1A171415', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, marginBottom: 8, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <IconSymbol name="clock.fill" size={12} color="#1A1714" />
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: '#1A1714' }}>Coming {formatDate(campaign.startDate)}</Text>
                 </View>
               )}
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
@@ -1504,7 +1504,7 @@ export default function EducationFundScreen() {
     return (
       <>
         {/* Balance due card */}
-        <View style={{ backgroundColor: '#003A63', borderRadius: 16, padding: 20, marginBottom: 16 }}>
+        <View style={{ backgroundColor: '#1A1714', borderRadius: 16, padding: 20, marginBottom: 16 }}>
           <Text style={{ fontSize: 11, fontWeight: '700', color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase', letterSpacing: 0.6 }}>Balance Due</Text>
           <Text style={{ fontSize: 36, fontWeight: '900', color: '#fff', marginTop: 4 }}>{formatCurrency(amountDue)}</Text>
           <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>Spring 2026 Housing  ·  Due Apr 1, 2026</Text>
@@ -1526,14 +1526,14 @@ export default function EducationFundScreen() {
               borderBottomWidth: idx < PAYMENT_PLAN.length - 1 ? StyleSheet.hairlineWidth : 0,
               borderBottomColor: C.separator,
             }}>
-              <View style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: item.paid ? '#22C55E18' : '#EF444418', alignItems: 'center', justifyContent: 'center' }}>
-                <IconSymbol name={item.paid ? 'checkmark.circle.fill' : 'clock.fill'} size={16} color={item.paid ? '#22C55E' : '#EF4444'} />
+              <View style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: item.paid ? '#5A8A6E18' : '#B85C5C18', alignItems: 'center', justifyContent: 'center' }}>
+                <IconSymbol name={item.paid ? 'checkmark.circle.fill' : 'clock.fill'} size={16} color={item.paid ? '#5A8A6E' : '#B85C5C'} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{item.label}</Text>
                 <Text style={{ fontSize: 12, color: C.secondary }}>{item.date}</Text>
               </View>
-              <Text style={{ fontSize: 14, fontWeight: '700', color: item.paid ? C.label : '#EF4444' }}>{formatCurrency(item.amount)}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: item.paid ? C.label : '#B85C5C' }}>{formatCurrency(item.amount)}</Text>
             </View>
           ))}
         </View>
@@ -1542,7 +1542,7 @@ export default function EducationFundScreen() {
         <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>2025–2026 Financial Aid</Text>
         <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 16, gap: 12 }}>
           {AID.map((item, idx) => {
-            const color = item.type === 'grant' ? '#22C55E' : item.type === 'loan' ? C.accent : '#F59E0B';
+            const color = item.type === 'grant' ? '#5A8A6E' : item.type === 'loan' ? C.accent : '#B8943E';
             return (
               <View key={item.label} style={{
                 flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
@@ -1560,7 +1560,7 @@ export default function EducationFundScreen() {
           })}
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingTop: 4, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator }}>
             <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>Total Aid</Text>
-            <Text style={{ fontSize: 16, fontWeight: '800', color: '#22C55E' }}>{formatCurrency(totalAid)}</Text>
+            <Text style={{ fontSize: 16, fontWeight: '800', color: '#5A8A6E' }}>{formatCurrency(totalAid)}</Text>
           </View>
         </View>
 
@@ -1573,8 +1573,8 @@ export default function EducationFundScreen() {
           })}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
         >
-          <View style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: '#003A6318', alignItems: 'center', justifyContent: 'center' }}>
-            <IconSymbol name="person.fill.questionmark" size={18} color="#003A63" />
+          <View style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: '#1A171418', alignItems: 'center', justifyContent: 'center' }}>
+            <IconSymbol name="person.fill.questionmark" size={18} color="#1A1714" />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>Contact Financial Aid</Text>
@@ -1649,7 +1649,7 @@ export default function EducationFundScreen() {
             <RolePill
               role={demoRole}
               onPress={cycleRole}
-              accentColor="#003A63"
+              accentColor="#1A1714"
               isPrimary={isAdmin}
             />
             {pills.length > 0 && (
@@ -1732,7 +1732,7 @@ export default function EducationFundScreen() {
           pointerEvents="none"
           style={{ ...StyleSheet.absoluteFillObject, zIndex: 80, alignItems: 'center', justifyContent: 'center', opacity: confettiAnim } as any}
         >
-          <View style={{ backgroundColor: '#E8884A', borderRadius: 20, padding: 24, alignItems: 'center', gap: 10 }}>
+          <View style={{ backgroundColor: '#B8943E', borderRadius: 20, padding: 24, alignItems: 'center', gap: 10 }}>
             <Text style={{ fontSize: 40 }}>🎉</Text>
             <Text style={{ fontSize: 18, fontWeight: '800', color: '#fff' }}>Lincoln Giving Day!</Text>
             <Text style={{ fontSize: 14, color: '#fff' }}>{formatCurrency(FUND_CAMPAIGNS[0].raisedAmount)} raised so far</Text>

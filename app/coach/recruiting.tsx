@@ -912,7 +912,7 @@ export function PlayerPoolContent() {
                 <View style={styles.qaActionsRow}>
                   {[
                     { icon: 'doc.text.fill' as const, label: 'Offer', color: C.green, key: 'offer' as const },
-                    { icon: 'dollarsign.circle.fill' as const, label: 'NIL', color: '#F59E0B', key: 'nil' as const },
+                    { icon: 'dollarsign.circle.fill' as const, label: 'NIL', color: '#B8943E', key: 'nil' as const },
                     { icon: 'mappin.and.ellipse' as const, label: 'Visit', color: ACCENT, key: 'visit' as const },
                     { icon: 'note.text' as const, label: 'Log', color: ACCENT, key: 'log' as const },
                   ].map((action) => (
@@ -961,8 +961,8 @@ export function PlayerPoolContent() {
                         <Text style={styles.qaDetailRow}><Text style={styles.qaDetailLabel}>Structure: </Text>{entry.nil.structure}</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                           <Text style={styles.qaDetailLabel}>Status: </Text>
-                          <View style={[styles.qaTempPill, { backgroundColor: entry.nil.status === 'Approved' ? `${C.green}25` : entry.nil.status === 'Pending' ? '#F59E0B25' : `${C.secondary}25` }]}>
-                            <Text style={{ fontSize: 11, fontWeight: '600', color: entry.nil.status === 'Approved' ? C.green : entry.nil.status === 'Pending' ? '#F59E0B' : C.secondary }}>{entry.nil.status}</Text>
+                          <View style={[styles.qaTempPill, { backgroundColor: entry.nil.status === 'Approved' ? `${C.green}25` : entry.nil.status === 'Pending' ? '#B8943E25' : `${C.secondary}25` }]}>
+                            <Text style={{ fontSize: 11, fontWeight: '600', color: entry.nil.status === 'Approved' ? C.green : entry.nil.status === 'Pending' ? '#B8943E' : C.secondary }}>{entry.nil.status}</Text>
                           </View>
                         </View>
                         {entry.nil.complianceNotes ? <Text style={styles.qaDetailRow}><Text style={styles.qaDetailLabel}>Compliance: </Text>{entry.nil.complianceNotes}</Text> : null}
@@ -2245,10 +2245,10 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   boardSearchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 20, paddingHorizontal: 14, height: 38, borderWidth: 1, borderColor: C.surface, gap: 8, marginBottom: 4 },
   boardSearchInput: { flex: 1, fontSize: 14, color: C.label, paddingVertical: 0 },
   needsRow: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, flexWrap: 'wrap' },
-  needsDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#F59E0B', marginRight: 2 },
+  needsDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#B8943E', marginRight: 2 },
   needsLabel: { fontSize: 12, fontWeight: '600', color: C.label },
   needsSep: { fontSize: 12, color: C.divider, marginHorizontal: 2 },
-  needsPrimaryText: { fontSize: 12, fontWeight: '700', color: '#F59E0B' },
+  needsPrimaryText: { fontSize: 12, fontWeight: '700', color: '#B8943E' },
   needsTotalText: { fontSize: 12, fontWeight: '600', color: C.secondary },
   needsMetric: { fontSize: 11, color: C.secondary },
   needsPanel: { backgroundColor: C.surface, borderRadius: 10, padding: 12, marginBottom: 10, borderWidth: 1, borderColor: C.divider },
@@ -2302,7 +2302,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   qaPipelinePill: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: C.surface, borderWidth: 1, borderColor: 'transparent' },
   qaPipelinePillText: { fontSize: 12, fontWeight: '600', color: C.secondary },
   qaSnapshotCard: { backgroundColor: C.surface, borderRadius: 12, padding: 14, marginBottom: 14, gap: 8 },
-  qaNeedsText: { fontSize: 12, color: '#F59E0B', fontWeight: '500' },
+  qaNeedsText: { fontSize: 12, color: '#B8943E', fontWeight: '500' },
   qaLastTouchText: { fontSize: 12, color: C.secondary },
   qaActionsRow: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 18 },
   qaActionBtn: { alignItems: 'center', gap: 6 },
@@ -2330,7 +2330,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   qaRiskChipText: { fontSize: 10, fontWeight: '600', color: C.red },
   qaDdCheck: { width: 18, height: 18, borderRadius: 4, borderWidth: 1.5, borderColor: C.secondary, alignItems: 'center' as const, justifyContent: 'center' as const },
   qaDdCheckDone: { backgroundColor: C.green, borderColor: C.green },
-  qaConfirmBox: { backgroundColor: C.surface, borderRadius: 12, padding: 16, marginBottom: 10, borderWidth: 1, borderColor: '#F59E0B60' },
+  qaConfirmBox: { backgroundColor: C.surface, borderRadius: 12, padding: 16, marginBottom: 10, borderWidth: 1, borderColor: '#B8943E60' },
   qaConfirmBtn: { flex: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center' as const },
   qaLogComposer: { backgroundColor: C.surface, borderRadius: 12, padding: 12, marginBottom: 10 },
   qaLogTypeChip: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, borderWidth: 1, borderColor: C.divider, backgroundColor: C.surface },

@@ -239,22 +239,22 @@ const INTERNAL_STANDARDS = [
 // =============================================================================
 
 const ELIGIBILITY_COLOR: Record<EligibilityStatus, string> = {
-  'Eligible': '#22C55E',
-  'At Risk': '#F59E0B',
-  'Ineligible': '#EF4444',
-  'Pending': '#A1A1AA',
+  'Eligible': '#5A8A6E',
+  'At Risk': '#B8943E',
+  'Ineligible': '#B85C5C',
+  'Pending': '#9C9790',
 };
 
 const ACTION_COLOR: Record<ActionStatus, string> = {
-  'Needs Action': '#EF4444',
-  'In Review': '#F59E0B',
-  'Cleared': '#22C55E',
+  'Needs Action': '#B85C5C',
+  'In Review': '#B8943E',
+  'Cleared': '#5A8A6E',
 };
 
 const DOC_STATUS_COLOR: Record<string, string> = {
-  'Complete': '#22C55E',
-  'Pending': '#F59E0B',
-  'Missing': '#EF4444',
+  'Complete': '#5A8A6E',
+  'Pending': '#B8943E',
+  'Missing': '#B85C5C',
 };
 
 // =============================================================================
@@ -307,10 +307,10 @@ function EligibilitySnapshot({ colors, accentColor }: { colors: typeof Colors.li
   const pendingDocs = PLAYERS.filter((p) => p.documents?.some((d) => d.status !== 'Complete')).length;
 
   const counts = [
-    { label: 'Eligible', value: eligible, color: '#22C55E' },
-    { label: 'At Risk', value: atRisk, color: '#F59E0B' },
-    { label: 'Ineligible', value: ineligible, color: '#EF4444' },
-    { label: 'Pending', value: pending, color: '#A1A1AA' },
+    { label: 'Eligible', value: eligible, color: '#5A8A6E' },
+    { label: 'At Risk', value: atRisk, color: '#B8943E' },
+    { label: 'Ineligible', value: ineligible, color: '#B85C5C' },
+    { label: 'Pending', value: pending, color: '#9C9790' },
   ];
 
   return (
@@ -398,7 +398,7 @@ function AtRiskQueue({ colors, accentColor, onSelectPlayer }: { colors: typeof C
               </View>
             </View>
             {player.dueDate && (
-              <ThemedText style={[s.riskDue, { color: player.actionStatus === 'Needs Action' ? '#EF4444' : colors.textSecondary }]}>
+              <ThemedText style={[s.riskDue, { color: player.actionStatus === 'Needs Action' ? '#B85C5C' : colors.textSecondary }]}>
                 {player.dueDate}
               </ThemedText>
             )}
@@ -480,9 +480,9 @@ function DocumentsTracker({ colors, accentColor }: { colors: typeof Colors.light
   const missing = allDocs.filter((d) => d.status === 'Missing');
 
   const buckets = [
-    { label: 'Verified', count: verified, color: '#22C55E', icon: 'checkmark.seal.fill' },
-    { label: 'Submitted', count: submitted, color: '#F59E0B', icon: 'clock.fill' },
-    { label: 'Missing', count: missing.length, color: '#EF4444', icon: 'xmark.circle.fill' },
+    { label: 'Verified', count: verified, color: '#5A8A6E', icon: 'checkmark.seal.fill' },
+    { label: 'Submitted', count: submitted, color: '#B8943E', icon: 'clock.fill' },
+    { label: 'Missing', count: missing.length, color: '#B85C5C', icon: 'xmark.circle.fill' },
   ];
 
   // Group missing by item name
@@ -510,8 +510,8 @@ function DocumentsTracker({ colors, accentColor }: { colors: typeof Colors.light
             <ThemedText style={[s.missingTitle, { color: colors.textSecondary }]}>MISSING</ThemedText>
             {Object.entries(missingGrouped).map(([item, count]) => (
               <View key={item} style={s.missingRow}>
-                <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
-                <ThemedText style={[s.missingText, { color: '#EF4444' }]}>
+                <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B85C5C" />
+                <ThemedText style={[s.missingText, { color: '#B85C5C' }]}>
                   {count} Missing — {item}
                 </ThemedText>
               </View>
@@ -586,7 +586,7 @@ function PlayerDetailSheet({ visible, onClose, player, colors, accentColor }: {
           {player.gpa !== undefined && (
             <View style={s.sheetDetailRow}>
               <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>GPA</ThemedText>
-              <ThemedText style={[s.sheetDetailValue, { color: (player.gpa ?? 0) < 2.0 ? '#EF4444' : colors.text }]}>
+              <ThemedText style={[s.sheetDetailValue, { color: (player.gpa ?? 0) < 2.0 ? '#B85C5C' : colors.text }]}>
                 {player.gpa?.toFixed(1)}
               </ThemedText>
             </View>
@@ -605,13 +605,13 @@ function PlayerDetailSheet({ visible, onClose, player, colors, accentColor }: {
           {player.testStatus && (
             <View style={s.sheetDetailRow}>
               <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Test</ThemedText>
-              <StatusChip label={player.testStatus} color={player.testStatus === 'Complete' ? '#22C55E' : '#F59E0B'} />
+              <StatusChip label={player.testStatus} color={player.testStatus === 'Complete' ? '#5A8A6E' : '#B8943E'} />
             </View>
           )}
           {player.amateurismStatus && (
             <View style={s.sheetDetailRow}>
               <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Amateurism</ThemedText>
-              <StatusChip label={player.amateurismStatus} color={player.amateurismStatus === 'Cleared' ? '#22C55E' : '#F59E0B'} />
+              <StatusChip label={player.amateurismStatus} color={player.amateurismStatus === 'Cleared' ? '#5A8A6E' : '#B8943E'} />
             </View>
           )}
           {player.immigrationStatus && (
@@ -619,7 +619,7 @@ function PlayerDetailSheet({ visible, onClose, player, colors, accentColor }: {
               <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Immigration</ThemedText>
               <StatusChip
                 label={player.immigrationStatus}
-                color={player.immigrationStatus === 'Valid' ? '#22C55E' : player.immigrationStatus === 'Expiring' ? '#F59E0B' : '#EF4444'}
+                color={player.immigrationStatus === 'Valid' ? '#5A8A6E' : player.immigrationStatus === 'Expiring' ? '#B8943E' : '#B85C5C'}
               />
             </View>
           )}

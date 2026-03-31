@@ -54,46 +54,46 @@ interface UniversalMemberSheetProps {
 // =============================================================================
 
 const MEMBER_STATUS_COLORS: Record<string, string> = {
-  active: '#22C55E',
+  active: '#5A8A6E',
   visitor: ACCENT,
-  inactive: '#A1A1AA',
-  under_review: '#F59E0B',
+  inactive: '#9C9790',
+  under_review: '#B8943E',
 };
 
 const SAFETY_STATUS_COLORS: Record<string, string> = {
-  cleared: '#22C55E',
-  pending: '#F59E0B',
-  restricted: '#EF4444',
+  cleared: '#5A8A6E',
+  pending: '#B8943E',
+  restricted: '#B85C5C',
 };
 
 const TASK_STATUS_COLORS: Record<string, string> = {
-  open: '#F59E0B',
+  open: '#B8943E',
   in_progress: ACCENT,
-  completed: '#22C55E',
+  completed: '#5A8A6E',
 };
 
 const FOLLOW_UP_CATEGORY_COLORS: Record<string, string> = {
   new_visitor: ACCENT,
-  returning: '#22C55E',
+  returning: '#5A8A6E',
   prayer_request: ACCENT,
-  hospital: '#EF4444',
-  counseling: '#F59E0B',
-  discipline: '#EF4444',
-  other: '#A1A1AA',
+  hospital: '#B85C5C',
+  counseling: '#B8943E',
+  discipline: '#B85C5C',
+  other: '#9C9790',
 };
 
 const INCIDENT_TYPE_COLORS: Record<string, string> = {
-  child_safety: '#EF4444',
-  medical: '#F59E0B',
+  child_safety: '#B85C5C',
+  medical: '#B8943E',
   conflict: ACCENT,
-  property: '#A1A1AA',
-  other: '#A1A1AA',
+  property: '#9C9790',
+  other: '#9C9790',
 };
 
 const SENSITIVITY_COLORS: Record<string, string> = {
-  public: '#22C55E',
-  restricted: '#F59E0B',
-  confidential: '#EF4444',
+  public: '#5A8A6E',
+  restricted: '#B8943E',
+  confidential: '#B85C5C',
 };
 
 // =============================================================================
@@ -308,19 +308,19 @@ function MemberHeader({
         <View
           style={[
             styles.statusPill,
-            { backgroundColor: (MEMBER_STATUS_COLORS[member.status] ?? '#A1A1AA') + '1A' },
+            { backgroundColor: (MEMBER_STATUS_COLORS[member.status] ?? '#9C9790') + '1A' },
           ]}
         >
           <View
             style={[
               styles.statusDot,
-              { backgroundColor: MEMBER_STATUS_COLORS[member.status] ?? '#A1A1AA' },
+              { backgroundColor: MEMBER_STATUS_COLORS[member.status] ?? '#9C9790' },
             ]}
           />
           <ThemedText
             style={[
               styles.statusPillText,
-              { color: MEMBER_STATUS_COLORS[member.status] ?? '#A1A1AA' },
+              { color: MEMBER_STATUS_COLORS[member.status] ?? '#9C9790' },
             ]}
           >
             {member.status.replace('_', ' ').toUpperCase()}
@@ -343,18 +343,18 @@ function MemberHeader({
           <View
             style={[
               styles.safetyPill,
-              { backgroundColor: (SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#A1A1AA') + '1A' },
+              { backgroundColor: (SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#9C9790') + '1A' },
             ]}
           >
             <IconSymbol
               name="shield.fill"
               size={10}
-              color={SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#A1A1AA'}
+              color={SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#9C9790'}
             />
             <ThemedText
               style={[
                 styles.safetyPillText,
-                { color: SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#A1A1AA' },
+                { color: SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#9C9790' },
               ]}
             >
               {member.safetyClearance.toUpperCase()}
@@ -432,7 +432,7 @@ function OverviewTab({
           <StatBlock
             label="Follow-Ups"
             value={String(followUps.length)}
-            color={followUps.length > 0 ? '#F59E0B' : '#22C55E'}
+            color={followUps.length > 0 ? '#B8943E' : '#5A8A6E'}
             colors={colors}
           />
         </View>
@@ -500,13 +500,13 @@ function MinistryInvolvementTab({
               <View
                 style={[
                   styles.ministryStatusBadge,
-                  { backgroundColor: ministry.status === 'active' ? '#22C55E22' : '#F59E0B22' },
+                  { backgroundColor: ministry.status === 'active' ? '#5A8A6E22' : '#B8943E22' },
                 ]}
               >
                 <ThemedText
                   style={[
                     styles.ministryStatusText,
-                    { color: ministry.status === 'active' ? '#22C55E' : '#F59E0B' },
+                    { color: ministry.status === 'active' ? '#5A8A6E' : '#B8943E' },
                   ]}
                 >
                   {ministry.status.toUpperCase()}
@@ -562,7 +562,7 @@ function ScheduleAttendanceTab({
             <View
               style={[
                 styles.attendanceDot,
-                { backgroundColor: entry.checkedIn ? '#22C55E' : '#EF4444' },
+                { backgroundColor: entry.checkedIn ? '#5A8A6E' : '#B85C5C' },
               ]}
             />
             <View style={{ flex: 1, marginLeft: Spacing.sm }}>
@@ -576,7 +576,7 @@ function ScheduleAttendanceTab({
             <ThemedText
               style={[
                 styles.statusLabel,
-                { color: entry.checkedIn ? '#22C55E' : '#EF4444' },
+                { color: entry.checkedIn ? '#5A8A6E' : '#B85C5C' },
               ]}
             >
               {entry.checkedIn ? 'PRESENT' : 'ABSENT'}
@@ -610,13 +610,13 @@ function ScheduleAttendanceTab({
                 <View
                   style={[
                     styles.assignmentStatusBadge,
-                    { backgroundColor: assign.status === 'confirmed' ? '#22C55E22' : '#F59E0B22' },
+                    { backgroundColor: assign.status === 'confirmed' ? '#5A8A6E22' : '#B8943E22' },
                   ]}
                 >
                   <ThemedText
                     style={[
                       styles.assignmentStatusText,
-                      { color: assign.status === 'confirmed' ? '#22C55E' : '#F59E0B' },
+                      { color: assign.status === 'confirmed' ? '#5A8A6E' : '#B8943E' },
                     ]}
                   >
                     {assign.status.toUpperCase()}
@@ -662,9 +662,9 @@ function CareFollowUpTab({
       <SectionCard title="Care Status" colors={colors}>
         <View style={styles.pillRow}>
           {needsFollowUp && (
-            <View style={[styles.careTagPill, { backgroundColor: '#F59E0B22' }]}>
-              <IconSymbol name="exclamationmark.triangle.fill" size={10} color="#F59E0B" />
-              <ThemedText style={[styles.careTagText, { color: '#F59E0B' }]}>
+            <View style={[styles.careTagPill, { backgroundColor: '#B8943E22' }]}>
+              <IconSymbol name="exclamationmark.triangle.fill" size={10} color="#B8943E" />
+              <ThemedText style={[styles.careTagText, { color: '#B8943E' }]}>
                 NEEDS FOLLOW-UP
               </ThemedText>
             </View>
@@ -677,16 +677,16 @@ function CareFollowUpTab({
             </View>
           )}
           {member.status === 'under_review' && (
-            <View style={[styles.careTagPill, { backgroundColor: '#EF444422' }]}>
-              <ThemedText style={[styles.careTagText, { color: '#EF4444' }]}>
+            <View style={[styles.careTagPill, { backgroundColor: '#B85C5C22' }]}>
+              <ThemedText style={[styles.careTagText, { color: '#B85C5C' }]}>
                 UNDER REVIEW
               </ThemedText>
             </View>
           )}
           {!needsFollowUp && member.status !== 'under_review' && (
-            <View style={[styles.careTagPill, { backgroundColor: '#22C55E22' }]}>
-              <IconSymbol name="checkmark.circle.fill" size={10} color="#22C55E" />
-              <ThemedText style={[styles.careTagText, { color: '#22C55E' }]}>
+            <View style={[styles.careTagPill, { backgroundColor: '#5A8A6E22' }]}>
+              <IconSymbol name="checkmark.circle.fill" size={10} color="#5A8A6E" />
+              <ThemedText style={[styles.careTagText, { color: '#5A8A6E' }]}>
                 NO OPEN CARE ITEMS
               </ThemedText>
             </View>
@@ -710,13 +710,13 @@ function CareFollowUpTab({
                 <View
                   style={[
                     styles.followUpCategoryBadge,
-                    { backgroundColor: (FOLLOW_UP_CATEGORY_COLORS[fu.category] ?? '#A1A1AA') + '22' },
+                    { backgroundColor: (FOLLOW_UP_CATEGORY_COLORS[fu.category] ?? '#9C9790') + '22' },
                   ]}
                 >
                   <ThemedText
                     style={[
                       styles.followUpCategoryText,
-                      { color: FOLLOW_UP_CATEGORY_COLORS[fu.category] ?? '#A1A1AA' },
+                      { color: FOLLOW_UP_CATEGORY_COLORS[fu.category] ?? '#9C9790' },
                     ]}
                   >
                     {fu.category.replace('_', ' ').toUpperCase()}
@@ -809,13 +809,13 @@ function TasksWorkflowTab({
             <View
               style={[
                 styles.taskStatusBadge,
-                { backgroundColor: (TASK_STATUS_COLORS[task.status] ?? '#A1A1AA') + '22' },
+                { backgroundColor: (TASK_STATUS_COLORS[task.status] ?? '#9C9790') + '22' },
               ]}
             >
               <ThemedText
                 style={[
                   styles.taskStatusText,
-                  { color: TASK_STATUS_COLORS[task.status] ?? '#A1A1AA' },
+                  { color: TASK_STATUS_COLORS[task.status] ?? '#9C9790' },
                 ]}
               >
                 {task.status.replace('_', ' ').toUpperCase()}
@@ -837,8 +837,8 @@ function TasksWorkflowTab({
       <SectionCard title="Workflow Queue" colors={colors}>
         {MEMBER_WORKFLOW_QUEUE.map((item) => {
           const statusColor =
-            item.status === 'completed' ? '#22C55E' :
-            item.status === 'in_progress' ? ACCENT : '#A1A1AA';
+            item.status === 'completed' ? '#5A8A6E' :
+            item.status === 'in_progress' ? ACCENT : '#9C9790';
           return (
             <View
               key={item.id}
@@ -958,19 +958,19 @@ function SafetyComplianceTab({
           <StatBlock
             label="Status"
             value={member.safetyClearance.charAt(0).toUpperCase() + member.safetyClearance.slice(1)}
-            color={SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#A1A1AA'}
+            color={SAFETY_STATUS_COLORS[member.safetyClearance] ?? '#9C9790'}
             colors={colors}
           />
           <StatBlock
             label="Child Safety"
             value={member.safetyClearance === 'cleared' ? 'Cleared' : 'Not Cleared'}
-            color={member.safetyClearance === 'cleared' ? '#22C55E' : '#EF4444'}
+            color={member.safetyClearance === 'cleared' ? '#5A8A6E' : '#B85C5C'}
             colors={colors}
           />
           <StatBlock
             label="Incidents"
             value="0"
-            color="#22C55E"
+            color="#5A8A6E"
             colors={colors}
           />
         </View>
@@ -988,7 +988,7 @@ function SafetyComplianceTab({
               <IconSymbol
                 name={isCompleted ? 'checkmark.circle.fill' : 'circle' as any}
                 size={18}
-                color={isCompleted ? '#22C55E' : colors.textTertiary}
+                color={isCompleted ? '#5A8A6E' : colors.textTertiary}
               />
               <View style={{ flex: 1, marginLeft: Spacing.sm }}>
                 <ThemedText style={[styles.listRowTitle, { color: colors.text }]}>
@@ -1018,13 +1018,13 @@ function SafetyComplianceTab({
               <View
                 style={[
                   styles.incidentTypeBadge,
-                  { backgroundColor: (INCIDENT_TYPE_COLORS[inc.type] ?? '#A1A1AA') + '22' },
+                  { backgroundColor: (INCIDENT_TYPE_COLORS[inc.type] ?? '#9C9790') + '22' },
                 ]}
               >
                 <ThemedText
                   style={[
                     styles.incidentTypeText,
-                    { color: INCIDENT_TYPE_COLORS[inc.type] ?? '#A1A1AA' },
+                    { color: INCIDENT_TYPE_COLORS[inc.type] ?? '#9C9790' },
                   ]}
                 >
                   {inc.type.replace('_', ' ').toUpperCase()}
@@ -1090,8 +1090,8 @@ function AdminTab({
               Allows use of member photos and video in church media
             </ThemedText>
           </View>
-          <View style={[styles.consentBadge, { backgroundColor: '#22C55E22' }]}>
-            <ThemedText style={[styles.consentBadgeText, { color: '#22C55E' }]}>
+          <View style={[styles.consentBadge, { backgroundColor: '#5A8A6E22' }]}>
+            <ThemedText style={[styles.consentBadgeText, { color: '#5A8A6E' }]}>
               APPROVED
             </ThemedText>
           </View>
@@ -1105,8 +1105,8 @@ function AdminTab({
               Authorized individuals for child release
             </ThemedText>
           </View>
-          <View style={[styles.consentBadge, { backgroundColor: member.type === 'visitor' ? '#A1A1AA22' : '#F59E0B22' }]}>
-            <ThemedText style={[styles.consentBadgeText, { color: member.type === 'visitor' ? '#A1A1AA' : '#F59E0B' }]}>
+          <View style={[styles.consentBadge, { backgroundColor: member.type === 'visitor' ? '#9C979022' : '#B8943E22' }]}>
+            <ThemedText style={[styles.consentBadgeText, { color: member.type === 'visitor' ? '#9C9790' : '#B8943E' }]}>
               {member.type === 'visitor' ? 'N/A' : 'PENDING'}
             </ThemedText>
           </View>
@@ -1120,8 +1120,8 @@ function AdminTab({
               Acknowledgment of data handling practices
             </ThemedText>
           </View>
-          <View style={[styles.consentBadge, { backgroundColor: '#22C55E22' }]}>
-            <ThemedText style={[styles.consentBadgeText, { color: '#22C55E' }]}>
+          <View style={[styles.consentBadge, { backgroundColor: '#5A8A6E22' }]}>
+            <ThemedText style={[styles.consentBadgeText, { color: '#5A8A6E' }]}>
               APPROVED
             </ThemedText>
           </View>
@@ -1145,7 +1145,7 @@ function AdminTab({
             <IconSymbol
               name={item.done ? 'checkmark.circle.fill' : 'circle' as any}
               size={18}
-              color={item.done ? '#22C55E' : colors.textTertiary}
+              color={item.done ? '#5A8A6E' : colors.textTertiary}
             />
             <ThemedText style={[styles.bodyText, { color: colors.text, marginLeft: Spacing.sm }]}>
               {item.label}
@@ -1223,10 +1223,10 @@ function GivingTab({
                 <ThemedText style={[styles.captionText, { color: colors.textSecondary }]}>
                   Pledged: {pledge.pledged}
                 </ThemedText>
-                <ThemedText style={[styles.captionText, { color: '#22C55E' }]}>
+                <ThemedText style={[styles.captionText, { color: '#5A8A6E' }]}>
                   Given: {pledge.given}
                 </ThemedText>
-                <ThemedText style={[styles.captionText, { color: '#F59E0B' }]}>
+                <ThemedText style={[styles.captionText, { color: '#B8943E' }]}>
                   Remaining: {pledge.remaining}
                 </ThemedText>
               </View>
@@ -1671,7 +1671,7 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   unreadBadge: {
-    backgroundColor: '#EF4444',
+    backgroundColor: '#B85C5C',
     width: 18,
     height: 18,
     borderRadius: 9,

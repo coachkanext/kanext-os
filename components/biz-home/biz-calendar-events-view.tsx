@@ -14,12 +14,12 @@ import { openPersonCard } from '@/utils/global-entity-sheets';
 
 const ACCENT = MODE_ACCENT.business;
 const CATEGORY_COLORS: Record<BizEvent['category'], string> = {
-  investor: '#22C55E',
+  investor: '#5A8A6E',
   board: ACCENT,
   product: ACCENT,
-  legal: '#A1A1AA',
-  media: '#EF4444',
-  conference: '#F59E0B',
+  legal: '#9C9790',
+  media: '#B85C5C',
+  conference: '#B8943E',
 };
 
 interface Props {

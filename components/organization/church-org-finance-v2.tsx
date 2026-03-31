@@ -207,11 +207,11 @@ function OverviewTab({
   // Health tiles
   const healthTiles = [
     { icon: 'banknote.fill', label: 'Total Funds', value: formatCurrency(totalFunds), color: accentColor },
-    { icon: 'lock.fill', label: 'Committed', value: formatCurrency(totalCommitted), color: '#F59E0B' },
+    { icon: 'lock.fill', label: 'Committed', value: formatCurrency(totalCommitted), color: '#B8943E' },
     { icon: 'arrow.up.right', label: 'Spend MTD', value: formatCurrency(totalSpent), color: ACCENT },
     { icon: 'heart.fill', label: 'Benevolence', value: String(benevolenceCases), color: ACCENT },
-    { icon: 'exclamationmark.triangle.fill', label: 'Exceptions', value: String(overBudgetWarnings), color: overBudgetWarnings > 0 ? '#EF4444' : '#22C55E' },
-    { icon: 'checkmark.shield.fill', label: 'Audit Score', value: `${data.auditTrail.filter((a) => a.evidenceAttached).length}/${data.auditTrail.length}`, color: '#22C55E' },
+    { icon: 'exclamationmark.triangle.fill', label: 'Exceptions', value: String(overBudgetWarnings), color: overBudgetWarnings > 0 ? '#B85C5C' : '#5A8A6E' },
+    { icon: 'checkmark.shield.fill', label: 'Audit Score', value: `${data.auditTrail.filter((a) => a.evidenceAttached).length}/${data.auditTrail.length}`, color: '#5A8A6E' },
   ];
 
   return (
@@ -235,7 +235,7 @@ function OverviewTab({
         </View>
         <View style={s.weekRow}>
           <View style={s.weekItem}>
-            <ThemedText style={[s.weekItemValue, { color: '#F59E0B' }]}>{pendingApprovals}</ThemedText>
+            <ThemedText style={[s.weekItemValue, { color: '#B8943E' }]}>{pendingApprovals}</ThemedText>
             <ThemedText style={[s.weekItemLabel, { color: colors.textSecondary }]}>Pending Approvals</ThemedText>
           </View>
           <View style={s.weekItem}>
@@ -245,7 +245,7 @@ function OverviewTab({
             <ThemedText style={[s.weekItemLabel, { color: colors.textSecondary }]}>Recurring Due</ThemedText>
           </View>
           <View style={s.weekItem}>
-            <ThemedText style={[s.weekItemValue, { color: fundsAtRisk.length > 0 ? '#EF4444' : '#22C55E' }]}>
+            <ThemedText style={[s.weekItemValue, { color: fundsAtRisk.length > 0 ? '#B85C5C' : '#5A8A6E' }]}>
               {fundsAtRisk.length}
             </ThemedText>
             <ThemedText style={[s.weekItemLabel, { color: colors.textSecondary }]}>At-Risk Funds</ThemedText>
@@ -253,8 +253,8 @@ function OverviewTab({
         </View>
         {fundsAtRisk.length > 0 && (
           <View style={s.riskWarningRow}>
-            <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#EF4444" />
-            <ThemedText style={[s.riskWarningText, { color: '#EF4444' }]}>
+            <IconSymbol name="exclamationmark.triangle.fill" size={12} color="#B85C5C" />
+            <ThemedText style={[s.riskWarningText, { color: '#B85C5C' }]}>
               {fundsAtRisk.map((f) => f.name).join(', ')} at risk
             </ThemedText>
           </View>
@@ -279,17 +279,17 @@ function OverviewTab({
               <ThemedText style={[s.fundSnapshotName, { color: colors.text }]} numberOfLines={1}>
                 {fund.name}
               </ThemedText>
-              {fund.atRisk && <StatusBadge label="AT RISK" color="#EF4444" />}
+              {fund.atRisk && <StatusBadge label="AT RISK" color="#B85C5C" />}
             </View>
             <View style={s.fundSnapshotValues}>
               <View style={s.fundSnapshotValueItem}>
-                <ThemedText style={[s.fundSnapshotAmount, { color: '#22C55E' }]}>
+                <ThemedText style={[s.fundSnapshotAmount, { color: '#5A8A6E' }]}>
                   {formatCurrency(fund.available)}
                 </ThemedText>
                 <ThemedText style={[s.fundSnapshotAmountLabel, { color: colors.textTertiary }]}>Available</ThemedText>
               </View>
               <View style={s.fundSnapshotValueItem}>
-                <ThemedText style={[s.fundSnapshotAmount, { color: '#F59E0B' }]}>
+                <ThemedText style={[s.fundSnapshotAmount, { color: '#B8943E' }]}>
                   {formatCurrency(fund.committed)}
                 </ThemedText>
                 <ThemedText style={[s.fundSnapshotAmountLabel, { color: colors.textTertiary }]}>Committed</ThemedText>
@@ -308,12 +308,12 @@ function OverviewTab({
       {/* Block D: Action Queue */}
       <View style={[s.sectionCard, { backgroundColor: colors.card, borderColor: colors.border, marginTop: Spacing.lg }]}>
         <View style={s.sectionCardHeader}>
-          <IconSymbol name="list.bullet.rectangle.fill" size={16} color="#F59E0B" />
+          <IconSymbol name="list.bullet.rectangle.fill" size={16} color="#B8943E" />
           <ThemedText style={[s.sectionCardTitle, { color: colors.text }]}>Action Queue</ThemedText>
         </View>
         {missingReceipts > 0 && (
           <View style={s.actionQueueRow}>
-            <View style={[s.actionDot, { backgroundColor: '#EF4444' }]} />
+            <View style={[s.actionDot, { backgroundColor: '#B85C5C' }]} />
             <ThemedText style={[s.actionQueueText, { color: colors.text }]}>
               {missingReceipts} missing receipt{missingReceipts > 1 ? 's' : ''}
             </ThemedText>
@@ -321,7 +321,7 @@ function OverviewTab({
         )}
         {pendingApprovals > 0 && (
           <View style={s.actionQueueRow}>
-            <View style={[s.actionDot, { backgroundColor: '#F59E0B' }]} />
+            <View style={[s.actionDot, { backgroundColor: '#B8943E' }]} />
             <ThemedText style={[s.actionQueueText, { color: colors.text }]}>
               {pendingApprovals} pending approval{pendingApprovals > 1 ? 's' : ''}
             </ThemedText>
@@ -337,7 +337,7 @@ function OverviewTab({
         )}
         {overBudgetWarnings > 0 && (
           <View style={s.actionQueueRow}>
-            <View style={[s.actionDot, { backgroundColor: '#EF4444' }]} />
+            <View style={[s.actionDot, { backgroundColor: '#B85C5C' }]} />
             <ThemedText style={[s.actionQueueText, { color: colors.text }]}>
               {overBudgetWarnings} over-budget categor{overBudgetWarnings > 1 ? 'ies' : 'y'}
             </ThemedText>
@@ -391,9 +391,9 @@ function BudgetsTab({
 
   const getBudgetColor = (spent: number, cap: number): string => {
     const ratio = cap > 0 ? spent / cap : 0;
-    if (ratio > 1) return '#EF4444';
-    if (ratio >= 0.8) return '#F59E0B';
-    return '#22C55E';
+    if (ratio > 1) return '#B85C5C';
+    if (ratio >= 0.8) return '#B8943E';
+    return '#5A8A6E';
   };
 
   return (
@@ -503,10 +503,10 @@ function BudgetsTab({
                     <ThemedText style={[s.budgetCategoryValueText, { color: catColor }]}>
                       Spent: {formatCurrency(cat.spent)}
                     </ThemedText>
-                    <ThemedText style={[s.budgetCategoryValueText, { color: '#F59E0B' }]}>
+                    <ThemedText style={[s.budgetCategoryValueText, { color: '#B8943E' }]}>
                       Cmtd: {formatCurrency(cat.committed)}
                     </ThemedText>
-                    <ThemedText style={[s.budgetCategoryValueText, { color: remaining >= 0 ? '#22C55E' : '#EF4444' }]}>
+                    <ThemedText style={[s.budgetCategoryValueText, { color: remaining >= 0 ? '#5A8A6E' : '#B85C5C' }]}>
                       Rem: {formatCurrency(remaining)}
                     </ThemedText>
                   </View>
@@ -572,7 +572,7 @@ function FundsTab({
               <View style={s.fundBadgeRow}>
                 <StatusBadge label={FUND_TYPE_LABELS[item.type].toUpperCase()} color={typeColor} />
                 {item.restricted && <StatusBadge label="RESTRICTED" color={ACCENT} />}
-                {item.atRisk && <StatusBadge label="AT RISK" color="#EF4444" />}
+                {item.atRisk && <StatusBadge label="AT RISK" color="#B85C5C" />}
               </View>
             </View>
             <IconSymbol name="chevron.right" size={14} color={colors.textTertiary} />
@@ -581,13 +581,13 @@ function FundsTab({
           {/* Values Row */}
           <View style={[s.fundValuesRow, { borderTopColor: colors.border }]}>
             <View style={s.fundValueItem}>
-              <ThemedText style={[s.fundValueAmount, { color: '#22C55E' }]}>
+              <ThemedText style={[s.fundValueAmount, { color: '#5A8A6E' }]}>
                 {formatCurrency(item.available)}
               </ThemedText>
               <ThemedText style={[s.fundValueLabel, { color: colors.textTertiary }]}>Available</ThemedText>
             </View>
             <View style={s.fundValueItem}>
-              <ThemedText style={[s.fundValueAmount, { color: '#F59E0B' }]}>
+              <ThemedText style={[s.fundValueAmount, { color: '#B8943E' }]}>
                 {formatCurrency(item.committed)}
               </ThemedText>
               <ThemedText style={[s.fundValueLabel, { color: colors.textTertiary }]}>Committed</ThemedText>
@@ -665,7 +665,7 @@ function CommitmentsTab({
   };
 
   const getFundColor = (fundType: string): string => {
-    return FUND_TYPE_COLORS[fundType as FundType] || '#A1A1AA';
+    return FUND_TYPE_COLORS[fundType as FundType] || '#9C9790';
   };
 
   return (
@@ -689,7 +689,7 @@ function CommitmentsTab({
               </ThemedText>
               <StatusBadge
                 label={isReady ? 'READY FOR RAILS' : commitment.status.toUpperCase().replace('_', ' ')}
-                color={isReady ? '#22C55E' : '#F59E0B'}
+                color={isReady ? '#5A8A6E' : '#B8943E'}
               />
             </View>
             <ThemedText style={[s.commitmentAmount, { color: colors.text }]}>
@@ -712,8 +712,8 @@ function CommitmentsTab({
             </View>
             {isReady && (
               <View style={s.readyIndicator}>
-                <IconSymbol name="checkmark.circle.fill" size={12} color="#22C55E" />
-                <ThemedText style={[s.readyText, { color: '#22C55E' }]}>
+                <IconSymbol name="checkmark.circle.fill" size={12} color="#5A8A6E" />
+                <ThemedText style={[s.readyText, { color: '#5A8A6E' }]}>
                   Ready for Payment Rails
                 </ThemedText>
               </View>
@@ -762,14 +762,14 @@ function ExpensesTab({
   };
 
   const getFundColor = (fundType: string): string => {
-    return FUND_TYPE_COLORS[fundType as FundType] || '#A1A1AA';
+    return FUND_TYPE_COLORS[fundType as FundType] || '#9C9790';
   };
 
   const renderItem = useCallback(
     ({ item }: { item: ExpenseEntry }) => {
       const catIcon = EXPENSE_CATEGORY_ICONS[item.category] || 'dollarsign.circle.fill';
       const catLabel = EXPENSE_CATEGORY_LABELS[item.category] || item.category;
-      const statusColor = REQUEST_STATUS_COLORS[item.status as RequestStatus] || '#A1A1AA';
+      const statusColor = REQUEST_STATUS_COLORS[item.status as RequestStatus] || '#9C9790';
       const statusLabel = REQUEST_STATUS_LABELS[item.status as RequestStatus] || item.status;
       const fundColor = getFundColor(item.fund);
 
@@ -849,14 +849,14 @@ function ApprovalsTab({
   };
 
   const getFundColor = (fundType: string): string => {
-    return FUND_TYPE_COLORS[fundType as FundType] || '#A1A1AA';
+    return FUND_TYPE_COLORS[fundType as FundType] || '#9C9790';
   };
 
   const renderRequestItem = (req: FinanceRequest, queueType: 'approval' | 'release') => {
     const fundColor = getFundColor(req.fund);
     const catLabel = EXPENSE_CATEGORY_LABELS[req.category] || req.category;
     const typeLabel = REQUEST_TYPE_LABELS[req.type] || req.type;
-    const indicatorColor = queueType === 'approval' ? '#F59E0B' : ACCENT;
+    const indicatorColor = queueType === 'approval' ? '#B8943E' : ACCENT;
     const indicatorLabel = queueType === 'approval' ? 'Needs Approval' : 'Needs Release';
 
     return (
@@ -872,7 +872,7 @@ function ApprovalsTab({
         </View>
         <View style={s.approvalBadgeRow}>
           <StatusBadge label={getFundName(req.fund).toUpperCase()} color={fundColor} />
-          <StatusBadge label={catLabel.toUpperCase()} color="#A1A1AA" />
+          <StatusBadge label={catLabel.toUpperCase()} color="#9C9790" />
           <StatusBadge label={typeLabel.toUpperCase()} color={accentColor} />
         </View>
         <View style={s.approvalMeta}>
@@ -891,8 +891,8 @@ function ApprovalsTab({
         </View>
         {req.attachments.length === 0 && (
           <View style={s.missingRow}>
-            <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#EF4444" />
-            <ThemedText style={[s.missingText, { color: '#EF4444' }]}>
+            <IconSymbol name="exclamationmark.triangle.fill" size={11} color="#B85C5C" />
+            <ThemedText style={[s.missingText, { color: '#B85C5C' }]}>
               Missing: receipts/documentation
             </ThemedText>
           </View>
@@ -1022,15 +1022,15 @@ function AuditTab({
 
       {auditEntries.map((entry, idx) => {
         const isMissing = !entry.evidenceAttached;
-        const statusColor = entry.evidenceAttached ? '#22C55E' : '#EF4444';
+        const statusColor = entry.evidenceAttached ? '#5A8A6E' : '#B85C5C';
         return (
           <View
             key={entry.id}
             style={[
               s.auditCard,
               {
-                backgroundColor: isMissing ? '#EF444408' : colors.card,
-                borderColor: isMissing ? '#EF444430' : colors.border,
+                backgroundColor: isMissing ? '#B85C5C08' : colors.card,
+                borderColor: isMissing ? '#B85C5C30' : colors.border,
               },
             ]}
           >
@@ -1072,12 +1072,12 @@ function AuditTab({
                 <IconSymbol
                   name={entry.evidenceAttached ? 'checkmark.circle.fill' : 'xmark.circle.fill'}
                   size={14}
-                  color={entry.evidenceAttached ? '#22C55E' : '#EF4444'}
+                  color={entry.evidenceAttached ? '#5A8A6E' : '#B85C5C'}
                 />
                 <ThemedText
                   style={[
                     s.auditEvidenceText,
-                    { color: entry.evidenceAttached ? '#22C55E' : '#EF4444' },
+                    { color: entry.evidenceAttached ? '#5A8A6E' : '#B85C5C' },
                   ]}
                 >
                   {entry.evidenceAttached ? 'Evidence attached' : 'Missing evidence'}
@@ -1125,7 +1125,7 @@ function FundDetailSheet({
       <View style={s.sheetBadgeRow}>
         <StatusBadge label={FUND_TYPE_LABELS[fund.type].toUpperCase()} color={typeColor} />
         {fund.restricted && <StatusBadge label="RESTRICTED" color={ACCENT} />}
-        {fund.atRisk && <StatusBadge label="AT RISK" color="#EF4444" />}
+        {fund.atRisk && <StatusBadge label="AT RISK" color="#B85C5C" />}
       </View>
 
       {/* Balance Section */}
@@ -1133,13 +1133,13 @@ function FundDetailSheet({
         <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Balance Breakdown</ThemedText>
         <View style={s.sheetDetailsGrid}>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: '#22C55E' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: '#5A8A6E' }]}>
               {formatCurrency(fund.available)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Available</ThemedText>
           </View>
           <View style={s.sheetDetailItem}>
-            <ThemedText style={[s.sheetDetailValue, { color: '#F59E0B' }]}>
+            <ThemedText style={[s.sheetDetailValue, { color: '#B8943E' }]}>
               {formatCurrency(fund.committed)}
             </ThemedText>
             <ThemedText style={[s.sheetDetailLabel, { color: colors.textSecondary }]}>Committed</ThemedText>
@@ -1265,8 +1265,8 @@ function ExpenseDetailSheet({
   const catIcon = EXPENSE_CATEGORY_ICONS[expense.category] || 'dollarsign.circle.fill';
   const fund = funds.find((f) => f.type === expense.fund);
   const fundName = fund ? fund.name : FUND_TYPE_LABELS[expense.fund] || expense.fund;
-  const fundColor = fund ? FUND_TYPE_COLORS[fund.type] : '#A1A1AA';
-  const statusColor = REQUEST_STATUS_COLORS[expense.status as RequestStatus] || '#A1A1AA';
+  const fundColor = fund ? FUND_TYPE_COLORS[fund.type] : '#9C9790';
+  const statusColor = REQUEST_STATUS_COLORS[expense.status as RequestStatus] || '#9C9790';
   const statusLabel = REQUEST_STATUS_LABELS[expense.status as RequestStatus] || expense.status;
 
   return (
@@ -1310,12 +1310,12 @@ function ExpenseDetailSheet({
       <View style={[s.sheetSection, { borderBottomColor: colors.border }]}>
         <ThemedText style={[s.sheetSectionTitle, { color: colors.text }]}>Approval</ThemedText>
         <View style={s.approvalChainRow}>
-          <View style={[s.approvalChainDot, { backgroundColor: '#22C55E' }]} />
+          <View style={[s.approvalChainDot, { backgroundColor: '#5A8A6E' }]} />
           <View style={s.approvalChainTextCol}>
             <ThemedText style={[s.approvalChainName, { color: colors.text }]}>
               {expense.approvedBy}
             </ThemedText>
-            <ThemedText style={[s.approvalChainStatus, { color: '#22C55E' }]}>
+            <ThemedText style={[s.approvalChainStatus, { color: '#5A8A6E' }]}>
               Approved
             </ThemedText>
           </View>
@@ -1329,12 +1329,12 @@ function ExpenseDetailSheet({
           <IconSymbol
             name={expense.receiptAttached ? 'checkmark.circle.fill' : 'xmark.circle.fill'}
             size={16}
-            color={expense.receiptAttached ? '#22C55E' : '#EF4444'}
+            color={expense.receiptAttached ? '#5A8A6E' : '#B85C5C'}
           />
           <ThemedText
             style={[
               s.auditEvidenceText,
-              { color: expense.receiptAttached ? '#22C55E' : '#EF4444' },
+              { color: expense.receiptAttached ? '#5A8A6E' : '#B85C5C' },
             ]}
           >
             {expense.receiptAttached ? 'Receipt attached' : 'No receipt attached'}

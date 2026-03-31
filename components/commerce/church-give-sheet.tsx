@@ -54,12 +54,12 @@ interface Props {
 // =============================================================================
 
 const STATUS_COLOR: Record<string, string> = {
-  SETTLED: '#22C55E',
-  PENDING: '#F59E0B',
-  FAILED: '#EF4444',
-  ACTIVE: '#22C55E',
-  PAUSED: '#F59E0B',
-  CANCELLED: '#A1A1AA',
+  SETTLED: '#5A8A6E',
+  PENDING: '#B8943E',
+  FAILED: '#B85C5C',
+  ACTIVE: '#5A8A6E',
+  PAUSED: '#B8943E',
+  CANCELLED: '#9C9790',
 };
 
 const CARD_ICON: Record<string, IconSymbolName> = {
@@ -332,13 +332,13 @@ export function ChurchGiveSheet({ visible, onClose, colors }: Props) {
                 <View
                   style={[
                     s.statusChip,
-                    { backgroundColor: (STATUS_COLOR[gift.status] || '#A1A1AA') + '20' },
+                    { backgroundColor: (STATUS_COLOR[gift.status] || '#9C9790') + '20' },
                   ]}
                 >
                   <ThemedText
                     style={[
                       s.statusChipText,
-                      { color: STATUS_COLOR[gift.status] || '#A1A1AA' },
+                      { color: STATUS_COLOR[gift.status] || '#9C9790' },
                     ]}
                   >
                     {gift.status}
@@ -365,7 +365,7 @@ export function ChurchGiveSheet({ visible, onClose, colors }: Props) {
                   style={({ pressed }) => [s.miniBtn, pressed && { opacity: 0.7 }]}
                   onPress={() => handleRecurringAction(gift, 'cancel')}
                 >
-                  <ThemedText style={[s.miniBtnText, { color: '#EF4444' }]}>Cancel</ThemedText>
+                  <ThemedText style={[s.miniBtnText, { color: '#B85C5C' }]}>Cancel</ThemedText>
                 </Pressable>
               </View>
             </View>
@@ -417,11 +417,11 @@ export function ChurchGiveSheet({ visible, onClose, colors }: Props) {
                 <View
                   style={[
                     s.statusDot,
-                    { backgroundColor: STATUS_COLOR[tx.status] || '#A1A1AA' },
+                    { backgroundColor: STATUS_COLOR[tx.status] || '#9C9790' },
                   ]}
                 />
                 <ThemedText
-                  style={[s.historyStatus, { color: STATUS_COLOR[tx.status] || '#A1A1AA' }]}
+                  style={[s.historyStatus, { color: STATUS_COLOR[tx.status] || '#9C9790' }]}
                 >
                   {tx.status}
                 </ThemedText>

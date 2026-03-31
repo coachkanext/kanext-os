@@ -195,7 +195,7 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#1D9BF0',
+    backgroundColor: '#1A1714',
     marginTop: 4,
   },
 });

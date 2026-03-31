@@ -195,9 +195,9 @@ export interface GivingAllocation {
 // =============================================================================
 
 export const RAILS_STATUS_COLORS: Record<RailsStatus, string> = {
-  green: '#22C55E',
-  yellow: '#F59E0B',
-  red: '#EF4444',
+  green: '#5A8A6E',
+  yellow: '#B8943E',
+  red: '#B85C5C',
 };
 
 export const RAIL_METHOD_LABELS: Record<RailMethod, string> = {
@@ -233,19 +233,19 @@ export const TRANSACTION_STATE_LABELS: Record<TransactionState, string> = {
 };
 
 export const TRANSACTION_STATE_COLORS: Record<TransactionState, string> = {
-  draft: '#A1A1AA',
-  proposed: '#1D9BF0',
-  rule_checked: '#1D9BF0',
-  authorized: '#22C55E',
-  scheduled: '#1D9BF0',
-  released: '#22C55E',
-  in_flight: '#F59E0B',
-  settled: '#22C55E',
-  held: '#F59E0B',
-  failed: '#EF4444',
-  returned: '#EF4444',
-  disputed: '#EF4444',
-  refunded: '#1D9BF0',
+  draft: '#9C9790',
+  proposed: '#1A1714',
+  rule_checked: '#1A1714',
+  authorized: '#5A8A6E',
+  scheduled: '#1A1714',
+  released: '#5A8A6E',
+  in_flight: '#B8943E',
+  settled: '#5A8A6E',
+  held: '#B8943E',
+  failed: '#B85C5C',
+  returned: '#B85C5C',
+  disputed: '#B85C5C',
+  refunded: '#1A1714',
 };
 
 export const BATCH_TYPE_LABELS: Record<BatchType, string> = {
@@ -267,11 +267,11 @@ export const EXCEPTION_TYPE_LABELS: Record<ExceptionType, string> = {
 };
 
 export const EXCEPTION_TYPE_COLORS: Record<ExceptionType, string> = {
-  held: '#F59E0B',
-  failed: '#EF4444',
-  returned: '#EF4444',
-  disputed: '#EF4444',
-  reversal: '#1D9BF0',
+  held: '#B8943E',
+  failed: '#B85C5C',
+  returned: '#B85C5C',
+  disputed: '#B85C5C',
+  reversal: '#1A1714',
 };
 
 export const EXCEPTION_CAUSE_LABELS: Record<ExceptionCause, string> = {
@@ -954,7 +954,7 @@ const RECEIPTS: RailsReceipt[] = [
     rulesApplied: 'Amount < $5,000 — single approval; General Fund budget check passed',
     approvalChain: 'Worship Director (requestor) → Church Treasurer (approved)',
     releaseAuth: 'Finance Secretary released via ACH batch',
-    settlementRecord: 'ACH settled 2026-02-10 — Trace #1D9BF0400012345',
+    settlementRecord: 'ACH settled 2026-02-10 — Trace #1A1714400012345',
     ledgerPostings: 'DR General Fund — Worship Expenses $1,450; CR Operating Cash $1,450',
     amount: 1450,
     settledDate: '2026-02-10',
@@ -980,7 +980,7 @@ const RECEIPTS: RailsReceipt[] = [
     rulesApplied: 'Youth Fund budget check passed; event cap $2,000 — within limit',
     approvalChain: 'Youth Pastor Davis (requestor) → Church Treasurer (approved)',
     releaseAuth: 'Finance Secretary released via card payment',
-    settlementRecord: 'Card settled 2026-02-12 — Auth #A1A1AA2',
+    settlementRecord: 'Card settled 2026-02-12 — Auth #9C97902',
     ledgerPostings: 'DR Youth Fund — Event Expenses $1,680; CR Youth Operating Cash $1,680',
     amount: 1680,
     settledDate: '2026-02-12',

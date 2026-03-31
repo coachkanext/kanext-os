@@ -23,7 +23,7 @@ const VIEW_LABELS: { id: RecruitingViewMode; label: string }[] = [
 const BG = '#0B0F14';
 const CARD_BG = '#0B0F14';
 const WHITE = '#FFFFFF';
-const GRAY = '#A1A1AA';
+const GRAY = '#9C9790';
 const DIVIDER = '#0B0F14';
 
 export function RecruitingHeader({
@@ -76,19 +76,19 @@ export function RecruitingHeader({
       {/* Search bar (conditional) */}
       {searchVisible && (
         <View style={styles.searchBar}>
-          <IconSymbol name="magnifyingglass" size={14} color="#A1A1AA" />
+          <IconSymbol name="magnifyingglass" size={14} color="#9C9790" />
           <TextInput
             ref={searchRef}
             style={styles.searchInput}
             placeholder="Search player, team, tag..."
-            placeholderTextColor="#A1A1AA"
+            placeholderTextColor="#9C9790"
             value={search}
             onChangeText={onSearchChange}
             autoFocus
           />
           {search.length > 0 && (
             <Pressable hitSlop={16} onPress={() => onSearchChange('')} style={{ padding: 8 }}>
-              <IconSymbol name="xmark.circle.fill" size={18} color="#A1A1AA" />
+              <IconSymbol name="xmark.circle.fill" size={18} color="#9C9790" />
             </Pressable>
           )}
         </View>
