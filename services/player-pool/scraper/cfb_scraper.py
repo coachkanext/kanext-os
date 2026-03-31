@@ -84,6 +84,7 @@ FCS_GROUPS = {
     "SWAC East":                33,
     "SWAC West":                34,
     "Big South-OVC":           179,
+    "United Athletic":         177,   # UAC — formed 2023, FCS
     "FCS Independents":         32,
 }
 
@@ -98,6 +99,7 @@ FCS_CONF_META = {
     "Patriot":              ("Patriot League",        "PL",   "fcs_mid"),
     "Northeast":            ("Northeast Conference",  "NEC",  "fcs_mid"),
     "Pioneer":              ("Pioneer Football",      "PFL",  "fcs_mid"),
+    "United Athletic":      ("United Athletic",       "UAC",  "fcs_mid"),
     "Mid-Eastern Athletic": ("MEAC",                  "MEAC", "fcs_low"),
     "SWAC East":            ("SWAC",                  "SWAC", "fcs_low"),
     "SWAC West":            ("SWAC",                  "SWAC", "fcs_low"),
@@ -108,6 +110,91 @@ FCS_CONF_META = {
 def fcs_level_key(conf_key: str) -> str:
     meta = FCS_CONF_META.get(conf_key)
     return meta[2] if meta else "fcs_low"
+
+
+# NCAA Division II conferences (ESPN group IDs — verified via API scan)
+# PSAC has ESPN sub-groups East=156/West=157; canonical name "PSAC"
+D2_GROUPS = {
+    "CIAA":                 104,
+    "GLIAC":                107,
+    "Great Lakes":          108,   # GLIAC-adjacent D2 group
+    "Gulf South":           110,
+    "D2 Independents":      112,
+    "Lone Star":            116,
+    "MIAA":                 118,
+    "NE10":                 127,
+    "NSIC":                 129,
+    "PSAC East":            156,   # Penn State Athletic Conf — East div
+    "PSAC West":            157,   # Penn State Athletic Conf — West div
+    "RMAC":                 135,
+    "SIAC":                 136,
+    "South Atlantic":       139,   # SAC
+    "Great American":       146,   # GAC
+    "Great Midwest":        165,   # GMAC
+    "Mountain East":        144,
+}
+
+D2_CONF_ABBR = {
+    "CIAA": "CIAA", "GLIAC": "GLIAC", "Great Lakes": "GL",
+    "Gulf South": "GSC", "D2 Independents": "IND", "Lone Star": "LSC",
+    "MIAA": "MIAA", "NE10": "NE10", "NSIC": "NSIC",
+    "PSAC East": "PSAC", "PSAC West": "PSAC",
+    "RMAC": "RMAC", "SIAC": "SIAC", "South Atlantic": "SAC",
+    "Great American": "GAC", "Great Midwest": "GMAC", "Mountain East": "MEC",
+}
+
+# Canonical name mapping for split D2 conferences (like Sun Belt in FBS)
+D2_CONF_CANONICAL = {
+    "PSAC East": ("PSAC", "PSAC"),
+    "PSAC West": ("PSAC", "PSAC"),
+}
+
+# NCAA Division III conferences (ESPN group IDs — verified via API scan)
+D3_GROUPS = {
+    "American Southwest": 100,  # ASC
+    "AMCC":             102,
+    "Centennial":       103,
+    "ECFC":             105,    # Eastern Collegiate Football Conf (D3)
+    "CCIW":             106,
+    "ECAC":             113,    # generic
+    "Empire 8":         114,
+    "Heartland Collegiate": 115,
+    "Liberty League":   117,
+    "MAC Freedom":      119,
+    "MIAC":             120,
+    "MAC Commonwealth": 121,
+    "NCC":              122,
+    "NESCAC":           123,
+    "New Jersey AC":    124,
+    "NJAC":             126,
+    "North Coast AC":   128,
+    "MSCAC":            160,    # Massachusetts State Collegiate AC (D3)
+    "OAC":              130,
+    "PAC":              131,
+    "Presidents' AC":   132,
+    "Skyline":          134,
+    "Southern Collegiate": 143,
+    "UAA":              145,
+    "USA South":        147,
+    "Wisconsin IAC":    148,
+    "Northwoods":       182,    # D3 Northwoods (MIAC region)
+    "D3 Independents":  133,
+}
+
+D3_CONF_ABBR = {k: k[:8] for k in D3_GROUPS}
+
+# NAIA conferences — ESPN only has a small subset of NAIA schools
+# Group 111 = HAAC verified; group 186 = NAIA (1 independent)
+# Most NAIA football programs are NOT on ESPN; bulk load via NAIA site scraper (future)
+NAIA_GROUPS = {
+    "Heart of America AC":  111,   # HAAC — 7 teams verified
+    "NAIA Independents":    186,   # 1 team (Defiance)
+}
+
+NAIA_CONF_ABBR = {
+    "Heart of America AC": "HAAC",
+    "NAIA Independents": "IND",
+}
 
 
 # ── Static data ───────────────────────────────────────────────────────────────
@@ -1324,19 +1411,83 @@ def main():
         print(f"  ✓ {fcs_players} FCS players loaded")
         print(f"\n  FCS total: {total_fcs_teams} teams, {fcs_players} players")
 
+    # ── NCAA Division II ──────────────────────────────────────────────────────
+    if mode in ("ncaa_d2", "lower", "all"):
+        print(f"\n[NCAA D2] Loading {len(D2_GROUPS)} conference groups...")
+        d2_level_id = level_ids["ncaa_d2"]
+        total_d2 = 0
+        for conf_key, group_id in D2_GROUPS.items():
+            canonical, abbr = D2_CONF_CANONICAL.get(conf_key, (conf_key, D2_CONF_ABBR.get(conf_key)))
+            _, n = load_conf_group(conn, conf_key, group_id, d2_level_id, canonical, abbr)
+            print(f"  {conf_key} ({canonical}): {n} teams")
+            total_d2 += n
+        print(f"\n[NCAA D2 ROSTERS] Loading player rosters...")
+        d2_players = load_rosters_for_level(conn, "ncaa_d2")
+        print(f"  ✓ {d2_players} players loaded")
+        print(f"\n  NCAA D2 total: {total_d2} teams, {d2_players} players")
+
+    # ── NCAA Division III ─────────────────────────────────────────────────────
+    if mode in ("ncaa_d3", "lower", "all"):
+        print(f"\n[NCAA D3] Loading conference groups...")
+        d3_level_id = level_ids["ncaa_d3"]
+        total_d3 = 0
+        for conf_key, group_id in D3_GROUPS.items():
+            if group_id is None:
+                continue
+            abbr = D3_CONF_ABBR.get(conf_key)
+            _, n = load_conf_group(conn, conf_key, group_id, d3_level_id, conf_key, abbr)
+            print(f"  {conf_key}: {n} teams")
+            total_d3 += n
+        print(f"\n[NCAA D3 ROSTERS] Loading player rosters...")
+        d3_players = load_rosters_for_level(conn, "ncaa_d3")
+        print(f"  ✓ {d3_players} players loaded")
+        print(f"\n  NCAA D3 total: {total_d3} teams, {d3_players} players")
+
+    # ── NAIA ──────────────────────────────────────────────────────────────────
+    if mode in ("naia", "lower", "all"):
+        print(f"\n[NAIA] Loading {len(NAIA_GROUPS)} conference groups...")
+        naia_level_id = level_ids["naia"]
+        total_naia = 0
+        for conf_key, group_id in NAIA_GROUPS.items():
+            abbr = NAIA_CONF_ABBR.get(conf_key)
+            _, n = load_conf_group(conn, conf_key, group_id, naia_level_id, conf_key, abbr)
+            print(f"  {conf_key}: {n} teams")
+            total_naia += n
+        print(f"\n[NAIA ROSTERS] Loading player rosters...")
+        naia_players = load_rosters_for_level(conn, "naia")
+        print(f"  ✓ {naia_players} players loaded")
+        print(f"\n  NAIA total: {total_naia} teams, {naia_players} players")
+
     # ── Sports Reference stats (blocked — stub) ──────────────────────────────
     if mode in ("stats",):
         scrape_cfbref_stats(conn)
 
-    # ── ESPN game-summary stats (primary stats pipeline) ─────────────────────
-    if mode in ("espn_stats", "all"):
-        print("\n[ESPN STATS] Aggregating per-game stats from ESPN game summaries...")
-        if mode == "espn_stats":
-            # Default: FBS P4 + G5 only
-            scrape_espn_season_stats(conn, level_keys=["fbs_p4", "fbs_g5"])
-        else:
-            # all: every level in DB
-            scrape_espn_season_stats(conn, level_keys=None)
+    # ── ESPN game-summary stats ───────────────────────────────────────────────
+    # Usage:
+    #   python3 cfb_scraper.py espn_stats          → FBS P4 + G5
+    #   python3 cfb_scraper.py espn_stats fcs      → FCS (top/mid/low)
+    #   python3 cfb_scraper.py espn_stats d2       → NCAA D2
+    #   python3 cfb_scraper.py espn_stats d3       → NCAA D3
+    #   python3 cfb_scraper.py espn_stats naia     → NAIA
+    #   python3 cfb_scraper.py espn_stats all      → all levels in DB
+    if mode in ("espn_stats",):
+        subtarget = sys.argv[2] if len(sys.argv) > 2 else "fbs"
+        _stats_map = {
+            "fbs":  ["fbs_p4", "fbs_g5"],
+            "fcs":  ["fcs_top", "fcs_mid", "fcs_low"],
+            "d2":   ["ncaa_d2"],
+            "d3":   ["ncaa_d3"],
+            "naia": ["naia"],
+            "all":  None,
+        }
+        level_keys = _stats_map.get(subtarget, ["fbs_p4", "fbs_g5"])
+        tag = subtarget.upper()
+        print(f"\n[ESPN STATS — {tag}] Aggregating per-game stats from ESPN game summaries...")
+        scrape_espn_season_stats(conn, level_keys=level_keys)
+
+    if mode in ("all",):
+        print("\n[ESPN STATS — ALL] Aggregating per-game stats for all levels...")
+        scrape_espn_season_stats(conn, level_keys=None)
 
     print_summary(conn, mode.upper())
     conn.close()

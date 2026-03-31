@@ -1,0 +1,22 @@
+# Railway deployment config for henrygd/ncaa-api
+# Deploys as a Docker Hub image — no build step needed
+#
+# DEPLOY STEPS (one-time):
+#   1. railway login
+#   2. cd services/ncaa-api && railway init
+#   3. railway up
+#   4. In Railway dashboard: set image source to Docker Hub → henrygd/ncaa-api
+#   5. Set environment variable: NCAA_HEADER_KEY=<your-secret-key>
+#   6. Railway auto-assigns a public URL
+
+[deploy]
+restartPolicyType = "always"
+numReplicas = 1
+
+[build]
+# Docker image from Docker Hub (set in Railway UI: Service Settings → Source)
+# Image: henrygd/ncaa-api
+
+[variables]
+# NCAA_HEADER_KEY = ""   # Set in Railway UI — required in requests as x-ncaa-key header
+PORT = "3000"
