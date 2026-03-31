@@ -8,6 +8,11 @@ Division-specific outdoor lists (2026 season):
   5604 = NCAA D3 Outdoor Qualifying
   5605 = NAIA Outdoor Qualifying
   5606 = NJCAA Outdoor Performance
+  5607 = NWAC Outdoor Qualifying
+  5608 = NCCAA Outdoor Qualifying
+  5609 = USCAA Outdoor Track & Field
+  5612 = CA Community Colleges (All Schools)
+  5613-5621 = CCCAA conference sub-lists
 
 Indoor: probes for D1/D2/D3 indoor qualifying lists at startup,
         falls back to All-College list (5481) if not found.
@@ -51,6 +56,22 @@ OUTDOOR_LISTS = [
     {"id": 5604, "assoc": "ncaa",   "division": "d3", "label": "NCAA D3 Outdoor"},
     {"id": 5605, "assoc": "naia",   "division": None, "label": "NAIA Outdoor"},
     {"id": 5606, "assoc": "njcaa",  "division": None, "label": "NJCAA Outdoor"},
+    {"id": 5607, "assoc": "nwac",   "division": None, "label": "NWAC Outdoor"},
+    {"id": 5608, "assoc": "nccaa",  "division": None, "label": "NCCAA Outdoor"},
+    {"id": 5609, "assoc": "uscaa",  "division": None, "label": "USCAA Outdoor"},
+    # CCCAA: All-schools list + 9 conference sub-lists
+    # The all-schools list (5612) is a superset; conference lists are subsets.
+    # We load all-schools first, then conference lists catch any athletes missed.
+    {"id": 5612, "assoc": "cccaa",  "division": None, "label": "CCCAA All Schools Outdoor"},
+    {"id": 5613, "assoc": "cccaa",  "division": None, "label": "CCCAA Coast Conference"},
+    {"id": 5614, "assoc": "cccaa",  "division": None, "label": "CCCAA Foothill Conference"},
+    {"id": 5615, "assoc": "cccaa",  "division": None, "label": "CCCAA Golden Valley Conference"},
+    {"id": 5616, "assoc": "cccaa",  "division": None, "label": "CCCAA NorCal"},
+    {"id": 5617, "assoc": "cccaa",  "division": None, "label": "CCCAA Orange Empire Conference"},
+    {"id": 5618, "assoc": "cccaa",  "division": None, "label": "CCCAA Pacific Coast Conference"},
+    {"id": 5619, "assoc": "cccaa",  "division": None, "label": "CCCAA SoCal"},
+    {"id": 5620, "assoc": "cccaa",  "division": None, "label": "CCCAA South Coast Conference"},
+    {"id": 5621, "assoc": "cccaa",  "division": None, "label": "CCCAA Western State Conference"},
 ]
 
 # ── Indoor: known 2025-26 list IDs (probe fills in future seasons) ────────────
