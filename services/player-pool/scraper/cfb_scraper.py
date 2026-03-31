@@ -921,14 +921,314 @@ def scrape_kicking_stats(conn, school_map: dict[str, str]):
 
 
 def scrape_cfbref_stats(conn):
-    print("\n[STATS] Scraping Sports Reference CFB stats...")
-    school_map = build_school_map(conn)
-    print(f"  School map: {len(school_map)} entries")
-    scrape_passing_stats(conn, school_map)
-    scrape_rushing_stats(conn, school_map)
-    scrape_receiving_stats(conn, school_map)
-    scrape_defense_stats(conn, school_map)
-    scrape_kicking_stats(conn, school_map)
+    """
+    Sports Reference CFB is Cloudflare-protected (403). Falls through to ESPN.
+    This function is kept as a stub; use scrape_espn_stats() instead.
+    """
+    print("\n[STATS] Sports Reference CFB is blocked (403). Use 'espn_stats' mode instead.")
+
+
+# ── Step 3b: ESPN game-summary stats pipeline ─────────────────────────────────
+# Sports Reference CFB blocks scraping. Instead we:
+#   1. Pull all 2024 season game IDs from ESPN scoreboard (FBS groups 80, FCS group 81)
+#   2. Filter to games involving teams in our DB
+#   3. Fetch each game's box score (summary endpoint)
+#   4. Parse passing/rushing/receiving/defensive/kicking stats per athlete
+#   5. Aggregate across all games → season totals
+#   6. Match athletes by ESPN ID → insert into stat tables
+
+
+def get_espn_game_ids(groups: list[int] = (80, 81)) -> dict[int, list[int]]:
+    """
+    Returns {espn_team_id: [game_id, ...]} mapping.
+    Fetches from ESPN scoreboard for the full 2024 season.
+    """
+    team_games: dict[int, list[int]] = {}
+    for grp in groups:
+        url = (
+            f"{ESPN_SITE}/scoreboard"
+            f"?groups={grp}&dates={SEASON}0824-{int(SEASON)+1}0120&limit=1000"
+        )
+        data = espn_get(url)
+        if not data:
+            continue
+        for evt in data.get("events", []):
+            eid = safe_int(evt.get("id"))
+            if not eid:
+                continue
+            for comp in evt.get("competitions", []):
+                for competitor in comp.get("competitors", []):
+                    tid = safe_int(competitor.get("team", {}).get("id"))
+                    if tid:
+                        team_games.setdefault(tid, [])
+                        if eid not in team_games[tid]:
+                            team_games[tid].append(eid)
+    return team_games
+
+
+def fetch_game_boxscore(event_id: int) -> dict:
+    """Fetch ESPN game summary and return boxscore dict."""
+    data = espn_get(f"{ESPN_SITE}/summary?event={event_id}")
+    return (data or {}).get("boxscore", {})
+
+
+def _parse_ca_att(s: str) -> tuple[Optional[int], Optional[int]]:
+    """Parse 'C/ATT' format (e.g. '20/27') into (comp, att)."""
+    m = re.match(r"(\d+)/(\d+)", str(s or ""))
+    if m:
+        return int(m.group(1)), int(m.group(2))
+    return None, None
+
+
+def _parse_fg_str(s: str) -> tuple[Optional[int], Optional[int]]:
+    """Parse 'FGM/FGA' format (e.g. '1/1') → (made, att)."""
+    return _parse_ca_att(s)
+
+
+def aggregate_game_stats(game_stats: dict) -> dict:
+    """
+    Merge per-game stat dicts into season-aggregate dicts.
+    game_stats: {espn_athlete_id: {category: {field: value, ...}}}
+    Returns same structure with aggregated values.
+    """
+    return game_stats  # Already accumulating in place
+
+
+def scrape_espn_season_stats(conn, level_keys: Optional[list] = None):
+    """
+    Scrape ESPN game-by-game stats for all teams at the given levels,
+    aggregate to season totals, then insert into stat tables.
+    """
+    # Build ESPN-team-id → fb_teams.id + fb_player_team_seasons lookup
+    level_filter = ""
+    params: list = []
+    if level_keys:
+        placeholders = ",".join(["%s"] * len(level_keys))
+        level_filter = f"AND cl.level_key IN ({placeholders})"
+        params.extend(level_keys)
+
+    teams = conn.execute(
+        f"""
+        SELECT t.id AS team_id, t.espn_team_id, t.name
+        FROM fb_teams t
+        JOIN fb_conferences c ON c.id = t.conference_id
+        JOIN fb_competitive_levels cl ON cl.id = c.level_id
+        WHERE t.espn_team_id IS NOT NULL {level_filter}
+        ORDER BY t.name
+        """,
+        params,
+    ).fetchall()
+
+    if not teams:
+        print("  No teams found for given level keys")
+        return
+
+    db_team_ids = {t["espn_team_id"] for t in teams}
+    print(f"  Fetching game IDs for {len(teams)} teams...")
+    team_games = get_espn_game_ids([80, 81])
+
+    # Collect unique game IDs that involve at least one of our teams
+    our_game_ids: set[int] = set()
+    for t in teams:
+        for gid in team_games.get(t["espn_team_id"], []):
+            our_game_ids.add(gid)
+
+    print(f"  Found {len(our_game_ids)} unique games to process")
+
+    # season_stats: espn_athlete_id → {passing: {...}, rushing: {...}, ...}
+    season_stats: dict[int, dict[str, dict]] = {}
+
+    processed = 0
+    for gid in sorted(our_game_ids):
+        boxscore = fetch_game_boxscore(gid)
+        players_sections = boxscore.get("players", [])
+
+        for team_section in players_sections:
+            for cat in team_section.get("statistics", []):
+                cat_name = cat.get("name", "").lower()
+                labels   = cat.get("labels", [])
+                for a_entry in cat.get("athletes", []):
+                    athlete_obj = a_entry.get("athlete", {})
+                    aid = safe_int(athlete_obj.get("id"))
+                    if not aid:
+                        continue
+                    stats_list = a_entry.get("stats", [])
+                    row = {lab: stats_list[i] for i, lab in enumerate(labels) if i < len(stats_list)}
+
+                    if aid not in season_stats:
+                        season_stats[aid] = {}
+                    if cat_name not in season_stats[aid]:
+                        season_stats[aid][cat_name] = {}
+
+                    # Accumulate numeric stats
+                    for field, val in row.items():
+                        # Handle C/ATT and FG/XP formatted fields
+                        if "/" in str(val):
+                            made, att = _parse_ca_att(val)
+                            season_stats[aid][cat_name].setdefault(f"{field}_made", 0)
+                            season_stats[aid][cat_name].setdefault(f"{field}_att", 0)
+                            if made is not None:
+                                season_stats[aid][cat_name][f"{field}_made"] += made
+                            if att is not None:
+                                season_stats[aid][cat_name][f"{field}_att"] += att
+                        else:
+                            fval = safe_float(val)
+                            if fval is not None:
+                                season_stats[aid][cat_name].setdefault(field, 0.0)
+                                season_stats[aid][cat_name][field] += fval
+
+        processed += 1
+        if processed % 50 == 0:
+            print(f"    {processed}/{len(our_game_ids)} games processed...")
+
+    print(f"  ✓ Processed {processed} games | {len(season_stats)} athletes with stats")
+
+    # Build athlete_id → player_team_season_id lookup
+    pts_rows = conn.execute(
+        """
+        SELECT p.espn_athlete_id, pts.id AS pts_id, pts.team_id
+        FROM fb_player_team_seasons pts
+        JOIN fb_players p ON p.id = pts.player_id
+        JOIN fb_teams t ON t.id = pts.team_id
+        WHERE pts.season = %s AND p.espn_athlete_id IS NOT NULL
+        """,
+        (SEASON,),
+    ).fetchall()
+    athlete_pts_map: dict[int, str] = {r["espn_athlete_id"]: str(r["pts_id"]) for r in pts_rows}
+
+    print(f"  Matching to {len(athlete_pts_map)} player-team-season entries...")
+
+    # Insert stats
+    qb_ins = sk_ins = def_ins = kick_ins = 0
+
+    for aid, cats in season_stats.items():
+        pts_id = athlete_pts_map.get(aid)
+        if not pts_id:
+            continue
+
+        # ── Passing (QB) ─────────────────────────────────────────────────────
+        if "passing" in cats:
+            p = cats["passing"]
+            comp = safe_int(p.get("C/ATT_made"))
+            att  = safe_int(p.get("C/ATT_att"))
+            yds  = safe_int(p.get("YDS"))
+            td   = safe_int(p.get("TD"))
+            ints = safe_int(p.get("INT"))
+            comp_pct = round(comp / att * 100, 2) if comp and att else None
+            ypa      = round(yds / att, 2) if yds and att else None
+            # Rush stats may be in rushing category
+            rush = cats.get("rushing", {})
+            rush_att = safe_int(rush.get("CAR"))
+            rush_yds = safe_int(rush.get("YDS"))
+            rush_td  = safe_int(rush.get("TD"))
+            conn.execute(
+                """
+                INSERT INTO fb_qb_season_stats
+                    (player_team_season_id, comp, att, comp_pct, pass_yards, ypa,
+                     pass_td, int, rush_att, rush_yards, rush_td)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT (player_team_season_id) DO UPDATE SET
+                    comp=EXCLUDED.comp, att=EXCLUDED.att, comp_pct=EXCLUDED.comp_pct,
+                    pass_yards=EXCLUDED.pass_yards, ypa=EXCLUDED.ypa,
+                    pass_td=EXCLUDED.pass_td, int=EXCLUDED.int,
+                    rush_att=EXCLUDED.rush_att, rush_yards=EXCLUDED.rush_yards,
+                    rush_td=EXCLUDED.rush_td
+                """,
+                (pts_id, comp, att, comp_pct, yds, ypa, td, ints,
+                 rush_att, rush_yds, rush_td),
+            )
+            # Update games played on pts
+            gp = safe_int(cats.get("general", {}).get("GP"))
+            if gp:
+                conn.execute("UPDATE fb_player_team_seasons SET games=%s WHERE id=%s AND games IS NULL",
+                             (gp, pts_id))
+            qb_ins += 1
+
+        # ── Skill (rushing-dominant or receiving-dominant non-QB) ─────────────
+        elif "rushing" in cats or "receiving" in cats:
+            rush = cats.get("rushing", {})
+            recv = cats.get("receiving", {})
+            rush_att = safe_int(rush.get("CAR"))
+            rush_yds = safe_int(rush.get("YDS"))
+            rush_td  = safe_int(rush.get("TD"))
+            rec     = safe_int(recv.get("REC"))
+            rec_yds = safe_int(recv.get("YDS"))
+            rec_td  = safe_int(recv.get("TD"))
+            targets = safe_int(recv.get("TGTS"))
+            ypc = round(rush_yds / rush_att, 2) if rush_yds and rush_att else None
+            ypr = round(rec_yds / rec, 2) if rec_yds and rec else None
+            conn.execute(
+                """
+                INSERT INTO fb_skill_season_stats
+                    (player_team_season_id, rush_att, rush_yards, ypc, rush_td,
+                     rec, rec_yards, ypr, rec_td, targets)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT (player_team_season_id) DO UPDATE SET
+                    rush_att=EXCLUDED.rush_att, rush_yards=EXCLUDED.rush_yards,
+                    ypc=EXCLUDED.ypc, rush_td=EXCLUDED.rush_td,
+                    rec=EXCLUDED.rec, rec_yards=EXCLUDED.rec_yards,
+                    ypr=EXCLUDED.ypr, rec_td=EXCLUDED.rec_td,
+                    targets=EXCLUDED.targets
+                """,
+                (pts_id, rush_att, rush_yds, ypc, rush_td, rec, rec_yds, ypr, rec_td, targets),
+            )
+            sk_ins += 1
+
+        # ── Defense ───────────────────────────────────────────────────────────
+        if "defensive" in cats:
+            df = cats["defensive"]
+            ints_cat = cats.get("interceptions", {})
+            conn.execute(
+                """
+                INSERT INTO fb_defense_season_stats
+                    (player_team_season_id, tackles, solo, assists, tfl, sacks,
+                     int, pbu, def_td)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT (player_team_season_id) DO UPDATE SET
+                    tackles=EXCLUDED.tackles, solo=EXCLUDED.solo,
+                    assists=EXCLUDED.assists, tfl=EXCLUDED.tfl,
+                    sacks=EXCLUDED.sacks, int=EXCLUDED.int,
+                    pbu=EXCLUDED.pbu, def_td=EXCLUDED.def_td
+                """,
+                (
+                    pts_id,
+                    safe_int(df.get("TOT")),
+                    safe_int(df.get("SOLO")),
+                    None,   # assists not in ESPN game summary
+                    safe_float(df.get("TFL")),
+                    safe_float(df.get("SACKS")),
+                    safe_int(ints_cat.get("INT")),
+                    safe_int(df.get("PD")),
+                    safe_int(df.get("TD")),
+                ),
+            )
+            def_ins += 1
+
+        # ── Kicking ───────────────────────────────────────────────────────────
+        if "kicking" in cats:
+            k = cats["kicking"]
+            # FG format "FG_made/FG_att" or "C/ATT_made"
+            fgm = safe_int(k.get("FG_made", k.get("C/ATT_made")))
+            fga = safe_int(k.get("FG_att",  k.get("C/ATT_att")))
+            xpm = safe_int(k.get("XP_made"))
+            xpa = safe_int(k.get("XP_att"))
+            pts_scored = safe_int(k.get("PTS"))
+            fg_pct = round(fgm / fga * 100, 2) if fgm and fga else None
+            conn.execute(
+                """
+                INSERT INTO fb_kicker_season_stats
+                    (player_team_season_id, fgm, fga, fg_pct, xpm, xpa, points)
+                VALUES (%s,%s,%s,%s,%s,%s,%s)
+                ON CONFLICT (player_team_season_id) DO UPDATE SET
+                    fgm=EXCLUDED.fgm, fga=EXCLUDED.fga, fg_pct=EXCLUDED.fg_pct,
+                    xpm=EXCLUDED.xpm, xpa=EXCLUDED.xpa, points=EXCLUDED.points
+                """,
+                (pts_id, fgm, fga, fg_pct, xpm, xpa, pts_scored),
+            )
+            kick_ins += 1
+
+    conn.commit()
+    print(f"  ✓ QB stats: {qb_ins} | Skill: {sk_ins} | Defense: {def_ins} | Kicking: {kick_ins}")
 
 
 # ── Summary ───────────────────────────────────────────────────────────────────
@@ -1024,9 +1324,19 @@ def main():
         print(f"  ✓ {fcs_players} FCS players loaded")
         print(f"\n  FCS total: {total_fcs_teams} teams, {fcs_players} players")
 
-    # ── Sports Reference stats ────────────────────────────────────────────────
-    if mode in ("stats", "all"):
+    # ── Sports Reference stats (blocked — stub) ──────────────────────────────
+    if mode in ("stats",):
         scrape_cfbref_stats(conn)
+
+    # ── ESPN game-summary stats (primary stats pipeline) ─────────────────────
+    if mode in ("espn_stats", "all"):
+        print("\n[ESPN STATS] Aggregating per-game stats from ESPN game summaries...")
+        if mode == "espn_stats":
+            # Default: FBS P4 + G5 only
+            scrape_espn_season_stats(conn, level_keys=["fbs_p4", "fbs_g5"])
+        else:
+            # all: every level in DB
+            scrape_espn_season_stats(conn, level_keys=None)
 
     print_summary(conn, mode.upper())
     conn.close()
