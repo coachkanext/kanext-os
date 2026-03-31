@@ -300,6 +300,7 @@ CREATE TABLE IF NOT EXISTS wvb_player_stats (
 CREATE TABLE IF NOT EXISTS football_player_stats (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     player_id       UUID NOT NULL UNIQUE REFERENCES ncaa_players(id) ON DELETE CASCADE,
+    games           INTEGER,
     -- Rushing
     rush_att        INTEGER,
     rush_yards      INTEGER,

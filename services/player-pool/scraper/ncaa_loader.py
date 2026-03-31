@@ -51,136 +51,144 @@ DB_CONFIG = {
 
 # Format: sport_code → {stat_id: {title, cols, table, col_map}}
 # col_map: API column name → DB column name (None = skip)
+# ── Verified API column names (from live scan 2026-03-31) ─────────────────────
+# Format: sport → {stat_id: {title, map: {API_col → DB_col}, table (optional)}}
+# API col names confirmed by probing /stats/{sport}/{div}/current/individual/{id}
 STATS = {
     "basketball-men": {
-        # Divisions: d1, d2, d3
-        # All division stat IDs are the same
-        136: {
-            "title": "Points Per Game",
-            "table": None,  # merged into wbb/mbb player stats via upsert
-            "cols":  ["G", "FGM", "3FG", "FT", "PTS", "PPG"],
-            "map":   {"G": "games", "PTS": "points", "PPG": "ppg",
-                      "FGM": None, "3FG": None, "FT": None},
-        },
-        137: {
-            "title": "Rebounds Per Game",
-            "cols":  ["G", "REB", "RPG"],
-            "map":   {"REB": "rebounds", "RPG": "rpg"},
-        },
-        138: {
-            "title": "Blocks Per Game",
-            "cols":  ["G", "BLKS", "BKPG"],
-            "map":   {"BLKS": "blocks", "BKPG": "bpg"},
-        },
-        139: {
-            "title": "Steals Per Game",
-            "cols":  ["G", "ST", "STPG"],
-            "map":   {"ST": "steals", "STPG": "spg"},
-        },
-        140: {
-            "title": "Assists Per Game",
-            "cols":  ["G", "AST", "APG"],
-            "map":   {"AST": "assists", "APG": "apg"},
-        },
-        141: {
-            "title": "Field Goal Percentage",
-            "cols":  ["FGM", "FGA", "FG%"],
-            "map":   {"FG%": "fg_pct"},
-        },
-        142: {
-            "title": "Free Throw Percentage",
-            "cols":  ["FT", "FTA", "FT%"],
-            "map":   {"FT%": "ft_pct"},
-        },
-        143: {
-            "title": "Three Point Percentage",
-            "cols":  ["3FG", "3FGA", "3FG%"],
-            "map":   {"3FG%": "three_pt_pct"},
-        },
-        144: {
-            "title": "Three Pointers Per Game",
-            "cols":  ["3FG", "3PG"],
-            "map":   {"3PG": "three_pt_pg"},
-        },
+        # actual cols: G, FGM, 3FG, FT, PTS, PPG / REB, RPG / BLKS, BKPG / ST, STPG / AST, APG / FG% / FT% / 3FG% / 3PG
+        136: {"title": "Points Per Game",        "map": {"G":"games","PTS":"points","PPG":"ppg"}},
+        137: {"title": "Rebounds Per Game",       "map": {"G":"games","REB":"rebounds","RPG":"rpg"}},
+        138: {"title": "Blocks Per Game",         "map": {"G":"games","BLKS":"blocks","BKPG":"bpg"}},
+        139: {"title": "Steals Per Game",         "map": {"G":"games","ST":"steals","STPG":"spg"}},
+        140: {"title": "Assists Per Game",        "map": {"G":"games","AST":"assists","APG":"apg"}},
+        141: {"title": "Field Goal Percentage",   "map": {"FG%":"fg_pct"}},
+        142: {"title": "Free Throw Percentage",   "map": {"FT%":"ft_pct"}},
+        143: {"title": "Three Point Percentage",  "map": {"3FG%":"three_pt_pct"}},
+        144: {"title": "Three Pointers Per Game", "map": {"3PG":"three_pt_pg"}},
     },
     "basketball-women": {
-        # IDs differ from basketball-men (102-110)
+        # same col names as basketball-men
         102: {"title": "Points Per Game",        "map": {"G":"games","PTS":"points","PPG":"ppg"}},
-        103: {"title": "Rebounds Per Game",       "map": {"REB":"rebounds","RPG":"rpg"}},
-        104: {"title": "Blocks Per Game",         "map": {"BLKS":"blocks","BKPG":"bpg"}},
-        105: {"title": "Steals Per Game",         "map": {"ST":"steals","STPG":"spg"}},
-        106: {"title": "Assists Per Game",        "map": {"AST":"assists","APG":"apg"}},
+        103: {"title": "Rebounds Per Game",       "map": {"G":"games","REB":"rebounds","RPG":"rpg"}},
+        104: {"title": "Blocks Per Game",         "map": {"G":"games","BLKS":"blocks","BKPG":"bpg"}},
+        105: {"title": "Steals Per Game",         "map": {"G":"games","ST":"steals","STPG":"spg"}},
+        106: {"title": "Assists Per Game",        "map": {"G":"games","AST":"assists","APG":"apg"}},
         107: {"title": "Field Goal Percentage",   "map": {"FG%":"fg_pct"}},
         108: {"title": "Free Throw Percentage",   "map": {"FT%":"ft_pct"}},
         109: {"title": "Three Point Percentage",  "map": {"3FG%":"three_pt_pct"}},
         110: {"title": "Three Pointers Per Game", "map": {"3PG":"three_pt_pg"}},
     },
     "football": {
-        # Divisions: fbs, fcs (d2/d3 may return 500 on public API)
-        7:  {"title": "Rushing Yards Per Game",   "map": {"Rush":"rush_att","Rush Yds":"rush_yards","Rush TD":"rush_td","YPG":"rush_ypg"}},
-        8:  {"title": "Passing Efficiency",       "map": {"Pass Att":"pass_att","Pass Com":"pass_comp","Pass Yds":"pass_yards","Pass TD":"pass_td","Int":"pass_int","Pass Eff":"pass_eff"}},
-        11: {"title": "Total Offense",            "map": {"Plays":"plays","YDS":"total_yards","YPG":"total_ypg"}},
-        12: {"title": "Receptions Per Game",      "map": {"Rec":"receptions","Rec Yds":"rec_yards","Rec TD":"rec_td","Rec PG":"rec_pg"}},
-        13: {"title": "Receiving Yards Per Game", "map": {"Rec":"receptions","Rec Yds":"rec_yards","YdsPg":"rec_ypg"}},
-        14: {"title": "Interceptions Per Game",   "map": {"Int":"int_count","Int Ret Yds":"int_yards","Int Ret TDs":"int_td"}},
-        15: {"title": "Punt Returns",             "map": {}},   # no mapped cols
-        16: {"title": "Kickoff Returns",          "map": {}},   # no mapped cols
-        17: {"title": "Punting",                  "map": {}},   # no mapped cols
-        18: {"title": "Field Goals Per Game",     "map": {"FG":"fg_made","FGA":"fg_att","Pct":"fg_pct"}},
-        19: {"title": "Scoring",                  "map": {"TDs":"tds","Pts":"points","PPG":"ppg"}},
-        20: {"title": "All Purpose",              "map": {}},   # no mapped cols
-        34: {"title": "Total Tackles",            "map": {"TOT":"tackles","SOLO":"solo_tackles","AST":"ast_tackles"}},
-        35: {"title": "Solo Tackles",             "map": {"SOLO":"solo_tackles"}},
-        36: {"title": "Sacks",                    "map": {"SACKS":"sacks","SACKYDS":"sack_yards"}},
-        37: {"title": "Forced Fumbles",           "map": {"FF":"forced_fumbles"}},
-        38: {"title": "Passes Defended",          "map": {"PD":"passes_defended"}},
-        39: {"title": "Tackles For Loss",         "map": {"TFL":"tfl","TFLYDS":"tfl_yards"}},
+        # actual cols (fbs confirmed):
+        # 7:  G, Rush, Rush Yds, Rush TD, YPG
+        # 8:  G, Pass Att, Pass Com, Int, Pass Yds, Pass TD, Pass Eff
+        # 12: G, Rec, Rec Yds, Rec TD, Rec PG
+        # 13: G, Rec, Rec Yds, Rec TD, YdsPg
+        # 14: G, Int, Int Ret Yds, Int Ret TDs, Int PG
+        # 18: G, FG, FGA, Pct, FG PG
+        # 19: G, TDs, PAT, PAT Att, 2PT, FG, FGA, Def Pts, Pts, PPG
+        # 34: G, Solo Tack, Asst Tack, TT, TPG
+        # 35: G, Solo Tack, STPG
+        # 36: G, Solo Sack, Asst Sack, Sack Yds, Tot Sack, Sacks PG
+        # 37: G, FF, FFPG
+        # 38: G, PBU, Int, TPD, PDPG
+        # 39: G, STFL, ATFL, Tackle Yds, TTFL, TFLPG
+        7:  {"title": "Rushing Yards Per Game",   "map": {"G":"games","Rush":"rush_att","Rush Yds":"rush_yards","Rush TD":"rush_td","YPG":"rush_ypg"}},
+        8:  {"title": "Passing Efficiency",       "map": {"G":"games","Pass Att":"pass_att","Pass Com":"pass_comp","Pass Yds":"pass_yards","Pass TD":"pass_td","Int":"pass_int","Pass Eff":"pass_eff"}},
+        11: {"title": "Total Offense",            "map": {}},
+        12: {"title": "Receptions Per Game",      "map": {"G":"games","Rec":"receptions","Rec Yds":"rec_yards","Rec TD":"rec_td","Rec PG":"rec_pg"}},
+        13: {"title": "Receiving Yards Per Game", "map": {"G":"games","Rec":"receptions","Rec Yds":"rec_yards","Rec TD":"rec_td","YdsPg":"rec_ypg"}},
+        14: {"title": "Interceptions Per Game",   "map": {"G":"games","Int":"int_count","Int Ret Yds":"int_yards","Int Ret TDs":"int_td"}},
+        15: {"title": "Punt Returns",             "map": {}},
+        16: {"title": "Kickoff Returns",          "map": {}},
+        17: {"title": "Punting",                  "map": {}},
+        18: {"title": "Field Goals Per Game",     "map": {"G":"games","FG":"fg_made","FGA":"fg_att","Pct":"fg_pct"}},
+        19: {"title": "Scoring",                  "map": {"G":"games","TDs":"tds","Pts":"points","PPG":"ppg"}},
+        20: {"title": "All Purpose",              "map": {}},
+        34: {"title": "Total Tackles",            "map": {"G":"games","TT":"tackles","Solo Tack":"solo_tackles","Asst Tack":"ast_tackles"}},
+        35: {"title": "Solo Tackles",             "map": {"G":"games","Solo Tack":"solo_tackles"}},
+        36: {"title": "Sacks",                    "map": {"G":"games","Tot Sack":"sacks","Sack Yds":"sack_yards"}},
+        37: {"title": "Forced Fumbles",           "map": {"G":"games","FF":"forced_fumbles"}},
+        38: {"title": "Passes Defended",          "map": {"G":"games","TPD":"passes_defended"}},
+        39: {"title": "Tackles For Loss",         "map": {"G":"games","TTFL":"tfl","Tackle Yds":"tfl_yards"}},
     },
     "baseball": {
-        200: {"title": "Batting Average",     "table": "bb_player_batting_stats",  "map": {"AB":"at_bats","H":"hits","BA":"batting_avg"}},
-        201: {"title": "HR Per Game",         "table": "bb_player_batting_stats",  "map": {"HR":"home_runs"}},
-        202: {"title": "RBI Per Game",        "table": "bb_player_batting_stats",  "map": {"RBI":"rbi"}},
-        203: {"title": "Doubles Per Game",    "table": "bb_player_batting_stats",  "map": {"2B":"doubles"}},
-        204: {"title": "Triples Per Game",    "table": "bb_player_batting_stats",  "map": {"3B":"triples"}},
-        205: {"title": "ERA",                 "table": "bb_player_pitching_stats", "map": {"ERA":"era","IP":"innings_pitched","W":"wins","L":"losses","H":"hits_allowed","BB":"walks","SO":"strikeouts"}},
-        206: {"title": "SB Per Game",         "table": "bb_player_batting_stats",  "map": {"SB":"stolen_bases"}},
-        207: {"title": "Strikeouts Per 9",    "table": "bb_player_pitching_stats", "map": {"SO":"strikeouts","K/9":"k_per_9"}},
-        208: {"title": "Victories",           "table": "bb_player_pitching_stats", "map": {"W":"wins"}},
-        209: {"title": "Saves",               "table": "bb_player_pitching_stats", "map": {"SV":"saves"}},
+        # actual cols:
+        # 200: G, AB, H, BA          (batting)
+        # 201: G, HR, PG             (batting — PG = per game rate)
+        # 202: G, RBI, PG            (batting)
+        # 203: G, 2B, PG             (batting)
+        # 204: G, 3B, PG             (batting)
+        # 205: App, IP, R, ER, ERA   (pitching — App not G)
+        # 206: G, SB, CS, PG        (batting)
+        # 207: App, IP, SO, K/9      (pitching)
+        # 208: App, IP, W, L, PCT    (pitching)
+        # 209: App, IP, SV           (pitching)
+        200: {"title": "Batting Average",         "table": "bb_player_batting_stats",  "map": {"G":"games","AB":"at_bats","H":"hits","BA":"batting_avg"}},
+        201: {"title": "Home Runs Per Game",      "table": "bb_player_batting_stats",  "map": {"G":"games","HR":"home_runs"}},
+        202: {"title": "RBI Per Game",            "table": "bb_player_batting_stats",  "map": {"G":"games","RBI":"rbi"}},
+        203: {"title": "Doubles Per Game",        "table": "bb_player_batting_stats",  "map": {"G":"games","2B":"doubles"}},
+        204: {"title": "Triples Per Game",        "table": "bb_player_batting_stats",  "map": {"G":"games","3B":"triples"}},
+        205: {"title": "ERA",                     "table": "bb_player_pitching_stats", "map": {"App":"games","IP":"innings_pitched","ERA":"era"}},
+        206: {"title": "Stolen Bases Per Game",   "table": "bb_player_batting_stats",  "map": {"G":"games","SB":"stolen_bases"}},
+        207: {"title": "Strikeouts Per Nine",     "table": "bb_player_pitching_stats", "map": {"App":"games","IP":"innings_pitched","SO":"strikeouts","K/9":"k_per_9"}},
+        208: {"title": "Victories",               "table": "bb_player_pitching_stats", "map": {"App":"games","IP":"innings_pitched","W":"wins","L":"losses"}},
+        209: {"title": "Saves",                   "table": "bb_player_pitching_stats", "map": {"App":"games","IP":"innings_pitched","SV":"saves"}},
     },
     "softball": {
-        271: {"title": "Batting Average",     "table": "sb_player_batting_stats",  "map": {"AB":"at_bats","H":"hits","BA":"batting_avg"}},
-        272: {"title": "HR Per Game",         "table": "sb_player_batting_stats",  "map": {"HR":"home_runs"}},
-        273: {"title": "RBI Per Game",        "table": "sb_player_batting_stats",  "map": {"RBI":"rbi"}},
-        274: {"title": "Doubles Per Game",    "table": "sb_player_batting_stats",  "map": {"2B":"doubles"}},
-        275: {"title": "Triples Per Game",    "table": "sb_player_batting_stats",  "map": {"3B":"triples"}},
-        276: {"title": "ERA",                 "table": "sb_player_pitching_stats", "map": {"ERA":"era","IP":"innings_pitched","W":"wins","L":"losses","BB":"walks","SO":"strikeouts"}},
-        277: {"title": "SB Per Game",         "table": "sb_player_batting_stats",  "map": {"SB":"stolen_bases"}},
-        278: {"title": "Strikeouts Per 7",    "table": "sb_player_pitching_stats", "map": {"SO":"strikeouts","K/7":"k_per_7"}},
-        279: {"title": "Victories",           "table": "sb_player_pitching_stats", "map": {"W":"wins"}},
-        280: {"title": "Saves",               "table": "sb_player_pitching_stats", "map": {"SV":"saves"}},
+        # same structure as baseball (App for pitching, G for batting)
+        271: {"title": "Batting Average",         "table": "sb_player_batting_stats",  "map": {"G":"games","AB":"at_bats","H":"hits","BA":"batting_avg"}},
+        272: {"title": "Home Runs Per Game",      "table": "sb_player_batting_stats",  "map": {"G":"games","HR":"home_runs"}},
+        273: {"title": "RBI Per Game",            "table": "sb_player_batting_stats",  "map": {"G":"games","RBI":"rbi"}},
+        274: {"title": "Doubles Per Game",        "table": "sb_player_batting_stats",  "map": {"G":"games","2B":"doubles"}},
+        275: {"title": "Triples Per Game",        "table": "sb_player_batting_stats",  "map": {"G":"games","3B":"triples"}},
+        276: {"title": "ERA",                     "table": "sb_player_pitching_stats", "map": {"App":"games","IP":"innings_pitched","ERA":"era"}},
+        277: {"title": "Stolen Bases Per Game",   "table": "sb_player_batting_stats",  "map": {"G":"games","SB":"stolen_bases"}},
+        278: {"title": "Strikeouts Per Seven",    "table": "sb_player_pitching_stats", "map": {"App":"games","IP":"innings_pitched","SO":"strikeouts","K/7":"k_per_7"}},
+        279: {"title": "Victories",               "table": "sb_player_pitching_stats", "map": {"App":"games","IP":"innings_pitched","W":"wins","L":"losses"}},
+        280: {"title": "Saves",                   "table": "sb_player_pitching_stats", "map": {"App":"games","IP":"innings_pitched","SV":"saves"}},
     },
     "soccer-men": {
-        4:  {"title": "Points Per Game",      "map": {"G":"goals","A":"assists","Pts":"points","Pts/G":"goals_per_game"}},
-        5:  {"title": "Goals Per Game",       "map": {"G":"goals","G/Gm":"goals_per_game","SOG":"shots_on_goal"}},
-        6:  {"title": "Assists Per Game",     "map": {"A":"assists"}},
-        9:  {"title": "Goals Against Avg",    "map": {"GA":"goals_allowed","GAA":"gaa","SV%":"save_pct","Shutouts":"shutouts"}},
-        10: {"title": "Saves Per Game",       "map": {"SV":"saves","SV/Gm":"saves_pg"}},
+        # actual cols use FULL ENGLISH names (NOT abbreviations):
+        # 4:  Games, Goals, Assists, Points, Per Game
+        # 5:  Games, Goals, Per Game
+        # 6:  Games, Assists, Per Game
+        # 9:  Games, Goalie Min. Plyd, GA, GAA
+        # 10: Games, Goalie Min. Plyd, Saves, Per Game
+        4:  {"title": "Points Per Game",      "map": {"Games":"games","Goals":"goals","Assists":"assists","Points":"points"}},
+        5:  {"title": "Goals Per Game",       "map": {"Games":"games","Goals":"goals","Per Game":"goals_per_game"}},
+        6:  {"title": "Assists Per Game",     "map": {"Games":"games","Assists":"assists"}},
+        9:  {"title": "Goals Against Avg",    "map": {"Games":"games","GA":"goals_allowed","GAA":"gaa"}},
+        10: {"title": "Saves Per Game",       "map": {"Games":"games","Saves":"saves"}},
     },
     "soccer-women": {
-        52: {"title": "Points Per Game",      "map": {"G":"goals","A":"assists","Pts":"points"}},
-        53: {"title": "Goals Per Game",       "map": {"G":"goals","G/Gm":"goals_per_game"}},
-        54: {"title": "Saves Per Game",       "map": {"SV":"saves","SV%":"save_pct"}},
-        55: {"title": "Goals Against Avg",    "map": {"GA":"goals_allowed","GAA":"gaa","Shutouts":"shutouts"}},
-        57: {"title": "Assists Per Game",     "map": {"A":"assists"}},
+        # same full-English col names as soccer-men
+        # 52: Games, Goals, Assists, Points, Per Game
+        # 53: Games, Goals, Per Game
+        # 54: Games, Goalie Min. Plyd, Team Min, Saves, Per Game
+        # 55: Games, Goalie Min. Plyd, Team Min, GA, GAA
+        # 57: Games, Assists, Per Game
+        52: {"title": "Points Per Game",      "map": {"Games":"games","Goals":"goals","Assists":"assists","Points":"points"}},
+        53: {"title": "Goals Per Game",       "map": {"Games":"games","Goals":"goals","Per Game":"goals_per_game"}},
+        54: {"title": "Saves Per Game",       "map": {"Games":"games","Saves":"saves"}},
+        55: {"title": "Goals Against Avg",    "map": {"Games":"games","GA":"goals_allowed","GAA":"gaa"}},
+        57: {"title": "Assists Per Game",     "map": {"Games":"games","Assists":"assists"}},
     },
     "volleyball-women": {
-        1:  {"title": "Hitting Percentage",   "map": {"K":"kills","E":"errors","TA":"attacks","Pct":"attack_pct"}},
-        2:  {"title": "Kills Per Set",        "map": {"K":"kills","S":"sets_played","K/S":"kills_per_set"}},
-        3:  {"title": "Assists Per Set",      "map": {"A":"assists","A/S":"assists_per_set"}},
-        42: {"title": "Aces Per Set",         "map": {"SA":"service_aces","SE":"service_errors","SA/S":"aces_per_set"}},
-        43: {"title": "Blocks Per Set",       "map": {"BS":"solo_blocks","BA":"block_assists","TB":"total_blocks","B/S":"blocks_per_set"}},
-        44: {"title": "Digs Per Set",         "map": {"D":"digs","D/S":"digs_per_set"}},
+        # actual cols use FULL ENGLISH names (NOT abbreviations):
+        # 1:  S, Kills, Errors, Total Attacks, Pct.
+        # 2:  S, Kills, Per Set
+        # 3:  S, Assists, Per Set
+        # 42: S, Aces, Per Set
+        # 43: S, Block Solos, Block Assists, Total, Per Set
+        # 44: S, Digs, Per Set
+        1:  {"title": "Hitting Percentage",   "map": {"S":"sets_played","Kills":"kills","Total Attacks":"attacks","Pct.":"attack_pct"}},
+        2:  {"title": "Kills Per Set",        "map": {"S":"sets_played","Kills":"kills","Per Set":"kills_per_set"}},
+        3:  {"title": "Assists Per Set",      "map": {"S":"sets_played","Assists":"assists","Per Set":"assists_per_set"}},
+        42: {"title": "Aces Per Set",         "map": {"S":"sets_played","Aces":"service_aces","Per Set":"aces_per_set"}},
+        43: {"title": "Blocks Per Set",       "map": {"S":"sets_played","Block Solos":"solo_blocks","Block Assists":"block_assists","Total":"total_blocks","Per Set":"blocks_per_set"}},
+        44: {"title": "Digs Per Set",         "map": {"S":"sets_played","Digs":"digs","Per Set":"digs_per_set"}},
     },
 }
 
