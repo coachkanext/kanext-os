@@ -293,4 +293,52 @@ CREATE TABLE IF NOT EXISTS wvb_player_stats (
     service_errors  INTEGER
 );
 
+-- ── Football (NCAA API — all divisions) ───────────────────────────────────
+-- Broad table that merges rushing/passing/receiving/defense/kicking per player.
+-- Columns are NULLable; upserted incrementally across multiple stat categories.
+
+CREATE TABLE IF NOT EXISTS football_player_stats (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    player_id       UUID NOT NULL UNIQUE REFERENCES ncaa_players(id) ON DELETE CASCADE,
+    -- Rushing
+    rush_att        INTEGER,
+    rush_yards      INTEGER,
+    rush_td         INTEGER,
+    rush_ypg        DECIMAL(6,2),
+    -- Passing
+    pass_att        INTEGER,
+    pass_comp       INTEGER,
+    pass_yards      INTEGER,
+    pass_td         INTEGER,
+    pass_int        INTEGER,
+    pass_eff        DECIMAL(6,2),
+    -- Receiving
+    receptions      INTEGER,
+    rec_yards       INTEGER,
+    rec_td          INTEGER,
+    rec_pg          DECIMAL(5,2),
+    rec_ypg         DECIMAL(6,2),
+    -- Defense
+    tackles         INTEGER,
+    solo_tackles    INTEGER,
+    ast_tackles     INTEGER,
+    sacks           DECIMAL(5,1),
+    sack_yards      DECIMAL(6,1),
+    forced_fumbles  INTEGER,
+    passes_defended INTEGER,
+    tfl             DECIMAL(5,1),
+    tfl_yards       DECIMAL(6,1),
+    int_count       INTEGER,
+    int_yards       INTEGER,
+    int_td          INTEGER,
+    -- Kicking
+    fg_made         INTEGER,
+    fg_att          INTEGER,
+    fg_pct          DECIMAL(5,3),
+    -- Scoring
+    tds             INTEGER,
+    points          INTEGER,
+    ppg             DECIMAL(5,2)
+);
+
 COMMIT;

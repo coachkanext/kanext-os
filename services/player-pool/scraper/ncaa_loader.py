@@ -123,12 +123,12 @@ STATS = {
         12: {"title": "Receptions Per Game",      "map": {"Rec":"receptions","Rec Yds":"rec_yards","Rec TD":"rec_td","Rec PG":"rec_pg"}},
         13: {"title": "Receiving Yards Per Game", "map": {"Rec":"receptions","Rec Yds":"rec_yards","YdsPg":"rec_ypg"}},
         14: {"title": "Interceptions Per Game",   "map": {"Int":"int_count","Int Ret Yds":"int_yards","Int Ret TDs":"int_td"}},
-        15: {"title": "Punt Returns",             "map": {}},
-        16: {"title": "Kickoff Returns",          "map": {}},
-        17: {"title": "Punting",                  "map": {}},
+        15: {"title": "Punt Returns",             "map": {}},   # no mapped cols
+        16: {"title": "Kickoff Returns",          "map": {}},   # no mapped cols
+        17: {"title": "Punting",                  "map": {}},   # no mapped cols
         18: {"title": "Field Goals Per Game",     "map": {"FG":"fg_made","FGA":"fg_att","Pct":"fg_pct"}},
         19: {"title": "Scoring",                  "map": {"TDs":"tds","Pts":"points","PPG":"ppg"}},
-        20: {"title": "All Purpose",              "map": {}},
+        20: {"title": "All Purpose",              "map": {}},   # no mapped cols
         34: {"title": "Total Tackles",            "map": {"TOT":"tackles","SOLO":"solo_tackles","AST":"ast_tackles"}},
         35: {"title": "Solo Tackles",             "map": {"SOLO":"solo_tackles"}},
         36: {"title": "Sacks",                    "map": {"SACKS":"sacks","SACKYDS":"sack_yards"}},
@@ -188,7 +188,7 @@ STATS = {
 SPORT_DIVISIONS = {
     "basketball-men":    ["d1", "d2", "d3"],
     "basketball-women":  ["d1", "d2", "d3"],
-    "football":          ["fbs", "fcs"],
+    "football":          ["fbs", "fcs", "d2", "d3"],
     "baseball":          ["d1", "d2", "d3"],
     "softball":          ["d1", "d2", "d3"],
     "soccer-men":        ["d1", "d2", "d3"],
@@ -212,9 +212,9 @@ SPORT_CODE_MAP = {
 STAT_TABLE_MAP = {
     "mbb":          "mbb_player_stats",
     "wbb":          "wbb_player_stats",
-    "football":     None,   # multiple tables (fb_ schema) — handled separately
-    "baseball":     None,   # bb_player_batting_stats / bb_player_pitching_stats
-    "softball":     None,   # sb_player_batting_stats / sb_player_pitching_stats
+    "football":     "football_player_stats",  # ncaa_ football (all divs; fb_ has FBS/FCS from ESPN)
+    "baseball":     None,   # per-stat: bb_player_batting_stats / bb_player_pitching_stats
+    "softball":     None,   # per-stat: sb_player_batting_stats / sb_player_pitching_stats
     "soccer_m":     "sc_player_stats",
     "soccer_w":     "wsc_player_stats",
     "volleyball_w": "wvb_player_stats",
@@ -224,7 +224,7 @@ STAT_TABLE_MAP = {
 LAMBDA_MAP = {
     "mbb_d1": 1.6, "mbb_d2": 1.0, "mbb_d3": 0.7,
     "wbb_d1": 1.6, "wbb_d2": 1.0, "wbb_d3": 0.7,
-    "football_fbs": 1.65, "football_fcs": 1.1,
+    "football_fbs": 1.65, "football_fcs": 1.1, "football_d2": 0.85, "football_d3": 0.65,
     "baseball_d1": 1.5, "baseball_d2": 1.0, "baseball_d3": 0.7,
     "softball_d1": 1.5, "softball_d2": 1.0, "softball_d3": 0.7,
     "soccer_m_d1": 1.5, "soccer_m_d2": 1.0, "soccer_m_d3": 0.7,
@@ -485,8 +485,9 @@ def _upsert_stat_row(conn, table: str, player_id: str, col_vals: dict):
 
 def load_stats(conn, sport_key: str):
     """
-    Fetch all stat categories for the sport and upsert ncaa_players + stat tables.
-    Returns (players_inserted, stat_rows_inserted).
+    Fetch ALL pages of every stat category for the sport.
+    Paginates through all pages (response includes 'page' and 'pages' fields).
+    Returns (players_upserted, stat_rows_upserted).
     """
     sport_code = SPORT_CODE_MAP[sport_key]
     stat_defs = STATS.get(sport_key, {})
@@ -500,74 +501,118 @@ def load_stats(conn, sport_key: str):
     total_players = 0
     total_stats = 0
 
-    # Aggregate stats per (name, team, div, table) so two-way players get both rows
+    # Aggregate stats per (name, team, div, table) — two-way players get both tables
     player_stats: dict[tuple, dict] = defaultdict(dict)
     player_meta: dict[tuple, dict] = {}  # keyed by (name, team, div)
 
     for div in divs:
+        div_api_rows = 0
         for stat_id, stat_def in stat_defs.items():
-            data = api_get(f"stats/{sport_key}/{div}/current/individual/{stat_id}")
-            if not data:
-                continue
-            rows = data.get("data", [])
-            col_map = stat_def.get("map", {})
-            # Per-stat-id table override (used for baseball/softball batting vs pitching)
+            col_map     = stat_def.get("map", {})
             entry_table = stat_def.get("table") or default_stat_table
-            title = data.get("title", str(stat_id))
-            print(f"    {sport_key}/{div}/{stat_id} ({title}): {len(rows)} rows")
+            page        = 1
+            total_pages = 1  # updated after first response
 
-            for row in rows:
-                name  = row.get("Name", "").strip()
-                team  = row.get("Team", "").strip()
-                pos   = row.get("Position", "")
-                cl    = row.get("Cl", "")
-                ht    = row.get("Height", "")
-                if not name:
-                    continue
+            while page <= total_pages:
+                path = f"stats/{sport_key}/{div}/current/individual/{stat_id}?page={page}"
+                data = api_get(path)
+                if not data or not data.get("data"):
+                    break
 
-                meta_key = (name, team, div)
-                player_meta[meta_key] = {"position": pos, "class_year": cl, "height": ht}
+                rows        = data["data"]
+                total_pages = data.get("pages", 1)
+                title       = data.get("title", str(stat_id))
 
-                if not entry_table:
-                    continue
+                if page == 1:
+                    print(f"    {sport_key}/{div}/{stat_id} ({title}): {total_pages} pages", flush=True)
 
-                stat_key = (name, team, div, entry_table)
-                for api_col, db_col in col_map.items():
-                    if db_col is None:
+                div_api_rows += len(rows)
+
+                for row in rows:
+                    name = row.get("Name", "").strip()
+                    team = row.get("Team", "").strip()
+                    pos  = row.get("Position", "")
+                    cl   = row.get("Cl", "")
+                    ht   = row.get("Height", "")
+                    if not name:
                         continue
-                    val = row.get(api_col)
-                    if val is not None and val not in ("", "–", "-"):
-                        if "pct" in db_col or "pg" in db_col or "avg" in db_col or "era" in db_col:
-                            player_stats[stat_key][db_col] = safe_float(val)
-                        else:
-                            player_stats[stat_key][db_col] = safe_int(val) or safe_float(val)
 
-    # Write to DB — group by player first to avoid multiple upsert_player calls
-    # Build player_id cache: meta_key → pid
-    pid_cache: dict[tuple, str] = {}
-    for key, stat_vals in player_stats.items():
-        name, team, div, tbl = key
-        meta_key = (name, team, div)
-        try:
-            if meta_key not in pid_cache:
-                meta = player_meta.get(meta_key, {})
-                pid = _upsert_player(conn, name, sport_code, team, div,
+                    meta_key = (name, team, div)
+                    player_meta[meta_key] = {"position": pos, "class_year": cl, "height": ht}
+
+                    if not entry_table:
+                        continue
+
+                    stat_key = (name, team, div, entry_table)
+                    for api_col, db_col in col_map.items():
+                        if db_col is None:
+                            continue
+                        val = row.get(api_col)
+                        if val is not None and val not in ("", "–", "-"):
+                            if "pct" in db_col or "pg" in db_col or "avg" in db_col or "era" in db_col:
+                                player_stats[stat_key][db_col] = safe_float(val)
+                            else:
+                                player_stats[stat_key][db_col] = safe_int(val) or safe_float(val)
+
+                page += 1
+
+        print(f"  {sport_key}/{div}: {div_api_rows} API rows fetched, writing to DB...", flush=True)
+
+        # Write this division's data to DB immediately to cap memory usage
+        div_players = 0
+        div_stat_rows = 0
+        pid_cache: dict[tuple, str] = {}
+
+        # 1. Write players that have stat data
+        div_keys = [k for k in player_stats if k[2] == div]
+        for key in div_keys:
+            stat_vals = player_stats.pop(key)
+            name, team, div_, tbl = key
+            meta_key = (name, team, div_)
+            try:
+                if meta_key not in pid_cache:
+                    meta = player_meta.get(meta_key, {})
+                    pid = _upsert_player(conn, name, sport_code, team, div_,
+                                         meta.get("position"), meta.get("class_year"),
+                                         meta.get("height"))
+                    pid_cache[meta_key] = pid
+                    div_players += 1
+                else:
+                    pid = pid_cache[meta_key]
+
+                if tbl and stat_vals:
+                    _upsert_stat_row(conn, tbl, pid, stat_vals)
+                    div_stat_rows += 1
+            except Exception as e:
+                print(f"    Error inserting {name}: {e}")
+                conn.rollback()
+                continue
+
+        # 2. Upsert any remaining players from meta (stat_defs with empty map like returns/punting)
+        for meta_key, meta in list(player_meta.items()):
+            if meta_key[2] != div or meta_key in pid_cache:
+                continue
+            name, team, div_ = meta_key
+            try:
+                pid = _upsert_player(conn, name, sport_code, team, div_,
                                      meta.get("position"), meta.get("class_year"),
                                      meta.get("height"))
                 pid_cache[meta_key] = pid
-                total_players += 1
-            else:
-                pid = pid_cache[meta_key]
+                div_players += 1
+            except Exception as e:
+                print(f"    Error inserting {name}: {e}")
+                conn.rollback()
 
-            if tbl and stat_vals:
-                _upsert_stat_row(conn, tbl, pid, stat_vals)
-                total_stats += 1
-        except Exception as e:
-            print(f"    Error inserting {name}: {e}")
-            conn.rollback()
-            continue
+        # Clear processed meta entries
+        for mk in list(player_meta.keys()):
+            if mk[2] == div:
+                del player_meta[mk]
 
-    conn.commit()
+        conn.commit()
+        total_players += div_players
+        total_stats   += div_stat_rows
+        print(f"  ✓ {sport_key}/{div}: {div_players} players, {div_stat_rows} stat rows", flush=True)
+
     return total_players, total_stats
 
 
