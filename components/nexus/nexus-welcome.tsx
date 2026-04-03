@@ -72,7 +72,7 @@ export function NexusWelcome({ onSend, userName, mode = 'sports' }: NexusWelcome
       <View style={[S.iconWrap, { backgroundColor: C.surface, borderWidth: 0.75, borderColor: C.cardBorder }]}>
         <Image
           source={require('@/assets/nexus-icon.png')}
-          style={{ width: 200, height: 200, tintColor: C.label }}
+          style={{ width: 56, height: 56, tintColor: C.label }}
           resizeMode="contain"
         />
       </View>
@@ -124,9 +124,9 @@ const makeStyles = (C: ComponentColors) =>
       gap: 10,
     },
     iconWrap: {
-      width: 220,
-      height: 220,
-      borderRadius: 40,
+      width: 88,
+      height: 88,
+      borderRadius: 22,
       alignItems: 'center',
       justifyContent: 'center',
       marginBottom: 8,
