@@ -1,0 +1,107 @@
+[
+  {
+    "name": "Hutchinson Community College",
+    "url": "https://bluedragonsports.com",
+    "conference": "KJCCC",
+    "platform": "prestosports",
+    "season_path": "fball/2025-26"
+  },
+  {
+    "name": "Garden City Community College",
+    "url": "https://gobroncbusters.com",
+    "conference": "KJCCC",
+    "platform": "prestosports",
+    "season_path": "fball/2025-26"
+  },
+  {
+    "name": "Butler Community College",
+    "url": "https://butlergrizzlies.com",
+    "conference": "KJCCC",
+    "platform": "prestosports",
+    "season_path": "fball/2025-26"
+  },
+  {
+    "name": "Coffeyville Community College",
+    "url": "https://redravenathletics.com",
+    "conference": "KJCCC",
+    "platform": "prestosports",
+    "season_path": "fball/2025-26"
+  },
+  {
+    "name": "Iowa Western Community College",
+    "url": "https://goreivers.com",
+    "conference": "ICCAC",
+    "platform": "prestosports",
+    "season_path": "fball/2025-26"
+  },
+  {
+    "name": "East Mississippi Community College",
+    "url": "https://emccathletics.com",
+    "conference": "MACJC",
+    "platform": "prestosports",
+    "season_path": "fball/2025-26"
+  },
+  {
+    "name": "Mississippi Gulf Coast Community College",
+    "url": "https://mgcccbulldogs.com",
+    "conference": "MACJC",
+    "platform": "prestosports",
+    "season_path": "fball/2025-26"
+  },
+  {
+    "name": "Itawamba Community College",
+    "url": "https://letsgoicc.com",
+    "conference": "MACJC",
+    "platform": "prestosports",
+    "season_path": "fball/2025-26"
+  },
+  {
+    "name": "Copiah-Lincoln Community College",
+    "url": "https://colinathletics.com",
+    "conference": "MACJC",
+    "platform": "prestosports",
+    "season_path": "fball/2025-26"
+  },
+  {
+    "name": "Kilgore College",
+    "url": "https://kcrangernation.com",
+    "conference": "TXCCC",
+    "platform": "prestosports",
+    "season_path": "fball/2025-26"
+  },
+  {
+    "name": "Trinity Valley Community College",
+    "url": "https://tvccsports.com",
+    "conference": "TXCCC",
+    "platform": "prestosports",
+    "season_path": "fball/2025-26"
+  },
+  {
+    "name": "Jones College",
+    "url": "https://jcbobcats.com",
+    "conference": "MACJC",
+    "platform": "sidearm",
+    "season_path": null
+  },
+  {
+    "name": "Northwest Mississippi Community College",
+    "url": "https://nwccrangers.com",
+    "conference": "MACJC",
+    "platform": "sidearm",
+    "season_path": null
+  },
+  {
+    "name": "Blinn College",
+    "url": "https://buccaneersports.com",
+    "conference": "TXCCC",
+    "platform": "sidearm",
+    "season_path": null
+  },
+  {
+    "name": "Snow College",
+    "url": "https://snowbadgers.com",
+    "conference": "Scenic West",
+    "platform": "sidearm",
+    "season_path": null
+  }
+]

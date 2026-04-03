@@ -1,0 +1,59 @@
+
+=== CCCAA Football Scraper (season=2024-25) ===
+  Source : cccaasports.org/sports/fball
+  Pages  : state leaders + 13 conference leaders
+
+  Fetching state leaders...
+    → 99 players from state page
+    [warn] 404 len=225238 https://cccaasports.org/sports/fball/2024-25/Conference/Bay_Valley/leaders
+    Bay Valley                SKIPPED
+    [warn] 404 len=225209 https://cccaasports.org/sports/fball/2024-25/Conference/Big_8/leaders
+    Big 8                     SKIPPED
+    [warn] 404 len=225315 https://cccaasports.org/sports/fball/2024-25/Conference/Central_Valley/leaders
+    Central Valley            SKIPPED
+    [warn] 404 len=225267 https://cccaasports.org/sports/fball/2024-25/Conference/Coast-North/leaders
+    Coast-North               SKIPPED
+    [warn] 404 len=225275 https://cccaasports.org/sports/fball/2024-25/Conference/Coast-South/leaders
+    Coast-South               SKIPPED
+    [warn] 404 len=225302 https://cccaasports.org/sports/fball/2024-25/Conference/Golden_Valley/leaders
+    Golden Valley             SKIPPED
+    [warn] 404 len=225416 https://cccaasports.org/sports/fball/2024-25/Conference/Inland_Empire_Athletic/leaders
+    Inland Empire             SKIPPED
+    [warn] 404 len=225290 https://cccaasports.org/sports/fball/2024-25/Conference/Orange_Empire/leaders
+    Orange Empire             SKIPPED
+    [warn] 404 len=225412 https://cccaasports.org/sports/fball/2024-25/Conference/Pacific_Coast_Athletic/leaders
+    Pacific Coast             SKIPPED
+    [warn] 404 len=225348 https://cccaasports.org/sports/fball/2024-25/Conference/South_Coast-North/leaders
+    South Coast-North         SKIPPED
+    [warn] 404 len=225349 https://cccaasports.org/sports/fball/2024-25/Conference/South_Coast-South/leaders
+    South Coast-South         SKIPPED
+    [warn] 404 len=225356 https://cccaasports.org/sports/fball/2024-25/Conference/Western_State-North/leaders
+    Western State-North       SKIPPED
+    [warn] 404 len=225352 https://cccaasports.org/sports/fball/2024-25/Conference/Western_State-South/leaders
+    Western State-South       SKIPPED
+
+  Total unique players collected: 99
+
+  Upserted 99 player stat rows
+
+============================================================
+CCCAA FOOTBALL DONE
+  Season    : 2024-25
+  Teams     : 50
+  Players   : 99
+  Stat rows : 99
+
+  Top passers (by total yards):
+    B Jones                Riverside            4456 yds  44 TD  —
+    A Jackson              De Anza              3164 yds  36 TD  73.6%
+    L Gonzalez             Mt. San Jacinto      3157 yds  None TD  —
+    L Weaver               Modesto              2966 yds  None TD  —
+    L Johnson              Coalinga             2829 yds  33 TD  —
+
+  Top rushers (by total yards):
+    J Lajes                San Jose             1544 yds  15 TD
+    K Boone                Monterey Peninsula   1475 yds  None TD
+    L Mataele              San Mateo            1351 yds  22 TD
+    D Miles                Mt. San Antonio      1280 yds  15 TD
+    E Brown                American River       1148 yds  16 TD
+============================================================
