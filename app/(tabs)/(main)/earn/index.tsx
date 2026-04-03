@@ -17,6 +17,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { RolePill } from '@/components/ui/role-pill';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useDataMode } from '@/utils/global-demo-mode';
 import { useColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
@@ -1139,12 +1140,57 @@ function StoreView({ C, topBarH }: { C: ReturnType<typeof useColors>; topBarH: n
   );
 }
 
+// ── Live Mode Public View ──────────────────────────────────────────────────────
+
+const LIVE_STORE_PRODUCTS = [
+  { id: '1', emoji: '📘', name: 'KaNeXT OS Playbook', price: '$47', desc: 'The complete guide to institutional intelligence. 80 pages.' },
+  { id: '2', emoji: '🎓', name: 'Athletic Intelligence Crash Course', price: '$97', desc: '6-hour course on how KR works and how to use it.' },
+  { id: '3', emoji: '🏀', name: 'Basketball Scouting Template Pack', price: '$29', desc: '12 ready-to-use scouting report templates.' },
+  { id: '4', emoji: '🔐', name: 'Data Room Access', price: 'Invite Only', desc: 'For accredited investors. Request access to the full KaNeXT data room.' },
+  { id: '5', emoji: '📊', name: 'Monthly Intelligence Brief', price: '$19/mo', desc: 'Monthly deep-dives on sports tech, AI, and institutional trends.' },
+];
+
+function LiveEarnView({ C, insets }: { C: any; insets: any }) {
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 12 }}>
+        <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, paddingTop: 8 }}>Store</Text>
+        <Text style={{ fontSize: 14, color: C.secondary, paddingBottom: 4 }}>Products and resources from Sammy Kalejaiye.</Text>
+        {LIVE_STORE_PRODUCTS.map(item => (
+          <View key={item.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 10 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+              <View style={{ width: 52, height: 52, backgroundColor: C.separator, borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 24 }}>{item.emoji}</Text>
+              </View>
+              <View style={{ flex: 1, gap: 3 }}>
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{item.name}</Text>
+                <Text style={{ fontSize: 13, color: C.secondary, lineHeight: 17 }}>{item.desc}</Text>
+              </View>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{item.price}</Text>
+              <Pressable style={{ backgroundColor: C.label, borderRadius: 10, paddingVertical: 8, paddingHorizontal: 18 }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: C.bg }}>
+                  {item.price === 'Invite Only' ? 'Request Access' : 'Buy'}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Main Screen ────────────────────────────────────────────────────────────────
 
 export default function EarnScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const topBarH = insets.top + TOP_BAR_H;
+
+  const dataMode = useDataMode();
 
   const [role, cycleRole, roleCycles] = useDemoRole('personal:earn');
   const isOwner = role === roleCycles[0];
@@ -1185,6 +1231,9 @@ export default function EarnScreen() {
 
   const scrollPadTop = topBarH + (showPills ? PILL_ROW_H : 0) + 8;
   const pills = TAB_PILLS[tab];
+
+  // ── Live mode public view ──────────────────────────────────────────────────
+  if (dataMode === 'live') return <LiveEarnView C={C} insets={insets} />;
 
   // ── Subscriber (Store) view ────────────────────────────────────────────────
   if (!isOwner) {

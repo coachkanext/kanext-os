@@ -21,6 +21,7 @@ import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useAppContext } from '@/context/app-context';
 import { useDemoRole, MODE_ACCENTS } from '@/utils/demo-role-store';
+import { useDataMode } from '@/utils/global-demo-mode';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -1554,6 +1555,79 @@ function SportsPlayerAgendaView({ C, insets, cycleRole, role }: {
   );
 }
 
+// ── Live mode public data ─────────────────────────────────────────────────────
+
+const LIVE_AGENDA_DATA: Record<string, Array<{ id: string; title: string; date: string; time: string; location: string; type: string; hasRsvp?: boolean }>> = {
+  personal: [
+    { id: '1', title: 'Creator Masterclass — AI for Creators', date: 'Apr 8, 2026', time: '7:00 PM ET', location: 'Zoom (Link sent on RSVP)', type: 'Webinar', hasRsvp: true },
+    { id: '2', title: 'Live Q&A: KaNeXT OS Overview', date: 'Apr 15, 2026', time: '6:00 PM PT', location: 'YouTube Live', type: 'Live Stream', hasRsvp: true },
+    { id: '3', title: 'Podcast Appearance — Sports Tech Today', date: 'Apr 22, 2026', time: 'TBD', location: 'Online', type: 'Appearance' },
+  ],
+  business: [
+    { id: '1', title: 'KaNeXT Product Demo — Open Registration', date: 'Apr 10, 2026', time: '2:00 PM ET', location: 'Zoom', type: 'Webinar', hasRsvp: true },
+    { id: '2', title: 'Investor Office Hours', date: 'Apr 17, 2026', time: '11:00 AM ET', location: 'Virtual', type: 'Meeting', hasRsvp: true },
+    { id: '3', title: 'KaNeXT Partner Summit 2026', date: 'May 1, 2026', time: '9:00 AM PT', location: 'Miami, FL', type: 'Conference', hasRsvp: true },
+  ],
+  education: [
+    { id: '1', title: 'Open House', date: 'Apr 15, 2026', time: '10:00 AM PT', location: 'Lincoln University Campus', type: 'Open House', hasRsvp: true },
+    { id: '2', title: 'Info Session — Graduate Programs', date: 'Apr 22, 2026', time: '5:00 PM PT', location: 'Zoom', type: 'Info Session', hasRsvp: true },
+    { id: '3', title: 'Summer Registration Opens', date: 'May 1, 2026', time: 'All Day', location: 'Online', type: 'Academic Calendar' },
+    { id: '4', title: 'Commencement 2026', date: 'May 10, 2026', time: '2:00 PM PT', location: 'Oakland, CA', type: 'Ceremony' },
+    { id: '5', title: 'Fall 2026 Classes Begin', date: 'Aug 24, 2026', time: 'All Day', location: 'On Campus', type: 'Academic Calendar' },
+  ],
+  community: [
+    { id: '1', title: 'Sunday Service (AM)', date: 'Every Sunday', time: '9:00 AM', location: 'ICCLA Main Sanctuary', type: 'Service' },
+    { id: '2', title: 'Sunday Service (PM)', date: 'Every Sunday', time: '6:00 PM', location: 'ICCLA Main Sanctuary', type: 'Service' },
+    { id: '3', title: 'Wednesday Bible Study', date: 'Every Wednesday', time: '7:00 PM', location: 'ICCLA Fellowship Hall', type: 'Bible Study' },
+    { id: '4', title: 'Easter Sunday Celebration', date: 'Apr 5, 2026', time: '9:00 AM & 6:00 PM', location: 'ICCLA Main Sanctuary', type: 'Special Service', hasRsvp: true },
+    { id: '5', title: 'Community Outreach Day', date: 'Apr 19, 2026', time: '10:00 AM', location: 'Los Angeles, CA', type: 'Outreach', hasRsvp: true },
+    { id: '6', title: 'Youth Conference 2026', date: 'May 23-25, 2026', time: 'All Day', location: 'ICCLA Campus', type: 'Conference', hasRsvp: true },
+  ],
+  sports: [
+    { id: '1', title: 'vs. Holy Names University', date: 'Apr 5, 2026', time: '3:00 PM PT', location: 'Lincoln University Gym', type: 'Home Game' },
+    { id: '2', title: '@ Dominican University', date: 'Apr 8, 2026', time: '7:00 PM PT', location: 'San Rafael, CA', type: 'Away Game' },
+    { id: '3', title: 'vs. Notre Dame de Namur', date: 'Apr 12, 2026', time: '2:00 PM PT', location: 'Lincoln University Gym', type: 'Home Game' },
+    { id: '4', title: 'GAAC Championship Game', date: 'Apr 18, 2026', time: 'TBD', location: 'TBD', type: 'Conference Championship' },
+  ],
+};
+
+function LiveAgendaView({ mode, C, insets }: { mode: string; C: any; insets: any }) {
+  const events = LIVE_AGENDA_DATA[mode] ?? LIVE_AGENDA_DATA.personal;
+  const typeColors: Record<string, string> = {
+    'Home Game': '#5A8A6E',
+    'Away Game': '#B85C5C',
+    'Conference Championship': '#B8943E',
+    'Service': '#5A8A6E',
+    'Special Service': '#B8943E',
+    default: C.secondary,
+  };
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 12 }}>
+        <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, paddingTop: 8, paddingBottom: 4 }}>Schedule</Text>
+        {events.map(ev => (
+          <View key={ev.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 6 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, flex: 1, marginRight: 8 }}>{ev.title}</Text>
+              <View style={{ backgroundColor: C.separator, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 }}>
+                <Text style={{ fontSize: 11, color: typeColors[ev.type] ?? typeColors.default, fontWeight: '600' }}>{ev.type}</Text>
+              </View>
+            </View>
+            <Text style={{ fontSize: 13, color: C.secondary }}>{ev.date} · {ev.time}</Text>
+            <Text style={{ fontSize: 12, color: C.secondary }}>{ev.location}</Text>
+            {ev.hasRsvp && (
+              <Pressable style={{ backgroundColor: C.label, borderRadius: 10, paddingVertical: 8, alignItems: 'center', marginTop: 4 }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: C.bg }}>RSVP</Text>
+              </Pressable>
+            )}
+          </View>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── AgendaScreen ──────────────────────────────────────────────────────────────
 
 // ── RBAC event type visibility for non-admin roles ───────────────────────────
@@ -1581,6 +1655,7 @@ export default function AgendaScreen() {
   const { state } = useAppContext();
   const mode   = state.activeContext?.mode ?? state.mode ?? 'business';
   const styles = useMemo(() => makeStyles(C), [C]);
+  const dataMode = useDataMode();
 
   const roleKey = AGENDA_ROLE_KEYS[mode] ?? 'business';
   const [role, cycleRole, roleCycles] = useDemoRole(roleKey);
@@ -1618,6 +1693,8 @@ export default function AgendaScreen() {
   const handleNavigateMonth = useCallback((n: number) => { setSelectedDate(p => addMonths(p, n)); setExpandedId(null); }, []);
   const handleCreateAtTime  = useCallback((time: Date) => { setCreateTime(time); setCreateVisible(true); }, []);
   const closeDropdowns      = useCallback(() => { setShowViewDD(false); setShowEditDD(false); }, []);
+
+  if (dataMode === 'live') return <LiveAgendaView mode={mode} C={C} insets={insets} />;
 
   // ── Sports Head Coach: full calendar with all event types ────────────────
   if (mode === 'sports' && isAdmin) return <SportsHeadCoachAgendaView C={C} insets={insets} cycleRole={cycleRole} role={role} />;

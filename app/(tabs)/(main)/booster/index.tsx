@@ -22,6 +22,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useDataMode } from '@/utils/global-demo-mode';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
@@ -115,12 +116,86 @@ function starString(rating: number): string {
   return '\u2605'.repeat(full) + (half ? '\u00BD' : '') + '\u2606'.repeat(empty);
 }
 
+// ── Live Public View ──────────────────────────────────────────────────────────
+
+const LIVE_FAN_CHALLENGES = [
+  { id: '1', title: '$1 per 3-pointer', desc: 'LU hits 12.4 threes/game this season. Pledge $1 per three.', pledged: '$4,820', participants: 48 },
+  { id: '2', title: 'Championship Fund', desc: 'If we win the GAAC Championship, give $50 to the program.', pledged: '$18,600', participants: 372 },
+  { id: '3', title: 'Senior Night Tribute', desc: 'Honor our 4 seniors. Give what you can before Apr 12.', pledged: '$2,340', participants: 67 },
+];
+
+const LIVE_MERCH_ITEMS = [
+  { id: '1', emoji: '👕', name: 'LU Basketball Tee', price: '$28', sizes: 'S–2XL' },
+  { id: '2', emoji: '🧢', name: 'Oaklanders Snapback', price: '$32', sizes: 'One Size' },
+  { id: '3', emoji: '🏀', name: 'Game Ball (signed)', price: '$75', sizes: 'One Size' },
+  { id: '4', emoji: '🎽', name: 'Replica Jersey #0', price: '$65', sizes: 'S–XL' },
+];
+
+function LiveBoosterView({ C, insets }: { C: any; insets: any }) {
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 16 }}>
+        <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, paddingTop: 8 }}>Booster</Text>
+
+        {/* Support section */}
+        <View style={{ backgroundColor: C.surface, borderRadius: 16, padding: 16, gap: 10 }}>
+          <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>Support LU Basketball</Text>
+          <Text style={{ fontSize: 13, color: C.secondary }}>Your contribution funds travel, equipment, and athlete development.</Text>
+          <View style={{ flexDirection: 'row', gap: 10 }}>
+            {['$25', '$50', '$100', '$250'].map(amt => (
+              <View key={amt} style={{ flex: 1, backgroundColor: C.bg, borderRadius: 10, borderWidth: 1, borderColor: C.separator, paddingVertical: 10, alignItems: 'center' }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>{amt}</Text>
+              </View>
+            ))}
+          </View>
+          <Pressable style={{ backgroundColor: C.label, borderRadius: 12, paddingVertical: 12, alignItems: 'center' }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Give Now</Text>
+          </Pressable>
+        </View>
+
+        {/* Fan Challenges */}
+        <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Fan Challenges</Text>
+        {LIVE_FAN_CHALLENGES.map(ch => (
+          <View key={ch.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 8 }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{ch.title}</Text>
+            <Text style={{ fontSize: 13, color: C.secondary, lineHeight: 18 }}>{ch.desc}</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={{ fontSize: 12, color: C.secondary }}>{ch.participants} participants</Text>
+              <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>{ch.pledged} pledged</Text>
+            </View>
+            <Pressable style={{ backgroundColor: C.separator, borderRadius: 10, paddingVertical: 8, alignItems: 'center' }}>
+              <Text style={{ fontSize: 13, color: C.label }}>Join Challenge</Text>
+            </Pressable>
+          </View>
+        ))}
+
+        {/* Merch store */}
+        <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Merch Store</Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+          {LIVE_MERCH_ITEMS.map(item => (
+            <View key={item.id} style={{ width: '47%', backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 8 }}>
+              <Text style={{ fontSize: 28, textAlign: 'center' }}>{item.emoji}</Text>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.label, textAlign: 'center' }}>{item.name}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, textAlign: 'center' }}>{item.sizes}</Text>
+              <Pressable style={{ backgroundColor: C.label, borderRadius: 10, paddingVertical: 8, alignItems: 'center' }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: C.bg }}>{item.price} · Buy</Text>
+              </Pressable>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Screen ────────────────────────────────────────────────────────────────────
 
 export default function BoosterScreen() {
-  const C      = useColors();
-  const insets = useSafeAreaInsets();
-  const s      = useMemo(() => makeStyles(C), [C]);
+  const C        = useColors();
+  const insets   = useSafeAreaInsets();
+  const s        = useMemo(() => makeStyles(C), [C]);
+  const dataMode = useDataMode();
 
   const topBarH = insets.top + TOP_BAR_H;
 
@@ -235,6 +310,8 @@ export default function BoosterScreen() {
     () => NIL_DEALS.filter(d => d.playerId === 'p01'),
     [],
   );
+
+  if (dataMode === 'live') return <LiveBoosterView C={C} insets={insets} />;
 
   // ────────────────────────────────────────────────────────────────────────────
   // SUPPORT TAB

@@ -21,6 +21,7 @@ import { useAppContext } from '@/context/app-context';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { useDemoRole, MODE_ACCENTS } from '@/utils/demo-role-store';
+import { useDataMode } from '@/utils/global-demo-mode';
 import {
   getFeedContent, getExploreRows, getAllContent, filterByPill,
   STUDIOS_PILLS,
@@ -1627,6 +1628,111 @@ const KAYSTUDIOS_ADMIN_TOOLS: Record<string, { header: string; tools: string[] }
   personal:  { header: 'My Studio',               tools: ['Create Experience', 'Manage Library', 'Analytics', 'Share'] },
 };
 
+// ── Live KPlay Data ──────────────────────────────────────────────────────────
+
+const LIVE_KPLAY_CONTENT: Record<string, { featured: Array<{ id: string; emoji: string; title: string; desc: string; price: string; action: string }>; leaderboard: Array<{ rank: number; name: string; score: string }> }> = {
+  personal: {
+    featured: [
+      { id: '1', emoji: '🧠', title: 'Creator Growth Masterclass', desc: '12 lessons on building an audience and monetizing your knowledge.', price: '$49', action: 'Enroll' },
+      { id: '2', emoji: '📊', title: 'Analytics for Creators', desc: 'Free introductory course. Learn to read your numbers.', price: 'Free', action: 'Start' },
+      { id: '3', emoji: '🏆', title: 'Creator Leaderboard', desc: 'Compete with other creators. Top 10 get featured this month.', price: 'Free', action: 'Join' },
+    ],
+    leaderboard: [
+      { rank: 1, name: 'Sammy K.', score: '9,842 pts' },
+      { rank: 2, name: 'Jordan M.', score: '8,210 pts' },
+      { rank: 3, name: 'Alexis T.', score: '7,654 pts' },
+    ],
+  },
+  business: {
+    featured: [
+      { id: '1', emoji: '🚀', title: 'KaNeXT Product Walkthrough', desc: 'Interactive tour of all 9 tiles. Self-paced.', price: 'Free', action: 'Start' },
+      { id: '2', emoji: '📈', title: 'ROI Calculator', desc: 'See the projected ROI of KaNeXT for your organization.', price: 'Free', action: 'Calculate' },
+      { id: '3', emoji: '🏢', title: 'Enterprise Readiness Quiz', desc: 'Is your organization ready for the OS? Find out.', price: 'Free', action: 'Take Quiz' },
+    ],
+    leaderboard: [
+      { rank: 1, name: 'Lincoln University', score: '12,480 pts' },
+      { rank: 2, name: 'Fresno State', score: '11,200 pts' },
+      { rank: 3, name: 'TechCorp Inc.', score: '9,870 pts' },
+    ],
+  },
+  education: {
+    featured: [
+      { id: '1', emoji: '🗺', title: 'Virtual Campus Tour', desc: "Explore Lincoln University's Oakland campus interactively.", price: 'Free', action: 'Explore' },
+      { id: '2', emoji: '🎓', title: 'Program Explorer', desc: 'Find the right degree for your goals.', price: 'Free', action: 'Explore' },
+      { id: '3', emoji: '✅', title: '"Is Lincoln Right For Me?" Quiz', desc: '5-minute quiz to help you decide.', price: 'Free', action: 'Take Quiz' },
+    ],
+    leaderboard: [
+      { rank: 1, name: 'Jordan S.', score: '4,210 pts' },
+      { rank: 2, name: 'Marcus D.', score: '3,870 pts' },
+      { rank: 3, name: 'Aisha P.', score: '3,540 pts' },
+    ],
+  },
+  community: {
+    featured: [
+      { id: '1', emoji: '✝️', title: '"New Here?" Welcome Course', desc: 'Learn what ICCLA believes and how to get connected.', price: 'Free', action: 'Start' },
+      { id: '2', emoji: '📖', title: 'Daily Devotional', desc: 'A new devotional every morning. Start your day with purpose.', price: 'Free', action: "Read Today's" },
+      { id: '3', emoji: '🏆', title: 'Bible Trivia Challenge', desc: 'How well do you know the Word? Compete with the community.', price: 'Free', action: 'Play' },
+    ],
+    leaderboard: [
+      { rank: 1, name: 'Ruth A.', score: '6,340 pts' },
+      { rank: 2, name: 'Emmanuel O.', score: '5,780 pts' },
+      { rank: 3, name: 'Grace M.', score: '5,100 pts' },
+    ],
+  },
+  sports: {
+    featured: [
+      { id: '1', emoji: '🏀', title: 'College Basketball GM', desc: 'Build your dream roster using real KR data from 37K players.', price: 'Free', action: 'Play' },
+      { id: '2', emoji: '🎯', title: "Pick'em: GAAC Championship", desc: 'Predict the bracket. Top picker wins merch.', price: 'Free', action: 'Make Picks' },
+      { id: '3', emoji: '❓', title: 'LU Basketball Trivia', desc: 'How well do you know the Oaklanders?', price: 'Free', action: 'Play' },
+      { id: '4', emoji: '🏆', title: 'Fantasy Basketball (KR-Powered)', desc: 'Draft real players from the KaNeXT pool. KR scores your lineup.', price: 'Free', action: 'Join League' },
+    ],
+    leaderboard: [
+      { rank: 1, name: 'Coach_Fan_23', score: '18,420 pts' },
+      { rank: 2, name: 'OaklandLoyalist', score: '17,100 pts' },
+      { rank: 3, name: 'HoopsDad_LU', score: '15,670 pts' },
+    ],
+  },
+};
+
+function LiveKplayView({ mode, C, insets }: { mode: string; C: any; insets: any }) {
+  const content = LIVE_KPLAY_CONTENT[mode] ?? LIVE_KPLAY_CONTENT.personal;
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 16 }}>
+        <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, paddingTop: 8 }}>KPlay</Text>
+        {/* Featured */}
+        <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Featured</Text>
+        {content.featured.map(item => (
+          <View key={item.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 10 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+              <Text style={{ fontSize: 28 }}>{item.emoji}</Text>
+              <View style={{ flex: 1, gap: 3 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{item.title}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary, lineHeight: 17 }}>{item.desc}</Text>
+              </View>
+            </View>
+            <Pressable style={{ backgroundColor: C.label, borderRadius: 10, paddingVertical: 10, alignItems: 'center' }}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.bg }}>{item.action}{item.price !== 'Free' ? ` · ${item.price}` : ''}</Text>
+            </Pressable>
+          </View>
+        ))}
+        {/* Leaderboard */}
+        <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4 }}>Leaderboard</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden' }}>
+          {content.leaderboard.map((entry, i) => (
+            <View key={entry.rank} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, borderTopWidth: i > 0 ? 1 : 0, borderTopColor: C.separator, gap: 12 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.secondary, width: 20 }}>{entry.rank}</Text>
+              <Text style={{ flex: 1, fontSize: 14, color: C.label }}>{entry.name}</Text>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>{entry.score}</Text>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── KayStudios Screen ───────────────────────────────────────────────────────
 
 export default function KayStudiosScreen() {
@@ -1635,6 +1741,8 @@ export default function KayStudiosScreen() {
   const router = useRouter();
   const { state } = useAppContext();
   const mode = state.activeContext?.mode ?? state.mode ?? 'business';
+
+  const dataMode = useDataMode();
 
   const roleKey = KAYSTUDIOS_ROLE_KEYS[mode] ?? 'business';
   const [role, cycleRole, roleCycles] = useDemoRole(roleKey);
@@ -1754,6 +1862,9 @@ export default function KayStudiosScreen() {
       params: { contentId: item.id },
     });
   }, [router]);
+
+  // ── Live mode: public KPlay view ────────────────────────────────────────────
+  if (dataMode === 'live') return <LiveKplayView mode={mode} C={C} insets={insets} />;
 
   // ── Business CEO: Business Tools early return ──────────────────────────────
   if (mode === 'business' && isAdmin) {

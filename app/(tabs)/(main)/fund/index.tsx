@@ -20,6 +20,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useDataMode } from '@/utils/global-demo-mode';
 import {
   FUNDS, FUND_CAMPAIGNS, SAVED_PAYMENT_METHODS, MY_RECURRING_GIFTS,
   MY_PLEDGE, FUND_TRANSACTIONS, ADMIN_DASHBOARD, SCHOLARSHIPS,
@@ -61,12 +62,59 @@ function daysRemaining(deadline: string): number {
   return Math.max(0, Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
 }
 
+// ── Live Public View ──────────────────────────────────────────────────────────
+
+function LiveFundView({ C, insets }: { C: any; insets: any }) {
+  const costItems = [
+    { label: 'Tuition (per year)', value: '$13,150' },
+    { label: 'Registration Fee', value: '$150' },
+    { label: 'Technology Fee', value: '$200' },
+    { label: 'Student Services Fee', value: '$250' },
+    { label: 'Estimated Total COA', value: '~$14,900/year' },
+  ];
+  const aidTypes = ['Federal Pell Grant', 'Cal Grant (CA residents)', 'Institutional Merit Scholarship', 'Need-Based Grant', 'Federal Work-Study', 'Federal Direct Loans'];
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 16 }}>
+        <Text style={{ fontSize: 20, fontWeight: '700', color: C.label, paddingTop: 8 }}>Tuition & Financial Aid</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 16, overflow: 'hidden' }}>
+          {costItems.map((item, i) => (
+            <View key={item.label} style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 14, borderTopWidth: i > 0 ? 1 : 0, borderTopColor: C.separator }}>
+              <Text style={{ fontSize: 13, color: C.secondary }}>{item.label}</Text>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>{item.value}</Text>
+            </View>
+          ))}
+        </View>
+        <Pressable style={{ backgroundColor: C.label, borderRadius: 14, padding: 16, alignItems: 'center' }}>
+          <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>Apply for Financial Aid</Text>
+        </Pressable>
+        <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Aid Types Available</Text>
+        {aidTypes.map(a => (
+          <View key={a} style={{ backgroundColor: C.surface, borderRadius: 12, padding: 14, flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+            <Text style={{ fontSize: 16 }}>✓</Text>
+            <Text style={{ fontSize: 14, color: C.label }}>{a}</Text>
+          </View>
+        ))}
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 8 }}>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>Support Lincoln University</Text>
+          <Text style={{ fontSize: 13, color: C.secondary }}>Alumni and supporters can donate to student scholarships and institutional programs.</Text>
+          <Pressable style={{ backgroundColor: C.separator, borderRadius: 10, paddingVertical: 10, alignItems: 'center' }}>
+            <Text style={{ fontSize: 13, color: C.label }}>Make a Donation</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
 export default function EducationFundScreen() {
   const C      = useColors();
   const s      = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
+  const dataMode = useDataMode();
 
   const topBarH   = insets.top + TOP_BAR_H;
   const pillsAnim = useRef(new Animated.Value(0)).current;
@@ -286,6 +334,8 @@ export default function EducationFundScreen() {
   const closeTxDetail = useCallback(() => {
     Animated.timing(txSheetAnim, { toValue: 0, duration: 220, useNativeDriver: true }).start(() => setSelectedTxId(null));
   }, [txSheetAnim]);
+
+  if (dataMode === 'live') return <LiveFundView C={C} insets={insets} />;
 
   // ── Render: Give tab ─────────────────────────────────────────────────────────
 

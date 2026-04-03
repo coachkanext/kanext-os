@@ -20,6 +20,7 @@ import { RolePill }     from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useDemoRole }  from '@/utils/demo-role-store';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
+import { useDataMode } from '@/utils/global-demo-mode';
 import { openSidePanel } from '@/utils/global-side-panel';
 import {
   PLAYERS, COACHING_STAFF, TEAM_INFO,
@@ -967,11 +968,89 @@ const cara = StyleSheet.create({
   divider:  { height: StyleSheet.hairlineWidth, marginVertical: 12 },
 });
 
+// ── Live Mode Data & View ──────────────────────────────────────────────────────
+
+const LIVE_ROSTER_PLAYERS = [
+  { number: 0,  name: 'Laolu Kalejaiye', pos: 'PG', year: 'Sr', ht: "6'1\"",  wt: '185', hometown: 'Vallejo, CA',     ppg: 18.4, rpg: 4.2, apg: 7.1, fg: 46.2 },
+  { number: 1,  name: 'Jarvis Williams',  pos: 'SG', year: 'Jr', ht: "6'3\"",  wt: '190', hometown: 'Oakland, CA',     ppg: 14.8, rpg: 3.1, apg: 2.4, fg: 44.8 },
+  { number: 3,  name: 'Marcus Stone',     pos: 'SF', year: 'Sr', ht: "6'6\"",  wt: '210', hometown: 'Stockton, CA',    ppg: 11.2, rpg: 6.4, apg: 1.8, fg: 48.1 },
+  { number: 5,  name: 'Devon Clark',      pos: 'PF', year: 'So', ht: "6'7\"",  wt: '225', hometown: 'Richmond, CA',    ppg: 8.7,  rpg: 7.9, apg: 1.2, fg: 51.3 },
+  { number: 10, name: 'Tony Reeves',      pos: 'C',  year: 'Jr', ht: "6'9\"",  wt: '240', hometown: 'San Jose, CA',    ppg: 7.4,  rpg: 9.2, apg: 0.8, fg: 55.6 },
+  { number: 12, name: 'Malik Johnson',    pos: 'SG', year: 'Fr', ht: "6'4\"",  wt: '185', hometown: 'Los Angeles, CA', ppg: 6.2,  rpg: 2.1, apg: 3.4, fg: 38.9 },
+  { number: 21, name: 'Chris Avery',      pos: 'PG', year: 'So', ht: "5'11\"", wt: '175', hometown: 'Fresno, CA',      ppg: 5.1,  rpg: 1.4, apg: 4.8, fg: 41.2 },
+  { number: 24, name: 'Darius Hill',      pos: 'SF', year: 'Jr', ht: "6'5\"",  wt: '205', hometown: 'Bakersfield, CA', ppg: 9.3,  rpg: 4.7, apg: 1.6, fg: 43.5 },
+];
+
+const LIVE_ROSTER_STAFF = [
+  { name: 'Coach Davis',  title: 'Head Coach' },
+  { name: 'Coach Martin', title: 'Assistant Coach — Offense' },
+  { name: 'Coach Reed',   title: 'Assistant Coach — Defense' },
+  { name: 'Dr. Thomas',   title: 'Athletic Trainer' },
+];
+
+function LiveRosterView({ C, insets }: { C: any; insets: any }) {
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 12 }}>
+        <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, paddingTop: 8 }}>Roster</Text>
+        <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Players</Text>
+        {LIVE_ROSTER_PLAYERS.map(p => (
+          <View key={p.number} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 6 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+              <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: C.secondary }}>#{p.number}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{p.name}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>{p.pos} · {p.year} · {p.ht} · {p.wt} lbs · {p.hometown}</Text>
+              </View>
+            </View>
+            <View style={{ flexDirection: 'row', gap: 16 }}>
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{p.ppg}</Text>
+                <Text style={{ fontSize: 10, color: C.secondary }}>PPG</Text>
+              </View>
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{p.rpg}</Text>
+                <Text style={{ fontSize: 10, color: C.secondary }}>RPG</Text>
+              </View>
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{p.apg}</Text>
+                <Text style={{ fontSize: 10, color: C.secondary }}>APG</Text>
+              </View>
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{p.fg}%</Text>
+                <Text style={{ fontSize: 10, color: C.secondary }}>FG%</Text>
+              </View>
+            </View>
+          </View>
+        ))}
+        <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 8 }}>Coaching Staff</Text>
+        {LIVE_ROSTER_STAFF.map(s => (
+          <View key={s.name} style={{ backgroundColor: C.surface, borderRadius: 12, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ fontSize: 14, color: C.secondary }}>{s.name[0]}</Text>
+            </View>
+            <View>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{s.name}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary }}>{s.title}</Text>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
 export default function RosterScreen() {
   const C       = useColors();
   const insets  = useSafeAreaInsets();
+
+  // ── Data mode ──
+  const dataMode = useDataMode();
 
   // ── RBAC demo role ──
   const [role, cycleRole] = useDemoRole('sports:roster');
@@ -1029,6 +1108,8 @@ export default function RosterScreen() {
     setFilterVisible(false);
     pillsAnim.setValue(0);
   }, [pillsAnim]);
+
+  if (dataMode === 'live') return <LiveRosterView C={C} insets={insets} />;
 
   // ── Filtered players ──
   const sortedPlayers = [...PLAYERS].sort((a, b) => a.number - b.number);

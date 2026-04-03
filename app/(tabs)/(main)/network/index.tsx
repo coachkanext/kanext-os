@@ -26,6 +26,7 @@ import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide'
 import { openSidePanel } from '@/utils/global-side-panel';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { useAppContext } from '@/context/app-context';
+import { useDataMode } from '@/utils/global-demo-mode';
 import {
   COMMUNITY_TIERS, COMMUNITY_SPACES, COMMUNITY_MEMBERS,
   LOOKING_FOR_POSTS, ICEBREAKER_PROMPT, COMMUNITY_EVENTS, COMMUNITY_STATS,
@@ -1640,6 +1641,134 @@ function BusinessCustomerTeamView({
   );
 }
 
+// ── Live Mode View ─────────────────────────────────────────────────────────────
+
+function LiveNetworkView({ mode, C, insets }: { mode: string; C: any; insets: any }) {
+  if (mode === 'business') {
+    // Business Team public page
+    const team = [
+      { name: 'Sammy Kalejaiye', title: 'Founder & CEO', bio: 'Builder of KaNeXT OS. 10+ years in sports technology and institutional intelligence.' },
+      { name: 'TBD', title: 'CTO', bio: 'Joining the team Q2 2026.' },
+      { name: 'TBD', title: 'Head of Product', bio: 'Joining the team Q2 2026.' },
+    ];
+    return (
+      <View style={{ flex: 1, backgroundColor: C.bg }}>
+        <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 16 }}>
+          <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, paddingTop: 8 }}>Our Team</Text>
+          {team.map(m => (
+            <View key={m.name} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 8 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ fontSize: 18, color: C.secondary }}>{m.name[0]}</Text>
+                </View>
+                <View style={{ gap: 2 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{m.name}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary }}>{m.title}</Text>
+                </View>
+              </View>
+              <Text style={{ fontSize: 13, color: C.secondary, lineHeight: 18 }}>{m.bio}</Text>
+              <Pressable style={{ backgroundColor: C.separator, borderRadius: 10, paddingVertical: 8, alignItems: 'center' }}>
+                <Text style={{ fontSize: 13, color: C.label }}>Contact</Text>
+              </Pressable>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
+
+  if (mode === 'education') {
+    // Education Campus public page — faculty directory + programs
+    const faculty = [
+      { name: 'Dr. A. Johnson', dept: 'Business Administration', title: 'Dean, School of Business', hours: 'Mon/Wed 2–4 PM' },
+      { name: 'Dr. M. Rivera', dept: 'Diagnostic Imaging', title: 'Program Director', hours: 'Tue/Thu 1–3 PM' },
+      { name: 'Prof. L. Chen', dept: 'MBA Program', title: 'Associate Professor', hours: 'By appointment' },
+    ];
+    const programs = ['BA Business Administration', 'BS Diagnostic Imaging', 'MBA', 'MS International Banking & Finance (IBFM)', 'DBA'];
+    return (
+      <View style={{ flex: 1, backgroundColor: C.bg }}>
+        <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 16 }}>
+          <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, paddingTop: 8 }}>Campus</Text>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Faculty Directory</Text>
+          {faculty.map(f => (
+            <View key={f.name} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 6 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{f.name}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary }}>{f.title} · {f.dept}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary }}>Office Hours: {f.hours}</Text>
+            </View>
+          ))}
+          <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4 }}>Programs Offered</Text>
+          {programs.map(p => (
+            <View key={p} style={{ backgroundColor: C.surface, borderRadius: 12, padding: 14 }}>
+              <Text style={{ fontSize: 14, color: C.label }}>{p}</Text>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
+
+  if (mode === 'community') {
+    // Community Connect page — ministries list
+    const ministries = [
+      { name: 'Youth Ministry', desc: 'For ages 13–25. Meets Fridays 6 PM.' },
+      { name: "Women's Ministry", desc: 'Monthly gatherings. Bible study and fellowship.' },
+      { name: "Men's Ministry", desc: 'First Saturday of each month.' },
+      { name: 'Marriage Ministry', desc: 'For couples at every stage.' },
+      { name: 'Prayer Ministry', desc: 'Weekly corporate prayer. Tuesday 6 AM.' },
+      { name: "Children's Ministry", desc: 'Sunday School during both services.' },
+      { name: 'Choir & Worship', desc: 'Rehearsal Thursdays 7 PM. All voices welcome.' },
+      { name: 'Media Ministry', desc: 'Live stream team, audio, photography.' },
+    ];
+    return (
+      <View style={{ flex: 1, backgroundColor: C.bg }}>
+        <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 12 }}>
+          <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, paddingTop: 8 }}>Connect With Us</Text>
+          <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 10 }}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>I Visited</Text>
+            <Text style={{ fontSize: 13, color: C.secondary }}>New to ICCLA? Let us know you came. We'd love to connect with you.</Text>
+            <Pressable style={{ backgroundColor: C.label, borderRadius: 10, paddingVertical: 10, alignItems: 'center' }}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.bg }}>Register My Visit</Text>
+            </Pressable>
+          </View>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Ministries</Text>
+          {ministries.map(m => (
+            <View key={m.name} style={{ backgroundColor: C.surface, borderRadius: 12, padding: 14, gap: 4 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{m.name}</Text>
+              <Text style={{ fontSize: 13, color: C.secondary }}>{m.desc}</Text>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
+
+  // Personal (default) — public featured connections
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 16 }}>
+        <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, paddingTop: 8 }}>Network</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 8 }}>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>Also followed by...</Text>
+          {['Jordan M. · Creator', 'Alexis T. · Sports Agent', 'Marcus D. · Coach', 'TechSports Venture Fund'].map(c => (
+            <View key={c} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 6 }}>
+              <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 14, color: C.secondary }}>{c[0]}</Text>
+              </View>
+              <Text style={{ fontSize: 14, color: C.label }}>{c}</Text>
+            </View>
+          ))}
+        </View>
+        <Text style={{ fontSize: 13, color: C.secondary, textAlign: 'center' }}>Sign in to see your full network.</Text>
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Main Screen ────────────────────────────────────────────────────────────────
 
 export default function NetworkScreen() {
@@ -1661,6 +1790,7 @@ export default function NetworkScreen() {
 
   const { state } = useAppContext();
   const mode = state.activeContext?.mode ?? (state as any).mode ?? 'personal';
+  const dataMode = useDataMode();
   const [eduRole, cycleEduRole, eduRoleCycles] = useDemoRole('education');
   const isEduAdmin = eduRole === eduRoleCycles[0];
   const [bizRole, cycleBizRole, bizRoleCycles] = useDemoRole('business');
@@ -1756,6 +1886,8 @@ export default function NetworkScreen() {
     if (selectedPill === 'All') return COMMUNITY_MEMBERS;
     return COMMUNITY_MEMBERS.filter(m => m.interests.includes(selectedPill.toLowerCase()));
   }, [selectedPill]);
+
+  if (dataMode === 'live') return <LiveNetworkView mode={mode} C={C} insets={insets} />;
 
   const isOwner = role === 'owner';
   const isMember = role === 'member';

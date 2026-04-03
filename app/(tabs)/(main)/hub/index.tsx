@@ -20,6 +20,7 @@ import { useAppContext } from '@/context/app-context';
 import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useDataMode } from '@/utils/global-demo-mode';
 import {
   HUB_PROFILE, HUB_ANALYTICS, HUB_CHART_DATA, HUB_ACTIVITY, HUB_GOALS,
   HUB_TIERS, HUB_SUBSCRIBERS, HUB_NEWSLETTERS, HUB_LINKS, HUB_PORTFOLIO,
@@ -498,6 +499,127 @@ const editStyles = StyleSheet.create({
   btnText: { fontSize: 14, fontWeight: '600' },
 });
 
+// ── Live Hub View ─────────────────────────────────────────────────────────────
+
+function getLiveHubContent(mode: string) {
+  switch (mode) {
+    case 'business':
+      return {
+        name: 'KaNeXT LLC',
+        subtitle: 'Miami, FL · kanext.io',
+        description: 'KaNeXT builds the operating system for sports, education, business, and community organizations. One platform for every stakeholder.',
+        stats: [
+          { label: 'Founded', value: '2023' },
+          { label: 'Headquarters', value: 'Miami, FL' },
+          { label: 'Website', value: 'kanext.io' },
+        ],
+        actions: ['Contact Us', 'Request Demo'],
+        itemsLabel: 'Latest News',
+        items: ['KaNeXT OS v2.0 Launch', 'New Partnership Announced', 'Series A Fundraise Open'],
+      };
+    case 'education':
+      return {
+        name: 'Lincoln University',
+        subtitle: 'Oakland, California · Est. 1919',
+        description: 'Accredited by WSCUC. Offering undergraduate and graduate programs in business, health sciences, and more.',
+        stats: [
+          { label: 'Enrollment', value: '~800 students' },
+          { label: 'Programs', value: 'BA, BS, MBA, MS, DBA' },
+          { label: 'Tuition', value: '$13,150/year' },
+          { label: 'Accreditation', value: 'WSCUC' },
+        ],
+        actions: ['Apply Now', 'Request Info'],
+        itemsLabel: 'Upcoming Events',
+        items: ['Open House – Apr 15', 'Info Session – Apr 22', 'Commencement – May 10'],
+      };
+    case 'community':
+      return {
+        name: 'International Christian Center LA',
+        subtitle: 'Los Angeles, CA',
+        description: 'A Spirit-filled community church in Los Angeles. Join us every Sunday and Wednesday.',
+        stats: [
+          { label: 'Sunday AM', value: '9:00 AM' },
+          { label: 'Sunday PM', value: '6:00 PM' },
+          { label: 'Wednesday', value: 'Bible Study 7:00 PM' },
+        ],
+        actions: ["I'm New", 'Plan Your Visit'],
+        itemsLabel: 'Upcoming Events',
+        items: ['Easter Sunday Service', 'Community Outreach Day', 'Youth Conference 2026'],
+      };
+    case 'sports':
+      return {
+        name: "LU Men's Basketball",
+        subtitle: 'Lincoln University Oaklanders · 22-8 (14-2 GAAC)',
+        description: "Lincoln University Men's Basketball. 2025-26 season in progress.",
+        stats: [
+          { label: 'Record', value: '22-8' },
+          { label: 'Conference', value: '14-2 GAAC' },
+          { label: 'Next Game', value: 'Apr 5 vs. Holy Names' },
+          { label: 'Location', value: 'Oakland, CA' },
+        ],
+        actions: ['View Schedule', 'See Roster'],
+        itemsLabel: 'Recent Results',
+        items: ['W 78-65 vs. Dominican', 'W 91-72 vs. Menlo', 'L 74-80 @ Cal Maritime', 'W 85-70 vs. Bethesda', 'W 77-68 vs. Simpson'],
+      };
+    default: // personal
+      return {
+        name: 'Sammy Kalejaiye',
+        subtitle: 'Creator · Founder · Builder',
+        description: 'Founder of KaNeXT. Building the OS for institutions. Follow for updates on sports technology, AI, and institutional intelligence.',
+        stats: [
+          { label: 'Followers', value: '12.4K' },
+          { label: 'Posts', value: '247' },
+        ],
+        actions: ['Follow'],
+        itemsLabel: 'Recent Posts',
+        items: ['KaNeXT OS v2 is here', 'The future of sports analytics', 'Lincoln University x KaNeXT partnership', 'Why institutional intelligence matters'],
+      };
+  }
+}
+
+function LiveHubView({ mode, C, insets }: { mode: string; C: ComponentColors; insets: any }) {
+  const content = getLiveHubContent(mode);
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 120, gap: 20 }}>
+        {/* Header */}
+        <View style={{ gap: 4, paddingTop: 8 }}>
+          <Text style={{ fontSize: 24, fontWeight: '700', color: C.label }}>{content.name}</Text>
+          <Text style={{ fontSize: 14, color: C.secondary }}>{content.subtitle}</Text>
+        </View>
+        {/* Profile/overview card */}
+        <View style={{ backgroundColor: C.surface, borderRadius: 16, padding: 16, gap: 12 }}>
+          <Text style={{ fontSize: 13, color: C.secondary, lineHeight: 20 }}>{content.description}</Text>
+          {content.stats.map((s: any) => (
+            <View key={s.label} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={{ fontSize: 13, color: C.secondary }}>{s.label}</Text>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>{s.value}</Text>
+            </View>
+          ))}
+        </View>
+        {/* Action buttons */}
+        {content.actions.map((a: any) => (
+          <Pressable key={a} style={{ backgroundColor: C.label, borderRadius: 12, padding: 14, alignItems: 'center' }}>
+            <Text style={{ fontSize: 15, fontWeight: '600', color: C.bg }}>{a}</Text>
+          </Pressable>
+        ))}
+        {/* Recent posts / links */}
+        {content.items && content.items.length > 0 && (
+          <View style={{ gap: 10 }}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>{content.itemsLabel}</Text>
+            {content.items.map((item: any) => (
+              <View key={item} style={{ backgroundColor: C.surface, borderRadius: 12, padding: 14 }}>
+                <Text style={{ fontSize: 14, color: C.label }}>{item}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Hub Screen ────────────────────────────────────────────────────────────────
 
 export default function HubScreen() {
@@ -506,6 +628,7 @@ export default function HubScreen() {
   const router = useRouter();
   const { state } = useAppContext();
   const mode = state.activeContext?.mode ?? state.mode ?? 'personal';
+  const dataMode = useDataMode();
 
   const [role, cycleRole, roleCycles] = useDemoRole('personal:hub');
   const isOwner = role === roleCycles[0];
@@ -523,11 +646,6 @@ export default function HubScreen() {
 
   const pillsRevealAnim = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
-
-  const topBarH = insets.top + TOP_BAR_H;
-  const contentPaddingTop = topBarH + PILL_ROW_H + 8;
-
-  const pills = pillsForTab(activeTab);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
@@ -555,6 +673,13 @@ export default function HubScreen() {
     setFilterPillsVisible(false);
     pillsRevealAnim.setValue(0);
   }, [pillsRevealAnim]);
+
+  if (dataMode === 'live') return <LiveHubView mode={mode} C={C} insets={insets} />;
+
+  const topBarH = insets.top + TOP_BAR_H;
+  const contentPaddingTop = topBarH + PILL_ROW_H + 8;
+
+  const pills = pillsForTab(activeTab);
 
   // ── Owner Overview ───────────────────────────────────────────────────────────
 

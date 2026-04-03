@@ -22,6 +22,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useDataMode } from '@/utils/global-demo-mode';
 import {
   APPLICANTS, ENROLLMENT_STAGES, ENROLLMENT_SUMMARY, CAMPAIGNS,
   getApplications, getApplicantHue, MOCK_INTERACTION_LOG, formatAidAmount,
@@ -500,12 +501,63 @@ function ProspectCardOverlay({ onClose, C, insets }: {
   );
 }
 
+// ── Live Public View ──────────────────────────────────────────────────────────
+
+function LiveAdmissionsView({ C, insets }: { C: any; insets: any }) {
+  const steps = [
+    { step: '1', title: 'Start Your Application', desc: 'Fill out personal info, academic history, and program selection.' },
+    { step: '2', title: 'Upload Documents', desc: 'Official transcript, letter of recommendation, personal essay.' },
+    { step: '3', title: 'Submit & Track', desc: 'Track your application status in real time after submission.' },
+  ];
+  const programs = ['BA Business Administration', 'BS Diagnostic Imaging', 'MBA', 'MS International Banking & Finance', 'DBA'];
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 16 }}>
+        <View style={{ gap: 4, paddingTop: 8 }}>
+          <Text style={{ fontSize: 20, fontWeight: '700', color: C.label }}>Apply to Lincoln University</Text>
+          <Text style={{ fontSize: 14, color: C.secondary }}>Oakland, CA · Est. 1919 · WSCUC Accredited</Text>
+        </View>
+        <Pressable style={{ backgroundColor: C.label, borderRadius: 14, padding: 16, alignItems: 'center' }}>
+          <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>Start Application</Text>
+        </Pressable>
+        <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>How It Works</Text>
+        {steps.map(s => (
+          <View key={s.step} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, flexDirection: 'row', gap: 14 }}>
+            <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{s.step}</Text>
+            </View>
+            <View style={{ flex: 1, gap: 3 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{s.title}</Text>
+              <Text style={{ fontSize: 13, color: C.secondary, lineHeight: 18 }}>{s.desc}</Text>
+            </View>
+          </View>
+        ))}
+        <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Programs Available</Text>
+        {programs.map(p => (
+          <View key={p} style={{ backgroundColor: C.surface, borderRadius: 12, padding: 14 }}>
+            <Text style={{ fontSize: 14, color: C.label }}>{p}</Text>
+          </View>
+        ))}
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 8 }}>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>Financial Aid Available</Text>
+          <Text style={{ fontSize: 13, color: C.secondary, lineHeight: 18 }}>Federal grants, state aid, institutional scholarships, and work-study programs available. Tuition: $13,150/year.</Text>
+          <Pressable style={{ backgroundColor: C.separator, borderRadius: 10, paddingVertical: 10, alignItems: 'center' }}>
+            <Text style={{ fontSize: 13, color: C.label }}>Learn About Financial Aid</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
 export default function AdmissionsScreen() {
   const C      = useColors();
   const s      = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
+  const dataMode = useDataMode();
 
   const topBarH   = insets.top + TOP_BAR_H;
   const pillsAnim  = useRef(new Animated.Value(0)).current;
@@ -616,6 +668,8 @@ export default function AdmissionsScreen() {
     setApplicantStages(prev => ({ ...prev, [applicantId]: stage }));
     setSelected(prev => prev ? { ...prev, stage } : null);
   }, []);
+
+  if (dataMode === 'live') return <LiveAdmissionsView C={C} insets={insets} />;
 
   const contentPaddingTop = TOP_BAR_H + (pillsVisible ? PILLS_H : 0) + insets.top + 8;
 

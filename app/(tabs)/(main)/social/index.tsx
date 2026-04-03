@@ -31,6 +31,7 @@ import { useAppContext } from '@/context/app-context';
 import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { useDemoRole, MODE_ACCENTS } from '@/utils/demo-role-store';
+import { useDataMode } from '@/utils/global-demo-mode';
 import {
   getFeedPosts, getReels, getStories, getSammyPosts, getSammyTaggedPosts, formatPostTime,
   SAMMY_POSTS, SAMMY_REELS, type FeedPost, type SocialReel,
@@ -2065,6 +2066,70 @@ function EducationPresidentSocialView({
 }
 
 // ── Social role keys per mode ──────────────────────────────────────────────
+// ── Live mode public feed data ────────────────────────────────────────────────
+
+const LIVE_SOCIAL_POSTS: Record<string, Array<{ id: string; author: string; handle: string; time: string; body: string; likes: number; comments: number }>> = {
+  personal: [
+    { id: '1', author: 'Sammy Kalejaiye', handle: '@sammyk', time: '2h ago', body: 'KaNeXT OS v2 is live. The operating system for every institution.', likes: 312, comments: 47 },
+    { id: '2', author: 'Sammy Kalejaiye', handle: '@sammyk', time: '1d ago', body: 'Athletic intelligence is not a spreadsheet. It is a living system that learns, updates, and predicts.', likes: 208, comments: 31 },
+    { id: '3', author: 'Sammy Kalejaiye', handle: '@sammyk', time: '3d ago', body: 'We signed our third university this month. Lincoln University x KaNeXT.', likes: 445, comments: 62 },
+    { id: '4', author: 'Sammy Kalejaiye', handle: '@sammyk', time: '1w ago', body: 'Investors: the data room is open. DM for access code.', likes: 176, comments: 28 },
+  ],
+  business: [
+    { id: '1', author: 'KaNeXT LLC', handle: '@kanext', time: '1d ago', body: 'KaNeXT OS v2.0 is officially launched. Sports. Education. Business. Community. One OS for every institution.', likes: 528, comments: 74 },
+    { id: '2', author: 'KaNeXT LLC', handle: '@kanext', time: '3d ago', body: 'New partnership with Lincoln University bringing AI-powered intelligence to student athletes.', likes: 341, comments: 49 },
+    { id: '3', author: 'KaNeXT LLC', handle: '@kanext', time: '1w ago', body: 'The KaNeXT Player Pool now has 37,176 verified players across D1, D2, D3, NAIA, NJCAA, and JUCO.', likes: 287, comments: 38 },
+  ],
+  education: [
+    { id: '1', author: 'Lincoln University', handle: '@lincolnuniv', time: '6h ago', body: 'Applications are open for Fall 2026. BA Business Administration, BS Diagnostic Imaging, MBA, MS IBFM, DBA. Apply at kanext.io/lincoln.', likes: 94, comments: 12 },
+    { id: '2', author: 'Lincoln University', handle: '@lincolnuniv', time: '2d ago', body: 'Congratulations to our 2026 graduating class. Commencement is May 10th.', likes: 217, comments: 33 },
+    { id: '3', author: 'Lincoln University', handle: '@lincolnuniv', time: '1w ago', body: 'Open House this Saturday April 15th. Come tour campus, meet faculty, and learn about financial aid options.', likes: 143, comments: 19 },
+  ],
+  community: [
+    { id: '1', author: 'ICCLA', handle: '@iccla', time: '3h ago', body: 'Join us this Sunday for our Easter celebration. 9 AM and 6 PM services. All are welcome.', likes: 182, comments: 24 },
+    { id: '2', author: 'ICCLA', handle: '@iccla', time: '1d ago', body: '"For I know the plans I have for you," declares the Lord. Jeremiah 29:11. Have a blessed Thursday.', likes: 265, comments: 31 },
+    { id: '3', author: 'ICCLA', handle: '@iccla', time: '4d ago', body: 'Community Outreach Day is coming April 19th. Volunteers needed. Sign up in the app.', likes: 98, comments: 14 },
+    { id: '4', author: 'ICCLA', handle: '@iccla', time: '1w ago', body: 'Prayer wall is now live in the app. Submit your requests anytime. We pray for every submission.', likes: 311, comments: 42 },
+  ],
+  sports: [
+    { id: '1', author: 'LU Basketball', handle: '@luoaklanders', time: '4h ago', body: 'FINAL: LU 78, Dominican 65. Jarvis with 24 pts 8 ast. Laolu with 18 pts 11 reb. On to the next one. 🏀', likes: 412, comments: 58 },
+    { id: '2', author: 'LU Basketball', handle: '@luoaklanders', time: '2d ago', body: '22-8 on the season. 14-2 in the GAAC. Playoffs locked. Eyes on the championship. 🔒', likes: 687, comments: 94 },
+    { id: '3', author: 'LU Basketball', handle: '@luoaklanders', time: '5d ago', body: 'Practice film looking sharp. Coach has us dialed in for the stretch run.', likes: 229, comments: 31 },
+  ],
+};
+
+function LiveSocialView({ mode, C, insets }: { mode: string; C: any; insets: any }) {
+  const posts = LIVE_SOCIAL_POSTS[mode] ?? LIVE_SOCIAL_POSTS.personal;
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 12 }}>
+        <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, paddingTop: 8, paddingBottom: 4 }}>Feed</Text>
+        {posts.map(post => (
+          <View key={post.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 10 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <View style={{ gap: 2 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{post.author}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>{post.handle} · {post.time}</Text>
+              </View>
+            </View>
+            <Text style={{ fontSize: 14, color: C.label, lineHeight: 20 }}>{post.body}</Text>
+            <View style={{ flexDirection: 'row', gap: 20 }}>
+              <Text style={{ fontSize: 12, color: C.secondary }}>♥ {post.likes}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary }}>💬 {post.comments}</Text>
+            </View>
+          </View>
+        ))}
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, alignItems: 'center', gap: 6 }}>
+          <Text style={{ fontSize: 13, color: C.secondary, textAlign: 'center' }}>Sign in to like, comment, and post.</Text>
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
+// ── Role keys ─────────────────────────────────────────────────────────────────
+
 const SOCIAL_ROLE_KEYS: Record<string, string> = {
   sports:    'sports',
   education: 'education',
@@ -2080,6 +2145,7 @@ export default function SocialScreen() {
   const styles = useMemo(() => makeStyles(C), [C]);
   const { state } = useAppContext();
   const mode = (state.activeContext?.mode ?? state.mode ?? 'business') as Mode;
+  const dataMode = useDataMode();
 
   const roleKey = SOCIAL_ROLE_KEYS[mode] ?? 'business';
   const [role, cycleRole, roleCycles] = useDemoRole(roleKey);
@@ -2207,6 +2273,8 @@ export default function SocialScreen() {
       return s;
     });
   }, []);
+
+  if (dataMode === 'live') return <LiveSocialView mode={mode} C={C} insets={insets} />;
 
   const isPostLiked = (post: FeedPost) =>
     post.isLiked !== likedPostFlips.has(post.id);

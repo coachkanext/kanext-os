@@ -22,6 +22,7 @@ import { useAccentColor } from '@/hooks/use-accent-color';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useDataMode } from '@/utils/global-demo-mode';
 import {
   PROSPECTS, CAMPAIGNS, VOLUNTEER_TEAMS, OUTREACH_OPPORTUNITIES,
   MY_OUTREACH_STATS, INVITE_LEADERBOARD, PIPELINE_STAGES,
@@ -543,6 +544,42 @@ function CommunityMemberConnectView({
   );
 }
 
+// ── Live Public View ──────────────────────────────────────────────────────────
+
+function LiveOutreachView({ C, insets }: { C: any; insets: any }) {
+  const events = [
+    { id: '1', title: 'Community Outreach Day', date: 'Apr 19, 2026', time: '10:00 AM', location: 'Los Angeles, CA' },
+    { id: '2', title: 'Food Drive — Feeding LA', date: 'Apr 26, 2026', time: '9:00 AM', location: 'ICCLA Parking Lot' },
+    { id: '3', title: 'Youth Mentorship Program Launch', date: 'May 3, 2026', time: '11:00 AM', location: 'ICCLA Fellowship Hall' },
+  ];
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 16 }}>
+        <Text style={{ fontSize: 20, fontWeight: '700', color: C.label, paddingTop: 8 }}>Community Events</Text>
+        <Text style={{ fontSize: 14, color: C.secondary }}>Join us in serving our community. All are welcome.</Text>
+        {events.map(ev => (
+          <View key={ev.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 8 }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{ev.title}</Text>
+            <Text style={{ fontSize: 13, color: C.secondary }}>{ev.date} · {ev.time}</Text>
+            <Text style={{ fontSize: 12, color: C.secondary }}>{ev.location}</Text>
+            <Pressable style={{ backgroundColor: C.label, borderRadius: 10, paddingVertical: 10, alignItems: 'center' }}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.bg }}>RSVP</Text>
+            </Pressable>
+          </View>
+        ))}
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 10 }}>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>Invite a Friend</Text>
+          <Text style={{ fontSize: 13, color: C.secondary }}>Know someone who'd love ICCLA? Share our community with them.</Text>
+          <Pressable style={{ backgroundColor: C.separator, borderRadius: 10, paddingVertical: 10, alignItems: 'center' }}>
+            <Text style={{ fontSize: 13, color: C.label }}>Share Invite Link</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
 export default function CommunityOutreachScreen() {
@@ -550,6 +587,7 @@ export default function CommunityOutreachScreen() {
   const s      = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
   const accent = useAccentColor();
+  const dataMode = useDataMode();
 
   const topBarH   = insets.top + TOP_BAR_H;
   const pillsAnim  = useRef(new Animated.Value(0)).current;
@@ -640,6 +678,8 @@ export default function CommunityOutreachScreen() {
     Haptics.selectionAsync();
     setProspectStages(prev => ({ ...prev, [prospectId]: stage }));
   }, []);
+
+  if (dataMode === 'live') return <LiveOutreachView C={C} insets={insets} />;
 
   const contentPaddingTop = topBarH + (pillsVisible ? PILLS_H : 0) + 8;
 

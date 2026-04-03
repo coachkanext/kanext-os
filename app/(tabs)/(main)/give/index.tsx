@@ -20,6 +20,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useDataMode } from '@/utils/global-demo-mode';
 import {
   FUNDS, GIVING_CAMPAIGNS, SAVED_PAYMENT_METHODS, MY_RECURRING_GIFTS,
   MY_PLEDGES, ALL_PLEDGES, GIVING_TRANSACTIONS, ADMIN_DASHBOARD,
@@ -59,12 +60,50 @@ function daysRemaining(deadline: string): number {
   return Math.max(0, Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
 }
 
+// ── Live Public View ──────────────────────────────────────────────────────────
+
+function LiveGiveView({ C, insets }: { C: any; insets: any }) {
+  const funds = ['General Fund', 'Building Fund', 'Missions'];
+  const amounts = ['$25', '$50', '$100', '$250', 'Custom'];
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 120, gap: 16 }}>
+        <View style={{ gap: 4, paddingTop: 8, alignItems: 'center' }}>
+          <Text style={{ fontSize: 22, fontWeight: '700', color: C.label }}>Give to ICCLA</Text>
+          <Text style={{ fontSize: 14, color: C.secondary, textAlign: 'center' }}>Every gift supports our mission to serve our community and the world.</Text>
+        </View>
+        <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Select Fund</Text>
+        {funds.map(f => (
+          <Pressable key={f} style={{ backgroundColor: C.surface, borderRadius: 12, padding: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Text style={{ fontSize: 14, color: C.label }}>{f}</Text>
+            <Text style={{ fontSize: 14, color: C.secondary }}>○</Text>
+          </Pressable>
+        ))}
+        <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Amount</Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+          {amounts.map(a => (
+            <View key={a} style={{ backgroundColor: C.surface, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 18, borderWidth: 1, borderColor: C.separator }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.secondary }}>{a}</Text>
+            </View>
+          ))}
+        </View>
+        <Pressable style={{ backgroundColor: C.label, borderRadius: 14, padding: 16, alignItems: 'center' }}>
+          <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>Give with KPay</Text>
+        </Pressable>
+        <Text style={{ fontSize: 12, color: C.secondary, textAlign: 'center' }}>ICCLA is a registered 501(c)(3). Your gift may be tax-deductible.</Text>
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
 export default function CommunityGiveScreen() {
   const C      = useColors();
   const s      = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
+  const dataMode = useDataMode();
 
   const topBarH   = insets.top + TOP_BAR_H;
   const pillsAnim = useRef(new Animated.Value(0)).current;
@@ -188,6 +227,8 @@ export default function CommunityGiveScreen() {
   const closeTxDetail = useCallback(() => {
     Animated.timing(txSheetAnim, { toValue: 0, duration: 220, useNativeDriver: true }).start(() => setSelectedTxId(null));
   }, [txSheetAnim]);
+
+  if (dataMode === 'live') return <LiveGiveView C={C} insets={insets} />;
 
   // ── Render: Give tab ─────────────────────────────────────────────────────────
 

@@ -22,6 +22,7 @@ import { useAppContext } from '@/context/app-context';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole, MODE_ACCENTS } from '@/utils/demo-role-store';
+import { useDataMode } from '@/utils/global-demo-mode';
 import {
   BALANCE, APY_RATE, QUICK_RECIPIENTS, CARD_INFO,
   INFRA_FUND, CAPITAL_POINTS, REMITTANCE_RECIPIENTS,
@@ -509,6 +510,51 @@ const KAYPAY_ROLE_KEYS: Record<string, string> = {
   personal:  'personal:kaypay',
 };
 
+// ── Live Mode Public View ──────────────────────────────────────────────────
+
+function LiveKpayView({ mode, C, insets }: { mode: string; C: any; insets: any }) {
+  const payInfo = {
+    personal: { name: 'Sammy Kalejaiye', desc: 'Send a payment or tip directly to Sammy.' },
+    business: { name: 'KaNeXT LLC', desc: 'Pay an invoice or purchase a product or service from KaNeXT.' },
+    education: { name: 'Lincoln University', desc: 'Pay tuition, fees, or application fee.' },
+    community: { name: 'ICCLA', desc: 'Give to ICCLA. Every contribution supports our mission.' },
+    sports: { name: "LU Men's Basketball", desc: 'Buy merch, tickets, or support the program.' },
+  }[mode] ?? { name: 'KaNeXT', desc: 'Send a payment.' };
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <View style={{ paddingHorizontal: 20, paddingTop: 24, gap: 20 }}>
+        {/* Recipient card */}
+        <View style={{ backgroundColor: C.surface, borderRadius: 16, padding: 20, gap: 10, alignItems: 'center' }}>
+          <Text style={{ fontSize: 18, fontWeight: '700', color: C.label }}>{payInfo.name}</Text>
+          <Text style={{ fontSize: 14, color: C.secondary, textAlign: 'center' }}>{payInfo.desc}</Text>
+        </View>
+        {/* Amount input area (static display) */}
+        <View style={{ backgroundColor: C.surface, borderRadius: 16, padding: 20, gap: 12 }}>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Amount</Text>
+          <View style={{ backgroundColor: C.bg, borderRadius: 12, borderWidth: 1, borderColor: C.separator, padding: 16 }}>
+            <Text style={{ fontSize: 28, fontWeight: '700', color: C.secondary }}>$0.00</Text>
+          </View>
+          {/* Preset amounts */}
+          <View style={{ flexDirection: 'row', gap: 10 }}>
+            {['$25', '$50', '$100', '$250'].map(amt => (
+              <View key={amt} style={{ flex: 1, backgroundColor: C.bg, borderRadius: 10, borderWidth: 1, borderColor: C.separator, padding: 10, alignItems: 'center' }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>{amt}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+        {/* CTA */}
+        <Pressable style={{ backgroundColor: C.label, borderRadius: 14, padding: 16, alignItems: 'center' }}>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: C.bg }}>Continue with KPay</Text>
+        </Pressable>
+        <Text style={{ fontSize: 12, color: C.secondary, textAlign: 'center' }}>Sign in to KaNeXT to complete your payment.</Text>
+      </View>
+    </View>
+  );
+}
+
 export default function KayPayScreen(){
   const C=useColors();
   const insets=useSafeAreaInsets();
@@ -516,6 +562,8 @@ export default function KayPayScreen(){
   const topBarH=insets.top+TOP_BAR_H;
   const { state } = useAppContext();
   const mode = state.activeContext?.mode ?? state.mode ?? 'business';
+  const dataMode = useDataMode();
+
   const roleKey = KAYPAY_ROLE_KEYS[mode] ?? 'business:kaypay';
   const [role, cycleRole, roleCycles] = useDemoRole(roleKey);
   const isAdminRole = role === roleCycles[0];
@@ -540,6 +588,8 @@ export default function KayPayScreen(){
   const [showSuccess,setShowSuccess]=useState(false);
   const [expandedSettlement,setExpandedSettlement]=useState(null);
   useFocusEffect(useCallback(()=>{resetFooter();},[]));
+
+  if (dataMode === 'live') return <LiveKpayView mode={mode} C={C} insets={insets} />;
 
   function togglePills(){
     Haptics.selectionAsync();

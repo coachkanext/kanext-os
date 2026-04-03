@@ -19,6 +19,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { useDataMode } from '@/utils/global-demo-mode';
 import {
   DEALS, BIZ_CONTACTS, CAMPAIGNS, BIZ_DASHBOARD, ACTIVITY_FEED,
   getContactById, getEmployeeById,
@@ -53,10 +54,53 @@ function dealStageBg(stage: DealStage): string {
   return colors[stage];
 }
 
+function LiveInquiriesView({ C, insets }: { C: any; insets: any }) {
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 120, gap: 16 }}>
+        <View style={{ gap: 4, paddingTop: 8 }}>
+          <Text style={{ fontSize: 20, fontWeight: '700', color: C.label }}>Contact Us</Text>
+          <Text style={{ fontSize: 14, color: C.secondary }}>We'd love to hear from you. Fill out the form below.</Text>
+        </View>
+        {[
+          { label: 'Your Name', placeholder: 'Full name' },
+          { label: 'Email', placeholder: 'you@company.com' },
+          { label: 'Company / Organization', placeholder: 'Optional' },
+        ].map(field => (
+          <View key={field.label} style={{ gap: 6 }}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>{field.label}</Text>
+            <View style={{ backgroundColor: C.surface, borderRadius: 12, borderWidth: 1, borderColor: C.separator, padding: 14 }}>
+              <Text style={{ fontSize: 14, color: C.secondary }}>{field.placeholder}</Text>
+            </View>
+          </View>
+        ))}
+        <View style={{ gap: 6 }}>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>Message</Text>
+          <View style={{ backgroundColor: C.surface, borderRadius: 12, borderWidth: 1, borderColor: C.separator, padding: 14, height: 100 }}>
+            <Text style={{ fontSize: 14, color: C.secondary }}>Tell us how we can help...</Text>
+          </View>
+        </View>
+        <Pressable style={{ backgroundColor: C.label, borderRadius: 14, padding: 16, alignItems: 'center' }}>
+          <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>Send Message</Text>
+        </Pressable>
+        <View style={{ gap: 8, paddingTop: 8 }}>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Or reach us directly</Text>
+          <Text style={{ fontSize: 14, color: C.label }}>hello@kanext.io</Text>
+          <Text style={{ fontSize: 14, color: C.label }}>kanext.io</Text>
+          <Text style={{ fontSize: 14, color: C.label }}>Miami, FL</Text>
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
 export default function InquiriesScreen() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
+  const dataMode = useDataMode();
   const s      = useMemo(() => makeStyles(C), [C]);
+
   const topBarH = insets.top + TOP_BAR_H;
 
   const [activeTab,    setActiveTab]    = useState<InqTab>('Pipeline');
@@ -126,6 +170,8 @@ export default function InquiriesScreen() {
     }),
     [],
   );
+
+  if (dataMode === 'live') return <LiveInquiriesView C={C} insets={insets} />;
 
   function renderDealDetail(deal: Deal) {
     const contact  = getContactById(deal.contactId);

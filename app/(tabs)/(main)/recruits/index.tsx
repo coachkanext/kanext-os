@@ -20,6 +20,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useDataMode } from '@/utils/global-demo-mode';
 import { GlassView } from '@/components/ui/glass-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
@@ -535,13 +536,55 @@ const sheetS = StyleSheet.create({
   },
 });
 
+// ── Live Public View ──────────────────────────────────────────────────────────
+
+const LIVE_COMMIT_NEWS = [
+  { id: '1', name: 'Jordan Shaw', pos: 'PG', school: 'Oakland Tech', date: 'Mar 28, 2026', note: 'Committed to Lincoln University. Welcome to the family, #1! 🙌' },
+  { id: '2', name: 'Marcus Webb', pos: 'SF', school: 'Fremont HS', date: 'Feb 14, 2026', note: 'Marcus Webb signs his NLI. Another Oakland kid coming home.' },
+  { id: '3', name: 'Chris Avery', pos: 'PG', school: 'Fresno City College (Transfer)', date: 'Jan 10, 2026', note: 'Transfer portal add. Avery brings 3 years of JUCO experience.' },
+];
+
+function LiveRecruitsView({ C, insets }: { C: any; insets: any }) {
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 12 }}>
+        <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, paddingTop: 8 }}>Recruiting News</Text>
+        <Text style={{ fontSize: 14, color: C.secondary, lineHeight: 20, paddingBottom: 4 }}>
+          Follow LU Basketball recruiting. Commit announcements, signing day news, and transfer portal updates.
+        </Text>
+        {LIVE_COMMIT_NEWS.map(c => (
+          <View key={c.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 8 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <View style={{ gap: 2 }}>
+                <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{c.name}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>{c.pos} · {c.school}</Text>
+              </View>
+              <Text style={{ fontSize: 11, color: C.secondary }}>{c.date}</Text>
+            </View>
+            <Text style={{ fontSize: 14, color: C.label, lineHeight: 19 }}>{c.note}</Text>
+          </View>
+        ))}
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 8, alignItems: 'center' }}>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>Stay Updated</Text>
+          <Text style={{ fontSize: 13, color: C.secondary, textAlign: 'center' }}>Sign in to follow LU Basketball recruiting and get notified on commits.</Text>
+          <Pressable style={{ backgroundColor: C.label, borderRadius: 10, paddingVertical: 10, paddingHorizontal: 24 }}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.bg }}>Follow Recruiting</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
 export default function RecruitsScreen() {
-  const C      = useColors();
-  const insets = useSafeAreaInsets();
-  const s      = useMemo(() => makeStyles(C), [C]);
-  const router = useRouter();
+  const C        = useColors();
+  const insets   = useSafeAreaInsets();
+  const s        = useMemo(() => makeStyles(C), [C]);
+  const router   = useRouter();
+  const dataMode = useDataMode();
 
   // ── RBAC demo role ──
   const [role, cycleRole] = useDemoRole('sports:recruits');
@@ -661,6 +704,8 @@ export default function RecruitsScreen() {
     setPendingEvalQuery(query);
     router.push('/nexus' as any);
   }, [router]);
+
+  if (dataMode === 'live') return <LiveRecruitsView C={C} insets={insets} />;
 
   // ─────────────────────────────────────────────────────────────────────────
   // Render helpers

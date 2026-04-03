@@ -10,6 +10,7 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useDataMode, setDataMode } from '@/utils/global-demo-mode';
 import {
   View, Text, TextInput, Pressable, StyleSheet, ScrollView,
 } from 'react-native';
@@ -71,7 +72,7 @@ export function OrgDrawer() {
   const [filterKey, setFilterKey] = useState<FilterKey>('all');
   const [showModeFilter, setShowModeFilter] = useState(false);
   const [search, setSearch] = useState('');
-  const [dataMode, setDataMode] = useState<'demo' | 'live'>('demo');
+  const dataMode = useDataMode();
   const [pulseCounts, setPulseCounts] = useState<Record<string, number>>({});
 
   useEffect(() => subscribePulseOrgBadges(setPulseCounts), []);

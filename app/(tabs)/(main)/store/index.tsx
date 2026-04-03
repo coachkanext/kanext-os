@@ -20,6 +20,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useDataMode } from '@/utils/global-demo-mode';
 import {
   getProducts, getFeaturedBanner, getOrders, getDrops,
   STORE_CATEGORIES, ORDER_FILTERS, DROP_FILTERS, formatPrice,
@@ -191,12 +192,58 @@ function DropCard({ item, C }: { item: DropItem; C: ComponentColors }) {
   );
 }
 
+// ── Live Mode Public Store ─────────────────────────────────────────────────────
+
+const LIVE_BIZ_PRODUCTS = [
+  { id: '1', emoji: '🚀', name: 'KaNeXT OS — Starter Plan', price: '$299/mo', desc: 'For small organizations. Up to 50 users, 3 modes, core tiles.' },
+  { id: '2', emoji: '🏢', name: 'KaNeXT OS — Enterprise', price: 'Custom', desc: 'Full platform deployment for large institutions. Contact for pricing.' },
+  { id: '3', emoji: '🏀', name: 'Athletic Intelligence Add-on', price: '$149/mo', desc: 'Player pool, KR evaluations, scouting reports. Requires base plan.' },
+  { id: '4', emoji: '🎓', name: 'Education Intelligence Add-on', price: '$99/mo', desc: 'Admissions KR, student success tracking. Requires base plan.' },
+  { id: '5', emoji: '💼', name: 'Implementation Package', price: '$4,500', desc: 'Onboarding, data migration, and 90-day success support.' },
+  { id: '6', emoji: '📊', name: 'Custom Intelligence Build', price: 'From $10K', desc: 'Custom KR model and knowledge base for your specific domain.' },
+];
+
+function LiveBizStoreView({ C, insets }: { C: any; insets: any }) {
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 12 }}>
+        <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, paddingTop: 8 }}>Products & Services</Text>
+        <Text style={{ fontSize: 14, color: C.secondary, paddingBottom: 4 }}>KaNeXT OS plans and add-ons.</Text>
+        {LIVE_BIZ_PRODUCTS.map(item => (
+          <View key={item.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 10 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+              <View style={{ width: 52, height: 52, backgroundColor: C.separator, borderRadius: 12, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 24 }}>{item.emoji}</Text>
+              </View>
+              <View style={{ flex: 1, gap: 3 }}>
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{item.name}</Text>
+                <Text style={{ fontSize: 13, color: C.secondary, lineHeight: 17 }}>{item.desc}</Text>
+              </View>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{item.price}</Text>
+              <Pressable style={{ backgroundColor: C.label, borderRadius: 10, paddingVertical: 8, paddingHorizontal: 16 }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: C.bg }}>
+                  {item.price === 'Custom' ? 'Contact Us' : 'Get Started'}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
 export default function StoreScreen() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
+  const dataMode = useDataMode();
   const s      = useMemo(() => makeStyles(C), [C]);
+
   const topBarH = insets.top + TOP_BAR_H;
 
   const [activeTab,    setActiveTab]    = useState<StoreTab>('Products');
@@ -264,6 +311,8 @@ export default function StoreScreen() {
   }, [selectedPill]);
 
   const filteredDrops = useMemo(() => getDrops(dropFilterKey), [dropFilterKey]);
+
+  if (dataMode === 'live') return <LiveBizStoreView C={C} insets={insets} />;
 
   // ── CEO Store Dashboard ──────────────────────────────────────────────────
 

@@ -18,6 +18,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { RolePill } from '@/components/ui/role-pill';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useDataMode } from '@/utils/global-demo-mode';
 import { useColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
@@ -1067,12 +1068,55 @@ function CollaborateView({ C, topBarH }: { C: ReturnType<typeof useColors>; topB
   );
 }
 
+// ── Live Mode Public View ─────────────────────────────────────────────────────
+
+const LIVE_RATE_CARD = [
+  { service: 'Speaking Engagement', rate: 'Starting at $5,000', desc: 'Keynote or panel for conferences, events, summits.' },
+  { service: 'Brand Partnership', rate: 'Starting at $2,500/month', desc: 'Long-form partnership integrations for aligned brands.' },
+  { service: 'Consulting — Sports Tech', rate: 'Starting at $500/hour', desc: 'Strategic advisory for sports organizations and tech companies.' },
+  { service: 'Advisory Role', rate: 'Equity + retainer', desc: 'Board advisory for early-stage companies in sports, AI, and EdTech.' },
+];
+
+function LiveDealsView({ C, insets }: { C: any; insets: any }) {
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 16 }}>
+        <View style={{ gap: 4, paddingTop: 8 }}>
+          <Text style={{ fontSize: 20, fontWeight: '700', color: C.label }}>Collaborate</Text>
+          <Text style={{ fontSize: 14, color: C.secondary }}>Work with Sammy Kalejaiye</Text>
+        </View>
+        {/* CTA buttons */}
+        <View style={{ gap: 10 }}>
+          <Pressable style={{ backgroundColor: C.label, borderRadius: 14, padding: 16, alignItems: 'center' }}>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>Submit a Proposal</Text>
+          </Pressable>
+          <Pressable style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, alignItems: 'center', borderWidth: 1, borderColor: C.separator }}>
+            <Text style={{ fontSize: 15, fontWeight: '600', color: C.label }}>Book a Call</Text>
+          </Pressable>
+        </View>
+        {/* Rate card */}
+        <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Services & Rates</Text>
+        {LIVE_RATE_CARD.map(item => (
+          <View key={item.service} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 6 }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{item.service}</Text>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>{item.rate}</Text>
+            <Text style={{ fontSize: 13, color: C.secondary, lineHeight: 18 }}>{item.desc}</Text>
+          </View>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
 export default function DealsScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const topBarH = insets.top + TOP_BAR_H;
+
+  const dataMode = useDataMode();
 
   const [role, cycleRole, roleCycles] = useDemoRole('personal:deals');
   const isOwner = role === roleCycles[0];
@@ -1132,6 +1176,9 @@ export default function DealsScreen() {
 
   const scrollPadTop = topBarH + (showPills ? PILL_ROW_H : 0) + 8;
   const pills = TAB_PILLS[tab];
+
+  // ── Live mode public view ──────────────────────────────────────────────────
+  if (dataMode === 'live') return <LiveDealsView C={C} insets={insets} />;
 
   // ── Subscriber (Collaborate) view ──────────────────────────────────────────
   if (!isOwner) {

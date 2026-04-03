@@ -27,6 +27,7 @@ import { useAccentColor } from '@/hooks/use-accent-color';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useDataMode } from '@/utils/global-demo-mode';
 import {
   COMMUNITY_MEMBERS, ROLE_DEFINITIONS, ATTENDANCE_CHART,
   ATTENDANCE_EVENTS, ATTENDANCE_STATS, MY_ATTENDANCE_HISTORY,
@@ -551,6 +552,53 @@ function AlphabetIndex({ letters, onPress, C, topOffset }: { letters: string[]; 
   );
 }
 
+// ── Live Public View ──────────────────────────────────────────────────────────
+
+const LIVE_MINISTRIES_LIST = [
+  { name: 'Youth Ministry', desc: 'Ages 13–25. Fridays 6 PM.' },
+  { name: "Women's Ministry", desc: 'Monthly gatherings. Bible study and fellowship.' },
+  { name: "Men's Ministry", desc: 'First Saturday of each month.' },
+  { name: 'Marriage Ministry', desc: 'For couples at every stage of marriage.' },
+  { name: 'Prayer Ministry', desc: 'Corporate prayer Tuesdays 6 AM.' },
+  { name: "Children's Ministry", desc: 'Sunday School during both services.' },
+  { name: 'Choir & Worship', desc: 'Rehearsal Thursdays 7 PM. All voices welcome.' },
+  { name: 'Media Ministry', desc: 'Live stream, audio, photography, social.' },
+  { name: 'Community Outreach', desc: 'Monthly local outreach events.' },
+  { name: 'International Ministry', desc: 'Connecting our global family.' },
+];
+
+function LiveMembersView({ C, insets }: { C: any; insets: any }) {
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 12 }}>
+        <Text style={{ fontSize: 20, fontWeight: '700', color: C.label, paddingTop: 8 }}>Connect With Us</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 16, padding: 16, gap: 10 }}>
+          <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>I Visited</Text>
+          <Text style={{ fontSize: 13, color: C.secondary, lineHeight: 18 }}>New to ICCLA? Register your visit and we'll reach out to welcome you personally.</Text>
+          <View style={{ gap: 10 }}>
+            {['Your Name', 'Email Address', 'How did you hear about us?'].map(f => (
+              <View key={f} style={{ backgroundColor: C.bg, borderRadius: 12, borderWidth: 1, borderColor: C.separator, padding: 14 }}>
+                <Text style={{ fontSize: 14, color: C.secondary }}>{f}</Text>
+              </View>
+            ))}
+            <Pressable style={{ backgroundColor: C.label, borderRadius: 12, paddingVertical: 12, alignItems: 'center' }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Register My Visit</Text>
+            </Pressable>
+          </View>
+        </View>
+        <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Ministries</Text>
+        {LIVE_MINISTRIES_LIST.map(m => (
+          <View key={m.name} style={{ backgroundColor: C.surface, borderRadius: 12, padding: 14, gap: 4 }}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{m.name}</Text>
+            <Text style={{ fontSize: 13, color: C.secondary }}>{m.desc}</Text>
+          </View>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
 export default function CommunityMembersScreen() {
@@ -559,6 +607,7 @@ export default function CommunityMembersScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const accent = useAccentColor();
+  const dataMode = useDataMode();
 
   const topBarH    = insets.top + TOP_BAR_H;
   const scrollRef  = useRef<ScrollView>(null);
@@ -738,6 +787,8 @@ export default function CommunityMembersScreen() {
       return next;
     });
   }, []);
+
+  if (dataMode === 'live') return <LiveMembersView C={C} insets={insets} />;
 
   // ── Render functions ────────────────────────────────────────────────────────
 

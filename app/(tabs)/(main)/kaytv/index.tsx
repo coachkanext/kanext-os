@@ -23,6 +23,7 @@ import { useAppContext } from '@/context/app-context';
 import { hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { useDemoRole, MODE_ACCENTS } from '@/utils/demo-role-store';
+import { useDataMode } from '@/utils/global-demo-mode';
 import {
   getKayTVFeed, getExploreRows, getWatchHistoryFeed, getWatchLaterFeed,
   getLikedVideosFeed, getPlaylists, KAYTV_CATEGORIES,
@@ -1336,12 +1337,93 @@ function CommunityPastorMediaView({
   );
 }
 
+// ── Live Mode Public View ──────────────────────────────────────────────────
+
+const LIVE_KTV_CONTENT: Record<string, { title: string; items: Array<{ id: string; title: string; duration: string; thumb: string; locked?: boolean }> }> = {
+  personal: {
+    title: "Sammy's Videos",
+    items: [
+      { id: '1', title: 'KaNeXT OS — Full Product Demo', duration: '18:42', thumb: '🎬' },
+      { id: '2', title: 'The Future of Sports Intelligence', duration: '12:05', thumb: '🏀' },
+      { id: '3', title: 'Founder Story: Why I Built KaNeXT', duration: '24:17', thumb: '🚀' },
+      { id: '4', title: 'Live Q&A Recap — March 2026', duration: '45:00', thumb: '💬', locked: true },
+    ],
+  },
+  business: {
+    title: 'KaNeXT Media',
+    items: [
+      { id: '1', title: 'KaNeXT OS Platform Overview', duration: '8:30', thumb: '💼' },
+      { id: '2', title: 'Athletic Intelligence — How It Works', duration: '15:22', thumb: '🏟' },
+      { id: '3', title: 'Customer Success: Lincoln University', duration: '6:45', thumb: '🎓' },
+      { id: '4', title: 'Investor Briefing Q1 2026', duration: '32:00', thumb: '📊', locked: true },
+    ],
+  },
+  education: {
+    title: 'Lincoln University Videos',
+    items: [
+      { id: '1', title: 'Campus Tour — Oakland, CA', duration: '7:12', thumb: '🏛' },
+      { id: '2', title: 'MBA Program Overview', duration: '5:48', thumb: '🎓' },
+      { id: '3', title: 'Student Testimonials 2026', duration: '9:30', thumb: '👩‍🎓' },
+      { id: '4', title: 'Commencement Highlights 2025', duration: '22:15', thumb: '🎉' },
+    ],
+  },
+  community: {
+    title: 'ICCLA Sermons & Events',
+    items: [
+      { id: '1', title: 'Sunday Service — Apr 5: Easter Sunday', duration: '1:12:00', thumb: '✝️' },
+      { id: '2', title: 'Wednesday Bible Study — John 15', duration: '52:30', thumb: '📖' },
+      { id: '3', title: 'Youth Conference Recap 2025', duration: '28:45', thumb: '🙌' },
+      { id: '4', title: 'Sunday Service — Mar 29', duration: '58:20', thumb: '✝️' },
+    ],
+  },
+  sports: {
+    title: 'LU Basketball',
+    items: [
+      { id: '1', title: 'Full Game: LU 78, Dominican 65', duration: '1:48:22', thumb: '🏀' },
+      { id: '2', title: 'Season Highlights Reel 2025-26', duration: '4:30', thumb: '🎬' },
+      { id: '3', title: 'Laolu Kalejaiye — Player Profile', duration: '3:15', thumb: '⭐' },
+      { id: '4', title: 'Behind the Scenes: Road Trip', duration: '8:45', thumb: '🚌' },
+    ],
+  },
+};
+
+function LiveKtvView({ mode, C, insets }: { mode: string; C: any; insets: any }) {
+  const content = LIVE_KTV_CONTENT[mode] ?? LIVE_KTV_CONTENT.personal;
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 12 }}>
+        <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, paddingTop: 8, paddingBottom: 4 }}>{content.title}</Text>
+        {content.items.map(item => (
+          <Pressable key={item.id} style={{ backgroundColor: C.surface, borderRadius: 14, flexDirection: 'row', padding: 14, gap: 14, alignItems: 'center' }}>
+            <View style={{ width: 56, height: 56, backgroundColor: C.separator, borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ fontSize: 24 }}>{item.thumb}</Text>
+            </View>
+            <View style={{ flex: 1, gap: 4 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: item.locked ? C.secondary : C.label }}>{item.title}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary }}>{item.duration}</Text>
+            </View>
+            {item.locked ? (
+              <View style={{ backgroundColor: C.separator, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 4 }}>
+                <Text style={{ fontSize: 11, color: C.secondary }}>🔒 Subscribe</Text>
+              </View>
+            ) : (
+              <Text style={{ fontSize: 20, color: C.secondary }}>▶</Text>
+            )}
+          </Pressable>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
 export default function KayTVScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { state } = useAppContext();
   const mode = state.activeContext?.mode ?? state.mode ?? 'business';
+  const dataMode = useDataMode();
 
   const roleKey = KAYTV_ROLE_KEYS[mode] ?? 'business';
   const [role, cycleRole, roleCycles] = useDemoRole(roleKey);
@@ -1417,6 +1499,8 @@ export default function KayTVScreen() {
       params: { videoId },
     });
   }, [router]);
+
+  if (dataMode === 'live') return <LiveKtvView mode={mode} C={C} insets={insets} />;
 
   // ── Personal Subscriber "Videos" view ─────────────────────────────────
   if (mode === 'personal' && !isOwner) {
