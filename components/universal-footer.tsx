@@ -201,7 +201,7 @@ export function UniversalFooter() {
         >
           <Image
             source={require('@/assets/nexus-icon.png')}
-            style={{ width: 24, height: 24, tintColor: activeNexus ? C.label : C.muted }}
+            style={{ width: 28, height: 28, tintColor: activeNexus ? C.label : C.muted }}
             resizeMode="contain"
           />
         </Pressable>
