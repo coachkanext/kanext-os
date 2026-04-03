@@ -926,6 +926,334 @@ function ProfileView({ C }: { C: ComponentColors }) {
   );
 }
 
+// ── Business CEO: Feed / Announcements / Internal ─────────────────────
+
+type BizCEOTab = 'Feed' | 'Announcements' | 'Internal';
+
+const BIZ_CEO_FEED_POSTS = [
+  { id: 'bc1', author: 'Sammy Kalejaiye', initials: 'SK', time: '1h', visibility: 'Public', pinned: true, views: 3241, likes: 187, comments: 43, shares: 62, text: 'KaNeXT OS V2 just shipped 3 new intelligence features — read the full release notes. The team has been cooking for months and this is just the beginning.' },
+  { id: 'bc2', author: 'KaNeXT LLC', initials: 'KN', time: '3h', visibility: 'Public', pinned: false, views: 1847, likes: 94, comments: 21, shares: 38, text: 'Partnership signed with Lincoln University Oakland for Education Mode pilot. Proud to support historically Black institutions with next-gen technology.' },
+  { id: 'bc3', author: 'KaNeXT LLC', initials: 'KN', time: '1d', visibility: 'Team Only', pinned: false, views: 312, likes: 48, comments: 9, shares: 0, text: 'Team hit $49K MRR this month. That is a 34% jump from February. Execution is everything.' },
+  { id: 'bc4', author: 'Press Coverage', initials: 'PC', time: '2d', visibility: 'Public', pinned: false, views: 2108, likes: 113, comments: 17, shares: 54, text: 'TechCrunch covered KaNeXT in their Top 10 Startup Tools of Q1 2026 roundup. Great visibility for the brand — sharing with the team.' },
+];
+
+const BIZ_ANNOUNCEMENTS = [
+  { id: 'ba1', title: 'Q1 Product Update', body: 'Intelligence features v2 live: real-time corpus updates, prompt caching, and eval protocol v1.1. See release notes in the portal.', date: 'Apr 1', distribution: 'Public', pushSent: true, readCount: 2847 },
+  { id: 'ba2', title: 'NAIA Mandate Outreach Campaign Launched', body: 'We are reaching out to all 258 NAIA institutions to introduce KaNeXT Sports Mode. Email sequence live. BD team leading.', date: 'Mar 28', distribution: 'Team', pushSent: true, readCount: 18 },
+  { id: 'ba3', title: 'Investor Demo Day — April 15', body: 'Demo Day is confirmed for April 15 at 2 PM EST. Pitch deck v7 shared in Notion. All team members should be available on standby.', date: 'Mar 25', distribution: 'Investors', pushSent: false, readCount: 7 },
+];
+
+const BIZ_INTERNAL_POSTS = [
+  { id: 'bi1', author: 'Sammy Kalejaiye', initials: 'SK', time: '2h', likes: 14, comments: 3, text: 'Welcome our new engineer David Chen! First day today — he is diving straight into the corpus pipeline.' },
+  { id: 'bi2', author: 'Operations', initials: 'OP', time: '5h', likes: 9, comments: 2, text: 'Q1 retro this Friday at 3 PM EST. Link in the calendar invite. Come with your wins and blockers.' },
+  { id: 'bi3', author: 'Sammy Kalejaiye', initials: 'SK', time: '1d', likes: 22, comments: 6, text: 'Shoutout to the BD team for closing 3 deals this week. That is what we are talking about. Keep the momentum going.' },
+  { id: 'bi4', author: 'Design', initials: 'DS', time: '2d', likes: 11, comments: 1, text: 'New dark mode refinements are in TestFlight build #14. Please QA before Monday. Especially the Nexus screen edge cases.' },
+];
+
+function BusinessCEOSocialView({
+  C, insets, role, cycleRole, accent,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+  accent: string;
+}) {
+  const [bizTab, setBizTab] = useState("Feed" as BizCEOTab);
+  const [bizDrop, setBizDrop] = useState(false);
+  const [feedVisibility, setFeedVisibility] = useState("Public" as string);
+  const [ceoLiked, setCeoLiked] = useState(new Set() as Set<string>);
+  const TOP_BAR_H = 52;
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top bar */}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: insets.top + TOP_BAR_H, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <IconSymbol name='line.3.horizontal' size={22} color={C.label} />
+        </Pressable>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setBizDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{bizTab as string}</Text>
+          <IconSymbol name={bizDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
+        </Pressable>
+        <View style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary />
+        </View>
+      </View>
+      {/* Tab dropdown */}
+      {bizDrop && (
+        <View style={{ position: 'absolute', top: insets.top + TOP_BAR_H + 4, left: '18%', right: '18%', backgroundColor: C.surface, borderRadius: 14, zIndex: 100, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 8, overflow: 'hidden' }}>
+          {(['Feed', 'Announcements', 'Internal'] as BizCEOTab[]).map((tab, i, arr) => (
+            <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setBizTab(tab as BizCEOTab); setBizDrop(false); }} style={{ paddingVertical: 13, paddingHorizontal: 16, borderBottomWidth: i < arr.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }}>
+              <Text style={{ fontSize: 15, color: tab === bizTab ? C.label : C.secondary, fontWeight: tab === bizTab ? '600' : '400' }}>{tab}</Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
+      {/* FEED */}
+      {bizTab === "Feed" && (
+        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 12, paddingBottom: 120 }}>
+          {/* Post composer */}
+          <View style={{ marginHorizontal: 14, marginBottom: 14, backgroundColor: C.surface, borderRadius: 16, padding: 14 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+              <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>SK</Text>
+              </View>
+              <View style={{ flex: 1, height: 36, borderRadius: 18, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, alignItems: 'flex-start', justifyContent: 'center', paddingHorizontal: 14 }}>
+                <Text style={{ fontSize: 14, color: C.muted }}>Post as KaNeXT...</Text>
+              </View>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <Text style={{ fontSize: 12, color: C.secondary }}>Visibility:</Text>
+              {(['Public', 'Team Only', 'Clients Only'] as const).map(v => (
+                <Pressable key={v} onPress={() => { Haptics.selectionAsync(); setFeedVisibility(v); }} style={{ paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, backgroundColor: feedVisibility === v ? C.label : C.surfacePressed }}>
+                  <Text style={{ fontSize: 12, fontWeight: '600', color: feedVisibility === v ? C.bg : C.secondary }}>{v}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+          {BIZ_CEO_FEED_POSTS.map(post => (
+            <View key={post.id} style={{ borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingTop: 12, paddingBottom: 6, gap: 10 }}>
+                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>{post.initials}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{post.author}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 1, flexWrap: 'wrap' }}>
+                    <Text style={{ fontSize: 12, color: C.secondary }}>{post.time}</Text>
+                    <View style={{ backgroundColor: post.visibility === 'Public' ? '#5A8A6E22' : C.surfacePressed, borderRadius: 5, paddingHorizontal: 6, paddingVertical: 1 }}>
+                      <Text style={{ fontSize: 10, fontWeight: '700', color: post.visibility === 'Public' ? '#5A8A6E' : C.secondary }}>{post.visibility}</Text>
+                    </View>
+                    {post.pinned && (
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+                        <IconSymbol name='pin.fill' size={10} color={C.secondary} />
+                        <Text style={{ fontSize: 10, fontWeight: '700', color: C.secondary }}>Pinned</Text>
+                      </View>
+                    )}
+                  </View>
+                </View>
+                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+                  <IconSymbol name='ellipsis' size={18} color={C.secondary} />
+                </Pressable>
+              </View>
+              <Text style={{ fontSize: 15, color: C.label, paddingHorizontal: 14, paddingBottom: 10, lineHeight: 22 }}>{post.text}</Text>
+              {/* Engagement stats */}
+              <View style={{ flexDirection: 'row', gap: 16, paddingHorizontal: 14, paddingBottom: 8 }}>
+                {[
+                  { icon: 'eye', value: post.views >= 1000 ? (post.views / 1000).toFixed(1) + 'K' : String(post.views) },
+                  { icon: 'heart', value: String(post.likes + (ceoLiked.has(post.id) ? 1 : 0)) },
+                  { icon: 'bubble.right', value: String(post.comments) },
+                  { icon: 'paperplane', value: String(post.shares) },
+                ].map(stat => (
+                  <View key={stat.icon} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <IconSymbol name={stat.icon as any} size={13} color={C.muted} />
+                    <Text style={{ fontSize: 12, color: C.muted }}>{stat.value}</Text>
+                  </View>
+                ))}
+              </View>
+              {/* Action row */}
+              <View style={{ flexDirection: 'row', gap: 20, paddingHorizontal: 14, paddingBottom: 12 }}>
+                <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setCeoLiked(s => { const n = new Set(s); if (n.has(post.id)) n.delete(post.id); else n.add(post.id); return n; }); }} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <IconSymbol name={ceoLiked.has(post.id) ? 'heart.fill' : 'heart'} size={18} color={ceoLiked.has(post.id) ? C.red : C.secondary} />
+                  <Text style={{ fontSize: 13, color: C.secondary }}>{post.likes + (ceoLiked.has(post.id) ? 1 : 0)}</Text>
+                </Pressable>
+                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <IconSymbol name='bubble.right' size={18} color={C.secondary} />
+                  <Text style={{ fontSize: 13, color: C.secondary }}>{post.comments}</Text>
+                </Pressable>
+                {post.pinned ? (
+                  <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                    <IconSymbol name='pin.fill' size={15} color={C.label} />
+                    <Text style={{ fontSize: 13, color: C.label, fontWeight: '600' }}>Pinned</Text>
+                  </Pressable>
+) : (
+                  <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                    <IconSymbol name='pin' size={15} color={C.secondary} />
+                    <Text style={{ fontSize: 13, color: C.secondary }}>Pin</Text>
+                  </Pressable>
+)  }
+                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <IconSymbol name='pencil' size={15} color={C.secondary} />
+                  <Text style={{ fontSize: 13, color: C.secondary }}>Edit</Text>
+                </Pressable>
+                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <IconSymbol name='trash' size={15} color={C.secondary} />
+                  <Text style={{ fontSize: 13, color: C.secondary }}>Delete</Text>
+                </Pressable>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+      )}
+      {/* ANNOUNCEMENTS */}
+      {bizTab === "Announcements" && (
+        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 12, paddingBottom: 120 }}>
+          <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ marginHorizontal: 14, marginBottom: 20, backgroundColor: C.label, borderRadius: 14, paddingVertical: 14, alignItems: 'center', opacity: pressed ? 0.8 : 1 })}>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>+ Schedule Announcement</Text>
+          </Pressable>
+          {BIZ_ANNOUNCEMENTS.map(ann => (
+            <View key={ann.id} style={{ marginHorizontal: 14, marginBottom: 12, backgroundColor: C.surface, borderRadius: 16, padding: 16 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 4 }}>
+                <Text style={{ fontSize: 15, fontWeight: '700', color: C.label, flex: 1, marginRight: 8 }}>{ann.title}</Text>
+                <View style={{ backgroundColor: C.surfacePressed, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 }}>
+                  <Text style={{ fontSize: 10, fontWeight: '700', color: C.secondary }}>{ann.distribution}</Text>
+                </View>
+              </View>
+              <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 10, lineHeight: 18 }}>{ann.body}</Text>
+              <Text style={{ fontSize: 12, color: C.muted, marginBottom: 12 }}>Published {ann.date} · {ann.readCount.toLocaleString()} reads</Text>
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                {ann.pushSent ? (
+                  <View style={{ backgroundColor: C.surfacePressed, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5 }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary }}>Push Sent</Text>
+                  </View>
+) : (
+                  <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.label, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 })}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: C.bg }}>Send Push</Text>
+                  </Pressable>
+)  }
+                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : 'transparent', borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 })}>
+                  <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary }}>Edit</Text>
+                </Pressable>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+      )}
+      {/* INTERNAL */}
+      {bizTab === "Internal" && (
+        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 12, paddingBottom: 120 }}>
+          <View style={{ marginHorizontal: 14, marginBottom: 12, backgroundColor: C.surfacePressed, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <IconSymbol name='lock.fill' size={13} color={C.secondary} />
+            <Text style={{ fontSize: 13, color: C.secondary }}>Visible to team members only</Text>
+          </View>
+          <View style={{ marginHorizontal: 14, marginBottom: 14, backgroundColor: C.surface, borderRadius: 16, padding: 14 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>SK</Text>
+              </View>
+              <View style={{ flex: 1, height: 36, borderRadius: 18, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, alignItems: 'flex-start', justifyContent: 'center', paddingHorizontal: 14 }}>
+                <Text style={{ fontSize: 14, color: C.muted }}>Share with the team...</Text>
+              </View>
+            </View>
+          </View>
+          {BIZ_INTERNAL_POSTS.map(post => (
+            <View key={post.id} style={{ borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingTop: 12, paddingBottom: 6, gap: 10 }}>
+                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>{post.initials}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{post.author}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{post.time}</Text>
+                </View>
+              </View>
+              <Text style={{ fontSize: 15, color: C.label, paddingHorizontal: 14, paddingBottom: 10, lineHeight: 22 }}>{post.text}</Text>
+              <View style={{ flexDirection: 'row', gap: 20, paddingHorizontal: 14, paddingBottom: 12 }}>
+                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <IconSymbol name='heart' size={18} color={C.secondary} />
+                  <Text style={{ fontSize: 13, color: C.secondary }}>{post.likes}</Text>
+                </Pressable>
+                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <IconSymbol name='bubble.right' size={18} color={C.secondary} />
+                  <Text style={{ fontSize: 13, color: C.secondary }}>{post.comments}</Text>
+                </Pressable>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+      )}
+    </View>
+  );
+}
+
+// ── Business Customer: Company updates feed ────────────────────────────
+
+const BIZ_CUSTOMER_POSTS = [
+  { id: 'bcu1', author: 'KaNeXT LLC', initials: 'KN', time: '1h', tag: 'Product Update', tagColor: '#5A8A6E', text: 'KaNeXT OS V2 is live. New intelligence features include real-time corpus updates, prompt caching, and a redesigned Nexus evaluation protocol. Upgrade available now.', likes: 187, comments: 43 },
+  { id: 'bcu2', author: 'KaNeXT LLC', initials: 'KN', time: '3h', tag: 'Partnership', tagColor: '#B8943E', text: 'We have officially partnered with Lincoln University Oakland to pilot KaNeXT Education Mode. Building technology that serves HBCUs is a priority for us.', likes: 94, comments: 21 },
+  { id: 'bcu3', author: 'David Mensah', initials: 'DM', time: '6h', tag: 'Client Story', tagColor: '#9C9790', text: 'KaNeXT completely changed how we manage our athletic program. The intelligence features alone saved us 10 hours a week. — David Mensah, AD at Westfield College', likes: 312, comments: 58 },
+  { id: 'bcu4', author: 'KaNeXT LLC', initials: 'KN', time: '2d', tag: 'Clients Only', tagColor: '#9C9790', text: 'Client exclusive: Early access to Sports Mode v2.1 now open for current subscribers. Request access from your account dashboard.', likes: 67, comments: 14 },
+];
+
+const BIZ_BLOG_CARDS = [
+  { id: 'bb1', title: 'How KaNeXT Builds Intelligence Into Every Mode', date: 'Mar 30', readTime: '4 min' },
+  { id: 'bb2', title: 'NAIA vs NCAA: What Athletic Directors Need to Know in 2026', date: 'Mar 22', readTime: '6 min' },
+  { id: 'bb3', title: 'The Case for Unified OS Platforms in Modern Organizations', date: 'Mar 15', readTime: '5 min' },
+];
+
+function BusinessCustomerSocialView({
+  C, insets, role, cycleRole, accent,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+  accent: string;
+}) {
+  const [custLiked, setCustLiked] = useState(new Set() as Set<string>);
+  const TOP_BAR_H = 52;
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top bar */}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: insets.top + TOP_BAR_H, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <IconSymbol name='line.3.horizontal' size={22} color={C.label} />
+        </Pressable>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Updates</Text>
+        </View>
+        <View style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary={false} />
+        </View>
+      </View>
+      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 12, paddingBottom: 120 }}>
+        {BIZ_CUSTOMER_POSTS.map(post => (
+          <View key={post.id} style={{ borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingTop: 12, paddingBottom: 6, gap: 10 }}>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>{post.initials}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{post.author}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 1 }}>
+                  <Text style={{ fontSize: 12, color: C.secondary }}>{post.time}</Text>
+                  <View style={{ backgroundColor: post.tagColor + "22", borderRadius: 5, paddingHorizontal: 6, paddingVertical: 1 }}>
+                    <Text style={{ fontSize: 10, fontWeight: '700', color: post.tagColor }}>{post.tag}</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <Text style={{ fontSize: 15, color: C.label, paddingHorizontal: 14, paddingBottom: 10, lineHeight: 22 }}>{post.text}</Text>
+            <View style={{ flexDirection: 'row', gap: 20, paddingHorizontal: 14, paddingBottom: 12 }}>
+              <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setCustLiked(s => { const n = new Set(s); if (n.has(post.id)) n.delete(post.id); else n.add(post.id); return n; }); }} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                <IconSymbol name={custLiked.has(post.id) ? 'heart.fill' : 'heart'} size={18} color={custLiked.has(post.id) ? C.red : C.secondary} />
+                <Text style={{ fontSize: 13, color: C.secondary }}>{post.likes + (custLiked.has(post.id) ? 1 : 0)}</Text>
+              </Pressable>
+              <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                <IconSymbol name='bubble.right' size={18} color={C.secondary} />
+                <Text style={{ fontSize: 13, color: C.secondary }}>{post.comments}</Text>
+              </Pressable>
+            </View>
+          </View>
+        ))}
+        <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, paddingHorizontal: 14, marginTop: 20, marginBottom: 10 }}>FROM THE BLOG</Text>
+        {BIZ_BLOG_CARDS.map(card => (
+          <Pressable key={card.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ marginHorizontal: 14, marginBottom: 8, backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 14, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12 })}>
+            <View style={{ width: 44, height: 44, borderRadius: 10, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <IconSymbol name='doc.text' size={20} color={C.secondary} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, lineHeight: 19 }}>{card.title}</Text>
+              <Text style={{ fontSize: 12, color: C.muted, marginTop: 3 }}>{card.date} · {card.readTime} read</Text>
+            </View>
+            <IconSymbol name='chevron.right' size={14} color={C.muted} />
+          </Pressable>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Social Screen (main) ──────────────────────────────────────────────────────
 
 // ── Personal Owner: Creator Feed View ────────────────────────────────────────
@@ -1546,6 +1874,32 @@ export default function SocialScreen() {
   const isPostBookmarked = (post: FeedPost) =>
     post.isBookmarked !== bookmarkedPostFlips.has(post.id);
 
+
+  // ── Business CEO view (early return) ────────────────────────────
+  if (mode === 'business' && isAdmin) {
+    return (
+      <BusinessCEOSocialView
+        C={C}
+        insets={insets}
+        role={role}
+        cycleRole={cycleRole}
+        accent={accent}
+      />
+    );
+  }
+
+  // ── Business Customer view (early return) ─────────────────────────
+  if (mode === 'business' && !isAdmin) {
+    return (
+      <BusinessCustomerSocialView
+        C={C}
+        insets={insets}
+        role={role}
+        cycleRole={cycleRole}
+        accent={accent}
+      />
+    );
+  }
 
   // ── Personal Owner view (early return) ───────────────────────────────────
   if (mode === 'personal' && isOwner) {

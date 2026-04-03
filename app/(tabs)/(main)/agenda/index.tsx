@@ -1382,6 +1382,217 @@ export default function AgendaScreen() {
   const handleCreateAtTime  = useCallback((time: Date) => { setCreateTime(time); setCreateVisible(true); }, []);
   const closeDropdowns      = useCallback(() => { setShowViewDD(false); setShowEditDD(false); }, []);
 
+  // ── Business CEO: full calendar with all event types ──────────────────────
+  if (mode === 'business' && isAdmin) {
+    const CEO_EVENTS = [
+      // Apr 7 Mon
+      { id: 'cx1',  date: 'Apr 7',  time: '9:00 AM',  title: 'Team Standup',                  type: 'internal',  dotStyle: 'solid' as const },
+      { id: 'cx2',  date: 'Apr 7',  time: '2:00 PM',  title: 'Product Review',                type: 'internal',  dotStyle: 'solid' as const },
+      { id: 'cx3',  date: 'Apr 7',  time: '4:00 PM',  title: 'Client Call — LU Oakland',      type: 'client',    dotStyle: 'solid' as const },
+      // Apr 8 Tue
+      { id: 'cx4',  date: 'Apr 8',  time: '10:00 AM', title: 'Investor Meeting — Tiger Global', type: 'board',   dotStyle: 'ring' as const  },
+      { id: 'cx5',  date: 'Apr 8',  time: '1:00 PM',  title: 'Sprint Planning',               type: 'internal',  dotStyle: 'solid' as const },
+      // Apr 9 Wed
+      { id: 'cx6',  date: 'Apr 9',  time: '11:00 AM', title: 'Hiring Interview — Senior Engineer', type: 'hiring', dotStyle: 'solid' as const },
+      { id: 'cx7',  date: 'Apr 9',  time: '3:00 PM',  title: 'Client Demo — NAIA Mandate',    type: 'client',    dotStyle: 'solid' as const },
+      // Apr 14 Mon
+      { id: 'cx8',  date: 'Apr 14', time: '9:00 AM',  title: 'Board Meeting',                 type: 'board',     dotStyle: 'ring' as const  },
+      { id: 'cx9',  date: 'Apr 14', time: '4:00 PM',  title: 'All-Hands',                     type: 'internal',  dotStyle: 'solid' as const },
+      // Apr 15 Tue
+      { id: 'cx10', date: 'Apr 15', time: 'All Day',  title: 'Investor Demo Day',             type: 'board',     dotStyle: 'ring' as const  },
+      // Apr 21 Mon
+      { id: 'cx11', date: 'Apr 21', time: 'All Day',  title: 'Travel — Chicago Conference',   type: 'travel',    dotStyle: 'solid' as const },
+    ] as const;
+    type DotStyle = 'solid' | 'ring';
+    type CeoEventType = 'internal' | 'client' | 'board' | 'hiring' | 'travel' | 'deadline';
+    const CEO_DOT_COLORS: Record<CeoEventType, string> = {
+      internal: C.label,
+      client:   C.muted,
+      board:    C.label,
+      hiring:   '#5A8A6E',
+      travel:   C.separator,
+      deadline: '#B8943E',
+    };
+    type DotIndicatorProps = { evType: CeoEventType; dotStyle: DotStyle };
+    const DotIndicator = ({ evType, dotStyle }: DotIndicatorProps) => {
+      const color = CEO_DOT_COLORS[evType] ?? C.label;
+      if (dotStyle === 'ring') {
+        return (
+          <View style={{ width: 10, height: 10, borderRadius: 5, borderWidth: 1.5, borderColor: color, backgroundColor: 'transparent' }} />
+        );
+      }
+      return <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: color }} />;
+    };
+    const LEGEND_ITEMS: { label: string; evType: CeoEventType; dotStyle: DotStyle }[] = [
+      { label: 'Internal',        evType: 'internal', dotStyle: 'solid' },
+      { label: 'Client',          evType: 'client',   dotStyle: 'solid' },
+      { label: 'Board/Investor',  evType: 'board',    dotStyle: 'ring'  },
+      { label: 'Hiring',          evType: 'hiring',   dotStyle: 'solid' },
+      { label: 'Travel',          evType: 'travel',   dotStyle: 'solid' },
+      { label: 'Deadline',        evType: 'deadline', dotStyle: 'solid' },
+    ];
+    return (
+      <View style={[styles.screen, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+        {/* Top bar */}
+        <View style={styles.topBar}>
+          <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
+          <View style={styles.viewPill}>
+            <Text style={styles.viewPillText}>April 2026</Text>
+          </View>
+          <View style={[styles.topRight, { alignItems: 'flex-end' }]}>
+            <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary />
+          </View>
+        </View>
+
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 12, paddingBottom: 120, paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
+
+          {/* Legend */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingBottom: 16 }}>
+            {LEGEND_ITEMS.map(li => (
+              <View key={li.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                <DotIndicator evType={li.evType} dotStyle={li.dotStyle} />
+                <Text style={{ fontSize: 11, color: C.secondary }}>{li.label}</Text>
+              </View>
+            ))}
+          </ScrollView>
+
+          {/* Events list grouped by date */}
+          {(() => {
+            const grouped: Record<string, typeof CEO_EVENTS[number][]> = {};
+            for (const ev of CEO_EVENTS) {
+              if (!grouped[ev.date]) grouped[ev.date] = [];
+              grouped[ev.date].push(ev);
+            }
+            return Object.entries(grouped).map(([date, evs]) => (
+              <View key={date} style={{ marginBottom: 20 }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>{date}</Text>
+                {evs.map(ev => (
+                  <View key={ev.id} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 14, padding: 14, marginBottom: 8 }}>
+                    <View style={{ marginRight: 12, alignItems: 'center', justifyContent: 'center', width: 12 }}>
+                      <DotIndicator evType={ev.type as CeoEventType} dotStyle={ev.dotStyle} />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{ev.title}</Text>
+                      <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{ev.time}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            ));
+          })()}
+
+        </ScrollView>
+
+        {/* FAB */}
+        <Pressable
+          style={[styles.fab, { bottom: 49 + insets.bottom + 20 }]}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+        >
+          <IconSymbol name="plus" size={24} color={C.bg} />
+        </Pressable>
+      </View>
+    );
+  }
+
+  // ── Business Customer: meeting list + deliverables ──────────────────────────
+  if (mode === 'business') {
+    const UPCOMING_MEETINGS = [
+      { id: 'bm1', date: 'Apr 9',  time: '3:00 PM',  topic: 'Product Demo & Q&A',  meetType: 'Video',     attendee: 'Sammy Kalejaiye' },
+      { id: 'bm2', date: 'Apr 16', time: '11:00 AM', topic: 'Monthly Check-In',     meetType: 'Video',     attendee: 'Sammy Kalejaiye' },
+    ];
+    const PAST_MEETINGS = [
+      { id: 'bmp1', date: 'Mar 26', topic: 'Onboarding Kickoff', notes: 'Notes shared', actionItems: 2 },
+    ];
+    const DELIVERABLES = [
+      { id: 'bd1', date: 'Apr 12', title: 'V2 Integration Docs' },
+      { id: 'bd2', date: 'Apr 19', title: 'Q1 Analytics Report' },
+    ];
+    const MEET_TYPE_ICON: Record<string, string> = { Video: 'video', Call: 'phone', 'In-Person': 'person' };
+    return (
+      <View style={[styles.screen, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+        {/* Top bar */}
+        <View style={styles.topBar}>
+          <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
+          <View style={styles.viewPill}>
+            <Text style={styles.viewPillText}>Meetings</Text>
+          </View>
+          <View style={[styles.topRight, { alignItems: 'flex-end' }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <Pressable
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                style={{ paddingHorizontal: 14, paddingVertical: 7, borderRadius: 10, backgroundColor: C.surface }}
+              >
+                <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Request</Text>
+              </Pressable>
+              <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary={false} />
+            </View>
+          </View>
+        </View>
+
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120, paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
+
+          {/* Upcoming Meetings */}
+          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>UPCOMING MEETINGS</Text>
+          {UPCOMING_MEETINGS.map(m => (
+            <View key={m.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 10 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                <View style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name={(MEET_TYPE_ICON[m.meetType] ?? 'calendar') as any} size={15} color={C.label} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 15, fontWeight: '600', color: C.label }}>{m.topic}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{m.date} · {m.time} · {m.meetType}</Text>
+                </View>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingTop: 6, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator }}>
+                <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ fontSize: 9, fontWeight: '700', color: C.bg }}>SK</Text>
+                </View>
+                <Text style={{ fontSize: 12, color: C.secondary }}>{m.attendee}</Text>
+              </View>
+            </View>
+          ))}
+
+          {/* Past Meetings */}
+          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginTop: 8, marginBottom: 10 }}>PAST MEETINGS</Text>
+          {PAST_MEETINGS.map(m => (
+            <View key={m.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 10 }}>
+              <Text style={{ fontSize: 15, fontWeight: '600', color: C.label, marginBottom: 4 }}>{m.topic}</Text>
+              <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 8 }}>{m.date}</Text>
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <IconSymbol name="doc.text" size={12} color={C.muted} />
+                  <Text style={{ fontSize: 12, color: C.secondary }}>{m.notes}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <IconSymbol name="checkmark.circle" size={12} color={C.muted} />
+                  <Text style={{ fontSize: 12, color: C.secondary }}>{m.actionItems} action items</Text>
+                </View>
+              </View>
+            </View>
+          ))}
+
+          {/* Deliverable Deadlines */}
+          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginTop: 8, marginBottom: 10 }}>DELIVERABLE DEADLINES</Text>
+          {DELIVERABLES.map(d => (
+            <View key={d.id} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 14, padding: 14, marginBottom: 8 }}>
+              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#B8943E', marginRight: 12 }} />
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{d.title}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{d.date}</Text>
+              </View>
+            </View>
+          ))}
+
+        </ScrollView>
+      </View>
+    );
+  }
+
   // ── Education Student: personal class schedule + assignments ────────────────
   if (mode === 'education' && !isAdmin) {
     const MY_COURSES = [

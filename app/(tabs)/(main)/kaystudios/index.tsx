@@ -512,6 +512,389 @@ function CommunityMemberLearnView({
   );
 }
 
+// ── Business Mode: CEO Tools & Customer Resources ────────────────────────────
+
+type BizCEOTab = 'Demos' | 'Training' | 'Certifications' | 'Analytics';
+
+const BIZ_DEMOS = [
+  { id: 'bd1', title: 'KaNeXT OS Full Platform Tour',      badge: 'Guided Walkthrough', uses: 847 },
+  { id: 'bd2', title: 'Intelligence System Deep Dive',     badge: 'Guided Walkthrough', uses: 312 },
+  { id: 'bd3', title: 'Education Mode Live Demo',          badge: 'Live Environment',   uses: 128 },
+  { id: 'bd4', title: 'Athletics Recruiting Module',       badge: 'Self-Service',        uses: 94  },
+];
+
+const BIZ_TRAINING_MODULES = [
+  { id: 'bm1', title: 'New Hire Orientation',     complete: 11, total: 11 },
+  { id: 'bm2', title: 'Product Deep Dive',         complete: 8,  total: 11 },
+  { id: 'bm3', title: 'Sales Pitch & Objections', complete: 6,  total: 11 },
+  { id: 'bm4', title: 'Data Privacy & Security',  complete: 11, total: 11 },
+];
+
+const BIZ_TEAM_MEMBERS = [
+  { name: 'Alex T.',   modules: [true,  true,  false, true ] },
+  { name: 'Jordan M.', modules: [true,  true,  true,  true ] },
+  { name: 'Casey R.',  modules: [true,  false, false, true ] },
+  { name: 'Morgan L.', modules: [true,  true,  true,  true ] },
+  { name: 'Riley D.',  modules: [false, false, false, true ] },
+];
+
+const BIZ_CERT_PROGRAMS = [
+  { id: 'cp1', title: 'KaNeXT Intelligence Certified', desc: 'Learn KR, archetypes, and scouting reports.', certified: 34, inProgress: 12 },
+  { id: 'cp2', title: 'KaNeXT OS Administrator',       desc: 'Full platform management and configuration.',  certified: 8,  inProgress: 5  },
+];
+
+const BIZ_KB_ARTICLES = [
+  { id: 'ka1', title: 'How to set up your Hub',        category: 'Getting Started' },
+  { id: 'ka2', title: 'Managing your team in KaNeXT',  category: 'Getting Started' },
+  { id: 'ka3', title: 'Understanding your invoice',    category: 'Billing'         },
+  { id: 'ka4', title: 'API integration guide',         category: 'Integrations'    },
+];
+
+const BIZ_ONBOARDING_STEPS = [
+  { id: 'os1', label: 'Account Created',       done: true  },
+  { id: 'os2', label: 'Profile Setup',          done: true  },
+  { id: 'os3', label: 'First Project Created', done: true  },
+  { id: 'os4', label: 'Integration Connected', done: false },
+  { id: 'os5', label: 'Team Invited',          done: false },
+];
+
+const BIZ_PIPELINE_STEPS = ['Orientation', 'Product Training', 'Sales Training', 'Compliance'] as const;
+
+function BusinessCEOToolsView({
+  C, insets, role, cycleRole,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+}) {
+  const [bizCEOTab, setBizCEOTab] = React.useState<BizCEOTab>('Demos');
+  const [bizCEODrop, setBizCEODrop] = React.useState(false);
+  const topBarH = insets.top + 52;
+  const BIZ_CEO_TABS: BizCEOTab[] = ['Demos', 'Training', 'Certifications', 'Analytics'];
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top bar */}
+      <View style={{ paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, zIndex: 20, backgroundColor: C.bg }}>
+        <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Pressable
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: C.surfacePressed }}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setBizCEODrop(v => !v); }}
+            >
+              <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>Business Tools</Text>
+              <IconSymbol name={bizCEODrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
+            </Pressable>
+          </View>
+          <RolePill role={role} onPress={cycleRole} isPrimary />
+        </View>
+      </View>
+
+      {/* Tab dropdown */}
+      {bizCEODrop && (
+        <>
+          <Pressable style={[StyleSheet.absoluteFillObject, { zIndex: 98 }]} onPress={() => setBizCEODrop(false)} />
+          <View style={{ position: 'absolute', top: topBarH + 4, left: '18%', right: '18%', backgroundColor: C.surface, borderRadius: 16, zIndex: 100, shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 16, shadowOffset: { width: 0, height: 4 }, elevation: 8, overflow: 'hidden' }}>
+            {BIZ_CEO_TABS.map((t, idx) => (
+              <Pressable key={t} style={{ paddingVertical: 13, paddingHorizontal: 20, borderBottomWidth: idx < BIZ_CEO_TABS.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }} onPress={() => { setBizCEOTab(t); setBizCEODrop(false); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}>
+                <Text style={{ fontSize: 15, fontWeight: bizCEOTab === t ? '700' : '400', color: bizCEOTab === t ? C.label : C.secondary }}>{t}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </>
+      )}
+
+      <ScrollView style={{ flex: 1, marginTop: topBarH }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120, paddingTop: 8 }}>
+
+        {/* ── Demos Tab ── */}
+        {bizCEOTab === 'Demos' && (
+          <View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, marginBottom: 12 }}>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Product Demos</Text>
+              <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center' }}>
+                <IconSymbol name="plus" size={16} color={C.label} />
+              </Pressable>
+            </View>
+            {BIZ_DEMOS.map(demo => (
+              <View key={demo.id} style={{ backgroundColor: C.surface, borderRadius: 14, marginHorizontal: 16, marginBottom: 10, padding: 14 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 8 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, flex: 1, marginRight: 8 }}>{demo.title}</Text>
+                  <View style={{ backgroundColor: C.surfacePressed, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 }}>
+                    <Text style={{ fontSize: 10, fontWeight: '600', color: C.secondary }}>{demo.badge}</Text>
+                  </View>
+                </View>
+                <Text style={{ fontSize: 12, color: C.secondary, marginBottom: 12 }}>{demo.uses.toLocaleString()} uses</Text>
+                <View style={{ flexDirection: 'row', gap: 8 }}>
+                  <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flex: 1, paddingVertical: 8, borderRadius: 10, backgroundColor: C.surfacePressed, alignItems: 'center' }}>
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Share</Text>
+                  </Pressable>
+                  <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flex: 1, paddingVertical: 8, borderRadius: 10, backgroundColor: C.surfacePressed, alignItems: 'center' }}>
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Edit</Text>
+                  </Pressable>
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* ── Training Tab ── */}
+        {bizCEOTab === 'Training' && (
+          <View>
+            <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10, paddingHorizontal: 16 }}>ONBOARDING PIPELINE</Text>
+            <View style={{ marginHorizontal: 16, marginBottom: 20 }}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 0 }}>
+                {BIZ_PIPELINE_STEPS.map((step, idx) => (
+                  <View key={step} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ alignItems: 'center', gap: 6 }}>
+                      <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: C.label }}>
+                        <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>{idx + 1}</Text>
+                      </View>
+                      <Text style={{ fontSize: 10, color: C.secondary, textAlign: 'center', maxWidth: 64 }}>{step}</Text>
+                    </View>
+                    {idx < BIZ_PIPELINE_STEPS.length - 1 && (
+                      <View style={{ width: 28, height: 2, backgroundColor: C.separator, marginBottom: 18, marginHorizontal: 4 }} />
+                    )}
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+
+            <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10, paddingHorizontal: 16 }}>MODULES</Text>
+            {BIZ_TRAINING_MODULES.map(mod => {
+              const pct = mod.complete / mod.total;
+              return (
+                <View key={mod.id} style={{ backgroundColor: C.surface, borderRadius: 12, marginHorizontal: 16, marginBottom: 10, padding: 14 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, flex: 1 }}>{mod.title}</Text>
+                    <Text style={{ fontSize: 12, color: C.secondary, marginLeft: 8 }}>{mod.complete}/{mod.total}</Text>
+                  </View>
+                  <View style={{ height: 4, backgroundColor: C.separator, borderRadius: 2, overflow: 'hidden' }}>
+                    <View style={{ height: 4, width: `${pct * 100}%` as any, backgroundColor: C.label, borderRadius: 2 }} />
+                  </View>
+                </View>
+              );
+            })}
+
+            <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginTop: 10, marginBottom: 10, paddingHorizontal: 16 }}>TEAM COMPLETION</Text>
+            <View style={{ backgroundColor: C.surface, borderRadius: 14, marginHorizontal: 16, padding: 14 }}>
+              <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                <View style={{ flex: 1 }} />
+                {BIZ_TRAINING_MODULES.map((mod, idx) => (
+                  <View key={mod.id} style={{ width: 32, alignItems: 'center' }}>
+                    <Text style={{ fontSize: 9, color: C.secondary, textAlign: 'center' }}>M{idx + 1}</Text>
+                  </View>
+                ))}
+              </View>
+              {BIZ_TEAM_MEMBERS.map(member => (
+                <View key={member.name} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                  <Text style={{ flex: 1, fontSize: 12, color: C.label }}>{member.name}</Text>
+                  {member.modules.map((done, idx) => (
+                    <View key={idx} style={{ width: 32, alignItems: 'center' }}>
+                      <Text style={{ fontSize: 13, color: done ? C.green : C.separator }}>{done ? '✓' : '○'}</Text>
+                    </View>
+                  ))}
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* ── Certifications Tab ── */}
+        {bizCEOTab === 'Certifications' && (
+          <View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, marginBottom: 12 }}>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>KaNeXT Certification Programs</Text>
+              <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: C.surfacePressed }}>
+                <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>Create Program</Text>
+              </Pressable>
+            </View>
+            {BIZ_CERT_PROGRAMS.map(prog => (
+              <View key={prog.id} style={{ backgroundColor: C.surface, borderRadius: 14, marginHorizontal: 16, marginBottom: 12, padding: 16 }}>
+                <Text style={{ fontSize: 15, fontWeight: '700', color: C.label, marginBottom: 6 }}>{prog.title}</Text>
+                <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 12, lineHeight: 19 }}>{prog.desc}</Text>
+                <View style={{ flexDirection: 'row', gap: 16, marginBottom: 14 }}>
+                  <View style={{ alignItems: 'center' }}>
+                    <Text style={{ fontSize: 22, fontWeight: '800', color: C.label }}>{prog.certified}</Text>
+                    <Text style={{ fontSize: 11, color: C.secondary }}>Certified</Text>
+                  </View>
+                  <View style={{ width: StyleSheet.hairlineWidth, backgroundColor: C.separator }} />
+                  <View style={{ alignItems: 'center' }}>
+                    <Text style={{ fontSize: 22, fontWeight: '800', color: C.label }}>{prog.inProgress}</Text>
+                    <Text style={{ fontSize: 11, color: C.secondary }}>In Progress</Text>
+                  </View>
+                </View>
+                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ paddingVertical: 9, borderRadius: 10, backgroundColor: C.surfacePressed, alignItems: 'center' }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Manage</Text>
+                </Pressable>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* ── Analytics Tab ── */}
+        {bizCEOTab === 'Analytics' && (
+          <View>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: C.label, paddingHorizontal: 16, marginBottom: 12 }}>Training & Demo Analytics</Text>
+            <View style={{ flexDirection: 'row', gap: 10, paddingHorizontal: 16, marginBottom: 20 }}>
+              {[
+                { label: 'Training Completion', value: '78%'   },
+                { label: 'Demo Uses',            value: '1,381' },
+                { label: 'Certs Issued',         value: '42'    },
+              ].map(kpi => (
+                <View key={kpi.label} style={{ flex: 1, backgroundColor: C.surface, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 10, alignItems: 'center', gap: 4 }}>
+                  <Text style={{ fontSize: 20, fontWeight: '800', color: C.label }}>{kpi.value}</Text>
+                  <Text style={{ fontSize: 10, color: C.secondary, textAlign: 'center' }}>{kpi.label}</Text>
+                </View>
+              ))}
+            </View>
+            <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, paddingHorizontal: 16, marginBottom: 10 }}>Completion by Module</Text>
+            <View style={{ backgroundColor: C.surface, borderRadius: 14, marginHorizontal: 16, padding: 16, marginBottom: 16 }}>
+              {BIZ_TRAINING_MODULES.map(mod => {
+                const pct = mod.complete / mod.total;
+                return (
+                  <View key={mod.id} style={{ marginBottom: 12 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+                      <Text style={{ fontSize: 12, color: C.label, flex: 1 }}>{mod.title}</Text>
+                      <Text style={{ fontSize: 12, color: C.secondary }}>{Math.round(pct * 100)}%</Text>
+                    </View>
+                    <View style={{ height: 6, backgroundColor: C.separator, borderRadius: 3, overflow: 'hidden' }}>
+                      <View style={{ height: 6, width: `${pct * 100}%` as any, backgroundColor: C.label, borderRadius: 3 }} />
+                    </View>
+                  </View>
+                );
+              })}
+            </View>
+            <View style={{ backgroundColor: C.surface, borderRadius: 14, marginHorizontal: 16, padding: 16 }}>
+              <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>INSIGHT</Text>
+              <Text style={{ fontSize: 14, color: C.label, lineHeight: 20 }}>Platform Tour generates <Text style={{ fontWeight: '700' }}>3.2x more closes</Text> than other demos.</Text>
+            </View>
+          </View>
+        )}
+
+      </ScrollView>
+    </View>
+  );
+}
+
+function BusinessCustomerLearnView({
+  C, insets, role, cycleRole,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+}) {
+  const [kbCategory, setKbCategory] = React.useState('Getting Started');
+  const topBarH = insets.top + 52;
+  const KB_CATEGORIES = ['Getting Started', 'Integrations', 'Billing', 'Advanced'];
+  const onboardingDone = BIZ_ONBOARDING_STEPS.filter(s => s.done).length;
+  const onboardingTotal = BIZ_ONBOARDING_STEPS.length;
+  const onboardingPct = onboardingDone / onboardingTotal;
+  const filteredArticles = BIZ_KB_ARTICLES.filter(a => a.category === kbCategory);
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top bar */}
+      <View style={{ paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, zIndex: 20, backgroundColor: C.bg }}>
+        <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Resources</Text>
+          </View>
+          <RolePill role={role} onPress={cycleRole} isPrimary={false} />
+        </View>
+      </View>
+
+      <ScrollView style={{ flex: 1, marginTop: topBarH }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120, paddingTop: 8 }}>
+
+        {/* Onboarding card */}
+        <View style={{ backgroundColor: C.surface, borderRadius: 16, marginHorizontal: 16, marginBottom: 20, padding: 16 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>My Onboarding</Text>
+            <Text style={{ fontSize: 12, color: C.secondary }}>Setup {Math.round(onboardingPct * 100)}% complete</Text>
+          </View>
+          <View style={{ height: 6, backgroundColor: C.separator, borderRadius: 3, overflow: 'hidden', marginBottom: 14 }}>
+            <View style={{ height: 6, width: `${onboardingPct * 100}%` as any, backgroundColor: C.label, borderRadius: 3 }} />
+          </View>
+          <Text style={{ fontSize: 11, color: C.secondary, marginBottom: 8 }}>Next: Connect your first integration</Text>
+          {BIZ_ONBOARDING_STEPS.map(step => (
+            <View key={step.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 7 }}>
+              <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: step.done ? C.label : C.separator, alignItems: 'center', justifyContent: 'center' }}>
+                {step.done && <IconSymbol name="checkmark" size={10} color={C.bg} />}
+              </View>
+              <Text style={{ fontSize: 13, color: step.done ? C.label : C.secondary }}>{step.label}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Knowledge Base */}
+        <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, paddingHorizontal: 16, marginBottom: 10 }}>KNOWLEDGE BASE</Text>
+        <View style={{ marginHorizontal: 16, marginBottom: 12, flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 10, gap: 8 }}>
+          <IconSymbol name="magnifyingglass" size={15} color={C.secondary} />
+          <Text style={{ fontSize: 14, color: C.secondary }}>Search help articles...</Text>
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 8, marginBottom: 12 }}>
+          {KB_CATEGORIES.map(cat => {
+            const active = cat === kbCategory;
+            return (
+              <Pressable key={cat} onPress={() => { setKbCategory(cat); Haptics.selectionAsync(); }} style={{ paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: active ? C.label : C.surfacePressed }}>
+                <Text style={{ fontSize: 13, fontWeight: active ? '600' : '400', color: active ? C.bg : C.secondary }}>{cat}</Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+        {(filteredArticles.length > 0 ? filteredArticles : BIZ_KB_ARTICLES).map(article => (
+          <Pressable key={article.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 12, marginHorizontal: 16, marginBottom: 8, padding: 14, flexDirection: 'row', alignItems: 'center' })}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, marginBottom: 3 }}>{article.title}</Text>
+              <Text style={{ fontSize: 11, color: C.secondary }}>{article.category}</Text>
+            </View>
+            <IconSymbol name="chevron.right" size={14} color={C.secondary} />
+          </Pressable>
+        ))}
+
+        {/* Certifications */}
+        <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, paddingHorizontal: 16, marginTop: 12, marginBottom: 10 }}>CERTIFICATIONS</Text>
+        {BIZ_CERT_PROGRAMS.map(prog => (
+          <View key={prog.id} style={{ backgroundColor: C.surface, borderRadius: 14, marginHorizontal: 16, marginBottom: 10, padding: 14 }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 4 }}>{prog.title}</Text>
+            <Text style={{ fontSize: 12, color: C.secondary, marginBottom: 10, lineHeight: 18 }}>{prog.desc}</Text>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ paddingVertical: 8, borderRadius: 10, backgroundColor: C.surfacePressed, alignItems: 'center' }}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Start</Text>
+            </Pressable>
+          </View>
+        ))}
+        <View style={{ backgroundColor: C.surface, borderRadius: 12, marginHorizontal: 16, marginBottom: 20, padding: 14 }}>
+          <Text style={{ fontSize: 13, color: C.secondary }}>0 of your team members are certified yet.</Text>
+        </View>
+
+        {/* Tools */}
+        <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, paddingHorizontal: 16, marginBottom: 10 }}>TOOLS</Text>
+        {[
+          { id: 'rt1', title: 'ROI Calculator',      subtitle: 'Estimate your return on investment' },
+          { id: 'rt2', title: 'Pricing Estimator',   subtitle: 'Build a custom plan estimate'       },
+          { id: 'rt3', title: 'Platform Comparison', subtitle: 'See how KaNeXT stacks up'           },
+        ].map(tool => (
+          <Pressable key={tool.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 12, marginHorizontal: 16, marginBottom: 8, padding: 14, flexDirection: 'row', alignItems: 'center' })}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, marginBottom: 2 }}>{tool.title}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary }}>{tool.subtitle}</Text>
+            </View>
+            <IconSymbol name="chevron.right" size={14} color={C.secondary} />
+          </Pressable>
+        ))}
+
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Education President: Academic Tools View ─────────────────────────────────
 
 type EduAdminTab = 'Courses' | 'Training' | 'Orientation' | 'Analytics';
@@ -1371,6 +1754,30 @@ export default function KayStudiosScreen() {
       params: { contentId: item.id },
     });
   }, [router]);
+
+  // ── Business CEO: Business Tools early return ──────────────────────────────
+  if (mode === 'business' && isAdmin) {
+    return (
+      <BusinessCEOToolsView
+        C={C}
+        insets={insets}
+        role={role}
+        cycleRole={cycleRole}
+      />
+    );
+  }
+
+  // ── Business Customer: Resources early return ─────────────────────────────
+  if (mode === 'business' && !isAdmin) {
+    return (
+      <BusinessCustomerLearnView
+        C={C}
+        insets={insets}
+        role={role}
+        cycleRole={cycleRole}
+      />
+    );
+  }
 
   // ── Education President: Academic Tools ─────────────────────────────────────
   if (mode === 'education' && isAdmin) {

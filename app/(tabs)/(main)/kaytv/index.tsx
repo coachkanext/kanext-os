@@ -780,6 +780,355 @@ function EducationStudentWatchView({
   );
 }
 
+// ── BusinessCEOMediaView ─────────────────────────────────────────────────────
+
+type BizMediaTab = 'Library' | 'Upload' | 'Schedule' | 'Gated' | 'Analytics';
+
+const BIZ_LIB_CATS = ['All', 'Demos', 'Tutorials', 'Webinars', 'Training', 'Investor', 'Culture', 'Testimonials'] as const;
+type BizLibCat = typeof BIZ_LIB_CATS[number];
+
+const BIZ_MEDIA_LIBRARY = [
+  { id: 'bm1', title: 'KaNeXT OS Platform Overview',          category: 'Demos',        views: 1200, duration: '4:32',  visibility: 'Public'    },
+  { id: 'bm2', title: 'Intelligence System Deep Dive',         category: 'Tutorials',    views: 847,  duration: '18:45', visibility: 'Public'    },
+  { id: 'bm3', title: 'Q1 2026 Investor Update',              category: 'Investor',     views: 34,   duration: '22:10', visibility: 'Investors' },
+  { id: 'bm4', title: 'Team Culture Day 2025',                 category: 'Culture',      views: 203,  duration: '6:18',  visibility: 'Team'      },
+  { id: 'bm5', title: 'Lincoln University Case Study',         category: 'Testimonials', views: 412,  duration: '8:42',  visibility: 'Clients'   },
+  { id: 'bm6', title: 'New Member Onboarding Walkthrough',     category: 'Tutorials',    views: 589,  duration: '12:20', visibility: 'Clients'   },
+];
+
+const BIZ_GATED_VIDEOS = [
+  { id: 'bg1', title: 'Founder Presentation Apr 2026',        views: 34, watchStats: 'Tiger Global team watched 100%, Sequoia watched 62%' },
+  { id: 'bg2', title: 'Financial Model Walkthrough',           views: 18, watchStats: 'Tiger Global watched 88%, a16z watched 45%'          },
+  { id: 'bg3', title: 'Market Opportunity Deep Dive',          views: 12, watchStats: 'Sequoia watched 71%, Benchmark watched 30%'          },
+];
+
+function BusinessCEOMediaView({
+  C, insets, role, cycleRole,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+}) {
+  const [mediaTab, setMediaTab] = React.useState<BizMediaTab>('Library');
+  const [mediaDrop, setMediaDrop] = React.useState(false);
+  const [libCat, setLibCat] = React.useState<BizLibCat>('All');
+  const [uploadCat, setUploadCat] = React.useState('Demos');
+  const [uploadVis, setUploadVis] = React.useState('Public');
+  const topBarH = insets.top + 52;
+
+  const visibleVideos = libCat === 'All' ? BIZ_MEDIA_LIBRARY : BIZ_MEDIA_LIBRARY.filter(v => v.category === libCat);
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top Bar */}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+        </Pressable>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setMediaDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{mediaTab}</Text>
+          <IconSymbol name={mediaDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
+        </Pressable>
+        <View style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <RolePill role={role} onPress={cycleRole} isPrimary />
+        </View>
+      </View>
+
+      {/* Dropdown */}
+      {mediaDrop && (
+        <View style={{ position: 'absolute', top: topBarH + 4, left: '14%', right: '14%', backgroundColor: C.surface, borderRadius: 14, zIndex: 100, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 8, overflow: 'hidden' }}>
+          {(['Library', 'Upload', 'Schedule', 'Gated', 'Analytics'] as BizMediaTab[]).map((tab, i, arr) => (
+            <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setMediaTab(tab); setMediaDrop(false); }} style={{ paddingVertical: 13, paddingHorizontal: 16, borderBottomWidth: i < arr.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }}>
+              <Text style={{ fontSize: 15, color: tab === mediaTab ? C.label : C.secondary, fontWeight: tab === mediaTab ? '600' : '400' }}>{tab}</Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
+
+      <ScrollView style={{ flex: 1, marginTop: topBarH }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120 }}>
+
+        {/* LIBRARY */}
+        {mediaTab === 'Library' && (
+          <>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 12, gap: 8, flexDirection: 'row' }}>
+              {BIZ_LIB_CATS.map(cat => (
+                <Pressable key={cat} onPress={() => { Haptics.selectionAsync(); setLibCat(cat); }} style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, backgroundColor: libCat === cat ? C.label : C.surface, borderWidth: StyleSheet.hairlineWidth, borderColor: libCat === cat ? C.label : C.separator }}>
+                  <Text style={{ fontSize: 12, fontWeight: '600', color: libCat === cat ? C.bg : C.secondary }}>{cat}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 16, gap: 12 }}>
+              {visibleVideos.map(video => (
+                <View key={video.id} style={{ width: '47%', backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden' }}>
+                  <View style={{ height: 90, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center' }}>
+                    <IconSymbol name="play.fill" size={24} color={C.label} />
+                    <View style={{ position: 'absolute', bottom: 6, right: 8, backgroundColor: C.label + 'cc', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2 }}>
+                      <Text style={{ fontSize: 10, fontWeight: '700', color: C.bg }}>{video.duration}</Text>
+                    </View>
+                  </View>
+                  <View style={{ padding: 10 }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: C.label, lineHeight: 17, marginBottom: 3 }} numberOfLines={2}>{video.title}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <View style={{ paddingHorizontal: 5, paddingVertical: 2, borderRadius: 5, backgroundColor: C.surfacePressed }}>
+                          <Text style={{ fontSize: 10, fontWeight: '600', color: C.secondary }}>{video.category}</Text>
+                        </View>
+                        <Text style={{ fontSize: 10, color: C.muted }}>{video.views >= 1000 ? `${(video.views / 1000).toFixed(1)}K` : video.views} views</Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', gap: 6 }}>
+                        <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} hitSlop={6}>
+                          <IconSymbol name="pencil" size={14} color={C.secondary} />
+                        </Pressable>
+                        <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} hitSlop={6}>
+                          <IconSymbol name="trash" size={14} color={C.secondary} />
+                        </Pressable>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </>
+        )}
+
+        {/* UPLOAD */}
+        {mediaTab === 'Upload' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
+              <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ flex: 1, backgroundColor: pressed ? '#0a0a0a' : C.label, borderRadius: 14, padding: 20, alignItems: 'center', gap: 8 })}>
+                <IconSymbol name="arrow.up.to.line" size={26} color={C.bg} />
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Upload Video</Text>
+              </Pressable>
+              <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ flex: 1, backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 14, padding: 20, alignItems: 'center', gap: 8, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator })}>
+                <IconSymbol name="video.fill" size={26} color={C.label} />
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>Record Screen</Text>
+              </Pressable>
+            </View>
+            <View style={{ marginBottom: 14 }}>
+              <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Title</Text>
+              <View style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
+                <Text style={{ fontSize: 14, color: C.muted }}>e.g. Q2 Product Demo Walkthrough</Text>
+              </View>
+            </View>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Category</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingBottom: 14, flexDirection: 'row' }}>
+              {(['Demos', 'Tutorials', 'Webinars', 'Training', 'Investor', 'Culture', 'Testimonials'] as const).map(cat => (
+                <Pressable key={cat} onPress={() => { Haptics.selectionAsync(); setUploadCat(cat); }} style={{ paddingHorizontal: 12, paddingVertical: 7, borderRadius: 10, backgroundColor: uploadCat === cat ? C.label : C.surfacePressed }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: uploadCat === cat ? C.bg : C.secondary }}>{cat}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Visibility</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
+              {(['Public', 'Clients', 'Team', 'Investors'] as const).map(v => (
+                <Pressable key={v} onPress={() => { Haptics.selectionAsync(); setUploadVis(v); }} style={{ paddingHorizontal: 12, paddingVertical: 7, borderRadius: 10, backgroundColor: uploadVis === v ? C.label : C.surfacePressed }}>
+                  <Text style={{ fontSize: 12, fontWeight: '600', color: uploadVis === v ? C.bg : C.secondary }}>{v}</Text>
+                </Pressable>
+              ))}
+            </View>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 20, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
+              <IconSymbol name="calendar" size={18} color={C.secondary} />
+              <Text style={{ fontSize: 14, color: C.muted }}>Schedule Publish Date</Text>
+            </Pressable>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ backgroundColor: pressed ? '#0a0a0a' : C.label, borderRadius: 14, paddingVertical: 14, alignItems: 'center' })}>
+              <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>Upload</Text>
+            </Pressable>
+          </View>
+        )}
+
+        {/* SCHEDULE */}
+        {mediaTab === 'Schedule' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 }}>UPCOMING</Text>
+            {[
+              { title: 'Q2 Product Roadmap Webinar',         date: 'Apr 10',  type: 'Live Webinar',      visibility: 'Clients' },
+              { title: 'Customer Success Story: LU Oakland', date: 'Apr 18',  type: 'Scheduled Release', visibility: 'Public'  },
+            ].map((item, i) => (
+              <View key={i} style={{ backgroundColor: C.surface, borderRadius: 14, marginBottom: 10, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                <View style={{ width: 38, height: 38, borderRadius: 10, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name={item.type === 'Live Webinar' ? 'dot.radiowaves.left.and.right' : 'video.fill'} size={16} color={C.label} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={1}>{item.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{item.date} · {item.type} · {item.visibility}</Text>
+                </View>
+                {item.type === 'Live Webinar' && (
+                  <View style={{ paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6, backgroundColor: C.surfacePressed }}>
+                    <Text style={{ fontSize: 10, fontWeight: '700', color: C.secondary }}>LIVE</Text>
+                  </View>
+                )}
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* GATED */}
+        {mediaTab === 'Gated' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+              <IconSymbol name="lock.fill" size={16} color={C.label} />
+              <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Investor-Gated Content</Text>
+            </View>
+            {BIZ_GATED_VIDEOS.map(video => (
+              <View key={video.id} style={{ backgroundColor: C.surface, borderRadius: 14, marginBottom: 12, overflow: 'hidden' }}>
+                <View style={{ height: 80, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name="play.fill" size={22} color={C.secondary} />
+                  <View style={{ position: 'absolute', top: 8, right: 10, backgroundColor: C.label, borderRadius: 6, paddingHorizontal: 7, paddingVertical: 3 }}>
+                    <Text style={{ fontSize: 10, fontWeight: '700', color: C.bg }}>Invite Code Required</Text>
+                  </View>
+                </View>
+                <View style={{ padding: 12 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, marginBottom: 6 }}>{video.title}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                    <IconSymbol name="eye" size={13} color={C.secondary} />
+                    <Text style={{ fontSize: 12, color: C.secondary }}>{video.views} views</Text>
+                  </View>
+                  <Text style={{ fontSize: 11, color: C.muted, lineHeight: 16 }}>{video.watchStats}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* ANALYTICS */}
+        {mediaTab === 'Analytics' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
+              {[{ label: 'Total Views', value: '3,847' }, { label: 'Watch Hours', value: '284h' }, { label: 'Avg Completion', value: '67%' }].map(s => (
+                <View key={s.label} style={{ flex: 1, backgroundColor: C.surface, borderRadius: 12, padding: 12, alignItems: 'center' }}>
+                  <Text style={{ fontSize: 18, fontWeight: '800', color: C.label }}>{s.value}</Text>
+                  <Text style={{ fontSize: 10, color: C.secondary, textAlign: 'center', marginTop: 2 }}>{s.label}</Text>
+                </View>
+              ))}
+            </View>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>BY CATEGORY</Text>
+            {[
+              { cat: 'Demos',        views: 1200 },
+              { cat: 'Tutorials',    views: 1436 },
+              { cat: 'Webinars',     views: 620  },
+              { cat: 'Culture',      views: 203  },
+              { cat: 'Testimonials', views: 412  },
+              { cat: 'Investor',     views: 34   },
+            ].map(row => {
+              const maxViews = 1436;
+              const pct = Math.round((row.views / maxViews) * 100);
+              return (
+                <View key={row.cat} style={{ marginBottom: 10 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>{row.cat}</Text>
+                    <Text style={{ fontSize: 12, color: C.secondary }}>{row.views.toLocaleString()} views</Text>
+                  </View>
+                  <View style={{ height: 6, borderRadius: 3, backgroundColor: C.surfacePressed, overflow: 'hidden' }}>
+                    <View style={{ width: `${pct}%`, height: '100%', backgroundColor: C.label, borderRadius: 3 }} />
+                  </View>
+                </View>
+              );
+            })}
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 8, marginBottom: 10 }}>TOP VIDEOS</Text>
+            {BIZ_MEDIA_LIBRARY.slice().sort((a, b) => b.views - a.views).slice(0, 4).map((v, i) => (
+              <View key={v.id} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 12, marginBottom: 8, padding: 12, gap: 10 }}>
+                <Text style={{ fontSize: 16, fontWeight: '800', color: C.muted, width: 20 }}>{i + 1}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }} numberOfLines={1}>{v.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary }}>{v.views >= 1000 ? `${(v.views / 1000).toFixed(1)}K` : v.views} views · {v.duration}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+
+      </ScrollView>
+    </View>
+  );
+}
+
+// ── BusinessCustomerResourcesView ─────────────────────────────────────────────
+
+type BizCustomerTab = 'All' | 'Tutorials' | 'Webinars' | 'Help' | 'Client Content';
+const BIZ_CUSTOMER_TABS: BizCustomerTab[] = ['All', 'Tutorials', 'Webinars', 'Help', 'Client Content'];
+
+const BIZ_CUSTOMER_VIDEOS: { id: string; title: string; category: BizCustomerTab; duration: string; gated: boolean }[] = [
+  { id: 'bc1', title: 'Getting Started with KaNeXT OS',          category: 'Tutorials',      duration: '8:14',  gated: false },
+  { id: 'bc2', title: 'Setting Up Your Hub',                      category: 'Tutorials',      duration: '5:42',  gated: false },
+  { id: 'bc3', title: 'Using the Agenda Tile',                    category: 'Tutorials',      duration: '4:55',  gated: false },
+  { id: 'bc4', title: 'Product Roadmap Q1 2026 (Recording)',      category: 'Webinars',       duration: '38:22', gated: false },
+  { id: 'bc5', title: 'Getting the Most Out of KaNeXT',           category: 'Webinars',       duration: '24:10', gated: false },
+  { id: 'bc6', title: 'FAQ Video',                                 category: 'Help',           duration: '11:05', gated: false },
+  { id: 'bc7', title: 'Troubleshooting Common Issues',            category: 'Help',           duration: '9:30',  gated: false },
+  { id: 'bc8', title: 'Your Implementation Guide',                category: 'Client Content', duration: '18:00', gated: true  },
+  { id: 'bc9', title: 'Advanced Features for Power Users',        category: 'Client Content', duration: '22:15', gated: true  },
+];
+
+function BusinessCustomerResourcesView({
+  C, insets, role, cycleRole,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+}) {
+  const [activeTab, setActiveTab] = React.useState<BizCustomerTab>('All');
+  const topBarH = insets.top + 52;
+
+  const visibleVideos = activeTab === 'All' ? BIZ_CUSTOMER_VIDEOS : BIZ_CUSTOMER_VIDEOS.filter(v => v.category === activeTab);
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top Bar */}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+        </Pressable>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Resources</Text>
+        </View>
+        <View style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <RolePill role={role} onPress={cycleRole} isPrimary={false} />
+        </View>
+      </View>
+
+      {/* Category tabs */}
+      <View style={{ position: 'absolute', top: topBarH, left: 0, right: 0, zIndex: 15, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 12, paddingVertical: 10, gap: 8, flexDirection: 'row' }}>
+          {BIZ_CUSTOMER_TABS.map(tab => (
+            <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setActiveTab(tab); }} style={{ paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: activeTab === tab ? C.label : C.surface, borderWidth: StyleSheet.hairlineWidth, borderColor: activeTab === tab ? C.label : C.separator }}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: activeTab === tab ? C.bg : C.secondary }}>{tab}</Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
+
+      <ScrollView style={{ flex: 1, marginTop: topBarH + 50 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 12, paddingHorizontal: 16, paddingBottom: 120 }}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
+          {visibleVideos.map(video => (
+            <View key={video.id} style={{ width: '47%', backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden' }}>
+              <View style={{ height: 90, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center' }}>
+                <IconSymbol name="play.fill" size={24} color={C.label} />
+                {video.gated && (
+                  <View style={{ position: 'absolute', top: 8, left: 8, backgroundColor: C.label, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 3 }}>
+                    <Text style={{ fontSize: 9, fontWeight: '700', color: C.bg }}>Clients Only</Text>
+                  </View>
+                )}
+                <View style={{ position: 'absolute', bottom: 6, right: 8, backgroundColor: C.label + 'cc', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2 }}>
+                  <Text style={{ fontSize: 10, fontWeight: '700', color: C.bg }}>{video.duration}</Text>
+                </View>
+              </View>
+              <View style={{ padding: 10 }}>
+                <Text style={{ fontSize: 12, fontWeight: '600', color: C.label, lineHeight: 17, marginBottom: 8 }} numberOfLines={2}>{video.title}</Text>
+                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ backgroundColor: pressed ? '#0a0a0a' : C.label, borderRadius: 8, paddingVertical: 7, alignItems: 'center' })}>
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: C.bg }}>Watch</Text>
+                </Pressable>
+              </View>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
+
 // ── Community Pastor Media View ───────────────────────────────────────────────
 
 type MediaTab = 'Library' | 'Upload' | 'Schedule' | 'Live' | 'Analytics';
@@ -1186,6 +1535,31 @@ export default function KayTVScreen() {
       />
     );
   }
+
+  // ── Business CEO: Media management view ──────────────────────────────────
+  if (mode === 'business' && isOwner) {
+    return (
+      <BusinessCEOMediaView
+        C={C}
+        insets={insets}
+        role={role}
+        cycleRole={cycleRole}
+      />
+    );
+  }
+
+  // ── Business Customer: Resources view ─────────────────────────────────────
+  if (mode === 'business' && !isOwner) {
+    return (
+      <BusinessCustomerResourcesView
+        C={C}
+        insets={insets}
+        role={role}
+        cycleRole={cycleRole}
+      />
+    );
+  }
+
 
   // ── Community Pastor: Media management view ───────────────────────────────
   if (mode === 'community' && isOwner) {

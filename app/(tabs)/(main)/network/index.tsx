@@ -1031,6 +1031,615 @@ function EducationStudentDirectoryView({
   );
 }
 
+// ── Business Mode Data ────────────────────────────────────────────────────────
+
+type BizPeopleTab = 'Directory' | 'Org Chart' | 'HR' | 'Hiring';
+
+const BIZ_TEAM = [
+  { id: 'b1',  initials: 'SK', hue: 30,  name: 'Sammy Kalejaiye', title: 'CEO',               dept: 'Leadership',    status: 'Active' },
+  { id: 'b2',  initials: 'MW', hue: 200, name: 'Marcus Williams',  title: 'CTO',               dept: 'Engineering',   status: 'Active' },
+  { id: 'b3',  initials: 'DC', hue: 300, name: 'Diana Chen',       title: 'Head of Product',   dept: 'Product',       status: 'Active' },
+  { id: 'b4',  initials: 'KM', hue: 80,  name: 'Kevin Moore',      title: 'Lead Engineer',     dept: 'Engineering',   status: 'Active' },
+  { id: 'b5',  initials: 'TO', hue: 160, name: 'Tara Osei',        title: 'Sales Lead',        dept: 'Sales',         status: 'Active' },
+  { id: 'b6',  initials: 'BF', hue: 40,  name: 'Ben Foster',       title: 'Marketing Manager', dept: 'Marketing',     status: 'Active' },
+  { id: 'b7',  initials: 'MG', hue: 260, name: 'Mia Grant',        title: 'Operations Manager',dept: 'Operations',    status: 'Active' },
+  { id: 'b8',  initials: 'AD', hue: 140, name: 'Aisha Diallo',     title: 'Finance Manager',   dept: 'Finance',       status: 'Active' },
+  { id: 'b9',  initials: 'TR', hue: 0,   name: 'Tom Reyes',        title: 'General Counsel',   dept: 'Legal',         status: 'Active' },
+  { id: 'b10', initials: 'CN', hue: 220, name: 'Carlos Ng',        title: 'Support Lead',      dept: 'Support',       status: 'Active' },
+  { id: 'b11', initials: 'PS', hue: 340, name: 'Priya Shah',       title: 'Senior Engineer',   dept: 'Engineering',   status: 'On Leave' },
+];
+
+const BIZ_ORG_CHART = [
+  { id: 'o0', name: 'Sammy Kalejaiye', title: 'CEO',               level: 0, parentTitle: '' },
+  { id: 'o1', name: 'Marcus Williams', title: 'CTO',               level: 1, parentTitle: 'CEO' },
+  { id: 'o2', name: 'Diana Chen',      title: 'Head of Product',   level: 1, parentTitle: 'CEO' },
+  { id: 'o3', name: 'Tara Osei',       title: 'Sales Lead',        level: 1, parentTitle: 'CEO' },
+  { id: 'o4', name: 'Ben Foster',      title: 'Marketing Manager', level: 1, parentTitle: 'CEO' },
+  { id: 'o5', name: 'Mia Grant',       title: 'Operations Manager',level: 1, parentTitle: 'CEO' },
+  { id: 'o6', name: 'Aisha Diallo',    title: 'Finance Manager',   level: 1, parentTitle: 'CEO' },
+  { id: 'o7', name: 'Tom Reyes',       title: 'General Counsel',   level: 1, parentTitle: 'CEO' },
+  { id: 'o8', name: 'Kevin Moore',     title: 'Lead Engineer',     level: 2, parentTitle: 'CTO' },
+  { id: 'o9', name: 'Priya Shah',      title: 'Senior Engineer',   level: 2, parentTitle: 'CTO' },
+  { id: 'o10',name: 'Carlos Ng',       title: 'Support Lead',      level: 2, parentTitle: 'Head of Product' },
+];
+
+const BIZ_ONBOARDING = [
+  { name: 'Jordan Lee',  role: 'Data Analyst',    startDate: 'Apr 7, 2026',  progress: 0.6 },
+  { name: 'Nadia Osei',  role: 'Growth Engineer', startDate: 'Apr 14, 2026', progress: 0.2 },
+];
+
+const BIZ_PTO = [
+  { name: 'Priya Shah', dates: 'Apr 1–11, 2026',  status: 'Approved' },
+  { name: 'Carlos Ng',  dates: 'Apr 22–25, 2026', status: 'Pending' },
+  { name: 'Ben Foster', dates: 'May 5–9, 2026',   status: 'Pending' },
+];
+
+const BIZ_OPEN_ROLES = [
+  { id: 'r1', title: 'Senior Engineer',   dept: 'Engineering', posted: 'Mar 15, 2026', applicants: 24, pipeline: [14, 6, 3, 1] },
+  { id: 'r2', title: 'Growth Marketer',   dept: 'Marketing',   posted: 'Mar 22, 2026', applicants: 18, pipeline: [10, 5, 2, 1] },
+  { id: 'r3', title: 'Account Executive', dept: 'Sales',       posted: 'Apr 1, 2026',  applicants: 11, pipeline: [8, 2, 1, 0] },
+];
+
+const BIZ_CANDIDATES = [
+  { name: 'Keanu Reeves', role: 'Senior Engineer',   stars: 5, status: 'Interview' },
+  { name: 'Amara Bello',  role: 'Growth Marketer',   stars: 4, status: 'Screened'  },
+  { name: 'Diego Vargas', role: 'Account Executive', stars: 4, status: 'Applied'   },
+  { name: 'Lena Üller',  role: 'Senior Engineer',   stars: 3, status: 'Offer'     },
+];
+
+const BIZ_PIPELINE_LABELS = ['Applied', 'Screened', 'Interview', 'Offer'];
+
+// ── BusinessCEOTeamView ────────────────────────────────────────────────────────
+
+function BusinessCEOTeamView({
+  C, insets, role, cycleRole,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+}) {
+  const topBarH = insets.top + TOP_BAR_H;
+  const [peopleTab, setPeopleTab] = useState<BizPeopleTab>('Directory');
+  const [peopleDrop, setPeopleDrop] = useState(false);
+  const [dirSearch, setDirSearch] = useState('');
+
+  const PEOPLE_TABS: BizPeopleTab[] = ['Directory', 'Org Chart', 'HR', 'Hiring'];
+
+  const filteredTeam = dirSearch.trim()
+    ? BIZ_TEAM.filter(m =>
+        m.name.toLowerCase().includes(dirSearch.toLowerCase()) ||
+        m.title.toLowerCase().includes(dirSearch.toLowerCase()) ||
+        m.dept.toLowerCase().includes(dirSearch.toLowerCase())
+      )
+    : BIZ_TEAM;
+
+  function renderDirectory() {
+    return (
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Search bar */}
+        <View style={{
+          flexDirection: 'row', alignItems: 'center', gap: 10,
+          marginHorizontal: 16, marginBottom: 12,
+          paddingHorizontal: 12, paddingVertical: 10,
+          backgroundColor: C.surface, borderRadius: 12,
+          borderWidth: 1.5, borderColor: C.separator,
+        }}>
+          <IconSymbol name="magnifyingglass" size={16} color={C.muted} />
+          <TextInput
+            style={{ flex: 1, fontSize: 14, color: C.label }}
+            placeholder="Search team..."
+            placeholderTextColor={C.muted}
+            value={dirSearch}
+            onChangeText={setDirSearch}
+            returnKeyType="search"
+          />
+          {dirSearch.length > 0 && (
+            <Pressable onPress={() => setDirSearch('')}>
+              <IconSymbol name="xmark.circle.fill" size={16} color={C.muted} />
+            </Pressable>
+          )}
+        </View>
+
+        <Text style={{ fontSize: 13, color: C.secondary, paddingHorizontal: 16, marginBottom: 12 }}>
+          {filteredTeam.length} team members
+        </Text>
+
+        {filteredTeam.map(member => (
+          <Pressable
+            key={member.id}
+            style={({ pressed }) => ({
+              flexDirection: 'row', alignItems: 'center', gap: 12,
+              paddingHorizontal: 16, paddingVertical: 13,
+              backgroundColor: pressed ? C.surfacePressed : C.surface,
+              marginHorizontal: 16, marginBottom: 8, borderRadius: 12,
+              borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator,
+            })}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <View style={{
+              width: 44, height: 44, borderRadius: 22,
+              backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>{member.initials}</Text>
+            </View>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={1}>{member.name}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{member.title}</Text>
+              <Text style={{ fontSize: 11, color: C.muted, marginTop: 1 }}>{member.dept}</Text>
+            </View>
+            <View style={{
+              paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8,
+              backgroundColor: member.status === 'Active' ? '#5A8A6E18' : '#B8943E18',
+            }}>
+              <Text style={{
+                fontSize: 11, fontWeight: '600',
+                color: member.status === 'Active' ? '#5A8A6E' : '#B8943E',
+              }}>{member.status}</Text>
+            </View>
+          </Pressable>
+        ))}
+      </ScrollView>
+    );
+  }
+
+  function renderOrgChart() {
+    return (
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={{ fontSize: 13, color: C.secondary, paddingHorizontal: 16, marginBottom: 16 }}>
+          Organizational structure
+        </Text>
+        {BIZ_ORG_CHART.map((node, i) => (
+          <View
+            key={node.id}
+            style={{
+              flexDirection: 'row', alignItems: 'center',
+              paddingHorizontal: 16 + node.level * 20,
+              paddingVertical: 10,
+              borderTopWidth: i > 0 ? StyleSheet.hairlineWidth : 0,
+              borderTopColor: C.separator,
+            }}
+          >
+            <View style={{
+              width: 8, height: 8, borderRadius: 4,
+              backgroundColor: node.level === 0 ? C.label : C.secondary,
+              marginRight: 12, flexShrink: 0,
+            }} />
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text style={{
+                fontSize: node.level === 0 ? 15 : 14,
+                fontWeight: node.level === 0 ? '700' : '500',
+                color: C.label,
+              }} numberOfLines={1}>{node.name}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{node.title}</Text>
+            </View>
+            {node.level === 0 && (
+              <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, backgroundColor: C.surfacePressed }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: C.label }}>CEO</Text>
+              </View>
+            )}
+          </View>
+        ))}
+      </ScrollView>
+    );
+  }
+
+  function renderHR() {
+    return (
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Onboarding */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 1, textTransform: 'uppercase', paddingHorizontal: 16, marginBottom: 10 }}>
+          Onboarding
+        </Text>
+        {BIZ_ONBOARDING.map(hire => (
+          <View key={hire.name} style={{
+            marginHorizontal: 16, marginBottom: 10, padding: 14,
+            backgroundColor: C.surface, borderRadius: 12,
+            borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator,
+          }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+              <View>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{hire.name}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{hire.role} · Starts {hire.startDate}</Text>
+              </View>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>{Math.round(hire.progress * 100)}%</Text>
+            </View>
+            <View style={{ height: 6, backgroundColor: C.separator, borderRadius: 3, overflow: 'hidden' }}>
+              <View style={{ height: 6, width: `${hire.progress * 100}%` as any, backgroundColor: '#5A8A6E', borderRadius: 3 }} />
+            </View>
+          </View>
+        ))}
+
+        {/* Performance */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 1, textTransform: 'uppercase', paddingHorizontal: 16, marginTop: 16, marginBottom: 10 }}>
+          Performance
+        </Text>
+        <View style={{
+          marginHorizontal: 16, marginBottom: 10, padding: 14,
+          backgroundColor: C.surface, borderRadius: 12,
+          borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator,
+        }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>Q1 Reviews: 8/11 completed</Text>
+            <Text style={{ fontSize: 13, fontWeight: '700', color: '#5A8A6E' }}>73%</Text>
+          </View>
+          <View style={{ height: 6, backgroundColor: C.separator, borderRadius: 3, overflow: 'hidden' }}>
+            <View style={{ height: 6, width: '73%', backgroundColor: '#5A8A6E', borderRadius: 3 }} />
+          </View>
+          <Text style={{ fontSize: 12, color: C.muted, marginTop: 8 }}>3 reviews pending — deadline Apr 15, 2026</Text>
+        </View>
+
+        {/* PTO */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 1, textTransform: 'uppercase', paddingHorizontal: 16, marginTop: 16, marginBottom: 10 }}>
+          PTO Requests
+        </Text>
+        {BIZ_PTO.map((req, i) => (
+          <View
+            key={req.name}
+            style={{
+              flexDirection: 'row', alignItems: 'center',
+              paddingHorizontal: 16, paddingVertical: 12,
+              borderTopWidth: i > 0 ? StyleSheet.hairlineWidth : 0, borderTopColor: C.separator,
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{req.name}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{req.dates}</Text>
+            </View>
+            <View style={{
+              paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8,
+              backgroundColor: req.status === 'Approved' ? '#5A8A6E18' : '#B8943E18',
+            }}>
+              <Text style={{ fontSize: 11, fontWeight: '600', color: req.status === 'Approved' ? '#5A8A6E' : '#B8943E' }}>
+                {req.status}
+              </Text>
+            </View>
+          </View>
+        ))}
+
+        {/* Compliance */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 1, textTransform: 'uppercase', paddingHorizontal: 16, marginTop: 16, marginBottom: 10 }}>
+          Compliance
+        </Text>
+        <View style={{ marginHorizontal: 16, padding: 14, backgroundColor: C.surface, borderRadius: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+          <IconSymbol name="checkmark.shield" size={20} color={'#5A8A6E'} />
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>Employee Handbook updated</Text>
+            <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>Last revision: Mar 2026</Text>
+          </View>
+        </View>
+      </ScrollView>
+    );
+  }
+
+  function renderHiring() {
+    return (
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Open roles */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 1, textTransform: 'uppercase', paddingHorizontal: 16, marginBottom: 10 }}>
+          Open Positions
+        </Text>
+        {BIZ_OPEN_ROLES.map(job => (
+          <View key={job.id} style={{
+            marginHorizontal: 16, marginBottom: 12, padding: 14,
+            backgroundColor: C.surface, borderRadius: 12,
+            borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, gap: 10,
+          }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{job.title}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{job.dept} · Posted {job.posted}</Text>
+              </View>
+              <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, backgroundColor: C.surfacePressed }}>
+                <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>{job.applicants} applicants</Text>
+              </View>
+            </View>
+            {/* Pipeline pills */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }}>
+              {BIZ_PIPELINE_LABELS.map((label, idx) => (
+                <View key={label} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                  <View style={{
+                    paddingHorizontal: 10, paddingVertical: 5, borderRadius: 16,
+                    backgroundColor: C.surfacePressed, borderWidth: 1, borderColor: C.separator,
+                  }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>{label} ({job.pipeline[idx]})</Text>
+                  </View>
+                  {idx < BIZ_PIPELINE_LABELS.length - 1 && (
+                    <IconSymbol name="chevron.right" size={10} color={C.muted} />
+                  )}
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        ))}
+
+        {/* Candidates */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 1, textTransform: 'uppercase', paddingHorizontal: 16, marginTop: 8, marginBottom: 10 }}>
+          Recent Candidates
+        </Text>
+        {BIZ_CANDIDATES.map((cand, i) => (
+          <Pressable
+            key={cand.name}
+            style={({ pressed }) => ({
+              flexDirection: 'row', alignItems: 'center', gap: 12,
+              paddingHorizontal: 16, paddingVertical: 12,
+              backgroundColor: pressed ? C.surfacePressed : 'transparent',
+              borderTopWidth: i > 0 ? StyleSheet.hairlineWidth : 0, borderTopColor: C.separator,
+            })}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <View style={{
+              width: 40, height: 40, borderRadius: 20,
+              backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: C.bg }}>
+                {cand.name.split(' ').map((n: string) => n[0]).join('')}
+              </Text>
+            </View>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={1}>{cand.name}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{cand.role}</Text>
+            </View>
+            <View style={{ alignItems: 'flex-end', gap: 4 }}>
+              <Text style={{ fontSize: 12, color: C.label }}>
+                {'★'.repeat(cand.stars)}{'☆'.repeat(5 - cand.stars)}
+              </Text>
+              <View style={{
+                paddingHorizontal: 7, paddingVertical: 2, borderRadius: 8,
+                backgroundColor: cand.status === 'Offer' ? '#5A8A6E18' : C.surfacePressed,
+              }}>
+                <Text style={{ fontSize: 10, fontWeight: '600', color: cand.status === 'Offer' ? '#5A8A6E' : C.secondary }}>
+                  {cand.status}
+                </Text>
+              </View>
+            </View>
+          </Pressable>
+        ))}
+      </ScrollView>
+    );
+  }
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top bar */}
+      <View style={{
+        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 30,
+        flexDirection: 'row', alignItems: 'flex-end',
+        paddingTop: insets.top, height: topBarH,
+        paddingHorizontal: 16, paddingBottom: 10,
+        borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+        backgroundColor: C.bg,
+      }}>
+        <View style={{ flex: 1, justifyContent: 'center' }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
+        </View>
+        <Pressable
+          style={{
+            flexDirection: 'row', alignItems: 'center', gap: 4,
+            backgroundColor: C.surfacePressed, borderRadius: 18,
+            paddingHorizontal: 14, paddingVertical: 6,
+            borderWidth: 1.5, borderColor: C.separator,
+          }}
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setPeopleDrop(v => !v); }}
+        >
+          <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>{peopleTab}</Text>
+          <IconSymbol name={peopleDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.label} />
+        </Pressable>
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary />
+        </View>
+      </View>
+
+      {/* Dropdown */}
+      {peopleDrop && (
+        <View style={{
+          position: 'absolute', top: topBarH, left: 16, right: 16, zIndex: 99,
+          backgroundColor: C.bg, borderRadius: 14, borderWidth: 1, borderColor: C.separator,
+          shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.08, shadowRadius: 12, elevation: 8,
+        }}>
+          {PEOPLE_TABS.map(t => (
+            <Pressable
+              key={t}
+              style={[{
+                flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+                paddingHorizontal: 16, paddingVertical: 14,
+                borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+              }, t === peopleTab && { backgroundColor: C.surfacePressed }]}
+              onPress={() => { setPeopleTab(t); setPeopleDrop(false); }}
+            >
+              <Text style={{ fontSize: 15, color: t === peopleTab ? C.label : C.secondary, fontWeight: t === peopleTab ? '700' : '400' }}>{t}</Text>
+              {t === peopleTab && <IconSymbol name="checkmark" size={14} color={C.label} />}
+            </Pressable>
+          ))}
+        </View>
+      )}
+
+      {/* Tab content */}
+      {peopleTab === 'Directory'  ? renderDirectory()
+        : peopleTab === 'Org Chart' ? renderOrgChart()
+        : peopleTab === 'HR'        ? renderHR()
+        : renderHiring()}
+    </View>
+  );
+}
+
+// ── BusinessCustomerTeamView ───────────────────────────────────────────────────
+
+function BusinessCustomerTeamView({
+  C, insets, role, cycleRole,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+}) {
+  const topBarH = insets.top + TOP_BAR_H;
+
+  const BIZ_WORKING_WITH = [
+    { initials: 'SK', name: 'Sammy Kalejaiye', title: 'Founder & CEO',  email: 'sammy@kanext.io' },
+    { initials: 'TO', name: 'Tara Osei',        title: 'Sales Lead',     email: 'tara@kanext.io' },
+    { initials: 'MG', name: 'Mia Grant',        title: 'Client Success', email: 'mia@kanext.io' },
+  ];
+
+  const BIZ_LEADERSHIP_PUBLIC = [
+    { initials: 'SK', name: 'Sammy Kalejaiye', title: 'Founder & CEO',   bio: 'Building the OS that runs institutions' },
+    { initials: 'MW', name: 'Marcus Williams',  title: 'CTO',             bio: 'Engineering the platform infrastructure' },
+    { initials: 'DC', name: 'Diana Chen',       title: 'Head of Product', bio: 'Designing the user experience' },
+  ];
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top bar */}
+      <View style={{
+        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 30,
+        flexDirection: 'row', alignItems: 'flex-end',
+        paddingTop: insets.top, height: topBarH,
+        paddingHorizontal: 16, paddingBottom: 10,
+        borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+        backgroundColor: C.bg,
+      }}>
+        <View style={{ flex: 1, justifyContent: 'center' }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
+        </View>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Text style={{ fontSize: 17, fontWeight: '700', color: C.label }}>Our Team</Text>
+        </View>
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={false} />
+        </View>
+      </View>
+
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* My Contact card */}
+        <View style={{
+          marginHorizontal: 16, marginBottom: 20, padding: 16,
+          backgroundColor: C.surface, borderRadius: 14,
+          borderWidth: 1.5, borderColor: C.separator,
+        }}>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 }}>
+            My Contact
+          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <View style={{
+              width: 52, height: 52, borderRadius: 26,
+              backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <Text style={{ fontSize: 17, fontWeight: '700', color: C.bg }}>SK</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Sammy Kalejaiye</Text>
+              <Text style={{ fontSize: 13, color: C.secondary, marginTop: 2 }}>Founder & CEO</Text>
+              <Text style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>Your account manager</Text>
+            </View>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 12 }}>
+            <IconSymbol name="envelope" size={13} color={C.muted} />
+            <Text style={{ fontSize: 12, color: C.secondary }}>sammy@kanext.io</Text>
+          </View>
+          <Pressable
+            style={({ pressed }) => ({
+              marginTop: 12, borderRadius: 10, paddingVertical: 10, alignItems: 'center',
+              backgroundColor: pressed ? C.surfacePressed : C.label,
+            })}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <Text style={{ fontSize: 14, fontWeight: '600', color: C.bg }}>Message</Text>
+          </Pressable>
+        </View>
+
+        {/* Company Leadership */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 1, textTransform: 'uppercase', paddingHorizontal: 16, marginBottom: 10 }}>
+          Company Leadership
+        </Text>
+        {BIZ_LEADERSHIP_PUBLIC.map((person, i) => (
+          <View
+            key={person.name}
+            style={{
+              flexDirection: 'row', alignItems: 'center', gap: 12,
+              paddingHorizontal: 16, paddingVertical: 14,
+              borderTopWidth: i > 0 ? StyleSheet.hairlineWidth : 0, borderTopColor: C.separator,
+            }}
+          >
+            <View style={{
+              width: 44, height: 44, borderRadius: 22,
+              backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>{person.initials}</Text>
+            </View>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={1}>{person.name}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{person.title}</Text>
+              <Text style={{ fontSize: 11, color: C.muted, marginTop: 2 }} numberOfLines={1}>{person.bio}</Text>
+            </View>
+          </View>
+        ))}
+
+        {/* Working With You */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 1, textTransform: 'uppercase', paddingHorizontal: 16, marginTop: 24, marginBottom: 10 }}>
+          Working With You
+        </Text>
+        {BIZ_WORKING_WITH.map(person => (
+          <View key={person.name} style={{
+            flexDirection: 'row', alignItems: 'center', gap: 12,
+            marginHorizontal: 16, marginBottom: 8, padding: 14,
+            backgroundColor: C.surface, borderRadius: 12,
+            borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator,
+          }}>
+            <View style={{
+              width: 44, height: 44, borderRadius: 22,
+              backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>{person.initials}</Text>
+            </View>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={1}>{person.name}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{person.title}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                <IconSymbol name="envelope" size={11} color={C.muted} />
+                <Text style={{ fontSize: 11, color: C.muted }}>{person.email}</Text>
+              </View>
+            </View>
+            <Pressable
+              style={({ pressed }) => ({
+                paddingHorizontal: 12, paddingVertical: 7, borderRadius: 10,
+                backgroundColor: pressed ? C.surfacePressed : C.label,
+              })}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <Text style={{ fontSize: 12, fontWeight: '600', color: C.bg }}>Message</Text>
+            </Pressable>
+          </View>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Main Screen ────────────────────────────────────────────────────────────────
 
 export default function NetworkScreen() {
@@ -1054,6 +1663,9 @@ export default function NetworkScreen() {
   const mode = state.activeContext?.mode ?? (state as any).mode ?? 'personal';
   const [eduRole, cycleEduRole, eduRoleCycles] = useDemoRole('education');
   const isEduAdmin = eduRole === eduRoleCycles[0];
+  const [bizRole, cycleBizRole, bizRoleCycles] = useDemoRole('business');
+  const isBusinessAdmin = bizRole === bizRoleCycles[0];
+
 
   // Member action sheet
   const [actionTarget, setActionTarget] = useState<CommunityMember | null>(null);
@@ -1517,6 +2129,29 @@ export default function NetworkScreen() {
     );
   }
 
+
+  // ── Business mode early returns ──────────────────────────────────────────
+  if (mode === 'business' && isBusinessAdmin) {
+    return (
+      <BusinessCEOTeamView
+        C={C}
+        insets={insets}
+        role={bizRole}
+        cycleRole={cycleBizRole}
+      />
+    );
+  }
+
+  if (mode === 'business') {
+    return (
+      <BusinessCustomerTeamView
+        C={C}
+        insets={insets}
+        role={bizRole}
+        cycleRole={cycleBizRole}
+      />
+    );
+  }
 
   // ── Education mode early returns ─────────────────────────────────────────
   if (mode === 'education' && isEduAdmin) {
