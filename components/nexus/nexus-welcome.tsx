@@ -71,7 +71,7 @@ export function NexusWelcome({ onSend, userName, mode = 'sports' }: NexusWelcome
       {/* Dipson icon */}
       <Image
         source={require('@/assets/nexus-icon.png')}
-        style={{ width: 56, height: 56, tintColor: C.label, marginBottom: 8 }}
+        style={{ width: 96, height: 96, tintColor: C.label, marginBottom: 8 }}
         resizeMode="contain"
       />
 
