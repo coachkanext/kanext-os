@@ -424,6 +424,125 @@ function ConnectCardOverlay({ onClose, C, insets }: {
   );
 }
 
+// ── Community Member: Connect view ────────────────────────────────────────────
+
+function CommunityMemberConnectView({
+  C, insets, role, cycleRole,
+}: {
+  C: import('@/hooks/use-colors').ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+}) {
+  const [visited,      setVisited]      = React.useState(false);
+  const [invitesSent,  setInvitesSent]  = React.useState(0);
+  const [myInvites,    setMyInvites]    = React.useState([
+    { id: 'mi1', name: 'Marcus Reid',    date: 'Apr 3', status: 'Attended' as const },
+    { id: 'mi2', name: 'Priya Nair',     date: 'Apr 1', status: 'Pending' as const  },
+    { id: 'mi3', name: 'Terrence Hall',  date: 'Mar 28', status: 'Pending' as const },
+  ]);
+  const PUBLIC_EVENTS = [
+    { id: 'pe1', title: 'Easter Celebration Service', date: 'Apr 20 · 9:00 AM', location: 'Main Sanctuary' },
+    { id: 'pe2', title: 'Community Outreach Day',     date: 'Apr 26 · 8:00 AM', location: 'Crenshaw Park'  },
+    { id: 'pe3', title: 'ICCLA Open House',           date: 'May 3 · 2:00 PM',  location: 'Campus'         },
+  ];
+  const topBarH = insets.top + 52;
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top bar */}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+        <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+        </Pressable>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Connect</Text>
+        </View>
+        <View style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <RolePill role={role} onPress={cycleRole} isPrimary={false} />
+        </View>
+      </View>
+
+      <ScrollView style={{ flex: 1, marginTop: topBarH }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
+
+        {/* I Visited */}
+        <View style={{ backgroundColor: '#1A1714', borderRadius: 16, margin: 16, padding: 20 }}>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase', letterSpacing: 0.6 }}>First Time Here?</Text>
+          <Text style={{ fontSize: 20, fontWeight: '800', color: '#fff', marginTop: 4, marginBottom: 8 }}>
+            {visited ? 'Welcome to ICCLA!' : "Let us know you're here"}
+          </Text>
+          <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.72)', lineHeight: 19, marginBottom: 16 }}>
+            {visited
+              ? 'Your visit has been recorded. A member of our welcome team will reach out soon.'
+              : "Tap below to register your visit. We'd love to connect with you and help you find your place here."}
+          </Text>
+          <Pressable
+            onPress={() => { if (!visited) { Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success); setVisited(true); } }}
+            style={{ borderRadius: 12, paddingVertical: 13, alignItems: 'center', backgroundColor: visited ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.2)', borderWidth: visited ? 0 : 1, borderColor: 'rgba(255,255,255,0.3)' }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              {visited && <IconSymbol name="checkmark.circle.fill" size={18} color="#fff" />}
+              <Text style={{ fontSize: 15, fontWeight: '700', color: '#fff' }}>{visited ? 'Registered' : 'I Visited Today'}</Text>
+            </View>
+          </Pressable>
+        </View>
+
+        {/* Invite a Friend */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, paddingHorizontal: 16, marginBottom: 10 }}>INVITE A FRIEND</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, marginHorizontal: 16, marginBottom: 16, padding: 16 }}>
+          <Text style={{ fontSize: 14, color: C.label, lineHeight: 20, marginBottom: 14 }}>Share ICCLA with someone who needs community. Every invitation matters.</Text>
+          <View style={{ flexDirection: 'row', gap: 10 }}>
+            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setInvitesSent(n => n + 1); }} style={({ pressed }) => ({ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 12, borderRadius: 12, backgroundColor: pressed ? '#0a0a0a' : '#1A1714' })}>
+              <IconSymbol name="message.fill" size={15} color="#fff" />
+              <Text style={{ fontSize: 14, fontWeight: '600', color: '#fff' }}>Text Invite</Text>
+            </Pressable>
+            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setInvitesSent(n => n + 1); }} style={({ pressed }) => ({ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 12, borderRadius: 12, backgroundColor: pressed ? C.surfacePressed : C.bg, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator })}>
+              <IconSymbol name="link" size={15} color={C.label} />
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>Copy Link</Text>
+            </Pressable>
+          </View>
+          {invitesSent > 0 && (
+            <Text style={{ fontSize: 12, color: '#5A8A6E', marginTop: 10, textAlign: 'center' }}>{invitesSent} invite{invitesSent > 1 ? 's' : ''} sent</Text>
+          )}
+        </View>
+
+        {/* My Invites */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, paddingHorizontal: 16, marginBottom: 10 }}>MY INVITES</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, marginHorizontal: 16, marginBottom: 16, overflow: 'hidden' }}>
+          {myInvites.map((inv, i) => (
+            <View key={inv.id} style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 13, borderBottomWidth: i < myInvites.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }}>
+              <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
+                <Text style={{ fontSize: 12, fontWeight: '700', color: C.bg }}>{inv.name.split(' ').map((w: string) => w[0]).join('').slice(0, 2)}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{inv.name}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>Invited {inv.date}</Text>
+              </View>
+              <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, backgroundColor: inv.status === 'Attended' ? '#5A8A6E22' : C.surfacePressed }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: inv.status === 'Attended' ? '#5A8A6E' : C.secondary }}>{inv.status}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+
+        {/* Upcoming Public Events */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, paddingHorizontal: 16, marginBottom: 10 }}>UPCOMING EVENTS TO SHARE</Text>
+        {PUBLIC_EVENTS.map(ev => (
+          <View key={ev.id} style={{ backgroundColor: C.surface, borderRadius: 14, marginHorizontal: 16, marginBottom: 10, padding: 16 }}>
+            <Text style={{ fontSize: 15, fontWeight: '600', color: C.label, marginBottom: 4 }}>{ev.title}</Text>
+            <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 2 }}>{ev.date}</Text>
+            <Text style={{ fontSize: 12, color: C.muted, marginBottom: 12 }}>{ev.location}</Text>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 10, backgroundColor: pressed ? C.surfacePressed : C.bg, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator })}>
+              <IconSymbol name="square.and.arrow.up" size={13} color={C.label} />
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Share Event</Text>
+            </Pressable>
+          </View>
+        ))}
+
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
 export default function CommunityOutreachScreen() {
@@ -1278,6 +1397,18 @@ export default function CommunityOutreachScreen() {
         </View>
         <View style={{ height: 40 }} />
       </>
+    );
+  }
+
+  // ── Community Member: Connect view ─────────────────────────────────────────
+  if (!isAdmin) {
+    return (
+      <CommunityMemberConnectView
+        C={C}
+        insets={insets}
+        role={demoRole}
+        cycleRole={cycleRole}
+      />
     );
   }
 

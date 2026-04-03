@@ -37,7 +37,7 @@ const RECEIPT_SHEET_H = 420;
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type GiveTab = 'Give' | 'Campaigns' | 'History';
+type GiveTab = 'Give' | 'Campaigns' | 'History' | 'Donors' | 'Tax';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -1126,6 +1126,103 @@ export default function CommunityGiveScreen() {
     );
   }
 
+  // ── Render: Donors tab (admin) ───────────────────────────────────────────────
+  function renderDonorsAdmin() {
+    const DONORS = [
+      { initials: 'RJ', name: 'Robert James',    ytd: 12_500, lastGift: 'Apr 1',  trend: 'up',   recurring: true  },
+      { initials: 'MA', name: 'Mary Akintola',   ytd:  8_900, lastGift: 'Mar 28', trend: 'up',   recurring: true  },
+      { initials: 'DS', name: 'David Selby',     ytd:  6_200, lastGift: 'Mar 15', trend: 'flat', recurring: false },
+      { initials: 'CW', name: 'C. Williams',     ytd:  4_750, lastGift: 'Mar 22', trend: 'down', recurring: true  },
+      { initials: 'GE', name: 'Grace Emeka',     ytd:  3_200, lastGift: 'Apr 2',  trend: 'up',   recurring: false },
+      { initials: 'TO', name: 'Thomas Osei',     ytd:  2_800, lastGift: 'Feb 28', trend: 'down', recurring: false },
+      { initials: 'NB', name: 'Naomi Barnes',    ytd:  2_400, lastGift: 'Mar 30', trend: 'flat', recurring: true  },
+    ];
+    const TREND_ICON: Record<string, string> = { up: 'arrow.up', down: 'arrow.down', flat: 'minus' };
+    const TREND_COLOR: Record<string, string> = { up: '#5A8A6E', down: '#B85C5C', flat: C.secondary };
+    return (
+      <>
+        <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
+          {[{label:'Active Donors',value:'312'},{label:'Lapsed',value:'47'},{label:'New This Month',value:'14'}].map(s=>(
+            <View key={s.label} style={{flex:1,backgroundColor:C.surface,borderRadius:12,padding:12,alignItems:'center'}}>
+              <Text style={{fontSize:18,fontWeight:'800',color:C.label}}>{s.value}</Text>
+              <Text style={{fontSize:10,color:C.secondary,textAlign:'center',marginTop:2}}>{s.label}</Text>
+            </View>
+          ))}
+        </View>
+        <Text style={{fontSize:11,fontWeight:'700',color:C.secondary,textTransform:'uppercase',letterSpacing:0.5,marginBottom:10}}>TOP DONORS — YTD</Text>
+        <View style={{backgroundColor:C.surface,borderRadius:14,overflow:'hidden',marginBottom:16}}>
+          {DONORS.map((d,i)=>(
+            <View key={d.initials+i} style={{flexDirection:'row',alignItems:'center',paddingHorizontal:14,paddingVertical:12,borderBottomWidth:i<DONORS.length-1?StyleSheet.hairlineWidth:0,borderBottomColor:C.separator,gap:12}}>
+              <View style={{width:36,height:36,borderRadius:18,backgroundColor:C.label,alignItems:'center',justifyContent:'center'}}>
+                <Text style={{fontSize:12,fontWeight:'700',color:C.bg}}>{d.initials}</Text>
+              </View>
+              <View style={{flex:1}}>
+                <Text style={{fontSize:14,fontWeight:'600',color:C.label}}>{d.name}</Text>
+                <Text style={{fontSize:12,color:C.secondary}}>Last: {d.lastGift}{d.recurring ? ' · Recurring' : ''}</Text>
+              </View>
+              <View style={{alignItems:'flex-end',gap:4}}>
+                <Text style={{fontSize:14,fontWeight:'700',color:C.label}}>${(d.ytd/1000).toFixed(1)}K</Text>
+                <IconSymbol name={TREND_ICON[d.trend] as any} size={12} color={TREND_COLOR[d.trend]}/>
+              </View>
+            </View>
+          ))}
+        </View>
+        <View style={{backgroundColor:'#B85C5C18',borderRadius:14,padding:14,marginBottom:16,flexDirection:'row',alignItems:'flex-start',gap:10}}>
+          <IconSymbol name="exclamationmark.triangle.fill" size={16} color='#B85C5C'/>
+          <View style={{flex:1}}>
+            <Text style={{fontSize:13,fontWeight:'700',color:'#B85C5C',marginBottom:2}}>47 Lapsed Donors</Text>
+            <Text style={{fontSize:12,color:C.secondary,lineHeight:18}}>Regular givers who have not given in 60+ days. Consider personal outreach to reconnect.</Text>
+          </View>
+        </View>
+      </>
+    );
+  }
+
+  // ── Render: Tax tab (admin) ───────────────────────────────────────────────────
+  function renderTaxAdmin() {
+    return (
+      <>
+        <Text style={{fontSize:11,fontWeight:'700',color:C.secondary,textTransform:'uppercase',letterSpacing:0.5,marginBottom:12}}>YEAR-END STATEMENTS</Text>
+        <View style={{backgroundColor:C.surface,borderRadius:14,padding:16,marginBottom:16}}>
+          <Text style={{fontSize:15,fontWeight:'600',color:C.label,marginBottom:4}}>2025 Tax Statements</Text>
+          <Text style={{fontSize:13,color:C.secondary,lineHeight:19,marginBottom:14}}>312 eligible donors · Statements ready to send</Text>
+          <View style={{flexDirection:'row',gap:10}}>
+            <Pressable onPress={()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({pressed})=>({flex:1,paddingVertical:12,borderRadius:12,alignItems:'center',backgroundColor:pressed?'#0a0a0a':'#1A1714'})}>
+              <Text style={{fontSize:14,fontWeight:'700',color:'#fff'}}>Send All</Text>
+            </Pressable>
+            <Pressable onPress={()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({pressed})=>({flex:1,paddingVertical:12,borderRadius:12,alignItems:'center',backgroundColor:pressed?C.surfacePressed:C.bg,borderWidth:StyleSheet.hairlineWidth,borderColor:C.separator})}>
+              <Text style={{fontSize:14,fontWeight:'600',color:C.label}}>Preview</Text>
+            </Pressable>
+          </View>
+        </View>
+        <Text style={{fontSize:11,fontWeight:'700',color:C.secondary,textTransform:'uppercase',letterSpacing:0.5,marginBottom:12}}>IRS COMPLIANCE</Text>
+        {[
+          {label:'501(c)(3) Status',value:'Active',ok:true},
+          {label:'Form 990 Filed',value:'2024 — Filed',ok:true},
+          {label:'Charitable Contribution Disclosures',value:'Required',ok:true},
+          {label:'UBIT (Unrelated Business Income)',value:'None',ok:true},
+        ].map(item=>(
+          <View key={item.label} style={{flexDirection:'row',alignItems:'center',backgroundColor:C.surface,borderRadius:12,marginBottom:8,padding:14,gap:12}}>
+            <IconSymbol name={item.ok?'checkmark.circle.fill':'exclamationmark.circle.fill'} size={18} color={item.ok?'#5A8A6E':'#B85C5C'}/>
+            <View style={{flex:1}}>
+              <Text style={{fontSize:13,fontWeight:'600',color:C.label}}>{item.label}</Text>
+              <Text style={{fontSize:12,color:C.secondary,marginTop:1}}>{item.value}</Text>
+            </View>
+          </View>
+        ))}
+        <Text style={{fontSize:11,fontWeight:'700',color:C.secondary,textTransform:'uppercase',letterSpacing:0.5,marginTop:8,marginBottom:12}}>DONOR ACKNOWLEDGMENT LETTERS</Text>
+        <Pressable onPress={()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({pressed})=>({backgroundColor:pressed?C.surfacePressed:C.surface,borderRadius:14,padding:16,flexDirection:'row',alignItems:'center',gap:12})}>
+          <IconSymbol name="envelope.fill" size={20} color={C.label}/>
+          <View style={{flex:1}}>
+            <Text style={{fontSize:14,fontWeight:'600',color:C.label}}>Generate Acknowledgment Letters</Text>
+            <Text style={{fontSize:12,color:C.secondary,marginTop:2}}>For single gifts of $250+</Text>
+          </View>
+          <IconSymbol name="chevron.right" size={14} color={C.secondary}/>
+        </Pressable>
+      </>
+    );
+  }
+
   // ── Pastor Fund Dashboard ────────────────────────────────────────────────────
 
   function renderPastorFundDashboard() {
@@ -1272,7 +1369,9 @@ export default function CommunityGiveScreen() {
     }
     // Pastor: Give tab shows fund dashboard
     if (activeTab === 'Give')      return renderPastorFundDashboard();
+    if (activeTab === 'Donors')    return renderDonorsAdmin();
     if (activeTab === 'Campaigns') return renderCampaignsAdmin();
+    if (activeTab === 'Tax')       return renderTaxAdmin();
     return renderHistoryAdmin();
   }
 
@@ -1380,7 +1479,10 @@ export default function CommunityGiveScreen() {
             onPress={() => setDropdownOpen(false)}
           />
           <View style={[s.dropdown, { backgroundColor: C.surface, borderColor: C.separator, top: insets.top + TOP_BAR_H }]}>
-            {(['Give', 'Campaigns', 'History'] as GiveTab[]).map(tab => (
+            {(isAdmin
+              ? (['Give', 'Donors', 'Campaigns', 'Tax'] as GiveTab[])
+              : (['Give', 'Campaigns', 'History'] as GiveTab[])
+            ).map(tab => (
               <Pressable
                 key={tab}
                 style={({ pressed }) => [

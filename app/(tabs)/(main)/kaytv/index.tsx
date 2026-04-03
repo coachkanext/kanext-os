@@ -4,6 +4,7 @@
  *       Category pills hidden by default, toggled via filter icon.
  * Explore: cross-brand/cross-mode discovery rows.
  * Library: personal history, saved, liked, playlists — mode-agnostic.
+ * Personal mode: Owner sees full creator tools; Subscriber sees Videos view.
  */
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
@@ -34,13 +35,25 @@ type KayTab = 'Home' | 'Explore' | 'Library';
 const TOP_BAR_H = 52;
 const PILL_ROW_H = 48;
 
+// ── Subscriber filter pills ────────────────────────────────────────────────
+
+const SUB_FILTERS = ['All', 'Public', 'Exclusive'] as const;
+type SubFilter = typeof SUB_FILTERS[number];
+
+const SUBSCRIBER_VIDEOS = [
+  { id: 'sv1', title: 'Building KaNeXT OS | Ep 1',          views: '4.2K views', duration: '18:32', locked: false },
+  { id: 'sv2', title: 'Morning Routine 2026',                views: '8.7K views', duration: '12:15', locked: false },
+  { id: 'sv3', title: 'Creator Systems',                     views: '6.1K views', duration: '22:44', locked: false },
+  { id: 'sv4', title: 'Subscribers Only: Business Strategy', views: '',           duration: '',      locked: true  },
+];
+
 // ── VideoCard — YouTube-style ──────────────────────────────────────────────
 
 function VideoCard({
   video, C, onPress,
 }: { video: KayTVFeedItem; C: ComponentColors; onPress: () => void }) {
   const { width } = useWindowDimensions();
-  const thumbW = width - 24; // 12px padding each side
+  const thumbW = width - 24;
   const thumbH = Math.round(thumbW * (9 / 16));
 
   return (
@@ -48,7 +61,7 @@ function VideoCard({
       onPress={onPress}
       style={({ pressed }) => [styles.card, { opacity: pressed ? 0.92 : 1 }]}
     >
-      {/* 16:9 Thumbnail with horizontal padding */}
+      {/* 16:9 Thumbnail */}
       <View style={styles.thumbWrap}>
         <View style={[styles.thumb, { height: thumbH, backgroundColor: `hsl(${video.thumbHue},38%,32%)` }]}>
           <Text style={styles.thumbEmoji}>{video.thumbEmoji}</Text>
@@ -60,7 +73,6 @@ function VideoCard({
 
       {/* Info block */}
       <View style={styles.infoBlock}>
-        {/* Uploader row: avatar · name · @handle · ⋮ */}
         <View style={styles.uploaderRow}>
           <View style={[styles.brandAvatar, { backgroundColor: C.surfacePressed }]}>
             <Text style={[styles.brandAvatarText, { color: C.label }]}>{video.uploaderInitials}</Text>
@@ -76,13 +88,9 @@ function VideoCard({
             <IconSymbol name="ellipsis" size={14} color={C.secondary} />
           </Pressable>
         </View>
-
-        {/* Title */}
         <Text style={[styles.videoTitle, { color: C.label }]} numberOfLines={2}>
           {video.title}
         </Text>
-
-        {/* Meta: brand · views · time */}
         <Text style={[styles.videoMeta, { color: C.secondary }]} numberOfLines={1}>
           {video.brandName} · {formatViewCount(video.viewCount)} · {formatVideoTimestamp(video.timestamp)}
         </Text>
@@ -144,7 +152,167 @@ function PlaylistCard({
   );
 }
 
-// ── KayTV Screen ──────────────────────────────────────────────────────────
+// ── CommunityMemberWatchView ──────────────────────────────────────────────
+
+type WatchCat = 'Sermons' | 'Worship' | 'Teaching' | "Children's" | 'Testimonies';
+const COMMUNITY_WATCH_VIDEOS: Record<WatchCat, Array<{ id: string; title: string; speaker: string; date: string; duration: string }>> = {
+  Sermons: [
+    { id: 'cw1', title: 'The Power of Grace',             speaker: 'Dr. Oladipo Kalejaiye',   date: 'Mar 30, 2026', duration: '47 min' },
+    { id: 'cw2', title: 'Walking in Faith',               speaker: 'Dr. Oladipo Kalejaiye',   date: 'Mar 23, 2026', duration: '42 min' },
+    { id: 'cw3', title: 'Rooted in Prayer',               speaker: 'Dr. Nonyelum Kalejaiye',  date: 'Mar 16, 2026', duration: '38 min' },
+    { id: 'cw4', title: 'The Kingdom Is Now',             speaker: 'Dr. Oladipo Kalejaiye',   date: 'Mar 9, 2026',  duration: '51 min' },
+    { id: 'cw5', title: 'Your Healing Is Coming',         speaker: 'Dr. Nonyelum Kalejaiye',  date: 'Mar 2, 2026',  duration: '44 min' },
+  ],
+  Worship: [
+    { id: 'cw6', title: 'Sunday Worship — Mar 30',       speaker: 'ICCLA Worship Team',       date: 'Mar 30, 2026', duration: '28 min' },
+    { id: 'cw7', title: 'Praise Night Highlights',       speaker: 'ICCLA Worship Team',       date: 'Mar 21, 2026', duration: '55 min' },
+    { id: 'cw8', title: 'Wednesday Worship Set',         speaker: 'ICCLA Worship Team',       date: 'Mar 19, 2026', duration: '22 min' },
+  ],
+  Teaching: [
+    { id: 'cw9',  title: 'Romans 8 — Deep Dive Series', speaker: 'Dr. Oladipo Kalejaiye',    date: 'Apr 2, 2026',  duration: '56 min' },
+    { id: 'cw10', title: "Marriage & Family: God's Design", speaker: 'Dr. Nonyelum Kalejaiye', date: 'Mar 25, 2026', duration: '48 min' },
+    { id: 'cw11', title: 'Financial Stewardship Pt. 2', speaker: 'Guest Speaker',             date: 'Mar 18, 2026', duration: '39 min' },
+  ],
+  "Children's": [
+    { id: 'cw12', title: "God Loves Me! — Lesson 4",   speaker: "Children's Ministry",       date: 'Mar 30, 2026', duration: '12 min' },
+    { id: 'cw13', title: 'Bible Heroes: Daniel',        speaker: "Children's Ministry",       date: 'Mar 23, 2026', duration: '15 min' },
+    { id: 'cw14', title: 'Worship with Kids — Easter', speaker: "Children's Ministry",        date: 'Mar 16, 2026', duration: '18 min' },
+  ],
+  Testimonies: [
+    { id: 'cw15', title: 'From Addiction to Purpose',  speaker: 'Michael A.',                date: 'Mar 28, 2026', duration: '8 min' },
+    { id: 'cw16', title: 'Answered Prayer: Healing',   speaker: 'Grace O.',                  date: 'Mar 14, 2026', duration: '6 min' },
+    { id: 'cw17', title: 'Finding ICCLA Changed My Life', speaker: 'James & Linda F.',       date: 'Feb 28, 2026', duration: '11 min' },
+  ],
+};
+const WATCH_CATS: WatchCat[] = ['Sermons', 'Worship', 'Teaching', "Children's", 'Testimonies'];
+
+function CommunityMemberWatchView({
+  C, insets, role, cycleRole, accent, router: nav,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+  accent: string;
+  router: ReturnType<typeof useRouter>;
+}) {
+  const [watchCat, setWatchCat] = React.useState<WatchCat>('Sermons');
+  const [bookmarked, setBookmarked] = React.useState<Set<string>>(new Set());
+  const topBarH = insets.top + TOP_BAR_H;
+  const vids = COMMUNITY_WATCH_VIDEOS[watchCat];
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top bar */}
+      <View style={{ paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, zIndex: 10, backgroundColor: C.bg }}>
+        <View style={{ height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={{ fontSize: 17, fontWeight: '700', color: C.label }}>Watch</Text>
+          </View>
+          <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary={false} />
+        </View>
+        {/* Category pills */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 10, gap: 8, flexDirection: 'row' }}>
+          {WATCH_CATS.map(cat => (
+            <Pressable
+              key={cat}
+              onPress={() => { Haptics.selectionAsync(); setWatchCat(cat); }}
+              style={{ paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: watchCat === cat ? C.label : C.surface, borderWidth: StyleSheet.hairlineWidth, borderColor: watchCat === cat ? C.label : C.separator }}
+            >
+              <Text style={{ fontSize: 13, fontWeight: '600', color: watchCat === cat ? C.bg : C.secondary }}>{cat}</Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
+
+      <ScrollView
+        contentContainerStyle={{ paddingTop: 8, paddingBottom: 120 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {vids.map(vid => (
+          <Pressable
+            key={vid.id}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); nav.push({ pathname: '/(tabs)/(main)/kaytv/player', params: { id: vid.id } } as any); }}
+            style={({ pressed }) => ({
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 12,
+              paddingHorizontal: 16,
+              paddingVertical: 12,
+              backgroundColor: pressed ? C.surfacePressed : 'transparent',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              borderBottomColor: C.separator,
+            })}
+          >
+            <View style={{ width: 96, height: 60, borderRadius: 8, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <IconSymbol name="play.fill" size={22} color={C.secondary} />
+              <View style={{ position: 'absolute', bottom: 4, right: 6, backgroundColor: C.label + 'cc', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 2 }}>
+                <Text style={{ fontSize: 10, fontWeight: '700', color: C.bg }}>{vid.duration}</Text>
+              </View>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, lineHeight: 20, marginBottom: 3 }} numberOfLines={2}>{vid.title}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary }}>{vid.speaker}</Text>
+              <Text style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{vid.date}</Text>
+            </View>
+            <Pressable
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setBookmarked(s => { const n = new Set(s); if (n.has(vid.id)) n.delete(vid.id); else n.add(vid.id); return n; }); }}
+              hitSlop={8}
+              style={{ width: 36, height: 36, alignItems: 'center', justifyContent: 'center' }}
+            >
+              <IconSymbol name={bookmarked.has(vid.id) ? 'bookmark.fill' : 'bookmark'} size={18} color={bookmarked.has(vid.id) ? C.label : C.secondary} />
+            </Pressable>
+          </Pressable>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
+// ── SubscriberVideoCard ────────────────────────────────────────────────────
+
+function SubscriberVideoCard({
+  video, C,
+}: {
+  video: typeof SUBSCRIBER_VIDEOS[number];
+  C: ComponentColors;
+}) {
+  return (
+    <Pressable
+      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+      style={({ pressed }) => [
+        styles.subVideoCard,
+        { backgroundColor: C.surface, opacity: pressed ? 0.9 : 1 },
+      ]}
+    >
+      {/* Thumbnail area */}
+      <View style={[styles.subVideoThumb, { backgroundColor: C.separator }]}>
+        <IconSymbol name="play.fill" size={24} color={C.secondary} />
+        {video.locked && (
+          <View style={styles.subVideoLockOverlay}>
+            <IconSymbol name="lock.fill" size={20} color="#fff" />
+          </View>
+        )}
+      </View>
+      {/* Info row */}
+      <View style={styles.subVideoInfo}>
+        <Text style={[styles.subVideoTitle, { color: C.label }]} numberOfLines={2}>
+          {video.title}
+        </Text>
+        {video.locked ? (
+          <Text style={[styles.subVideoMeta, { color: C.secondary }]}>Subscribe to watch</Text>
+        ) : (
+          <Text style={[styles.subVideoMeta, { color: C.secondary }]}>
+            {video.views}  ·  {video.duration}
+          </Text>
+        )}
+      </View>
+    </Pressable>
+  );
+}
 
 // ── KayTV role keys per mode ──────────────────────────────────────────────
 const KAYTV_ROLE_KEYS: Record<string, string> = {
@@ -152,17 +320,225 @@ const KAYTV_ROLE_KEYS: Record<string, string> = {
   education: 'education',
   community: 'community',
   business:  'business',
-  personal:  'personal',
+  personal:  'personal:kaytv',
 };
 
-// Admin role labels per mode for content labeling
+// Admin role labels per mode
 const KAYTV_ADMIN_LABELS: Record<string, { header: string; tools: string[] }> = {
-  sports:    { header: 'Film Library',          tools: ['Practice Film', 'Game Film', 'Opponent Film', 'Custom Playlists', 'Intelligence Overlay'] },
-  education: { header: 'Content Management',    tools: ['Upload Video', 'Manage Library', 'Organize Playlists', 'Gate Content', 'Schedule Live Stream'] },
-  community: { header: 'Sermon & Media Hub',    tools: ['Upload Sermon', 'Manage Library', 'Manage Access', 'Schedule Live Stream', 'Organize Series'] },
-  business:  { header: 'Internal Content Hub',  tools: ['Investor Updates', 'Internal Training', 'Demo Library', 'Sales Enablement', 'All-Hands Recordings'] },
-  personal:  { header: 'My Content',            tools: ['Upload Video', 'Manage Channel', 'Analytics', 'Schedule Post'] },
+  sports:    { header: 'Film Library',         tools: ['Practice Film', 'Game Film', 'Opponent Film', 'Custom Playlists', 'Intelligence Overlay'] },
+  education: { header: 'Content Management',   tools: ['Upload Video', 'Manage Library', 'Organize Playlists', 'Gate Content', 'Schedule Live Stream'] },
+  community: { header: 'Sermon & Media Hub',   tools: ['Upload Sermon', 'Manage Library', 'Manage Access', 'Schedule Live Stream', 'Organize Series'] },
+  business:  { header: 'Internal Content Hub', tools: ['Investor Updates', 'Internal Training', 'Demo Library', 'Sales Enablement', 'All-Hands Recordings'] },
+  personal:  { header: 'My Content',           tools: ['Upload Video', 'Manage Channel', 'Analytics', 'Schedule Post'] },
 };
+
+
+// ── Community Pastor Media View ───────────────────────────────────────────────
+
+type MediaTab = 'Library' | 'Upload' | 'Schedule' | 'Live' | 'Analytics';
+
+const MEDIA_LIBRARY = [
+  { id: 'ml1', title: 'Easter Sunday Message — "He Is Risen"',  speaker: 'Dr. Oladipo Kalejaiye', date: 'Apr 20',  views: 1247, duration: '52:18', category: 'Sermons',    visibility: 'Public' },
+  { id: 'ml2', title: 'Wednesday Bible Study — Romans 8',        speaker: 'Pastor Nonyelum',       date: 'Apr 16',  views: 312,  duration: '44:02', category: 'Teaching',   visibility: 'Members' },
+  { id: 'ml3', title: 'Worship Night Highlights',                 speaker: 'ICCLA Worship Team',    date: 'Apr 13',  views: 892,  duration: '18:44', category: 'Worship',    visibility: 'Public' },
+  { id: 'ml4', title: 'Children\'s Ministry — Easter Story',      speaker: 'Sis. Naomi Wright',     date: 'Apr 20',  views: 438,  duration: '22:10', category: 'Children\'s', visibility: 'Public' },
+  { id: 'ml5', title: 'Marriage Enrichment Week 3',               speaker: 'Drs. Kalejaiye',         date: 'Apr 9',   views: 214,  duration: '61:33', category: 'Teaching',   visibility: 'Members' },
+];
+
+function CommunityPastorMediaView({
+  C, insets, role, cycleRole,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+}) {
+  const [mediaTab, setMediaTab] = useState<MediaTab>('Library');
+  const [mediaDrop, setMediaDrop] = useState(false);
+  const topBarH = insets.top + 52;
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top Bar */}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+        </Pressable>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setMediaDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{mediaTab}</Text>
+          <IconSymbol name={mediaDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
+        </Pressable>
+        <View style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <RolePill role={role} onPress={cycleRole} isPrimary />
+        </View>
+      </View>
+
+      {/* Dropdown */}
+      {mediaDrop && (
+        <View style={{ position: 'absolute', top: topBarH + 4, left: '14%', right: '14%', backgroundColor: C.surface, borderRadius: 14, zIndex: 100, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 8, overflow: 'hidden' }}>
+          {(['Library', 'Upload', 'Schedule', 'Live', 'Analytics'] as MediaTab[]).map((tab, i, arr) => (
+            <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setMediaTab(tab); setMediaDrop(false); }} style={{ paddingVertical: 13, paddingHorizontal: 16, borderBottomWidth: i < arr.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }}>
+              <Text style={{ fontSize: 15, color: tab === mediaTab ? C.label : C.secondary, fontWeight: tab === mediaTab ? '600' : '400' }}>{tab}</Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
+
+      <ScrollView style={{ flex: 1, marginTop: topBarH }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120 }}>
+
+        {/* LIBRARY */}
+        {mediaTab === 'Library' && (
+          <>
+            <View style={{ flexDirection: 'row', paddingHorizontal: 16, marginBottom: 16, gap: 8 }}>
+              {(['All', 'Sermons', 'Worship', 'Teaching', "Children's"] as const).map(cat => (
+                <Pressable key={cat} onPress={() => Haptics.selectionAsync()} style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, backgroundColor: cat === 'All' ? C.label : C.surfacePressed }}>
+                  <Text style={{ fontSize: 12, fontWeight: '600', color: cat === 'All' ? C.bg : C.secondary }}>{cat}</Text>
+                </Pressable>
+              ))}
+            </View>
+            {MEDIA_LIBRARY.map(video => (
+              <Pressable key={video.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingVertical: 10, backgroundColor: pressed ? C.surfacePressed : 'transparent' })}>
+                <View style={{ width: 80, height: 52, borderRadius: 8, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <IconSymbol name="play.fill" size={18} color={C.secondary} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: C.label, marginBottom: 2 }} numberOfLines={2}>{video.title}</Text>
+                  <Text style={{ fontSize: 11, color: C.secondary }}>{video.speaker}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 3 }}>
+                    <Text style={{ fontSize: 11, color: C.muted }}>{video.duration}</Text>
+                    <Text style={{ fontSize: 11, color: C.muted }}>·</Text>
+                    <Text style={{ fontSize: 11, color: C.muted }}>{video.views.toLocaleString()} views</Text>
+                    <View style={{ paddingHorizontal: 6, paddingVertical: 1, borderRadius: 5, backgroundColor: video.visibility === 'Public' ? '#5A8A6E22' : C.surfacePressed }}>
+                      <Text style={{ fontSize: 10, fontWeight: '700', color: video.visibility === 'Public' ? '#5A8A6E' : C.secondary }}>{video.visibility}</Text>
+                    </View>
+                  </View>
+                </View>
+                <IconSymbol name="ellipsis" size={16} color={C.secondary} />
+              </Pressable>
+            ))}
+          </>
+        )}
+
+        {/* UPLOAD */}
+        {mediaTab === 'Upload' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ backgroundColor: pressed ? '#0a0a0a' : '#1A1714', borderRadius: 16, padding: 24, alignItems: 'center', marginBottom: 16 })}>
+              <IconSymbol name="arrow.up.to.line" size={32} color="#fff" />
+              <Text style={{ fontSize: 16, fontWeight: '700', color: '#fff', marginTop: 12, marginBottom: 4 }}>Upload Video</Text>
+              <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', textAlign: 'center' }}>Select from device or record directly</Text>
+            </Pressable>
+            {[
+              { label: 'Title', placeholder: 'e.g. Sunday Message — April 20' },
+              { label: 'Speaker / Leader', placeholder: 'e.g. Dr. Oladipo Kalejaiye' },
+            ].map(field => (
+              <View key={field.label} style={{ marginBottom: 14 }}>
+                <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>{field.label}</Text>
+                <View style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
+                  <Text style={{ fontSize: 14, color: C.muted }}>{field.placeholder}</Text>
+                </View>
+              </View>
+            ))}
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Category</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
+              {['Sermons', 'Teaching', 'Worship', "Children's", 'Testimonies', 'Events'].map(cat => (
+                <Pressable key={cat} onPress={() => Haptics.selectionAsync()} style={{ paddingHorizontal: 12, paddingVertical: 7, borderRadius: 10, backgroundColor: cat === 'Sermons' ? C.label : C.surfacePressed }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: cat === 'Sermons' ? C.bg : C.secondary }}>{cat}</Text>
+                </Pressable>
+              ))}
+            </View>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Visibility</Text>
+            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 20 }}>
+              {['Public', 'Members Only', 'Leadership'].map(v => (
+                <Pressable key={v} onPress={() => Haptics.selectionAsync()} style={{ paddingHorizontal: 12, paddingVertical: 7, borderRadius: 10, backgroundColor: v === 'Public' ? C.label : C.surfacePressed }}>
+                  <Text style={{ fontSize: 12, fontWeight: '600', color: v === 'Public' ? C.bg : C.secondary }}>{v}</Text>
+                </Pressable>
+              ))}
+            </View>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ backgroundColor: pressed ? '#0a0a0a' : '#1A1714', borderRadius: 14, paddingVertical: 14, alignItems: 'center' })}>
+              <Text style={{ fontSize: 15, fontWeight: '700', color: '#fff' }}>Publish Video</Text>
+            </Pressable>
+          </View>
+        )}
+
+        {/* SCHEDULE */}
+        {mediaTab === 'Schedule' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 }}>SCHEDULED RELEASES</Text>
+            {[
+              { title: 'Easter Message Full Recording', date: 'Apr 21 · 9:00 AM', type: 'Video' },
+              { title: 'Marriage Enrichment Week 4', date: 'Apr 23 · 7:00 PM', type: 'Video' },
+              { title: 'Sunday Worship Live Stream', date: 'Apr 27 · 10:00 AM', type: 'Live' },
+            ].map((item, i) => (
+              <View key={i} style={{ backgroundColor: C.surface, borderRadius: 14, marginBottom: 10, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                <View style={{ width: 38, height: 38, borderRadius: 10, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name={item.type === 'Live' ? 'dot.radiowaves.left.and.right' : 'video.fill'} size={16} color={C.label} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={1}>{item.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{item.date}</Text>
+                </View>
+                {item.type === 'Live' && (
+                  <View style={{ paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6, backgroundColor: '#B85C5C22' }}>
+                    <Text style={{ fontSize: 10, fontWeight: '700', color: '#B85C5C' }}>LIVE</Text>
+                  </View>
+                )}
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* LIVE */}
+        {mediaTab === 'Live' && (
+          <View style={{ paddingHorizontal: 16, alignItems: 'center' }}>
+            <View style={{ width: '100%', backgroundColor: '#1A1714', borderRadius: 16, padding: 24, alignItems: 'center', marginBottom: 20 }}>
+              <View style={{ width: 60, height: 60, borderRadius: 30, backgroundColor: '#B85C5C22', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                <IconSymbol name="dot.radiowaves.left.and.right" size={28} color="#B85C5C" />
+              </View>
+              <Text style={{ fontSize: 20, fontWeight: '800', color: '#fff', marginBottom: 8 }}>Go Live</Text>
+              <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', textAlign: 'center', lineHeight: 19, marginBottom: 20 }}>Stream your Sunday service, Bible study, or special event directly to your congregation.</Text>
+              <Pressable onPress={() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)} style={({ pressed }) => ({ backgroundColor: pressed ? '#cc4040' : '#B85C5C', borderRadius: 14, paddingVertical: 14, paddingHorizontal: 40, alignItems: 'center' })}>
+                <Text style={{ fontSize: 15, fontWeight: '700', color: '#fff' }}>Start Stream</Text>
+              </Pressable>
+            </View>
+            {[{ label: 'Title', ph: 'e.g. Sunday Worship Service' }, { label: 'Chat', ph: 'Enabled' }].map(f => (
+              <View key={f.label} style={{ width: '100%', marginBottom: 12 }}>
+                <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>{f.label}</Text>
+                <View style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 12, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
+                  <Text style={{ fontSize: 14, color: C.muted }}>{f.ph}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* ANALYTICS */}
+        {mediaTab === 'Analytics' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
+              {[{ label: 'Total Views', value: '18.4K' }, { label: 'Watch Hours', value: '1,247' }, { label: 'Subscribers', value: '892' }].map(s => (
+                <View key={s.label} style={{ flex: 1, backgroundColor: C.surface, borderRadius: 12, padding: 12, alignItems: 'center' }}>
+                  <Text style={{ fontSize: 18, fontWeight: '800', color: C.label }}>{s.value}</Text>
+                  <Text style={{ fontSize: 10, color: C.secondary, textAlign: 'center', marginTop: 2 }}>{s.label}</Text>
+                </View>
+              ))}
+            </View>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>TOP VIDEOS</Text>
+            {MEDIA_LIBRARY.slice(0, 4).map((v, i) => (
+              <View key={v.id} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 12, marginBottom: 8, padding: 12, gap: 10 }}>
+                <Text style={{ fontSize: 16, fontWeight: '800', color: C.muted, width: 20 }}>{i + 1}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }} numberOfLines={1}>{v.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary }}>{v.views.toLocaleString()} views · {v.duration}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+
+      </ScrollView>
+    </View>
+  );
+}
 
 export default function KayTVScreen() {
   const C = useColors();
@@ -173,8 +549,11 @@ export default function KayTVScreen() {
 
   const roleKey = KAYTV_ROLE_KEYS[mode] ?? 'business';
   const [role, cycleRole, roleCycles] = useDemoRole(roleKey);
-  const isAdmin = role === roleCycles[0];
+  const isOwner = role === roleCycles[0];
   const accent  = MODE_ACCENTS[mode] ?? C.accent;
+
+  // Personal subscriber filter state
+  const [subFilter, setSubFilter] = useState<SubFilter>('All');
 
   const [activeTab, setActiveTab] = useState<KayTab>('Home');
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -183,7 +562,7 @@ export default function KayTVScreen() {
   const pillsRevealAnim = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
 
-  const canUpload = isAdmin && mode !== 'personal';
+  const canUpload = isOwner && mode !== 'personal';
   const categories = KAYTV_CATEGORIES[mode] ?? KAYTV_CATEGORIES.sports;
 
   const topBarH = insets.top + TOP_BAR_H;
@@ -194,6 +573,7 @@ export default function KayTVScreen() {
     setSelectedCategory('All');
     setFilterPillsVisible(false);
     pillsRevealAnim.setValue(0);
+    setSubFilter('All');
   }, [mode, pillsRevealAnim]);
 
   const videos = useMemo(() => getKayTVFeed(mode, selectedCategory), [mode, selectedCategory]);
@@ -242,6 +622,126 @@ export default function KayTVScreen() {
     });
   }, [router]);
 
+  // ── Personal Subscriber "Videos" view ─────────────────────────────────
+  if (mode === 'personal' && !isOwner) {
+    return (
+      <View style={[styles.screen, { backgroundColor: C.bg }]}>
+        {/* Top bar */}
+        <View style={[styles.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+          <View style={styles.topBar}>
+            {/* Left: hamburger */}
+            <View style={styles.topBarSide}>
+              <Pressable
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+                hitSlop={8}
+              >
+                <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+              </Pressable>
+            </View>
+            {/* Center: plain "Videos" title */}
+            <View style={{ flex: 1, alignItems: 'center' }}>
+              <Text style={{ fontSize: 17, fontWeight: '700', color: C.label }}>Videos</Text>
+            </View>
+            {/* Right: RolePill */}
+            <View style={[styles.topBarSide, { alignItems: 'flex-end' }]}>
+              <RolePill
+                role={role}
+                onPress={cycleRole}
+                accentColor={accent}
+                isPrimary={false}
+              />
+            </View>
+          </View>
+        </View>
+
+        <ScrollView
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingTop: topBarH + 12, paddingBottom: 120 }}
+        >
+          {/* Filter pills row */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 16, gap: 8, alignItems: 'center' }}
+            style={{ marginBottom: 16 }}
+          >
+            {SUB_FILTERS.map(f => {
+              const isExclusive = f === 'Exclusive';
+              const active = subFilter === f && !isExclusive;
+              return (
+                <Pressable
+                  key={f}
+                  onPress={() => {
+                    if (!isExclusive) {
+                      Haptics.selectionAsync();
+                      setSubFilter(f);
+                    }
+                  }}
+                  style={[
+                    styles.subFilterPill,
+                    active
+                      ? { backgroundColor: C.label, borderColor: C.label }
+                      : { borderColor: C.separator },
+                    isExclusive && { opacity: 0.45 },
+                  ]}
+                >
+                  {isExclusive && (
+                    <IconSymbol
+                      name="lock.fill"
+                      size={11}
+                      color={active ? C.bg : C.secondary}
+                      style={{ marginRight: 4 }}
+                    />
+                  )}
+                  <Text style={[
+                    styles.subFilterPillText,
+                    { color: active ? C.bg : C.secondary },
+                  ]}>
+                    {f}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+
+          {/* Video cards */}
+          {SUBSCRIBER_VIDEOS.map(video => (
+            <SubscriberVideoCard key={video.id} video={video} C={C} />
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
+
+  // ── Community Pastor: Media management view ───────────────────────────────
+  if (mode === 'community' && isOwner) {
+    return (
+      <CommunityPastorMediaView
+        C={C}
+        insets={insets}
+        role={role}
+        cycleRole={cycleRole}
+      />
+    );
+  }
+
+  // ── Community Member: simplified Watch view ──────────────────────────────
+  if (mode === 'community' && !isOwner) {
+    return (
+      <CommunityMemberWatchView
+        C={C}
+        insets={insets}
+        role={role}
+        cycleRole={cycleRole}
+        accent={accent}
+        router={router}
+      />
+    );
+  }
+
+  // ── Owner / non-personal modes: full existing screen ──────────────────
   return (
     <View style={[styles.screen, { backgroundColor: C.bg }]}>
 
@@ -255,7 +755,7 @@ export default function KayTVScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingTop: contentTop, paddingBottom: 120 }}
           ListHeaderComponent={
-            isAdmin ? (
+            isOwner ? (
               <View style={{ marginHorizontal: 12, marginTop: 12, marginBottom: 4, backgroundColor: accent + '12', borderRadius: 14, padding: 14, borderWidth: 1, borderColor: accent + '30' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 }}>
                   <IconSymbol name="play.rectangle.fill" size={16} color={accent} />
@@ -284,7 +784,7 @@ export default function KayTVScreen() {
                 <Text style={{ fontSize: 12, color: C.secondary }}>
                   {mode === 'sports' ? 'Game broadcasts, highlight reels & podcasts' :
                    mode === 'education' ? 'Course videos, campus updates & public library' :
-                   mode === 'community' ? 'Worship, devotionals & children\'s content' :
+                   mode === 'community' ? "Worship, devotionals & children's content" :
                    mode === 'business' ? 'Product demos, onboarding & public content' : 'Discover and enjoy content'}
                 </Text>
               </View>
@@ -428,7 +928,7 @@ export default function KayTVScreen() {
               role={role}
               onPress={cycleRole}
               accentColor={accent}
-              isPrimary={isAdmin}
+              isPrimary={isOwner}
             />
             <Pressable onPress={toggleFilterPills} hitSlop={12}>
               <IconSymbol
@@ -442,7 +942,7 @@ export default function KayTVScreen() {
           </View>
         </View>
 
-        {/* Category pills — all tabs, toggled via filter icon */}
+        {/* Category pills — toggled via filter icon */}
         <Animated.View style={{
           height: pillsRevealAnim.interpolate({ inputRange: [0, 1], outputRange: [0, PILL_ROW_H] }),
           opacity: pillsRevealAnim,
@@ -505,7 +1005,7 @@ export default function KayTVScreen() {
         </>
       ) : null}
 
-      {/* ── Upload FAB (creators/admins only) ── */}
+      {/* ── Upload FAB (owners only, non-personal) ── */}
       {canUpload && (
         <Pressable
           style={[styles.fab, { bottom: insets.bottom + 49 + 16 + 56, backgroundColor: C.label }]}
@@ -588,7 +1088,7 @@ const styles = StyleSheet.create({
   dropdownOption: { paddingVertical: 14, paddingHorizontal: 20 },
   dropdownOptionText: { fontSize: 15 },
 
-  // Category pills (Home, always visible)
+  // Category pills
   pillsRow: {
     height: PILL_ROW_H,
     borderTopWidth: StyleSheet.hairlineWidth,
@@ -691,6 +1191,40 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingVertical: 12,
   },
   libSectionTitle: { fontSize: 16, fontWeight: '700' },
+
+  // Subscriber video cards
+  subVideoCard: {
+    marginHorizontal: 16,
+    marginBottom: 10,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  subVideoThumb: {
+    height: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  subVideoLockOverlay: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  subVideoInfo: { padding: 10 },
+  subVideoTitle: { fontSize: 14, fontWeight: '600', marginBottom: 4 },
+  subVideoMeta: { fontSize: 12 },
+
+  // Subscriber filter pills
+  subFilterPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    borderWidth: 1.5,
+  },
+  subFilterPillText: { fontSize: 13 },
 
   // FAB
   fab: {

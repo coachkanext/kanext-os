@@ -265,7 +265,7 @@ const MOCK_EVENTS: AgendaEvent[] = [
   { id: 'b6',  title: 'Daily Standup',            type: 'meeting',    mode: 'business',  start: dn(7, 9),      end: dn(7, 9, 30),  location: 'Zoom',             virtual: true,  attendees: [{ initials: 'MW', hue: 140 }, { initials: 'DC', hue: 300 }, { initials: 'TO', hue: 30 }] },
   { id: 'b6b', title: 'Content Recording',        type: 'event',      mode: 'business',  start: dn(7, 11),     end: dn(7, 13),     location: 'Studio B',                         attendees: [{ initials: 'MG', hue: 270 }, { initials: 'TO', hue: 30 }], description: 'KaNeXT brand launch video + social reels' },
   { id: 'b6c', title: '1:1 — Tyler Okafor',       type: 'meeting',    mode: 'business',  start: dn(7, 14),     end: dn(7, 14, 30), location: 'Zoom',             virtual: true,  attendees: [{ initials: 'TO', hue: 30 }], description: 'Growth targets + NAIA outreach status' },
-  // Education
+  // Education — Student events (visible to Student role)
   { id: 'e1',  title: 'English Literature',      type: 'class',      mode: 'education', start: dn(0, 10),     end: dn(0, 11),     location: 'Room 204' },
   { id: 'e2',  title: 'Calculus',                type: 'class',      mode: 'education', start: dn(1, 9),      end: dn(1, 10),     location: 'Room 101' },
   { id: 'e3',  title: 'Mid-Term Exam',           type: 'exam',       mode: 'education', start: dn(4, 9),      end: dn(4, 11),     location: 'Exam Hall',          description: 'Covers chapters 1–8' },
@@ -290,6 +290,22 @@ const MOCK_EVENTS: AgendaEvent[] = [
   { id: 'e22', title: 'ENGL 301 Final Exam',     type: 'exam',       mode: 'education', start: dn(30, 14),    end: dn(30, 16),    location: 'Room 204',           description: 'Final essay exam — open notes' },
   { id: 'e23', title: 'Registration Closes',     type: 'registration', mode: 'education', start: dn(35, 0),  end: dn(35, 23, 59), allDay: true },
   { id: 'e24', title: 'Graduation Ceremony',     type: 'event',      mode: 'education', start: dn(42, 10),    end: dn(42, 13),    location: 'Lincoln Stadium',    description: 'Class of 2026 Commencement' },
+  // Education — President-only events (visible to President/admin role)
+  { id: 'ep1',  title: 'Registration Opens',          type: 'registration', mode: 'education', start: dn(0, 0),      end: dn(12, 23, 59), allDay: true,  location: 'Student Portal',     description: 'Spring registration window: Apr 1–15' },
+  { id: 'ep2',  title: 'Dept Chair Meeting',          type: 'meeting',      mode: 'education', start: dn(5, 10),     end: dn(5, 11),      location: 'Room 201',           attendees: [{ initials: 'MB', hue: 220 }, { initials: 'AR', hue: 140 }], description: 'Q2 curriculum review — all department chairs' },
+  { id: 'ep3',  title: 'Board of Trustees Meeting',   type: 'meeting',      mode: 'education', start: dn(12, 14),    end: dn(12, 16),     location: 'Board Room 400',     attendees: [{ initials: 'MB', hue: 220 }], description: 'Budget approval + FY2027 planning' },
+  { id: 'ep4',  title: 'Registration Closes',         type: 'registration', mode: 'education', start: dn(12, 23, 59), end: dn(12, 23, 59), allDay: true, location: 'Student Portal' },
+  { id: 'ep5',  title: 'Add/Drop Deadline',           type: 'deadline',     mode: 'education', start: dn(17, 23, 59), end: dn(17, 23, 59), allDay: true, description: 'Last day to add or drop courses without penalty' },
+  { id: 'ep6',  title: 'Budget Review — Academic',    type: 'meeting',      mode: 'education', start: dn(19, 9),     end: dn(19, 11),     location: 'President\'s Office', attendees: [{ initials: 'MB', hue: 220 }, { initials: 'CF', hue: 60 }], description: 'Academic affairs budget mid-year review' },
+  { id: 'ep7',  title: 'WSCUC Site Visit — Day 1',    type: 'event',        mode: 'education', start: dn(29, 8),     end: dn(29, 18),     location: 'Lincoln University',  description: 'WSCUC accreditation review team on-site' },
+  { id: 'ep8',  title: 'WSCUC Site Visit — Day 2',    type: 'event',        mode: 'education', start: dn(30, 8),     end: dn(30, 18),     location: 'Lincoln University',  description: 'WSCUC exit interview at 3 PM' },
+  { id: 'ep9',  title: 'WSCUC Site Visit — Day 3',    type: 'event',        mode: 'education', start: dn(31, 8),     end: dn(31, 16),     location: 'Lincoln University',  description: 'Final debrief session with accreditation team' },
+  { id: 'ep10', title: 'Midterms Begin',              type: 'exam',         mode: 'education', start: dn(30, 0),     end: dn(30, 23, 59), allDay: true,  description: 'Midterm exam period: May 3–10' },
+  { id: 'ep11', title: 'Midterms End',                type: 'exam',         mode: 'education', start: dn(37, 0),     end: dn(37, 23, 59), allDay: true,  description: 'End of midterm exam window' },
+  { id: 'ep12', title: 'Faculty Senate Meeting',      type: 'meeting',      mode: 'education', start: dn(40, 13),    end: dn(40, 14, 30), location: 'Faculty Lounge',     description: 'End-of-semester faculty governance session' },
+  { id: 'ep13', title: 'Finals Begin',                type: 'exam',         mode: 'education', start: dn(66, 0),     end: dn(66, 23, 59), allDay: true,  description: 'Final exam period: Jun 8–15' },
+  { id: 'ep14', title: 'Commencement Ceremony',       type: 'event',        mode: 'education', start: dn(70, 10),    end: dn(70, 13),     location: 'Lincoln University Lawn', description: 'Class of 2026 Commencement — Dr. Brodsky presiding' },
+  { id: 'ep15', title: 'Finals End',                  type: 'exam',         mode: 'education', start: dn(73, 0),     end: dn(73, 23, 59), allDay: true,  description: 'End of final exam window' },
   // Community
   { id: 'c1',  title: 'Sunday Service',          type: 'service',    mode: 'community', start: dn(4, 10),     end: dn(4, 12),     location: 'Main Sanctuary',     description: '10 AM Worship & Message — all are welcome' },
   { id: 'c2',  title: 'Youth Meeting',           type: 'meeting',    mode: 'community', start: dn(2, 18),     end: dn(2, 19, 30), location: 'Fellowship Hall',    description: 'Weekly youth leadership meeting' },
@@ -1318,7 +1334,7 @@ const AGENDA_ROLE_KEYS: Record<string, string> = {
   education: 'education',
   community: 'community',
   business:  'business',
-  personal:  'personal',
+  personal:  'personal:agenda',
 };
 
 export default function AgendaScreen() {
@@ -1346,6 +1362,8 @@ export default function AgendaScreen() {
   const [selectEventsMode,  setSelectEventsMode]  = useState(false);
   const [selectedEventIds,  setSelectedEventIds]  = useState<Set<string>>(new Set());
   const [editCatVisible,    setEditCatVisible]    = useState(false);
+  const [rsvped,            setRsvped]            = useState<Set<string>>(new Set(['pe2']));
+  const [communityRsvped, setCommunityRsvped] = useState<Set<string>>(new Set());
 
   const filterPills  = MODE_FILTERS[mode] ?? MODE_FILTERS.personal;
 
@@ -1363,6 +1381,209 @@ export default function AgendaScreen() {
   const handleNavigateMonth = useCallback((n: number) => { setSelectedDate(p => addMonths(p, n)); setExpandedId(null); }, []);
   const handleCreateAtTime  = useCallback((time: Date) => { setCreateTime(time); setCreateVisible(true); }, []);
   const closeDropdowns      = useCallback(() => { setShowViewDD(false); setShowEditDD(false); }, []);
+
+  // ── Education Student: personal class schedule + assignments ────────────────
+  if (mode === 'education' && !isAdmin) {
+    const MY_COURSES = [
+      { id: 'sc1', code: 'BUS 401', title: 'Strategic Management',      days: 'Mon / Wed', time: '6:00 PM – 8:00 PM', room: 'Room 201',  nextClass: 'Mon Apr 7 · 6:00 PM' },
+      { id: 'sc2', code: 'MKT 350', title: 'Consumer Behavior',         days: 'Tue / Thu', time: '6:00 PM – 8:00 PM', room: 'Room 105',  nextClass: 'Tue Apr 8 · 6:00 PM' },
+      { id: 'sc3', code: 'MBA 520', title: 'Finance & Accounting',      days: 'Monday',    time: '7:00 PM – 9:00 PM', room: 'Room 302',  nextClass: 'Mon Apr 7 · 7:00 PM' },
+      { id: 'sc4', code: 'MBA 510', title: 'Organizational Behavior',   days: 'Wednesday', time: '7:00 PM – 9:00 PM', room: 'Room 201',  nextClass: 'Wed Apr 9 · 7:00 PM' },
+    ];
+    const ASSIGNMENTS = [
+      { id: 'as1', course: 'BUS 401', title: 'Case Study: Apple Supply Chain',  due: 'Apr 10 · 11:59 PM', status: 'pending' },
+      { id: 'as2', course: 'MBA 520', title: 'Financial Ratios Problem Set',    due: 'Apr 14 · 11:59 PM', status: 'pending' },
+      { id: 'as3', course: 'MKT 350', title: 'Consumer Survey Analysis',        due: 'Apr 17 · 11:59 PM', status: 'pending' },
+      { id: 'as4', course: 'MBA 510', title: 'Org Culture Reflection Paper',    due: 'Apr 21 · 11:59 PM', status: 'pending' },
+    ];
+    const CAMPUS_EVENTS = [
+      { id: 'ce1', title: 'Lincoln University Info Night',  date: 'Apr 9 · 6:00 PM',  location: 'Student Union' },
+      { id: 'ce2', title: 'MBA Networking Mixer',          date: 'Apr 11 · 7:00 PM', location: 'Room 400' },
+      { id: 'ce3', title: 'Career Center: Resume Workshop', date: 'Apr 16 · 5:00 PM', location: 'Career Center' },
+    ];
+    return (
+      <View style={[styles.screen, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+        {/* Top bar */}
+        <View style={styles.topBar}>
+          <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
+          <View style={styles.viewPill}>
+            <Text style={styles.viewPillText}>My Schedule</Text>
+          </View>
+          <View style={[styles.topRight, { alignItems: 'flex-end' }]}>
+            <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary={false} />
+          </View>
+        </View>
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120, paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
+
+          {/* Weekly Classes */}
+          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>{"THIS WEEK'S CLASSES"}</Text>
+          {MY_COURSES.map(c => (
+            <View key={c.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 10 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
+                <Text style={{ fontSize: 12, fontWeight: '700', color: C.secondary, letterSpacing: 0.3 }}>{c.code}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>{c.room}</Text>
+              </View>
+              <Text style={{ fontSize: 15, fontWeight: '600', color: C.label, marginBottom: 6 }}>{c.title}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <IconSymbol name="calendar" size={12} color={C.muted} />
+                <Text style={{ fontSize: 12, color: C.secondary }}>{c.days} · {c.time}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 3 }}>
+                <IconSymbol name="clock" size={12} color={C.muted} />
+                <Text style={{ fontSize: 12, color: C.muted }}>Next: {c.nextClass}</Text>
+              </View>
+            </View>
+          ))}
+
+          {/* Assignments Due */}
+          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginTop: 8, marginBottom: 10 }}>UPCOMING ASSIGNMENTS</Text>
+          {ASSIGNMENTS.map(a => (
+            <View key={a.id} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 14, padding: 14, marginBottom: 8 }}>
+              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: C.label, marginRight: 12 }} />
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>{a.title}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{a.course} · Due {a.due}</Text>
+              </View>
+            </View>
+          ))}
+
+          {/* Campus Events */}
+          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginTop: 8, marginBottom: 10 }}>CAMPUS EVENTS</Text>
+          {CAMPUS_EVENTS.map(ev => (
+            <View key={ev.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 10 }}>
+              <Text style={{ fontSize: 15, fontWeight: '600', color: C.label, marginBottom: 4 }}>{ev.title}</Text>
+              <Text style={{ fontSize: 13, color: C.secondary }}>{ev.date} · {ev.location}</Text>
+            </View>
+          ))}
+
+        </ScrollView>
+      </View>
+    );
+  }
+
+  // ── Community Member: simplified event calendar ─────────────────────────────
+  if (mode === 'community' && !isAdmin) {
+    const CHURCH_EVENTS = [
+      { id: 'cs1', title: 'Sunday Worship Service',   date: 'Apr 6',  time: '10:00 AM', location: 'Main Sanctuary',   type: 'service' },
+      { id: 'cs2', title: 'Wednesday Bible Study',    date: 'Apr 9',  time: '7:00 PM',  location: 'Fellowship Hall',  type: 'service' },
+      { id: 'cs3', title: 'Sunday Worship Service',   date: 'Apr 13', time: '10:00 AM', location: 'Main Sanctuary',   type: 'service' },
+      { id: 'cs4', title: 'Prayer & Fasting Meeting', date: 'Apr 11', time: '6:00 AM',  location: 'Prayer Room',      type: 'event' },
+      { id: 'cs5', title: 'Men\'s Ministry Breakfast', date: 'Apr 12', time: '8:00 AM', location: 'Fellowship Hall',  type: 'event' },
+      { id: 'cs6', title: 'Youth Group Night',         date: 'Apr 12', time: '5:00 PM', location: 'Youth Wing',       type: 'event' },
+      { id: 'cs7', title: 'Women\'s Ministry Luncheon', date: 'Apr 19', time: '12:00 PM', location: 'Fellowship Hall', type: 'event' },
+      { id: 'cs8', title: 'Easter Celebration Service', date: 'Apr 20', time: '9:00 AM', location: 'Main Sanctuary',  type: 'service' },
+    ];
+    const TYPE_ICONS: Record<string, string> = { service: 'building.columns', event: 'star', meeting: 'person.2' };
+    return (
+      <View style={[styles.screen, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+        {/* Top bar */}
+        <View style={styles.topBar}>
+          <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
+          <View style={styles.viewPill}>
+            <Text style={styles.viewPillText}>My Calendar</Text>
+          </View>
+          <View style={[styles.topRight, { alignItems: 'flex-end' }]}>
+            <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary={false} />
+          </View>
+        </View>
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120, paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
+          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>UPCOMING</Text>
+          {CHURCH_EVENTS.map(ev => (
+            <View key={ev.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 10 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
+                <View style={{ width: 38, height: 38, borderRadius: 10, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name={(TYPE_ICONS[ev.type] ?? 'calendar') as any} size={16} color={C.label} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 15, fontWeight: '600', color: C.label, marginBottom: 2 }}>{ev.title}</Text>
+                  <Text style={{ fontSize: 13, color: C.secondary }}>{ev.date} · {ev.time}</Text>
+                  <Text style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{ev.location}</Text>
+                </View>
+              </View>
+              <Pressable
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setCommunityRsvped(prev => { const n = new Set(prev); if (n.has(ev.id)) n.delete(ev.id); else n.add(ev.id); return n; });
+                }}
+                style={({ pressed }) => ({
+                  marginTop: 12, alignSelf: 'flex-start',
+                  paddingHorizontal: 16, paddingVertical: 7, borderRadius: 10,
+                  backgroundColor: communityRsvped.has(ev.id) ? C.label : C.surfacePressed,
+                  opacity: pressed ? 0.8 : 1,
+                })}
+              >
+                <Text style={{ fontSize: 13, fontWeight: '600', color: communityRsvped.has(ev.id) ? C.bg : C.label }}>
+                  {communityRsvped.has(ev.id) ? 'RSVP\'d ✓' : 'RSVP'}
+                </Text>
+              </Pressable>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
+
+  // ── Personal Subscriber: public events list only ────────────────────────────
+  if (mode === 'personal' && !isAdmin) {
+    const publicEvents = [
+      { id: 'pe1', title: 'Live Stream: Q&A Session',     date: 'Apr 10 · 7:00 PM', type: 'live',       rsvp: false },
+      { id: 'pe2', title: 'Brand Meetup — NYC',            date: 'Apr 18 · 2:00 PM', type: 'appearance', rsvp: true  },
+      { id: 'pe3', title: 'Content Strategy Webinar',      date: 'Apr 25 · 6:00 PM', type: 'webinar',    rsvp: false },
+      { id: 'pe4', title: 'Creator Summit Panel',          date: 'May 3 · 10:00 AM', type: 'appearance', rsvp: false },
+      { id: 'pe5', title: 'Subscriber Meet-and-Greet',     date: 'May 15 · 5:00 PM', type: 'meetup',     rsvp: false },
+    ];
+    return (
+      <View style={[styles.screen, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+        {/* Top bar */}
+        <View style={styles.topBar}>
+          <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
+          <View style={styles.viewPill}>
+            <Text style={styles.viewPillText}>Events</Text>
+          </View>
+          <View style={[styles.topRight, { alignItems: 'flex-end' }]}>
+            <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary={false} />
+          </View>
+        </View>
+
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120, paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
+          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>UPCOMING EVENTS</Text>
+          {publicEvents.map(ev => (
+            <View key={ev.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 10 }}>
+              <Text style={{ fontSize: 15, fontWeight: '600', color: C.label, marginBottom: 4 }}>{ev.title}</Text>
+              <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 12 }}>{ev.date}</Text>
+              <Pressable
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setRsvped(prev => {
+                    const next = new Set(prev);
+                    if (next.has(ev.id)) next.delete(ev.id); else next.add(ev.id);
+                    return next;
+                  });
+                }}
+                style={({ pressed }) => ({
+                  alignSelf: 'flex-start',
+                  paddingHorizontal: 16, paddingVertical: 8,
+                  borderRadius: 10,
+                  backgroundColor: rsvped.has(ev.id) ? C.label : C.surfacePressed,
+                  opacity: pressed ? 0.8 : 1,
+                })}
+              >
+                <Text style={{ fontSize: 13, fontWeight: '600', color: rsvped.has(ev.id) ? C.bg : C.label }}>
+                  {rsvped.has(ev.id) ? 'RSVP\'d ✓' : 'RSVP'}
+                </Text>
+              </Pressable>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.screen, { paddingTop: insets.top }]}>
