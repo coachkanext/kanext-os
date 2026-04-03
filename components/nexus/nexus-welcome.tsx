@@ -68,14 +68,12 @@ export function NexusWelcome({ onSend, userName, mode = 'sports' }: NexusWelcome
 
   return (
     <View style={S.root}>
-      {/* Nexus icon */}
-      <View style={[S.iconWrap, { backgroundColor: C.surface, borderWidth: 0.75, borderColor: C.cardBorder }]}>
-        <Image
-          source={require('@/assets/nexus-icon.png')}
-          style={{ width: 56, height: 56, tintColor: C.label }}
-          resizeMode="contain"
-        />
-      </View>
+      {/* Dipson icon */}
+      <Image
+        source={require('@/assets/nexus-icon.png')}
+        style={{ width: 56, height: 56, tintColor: C.label, marginBottom: 8 }}
+        resizeMode="contain"
+      />
 
       {/* Greeting */}
       <Text style={[S.greeting, { color: C.label }]}>{greetText}</Text>
