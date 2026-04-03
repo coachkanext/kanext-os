@@ -25,6 +25,7 @@ export interface NexusChat {
   updatedAt: string;
   projectId?: string;
   starred?: boolean;
+  section?: string;
 }
 
 /** Lightweight metadata used in the sidebar list */
@@ -35,6 +36,7 @@ export interface NexusChatMeta {
   updatedAt: string;
   projectId?: string;
   starred?: boolean;
+  section?: string;                   // Dipson intelligence section key
   lastMessagePreview?: string;
   lastMessageRole?: 'user' | 'assistant';
 }
@@ -93,6 +95,7 @@ function buildMeta(chat: NexusChat): NexusChatMeta {
     updatedAt:           chat.updatedAt,
     projectId:           chat.projectId,
     starred:             chat.starred,
+    section:             chat.section,
     lastMessagePreview:  lastMsg
       ? lastMsg.content.replace(/```[\s\S]*?```/g, '[code]').replace(/\n/g, ' ').slice(0, 100)
       : undefined,

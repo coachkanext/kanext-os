@@ -31,6 +31,8 @@ export interface NexusPageTopBarProps {
   showFilter?: boolean;
   showNewChat?: boolean;
   filterActive?: boolean;
+  /** Active Dipson section — shown as a small pill next to the wordmark */
+  section?: string;
   onHamburger?: () => void;
   onBack?: () => void;
   onNewChat?: () => void;
@@ -47,6 +49,7 @@ export function NexusPageTopBar({
   showFilter = false,
   showNewChat = false,
   filterActive = false,
+  section,
   onHamburger,
   onBack,
   onNewChat,
@@ -100,14 +103,19 @@ export function NexusPageTopBar({
               { backgroundColor: pressed ? C.separator : C.surface },
             ]}
             onPress={() => setDropdownOpen((v) => !v)}
-            accessibilityLabel="Nexus options"
+            accessibilityLabel="Dipson options"
           >
             <Image
               source={require('@/assets/nexus-icon.png')}
               style={{ width: 20, height: 20, tintColor: C.label }}
               resizeMode="contain"
             />
-            <Text style={styles.nexusPillText}>Nexus 1.0</Text>
+            <Text style={styles.nexusPillText}>Dipson</Text>
+            {!!section && (
+              <View style={[styles.sectionPill, { backgroundColor: C.separator }]}>
+                <Text style={[styles.sectionPillText, { color: C.secondary }]}>{section}</Text>
+              </View>
+            )}
           </Pressable>
         )}
 
@@ -240,6 +248,16 @@ const makeStyles = (C: ComponentColors) =>
       fontSize: 15,
       fontWeight: '600',
       color: C.label,
+    },
+    sectionPill: {
+      paddingHorizontal: 7,
+      paddingVertical: 2,
+      borderRadius: 8,
+      marginLeft: 2,
+    },
+    sectionPillText: {
+      fontSize: 11,
+      fontWeight: '600',
     },
     ghostBtn: {
       width: 40,

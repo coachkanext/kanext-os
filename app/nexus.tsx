@@ -35,7 +35,7 @@ import { ArtifactSheet, type Artifact } from '@/components/nexus/artifact-sheet'
 
 // New UI components
 import { NexusWelcome } from '@/components/nexus/nexus-welcome';
-import { NexusSidebar } from '@/components/nexus/nexus-sidebar';
+import { NexusSidebar, type DipsonSection } from '@/components/nexus/nexus-sidebar';
 import { NexusArtifactBlock } from '@/components/nexus/nexus-artifact-block';
 
 // Intelligence layer
@@ -52,12 +52,12 @@ import { CANONICAL_VIEWS } from '@/data/views';
 // Storage
 import {
   saveChat, loadChat, loadAllChats, deleteChat, renameChat,
-  toggleStarChat, loadAllProjects, saveProject,
+  toggleStarChat,
   generateChatTitle, generateChatId,
-  type NexusChatMeta, type NexusProject,
+  type NexusChatMeta,
   type NexusMessage as StoredMessage, type NexusChat,
 } from '@/services/nexus/nexus-chat-storage';
-import type { NexusArtifact } from '@/services/nexus/nexus-artifact-extractor';
+// NexusArtifact import retained for future use (artifact-extractor service)
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -66,8 +66,42 @@ const MAX_TOKENS  = 8192;
 const MAX_HISTORY = 20;
 
 const GENERIC_PROMPT =
-  `You are Nexus, KaNeXT's intelligent AI assistant. Be concise, direct, and helpful. ` +
+  `You are Dipson, KaNeXT's intelligent AI assistant. Be concise, direct, and helpful. ` +
   `You assist coaches, athletes, and administrators with any question.`;
+
+// ── Section label map ─────────────────────────────────────────────────────────
+
+const SECTION_LABELS: Record<string, string> = {
+  'basketball':       "Men's Basketball",
+  'football':         'Football',
+  'mens-basketball':  "Men's Basketball",
+  'womens-basketball':"Women's Basketball",
+  'mens-soccer':      "Men's Soccer",
+  'womens-soccer':    "Women's Soccer",
+  'baseball':         'Baseball',
+  'softball':         'Softball',
+  'mens-volleyball':  "Men's Volleyball",
+  'womens-volleyball':"Women's Volleyball",
+  'flag-football':    "Women's Flag Football",
+  'mens-golf':        "Men's Golf",
+  'womens-golf':      "Women's Golf",
+  'mens-track':       "Men's Track & Field",
+  'womens-track':     "Women's Track & Field",
+  'beach-volleyball': 'Beach Volleyball',
+  'cheer':            'Cheer',
+  'admissions':       'Admissions',
+  'hiring':           'Hiring',
+  'student-success':  'Student Success',
+  'sales-revenue':    'Sales Revenue',
+  'financial':        'Financial',
+  'fundraising':      'Fundraising/Development',
+  'operations':       'Operations',
+  'marketing':        'Marketing',
+  'compliance':       'Compliance',
+  'curriculum':       'Curriculum',
+  'real-estate':      'Real Estate',
+  'acquisition':      'Acquisition',
+};
 
 // ── Tool name sets + dispatcher ───────────────────────────────────────────────
 
@@ -343,6 +377,8 @@ type SystemBlock = { type: 'text'; text: string; cache_control?: { type: 'epheme
 /**
  * Builds the `system` field for the API request.
  *
+ * Section-based routing (explicit user selection) takes priority over content detection.
+ *
  * Data room tier — R0/R1 only, investor/business queries:
  *   Block 0: Data Room KB — cache_control: ephemeral
  *
@@ -353,8 +389,36 @@ type SystemBlock = { type: 'text'; text: string; cache_control?: { type: 'epheme
  *
  * General tier — plain string (Haiku, small prompt, caching not worthwhile).
  */
-function buildSystemField(msg: string, rbcaTier: number): string | SystemBlock[] {
-  // Data room tier — R0/R1 only, investor/business queries
+function buildSystemField(
+  msg:           string,
+  rbcaTier:      number,
+  activeSection: DipsonSection | null,
+): string | SystemBlock[] {
+  // Section-based routing takes priority over message-content detection
+  if (activeSection === 'data-room') {
+    const parts = buildDataRoomSystemPrompt();
+    return [
+      { type: 'text', text: parts.staticContent, cache_control: { type: 'ephemeral' } },
+    ] as SystemBlock[];
+  }
+
+  if (activeSection === 'basketball' || activeSection === 'mens-basketball') {
+    const parts: SystemPromptParts = buildIntelligenceSystemPrompt(msg);
+    const blocks: SystemBlock[] = [
+      { type: 'text', text: parts.staticContent, cache_control: { type: 'ephemeral' } },
+    ];
+    if (parts.dynamicContent) {
+      blocks.push({ type: 'text', text: parts.dynamicContent });
+    }
+    return blocks;
+  }
+
+  if (activeSection && activeSection !== 'general') {
+    const sectionLabel = SECTION_LABELS[activeSection] ?? activeSection;
+    return `You are Dipson, KaNeXT's intelligent AI assistant. You are operating in the ${sectionLabel} intelligence context. Be concise, direct, and helpful.`;
+  }
+
+  // Fall back to existing content-based detection for general context
   if (rbcaTier <= 1 && isDataRoomQuery(msg)) {
     const parts = buildDataRoomSystemPrompt();
     return [
@@ -362,7 +426,6 @@ function buildSystemField(msg: string, rbcaTier: number): string | SystemBlock[]
     ] as SystemBlock[];
   }
 
-  // Basketball intelligence tier
   if (isBasketball(msg)) {
     const parts: SystemPromptParts = buildIntelligenceSystemPrompt(msg);
     const blocks: SystemBlock[] = [
@@ -495,8 +558,8 @@ export default function NexusScreen() {
   const [isSidebarOpen,   setIsSidebarOpen]   = useState(false);
   const [currentChatId,   _setCurrentChatId]  = useState<string | null>(null);
   const [chatIndex,       setChatIndex]        = useState<NexusChatMeta[]>([]);
-  const [projects,        setProjects]         = useState<NexusProject[]>([]);
-  const [activeProjectId, setActiveProjectId]  = useState<string | null>(null);
+  // projects/activeProjectId retained for future use
+  const [activeSection,   setActiveSection]    = useState<DipsonSection | null>(null);
 
   // Refs
   const scrollRef         = useRef<ScrollView>(null);
@@ -507,10 +570,12 @@ export default function NexusScreen() {
   const messagesRef       = useRef<Message[]>([]);
   const chatIndexRef      = useRef<NexusChatMeta[]>([]);
   const prevIsStreamingRef = useRef(false);
+  const activeSectionRef  = useRef<DipsonSection | null>(null);
 
   // Keep refs in sync with state (no useEffect needed — runs before commit)
-  messagesRef.current  = messages;
-  chatIndexRef.current = chatIndex;
+  messagesRef.current    = messages;
+  chatIndexRef.current   = chatIndex;
+  activeSectionRef.current = activeSection;
 
   // Wrapper that updates both ref and state
   const setCurrentChatId = useCallback((id: string | null) => {
@@ -524,10 +589,9 @@ export default function NexusScreen() {
   // ── Load chats + projects on mount ──────────────────────────────────────────
 
   useEffect(() => {
-    Promise.all([loadAllChats(), loadAllProjects()]).then(([chats, projs]) => {
+    loadAllChats().then(chats => {
       setChatIndex(chats);
       chatIndexRef.current = chats;
-      setProjects(projs);
     });
   }, []);
 
@@ -555,6 +619,7 @@ export default function NexusScreen() {
           messages:  saveMsgs,
           createdAt: existingMeta?.createdAt ?? new Date().toISOString(),
           updatedAt: new Date().toISOString(),
+          section:   existingMeta?.section ?? (activeSectionRef.current ?? undefined),
         };
 
         saveChat(chat).then(() => {
@@ -639,8 +704,13 @@ export default function NexusScreen() {
     ]);
     scrollToEnd(true);
 
-    const systemField = buildSystemField(userText, rbcaTier);
-    const tier: ModelTier = isDataRoom ? 'DATA_ROOM' : isBasketball(userText) ? 'BASKETBALL' : 'GENERAL';
+    const systemField = buildSystemField(userText, rbcaTier, activeSection);
+    const tier: ModelTier =
+      activeSection === 'data-room'                                           ? 'DATA_ROOM' :
+      (activeSection === 'basketball' || activeSection === 'mens-basketball') ? 'BASKETBALL' :
+      isDataRoom                                                              ? 'DATA_ROOM' :
+      isBasketball(userText)                                                  ? 'BASKETBALL' :
+      'GENERAL';
     const model = MODELS[tier];
 
     console.log('[Nexus] tier:', tier, '| model:', model);
@@ -821,24 +891,6 @@ export default function NexusScreen() {
     chatIndexRef.current = updated;
   }, []);
 
-  // ── Projects ─────────────────────────────────────────────────────────────────
-
-  const handleSelectProject = useCallback((projectId: string | null) => {
-    setActiveProjectId(projectId);
-  }, []);
-
-  const handleCreateProject = useCallback(async (name: string) => {
-    const project: NexusProject = {
-      id:        `proj_${Date.now()}`,
-      name,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    await saveProject(project);
-    const updated = await loadAllProjects();
-    setProjects(updated);
-  }, []);
-
   // ── Artifact open ─────────────────────────────────────────────────────────────
 
   const openArtifact = (a: Artifact) => {
@@ -932,6 +984,7 @@ export default function NexusScreen() {
           showNewChat={hasMessages}
           onHamburger={() => setIsSidebarOpen(true)}
           onNewChat={handleNewChat}
+          section={activeSection ? (SECTION_LABELS[activeSection] ?? activeSection) : undefined}
         />
       </View>
 
@@ -971,7 +1024,7 @@ export default function NexusScreen() {
           <View style={[S.inputStrip, { backgroundColor: C.surface, borderColor: C.inputBorder }]}>
             <TextInput
               style={[S.textInput, { color: C.label }]}
-              placeholder="Message Nexus"
+              placeholder="Message Dipson..."
               placeholderTextColor={C.muted}
               value={text}
               onChangeText={setText}
@@ -1062,22 +1115,14 @@ export default function NexusScreen() {
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         chats={chatIndex}
-        projects={projects}
         currentChatId={currentChatId}
+        activeSection={activeSection}
+        onSectionChange={setActiveSection}
         onSelectChat={handleSelectChat}
         onDeleteChat={handleDeleteChat}
         onRenameChat={handleRenameChat}
         onStarChat={handleStarChat}
         onNewChat={handleNewChat}
-        onSelectProject={handleSelectProject}
-        onCreateProject={handleCreateProject}
-        onOpenArtifact={(artifact: NexusArtifact) => openArtifact({
-          id:       artifact.id,
-          language: artifact.language ?? 'text',
-          title:    artifact.title,
-          content:  artifact.content,
-        })}
-        activeProjectId={activeProjectId}
       />
     </View>
   );
