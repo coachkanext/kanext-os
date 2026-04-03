@@ -1317,6 +1317,243 @@ function EditCategoriesSheet({ visible, onClose, C }: { visible: boolean; onClos
   );
 }
 
+// ── SportsHeadCoachAgendaView ─────────────────────────────────────────────────
+
+function SportsHeadCoachAgendaView({ C, insets, cycleRole, role }: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  cycleRole: () => void;
+  role: string;
+}) {
+  const accent = C.label;
+
+  const COACH_EVENTS = [
+    // Apr 7 Mon
+    { id: 'ch1',  date: 'Apr 7',  time: '7:00 AM',  title: 'Morning Practice',                 evType: 'practice'   as const },
+    { id: 'ch2',  date: 'Apr 7',  time: '2:00 PM',  title: 'Film Session',                     evType: 'practice'   as const },
+    { id: 'ch3',  date: 'Apr 7',  time: '9:00 PM',  title: 'Coaches Meeting',                  evType: 'coaching'   as const },
+    // Apr 8 Tue
+    { id: 'ch4',  date: 'Apr 8',  time: '10:00 AM', title: 'Recruiting Visit — J. Davis PG',   evType: 'recruiting' as const },
+    { id: 'ch5',  date: 'Apr 8',  time: '3:00 PM',  title: 'Strength & Conditioning',          evType: 'practice'   as const },
+    // Apr 9 Wed
+    { id: 'ch6',  date: 'Apr 9',  time: '1:00 PM',  title: 'Travel Departs',                   evType: 'travel'     as const },
+    { id: 'ch7',  date: 'Apr 9',  time: '6:00 PM',  title: 'Away Game vs. Westview',           evType: 'game'       as const },
+    // Apr 11 Fri
+    { id: 'ch8',  date: 'Apr 11', time: '11:00 AM', title: 'Academic Check-In',                evType: 'academic'   as const },
+    // Apr 14 Mon
+    { id: 'ch9',  date: 'Apr 14', time: '7:00 AM',  title: 'Morning Practice',                 evType: 'practice'   as const },
+    { id: 'ch10', date: 'Apr 14', time: '2:00 PM',  title: 'Compliance Review',                evType: 'compliance' as const },
+    // Apr 15 Tue
+    { id: 'ch11', date: 'Apr 15', time: 'All Day',  title: 'Recruiting Contact Period Ends',   evType: 'recruiting' as const },
+    // Apr 16 Wed
+    { id: 'ch12', date: 'Apr 16', time: '7:00 PM',  title: 'Home Game vs. Riverside',          evType: 'game'       as const },
+    // Apr 21 Mon
+    { id: 'ch13', date: 'Apr 21', time: '7:00 AM',  title: 'Practice',                         evType: 'practice'   as const },
+  ] as const;
+
+  type CoachEventType = 'game' | 'practice' | 'recruiting' | 'travel' | 'academic' | 'compliance' | 'coaching';
+
+  const COACH_DOT_COLORS: Record<CoachEventType, string> = {
+    game:       C.label,
+    practice:   C.secondary,
+    recruiting: '#B8943E',
+    travel:     C.separator,
+    academic:   '#5A8A6E',
+    compliance: '#B85C5C',
+    coaching:   C.label,
+  };
+
+  const LEGEND_ITEMS: { label: string; evType: CoachEventType }[] = [
+    { label: 'Games',      evType: 'game'       },
+    { label: 'Practices',  evType: 'practice'   },
+    { label: 'Recruiting', evType: 'recruiting' },
+    { label: 'Travel',     evType: 'travel'     },
+    { label: 'Academic',   evType: 'academic'   },
+    { label: 'Compliance', evType: 'compliance' },
+  ];
+
+  const grouped: Record<string, typeof COACH_EVENTS[number][]> = {};
+  for (const ev of COACH_EVENTS) {
+    if (!grouped[ev.date]) grouped[ev.date] = [];
+    grouped[ev.date].push(ev);
+  }
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg, paddingTop: insets.top }}>
+      {/* Top bar */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10 }}>
+        <Pressable style={{ flex: 1, alignItems: 'flex-start' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+        </Pressable>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 16, paddingVertical: 7, borderRadius: 20, borderWidth: 1.5, borderColor: C.separator }}>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>April 2026</Text>
+        </View>
+        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+          <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary />
+        </View>
+      </View>
+
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 12, paddingBottom: 120, paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
+
+        {/* Legend */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingBottom: 16 }}>
+          {LEGEND_ITEMS.map(li => (
+            <View key={li.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: COACH_DOT_COLORS[li.evType] }} />
+              <Text style={{ fontSize: 11, color: C.secondary }}>{li.label}</Text>
+            </View>
+          ))}
+        </ScrollView>
+
+        {/* Events list grouped by date */}
+        {Object.entries(grouped).map(([date, evs]) => (
+          <View key={date} style={{ marginBottom: 20 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>{date}</Text>
+            {evs.map(ev => {
+              const dotColor = COACH_DOT_COLORS[ev.evType as CoachEventType] ?? C.label;
+              return (
+                <View key={ev.id} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 14, padding: 14, marginBottom: 8 }}>
+                  <View style={{ marginRight: 12, alignItems: 'center', justifyContent: 'center', width: 12 }}>
+                    <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: dotColor }} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{ev.title}</Text>
+                    <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{ev.time}</Text>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        ))}
+
+      </ScrollView>
+
+      {/* FAB */}
+      <Pressable
+        style={{ position: 'absolute', right: 20, bottom: 49 + insets.bottom + 20, width: 52, height: 52, borderRadius: 26, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 10, shadowOffset: { width: 0, height: 4 } }}
+        onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+      >
+        <IconSymbol name="plus" size={24} color={C.bg} />
+      </Pressable>
+    </View>
+  );
+}
+
+// ── SportsPlayerAgendaView ────────────────────────────────────────────────────
+
+function SportsPlayerAgendaView({ C, insets, cycleRole, role }: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  cycleRole: () => void;
+  role: string;
+}) {
+  const accent = C.label;
+
+  // Week Apr 7–13 (player-visible events only — no recruiting, compliance, coaching)
+  const WEEK_EVENTS = [
+    { id: 'pl1', day: 'Mon Apr 7',  time: '7:00 AM',  title: 'Morning Practice',  location: 'Main Gym',       evType: 'practice' as const },
+    { id: 'pl2', day: 'Mon Apr 7',  time: '2:00 PM',  title: 'Film Session',      location: 'Film Room',      evType: 'practice' as const },
+    { id: 'pl3', day: 'Wed Apr 9',  time: '1:00 PM',  title: 'Bus Departs',       location: 'Travel',         evType: 'travel'   as const },
+    { id: 'pl4', day: 'Wed Apr 9',  time: '6:00 PM',  title: 'Away Game',         location: 'Westview Arena', evType: 'game'     as const, note: 'Bring: Away uniform, bus boards 1pm' },
+    { id: 'pl5', day: 'Fri Apr 11', time: '3:00 PM',  title: 'Team Meeting',      location: 'Locker Room',    evType: 'meeting'  as const },
+  ] as const;
+
+  type PlayerEventType = 'game' | 'practice' | 'travel' | 'meeting';
+
+  const PLAYER_DOT_COLORS: Record<PlayerEventType, string> = {
+    game:     C.label,
+    practice: C.secondary,
+    travel:   C.separator,
+    meeting:  C.label,
+  };
+
+  const grouped: Record<string, typeof WEEK_EVENTS[number][]> = {};
+  for (const ev of WEEK_EVENTS) {
+    if (!grouped[ev.day]) grouped[ev.day] = [];
+    grouped[ev.day].push(ev);
+  }
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg, paddingTop: insets.top }}>
+      {/* Top bar */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10 }}>
+        <Pressable style={{ flex: 1, alignItems: 'flex-start' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+        </Pressable>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 16, paddingVertical: 7, borderRadius: 20, borderWidth: 1.5, borderColor: C.separator }}>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>My Schedule</Text>
+        </View>
+        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+          <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary={false} />
+        </View>
+      </View>
+
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120, paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
+
+        {/* Week header */}
+        <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>WEEK OF APR 7 – 13</Text>
+
+        {/* Events grouped by day */}
+        {Object.entries(grouped).map(([day, evs]) => (
+          <View key={day} style={{ marginBottom: 20 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>{day}</Text>
+            {evs.map(ev => {
+              const dotColor = PLAYER_DOT_COLORS[ev.evType as PlayerEventType] ?? C.label;
+              return (
+                <View key={ev.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, marginBottom: 8 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ marginRight: 12, width: 12, alignItems: 'center' }}>
+                      <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: dotColor }} />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{ev.title}</Text>
+                      <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{ev.time} · {ev.location}</Text>
+                      {'note' in ev && ev.note ? (
+                        <Text style={{ fontSize: 12, color: C.muted, marginTop: 4 }}>{ev.note}</Text>
+                      ) : null}
+                    </View>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        ))}
+
+        {/* Upcoming games */}
+        <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginTop: 8, marginBottom: 12 }}>UPCOMING GAMES</Text>
+        {[
+          { id: 'pg1', date: 'Wed Apr 9',  title: 'Away Game vs. Westview',  time: '6:00 PM', location: 'Westview Arena' },
+          { id: 'pg2', date: 'Wed Apr 16', title: 'Home Game vs. Riverside', time: '7:00 PM', location: 'Home Arena'     },
+        ].map(g => (
+          <View key={g.id} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 14, padding: 14, marginBottom: 8 }}>
+            <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: C.label, marginRight: 12 }} />
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{g.title}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{g.date} · {g.time} · {g.location}</Text>
+            </View>
+          </View>
+        ))}
+
+        {/* Academic deadlines */}
+        <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginTop: 8, marginBottom: 12 }}>ACADEMIC DEADLINES</Text>
+        {[
+          { id: 'pa1', title: 'Grade Check Submission', due: 'Apr 11' },
+          { id: 'pa2', title: 'Eligibility Form Due',   due: 'Apr 18' },
+        ].map(a => (
+          <View key={a.id} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 14, padding: 14, marginBottom: 8 }}>
+            <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#5A8A6E', marginRight: 12 }} />
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{a.title}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>Due {a.due}</Text>
+            </View>
+          </View>
+        ))}
+
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── AgendaScreen ──────────────────────────────────────────────────────────────
 
 // ── RBAC event type visibility for non-admin roles ───────────────────────────
@@ -1381,6 +1618,12 @@ export default function AgendaScreen() {
   const handleNavigateMonth = useCallback((n: number) => { setSelectedDate(p => addMonths(p, n)); setExpandedId(null); }, []);
   const handleCreateAtTime  = useCallback((time: Date) => { setCreateTime(time); setCreateVisible(true); }, []);
   const closeDropdowns      = useCallback(() => { setShowViewDD(false); setShowEditDD(false); }, []);
+
+  // ── Sports Head Coach: full calendar with all event types ────────────────
+  if (mode === 'sports' && isAdmin) return <SportsHeadCoachAgendaView C={C} insets={insets} cycleRole={cycleRole} role={role} />;
+
+  // ── Sports Player: filtered weekly schedule ───────────────────────────────
+  if (mode === 'sports') return <SportsPlayerAgendaView C={C} insets={insets} cycleRole={cycleRole} role={role} />;
 
   // ── Business CEO: full calendar with all event types ──────────────────────
   if (mode === 'business' && isAdmin) {
