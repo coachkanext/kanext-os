@@ -46,7 +46,8 @@ TIMEOUT    = 20
 
 STATS_PATH = f"/sports/football/stats/{SEASON}"
 
-_SCHOOLS_FILE = Path(__file__).parent / "naia_schools.json"
+_SCHOOLS_FILE         = Path(__file__).parent / "naia_schools.json"
+_FOOTBALL_SCHOOLS_FILE = Path(__file__).parent / "naia_football_schools.json"
 
 HTTP_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
@@ -532,9 +533,20 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--test", type=int, default=0, metavar="N",
                     help="only scrape first N schools")
+    ap.add_argument("--schools-file", type=Path, default=None,
+                    help="override school list JSON (default: naia_schools.json)")
+    ap.add_argument("--football-schools", action="store_true",
+                    help="use naia_football_schools.json instead of naia_schools.json")
     args = ap.parse_args()
 
-    schools = json.loads(_SCHOOLS_FILE.read_text())
+    if args.schools_file:
+        schools_path = args.schools_file
+    elif args.football_schools:
+        schools_path = _FOOTBALL_SCHOOLS_FILE
+    else:
+        schools_path = _SCHOOLS_FILE
+
+    schools = json.loads(schools_path.read_text())
     if args.test:
         schools = schools[:args.test]
 

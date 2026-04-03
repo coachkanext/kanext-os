@@ -1,0 +1,63 @@
+
+=== NAIA Football Scraper (season=2024-25) ===
+  Schools: 229  |  dry_run=False
+
+  [ 23/229] unionathletics                            62 players
+  [ 24/229] upikebears                                52 players
+  [ 28/229] simpsonredhawks                           62 players
+  [ 31/229] The College                               71 players
+  [ 37/229] eousports                                 56 players
+  [ 38/229] gothunderbirds                            51 players
+  [ 41/229] souraiders                                71 players
+  [ 46/229] gostatesmen                               55 players
+  [ 51/229] saintsathletics                           56 players
+  [ 53/229] sxucougars                                64 players
+  [ 70/229] muknights                                 62 players
+  [ 75/229] Montana State University-Northern         53 players
+  [ 76/229] Valley City State University              49 players
+  [ 79/229] dsuathletics                              53 players
+  [ 80/229] gobattlinbears                            59 players
+  [ 81/229] godiggers                                 59 players
+  [ 82/229] msumavericks                              53 players
+  [ 93/229] mountmartyathletics                       59 players
+  [ 95/229] nwcraiders                                55 players
+  [ 98/229] They are also a member of the National Christian College  75 players
+  [100/229] acufirestorm                              68 players
+  [122/229] wwuowls                                   63 players
+  [124/229] The Missouri Baptist University           55 players
+  [131/229] gvvikings                                 64 players
+  [132/229] mnusports                                 58 players
+  [134/229] pscbobcats                                68 players
+  [135/229] ravenathletics                            73 players
+  [139/229] The university's varsity teams compete in the Ontario University  60 players
+  [140/229] [19][20] The university                   55 players
+  [142/229] bethelthreshers                           63 players
+  [143/229] buildersports                            101 players
+  [144/229] friendsathletics                          71 players
+  [145/229] gospires                                  60 players
+  [146/229] kwucoyotes                                66 players
+  [147/229] macbulldogs                               73 players
+  [149/229] ottawabraves                              54 players
+  [150/229] taborbluejays                             51 players
+  [151/229] Campbellsville University                 72 players
+  [155/229] lindseyathletics                          48 players
+  [165/229] lcwildcats                                79 players
+  [184/229] Oklahoma Panhandle State University       46 players
+  [186/229] Wayland Baptist University                62 players
+  [192/229] ramsports                                 75 players
+  [201/229] faulknereagles                            58 players
+  [203/229] tunighthawks                              57 players
+  [207/229] Keiser University                         62 players
+  [208/229] Southeastern University                   60 players
+  [209/229] St. Thomas                                63 players
+  [210/229] The Warner Royals are the athletic teams for Warner University  73 players
+  [211/229] avemariagyrenes                           56 players
+  [213/229] fmuathletics                              64 players
+  [216/229] webberathletics                           71 players
+  [225/229] ltuathletics                              58 players
+  [226/229] mucrusaders                               75 players
+  [228/229] uofrathletics                             55 players
+
+  Done: 55 schools with data, 174 skipped, 3414 players total
+
+=== DB: 55 teams, 3405 players, 3405 stat rows ===

@@ -231,12 +231,12 @@
   },
   {
     "name": "Dordt University",
-    "url": "https://defenders.dordt.edu",
+    "url": "https://godordt.com",
     "conference": "GPAC"
   },
   {
     "name": "Hastings College",
-    "url": "https://gobroncosathletics.com",
+    "url": "https://hastingsbroncos.com",
     "conference": "GPAC"
   },
   {
@@ -246,12 +246,12 @@
   },
   {
     "name": "Morningside University",
-    "url": "https://mornsidemustangs.com",
+    "url": "https://msidemustangs.com",
     "conference": "GPAC"
   },
   {
     "name": "Northwestern College IA",
-    "url": "https://nornwesternraiders.com",
+    "url": "https://nwcraiders.com",
     "conference": "GPAC"
   },
   {
@@ -518,5 +518,30 @@
     "name": "Thomas University",
     "url": "https://thomasnightHawks.com",
     "conference": "Sun"
+  },
+  {
+    "name": "Texas Wesleyan University",
+    "url": "http://ramsports.net",
+    "conference": "Sooner"
+  },
+  {
+    "name": "Briar Cliff University",
+    "url": "https://bcuchargers.com",
+    "conference": "GPAC"
+  },
+  {
+    "name": "Peru State College",
+    "url": "https://www.pscbobcats.com",
+    "conference": "HAAC"
+  },
+  {
+    "name": "Bluefield University",
+    "url": "https://burams.com",
+    "conference": "AAC"
+  },
+  {
+    "name": "Langston University",
+    "url": "https://langstonsports.com",
+    "conference": "Sooner"
   }
 ]

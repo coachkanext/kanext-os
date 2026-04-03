@@ -1,0 +1,54 @@
+
+=== NAIA Football Scraper (season=2024-25) ===
+  Schools: 102  |  dry_run=False
+
+  [  1/102] The College                               71 players
+  [  2/102] souraiders                                71 players
+  [  3/102] simpsonredhawks                           62 players
+  [  4/102] upikebears                                52 players
+  [  5/102] eousports                                 56 players
+  [  6/102] saintsathletics                           56 players
+  [  7/102] Valley City State University              49 players
+  [  8/102] Montana State University-Northern         53 players
+  [  9/102] gobattlinbears                            59 players
+  [ 10/102] mountmartyathletics                       59 players
+  [ 11/102] nwcraiders                                55 players
+  [ 12/102] dsuathletics                              53 players
+  [ 13/102] wwuowls                                   63 players
+  [ 14/102] ravenathletics                            73 players
+  [ 15/102] bethelthreshers                           63 players
+  [ 16/102] mnusports                                 58 players
+  [ 17/102] The Missouri Baptist University           55 players
+  [ 18/102] [19][20] The university                   55 players
+  [ 19/102] macbulldogs                               73 players
+  [ 20/102] gospires                                  60 players
+  [ 21/102] lindseyathletics                          48 players
+  [ 25/102] Wayland Baptist University                62 players
+  [ 26/102] tunighthawks                              57 players
+  [ 27/102] The Warner Royals are the athletic teams for Warner University  73 players
+  [ 28/102] avemariagyrenes                           56 players
+  [ 29/102] fmuathletics                              64 players
+  [ 30/102] webberathletics                           71 players
+  [ 31/102] Oklahoma Panhandle State University       46 players
+  [ 32/102] faulknereagles                            58 players
+  [ 33/102] mucrusaders                               75 players
+  [ 34/102] uofrathletics                             55 players
+  [ 35/102] St. Thomas                                63 players
+  [ 65/102] Kansas Wesleyan University                66 players
+  [ 70/102] Ottawa University                         54 players
+  [ 71/102] Tabor College                             51 players
+  [ 74/102] Louisiana Christian University            79 players
+  [ 78/102] Kentucky Christian University             80 players
+  [ 91/102] Saint Xavier University                   64 players
+  [ 98/102] Texas Wesleyan University                 75 players
+  [ 99/102] Briar Cliff University                    63 players
+  [100/102] Peru State College                        68 players
+  [101/102] Bluefield University                      57 players
+  [102/102] Langston University                       73 players
+
+  Done: 43 schools with data, 59 skipped, 2654 players total
+
+=== DB: 59 teams, 4346 players, 4346 stat rows ===
+layers total
+
+=== DB: 59 teams, 4346 players, 4346 stat rows ===
