@@ -3,11 +3,17 @@ NFL Pro Player Pool Scraper — 2024 Season
 Source: nfl_data_py (nflverse) — actively maintained
 Loads: profb_teams, profb_players, profb_player_stats
 
+Stats sources:
+  import_seasonal_data   → offense/fantasy stats (345 skill-position players)
+  import_seasonal_pfr    → PFR defensive stats (1008+ defensive players)
+  import_ids             → pfr_id ↔ gsis_id bridge
+
 Usage:
     python3 nfl_scraper.py              # load all
     python3 nfl_scraper.py teams        # teams only
     python3 nfl_scraper.py players      # teams + players
     python3 nfl_scraper.py stats        # stats only (players must exist)
+    python3 nfl_scraper.py defense      # defensive stats only (fast refresh)
 """
 from __future__ import annotations
 
@@ -178,6 +184,32 @@ def load_players(conn, team_uuid: dict[str, str]) -> dict[str, str]:
 
 # ── Step 3: Stats ─────────────────────────────────────────────────────────────
 
+def ensure_defense_columns(conn):
+    """Add defensive stat columns to profb_player_stats if missing."""
+    new_cols = [
+        ("def_games",         "INT"),
+        ("def_int",           "INT"),
+        ("def_tgt",           "INT"),
+        ("def_cmp",           "INT"),
+        ("def_yards_allowed", "INT"),
+        ("def_td_allowed",    "INT"),
+        ("def_sacks",         "NUMERIC(5,1)"),
+        ("def_tackles",       "INT"),
+        ("def_missed_tackles","INT"),
+        ("def_blitz",         "INT"),
+        ("def_hurries",       "INT"),
+    ]
+    # Use autocommit cursor to avoid savepoint-vs-real-commit ambiguity
+    cur = conn.cursor()
+    for col, col_type in new_cols:
+        cur.execute(f"""
+            ALTER TABLE profb_player_stats
+            ADD COLUMN IF NOT EXISTS {col} {col_type}
+        """)
+    conn.commit()
+    print(f"  Defense columns ensured ({len(new_cols)} columns)")
+
+
 def load_stats(conn, player_uuid: dict[str, str]):
     """Pull 2024 seasonal stats, upsert profb_player_stats."""
     print("  Fetching nflverse seasonal data 2024 ...", flush=True)
@@ -263,6 +295,90 @@ def load_stats(conn, player_uuid: dict[str, str]):
     print(f"  Stats: {inserted} inserted, {updated} updated, {skipped} skipped (no player)")
 
 
+def load_defensive_stats(conn, player_uuid: dict[str, str]):
+    """
+    Pull PFR seasonal defensive stats and upsert into profb_player_stats.
+    Uses pfr_id → gsis_id mapping from import_ids().
+    Covers ~1008 defensive players not in import_seasonal_data.
+    """
+    print("  Building pfr_id → gsis_id map ...", flush=True)
+    ids_df  = nfl.import_ids()
+    pfr_map = {}  # pfr_id → gsis_id
+    for _, r in ids_df.iterrows():
+        pfr = r.get("pfr_id")
+        gsis = r.get("gsis_id")
+        if pfr and not pd.isna(pfr) and gsis and not pd.isna(gsis):
+            pfr_map[str(pfr)] = str(gsis)
+
+    print(f"  pfr → gsis map: {len(pfr_map)} entries")
+
+    print("  Fetching PFR seasonal defensive stats 2024 ...", flush=True)
+    df_def = nfl.import_seasonal_pfr("def", years=[SEASON])
+    print(f"  DEF rows: {len(df_def)}")
+
+    inserted = updated = skipped = 0
+    with conn.transaction():
+        cur = conn.cursor()
+        for _, row in df_def.iterrows():
+            pfr_id = row.get("pfr_id")
+            if not pfr_id or pd.isna(pfr_id):
+                skipped += 1
+                continue
+            gsis = pfr_map.get(str(pfr_id))
+            if not gsis or gsis not in player_uuid:
+                skipped += 1
+                continue
+            pid = player_uuid[gsis]
+
+            cur.execute("""
+                INSERT INTO profb_player_stats (
+                    player_id, season, season_type,
+                    def_games, def_int, def_tgt, def_cmp, def_yards_allowed,
+                    def_td_allowed, def_sacks, def_tackles, def_missed_tackles,
+                    def_blitz, def_hurries
+                ) VALUES (
+                    %s, %s, %s,
+                    %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s,
+                    %s, %s
+                )
+                ON CONFLICT (player_id, season, season_type) DO UPDATE SET
+                    def_games         = EXCLUDED.def_games,
+                    def_int           = EXCLUDED.def_int,
+                    def_tgt           = EXCLUDED.def_tgt,
+                    def_cmp           = EXCLUDED.def_cmp,
+                    def_yards_allowed = EXCLUDED.def_yards_allowed,
+                    def_td_allowed    = EXCLUDED.def_td_allowed,
+                    def_sacks         = EXCLUDED.def_sacks,
+                    def_tackles       = EXCLUDED.def_tackles,
+                    def_missed_tackles= EXCLUDED.def_missed_tackles,
+                    def_blitz         = EXCLUDED.def_blitz,
+                    def_hurries       = EXCLUDED.def_hurries
+                RETURNING id, (xmax = 0) AS is_insert
+            """, (
+                pid, SEASON, "REG",
+                safe_int(row.get("g")),
+                safe_int(row.get("int")),
+                safe_int(row.get("tgt")),
+                safe_int(row.get("cmp")),
+                safe_int(row.get("yds")),
+                safe_int(row.get("td")),
+                safe_float(row.get("sk")),
+                safe_int(row.get("comb")),
+                safe_int(row.get("m_tkl")),
+                safe_int(row.get("bltz")),
+                safe_int(row.get("hrry")),
+            ))
+            r2 = cur.fetchone()
+            if r2["is_insert"]:
+                inserted += 1
+            else:
+                updated += 1
+
+    conn.commit()
+    print(f"  Defense: {inserted} inserted, {updated} updated, {skipped} skipped")
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -270,16 +386,15 @@ def main():
     conn = get_conn()
     try:
         if mode in ("all", "teams"):
-            print("\n[1/3] Loading NFL teams ...")
+            print("\n[1/4] Loading NFL teams ...")
             team_uuid = load_teams(conn)
         else:
-            # Load existing team UUIDs from DB
             cur = conn.cursor()
             cur.execute("SELECT team_abbr, id FROM profb_teams")
             team_uuid = {r["team_abbr"]: str(r["id"]) for r in cur.fetchall()}
 
         if mode in ("all", "players"):
-            print("\n[2/3] Loading NFL players ...")
+            print("\n[2/4] Loading NFL players ...")
             player_uuid = load_players(conn, team_uuid)
         else:
             cur = conn.cursor()
@@ -287,8 +402,17 @@ def main():
             player_uuid = {r["gsis_id"]: str(r["id"]) for r in cur.fetchall()}
 
         if mode in ("all", "stats"):
-            print("\n[3/3] Loading NFL stats ...")
+            print("\n[3/4] Loading offensive/fantasy stats ...")
+            ensure_defense_columns(conn)
             load_stats(conn, player_uuid)
+
+            print("\n[4/4] Loading PFR defensive stats ...")
+            load_defensive_stats(conn, player_uuid)
+
+        elif mode == "defense":
+            print("\n[1/1] Loading PFR defensive stats ...")
+            ensure_defense_columns(conn)
+            load_defensive_stats(conn, player_uuid)
 
         # Summary
         cur = conn.cursor()
@@ -298,7 +422,9 @@ def main():
         np_ = cur.fetchone()["n"]
         cur.execute("SELECT COUNT(*) AS n FROM profb_player_stats")
         ns = cur.fetchone()["n"]
-        print(f"\n=== NFL done: {nt} teams, {np_} players, {ns} stat rows ===")
+        cur.execute("SELECT COUNT(*) AS n FROM profb_player_stats WHERE def_tackles IS NOT NULL")
+        nd = cur.fetchone()["n"]
+        print(f"\n=== NFL done: {nt} teams, {np_} players, {ns} stat rows ({nd} with def stats) ===")
 
     finally:
         conn.close()

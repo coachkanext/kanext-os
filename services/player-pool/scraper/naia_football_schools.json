@@ -1,0 +1,522 @@
+[
+  {
+    "name": "The College",
+    "url": "https://yoteathletics.com",
+    "conference": "Cascade Collegiate Conference",
+    "slug": "yoteathletics"
+  },
+  {
+    "name": "souraiders",
+    "url": "https://souraiders.com",
+    "conference": "Cascade Collegiate Conference",
+    "slug": "souraiders"
+  },
+  {
+    "name": "simpsonredhawks",
+    "url": "https://simpsonredhawks.com",
+    "conference": "California Pacific Conference",
+    "slug": "simpsonredhawks"
+  },
+  {
+    "name": "upikebears",
+    "url": "https://upikebears.com",
+    "conference": "Appalachian Athletic Conference",
+    "slug": "upikebears"
+  },
+  {
+    "name": "eousports",
+    "url": "https://eousports.com",
+    "conference": "Cascade Collegiate Conference",
+    "slug": "eousports"
+  },
+  {
+    "name": "saintsathletics",
+    "url": "https://saintsathletics.com",
+    "conference": "Chicagoland Collegiate Athletic Conference",
+    "slug": "saintsathletics"
+  },
+  {
+    "name": "Valley City State University",
+    "url": "https://vcsuvikings.com",
+    "conference": "Frontier Conference",
+    "slug": "vcsuvikings"
+  },
+  {
+    "name": "Montana State University-Northern",
+    "url": "https://golightsgo.com",
+    "conference": "Frontier Conference",
+    "slug": "golightsgo"
+  },
+  {
+    "name": "gobattlinbears",
+    "url": "https://gobattlinbears.com",
+    "conference": "Frontier Conference",
+    "slug": "gobattlinbears"
+  },
+  {
+    "name": "mountmartyathletics",
+    "url": "https://mountmartyathletics.com",
+    "conference": "Great Plains Athletic Conference",
+    "slug": "mountmartyathletics"
+  },
+  {
+    "name": "nwcraiders",
+    "url": "https://nwcraiders.com",
+    "conference": "Great Plains Athletic Conference",
+    "slug": "nwcraiders"
+  },
+  {
+    "name": "dsuathletics",
+    "url": "https://dsuathletics.com",
+    "conference": "Frontier Conference",
+    "slug": "dsuathletics"
+  },
+  {
+    "name": "wwuowls",
+    "url": "https://wwuowls.com",
+    "conference": "Hear of America Athletic Conference",
+    "slug": "wwuowls"
+  },
+  {
+    "name": "ravenathletics",
+    "url": "https://www.ravenathletics.com",
+    "conference": "Heart of America Athletic Conference",
+    "slug": "www.ravenathletics"
+  },
+  {
+    "name": "bethelthreshers",
+    "url": "https://bethelthreshers.com",
+    "conference": "Kansas Collegiate Athletic Conference",
+    "slug": "bethelthreshers"
+  },
+  {
+    "name": "mnusports",
+    "url": "https://mnusports.com",
+    "conference": "Heart of America Athletic Conference",
+    "slug": "mnusports"
+  },
+  {
+    "name": "The Missouri Baptist University",
+    "url": "https://mbuspartans.com",
+    "conference": "Heart of America Athletic Conference",
+    "slug": "mbuspartans"
+  },
+  {
+    "name": "[19][20] The university",
+    "url": "https://evangelathletics.com",
+    "conference": "Kansas Collegiate Athletic Conference",
+    "slug": "evangelathletics"
+  },
+  {
+    "name": "macbulldogs",
+    "url": "https://macbulldogs.com",
+    "conference": "Kansas Collegiate Athletic Conference",
+    "slug": "macbulldogs"
+  },
+  {
+    "name": "gospires",
+    "url": "https://www.gospires.com",
+    "conference": "Kansas Collegiate Athletic Conference",
+    "slug": "www.gospires"
+  },
+  {
+    "name": "lindseyathletics",
+    "url": "https://lindseyathletics.com",
+    "conference": "Mid-South Conference",
+    "slug": "lindseyathletics"
+  },
+  {
+    "name": "gojacks",
+    "url": "https://gojacks.com",
+    "conference": "Red River Athletic Conference",
+    "slug": "gojacks"
+  },
+  {
+    "name": "lcwildcats",
+    "url": "https://www.lcwildcats.net",
+    "conference": "Red River Athletic Conference",
+    "slug": "www.lcwildcats.net"
+  },
+  {
+    "name": "wvusports",
+    "url": "https://wvusports.com",
+    "conference": "River States Conference",
+    "slug": "wvusports"
+  },
+  {
+    "name": "Wayland Baptist University",
+    "url": "https://wbuathletics.com",
+    "conference": "Sooner Athletic Conference",
+    "slug": "wbuathletics"
+  },
+  {
+    "name": "tunighthawks",
+    "url": "https://tunighthawks.com",
+    "conference": "Southern States Athletic Conference",
+    "slug": "tunighthawks"
+  },
+  {
+    "name": "The Warner Royals are the athletic teams for Warner University",
+    "url": "https://warnerroyals.com",
+    "conference": "The Sun Conference",
+    "slug": "warnerroyals"
+  },
+  {
+    "name": "avemariagyrenes",
+    "url": "https://avemariagyrenes.com",
+    "conference": "The Sun Conference",
+    "slug": "avemariagyrenes"
+  },
+  {
+    "name": "fmuathletics",
+    "url": "https://fmuathletics.com",
+    "conference": "The Sun Conference",
+    "slug": "fmuathletics"
+  },
+  {
+    "name": "webberathletics",
+    "url": "https://webberathletics.com",
+    "conference": "The Sun Conference",
+    "slug": "webberathletics"
+  },
+  {
+    "name": "Oklahoma Panhandle State University",
+    "url": "https://opsuaggies.com",
+    "conference": "Sooner Athletic Conference",
+    "slug": "opsuaggies"
+  },
+  {
+    "name": "faulknereagles",
+    "url": "https://faulknereagles.com",
+    "conference": "Southern States Athletic Conference",
+    "slug": "faulknereagles"
+  },
+  {
+    "name": "mucrusaders",
+    "url": "https://mucrusaders.com",
+    "conference": "Wolverine-Hoosier Athletic Conference",
+    "slug": "mucrusaders"
+  },
+  {
+    "name": "uofrathletics",
+    "url": "https://uofrathletics.com",
+    "conference": "Wolverine-Hoosier Athletic Conference",
+    "slug": "uofrathletics"
+  },
+  {
+    "name": "St. Thomas",
+    "url": "https://stubobcats.com",
+    "conference": "The Sun Conference",
+    "slug": "stubobcats"
+  },
+  {
+    "name": "Briar Cliff University",
+    "url": "https://bcuathletics.com",
+    "conference": "GPAC"
+  },
+  {
+    "name": "Concordia University NE",
+    "url": "https://gobluejays.com",
+    "conference": "GPAC"
+  },
+  {
+    "name": "Dakota Wesleyan University",
+    "url": "https://dwtdwu.com",
+    "conference": "GPAC"
+  },
+  {
+    "name": "Doane University",
+    "url": "https://doanetiger.com",
+    "conference": "GPAC"
+  },
+  {
+    "name": "Dordt University",
+    "url": "https://defenders.dordt.edu",
+    "conference": "GPAC"
+  },
+  {
+    "name": "Hastings College",
+    "url": "https://gobroncosathletics.com",
+    "conference": "GPAC"
+  },
+  {
+    "name": "Midland University",
+    "url": "https://midlandwarriors.com",
+    "conference": "GPAC"
+  },
+  {
+    "name": "Morningside University",
+    "url": "https://mornsidemustangs.com",
+    "conference": "GPAC"
+  },
+  {
+    "name": "Northwestern College IA",
+    "url": "https://nornwesternraiders.com",
+    "conference": "GPAC"
+  },
+  {
+    "name": "Waldorf University",
+    "url": "https://waldorfwarriors.com",
+    "conference": "GPAC"
+  },
+  {
+    "name": "Grand View University",
+    "url": "https://gvuvikings.com",
+    "conference": "HAAC"
+  },
+  {
+    "name": "William Penn University",
+    "url": "https://wpustatesmen.com",
+    "conference": "HAAC"
+  },
+  {
+    "name": "Peru State College",
+    "url": "https://perustatebobcats.com",
+    "conference": "HAAC"
+  },
+  {
+    "name": "St. Ambrose University",
+    "url": "https://saambees.com",
+    "conference": "HAAC"
+  },
+  {
+    "name": "Graceland University",
+    "url": "https://gracelandyellowjackets.com",
+    "conference": "HAAC"
+  },
+  {
+    "name": "Culver-Stockton College",
+    "url": "https://wildcatnathletics.com",
+    "conference": "HAAC"
+  },
+  {
+    "name": "Clarke University",
+    "url": "https://clarkecrusaders.com",
+    "conference": "HAAC"
+  },
+  {
+    "name": "Baker University",
+    "url": "https://gobakerwildcats.com",
+    "conference": "HAAC"
+  },
+  {
+    "name": "Benedictine College",
+    "url": "https://beneravens.com",
+    "conference": "HAAC"
+  },
+  {
+    "name": "William Woods University",
+    "url": "https://williamwoodsowls.com",
+    "conference": "HAAC"
+  },
+  {
+    "name": "Central Methodist University",
+    "url": "https://cmueagles.com",
+    "conference": "HAAC"
+  },
+  {
+    "name": "Missouri Valley College",
+    "url": "https://mvcsports.com",
+    "conference": "HAAC"
+  },
+  {
+    "name": "MidAmerica Nazarene",
+    "url": "https://mnupioneerssports.com",
+    "conference": "HAAC"
+  },
+  {
+    "name": "Bethel University TN",
+    "url": "https://bethelbulldogs.com",
+    "conference": "Mid-South"
+  },
+  {
+    "name": "Campbellsville University",
+    "url": "https://gotyers.com",
+    "conference": "Mid-South"
+  },
+  {
+    "name": "Cumberland University",
+    "url": "https://phoenixathletics.com",
+    "conference": "Mid-South"
+  },
+  {
+    "name": "University of the Cumberlands",
+    "url": "https://ucpatriotsathletics.com",
+    "conference": "Mid-South"
+  },
+  {
+    "name": "Georgetown College",
+    "url": "https://georgetowntigers.com",
+    "conference": "Mid-South"
+  },
+  {
+    "name": "Friends University",
+    "url": "https://friendsfalcons.com",
+    "conference": "KCAC"
+  },
+  {
+    "name": "Kansas Wesleyan University",
+    "url": "https://kwucoyotes.com",
+    "conference": "KCAC"
+  },
+  {
+    "name": "McPherson College",
+    "url": "https://mcphersonsports.com",
+    "conference": "KCAC"
+  },
+  {
+    "name": "Southwestern College KS",
+    "url": "https://scbuilders.com",
+    "conference": "KCAC"
+  },
+  {
+    "name": "Sterling College",
+    "url": "https://scarletwarriors.com",
+    "conference": "KCAC"
+  },
+  {
+    "name": "Bethany College KS",
+    "url": "https://bethanylindbergs.com",
+    "conference": "KCAC"
+  },
+  {
+    "name": "Ottawa University",
+    "url": "https://ottawabraves.com",
+    "conference": "KCAC"
+  },
+  {
+    "name": "Tabor College",
+    "url": "https://taborbluejays.com",
+    "conference": "KCAC"
+  },
+  {
+    "name": "Arkansas Baptist College",
+    "url": "https://arkansasbaptist.edu/athletics",
+    "conference": "Sooner"
+  },
+  {
+    "name": "Langston University",
+    "url": "https://golions.com",
+    "conference": "Sooner"
+  },
+  {
+    "name": "Louisiana Christian University",
+    "url": "https://lcwildcats.net",
+    "conference": "Sooner"
+  },
+  {
+    "name": "Texas College",
+    "url": "https://tcsteers.com",
+    "conference": "Sooner"
+  },
+  {
+    "name": "Texas Wesleyan University",
+    "url": "https://txwesathletics.com",
+    "conference": "Sooner"
+  },
+  {
+    "name": "Bluefield University",
+    "url": "https://bluefieldu.edu/athletics",
+    "conference": "AAC"
+  },
+  {
+    "name": "Kentucky Christian University",
+    "url": "https://knightathletics.com",
+    "conference": "AAC"
+  },
+  {
+    "name": "Point University",
+    "url": "https://pointskyhawks.com",
+    "conference": "AAC"
+  },
+  {
+    "name": "Reinhardt University",
+    "url": "https://reinhardt.edu/athletics",
+    "conference": "AAC"
+  },
+  {
+    "name": "Union College KY",
+    "url": "https://ucbulldogssports.com",
+    "conference": "AAC"
+  },
+  {
+    "name": "Dickinson State University",
+    "url": "https://bluehawks.com",
+    "conference": "Frontier"
+  },
+  {
+    "name": "Mayville State University",
+    "url": "https://mayvillestate.edu/athletics",
+    "conference": "Frontier"
+  },
+  {
+    "name": "Montana Tech",
+    "url": "https://orediggers.com",
+    "conference": "Frontier"
+  },
+  {
+    "name": "Carroll College",
+    "url": "https://gosaints.carroll.edu",
+    "conference": "Frontier"
+  },
+  {
+    "name": "Montana Western",
+    "url": "https://ulmathletics.com",
+    "conference": "Frontier"
+  },
+  {
+    "name": "Rocky Mountain College",
+    "url": "https://rockymountainbears.com",
+    "conference": "Frontier"
+  },
+  {
+    "name": "Marian University IN",
+    "url": "https://marianknight.com",
+    "conference": "MSFA"
+  },
+  {
+    "name": "Saint Francis University IL",
+    "url": "https://saintfrancissaints.com",
+    "conference": "MSFA"
+  },
+  {
+    "name": "Olivet Nazarene University",
+    "url": "https://olivetnazarenetiger.com",
+    "conference": "MSFA"
+  },
+  {
+    "name": "Saint Xavier University",
+    "url": "https://sxucougars.com",
+    "conference": "MSFA"
+  },
+  {
+    "name": "Judson University",
+    "url": "https://judsoneagles.com",
+    "conference": "MSFA"
+  },
+  {
+    "name": "Indiana Wesleyan University",
+    "url": "https://indwesathletics.com",
+    "conference": "MSFA"
+  },
+  {
+    "name": "Defiance College",
+    "url": "https://defianceyellow.com",
+    "conference": "MSFA"
+  },
+  {
+    "name": "Keiser University",
+    "url": "https://keisersailfish.com",
+    "conference": "Sun"
+  },
+  {
+    "name": "Southeastern University",
+    "url": "https://seufireAThletics.com",
+    "conference": "Sun"
+  },
+  {
+    "name": "Thomas University",
+    "url": "https://thomasnightHawks.com",
+    "conference": "Sun"
+  }
+]
