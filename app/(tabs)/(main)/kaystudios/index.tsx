@@ -512,6 +512,234 @@ function CommunityMemberLearnView({
   );
 }
 
+// ── Education President: Academic Tools View ─────────────────────────────────
+
+type EduAdminTab = 'Courses' | 'Training' | 'Orientation' | 'Analytics';
+
+const EDU_ADMIN_COURSES = [
+  { id: 'eac1', title: 'BUS 401: Strategic Management',  program: 'BA Business Admin', enrollment: 34, engagement: 78, status: 'active', modules: 14 },
+  { id: 'eac2', title: 'MBA 520: Finance & Accounting',  program: 'MBA',               enrollment: 28, engagement: 71, status: 'active', modules: 18 },
+  { id: 'eac3', title: 'MKT 350: Consumer Behavior',     program: 'BA Business Admin', enrollment: 41, engagement: 84, status: 'active', modules: 12 },
+  { id: 'eac4', title: 'DBA 601: Research Methods',      program: 'DBA',               enrollment: 12, engagement: 91, status: 'active', modules: 10 },
+  { id: 'eac5', title: 'BS 201: Diagnostic Imaging I',   program: 'BS DiagImaging',    enrollment: 19, engagement: 68, status: 'draft',  modules: 16 },
+];
+
+const EDU_TRAINING_MODULES = [
+  { id: 'et1', title: 'Title IX Compliance Training',    emoji: '⚖️', certified: 38, total: 38, dueDate: 'Complete', type: 'Compliance'  },
+  { id: 'et2', title: 'FERPA Privacy Training',          emoji: '🔒', certified: 35, total: 38, dueDate: 'Apr 30',   type: 'Compliance'  },
+  { id: 'et3', title: 'Campus Safety & Emergency',       emoji: '🚨', certified: 31, total: 38, dueDate: 'May 15',   type: 'Safety'      },
+  { id: 'et4', title: 'KPlay LMS Faculty Orientation',   emoji: '💻', certified: 24, total: 38, dueDate: 'Ongoing',  type: 'Technology'  },
+  { id: 'et5', title: 'Accessibility & ADA Standards',   emoji: '♿', certified: 29, total: 38, dueDate: 'Jun 1',    type: 'Compliance'  },
+];
+
+const EDU_ORIENTATION_STEPS = [
+  { id: 'eo1', title: 'Welcome to Lincoln University',         completed: 436, total: 436 },
+  { id: 'eo2', title: 'Academic Policies & Expectations',      completed: 421, total: 436 },
+  { id: 'eo3', title: 'Campus Virtual Tour',                   completed: 398, total: 436 },
+  { id: 'eo4', title: 'Student Services Guide',                completed: 387, total: 436 },
+  { id: 'eo5', title: 'Financial Aid & Tuition Overview',      completed: 362, total: 436 },
+  { id: 'eo6', title: 'LMS Platform Walkthrough',              completed: 341, total: 436 },
+];
+
+function EducationPresidentAcademicToolsView({
+  C, insets, role, cycleRole,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+}) {
+  const [eduAdminTab, setEduAdminTab] = React.useState<EduAdminTab>('Courses');
+  const [eduAdminDrop, setEduAdminDrop] = React.useState(false);
+  const topBarH = insets.top + 52;
+  const EDU_ADMIN_TABS: EduAdminTab[] = ['Courses', 'Training', 'Orientation', 'Analytics'];
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top bar */}
+      <View style={{ paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, zIndex: 20, backgroundColor: C.bg }}>
+        <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Pressable
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: C.surfacePressed }}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setEduAdminDrop(v => !v); }}
+            >
+              <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{eduAdminTab}</Text>
+              <IconSymbol name={eduAdminDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
+            </Pressable>
+          </View>
+          <RolePill role={role} onPress={cycleRole} isPrimary />
+        </View>
+      </View>
+
+      {/* Dropdown */}
+      {eduAdminDrop && (
+        <View style={{ position: 'absolute', top: topBarH + 4, left: '18%', right: '18%', backgroundColor: C.surface, borderRadius: 16, zIndex: 100, shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 16, shadowOffset: { width: 0, height: 4 }, elevation: 8, overflow: 'hidden' }}>
+          {EDU_ADMIN_TABS.map((tab, i) => (
+            <Pressable key={tab} style={{ paddingVertical: 14, paddingHorizontal: 20, borderBottomWidth: i < EDU_ADMIN_TABS.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }} onPress={() => { Haptics.selectionAsync(); setEduAdminTab(tab); setEduAdminDrop(false); }}>
+              <Text style={{ fontSize: 15, color: tab === eduAdminTab ? C.label : C.secondary, fontWeight: tab === eduAdminTab ? '600' : '400' }}>{tab}</Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
+
+      <ScrollView contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: 120 }} showsVerticalScrollIndicator={false}>
+
+        {/* ── COURSES TAB ── */}
+        {eduAdminTab === 'Courses' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16, backgroundColor: C.label, borderRadius: 14, paddingVertical: 14, paddingHorizontal: 18 }}>
+              <IconSymbol name="plus" size={16} color={C.bg} />
+              <Text style={{ color: C.bg, fontSize: 15, fontWeight: '700' }}>Create Course Supplement</Text>
+            </Pressable>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>ACTIVE COURSE SUPPLEMENTS</Text>
+            {EDU_ADMIN_COURSES.map(course => (
+              <Pressable key={course.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 14, marginBottom: 10, padding: 16 })}>
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginBottom: 8 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 4 }}>{course.title}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                      <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, backgroundColor: C.surfacePressed }}>
+                        <Text style={{ fontSize: 11, color: C.secondary }}>{course.program}</Text>
+                      </View>
+                      <Text style={{ fontSize: 12, color: C.secondary }}>{course.modules} modules</Text>
+                    </View>
+                  </View>
+                  <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, backgroundColor: course.status === 'active' ? '#5A8A6E22' : C.surfacePressed }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: course.status === 'active' ? '#5A8A6E' : C.secondary }}>{course.status === 'active' ? 'Active' : 'Draft'}</Text>
+                  </View>
+                </View>
+                <View style={{ flexDirection: 'row', gap: 24 }}>
+                  <View>
+                    <Text style={{ fontSize: 11, color: C.muted }}>Enrollment</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{course.enrollment}</Text>
+                  </View>
+                  <View>
+                    <Text style={{ fontSize: 11, color: C.muted }}>Engagement</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: '#5A8A6E' }}>{course.engagement}%</Text>
+                  </View>
+                </View>
+              </Pressable>
+            ))}
+          </View>
+        )}
+
+        {/* ── TRAINING TAB ── */}
+        {eduAdminTab === 'Training' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10, marginTop: 4 }}>FACULTY & STAFF TRAINING</Text>
+            {EDU_TRAINING_MODULES.map(mod => {
+              const certRate = Math.round((mod.certified / mod.total) * 100);
+              const isComplete = mod.dueDate === 'Complete';
+              return (
+                <View key={mod.id} style={{ backgroundColor: C.surface, borderRadius: 14, marginBottom: 10, padding: 16 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                    <Text style={{ fontSize: 26 }}>{mod.emoji}</Text>
+                    <View style={{ flex: 1 }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                        <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, flex: 1 }}>{mod.title}</Text>
+                        <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, backgroundColor: C.surfacePressed }}>
+                          <Text style={{ fontSize: 11, color: C.secondary }}>{mod.type}</Text>
+                        </View>
+                      </View>
+                      <View style={{ height: 4, backgroundColor: C.separator, borderRadius: 2, marginBottom: 4 }}>
+                        <View style={{ width: `${certRate}%` as any, height: 4, backgroundColor: '#5A8A6E', borderRadius: 2 }} />
+                      </View>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 12, color: C.secondary }}>{mod.certified} of {mod.total} certified ({certRate}%)</Text>
+                        <Text style={{ fontSize: 12, fontWeight: '600', color: isComplete ? '#5A8A6E' : '#B8943E' }}>Due: {mod.dueDate}</Text>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        )}
+
+        {/* ── ORIENTATION TAB ── */}
+        {eduAdminTab === 'Orientation' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, marginBottom: 12 }}>New Student Orientation — Spring 2026</Text>
+            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
+              {[
+                { label: 'Total Students', value: '436' },
+                { label: 'Fully Complete', value: '341' },
+                { label: 'Avg Completion', value: '89%' },
+              ].map(stat => (
+                <View key={stat.label} style={{ flex: 1, backgroundColor: C.surface, borderRadius: 12, padding: 12, alignItems: 'center' }}>
+                  <Text style={{ fontSize: 18, fontWeight: '800', color: C.label }}>{stat.value}</Text>
+                  <Text style={{ fontSize: 10, color: C.secondary, textAlign: 'center', marginTop: 2 }}>{stat.label}</Text>
+                </View>
+              ))}
+            </View>
+            {EDU_ORIENTATION_STEPS.map((step, idx) => {
+              const pct = Math.round((step.completed / step.total) * 100);
+              return (
+                <View key={step.id} style={{ backgroundColor: C.surface, borderRadius: 14, marginBottom: 10, padding: 16, flexDirection: 'row', gap: 14, alignItems: 'flex-start' }}>
+                  <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: C.bg }}>{idx + 1}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, marginBottom: 8 }}>{step.title}</Text>
+                    <View style={{ height: 4, backgroundColor: C.separator, borderRadius: 2, marginBottom: 4 }}>
+                      <View style={{ width: `${pct}%` as any, height: 4, backgroundColor: '#5A8A6E', borderRadius: 2 }} />
+                    </View>
+                    <Text style={{ fontSize: 12, color: C.secondary }}>{step.completed} of {step.total} completed</Text>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        )}
+
+        {/* ── ANALYTICS TAB ── */}
+        {eduAdminTab === 'Analytics' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12, marginTop: 4 }}>KEY PERFORMANCE INDICATORS</Text>
+            {[
+              { label: 'Course Supplement Engagement', value: '79% avg',  sub: '+4% vs last semester'           },
+              { label: 'Training Completion Rate',      value: '91%',      sub: '38 faculty/staff tracked'       },
+              { label: 'Orientation Completion',        value: '89%',      sub: '341 of 436 students complete'   },
+              { label: 'Student Content Interactions',  value: '4,892',    sub: 'this semester'                  },
+            ].map(stat => (
+              <View key={stat.label} style={{ backgroundColor: C.surface, borderRadius: 14, marginBottom: 10, padding: 16 }}>
+                <Text style={{ fontSize: 12, color: C.secondary, marginBottom: 4 }}>{stat.label}</Text>
+                <Text style={{ fontSize: 22, fontWeight: '700', color: C.label, marginBottom: 2 }}>{stat.value}</Text>
+                <Text style={{ fontSize: 12, color: '#5A8A6E' }}>{stat.sub}</Text>
+              </View>
+            ))}
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 6, marginBottom: 12 }}>ENGAGEMENT BY PROGRAM</Text>
+            <View style={{ backgroundColor: C.surface, borderRadius: 14, marginBottom: 10, padding: 16 }}>
+              {[
+                { program: 'BA Business Admin', pct: 84 },
+                { program: 'MBA',               pct: 91 },
+                { program: 'BS DiagImaging',    pct: 68 },
+                { program: 'MS IBFM',           pct: 77 },
+                { program: 'DBA',               pct: 95 },
+              ].map((row, i, arr) => (
+                <View key={row.program} style={{ marginBottom: i < arr.length - 1 ? 14 : 0 }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>{row.program}</Text>
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: '#5A8A6E' }}>{row.pct}%</Text>
+                  </View>
+                  <View style={{ height: 4, backgroundColor: C.separator, borderRadius: 2 }}>
+                    <View style={{ width: `${row.pct}%` as any, height: 4, backgroundColor: '#5A8A6E', borderRadius: 2 }} />
+                  </View>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Community Pastor: Ministry Tools View ────────────────────────────────────
 
 type MinistryTab = 'Courses' | 'Training' | 'Content' | 'Analytics';
@@ -1036,6 +1264,8 @@ export default function KayStudiosScreen() {
   const [selectedPill, setSelectedPill] = useState('All');
   const [allProgress, setAllProgress] = useState<Record<string, ProgressEntry>>(DEMO_PROGRESS);
   const [savedIds, setSavedIds] = useState<string[]>(DEMO_SAVED_IDS);
+  const [eduStudentTab, setEduStudentTab] = useState<'My Courses' | 'Orientation' | 'Study Tools' | 'Career'>('My Courses');
+  const [eduStudentDrop, setEduStudentDrop] = useState(false);
 
   const pillsRevealAnim = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
@@ -1142,6 +1372,18 @@ export default function KayStudiosScreen() {
     });
   }, [router]);
 
+  // ── Education President: Academic Tools ─────────────────────────────────────
+  if (mode === 'education' && isAdmin) {
+    return (
+      <EducationPresidentAcademicToolsView
+        C={C}
+        insets={insets}
+        role={role}
+        cycleRole={cycleRole}
+      />
+    );
+  }
+
   // ── Education Student early return ──────────────────────────────────────────
   if (mode === 'education' && !isAdmin) {
     const EDU_COURSES = [
@@ -1151,110 +1393,230 @@ export default function KayStudiosScreen() {
       { id: 'ec4', code: 'MBA 510', title: 'Organizational Behavior', progress: 0.30, lessons: 11, nextLesson: 'Leadership Styles' },
     ];
     const EDU_TOOLS = [
-      { id: 'et1', icon: 'doc.text.fill',             label: 'Flashcards',    subtitle: 'BUS 401 · 120 cards' },
-      { id: 'et2', icon: 'list.bullet.clipboard',    label: 'Practice Exams', subtitle: 'MBA 520 · 3 sets available' },
-      { id: 'et3', icon: 'magnifyingglass',           label: 'Case Studies',  subtitle: '8 assigned this semester' },
+      { id: 'et1', icon: 'doc.text.fill',          label: 'Flashcards',    subtitle: 'BUS 401 · 120 cards' },
+      { id: 'et2', icon: 'list.bullet.clipboard',  label: 'Practice Exams', subtitle: 'MBA 520 · 3 sets available' },
+      { id: 'et3', icon: 'magnifyingglass',         label: 'Case Studies',  subtitle: '8 assigned this semester' },
     ];
+    const EDU_ACADEMIC_SKILLS = [
+      { id: 'as1', label: 'Time Management Workshop', type: 'Interactive', duration: '45 min' },
+      { id: 'as2', label: 'Research Methods Guide',   type: 'Reference',   duration: '30 min' },
+      { id: 'as3', label: 'Study Techniques Toolkit', type: 'Interactive', duration: '25 min' },
+    ];
+    const EDU_STUDENT_TABS: ('My Courses' | 'Orientation' | 'Study Tools' | 'Career')[] = ['My Courses', 'Orientation', 'Study Tools', 'Career'];
     const topBarH2 = insets.top + TOP_BAR_H;
     return (
       <View style={{ flex: 1, backgroundColor: C.bg }}>
         {/* Top Bar */}
-        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, height: topBarH2, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
-          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
-          </Pressable>
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>My Courses</Text>
-          </View>
-          <View style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, zIndex: 20, backgroundColor: C.bg }}>
+          <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+            <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+              <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+            </Pressable>
+            <View style={{ flex: 1, alignItems: 'center' }}>
+              <Pressable
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: C.surfacePressed }}
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setEduStudentDrop(v => !v); }}
+              >
+                <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{eduStudentTab}</Text>
+                <IconSymbol name={eduStudentDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
+              </Pressable>
+            </View>
             <RolePill role={role} onPress={cycleRole} isPrimary={false} />
           </View>
         </View>
 
-        <ScrollView style={{ flex: 1, marginTop: topBarH2 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
-
-          {/* Orientation Banner */}
-          <View style={{ marginHorizontal: 16, marginTop: 16, marginBottom: 8, backgroundColor: C.surface, borderRadius: 14, padding: 14, borderLeftWidth: 3, borderLeftColor: C.label }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-              <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>New Student Orientation</Text>
-              <View style={{ backgroundColor: C.label + '22', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
-                <Text style={{ fontSize: 11, fontWeight: '700', color: C.label }}>Required</Text>
-              </View>
-            </View>
-            <Text style={{ fontSize: 12, color: C.secondary, marginBottom: 10 }}>Complete all modules before May 1, 2026</Text>
-            <View style={{ height: 6, backgroundColor: C.separator, borderRadius: 3, marginBottom: 4 }}>
-              <View style={{ width: '65%', height: 6, backgroundColor: C.label, borderRadius: 3 }} />
-            </View>
-            <Text style={{ fontSize: 12, color: C.secondary }}>65% complete · 4 modules remaining</Text>
+        {/* Dropdown */}
+        {eduStudentDrop && (
+          <View style={{ position: 'absolute', top: topBarH2 + 4, left: '18%', right: '18%', backgroundColor: C.surface, borderRadius: 16, zIndex: 100, shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 16, shadowOffset: { width: 0, height: 4 }, elevation: 8, overflow: 'hidden' }}>
+            {EDU_STUDENT_TABS.map((tab, i) => (
+              <Pressable key={tab} style={{ paddingVertical: 14, paddingHorizontal: 20, borderBottomWidth: i < EDU_STUDENT_TABS.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }} onPress={() => { Haptics.selectionAsync(); setEduStudentTab(tab); setEduStudentDrop(false); }}>
+                <Text style={{ fontSize: 15, color: tab === eduStudentTab ? C.label : C.secondary, fontWeight: tab === eduStudentTab ? '600' : '400' }}>{tab}</Text>
+              </Pressable>
+            ))}
           </View>
+        )}
 
-          {/* Course Supplements */}
-          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginTop: 12, marginBottom: 8, paddingHorizontal: 16 }}>MY COURSE SUPPLEMENTS</Text>
-          {EDU_COURSES.map(course => (
-            <Pressable
-              key={course.id}
-              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-              style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 12, marginHorizontal: 16, marginBottom: 8, padding: 14 })}
-            >
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                <Text style={{ fontSize: 12, fontWeight: '700', color: C.secondary }}>{course.code}</Text>
-                <Text style={{ fontSize: 12, color: C.secondary }}>{Math.round(course.progress * 100)}%</Text>
-              </View>
-              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, marginBottom: 6 }}>{course.title}</Text>
-              <View style={{ height: 4, backgroundColor: C.separator, borderRadius: 2, marginBottom: 6 }}>
-                <View style={{ width: `${course.progress * 100}%`, height: 4, backgroundColor: C.label, borderRadius: 2 }} />
-              </View>
-              <Text style={{ fontSize: 12, color: C.muted }}>Next: {course.nextLesson} · {course.lessons} lessons total</Text>
-            </Pressable>
-          ))}
+        <ScrollView contentContainerStyle={{ paddingTop: topBarH2 + 8, paddingBottom: 120 }} showsVerticalScrollIndicator={false}>
 
-          {/* Study Tools */}
-          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginTop: 12, marginBottom: 8, paddingHorizontal: 16 }}>STUDY TOOLS</Text>
-          {EDU_TOOLS.map(tool => (
-            <Pressable
-              key={tool.id}
-              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-              style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 12, marginHorizontal: 16, marginBottom: 8, padding: 14 })}
-            >
-              <View style={{ width: 42, height: 42, borderRadius: 12, backgroundColor: C.label + '15', alignItems: 'center', justifyContent: 'center' }}>
-                <IconSymbol name={tool.icon as any} size={20} color={C.label} />
+          {/* ── MY COURSES TAB ── */}
+          {eduStudentTab === 'My Courses' && (
+            <View>
+              {/* Orientation Banner */}
+              <View style={{ marginHorizontal: 16, marginTop: 8, marginBottom: 8, backgroundColor: C.surface, borderRadius: 14, padding: 14, borderLeftWidth: 3, borderLeftColor: C.label }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>New Student Orientation</Text>
+                  <View style={{ backgroundColor: C.label + '22', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: C.label }}>Required</Text>
+                  </View>
+                </View>
+                <Text style={{ fontSize: 12, color: C.secondary, marginBottom: 10 }}>Complete all modules before May 1, 2026</Text>
+                <View style={{ height: 6, backgroundColor: C.separator, borderRadius: 3, marginBottom: 4 }}>
+                  <View style={{ width: '65%', height: 6, backgroundColor: C.label, borderRadius: 3 }} />
+                </View>
+                <Text style={{ fontSize: 12, color: C.secondary }}>65% complete · 4 modules remaining</Text>
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{tool.label}</Text>
-                <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{tool.subtitle}</Text>
-              </View>
-              <IconSymbol name="chevron.right" size={14} color={C.secondary} />
-            </Pressable>
-          ))}
 
-          {/* Career Readiness */}
-          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginTop: 12, marginBottom: 8, paddingHorizontal: 16 }}>CAREER READINESS</Text>
-          <Pressable
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-            style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 12, marginHorizontal: 16, marginBottom: 8, padding: 14 })}
-          >
-            <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 4 }}>Business Career Simulator</Text>
-            <Text style={{ fontSize: 12, color: C.secondary, lineHeight: 18, marginBottom: 10 }}>Practice interviews, case presentations, and salary negotiations with AI-powered feedback.</Text>
-            <View style={{ flexDirection: 'row', gap: 8 }}>
-              <View style={{ paddingHorizontal: 10, paddingVertical: 4, backgroundColor: C.label + '15', borderRadius: 8 }}>
-                <Text style={{ fontSize: 11, fontWeight: '700', color: C.label }}>Simulation</Text>
-              </View>
-              <View style={{ paddingHorizontal: 10, paddingVertical: 4, backgroundColor: C.label + '15', borderRadius: 8 }}>
-                <Text style={{ fontSize: 11, fontWeight: '700', color: C.label }}>Not Started</Text>
-              </View>
+              {/* Course Supplements */}
+              <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginTop: 12, marginBottom: 8, paddingHorizontal: 16 }}>MY COURSE SUPPLEMENTS</Text>
+              {EDU_COURSES.map(course => (
+                <Pressable
+                  key={course.id}
+                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                  style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 12, marginHorizontal: 16, marginBottom: 8, padding: 14 })}
+                >
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <Text style={{ fontSize: 12, fontWeight: '700', color: C.secondary }}>{course.code}</Text>
+                    <Text style={{ fontSize: 12, color: C.secondary }}>{Math.round(course.progress * 100)}%</Text>
+                  </View>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, marginBottom: 6 }}>{course.title}</Text>
+                  <View style={{ height: 4, backgroundColor: C.separator, borderRadius: 2, marginBottom: 6 }}>
+                    <View style={{ width: `${course.progress * 100}%`, height: 4, backgroundColor: C.label, borderRadius: 2 }} />
+                  </View>
+                  <Text style={{ fontSize: 12, color: C.muted }}>Next: {course.nextLesson} · {course.lessons} lessons total</Text>
+                </Pressable>
+              ))}
             </View>
-          </Pressable>
-          <Pressable
-            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-            style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 12, marginHorizontal: 16, marginBottom: 8, padding: 14 })}
-          >
-            <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 4 }}>Resume Builder</Text>
-            <Text style={{ fontSize: 12, color: C.secondary, lineHeight: 18, marginBottom: 10 }}>Build a professional resume tailored to your Lincoln University MBA program and target industry.</Text>
-            <View style={{ height: 4, backgroundColor: C.separator, borderRadius: 2, marginBottom: 4 }}>
-              <View style={{ width: '30%', height: 4, backgroundColor: C.label, borderRadius: 2 }} />
+          )}
+
+          {/* ── ORIENTATION TAB ── */}
+          {eduStudentTab === 'Orientation' && (
+            <View style={{ paddingHorizontal: 16 }}>
+              {/* Required Banner */}
+              <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, borderLeftWidth: 3, borderLeftColor: C.label, marginBottom: 16, marginTop: 8 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>New Student Orientation</Text>
+                  <View style={{ backgroundColor: C.label + '22', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: C.label }}>Required</Text>
+                  </View>
+                </View>
+                <Text style={{ fontSize: 12, color: C.secondary, marginBottom: 10 }}>Required — Complete before May 1, 2026</Text>
+                <View style={{ height: 6, backgroundColor: C.separator, borderRadius: 3, marginBottom: 4 }}>
+                  <View style={{ width: '65%', height: 6, backgroundColor: C.label, borderRadius: 3 }} />
+                </View>
+                <Text style={{ fontSize: 12, color: C.secondary }}>65% complete</Text>
+              </View>
+
+              {/* Orientation Modules */}
+              {[
+                { id: 'om1', title: 'Academic Policies & Expectations', status: 'completed' as const,  pct: 100 },
+                { id: 'om2', title: 'Campus Virtual Tour',              status: 'explore'   as const,  pct: 0   },
+                { id: 'om3', title: 'Student Services Guide',           status: 'partial'   as const,  pct: 50  },
+                { id: 'om4', title: 'LMS Platform Walkthrough',         status: 'notstarted' as const, pct: 0   },
+              ].map(mod => (
+                <Pressable key={mod.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 14, marginBottom: 10, padding: 16 })}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, marginBottom: 8 }}>{mod.title}</Text>
+                      {mod.status === 'completed' && (
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                          <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: '#5A8A6E', alignItems: 'center', justifyContent: 'center' }}>
+                            <IconSymbol name="checkmark" size={10} color="#fff" />
+                          </View>
+                          <Text style={{ fontSize: 12, color: '#5A8A6E', fontWeight: '600' }}>Completed</Text>
+                        </View>
+                      )}
+                      {mod.status === 'explore' && (
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                          <IconSymbol name="play.fill" size={12} color={C.secondary} />
+                          <Text style={{ fontSize: 12, color: C.secondary }}>Tap to explore</Text>
+                        </View>
+                      )}
+                      {mod.status === 'partial' && (
+                        <View>
+                          <View style={{ height: 4, backgroundColor: C.separator, borderRadius: 2, marginBottom: 4 }}>
+                            <View style={{ width: '50%', height: 4, backgroundColor: C.label, borderRadius: 2 }} />
+                          </View>
+                          <Text style={{ fontSize: 12, color: C.secondary }}>50% complete</Text>
+                        </View>
+                      )}
+                      {mod.status === 'notstarted' && (
+                        <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, backgroundColor: C.surfacePressed, alignSelf: 'flex-start' }}>
+                          <Text style={{ fontSize: 11, color: C.secondary }}>Not started</Text>
+                        </View>
+                      )}
+                    </View>
+                    <IconSymbol name="chevron.right" size={14} color={C.secondary} />
+                  </View>
+                </Pressable>
+              ))}
             </View>
-            <Text style={{ fontSize: 12, color: C.secondary }}>30% complete</Text>
-          </Pressable>
+          )}
+
+          {/* ── STUDY TOOLS TAB ── */}
+          {eduStudentTab === 'Study Tools' && (
+            <View style={{ paddingHorizontal: 16 }}>
+              <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginTop: 8, marginBottom: 8 }}>STUDY TOOLS</Text>
+              {EDU_TOOLS.map(tool => (
+                <Pressable
+                  key={tool.id}
+                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                  style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 12, marginBottom: 8, padding: 14 })}
+                >
+                  <View style={{ width: 42, height: 42, borderRadius: 12, backgroundColor: C.label + '15', alignItems: 'center', justifyContent: 'center' }}>
+                    <IconSymbol name={tool.icon as any} size={20} color={C.label} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{tool.label}</Text>
+                    <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{tool.subtitle}</Text>
+                  </View>
+                  <IconSymbol name="chevron.right" size={14} color={C.secondary} />
+                </Pressable>
+              ))}
+
+              <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginTop: 12, marginBottom: 8 }}>ACADEMIC SKILLS</Text>
+              {EDU_ACADEMIC_SKILLS.map(skill => (
+                <Pressable
+                  key={skill.id}
+                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                  style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 12, marginBottom: 8, padding: 14 })}
+                >
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, marginBottom: 6 }}>{skill.label}</Text>
+                    <View style={{ flexDirection: 'row', gap: 8 }}>
+                      <View style={{ paddingHorizontal: 8, paddingVertical: 3, backgroundColor: C.surfacePressed, borderRadius: 6 }}>
+                        <Text style={{ fontSize: 11, color: C.secondary }}>{skill.type}</Text>
+                      </View>
+                      <Text style={{ fontSize: 12, color: C.muted, alignSelf: 'center' }}>{skill.duration}</Text>
+                    </View>
+                  </View>
+                  <IconSymbol name="chevron.right" size={14} color={C.secondary} />
+                </Pressable>
+              ))}
+            </View>
+          )}
+
+          {/* ── CAREER TAB ── */}
+          {eduStudentTab === 'Career' && (
+            <View style={{ paddingHorizontal: 16, marginTop: 8 }}>
+              <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>CAREER READINESS</Text>
+              <Pressable
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 12, marginBottom: 8, padding: 14 })}
+              >
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 4 }}>Business Career Simulator</Text>
+                <Text style={{ fontSize: 12, color: C.secondary, lineHeight: 18, marginBottom: 10 }}>Practice interviews, case presentations, and salary negotiations with AI-powered feedback.</Text>
+                <View style={{ flexDirection: 'row', gap: 8 }}>
+                  <View style={{ paddingHorizontal: 10, paddingVertical: 4, backgroundColor: C.label + '15', borderRadius: 8 }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: C.label }}>Simulation</Text>
+                  </View>
+                  <View style={{ paddingHorizontal: 10, paddingVertical: 4, backgroundColor: C.label + '15', borderRadius: 8 }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: C.label }}>Not Started</Text>
+                  </View>
+                </View>
+              </Pressable>
+              <Pressable
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 12, marginBottom: 8, padding: 14 })}
+              >
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 4 }}>Resume Builder</Text>
+                <Text style={{ fontSize: 12, color: C.secondary, lineHeight: 18, marginBottom: 10 }}>Build a professional resume tailored to your Lincoln University MBA program and target industry.</Text>
+                <View style={{ height: 4, backgroundColor: C.separator, borderRadius: 2, marginBottom: 4 }}>
+                  <View style={{ width: '30%', height: 4, backgroundColor: C.label, borderRadius: 2 }} />
+                </View>
+                <Text style={{ fontSize: 12, color: C.secondary }}>30% complete</Text>
+              </Pressable>
+            </View>
+          )}
 
         </ScrollView>
       </View>

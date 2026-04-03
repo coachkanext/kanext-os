@@ -20,9 +20,12 @@ import { useFocusEffect } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
+import { useDemoRole } from '@/utils/demo-role-store';
+import { useAppContext } from '@/context/app-context';
 import {
   COMMUNITY_TIERS, COMMUNITY_SPACES, COMMUNITY_MEMBERS,
   LOOKING_FOR_POSTS, ICEBREAKER_PROMPT, COMMUNITY_EVENTS, COMMUNITY_STATS,
@@ -423,6 +426,611 @@ function Toast({ msg, C }: { msg: string; C: ComponentColors }) {
   );
 }
 
+// ── Education Mode Data ────────────────────────────────────────────────────────
+
+type CampusTab = 'Students' | 'Faculty' | 'Staff' | 'Applicants';
+type DirTab = 'Faculty' | 'Students' | 'My Profile';
+
+const EDU_STUDENTS = [
+  { id: 's1', name: 'Marcus Reid',    initials: 'MR', hue: 200, program: 'MBA',            year: 'Year 2', gpa: '3.82', status: 'Active', flag: null },
+  { id: 's2', name: 'Priya Nair',     initials: 'PN', hue: 140, program: 'BA Business',    year: 'Year 3', gpa: '3.45', status: 'Active', flag: null },
+  { id: 's3', name: 'James Okafor',   initials: 'JO', hue: 40,  program: 'DBA',            year: 'Year 1', gpa: '3.91', status: 'Active', flag: null },
+  { id: 's4', name: 'Sofia Chen',     initials: 'SC', hue: 300, program: 'BS DiagImaging', year: 'Year 2', gpa: '3.20', status: 'Active', flag: 'at-risk' },
+  { id: 's5', name: 'Andre Williams', initials: 'AW', hue: 20,  program: 'MS IBFM',        year: 'Year 1', gpa: '2.87', status: 'Active', flag: 'probation' },
+  { id: 's6', name: 'Leila Hassan',   initials: 'LH', hue: 160, program: 'MBA',            year: 'Year 1', gpa: '3.67', status: 'Leave',  flag: null },
+  { id: 's7', name: 'Tyler Brooks',   initials: 'TB', hue: 260, program: 'BA Business',    year: 'Year 4', gpa: '3.55', status: 'Active', flag: null },
+];
+
+const EDU_FACULTY = [
+  { id: 'f1', name: 'Dr. Angela Ross',    initials: 'AR', hue: 180, dept: 'Business',          title: 'Associate Professor', courses: 3, officeHours: 'Mon/Wed 3–5 PM', tenure: true },
+  { id: 'f2', name: 'Prof. James Okafor', initials: 'JO', hue: 40,  dept: 'Finance',           title: 'Adjunct Professor',   courses: 2, officeHours: 'Tue/Thu 4–6 PM', tenure: false },
+  { id: 'f3', name: 'Dr. Maria Santos',   initials: 'MS', hue: 320, dept: 'International Biz', title: 'Full Professor',      courses: 2, officeHours: 'Wed/Fri 2–4 PM', tenure: true },
+  { id: 'f4', name: 'Dr. Kevin Lin',      initials: 'KL', hue: 80,  dept: 'Diagnostic Imaging',title: 'Associate Professor', courses: 3, officeHours: 'Mon/Thu 1–3 PM', tenure: false },
+  { id: 'f5', name: 'Prof. Diane Carter', initials: 'DC', hue: 220, dept: 'Business',          title: 'Adjunct Professor',   courses: 2, officeHours: 'By appointment', tenure: false },
+];
+
+const EDU_STAFF = [
+  { id: 'st1', name: 'Carmen Flores', initials: 'CF', hue: 60,  role: 'Registrar',          dept: 'Academic Affairs' },
+  { id: 'st2', name: 'David Kim',     initials: 'DK', hue: 200, role: 'Financial Aid Dir.',  dept: 'Student Services' },
+  { id: 'st3', name: 'Tamara Jones',  initials: 'TJ', hue: 340, role: 'IT Director',         dept: 'Information Technology' },
+  { id: 'st4', name: 'Robert Perez',  initials: 'RP', hue: 120, role: 'Facilities Manager',  dept: 'Facilities' },
+  { id: 'st5', name: 'Nina Obi',      initials: 'NO', hue: 280, role: 'Admissions Coord.',   dept: 'Admissions' },
+];
+
+// ── EducationPresidentCampusView ───────────────────────────────────────────────
+
+function EducationPresidentCampusView({
+  C, insets, role, cycleRole,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+}) {
+  const topBarH = insets.top + TOP_BAR_H;
+  const [campusTab, setCampusTab] = useState<CampusTab>('Students');
+  const [campusDrop, setCampusDrop] = useState(false);
+  const [campusSearch, setCampusSearch] = useState('');
+
+  const CAMPUS_TABS: CampusTab[] = ['Students', 'Faculty', 'Staff', 'Applicants'];
+
+  function renderStudents() {
+    return (
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Search bar */}
+        <View style={{
+          flexDirection: 'row', alignItems: 'center', gap: 10,
+          marginHorizontal: 16, marginBottom: 8,
+          paddingHorizontal: 12, paddingVertical: 10,
+          backgroundColor: C.surface, borderRadius: 12,
+          borderWidth: 1.5, borderColor: C.separator,
+        }}>
+          <IconSymbol name="magnifyingglass" size={16} color={C.muted} />
+          <TextInput
+            style={{ flex: 1, fontSize: 14, color: C.label }}
+            placeholder="Search students..."
+            placeholderTextColor={C.muted}
+            value={campusSearch}
+            onChangeText={setCampusSearch}
+            returnKeyType="search"
+          />
+          {campusSearch.length > 0 && (
+            <Pressable onPress={() => setCampusSearch('')}>
+              <IconSymbol name="xmark.circle.fill" size={16} color={C.muted} />
+            </Pressable>
+          )}
+        </View>
+
+        {/* Summary */}
+        <Text style={{ fontSize: 13, color: C.secondary, paddingHorizontal: 16, marginBottom: 12 }}>
+          436 students enrolled
+        </Text>
+
+        {/* Student rows */}
+        {EDU_STUDENTS.map((s, i) => (
+          <Pressable
+            key={s.id}
+            style={({ pressed }) => ({
+              flexDirection: 'row', alignItems: 'center', gap: 12,
+              paddingHorizontal: 16, paddingVertical: 12,
+              backgroundColor: pressed ? C.surfacePressed : 'transparent',
+              borderTopWidth: i > 0 ? StyleSheet.hairlineWidth : 0,
+              borderTopColor: C.separator,
+            })}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <Avatar initials={s.initials} hue={s.hue} size={42} />
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{s.name}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{s.program} · {s.year}</Text>
+            </View>
+            <View style={{ alignItems: 'flex-end', gap: 4 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{s.gpa}</Text>
+              <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
+                <View style={{
+                  paddingHorizontal: 7, paddingVertical: 2, borderRadius: 8,
+                  backgroundColor: s.status === 'Leave' ? '#B8943E18' : C.surface,
+                }}>
+                  <Text style={{
+                    fontSize: 10, fontWeight: '600',
+                    color: s.status === 'Leave' ? '#B8943E' : C.secondary,
+                  }}>{s.status}</Text>
+                </View>
+                {s.flag != null && (
+                  <View style={{ paddingHorizontal: 7, paddingVertical: 2, borderRadius: 8, backgroundColor: '#B85C5C18' }}>
+                    <Text style={{ fontSize: 10, fontWeight: '600', color: '#B85C5C' }}>
+                      {s.flag === 'at-risk' ? 'At-Risk' : 'Probation'}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            </View>
+          </Pressable>
+        ))}
+
+        {/* Export button */}
+        <Pressable
+          style={({ pressed }) => ({
+            flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+            marginHorizontal: 16, marginTop: 20, paddingVertical: 13,
+            borderRadius: 12, borderWidth: 1.5, borderColor: C.separator,
+            backgroundColor: pressed ? C.surfacePressed : C.surface,
+          })}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        >
+          <IconSymbol name="square.and.arrow.up" size={16} color={C.label} />
+          <Text style={{ fontSize: 14, fontWeight: '500', color: C.label }}>Export Student Data</Text>
+        </Pressable>
+      </ScrollView>
+    );
+  }
+
+  function renderFaculty() {
+    return (
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {EDU_FACULTY.map((f, i) => (
+          <Pressable
+            key={f.id}
+            style={({ pressed }) => ({
+              flexDirection: 'row', alignItems: 'center', gap: 12,
+              paddingHorizontal: 16, paddingVertical: 14,
+              backgroundColor: pressed ? C.surfacePressed : 'transparent',
+              borderTopWidth: i > 0 ? StyleSheet.hairlineWidth : 0,
+              borderTopColor: C.separator,
+            })}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <Avatar initials={f.initials} hue={f.hue} size={42} />
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={1}>{f.name}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{f.dept} · {f.title}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 }}>
+                <Text style={{ fontSize: 11, color: C.muted }}>{f.courses} courses</Text>
+                <Text style={{ fontSize: 11, color: C.muted }}>· {f.officeHours}</Text>
+              </View>
+            </View>
+            <View style={{ alignItems: 'flex-end', gap: 4 }}>
+              {f.tenure && (
+                <View style={{ paddingHorizontal: 7, paddingVertical: 2, borderRadius: 8, backgroundColor: '#5A8A6E18' }}>
+                  <Text style={{ fontSize: 10, fontWeight: '600', color: '#5A8A6E' }}>Tenured</Text>
+                </View>
+              )}
+              <IconSymbol name="chevron.right" size={14} color={C.muted} />
+            </View>
+          </Pressable>
+        ))}
+      </ScrollView>
+    );
+  }
+
+  function renderStaff() {
+    return (
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {EDU_STAFF.map((st, i) => (
+          <Pressable
+            key={st.id}
+            style={({ pressed }) => ({
+              flexDirection: 'row', alignItems: 'center', gap: 12,
+              paddingHorizontal: 16, paddingVertical: 14,
+              backgroundColor: pressed ? C.surfacePressed : 'transparent',
+              borderTopWidth: i > 0 ? StyleSheet.hairlineWidth : 0,
+              borderTopColor: C.separator,
+            })}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          >
+            <Avatar initials={st.initials} hue={st.hue} size={42} />
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{st.name}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{st.role}</Text>
+              <Text style={{ fontSize: 11, color: C.muted, marginTop: 1 }}>{st.dept}</Text>
+            </View>
+          </Pressable>
+        ))}
+      </ScrollView>
+    );
+  }
+
+  function renderApplicants() {
+    const RECENT_APPS = [
+      { name: 'Kenji Tanaka',   program: 'MBA',            date: 'Applied Mar 28', status: 'Applied' },
+      { name: 'Amara Osei',     program: 'BS DiagImaging', date: 'Applied Mar 25', status: 'Applied' },
+      { name: 'Lucas Martins',  program: 'DBA',            date: 'Applied Mar 20', status: 'Applied' },
+    ];
+    const PIPELINE = [
+      { stage: 'Inquiry',  count: 312 },
+      { stage: 'Applied',  count: 187 },
+      { stage: 'Admitted', count: 89 },
+      { stage: 'Deposited',count: 42 },
+      { stage: 'Enrolled', count: 18 },
+    ];
+
+    return (
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 80 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Summary card */}
+        <View style={{
+          marginHorizontal: 16, marginBottom: 16, padding: 16,
+          backgroundColor: C.surface, borderRadius: 14,
+          borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator,
+        }}>
+          <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, marginBottom: 12 }}>
+            Current Admissions Cycle
+          </Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+            {[
+              { label: 'Applicants', value: '312' },
+              { label: 'Complete',   value: '187' },
+              { label: 'Admitted',   value: '89'  },
+              { label: 'Deposited',  value: '42'  },
+            ].map(s => (
+              <View key={s.label} style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 20, fontWeight: '700', color: C.label }}>{s.value}</Text>
+                <Text style={{ fontSize: 11, color: C.secondary, marginTop: 2 }}>{s.label}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Pipeline stages */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 1, textTransform: 'uppercase', paddingHorizontal: 16, marginBottom: 8 }}>
+          Pipeline
+        </Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 8, paddingBottom: 4 }}>
+          {PIPELINE.map((p, i) => (
+            <View key={p.stage} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <View style={{
+                paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20,
+                backgroundColor: C.surface, borderWidth: 1.5, borderColor: C.separator,
+                alignItems: 'center',
+              }}>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>{p.count}</Text>
+                <Text style={{ fontSize: 10, color: C.secondary, marginTop: 1 }}>{p.stage}</Text>
+              </View>
+              {i < PIPELINE.length - 1 && (
+                <IconSymbol name="chevron.right" size={12} color={C.muted} />
+              )}
+            </View>
+          ))}
+        </ScrollView>
+
+        {/* View Full Pipeline button */}
+        <Pressable
+          style={({ pressed }) => ({
+            marginHorizontal: 16, marginTop: 12, marginBottom: 20, paddingVertical: 12,
+            borderRadius: 12, borderWidth: 1.5, borderColor: C.separator,
+            backgroundColor: pressed ? C.surfacePressed : C.surface,
+            alignItems: 'center',
+          })}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        >
+          <Text style={{ fontSize: 14, fontWeight: '500', color: C.label }}>View Full Pipeline</Text>
+        </Pressable>
+
+        {/* Recent applicants */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 1, textTransform: 'uppercase', paddingHorizontal: 16, marginBottom: 8 }}>
+          Recent Applicants
+        </Text>
+        {RECENT_APPS.map((a, i) => (
+          <View
+            key={a.name}
+            style={{
+              flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12,
+              borderTopWidth: i > 0 ? StyleSheet.hairlineWidth : 0, borderTopColor: C.separator,
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{a.name}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{a.program} · {a.date}</Text>
+            </View>
+            <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, backgroundColor: C.surface }}>
+              <Text style={{ fontSize: 11, fontWeight: '600', color: C.secondary }}>{a.status}</Text>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
+    );
+  }
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top bar */}
+      <View style={{
+        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 30,
+        flexDirection: 'row', alignItems: 'flex-end',
+        paddingTop: insets.top, height: topBarH,
+        paddingHorizontal: 16, paddingBottom: 10,
+        borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+        backgroundColor: C.bg,
+      }}>
+        {/* Left: hamburger */}
+        <View style={{ flex: 1, justifyContent: 'center' }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
+        </View>
+
+        {/* Center: campus tab dropdown pill */}
+        <Pressable
+          style={{
+            flexDirection: 'row', alignItems: 'center', gap: 4,
+            backgroundColor: C.surfacePressed, borderRadius: 18,
+            paddingHorizontal: 14, paddingVertical: 6,
+            borderWidth: 1.5, borderColor: C.separator,
+          }}
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setCampusDrop(v => !v); }}
+        >
+          <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>{campusTab}</Text>
+          <IconSymbol name={campusDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.label} />
+        </Pressable>
+
+        {/* Right: RolePill */}
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary />
+        </View>
+      </View>
+
+      {/* Dropdown */}
+      {campusDrop && (
+        <View style={{
+          position: 'absolute', top: topBarH, left: 16, right: 16, zIndex: 99,
+          backgroundColor: C.bg, borderRadius: 14, borderWidth: 1, borderColor: C.separator,
+          shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.08, shadowRadius: 12, elevation: 8,
+        }}>
+          {CAMPUS_TABS.map(t => (
+            <Pressable
+              key={t}
+              style={[{
+                flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+                paddingHorizontal: 16, paddingVertical: 14,
+                borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+              }, t === campusTab && { backgroundColor: C.surfacePressed }]}
+              onPress={() => { setCampusTab(t); setCampusDrop(false); }}
+            >
+              <Text style={{ fontSize: 15, color: t === campusTab ? C.label : C.secondary, fontWeight: t === campusTab ? '700' : '400' }}>{t}</Text>
+              {t === campusTab && <IconSymbol name="checkmark" size={14} color={C.label} />}
+            </Pressable>
+          ))}
+        </View>
+      )}
+
+      {/* Tab content */}
+      {campusTab === 'Students'   ? renderStudents()
+        : campusTab === 'Faculty'   ? renderFaculty()
+        : campusTab === 'Staff'     ? renderStaff()
+        : renderApplicants()}
+    </View>
+  );
+}
+
+// ── EducationStudentDirectoryView ──────────────────────────────────────────────
+
+function EducationStudentDirectoryView({
+  C, insets, role, cycleRole,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+}) {
+  const topBarH = insets.top + TOP_BAR_H;
+  const [dirTab, setDirTab] = useState<DirTab>('Faculty');
+
+  const DIR_TABS: DirTab[] = ['Faculty', 'Students', 'My Profile'];
+
+  function renderFacultyDir() {
+    return (
+      <>
+        {EDU_FACULTY.map((f, i) => (
+          <View
+            key={f.id}
+            style={{
+              flexDirection: 'row', alignItems: 'center', gap: 12,
+              paddingHorizontal: 16, paddingVertical: 14,
+              borderTopWidth: i > 0 ? StyleSheet.hairlineWidth : 0, borderTopColor: C.separator,
+            }}
+          >
+            <Avatar initials={f.initials} hue={f.hue} size={42} />
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={1}>{f.name}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{f.dept}</Text>
+              <Text style={{ fontSize: 11, color: C.muted, marginTop: 1 }}>{f.officeHours}</Text>
+            </View>
+            <Pressable
+              style={({ pressed }) => ({
+                padding: 8, borderRadius: 10,
+                backgroundColor: pressed ? C.surfacePressed : C.surface,
+              })}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <IconSymbol name="envelope" size={16} color={C.label} />
+            </Pressable>
+          </View>
+        ))}
+      </>
+    );
+  }
+
+  function renderStudentsDir() {
+    return (
+      <>
+        {EDU_STUDENTS.slice(0, 4).map((s, i) => (
+          <View
+            key={s.id}
+            style={{
+              flexDirection: 'row', alignItems: 'center', gap: 12,
+              paddingHorizontal: 16, paddingVertical: 12,
+              borderTopWidth: i > 0 ? StyleSheet.hairlineWidth : 0, borderTopColor: C.separator,
+            }}
+          >
+            <Avatar initials={s.initials} hue={s.hue} size={42} />
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{s.name}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{s.program} · {s.year}</Text>
+            </View>
+            <Pressable
+              style={({ pressed }) => ({
+                paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10,
+                backgroundColor: pressed ? C.surfacePressed : C.surface,
+                borderWidth: 1, borderColor: C.separator,
+              })}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+            >
+              <Text style={{ fontSize: 12, fontWeight: '500', color: C.label }}>Study Group</Text>
+            </Pressable>
+          </View>
+        ))}
+      </>
+    );
+  }
+
+  function renderMyProfile() {
+    const COURSES = ['BUS 401', 'MKT 350', 'MBA 520', 'MBA 510'];
+    return (
+      <View style={{ paddingHorizontal: 16, gap: 16 }}>
+        {/* Profile card */}
+        <View style={{
+          backgroundColor: C.surface, borderRadius: 14, padding: 16,
+          borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator,
+          alignItems: 'center', gap: 8,
+        }}>
+          <Avatar initials="MR" hue={200} size={56} />
+          <Text style={{ fontSize: 17, fontWeight: '700', color: C.label }}>Marcus Reid</Text>
+          <Text style={{ fontSize: 13, color: C.secondary }}>MBA · Year 2</Text>
+          <View style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10, backgroundColor: C.surfacePressed }}>
+            <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>GPA: 3.82</Text>
+          </View>
+        </View>
+
+        {/* Enrolled courses */}
+        <View>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>
+            Enrolled Courses
+          </Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+            {COURSES.map(c => (
+              <View key={c} style={{
+                paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10,
+                backgroundColor: C.surface, borderWidth: 1, borderColor: C.separator,
+              }}>
+                <Text style={{ fontSize: 13, fontWeight: '500', color: C.label }}>{c}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Academic advisor */}
+        <View style={{
+          backgroundColor: C.surface, borderRadius: 12, padding: 14,
+          borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator,
+          gap: 4,
+        }}>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 1, textTransform: 'uppercase' }}>
+            Academic Advisor
+          </Text>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, marginTop: 4 }}>Dr. Angela Ross</Text>
+          <Text style={{ fontSize: 12, color: C.secondary }}>angelar@lincoln.edu</Text>
+        </View>
+
+        {/* Edit Profile button */}
+        <Pressable
+          style={({ pressed }) => ({
+            paddingVertical: 13, borderRadius: 12, alignItems: 'center',
+            backgroundColor: pressed ? C.surfacePressed : C.surface,
+            borderWidth: 1.5, borderColor: C.separator,
+          })}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        >
+          <Text style={{ fontSize: 14, fontWeight: '500', color: C.label }}>Edit Profile</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top bar */}
+      <View style={{
+        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 30,
+        flexDirection: 'row', alignItems: 'flex-end',
+        paddingTop: insets.top, height: topBarH,
+        paddingHorizontal: 16, paddingBottom: 10,
+        borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+        backgroundColor: C.bg,
+      }}>
+        {/* Left: hamburger */}
+        <View style={{ flex: 1, justifyContent: 'center' }}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
+        </View>
+
+        {/* Center: static title */}
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Text style={{ fontSize: 17, fontWeight: '700', color: C.label }}>Directory</Text>
+        </View>
+
+        {/* Right: RolePill */}
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <RolePill role={role} onPress={cycleRole} accentColor={C.label} isPrimary={false} />
+        </View>
+      </View>
+
+      {/* Tab pills row */}
+      <View style={{
+        position: 'absolute', top: topBarH, left: 0, right: 0, zIndex: 29,
+        backgroundColor: C.bg, paddingVertical: 8,
+        borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+        flexDirection: 'row', paddingHorizontal: 16, gap: 8,
+      }}>
+        {DIR_TABS.map(t => (
+          <Pressable
+            key={t}
+            style={{
+              paddingHorizontal: 14, paddingVertical: 6, borderRadius: 16,
+              borderWidth: 1.5,
+              backgroundColor: t === dirTab ? C.label : 'transparent',
+              borderColor: t === dirTab ? C.label : C.separator,
+            }}
+            onPress={() => { Haptics.selectionAsync(); setDirTab(t); }}
+          >
+            <Text style={{
+              fontSize: 13, fontWeight: '500',
+              color: t === dirTab ? C.bg : C.secondary,
+            }}>{t}</Text>
+          </Pressable>
+        ))}
+      </View>
+
+      {/* Content */}
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingTop: topBarH + 56, paddingBottom: insets.bottom + 80 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {dirTab === 'Faculty'    ? renderFacultyDir()
+          : dirTab === 'Students' ? renderStudentsDir()
+          : renderMyProfile()}
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Main Screen ────────────────────────────────────────────────────────────────
 
 export default function NetworkScreen() {
@@ -438,7 +1046,14 @@ export default function NetworkScreen() {
   const [showPills, setShowPills]     = useState(false);
   const [selectedPill, setSelectedPill] = useState('All');
   const [searchQuery, setSearchQuery]   = useState('');
+  const [demoRole, cycleRoleDemo, demoRoleCycles] = useDemoRole('personal:network');
+  const isPersonalOwner = demoRole === demoRoleCycles[0];
   const [role, setRole]               = useState<Role>('owner');
+
+  const { state } = useAppContext();
+  const mode = state.activeContext?.mode ?? (state as any).mode ?? 'personal';
+  const [eduRole, cycleEduRole, eduRoleCycles] = useDemoRole('education');
+  const isEduAdmin = eduRole === eduRoleCycles[0];
 
   // Member action sheet
   const [actionTarget, setActionTarget] = useState<CommunityMember | null>(null);
@@ -824,10 +1439,10 @@ export default function NetworkScreen() {
         <View style={[styles.card, { marginHorizontal: 16, marginBottom: 16, borderColor: C.accent + '33', borderWidth: 1.5 }]}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
             <IconSymbol name="lightbulb.fill" size={14} color={C.accent} />
-            <Text style={{ fontSize: 11, fontWeight: '700', color: C.accent }}>THIS WEEK'S PROMPT</Text>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.accent }}>{"THIS WEEK'S PROMPT"}</Text>
           </View>
           <Text style={{ fontSize: 15, fontWeight: '600', color: C.label, lineHeight: 22 }}>
-            "{ICEBREAKER_PROMPT.text}"
+            {`"${ICEBREAKER_PROMPT.text}"`}
           </Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 12 }}>
             <Text style={{ fontSize: 12, color: C.muted }}>{ICEBREAKER_PROMPT.responseCount} responses</Text>
@@ -902,6 +1517,150 @@ export default function NetworkScreen() {
     );
   }
 
+
+  // ── Education mode early returns ─────────────────────────────────────────
+  if (mode === 'education' && isEduAdmin) {
+    return (
+      <EducationPresidentCampusView
+        C={C}
+        insets={insets}
+        role={eduRole}
+        cycleRole={cycleEduRole}
+      />
+    );
+  }
+
+  if (mode === 'education' && !isEduAdmin) {
+    return (
+      <EducationStudentDirectoryView
+        C={C}
+        insets={insets}
+        role={eduRole}
+        cycleRole={cycleEduRole}
+      />
+    );
+  }
+
+  // ── Personal Subscriber view (early return) ──────────────────────────────
+  if (!isPersonalOwner) {
+    const COLLABORATORS = [
+      { id: 'c1', initials: 'JL', name: 'Jordan Lee',  role: 'Brand Partner' },
+      { id: 'c2', initials: 'MC', name: 'Mia Chen',    role: 'Co-Creator'    },
+      { id: 'c3', initials: 'DP', name: 'Dev Patel',   role: 'Agent'         },
+    ];
+    const MUTUAL_CONNECTIONS = [
+      { id: 'm1', initials: 'AM', name: 'Alex Morgan'  },
+      { id: 'm2', initials: 'CD', name: 'Chris Davis'  },
+      { id: 'm3', initials: 'TK', name: 'Taylor Kim'   },
+    ];
+
+    return (
+      <View style={[styles.screen, { backgroundColor: C.bg }]}>
+        {/* Top bar */}
+        <View style={[
+          styles.topBar,
+          { paddingTop: insets.top, height: topBarH, borderBottomColor: C.separator },
+        ]}>
+          {/* Left: menu icon */}
+          <View style={styles.topBarSide}>
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+              <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+            </Pressable>
+          </View>
+
+          {/* Center: plain "Network" title */}
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={{ fontSize: 17, fontWeight: '700', color: C.label }}>Network</Text>
+          </View>
+
+          {/* Right: RolePill */}
+          <View style={[styles.topBarSide, { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }]}>
+            <RolePill
+              role={demoRole}
+              onPress={cycleRoleDemo}
+              accentColor={C.label}
+              isPrimary={false}
+            />
+          </View>
+        </View>
+
+        {/* Content */}
+        <ScrollView
+          style={{ flex: 1 }}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: insets.bottom + 100 }}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+        >
+          {/* Featured Collaborators */}
+          <Text style={{
+            fontSize: 11, fontWeight: '700', color: C.secondary,
+            letterSpacing: 1, textTransform: 'uppercase',
+            paddingHorizontal: 16, paddingTop: 8, paddingBottom: 4,
+          }}>
+            Featured Collaborators
+          </Text>
+          {COLLABORATORS.map((collab, i) => (
+            <View
+              key={collab.id}
+              style={{
+                flexDirection: 'row', alignItems: 'center', gap: 12,
+                paddingVertical: 12, paddingHorizontal: 16,
+                borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+              }}
+            >
+              <View style={{
+                width: 44, height: 44, borderRadius: 22,
+                backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              }}>
+                <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>{collab.initials}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 15, fontWeight: '600', color: C.label }}>{collab.name}</Text>
+              </View>
+              <View style={{
+                backgroundColor: C.surface, borderRadius: 8,
+                paddingHorizontal: 8, paddingVertical: 2,
+              }}>
+                <Text style={{ fontSize: 12, color: C.secondary }}>{collab.role}</Text>
+              </View>
+            </View>
+          ))}
+
+          {/* Mutual Connections */}
+          <Text style={{
+            fontSize: 11, fontWeight: '700', color: C.secondary,
+            letterSpacing: 1, textTransform: 'uppercase',
+            paddingHorizontal: 16, paddingTop: 24, paddingBottom: 4,
+          }}>
+            Mutual Connections
+          </Text>
+          <Text style={{ fontSize: 14, color: C.secondary, paddingHorizontal: 16, paddingBottom: 8 }}>
+            12 people you may know also follow Sammy
+          </Text>
+          {MUTUAL_CONNECTIONS.map((conn) => (
+            <View
+              key={conn.id}
+              style={{
+                flexDirection: 'row', alignItems: 'center', gap: 12,
+                paddingVertical: 10, paddingHorizontal: 16,
+                borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+              }}
+            >
+              <View style={{
+                width: 36, height: 36, borderRadius: 18,
+                backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              }}>
+                <Text style={{ fontSize: 12, fontWeight: '700', color: C.bg }}>{conn.initials}</Text>
+              </View>
+              <Text style={{ fontSize: 14, color: C.label }}>{conn.name}</Text>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
+
   // ── UI shell ──────────────────────────────────────────────────────────────────
 
   const roleColor = role === 'owner' ? C.accent : role === 'member' ? '#5A8A6E' : C.secondary;
@@ -929,13 +1688,14 @@ export default function NetworkScreen() {
           <IconSymbol name={dropdownOpen ? 'chevron.up' : 'chevron.down'} size={12} color={C.label} />
         </Pressable>
 
-        {/* Right: role pill + filter */}
-        <View style={[styles.topBarSide, { flexDirection: 'row', justifyContent: 'flex-end', gap: 8 }]}>
-          <Pressable style={[styles.rolePill, { backgroundColor: roleColor + '18' }]} onPress={cycleRole}>
-            <Text style={[styles.rolePillText, { color: roleColor }]}>
-              {role === 'owner' ? 'Owner' : role === 'member' ? 'Member' : 'Visitor'}
-            </Text>
-          </Pressable>
+        {/* Right: RolePill + filter */}
+        <View style={[styles.topBarSide, { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 8 }]}>
+          <RolePill
+            role={demoRole}
+            onPress={cycleRoleDemo}
+            accentColor={C.label}
+            isPrimary={isPersonalOwner}
+          />
           <Pressable onPress={() => setShowPills(v => !v)}>
             <IconSymbol
               name="line.3.horizontal.decrease.circle"

@@ -333,6 +333,453 @@ const KAYTV_ADMIN_LABELS: Record<string, { header: string; tools: string[] }> = 
 };
 
 
+// ── EducationPresidentMediaView ───────────────────────────────────────────────
+
+type EduMediaTab = 'Library' | 'Upload' | 'Schedule' | 'Analytics';
+
+const EDU_MEDIA_LIBRARY = [
+  { id: 'em1', title: 'BUS 401: Strategic Management — Week 8',          category: 'Lectures',        creator: 'Dr. Angela Ross',  views: 234,  duration: '52 min',   visibility: 'Course Only' },
+  { id: 'em2', title: 'MBA Info Night Spring 2026',                       category: 'Promo',           creator: 'Admissions',       views: 1847, duration: '38 min',   visibility: 'Public'      },
+  { id: 'em3', title: 'Spring 2026 Commencement Highlights',              category: 'Commencement',    creator: 'Media Team',       views: 3241, duration: '1h 12min', visibility: 'Public'      },
+  { id: 'em4', title: 'Lincoln University Virtual Tour',                  category: 'Virtual Tours',   creator: 'Marketing',        views: 892,  duration: '18 min',   visibility: 'Public'      },
+  { id: 'em5', title: 'MBA 520: Finance Week 5 Lecture',                  category: 'Lectures',        creator: 'Prof. James Okafor', views: 187, duration: '48 min', visibility: 'Course Only' },
+];
+
+const EDU_LIB_CATS = ['All', 'Lectures', 'Campus Events', 'Commencement', 'Athletics', 'Promo', 'Virtual Tours'] as const;
+
+function EducationPresidentMediaView({
+  C, insets, role, cycleRole, accent,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+  accent: string;
+}) {
+  const [mediaTab, setMediaTab] = useState<EduMediaTab>('Library');
+  const [mediaDrop, setMediaDrop] = useState(false);
+  const [libCat, setLibCat] = useState('All');
+  const [uploadCat, setUploadCat] = useState('Lectures');
+  const [uploadVis, setUploadVis] = useState('Public');
+  const topBarH = insets.top + 52;
+
+  const visibleVideos = libCat === 'All' ? EDU_MEDIA_LIBRARY : EDU_MEDIA_LIBRARY.filter(v => v.category === libCat);
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top Bar */}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+        </Pressable>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setMediaDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{mediaTab}</Text>
+          <IconSymbol name={mediaDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
+        </Pressable>
+        <View style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary />
+        </View>
+      </View>
+
+      {/* Dropdown */}
+      {mediaDrop && (
+        <View style={{ position: 'absolute', top: topBarH + 4, left: '14%', right: '14%', backgroundColor: C.surface, borderRadius: 14, zIndex: 100, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 8, overflow: 'hidden' }}>
+          {(['Library', 'Upload', 'Schedule', 'Analytics'] as EduMediaTab[]).map((tab, i, arr) => (
+            <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setMediaTab(tab); setMediaDrop(false); }} style={{ paddingVertical: 13, paddingHorizontal: 16, borderBottomWidth: i < arr.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }}>
+              <Text style={{ fontSize: 15, color: tab === mediaTab ? C.label : C.secondary, fontWeight: tab === mediaTab ? '600' : '400' }}>{tab}</Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
+
+      <ScrollView style={{ flex: 1, marginTop: topBarH }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120 }}>
+
+        {/* LIBRARY */}
+        {mediaTab === 'Library' && (
+          <>
+            {/* Category filter pills */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 12, gap: 8, flexDirection: 'row' }}>
+              {EDU_LIB_CATS.map(cat => (
+                <Pressable key={cat} onPress={() => { Haptics.selectionAsync(); setLibCat(cat); }} style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, backgroundColor: libCat === cat ? C.label : C.surface, borderWidth: StyleSheet.hairlineWidth, borderColor: libCat === cat ? C.label : C.separator }}>
+                  <Text style={{ fontSize: 12, fontWeight: '600', color: libCat === cat ? C.bg : C.secondary }}>{cat}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+            {visibleVideos.map(video => (
+              <Pressable key={video.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingVertical: 10, backgroundColor: pressed ? C.surfacePressed : 'transparent' })}>
+                <View style={{ width: 80, height: 52, borderRadius: 8, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <IconSymbol name="play.fill" size={18} color={C.secondary} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: C.label, marginBottom: 2 }} numberOfLines={2}>{video.title}</Text>
+                  <Text style={{ fontSize: 11, color: C.secondary }}>{video.creator}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 3, flexWrap: 'wrap' }}>
+                    <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5, backgroundColor: C.surfacePressed }}>
+                      <Text style={{ fontSize: 10, fontWeight: '600', color: C.secondary }}>{video.category}</Text>
+                    </View>
+                    <Text style={{ fontSize: 11, color: C.muted }}>{video.views.toLocaleString()} views</Text>
+                    <Text style={{ fontSize: 11, color: C.muted }}>·</Text>
+                    <Text style={{ fontSize: 11, color: C.muted }}>{video.duration}</Text>
+                    <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5, backgroundColor: video.visibility === 'Public' ? C.label : C.surface, borderWidth: video.visibility === 'Public' ? 0 : StyleSheet.hairlineWidth, borderColor: C.separator }}>
+                      <Text style={{ fontSize: 10, fontWeight: '700', color: video.visibility === 'Public' ? C.bg : C.secondary }}>{video.visibility}</Text>
+                    </View>
+                  </View>
+                </View>
+                <IconSymbol name="ellipsis" size={16} color={C.secondary} />
+              </Pressable>
+            ))}
+          </>
+        )}
+
+        {/* UPLOAD */}
+        {mediaTab === 'Upload' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            {/* Upload action cards */}
+            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
+              <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ flex: 1, backgroundColor: pressed ? '#0a0a0a' : C.label, borderRadius: 14, padding: 20, alignItems: 'center', gap: 8 })}>
+                <IconSymbol name="arrow.up.to.line" size={26} color={C.bg} />
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Upload from Device</Text>
+              </Pressable>
+              <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ flex: 1, backgroundColor: pressed ? '#0a0a0a' : C.label, borderRadius: 14, padding: 20, alignItems: 'center', gap: 8 })}>
+                <IconSymbol name="video.fill" size={26} color={C.bg} />
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Record Video</Text>
+              </Pressable>
+            </View>
+            {/* Title field */}
+            <View style={{ marginBottom: 14 }}>
+              <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Title</Text>
+              <View style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
+                <Text style={{ fontSize: 14, color: C.muted }}>e.g. BUS 401 — Week 9 Lecture</Text>
+              </View>
+            </View>
+            {/* Description field */}
+            <View style={{ marginBottom: 14 }}>
+              <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Description</Text>
+              <View style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, minHeight: 72, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
+                <Text style={{ fontSize: 14, color: C.muted }}>Brief description of the content…</Text>
+              </View>
+            </View>
+            {/* Category */}
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Category</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingBottom: 14, flexDirection: 'row' }}>
+              {(['Lectures', 'Campus Events', 'Commencement', 'Athletics', 'Promo', 'Virtual Tours'] as const).map(cat => (
+                <Pressable key={cat} onPress={() => { Haptics.selectionAsync(); setUploadCat(cat); }} style={{ paddingHorizontal: 12, paddingVertical: 7, borderRadius: 10, backgroundColor: uploadCat === cat ? C.label : C.surfacePressed }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: uploadCat === cat ? C.bg : C.secondary }}>{cat}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+            {/* Course Link */}
+            <View style={{ marginBottom: 14 }}>
+              <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Course Link <Text style={{ fontWeight: '400', color: C.muted }}>(optional)</Text></Text>
+              <View style={{ backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
+                <Text style={{ fontSize: 14, color: C.muted }}>Link to course</Text>
+              </View>
+            </View>
+            {/* Visibility */}
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Visibility</Text>
+            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
+              {(['Public', 'Campus', 'Course-Specific'] as const).map(v => (
+                <Pressable key={v} onPress={() => { Haptics.selectionAsync(); setUploadVis(v); }} style={{ paddingHorizontal: 12, paddingVertical: 7, borderRadius: 10, backgroundColor: uploadVis === v ? C.label : C.surfacePressed }}>
+                  <Text style={{ fontSize: 12, fontWeight: '600', color: uploadVis === v ? C.bg : C.secondary }}>{v}</Text>
+                </Pressable>
+              ))}
+            </View>
+            {/* Schedule Publish Date */}
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 20, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
+              <IconSymbol name="calendar" size={18} color={C.secondary} />
+              <Text style={{ fontSize: 14, color: C.muted }}>Schedule Publish Date</Text>
+            </Pressable>
+            {/* Publish Now */}
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ backgroundColor: pressed ? '#0a0a0a' : C.label, borderRadius: 14, paddingVertical: 14, alignItems: 'center' })}>
+              <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>Publish Now</Text>
+            </Pressable>
+          </View>
+        )}
+
+        {/* SCHEDULE */}
+        {mediaTab === 'Schedule' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 }}>SCHEDULED RELEASES</Text>
+            {[
+              { title: 'MBA 520 Week 9 Lecture',                                     date: 'Apr 10, 2026', time: '8:00 PM',  visibility: 'Course Only' },
+              { title: 'Spring Commencement Live Stream',                             date: 'Jun 20, 2026', time: '10:00 AM', visibility: 'Public'      },
+              { title: 'Guest Lecture: Dr. Maria Santos — International Business',   date: 'May 8, 2026',  time: '6:00 PM',  visibility: 'Campus'      },
+            ].map((item, i) => (
+              <View key={i} style={{ backgroundColor: C.surface, borderRadius: 14, marginBottom: 10, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                <View style={{ width: 38, height: 38, borderRadius: 10, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name="video.fill" size={16} color={C.label} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={2}>{item.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{item.date} · {item.time}</Text>
+                </View>
+                <View style={{ paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6, backgroundColor: C.surfacePressed }}>
+                  <Text style={{ fontSize: 10, fontWeight: '700', color: C.secondary }}>{item.visibility}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* ANALYTICS */}
+        {mediaTab === 'Analytics' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            {/* KPI cards */}
+            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
+              {[{ label: 'Total Views', value: '8,401' }, { label: 'Watch Hours', value: '2,847 hrs' }, { label: 'Avg Completion', value: '61%' }].map(s => (
+                <View key={s.label} style={{ flex: 1, backgroundColor: C.surface, borderRadius: 12, padding: 12, alignItems: 'center' }}>
+                  <Text style={{ fontSize: 18, fontWeight: '800', color: C.label }}>{s.value}</Text>
+                  <Text style={{ fontSize: 10, color: C.secondary, textAlign: 'center', marginTop: 2 }}>{s.label}</Text>
+                </View>
+              ))}
+            </View>
+            {/* By Category */}
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>BY CATEGORY</Text>
+            {[
+              { cat: 'Lectures',      views: 4291, completion: '58%' },
+              { cat: 'Campus Events', views: 2103, completion: '71%' },
+              { cat: 'Commencement',  views: 3241, completion: '89%' },
+              { cat: 'Promo',         views: 1847, completion: '44%' },
+            ].map(row => (
+              <View key={row.cat} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 12, marginBottom: 8, padding: 12, gap: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>{row.cat}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary }}>{row.views.toLocaleString()} views</Text>
+                </View>
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{row.completion}</Text>
+                <Text style={{ fontSize: 11, color: C.muted }}>completion</Text>
+              </View>
+            ))}
+            {/* Top Lectures */}
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 8, marginBottom: 10 }}>TOP LECTURES</Text>
+            {EDU_MEDIA_LIBRARY.filter(v => v.category === 'Lectures').slice(0, 3).map((v, i) => (
+              <View key={v.id} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 12, marginBottom: 8, padding: 12, gap: 10 }}>
+                <Text style={{ fontSize: 16, fontWeight: '800', color: C.muted, width: 20 }}>{i + 1}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }} numberOfLines={1}>{v.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary }}>{v.views.toLocaleString()} views · {v.duration}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+
+      </ScrollView>
+    </View>
+  );
+}
+
+// ── EducationStudentWatchView ─────────────────────────────────────────────────
+
+type WatchTab = 'Lectures' | 'Campus' | 'Athletics' | 'Student Life';
+
+const COURSE_LECTURES = [
+  { id: 'el1', title: 'BUS 401 — Week 8: Competitive Dynamics',   instructor: 'Dr. Angela Ross',  duration: '52 min', progress: 0.45, resumeAt: '23:12', status: 'in-progress' as const },
+  { id: 'el2', title: 'MKT 350 — Week 7: Decision-Making Models', instructor: 'Prof. Chen',        duration: '47 min', progress: 0,    resumeAt: '',      status: 'not-started' as const },
+  { id: 'el3', title: 'MBA 520 — Week 5: Cash Flow Analysis',     instructor: 'Prof. Okafor',      duration: '48 min', progress: 1,    resumeAt: '',      status: 'completed'   as const },
+  { id: 'el4', title: 'MBA 510 — Week 6: Leadership in Crisis',   instructor: 'Dr. Williams',      duration: '44 min', progress: 0.12, resumeAt: '',      status: 'in-progress' as const },
+];
+
+const CAMPUS_VIDEOS = [
+  { id: 'cv1', emoji: '🎓', title: 'MBA Networking Mixer Recap',    date: 'Mar 28, 2026', duration: '22 min' },
+  { id: 'cv2', emoji: '🏛️', title: 'Spring Convocation 2026',       date: 'Mar 15, 2026', duration: '1h 8min' },
+  { id: 'cv3', emoji: '💼', title: 'Campus Career Fair 2026',       date: 'Mar 5, 2026',  duration: '34 min' },
+];
+
+const ATHLETICS_VIDEOS = [
+  { id: 'av1', emoji: '🏀', title: 'Oakland Oaklanders Basketball Highlights — Mar 2026', date: 'Mar 31, 2026', duration: '18 min' },
+  { id: 'av2', emoji: '⚽', title: 'Intramural Soccer Championship',                      date: 'Mar 20, 2026', duration: '42 min' },
+];
+
+const STUDENT_LIFE_VIDEOS = [
+  { id: 'sl1', emoji: '🏠', title: 'Dorm Life at Lincoln University',           date: 'Mar 10, 2026', duration: '11 min' },
+  { id: 'sl2', emoji: '🎙️', title: 'Student Council President Interview',       date: 'Feb 28, 2026', duration: '24 min' },
+  { id: 'sl3', emoji: '✈️', title: 'Study Abroad: Business in Tokyo',           date: 'Feb 14, 2026', duration: '31 min' },
+];
+
+const WATCH_TABS: WatchTab[] = ['Lectures', 'Campus', 'Athletics', 'Student Life'];
+const SPEED_OPTIONS = [1, 1.25, 1.5, 2] as const;
+type SpeedOption = typeof SPEED_OPTIONS[number];
+
+function EducationStudentWatchView({
+  C, insets, role, cycleRole,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+}) {
+  const [watchTab, setWatchTab] = useState<WatchTab>('Lectures');
+  const [watchDrop, setWatchDrop] = useState(false);
+  const [speed, setSpeed] = useState<SpeedOption>(1);
+  const [bookmarked, setBookmarked] = useState<Set<string>>(new Set());
+  const topBarH = insets.top + 52;
+
+  const toggleBookmark = (id: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setBookmarked(s => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  };
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top Bar */}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+        </Pressable>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setWatchDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{watchTab}</Text>
+          <IconSymbol name={watchDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
+        </Pressable>
+        <View style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <RolePill role={role} onPress={cycleRole} isPrimary={false} />
+        </View>
+      </View>
+
+      {/* Dropdown */}
+      {watchDrop && (
+        <View style={{ position: 'absolute', top: topBarH + 4, left: '14%', right: '14%', backgroundColor: C.surface, borderRadius: 14, zIndex: 100, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 8, overflow: 'hidden' }}>
+          {WATCH_TABS.map((tab, i, arr) => (
+            <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setWatchTab(tab); setWatchDrop(false); }} style={{ paddingVertical: 13, paddingHorizontal: 16, borderBottomWidth: i < arr.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }}>
+              <Text style={{ fontSize: 15, color: tab === watchTab ? C.label : C.secondary, fontWeight: tab === watchTab ? '600' : '400' }}>{tab}</Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
+
+      <ScrollView style={{ flex: 1, marginTop: topBarH }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120 }}>
+
+        {/* LECTURES */}
+        {watchTab === 'Lectures' && (
+          <>
+            {/* Section header */}
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginHorizontal: 16, marginBottom: 12 }}>MY COURSE LECTURES</Text>
+            {/* Speed control */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 16, marginBottom: 14 }}>
+              <Text style={{ fontSize: 12, color: C.secondary, marginRight: 4 }}>Speed:</Text>
+              {SPEED_OPTIONS.map(s => (
+                <Pressable key={s} onPress={() => { Haptics.selectionAsync(); setSpeed(s); }} style={{ paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, backgroundColor: speed === s ? C.label : C.surface, borderWidth: StyleSheet.hairlineWidth, borderColor: speed === s ? C.label : C.separator }}>
+                  <Text style={{ fontSize: 12, fontWeight: '600', color: speed === s ? C.bg : C.secondary }}>{s}×</Text>
+                </Pressable>
+              ))}
+            </View>
+            {/* Lecture cards */}
+            {COURSE_LECTURES.map(vid => (
+              <View key={vid.id} style={{ marginHorizontal: 16, marginBottom: 12, backgroundColor: C.surface, borderRadius: 14, padding: 14 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, lineHeight: 20, marginBottom: 2 }} numberOfLines={2}>{vid.title}</Text>
+                    <Text style={{ fontSize: 12, color: C.secondary }}>{vid.instructor} · {vid.duration}</Text>
+                  </View>
+                  <Pressable onPress={() => toggleBookmark(vid.id)} hitSlop={8} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
+                    <IconSymbol name={bookmarked.has(vid.id) ? 'bookmark.fill' : 'bookmark'} size={18} color={bookmarked.has(vid.id) ? C.label : C.secondary} />
+                  </Pressable>
+                </View>
+                {/* Progress / status */}
+                {vid.status === 'completed' ? (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 10 }}>
+                    <IconSymbol name="checkmark.circle.fill" size={16} color="#5A8A6E" />
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: '#5A8A6E' }}>Completed</Text>
+                  </View>
+                ) : vid.status === 'not-started' ? (
+                  <View style={{ marginTop: 10 }}>
+                    <View style={{ height: 3, borderRadius: 2, backgroundColor: C.separator }} />
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
+                      <Text style={{ fontSize: 12, color: C.muted }}>Not started</Text>
+                      <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 8, backgroundColor: C.label }}>
+                        <Text style={{ fontSize: 12, fontWeight: '700', color: C.bg }}>Play</Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                ) : (
+                  <View style={{ marginTop: 10 }}>
+                    <View style={{ height: 3, borderRadius: 2, backgroundColor: C.separator, overflow: 'hidden' }}>
+                      <View style={{ width: `${Math.round(vid.progress * 100)}%`, height: '100%', backgroundColor: C.label, borderRadius: 2 }} />
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
+                      <Text style={{ fontSize: 12, color: C.secondary }}>{Math.round(vid.progress * 100)}% watched</Text>
+                      {vid.resumeAt ? (
+                        <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 8, backgroundColor: C.label }}>
+                          <Text style={{ fontSize: 12, fontWeight: '700', color: C.bg }}>Resume {vid.resumeAt}</Text>
+                        </Pressable>
+                      ) : (
+                        <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 8, backgroundColor: C.label }}>
+                          <Text style={{ fontSize: 12, fontWeight: '700', color: C.bg }}>Resume</Text>
+                        </Pressable>
+                      )}
+                    </View>
+                  </View>
+                )}
+              </View>
+            ))}
+          </>
+        )}
+
+        {/* CAMPUS */}
+        {watchTab === 'Campus' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            {CAMPUS_VIDEOS.map(vid => (
+              <Pressable key={vid.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 14, marginBottom: 12, overflow: 'hidden' })}>
+                <View style={{ height: 110, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ fontSize: 36 }}>{vid.emoji}</Text>
+                  <View style={{ position: 'absolute', bottom: 8, right: 10, backgroundColor: C.label + 'cc', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: C.bg }}>{vid.duration}</Text>
+                  </View>
+                </View>
+                <View style={{ padding: 12 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={2}>{vid.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.muted, marginTop: 3 }}>{vid.date}</Text>
+                </View>
+              </Pressable>
+            ))}
+          </View>
+        )}
+
+        {/* ATHLETICS */}
+        {watchTab === 'Athletics' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            {ATHLETICS_VIDEOS.map(vid => (
+              <Pressable key={vid.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 14, marginBottom: 12, overflow: 'hidden' })}>
+                <View style={{ height: 110, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ fontSize: 36 }}>{vid.emoji}</Text>
+                  <View style={{ position: 'absolute', bottom: 8, right: 10, backgroundColor: C.label + 'cc', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: C.bg }}>{vid.duration}</Text>
+                  </View>
+                </View>
+                <View style={{ padding: 12 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={2}>{vid.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.muted, marginTop: 3 }}>{vid.date}</Text>
+                </View>
+              </Pressable>
+            ))}
+          </View>
+        )}
+
+        {/* STUDENT LIFE */}
+        {watchTab === 'Student Life' && (
+          <View style={{ paddingHorizontal: 16 }}>
+            {STUDENT_LIFE_VIDEOS.map(vid => (
+              <Pressable key={vid.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.surface, borderRadius: 14, marginBottom: 12, overflow: 'hidden' })}>
+                <View style={{ height: 110, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ fontSize: 36 }}>{vid.emoji}</Text>
+                  <View style={{ position: 'absolute', bottom: 8, right: 10, backgroundColor: C.label + 'cc', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: C.bg }}>{vid.duration}</Text>
+                  </View>
+                </View>
+                <View style={{ padding: 12 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={2}>{vid.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.muted, marginTop: 3 }}>{vid.date}</Text>
+                </View>
+              </Pressable>
+            ))}
+          </View>
+        )}
+
+      </ScrollView>
+    </View>
+  );
+}
+
 // ── Community Pastor Media View ───────────────────────────────────────────────
 
 type MediaTab = 'Library' | 'Upload' | 'Schedule' | 'Live' | 'Analytics';
@@ -712,6 +1159,31 @@ export default function KayTVScreen() {
           ))}
         </ScrollView>
       </View>
+    );
+  }
+
+  // ── Education President: Media management view ───────────────────────────
+  if (mode === 'education' && isOwner) {
+    return (
+      <EducationPresidentMediaView
+        C={C}
+        insets={insets}
+        role={role}
+        cycleRole={cycleRole}
+        accent={accent}
+      />
+    );
+  }
+
+  // ── Education Student: Watch view ─────────────────────────────────────────
+  if (mode === 'education' && !isOwner) {
+    return (
+      <EducationStudentWatchView
+        C={C}
+        insets={insets}
+        role={role}
+        cycleRole={cycleRole}
+      />
     );
   }
 

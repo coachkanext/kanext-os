@@ -1141,6 +1141,261 @@ function PersonalOwnerSocialView({
   );
 }
 
+// ── Education President: Feed / Announcements / Alumni ───────────────────────
+
+type EduPresTab = 'Feed' | 'Announcements' | 'Alumni';
+
+const EDU_PRES_POSTS = [
+  { id: 'ep1', author: 'Dr. Mikhail Brodsky', initials: 'MB', time: '2h',  visibility: 'Public',      pinned: true,  views: 1247, likes: 89, text: 'Spring 2026 Commencement — Saturday, June 20. We are proud of every graduate who has persevered through this journey. More details coming soon.' },
+  { id: 'ep2', author: 'Office of the President', initials: 'OP', time: '1d', visibility: 'Campus',   pinned: false, views: 432,  likes: 0,  text: 'Accreditation Prep: WSCUC Site Visit May 2–4. All faculty and staff are encouraged to review the self-study document shared in the portal.' },
+  { id: 'ep3', author: 'Academic Affairs', initials: 'AA', time: '1d',      visibility: 'Campus',      pinned: false, views: 618,  likes: 47, text: "Dean's List: Spring 2026 Honorees have been posted in the Student Portal. Congratulations to all honorees — excellence recognized." },
+  { id: 'ep4', author: 'Admissions', initials: 'AD', time: '2d',             visibility: 'Public',      pinned: false, views: 891,  likes: 0,  text: 'New MBA Cohort Orientation — April 12 at 9 AM in the Main Hall. Welcome to the Lincoln University family, Class of 2028!' },
+  { id: 'ep5', author: 'Faculty Senate', initials: 'FS', time: '5d',         visibility: 'Campus',      pinned: false, views: 203,  likes: 0,  text: 'Faculty Research Symposium — May 15. Abstract submissions due April 25. All faculty are encouraged to present their current work.' },
+];
+
+const EDU_ANNOUNCEMENTS = [
+  { id: 'ea1', title: 'Spring Registration Now Open', date: 'Apr 1',  read: 312, total: 436, pushSent: true },
+  { id: 'ea2', title: 'WSCUC Accreditation Visit — May 2–4', date: 'Mar 28', read: 387, total: 436, pushSent: true },
+  { id: 'ea3', title: 'Tuition Payment Deadline — May 15', date: 'Mar 20', read: 401, total: 436, pushSent: true },
+];
+
+const EDU_ALUMNI = [
+  { id: 'al1', initials: 'MC', name: 'Marcus Chen',   degree: "MBA '21", title: 'VP Finance',  company: 'Wells Fargo' },
+  { id: 'al2', initials: 'AO', name: 'Dr. Adaeze Okoye', degree: "BS DiagImaging '18", title: 'Radiologist', company: 'UCSF Medical' },
+  { id: 'al3', initials: 'JL', name: 'James Liu',     degree: "DBA '22", title: 'Professor',   company: 'San Jose State' },
+];
+
+function EducationPresidentSocialView({
+  C, insets, role, cycleRole, accent,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+  accent: string;
+}) {
+  const [eduTab, setEduTab] = useState<EduPresTab>('Feed');
+  const [eduDrop, setEduDrop] = useState(false);
+  const [feedVisibility, setFeedVisibility] = useState<'Public' | 'Campus' | 'Faculty Only'>('Public');
+  const TOP_BAR_H = 52;
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top bar */}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: insets.top + TOP_BAR_H, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+        </Pressable>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setEduDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{eduTab}</Text>
+          <IconSymbol name={eduDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
+        </Pressable>
+        <View style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary />
+        </View>
+      </View>
+
+      {/* Tab dropdown */}
+      {eduDrop && (
+        <View style={{ position: 'absolute', top: insets.top + TOP_BAR_H + 4, left: '22%', right: '22%', backgroundColor: C.surface, borderRadius: 14, zIndex: 100, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 8, overflow: 'hidden' }}>
+          {(['Feed', 'Announcements', 'Alumni'] as EduPresTab[]).map((tab, i, arr) => (
+            <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setEduTab(tab); setEduDrop(false); }} style={{ paddingVertical: 13, paddingHorizontal: 16, borderBottomWidth: i < arr.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }}>
+              <Text style={{ fontSize: 15, color: tab === eduTab ? C.label : C.secondary, fontWeight: tab === eduTab ? '600' : '400' }}>{tab}</Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
+
+      {/* ── FEED ── */}
+      {eduTab === 'Feed' && (
+        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 12, paddingBottom: 120 }}>
+          {/* Post composer */}
+          <View style={{ marginHorizontal: 14, marginBottom: 14, backgroundColor: C.surface, borderRadius: 16, padding: 14 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+              <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>MB</Text>
+              </View>
+              <View style={{ flex: 1, height: 36, borderRadius: 18, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, alignItems: 'flex-start', justifyContent: 'center', paddingHorizontal: 14 }}>
+                <Text style={{ fontSize: 14, color: C.muted }}>Share with Lincoln University...</Text>
+              </View>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <Text style={{ fontSize: 12, color: C.secondary }}>Visibility:</Text>
+              {(['Public', 'Campus', 'Faculty Only'] as const).map(v => (
+                <Pressable key={v} onPress={() => { Haptics.selectionAsync(); setFeedVisibility(v); }} style={{ paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, backgroundColor: feedVisibility === v ? C.label : C.surfacePressed }}>
+                  <Text style={{ fontSize: 12, fontWeight: '600', color: feedVisibility === v ? C.bg : C.secondary }}>{v}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+
+          {/* Posts */}
+          {EDU_PRES_POSTS.map(post => (
+            <View key={post.id} style={{ borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingTop: 12, paddingBottom: 6, gap: 10 }}>
+                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>{post.initials}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{post.author}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 1 }}>
+                    <Text style={{ fontSize: 12, color: C.secondary }}>{post.time}</Text>
+                    <View style={{ backgroundColor: C.surfacePressed, borderRadius: 5, paddingHorizontal: 6, paddingVertical: 1 }}>
+                      <Text style={{ fontSize: 10, fontWeight: '700', color: C.secondary }}>{post.visibility}</Text>
+                    </View>
+                    {post.pinned && (
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+                        <IconSymbol name="pin.fill" size={10} color={C.secondary} />
+                        <Text style={{ fontSize: 10, fontWeight: '700', color: C.secondary }}>Pinned</Text>
+                      </View>
+                    )}
+                  </View>
+                </View>
+              </View>
+              <Text style={{ fontSize: 15, color: C.label, paddingHorizontal: 14, paddingBottom: 10, lineHeight: 22 }}>{post.text}</Text>
+              {/* Stats row */}
+              <View style={{ flexDirection: 'row', gap: 16, paddingHorizontal: 14, paddingBottom: 8 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                  <IconSymbol name="eye" size={13} color={C.muted} />
+                  <Text style={{ fontSize: 12, color: C.muted }}>{post.views >= 1000 ? `${(post.views / 1000).toFixed(1)}K` : `${post.views}`}</Text>
+                </View>
+                {post.likes > 0 && (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <IconSymbol name="heart" size={13} color={C.muted} />
+                    <Text style={{ fontSize: 12, color: C.muted }}>{post.likes}</Text>
+                  </View>
+                )}
+              </View>
+              {/* Actions row */}
+              <View style={{ flexDirection: 'row', gap: 20, paddingHorizontal: 14, paddingBottom: 12 }}>
+                {post.pinned && (
+                  <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                    <IconSymbol name="pin.fill" size={15} color={C.label} />
+                    <Text style={{ fontSize: 13, color: C.label, fontWeight: '600' }}>Pinned</Text>
+                  </Pressable>
+                )}
+                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <IconSymbol name="pencil" size={15} color={C.secondary} />
+                  <Text style={{ fontSize: 13, color: C.secondary }}>Edit</Text>
+                </Pressable>
+                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <IconSymbol name="trash" size={15} color={C.secondary} />
+                  <Text style={{ fontSize: 13, color: C.secondary }}>Delete</Text>
+                </Pressable>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+      )}
+
+      {/* ── ANNOUNCEMENTS ── */}
+      {eduTab === 'Announcements' && (
+        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 12, paddingBottom: 120 }}>
+          <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ marginHorizontal: 14, marginBottom: 20, backgroundColor: C.label, borderRadius: 14, paddingVertical: 14, alignItems: 'center', opacity: pressed ? 0.8 : 1 })}>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>+ Create Announcement</Text>
+          </Pressable>
+
+          {EDU_ANNOUNCEMENTS.map(ann => {
+            const progress = ann.read / ann.total;
+            return (
+              <View key={ann.id} style={{ marginHorizontal: 14, marginBottom: 12, backgroundColor: C.surface, borderRadius: 16, padding: 16 }}>
+                <Text style={{ fontSize: 15, fontWeight: '700', color: C.label, marginBottom: 4 }}>{ann.title}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary, marginBottom: 12 }}>Published {ann.date}</Text>
+                {/* Read progress */}
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                  <Text style={{ fontSize: 12, color: C.secondary }}>Read by {ann.read} of {ann.total} students</Text>
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: C.label }}>{Math.round(progress * 100)}%</Text>
+                </View>
+                <View style={{ height: 4, backgroundColor: C.separator, borderRadius: 2, marginBottom: 12, overflow: 'hidden' }}>
+                  <View style={{ width: `${progress * 100}%`, height: 4, backgroundColor: C.label, borderRadius: 2 }} />
+                </View>
+                {/* Push badge / button */}
+                {ann.pushSent ? (
+                  <View style={{ alignSelf: 'flex-start', backgroundColor: C.surfacePressed, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4 }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary }}>Push Sent</Text>
+                  </View>
+                ) : (
+                  <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ alignSelf: 'flex-start', backgroundColor: pressed ? C.surfacePressed : C.label, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 })}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: C.bg }}>Send Push</Text>
+                  </Pressable>
+                )}
+              </View>
+            );
+          })}
+        </ScrollView>
+      )}
+
+      {/* ── ALUMNI ── */}
+      {eduTab === 'Alumni' && (
+        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 12, paddingBottom: 120 }}>
+          {/* Network header */}
+          <View style={{ marginHorizontal: 14, marginBottom: 16, backgroundColor: C.surface, borderRadius: 16, padding: 16, alignItems: 'center' }}>
+            <IconSymbol name="person.3.fill" size={28} color={C.label} />
+            <Text style={{ fontSize: 22, fontWeight: '800', color: C.label, marginTop: 8 }}>3,247</Text>
+            <Text style={{ fontSize: 14, color: C.secondary, marginTop: 2 }}>Lincoln University Alumni</Text>
+          </View>
+
+          {/* Recent alumni highlights */}
+          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, paddingHorizontal: 14, marginBottom: 8 }}>ALUMNI HIGHLIGHTS</Text>
+          {EDU_ALUMNI.map(alum => (
+            <View key={alum.id} style={{ marginHorizontal: 14, marginBottom: 8, backgroundColor: C.surface, borderRadius: 14, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+              <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>{alum.initials}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{alum.name} · <Text style={{ fontWeight: '400', color: C.secondary }}>{alum.degree}</Text></Text>
+                <Text style={{ fontSize: 13, color: C.secondary, marginTop: 2 }}>{alum.title} · {alum.company}</Text>
+              </View>
+            </View>
+          ))}
+
+          {/* Annual Giving Campaign */}
+          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, paddingHorizontal: 14, marginTop: 16, marginBottom: 8 }}>ANNUAL GIVING CAMPAIGN</Text>
+          <View style={{ marginHorizontal: 14, marginBottom: 16, backgroundColor: C.surface, borderRadius: 16, padding: 16 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
+              <View>
+                <Text style={{ fontSize: 13, color: C.secondary }}>Goal</Text>
+                <Text style={{ fontSize: 18, fontWeight: '800', color: C.label }}>$500K</Text>
+              </View>
+              <View style={{ alignItems: 'flex-end' }}>
+                <Text style={{ fontSize: 13, color: C.secondary }}>Raised</Text>
+                <Text style={{ fontSize: 18, fontWeight: '800', color: C.label }}>$187K</Text>
+              </View>
+            </View>
+            <View style={{ height: 6, backgroundColor: C.separator, borderRadius: 3, marginBottom: 8, overflow: 'hidden' }}>
+              <View style={{ width: '37.4%', height: 6, backgroundColor: C.label, borderRadius: 3 }} />
+            </View>
+            <Text style={{ fontSize: 12, color: C.secondary }}>37% of goal · 89 days remaining</Text>
+          </View>
+
+          {/* Alumni Reunions */}
+          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, paddingHorizontal: 14, marginBottom: 8 }}>ALUMNI REUNIONS</Text>
+          {[
+            { id: 'ar1', title: 'Class of 2020 Reunion', date: 'June 28, 2026', location: 'Lincoln University Main Campus' },
+            { id: 'ar2', title: 'MBA Alumni Gala',       date: 'July 12, 2026', location: 'San Francisco Marriott' },
+          ].map(event => (
+            <View key={event.id} style={{ marginHorizontal: 14, marginBottom: 8, backgroundColor: C.surface, borderRadius: 14, padding: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{event.title}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{event.date}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>{event.location}</Text>
+              </View>
+              <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.label, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 8 })}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: C.bg }}>RSVP</Text>
+              </Pressable>
+            </View>
+          ))}
+
+          {/* Share Alumni Story */}
+          <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ marginHorizontal: 14, marginTop: 12, backgroundColor: C.label, borderRadius: 14, paddingVertical: 15, alignItems: 'center', opacity: pressed ? 0.8 : 1 })}>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>Share Alumni Story</Text>
+          </Pressable>
+        </ScrollView>
+      )}
+    </View>
+  );
+}
+
 // ── Social role keys per mode ──────────────────────────────────────────────
 const SOCIAL_ROLE_KEYS: Record<string, string> = {
   sports:    'sports',
@@ -1477,6 +1732,19 @@ export default function SocialScreen() {
           </View>
         </ScrollView>
       </View>
+    );
+  }
+
+  // ── Education President: Feed / Announcements / Alumni ──────────────────────
+  if (mode === 'education' && isAdmin) {
+    return (
+      <EducationPresidentSocialView
+        C={C}
+        insets={insets}
+        role={role}
+        cycleRole={cycleRole}
+        accent={accent}
+      />
     );
   }
 
