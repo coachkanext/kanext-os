@@ -14,14 +14,13 @@
  * F — Global Items (Settings, Help, Terms, Sign Out)
  */
 
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
   Image,
   StyleSheet,
   Pressable,
-  Animated,
   Dimensions,
   ScrollView,
   LayoutAnimation,
@@ -33,6 +32,7 @@ import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { DrawerPanel } from '@/components/ui/drawer-panel';
 import { Colors, BorderRadius } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAccentColor } from '@/hooks/use-accent-color';
@@ -67,10 +67,9 @@ const MODE_LABELS: Record<string, string> = {
 interface AvatarDrawerProps {
   visible: boolean;
   onClose: () => void;
-  contentSlideAnim?: Animated.Value;
 }
 
-export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawerProps) {
+export function AvatarDrawer({ visible, onClose }: AvatarDrawerProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const accent = useAccentColor();
@@ -94,60 +93,6 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
       setPermissionsExpanded(false);
     }
   }, [visible, activeContext.mode]);
-
-  // Animation refs
-  const slideAnim = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    if (visible) {
-      Animated.parallel([
-        Animated.spring(slideAnim, {
-          toValue: 0,
-          tension: 65,
-          friction: 11,
-          useNativeDriver: true,
-        }),
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        ...(contentSlideAnim
-          ? [
-              Animated.spring(contentSlideAnim, {
-                toValue: DRAWER_WIDTH,
-                tension: 65,
-                friction: 11,
-                useNativeDriver: true,
-              }),
-            ]
-          : []),
-      ]).start();
-    } else {
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: -DRAWER_WIDTH,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        ...(contentSlideAnim
-          ? [
-              Animated.timing(contentSlideAnim, {
-                toValue: 0,
-                duration: 200,
-                useNativeDriver: true,
-              }),
-            ]
-          : []),
-      ]).start();
-    }
-  }, [visible, slideAnim, fadeAnim, contentSlideAnim]);
 
   // Derive highest RBCA tier across all views for primary badge
   const highestTier = useMemo<RBCATier>(() => {
@@ -219,28 +164,9 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
     setPermissionsExpanded((prev) => !prev);
   }, []);
 
-  if (!visible) return null;
-
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="auto">
-      {/* Scrim */}
-      <Animated.View style={[styles.scrim, { opacity: fadeAnim }]} pointerEvents={visible ? 'auto' : 'none'}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-      </Animated.View>
-
-      {/* Drawer */}
-      <Animated.View
-        style={[
-          styles.drawer,
-          {
-            width: DRAWER_WIDTH,
-            backgroundColor: colors.background,
-            transform: [{ translateX: slideAnim }],
-            paddingTop: insets.top,
-            paddingBottom: insets.bottom,
-          },
-        ]}
-      >
+    <DrawerPanel visible={visible} onClose={onClose} width={DRAWER_WIDTH}>
+      <View style={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom }}>
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           {/* ===== A. IDENTITY HEADER ===== */}
           <View style={styles.identityBlock}>
@@ -462,14 +388,9 @@ export function AvatarDrawer({ visible, onClose, contentSlideAnim }: AvatarDrawe
             )}
           </View>
         </ScrollView>
-      </Animated.View>
-
-      {/* View Details Sheet (long-press) */}
-      <ViewDetailsSheet
-        view={detailsView}
-        onClose={() => setDetailsView(null)}
-      />
-    </View>
+      </View>
+      <ViewDetailsSheet view={detailsView} onClose={() => setDetailsView(null)} />
+    </DrawerPanel>
   );
 }
 
@@ -564,21 +485,6 @@ function UtilityNavItem({
 // STYLES
 // =============================================
 const styles = StyleSheet.create({
-  scrim: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  drawer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    shadowColor: '#000',
-    shadowOffset: { width: 2, height: 0 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 10,
-  },
   scrollView: {
     flex: 1,
   },

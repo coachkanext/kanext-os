@@ -17,6 +17,7 @@ import { useAuth } from '@/context/auth-context';
 import { closeSettingsPanel } from '@/utils/global-settings-panel';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useThemePreference, useSetThemePreference } from '@/context/theme-context';
+import { DrawerPanel } from '@/components/ui/drawer-panel';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 export const SETTINGS_PANEL_WIDTH = Math.min(300, SCREEN_WIDTH * 0.82);
@@ -24,6 +25,7 @@ export const SETTINGS_PANEL_WIDTH = Math.min(300, SCREEN_WIDTH * 0.82);
 
 interface SettingsPanelProps {
   visible: boolean;
+  onClose: () => void;
 }
 
 const THEME_OPTIONS = [
@@ -32,7 +34,7 @@ const THEME_OPTIONS = [
   { key: 'system' as const, label: 'System' },
 ];
 
-export function SettingsPanel({ visible }: SettingsPanelProps) {
+export function SettingsPanel({ visible, onClose }: SettingsPanelProps) {
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
   const insets = useSafeAreaInsets();
@@ -58,156 +60,150 @@ export function SettingsPanel({ visible }: SettingsPanelProps) {
   }, [signOut]);
 
   return (
-    <View style={[styles.container, { width: SETTINGS_PANEL_WIDTH }]} pointerEvents={visible ? 'auto' : 'none'}>
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={[
-          styles.scrollContent,
-          { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24 },
-        ]}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* ── PROFILE HEADER ── */}
-        <View style={styles.profileHeader}>
-          <View style={styles.profileAvatar}>
-            <Text style={styles.profileInitials}>
-              {displayName.trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase()}
-            </Text>
-          </View>
-          <View style={styles.profileInfo}>
-            <Text style={styles.profileName} numberOfLines={1}>{displayName}</Text>
-            {handle ? <Text style={styles.profileHandle} numberOfLines={1}>@{handle}</Text> : null}
-          </View>
-        </View>
-
-        {/* ── DIVIDER ── */}
-        <View style={styles.divider} />
-
-        {/* ── FEATURE SHORTCUTS ── */}
-        <View style={styles.menuSection}>
-          <Pressable
-            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => handleNavigate('/settings')}
-          >
-            <IconSymbol name="bookmark.fill" size={20} color={C.label} />
-            <Text style={styles.menuItemText}>Saved</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => handleNavigate('/settings')}
-          >
-            <IconSymbol name="clock.fill" size={20} color={C.label} />
-            <Text style={styles.menuItemText}>Your Activity</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => handleNavigate('/settings')}
-          >
-            <IconSymbol name="qrcode" size={20} color={C.label} />
-            <Text style={styles.menuItemText}>QR Code</Text>
-          </Pressable>
-        </View>
-
-        {/* ── DIVIDER ── */}
-        <View style={styles.divider} />
-
-        {/* ── BOTTOM SECTION: SETTINGS ── */}
-        <View style={styles.menuSection}>
-          <Pressable
-            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => handleNavigate('/settings')}
-          >
-            <IconSymbol name="person.fill" size={20} color={C.label} />
-            <Text style={styles.menuItemText}>Account</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => handleNavigate('/settings')}
-          >
-            <IconSymbol name="slider.horizontal.3" size={20} color={C.label} />
-            <Text style={styles.menuItemText}>Preferences</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => handleNavigate('/settings')}
-          >
-            <IconSymbol name="bell.fill" size={20} color={C.label} />
-            <Text style={styles.menuItemText}>Notifications</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => setShowAppearance(!showAppearance)}
-          >
-            <IconSymbol name="moon.fill" size={20} color={C.label} />
-            <Text style={styles.menuItemText}>Appearance</Text>
-            <IconSymbol
-              name={showAppearance ? 'chevron.up' : 'chevron.down'}
-              size={14}
-              color={C.secondary}
-            />
-          </Pressable>
-          {showAppearance && (
-            <View style={styles.appearanceRow}>
-              {THEME_OPTIONS.map((opt) => {
-                const active = themePref === opt.key;
-                return (
-                  <Pressable
-                    key={opt.key}
-                    style={[styles.themePill, active && styles.themePillActive]}
-                    onPress={() => setThemePref(opt.key)}
-                  >
-                    <Text style={[styles.themePillText, active && styles.themePillTextActive]}>
-                      {opt.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          )}
-          <Pressable
-            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => handleNavigate('/settings')}
-          >
-            <IconSymbol name="questionmark.circle" size={20} color={C.label} />
-            <Text style={styles.menuItemText}>Help & Support</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-            onPress={() => handleNavigate('/settings')}
-          >
-            <IconSymbol name="shield.fill" size={20} color={C.label} />
-            <Text style={styles.menuItemText}>Terms & Privacy</Text>
-          </Pressable>
-        </View>
-
-        {/* Spacer pushes log out to bottom */}
-        <View style={styles.spacer} />
-
-        {/* ── DIVIDER ── */}
-        <View style={styles.divider} />
-
-        {/* Log Out — always last */}
-        <Pressable
-          style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
-          onPress={handleSignOut}
+    <DrawerPanel visible={visible} onClose={onClose} width={SETTINGS_PANEL_WIDTH}>
+      <View style={{ flex: 1, backgroundColor: C.surface }}>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={[
+            styles.scrollContent,
+            { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24 },
+          ]}
+          showsVerticalScrollIndicator={false}
         >
-          <IconSymbol name="rectangle.portrait.and.arrow.right" size={20} color="#B85C5C" />
-          <Text style={[styles.menuItemText, styles.logOutText]}>Log Out</Text>
-        </Pressable>
-      </ScrollView>
-    </View>
+          {/* ── PROFILE HEADER ── */}
+          <View style={styles.profileHeader}>
+            <View style={styles.profileAvatar}>
+              <Text style={styles.profileInitials}>
+                {displayName.trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase()}
+              </Text>
+            </View>
+            <View style={styles.profileInfo}>
+              <Text style={styles.profileName} numberOfLines={1}>{displayName}</Text>
+              {handle ? <Text style={styles.profileHandle} numberOfLines={1}>@{handle}</Text> : null}
+            </View>
+          </View>
+
+          {/* ── DIVIDER ── */}
+          <View style={styles.divider} />
+
+          {/* ── FEATURE SHORTCUTS ── */}
+          <View style={styles.menuSection}>
+            <Pressable
+              style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+              onPress={() => handleNavigate('/settings')}
+            >
+              <IconSymbol name="bookmark.fill" size={20} color={C.label} />
+              <Text style={styles.menuItemText}>Saved</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+              onPress={() => handleNavigate('/settings')}
+            >
+              <IconSymbol name="clock.fill" size={20} color={C.label} />
+              <Text style={styles.menuItemText}>Your Activity</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+              onPress={() => handleNavigate('/settings')}
+            >
+              <IconSymbol name="qrcode" size={20} color={C.label} />
+              <Text style={styles.menuItemText}>QR Code</Text>
+            </Pressable>
+          </View>
+
+          {/* ── DIVIDER ── */}
+          <View style={styles.divider} />
+
+          {/* ── BOTTOM SECTION: SETTINGS ── */}
+          <View style={styles.menuSection}>
+            <Pressable
+              style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+              onPress={() => handleNavigate('/settings')}
+            >
+              <IconSymbol name="person.fill" size={20} color={C.label} />
+              <Text style={styles.menuItemText}>Account</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+              onPress={() => handleNavigate('/settings')}
+            >
+              <IconSymbol name="slider.horizontal.3" size={20} color={C.label} />
+              <Text style={styles.menuItemText}>Preferences</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+              onPress={() => handleNavigate('/settings')}
+            >
+              <IconSymbol name="bell.fill" size={20} color={C.label} />
+              <Text style={styles.menuItemText}>Notifications</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+              onPress={() => setShowAppearance(!showAppearance)}
+            >
+              <IconSymbol name="moon.fill" size={20} color={C.label} />
+              <Text style={styles.menuItemText}>Appearance</Text>
+              <IconSymbol
+                name={showAppearance ? 'chevron.up' : 'chevron.down'}
+                size={14}
+                color={C.secondary}
+              />
+            </Pressable>
+            {showAppearance && (
+              <View style={styles.appearanceRow}>
+                {THEME_OPTIONS.map((opt) => {
+                  const active = themePref === opt.key;
+                  return (
+                    <Pressable
+                      key={opt.key}
+                      style={[styles.themePill, active && styles.themePillActive]}
+                      onPress={() => setThemePref(opt.key)}
+                    >
+                      <Text style={[styles.themePillText, active && styles.themePillTextActive]}>
+                        {opt.label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            )}
+            <Pressable
+              style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+              onPress={() => handleNavigate('/settings')}
+            >
+              <IconSymbol name="questionmark.circle" size={20} color={C.label} />
+              <Text style={styles.menuItemText}>Help & Support</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+              onPress={() => handleNavigate('/settings')}
+            >
+              <IconSymbol name="shield.fill" size={20} color={C.label} />
+              <Text style={styles.menuItemText}>Terms & Privacy</Text>
+            </Pressable>
+          </View>
+
+          {/* Spacer pushes log out to bottom */}
+          <View style={styles.spacer} />
+
+          {/* ── DIVIDER ── */}
+          <View style={styles.divider} />
+
+          {/* Log Out — always last */}
+          <Pressable
+            style={({ pressed }) => [styles.menuItem, pressed && styles.menuItemPressed]}
+            onPress={handleSignOut}
+          >
+            <IconSymbol name="rectangle.portrait.and.arrow.right" size={20} color="#B85C5C" />
+            <Text style={[styles.menuItemText, styles.logOutText]}>Log Out</Text>
+          </Pressable>
+        </ScrollView>
+      </View>
+    </DrawerPanel>
   );
 }
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  container: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: C.surface,
-    zIndex: 0,
-  },
   scroll: {
     flex: 1,
   },

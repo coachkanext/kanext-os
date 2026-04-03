@@ -14,9 +14,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, useFocusEffect } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useAppContext } from '@/context/app-context';
 import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
+import { useDemoRole } from '@/utils/demo-role-store';
 import {
   HUB_PROFILE, HUB_ANALYTICS, HUB_CHART_DATA, HUB_ACTIVITY, HUB_GOALS,
   HUB_TIERS, HUB_SUBSCRIBERS, HUB_NEWSLETTERS, HUB_LINKS, HUB_PORTFOLIO,
@@ -501,8 +504,11 @@ export default function HubScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { state } = useAppContext();
+  const mode = state.activeContext?.mode ?? state.mode ?? 'personal';
 
-  const [isOwner, setIsOwner] = useState(true);
+  const [role, cycleRole, roleCycles] = useDemoRole('personal:hub');
+  const isOwner = role === roleCycles[0];
   const [activeTab, setActiveTab] = useState<HubTab>('Overview');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [filterPillsVisible, setFilterPillsVisible] = useState(false);
@@ -980,16 +986,14 @@ export default function HubScreen() {
       {/* ── Fixed Top Bar ── */}
       <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         <View style={s.topBar}>
-          {/* Left: hamburger (owner) */}
+          {/* Left: hamburger */}
           <View style={s.topBarSide}>
-            {isOwner ? (
-              <Pressable
-                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-                hitSlop={12}
-              >
-                <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
-              </Pressable>
-            ) : null}
+            <Pressable
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+              hitSlop={12}
+            >
+              <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+            </Pressable>
           </View>
 
           {/* Center: dropdown pill */}
@@ -1003,16 +1007,9 @@ export default function HubScreen() {
             </Pressable>
           </View>
 
-          {/* Right: filter icon + owner toggle */}
+          {/* Right: RolePill + filter icon */}
           <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', gap: 10 }]}>
-            <Pressable
-              style={[s.ownerToggle, { backgroundColor: isOwner ? C.accent : C.surfacePressed }]}
-              onPress={() => { Haptics.selectionAsync(); setIsOwner(v => !v); }}
-            >
-              <Text style={[s.ownerToggleText, { color: isOwner ? '#fff' : C.secondary }]}>
-                {isOwner ? 'Owner' : 'Visit'}
-              </Text>
-            </Pressable>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
             <Pressable onPress={toggleFilterPills} hitSlop={12}>
               <IconSymbol
                 name={filterPillsVisible || selectedPill !== pills[0]
@@ -1060,7 +1057,7 @@ export default function HubScreen() {
         <>
           <Pressable style={[StyleSheet.absoluteFillObject, { zIndex: 98 }]} onPress={() => setDropdownOpen(false)} />
           <View style={[s.dropdown, { top: insets.top + 56, backgroundColor: C.bg, borderColor: C.separator, zIndex: 99 }]}>
-            {(['Overview', 'Page', 'Members'] as HubTab[]).map(tab => (
+            {(['Overview', 'Page', ...(isOwner ? ['Members'] : [])] as HubTab[]).map(tab => (
               <Pressable key={tab} style={s.dropdownOption} onPress={() => handleTabSelect(tab)}>
                 <Text style={[s.dropdownOptionText, { color: tab === activeTab ? C.label : C.secondary }, tab === activeTab && { fontWeight: '600' }]}>
                   {tab}

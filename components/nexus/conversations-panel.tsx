@@ -1,24 +1,23 @@
 /**
  * Conversations Panel — Nexus Side Panel
- * Claude-style: rounded right corners, spring animation, full height.
+ * Uses DrawerPanel for slide animation, backdrop, and swipe-to-close.
  */
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Pressable,
-  Animated,
   Share,
   ScrollView,
-  Modal,
   useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { DrawerPanel } from '@/components/ui/drawer-panel';
 import { ConversationContextMenu } from './conversation-context-menu';
 import { useColors } from '@/hooks/use-colors';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -58,7 +57,7 @@ export function ConversationsPanel({
   const C = useColors();
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
-  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+  const { width: screenWidth } = useWindowDimensions();
   const { state: authState } = useAuth();
 
   const PANEL_WIDTH = Math.min(screenWidth * 0.82, 320);
@@ -66,27 +65,12 @@ export function ConversationsPanel({
   const panelBg   = colorScheme === 'dark' ? '#1C1C1E' : C.bg;
   const activeBg  = colorScheme === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
 
-  const slideAnim = useRef(new Animated.Value(-PANEL_WIDTH)).current;
-  const [rendered, setRendered] = useState(visible);
-
   const displayName = authState.session?.displayName ?? 'You';
   const initials = displayName.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase();
 
   const [contextMenuVisible, setContextMenuVisible] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    if (visible) setRendered(true);
-    Animated.spring(slideAnim, {
-      toValue: visible ? 0 : -PANEL_WIDTH,
-      useNativeDriver: true,
-      bounciness: 0,
-      speed: 16,
-    }).start(({ finished }) => {
-      if (finished && !visible) setRendered(false);
-    });
-  }, [visible, slideAnim, PANEL_WIDTH]);
 
   const handleConversationPress = (id: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -110,92 +94,63 @@ export function ConversationsPanel({
     }
   };
 
-  if (!rendered) return null;
-
   return (
-    <Modal
-      visible={rendered}
-      transparent
-      animationType="none"
-      statusBarTranslucent
-      onRequestClose={onClose}
-    >
-      {/* Backdrop — only interactive when panel is open */}
-      <Pressable
-        style={styles.backdrop}
-        onPress={visible ? onClose : undefined}
-        pointerEvents={visible ? 'auto' : 'none'}
-      />
+    <DrawerPanel visible={visible} onClose={onClose} width={PANEL_WIDTH}>
+      <View style={[styles.panel, { backgroundColor: panelBg, paddingTop: insets.top + 8, paddingBottom: insets.bottom + 24 }]}>
+        {/* ── Brand ── */}
+        <Text style={[styles.brand, { color: C.label }]}>KaNeXT</Text>
+        <View style={[styles.brandDivider, { backgroundColor: C.divider }]} />
 
-      {/* Panel */}
-      <Animated.View
-        style={[
-          styles.panel,
-          {
-            width: PANEL_WIDTH,
-            height: screenHeight,
-            backgroundColor: panelBg,
-            paddingTop: insets.top + 8,
-            paddingBottom: insets.bottom + 24,
-            transform: [{ translateX: slideAnim }],
-          },
-        ]}
-        pointerEvents={visible ? 'auto' : 'none'}
-      >
-      {/* ── Brand ── */}
-      <Text style={[styles.brand, { color: C.label }]}>KaNeXT</Text>
-      <View style={[styles.brandDivider, { backgroundColor: C.divider }]} />
+        {/* ── Nav Tabs (display only) ── */}
+        <View style={styles.navContainer}>
+          {(
+            [
+              { label: 'Chats',     icon: 'bubble.left.and.bubble.right' },
+              { label: 'Projects',  icon: 'folder'                        },
+              { label: 'Artifacts', icon: 'doc.text'                      },
+            ] as const
+          ).map((tab) => (
+            <View key={tab.label} style={styles.navTab}>
+              <IconSymbol name={tab.icon as any} size={19} color={C.secondary} />
+              <Text style={[styles.navLabel, { color: C.secondary }]}>{tab.label}</Text>
+            </View>
+          ))}
+        </View>
 
-      {/* ── Nav Tabs (display only) ── */}
-      <View style={styles.navContainer}>
-        {(
-          [
-            { label: 'Chats',     icon: 'bubble.left.and.bubble.right' },
-            { label: 'Projects',  icon: 'folder'                        },
-            { label: 'Artifacts', icon: 'doc.text'                      },
-          ] as const
-        ).map((tab) => (
-          <View key={tab.label} style={styles.navTab}>
-            <IconSymbol name={tab.icon as any} size={19} color={C.secondary} />
-            <Text style={[styles.navLabel, { color: C.secondary }]}>{tab.label}</Text>
-          </View>
-        ))}
-      </View>
+        {/* ── Recents label ── */}
+        <Text style={[styles.sectionLabel, { color: C.muted }]}>Recents</Text>
 
-      {/* ── Recents label ── */}
-      <Text style={[styles.sectionLabel, { color: C.muted }]}>Recents</Text>
-
-      {/* ── Thread List ── */}
-      <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {conversations.length > 0 ? (
-          conversations.map((conv) => {
-            const isActive = conv.id === activeConversationId;
-            return (
-              <Pressable
-                key={conv.id}
-                style={({ pressed }) => [
-                  styles.threadRow,
-                  { backgroundColor: isActive || pressed ? activeBg : 'transparent' },
-                ]}
-                onPress={() => handleConversationPress(conv.id)}
-                onLongPress={(event) => handleConversationLongPress(conv, event)}
-                delayLongPress={300}
-              >
-                <Text
-                  style={[styles.threadTitle, { color: isActive ? C.label : C.secondary, fontWeight: isActive ? '500' : '400' }]}
-                  numberOfLines={1}
+        {/* ── Thread List ── */}
+        <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          {conversations.length > 0 ? (
+            conversations.map((conv) => {
+              const isActive = conv.id === activeConversationId;
+              return (
+                <Pressable
+                  key={conv.id}
+                  style={({ pressed }) => [
+                    styles.threadRow,
+                    { backgroundColor: isActive || pressed ? activeBg : 'transparent' },
+                  ]}
+                  onPress={() => handleConversationPress(conv.id)}
+                  onLongPress={(event) => handleConversationLongPress(conv, event)}
+                  delayLongPress={300}
                 >
-                  {conv.title}
-                </Text>
-              </Pressable>
-            );
-          })
-        ) : (
-          <View style={styles.emptyState}>
-            <Text style={[styles.emptyText, { color: C.muted }]}>No conversations yet</Text>
-          </View>
-        )}
-      </ScrollView>
+                  <Text
+                    style={[styles.threadTitle, { color: isActive ? C.label : C.secondary, fontWeight: isActive ? '500' : '400' }]}
+                    numberOfLines={1}
+                  >
+                    {conv.title}
+                  </Text>
+                </Pressable>
+              );
+            })
+          ) : (
+            <View style={styles.emptyState}>
+              <Text style={[styles.emptyText, { color: C.muted }]}>No conversations yet</Text>
+            </View>
+          )}
+        </ScrollView>
 
         <ConversationContextMenu
           visible={contextMenuVisible}
@@ -209,27 +164,14 @@ export function ConversationsPanel({
           onDelete={onDeleteConversation}
           onShare={handleShare}
         />
-      </Animated.View>
-    </Modal>
+      </View>
+    </DrawerPanel>
   );
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-  },
   panel: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    borderTopRightRadius: 28,
-    borderBottomRightRadius: 28,
-    shadowColor: '#000',
-    shadowOffset: { width: 4, height: 0 },
-    shadowOpacity: 0.15,
-    shadowRadius: 20,
-    elevation: 16,
+    flex: 1,
   },
 
   brand: {
@@ -273,5 +215,4 @@ const styles = StyleSheet.create({
   threadTitle: { fontSize: 15 },
   emptyState: { paddingVertical: 40, alignItems: 'center' },
   emptyText: { fontSize: 13, fontStyle: 'italic' },
-
 });

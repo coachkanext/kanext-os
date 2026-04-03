@@ -28,11 +28,11 @@ import {
 
 const ACCENT = '#1A1714';
 
-type CommunityTab  = 'Overview' | 'Departments' | 'Groups';
+type CommunityTab  = 'Dashboard' | 'Services' | 'Groups' | 'Volunteers';
 type CommunityRole = 'Pastor' | 'Member';
 
 const OVERVIEW_PILLS_ADMIN   = ['All', 'Attendance', 'Giving', 'Volunteers', 'Care'];
-const DEPT_PILLS             = ['All', 'Worship', 'Youth', 'Hospitality', 'Outreach', 'Education'];
+const SERVICES_PILLS         = ['All', 'Sunday AM', 'Sunday PM', 'Bible Study', 'Special'];
 const GROUPS_PILLS_ADMIN     = ['All', 'Active', 'Inactive'];
 const GROUPS_PILLS_MEMBER    = ['All', 'Open', 'My Groups', 'Full'];
 
@@ -41,8 +41,9 @@ const PILL_ROW_H = 48;
 const BAR_MAX_H  = 100;
 
 function pillsForTab(tab: CommunityTab, role: CommunityRole): string[] {
-  if (tab === 'Overview')    return role === 'Pastor' ? OVERVIEW_PILLS_ADMIN : [];
-  if (tab === 'Departments') return DEPT_PILLS;
+  if (tab === 'Dashboard')   return role === 'Pastor' ? OVERVIEW_PILLS_ADMIN : [];
+  if (tab === 'Services')    return role === 'Pastor' ? SERVICES_PILLS : [];
+  if (tab === 'Volunteers')  return [];
   return role === 'Pastor' ? GROUPS_PILLS_ADMIN : GROUPS_PILLS_MEMBER;
 }
 
@@ -373,7 +374,7 @@ export default function CommunityHubScreen() {
   const router = useRouter();
 
   const [role, setRole]                 = useState<CommunityRole>('Pastor');
-  const [activeTab, setActiveTab]       = useState<CommunityTab>('Overview');
+  const [activeTab, setActiveTab]       = useState<CommunityTab>('Dashboard');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [filterPillsVisible, setFilterPillsVisible] = useState(false);
   const [selectedPill, setSelectedPill] = useState('All');
@@ -1069,9 +1070,111 @@ export default function CommunityHubScreen() {
 
   // ── Render ────────────────────────────────────────────────────────────────
 
+  const renderAdminServices = () => {
+    const SERVICES = [
+      { id: 's1', date: 'Sun Apr 6',   time: '10:00 AM', type: 'Sunday AM',   title: 'Easter Sunday',        speaker: 'Dr. Oladipo Kalejaiye',  attendance: 612, elements: 9 },
+      { id: 's2', date: 'Sun Apr 6',   time: '6:00 PM',  type: 'Sunday PM',   title: 'Easter Evening Service', speaker: 'Dr. Nonyelum Kalejaiye', attendance: 0, elements: 7 },
+      { id: 's3', date: 'Wed Apr 9',   time: '7:00 PM',  type: 'Bible Study', title: 'Romans 9 — Election',   speaker: 'Dr. Oladipo Kalejaiye',  attendance: 0, elements: 5 },
+      { id: 's4', date: 'Sun Apr 13',  time: '10:00 AM', type: 'Sunday AM',   title: 'Walking in Authority',  speaker: 'Dr. Oladipo Kalejaiye',  attendance: 0, elements: 8 },
+      { id: 's5', date: 'Sun Apr 13',  time: '6:00 PM',  type: 'Sunday PM',   title: 'Evening Worship',       speaker: 'Guest Speaker',          attendance: 0, elements: 6 },
+    ];
+    const typeFilter = selectedPill === 'All' ? SERVICES : SERVICES.filter(sv => sv.type === selectedPill);
+    return (
+      <ScrollView onScroll={handleScroll} scrollEventThrottle={16} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}>
+        <SecHeader title="Upcoming Services" C={C} />
+        {typeFilter.map((sv, idx) => (
+          <Pressable key={sv.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={[{ backgroundColor: C.surface, borderRadius: 14, padding: 14, marginBottom: 10 }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 6 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{sv.title}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{sv.date} · {sv.time}</Text>
+              </View>
+              <View style={{ backgroundColor: C.surfacePressed, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3, marginLeft: 8 }}>
+                <Text style={{ fontSize: 11, fontWeight: '600', color: C.secondary }}>{sv.type}</Text>
+              </View>
+            </View>
+            <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 8 }}>{sv.speaker}</Text>
+            <View style={{ flexDirection: 'row', gap: 16 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <IconSymbol name="list.bullet" size={12} color={C.muted} />
+                <Text style={{ fontSize: 11, color: C.muted }}>{sv.elements} elements</Text>
+              </View>
+              {sv.attendance > 0 && (
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                  <IconSymbol name="person.2.fill" size={12} color={C.muted} />
+                  <Text style={{ fontSize: 11, color: C.muted }}>{sv.attendance} attended</Text>
+                </View>
+              )}
+              <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ marginLeft: 'auto' as any, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, borderWidth: 1, borderColor: C.separator }}>
+                <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>Edit Order</Text>
+              </Pressable>
+            </View>
+          </Pressable>
+        ))}
+      </ScrollView>
+    );
+  };
+
+  const renderAdminVolunteers = () => {
+    const VOLUNTEER_ROSTER = [
+      { id: 'v1', name: 'Jordan Williams',  roles: ['Usher', 'Greeter'],               hours: 24, lastServed: 'Apr 6',  certified: true  },
+      { id: 'v2', name: 'Keisha Brown',     roles: ["Children's Ministry"],             hours: 18, lastServed: 'Apr 6',  certified: true  },
+      { id: 'v3', name: 'Marcus Adeyemi',   roles: ['Audio/Visual', 'Media'],           hours: 32, lastServed: 'Apr 6',  certified: true  },
+      { id: 'v4', name: 'Tanya Smith',      roles: ['Worship Team'],                    hours: 14, lastServed: 'Apr 6',  certified: false },
+      { id: 'v5', name: 'David Chen',       roles: ['Parking', 'Usher'],               hours: 10, lastServed: 'Mar 30', certified: true  },
+      { id: 'v6', name: 'Grace Okonkwo',    roles: ['Prayer Team', 'Greeter'],          hours: 22, lastServed: 'Apr 6',  certified: true  },
+    ];
+    const VOL_GAPS = [
+      { role: 'Children\'s Ministry Safety', dept: "Children's Ministry", needed: 3 },
+      { role: 'Sound Engineer',              dept: 'Media Ministry',     needed: 1 },
+      { role: 'Parking Volunteer',           dept: 'Hospitality',        needed: 2 },
+    ];
+    return (
+      <ScrollView onScroll={handleScroll} scrollEventThrottle={16} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}>
+        {VOL_GAPS.length > 0 && (
+          <>
+            <SecHeader title={`${VOL_GAPS.length} Open Volunteer Slots`} C={C} />
+            <View style={[s.section, { backgroundColor: C.surface, marginBottom: 20 }]}>
+              {VOL_GAPS.map((gap, idx) => (
+                <View key={idx} style={[s.volGapRow, idx < VOL_GAPS.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.volGapDept, { color: C.label }]}>{gap.role}</Text>
+                    <Text style={[s.volGapNeeds, { color: C.secondary }]}>{gap.dept} · {gap.needed} needed</Text>
+                  </View>
+                  <Pressable style={[s.volSignUpBtn, { borderColor: C.accent }]} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+                    <Text style={[s.volSignUpText, { color: C.accent }]}>Fill Slot</Text>
+                  </Pressable>
+                </View>
+              ))}
+            </View>
+          </>
+        )}
+        <SecHeader title="Volunteer Roster" C={C} />
+        <View style={[s.section, { backgroundColor: C.surface }]}>
+          {VOLUNTEER_ROSTER.map((v, idx) => (
+            <Pressable key={v.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={[{ padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12 }, idx < VOLUNTEER_ROSTER.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: ACCENT, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Text style={{ color: '#fff', fontWeight: '700', fontSize: 13 }}>{v.name.split(' ').map(w => w[0]).join('').slice(0, 2)}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{v.name}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>{v.roles.join(' · ')}</Text>
+              </View>
+              <View style={{ alignItems: 'flex-end', gap: 4 }}>
+                <Text style={{ fontSize: 12, fontWeight: '700', color: C.label }}>{v.hours}h</Text>
+                <Text style={{ fontSize: 11, color: C.muted }}>Last: {v.lastServed}</Text>
+              </View>
+            </Pressable>
+          ))}
+        </View>
+      </ScrollView>
+    );
+  };
+
   const renderContent = () => {
-    if (activeTab === 'Overview')    return isAdmin ? renderAdminOverview()  : renderMemberOverview();
-    if (activeTab === 'Departments') return isAdmin ? renderAdminDepts()     : renderMemberDepts();
+    if (activeTab === 'Dashboard')   return isAdmin ? renderAdminOverview()   : renderMemberOverview();
+    if (activeTab === 'Services')    return isAdmin ? renderAdminServices()   : renderMemberOverview();
+    if (activeTab === 'Volunteers')  return isAdmin ? renderAdminVolunteers() : renderMemberOverview();
     return isAdmin ? renderAdminGroups() : renderMemberGroups();
   };
 
@@ -1097,15 +1200,19 @@ export default function CommunityHubScreen() {
           </View>
 
 
-          {/* Center dropdown pill */}
+          {/* Center: dropdown pill for Pastor, plain "Home" for Member */}
           <View style={s.dropdownPillWrap}>
-            <Pressable
-              style={[s.dropdownPill, { backgroundColor: C.surfacePressed }]}
-              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setDropdownOpen(v => !v); }}
-            >
-              <Text style={[s.dropdownPillText, { color: C.label }]}>{activeTab}</Text>
-              <IconSymbol name="chevron.down" size={12} color={C.secondary} />
-            </Pressable>
+            {isAdmin ? (
+              <Pressable
+                style={[s.dropdownPill, { backgroundColor: C.surfacePressed }]}
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setDropdownOpen(v => !v); }}
+              >
+                <Text style={[s.dropdownPillText, { color: C.label }]}>{activeTab}</Text>
+                <IconSymbol name="chevron.down" size={12} color={C.secondary} />
+              </Pressable>
+            ) : (
+              <Text style={[s.dropdownPillText, { color: C.label }]}>Home</Text>
+            )}
           </View>
 
           <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', gap: 8 }]}>
@@ -1164,7 +1271,7 @@ export default function CommunityHubScreen() {
         <>
           <Pressable style={[StyleSheet.absoluteFillObject, { zIndex: 98 }]} onPress={() => setDropdownOpen(false)} />
           <View style={[s.dropdown, { top: insets.top + 56, backgroundColor: C.bg, borderColor: C.separator, zIndex: 99 }]}>
-            {(['Overview', 'Departments', 'Groups'] as CommunityTab[]).map(tab => (
+            {(['Dashboard', 'Services', 'Groups', 'Volunteers'] as CommunityTab[]).map(tab => (
               <Pressable key={tab} style={s.dropdownOption} onPress={() => handleTabSelect(tab)}>
                 <Text style={[s.dropdownOptionText, { color: tab === activeTab ? C.label : C.secondary }, tab === activeTab && { fontWeight: '600' }]}>
                   {tab}

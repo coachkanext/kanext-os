@@ -40,12 +40,14 @@ import { NexusArtifactBlock } from '@/components/nexus/nexus-artifact-block';
 
 // Intelligence layer
 import { classifyQuery } from '@/services/intelligence/router';
-import { buildIntelligenceSystemPrompt, type SystemPromptParts } from '@/services/intelligence/nexus-intelligence';
+import { buildIntelligenceSystemPrompt, isDataRoomQuery, buildDataRoomSystemPrompt, type SystemPromptParts } from '@/services/intelligence/nexus-intelligence';
 import { MODELS, type ModelTier } from '@/services/intelligence/models';
 import { POOL_TOOLS, handlePoolTool } from '@/services/intelligence/pool-tools';
 import { CORPUS_TOOLS, handleCorpusTool } from '@/services/intelligence/corpus-tools';
 import { APP_DATA_TOOLS, handleAppDataTool } from '@/services/intelligence/app-data-tools';
 import { consumePendingEvalQuery } from '@/utils/global-nexus-state';
+import { useAppContext } from '@/context/app-context';
+import { CANONICAL_VIEWS } from '@/data/views';
 
 // Storage
 import {
@@ -341,6 +343,9 @@ type SystemBlock = { type: 'text'; text: string; cache_control?: { type: 'epheme
 /**
  * Builds the `system` field for the API request.
  *
+ * Data room tier — R0/R1 only, investor/business queries:
+ *   Block 0: Data Room KB — cache_control: ephemeral
+ *
  * Basketball tier — structured array with prompt caching:
  *   Block 0: SKILL_MD + TOOLS_INSTRUCTION (~2K tokens) — cache_control: ephemeral
  *   Block 1: validated profiles (Laolu/Lincoln) — no cache marker, only when matched
@@ -348,17 +353,29 @@ type SystemBlock = { type: 'text'; text: string; cache_control?: { type: 'epheme
  *
  * General tier — plain string (Haiku, small prompt, caching not worthwhile).
  */
-function buildSystemField(msg: string): string | SystemBlock[] {
-  if (!isBasketball(msg)) return GENERIC_PROMPT;
-
-  const parts: SystemPromptParts = buildIntelligenceSystemPrompt(msg);
-  const blocks: SystemBlock[] = [
-    { type: 'text', text: parts.staticContent, cache_control: { type: 'ephemeral' } },
-  ];
-  if (parts.dynamicContent) {
-    blocks.push({ type: 'text', text: parts.dynamicContent });
+function buildSystemField(msg: string, rbcaTier: number): string | SystemBlock[] {
+  // Data room tier — R0/R1 only, investor/business queries
+  if (rbcaTier <= 1 && isDataRoomQuery(msg)) {
+    const parts = buildDataRoomSystemPrompt();
+    return [
+      { type: 'text', text: parts.staticContent, cache_control: { type: 'ephemeral' } },
+    ] as SystemBlock[];
   }
-  return blocks;
+
+  // Basketball intelligence tier
+  if (isBasketball(msg)) {
+    const parts: SystemPromptParts = buildIntelligenceSystemPrompt(msg);
+    const blocks: SystemBlock[] = [
+      { type: 'text', text: parts.staticContent, cache_control: { type: 'ephemeral' } },
+    ];
+    if (parts.dynamicContent) {
+      blocks.push({ type: 'text', text: parts.dynamicContent });
+    }
+    return blocks;
+  }
+
+  // General tier — plain string (Haiku)
+  return GENERIC_PROMPT;
 }
 
 // ── XHR Streaming ─────────────────────────────────────────────────────────────
@@ -459,6 +476,12 @@ export default function NexusScreen() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
   const S      = useMemo(() => makeStyles(C), [C]);
+
+  const { state: appCtxState } = useAppContext();
+  const rbcaTier = useMemo(() => {
+    const view = CANONICAL_VIEWS.find(v => v.membership_id === appCtxState.activeContext.membership_id);
+    return view?.rbca_tier ?? 5;
+  }, [appCtxState.activeContext.membership_id]);
 
   // Chat state
   const [text,            setText]          = useState('');
@@ -599,7 +622,8 @@ export default function NexusScreen() {
     const assistantId = `a_${Date.now()}`;
     abortRef.current  = false;
 
-    const historyLimit = isBasketball(userText) ? 6 : MAX_HISTORY;
+    const isDataRoom = rbcaTier <= 1 && isDataRoomQuery(userText);
+    const historyLimit = (isBasketball(userText) || isDataRoom) ? 6 : MAX_HISTORY;
     const history: ApiMessage[] = messages
       .filter(m => m.raw.length > 0 && !m.streaming)
       .slice(-historyLimit)
@@ -615,8 +639,8 @@ export default function NexusScreen() {
     ]);
     scrollToEnd(true);
 
-    const systemField = buildSystemField(userText);
-    const tier: ModelTier = isBasketball(userText) ? 'BASKETBALL' : 'GENERAL';
+    const systemField = buildSystemField(userText, rbcaTier);
+    const tier: ModelTier = isDataRoom ? 'DATA_ROOM' : isBasketball(userText) ? 'BASKETBALL' : 'GENERAL';
     const model = MODELS[tier];
 
     console.log('[Nexus] tier:', tier, '| model:', model);
@@ -628,6 +652,8 @@ export default function NexusScreen() {
       const toolsForTier =
         tier === 'BASKETBALL'
           ? [...POOL_TOOLS, ...CORPUS_TOOLS, ...APP_DATA_TOOLS, { type: 'web_search_20250305', name: 'web_search' }]
+          : tier === 'DATA_ROOM'
+          ? [...APP_DATA_TOOLS, { type: 'web_search_20250305', name: 'web_search' }]
           : APP_DATA_TOOLS;
 
       const bodyObj = {

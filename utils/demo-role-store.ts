@@ -14,9 +14,9 @@
  *   sports:recruits → ['Coach', 'Recruit']
  *   sports:kaypay   → ['Coach', 'Player']
  *   sports:kaystudios → ['Coach', 'Player']
- *   education       → ['Dean', 'Student']
- *   education:admissions → ['Dean', 'Prospective']
- *   education:kaystudios → ['Faculty', 'Student']
+ *   education       → ['President', 'Student']
+ *   education:admissions → ['President', 'Student']
+ *   education:kaystudios → ['President', 'Student']
  *   community       → ['Pastor', 'Member']
  *   community:outreach → ['Pastor', 'Visitor']
  *   business        → ['CEO', 'Client']
@@ -34,10 +34,10 @@ const DEFAULTS: Record<string, string[]> = {
   'sports:booster':     ['Coach',   'Fan'],
   'sports:kaypay':      ['Coach',   'Player'],
   'sports:kaystudios':  ['Coach',   'Player'],
-  education:              ['Dean',    'Student'],
-  'education:admissions': ['Dean',    'Prospective'],
-  'education:fund':       ['Dean',    'Student'],
-  'education:kaystudios': ['Faculty', 'Student'],
+  education:              ['President', 'Student'],
+  'education:admissions': ['President', 'Student'],
+  'education:fund':       ['President', 'Student'],
+  'education:kaystudios': ['President', 'Student'],
   community:              ['Pastor',  'Member'],
   'community:members':    ['Pastor',  'Member'],
   'community:outreach':   ['Pastor',  'Visitor'],
@@ -46,6 +46,16 @@ const DEFAULTS: Record<string, string[]> = {
   'business:store':       ['CEO',     'Client'],
   'business:team':        ['CEO',     'Employee'],
   'business:kaypay':      ['CEO',     'Employee'],
+  personal:               ['Owner',   'Subscriber'],
+  'personal:hub':         ['Owner',   'Subscriber'],
+  'personal:agenda':      ['Owner',   'Subscriber'],
+  'personal:social':      ['Owner',   'Subscriber'],
+  'personal:network':     ['Owner',   'Subscriber'],
+  'personal:deals':       ['Owner',   'Subscriber'],
+  'personal:earn':        ['Owner',   'Subscriber'],
+  'personal:kaytv':       ['Owner',   'Subscriber'],
+  'personal:kaypay':      ['Owner',   'Subscriber'],
+  'personal:kaystudios':  ['Owner',   'Subscriber'],
 };
 
 const _state: Record<string, string> = {};

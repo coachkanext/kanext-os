@@ -1,6 +1,6 @@
 /**
  * Side Panel Shell — Universal side panel for all screens.
- * Position: absolute left, jet black background.
+ * Wrapped in DrawerPanel primitive for animated slide-in/out.
  *
  * Layout: Screen-specific content rows only.
  * Mode/org switching lives exclusively in the Profile org drawer.
@@ -11,6 +11,7 @@ import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { usePathname } from 'expo-router';
 import { useColors } from '@/hooks/use-colors';
+import { DrawerPanel } from '@/components/ui/drawer-panel';
 
 import { MessagesPanel } from './messages-panel';
 import { PhonePanel } from './phone-panel';
@@ -56,9 +57,10 @@ export const SIDE_PANEL_WIDTH = Math.min(300, SCREEN_WIDTH * 0.82);
 
 interface SidePanelProps {
   visible: boolean;
+  onClose: () => void;
 }
 
-export function SidePanel({ visible }: SidePanelProps) {
+export function SidePanel({ visible, onClose }: SidePanelProps) {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
@@ -97,96 +99,88 @@ export function SidePanel({ visible }: SidePanelProps) {
   const isFund     = pathname.includes('/fund');
 
   return (
-    <View
-      style={[styles.container, { width: SIDE_PANEL_WIDTH, backgroundColor: C.surface }]}
-      pointerEvents={visible ? 'auto' : 'none'}
-    >
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={[
-          styles.scrollContent,
-          { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24 },
-        ]}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Screen-specific content — no mode circles or org switcher */}
-        {isMessages
-          ? <MessagesPanel />
-          : isPhone
-            ? <PhonePanel />
-            : isNexus
-              ? <NexusPanel />
-              : isSocial
-                ? <SocialPanel />
-                : isBusinessStore
-                  ? <BusinessStorePanel />
-                : isStore
-                  ? (mode === 'church' ? <GivePanel /> : <StorePanel />)
-                  : isKayTV
-                    ? <KayTVPanel />
-                    : isWallet
-                      ? <WalletPanel />
-                      : isHubCommunity
-                        ? <CommunityHubPanel />
-                        : isHubEducation
-                        ? <EducationHubPanel />
-                        : isCampus
-                        ? <CampusPanel />
-                        : isHubSports
-                        ? <SportsHubPanel />
-                        : isBooster
-                        ? <SportsBoosterPanel />
-                        : isAdmissions
-                        ? <AdmissionsPanel />
-                        : isHubBusiness
-                        ? <BusinessHubPanel />
-                        : isTeam
-                        ? <TeamPanel />
-                        : isInquiries
-                        ? <InquiriesPanel />
-                        : isHub
-                        ? <HubPanel />
-                        : isStudios
-                        ? <StudiosPanel />
-                        : isMode
-                      ? <ModePanel />
-                      : isAgenda
-                        ? <AgendaPanel />
-                        : isSeason
-                          ? <SeasonPanel />
-                          : isRoster
-                            ? (mode === 'sports' ? <SportsRosterPanel /> : <RosterPanel />)
-                            : isRecruits
-                              ? (mode === 'sports' ? <SportsRecruitsPanel /> : mode === 'business' ? <LeadsPanel /> : mode === 'education' ? <AdmissionsPanel /> : mode === 'church' ? <OutreachPanel /> : <ProspectsPanel />)
-                              : isOutreach
-                                ? <CommunityOutreachPanel />
-                                : isEarn
-                                  ? <EarnPanel />
-                                : isDeals
-                                  ? <DealsPanel />
-                                : isNetwork
-                                  ? <NetworkPanel />
-                                  : isMembers
-                                  ? <CommunityMembersPanel />
-                                  : isGive
-                                    ? <CommunityGivePanel />
-                                    : isFund
-                                      ? <EduFundPanel />
-                                      : <DefaultPanel pathname={pathname} />
-        }
-      </ScrollView>
-    </View>
+    <DrawerPanel visible={visible} onClose={onClose} width={SIDE_PANEL_WIDTH}>
+      <View style={{ flex: 1, backgroundColor: C.surface }}>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={[
+            styles.scrollContent,
+            { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24 },
+          ]}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Screen-specific content — no mode circles or org switcher */}
+          {isMessages
+            ? <MessagesPanel />
+            : isPhone
+              ? <PhonePanel />
+              : isNexus
+                ? <NexusPanel />
+                : isSocial
+                  ? <SocialPanel />
+                  : isBusinessStore
+                    ? <BusinessStorePanel />
+                  : isStore
+                    ? (mode === 'church' ? <GivePanel /> : <StorePanel />)
+                    : isKayTV
+                      ? <KayTVPanel />
+                      : isWallet
+                        ? <WalletPanel />
+                        : isHubCommunity
+                          ? <CommunityHubPanel />
+                          : isHubEducation
+                          ? <EducationHubPanel />
+                          : isCampus
+                          ? <CampusPanel />
+                          : isHubSports
+                          ? <SportsHubPanel />
+                          : isBooster
+                          ? <SportsBoosterPanel />
+                          : isAdmissions
+                          ? <AdmissionsPanel />
+                          : isHubBusiness
+                          ? <BusinessHubPanel />
+                          : isTeam
+                          ? <TeamPanel />
+                          : isInquiries
+                          ? <InquiriesPanel />
+                          : isHub
+                          ? <HubPanel />
+                          : isStudios
+                          ? <StudiosPanel />
+                          : isMode
+                        ? <ModePanel />
+                        : isAgenda
+                          ? <AgendaPanel />
+                          : isSeason
+                            ? <SeasonPanel />
+                            : isRoster
+                              ? (mode === 'sports' ? <SportsRosterPanel /> : <RosterPanel />)
+                              : isRecruits
+                                ? (mode === 'sports' ? <SportsRecruitsPanel /> : mode === 'business' ? <LeadsPanel /> : mode === 'education' ? <AdmissionsPanel /> : mode === 'church' ? <OutreachPanel /> : <ProspectsPanel />)
+                                : isOutreach
+                                  ? <CommunityOutreachPanel />
+                                  : isEarn
+                                    ? <EarnPanel />
+                                  : isDeals
+                                    ? <DealsPanel />
+                                  : isNetwork
+                                    ? <NetworkPanel />
+                                    : isMembers
+                                    ? <CommunityMembersPanel />
+                                    : isGive
+                                      ? <CommunityGivePanel />
+                                      : isFund
+                                        ? <EduFundPanel />
+                                        : <DefaultPanel pathname={pathname} />
+          }
+        </ScrollView>
+      </View>
+    </DrawerPanel>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    bottom: 0,
-    zIndex: 0,
-  },
   scroll: {
     flex: 1,
   },

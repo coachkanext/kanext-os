@@ -6,17 +6,19 @@
  */
 
 import React, { useRef, useCallback, useMemo } from 'react';
-import { View, Text, StyleSheet, Animated, Pressable, Image } from 'react-native';
+import { View, Text, StyleSheet, Animated, Pressable } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+
 import { useAccentColor } from '@/hooks/use-accent-color';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useMode } from '@/context/app-context';
 import { useMultitasking } from '@/context/multitasking-context';
 import type { Mode } from '@/types';
 import type { GridIcon } from './home-types';
+
 
 /** Route overrides per mode */
 const MODE_ROUTES: Record<string, Partial<Record<string, string>>> = {
@@ -40,17 +42,13 @@ const MODE_ICONS: Record<string, Partial<Record<Mode, string>>> = {
   p6: { personal: 'dollarsign.circle.fill', business: 'storefront.fill', education: 'dollarsign.circle.fill', sports: 'bag.fill', community: 'heart.fill' },
 };
 
-/** Custom image overrides per mode (replaces SF Symbol when set) */
-const MODE_IMAGES: Record<string, Partial<Record<Mode, any>>> = {
-  p4: { sports: require('@/assets/images/icons/roster-jerseys.png') },
-};
 
 const ROWS: GridIcon[][] = [
   // Row 1 — universal
   [
-    { id: 'hub',     icon: 'square.grid.2x2.fill',  label: 'Hub',    route: '/(tabs)/(main)/season' },
-    { id: 'agenda',  icon: 'calendar.badge.clock',  label: 'Agenda', route: '/agenda' },
-    { id: 'social',  icon: 'globe',                 label: 'Social', route: '/social' },
+    { id: 'hub',    icon: 'square.grid.2x2.fill', label: 'Hub',    route: '/(tabs)/(main)/season' },
+    { id: 'agenda', icon: 'calendar.badge.clock', label: 'Agenda', route: '/agenda'               },
+    { id: 'social', icon: 'globe',                label: 'Social', route: '/social'               },
   ],
   // Row 2 — mode-dependent labels
   [
@@ -60,9 +58,9 @@ const ROWS: GridIcon[][] = [
   ],
   // Row 3 — universal
   [
-    { id: 'media',  icon: 'play.rectangle.fill', label: 'KayTV',      route: '/(tabs)/(main)/kaytv' },
-    { id: 'wallet', icon: 'creditcard.fill',     label: 'KayPay',     route: '/(tabs)/(main)/kaypay' },
-    { id: 'gm',     icon: 'gamecontroller.fill', label: 'KayStudios', route: '/studios' },
+    { id: 'media',  icon: 'play.rectangle.fill', label: 'KTV',  route: '/(tabs)/(main)/kaytv'  },
+    { id: 'wallet', icon: 'creditcard.fill',     label: 'KPay', route: '/(tabs)/(main)/kaypay' },
+    { id: 'gm',     icon: 'gamecontroller.fill', label: 'KPlay', route: '/studios'              },
   ],
 ];
 
@@ -109,12 +107,7 @@ function GridTile({
       onPressOut={handlePressOut}
     >
       <Animated.View style={[styles.tileWrap, { transform: [{ scale }] }]}>
-        {item.image
-          ? <Image source={item.image} style={styles.tileImage} resizeMode="cover" />
-          : <View style={styles.tile}>
-              <IconSymbol name={item.icon} size={28} color={C.label} />
-            </View>
-        }
+        <IconSymbol name={item.icon} size={36} color={C.label} />
         {item.badgeCount != null && item.badgeCount > 0 && (
           <View style={[styles.badge, { backgroundColor: accent }]}>
             <Text style={styles.badgeText}>{item.badgeCount}</Text>
@@ -155,11 +148,10 @@ export function IconGrid() {
           {row.map((item) => {
             const label = MODE_LABELS[item.id]?.[mode] ?? item.label;
             const icon  = MODE_ICONS[item.id]?.[mode] ?? item.icon;
-            const image = MODE_IMAGES[item.id]?.[mode] ?? undefined;
             return (
               <GridTile
                 key={item.id}
-                item={{ ...item, label, icon, image }}
+                item={{ ...item, label, icon }}
                 accent={accent}
                 onPress={handlePress}
                 styles={styles}
@@ -190,25 +182,10 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   tileWrap: {
     width: 72,
     height: 72,
-  },
-  tile: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: C.surface,
-    borderRadius: 20,
-    borderCurve: 'continuous' as any,
-    borderWidth: 0.75,
-    borderColor: C.cardBorder,
-    // No shadows — flat and clean per design spec
   },
-  tileImage: {
-    width: 72,
-    height: 72,
-    borderRadius: 20,
-    borderCurve: 'continuous' as any,
-    overflow: 'hidden' as any,
-  },
+
   badge: {
     position: 'absolute',
     top: 4,

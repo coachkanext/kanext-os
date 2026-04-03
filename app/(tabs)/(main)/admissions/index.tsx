@@ -39,24 +39,24 @@ const DETAIL_H  = 560;
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type AdmTab  = 'Pipeline' | 'Applications' | 'Campaigns';
-type AdmRole = 'Dean' | 'Prospective'; // kept for local reference; actual role driven by useDemoRole
+type AdmRole = 'President' | 'Student'; // kept for local reference; actual role driven by useDemoRole
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function pillsForTab(tab: AdmTab, role: string): string[] {
-  const isDean = role === 'Dean';
+function pillsForTab(tab: AdmTab, role: string, roleCycles: string[]): string[] {
+  const isAdmin = role === roleCycles[0];
   if (tab === 'Pipeline') {
-    return isDean
+    return isAdmin
       ? ['All', 'Prospect', 'Inquiry', 'Applied', 'Under Review', 'Admitted', 'Deposited', 'Enrolled']
       : [];
   }
   if (tab === 'Applications') {
-    return isDean
+    return isAdmin
       ? ['All', 'Unreviewed', 'In Review', 'Decision Ready', 'Decided']
       : [];
   }
   // Campaigns
-  return isDean
+  return isAdmin
     ? ['All', 'Active', 'Upcoming', 'Completed', 'Planning', 'Campus Visits', 'Virtual', 'Digital', 'Social', 'Transfer', 'Scholarship', 'Alumni']
     : ['Upcoming', 'Campus Visits', 'Virtual'];
 }
@@ -512,7 +512,8 @@ export default function AdmissionsScreen() {
   const detailAnim = useRef(new Animated.Value(0)).current;
   const scrollRef  = useRef<ScrollView>(null);
 
-  const [role, cycleRole] = useDemoRole('education:admissions');
+  const [role, cycleRole, roleCycles] = useDemoRole('education:admissions');
+  const isAdmin = role === roleCycles[0];
   const [activeTab,         setActiveTab]         = useState<AdmTab>('Pipeline');
   const [dropdownOpen,      setDropdownOpen]      = useState(false);
   const [pillsVisible,      setPillsVisible]      = useState(false);
@@ -540,7 +541,7 @@ export default function AdmissionsScreen() {
   const [rec2Email,    setRec2Email]    = useState('');
 
   // Derived
-  const pills = useMemo(() => pillsForTab(activeTab, role), [activeTab, role]);
+  const pills = useMemo(() => pillsForTab(activeTab, role, roleCycles), [activeTab, role, roleCycles]);
 
   const funnelCounts = useMemo<Record<EnrollmentStage, number>>(() => {
     const counts = Object.fromEntries(
@@ -584,14 +585,14 @@ export default function AdmissionsScreen() {
   // Tab change
   const changeTab = useCallback((tab: AdmTab) => {
     Haptics.selectionAsync();
-    const newPills = pillsForTab(tab, role);
+    const newPills = pillsForTab(tab, role, roleCycles);
     setActiveTab(tab);
     setDropdownOpen(false);
     setSelectedPill(newPills[0] ?? 'All');
     setPillsVisible(false);
     pillsAnim.setValue(0);
     setExpandedCampaignId(null);
-  }, [role, pillsAnim]);
+  }, [role, roleCycles, pillsAnim]);
 
   // Role is now driven by useDemoRole('education:admissions')
 
@@ -1599,17 +1600,16 @@ export default function AdmissionsScreen() {
   }
 
   function renderContent() {
-    const isDean = role === 'Dean';
     if (activeTab === 'Pipeline') {
-      if (isDean) return renderPipelineAdmin();
+      if (isAdmin) return renderPipelineAdmin();
       return renderProspectiveDashboard();
     }
     if (activeTab === 'Applications') {
-      if (isDean) return renderApplicationsAdmin();
+      if (isAdmin) return renderApplicationsAdmin();
       return renderApplicationsStudent();
     }
     // Campaigns
-    if (isDean) return renderCampaignsAdmin();
+    if (isAdmin) return renderCampaignsAdmin();
     return renderCampaignsMember();
   }
 
@@ -1632,7 +1632,7 @@ export default function AdmissionsScreen() {
       </ScrollView>
 
       {/* FAB — Pipeline: Add Prospect */}
-      {role === 'Dean' && activeTab === 'Pipeline' && (
+      {isAdmin && activeTab === 'Pipeline' && (
         <Pressable
           style={[s.fab, { bottom: insets.bottom + 80 }]}
           onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setShowProspectCard(true); }}
@@ -1643,7 +1643,7 @@ export default function AdmissionsScreen() {
       )}
 
       {/* FAB — Campaigns: Create Campaign */}
-      {role === 'Dean' && activeTab === 'Campaigns' && (
+      {isAdmin && activeTab === 'Campaigns' && (
         <Pressable
           style={[s.fab, { bottom: insets.bottom + 80 }]}
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
@@ -1656,9 +1656,9 @@ export default function AdmissionsScreen() {
       {/* Absolute top bar */}
       <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         <View style={s.topBar}>
-          {/* Left: hamburger (Dean only) */}
+          {/* Left: hamburger (President only) */}
           <View style={s.topBarSide}>
-            {role === 'Dean' && (
+            {isAdmin && (
               <Pressable
                 onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
                 hitSlop={12}
@@ -1685,7 +1685,7 @@ export default function AdmissionsScreen() {
               role={role}
               onPress={cycleRole}
               accentColor="#1A1714"
-              isPrimary={role === 'Dean'}
+              isPrimary={isAdmin}
             />
             {pills.length > 0 && (
               <Pressable onPress={togglePills} hitSlop={12}>
@@ -1764,7 +1764,7 @@ export default function AdmissionsScreen() {
             {selectedApplicant && (
               <ApplicantDetailSheet
                 applicant={{ ...selectedApplicant, stage: applicantStages[selectedApplicant.id] ?? selectedApplicant.stage }}
-                isAdmin={role === 'Dean'}
+                isAdmin={isAdmin}
                 onClose={closeDetail}
                 onMoveStage={(stage) => moveStage(selectedApplicant.id, stage)}
                 counselorNotes={counselorNotes}

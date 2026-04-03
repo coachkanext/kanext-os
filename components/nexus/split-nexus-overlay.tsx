@@ -245,14 +245,6 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
     }
   }, [visible, slideAnim]);
 
-  // Consume pending query from voice handoff
-  useEffect(() => {
-    if (visible) {
-      const pending = consumeSplitNexusPendingQuery();
-      if (pending) sendQuery(pending);
-    }
-  }, [visible, sendQuery]);
-
   const handleClose = useCallback(() => {
     Keyboard.dismiss();
     Animated.timing(slideAnim, {
@@ -351,6 +343,14 @@ export function SplitNexusOverlay({ visible, onClose }: Props) {
 
     setIsLoading(false);
   }, [isLoading, mode, appState, screenContext]);
+
+  // Consume pending query from voice handoff (must be after sendQuery declaration)
+  useEffect(() => {
+    if (visible) {
+      const pending = consumeSplitNexusPendingQuery();
+      if (pending) sendQuery(pending);
+    }
+  }, [visible, sendQuery]);
 
   const handleSend = useCallback(() => sendQuery(inputText), [inputText, sendQuery]);
   const handleChipPress = useCallback((chip: string) => sendQuery(chip), [sendQuery]);

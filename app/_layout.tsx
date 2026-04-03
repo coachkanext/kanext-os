@@ -16,8 +16,8 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreenModule from 'expo-splash-screen';
-import React, { useEffect, useCallback, useRef, useMemo, useState } from 'react';
-import { View, StyleSheet, Animated, Pressable, PanResponder } from 'react-native';
+import React, { useEffect, useCallback, useRef, useState } from 'react';
+import { View, StyleSheet, Pressable } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import 'react-native-reanimated';
@@ -39,10 +39,10 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useColors } from '@/hooks/use-colors';
 import { registerSearchOverlayHandlers } from '@/utils/global-search-overlay';
 import { registerSplitNexusHandlers, openSplitNexus, setSplitNexusPendingQuery } from '@/utils/global-split-nexus';
-import { registerSettingsPanelHandlers, closeSettingsPanel, isSettingsPanelOpen } from '@/utils/global-settings-panel';
-import { SettingsPanel, SETTINGS_PANEL_WIDTH } from '@/components/settings-panel';
-import { registerSidePanelHandlers, openSidePanel, closeSidePanel, isSidePanelOpen } from '@/utils/global-side-panel';
-import { SidePanel, SIDE_PANEL_WIDTH } from '@/components/side-panel/side-panel';
+import { registerSettingsPanelHandlers } from '@/utils/global-settings-panel';
+import { SettingsPanel } from '@/components/settings-panel';
+import { registerSidePanelHandlers } from '@/utils/global-side-panel';
+import { SidePanel } from '@/components/side-panel/side-panel';
 
 import { registerViewSwitchCallback } from '@/utils/view-switch-lifecycle';
 import { requestHomeReset } from '@/utils/global-home';
@@ -213,78 +213,37 @@ function AppShell() {
     );
   }, [startListening, stopListening]);
 
-  // Settings panel state — slides from LEFT, content shifts RIGHT
+  // Settings panel state — DrawerPanel handles scrim + animation internally
   const [settingsPanelVisible, setSettingsPanelVisible] = useState(false);
-  const contentTranslateX = useRef(new Animated.Value(0)).current;
 
   const openPanel = useCallback(() => {
     setSettingsPanelVisible(true);
-    Animated.spring(contentTranslateX, {
-      toValue: SETTINGS_PANEL_WIDTH,
-      tension: 65,
-      friction: 11,
-      useNativeDriver: true,
-    }).start();
-  }, [contentTranslateX]);
+  }, []);
 
   const dismissPanel = useCallback(() => {
-    Animated.timing(contentTranslateX, {
-      toValue: 0,
-      duration: 250,
-      useNativeDriver: true,
-    }).start(() => {
-      setSettingsPanelVisible(false);
-    });
-  }, [contentTranslateX]);
+    setSettingsPanelVisible(false);
+  }, []);
 
   useEffect(() => {
     registerSettingsPanelHandlers(openPanel, dismissPanel);
   }, [openPanel, dismissPanel]);
 
-  // Side panel state — also slides from LEFT, content shifts RIGHT
+  // Side panel state — DrawerPanel handles scrim + animation internally
   const [sidePanelVisible, setSidePanelVisible] = useState(false);
 
   const openSidePanelCb = useCallback(() => {
     setSidePanelVisible(true);
-    Animated.spring(contentTranslateX, {
-      toValue: SIDE_PANEL_WIDTH,
-      tension: 65,
-      friction: 11,
-      useNativeDriver: true,
-    }).start();
-  }, [contentTranslateX]);
+  }, []);
 
   const dismissSidePanelCb = useCallback(() => {
-    Animated.timing(contentTranslateX, {
-      toValue: 0,
-      duration: 250,
-      useNativeDriver: true,
-    }).start(() => {
-      setSidePanelVisible(false);
-    });
-  }, [contentTranslateX]);
+    setSidePanelVisible(false);
+  }, []);
 
   useEffect(() => {
     registerSidePanelHandlers(openSidePanelCb, dismissSidePanelCb);
   }, [openSidePanelCb, dismissSidePanelCb]);
 
   const router = useRouter();
-
-  // PanResponder for swipe-left dismiss on shifted content (both panels on left)
-  const dismissPanResponder = useMemo(
-    () =>
-      PanResponder.create({
-        onMoveShouldSetPanResponder: (_evt, gs) =>
-          gs.dx < -20 && Math.abs(gs.dx) > Math.abs(gs.dy) * 1.5,
-        onPanResponderRelease: (_evt, gs) => {
-          if (gs.dx < -60) {
-            if (isSettingsPanelOpen()) closeSettingsPanel();
-            if (isSidePanelOpen()) closeSidePanel();
-          }
-        },
-      }),
-    [],
-  );
 
   // Show onboarding when not authenticated OR when authenticated but new user needs onboarding
   const showAuthModal = !authState.isChecking && (!authState.isAuthenticated || authState.isNewUser);
@@ -294,14 +253,8 @@ function AppShell() {
 
   return (
     <View style={containerDynamic}>
-      {/* Only mount the active panel — root bg matches theme so no flash */}
-      {settingsPanelVisible ? <SettingsPanel visible={true} /> : null}
-      {sidePanelVisible ? <SidePanel visible={true} /> : null}
-
-      {/* Content wrapper — shifts right when panels open */}
-      <Animated.View
-        style={[containerDynamic, { transform: [{ translateX: contentTranslateX }] }]}
-      >
+      {/* Content wrapper */}
+      <View style={containerDynamic}>
         <View style={containerDynamic}>
           <Stack
             screenOptions={{
@@ -327,20 +280,11 @@ function AppShell() {
           </Stack>
         </View>
         <UniversalFooter />
+      </View>
 
-        {/* Tap/swipe dismiss overlay when either panel is open */}
-        {(settingsPanelVisible || sidePanelVisible) ? (
-          <View style={StyleSheet.absoluteFill} {...dismissPanResponder.panHandlers}>
-            <Pressable
-              style={StyleSheet.absoluteFill}
-              onPress={() => {
-                if (isSettingsPanelOpen()) closeSettingsPanel();
-                if (isSidePanelOpen()) closeSidePanel();
-              }}
-            />
-          </View>
-        ) : null}
-      </Animated.View>
+      {/* Side panels — rendered after content so they overlay it correctly */}
+      <SettingsPanel visible={settingsPanelVisible} onClose={dismissPanel} />
+      <SidePanel visible={sidePanelVisible} onClose={dismissSidePanelCb} />
 
       {/* Universal entity sheets (single sheet per entity type) */}
       <TeamSheet

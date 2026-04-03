@@ -1,6 +1,7 @@
 /**
  * Personal Deals — Pipedrive-style creator CRM.
- * Pipeline (vertical grouped list) / Contacts / Insights tabs.
+ * Owner view: Pipeline/Contacts/Insights tabs.
+ * Subscriber view: Collaborate (rate card + service categories + submissions).
  */
 
 import React, { useState, useRef, useMemo, useCallback } from 'react';
@@ -15,6 +16,8 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { RolePill } from '@/components/ui/role-pill';
+import { useDemoRole } from '@/utils/demo-role-store';
 import { useColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
@@ -962,12 +965,117 @@ function InsightsTab({ C }: { C: ReturnType<typeof useColors> }) {
   );
 }
 
+// ── Subscriber Collaborate View ───────────────────────────────────────────────
+
+const SERVICE_CATEGORIES = [
+  { icon: 'bag.fill',             title: 'Brand Partnership',    sub: 'Sponsored content, campaigns'  },
+  { icon: 'mic.fill',             title: 'Speaking Engagement',  sub: 'Keynotes, panels, workshops'   },
+  { icon: 'person.fill',          title: 'Coaching Consultation',sub: '1:1 strategy sessions'         },
+  { icon: 'ellipsis.circle.fill', title: 'Custom Request',       sub: 'Tell us what you need'         },
+] as const;
+
+const SUBMISSIONS = [
+  { id: 's1', title: 'Brand Partnership Inquiry', date: 'Submitted Apr 1',  status: 'Under Review', statusColor: '#B8943E' as const },
+  { id: 's2', title: 'Speaking Engagement',       date: 'Submitted Mar 28', status: 'Accepted',     statusColor: '#5A8A6E' as const },
+] as const;
+
+function CollaborateView({ C, topBarH }: { C: ReturnType<typeof useColors>; topBarH: number }) {
+  return (
+    <ScrollView
+      style={{ flex: 1, marginTop: topBarH }}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 120 }}
+    >
+      {/* Rate Card */}
+      <View style={{
+        backgroundColor: C.surface, borderRadius: 16,
+        margin: 16, padding: 20,
+      }}>
+        <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, marginBottom: 10 }}>
+          Work With Sammy
+        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+          <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#5A8A6E' }} />
+          <Text style={{ fontSize: 13, fontWeight: '600', color: '#5A8A6E' }}>Available</Text>
+        </View>
+        <Text style={{ fontSize: 14, color: C.secondary }}>Starting from $500</Text>
+      </View>
+
+      {/* Service Category Cards */}
+      {SERVICE_CATEGORIES.map(svc => (
+        <Pressable
+          key={svc.title}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          style={({ pressed }) => ({
+            flexDirection: 'row', alignItems: 'center', gap: 14,
+            backgroundColor: pressed ? C.surfacePressed : C.surface,
+            borderRadius: 12, marginHorizontal: 16, marginBottom: 8, padding: 16,
+          })}
+        >
+          <IconSymbol name={svc.icon as any} size={20} color={C.label} />
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{svc.title}</Text>
+            <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{svc.sub}</Text>
+          </View>
+          <IconSymbol name="chevron.right" size={14} color={C.secondary} />
+        </Pressable>
+      ))}
+
+      {/* Book a Call */}
+      <Pressable
+        onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+        style={({ pressed }) => ({
+          backgroundColor: C.label, borderRadius: 14,
+          paddingVertical: 14, marginHorizontal: 16, marginTop: 8,
+          alignItems: 'center', opacity: pressed ? 0.85 : 1,
+        })}
+      >
+        <Text style={{ fontSize: 15, fontWeight: '700', color: '#FFFFFF' }}>Book a Call</Text>
+      </Pressable>
+
+      {/* My Submissions */}
+      <Text style={{
+        fontSize: 11, color: C.secondary, textTransform: 'uppercase',
+        letterSpacing: 1, padding: 16, marginTop: 8,
+      }}>
+        MY SUBMISSIONS
+      </Text>
+
+      {SUBMISSIONS.map(sub => (
+        <View
+          key={sub.id}
+          style={{
+            backgroundColor: C.surface, borderRadius: 12,
+            marginHorizontal: 16, marginBottom: 8, padding: 16,
+            flexDirection: 'row', alignItems: 'center',
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{sub.title}</Text>
+            <Text style={{ fontSize: 12, color: C.secondary, marginTop: 3 }}>{sub.date}</Text>
+          </View>
+          <View style={{
+            paddingHorizontal: 10, paddingVertical: 5,
+            backgroundColor: C.surface, borderRadius: 8,
+            borderWidth: 1, borderColor: sub.statusColor,
+          }}>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: sub.statusColor }}>{sub.status}</Text>
+          </View>
+        </View>
+      ))}
+    </ScrollView>
+  );
+}
+
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
 export default function DealsScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const topBarH = insets.top + TOP_BAR_H;
+
+  const [role, cycleRole, roleCycles] = useDemoRole('personal:deals');
+  const isOwner = role === roleCycles[0];
 
   const [tab, setTab] = useState<Tab>('Pipeline');
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -1025,6 +1133,31 @@ export default function DealsScreen() {
   const scrollPadTop = topBarH + (showPills ? PILL_ROW_H : 0) + 8;
   const pills = TAB_PILLS[tab];
 
+  // ── Subscriber (Collaborate) view ──────────────────────────────────────────
+  if (!isOwner) {
+    return (
+      <View style={{ flex: 1, backgroundColor: C.bg }}>
+        <View style={[styles.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg }]}>
+          <Pressable
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+            style={styles.topBtn}
+          >
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Collaborate</Text>
+          </View>
+          <View style={styles.topBtn}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={false} />
+          </View>
+        </View>
+
+        <CollaborateView C={C} topBarH={topBarH} />
+      </View>
+    );
+  }
+
+  // ── Owner view ─────────────────────────────────────────────────────────────
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
@@ -1042,14 +1175,16 @@ export default function DealsScreen() {
             <IconSymbol name={dropdownOpen ? 'chevron.up' : 'chevron.down'} size={11} color={C.muted} />
           </Pressable>
         </View>
-        {/* Filter button — only for Pipeline/Insights (Contacts has internal filter) */}
-        {tab !== 'Contacts' ? (
-          <Pressable onPress={togglePills} style={styles.topBtn}>
-            <IconSymbol name="line.3.horizontal.decrease.circle" size={20} color={showPills ? C.accent : C.label} />
-          </Pressable>
-        ) : (
-          <View style={styles.topBtn} />
-        )}
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+          {tab !== 'Contacts' ? (
+            <Pressable onPress={togglePills} style={styles.topBtn}>
+              <IconSymbol name="line.3.horizontal.decrease.circle" size={20} color={showPills ? C.accent : C.label} />
+            </Pressable>
+          ) : (
+            <View style={styles.topBtn} />
+          )}
+          <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
+        </View>
       </View>
 
       {/* Dropdown */}

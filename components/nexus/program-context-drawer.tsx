@@ -19,6 +19,7 @@ import * as Haptics from 'expo-haptics';
 
 import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { DrawerPanel } from '@/components/ui/drawer-panel';
 import { Colors, Spacing, BorderRadius, ModeColors, Brand } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppContext } from '@/context/app-context';
@@ -215,39 +216,6 @@ export function ProgramContextDrawer({
     biases: true,
   });
 
-  const slideAnim = useRef(new Animated.Value(DRAWER_WIDTH)).current;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    if (visible) {
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 250,
-          useNativeDriver: true,
-        }),
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 250,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: DRAWER_WIDTH,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }
-  }, [visible, slideAnim, fadeAnim]);
-
   const currentProgram = state.program ?? PROGRAMS[0];
 
   const handleProgramSelect = (program: Program) => {
@@ -332,346 +300,328 @@ export function ProgramContextDrawer({
     };
   }, [context, savedFadeAnim]);
 
-  if (!visible) return null;
-
   const importanceLevels: ImportanceLevel[] = ['critical', 'high', 'medium', 'low'];
 
   return (
-    <View style={StyleSheet.absoluteFill}>
-      {/* Scrim / Backdrop */}
-      <Animated.View style={[styles.scrim, { opacity: fadeAnim }]}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-      </Animated.View>
+    <DrawerPanel side="right" visible={visible} onClose={onClose} width={DRAWER_WIDTH}>
+      {/* Header */}
+      <View style={[styles.header, { borderBottomColor: colors.border }]}>
+        <ThemedText style={styles.headerTitle}>Team System</ThemedText>
+        <Pressable
+          style={({ pressed }) => [
+            styles.closeButton,
+            { opacity: pressed ? 0.7 : 1 },
+          ]}
+          onPress={onClose}
+        >
+          <IconSymbol name="xmark" size={20} color={colors.text} />
+        </Pressable>
+      </View>
 
-      {/* Drawer */}
-      <Animated.View
-        style={[
-          styles.drawer,
-          {
-            width: DRAWER_WIDTH,
-            backgroundColor: colors.background,
-            transform: [{ translateX: slideAnim }],
-            paddingTop: insets.top,
-            paddingBottom: insets.bottom,
-          },
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingTop: insets.top, paddingBottom: insets.bottom },
         ]}
+        showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View style={[styles.header, { borderBottomColor: colors.border }]}>
-          <ThemedText style={styles.headerTitle}>Team System</ThemedText>
-          <Pressable
-            style={({ pressed }) => [
-              styles.closeButton,
-              { opacity: pressed ? 0.7 : 1 },
-            ]}
-            onPress={onClose}
-          >
-            <IconSymbol name="xmark" size={20} color={colors.text} />
-          </Pressable>
+        {/* Program Selector */}
+        <View style={styles.section}>
+          <SectionHeader title="ACTIVE PROGRAM" colors={colors} />
+          <View style={styles.programGrid}>
+            {PROGRAMS.map((program) => {
+              const isSelected = program.id === currentProgram.id;
+              return (
+                <Pressable
+                  key={program.id}
+                  style={[
+                    styles.programChip,
+                    {
+                      backgroundColor: isSelected ? modeColors.primary : colors.backgroundSecondary,
+                      borderColor: isSelected ? modeColors.primary : colors.border,
+                    },
+                  ]}
+                  onPress={() => handleProgramSelect(program)}
+                >
+                  <ThemedText
+                    style={[
+                      styles.programChipText,
+                      { color: isSelected ? '#FFFFFF' : colors.text },
+                    ]}
+                  >
+                    {program.name}
+                  </ThemedText>
+                </Pressable>
+              );
+            })}
+          </View>
         </View>
 
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Program Selector */}
-          <View style={styles.section}>
-            <SectionHeader title="ACTIVE PROGRAM" colors={colors} />
-            <View style={styles.programGrid}>
-              {PROGRAMS.map((program) => {
-                const isSelected = program.id === currentProgram.id;
-                return (
-                  <Pressable
-                    key={program.id}
-                    style={[
-                      styles.programChip,
-                      {
-                        backgroundColor: isSelected ? modeColors.primary : colors.backgroundSecondary,
-                        borderColor: isSelected ? modeColors.primary : colors.border,
-                      },
-                    ]}
-                    onPress={() => handleProgramSelect(program)}
-                  >
-                    <ThemedText
-                      style={[
-                        styles.programChipText,
-                        { color: isSelected ? '#FFFFFF' : colors.text },
-                      ]}
-                    >
-                      {program.name}
-                    </ThemedText>
-                  </Pressable>
-                );
-              })}
+        {/* Program Resources */}
+        <View style={styles.section}>
+          <SectionHeader title="PROGRAM RESOURCES" colors={colors} />
+          <View style={[styles.resourceCard, { backgroundColor: colors.backgroundSecondary }]}>
+            <View style={styles.resourceRow}>
+              <ThemedText style={[styles.resourceLabel, { color: colors.textSecondary }]}>
+                Scholarships
+              </ThemedText>
+              <ThemedText style={styles.resourceValue}>
+                {context.scholarshipsUsed} / {context.scholarships}
+              </ThemedText>
+            </View>
+            <View style={[styles.resourceBar, { backgroundColor: colors.backgroundTertiary }]}>
+              <View
+                style={[
+                  styles.resourceBarFill,
+                  {
+                    width: `${(context.scholarshipsUsed / context.scholarships) * 100}%`,
+                    backgroundColor: modeColors.primary,
+                  },
+                ]}
+              />
+            </View>
+            <View style={[styles.resourceRow, { marginTop: Spacing.sm }]}>
+              <ThemedText style={[styles.resourceLabel, { color: colors.textSecondary }]}>
+                NIL Budget
+              </ThemedText>
+              <ThemedText style={styles.resourceValue}>
+                {formatCurrency(context.nilUsed)} / {formatCurrency(context.nilBudget)}
+              </ThemedText>
+            </View>
+            <View style={[styles.resourceBar, { backgroundColor: colors.backgroundTertiary }]}>
+              <View
+                style={[
+                  styles.resourceBarFill,
+                  {
+                    width: `${(context.nilUsed / context.nilBudget) * 100}%`,
+                    backgroundColor: '#FFFFFF',
+                  },
+                ]}
+              />
             </View>
           </View>
+        </View>
 
-          {/* Program Resources */}
-          <View style={styles.section}>
-            <SectionHeader title="PROGRAM RESOURCES" colors={colors} />
-            <View style={[styles.resourceCard, { backgroundColor: colors.backgroundSecondary }]}>
-              <View style={styles.resourceRow}>
-                <ThemedText style={[styles.resourceLabel, { color: colors.textSecondary }]}>
-                  Scholarships
-                </ThemedText>
-                <ThemedText style={styles.resourceValue}>
-                  {context.scholarshipsUsed} / {context.scholarships}
-                </ThemedText>
-              </View>
-              <View style={[styles.resourceBar, { backgroundColor: colors.backgroundTertiary }]}>
-                <View
-                  style={[
-                    styles.resourceBarFill,
-                    {
-                      width: `${(context.scholarshipsUsed / context.scholarships) * 100}%`,
-                      backgroundColor: modeColors.primary,
-                    },
-                  ]}
-                />
-              </View>
-              <View style={[styles.resourceRow, { marginTop: Spacing.sm }]}>
-                <ThemedText style={[styles.resourceLabel, { color: colors.textSecondary }]}>
-                  NIL Budget
-                </ThemedText>
-                <ThemedText style={styles.resourceValue}>
-                  {formatCurrency(context.nilUsed)} / {formatCurrency(context.nilBudget)}
-                </ThemedText>
-              </View>
-              <View style={[styles.resourceBar, { backgroundColor: colors.backgroundTertiary }]}>
-                <View
-                  style={[
-                    styles.resourceBarFill,
-                    {
-                      width: `${(context.nilUsed / context.nilBudget) * 100}%`,
-                      backgroundColor: '#FFFFFF',
-                    },
-                  ]}
-                />
-              </View>
-            </View>
-          </View>
+        {/* System Preset */}
+        <View style={styles.section}>
+          <SectionHeader title="SYSTEM PRESET" colors={colors} />
+          <Dropdown
+            value={context.systemPreset}
+            options={SYSTEM_PRESETS.map((p) => ({ value: p.value, label: p.label }))}
+            onSelect={(v) => setContext((prev) => ({ ...prev, systemPreset: v as SystemPreset }))}
+            colors={colors}
+          />
+          <ThemedText style={[styles.presetDescription, { color: colors.textSecondary }]}>
+            {SYSTEM_PRESETS.find((p) => p.value === context.systemPreset)?.description}
+          </ThemedText>
+        </View>
 
-          {/* System Preset */}
-          <View style={styles.section}>
-            <SectionHeader title="SYSTEM PRESET" colors={colors} />
-            <Dropdown
-              value={context.systemPreset}
-              options={SYSTEM_PRESETS.map((p) => ({ value: p.value, label: p.label }))}
-              onSelect={(v) => setContext((prev) => ({ ...prev, systemPreset: v as SystemPreset }))}
-              colors={colors}
-            />
-            <ThemedText style={[styles.presetDescription, { color: colors.textSecondary }]}>
-              {SYSTEM_PRESETS.find((p) => p.value === context.systemPreset)?.description}
-            </ThemedText>
-          </View>
-
-          {/* Play Style */}
-          <View style={styles.section}>
-            <SectionHeader title="PLAY STYLE" colors={colors} />
-            <View style={styles.styleRow}>
-              <View style={styles.styleColumn}>
-                <ThemedText style={[styles.styleLabel, { color: colors.textTertiary }]}>
-                  Offensive
-                </ThemedText>
-                <Dropdown
-                  value={context.offensiveStyle}
-                  options={OFFENSIVE_STYLES}
-                  onSelect={(v) => setContext((prev) => ({ ...prev, offensiveStyle: v as OffensiveStyle }))}
-                  colors={colors}
-                />
-              </View>
-              <View style={styles.styleColumn}>
-                <ThemedText style={[styles.styleLabel, { color: colors.textTertiary }]}>
-                  Defensive
-                </ThemedText>
-                <Dropdown
-                  value={context.defensiveStyle}
-                  options={DEFENSIVE_STYLES}
-                  onSelect={(v) => setContext((prev) => ({ ...prev, defensiveStyle: v as DefensiveStyle }))}
-                  colors={colors}
-                />
-              </View>
-            </View>
-
-            {/* Tempo Slider */}
-            <View style={styles.tempoSection}>
-              <View style={styles.tempoHeader}>
-                <ThemedText style={[styles.styleLabel, { color: colors.textTertiary }]}>
-                  Tempo
-                </ThemedText>
-                <ThemedText style={[styles.tempoValue, { color: modeColors.primary }]}>
-                  {context.tempo < 40 ? 'Slow' : context.tempo < 60 ? 'Moderate' : context.tempo < 80 ? 'Fast' : 'Very Fast'}
-                </ThemedText>
-              </View>
-              <SimpleSlider
-                value={context.tempo}
-                onValueChange={(v) => setContext((prev) => ({ ...prev, tempo: v }))}
+        {/* Play Style */}
+        <View style={styles.section}>
+          <SectionHeader title="PLAY STYLE" colors={colors} />
+          <View style={styles.styleRow}>
+            <View style={styles.styleColumn}>
+              <ThemedText style={[styles.styleLabel, { color: colors.textTertiary }]}>
+                Offensive
+              </ThemedText>
+              <Dropdown
+                value={context.offensiveStyle}
+                options={OFFENSIVE_STYLES}
+                onSelect={(v) => setContext((prev) => ({ ...prev, offensiveStyle: v as OffensiveStyle }))}
                 colors={colors}
-                accentColor={modeColors.primary}
+              />
+            </View>
+            <View style={styles.styleColumn}>
+              <ThemedText style={[styles.styleLabel, { color: colors.textTertiary }]}>
+                Defensive
+              </ThemedText>
+              <Dropdown
+                value={context.defensiveStyle}
+                options={DEFENSIVE_STYLES}
+                onSelect={(v) => setContext((prev) => ({ ...prev, defensiveStyle: v as DefensiveStyle }))}
+                colors={colors}
               />
             </View>
           </View>
 
-          {/* Cluster Weighting */}
-          <View style={styles.section}>
-            <SectionHeader
-              title="CLUSTER WEIGHTING"
+          {/* Tempo Slider */}
+          <View style={styles.tempoSection}>
+            <View style={styles.tempoHeader}>
+              <ThemedText style={[styles.styleLabel, { color: colors.textTertiary }]}>
+                Tempo
+              </ThemedText>
+              <ThemedText style={[styles.tempoValue, { color: modeColors.primary }]}>
+                {context.tempo < 40 ? 'Slow' : context.tempo < 60 ? 'Moderate' : context.tempo < 80 ? 'Fast' : 'Very Fast'}
+              </ThemedText>
+            </View>
+            <SimpleSlider
+              value={context.tempo}
+              onValueChange={(v) => setContext((prev) => ({ ...prev, tempo: v }))}
               colors={colors}
-              collapsed={collapsedSections.clusters}
-              onToggle={() => toggleSection('clusters')}
+              accentColor={modeColors.primary}
             />
-            {!collapsedSections.clusters && (
-              <View style={styles.clusterList}>
-                {context.clusterWeights.map((cw) => (
-                  <View key={cw.cluster} style={styles.clusterRow}>
-                    <View style={styles.clusterInfo}>
-                      <ThemedText style={styles.clusterLabel}>
-                        {CLUSTER_LABELS[cw.cluster].label}
-                      </ThemedText>
-                      <ThemedText style={[styles.clusterDesc, { color: colors.textTertiary }]}>
-                        {CLUSTER_LABELS[cw.cluster].description}
-                      </ThemedText>
-                    </View>
-                    <View style={styles.clusterControls}>
-                      <Pressable
-                        style={[styles.clusterButton, { backgroundColor: colors.backgroundSecondary }]}
-                        onPress={() => updateClusterWeight(cw.cluster, -2)}
-                      >
-                        <IconSymbol name="minus" size={12} color={colors.text} />
-                      </Pressable>
-                      <ThemedText style={[styles.clusterValue, { color: modeColors.primary }]}>
-                        {cw.weight}
-                      </ThemedText>
-                      <Pressable
-                        style={[styles.clusterButton, { backgroundColor: colors.backgroundSecondary }]}
-                        onPress={() => updateClusterWeight(cw.cluster, 2)}
-                      >
-                        <IconSymbol name="plus" size={12} color={colors.text} />
-                      </Pressable>
-                    </View>
-                  </View>
-                ))}
-              </View>
-            )}
           </View>
+        </View>
 
-          {/* Position Importance */}
-          <View style={styles.section}>
-            <SectionHeader
-              title="POSITION IMPORTANCE"
-              colors={colors}
-              collapsed={collapsedSections.positions}
-              onToggle={() => toggleSection('positions')}
-            />
-            {!collapsedSections.positions && (
-              <View style={styles.positionList}>
-                {context.positionImportance.map((pi) => (
-                  <View key={pi.position} style={styles.positionRow}>
-                    <ThemedText style={styles.positionLabel}>
-                      {POSITION_LABELS[pi.position]}
+        {/* Cluster Weighting */}
+        <View style={styles.section}>
+          <SectionHeader
+            title="CLUSTER WEIGHTING"
+            colors={colors}
+            collapsed={collapsedSections.clusters}
+            onToggle={() => toggleSection('clusters')}
+          />
+          {!collapsedSections.clusters && (
+            <View style={styles.clusterList}>
+              {context.clusterWeights.map((cw) => (
+                <View key={cw.cluster} style={styles.clusterRow}>
+                  <View style={styles.clusterInfo}>
+                    <ThemedText style={styles.clusterLabel}>
+                      {CLUSTER_LABELS[cw.cluster].label}
                     </ThemedText>
-                    <View style={styles.importanceButtons}>
-                      {importanceLevels.map((level) => (
-                        <Pressable
-                          key={level}
-                          style={[
-                            styles.importanceButton,
-                            pi.importance === level && {
-                              backgroundColor: getImportanceColor(level),
-                            },
-                          ]}
-                          onPress={() => updatePositionImportance(pi.position, level)}
-                        >
-                          <ThemedText
-                            style={[
-                              styles.importanceText,
-                              { color: pi.importance === level ? '#FFFFFF' : colors.textTertiary },
-                            ]}
-                          >
-                            {level.charAt(0).toUpperCase()}
-                          </ThemedText>
-                        </Pressable>
-                      ))}
-                    </View>
+                    <ThemedText style={[styles.clusterDesc, { color: colors.textTertiary }]}>
+                      {CLUSTER_LABELS[cw.cluster].description}
+                    </ThemedText>
                   </View>
-                ))}
-                <View style={styles.importanceLegend}>
-                  <ThemedText style={[styles.legendText, { color: colors.textTertiary }]}>
-                    C = Critical • H = High • M = Medium • L = Low
-                  </ThemedText>
+                  <View style={styles.clusterControls}>
+                    <Pressable
+                      style={[styles.clusterButton, { backgroundColor: colors.backgroundSecondary }]}
+                      onPress={() => updateClusterWeight(cw.cluster, -2)}
+                    >
+                      <IconSymbol name="minus" size={12} color={colors.text} />
+                    </Pressable>
+                    <ThemedText style={[styles.clusterValue, { color: modeColors.primary }]}>
+                      {cw.weight}
+                    </ThemedText>
+                    <Pressable
+                      style={[styles.clusterButton, { backgroundColor: colors.backgroundSecondary }]}
+                      onPress={() => updateClusterWeight(cw.cluster, 2)}
+                    >
+                      <IconSymbol name="plus" size={12} color={colors.text} />
+                    </Pressable>
+                  </View>
                 </View>
-              </View>
-            )}
-          </View>
+              ))}
+            </View>
+          )}
+        </View>
 
-          {/* Program Biases */}
-          <View style={styles.section}>
-            <SectionHeader
-              title="PROGRAM BIASES"
-              colors={colors}
-              collapsed={collapsedSections.biases}
-              onToggle={() => toggleSection('biases')}
-            />
-            {!collapsedSections.biases && (
-              <View style={styles.biasList}>
-                {context.biases.map((bias) => (
-                  <Pressable
-                    key={bias.type}
+        {/* Position Importance */}
+        <View style={styles.section}>
+          <SectionHeader
+            title="POSITION IMPORTANCE"
+            colors={colors}
+            collapsed={collapsedSections.positions}
+            onToggle={() => toggleSection('positions')}
+          />
+          {!collapsedSections.positions && (
+            <View style={styles.positionList}>
+              {context.positionImportance.map((pi) => (
+                <View key={pi.position} style={styles.positionRow}>
+                  <ThemedText style={styles.positionLabel}>
+                    {POSITION_LABELS[pi.position]}
+                  </ThemedText>
+                  <View style={styles.importanceButtons}>
+                    {importanceLevels.map((level) => (
+                      <Pressable
+                        key={level}
+                        style={[
+                          styles.importanceButton,
+                          pi.importance === level && {
+                            backgroundColor: getImportanceColor(level),
+                          },
+                        ]}
+                        onPress={() => updatePositionImportance(pi.position, level)}
+                      >
+                        <ThemedText
+                          style={[
+                            styles.importanceText,
+                            { color: pi.importance === level ? '#FFFFFF' : colors.textTertiary },
+                          ]}
+                        >
+                          {level.charAt(0).toUpperCase()}
+                        </ThemedText>
+                      </Pressable>
+                    ))}
+                  </View>
+                </View>
+              ))}
+              <View style={styles.importanceLegend}>
+                <ThemedText style={[styles.legendText, { color: colors.textTertiary }]}>
+                  C = Critical • H = High • M = Medium • L = Low
+                </ThemedText>
+              </View>
+            </View>
+          )}
+        </View>
+
+        {/* Program Biases */}
+        <View style={styles.section}>
+          <SectionHeader
+            title="PROGRAM BIASES"
+            colors={colors}
+            collapsed={collapsedSections.biases}
+            onToggle={() => toggleSection('biases')}
+          />
+          {!collapsedSections.biases && (
+            <View style={styles.biasList}>
+              {context.biases.map((bias) => (
+                <Pressable
+                  key={bias.type}
+                  style={[
+                    styles.biasRow,
+                    {
+                      backgroundColor: bias.enabled ? modeColors.primary + '15' : colors.backgroundSecondary,
+                      borderColor: bias.enabled ? modeColors.primary : colors.border,
+                    },
+                  ]}
+                  onPress={() => toggleBias(bias.type)}
+                >
+                  <View style={styles.biasInfo}>
+                    <ThemedText style={[styles.biasLabel, bias.enabled && { color: modeColors.primary }]}>
+                      {BIAS_LABELS[bias.type].label}
+                    </ThemedText>
+                    <ThemedText style={[styles.biasDesc, { color: colors.textTertiary }]}>
+                      {BIAS_LABELS[bias.type].description}
+                    </ThemedText>
+                  </View>
+                  <View
                     style={[
-                      styles.biasRow,
-                      {
-                        backgroundColor: bias.enabled ? modeColors.primary + '15' : colors.backgroundSecondary,
-                        borderColor: bias.enabled ? modeColors.primary : colors.border,
-                      },
+                      styles.biasToggle,
+                      { backgroundColor: bias.enabled ? modeColors.primary : colors.backgroundTertiary },
                     ]}
-                    onPress={() => toggleBias(bias.type)}
                   >
-                    <View style={styles.biasInfo}>
-                      <ThemedText style={[styles.biasLabel, bias.enabled && { color: modeColors.primary }]}>
-                        {BIAS_LABELS[bias.type].label}
-                      </ThemedText>
-                      <ThemedText style={[styles.biasDesc, { color: colors.textTertiary }]}>
-                        {BIAS_LABELS[bias.type].description}
-                      </ThemedText>
-                    </View>
                     <View
                       style={[
-                        styles.biasToggle,
-                        { backgroundColor: bias.enabled ? modeColors.primary : colors.backgroundTertiary },
+                        styles.biasToggleKnob,
+                        { transform: [{ translateX: bias.enabled ? 14 : 0 }] },
                       ]}
-                    >
-                      <View
-                        style={[
-                          styles.biasToggleKnob,
-                          { transform: [{ translateX: bias.enabled ? 14 : 0 }] },
-                        ]}
-                      />
-                    </View>
-                  </Pressable>
-                ))}
-              </View>
-            )}
-          </View>
-        </ScrollView>
-
-        {/* Footer with auto-save indicator */}
-        <View style={[styles.footer, { borderTopColor: colors.border }]}>
-          {savedIndicator && (
-            <Animated.View style={[styles.savedIndicator, { opacity: savedFadeAnim }]}>
-              <IconSymbol name="checkmark.circle.fill" size={14} color={Brand.success} />
-              <ThemedText style={[styles.savedText, { color: Brand.success }]}>Saved</ThemedText>
-            </Animated.View>
+                    />
+                  </View>
+                </Pressable>
+              ))}
+            </View>
           )}
-          <Pressable
-            style={[styles.footerButton, { backgroundColor: colors.backgroundSecondary }]}
-            onPress={onClose}
-          >
-            <ThemedText style={styles.footerButtonText}>Close</ThemedText>
-          </Pressable>
         </View>
-      </Animated.View>
-    </View>
+      </ScrollView>
+
+      {/* Footer with auto-save indicator */}
+      <View style={[styles.footer, { borderTopColor: colors.border }]}>
+        {savedIndicator && (
+          <Animated.View style={[styles.savedIndicator, { opacity: savedFadeAnim }]}>
+            <IconSymbol name="checkmark.circle.fill" size={14} color={Brand.success} />
+            <ThemedText style={[styles.savedText, { color: Brand.success }]}>Saved</ThemedText>
+          </Animated.View>
+        )}
+        <Pressable
+          style={[styles.footerButton, { backgroundColor: colors.backgroundSecondary }]}
+          onPress={onClose}
+        >
+          <ThemedText style={styles.footerButtonText}>Close</ThemedText>
+        </Pressable>
+      </View>
+    </DrawerPanel>
   );
 }
 
@@ -680,21 +630,6 @@ export function ProgramContextDrawer({
 // =============================================================================
 
 const styles = StyleSheet.create({
-  scrim: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  drawer: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    shadowColor: '#000',
-    shadowOffset: { width: -2, height: 0 },
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
-    elevation: 10,
-  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

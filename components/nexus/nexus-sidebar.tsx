@@ -1,5 +1,5 @@
 /**
- * NexusSidebar — Full-screen-width drawer modeled on Claude's iOS sidebar.
+ * NexusSidebar — DrawerPanel-backed sidebar modeled on Claude's iOS sidebar.
  *
  * Layout (top → bottom):
  *   Header:  "Nexus" bold title  +  [X] close
@@ -8,8 +8,8 @@
  *   Scroll:  content for the active nav view
  *   Bottom:  [SK avatar + name]  ·  [+ FAB]
  *
- * Width: 100% screen — no bleed-through.
- * Animation: spring slide from -SCREEN_WIDTH → 0.
+ * Width: 78% screen — exposes content behind on the right.
+ * Animation: DrawerPanel spring slide (handles its own animation).
  * Background: C.bg (fully opaque warm cream).
  */
 
@@ -18,14 +18,12 @@ import {
   View, Text, Pressable, ScrollView, Alert, Platform,
   StyleSheet, Dimensions,
 } from 'react-native';
-import Animated, {
-  useSharedValue, useAnimatedStyle, withSpring,
-} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { DrawerPanel } from '@/components/ui/drawer-panel';
 import { loadAllChatsWithMessages } from '@/services/nexus/nexus-chat-storage';
 import { extractArtifactsFromChats, type NexusArtifact } from '@/services/nexus/nexus-artifact-extractor';
 import type { NexusChatMeta, NexusProject } from '@/services/nexus/nexus-chat-storage';
@@ -33,7 +31,7 @@ import type { NexusChatMeta, NexusProject } from '@/services/nexus/nexus-chat-st
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const SPRING = { damping: 26, stiffness: 260, mass: 0.85 } as const;
+const SIDEBAR_WIDTH = Math.round(SCREEN_WIDTH * 0.78);
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -109,16 +107,6 @@ export function NexusSidebar({
   const [artifacts, setArtifacts]             = useState<NexusArtifact[]>([]);
   const [artifactsLoading, setArtifactsLoading] = useState(false);
   const [artifactsLoaded, setArtifactsLoaded]   = useState(false);
-
-  const translateX = useSharedValue(-SCREEN_WIDTH);
-
-  useEffect(() => {
-    translateX.value = withSpring(isOpen ? 0 : -SCREEN_WIDTH, SPRING);
-  }, [isOpen]);
-
-  const panelStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }));
 
   // ── Artifacts lazy load ────────────────────────────────────────────────────
 
@@ -207,17 +195,8 @@ export function NexusSidebar({
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <View
-      style={[StyleSheet.absoluteFill, S.container]}
-      pointerEvents={isOpen ? 'auto' : 'none'}
-    >
-      <Animated.View
-        style={[
-          StyleSheet.absoluteFill,
-          { backgroundColor: C.bg },
-          panelStyle,
-        ]}
-      >
+    <DrawerPanel visible={isOpen} onClose={onClose} width={SIDEBAR_WIDTH}>
+      <View style={{ flex: 1, backgroundColor: C.bg }}>
         {/* ── Header ───────────────────────────────────────────────────────── */}
         <View style={[S.header, { paddingTop: insets.top + 12 }]}>
           <Text style={[S.headerTitle, { color: C.label }]}>Nexus</Text>
@@ -415,8 +394,8 @@ export function NexusSidebar({
             <IconSymbol name="plus" size={22} color="#fff" />
           </Pressable>
         </View>
-      </Animated.View>
-    </View>
+      </View>
+    </DrawerPanel>
   );
 }
 
@@ -424,10 +403,6 @@ export function NexusSidebar({
 
 const makeStyles = (C: ComponentColors) =>
   StyleSheet.create({
-    container: {
-      zIndex: 200,
-    },
-
     // Header
     header: {
       flexDirection: 'row',

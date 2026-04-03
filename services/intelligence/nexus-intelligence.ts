@@ -12,6 +12,7 @@ import {
   SKILL_MD,
   TEST_CASE_LAOLU, TEST_CASE_LINCOLN,
 } from './corpus';
+import { DATA_ROOM_KB } from './corpus-dataroom';
 
 // ── Validated Profile Detection ──────────────────────────────────────────────
 // When a query mentions a player or team we have a validated eval for, inject
@@ -90,5 +91,35 @@ export function buildIntelligenceSystemPrompt(msg: string): SystemPromptParts {
   return {
     staticContent,
     dynamicContent: dynamicParts.join('\n\n---\n\n'),
+  };
+}
+
+// ── Data Room Intelligence ────────────────────────────────────────────────────
+
+/**
+ * Detects investor / business queries that should route to the data room KB.
+ * Covers: fund terms, revenue model, valuation, IOA, mandate, acquisitions,
+ * regulatory (SACSCOC/Title IV), FMU, governance, brand architecture, etc.
+ */
+const DATA_ROOM_PATTERNS =
+  /\b(invest|revenue|valuat|fund(?:ing)?|capital|term[\s-]?sheet|IOA|mandate|enrollment|tuition|operat\w*[\s-]?budget|acquisition|bank[\s-]?charter|SACSCOC|accredit|FMU|Florida[\s-]?Memorial|governance|asset[\s-]?coverage|cap[\s-]?table|return\b|LP\b|data[\s-]?room|competitive|market[\s-]?size|title[\s-]?IV|institution\w*|brand[\s-]?archit|KayTV|KayPay|KayStudios|KayVision|campus[\s-]?land|founder|ARR\b|AUM\b|GMP\b|EFC\b|deploy\w*|commerciali\w*|data[\s-]?rights|privacy[\s-]?compli|intelligence[\s-]?commerc|fulfillment|VoIP|fanbase|NIL[\s-]?platform)\b/i;
+
+export function isDataRoomQuery(msg: string): boolean {
+  return DATA_ROOM_PATTERNS.test(msg);
+}
+
+const DATA_ROOM_HEADER =
+  `You are Nexus, KaNeXT's AI assistant with full access to the KaNeXT investor data room. ` +
+  `Answer investor and business questions accurately, citing specific documents when relevant. ` +
+  `Be direct, precise, and concise. Do not speculate beyond what the data room documents state.`;
+
+/**
+ * Builds the system prompt for data room / investor queries.
+ * Static block only — the full KB is the cache target (large, static, ideal for caching).
+ */
+export function buildDataRoomSystemPrompt(): SystemPromptParts {
+  return {
+    staticContent:  [DATA_ROOM_HEADER, DATA_ROOM_KB].join('\n\n---\n\n'),
+    dynamicContent: '',
   };
 }

@@ -1,6 +1,7 @@
 /**
  * Personal Earn — creator revenue command center.
- * Earnings (dashboard) / Products (storefront) / Payouts (money out).
+ * Owner view: Earnings (dashboard) / Products (storefront) / Payouts (money out).
+ * Subscriber view: Store (browse & buy products).
  */
 
 import React, { useState, useRef, useMemo, useCallback } from 'react';
@@ -14,6 +15,8 @@ import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { RolePill } from '@/components/ui/role-pill';
+import { useDemoRole } from '@/utils/demo-role-store';
 import { useColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
@@ -1053,12 +1056,98 @@ function PayoutsTab({
   );
 }
 
+// ── Subscriber Store View ──────────────────────────────────────────────────────
+
+const STORE_PRODUCTS = [
+  { id: 'sp1', icon: 'play.circle.fill', title: 'Creator Course',      price: '$197', priceNum: 197 },
+  { id: 'sp2', icon: 'doc.fill',         title: 'Brand Kit Template',  price: '$49',  priceNum: 49  },
+  { id: 'sp3', icon: 'person.fill',      title: 'Coaching Session',    price: '$250', priceNum: 250 },
+  { id: 'sp4', icon: 'envelope.fill',    title: 'Newsletter Guide',    price: 'Free', priceNum: 0   },
+] as const;
+
+function StoreView({ C, topBarH }: { C: ReturnType<typeof useColors>; topBarH: number }) {
+  const [cartCount] = useState(0);
+
+  return (
+    <ScrollView
+      style={{ flex: 1, marginTop: topBarH }}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 120 }}
+    >
+      {/* My Purchases link */}
+      <Pressable
+        onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+        style={{ alignSelf: 'flex-end', paddingHorizontal: 16, paddingVertical: 12 }}
+      >
+        <Text style={{ fontSize: 13, color: C.secondary }}>My Purchases</Text>
+      </Pressable>
+
+      {/* Product Grid */}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 12 }}>
+        {STORE_PRODUCTS.map(product => (
+          <View
+            key={product.id}
+            style={{
+              width: '47%', margin: 4,
+              backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden',
+            }}
+          >
+            {/* Thumbnail area */}
+            <View style={{
+              backgroundColor: C.separator, height: 80,
+              alignItems: 'center', justifyContent: 'center',
+            }}>
+              <IconSymbol name={product.icon as any} size={32} color={C.label} />
+            </View>
+            {/* Info + Buy */}
+            <View style={{ padding: 10 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, marginBottom: 2 }} numberOfLines={1}>
+                {product.title}
+              </Text>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{product.price}</Text>
+              <Pressable
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+                style={({ pressed }) => ({
+                  backgroundColor: C.label, borderRadius: 8,
+                  paddingVertical: 6, marginTop: 6,
+                  alignItems: 'center', opacity: pressed ? 0.85 : 1,
+                })}
+              >
+                <Text style={{ fontSize: 13, fontWeight: '600', color: '#FFFFFF' }}>
+                  {product.priceNum === 0 ? 'Get Free' : 'Buy'}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        ))}
+      </View>
+
+      {/* Cart Button */}
+      <Pressable
+        onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+        style={({ pressed }) => ({
+          backgroundColor: C.label, borderRadius: 14,
+          paddingVertical: 14, marginHorizontal: 16, marginTop: 16,
+          alignItems: 'center', opacity: pressed ? 0.85 : 1,
+        })}
+      >
+        <Text style={{ fontSize: 15, fontWeight: '700', color: '#FFFFFF' }}>
+          View Cart ({cartCount})
+        </Text>
+      </Pressable>
+    </ScrollView>
+  );
+}
+
 // ── Main Screen ────────────────────────────────────────────────────────────────
 
 export default function EarnScreen() {
   const C = useColors();
   const insets = useSafeAreaInsets();
   const topBarH = insets.top + TOP_BAR_H;
+
+  const [role, cycleRole, roleCycles] = useDemoRole('personal:earn');
+  const isOwner = role === roleCycles[0];
 
   const [tab, setTab]             = useState<Tab>('Earnings');
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -1097,6 +1186,31 @@ export default function EarnScreen() {
   const scrollPadTop = topBarH + (showPills ? PILL_ROW_H : 0) + 8;
   const pills = TAB_PILLS[tab];
 
+  // ── Subscriber (Store) view ────────────────────────────────────────────────
+  if (!isOwner) {
+    return (
+      <View style={{ flex: 1, backgroundColor: C.bg }}>
+        <View style={[styles.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg }]}>
+          <Pressable
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+            style={styles.topBtn}
+          >
+            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          </Pressable>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Store</Text>
+          </View>
+          <View style={styles.topBtn}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={false} />
+          </View>
+        </View>
+
+        <StoreView C={C} topBarH={topBarH} />
+      </View>
+    );
+  }
+
+  // ── Owner view ─────────────────────────────────────────────────────────────
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
 
@@ -1116,9 +1230,12 @@ export default function EarnScreen() {
           </Pressable>
         </View>
 
-        <Pressable onPress={togglePills} style={styles.topBtn}>
-          <IconSymbol name="line.3.horizontal.decrease.circle" size={20} color={showPills ? C.accent : C.label} />
-        </Pressable>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+          <Pressable onPress={togglePills} style={styles.topBtn}>
+            <IconSymbol name="line.3.horizontal.decrease.circle" size={20} color={showPills ? C.accent : C.label} />
+          </Pressable>
+          <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
+        </View>
       </View>
 
       {/* Dropdown */}

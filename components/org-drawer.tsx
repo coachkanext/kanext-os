@@ -1,15 +1,12 @@
 /**
- * Brand Drawer — bottom sheet for switching brands and modes.
- * Triggered by long-press on Home footer icon.
+ * Brand Drawer — bottom sheet for switching brands.
  *
  * Layout (top to bottom):
- *   Drag handle (cosmetic)
- *   Mode pills row: All · Personal · Business · Education · Sports · Community
- *   Search bar
+ *   Demo | Live segmented control
+ *   Search bar + Mode filter chip
+ *   [expanded] Mode pills row
  *   Brand list
- *
- * Tap brand → dismiss drawer, switch context (mode switches silently if different).
- * Right badge: checkmark (selected) · count (unread activity) · empty radio (none).
+ *   Settings (only persistent utility action)
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
@@ -34,7 +31,7 @@ import { registerOrgDrawerHandlers } from '@/utils/global-org-drawer';
 import { subscribePulseOrgBadges } from '@/utils/global-pulse-badge';
 import type { Mode, ActiveContext } from '@/types';
 
-// ── Filter pill config ───────────────────────────────────────────────────────
+// ── Filter config ─────────────────────────────────────────────────────────────
 
 type FilterKey = 'all' | Mode;
 
@@ -59,21 +56,22 @@ function modeLabel(mode: string): string {
   return mode.charAt(0).toUpperCase() + mode.slice(1);
 }
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
-/** Two-letter initials from a brand name */
 function getInitials(name: string): string {
   const words = name.trim().split(/\s+/);
   if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
   return name.slice(0, 2).toUpperCase();
 }
 
-// ── Component ────────────────────────────────────────────────────────────────
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export function OrgDrawer() {
   const [visible, setVisible] = useState(false);
   const [filterKey, setFilterKey] = useState<FilterKey>('all');
+  const [showModeFilter, setShowModeFilter] = useState(false);
   const [search, setSearch] = useState('');
+  const [dataMode, setDataMode] = useState<'demo' | 'live'>('demo');
   const [pulseCounts, setPulseCounts] = useState<Record<string, number>>({});
 
   useEffect(() => subscribePulseOrgBadges(setPulseCounts), []);
@@ -88,6 +86,7 @@ export function OrgDrawer() {
     registerOrgDrawerHandlers(
       () => {
         setFilterKey('all');
+        setShowModeFilter(false);
         setSearch('');
         setVisible(true);
       },
@@ -95,10 +94,9 @@ export function OrgDrawer() {
     );
   }, []);
 
-  // ── Filtered orgs ──────────────────────────────────────────────────────────
+  // ── Filtered orgs ───────────────────────────────────────────────────────────
 
   const displayOrgs = useMemo(() => {
-    // Personal only shows on All or Personal filter
     let orgs = V2_ORGANIZATIONS.filter(o =>
       filterKey === 'all' || filterKey === 'personal'
         ? true
@@ -114,7 +112,6 @@ export function OrgDrawer() {
       orgs = orgs.filter(o => o.org_name.toLowerCase().includes(q));
     }
 
-    // Personal pinned first, rest alphabetical
     const personal = orgs.filter(o => o.mode === 'personal');
     const others = orgs
       .filter(o => o.mode !== 'personal')
@@ -123,7 +120,7 @@ export function OrgDrawer() {
     return [...personal, ...others];
   }, [filterKey, search]);
 
-  // ── Org press ──────────────────────────────────────────────────────────────
+  // ── Handlers ────────────────────────────────────────────────────────────────
 
   const handleOrgPress = useCallback((orgId: string, orgMode: Mode) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -158,56 +155,93 @@ export function OrgDrawer() {
     router.push('/settings');
   }, [router]);
 
-  const handleCreateBrand = useCallback(() => {
-    setVisible(false);
-    router.push('/settings/create-org');
-  }, [router]);
-
-  // ── Render ─────────────────────────────────────────────────────────────────
+  // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
     <BottomSheet visible={visible} onClose={handleClose} useModal snapPoints={['50%', '90%']} backgroundColor={C.bg}>
-      {/* Mode pills */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.pillsScroll}
-        contentContainerStyle={styles.pillsContent}
-      >
-        {FILTER_PILLS.map(p => {
-          const active = p.key === filterKey;
-          return (
+
+      {/* Demo | Live segmented control */}
+      <View style={styles.segmentedWrap}>
+        <View style={styles.segmented}>
+          {(['demo', 'live'] as const).map(seg => (
             <Pressable
-              key={p.key}
-              style={[styles.pill, active && styles.pillActive]}
+              key={seg}
+              style={[styles.segment, dataMode === seg && styles.segmentActive]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setFilterKey(p.key);
+                setDataMode(seg);
               }}
             >
-              <Text style={[styles.pillText, active && styles.pillTextActive]}>
-                {p.label}
+              <Text style={[styles.segmentText, dataMode === seg && styles.segmentTextActive]}>
+                {seg.charAt(0).toUpperCase() + seg.slice(1)}
               </Text>
             </Pressable>
-          );
-        })}
-      </ScrollView>
-
-      {/* Search bar */}
-      <View style={styles.searchWrap}>
-        <IconSymbol name="magnifyingglass" size={16} color={C.muted} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search brands..."
-          placeholderTextColor={C.muted}
-          value={search}
-          onChangeText={setSearch}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
+          ))}
+        </View>
       </View>
 
-      {/* Brand list — rendered flat; outer BottomSheetScrollView handles all scrolling */}
+      {/* Search + Mode filter chip */}
+      <View style={styles.searchRow}>
+        <View style={styles.searchWrap}>
+          <IconSymbol name="magnifyingglass" size={16} color={C.muted} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search brands..."
+            placeholderTextColor={C.muted}
+            value={search}
+            onChangeText={setSearch}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+        </View>
+        <Pressable
+          style={[styles.modeChip, filterKey !== 'all' && styles.modeChipActive]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            setShowModeFilter(v => !v);
+          }}
+        >
+          <Text style={[styles.modeChipText, filterKey !== 'all' && styles.modeChipTextActive]}>
+            {filterKey === 'all' ? 'Mode' : modeLabel(filterKey)}
+          </Text>
+          <IconSymbol
+            name={showModeFilter ? 'chevron.up' : 'chevron.down'}
+            size={11}
+            color={filterKey !== 'all' ? C.bg : C.secondary}
+          />
+        </Pressable>
+      </View>
+
+      {/* Mode pills — only visible when filter is open */}
+      {showModeFilter && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.pillsScroll}
+          contentContainerStyle={styles.pillsContent}
+        >
+          {FILTER_PILLS.map(p => {
+            const active = p.key === filterKey;
+            return (
+              <Pressable
+                key={p.key}
+                style={[styles.pill, active && styles.pillActive]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setFilterKey(p.key);
+                  setShowModeFilter(false);
+                }}
+              >
+                <Text style={[styles.pillText, active && styles.pillTextActive]}>
+                  {p.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+      )}
+
+      {/* Brand list */}
       <View style={styles.orgListContent}>
         {displayOrgs.length === 0 && (
           <Text style={styles.emptyText}>No brands found</Text>
@@ -242,21 +276,10 @@ export function OrgDrawer() {
             </Pressable>
           );
         })}
-        {/* Create Brand — above Settings */}
-        <Pressable
-          style={({ pressed }) => [styles.settingsRow, { marginTop: 4 }, pressed && { opacity: 0.6 }]}
-          onPress={handleCreateBrand}
-        >
-          <View style={[styles.settingsIcon, { backgroundColor: C.accent + '18' }]}>
-            <IconSymbol name="plus" size={16} color={C.accent} />
-          </View>
-          <Text style={[styles.settingsLabel, { color: C.label, fontWeight: '500' }]}>Create Brand</Text>
-          <IconSymbol name="chevron.right" size={14} color={C.muted} />
-        </Pressable>
 
-        {/* Settings — last item */}
+        {/* Settings — only persistent utility action */}
         <Pressable
-          style={({ pressed }) => [styles.settingsRow, { borderTopWidth: 0, marginTop: 2 }, pressed && { opacity: 0.6 }]}
+          style={({ pressed }) => [styles.settingsRow, pressed && { opacity: 0.6 }]}
           onPress={handleSettings}
         >
           <View style={styles.settingsIcon}>
@@ -271,8 +294,7 @@ export function OrgDrawer() {
   );
 }
 
-// ── Brand badge (right slot) ──────────────────────────────────────────────────
-// Selected → checkmark. Unselected + activity → count number. Otherwise → empty radio.
+// ── Brand badge ───────────────────────────────────────────────────────────────
 
 function BrandBadge({ active, activityCount, C }: { active: boolean; activityCount: number; C: ComponentColors }) {
   if (active) {
@@ -306,47 +328,127 @@ function BrandBadge({ active, activityCount, C }: { active: boolean; activityCou
   );
 }
 
-// ── Styles ───────────────────────────────────────────────────────────────────
+// ── Styles ────────────────────────────────────────────────────────────────────
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  // Mode pills
-  pillsScroll: { flexShrink: 0 },
-  pillsContent: {
-    flexDirection: 'row', gap: 8,
-    paddingHorizontal: 20, paddingBottom: 14,
+  // Segmented control
+  segmentedWrap: {
+    paddingHorizontal: 20,
+    paddingBottom: 14,
+    alignItems: 'center',
   },
-  pill: {
-    paddingVertical: 10, paddingHorizontal: 20,
-    borderRadius: 24, borderWidth: 1.5,
-    borderColor: C.separator,
-    flexShrink: 0,
+  segmented: {
+    flexDirection: 'row',
+    backgroundColor: C.surfacePressed,
+    borderRadius: 10,
+    padding: 2,
+    width: 180,
   },
-  pillActive: {
-    backgroundColor: C.label, borderColor: C.label,
+  segment: {
+    flex: 1,
+    paddingVertical: 7,
+    borderRadius: 8,
+    alignItems: 'center',
   },
-  pillText: {
-    fontSize: 14, fontWeight: '500', color: C.secondary,
+  segmentActive: {
+    backgroundColor: C.bg,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
   },
-  pillTextActive: {
-    color: C.bg, fontWeight: '600',
+  segmentText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: C.secondary,
+  },
+  segmentTextActive: {
+    color: C.label,
+    fontWeight: '600',
   },
 
-  // Search
+  // Search row
+  searchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginHorizontal: 20,
+    marginBottom: 10,
+  },
   searchWrap: {
-    flexDirection: 'row', alignItems: 'center', gap: 8,
-    marginHorizontal: 20, marginBottom: 12,
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     backgroundColor: C.surfacePressed,
-    borderWidth: 1, borderColor: C.separator,
-    borderRadius: 14, paddingVertical: 11, paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: C.separator,
+    borderRadius: 14,
+    paddingVertical: 11,
+    paddingHorizontal: 14,
   },
   searchInput: {
     flex: 1, fontSize: 14, color: C.label, padding: 0,
   },
 
+  // Mode filter chip
+  modeChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: C.separator,
+    backgroundColor: C.bg,
+  },
+  modeChipActive: {
+    backgroundColor: C.label,
+    borderColor: C.label,
+  },
+  modeChipText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: C.secondary,
+  },
+  modeChipTextActive: {
+    color: C.bg,
+  },
+
+  // Mode pills (collapsed by default)
+  pillsScroll: { flexShrink: 0 },
+  pillsContent: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingHorizontal: 20,
+    paddingBottom: 10,
+  },
+  pill: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: C.separator,
+    flexShrink: 0,
+  },
+  pillActive: {
+    backgroundColor: C.label,
+    borderColor: C.label,
+  },
+  pillText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: C.secondary,
+  },
+  pillTextActive: {
+    color: C.bg,
+    fontWeight: '600',
+  },
+
   // Org list
   orgListContent: { paddingHorizontal: 12, paddingBottom: 28 },
 
-  // Org row
   orgRow: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
     paddingVertical: 13, paddingHorizontal: 12,
@@ -355,8 +457,6 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   orgRowActive: {
     backgroundColor: C.surfacePressed,
   },
-
-  // Avatar — circle with mode color
   orgAvatar: {
     width: 40, height: 40, borderRadius: 20,
     alignItems: 'center', justifyContent: 'center',
@@ -365,8 +465,6 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   orgInitials: {
     fontSize: 14, fontWeight: '700',
   },
-
-  // Org info
   orgInfo: { flex: 1, minWidth: 0, gap: 1 },
   orgName: { fontSize: 15, fontWeight: '500', color: C.label },
   orgNameActive: { fontWeight: '700' },

@@ -72,8 +72,8 @@ export default function EducationFundScreen() {
   const pillsAnim = useRef(new Animated.Value(0)).current;
 
   // ── RBAC role ───────────────────────────────────────────────────────────────
-  const [demoRole, cycleRole] = useDemoRole('education:fund');
-  const isAdmin = demoRole === 'Dean';
+  const [demoRole, cycleRole, roleCycles] = useDemoRole('education:fund');
+  const isAdmin = demoRole === roleCycles[0];
 
   // ── Navigation state ────────────────────────────────────────────────────────
   const [activeTab,    setActiveTab]    = useState<FundTab>('Give');
@@ -135,6 +135,9 @@ export default function EducationFundScreen() {
 
   // ── Scholarships state ───────────────────────────────────────────────────────
   const [expandedScholarshipId, setExpandedScholarshipId] = useState<string | null>(null);
+
+  // ── Education President Finance tab ──────────────────────────────────────────
+  const [presidentTab, setPresidentTab] = useState<'Overview' | 'Tuition' | 'Budget' | 'Aid'>('Overview');
 
   // ── Derived ─────────────────────────────────────────────────────────────────
   const pills             = useMemo(() => pillsForTab(activeTab, isAdmin), [activeTab, isAdmin]);
@@ -1484,103 +1487,132 @@ export default function EducationFundScreen() {
     );
   }
 
-  // ── Student Financial Portal ────────────────────────────────────────────────
+  // ── Education: Student Finances View ────────────────────────────────────────
 
-  function renderStudentFinancialPortal() {
-    const PAYMENT_PLAN = [
-      { label: 'Fall 2025 Tuition',    amount: 8_250, paid: true,  date: 'Aug 15, 2025' },
-      { label: 'Fall 2025 Housing',    amount: 3_400, paid: true,  date: 'Aug 15, 2025' },
-      { label: 'Spring 2026 Tuition',  amount: 8_250, paid: true,  date: 'Jan 10, 2026' },
-      { label: 'Spring 2026 Housing',  amount: 3_400, paid: false, date: 'Apr 1, 2026'  },
+  function renderStudentFinancesView() {
+    const SEMESTER_BILL = [
+      { label: 'Tuition',  amount: 6_575 },
+      { label: 'Fees',     amount:   425 },
     ];
-    const AID = [
-      { label: 'Merit Scholarship',   amount: 12_000, type: 'grant' },
-      { label: 'Federal Pell Grant',  amount:  6_895, type: 'grant' },
-      { label: 'Work-Study',          amount:  2_500, type: 'work'  },
-      { label: 'Subsidized Loan',     amount:  5_500, type: 'loan'  },
+    const semesterTotal = SEMESTER_BILL.reduce((a, i) => a + i.amount, 0); // 7_000
+    const AID_APPLIED = [
+      { label: 'Institutional Grant', amount: -2_500 },
+      { label: 'Merit Scholarship',   amount: -1_212.50 },
     ];
-    const totalAid    = AID.reduce((a, i) => a + i.amount, 0);
-    const amountDue   = 3_400;
+    const balanceDue = 3_287.50;
+    const PAYMENT_HISTORY = [
+      { label: 'Fall 2025 — Tuition & Fees', amount: 3_287.50, date: 'Aug 20, 2025' },
+      { label: 'Spring 2026 — Partial',      amount: 1_500.00, date: 'Jan 8, 2026'  },
+      { label: 'Spring 2026 — Partial',      amount: 1_000.00, date: 'Feb 14, 2026' },
+    ];
+
     return (
       <>
-        {/* Balance due card */}
-        <View style={{ backgroundColor: '#1A1714', borderRadius: 16, padding: 20, marginBottom: 16 }}>
-          <Text style={{ fontSize: 11, fontWeight: '700', color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase', letterSpacing: 0.6 }}>Balance Due</Text>
-          <Text style={{ fontSize: 36, fontWeight: '900', color: '#fff', marginTop: 4 }}>{formatCurrency(amountDue)}</Text>
-          <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>Spring 2026 Housing  ·  Due Apr 1, 2026</Text>
+        {/* Balance card */}
+        <View style={{ backgroundColor: '#F5F0EA', borderRadius: 16, padding: 20, marginBottom: 16, borderWidth: 1, borderColor: '#E0DBD4' }}>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: '#9C9790', textTransform: 'uppercase', letterSpacing: 0.6 }}>Balance Due</Text>
+          <Text style={{ fontSize: 38, fontWeight: '900', color: '#B85C5C', marginTop: 4 }}>${balanceDue.toLocaleString('en-US', { minimumFractionDigits: 2 })}</Text>
+          <Text style={{ fontSize: 13, color: '#9C9790', marginTop: 2 }}>Spring 2026  ·  Due May 1, 2026</Text>
           <Pressable
-            style={{ marginTop: 16, backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 12, paddingVertical: 12, alignItems: 'center' }}
+            style={({ pressed }) => ({
+              marginTop: 16, backgroundColor: pressed ? '#333' : '#1A1714',
+              borderRadius: 12, paddingVertical: 13, alignItems: 'center',
+            })}
             onPress={() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)}
           >
-            <Text style={{ fontSize: 15, fontWeight: '700', color: '#fff' }}>Make Payment</Text>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: '#FFFFFF' }}>Pay Now</Text>
           </Pressable>
         </View>
 
-        {/* Payment history */}
-        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Payment History</Text>
+        {/* Semester Bill Breakdown */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Spring 2026 Bill</Text>
         <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden', marginBottom: 16 }}>
-          {PAYMENT_PLAN.map((item, idx) => (
+          {SEMESTER_BILL.map((item, idx) => (
             <View key={item.label} style={{
-              flexDirection: 'row', alignItems: 'center', gap: 12,
-              paddingHorizontal: 14, paddingVertical: 12,
-              borderBottomWidth: idx < PAYMENT_PLAN.length - 1 ? StyleSheet.hairlineWidth : 0,
+              flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+              paddingHorizontal: 16, paddingVertical: 13,
+              borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+            }}>
+              <Text style={{ fontSize: 14, color: C.label }}>{item.label}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{formatCurrency(item.amount)}</Text>
+            </View>
+          ))}
+          <View style={{
+            flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+            paddingHorizontal: 16, paddingVertical: 13,
+          }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>Semester Total</Text>
+            <Text style={{ fontSize: 15, fontWeight: '800', color: C.label }}>{formatCurrency(semesterTotal)}</Text>
+          </View>
+        </View>
+
+        {/* Financial Aid Applied */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Financial Aid Applied</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden', marginBottom: 16 }}>
+          {AID_APPLIED.map((item, idx) => (
+            <View key={item.label} style={{
+              flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+              paddingHorizontal: 16, paddingVertical: 13,
+              borderBottomWidth: idx < AID_APPLIED.length - 1 ? StyleSheet.hairlineWidth : 0,
               borderBottomColor: C.separator,
             }}>
-              <View style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: item.paid ? '#5A8A6E18' : '#B85C5C18', alignItems: 'center', justifyContent: 'center' }}>
-                <IconSymbol name={item.paid ? 'checkmark.circle.fill' : 'clock.fill'} size={16} color={item.paid ? '#5A8A6E' : '#B85C5C'} />
+              <Text style={{ fontSize: 14, color: C.label }}>{item.label}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: '#5A8A6E' }}>
+                {`-${formatCurrency(Math.abs(item.amount))}`}
+              </Text>
+            </View>
+          ))}
+          <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: C.separator, marginHorizontal: 16 }} />
+          <View style={{
+            flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+            paddingHorizontal: 16, paddingVertical: 13,
+          }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>Net Due</Text>
+            <Text style={{ fontSize: 15, fontWeight: '800', color: '#B85C5C' }}>
+              ${balanceDue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </Text>
+          </View>
+        </View>
+
+        {/* Payment History */}
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Payment History</Text>
+        <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden', marginBottom: 16 }}>
+          {PAYMENT_HISTORY.map((item, idx) => (
+            <View key={idx} style={{
+              flexDirection: 'row', alignItems: 'center', gap: 12,
+              paddingHorizontal: 16, paddingVertical: 12,
+              borderBottomWidth: idx < PAYMENT_HISTORY.length - 1 ? StyleSheet.hairlineWidth : 0,
+              borderBottomColor: C.separator,
+            }}>
+              <View style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: '#5A8A6E15', alignItems: 'center', justifyContent: 'center' }}>
+                <IconSymbol name="checkmark.circle.fill" size={16} color="#5A8A6E" />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{item.label}</Text>
                 <Text style={{ fontSize: 12, color: C.secondary }}>{item.date}</Text>
               </View>
-              <Text style={{ fontSize: 14, fontWeight: '700', color: item.paid ? C.label : '#B85C5C' }}>{formatCurrency(item.amount)}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{formatCurrency(item.amount)}</Text>
             </View>
           ))}
         </View>
 
-        {/* Financial Aid Package */}
-        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>2025–2026 Financial Aid</Text>
-        <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 16, gap: 12 }}>
-          {AID.map((item, idx) => {
-            const color = item.type === 'grant' ? '#5A8A6E' : item.type === 'loan' ? C.accent : '#B8943E';
-            return (
-              <View key={item.label} style={{
-                flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-                paddingBottom: idx < AID.length - 1 ? 12 : 0,
-                borderBottomWidth: idx < AID.length - 1 ? StyleSheet.hairlineWidth : 0,
-                borderBottomColor: C.separator,
-              }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: color }} />
-                  <Text style={{ fontSize: 14, color: C.label }}>{item.label}</Text>
-                </View>
-                <Text style={{ fontSize: 14, fontWeight: '700', color }}>{formatCurrency(item.amount)}</Text>
-              </View>
-            );
-          })}
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingTop: 4, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>Total Aid</Text>
-            <Text style={{ fontSize: 16, fontWeight: '800', color: '#5A8A6E' }}>{formatCurrency(totalAid)}</Text>
-          </View>
-        </View>
-
-        {/* Contact Financial Aid */}
+        {/* Download 1098-T */}
         <Pressable
           style={({ pressed }) => ({
-            flexDirection: 'row', alignItems: 'center', gap: 10,
+            flexDirection: 'row', alignItems: 'center', gap: 12,
             backgroundColor: pressed ? C.surfacePressed : C.surface,
             borderRadius: 14, padding: 16, marginBottom: 24,
           })}
-          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          onPress={() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)}
         >
-          <View style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: '#1A171418', alignItems: 'center', justifyContent: 'center' }}>
-            <IconSymbol name="person.fill.questionmark" size={18} color="#1A1714" />
+          <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: '#1A171415', alignItems: 'center', justifyContent: 'center' }}>
+            <IconSymbol name="doc.text.fill" size={17} color="#1A1714" />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>Contact Financial Aid</Text>
-            <Text style={{ fontSize: 12, color: C.secondary }}>Mon–Fri 8am–5pm  ·  finaid@lincoln.edu</Text>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>Download 1098-T</Text>
+            <Text style={{ fontSize: 12, color: C.secondary }}>Tax year 2025  ·  Lincoln University</Text>
           </View>
-          <IconSymbol name="chevron.right" size={14} color={C.muted} />
+          <IconSymbol name="arrow.down.circle" size={20} color={C.label} />
         </Pressable>
 
         <View style={{ height: 40 }} />
@@ -1588,11 +1620,233 @@ export default function EducationFundScreen() {
     );
   }
 
+  // ── Education: President Finance View ────────────────────────────────────────
+
+  function renderPresidentFinanceView() {
+    const PRES_TABS = ['Overview', 'Tuition', 'Budget', 'Aid'] as const;
+
+    const PROGRAMS = [
+      { name: 'BA Business Admin',  tuition: 12_800, enrolled: 340 },
+      { name: 'BS Diagnostic Imag', tuition: 14_200, enrolled: 180 },
+      { name: 'MBA',                tuition: 18_500, enrolled:  95 },
+      { name: 'MS IBFM',            tuition: 16_400, enrolled:  62 },
+      { name: 'DBA',                tuition: 22_000, enrolled:  28 },
+    ];
+
+    const DEPARTMENTS = [
+      { name: 'Academic Affairs',   budget: 680_000, actual: 612_000 },
+      { name: 'Student Services',   budget: 310_000, actual: 328_500 },
+      { name: 'Administration',     budget: 240_000, actual: 231_000 },
+      { name: 'Facilities',         budget: 195_000, actual: 201_000 },
+      { name: 'Technology',         budget: 145_000, actual: 138_000 },
+    ];
+
+    const AID_DIST = [
+      { label: 'Need-Based',     pct: 45, color: '#1A1714'  },
+      { label: 'Merit',          pct: 30, color: '#5A8A6E'  },
+      { label: 'Athletic',       pct:  5, color: '#B8943E'  },
+      { label: 'Institutional',  pct: 20, color: '#9C9790'  },
+    ];
+
+    const CASHFLOW_MONTHS = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+    const CASHFLOW_VALUES = [180, 210, 195, 225, 205, 215]; // $K, normalized
+    const maxFlow = Math.max(...CASHFLOW_VALUES);
+
+    return (
+      <>
+        {/* President tab switcher */}
+        <View style={{
+          flexDirection: 'row', backgroundColor: C.surface,
+          borderRadius: 12, padding: 4, marginBottom: 20, gap: 2,
+        }}>
+          {PRES_TABS.map(tab => {
+            const active = presidentTab === tab;
+            return (
+              <Pressable
+                key={tab}
+                style={{
+                  flex: 1, paddingVertical: 8, borderRadius: 9, alignItems: 'center',
+                  backgroundColor: active ? '#1A1714' : 'transparent',
+                }}
+                onPress={() => { Haptics.selectionAsync(); setPresidentTab(tab); }}
+              >
+                <Text style={{ fontSize: 13, fontWeight: active ? '700' : '500', color: active ? '#FFFFFF' : C.secondary }}>
+                  {tab}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        {/* ── Overview tab ── */}
+        {presidentTab === 'Overview' && (
+          <>
+            {/* Revenue vs Expenses */}
+            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
+              {[
+                { label: 'Revenue YTD',   value: '$2.1M',  sub: 'vs $1.8M prior yr', color: '#5A8A6E' },
+                { label: 'Expenses YTD',  value: '$1.8M',  sub: 'on budget',          color: '#1A1714' },
+              ].map(stat => (
+                <View key={stat.label} style={{ flex: 1, backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 3 }}>
+                  <Text style={{ fontSize: 11, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.4 }}>{stat.label}</Text>
+                  <Text style={{ fontSize: 24, fontWeight: '800', color: stat.color }}>{stat.value}</Text>
+                  <Text style={{ fontSize: 11, color: C.muted }}>{stat.sub}</Text>
+                </View>
+              ))}
+            </View>
+
+            {/* 12-month Cash Flow chart */}
+            <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 16 }}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.label, marginBottom: 14 }}>12-Month Cash Flow</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 8, height: 64 }}>
+                {CASHFLOW_MONTHS.map((month, idx) => {
+                  const h = Math.round((CASHFLOW_VALUES[idx] / maxFlow) * 64);
+                  return (
+                    <View key={month} style={{ flex: 1, alignItems: 'center', gap: 4 }}>
+                      <View style={{ width: '100%', height: h, backgroundColor: '#1A1714', borderRadius: 4 }} />
+                      <Text style={{ fontSize: 9, color: C.muted }}>{month}</Text>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+
+            {/* Outstanding receivables */}
+            <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+              <View style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: '#B85C5C15', alignItems: 'center', justifyContent: 'center' }}>
+                <IconSymbol name="exclamationmark.circle.fill" size={20} color="#B85C5C" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Outstanding Receivables</Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>23 student accounts past due</Text>
+              </View>
+              <Text style={{ fontSize: 16, fontWeight: '800', color: '#B85C5C' }}>$142K</Text>
+            </View>
+            <View style={{ height: 40 }} />
+          </>
+        )}
+
+        {/* ── Tuition tab ── */}
+        {presidentTab === 'Tuition' && (
+          <>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>
+              Collection by Program
+            </Text>
+            <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden', marginBottom: 16 }}>
+              {PROGRAMS.map((prog, idx) => {
+                const collected = prog.tuition * prog.enrolled;
+                return (
+                  <View key={prog.name} style={{
+                    paddingHorizontal: 16, paddingVertical: 13,
+                    borderBottomWidth: idx < PROGRAMS.length - 1 ? StyleSheet.hairlineWidth : 0,
+                    borderBottomColor: C.separator,
+                    gap: 4,
+                  }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, flex: 1 }} numberOfLines={1}>{prog.name}</Text>
+                      <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{formatCurrency(collected)}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                      <Text style={{ fontSize: 12, color: C.secondary }}>{prog.enrolled} enrolled</Text>
+                      <Text style={{ fontSize: 12, color: C.muted }}>{formatCurrency(prog.tuition)}/student</Text>
+                    </View>
+                  </View>
+                );
+              })}
+            </View>
+            <View style={{ backgroundColor: '#B85C5C15', borderRadius: 12, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+              <IconSymbol name="clock.badge.exclamationmark.fill" size={18} color="#B85C5C" />
+              <Text style={{ fontSize: 14, color: '#B85C5C', fontWeight: '600' }}>
+                23 accounts with outstanding balances
+              </Text>
+            </View>
+            <View style={{ height: 40 }} />
+          </>
+        )}
+
+        {/* ── Budget tab ── */}
+        {presidentTab === 'Budget' && (
+          <>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>
+              Department Budget vs Actual
+            </Text>
+            <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden', marginBottom: 16 }}>
+              {DEPARTMENTS.map((dept, idx) => {
+                const isOver    = dept.actual > dept.budget;
+                const variance  = dept.actual - dept.budget;
+                const varColor  = isOver ? '#B85C5C' : '#5A8A6E';
+                const barPct    = Math.min(100, Math.round((dept.actual / dept.budget) * 100));
+                return (
+                  <View key={dept.name} style={{
+                    paddingHorizontal: 16, paddingVertical: 14,
+                    borderBottomWidth: idx < DEPARTMENTS.length - 1 ? StyleSheet.hairlineWidth : 0,
+                    borderBottomColor: C.separator, gap: 8,
+                  }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Text style={{ fontSize: 14, fontWeight: '600', color: C.label, flex: 1 }}>{dept.name}</Text>
+                      <View style={{ paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6, backgroundColor: varColor + '20' }}>
+                        <Text style={{ fontSize: 11, fontWeight: '700', color: varColor }}>
+                          {isOver ? '+' : ''}{formatCurrency(Math.abs(variance))}
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={{ height: 6, borderRadius: 3, backgroundColor: C.separator }}>
+                      <View style={{ height: 6, borderRadius: 3, backgroundColor: isOver ? '#B85C5C' : '#5A8A6E', width: `${barPct}%` as any }} />
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                      <Text style={{ fontSize: 11, color: C.muted }}>Budget: {formatCurrency(dept.budget)}</Text>
+                      <Text style={{ fontSize: 11, color: C.secondary }}>Actual: {formatCurrency(dept.actual)}</Text>
+                    </View>
+                  </View>
+                );
+              })}
+            </View>
+            <View style={{ height: 40 }} />
+          </>
+        )}
+
+        {/* ── Aid tab ── */}
+        {presidentTab === 'Aid' && (
+          <>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>
+              Aid Distribution
+            </Text>
+            <View style={{ backgroundColor: C.surface, borderRadius: 14, overflow: 'hidden', marginBottom: 16 }}>
+              {AID_DIST.map((item, idx) => (
+                <View key={item.label} style={{
+                  paddingHorizontal: 16, paddingVertical: 13, gap: 8,
+                  borderBottomWidth: idx < AID_DIST.length - 1 ? StyleSheet.hairlineWidth : 0,
+                  borderBottomColor: C.separator,
+                }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 14, color: C.label }}>{item.label}</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '700', color: item.color }}>{item.pct}%</Text>
+                  </View>
+                  <View style={{ height: 5, borderRadius: 3, backgroundColor: C.separator }}>
+                    <View style={{ height: 5, borderRadius: 3, backgroundColor: item.color, width: `${item.pct}%` as any }} />
+                  </View>
+                </View>
+              ))}
+            </View>
+
+            <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <View>
+                <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 3 }}>Institutional Discount Rate</Text>
+                <Text style={{ fontSize: 12, color: C.muted }}>Aid as % of gross tuition revenue</Text>
+              </View>
+              <Text style={{ fontSize: 28, fontWeight: '800', color: '#1A1714' }}>18%</Text>
+            </View>
+            <View style={{ height: 40 }} />
+          </>
+        )}
+      </>
+    );
+  }
+
   function renderContent() {
-    if (!isAdmin) return renderStudentFinancialPortal();
-    if (activeTab === 'Give')      return renderGiveTab();
-    if (activeTab === 'Campaigns') return renderCampaignsAdmin();
-    return renderHistoryAdmin();
+    if (!isAdmin) return renderStudentFinancesView();
+    if (isAdmin)  return renderPresidentFinanceView();
+    return renderGiveTab();
   }
 
   // ── Layout ────────────────────────────────────────────────────────────────────
@@ -1612,8 +1866,8 @@ export default function EducationFundScreen() {
         {renderContent()}
       </ScrollView>
 
-      {/* Create Campaign FAB */}
-      {isAdmin && activeTab === 'Campaigns' && (
+      {/* Create Campaign FAB — not shown in education finance views */}
+      {isAdmin && activeTab === 'Campaigns' && false && (
         <Pressable
           style={[s.fab, { bottom: insets.bottom + 80 }]}
           onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setShowCreateCampaign(true); }}
@@ -1636,13 +1890,19 @@ export default function EducationFundScreen() {
           </View>
 
           <View style={s.dropdownPillWrap}>
-            <Pressable
-              style={[s.dropdownPill, { backgroundColor: C.surfacePressed }]}
-              onPress={() => { Haptics.selectionAsync(); setDropdownOpen(v => !v); }}
-            >
-              <Text style={[s.dropdownPillText, { color: C.label }]}>{activeTab}</Text>
-              <IconSymbol name="chevron.down" size={12} color={C.secondary} />
-            </Pressable>
+            {isAdmin ? (
+              <Pressable
+                style={[s.dropdownPill, { backgroundColor: C.surfacePressed }]}
+                onPress={() => { Haptics.selectionAsync(); setDropdownOpen(v => !v); }}
+              >
+                <Text style={[s.dropdownPillText, { color: C.label }]}>Finance</Text>
+                <IconSymbol name="chevron.down" size={12} color={C.secondary} />
+              </Pressable>
+            ) : (
+              <View style={[s.dropdownPill, { backgroundColor: 'transparent' }]}>
+                <Text style={[s.dropdownPillText, { color: C.label }]}>My Finances</Text>
+              </View>
+            )}
           </View>
 
           <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end', gap: 8 }]}>
@@ -1652,7 +1912,7 @@ export default function EducationFundScreen() {
               accentColor="#1A1714"
               isPrimary={isAdmin}
             />
-            {pills.length > 0 && (
+            {pills.length > 0 && !isAdmin && (
               <Pressable onPress={togglePills} hitSlop={12}>
                 <IconSymbol
                   name={pillsVisible || selectedPill !== pills[0] ? 'line.3.horizontal.decrease.circle.fill' : 'line.3.horizontal.decrease.circle'}
@@ -1687,25 +1947,25 @@ export default function EducationFundScreen() {
         </Animated.View>
       </View>
 
-      {/* Dropdown */}
-      {dropdownOpen && (
+      {/* Dropdown — President Finance sub-nav */}
+      {dropdownOpen && isAdmin && (
         <>
           <Pressable
             style={{ ...StyleSheet.absoluteFillObject, zIndex: 98 } as any}
             onPress={() => setDropdownOpen(false)}
           />
           <View style={[s.dropdown, { backgroundColor: C.surface, borderColor: C.separator, top: insets.top + TOP_BAR_H }]}>
-            {(['Give', 'Campaigns', 'History'] as FundTab[]).map(tab => (
+            {(['Overview', 'Tuition', 'Budget', 'Aid'] as const).map(tab => (
               <Pressable
                 key={tab}
                 style={({ pressed }) => [
                   s.dropdownOpt, { borderBottomColor: C.separator },
-                  (pressed || tab === activeTab) && { backgroundColor: C.surfacePressed },
+                  (pressed || tab === presidentTab) && { backgroundColor: C.surfacePressed },
                 ]}
-                onPress={() => changeTab(tab)}
+                onPress={() => { Haptics.selectionAsync(); setPresidentTab(tab); setDropdownOpen(false); }}
               >
-                <Text style={[s.dropdownOptText, { color: tab === activeTab ? C.accent : C.label }]}>{tab}</Text>
-                {tab === activeTab && <IconSymbol name="checkmark" size={14} color={C.accent} />}
+                <Text style={[s.dropdownOptText, { color: tab === presidentTab ? C.accent : C.label }]}>{tab}</Text>
+                {tab === presidentTab && <IconSymbol name="checkmark" size={14} color={C.accent} />}
               </Pressable>
             ))}
           </View>
