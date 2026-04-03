@@ -23,7 +23,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import 'react-native-reanimated';
 
 import { SplashScreen } from '@/components/splash-screen';
-import { AuthModal } from '@/components/auth/auth-modal';
+import { AccessPortal } from '@/components/auth/access-portal';
 import { SearchOverlay } from '@/components/nexus/search-overlay';
 import { OrgDrawer } from '@/components/org-drawer';
 import { ModeSwitcherOverlay } from '@/components/mode-switcher-overlay';
@@ -247,6 +247,7 @@ function AppShell() {
 
   // Show onboarding when not authenticated OR when authenticated but new user needs onboarding
   const showAuthModal = !authState.isChecking && (!authState.isAuthenticated || authState.isNewUser);
+  // AccessPortal replaces AuthModal — full-screen onboarding flow per spec
 
   // Normal navigation with tabs — edge-to-edge, no header
   const containerDynamic = { flex: 1 as const, backgroundColor: colors.bg };
@@ -350,7 +351,7 @@ function AppShell() {
       <IncomingCallOverlay />
       <ProfileSheet />
       <KXTransition />
-      <AuthModal visible={showAuthModal} />
+      <AccessPortal visible={showAuthModal} />
     </View>
   );
 }
