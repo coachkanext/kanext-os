@@ -3,38 +3,150 @@
     "r2": {
       "base": "https://region2athletics.com",
       "slugs": [
-        "connorsstatecollege", "easternoklahomastatecollege", "murraystatecollege",
-        "northeasternoklahomaamcollege", "northernoklahomacollegeenid",
-        "richmountain", "rosestatecollege"
+        "connorsstatecollege",
+        "easternoklahomastatecollege",
+        "murraystatecollege",
+        "northeasternoklahomaamcollege",
+        "northernoklahomacollegeenid",
+        "richmountain",
+        "rosestatecollege"
       ]
     },
     "r5": {
       "base": "https://njcaaregion5.com",
       "slugs": [
-        "ciscocollege", "dallascollegebrookhaven", "dallascollegecedarvalley",
-        "dallascollegeeastfield", "dallascollegemountainview", "dallascollegerichland",
-        "hillcollege", "odessacollege", "rangercollege", "westerntexascollege"
+        "ciscocollege",
+        "dallascollegebrookhaven",
+        "dallascollegecedarvalley",
+        "dallascollegeeastfield",
+        "dallascollegemountainview",
+        "dallascollegerichland",
+        "hillcollege",
+        "odessacollege",
+        "rangercollege",
+        "westerntexascollege"
       ]
     },
     "r19": {
       "base": "https://njcaaregion19.com",
       "slugs": [
-        "atlanticcapecommunitycollege", "bergencommunitycollege", "brookdalecommunitycollege",
-        "camdencountycollege", "countycollegeofmorris", "delawarecountycommunitycollege",
-        "essexcountycollege", "harcumcollege", "harrisburgareacommunitycollege",
-        "lackawannacollege", "lehighcarboncommunitycollege", "mercercountycommunitycollege",
-        "middlesexcollege", "montgomerycountycommunitycollegepa", "northamptoncommunitycollege",
-        "oceancountycollege", "raritanvalleycommunitycollege",
-        "rowancollegeofsouthjerseycumberland", "rowancollegesouthjerseygloucester",
-        "sussexcountycommunitycollege", "ucnj"
+        "atlanticcapecommunitycollege",
+        "bergencommunitycollege",
+        "brookdalecommunitycollege",
+        "camdencountycollege",
+        "countycollegeofmorris",
+        "delawarecountycommunitycollege",
+        "essexcountycollege",
+        "harcumcollege",
+        "harrisburgareacommunitycollege",
+        "lackawannacollege",
+        "lehighcarboncommunitycollege",
+        "mercercountycommunitycollege",
+        "middlesexcollege",
+        "montgomerycountycommunitycollegepa",
+        "northamptoncommunitycollege",
+        "oceancountycollege",
+        "raritanvalleycommunitycollege",
+        "rowancollegeofsouthjerseycumberland",
+        "rowancollegesouthjerseygloucester",
+        "sussexcountycommunitycollege",
+        "ucnj"
       ]
     },
     "r24": {
       "base": "https://njcaaregion24.com",
       "slugs": [
-        "heartlandcommunitycollege", "illinoiscentralcollege", "johnwoodcommunitycollege",
-        "lewisclarkcommunitycollege", "lincolntrailcollege", "parklandcollege",
+        "heartlandcommunitycollege",
+        "illinoiscentralcollege",
+        "johnwoodcommunitycollege",
+        "lewisclarkcommunitycollege",
+        "lincolntrailcollege",
+        "parklandcollege",
         "southwesternillinoiscollege"
+      ]
+    },
+    "r1": {
+      "slugs": [
+        "arizonawesterncollege",
+        "chandlergilbertcommunitycollege",
+        "cochisecollege",
+        "collegeofsouthernnevada",
+        "communitychristiancollege",
+        "easternarizonacollege",
+        "gatewaycommunitycollegeaz",
+        "glendalecommunitycollege",
+        "mesacommunitycollege",
+        "mohavecommunitycollege",
+        "paradisevalleycommunitycollege",
+        "phoenixcollege",
+        "pimacommunitycollege",
+        "scottsdalecommunitycollege",
+        "southmountaincommunitycollege",
+        "yavapaicollege"
+      ]
+    },
+    "r3": {
+      "slugs": [
+        "cayugacommunitycollege",
+        "clintoncommunitycollege",
+        "eriecommunitycollege",
+        "fingerlakescommunitycollege",
+        "fultonmontgomerycommunitycollege",
+        "geneseecommunitycollege",
+        "herkimercollege",
+        "hudsonvalleycommunitycollege",
+        "jamestowncommunitycollege",
+        "jeffersoncommunitycollege",
+        "mohawkvalleycommunitycollege",
+        "northcountrycommunitycollege",
+        "onondagacommunitycollege",
+        "sunyadirondack",
+        "sunybroomecommunitycollege",
+        "sunyniagara",
+        "tompkinscortlandcommunitycollege"
+      ]
+    },
+    "r4": {
+      "slugs": [
+        "blackhawkcollege",
+        "bryantstrattoncollegewi",
+        "carlsandburgcollege",
+        "collegeofdupage",
+        "collegeoflakecounty",
+        "elgincommunitycollege",
+        "harpercollege",
+        "harrystrumancollege",
+        "illinoisvalleycommunitycollege",
+        "jolietjuniorcollege",
+        "kankakeecommunitycollege",
+        "kennedykingcollege",
+        "kishwaukeecollege",
+        "madisoncollege",
+        "malcolmxcollege",
+        "mchenrycountycollege",
+        "milwaukeeareatechnicalcollege",
+        "morainevalleycommunitycollege",
+        "mortoncollege",
+        "oaktoncommunitycollege",
+        "prairiestatecollege",
+        "richardjdaleycollege",
+        "rockvalleycollege",
+        "southsuburbancollege",
+        "tritoncollege",
+        "waubonseecommunitycollege",
+        "wilburwrightcollege"
+      ]
+    },
+    "r7": {
+      "slugs": [
+        "pellissippistate"
+      ]
+    },
+    "r8": {
+      "slugs": [
+        "daytonastatecollege",
+        "easternfloridastatecollege",
+        "miamidadecollege"
       ]
     }
   },
@@ -42,47 +154,164 @@
     "r2": {
       "base": "https://region2athletics.com",
       "slugs": [
-        "connorsstatecollege", "easternoklahomastatecollege", "murraystatecollege",
-        "northeasternoklahomaamcollege", "northernoklahomacollegeenid",
-        "redlandscommunitycollege", "richmountain", "rosestatecollege",
+        "connorsstatecollege",
+        "easternoklahomastatecollege",
+        "murraystatecollege",
+        "northeasternoklahomaamcollege",
+        "northernoklahomacollegeenid",
+        "redlandscommunitycollege",
+        "richmountain",
+        "rosestatecollege",
         "seminolestatecollege"
       ]
     },
     "r5": {
       "base": "https://njcaaregion5.com",
       "slugs": [
-        "ciscocollege", "dallascollegebrookhaven", "dallascollegecedarvalley",
-        "dallascollegeeastfield", "dallascollegemountainview", "dallascollegenorthlake",
-        "dallascollegerichland", "hillcollege", "odessacollege",
-        "rangercollege", "westerntexascollege"
+        "ciscocollege",
+        "dallascollegebrookhaven",
+        "dallascollegecedarvalley",
+        "dallascollegeeastfield",
+        "dallascollegemountainview",
+        "dallascollegenorthlake",
+        "dallascollegerichland",
+        "hillcollege",
+        "odessacollege",
+        "rangercollege",
+        "westerntexascollege"
       ]
     },
     "r15": {
       "base": "https://region15athletics.com",
       "slugs": [
-        "boroughofmanhattancommunitycollege", "fashioninstituteoftechnology",
-        "kingsboroughcommunitycollege", "monroeuniversity", "nassaucommunitycollege",
-        "queensboroughcommunitycollege", "suffolkcc"
+        "boroughofmanhattancommunitycollege",
+        "fashioninstituteoftechnology",
+        "kingsboroughcommunitycollege",
+        "monroeuniversity",
+        "nassaucommunitycollege",
+        "queensboroughcommunitycollege",
+        "suffolkcc"
       ]
     },
     "r19": {
       "base": "https://njcaaregion19.com",
       "slugs": [
-        "atlanticcapecommunitycollege", "bergencommunitycollege", "brookdalecommunitycollege",
-        "essexcountycollege", "harcumcollege", "lackawannacollege",
-        "lehighcarboncommunitycollege", "mercercountycommunitycollege", "middlesexcollege",
-        "oceancountycollege", "raritanvalleycommunitycollege",
-        "rowancollegeofsouthjerseycumberland", "rowancollegesouthjerseygloucester",
-        "sussexcountycommunitycollege", "ucnj"
+        "atlanticcapecommunitycollege",
+        "bergencommunitycollege",
+        "brookdalecommunitycollege",
+        "essexcountycollege",
+        "harcumcollege",
+        "lackawannacollege",
+        "lehighcarboncommunitycollege",
+        "mercercountycommunitycollege",
+        "middlesexcollege",
+        "oceancountycollege",
+        "raritanvalleycommunitycollege",
+        "rowancollegeofsouthjerseycumberland",
+        "rowancollegesouthjerseygloucester",
+        "sussexcountycommunitycollege",
+        "ucnj"
       ]
     },
     "r24": {
       "base": "https://njcaaregion24.com",
       "slugs": [
-        "heartlandcommunitycollege", "illinoiscentralcollege", "johnwoodcommunitycollege",
-        "kaskaskiacollege", "lewisclarkcommunitycollege", "lincolnlandcommunitycollege",
-        "lincolntrailcollege", "parklandcollege", "southwesternillinoiscollege",
+        "heartlandcommunitycollege",
+        "illinoiscentralcollege",
+        "johnwoodcommunitycollege",
+        "kaskaskiacollege",
+        "lewisclarkcommunitycollege",
+        "lincolnlandcommunitycollege",
+        "lincolntrailcollege",
+        "parklandcollege",
+        "southwesternillinoiscollege",
         "wabashvalleycollege"
+      ]
+    },
+    "r1": {
+      "slugs": [
+        "arizonawesterncollege",
+        "chandlergilbertcommunitycollege",
+        "cochisecollege",
+        "collegeofsouthernnevada",
+        "communitychristiancollege",
+        "easternarizonacollege",
+        "gatewaycommunitycollegeaz",
+        "glendalecommunitycollege",
+        "mesacommunitycollege",
+        "mohavecommunitycollege",
+        "paradisevalleycommunitycollege",
+        "phoenixcollege",
+        "pimacommunitycollege",
+        "scottsdalecommunitycollege",
+        "southmountaincommunitycollege",
+        "yavapaicollege"
+      ]
+    },
+    "r3": {
+      "slugs": [
+        "corningcommunitycollege",
+        "fingerlakescommunitycollege",
+        "fultonmontgomerycommunitycollege",
+        "geneseecommunitycollege",
+        "herkimercollege",
+        "hudsonvalleycommunitycollege",
+        "jamestowncommunitycollege",
+        "jeffersoncommunitycollege",
+        "mohawkvalleycommunitycollege",
+        "northcountrycommunitycollege",
+        "onondagacommunitycollege",
+        "sunybroomecommunitycollege",
+        "sunyniagara",
+        "tompkinscortlandcommunitycollege"
+      ]
+    },
+    "r4": {
+      "slugs": [
+        "blackhawkcollege",
+        "bryantandstrattoncollegewi",
+        "carlsandburgcollege",
+        "collegeofdupage",
+        "collegeoflakecounty",
+        "elgincommunitycollege",
+        "harpercollege",
+        "harrystrumancollege",
+        "illinoisvalleycommunitycollege",
+        "jolietjuniorcollege",
+        "kankakeecommunitycollege",
+        "kishwaukeecollege",
+        "madisoncollege",
+        "milwaukeeareatechnicalcollege",
+        "morainevalleycommunitycollege",
+        "mortoncollege",
+        "oaktoncommunitycollege",
+        "prairiestatecollege",
+        "richardjdaleycollege",
+        "rockvalleycollege",
+        "southsuburbancollege",
+        "tritoncollege",
+        "waubonseecommunitycollege",
+        "wilburwrightcollege"
+      ]
+    },
+    "r7": {
+      "slugs": [
+        "columbiastatecommunitycollege",
+        "dyersburgstatecommunitycollege",
+        "motlowstatecommunitycollege",
+        "pellissippistate",
+        "roanestatecommunitycollege",
+        "southwesttennesseecommunitycollege"
+      ]
+    },
+    "r8": {
+      "slugs": [
+        "daytonastatecollege",
+        "easternfloridastatecollege",
+        "miamidadecollege",
+        "pascohernandostatecollege",
+        "pensacolastatecollege",
+        "polkstatecollege"
       ]
     }
   }

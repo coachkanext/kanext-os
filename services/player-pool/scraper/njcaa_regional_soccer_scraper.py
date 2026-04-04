@@ -3,8 +3,8 @@ NJCAA Regional Soccer Scraper — msoc + wsoc
 Per-team stats from all accessible NJCAA regional sites.
 
 Confirmed regions (per audit):
-  msoc: r2, r5, r19, r24  (r14/r15 are leaders-only)
-  wsoc: r2, r5, r15, r19, r24  (r14 is leaders-only)
+  msoc: r1, r2, r3, r4, r5, r7, r8, r19, r24  (r14/r15 are leaders-only)
+  wsoc: r1, r2, r3, r4, r5, r7, r8, r15, r19, r24  (r14 is leaders-only)
 
 Stat format (both sports, all categories identical):
   # | Name | Yr | Pos | gp | gs | g | a | pts | sh | sh% | sog | sog% | yc | rc | pk | gw
@@ -43,18 +43,29 @@ REGION_DELAY = 8
 TEAMS_JSON = Path(__file__).parent / "njcaa_regional_soccer_teams.json"
 
 REGIONS = {
+    "r1":  "https://www.accac.org",
     "r2":  "https://region2athletics.com",
+    "r3":  "https://www.njcaaregion3.org",
+    "r4":  "https://www.region4sports.com",
     "r5":  "https://njcaaregion5.com",
+    "r7":  "http://tjccaa.com",
+    "r8":  "https://thefcsaasports.com",
     "r14": "https://njcaaregion14.com",
     "r15": "https://region15athletics.com",
     "r19": "https://njcaaregion19.com",
     "r24": "https://njcaaregion24.com",
 }
 
+# r1/r3/r8 use newer PrestoSports (no AJAX endpoint; stats on full team page as per-game averages)
+FULLPAGE_REGIONS = {"r1", "r3", "r8"}
+
+# r4/r7 have no per-player stats accessible — roster names only
+ROSTER_ONLY_REGIONS = {"r4", "r7"}
+
 # Regions that have per-team stats (r14 confirmed leaders-only for both sports)
 VALID_REGIONS = {
-    "msoc": ["r2", "r5", "r19", "r24"],
-    "wsoc": ["r2", "r5", "r15", "r19", "r24"],
+    "msoc": ["r1", "r2", "r3", "r4", "r5", "r7", "r8", "r19", "r24"],
+    "wsoc": ["r1", "r2", "r3", "r4", "r5", "r7", "r8", "r15", "r19", "r24"],
 }
 
 BROWSER_HEADERS = {
@@ -255,7 +266,9 @@ def parse_soccer_table(html: str) -> list[dict]:
             return " ".join(cells[i].get_text(strip=True).split()) if i < len(cells) else ""
 
         name_raw = cell(C_NAME)
-        if not name_raw or name_raw.lower() in ("name", "player", "totals", "total"):
+        _SKIP = {"name", "player", "totals", "total", "", "opponent", "opponents",
+                 "home", "away", "exhibition", "conference", "non-conference"}
+        if not name_raw or name_raw.lower() in _SKIP:
             continue
 
         pk_made, pk_att = _pk(cell(C_PK))
@@ -347,6 +360,167 @@ def scrape_team(conn, region, sport, slug, base):
     conn.commit()
     return saved
 
+
+def parse_fullpage_stats(html: str) -> list[dict]:
+    """
+    Parse per-player season totals from the newer PrestoSports full team page.
+    These pages have multiple stat tables (no <thead>). We want the overall totals table:
+      No., Name, Yr, Pos, gp, gs, g, a, pts, sh, sh%, sog, sog%, yc, rc, pk, gw
+    We identify it by: first row has g, a, pts columns but NOT gpg (averages) or date.
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    target_table = None
+    header_row_idx = -1
+    for t in soup.find_all("table"):
+        rows = t.find_all("tr")
+        for ri, tr in enumerate(rows[:3]):  # header is usually in first 3 rows
+            hdrs = [td.get_text(strip=True).lower() for td in tr.find_all(["th", "td"])]
+            # Must be a player stats table: has gp, gs, g, a, pts; no averages (gpg/a/g); no date
+            # Also must have a name/player column (name or player in hdrs, else require no./# + gp)
+            has_player_cols = ("gp" in hdrs and "gs" in hdrs and "g" in hdrs
+                               and "a" in hdrs and "pts" in hdrs)
+            not_avg_or_schedule = "gpg" not in hdrs and "date" not in hdrs and "opponent" not in hdrs
+            has_name_col = "name" in hdrs or "player" in hdrs
+            if has_player_cols and not_avg_or_schedule and has_name_col:
+                target_table = t
+                header_row_idx = ri
+                break
+        if target_table:
+            break
+    if not target_table:
+        return []
+
+    all_rows = target_table.find_all("tr")
+    # Get column indices from the header row
+    hdr = all_rows[header_row_idx]
+    raw_hdrs = [td.get_text(strip=True).lower() for td in hdr.find_all(["th", "td"])]
+
+    def ci(names):
+        for n in names:
+            for i, h in enumerate(raw_hdrs):
+                if h == n:
+                    return i
+        return -1
+
+    C_JERSEY = ci(["#", "no.", "no"])
+    C_NAME   = ci(["name", "player"])
+    C_YR     = ci(["yr", "cl", "class"])
+    C_POS    = ci(["pos", "position"])
+    C_GP     = ci(["gp"])
+    C_GS     = ci(["gs"])
+    C_G      = ci(["g"])
+    C_A      = ci(["a"])
+    C_PTS    = ci(["pts", "points"])
+    C_SH     = ci(["sh"])
+    C_SHPCT  = ci(["sh%"])
+    C_SOG    = ci(["sog"])
+    C_SOGPCT = ci(["sog%"])
+    C_YC     = ci(["yc"])
+    C_RC     = ci(["rc"])
+    C_PK     = ci(["pk"])
+    C_GW     = ci(["gw"])
+
+    if C_NAME < 0 or C_G < 0:
+        return []
+
+    rows = []
+    for tr in all_rows[header_row_idx + 1:]:
+        cells = tr.find_all(["td", "th"])
+
+        def cell(i):
+            return " ".join(cells[i].get_text(strip=True).split()) if 0 <= i < len(cells) else ""
+
+        name_raw = cell(C_NAME)
+        # Skip summary/header rows
+        SKIP_NAMES = {"name", "player", "totals", "total", "", "opponent", "opponents",
+                      "home", "away", "exhibition", "conference", "non-conference"}
+        if not name_raw or name_raw.lower() in SKIP_NAMES:
+            continue
+        # Skip rows that look like sub-headers
+        if name_raw.lower() in raw_hdrs:
+            continue
+
+        pk_made, pk_att = _pk(cell(C_PK)) if C_PK >= 0 else (None, None)
+        rows.append({
+            "name":    name_raw,
+            "jersey":  cell(C_JERSEY) if C_JERSEY >= 0 else None,
+            "pos":     cell(C_POS) if C_POS >= 0 else None,
+            "cl":      cell(C_YR) if C_YR >= 0 else None,
+            "gp":      _di(cell(C_GP)) if C_GP >= 0 else None,
+            "gs":      _di(cell(C_GS)) if C_GS >= 0 else None,
+            "goals":   _di(cell(C_G)),
+            "assists": _di(cell(C_A)) if C_A >= 0 else None,
+            "pts":     _di(cell(C_PTS)) if C_PTS >= 0 else None,
+            "shots":   _di(cell(C_SH)) if C_SH >= 0 else None,
+            "sh_pct":  _pct(cell(C_SHPCT)) if C_SHPCT >= 0 else None,
+            "sog":     _di(cell(C_SOG)) if C_SOG >= 0 else None,
+            "sog_pct": _pct(cell(C_SOGPCT)) if C_SOGPCT >= 0 else None,
+            "yc":      _di(cell(C_YC)) if C_YC >= 0 else None,
+            "rc":      _di(cell(C_RC)) if C_RC >= 0 else None,
+            "pk_made": pk_made,
+            "pk_att":  pk_att,
+            "gw":      _di(cell(C_GW)) if C_GW >= 0 else None,
+        })
+    return rows
+
+
+def scrape_team_fullpage(conn, region, sport, slug, base):
+    """For r1/r3/r8: fetch full team page and parse embedded per-game stats."""
+    team_page = f"{base}/sports/{sport}/{SEASON}/teams/{slug}"
+    r = fetch(team_page, base, f"{base}/sports/{sport}/{SEASON}/teams")
+    if not r or r.status_code != 200:
+        print(f"      SKIP {slug} [{r.status_code if r else 'err'}]")
+        return 0
+    rows = parse_fullpage_stats(r.text)
+    if not rows:
+        print(f"      SKIP {slug} [no data]")
+        return 0
+    team_id = upsert_team(conn, region, sport, slug, base)
+    saved = 0
+    for row in rows:
+        if not row["name"]:
+            continue
+        pid = upsert_player(conn, team_id, row)
+        upsert_stats(conn, pid, row)
+        saved += 1
+    conn.commit()
+    return saved
+
+
+def scrape_team_roster_only(conn, region, sport, slug, base):
+    """For r4/r7: fetch full page, extract player names from any table with Name column."""
+    team_page = f"{base}/sports/{sport}/{SEASON}/teams/{slug}"
+    r = fetch(team_page, base, f"{base}/sports/{sport}/{SEASON}/teams")
+    if not r or r.status_code != 200:
+        print(f"      SKIP {slug} [{r.status_code if r else 'err'}]")
+        return 0
+    soup = BeautifulSoup(r.text, "html.parser")
+    # Extract player names from any linked player pages
+    player_links = soup.find_all("a", href=True)
+    seen = set()
+    names = []
+    for a in player_links:
+        href = a["href"]
+        if f"/sports/{sport}/{SEASON}/players/" in href:
+            name = " ".join(a.get_text(strip=True).split())
+            if name and name not in seen:
+                seen.add(name)
+                names.append(name)
+    if not names:
+        return 0
+    team_id = upsert_team(conn, region, sport, slug, base)
+    saved = 0
+    for name in names:
+        row = {"name": name, "jersey": None, "pos": None, "cl": None,
+               "gp": None, "gs": None, "goals": None, "assists": None, "pts": None,
+               "shots": None, "sh_pct": None, "sog": None, "sog_pct": None,
+               "yc": None, "rc": None, "pk_made": None, "pk_att": None, "gw": None}
+        pid = upsert_player(conn, team_id, row)
+        upsert_stats(conn, pid, row)
+        saved += 1
+    conn.commit()
+    return saved
+
 def get_slugs(sport, region, base, teams_data):
     if teams_data and sport in teams_data and region in teams_data[sport]:
         slugs = teams_data[sport][region].get("slugs", [])
@@ -429,7 +603,12 @@ def main():
                 print(f"\n  [{region}] {base}  ({len(slugs)} teams)")
                 rp = 0
                 for j, slug in enumerate(slugs):
-                    n = scrape_team(conn, region, sport, slug, base)
+                    if region in FULLPAGE_REGIONS:
+                        n = scrape_team_fullpage(conn, region, sport, slug, base)
+                    elif region in ROSTER_ONLY_REGIONS:
+                        n = scrape_team_roster_only(conn, region, sport, slug, base)
+                    else:
+                        n = scrape_team(conn, region, sport, slug, base)
                     if n > 0:
                         print(f"    {j+1:>2}/{len(slugs)} {slug[:38]:<38} {n:>3} players")
                     total_teams += 1
