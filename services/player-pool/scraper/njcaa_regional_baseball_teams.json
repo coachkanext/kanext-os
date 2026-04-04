@@ -1,0 +1,279 @@
+{
+  "sball": {
+    "r2": {
+      "base": "https://region2athletics.com",
+      "season": "2024-25",
+      "slugs": [
+        "arkansasstateuniversitymountainhome",
+        "arkansasstatenewport",
+        "carlalbertstatecollege",
+        "connorsstatecollege",
+        "easternoklahomastatecollege",
+        "murraystatecollege",
+        "nationalparkcollege",
+        "northarkansascollege",
+        "northeasternoklahomaamcollege",
+        "northernoklahomacollegeenid",
+        "northernoklahomacollegetonkawa",
+        "rosestatecollege",
+        "seminolestatecollegeok",
+        "southernarkansasuniversitytech",
+        "uarichmountain",
+        "westernoklahomastatecollege"
+      ]
+    },
+    "r5": {
+      "base": "https://njcaaregion5.com",
+      "season": "2024-25",
+      "slugs": [
+        "ciscocollege",
+        "clarendoncollege",
+        "dallascollegemountainview",
+        "elpasocommunitycollege",
+        "frankphillipscollege",
+        "graysoncollege",
+        "hillcollege",
+        "howardcollege",
+        "mclennancommunitycollege",
+        "midlandcollege",
+        "northcentraltexascollege",
+        "odessacollege",
+        "rangercollege",
+        "templecollege",
+        "vernoncollege",
+        "weatherfordcollege",
+        "westerntexascollege"
+      ]
+    },
+    "r14": {
+      "base": "https://njcaaregion14.com",
+      "season": "2024-25",
+      "slugs": [
+        "trinityvalleycommunitycollege",
+        "parisjuniorcollege",
+        "sanjacintocollegesouth",
+        "tylerjuniorcollege",
+        "alvincommunitycollege",
+        "navarrocollege",
+        "lamarstatecollegeportarthur",
+        "galvestoncollege",
+        "bossierparishcommunitycollege",
+        "blinncollege",
+        "angelinacollege",
+        "kilgorecollege",
+        "northeasttexascommunitycollege",
+        "coastalbendcollege",
+        "laredocollege"
+      ]
+    },
+    "r15": {
+      "base": "https://region15athletics.com",
+      "season": "2024-25",
+      "slugs": [
+        "dutchesscommunitycollege",
+        "monroeuniversity",
+        "monroeuniversitybronx",
+        "orangecountycommunitycollege",
+        "suffolkcc"
+      ]
+    },
+    "r19": {
+      "base": "https://njcaaregion19.com",
+      "season": "2024-25",
+      "slugs": [
+        "atlanticcapecommunitycollege",
+        "bergencommunitycollege",
+        "brookdalecommunitycollege",
+        "camdencountycollege",
+        "delawaretechnicalcommunitycollege",
+        "lackawannacollege",
+        "lehighcarboncommunitycollege",
+        "mercercountycommunitycollege",
+        "middlesexcollege",
+        "montgomerycountycommunitycollegepa",
+        "countycollegeofmorris",
+        "northamptoncommunitycollege",
+        "oceancountycollege",
+        "rowancollegeofsouthjerseycumberland",
+        "rowancollegesouthjerseygloucester",
+        "raritanvalleycommunitycollege",
+        "salemcommunitycollege",
+        "sussexcountycommunitycollege"
+      ]
+    },
+    "r24": {
+      "base": "https://njcaaregion24.com",
+      "season": "2024-25",
+      "slugs": [
+        "danvilleareacommunitycollege",
+        "frontiercommunitycollege",
+        "heartlandcommunitycollege",
+        "illinoiscentralcollege",
+        "johnalogancollege",
+        "johnwoodcommunitycollege",
+        "kaskaskiacollege",
+        "lakelandcollege",
+        "lewisclarkcommunitycollege",
+        "lincolnlandcommunitycollege",
+        "lincolntrailcollege",
+        "olneycentralcollege",
+        "parklandcollege",
+        "rendlakecollege",
+        "shawneecommunitycollege",
+        "southeasternillinoiscollege",
+        "southwesternillinoiscollege",
+        "spoonrivercollege",
+        "wabashvalleycollege"
+      ]
+    }
+  },
+  "bsb": {
+    "r2": {
+      "base": "https://region2athletics.com",
+      "season": "2024-25",
+      "slugs": [
+        "arkansasstatemidsouth",
+        "arkansasstateuniversitymountainhome",
+        "carlalbertstatecollege",
+        "connorsstatecollege",
+        "easternoklahomastatecollege",
+        "murraystatecollege",
+        "nationalparkcollege",
+        "northarkansascollege",
+        "northeasternoklahomaamcollege",
+        "northernoklahomacollegeenid",
+        "northernoklahomacollegetonkawa",
+        "redlandscommunitycollege",
+        "rosestatecollege",
+        "seminolestatecollegeok",
+        "southarkansascollege",
+        "southeastarkansascollege",
+        "southernarkansasuniversitytech",
+        "uarichmountain",
+        "westernoklahomastatecollege"
+      ]
+    },
+    "r5": {
+      "base": "https://njcaaregion5.com",
+      "season": "2024-25",
+      "slugs": [
+        "amarillocollege",
+        "ciscocollege",
+        "clarendoncollege",
+        "dallascollegebrookhaven",
+        "dallascollegecedarvalley",
+        "dallascollegeeastfield",
+        "dallascollegemountainview",
+        "dallascollegenorthlake",
+        "dallascollegerichland",
+        "elpasocommunitycollege",
+        "frankphillipscollege",
+        "graysoncollege",
+        "hillcollege",
+        "howardcollege",
+        "lunacommunitycollege",
+        "mclennancommunitycollege",
+        "midlandcollege",
+        "newmexicojuniorcollege",
+        "newmexicomilitaryinstitute",
+        "northcentraltexascollege",
+        "odessacollege",
+        "rangercollege",
+        "templecollege",
+        "vernoncollege",
+        "weatherfordcollege",
+        "westerntexascollege"
+      ]
+    },
+    "r14": {
+      "base": "https://njcaaregion14.com",
+      "season": "2024-25",
+      "slugs": [
+        "bossierparishcommunitycollege",
+        "blinncollege",
+        "parisjuniorcollege",
+        "angelinacollege",
+        "panolacollege",
+        "tylerjuniorcollege",
+        "northeasttexascommunitycollege",
+        "alvincommunitycollege",
+        "sanjacintocollegenorth",
+        "whartoncountyjuniorcollege",
+        "navarrocollege",
+        "coastalbendcollege",
+        "galvestoncollege"
+      ]
+    },
+    "r15": {
+      "base": "https://region15athletics.com",
+      "season": "2024-25",
+      "slugs": [
+        "boroughofmanhattancommunitycollege",
+        "bronxcommunitycollege",
+        "dutchesscommunitycollege",
+        "kingsboroughcommunitycollege",
+        "monroeuniversity",
+        "monroeuniversitybronx",
+        "nassaucommunitycollege",
+        "orangecountycommunitycollege",
+        "queensboroughcommunitycollege",
+        "rocklandcommunitycollege",
+        "suffolkcc",
+        "sullivancountycommunitycollege",
+        "westchestercommunitycollege"
+      ]
+    },
+    "r19": {
+      "base": "https://njcaaregion19.com",
+      "season": "2024-25",
+      "slugs": [
+        "atlanticcapecommunitycollege",
+        "bergencommunitycollege",
+        "brookdalecommunitycollege",
+        "camdencountycollege",
+        "delawarecountycommunitycollege",
+        "delawaretechnicalcommunitycollege",
+        "lackawannacollege",
+        "luzernecountycommunitycollege",
+        "mercercountycommunitycollege",
+        "middlesexcollege",
+        "montgomerycountycommunitycollegepa",
+        "countycollegeofmorris",
+        "northamptoncommunitycollege",
+        "oceancountycollege",
+        "rowancollegeofsouthjerseycumberland",
+        "rowancollegesouthjerseygloucester",
+        "raritanvalleycommunitycollege",
+        "salemcommunitycollege",
+        "sussexcountycommunitycollege",
+        "ucnj"
+      ]
+    },
+    "r24": {
+      "base": "https://njcaaregion24.com",
+      "season": "2024-25",
+      "slugs": [
+        "danvilleareacommunitycollege",
+        "frontiercommunitycollege",
+        "heartlandcommunitycollege",
+        "illinoiscentralcollege",
+        "johnalogancollege",
+        "johnwoodcommunitycollege",
+        "kaskaskiacollege",
+        "lakelandcollege",
+        "lewisclarkcommunitycollege",
+        "lincolnlandcommunitycollege",
+        "lincolntrailcollege",
+        "olneycentralcollege",
+        "parklandcollege",
+        "rendlakecollege",
+        "shawneecommunitycollege",
+        "southeasternillinoiscollege",
+        "southwesternillinoiscollege",
+        "spoonrivercollege",
+        "vincennesuniversity",
+        "wabashvalleycollege"
+      ]
+    }
+  }
+}
