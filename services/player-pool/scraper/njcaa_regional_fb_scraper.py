@@ -56,6 +56,32 @@ REGIONS = [
     ("r19", "https://njcaaregion19.com"),
 ]
 
+# Hardcoded slugs — bypasses WAF-blocked listing pages
+HARDCODED_TEAMS: dict[str, list[dict]] = {
+    "r5": [
+        {"slug": "ciscocollege",              "name": "Cisco College"},
+        {"slug": "newmexicomilitaryinstitute", "name": "New Mexico Military Institute"},
+    ],
+    "r14": [
+        {"slug": "blinncollege",                   "name": "Blinn College"},
+        {"slug": "ciscocollege",                   "name": "Cisco College"},
+        {"slug": "kilgorecollege",                 "name": "Kilgore College"},
+        {"slug": "navarrocollege",                 "name": "Navarro College"},
+        {"slug": "newmexicomilitaryinstitute",      "name": "New Mexico Military Institute"},
+        {"slug": "northeasternoklahomaamcollege",   "name": "Northeastern Oklahoma A&M College"},
+        {"slug": "trinityvalleycommunitycollege",   "name": "Trinity Valley Community College"},
+        {"slug": "tylerjuniorcollege",             "name": "Tyler Junior College"},
+    ],
+    "r15": [
+        {"slug": "monroeuniversity",          "name": "Monroe University"},
+        {"slug": "nassaucommunitycollege",    "name": "Nassau Community College"},
+    ],
+    "r19": [
+        {"slug": "lackawannacollege",            "name": "Lackawanna College"},
+        {"slug": "sussexcountycommunitycollege", "name": "Sussex County Community College"},
+    ],
+}
+
 # Stat categories: (pos param, col_map)
 # col_map: list of (col_index, db_field, type)  — 0-indexed, first 4 cols are #/Name/Yr/Pos
 CATEGORIES = {
@@ -414,7 +440,7 @@ def run_region(region_code: str, base: str, conn,
                dry_run: bool = False,
                only_team: str = "") -> tuple[int, int]:
     """Scrape all teams in one region. Returns (teams_ok, total_players)."""
-    teams = get_teams(base)
+    teams = HARDCODED_TEAMS.get(region_code) or get_teams(base)
     if not teams:
         print(f"  [{region_code}] no teams found")
         return 0, 0

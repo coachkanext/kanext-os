@@ -1,0 +1,89 @@
+{
+  "msoc": {
+    "r2": {
+      "base": "https://region2athletics.com",
+      "slugs": [
+        "connorsstatecollege", "easternoklahomastatecollege", "murraystatecollege",
+        "northeasternoklahomaamcollege", "northernoklahomacollegeenid",
+        "richmountain", "rosestatecollege"
+      ]
+    },
+    "r5": {
+      "base": "https://njcaaregion5.com",
+      "slugs": [
+        "ciscocollege", "dallascollegebrookhaven", "dallascollegecedarvalley",
+        "dallascollegeeastfield", "dallascollegemountainview", "dallascollegerichland",
+        "hillcollege", "odessacollege", "rangercollege", "westerntexascollege"
+      ]
+    },
+    "r19": {
+      "base": "https://njcaaregion19.com",
+      "slugs": [
+        "atlanticcapecommunitycollege", "bergencommunitycollege", "brookdalecommunitycollege",
+        "camdencountycollege", "countycollegeofmorris", "delawarecountycommunitycollege",
+        "essexcountycollege", "harcumcollege", "harrisburgareacommunitycollege",
+        "lackawannacollege", "lehighcarboncommunitycollege", "mercercountycommunitycollege",
+        "middlesexcollege", "montgomerycountycommunitycollegepa", "northamptoncommunitycollege",
+        "oceancountycollege", "raritanvalleycommunitycollege",
+        "rowancollegeofsouthjerseycumberland", "rowancollegesouthjerseygloucester",
+        "sussexcountycommunitycollege", "ucnj"
+      ]
+    },
+    "r24": {
+      "base": "https://njcaaregion24.com",
+      "slugs": [
+        "heartlandcommunitycollege", "illinoiscentralcollege", "johnwoodcommunitycollege",
+        "lewisclarkcommunitycollege", "lincolntrailcollege", "parklandcollege",
+        "southwesternillinoiscollege"
+      ]
+    }
+  },
+  "wsoc": {
+    "r2": {
+      "base": "https://region2athletics.com",
+      "slugs": [
+        "connorsstatecollege", "easternoklahomastatecollege", "murraystatecollege",
+        "northeasternoklahomaamcollege", "northernoklahomacollegeenid",
+        "redlandscommunitycollege", "richmountain", "rosestatecollege",
+        "seminolestatecollege"
+      ]
+    },
+    "r5": {
+      "base": "https://njcaaregion5.com",
+      "slugs": [
+        "ciscocollege", "dallascollegebrookhaven", "dallascollegecedarvalley",
+        "dallascollegeeastfield", "dallascollegemountainview", "dallascollegenorthlake",
+        "dallascollegerichland", "hillcollege", "odessacollege",
+        "rangercollege", "westerntexascollege"
+      ]
+    },
+    "r15": {
+      "base": "https://region15athletics.com",
+      "slugs": [
+        "boroughofmanhattancommunitycollege", "fashioninstituteoftechnology",
+        "kingsboroughcommunitycollege", "monroeuniversity", "nassaucommunitycollege",
+        "queensboroughcommunitycollege", "suffolkcc"
+      ]
+    },
+    "r19": {
+      "base": "https://njcaaregion19.com",
+      "slugs": [
+        "atlanticcapecommunitycollege", "bergencommunitycollege", "brookdalecommunitycollege",
+        "essexcountycollege", "harcumcollege", "lackawannacollege",
+        "lehighcarboncommunitycollege", "mercercountycommunitycollege", "middlesexcollege",
+        "oceancountycollege", "raritanvalleycommunitycollege",
+        "rowancollegeofsouthjerseycumberland", "rowancollegesouthjerseygloucester",
+        "sussexcountycommunitycollege", "ucnj"
+      ]
+    },
+    "r24": {
+      "base": "https://njcaaregion24.com",
+      "slugs": [
+        "heartlandcommunitycollege", "illinoiscentralcollege", "johnwoodcommunitycollege",
+        "kaskaskiacollege", "lewisclarkcommunitycollege", "lincolnlandcommunitycollege",
+        "lincolntrailcollege", "parklandcollege", "southwesternillinoiscollege",
+        "wabashvalleycollege"
+      ]
+    }
+  }
+}
