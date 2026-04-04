@@ -448,6 +448,38 @@ def _upsert_player(conn, name: str, sport_code: str, team_name: str,
         if row:
             team_id = str(row["id"])
 
+    # Auto-create team if still not found (happens when standings endpoint returns no data,
+    # e.g. soccer — the API provides stats but not standings for some sports)
+    if not team_id and team_name:
+        level_id_row = conn.execute(
+            "SELECT id FROM ncaa_competitive_levels WHERE level_key=%s", (level_key,)
+        ).fetchone()
+        if level_id_row:
+            # Ensure a placeholder conference exists for this level
+            conf_id_row = conn.execute(
+                "SELECT id FROM ncaa_conferences WHERE level_id=%s AND name=%s",
+                (str(level_id_row["id"]), "Unknown"),
+            ).fetchone()
+            if not conf_id_row:
+                conf_id_row = conn.execute(
+                    "INSERT INTO ncaa_conferences (level_id, name) VALUES (%s, %s) "
+                    "ON CONFLICT (level_id, name) DO UPDATE SET name=EXCLUDED.name RETURNING id",
+                    (str(level_id_row["id"]), "Unknown"),
+                ).fetchone()
+            if conf_id_row:
+                conf_id = str(conf_id_row["id"])
+                t_row = conn.execute(
+                    """
+                    INSERT INTO ncaa_teams (conference_id, name, season)
+                    VALUES (%s, %s, %s)
+                    ON CONFLICT (conference_id, name, season) DO UPDATE SET name=EXCLUDED.name
+                    RETURNING id
+                    """,
+                    (conf_id, team_name, season),
+                ).fetchone()
+                if t_row:
+                    team_id = str(t_row["id"])
+
     existing = conn.execute(
         "SELECT id FROM ncaa_players WHERE full_name=%s AND sport=%s::sport_code AND season=%s",
         (name, sport_code, season),

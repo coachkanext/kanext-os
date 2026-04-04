@@ -32,13 +32,49 @@ ESPN_CORE = "https://sports.core.api.espn.com/v2/sports/soccer/leagues"
 # ── League definitions ────────────────────────────────────────────────────────
 
 LEAGUES = {
-    "usa.1":    {"name": "Major League Soccer",         "country": "USA"},
-    "usa.nwsl": {"name": "National Women's Soccer League", "country": "USA"},
-    "eng.1":    {"name": "English Premier League",      "country": "England"},
-    "esp.1":    {"name": "La Liga",                     "country": "Spain"},
-    "ger.1":    {"name": "Bundesliga",                  "country": "Germany"},
-    "ita.1":    {"name": "Serie A",                     "country": "Italy"},
-    "fra.1":    {"name": "Ligue 1",                     "country": "France"},
+    # ── Original 7 ────────────────────────────────────────────────────────────
+    "usa.1":      {"name": "Major League Soccer",                   "country": "USA"},
+    "usa.nwsl":   {"name": "National Women's Soccer League",        "country": "USA"},
+    "eng.1":      {"name": "English Premier League",                "country": "England"},
+    "esp.1":      {"name": "La Liga",                               "country": "Spain"},
+    "ger.1":      {"name": "Bundesliga",                            "country": "Germany"},
+    "ita.1":      {"name": "Serie A",                               "country": "Italy"},
+    "fra.1":      {"name": "Ligue 1",                               "country": "France"},
+
+    # ── Men's Top Flights ──────────────────────────────────────────────────────
+    "mex.1":      {"name": "Liga MX",                               "country": "Mexico"},
+    "ned.1":      {"name": "Eredivisie",                            "country": "Netherlands"},
+    "por.1":      {"name": "Primeira Liga",                         "country": "Portugal"},
+    "tur.1":      {"name": "Süper Lig",                             "country": "Turkey"},
+    "sco.1":      {"name": "Scottish Premiership",                  "country": "Scotland"},
+    "bel.1":      {"name": "Belgian Pro League",                    "country": "Belgium"},
+    "arg.1":      {"name": "Argentine Primera División",            "country": "Argentina"},
+    "bra.1":      {"name": "Brasileirão Série A",                   "country": "Brazil"},
+    "col.1":      {"name": "Liga BetPlay Colombia",                 "country": "Colombia"},
+
+    # ── Men's Second Divisions ─────────────────────────────────────────────────
+    "eng.2":      {"name": "EFL Championship",                      "country": "England"},
+    "eng.3":      {"name": "EFL League One",                        "country": "England"},
+    "eng.4":      {"name": "EFL League Two",                        "country": "England"},
+    "esp.2":      {"name": "La Liga 2",                             "country": "Spain"},
+    "ita.2":      {"name": "Serie B",                               "country": "Italy"},
+    "ger.2":      {"name": "2. Bundesliga",                         "country": "Germany"},
+    "fra.2":      {"name": "Ligue 2",                               "country": "France"},
+    "mex.2":      {"name": "Liga de Expansión MX",                  "country": "Mexico"},
+    "bra.2":      {"name": "Brasileirão Série B",                   "country": "Brazil"},
+
+    # ── US Development ─────────────────────────────────────────────────────────
+    "usa.usl.1":  {"name": "USL Championship",                      "country": "USA"},
+    "usa.usl.l1": {"name": "USL League One",                        "country": "USA"},
+    "usa.mlsnp":  {"name": "MLS NEXT Pro",                          "country": "USA"},
+
+    # ── Women's Pro ────────────────────────────────────────────────────────────
+    "eng.w.1":    {"name": "Women's Super League",                  "country": "England"},
+    "fra.w.1":    {"name": "D1 Féminine",                           "country": "France"},
+    "ger.w.1":    {"name": "Frauen-Bundesliga",                      "country": "Germany"},
+    "ita.w.1":    {"name": "Serie A Femminile",                     "country": "Italy"},
+    "mex.w.1":    {"name": "Liga MX Femenil",                       "country": "Mexico"},
+    "eng.w.2":    {"name": "Women's Championship England",          "country": "England"},
 }
 
 
@@ -87,7 +123,7 @@ def height_to_inches(h: Optional[float]) -> Optional[int]:
 # ── Step 1: Leagues ───────────────────────────────────────────────────────────
 
 def ensure_leagues(conn) -> dict[str, str]:
-    """Upsert all 7 soccer leagues. Returns {league_key: uuid}."""
+    """Upsert all soccer leagues. Returns {league_key: uuid}."""
     league_uuid: dict[str, str] = {}
     with conn.transaction():
         cur = conn.cursor()
