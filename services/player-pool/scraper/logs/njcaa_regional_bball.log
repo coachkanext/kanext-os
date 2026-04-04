@@ -1,0 +1,307 @@
+=== NJCAA Regional Basketball Scraper ===
+  Season  : 2025-26
+  Sports  : mbkb, wbkb
+  Region  : all
+
+============================================================
+  Sport: MBKB
+
+  [r14] https://njcaaregion14.com  (12 teams)
+     1/12 angelinacollege                      14 players
+     2/12 blinncollege                         16 players
+     3/12 bossierparishcommunitycollege        15 players
+    [WAF] https://njcaaregion14.com/sports/mbkb/2025-26/teams/coastalbendcollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+     4/12 coastalbendcollege                   18 players
+     5/12 kilgorecollege                       14 players
+     6/12 lamarstatecollegeportarthur           9 players
+     7/12 leecollege                           18 players
+     8/12 navarrocollege                       16 players
+     9/12 panolacollege                        12 players
+    10/12 parisjuniorcollege                    9 players
+    11/12 trinityvalleycommunitycollege        19 players
+    12/12 tylerjuniorcollege                   14 players
+    → r14: 174 players from 12 teams
+
+  [r15] https://region15athletics.com  (16 teams)
+     1/16 boroughofmanhattancommunitycollege   15 players
+     2/16 bronxcommunitycollege                17 players
+     3/16 dutchesscommunitycollege             20 players
+     4/16 hostoscommunitycollege               16 players
+     5/16 kingsboroughcommunitycollege         21 players
+     6/16 laguardiacommunitycollege             8 players
+    [WAF] https://region15athletics.com/sports/mbkb/2025-26/teams/monroeuniversity?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+     7/16 monroeuniversity                     15 players
+     8/16 monroeuniversitybronx                15 players
+     9/16 nassaucommunitycollege               17 players
+    10/16 orangecountycommunitycollege         16 players
+    11/16 queensboroughcommunitycollege        16 players
+    12/16 rocklandcommunitycollege             15 players
+    13/16 suffolkcc                            13 players
+    14/16 sullivancountycommunitycollege       16 players
+    15/16 ulstercountycommunitycollege         14 players
+    16/16 westchestercommunitycollege          19 players
+    → r15: 253 players from 16 teams
+
+  [r19] https://njcaaregion19.com  (27 teams)
+    [WAF] https://njcaaregion19.com/sports/mbkb/2025-26/teams/atlanticcapecommunitycollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+     1/27 atlanticcapecommunitycollege         16 players
+     2/27 bergencommunitycollege               18 players
+     3/27 brookdalecommunitycollege            16 players
+     4/27 camdencountycollege                  18 players
+     5/27 communitycollegeofphiladelphia       11 players
+     6/27 countycollegeofmorris                17 players
+     7/27 delawarecountycommunitycollege       18 players
+     8/27 delawaretechnicalcommunitycollege    14 players
+     9/27 essexcountycollege                   17 players
+    10/27 harcumcollege                        15 players
+    11/27 harrisburgareacommunitycollege       15 players
+    12/27 lackawannacollege                    21 players
+    13/27 lehighcarboncommunitycollege          1 players
+    [WAF] https://njcaaregion19.com/sports/mbkb/2025-26/teams/luzernecountycommunitycollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+    14/27 luzernecountycommunitycollege        20 players
+    15/27 mercercountycommunitycollege         19 players
+    16/27 middlesexcollege                     18 players
+    17/27 montgomerycountycommunitycollegepa   14 players
+    18/27 northamptoncommunitycollege          16 players
+    19/27 oceancountycollege                   16 players
+    20/27 passaiccountycommunitycollege        13 players
+    21/27 raritanvalleycommunitycollege        15 players
+    22/27 rowancollegeofsouthjerseycumberland  18 players
+    23/27 rowancollegesouthjerseygloucester    13 players
+    [WAF] https://njcaaregion19.com/sports/mbkb/2025-26/teams/salemcommunitycollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+    24/27 salemcommunitycollege                16 players
+    25/27 sussexcountycommunitycollege         19 players
+    26/27 thaddeusstevenscollegeoftechnology   15 players
+    27/27 ucnj                                 15 players
+    → r19: 424 players from 27 teams
+
+  [r2] https://region2athletics.com  (19 teams)
+     1/19 arkansasstatemidsouth                13 players
+     2/19 arkansasstatenewport                 14 players
+     3/19 connorsstatecollege                  11 players
+     4/19 easternoklahomastatecollege          14 players
+     5/19 murraystatecollege                   17 players
+     6/19 nationalparkcollege                  14 players
+     7/19 northarkansascollege                 19 players
+     8/19 northeasternoklahomaamcollege        13 players
+     9/19 northernoklahomacollegeenid          17 players
+    10/19 northernoklahomacollegetonkawa       16 players
+    [WAF] https://region2athletics.com/sports/mbkb/2025-26/teams/phillipscommunitycollegeua?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+    11/19 phillipscommunitycollegeua           14 players
+    12/19 redlandscommunitycollege             15 players
+    13/19 seminolestatecollege                 22 players
+    14/19 shortercollege                       13 players
+    15/19 southarkansascollege                  7 players
+    16/19 southeastarkansascollege             15 players
+    17/19 southernarkansasuniversitytech       16 players
+    18/19 universityofarkansascossatot         24 players
+    19/19 westernoklahomastatecollege          14 players
+    → r2: 288 players from 19 teams
+
+  [r24] https://njcaaregion24.com  (17 teams)
+    [WAF] https://njcaaregion24.com/sports/mbkb/2025-26/teams/danvilleareacommunitycollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+     1/17 danvilleareacommunitycollege         16 players
+     2/17 illinoiscentralcollege               15 players
+     3/17 johnalogancollege                    14 players
+     4/17 johnwoodcommunitycollege             15 players
+     5/17 kaskaskiacollege                     11 players
+     6/17 lakelandcollege                      15 players
+     7/17 lewisclarkcommunitycollege           18 players
+     8/17 lincolnlandcommunitycollege          15 players
+     9/17 lincolntrailcollege                  14 players
+    [WAF] https://njcaaregion24.com/sports/mbkb/2025-26/teams/olneycentralcollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+    10/17 olneycentralcollege                  12 players
+    11/17 parklandcollege                      14 players
+    12/17 rendlakecollege                      16 players
+    13/17 shawneecommunitycollege              15 players
+    14/17 southwesternillinoiscollege          13 players
+    15/17 spoonrivercollege                    14 players
+    16/17 vincennesuniversity                  14 players
+    17/17 wabashvalleycollege                  14 players
+    → r24: 245 players from 17 teams
+
+  [r5] https://njcaaregion5.com  (23 teams)
+     1/23 clarendoncollege                     16 players
+    [WAF] https://njcaaregion5.com/sports/mbkb/2025-26/teams/collincountycommunitycollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+     2/23 collincountycommunitycollege         12 players
+     3/23 dallascollegebrookhaven              15 players
+     4/23 dallascollegecedarvalley             15 players
+     5/23 dallascollegeeastfield               16 players
+     6/23 dallascollegemountainview            13 players
+     7/23 dallascollegenorthlake               14 players
+     8/23 dallascollegerichland                17 players
+     9/23 frankphillipscollege                 13 players
+    10/23 graysoncollege                       12 players
+    [WAF] https://njcaaregion5.com/sports/mbkb/2025-26/teams/hillcollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+    11/23 hillcollege                          16 players
+    12/23 howardcollege                        14 players
+    13/23 mclennancommunitycollege             16 players
+    14/23 midlandcollege                       16 players
+    15/23 newmexicojuniorcollege               15 players
+    16/23 newmexicomilitaryinstitute           15 players
+    17/23 odessacollege                        16 players
+    18/23 rangercollege                        17 players
+    19/23 southplainscollege                   14 players
+    20/23 southwesternchristiancollege         14 players
+    [WAF] https://njcaaregion5.com/sports/mbkb/2025-26/teams/templecollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+    21/23 templecollege                        17 players
+    22/23 weatherfordcollege                   18 players
+    23/23 westerntexascollege                  15 players
+    → r5: 346 players from 23 teams
+
+  MBKB totals in DB: 114 teams, 1730 players, 1730 stat rows
+
+  Top MBKB scorers (min 10 GP):
+    Tony Montgomery              bossierparishcommunitycollege       PPG=19.4  PTS=601  GP=31  FG%=0.423  3P%=0.319
+    Dashawn Ceaser               blinncollege                        PPG=18.4  PTS=551  GP=30  FG%=0.478  3P%=0.329
+    Amari Brown                  parisjuniorcollege                  PPG=16.2  PTS=517  GP=32  FG%=0.446  3P%=0.313
+    Zion Young                   lamarstatecollegeportarthur         PPG=16.0  PTS=497  GP=31  FG%=0.453  3P%=0.431
+    Caden Bell                   tylerjuniorcollege                  PPG=15.5  PTS=481  GP=31  FG%=0.520  3P%=0.471
+
+============================================================
+  Sport: WBKB
+
+  [r14] https://njcaaregion14.com  (8 teams)
+     1/8 angelinacollege                      15 players
+     2/8 blinncollege                         15 players
+     3/8 coastalbendcollege                   15 players
+     4/8 kilgorecollege                       11 players
+     5/8 panolacollege                        12 players
+     6/8 parisjuniorcollege                   13 players
+     7/8 trinityvalleycommunitycollege        13 players
+     8/8 tylerjuniorcollege                   11 players
+    → r14: 105 players from 8 teams
+
+  [r15] https://region15athletics.com  (16 teams)
+    [WAF] https://region15athletics.com/sports/wbkb/2025-26/teams/boroughofmanhattancommunitycollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+     1/16 boroughofmanhattancommunitycollege    9 players
+     2/16 bronxcommunitycollege                13 players
+     3/16 dutchesscommunitycollege             11 players
+     4/16 hostoscommunitycollege                9 players
+     5/16 kingsboroughcommunitycollege          9 players
+     6/16 laguardiacommunitycollege            11 players
+     7/16 monroeuniversity                     15 players
+     8/16 monroeuniversitybronx                15 players
+      SKIP nassaucommunitycollege [no data]
+    [WAF] https://region15athletics.com/sports/wbkb/2025-26/teams/orangecountycommunitycollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+    10/16 orangecountycommunitycollege         10 players
+    11/16 queensboroughcommunitycollege        12 players
+    12/16 rocklandcommunitycollege              8 players
+    13/16 suffolkcc                            12 players
+      SKIP sullivancountycommunitycollege [no data]
+      SKIP ulstercountycommunitycollege [no data]
+    16/16 westchestercommunitycollege          14 players
+    → r15: 148 players from 16 teams
+
+  [r19] https://njcaaregion19.com  (25 teams)
+     1/25 atlanticcapecommunitycollege         11 players
+     2/25 bergencommunitycollege               15 players
+    [WAF] https://njcaaregion19.com/sports/wbkb/2025-26/teams/brookdalecommunitycollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+     3/25 brookdalecommunitycollege            14 players
+     4/25 camdencountycollege                  12 players
+     5/25 communitycollegeofphiladelphia       12 players
+     6/25 countycollegeofmorris                 9 players
+     7/25 delawaretechnicalcommunitycollege    12 players
+     8/25 essexcountycollege                   11 players
+     9/25 harcumcollege                        13 players
+    10/25 harrisburgareacommunitycollege        1 players
+    11/25 lackawannacollege                    13 players
+    [WAF] https://njcaaregion19.com/sports/wbkb/2025-26/teams/lehighcarboncommunitycollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+      SKIP lehighcarboncommunitycollege [404]
+    13/25 mercercountycommunitycollege         10 players
+    14/25 middlesexcollege                     14 players
+    15/25 montgomerycountycommunitycollegepa   10 players
+    16/25 northamptoncommunitycollege           9 players
+    17/25 oceancountycollege                   12 players
+    18/25 passaiccountycommunitycollege        12 players
+    19/25 raritanvalleycommunitycollege        10 players
+    20/25 rowancollegeofsouthjerseycumberland  13 players
+    [WAF] https://njcaaregion19.com/sports/wbkb/2025-26/teams/rowancollegesouthjerseygloucester?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+    21/25 rowancollegesouthjerseygloucester    16 players
+    22/25 salemcommunitycollege                12 players
+    23/25 sussexcountycommunitycollege          8 players
+    24/25 ucnj                                 15 players
+      SKIP unioncollege [404]
+    → r19: 264 players from 25 teams
+
+  [r2] https://region2athletics.com  (18 teams)
+     1/18 arkansasstatemidsouth                 9 players
+     2/18 connorsstatecollege                  10 players
+     3/18 easternoklahomastatecollege          14 players
+    [WAF] https://region2athletics.com/sports/wbkb/2025-26/teams/murraystatecollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+     4/18 murraystatecollege                   13 players
+     5/18 nationalparkcollege                  14 players
+     6/18 northarkansascollege                 13 players
+     7/18 northeasternoklahomaamcollege        11 players
+     8/18 northernoklahomacollegeenid          11 players
+     9/18 northernoklahomacollegetonkawa       13 players
+    10/18 phillipscommunitycollegeua           13 players
+    11/18 redlandscommunitycollege             16 players
+    12/18 seminolestatecollege                 12 players
+      SKIP shortercollege [no data]
+    [WAF] https://region2athletics.com/sports/wbkb/2025-26/teams/southarkansascollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+    14/18 southarkansascollege                  9 players
+    15/18 southeastarkansascollege              8 players
+    16/18 southernarkansasuniversitytech       10 players
+    17/18 universityofarkansascossatot         10 players
+    18/18 westernoklahomastatecollege          10 players
+    → r2: 196 players from 18 teams
+
+  [r24] https://njcaaregion24.com  (17 teams)
+     1/17 danvilleareacommunitycollege         12 players
+     2/17 illinoiscentralcollege               11 players
+     3/17 johnalogancollege                    11 players
+    [WAF] https://njcaaregion24.com/sports/wbkb/2025-26/teams/johnwoodcommunitycollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+     4/17 johnwoodcommunitycollege             12 players
+     5/17 kaskaskiacollege                     12 players
+     6/17 lakelandcollege                      11 players
+     7/17 lewisclarkcommunitycollege           14 players
+     8/17 lincolnlandcommunitycollege          13 players
+     9/17 lincolntrailcollege                   8 players
+    10/17 olneycentralcollege                  13 players
+    11/17 parklandcollege                      12 players
+    12/17 rendlakecollege                      11 players
+    13/17 shawneecommunitycollege               9 players
+    [WAF] https://njcaaregion24.com/sports/wbkb/2025-26/teams/southwesternillinoiscollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+    14/17 southwesternillinoiscollege          14 players
+    15/17 spoonrivercollege                    10 players
+    16/17 vincennesuniversity                  13 players
+    17/17 wabashvalleycollege                   8 players
+    → r24: 194 players from 17 teams
+
+  [r5] https://njcaaregion5.com  (20 teams)
+     1/20 ciscocollege                         11 players
+     2/20 clarendoncollege                     15 players
+     3/20 collincountycommunitycollege         10 players
+     4/20 dallascollegecedarvalley             15 players
+     5/20 dallascollegemountainview            14 players
+    [WAF] https://njcaaregion5.com/sports/wbkb/2025-26/teams/dallascollegerichland?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+     6/20 dallascollegerichland                15 players
+     7/20 frankphillipscollege                 11 players
+     8/20 graysoncollege                       13 players
+     9/20 hillcollege                          13 players
+    10/20 howardcollege                        17 players
+    11/20 mclennancommunitycollege             14 players
+    12/20 midlandcollege                       13 players
+    13/20 newmexicojuniorcollege               16 players
+    14/20 odessacollege                        16 players
+    15/20 rangercollege                        14 players
+    [WAF] https://njcaaregion5.com/sports/wbkb/2025-26/teams/southplainscollege?tmpl=brief-category-template&pos=overall&r=0 — waiting 90s...
+    16/20 southplainscollege                   14 players
+    17/20 southwesternchristiancollege         13 players
+    18/20 templecollege                        13 players
+    19/20 weatherfordcollege                   11 players
+    20/20 westerntexascollege                  14 players
+    → r5: 272 players from 20 teams
+
+  WBKB totals in DB: 98 teams, 1179 players, 1179 stat rows
+
+  Top WBKB scorers (min 10 GP):
+    Monica Bottley               tylerjuniorcollege                  PPG=17.9  PTS=591  GP=33  FG%=0.422  3P%=0.360
+    Taler Thornton               tylerjuniorcollege                  PPG=16.2  PTS=535  GP=33  FG%=0.509  3P%=0.317
+    Kennedi Johnson              tylerjuniorcollege                  PPG=15.9  PTS=492  GP=31  FG%=0.499  3P%=0.302
+    Ja'Sani Green                kilgorecollege                      PPG=15.3  PTS=505  GP=33  FG%=0.590  3P%=0.167
+    Aminah Dixon                 angelinacollege                     PPG=14.7  PTS=381  GP=26  FG%=0.404  3P%=0.225
+
+============================================================
+DONE: 218 teams, 2909 players

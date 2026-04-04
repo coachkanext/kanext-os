@@ -1,0 +1,288 @@
+  Loaded team slugs from njcaa_regional_baseball_teams.json
+=== NJCAA Regional Baseball/Softball Scraper ===
+  Sports  : sball, bsb
+  Regions : r2, r5, r14, r15, r19, r24
+
+============================================================
+  Sport: Softball (sball)
+
+  [r2] https://region2athletics.com  (16 teams)
+     1/16 arkansasstateuniversitymountainhome     13 players
+     2/16 arkansasstatenewport                    19 players
+     3/16 carlalbertstatecollege                  17 players
+     4/16 connorsstatecollege                     22 players
+     5/16 easternoklahomastatecollege             27 players
+     6/16 murraystatecollege                      25 players
+     7/16 nationalparkcollege                     16 players
+     8/16 northarkansascollege                    16 players
+    [WAF] waiting 90s...
+     9/16 northeasternoklahomaamcollege           22 players
+    10/16 northernoklahomacollegeenid             27 players
+    11/16 northernoklahomacollegetonkawa          14 players
+    12/16 rosestatecollege                        19 players
+    13/16 seminolestatecollegeok                  20 players
+    14/16 southernarkansasuniversitytech          15 players
+    15/16 uarichmountain                          19 players
+    16/16 westernoklahomastatecollege             18 players
+    → r2: 309 players from 16 teams
+
+  [r5] https://njcaaregion5.com  (17 teams)
+     1/17 ciscocollege                            17 players
+    [WAF] waiting 90s...
+     2/17 clarendoncollege                        13 players
+      SKIP dallascollegemountainview [no data]
+     4/17 elpasocommunitycollege                  13 players
+     5/17 frankphillipscollege                    15 players
+     6/17 graysoncollege                          19 players
+     7/17 hillcollege                             22 players
+     8/17 howardcollege                           22 players
+     9/17 mclennancommunitycollege                20 players
+    10/17 midlandcollege                          26 players
+    [WAF] waiting 90s...
+    11/17 northcentraltexascollege                24 players
+    12/17 odessacollege                           20 players
+    13/17 rangercollege                           25 players
+    14/17 templecollege                           21 players
+    15/17 vernoncollege                           19 players
+    16/17 weatherfordcollege                      30 players
+    17/17 westerntexascollege                     19 players
+    → r5: 325 players from 17 teams
+
+  [r14] https://njcaaregion14.com  (15 teams)
+     1/15 trinityvalleycommunitycollege           23 players
+    [WAF] waiting 90s...
+     2/15 parisjuniorcollege                      22 players
+     3/15 sanjacintocollegesouth                  21 players
+     4/15 tylerjuniorcollege                      20 players
+     5/15 alvincommunitycollege                   21 players
+     6/15 navarrocollege                          22 players
+     7/15 lamarstatecollegeportarthur             15 players
+     8/15 galvestoncollege                        25 players
+     9/15 bossierparishcommunitycollege           24 players
+    10/15 blinncollege                            17 players
+    [WAF] waiting 90s...
+    11/15 angelinacollege                         20 players
+    12/15 kilgorecollege                          20 players
+    13/15 northeasttexascommunitycollege          21 players
+    14/15 coastalbendcollege                      19 players
+      SKIP laredocollege [no data]
+    → r14: 290 players from 15 teams
+
+  [r15] https://region15athletics.com  (5 teams)
+     1/5 dutchesscommunitycollege                14 players
+     2/5 monroeuniversity                        24 players
+     3/5 monroeuniversitybronx                   20 players
+    [WAF] waiting 90s...
+     4/5 orangecountycommunitycollege            11 players
+     5/5 suffolkcc                               12 players
+    → r15: 81 players from 5 teams
+
+  [r19] https://njcaaregion19.com  (18 teams)
+     1/18 atlanticcapecommunitycollege             1 players
+     2/18 bergencommunitycollege                  17 players
+     3/18 brookdalecommunitycollege               14 players
+     4/18 camdencountycollege                     15 players
+     5/18 delawaretechnicalcommunitycollege       19 players
+     6/18 lackawannacollege                       16 players
+     7/18 lehighcarboncommunitycollege             1 players
+    [WAF] waiting 90s...
+     8/18 mercercountycommunitycollege            12 players
+     9/18 middlesexcollege                        13 players
+    10/18 montgomerycountycommunitycollegepa       1 players
+    11/18 countycollegeofmorris                   13 players
+    12/18 northamptoncommunitycollege             13 players
+    13/18 oceancountycollege                      15 players
+    14/18 rowancollegeofsouthjerseycumberland      1 players
+    15/18 rowancollegesouthjerseygloucester       15 players
+    16/18 raritanvalleycommunitycollege           13 players
+    17/18 salemcommunitycollege                   18 players
+    [WAF] waiting 90s...
+    18/18 sussexcountycommunitycollege            11 players
+    → r19: 208 players from 18 teams
+
+  [r24] https://njcaaregion24.com  (19 teams)
+     1/19 danvilleareacommunitycollege            22 players
+     2/19 frontiercommunitycollege                14 players
+     3/19 heartlandcommunitycollege               18 players
+     4/19 illinoiscentralcollege                  16 players
+     5/19 johnalogancollege                       17 players
+     6/19 johnwoodcommunitycollege                15 players
+     7/19 kaskaskiacollege                        17 players
+     8/19 lakelandcollege                         21 players
+    [WAF] waiting 90s...
+     9/19 lewisclarkcommunitycollege              15 players
+    10/19 lincolnlandcommunitycollege             18 players
+    11/19 lincolntrailcollege                     15 players
+    12/19 olneycentralcollege                     22 players
+    13/19 parklandcollege                         15 players
+    14/19 rendlakecollege                         16 players
+    15/19 shawneecommunitycollege                 16 players
+    16/19 southeasternillinoiscollege             18 players
+    17/19 southwesternillinoiscollege             24 players
+    [WAF] waiting 90s...
+    18/19 spoonrivercollege                       17 players
+    19/19 wabashvalleycollege                     18 players
+    → r24: 334 players from 19 teams
+
+  Softball in DB: 88 teams  1542 players  1542 stat rows
+
+  Top Softball hitters (min 30 AB):
+    Ella Hayes                   salemcommunitycollege               [r19] AVG=0.577 OBP=0.643 SLG=0.949 OPS=1.592 H=79 AB=137 HR=7 RBI=54 SB=23
+    Emma Davis                   midlandcollege                      [r5] AVG=0.556 OBP=0.583 SLG=0.844 OPS=1.427 H=25 AB=45 HR=1 RBI=19 SB=None
+    Kaitlyn Drew                 danvilleareacommunitycollege        [r24] AVG=0.551 OBP=0.597 SLG=0.565 OPS=1.162 H=38 AB=69 HR=None RBI=9 SB=11
+    Aniyah Pequeno               graysoncollege                      [r5] AVG=0.550 OBP=0.588 SLG=0.675 OPS=1.263 H=110 AB=200 HR=2 RBI=34 SB=27
+    Jules Hart                   brookdalecommunitycollege           [r19] AVG=0.548 OBP=0.588 SLG=0.615 OPS=1.203 H=74 AB=135 HR=None RBI=27 SB=29
+
+  sball run total: 90 teams, 1547 players
+
+============================================================
+  Sport: Baseball (bsb)
+
+  [r2] https://region2athletics.com  (19 teams)
+     1/19 arkansasstatemidsouth                   39 players
+     2/19 arkansasstateuniversitymountainhome     38 players
+     3/19 carlalbertstatecollege                  36 players
+     4/19 connorsstatecollege                     38 players
+     5/19 easternoklahomastatecollege             38 players
+     6/19 murraystatecollege                      37 players
+     7/19 nationalparkcollege                     39 players
+    [WAF] waiting 90s...
+     8/19 northarkansascollege                    30 players
+     9/19 northeasternoklahomaamcollege           35 players
+    10/19 northernoklahomacollegeenid             31 players
+    11/19 northernoklahomacollegetonkawa          40 players
+    12/19 redlandscommunitycollege                40 players
+    13/19 rosestatecollege                        30 players
+    14/19 seminolestatecollegeok                  54 players
+    15/19 southarkansascollege                    39 players
+    16/19 southeastarkansascollege                39 players
+    [WAF] waiting 90s...
+    17/19 southernarkansasuniversitytech          38 players
+    18/19 uarichmountain                          40 players
+    19/19 westernoklahomastatecollege             36 players
+    → r2: 717 players from 19 teams
+
+  [r5] https://njcaaregion5.com  (26 teams)
+     1/26 amarillocollege                         39 players
+     2/26 ciscocollege                            40 players
+     3/26 clarendoncollege                        32 players
+     4/26 dallascollegebrookhaven                 36 players
+     5/26 dallascollegecedarvalley                33 players
+    [WAF] waiting 90s...
+     6/26 dallascollegeeastfield                  33 players
+     7/26 dallascollegemountainview               34 players
+     8/26 dallascollegenorthlake                  32 players
+     9/26 dallascollegerichland                   36 players
+    10/26 elpasocommunitycollege                  37 players
+    11/26 frankphillipscollege                    43 players
+    12/26 graysoncollege                          38 players
+    13/26 hillcollege                             41 players
+    14/26 howardcollege                           37 players
+    [WAF] waiting 90s...
+    15/26 lunacommunitycollege                    25 players
+    16/26 mclennancommunitycollege                45 players
+    17/26 midlandcollege                          34 players
+    18/26 newmexicojuniorcollege                  34 players
+    19/26 newmexicomilitaryinstitute              49 players
+    20/26 northcentraltexascollege                43 players
+    21/26 odessacollege                           45 players
+    22/26 rangercollege                           43 players
+    23/26 templecollege                           40 players
+    [WAF] waiting 90s...
+    24/26 vernoncollege                           33 players
+    25/26 weatherfordcollege                      47 players
+    26/26 westerntexascollege                     38 players
+    → r5: 987 players from 26 teams
+
+  [r14] https://njcaaregion14.com  (13 teams)
+     1/13 bossierparishcommunitycollege           29 players
+     2/13 blinncollege                            32 players
+     3/13 parisjuniorcollege                      31 players
+     4/13 angelinacollege                         34 players
+     5/13 panolacollege                           37 players
+     6/13 tylerjuniorcollege                      47 players
+    [WAF] waiting 90s...
+     7/13 northeasttexascommunitycollege          34 players
+     8/13 alvincommunitycollege                   35 players
+     9/13 sanjacintocollegenorth                  33 players
+    10/13 whartoncountyjuniorcollege              31 players
+    11/13 navarrocollege                          33 players
+    12/13 coastalbendcollege                      38 players
+    13/13 galvestoncollege                        34 players
+    → r14: 448 players from 13 teams
+
+  [r15] https://region15athletics.com  (13 teams)
+     1/13 boroughofmanhattancommunitycollege      21 players
+    [WAF] waiting 90s...
+     2/13 bronxcommunitycollege                   24 players
+     3/13 dutchesscommunitycollege                14 players
+     4/13 kingsboroughcommunitycollege            18 players
+     5/13 monroeuniversity                        30 players
+     6/13 monroeuniversitybronx                   36 players
+     7/13 nassaucommunitycollege                  26 players
+     8/13 orangecountycommunitycollege            23 players
+     9/13 queensboroughcommunitycollege           15 players
+    10/13 rocklandcommunitycollege                24 players
+    11/13 suffolkcc                               33 players
+      SKIP sullivancountycommunitycollege [no data]
+    [WAF] waiting 90s...
+    13/13 westchestercommunitycollege             34 players
+    → r15: 298 players from 13 teams
+
+  [r19] https://njcaaregion19.com  (20 teams)
+     1/20 atlanticcapecommunitycollege             1 players
+     2/20 bergencommunitycollege                  28 players
+     3/20 brookdalecommunitycollege               39 players
+     4/20 camdencountycollege                     28 players
+     5/20 delawarecountycommunitycollege          21 players
+     6/20 delawaretechnicalcommunitycollege       33 players
+     7/20 lackawannacollege                       47 players
+     8/20 luzernecountycommunitycollege            1 players
+     9/20 mercercountycommunitycollege            39 players
+    10/20 middlesexcollege                        31 players
+    11/20 montgomerycountycommunitycollegepa      24 players
+    12/20 countycollegeofmorris                   31 players
+    13/20 northamptoncommunitycollege             32 players
+    14/20 oceancountycollege                      27 players
+    15/20 rowancollegeofsouthjerseycumberland     39 players
+    16/20 rowancollegesouthjerseygloucester       33 players
+    [WAF] waiting 90s...
+    17/20 raritanvalleycommunitycollege           28 players
+    18/20 salemcommunitycollege                   29 players
+    19/20 sussexcountycommunitycollege            27 players
+    20/20 ucnj                                    30 players
+    → r19: 568 players from 20 teams
+
+  [r24] https://njcaaregion24.com  (20 teams)
+     1/20 danvilleareacommunitycollege            26 players
+     2/20 frontiercommunitycollege                37 players
+     3/20 heartlandcommunitycollege               34 players
+     4/20 illinoiscentralcollege                  38 players
+     5/20 johnalogancollege                       35 players
+     6/20 johnwoodcommunitycollege                39 players
+     7/20 kaskaskiacollege                        35 players
+     8/20 lakelandcollege                         43 players
+     9/20 lewisclarkcommunitycollege              42 players
+    10/20 lincolnlandcommunitycollege             27 players
+    11/20 lincolntrailcollege                     38 players
+    12/20 olneycentralcollege                     39 players
+    13/20 parklandcollege                         43 players
+      SKIP rendlakecollege [no data]
+    15/20 shawneecommunitycollege                 20 players
+    16/20 southeasternillinoiscollege             34 players
+    17/20 southwesternillinoiscollege             46 players
+    18/20 spoonrivercollege                       39 players
+    19/20 vincennesuniversity                     31 players
+    20/20 wabashvalleycollege                     38 players
+    → r24: 684 players from 20 teams
+
+  Baseball in DB: 109 teams  3699 players  3699 stat rows
+
+  Top Baseball hitters (min 30 AB):
+    RJ Mustaro                   rowancollegesouthjerseygloucester   [r19] AVG=0.503 OBP=0.584 SLG=0.849 OPS=1.433 H=80 AB=159 HR=11 RBI=58 SB=12
+    Austin Haley                 murraystatecollege                  [r2] AVG=0.503 OBP=0.594 SLG=0.857 OPS=1.451 H=95 AB=189 HR=14 RBI=64 SB=17
+    Ryan Acquisto                middlesexcollege                    [r19] AVG=0.500 OBP=0.565 SLG=0.789 OPS=1.354 H=45 AB=90 HR=5 RBI=49 SB=9
+    Howard Bachus                southeastarkansascollege            [r2] AVG=0.489 OBP=0.600 SLG=0.689 OPS=1.289 H=22 AB=45 HR=1 RBI=14 SB=10
+    Robert Herrera               monroeuniversitybronx               [r15] AVG=0.483 OBP=0.580 SLG=0.685 OPS=1.265 H=72 AB=149 HR=3 RBI=54 SB=31
+
+  bsb run total: 111 teams, 3702 players

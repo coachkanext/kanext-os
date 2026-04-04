@@ -1,0 +1,22 @@
+
+=== NJCAA Regional Football Stats Scraper ===
+  Season   : 2024-25
+  Regions  : ['r5', 'r14', 'r15', 'r19']
+  Categories: ['qb', 'rb', 'wr', 'k', 'p', 'kr', 'allp', 'pts', 'd']
+
+
+[r5] https://njcaaregion5.com
+  [r5] no teams found
+
+[r14] https://njcaaregion14.com
+  [r14] no teams found
+
+[r15] https://region15athletics.com
+  [r15] no teams found
+
+[r19] https://njcaaregion19.com
+  [r19] no teams found
+
+==================================================
+  Total: 0 teams, 0 players
+  DB: 0 teams, 0 players, 0 stat rows

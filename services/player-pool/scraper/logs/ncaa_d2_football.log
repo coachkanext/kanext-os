@@ -1,0 +1,42 @@
+
+KaNeXT CFB Pool Scraper — 2024 season  [mode=ncaa_d2]
+============================================================
+
+[0] Seeding static data...
+  ✓ 4 associations, 8 divisions, 11 competitive levels
+
+[NCAA D2] Loading 17 conference groups...
+  CIAA (CIAA): 11 teams
+  GLIAC (GLIAC): 8 teams
+  Great Lakes (Great Lakes): 9 teams
+  Gulf South (Gulf South): 8 teams
+  D2 Independents (D2 Independents): 3 teams
+  Lone Star (Lone Star): 10 teams
+  MIAA (MIAA): 10 teams
+  NE10 (NE10): 9 teams
+  NSIC (NSIC): 13 teams
+  PSAC East (PSAC): 8 teams
+  PSAC West (PSAC): 7 teams
+  RMAC (RMAC): 10 teams
+  SIAC (SIAC): 13 teams
+  South Atlantic (South Atlantic): 12 teams
+  Great American (Great American): 12 teams
+  Great Midwest (Great Midwest): 10 teams
+  Mountain East (Mountain East): 10 teams
+
+[NCAA D2 ROSTERS] Loading player rosters...
+  ✓ 98 players loaded
+
+  NCAA D2 total: 163 teams, 98 players
+
+════════════════════════════════════════════════════════════
+  CFB POOL — NCAA_D2
+════════════════════════════════════════════════════════════
+  Teams:        630
+  Players:      25104
+  Player-seasons (2024): 25104
+  QB stats:     586
+  Skill stats:  2654
+  Defense stats:4940
+════════════════════════════════════════════════════════════
+
