@@ -1,0 +1,134 @@
+{
+  "season": "2025-26",
+  "regions": {
+    "r2":  "https://region2athletics.com",
+    "r5":  "https://njcaaregion5.com",
+    "r14": "https://njcaaregion14.com",
+    "r15": "https://region15athletics.com",
+    "r19": "https://njcaaregion19.com",
+    "r24": "https://njcaaregion24.com"
+  },
+  "mbkb": {
+    "r2": [
+      "arkansasstatemidsouth", "arkansasstatenewport", "connorsstatecollege",
+      "easternoklahomastatecollege", "murraystatecollege", "nationalparkcollege",
+      "northarkansascollege", "northeasternoklahomaamcollege",
+      "northernoklahomacollegeenid", "northernoklahomacollegetonkawa",
+      "phillipscommunitycollegeua", "redlandscommunitycollege",
+      "seminolestatecollege", "shortercollege", "southarkansascollege",
+      "southeastarkansascollege", "southernarkansasuniversitytech",
+      "universityofarkansascossatot", "westernoklahomastatecollege"
+    ],
+    "r5": [
+      "clarendoncollege", "collincountycommunitycollege",
+      "dallascollegebrookhaven", "dallascollegecedarvalley",
+      "dallascollegeeastfield", "dallascollegemountainview",
+      "dallascollegenorthlake", "dallascollegerichland",
+      "frankphillipscollege", "graysoncollege", "hillcollege",
+      "howardcollege", "mclennancommunitycollege", "midlandcollege",
+      "newmexicojuniorcollege", "newmexicomilitaryinstitute",
+      "odessacollege", "rangercollege", "southplainscollege",
+      "southwesternchristiancollege", "templecollege",
+      "weatherfordcollege", "westerntexascollege"
+    ],
+    "r14": [
+      "angelinacollege", "blinncollege", "bossierparishcommunitycollege",
+      "coastalbendcollege", "kilgorecollege", "lamarstatecollegeportarthur",
+      "leecollege", "navarrocollege", "panolacollege", "parisjuniorcollege",
+      "trinityvalleycommunitycollege", "tylerjuniorcollege"
+    ],
+    "r15": [
+      "boroughofmanhattancommunitycollege", "bronxcommunitycollege",
+      "dutchesscommunitycollege", "hostoscommunitycollege",
+      "kingsboroughcommunitycollege", "laguardiacommunitycollege",
+      "monroeuniversity", "monroeuniversitybronx", "nassaucommunitycollege",
+      "orangecountycommunitycollege", "queensboroughcommunitycollege",
+      "rocklandcommunitycollege", "suffolkcc", "sullivancountycommunitycollege",
+      "ulstercountycommunitycollege", "westchestercommunitycollege"
+    ],
+    "r19": [
+      "atlanticcapecommunitycollege", "bergencommunitycollege",
+      "brookdalecommunitycollege", "camdencountycollege",
+      "communitycollegeofphiladelphia", "countycollegeofmorris",
+      "delawarecountycommunitycollege", "delawaretechnicalcommunitycollege",
+      "essexcountycollege", "harcumcollege",
+      "harrisburgareacommunitycollege", "lackawannacollege",
+      "lehighcarboncommunitycollege", "luzernecountycommunitycollege",
+      "mercercountycommunitycollege", "middlesexcollege",
+      "montgomerycountycommunitycollegepa", "northamptoncommunitycollege",
+      "oceancountycollege", "passaiccountycommunitycollege",
+      "raritanvalleycommunitycollege", "rowancollegeofsouthjerseycumberland",
+      "rowancollegesouthjerseygloucester", "salemcommunitycollege",
+      "sussexcountycommunitycollege", "thaddeusstevenscollegeoftechnology",
+      "ucnj"
+    ],
+    "r24": [
+      "danvilleareacommunitycollege", "illinoiscentralcollege",
+      "johnalogancollege", "johnwoodcommunitycollege", "kaskaskiacollege",
+      "lakelandcollege", "lewisclarkcommunitycollege",
+      "lincolnlandcommunitycollege", "lincolntrailcollege",
+      "olneycentralcollege", "parklandcollege", "rendlakecollege",
+      "shawneecommunitycollege", "southwesternillinoiscollege",
+      "spoonrivercollege", "vincennesuniversity", "wabashvalleycollege"
+    ]
+  },
+  "wbkb": {
+    "r2": [
+      "arkansasstatemidsouth", "connorsstatecollege",
+      "easternoklahomastatecollege", "murraystatecollege",
+      "nationalparkcollege", "northarkansascollege",
+      "northeasternoklahomaamcollege", "northernoklahomacollegeenid",
+      "northernoklahomacollegetonkawa", "phillipscommunitycollegeua",
+      "redlandscommunitycollege", "seminolestatecollege", "shortercollege",
+      "southarkansascollege", "southeastarkansascollege",
+      "southernarkansasuniversitytech", "universityofarkansascossatot",
+      "westernoklahomastatecollege"
+    ],
+    "r5": [
+      "ciscocollege", "clarendoncollege", "collincountycommunitycollege",
+      "dallascollegecedarvalley", "dallascollegemountainview",
+      "dallascollegerichland", "frankphillipscollege", "graysoncollege",
+      "hillcollege", "howardcollege", "mclennancommunitycollege",
+      "midlandcollege", "newmexicojuniorcollege", "odessacollege",
+      "rangercollege", "southplainscollege", "southwesternchristiancollege",
+      "templecollege", "weatherfordcollege", "westerntexascollege"
+    ],
+    "r14": [
+      "angelinacollege", "blinncollege", "coastalbendcollege",
+      "kilgorecollege", "panolacollege", "parisjuniorcollege",
+      "trinityvalleycommunitycollege", "tylerjuniorcollege"
+    ],
+    "r15": [
+      "boroughofmanhattancommunitycollege", "bronxcommunitycollege",
+      "dutchesscommunitycollege", "hostoscommunitycollege",
+      "kingsboroughcommunitycollege", "laguardiacommunitycollege",
+      "monroeuniversity", "monroeuniversitybronx", "nassaucommunitycollege",
+      "orangecountycommunitycollege", "queensboroughcommunitycollege",
+      "rocklandcommunitycollege", "suffolkcc", "sullivancountycommunitycollege",
+      "ulstercountycommunitycollege", "westchestercommunitycollege"
+    ],
+    "r19": [
+      "atlanticcapecommunitycollege", "bergencommunitycollege",
+      "brookdalecommunitycollege", "camdencountycollege",
+      "communitycollegeofphiladelphia", "countycollegeofmorris",
+      "delawaretechnicalcommunitycollege", "essexcountycollege",
+      "harcumcollege", "harrisburgareacommunitycollege", "lackawannacollege",
+      "lehighcarboncommunitycollege", "mercercountycommunitycollege",
+      "middlesexcollege", "montgomerycountycommunitycollegepa",
+      "northamptoncommunitycollege", "oceancountycollege",
+      "passaiccountycommunitycollege", "raritanvalleycommunitycollege",
+      "rowancollegeofsouthjerseycumberland",
+      "rowancollegesouthjerseygloucester", "salemcommunitycollege",
+      "sussexcountycommunitycollege", "ucnj", "unioncollege"
+    ],
+    "r24": [
+      "danvilleareacommunitycollege", "illinoiscentralcollege",
+      "johnalogancollege", "johnwoodcommunitycollege", "kaskaskiacollege",
+      "lakelandcollege", "lewisclarkcommunitycollege",
+      "lincolnlandcommunitycollege", "lincolntrailcollege",
+      "olneycentralcollege", "parklandcollege", "rendlakecollege",
+      "shawneecommunitycollege", "southwesternillinoiscollege",
+      "spoonrivercollege", "vincennesuniversity", "wabashvalleycollege"
+    ]
+  }
+}
