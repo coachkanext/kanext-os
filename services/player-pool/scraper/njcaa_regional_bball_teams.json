@@ -3,9 +3,17 @@
   "regions": {
     "r2":  "https://region2athletics.com",
     "r5":  "https://njcaaregion5.com",
+    "r6":  "https://kjccc.org",
+    "r11": "https://iccac.org",
+    "r12": "https://njcaaregion12.org",
+    "r13": "https://njcaaregion13.org",
     "r14": "https://njcaaregion14.com",
     "r15": "https://region15athletics.com",
+    "r17": "https://thegcaa.com",
     "r19": "https://njcaaregion19.com",
+    "r20": "https://njcaaregion20.org",
+    "r21": "https://njcaaregionxxi.com",
+    "r22": "https://acccathletics.com",
     "r24": "https://njcaaregion24.com"
   },
   "mbkb": {
@@ -31,6 +39,53 @@
       "southwesternchristiancollege", "templecollege",
       "weatherfordcollege", "westerntexascollege"
     ],
+    "r6": [
+      "allencountycommunitycollege", "bartoncommunitycollege",
+      "butlercommunitycollegeks", "cloudcountycommunitycollege",
+      "coffeyvillecommunitycollege", "colbycommunitycollege",
+      "cowleycountycommunitycollege", "dodgecitycommunitycollege",
+      "forthaystechnorthwest", "fortscottcommunitycollege",
+      "gardencitycommunitycollege", "highlandcommunitycollegekansas",
+      "hutchinsoncommunitycollege", "independencecommunitycollege",
+      "johnsoncountycommunitycollege", "kansascitykansascommunitycollege",
+      "labettecommunitycollege", "neoshocountycommunitycollege",
+      "prattcommunitycollege", "sewardcounty"
+    ],
+    "r11": [
+      "indianhillscommunitycollege", "marshalltowncc",
+      "southeasterncommunitycollege"
+    ],
+    "r12": [
+      "alpenacommunitycollege", "baycollege", "bryantstrattonohio",
+      "clarkstatecollege", "communitychristianmich", "cuyahogacommunitycollege",
+      "deltacollege", "edisonstate", "glenoakscommunitycollege",
+      "grandrapidscommunitycollege", "henryfordcollege", "hockingcollege",
+      "jacksoncollege", "kalamazoovalleycommunitycollege",
+      "kelloggcommunitycollege", "kirtlandcommunitycollege",
+      "lakelandcommunitycollege", "lakemichigancollege",
+      "lansingcommunitycollege", "loraincountycommunitycollege",
+      "macombcommunitycollege", "marianuniversityancilla",
+      "midmichigancollege", "montcalmcommunitycollege", "mottcommunitycollege",
+      "muskegoncommunitycollege", "northcentralmichigan",
+      "oaklandcommunitycollege", "owenscommunitycollege",
+      "schoolcraftcollege", "southwesternmichigan",
+      "stclaircountycommunitycollege", "terrastate",
+      "waynecountycommunitycollege"
+    ],
+    "r13": [
+      "anokaramseycommunitycollege", "centrallakescollegebrainerd",
+      "dakotacollegeatbottineau", "dakotacountytechnicalcollege",
+      "dawsoncommunitycollege", "gogebiccommunitycollege",
+      "lakeregionstatecollegend", "milescommunitycollege",
+      "minnesotanorthcollegehibbing", "minnesotanorthcollegeitasca",
+      "minnesotanorthcollegemesabirange", "minnesotanorthcollegerainyriver",
+      "minnesotanorthcollegevermilion", "minnesotastatecommunityandtechnical",
+      "minnesotawestcommunitytechnicalcol", "northdakotastatecollegeofscience",
+      "northlandcommunitytechnicalcollege", "ridgewatercollege",
+      "riverlandcommunitycollege", "rochestercommunityandtechnicalcolleg",
+      "stcloudtechnicalcommunitycollege", "unitedtribestechnicalcollege",
+      "willistonstatecollege"
+    ],
     "r14": [
       "angelinacollege", "blinncollege", "bossierparishcommunitycollege",
       "coastalbendcollege", "kilgorecollege", "lamarstatecollegeportarthur",
@@ -45,6 +100,13 @@
       "orangecountycommunitycollege", "queensboroughcommunitycollege",
       "rocklandcommunitycollege", "suffolkcc", "sullivancountycommunitycollege",
       "ulstercountycommunitycollege", "westchestercommunitycollege"
+    ],
+    "r17": [
+      "albanytechnicalcollege", "andrewcollege",
+      "centralgeorgiatechnicalcollege", "eastgeorgiastatecollege",
+      "georgiahighlandscollege", "gordonstatecollege",
+      "southerncrescenttechnicalcollege", "southgeorgiastatecollege",
+      "southgeorgiatechnicalcollege"
     ],
     "r19": [
       "atlanticcapecommunitycollege", "bergencommunitycollege",
@@ -61,6 +123,40 @@
       "rowancollegesouthjerseygloucester", "salemcommunitycollege",
       "sussexcountycommunitycollege", "thaddeusstevenscollegeoftechnology",
       "ucnj"
+    ],
+    "r20": [
+      "alleganycollegeofmaryland", "annearundelcommunitycollege",
+      "baltimorecitycommunitycollege", "butlercountycommunitycollegepa",
+      "carrollcommunitycollege", "ccbccatonsville", "ccbcdundalk",
+      "ccofalleghenycounty", "cecilcollege", "chesapeakecollege",
+      "collegeofsouthernmaryland", "communitycollegeofbeavercounty",
+      "frederickcommunitycollege", "garrettcollege",
+      "hagerstowncommunitycollege", "harfordcommunitycollege",
+      "howardcommunitycollege", "montgomerycollegemd",
+      "northernvirginiacommunitycollege",
+      "pennsylvaniahighlandscommunitycollege",
+      "princegeorgescommunitycollege", "westmorelandcountycommunitycollege",
+      "wvupotomacstatecollege"
+    ],
+    "r21": [
+      "bristolcommunitycollege", "bunkerhillcommunitycollege",
+      "communitycollegeofrhodeisland", "gatewaycommunitycollegect",
+      "holyokecommunitycollege", "massasoitcommunitycollege",
+      "massbaycommunitycollege", "northernessexcommunitycollege",
+      "quincycollege", "quinsigamondcommunitycollege",
+      "roxburycommunitycollege", "springfieldtechnicalcommunitycollege",
+      "universityofconnecticutataverypoint"
+    ],
+    "r22": [
+      "bevillstatecommunitycollege", "bishopstatecommunitycollege",
+      "calhouncommunitycollege", "chattahoocheevalleycommunitycollege",
+      "coastalalabamaeast", "coastalalabamanorth", "coastalalabamasouth",
+      "enterprisestatecommunitycollege", "gadsdenstatecommunitycollege",
+      "lawsonstatecommunitycollege", "lurleenbwallacecommunitycollege",
+      "marionmilitaryinstitute", "northwestshoalscommunitycollege",
+      "reidstatecommunitycollege", "sheltonstatecommunitycollege",
+      "sneadstatecommunitycollege", "southernunionstatecommunitycollege",
+      "wallacecommunitycollegeselma", "wallacestatecommunitycollegehancevil"
     ],
     "r24": [
       "danvilleareacommunitycollege", "illinoiscentralcollege",
@@ -93,6 +189,54 @@
       "rangercollege", "southplainscollege", "southwesternchristiancollege",
       "templecollege", "weatherfordcollege", "westerntexascollege"
     ],
+    "r6": [
+      "allencountycommunitycollege", "bartoncommunitycollege",
+      "butlercommunitycollegeks", "cloudcountycommunitycollege",
+      "coffeyvillecommunitycollege", "colbycommunitycollege",
+      "cowleycountycommunitycollege", "dodgecitycommunitycollege",
+      "forthaystechnorthwest", "fortscottcommunitycollege",
+      "gardencitycommunitycollege", "highlandcommunitycollegekansas",
+      "hutchinsoncommunitycollege", "independencecommunitycollege",
+      "johnsoncountycommunitycollege", "kansascitykansascommunitycollege",
+      "labettecommunitycollege", "neoshocountycommunitycollege",
+      "prattcommunitycollege", "sewardcounty"
+    ],
+    "r11": [
+      "centralcommunitycollege", "desmoinesareacommunitycollege",
+      "ellsworthcommunitycollege", "iowacentralcommunitycollege",
+      "iowalakescommunitycollege", "iowawesterncommunitycollege",
+      "kirkwoodcommunitycollege", "marshalltowncc",
+      "northeastcommunitycollege", "northiowaareacommunitycollege",
+      "southeasterncommunitycollege", "southwesterncommunitycollege"
+    ],
+    "r12": [
+      "alpenacommunitycollege", "baycollege", "clarkstatecollege",
+      "communitychristianmich", "cuyahogacommunitycollege",
+      "deltacollege", "edisonstate", "glenoakscommunitycollege",
+      "grandrapidscommunitycollege", "henryfordcollege", "hockingcollege",
+      "jacksoncollege", "kelloggcommunitycollege", "kirtlandcommunitycollege",
+      "lakelandcommunitycollege", "lakemichigancollege",
+      "lansingcommunitycollege", "loraincountycommunitycollege",
+      "macombcommunitycollege", "marianuniversityancilla",
+      "midmichigancollege", "montcalmcommunitycollege",
+      "mottcommunitycollege", "muskegoncommunitycollege",
+      "northcentralmichigan", "oaklandcommunitycollege",
+      "owenscommunitycollege", "schoolcraftcollege",
+      "southwesternmichigan", "stclaircountycommunitycollege",
+      "terrastate", "waynecountycommunitycollege"
+    ],
+    "r13": [
+      "anokaramseycommunitycollege", "centrallakescollegebrainerd",
+      "dakotacollegeatbottineau", "dawsoncommunitycollege",
+      "gogebiccommunitycollege", "lakeregionstatecollegend",
+      "milescommunitycollege", "minnesotanorthcollegeitasca",
+      "minnesotanorthcollegemesabirange", "minnesotanorthcollegerainyriver",
+      "minnesotanorthcollegevermilion", "minnesotastatecommunityandtechnical",
+      "minnesotawestcommunitytechnicalcol", "northdakotastatecollegeofscience",
+      "northlandcommunitytechnicalcollege", "ridgewatercollege",
+      "riverlandcommunitycollege", "stcloudtechnicalcommunitycollege",
+      "unitedtribestechnicalcollege", "willistonstatecollege"
+    ],
     "r14": [
       "angelinacollege", "blinncollege", "coastalbendcollege",
       "kilgorecollege", "panolacollege", "parisjuniorcollege",
@@ -107,6 +251,11 @@
       "rocklandcommunitycollege", "suffolkcc", "sullivancountycommunitycollege",
       "ulstercountycommunitycollege", "westchestercommunitycollege"
     ],
+    "r17": [
+      "albanytechnicalcollege", "andrewcollege",
+      "centralgeorgiatechnicalcollege", "eastgeorgiastatecollege",
+      "southerncrescenttechnicalcollege", "southgeorgiatechnicalcollege"
+    ],
     "r19": [
       "atlanticcapecommunitycollege", "bergencommunitycollege",
       "brookdalecommunitycollege", "camdencountycollege",
@@ -120,6 +269,38 @@
       "rowancollegeofsouthjerseycumberland",
       "rowancollegesouthjerseygloucester", "salemcommunitycollege",
       "sussexcountycommunitycollege", "ucnj", "unioncollege"
+    ],
+    "r20": [
+      "alleganycollegeofmaryland", "annearundelcommunitycollege",
+      "baltimorecitycommunitycollege", "butlercountycommunitycollegepa",
+      "carrollcommunitycollege", "ccbccatonsville", "ccbcdundalk",
+      "ccbcessex", "ccofalleghenycounty", "cecilcollege",
+      "chesapeakecollege", "collegeofsouthernmaryland",
+      "communitycollegeofbeavercounty", "frederickcommunitycollege",
+      "garrettcollege", "hagerstowncommunitycollege",
+      "harfordcommunitycollege", "howardcommunitycollege",
+      "montgomerycollegemd", "northernvirginiacommunitycollege",
+      "pennsylvaniahighlandscommunitycollege",
+      "princegeorgescommunitycollege", "westmorelandcountycommunitycollege",
+      "wvupotomacstatecollege"
+    ],
+    "r21": [
+      "bristolcommunitycollege", "bunkerhillcommunitycollege",
+      "communitycollegeofrhodeisland", "gatewaycommunitycollegect",
+      "holyokecommunitycollege", "massasoitcommunitycollege",
+      "northernessexcommunitycollege", "quinsigamondcommunitycollege",
+      "roxburycommunitycollege", "springfieldtechnicalcommunitycollege",
+      "universityofconnecticutataverypoint"
+    ],
+    "r22": [
+      "bishopstatecommunitycollege", "calhouncommunitycollege",
+      "chattahoocheevalleycommunitycollege", "coastalalabamanorth",
+      "coastalalabamasouth", "enterprisestatecommunitycollege",
+      "gadsdenstatecommunitycollege", "lawsonstatecommunitycollege",
+      "lurleenbwallacecommunitycollege", "northwestshoalscommunitycollege",
+      "reidstatecommunitycollege", "sheltonstatecommunitycollege",
+      "sneadstatecommunitycollege", "southernunionstatecommunitycollege",
+      "wallacecommunitycollegeselma", "wallacestatecommunitycollegehancevil"
     ],
     "r24": [
       "danvilleareacommunitycollege", "illinoiscentralcollege",

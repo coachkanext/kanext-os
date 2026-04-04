@@ -290,7 +290,9 @@ def parse_stat_table(html: str, _category: str = "overall") -> list[dict]:
             return ""
 
         name_raw = cell(C_NAME)
-        if not name_raw or name_raw.lower() in ("name", "player", "totals", "total"):
+        _SKIP = {"name", "player", "totals", "total", "", "opponent", "opponents",
+                 "home", "away", "exhibition", "conference", "non-conference"}
+        if not name_raw or name_raw.lower() in _SKIP:
             continue
         name = " ".join(name_raw.split())
 
@@ -425,6 +427,43 @@ def upsert_stats(conn, player_id: int, row: dict):
     ))
 
 
+# Sites where AJAX endpoint returns "unable to find" — must parse full team page
+FULLPAGE_BBALL_REGIONS = {"r22"}
+
+
+def parse_fullpage_bball_stats(html: str) -> list[dict]:
+    """
+    Parse season totals table from full-page sites (e.g., r22/acccathletics.com)
+    that don't have an AJAX endpoint. Finds the table with gp/gs/min/fg/pts totals
+    (not per-game averages) and wraps first row in <thead> for parse_stat_table().
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    target_table = None
+    header_row_idx = 0
+    for t in soup.find_all("table"):
+        rows = t.find_all("tr")
+        for ri, tr in enumerate(rows[:3]):
+            hdrs = [td.get_text(strip=True).lower() for td in tr.find_all(["th", "td"])]
+            has_stats = ("gp" in hdrs and "gs" in hdrs and "min" in hdrs and "pts" in hdrs)
+            not_per_game = ("fg/g" not in hdrs and "min/g" not in hdrs
+                            and "ppg" not in hdrs and "rpg" not in hdrs)
+            has_name = "name" in hdrs or "player" in hdrs
+            if has_stats and not_per_game and has_name:
+                target_table = t
+                header_row_idx = ri
+                break
+        if target_table:
+            break
+    if not target_table:
+        return []
+    rows = target_table.find_all("tr")
+    # Reconstruct as AJAX-like HTML with proper <thead>
+    header_html = str(rows[header_row_idx])
+    body_html = "".join(str(tr) for tr in rows[header_row_idx + 1:])
+    synthetic = f"<table><thead><tr>{header_html}</tr></thead><tbody>{body_html}</tbody></table>"
+    return parse_stat_table(synthetic)
+
+
 # ── Core Scrape ───────────────────────────────────────────────────────────────
 
 def scrape_team(conn, region: str, sport: str, slug: str, base: str) -> int:
@@ -433,15 +472,22 @@ def scrape_team(conn, region: str, sport: str, slug: str, base: str) -> int:
     Returns number of players saved.
     """
     team_page = f"{base}/sports/{sport}/{SEASON}/teams/{slug}"
-    url = team_page + TMPL_PATH.format(pos="overall")
 
-    r = fetch(url, base, team_page)
-    if not r or r.status_code != 200:
-        code = r.status_code if r else "err"
-        print(f"      SKIP {slug} [{code}]")
-        return 0
-
-    rows = parse_stat_table(r.text, "overall")
+    if region in FULLPAGE_BBALL_REGIONS:
+        r = fetch(team_page, base, team_page)
+        if not r or r.status_code != 200:
+            code = r.status_code if r else "err"
+            print(f"      SKIP {slug} [{code}]")
+            return 0
+        rows = parse_fullpage_bball_stats(r.text)
+    else:
+        url = team_page + TMPL_PATH.format(pos="overall")
+        r = fetch(url, base, team_page)
+        if not r or r.status_code != 200:
+            code = r.status_code if r else "err"
+            print(f"      SKIP {slug} [{code}]")
+            return 0
+        rows = parse_stat_table(r.text, "overall")
 
     if not rows:
         print(f"      SKIP {slug} [no data]")
@@ -544,7 +590,9 @@ def main():
     parser = argparse.ArgumentParser(description="NJCAA Regional Basketball Scraper")
     parser.add_argument("--sport", choices=["mbkb", "wbkb"], default=None,
                         help="Sport to scrape (default: both)")
-    parser.add_argument("--region", choices=["r2","r5","r14","r15","r19","r24"],
+    parser.add_argument("--region",
+                        choices=["r2","r5","r6","r11","r12","r13","r14","r15",
+                                 "r17","r19","r20","r21","r22","r24"],
                         default=None, help="Only scrape one region")
     args = parser.parse_args()
 
