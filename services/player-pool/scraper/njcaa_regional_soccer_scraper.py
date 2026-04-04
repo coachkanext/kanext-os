@@ -3,8 +3,9 @@ NJCAA Regional Soccer Scraper — msoc + wsoc
 Per-team stats from all accessible NJCAA regional sites.
 
 Confirmed regions (per audit):
-  msoc: r1, r2, r3, r4, r5, r7, r8, r19, r24  (r14/r15 are leaders-only)
-  wsoc: r1, r2, r3, r4, r5, r7, r8, r15, r19, r24  (r14 is leaders-only)
+  msoc: r1, r2, r3, r4, r5, r6, r7, r8, r11, r12, r13, r17, r19, r20, r21, r22, r24
+  wsoc: r1, r2, r3, r4, r5, r6, r7, r8, r11, r12, r13, r15, r17, r19, r20, r21, r22, r24
+  (r14 leaders-only for both sports; r9/r10/r16/r18/r23 blocked/incompatible)
 
 Stat format (both sports, all categories identical):
   # | Name | Yr | Pos | gp | gs | g | a | pts | sh | sh% | sog | sog% | yc | rc | pk | gw
@@ -48,16 +49,24 @@ REGIONS = {
     "r3":  "https://www.njcaaregion3.org",
     "r4":  "https://www.region4sports.com",
     "r5":  "https://njcaaregion5.com",
+    "r6":  "https://kjccc.org",
     "r7":  "http://tjccaa.com",
     "r8":  "https://thefcsaasports.com",
+    "r11": "https://iccac.org",
+    "r12": "https://njcaaregion12.org",
+    "r13": "https://njcaaregion13.org",
     "r14": "https://njcaaregion14.com",
     "r15": "https://region15athletics.com",
+    "r17": "https://thegcaa.com",
     "r19": "https://njcaaregion19.com",
+    "r20": "https://njcaaregion20.org",
+    "r21": "https://njcaaregionxxi.com",
+    "r22": "https://acccathletics.com",
     "r24": "https://njcaaregion24.com",
 }
 
-# r1/r3/r8 use newer PrestoSports (no AJAX endpoint; stats on full team page as per-game averages)
-FULLPAGE_REGIONS = {"r1", "r3", "r8"}
+# r1/r3/r8/r22 use newer PrestoSports (no AJAX endpoint; stats on full team page)
+FULLPAGE_REGIONS = {"r1", "r3", "r8", "r22"}
 
 # r4/r7 have no per-player stats accessible — roster names only
 ROSTER_ONLY_REGIONS = {"r4", "r7"}
