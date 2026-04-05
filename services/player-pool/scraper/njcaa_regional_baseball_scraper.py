@@ -77,6 +77,7 @@ REGIONS = {
 }
 
 FULLPAGE_BASEBALL_REGIONS = {"r22"}
+_PITCHING_ONLY = False   # set by --pitching-only flag
 
 BROWSER_HEADERS = {
     "User-Agent": (
@@ -147,11 +148,42 @@ CREATE TABLE IF NOT EXISTS njcaa_reg_baseball_stats (
 );
 """
 
+# Pitching table shared with naia_baseball_scraper (region='naia' rows already present)
+CREATE_PITCHING_STATS = """
+CREATE TABLE IF NOT EXISTS njcaa_reg_baseball_pitching_stats (
+    id         SERIAL PRIMARY KEY,
+    player_id  INT  NOT NULL REFERENCES njcaa_reg_baseball_players(id),
+    season     TEXT NOT NULL,
+    app        INT,
+    gs         INT,
+    cg         INT,
+    sho        INT,
+    sv         INT,
+    ip         NUMERIC(6,1),
+    h          INT,
+    r          INT,
+    er         INT,
+    bb         INT,
+    so         INT,
+    hr_allowed INT,
+    w          INT,
+    l          INT,
+    era        NUMERIC(7,2),
+    whip       NUMERIC(6,2),
+    wp         INT,
+    hbp        INT,
+    bk         INT,
+    b_avg      NUMERIC(7,3),
+    UNIQUE (player_id, season)
+);
+"""
+
 
 def ensure_schema(conn):
     conn.execute(CREATE_TEAMS)
     conn.execute(CREATE_PLAYERS)
     conn.execute(CREATE_STATS)
+    conn.execute(CREATE_PITCHING_STATS)
     conn.commit()
 
 
@@ -353,6 +385,153 @@ def parse_fullpage_baseball_stats(html: str) -> list[dict]:
     return parse_batting_table(synthetic)
 
 
+def parse_pitching_table(html: str) -> list[dict]:
+    """
+    Parse PrestoSports baseball pitching table from AJAX endpoint:
+      ?tmpl=brief-category-template&pos=p&r=0
+
+    Columns vary by region but always include:
+      # | Name | Yr | Pos | app | gs | w | l | sv | cg | ip | h | r | er | bb | k | era | whip
+    Some regions add: k/9 | hr | wp | hbp
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    table = soup.find("table")
+    if not table:
+        return []
+    thead = table.find("thead")
+    if not thead:
+        return []
+
+    raw_hdrs = [th.get_text(strip=True).lower() for th in thead.find_all(["th", "td"])]
+
+    def ci(names: list[str], default: int) -> int:
+        for n in names:
+            for i, h in enumerate(raw_hdrs):
+                if h == n:
+                    return i
+        return default
+
+    C_JERSEY = ci(["#", "no", "num"], 0)
+    C_NAME   = ci(["name", "player"], 1)
+    C_YR     = ci(["yr", "cl", "class", "year"], 2)
+    C_POS    = ci(["pos", "position"], 3)
+    C_APP    = ci(["app", "g", "gp"], 4)
+    C_GS     = ci(["gs"], 5)
+    C_W      = ci(["w"], 6)
+    C_L      = ci(["l"], 7)
+    C_SV     = ci(["sv"], 8)
+    C_CG     = ci(["cg"], 9)
+    C_IP     = ci(["ip"], 10)
+    C_H      = ci(["h"], 11)
+    C_R      = ci(["r"], 12)
+    C_ER     = ci(["er"], 13)
+    C_BB     = ci(["bb"], 14)
+    C_K      = ci(["k", "so"], 15)
+    C_HR     = ci(["hr"], 17)
+    C_ERA    = ci(["era"], 18)
+    C_WHIP   = ci(["whip"], 19)
+    C_WP     = ci(["wp"], -1)
+    C_HBP    = ci(["hbp"], -1)
+
+    def _int(v: str | None) -> int | None:
+        if not v or v.strip() in ("-", "", "—"):
+            return None
+        try:
+            return int(str(v).replace(",", "").strip())
+        except ValueError:
+            return None
+
+    def _flt(v: str | None, ndigits: int = 2) -> float | None:
+        if not v or v.strip() in ("-", "", "—", "∞", "inf", "INF", "infinity"):
+            return None
+        try:
+            f = float(str(v).strip())
+            if f != f or f == float("inf") or f == float("-inf"):  # NaN or inf
+                return None
+            return round(f, ndigits)
+        except ValueError:
+            return None
+
+    def _ip(v: str | None) -> float | None:
+        """Parse innings pitched: '80.0' or '80.1' stored as decimal."""
+        return _flt(v, 1)
+
+    rows = []
+    tbody = table.find("tbody") or table
+    for tr in tbody.find_all("tr"):
+        cells = tr.find_all(["td", "th"])
+        if len(cells) < 8:
+            continue
+
+        def cell(i: int) -> str:
+            if i < 0 or i >= len(cells):
+                return ""
+            return " ".join(cells[i].get_text(strip=True).split())
+
+        name_raw = cell(C_NAME)
+        if not name_raw or name_raw.lower() in (
+            "name", "player", "totals", "total", "", "opponent", "opponents",
+        ):
+            continue
+        name = " ".join(name_raw.split())
+
+        rows.append({
+            "name":   name,
+            "jersey": cell(C_JERSEY) or None,
+            "pos":    cell(C_POS) or None,
+            "cl":     cell(C_YR) or None,
+            "app":    _int(cell(C_APP)),
+            "gs":     _int(cell(C_GS)),
+            "w":      _int(cell(C_W)),
+            "l":      _int(cell(C_L)),
+            "sv":     _int(cell(C_SV)),
+            "cg":     _int(cell(C_CG)),
+            "ip":     _ip(cell(C_IP)),
+            "h":      _int(cell(C_H)),
+            "r":      _int(cell(C_R)),
+            "er":     _int(cell(C_ER)),
+            "bb":     _int(cell(C_BB)),
+            "so":     _int(cell(C_K)),
+            "hr":     _int(cell(C_HR)),
+            "era":    _flt(cell(C_ERA), 2),
+            "whip":   _flt(cell(C_WHIP), 2),
+            "wp":     _int(cell(C_WP)) if C_WP >= 0 else None,
+            "hbp":    _int(cell(C_HBP)) if C_HBP >= 0 else None,
+        })
+    return rows
+
+
+def parse_fullpage_baseball_pitching_stats(html: str) -> list[dict]:
+    """
+    Parse pitching stats from PrestoSports FULLPAGE team page (r22 / acccathletics.com).
+    Finds the season pitching table by column signature (has ip + er, NOT avg/obp).
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    target_table = None
+    header_row_idx = 0
+    for t in soup.find_all("table"):
+        rows = t.find_all("tr")
+        for ri, tr in enumerate(rows[:3]):
+            hdrs = [td.get_text(strip=True).lower() for td in tr.find_all(["th", "td"])]
+            has_pitching = "ip" in hdrs and "er" in hdrs and "era" in hdrs
+            has_name = "name" in hdrs or "player" in hdrs
+            # Exclude batting tables
+            not_batting = "ab" not in hdrs and "obp" not in hdrs
+            if has_pitching and has_name and not_batting:
+                target_table = t
+                header_row_idx = ri
+                break
+        if target_table:
+            break
+    if not target_table:
+        return []
+    rows = target_table.find_all("tr")
+    header_html = str(rows[header_row_idx])
+    body_html = "".join(str(tr) for tr in rows[header_row_idx + 1:])
+    synthetic = f"<table><thead><tr>{header_html}</tr></thead><tbody>{body_html}</tbody></table>"
+    return parse_pitching_table(synthetic)
+
+
 # ── DB Writes ─────────────────────────────────────────────────────────────────
 
 def upsert_team(conn, region: str, sport: str, slug: str, base: str) -> int:
@@ -403,47 +582,104 @@ def upsert_stats(conn, player_id: int, row: dict, season: str):
     ))
 
 
+def upsert_pitching_stats(conn, player_id: int, row: dict, season: str):
+    conn.execute("""
+        INSERT INTO njcaa_reg_baseball_pitching_stats (
+            player_id, season, app, gs, cg, sv, ip, h, r, er, bb, so,
+            hr_allowed, w, l, era, whip, wp, hbp
+        ) VALUES (
+            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+            %s, %s, %s, %s, %s, %s, %s
+        )
+        ON CONFLICT (player_id, season) DO UPDATE SET
+            app=EXCLUDED.app, gs=EXCLUDED.gs, cg=EXCLUDED.cg, sv=EXCLUDED.sv,
+            ip=EXCLUDED.ip, h=EXCLUDED.h, r=EXCLUDED.r, er=EXCLUDED.er,
+            bb=EXCLUDED.bb, so=EXCLUDED.so, hr_allowed=EXCLUDED.hr_allowed,
+            w=EXCLUDED.w, l=EXCLUDED.l, era=EXCLUDED.era, whip=EXCLUDED.whip,
+            wp=EXCLUDED.wp, hbp=EXCLUDED.hbp
+    """, (
+        player_id, season,
+        row.get("app"), row.get("gs"), row.get("cg"), row.get("sv"),
+        row.get("ip"), row.get("h"), row.get("r"), row.get("er"),
+        row.get("bb"), row.get("so"), row.get("hr"),
+        row.get("w"), row.get("l"), row.get("era"), row.get("whip"),
+        row.get("wp"), row.get("hbp"),
+    ))
+
+
 # ── Core Scrape ───────────────────────────────────────────────────────────────
 
-def scrape_team(conn, region: str, sport: str, slug: str, base: str) -> int:
+def scrape_team(conn, region: str, sport: str, slug: str, base: str) -> tuple[int, int]:
+    """Returns (batting_count, pitching_count)."""
     season = SEASONS[sport]
     team_page = f"{base}/sports/{sport}/{season}/teams/{slug}"
 
+    # ── Batting + Pitching ────────────────────────────────────────────────────
     if region in FULLPAGE_BASEBALL_REGIONS:
-        r = fetch(team_page, base, team_page)
-        if not r or r.status_code != 200:
-            code = r.status_code if r else "err"
+        page_resp = fetch(team_page, base, team_page)
+        if not page_resp or page_resp.status_code != 200:
+            code = page_resp.status_code if page_resp else "err"
             print(f"      SKIP {slug} [{code}]")
-            return 0
-        rows = parse_fullpage_baseball_stats(r.text)
+            return 0, 0
+        bat_rows = [] if _PITCHING_ONLY else parse_fullpage_baseball_stats(page_resp.text)
+        pitch_rows = parse_fullpage_baseball_pitching_stats(page_resp.text)
     else:
-        url = f"{team_page}?tmpl=brief-category-template&pos=overall&r=0"
-        r = fetch(url, base, team_page)
-        if not r or r.status_code != 200:
-            code = r.status_code if r else "err"
-            print(f"      SKIP {slug} [{code}]")
-            return 0
-        rows = parse_batting_table(r.text)
+        # Pitching-only: skip batting fetch, use existing player records for lookup
+        if _PITCHING_ONLY:
+            bat_rows = []
+        else:
+            bat_url = f"{team_page}?tmpl=brief-category-template&pos=overall&r=0"
+            bat_resp = fetch(bat_url, base, team_page)
+            if not bat_resp or bat_resp.status_code != 200:
+                code = bat_resp.status_code if bat_resp else "err"
+                print(f"      SKIP {slug} [{code}]")
+                return 0, 0
+            bat_rows = parse_batting_table(bat_resp.text)
+            time.sleep(1)
 
-    if not rows:
+        pit_url = f"{team_page}?tmpl=brief-category-template&pos=p&r=0"
+        pit_resp = fetch(pit_url, base, team_page)
+        pitch_rows = parse_pitching_table(pit_resp.text) if pit_resp and pit_resp.status_code == 200 else []
+
+    if not bat_rows and not pitch_rows:
         print(f"      SKIP {slug} [no data]")
-        return 0
+        return 0, 0
 
     team_id = upsert_team(conn, region, sport, slug, base)
-    saved = 0
-    for row in rows:
+
+    bat_saved = 0
+    for row in bat_rows:
         if not row["name"]:
             continue
         player_id = upsert_player(conn, team_id, row)
         upsert_stats(conn, player_id, row, season)
-        saved += 1
+        bat_saved += 1
+
+    pit_saved = 0
+    for row in pitch_rows:
+        if not row["name"]:
+            continue
+        player_id = upsert_player(conn, team_id, row)
+        upsert_pitching_stats(conn, player_id, row, season)
+        pit_saved += 1
 
     conn.commit()
-    return saved
+    return bat_saved, pit_saved
 
 
-def get_slugs(sport: str, region: str, base: str, teams_data: dict | None) -> list[str]:
-    """Return slugs from JSON if available, else try dynamic discovery."""
+def get_slugs_from_db(conn, sport: str, region: str) -> list[str]:
+    """Pull slugs already in DB for this region/sport (used as fallback)."""
+    rows = conn.execute("""
+        SELECT slug FROM njcaa_reg_baseball_teams
+        WHERE sport = %s AND region = %s
+        ORDER BY slug
+    """, (sport, region)).fetchall()
+    return [r["slug"] for r in rows]
+
+
+def get_slugs(sport: str, region: str, base: str, teams_data: dict | None,
+              conn=None) -> list[str]:
+    """Return slugs from JSON, dynamic discovery, or DB fallback."""
     if teams_data and sport in teams_data and region in teams_data[sport]:
         slugs = teams_data[sport][region].get("slugs", [])
         if slugs:
@@ -453,9 +689,17 @@ def get_slugs(sport: str, region: str, base: str, teams_data: dict | None) -> li
     slugs = discover_slugs(base, sport, SEASONS[sport])
     if slugs:
         print(f"    [slug-discover] found {len(slugs)} teams")
-    else:
-        print(f"    [slug-discover] WAF blocked or empty — skipping {region}")
-    return slugs
+        return slugs
+
+    # Fall back to DB if we already scraped batting for this region
+    if conn:
+        slugs = get_slugs_from_db(conn, sport, region)
+        if slugs:
+            print(f"    [slug-discover] WAF blocked — using {len(slugs)} DB slugs for {region}")
+            return slugs
+
+    print(f"    [slug-discover] WAF blocked or empty — skipping {region}")
+    return []
 
 
 # ── Summary ───────────────────────────────────────────────────────────────────
@@ -464,16 +708,25 @@ def print_summary(conn, sport: str):
     row = conn.execute("""
         SELECT COUNT(DISTINCT t.id) AS teams,
                COUNT(DISTINCT p.id) AS players,
-               COUNT(s.id)          AS stat_rows
+               COUNT(s.id)          AS bat_rows
         FROM njcaa_reg_baseball_teams t
         JOIN njcaa_reg_baseball_players p ON p.team_id = t.id
         JOIN njcaa_reg_baseball_stats   s ON s.player_id = p.id
         WHERE t.sport = %s
     """, (sport,)).fetchone()
 
+    pit_row = conn.execute("""
+        SELECT COUNT(ps.id) AS pit_rows
+        FROM njcaa_reg_baseball_teams t
+        JOIN njcaa_reg_baseball_players p ON p.team_id = t.id
+        JOIN njcaa_reg_baseball_pitching_stats ps ON ps.player_id = p.id
+        WHERE t.sport = %s AND t.region != 'naia'
+    """, (sport,)).fetchone()
+
     label = "Softball" if sport == "sball" else "Baseball"
     print(f"\n  {label} in DB: "
-          f"{row['teams']} teams  {row['players']} players  {row['stat_rows']} stat rows")
+          f"{row['teams']} teams  {row['players']} players  "
+          f"{row['bat_rows']} batting rows  {pit_row['pit_rows']} pitching rows")
 
     # Top hitters by avg (min 30 AB)
     top = conn.execute("""
@@ -508,7 +761,12 @@ def main():
                         help="Sport to scrape (default: both)")
     parser.add_argument("--region", choices=sorted(REGIONS.keys()), default=None,
                         help="Only scrape one region")
+    parser.add_argument("--pitching-only", action="store_true",
+                        help="Skip batting re-scrape; only fetch pitching (uses existing player records)")
     args = parser.parse_args()
+
+    global _PITCHING_ONLY
+    _PITCHING_ONLY = args.pitching_only
 
     # Load hardcoded slugs if available
     teams_data = None
@@ -525,6 +783,7 @@ def main():
     print(f"=== NJCAA Regional Baseball/Softball Scraper ===")
     print(f"  Sports  : {', '.join(sports)}")
     print(f"  Regions : {', '.join(region_ids)}")
+    print(f"  Mode    : {'pitching-only' if _PITCHING_ONLY else 'batting + pitching'}")
 
     with psycopg.connect(
         host=DB_CONFIG["host"],
@@ -540,35 +799,39 @@ def main():
             print(f"  Sport: {'Softball' if sport == 'sball' else 'Baseball'} ({sport})")
 
             grand_teams = 0
-            grand_players = 0
+            grand_batters = 0
+            grand_pitchers = 0
 
             for i, region in enumerate(region_ids):
                 base = REGIONS[region]
                 if i > 0:
                     time.sleep(REGION_DELAY)
 
-                slugs = get_slugs(sport, region, base, teams_data)
+                slugs = get_slugs(sport, region, base, teams_data, conn=conn)
                 if not slugs:
                     print(f"\n  [{region}] SKIP — no slugs available")
                     continue
 
                 print(f"\n  [{region}] {base}  ({len(slugs)} teams)")
 
-                region_players = 0
+                region_bat = 0
+                region_pit = 0
                 for j, slug in enumerate(slugs):
-                    n = scrape_team(conn, region, sport, slug, base)
-                    if n > 0:
-                        print(f"    {j+1:>2}/{len(slugs)} {slug[:38]:<38} {n:>3} players")
+                    b, p = scrape_team(conn, region, sport, slug, base)
+                    if b > 0 or p > 0:
+                        print(f"    {j+1:>2}/{len(slugs)} {slug[:38]:<38} {b:>3}b {p:>3}p")
                     grand_teams += 1
-                    region_players += n
+                    region_bat += b
+                    region_pit += p
                     if j < len(slugs) - 1:
                         time.sleep(CRAWL_DELAY)
 
-                grand_players += region_players
-                print(f"    → {region}: {region_players} players from {len(slugs)} teams")
+                grand_batters += region_bat
+                grand_pitchers += region_pit
+                print(f"    → {region}: {region_bat} batters  {region_pit} pitchers  from {len(slugs)} teams")
 
             print_summary(conn, sport)
-            print(f"\n  {sport} run total: {grand_teams} teams, {grand_players} players")
+            print(f"\n  {sport} run total: {grand_teams} teams, {grand_batters} batters, {grand_pitchers} pitchers")
 
 
 if __name__ == "__main__":
