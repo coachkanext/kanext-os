@@ -484,16 +484,25 @@ def scrape_school(conn, school: dict, sport: str) -> int:
     for p in batters:
         if not p.get("name"):
             continue
-        pid = upsert_player(conn, team_id, p["name"], p.get("jersey"))
-        upsert_batting(conn, pid, p)
-        saved += 1
+        try:
+            pid = upsert_player(conn, team_id, p["name"], p.get("jersey"))
+            upsert_batting(conn, pid, p)
+            saved += 1
+        except Exception:
+            conn.rollback()
+            # Re-establish team after rollback
+            team_id = upsert_team(conn, sport, slug, school["name"], base)
 
     for p in pitchers:
         if not p.get("name"):
             continue
-        pid = upsert_player(conn, team_id, p["name"], p.get("jersey"))
-        upsert_pitching(conn, pid, p)
-        saved += 1
+        try:
+            pid = upsert_player(conn, team_id, p["name"], p.get("jersey"))
+            upsert_pitching(conn, pid, p)
+            saved += 1
+        except Exception:
+            conn.rollback()
+            team_id = upsert_team(conn, sport, slug, school["name"], base)
 
     conn.commit()
     return saved
