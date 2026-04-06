@@ -88,6 +88,7 @@ OUTDOOR_LISTS = [
     {"id": 5019, "assoc": "ncaa",  "division": "d2", "label": "NCAA D2 Outdoor 2025", "season": SEASON_PRIOR},
     {"id": 5020, "assoc": "ncaa",  "division": "d3", "label": "NCAA D3 Outdoor 2025", "season": SEASON_PRIOR},
     {"id": 5021, "assoc": "naia",  "division": None, "label": "NAIA Outdoor 2025", "season": SEASON_PRIOR},
+    {"id": 5028, "assoc": "njcaa", "division": None, "label": "NJCAA All Schools Outdoor 2025", "season": SEASON_PRIOR},
     {"id": 5029, "assoc": "njcaa", "division": "d1", "label": "NJCAA DI Outdoor 2025", "season": SEASON_PRIOR},
     {"id": 5030, "assoc": "njcaa", "division": "d3", "label": "NJCAA DIII Outdoor 2025", "season": SEASON_PRIOR},
     {"id": 5031, "assoc": "nccaa", "division": None, "label": "NCCAA Outdoor 2025", "season": SEASON_PRIOR},
