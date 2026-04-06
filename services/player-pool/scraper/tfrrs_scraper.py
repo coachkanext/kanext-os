@@ -4,6 +4,8 @@ Source: www.tfrrs.org static HTML leaderboards
 
 Division-specific outdoor lists (2026 season):
   5602 = NCAA D1 Outdoor Qualifying
+  5622 = NCAA D1 East Outdoor Qualifying
+  5623 = NCAA D1 West Outdoor Qualifying
   5603 = NCAA D2 Outdoor Qualifying
   5604 = NCAA D3 Outdoor Qualifying
   5605 = NAIA Outdoor Qualifying
@@ -14,8 +16,10 @@ Division-specific outdoor lists (2026 season):
   5612 = CA Community Colleges (All Schools)
   5613-5621 = CCCAA conference sub-lists
 
-Indoor: probes for D1/D2/D3 indoor qualifying lists at startup,
-        falls back to All-College list (5481) if not found.
+Indoor (2025-26):
+  5351 = NAIA, 5352 = NCAA D1, 5353 = NCAA D2, 5354 = NCAA D3
+  5355 = NJCAA, 5356 = NCCAA
+  Probe scans 5320-5481 for any newer IDs; falls back to known IDs.
 
 Relay events are skipped (individual-only).
 
@@ -52,6 +56,8 @@ RELAY_RE = re.compile(
 # ── Known outdoor division-specific list IDs ─────────────────────────────────
 OUTDOOR_LISTS = [
     {"id": 5602, "assoc": "ncaa",   "division": "d1", "label": "NCAA D1 Outdoor"},
+    {"id": 5622, "assoc": "ncaa",   "division": "d1", "label": "NCAA D1 East Outdoor"},
+    {"id": 5623, "assoc": "ncaa",   "division": "d1", "label": "NCAA D1 West Outdoor"},
     {"id": 5603, "assoc": "ncaa",   "division": "d2", "label": "NCAA D2 Outdoor"},
     {"id": 5604, "assoc": "ncaa",   "division": "d3", "label": "NCAA D3 Outdoor"},
     {"id": 5605, "assoc": "naia",   "division": None, "label": "NAIA Outdoor"},
@@ -83,6 +89,7 @@ INDOOR_KNOWN_2026 = [
     {"id": 5353, "assoc": "ncaa",   "division": "d2", "label": "NCAA D2 Indoor 2025-26"},
     {"id": 5354, "assoc": "ncaa",   "division": "d3", "label": "NCAA D3 Indoor 2025-26"},
     {"id": 5355, "assoc": "njcaa",  "division": None, "label": "NJCAA Indoor 2025-26"},
+    {"id": 5356, "assoc": "nccaa",  "division": None, "label": "NCCAA Indoor 2025-26"},
 ]
 INDOOR_FALLBACK = [
     {"id": 5481, "assoc": None, "division": None, "label": "All-College Indoor"},
