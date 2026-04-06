@@ -56,6 +56,8 @@ OUTDOOR_LISTS = [
     {"id": 5604, "assoc": "ncaa",   "division": "d3", "label": "NCAA D3 Outdoor"},
     {"id": 5605, "assoc": "naia",   "division": None, "label": "NAIA Outdoor"},
     {"id": 5606, "assoc": "njcaa",  "division": None, "label": "NJCAA Outdoor"},
+    {"id": 5774, "assoc": "njcaa",  "division": "d1", "label": "NJCAA DI Outdoor"},
+    {"id": 5775, "assoc": "njcaa",  "division": "d3", "label": "NJCAA DIII Outdoor"},
     {"id": 5607, "assoc": "nwac",   "division": None, "label": "NWAC Outdoor"},
     {"id": 5608, "assoc": "nccaa",  "division": None, "label": "NCCAA Outdoor"},
     {"id": 5609, "assoc": "uscaa",  "division": None, "label": "USCAA Outdoor"},
