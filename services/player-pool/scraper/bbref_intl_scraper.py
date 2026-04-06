@@ -6,6 +6,8 @@ Source: baseball-reference.com/register/
 Scrapes full-season batting + pitching stats for international pro leagues:
   Winter leagues: LIDOM (Dominican), LVBP (Venezuelan), LMP (Mexican Pacific), PRWL (Puerto Rico)
   Asia:           NPB-Central (Japan), NPB-Pacific (Japan), KBO (Korea)
+  Other intl:     LMB (Mexican League), DSL (Dominican Summer), CUBA (Cuban National Series),
+                  CPBL (Taiwan), ABL (Australia)
 
 All data from team pages — each team has a visible #team_batting table and
 a commented-out #team_pitching table (BBRef renders pitching client-side).
@@ -38,16 +40,23 @@ from psycopg.rows import dict_row
 # ── Config ─────────────────────────────────────────────────────────────────
 DB_CONFIG   = {"host": "localhost", "port": 5432, "dbname": "kanext_player_pool"}
 BASE_URL    = "https://www.baseball-reference.com"
-SLEEP_TEAM  = 4.0   # seconds between team page fetches (BBRef rate limit)
-SLEEP_LEAGUE = 3.0  # seconds between league page fetches
+SLEEP_TEAM   = 5.0   # seconds between team page fetches (BBRef rate limit)
+SLEEP_LEAGUE = 10.0  # seconds between league page fetches
 
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
     ),
-    "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
     "Accept-Language": "en-US,en;q=0.9",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Referer": "https://www.baseball-reference.com/register/",
+    "Connection": "keep-alive",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "same-origin",
+    "Upgrade-Insecure-Requests": "1",
 }
 
 # ── League definitions ──────────────────────────────────────────────────────
@@ -58,9 +67,15 @@ LEAGUES = {
     "LVBP":   {"name": "Venezuelan Winter League", "bbref_id": "8b7647c8", "season": "2024-25", "type": "winter"},
     "LMP":    {"name": "Mexican Pacific League",   "bbref_id": "5e972344", "season": "2024-25", "type": "winter"},
     "PRWL":   {"name": "Puerto Rican Winter League","bbref_id": "ea5c6086", "season": "2024-25", "type": "winter"},
-    "NPB-C":  {"name": "Japan Central League",     "bbref_id": "5e1f8b77", "season": "2024",    "type": "npb"},
-    "NPB-P":  {"name": "Japan Pacific League",     "bbref_id": "5677b62d", "season": "2024",    "type": "npb"},
-    "KBO":    {"name": "Korea Baseball Organization","bbref_id": "4b32bd8a","season": "2024",    "type": "kbo"},
+    "NPB-C":  {"name": "Japan Central League",        "bbref_id": "5e1f8b77", "season": "2024",    "type": "npb"},
+    "NPB-P":  {"name": "Japan Pacific League",        "bbref_id": "5677b62d", "season": "2024",    "type": "npb"},
+    "KBO":    {"name": "Korea Baseball Organization", "bbref_id": "4b32bd8a", "season": "2024",    "type": "kbo"},
+    # New leagues
+    "LMB":    {"name": "Mexican League",              "bbref_id": "83fa0ab3", "season": "2024",    "type": "intl"},
+    "DSL":    {"name": "Dominican Summer League",     "bbref_id": "6b7e8adc", "season": "2024",    "type": "intl"},
+    "CUBA":   {"name": "Cuban National Series",       "bbref_id": "a5678475", "season": "2022-23", "type": "intl"},
+    "CPBL":   {"name": "Chinese Professional Baseball League", "bbref_id": "f65db0d9", "season": "2024", "type": "intl"},
+    "ABL":    {"name": "Australian Baseball League",  "bbref_id": "21cb7dd1", "season": "2024",    "type": "intl"},
 }
 
 # ── DDL ─────────────────────────────────────────────────────────────────────
@@ -185,16 +200,28 @@ def get_handedness(name: str) -> Optional[str]:
         return "S"
     return None
 
-def fetch(url: str) -> Optional[BeautifulSoup]:
-    try:
-        r = httpx.get(url, headers=HEADERS, follow_redirects=True, timeout=30)
-        if r.status_code != 200:
-            print(f"  [HTTP {r.status_code}] {url}")
-            return None
-        return BeautifulSoup(r.text, "html.parser")
-    except Exception as e:
-        print(f"  [ERROR] {url}: {e}")
-        return None
+def fetch(url: str, retries: int = 3) -> Optional[BeautifulSoup]:
+    backoff = 90  # seconds for first 429 retry
+    for attempt in range(retries):
+        try:
+            r = httpx.get(url, headers=HEADERS, follow_redirects=True, timeout=30)
+            if r.status_code == 429:
+                if attempt < retries - 1:
+                    print(f"  [429] Rate limited — waiting {backoff}s before retry {attempt+1}/{retries-1}...")
+                    time.sleep(backoff)
+                    backoff = min(backoff * 2, 300)  # cap at 5 min
+                    continue
+                print(f"  [429] Rate limited after {retries} attempts: {url}")
+                return None
+            if r.status_code != 200:
+                print(f"  [HTTP {r.status_code}] {url}")
+                return None
+            return BeautifulSoup(r.text, "html.parser")
+        except Exception as e:
+            print(f"  [ERROR] {url}: {e}")
+            if attempt < retries - 1:
+                time.sleep(10)
+    return None
 
 def find_commented_table(soup: BeautifulSoup, table_id: str) -> Optional[BeautifulSoup]:
     """Find a BBRef table that is hidden inside an HTML comment block."""
