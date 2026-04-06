@@ -42,9 +42,10 @@ from bs4 import BeautifulSoup
 import psycopg
 from psycopg.rows import dict_row
 
-DB_CONFIG  = {"host": "localhost", "port": 5432, "dbname": "kanext_player_pool"}
-SEASON     = "2025-26"
-DELAY      = 0.6   # seconds between TFRRS requests (respectful)
+DB_CONFIG      = {"host": "localhost", "port": 5432, "dbname": "kanext_player_pool"}
+SEASON_CURRENT = "2025-26"
+SEASON_PRIOR   = "2024-25"
+DELAY          = 0.6   # seconds between TFRRS requests (respectful)
 HEADERS    = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"}
 
 # ── Skip relay/team events ────────────────────────────────────────────────────
@@ -80,6 +81,28 @@ OUTDOOR_LISTS = [
     {"id": 5619, "assoc": "cccaa",  "division": None, "label": "CCCAA SoCal"},
     {"id": 5620, "assoc": "cccaa",  "division": None, "label": "CCCAA South Coast Conference"},
     {"id": 5621, "assoc": "cccaa",  "division": None, "label": "CCCAA Western State Conference"},
+    # ── Prior season (2025 outdoor = 2024-25 academic year) ──────────────────
+    {"id": 5018, "assoc": "ncaa",  "division": "d1", "label": "NCAA D1 Outdoor 2025", "season": SEASON_PRIOR},
+    {"id": 5052, "assoc": "ncaa",  "division": "d1", "label": "NCAA D1 East Outdoor 2025", "season": SEASON_PRIOR},
+    {"id": 5053, "assoc": "ncaa",  "division": "d1", "label": "NCAA D1 West Outdoor 2025", "season": SEASON_PRIOR},
+    {"id": 5019, "assoc": "ncaa",  "division": "d2", "label": "NCAA D2 Outdoor 2025", "season": SEASON_PRIOR},
+    {"id": 5020, "assoc": "ncaa",  "division": "d3", "label": "NCAA D3 Outdoor 2025", "season": SEASON_PRIOR},
+    {"id": 5021, "assoc": "naia",  "division": None, "label": "NAIA Outdoor 2025", "season": SEASON_PRIOR},
+    {"id": 5029, "assoc": "njcaa", "division": "d1", "label": "NJCAA DI Outdoor 2025", "season": SEASON_PRIOR},
+    {"id": 5030, "assoc": "njcaa", "division": "d3", "label": "NJCAA DIII Outdoor 2025", "season": SEASON_PRIOR},
+    {"id": 5031, "assoc": "nccaa", "division": None, "label": "NCCAA Outdoor 2025", "season": SEASON_PRIOR},
+    {"id": 5032, "assoc": "nwac",  "division": None, "label": "NWAC Outdoor 2025", "season": SEASON_PRIOR},
+    {"id": 5033, "assoc": "uscaa", "division": None, "label": "USCAA Outdoor 2025", "season": SEASON_PRIOR},
+]
+
+# ── Prior-season indoor (2024-25) ─────────────────────────────────────────────
+INDOOR_PRIOR_2025 = [
+    {"id": 4867, "assoc": "ncaa",  "division": "d1", "label": "NCAA D1 Indoor 2024-25", "season": SEASON_PRIOR},
+    {"id": 4868, "assoc": "ncaa",  "division": "d2", "label": "NCAA D2 Indoor 2024-25", "season": SEASON_PRIOR},
+    {"id": 4869, "assoc": "ncaa",  "division": "d3", "label": "NCAA D3 Indoor 2024-25", "season": SEASON_PRIOR},
+    {"id": 4870, "assoc": "naia",  "division": None, "label": "NAIA Indoor 2024-25", "season": SEASON_PRIOR},
+    {"id": 4871, "assoc": "njcaa", "division": None, "label": "NJCAA Indoor 2024-25", "season": SEASON_PRIOR},
+    {"id": 4872, "assoc": "nccaa", "division": None, "label": "NCCAA Indoor 2024-25", "season": SEASON_PRIOR},
 ]
 
 # ── Indoor: known 2025-26 list IDs (probe fills in future seasons) ────────────
@@ -343,7 +366,7 @@ def url_assoc_to_db_assoc(url_assoc: str, list_assoc: Optional[str]) -> str:
     return url_assoc
 
 
-def write_results(conn, results: list[dict]) -> dict:
+def write_results(conn, results: list[dict], season: str = SEASON_CURRENT) -> dict:
     """Upsert teams, athletes, and results from one parsed list. Returns counts."""
     if not results:
         return {"teams": 0, "athletes_m": 0, "athletes_f": 0, "results_m": 0, "results_f": 0}
@@ -450,7 +473,7 @@ def write_results(conn, results: list[dict]) -> dict:
                     list_id=EXCLUDED.list_id
                 RETURNING id, (xmax = 0) AS is_insert
             """, (
-                pid, r["event"], r["season_type"], SEASON,
+                pid, r["event"], r["season_type"], season,
                 r["rank"], r["mark"], r["wind"],
                 r["meet_name"], r["tfrrs_meet_id"], r["meet_date"],
                 r["list_id"],
@@ -478,6 +501,7 @@ def write_results(conn, results: list[dict]) -> dict:
 def run_list(conn, list_cfg: dict, season_type: str) -> dict:
     lid = list_cfg["id"]
     label = list_cfg.get("label", str(lid))
+    season = list_cfg.get("season", SEASON_CURRENT)
     print(f"\n  [{label}] list_id={lid} ...", flush=True)
     html = fetch_html(f"https://www.tfrrs.org/lists/{lid}")
     if not html:
@@ -495,7 +519,7 @@ def run_list(conn, list_cfg: dict, season_type: str) -> dict:
     women = sum(1 for r in results if r["gender"] == "f")
     print(f"  Parsed {len(results)} rows across {events} events ({men}M / {women}F)", flush=True)
 
-    counts = write_results(conn, results)
+    counts = write_results(conn, results, season)
     print(f"  → {counts['athletes_m']}M athletes, {counts['athletes_f']}F athletes, "
           f"{counts['results_m']}M results, {counts['results_f']}F results", flush=True)
     return counts
@@ -506,12 +530,15 @@ def main():
 
     if mode == "list" and len(sys.argv) > 2:
         # Single list by ID
-        # Usage: python3 tfrrs_scraper.py list 5354 indoor
+        # Usage: python3 tfrrs_scraper.py list 5354 indoor [season]
+        # e.g.:  python3 tfrrs_scraper.py list 5018 outdoor 2024-25
         lid = int(sys.argv[2])
-        stype = sys.argv[3] if len(sys.argv) > 3 else "outdoor"
+        stype  = sys.argv[3] if len(sys.argv) > 3 else "outdoor"
+        season = sys.argv[4] if len(sys.argv) > 4 else SEASON_CURRENT
         conn = get_conn()
         try:
-            cfg = {"id": lid, "assoc": None, "division": None, "label": f"list/{lid}"}
+            cfg = {"id": lid, "assoc": None, "division": None,
+                   "label": f"list/{lid}", "season": season}
             run_list(conn, cfg, stype)
         finally:
             conn.close()
@@ -532,9 +559,18 @@ def main():
                 total_rf    += counts.get("results_f", 0)
 
         if mode in ("all", "indoor"):
-            print("\n=== INDOOR LISTS ===")
+            print("\n=== INDOOR LISTS (2025-26) ===")
             indoor_lists = probe_indoor_division_lists()
             for cfg in indoor_lists:
+                counts = run_list(conn, cfg, "indoor")
+                total_teams += counts.get("teams", 0)
+                total_am    += counts.get("athletes_m", 0)
+                total_af    += counts.get("athletes_f", 0)
+                total_rm    += counts.get("results_m", 0)
+                total_rf    += counts.get("results_f", 0)
+
+            print("\n=== INDOOR LISTS (2024-25) ===")
+            for cfg in INDOOR_PRIOR_2025:
                 counts = run_list(conn, cfg, "indoor")
                 total_teams += counts.get("teams", 0)
                 total_am    += counts.get("athletes_m", 0)
