@@ -12,7 +12,7 @@ KaNeXT is not a single sports app, a single school tool, or a generic AI wrapper
 - **The mandate, FMU, and network-school strategy validate and scale it**
 
 This framing is the clearest description of the broader KaNeXT system and how the app fits inside it. Sports is the first proving ground, especially basketball, but the architecture is designed to extend across institutions, communications, media, finance, and operations.  
-Source framing: the uploaded KaNeXT product/system docs describe KaNeXT as a governed institutional operating system whose intelligence architecture is the core moat, Dipson is the interface, the OS is the delivery environment, and the rails plus school-network strategy monetize, validate, and scale the system :contentReference[oaicite:0]{index=0}.
+Source framing: the uploaded KaNeXT product/system docs describe KaNeXT as a governed institutional operating system whose intelligence architecture is the core moat, Dipson is the interface, the OS is the delivery environment, and the rails plus school-network strategy monetize, validate, and scale the system.
 
 ---
 
@@ -33,14 +33,14 @@ The product is not meant to be understood as "an app with many tiles." It is mea
 - a front-facing digital home for institutions,
 - an operating environment for daily workflows,
 - a financial and media infrastructure layer,
-- and a governed interface into a deep intelligence system :contentReference[oaicite:1]{index=1}.
+- and a governed interface into a deep intelligence system.
 
 The product knowledge base defines the visible product surface around:
 - brands as the primary switching unit,
 - role-based access control,
 - a 3x3 home grid,
 - Dipson as the intelligence and execution interface,
-- and universal rails such as KTV, KPlay, and KPay :contentReference[oaicite:2]{index=2}.
+- and universal rails such as KTV, KPlay, and KPay.
 
 ---
 
@@ -59,7 +59,7 @@ In Demo:
 - videos and media surfaces are populated,
 - and feature depth is shown in a way that makes the full system legible.
 
-The product knowledge base explicitly defines Demo as the curated environment used to show every capability of the OS at scale, with role contrast and loaded data across the system :contentReference[oaicite:3]{index=3}.
+The product knowledge base explicitly defines Demo as the curated environment used to show every capability of the OS at scale, with role contrast and loaded data across the system.
 
 ### Live
 Live is the **real deployed product context**.
@@ -69,7 +69,7 @@ In Live:
 - the interface reflects the actual state of rollout,
 - and some surfaces are intentionally more sparse than Demo because they represent reality, not a fully staged walkthrough.
 
-The product knowledge base explicitly frames Live as the real app state and the honest counterpart to Demo, with the contrast between the two meant to prove both vision and reality :contentReference[oaicite:4]{index=4}.
+The product knowledge base explicitly frames Live as the real app state and the honest counterpart to Demo, with the contrast between the two meant to prove both vision and reality.
 
 ### Why this matters
 KaNeXT should not be described as either:
@@ -119,9 +119,9 @@ KaNeXT's basketball layer is not framed as simple descriptive analytics. It is f
 - impact modifiers,
 - counterfactual reasoning,
 - team degradation from misuse or miscast roles,
-- and player search across a normalized market :contentReference[oaicite:5]{index=5}.
+- and player search across a normalized market.
 
-The broader system overview also explicitly states that basketball is the **deepest flagship intelligence domain**, covering recruiting, roster construction, NIL and scholarship logic, archetypes, system fit, team intelligence, simulation, scouting, and downstream projections :contentReference[oaicite:6]{index=6}.
+The broader system overview also explicitly states that basketball is the **deepest flagship intelligence domain**, covering recruiting, roster construction, NIL and scholarship logic, archetypes, system fit, team intelligence, simulation, scouting, and downstream projections.
 
 That matters because KaNeXT's moat is not only interface quality.  
 It is the **intelligence architecture underneath the interface**.
@@ -133,19 +133,19 @@ It is the **intelligence architecture underneath the interface**.
 The cleanest way to understand KaNeXT OS is through five layers:
 
 ### 1. Intelligence
-The governed reasoning architecture is the core moat. It drives evaluation, fit, projections, simulation, and decision support across sports and institutional domains :contentReference[oaicite:7]{index=7}.
+The governed reasoning architecture is the core moat. It drives evaluation, fit, projections, simulation, and decision support across sports and institutional domains.
 
 ### 2. Dipson
-Dipson is the user-facing interface to the intelligence system. It makes the deeper architecture queryable and eventually executable inside the governed environment :contentReference[oaicite:8]{index=8}.
+Dipson is the user-facing interface to the intelligence system. It makes the deeper architecture queryable and eventually executable inside the governed environment.
 
 ### 3. Operating System
 The app is the delivery environment where users experience brands, workflows, media, payments, communication, and role-based access.
 
 ### 4. Rails
-KPay, KTV, VoIP, and related infrastructure are the monetization and distribution engines of the system. They are not the deepest moat, but they increase utility, retention, distribution, and data capture :contentReference[oaicite:9]{index=9}.
+KPay, KTV, VoIP, and related infrastructure are the monetization and distribution engines of the system. They are not the deepest moat, but they increase utility, retention, distribution, and data capture.
 
 ### 5. Proving / Scale Engines
-FMU, the mandate strategy, and the broader school network are the live proving and expansion mechanisms for the system :contentReference[oaicite:10]{index=10}.
+FMU, the mandate strategy, and the broader school network are the live proving and expansion mechanisms for the system.
 
 ---
 
@@ -161,7 +161,7 @@ The visible product surface is built around:
 - RBAC-governed screen depth
 - Dipson as the central intelligence interface
 
-The product knowledge base describes the app as one environment spanning multiple brands and modes, with tiles and role logic changing by institutional context while the system remains architecturally unified :contentReference[oaicite:11]{index=11}.
+The product knowledge base describes the app as one environment spanning multiple brands and modes, with tiles and role logic changing by institutional context while the system remains architecturally unified.
 
 ---
 
