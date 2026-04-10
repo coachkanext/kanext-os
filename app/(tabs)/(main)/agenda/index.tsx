@@ -22,10 +22,11 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useAppContext } from '@/context/app-context';
 import { useDemoRole, MODE_ACCENTS } from '@/utils/demo-role-store';
 import { useDataMode } from '@/utils/global-demo-mode';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type AgendaView = 'Day' | 'Month' | 'List';
+type AgendaView = 'Day' | 'Week' | 'Month' | 'List';
 type EventType =
   | 'game' | 'practice' | 'travel' | 'meeting' | 'recruiting'
   | 'call' | 'deadline' | 'class' | 'exam' | 'service' | 'event'
@@ -57,11 +58,11 @@ const HOUR_H     = 64;
 const T_START    = 6;
 const T_END      = 22;
 const TL_LEFT    = 56;   // hour-label column width
-const VIEWS: AgendaView[] = ['Day', 'Month', 'List'];
+const VIEWS: AgendaView[] = ['Day', 'Week', 'Month', 'List'];
 const FOOTER_H   = 49;
 const DAY_LABELS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
-const MODE_FILTERS: Record<string, { key: FilterKey; label: string }[]> = {
+const MODE_FILTERS: Record<string, { key: FilterKey; label: string; color?: string }[]> = {
   sports: [
     { key: 'all',        label: 'All' },
     { key: 'game',       label: 'Games' },
@@ -93,9 +94,11 @@ const MODE_FILTERS: Record<string, { key: FilterKey; label: string }[]> = {
   ],
   personal: [
     { key: 'all',      label: 'All' },
-    { key: 'event',    label: 'Events' },
-    { key: 'meeting',  label: 'Meetings' },
-    { key: 'reminder', label: 'Reminders' },
+    { key: 'event',    label: 'Content',   color: '#1A1714' },
+    { key: 'meeting',  label: 'Meetings',  color: '#E0DBD4' },
+    { key: 'deadline', label: 'Deadlines', color: '#B8943E' },
+    { key: 'reminder', label: 'Personal',  color: '#9C9790' },
+    { key: 'call',     label: 'Bookings',  color: '#5A8A6E' },
   ],
 };
 
@@ -179,7 +182,16 @@ function timeTop(date: Date): number {
 function timeDuration(start: Date, end: Date): number {
   return Math.max(((end.getTime() - start.getTime()) / (1000 * 60 * 60)) * HOUR_H, 28);
 }
-function eventColor(type: EventType): string {
+function eventColor(type: EventType, mode?: string): string {
+  if (mode === 'personal') {
+    switch (type) {
+      case 'event':    return '#1A1714'; // Carbon — Content
+      case 'meeting':  return '#E0DBD4'; // Mist — Meetings
+      case 'deadline': return '#B8943E'; // Caution — Deadlines
+      case 'reminder': return '#9C9790'; // Drift — Personal
+      default:         return '#1A1714';
+    }
+  }
   switch (type) {
     case 'game':                                       return '#1A1714';
     case 'deadline': case 'exam':                      return '#B85C5C';
@@ -473,7 +485,7 @@ function MonthGrid({
                 </View>
                 <View style={styles.monthDots}>
                   {dots.slice(0, 3).map(ev => (
-                    <View key={ev.id} style={[styles.eventDot, { backgroundColor: eventColor(ev.type) }]} />
+                    <View key={ev.id} style={[styles.eventDot, { backgroundColor: eventColor(ev.type, ev.mode) }]} />
                   ))}
                 </View>
               </Pressable>
@@ -533,7 +545,7 @@ function SharedTimeline({
           <Text style={styles.allDayLabel}>all-day</Text>
           <View style={styles.allDayList}>
             {allDayEvts.map(ev => {
-              const color = eventColor(ev.type);
+              const color = eventColor(ev.type, ev.mode);
               return (
                 <View key={ev.id} style={[styles.allDayChip, { backgroundColor: color + '20', borderLeftColor: color }]}>
                   <Text style={[styles.allDayText, { color }]} numberOfLines={1}>{ev.title}</Text>
@@ -587,7 +599,7 @@ function SharedTimeline({
             const top    = timeTop(ev.start);
             const height = timeDuration(ev.start, ev.end);
             const isExp  = expandedId === ev.id;
-            const color  = eventColor(ev.type);
+            const color  = eventColor(ev.type, ev.mode);
             const colW   = evAreaWidth / ev.totalCols;
             const left   = TL_LEFT + ev.colIndex * colW + 2;
             const width  = colW - 4;
@@ -721,7 +733,7 @@ function ListView({ events, C, styles }: {
       {nextEvent && (
         <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-            <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: eventColor(nextEvent.type) }} />
+            <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: eventColor(nextEvent.type, nextEvent.mode) }} />
             <Text style={{ fontSize: 10, fontWeight: '700', color: C.muted, textTransform: 'uppercase', letterSpacing: 0.8 }}>Next Up</Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -824,7 +836,7 @@ function ListView({ events, C, styles }: {
       )}
       renderSectionFooter={() => <View style={{ height: 6 }} />}
       renderItem={({ item: ev, index, section }) => {
-        const color   = eventColor(ev.type);
+        const color   = eventColor(ev.type, ev.mode);
         const isFirst = index === 0;
         const isLast  = index === section.data.length - 1;
         return (
@@ -874,6 +886,94 @@ function ListView({ events, C, styles }: {
         );
       }}
     />
+  );
+}
+
+// ── WeekView ──────────────────────────────────────────────────────────────────
+
+function WeekView({
+  selectedDate, onSelectDate, onNavigate, events, C, styles,
+}: {
+  selectedDate: Date;
+  onSelectDate: (d: Date) => void;
+  onNavigate: (weeks: number) => void;
+  events: AgendaEvent[];
+  C: ComponentColors;
+  styles: ReturnType<typeof makeStyles>;
+}) {
+  const weekDays = useMemo(() => getWeekDays(selectedDate), [selectedDate]);
+  const t = today();
+
+  return (
+    <View style={{ flex: 1 }}>
+      <WeekRow
+        selectedDate={selectedDate}
+        onSelectDate={onSelectDate}
+        onNavigate={onNavigate}
+        onPullDown={() => {}}
+        events={events}
+        C={C}
+        styles={styles}
+      />
+      <ScrollView
+        style={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingTop: 8, paddingBottom: 100 }}
+      >
+        {weekDays.map((day, dayIdx) => {
+          const allDayEvts = events.filter(e => e.allDay && isSameDay(e.start, day));
+          const timedEvts  = events
+            .filter(e => !e.allDay && isSameDay(e.start, day))
+            .sort((a, b) => a.start.getTime() - b.start.getTime());
+          if (timedEvts.length === 0 && allDayEvts.length === 0) return null;
+          const isToday = isSameDay(day, t);
+          return (
+            <View key={dayIdx} style={{ marginBottom: 4 }}>
+              <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 6 }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', letterSpacing: 0.8, textTransform: 'uppercase', color: isToday ? C.accent : C.secondary }}>
+                  {['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][day.getDay()]} {day.getDate()}
+                </Text>
+              </View>
+              {allDayEvts.map(ev => {
+                const color = eventColor(ev.type, ev.mode);
+                return (
+                  <View key={ev.id} style={{ marginHorizontal: 16, marginBottom: 4, borderRadius: 8, backgroundColor: color + '20', borderLeftWidth: 3, borderLeftColor: color, paddingHorizontal: 10, paddingVertical: 6 }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color }} numberOfLines={1}>{ev.title}</Text>
+                  </View>
+                );
+              })}
+              {timedEvts.map(ev => {
+                const color = eventColor(ev.type, ev.mode);
+                return (
+                  <Pressable
+                    key={ev.id}
+                    style={({ pressed }) => ({
+                      marginHorizontal: 16, marginBottom: 6, borderRadius: 10,
+                      backgroundColor: pressed ? C.surfacePressed : C.surface,
+                      borderLeftWidth: 3, borderLeftColor: color,
+                      paddingHorizontal: 12, paddingVertical: 10,
+                    })}
+                    onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                  >
+                    <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={1}>{ev.title}</Text>
+                    <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{fmtTime(ev.start)} – {fmtTime(ev.end)}</Text>
+                    {ev.location && <Text style={{ fontSize: 11, color: C.muted, marginTop: 1 }} numberOfLines={1}>{ev.location}</Text>}
+                  </Pressable>
+                );
+              })}
+            </View>
+          );
+        })}
+        {weekDays.every(day => {
+          const all = events.filter(e => isSameDay(e.start, day));
+          return all.length === 0;
+        }) && (
+          <View style={{ alignItems: 'center', paddingTop: 60 }}>
+            <Text style={{ fontSize: 14, color: C.muted }}>No events this week</Text>
+          </View>
+        )}
+      </ScrollView>
+    </View>
   );
 }
 
@@ -1256,63 +1356,158 @@ function CreateEventSheet({ selectedDate, initialTime, onClose, C }: {
 
 // ── EditCategoriesSheet ───────────────────────────────────────────────────────
 
-const CATEGORY_LIST: { type: EventType; label: string; desc: string }[] = [
-  { type: 'game',         label: 'Game',         desc: 'Scheduled games and matches' },
-  { type: 'practice',     label: 'Practice',     desc: 'Team practices and drills' },
-  { type: 'travel',       label: 'Travel',       desc: 'Team travel events' },
-  { type: 'meeting',      label: 'Meeting',      desc: 'Team and staff meetings' },
-  { type: 'recruiting',   label: 'Recruiting',   desc: 'Recruiting visits and calls' },
-  { type: 'call',         label: 'Call',         desc: 'Phone or video calls' },
-  { type: 'deadline',     label: 'Deadline',     desc: 'Project and task deadlines' },
-  { type: 'class',        label: 'Class',        desc: 'Classes and lectures' },
-  { type: 'exam',         label: 'Exam',         desc: 'Tests and exams' },
-  { type: 'service',      label: 'Service',      desc: 'Community service events' },
-  { type: 'event',        label: 'Event',        desc: 'General events' },
-  { type: 'registration', label: 'Registration', desc: 'Registration deadlines and periods' },
-  { type: 'volunteer',    label: 'Volunteer',    desc: 'Volunteer opportunities' },
-  { type: 'reminder',     label: 'Reminder',     desc: 'Personal reminders' },
-  { type: 'other',        label: 'Other',        desc: 'Miscellaneous events' },
+interface PersonalCat { id: string; name: string; color: string; eventCount: number; visible: boolean }
+
+const PERSONAL_CATS_DEFAULT: PersonalCat[] = [
+  { id: 'cat1', name: 'Content',   color: '#1A1714', eventCount: 14, visible: true },
+  { id: 'cat2', name: 'Meetings',  color: '#E0DBD4', eventCount: 8,  visible: true },
+  { id: 'cat3', name: 'Deadlines', color: '#B8943E', eventCount: 3,  visible: true },
+  { id: 'cat4', name: 'Personal',  color: '#9C9790', eventCount: 7,  visible: true },
+  { id: 'cat5', name: 'Bookings',  color: '#5A8A6E', eventCount: 11, visible: true },
 ];
 
+const CAT_COLOR_CHOICES = ['#1A1714','#9C9790','#E0DBD4','#B8943E','#5A8A6E','#B85C5C','#8B2500'];
+
 function EditCategoriesSheet({ visible, onClose, C }: { visible: boolean; onClose: () => void; C: ComponentColors }) {
+  const [cats, setCats] = React.useState<PersonalCat[]>(PERSONAL_CATS_DEFAULT);
+  const [editId, setEditId] = React.useState<string | null>(null);
+  const [editName, setEditName] = React.useState('');
+  const [editColor, setEditColor] = React.useState('');
+  const [editVisible, setEditVisible] = React.useState(true);
+
+  const openEdit = (cat: PersonalCat) => {
+    setEditId(cat.id);
+    setEditName(cat.name);
+    setEditColor(cat.color);
+    setEditVisible(cat.visible);
+  };
+
+  const saveEdit = () => {
+    setCats(prev => prev.map(c => c.id === editId ? { ...c, name: editName, color: editColor, visible: editVisible } : c));
+    setEditId(null);
+  };
+
+  const deleteCat = (id: string) => {
+    setCats(prev => prev.filter(c => c.id !== id));
+    setEditId(null);
+  };
+
+  const addCat = () => {
+    const id = `cat${Date.now()}`;
+    const newCat: PersonalCat = { id, name: 'New Category', color: '#9C9790', eventCount: 0, visible: true };
+    setCats(prev => [...prev, newCat]);
+    openEdit(newCat);
+  };
+
+  const handleClose = () => { setEditId(null); onClose(); };
+
   return (
-    <BottomSheet visible={visible} onClose={onClose} useModal snapPoints={['50%', '90%']} backgroundColor={C.bg}>
-      <View style={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 28 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-          <Text style={{ fontSize: 16, fontWeight: '600', color: C.label }}>Event Categories</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: C.surfacePressed, borderRadius: 10, paddingHorizontal: 8, paddingVertical: 4 }}>
-            <IconSymbol name="lock.fill" size={11} color={C.muted} />
-            <Text style={{ fontSize: 12, color: C.muted, fontWeight: '500' }}>Admin only</Text>
-          </View>
+    <BottomSheet visible={visible} onClose={handleClose} useModal snapPoints={['55%', '90%']} backgroundColor={C.bg}>
+      <View style={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24 }}>
+        {/* Header */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+          {editId && (
+            <Pressable onPress={() => setEditId(null)} style={{ marginRight: 10, padding: 4 }}>
+              <IconSymbol name="chevron.left" size={16} color={C.label} />
+            </Pressable>
+          )}
+          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label, flex: 1 }}>
+            {editId ? 'Edit Category' : 'Categories'}
+          </Text>
         </View>
-        <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 16, lineHeight: 19 }}>
-          Manage event type labels and colors for your organization.
-        </Text>
-        {CATEGORY_LIST.map((item, idx) => {
-          const color = eventColor(item.type);
-          return (
+
+        {editId === null ? (
+          /* ── List view ── */
+          <>
+            {cats.map((cat, idx) => (
+              <Pressable
+                key={cat.id}
+                onPress={() => openEdit(cat)}
+                style={({ pressed }) => ({
+                  flexDirection: 'row', alignItems: 'center', gap: 12,
+                  paddingVertical: 13, paddingHorizontal: 4,
+                  borderBottomWidth: idx < cats.length - 1 ? StyleSheet.hairlineWidth : 0,
+                  borderBottomColor: C.separator,
+                  backgroundColor: pressed ? C.surface : 'transparent',
+                  borderRadius: 10,
+                })}
+              >
+                <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: cat.color }} />
+                <Text style={{ flex: 1, fontSize: 15, color: cat.visible ? C.label : C.muted }}>
+                  {cat.name}
+                </Text>
+                <Text style={{ fontSize: 13, color: C.secondary, marginRight: 6 }}>
+                  {cat.eventCount} events
+                </Text>
+              </Pressable>
+            ))}
             <Pressable
-              key={item.type}
+              onPress={addCat}
               style={({ pressed }) => ({
-                flexDirection: 'row', alignItems: 'center', gap: 12,
-                paddingVertical: 12, paddingHorizontal: 4,
-                borderBottomWidth: idx < CATEGORY_LIST.length - 1 ? StyleSheet.hairlineWidth : 0,
-                borderBottomColor: C.separator,
-                backgroundColor: pressed ? C.surfacePressed : 'transparent',
-                borderRadius: 10,
+                flexDirection: 'row', alignItems: 'center', gap: 8,
+                marginTop: 16, paddingVertical: 12, paddingHorizontal: 4,
+                opacity: pressed ? 0.6 : 1,
               })}
             >
-              <View style={{ width: 28, height: 28, borderRadius: 8, backgroundColor: color + '20', alignItems: 'center', justifyContent: 'center' }}>
-                <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: color }} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 14, fontWeight: '500', color: C.label }}>{item.label}</Text>
-                <Text style={{ fontSize: 12, color: C.muted }}>{item.desc}</Text>
-              </View>
-              <IconSymbol name="chevron.right" size={13} color={C.muted} />
+              <IconSymbol name="plus.circle.fill" size={18} color={C.label} />
+              <Text style={{ fontSize: 15, fontWeight: '600', color: C.label }}>Add Category</Text>
             </Pressable>
-          );
-        })}
+          </>
+        ) : (
+          /* ── Edit view ── */
+          <>
+            {/* Name */}
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>Name</Text>
+            <TextInput
+              value={editName}
+              onChangeText={setEditName}
+              style={{ borderWidth: 1, borderColor: C.separator, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 11, fontSize: 15, color: C.label, backgroundColor: C.surface, marginBottom: 16 }}
+              placeholderTextColor={C.muted}
+            />
+
+            {/* Color */}
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 10 }}>Color</Text>
+            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 20 }}>
+              {CAT_COLOR_CHOICES.map(c => (
+                <Pressable
+                  key={c}
+                  onPress={() => setEditColor(c)}
+                  style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: c, alignItems: 'center', justifyContent: 'center',
+                    borderWidth: editColor === c ? 2.5 : 0, borderColor: C.label }}
+                >
+                  {editColor === c && <IconSymbol name="checkmark" size={13} color={c === '#E0DBD4' ? C.label : '#fff'} />}
+                </Pressable>
+              ))}
+            </View>
+
+            {/* Visibility */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 12, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator, marginBottom: 12 }}>
+              <Text style={{ fontSize: 15, color: C.label }}>Show on calendar</Text>
+              <Switch
+                value={editVisible}
+                onValueChange={setEditVisible}
+                trackColor={{ false: C.separator, true: C.label }}
+                thumbColor={C.bg}
+              />
+            </View>
+
+            {/* Save */}
+            <Pressable
+              onPress={saveEdit}
+              style={({ pressed }) => ({ backgroundColor: C.label, borderRadius: 12, paddingVertical: 13, alignItems: 'center', marginBottom: 10, opacity: pressed ? 0.8 : 1 })}
+            >
+              <Text style={{ fontSize: 15, fontWeight: '600', color: C.bg }}>Save</Text>
+            </Pressable>
+
+            {/* Delete */}
+            <Pressable
+              onPress={() => deleteCat(editId)}
+              style={({ pressed }) => ({ paddingVertical: 12, alignItems: 'center', opacity: pressed ? 0.7 : 1 })}
+            >
+              <Text style={{ fontSize: 14, fontWeight: '600', color: '#B85C5C' }}>Delete Category</Text>
+            </Pressable>
+          </>
+        )}
       </View>
     </BottomSheet>
   );
@@ -1384,7 +1579,7 @@ function SportsHeadCoachAgendaView({ C, insets, cycleRole, role }: {
       {/* Top bar */}
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10 }}>
         <Pressable style={{ flex: 1, alignItems: 'flex-start' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
-          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          <KMenuButton />
         </Pressable>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 16, paddingVertical: 7, borderRadius: 20, borderWidth: 1.5, borderColor: C.separator }}>
           <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>April 2026</Text>
@@ -1479,7 +1674,7 @@ function SportsPlayerAgendaView({ C, insets, cycleRole, role }: {
       {/* Top bar */}
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10 }}>
         <Pressable style={{ flex: 1, alignItems: 'flex-start' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
-          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          <KMenuButton />
         </Pressable>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 16, paddingVertical: 7, borderRadius: 20, borderWidth: 1.5, borderColor: C.separator }}>
           <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>My Schedule</Text>
@@ -1662,20 +1857,20 @@ export default function AgendaScreen() {
   const isAdmin = role === roleCycles[0];
   const accent  = MODE_ACCENTS[mode] ?? C.accent;
 
-  const [view,              setView]              = useState<AgendaView>('Day');
-  const [selectedDate,      setSelectedDate]      = useState(today);
-  const [showViewDD,        setShowViewDD]        = useState(false);
-  const [showEditDD,        setShowEditDD]        = useState(false);
-  const [expandedId,        setExpandedId]        = useState<string | null>(null);
-  const [activeFilter,      setActiveFilter]      = useState<FilterKey>('all');
-  const [pillsVisible,      setPillsVisible]      = useState(false);
-  const [createVisible,     setCreateVisible]     = useState(false);
-  const [createTime,        setCreateTime]        = useState<Date | null>(null);
-  const [selectEventsMode,  setSelectEventsMode]  = useState(false);
-  const [selectedEventIds,  setSelectedEventIds]  = useState<Set<string>>(new Set());
-  const [editCatVisible,    setEditCatVisible]    = useState(false);
-  const [rsvped,            setRsvped]            = useState<Set<string>>(new Set(['pe2']));
+  const [eduTab,        setEduTab]        = useState<'Calendar' | 'Reminders' | 'Tasks'>('Calendar');
+  const [communityTab,  setCommunityTab]  = useState<'Calendar' | 'Reminders' | 'Tasks'>('Calendar');
+  const [view,          setView]          = useState<AgendaView>('Week');
+  const [showViewDD,    setShowViewDD]    = useState(false);
+  const [selectedDate,  setSelectedDate]  = useState(today);
+  const [expandedId,    setExpandedId]    = useState<string | null>(null);
+  const [activeFilter,  setActiveFilter]  = useState<FilterKey>('all');
+  const [createVisible, setCreateVisible] = useState(false);
+  const [createTime,    setCreateTime]    = useState<Date | null>(null);
+  const [editCatVisible, setEditCatVisible] = useState(false);
+  const [rsvped,         setRsvped]         = useState<Set<string>>(new Set(['pe2']));
   const [communityRsvped, setCommunityRsvped] = useState<Set<string>>(new Set());
+  const [rsvpStatus,     setRsvpStatus]     = useState<Record<string, 'going' | 'maybe' | 'no'>>({ pe2: 'going' });
+  const [expandedPubId,  setExpandedPubId]  = useState<string | null>(null);
 
   const filterPills  = MODE_FILTERS[mode] ?? MODE_FILTERS.personal;
 
@@ -1692,7 +1887,6 @@ export default function AgendaScreen() {
   const handleNavigateWeek  = useCallback((n: number) => { setSelectedDate(p => addDays(p, n * 7)); setExpandedId(null); }, []);
   const handleNavigateMonth = useCallback((n: number) => { setSelectedDate(p => addMonths(p, n)); setExpandedId(null); }, []);
   const handleCreateAtTime  = useCallback((time: Date) => { setCreateTime(time); setCreateVisible(true); }, []);
-  const closeDropdowns      = useCallback(() => { setShowViewDD(false); setShowEditDD(false); }, []);
 
   if (dataMode === 'live') return <LiveAgendaView mode={mode} C={C} insets={insets} />;
 
@@ -1756,7 +1950,7 @@ export default function AgendaScreen() {
         {/* Top bar */}
         <View style={styles.topBar}>
           <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+            <KMenuButton />
           </Pressable>
           <View style={styles.viewPill}>
             <Text style={styles.viewPillText}>April 2026</Text>
@@ -1835,7 +2029,7 @@ export default function AgendaScreen() {
         {/* Top bar */}
         <View style={styles.topBar}>
           <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+            <KMenuButton />
           </Pressable>
           <View style={styles.viewPill}>
             <Text style={styles.viewPillText}>Meetings</Text>
@@ -1913,6 +2107,110 @@ export default function AgendaScreen() {
     );
   }
 
+  // ── Education President: full calendar with TabPill ──────────────────────────
+  if (mode === 'education' && isAdmin) {
+    const EDU_EVENTS = [
+      // Apr 7 Mon
+      { id: 'ep_a1', date: 'Apr 7',  time: '10:00 AM', title: 'Registration Opens',           type: 'registration' as const },
+      { id: 'ep_a2', date: 'Apr 7',  time: '2:00 PM',  title: 'Dept Chair Meeting',           type: 'meeting'      as const },
+      // Apr 8 Tue
+      { id: 'ep_a3', date: 'Apr 8',  time: '9:00 AM',  title: 'Budget Review — Academic',     type: 'meeting'      as const },
+      // Apr 9 Wed
+      { id: 'ep_a4', date: 'Apr 9',  time: '11:00 AM', title: 'Faculty Senate Meeting',       type: 'meeting'      as const },
+      // Apr 14 Mon
+      { id: 'ep_a5', date: 'Apr 14', time: '2:00 PM',  title: 'Board of Trustees Meeting',   type: 'meeting'      as const },
+      { id: 'ep_a6', date: 'Apr 14', time: '10:00 AM', title: 'Add/Drop Deadline',            type: 'deadline'     as const },
+      // Apr 21 Mon
+      { id: 'ep_a7', date: 'Apr 21', time: 'All Day',  title: 'WSCUC Site Visit — Day 1',    type: 'event'        as const },
+    ] as const;
+    type EduAdminEventType = 'registration' | 'meeting' | 'deadline' | 'event' | 'exam';
+    const EDU_DOT_COLORS: Record<EduAdminEventType, string> = {
+      registration: '#B8943E',
+      meeting:      C.label,
+      deadline:     '#B85C5C',
+      event:        C.secondary,
+      exam:         '#B85C5C',
+    };
+    const grouped: Record<string, typeof EDU_EVENTS[number][]> = {};
+    for (const ev of EDU_EVENTS) {
+      if (!grouped[ev.date]) grouped[ev.date] = [];
+      grouped[ev.date].push(ev);
+    }
+    return (
+      <View style={[styles.screen, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+        {/* Top bar */}
+        <View style={styles.topBar}>
+          <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+            <KMenuButton />
+          </Pressable>
+          {/* TabPill */}
+          <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+            {(['Calendar', 'Reminders', 'Tasks'] as const).map(t => {
+              const active = eduTab === t;
+              return (
+                <Pressable key={t} onPress={() => { Haptics.selectionAsync(); setEduTab(t); }} style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{t}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+          <View style={[styles.topRight, { alignItems: 'flex-end' }]}>
+            <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary />
+          </View>
+        </View>
+
+        {/* Reminders placeholder */}
+        {eduTab === 'Reminders' && (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingBottom: 100 }}>
+            <Text style={{ fontSize: 16, color: C.secondary, fontWeight: '600' }}>Reminders</Text>
+            <Text style={{ fontSize: 13, color: C.secondary, marginTop: 6, opacity: 0.6 }}>No reminders yet</Text>
+          </View>
+        )}
+
+        {/* Tasks placeholder */}
+        {eduTab === 'Tasks' && (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingBottom: 100 }}>
+            <Text style={{ fontSize: 16, color: C.secondary, fontWeight: '600' }}>Tasks</Text>
+            <Text style={{ fontSize: 13, color: C.secondary, marginTop: 6, opacity: 0.6 }}>No tasks yet</Text>
+          </View>
+        )}
+
+        {/* Calendar content */}
+        {eduTab === 'Calendar' && (
+          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 12, paddingBottom: 120, paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
+            {Object.entries(grouped).map(([date, evs]) => (
+              <View key={date} style={{ marginBottom: 20 }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>{date}</Text>
+                {evs.map(ev => {
+                  const dotColor = EDU_DOT_COLORS[ev.type as EduAdminEventType] ?? C.label;
+                  return (
+                    <View key={ev.id} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 14, padding: 14, marginBottom: 8 }}>
+                      <View style={{ marginRight: 12, alignItems: 'center', justifyContent: 'center', width: 12 }}>
+                        <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: dotColor }} />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{ev.title}</Text>
+                        <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{ev.time}</Text>
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            ))}
+          </ScrollView>
+        )}
+
+        {/* FAB */}
+        <Pressable
+          style={[styles.fab, { bottom: 49 + insets.bottom + 20 }]}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+        >
+          <IconSymbol name="plus" size={24} color={C.bg} />
+        </Pressable>
+      </View>
+    );
+  }
+
   // ── Education Student: personal class schedule + assignments ────────────────
   if (mode === 'education' && !isAdmin) {
     const MY_COURSES = [
@@ -1936,11 +2234,12 @@ export default function AgendaScreen() {
       <View style={[styles.screen, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         {/* Top bar */}
         <View style={styles.topBar}>
-          <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}>
+            <KMenuButton />
           </Pressable>
-          <View style={styles.viewPill}>
-            <Text style={styles.viewPillText}>My Schedule</Text>
+          {/* Static non-tappable pill */}
+          <View style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, backgroundColor: C.activePill }}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.activePillText }}>Schedule</Text>
           </View>
           <View style={[styles.topRight, { alignItems: 'flex-end' }]}>
             <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary={false} />
@@ -1994,6 +2293,114 @@ export default function AgendaScreen() {
     );
   }
 
+  // ── Community Pastor: full calendar with TabPill ─────────────────────────────
+  if (mode === 'community' && isAdmin) {
+    const PASTOR_EVENTS = [
+      // Apr 7 Mon
+      { id: 'cp_a1', date: 'Apr 7',  time: '9:00 AM',  title: 'Staff Meeting',                type: 'meeting'   as const },
+      { id: 'cp_a2', date: 'Apr 7',  time: '7:00 PM',  title: 'Evening Prayer Service',       type: 'service'   as const },
+      // Apr 9 Wed
+      { id: 'cp_a3', date: 'Apr 9',  time: '7:00 PM',  title: 'Bible Study',                  type: 'service'   as const },
+      // Apr 11 Fri
+      { id: 'cp_a4', date: 'Apr 11', time: '6:00 AM',  title: 'Prayer & Fasting Meeting',     type: 'service'   as const },
+      // Apr 12 Sat
+      { id: 'cp_a5', date: 'Apr 12', time: '2:00 PM',  title: 'Volunteer Training',           type: 'volunteer' as const },
+      { id: 'cp_a6', date: 'Apr 12', time: '5:00 PM',  title: 'Youth Group Night',            type: 'event'     as const },
+      // Apr 13 Sun
+      { id: 'cp_a7', date: 'Apr 13', time: '10:00 AM', title: 'Sunday Service',               type: 'service'   as const },
+      { id: 'cp_a8', date: 'Apr 13', time: '2:00 PM',  title: 'Leadership Council',           type: 'meeting'   as const },
+      // Apr 19 Sat
+      { id: 'cp_a9', date: 'Apr 19', time: '10:00 AM', title: 'Community Outreach Day',       type: 'event'     as const },
+      // Apr 20 Sun
+      { id: 'cp_a10', date: 'Apr 20', time: '9:00 AM', title: 'Easter Celebration Service',   type: 'service'   as const },
+    ] as const;
+    type PastorEventType = 'meeting' | 'service' | 'volunteer' | 'event';
+    const PASTOR_DOT_COLORS: Record<PastorEventType, string> = {
+      meeting:  C.label,
+      service:  '#5A8A6E',
+      volunteer: '#B8943E',
+      event:    C.secondary,
+    };
+    const grouped: Record<string, typeof PASTOR_EVENTS[number][]> = {};
+    for (const ev of PASTOR_EVENTS) {
+      if (!grouped[ev.date]) grouped[ev.date] = [];
+      grouped[ev.date].push(ev);
+    }
+    return (
+      <View style={[styles.screen, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+        {/* Top bar */}
+        <View style={styles.topBar}>
+          <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
+            <KMenuButton />
+          </Pressable>
+          {/* TabPill */}
+          <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+            {(['Calendar', 'Reminders', 'Tasks'] as const).map(t => {
+              const active = communityTab === t;
+              return (
+                <Pressable key={t} onPress={() => { Haptics.selectionAsync(); setCommunityTab(t); }} style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{t}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+          <View style={[styles.topRight, { alignItems: 'flex-end' }]}>
+            <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary />
+          </View>
+        </View>
+
+        {/* Reminders placeholder */}
+        {communityTab === 'Reminders' && (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingBottom: 100 }}>
+            <Text style={{ fontSize: 16, color: C.secondary, fontWeight: '600' }}>Reminders</Text>
+            <Text style={{ fontSize: 13, color: C.secondary, marginTop: 6, opacity: 0.6 }}>No reminders yet</Text>
+          </View>
+        )}
+
+        {/* Tasks placeholder */}
+        {communityTab === 'Tasks' && (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingBottom: 100 }}>
+            <Text style={{ fontSize: 16, color: C.secondary, fontWeight: '600' }}>Tasks</Text>
+            <Text style={{ fontSize: 13, color: C.secondary, marginTop: 6, opacity: 0.6 }}>No tasks yet</Text>
+          </View>
+        )}
+
+        {/* Calendar content */}
+        {communityTab === 'Calendar' && (
+          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 12, paddingBottom: 120, paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
+            {Object.entries(grouped).map(([date, evs]) => (
+              <View key={date} style={{ marginBottom: 20 }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>{date}</Text>
+                {evs.map(ev => {
+                  const dotColor = PASTOR_DOT_COLORS[ev.type as PastorEventType] ?? C.label;
+                  return (
+                    <View key={ev.id} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 14, padding: 14, marginBottom: 8 }}>
+                      <View style={{ marginRight: 12, alignItems: 'center', justifyContent: 'center', width: 12 }}>
+                        <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: dotColor }} />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{ev.title}</Text>
+                        <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{ev.time}</Text>
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            ))}
+          </ScrollView>
+        )}
+
+        {/* FAB */}
+        <Pressable
+          style={[styles.fab, { bottom: 49 + insets.bottom + 20 }]}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+        >
+          <IconSymbol name="plus" size={24} color={C.bg} />
+        </Pressable>
+      </View>
+    );
+  }
+
   // ── Community Member: simplified event calendar ─────────────────────────────
   if (mode === 'community' && !isAdmin) {
     const CHURCH_EVENTS = [
@@ -2011,11 +2418,12 @@ export default function AgendaScreen() {
       <View style={[styles.screen, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         {/* Top bar */}
         <View style={styles.topBar}>
-          <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}>
+            <KMenuButton />
           </Pressable>
-          <View style={styles.viewPill}>
-            <Text style={styles.viewPillText}>My Calendar</Text>
+          {/* Static non-tappable pill */}
+          <View style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, backgroundColor: C.activePill }}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.activePillText }}>Events</Text>
           </View>
           <View style={[styles.topRight, { alignItems: 'flex-end' }]}>
             <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary={false} />
@@ -2058,21 +2466,21 @@ export default function AgendaScreen() {
     );
   }
 
-  // ── Personal Subscriber: public events list only ────────────────────────────
+  // ── Personal Subscriber: public events list ──────────────────────────────────
   if (mode === 'personal' && !isAdmin) {
     const publicEvents = [
-      { id: 'pe1', title: 'Live Stream: Q&A Session',     date: 'Apr 10 · 7:00 PM', type: 'live',       rsvp: false },
-      { id: 'pe2', title: 'Brand Meetup — NYC',            date: 'Apr 18 · 2:00 PM', type: 'appearance', rsvp: true  },
-      { id: 'pe3', title: 'Content Strategy Webinar',      date: 'Apr 25 · 6:00 PM', type: 'webinar',    rsvp: false },
-      { id: 'pe4', title: 'Creator Summit Panel',          date: 'May 3 · 10:00 AM', type: 'appearance', rsvp: false },
-      { id: 'pe5', title: 'Subscriber Meet-and-Greet',     date: 'May 15 · 5:00 PM', type: 'meetup',     rsvp: false },
+      { id: 'pe1', title: 'Live Stream: Q&A Session',   date: 'Apr 10', time: '7:00 PM',  type: 'Live',       location: 'YouTube Live',           description: 'Monthly subscriber Q&A. Submit questions in the comments.' },
+      { id: 'pe2', title: 'Brand Meetup — NYC',          date: 'Apr 18', time: '2:00 PM',  type: 'In-Person',  location: 'Soho House, New York',    description: 'Casual meetup with the community. Tickets required.' },
+      { id: 'pe3', title: 'Content Strategy Webinar',   date: 'Apr 25', time: '6:00 PM',  type: 'Webinar',    location: 'Zoom',                    description: 'Deep dive on content planning and distribution strategy.' },
+      { id: 'pe4', title: 'Creator Summit Panel',        date: 'May 3',  time: '10:00 AM', type: 'In-Person',  location: 'LA Convention Center',    description: 'Panel discussion on the future of the creator economy.' },
+      { id: 'pe5', title: 'Subscriber Meet-and-Greet',  date: 'May 15', time: '5:00 PM',  type: 'In-Person',  location: 'TBD',                     description: 'Exclusive event for subscribers only. Details coming soon.' },
     ];
     return (
       <View style={[styles.screen, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         {/* Top bar */}
         <View style={styles.topBar}>
-          <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}>
+            <KMenuButton />
           </Pressable>
           <View style={styles.viewPill}>
             <Text style={styles.viewPillText}>Events</Text>
@@ -2082,35 +2490,107 @@ export default function AgendaScreen() {
           </View>
         </View>
 
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120, paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
-          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>UPCOMING EVENTS</Text>
-          {publicEvents.map(ev => (
-            <View key={ev.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 10 }}>
-              <Text style={{ fontSize: 15, fontWeight: '600', color: C.label, marginBottom: 4 }}>{ev.title}</Text>
-              <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 12 }}>{ev.date}</Text>
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 12, paddingBottom: 120, paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
+
+          {/* Book a Session card */}
+          <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 20 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+              <IconSymbol name="calendar.badge.plus" size={20} color={C.label} />
+              <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Book a 1:1 Session</Text>
+            </View>
+            <Text style={{ fontSize: 13, color: C.secondary, lineHeight: 18, marginBottom: 14 }}>
+              Coaching, Q&A, or consultation — book directly on my calendar.
+            </Text>
+            <Pressable
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              style={({ pressed }) => ({
+                backgroundColor: pressed ? C.surfacePressed : C.label,
+                borderRadius: 10, paddingVertical: 10, paddingHorizontal: 20,
+                alignSelf: 'flex-start',
+              })}
+            >
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Book Now</Text>
+            </Pressable>
+          </View>
+
+          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>UPCOMING EVENTS</Text>
+
+          {publicEvents.map(ev => {
+            const isExpanded = expandedPubId === ev.id;
+            const myRsvp     = rsvpStatus[ev.id] ?? null;
+            return (
               <Pressable
+                key={ev.id}
                 onPress={() => {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setRsvped(prev => {
-                    const next = new Set(prev);
-                    if (next.has(ev.id)) next.delete(ev.id); else next.add(ev.id);
-                    return next;
-                  });
+                  setExpandedPubId(prev => prev === ev.id ? null : ev.id);
                 }}
-                style={({ pressed }) => ({
-                  alignSelf: 'flex-start',
-                  paddingHorizontal: 16, paddingVertical: 8,
-                  borderRadius: 10,
-                  backgroundColor: rsvped.has(ev.id) ? C.label : C.surfacePressed,
-                  opacity: pressed ? 0.8 : 1,
-                })}
+                style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 10 }}
               >
-                <Text style={{ fontSize: 13, fontWeight: '600', color: rsvped.has(ev.id) ? C.bg : C.label }}>
-                  {rsvped.has(ev.id) ? 'RSVP\'d ✓' : 'RSVP'}
+                {/* Type badge + title row */}
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                  <View style={{ backgroundColor: C.surfacePressed, borderRadius: 5, paddingHorizontal: 7, paddingVertical: 2 }}>
+                    <Text style={{ fontSize: 10, fontWeight: '600', color: C.secondary }}>{ev.type}</Text>
+                  </View>
+                  <Text style={{ flex: 1, fontSize: 15, fontWeight: '700', color: C.label }}>{ev.title}</Text>
+                </View>
+
+                <Text style={{ fontSize: 13, color: C.secondary, marginBottom: isExpanded ? 12 : 0 }}>
+                  {ev.date} · {ev.time}
                 </Text>
+
+                {/* Expanded detail */}
+                {isExpanded && (
+                  <>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                      <IconSymbol name="location.fill" size={13} color={C.secondary} />
+                      <Text style={{ fontSize: 13, color: C.secondary }}>{ev.location}</Text>
+                    </View>
+                    <Text style={{ fontSize: 13, color: C.label, lineHeight: 18, marginBottom: 14 }}>{ev.description}</Text>
+
+                    {/* RSVP buttons */}
+                    <View style={{ flexDirection: 'row', gap: 8 }}>
+                      {(['going', 'maybe', 'no'] as const).map(opt => {
+                        const labels: Record<string, string> = { going: 'Going', maybe: 'Maybe', no: 'Not Going' };
+                        const isActive = myRsvp === opt;
+                        return (
+                          <Pressable
+                            key={opt}
+                            onPress={() => {
+                              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                              setRsvpStatus(prev => {
+                                const next = { ...prev };
+                                if (isActive) { delete next[ev.id]; } else { next[ev.id] = opt; }
+                                return next;
+                              });
+                            }}
+                            style={{
+                              flex: 1, paddingVertical: 8, borderRadius: 10, alignItems: 'center',
+                              backgroundColor: isActive ? C.label : C.surfacePressed,
+                            }}
+                          >
+                            <Text style={{ fontSize: 13, fontWeight: '600', color: isActive ? C.bg : C.label }}>
+                              {labels[opt]}
+                            </Text>
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+                  </>
+                )}
+
+                {/* RSVP status badge when collapsed */}
+                {!isExpanded && myRsvp && (
+                  <View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                    <IconSymbol name="checkmark.circle.fill" size={14} color={C.label} />
+                    <Text style={{ fontSize: 12, color: C.secondary }}>
+                      {myRsvp === 'going' ? 'Going' : myRsvp === 'maybe' ? 'Maybe' : 'Not Going'}
+                    </Text>
+                  </View>
+                )}
               </Pressable>
-            </View>
-          ))}
+            );
+          })}
         </ScrollView>
       </View>
     );
@@ -2121,69 +2601,40 @@ export default function AgendaScreen() {
 
       {/* ── Top bar ── */}
       <View style={styles.topBar}>
-        {selectEventsMode ? (
-          <>
-            <Pressable
-              style={styles.topLeft}
-              onPress={() => { setSelectEventsMode(false); setSelectedEventIds(new Set()); }}
-            >
-              <Text style={styles.cancelBtn}>Cancel</Text>
+        <View style={[styles.topLeft, { flexDirection: 'row', alignItems: 'center', gap: 10 }]}>
+          <Pressable
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+            hitSlop={12}
+          >
+            <KMenuButton />
+          </Pressable>
+          {!isSameDay(selectedDate, today()) && (
+            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSelectedDate(today()); setExpandedId(null); }}>
+              <Text style={styles.todayBtn}>Today</Text>
             </Pressable>
-            <View style={styles.viewPill}>
-              <Text style={styles.viewPillText}>{selectedEventIds.size} Selected</Text>
-            </View>
-            <View style={styles.topRight} />
-          </>
-        ) : (
-          <>
-            <View style={[styles.topLeft, { flexDirection: 'row', alignItems: 'center', gap: 10 }]}>
-              <Pressable
-                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-                hitSlop={12}
-              >
-                <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
-              </Pressable>
-              {!isSameDay(selectedDate, today()) && (
-                <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSelectedDate(today()); setExpandedId(null); }}>
-                  <Text style={styles.todayBtn}>Today</Text>
-                </Pressable>
-              )}
-            </View>
-            <Pressable
-              style={styles.viewPill}
-              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowViewDD(v => !v); setShowEditDD(false); }}
-            >
-              <Text style={styles.viewPillText}>{view}</Text>
-              <IconSymbol name="chevron.down" size={11} color={C.label} />
-            </Pressable>
-            <View style={[styles.topRight, { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 8 }]}>
-              <RolePill
-                role={role}
-                onPress={cycleRole}
-                accentColor={accent}
-                isPrimary={isAdmin}
-              />
-              <Pressable
-                hitSlop={8}
-                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setPillsVisible(v => !v); setShowEditDD(false); setShowViewDD(false); }}
-              >
-                <IconSymbol name={pillsVisible ? 'line.3.horizontal.decrease.circle.fill' : 'line.3.horizontal.decrease.circle'} size={20} color={pillsVisible ? C.accent : C.label} />
-              </Pressable>
-              {isAdmin && (
-                <Pressable
-                  onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowEditDD(v => !v); setShowViewDD(false); }}
-                >
-                  <Text style={styles.editBtn}>Edit</Text>
-                </Pressable>
-              )}
-            </View>
-          </>
-        )}
+          )}
+        </View>
+        <Pressable
+          style={styles.viewPill}
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowViewDD(v => !v); }}
+        >
+          <Text style={styles.viewPillText}>Calendar</Text>
+          <IconSymbol name="chevron.down" size={11} color={C.label} />
+        </Pressable>
+        <View style={[styles.topRight, { alignItems: 'flex-end' }]}>
+          <RolePill
+            role={role}
+            onPress={cycleRole}
+            accentColor={accent}
+            isPrimary={isAdmin}
+          />
+        </View>
       </View>
 
-      {/* ── Filter pills (toggle via filter icon) ── */}
-      {pillsVisible && (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.pillsScroll} contentContainerStyle={styles.pillsContent}>
+      {/* ── Filter pills ── */}
+      {(
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={[styles.pillsScroll, { flex: 1 }]} contentContainerStyle={styles.pillsContent}>
           {filterPills.map(p => {
             const active = p.key === activeFilter;
             return (
@@ -2192,11 +2643,38 @@ export default function AgendaScreen() {
                 style={[styles.pill, active && styles.pillActive]}
                 onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setActiveFilter(p.key); }}
               >
+                {!active && p.color && (
+                  <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: p.color, flexShrink: 0 }} />
+                )}
                 <Text style={[styles.pillText, active && styles.pillTextActive]}>{p.label}</Text>
               </Pressable>
             );
           })}
         </ScrollView>
+        {mode === 'personal' && isAdmin && (
+          <Pressable
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setEditCatVisible(true); }}
+            style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <IconSymbol name="gearshape" size={16} color={C.secondary} />
+          </Pressable>
+        )}
+      </View>
+      )}
+
+      {/* ── Calendar views ── */}
+      {(<>
+
+      {/* ── Week view ── */}
+      {view === 'Week' && (
+        <WeekView
+          selectedDate={selectedDate}
+          onSelectDate={handleSelectDate}
+          onNavigate={handleNavigateWeek}
+          events={modeEvents}
+          C={C}
+          styles={styles}
+        />
       )}
 
       {/* ── Week row (Day view) ── */}
@@ -2260,9 +2738,11 @@ export default function AgendaScreen() {
         </Pressable>
       )}
 
-      {/* ── Dropdown backdrop ── */}
-      {(showViewDD || showEditDD) && (
-        <Pressable style={[StyleSheet.absoluteFill, { zIndex: 10 }]} onPress={closeDropdowns} />
+      </>)}
+
+      {/* ── View dropdown backdrop ── */}
+      {showViewDD && (
+        <Pressable style={[StyleSheet.absoluteFill, { zIndex: 10 }]} onPress={() => setShowViewDD(false)} />
       )}
 
       {/* ── View dropdown ── */}
@@ -2274,30 +2754,10 @@ export default function AgendaScreen() {
               style={[styles.ddItem, v === view && { backgroundColor: C.surfacePressed }]}
               onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setView(v); setShowViewDD(false); }}
             >
-              <Text style={[styles.ddText, v === view && { color: C.activePill, fontWeight: '600' }]}>{v}</Text>
-              {v === view && <IconSymbol name="checkmark" size={13} color={C.activePill} />}
+              <Text style={[styles.ddText, v === view && { fontWeight: '600' }]}>{v}</Text>
+              {v === view && <IconSymbol name="checkmark" size={13} color={C.label} />}
             </Pressable>
           ))}
-        </View>
-      )}
-
-      {/* ── Edit dropdown ── */}
-      {showEditDD && (
-        <View style={[styles.dropdown, styles.editDDPos]}>
-          <Pressable
-            style={({ pressed }) => [styles.ddItem, pressed && { backgroundColor: C.surfacePressed }]}
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowEditDD(false); setSelectEventsMode(true); setSelectedEventIds(new Set()); }}
-          >
-            <IconSymbol name="checkmark.circle" size={16} color={C.label} />
-            <Text style={styles.ddText}>Select Events</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.ddItem, { borderBottomWidth: 0 }, pressed && { backgroundColor: C.surfacePressed }]}
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setShowEditDD(false); setEditCatVisible(true); }}
-          >
-            <IconSymbol name="tag" size={16} color={C.label} />
-            <Text style={styles.ddText}>Edit Categories</Text>
-          </Pressable>
         </View>
       )}
 
@@ -2331,13 +2791,13 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   editBtn:     { fontSize: 15, fontWeight: '500', color: C.secondary },
   rbacPill:    { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 12 },
   rbacPillText: { fontSize: 12, fontWeight: '600' },
-  viewPill:    { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 16, paddingVertical: 7, borderRadius: 20, borderWidth: 1.5, borderColor: C.separator },
-  viewPillText: { fontSize: 14, fontWeight: '600', color: C.label },
+  viewPill:    { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, height: 32, borderRadius: 16, borderWidth: 1, borderColor: C.separator, backgroundColor: C.surface, marginHorizontal: 10 },
+  viewPillText: { fontSize: 14, fontWeight: '700', color: C.label },
 
   // Filter pills
   pillsScroll:    { flexShrink: 0, flexGrow: 0, height: 44 },
   pillsContent:   { flexDirection: 'row', gap: 8, paddingHorizontal: 16, alignItems: 'center', height: 44 },
-  pill:           { paddingVertical: 7, paddingHorizontal: 16, borderRadius: 20, borderWidth: 1.5, borderColor: C.separator, flexShrink: 0 },
+  pill:           { paddingVertical: 7, paddingHorizontal: 14, borderRadius: 20, borderWidth: 1.5, borderColor: C.separator, flexShrink: 0, flexDirection: 'row', alignItems: 'center', gap: 5 },
   pillActive:     { backgroundColor: C.activePill, borderColor: C.activePill },
   pillText:       { fontSize: 13, fontWeight: '500', color: C.secondary },
   pillTextActive: { color: C.activePillText, fontWeight: '600' },

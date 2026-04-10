@@ -15,12 +15,6 @@ import { closeSidePanel } from '@/utils/global-side-panel';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { EDUCATION_PROFILE, EDUCATION_ANALYTICS } from '@/data/mock-education-hub';
 
-const NAV_ITEMS = [
-  { icon: 'square.grid.2x2',   label: 'Overview',     tab: 'Overview'     },
-  { icon: 'book.fill',          label: 'Academics',    tab: 'Academics'    },
-  { icon: 'figure.walk',        label: 'Student Life', tab: 'Student Life' },
-] as const;
-
 const QUICK_ACTIONS = [
   { icon: 'megaphone.fill',          label: 'Send Announcement' },
   { icon: 'tray.fill',               label: 'View Applications' },
@@ -38,11 +32,6 @@ export function EducationHubPanel() {
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
   const a = EDUCATION_ANALYTICS;
-
-  const navigate = (tab: string) => {
-    closeSidePanel();
-    setTimeout(() => router.push({ pathname: '/(tabs)/(main)/hub/education' as any, params: { tab } }), 80);
-  };
 
   return (
     <View style={styles.container}>
@@ -75,26 +64,18 @@ export function EducationHubPanel() {
         </View>
       </View>
 
-      {/* Navigate */}
-      <Text style={[styles.sectionLabel, { color: C.secondary }]}>Navigate</Text>
-      {NAV_ITEMS.map((item, idx) => (
-        <Pressable
-          key={item.label}
-          style={({ pressed }) => [
-            styles.navRow,
-            pressed && { backgroundColor: C.surfacePressed },
-            idx < NAV_ITEMS.length - 1 && [styles.navRowBorder, { borderBottomColor: C.separator }],
-          ]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            navigate(item.tab);
-          }}
-        >
-          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-          <Text style={[styles.navLabel, { color: C.label }]}>{item.label}</Text>
-          <IconSymbol name="chevron.right" size={14} color={C.muted} />
-        </Pressable>
-      ))}
+      {/* ── Home ── */}
+      <Pressable
+        style={({ pressed }) => [styles.navRow, pressed && { backgroundColor: C.surfacePressed }]}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          closeSidePanel();
+          router.setParams({ manage: undefined });
+        }}
+      >
+        <IconSymbol name="house.fill" size={18} color={C.secondary} />
+        <Text style={[styles.navLabel, { color: C.label }]}>Home</Text>
+      </Pressable>
 
       <View style={[styles.divider, { backgroundColor: C.separator }]} />
 
@@ -123,27 +104,6 @@ export function EducationHubPanel() {
         </Pressable>
       ))}
 
-      <View style={[styles.divider, { backgroundColor: C.separator }]} />
-
-      {/* Settings */}
-      {SETTINGS_ITEMS.map((item, idx) => (
-        <Pressable
-          key={item.label}
-          style={({ pressed }) => [
-            styles.navRow,
-            pressed && { backgroundColor: C.surfacePressed },
-            idx < SETTINGS_ITEMS.length - 1 && [styles.navRowBorder, { borderBottomColor: C.separator }],
-          ]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            closeSidePanel();
-          }}
-        >
-          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-          <Text style={[styles.navLabel, { color: C.label }]}>{item.label}</Text>
-          <IconSymbol name="chevron.right" size={14} color={C.muted} />
-        </Pressable>
-      ))}
 
       <View style={{ height: 24 }} />
     </View>

@@ -67,6 +67,21 @@ export function AdmissionsPanel() {
 
       {panelRole === 'Admin' ? (
         <>
+          {/* ── Home ── */}
+          <Pressable
+            style={({ pressed }) => [styles.navRow, pressed && styles.navRowPressed, styles.navRowBorder]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              closeSidePanel();
+              router.setParams({ manage: undefined });
+            }}
+          >
+            <IconSymbol name="house.fill" size={18} color={C.secondary} />
+            <Text style={styles.navLabel}>Home</Text>
+          </Pressable>
+
+          <View style={styles.divider} />
+
           {/* Header */}
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 20 }}>
             <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: `hsl(220,60%,32%)`, alignItems: 'center', justifyContent: 'center' }}>

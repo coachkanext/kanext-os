@@ -12,7 +12,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import { useColors } from '@/hooks/use-colors';
+import { openSidePanel } from '@/utils/global-side-panel';
 import type { CareRequestType } from '@/data/mock-community-hub';
 
 const REQUEST_TYPES: CareRequestType[] = ['Prayer', 'Counseling', 'Financial Aid', 'General'];
@@ -61,9 +63,7 @@ export default function CareRequestScreen() {
     <View style={[st.screen, { backgroundColor: C.bg }]}>
       {/* Top Bar */}
       <View style={[st.topBar, { paddingTop: insets.top + 6, borderBottomColor: C.separator, backgroundColor: C.bg }]}>
-        <Pressable onPress={() => router.back()} hitSlop={12}>
-          <IconSymbol name="chevron.left" size={22} color={C.label} />
-        </Pressable>
+        <KMenuButton onPress={openSidePanel} />
         <Text style={[st.topBarTitle, { color: C.label }]}>Care Request</Text>
         <Pressable
           style={[st.submitBtn, { backgroundColor: details.trim() ? C.accent : C.surfacePressed }]}

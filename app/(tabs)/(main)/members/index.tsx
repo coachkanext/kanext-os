@@ -28,6 +28,7 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { useDataMode } from '@/utils/global-demo-mode';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   COMMUNITY_MEMBERS, ROLE_DEFINITIONS, ATTENDANCE_CHART,
   ATTENDANCE_EVENTS, ATTENDANCE_STATS, MY_ATTENDANCE_HISTORY,
@@ -46,7 +47,7 @@ const DEPT_PILLS = ['All', 'Leadership', 'Worship', 'Youth', 'Hospitality', 'Out
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type MemberTab = 'Directory' | 'Roles' | 'Attendance';
+type MemberTab = 'Directory' | 'Households' | 'Check-In';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -55,9 +56,9 @@ function pillsForTab(tab: MemberTab, isAdmin: boolean): string[] {
     return isAdmin
       ? ['All', 'Active', 'At-Risk', 'Inactive', 'New', 'Visitors']
       : DEPT_PILLS;
-  if (tab === 'Roles')
+  if (tab === 'Households')
     return ['All', 'Admin', 'Staff', 'Leader', 'Volunteer', 'Member'];
-  if (tab === 'Attendance')
+  if (tab === 'Check-In')
     return isAdmin ? ['All', 'This Week', 'This Month', 'At-Risk', 'Visitors'] : [];
   return [];
 }
@@ -618,7 +619,6 @@ export default function CommunityMembersScreen() {
   const [demoRole, cycleRole] = useDemoRole('community:members');
   const isAdmin = demoRole === 'Pastor';
   const [activeTab,         setActiveTab]         = useState<MemberTab>('Directory');
-  const [dropdownOpen,      setDropdownOpen]      = useState(false);
   const [pillsVisible,      setPillsVisible]      = useState(false);
   const [selectedPill,      setSelectedPill]      = useState('All');
   const [searchText,        setSearchText]        = useState('');
@@ -714,7 +714,6 @@ export default function CommunityMembersScreen() {
   const changeTab = useCallback((tab: MemberTab) => {
     Haptics.selectionAsync();
     setActiveTab(tab);
-    setDropdownOpen(false);
     setSelectedPill('All');
     setPillsVisible(false);
     pillsAnim.setValue(0);
@@ -1272,8 +1271,29 @@ export default function CommunityMembersScreen() {
 
   function renderContent() {
     if (activeTab === 'Directory') return isAdmin ? renderAdminDirectory() : renderMemberDirectory();
-    if (activeTab === 'Roles') return isAdmin ? renderAdminRoles() : renderMemberRoles();
-    return isAdmin ? renderAdminAttendance() : renderMemberAttendance();
+    if (activeTab === 'Households') {
+      if (!isAdmin) {
+        return (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 16, color: C.secondary, fontWeight: '600' }}>Households</Text>
+            <Text style={{ fontSize: 13, color: C.secondary, marginTop: 6, opacity: 0.6 }}>Coming soon</Text>
+          </View>
+        );
+      }
+      return renderAdminRoles();
+    }
+    if (activeTab === 'Check-In') {
+      if (!isAdmin) {
+        return (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 16, color: C.secondary, fontWeight: '600' }}>Check-In</Text>
+            <Text style={{ fontSize: 13, color: C.secondary, marginTop: 6, opacity: 0.6 }}>Coming soon</Text>
+          </View>
+        );
+      }
+      return renderAdminAttendance();
+    }
+    return renderAdminAttendance();
   }
 
   // ── Layout ──────────────────────────────────────────────────────────────────
@@ -1309,24 +1329,32 @@ export default function CommunityMembersScreen() {
       {/* ── Absolute top bar (renders over content) ───────────────────────── */}
       <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         <View style={s.topBar}>
-          {/* Left: hamburger (admin) or empty */}
+          {/* Left: hamburger (admin only — no-op for member) */}
           <View style={s.topBarSide}>
-            {isAdmin && (
-              <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={12}>
-                <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
-              </Pressable>
-            )}
+            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isAdmin) openSidePanel(); }} hitSlop={12}>
+              <KMenuButton />
+            </Pressable>
           </View>
 
-          {/* Center: dropdown pill */}
+          {/* Center: TabPill (admin) or static Directory pill (member) */}
           <View style={s.dropdownPillWrap}>
-            <Pressable
-              style={[s.dropdownPill, { backgroundColor: C.surfacePressed }]}
-              onPress={() => { Haptics.selectionAsync(); setDropdownOpen(v => !v); }}
-            >
-              <Text style={[s.dropdownPillText, { color: C.label }]}>{activeTab}</Text>
-              <IconSymbol name="chevron.down" size={12} color={C.secondary} />
-            </Pressable>
+            {isAdmin ? (
+              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+                {(['Directory', 'Households', 'Check-In'] as MemberTab[]).map(tab => {
+                  const active = activeTab === tab;
+                  return (
+                    <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); changeTab(tab); }}
+                      style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
+                      <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            ) : (
+              <View style={{ backgroundColor: C.activePill, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: C.activePillText }}>Directory</Text>
+              </View>
+            )}
           </View>
 
           {/* Right: role pill + filter icon */}
@@ -1370,32 +1398,6 @@ export default function CommunityMembersScreen() {
           </ScrollView>
         </Animated.View>
       </View>
-
-      {/* ── Dropdown overlay ─────────────────────────────────────────────────── */}
-      {dropdownOpen && (
-        <>
-          <Pressable
-            style={{ ...StyleSheet.absoluteFillObject, zIndex: 98 } as any}
-            onPress={() => setDropdownOpen(false)}
-          />
-          <View style={[s.dropdown, { backgroundColor: C.surface, borderColor: C.separator, top: insets.top + TOP_BAR_H }]}>
-            {(['Directory', 'Roles', 'Attendance'] as MemberTab[]).map(tab => (
-              <Pressable
-                key={tab}
-                style={({ pressed }) => [
-                  s.dropdownOpt,
-                  { borderBottomColor: C.separator },
-                  (pressed || tab === activeTab) && { backgroundColor: C.surfacePressed },
-                ]}
-                onPress={() => changeTab(tab)}
-              >
-                <Text style={[s.dropdownOptText, { color: tab === activeTab ? C.accent : C.label }]}>{tab}</Text>
-                {tab === activeTab && <IconSymbol name="checkmark" size={14} color={C.accent} />}
-              </Pressable>
-            ))}
-          </View>
-        </>
-      )}
 
       {/* ── Member detail sheet ───────────────────────────────────────────────── */}
       {expandedMemberId && (

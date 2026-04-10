@@ -7,13 +7,14 @@
 import React, { useState, useRef, useCallback, useMemo } from 'react';
 import {
   View, Text, StyleSheet, Pressable, ScrollView,
-  Image, Animated,
+  Image, Animated, TextInput, ActionSheetIOS, Platform,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 
 import { GlassView } from '@/components/ui/glass-view';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { RolePill } from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
@@ -21,16 +22,471 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { useDataMode } from '@/utils/global-demo-mode';
+import { useMode } from '@/context/app-context';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   getProducts, getFeaturedBanner, getOrders, getDrops,
   STORE_CATEGORIES, ORDER_FILTERS, DROP_FILTERS, formatPrice,
   type ProductItem, type OrderItem, type DropItem,
 } from '@/data/mock-store';
 
+// ── Personal Store Data ────────────────────────────────────────────────────────
+
+const PERSONAL_PRODUCTS = [
+  { id: '1', type: 'Digital',  title: 'The Blueprint (eBook)',         price: 19.99,  sales: 342, revenue: 6817.58,  rating: 4.9, emoji: '📖', accessLevel: 'Public',           status: 'Published' },
+  { id: '2', type: 'Course',   title: 'Film Study Masterclass',        price: 89.00,  sales: 127, revenue: 11303.00, rating: 4.8, emoji: '🎬', accessLevel: 'Public',           status: 'Published' },
+  { id: '3', type: 'Services', title: '1-on-1 Training Session',       price: 150.00, sales: 48,  revenue: 7200.00,  rating: 5.0, emoji: '🤝', accessLevel: 'Subscribers Only', status: 'Published' },
+  { id: '4', type: 'Merch',    title: 'KLVN Training Hoodie',          price: 65.00,  sales: 83,  revenue: 5395.00,  rating: 4.7, emoji: '👕', accessLevel: 'Public',           status: 'Published' },
+  { id: '5', type: 'Digital',  title: 'Speed & Agility Program (PDF)', price: 14.99,  sales: 219, revenue: 3282.81,  rating: 4.6, emoji: '⚡', accessLevel: 'Public',           status: 'Published' },
+  { id: '6', type: 'Course',   title: 'Recruiting 101 Webinar',        price: 49.00,  sales: 94,  revenue: 4606.00,  rating: 4.7, emoji: '🎓', accessLevel: 'Subscribers Only', status: 'Draft'     },
+];
+
+const PERSONAL_TYPES = ['All', 'Digital', 'Course', 'Services', 'Merch'];
+
+const MY_LIBRARY = [
+  { id: '1', title: 'The Blueprint (eBook)',         type: 'Digital' },
+  { id: '2', title: 'Speed & Agility Program (PDF)', type: 'Digital' },
+];
+
+const STORE_TIERS = [
+  { id: 'free',    name: 'Free',         price: 0,  members: 1000, color: '#9C9790', benefits: ['Public posts', 'Community feed'] },
+  { id: 'support', name: 'Supporters',   price: 10, members: 197,  color: '#5A8A6E', benefits: ['All Free', 'Exclusive content', 'Monthly Q&A', 'Early drops'] },
+  { id: 'inner',   name: 'Inner Circle', price: 25, members: 50,   color: '#B8943E', benefits: ['All Supporters', '1-on-1 session', 'Private channel', '20% merch discount'] },
+];
+
+// ── Personal Store Screen ──────────────────────────────────────────────────────
+
+function PersonalStoreScreen() {
+  const C = useColors();
+  const insets = useSafeAreaInsets();
+  const [demoRole, cycleRole, roleCycles] = useDemoRole('personal:store');
+  const isOwner = demoRole === roleCycles[0];
+
+  const [preview,   setPreview]   = useState(false);
+  const [filter,    setFilter]    = useState('All');
+  const [addSheet,  setAddSheet]  = useState(false);
+  const [formTitle, setFormTitle] = useState('');
+  const [formType,  setFormType]  = useState('Digital');
+  const [formPrice, setFormPrice] = useState('');
+
+  const [editProduct,   setEditProduct]   = useState<string | null>(null);
+  const [formDesc,      setFormDesc]      = useState('');
+  const [formAccess,    setFormAccess]    = useState('Public');
+  const [formStatus,    setFormStatus]    = useState('Published');
+  const [formPriceType, setFormPriceType] = useState<'one-time' | 'plan'>('one-time');
+
+  useFocusEffect(useCallback(() => { resetFooter(); }, []));
+
+  const showFollower = !isOwner || preview;
+
+  const filtered = useMemo(() =>
+    filter === 'All' ? PERSONAL_PRODUCTS : PERSONAL_PRODUCTS.filter(p => p.type === filter),
+    [filter]
+  );
+
+  const productIcon = (type: string) =>
+    type === 'Services' ? 'person.fill' : type === 'Merch' ? 'bag.fill' : 'doc.fill';
+
+  function handleProductMore(product: typeof PERSONAL_PRODUCTS[0]) {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        { options: ['Edit', 'Duplicate', 'Hide', 'Delete', 'Cancel'], cancelButtonIndex: 4, destructiveButtonIndex: 3 },
+        (idx) => {
+          if (idx === 0) {
+            setEditProduct(product.id);
+            setFormTitle(product.title);
+            setFormType(product.type);
+            setFormPrice(String(product.price));
+            setFormDesc('');
+            setFormAccess(product.accessLevel);
+            setFormStatus(product.status);
+            setAddSheet(true);
+          } else if (idx < 4) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          }
+        }
+      );
+    }
+  }
+
+  function renderOwnerView() {
+    return (
+      <>
+        {/* Stats row */}
+        <View style={{ flexDirection: 'row', gap: 10, paddingHorizontal: 16, paddingTop: 16 }}>
+          {([
+            { label: 'Total Products', value: '6'   },
+            { label: 'Total Sales',    value: '913' },
+            { label: 'Active Subs',    value: '247' },
+          ] as const).map(stat => (
+            <View key={stat.label} style={{ flex: 1, backgroundColor: C.surface, borderRadius: 12, padding: 12, alignItems: 'center', gap: 2 }}>
+              <Text style={{ fontSize: 20, fontWeight: '800', color: C.label }}>{stat.value}</Text>
+              <Text style={{ fontSize: 11, color: C.secondary, textAlign: 'center' }}>{stat.label}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Preview Store button */}
+        <Pressable
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setPreview(true); }}
+          style={{ marginHorizontal: 16, marginTop: 12, backgroundColor: C.surface, borderRadius: 12, paddingVertical: 11, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', gap: 6 }}
+        >
+          <IconSymbol name="eye.fill" size={14} color={C.secondary} />
+          <Text style={{ fontSize: 14, fontWeight: '600', color: C.secondary }}>Preview Store</Text>
+        </Pressable>
+
+        {/* Filter pills */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 16, gap: 8, paddingVertical: 12 }}>
+          {PERSONAL_TYPES.map(f => (
+            <Pressable key={f} onPress={() => { Haptics.selectionAsync(); setFilter(f); }}
+              style={{ paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: filter === f ? C.label : C.surface }}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: filter === f ? C.bg : C.label }}>{f}</Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+
+        {/* Product list */}
+        <View style={{ paddingHorizontal: 16, gap: 10, paddingBottom: 110 }}>
+          {filtered.map(product => (
+            <Pressable
+              key={product.id}
+              onPress={() => {
+                setEditProduct(product.id);
+                setFormTitle(product.title);
+                setFormType(product.type);
+                setFormPrice(String(product.price));
+                setFormDesc('');
+                setFormAccess(product.accessLevel);
+                setFormStatus(product.status);
+                setAddSheet(true);
+              }}
+              style={({ pressed }) => ({ backgroundColor: C.surface, borderRadius: 14, padding: 14, flexDirection: 'row', alignItems: 'flex-start', gap: 12, opacity: pressed ? 0.85 : 1 })}
+            >
+              {/* Thumbnail */}
+              <View style={{ width: 60, height: 60, backgroundColor: C.bg, borderRadius: 10, alignItems: 'center', justifyContent: 'center', borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
+                <Text style={{ fontSize: 26 }}>{product.emoji}</Text>
+              </View>
+              {/* Info */}
+              <View style={{ flex: 1, gap: 4 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
+                  <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: C.label }} numberOfLines={1}>{product.title}</Text>
+                  <Pressable onPress={() => handleProductMore(product)} hitSlop={8} style={{ paddingLeft: 6 }}>
+                    <IconSymbol name="ellipsis" size={15} color={C.secondary} />
+                  </Pressable>
+                </View>
+                <Text style={{ fontSize: 12, color: C.secondary }}>{product.type}</Text>
+                {/* Stats row */}
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 4 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>${product.price}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary }}>{product.sales} sold</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary }}>${(product.revenue / 1000).toFixed(1)}K rev</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+                    <Text style={{ fontSize: 12, color: '#5A8A6E', fontWeight: '600' }}>★ {product.rating}</Text>
+                  </View>
+                </View>
+                {/* Status + access badges */}
+                <View style={{ flexDirection: 'row', gap: 6, marginTop: 2 }}>
+                  <View style={{ backgroundColor: product.status === 'Draft' ? '#B8943E18' : '#5A8A6E18', borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2 }}>
+                    <Text style={{ fontSize: 10, fontWeight: '700', color: product.status === 'Draft' ? '#B8943E' : '#5A8A6E' }}>{product.status}</Text>
+                  </View>
+                  {product.accessLevel !== 'Public' && (
+                    <View style={{ backgroundColor: C.bg, borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
+                      <Text style={{ fontSize: 10, color: C.secondary }}>🔒 {product.accessLevel}</Text>
+                    </View>
+                  )}
+                </View>
+              </View>
+            </Pressable>
+          ))}
+        </View>
+      </>
+    );
+  }
+
+  function renderFollowerView() {
+    return (
+      <View style={{ paddingBottom: 110 }}>
+        {/* My Library */}
+        {MY_LIBRARY.length > 0 && (
+          <View style={{ marginTop: 16 }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, paddingHorizontal: 16, marginBottom: 10 }}>My Library</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}>
+              {MY_LIBRARY.map(item => (
+                <Pressable key={item.id} style={{ width: 140, backgroundColor: C.surface, borderRadius: 12, padding: 12, gap: 6 }}>
+                  <View style={{ width: '100%', height: 80, backgroundColor: C.separator, borderRadius: 8, alignItems: 'center', justifyContent: 'center' }}>
+                    <IconSymbol name="doc.fill" size={28} color={C.secondary} />
+                  </View>
+                  <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }} numberOfLines={2}>{item.title}</Text>
+                  <Text style={{ fontSize: 11, color: C.secondary }}>{item.type}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
+        {/* Featured */}
+        <View style={{ paddingHorizontal: 16, marginTop: 20, gap: 8 }}>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Featured</Text>
+          <View style={{ backgroundColor: '#1A1714', borderRadius: 16, padding: 20, gap: 8 }}>
+            <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 0.5 }}>Course</Text>
+            <Text style={{ fontSize: 20, fontWeight: '800', color: '#fff' }}>Film Study Masterclass</Text>
+            <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', lineHeight: 18 }}>Learn how the pros break down game film. Improve your read speed and decision-making.</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 4 }}>
+              <Text style={{ fontSize: 22, fontWeight: '900', color: '#fff' }}>$89</Text>
+              <Pressable
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+                style={{ backgroundColor: '#fff', borderRadius: 12, paddingVertical: 10, paddingHorizontal: 20 }}
+              >
+                <Text style={{ fontSize: 14, fontWeight: '700', color: '#1A1714' }}>Buy Now</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+
+        {/* All Products */}
+        <View style={{ marginTop: 20, gap: 10 }}>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, paddingHorizontal: 16 }}>All Products</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 16, gap: 8 }}>
+            {PERSONAL_TYPES.map(f => (
+              <Pressable key={f} onPress={() => { Haptics.selectionAsync(); setFilter(f); }}
+                style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, backgroundColor: filter === f ? C.label : C.surface }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: filter === f ? C.bg : C.label }}>{f}</Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+          <View style={{ paddingHorizontal: 16, gap: 10 }}>
+            {filtered.map(product => (
+              <Pressable key={product.id}
+                style={({ pressed }) => ({ backgroundColor: C.surface, borderRadius: 12, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12, opacity: pressed ? 0.8 : 1 })}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+                <View style={{ width: 52, height: 52, backgroundColor: C.separator, borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
+                  <IconSymbol name={productIcon(product.type) as any} size={22} color={C.secondary} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={1}>{product.title}</Text>
+                  <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{product.type}</Text>
+                </View>
+                <View style={{ alignItems: 'flex-end', gap: 4 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>${product.price}</Text>
+                  <Pressable
+                    onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+                    style={{ backgroundColor: C.label, borderRadius: 8, paddingVertical: 5, paddingHorizontal: 10 }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: C.bg }}>Buy</Text>
+                  </Pressable>
+                </View>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+
+        {/* Subscription Tiers */}
+        <View style={{ paddingHorizontal: 16, marginTop: 24, gap: 10 }}>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Membership Tiers</Text>
+          {STORE_TIERS.map(tier => (
+            <View key={tier.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 8 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: tier.color }} />
+                <Text style={{ flex: 1, fontSize: 15, fontWeight: '700', color: C.label }}>{tier.name}</Text>
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{tier.price === 0 ? 'Free' : `$${tier.price}/mo`}</Text>
+              </View>
+              <View style={{ gap: 4 }}>
+                {tier.benefits.map((b, i) => (
+                  <View key={i} style={{ flexDirection: 'row', gap: 6, alignItems: 'flex-start' }}>
+                    <IconSymbol name="checkmark" size={12} color={tier.color} style={{ marginTop: 2 }} />
+                    <Text style={{ fontSize: 13, color: C.label, flex: 1 }}>{b}</Text>
+                  </View>
+                ))}
+              </View>
+              {tier.price > 0 && (
+                <Pressable
+                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
+                  style={{ backgroundColor: C.label, borderRadius: 10, paddingVertical: 10, alignItems: 'center', marginTop: 4 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Join {tier.name}</Text>
+                </Pressable>
+              )}
+            </View>
+          ))}
+        </View>
+      </View>
+    );
+  }
+
+  const topBarH = insets.top + 52;
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top Bar */}
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, paddingTop: insets.top }}>
+        <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
+          {isOwner && !preview ? (
+            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, alignItems: 'center' }}>
+              <KMenuButton />
+            </Pressable>
+          ) : (
+            <View style={{ width: 36 }} />
+          )}
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>
+              {preview ? 'Store Preview' : isOwner ? 'Store' : 'Shop'}
+            </Text>
+          </View>
+          {!preview ? (
+            <RolePill
+              role={demoRole}
+              onPress={() => { cycleRole(); setFilter('All'); setPreview(false); }}
+              accentColor="#1A1714"
+              isPrimary={isOwner}
+            />
+          ) : (
+            <View style={{ width: 60 }} />
+          )}
+        </View>
+      </View>
+
+      {/* Content */}
+      <ScrollView contentContainerStyle={{ paddingTop: topBarH }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+        {showFollower ? renderFollowerView() : renderOwnerView()}
+      </ScrollView>
+
+      {/* Owner FAB */}
+      {isOwner && !preview && (
+        <Pressable
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setAddSheet(true); }}
+          style={{ position: 'absolute', right: 20, bottom: insets.bottom + 88, width: 52, height: 52, borderRadius: 26, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}
+        >
+          <IconSymbol name="plus" size={22} color={C.bg} />
+        </Pressable>
+      )}
+
+      {/* Preview Back button */}
+      {preview && (
+        <Pressable
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setPreview(false); }}
+          style={{ position: 'absolute', bottom: insets.bottom + 88, alignSelf: 'center', backgroundColor: C.label, borderRadius: 20, paddingVertical: 10, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', gap: 6 }}
+        >
+          <IconSymbol name="arrow.left" size={13} color={C.bg} />
+          <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>Back to Manage</Text>
+        </Pressable>
+      )}
+
+      {/* Add Product Sheet */}
+      <BottomSheet visible={addSheet} onClose={() => { setAddSheet(false); setEditProduct(null); }} useModal>
+        <ScrollView contentContainerStyle={{ padding: 20, gap: 16, paddingBottom: 40 }}>
+          <Text style={{ fontSize: 18, fontWeight: '700', color: C.label }}>{editProduct ? 'Edit Product' : 'New Product'}</Text>
+
+          {/* Title */}
+          <View style={{ gap: 6 }}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>Title</Text>
+            <TextInput
+              value={formTitle} onChangeText={setFormTitle}
+              placeholder="Product name" placeholderTextColor={C.secondary}
+              style={{ borderWidth: 1, borderColor: C.separator, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 10, fontSize: 15, color: C.label, backgroundColor: C.surface }}
+            />
+          </View>
+
+          {/* Description */}
+          <View style={{ gap: 6 }}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>Description</Text>
+            <TextInput
+              value={formDesc} onChangeText={setFormDesc}
+              placeholder="Describe what's included…" placeholderTextColor={C.secondary}
+              multiline numberOfLines={3}
+              style={{ borderWidth: 1, borderColor: C.separator, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 10, fontSize: 14, color: C.label, backgroundColor: C.surface, height: 90, textAlignVertical: 'top' }}
+            />
+          </View>
+
+          {/* Type */}
+          <View style={{ gap: 6 }}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>Product Type</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+              {['Digital', 'Course', 'Services', 'Merch'].map(t => (
+                <Pressable key={t} onPress={() => { Haptics.selectionAsync(); setFormType(t); }}
+                  style={{ paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: formType === t ? C.label : C.surface, borderWidth: 1, borderColor: C.separator }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: formType === t ? C.bg : C.label }}>{t}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+
+          {/* Pricing */}
+          <View style={{ gap: 6 }}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>Pricing</Text>
+            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 8 }}>
+              {(['one-time', 'plan'] as const).map(pt => (
+                <Pressable key={pt} onPress={() => setFormPriceType(pt)}
+                  style={{ flex: 1, paddingVertical: 8, borderRadius: 10, alignItems: 'center', backgroundColor: formPriceType === pt ? C.label : C.surface, borderWidth: 1, borderColor: C.separator }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: formPriceType === pt ? C.bg : C.label }}>{pt === 'one-time' ? 'One-Time' : 'Payment Plan'}</Text>
+                </Pressable>
+              ))}
+            </View>
+            <TextInput
+              value={formPrice} onChangeText={setFormPrice}
+              keyboardType="decimal-pad" placeholder={formPriceType === 'plan' ? 'Price per installment ($)' : 'Price ($)'} placeholderTextColor={C.secondary}
+              style={{ borderWidth: 1, borderColor: C.separator, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 10, fontSize: 15, color: C.label, backgroundColor: C.surface }}
+            />
+          </View>
+
+          {/* Delivery note per type */}
+          <View style={{ backgroundColor: C.surface, borderRadius: 10, padding: 12 }}>
+            <Text style={{ fontSize: 12, color: C.secondary }}>
+              {formType === 'Digital'   && '📁 File upload — buyers get instant download after purchase.'}
+              {formType === 'Course'    && '▶️ Links to your KPlay content for lesson delivery.'}
+              {formType === 'Services'  && '📅 Booking via Agenda + payment collected via KPay.'}
+              {formType === 'Merch'     && '📦 Set variants, inventory, and shipping in Product Settings.'}
+            </Text>
+          </View>
+
+          {/* Access Level */}
+          <View style={{ gap: 6 }}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>Access Level</Text>
+            <View style={{ gap: 1, borderRadius: 12, overflow: 'hidden', borderWidth: 1, borderColor: C.separator }}>
+              {['Public', 'Subscribers Only', 'Inner Circle'].map((level, idx, arr) => (
+                <Pressable key={level} onPress={() => setFormAccess(level)}
+                  style={{ flexDirection: 'row', alignItems: 'center', padding: 12, backgroundColor: formAccess === level ? C.bg : C.surface, borderBottomWidth: idx < arr.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }}>
+                  <Text style={{ flex: 1, fontSize: 14, color: C.label }}>{level}</Text>
+                  {formAccess === level && <IconSymbol name="checkmark" size={14} color={C.label} />}
+                </Pressable>
+              ))}
+            </View>
+          </View>
+
+          {/* Status */}
+          <View style={{ gap: 6 }}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary }}>Status</Text>
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              {(['Published', 'Draft', 'Hidden'] as const).map(st => (
+                <Pressable key={st} onPress={() => setFormStatus(st)}
+                  style={{ flex: 1, paddingVertical: 8, borderRadius: 10, alignItems: 'center', backgroundColor: formStatus === st ? C.label : C.surface, borderWidth: 1, borderColor: C.separator }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: formStatus === st ? C.bg : C.label }}>{st}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+
+          {/* Save */}
+          <Pressable
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setAddSheet(false); setEditProduct(null); }}
+            style={{ backgroundColor: C.label, borderRadius: 14, paddingVertical: 14, alignItems: 'center', marginTop: 4 }}
+          >
+            <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>{editProduct ? 'Save Changes' : 'Save & Publish'}</Text>
+          </Pressable>
+        </ScrollView>
+      </BottomSheet>
+    </View>
+  );
+}
+
+// ── Business / Multi-Mode Store ────────────────────────────────────────────────
+
 const TOP_BAR_H = 52;
 const PILLS_H   = 48;
 
-type StoreTab  = 'Products' | 'Orders' | 'Drops';
+type StoreTab      = 'Products' | 'Orders' | 'Analytics' | 'Subscriptions';
+type StoreCEOTab    = 'Products' | 'Orders' | 'Analytics';
+type StoreCustomTab = 'Products' | 'Orders' | 'Subscriptions';
 type StoreRole = 'Admin' | 'Member';
 type StoreMode = 'sports' | 'business' | 'education';
 
@@ -39,7 +495,7 @@ function pillsForTab(tab: StoreTab, mode: StoreMode): string[] {
     return (STORE_CATEGORIES[mode] ?? STORE_CATEGORIES.business).map(c => c.label);
   }
   if (tab === 'Orders') return ORDER_FILTERS.map(f => f.label);
-  return DROP_FILTERS.map(f => f.label);
+  return [];
 }
 
 function orderStatusColor(status: OrderItem['status'], C: ComponentColors): string {
@@ -238,7 +694,7 @@ function LiveBizStoreView({ C, insets }: { C: any; insets: any }) {
 
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
-export default function StoreScreen() {
+function BusinessStoreScreen() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
   const dataMode = useDataMode();
@@ -248,9 +704,9 @@ export default function StoreScreen() {
 
   const [activeTab,    setActiveTab]    = useState<StoreTab>('Products');
   const [mode]                          = useState<StoreMode>('business');
-  const [demoRole, cycleRole] = useDemoRole('business:store');
-  const role: StoreRole = demoRole === 'CEO' ? 'Admin' : 'Member';
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [demoRole, cycleRole, roleCycles] = useDemoRole('business:store');
+  const role: StoreRole = demoRole === roleCycles[0] ? 'Admin' : 'Member';
+  const isAdmin = role === 'Admin';
   const [pillsVisible, setPillsVisible] = useState(false);
   const [selectedPill, setSelectedPill] = useState('All');
   const pillsAnim = useRef(new Animated.Value(0)).current;
@@ -258,6 +714,14 @@ export default function StoreScreen() {
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
   const pills = useMemo(() => pillsForTab(activeTab, mode), [activeTab, mode]);
+
+  function handleCycleRole() {
+    cycleRole();
+    setActiveTab('Products');
+    setSelectedPill('All');
+    setPillsVisible(false);
+    pillsAnim.setValue(0);
+  }
 
   function togglePills() {
     Haptics.selectionAsync();
@@ -268,7 +732,6 @@ export default function StoreScreen() {
 
   function changeTab(tab: StoreTab) {
     Haptics.selectionAsync();
-    setDropdownOpen(false);
     setActiveTab(tab);
     setSelectedPill('All');
     const newPills = pillsForTab(tab, mode);
@@ -564,7 +1027,21 @@ export default function StoreScreen() {
     );
   }
 
+  // ── Render Subscriptions (Customer) ───────────────────────────────────────
+
+  function renderSubscriptions() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingBottom: 60 }}>
+        <Text style={{ fontSize: 16, color: C.secondary, fontWeight: '600' }}>Subscriptions</Text>
+        <Text style={{ fontSize: 13, color: C.secondary, marginTop: 6, opacity: 0.6 }}>Coming soon</Text>
+      </View>
+    );
+  }
+
   // ── Shell ─────────────────────────────────────────────────────────────────
+
+  const ceoTabs: StoreCEOTab[]    = ['Products', 'Orders', 'Analytics'];
+  const customerTabs: StoreCustomTab[] = ['Products', 'Orders', 'Subscriptions'];
 
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
@@ -572,26 +1049,48 @@ export default function StoreScreen() {
       <View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator as string, paddingTop: insets.top }]}>
         <View style={s.topBar}>
           <Pressable
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isAdmin) openSidePanel(); }}
             style={s.iconBtn} hitSlop={8}
           >
-            <IconSymbol name="line.3.horizontal" size={20} color={C.label} />
+            <KMenuButton />
           </Pressable>
 
-          <Pressable
-            onPress={() => { Haptics.selectionAsync(); setDropdownOpen(v => !v); }}
-            style={[s.dropdownPill, { backgroundColor: C.surface, borderColor: C.separator as string }]}
-          >
-            <Text style={[s.dropdownPillText, { color: C.label }]}>{activeTab}</Text>
-            <IconSymbol name={dropdownOpen ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary as string} style={{ marginLeft: 4 }} />
-          </Pressable>
+          {isAdmin ? (
+            <View style={{ flex: 1, marginHorizontal: 10, flexDirection: 'row', justifyContent: 'center' }}>
+              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+                {ceoTabs.map(tab => {
+                  const active = activeTab === tab;
+                  return (
+                    <Pressable key={tab} onPress={() => changeTab(tab)}
+                      style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
+                      <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+          ) : (
+            <View style={{ flex: 1, marginHorizontal: 10, flexDirection: 'row', justifyContent: 'center' }}>
+              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+                {customerTabs.map(tab => {
+                  const active = activeTab === tab;
+                  return (
+                    <Pressable key={tab} onPress={() => changeTab(tab)}
+                      style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
+                      <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+          )}
 
           <View style={[s.row, { gap: 8 }]}>
             <RolePill
               role={demoRole}
-              onPress={cycleRole}
+              onPress={handleCycleRole}
               accentColor="#1A1714"
-              isPrimary={role === 'Admin'}
+              isPrimary={isAdmin}
             />
             {pills.length > 0 && (
               <Pressable onPress={togglePills} hitSlop={8} style={s.iconBtn}>
@@ -631,42 +1130,27 @@ export default function StoreScreen() {
         )}
       </View>
 
-      {/* Dropdown */}
-      {dropdownOpen && (
-        <>
-          <Pressable style={[StyleSheet.absoluteFill, { zIndex: 150 }]} onPress={() => setDropdownOpen(false)} />
-          <View style={[s.dropdown, { top: topBarH, backgroundColor: C.surface, borderColor: C.separator as string }]}>
-            {(['Products', 'Orders', 'Drops'] as StoreTab[]).map(tab => (
-              <Pressable key={tab} onPress={() => changeTab(tab)}
-                style={({ pressed }) => [
-                  s.dropdownItem,
-                  pressed && { backgroundColor: C.surfacePressed as string },
-                  activeTab === tab && { backgroundColor: C.surfacePressed as string },
-                ]}
-              >
-                <Text style={[s.dropdownItemText, { color: activeTab === tab ? C.accent : C.label }]}>{tab}</Text>
-                {activeTab === tab && <IconSymbol name="checkmark" size={14} color={C.accent} />}
-              </Pressable>
-            ))}
-          </View>
-        </>
-      )}
-
       <ScrollView
-        contentContainerStyle={{ paddingTop: contentPaddingTop }}
+        contentContainerStyle={{ paddingTop: contentPaddingTop, flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {role === 'Admin' ? renderCEOView() : (
+        {isAdmin ? (
           <>
-            {activeTab === 'Products' && renderProducts()}
-            {activeTab === 'Orders'   && renderOrders()}
-            {activeTab === 'Drops'    && renderDrops()}
+            {activeTab === 'Products'  && renderProducts()}
+            {activeTab === 'Orders'    && renderOrders()}
+            {activeTab === 'Analytics' && renderCEOView()}
+          </>
+        ) : (
+          <>
+            {activeTab === 'Products'      && renderProducts()}
+            {activeTab === 'Orders'        && renderOrders()}
+            {activeTab === 'Subscriptions' && renderSubscriptions()}
           </>
         )}
       </ScrollView>
 
-      {activeTab === 'Products' && role === 'Admin' && (
+      {activeTab === 'Products' && isAdmin && (
         <Pressable
           onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
           style={[s.fab, { backgroundColor: C.accent, bottom: insets.bottom + 88 }]}
@@ -734,3 +1218,11 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   // FAB
   fab: { position: 'absolute', right: 20, width: 52, height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 6, elevation: 4 },
 });
+
+// ── Routing Wrapper ────────────────────────────────────────────────────────────
+
+export default function StoreScreen() {
+  const appMode = useMode();
+  if (appMode === 'personal') return <PersonalStoreScreen />;
+  return <BusinessStoreScreen />;
+}

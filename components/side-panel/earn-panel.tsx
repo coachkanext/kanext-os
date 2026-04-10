@@ -1,159 +1,171 @@
 /**
- * Earn Side Panel — revenue command center tools.
+ * Earn Side Panel — role-aware.
+ * Owner:    Manage · Notifications
+ * Follower: (nothing)
  */
 
 import React, { useMemo } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
+import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
-import { EARN_STATS, PRODUCTS, formatMoney, formatMoneyFull } from '@/data/mock-earn';
+import { useDemoRole } from '@/utils/demo-role-store';
+
+const GAIN    = '#5A8A6E';
+const CAUTION = '#B8943E';
+const EMBER   = '#8B2500';
+
+// ── Nav items ─────────────────────────────────────────────────────────────────
+
+type ManageItem = { icon: string; label: string; route: string };
+
+const MANAGE_ITEMS: ManageItem[] = [
+  { icon: 'tag',      label: 'Pricing Manager',   route: '/(tabs)/(main)/earn/pricing-manager'   },
+  { icon: 'doc.text', label: 'Tax Center',        route: '/(tabs)/(main)/earn/tax-center'        },
+  { icon: 'person.2', label: 'Subscriber Health', route: '/(tabs)/(main)/earn/subscriber-health' },
+  { icon: 'gear',     label: 'Payout Settings',   route: '/(tabs)/(main)/earn/payout-settings'   },
+];
+
+const NOTIF_ITEMS: {
+  icon: string;
+  label: string;
+  badge: string | null;
+  iconBg: string;
+  iconColor: string;
+  tab: string | null;
+}[] = [
+  { icon: 'dollarsign', label: '$340 pending',      badge: null, iconBg: CAUTION + '22', iconColor: CAUTION, tab: 'Payouts'  },
+  { icon: 'bag',        label: '3 new sales today', badge: '3',  iconBg: EMBER   + '18', iconColor: EMBER,   tab: 'Products' },
+];
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export function EarnPanel() {
-  const C = useColors();
-  const styles = useMemo(() => makeStyles(C), [C]);
+  const C      = useColors();
+  const s      = useMemo(() => makeStyles(C), [C]);
+  const router = useRouter();
+  const [role, , roleCycles] = useDemoRole('personal:earn');
+  const isOwner = role === roleCycles[0];
 
-  const close = () => {
+  const goTab = (tab: string | null) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     closeSidePanel();
+    if (!tab) return;
+    setTimeout(() => {
+      router.navigate({ pathname: '/(tabs)/(main)/earn' as any, params: { tab } });
+    }, 80);
   };
 
-  const topProducts = PRODUCTS.slice(0, 3);
+  const goPage = (route: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    closeSidePanel();
+    setTimeout(() => { router.navigate(route as any); }, 80);
+  };
 
+  if (!isOwner) return null;
+
+  // ── Owner view ───────────────────────────────────────────────────────────────
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={[styles.iconBadge, { backgroundColor: C.accent + '20' }]}>
-          <IconSymbol name="dollarsign.circle.fill" size={18} color={C.accent} />
-        </View>
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={[styles.headerName, { color: C.label }]}>Earn</Text>
-          <Text style={[styles.headerSub, { color: C.secondary }]}>
-            {formatMoneyFull(EARN_STATS.balance)} available
-          </Text>
-        </View>
-      </View>
+    <View style={[s.root, { backgroundColor: C.surface }]}>
+      <ScrollView style={s.scroll} contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
 
-      {/* Quick Stats */}
-      <View style={[styles.statsRow, { backgroundColor: C.surface, borderRadius: 12 }]}>
-        <View style={styles.statCell}>
-          <Text style={[styles.statValue, { color: C.label }]}>{formatMoney(EARN_STATS.thisMonth)}</Text>
-          <Text style={[styles.statLabel, { color: C.secondary }]}>Today's Rev.</Text>
-        </View>
-        <View style={[styles.statDivider, { backgroundColor: C.separator }]} />
-        <View style={styles.statCell}>
-          <Text style={[styles.statValue, { color: C.label }]}>{formatMoney(EARN_STATS.pendingBalance)}</Text>
-          <Text style={[styles.statLabel, { color: C.secondary }]}>Pending</Text>
-        </View>
-      </View>
-
-      {/* Navigate */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: C.secondary }]}>NAVIGATE</Text>
-        {[
-          { icon: 'chart.line.uptrend.xyaxis', label: 'Earnings'  },
-          { icon: 'bag.fill',                  label: 'Products'  },
-          { icon: 'banknote.fill',             label: 'Payouts'   },
-        ].map(item => (
-          <Pressable
-            key={item.label}
-            style={({ pressed }) => [styles.navRow, { backgroundColor: pressed ? C.surfacePressed : 'transparent' }]}
-            onPress={close}
-          >
-            <View style={[styles.navIcon, { backgroundColor: C.surfacePressed }]}>
-              <IconSymbol name={item.icon as any} size={15} color={C.label} />
-            </View>
-            <Text style={[styles.navLabel, { color: C.label }]}>{item.label}</Text>
-            <IconSymbol name="chevron.right" size={14} color={C.muted} />
-          </Pressable>
-        ))}
-      </View>
-
-      {/* Top Products */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: C.secondary }]}>TOP PRODUCTS</Text>
-        {topProducts.map(p => (
-          <Pressable
-            key={p.id}
-            style={({ pressed }) => [styles.navRow, { backgroundColor: pressed ? C.surfacePressed : 'transparent' }]}
-            onPress={close}
-          >
-            <Text style={{ fontSize: 20 }}>{p.thumbEmoji}</Text>
-            <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={[styles.navLabel, { color: C.label }]} numberOfLines={1}>{p.title}</Text>
-              <Text style={[styles.navSub, { color: C.muted }]}>{p.salesCount} sales</Text>
-            </View>
-            <Text style={{ fontSize: 12, fontWeight: '600', color: C.accent }}>{formatMoney(p.revenue)}</Text>
-          </Pressable>
-        ))}
-      </View>
-
-      {/* Quick Payout */}
-      <View style={styles.section}>
+        {/* ── Home ── */}
         <Pressable
-          style={({ pressed }) => [styles.payoutBtn, { backgroundColor: C.accent, opacity: pressed ? 0.85 : 1 }]}
-          onPress={close}
+          style={({ pressed }) => [s.row, s.rowBorder, { borderBottomColor: C.separator }, pressed && { backgroundColor: C.bg }]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            closeSidePanel();
+            setTimeout(() => router.navigate('/(tabs)/(main)/earn' as any), 80);
+          }}
         >
-          <IconSymbol name="arrow.down.circle.fill" size={16} color="#fff" />
-          <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff' }}>Withdraw {formatMoneyFull(EARN_STATS.balance)}</Text>
+          <IconSymbol name="house.fill" size={18} color={C.label} />
+          <Text style={[s.rowLabel, { color: C.label }]}>Home</Text>
         </Pressable>
-      </View>
 
-      {/* Tools */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: C.secondary }]}>TOOLS</Text>
-        {[
-          { icon: 'tag.fill',             label: 'Pricing Manager'  },
-          { icon: 'doc.text.fill',        label: 'Tax Center'       },
-          { icon: 'person.2.fill',        label: 'Subscriber Health'},
-          { icon: 'gear',                 label: 'Payout Settings'  },
-        ].map(item => (
+        <View style={[s.divider, { backgroundColor: C.separator }]} />
+
+        <Text style={[s.sectionLabel, { color: C.secondary }]}>Manage</Text>
+        {MANAGE_ITEMS.map((item, idx) => (
           <Pressable
             key={item.label}
-            style={({ pressed }) => [styles.navRow, { backgroundColor: pressed ? C.surfacePressed : 'transparent' }]}
-            onPress={close}
+            style={({ pressed }) => [
+              s.row,
+              pressed && { backgroundColor: C.bg },
+              idx < MANAGE_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
+            ]}
+            onPress={() => goPage(item.route)}
           >
-            <View style={[styles.navIcon, { backgroundColor: C.surfacePressed }]}>
-              <IconSymbol name={item.icon as any} size={15} color={C.label} />
-            </View>
-            <Text style={[styles.navLabel, { color: C.label }]}>{item.label}</Text>
-            <IconSymbol name="chevron.right" size={14} color={C.muted} />
+            <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
+            <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
           </Pressable>
         ))}
-      </View>
+
+        <View style={[s.divider, { backgroundColor: C.separator }]} />
+
+        <Text style={[s.sectionLabel, { color: C.secondary }]}>Notifications</Text>
+        {NOTIF_ITEMS.map((item, idx) => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [
+              s.row,
+              pressed && { backgroundColor: C.bg },
+              idx < NOTIF_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
+            ]}
+            onPress={() => goTab(item.tab)}
+          >
+            <View style={s.iconWrap}>
+              <View style={[s.notifCircle, { backgroundColor: item.iconBg }]}>
+                <IconSymbol name={item.icon as any} size={14} color={item.iconColor} />
+              </View>
+              {item.badge && (
+                <View style={[s.badge, { backgroundColor: EMBER }]}>
+                  <Text style={[s.badgeText, { color: '#fff' }]}>{item.badge}</Text>
+                </View>
+              )}
+            </View>
+            <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+
+      </ScrollView>
     </View>
   );
 }
 
+// ── Styles ────────────────────────────────────────────────────────────────────
+
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  container:   { flex: 1 },
-  header: {
+  root:    { flex: 1 },
+  scroll:  { flex: 1 },
+  content: { paddingTop: 8, paddingBottom: 16 },
+
+  divider: { height: StyleSheet.hairlineWidth, marginVertical: 12, marginHorizontal: 16 },
+
+  sectionLabel: {
+    fontSize: 11, fontWeight: '600', letterSpacing: 0.6,
+    textTransform: 'uppercase',
+    paddingHorizontal: 16,
+    marginBottom: 2, marginTop: 4,
+  },
+
+  row: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
-    paddingBottom: 20, marginBottom: 4,
-    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+    paddingHorizontal: 16, paddingVertical: 13,
+    borderRadius: 8,
   },
-  iconBadge:   { width: 42, height: 42, borderRadius: 12, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  headerName:  { fontSize: 15, fontWeight: '700' },
-  headerSub:   { fontSize: 12, marginTop: 1 },
-  statsRow:    { flexDirection: 'row', marginTop: 16, padding: 12 },
-  statCell:    { flex: 1, alignItems: 'center' },
-  statValue:   { fontSize: 16, fontWeight: '700' },
-  statLabel:   { fontSize: 10, marginTop: 2 },
-  statDivider: { width: StyleSheet.hairlineWidth, height: '100%' },
-  section:     { marginTop: 20 },
-  sectionTitle:{ fontSize: 11, fontWeight: '700', letterSpacing: 0.6, marginBottom: 8 },
-  navRow: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    paddingVertical: 8, borderRadius: 10, paddingHorizontal: 2,
+  rowBorder: { borderBottomWidth: StyleSheet.hairlineWidth },
+  rowLabel:  { flex: 1, fontSize: 15 },
+
+  iconWrap: { position: 'relative', width: 28, height: 28, alignItems: 'center', justifyContent: 'center' },
+  notifCircle: { width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  badge: {
+    position: 'absolute', top: -4, right: -6,
+    minWidth: 16, height: 16, borderRadius: 8,
+    alignItems: 'center', justifyContent: 'center',
+    paddingHorizontal: 3,
   },
-  navIcon:  { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  navLabel: { flex: 1, fontSize: 14, fontWeight: '500' },
-  navSub:   { fontSize: 11, marginTop: 1 },
-  payoutBtn: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
-    borderRadius: 12, paddingVertical: 12,
-  },
+  badgeText: { fontSize: 9, fontWeight: '800' },
 });

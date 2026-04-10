@@ -16,6 +16,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   PRODUCTS, INVOICES, REVENUE_TREND, RECENT_TRANSACTIONS, BIZ_CONTACTS, BIZ_DASHBOARD,
   getContactById,
@@ -526,7 +527,7 @@ export default function BusinessStoreScreen() {
       <View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator as string, paddingTop: insets.top }]}>
         <View style={s.topBar}>
           <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={s.iconBtn} hitSlop={8}>
-            <IconSymbol name="line.3.horizontal" size={20} color={C.label} />
+            <KMenuButton />
           </Pressable>
 
           <Pressable

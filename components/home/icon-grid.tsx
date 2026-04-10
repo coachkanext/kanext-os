@@ -25,21 +25,21 @@ const MODE_ROUTES: Record<string, Partial<Record<string, string>>> = {
   hub: { personal: '/(tabs)/(main)/hub', community: '/(tabs)/(main)/hub/community', education: '/(tabs)/(main)/hub/education', sports: '/(tabs)/(main)/hub/sports', business: '/(tabs)/(main)/hub/business' },
   p4:  { personal: '/(tabs)/(main)/network', community: '/(tabs)/(main)/members', education: '/(tabs)/(main)/hub/campus', business: '/(tabs)/(main)/team' },
   p5:  { personal: '/(tabs)/(main)/deals', community: '/(tabs)/(main)/outreach', education: '/(tabs)/(main)/admissions', business: '/(tabs)/(main)/inquiries' },
-  p6:  { personal: '/(tabs)/(main)/earn', community: '/(tabs)/(main)/give', education: '/(tabs)/(main)/fund', sports: '/(tabs)/(main)/booster', business: '/(tabs)/(main)/business-store' },
+  p6:  { personal: '/(tabs)/(main)/store', community: '/(tabs)/(main)/give', education: '/(tabs)/(main)/fund', sports: '/(tabs)/(main)/booster', business: '/(tabs)/(main)/business-store' },
 };
 
 /** Row 2 labels shift per mode */
 const MODE_LABELS: Record<string, Partial<Record<Mode, string>>> = {
-  p4: { personal: 'Network', business: 'Team',     education: 'Campus',     sports: 'Roster',   community: 'Members'  },
+  p4: { personal: 'Community', business: 'Team',     education: 'Campus',     sports: 'Roster',   community: 'Members'  },
   p5: { personal: 'Deals',   business: 'Inquiries', education: 'Admissions', sports: 'Recruits', community: 'Outreach' },
-  p6: { personal: 'Earn',    business: 'Store',    education: 'Fund',       sports: 'Booster',  community: 'Give'     },
+  p6: { personal: 'Store',   business: 'Store',    education: 'Fund',       sports: 'Booster',  community: 'Give'     },
 };
 
 /** Row 2 icons shift per mode to match labels */
 const MODE_ICONS: Record<string, Partial<Record<Mode, string>>> = {
-  p4: { personal: 'person.2.fill', business: 'person.2.fill', education: 'building.fill', sports: 'person.3.fill', community: 'person.2.fill' },
+  p4: { personal: 'person.3.fill', business: 'person.2.fill', education: 'building.fill', sports: 'person.3.fill', community: 'person.2.fill' },
   p5: { personal: 'tag.fill',      business: 'envelope.fill', education: 'doc.text.fill', sports: 'person.badge.plus', community: 'megaphone.fill' },
-  p6: { personal: 'dollarsign.circle.fill', business: 'storefront.fill', education: 'dollarsign.circle.fill', sports: 'bag.fill', community: 'heart.fill' },
+  p6: { personal: 'bag.fill',               business: 'storefront.fill', education: 'dollarsign.circle.fill', sports: 'bag.fill', community: 'heart.fill' },
 };
 
 
@@ -58,9 +58,9 @@ const ROWS: GridIcon[][] = [
   ],
   // Row 3 — universal
   [
-    { id: 'media',  icon: 'play.rectangle.fill', label: 'KTV',  route: '/(tabs)/(main)/kaytv'  },
-    { id: 'wallet', icon: 'creditcard.fill',     label: 'KPay', route: '/(tabs)/(main)/kaypay' },
-    { id: 'gm',     icon: 'gamecontroller.fill', label: 'KPlay', route: '/studios'              },
+    { id: 'media',  icon: 'play.rectangle.fill', label: 'KTV',   route: '/(tabs)/(main)/kaytv'  },
+    { id: 'gm',     icon: 'gamecontroller.fill', label: 'KPlay', route: '/studios'               },
+    { id: 'wallet', icon: 'creditcard.fill',     label: 'KPay',  route: '/(tabs)/(main)/kaypay' },
   ],
 ];
 

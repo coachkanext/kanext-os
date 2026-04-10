@@ -1,178 +1,129 @@
 /**
- * Deals Side Panel — personal CRM pipeline tools.
- * Quick nav, deals closing soon, overdue follow-ups, pipeline settings.
+ * Deals Side Panel — personal CRM navigation.
+ * Owner:      MANAGE (Customize Stages · Templates).
+ * Subscriber: (nothing)
  */
 
 import React, { useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
-
+import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
-import {
-  PERSONAL_DEALS, INSIGHT_STATS,
-  formatDealValue, formatRelativeDate, isClosingSoon, getContactById,
-  PRIORITY_COLORS,
-} from '@/data/mock-personal-deals';
+import { useDemoRole } from '@/utils/demo-role-store';
 
-const CLOSING_SOON  = PERSONAL_DEALS.filter(d => isClosingSoon(d) && d.stage !== 'Won' && d.stage !== 'Lost');
-const OVERDUE_TASKS = PERSONAL_DEALS.flatMap(d =>
-  d.tasks.filter(t => !t.completed && t.dueDate.getTime() < Date.now())
-    .map(t => ({ task: t, deal: d }))
-);
+// ── Data ──────────────────────────────────────────────────────────────────────
+
+type NavItem = { icon: string; label: string; route: string };
+
+const NAV_ITEMS: NavItem[] = [
+  { icon: 'person.2.fill',       label: 'Contacts',       route: '/(tabs)/(main)/deals/contacts'       },
+  { icon: 'chart.bar.fill',      label: 'Insights',       route: '/(tabs)/(main)/deals/insights'       },
+  { icon: 'doc.plaintext',       label: 'Rate Card',      route: '/(tabs)/(main)/deals/rate-card'      },
+  { icon: 'megaphone.fill',      label: 'Brand Outreach', route: '/(tabs)/(main)/deals/brand-outreach' },
+];
+
+const MANAGE_ITEMS: NavItem[] = [
+  { icon: 'slider.horizontal.3', label: 'Customize Stages', route: '/(tabs)/(main)/deals/customize-stages' },
+  { icon: 'doc.text',            label: 'Templates',         route: '/(tabs)/(main)/deals/templates'        },
+];
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export function DealsPanel() {
-  const C = useColors();
-  const styles = useMemo(() => makeStyles(C), [C]);
+  const C      = useColors();
+  const s      = useMemo(() => makeStyles(C), [C]);
+  const router = useRouter();
 
-  const close = () => {
+  const [role, , roleCycles] = useDemoRole('personal:deals');
+  const isOwner = role === roleCycles[0];
+
+  const goPage = (route: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     closeSidePanel();
+    setTimeout(() => {
+      router.navigate(route as any);
+    }, 80);
   };
 
+  if (!isOwner) return null;
+
+  // ── Owner view ──────────────────────────────────────────────────────────────
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={[styles.iconBadge, { backgroundColor: C.accent + '20' }]}>
-          <IconSymbol name="bag.fill" size={18} color={C.accent} />
-        </View>
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={[styles.headerName, { color: C.label }]}>My Deals</Text>
-          <Text style={[styles.headerSub, { color: C.secondary }]}>
-            ${(INSIGHT_STATS.totalPipelineValue / 1000).toFixed(0)}K pipeline
-          </Text>
-        </View>
-      </View>
+    <View style={[s.root, { backgroundColor: C.surface }]}>
 
-      {/* Navigate */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: C.secondary }]}>NAVIGATE</Text>
-        {[
-          { icon: 'arrow.trianglehead.2.clockwise.rotate.90', label: 'Pipeline'  },
-          { icon: 'person.2',                                 label: 'Contacts'  },
-          { icon: 'chart.bar',                                label: 'Insights'  },
-        ].map(item => (
-          <Pressable
-            key={item.label}
-            style={({ pressed }) => [styles.navRow, { backgroundColor: pressed ? C.surfacePressed : 'transparent' }]}
-            onPress={close}
-          >
-            <View style={[styles.navIcon, { backgroundColor: C.surfacePressed }]}>
-              <IconSymbol name={item.icon as any} size={15} color={C.label} />
-            </View>
-            <Text style={[styles.navLabel, { color: C.label }]}>{item.label}</Text>
-            <IconSymbol name="chevron.right" size={14} color={C.muted} />
-          </Pressable>
-        ))}
-      </View>
+      {/* ── Home ── */}
+      <Pressable
+        style={({ pressed }) => [s.row, s.rowBorder, { borderBottomColor: C.separator }, pressed && { backgroundColor: C.bg }]}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          closeSidePanel();
+          setTimeout(() => router.navigate('/(tabs)/(main)/deals' as any), 80);
+        }}
+      >
+        <IconSymbol name="chart.bar.fill" size={18} color={C.label} />
+        <Text style={[s.rowLabel, { color: C.label }]}>Pipeline</Text>
+      </Pressable>
 
-      {/* Closing soon */}
-      {CLOSING_SOON.length > 0 && (
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: C.secondary }]}>CLOSING THIS WEEK</Text>
-          {CLOSING_SOON.map(deal => {
-            const contact = getContactById(deal.contactId);
-            return (
-              <Pressable
-                key={deal.id}
-                style={({ pressed }) => [styles.navRow, { backgroundColor: pressed ? C.surfacePressed : 'transparent' }]}
-                onPress={close}
-              >
-                <View style={[styles.priorityDot, { backgroundColor: PRIORITY_COLORS[deal.priority] }]} />
-                <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={[styles.navLabel, { color: C.label }]} numberOfLines={1}>{deal.title}</Text>
-                  <Text style={[styles.navSub, { color: C.muted }]}>{contact?.company ?? ''}</Text>
-                </View>
-                <Text style={{ fontSize: 12, fontWeight: '600', color: C.accent }}>{formatDealValue(deal.value)}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
-      )}
+      <View style={[s.divider, { backgroundColor: C.separator }]} />
 
-      {/* Overdue follow-ups */}
-      {OVERDUE_TASKS.length > 0 && (
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: C.secondary }]}>OVERDUE FOLLOW-UPS</Text>
-          {OVERDUE_TASKS.slice(0, 3).map(({ task, deal }) => (
-            <Pressable
-              key={task.id}
-              style={({ pressed }) => [styles.navRow, { backgroundColor: pressed ? C.surfacePressed : 'transparent' }]}
-              onPress={close}
-            >
-              <View style={[styles.navIcon, { backgroundColor: '#B85C5C' + '20' }]}>
-                <IconSymbol name="exclamationmark" size={14} color="#B85C5C" />
-              </View>
-              <View style={{ flex: 1, minWidth: 0 }}>
-                <Text style={[styles.navLabel, { color: C.label }]} numberOfLines={1}>{task.title}</Text>
-                <Text style={[styles.navSub, { color: '#B85C5C' }]}>{deal.title}</Text>
-              </View>
-            </Pressable>
-          ))}
-        </View>
-      )}
-
-      {/* Quick add */}
-      <View style={styles.section}>
+      {NAV_ITEMS.map((item, idx) => (
         <Pressable
-          style={({ pressed }) => [styles.addBtn, { backgroundColor: C.accent, opacity: pressed ? 0.85 : 1 }]}
-          onPress={close}
+          key={item.label}
+          style={({ pressed }) => [
+            s.row,
+            pressed && { backgroundColor: C.bg },
+            idx < NAV_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
+          ]}
+          onPress={() => goPage(item.route)}
         >
-          <IconSymbol name="plus" size={16} color="#fff" />
-          <Text style={{ fontSize: 14, fontWeight: '600', color: '#fff' }}>Add New Deal</Text>
+          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
+          <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
         </Pressable>
-      </View>
+      ))}
 
-      {/* Pipeline settings */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: C.secondary }]}>SETTINGS</Text>
-        {[
-          { icon: 'slider.horizontal.3', label: 'Customize Stages' },
-          { icon: 'percent',             label: 'Win Probabilities' },
-          { icon: 'doc.text',            label: 'Message Templates' },
-          { icon: 'square.and.arrow.up', label: 'Export CSV' },
-        ].map(item => (
-          <Pressable
-            key={item.label}
-            style={({ pressed }) => [styles.navRow, { backgroundColor: pressed ? C.surfacePressed : 'transparent' }]}
-            onPress={close}
-          >
-            <View style={[styles.navIcon, { backgroundColor: C.surfacePressed }]}>
-              <IconSymbol name={item.icon as any} size={15} color={C.label} />
-            </View>
-            <Text style={[styles.navLabel, { color: C.label }]}>{item.label}</Text>
-            <IconSymbol name="chevron.right" size={14} color={C.muted} />
-          </Pressable>
-        ))}
-      </View>
+      <View style={[s.divider, { backgroundColor: C.separator }]} />
+
+      <Text style={[s.sectionLabel, { color: C.secondary }]}>Manage</Text>
+      {MANAGE_ITEMS.map((item, idx) => (
+        <Pressable
+          key={item.label}
+          style={({ pressed }) => [
+            s.row,
+            pressed && { backgroundColor: C.bg },
+            idx < MANAGE_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
+          ]}
+          onPress={() => goPage(item.route)}
+        >
+          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
+          <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
+        </Pressable>
+      ))}
+
     </View>
   );
 }
 
+// ── Styles ────────────────────────────────────────────────────────────────────
+
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  container: { flex: 1 },
-  header: {
+  root: { flex: 1 },
+
+  divider: { height: StyleSheet.hairlineWidth, marginVertical: 12, marginHorizontal: 16 },
+
+  sectionLabel: {
+    fontSize: 11, fontWeight: '600', letterSpacing: 0.6,
+    textTransform: 'uppercase',
+    paddingHorizontal: 16,
+    marginBottom: 2, marginTop: 4,
+  },
+
+  row: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
-    paddingBottom: 20, marginBottom: 4,
-    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+    paddingHorizontal: 16, paddingVertical: 13,
+    borderRadius: 8,
   },
-  iconBadge: { width: 42, height: 42, borderRadius: 12, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  headerName:  { fontSize: 15, fontWeight: '700' },
-  headerSub:   { fontSize: 12, marginTop: 1 },
-  section:     { marginTop: 20 },
-  sectionTitle: { fontSize: 11, fontWeight: '700', letterSpacing: 0.6, marginBottom: 8 },
-  navRow: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    paddingVertical: 8, borderRadius: 10, paddingHorizontal: 2,
-  },
-  navIcon:  { width: 30, height: 30, borderRadius: 8, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  navLabel: { flex: 1, fontSize: 14, fontWeight: '500' },
-  navSub:   { fontSize: 11, marginTop: 1 },
-  priorityDot: { width: 8, height: 8, borderRadius: 4, flexShrink: 0 },
-  addBtn: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
-    borderRadius: 12, paddingVertical: 12,
-  },
+  rowBorder: { borderBottomWidth: StyleSheet.hairlineWidth },
+  rowLabel:  { flex: 1, fontSize: 15 },
 });

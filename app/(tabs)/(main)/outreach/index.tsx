@@ -23,6 +23,7 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { useDataMode } from '@/utils/global-demo-mode';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   PROSPECTS, CAMPAIGNS, VOLUNTEER_TEAMS, OUTREACH_OPPORTUNITIES,
   MY_OUTREACH_STATS, INVITE_LEADERBOARD, PIPELINE_STAGES,
@@ -39,7 +40,7 @@ const DETAIL_H  = 560;
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type OutreachTab = 'Pipeline' | 'Campaigns' | 'Serve';
+type OutreachTab = 'Pipeline' | 'Campaigns' | 'Events';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -48,7 +49,7 @@ function pillsForTab(tab: OutreachTab, isAdmin: boolean): string[] {
     return isAdmin ? ['All', 'Explorer', 'First Visit', 'Follow-Up Sent', 'Returned', 'Connected', 'Joined Group', 'Member', 'Inactive'] : [];
   if (tab === 'Campaigns')
     return isAdmin ? ['All', 'Active', 'Planning', 'Completed'] : ['Invite', 'Available', 'Leaderboard'];
-  return isAdmin ? ['All', 'Teams', 'Opportunities'] : ['My Teams', 'Available', 'Impact'];
+  return isAdmin ? ['All', 'Teams', 'Opportunities'] : [];
 }
 
 function stageColor(stage: ProspectStage): string {
@@ -453,14 +454,12 @@ function CommunityMemberConnectView({
       {/* Top bar */}
       <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
         <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          <KMenuButton />
         </Pressable>
         <View style={{ flex: 1, alignItems: 'center' }}>
           <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Connect</Text>
         </View>
-        <View style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={false} />
-        </View>
+        <RolePill role={role} onPress={cycleRole} isPrimary={false} />
       </View>
 
       <ScrollView style={{ flex: 1, marginTop: topBarH }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
@@ -596,7 +595,6 @@ export default function CommunityOutreachScreen() {
   const [demoRole, cycleRole] = useDemoRole('community:outreach');
   const isAdmin = demoRole === 'Pastor';
   const [activeTab,          setActiveTab]          = useState<OutreachTab>('Pipeline');
-  const [dropdownOpen,       setDropdownOpen]       = useState(false);
   const [pillsVisible,       setPillsVisible]       = useState(false);
   const [selectedPill,       setSelectedPill]       = useState('All');
   const [expandedProspectId, setExpandedProspectId] = useState<string | null>(null);
@@ -651,7 +649,6 @@ export default function CommunityOutreachScreen() {
     Haptics.selectionAsync();
     const newPills = pillsForTab(tab, isAdmin);
     setActiveTab(tab);
-    setDropdownOpen(false);
     setSelectedPill(newPills[0] ?? 'All');
     setPillsVisible(false);
     pillsAnim.setValue(0);
@@ -1453,9 +1450,9 @@ export default function CommunityOutreachScreen() {
   }
 
   function renderContent() {
-    if (activeTab === 'Pipeline')  return isAdmin ? renderPipelineAdmin()  : renderPipelineMember();
-    if (activeTab === 'Campaigns') return isAdmin ? renderCampaignsAdmin() : renderCampaignsMember();
-    return isAdmin ? renderServeAdmin() : renderServeMember();
+    if (activeTab === 'Pipeline')  return renderPipelineAdmin();
+    if (activeTab === 'Campaigns') return renderCampaignsAdmin();
+    return renderServeAdmin();
   }
 
   // ── Layout ───────────────────────────────────────────────────────────────
@@ -1499,27 +1496,29 @@ export default function CommunityOutreachScreen() {
       {/* Absolute top bar */}
       <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         <View style={s.topBar}>
-          {/* Left: hamburger (admin) */}
+          {/* Left: hamburger (admin only — this layout only renders for admin) */}
           <View style={s.topBarSide}>
-            {isAdmin && (
-              <Pressable
-                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-                hitSlop={12}
-              >
-                <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
-              </Pressable>
-            )}
+            <Pressable
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isAdmin) openSidePanel(); }}
+              hitSlop={12}
+            >
+              <KMenuButton />
+            </Pressable>
           </View>
 
-          {/* Center: dropdown pill */}
+          {/* Center: TabPill (admin) */}
           <View style={s.dropdownPillWrap}>
-            <Pressable
-              style={[s.dropdownPill, { backgroundColor: C.surfacePressed }]}
-              onPress={() => { Haptics.selectionAsync(); setDropdownOpen(v => !v); }}
-            >
-              <Text style={[s.dropdownPillText, { color: C.label }]}>{activeTab}</Text>
-              <IconSymbol name="chevron.down" size={12} color={C.secondary} />
-            </Pressable>
+            <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+              {(['Pipeline', 'Campaigns', 'Events'] as OutreachTab[]).map(tab => {
+                const active = activeTab === tab;
+                return (
+                  <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); changeTab(tab); }}
+                    style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
           </View>
 
           {/* Right: role pill + filter icon */}
@@ -1564,31 +1563,6 @@ export default function CommunityOutreachScreen() {
           </ScrollView>
         </Animated.View>
       </View>
-
-      {/* Dropdown overlay */}
-      {dropdownOpen && (
-        <>
-          <Pressable
-            style={{ ...StyleSheet.absoluteFillObject, zIndex: 98 } as any}
-            onPress={() => setDropdownOpen(false)}
-          />
-          <View style={[s.dropdown, { backgroundColor: C.surface, borderColor: C.separator, top: insets.top + TOP_BAR_H }]}>
-            {(['Pipeline', 'Campaigns', 'Serve'] as OutreachTab[]).map(tab => (
-              <Pressable
-                key={tab}
-                style={({ pressed }) => [
-                  s.dropdownOpt, { borderBottomColor: C.separator },
-                  (pressed || tab === activeTab) && { backgroundColor: C.surfacePressed },
-                ]}
-                onPress={() => changeTab(tab)}
-              >
-                <Text style={[s.dropdownOptText, { color: tab === activeTab ? C.accent : C.label }]}>{tab}</Text>
-                {tab === activeTab && <IconSymbol name="checkmark" size={14} color={C.accent} />}
-              </Pressable>
-            ))}
-          </View>
-        </>
-      )}
 
       {/* Prospect detail sheet */}
       {expandedProspectId && (

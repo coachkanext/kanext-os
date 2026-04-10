@@ -1,86 +1,124 @@
 /**
- * Social Side Panel — swipe right on Social feed (page 0).
- * 6 navigation items: Your Posts, Saved, Drafts, Analytics, Following, Settings.
+ * Social Side Panel — role-aware.
+ * Owner:    Browse (Explore) + Manage (Drafts, Scheduled)
+ * Follower: (nothing)
  */
 
 import React, { useMemo } from 'react';
-import {
-  View,
-  Text,
-  Pressable,
-  StyleSheet,
-} from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
+import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useDemoRole } from '@/utils/demo-role-store';
 
-const NAV_ITEMS = [
-  { icon: 'square.grid.2x2.fill', label: 'Your Posts', route: '/(tabs)/(main)/social/your-posts' },
-  { icon: 'bookmark.fill',        label: 'Saved',      route: '/(tabs)/(main)/social/saved' },
-  { icon: 'doc.text.fill',        label: 'Drafts',     route: '/(tabs)/(main)/social/drafts' },
-  { icon: 'chart.bar.fill',       label: 'Analytics',  route: '/(tabs)/(main)/social/analytics' },
-  { icon: 'person.2.fill',        label: 'Following',  route: '/(tabs)/(main)/social/following' },
-  { icon: 'gearshape.fill',       label: 'Settings',   route: '/(tabs)/(main)/social/settings' },
-] as const;
+// ── Nav items ─────────────────────────────────────────────────────────────────
+
+type NavItem = { icon: string; label: string; route: string };
+
+const BROWSE_ITEMS: NavItem[] = [
+  { icon: 'magnifyingglass', label: 'Explore', route: '/(tabs)/(main)/social/explore' },
+];
+
+const MANAGE_ITEMS: NavItem[] = [
+  { icon: 'doc.text',                 label: 'Drafts',     route: '/(tabs)/(main)/social/drafts'     },
+  { icon: 'clock',                    label: 'Scheduled',  route: '/(tabs)/(main)/social/scheduled'  },
+];
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export function SocialPanel() {
+  const C      = useColors();
+  const s      = useMemo(() => makeStyles(C), [C]);
   const router = useRouter();
-  const C = useColors();
-  const styles = useMemo(() => makeStyles(C), [C]);
+  const [role, , roleCycles] = useDemoRole('personal:social');
+  const isOwner = role === roleCycles[0];
 
-  const navigateTo = (route: string) => {
+  const goRoute = (route: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     closeSidePanel();
-    setTimeout(() => router.push(route as any), 80);
+    setTimeout(() => router.navigate(route as any), 80);
   };
 
+  if (!isOwner) return null;
+
   return (
-    <View style={styles.container}>
-      {NAV_ITEMS.map((item, idx) => (
+    <View style={[s.root, { backgroundColor: C.surface }]}>
+      <ScrollView style={s.scroll} contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
+
+        {/* ── Home ── */}
         <Pressable
-          key={item.label}
-          style={({ pressed }) => [
-            styles.navRow,
-            pressed && styles.navRowPressed,
-            idx < NAV_ITEMS.length - 1 && styles.navRowBorder,
-          ]}
+          style={({ pressed }) => [s.row, s.rowBorder, { borderBottomColor: C.separator }, pressed && { backgroundColor: C.bg }]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            navigateTo(item.route);
+            closeSidePanel();
+            setTimeout(() => router.navigate('/(tabs)/(main)/social' as any), 80);
           }}
         >
-          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-          <Text style={styles.navLabel}>{item.label}</Text>
-          <IconSymbol name="chevron.right" size={14} color="rgba(255,255,255,0.25)" />
+          <IconSymbol name="newspaper.fill" size={18} color={C.label} />
+          <Text style={[s.rowLabel, { color: C.label }]}>Feed</Text>
         </Pressable>
-      ))}
 
-      <View style={{ height: 32 }} />
+        <View style={[s.divider, { backgroundColor: C.separator }]} />
+
+        <Text style={[s.sectionLabel, { color: C.secondary }]}>Browse</Text>
+        {BROWSE_ITEMS.map((item) => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [s.row, pressed && { backgroundColor: C.bg }]}
+            onPress={() => goRoute(item.route)}
+          >
+            <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
+            <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+
+        <View style={[s.divider, { backgroundColor: C.separator }]} />
+
+        <Text style={[s.sectionLabel, { color: C.secondary }]}>Manage</Text>
+        {MANAGE_ITEMS.map((item, idx) => (
+          <Pressable
+            key={item.label}
+            style={({ pressed }) => [
+              s.row,
+              pressed && { backgroundColor: C.bg },
+              idx < MANAGE_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
+            ]}
+            onPress={() => goRoute(item.route)}
+          >
+            <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
+            <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
+          </Pressable>
+        ))}
+
+      </ScrollView>
     </View>
   );
 }
 
+// ── Styles ────────────────────────────────────────────────────────────────────
+
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  container: {},
-  navRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
+  root:    { flex: 1 },
+  scroll:  { flex: 1 },
+  content: { paddingTop: 8, paddingBottom: 8 },
+
+  divider: { height: StyleSheet.hairlineWidth, marginVertical: 12, marginHorizontal: 16 },
+
+  sectionLabel: {
+    fontSize: 11, fontWeight: '600', letterSpacing: 0.6,
+    textTransform: 'uppercase',
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    marginBottom: 2, marginTop: 4,
   },
-  navRowPressed: {
-    backgroundColor: 'rgba(255,255,255,0.05)',
+
+  row: {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    paddingHorizontal: 16, paddingVertical: 13,
+    borderRadius: 8,
   },
-  navRowBorder: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: C.separator,
-  },
-  navLabel: {
-    flex: 1,
-    fontSize: 16,
-    color: C.label,
-  },
+  rowBorder: { borderBottomWidth: StyleSheet.hairlineWidth },
+  rowLabel:  { flex: 1, fontSize: 15 },
 });

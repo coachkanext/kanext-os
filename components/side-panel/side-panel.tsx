@@ -7,11 +7,13 @@
  */
 
 import React from 'react';
-import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { View, Pressable, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { usePathname } from 'expo-router';
 import { useColors } from '@/hooks/use-colors';
 import { DrawerPanel } from '@/components/ui/drawer-panel';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 
 import { MessagesPanel } from './messages-panel';
 import { PhonePanel } from './phone-panel';
@@ -44,7 +46,6 @@ import { SportsRecruitsPanel } from './sports-recruits-panel';
 import { SportsBoosterPanel } from './sports-booster-panel';
 import { NetworkPanel } from './network-panel';
 import { DealsPanel } from './deals-panel';
-import { EarnPanel } from './earn-panel';
 import { DefaultPanel } from './default-panel';
 import { BusinessHubPanel } from './business-hub-panel';
 import { TeamPanel } from './team-panel';
@@ -69,7 +70,7 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
   const isMessages = pathname.includes('messages');
   const isPhone = pathname.includes('phone');
   const isNexus = pathname.includes('nexus');
-  const isMode = pathname.includes('mode');
+  const isMode = pathname.startsWith('/mode') || pathname.includes('/mode/');
   const isAgenda = pathname.includes('agenda');
   const isSeason = pathname.includes('season');
   const isRoster = pathname.includes('roster');
@@ -78,7 +79,7 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
   const isBusinessStore = pathname.includes('business-store');
   const isStore = pathname.includes('store') && !isBusinessStore;
   const isKayTV = pathname.includes('kaytv');
-  const isWallet = pathname.includes('wallet');
+  const isWallet = pathname.includes('wallet') || pathname.includes('kaypay');
   const isStudios = pathname.includes('studios');
   const isAdmissions    = pathname.includes('/admissions');
   const isHubCommunity  = pathname.includes('hub/community') || pathname.includes('hub/announcement-compose') || pathname.includes('hub/care-request');
@@ -90,7 +91,6 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
   const isTeam         = pathname.includes('/team') && !pathname.includes('admissions');
   const isInquiries    = pathname.includes('/inquiries');
   const isHub = pathname.includes('hub') && !isHubCommunity && !isHubEducation && !isCampus && !isHubSports && !isHubBusiness;
-  const isEarn     = pathname.includes('earn');
   const isDeals    = pathname.includes('deals');
   const isNetwork  = pathname.includes('network');
   const isMembers  = pathname.includes('members');
@@ -101,11 +101,23 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
   return (
     <DrawerPanel visible={visible} onClose={onClose} width={SIDE_PANEL_WIDTH}>
       <View style={{ flex: 1, backgroundColor: C.surface }}>
+        {/* K toggle — same position as on-screen K button, taps to close */}
+        <Pressable
+          style={[styles.kBtn, { top: insets.top }]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            onClose();
+          }}
+          hitSlop={8}
+        >
+          <KMenuButton />
+        </Pressable>
+
         <ScrollView
           style={styles.scroll}
           contentContainerStyle={[
             styles.scrollContent,
-            { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24 },
+            { paddingTop: insets.top + 52, paddingBottom: insets.bottom + 24 },
           ]}
           showsVerticalScrollIndicator={false}
         >
@@ -160,8 +172,6 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
                                 ? (mode === 'sports' ? <SportsRecruitsPanel /> : mode === 'business' ? <LeadsPanel /> : mode === 'education' ? <AdmissionsPanel /> : mode === 'church' ? <OutreachPanel /> : <ProspectsPanel />)
                                 : isOutreach
                                   ? <CommunityOutreachPanel />
-                                  : isEarn
-                                    ? <EarnPanel />
                                   : isDeals
                                     ? <DealsPanel />
                                   : isNetwork
@@ -181,6 +191,15 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
 }
 
 const styles = StyleSheet.create({
+  kBtn: {
+    position: 'absolute',
+    left: 0,
+    width: 80,
+    height: 44,
+    justifyContent: 'center',
+    paddingLeft: 20,
+    zIndex: 10,
+  },
   scroll: {
     flex: 1,
   },

@@ -1,48 +1,113 @@
 /**
  * Personal Hub — Creator backend + public-facing profile.
  * RBAC flip: owner sees analytics/admin tools, visitor sees public profile.
- * Three views: Overview / Page / Members via centered dropdown pill.
+ * Navigation (Dashboard / Content / Analytics) lives in the sidebar — no dropdown.
  */
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import {
   View, Text, Pressable, ScrollView, TextInput,
-  StyleSheet, Animated,
+  Image, StyleSheet,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter, useFocusEffect } from 'expo-router';
+import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { RolePill } from '@/components/ui/role-pill';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useAppContext } from '@/context/app-context';
 import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { useDataMode } from '@/utils/global-demo-mode';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   HUB_PROFILE, HUB_ANALYTICS, HUB_CHART_DATA, HUB_ACTIVITY, HUB_GOALS,
-  HUB_TIERS, HUB_SUBSCRIBERS, HUB_NEWSLETTERS, HUB_LINKS, HUB_PORTFOLIO,
-  HUB_FEATURED,
-  getChartMax, getTierName,
-  type ChartMetric, type MemberTier, type HubLink,
+  HUB_TIERS, HUB_LINKS, HUB_PORTFOLIO,
+  HUB_FEATURED, CONTENT_ITEMS,
+  ANALYTICS_ENGAGEMENT_TREND, ANALYTICS_AUDIENCE, ANALYTICS_HEATMAP,
+  ANALYTICS_TOP_CONTENT, ANALYTICS_GROWTH_SOURCES, ANALYTICS_REVENUE,
+  ANALYTICS_CONTENT_TYPES, HEATMAP_HOURS, HEATMAP_DAYS,
+  ANALYTICS_AGE_DETAIL, ANALYTICS_LOCATION_DETAIL,
+  ANALYTICS_GROWTH_DETAIL, ANALYTICS_REVENUE_DETAIL,
+  ANALYTICS_CONTENT_DETAIL, ANALYTICS_TYPE_CONTENT,
+  getChartMax,
+  type ChartMetric, type MemberTier, type HubLink, type ContentItem, type ContentType,
 } from '@/data/mock-hub';
 
-type HubTab = 'Overview' | 'Page' | 'Members';
-
 const OVERVIEW_PILLS = ['All', 'Followers', 'Earnings', 'Content', 'Subscribers'];
-const PAGE_PILLS     = ['All', 'Links', 'Portfolio', 'Featured'];
-const MEMBERS_PILLS  = ['All Tiers', 'Free', 'Paid', 'Newsletter'];
+const CONTENT_PILLS  = ['All', 'Posts', 'Reels', 'KTV', 'Stories'];
 
-const TOP_BAR_H  = 52;
+const GAIN    = '#5A8A6E';
+const CAUTION = '#B8943E';
+
+const TOP_BAR_H  = 44;
 const PILL_ROW_H = 48;
 const BAR_MAX_H  = 100;
 
-function pillsForTab(tab: HubTab): string[] {
-  if (tab === 'Overview') return OVERVIEW_PILLS;
-  if (tab === 'Page')     return PAGE_PILLS;
-  return MEMBERS_PILLS;
+const SOCIAL_PLATFORMS = [
+  { name: 'Instagram', fa: 'instagram'  },
+  { name: 'X',         fa: 'x-twitter' },
+  { name: 'TikTok',    fa: 'tiktok'    },
+  { name: 'YouTube',   fa: 'youtube'   },
+  { name: 'LinkedIn',  fa: 'linkedin'  },
+] satisfies { name: string; fa: string }[];
+
+// ── Content Tab Helpers ───────────────────────────────────────────────────────
+
+function getDayOffset(date: Date): number {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const d = new Date(date); d.setHours(0, 0, 0, 0);
+  return Math.round((d.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+function isSameDay(a: Date, b: Date): boolean {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+function getWeekDays(offset: number): Date[] {
+  const today = new Date();
+  const dow = today.getDay();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1) + offset * 7);
+  monday.setHours(0, 0, 0, 0);
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday); d.setDate(monday.getDate() + i); return d;
+  });
+}
+
+function getItemsForDate(date: Date, items: ContentItem[]): ContentItem[] {
+  const offset = getDayOffset(date);
+  return items.filter(i => i.daysFromToday === offset);
+}
+
+function contentTypeIcon(type: ContentType): string {
+  switch (type) {
+    case 'post':  return 'doc.text.fill';
+    case 'reel':  return 'film.fill';
+    case 'ktv':   return 'play.tv.fill';
+    case 'story': return 'camera.circle.fill';
+  }
+}
+
+function formatViews(n: number): string {
+  return n >= 1000 ? `${(n / 1000).toFixed(1)}K` : `${n}`;
+}
+
+function formatDayLabel(date: Date): string {
+  const days   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
+}
+
+function formatWeekRange(days: Date[]): string {
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const f = days[0], l = days[6];
+  if (f.getMonth() === l.getMonth()) return `${months[f.getMonth()]} ${f.getDate()}–${l.getDate()}`;
+  return `${months[f.getMonth()]} ${f.getDate()} – ${months[l.getMonth()]} ${l.getDate()}`;
 }
 
 // ── Stat Card ─────────────────────────────────────────────────────────────────
@@ -78,20 +143,41 @@ const cardStyles = StyleSheet.create({
 
 // ── Bar Chart ─────────────────────────────────────────────────────────────────
 
-function BarChart({ metric, C }: { metric: ChartMetric; C: ComponentColors }) {
+function formatTooltip(value: number, metric: ChartMetric): string {
+  if (metric === 'earnings') return `$${value.toLocaleString()}`;
+  if (metric === 'views') return value >= 1000 ? `${(value / 1000).toFixed(1)}K` : `${value}`;
+  return value.toLocaleString();
+}
+
+function BarChart({ metric, C, onLongPress }: { metric: ChartMetric; C: ComponentColors; onLongPress?: () => void }) {
   const max = getChartMax(metric);
+  const [activeIdx, setActiveIdx] = useState<number | null>(null);
+
   return (
     <View style={[chartStyles.wrap, { backgroundColor: C.surface }]}>
       <View style={chartStyles.bars}>
-        {HUB_CHART_DATA.map(pt => {
+        {HUB_CHART_DATA.map((pt, idx) => {
           const h = max > 0 ? Math.round((pt[metric] / max) * BAR_MAX_H) : 4;
+          const isActive = activeIdx === idx;
           return (
-            <View key={pt.label} style={chartStyles.barCol}>
+            <Pressable
+              key={pt.label}
+              style={chartStyles.barCol}
+              onHoverIn={() => setActiveIdx(idx)}
+              onHoverOut={() => setActiveIdx(null)}
+              onPressIn={() => setActiveIdx(idx)}
+              onPressOut={() => setActiveIdx(null)}
+              onLongPress={onLongPress}
+              delayLongPress={400}
+            >
+              <Text style={[chartStyles.barValue, { color: isActive ? C.accent : 'transparent' }]}>
+                {formatTooltip(pt[metric], metric)}
+              </Text>
               <View style={chartStyles.barTrack}>
                 <View style={[chartStyles.bar, { height: h, backgroundColor: C.accent }]} />
               </View>
               <Text style={[chartStyles.barLabel, { color: C.muted }]}>{pt.label}</Text>
-            </View>
+            </Pressable>
           );
         })}
       </View>
@@ -106,6 +192,7 @@ const chartStyles = StyleSheet.create({
   barTrack: { flex: 1, justifyContent: 'flex-end', width: '100%', alignItems: 'center' },
   bar: { width: '80%', borderRadius: 4, minHeight: 4 },
   barLabel: { fontSize: 9, fontWeight: '500' },
+  barValue: { fontSize: 9, fontWeight: '700', height: 14, textAlign: 'center' },
 });
 
 // ── Progress Row ──────────────────────────────────────────────────────────────
@@ -162,48 +249,6 @@ const actStyles = StyleSheet.create({
 
 // ── Tier Card ─────────────────────────────────────────────────────────────────
 
-function OwnerTierCard({
-  tier, C, onEdit,
-}: { tier: MemberTier; C: ComponentColors; onEdit: () => void }) {
-  const rev = tier.price * tier.subscriberCount;
-  return (
-    <View style={[tierStyles.card, { backgroundColor: C.surface }]}>
-      <View style={tierStyles.cardHeader}>
-        <View>
-          <Text style={[tierStyles.tierName, { color: C.label }]}>{tier.name}</Text>
-          <Text style={[tierStyles.tierPrice, { color: C.secondary }]}>
-            {tier.price === 0 ? 'Free' : `$${tier.price}/mo`}
-          </Text>
-        </View>
-        <View style={tierStyles.cardHeaderRight}>
-          <View>
-            <Text style={[tierStyles.subCount, { color: C.label }]}>{tier.subscriberCount}</Text>
-            <Text style={[tierStyles.subLabel, { color: C.muted }]}>members</Text>
-          </View>
-          {tier.price > 0 && (
-            <View>
-              <Text style={[tierStyles.subCount, { color: '#5A8A6E' }]}>${rev}</Text>
-              <Text style={[tierStyles.subLabel, { color: C.muted }]}>mo revenue</Text>
-            </View>
-          )}
-        </View>
-      </View>
-      {tier.perks.slice(0, 3).map(perk => (
-        <View key={perk} style={tierStyles.perkRow}>
-          <IconSymbol name="checkmark.circle.fill" size={14} color="#5A8A6E" />
-          <Text style={[tierStyles.perkText, { color: C.secondary }]}>{perk}</Text>
-        </View>
-      ))}
-      <Pressable
-        style={[tierStyles.editBtn, { borderColor: C.separator }]}
-        onPress={onEdit}
-      >
-        <Text style={[tierStyles.editBtnText, { color: C.accent }]}>Edit Tier</Text>
-      </Pressable>
-    </View>
-  );
-}
-
 function VisitorTierCard({ tier, C }: { tier: MemberTier; C: ComponentColors }) {
   const isFree = tier.price === 0;
   return (
@@ -256,79 +301,6 @@ const tierStyles = StyleSheet.create({
   subBtnText: { fontSize: 14, fontWeight: '700' },
 });
 
-// ── Subscriber Row ────────────────────────────────────────────────────────────
-
-function SubscriberRow({ sub, C, last }: { sub: typeof HUB_SUBSCRIBERS[0]; C: ComponentColors; last: boolean }) {
-  const tierColor = sub.tierId === 'inner-circle' ? C.accent : sub.tierId === 'vip' ? '#1A1714' : C.secondary;
-  return (
-    <View style={[subStyles.row, !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }]}>
-      <View style={[subStyles.avatar, { backgroundColor: C.surfacePressed }]}>
-        <Text style={[subStyles.avatarText, { color: C.label }]}>{sub.initials}</Text>
-      </View>
-      <View style={subStyles.info}>
-        <Text style={[subStyles.name, { color: C.label }]}>{sub.name}</Text>
-        <Text style={[subStyles.meta, { color: C.secondary }]}>Since {sub.joinDate}</Text>
-      </View>
-      <View style={subStyles.right}>
-        <View style={[subStyles.tierBadge, { backgroundColor: `${tierColor}22` }]}>
-          <Text style={[subStyles.tierBadgeText, { color: tierColor }]}>{getTierName(sub.tierId)}</Text>
-        </View>
-        <Text style={[subStyles.ltv, { color: C.muted }]}>${sub.lifetimeValue}</Text>
-      </View>
-    </View>
-  );
-}
-
-const subStyles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12 },
-  avatar: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  avatarText: { fontSize: 13, fontWeight: '700' },
-  info: { flex: 1 },
-  name: { fontSize: 14, fontWeight: '600' },
-  meta: { fontSize: 12, marginTop: 2 },
-  right: { alignItems: 'flex-end', gap: 4 },
-  tierBadge: { borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 },
-  tierBadgeText: { fontSize: 10, fontWeight: '700' },
-  ltv: { fontSize: 11 },
-});
-
-// ── Newsletter Row ────────────────────────────────────────────────────────────
-
-function NewsletterRow({ item, C, last, onPress }: {
-  item: typeof HUB_NEWSLETTERS[0]; C: ComponentColors; last: boolean; onPress: () => void;
-}) {
-  return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        nlStyles.row,
-        !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator },
-        pressed && { opacity: 0.8 },
-      ]}
-    >
-      <View style={nlStyles.info}>
-        <Text style={[nlStyles.subject, { color: C.label }]} numberOfLines={1}>{item.subject}</Text>
-        <Text style={[nlStyles.preview, { color: C.secondary }]} numberOfLines={1}>{item.preview}</Text>
-        <Text style={[nlStyles.meta, { color: C.muted }]}>{item.sentAt} · {item.recipients} recipients</Text>
-      </View>
-      <View style={nlStyles.stats}>
-        <Text style={[nlStyles.rate, { color: '#5A8A6E' }]}>{item.openRate}% open</Text>
-        <Text style={[nlStyles.rate, { color: C.secondary }]}>{item.clickRate}% click</Text>
-      </View>
-    </Pressable>
-  );
-}
-
-const nlStyles = StyleSheet.create({
-  row: { paddingVertical: 14, flexDirection: 'row', gap: 12 },
-  info: { flex: 1 },
-  subject: { fontSize: 14, fontWeight: '600', lineHeight: 20 },
-  preview: { fontSize: 13, marginTop: 2 },
-  meta: { fontSize: 11, marginTop: 4 },
-  stats: { alignItems: 'flex-end', gap: 4 },
-  rate: { fontSize: 12, fontWeight: '600' },
-});
-
 // ── Section Header ────────────────────────────────────────────────────────────
 
 function SectionHeader({ title, C }: { title: string; C: ComponentColors }) {
@@ -341,6 +313,7 @@ const secStyles = StyleSheet.create({
 // ── Link Row ──────────────────────────────────────────────────────────────────
 
 function LinkRow({ link, C, last }: { link: HubLink; C: ComponentColors; last: boolean }) {
+  const router = useRouter();
   return (
     <Pressable
       style={({ pressed }) => [
@@ -349,10 +322,13 @@ function LinkRow({ link, C, last }: { link: HubLink; C: ComponentColors; last: b
         pressed && { opacity: 0.8 },
         !last && { marginBottom: 8 },
       ]}
+      onPress={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        if (link.route) router.push(link.route as any);
+      }}
     >
       <IconSymbol name={link.icon as any} size={18} color={C.accent} />
       <Text style={[linkStyles.title, { color: C.label }]} numberOfLines={1}>{link.title}</Text>
-      <IconSymbol name="chevron.right" size={14} color={C.muted} />
     </Pressable>
   );
 }
@@ -370,8 +346,13 @@ const linkStyles = StyleSheet.create({
 function FeaturedCard({ item, C }: { item: typeof HUB_FEATURED[0]; C: ComponentColors }) {
   return (
     <Pressable style={({ pressed }) => [featStyles.card, pressed && { opacity: 0.85 }]}>
-      <View style={[featStyles.thumb, { backgroundColor: `hsl(${item.thumbHue},42%,28%)` }]}>
-        <Text style={featStyles.emoji}>{item.thumbEmoji}</Text>
+      <View style={featStyles.thumb}>
+        {item.thumbUri
+          ? <Image source={{ uri: item.thumbUri }} style={StyleSheet.absoluteFill} resizeMode="cover" />
+          : <View style={[StyleSheet.absoluteFill, { backgroundColor: `hsl(${item.thumbHue},42%,28%)` }]}>
+              <Text style={[featStyles.emoji, { position: 'absolute', alignSelf: 'center', top: '30%' }]}>{item.thumbEmoji}</Text>
+            </View>
+        }
         <View style={featStyles.typeBadge}>
           <Text style={featStyles.typeBadgeText}>{item.type === 'video' ? '▶' : '✦'}</Text>
         </View>
@@ -407,9 +388,12 @@ function PortfolioCard({ item, C, expanded, onToggle }: {
       onPress={onToggle}
       style={[pfStyles.card, { backgroundColor: C.surface }]}
     >
-      <View style={[pfStyles.thumb, { backgroundColor: `hsl(${item.thumbHue},42%,28%)` }]}>
-        <Text style={pfStyles.emoji}>{item.thumbEmoji}</Text>
-      </View>
+      {item.thumbUri
+        ? <Image source={{ uri: item.thumbUri }} style={pfStyles.thumb} resizeMode="cover" />
+        : <View style={[pfStyles.thumb, { backgroundColor: `hsl(${item.thumbHue},42%,28%)` }]}>
+            <Text style={pfStyles.emoji}>{item.thumbEmoji}</Text>
+          </View>
+      }
       <Text style={[pfStyles.title, { color: C.label }]} numberOfLines={2}>{item.title}</Text>
       <Text style={[pfStyles.category, { color: C.secondary }]}>{item.category} · {item.year}</Text>
       {expanded && (
@@ -426,77 +410,6 @@ const pfStyles = StyleSheet.create({
   title: { fontSize: 13, fontWeight: '700', lineHeight: 18 },
   category: { fontSize: 11, marginTop: 3 },
   description: { fontSize: 12, lineHeight: 17, marginTop: 8 },
-});
-
-// ── Tier Edit Form ────────────────────────────────────────────────────────────
-
-function TierEditForm({ tier, C, onSave, onCancel }: {
-  tier: MemberTier; C: ComponentColors;
-  onSave: (t: MemberTier) => void; onCancel: () => void;
-}) {
-  const [name, setName] = useState(tier.name);
-  const [price, setPrice] = useState(String(tier.price));
-  const [desc, setDesc] = useState(tier.description);
-  const [perks, setPerks] = useState(tier.perks.join('\n'));
-
-  return (
-    <View style={[editStyles.form, { backgroundColor: C.surface }]}>
-      <Text style={[editStyles.formTitle, { color: C.label }]}>Edit Tier</Text>
-      <TextInput
-        style={[editStyles.input, { color: C.label, borderColor: C.separator }]}
-        value={name} onChangeText={setName} placeholder="Tier name"
-        placeholderTextColor={C.muted}
-      />
-      <TextInput
-        style={[editStyles.input, { color: C.label, borderColor: C.separator }]}
-        value={price} onChangeText={setPrice} placeholder="Price (0 = free)"
-        placeholderTextColor={C.muted} keyboardType="numeric"
-      />
-      <TextInput
-        style={[editStyles.input, { color: C.label, borderColor: C.separator }]}
-        value={desc} onChangeText={setDesc} placeholder="Description"
-        placeholderTextColor={C.muted}
-      />
-      <TextInput
-        style={[editStyles.inputMulti, { color: C.label, borderColor: C.separator }]}
-        value={perks} onChangeText={setPerks}
-        placeholder="Perks (one per line)" placeholderTextColor={C.muted}
-        multiline textAlignVertical="top"
-      />
-      <View style={editStyles.btnRow}>
-        <Pressable style={[editStyles.btn, { borderColor: C.separator, borderWidth: 1 }]} onPress={onCancel}>
-          <Text style={[editStyles.btnText, { color: C.secondary }]}>Cancel</Text>
-        </Pressable>
-        <Pressable
-          style={[editStyles.btn, { backgroundColor: C.accent }]}
-          onPress={() => onSave({
-            ...tier,
-            name, price: parseFloat(price) || 0,
-            description: desc,
-            perks: perks.split('\n').filter(Boolean),
-          })}
-        >
-          <Text style={[editStyles.btnText, { color: '#fff' }]}>Save</Text>
-        </Pressable>
-      </View>
-    </View>
-  );
-}
-
-const editStyles = StyleSheet.create({
-  form: { borderRadius: 16, padding: 16, marginBottom: 14 },
-  formTitle: { fontSize: 15, fontWeight: '700', marginBottom: 12 },
-  input: {
-    borderWidth: StyleSheet.hairlineWidth, borderRadius: 10,
-    padding: 12, fontSize: 14, marginBottom: 10,
-  },
-  inputMulti: {
-    borderWidth: StyleSheet.hairlineWidth, borderRadius: 10,
-    padding: 12, fontSize: 14, marginBottom: 10, minHeight: 80,
-  },
-  btnRow: { flexDirection: 'row', gap: 10, marginTop: 4 },
-  btn: { flex: 1, paddingVertical: 11, borderRadius: 12, alignItems: 'center' },
-  btnText: { fontSize: 14, fontWeight: '600' },
 });
 
 // ── Live Hub View ─────────────────────────────────────────────────────────────
@@ -620,6 +533,99 @@ function LiveHubView({ mode, C, insets }: { mode: string; C: ComponentColors; in
   );
 }
 
+// ── Line Chart ────────────────────────────────────────────────────────────────
+
+function LineChart({ data, color, height = 72, interactive = false, tooltipBg, tooltipText, labels }: {
+  data: number[]; color: string; height?: number;
+  interactive?: boolean; tooltipBg?: string; tooltipText?: string;
+  labels?: string[];
+}) {
+  const [width, setWidth] = React.useState(0);
+  const [tooltipIdx, setTooltipIdx] = React.useState<number | null>(null);
+
+  if (data.length < 2) return <View style={{ height }} onLayout={e => setWidth(e.nativeEvent.layout.width)} />;
+  const min  = Math.min(...data);
+  const max  = Math.max(...data);
+  const rng  = max - min || 1;
+  const pts  = data.map((v, i) => ({
+    x: width > 0 ? (i / (data.length - 1)) * width : 0,
+    y: height - ((v - min) / rng) * (height - 6) - 3,
+  }));
+
+  const handleTouch = (x: number) => {
+    if (width <= 0) return;
+    const idx = Math.max(0, Math.min(data.length - 1, Math.round((x / width) * (data.length - 1))));
+    setTooltipIdx(idx);
+  };
+
+  return (
+    <View style={{ height }} onLayout={e => setWidth(e.nativeEvent.layout.width)}>
+      {width > 0 && pts.slice(1).map((pt, i) => {
+        const prev = pts[i];
+        const dx = pt.x - prev.x, dy = pt.y - prev.y;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        const ang = Math.atan2(dy, dx) * (180 / Math.PI);
+        return (
+          <View key={i} style={{
+            position: 'absolute',
+            left: (prev.x + pt.x) / 2 - len / 2,
+            top:  (prev.y + pt.y) / 2 - 1,
+            width: len, height: 2,
+            backgroundColor: color,
+            transform: [{ rotate: `${ang}deg` }],
+          }} />
+        );
+      })}
+      {interactive && tooltipIdx !== null && width > 0 && (
+        <>
+          <View style={{
+            position: 'absolute',
+            left: pts[tooltipIdx].x,
+            top: 0,
+            bottom: 0,
+            width: 1,
+            backgroundColor: color,
+            opacity: 0.4,
+          }} />
+          <View style={{
+            position: 'absolute',
+            left: pts[tooltipIdx].x - 4,
+            top: pts[tooltipIdx].y - 4,
+            width: 8,
+            height: 8,
+            borderRadius: 4,
+            backgroundColor: color,
+          }} />
+          <View style={{
+            position: 'absolute',
+            left: Math.max(0, Math.min(width - 90, pts[tooltipIdx].x - 45)),
+            top: -36,
+            backgroundColor: tooltipBg ?? color,
+            borderRadius: 8,
+            paddingHorizontal: 10,
+            paddingVertical: 6,
+            zIndex: 10,
+          }}>
+            <Text style={{ color: tooltipText ?? '#fff', fontSize: 11, fontWeight: '700' }}>
+              {data[tooltipIdx].toFixed(1)}%{'  '}{labels?.[tooltipIdx] ?? ''}
+            </Text>
+          </View>
+        </>
+      )}
+      {interactive && width > 0 && (
+        <View
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+          onStartShouldSetResponder={() => true}
+          onMoveShouldSetResponder={() => true}
+          onResponderGrant={e => handleTouch(e.nativeEvent.locationX)}
+          onResponderMove={e => handleTouch(e.nativeEvent.locationX)}
+          onResponderRelease={() => setTooltipIdx(null)}
+        />
+      )}
+    </View>
+  );
+}
+
 // ── Hub Screen ────────────────────────────────────────────────────────────────
 
 export default function HubScreen() {
@@ -632,19 +638,62 @@ export default function HubScreen() {
 
   const [role, cycleRole, roleCycles] = useDemoRole('personal:hub');
   const isOwner = role === roleCycles[0];
-  const [activeTab, setActiveTab] = useState<HubTab>('Overview');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [filterPillsVisible, setFilterPillsVisible] = useState(false);
+
+  // ── Non-personal mode roles ──────────────────────────────────────────────────
+  const [bizRole,    bizCycleRole,    bizRoleCycles]    = useDemoRole('business:hub');
+  const isBizAdmin = bizRole === bizRoleCycles[0];
+  const [eduRole,    eduCycleRole,    eduRoleCycles]    = useDemoRole('education:hub');
+  const isEduAdmin = eduRole === eduRoleCycles[0];
+  const [comRole,    comCycleRole,    comRoleCycles]    = useDemoRole('community:hub');
+  const isComAdmin = comRole === comRoleCycles[0];
+  const [sportsRole, sportsCycleRole, sportsRoleCycles] = useDemoRole('sports:hub');
+  const isSportsAdmin = sportsRole === sportsRoleCycles[0];
+
+  // ── Tab state ─────────────────────────────────────────────────────────────────
+  type HubTab = 'Profile' | 'Content' | 'Analytics';
+  const params = useLocalSearchParams<{ tab?: string }>();
+  const [activeTab, setActiveTab] = useState<HubTab>('Profile');
+  useEffect(() => { if (!isOwner) setActiveTab('Profile'); }, [isOwner]);
+  useEffect(() => {
+    if (!isOwner) return;
+    const t = params.tab;
+    if (t === 'Content' || t === 'Analytics') setActiveTab(t);
+    else setActiveTab('Profile');
+  }, [params.tab, isOwner]);
+
+  // ── Tab state for non-personal modes ────────────────────────────────────────
+  const [bizTab,    setBizTab]    = useState<'Overview' | 'Projects' | 'Documents'>('Overview');
+  const [eduTab,    setEduTab]    = useState<'Overview' | 'Courses' | 'Student Life'>('Overview');
+  const [comTab,    setComTab]    = useState<'Overview' | 'Services' | 'Groups'>('Overview');
+  const [sportsTab, setSportsTab] = useState<'Overview' | 'Film Room' | 'Scouting' | 'Game Day'>('Overview');
+  useEffect(() => { if (!isBizAdmin && bizTab === 'Documents') setBizTab('Overview'); }, [isBizAdmin, bizTab]);
+  useEffect(() => { if (!isComAdmin && comTab === 'Groups') setComTab('Overview'); }, [isComAdmin, comTab]);
+  useEffect(() => { if (!isSportsAdmin && (sportsTab === 'Scouting' || sportsTab === 'Game Day')) setSportsTab('Overview'); }, [isSportsAdmin, sportsTab]);
   const [selectedPill, setSelectedPill] = useState('All');
   const [chartMetric, setChartMetric] = useState<ChartMetric>('followers');
-  const [editingBio, setEditingBio] = useState(false);
-  const [bioText, setBioText] = useState(HUB_PROFILE.bio);
-  const [editLinks, setEditLinks] = useState(HUB_LINKS);
-  const [tiers, setTiers] = useState(HUB_TIERS);
-  const [editingTierId, setEditingTierId] = useState<string | null>(null);
+  const [bioText] = useState(HUB_PROFILE.bio);
+
+  const [tiers] = useState(HUB_TIERS);
   const [expandedPortfolioId, setExpandedPortfolioId] = useState<string | null>(null);
 
-  const pillsRevealAnim = useRef(new Animated.Value(0)).current;
+  // ── Analytics tab state ──────────────────────────────────────────────────────
+  const [engPeriod,         setEngPeriod]         = useState<'7d'|'30d'|'90d'>('30d');
+  const [topMetric,         setTopMetric]         = useState<'reach'|'engagement'|'revenue'>('reach');
+  const [hmTooltip,         setHmTooltip]         = useState<{day:number;slot:number}|null>(null);
+  const [expandedAge,       setExpandedAge]       = useState<string | null>(null);
+  const [expandedLocation,  setExpandedLocation]  = useState<string | null>(null);
+  const [expandedGrowthSrc, setExpandedGrowthSrc] = useState<string | null>(null);
+  const [expandedRevSrc,    setExpandedRevSrc]    = useState<string | null>(null);
+  const [expandedContent,   setExpandedContent]   = useState<string | null>(null);
+  const [expandedContentType, setExpandedContentType] = useState<string | null>(null);
+
+  // ── Content tab state ────────────────────────────────────────────────────────
+  const [calView,       setCalView]       = useState<'week' | 'month'>('week');
+  const [weekOffset,    setWeekOffset]    = useState(0);
+  const [selectedCalDay, setSelectedCalDay] = useState<Date>(() => { const d = new Date(); d.setHours(0,0,0,0); return d; });
+  const [contentSearch, setContentSearch] = useState('');
+  const [showComposer,  setShowComposer]  = useState(false);
+
   const lastScrollY = useRef(0);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
@@ -657,33 +706,15 @@ export default function HubScreen() {
     if (y <= 0) showFooter();
   }, []);
 
-  const toggleFilterPills = useCallback(() => {
-    setFilterPillsVisible(prev => {
-      const next = !prev;
-      Animated.timing(pillsRevealAnim, { toValue: next ? 1 : 0, duration: 200, useNativeDriver: false }).start();
-      return next;
-    });
-  }, [pillsRevealAnim]);
-
-  const handleTabSelect = useCallback((tab: HubTab) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setActiveTab(tab);
-    setDropdownOpen(false);
-    setSelectedPill(tab === 'Members' ? 'All Tiers' : 'All');
-    setFilterPillsVisible(false);
-    pillsRevealAnim.setValue(0);
-  }, [pillsRevealAnim]);
 
   if (dataMode === 'live') return <LiveHubView mode={mode} C={C} insets={insets} />;
 
   const topBarH = insets.top + TOP_BAR_H;
-  const contentPaddingTop = topBarH + PILL_ROW_H + 8;
+  const contentPaddingTop = topBarH + 8;
 
-  const pills = pillsForTab(activeTab);
+  // ── Owner Dashboard ───────────────────────────────────────────────────────────
 
-  // ── Owner Overview ───────────────────────────────────────────────────────────
-
-  const renderOwnerOverview = () => {
+  const renderOwnerDashboard = () => {
     const a = HUB_ANALYTICS;
     const showFollowers = selectedPill === 'All' || selectedPill === 'Followers';
     const showEarnings  = selectedPill === 'All' || selectedPill === 'Earnings';
@@ -732,8 +763,8 @@ export default function HubScreen() {
         <View style={{ flexDirection: 'row', gap: 10, marginBottom: 20 }}>
           {[
             { label: 'Create Post', icon: 'plus.circle.fill', action: () => router.push('/(tabs)/(main)/social/create' as any) },
-            { label: 'Newsletter',  icon: 'envelope.fill',    action: () => router.push('/(tabs)/(main)/hub/newsletter-compose' as any) },
-            { label: 'Earnings',    icon: 'dollarsign.circle.fill', action: () => {} },
+            { label: 'New Content', icon: 'calendar',          action: () => router.push('/(tabs)/(main)/hub/newsletter-compose' as any) },
+            { label: 'View Earnings', icon: 'dollarsign.circle.fill', action: () => {} },
           ].map(btn => (
             <Pressable
               key={btn.label}
@@ -763,9 +794,191 @@ export default function HubScreen() {
     );
   };
 
-  // ── Visitor Overview ─────────────────────────────────────────────────────────
+  // ── Owner Profile (public-facing creator profile) ────────────────────────────
 
-  const renderVisitorOverview = () => (
+  const PROFILE_FEATURED = [
+    { type: 'VIDEO',   title: 'KaNeXT OS v2.0 — Full Walkthrough',    meta: '12.4K views'   },
+    { type: 'PRODUCT', title: 'Sports Intelligence Playbook',          meta: '$29 · 847 sold' },
+    { type: 'POST',    title: 'Why every institution needs an OS',     meta: '2.1K likes'    },
+  ];
+
+  const PROFILE_TIERS = [
+    { id: 'free',         name: 'Free',         price: 0,  desc: 'Public posts, basic profile',                    members: 1000 },
+    { id: 'supporter',    name: 'Supporter',    price: 10, desc: 'Exclusive content, monthly Q&A',                 members: 197  },
+    { id: 'inner-circle', name: 'Inner Circle', price: 25, desc: 'DM access, early releases, live sessions',       members: 50   },
+  ];
+
+  const PROFILE_LINKS = [
+    { icon: 'globe',                    title: 'KaNeXT Product Demo',      url: 'kanext.io/demo'       },
+    { icon: 'calendar.badge.plus',      title: 'Book a Coaching Session',  url: 'kanext.io/book'       },
+    { icon: 'envelope.fill',            title: 'My Newsletter',            url: 'kanext.io/newsletter' },
+    { icon: 'play.rectangle.fill',      title: 'Latest KTV Video',         url: 'kanext.io/ktv'        },
+  ];
+
+  const COVER_H = 220 + contentPaddingTop;   // bleeds behind status bar + top bar
+  const AVATAR_SIZE = 80;
+  const AVATAR_OVERLAP = AVATAR_SIZE / 2;
+
+  const renderOwnerProfile = (viewerIsOwner = true) => (
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingTop: 0, paddingBottom: 120 }}
+    >
+      {/* ── 1. Cover + Avatar ── */}
+      <View style={{ position: 'relative', marginBottom: AVATAR_OVERLAP + 12 }}>
+        {/* Cover image */}
+        <Pressable disabled={!viewerIsOwner}>
+          <View style={{ height: COVER_H, backgroundColor: C.surface, overflow: 'hidden' }}>
+            <Image
+              source={{ uri: 'https://picsum.photos/seed/kanext-city/900/500' }}
+              style={{ width: '100%', height: '100%' }}
+              resizeMode="cover"
+            />
+            {/* top scrim so nav items are readable over image */}
+            <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: contentPaddingTop + 20, backgroundColor: 'rgba(0,0,0,0.30)' }} />
+            {/* bottom scrim for avatar area */}
+            <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 60, backgroundColor: 'rgba(0,0,0,0.20)' }} />
+            {viewerIsOwner && (
+              <View style={{ position: 'absolute', bottom: 10, right: 12, backgroundColor: 'rgba(0,0,0,0.50)', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5, flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                <IconSymbol name="camera.fill" size={12} color="#fff" />
+                <Text style={{ fontSize: 11, fontWeight: '600', color: '#fff' }}>Edit Cover</Text>
+              </View>
+            )}
+          </View>
+        </Pressable>
+        {/* Profile photo — overlapping */}
+        <View style={{ position: 'absolute', bottom: -AVATAR_OVERLAP, left: 20 }}>
+          <Pressable disabled={!viewerIsOwner}>
+            <Image
+              source={{ uri: 'https://picsum.photos/seed/kanext-avatar/200/200' }}
+              style={{ width: AVATAR_SIZE, height: AVATAR_SIZE, borderRadius: AVATAR_SIZE / 2, borderWidth: 3, borderColor: C.bg }}
+              resizeMode="cover"
+            />
+            {viewerIsOwner && (
+              <View style={{ position: 'absolute', bottom: 0, right: 0, width: 24, height: 24, borderRadius: 12, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: C.bg }}>
+                <IconSymbol name="camera.fill" size={11} color={C.bg} />
+              </View>
+            )}
+          </Pressable>
+        </View>
+      </View>
+
+      {/* ── 2. Identity ── */}
+      <View style={{ paddingHorizontal: 20, marginBottom: 14 }}>
+        <Text style={{ fontSize: 20, fontWeight: '700', color: C.label, marginBottom: 2 }}>Sammy Kalejaiye</Text>
+        <Text style={{ fontSize: 14, color: C.secondary, marginBottom: 8 }}>@sammyk</Text>
+        <Text style={{ fontSize: 14, color: C.label, lineHeight: 20, opacity: 0.85 }}>
+          {"Building the operating system for institutions. Founder of KaNeXT. Sports. Education. Business. Community."}
+        </Text>
+      </View>
+
+      {/* ── 3. Social proof + Primary action ── */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, marginBottom: 18 }}>
+        <Text style={{ fontSize: 14, color: C.secondary }}>
+          <Text style={{ fontWeight: '700', color: C.label }}>1,247</Text>{' followers'}
+        </Text>
+        {viewerIsOwner ? (
+          <Pressable style={{ paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20, borderWidth: 1.5, borderColor: C.separator }}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Edit Profile</Text>
+          </Pressable>
+        ) : (
+          <Pressable style={{ paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20, backgroundColor: C.activePill }}>
+            <Text style={{ fontSize: 13, fontWeight: '600', color: C.activePillText }}>Follow</Text>
+          </Pressable>
+        )}
+      </View>
+
+      {/* ── 4. Social links row ── */}
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-start', gap: 12, paddingHorizontal: 20, paddingVertical: 14, borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: C.separator, marginBottom: 28 }}>
+        {SOCIAL_PLATFORMS.map(platform => (
+          <Pressable key={platform.name} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+            <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' }}>
+              <FontAwesome6 name={platform.fa as any} size={18} color={C.label} iconStyle="brands" />
+            </View>
+          </Pressable>
+        ))}
+      </View>
+
+      {/* ── 5. FEATURED ── */}
+      <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Featured</Text>
+        {PROFILE_FEATURED.map(item => (
+          <Pressable
+            key={item.title}
+            style={({ pressed }) => [{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 8, gap: 12 }, pressed && { opacity: 0.75 }]}
+          >
+            <View style={{ paddingHorizontal: 8, paddingVertical: 5, backgroundColor: C.separator, borderRadius: 6 }}>
+              <Text style={{ fontSize: 9, fontWeight: '800', color: C.secondary, letterSpacing: 0.5 }}>{item.type}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={1}>{item.title}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{item.meta}</Text>
+            </View>
+            <IconSymbol name="chevron.right" size={14} color={C.muted} />
+          </Pressable>
+        ))}
+      </View>
+
+      {/* ── 6. SUBSCRIBE ── */}
+      <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 12 }}>Subscribe</Text>
+        {PROFILE_TIERS.map(t => (
+          <View key={t.id} style={{ backgroundColor: C.surface, borderRadius: 12, padding: 14, marginBottom: 8 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
+              <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{t.name}</Text>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>{t.price === 0 ? 'Free' : `$${t.price}/mo`}</Text>
+            </View>
+            <Text style={{ fontSize: 13, color: C.secondary, lineHeight: 18, marginBottom: 10 }}>{t.desc}</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text style={{ fontSize: 11, color: C.muted }}>{t.members.toLocaleString()} members</Text>
+              {t.id !== 'free' && (
+                viewerIsOwner ? (
+                  <Pressable style={{ borderWidth: 1.5, borderColor: C.separator, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 5 }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>Edit Tier</Text>
+                  </Pressable>
+                ) : (
+                  <Pressable style={{ backgroundColor: C.activePill, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 5 }}>
+                    <Text style={{ fontSize: 12, fontWeight: '700', color: C.activePillText }}>Subscribe</Text>
+                  </Pressable>
+                )
+              )}
+            </View>
+          </View>
+        ))}
+      </View>
+
+      {/* ── 7. LINKS ── */}
+      <View style={{ paddingHorizontal: 16, marginBottom: 28 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, letterSpacing: 0.8, textTransform: 'uppercase' }}>Links</Text>
+          {viewerIsOwner && (
+            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' }}>
+              <IconSymbol name="plus" size={14} color={C.label} />
+            </Pressable>
+          )}
+        </View>
+        {PROFILE_LINKS.map(link => (
+          <Pressable
+            key={link.title}
+            style={({ pressed }) => [{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 13, marginBottom: 8, gap: 12 }, pressed && { opacity: 0.75 }]}
+          >
+            <View style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center' }}>
+              <IconSymbol name={link.icon as any} size={16} color={C.label} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{link.title}</Text>
+              <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{link.url}</Text>
+            </View>
+            <IconSymbol name="chevron.right" size={14} color={C.muted} />
+          </Pressable>
+        ))}
+      </View>
+    </ScrollView>
+  );
+
+  // ── Visitor Dashboard ─────────────────────────────────────────────────────────
+
+  const renderVisitorDashboard = () => (
     <ScrollView
       key="visitor-overview"
       onScroll={handleScroll}
@@ -826,236 +1039,203 @@ export default function HubScreen() {
     </ScrollView>
   );
 
-  // ── Owner Page ───────────────────────────────────────────────────────────────
+  // ── Owner Content Tab ────────────────────────────────────────────────────────
 
-  const renderOwnerPage = () => {
-    const showLinks     = selectedPill === 'All' || selectedPill === 'Links';
-    const showPortfolio = selectedPill === 'All' || selectedPill === 'Portfolio';
-    const showFeatured  = selectedPill === 'All' || selectedPill === 'Featured';
+  const renderOwnerContent = () => {
+    const weekDays   = getWeekDays(weekOffset);
+    const weekLabel  = formatWeekRange(weekDays);
+    const selDayItems = getItemsForDate(selectedCalDay, CONTENT_ITEMS);
 
-    return (
-      <ScrollView
-        key="owner-page"
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 120 }}
-      >
-        {/* Cover strip */}
-        <View style={[s.coverStrip, { backgroundColor: `hsl(${HUB_PROFILE.coverHue},42%,30%)` }]}>
-          <Text style={s.coverEditHint}>Tap to edit cover</Text>
-        </View>
+    const upNext = CONTENT_ITEMS
+      .filter(i => i.status === 'scheduled' && i.daysFromToday !== null && i.daysFromToday >= 0)
+      .sort((a, b) => (a.daysFromToday ?? 0) - (b.daysFromToday ?? 0))
+      .slice(0, 5);
 
-        {/* Name + handle */}
-        <View style={[s.pageSection, { marginHorizontal: 16 }]}>
-          <Text style={[s.pageName, { color: C.label }]}>{HUB_PROFILE.name}</Text>
-          <Text style={[s.pageHandle, { color: C.secondary }]}>{HUB_PROFILE.handle}</Text>
-        </View>
+    const drafts = CONTENT_ITEMS.filter(i => i.status === 'draft');
 
-        {/* Bio editor */}
-        <View style={[s.pageSectionBox, { backgroundColor: C.surface, marginHorizontal: 16 }]}>
-          <View style={s.pageSectionHeader}>
-            <Text style={[s.pageSectionTitle, { color: C.label }]}>About</Text>
-            <Pressable
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setEditingBio(v => !v);
-              }}
-            >
-              <Text style={[s.editToggle, { color: C.accent }]}>{editingBio ? 'Save' : 'Edit'}</Text>
-            </Pressable>
-          </View>
-          {editingBio ? (
-            <TextInput
-              style={[s.bioInput, { color: C.label, borderColor: C.separator }]}
-              value={bioText}
-              onChangeText={setBioText}
-              multiline
-              textAlignVertical="top"
-              placeholder="Write your bio…"
-              placeholderTextColor={C.muted}
-            />
-          ) : (
-            <Text style={[s.bioText, { color: C.secondary }]}>{bioText}</Text>
-          )}
-        </View>
+    const typeFilterMap: Record<string, ContentType | null> = {
+      All: null, Posts: 'post', Reels: 'reel', KTV: 'ktv', Stories: 'story',
+    };
+    const typeFilter = typeFilterMap[selectedPill] ?? null;
+    const library = CONTENT_ITEMS
+      .filter(i => i.status === 'published')
+      .filter(i => !typeFilter || i.type === typeFilter)
+      .filter(i => !contentSearch || i.title.toLowerCase().includes(contentSearch.toLowerCase()))
+      .sort((a, b) => (a.daysFromToday ?? 0) - (b.daysFromToday ?? 0));
 
-        {/* Links editor */}
-        {showLinks && (
-          <View style={{ marginHorizontal: 16, marginTop: 20 }}>
-            <SectionHeader title="Links" C={C} />
-            {editLinks.map((link, idx) => (
-              <View key={link.id} style={[s.editLinkRow, { backgroundColor: C.surface }]}>
-                <IconSymbol name={link.icon as any} size={16} color={C.accent} />
-                <Text style={[s.editLinkTitle, { color: C.label }]} numberOfLines={1}>{link.title}</Text>
-                <Pressable hitSlop={8}>
-                  <IconSymbol name="trash" size={16} color={C.muted} />
-                </Pressable>
-              </View>
-            ))}
-            <Pressable
-              style={[s.addLinkBtn, { borderColor: C.separator }]}
-              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-            >
-              <IconSymbol name="plus" size={16} color={C.accent} />
-              <Text style={[s.addLinkText, { color: C.accent }]}>Add Link</Text>
-            </Pressable>
-          </View>
-        )}
-
-        {/* Portfolio grid */}
-        {showPortfolio && (
-          <View style={{ marginHorizontal: 16, marginTop: 20 }}>
-            <SectionHeader title="Portfolio" C={C} />
-            <View style={s.portfolioGrid}>
-              {HUB_PORTFOLIO.map((item) => (
-                <View key={item.id} style={s.portfolioCell}>
-                  <PortfolioCard
-                    item={item}
-                    C={C}
-                    expanded={expandedPortfolioId === item.id}
-                    onToggle={() => setExpandedPortfolioId(expandedPortfolioId === item.id ? null : item.id)}
-                  />
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
-
-        {/* Preview button */}
-        <Pressable
-          style={[s.previewBtn, { backgroundColor: C.label, marginHorizontal: 16, marginTop: 24 }]}
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setIsOwner(false); }}
-        >
-          <IconSymbol name="eye.fill" size={16} color={C.bg} />
-          <Text style={[s.previewBtnText, { color: C.bg }]}>Preview as Visitor</Text>
-        </Pressable>
-      </ScrollView>
-    );
-  };
-
-  // ── Visitor Page ─────────────────────────────────────────────────────────────
-
-  const renderVisitorPage = () => (
-    <ScrollView
-      key="visitor-page"
-      onScroll={handleScroll}
-      scrollEventThrottle={16}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 120 }}
-    >
-      {/* Cover strip */}
-      <View style={[s.coverStrip, { backgroundColor: `hsl(${HUB_PROFILE.coverHue},42%,30%)` }]} />
-
-      {/* Portfolio grid */}
-      <View style={{ marginHorizontal: 16, marginTop: 16 }}>
-        <SectionHeader title="Portfolio" C={C} />
-        <View style={s.portfolioGrid}>
-          {HUB_PORTFOLIO.map(item => (
-            <View key={item.id} style={s.portfolioCell}>
-              <PortfolioCard
-                item={item}
-                C={C}
-                expanded={expandedPortfolioId === item.id}
-                onToggle={() => setExpandedPortfolioId(expandedPortfolioId === item.id ? null : item.id)}
-              />
-            </View>
-          ))}
-        </View>
-      </View>
-
-      {/* Featured Content */}
-      <View style={{ marginTop: 20 }}>
-        <View style={{ paddingHorizontal: 16 }}>
-          <SectionHeader title="Featured" C={C} />
-        </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingLeft: 16, paddingRight: 8 }}>
-          {HUB_FEATURED.map(item => (
-            <FeaturedCard key={item.id} item={item} C={C} />
-          ))}
-        </ScrollView>
-      </View>
-    </ScrollView>
-  );
-
-  // ── Owner Members ────────────────────────────────────────────────────────────
-
-  const renderOwnerMembers = () => {
-    const isNewsletter = selectedPill === 'Newsletter';
-    const filteredTiers = selectedPill === 'All Tiers' || selectedPill === 'All'
-      ? tiers
-      : selectedPill === 'Free'
-        ? tiers.filter(t => t.price === 0)
-        : selectedPill === 'Paid'
-          ? tiers.filter(t => t.price > 0)
-          : tiers;
+    const statusColor = (s: string) => s === 'published' ? GAIN : s === 'scheduled' ? CAUTION : C.separator;
+    const statusLabel = (s: string) => s === 'published' ? 'Published' : s === 'scheduled' ? 'Scheduled' : 'Draft';
 
     return (
       <ScrollView
-        key="owner-members"
+        key="owner-content"
         onScroll={handleScroll}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}
       >
-        {isNewsletter ? (
-          <>
-            <SectionHeader title="Newsletters" C={C} />
-            <View style={[s.section, { backgroundColor: C.surface }]}>
-              {HUB_NEWSLETTERS.map((item, idx) => (
-                <NewsletterRow
-                  key={item.id}
-                  item={item}
-                  C={C}
-                  last={idx === HUB_NEWSLETTERS.length - 1}
-                  onPress={() => router.push('/(tabs)/(main)/hub/newsletter-compose' as any)}
-                />
+        {/* ── Calendar ── */}
+        <SectionHeader title="Content Calendar" C={C} />
+        <View style={[cs.card, { backgroundColor: C.surface }]}>
+          {/* Header row */}
+          <View style={cs.calHeader}>
+            <View style={cs.toggleRow}>
+              {(['week', 'month'] as const).map(v => (
+                <Pressable key={v} style={[cs.viewToggle, calView === v && { backgroundColor: C.label }]}
+                  onPress={() => setCalView(v)}>
+                  <Text style={[cs.viewToggleText, { color: calView === v ? C.bg : C.secondary }]}>
+                    {v === 'week' ? 'Week' : 'Month'}
+                  </Text>
+                </Pressable>
               ))}
             </View>
-          </>
-        ) : (
-          <>
-            <SectionHeader title="Tiers" C={C} />
-            {filteredTiers.map(tier => (
-              editingTierId === tier.id ? (
-                <TierEditForm
-                  key={tier.id}
-                  tier={tier}
-                  C={C}
-                  onSave={updated => {
-                    setTiers(prev => prev.map(t => t.id === tier.id ? updated : t));
-                    setEditingTierId(null);
-                  }}
-                  onCancel={() => setEditingTierId(null)}
-                />
-              ) : (
-                <OwnerTierCard
-                  key={tier.id}
-                  tier={tier}
-                  C={C}
-                  onEdit={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setEditingTierId(tier.id); }}
-                />
-              )
-            ))}
-            <Pressable
-              style={[s.addTierBtn, { borderColor: C.separator }]}
-              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-            >
-              <IconSymbol name="plus" size={16} color={C.accent} />
-              <Text style={[s.addTierText, { color: C.accent }]}>Create Tier</Text>
-            </Pressable>
+            <View style={cs.navRow}>
+              <Pressable onPress={() => setWeekOffset(w => w - 1)} hitSlop={10}>
+                <IconSymbol name="chevron.left" size={14} color={C.secondary} />
+              </Pressable>
+              <Text style={[cs.weekLabel, { color: C.secondary }]}>{weekLabel}</Text>
+              <Pressable onPress={() => setWeekOffset(w => w + 1)} hitSlop={10}>
+                <IconSymbol name="chevron.right" size={14} color={C.secondary} />
+              </Pressable>
+            </View>
+          </View>
 
-            <SectionHeader title="Subscribers" C={C} />
-            <View style={[s.section, { backgroundColor: C.surface }]}>
-              {HUB_SUBSCRIBERS.map((sub, idx) => (
-                <SubscriberRow key={sub.id} sub={sub} C={C} last={idx === HUB_SUBSCRIBERS.length - 1} />
+          {/* Week cells */}
+          <View style={cs.weekRow}>
+            {weekDays.map((day, idx) => {
+              const items     = getItemsForDate(day, CONTENT_ITEMS);
+              const isSelected = isSameDay(day, selectedCalDay);
+              const isToday   = getDayOffset(day) === 0;
+              const hasPub    = items.some(i => i.status === 'published');
+              const hasSch    = items.some(i => i.status === 'scheduled');
+              const DAY_NAMES = ['M','T','W','T','F','S','S'];
+              return (
+                <Pressable key={idx} style={cs.dayCell}
+                  onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSelectedCalDay(day); }}>
+                  <Text style={[cs.dayName, { color: C.muted }]}>{DAY_NAMES[idx]}</Text>
+                  <View style={[
+                    cs.dayNumCircle,
+                    isSelected && { backgroundColor: C.label },
+                    isToday && !isSelected && { borderWidth: 1.5, borderColor: C.label },
+                  ]}>
+                    <Text style={[cs.dayNumText, { color: isSelected ? C.bg : C.label }]}>{day.getDate()}</Text>
+                  </View>
+                  <View style={cs.dotRow}>
+                    {hasPub && <View style={[cs.dot, { backgroundColor: GAIN }]} />}
+                    {hasSch && <View style={[cs.dot, { backgroundColor: CAUTION }]} />}
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          {/* Selected day expanded */}
+          {selDayItems.length > 0 && (
+            <View style={[cs.dayExpanded, { borderTopColor: C.separator }]}>
+              <Text style={[cs.dayExpandedLabel, { color: C.secondary }]}>{formatDayLabel(selectedCalDay)}</Text>
+              {selDayItems.map((item, idx) => (
+                <View key={item.id} style={[cs.dayItemRow, idx < selDayItems.length - 1 && { borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth }]}>
+                  <View style={[cs.typeIconCircle, { backgroundColor: C.bg }]}>
+                    <IconSymbol name={contentTypeIcon(item.type) as any} size={14} color={C.label} />
+                  </View>
+                  <Text style={[cs.dayItemTitle, { color: C.label }]} numberOfLines={1}>{item.title}</Text>
+                  <View style={[cs.statusPill, { backgroundColor: statusColor(item.status) + '22' }]}>
+                    <Text style={[cs.statusPillText, { color: statusColor(item.status) }]}>{statusLabel(item.status)}</Text>
+                  </View>
+                  {item.time && <Text style={[cs.dayItemTime, { color: C.muted }]}>{item.time}</Text>}
+                </View>
+              ))}
+            </View>
+          )}
+        </View>
+
+        {/* ── Up Next ── */}
+        <SectionHeader title="Up Next" C={C} />
+        {upNext.map(item => (
+          <Pressable key={item.id} style={[cs.upNextCard, { backgroundColor: C.surface }]}
+            onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+            <View style={[cs.typeIconCircle, { backgroundColor: C.bg, width: 40, height: 40 }]}>
+              <IconSymbol name={contentTypeIcon(item.type) as any} size={18} color={C.label} />
+            </View>
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={[cs.upNextTitle, { color: C.label }]} numberOfLines={1}>{item.title}</Text>
+              <Text style={[cs.upNextMeta, { color: C.secondary }]}>
+                {item.destination}  ·  {item.daysFromToday === 0 ? 'Today' : item.daysFromToday === 1 ? 'Tomorrow' : `in ${item.daysFromToday}d`}  ·  {item.time}
+              </Text>
+            </View>
+            <View style={[cs.statusPill, { backgroundColor: CAUTION + '22' }]}>
+              <Text style={[cs.statusPillText, { color: CAUTION }]}>Scheduled</Text>
+            </View>
+          </Pressable>
+        ))}
+
+        {/* ── Drafts ── */}
+        {drafts.length > 0 && (
+          <>
+            <SectionHeader title="Drafts" C={C} />
+            <View style={[cs.card, { backgroundColor: C.surface }]}>
+              {drafts.map((item, idx) => (
+                <Pressable key={item.id}
+                  style={[cs.draftRow, idx < drafts.length - 1 && { borderBottomColor: C.separator, borderBottomWidth: StyleSheet.hairlineWidth }]}
+                  onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+                  <View style={[cs.typeIconCircle, { backgroundColor: C.bg }]}>
+                    <IconSymbol name={contentTypeIcon(item.type) as any} size={14} color={C.label} />
+                  </View>
+                  <View style={{ flex: 1, gap: 2 }}>
+                    <Text style={[cs.draftTitle, { color: C.label }]} numberOfLines={1}>{item.title}</Text>
+                    <Text style={[cs.draftMeta, { color: C.muted }]}>Edited {item.lastEdited}</Text>
+                  </View>
+                </Pressable>
               ))}
             </View>
           </>
         )}
+
+        {/* ── Content Library ── */}
+        <SectionHeader title="Content Library" C={C} />
+        <View style={[cs.searchBar, { backgroundColor: C.surface, borderColor: C.separator }]}>
+          <IconSymbol name="magnifyingglass" size={14} color={C.muted} />
+          <TextInput
+            value={contentSearch}
+            onChangeText={setContentSearch}
+            placeholder="Search content..."
+            placeholderTextColor={C.muted}
+            style={[cs.searchInput, { color: C.label }]}
+          />
+          {contentSearch.length > 0 && (
+            <Pressable onPress={() => setContentSearch('')} hitSlop={8}>
+              <IconSymbol name="xmark.circle.fill" size={14} color={C.muted} />
+            </Pressable>
+          )}
+        </View>
+
+        {library.length === 0
+          ? <Text style={[cs.emptyText, { color: C.muted }]}>No published content yet.</Text>
+          : library.map(item => (
+            <Pressable key={item.id} style={[cs.libraryRow, { backgroundColor: C.surface }]}
+              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+              <View style={[cs.thumbPlaceholder, { backgroundColor: C.bg }]}>
+                <IconSymbol name={contentTypeIcon(item.type) as any} size={18} color={C.label} />
+              </View>
+              <View style={{ flex: 1, gap: 3 }}>
+                <Text style={[cs.libraryTitle, { color: C.label }]} numberOfLines={1}>{item.title}</Text>
+                <Text style={[cs.libraryMeta, { color: C.secondary }]}>
+                  {item.destination}  ·  {item.views ? formatViews(item.views) + ' views' : ''}
+                  {item.engagement ? '  ·  ' + item.engagement + ' engagements' : ''}
+                </Text>
+              </View>
+            </Pressable>
+          ))
+        }
       </ScrollView>
     );
   };
+
+  // ── Owner Page ───────────────────────────────────────────────────────────────
+
+  // ── Visitor Page ─────────────────────────────────────────────────────────────
+
+  const renderVisitorPage = () => renderOwnerProfile(false);
 
   // ── Visitor Members ──────────────────────────────────────────────────────────
 
@@ -1096,12 +1276,444 @@ export default function HubScreen() {
     </ScrollView>
   );
 
+  // ── Owner Analytics ──────────────────────────────────────────────────────────
+
+  const renderOwnerAnalytics = () => {
+    const engData   = ANALYTICS_ENGAGEMENT_TREND.slice(engPeriod === '7d' ? -7 : engPeriod === '30d' ? -30 : -90);
+    const curRate   = engData[engData.length - 1];
+    const prevRate  = engData[0];
+    const trendUp   = curRate >= prevRate;
+    const trendPct  = Math.abs(((curRate - prevRate) / prevRate) * 100).toFixed(1);
+    const bestRevIdx = ANALYTICS_CONTENT_TYPES.reduce((bi, ct, i) => ct.revenue > ANALYTICS_CONTENT_TYPES[bi].revenue ? i : bi, 0);
+
+    const topSorted = [...ANALYTICS_TOP_CONTENT].sort((a, b) =>
+      topMetric === 'reach' ? b.reach - a.reach :
+      topMetric === 'engagement' ? b.engRate - a.engRate :
+      b.revenue - a.revenue
+    );
+
+    return (
+      <ScrollView
+        key="owner-analytics"
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: insets.bottom + 70 }}
+      >
+        {/* ── Engagement ── */}
+        <SectionHeader title="Engagement" C={C} />
+        <View style={[as.card, { backgroundColor: C.surface }]}>
+          <View style={as.engHeaderRow}>
+            <View>
+              <Text style={[as.bigRate, { color: C.label }]}>{curRate.toFixed(1)}%</Text>
+              <View style={as.trendRow}>
+                <IconSymbol name={trendUp ? 'arrow.up.right' : 'arrow.down.right'} size={12} color={trendUp ? GAIN : '#B85C5C'} />
+                <Text style={[as.trendText, { color: trendUp ? GAIN : '#B85C5C' }]}>{trendPct}% vs {engPeriod} ago</Text>
+              </View>
+            </View>
+            <View style={as.periodPills}>
+              {(['7d','30d','90d'] as const).map(p => (
+                <Pressable key={p} style={[as.periodPill, engPeriod === p && { backgroundColor: C.label }]}
+                  onPress={() => setEngPeriod(p)}>
+                  <Text style={[as.periodPillText, { color: engPeriod === p ? C.bg : C.secondary }]}>{p}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+          {(() => {
+            const today = new Date();
+            const engLabels = engData.map((_, i) => {
+              const d = new Date(today);
+              d.setDate(d.getDate() - (engData.length - 1 - i));
+              return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+            return (
+              <LineChart data={engData} color={C.label} height={72} interactive
+                tooltipBg={C.label} tooltipText={C.bg} labels={engLabels} />
+            );
+          })()}
+          <View style={as.chartAxisRow}>
+            <Text style={[as.axisLabel, { color: C.muted }]}>{engPeriod === '7d' ? '7d ago' : engPeriod === '30d' ? '30d ago' : '90d ago'}</Text>
+            <Text style={[as.axisLabel, { color: C.muted }]}>Today</Text>
+          </View>
+        </View>
+
+        {/* ── Audience ── */}
+        <SectionHeader title="Audience" C={C} />
+        <View style={[as.card, { backgroundColor: C.surface }]}>
+          {/* Age bars */}
+          <Text style={[as.subHeader, { color: C.secondary }]}>Age Range</Text>
+          {ANALYTICS_AUDIENCE.ages.map(a => {
+            const ageExpanded = expandedAge === a.range;
+            const ageDetail = ANALYTICS_AGE_DETAIL[a.range];
+            return (
+              <Pressable key={a.range} onPress={() => setExpandedAge(ageExpanded ? null : a.range)}>
+                <View style={as.ageRow}>
+                  <Text style={[as.ageLabel, { color: C.secondary }]}>{a.range}</Text>
+                  <View style={[as.barTrackH, { backgroundColor: C.separator }]}>
+                    <View style={[as.barFillH, { width: `${a.pct}%`, backgroundColor: C.label }]} />
+                  </View>
+                  <Text style={[as.agePct, { color: C.label }]}>{a.pct}%</Text>
+                </View>
+                {ageExpanded && ageDetail && (
+                  <View style={{ paddingTop: 8, gap: 4, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator, marginBottom: 6 }}>
+                    <Text style={{ fontSize: 12, color: C.secondary }}>Followers: {ageDetail.followers}</Text>
+                    <Text style={{ fontSize: 12, color: C.secondary }}>Engagement: {ageDetail.engPct}% of total</Text>
+                    <Text style={{ fontSize: 12, color: C.secondary, fontStyle: 'italic' }}>Top content: {ageDetail.topContent}</Text>
+                  </View>
+                )}
+              </Pressable>
+            );
+          })}
+
+          {/* Gender */}
+          <View style={[as.divider, { backgroundColor: C.separator }]} />
+          <Text style={[as.subHeader, { color: C.secondary }]}>Gender</Text>
+          <Text style={[as.genderText, { color: C.label }]}>
+            {ANALYTICS_AUDIENCE.gender.male}% Male  ·  {ANALYTICS_AUDIENCE.gender.female}% Female  ·  {ANALYTICS_AUDIENCE.gender.other}% Other
+          </Text>
+
+          {/* Locations */}
+          <View style={[as.divider, { backgroundColor: C.separator }]} />
+          <Text style={[as.subHeader, { color: C.secondary }]}>Top Locations</Text>
+          {ANALYTICS_AUDIENCE.locations.map((loc, i) => {
+            const locExpanded = expandedLocation === loc.city;
+            const locDetail = ANALYTICS_LOCATION_DETAIL[loc.city];
+            return (
+              <Pressable key={loc.city} onPress={() => setExpandedLocation(locExpanded ? null : loc.city)}>
+                <View style={as.locationRow}>
+                  <Text style={[as.locationRank, { color: C.muted }]}>{i + 1}</Text>
+                  <Text style={[as.locationCity, { color: C.label }]}>{loc.city}</Text>
+                  <Text style={[as.locationPct,  { color: C.secondary }]}>{loc.pct}%</Text>
+                </View>
+                {locExpanded && locDetail && (
+                  <View style={{ paddingTop: 4, paddingBottom: 4, gap: 2, paddingLeft: 26 }}>
+                    <Text style={{ fontSize: 12, color: C.secondary }}>Followers: {locDetail.followers}</Text>
+                    <Text style={{ fontSize: 12, color: C.secondary }}>Eng rate: {locDetail.engRate}%</Text>
+                  </View>
+                )}
+              </Pressable>
+            );
+          })}
+        </View>
+
+        {/* ── Best Times ── */}
+        <SectionHeader title="Best Times to Post" C={C} />
+        <View style={[as.card, { backgroundColor: C.surface }]}>
+          {/* Hour labels */}
+          <View style={as.hmHeaderRow}>
+            <View style={{ width: 32 }} />
+            {HEATMAP_HOURS.map(h => (
+              <Text key={h} style={[as.hmHourLabel, { color: C.muted }]}>{h}</Text>
+            ))}
+          </View>
+          {/* Rows */}
+          {ANALYTICS_HEATMAP.map((row, di) => (
+            <View key={di} style={as.hmRow}>
+              <Text style={[as.hmDayLabel, { color: C.secondary }]}>{HEATMAP_DAYS[di]}</Text>
+              {row.map((val, si) => {
+                const active = hmTooltip?.day === di && hmTooltip?.slot === si;
+                return (
+                  <Pressable key={si}
+                    style={[as.hmCell, { backgroundColor: C.surface }]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      setHmTooltip(active ? null : { day: di, slot: si });
+                    }}
+                  >
+                    <View style={[as.hmCellFill, { backgroundColor: C.label, opacity: 0.04 + (val / 100) * 0.88 }]} />
+                    {active && (
+                      <View style={[as.hmTooltip, { backgroundColor: C.label }]}>
+                        <Text style={[as.hmTooltipText, { color: C.bg }]}>{val}%</Text>
+                      </View>
+                    )}
+                  </Pressable>
+                );
+              })}
+            </View>
+          ))}
+          <Text style={[as.hmFooter, { color: C.muted }]}>Darker = higher engagement</Text>
+        </View>
+
+        {/* ── Top Content ── */}
+        <SectionHeader title="Top Content" C={C} />
+        <View style={as.topMetricPills}>
+          {(['reach','engagement','revenue'] as const).map(m => (
+            <Pressable key={m} style={[as.metricPill, topMetric === m && { backgroundColor: C.label }]}
+              onPress={() => setTopMetric(m)}>
+              <Text style={[as.metricPillText, { color: topMetric === m ? C.bg : C.secondary }]}>
+                {m === 'reach' ? 'By Reach' : m === 'engagement' ? 'By Engagement' : 'By Revenue'}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+        {topSorted.map((item, idx) => {
+          const tcExpanded = expandedContent === item.id;
+          const tcDetail = ANALYTICS_CONTENT_DETAIL[item.id];
+          const tcEngRate = tcDetail
+            ? ((tcDetail.likes + tcDetail.comments + tcDetail.shares + tcDetail.saves) / tcDetail.views * 100)
+            : item.engRate;
+          return (
+            <Pressable
+              key={item.id}
+              style={[as.topCard, { backgroundColor: C.surface, flexDirection: 'column', alignItems: 'flex-start' }]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setExpandedContent(tcExpanded ? null : item.id);
+              }}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, width: '100%' }}>
+                <View style={as.topRankCircle}>
+                  <Text style={[as.topRank, { color: C.secondary }]}>{idx + 1}</Text>
+                </View>
+                <View style={[as.topThumb, { backgroundColor: C.bg }]}>
+                  <IconSymbol name={contentTypeIcon(item.type) as any} size={16} color={C.label} />
+                </View>
+                <View style={{ flex: 1, gap: 3 }}>
+                  <Text style={[as.topTitle, { color: C.label }]} numberOfLines={1}>{item.title}</Text>
+                  <Text style={[as.topMeta, { color: C.secondary }]}>{item.date}</Text>
+                </View>
+                <View style={{ alignItems: 'flex-end', gap: 3 }}>
+                  <Text style={[as.topValue, { color: C.label }]}>
+                    {topMetric === 'reach' ? formatViews(item.reach) + ' views' :
+                     topMetric === 'engagement' ? item.engRate.toFixed(1) + '%' :
+                     '$' + item.revenue}
+                  </Text>
+                  <View style={[as.typeBadge, { backgroundColor: C.bg }]}>
+                    <Text style={[as.typeBadgeText, { color: C.secondary }]}>{item.type.toUpperCase()}</Text>
+                  </View>
+                </View>
+              </View>
+              {tcExpanded && tcDetail && (
+                <View style={{ paddingTop: 10, gap: 8, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator, marginTop: 8, width: '100%' }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    {[
+                      { label: 'Views',    value: formatViews(tcDetail.views) },
+                      { label: 'Likes',    value: formatViews(tcDetail.likes) },
+                      { label: 'Comments', value: formatViews(tcDetail.comments) },
+                      { label: 'Shares',   value: formatViews(tcDetail.shares) },
+                      { label: 'Saves',    value: formatViews(tcDetail.saves) },
+                    ].map(stat => (
+                      <View key={stat.label} style={{ alignItems: 'center' }}>
+                        <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{stat.value}</Text>
+                        <Text style={{ fontSize: 11, color: C.muted }}>{stat.label}</Text>
+                      </View>
+                    ))}
+                  </View>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 13, color: C.secondary }}>Eng Rate</Text>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: tcEngRate > 8 ? GAIN : '#B85C5C' }}>
+                      {tcEngRate.toFixed(1)}%
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 13, color: C.secondary }}>Revenue</Text>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>${item.revenue}</Text>
+                  </View>
+                  <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ marginTop: 4 }}>
+                    <Text style={{ fontSize: 13, color: C.accent }}>View Post →</Text>
+                  </Pressable>
+                </View>
+              )}
+            </Pressable>
+          );
+        })}
+
+        {/* ── Growth Sources ── */}
+        <SectionHeader title="Where Followers Come From" C={C} />
+        <View style={[as.card, { backgroundColor: C.surface }]}>
+          {ANALYTICS_GROWTH_SOURCES.map((src, i) => {
+            const growthExpanded = expandedGrowthSrc === src.label;
+            const growthDetail = ANALYTICS_GROWTH_DETAIL[src.label];
+            const trendColor = growthDetail?.trend === 'up' ? GAIN : growthDetail?.trend === 'down' ? '#B85C5C' : C.secondary;
+            const trendIcon = growthDetail?.trend === 'up' ? 'arrow.up.right' : growthDetail?.trend === 'down' ? 'arrow.down.right' : 'minus';
+            const trendLabel = growthDetail?.trend === 'up' ? 'Growing' : growthDetail?.trend === 'down' ? 'Declining' : 'Stable';
+            return (
+              <Pressable
+                key={src.label}
+                style={[as.srcRow, i < ANALYTICS_GROWTH_SOURCES.length - 1 && { marginBottom: 12 }]}
+                onPress={() => setExpandedGrowthSrc(growthExpanded ? null : src.label)}
+              >
+                <View style={as.srcLabelRow}>
+                  <Text style={[as.srcLabel, { color: C.label }]}>{src.label}</Text>
+                  <Text style={[as.srcCount, { color: C.secondary }]}>{src.count}  ·  {src.pct}%</Text>
+                </View>
+                <View style={[as.barTrackH, { backgroundColor: C.separator }]}>
+                  <View style={[as.barFillH, { width: `${src.pct}%`, backgroundColor: C.label }]} />
+                </View>
+                {growthExpanded && growthDetail && (
+                  <View style={{ paddingTop: 10, gap: 6, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator, marginTop: 8 }}>
+                    <Text style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 0.5, color: C.muted }}>Top posts:</Text>
+                    {growthDetail.topPosts.map(post => (
+                      <Text key={post} style={{ fontSize: 12, color: C.secondary }}>· {post}</Text>
+                    ))}
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                      <IconSymbol name={trendIcon as any} size={12} color={trendColor} />
+                      <Text style={{ fontSize: 12, color: trendColor, fontWeight: '600' }}>{trendLabel}</Text>
+                    </View>
+                    <Text style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 0.5, color: C.muted }}>Recent followers:</Text>
+                    <Text style={{ fontSize: 12, color: C.secondary }}>{growthDetail.recentFollowers.join(', ')}</Text>
+                  </View>
+                )}
+              </Pressable>
+            );
+          })}
+        </View>
+
+        {/* ── Revenue Breakdown ── */}
+        <SectionHeader title="Revenue by Source" C={C} />
+        <View style={[as.card, { backgroundColor: C.surface }]}>
+          {/* Stacked bar */}
+          <View style={as.revStackedBar}>
+            {ANALYTICS_REVENUE.map(r => (
+              <View key={r.source} style={{ flex: r.pct, backgroundColor: C.label, opacity: 0.15 + (r.pct / 43) * 0.75 }} />
+            ))}
+          </View>
+          <View style={[as.divider, { backgroundColor: C.separator, marginBottom: 12 }]} />
+          {ANALYTICS_REVENUE.map((r, i) => {
+            const isExpandable = r.source === 'Subscriptions' || r.source === 'Brand Deals' || r.source === 'Digital Products';
+            const revExpanded = expandedRevSrc === r.source;
+            const revDetail = ANALYTICS_REVENUE_DETAIL[r.source];
+            if (isExpandable) {
+              return (
+                <Pressable
+                  key={r.source}
+                  style={[i < ANALYTICS_REVENUE.length - 1 && { marginBottom: 10 }]}
+                  onPress={() => setExpandedRevSrc(revExpanded ? null : r.source)}
+                >
+                  <View style={as.revRow}>
+                    <View style={[as.revDot, { backgroundColor: C.label, opacity: 0.2 + (r.pct / 43) * 0.8 }]} />
+                    <Text style={[as.revSource, { color: C.label }]}>{r.source}</Text>
+                    <Text style={[as.revPct,    { color: C.secondary }]}>{r.pct}%</Text>
+                    <Text style={[as.revAmt,    { color: C.label }]}>${r.amount.toLocaleString()}</Text>
+                    <IconSymbol name="chevron.right" size={14} color={C.muted} />
+                  </View>
+                  {revExpanded && revDetail && (
+                    <View style={{ paddingTop: 10, gap: 8, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator, marginTop: 8 }}>
+                      {revDetail.map(sub => (
+                        <View key={sub.label} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <Text style={{ flex: 1, fontSize: 13, color: C.label }}>{sub.label}</Text>
+                          <Text style={{ fontSize: 12, color: C.secondary, marginRight: 8 }}>
+                            {sub.count !== null ? `${sub.count} · ` : ''}{sub.detail}
+                          </Text>
+                          <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, width: 60, textAlign: 'right' }}>
+                            ${sub.revenue.toLocaleString()}
+                          </Text>
+                        </View>
+                      ))}
+                    </View>
+                  )}
+                </Pressable>
+              );
+            }
+            return (
+              <View key={r.source} style={[as.revRow, i < ANALYTICS_REVENUE.length - 1 && { marginBottom: 10 }]}>
+                <View style={[as.revDot, { backgroundColor: C.label, opacity: 0.2 + (r.pct / 43) * 0.8 }]} />
+                <Text style={[as.revSource, { color: C.label }]}>{r.source}</Text>
+                <Text style={[as.revPct,    { color: C.secondary }]}>{r.pct}%</Text>
+                <Text style={[as.revAmt,    { color: C.label }]}>${r.amount.toLocaleString()}</Text>
+              </View>
+            );
+          })}
+        </View>
+
+        {/* ── Content Type Performance ── */}
+        <SectionHeader title="What's Working" C={C} />
+        <View style={as.ctGrid}>
+          {ANALYTICS_CONTENT_TYPES.map((ct, i) => {
+            const isBest = i === bestRevIdx;
+            const ctExpanded = expandedContentType === ct.type;
+            const ctPieces = ANALYTICS_TYPE_CONTENT[ct.type] ?? [];
+            return (
+              <Pressable
+                key={ct.label}
+                style={[
+                  as.ctCard,
+                  { backgroundColor: C.surface, borderColor: isBest ? GAIN : 'transparent', borderWidth: isBest ? 1.5 : 0 },
+                  ctExpanded ? { width: '100%' } : {},
+                ]}
+                onPress={() => setExpandedContentType(ctExpanded ? null : ct.type)}
+              >
+                {isBest && (
+                  <View style={[as.ctBestBadge, { backgroundColor: GAIN + '22' }]}>
+                    <Text style={[as.ctBestText, { color: GAIN }]}>Best</Text>
+                  </View>
+                )}
+                <View style={[as.ctIcon, { backgroundColor: C.bg }]}>
+                  <IconSymbol name={contentTypeIcon(ct.type) as any} size={16} color={C.label} />
+                </View>
+                <Text style={[as.ctLabel, { color: C.label }]}>{ct.label}</Text>
+                <View style={[as.divider, { backgroundColor: C.separator, marginVertical: 8 }]} />
+                <Text style={[as.ctStat, { color: C.secondary }]}>{ct.count} published</Text>
+                <Text style={[as.ctStat, { color: C.secondary }]}>{formatViews(ct.avgViews)} avg views</Text>
+                <Text style={[as.ctStat, { color: C.secondary }]}>{ct.avgEng}% avg eng.</Text>
+                <Text style={[as.ctStatBold, { color: C.label }]}>${ct.revenue} revenue</Text>
+                {ctExpanded && ctPieces.length > 0 && (
+                  <View style={{ marginTop: 10, gap: 8, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator, paddingTop: 10 }}>
+                    {ctPieces.map(piece => (
+                      <View key={piece.title}>
+                        <Text style={{ fontSize: 12, color: C.label }} numberOfLines={1}>{piece.title}</Text>
+                        <View style={{ flexDirection: 'row', gap: 8, marginTop: 2 }}>
+                          <Text style={{ fontSize: 10, color: C.muted }}>{formatViews(piece.views)} views</Text>
+                          <Text style={{ fontSize: 10, color: C.muted }}>{piece.engRate}%</Text>
+                          {piece.revenue > 0 && <Text style={{ fontSize: 10, color: C.muted }}>${piece.revenue}</Text>}
+                        </View>
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </Pressable>
+            );
+          })}
+        </View>
+      </ScrollView>
+    );
+  };
+
+  // ── Non-personal mode placeholder content ────────────────────────────────────
+
+  const renderNonPersonalTab = (tabName: string) => (
+    <ScrollView
+      key={`nonpersonal-${tabName}`}
+      onScroll={handleScroll}
+      scrollEventThrottle={16}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingTop: contentPaddingTop, paddingHorizontal: 16, paddingBottom: 120 }}
+    >
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 80, paddingBottom: 100 }}>
+        <Text style={{ fontSize: 16, color: C.secondary, fontWeight: '600' }}>{tabName}</Text>
+        <Text style={{ fontSize: 13, color: C.secondary, marginTop: 6, opacity: 0.6 }}>Coming soon</Text>
+      </View>
+    </ScrollView>
+  );
+
   // ── Render ───────────────────────────────────────────────────────────────────
 
   const renderContent = () => {
-    if (activeTab === 'Overview') return isOwner ? renderOwnerOverview() : renderVisitorOverview();
-    if (activeTab === 'Page')     return isOwner ? renderOwnerPage()     : renderVisitorPage();
-    return isOwner ? renderOwnerMembers() : renderVisitorMembers();
+    // Non-personal modes get their own tab-based rendering
+    if (mode === 'business') {
+      if (bizTab === 'Overview')   return renderOwnerDashboard();
+      return renderNonPersonalTab(bizTab);
+    }
+    if (mode === 'education') {
+      if (eduTab === 'Overview')   return renderOwnerDashboard();
+      return renderNonPersonalTab(eduTab);
+    }
+    if (mode === 'community') {
+      if (comTab === 'Overview')   return renderOwnerDashboard();
+      return renderNonPersonalTab(comTab);
+    }
+    if (mode === 'sports') {
+      if (sportsTab === 'Overview') return renderOwnerDashboard();
+      return renderNonPersonalTab(sportsTab);
+    }
+    // Personal mode — tabs for Owner, profile page for Follower
+    if (isOwner) {
+      if (activeTab === 'Content')   return renderOwnerContent();
+      if (activeTab === 'Analytics') return renderOwnerAnalytics();
+      return renderOwnerProfile();
+    }
+    return renderOwnerProfile(false);
   };
 
   return (
@@ -1109,105 +1721,320 @@ export default function HubScreen() {
       {renderContent()}
 
       {/* ── Fixed Top Bar ── */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
+      <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: (mode === 'personal' && activeTab === 'Profile') ? 'transparent' : C.bg }]}>
         <View style={s.topBar}>
-          {/* Left: hamburger */}
-          <View style={s.topBarSide}>
-            <Pressable
-              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-              hitSlop={12}
-            >
-              <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
-            </Pressable>
-          </View>
 
-          {/* Center: dropdown pill */}
-          <View style={s.dropdownPillWrap}>
-            <Pressable
-              style={[s.dropdownPill, { backgroundColor: C.surfacePressed }]}
-              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setDropdownOpen(v => !v); }}
-            >
-              <Text style={[s.dropdownPillText, { color: C.label }]}>{activeTab}</Text>
-              <IconSymbol name="chevron.down" size={12} color={C.secondary} />
-            </Pressable>
-          </View>
+          {/* ── Business Mode ── */}
+          {mode === 'business' && (<>
+            <View style={s.topBarSide}>
+              <Pressable
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isBizAdmin) openSidePanel(); }}
+                hitSlop={12}
+              >
+                <KMenuButton />
+              </Pressable>
+            </View>
+            <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 8 }}>
+              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+                {(isBizAdmin
+                  ? (['Overview', 'Projects', 'Documents'] as const)
+                  : (['Overview', 'Projects'] as const)
+                ).map(t => {
+                  const active = bizTab === t;
+                  return (
+                    <Pressable
+                      key={t}
+                      onPress={() => { Haptics.selectionAsync(); setBizTab(t as any); }}
+                      style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}
+                    >
+                      <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{t}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+            <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
+              <RolePill role={bizRole} onPress={bizCycleRole} isPrimary={isBizAdmin} />
+            </View>
+          </>)}
 
-          {/* Right: RolePill + filter icon */}
-          <View style={[s.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', gap: 10 }]}>
-            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
-            <Pressable onPress={toggleFilterPills} hitSlop={12}>
-              <IconSymbol
-                name={filterPillsVisible || selectedPill !== pills[0]
-                  ? 'line.3.horizontal.decrease.circle.fill'
-                  : 'line.3.horizontal.decrease.circle'}
-                size={22}
-                color={filterPillsVisible || selectedPill !== pills[0] ? C.accent : C.label}
-              />
-            </Pressable>
-          </View>
+          {/* ── Education Mode ── */}
+          {mode === 'education' && (<>
+            <View style={s.topBarSide}>
+              <Pressable
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isEduAdmin) openSidePanel(); }}
+                hitSlop={12}
+              >
+                <KMenuButton />
+              </Pressable>
+            </View>
+            <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 8 }}>
+              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+                {(['Overview', 'Courses', 'Student Life'] as const).map(t => {
+                  const active = eduTab === t;
+                  return (
+                    <Pressable
+                      key={t}
+                      onPress={() => { Haptics.selectionAsync(); setEduTab(t as any); }}
+                      style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}
+                    >
+                      <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{t}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+            <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
+              <RolePill role={eduRole} onPress={eduCycleRole} isPrimary={isEduAdmin} />
+            </View>
+          </>)}
+
+          {/* ── Community Mode ── */}
+          {mode === 'community' && (<>
+            <View style={s.topBarSide}>
+              <Pressable
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isComAdmin) openSidePanel(); }}
+                hitSlop={12}
+              >
+                <KMenuButton />
+              </Pressable>
+            </View>
+            <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 8 }}>
+              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+                {(isComAdmin
+                  ? (['Overview', 'Services', 'Groups'] as const)
+                  : (['Overview', 'Services'] as const)
+                ).map(t => {
+                  const active = comTab === t;
+                  return (
+                    <Pressable
+                      key={t}
+                      onPress={() => { Haptics.selectionAsync(); setComTab(t as any); }}
+                      style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}
+                    >
+                      <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{t}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+            <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
+              <RolePill role={comRole} onPress={comCycleRole} isPrimary={isComAdmin} />
+            </View>
+          </>)}
+
+          {/* ── Sports Mode ── */}
+          {mode === 'sports' && (<>
+            <View style={s.topBarSide}>
+              <Pressable
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isSportsAdmin) openSidePanel(); }}
+                hitSlop={12}
+              >
+                <KMenuButton />
+              </Pressable>
+            </View>
+            <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 8 }}>
+              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+                {(isSportsAdmin
+                  ? (['Overview', 'Film Room', 'Scouting', 'Game Day'] as const)
+                  : (['Overview', 'Film Room'] as const)
+                ).map(t => {
+                  const active = sportsTab === t;
+                  return (
+                    <Pressable
+                      key={t}
+                      onPress={() => { Haptics.selectionAsync(); setSportsTab(t as any); }}
+                      style={{ paddingHorizontal: 10, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}
+                    >
+                      <Text style={{ fontSize: 12, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{t}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+            <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
+              <RolePill role={sportsRole} onPress={sportsCycleRole} isPrimary={isSportsAdmin} />
+            </View>
+          </>)}
+
+          {/* ── Personal Mode ── */}
+          {mode === 'personal' && (<>
+            {/* Left: K button */}
+            <View style={s.topBarSide}>
+              <Pressable
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isOwner) openSidePanel(); }}
+                hitSlop={12}
+              >
+                <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.5, color: activeTab === 'Profile' ? '#fff' : C.label }}>K</Text>
+              </Pressable>
+            </View>
+
+            {/* Center: handle on Profile, cream pill on Content/Analytics */}
+            <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 8 }}>
+              {activeTab === 'Profile' ? (
+                <Text style={{ fontSize: 15, fontWeight: '700', color: '#fff' }}>@sammyk</Text>
+              ) : (
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: 32, borderRadius: 16, borderWidth: 1, borderColor: C.separator, backgroundColor: C.surface, marginHorizontal: 2 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{activeTab}</Text>
+                </View>
+              )}
+            </View>
+
+            {/* Right: RolePill */}
+            <View style={[s.topBarSide, { alignItems: 'flex-end' }]}>
+              <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
+            </View>
+          </>)}
+
         </View>
+      </View>
 
-        {/* Filter Pills */}
-        <Animated.View style={{
-          height: pillsRevealAnim.interpolate({ inputRange: [0, 1], outputRange: [0, PILL_ROW_H] }),
-          opacity: pillsRevealAnim,
-          overflow: 'hidden',
-        }}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={s.pillsContent}
-            style={[s.pillsRow, { borderTopColor: C.separator }]}
-          >
-            {pills.map(pill => {
-              const active = pill === selectedPill;
+
+      {/* ── Content Composer ── */}
+      <BottomSheet visible={showComposer} onClose={() => setShowComposer(false)}>
+        <View style={cs.composerWrap}>
+          <Text style={[cs.composerTitle, { color: C.label }]}>New Content</Text>
+
+          {/* Destination pills */}
+          <Text style={[cs.composerLabel, { color: C.secondary }]}>Destination</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 14 }}>
+            {['Social', 'Reels', 'KTV', 'Stories'].map(d => {
+              const active = false;
               return (
-                <Pressable
-                  key={pill}
-                  style={[s.pill, active ? { backgroundColor: C.label } : { borderColor: C.separator }]}
-                  onPress={() => { Haptics.selectionAsync(); setSelectedPill(pill); }}
-                >
-                  <Text style={[s.pillText, { color: active ? C.bg : C.secondary }, active && { fontWeight: '600' }]}>
-                    {pill}
-                  </Text>
+                <Pressable key={d} style={[cs.composerPill, { borderColor: C.separator, backgroundColor: active ? C.label : 'transparent' }]}>
+                  <Text style={[cs.composerPillText, { color: active ? C.bg : C.secondary }]}>{d}</Text>
                 </Pressable>
               );
             })}
           </ScrollView>
-        </Animated.View>
-      </View>
 
-      {/* ── Dropdown ── */}
-      {dropdownOpen && (
-        <>
-          <Pressable style={[StyleSheet.absoluteFillObject, { zIndex: 98 }]} onPress={() => setDropdownOpen(false)} />
-          <View style={[s.dropdown, { top: insets.top + 56, backgroundColor: C.bg, borderColor: C.separator, zIndex: 99 }]}>
-            {(['Overview', 'Page', ...(isOwner ? ['Members'] : [])] as HubTab[]).map(tab => (
-              <Pressable key={tab} style={s.dropdownOption} onPress={() => handleTabSelect(tab)}>
-                <Text style={[s.dropdownOptionText, { color: tab === activeTab ? C.label : C.secondary }, tab === activeTab && { fontWeight: '600' }]}>
-                  {tab}
-                </Text>
+          {/* Title */}
+          <Text style={[cs.composerLabel, { color: C.secondary }]}>Title</Text>
+          <TextInput
+            placeholder="Add a title..."
+            placeholderTextColor={C.muted}
+            style={[cs.composerInput, { color: C.label, backgroundColor: C.surface, borderColor: C.separator }]}
+          />
+
+          {/* Caption */}
+          <Text style={[cs.composerLabel, { color: C.secondary }]}>Caption</Text>
+          <TextInput
+            placeholder="Write your caption..."
+            placeholderTextColor={C.muted}
+            multiline
+            numberOfLines={4}
+            style={[cs.composerInput, cs.composerTextArea, { color: C.label, backgroundColor: C.surface, borderColor: C.separator }]}
+          />
+
+          {/* Visibility */}
+          <Text style={[cs.composerLabel, { color: C.secondary }]}>Visibility</Text>
+          <View style={cs.visibilityRow}>
+            {['Public', 'Subscribers Only'].map((v, i) => (
+              <Pressable key={v} style={[cs.visibilityBtn, { backgroundColor: i === 0 ? C.label : C.surface, borderColor: C.separator }]}>
+                <Text style={[cs.visibilityText, { color: i === 0 ? C.bg : C.secondary }]}>{v}</Text>
               </Pressable>
             ))}
           </View>
-        </>
-      )}
 
-      {/* ── Compose Newsletter FAB (Members + Owner) ── */}
-      {activeTab === 'Members' && isOwner && (
-        <Pressable
-          style={[s.fab, { bottom: insets.bottom + 49 + 16, backgroundColor: C.label }]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            router.push('/(tabs)/(main)/hub/newsletter-compose' as any);
-          }}
-        >
-          <IconSymbol name="envelope.fill" size={20} color={C.bg} />
-        </Pressable>
-      )}
+          {/* Media + Dipson row */}
+          <View style={cs.composerActionsRow}>
+            <Pressable style={[cs.mediaBtn, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <IconSymbol name="photo" size={16} color={C.secondary} />
+              <Text style={[cs.mediaBtnText, { color: C.secondary }]}>Media</Text>
+            </Pressable>
+            <Pressable style={[cs.dipsonBtn, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[cs.dipsonBtnText, { color: C.label }]}>✦ Dipson</Text>
+            </Pressable>
+          </View>
+
+          {/* Schedule + Publish */}
+          <View style={[cs.composerFooter, { borderTopColor: C.separator }]}>
+            <Pressable style={[cs.scheduleBtn, { borderColor: C.separator }]}>
+              <IconSymbol name="calendar" size={16} color={C.secondary} />
+              <Text style={[cs.scheduleBtnText, { color: C.secondary }]}>Schedule</Text>
+            </Pressable>
+            <Pressable style={[cs.publishBtn, { backgroundColor: C.label }]}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setShowComposer(false); }}>
+              <Text style={[cs.publishBtnText, { color: C.bg }]}>Publish Now</Text>
+            </Pressable>
+          </View>
+        </View>
+      </BottomSheet>
     </View>
   );
 }
+
+// ── Content Tab Styles ────────────────────────────────────────────────────────
+
+const cs = StyleSheet.create({
+  card:            { borderRadius: 14, padding: 14, marginBottom: 20 },
+
+  // Calendar
+  calHeader:       { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
+  toggleRow:       { flexDirection: 'row', gap: 4 },
+  viewToggle:      { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
+  viewToggleText:  { fontSize: 12, fontWeight: '500' },
+  navRow:          { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  weekLabel:       { fontSize: 12, fontWeight: '500' },
+  weekRow:         { flexDirection: 'row', gap: 2 },
+  dayCell:         { flex: 1, alignItems: 'center', gap: 4, paddingVertical: 4 },
+  dayName:         { fontSize: 10, fontWeight: '500' },
+  dayNumCircle:    { width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  dayNumText:      { fontSize: 13, fontWeight: '600' },
+  dotRow:          { flexDirection: 'row', gap: 3, height: 6, alignItems: 'center' },
+  dot:             { width: 5, height: 5, borderRadius: 3 },
+
+  // Selected day expanded
+  dayExpanded:     { marginTop: 12, paddingTop: 12, borderTopWidth: StyleSheet.hairlineWidth },
+  dayExpandedLabel:{ fontSize: 11, fontWeight: '600', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.5 },
+  dayItemRow:      { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8 },
+  dayItemTitle:    { flex: 1, fontSize: 13, fontWeight: '500' },
+  dayItemTime:     { fontSize: 11 },
+  typeIconCircle:  { width: 30, height: 30, borderRadius: 15, alignItems: 'center', justifyContent: 'center' },
+  statusPill:      { borderRadius: 10, paddingHorizontal: 7, paddingVertical: 2 },
+  statusPillText:  { fontSize: 10, fontWeight: '600' },
+
+  // Up Next
+  upNextCard:      { borderRadius: 12, padding: 12, marginBottom: 8, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  upNextTitle:     { fontSize: 14, fontWeight: '600' },
+  upNextMeta:      { fontSize: 12 },
+
+  // Drafts
+  draftRow:        { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 12 },
+  draftTitle:      { fontSize: 14, fontWeight: '500' },
+  draftMeta:       { fontSize: 12 },
+
+  // Library
+  searchBar:       { flexDirection: 'row', alignItems: 'center', gap: 8, borderRadius: 10, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 9, marginBottom: 10 },
+  searchInput:     { flex: 1, fontSize: 14, padding: 0 },
+  libraryRow:      { flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: 12, padding: 12, marginBottom: 6 },
+  thumbPlaceholder:{ width: 48, height: 48, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
+  libraryTitle:    { fontSize: 14, fontWeight: '500' },
+  libraryMeta:     { fontSize: 11 },
+  emptyText:       { fontSize: 13, textAlign: 'center', paddingVertical: 24 },
+
+  // Composer
+  composerWrap:    { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 32 },
+  composerTitle:   { fontSize: 18, fontWeight: '700', marginBottom: 18 },
+  composerLabel:   { fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 },
+  composerInput:   { borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14, marginBottom: 14 },
+  composerTextArea:{ minHeight: 100, textAlignVertical: 'top' },
+  composerPill:    { borderWidth: 1, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6, marginRight: 8 },
+  composerPillText:{ fontSize: 13 },
+  visibilityRow:   { flexDirection: 'row', gap: 8, marginBottom: 14 },
+  visibilityBtn:   { flex: 1, borderWidth: 1, borderRadius: 10, paddingVertical: 10, alignItems: 'center' },
+  visibilityText:  { fontSize: 13, fontWeight: '500' },
+  composerActionsRow: { flexDirection: 'row', gap: 8, marginBottom: 14 },
+  mediaBtn:        { flexDirection: 'row', alignItems: 'center', gap: 6, borderWidth: 1, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 9 },
+  mediaBtnText:    { fontSize: 13 },
+  dipsonBtn:       { flex: 1, borderWidth: 1, borderRadius: 10, paddingVertical: 9, alignItems: 'center' },
+  dipsonBtnText:   { fontSize: 13, fontWeight: '600' },
+  composerFooter:  { flexDirection: 'row', gap: 10, borderTopWidth: StyleSheet.hairlineWidth, paddingTop: 16, marginTop: 4 },
+  scheduleBtn:     { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, borderWidth: 1, borderRadius: 12, paddingVertical: 12 },
+  scheduleBtnText: { fontSize: 14, fontWeight: '500' },
+  publishBtn:      { flex: 2, borderRadius: 12, paddingVertical: 12, alignItems: 'center' },
+  publishBtnText:  { fontSize: 14, fontWeight: '600' },
+});
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
@@ -1218,18 +2045,8 @@ const s = StyleSheet.create({
   topBar: { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
   topBarSide: { width: 80, justifyContent: 'center' },
 
-  dropdownPillWrap: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  dropdownPill: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, gap: 6 },
-  dropdownPillText: { fontSize: 15, fontWeight: '700', letterSpacing: 0.2 },
-
-  dropdown: {
-    position: 'absolute', left: '50%', marginLeft: -110, minWidth: 220,
-    borderRadius: 14, borderWidth: StyleSheet.hairlineWidth,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.10, shadowRadius: 12, elevation: 8, overflow: 'hidden',
-  },
-  dropdownOption: { paddingVertical: 14, paddingHorizontal: 20 },
-  dropdownOptionText: { fontSize: 15 },
+  centerPill: { flex: 1, marginHorizontal: 10, height: 32, borderRadius: 16, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  centerPillText: { fontSize: 14, fontWeight: '700' },
 
   pillsRow: { height: PILL_ROW_H, borderTopWidth: StyleSheet.hairlineWidth },
   pillsContent: { paddingHorizontal: 12, alignItems: 'center', gap: 8 },
@@ -1243,13 +2060,13 @@ const s = StyleSheet.create({
 
   section: { borderRadius: 16, padding: 16, marginBottom: 20 },
 
-  // Owner Overview
+  // Owner Dashboard
   metricBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16 },
   metricBtnText: { fontSize: 12, fontWeight: '600' },
   actionBtn: { flex: 1, borderRadius: 12, padding: 12, alignItems: 'center', gap: 6 },
   actionBtnText: { fontSize: 12, fontWeight: '600' },
 
-  // Visitor Overview
+  // Visitor Dashboard
   heroCenter: { alignItems: 'center', paddingTop: 16, paddingBottom: 20 },
   heroAvatar: { width: 80, height: 80, borderRadius: 40, alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
   heroAvatarText: { fontSize: 26, fontWeight: '700', color: '#fff' },
@@ -1306,4 +2123,86 @@ const s = StyleSheet.create({
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15, shadowRadius: 6, elevation: 4, zIndex: 20,
   },
+});
+
+// ── Analytics Styles ──────────────────────────────────────────────────────────
+
+const as = StyleSheet.create({
+  card:           { borderRadius: 14, padding: 14, marginBottom: 20 },
+  subHeader:      { fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 },
+  divider:        { height: StyleSheet.hairlineWidth, marginVertical: 14 },
+
+  // Engagement
+  engHeaderRow:   { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 },
+  bigRate:        { fontSize: 40, fontWeight: '800', letterSpacing: -1 },
+  trendRow:       { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
+  trendText:      { fontSize: 12, fontWeight: '600' },
+  periodPills:    { flexDirection: 'row', gap: 4 },
+  periodPill:     { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 20 },
+  periodPillText: { fontSize: 12, fontWeight: '500' },
+  chartAxisRow:   { flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 },
+  axisLabel:      { fontSize: 10 },
+
+  // Audience
+  ageRow:         { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
+  ageLabel:       { fontSize: 12, width: 44 },
+  barTrackH:      { flex: 1, height: 6, borderRadius: 3, overflow: 'hidden' },
+  barFillH:       { height: '100%', borderRadius: 3 },
+  agePct:         { fontSize: 12, fontWeight: '600', width: 32, textAlign: 'right' },
+  genderText:     { fontSize: 14, fontWeight: '500', marginBottom: 4 },
+  locationRow:    { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 5 },
+  locationRank:   { fontSize: 12, width: 16, textAlign: 'center' },
+  locationCity:   { flex: 1, fontSize: 14, fontWeight: '500' },
+  locationPct:    { fontSize: 13, fontWeight: '600' },
+
+  // Heatmap
+  hmHeaderRow:    { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
+  hmHourLabel:    { flex: 1, fontSize: 8, textAlign: 'center' },
+  hmRow:          { flexDirection: 'row', alignItems: 'center', marginBottom: 3 },
+  hmDayLabel:     { width: 32, fontSize: 10, fontWeight: '500' },
+  hmCell:         { flex: 1, height: 28, borderRadius: 4, marginHorizontal: 1, overflow: 'visible' },
+  hmCellFill:     { ...StyleSheet.absoluteFillObject, borderRadius: 4 },
+  hmTooltip:      { position: 'absolute', top: -22, alignSelf: 'center', borderRadius: 6, paddingHorizontal: 5, paddingVertical: 2, zIndex: 10 },
+  hmTooltipText:  { fontSize: 9, fontWeight: '700' },
+  hmFooter:       { fontSize: 10, textAlign: 'center', marginTop: 8 },
+
+  // Top Content
+  topMetricPills: { flexDirection: 'row', gap: 6, marginBottom: 10 },
+  metricPill:     { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 },
+  metricPillText: { fontSize: 12, fontWeight: '500' },
+  topCard:        { flexDirection: 'row', alignItems: 'center', gap: 10, borderRadius: 12, padding: 12, marginBottom: 6 },
+  topRankCircle:  { width: 20, alignItems: 'center' },
+  topRank:        { fontSize: 13, fontWeight: '700' },
+  topThumb:       { width: 40, height: 40, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
+  topTitle:       { fontSize: 14, fontWeight: '600' },
+  topMeta:        { fontSize: 11 },
+  topValue:       { fontSize: 13, fontWeight: '700' },
+  typeBadge:      { borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 },
+  typeBadgeText:  { fontSize: 9, fontWeight: '700', letterSpacing: 0.5 },
+
+  // Growth sources
+  srcRow:         { },
+  srcLabelRow:    { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 },
+  srcLabel:       { fontSize: 13, fontWeight: '500' },
+  srcCount:       { fontSize: 12 },
+  growthTip:      { position: 'absolute', bottom: 12, borderRadius: 6, paddingHorizontal: 7, paddingVertical: 3, zIndex: 10 },
+  growthTipText:  { fontSize: 11, fontWeight: '700' },
+
+  // Revenue
+  revStackedBar:  { flexDirection: 'row', height: 10, borderRadius: 5, overflow: 'hidden', marginBottom: 14 },
+  revRow:         { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  revDot:         { width: 8, height: 8, borderRadius: 4 },
+  revSource:      { flex: 1, fontSize: 13, fontWeight: '500' },
+  revPct:         { fontSize: 12, width: 32, textAlign: 'right' },
+  revAmt:         { fontSize: 13, fontWeight: '700', width: 72, textAlign: 'right' },
+
+  // Content type grid
+  ctGrid:         { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 20 },
+  ctCard:         { width: '47%', borderRadius: 14, padding: 12 },
+  ctBestBadge:    { alignSelf: 'flex-start', borderRadius: 8, paddingHorizontal: 6, paddingVertical: 2, marginBottom: 8 },
+  ctBestText:     { fontSize: 10, fontWeight: '700' },
+  ctIcon:         { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
+  ctLabel:        { fontSize: 15, fontWeight: '700', marginBottom: 2 },
+  ctStat:         { fontSize: 12, marginBottom: 2 },
+  ctStatBold:     { fontSize: 13, fontWeight: '700', marginTop: 4 },
 });

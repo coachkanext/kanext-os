@@ -14,9 +14,9 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { HUB_TIERS } from '@/data/mock-hub';
 
-type ToOption = 'All Subscribers' | 'Free' | 'Supporter' | 'VIP' | 'Inner Circle';
+type ToOption = 'All Subscribers' | 'Free' | 'Supporter' | 'Inner Circle';
 
-const TO_OPTIONS: ToOption[] = ['All Subscribers', 'Free', 'Supporter', 'VIP', 'Inner Circle'];
+const TO_OPTIONS: ToOption[] = ['All Subscribers', 'Free', 'Supporter', 'Inner Circle'];
 
 export default function NewsletterComposeScreen() {
   const C = useColors();

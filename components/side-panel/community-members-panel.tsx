@@ -13,12 +13,6 @@ import { closeSidePanel } from '@/utils/global-side-panel';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { COMMUNITY_MEMBERS, getAtRiskMembers, getVisitorMembers, getNewMembers } from '@/data/mock-community-members';
 
-const NAV_ITEMS = [
-  { icon: 'person.3',         label: 'Directory',  tab: 'Directory'  },
-  { icon: 'shield.lefthalf.filled', label: 'Roles', tab: 'Roles'    },
-  { icon: 'chart.bar',        label: 'Attendance', tab: 'Attendance' },
-] as const;
-
 const ACTION_ITEMS = [
   { icon: 'message',          label: 'Bulk Message'    },
   { icon: 'square.and.arrow.down', label: 'Import Members' },
@@ -48,13 +42,23 @@ export function CommunityMembersPanel() {
   const visitors     = getVisitorMembers();
   const newMembers   = getNewMembers();
 
-  const navigate = (tab: string) => {
-    closeSidePanel();
-    setTimeout(() => router.push({ pathname: '/(tabs)/(main)/members' as any, params: { tab } }), 80);
-  };
-
   return (
     <View style={s.container}>
+      {/* ── Home ── */}
+      <Pressable
+        style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          closeSidePanel();
+          router.setParams({ manage: undefined });
+        }}
+      >
+        <IconSymbol name="house.fill" size={18} color={C.secondary} />
+        <Text style={[s.navLabel, { color: C.label }]}>Home</Text>
+      </Pressable>
+
+      <View style={[s.divider, { backgroundColor: C.separator }]} />
+
       {/* Stats */}
       <View style={[s.statsRow, { backgroundColor: C.surfacePressed, borderRadius: 12 }]}>
         <View style={s.statItem}>
@@ -72,26 +76,6 @@ export function CommunityMembersPanel() {
           <Text style={[s.statLabel, { color: C.secondary }]}>At-Risk</Text>
         </View>
       </View>
-
-      {/* Navigate */}
-      <Text style={[s.sectionLabel, { color: C.secondary }]}>Navigate</Text>
-      {NAV_ITEMS.map((item, idx) => (
-        <Pressable
-          key={item.label}
-          style={({ pressed }) => [
-            s.navRow,
-            pressed && { backgroundColor: C.surfacePressed },
-            idx < NAV_ITEMS.length - 1 && [s.navRowBorder, { borderBottomColor: C.separator }],
-          ]}
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); navigate(item.tab); }}
-        >
-          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-          <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
-          <IconSymbol name="chevron.right" size={14} color={C.muted} />
-        </Pressable>
-      ))}
-
-      <View style={[s.divider, { backgroundColor: C.separator }]} />
 
       {/* New Members */}
       {newMembers.length > 0 && (

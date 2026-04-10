@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -14,6 +15,7 @@ import {
 } from '@/data/mock-sports-hub';
 
 export function SportsRosterPanel() {
+  const router = useRouter();
   const C = useColors();
   const health = rosterHealthSummary();
   const scholarship = PLAYERS.filter(p => p.isScholarship && !p.isRedshirt).length;
@@ -37,6 +39,21 @@ export function SportsRosterPanel() {
 
   return (
     <View style={{ gap: 8 }}>
+
+      {/* ── Home ── */}
+      <Pressable
+        style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          closeSidePanel();
+          router.setParams({ manage: undefined });
+        }}
+      >
+        <IconSymbol name="house.fill" size={18} color={C.secondary} />
+        <Text style={[s.navLabel, { color: C.label }]}>Home</Text>
+      </Pressable>
+
+      <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: C.separator }} />
 
       {/* Roster summary */}
       <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14 }}>
@@ -87,14 +104,6 @@ export function SportsRosterPanel() {
           </View>
         </>
       )}
-
-      {/* Navigate */}
-      <Text style={[s.sectionHeader, { color: C.secondary }]}>Navigate</Text>
-      <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-        {navRow('person.3.fill',   'Roster',      `${PLAYERS.length} players`)}
-        {navRow('person.2.fill',   'Staff',       `${COACHING_STAFF.length} members`)}
-        {navRow('checkmark.seal',  'Eligibility', warningPlayers.length > 0 ? `${warningPlayers.length} warning` : 'All clear')}
-      </View>
 
       {/* Upcoming schedule */}
       <Text style={[s.sectionHeader, { color: C.secondary }]}>Upcoming</Text>

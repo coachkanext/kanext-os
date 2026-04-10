@@ -22,6 +22,7 @@ import { useDemoRole }  from '@/utils/demo-role-store';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { useDataMode } from '@/utils/global-demo-mode';
 import { openSidePanel } from '@/utils/global-side-panel';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   PLAYERS, COACHING_STAFF, TEAM_INFO,
   DEVELOPMENT_PRIORITIES,
@@ -1057,8 +1058,7 @@ export default function RosterScreen() {
   const isCoachRole = role === 'Coach';
 
   // ── Navigation state ──
-  const [activeTab, setActiveTab]       = useState<RosterTab>('Players');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<RosterTab>('Players');
 
   // ── Filter state ──
   const [filterVisible, setFilterVisible] = useState(false);
@@ -1102,7 +1102,6 @@ export default function RosterScreen() {
   const handleTabSelect = useCallback((tab: RosterTab) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setActiveTab(tab);
-    setDropdownOpen(false);
     setPosFilter('All');
     setSearchQuery('');
     setFilterVisible(false);
@@ -1451,26 +1450,33 @@ export default function RosterScreen() {
             <Pressable
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                openSidePanel();
+                if (isCoachRole) openSidePanel();
               }}
               hitSlop={12}
             >
-              <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+              <KMenuButton />
             </Pressable>
           </View>
 
-          {/* Center: dropdown pill */}
+          {/* Center: TabPill (Coach) or static pill (Player) */}
           <View style={s.dropdownWrap}>
-            <Pressable
-              style={[s.dropdownPill, { backgroundColor: C.surfacePressed }]}
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setDropdownOpen(v => !v);
-              }}
-            >
-              <Text style={[s.dropdownText, { color: C.label }]}>{activeTab}</Text>
-              <IconSymbol name="chevron.down" size={12} color={C.secondary} />
-            </Pressable>
+            {isCoachRole ? (
+              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+                {(['Players', 'Depth Chart', 'Staff'] as const).map(tab => {
+                  const active = activeTab === tab;
+                  return (
+                    <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setActiveTab(tab as any); }}
+                      style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
+                      <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            ) : (
+              <View style={{ backgroundColor: C.activePill, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: C.activePillText }}>Roster</Text>
+              </View>
+            )}
           </View>
 
           {/* Right: filter toggle + role pill */}
@@ -1535,39 +1541,6 @@ export default function RosterScreen() {
           </Animated.View>
         )}
       </View>
-
-      {/* ── Tab Dropdown ── */}
-      {dropdownOpen && (
-        <>
-          <Pressable
-            style={[StyleSheet.absoluteFillObject, { zIndex: 98 }]}
-            onPress={() => setDropdownOpen(false)}
-          />
-          <View style={[
-            s.dropdown,
-            { top: insets.top + 56, backgroundColor: C.bg, borderColor: C.separator },
-          ]}>
-            {ROSTER_TABS.map(tab => (
-              <Pressable
-                key={tab}
-                style={s.dropdownOption}
-                onPress={() => handleTabSelect(tab)}
-              >
-                <Text style={[
-                  s.dropdownOptionText,
-                  { color: tab === activeTab ? C.label : C.secondary },
-                  tab === activeTab && { fontWeight: '700' },
-                ]}>
-                  {tab}
-                </Text>
-                {tab === 'Depth Chart' && !isCoachRole && (
-                  <IconSymbol name="lock.fill" size={12} color={C.muted} />
-                )}
-              </Pressable>
-            ))}
-          </View>
-        </>
-      )}
 
       {/* ── Bottom Sheets ── */}
       <PlayerSheet
@@ -1646,13 +1619,8 @@ const s = StyleSheet.create({
   topBarSide:        { width: 90, justifyContent: 'center' },
   topBarRight:       { alignItems: 'flex-end', flexDirection: 'row', gap: 8, justifyContent: 'flex-end' },
   dropdownWrap:      { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  dropdownPill:      { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, gap: 6 },
-  dropdownText:      { fontSize: 15, fontWeight: '700' },
   pillsRow:          { height: PILL_ROW_H, borderTopWidth: StyleSheet.hairlineWidth },
   pillsContent:      { paddingHorizontal: 16, gap: 8, alignItems: 'center' },
   pill:              { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 16, borderWidth: 1 },
   pillText:          { fontSize: 13 },
-  dropdown:          { position: 'absolute', left: 16, right: 16, borderRadius: 14, borderWidth: 1, overflow: 'hidden', zIndex: 99 },
-  dropdownOption:    { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 18, paddingVertical: 14 },
-  dropdownOptionText:{ fontSize: 15 },
 });

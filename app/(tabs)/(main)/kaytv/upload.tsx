@@ -16,7 +16,11 @@ import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { useAppContext } from '@/context/app-context';
-import { KAYTV_CATEGORIES } from '@/data/mock-kaytv';
+import { useDemoRole } from '@/utils/demo-role-store';
+
+const PERSONAL_CATEGORIES = ['Coaching', 'Business', 'Creator', 'Behind the Scenes', 'Q&A', 'Live'];
+
+const GAIN = '#5A8A6E';
 
 export default function KayTVUploadScreen() {
   const C = useColors();
@@ -24,17 +28,21 @@ export default function KayTVUploadScreen() {
   const router = useRouter();
   const { state } = useAppContext();
   const mode = state.activeContext.mode as string;
-  const canUpload = mode !== 'personal';
+  const [role, , roleCycles] = useDemoRole('personal:kaytv');
+  const isOwner = role === roleCycles[0];
+  // Personal mode: only owners can upload. Other modes: all admins can.
+  const canUpload = mode === 'personal' ? isOwner : mode !== 'personal';
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [visibility, setVisibility] = useState<'brand' | 'explore'>('brand');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [visibility, setVisibility] = useState<'public' | 'subscribers' | 'tier'>('public');
+  const [selectedSeries, setSelectedSeries] = useState('None');
+  const [scheduled, setScheduled] = useState(false);
+  const [commentsOn, setCommentsOn] = useState(true);
+  const [tipsOn, setTipsOn] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
-
-  const rawCategories = KAYTV_CATEGORIES[mode] ?? KAYTV_CATEGORIES.sports;
-  const categories = rawCategories.filter(c => c !== 'All');
 
   const handleUpload = useCallback(() => {
     if (!title.trim() || uploading) return;
@@ -51,17 +59,17 @@ export default function KayTVUploadScreen() {
     return (
       <View style={[styles.screen, { backgroundColor: C.bg }]}>
         <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
-          <Pressable onPress={() => router.back()} hitSlop={10} style={styles.closeBtn}>
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }} hitSlop={10} style={styles.closeBtn}>
             <IconSymbol name="xmark" size={18} color={C.label} />
           </Pressable>
-          <Text style={[styles.headerTitle, { color: C.label }]}>Upload to KayTV</Text>
+          <Text style={[styles.headerTitle, { color: C.label }]}>Upload to KTV</Text>
           <View style={{ width: 36 }} />
         </View>
         <View style={styles.centeredView}>
-          <IconSymbol name="lock" size={40} color={C.muted} />
+          <IconSymbol name="lock" size={40} color={C.secondary} />
           <Text style={[styles.restrictedTitle, { color: C.label }]}>Upload access restricted</Text>
           <Text style={[styles.restrictedSub, { color: C.secondary }]}>
-            Switch to a brand mode to upload videos.
+            {mode === 'personal' ? 'Switch to Owner mode to upload videos.' : 'Switch to a brand mode to upload videos.'}
           </Text>
         </View>
       </View>
@@ -73,8 +81,8 @@ export default function KayTVUploadScreen() {
     return (
       <View style={[styles.screen, { backgroundColor: C.bg }]}>
         <View style={styles.centeredView}>
-          <View style={[styles.successIcon, { backgroundColor: C.green + '22' }]}>
-            <IconSymbol name="checkmark" size={32} color={C.green} />
+          <View style={[styles.successIcon, { backgroundColor: GAIN + '22' }]}>
+            <IconSymbol name="checkmark" size={32} color={GAIN} />
           </View>
           <Text style={[styles.successTitle, { color: C.label }]}>Uploaded!</Text>
           <Text style={[styles.successSub, { color: C.secondary }]}>
@@ -95,10 +103,10 @@ export default function KayTVUploadScreen() {
     <View style={[styles.screen, { backgroundColor: C.bg }]}>
       {/* Header */}
       <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
-        <Pressable onPress={() => router.back()} hitSlop={10} style={styles.closeBtn}>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }} hitSlop={10} style={styles.closeBtn}>
           <IconSymbol name="xmark" size={18} color={C.label} />
         </Pressable>
-        <Text style={[styles.headerTitle, { color: C.label }]}>Upload to KayTV</Text>
+        <Text style={[styles.headerTitle, { color: C.label }]}>Upload to KTV</Text>
         <Pressable
           style={[
             styles.uploadBtn,
@@ -110,7 +118,7 @@ export default function KayTVUploadScreen() {
           {uploading ? (
             <ActivityIndicator size="small" color={C.bg} />
           ) : (
-            <Text style={[styles.uploadBtnText, { color: title.trim() ? C.bg : C.muted }]}>
+            <Text style={[styles.uploadBtnText, { color: title.trim() ? C.bg : C.secondary }]}>
               Upload
             </Text>
           )}
@@ -146,7 +154,7 @@ export default function KayTVUploadScreen() {
             <Text style={{ fontSize: 40 }}>🎬</Text>
           </View>
           <Pressable
-            style={[styles.thumbEdit, { backgroundColor: C.surface, borderColor: C.inputBorder }]}
+            style={[styles.thumbEdit, { backgroundColor: C.surface, borderColor: C.separator }]}
             onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
           >
             <IconSymbol name="pencil" size={13} color={C.label} />
@@ -158,7 +166,7 @@ export default function KayTVUploadScreen() {
           <TextInput
             style={[styles.titleInput, { color: C.label }]}
             placeholder="Title"
-            placeholderTextColor={C.muted}
+            placeholderTextColor={C.secondary}
             value={title}
             onChangeText={setTitle}
             maxLength={100}
@@ -166,11 +174,11 @@ export default function KayTVUploadScreen() {
         </View>
 
         {/* Description */}
-        <View style={[styles.inputRow, { borderBottomColor: C.separator }]}>
+        <View style={[styles.inputRow, { borderBottomColor: C.separator, position: 'relative' }]}>
           <TextInput
             style={[styles.descInput, { color: C.label }]}
             placeholder="Description (optional)"
-            placeholderTextColor={C.muted}
+            placeholderTextColor={C.secondary}
             value={description}
             onChangeText={setDescription}
             multiline
@@ -178,18 +186,24 @@ export default function KayTVUploadScreen() {
             maxLength={500}
             textAlignVertical="top"
           />
+          <Pressable
+            style={{ position: 'absolute', top: 10, right: 16 }}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); /* Dipson assist */ }}
+          >
+            <Text style={{ fontSize: 16 }}>✨</Text>
+          </Pressable>
         </View>
 
         {/* Category */}
         <View style={styles.formSection}>
-          <Text style={[styles.formLabel, { color: C.label }]}>Category</Text>
+          <Text style={[styles.formLabel, { color: C.label }]}>Category (select all that apply)</Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 16, gap: 8, paddingVertical: 4 }}
           >
-            {categories.map(cat => {
-              const active = cat === selectedCategory;
+            {PERSONAL_CATEGORIES.map(cat => {
+              const active = selectedCategories.includes(cat);
               return (
                 <Pressable
                   key={cat}
@@ -199,7 +213,7 @@ export default function KayTVUploadScreen() {
                   ]}
                   onPress={() => {
                     Haptics.selectionAsync();
-                    setSelectedCategory(active ? '' : cat);
+                    setSelectedCategories(prev => prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]);
                   }}
                 >
                   <Text style={[
@@ -215,49 +229,91 @@ export default function KayTVUploadScreen() {
           </ScrollView>
         </View>
 
+        {/* Series */}
+        <View style={styles.formSection}>
+          <Text style={[styles.formLabel, { color: C.label }]}>Add to Series</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 8, paddingVertical: 4 }}>
+            {(['None', 'Building KaNeXT', 'Coaching Philosophy', 'Creator Toolkit', '+ New Series'] as const).map(s => {
+              const active = selectedSeries === s;
+              return (
+                <Pressable
+                  key={s}
+                  style={[styles.pill, active ? { backgroundColor: C.label } : { borderColor: C.separator }]}
+                  onPress={() => { Haptics.selectionAsync(); setSelectedSeries(active ? 'None' : s); }}
+                >
+                  <Text style={[styles.pillText, { color: active ? C.bg : C.secondary }, active && { fontWeight: '600' }]}>{s}</Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        </View>
+
         {/* Visibility */}
         <View style={styles.formSection}>
           <Text style={[styles.formLabel, { color: C.label }]}>Visibility</Text>
-          <Pressable
-            style={styles.visibilityOption}
-            onPress={() => setVisibility('brand')}
-          >
-            <View style={[
-              styles.radio,
-              { borderColor: visibility === 'brand' ? C.label : C.separator },
-              visibility === 'brand' && { backgroundColor: C.label },
-            ]}>
-              {visibility === 'brand' ? (
-                <View style={[styles.radioDot, { backgroundColor: C.bg }]} />
-              ) : null}
+          {([
+            { id: 'public', title: 'Public', sub: 'Visible to everyone. Appears on your channel and in Explore.' },
+            { id: 'subscribers', title: 'Subscribers Only', sub: 'Only visible to paid subscribers (Supporter and above).' },
+            { id: 'tier', title: 'Specific Tier', sub: 'Choose which subscriber tier can access this video.' },
+          ] as const).map(opt => (
+            <Pressable
+              key={opt.id}
+              style={styles.visibilityOption}
+              onPress={() => setVisibility(opt.id)}
+            >
+              <View style={[styles.radio, { borderColor: visibility === opt.id ? C.label : C.separator }, visibility === opt.id && { backgroundColor: C.label }]}>
+                {visibility === opt.id && <View style={[styles.radioDot, { backgroundColor: C.bg }]} />}
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.visibilityTitle, { color: C.label }]}>{opt.title}</Text>
+                <Text style={[styles.visibilitySub, { color: C.secondary }]}>{opt.sub}</Text>
+              </View>
+            </Pressable>
+          ))}
+        </View>
+
+        {/* Schedule */}
+        <View style={styles.formSection}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16 }}>
+            <View>
+              <Text style={[styles.formLabel, { color: C.label, paddingHorizontal: 0 }]}>Schedule</Text>
+              <Text style={{ fontSize: 12, color: C.secondary }}>Set a future publish date</Text>
             </View>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.visibilityTitle, { color: C.label }]}>Brand Only</Text>
-              <Text style={[styles.visibilitySub, { color: C.secondary }]}>
-                Only visible to your organization
+            <Pressable
+              onPress={() => { Haptics.selectionAsync(); setScheduled(!scheduled); }}
+              style={{ width: 44, height: 26, borderRadius: 13, backgroundColor: scheduled ? C.label : C.separator, justifyContent: 'center', paddingHorizontal: 2 }}
+            >
+              <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: C.bg, alignSelf: scheduled ? 'flex-end' : 'flex-start' }} />
+            </Pressable>
+          </View>
+          {scheduled && (
+            <View style={{ paddingHorizontal: 16, paddingTop: 12 }}>
+              <Text style={{ fontSize: 13, color: C.secondary, backgroundColor: C.surface, padding: 12, borderRadius: 10 }}>
+                📅 Tap to pick date/time (date picker coming soon)
               </Text>
             </View>
-          </Pressable>
-          <Pressable
-            style={styles.visibilityOption}
-            onPress={() => setVisibility('explore')}
-          >
-            <View style={[
-              styles.radio,
-              { borderColor: visibility === 'explore' ? C.label : C.separator },
-              visibility === 'explore' && { backgroundColor: C.label },
-            ]}>
-              {visibility === 'explore' ? (
-                <View style={[styles.radioDot, { backgroundColor: C.bg }]} />
-              ) : null}
+          )}
+        </View>
+
+        {/* Toggles */}
+        <View style={[styles.formSection, { paddingHorizontal: 16, gap: 14 }]}>
+          {[
+            { label: 'Allow Comments', sub: 'Viewers can comment on this video', state: commentsOn, toggle: () => setCommentsOn(!commentsOn) },
+            { label: 'Enable Tips', sub: 'Viewers can send tips via KPay during playback', state: tipsOn, toggle: () => setTipsOn(!tipsOn) },
+          ].map(item => (
+            <View key={item.label} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              <View style={{ flex: 1, marginRight: 16 }}>
+                <Text style={{ fontSize: 14, fontWeight: '500', color: C.label }}>{item.label}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{item.sub}</Text>
+              </View>
+              <Pressable
+                onPress={() => { Haptics.selectionAsync(); item.toggle(); }}
+                style={{ width: 44, height: 26, borderRadius: 13, backgroundColor: item.state ? C.label : C.separator, justifyContent: 'center', paddingHorizontal: 2 }}
+              >
+                <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: C.bg, alignSelf: item.state ? 'flex-end' : 'flex-start' }} />
+              </Pressable>
             </View>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.visibilityTitle, { color: C.label }]}>Explore-eligible</Text>
-              <Text style={[styles.visibilitySub, { color: C.secondary }]}>
-                Can appear in Explore for all users
-              </Text>
-            </View>
-          </Pressable>
+          ))}
         </View>
       </ScrollView>
     </View>

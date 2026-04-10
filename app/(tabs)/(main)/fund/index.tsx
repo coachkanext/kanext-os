@@ -21,6 +21,7 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { useDataMode } from '@/utils/global-demo-mode';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   FUNDS, FUND_CAMPAIGNS, SAVED_PAYMENT_METHODS, MY_RECURRING_GIFTS,
   MY_PLEDGE, FUND_TRANSACTIONS, ADMIN_DASHBOARD, SCHOLARSHIPS,
@@ -125,7 +126,7 @@ export default function EducationFundScreen() {
 
   // ── Navigation state ────────────────────────────────────────────────────────
   const [activeTab,    setActiveTab]    = useState<FundTab>('Give');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [studentFundTab, setStudentFundTab] = useState<'Give' | 'Scholarships'>('Give');
   const [pillsVisible, setPillsVisible] = useState(false);
   const [selectedPill, setSelectedPill] = useState('All');
 
@@ -281,7 +282,6 @@ export default function EducationFundScreen() {
     Haptics.selectionAsync();
     const newPills = pillsForTab(tab, isAdmin);
     setActiveTab(tab);
-    setDropdownOpen(false);
     setSelectedPill(newPills[0] ?? 'All');
     setPillsVisible(false);
     pillsAnim.setValue(0);
@@ -1894,7 +1894,17 @@ export default function EducationFundScreen() {
   }
 
   function renderContent() {
-    if (!isAdmin) return renderStudentFinancesView();
+    if (!isAdmin) {
+      if (studentFundTab === 'Scholarships') {
+        return (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingBottom: 100 }}>
+            <Text style={{ fontSize: 16, color: C.secondary, fontWeight: '600' }}>Scholarships</Text>
+            <Text style={{ fontSize: 13, color: C.secondary, marginTop: 6, opacity: 0.6 }}>Browse available scholarships</Text>
+          </View>
+        );
+      }
+      return renderStudentFinancesView();
+    }
     if (isAdmin)  return renderPresidentFinanceView();
     return renderGiveTab();
   }
@@ -1932,25 +1942,37 @@ export default function EducationFundScreen() {
         <View style={s.topBar}>
           <View style={s.topBarSide}>
             <Pressable
-              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isAdmin) openSidePanel(); }}
               hitSlop={12}
             >
-              <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+              <KMenuButton />
             </Pressable>
           </View>
 
           <View style={s.dropdownPillWrap}>
             {isAdmin ? (
-              <Pressable
-                style={[s.dropdownPill, { backgroundColor: C.surfacePressed }]}
-                onPress={() => { Haptics.selectionAsync(); setDropdownOpen(v => !v); }}
-              >
-                <Text style={[s.dropdownPillText, { color: C.label }]}>Finance</Text>
-                <IconSymbol name="chevron.down" size={12} color={C.secondary} />
-              </Pressable>
+              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+                {(['Give', 'Campaigns', 'History'] as const).map(tab => {
+                  const active = activeTab === tab;
+                  return (
+                    <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); changeTab(tab as FundTab); }}
+                      style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
+                      <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
             ) : (
-              <View style={[s.dropdownPill, { backgroundColor: 'transparent' }]}>
-                <Text style={[s.dropdownPillText, { color: C.label }]}>My Finances</Text>
+              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+                {(['Give', 'Scholarships'] as const).map(tab => {
+                  const active = studentFundTab === tab;
+                  return (
+                    <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setStudentFundTab(tab); }}
+                      style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
+                      <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                    </Pressable>
+                  );
+                })}
               </View>
             )}
           </View>
@@ -1996,31 +2018,6 @@ export default function EducationFundScreen() {
           </ScrollView>
         </Animated.View>
       </View>
-
-      {/* Dropdown — President Finance sub-nav */}
-      {dropdownOpen && isAdmin && (
-        <>
-          <Pressable
-            style={{ ...StyleSheet.absoluteFillObject, zIndex: 98 } as any}
-            onPress={() => setDropdownOpen(false)}
-          />
-          <View style={[s.dropdown, { backgroundColor: C.surface, borderColor: C.separator, top: insets.top + TOP_BAR_H }]}>
-            {(['Overview', 'Tuition', 'Budget', 'Aid'] as const).map(tab => (
-              <Pressable
-                key={tab}
-                style={({ pressed }) => [
-                  s.dropdownOpt, { borderBottomColor: C.separator },
-                  (pressed || tab === presidentTab) && { backgroundColor: C.surfacePressed },
-                ]}
-                onPress={() => { Haptics.selectionAsync(); setPresidentTab(tab); setDropdownOpen(false); }}
-              >
-                <Text style={[s.dropdownOptText, { color: tab === presidentTab ? C.accent : C.label }]}>{tab}</Text>
-                {tab === presidentTab && <IconSymbol name="checkmark" size={14} color={C.accent} />}
-              </Pressable>
-            ))}
-          </View>
-        </>
-      )}
 
       {/* Success toast */}
       {showSuccess && (

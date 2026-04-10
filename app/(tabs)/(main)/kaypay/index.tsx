@@ -8,7 +8,7 @@
 import React, { useState, useRef, useCallback, useMemo } from 'react';
 import {
   View, Text, StyleSheet, Pressable, ScrollView,
-  TextInput, Animated,
+  TextInput, Animated, useWindowDimensions,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -23,6 +23,7 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole, MODE_ACCENTS } from '@/utils/demo-role-store';
 import { useDataMode } from '@/utils/global-demo-mode';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   BALANCE, APY_RATE, QUICK_RECIPIENTS, CARD_INFO,
   INFRA_FUND, CAPITAL_POINTS, REMITTANCE_RECIPIENTS,
@@ -32,6 +33,8 @@ import {
 } from '@/data/mock-wallet';
 
 const NAVY='#1A1714';
+const GAIN='#5A8A6E';
+const HEAT='#B85C5C';
 const TOP_BAR_H=52;
 const PILL_ROW_H=48;
 
@@ -62,7 +65,7 @@ function BusinessCEOFinanceView({C,openSidePanel:openPanel,cycleRole,role}:Busin
       <View style={{position:'absolute',top:0,left:0,right:0,zIndex:100,backgroundColor:C.bg,borderBottomWidth:StyleSheet.hairlineWidth,borderBottomColor:C.separator,paddingTop:insets.top,height:topBarH}}>
         <View style={{flexDirection:'row',alignItems:'center',height:TOP_BAR_H,paddingHorizontal:12}}>
           <Pressable style={{width:40,height:40,alignItems:'center',justifyContent:'center'}} onPress={()=>{Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);openPanel();}}>
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label}/>
+            <KMenuButton />
           </Pressable>
           <View style={{flex:1,alignItems:'center'}}>
             <Pressable onPress={()=>{Haptics.selectionAsync();setDropOpen(p=>!p);}}>
@@ -396,7 +399,7 @@ function BusinessCustomerBillingView({C,openSidePanel:openPanel,cycleRole,role}:
       <View style={{position:'absolute',top:0,left:0,right:0,zIndex:100,backgroundColor:C.bg,borderBottomWidth:StyleSheet.hairlineWidth,borderBottomColor:C.separator,paddingTop:insets.top,height:topBarH}}>
         <View style={{flexDirection:'row',alignItems:'center',height:TOP_BAR_H,paddingHorizontal:12}}>
           <Pressable style={{width:40,height:40,alignItems:'center',justifyContent:'center'}} onPress={()=>{Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);openPanel();}}>
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label}/>
+            <KMenuButton />
           </Pressable>
           <View style={{flex:1,alignItems:'center'}}>
             <Text style={{fontSize:17,fontWeight:'700',color:C.label}}>Billing</Text>
@@ -665,147 +668,173 @@ export default function KayPayScreen(){
   }
 
   function renderWalletPersonal(){
-    const txs=getTransactions(txFilter);
-    const displayBal=balanceToggle==="available"?BALANCE:BALANCE+47;
+    const {width:screenWidth}=useWindowDimensions();
+    const BAR_MONTHS=[
+      {month:'Nov',value:420},{month:'Dec',value:680},{month:'Jan',value:390},
+      {month:'Feb',value:820},{month:'Mar',value:560},{month:'Apr',value:340},
+    ];
+    const maxBar=Math.max(...BAR_MONTHS.map(b=>b.value));
+    const BAR_MAX_H=80;
+    const barW=Math.floor((screenWidth-80)/7);
+    const OWNER_TXS=[
+      {icon:'arrow.down.circle.fill',color:GAIN,desc:'Subscription — Inner Circle',amount:'+$25.00',date:'Apr 7'},
+      {icon:'arrow.down.circle.fill',color:GAIN,desc:'Product Sale — The Blueprint',amount:'+$19.99',date:'Apr 6'},
+      {icon:'arrow.up.circle.fill',color:HEAT,desc:'Chick-fil-A',amount:'-$14.23',date:'Apr 6'},
+      {icon:'arrow.down.circle.fill',color:GAIN,desc:'Tip from @marcus_j',amount:'+$10.00',date:'Apr 5'},
+      {icon:'arrow.up.circle.fill',color:HEAT,desc:'Shell Gas Station',amount:'-$52.40',date:'Apr 4'},
+      {icon:'arrow.down.circle.fill',color:GAIN,desc:'Subscription — Supporters',amount:'+$10.00',date:'Apr 3'},
+    ];
     return(
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{padding:16,paddingBottom:120,paddingTop:contentPaddingTop}}>
-        <Pressable onPress={()=>{Haptics.selectionAsync();setBalanceToggle(p=>p==="available"?"total":"available");}}>
-          <GlassView tier={1} style={[s.balanceHero,{backgroundColor:NAVY}]}>
-            <Text style={{fontSize:13,color:"rgba(255,255,255,0.55)",fontWeight:"600",textAlign:"center",marginBottom:4}}>
-              {balanceToggle==="available"?"Available Balance":"Total Balance"}
-            </Text>
-            <Text style={s.balanceAmt}>{formatCurrency(displayBal)}</Text>
-            {balanceToggle==="total"&&(<Text style={{fontSize:13,color:"rgba(255,255,255,0.50)",textAlign:"center",marginTop:2}}>{"(+$47.00 pending)"}</Text>)}
-            <View style={s.apyRow}>
-              <View style={s.apyDot}/>
-              <Text style={{fontSize:13,color:C.green,fontWeight:"600"}}>{"Earning "+APY_RATE.toFixed(2)+"% APY"}</Text>
-              <Text style={{fontSize:12,color:"rgba(255,255,255,0.45)",marginLeft:8}}>{"  +$0.26 today"}</Text>
-            </View>
-          </GlassView>
-        </Pressable>
-        <View style={[s.row,{gap:8,marginBottom:12}]}>
-          {[{icon:"plus.circle",label:"Add Cash",fn:()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)},{icon:"arrow.down.circle",label:"Cash Out",fn:()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)},{icon:"arrow.up.circle",label:"Send",fn:()=>openSend()},{icon:"qrcode",label:"Receive",fn:()=>{Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);setShowQRSheet(true);}}].map(a=>(
-            <Pressable key={a.label} style={{flex:1,alignItems:"center",gap:6}} onPress={a.fn}>
-              <GlassView tier={2} style={s.quickActCircle}>
-                <IconSymbol name={a.icon} size={22} color={C.accent}/>
-              </GlassView>
-              <Text style={{fontSize:11,fontWeight:"600",color:C.secondary}}>{a.label}</Text>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:120,paddingTop:contentPaddingTop}}>
+
+        {/* 1. Balance card */}
+        <View style={{marginHorizontal:16,marginTop:16,borderRadius:20,backgroundColor:C.label,padding:24}}>
+          <Text style={{fontSize:12,color:'rgba(255,255,255,0.65)',marginBottom:6}}>Available Balance</Text>
+          <Text style={{fontSize:40,fontWeight:'800',color:'#fff',marginBottom:8}}>$2,340.50</Text>
+          <Text style={{fontSize:12,color:'rgba(255,255,255,0.65)'}}>Earning 4.00% APY · +$0.26 today</Text>
+        </View>
+
+        {/* 2. Quick actions row */}
+        <View style={{flexDirection:'row',justifyContent:'space-around',marginTop:20,marginHorizontal:16}}>
+          {[
+            {icon:'arrow.down.circle.fill',label:'Add Cash',fn:()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)},
+            {icon:'arrow.up.circle.fill',label:'Cash Out',fn:()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)},
+            {icon:'paperplane.fill',label:'Send',fn:()=>setShowSendSheet(true)},
+            {icon:'qrcode',label:'Receive',fn:()=>{Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);setShowQRSheet(true);}},
+          ].map(a=>(
+            <Pressable key={a.label} style={{alignItems:'center',gap:6}} onPress={a.fn}>
+              <View style={{width:52,height:52,borderRadius:26,backgroundColor:C.surface,alignItems:'center',justifyContent:'center'}}>
+                <IconSymbol name={a.icon} size={22} color={C.label}/>
+              </View>
+              <Text style={{fontSize:11,color:C.secondary}}>{a.label}</Text>
             </Pressable>
           ))}
         </View>
-        <GlassView tier={1} style={s.card}>
-          <View style={[s.row,{justifyContent:"space-between",marginBottom:12}]}>
-            <Text style={[s.sectionHeader,{marginBottom:0}]}>KaNeXT Card</Text>
-            <View style={{backgroundColor:"rgba(90,138,110,0.15)",paddingHorizontal:10,paddingVertical:4,borderRadius:10}}>
-              <Text style={{fontSize:12,fontWeight:"700",color:C.green}}>Active</Text>
+
+        {/* 3. Earnings Summary */}
+        <View style={{marginTop:24,paddingHorizontal:16}}>
+          <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
+            <Text style={{fontSize:16,fontWeight:'700',color:C.label}}>Earnings</Text>
+            <Text style={{fontSize:13,color:C.secondary}}>This month</Text>
+          </View>
+          <View style={{backgroundColor:C.surface,borderRadius:12,padding:16}}>
+            <View style={{flexDirection:'row'}}>
+              {[
+                {label:'Subscriptions',value:'$550'},
+                {label:'Tips',value:'$47'},
+                {label:'Products',value:'$340'},
+              ].map((item,i,arr)=>(
+                <View key={item.label} style={{flex:1,alignItems:'center',borderRightWidth:i<arr.length-1?StyleSheet.hairlineWidth:0,borderColor:C.separator}}>
+                  <Text style={{fontSize:18,fontWeight:'800',color:GAIN}}>{item.value}</Text>
+                  <Text style={{fontSize:11,color:C.secondary,marginTop:3}}>{item.label}</Text>
+                </View>
+              ))}
+            </View>
+            <View style={{marginTop:12,paddingTop:12,borderTopWidth:StyleSheet.hairlineWidth,borderTopColor:C.separator,flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
+              <Text style={{fontSize:13,color:C.secondary}}>Total Earned</Text>
+              <Text style={{fontSize:16,fontWeight:'700',color:C.label}}>$937</Text>
             </View>
           </View>
-          <View style={s.virtualCard}>
-            <Text style={s.virtualCardTitle}>KaNeXT</Text>
-            <Text style={s.virtualCardNum}>{"\u2022\u2022\u2022\u2022  \u2022\u2022\u2022\u2022  \u2022\u2022\u2022\u2022  "+CARD_INFO.last4}</Text>
-            <View style={[s.row,{justifyContent:"space-between"}]}>
-              <Text style={{fontSize:11,color:"rgba(255,255,255,0.55)"}}>{CARD_INFO.expiry}</Text>
-              <Text style={{fontSize:11,color:"rgba(255,255,255,0.75)",fontWeight:"600"}}>{CARD_INFO.name}</Text>
+        </View>
+
+        {/* 4. KaNeXT Card */}
+        <View style={{marginTop:24,paddingHorizontal:16}}>
+          <Text style={{fontSize:16,fontWeight:'700',color:C.label,marginBottom:12}}>KaNeXT Card</Text>
+          {/* Card visual */}
+          <View style={{width:'100%',height:180,borderRadius:16,backgroundColor:C.label,padding:20,justifyContent:'space-between'}}>
+            <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-start'}}>
+              <Text style={{fontSize:12,fontWeight:'700',color:'rgba(255,255,255,0.7)'}}>KANEXT</Text>
+              <View style={{backgroundColor:GAIN,paddingHorizontal:10,paddingVertical:4,borderRadius:8}}>
+                <Text style={{fontSize:11,fontWeight:'700',color:'#fff'}}>ACTIVE</Text>
+              </View>
+            </View>
+            <View style={{alignItems:'center'}}>
+              <Text style={{fontSize:18,fontWeight:'700',color:'#fff',letterSpacing:2}}>{'•••• •••• •••• 4521'}</Text>
+            </View>
+            <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-end'}}>
+              <Text style={{fontSize:12,color:'#fff',fontWeight:'600'}}>SAMMY KALEJAIYE</Text>
+              <Text style={{fontSize:12,color:'rgba(255,255,255,0.8)'}}>04/28</Text>
             </View>
           </View>
-          <View style={[s.row,{gap:8,marginTop:14}]}>
-            {[{icon:"snowflake",label:"Freeze"},{icon:"eye.slash",label:"Number"},{icon:"applelogo",label:"Apple Pay"},{icon:"creditcard",label:"Order Card"}].map(a=>(
-              <Pressable key={a.label} style={{flex:1,alignItems:"center",gap:5}}
-                onPress={()=>{Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);if(a.label==="Number")setShowCardSheet(true);}}>
-                <GlassView tier={2} style={{width:40,height:40,borderRadius:20,alignItems:"center",justifyContent:"center"}}>
-                  <IconSymbol name={a.icon} size={18} color={C.accent}/>
-                </GlassView>
-                <Text style={{fontSize:10,color:C.secondary,fontWeight:"600"}}>{a.label}</Text>
+          {/* Card action buttons */}
+          <View style={{flexDirection:'row',justifyContent:'space-around',marginTop:14}}>
+            {[
+              {icon:'snowflake',label:'Freeze'},
+              {icon:'eye.slash',label:'Number'},
+              {icon:'applelogo',label:'Apple Pay'},
+              {icon:'creditcard.fill',label:'Order'},
+            ].map(a=>(
+              <Pressable key={a.label} style={{alignItems:'center',gap:6}}
+                onPress={()=>{Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);if(a.label==='Number')setShowCardSheet(true);}}>
+                <View style={{width:52,height:52,borderRadius:26,backgroundColor:C.surface,alignItems:'center',justifyContent:'center'}}>
+                  <IconSymbol name={a.icon} size={22} color={C.label}/>
+                </View>
+                <Text style={{fontSize:11,color:C.secondary}}>{a.label}</Text>
               </Pressable>
             ))}
           </View>
-          <View style={[s.row,{marginTop:14,paddingTop:12,borderTopWidth:StyleSheet.hairlineWidth,borderTopColor:C.separator,flexWrap:"wrap",gap:6}]}>
-            <Text style={{fontSize:13,fontWeight:"700",color:C.label,marginRight:2}}>Boosts:</Text>
-            {ACTIVE_BOOSTS.filter(b=>b.active).map(b=>(
-              <View key={b.id} style={{backgroundColor:"rgba(217,119,87,0.12)",paddingHorizontal:10,paddingVertical:4,borderRadius:10}}>
-                <Text style={{fontSize:12,fontWeight:"700",color:C.accent}}>{b.merchant+" \u00B7 "+b.discount}</Text>
+          {/* Boosts */}
+          <Text style={{fontSize:14,fontWeight:'700',color:C.label,marginTop:16,marginBottom:8}}>Boosts</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{gap:8}}>
+            {[
+              {merchant:'Chick-fil-A',pct:'10%'},
+              {merchant:'Shell',pct:'5%'},
+              {merchant:'Amazon',pct:'3%'},
+              {merchant:'Target',pct:'2%'},
+            ].map(b=>(
+              <View key={b.merchant} style={{backgroundColor:C.surface,borderRadius:10,paddingHorizontal:12,paddingVertical:8}}>
+                <Text style={{fontSize:13,fontWeight:'700',color:GAIN}}>{b.pct+' back'}</Text>
+                <Text style={{fontSize:12,color:C.secondary}}>{b.merchant}</Text>
               </View>
             ))}
-            <Pressable onPress={()=>{Haptics.selectionAsync();setShowBoostsSheet(true);}}>
-              <Text style={{fontSize:12,fontWeight:"700",color:C.accent,paddingVertical:4}}>+ Browse</Text>
-            </Pressable>
-          </View>
-        </GlassView>
-        <Text style={[s.sectionHeader,{marginBottom:10}]}>Savings Goals</Text>
-        <View style={[s.row,{gap:10,marginBottom:12}]}>
-          {[{name:"New Car",current:3200,target:5000},{name:"Emergency Fund",current:8400,target:10000}].map(g=>(
-            <GlassView key={g.name} tier={1} style={{flex:1,padding:14,borderRadius:16,alignItems:"center",gap:8}}>
-              {renderProgressRing(g.current/g.target,C.accent,72)}
-              <Text style={{fontSize:13,fontWeight:"700",color:C.label,textAlign:"center"}}>{g.name}</Text>
-              <Text style={{fontSize:11,color:C.secondary}}>{formatCompact(g.current)+" / "+formatCompact(g.target)}</Text>
-              <View style={{backgroundColor:"rgba(90,138,110,0.15)",paddingHorizontal:8,paddingVertical:3,borderRadius:8}}>
-                <Text style={{fontSize:11,fontWeight:"700",color:C.green}}>4% APY</Text>
-              </View>
-            </GlassView>
-          ))}
+          </ScrollView>
         </View>
-        <GlassView tier={1} style={s.card}>
-          <Pressable onPress={()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
-            <View style={[s.row,{justifyContent:"space-between",marginBottom:10}]}>
-              <Text style={[s.sectionHeader,{marginBottom:0}]}>{MONTHLY_SUMMARY.month}</Text>
-              <IconSymbol name="chevron.right" size={14} color={C.muted}/>
-            </View>
-            <View style={[s.row,{gap:8,marginBottom:14}]}>
-              {[{label:"Spent",value:MONTHLY_SUMMARY.spent,color:C.red},{label:"Received",value:MONTHLY_SUMMARY.received,color:C.green},{label:"Saved",value:MONTHLY_SUMMARY.saved,color:C.accent}].map(stat=>(
-                <GlassView key={stat.label} tier={2} style={{flex:1,padding:10,borderRadius:12,alignItems:"center"}}>
-                  <Text style={{fontSize:14,fontWeight:"800",color:stat.color}}>{formatCompact(stat.value)}</Text>
-                  <Text style={{fontSize:11,color:C.secondary,marginTop:2}}>{stat.label}</Text>
-                </GlassView>
-              ))}
-            </View>
-            {MONTHLY_SUMMARY.breakdown.map(cat=>{
-              const pct=cat.amount/MONTHLY_SUMMARY.spent;
-              return(
-                <View key={cat.category} style={[s.row,{marginBottom:7,gap:8}]}>
-                  <Text style={{width:90,fontSize:12,color:C.secondary}}>{cat.label}</Text>
-                  <View style={{flex:1,height:6,backgroundColor:C.separator,borderRadius:3,overflow:"hidden"}}>
-                    <View style={{width:(Math.round(pct*100))+"%" as any,height:6,backgroundColor:cat.color,borderRadius:3}}/>
+
+        {/* 5. Recent Transactions */}
+        <View style={{marginTop:24,paddingHorizontal:16}}>
+          <Text style={{fontSize:16,fontWeight:'700',color:C.label,marginBottom:12}}>Recent Transactions</Text>
+          <View style={{backgroundColor:C.surface,borderRadius:12,overflow:'hidden'}}>
+            {OWNER_TXS.map((tx,i)=>(
+              <View key={i}>
+                <View style={{flexDirection:'row',alignItems:'center',paddingVertical:12,paddingHorizontal:14,gap:12}}>
+                  <View style={{width:36,height:36,borderRadius:18,backgroundColor:tx.color+'22',alignItems:'center',justifyContent:'center'}}>
+                    <IconSymbol name={tx.icon} size={18} color={tx.color}/>
                   </View>
-                  <Text style={{width:44,fontSize:12,fontWeight:"600",color:C.label,textAlign:"right"}}>{formatCompact(cat.amount)}</Text>
+                  <Text style={{flex:1,fontSize:13,color:C.label}} numberOfLines={1}>{tx.desc}</Text>
+                  <View style={{alignItems:'flex-end'}}>
+                    <Text style={{fontSize:13,fontWeight:'700',color:tx.color}}>{tx.amount}</Text>
+                    <Text style={{fontSize:11,color:C.secondary}}>{tx.date}</Text>
+                  </View>
+                </View>
+                {i<OWNER_TXS.length-1&&<View style={{height:StyleSheet.hairlineWidth,backgroundColor:C.separator,marginLeft:62}}/>}
+              </View>
+            ))}
+          </View>
+          <Pressable onPress={()=>Haptics.selectionAsync()} style={{alignItems:'center',paddingVertical:12}}>
+            <Text style={{fontSize:13,fontWeight:'700',color:C.label}}>View All</Text>
+          </Pressable>
+        </View>
+
+        {/* 6. Revenue Trend */}
+        <View style={{marginTop:24,paddingHorizontal:16,paddingBottom:120}}>
+          <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+            <Text style={{fontSize:16,fontWeight:'700',color:C.label}}>Revenue Trend</Text>
+            <Text style={{fontSize:13,color:C.secondary}}>Last 6 months</Text>
+          </View>
+          <View style={{flexDirection:'row',alignItems:'flex-end',justifyContent:'space-between',height:BAR_MAX_H+24}}>
+            {BAR_MONTHS.map(b=>{
+              const barH=Math.round((b.value/maxBar)*BAR_MAX_H);
+              return(
+                <View key={b.month} style={{alignItems:'center',gap:4}}>
+                  <View style={{width:barW,height:barH,backgroundColor:C.label,borderRadius:4}}/>
+                  <Text style={{fontSize:10,color:C.secondary}}>{b.month}</Text>
                 </View>
               );
             })}
-          </Pressable>
-        </GlassView>
-        <View style={[s.row,{justifyContent:"space-between",marginBottom:4,marginTop:4}]}>
-          <Text style={[s.sectionHeader,{marginBottom:0}]}>Recent Transactions</Text>
-          <Pressable onPress={togglePills}>
-            <IconSymbol name="line.3.horizontal.decrease.circle" size={22} color={pillsVisible?C.accent:C.muted}/>
-          </Pressable>
+          </View>
+          <Text style={{fontSize:12,color:C.secondary,textAlign:'right',marginTop:8}}>Total: $3,210</Text>
         </View>
-        <Animated.View style={{height:pillsAnim.interpolate({inputRange:[0,1],outputRange:[0,PILL_ROW_H]}),opacity:pillsAnim,overflow:"hidden"}}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{paddingVertical:8,gap:8}}>
-            {TRANSACTION_FILTERS.map(f=>(
-              <Pressable key={f.key} onPress={()=>{Haptics.selectionAsync();setTxFilter(f.key);}}>
-                <GlassView tier={txFilter===f.key?1:2} style={{paddingHorizontal:14,paddingVertical:7,borderRadius:16}}>
-                  <Text style={{fontSize:13,fontWeight:"700",color:txFilter===f.key?C.label:C.secondary}}>{f.label}</Text>
-                </GlassView>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </Animated.View>
-        {txs.map(tx=>(
-          <Pressable key={tx.id} onPress={()=>Haptics.selectionAsync()}>
-            <View style={s.txRow}>
-              <View style={[s.txAvatar,{backgroundColor:initialsHue(tx.avatarInitials),alignItems:"center",justifyContent:"center"}]}>
-                <Text style={{color:"#fff",fontWeight:"800",fontSize:14}}>{tx.avatarInitials}</Text>
-              </View>
-              <View style={{flex:1}}>
-                <Text style={[s.bodyMed,{color:C.label}]}>{tx.name}</Text>
-                <Text style={[s.bodySmall,{color:C.secondary}]}>{tx.note}</Text>
-              </View>
-              <View style={{alignItems:"flex-end"}}>
-                <Text style={[s.txAmt,{color:txAmtColor(tx.amount,C)}]}>{txSign(tx.amount)+formatCurrency(tx.amount)}</Text>
-                <Text style={{fontSize:11,color:C.muted}}>{tx.timestamp}</Text>
-              </View>
-            </View>
-          </Pressable>
-        ))}
+
       </ScrollView>
     );
   }
@@ -841,7 +870,7 @@ export default function KayPayScreen(){
           <GlassView tier={1} style={{flex:1,padding:14,borderRadius:16}}>
             <Text style={{fontSize:11,fontWeight:"600",color:C.secondary}}>Commerce</Text>
             <Text style={{fontSize:22,fontWeight:"800",color:C.label,marginTop:4}}>{formatCompact(INSTITUTIONAL_WALLET.commerceMonth)}</Text>
-            <Text style={{fontSize:11,color:C.muted}}>processed this month</Text>
+            <Text style={{fontSize:11,color:C.secondary}}>processed this month</Text>
             <View style={[s.row,{gap:6,marginTop:8}]}>
               <View style={s.infoBadge}><Text style={{fontSize:11,fontWeight:"700",color:C.accent}}>5% card</Text></View>
               <View style={s.infoBadge}><Text style={{fontSize:11,fontWeight:"700",color:C.accent}}>3% wallet</Text></View>
@@ -850,7 +879,7 @@ export default function KayPayScreen(){
           <GlassView tier={1} style={{flex:1,padding:14,borderRadius:16}}>
             <Text style={{fontSize:11,fontWeight:"600",color:C.secondary}}>Payroll</Text>
             <Text style={{fontSize:22,fontWeight:"800",color:C.label,marginTop:4}}>{formatCompact(INSTITUTIONAL_WALLET.payrollNext.amount)}</Text>
-            <Text style={{fontSize:11,color:C.muted}}>{"Next: "+INSTITUTIONAL_WALLET.payrollNext.date}</Text>
+            <Text style={{fontSize:11,color:C.secondary}}>{"Next: "+INSTITUTIONAL_WALLET.payrollNext.date}</Text>
             <View style={{marginTop:8}}><View style={{backgroundColor:"rgba(90,138,110,0.15)",paddingHorizontal:8,paddingVertical:4,borderRadius:8,alignSelf:"flex-start"}}><Text style={{fontSize:11,fontWeight:"700",color:C.green}}>Scheduled</Text></View></View>
           </GlassView>
         </View>
@@ -892,7 +921,7 @@ export default function KayPayScreen(){
                     <View key={sp.label} style={[s.row,{justifyContent:"space-between",paddingVertical:5}]}>
                       <Text style={{fontSize:13,color:C.label}}>{sp.label}</Text>
                       <View style={[s.row,{gap:8}]}>
-                        <Text style={{fontSize:12,color:C.muted}}>{sp.pct+"%"}</Text>
+                        <Text style={{fontSize:12,color:C.secondary}}>{sp.pct+"%"}</Text>
                         <Text style={{fontSize:13,fontWeight:"700",color:C.green}}>{formatCurrency(sp.amount)}</Text>
                       </View>
                     </View>
@@ -907,59 +936,150 @@ export default function KayPayScreen(){
   }
 
   function renderSubscriberWalletView(){
+    const SUB_TXS=[
+      {icon:'arrow.up.circle.fill',color:HEAT,desc:'Inner Circle — Sammy K',amount:'-$25.00',date:'Apr 1'},
+      {icon:'arrow.down.circle.fill',color:GAIN,desc:'Received from @dad',amount:'+$200.00',date:'Mar 30'},
+      {icon:'arrow.up.circle.fill',color:HEAT,desc:'Amazon Purchase',amount:'-$43.99',date:'Mar 28'},
+      {icon:'arrow.up.circle.fill',color:HEAT,desc:'Shell Gas Station',amount:'-$48.20',date:'Mar 25'},
+      {icon:'arrow.down.circle.fill',color:GAIN,desc:'Cash Out to Chase',amount:'+$300.00',date:'Mar 20'},
+    ];
+    const PURCHASES=[
+      {desc:'Inner Circle Subscription',amount:'$25.00/mo',date:'Apr 1',status:'Active'},
+      {desc:'The Blueprint (eBook)',amount:'$19.99',date:'Mar 15',status:'Completed'},
+      {desc:'Tip sent',amount:'$10.00',date:'Mar 10',status:'Completed'},
+      {desc:'Film Study Masterclass',amount:'$89.00',date:'Feb 28',status:'Completed'},
+    ];
     return(
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:120,paddingTop:contentPaddingTop}}>
-        {/* Balance card */}
-        <View style={{marginHorizontal:16,marginVertical:16,borderRadius:20,backgroundColor:C.label,padding:24}}>
-          <Text style={{fontSize:12,color:"rgba(255,255,255,0.7)",marginBottom:8}}>Available Balance</Text>
-          <Text style={{fontSize:36,fontWeight:"700",color:"#fff",marginBottom:20}}>$847.50</Text>
-          <View style={{flexDirection:"row",gap:10}}>
-            <Pressable
-              style={{flex:1,height:44,borderRadius:12,borderWidth:1.5,borderColor:"rgba(255,255,255,0.7)",alignItems:"center",justifyContent:"center"}}
-              onPress={()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-            >
-              <Text style={{fontSize:15,fontWeight:"700",color:"#fff"}}>Send</Text>
-            </Pressable>
-            <Pressable
-              style={{flex:1,height:44,borderRadius:12,borderWidth:1.5,borderColor:"rgba(255,255,255,0.7)",alignItems:"center",justifyContent:"center"}}
-              onPress={()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-            >
-              <Text style={{fontSize:15,fontWeight:"700",color:"#fff"}}>Request</Text>
-            </Pressable>
-          </View>
+
+        {/* 1. Balance card */}
+        <View style={{marginHorizontal:16,marginTop:16,borderRadius:20,backgroundColor:C.label,padding:24}}>
+          <Text style={{fontSize:12,color:'rgba(255,255,255,0.65)',marginBottom:6}}>Available Balance</Text>
+          <Text style={{fontSize:40,fontWeight:'800',color:'#fff',marginBottom:8}}>$487.23</Text>
+          <Text style={{fontSize:12,color:'rgba(255,255,255,0.65)'}}>Earning 4.00% APY · +$0.13 today</Text>
         </View>
 
-        {/* Recent Transactions */}
-        <Text style={{fontSize:11,fontWeight:"700",color:C.secondary,letterSpacing:1,paddingHorizontal:16,paddingVertical:8,textTransform:"uppercase"}}>Recent Transactions</Text>
-        {[
-          {name:"Creator Course Purchase",date:"Mar 28, 2026",amount:"-$197.00",positive:false},
-          {name:"KaNeXT Subscription",    date:"Mar 1, 2026", amount:"-$29.00", positive:false},
-          {name:"Refund - Brand Kit",      date:"Feb 20, 2026",amount:"+$49.00", positive:true },
-          {name:"Transfer from Bank",      date:"Feb 15, 2026",amount:"+$500.00",positive:true },
-        ].map((tx,i)=>(
-          <View key={i} style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between",paddingVertical:12,paddingHorizontal:16,borderBottomWidth:StyleSheet.hairlineWidth,borderBottomColor:C.separator}}>
-            <View style={{flex:1}}>
-              <Text style={{fontSize:14,fontWeight:"600",color:C.label}}>{tx.name}</Text>
-              <Text style={{fontSize:12,color:C.secondary,marginTop:2}}>{tx.date}</Text>
-            </View>
-            <Text style={{fontSize:14,fontWeight:"700",color:tx.positive?C.green:C.red}}>{tx.amount}</Text>
-          </View>
-        ))}
+        {/* 2. Quick actions row */}
+        <View style={{flexDirection:'row',justifyContent:'space-around',marginTop:20,marginHorizontal:16}}>
+          {[
+            {icon:'arrow.down.circle.fill',label:'Add Cash',fn:()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)},
+            {icon:'arrow.up.circle.fill',label:'Cash Out',fn:()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)},
+            {icon:'paperplane.fill',label:'Send',fn:()=>setShowSendSheet(true)},
+            {icon:'qrcode',label:'Receive',fn:()=>{Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);setShowQRSheet(true);}},
+          ].map(a=>(
+            <Pressable key={a.label} style={{alignItems:'center',gap:6}} onPress={a.fn}>
+              <View style={{width:52,height:52,borderRadius:26,backgroundColor:C.surface,alignItems:'center',justifyContent:'center'}}>
+                <IconSymbol name={a.icon} size={22} color={C.label}/>
+              </View>
+              <Text style={{fontSize:11,color:C.secondary}}>{a.label}</Text>
+            </Pressable>
+          ))}
+        </View>
 
-        {/* Purchases from Sammy */}
-        <Text style={{fontSize:11,fontWeight:"700",color:C.secondary,letterSpacing:1,paddingHorizontal:16,paddingTop:20,paddingBottom:8,textTransform:"uppercase"}}>Purchases from Sammy</Text>
-        {[
-          {name:"Creator Course",   detail:"Enrolled Mar 28"},
-          {name:"Newsletter Guide", detail:"Purchased Mar 10"},
-        ].map((item,i)=>(
-          <View key={i} style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between",paddingVertical:12,paddingHorizontal:16,borderBottomWidth:StyleSheet.hairlineWidth,borderBottomColor:C.separator}}>
-            <View style={{flex:1}}>
-              <Text style={{fontSize:14,fontWeight:"600",color:C.label}}>{item.name}</Text>
-              <Text style={{fontSize:12,color:C.secondary,marginTop:2}}>{item.detail}</Text>
-            </View>
-            <IconSymbol name="chevron.right" size={14} color={C.secondary}/>
+        {/* 3. Purchases from Creator */}
+        <View style={{marginTop:24,paddingHorizontal:16}}>
+          <Text style={{fontSize:16,fontWeight:'700',color:C.label,marginBottom:2}}>From Sammy Kalejaiye</Text>
+          <Text style={{fontSize:13,color:C.secondary,marginBottom:12}}>Your purchases from this creator</Text>
+          <View style={{backgroundColor:C.surface,borderRadius:12,overflow:'hidden'}}>
+            {PURCHASES.map((p,i)=>(
+              <View key={i}>
+                <View style={{flexDirection:'row',alignItems:'center',paddingVertical:12,paddingHorizontal:14}}>
+                  <View style={{flex:1}}>
+                    <Text style={{fontSize:13,fontWeight:'600',color:C.label}}>{p.desc}</Text>
+                    <Text style={{fontSize:11,color:C.secondary,marginTop:2}}>{p.date}</Text>
+                  </View>
+                  <View style={{alignItems:'flex-end',gap:4}}>
+                    <Text style={{fontSize:13,fontWeight:'700',color:C.label}}>{p.amount}</Text>
+                    <View style={{backgroundColor:p.status==='Active'?GAIN+'22':C.separator,paddingHorizontal:8,paddingVertical:2,borderRadius:6}}>
+                      <Text style={{fontSize:11,fontWeight:'600',color:p.status==='Active'?GAIN:C.secondary}}>{p.status}</Text>
+                    </View>
+                  </View>
+                </View>
+                {i<PURCHASES.length-1&&<View style={{height:StyleSheet.hairlineWidth,backgroundColor:C.separator,marginLeft:14}}/>}
+              </View>
+            ))}
           </View>
-        ))}
+          <Text style={{fontSize:12,color:C.secondary,textAlign:'right',marginTop:8}}>Total Spent: $143.99</Text>
+        </View>
+
+        {/* 4. KaNeXT Card */}
+        <View style={{marginTop:24,paddingHorizontal:16}}>
+          <Text style={{fontSize:16,fontWeight:'700',color:C.label,marginBottom:12}}>KaNeXT Card</Text>
+          {/* Card visual */}
+          <View style={{width:'100%',height:180,borderRadius:16,backgroundColor:C.label,padding:20,justifyContent:'space-between'}}>
+            <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-start'}}>
+              <Text style={{fontSize:12,fontWeight:'700',color:'rgba(255,255,255,0.7)'}}>KANEXT</Text>
+              <View style={{backgroundColor:GAIN,paddingHorizontal:10,paddingVertical:4,borderRadius:8}}>
+                <Text style={{fontSize:11,fontWeight:'700',color:'#fff'}}>ACTIVE</Text>
+              </View>
+            </View>
+            <View style={{alignItems:'center'}}>
+              <Text style={{fontSize:18,fontWeight:'700',color:'#fff',letterSpacing:2}}>{'•••• •••• •••• 7291'}</Text>
+            </View>
+            <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'flex-end'}}>
+              <Text style={{fontSize:12,color:'#fff',fontWeight:'600'}}>ALEX MARTIN</Text>
+              <Text style={{fontSize:12,color:'rgba(255,255,255,0.8)'}}>04/28</Text>
+            </View>
+          </View>
+          {/* Card action buttons */}
+          <View style={{flexDirection:'row',justifyContent:'space-around',marginTop:14}}>
+            {[
+              {icon:'snowflake',label:'Freeze'},
+              {icon:'eye.slash',label:'Number'},
+              {icon:'applelogo',label:'Apple Pay'},
+              {icon:'creditcard.fill',label:'Order'},
+            ].map(a=>(
+              <Pressable key={a.label} style={{alignItems:'center',gap:6}}
+                onPress={()=>{Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);if(a.label==='Number')setShowCardSheet(true);}}>
+                <View style={{width:52,height:52,borderRadius:26,backgroundColor:C.surface,alignItems:'center',justifyContent:'center'}}>
+                  <IconSymbol name={a.icon} size={22} color={C.label}/>
+                </View>
+                <Text style={{fontSize:11,color:C.secondary}}>{a.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+          {/* Boosts */}
+          <Text style={{fontSize:14,fontWeight:'700',color:C.label,marginTop:16,marginBottom:8}}>Boosts</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{gap:8}}>
+            {[
+              {merchant:'Chick-fil-A',pct:'10%'},
+              {merchant:'Shell',pct:'5%'},
+              {merchant:'Amazon',pct:'3%'},
+              {merchant:'Target',pct:'2%'},
+            ].map(b=>(
+              <View key={b.merchant} style={{backgroundColor:C.surface,borderRadius:10,paddingHorizontal:12,paddingVertical:8}}>
+                <Text style={{fontSize:13,fontWeight:'700',color:GAIN}}>{b.pct+' back'}</Text>
+                <Text style={{fontSize:12,color:C.secondary}}>{b.merchant}</Text>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* 5. Recent Transactions */}
+        <View style={{marginTop:24,paddingHorizontal:16,paddingBottom:120}}>
+          <Text style={{fontSize:16,fontWeight:'700',color:C.label,marginBottom:12}}>Recent Transactions</Text>
+          <View style={{backgroundColor:C.surface,borderRadius:12,overflow:'hidden'}}>
+            {SUB_TXS.map((tx,i)=>(
+              <View key={i}>
+                <View style={{flexDirection:'row',alignItems:'center',paddingVertical:12,paddingHorizontal:14,gap:12}}>
+                  <View style={{width:36,height:36,borderRadius:18,backgroundColor:tx.color+'22',alignItems:'center',justifyContent:'center'}}>
+                    <IconSymbol name={tx.icon} size={18} color={tx.color}/>
+                  </View>
+                  <Text style={{flex:1,fontSize:13,color:C.label}} numberOfLines={1}>{tx.desc}</Text>
+                  <View style={{alignItems:'flex-end'}}>
+                    <Text style={{fontSize:13,fontWeight:'700',color:tx.color}}>{tx.amount}</Text>
+                    <Text style={{fontSize:11,color:C.secondary}}>{tx.date}</Text>
+                  </View>
+                </View>
+                {i<SUB_TXS.length-1&&<View style={{height:StyleSheet.hairlineWidth,backgroundColor:C.separator,marginLeft:62}}/>}
+              </View>
+            ))}
+          </View>
+          <Pressable onPress={()=>Haptics.selectionAsync()} style={{alignItems:'center',paddingVertical:12}}>
+            <Text style={{fontSize:13,fontWeight:'700',color:C.label}}>View All</Text>
+          </Pressable>
+        </View>
+
       </ScrollView>
     );
   }
@@ -976,7 +1096,7 @@ export default function KayPayScreen(){
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:120,paddingTop:contentPaddingTop}}>
         {/* Balance card */}
         <View style={{marginHorizontal:16,marginVertical:16,borderRadius:20,backgroundColor:C.label,padding:24}}>
-          <Text style={{fontSize:12,color:"rgba(255,255,255,0.7)",marginBottom:8}}>KayPay Balance</Text>
+          <Text style={{fontSize:12,color:"rgba(255,255,255,0.7)",marginBottom:8}}>KPay Balance</Text>
           <Text style={{fontSize:36,fontWeight:"700",color:"#fff",marginBottom:4}}>$847.50</Text>
           <Text style={{fontSize:13,color:"rgba(255,255,255,0.55)",marginBottom:20}}>Lincoln University Student Account</Text>
           <View style={{flexDirection:"row",gap:10}}>
@@ -1280,7 +1400,7 @@ export default function KayPayScreen(){
                   <View style={[s.row,{gap:16}]}>
                     {fa.inflow>0&&<View style={[s.row,{gap:4}]}><IconSymbol name="arrow.up.circle.fill" size={13} color={C.green}/><Text style={{fontSize:12,color:C.green,fontWeight:"600"}}>+{formatCompact(fa.inflow)}</Text></View>}
                     {fa.outflow>0&&<View style={[s.row,{gap:4}]}><IconSymbol name="arrow.down.circle.fill" size={13} color={C.red}/><Text style={{fontSize:12,color:C.red,fontWeight:"600"}}>-{formatCompact(fa.outflow)}</Text></View>}
-                    {fa.restricted&&<Text style={{fontSize:11,color:C.muted,marginLeft:"auto" as any}}>Restricted-use only</Text>}
+                    {fa.restricted&&<Text style={{fontSize:11,color:C.secondary,marginLeft:"auto" as any}}>Restricted-use only</Text>}
                   </View>
                 </GlassView>
               ))}
@@ -1371,8 +1491,8 @@ export default function KayPayScreen(){
                   <View key={row.label} style={{backgroundColor:C.surface,borderRadius:14,marginBottom:10,padding:16}}>
                     <Text style={{fontSize:13,color:C.secondary,marginBottom:8}}>{row.label}</Text>
                     <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                      <View><Text style={{fontSize:11,color:C.muted}}>2025</Text><Text style={{fontSize:16,fontWeight:'700',color:C.label}}>{row.v2025}</Text></View>
-                      <View style={{alignItems:'flex-end'}}><Text style={{fontSize:11,color:C.muted}}>2026 {row.note}</Text><Text style={{fontSize:16,fontWeight:'700',color:C.label}}>{row.v2026}</Text></View>
+                      <View><Text style={{fontSize:11,color:C.secondary}}>2025</Text><Text style={{fontSize:16,fontWeight:'700',color:C.label}}>{row.v2025}</Text></View>
+                      <View style={{alignItems:'flex-end'}}><Text style={{fontSize:11,color:C.secondary}}>2026 {row.note}</Text><Text style={{fontSize:16,fontWeight:'700',color:C.label}}>{row.v2026}</Text></View>
                     </View>
                   </View>
                 ))}
@@ -1389,6 +1509,7 @@ export default function KayPayScreen(){
     if(mode==='education'&&isAdminRole){return renderEducationPresidentFinance();}
     if(mode==='community'&&!isAdminRole){return renderCommunityMemberWallet();}
     if(mode==='community'&&isAdminRole){return RenderCommunityPastorFinance();}
+    if(mode==='personal'&&isAdminRole){return renderWalletPersonal();}
     return isAdminRole?renderWalletInstitutional():renderWalletPersonal();
   }
 
@@ -1460,8 +1581,8 @@ export default function KayPayScreen(){
                   <Text style={[s.bodySmall,{color:C.secondary}]}>{rr.country}</Text>
                 </View>
                 <View style={{alignItems:"flex-end"}}>
-                  <Text style={{fontSize:13,fontWeight:"700",color:C.label}}>{formatCurrency(rr.lastAmount)}</Text>
-                  <Text style={{fontSize:11,color:C.muted}}>{rr.lastDate}</Text>
+                  <Text style={{fontSize:13,fontWeight:"700",color:C.label}}>{formatCurrency(rr.lastAmt)}</Text>
+                  <Text style={{fontSize:11,color:C.secondary}}>{rr.lastSent}</Text>
                 </View>
               </View>
             </Pressable>
@@ -1550,7 +1671,7 @@ export default function KayPayScreen(){
                 </React.Fragment>
               ))}
             </View>
-            <Text style={{fontSize:12,color:C.muted,marginBottom:10}}>{"$"+INFRA_FUND.fundSizeM+"M fund \u00B7 "+INFRA_FUND.investors.toLocaleString()+" investors"}</Text>
+            <Text style={{fontSize:12,color:C.secondary,marginBottom:10}}>{"$"+INFRA_FUND.fundSizeM+"M fund \u00B7 "+INFRA_FUND.investors.toLocaleString()+" investors"}</Text>
             {INFRA_FUND.projects.map(p=>(
               <View key={p.id} style={[s.row,{paddingVertical:8,borderBottomWidth:StyleSheet.hairlineWidth,borderBottomColor:C.separator,gap:8}]}>
                 <View style={{flex:1}}>
@@ -1625,13 +1746,13 @@ export default function KayPayScreen(){
             ].map(lvl=>(
               <View key={lvl.level} style={[s.ladderRow,{borderBottomColor:C.separator,backgroundColor:lvl.active?"rgba(217,119,87,0.06)":"transparent",borderRadius:8,paddingHorizontal:6}]}>
                 <View style={{width:36,height:36,borderRadius:18,backgroundColor:lvl.unlocked?(lvl.active?C.accent+"22":"rgba(90,138,110,0.15)"):C.separator,alignItems:"center",justifyContent:"center"}}>
-                  <IconSymbol name={lvl.unlocked?(lvl.active?"star.fill":"checkmark.circle.fill"):"lock.fill"} size={16} color={lvl.unlocked?(lvl.active?C.accent:C.green):C.muted}/>
+                  <IconSymbol name={lvl.unlocked?(lvl.active?"star.fill":"checkmark.circle.fill"):"lock.fill"} size={16} color={lvl.unlocked?(lvl.active?C.accent:C.green):C.secondary}/>
                 </View>
                 <View style={{flex:1}}>
-                  <Text style={{fontSize:14,fontWeight:lvl.active?"800":"600",color:lvl.unlocked?C.label:C.muted}}>{"Level "+lvl.level+": "+lvl.name}</Text>
+                  <Text style={{fontSize:14,fontWeight:lvl.active?"800":"600",color:lvl.unlocked?C.label:C.secondary}}>{"Level "+lvl.level+": "+lvl.name}</Text>
                 </View>
                 <View style={{backgroundColor:lvl.unlocked?"rgba(217,119,87,0.12)":C.separator,paddingHorizontal:8,paddingVertical:3,borderRadius:8}}>
-                  <Text style={{fontSize:12,fontWeight:"800",color:lvl.unlocked?C.accent:C.muted}}>{lvl.multiplier}</Text>
+                  <Text style={{fontSize:12,fontWeight:"800",color:lvl.unlocked?C.accent:C.secondary}}>{lvl.multiplier}</Text>
                 </View>
               </View>
             ))}
@@ -1640,7 +1761,7 @@ export default function KayPayScreen(){
               <View key={row.source} style={[s.row,{justifyContent:"space-between",paddingVertical:6}]}>
                 <Text style={{fontSize:13,color:C.label}}>{row.source}</Text>
                 <View style={[s.row,{gap:8}]}>
-                  <Text style={{fontSize:12,color:C.muted}}>{row.multiplier}</Text>
+                  <Text style={{fontSize:12,color:C.secondary}}>{row.multiplier}</Text>
                   <Text style={{fontSize:13,fontWeight:"700",color:C.accent}}>{row.points.toLocaleString()+" pts"}</Text>
                 </View>
               </View>
@@ -1687,8 +1808,8 @@ export default function KayPayScreen(){
             <View style={{gap:16}}>
               <Text style={{fontSize:20,fontWeight:"800",color:C.label}}>Who?</Text>
               <GlassView tier={2} style={{flexDirection:"row",alignItems:"center",paddingHorizontal:14,height:46,borderRadius:14}}>
-                <IconSymbol name="magnifyingglass" size={16} color={C.muted}/>
-                <TextInput placeholder="Search name or @handle" placeholderTextColor={C.muted} style={{flex:1,marginLeft:10,fontSize:15,color:C.label}}/>
+                <IconSymbol name="magnifyingglass" size={16} color={C.secondary}/>
+                <TextInput placeholder="Search name or @handle" placeholderTextColor={C.secondary} style={{flex:1,marginLeft:10,fontSize:15,color:C.label}}/>
               </GlassView>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{gap:14}}>
                 {QUICK_RECIPIENTS.map(r=>(
@@ -1715,10 +1836,10 @@ export default function KayPayScreen(){
                   <Text style={{fontSize:14,fontWeight:"700",color:C.label,marginTop:4}}>{sendRecipient?.name??""}</Text>
                 </View>
               </View>
-              <TextInput value={sendAmount} onChangeText={setSendAmount} keyboardType="decimal-pad" placeholder="$0" placeholderTextColor={C.muted} style={{fontSize:56,fontWeight:"800",color:C.label,textAlign:"center"}}/>
+              <TextInput value={sendAmount} onChangeText={setSendAmount} keyboardType="decimal-pad" placeholder="$0" placeholderTextColor={C.secondary} style={{fontSize:56,fontWeight:"800",color:C.label,textAlign:"center"}}/>
               <Pressable onPress={()=>{}} style={{alignSelf:"center"}}>
                 <GlassView tier={2} style={{paddingHorizontal:14,paddingVertical:10,borderRadius:14}}>
-                  <Text style={{fontSize:13,fontWeight:"600",color:C.secondary}}>{"KayPay Balance · "+formatCurrency(BALANCE)}</Text>
+                  <Text style={{fontSize:13,fontWeight:"600",color:C.secondary}}>{"KPay Balance · "+formatCurrency(BALANCE)}</Text>
                 </GlassView>
               </Pressable>
               <Pressable onPress={()=>setSendStep(3)}>
@@ -1742,12 +1863,12 @@ export default function KayPayScreen(){
                 </View>
               </GlassView>
               <GlassView tier={2} style={{flexDirection:"row",alignItems:"center",paddingHorizontal:14,height:46,borderRadius:14}}>
-                <TextInput value={sendNote} onChangeText={setSendNote} placeholder="Add a note..." placeholderTextColor={C.muted} style={{flex:1,fontSize:15,color:C.label}}/>
+                <TextInput value={sendNote} onChangeText={setSendNote} placeholder="Add a note..." placeholderTextColor={C.secondary} style={{flex:1,fontSize:15,color:C.label}}/>
               </GlassView>
               <Pressable onPress={confirmSend}>
-                <View style={[s.giveBtn,{backgroundColor:C.accent}]}><Text style={s.giveBtnText}>{"Send "+(sendAmount?"$"+sendAmount:"")+" via KayPay"}</Text></View>
+                <View style={[s.giveBtn,{backgroundColor:C.accent}]}><Text style={s.giveBtnText}>{"Send "+(sendAmount?"$"+sendAmount:"")+" via KPay"}</Text></View>
               </Pressable>
-              <Text style={{fontSize:12,color:C.muted,textAlign:"center"}}>Face ID / Touch ID may be required</Text>
+              <Text style={{fontSize:12,color:C.secondary,textAlign:"center"}}>Face ID / Touch ID may be required</Text>
             </View>
           )}
         </View>
@@ -1786,7 +1907,7 @@ export default function KayPayScreen(){
                   <Text style={{fontSize:14,fontWeight:"700",color:C.label}}>{item.label}</Text>
                   <Text style={{fontSize:12,color:C.secondary}}>{item.sub}</Text>
                 </View>
-                <IconSymbol name="chevron.right" size={14} color={C.muted}/>
+                <IconSymbol name="chevron.right" size={14} color={C.secondary}/>
               </GlassView>
             </Pressable>
           ))}
@@ -1813,7 +1934,7 @@ export default function KayPayScreen(){
                 <View style={{alignItems:"flex-end",gap:4}}>
                   <Text style={{fontSize:15,fontWeight:"800",color:C.accent}}>{boost.discount}</Text>
                   <View style={{backgroundColor:boost.active?"rgba(90,138,110,0.15)":C.separator,paddingHorizontal:8,paddingVertical:3,borderRadius:8}}>
-                    <Text style={{fontSize:11,fontWeight:"700",color:boost.active?C.green:C.muted}}>{boost.active?"Active":"Add"}</Text>
+                    <Text style={{fontSize:11,fontWeight:"700",color:boost.active?C.green:C.secondary}}>{boost.active?"Active":"Add"}</Text>
                   </View>
                 </View>
               </GlassView>
@@ -1854,16 +1975,18 @@ export default function KayPayScreen(){
   const isEduStudent=mode==='education'&&!isAdminRole;
   const isCommunityMember=mode==='community'&&!isAdminRole;
   const isCommunityPastor=mode==='community'&&isAdminRole;
-  const showFilterBtn=activeTab!=="Pay"&&!(mode==='personal'&&!isAdminRole)&&!isEduStudent&&!isCommunityMember&&!isCommunityPastor;
+  const showFilterBtn=activeTab!=="Pay"&&mode!=='personal'&&!isEduStudent&&!isCommunityMember&&!isCommunityPastor;
   return(
     <View style={[s.container,{backgroundColor:C.bg}]}>
       <View style={[s.topBarOuter,{paddingTop:insets.top,height:topBarH+(pillsVisible&&activeTab==="Invest"?PILL_ROW_H:0)}]}>
         <View style={s.topBar}>
           <Pressable style={s.iconBtn} onPress={()=>{Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);openSidePanel();}}>
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label}/>
+            <KMenuButton />
           </Pressable>
           <View style={{flex:1,alignItems:"center"}}>
-            {(mode==='personal'&&!isAdminRole)||isEduStudent||isCommunityMember?(
+            {mode==='personal'?(
+              <Text style={{fontSize:17,fontWeight:'700',color:C.label}}>KPay</Text>
+            ):isEduStudent||isCommunityMember?(
               <Text style={{fontSize:17,fontWeight:"700",color:C.label}}>Wallet</Text>
             ):isCommunityPastor?(
               <Text style={{fontSize:17,fontWeight:"700",color:C.label}}>Finance</Text>
@@ -1892,7 +2015,7 @@ export default function KayPayScreen(){
             <View style={s.iconBtn}/>
           )}
         </View>
-        {activeTab==="Invest"&&(
+        {activeTab==="Invest"&&mode!=='personal'&&(
           <Animated.View style={{height:pillsAnim.interpolate({inputRange:[0,1],outputRange:[0,PILL_ROW_H]}),opacity:pillsAnim,overflow:"hidden"}}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{paddingHorizontal:16,paddingVertical:8,gap:8}}>
               {INVEST_FLTRS.map(f=>(
@@ -1906,10 +2029,10 @@ export default function KayPayScreen(){
           </Animated.View>
         )}
       </View>
-      {activeTab==="Wallet"&&renderWalletTab()}
-      {activeTab==="Pay"&&renderPayTab()}
-      {activeTab==="Invest"&&renderInvestTab()}
-      {dropdownOpen&&!(mode==='personal'&&!isAdminRole)&&!isEduStudent&&(
+      {(mode==='personal'||activeTab==="Wallet")&&renderWalletTab()}
+      {activeTab==="Pay"&&mode!=='personal'&&renderPayTab()}
+      {activeTab==="Invest"&&mode!=='personal'&&renderInvestTab()}
+      {dropdownOpen&&mode!=='personal'&&!isEduStudent&&(
         <>
           <Pressable style={StyleSheet.absoluteFill} onPress={()=>setDropdownOpen(false)}/>
           <View style={[s.dropdown,{top:topBarH+4}]}>

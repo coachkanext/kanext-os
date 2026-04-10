@@ -12,12 +12,6 @@ import { closeSidePanel } from '@/utils/global-side-panel';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { COMMUNITY_PROFILE, COMMUNITY_ANALYTICS } from '@/data/mock-community-hub';
 
-const NAV_ITEMS = [
-  { icon: 'square.grid.2x2',  label: 'Overview',    tab: 'Overview'    },
-  { icon: 'building.2',        label: 'Departments', tab: 'Departments' },
-  { icon: 'person.3.fill',    label: 'Groups',      tab: 'Groups'      },
-] as const;
-
 const SETTINGS_ITEMS = [
   { icon: 'person.crop.circle', label: 'Community Profile' },
   { icon: 'lock.shield',        label: 'Permissions' },
@@ -28,11 +22,6 @@ export function CommunityHubPanel() {
   const router = useRouter();
   const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
-
-  const navigate = (tab: string) => {
-    closeSidePanel();
-    setTimeout(() => router.push({ pathname: '/(tabs)/(main)/hub/community' as any, params: { tab } }), 80);
-  };
 
   const a = COMMUNITY_ANALYTICS;
 
@@ -67,26 +56,18 @@ export function CommunityHubPanel() {
         </View>
       </View>
 
-      {/* Navigate */}
-      <Text style={[styles.sectionLabel, { color: C.secondary }]}>Navigate</Text>
-      {NAV_ITEMS.map((item, idx) => (
-        <Pressable
-          key={item.label}
-          style={({ pressed }) => [
-            styles.navRow,
-            pressed && { backgroundColor: C.surfacePressed },
-            idx < NAV_ITEMS.length - 1 && [styles.navRowBorder, { borderBottomColor: C.separator }],
-          ]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            navigate(item.tab);
-          }}
-        >
-          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-          <Text style={[styles.navLabel, { color: C.label }]}>{item.label}</Text>
-          <IconSymbol name="chevron.right" size={14} color={C.muted} />
-        </Pressable>
-      ))}
+      {/* ── Home ── */}
+      <Pressable
+        style={({ pressed }) => [styles.navRow, pressed && { backgroundColor: C.surfacePressed }]}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          closeSidePanel();
+          router.setParams({ manage: undefined });
+        }}
+      >
+        <IconSymbol name="house.fill" size={18} color={C.secondary} />
+        <Text style={[styles.navLabel, { color: C.label }]}>Home</Text>
+      </Pressable>
 
       <View style={[styles.divider, { backgroundColor: C.separator }]} />
 
@@ -114,27 +95,6 @@ export function CommunityHubPanel() {
         </Pressable>
       ))}
 
-      <View style={[styles.divider, { backgroundColor: C.separator }]} />
-
-      {/* Settings */}
-      {SETTINGS_ITEMS.map((item, idx) => (
-        <Pressable
-          key={item.label}
-          style={({ pressed }) => [
-            styles.navRow,
-            pressed && { backgroundColor: C.surfacePressed },
-            idx < SETTINGS_ITEMS.length - 1 && [styles.navRowBorder, { borderBottomColor: C.separator }],
-          ]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            closeSidePanel();
-          }}
-        >
-          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-          <Text style={[styles.navLabel, { color: C.label }]}>{item.label}</Text>
-          <IconSymbol name="chevron.right" size={14} color={C.muted} />
-        </Pressable>
-      ))}
 
       <View style={{ height: 24 }} />
     </View>

@@ -4,6 +4,7 @@
 
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -15,6 +16,7 @@ import {
 } from '@/data/mock-fund';
 
 export function EduFundPanel() {
+  const router = useRouter();
   const C = useColors();
   const [role, setRole] = useState<'Admin' | 'Donor'>('Admin');
 
@@ -64,6 +66,19 @@ export function EduFundPanel() {
 
       {role === 'Admin' ? (
         <>
+          {/* ── Home ── */}
+          <Pressable
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              closeSidePanel();
+              router.setParams({ manage: undefined });
+            }}
+          >
+            <IconSymbol name="house.fill" size={18} color={C.secondary} />
+            <Text style={[s.navLabel, { color: C.label }]}>Home</Text>
+          </Pressable>
+
           {/* This Month stats */}
           <View style={{ backgroundColor: C.surface, borderRadius: 12, padding: 12, gap: 8 }}>
             <Text style={[s.sectionHeader, { color: C.secondary }]}>This Month</Text>
@@ -79,14 +94,6 @@ export function EduFundPanel() {
                 </View>
               ))}
             </View>
-          </View>
-
-          {/* Navigate */}
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>Navigate</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {navRow('dollarsign.circle.fill',   'Make a Gift',     undefined)}
-            {navRow('megaphone.fill',           'Campaigns',       `${activeCampaigns.length} active`)}
-            {navRow('clock.arrow.circlepath',   'Giving History',  `${FUND_TRANSACTIONS.length} gifts`)}
           </View>
 
           {/* Pending Scholarships */}
@@ -175,14 +182,6 @@ export function EduFundPanel() {
               </View>
             </>
           )}
-
-          {/* Navigate */}
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>Navigate</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {navRow('dollarsign.circle.fill', 'Make a Gift')}
-            {navRow('megaphone.fill',         'Campaigns',   `${activeCampaigns.length} active`)}
-            {navRow('clock.arrow.circlepath', 'My History',  `${myTx.length} gifts`)}
-          </View>
 
           {/* Actions */}
           <Text style={[s.sectionHeader, { color: C.secondary }]}>Actions</Text>

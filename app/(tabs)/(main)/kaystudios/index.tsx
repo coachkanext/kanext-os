@@ -27,6 +27,7 @@ import {
   STUDIOS_PILLS,
   type StudioContent, type ExperienceType,
 } from '@/data/mock-kaystudios';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   loadAllProgress, getSavedIds, type ProgressEntry,
 } from '@/utils/studios-progress';
@@ -282,8 +283,8 @@ function CommunityMemberLearnView({
       {/* Top bar */}
       <View style={{ paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, zIndex: 20, backgroundColor: C.bg }}>
         <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
-          <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}>
+            <KMenuButton />
           </Pressable>
           <View style={{ flex: 1, alignItems: 'center' }}>
             <Pressable
@@ -580,7 +581,7 @@ function BusinessCEOToolsView({
       <View style={{ paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, zIndex: 20, backgroundColor: C.bg }}>
         <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
           <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+            <KMenuButton />
           </Pressable>
           <View style={{ flex: 1, alignItems: 'center' }}>
             <Pressable
@@ -802,8 +803,8 @@ function BusinessCustomerLearnView({
       {/* Top bar */}
       <View style={{ paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, zIndex: 20, backgroundColor: C.bg }}>
         <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
-          <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}>
+            <KMenuButton />
           </Pressable>
           <View style={{ flex: 1, alignItems: 'center' }}>
             <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Resources</Text>
@@ -944,7 +945,7 @@ function EducationPresidentAcademicToolsView({
       <View style={{ paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, zIndex: 20, backgroundColor: C.bg }}>
         <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
           <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+            <KMenuButton />
           </Pressable>
           <View style={{ flex: 1, alignItems: 'center' }}>
             <Pressable
@@ -1170,7 +1171,7 @@ function CommunityPastorMinistryToolsView({
       <View style={{ paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, zIndex: 20, backgroundColor: C.bg }}>
         <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
           <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+            <KMenuButton />
           </Pressable>
           <View style={{ flex: 1, alignItems: 'center' }}>
             <Pressable
@@ -1355,6 +1356,7 @@ function PersonalOwnerStudioView({
 }) {
   const [studioTab, setStudioTab] = useState<StudioOwnerTab>('Courses');
   const [studioDrop, setStudioDrop] = useState(false);
+  const [ksTab, setKsTab] = useState<KSTab>('Home');
   const topBarH = insets.top + 52;
 
   return (
@@ -1362,15 +1364,25 @@ function PersonalOwnerStudioView({
       {/* Top Bar */}
       <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
         <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          <KMenuButton />
         </Pressable>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setStudioDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{studioTab}</Text>
-          <IconSymbol name={studioDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
-        </Pressable>
-        <View style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <RolePill role={role} onPress={cycleRole} isPrimary />
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+            {(['Home', 'Explore', 'Library'] as KSTab[]).map(tab => {
+              const active = ksTab === tab;
+              return (
+                <Pressable
+                  key={tab}
+                  onPress={() => { Haptics.selectionAsync(); setKsTab(tab); }}
+                  style={{ paddingHorizontal: 14, paddingVertical: 5, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}
+                >
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
         </View>
+        <RolePill role={role} onPress={cycleRole} isPrimary />
       </View>
 
       {/* Dropdown */}
@@ -1521,20 +1533,32 @@ function PersonalSubscriberView({
   cycleRole: () => void;
   role: string;
 }) {
+  const [subKsTab, setSubKsTab] = useState<KSTab>('Home');
   const topBarH = insets.top + 52;
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       {/* Top Bar */}
       <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <KMenuButton />
         </Pressable>
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Learn & Play</Text>
+          <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+            {(['Home', 'Explore', 'Library'] as KSTab[]).map(tab => {
+              const active = subKsTab === tab;
+              return (
+                <Pressable
+                  key={tab}
+                  onPress={() => { Haptics.selectionAsync(); setSubKsTab(tab); }}
+                  style={{ paddingHorizontal: 14, paddingVertical: 5, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}
+                >
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
         </View>
-        <View style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={false} />
-        </View>
+        <RolePill role={role} onPress={cycleRole} isPrimary={false} />
       </View>
 
       <ScrollView style={{ flex: 1, marginTop: topBarH }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
@@ -1750,7 +1774,6 @@ export default function KayStudiosScreen() {
   const accent  = MODE_ACCENTS[mode] ?? C.accent;
 
   const [activeTab, setActiveTab] = useState<KSTab>('Home');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [filterPillsVisible, setFilterPillsVisible] = useState(false);
   const [selectedPill, setSelectedPill] = useState('All');
   const [allProgress, setAllProgress] = useState<Record<string, ProgressEntry>>(DEMO_PROGRESS);
@@ -1841,7 +1864,6 @@ export default function KayStudiosScreen() {
   const handleTabSelect = useCallback((tab: KSTab) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setActiveTab(tab);
-    setDropdownOpen(false);
     setFilterPillsVisible(false);
     pillsRevealAnim.setValue(0);
     setSelectedPill('All');
@@ -1927,8 +1949,8 @@ export default function KayStudiosScreen() {
         {/* Top Bar */}
         <View style={{ paddingTop: insets.top, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, zIndex: 20, backgroundColor: C.bg }}>
           <View style={{ height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 }}>
-            <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
-              <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+            <Pressable style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}>
+              <KMenuButton />
             </Pressable>
             <View style={{ flex: 1, alignItems: 'center' }}>
               <Pressable
@@ -2196,65 +2218,69 @@ export default function KayStudiosScreen() {
 
       {/* ── Home View ── */}
       {activeTab === 'Home' && (
-        <FlatList
-          data={filteredFeed}
-          keyExtractor={item => item.id}
+        <ScrollView
           onScroll={handleScroll}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingTop: contentTop + 8, paddingBottom: 120 }}
-          ListHeaderComponent={
-            isAdmin ? (
-              <View style={{ marginHorizontal: 16, marginBottom: 8, backgroundColor: accent + '12', borderRadius: 14, padding: 14, borderWidth: 1, borderColor: accent + '30' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-                  <IconSymbol name="plus.rectangle.fill.on.rectangle.fill" size={16} color={accent} />
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: accent }}>{KAYSTUDIOS_ADMIN_TOOLS[mode]?.header ?? 'Creator Tools'}</Text>
-                </View>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 7 }}>
-                  {(KAYSTUDIOS_ADMIN_TOOLS[mode]?.tools ?? []).map(tool => (
-                    <Pressable
-                      key={tool}
-                      onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-                      style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: accent + '20', borderWidth: 1, borderColor: accent + '40' }}
-                    >
-                      <Text style={{ fontSize: 12, fontWeight: '600', color: accent }}>{tool}</Text>
-                    </Pressable>
-                  ))}
-                </View>
+        >
+          {isAdmin ? (
+            <View style={{ marginHorizontal: 16, marginBottom: 8, backgroundColor: accent + '12', borderRadius: 14, padding: 14, borderWidth: 1, borderColor: accent + '30' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                <IconSymbol name="plus.rectangle.fill.on.rectangle.fill" size={16} color={accent} />
+                <Text style={{ fontSize: 14, fontWeight: '700', color: accent }}>{KAYSTUDIOS_ADMIN_TOOLS[mode]?.header ?? 'Creator Tools'}</Text>
               </View>
-            ) : (
-              <View style={{ marginHorizontal: 16, marginBottom: 8, backgroundColor: C.surface, borderRadius: 14, padding: 14 }}>
-                <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 4 }}>
-                  {mode === 'sports' ? 'Your Learning & Development' :
-                   mode === 'education' ? 'Courses & Study Tools' :
-                   mode === 'community' ? 'Grow & Engage' :
-                   mode === 'business' ? 'Onboarding & Certifications' : 'Discover Experiences'}
-                </Text>
-                <Text style={{ fontSize: 12, color: C.secondary }}>
-                  {mode === 'sports' ? 'Required IQ courses, life skills & fan games' :
-                   mode === 'education' ? 'Take courses, study games & career simulators' :
-                   mode === 'community' ? 'New member courses, volunteer training & trivia' :
-                   mode === 'business' ? 'Product demos, ROI calculators & onboarding flows' : 'Interactive experiences built for you'}
-                </Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 7 }}>
+                {(KAYSTUDIOS_ADMIN_TOOLS[mode]?.tools ?? []).map(tool => (
+                  <Pressable
+                    key={tool}
+                    onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                    style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: accent + '20', borderWidth: 1, borderColor: accent + '40' }}
+                  >
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: accent }}>{tool}</Text>
+                  </Pressable>
+                ))}
               </View>
-            )
-          }
-          ItemSeparatorComponent={() => <View style={[styles.separator, { backgroundColor: C.separator }]} />}
-          renderItem={({ item }) => (
-            <ContentCard
-              item={item}
-              C={C}
-              onPress={() => launchExperience(item)}
-              progress={allProgress[item.id]}
-            />
+            </View>
+          ) : (
+            <View style={{ marginHorizontal: 16, marginBottom: 8, backgroundColor: C.surface, borderRadius: 14, padding: 14 }}>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 4 }}>
+                {mode === 'sports' ? 'Your Learning & Development' :
+                 mode === 'education' ? 'Courses & Study Tools' :
+                 mode === 'community' ? 'Grow & Engage' :
+                 mode === 'business' ? 'Onboarding & Certifications' : 'Discover Experiences'}
+              </Text>
+              <Text style={{ fontSize: 12, color: C.secondary }}>
+                {mode === 'sports' ? 'Required IQ courses, life skills & fan games' :
+                 mode === 'education' ? 'Take courses, study games & career simulators' :
+                 mode === 'community' ? 'New member courses, volunteer training & trivia' :
+                 mode === 'business' ? 'Product demos, ROI calculators & onboarding flows' : 'Interactive experiences built for you'}
+              </Text>
+            </View>
           )}
-          ListEmptyComponent={
-            <View style={[styles.empty, { marginTop: 80 }]}>
+          {filteredFeed.filter(item => { const p = allProgress[item.id]; return p && p.progress > 0 && !p.completed; }).length > 0 && (
+            <Text style={{ fontSize: 16, fontWeight: '700', color: C.label, paddingHorizontal: 16, marginBottom: 8, marginTop: 4 }}>Continue</Text>
+          )}
+          {filteredFeed.filter(item => { const p = allProgress[item.id]; return p && p.progress > 0 && !p.completed; }).map((item, index, arr) => (
+            <View key={item.id}>
+              <ContentCard item={item} C={C} onPress={() => launchExperience(item)} progress={allProgress[item.id]} />
+              {index < arr.length - 1 && <View style={[styles.separator, { backgroundColor: C.separator }]} />}
+            </View>
+          ))}
+          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label, paddingHorizontal: 16, marginBottom: 8, marginTop: 16 }}>For You</Text>
+          {filteredFeed.filter(item => { const p = allProgress[item.id]; return !(p && p.progress > 0 && !p.completed); }).length === 0 && (
+            <View style={[styles.empty, { marginTop: 40 }]}>
               <Text style={styles.emptyIcon}>🎮</Text>
               <Text style={[styles.emptyText, { color: C.secondary }]}>No experiences in this category</Text>
             </View>
-          }
-        />
+          )}
+          {filteredFeed.filter(item => { const p = allProgress[item.id]; return !(p && p.progress > 0 && !p.completed); }).map((item, index, arr) => (
+            <View key={item.id}>
+              <ContentCard item={item} C={C} onPress={() => launchExperience(item)} progress={allProgress[item.id]} />
+              {index < arr.length - 1 && <View style={[styles.separator, { backgroundColor: C.separator }]} />}
+            </View>
+          ))}
+        </ScrollView>
       )}
 
       {/* ── Explore View ── */}
@@ -2316,19 +2342,26 @@ export default function KayStudiosScreen() {
         <View style={styles.topBar}>
           <Pressable
             style={styles.topBarSide}
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isAdmin) openSidePanel(); }}
             hitSlop={8}
           >
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+            <KMenuButton />
           </Pressable>
           <View style={styles.dropdownPillWrap}>
-            <Pressable
-              style={[styles.dropdownPill, { backgroundColor: C.surfacePressed }]}
-              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setDropdownOpen(v => !v); }}
-            >
-              <Text style={[styles.dropdownPillText, { color: C.label }]}>{activeTab}</Text>
-              <IconSymbol name="chevron.down" size={12} color={C.secondary} />
-            </Pressable>
+            <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+              {(['Home', 'Explore', 'Library'] as KSTab[]).map(tab => {
+                const active = activeTab === tab;
+                return (
+                  <Pressable
+                    key={tab}
+                    onPress={() => { Haptics.selectionAsync(); setActiveTab(tab); }}
+                    style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}
+                  >
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
           </View>
           <View style={[styles.topBarSide, { alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end', gap: 8, width: 'auto' as any }]}>
             <RolePill
@@ -2337,15 +2370,19 @@ export default function KayStudiosScreen() {
               accentColor={accent}
               isPrimary={isAdmin}
             />
-            <Pressable onPress={toggleFilterPills} hitSlop={12}>
-              <IconSymbol
-                name={filterPillsVisible || selectedPill !== 'All'
-                  ? 'line.3.horizontal.decrease.circle.fill'
-                  : 'line.3.horizontal.decrease.circle'}
-                size={22}
-                color={filterPillsVisible || selectedPill !== 'All' ? C.accent : C.label}
-              />
-            </Pressable>
+            {activeTab === 'Library' ? (
+              <Pressable onPress={toggleFilterPills} hitSlop={12}>
+                <IconSymbol
+                  name={filterPillsVisible || selectedPill !== 'All'
+                    ? 'line.3.horizontal.decrease.circle.fill'
+                    : 'line.3.horizontal.decrease.circle'}
+                  size={22}
+                  color={filterPillsVisible || selectedPill !== 'All' ? C.label : C.label}
+                />
+              </Pressable>
+            ) : (
+              <View style={{ width: 22, height: 22 }} />
+            )}
           </View>
         </View>
 
@@ -2377,26 +2414,6 @@ export default function KayStudiosScreen() {
           </ScrollView>
         </Animated.View>
       </View>
-
-      {/* ── Dropdown ── */}
-      {dropdownOpen && (
-        <>
-          <Pressable style={[StyleSheet.absoluteFillObject, { zIndex: 98 }]} onPress={() => setDropdownOpen(false)} />
-          <View style={[styles.dropdown, { top: insets.top + 56, backgroundColor: C.bg, borderColor: C.separator, zIndex: 99 }]}>
-            {(['Home', 'Explore', 'Library'] as KSTab[]).map(tab => (
-              <Pressable key={tab} style={styles.dropdownOption} onPress={() => handleTabSelect(tab)}>
-                <Text style={[
-                  styles.dropdownOptionText,
-                  { color: tab === activeTab ? C.label : C.secondary },
-                  tab === activeTab && { fontWeight: '600' },
-                ]}>
-                  {tab}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        </>
-      )}
 
       {/* ── Search FAB ── */}
       <Pressable

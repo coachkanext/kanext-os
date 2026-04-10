@@ -26,6 +26,7 @@ import { useDataMode } from '@/utils/global-demo-mode';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   BOOSTER_CAMPAIGNS, NIL_OPPORTUNITIES, NIL_DEALS, MERCH_PRODUCTS,
   TICKET_GAMES, FAN_REWARDS, NIL_ACTIVITY, FAN_EXPERIENCES, PLAYERS,
@@ -206,8 +207,7 @@ export default function BoosterScreen() {
   const role: BoosterRole = isCoachRole ? 'admin' : 'fan';
 
   // ── Tab & Role ─────────────────────────────────────────────────────────────
-  const [activeTab,    setActiveTab]    = useState<BoosterTab>('Give');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<BoosterTab>('Give');
 
   // ── Pills ──────────────────────────────────────────────────────────────────
   const [pillsVisible, setPillsVisible] = useState(false);
@@ -252,7 +252,6 @@ export default function BoosterScreen() {
 
   function changeTab(tab: BoosterTab) {
     Haptics.selectionAsync();
-    setDropdownOpen(false);
     setActiveTab(tab);
     setSelectedPill('All');
     const newPills = pillsForTab(tab);
@@ -265,6 +264,12 @@ export default function BoosterScreen() {
   function handleCycleRole() {
     Haptics.selectionAsync();
     cycleDemoRole();
+    // If cycling away from Coach, reset to NIL Marketplace (player default)
+    if (isCoachRole) {
+      setActiveTab('NIL Marketplace');
+    } else {
+      setActiveTab('Give');
+    }
     setPillsVisible(false);
     pillsAnim.setValue(0);
   }
@@ -2232,27 +2237,40 @@ export default function BoosterScreen() {
           <Pressable
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              openSidePanel();
+              if (isCoachRole) openSidePanel();
             }}
             style={s.iconBtn}
             hitSlop={8}
           >
-            <IconSymbol name="line.3.horizontal" size={20} color={C.label} />
+            <KMenuButton />
           </Pressable>
 
-          {/* Center: dropdown tab pill */}
-          <Pressable
-            onPress={() => { Haptics.selectionAsync(); setDropdownOpen(v => !v); }}
-            style={[s.dropdownPill, { backgroundColor: C.surface, borderColor: C.separator as string }]}
-          >
-            <Text style={[s.dropdownPillText, { color: C.label }]}>{activeTab}</Text>
-            <IconSymbol
-              name={dropdownOpen ? 'chevron.up' : 'chevron.down'}
-              size={12}
-              color={C.secondary as string}
-              style={{ marginLeft: 4 }}
-            />
-          </Pressable>
+          {/* Center: TabPill (Coach 3 tabs, Player 2 tabs) */}
+          {isCoachRole ? (
+            <View style={{ flex: 1, marginHorizontal: 8, flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+              {(['Give', 'NIL Marketplace', 'Fan Shop'] as BoosterTab[]).map(tab => {
+                const active = activeTab === tab;
+                return (
+                  <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); changeTab(tab); }}
+                    style={{ paddingHorizontal: 10, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          ) : (
+            <View style={{ flex: 1, marginHorizontal: 8, flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+              {(['NIL Marketplace', 'Fan Shop'] as const).map(tab => {
+                const active = activeTab === tab;
+                return (
+                  <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setActiveTab(tab as BoosterTab); }}
+                    style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
 
           {/* Right: role cycle pill + filter icon */}
           <View style={[s.row, { gap: 8 }]}>
@@ -2320,49 +2338,6 @@ export default function BoosterScreen() {
           </Animated.View>
         )}
       </View>
-
-      {/* ── Dropdown overlay ─────────────────────────────────────────────── */}
-      {dropdownOpen && (
-        <>
-          {/* Backdrop — separate from dropdown so dropdown isn't clipped */}
-          <Pressable
-            style={[StyleSheet.absoluteFill, { zIndex: 150 }]}
-            onPress={() => setDropdownOpen(false)}
-          />
-          <View
-            style={[
-              s.dropdown,
-              {
-                backgroundColor: C.surface,
-                borderColor:     C.separator as string,
-                top:             topBarH,
-                zIndex:          200,
-              },
-            ]}
-          >
-            {(['Give', 'NIL Marketplace', 'Fan Shop'] as BoosterTab[]).map(tab => (
-              <Pressable
-                key={tab}
-                onPress={() => changeTab(tab)}
-                style={[
-                  s.dropdownItem,
-                  {
-                    borderBottomColor: C.separator as string,
-                    backgroundColor:   activeTab === tab ? (C.surfacePressed as string) : 'transparent',
-                  },
-                ]}
-              >
-                <Text style={[s.dropdownItemText, { color: activeTab === tab ? C.accent : C.label }]}>
-                  {tab}
-                </Text>
-                {activeTab === tab && (
-                  <IconSymbol name="checkmark" size={14} color={C.accent} />
-                )}
-              </Pressable>
-            ))}
-          </View>
-        </>
-      )}
 
       {/* ── Main scroll content ──────────────────────────────────────────── */}
       <ScrollView

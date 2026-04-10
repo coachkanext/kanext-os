@@ -23,6 +23,7 @@ import { GlassView }  from '@/components/ui/glass-view';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   PLAYERS, COACHING_STAFF, SEASON_SCHEDULE,
   TEAM_INFO, TEAM_KR, TEAM_SYSTEM, NEXT_GAME,
@@ -886,7 +887,7 @@ export default function SportsHubScreen() {
             style={styles.iconBtn}
             hitSlop={8}
           >
-            <IconSymbol name="line.3.horizontal" size={20} color={C.label} />
+            <KMenuButton />
           </Pressable>
 
           {/* Dropdown tab pill */}

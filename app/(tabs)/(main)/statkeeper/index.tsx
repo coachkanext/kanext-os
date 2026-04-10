@@ -55,6 +55,9 @@ interface PendingAction {
   result:  GameEvent['result'];
 }
 
+type FoulType = 'Personal' | 'Shooting' | 'Offensive' | 'Technical' | 'Flagrant';
+type ContinuationMode = 'assist' | 'rebound-type' | 'ft-count' | 'ft-shot';
+
 // ── Module-level semantic colors (no C needed) ─────────────────────────────
 
 const EV_GAIN    = '#5A8A6E';
@@ -160,6 +163,17 @@ export default function StatKeeperScreen() {
   const [subIncomingId,    setSubIncomingId]    = useState<string | null>(null);
   const [toastMsg,         setToastMsg]         = useState<string | null>(null);
 
+  // ── Foul type + continuation ──────────────────────────────────────────────
+  const [showFoulType,      setShowFoulType]      = useState(false);
+  const [foulPendingPlayer, setFoulPendingPlayer] = useState<GamePlayer | null>(null);
+  const [contMode,          setContMode]          = useState<ContinuationMode | null>(null);
+  const [ftTotal,           setFtTotal]           = useState(0);
+  const [ftDone,            setFtDone]            = useState(0);
+  // ── Overlay state ──────────────────────────────────────────────────────────
+  const [showQD,            setShowQD]            = useState(false);
+  const [showPeriodScore,   setShowPeriodScore]    = useState(false);
+  const [showPeriodPicker,  setShowPeriodPicker]   = useState(false);
+
   const clockRef   = useRef<ReturnType<typeof setInterval> | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout>  | null>(null);
   const allPlayers = useMemo(() => [...homePlayers, ...awayPlayers], [homePlayers, awayPlayers]);
@@ -207,6 +221,31 @@ export default function StatKeeperScreen() {
       .reduce((s, e) => s + (e.eventSubtype === '3pt' ? 3 : e.eventSubtype === 'ft' ? 1 : 2), 0),
   [events]);
 
+  const BONUS_THRESHOLD = 7;
+  const homeFoulsH = useMemo(() =>
+    events.filter(e => e.teamId === 'home' && e.eventType === 'foul' && e.period === period).length,
+  [events, period]);
+  const awayFoulsH = useMemo(() =>
+    events.filter(e => e.teamId === 'away' && e.eventType === 'foul' && e.period === period).length,
+  [events, period]);
+  const homeTimeouts = useMemo(() =>
+    events.filter(e => e.eventType === 'timeout' && e.eventSubtype === 'home').length,
+  [events]);
+  const awayTimeouts = useMemo(() =>
+    events.filter(e => e.eventType === 'timeout' && e.eventSubtype === 'away').length,
+  [events]);
+  const scoreByPeriod = useMemo(() => {
+    const score = (teamId: 'home' | 'away', p: Period) =>
+      events.filter(e => e.teamId === teamId && e.eventType === 'shot' && e.result === 'make' && e.period === p)
+        .reduce((s, e) => s + (e.eventSubtype === '3pt' ? 3 : e.eventSubtype === 'ft' ? 1 : 2), 0);
+    return {
+      home1: score('home', 1), home2: score('home', 2),
+      homeOT1: score('home', 'OT1'), homeOT2: score('home', 'OT2'),
+      away1: score('away', 1), away2: score('away', 2),
+      awayOT1: score('away', 'OT1'), awayOT2: score('away', 'OT2'),
+    };
+  }, [events]);
+
   // ── Box score ──────────────────────────────────────────────────────────────
   const computeBoxScore = useCallback((teamId: 'home' | 'away') => {
     const players = teamId === 'home' ? homePlayers : awayPlayers;
@@ -237,7 +276,7 @@ export default function StatKeeperScreen() {
     subtype: string | null,
     result:  GameEvent['result'],
     player:  GamePlayer | null,
-  ) => {
+  ): GameEvent => {
     const event: GameEvent = {
       id:           Math.random().toString(36).slice(2),
       timestamp:    Date.now(),
@@ -251,6 +290,7 @@ export default function StatKeeperScreen() {
     };
     setEvents(prev => [event, ...prev]);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    return event;
   }, [clockSeconds, period]);
 
   // ── Pend → player select → commit ─────────────────────────────────────────
@@ -263,13 +303,81 @@ export default function StatKeeperScreen() {
     setPendingAction({ type, subtype, result });
   }, []);
 
+  // ── Shot button handler (respects FT mini-flow) ────────────────────────────
+  const onShotButtonPress = useCallback((
+    subtype: '3pt' | '2pt' | 'ft',
+    result:  'make' | 'miss',
+  ) => {
+    if (contMode === 'ft-shot' && subtype !== 'ft') return; // only 1pt during FT flow
+    logOrPend('shot', subtype, result);
+  }, [contMode, logOrPend]);
+
   const commitAction = useCallback((player: GamePlayer | null) => {
     if (!pendingAction) return;
+
+    // Foul: intercept to show foul type selector
+    if (pendingAction.type === 'foul') {
+      setFoulPendingPlayer(player);
+      setPendingAction(null);
+      setShowFoulType(true);
+      return;
+    }
+
     logEvent(pendingAction.type, pendingAction.subtype, pendingAction.result, player);
+    const { type, result } = pendingAction;
     setPendingAction(null);
-  }, [pendingAction, logEvent]);
+
+    // FT mini-flow tracking
+    if (contMode === 'ft-shot') {
+      const newDone = ftDone + 1;
+      setFtDone(newDone);
+      if (newDone >= ftTotal) {
+        setContMode(result === 'miss' ? 'rebound-type' : null);
+        setFtTotal(0); setFtDone(0);
+      }
+      return;
+    }
+
+    // Continuation dialogs
+    if (type === 'shot' && result === 'make') {
+      setContMode('assist');
+    } else if (type === 'shot' && result === 'miss') {
+      setContMode('rebound-type');
+    }
+  }, [pendingAction, logEvent, contMode, ftDone, ftTotal]);
 
   const cancelPending = useCallback(() => setPendingAction(null), []);
+
+  // ── Commit foul with selected type ─────────────────────────────────────────
+  const commitFoul = useCallback((foulType: FoulType) => {
+    setShowFoulType(false);
+    const player = foulPendingPlayer;
+    logEvent('foul', foulType, null, player);
+    setFoulPendingPlayer(null);
+
+    if (player) {
+      const playerFouls = events.filter(e => e.playerId === player.id && e.eventType === 'foul').length + 1;
+      if (playerFouls >= 5) {
+        showToast(`FOULED OUT — #${player.number} ${player.firstName}`);
+      } else if (playerFouls === 4) {
+        showToast(`FOUL TROUBLE — #${player.number} has 4 fouls`);
+      }
+      const teamFouls = (player.teamId === 'home' ? homeFoulsH : awayFoulsH) + 1;
+      if (teamFouls === BONUS_THRESHOLD) {
+        showToast(`BONUS — ${player.teamId === 'home' ? homeName : awayName} in the bonus`);
+      }
+    }
+
+    setContMode('ft-count');
+    setFtDone(0);
+    setFtTotal(0);
+  }, [foulPendingPlayer, logEvent, events, homeFoulsH, awayFoulsH, homeName, awayName, showToast]);
+
+  const dismissContinuation = useCallback(() => {
+    setContMode(null);
+    setFtTotal(0);
+    setFtDone(0);
+  }, []);
 
   // ── Undo ──────────────────────────────────────────────────────────────────
   const undoLast = useCallback(() => {
@@ -279,6 +387,7 @@ export default function StatKeeperScreen() {
   }, [events.length]);
 
   // ── Period management ─────────────────────────────────────────────────────
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const endPeriod = useCallback(() => {
     setClockRunning(false);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -573,11 +682,11 @@ export default function StatKeeperScreen() {
 
         {/* 3pt row */}
         <View style={S.shotPairRow}>
-          <Pressable onPress={() => logOrPend('shot', '3pt', 'make')}
+          <Pressable onPress={() => onShotButtonPress('3pt', 'make')}
             style={[S.shotCircle, { borderColor: C.gain, backgroundColor: C.paper }]}>
             <Text style={[S.shotLabel, { color: C.carbon }]}>3pt</Text>
           </Pressable>
-          <Pressable onPress={() => logOrPend('shot', '3pt', 'miss')}
+          <Pressable onPress={() => onShotButtonPress('3pt', 'miss')}
             style={[S.shotCircle, { borderColor: C.heat, backgroundColor: C.paper }]}>
             <Text style={[S.shotLabel, { color: C.carbon }]}>3pt</Text>
           </Pressable>
@@ -585,11 +694,11 @@ export default function StatKeeperScreen() {
 
         {/* 2pt row */}
         <View style={S.shotPairRow}>
-          <Pressable onPress={() => logOrPend('shot', '2pt', 'make')}
+          <Pressable onPress={() => onShotButtonPress('2pt', 'make')}
             style={[S.shotCircle, { borderColor: C.gain, backgroundColor: C.paper }]}>
             <Text style={[S.shotLabel, { color: C.carbon }]}>2pt</Text>
           </Pressable>
-          <Pressable onPress={() => logOrPend('shot', '2pt', 'miss')}
+          <Pressable onPress={() => onShotButtonPress('2pt', 'miss')}
             style={[S.shotCircle, { borderColor: C.heat, backgroundColor: C.paper }]}>
             <Text style={[S.shotLabel, { color: C.carbon }]}>2pt</Text>
           </Pressable>
@@ -597,11 +706,11 @@ export default function StatKeeperScreen() {
 
         {/* 1pt row */}
         <View style={S.shotPairRow}>
-          <Pressable onPress={() => logOrPend('shot', 'ft', 'make')}
+          <Pressable onPress={() => onShotButtonPress('ft', 'make')}
             style={[S.shotCircle, { borderColor: C.gain, backgroundColor: C.paper }]}>
             <Text style={[S.shotLabel, { color: C.carbon }]}>1pt</Text>
           </Pressable>
-          <Pressable onPress={() => logOrPend('shot', 'ft', 'miss')}
+          <Pressable onPress={() => onShotButtonPress('ft', 'miss')}
             style={[S.shotCircle, { borderColor: C.heat, backgroundColor: C.paper }]}>
             <Text style={[S.shotLabel, { color: C.carbon }]}>1pt</Text>
           </Pressable>
@@ -654,24 +763,24 @@ export default function StatKeeperScreen() {
             <Pressable onPress={() => setShowScoreBlast(true)} style={S.ctrlIconBtn}>
               <IconSymbol name="bell" size={15} color={C.carbon} />
             </Pressable>
-            <Pressable onPress={() => { setClockRunning(r => !r); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }} style={S.ctrlIconBtn}>
-              <IconSymbol name={clockRunning ? 'pause.fill' : 'play.fill'} size={13} color={C.carbon} />
-            </Pressable>
-            <Pressable onPress={endPeriod}
-              style={[S.periodPill, { backgroundColor: C.linen, borderColor: C.mist }]}>
-              <Text style={[S.periodText, { color: C.carbon }]}>{periodLabel(period)}</Text>
-            </Pressable>
             <Pressable onPress={() => setShowTimeoutSheet(true)} style={S.ctrlIconBtn}>
               <IconSymbol name="clock" size={14} color={C.carbon} />
             </Pressable>
-            <Pressable onPress={() => setShowFullPbp(true)} style={S.ctrlIconBtn}>
-              <IconSymbol name="list.bullet" size={14} color={C.carbon} />
+            <Pressable onPress={() => setShowPeriodPicker(true)}
+              style={[S.periodPill, { backgroundColor: C.linen, borderColor: C.mist }]}>
+              <Text style={[S.periodText, { color: C.carbon }]}>{periodLabel(period)}</Text>
+            </Pressable>
+            <Pressable onPress={() => setShowQD(true)} style={S.ctrlIconBtn}>
+              <IconSymbol name="person.2" size={15} color={C.carbon} />
+            </Pressable>
+            <Pressable onPress={() => setShowPeriodScore(true)} style={S.ctrlIconBtn}>
+              <IconSymbol name="info.circle" size={15} color={C.carbon} />
             </Pressable>
           </View>
         </View>
 
-        {/* Content: player-select or PBP feed */}
-        {pendingAction ? renderPlayerGrid() : renderPbpFeed()}
+        {/* Content: continuation, player-select, or PBP feed */}
+        {contMode ? renderContinuationContent() : pendingAction ? renderPlayerGrid() : renderPbpFeed()}
 
       </View>
 
@@ -737,6 +846,10 @@ export default function StatKeeperScreen() {
       {showSubOverlay && renderSubOverlay()}
       {renderScoreBlastModal()}
       {renderTimeoutSheet()}
+      {showFoulType   && renderFoulTypeOverlay()}
+      {showQD         && renderQuickDashboard()}
+      {showPeriodScore && renderPeriodScoreboard()}
+      {showPeriodPicker && renderPeriodPicker()}
 
       <BottomSheet visible={showFullPbp} onClose={() => setShowFullPbp(false)} useModal title="Play by Play">
         {events.length === 0
@@ -789,6 +902,114 @@ export default function StatKeeperScreen() {
     </ScrollView>
   );
 
+  // ── Continuation content (center panel when contMode is active) ────────────
+  const renderContinuationContent = () => {
+    if (!contMode) return null;
+
+    if (contMode === 'assist') {
+      const renderCircles = (players: GamePlayer[], isHome: boolean) => {
+        const bg = isHome ? C.linen : C.mist;
+        return (
+          <View style={S.pgCircleGrid}>
+            <Pressable style={S.pgCircleWrap} onPress={dismissContinuation}>
+              <View style={[S.pgCircle, { backgroundColor: bg }]}>
+                <Text style={[S.pgCircleNum, { color: C.drift, fontSize: 12 }]}>✕</Text>
+              </View>
+              <Text style={[S.pgCircleName, { color: C.drift }]}>No Ast</Text>
+            </Pressable>
+            {players.map(p => (
+              <Pressable key={p.id} style={S.pgCircleWrap} onPress={() => {
+                logEvent('assist', null, null, p); dismissContinuation();
+              }}>
+                <View style={[S.pgCircle, { backgroundColor: bg }]}>
+                  <Text style={[S.pgCircleNum, { color: C.carbon }]}>{p.number}</Text>
+                </View>
+                <Text style={[S.pgCircleName, { color: C.carbon }]} numberOfLines={1}>{p.firstName}</Text>
+              </Pressable>
+            ))}
+          </View>
+        );
+      };
+      return (
+        <Pressable style={[S.pgRoot, { backgroundColor: C.paper }]} onPress={dismissContinuation}>
+          <View style={S.pgInner}>
+            <View style={S.pgTeamCol}>
+              <Text style={[S.pgTeamName, { color: C.carbon }]}>{homeName}</Text>
+              {renderCircles(homeOnCourt, true)}
+            </View>
+            <View style={S.pgLabelWrap}>
+              <View style={[S.pgLabelPill, { borderColor: C.mist, backgroundColor: C.linen }]}>
+                <Text style={[S.pgLabelText, { color: C.carbon }]}>Assist?</Text>
+              </View>
+            </View>
+            <View style={S.pgTeamCol}>
+              <Text style={[S.pgTeamName, { color: C.carbon }]}>{awayName}</Text>
+              {renderCircles(awayOnCourt, false)}
+            </View>
+          </View>
+        </Pressable>
+      );
+    }
+
+    if (contMode === 'rebound-type') {
+      return (
+        <View style={[S.contRoot]}>
+          <Text style={[S.contLabel, { color: C.drift }]}>REBOUND?</Text>
+          <Pressable style={[S.contOptionBtn, { backgroundColor: C.linen, borderColor: C.mist }]}
+            onPress={() => { setContMode(null); logOrPend('rebound', 'def', null); }}>
+            <Text style={[S.contOptionText, { color: C.carbon }]}>Def Rebound</Text>
+          </Pressable>
+          <Pressable style={[S.contOptionBtn, { backgroundColor: C.linen, borderColor: C.mist }]}
+            onPress={() => { setContMode(null); logOrPend('rebound', 'off', null); }}>
+            <Text style={[S.contOptionText, { color: C.carbon }]}>Off Rebound</Text>
+          </Pressable>
+          <Pressable style={S.contDismiss} onPress={dismissContinuation}>
+            <Text style={[S.contDismissText, { color: C.drift }]}>No Rebound</Text>
+          </Pressable>
+        </View>
+      );
+    }
+
+    if (contMode === 'ft-count') {
+      return (
+        <View style={[S.contRoot]}>
+          <Text style={[S.contLabel, { color: C.drift }]}>FREE THROWS?</Text>
+          {(['1 Shot', '2 Shots', '3 Shots', '1-and-1'] as const).map((label, i) => {
+            const count = i === 3 ? 2 : i + 1;
+            return (
+              <Pressable key={label}
+                style={[S.contOptionBtn, { backgroundColor: C.linen, borderColor: C.mist }]}
+                onPress={() => { setFtTotal(count); setFtDone(0); setContMode('ft-shot'); }}>
+                <Text style={[S.contOptionText, { color: C.carbon }]}>{label}</Text>
+              </Pressable>
+            );
+          })}
+          <Pressable style={S.contDismiss} onPress={dismissContinuation}>
+            <Text style={[S.contDismissText, { color: C.drift }]}>No FTs</Text>
+          </Pressable>
+        </View>
+      );
+    }
+
+    if (contMode === 'ft-shot') {
+      return (
+        <View style={[S.contRoot]}>
+          <Text style={[S.contLabel, { color: C.carbon, fontSize: 16, marginBottom: 4 }]}>
+            FT {ftDone + 1} of {ftTotal}
+          </Text>
+          <Text style={[{ color: C.drift, fontSize: 12, marginBottom: 16, textAlign: 'center' }]}>
+            Tap 1pt Make or Miss on left, then select shooter
+          </Text>
+          <Pressable style={S.contDismiss} onPress={dismissContinuation}>
+            <Text style={[S.contDismissText, { color: C.drift }]}>Skip FTs</Text>
+          </Pressable>
+        </View>
+      );
+    }
+
+    return null;
+  };
+
   // ── Player grid (center content when pendingAction is set) ─────────────────
   const renderPlayerGrid = () => {
     if (!pendingAction) return null;
@@ -797,7 +1018,7 @@ export default function StatKeeperScreen() {
     // Only on-court players + Team option — max 6 per team, fits on screen without scrolling
     const renderTeamCircles = (onCourtPlayers: GamePlayer[], isHome: boolean) => {
       const circleBg = isHome ? C.linen : C.mist;
-      const allOptions: Array<GamePlayer | null> = [null, ...onCourtPlayers];
+      const allOptions: (GamePlayer | null)[] = [null, ...onCourtPlayers];
       return (
         <View style={S.pgCircleGrid}>
           {allOptions.map((p, idx) => (
@@ -964,6 +1185,173 @@ export default function StatKeeperScreen() {
         </Pressable>
       ))}
     </BottomSheet>
+  );
+
+  // ── Foul type overlay ─────────────────────────────────────────────────────
+  const renderFoulTypeOverlay = () => (
+    <>
+      <Pressable style={[StyleSheet.absoluteFill, { zIndex: 300, backgroundColor: 'rgba(0,0,0,0.45)' }]}
+        onPress={() => { setShowFoulType(false); setFoulPendingPlayer(null); }} />
+      <View style={[S.foulTypeCard, { zIndex: 301, backgroundColor: C.linen }]}>
+        <Text style={[S.foulTypeTitle, { color: C.carbon }]}>Foul Type</Text>
+        {foulPendingPlayer && (
+          <Text style={[{ color: C.drift, fontSize: 12, textAlign: 'center', marginBottom: 12 }]}>
+            #{foulPendingPlayer.number} {foulPendingPlayer.firstName} {foulPendingPlayer.lastName}
+          </Text>
+        )}
+        {(['Personal', 'Shooting', 'Offensive', 'Technical', 'Flagrant'] as FoulType[]).map(ft => (
+          <Pressable key={ft} onPress={() => commitFoul(ft)}
+            style={[S.foulTypeRow, { backgroundColor: C.paper, borderColor: C.mist }]}>
+            <Text style={[{ color: C.carbon, fontSize: 15, fontWeight: '600' }]}>{ft}</Text>
+          </Pressable>
+        ))}
+        <Pressable style={{ paddingVertical: 12 }}
+          onPress={() => { setShowFoulType(false); setFoulPendingPlayer(null); }}>
+          <Text style={[{ color: C.drift, fontSize: 14, fontWeight: '600', textAlign: 'center' }]}>Cancel</Text>
+        </Pressable>
+      </View>
+    </>
+  );
+
+  // ── Quick Dashboard overlay ───────────────────────────────────────────────
+  const renderQuickDashboard = () => {
+    const renderPlayerStats = (players: GamePlayer[], fouls: number, timeouts: number, teamName: string) => (
+      <View style={{ flex: 1 }}>
+        <View style={{ paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.mist, marginBottom: 4 }}>
+          <Text style={[{ color: C.carbon, fontSize: 11, fontWeight: '700' }]}>{teamName}</Text>
+          <Text style={[{ color: C.drift, fontSize: 10, marginTop: 1 }]}>
+            Team Fouls: {fouls}  ·  Timeouts: {timeouts}
+          </Text>
+        </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {players.map(p => {
+            const pe = events.filter(e => e.playerId === p.id);
+            const makes = pe.filter(e => e.eventType === 'shot' && e.result === 'make');
+            const pts = makes.reduce((s, e) => s + (e.eventSubtype === '3pt' ? 3 : e.eventSubtype === 'ft' ? 1 : 2), 0);
+            const reb = pe.filter(e => e.eventType === 'rebound').length;
+            const fls = pe.filter(e => e.eventType === 'foul').length;
+            const tov = pe.filter(e => e.eventType === 'turnover').length;
+            return (
+              <View key={p.id} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.mist, gap: 6 }}>
+                <View style={[{ width: 28, height: 28, borderRadius: 14, backgroundColor: p.isOnCourt ? C.carbon : C.linen, alignItems: 'center', justifyContent: 'center', flexShrink: 0 }]}>
+                  <Text style={[{ fontSize: 10, fontWeight: '800', color: p.isOnCourt ? C.paper : C.drift }]}>{p.number}</Text>
+                </View>
+                <Text style={[{ flex: 1, fontSize: 11, fontWeight: '600', color: C.carbon }]} numberOfLines={1}>
+                  {p.firstName} {p.lastName.charAt(0)}.
+                </Text>
+                <Text style={[{ fontSize: 11, fontWeight: '700', color: EV_GAIN, minWidth: 22, textAlign: 'right' }]}>{pts}</Text>
+                <Text style={[{ fontSize: 9, color: C.drift }]}>PTS</Text>
+                <Text style={[{ fontSize: 11, fontWeight: '700', color: C.carbon, minWidth: 18, textAlign: 'right', marginLeft: 4 }]}>{reb}</Text>
+                <Text style={[{ fontSize: 9, color: C.drift }]}>REB</Text>
+                <Text style={[{ fontSize: 11, fontWeight: '700', color: fls >= 4 ? EV_HEAT : C.carbon, minWidth: 18, textAlign: 'right', marginLeft: 4 }]}>{fls}</Text>
+                <Text style={[{ fontSize: 9, color: C.drift }]}>FLS</Text>
+                <Text style={[{ fontSize: 11, fontWeight: '700', color: tov >= 3 ? EV_HEAT : C.carbon, minWidth: 18, textAlign: 'right', marginLeft: 4 }]}>{tov}</Text>
+                <Text style={[{ fontSize: 9, color: C.drift }]}>TO</Text>
+              </View>
+            );
+          })}
+        </ScrollView>
+      </View>
+    );
+
+    return (
+      <>
+        <Pressable style={[StyleSheet.absoluteFill, { zIndex: 400, backgroundColor: 'rgba(0,0,0,0.5)' }]}
+          onPress={() => setShowQD(false)} />
+        <View style={[StyleSheet.absoluteFill, { zIndex: 401, backgroundColor: C.paper,
+          paddingTop: insets.top + 8, paddingBottom: insets.bottom + 8,
+          paddingLeft: insets.left + 16, paddingRight: insets.right + 16 }]}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+            <Text style={[{ color: C.carbon, fontSize: 15, fontWeight: '700' }]}>{homeName} vs {awayName}</Text>
+            <Pressable onPress={() => setShowQD(false)} hitSlop={8}>
+              <IconSymbol name="xmark.circle.fill" size={24} color={C.drift} />
+            </Pressable>
+          </View>
+          <View style={{ flex: 1, flexDirection: 'row', gap: 12 }}>
+            {renderPlayerStats(homePlayers, homeFoulsH, homeTimeouts, homeName)}
+            <View style={{ width: StyleSheet.hairlineWidth, backgroundColor: C.mist }} />
+            {renderPlayerStats(awayPlayers, awayFoulsH, awayTimeouts, awayName)}
+          </View>
+        </View>
+      </>
+    );
+  };
+
+  // ── Period Scoreboard overlay ─────────────────────────────────────────────
+  const renderPeriodScoreboard = () => {
+    const hasOT = [period, ...events.map(e => e.period)].some(p => p === 'OT1' || p === 'OT2');
+    return (
+      <>
+        <Pressable style={[StyleSheet.absoluteFill, { zIndex: 400, backgroundColor: 'rgba(0,0,0,0.45)' }]}
+          onPress={() => setShowPeriodScore(false)} />
+        <View style={[S.scoreBlastCard, { zIndex: 401, backgroundColor: C.linen, maxWidth: 440, alignSelf: 'center' }]}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <Text style={[{ color: C.carbon, fontSize: 16, fontWeight: '700' }]}>Period Scoreboard</Text>
+            <Pressable onPress={() => setShowPeriodScore(false)} hitSlop={8}>
+              <IconSymbol name="xmark" size={16} color={C.drift} />
+            </Pressable>
+          </View>
+          {/* Header row */}
+          <View style={{ flexDirection: 'row', paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.mist }}>
+            <Text style={[{ flex: 2, color: C.drift, fontSize: 11, fontWeight: '600' }]}>TEAM</Text>
+            <Text style={[{ width: 44, textAlign: 'center', color: C.drift, fontSize: 11, fontWeight: '600' }]}>H1</Text>
+            <Text style={[{ width: 44, textAlign: 'center', color: C.drift, fontSize: 11, fontWeight: '600' }]}>H2</Text>
+            {hasOT && <Text style={[{ width: 44, textAlign: 'center', color: C.drift, fontSize: 11, fontWeight: '600' }]}>OT</Text>}
+            <Text style={[{ width: 44, textAlign: 'center', color: C.carbon, fontSize: 11, fontWeight: '700' }]}>TOT</Text>
+          </View>
+          {/* Home row */}
+          <View style={{ flexDirection: 'row', paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.mist }}>
+            <Text style={[{ flex: 2, color: C.carbon, fontSize: 13, fontWeight: '600' }]} numberOfLines={1}>{homeName}</Text>
+            <Text style={[{ width: 44, textAlign: 'center', color: C.carbon, fontSize: 13 }]}>{scoreByPeriod.home1}</Text>
+            <Text style={[{ width: 44, textAlign: 'center', color: C.carbon, fontSize: 13 }]}>{scoreByPeriod.home2}</Text>
+            {hasOT && <Text style={[{ width: 44, textAlign: 'center', color: C.carbon, fontSize: 13 }]}>{scoreByPeriod.homeOT1 + scoreByPeriod.homeOT2}</Text>}
+            <Text style={[{ width: 44, textAlign: 'center', color: C.carbon, fontSize: 14, fontWeight: '700' }]}>{homeScore}</Text>
+          </View>
+          {/* Away row */}
+          <View style={{ flexDirection: 'row', paddingVertical: 8 }}>
+            <Text style={[{ flex: 2, color: C.carbon, fontSize: 13, fontWeight: '600' }]} numberOfLines={1}>{awayName}</Text>
+            <Text style={[{ width: 44, textAlign: 'center', color: C.carbon, fontSize: 13 }]}>{scoreByPeriod.away1}</Text>
+            <Text style={[{ width: 44, textAlign: 'center', color: C.carbon, fontSize: 13 }]}>{scoreByPeriod.away2}</Text>
+            {hasOT && <Text style={[{ width: 44, textAlign: 'center', color: C.carbon, fontSize: 13 }]}>{scoreByPeriod.awayOT1 + scoreByPeriod.awayOT2}</Text>}
+            <Text style={[{ width: 44, textAlign: 'center', color: C.carbon, fontSize: 14, fontWeight: '700' }]}>{awayScore}</Text>
+          </View>
+        </View>
+      </>
+    );
+  };
+
+  // ── Period picker modal ───────────────────────────────────────────────────
+  const PERIOD_OPTIONS: Period[] = [1, 2, 'OT1', 'OT2'];
+  const renderPeriodPicker = () => (
+    <>
+      <Pressable style={[StyleSheet.absoluteFill, { zIndex: 400, backgroundColor: 'rgba(0,0,0,0.4)' }]}
+        onPress={() => setShowPeriodPicker(false)} />
+      <View style={[S.scoreBlastCard, { zIndex: 401, backgroundColor: C.linen, maxWidth: 280, alignSelf: 'center' }]}>
+        <Text style={[S.scoreBlastTitle, { color: C.carbon, marginBottom: 12 }]}>Select Period</Text>
+        {PERIOD_OPTIONS.map(p => (
+          <Pressable key={String(p)} onPress={() => {
+            const wasHalftime = period === 1 && p === 2;
+            setPeriod(p);
+            setClockSeconds(halfMinutes * 60);
+            setClockRunning(false);
+            setShowPeriodPicker(false);
+            if (wasHalftime) showToast('Halftime — 2nd Half starting');
+            if (p === 2 && period !== 1) {} // OT transitions handled above
+          }}
+            style={[S.foulTypeRow, {
+              backgroundColor: period === p ? C.carbon : C.paper,
+              borderColor: period === p ? C.carbon : C.mist,
+            }]}>
+            <Text style={[{ fontSize: 15, fontWeight: '600', color: period === p ? C.paper : C.carbon }]}>
+              {periodLabel(p)}
+            </Text>
+          </Pressable>
+        ))}
+        <Pressable style={{ paddingVertical: 12 }} onPress={() => setShowPeriodPicker(false)}>
+          <Text style={[{ color: C.drift, fontSize: 14, fontWeight: '600', textAlign: 'center' }]}>Cancel</Text>
+        </Pressable>
+      </View>
+    </>
   );
 
   // ============================================================================
@@ -1485,4 +1873,60 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   // Toast
   toast:     { position: 'absolute', alignSelf: 'center', backgroundColor: 'rgba(26,23,20,0.88)', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 8 },
   toastText: { color: '#FFF8F0', fontSize: 13, fontWeight: '600' },
+
+  // ── Continuation dialogs ──────────────────────────────────────────────────
+  contRoot: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    gap: 8,
+  },
+  contLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+  contOptionBtn: {
+    width: '85%',
+    borderRadius: 12,
+    borderWidth: 1,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  contOptionText: { fontSize: 14, fontWeight: '600' },
+  contDismiss:    { paddingVertical: 10, marginTop: 4 },
+  contDismissText: { fontSize: 12, fontWeight: '600' },
+
+  // ── Foul type overlay ─────────────────────────────────────────────────────
+  foulTypeCard: {
+    position: 'absolute',
+    top: '20%',
+    left: 32,
+    right: 32,
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 10,
+  },
+  foulTypeTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  foulTypeRow: {
+    borderRadius: 10,
+    borderWidth: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 6,
+    alignItems: 'center',
+  },
 });

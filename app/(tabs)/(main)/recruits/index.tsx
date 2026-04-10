@@ -1,7 +1,7 @@
 /**
  * Sports Mode — Recruits Screen
  * LU Men's Basketball | Two-sided: Coach / Recruit
- * Tabs: Board / Pool / Portal
+ * Tabs: Board / Portal / Search
  */
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
@@ -30,6 +30,7 @@ import { resetFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { setPendingEvalQuery } from '@/utils/global-nexus-state';
 import { nationalPool, type NationalPlayer } from '@/data/national-pool';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   RECRUITS_BOARD,
   type Recruit,
@@ -45,8 +46,8 @@ import {
 const TOP_BAR_H  = 52;
 const PILL_ROW_H = 48;
 
-type Tab  = 'Board' | 'Pool' | 'Portal';
-const TABS: Tab[]   = ['Board', 'Pool', 'Portal'];
+type Tab  = 'Board' | 'Search' | 'Portal';
+const TABS: Tab[]   = ['Board', 'Search', 'Portal'];
 
 const POSITIONS    = ['All', 'PG', 'SG', 'SF', 'PF', 'C'];
 const SORT_OPTIONS = ['By PPG', 'By RPG', 'Alphabetical'];
@@ -591,8 +592,7 @@ export default function RecruitsScreen() {
   const isCoachRole = role === 'Coach';
 
   // ── Core state ──
-  const [activeTab, setActiveTab]       = useState<Tab>('Board');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>('Board');
 
   // ── Board state ──
   const [stageFilter, setStageFilter]         = useState<RecruitStage | 'All'>('All');
@@ -642,12 +642,6 @@ export default function RecruitsScreen() {
 
   // cycleRole provided by useDemoRole above
 
-  // ── Tab select ──
-  const handleTabSelect = useCallback((tab: Tab) => {
-    setActiveTab(tab);
-    setDropdownOpen(false);
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-  }, []);
 
   // ── Pool query ──
   const poolLevelKey = useMemo((): string | string[] | undefined => {
@@ -725,29 +719,33 @@ export default function RecruitsScreen() {
         <Pressable
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            openSidePanel();
+            if (isCoachRole) openSidePanel();
           }}
           hitSlop={12}
           style={s.topBarBtn}
         >
-          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          <KMenuButton />
         </Pressable>
 
-        {/* Center: dropdown pill */}
+        {/* Center: TabPill (Coach) or static pill (Player) */}
         <View style={s.dropdownPillWrap}>
-          <Pressable
-            style={[s.dropdownPill, { backgroundColor: C.surfacePressed }]}
-            onPress={() => setDropdownOpen((o) => !o)}
-          >
-            <Text style={[s.dropdownPillText, { color: C.label }]}>
-              {activeTab}
-            </Text>
-            <IconSymbol
-              name={dropdownOpen ? 'chevron.up' : 'chevron.down'}
-              size={12}
-              color={C.secondary}
-            />
-          </Pressable>
+          {isCoachRole ? (
+            <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+              {(['Board', 'Portal', 'Search'] as Tab[]).map(tab => {
+                const active = activeTab === tab;
+                return (
+                  <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setActiveTab(tab); }}
+                    style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          ) : (
+            <View style={{ backgroundColor: C.activePill, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 }}>
+              <Text style={{ fontSize: 13, fontWeight: '600', color: C.activePillText }}>My Profile</Text>
+            </View>
+          )}
         </View>
 
         {/* Right: role pill */}
@@ -804,7 +802,7 @@ export default function RecruitsScreen() {
             })}
           </ScrollView>
         )}
-        {activeTab === 'Pool' && (
+        {activeTab === 'Search' && (
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -2030,7 +2028,7 @@ export default function RecruitsScreen() {
         showsVerticalScrollIndicator={false}
       >
         {activeTab === 'Board'  && renderBoard()}
-        {activeTab === 'Pool'   && (!isCoachRole ? renderPoolRecruit() : renderPoolCoach())}
+        {activeTab === 'Search' && (!isCoachRole ? renderPoolRecruit() : renderPoolCoach())}
         {activeTab === 'Portal' && renderPortal()}
       </ScrollView>
 
@@ -2047,44 +2045,6 @@ export default function RecruitsScreen() {
         >
           <IconSymbol name="plus" size={24} color="#fff" />
         </Pressable>
-      )}
-
-      {/* Dropdown overlay */}
-      {dropdownOpen && (
-        <>
-          <Pressable
-            style={StyleSheet.absoluteFillObject}
-            onPress={() => setDropdownOpen(false)}
-          />
-          <View
-            style={[
-              s.dropdown,
-              {
-                top: insets.top + 56,
-                backgroundColor: C.bg,
-                borderColor: C.separator,
-              },
-            ]}
-          >
-            {TABS.map((tab) => (
-              <Pressable
-                key={tab}
-                style={s.dropdownOption}
-                onPress={() => handleTabSelect(tab)}
-              >
-                <Text
-                  style={[
-                    s.dropdownOptionText,
-                    { color: tab === activeTab ? C.label : C.secondary },
-                    tab === activeTab && { fontWeight: '600' },
-                  ]}
-                >
-                  {tab}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-        </>
       )}
 
       {/* Toast */}

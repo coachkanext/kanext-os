@@ -10,7 +10,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import { useColors } from '@/hooks/use-colors';
+import { openSidePanel } from '@/utils/global-side-panel';
 import { COMMUNITY_GROUPS } from '@/data/mock-community-hub';
 import { resetFooter } from '@/utils/global-footer-hide';
 
@@ -208,13 +210,7 @@ export default function GroupDetailScreen() {
       {/* Top bar */}
       <View style={[ds.topBar, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         <View style={ds.topBarInner}>
-          <Pressable
-            style={ds.backBtn}
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.back(); }}
-            hitSlop={12}
-          >
-            <IconSymbol name="chevron.left" size={18} color={C.label} />
-          </Pressable>
+          <KMenuButton onPress={openSidePanel} />
           <Text style={[ds.topBarTitle, { color: C.label }]} numberOfLines={1}>
             {group.name}
           </Text>

@@ -4,6 +4,7 @@
 
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -15,6 +16,7 @@ import {
 } from '@/data/mock-business-ops';
 
 export function BusinessHubPanel() {
+  const router = useRouter();
   const C = useColors();
   const [role, setRole] = useState<'Admin' | 'Employee'>('Admin');
   const isAdmin = role === 'Admin';
@@ -56,19 +58,24 @@ export function BusinessHubPanel() {
 
       {isAdmin ? (
         <>
+          {/* ── Home ── */}
+          <Pressable
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              closeSidePanel();
+              router.setParams({ manage: undefined });
+            }}
+          >
+            <IconSymbol name="house.fill" size={18} color={C.secondary} />
+            <Text style={[s.navLabel, { color: C.label }]}>Home</Text>
+          </Pressable>
+
           {/* Revenue banner */}
           <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14, gap: 4 }}>
             <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: 0.5 }}>This Month</Text>
             <Text style={{ fontSize: 28, fontWeight: '900', color: '#fff', lineHeight: 32 }}>{formatCurrency(revenueMonth, true)}</Text>
             <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>Pipeline: {formatCurrency(pipelineVal, true)} · {BIZ_DASHBOARD.pipeline.dealCount} deals</Text>
-          </View>
-
-          {/* Nav */}
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>Navigate</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {navRow('square.grid.2x2.fill', 'Overview')}
-            {navRow('folder.fill',          'Projects',  `${activeProjects.length} active`)}
-            {navRow('chart.bar.fill',       'Reports')}
           </View>
 
           {/* Today's tasks */}

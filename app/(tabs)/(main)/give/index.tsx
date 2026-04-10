@@ -21,6 +21,7 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { useDataMode } from '@/utils/global-demo-mode';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   FUNDS, GIVING_CAMPAIGNS, SAVED_PAYMENT_METHODS, MY_RECURRING_GIFTS,
   MY_PLEDGES, ALL_PLEDGES, GIVING_TRANSACTIONS, ADMIN_DASHBOARD,
@@ -38,16 +39,17 @@ const RECEIPT_SHEET_H = 420;
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type GiveTab = 'Give' | 'Campaigns' | 'History' | 'Donors' | 'Tax';
+type GiveTab = 'Give' | 'Campaigns' | 'History';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function pillsForTab(tab: GiveTab, isAdmin: boolean): string[] {
   if (tab === 'Give') return [];
   if (tab === 'Campaigns') return ['All', 'Active', 'Completed', 'My Pledges'];
-  return isAdmin
+  if (tab === 'History') return isAdmin
     ? ['All', 'This Week', 'This Month', 'This Year', 'By Fund']
     : ['Recurring', 'Tax Receipts'];
+  return [];
 }
 
 function campaignProgress(raised: number, goal: number): number {
@@ -114,7 +116,6 @@ export default function CommunityGiveScreen() {
 
   // ── Core state ──────────────────────────────────────────────────────────────
   const [activeTab,    setActiveTab]    = useState<GiveTab>('Give');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [pillsVisible, setPillsVisible] = useState(false);
   const [selectedPill, setSelectedPill] = useState('All');
 
@@ -180,7 +181,6 @@ export default function CommunityGiveScreen() {
     Haptics.selectionAsync();
     const newPills = pillsForTab(tab, isAdmin);
     setActiveTab(tab);
-    setDropdownOpen(false);
     setSelectedPill(newPills[0] ?? 'All');
     setPillsVisible(false);
     pillsAnim.setValue(0);
@@ -1403,16 +1403,14 @@ export default function CommunityGiveScreen() {
 
   function renderContent() {
     if (!isAdmin) {
-      // Member: always show the give form
+      // Member: give form, campaigns, history
       if (activeTab === 'Give')      return renderGiveTab();
       if (activeTab === 'Campaigns') return renderCampaignsMember();
       return renderHistoryMember();
     }
-    // Pastor: Give tab shows fund dashboard
+    // Pastor: Give tab shows fund dashboard, Campaigns, History
     if (activeTab === 'Give')      return renderPastorFundDashboard();
-    if (activeTab === 'Donors')    return renderDonorsAdmin();
     if (activeTab === 'Campaigns') return renderCampaignsAdmin();
-    if (activeTab === 'Tax')       return renderTaxAdmin();
     return renderHistoryAdmin();
   }
 
@@ -1446,27 +1444,29 @@ export default function CommunityGiveScreen() {
       {/* Absolute top bar */}
       <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         <View style={s.topBar}>
-          {/* Left */}
+          {/* Left: K button — admin opens sidebar, member is no-op */}
           <View style={s.topBarSide}>
-            {isAdmin && (
-              <Pressable
-                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-                hitSlop={12}
-              >
-                <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
-              </Pressable>
-            )}
+            <Pressable
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isAdmin) openSidePanel(); }}
+              hitSlop={12}
+            >
+              <KMenuButton />
+            </Pressable>
           </View>
 
-          {/* Center: dropdown pill */}
+          {/* Center: TabPill — same 3 tabs for both Pastor and Member */}
           <View style={s.dropdownPillWrap}>
-            <Pressable
-              style={[s.dropdownPill, { backgroundColor: C.surfacePressed }]}
-              onPress={() => { Haptics.selectionAsync(); setDropdownOpen(v => !v); }}
-            >
-              <Text style={[s.dropdownPillText, { color: C.label }]}>{activeTab}</Text>
-              <IconSymbol name="chevron.down" size={12} color={C.secondary} />
-            </Pressable>
+            <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+              {(['Give', 'Campaigns', 'History'] as GiveTab[]).map(tab => {
+                const active = activeTab === tab;
+                return (
+                  <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); changeTab(tab); }}
+                    style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
           </View>
 
           {/* Right: role pill + filter icon */}
@@ -1511,34 +1511,6 @@ export default function CommunityGiveScreen() {
           </ScrollView>
         </Animated.View>
       </View>
-
-      {/* Dropdown overlay */}
-      {dropdownOpen && (
-        <>
-          <Pressable
-            style={{ ...StyleSheet.absoluteFillObject, zIndex: 98 } as any}
-            onPress={() => setDropdownOpen(false)}
-          />
-          <View style={[s.dropdown, { backgroundColor: C.surface, borderColor: C.separator, top: insets.top + TOP_BAR_H }]}>
-            {(isAdmin
-              ? (['Give', 'Donors', 'Campaigns', 'Tax'] as GiveTab[])
-              : (['Give', 'Campaigns', 'History'] as GiveTab[])
-            ).map(tab => (
-              <Pressable
-                key={tab}
-                style={({ pressed }) => [
-                  s.dropdownOpt, { borderBottomColor: C.separator },
-                  (pressed || tab === activeTab) && { backgroundColor: C.surfacePressed },
-                ]}
-                onPress={() => changeTab(tab)}
-              >
-                <Text style={[s.dropdownOptText, { color: tab === activeTab ? C.accent : C.label }]}>{tab}</Text>
-                {tab === activeTab && <IconSymbol name="checkmark" size={14} color={C.accent} />}
-              </Pressable>
-            ))}
-          </View>
-        </>
-      )}
 
       {/* Success toast */}
       {showSuccess && (

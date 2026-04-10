@@ -4,6 +4,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -15,6 +16,7 @@ import {
 } from '@/data/mock-business-ops';
 
 export function BusinessStorePanel() {
+  const router = useRouter();
   const C = useColors();
   const [role, setRole] = useState<'Admin' | 'Employee'>('Admin');
   const isAdmin = role === 'Admin';
@@ -54,6 +56,19 @@ export function BusinessStorePanel() {
 
       {isAdmin ? (
         <>
+          {/* ── Home ── */}
+          <Pressable
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              closeSidePanel();
+              router.setParams({ manage: undefined });
+            }}
+          >
+            <IconSymbol name="house.fill" size={18} color={C.secondary} />
+            <Text style={[s.navLabel, { color: C.label }]}>Home</Text>
+          </Pressable>
+
           {/* Revenue banner */}
           <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14, gap: 4 }}>
             <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: 0.5 }}>Revenue This Month</Text>
@@ -103,14 +118,6 @@ export function BusinessStorePanel() {
             </>
           )}
 
-          {/* Navigate */}
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>Navigate</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {navRow('chart.line.uptrend.xyaxis', 'Revenue')}
-            {navRow('storefront.fill',           'Products', `${PRODUCTS.length} items`)}
-            {navRow('doc.text.fill',             'Invoices', `${INVOICES.length} total`)}
-          </View>
-
           {/* Quick actions */}
           <Text style={[s.sectionHeader, { color: C.secondary }]}>Actions</Text>
           <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
@@ -135,12 +142,6 @@ export function BusinessStorePanel() {
             ))}
           </View>
 
-          {/* Navigate */}
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>Navigate</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {navRow('storefront.fill', 'Products')}
-            {navRow('doc.text.fill',  'My Invoices')}
-          </View>
         </>
       )}
     </View>

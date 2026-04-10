@@ -14,29 +14,33 @@ import { closeSidePanel } from '@/utils/global-side-panel';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { MY_HOUSING, CLUBS, CAMPUS_ALERTS } from '@/data/mock-campus-hub';
 
-const NAV_ITEMS = [
-  { icon: 'map',              label: 'Map',       tab: 'Map'       },
-  { icon: 'figure.walk',      label: 'Life',      tab: 'Life'      },
-  { icon: 'list.bullet',      label: 'Resources', tab: 'Resources' },
-] as const;
-
 export function CampusPanel() {
-  const C = useColors();
   const router = useRouter();
+  const C = useColors();
   const styles = useMemo(() => makeStyles(C), [C]);
 
   // Joined clubs for student section
   const joinedClubs = CLUBS.filter(c => c.joined);
 
-  const navigate = (tab: string) => {
-    closeSidePanel();
-    setTimeout(() => router.push({ pathname: '/(tabs)/(main)/hub/campus' as any, params: { tab } }), 80);
-  };
-
   return (
     <View style={styles.container}>
       {/* ── Admin Section ── */}
       <>
+        {/* ── Home ── */}
+        <Pressable
+          style={({ pressed }) => [styles.navRow, pressed && { backgroundColor: C.surfacePressed }]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            closeSidePanel();
+            router.setParams({ manage: undefined });
+          }}
+        >
+          <IconSymbol name="house.fill" size={18} color={C.secondary} />
+          <Text style={[styles.navLabel, { color: C.label }]}>Home</Text>
+        </Pressable>
+
+        <View style={[styles.divider, { backgroundColor: C.separator }]} />
+
         {/* Header */}
         <View style={styles.header}>
           <View style={[styles.avatar, { backgroundColor: `hsl(28,55%,30%)` }]}>
@@ -47,26 +51,6 @@ export function CampusPanel() {
             <Text style={[styles.headerSub, { color: C.secondary }]}>Admin</Text>
           </View>
         </View>
-
-        {/* Navigate */}
-        <Text style={[styles.sectionLabel, { color: C.secondary }]}>Navigate</Text>
-        {NAV_ITEMS.map((item, idx) => (
-          <Pressable
-            key={item.label}
-            style={({ pressed }) => [
-              styles.navRow,
-              pressed && { backgroundColor: C.surfacePressed },
-              idx < NAV_ITEMS.length - 1 && [styles.navRowBorder, { borderBottomColor: C.separator }],
-            ]}
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); navigate(item.tab); }}
-          >
-            <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-            <Text style={[styles.navLabel, { color: C.label }]}>{item.label}</Text>
-            <IconSymbol name="chevron.right" size={14} color={C.muted} />
-          </Pressable>
-        ))}
-
-        <View style={[styles.divider, { backgroundColor: C.separator }]} />
 
         {/* Alerts */}
         <Text style={[styles.sectionLabel, { color: C.secondary }]}>Alerts</Text>
@@ -148,26 +132,6 @@ export function CampusPanel() {
             <Text style={[styles.headerSub, { color: C.secondary }]}>{MY_HOUSING.building} {MY_HOUSING.room}</Text>
           </View>
         </View>
-
-        {/* Student Navigate */}
-        <Text style={[styles.sectionLabel, { color: C.secondary }]}>Navigate</Text>
-        {NAV_ITEMS.map((item, idx) => (
-          <Pressable
-            key={`stu-${item.label}`}
-            style={({ pressed }) => [
-              styles.navRow,
-              pressed && { backgroundColor: C.surfacePressed },
-              idx < NAV_ITEMS.length - 1 && [styles.navRowBorder, { borderBottomColor: C.separator }],
-            ]}
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); navigate(item.tab); }}
-          >
-            <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-            <Text style={[styles.navLabel, { color: C.label }]}>{item.label}</Text>
-            <IconSymbol name="chevron.right" size={14} color={C.muted} />
-          </Pressable>
-        ))}
-
-        <View style={[styles.divider, { backgroundColor: C.separator }]} />
 
         {/* My Housing */}
         <Text style={[styles.sectionLabel, { color: C.secondary }]}>My Housing</Text>

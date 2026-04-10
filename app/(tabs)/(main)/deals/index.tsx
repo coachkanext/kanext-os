@@ -4,14 +4,14 @@
  * Subscriber view: Collaborate (rate card + service categories + submissions).
  */
 
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import {
   View, Text, ScrollView, SectionList, Pressable, StyleSheet, Platform,
   ActionSheetIOS, Animated, PanResponder, TextInput,
   NativeSyntheticEvent, NativeScrollEvent,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -22,6 +22,7 @@ import { useDataMode } from '@/utils/global-demo-mode';
 import { useColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   PERSONAL_DEALS, CRM_CONTACTS, CRM_STAGES, MONTHLY_REVENUE, INSIGHT_STATS,
   SOURCE_BREAKDOWN, PRIORITY_COLORS,
@@ -45,6 +46,12 @@ const TAB_PILLS: Record<Tab, string[]> = {
 };
 
 const CONTACTS_PILLS = ['All', 'Active Deals', 'Past Deals', 'New This Month', 'Highest Value'];
+
+const CLOSING_SOON = PERSONAL_DEALS.filter(d => isClosingSoon(d) && d.stage !== 'Won' && d.stage !== 'Lost');
+const OVERDUE_TASKS = PERSONAL_DEALS.flatMap(d =>
+  d.tasks.filter(t => !t.completed && t.dueDate.getTime() < Date.now())
+    .map(t => ({ task: t, deal: d }))
+);
 
 const STAGE_COLORS: Record<CRMStage, string> = {
   Lead:        'rgba(45,30,18,0.30)',
@@ -120,40 +127,54 @@ function PipelineCard({
       delayLongPress={400}
       style={({ pressed }) => ({
         flexDirection: 'row',
-        borderRadius: 12,
+        borderRadius: 14,
         overflow: 'hidden',
         backgroundColor: pressed ? C.surfacePressed : C.surface,
-        marginBottom: 8,
+        marginBottom: 10,
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: C.separator,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.06,
+        shadowRadius: 4,
+        elevation: 2,
       })}
     >
+      {/* Left color bar */}
       <View style={{ width: 4, backgroundColor: STAGE_COLORS[deal.stage] }} />
-      <View style={{ flex: 1, paddingVertical: 11, paddingLeft: 10 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6 }}>
+
+      {/* Main content */}
+      <View style={{ flex: 1, paddingVertical: 14, paddingLeft: 12, paddingRight: 4 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginBottom: 4 }}>
           <PriorityDot priority={deal.priority} />
-          <Text style={{ flex: 1, fontSize: 13, fontWeight: '600', color: C.label, lineHeight: 18 }} numberOfLines={2}>
+          <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: C.label, lineHeight: 20 }} numberOfLines={2}>
             {deal.title}
           </Text>
         </View>
         {contact && (
-          <Text style={{ fontSize: 12, color: C.secondary, marginTop: 3, marginLeft: 14 }}>{contact.company}</Text>
+          <Text style={{ fontSize: 13, color: C.secondary, marginLeft: 16 }}>{contact.company}</Text>
         )}
         {soon && (
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4, marginLeft: 14 }}>
-            <IconSymbol name="clock" size={10} color="#B85C5C" />
-            <Text style={{ fontSize: 10, color: '#B85C5C', fontWeight: '600' }}>Closing {formatCloseDate(deal.expectedClose)}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 5, marginLeft: 16, backgroundColor: '#B85C5C18', borderRadius: 6, paddingHorizontal: 6, paddingVertical: 3, alignSelf: 'flex-start' }}>
+            <IconSymbol name="clock.fill" size={10} color="#B85C5C" />
+            <Text style={{ fontSize: 11, color: '#B85C5C', fontWeight: '600' }}>Closing {formatCloseDate(deal.expectedClose)}</Text>
           </View>
         )}
       </View>
-      <View style={{ paddingVertical: 11, paddingRight: 4, alignItems: 'flex-end', justifyContent: 'center', gap: 3 }}>
-        <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>{formatDealValue(deal.value)}</Text>
-        <Text style={{ fontSize: 10, color: C.muted }}>{formatRelativeDate(deal.lastActivity)}</Text>
+
+      {/* Value + date */}
+      <View style={{ paddingVertical: 14, paddingRight: 4, alignItems: 'flex-end', justifyContent: 'center', gap: 4, minWidth: 72 }}>
+        <Text style={{ fontSize: 16, fontWeight: '800', color: C.label }}>{formatDealValue(deal.value)}</Text>
+        <Text style={{ fontSize: 11, color: C.secondary }}>{formatRelativeDate(deal.lastActivity)}</Text>
       </View>
+
+      {/* Three-dot menu */}
       <Pressable
         onPress={onMoveStage}
         hitSlop={8}
         style={{ width: 36, alignItems: 'center', justifyContent: 'center' }}
       >
-        <IconSymbol name="ellipsis" size={16} color={C.muted} />
+        <IconSymbol name="ellipsis" size={16} color={C.secondary} />
       </Pressable>
     </Pressable>
   );
@@ -177,27 +198,28 @@ function StageHeader({
       style={({ pressed }) => ({
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 10,
+        paddingVertical: 12,
+        paddingHorizontal: 2,
         backgroundColor: pressed ? C.surfacePressed : C.bg,
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: C.separator,
         marginBottom: 8,
+        marginTop: 4,
       })}
     >
-      <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: STAGE_COLORS[stage], marginRight: 8 }} />
-      <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, flex: 1 }}>{stage}</Text>
+      <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: STAGE_COLORS[stage], marginRight: 10 }} />
+      <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, flex: 1 }}>{stage}</Text>
       <View style={{
-        minWidth: 22, height: 20, borderRadius: 10, backgroundColor: C.surfacePressed,
-        alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6, marginRight: 8,
+        minWidth: 24, height: 22, borderRadius: 11, backgroundColor: C.surface,
+        borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator,
+        alignItems: 'center', justifyContent: 'center', paddingHorizontal: 7, marginRight: 10,
       }}>
-        <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary }}>{count}</Text>
+        <Text style={{ fontSize: 12, fontWeight: '700', color: C.secondary }}>{count}</Text>
       </View>
       {total > 0 && (
-        <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginRight: 8 }}>
+        <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, marginRight: 10 }}>
           {formatDealValue(total)}
         </Text>
       )}
-      <IconSymbol name={isCollapsed ? 'chevron.right' : 'chevron.down'} size={13} color={C.muted} />
+      <IconSymbol name={isCollapsed ? 'chevron.right' : 'chevron.down'} size={13} color={C.secondary} />
     </Pressable>
   );
 }
@@ -205,9 +227,10 @@ function StageHeader({
 // ── Stage Summary Bar ─────────────────────────────────────────────────────────
 
 function StageSummaryBar({
-  deals, onChipPress, C,
+  deals, activeStage, onChipPress, C,
 }: {
   deals: PersonalDeal[];
+  activeStage: CRMStage | null;
   onChipPress: (stage: CRMStage) => void;
   C: ReturnType<typeof useColors>;
 }) {
@@ -220,22 +243,23 @@ function StageSummaryBar({
       {CRM_STAGES.map(stage => {
         const stageDeals = getDealsByStage(deals, stage);
         const total = stageDeals.reduce((s, d) => s + d.value, 0);
+        const isActive = activeStage === stage;
         return (
           <Pressable
             key={stage}
-            onPress={() => onChipPress(stage)}
+            onPress={() => { Haptics.selectionAsync(); onChipPress(stage); }}
             style={({ pressed }) => ({
               flexDirection: 'row', alignItems: 'center', gap: 5,
               paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16,
-              backgroundColor: pressed ? C.surfacePressed : C.surface,
-              borderWidth: 1, borderColor: C.inputBorder,
+              backgroundColor: isActive ? C.label : pressed ? C.surfacePressed : C.surface,
+              borderWidth: 1, borderColor: isActive ? C.label : C.inputBorder,
             })}
           >
-            <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: STAGE_COLORS[stage] }} />
-            <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>{stage}</Text>
-            <Text style={{ fontSize: 11, color: C.secondary }}>{stageDeals.length}</Text>
+            <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: isActive ? C.bg : STAGE_COLORS[stage] }} />
+            <Text style={{ fontSize: 12, fontWeight: '600', color: isActive ? C.bg : C.label }}>{stage}</Text>
+            <Text style={{ fontSize: 11, color: isActive ? C.bg : C.secondary }}>{stageDeals.length}</Text>
             {total > 0 && (
-              <Text style={{ fontSize: 11, color: C.accent, fontWeight: '600' }}>{formatDealValue(total)}</Text>
+              <Text style={{ fontSize: 11, color: isActive ? C.bg : C.accent, fontWeight: '600' }}>{formatDealValue(total)}</Text>
             )}
           </Pressable>
         );
@@ -247,10 +271,12 @@ function StageSummaryBar({
 // ── Pipeline List View ────────────────────────────────────────────────────────
 
 function PipelineListView({
-  deals, pill, collapsedStages, onToggleStage, onDealPress, onMoveDeal, onScroll, C,
+  deals, pill, stageFilter, onStageFilter, collapsedStages, onToggleStage, onDealPress, onMoveDeal, onScroll, C,
 }: {
   deals: PersonalDeal[];
   pill: string;
+  stageFilter: CRMStage | null;
+  onStageFilter: (stage: CRMStage) => void;
   collapsedStages: Set<CRMStage>;
   onToggleStage: (stage: CRMStage) => void;
   onDealPress: (deal: PersonalDeal) => void;
@@ -268,21 +294,13 @@ function PipelineListView({
     return deals;
   }, [deals, pill]);
 
-  const sections: PipelineSection[] = useMemo(() =>
-    CRM_STAGES.map(stage => {
+  const sections: PipelineSection[] = useMemo(() => {
+    const stageList = stageFilter ? [stageFilter] : CRM_STAGES;
+    return stageList.map(stage => {
       const allDeals = getDealsByStage(filtered, stage);
       return { stage, data: collapsedStages.has(stage) ? [] : allDeals, allDeals };
-    }),
-    [filtered, collapsedStages],
-  );
-
-  const scrollToStage = useCallback((stage: CRMStage) => {
-    const idx = CRM_STAGES.indexOf(stage);
-    if (idx < 0) return;
-    try {
-      listRef.current?.scrollToLocation({ sectionIndex: idx, itemIndex: 0, animated: true, viewOffset: 0 });
-    } catch {}
-  }, []);
+    });
+  }, [filtered, collapsedStages, stageFilter]);
 
   return (
     <SectionList<PersonalDeal, PipelineSection>
@@ -295,7 +313,7 @@ function PipelineListView({
       scrollEventThrottle={16}
       contentContainerStyle={{ paddingBottom: 120 }}
       ListHeaderComponent={
-        <StageSummaryBar deals={filtered} onChipPress={scrollToStage} C={C} />
+        <StageSummaryBar deals={filtered} activeStage={stageFilter} onChipPress={onStageFilter} C={C} />
       }
       renderSectionHeader={({ section }) => (
         <StageHeader
@@ -899,20 +917,84 @@ function AddContactSheet({ visible, onClose, C }: { visible: boolean; onClose: (
 
 // ── Insights Tab ──────────────────────────────────────────────────────────────
 
-function InsightsTab({ C }: { C: ReturnType<typeof useColors> }) {
-  const chartMax = useMemo(() => Math.max(...MONTHLY_REVENUE.map(m => m.value), 1), []);
+const INSIGHTS_TOP_BRANDS = [
+  { name: 'Adidas',           revenue: 20000 },
+  { name: 'Nike',             revenue: 15000 },
+  { name: 'FitLife',          revenue: 12000 },
+  { name: 'TechCorp',         revenue: 8500  },
+  { name: 'Black Enterprise', revenue: 6000  },
+];
+
+const DIPSON_INSIGHTS = [
+  'Your avg close time dropped from 35 days to 28 days this quarter',
+  'Referrals convert at 2× the rate of inbound DMs — prioritize referral channels',
+  'You have $28K in Negotiation — follow up on TechBrand to close before month end',
+];
+
+function InsightsTab({ C, onNavigateToPipeline }: {
+  C: ReturnType<typeof useColors>;
+  onNavigateToPipeline: (stage: CRMStage) => void;
+}) {
+  const chartMax  = useMemo(() => Math.max(...MONTHLY_REVENUE.map(m => m.value), 1), []);
+  const funnelMax = useMemo(() => Math.max(...CRM_STAGES.map(s => getDealsByStage(PERSONAL_DEALS, s).length), 1), []);
+  const brandMax  = Math.max(...INSIGHTS_TOP_BRANDS.map(b => b.revenue), 1);
+
+  const [timePeriod, setTimePeriod] = useState('This Month');
+  const [revenueBar, setRevenueBar] = useState<string | null>(null);
+  const [funnelBar,  setFunnelBar]  = useState<CRMStage | null>(null);
+  const [sourceBar,  setSourceBar]  = useState<string | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearTooltips = useCallback(() => { setRevenueBar(null); setFunnelBar(null); setSourceBar(null); }, []);
+
+  const armTimer = useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(clearTooltips, 3000);
+  }, [clearTooltips]);
+
+  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current); }, []);
+
+  const tapRevenue = (month: string) => { setRevenueBar(p => p === month ? null : month); setFunnelBar(null); setSourceBar(null); armTimer(); Haptics.selectionAsync(); };
+  const tapFunnel  = (s: CRMStage)  => { setFunnelBar(p => p === s ? null : s); setRevenueBar(null); setSourceBar(null); armTimer(); Haptics.selectionAsync(); };
+  const tapSource  = (l: string)    => { setSourceBar(p => p === l ? null : l); setRevenueBar(null); setFunnelBar(null); armTimer(); Haptics.selectionAsync(); };
+
   const statCards = [
-    { label: 'Pipeline',    value: `$${(INSIGHT_STATS.totalPipelineValue / 1000).toFixed(0)}K`, icon: 'chart.line.uptrend.xyaxis' },
-    { label: 'Won / Mo',    value: formatDealValue(INSIGHT_STATS.wonValueThisMonth),             icon: 'checkmark.seal.fill' },
-    { label: 'Win Rate',    value: `${INSIGHT_STATS.winRate}%`,                                  icon: 'percent' },
-    { label: 'Avg Deal',    value: formatDealValue(INSIGHT_STATS.avgDealSize),                   icon: 'tag.fill' },
-    { label: 'Avg Close',   value: `${INSIGHT_STATS.avgTimeToClose}d`,                           icon: 'calendar' },
-    { label: 'Won This Mo', value: `${INSIGHT_STATS.wonThisMonth}`,                              icon: 'trophy.fill' },
+    { label: 'Win Rate',    value: `${INSIGHT_STATS.winRate}%`,                icon: 'percent'       },
+    { label: 'Avg Deal',    value: formatDealValue(INSIGHT_STATS.avgDealSize),  icon: 'tag.fill'      },
+    { label: 'Avg Close',   value: `${INSIGHT_STATS.avgTimeToClose}d`,          icon: 'calendar'      },
+    { label: 'Won This Mo', value: `${INSIGHT_STATS.wonThisMonth}`,             icon: 'trophy.fill'   },
   ];
 
+  const activeRevBar = revenueBar ? MONTHLY_REVENUE.find(m => m.month === revenueBar) : null;
+  const activeSrcBar = sourceBar  ? SOURCE_BREAKDOWN.find(s => s.label === sourceBar) : null;
+
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 20 }}>
+    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
+
+      {/* Time period + Export row */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, gap: 8 }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flex: 1 }} contentContainerStyle={{ gap: 6 }}>
+          {['This Month', 'This Quarter', 'This Year'].map(p => (
+            <Pressable
+              key={p}
+              onPress={() => { setTimePeriod(p); Haptics.selectionAsync(); }}
+              style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14, borderWidth: 1, borderColor: timePeriod === p ? C.label : C.inputBorder, backgroundColor: timePeriod === p ? C.label : C.surface }}
+            >
+              <Text style={{ fontSize: 12, fontWeight: '600', color: timePeriod === p ? C.bg : C.secondary }}>{p}</Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+        <Pressable
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 11, paddingVertical: 7, borderRadius: 10, backgroundColor: pressed ? C.surfacePressed : C.surface, borderWidth: 1, borderColor: C.separator })}
+        >
+          <IconSymbol name="square.and.arrow.up" size={13} color={C.secondary} />
+          <Text style={{ fontSize: 12, fontWeight: '600', color: C.label }}>Export</Text>
+        </Pressable>
+      </View>
+
+      {/* Stat cards */}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 24 }}>
         {statCards.map(sc => (
           <View key={sc.label} style={{ width: '47%', backgroundColor: C.surface, borderRadius: 12, padding: 14 }}>
             <IconSymbol name={sc.icon as any} size={18} color={C.accent} />
@@ -922,148 +1004,374 @@ function InsightsTab({ C }: { C: ReturnType<typeof useColors> }) {
         ))}
       </View>
 
-      <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, marginBottom: 12 }}>Monthly Revenue</Text>
-      <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 6, height: 110, marginBottom: 20 }}>
+      {/* Monthly Revenue */}
+      <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, marginBottom: 6 }}>Monthly Revenue</Text>
+      <View style={{ height: 28, alignItems: 'center', justifyContent: 'center', marginBottom: 2 }}>
+        {activeRevBar && (
+          <View style={{ backgroundColor: C.label, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5 }}>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.bg }}>{activeRevBar.month}: ${activeRevBar.value.toLocaleString()}</Text>
+          </View>
+        )}
+      </View>
+      <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 5, height: 90, marginBottom: 24 }}>
         {MONTHLY_REVENUE.map(m => {
-          const barH = chartMax > 0 ? Math.max(4, (m.value / chartMax) * 90) : 4;
+          const barH = chartMax > 0 ? Math.max(4, (m.value / chartMax) * 80) : 4;
+          const isActive = revenueBar === m.month;
           return (
-            <View key={m.month} style={{ flex: 1, alignItems: 'center' }}>
-              <Text style={{ fontSize: 10, color: C.secondary, marginBottom: 2 }}>{m.value > 0 ? `$${(m.value / 1000).toFixed(1)}K` : ''}</Text>
-              <View style={{ width: '100%', height: barH, borderRadius: 4, backgroundColor: C.accent }} />
-              <Text style={{ fontSize: 10, color: C.muted, marginTop: 4 }}>{m.month}</Text>
-            </View>
+            <Pressable key={m.month} style={{ flex: 1, alignItems: 'center' }} onPress={() => tapRevenue(m.month)}>
+              <View style={{ width: '100%', height: barH, borderRadius: 4, backgroundColor: isActive ? C.label : C.accent }} />
+              <Text style={{ fontSize: 10, color: isActive ? C.label : C.muted, marginTop: 4, fontWeight: isActive ? '700' : '400' }}>{m.month}</Text>
+            </Pressable>
           );
         })}
       </View>
 
-      <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, marginBottom: 12 }}>Pipeline Funnel</Text>
+      {/* Pipeline Funnel */}
+      <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, marginBottom: 6 }}>Pipeline Funnel</Text>
+      {funnelBar && (() => {
+        const sd = getDealsByStage(PERSONAL_DEALS, funnelBar);
+        const tot = sd.reduce((s, d) => s + d.value, 0);
+        return (
+          <Pressable
+            onPress={() => { setFunnelBar(null); onNavigateToPipeline(funnelBar); }}
+            style={({ pressed }) => ({ backgroundColor: C.label, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, marginBottom: 8, alignSelf: 'center', flexDirection: 'row', alignItems: 'center', gap: 6, opacity: pressed ? 0.8 : 1 })}
+          >
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.bg }}>{funnelBar}: {sd.length} deal{sd.length !== 1 ? 's' : ''}, {formatDealValue(tot)}</Text>
+            <IconSymbol name="arrow.right" size={11} color={C.bg} />
+          </Pressable>
+        );
+      })()}
       {CRM_STAGES.filter(s => s !== 'Lost').map(stage => {
         const count = getDealsByStage(PERSONAL_DEALS, stage).length;
-        const maxCount = Math.max(...CRM_STAGES.map(s => getDealsByStage(PERSONAL_DEALS, s).length), 1);
+        const isActive = funnelBar === stage;
         return (
-          <View key={stage} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-            <Text style={{ width: 80, fontSize: 11, color: C.secondary }}>{stage}</Text>
+          <Pressable key={stage} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 8 }} onPress={() => tapFunnel(stage)}>
+            <Text style={{ width: 80, fontSize: 11, color: isActive ? C.label : C.secondary, fontWeight: isActive ? '700' : '400' }}>{stage}</Text>
             <View style={{ flex: 1, height: 24, backgroundColor: C.surface, borderRadius: 6, overflow: 'hidden' }}>
-              <View style={{ width: `${(count / maxCount) * 100}%`, height: '100%', borderRadius: 6, backgroundColor: STAGE_COLORS[stage] }} />
+              <View style={{ width: `${(count / funnelMax) * 100}%`, height: '100%', borderRadius: 6, backgroundColor: isActive ? C.label : STAGE_COLORS[stage] }} />
             </View>
-            <Text style={{ width: 20, fontSize: 11, fontWeight: '600', color: C.label, textAlign: 'right' }}>{count}</Text>
-          </View>
+            <Text style={{ width: 20, fontSize: 11, fontWeight: '600', color: isActive ? C.label : C.secondary, textAlign: 'right' }}>{count}</Text>
+          </Pressable>
         );
       })}
 
-      <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, marginTop: 20, marginBottom: 12 }}>Lead Sources</Text>
-      {SOURCE_BREAKDOWN.map(src => (
-        <View key={src.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-          <Text style={{ width: 86, fontSize: 11, color: C.secondary }}>{src.label}</Text>
-          <View style={{ flex: 1, height: 20, backgroundColor: C.surface, borderRadius: 6, overflow: 'hidden' }}>
-            <View style={{ width: `${src.pct}%`, height: '100%', borderRadius: 6, backgroundColor: C.accent + 'CC' }} />
-          </View>
-          <Text style={{ width: 32, fontSize: 11, fontWeight: '600', color: C.secondary, textAlign: 'right' }}>{src.pct}%</Text>
+      {/* Lead Sources */}
+      <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, marginTop: 20, marginBottom: 6 }}>Lead Sources</Text>
+      {activeSrcBar && (
+        <View style={{ backgroundColor: C.label, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5, marginBottom: 8, alignSelf: 'center' }}>
+          <Text style={{ fontSize: 12, fontWeight: '600', color: C.bg }}>{activeSrcBar.label}: {activeSrcBar.pct}% of leads</Text>
         </View>
-      ))}
-      <View style={{ height: 20 }} />
+      )}
+      {SOURCE_BREAKDOWN.map(src => {
+        const isActive = sourceBar === src.label;
+        return (
+          <Pressable key={src.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 8 }} onPress={() => tapSource(src.label)}>
+            <Text style={{ width: 86, fontSize: 11, color: isActive ? C.label : C.secondary, fontWeight: isActive ? '700' : '400' }}>{src.label}</Text>
+            <View style={{ flex: 1, height: 20, backgroundColor: C.surface, borderRadius: 6, overflow: 'hidden' }}>
+              <View style={{ width: `${src.pct}%`, height: '100%', borderRadius: 6, backgroundColor: isActive ? C.label : C.accent + 'CC' }} />
+            </View>
+            <Text style={{ width: 32, fontSize: 11, fontWeight: '600', color: isActive ? C.label : C.secondary, textAlign: 'right' }}>{src.pct}%</Text>
+          </Pressable>
+        );
+      })}
+
+      {/* Top Brands by Revenue */}
+      <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, marginTop: 24, marginBottom: 10 }}>Top Brands by Revenue</Text>
+      <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, marginBottom: 20 }}>
+        {INSIGHTS_TOP_BRANDS.map((brand, idx) => (
+          <View key={brand.name} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: idx < INSIGHTS_TOP_BRANDS.length - 1 ? 12 : 0 }}>
+            <Text style={{ width: 18, fontSize: 13, fontWeight: '700', color: idx === 0 ? '#B8943E' : C.secondary, textAlign: 'center' }}>{idx + 1}</Text>
+            <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: C.label }}>{brand.name}</Text>
+            <View style={{ width: 80, height: 8, backgroundColor: C.bg, borderRadius: 4, overflow: 'hidden' }}>
+              <View style={{ width: `${(brand.revenue / brandMax) * 100}%`, height: '100%', borderRadius: 4, backgroundColor: C.label }} />
+            </View>
+            <Text style={{ width: 44, fontSize: 12, fontWeight: '600', color: C.secondary, textAlign: 'right' }}>{formatDealValue(brand.revenue)}</Text>
+          </View>
+        ))}
+      </View>
+
+      {/* Dipson Insights */}
+      <View style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, marginBottom: 24 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+          <IconSymbol name="sparkles" size={15} color={C.secondary} />
+          <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Dipson Insights</Text>
+        </View>
+        {DIPSON_INSIGHTS.map((insight, idx) => (
+          <View key={idx} style={{ flexDirection: 'row', gap: 10, marginBottom: idx < DIPSON_INSIGHTS.length - 1 ? 10 : 0 }}>
+            <View style={{ paddingTop: 6 }}>
+              <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: C.secondary }} />
+            </View>
+            <Text style={{ flex: 1, fontSize: 13, color: C.secondary, lineHeight: 18 }}>{insight}</Text>
+          </View>
+        ))}
+      </View>
+
     </ScrollView>
   );
 }
 
 // ── Subscriber Collaborate View ───────────────────────────────────────────────
 
-const SERVICE_CATEGORIES = [
-  { icon: 'bag.fill',             title: 'Brand Partnership',    sub: 'Sponsored content, campaigns'  },
-  { icon: 'mic.fill',             title: 'Speaking Engagement',  sub: 'Keynotes, panels, workshops'   },
-  { icon: 'person.fill',          title: 'Coaching Consultation',sub: '1:1 strategy sessions'         },
-  { icon: 'ellipsis.circle.fill', title: 'Custom Request',       sub: 'Tell us what you need'         },
-] as const;
+const COLLAB_RATE_CARD = [
+  { service: 'Sponsored Post',        price: '$500 – $1,500',       deliverables: '1 Instagram or X post, 1 story',                  turnaround: '5–7 business days',   usageRights: 'Brand may repost for 90 days' },
+  { service: 'Sponsored Reel',        price: '$750 – $2,000',       deliverables: '1 short-form video reel (30–60 sec)',              turnaround: '7–10 business days',  usageRights: 'Brand may repost for 90 days' },
+  { service: 'KTV Video Integration', price: '$1,000 – $3,000',     deliverables: 'Brand integration in 1 KTV video (60–90 sec)',     turnaround: '10–14 business days', usageRights: 'Brand may repost for 6 months' },
+  { service: 'Story Feature',         price: '$250 – $500',         deliverables: '3–5 story frames with link sticker',              turnaround: '3–5 business days',   usageRights: 'Brand may screenshot for 30 days' },
+  { service: 'Brand Ambassadorship',  price: '$2,000 – $5,000/mo',  deliverables: '4 posts, 8 stories, 1 reel per month',            turnaround: 'Ongoing monthly',     usageRights: 'Full license during contract term' },
+  { service: 'Speaking Engagement',   price: '$1,500 – $5,000',     deliverables: '30–60 min keynote or panel appearance',           turnaround: 'Per event schedule',  usageRights: 'Event organizer may share clips for 1 year' },
+  { service: 'Consulting Session',    price: '$150/hr',             deliverables: '1-on-1 video call + follow-up notes doc',         turnaround: '5 business days',     usageRights: 'For internal use only' },
+  { service: 'Custom Package',        price: "Let's talk",          deliverables: 'Tailored to your campaign goals and deliverables', turnaround: 'Discussed in brief',  usageRights: 'Negotiated per agreement' },
+];
 
-const SUBMISSIONS = [
-  { id: 's1', title: 'Brand Partnership Inquiry', date: 'Submitted Apr 1',  status: 'Under Review', statusColor: '#B8943E' as const },
-  { id: 's2', title: 'Speaking Engagement',       date: 'Submitted Mar 28', status: 'Accepted',     statusColor: '#5A8A6E' as const },
-] as const;
+const WHAT_I_OFFER = [
+  { icon: 'camera.fill',    title: 'Sponsored Content',    desc: 'Authentic product integrations across posts, reels, and KTV videos', steps: ['Brief review & creative alignment', 'Content creation & shoot', 'Review period (2 revision rounds)', 'Post goes live + metrics report delivered'], startingPrice: 'From $500' },
+  { icon: 'star.fill',      title: 'Brand Ambassadorship', desc: 'Long-term partnership with ongoing content, appearances, and co-branding', steps: ['Intro call & campaign scoping', 'Contract & deliverables agreed', 'Monthly content creation & delivery', 'Quarterly performance review & renewal'], startingPrice: 'From $2,000/mo' },
+  { icon: 'mic.fill',       title: 'Speaking & Events',    desc: 'Keynotes, panels, workshops, and live appearances', steps: ['Topic brief & event details review', 'Deck or talking points prepared', 'Rehearsal or pre-event call (if needed)', 'Live appearance + post-event content optional'], startingPrice: 'From $1,500' },
+  { icon: 'lightbulb.fill', title: 'Consulting',           desc: '1-on-1 strategy sessions for brands, creators, and athletes', steps: ['Submit agenda & goals in advance', '60-min video call session', 'Follow-up notes doc delivered within 48hrs', 'Optional async follow-up via voice note'], startingPrice: 'From $150/hr' },
+  { icon: 'sparkles',       title: 'Custom',               desc: 'Have something else in mind? Pitch it below', steps: ['Submit your idea via the form below', 'Initial response within 3 business days', 'Discovery call to scope the project', 'Custom proposal & pricing delivered'], startingPrice: "Let's talk" },
+];
+
+const PAST_PARTNERS = [
+  { id: 'pp1', name: 'Nike',             initials: 'NK', hue: 30,  type: 'Content Series',     year: '2025', outcome: '5M+ impressions across 8-post campaign'    },
+  { id: 'pp2', name: 'Gatorade',         initials: 'GT', hue: 90,  type: 'Sponsorship',         year: '2024', outcome: 'Product integration campaign, 1.2M reach'   },
+  { id: 'pp3', name: 'Under Armour',     initials: 'UA', hue: 210, type: 'Brand Ambassador',    year: '2024', outcome: '6-month ambassador deal, 3 content series'   },
+  { id: 'pp4', name: 'Black Enterprise', initials: 'BE', hue: 0,   type: 'Speaking',            year: '2025', outcome: 'Keynote at Entrepreneurs Summit 2025'         },
+  { id: 'pp5', name: 'Beats by Dre',    initials: 'BD', hue: 340, type: 'Product Integration', year: '2025', outcome: 'KTV video integration, 850K views'            },
+];
+
+const COLLAB_PROJECT_TYPES = ['Sponsored Post', 'Ambassadorship', 'Speaking', 'Consulting', 'Custom'] as const;
+const COLLAB_BUDGET_RANGES = ['Under $1K', '$1K–$5K', '$5K–$10K', '$10K–$25K', '$25K+', 'Flexible'] as const;
+
+type SubmissionStatus = 'Submitted' | 'Under Review' | 'Accepted' | 'Declined';
+const SUBMISSION_STATUS_CONFIG: Record<SubmissionStatus, { color: string; label: string }> = {
+  'Submitted':   { color: '#9C9790', label: 'Submitted'   },
+  'Under Review':{ color: '#B8943E', label: 'Under Review' },
+  'Accepted':    { color: '#5A8A6E', label: 'Accepted'     },
+  'Declined':    { color: '#B85C5C', label: 'Declined'     },
+};
+
+const INITIAL_MY_SUBMISSIONS = [
+  { id: 'ms1', type: 'Sponsored Post',  company: 'My Brand Co.',      date: 'Mar 15, 2026', status: 'Under Review' as SubmissionStatus, description: 'Looking to sponsor 2 Instagram posts and a Story set for our spring launch.' },
+  { id: 'ms2', type: 'Ambassadorship',  company: 'FitLife Pro',       date: 'Feb 8, 2026',  status: 'Accepted'     as SubmissionStatus, description: 'Long-term ambassador partnership — 3 months, 2 posts per month.' },
+  { id: 'ms3', type: 'Speaking',        company: 'CreatorConf 2026',  date: 'Jan 20, 2026', status: 'Declined'     as SubmissionStatus, description: 'Panel speaker at our annual creator economy conference.' },
+];
+
 
 function CollaborateView({ C, topBarH }: { C: ReturnType<typeof useColors>; topBarH: number }) {
+  const [proposalSheet,   setProposalSheet]   = useState(false);
+  const [submissionSheet, setSubmissionSheet] = useState<typeof INITIAL_MY_SUBMISSIONS[number] | null>(null);
+  const [mySubmissions,   setMySubmissions]   = useState(INITIAL_MY_SUBMISSIONS);
+  const [expandedRate,    setExpandedRate]    = useState<string | null>(null);
+
+  // Proposal form state
+  const [brand,       setBrand]       = useState('');
+  const [yourName,    setYourName]    = useState('');
+  const [email,       setEmail]       = useState('');
+  const [projectType, setProjectType] = useState<string | null>(null);
+  const [budgetRange, setBudgetRange] = useState<string | null>(null);
+  const [timeline,    setTimeline]    = useState('');
+  const [description, setDescription] = useState('');
+
+  const canSubmit = !!(brand.trim() && yourName.trim() && email.trim() && projectType && budgetRange && description.trim());
+
+  const handleSubmit = () => {
+    if (!canSubmit) return;
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    const newSub = {
+      id: `ms${Date.now()}`,
+      type: projectType!,
+      company: brand.trim(),
+      date: 'Apr 8, 2026',
+      status: 'Submitted' as SubmissionStatus,
+      description: description.trim(),
+    };
+    setMySubmissions(prev => [newSub, ...prev]);
+    setBrand(''); setYourName(''); setEmail('');
+    setProjectType(null); setBudgetRange(null); setTimeline(''); setDescription('');
+    setProposalSheet(false);
+  };
+
+  const sectionLabel = (t: string) => (
+    <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, paddingHorizontal: 16, marginBottom: 8 }}>{t}</Text>
+  );
+
   return (
     <ScrollView
-      style={{ flex: 1, marginTop: topBarH }}
+      style={{ flex: 1 }}
+      contentContainerStyle={{ paddingTop: topBarH + 8, paddingBottom: 120 }}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 120 }}
+      keyboardShouldPersistTaps="handled"
     >
-      {/* Rate Card */}
-      <View style={{
-        backgroundColor: C.surface, borderRadius: 16,
-        margin: 16, padding: 20,
-      }}>
-        <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, marginBottom: 10 }}>
-          Work With Sammy
-        </Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-          <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#5A8A6E' }} />
-          <Text style={{ fontSize: 13, fontWeight: '600', color: '#5A8A6E' }}>Available</Text>
-        </View>
-        <Text style={{ fontSize: 14, color: C.secondary }}>Starting from $500</Text>
+      {/* Past Partnerships */}
+      {sectionLabel('Past Partnerships')}
+      <View style={{ backgroundColor: C.surface, borderRadius: 14, marginHorizontal: 16, marginBottom: 20, overflow: 'hidden' }}>
+        {PAST_PARTNERS.map((partner, idx) => (
+          <View key={partner.id} style={{ borderBottomWidth: idx < PAST_PARTNERS.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingVertical: 13 }}>
+              <Avatar initials={partner.initials} hue={partner.hue} size={40} />
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>{partner.name}</Text>
+                <Text style={{ fontSize: 12, color: C.secondary }}>{partner.type} · {partner.year}</Text>
+              </View>
+            </View>
+          </View>
+        ))}
       </View>
 
-      {/* Service Category Cards */}
-      {SERVICE_CATEGORIES.map(svc => (
-        <Pressable
-          key={svc.title}
-          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-          style={({ pressed }) => ({
-            flexDirection: 'row', alignItems: 'center', gap: 14,
-            backgroundColor: pressed ? C.surfacePressed : C.surface,
-            borderRadius: 12, marginHorizontal: 16, marginBottom: 8, padding: 16,
-          })}
-        >
-          <IconSymbol name={svc.icon as any} size={20} color={C.label} />
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{svc.title}</Text>
-            <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{svc.sub}</Text>
-          </View>
-          <IconSymbol name="chevron.right" size={14} color={C.secondary} />
-        </Pressable>
-      ))}
-
-      {/* Book a Call */}
-      <Pressable
-        onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-        style={({ pressed }) => ({
-          backgroundColor: C.label, borderRadius: 14,
-          paddingVertical: 14, marginHorizontal: 16, marginTop: 8,
-          alignItems: 'center', opacity: pressed ? 0.85 : 1,
+      {/* Rate Card */}
+      {sectionLabel('Rate Card')}
+      <View style={{ backgroundColor: C.surface, borderRadius: 14, marginHorizontal: 16, marginBottom: 20, overflow: 'hidden' }}>
+        {COLLAB_RATE_CARD.map((item, idx) => {
+          const isOpen = expandedRate === item.service;
+          return (
+            <View key={item.service} style={{ borderBottomWidth: idx < COLLAB_RATE_CARD.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }}>
+              <Pressable
+                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setExpandedRate(p => p === item.service ? null : item.service); }}
+                style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 13, opacity: pressed ? 0.7 : 1 })}
+              >
+                <Text style={{ fontSize: 14, color: C.label, flex: 1 }}>{item.service}</Text>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: C.label, marginRight: 8 }}>{item.price}</Text>
+                <IconSymbol name={isOpen ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
+              </Pressable>
+              {isOpen && (
+                <View style={{ paddingHorizontal: 16, paddingBottom: 14, gap: 6 }}>
+                  <View style={{ flexDirection: 'row', gap: 6 }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, width: 90 }}>Deliverables:</Text>
+                    <Text style={{ fontSize: 12, color: C.label, flex: 1, lineHeight: 17 }}>{item.deliverables}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', gap: 6 }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, width: 90 }}>Turnaround:</Text>
+                    <Text style={{ fontSize: 12, color: C.label, flex: 1, lineHeight: 17 }}>{item.turnaround}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', gap: 6 }}>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, width: 90 }}>Usage Rights:</Text>
+                    <Text style={{ fontSize: 12, color: C.label, flex: 1, lineHeight: 17 }}>{item.usageRights}</Text>
+                  </View>
+                </View>
+              )}
+            </View>
+          );
         })}
-      >
-        <Text style={{ fontSize: 15, fontWeight: '700', color: '#FFFFFF' }}>Book a Call</Text>
-      </Pressable>
+      </View>
+
+      {/* Submit a Proposal CTA */}
+      <View style={{ marginHorizontal: 16, marginBottom: 20 }}>
+        <Pressable
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setProposalSheet(true); }}
+          style={({ pressed }) => ({ backgroundColor: C.label, borderRadius: 14, paddingVertical: 16, alignItems: 'center', opacity: pressed ? 0.85 : 1 })}
+        >
+          <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>Submit a Proposal</Text>
+        </Pressable>
+      </View>
 
       {/* My Submissions */}
-      <Text style={{
-        fontSize: 11, color: C.secondary, textTransform: 'uppercase',
-        letterSpacing: 1, padding: 16, marginTop: 8,
-      }}>
-        MY SUBMISSIONS
-      </Text>
+      {mySubmissions.length > 0 && (
+        <>
+          {sectionLabel('My Submissions')}
+          <View style={{ backgroundColor: C.surface, borderRadius: 14, marginHorizontal: 16, marginBottom: 20, overflow: 'hidden' }}>
+            {mySubmissions.map((sub, idx) => {
+              const cfg = SUBMISSION_STATUS_CONFIG[sub.status];
+              return (
+                <View key={sub.id} style={{ borderBottomWidth: idx < mySubmissions.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }}>
+                  <Pressable
+                    onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setSubmissionSheet(sub); }}
+                    style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingVertical: 13, opacity: pressed ? 0.7 : 1 })}
+                  >
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{sub.type}</Text>
+                      <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{sub.company} · {sub.date}</Text>
+                    </View>
+                    <View style={{ backgroundColor: cfg.color + '22', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 4, marginRight: 4 }}>
+                      <Text style={{ fontSize: 11, fontWeight: '700', color: cfg.color }}>{cfg.label}</Text>
+                    </View>
+                    <IconSymbol name="chevron.right" size={12} color={C.secondary} />
+                  </Pressable>
+                </View>
+              );
+            })}
+          </View>
+        </>
+      )}
 
-      {SUBMISSIONS.map(sub => (
-        <View
-          key={sub.id}
-          style={{
-            backgroundColor: C.surface, borderRadius: 12,
-            marginHorizontal: 16, marginBottom: 8, padding: 16,
-            flexDirection: 'row', alignItems: 'center',
-          }}
-        >
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{sub.title}</Text>
-            <Text style={{ fontSize: 12, color: C.secondary, marginTop: 3 }}>{sub.date}</Text>
+      {/* Proposal form sheet */}
+      <BottomSheet visible={proposalSheet} onClose={() => setProposalSheet(false)} useModal title="Submit a Proposal">
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 14, paddingBottom: 40 }} keyboardShouldPersistTaps="handled">
+          <View>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Brand / Company *</Text>
+            <TextInput style={{ backgroundColor: C.bg, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14, color: C.label, borderWidth: 1, borderColor: C.separator }} placeholder="Nike, Adidas, FitLife…" placeholderTextColor={C.secondary} value={brand} onChangeText={setBrand} />
           </View>
-          <View style={{
-            paddingHorizontal: 10, paddingVertical: 5,
-            backgroundColor: C.surface, borderRadius: 8,
-            borderWidth: 1, borderColor: sub.statusColor,
-          }}>
-            <Text style={{ fontSize: 12, fontWeight: '600', color: sub.statusColor }}>{sub.status}</Text>
+          <View>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Your Name *</Text>
+            <TextInput style={{ backgroundColor: C.bg, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14, color: C.label, borderWidth: 1, borderColor: C.separator }} placeholder="Full name" placeholderTextColor={C.secondary} value={yourName} onChangeText={setYourName} />
           </View>
-        </View>
-      ))}
+          <View>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Email *</Text>
+            <TextInput style={{ backgroundColor: C.bg, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14, color: C.label, borderWidth: 1, borderColor: C.separator }} placeholder="you@brand.com" placeholderTextColor={C.secondary} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
+          </View>
+          <View>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Project Type *</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }}>
+              {COLLAB_PROJECT_TYPES.map(t => (
+                <Pressable key={t} onPress={() => { setProjectType(p => p === t ? null : t); Haptics.selectionAsync(); }} style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14, borderWidth: 1, borderColor: projectType === t ? C.label : C.separator, backgroundColor: projectType === t ? C.label : 'transparent' }}>
+                  <Text style={{ fontSize: 12, fontWeight: '600', color: projectType === t ? C.bg : C.secondary }}>{t}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+          <View>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Budget Range *</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+              {COLLAB_BUDGET_RANGES.map(b => (
+                <Pressable key={b} onPress={() => { setBudgetRange(p => p === b ? null : b); Haptics.selectionAsync(); }} style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14, borderWidth: 1, borderColor: budgetRange === b ? C.label : C.separator, backgroundColor: budgetRange === b ? C.label : 'transparent' }}>
+                  <Text style={{ fontSize: 12, fontWeight: '600', color: budgetRange === b ? C.bg : C.secondary }}>{b}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+          <View>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Timeline</Text>
+            <TextInput style={{ backgroundColor: C.bg, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14, color: C.label, borderWidth: 1, borderColor: C.separator }} placeholder="e.g. Q2 2026, ASAP, Flexible" placeholderTextColor={C.secondary} value={timeline} onChangeText={setTimeline} />
+          </View>
+          <View>
+            <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary, marginBottom: 6 }}>Project Description *</Text>
+            <TextInput style={{ backgroundColor: C.bg, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, fontSize: 14, color: C.label, borderWidth: 1, borderColor: C.separator, minHeight: 90, textAlignVertical: 'top' }} placeholder="Tell me about the project, deliverables, and goals…" placeholderTextColor={C.secondary} value={description} onChangeText={setDescription} multiline numberOfLines={4} />
+          </View>
+          <Pressable
+            onPress={handleSubmit}
+            style={({ pressed }) => ({ backgroundColor: canSubmit ? C.label : C.separator, borderRadius: 12, paddingVertical: 14, alignItems: 'center', opacity: pressed && canSubmit ? 0.85 : 1 })}
+          >
+            <Text style={{ fontSize: 15, fontWeight: '700', color: canSubmit ? C.bg : C.secondary }}>Submit Proposal</Text>
+          </Pressable>
+        </ScrollView>
+      </BottomSheet>
+
+      {/* Submission detail sheet */}
+      <BottomSheet visible={!!submissionSheet} onClose={() => setSubmissionSheet(null)} useModal title={submissionSheet?.type ?? ''}>
+        {submissionSheet && (() => {
+          const cfg = SUBMISSION_STATUS_CONFIG[submissionSheet.status];
+          return (
+            <View style={{ gap: 16, paddingTop: 8 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <View>
+                  <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>Company</Text>
+                  <Text style={{ fontSize: 15, fontWeight: '600', color: C.label }}>{submissionSheet.company}</Text>
+                </View>
+                <View style={{ backgroundColor: cfg.color + '22', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 6 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '700', color: cfg.color }}>{cfg.label}</Text>
+                </View>
+              </View>
+              <View>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>Submitted</Text>
+                <Text style={{ fontSize: 15, color: C.label }}>{submissionSheet.date}</Text>
+              </View>
+              <View>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>Description</Text>
+                <Text style={{ fontSize: 14, color: C.label, lineHeight: 21 }}>{submissionSheet.description}</Text>
+              </View>
+            </View>
+          );
+        })()}
+      </BottomSheet>
     </ScrollView>
   );
 }
@@ -1121,14 +1429,18 @@ export default function DealsScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole('personal:deals');
   const isOwner = role === roleCycles[0];
 
-  const [tab, setTab] = useState<Tab>('Pipeline');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { tab: tabParam } = useLocalSearchParams<{ tab?: string }>();
+  const [tab, setTab] = useState<Tab>(() => (TABS.includes(tabParam as Tab) ? (tabParam as Tab) : 'Pipeline'));
   const [showPills, setShowPills] = useState(false);
   const [selectedPill, setSelectedPill] = useState('All');
   const pillsRevealAnim = useRef(new Animated.Value(0)).current;
 
   const [deals, setDeals] = useState<PersonalDeal[]>([...PERSONAL_DEALS]);
   const [collapsedStages, setCollapsedStages] = useState<Set<CRMStage>>(() => new Set(['Won', 'Lost']));
+  const [stageFilter, setStageFilter] = useState<CRMStage | null>(null);
+  const toggleStageFilter = useCallback((stage: CRMStage) => {
+    setStageFilter(prev => prev === stage ? null : stage);
+  }, []);
 
   const [selectedDeal, setSelectedDeal]     = useState<PersonalDeal | null>(null);
   const [detailOpen, setDetailOpen]         = useState(false);
@@ -1137,6 +1449,23 @@ export default function DealsScreen() {
   const [addContactOpen, setAddContactOpen] = useState(false);
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
+
+  useEffect(() => {
+    if (tabParam && TABS.includes(tabParam as Tab)) {
+      setTab(tabParam as Tab);
+      setSelectedPill('All');
+    }
+  }, [tabParam]);
+
+  // Reset owner-specific state when switching to follower role
+  useEffect(() => {
+    if (!isOwner) {
+      setShowPills(false);
+      pillsRevealAnim.setValue(0);
+      setStageFilter(null);
+      setSelectedPill('All');
+    }
+  }, [isOwner]);
 
   const handleScroll = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
     e.nativeEvent.contentOffset.y > 20 ? hideFooter() : showFooter();
@@ -1153,7 +1482,14 @@ export default function DealsScreen() {
 
   const switchTab = (t: Tab) => {
     setTab(t);
-    setDropdownOpen(false);
+    setSelectedPill('All');
+    if (t !== 'Pipeline') setStageFilter(null);
+    if (showPills) { setShowPills(false); pillsRevealAnim.setValue(0); }
+  };
+
+  const navigateToPipeline = (stage: CRMStage) => {
+    setStageFilter(stage);
+    setTab('Pipeline');
     setSelectedPill('All');
     if (showPills) { setShowPills(false); pillsRevealAnim.setValue(0); }
   };
@@ -1186,17 +1522,17 @@ export default function DealsScreen() {
       <View style={{ flex: 1, backgroundColor: C.bg }}>
         <View style={[styles.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg }]}>
           <Pressable
-            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
             style={styles.topBtn}
           >
-            <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+            <KMenuButton />
           </Pressable>
           <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Collaborate</Text>
+            <View style={[styles.staticPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>Collaborate</Text>
+            </View>
           </View>
-          <View style={styles.topBtn}>
-            <RolePill role={role} onPress={cycleRole} isPrimary={false} />
-          </View>
+          <RolePill role={role} onPress={cycleRole} isPrimary={false} />
         </View>
 
         <CollaborateView C={C} topBarH={topBarH} />
@@ -1211,44 +1547,16 @@ export default function DealsScreen() {
       {/* Top Bar */}
       <View style={[styles.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg }]}>
         <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={styles.topBtn}>
-          <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+          <KMenuButton />
         </Pressable>
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Pressable
-            onPress={() => { setDropdownOpen(o => !o); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
-            style={[styles.dropdownPill, { backgroundColor: C.surfacePressed, borderColor: C.inputBorder }]}
-          >
-            <Text style={{ fontSize: 13, fontWeight: '700', color: C.label }}>{tab}</Text>
-            <IconSymbol name={dropdownOpen ? 'chevron.up' : 'chevron.down'} size={11} color={C.muted} />
-          </Pressable>
+          <View style={{ backgroundColor: C.label, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 5 }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: C.bg }}>{tab}</Text>
+          </View>
         </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-          {tab !== 'Contacts' ? (
-            <Pressable onPress={togglePills} style={styles.topBtn}>
-              <IconSymbol name="line.3.horizontal.decrease.circle" size={20} color={showPills ? C.accent : C.label} />
-            </Pressable>
-          ) : (
-            <View style={styles.topBtn} />
-          )}
-          <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
-        </View>
+        <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
       </View>
 
-      {/* Dropdown */}
-      {dropdownOpen && (
-        <View style={[styles.dropdown, { top: topBarH + 4, backgroundColor: C.surface, borderColor: C.inputBorder }]}>
-          {TABS.map(t => (
-            <Pressable
-              key={t}
-              onPress={() => switchTab(t)}
-              style={({ pressed }) => [styles.dropdownItem, { backgroundColor: pressed ? C.surfacePressed : 'transparent' }]}
-            >
-              <Text style={{ fontSize: 14, fontWeight: tab === t ? '700' : '500', color: tab === t ? C.accent : C.label }}>{t}</Text>
-              {tab === t && <IconSymbol name="checkmark" size={13} color={C.accent} />}
-            </Pressable>
-          ))}
-        </View>
-      )}
 
       {/* Filter Pills (Pipeline / Insights only) */}
       <Animated.View style={[styles.pillRow, { height: pillRowH, top: topBarH, backgroundColor: C.bg }]}>
@@ -1268,19 +1576,74 @@ export default function DealsScreen() {
         </ScrollView>
       </Animated.View>
 
-      {/* Dropdown dismiss overlay */}
-      <Pressable
-        style={StyleSheet.absoluteFill}
-        onPress={() => dropdownOpen && setDropdownOpen(false)}
-        pointerEvents={dropdownOpen ? 'auto' : 'none'}
-      />
 
       {/* Content */}
       {tab === 'Pipeline' && (
         <View style={{ flex: 1, marginTop: scrollPadTop, paddingHorizontal: 16 }}>
+          {CLOSING_SOON.length > 0 && (
+            <View style={{
+              borderLeftWidth: 4, borderLeftColor: '#B8943E',
+              backgroundColor: '#B8943E18',
+              borderRadius: 12, padding: 14, marginBottom: 12,
+              borderWidth: StyleSheet.hairlineWidth, borderColor: '#B8943E44',
+            }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                <IconSymbol name="clock.fill" size={13} color="#B8943E" />
+                <Text style={{ fontSize: 11, fontWeight: '800', color: '#B8943E', textTransform: 'uppercase', letterSpacing: 0.7 }}>Closing This Week</Text>
+                <View style={{ marginLeft: 4, backgroundColor: '#B8943E', borderRadius: 8, paddingHorizontal: 7, paddingVertical: 2 }}>
+                  <Text style={{ fontSize: 10, fontWeight: '700', color: '#fff' }}>{CLOSING_SOON.length}</Text>
+                </View>
+              </View>
+              {CLOSING_SOON.map((deal, i) => (
+                <View key={deal.id} style={{
+                  flexDirection: 'row', alignItems: 'center',
+                  paddingVertical: 7,
+                  borderTopWidth: i > 0 ? StyleSheet.hairlineWidth : 0,
+                  borderTopColor: '#B8943E33',
+                }}>
+                  <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={1}>{deal.title}</Text>
+                  <Text style={{ fontSize: 14, fontWeight: '800', color: '#B8943E', marginLeft: 12 }}>{formatDealValue(deal.value)}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+          {OVERDUE_TASKS.length > 0 && (
+            <View style={{
+              borderLeftWidth: 4, borderLeftColor: '#B85C5C',
+              backgroundColor: '#B85C5C18',
+              borderRadius: 12, padding: 14, marginBottom: 12,
+              borderWidth: StyleSheet.hairlineWidth, borderColor: '#B85C5C44',
+            }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                <IconSymbol name="exclamationmark.circle.fill" size={13} color="#B85C5C" />
+                <Text style={{ fontSize: 11, fontWeight: '800', color: '#B85C5C', textTransform: 'uppercase', letterSpacing: 0.7 }}>Overdue Follow-Ups</Text>
+                <View style={{ marginLeft: 4, backgroundColor: '#B85C5C', borderRadius: 8, paddingHorizontal: 7, paddingVertical: 2 }}>
+                  <Text style={{ fontSize: 10, fontWeight: '700', color: '#fff' }}>{OVERDUE_TASKS.length}</Text>
+                </View>
+              </View>
+              {OVERDUE_TASKS.slice(0, 3).map(({ task, deal }, i) => {
+                const daysOver = Math.floor((Date.now() - task.dueDate.getTime()) / 86400000);
+                return (
+                  <View key={task.id} style={{
+                    paddingVertical: 7,
+                    borderTopWidth: i > 0 ? StyleSheet.hairlineWidth : 0,
+                    borderTopColor: '#B85C5C33',
+                  }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: C.label }} numberOfLines={1}>{deal.title}</Text>
+                      <Text style={{ fontSize: 12, fontWeight: '700', color: '#B85C5C' }}>{daysOver}d overdue</Text>
+                    </View>
+                    <Text style={{ fontSize: 12, color: C.secondary, marginTop: 1 }} numberOfLines={1}>{task.title}</Text>
+                  </View>
+                );
+              })}
+            </View>
+          )}
           <PipelineListView
             deals={deals}
             pill={selectedPill}
+            stageFilter={stageFilter}
+            onStageFilter={toggleStageFilter}
             collapsedStages={collapsedStages}
             onToggleStage={toggleStage}
             onDealPress={openDetail}
@@ -1297,21 +1660,20 @@ export default function DealsScreen() {
       )}
       {tab === 'Insights' && (
         <View style={{ flex: 1, paddingTop: scrollPadTop, paddingHorizontal: 16 }}>
-          <InsightsTab C={C} />
+          <InsightsTab C={C} onNavigateToPipeline={navigateToPipeline} />
         </View>
       )}
 
       {/* FAB */}
-      {(tab === 'Pipeline' || tab === 'Contacts') && (
+      {tab === 'Pipeline' && (
         <Pressable
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            if (tab === 'Pipeline') setCreateOpen(true);
-            else setAddContactOpen(true);
+            setCreateOpen(true);
           }}
-          style={[styles.fab, { backgroundColor: C.accent, bottom: insets.bottom + 80 }]}
+          style={[styles.fab, { backgroundColor: C.label, bottom: insets.bottom + 80 }]}
         >
-          <IconSymbol name="plus" size={22} color="#fff" />
+          <IconSymbol name="plus" size={22} color={C.bg} />
         </Pressable>
       )}
 
@@ -1345,19 +1707,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingBottom: 8,
   },
   topBtn: { width: 40, height: 36, alignItems: 'center', justifyContent: 'center' },
-  dropdownPill: {
-    flexDirection: 'row', alignItems: 'center', gap: 4,
+  staticPill: {
     paddingHorizontal: 14, paddingVertical: 6, borderRadius: 18, borderWidth: 1.5,
-  },
-  dropdown: {
-    position: 'absolute', left: 16, right: 16, zIndex: 99,
-    borderRadius: 14, borderWidth: 1, overflow: 'hidden',
-    shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12, shadowRadius: 8, elevation: 6,
-  },
-  dropdownItem: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: 16, paddingVertical: 13,
   },
   pillRow: {
     position: 'absolute', left: 0, right: 0, zIndex: 9, overflow: 'hidden',

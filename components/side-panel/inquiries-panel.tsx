@@ -4,6 +4,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -18,6 +19,7 @@ import {
 const STAGES: DealStage[] = ['New', 'Qualified', 'Proposal', 'Negotiation'];
 
 export function InquiriesPanel() {
+  const router = useRouter();
   const C = useColors();
   const [role, setRole] = useState<'Admin' | 'Sales' | 'Employee'>('Admin');
   const isPrivileged = role === 'Admin' || role === 'Sales';
@@ -69,6 +71,19 @@ export function InquiriesPanel() {
 
       {isPrivileged ? (
         <>
+          {/* ── Home ── */}
+          <Pressable
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              closeSidePanel();
+              router.setParams({ manage: undefined });
+            }}
+          >
+            <IconSymbol name="house.fill" size={18} color={C.secondary} />
+            <Text style={[s.navLabel, { color: C.label }]}>Home</Text>
+          </Pressable>
+
           {/* Pipeline snapshot */}
           <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14, gap: 6 }}>
             <Text style={{ fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: 0.5 }}>Pipeline</Text>
@@ -111,14 +126,6 @@ export function InquiriesPanel() {
             </>
           )}
 
-          {/* Navigate */}
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>Navigate</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {navRow('chart.bar.fill',   'Pipeline',  `${openDeals.length} deals`)}
-            {navRow('person.2.fill',    'Contacts',  `${10} contacts`)}
-            {navRow('megaphone.fill',   'Campaigns', `${CAMPAIGNS.filter(c => c.status === 'active').length} active`)}
-          </View>
-
           {/* Quick actions */}
           <Text style={[s.sectionHeader, { color: C.secondary }]}>Actions</Text>
           <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
@@ -147,11 +154,6 @@ export function InquiriesPanel() {
             ))}
           </View>
 
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>Navigate</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {navRow('chart.bar.fill', 'Pipeline')}
-            {navRow('person.2.fill', 'Contacts')}
-          </View>
         </>
       )}
     </View>

@@ -25,6 +25,7 @@ import { useDemoRole } from '@/utils/demo-role-store';
 import { useAppContext } from '@/context/app-context';
 import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   EDUCATION_PROFILE,
   EDUCATION_ANALYTICS,
@@ -976,7 +977,7 @@ export default function EducationHubScreen() {
               onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
               hitSlop={12}
             >
-              <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+              <KMenuButton />
             </Pressable>
           </View>
 

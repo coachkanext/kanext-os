@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -15,6 +16,7 @@ import {
 } from '@/data/mock-sports-hub';
 
 export function SportsBoosterPanel() {
+  const router = useRouter();
   const C = useColors();
 
   const activeCampaigns = BOOSTER_CAMPAIGNS.filter(c => c.status === 'active');
@@ -40,6 +42,21 @@ export function SportsBoosterPanel() {
 
   return (
     <View style={{ gap: 8 }}>
+
+      {/* ── Home ── */}
+      <Pressable
+        style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          closeSidePanel();
+          router.setParams({ manage: undefined });
+        }}
+      >
+        <IconSymbol name="house.fill" size={18} color={C.secondary} />
+        <Text style={[s.navLabel, { color: C.label }]}>Home</Text>
+      </Pressable>
+
+      <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: C.separator }} />
 
       {/* Fundraising summary */}
       <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14, gap: 4 }}>
@@ -143,14 +160,6 @@ export function SportsBoosterPanel() {
           </View>
         </>
       )}
-
-      {/* Navigate */}
-      <Text style={[s.sectionHeader, { color: C.secondary }]}>Navigate</Text>
-      <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-        {navRow('heart.fill',             'Support',   `${BOOSTER_CAMPAIGNS.length} campaigns`)}
-        {navRow('dollarsign.circle.fill', 'NIL',       `${activeNIL} active`)}
-        {navRow('bag.fill',               'Shop',      `${MERCH_PRODUCTS.length} items`)}
-      </View>
 
       {/* Quick actions */}
       <Text style={[s.sectionHeader, { color: C.secondary }]}>Actions</Text>

@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -15,6 +16,7 @@ import {
 } from '@/data/mock-sports-hub';
 
 export function SportsHubPanel() {
+  const router = useRouter();
   const C = useColors();
   const health = rosterHealthSummary();
   const stageCounts = getStageCounts();
@@ -35,6 +37,21 @@ export function SportsHubPanel() {
 
   return (
     <View style={{ gap: 8 }}>
+
+      {/* ── Home ── */}
+      <Pressable
+        style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          closeSidePanel();
+          router.setParams({ manage: undefined });
+        }}
+      >
+        <IconSymbol name="house.fill" size={18} color={C.secondary} />
+        <Text style={[s.navLabel, { color: C.label }]}>Home</Text>
+      </Pressable>
+
+      <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: C.separator }} />
 
       {/* Team KR */}
       <View style={{ backgroundColor: '#1A1714', borderRadius: 12, padding: 14, gap: 4 }}>
@@ -81,14 +98,6 @@ export function SportsHubPanel() {
         </View>
       </View>
 
-      {/* Navigate */}
-      <Text style={[s.sectionHeader, { color: C.secondary }]}>Navigate</Text>
-      <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-        {navRow('chart.bar.fill',           'Dashboard')}
-        {navRow('brain',                    'Intelligence', 'Team KR 78.4')}
-        {navRow('gearshape.fill',           'Operations')}
-      </View>
-
       {/* Today's practice */}
       <Text style={[s.sectionHeader, { color: C.secondary }]}>Today</Text>
       <View style={{ backgroundColor: C.surface, borderRadius: 12, padding: 12, gap: 4 }}>
@@ -126,13 +135,6 @@ export function SportsHubPanel() {
         {navRow('doc.text.magnifyingglass', 'View Scout Report')}
       </View>
 
-      {/* Settings */}
-      <Text style={[s.sectionHeader, { color: C.secondary }]}>Settings</Text>
-      <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-        {navRow('person.2.fill',    'Staff Access')}
-        {navRow('bell',             'Notifications')}
-        {navRow('slider.horizontal.3', 'Intelligence Prefs')}
-      </View>
 
     </View>
   );

@@ -94,6 +94,7 @@ export default function HomeLayout() {
       <Stack.Screen name="social/your-posts" />
       <Stack.Screen name="social/saved" />
       <Stack.Screen name="social/drafts" />
+      <Stack.Screen name="social/scheduled" />
       <Stack.Screen name="social/analytics" />
       <Stack.Screen name="social/following" />
       <Stack.Screen name="social/settings" />
@@ -120,6 +121,11 @@ export default function HomeLayout() {
         options={{ presentation: 'fullScreenModal', gestureEnabled: false } as any}
       />
       <Stack.Screen name="kaytv/see-all" />
+      <Stack.Screen name="kaytv/my-channel" />
+      <Stack.Screen name="kaytv/analytics" />
+      <Stack.Screen name="kaytv/manage-videos" />
+      <Stack.Screen name="kaytv/explore" />
+      <Stack.Screen name="kaytv/library" />
       {/* KayStudios */}
       <Stack.Screen name="kaystudios/index" />
       <Stack.Screen name="kaystudios/detail" />
@@ -135,11 +141,17 @@ export default function HomeLayout() {
       <Stack.Screen name="outreach/index" />
       {/* Network */}
       <Stack.Screen name="network/index" />
-      {/* Earn */}
-      <Stack.Screen name="earn/index" />
+      <Stack.Screen name="network/moderation" />
+      <Stack.Screen name="network/weekly-prompt" />
+      {/* Store (Personal) */}
+      <Stack.Screen name="store/subscriptions" />
+      <Stack.Screen name="store/coupons" />
+      <Stack.Screen name="store/settings" />
       {/* Deals */}
       <Stack.Screen name="deals/index" />
       <Stack.Screen name="deals/contact" />
+      <Stack.Screen name="deals/customize-stages" />
+      <Stack.Screen name="deals/templates" />
       {/* Hub */}
       <Stack.Screen name="hub/index" />
       <Stack.Screen name="hub/newsletter-compose" />
@@ -152,6 +164,11 @@ export default function HomeLayout() {
       <Stack.Screen name="hub/edu-announcement" />
       <Stack.Screen name="hub/campus" />
       <Stack.Screen name="hub/sports" />
+      <Stack.Screen name="hub/my-page" />
+      <Stack.Screen name="hub/subscribers" />
+      <Stack.Screen name="hub/earnings" />
+      <Stack.Screen name="hub/creator-tools" />
+      <Stack.Screen name="hub/new-followers" />
       {/* StatKeeper */}
       <Stack.Screen
         name="statkeeper/index"
@@ -159,6 +176,11 @@ export default function HomeLayout() {
       />
       {/* KayPay */}
       <Stack.Screen name="kaypay/index" />
+      <Stack.Screen name="kaypay/pay" />
+      <Stack.Screen name="kaypay/invest" />
+      <Stack.Screen name="kaypay/invoices" />
+      <Stack.Screen name="kaypay/tax" />
+      <Stack.Screen name="kaypay/settings" />
       {/* Booster */}
       <Stack.Screen name="booster/index" />
       {/* Admissions */}
@@ -168,6 +190,25 @@ export default function HomeLayout() {
       <Stack.Screen name="team/index" />
       <Stack.Screen name="inquiries/index" />
       <Stack.Screen name="business-store/index" />
+      {/* Settings */}
+      <Stack.Screen name="settings/index" />
+      <Stack.Screen name="settings/profile" />
+      <Stack.Screen name="settings/security" />
+      <Stack.Screen name="settings/notifications" />
+      <Stack.Screen name="settings/privacy" />
+      <Stack.Screen name="settings/kpay" />
+      <Stack.Screen name="settings/appearance" />
+      <Stack.Screen name="settings/language" />
+      <Stack.Screen name="settings/help" />
+      <Stack.Screen name="settings/about" />
+      <Stack.Screen name="settings/brand-profile" />
+      <Stack.Screen name="settings/members" />
+      <Stack.Screen name="settings/customization" />
+      <Stack.Screen name="settings/permissions" />
+      <Stack.Screen name="settings/billing" />
+      <Stack.Screen name="settings/data-export" />
+      <Stack.Screen name="settings/integrations" />
+      <Stack.Screen name="settings/danger-zone" />
     </Stack>
   );
 }

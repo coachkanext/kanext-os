@@ -23,6 +23,7 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { useDataMode } from '@/utils/global-demo-mode';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   APPLICANTS, ENROLLMENT_STAGES, ENROLLMENT_SUMMARY, CAMPAIGNS,
   getApplications, getApplicantHue, MOCK_INTERACTION_LOG, formatAidAmount,
@@ -567,7 +568,6 @@ export default function AdmissionsScreen() {
   const [role, cycleRole, roleCycles] = useDemoRole('education:admissions');
   const isAdmin = role === roleCycles[0];
   const [activeTab,         setActiveTab]         = useState<AdmTab>('Pipeline');
-  const [dropdownOpen,      setDropdownOpen]      = useState(false);
   const [pillsVisible,      setPillsVisible]      = useState(false);
   const [selectedPill,      setSelectedPill]      = useState('All');
   const [selectedApplicant, setSelected]          = useState<ApplicantCard | null>(null);
@@ -639,7 +639,6 @@ export default function AdmissionsScreen() {
     Haptics.selectionAsync();
     const newPills = pillsForTab(tab, role, roleCycles);
     setActiveTab(tab);
-    setDropdownOpen(false);
     setSelectedPill(newPills[0] ?? 'All');
     setPillsVisible(false);
     pillsAnim.setValue(0);
@@ -1710,27 +1709,36 @@ export default function AdmissionsScreen() {
       {/* Absolute top bar */}
       <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         <View style={s.topBar}>
-          {/* Left: hamburger (President only) */}
+          {/* Left: K button */}
           <View style={s.topBarSide}>
-            {isAdmin && (
-              <Pressable
-                onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-                hitSlop={12}
-              >
-                <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
-              </Pressable>
-            )}
+            <Pressable
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isAdmin) openSidePanel(); }}
+              hitSlop={12}
+            >
+              <KMenuButton />
+            </Pressable>
           </View>
 
-          {/* Center: dropdown pill */}
+          {/* Center: tab pills (admin) or static pill (student) */}
           <View style={s.dropdownPillWrap}>
-            <Pressable
-              style={[s.dropdownPill, { backgroundColor: C.surfacePressed }]}
-              onPress={() => { Haptics.selectionAsync(); setDropdownOpen(v => !v); }}
-            >
-              <Text style={[s.dropdownPillText, { color: C.label }]}>{activeTab}</Text>
-              <IconSymbol name="chevron.down" size={12} color={C.secondary} />
-            </Pressable>
+            {isAdmin && (
+              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+                {(['Pipeline', 'Applications', 'Campaigns'] as AdmTab[]).map(tab => {
+                  const active = activeTab === tab;
+                  return (
+                    <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setActiveTab(tab); }}
+                      style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
+                      <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            )}
+            {!isAdmin && (
+              <View style={{ backgroundColor: C.activePill, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: C.activePillText }}>My Application</Text>
+              </View>
+            )}
           </View>
 
           {/* Right: role pill + filter icon */}
@@ -1775,31 +1783,6 @@ export default function AdmissionsScreen() {
           </ScrollView>
         </Animated.View>
       </View>
-
-      {/* Dropdown overlay */}
-      {dropdownOpen && (
-        <>
-          <Pressable
-            style={{ ...StyleSheet.absoluteFillObject, zIndex: 98 } as any}
-            onPress={() => setDropdownOpen(false)}
-          />
-          <View style={[s.dropdown, { backgroundColor: C.surface, borderColor: C.separator, top: insets.top + TOP_BAR_H }]}>
-            {(['Pipeline', 'Applications', 'Campaigns'] as AdmTab[]).map(tab => (
-              <Pressable
-                key={tab}
-                style={({ pressed }) => [
-                  s.dropdownOpt, { borderBottomColor: C.separator },
-                  (pressed || tab === activeTab) && { backgroundColor: C.surfacePressed },
-                ]}
-                onPress={() => changeTab(tab)}
-              >
-                <Text style={[s.dropdownOptText, { color: tab === activeTab ? C.accent : C.label }]}>{tab}</Text>
-                {tab === activeTab && <IconSymbol name="checkmark" size={14} color={C.accent} />}
-              </Pressable>
-            ))}
-          </View>
-        </>
-      )}
 
       {/* Applicant detail sheet */}
       {detailOpen && (

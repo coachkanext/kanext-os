@@ -4,6 +4,7 @@
 
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -12,6 +13,7 @@ import { closeSidePanel } from '@/utils/global-side-panel';
 import { EMPLOYEES, DEPARTMENTS, getEmployeeById } from '@/data/mock-business-ops';
 
 export function TeamPanel() {
+  const router = useRouter();
   const C = useColors();
   const [role, setRole] = useState<'Admin' | 'Employee'>('Admin');
   const isAdmin = role === 'Admin';
@@ -50,6 +52,19 @@ export function TeamPanel() {
 
       {isAdmin ? (
         <>
+          {/* ── Home ── */}
+          <Pressable
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              closeSidePanel();
+              router.setParams({ manage: undefined });
+            }}
+          >
+            <IconSymbol name="house.fill" size={18} color={C.secondary} />
+            <Text style={[s.navLabel, { color: C.label }]}>Home</Text>
+          </Pressable>
+
           {/* Team stats */}
           <View style={{ backgroundColor: C.surface, borderRadius: 12, padding: 14 }}>
             <View style={{ flexDirection: 'row', gap: 8 }}>
@@ -64,14 +79,6 @@ export function TeamPanel() {
                 </View>
               ))}
             </View>
-          </View>
-
-          {/* Navigate */}
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>Navigate</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {navRow('person.2.fill',       'Directory',   `${EMPLOYEES.length} members`)}
-            {navRow('building.2.fill',     'Departments', `${DEPARTMENTS.length} depts`)}
-            {navRow('list.bullet.indent',  'Org Chart')}
           </View>
 
           {/* Who's out */}
@@ -155,12 +162,6 @@ export function TeamPanel() {
             ))}
           </View>
 
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>Navigate</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {navRow('person.2.fill',     'Directory')}
-            {navRow('building.2.fill',   'Departments')}
-            {navRow('list.bullet.indent','Org Chart')}
-          </View>
         </>
       )}
     </View>

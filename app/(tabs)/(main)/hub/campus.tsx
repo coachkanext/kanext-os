@@ -29,6 +29,7 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -678,7 +679,7 @@ function PresidentView({ role, cycleRole, roleCycles, insets, C }: PresidentView
           {/* Hamburger */}
           <View style={pv.topBarSide}>
             <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={12}>
-              <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+              <KMenuButton />
             </Pressable>
           </View>
 
@@ -796,7 +797,7 @@ function StudentDirectoryView({ role, cycleRole, roleCycles, insets, C }: Studen
         <View style={pv.topBar}>
           <View style={pv.topBarSide}>
             <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={12}>
-              <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+              <KMenuButton />
             </Pressable>
           </View>
 

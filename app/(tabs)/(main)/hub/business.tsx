@@ -15,6 +15,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   PROJECTS, ACTIVITY_FEED, BIZ_DASHBOARD, REVENUE_TREND, RECENT_TRANSACTIONS, EMPLOYEES, DEPARTMENTS,
   getEmployeeById,
@@ -860,7 +861,7 @@ export default function BusinessHubScreen() {
       <View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator as string, paddingTop: insets.top }]}>
         <View style={s.topBar}>
           <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={s.iconBtn} hitSlop={8}>
-            <IconSymbol name="line.3.horizontal" size={20} color={C.label} />
+            <KMenuButton />
           </Pressable>
           <Pressable onPress={() => { Haptics.selectionAsync(); setDropdownOpen(v => !v); }}
             style={[s.dropdownPill, { backgroundColor: C.surface, borderColor: C.separator as string }]}>

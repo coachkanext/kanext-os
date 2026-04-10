@@ -1,8 +1,8 @@
 /**
- * Business Inquiries — Pipeline / Contacts / Campaigns
+ * Business Inquiries — Pipeline / Leads / Analytics
  * KaNeXT Operations LLC
  * RBAC demo: CEO sees full CRM pipeline + lead scoring + forecast;
- * Client sees their engagement card, proposals, invoices, shared docs.
+ * Customer sees static "My Account" view with engagement card, proposals, invoices, shared docs.
  */
 
 import React, { useState, useRef, useCallback, useMemo } from 'react';
@@ -20,6 +20,8 @@ import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDataMode } from '@/utils/global-demo-mode';
+import { useDemoRole } from '@/utils/demo-role-store';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   DEALS, BIZ_CONTACTS, CAMPAIGNS, BIZ_DASHBOARD, ACTIVITY_FEED,
   getContactById, getEmployeeById,
@@ -31,14 +33,13 @@ const TOP_BAR_H  = 52;
 const PILLS_H    = 48;
 const ACCENT_INQ = '#1A1714';
 
-type InqTab  = 'Pipeline' | 'Contacts' | 'Campaigns';
-type InqRole = 'CEO' | 'Client';
+type InqTab  = 'Pipeline' | 'Leads' | 'Analytics';
 
 const PIPELINE_STAGES: DealStage[] = ['New', 'Qualified', 'Proposal', 'Negotiation', 'Won', 'Lost'];
 
 function pillsForTab(tab: InqTab): string[] {
   if (tab === 'Pipeline') return ['All', 'New', 'Qualified', 'Proposal', 'Negotiation', 'Won', 'Lost'];
-  if (tab === 'Contacts') return ['All', 'Active Deals', 'Clients', 'Past'];
+  if (tab === 'Leads') return ['All', 'Active Deals', 'Clients', 'Past'];
   return [];
 }
 
@@ -104,8 +105,8 @@ export default function InquiriesScreen() {
   const topBarH = insets.top + TOP_BAR_H;
 
   const [activeTab,    setActiveTab]    = useState<InqTab>('Pipeline');
-  const [role,         setRole]         = useState<InqRole>('CEO');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [role, cycleRole, roleCycles]  = useDemoRole('business:inquiries');
+  const isAdmin = role === roleCycles[0];
   const [pillsVisible, setPillsVisible] = useState(false);
   const [selectedPill, setSelectedPill] = useState('All');
   const pillsAnim = useRef(new Animated.Value(0)).current;
@@ -115,7 +116,7 @@ export default function InquiriesScreen() {
   const [collapsedStages,   setCollapsedStages]   = useState<Set<DealStage>>(new Set(['Won', 'Lost']));
   const [searchQuery,       setSearchQuery]       = useState('');
 
-  const isCEO = role === 'CEO';
+  const isCEO = isAdmin;
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
@@ -130,7 +131,6 @@ export default function InquiriesScreen() {
 
   function changeTab(tab: InqTab) {
     Haptics.selectionAsync();
-    setDropdownOpen(false);
     setActiveTab(tab);
     setSelectedPill('All');
     setSelectedDealId(null);
@@ -140,6 +140,17 @@ export default function InquiriesScreen() {
       setPillsVisible(false);
       pillsAnim.setValue(0);
     }
+  }
+
+  function handleCycleRole() {
+    Haptics.selectionAsync();
+    cycleRole();
+    setActiveTab('Pipeline');
+    setSelectedPill('All');
+    setSelectedDealId(null);
+    setSelectedContactId(null);
+    setPillsVisible(false);
+    pillsAnim.setValue(0);
   }
 
   function toggleStage(stage: DealStage) {
@@ -346,7 +357,7 @@ export default function InquiriesScreen() {
     );
   }
 
-  // ── CONTACTS ─────────────────────────────────────────────────────────────────
+  // ── LEADS ────────────────────────────────────────────────────────────────────
 
   function renderContactProfile(contact: BizContact) {
     const contactDeals = DEALS.filter(d => contact.dealIds.includes(d.id));
@@ -354,7 +365,7 @@ export default function InquiriesScreen() {
       <GlassView tier={1} style={[s.card, { marginHorizontal: 16, marginBottom: 12 }]}>
         <Pressable onPress={() => setSelectedContactId(null)} style={[s.row, { marginBottom: 12 }]}>
           <IconSymbol name="chevron.left" size={14} color={C.secondary as string} />
-          <Text style={[s.bodySmall, { color: C.secondary as string, marginLeft: 4 }]}>Back to Contacts</Text>
+          <Text style={[s.bodySmall, { color: C.secondary as string, marginLeft: 4 }]}>Back to Leads</Text>
         </Pressable>
 
         <View style={[s.row, { gap: 14, marginBottom: 14 }]}>
@@ -391,7 +402,7 @@ export default function InquiriesScreen() {
           <View style={{ marginBottom: 14 }}>
             <Text style={[s.subHeader, { color: C.secondary as string, marginBottom: 8 }]}>Linked Deals</Text>
             {contactDeals.map((deal, i) => (
-              <Pressable key={deal.id} onPress={() => { setSelectedDealId(deal.id); setActiveTab('Pipeline'); }}
+              <Pressable key={deal.id} onPress={() => { setSelectedDealId(deal.id); changeTab('Pipeline'); }}
                 style={({ pressed }) => [
                   s.row, { paddingVertical: 10, gap: 10 },
                   i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string },
@@ -424,7 +435,7 @@ export default function InquiriesScreen() {
     );
   }
 
-  function renderContacts() {
+  function renderLeads() {
     if (selectedContactId) {
       const contact = getContactById(selectedContactId);
       if (contact) return (
@@ -494,7 +505,7 @@ export default function InquiriesScreen() {
     );
   }
 
-  // ── CAMPAIGNS ────────────────────────────────────────────────────────────────
+  // ── ANALYTICS ────────────────────────────────────────────────────────────────
 
   const campTypeColor = (type: string): string => {
     switch (type) {
@@ -552,7 +563,7 @@ export default function InquiriesScreen() {
     { id: 'sa4', label: 'Governing Body Direct: 2 meetings scheduled — add to pipeline', icon: 'arrow.right.circle.fill', color: C.accent as string, cta: 'Add Deals' },
   ];
 
-  function renderCampaigns() {
+  function renderAnalytics() {
     return (
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: contentPaddingTop, paddingBottom: 120 }}>
 
@@ -1041,35 +1052,35 @@ export default function InquiriesScreen() {
 
   // ── RENDER ───────────────────────────────────────────────────────────────────
 
-  function cycleRole() {
-    Haptics.selectionAsync();
-    setRole(r => r === 'CEO' ? 'Client' : 'CEO');
-    setActiveTab('Pipeline');
-    setSelectedDealId(null);
-    setSelectedContactId(null);
-  }
-
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
 
       {/* Top bar */}
       <View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator as string, paddingTop: insets.top }]}>
         <View style={s.topBar}>
-          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={s.iconBtn} hitSlop={8}>
-            <IconSymbol name="line.3.horizontal" size={20} color={C.label} />
+          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isAdmin) openSidePanel(); }} style={s.iconBtn} hitSlop={8}>
+            <KMenuButton />
           </Pressable>
 
           {isCEO ? (
-            <Pressable
-              onPress={() => { Haptics.selectionAsync(); setDropdownOpen(v => !v); }}
-              style={[s.dropdownPill, { backgroundColor: C.surface, borderColor: C.separator as string }]}
-            >
-              <Text style={[s.dropdownPillText, { color: C.label }]}>{activeTab}</Text>
-              <IconSymbol name={dropdownOpen ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary as string} style={{ marginLeft: 4 }} />
-            </Pressable>
+            <View style={{ flex: 1, marginHorizontal: 10, flexDirection: 'row', justifyContent: 'center' }}>
+              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
+                {(['Pipeline', 'Leads', 'Analytics'] as InqTab[]).map(tab => {
+                  const active = activeTab === tab;
+                  return (
+                    <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); changeTab(tab); }}
+                      style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
+                      <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
           ) : (
-            <View style={[s.dropdownPill, { backgroundColor: C.surface, borderColor: C.separator as string }]}>
-              <Text style={[s.dropdownPillText, { color: C.secondary as string }]}>My Portal</Text>
+            <View style={{ flex: 1, marginHorizontal: 10, alignItems: 'center' }}>
+              <View style={{ backgroundColor: C.activePill, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 }}>
+                <Text style={{ fontSize: 13, fontWeight: '600', color: C.activePillText }}>My Account</Text>
+              </View>
             </View>
           )}
 
@@ -1082,7 +1093,7 @@ export default function InquiriesScreen() {
                 />
               </Pressable>
             )}
-            <Pressable onPress={cycleRole} style={[s.rolePill, {
+            <Pressable onPress={handleCycleRole} style={[s.rolePill, {
               backgroundColor: isCEO ? ACCENT_INQ : C.surfacePressed as string,
               borderColor: isCEO ? ACCENT_INQ : C.separator as string,
             }]}>
@@ -1091,7 +1102,7 @@ export default function InquiriesScreen() {
           </View>
         </View>
 
-        {pills.length > 0 && (
+        {isCEO && pills.length > 0 && (
           <Animated.View style={[s.pillsRow, {
             height: pillsAnim.interpolate({ inputRange: [0, 1], outputRange: [0, PILLS_H] }),
             opacity: pillsAnim, overflow: 'hidden', borderBottomColor: C.separator as string,
@@ -1112,28 +1123,12 @@ export default function InquiriesScreen() {
         )}
       </View>
 
-      {/* Dropdown — CEO only */}
-      {isCEO && dropdownOpen && (
-        <>
-          <Pressable style={[StyleSheet.absoluteFill, { zIndex: 150 }]} onPress={() => setDropdownOpen(false)} />
-          <View style={[s.dropdown, { top: topBarH, backgroundColor: C.surface, borderColor: C.separator as string }]}>
-            {(['Pipeline', 'Contacts', 'Campaigns'] as InqTab[]).map(tab => (
-              <Pressable key={tab} onPress={() => changeTab(tab)}
-                style={({ pressed }) => [s.dropdownItem, pressed && { backgroundColor: C.surfacePressed as string }, activeTab === tab && { backgroundColor: C.surfacePressed as string }]}>
-                <Text style={[s.dropdownItemText, { color: activeTab === tab ? C.accent : C.label }]}>{tab}</Text>
-                {activeTab === tab && <IconSymbol name="checkmark" size={14} color={C.accent} />}
-              </Pressable>
-            ))}
-          </View>
-        </>
-      )}
-
       {/* Content */}
       {!isCEO ? renderClientView() : (
         <>
           {activeTab === 'Pipeline'  && renderPipeline()}
-          {activeTab === 'Contacts'  && renderContacts()}
-          {activeTab === 'Campaigns' && renderCampaigns()}
+          {activeTab === 'Leads'     && renderLeads()}
+          {activeTab === 'Analytics' && renderAnalytics()}
         </>
       )}
 
@@ -1144,7 +1139,7 @@ export default function InquiriesScreen() {
           <IconSymbol name="plus" size={22} color="#fff" />
         </Pressable>
       )}
-      {isCEO && activeTab === 'Campaigns' && (
+      {isCEO && activeTab === 'Analytics' && (
         <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
           style={[s.fab, { backgroundColor: ACCENT_INQ, bottom: insets.bottom + 88 }]}>
           <IconSymbol name="plus" size={22} color="#fff" />

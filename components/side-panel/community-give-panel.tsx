@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -15,6 +16,7 @@ import {
 } from '@/data/mock-give';
 
 export function CommunityGivePanel() {
+  const router = useRouter();
   const C = useColors();
 
   const myTx       = GIVING_TRANSACTIONS.filter(t => t.isMe);
@@ -36,6 +38,21 @@ export function CommunityGivePanel() {
 
   return (
     <View style={{ gap: 8 }}>
+      {/* ── Home ── */}
+      <Pressable
+        style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          closeSidePanel();
+          router.setParams({ manage: undefined });
+        }}
+      >
+        <IconSymbol name="house.fill" size={18} color={C.secondary} />
+        <Text style={[s.navLabel, { color: C.label }]}>Home</Text>
+      </Pressable>
+
+      <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: C.separator }} />
+
       {/* Giving summary */}
       <View style={{ backgroundColor: C.surface, borderRadius: 12, padding: 12, gap: 8 }}>
         <Text style={[s.sectionHeader, { color: C.secondary }]}>This Month</Text>
@@ -51,14 +68,6 @@ export function CommunityGivePanel() {
             </View>
           ))}
         </View>
-      </View>
-
-      {/* Navigate */}
-      <Text style={[s.sectionHeader, { color: C.secondary }]}>Navigate</Text>
-      <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-        {navRow('heart.fill',              'Give',      undefined, closeSidePanel)}
-        {navRow('megaphone.fill',          'Campaigns', `${activeCampaigns.length} active`, closeSidePanel)}
-        {navRow('clock.arrow.circlepath',  'History',   `${myTx.length} gifts`, closeSidePanel)}
       </View>
 
       {/* My giving */}

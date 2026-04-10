@@ -8,6 +8,7 @@ import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
+import { closeSidePanel } from '@/utils/global-side-panel';
 import { getStageCounts, getCampaignsByStatus } from '@/data/mock-community-outreach';
 
 export function CommunityOutreachPanel() {
@@ -38,6 +39,21 @@ export function CommunityOutreachPanel() {
 
   return (
     <View style={{ gap: 8 }}>
+      {/* ── Home ── */}
+      <Pressable
+        style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          closeSidePanel();
+          router.setParams({ manage: undefined });
+        }}
+      >
+        <IconSymbol name="house.fill" size={18} color={C.secondary} />
+        <Text style={[s.navLabel, { color: C.label }]}>Home</Text>
+      </Pressable>
+
+      <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: C.separator }} />
+
       {/* Pipeline summary */}
       <View style={{ backgroundColor: C.surface, borderRadius: 12, padding: 12, gap: 8 }}>
         <Text style={[s.sectionHeader, { color: C.secondary }]}>Pipeline</Text>
@@ -54,14 +70,6 @@ export function CommunityOutreachPanel() {
             </View>
           ))}
         </View>
-      </View>
-
-      {/* Navigate */}
-      <Text style={[s.sectionHeader, { color: C.secondary }]}>Navigate</Text>
-      <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-        {navRow('person.2.fill',   'Pipeline',  `${totalProspects} prospects`, () => nav('/(tabs)/(main)/outreach'))}
-        {navRow('megaphone.fill',  'Campaigns', `${activeCampaigns.length} active`,   () => nav('/(tabs)/(main)/outreach'))}
-        {navRow('hands.clap.fill', 'Serve',     undefined,                            () => nav('/(tabs)/(main)/outreach'))}
       </View>
 
       {/* Active campaigns */}

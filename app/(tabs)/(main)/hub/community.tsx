@@ -18,6 +18,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { hideFooter, showFooter, resetFooter } from '@/utils/global-footer-hide';
 import { openSidePanel } from '@/utils/global-side-panel';
+import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
   COMMUNITY_PROFILE, COMMUNITY_LEADERSHIP, COMMUNITY_ANALYTICS,
   COMMUNITY_CHART_DATA, COMMUNITY_DEPARTMENTS, COMMUNITY_GROUPS,
@@ -1194,7 +1195,7 @@ export default function CommunityHubScreen() {
                 onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
                 hitSlop={12}
               >
-                <IconSymbol name="line.3.horizontal" size={22} color={C.label} />
+                <KMenuButton />
               </Pressable>
             ) : null}
           </View>
