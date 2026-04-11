@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { openSidePanel } from '@/utils/global-side-panel';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -1836,8 +1837,9 @@ const ROLE_VISIBLE_TYPES_AGENDA: Record<string, EventType[]> = {
 
 // ── RBAC role pairs per mode (for Agenda: default pair) ─────────────────────
 const AGENDA_ROLE_KEYS: Record<string, string> = {
-  sports:    'sports',
+  sports:    'sports:agenda',
   education: 'education',
+  community: 'community:agenda',
   community: 'community',
   business:  'business',
   personal:  'personal:agenda',
@@ -1888,13 +1890,20 @@ export default function AgendaScreen() {
   const handleNavigateMonth = useCallback((n: number) => { setSelectedDate(p => addMonths(p, n)); setExpandedId(null); }, []);
   const handleCreateAtTime  = useCallback((time: Date) => { setCreateTime(time); setCreateVisible(true); }, []);
 
+  const router = useRouter();
+
+  useFocusEffect(useCallback(() => {
+    if (mode === 'sports') {
+      router.replace(isAdmin
+        ? '/(tabs)/(main)/agenda/sports-coach-calendar' as any
+        : '/(tabs)/(main)/agenda/sports-player-calendar' as any
+      );
+    }
+  }, [mode, isAdmin]));
+
   if (dataMode === 'live') return <LiveAgendaView mode={mode} C={C} insets={insets} />;
 
-  // ── Sports Head Coach: full calendar with all event types ────────────────
-  if (mode === 'sports' && isAdmin) return <SportsHeadCoachAgendaView C={C} insets={insets} cycleRole={cycleRole} role={role} />;
-
-  // ── Sports Player: filtered weekly schedule ───────────────────────────────
-  if (mode === 'sports') return <SportsPlayerAgendaView C={C} insets={insets} cycleRole={cycleRole} role={role} />;
+  if (mode === 'sports') return null;
 
   // ── Business CEO: full calendar with all event types ──────────────────────
   if (mode === 'business' && isAdmin) {
@@ -2288,179 +2297,6 @@ export default function AgendaScreen() {
             </View>
           ))}
 
-        </ScrollView>
-      </View>
-    );
-  }
-
-  // ── Community Pastor: full calendar with TabPill ─────────────────────────────
-  if (mode === 'community' && isAdmin) {
-    const PASTOR_EVENTS = [
-      // Apr 7 Mon
-      { id: 'cp_a1', date: 'Apr 7',  time: '9:00 AM',  title: 'Staff Meeting',                type: 'meeting'   as const },
-      { id: 'cp_a2', date: 'Apr 7',  time: '7:00 PM',  title: 'Evening Prayer Service',       type: 'service'   as const },
-      // Apr 9 Wed
-      { id: 'cp_a3', date: 'Apr 9',  time: '7:00 PM',  title: 'Bible Study',                  type: 'service'   as const },
-      // Apr 11 Fri
-      { id: 'cp_a4', date: 'Apr 11', time: '6:00 AM',  title: 'Prayer & Fasting Meeting',     type: 'service'   as const },
-      // Apr 12 Sat
-      { id: 'cp_a5', date: 'Apr 12', time: '2:00 PM',  title: 'Volunteer Training',           type: 'volunteer' as const },
-      { id: 'cp_a6', date: 'Apr 12', time: '5:00 PM',  title: 'Youth Group Night',            type: 'event'     as const },
-      // Apr 13 Sun
-      { id: 'cp_a7', date: 'Apr 13', time: '10:00 AM', title: 'Sunday Service',               type: 'service'   as const },
-      { id: 'cp_a8', date: 'Apr 13', time: '2:00 PM',  title: 'Leadership Council',           type: 'meeting'   as const },
-      // Apr 19 Sat
-      { id: 'cp_a9', date: 'Apr 19', time: '10:00 AM', title: 'Community Outreach Day',       type: 'event'     as const },
-      // Apr 20 Sun
-      { id: 'cp_a10', date: 'Apr 20', time: '9:00 AM', title: 'Easter Celebration Service',   type: 'service'   as const },
-    ] as const;
-    type PastorEventType = 'meeting' | 'service' | 'volunteer' | 'event';
-    const PASTOR_DOT_COLORS: Record<PastorEventType, string> = {
-      meeting:  C.label,
-      service:  '#5A8A6E',
-      volunteer: '#B8943E',
-      event:    C.secondary,
-    };
-    const grouped: Record<string, typeof PASTOR_EVENTS[number][]> = {};
-    for (const ev of PASTOR_EVENTS) {
-      if (!grouped[ev.date]) grouped[ev.date] = [];
-      grouped[ev.date].push(ev);
-    }
-    return (
-      <View style={[styles.screen, { paddingTop: insets.top, backgroundColor: C.bg }]}>
-        {/* Top bar */}
-        <View style={styles.topBar}>
-          <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}>
-            <KMenuButton />
-          </Pressable>
-          {/* TabPill */}
-          <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
-            {(['Calendar', 'Reminders', 'Tasks'] as const).map(t => {
-              const active = communityTab === t;
-              return (
-                <Pressable key={t} onPress={() => { Haptics.selectionAsync(); setCommunityTab(t); }} style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
-                  <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{t}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-          <View style={[styles.topRight, { alignItems: 'flex-end' }]}>
-            <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary />
-          </View>
-        </View>
-
-        {/* Reminders placeholder */}
-        {communityTab === 'Reminders' && (
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingBottom: 100 }}>
-            <Text style={{ fontSize: 16, color: C.secondary, fontWeight: '600' }}>Reminders</Text>
-            <Text style={{ fontSize: 13, color: C.secondary, marginTop: 6, opacity: 0.6 }}>No reminders yet</Text>
-          </View>
-        )}
-
-        {/* Tasks placeholder */}
-        {communityTab === 'Tasks' && (
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingBottom: 100 }}>
-            <Text style={{ fontSize: 16, color: C.secondary, fontWeight: '600' }}>Tasks</Text>
-            <Text style={{ fontSize: 13, color: C.secondary, marginTop: 6, opacity: 0.6 }}>No tasks yet</Text>
-          </View>
-        )}
-
-        {/* Calendar content */}
-        {communityTab === 'Calendar' && (
-          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 12, paddingBottom: 120, paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
-            {Object.entries(grouped).map(([date, evs]) => (
-              <View key={date} style={{ marginBottom: 20 }}>
-                <Text style={{ fontSize: 11, fontWeight: '700', color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>{date}</Text>
-                {evs.map(ev => {
-                  const dotColor = PASTOR_DOT_COLORS[ev.type as PastorEventType] ?? C.label;
-                  return (
-                    <View key={ev.id} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: C.surface, borderRadius: 14, padding: 14, marginBottom: 8 }}>
-                      <View style={{ marginRight: 12, alignItems: 'center', justifyContent: 'center', width: 12 }}>
-                        <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: dotColor }} />
-                      </View>
-                      <View style={{ flex: 1 }}>
-                        <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{ev.title}</Text>
-                        <Text style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{ev.time}</Text>
-                      </View>
-                    </View>
-                  );
-                })}
-              </View>
-            ))}
-          </ScrollView>
-        )}
-
-        {/* FAB */}
-        <Pressable
-          style={[styles.fab, { bottom: 49 + insets.bottom + 20 }]}
-          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-        >
-          <IconSymbol name="plus" size={24} color={C.bg} />
-        </Pressable>
-      </View>
-    );
-  }
-
-  // ── Community Member: simplified event calendar ─────────────────────────────
-  if (mode === 'community' && !isAdmin) {
-    const CHURCH_EVENTS = [
-      { id: 'cs1', title: 'Sunday Worship Service',   date: 'Apr 6',  time: '10:00 AM', location: 'Main Sanctuary',   type: 'service' },
-      { id: 'cs2', title: 'Wednesday Bible Study',    date: 'Apr 9',  time: '7:00 PM',  location: 'Fellowship Hall',  type: 'service' },
-      { id: 'cs3', title: 'Sunday Worship Service',   date: 'Apr 13', time: '10:00 AM', location: 'Main Sanctuary',   type: 'service' },
-      { id: 'cs4', title: 'Prayer & Fasting Meeting', date: 'Apr 11', time: '6:00 AM',  location: 'Prayer Room',      type: 'event' },
-      { id: 'cs5', title: 'Men\'s Ministry Breakfast', date: 'Apr 12', time: '8:00 AM', location: 'Fellowship Hall',  type: 'event' },
-      { id: 'cs6', title: 'Youth Group Night',         date: 'Apr 12', time: '5:00 PM', location: 'Youth Wing',       type: 'event' },
-      { id: 'cs7', title: 'Women\'s Ministry Luncheon', date: 'Apr 19', time: '12:00 PM', location: 'Fellowship Hall', type: 'event' },
-      { id: 'cs8', title: 'Easter Celebration Service', date: 'Apr 20', time: '9:00 AM', location: 'Main Sanctuary',  type: 'service' },
-    ];
-    const TYPE_ICONS: Record<string, string> = { service: 'building.columns', event: 'star', meeting: 'person.2' };
-    return (
-      <View style={[styles.screen, { paddingTop: insets.top, backgroundColor: C.bg }]}>
-        {/* Top bar */}
-        <View style={styles.topBar}>
-          <Pressable style={styles.topLeft} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}>
-            <KMenuButton />
-          </Pressable>
-          {/* Static non-tappable pill */}
-          <View style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, backgroundColor: C.activePill }}>
-            <Text style={{ fontSize: 13, fontWeight: '600', color: C.activePillText }}>Events</Text>
-          </View>
-          <View style={[styles.topRight, { alignItems: 'flex-end' }]}>
-            <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary={false} />
-          </View>
-        </View>
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 16, paddingBottom: 120, paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
-          <Text style={{ fontSize: 11, color: C.secondary, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>UPCOMING</Text>
-          {CHURCH_EVENTS.map(ev => (
-            <View key={ev.id} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 16, marginBottom: 10 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
-                <View style={{ width: 38, height: 38, borderRadius: 10, backgroundColor: C.surfacePressed, alignItems: 'center', justifyContent: 'center' }}>
-                  <IconSymbol name={(TYPE_ICONS[ev.type] ?? 'calendar') as any} size={16} color={C.label} />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 15, fontWeight: '600', color: C.label, marginBottom: 2 }}>{ev.title}</Text>
-                  <Text style={{ fontSize: 13, color: C.secondary }}>{ev.date} · {ev.time}</Text>
-                  <Text style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{ev.location}</Text>
-                </View>
-              </View>
-              <Pressable
-                onPress={() => {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  setCommunityRsvped(prev => { const n = new Set(prev); if (n.has(ev.id)) n.delete(ev.id); else n.add(ev.id); return n; });
-                }}
-                style={({ pressed }) => ({
-                  marginTop: 12, alignSelf: 'flex-start',
-                  paddingHorizontal: 16, paddingVertical: 7, borderRadius: 10,
-                  backgroundColor: communityRsvped.has(ev.id) ? C.label : C.surfacePressed,
-                  opacity: pressed ? 0.8 : 1,
-                })}
-              >
-                <Text style={{ fontSize: 13, fontWeight: '600', color: communityRsvped.has(ev.id) ? C.bg : C.label }}>
-                  {communityRsvped.has(ev.id) ? 'RSVP\'d ✓' : 'RSVP'}
-                </Text>
-              </Pressable>
-            </View>
-          ))}
         </ScrollView>
       </View>
     );

@@ -15,6 +15,7 @@ import { useColors } from '@/hooks/use-colors';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { useDemoRole } from '@/utils/demo-role-store';
+import { useMode } from '@/context/app-context';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useScrollFooter } from '@/hooks/use-scroll-footer';
 import { useOwnerGuard } from '@/hooks/use-owner-guard';
@@ -129,7 +130,9 @@ const DOT_COUNT = 10;
 export default function ReportsScreen() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
-  const [role, cycleRole, roleCycles] = useDemoRole('personal:agenda');
+  const mode = useMode();
+  const _rk = mode === 'sports' ? 'sports:agenda' : mode === 'community' ? 'community:agenda' : mode === 'education' ? 'education' : mode === 'business' ? 'business' : 'personal:agenda';
+  const [role, cycleRole, roleCycles] = useDemoRole(_rk);
   const isOwner = role === roleCycles[0];
   const guardedCycle = useOwnerGuard(role, roleCycles, cycleRole, '/(tabs)/(main)/agenda');
   const [period, setPeriod] = useState<Period>('week');

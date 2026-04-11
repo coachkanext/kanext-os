@@ -4,11 +4,18 @@
  */
 
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  ScrollView,
+  Alert,
+  useWindowDimensions,
+} from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { GlassView } from '@/components/ui/glass-view';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
@@ -17,639 +24,590 @@ import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
 
-// ── Module-level semantic colors (data values only) ───────────────────────────
+// ─── Constants ────────────────────────────────────────────────────────────────
 
 const GAIN    = '#5A8A6E';
 const HEAT    = '#B85C5C';
 const CAUTION = '#B8943E';
+const TOP_BAR_H = 52;
 
-// ── Static data ───────────────────────────────────────────────────────────────
+// ─── Mock data ─────────────────────────────────────────────────────────────────
 
-const PERIODS = ['Last 7 Days', 'Last 28 Days', 'Last 90 Days', 'All Time'] as const;
-type Period = typeof PERIODS[number];
+const ENROLLMENT_TREND = [
+  { month: 'Oct', count: 28 },
+  { month: 'Nov', count: 45 },
+  { month: 'Dec', count: 62 },
+  { month: 'Jan', count: 84 },
+  { month: 'Feb', count: 103 },
+  { month: 'Mar', count: 127 },
+  { month: 'Apr', count: 75 }, // partial month
+] as const;
 
-const OVERVIEW_CARDS = [
-  { label: 'Total Enrollments', value: '2,402', delta: '+18%', up: true },
-  { label: 'Total Revenue',     value: '$5,460', delta: '+12%', up: true },
-  { label: 'Avg Completion',    value: '77%',    delta: '+5%',  up: true },
-  { label: 'Avg Rating',        value: '4.8/5',  delta: '+0.2', up: true },
+type CoursePerf = {
+  id: string;
+  emoji: string;
+  title: string;
+  enrolled: number;
+  completionRate: number;
+  revenue: string;
+  rating: number;
+};
+
+const COURSE_PERFORMANCE: CoursePerf[] = [
+  {
+    id: 'cp1',
+    emoji: '🎯',
+    title: 'Creator Business Foundations',
+    enrolled: 284,
+    completionRate: 0.68,
+    revenue: '$2,840',
+    rating: 4.9,
+  },
+  {
+    id: 'cp2',
+    emoji: '📱',
+    title: 'Social Media Mastery',
+    enrolled: 147,
+    completionRate: 0.71,
+    revenue: '$1,176',
+    rating: 4.7,
+  },
+  {
+    id: 'cp3',
+    emoji: '💰',
+    title: 'Monetize Your Audience',
+    enrolled: 93,
+    completionRate: 0.55,
+    revenue: '$1,395',
+    rating: 4.8,
+  },
 ];
 
-// Relative heights: index 0 = Mon, index 6 = Sun (highest = 100%)
-const BAR_HEIGHTS = [0.30, 0.45, 0.55, 0.40, 0.70, 0.85, 1.00];
-const BAR_DAYS    = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-const REVENUE_BY_CONTENT = [
-  { rank: 1, emoji: '📘', title: 'Brand Building 101',  type: 'Course',    revenue: '$2,840', pct: '52%' },
-  { rank: 2, emoji: '💪', title: '30-Day Challenge',    type: 'Challenge', revenue: '$780',   pct: '14%' },
-  { rank: 3, emoji: '📊', title: 'Market Analysis',     type: 'Course',    revenue: '$1,840', pct: '34%' },
+const ACTIVE_STUDENTS = [
+  { initials: 'JM', name: 'Jordan Mills', activity: 'Active today',     streak: 7  },
+  { initials: 'SR', name: 'Sofia Reyes',  activity: 'Active today',     streak: 12 },
+  { initials: 'TK', name: 'Tyler Knox',   activity: 'Active yesterday', streak: 4  },
 ];
 
-const COMPLETION_ROWS = [
-  { emoji: '📘', title: 'Brand Building 101',       rate: 77, type: 'Course'    },
-  { emoji: '🏀', title: 'Basketball IQ Trivia',     rate: 82, type: 'Quiz'      },
-  { emoji: '💪', title: '30-Day Creator Challenge', rate: 61, type: 'Challenge' },
-  { emoji: '📊', title: 'Market Analysis',          rate: 55, type: 'Course'    },
+const AT_RISK_STUDENTS = [
+  { initials: 'AM', name: 'Alex Morgan', lastSeen: '18 days ago', course: 'Social Media Mastery'          },
+  { initials: 'CL', name: 'Chris Liu',   lastSeen: '21 days ago', course: 'Creator Business Foundations'  },
 ];
 
-const DEMO_LOCATIONS = ['US 52%', 'Nigeria 21%', 'UK 15%', 'Canada 8%'];
-const DEMO_MODES     = ['Personal 45%', 'Sports 28%', 'Business 17%', 'Education 10%'];
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-function completionColor(rate: number): string {
-  if (rate >= 70) return GAIN;
-  if (rate >= 50) return CAUTION;
-  return HEAT;
-}
-
-// ── Main Screen ───────────────────────────────────────────────────────────────
-
-export default function KPlayAnalyticsPage() {
-  const C       = useColors();
-  const insets  = useSafeAreaInsets();
-  const topBarH = insets.top + 52;
-
-  const [role, cycleRole, roleCycles] = useDemoRole('personal:kaystudios');
-  const isOwner = role === roleCycles[0];
-
-  const [period, setPeriod] = useState<Period>('Last 28 Days');
-
-  useFocusEffect(useCallback(() => { resetFooter(); }, []));
-
-  const styles = useMemo(() => makeStyles(C), [C]);
-
-  // ── JSX ──────────────────────────────────────────────────────────────────────
-
-  return (
-    <View style={{ flex: 1, backgroundColor: C.bg }}>
-
-      {/* ── Top Bar ─────────────────────────────────────────────────────────── */}
-      <View style={[styles.topBar, { height: topBarH, paddingTop: insets.top, backgroundColor: C.bg }]}>
-        <Pressable
-          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
-          style={styles.topBarLeft}
-        >
-          <KMenuButton />
-        </Pressable>
-
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <View style={[styles.staticPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
-            <Text style={[styles.staticPillText, { color: C.label }]}>Analytics</Text>
-          </View>
-        </View>
-
-        <View style={styles.topBarRight}>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
-        </View>
-      </View>
-
-      {/* ── Scroll Content ──────────────────────────────────────────────────── */}
-      <ScrollView
-        contentContainerStyle={{
-          paddingTop: topBarH + 16,
-          paddingHorizontal: 16,
-          paddingBottom: insets.bottom + 80,
-        }}
-        showsVerticalScrollIndicator={false}
-      >
-
-        {/* ── Period Filter Pills ─────────────────────────────────────────── */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{ marginBottom: 20 }}
-          contentContainerStyle={{ paddingRight: 4 }}
-        >
-          {PERIODS.map((p, idx) => {
-            const active = p === period;
-            return (
-              <Pressable
-                key={p}
-                onPress={() => {
-                  Haptics.selectionAsync();
-                  setPeriod(p);
-                }}
-                style={[
-                  styles.filterPill,
-                  {
-                    backgroundColor: active ? C.activePill : C.surface,
-                    marginRight: idx < PERIODS.length - 1 ? 8 : 0,
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.filterPillText,
-                    { color: active ? C.activePillText : C.secondary },
-                  ]}
-                >
-                  {p}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
-
-        {/* ── Overview Stat Cards — 2×2 grid ──────────────────────────────── */}
-        <View style={styles.section}>
-          <View style={styles.overviewGrid}>
-            {OVERVIEW_CARDS.map((card, idx) => (
-              <Pressable
-                key={idx}
-                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-                style={styles.overviewCardWrap}
-              >
-                <GlassView tier={1} radius={12} style={styles.overviewCard}>
-                  <Text style={[styles.overviewValue, { color: C.label }]}>{card.value}</Text>
-                  <Text style={[styles.overviewDelta, { color: card.up ? GAIN : HEAT }]}>
-                    {card.delta}
-                  </Text>
-                  <Text style={[styles.overviewLabel, { color: C.secondary }]}>{card.label}</Text>
-                </GlassView>
-              </Pressable>
-            ))}
-          </View>
-        </View>
-
-        {/* ── Enrollment Trend Bar Chart ───────────────────────────────────── */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: C.label }]}>Enrollment Trend</Text>
-
-          <GlassView tier={1} radius={12} style={styles.chartCard}>
-            <View style={styles.chartBars}>
-              {BAR_HEIGHTS.map((h, idx) => {
-                const isLast  = idx === BAR_HEIGHTS.length - 1;
-                const opacity = isLast ? 1.0 : 0.3 + (idx / (BAR_HEIGHTS.length - 1)) * 0.7;
-                return (
-                  <View key={idx} style={styles.barColumn}>
-                    <View style={styles.barTrack}>
-                      <View
-                        style={[
-                          styles.barFill,
-                          {
-                            height: `${h * 100}%`,
-                            backgroundColor: C.label,
-                            opacity,
-                          },
-                        ]}
-                      />
-                    </View>
-                    <Text style={[styles.barLabel, { color: C.secondary }]}>
-                      {BAR_DAYS[idx]}
-                    </Text>
-                  </View>
-                );
-              })}
-            </View>
-          </GlassView>
-        </View>
-
-        {/* ── Revenue by Content ──────────────────────────────────────────── */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: C.label }]}>Revenue by Content</Text>
-
-          <GlassView tier={1} radius={12} style={{ overflow: 'hidden' }}>
-            {REVENUE_BY_CONTENT.map((item, idx) => (
-              <View
-                key={idx}
-                style={[
-                  styles.revenueRow,
-                  idx < REVENUE_BY_CONTENT.length - 1 && {
-                    borderBottomWidth: StyleSheet.hairlineWidth,
-                    borderBottomColor: C.separator,
-                  },
-                ]}
-              >
-                {/* Rank */}
-                <Text style={[styles.revenueRank, { color: C.secondary }]}>{item.rank}</Text>
-
-                {/* Emoji + title + type badge */}
-                <View style={styles.revenueMeta}>
-                  <View style={styles.revenueTitleRow}>
-                    <Text style={styles.revenueEmoji}>{item.emoji}</Text>
-                    <Text style={[styles.revenueTitle, { color: C.label }]} numberOfLines={1}>
-                      {item.title}
-                    </Text>
-                  </View>
-                  <View style={[styles.typeBadge, { backgroundColor: C.surface, borderColor: C.separator }]}>
-                    <Text style={[styles.typeBadgeText, { color: C.secondary }]}>{item.type}</Text>
-                  </View>
-                </View>
-
-                {/* Pct + revenue right */}
-                <View style={styles.revenueRight}>
-                  <Text style={[styles.revenueValue, { color: GAIN }]}>{item.revenue}</Text>
-                  <Text style={[styles.revenuePct, { color: C.secondary }]}>{item.pct}</Text>
-                </View>
-              </View>
-            ))}
-          </GlassView>
-        </View>
-
-        {/* ── Completion Analysis ──────────────────────────────────────────── */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: C.label }]}>Completion Analysis</Text>
-
-          <GlassView tier={1} radius={12} style={{ overflow: 'hidden' }}>
-            {COMPLETION_ROWS.map((item, idx) => {
-              const barColor = completionColor(item.rate);
-              const needsAttention = item.rate < 50;
-              return (
-                <View
-                  key={idx}
-                  style={[
-                    styles.completionRow,
-                    idx < COMPLETION_ROWS.length - 1 && {
-                      borderBottomWidth: StyleSheet.hairlineWidth,
-                      borderBottomColor: C.separator,
-                    },
-                  ]}
-                >
-                  {/* Emoji */}
-                  <Text style={styles.completionEmoji}>{item.emoji}</Text>
-
-                  {/* Title + bar */}
-                  <View style={styles.completionBody}>
-                    <View style={styles.completionTitleRow}>
-                      <Text style={[styles.completionTitle, { color: C.label }]} numberOfLines={1}>
-                        {item.title}
-                      </Text>
-                      <Text style={[styles.completionRate, { color: barColor }]}>
-                        {item.rate}%
-                      </Text>
-                    </View>
-                    <View style={[styles.progressTrack, { backgroundColor: C.separator }]}>
-                      <View
-                        style={[
-                          styles.progressFill,
-                          {
-                            width: `${item.rate}%`,
-                            backgroundColor: barColor,
-                          },
-                        ]}
-                      />
-                    </View>
-                    {needsAttention && (
-                      <Text style={[styles.attentionText, { color: HEAT }]}>Needs attention</Text>
-                    )}
-                  </View>
-                </View>
-              );
-            })}
-          </GlassView>
-        </View>
-
-        {/* ── Top Content Card ─────────────────────────────────────────────── */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: C.label }]}>Top Content</Text>
-
-          <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
-            <GlassView tier={1} radius={12} style={styles.topContentCard}>
-              {/* Header row */}
-              <View style={styles.topContentHeader}>
-                <Text style={styles.topContentEmoji}>📘</Text>
-                <View style={styles.topContentMeta}>
-                  <Text style={[styles.topContentTitle, { color: C.label }]} numberOfLines={1}>
-                    Content Creator Playbook
-                  </Text>
-                  <View style={[styles.typeBadge, { backgroundColor: C.surface, borderColor: C.separator }]}>
-                    <Text style={[styles.typeBadgeText, { color: C.secondary }]}>Course</Text>
-                  </View>
-                </View>
-                <Text style={[styles.topContentRating, { color: GAIN }]}>4.8 ★</Text>
-              </View>
-
-              {/* Stats row */}
-              <View style={styles.topContentStats}>
-                <Text style={[styles.topContentStat, { color: C.secondary }]}>
-                  1,240 enrolled
-                </Text>
-                <Text style={[styles.topContentDot, { color: C.separator }]}>·</Text>
-                <Text style={[styles.topContentStat, { color: C.secondary }]}>
-                  82% completion
-                </Text>
-              </View>
-            </GlassView>
-          </Pressable>
-        </View>
-
-        {/* ── Student Demographics ─────────────────────────────────────────── */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: C.label }]}>Student Demographics</Text>
-
-          <GlassView tier={1} radius={12} style={styles.demoCard}>
-            {/* Locations */}
-            <Text style={[styles.demoSubLabel, { color: C.secondary }]}>Locations</Text>
-            <View style={[styles.pillRow, { marginBottom: 16 }]}>
-              {DEMO_LOCATIONS.map((loc, idx) => (
-                <View
-                  key={idx}
-                  style={[styles.demoPill, { backgroundColor: C.surface, borderColor: C.separator }]}
-                >
-                  <Text style={[styles.demoPillText, { color: C.secondary }]}>{loc}</Text>
-                </View>
-              ))}
-            </View>
-
-            {/* Modes */}
-            <Text style={[styles.demoSubLabel, { color: C.secondary }]}>Modes</Text>
-            <View style={styles.pillRow}>
-              {DEMO_MODES.map((mode, idx) => (
-                <View
-                  key={idx}
-                  style={[styles.demoPill, { backgroundColor: C.surface, borderColor: C.separator }]}
-                >
-                  <Text style={[styles.demoPillText, { color: C.secondary }]}>{mode}</Text>
-                </View>
-              ))}
-            </View>
-          </GlassView>
-        </View>
-
-      </ScrollView>
-    </View>
-  );
-}
-
-// ── Styles ────────────────────────────────────────────────────────────────────
+// ─── Styles ────────────────────────────────────────────────────────────────────
 
 function makeStyles(C: ComponentColors) {
   return StyleSheet.create({
-    // Top bar
-    topBar: {
+    root: { flex: 1 },
+    topBarOuter: {
       position: 'absolute',
-      top: 0, left: 0, right: 0,
-      zIndex: 10,
-      flexDirection: 'row',
-      alignItems: 'flex-end',
-      paddingHorizontal: 16,
-      paddingBottom: 8,
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 100,
+      borderBottomWidth: StyleSheet.hairlineWidth,
     },
-    topBarLeft: {
-      width: 40,
-      height: 36,
+    topBar: {
+      height: TOP_BAR_H,
+      flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
+      paddingHorizontal: 16,
+    },
+    topBarTitle: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      textAlign: 'center',
+      fontSize: 17,
+      fontWeight: '700',
+      pointerEvents: 'none',
     },
     topBarRight: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 8,
-    },
-    staticPill: {
-      paddingHorizontal: 14,
-      paddingVertical: 6,
-      borderRadius: 18,
-      borderWidth: 1.5,
-    },
-    staticPillText: {
-      fontSize: 13,
-      fontWeight: '700',
+      marginLeft: 'auto',
     },
 
-    // Section
-    section: {
-      marginBottom: 28,
+    // Scroll content
+    scrollContent: {
+      gap: 24,
+      paddingBottom: 32,
     },
+
+    // Section title
     sectionTitle: {
-      fontSize: 15,
+      fontSize: 17,
       fontWeight: '700',
-      marginBottom: 10,
+      paddingHorizontal: 16,
     },
 
-    // Period filter pills
-    filterPill: {
-      paddingHorizontal: 14,
-      paddingVertical: 8,
-      borderRadius: 20,
-    },
-    filterPillText: {
-      fontSize: 13,
-      fontWeight: '600',
-    },
-
-    // Overview cards grid
+    // Overview grid
     overviewGrid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      gap: 12,
-    },
-    overviewCardWrap: {
-      width: '48%',
+      gap: 10,
+      paddingHorizontal: 16,
     },
     overviewCard: {
+      flex: 1,
+      minWidth: '45%',
+      borderRadius: 12,
       padding: 14,
     },
     overviewValue: {
-      fontSize: 22,
-      fontWeight: '700',
-    },
-    overviewDelta: {
-      fontSize: 13,
-      fontWeight: '600',
-      marginTop: 2,
+      fontSize: 28,
+      fontWeight: '800',
+      color: GAIN,
     },
     overviewLabel: {
-      fontSize: 12,
+      fontSize: 11,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
       marginTop: 4,
     },
 
-    // Bar chart
-    chartCard: {
-      paddingHorizontal: 12,
-      paddingTop: 12,
-      paddingBottom: 8,
-    },
-    chartBars: {
+    // Enrollment chart
+    chartRow: {
       flexDirection: 'row',
       alignItems: 'flex-end',
-      height: 140,
-      gap: 6,
+      paddingHorizontal: 16,
     },
-    barColumn: {
+    barCol: {
       flex: 1,
       alignItems: 'center',
-      height: '100%',
-    },
-    barTrack: {
-      flex: 1,
-      width: '100%',
-      justifyContent: 'flex-end',
-    },
-    barFill: {
-      width: '100%',
-      borderRadius: 3,
-    },
-    barLabel: {
-      fontSize: 10,
-      marginTop: 6,
-    },
-
-    // Revenue by content
-    revenueRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      padding: 14,
-      gap: 10,
-    },
-    revenueRank: {
-      fontSize: 18,
-      fontWeight: '700',
-      width: 24,
-      textAlign: 'center',
-    },
-    revenueMeta: {
-      flex: 1,
       gap: 4,
     },
-    revenueTitleRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 6,
-    },
-    revenueEmoji: {
-      fontSize: 16,
-    },
-    revenueTitle: {
-      fontSize: 13,
-      fontWeight: '600',
-      flex: 1,
-    },
-    revenueRight: {
-      alignItems: 'flex-end',
-      gap: 2,
-    },
-    revenueValue: {
-      fontSize: 14,
+    barCountLabel: {
+      fontSize: 10,
       fontWeight: '700',
     },
-    revenuePct: {
-      fontSize: 12,
+    barFill: {
+      borderRadius: 4,
+      minHeight: 4,
     },
-
-    // Type badge
-    typeBadge: {
-      alignSelf: 'flex-start',
-      paddingHorizontal: 8,
-      paddingVertical: 2,
-      borderRadius: 8,
-      borderWidth: StyleSheet.hairlineWidth,
-    },
-    typeBadgeText: {
+    barMonthLabel: {
       fontSize: 10,
-      fontWeight: '600',
     },
 
-    // Completion analysis
-    completionRow: {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
+    // Course performance
+    courseCard: {
+      marginHorizontal: 16,
+      borderRadius: 12,
       padding: 14,
-      gap: 10,
-    },
-    completionEmoji: {
-      fontSize: 20,
-      marginTop: 1,
-    },
-    completionBody: {
-      flex: 1,
-      gap: 6,
-    },
-    completionTitleRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      gap: 8,
-    },
-    completionTitle: {
-      fontSize: 13,
-      fontWeight: '600',
-      flex: 1,
-    },
-    completionRate: {
-      fontSize: 13,
-      fontWeight: '700',
-    },
-    progressTrack: {
-      height: 4,
-      borderRadius: 2,
-      overflow: 'hidden',
-    },
-    progressFill: {
-      position: 'absolute',
-      left: 0,
-      top: 0,
-      height: 4,
-      borderRadius: 2,
-    },
-    attentionText: {
-      fontSize: 10,
-      fontWeight: '600',
-      marginTop: 2,
-    },
-
-    // Top content card
-    topContentCard: {
-      padding: 16,
-      gap: 10,
-    },
-    topContentHeader: {
+      marginBottom: 8,
       flexDirection: 'row',
       alignItems: 'center',
       gap: 12,
     },
-    topContentEmoji: {
-      fontSize: 36,
+    courseRank: {
+      fontSize: 14,
+      width: 20,
+      textAlign: 'center',
     },
-    topContentMeta: {
-      flex: 1,
-      gap: 4,
-    },
-    topContentTitle: {
-      fontSize: 15,
-      fontWeight: '700',
-    },
-    topContentRating: {
-      fontSize: 15,
-      fontWeight: '700',
-    },
-    topContentStats: {
-      flexDirection: 'row',
+    courseEmojiCircle: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
       alignItems: 'center',
-      gap: 6,
+      justifyContent: 'center',
     },
-    topContentStat: {
-      fontSize: 13,
+    courseEmojiText: {
+      fontSize: 20,
     },
-    topContentDot: {
-      fontSize: 13,
+    courseInfo: {
+      flex: 1,
     },
-
-    // Student demographics
-    demoCard: {
-      padding: 16,
-    },
-    demoSubLabel: {
-      fontSize: 11,
+    courseTitle: {
+      fontSize: 14,
       fontWeight: '700',
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-      marginBottom: 8,
+      marginBottom: 4,
     },
-    pillRow: {
+    courseStatsRow: {
       flexDirection: 'row',
       flexWrap: 'wrap',
+      gap: 4,
+      alignItems: 'center',
+    },
+    courseStat: {
+      fontSize: 12,
+    },
+    courseStatDot: {
+      fontSize: 12,
+    },
+    courseRevenueStat: {
+      fontSize: 12,
+      color: GAIN,
+    },
+
+    // Student engagement
+    studentSectionBlock: {
       gap: 8,
     },
-    demoPill: {
-      paddingHorizontal: 10,
-      paddingVertical: 6,
-      borderRadius: 12,
-      borderWidth: 1,
+    studentSubTitle: {
+      fontSize: 14,
+      fontWeight: '600',
+      paddingHorizontal: 16,
     },
-    demoPillText: {
-      fontSize: 11,
+    studentCard: {
+      marginHorizontal: 16,
+      borderRadius: 12,
+      overflow: 'hidden',
+    },
+    studentCardAtRisk: {
+      borderLeftWidth: 3,
+      borderLeftColor: HEAT,
+    },
+    studentRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 14,
+      paddingVertical: 12,
+      gap: 12,
+    },
+    studentRowDivider: {
+      marginHorizontal: 14,
+    },
+    initialsCircle: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    initialsText: {
+      fontSize: 14,
+      fontWeight: '700',
+    },
+    studentInfo: {
+      flex: 1,
+    },
+    studentName: {
+      fontSize: 14,
+      fontWeight: '600',
+    },
+    studentActivity: {
+      fontSize: 12,
+      marginTop: 1,
+    },
+    studentCourse: {
+      fontSize: 12,
+      marginTop: 1,
+    },
+    studentLastSeen: {
+      fontSize: 12,
+      color: HEAT,
+      marginTop: 1,
+    },
+    streakBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 3,
+    },
+    streakCount: {
+      fontSize: 14,
+      fontWeight: '700',
     },
   });
+}
+
+// ─── Screen ────────────────────────────────────────────────────────────────────
+
+export default function KayStudiosAnalyticsScreen() {
+  const C = useColors();
+  const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const { width: screenWidth } = useWindowDimensions();
+  const { role } = useDemoRole();
+  const styles = useMemo(() => makeStyles(C), [C]);
+
+  const isOwner = role === 'owner';
+
+  useFocusEffect(
+    useCallback(() => {
+      resetFooter();
+      if (!isOwner) router.replace('/(tabs)/(main)/kaystudios' as any);
+    }, [isOwner]),
+  );
+
+  // Bar chart dimensions
+  const maxCount = Math.max(...ENROLLMENT_TREND.map((d) => d.count));
+  const BAR_MAX_H = 80;
+  const barWidth = (screenWidth - 80) / 7;
+
+  return (
+    <View style={[styles.root, { backgroundColor: C.bg }]}>
+      {/* ── Top Bar ── */}
+      <View
+        style={[
+          styles.topBarOuter,
+          { top: insets.top, backgroundColor: C.bg, borderBottomColor: C.separator },
+        ]}
+      >
+        <View style={styles.topBar}>
+          <KMenuButton onPress={() => openSidePanel()} />
+          <Text style={[styles.topBarTitle, { color: C.label }]}>Analytics</Text>
+          <View style={styles.topBarRight}>
+            <RolePill />
+          </View>
+        </View>
+      </View>
+
+      {/* ── Scrollable Content ── */}
+      <ScrollView
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingTop: insets.top + TOP_BAR_H + 16 },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ── Overview Cards ── */}
+        <View style={styles.overviewGrid}>
+          {/* Total Enrollments */}
+          <View style={[styles.overviewCard, { backgroundColor: C.surface }]}>
+            <Text style={styles.overviewValue}>524</Text>
+            <Text style={[styles.overviewLabel, { color: C.secondary }]}>
+              Total Enrollments
+            </Text>
+          </View>
+
+          {/* Completion Rate */}
+          <View style={[styles.overviewCard, { backgroundColor: C.surface }]}>
+            <Text style={styles.overviewValue}>65%</Text>
+            <Text style={[styles.overviewLabel, { color: C.secondary }]}>
+              Completion Rate
+            </Text>
+          </View>
+
+          {/* Total Revenue */}
+          <View style={[styles.overviewCard, { backgroundColor: C.surface }]}>
+            <Text style={styles.overviewValue}>$5,411</Text>
+            <Text style={[styles.overviewLabel, { color: C.secondary }]}>
+              Total Revenue
+            </Text>
+          </View>
+
+          {/* Average Rating */}
+          <View style={[styles.overviewCard, { backgroundColor: C.surface }]}>
+            <Text style={styles.overviewValue}>4.8 ★</Text>
+            <Text style={[styles.overviewLabel, { color: C.secondary }]}>
+              Average Rating
+            </Text>
+          </View>
+        </View>
+
+        {/* ── Enrollment Trend ── */}
+        <View style={{ gap: 12 }}>
+          <Text style={[styles.sectionTitle, { color: C.label }]}>
+            Enrollment Trend
+          </Text>
+          <View style={[styles.chartRow, { alignItems: 'flex-end' }]}>
+            {ENROLLMENT_TREND.map((item) => {
+              const barH = Math.max((item.count / maxCount) * BAR_MAX_H, 4);
+              return (
+                <View key={item.month} style={[styles.barCol, { width: barWidth }]}>
+                  <Text style={[styles.barCountLabel, { color: C.label }]}>
+                    {item.count}
+                  </Text>
+                  <View
+                    style={[
+                      styles.barFill,
+                      {
+                        height: barH,
+                        width: barWidth - 8,
+                        backgroundColor: C.label,
+                      },
+                    ]}
+                  />
+                  <Text style={[styles.barMonthLabel, { color: C.secondary }]}>
+                    {item.month}
+                  </Text>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* ── Course Performance ── */}
+        <View style={{ gap: 12 }}>
+          <Text style={[styles.sectionTitle, { color: C.label }]}>
+            Course Performance
+          </Text>
+          {COURSE_PERFORMANCE.map((course, idx) => (
+            <Pressable
+              key={course.id}
+              style={[styles.courseCard, { backgroundColor: C.surface }]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                Alert.alert(
+                  'Course Detail',
+                  'Lesson-by-lesson analytics coming soon',
+                );
+              }}
+            >
+              <Text style={[styles.courseRank, { color: C.secondary }]}>
+                #{idx + 1}
+              </Text>
+              <View
+                style={[
+                  styles.courseEmojiCircle,
+                  { backgroundColor: C.separator },
+                ]}
+              >
+                <Text style={styles.courseEmojiText}>{course.emoji}</Text>
+              </View>
+              <View style={styles.courseInfo}>
+                <Text style={[styles.courseTitle, { color: C.label }]}>
+                  {course.title}
+                </Text>
+                <View style={styles.courseStatsRow}>
+                  <Text style={[styles.courseStat, { color: C.secondary }]}>
+                    {course.enrolled} enrolled
+                  </Text>
+                  <Text style={[styles.courseStatDot, { color: C.secondary }]}>
+                    ·
+                  </Text>
+                  <Text style={[styles.courseStat, { color: C.secondary }]}>
+                    {Math.round(course.completionRate * 100)}% completion
+                  </Text>
+                  <Text style={[styles.courseStatDot, { color: C.secondary }]}>
+                    ·
+                  </Text>
+                  <Text style={styles.courseRevenueStat}>{course.revenue}</Text>
+                  <Text style={[styles.courseStatDot, { color: C.secondary }]}>
+                    ·
+                  </Text>
+                  <Text style={[styles.courseStat, { color: C.secondary }]}>
+                    ★{course.rating}
+                  </Text>
+                </View>
+              </View>
+            </Pressable>
+          ))}
+        </View>
+
+        {/* ── Student Engagement ── */}
+        <View style={{ gap: 16 }}>
+          <Text style={[styles.sectionTitle, { color: C.label }]}>
+            Student Engagement
+          </Text>
+
+          {/* Most Active */}
+          <View style={styles.studentSectionBlock}>
+            <Text style={[styles.studentSubTitle, { color: C.secondary }]}>
+              Most Active
+            </Text>
+            <View
+              style={[
+                styles.studentCard,
+                { backgroundColor: C.surface },
+              ]}
+            >
+              {ACTIVE_STUDENTS.map((student, idx) => (
+                <React.Fragment key={student.initials}>
+                  {idx > 0 && (
+                    <View
+                      style={[
+                        styles.studentRowDivider,
+                        {
+                          height: StyleSheet.hairlineWidth,
+                          backgroundColor: C.separator,
+                        },
+                      ]}
+                    />
+                  )}
+                  <View style={styles.studentRow}>
+                    <View
+                      style={[
+                        styles.initialsCircle,
+                        { backgroundColor: C.label },
+                      ]}
+                    >
+                      <Text style={[styles.initialsText, { color: C.bg }]}>
+                        {student.initials}
+                      </Text>
+                    </View>
+                    <View style={styles.studentInfo}>
+                      <Text style={[styles.studentName, { color: C.label }]}>
+                        {student.name}
+                      </Text>
+                      <Text
+                        style={[styles.studentActivity, { color: C.secondary }]}
+                      >
+                        {student.activity}
+                      </Text>
+                    </View>
+                    <View style={styles.streakBadge}>
+                      <IconSymbol
+                        name="flame.fill"
+                        size={14}
+                        color={CAUTION}
+                      />
+                      <Text
+                        style={[styles.streakCount, { color: C.label }]}
+                      >
+                        {student.streak}
+                      </Text>
+                    </View>
+                  </View>
+                </React.Fragment>
+              ))}
+            </View>
+          </View>
+
+          {/* At Risk */}
+          <View style={styles.studentSectionBlock}>
+            <Text style={[styles.studentSubTitle, { color: C.secondary }]}>
+              At Risk
+            </Text>
+            <View
+              style={[
+                styles.studentCard,
+                styles.studentCardAtRisk,
+                { backgroundColor: C.surface },
+              ]}
+            >
+              {AT_RISK_STUDENTS.map((student, idx) => (
+                <React.Fragment key={student.initials}>
+                  {idx > 0 && (
+                    <View
+                      style={[
+                        styles.studentRowDivider,
+                        {
+                          height: StyleSheet.hairlineWidth,
+                          backgroundColor: C.separator,
+                        },
+                      ]}
+                    />
+                  )}
+                  <View style={styles.studentRow}>
+                    <View
+                      style={[
+                        styles.initialsCircle,
+                        { backgroundColor: HEAT + '22' },
+                      ]}
+                    >
+                      <Text style={[styles.initialsText, { color: HEAT }]}>
+                        {student.initials}
+                      </Text>
+                    </View>
+                    <View style={styles.studentInfo}>
+                      <Text style={[styles.studentName, { color: C.label }]}>
+                        {student.name}
+                      </Text>
+                      <Text
+                        style={[styles.studentCourse, { color: C.secondary }]}
+                      >
+                        {student.course}
+                      </Text>
+                      <Text style={styles.studentLastSeen}>
+                        {student.lastSeen}
+                      </Text>
+                    </View>
+                  </View>
+                </React.Fragment>
+              ))}
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    </View>
+  );
 }

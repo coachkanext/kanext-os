@@ -571,6 +571,7 @@ export default function KayPayScreen(){
   const [role, cycleRole, roleCycles] = useDemoRole(roleKey);
   const isAdminRole = role === roleCycles[0];
   const accent = MODE_ACCENTS[mode] ?? C.accent;
+  const { width: screenWidth } = useWindowDimensions();
 
   const [activeTab,setActiveTab]=useState("Wallet");
   const [dropdownOpen,setDropdownOpen]=useState(false);
@@ -668,7 +669,6 @@ export default function KayPayScreen(){
   }
 
   function renderWalletPersonal(){
-    const {width:screenWidth}=useWindowDimensions();
     const BAR_MONTHS=[
       {month:'Nov',value:420},{month:'Dec',value:680},{month:'Jan',value:390},
       {month:'Feb',value:820},{month:'Mar',value:560},{month:'Apr',value:340},

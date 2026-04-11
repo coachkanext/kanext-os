@@ -930,29 +930,88 @@ function ProfileView({ C }: { C: ComponentColors }) {
   );
 }
 
-// ── Sports Head Coach: Feed / Announcements / Recruiting ──────────────
+// ── Sports Social: Team Feed ──────────────────────────────────────────
 
-type SportsCoachTab = 'Feed' | 'Announcements' | 'Recruiting';
+type SportsPostVisibility = 'Internal' | 'Public';
+type SportsPostType = 'regular' | 'game_result' | 'poll';
 
-const SPORTS_COACH_FEED_POSTS = [
-  { id: 'sc1', author: 'StatKeeper', initials: 'SK', time: '2h', visibility: 'Public', pinned: true, views: 847, likes: 124, comments: 32, shares: 58, text: 'FINAL: LU 84 - Riverside 71. Laolu drops 28. GAAC record 14-2. 🏀' },
-  { id: 'sc2', author: 'Coach Middlebrooks', initials: 'WM', time: '4h', visibility: 'Staff Only', pinned: false, views: 18, likes: 6, comments: 4, shares: 0, text: 'Film session recap — our ball movement in the 2nd half is tournament-ready. Good work today men.' },
-  { id: 'sc3', author: 'Coach Middlebrooks', initials: 'WM', time: '6h', visibility: 'Team Only', pinned: false, views: 44, likes: 22, comments: 7, shares: 0, text: 'Strength numbers are UP. Every player PR\'d this week. Credit to S&C staff.' },
-  { id: 'sc4', author: 'Coach Middlebrooks', initials: 'WM', time: '1d', visibility: 'Staff Only', pinned: false, views: 12, likes: 3, comments: 2, shares: 0, text: '🔥 Official Visit confirmed — big recruiting weekend ahead.' },
+interface SportsTeamPost {
+  id: string;
+  author: string;
+  initials: string;
+  time: string;
+  visibility: SportsPostVisibility;
+  pinned: boolean;
+  type: SportsPostType;
+  views: number;
+  likes: number;
+  comments: number;
+  shares: number;
+  text: string;
+  isCoach: boolean;
+  pendingApproval: boolean;
+  pollOptions?: { label: string; votes: number }[];
+}
+
+const SPORTS_TEAM_FEED: SportsTeamPost[] = [
+  {
+    id: 'sf1', author: 'StatKeeper', initials: 'SK', time: 'Just now',
+    visibility: 'Public', pinned: true, type: 'game_result',
+    views: 2841, likes: 143, comments: 28, shares: 67,
+    text: 'FINAL: LU Oaklanders 84 — Riverside 71. Laolu drops 28 pts · 9 reb. GAAC record: 15-2. Playoff push continues.',
+    isCoach: false, pendingApproval: false,
+  },
+  {
+    id: 'sf2', author: 'Coach Middlebrooks', initials: 'WM', time: '2h',
+    visibility: 'Internal', pinned: false, type: 'regular',
+    views: 22, likes: 18, comments: 4, shares: 0,
+    text: 'Film assignment — all players: Watch the Westview 2nd-half possessions. Pay close attention to the high ball screen coverage rotations. Quiz at practice.',
+    isCoach: true, pendingApproval: false,
+  },
+  {
+    id: 'sf3', author: "LU Men's Basketball", initials: 'LU', time: '4h',
+    visibility: 'Public', pinned: false, type: 'regular',
+    views: 1247, likes: 89, comments: 12, shares: 34,
+    text: 'Over $620K in full COA secured for our student-athletes this season. LU Oaklanders is the standard. \uD83C\uDF93 #LincolnU #GAAC',
+    isCoach: true, pendingApproval: false,
+  },
+  {
+    id: 'sf4', author: 'Laolu Kalejaiye', initials: 'LK', time: '5h',
+    visibility: 'Internal', pinned: false, type: 'regular',
+    views: 19, likes: 24, comments: 7, shares: 0,
+    text: 'Big W last night fam. That 3rd quarter run was SPECIAL. Everyone played their role. Love this team.',
+    isCoach: false, pendingApproval: false,
+  },
+  {
+    id: 'sf5', author: 'Coach Middlebrooks', initials: 'WM', time: '1d',
+    visibility: 'Internal', pinned: false, type: 'regular',
+    views: 28, likes: 31, comments: 2, shares: 0,
+    text: 'Strength numbers are up across the board. Every player PR\'d this week. That is preparation. Final stretch starts now.',
+    isCoach: true, pendingApproval: false,
+  },
+  {
+    id: 'sf6', author: 'Brandon Williams', initials: 'BW', time: '1d',
+    visibility: 'Public', pinned: false, type: 'regular',
+    views: 0, likes: 0, comments: 0, shares: 0,
+    text: 'Big announcement coming next week. Stay locked in. @LU_Athletics \uD83D\uDC40 #NIL #GAAC',
+    isCoach: false, pendingApproval: true,
+  },
+  {
+    id: 'sf7', author: 'Coach Middlebrooks', initials: 'WM', time: '2d',
+    visibility: 'Internal', pinned: false, type: 'poll',
+    views: 18, likes: 0, comments: 0, shares: 0,
+    text: 'Practice playlist vote — pick your vibe:',
+    isCoach: true, pendingApproval: false,
+    pollOptions: [
+      { label: 'Hip-Hop',   votes: 9 },
+      { label: 'Trap',      votes: 5 },
+      { label: 'R&B',       votes: 3 },
+      { label: 'Vibes Mix', votes: 1 },
+    ],
+  },
 ];
 
-const SPORTS_ANNOUNCEMENTS = [
-  { id: 'sa1', title: 'GAAC Tournament Bracket Released', body: 'LU Men\'s Basketball is the #1 seed. First round tips off Friday April 11 at 7 PM. Travel itinerary in the portal.', date: 'Apr 2', distribution: 'Public', pushSent: true, readCount: 312 },
-  { id: 'sa2', title: 'Senior Night this Friday vs. Riverside', body: 'Honor our seniors before the final home game. Ceremony begins at 6:30 PM. Families, please arrive by 6:15.', date: 'Mar 28', distribution: 'Team', pushSent: true, readCount: 18 },
-  { id: 'sa3', title: 'Spring Practice Schedule Now Live', body: 'Spring workouts begin April 22. Full schedule posted in the player portal. Mandatory attendance for all scholarship players.', date: 'Mar 25', distribution: 'Team', pushSent: false, readCount: 14 },
-];
-
-const SPORTS_RECRUITING_POSTS = [
-  { id: 'sr1', title: 'A Day in the Life — LU Men\'s Basketball', body: '5 AM lifts. Film sessions. Class. Brotherhood. See what it means to wear the LU uniform.', tag: 'Brand Video', views: 2841 },
-  { id: 'sr2', title: 'Campus Tour Highlights', body: 'State-of-the-art facility, academic support center, and a coaching staff invested in your growth — on and off the court.', tag: 'Campus Life', views: 1204 },
-  { id: 'sr3', title: '"Playing for Coach Middlebrooks changed my game."', body: '"He pushed me every day. The system develops guards into pros." — Laolu Kalejaiye, GAAC Player of the Year', tag: 'Athlete Story', views: 3107 },
-  { id: 'sr4', title: 'Over $620K in COA Funding Secured', body: 'LU Men\'s Basketball has secured over $620,000 in full Cost of Attendance funding for our student-athletes this season.', tag: 'Scholarship', views: 1892 },
-];
+// ── Sports Head Coach Social View ─────────────────────────────────────
 
 function SportsHeadCoachSocialView({
   C, insets, role, cycleRole, accent,
@@ -963,218 +1022,296 @@ function SportsHeadCoachSocialView({
   cycleRole: () => void;
   accent: string;
 }) {
-  const [coachTab, setCoachTab] = useState<SportsCoachTab>('Feed');
-  const [coachDrop, setCoachDrop] = useState(false);
-  const [feedVisibility, setFeedVisibility] = useState<'Public' | 'Team Only' | 'Staff Only'>('Public');
-  const [coachLiked, setCoachLiked] = useState<Set<string>>(new Set());
+  const [filter, setFilter]             = useState<'All' | SportsPostVisibility>('All');
+  const [composerVis, setComposerVis]   = useState<SportsPostVisibility>('Internal');
+  const [liked, setLiked]               = useState<Set<string>>(new Set());
+  const [pinned, setPinned]             = useState<Set<string>>(new Set(['sf1']));
+  const [approved, setApproved]         = useState<Set<string>>(new Set());
   const TOP_BAR_H = 52;
+  const GAIN = '#5A8A6E';
+  const CAUTION = '#B8943E';
+
+  const filtered = useMemo(() => {
+    const base = filter === 'All' ? SPORTS_TEAM_FEED : SPORTS_TEAM_FEED.filter(p => p.visibility === filter);
+    return [...base].sort((a, b) => {
+      const ap = pinned.has(a.id) ? 1 : 0;
+      const bp = pinned.has(b.id) ? 1 : 0;
+      return bp - ap;
+    });
+  }, [filter, pinned]);
+
+  function toggleLike(id: string) {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setLiked(s => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  }
+
+  function togglePin(id: string) {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setPinned(s => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  }
+
+  function approvePost(id: string) {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    setApproved(s => { const n = new Set(s); n.add(id); return n; });
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       {/* Top bar */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: insets.top + TOP_BAR_H, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{
+        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20,
+        height: insets.top + TOP_BAR_H, paddingTop: insets.top,
+        flexDirection: 'row', alignItems: 'flex-end',
+        paddingHorizontal: 16, paddingBottom: 8,
+        backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+      }}>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+          style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
           <KMenuButton />
         </Pressable>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setCoachDrop(v => !v); }} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>{coachTab}</Text>
-          <IconSymbol name={coachDrop ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary} />
-        </Pressable>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ backgroundColor: C.surface, borderRadius: 16, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, paddingHorizontal: 14, paddingVertical: 5 }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>LU Men's Basketball</Text>
+          </View>
+        </View>
         <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary />
       </View>
 
-      {/* Tab dropdown */}
-      {coachDrop && (
-        <View style={{ position: 'absolute', top: insets.top + TOP_BAR_H + 4, left: '18%', right: '18%', backgroundColor: C.surface, borderRadius: 14, zIndex: 100, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 8, overflow: 'hidden' }}>
-          {(['Feed', 'Announcements', 'Recruiting'] as SportsCoachTab[]).map((tab, i, arr) => (
-            <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setCoachTab(tab); setCoachDrop(false); }} style={{ paddingVertical: 13, paddingHorizontal: 16, borderBottomWidth: i < arr.length - 1 ? StyleSheet.hairlineWidth : 0, borderBottomColor: C.separator }}>
-              <Text style={{ fontSize: 15, color: tab === coachTab ? C.label : C.secondary, fontWeight: tab === coachTab ? '600' : '400' }}>{tab}</Text>
+      {/* Filter pills */}
+      <View style={{
+        position: 'absolute', top: insets.top + TOP_BAR_H, left: 0, right: 0, zIndex: 15,
+        flexDirection: 'row', gap: 8, paddingHorizontal: 16, paddingVertical: 10,
+        backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+      }}>
+        {(['All', 'Internal', 'Public'] as const).map(f => {
+          const active = filter === f;
+          return (
+            <Pressable key={f} onPress={() => { Haptics.selectionAsync(); setFilter(f); }}
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, paddingVertical: 5, borderRadius: 16, borderWidth: 1,
+                backgroundColor: active ? C.activePill : C.surface,
+                borderColor: active ? C.activePill : C.separator }}>
+              {f === 'Internal' && <IconSymbol name="lock.fill" size={10} color={active ? C.activePillText : C.secondary} />}
+              {f === 'Public'   && <IconSymbol name="globe"     size={10} color={active ? C.activePillText : C.secondary} />}
+              <Text style={{ fontSize: 12, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{f}</Text>
             </Pressable>
-          ))}
+          );
+        })}
+      </View>
+
+      <ScrollView
+        style={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 48, paddingBottom: 120 }}
+      >
+        {/* Post composer */}
+        <View style={{ marginHorizontal: 14, marginTop: 12, marginBottom: 14, backgroundColor: C.surface, borderRadius: 16, padding: 14, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+            <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ color: C.bg, fontWeight: '800', fontSize: 12 }}>LU</Text>
+            </View>
+            <View style={{ flex: 1, height: 38, borderRadius: 19, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, backgroundColor: C.bg, alignItems: 'flex-start', justifyContent: 'center', paddingHorizontal: 14 }}>
+              <Text style={{ fontSize: 14, color: C.muted }}>Post as LU Men's Basketball...</Text>
+            </View>
+          </View>
+          {/* Visibility toggle */}
+          <View style={{ flexDirection: 'row', gap: 8, marginBottom: 10 }}>
+            {(['Internal', 'Public'] as const).map(v => {
+              const active = composerVis === v;
+              return (
+                <Pressable key={v} onPress={() => { Haptics.selectionAsync(); setComposerVis(v); }}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 10, borderWidth: 1,
+                    backgroundColor: active ? C.activePill : 'transparent',
+                    borderColor: active ? C.activePill : C.separator }}>
+                  <IconSymbol name={v === 'Internal' ? 'lock.fill' : 'globe'} size={11} color={active ? C.activePillText : C.secondary} />
+                  <Text style={{ fontSize: 12, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{v}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+          {/* Attach row */}
+          <View style={{ flexDirection: 'row', gap: 14, paddingTop: 2 }}>
+            {[
+              { icon: 'photo', label: 'Photo' },
+              { icon: 'video', label: 'Video' },
+              { icon: 'chart.bar.fill', label: 'Poll' },
+              { icon: 'calendar', label: 'Game Day' },
+            ].map(a => (
+              <Pressable key={a.icon} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <IconSymbol name={a.icon as any} size={14} color={C.secondary} />
+                <Text style={{ fontSize: 11, color: C.secondary, fontWeight: '500' }}>{a.label}</Text>
+              </Pressable>
+            ))}
+          </View>
         </View>
-      )}
 
-      {/* FEED */}
-      {coachTab === 'Feed' && (
-        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 12, paddingBottom: 120 }}>
-          {/* Post composer */}
-          <View style={{ marginHorizontal: 14, marginBottom: 14, backgroundColor: C.surface, borderRadius: 16, padding: 14 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-              <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>WM</Text>
-              </View>
-              <View style={{ flex: 1, height: 36, borderRadius: 18, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, alignItems: 'flex-start', justifyContent: 'center', paddingHorizontal: 14 }}>
-                <Text style={{ fontSize: 14, color: C.muted }}>{"Post to LU Men\u2019s Basketball..."}</Text>
-              </View>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-              <Text style={{ fontSize: 12, color: C.secondary }}>Visibility:</Text>
-              {(['Public', 'Team Only', 'Staff Only'] as const).map(v => (
-                <Pressable key={v} onPress={() => { Haptics.selectionAsync(); setFeedVisibility(v); }} style={{ paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, backgroundColor: feedVisibility === v ? C.label : C.surfacePressed }}>
-                  <Text style={{ fontSize: 12, fontWeight: '600', color: feedVisibility === v ? C.bg : C.secondary }}>{v}</Text>
-                </Pressable>
-              ))}
-            </View>
-          </View>
+        {/* Posts */}
+        {filtered.map(post => {
+          const isLiked = liked.has(post.id);
+          const isPinned = pinned.has(post.id);
+          const isApproved = approved.has(post.id);
+          const showPending = post.pendingApproval && !isApproved;
 
-          {SPORTS_COACH_FEED_POSTS.map(post => (
+          return (
             <View key={post.id} style={{ borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingTop: 12, paddingBottom: 6, gap: 10 }}>
-                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>{post.initials}</Text>
+              {/* Pending approval banner */}
+              {showPending && (
+                <View style={{ marginHorizontal: 14, marginTop: 10, backgroundColor: `${CAUTION}22`, borderRadius: 10, padding: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
+                    <IconSymbol name="clock.fill" size={13} color={CAUTION} />
+                    <Text style={{ fontSize: 12, color: CAUTION, fontWeight: '600' }}>Pending approval — public post by {post.author}</Text>
+                  </View>
+                  <Pressable onPress={() => approvePost(post.id)}
+                    style={{ backgroundColor: GAIN, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5, marginLeft: 8 }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: '#FFFFFF' }}>Approve</Text>
+                  </Pressable>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{post.author}</Text>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 1, flexWrap: 'wrap' }}>
-                    <Text style={{ fontSize: 12, color: C.secondary }}>{post.time}</Text>
-                    <View style={{ backgroundColor: post.visibility === 'Public' ? '#5A8A6E22' : C.surfacePressed, borderRadius: 5, paddingHorizontal: 6, paddingVertical: 1 }}>
-                      <Text style={{ fontSize: 10, fontWeight: '700', color: post.visibility === 'Public' ? '#5A8A6E' : C.secondary }}>{post.visibility}</Text>
+              )}
+
+              {/* Game result card */}
+              {post.type === 'game_result' ? (
+                <View style={{ marginHorizontal: 14, marginVertical: 10, backgroundColor: '#1A1714', borderRadius: 16, padding: 16 }}>
+                  {isPinned && (
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 6 }}>
+                      <IconSymbol name="pin.fill" size={10} color="#8A837C" />
+                      <Text style={{ fontSize: 10, fontWeight: '700', color: '#8A837C', textTransform: 'uppercase', letterSpacing: 0.5 }}>Pinned</Text>
                     </View>
-                    {post.pinned && (
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
-                        <IconSymbol name="pin.fill" size={10} color={C.secondary} />
-                        <Text style={{ fontSize: 10, fontWeight: '700', color: C.secondary }}>Pinned</Text>
+                  )}
+                  <Text style={{ fontSize: 11, fontWeight: '700', color: '#8A837C', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Game Result · Public</Text>
+                  <Text style={{ fontSize: 16, fontWeight: '800', color: '#F0E8DC', lineHeight: 24 }}>{post.text}</Text>
+                  <Text style={{ fontSize: 11, color: '#8A837C', marginTop: 8 }}>{post.time} · via StatKeeper</Text>
+                  <View style={{ flexDirection: 'row', gap: 16, marginTop: 12 }}>
+                    {[
+                      { icon: 'eye',         val: `${(post.views / 1000).toFixed(1)}K` },
+                      { icon: 'heart',       val: String(post.likes + (isLiked ? 1 : 0)) },
+                      { icon: 'bubble.right', val: String(post.comments) },
+                      { icon: 'paperplane',  val: String(post.shares) },
+                    ].map(s => (
+                      <View key={s.icon} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <IconSymbol name={s.icon as any} size={12} color="#8A837C" />
+                        <Text style={{ fontSize: 11, color: '#8A837C' }}>{s.val}</Text>
                       </View>
-                    )}
+                    ))}
                   </View>
                 </View>
-                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
-                  <IconSymbol name="ellipsis" size={18} color={C.secondary} />
-                </Pressable>
-              </View>
-              <Text style={{ fontSize: 15, color: C.label, paddingHorizontal: 14, paddingBottom: 10, lineHeight: 22 }}>{post.text}</Text>
-              {/* Engagement stats */}
-              <View style={{ flexDirection: 'row', gap: 16, paddingHorizontal: 14, paddingBottom: 8 }}>
-                {[
-                  { icon: 'eye', value: post.views >= 1000 ? `${(post.views / 1000).toFixed(1)}K` : String(post.views) },
-                  { icon: 'heart', value: String(post.likes + (coachLiked.has(post.id) ? 1 : 0)) },
-                  { icon: 'bubble.right', value: String(post.comments) },
-                  { icon: 'paperplane', value: String(post.shares) },
-                ].map(stat => (
-                  <View key={stat.icon} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                    <IconSymbol name={stat.icon as any} size={13} color={C.muted} />
-                    <Text style={{ fontSize: 12, color: C.muted }}>{stat.value}</Text>
+              ) : (
+                <>
+                  {/* Post header */}
+                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingTop: 12, paddingBottom: 6, gap: 10 }}>
+                    <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
+                      <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>{post.initials}</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{post.author}</Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2, flexWrap: 'wrap' }}>
+                        <Text style={{ fontSize: 12, color: C.secondary }}>{post.time}</Text>
+                        {post.isCoach && (
+                          <View style={{ backgroundColor: C.surfacePressed, borderRadius: 4, paddingHorizontal: 6, paddingVertical: 1 }}>
+                            <Text style={{ fontSize: 10, fontWeight: '700', color: C.secondary }}>Coach</Text>
+                          </View>
+                        )}
+                        {/* Visibility badge */}
+                        <View style={{
+                          flexDirection: 'row', alignItems: 'center', gap: 3,
+                          backgroundColor: post.visibility === 'Internal' ? C.surfacePressed : `${GAIN}22`,
+                          borderRadius: 4, paddingHorizontal: 6, paddingVertical: 1,
+                        }}>
+                          <IconSymbol name={post.visibility === 'Internal' ? 'lock.fill' : 'globe'} size={9}
+                            color={post.visibility === 'Internal' ? C.secondary : GAIN} />
+                          <Text style={{ fontSize: 10, fontWeight: '700', color: post.visibility === 'Internal' ? C.secondary : GAIN }}>
+                            {post.visibility}
+                          </Text>
+                        </View>
+                        {isPinned && (
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+                            <IconSymbol name="pin.fill" size={9} color={C.secondary} />
+                            <Text style={{ fontSize: 10, fontWeight: '600', color: C.secondary }}>Pinned</Text>
+                          </View>
+                        )}
+                      </View>
+                    </View>
+                    <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+                      <IconSymbol name="ellipsis" size={18} color={C.secondary} />
+                    </Pressable>
                   </View>
-                ))}
-              </View>
-              {/* Action row */}
-              <View style={{ flexDirection: 'row', gap: 20, paddingHorizontal: 14, paddingBottom: 12 }}>
-                <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setCoachLiked(s => { const n = new Set(s); if (n.has(post.id)) n.delete(post.id); else n.add(post.id); return n; }); }} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                  <IconSymbol name={coachLiked.has(post.id) ? 'heart.fill' : 'heart'} size={18} color={coachLiked.has(post.id) ? C.red : C.secondary} />
-                  <Text style={{ fontSize: 13, color: C.secondary }}>{post.likes + (coachLiked.has(post.id) ? 1 : 0)}</Text>
-                </Pressable>
-                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                  <IconSymbol name="bubble.right" size={18} color={C.secondary} />
-                  <Text style={{ fontSize: 13, color: C.secondary }}>{post.comments}</Text>
-                </Pressable>
-                {post.pinned ? (
-                  <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                    <IconSymbol name="pin.fill" size={15} color={C.label} />
-                    <Text style={{ fontSize: 13, color: C.label, fontWeight: '600' }}>Pinned</Text>
-                  </Pressable>
-                ) : (
-                  <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                    <IconSymbol name="pin" size={15} color={C.secondary} />
-                    <Text style={{ fontSize: 13, color: C.secondary }}>Pin</Text>
-                  </Pressable>
-                )}
-                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                  <IconSymbol name="pencil" size={15} color={C.secondary} />
-                  <Text style={{ fontSize: 13, color: C.secondary }}>Edit</Text>
-                </Pressable>
-                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                  <IconSymbol name="trash" size={15} color={C.secondary} />
-                  <Text style={{ fontSize: 13, color: C.secondary }}>Delete</Text>
-                </Pressable>
-              </View>
-            </View>
-          ))}
-        </ScrollView>
-      )}
 
-      {/* ANNOUNCEMENTS */}
-      {coachTab === 'Announcements' && (
-        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 12, paddingBottom: 120 }}>
-          <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ marginHorizontal: 14, marginBottom: 20, backgroundColor: C.label, borderRadius: 14, paddingVertical: 14, alignItems: 'center', opacity: pressed ? 0.8 : 1 })}>
-            <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>+ Schedule Announcement</Text>
-          </Pressable>
-          {SPORTS_ANNOUNCEMENTS.map(ann => (
-            <View key={ann.id} style={{ marginHorizontal: 14, marginBottom: 12, backgroundColor: C.surface, borderRadius: 16, padding: 16 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 4 }}>
-                <Text style={{ fontSize: 15, fontWeight: '700', color: C.label, flex: 1, marginRight: 8 }}>{ann.title}</Text>
-                <View style={{ backgroundColor: C.surfacePressed, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 }}>
-                  <Text style={{ fontSize: 10, fontWeight: '700', color: C.secondary }}>{ann.distribution}</Text>
-                </View>
-              </View>
-              <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 10, lineHeight: 18 }}>{ann.body}</Text>
-              <Text style={{ fontSize: 12, color: C.muted, marginBottom: 12 }}>Published {ann.date} · {ann.readCount.toLocaleString()} reads</Text>
-              <View style={{ flexDirection: 'row', gap: 10 }}>
-                {ann.pushSent ? (
-                  <View style={{ backgroundColor: C.surfacePressed, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5 }}>
-                    <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary }}>Push Sent</Text>
-                  </View>
-                ) : (
-                  <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.label, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 })}>
-                    <Text style={{ fontSize: 12, fontWeight: '600', color: C.bg }}>Send Push</Text>
-                  </Pressable>
-                )}
-                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : 'transparent', borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 })}>
-                  <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary }}>Edit</Text>
-                </Pressable>
-              </View>
-            </View>
-          ))}
-        </ScrollView>
-      )}
+                  {/* Poll */}
+                  {post.type === 'poll' && post.pollOptions ? (
+                    <View style={{ paddingHorizontal: 14, paddingBottom: 8 }}>
+                      <Text style={{ fontSize: 15, color: C.label, lineHeight: 22, marginBottom: 10 }}>{post.text}</Text>
+                      {(() => {
+                        const total = post.pollOptions.reduce((s, o) => s + o.votes, 0);
+                        return post.pollOptions.map(opt => {
+                          const pct = total > 0 ? Math.round((opt.votes / total) * 100) : 0;
+                          return (
+                            <View key={opt.label} style={{ marginBottom: 8 }}>
+                              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                                <Text style={{ fontSize: 13, fontWeight: '500', color: C.label }}>{opt.label}</Text>
+                                <Text style={{ fontSize: 12, color: C.secondary }}>{pct}%</Text>
+                              </View>
+                              <View style={{ height: 6, borderRadius: 3, backgroundColor: C.separator }}>
+                                <View style={{ height: 6, borderRadius: 3, width: `${pct}%`, backgroundColor: C.label }} />
+                              </View>
+                            </View>
+                          );
+                        });
+                      })()}
+                      <Text style={{ fontSize: 11, color: C.secondary, marginTop: 4 }}>{post.views} responses</Text>
+                    </View>
+                  ) : (
+                    <Text style={{ fontSize: 15, color: C.label, paddingHorizontal: 14, paddingBottom: 10, lineHeight: 22 }}>{post.text}</Text>
+                  )}
 
-      {/* RECRUITING */}
-      {coachTab === 'Recruiting' && (
-        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 12, paddingBottom: 120 }}>
-          <View style={{ marginHorizontal: 14, marginBottom: 12, backgroundColor: C.surfacePressed, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <IconSymbol name="globe" size={13} color={C.secondary} />
-            <Text style={{ fontSize: 13, color: C.secondary }}>Recruiting content is Public — visible to all prospects</Text>
-          </View>
-          {SPORTS_RECRUITING_POSTS.map(post => (
-            <View key={post.id} style={{ marginHorizontal: 14, marginBottom: 12, backgroundColor: C.surface, borderRadius: 16, padding: 16 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                <View style={{ backgroundColor: '#5A8A6E22', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 }}>
-                  <Text style={{ fontSize: 10, fontWeight: '700', color: '#5A8A6E' }}>{post.tag}</Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                  <IconSymbol name="eye" size={12} color={C.muted} />
-                  <Text style={{ fontSize: 12, color: C.muted }}>{post.views >= 1000 ? `${(post.views / 1000).toFixed(1)}K` : String(post.views)}</Text>
-                </View>
-              </View>
-              <Text style={{ fontSize: 15, fontWeight: '700', color: C.label, marginBottom: 6, lineHeight: 21 }}>{post.title}</Text>
-              <Text style={{ fontSize: 13, color: C.secondary, lineHeight: 19 }}>{post.body}</Text>
-              <View style={{ flexDirection: 'row', gap: 10, marginTop: 14 }}>
-                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : C.label, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 7 })}>
-                  <Text style={{ fontSize: 12, fontWeight: '600', color: C.bg }}>Edit</Text>
-                </Pressable>
-                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={({ pressed }) => ({ backgroundColor: pressed ? C.surfacePressed : 'transparent', borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 7 })}>
-                  <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary }}>Share</Text>
-                </Pressable>
-              </View>
+                  {/* Engagement stats (for non-polls) */}
+                  {post.type !== 'poll' && (
+                    <View style={{ flexDirection: 'row', gap: 16, paddingHorizontal: 14, paddingBottom: 8 }}>
+                      {post.visibility === 'Public' && (
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                          <IconSymbol name="eye" size={12} color={C.muted} />
+                          <Text style={{ fontSize: 12, color: C.muted }}>{post.views >= 1000 ? `${(post.views / 1000).toFixed(1)}K` : String(post.views)}</Text>
+                        </View>
+                      )}
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <IconSymbol name="heart" size={12} color={C.muted} />
+                        <Text style={{ fontSize: 12, color: C.muted }}>{post.likes + (isLiked ? 1 : 0)}</Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <IconSymbol name="bubble.right" size={12} color={C.muted} />
+                        <Text style={{ fontSize: 12, color: C.muted }}>{post.comments}</Text>
+                      </View>
+                    </View>
+                  )}
+
+                  {/* Action row — coach controls */}
+                  <View style={{ flexDirection: 'row', gap: 20, paddingHorizontal: 14, paddingBottom: 12, flexWrap: 'wrap' }}>
+                    <Pressable onPress={() => toggleLike(post.id)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                      <IconSymbol name={isLiked ? 'heart.fill' : 'heart'} size={18} color={isLiked ? '#B85C5C' : C.secondary} />
+                    </Pressable>
+                    <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                      <IconSymbol name="bubble.right" size={18} color={C.secondary} />
+                    </Pressable>
+                    <Pressable onPress={() => togglePin(post.id)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                      <IconSymbol name={isPinned ? 'pin.fill' : 'pin'} size={16} color={isPinned ? C.label : C.secondary} />
+                      <Text style={{ fontSize: 12, color: isPinned ? C.label : C.secondary, fontWeight: isPinned ? '600' : '400' }}>
+                        {isPinned ? 'Pinned' : 'Pin'}
+                      </Text>
+                    </Pressable>
+                    <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                      <IconSymbol name="trash" size={15} color={C.secondary} />
+                      <Text style={{ fontSize: 12, color: C.secondary }}>Delete</Text>
+                    </Pressable>
+                  </View>
+                </>
+              )}
             </View>
-          ))}
-          <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)} style={({ pressed }) => ({ marginHorizontal: 14, marginTop: 4, backgroundColor: C.label, borderRadius: 14, paddingVertical: 14, alignItems: 'center', opacity: pressed ? 0.8 : 1 })}>
-            <Text style={{ fontSize: 15, fontWeight: '700', color: C.bg }}>+ Add Recruiting Post</Text>
-          </Pressable>
-        </ScrollView>
-      )}
+          );
+        })}
+      </ScrollView>
     </View>
   );
 }
 
-// ── Sports Player: Team Feed ───────────────────────────────────────────
-
-const SPORTS_PLAYER_FEED_POSTS = [
-  { id: 'sp1', author: 'StatKeeper', initials: 'SK', time: '2h', isCoach: false, isGameResult: true, text: 'FINAL: LU 84 - Riverside 71. Laolu drops 28. GAAC record 14-2.' },
-  { id: 'sp2', author: 'Coach Middlebrooks', initials: 'WM', time: '4h', isCoach: true, isGameResult: false, text: 'Film session recap — our ball movement in the 2nd half is tournament-ready.' },
-  { id: 'sp3', author: 'Coach Middlebrooks', initials: 'WM', time: '6h', isCoach: true, isGameResult: false, text: 'Strength numbers are UP. Every player PR\'d this week.' },
-  { id: 'sp4', author: 'Laolu Kalejaiye', initials: 'LK', time: '8h', isCoach: false, isGameResult: false, text: 'Anyone else ready for Senior Night? 🏀' },
-  { id: 'sp5', author: 'Coach Middlebrooks', initials: 'WM', time: '1d', isCoach: true, isGameResult: false, text: 'Film homework due before practice tomorrow — watch the Westview 2nd half possessions' },
-];
+// ── Sports Player: Team Feed ──────────────────────────────────────────
 
 function SportsPlayerTeamFeedView({
   C, insets, role, cycleRole, accent,
@@ -1185,82 +1322,186 @@ function SportsPlayerTeamFeedView({
   cycleRole: () => void;
   accent: string;
 }) {
-  const [playerLiked, setPlayerLiked] = useState<Set<string>>(new Set());
+  const [liked, setLiked]             = useState<Set<string>>(new Set());
+  const [composerVis, setComposerVis] = useState<SportsPostVisibility>('Internal');
   const TOP_BAR_H = 52;
+  const GAIN    = '#5A8A6E';
+  const CAUTION = '#B8943E';
+  // Posting policy: public posts require approval (default)
+  const POSTING_POLICY_PUBLIC: 'off' | 'free' | 'approval' = 'approval';
+
+  function toggleLike(id: string) {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setLiked(s => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       {/* Top bar */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20, height: insets.top + TOP_BAR_H, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
-        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{
+        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20,
+        height: insets.top + TOP_BAR_H, paddingTop: insets.top,
+        flexDirection: 'row', alignItems: 'flex-end',
+        paddingHorizontal: 16, paddingBottom: 8,
+        backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator,
+      }}>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
+          style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
           <KMenuButton />
         </Pressable>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: C.label }}>Team Feed</Text>
+          <View style={{ backgroundColor: C.surface, borderRadius: 16, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, paddingHorizontal: 14, paddingVertical: 5 }}>
+            <Text style={{ fontSize: 14, fontWeight: '700', color: C.label }}>Team Feed</Text>
+          </View>
         </View>
         <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary={false} />
       </View>
 
-      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 12, paddingBottom: 120 }}>
-        {/* Post composer — Team Only fixed */}
-        <View style={{ marginHorizontal: 14, marginBottom: 14, backgroundColor: C.surface, borderRadius: 16, padding: 14 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+      <ScrollView
+        style={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_H + 12, paddingBottom: 120 }}
+      >
+        {/* Post composer */}
+        <View style={{ marginHorizontal: 14, marginBottom: 14, backgroundColor: C.surface, borderRadius: 16, padding: 14, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 }}>
             <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
               <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>LK</Text>
             </View>
-            <View style={{ flex: 1, height: 36, borderRadius: 18, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, alignItems: 'flex-start', justifyContent: 'center', paddingHorizontal: 14 }}>
+            <View style={{ flex: 1, height: 38, borderRadius: 19, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, backgroundColor: C.bg, alignItems: 'flex-start', justifyContent: 'center', paddingHorizontal: 14 }}>
               <Text style={{ fontSize: 14, color: C.muted }}>Post to the team...</Text>
             </View>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <IconSymbol name="lock.fill" size={12} color={C.secondary} />
-            <Text style={{ fontSize: 12, color: C.secondary }}>Team Only</Text>
+          {/* Visibility options */}
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            <Pressable onPress={() => { Haptics.selectionAsync(); setComposerVis('Internal'); }}
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 10, borderWidth: 1,
+                backgroundColor: composerVis === 'Internal' ? C.activePill : 'transparent',
+                borderColor: composerVis === 'Internal' ? C.activePill : C.separator }}>
+              <IconSymbol name="lock.fill" size={11} color={composerVis === 'Internal' ? C.activePillText : C.secondary} />
+              <Text style={{ fontSize: 12, fontWeight: '600', color: composerVis === 'Internal' ? C.activePillText : C.secondary }}>Internal</Text>
+            </Pressable>
+            {POSTING_POLICY_PUBLIC !== 'off' && (
+              <Pressable onPress={() => { Haptics.selectionAsync(); setComposerVis('Public'); }}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 10, borderWidth: 1,
+                  backgroundColor: composerVis === 'Public' ? C.activePill : 'transparent',
+                  borderColor: composerVis === 'Public' ? C.activePill : C.separator }}>
+                <IconSymbol name="globe" size={11} color={composerVis === 'Public' ? C.activePillText : C.secondary} />
+                <Text style={{ fontSize: 12, fontWeight: '600', color: composerVis === 'Public' ? C.activePillText : C.secondary }}>Public</Text>
+              </Pressable>
+            )}
+            {composerVis === 'Public' && POSTING_POLICY_PUBLIC === 'approval' && (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <IconSymbol name="clock.fill" size={11} color={CAUTION} />
+                <Text style={{ fontSize: 11, color: CAUTION, fontWeight: '600' }}>Requires approval</Text>
+              </View>
+            )}
           </View>
         </View>
 
-        {SPORTS_PLAYER_FEED_POSTS.map(post => (
-          <View key={post.id} style={{ borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
-            {post.isGameResult ? (
-              /* Game result card */
-              <View style={{ marginHorizontal: 14, marginVertical: 10, backgroundColor: C.label, borderRadius: 16, padding: 16 }}>
-                <Text style={{ fontSize: 11, fontWeight: '700', color: C.bg, opacity: 0.6, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Game Result</Text>
-                <Text style={{ fontSize: 18, fontWeight: '800', color: C.bg, lineHeight: 26 }}>{post.text}</Text>
-                <Text style={{ fontSize: 11, color: C.bg, opacity: 0.6, marginTop: 8 }}>{post.time} · via StatKeeper</Text>
+        {/* Posts */}
+        {SPORTS_TEAM_FEED.map(post => {
+          const isLiked = liked.has(post.id);
+          const HEAT = '#B85C5C';
+
+          if (post.type === 'game_result') {
+            return (
+              <View key={post.id} style={{ borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+                <View style={{ marginHorizontal: 14, marginVertical: 10, backgroundColor: '#1A1714', borderRadius: 16, padding: 16 }}>
+                  <Text style={{ fontSize: 11, fontWeight: '700', color: '#8A837C', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Game Result</Text>
+                  <Text style={{ fontSize: 16, fontWeight: '800', color: '#F0E8DC', lineHeight: 24 }}>{post.text}</Text>
+                  <Text style={{ fontSize: 11, color: '#8A837C', marginTop: 8 }}>{post.time} · via StatKeeper</Text>
+                </View>
               </View>
-            ) : (
-              <>
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingTop: 12, paddingBottom: 6, gap: 10 }}>
-                  <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>{post.initials}</Text>
+            );
+          }
+
+          if (post.type === 'poll' && post.pollOptions) {
+            const total = post.pollOptions.reduce((s, o) => s + o.votes, 0);
+            return (
+              <View key={post.id} style={{ borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator, paddingHorizontal: 14, paddingTop: 12, paddingBottom: 12 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                  <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={{ color: C.bg, fontWeight: '700', fontSize: 12 }}>{post.initials}</Text>
                   </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{post.author}</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 1 }}>
-                      <Text style={{ fontSize: 12, color: C.secondary }}>{post.time}</Text>
-                      {post.isCoach && (
-                        <View style={{ backgroundColor: C.surfacePressed, borderRadius: 5, paddingHorizontal: 6, paddingVertical: 1 }}>
-                          <Text style={{ fontSize: 10, fontWeight: '700', color: C.secondary }}>Coach</Text>
-                        </View>
-                      )}
+                  <View>
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>{post.author}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                      <Text style={{ fontSize: 11, color: C.secondary }}>{post.time}</Text>
+                      <View style={{ backgroundColor: C.surfacePressed, borderRadius: 4, paddingHorizontal: 5, paddingVertical: 1 }}>
+                        <Text style={{ fontSize: 9, fontWeight: '700', color: C.secondary }}>Coach</Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: C.surfacePressed, borderRadius: 4, paddingHorizontal: 5, paddingVertical: 1 }}>
+                        <IconSymbol name="lock.fill" size={9} color={C.secondary} />
+                        <Text style={{ fontSize: 9, fontWeight: '700', color: C.secondary }}>Internal</Text>
+                      </View>
                     </View>
                   </View>
                 </View>
-                <Text style={{ fontSize: 15, color: C.label, paddingHorizontal: 14, paddingBottom: 10, lineHeight: 22 }}>{post.text}</Text>
-                <View style={{ flexDirection: 'row', gap: 20, paddingHorizontal: 14, paddingBottom: 12 }}>
-                  <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setPlayerLiked(s => { const n = new Set(s); if (n.has(post.id)) n.delete(post.id); else n.add(post.id); return n; }); }} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                    <IconSymbol name={playerLiked.has(post.id) ? 'heart.fill' : 'heart'} size={18} color={playerLiked.has(post.id) ? C.red : C.secondary} />
-                  </Pressable>
-                  <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                    <IconSymbol name="bubble.right" size={18} color={C.secondary} />
-                  </Pressable>
-                  <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                    <IconSymbol name="paperplane" size={18} color={C.secondary} />
-                  </Pressable>
+                <Text style={{ fontSize: 14, color: C.label, marginBottom: 10 }}>{post.text}</Text>
+                {post.pollOptions.map(opt => {
+                  const pct = total > 0 ? Math.round((opt.votes / total) * 100) : 0;
+                  return (
+                    <Pressable key={opt.label} onPress={() => Haptics.selectionAsync()}
+                      style={{ marginBottom: 8, backgroundColor: C.surface, borderRadius: 10, borderWidth: 1, borderColor: C.separator, padding: 10 }}>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <Text style={{ fontSize: 13, fontWeight: '500', color: C.label }}>{opt.label}</Text>
+                        <Text style={{ fontSize: 12, color: C.secondary }}>{pct}%</Text>
+                      </View>
+                      <View style={{ height: 4, borderRadius: 2, backgroundColor: C.separator }}>
+                        <View style={{ height: 4, borderRadius: 2, width: `${pct}%`, backgroundColor: C.label }} />
+                      </View>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            );
+          }
+
+          return (
+            <View key={post.id} style={{ borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+              {/* Pending indicator (own post) */}
+              {post.pendingApproval && post.author === 'Laolu Kalejaiye' && (
+                <View style={{ marginHorizontal: 14, marginTop: 8, backgroundColor: `${CAUTION}22`, borderRadius: 8, padding: 8, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <IconSymbol name="clock.fill" size={12} color={CAUTION} />
+                  <Text style={{ fontSize: 11, color: CAUTION, fontWeight: '600' }}>Awaiting coach approval before publishing publicly</Text>
                 </View>
-              </>
-            )}
-          </View>
-        ))}
+              )}
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingTop: 12, paddingBottom: 6, gap: 10 }}>
+                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>{post.initials}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{post.author}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 2, flexWrap: 'wrap' }}>
+                    <Text style={{ fontSize: 12, color: C.secondary }}>{post.time}</Text>
+                    {post.isCoach && (
+                      <View style={{ backgroundColor: C.surfacePressed, borderRadius: 4, paddingHorizontal: 5, paddingVertical: 1 }}>
+                        <Text style={{ fontSize: 9, fontWeight: '700', color: C.secondary }}>Coach</Text>
+                      </View>
+                    )}
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: post.visibility === 'Internal' ? C.surfacePressed : `${GAIN}22`, borderRadius: 4, paddingHorizontal: 5, paddingVertical: 1 }}>
+                      <IconSymbol name={post.visibility === 'Internal' ? 'lock.fill' : 'globe'} size={9} color={post.visibility === 'Internal' ? C.secondary : GAIN} />
+                      <Text style={{ fontSize: 9, fontWeight: '700', color: post.visibility === 'Internal' ? C.secondary : GAIN }}>{post.visibility}</Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+              <Text style={{ fontSize: 15, color: C.label, paddingHorizontal: 14, paddingBottom: 10, lineHeight: 22 }}>{post.text}</Text>
+              <View style={{ flexDirection: 'row', gap: 20, paddingHorizontal: 14, paddingBottom: 12 }}>
+                <Pressable onPress={() => toggleLike(post.id)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <IconSymbol name={isLiked ? 'heart.fill' : 'heart'} size={18} color={isLiked ? HEAT : C.secondary} />
+                </Pressable>
+                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <IconSymbol name="bubble.right" size={18} color={C.secondary} />
+                </Pressable>
+                <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <IconSymbol name="paperplane" size={18} color={C.secondary} />
+                </Pressable>
+              </View>
+            </View>
+          );
+        })}
       </ScrollView>
     </View>
   );
@@ -2972,12 +3213,501 @@ function LiveSocialView({ mode, C, insets }: { mode: string; C: any; insets: any
   );
 }
 
+// ── Community (ICCLA) Pastor: Church Profile View ──────────────────────────────
+
+type ICCLASocialTab = 'Grid' | 'Reels' | 'Sermons';
+
+function ICCLAPastorSocialView({
+  C, insets, role, cycleRole, accent, router,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+  accent: string;
+  router: ReturnType<typeof useRouter>;
+}) {
+  const { width: SCREEN_W } = useWindowDimensions();
+  const GRID_CELL = Math.floor((SCREEN_W - 2) / 3);
+  const TOP_BAR_H = 52;
+  const topBarH = insets.top + TOP_BAR_H;
+
+  const [activeTab, setActiveTab] = useState<ICCLASocialTab>('Grid');
+  const [fullscreenReelIdx, setFullscreenReelIdx] = useState<number | null>(null);
+  const [highlightViewerIdx, setHighlightViewerIdx] = useState<number | null>(null);
+  const [viewedHighlights, setViewedHighlights] = useState<Set<string>>(new Set());
+  const [storySlideIdx, setStorySlideIdx] = useState(0);
+  const storyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const reels = useMemo(() => getReels('community'), []);
+
+  const GRID_SEEDS = ['ch01','ch02','ch03','ch04','ch05','ch06','ch07','ch08','ch09'];
+  const REEL_SEEDS = ['cr01','cr02','cr03','cr04','cr05','cr06','cr07','cr08','cr09'];
+  const SERMONS = [
+    { id: 's1', seed: 'ser-01', title: 'Walking in Purpose', speaker: 'Pastor Oladipo', duration: '42:18', views: '1.2K' },
+    { id: 's2', seed: 'ser-02', title: 'The Power of Community', speaker: 'Pastor Oladipo', duration: '38:44', views: '890' },
+    { id: 's3', seed: 'ser-03', title: 'Faith Over Fear', speaker: 'Min. Blessing A.', duration: '29:55', views: '654' },
+    { id: 's4', seed: 'ser-04', title: 'Renewal Season', speaker: 'Pastor Oladipo', duration: '45:02', views: '1.4K' },
+    { id: 's5', seed: 'ser-05', title: 'Romans 8 Deep Dive', speaker: 'Min. Blessing A.', duration: '51:33', views: '723' },
+    { id: 's6', seed: 'ser-06', title: 'The Generous Life', speaker: 'Pastor Oladipo', duration: '36:21', views: '512' },
+  ];
+  const HIGHLIGHTS_DATA = [
+    { id: 'sermons',  label: 'Sermons',  seed: 'hl-sermons'  },
+    { id: 'events',   label: 'Events',   seed: 'hl-events'   },
+    { id: 'worship',  label: 'Worship',  seed: 'hl-worship'  },
+    { id: 'outreach', label: 'Outreach', seed: 'hl-outreach' },
+  ];
+  const HIGHLIGHTS_STORIES: Record<string, string[]> = {
+    sermons:  ['hs-se1', 'hs-se2', 'hs-se3'],
+    events:   ['hs-ev1', 'hs-ev2'],
+    worship:  ['hs-wo1', 'hs-wo2', 'hs-wo3'],
+    outreach: ['hs-ou1', 'hs-ou2', 'hs-ou3', 'hs-ou4'],
+  };
+  const SOCIAL_TABS = [
+    { key: 'Grid'    as const, icon: 'square.grid.3x3.fill' },
+    { key: 'Reels'   as const, icon: 'play.square.fill'     },
+    { key: 'Sermons' as const, icon: 'tv.fill'              },
+  ];
+
+  React.useEffect(() => {
+    if (highlightViewerIdx === null) {
+      if (storyTimerRef.current) clearTimeout(storyTimerRef.current);
+      return;
+    }
+    const h = HIGHLIGHTS_DATA[highlightViewerIdx];
+    const slides = HIGHLIGHTS_STORIES[h.id] ?? [];
+    if (storyTimerRef.current) clearTimeout(storyTimerRef.current);
+    storyTimerRef.current = setTimeout(() => {
+      if (storySlideIdx < slides.length - 1) {
+        setStorySlideIdx(s => s + 1);
+      } else {
+        setViewedHighlights(prev => new Set([...prev, h.id]));
+        setHighlightViewerIdx(null);
+        setStorySlideIdx(0);
+      }
+    }, 5000);
+    return () => { if (storyTimerRef.current) clearTimeout(storyTimerRef.current); };
+  }, [highlightViewerIdx, storySlideIdx]);
+
+  const profileHeader = (
+    <>
+      {/* Avatar + Stats + Bio */}
+      <View style={{ paddingHorizontal: 16, paddingTop: 12, marginBottom: 12 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 14 }}>
+          <Pressable>
+            <View style={{ width: 86, height: 86, borderRadius: 43, borderWidth: 2.5, borderColor: C.separator, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ fontSize: 24, fontWeight: '800', color: C.bg }}>IC</Text>
+            </View>
+            <View style={{ position: 'absolute', bottom: 0, right: 0, width: 24, height: 24, borderRadius: 12, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: C.bg }}>
+              <IconSymbol name="plus" size={11} color={C.bg} />
+            </View>
+          </Pressable>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+            {[
+              { value: '84',    label: 'posts'     },
+              { value: '1,240', label: 'followers' },
+              { value: '312',   label: 'members'   },
+            ].map(stat => (
+              <Pressable key={stat.label} style={{ alignItems: 'center' }} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+                <Text style={{ fontSize: 17, fontWeight: '700', color: C.label }}>{stat.value}</Text>
+                <Text style={{ fontSize: 12, color: C.label, marginTop: 1 }}>{stat.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+        <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 2 }}>ICCLA — International Christian Community</Text>
+        <Text style={{ fontSize: 13, fontWeight: '600', color: C.label, marginBottom: 3, opacity: 0.75 }}>Church · Los Angeles, CA</Text>
+        <Text style={{ fontSize: 13, color: C.label, lineHeight: 18, marginBottom: 4 }}>
+          {"A community of faith, love, and purpose.\nSunday Service · 10 AM · Main Sanctuary"}
+        </Text>
+        <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 5 }}>#ICCLA #FaithOverFear #Community</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+          <IconSymbol name="link" size={12} color={C.secondary} />
+          <Text style={{ fontSize: 13, fontWeight: '500', color: C.label }}>kanext.io/@iccla</Text>
+        </View>
+      </View>
+
+      {/* Analytics card */}
+      <Pressable
+        style={({ pressed }) => [{ marginHorizontal: 16, marginBottom: 10, backgroundColor: C.surface, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, pressed && { opacity: 0.75 }]}
+        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.push('/(tabs)/(main)/social/analytics' as any); }}
+      >
+        <View>
+          <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 2 }}>Church Growth Dashboard</Text>
+          <Text style={{ fontSize: 12, color: C.secondary }}>+18 new followers this week.</Text>
+        </View>
+        <IconSymbol name="chevron.right" size={14} color={C.secondary} />
+      </Pressable>
+
+      {/* CTA Buttons */}
+      <View style={{ flexDirection: 'row', gap: 8, marginHorizontal: 16, marginBottom: 16 }}>
+        <Pressable style={({ pressed }) => [{ flex: 1, height: 34, borderRadius: 10, backgroundColor: C.surface, borderWidth: 1, borderColor: C.separator, alignItems: 'center', justifyContent: 'center' }, pressed && { opacity: 0.7 }]}
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.push('/(tabs)/(main)/social/edit-profile' as any); }}>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Edit profile</Text>
+        </Pressable>
+        <Pressable style={({ pressed }) => [{ flex: 1, height: 34, borderRadius: 10, backgroundColor: C.surface, borderWidth: 1, borderColor: C.separator, alignItems: 'center', justifyContent: 'center' }, pressed && { opacity: 0.7 }]}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Share profile</Text>
+        </Pressable>
+        <Pressable style={({ pressed }) => [{ width: 34, height: 34, borderRadius: 10, backgroundColor: C.surface, borderWidth: 1, borderColor: C.separator, alignItems: 'center', justifyContent: 'center' }, pressed && { opacity: 0.7 }]}
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+          <IconSymbol name="person.badge.plus" size={16} color={C.label} />
+        </Pressable>
+      </View>
+
+      {/* Highlights */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 14, paddingBottom: 4 }} style={{ marginBottom: 0 }}>
+        <Pressable style={{ alignItems: 'center', gap: 6 }} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+          <View style={{ width: 62, height: 62, borderRadius: 31, borderWidth: 1.5, borderColor: C.separator, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' }}>
+            <IconSymbol name="plus" size={22} color={C.label} />
+          </View>
+          <Text style={{ fontSize: 11, color: C.label }}>New</Text>
+        </Pressable>
+        {HIGHLIGHTS_DATA.map((h, hIdx) => {
+          const viewed = viewedHighlights.has(h.id);
+          return (
+            <Pressable key={h.id} style={{ alignItems: 'center', gap: 6 }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setHighlightViewerIdx(hIdx); setStorySlideIdx(0); }}>
+              <View style={{ width: 62, height: 62, borderRadius: 31, borderWidth: 2.5, borderColor: viewed ? C.separator : C.label, overflow: 'hidden', backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' }}>
+                <Image source={{ uri: `https://picsum.photos/seed/${h.seed}/200/200` }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+              </View>
+              <Text style={{ fontSize: 11, color: C.label }} numberOfLines={1}>{h.label}</Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+
+      {/* Content type tabs */}
+      <View style={{ flexDirection: 'row', borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator, marginTop: 16 }}>
+        {SOCIAL_TABS.map(({ key, icon }) => {
+          const active = activeTab === key;
+          return (
+            <Pressable key={key} onPress={() => { Haptics.selectionAsync(); setActiveTab(key); }}
+              style={[{ flex: 1, alignItems: 'center', paddingVertical: 11 }, active ? { borderBottomWidth: 1.5, borderBottomColor: C.label } : {}]}>
+              <IconSymbol name={icon as any} size={22} color={active ? C.label : C.muted} />
+            </Pressable>
+          );
+        })}
+      </View>
+    </>
+  );
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      {/* Top bar */}
+      <View style={{ height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <KMenuButton />
+        </Pressable>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>ICCLA</Text>
+        </View>
+        <View style={{ minWidth: 40, height: 36, alignItems: 'flex-end', justifyContent: 'center' }}>
+          <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary />
+        </View>
+      </View>
+
+      {/* Profile + Grid scroll */}
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
+        {profileHeader}
+
+        {activeTab === 'Grid' && (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 1 }}>
+            {GRID_SEEDS.map((seed, i) => (
+              <Pressable key={seed} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+                <Image source={{ uri: `https://picsum.photos/seed/${seed}/400/400` }} style={{ width: GRID_CELL, height: GRID_CELL }} resizeMode="cover" />
+              </Pressable>
+            ))}
+          </View>
+        )}
+
+        {activeTab === 'Reels' && (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 1 }}>
+            {REEL_SEEDS.map((seed, i) => (
+              <Pressable key={seed} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setFullscreenReelIdx(i); }}>
+                <Image source={{ uri: `https://picsum.photos/seed/${seed}/400/400` }} style={{ width: GRID_CELL, height: GRID_CELL }} resizeMode="cover" />
+                <Text style={{ position: 'absolute', bottom: 6, left: 6, fontSize: 11, fontWeight: '600', color: '#fff' }}>0:{String(15 + i * 7).padStart(2, '0')}</Text>
+              </Pressable>
+            ))}
+          </View>
+        )}
+
+        {activeTab === 'Sermons' && (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 1 }}>
+            {SERMONS.map((vid, i) => (
+              <Pressable key={vid.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ position: 'relative' }}>
+                <Image source={{ uri: `https://picsum.photos/seed/${vid.seed}/400/300` }} style={{ width: GRID_CELL, height: Math.floor(GRID_CELL * 0.75) }} resizeMode="cover" />
+                <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 32, backgroundColor: 'rgba(0,0,0,0.45)' }} />
+                <View style={{ position: 'absolute', bottom: 5, left: 5, flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+                  <IconSymbol name="eye.fill" size={9} color="#fff" />
+                  <Text style={{ fontSize: 10, fontWeight: '600', color: '#fff' }}>{vid.views}</Text>
+                </View>
+                <Text style={{ position: 'absolute', bottom: 5, right: 5, fontSize: 10, fontWeight: '600', color: '#fff' }}>{vid.duration}</Text>
+              </Pressable>
+            ))}
+          </View>
+        )}
+      </ScrollView>
+
+      {fullscreenReelIdx !== null && (
+        <View style={{ ...StyleSheet.absoluteFillObject, zIndex: 100, backgroundColor: '#000' }}>
+          <ReelsPage
+            reels={reels}
+            likedReels={new Set()}
+            bookmarkedReels={new Set()}
+            onLikeToggle={() => {}}
+            onBookmarkToggle={() => {}}
+          />
+          <Pressable
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setFullscreenReelIdx(null); }}
+            style={{ position: 'absolute', top: insets.top + 12, left: 16, zIndex: 101, width: 36, height: 36, borderRadius: 18, backgroundColor: 'rgba(0,0,0,0.45)', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <IconSymbol name="xmark" size={16} color="#fff" />
+          </Pressable>
+        </View>
+      )}
+    </View>
+  );
+}
+
+// ── Community (ICCLA) Member: Church Profile View ──────────────────────────────
+
+function ICCLAMemberSocialView({
+  C, insets, role, cycleRole, accent,
+}: {
+  C: ComponentColors;
+  insets: { top: number; bottom: number };
+  role: string;
+  cycleRole: () => void;
+  accent: string;
+}) {
+  const { width: SCREEN_W } = useWindowDimensions();
+  const GRID_CELL = Math.floor((SCREEN_W - 2) / 3);
+  const TOP_BAR_H = 52;
+  const topBarH = insets.top + TOP_BAR_H;
+
+  const [activeTab, setActiveTab] = useState<ICCLASocialTab>('Grid');
+  const [isFollowing, setIsFollowing] = useState(true);
+  const [fullscreenReelIdx, setFullscreenReelIdx] = useState<number | null>(null);
+  const [highlightViewerIdx, setHighlightViewerIdx] = useState<number | null>(null);
+  const [viewedHighlights, setViewedHighlights] = useState<Set<string>>(new Set());
+  const [storySlideIdx, setStorySlideIdx] = useState(0);
+  const storyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const reels = useMemo(() => getReels('community'), []);
+
+  const GRID_SEEDS = ['ch01','ch02','ch03','ch04','ch05','ch06','ch07','ch08','ch09'];
+  const REEL_SEEDS = ['cr01','cr02','cr03','cr04','cr05','cr06','cr07','cr08','cr09'];
+  const SERMONS = [
+    { id: 's1', seed: 'ser-01', title: 'Walking in Purpose', speaker: 'Pastor Oladipo', duration: '42:18', views: '1.2K' },
+    { id: 's2', seed: 'ser-02', title: 'The Power of Community', speaker: 'Pastor Oladipo', duration: '38:44', views: '890' },
+    { id: 's3', seed: 'ser-03', title: 'Faith Over Fear', speaker: 'Min. Blessing A.', duration: '29:55', views: '654' },
+    { id: 's4', seed: 'ser-04', title: 'Renewal Season', speaker: 'Pastor Oladipo', duration: '45:02', views: '1.4K' },
+    { id: 's5', seed: 'ser-05', title: 'Romans 8 Deep Dive', speaker: 'Min. Blessing A.', duration: '51:33', views: '723' },
+    { id: 's6', seed: 'ser-06', title: 'The Generous Life', speaker: 'Pastor Oladipo', duration: '36:21', views: '512' },
+  ];
+  const HIGHLIGHTS_DATA = [
+    { id: 'sermons',  label: 'Sermons',  seed: 'hl-sermons'  },
+    { id: 'events',   label: 'Events',   seed: 'hl-events'   },
+    { id: 'worship',  label: 'Worship',  seed: 'hl-worship'  },
+    { id: 'outreach', label: 'Outreach', seed: 'hl-outreach' },
+  ];
+  const HIGHLIGHTS_STORIES: Record<string, string[]> = {
+    sermons:  ['hs-se1', 'hs-se2', 'hs-se3'],
+    events:   ['hs-ev1', 'hs-ev2'],
+    worship:  ['hs-wo1', 'hs-wo2', 'hs-wo3'],
+    outreach: ['hs-ou1', 'hs-ou2', 'hs-ou3', 'hs-ou4'],
+  };
+  const SOCIAL_TABS = [
+    { key: 'Grid'    as const, icon: 'square.grid.3x3.fill' },
+    { key: 'Reels'   as const, icon: 'play.square.fill'     },
+    { key: 'Sermons' as const, icon: 'tv.fill'              },
+  ];
+
+  React.useEffect(() => {
+    if (highlightViewerIdx === null) {
+      if (storyTimerRef.current) clearTimeout(storyTimerRef.current);
+      return;
+    }
+    const h = HIGHLIGHTS_DATA[highlightViewerIdx];
+    const slides = HIGHLIGHTS_STORIES[h.id] ?? [];
+    if (storyTimerRef.current) clearTimeout(storyTimerRef.current);
+    storyTimerRef.current = setTimeout(() => {
+      if (storySlideIdx < slides.length - 1) {
+        setStorySlideIdx(s => s + 1);
+      } else {
+        setViewedHighlights(prev => new Set([...prev, h.id]));
+        setHighlightViewerIdx(null);
+        setStorySlideIdx(0);
+      }
+    }, 5000);
+    return () => { if (storyTimerRef.current) clearTimeout(storyTimerRef.current); };
+  }, [highlightViewerIdx, storySlideIdx]);
+
+  const profileHeader = (
+    <>
+      {/* Avatar + Stats + Bio */}
+      <View style={{ paddingHorizontal: 16, paddingTop: 12, marginBottom: 12 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 14 }}>
+          <View style={{ width: 86, height: 86, borderRadius: 43, borderWidth: 2.5, borderColor: C.separator, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 24, fontWeight: '800', color: C.bg }}>IC</Text>
+          </View>
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+            {[
+              { value: '84',    label: 'posts'     },
+              { value: '1,240', label: 'followers' },
+              { value: '312',   label: 'members'   },
+            ].map(stat => (
+              <Pressable key={stat.label} style={{ alignItems: 'center' }} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+                <Text style={{ fontSize: 17, fontWeight: '700', color: C.label }}>{stat.value}</Text>
+                <Text style={{ fontSize: 12, color: C.label, marginTop: 1 }}>{stat.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+        <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginBottom: 2 }}>ICCLA — International Christian Community</Text>
+        <Text style={{ fontSize: 13, fontWeight: '600', color: C.label, marginBottom: 3, opacity: 0.75 }}>Church · Los Angeles, CA</Text>
+        <Text style={{ fontSize: 13, color: C.label, lineHeight: 18, marginBottom: 4 }}>
+          {"A community of faith, love, and purpose.\nSunday Service · 10 AM · Main Sanctuary"}
+        </Text>
+        <Text style={{ fontSize: 13, color: C.secondary, marginBottom: 5 }}>#ICCLA #FaithOverFear #Community</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+          <IconSymbol name="link" size={12} color={C.secondary} />
+          <Text style={{ fontSize: 13, fontWeight: '500', color: C.label }}>kanext.io/@iccla</Text>
+        </View>
+      </View>
+
+      {/* Follow + Message buttons */}
+      <View style={{ flexDirection: 'row', gap: 8, marginHorizontal: 16, marginBottom: 16 }}>
+        <Pressable
+          onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setIsFollowing(f => !f); }}
+          style={({ pressed }) => [{ flex: 1, height: 34, borderRadius: 10, backgroundColor: isFollowing ? 'transparent' : C.label, borderWidth: isFollowing ? 1 : 0, borderColor: C.separator, alignItems: 'center', justifyContent: 'center' }, pressed && { opacity: 0.7 }]}
+        >
+          <Text style={{ fontSize: 13, fontWeight: '600', color: isFollowing ? C.secondary : C.bg }}>{isFollowing ? 'Following' : 'Follow'}</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          style={({ pressed }) => [{ flex: 1, height: 34, borderRadius: 10, backgroundColor: C.surface, borderWidth: 1, borderColor: C.separator, alignItems: 'center', justifyContent: 'center' }, pressed && { opacity: 0.7 }]}
+        >
+          <Text style={{ fontSize: 13, fontWeight: '600', color: C.label }}>Message</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+          style={({ pressed }) => [{ width: 34, height: 34, borderRadius: 10, backgroundColor: C.surface, borderWidth: 1, borderColor: C.separator, alignItems: 'center', justifyContent: 'center' }, pressed && { opacity: 0.7 }]}
+        >
+          <IconSymbol name="ellipsis" size={16} color={C.label} />
+        </Pressable>
+      </View>
+
+      {/* Highlights */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 14, paddingBottom: 4 }} style={{ marginBottom: 0 }}>
+        {HIGHLIGHTS_DATA.map((h, hIdx) => {
+          const viewed = viewedHighlights.has(h.id);
+          return (
+            <Pressable key={h.id} style={{ alignItems: 'center', gap: 6 }} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setHighlightViewerIdx(hIdx); setStorySlideIdx(0); }}>
+              <View style={{ width: 62, height: 62, borderRadius: 31, borderWidth: 2.5, borderColor: viewed ? C.separator : C.label, overflow: 'hidden', backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center' }}>
+                <Image source={{ uri: `https://picsum.photos/seed/${h.seed}/200/200` }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+              </View>
+              <Text style={{ fontSize: 11, color: C.label }} numberOfLines={1}>{h.label}</Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+
+      {/* Content type tabs */}
+      <View style={{ flexDirection: 'row', borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator, marginTop: 16 }}>
+        {SOCIAL_TABS.map(({ key, icon }) => {
+          const active = activeTab === key;
+          return (
+            <Pressable key={key} onPress={() => { Haptics.selectionAsync(); setActiveTab(key); }}
+              style={[{ flex: 1, alignItems: 'center', paddingVertical: 11 }, active ? { borderBottomWidth: 1.5, borderBottomColor: C.label } : {}]}>
+              <IconSymbol name={icon as any} size={22} color={active ? C.label : C.muted} />
+            </Pressable>
+          );
+        })}
+      </View>
+    </>
+  );
+
+  return (
+    <View style={{ flex: 1, backgroundColor: C.bg }}>
+      <View style={{ height: topBarH, paddingTop: insets.top, flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 16, paddingBottom: 8, backgroundColor: C.bg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
+        <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
+          <KMenuButton />
+        </Pressable>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>ICCLA</Text>
+        </View>
+        <View style={{ minWidth: 40, height: 36, alignItems: 'flex-end', justifyContent: 'center' }}>
+          <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary={false} />
+        </View>
+      </View>
+
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
+        {profileHeader}
+
+        {activeTab === 'Grid' && (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 1 }}>
+            {GRID_SEEDS.map((seed) => (
+              <Pressable key={seed} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
+                <Image source={{ uri: `https://picsum.photos/seed/${seed}/400/400` }} style={{ width: GRID_CELL, height: GRID_CELL }} resizeMode="cover" />
+              </Pressable>
+            ))}
+          </View>
+        )}
+
+        {activeTab === 'Reels' && (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 1 }}>
+            {REEL_SEEDS.map((seed, i) => (
+              <Pressable key={seed} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setFullscreenReelIdx(i); }}>
+                <Image source={{ uri: `https://picsum.photos/seed/${seed}/400/400` }} style={{ width: GRID_CELL, height: GRID_CELL }} resizeMode="cover" />
+                <Text style={{ position: 'absolute', bottom: 6, left: 6, fontSize: 11, fontWeight: '600', color: '#fff' }}>0:{String(15 + i * 7).padStart(2, '0')}</Text>
+              </Pressable>
+            ))}
+          </View>
+        )}
+
+        {activeTab === 'Sermons' && (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 1 }}>
+            {SERMONS.map((vid) => (
+              <Pressable key={vid.id} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ position: 'relative' }}>
+                <Image source={{ uri: `https://picsum.photos/seed/${vid.seed}/400/300` }} style={{ width: GRID_CELL, height: Math.floor(GRID_CELL * 0.75) }} resizeMode="cover" />
+                <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 32, backgroundColor: 'rgba(0,0,0,0.45)' }} />
+                <View style={{ position: 'absolute', bottom: 5, left: 5, flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+                  <IconSymbol name="eye.fill" size={9} color="#fff" />
+                  <Text style={{ fontSize: 10, fontWeight: '600', color: '#fff' }}>{vid.views}</Text>
+                </View>
+                <Text style={{ position: 'absolute', bottom: 5, right: 5, fontSize: 10, fontWeight: '600', color: '#fff' }}>{vid.duration}</Text>
+              </Pressable>
+            ))}
+          </View>
+        )}
+      </ScrollView>
+
+      {fullscreenReelIdx !== null && (
+        <View style={{ ...StyleSheet.absoluteFillObject, zIndex: 100, backgroundColor: '#000' }}>
+          <ReelsPage
+            reels={reels}
+            likedReels={new Set()}
+            bookmarkedReels={new Set()}
+            onLikeToggle={() => {}}
+            onBookmarkToggle={() => {}}
+          />
+          <Pressable
+            onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setFullscreenReelIdx(null); }}
+            style={{ position: 'absolute', top: insets.top + 12, left: 16, zIndex: 101, width: 36, height: 36, borderRadius: 18, backgroundColor: 'rgba(0,0,0,0.45)', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <IconSymbol name="xmark" size={16} color="#fff" />
+          </Pressable>
+        </View>
+      )}
+    </View>
+  );
+}
+
 // ── Role keys ─────────────────────────────────────────────────────────────────
 
 const SOCIAL_ROLE_KEYS: Record<string, string> = {
   sports:    'sports',
   education: 'education',
-  community: 'community',
+  community: 'community:social',
   business:  'business',
   personal:  'personal:social',
 };
@@ -3283,258 +4013,30 @@ export default function SocialScreen() {
     );
   }
 
-  // ── Community Member: Feed + Prayer Wall ─────────────────────────────────
-  if (mode === 'community' && !isAdmin) {
-    const COMMUNITY_POSTS = [
-      { id: 'cm1', initials: 'IC', author: 'ICCLA',          time: '2h', likes: 47,  comments: 12, text: 'Sunday service was incredible this week. Thank you to everyone who came and worshipped with us. We are ICCLA — family.' },
-      { id: 'cm2', initials: 'WT', author: 'Worship Team',   time: '5h', likes: 23,  comments: 4,  text: 'Rehearsal this Saturday at 9 AM. New song introduction — come prepared. See you there!' },
-      { id: 'cm3', initials: 'BA', author: 'Blessing A.',    time: '1d', likes: 61,  comments: 18, text: 'Romans 8:28 has been on my heart all week. All things work together for good to those who love God. 🙏' },
-      { id: 'cm4', initials: 'IC', author: 'ICCLA',          time: '2d', likes: 89,  comments: 22, text: 'Our Building Fund received its largest single-month total this year. God is faithful! Thank you for your generosity.' },
-      { id: 'cm5', initials: 'YM', author: 'Youth Ministry', time: '3d', likes: 104, comments: 31, text: 'Our teens raised $840 for the Community Outreach Food Drive. Proud of these young leaders!' },
-    ];
-    const cmReels = getReels('community');
+  // ── Community Pastor: Instagram-style church profile ────────────────────────────
+  if (mode === 'community' && isAdmin) {
     return (
-      <View style={[styles.screen, { backgroundColor: communityTab === 'Reels' ? '#000' : C.bg }]}>
-        {/* Full-screen Reels layer */}
-        {communityTab === 'Reels' && (
-          <View style={StyleSheet.absoluteFill}>
-            <ReelsPage
-              reels={cmReels}
-              likedReels={new Set()}
-              bookmarkedReels={new Set()}
-              onLikeToggle={() => {}}
-              onBookmarkToggle={() => {}}
-            />
-          </View>
-        )}
-        {/* Top bar */}
-        <View style={{
-          ...(communityTab === 'Reels' ? { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20 } : {}),
-          height: insets.top + TOP_BAR_HEIGHT,
-          paddingTop: insets.top,
-          flexDirection: 'row',
-          alignItems: 'flex-end',
-          paddingHorizontal: 16,
-          paddingBottom: 8,
-          backgroundColor: communityTab === 'Reels' ? 'rgba(0,0,0,0.3)' : C.bg,
-          ...(communityTab === 'Reels' ? {} : { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }),
-        }}>
-          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-            <KMenuButton />
-          </Pressable>
-          <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 6 }}>
-            <View style={{ flexDirection: 'row', backgroundColor: communityTab === 'Reels' ? 'rgba(255,255,255,0.15)' : C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
-              {(['Feed', 'Reels', 'KTV', 'Explore'] as CommunitySocialTab[]).map(tab => {
-                const active = communityTab === tab;
-                return (
-                  <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setCommunityTab(tab); }}
-                    style={{ paddingHorizontal: 10, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? (communityTab === 'Reels' ? 'rgba(255,255,255,0.85)' : C.activePill) : 'transparent' }}>
-                    <Text style={{ fontSize: 12, fontWeight: '600', color: active ? (communityTab === 'Reels' ? '#000' : C.activePillText) : (communityTab === 'Reels' ? 'rgba(255,255,255,0.6)' : C.secondary) }}>{tab}</Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
-          <View style={{ minWidth: 40, height: 36, alignItems: 'flex-end', justifyContent: 'center' }}>
-            <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary={false} />
-          </View>
-        </View>
-        {/* Feed */}
-        {communityTab === 'Feed' && (
-          <ScrollView contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_HEIGHT + 8, paddingBottom: 120 }} showsVerticalScrollIndicator={false} onScroll={handleFeedScroll} scrollEventThrottle={16}>
-            {/* Composer */}
-            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.push('/(tabs)/(main)/social/create' as any); }} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginHorizontal: 14, marginBottom: 12, backgroundColor: C.surface, borderRadius: 14, padding: 12 }}>
-              <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>ME</Text>
-              </View>
-              <View style={{ flex: 1, height: 36, borderRadius: 18, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, alignItems: 'flex-start', justifyContent: 'center', paddingHorizontal: 14 }}>
-                <Text style={{ fontSize: 14, color: C.muted }}>Share with the community...</Text>
-              </View>
-            </Pressable>
-            {COMMUNITY_POSTS.map(post => (
-              <View key={post.id} style={{ borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingTop: 12, paddingBottom: 6, gap: 10 }}>
-                  <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>{post.initials}</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{post.author}</Text>
-                    <Text style={{ fontSize: 12, color: C.secondary }}>{post.time}</Text>
-                  </View>
-                </View>
-                <Text style={{ fontSize: 15, color: C.label, paddingHorizontal: 14, paddingBottom: 10, lineHeight: 22 }}>{post.text}</Text>
-                <View style={{ flexDirection: 'row', gap: 20, paddingHorizontal: 14, paddingBottom: 12 }}>
-                  <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setCmLiked(s => { const n = new Set(s); if (n.has(post.id)) n.delete(post.id); else n.add(post.id); return n; }); }} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                    <IconSymbol name={cmLiked.has(post.id) ? 'heart.fill' : 'heart'} size={18} color={cmLiked.has(post.id) ? C.red : C.secondary} />
-                    <Text style={{ fontSize: 13, color: C.secondary }}>{post.likes + (cmLiked.has(post.id) ? 1 : 0)}</Text>
-                  </Pressable>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                    <IconSymbol name="bubble.right" size={18} color={C.secondary} />
-                    <Text style={{ fontSize: 13, color: C.secondary }}>{post.comments}</Text>
-                  </View>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                    <IconSymbol name="square.and.arrow.up" size={18} color={C.secondary} />
-                    <Text style={{ fontSize: 13, color: C.secondary }}>Share</Text>
-                  </View>
-                </View>
-              </View>
-            ))}
-          </ScrollView>
-        )}
-        {/* Reels — rendered as absoluteFill above, nothing extra needed here */}
-        {/* KTV */}
-        {communityTab === 'KTV' && (
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}>
-            <IconSymbol name="play.rectangle.fill" size={48} color={C.muted} style={{ marginBottom: 16 }} />
-            <Text style={{ fontSize: 17, fontWeight: '700', color: C.label, marginBottom: 8, textAlign: 'center' }}>KayTV</Text>
-            <Text style={{ fontSize: 14, color: C.secondary, textAlign: 'center', lineHeight: 20 }}>Watch community streams and recorded services. Open the KTV tile for the full experience.</Text>
-          </View>
-        )}
-        {/* Explore */}
-        {communityTab === 'Explore' && (
-          <View style={{ flex: 1 }}>
-            <ExplorePage
-              mode="community"
-              trendingTopics={getTrendingTopics()}
-              tiles={getExploreTiles()}
-              suggestedAccounts={getSuggestedAccounts()}
-            />
-          </View>
-        )}
-      </View>
+      <ICCLAPastorSocialView
+        C={C}
+        insets={insets}
+        role={role}
+        cycleRole={cycleRole}
+        accent={accent}
+        router={router}
+      />
     );
   }
 
-  // ── Community Pastor: Feed / Reels / KTV / Explore ────────────────────────
-  if (mode === 'community' && isAdmin) {
-    const PASTOR_POSTS = [
-      { id: 'pp1', initials: 'IC', author: 'ICCLA', time: '2h', likes: 47, comments: 12, visibility: 'Public',     text: 'Sunday service was incredible this week. Thank you to everyone who came and worshipped with us.' },
-      { id: 'pp2', initials: 'WT', author: 'Worship Team', time: '5h', likes: 23, comments: 4, visibility: 'Community', text: 'Rehearsal this Saturday at 9 AM. New song introduction — come prepared.' },
-      { id: 'pp3', initials: 'BA', author: 'Blessing A.', time: '1d', likes: 61, comments: 18, visibility: 'Community', text: 'Romans 8:28 has been on my heart all week. All things work together for good. 🙏' },
-      { id: 'pp4', initials: 'OK', author: 'Dr. Oladipo K.', time: '2d', likes: 14, comments: 6, visibility: 'Leadership', text: 'Deacon and Elder board meeting next Tuesday at 6:30 PM. Please review the agenda beforehand.' },
-      { id: 'pp5', initials: 'IC', author: 'ICCLA', time: '3d', likes: 89, comments: 22, visibility: 'Public', text: 'Our Building Fund received its largest single-month total this year. God is faithful!' },
-    ];
-    const VIS_COLORS: Record<string, string> = { Public: '#5A8A6E', Community: C.secondary, Leadership: '#B8943E' };
-    const cpReels = getReels('community');
+  // ── Community Member: Instagram-style church profile ────────────────────────────
+  if (mode === 'community' && !isAdmin) {
     return (
-      <View style={[styles.screen, { backgroundColor: communityTab === 'Reels' ? '#000' : C.bg }]}>
-        {/* Full-screen Reels layer */}
-        {communityTab === 'Reels' && (
-          <View style={StyleSheet.absoluteFill}>
-            <ReelsPage
-              reels={cpReels}
-              likedReels={new Set()}
-              bookmarkedReels={new Set()}
-              onLikeToggle={() => {}}
-              onBookmarkToggle={() => {}}
-            />
-          </View>
-        )}
-        {/* Top bar */}
-        <View style={{
-          ...(communityTab === 'Reels' ? { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 20 } : {}),
-          height: insets.top + TOP_BAR_HEIGHT,
-          paddingTop: insets.top,
-          flexDirection: 'row',
-          alignItems: 'flex-end',
-          paddingHorizontal: 16,
-          paddingBottom: 8,
-          backgroundColor: communityTab === 'Reels' ? 'rgba(0,0,0,0.3)' : C.bg,
-          ...(communityTab === 'Reels' ? {} : { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }),
-        }}>
-          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}>
-            <KMenuButton />
-          </Pressable>
-          <View style={{ flex: 1, alignItems: 'center', marginHorizontal: 6 }}>
-            <View style={{ flexDirection: 'row', backgroundColor: communityTab === 'Reels' ? 'rgba(255,255,255,0.15)' : C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
-              {(['Feed', 'Reels', 'KTV', 'Explore'] as CommunitySocialTab[]).map(tab => {
-                const active = communityTab === tab;
-                return (
-                  <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setCommunityTab(tab); }}
-                    style={{ paddingHorizontal: 10, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? (communityTab === 'Reels' ? 'rgba(255,255,255,0.85)' : C.activePill) : 'transparent' }}>
-                    <Text style={{ fontSize: 12, fontWeight: '600', color: active ? (communityTab === 'Reels' ? '#000' : C.activePillText) : (communityTab === 'Reels' ? 'rgba(255,255,255,0.6)' : C.secondary) }}>{tab}</Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
-          <View style={{ minWidth: 40, height: 36, alignItems: 'flex-end', justifyContent: 'center' }}>
-            <RolePill role={role} onPress={cycleRole} accentColor={accent} isPrimary />
-          </View>
-        </View>
-        {/* Feed */}
-        {communityTab === 'Feed' && (
-          <ScrollView contentContainerStyle={{ paddingTop: insets.top + TOP_BAR_HEIGHT + 8, paddingBottom: 120 }} showsVerticalScrollIndicator={false} onScroll={handleFeedScroll} scrollEventThrottle={16}>
-            {/* Composer */}
-            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); router.push('/(tabs)/(main)/social/create' as any); }} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginHorizontal: 14, marginBottom: 12, backgroundColor: C.surface, borderRadius: 14, padding: 12 }}>
-              <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>IC</Text>
-              </View>
-              <View style={{ flex: 1, height: 36, borderRadius: 18, borderWidth: StyleSheet.hairlineWidth, borderColor: C.separator, alignItems: 'flex-start', justifyContent: 'center', paddingHorizontal: 14 }}>
-                <Text style={{ fontSize: 14, color: C.muted }}>Post as ICCLA...</Text>
-              </View>
-              <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)} style={{ paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8, backgroundColor: C.surfacePressed }}>
-                <Text style={{ fontSize: 12, fontWeight: '600', color: C.secondary }}>Public</Text>
-              </Pressable>
-            </Pressable>
-            {PASTOR_POSTS.map(post => (
-              <View key={post.id} style={{ borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.separator }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingTop: 12, paddingBottom: 6, gap: 10 }}>
-                  <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.label, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ color: C.bg, fontWeight: '700', fontSize: 13 }}>{post.initials}</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{post.author}</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                      <Text style={{ fontSize: 12, color: C.secondary }}>{post.time}</Text>
-                      <View style={{ width: 3, height: 3, borderRadius: 2, backgroundColor: C.separator }} />
-                      <Text style={{ fontSize: 11, fontWeight: '700', color: VIS_COLORS[post.visibility] ?? C.secondary }}>{post.visibility}</Text>
-                    </View>
-                  </View>
-                  <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
-                    <IconSymbol name="ellipsis" size={18} color={C.secondary} />
-                  </Pressable>
-                </View>
-                <Text style={{ fontSize: 15, color: C.label, paddingHorizontal: 14, paddingBottom: 10, lineHeight: 22 }}>{post.text}</Text>
-                <View style={{ flexDirection: 'row', gap: 20, paddingHorizontal: 14, paddingBottom: 12 }}>
-                  <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setCpLiked(s => { const n = new Set(s); if (n.has(post.id)) n.delete(post.id); else n.add(post.id); return n; }); }} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                    <IconSymbol name={cpLiked.has(post.id) ? 'heart.fill' : 'heart'} size={18} color={cpLiked.has(post.id) ? C.red : C.secondary} />
-                    <Text style={{ fontSize: 13, color: C.secondary }}>{post.likes + (cpLiked.has(post.id) ? 1 : 0)}</Text>
-                  </Pressable>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                    <IconSymbol name="bubble.right" size={18} color={C.secondary} />
-                    <Text style={{ fontSize: 13, color: C.secondary }}>{post.comments}</Text>
-                  </View>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                    <IconSymbol name="pin" size={18} color={C.secondary} />
-                    <Text style={{ fontSize: 13, color: C.secondary }}>Pin</Text>
-                  </View>
-                </View>
-              </View>
-            ))}
-          </ScrollView>
-        )}
-        {/* Reels — rendered as absoluteFill above, nothing extra needed here */}
-        {/* KTV */}
-        {communityTab === 'KTV' && (
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}>
-            <IconSymbol name="play.rectangle.fill" size={48} color={C.muted} style={{ marginBottom: 16 }} />
-            <Text style={{ fontSize: 17, fontWeight: '700', color: C.label, marginBottom: 8, textAlign: 'center' }}>KayTV</Text>
-            <Text style={{ fontSize: 14, color: C.secondary, textAlign: 'center', lineHeight: 20 }}>Manage community streams and broadcast recorded services. Open the KTV tile for the full experience.</Text>
-          </View>
-        )}
-        {/* Explore */}
-        {communityTab === 'Explore' && (
-          <View style={{ flex: 1 }}>
-            <ExplorePage
-              mode="community"
-              trendingTopics={getTrendingTopics()}
-              tiles={getExploreTiles()}
-              suggestedAccounts={getSuggestedAccounts()}
-            />
-          </View>
-        )}
-      </View>
+      <ICCLAMemberSocialView
+        C={C}
+        insets={insets}
+        role={role}
+        cycleRole={cycleRole}
+        accent={accent}
+      />
     );
   }
 

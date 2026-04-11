@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useRouter, useFocusEffect, useLocalSearchParams, Redirect } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -696,7 +696,18 @@ export default function HubScreen() {
 
   const lastScrollY = useRef(0);
 
-  useFocusEffect(useCallback(() => { resetFooter(); }, []));
+  useFocusEffect(useCallback(() => {
+    resetFooter();
+    if (mode === 'sports') {
+      router.replace(isSportsAdmin
+        ? '/(tabs)/(main)/hub/sports-program-overview' as any
+        : '/(tabs)/(main)/hub/sports-player-dashboard' as any
+      );
+    }
+  }, [mode, isSportsAdmin]));
+
+  // ── Sports mode: render nothing while redirect fires ─────────────────────────
+  if (mode === 'sports') return null;
 
   const handleScroll = useCallback((e: any) => {
     const y = e.nativeEvent.contentOffset.y;

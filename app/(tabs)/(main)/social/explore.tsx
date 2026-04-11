@@ -20,6 +20,8 @@ import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { KMenuButton } from '@/components/ui/k-menu-button';
+import { openSidePanel } from '@/utils/global-side-panel';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 
 // ---------------------------------------------------------------------------
@@ -566,11 +568,11 @@ export default function SocialExplorePage() {
         <Pressable
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            router.back();
+            openSidePanel();
           }}
           style={{ width: 40, height: 36, alignItems: 'center', justifyContent: 'center' }}
         >
-          <IconSymbol name="chevron.left" size={22} color={C.label} />
+          <KMenuButton />
         </Pressable>
         <View style={{ flex: 1, alignItems: 'center' }}>
           <View

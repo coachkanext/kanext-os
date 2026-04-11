@@ -2434,30 +2434,9 @@ export default function KayTVScreen() {
   }
 
 
-  // ── Community Pastor: Media management view ───────────────────────────────
-  if (mode === 'community' && isOwner) {
-    return (
-      <CommunityPastorMediaView
-        C={C}
-        insets={insets}
-        role={role}
-        cycleRole={cycleRole}
-      />
-    );
-  }
-
-  // ── Community Member: simplified Watch view ──────────────────────────────
-  if (mode === 'community' && !isOwner) {
-    return (
-      <CommunityMemberWatchView
-        C={C}
-        insets={insets}
-        role={role}
-        cycleRole={cycleRole}
-        accent={accent}
-        router={router}
-      />
-    );
+  // ── Community mode: redirect to Sermons (default screen) ────────────────────
+  if (mode === 'community') {
+    return <Redirect href="/(tabs)/(main)/kaytv/sermons" />;
   }
 
   // ── Owner / non-personal modes: full existing screen ──────────────────

@@ -30,6 +30,7 @@ import { useState, useEffect } from 'react';
 const DEFAULTS: Record<string, string[]> = {
   sports:               ['Coach',   'Fan'],
   'sports:hub':         ['Head Coach', 'Player'],
+  'sports:agenda':      ['Head Coach', 'Player'],
   'sports:roster':      ['Coach',   'Player'],
   'sports:recruits':    ['Coach',   'Recruit'],
   'sports:booster':     ['Coach',   'Fan'],
@@ -45,6 +46,9 @@ const DEFAULTS: Record<string, string[]> = {
   'community:members':    ['Pastor',  'Member'],
   'community:outreach':   ['Pastor',  'Visitor'],
   'community:give':       ['Pastor',  'Member'],
+  'community:social':     ['Pastor',  'Member'],
+  'community:agenda':     ['Pastor',  'Member'],
+  'community:kaytv':      ['Pastor',  'Member'],
   business:               ['CEO',     'Client'],
   'business:hub':         ['CEO',     'Customer'],
   'business:inquiries':   ['CEO',     'Customer'],

@@ -1,1083 +1,308 @@
 /**
  * Roster Screen — Sports Mode · LU Men's Basketball
- * Tabs: Players / Depth Chart / Staff
- * Roles: Coach / Player (cycle via top-right pill)
+ * NBA 2K-style roster — no tabs in the screen (navigation via side panel)
+ * Roles: Coach (full data) / Player (public bio + basic stats only)
  */
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useMemo, useCallback, useRef, Alert } from 'react';
 import {
   View, Text, Pressable, ScrollView, TextInput,
-  StyleSheet, Animated,
+  StyleSheet, Alert as RNAlert,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 
-import { IconSymbol }   from '@/components/ui/icon-symbol';
-import { GlassView }    from '@/components/ui/glass-view';
-import { BottomSheet }  from '@/components/ui/bottom-sheet';
-import { RolePill }     from '@/components/ui/role-pill';
+import { IconSymbol }  from '@/components/ui/icon-symbol';
+import { RolePill }    from '@/components/ui/role-pill';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
-import { useDemoRole }  from '@/utils/demo-role-store';
+import { useDemoRole } from '@/utils/demo-role-store';
 import { resetFooter, hideFooter, showFooter } from '@/utils/global-footer-hide';
-import { useDataMode } from '@/utils/global-demo-mode';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { KMenuButton } from '@/components/ui/k-menu-button';
 import {
-  PLAYERS, COACHING_STAFF, TEAM_INFO,
-  DEVELOPMENT_PRIORITIES,
-  getUpcomingGames, krTierColor,
-  type Player, type StaffMember,
+  PLAYERS, TEAM_INFO, TEAM_KR, rosterHealthSummary, krTierColor,
+  type Player,
 } from '@/data/mock-sports-hub';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const TOP_BAR_H  = 52;
-const PILL_ROW_H = 48;
-const NAVY       = '#1A1714';
+const TOP_BAR_H = 52;
+const DARK_CARD = '#1A1714';
+const GAIN      = '#5A8A6E';
+const HEAT      = '#B85C5C';
+const CAUTION   = '#B8943E';
 
-type RosterTab   = 'Players' | 'Depth Chart' | 'Staff';
-type PosFilter   = 'All' | 'PG' | 'SG' | 'SF' | 'PF' | 'C';
+const MY_PLAYER_ID = 'p01'; // Marcus Reed — the "logged in" player
 
-const ROSTER_TABS: RosterTab[]  = ['Players', 'Depth Chart', 'Staff'];
-const POS_FILTERS: PosFilter[]  = ['All', 'PG', 'SG', 'SF', 'PF', 'C'];
+type SortKey  = 'KR' | '#' | 'Pos' | 'Name';
+type PosFilter = 'All' | 'PG' | 'SG' | 'SF' | 'PF' | 'C';
 
-// My player profile for the Player view demo
-const MY_PLAYER_ID = 'p01'; // Marcus Reed
+const POS_FILTERS: PosFilter[] = ['All', 'PG', 'SG', 'SF', 'PF', 'C'];
+const SORT_KEYS: SortKey[]     = ['KR', '#', 'Pos', 'Name'];
 
-const DEPTH_CHART: { pos: string; players: string[] }[] = [
-  { pos: 'PG', players: ['Marcus Reed',    'Devon Carter',   'Elijah Santos']  },
-  { pos: 'SG', players: ['Claude McKesey', 'Chris Plantey',  'Tyler Quinn']    },
-  { pos: 'SF', players: ['Samuel Manzo',   'Nicholas Bansraj', 'Marcus Webb']  },
-  { pos: 'PF', players: ['Samuel Wall',    'Jordan Blake',   'Kofi Mensah']    },
-  { pos: 'C',  players: ['Paul Diomande',  'Jordan Blake',   'Andre Voss']     },
-];
+// ── KR color helper ───────────────────────────────────────────────────────────
 
-// Player bio snippets
-const PLAYER_BIOS: Record<string, string> = {
-  p01: "Marcus is the engine of the Oaklanders offense, leading the team in scoring and assists. The junior PG from the Bay Area is one of the premier PNR creators in the GAAC.",
-  p02: "Claude brings length and two-way ability to the wing position. The Oakland native is a cornerstone of the Oaklanders switch-heavy defensive scheme.",
-  p03: "Samuel Manzo is a versatile guard-forward who creates off the bounce and hits the three. His GAAC experience gives the Oaklanders a steady secondary ball-handler.",
-  p04: "Samuel Wall is a physical forward who anchors the Oaklanders frontcourt. His mid-range game and screen-setting are crucial to the team's half-court execution.",
-  p05: "Paul leads the GAAC in blocks and is the defensive anchor of the Oaklanders frontcourt. The big man from Oakland is in the running for All-GAAC honors.",
-  p06: "Devon brings playmaking and pressure defense as the backup PG. His vision and pace give the Oaklanders a different look in two-guard lineups.",
-  p07: "Chris is the Oaklanders' designated spot-up shooter, shooting efficiently from distance. His off-ball movement and catch-and-shoot ability stretch opposing defenses.",
-  p08: "Tyler Quinn is a reliable two-way guard off the bench. His IQ and consistent three-point shooting make him a trusted rotation piece.",
-  p09: "Nicholas brings switchable defense and hustle off the bench. The sophomore wing can guard one through four and provides energy on both ends.",
-  p10: "Jordan is an athletic rim-running big who finishes above the rim. The sophomore is developing a face-up game to complement his interior presence.",
-  p11: "Darius Osei is a freshman guard working his way into the rotation. His burst and scoring instincts project real upside at the next level.",
-  p12: "Marcus Webb is an athletic wing in his freshman year who shows flashes of real upside. Developing his shot selection is his primary focus.",
-  p13: "Elijah Santos is a crafty sophomore PG who provides pace and ball security. His high basketball IQ makes him a reliable option in pick-and-roll situations.",
-  p14: "Kofi is a redshirting sophomore developing as a stretch four. His shooting mechanics have improved dramatically during the year away from competition.",
-  p15: "Andre is recovering from an ankle injury and projecting as a high-ceiling big with shot-blocking instincts.",
-};
-
-const SCHOLARSHIP_PCT: Record<string, number> = {
-  p01: 100, p02: 100, p05: 100,
-  p03: 80,  p04: 80,  p07: 60,
-  p06: 60,  p08: 40,  p09: 40,
-  p10: 60,  p12: 40,  p14: 50,
-  p15: 80,
-};
-
-// ── Helper Functions ──────────────────────────────────────────────────────────
-
-function medicalDot(status: Player['medical']): string {
-  if (status === 'available') return '#5A8A6E';
-  if (status === 'limited')   return '#1A1714';
-  return '#B85C5C';
+function krColor(kr: number): string {
+  if (kr >= 80) return CAUTION; // gold
+  if (kr >= 75) return GAIN;    // green
+  if (kr >= 65) return '#9C9790'; // neutral
+  return HEAT;                  // red
 }
 
-function eligDot(status: Player['eligibility']): string {
-  if (status === 'eligible')   return '#5A8A6E';
-  if (status === 'warning')    return '#1A1714';
-  return '#B85C5C';
+function krBorderColor(kr: number): string {
+  return krColor(kr);
 }
 
-function gpaColor(gpa: number): string {
-  if (gpa >= 2.5) return '#5A8A6E';
-  if (gpa >= 2.0) return '#1A1714';
-  return '#B85C5C';
+// ── Medical / eligibility helpers ─────────────────────────────────────────────
+
+function medDotColor(status: Player['medical']): string {
+  if (status === 'available') return GAIN;
+  if (status === 'limited')   return CAUTION;
+  return HEAT;
 }
 
-function staffRoleBadgeColor(role: StaffMember['role']): string {
-  if (role === 'head-coach') return NAVY;
-  if (role === 'asst-coach') return '#1A1714';
-  if (role === 'grad-asst')  return '#1A1714';
-  if (role === 'trainer')    return '#5A8A6E';
-  if (role === 'strength')   return '#1A1714';
-  if (role === 'sid')        return '#1A1714';
-  return '#1A1714';
+function eligDotColor(status: Player['eligibility']): string {
+  if (status === 'eligible')   return GAIN;
+  if (status === 'warning')    return CAUTION;
+  return HEAT;
 }
 
-function staffRoleLabel(role: StaffMember['role']): string {
-  if (role === 'head-coach') return 'Head Coach';
-  if (role === 'asst-coach') return 'Asst. Coach';
-  if (role === 'grad-asst')  return 'Grad Asst.';
-  if (role === 'trainer')    return 'Trainer';
-  if (role === 'strength')   return 'S&C';
-  if (role === 'sid')        return 'SID';
-  return role;
-}
+// ── Position Badge ─────────────────────────────────────────────────────────────
 
-// ── Sub-Components ────────────────────────────────────────────────────────────
-
-// ── Section Header ──
-
-function SectionHeader({ title, C }: { title: string; C: ComponentColors }) {
+function PosBadge({ pos, C }: { pos: string; C: ComponentColors }) {
   return (
-    <Text style={[sh.title, { color: C.label }]}>{title}</Text>
+    <View style={[pb.wrap, { backgroundColor: DARK_CARD + '18' }]}>
+      <Text style={[pb.text, { color: C.label }]}>{pos}</Text>
+    </View>
   );
 }
-const sh = StyleSheet.create({
-  title: { fontSize: 16, fontWeight: '700', marginBottom: 10, marginTop: 6 },
+const pb = StyleSheet.create({
+  wrap: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6 },
+  text: { fontSize: 11, fontWeight: '700' },
 });
 
-// ── Player Avatar ──
+// ── Avatar ────────────────────────────────────────────────────────────────────
 
 function PlayerAvatar({ p, size = 44 }: { p: Player; size?: number }) {
   return (
     <View style={{
       width: size, height: size, borderRadius: size / 2,
       backgroundColor: `hsl(${p.hue},45%,35%)`,
-      alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+      alignItems: 'center', justifyContent: 'center',
     }}>
-      <Text style={{ color: '#fff', fontSize: size * 0.32, fontWeight: '700' }}>{p.initials}</Text>
+      <Text style={{ color: '#fff', fontSize: size * 0.32, fontWeight: '700' }}>
+        {p.initials}
+      </Text>
     </View>
   );
 }
 
-// ── Staff Avatar ──
+// ── Coach Player Card ──────────────────────────────────────────────────────────
 
-function StaffAvatar({ s: staff, size = 44 }: { s: StaffMember; size?: number }) {
-  return (
-    <View style={{
-      width: size, height: size, borderRadius: size / 2,
-      backgroundColor: `hsl(${staff.hue},40%,35%)`,
-      alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-    }}>
-      <Text style={{ color: '#fff', fontSize: size * 0.32, fontWeight: '700' }}>{staff.initials}</Text>
-    </View>
-  );
-}
-
-// ── Position Badge ──
-
-function PosBadge({ pos }: { pos: string }) {
-  return (
-    <View style={[pb.badge, { backgroundColor: NAVY + '20' }]}>
-      <Text style={[pb.text, { color: NAVY }]}>{pos}</Text>
-    </View>
-  );
-}
-const pb = StyleSheet.create({
-  badge: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: 6 },
-  text:  { fontSize: 11, fontWeight: '700' },
-});
-
-// ── Eligibility Badge ──
-
-function EligBadge({ status }: { status: Player['eligibility'] }) {
-  const color = eligDot(status);
-  const label = status === 'eligible' ? 'Eligible' : status === 'warning' ? 'Warning' : 'Ineligible';
-  return (
-    <View style={[elb.badge, { backgroundColor: color + '22' }]}>
-      <Text style={[elb.text, { color }]}>{label}</Text>
-    </View>
-  );
-}
-const elb = StyleSheet.create({
-  badge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
-  text:  { fontSize: 11, fontWeight: '700' },
-});
-
-// ── Stat Chip ──
-
-function StatChip({ label, value, C }: { label: string; value: string; C: ComponentColors }) {
-  return (
-    <View style={[sc.chip, { backgroundColor: C.surfacePressed }]}>
-      <Text style={[sc.val, { color: C.label }]}>{value}</Text>
-      <Text style={[sc.lbl, { color: C.muted }]}>{label}</Text>
-    </View>
-  );
-}
-const sc = StyleSheet.create({
-  chip: { alignItems: 'center', paddingHorizontal: 10, paddingVertical: 8, borderRadius: 10, minWidth: 52 },
-  val:  { fontSize: 15, fontWeight: '800' },
-  lbl:  { fontSize: 10, fontWeight: '500', marginTop: 1 },
-});
-
-// ── Progress Bar ──
-
-function ProgressBar({ pct, color, C }: { pct: number; color: string; C: ComponentColors }) {
-  return (
-    <View style={[prg.track, { backgroundColor: C.surfacePressed }]}>
-      <View style={[prg.fill, { width: `${Math.min(pct * 100, 100)}%` as any, backgroundColor: color }]} />
-    </View>
-  );
-}
-const prg = StyleSheet.create({
-  track: { height: 6, borderRadius: 3, overflow: 'hidden', flex: 1 },
-  fill:  { height: 6, borderRadius: 3 },
-});
-
-// ── Player Card (Fan / Coach) ─────────────────────────────────────────────────
-
-function PlayerCard({
-  player, role, onPress, C,
-}: { player: Player; role: 'Fan' | 'Coach'; onPress: () => void; C: ComponentColors }) {
-  const isCoach = role === 'Coach';
-  const krColor = krTierColor(player.kr.overall);
+function CoachPlayerCard({
+  p, onPress, C,
+}: { p: Player; onPress: () => void; C: ComponentColors }) {
+  const krc    = krColor(p.kr.overall);
+  const fitAvg = Math.round((p.systemFitOff + p.systemFitDef) / 2);
 
   return (
     <Pressable
       style={({ pressed }) => [
-        plc.card,
-        { backgroundColor: C.surface, opacity: pressed ? 0.82 : 1 },
+        cc.card,
+        {
+          backgroundColor:  C.surface,
+          borderLeftColor:  krBorderColor(p.kr.overall),
+          opacity:          pressed ? 0.82 : 1,
+        },
       ]}
-      onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onPress(); }}
+      onPress={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onPress();
+      }}
     >
-      {/* Main Row */}
-      <View style={plc.mainRow}>
-        {/* Jersey Number */}
-        <View style={[plc.numberWrap, { backgroundColor: NAVY + '15' }]}>
-          <Text style={[plc.number, { color: NAVY }]}>#{player.number}</Text>
+      <View style={cc.row}>
+        {/* LEFT COLUMN */}
+        <View style={cc.left}>
+          {/* Number + Name */}
+          <View style={cc.nameRow}>
+            <Text style={[cc.number, { color: C.secondary }]}>#{p.number}</Text>
+            <Text style={[cc.name, { color: C.label }]} numberOfLines={1}>
+              {p.name}
+            </Text>
+          </View>
+
+          {/* Position + Class + Height + Weight */}
+          <View style={cc.metaRow}>
+            <PosBadge pos={p.position} C={C} />
+            <View style={[cc.classBadge, { backgroundColor: C.surfacePressed }]}>
+              <Text style={[cc.classTxt, { color: C.secondary }]}>{p.classYear}</Text>
+            </View>
+            <Text style={[cc.metaTxt, { color: C.secondary }]}>{p.heightFt}</Text>
+            <Text style={[cc.metaTxt, { color: C.muted }]}>·</Text>
+            <Text style={[cc.metaTxt, { color: C.secondary }]}>{p.weight} lbs</Text>
+          </View>
+
+          {/* Hometown */}
+          <Text style={[cc.hometown, { color: C.muted }]} numberOfLines={1}>
+            {p.hometown}
+          </Text>
+
+          {/* Archetype */}
+          <View style={[cc.archetypeBadge, { backgroundColor: C.surfacePressed }]}>
+            <Text style={[cc.archetypeTxt, { color: C.label }]}>{p.archetype}</Text>
+          </View>
+
+          {/* Stats row: PPG / RPG / APG */}
+          <View style={cc.statsRow}>
+            <View style={cc.statItem}>
+              <Text style={[cc.statVal, { color: C.label }]}>{p.stats.ppg.toFixed(1)}</Text>
+              <Text style={[cc.statLbl, { color: C.muted }]}>PPG</Text>
+            </View>
+            <Text style={[cc.statSep, { color: C.separator }]}>/</Text>
+            <View style={cc.statItem}>
+              <Text style={[cc.statVal, { color: C.label }]}>{p.stats.rpg.toFixed(1)}</Text>
+              <Text style={[cc.statLbl, { color: C.muted }]}>RPG</Text>
+            </View>
+            <Text style={[cc.statSep, { color: C.separator }]}>/</Text>
+            <View style={cc.statItem}>
+              <Text style={[cc.statVal, { color: C.label }]}>{p.stats.apg.toFixed(1)}</Text>
+              <Text style={[cc.statLbl, { color: C.muted }]}>APG</Text>
+            </View>
+          </View>
         </View>
 
-        {/* Avatar */}
-        <PlayerAvatar p={player} />
+        {/* RIGHT COLUMN */}
+        <View style={cc.right}>
+          {/* KR circle */}
+          <View style={[cc.krCircle, { backgroundColor: krc + '26', borderColor: krc }]}>
+            <Text style={[cc.krNum, { color: krc }]}>{Math.round(p.kr.overall)}</Text>
+          </View>
+          <Text style={[cc.krLabel, { color: C.muted }]}>KR</Text>
 
-        {/* Info */}
-        <View style={plc.info}>
-          <View style={plc.nameRow}>
-            <Text style={[plc.name, { color: C.label }]} numberOfLines={1}>{player.name}</Text>
-            {player.isRedshirt && (
-              <View style={[plc.rsBadge, { backgroundColor: '#1A171422' }]}>
-                <Text style={[plc.rsText, { color: '#1A1714' }]}>RS</Text>
-              </View>
+          {/* System fit */}
+          <Text style={[cc.fitTxt, { color: C.secondary }]}>{fitAvg}% fit</Text>
+
+          {/* Status dots row */}
+          <View style={cc.dotsRow}>
+            <View style={[cc.dot, { backgroundColor: eligDotColor(p.eligibility) }]} />
+            <View style={[cc.dot, { backgroundColor: medDotColor(p.medical) }]} />
+            {p.isScholarship && (
+              <Text style={[cc.scholTxt, { color: C.muted }]}>S</Text>
             )}
           </View>
-          <View style={plc.detailRow}>
-            <PosBadge pos={player.position} />
-            <Text style={[plc.detail, { color: C.secondary }]}>{player.classYear}</Text>
-            <Text style={[plc.detail, { color: C.muted }]}>·</Text>
-            <Text style={[plc.detail, { color: C.secondary }]}>{player.heightFt}</Text>
-            <Text style={[plc.detail, { color: C.muted }]}>·</Text>
-            <Text style={[plc.detail, { color: C.secondary }]}>{player.weight} lbs</Text>
-          </View>
-          <Text style={[plc.hometown, { color: C.muted }]} numberOfLines={1}>{player.hometown}</Text>
-        </View>
-
-        {/* Right side */}
-        <View style={plc.rightCol}>
-          {isCoach ? (
-            <>
-              <View style={[plc.krBubble, { backgroundColor: krColor + '20' }]}>
-                <Text style={[plc.krNum, { color: krColor }]}>{player.kr.overall.toFixed(0)}</Text>
-              </View>
-              <View style={plc.dotsRow}>
-                <View style={[plc.dot, { backgroundColor: eligDot(player.eligibility) }]} />
-                <View style={[plc.dot, { backgroundColor: medicalDot(player.medical) }]} />
-              </View>
-            </>
-          ) : (
-            <IconSymbol name="chevron.right" size={14} color={C.muted} />
-          )}
         </View>
       </View>
-
-      {/* Coach Operational Row */}
-      {isCoach && (
-        <View style={[plc.opRow, { borderTopColor: C.separator }]}>
-          <Text style={[plc.opLabel, { color: C.muted }]}>KR</Text>
-          <Text style={[plc.opVal, { color: krColor }]}>{player.kr.overall.toFixed(1)}</Text>
-          <Text style={[plc.opSep, { color: C.separator }]}>|</Text>
-          <Text style={[plc.opLabel, { color: C.muted }]}>Elig</Text>
-          <View style={[plc.smallDot, { backgroundColor: eligDot(player.eligibility) }]} />
-          <Text style={[plc.opSep, { color: C.separator }]}>|</Text>
-          <Text style={[plc.opLabel, { color: C.muted }]}>Med</Text>
-          <View style={[plc.smallDot, { backgroundColor: medicalDot(player.medical) }]} />
-          <Text style={[plc.opSep, { color: C.separator }]}>|</Text>
-          <Text style={[plc.opLabel, { color: C.muted }]}>Schol</Text>
-          <Text style={[plc.opVal, { color: C.secondary }]}>{SCHOLARSHIP_PCT[player.id] ?? 0}%</Text>
-        </View>
-      )}
     </Pressable>
   );
 }
 
-const plc = StyleSheet.create({
-  card:       { borderRadius: 14, padding: 12, marginBottom: 10 },
-  mainRow:    { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  numberWrap: { width: 34, height: 34, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
-  number:     { fontSize: 13, fontWeight: '800' },
-  info:       { flex: 1, gap: 3 },
-  nameRow:    { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  name:       { fontSize: 15, fontWeight: '700', flexShrink: 1 },
-  rsBadge:    { paddingHorizontal: 5, paddingVertical: 1, borderRadius: 5 },
-  rsText:     { fontSize: 10, fontWeight: '700' },
-  detailRow:  { flexDirection: 'row', alignItems: 'center', gap: 4, flexWrap: 'wrap' },
-  detail:     { fontSize: 12 },
-  hometown:   { fontSize: 11 },
-  rightCol:   { alignItems: 'center', gap: 6 },
-  krBubble:   { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center' },
-  krNum:      { fontSize: 13, fontWeight: '800' },
-  dotsRow:    { flexDirection: 'row', gap: 5 },
-  dot:        { width: 8, height: 8, borderRadius: 4 },
-  opRow:      { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 10, paddingTop: 8, borderTopWidth: StyleSheet.hairlineWidth },
-  opLabel:    { fontSize: 11 },
-  opVal:      { fontSize: 12, fontWeight: '700' },
-  opSep:      { fontSize: 12 },
-  smallDot:   { width: 7, height: 7, borderRadius: 3.5 },
+const cc = StyleSheet.create({
+  card:          { borderRadius: 16, marginHorizontal: 14, marginBottom: 10, padding: 14, borderLeftWidth: 4 },
+  row:           { flexDirection: 'row', gap: 12 },
+  left:          { flex: 1, gap: 5 },
+  right:         { width: 80, alignItems: 'center', gap: 4 },
+  nameRow:       { flexDirection: 'row', alignItems: 'baseline', gap: 6 },
+  number:        { fontSize: 11, fontWeight: '700' },
+  name:          { fontSize: 16, fontWeight: '800', flexShrink: 1 },
+  metaRow:       { flexDirection: 'row', alignItems: 'center', gap: 5, flexWrap: 'wrap' },
+  classBadge:    { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5 },
+  classTxt:      { fontSize: 11, fontWeight: '600' },
+  metaTxt:       { fontSize: 12 },
+  hometown:      { fontSize: 11, marginTop: 1 },
+  archetypeBadge:{ alignSelf: 'flex-start', paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6, marginTop: 2 },
+  archetypeTxt:  { fontSize: 11, fontWeight: '500' },
+  statsRow:      { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 4 },
+  statItem:      { alignItems: 'center' },
+  statVal:       { fontSize: 14, fontWeight: '800' },
+  statLbl:       { fontSize: 9, fontWeight: '600', marginTop: 1 },
+  statSep:       { fontSize: 12, marginHorizontal: 2 },
+  krCircle:      { width: 64, height: 64, borderRadius: 32, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  krNum:         { fontSize: 22, fontWeight: '900' },
+  krLabel:       { fontSize: 9, fontWeight: '700' },
+  fitTxt:        { fontSize: 10 },
+  dotsRow:       { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 2 },
+  dot:           { width: 6, height: 6, borderRadius: 3 },
+  scholTxt:      { fontSize: 9, fontWeight: '700' },
 });
 
-// ── Player Detail Sheet ───────────────────────────────────────────────────────
+// ── Player Public Card (Player role view) ─────────────────────────────────────
 
-function PlayerSheet({
-  player, role, visible, onClose, C,
-}: {
-  player: Player | null; role: 'Fan' | 'Coach';
-  visible: boolean; onClose: () => void; C: ComponentColors;
-}) {
-  if (!player) return null;
-  const isCoach   = role === 'Coach';
-  const krColor   = krTierColor(player.kr.overall);
-  const devPrios  = DEVELOPMENT_PRIORITIES.find(d => d.playerId === player.id)?.priorities ?? [];
-
-  return (
-    <BottomSheet visible={visible} onClose={onClose} useModal backgroundColor={C.bg} title={player.name}>
-      {/* Header */}
-      <View style={pds.header}>
-        <PlayerAvatar p={player} size={64} />
-        <View style={pds.headerInfo}>
-          <View style={pds.headerTopRow}>
-            <View style={[pds.numBadge, { backgroundColor: NAVY + '18' }]}>
-              <Text style={[pds.numText, { color: NAVY }]}>#{player.number}</Text>
-            </View>
-            <PosBadge pos={player.position} />
-            <Text style={[pds.classText, { color: C.secondary }]}>{player.classYear}</Text>
-          </View>
-          <Text style={[pds.archetype, { color: C.muted }]}>{player.archetype}</Text>
-          <Text style={[pds.info, { color: C.secondary }]}>{player.heightFt} · {player.weight} lbs</Text>
-          <Text style={[pds.info, { color: C.muted }]}>{player.hometown}</Text>
-        </View>
-      </View>
-
-      {/* Badges */}
-      {player.badges.length > 0 && (
-        <View style={pds.badgesRow}>
-          {player.badges.map(b => (
-            <View key={b} style={[pds.badge, { backgroundColor: NAVY + '12', borderColor: NAVY + '30', borderWidth: 1 }]}>
-              <Text style={[pds.badgeText, { color: NAVY }]}>{b}</Text>
-            </View>
-          ))}
-        </View>
-      )}
-
-      {/* Season Stats */}
-      <Text style={[pds.sectionLabel, { color: C.label }]}>Season Stats</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 14 }}>
-        <View style={pds.statsRow}>
-          <StatChip label="PPG"  value={player.stats.ppg.toFixed(1)}  C={C} />
-          <StatChip label="RPG"  value={player.stats.rpg.toFixed(1)}  C={C} />
-          <StatChip label="APG"  value={player.stats.apg.toFixed(1)}  C={C} />
-          <StatChip label="FG%"  value={`${player.stats.fgPct.toFixed(1)}%`}  C={C} />
-          <StatChip label="MPG"  value={player.stats.mpg.toFixed(1)}  C={C} />
-          {isCoach && <StatChip label="3P%"  value={`${player.stats.fg3Pct.toFixed(1)}%`} C={C} />}
-          {isCoach && <StatChip label="FT%"  value={`${player.stats.ftPct.toFixed(1)}%`}  C={C} />}
-          {isCoach && <StatChip label="GP"   value={String(player.stats.gp)} C={C} />}
-        </View>
-      </ScrollView>
-
-      {/* Bio */}
-      <Text style={[pds.sectionLabel, { color: C.label }]}>About</Text>
-      <Text style={[pds.bio, { color: C.secondary }]}>{PLAYER_BIOS[player.id] ?? ''}</Text>
-
-      {/* Coach-only sections */}
-      {isCoach && (
-        <>
-          {/* KaNeXT Rating */}
-          <Text style={[pds.sectionLabel, { color: C.label }]}>KaNeXT Rating</Text>
-          <View style={[pds.krCard, { backgroundColor: C.surface }]}>
-            <View style={pds.krRow}>
-              <View style={pds.krItem}>
-                <Text style={[pds.krVal, { color: krColor }]}>{player.kr.overall.toFixed(1)}</Text>
-                <Text style={[pds.krLbl, { color: C.muted }]}>Overall</Text>
-              </View>
-              <View style={[pds.krDivider, { backgroundColor: C.separator }]} />
-              <View style={pds.krItem}>
-                <Text style={[pds.krVal, { color: C.label }]}>{player.kr.offensive.toFixed(1)}</Text>
-                <Text style={[pds.krLbl, { color: C.muted }]}>Offense</Text>
-              </View>
-              <View style={[pds.krDivider, { backgroundColor: C.separator }]} />
-              <View style={pds.krItem}>
-                <Text style={[pds.krVal, { color: C.label }]}>{player.kr.defensive.toFixed(1)}</Text>
-                <Text style={[pds.krLbl, { color: C.muted }]}>Defense</Text>
-              </View>
-            </View>
-            <View style={pds.krFooter}>
-              <Text style={[pds.krTier, { color: NAVY }]}>Tier {player.kr.tier}</Text>
-              <Text style={[pds.krTrend, {
-                color: player.kr.trend === 'up'
-                  ? '#5A8A6E'
-                  : player.kr.trend === 'down'
-                  ? '#B85C5C'
-                  : C.muted,
-              }]}>
-                {player.kr.trend === 'up' ? '▲' : player.kr.trend === 'down' ? '▼' : '—'}
-                {' '}{Math.abs(player.kr.delta).toFixed(1)} last 5
-              </Text>
-            </View>
-          </View>
-
-          {/* Academic */}
-          <Text style={[pds.sectionLabel, { color: C.label }]}>Academic Status</Text>
-          <View style={[pds.infoCard, { backgroundColor: C.surface }]}>
-            <View style={pds.infoRow}>
-              <Text style={[pds.infoKey, { color: C.muted }]}>GPA</Text>
-              <Text style={[pds.infoVal, { color: gpaColor(player.gpa), fontWeight: '800' }]}>
-                {player.gpa.toFixed(2)}
-              </Text>
-            </View>
-            <View style={[pds.infoRowInner, { borderTopColor: C.separator }]}>
-              <Text style={[pds.infoKey, { color: C.muted }]}>Credits</Text>
-              <Text style={[pds.infoVal, { color: C.label }]}>{player.credits} / 120</Text>
-            </View>
-            <View style={pds.creditBarRow}>
-              <ProgressBar pct={player.credits / 120} color={gpaColor(player.gpa)} C={C} />
-            </View>
-            <View style={[pds.infoRowInner, { borderTopColor: C.separator }]}>
-              <Text style={[pds.infoKey, { color: C.muted }]}>Eligibility</Text>
-              <EligBadge status={player.eligibility} />
-            </View>
-          </View>
-
-          {/* Medical */}
-          <Text style={[pds.sectionLabel, { color: C.label }]}>Medical Status</Text>
-          <View style={[pds.infoCard, { backgroundColor: C.surface }]}>
-            <View style={pds.infoRow}>
-              <Text style={[pds.infoKey, { color: C.muted }]}>Status</Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                <View style={[pds.statusDot, { backgroundColor: medicalDot(player.medical) }]} />
-                <Text style={[pds.infoVal, { color: medicalDot(player.medical) }]}>
-                  {player.medical.charAt(0).toUpperCase() + player.medical.slice(1)}
-                </Text>
-              </View>
-            </View>
-            {player.medicalNote && (
-              <View style={[pds.infoRowInner, { borderTopColor: C.separator }]}>
-                <Text style={[pds.infoKey, { color: C.muted }]}>Note</Text>
-                <Text style={[pds.infoNote, { color: C.secondary }]}>{player.medicalNote}</Text>
-              </View>
-            )}
-          </View>
-
-          {/* Scholarship */}
-          <Text style={[pds.sectionLabel, { color: C.label }]}>Scholarship</Text>
-          <View style={[pds.infoCard, { backgroundColor: C.surface }]}>
-            <View style={pds.infoRow}>
-              <Text style={[pds.infoKey, { color: C.muted }]}>Allocation</Text>
-              <Text style={[pds.infoVal, { color: C.label, fontWeight: '700' }]}>
-                {SCHOLARSHIP_PCT[player.id] ?? 0}%
-              </Text>
-            </View>
-          </View>
-
-          {/* Development Priorities */}
-          {devPrios.length > 0 && (
-            <>
-              <Text style={[pds.sectionLabel, { color: C.label }]}>Development Priorities</Text>
-              <View style={[pds.infoCard, { backgroundColor: C.surface }]}>
-                {devPrios.map((dp, i) => (
-                  <View
-                    key={dp.trait}
-                    style={[
-                      pds.devRow,
-                      i < devPrios.length - 1 && {
-                        borderBottomWidth: StyleSheet.hairlineWidth,
-                        borderBottomColor: C.separator,
-                      },
-                    ]}
-                  >
-                    <Text style={[pds.devTrait, { color: C.label }]}>{dp.trait}</Text>
-                    <View style={pds.devRight}>
-                      <Text style={[pds.devNums, { color: C.secondary }]}>{dp.current} → {dp.target}</Text>
-                      <View style={{ width: 80 }}>
-                        <ProgressBar pct={dp.current / 100} color={C.accent} C={C} />
-                      </View>
-                    </View>
-                  </View>
-                ))}
-              </View>
-            </>
-          )}
-
-          {/* Notes */}
-          <Text style={[pds.sectionLabel, { color: C.label }]}>Coaching Notes</Text>
-          <View style={[pds.notesPlaceholder, { backgroundColor: C.surface, borderColor: C.inputBorder }]}>
-            <Text style={[pds.notesHint, { color: C.muted }]}>No notes yet. Tap to add...</Text>
-          </View>
-        </>
-      )}
-
-      <View style={{ height: 32 }} />
-    </BottomSheet>
-  );
-}
-
-const pds = StyleSheet.create({
-  header:          { flexDirection: 'row', gap: 14, marginBottom: 14, paddingHorizontal: 20, alignItems: 'flex-start' },
-  headerInfo:      { flex: 1, gap: 4 },
-  headerTopRow:    { flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' },
-  numBadge:        { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 7 },
-  numText:         { fontSize: 13, fontWeight: '800' },
-  classText:       { fontSize: 13 },
-  archetype:       { fontSize: 13, fontStyle: 'italic' },
-  info:            { fontSize: 13 },
-  badgesRow:       { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 14, paddingHorizontal: 20 },
-  badge:           { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
-  badgeText:       { fontSize: 11, fontWeight: '600' },
-  sectionLabel:    { fontSize: 14, fontWeight: '700', marginBottom: 8, marginTop: 6, paddingHorizontal: 20 },
-  statsRow:        { flexDirection: 'row', gap: 8, paddingHorizontal: 20 },
-  bio:             { fontSize: 14, lineHeight: 20, marginBottom: 14, paddingHorizontal: 20 },
-  krCard:          { borderRadius: 12, marginHorizontal: 20, marginBottom: 14, padding: 14 },
-  krRow:           { flexDirection: 'row', alignItems: 'center' },
-  krItem:          { flex: 1, alignItems: 'center', gap: 2 },
-  krVal:           { fontSize: 22, fontWeight: '800' },
-  krLbl:           { fontSize: 11 },
-  krDivider:       { width: 1, height: 36 },
-  krFooter:        { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
-  krTier:          { fontSize: 12, fontWeight: '700' },
-  krTrend:         { fontSize: 12, fontWeight: '600' },
-  infoCard:        { borderRadius: 12, marginHorizontal: 20, marginBottom: 14, overflow: 'hidden' },
-  infoRow:         { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 12 },
-  infoRowInner:    { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 12, borderTopWidth: StyleSheet.hairlineWidth },
-  infoKey:         { fontSize: 13 },
-  infoVal:         { fontSize: 14 },
-  infoNote:        { fontSize: 13, flex: 1, textAlign: 'right' },
-  creditBarRow:    { paddingHorizontal: 12, paddingBottom: 10 },
-  statusDot:       { width: 8, height: 8, borderRadius: 4 },
-  devRow:          { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 12 },
-  devTrait:        { fontSize: 13, fontWeight: '600', flex: 1 },
-  devRight:        { alignItems: 'flex-end', gap: 4 },
-  devNums:         { fontSize: 12 },
-  notesPlaceholder:{ borderRadius: 12, marginHorizontal: 20, marginBottom: 14, padding: 16, borderWidth: 1, borderStyle: 'dashed' },
-  notesHint:       { fontSize: 13, fontStyle: 'italic' },
-});
-
-// ── Staff Card ────────────────────────────────────────────────────────────────
-
-function StaffCard({
-  member, onPress, C,
-}: { member: StaffMember; onPress: () => void; C: ComponentColors }) {
-  const badgeColor = staffRoleBadgeColor(member.role);
+function PublicPlayerCard({
+  p, onPress, C, isMe,
+}: { p: Player; onPress: () => void; C: ComponentColors; isMe?: boolean }) {
   return (
     <Pressable
-      style={({ pressed }) => [stc.card, { backgroundColor: C.surface, opacity: pressed ? 0.82 : 1 }]}
-      onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); onPress(); }}
+      style={({ pressed }) => [
+        pc.card,
+        { backgroundColor: C.surface, opacity: pressed ? 0.82 : 1 },
+        isMe && { borderColor: C.separator, borderWidth: 1.5 },
+      ]}
+      onPress={() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        onPress();
+      }}
     >
-      <StaffAvatar s={member} />
-      <View style={stc.info}>
-        <Text style={[stc.name, { color: C.label }]}>{member.name}</Text>
-        <Text style={[stc.title, { color: C.secondary }]}>{member.title}</Text>
-      </View>
-      <View style={[stc.badge, { backgroundColor: badgeColor + '20' }]}>
-        <Text style={[stc.badgeText, { color: badgeColor }]}>{staffRoleLabel(member.role)}</Text>
+      <View style={pc.row}>
+        <PlayerAvatar p={p} size={44} />
+        <View style={pc.info}>
+          <View style={pc.nameRow}>
+            <Text style={[pc.num, { color: C.secondary }]}>#{p.number}</Text>
+            <Text style={[pc.name, { color: C.label }]} numberOfLines={1}>{p.name}</Text>
+            {isMe && (
+              <View style={[pc.meBadge, { backgroundColor: C.activePill }]}>
+                <Text style={[pc.meTxt, { color: C.activePillText }]}>Me</Text>
+              </View>
+            )}
+          </View>
+          <View style={pc.metaRow}>
+            <PosBadge pos={p.position} C={C} />
+            <Text style={[pc.meta, { color: C.secondary }]}>{p.classYear}</Text>
+            <Text style={[pc.meta, { color: C.muted }]}>·</Text>
+            <Text style={[pc.meta, { color: C.secondary }]}>{p.heightFt}</Text>
+            <Text style={[pc.meta, { color: C.muted }]}>·</Text>
+            <Text style={[pc.meta, { color: C.secondary }]}>{p.weight} lbs</Text>
+          </View>
+          <Text style={[pc.hometown, { color: C.muted }]} numberOfLines={1}>{p.hometown}</Text>
+        </View>
+        <IconSymbol name="chevron.right" size={14} color={C.muted} />
       </View>
     </Pressable>
   );
 }
 
-const stc = StyleSheet.create({
-  card:      { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 12, borderRadius: 14, marginBottom: 8 },
-  info:      { flex: 1 },
-  name:      { fontSize: 15, fontWeight: '700' },
-  title:     { fontSize: 13, marginTop: 2 },
-  badge:     { paddingHorizontal: 9, paddingVertical: 4, borderRadius: 8 },
-  badgeText: { fontSize: 11, fontWeight: '700' },
+const pc = StyleSheet.create({
+  card:    { borderRadius: 16, marginHorizontal: 14, marginBottom: 8, padding: 14 },
+  row:     { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  info:    { flex: 1, gap: 4 },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  num:     { fontSize: 11, fontWeight: '700' },
+  name:    { fontSize: 15, fontWeight: '700', flexShrink: 1 },
+  meBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 },
+  meTxt:   { fontSize: 10, fontWeight: '700' },
+  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 4, flexWrap: 'wrap' },
+  meta:    { fontSize: 12 },
+  hometown:{ fontSize: 11 },
 });
 
-// ── Staff Detail Sheet ────────────────────────────────────────────────────────
-
-function StaffSheet({
-  member, visible, onClose, C,
-}: { member: StaffMember | null; visible: boolean; onClose: () => void; C: ComponentColors }) {
-  if (!member) return null;
-  const badgeColor = staffRoleBadgeColor(member.role);
-
-  return (
-    <BottomSheet visible={visible} onClose={onClose} useModal backgroundColor={C.bg} title={member.name}>
-      <View style={sds.header}>
-        <StaffAvatar s={member} size={64} />
-        <View style={sds.info}>
-          <Text style={[sds.title, { color: C.secondary }]}>{member.title}</Text>
-          <View style={[sds.badge, { backgroundColor: badgeColor + '20' }]}>
-            <Text style={[sds.badgeText, { color: badgeColor }]}>{staffRoleLabel(member.role)}</Text>
-          </View>
-        </View>
-      </View>
-
-      <Text style={[sds.sectionLabel, { color: C.label }]}>Contact</Text>
-      <View style={[sds.contactCard, { backgroundColor: C.surface }]}>
-        <View style={sds.contactRow}>
-          <IconSymbol name="phone.fill" size={16} color={C.accent} />
-          <Text style={[sds.contactText, { color: C.label }]}>{member.phone}</Text>
-        </View>
-        <View style={[sds.contactRowInner, { borderTopColor: C.separator }]}>
-          <IconSymbol name="envelope.fill" size={16} color={C.accent} />
-          <Text style={[sds.contactText, { color: C.label }]}>{member.email}</Text>
-        </View>
-      </View>
-
-      <Pressable
-        style={[sds.msgBtn, { backgroundColor: C.accent }]}
-        onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); onClose(); }}
-      >
-        <IconSymbol name="message.fill" size={16} color="#fff" />
-        <Text style={sds.msgBtnText}>Message</Text>
-      </Pressable>
-
-      <View style={{ height: 32 }} />
-    </BottomSheet>
-  );
-}
-
-const sds = StyleSheet.create({
-  header:          { flexDirection: 'row', gap: 14, marginBottom: 20, paddingHorizontal: 20, alignItems: 'center' },
-  info:            { flex: 1, gap: 6 },
-  title:           { fontSize: 14 },
-  badge:           { alignSelf: 'flex-start', paddingHorizontal: 9, paddingVertical: 4, borderRadius: 8 },
-  badgeText:       { fontSize: 12, fontWeight: '700' },
-  sectionLabel:    { fontSize: 14, fontWeight: '700', marginBottom: 8, paddingHorizontal: 20 },
-  contactCard:     { borderRadius: 12, marginHorizontal: 20, marginBottom: 16, overflow: 'hidden' },
-  contactRow:      { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14 },
-  contactRowInner: { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14, borderTopWidth: StyleSheet.hairlineWidth },
-  contactText:     { fontSize: 14 },
-  msgBtn:          { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginHorizontal: 20, padding: 14, borderRadius: 12 },
-  msgBtnText:      { color: '#fff', fontSize: 15, fontWeight: '700' },
-});
-
-// ── Depth Chart ───────────────────────────────────────────────────────────────
-
-function DepthChartSection({ C }: { C: ComponentColors }) {
-  return (
-    <View style={{ marginTop: 6 }}>
-      <SectionHeader title="Depth Chart" C={C} />
-      <GlassView tier={1} style={dc.card}>
-        {DEPTH_CHART.map((row, i) => (
-          <View
-            key={row.pos}
-            style={[
-              dc.row,
-              i < DEPTH_CHART.length - 1 && {
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                borderBottomColor: C.separator,
-              },
-            ]}
-          >
-            <View style={[dc.posBadge, { backgroundColor: NAVY + '18' }]}>
-              <Text style={[dc.posText, { color: NAVY }]}>{row.pos}</Text>
-            </View>
-            <View style={dc.namesCol}>
-              {row.players.map((name, idx) => (
-                <View key={name} style={dc.nameRow}>
-                  <Text style={[dc.rank, { color: C.muted }]}>{idx + 1}</Text>
-                  <Text style={[
-                    dc.playerName,
-                    { color: idx === 0 ? C.label : C.secondary },
-                    idx === 0 && { fontWeight: '600' },
-                  ]}>{name}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        ))}
-      </GlassView>
-    </View>
-  );
-}
-
-const dc = StyleSheet.create({
-  card:       { borderRadius: 14, overflow: 'hidden', marginBottom: 20 },
-  row:        { flexDirection: 'row', alignItems: 'flex-start', padding: 12, gap: 10 },
-  posBadge:   { width: 36, height: 36, borderRadius: 8, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  posText:    { fontSize: 13, fontWeight: '800' },
-  namesCol:   { flex: 1, gap: 4 },
-  nameRow:    { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  rank:       { fontSize: 12, fontWeight: '600', width: 14, textAlign: 'center' },
-  playerName: { fontSize: 14 },
-});
-
-// ── Upcoming Schedule ─────────────────────────────────────────────────────────
-
-function UpcomingSchedule({ C }: { C: ComponentColors }) {
-  const upcoming = getUpcomingGames().slice(0, 5);
-  if (upcoming.length === 0) return null;
-
-  return (
-    <View style={{ marginTop: 6 }}>
-      <SectionHeader title="Upcoming Games" C={C} />
-      <GlassView tier={1} style={{ borderRadius: 14, overflow: 'hidden', marginBottom: 20 }}>
-        {upcoming.map((game, i) => (
-          <View
-            key={game.id}
-            style={[
-              ug.row,
-              i < upcoming.length - 1 && {
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                borderBottomColor: C.separator,
-              },
-            ]}
-          >
-            <Text style={[ug.date, { color: C.secondary }]}>{game.date}</Text>
-            <View style={[ug.locBadge, {
-              backgroundColor:
-                game.location === 'H' ? '#5A8A6E22' :
-                game.location === 'A' ? '#B85C5C22' :
-                '#1A171422',
-            }]}>
-              <Text style={[ug.locText, {
-                color:
-                  game.location === 'H' ? '#5A8A6E' :
-                  game.location === 'A' ? '#B85C5C' :
-                  '#1A1714',
-              }]}>
-                {game.location === 'H' ? 'HOME' : game.location === 'A' ? 'AWAY' : 'NEUT'}
-              </Text>
-            </View>
-            <Text style={[ug.opponent, { color: C.label }]} numberOfLines={1}>{game.opponent}</Text>
-            <Text style={[ug.time, { color: C.muted }]}>{game.time}</Text>
-          </View>
-        ))}
-      </GlassView>
-    </View>
-  );
-}
-
-const ug = StyleSheet.create({
-  row:      { flexDirection: 'row', alignItems: 'center', padding: 12, gap: 8 },
-  date:     { fontSize: 12, width: 48, flexShrink: 0 },
-  locBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 5, flexShrink: 0 },
-  locText:  { fontSize: 10, fontWeight: '800' },
-  opponent: { fontSize: 14, fontWeight: '600', flex: 1 },
-  time:     { fontSize: 12 },
-});
-
-// ── Team Banner ───────────────────────────────────────────────────────────────
-
-function TeamBanner({ C }: { C: ComponentColors }) {
-  return (
-    <View style={[bnr.banner, { backgroundColor: NAVY }]}>
-      <View style={bnr.inner}>
-        <View>
-          <Text style={bnr.teamName}>LU Oaklanders Basketball</Text>
-          <Text style={bnr.record}>{TEAM_INFO.record} · {TEAM_INFO.conference} · {TEAM_INFO.confStanding}</Text>
-        </View>
-        <View style={bnr.rightCol}>
-          <View style={[bnr.confBadge, { backgroundColor: '#ffffff20' }]}>
-            <Text style={bnr.confText}>{TEAM_INFO.conference}</Text>
-          </View>
-          <Text style={bnr.confRec}>{TEAM_INFO.conferenceRec} conf</Text>
-        </View>
-      </View>
-    </View>
-  );
-}
-
-const bnr = StyleSheet.create({
-  banner:   { borderRadius: 14, padding: 16, marginBottom: 14 },
-  inner:    { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  teamName: { color: '#fff', fontSize: 17, fontWeight: '800' },
-  record:   { color: 'rgba(255,255,255,0.72)', fontSize: 13, marginTop: 3 },
-  rightCol: { alignItems: 'flex-end', gap: 4 },
-  confBadge:{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 7 },
-  confText: { color: '#fff', fontSize: 12, fontWeight: '700' },
-  confRec:  { color: 'rgba(255,255,255,0.60)', fontSize: 12 },
-});
-
-// ── Eligibility Player Card ───────────────────────────────────────────────────
-
-function EligPlayerCard({ player, C }: { player: Player; C: ComponentColors }) {
-  const isWarning = player.eligibility === 'warning';
-
-  return (
-    <View style={[
-      epc.card,
-      { backgroundColor: C.surface },
-      isWarning && { borderColor: '#B85C5C', borderWidth: 1.5 },
-    ]}>
-      {isWarning && (
-        <View style={epc.warningTag}>
-          <IconSymbol name="exclamationmark.triangle.fill" size={13} color="#B85C5C" />
-          <Text style={epc.warningText}>Academic Advisor Alert</Text>
-        </View>
-      )}
-
-      <View style={epc.mainRow}>
-        <PlayerAvatar p={player} size={40} />
-        <View style={epc.infoCol}>
-          <Text style={[epc.name, { color: C.label }]}>{player.name}</Text>
-          <View style={epc.subRow}>
-            <PosBadge pos={player.position} />
-            <Text style={[epc.classYear, { color: C.secondary }]}>{player.classYear}</Text>
-          </View>
-        </View>
-        <View style={epc.rightCol}>
-          <Text style={[epc.gpa, { color: gpaColor(player.gpa) }]}>{player.gpa.toFixed(2)}</Text>
-          <Text style={[epc.gpaLabel, { color: C.muted }]}>GPA</Text>
-        </View>
-      </View>
-
-      <View style={epc.creditsRow}>
-        <Text style={[epc.creditsLabel, { color: C.muted }]}>Credits: {player.credits}/120</Text>
-        <View style={{ flex: 1, marginLeft: 10 }}>
-          <ProgressBar pct={player.credits / 120} color={gpaColor(player.gpa)} C={C} />
-        </View>
-      </View>
-
-      <View style={epc.statusRow}>
-        <EligBadge status={player.eligibility} />
-      </View>
-    </View>
-  );
-}
-
-const epc = StyleSheet.create({
-  card:         { borderRadius: 14, padding: 12, marginBottom: 10 },
-  warningTag:   { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#B85C5C15', borderRadius: 7, paddingHorizontal: 8, paddingVertical: 4, marginBottom: 10, alignSelf: 'flex-start' },
-  warningText:  { fontSize: 11, fontWeight: '700', color: '#B85C5C' },
-  mainRow:      { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  infoCol:      { flex: 1, gap: 4 },
-  name:         { fontSize: 15, fontWeight: '700' },
-  subRow:       { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  classYear:    { fontSize: 12 },
-  rightCol:     { alignItems: 'center' },
-  gpa:          { fontSize: 22, fontWeight: '800' },
-  gpaLabel:     { fontSize: 11 },
-  creditsRow:   { flexDirection: 'row', alignItems: 'center', marginTop: 10 },
-  creditsLabel: { fontSize: 12, width: 108 },
-  statusRow:    { marginTop: 8 },
-});
-
-// ── Eligibility Summary Bar ───────────────────────────────────────────────────
-
-function EligSummaryBar({ C }: { C: ComponentColors }) {
-  const eligible   = PLAYERS.filter(p => p.eligibility === 'eligible').length;
-  const warning    = PLAYERS.filter(p => p.eligibility === 'warning').length;
-  const ineligible = PLAYERS.filter(p => p.eligibility === 'ineligible').length;
-
-  return (
-    <View style={esb.row}>
-      <View style={[esb.chip, { backgroundColor: '#5A8A6E20' }]}>
-        <View style={[esb.dot, { backgroundColor: '#5A8A6E' }]} />
-        <Text style={[esb.count, { color: '#5A8A6E' }]}>{eligible}</Text>
-        <Text style={[esb.label, { color: '#5A8A6E' }]}>eligible</Text>
-      </View>
-      <View style={[esb.chip, { backgroundColor: '#1A171420' }]}>
-        <View style={[esb.dot, { backgroundColor: '#1A1714' }]} />
-        <Text style={[esb.count, { color: '#1A1714' }]}>{warning}</Text>
-        <Text style={[esb.label, { color: '#1A1714' }]}>warning</Text>
-      </View>
-      <View style={[esb.chip, { backgroundColor: '#B85C5C20' }]}>
-        <View style={[esb.dot, { backgroundColor: '#B85C5C' }]} />
-        <Text style={[esb.count, { color: '#B85C5C' }]}>{ineligible}</Text>
-        <Text style={[esb.label, { color: '#B85C5C' }]}>ineligible</Text>
-      </View>
-    </View>
-  );
-}
-
-const esb = StyleSheet.create({
-  row:   { flexDirection: 'row', gap: 8, marginBottom: 16 },
-  chip:  { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20 },
-  dot:   { width: 7, height: 7, borderRadius: 3.5 },
-  count: { fontSize: 16, fontWeight: '800' },
-  label: { fontSize: 12 },
-});
-
-// ── Academic Calendar ─────────────────────────────────────────────────────────
-
-function AcademicCalendarSection({ C }: { C: ComponentColors }) {
-  const events = [
-    { label: 'Midterm Grades', date: 'Apr 3',  icon: 'calendar' },
-    { label: 'Registration',   date: 'Apr 14', icon: 'list.bullet.clipboard' },
-    { label: 'Final Grades',   date: 'May 8',  icon: 'calendar.badge.checkmark' },
-  ];
-  return (
-    <View style={{ marginTop: 6 }}>
-      <SectionHeader title="Academic Calendar" C={C} />
-      <GlassView tier={1} style={{ borderRadius: 14, overflow: 'hidden', marginBottom: 20 }}>
-        {events.map((ev, i) => (
-          <View
-            key={ev.label}
-            style={[
-              acal.row,
-              i < events.length - 1 && {
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                borderBottomColor: C.separator,
-              },
-            ]}
-          >
-            <IconSymbol name={ev.icon as any} size={16} color={C.accent} />
-            <Text style={[acal.label, { color: C.label }]}>{ev.label}</Text>
-            <Text style={[acal.date, { color: C.secondary }]}>{ev.date}</Text>
-          </View>
-        ))}
-      </GlassView>
-    </View>
-  );
-}
-
-const acal = StyleSheet.create({
-  row:   { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 12 },
-  label: { flex: 1, fontSize: 14 },
-  date:  { fontSize: 13, fontWeight: '600' },
-});
-
-// ── CARA Hours ────────────────────────────────────────────────────────────────
-
-function CARASection({ C }: { C: ComponentColors }) {
-  return (
-    <View style={{ marginTop: 6 }}>
-      <SectionHeader title="CARA Hours" C={C} />
-      <GlassView tier={1} style={{ borderRadius: 14, padding: 14, marginBottom: 20 }}>
-        <View style={cara.labelRow}>
-          <Text style={[cara.label, { color: C.label }]}>This Week</Text>
-          <Text style={[cara.sub, { color: C.muted }]}>14 of 20 hours used</Text>
-          <Text style={[cara.pct, { color: C.accent }]}>70%</Text>
-        </View>
-        <ProgressBar pct={14 / 20} color={C.accent} C={C} />
-
-        <View style={[cara.divider, { backgroundColor: C.separator }]} />
-
-        <View style={cara.labelRow}>
-          <Text style={[cara.label, { color: C.label }]}>This Semester</Text>
-          <Text style={[cara.sub, { color: C.muted }]}>142 of 168 hours used</Text>
-          <Text style={[cara.pct, { color: C.accent }]}>85%</Text>
-        </View>
-        <ProgressBar pct={142 / 168} color={C.accent} C={C} />
-      </GlassView>
-    </View>
-  );
-}
-
-const cara = StyleSheet.create({
-  labelRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 6, gap: 4 },
-  label:    { fontSize: 14, fontWeight: '600', flex: 1 },
-  sub:      { fontSize: 12 },
-  pct:      { fontSize: 14, fontWeight: '800' },
-  divider:  { height: StyleSheet.hairlineWidth, marginVertical: 12 },
-});
-
-// ── Live Mode Data & View ──────────────────────────────────────────────────────
-
-const LIVE_ROSTER_PLAYERS = [
-  { number: 0,  name: 'Laolu Kalejaiye', pos: 'PG', year: 'Sr', ht: "6'1\"",  wt: '185', hometown: 'Vallejo, CA',     ppg: 18.4, rpg: 4.2, apg: 7.1, fg: 46.2 },
-  { number: 1,  name: 'Jarvis Williams',  pos: 'SG', year: 'Jr', ht: "6'3\"",  wt: '190', hometown: 'Oakland, CA',     ppg: 14.8, rpg: 3.1, apg: 2.4, fg: 44.8 },
-  { number: 3,  name: 'Marcus Stone',     pos: 'SF', year: 'Sr', ht: "6'6\"",  wt: '210', hometown: 'Stockton, CA',    ppg: 11.2, rpg: 6.4, apg: 1.8, fg: 48.1 },
-  { number: 5,  name: 'Devon Clark',      pos: 'PF', year: 'So', ht: "6'7\"",  wt: '225', hometown: 'Richmond, CA',    ppg: 8.7,  rpg: 7.9, apg: 1.2, fg: 51.3 },
-  { number: 10, name: 'Tony Reeves',      pos: 'C',  year: 'Jr', ht: "6'9\"",  wt: '240', hometown: 'San Jose, CA',    ppg: 7.4,  rpg: 9.2, apg: 0.8, fg: 55.6 },
-  { number: 12, name: 'Malik Johnson',    pos: 'SG', year: 'Fr', ht: "6'4\"",  wt: '185', hometown: 'Los Angeles, CA', ppg: 6.2,  rpg: 2.1, apg: 3.4, fg: 38.9 },
-  { number: 21, name: 'Chris Avery',      pos: 'PG', year: 'So', ht: "5'11\"", wt: '175', hometown: 'Fresno, CA',      ppg: 5.1,  rpg: 1.4, apg: 4.8, fg: 41.2 },
-  { number: 24, name: 'Darius Hill',      pos: 'SF', year: 'Jr', ht: "6'5\"",  wt: '205', hometown: 'Bakersfield, CA', ppg: 9.3,  rpg: 4.7, apg: 1.6, fg: 43.5 },
-];
-
-const LIVE_ROSTER_STAFF = [
-  { name: 'Coach Davis',  title: 'Head Coach' },
-  { name: 'Coach Martin', title: 'Assistant Coach — Offense' },
-  { name: 'Coach Reed',   title: 'Assistant Coach — Defense' },
-  { name: 'Dr. Thomas',   title: 'Athletic Trainer' },
-];
-
-function LiveRosterView({ C, insets }: { C: any; insets: any }) {
-  return (
-    <View style={{ flex: 1, backgroundColor: C.bg }}>
-      <View style={{ height: insets.top + 52, backgroundColor: C.bg }} />
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 12 }}>
-        <Text style={{ fontSize: 18, fontWeight: '700', color: C.label, paddingTop: 8 }}>Roster</Text>
-        <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5 }}>Players</Text>
-        {LIVE_ROSTER_PLAYERS.map(p => (
-          <View key={p.number} style={{ backgroundColor: C.surface, borderRadius: 14, padding: 14, gap: 6 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-              <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 13, fontWeight: '700', color: C.secondary }}>#{p.number}</Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{p.name}</Text>
-                <Text style={{ fontSize: 12, color: C.secondary }}>{p.pos} · {p.year} · {p.ht} · {p.wt} lbs · {p.hometown}</Text>
-              </View>
-            </View>
-            <View style={{ flexDirection: 'row', gap: 16 }}>
-              <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{p.ppg}</Text>
-                <Text style={{ fontSize: 10, color: C.secondary }}>PPG</Text>
-              </View>
-              <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{p.rpg}</Text>
-                <Text style={{ fontSize: 10, color: C.secondary }}>RPG</Text>
-              </View>
-              <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{p.apg}</Text>
-                <Text style={{ fontSize: 10, color: C.secondary }}>APG</Text>
-              </View>
-              <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontSize: 15, fontWeight: '700', color: C.label }}>{p.fg}%</Text>
-                <Text style={{ fontSize: 10, color: C.secondary }}>FG%</Text>
-              </View>
-            </View>
-          </View>
-        ))}
-        <Text style={{ fontSize: 13, fontWeight: '600', color: C.secondary, textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 8 }}>Coaching Staff</Text>
-        {LIVE_ROSTER_STAFF.map(s => (
-          <View key={s.name} style={{ backgroundColor: C.surface, borderRadius: 12, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-            <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.separator, alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 14, color: C.secondary }}>{s.name[0]}</Text>
-            </View>
-            <View>
-              <Text style={{ fontSize: 14, fontWeight: '600', color: C.label }}>{s.name}</Text>
-              <Text style={{ fontSize: 12, color: C.secondary }}>{s.title}</Text>
-            </View>
-          </View>
-        ))}
-      </ScrollView>
-    </View>
-  );
-}
-
-// ── Main Screen ───────────────────────────────────────────────────────────────
+// ── Main Screen ────────────────────────────────────────────────────────────────
 
 export default function RosterScreen() {
-  const C       = useColors();
-  const insets  = useSafeAreaInsets();
+  const C      = useColors();
+  const insets = useSafeAreaInsets();
+  const router = useRouter();
 
-  // ── Data mode ──
-  const dataMode = useDataMode();
+  const [role, cycleRole, roleCycles] = useDemoRole('sports:roster');
+  const isCoach = role === roleCycles[0]; // 'Coach'
 
-  // ── RBAC demo role ──
-  const [role, cycleRole] = useDemoRole('sports:roster');
-  const isCoachRole = role === 'Coach';
+  // ── State ──
+  const [search,    setSearch]    = useState('');
+  const [sort,      setSort]      = useState<SortKey>('KR');
+  const [posFilter, setPosFilter] = useState<PosFilter>('All');
+  const [sortDD,    setSortDD]    = useState(false);
 
-  // ── Navigation state ──
-  const [activeTab, setActiveTab] = useState<RosterTab>('Players');
-
-  // ── Filter state ──
-  const [filterVisible, setFilterVisible] = useState(false);
-  const [posFilter, setPosFilter]         = useState<PosFilter>('All');
-  const [searchQuery, setSearchQuery]     = useState('');
-
-  // ── Sheet state ──
-  const [selectedPlayer, setSelectedPlayer]     = useState<Player | null>(null);
-  const [playerSheetOpen, setPlayerSheetOpen]   = useState(false);
-  const [selectedStaff, setSelectedStaff]       = useState<StaffMember | null>(null);
-  const [staffSheetOpen, setStaffSheetOpen]     = useState(false);
-
-  // ── Animation ──
-  const pillsAnim   = useRef(new Animated.Value(0)).current;
+  // ── Scroll footer control ──
   const lastScrollY = useRef(0);
-
-  // ── Layout ──
-  const topBarH       = insets.top + TOP_BAR_H;
-  const contentPadTop = topBarH + (filterVisible ? PILL_ROW_H : 0) + 8;
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
@@ -1089,538 +314,389 @@ export default function RosterScreen() {
     if (y <= 0) showFooter();
   }, []);
 
-  const toggleFilter = useCallback(() => {
-    setFilterVisible(prev => {
-      const next = !prev;
-      Animated.timing(pillsAnim, {
-        toValue: next ? 1 : 0, duration: 200, useNativeDriver: false,
-      }).start();
-      return next;
-    });
-  }, [pillsAnim]);
-
-  const handleTabSelect = useCallback((tab: RosterTab) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setActiveTab(tab);
-    setPosFilter('All');
-    setSearchQuery('');
-    setFilterVisible(false);
-    pillsAnim.setValue(0);
-  }, [pillsAnim]);
-
-  if (dataMode === 'live') return <LiveRosterView C={C} insets={insets} />;
-
-  // ── Filtered players ──
-  const sortedPlayers = [...PLAYERS].sort((a, b) => a.number - b.number);
-  const filteredPlayers = sortedPlayers.filter(p => {
-    const posOk  = posFilter === 'All' || p.position === posFilter;
-    const srchOk = searchQuery.trim() === ''
-      || p.name.toLowerCase().includes(searchQuery.toLowerCase())
-      || String(p.number).includes(searchQuery)
-      || p.position.toLowerCase().includes(searchQuery.toLowerCase());
-    return posOk && srchOk;
-  });
-
-  // ── Staff grouping ──
-  const coachingStaff = COACHING_STAFF.filter(s =>
-    ['head-coach', 'asst-coach', 'grad-asst'].includes(s.role)
-  );
-  const supportStaff = COACHING_STAFF.filter(s =>
-    ['trainer', 'strength', 'sid'].includes(s.role)
-  );
-
-  // ── My player (for Player role view) ──
-  const myPlayer = PLAYERS.find(p => p.id === MY_PLAYER_ID) ?? PLAYERS[0];
-
-  // ── Render Player View (Player role — Players tab) ────────────────────────
-
-  const renderPlayerView = () => {
-    const p = myPlayer;
-    const krColor = krTierColor(p.kr.overall);
-    const teammates = PLAYERS.filter(t => t.id !== p.id).sort((a, b) => a.number - b.number);
-
-    return (
-      <ScrollView
-        key="player-view"
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: contentPadTop, paddingHorizontal: 16, paddingBottom: 120 }}
-      >
-        {/* My Profile Card */}
-        <GlassView tier={1} style={pv.profileCard}>
-          <View style={pv.profileHeader}>
-            <View style={[pv.numberBadge, { backgroundColor: NAVY }]}>
-              <Text style={pv.numberText}>#{p.number}</Text>
-            </View>
-            <PlayerAvatar p={p} size={64} />
-            <View style={pv.profileInfo}>
-              <Text style={[pv.profileName, { color: C.label }]}>{p.name}</Text>
-              <View style={pv.profileDetails}>
-                <PosBadge pos={p.position} />
-                <Text style={[pv.profileDetail, { color: C.secondary }]}>{p.classYear}</Text>
-              </View>
-              <Text style={[pv.profileDetail, { color: C.secondary }]}>{p.heightFt} · {p.weight} lbs</Text>
-              <Text style={[pv.profileDetail, { color: C.muted }]}>{p.hometown}</Text>
-            </View>
-          </View>
-          {p.badges.length > 0 && (
-            <View style={pv.badgesRow}>
-              {p.badges.map(b => (
-                <View key={b} style={[pv.badge, { backgroundColor: NAVY + '12', borderColor: NAVY + '30', borderWidth: 1 }]}>
-                  <Text style={[pv.badgeText, { color: NAVY }]}>{b}</Text>
-                </View>
-              ))}
-            </View>
-          )}
-        </GlassView>
-
-        {/* My Stats */}
-        <Text style={[sh.title, { color: C.label }]}>My Season Stats</Text>
-        <GlassView tier={1} style={pv.statsCard}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={{ flexDirection: 'row', gap: 10 }}>
-              <StatChip label="PPG"  value={p.stats.ppg.toFixed(1)}  C={C} />
-              <StatChip label="RPG"  value={p.stats.rpg.toFixed(1)}  C={C} />
-              <StatChip label="APG"  value={p.stats.apg.toFixed(1)}  C={C} />
-              <StatChip label="FG%"  value={`${p.stats.fgPct.toFixed(1)}%`} C={C} />
-              <StatChip label="3P%"  value={`${p.stats.fg3Pct.toFixed(1)}%`} C={C} />
-              <StatChip label="FT%"  value={`${p.stats.ftPct.toFixed(1)}%`} C={C} />
-              <StatChip label="MPG"  value={p.stats.mpg.toFixed(1)} C={C} />
-            </View>
-          </ScrollView>
-        </GlassView>
-
-        {/* My KR Score */}
-        <Text style={[sh.title, { color: C.label }]}>My KaNeXT Rating</Text>
-        <GlassView tier={1} style={pv.krCard}>
-          <View style={pv.krRow}>
-            <View style={pv.krItem}>
-              <Text style={[pv.krBig, { color: krColor }]}>{p.kr.overall.toFixed(1)}</Text>
-              <Text style={[pv.krLbl, { color: C.muted }]}>Overall</Text>
-            </View>
-            <View style={[pv.krDivider, { backgroundColor: C.separator }]} />
-            <View style={pv.krItem}>
-              <Text style={[pv.krBig, { color: C.label }]}>{p.kr.offensive.toFixed(1)}</Text>
-              <Text style={[pv.krLbl, { color: C.muted }]}>Offense</Text>
-            </View>
-            <View style={[pv.krDivider, { backgroundColor: C.separator }]} />
-            <View style={pv.krItem}>
-              <Text style={[pv.krBig, { color: C.label }]}>{p.kr.defensive.toFixed(1)}</Text>
-              <Text style={[pv.krLbl, { color: C.muted }]}>Defense</Text>
-            </View>
-          </View>
-          <View style={pv.krFooter}>
-            <Text style={[pv.krTier, { color: NAVY }]}>Tier {p.kr.tier}</Text>
-            <Text style={[pv.krTrend, {
-              color: p.kr.trend === 'up' ? '#5A8A6E' : p.kr.trend === 'down' ? '#B85C5C' : C.muted,
-            }]}>
-              {p.kr.trend === 'up' ? '▲' : p.kr.trend === 'down' ? '▼' : '—'}
-              {' '}{Math.abs(p.kr.delta).toFixed(1)} last 5
-            </Text>
-          </View>
-        </GlassView>
-
-        {/* Upcoming schedule */}
-        <UpcomingSchedule C={C} />
-
-        {/* Public Roster — teammates (name, number, position only) */}
-        <Text style={[sh.title, { color: C.label }]}>Teammates</Text>
-        <GlassView tier={1} style={{ borderRadius: 14, overflow: 'hidden', marginBottom: 20 }}>
-          {teammates.map((t, idx) => (
-            <View
-              key={t.id}
-              style={[
-                pv.teammateRow,
-                idx < teammates.length - 1 && {
-                  borderBottomWidth: StyleSheet.hairlineWidth,
-                  borderBottomColor: C.separator,
-                },
-              ]}
-            >
-              <View style={[pv.teammateBadge, { backgroundColor: NAVY + '15' }]}>
-                <Text style={[pv.teammateNum, { color: NAVY }]}>#{t.number}</Text>
-              </View>
-              <PlayerAvatar p={t} size={36} />
-              <View style={pv.teammateInfo}>
-                <Text style={[pv.teammateName, { color: C.label }]}>{t.name}</Text>
-                <Text style={[pv.teammateDetail, { color: C.secondary }]}>{t.classYear}</Text>
-              </View>
-              <PosBadge pos={t.position} />
-            </View>
-          ))}
-        </GlassView>
-      </ScrollView>
+  // ── Sorted & filtered players ──
+  const sorted = useMemo(() => {
+    let list = PLAYERS.filter(p =>
+      p.name.toLowerCase().includes(search.toLowerCase()) &&
+      (posFilter === 'All' || p.position === posFilter)
     );
-  };
+    if (sort === 'KR')   list = [...list].sort((a, b) => b.kr.overall - a.kr.overall);
+    if (sort === '#')    list = [...list].sort((a, b) => a.number - b.number);
+    if (sort === 'Pos')  list = [...list].sort((a, b) => a.position.localeCompare(b.position));
+    if (sort === 'Name') list = [...list].sort((a, b) => a.name.localeCompare(b.name));
+    return list;
+  }, [search, sort, posFilter]);
 
-  // ── Render Roster Tab ──────────────────────────────────────────────────────
+  // ── Roster stats ──
+  const scholarship  = PLAYERS.filter(p => p.isScholarship).length;
+  const walkOn       = PLAYERS.filter(p => !p.isScholarship && !p.isRedshirt).length;
+  const redshirts    = PLAYERS.filter(p => p.isRedshirt).length;
+  const health       = rosterHealthSummary();
 
-  const renderRosterTab = () => {
-    // Player role gets their own personalized view
-    if (role === 'Player') return renderPlayerView();
+  // ── Layout ──
+  const topBarH  = insets.top + TOP_BAR_H;
+  const scrollPB = insets.bottom + 80; // extra clearance above universal footer
 
-    return (
-      <ScrollView
-        key="roster"
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingTop: contentPadTop,
-          paddingHorizontal: 16,
-          paddingBottom: 120,
-        }}
-        keyboardShouldPersistTaps="handled"
-      >
-        <TeamBanner C={C} />
+  // ── Navigate to player profile ──
+  const goToPlayer = useCallback((playerId: string, publicView?: boolean) => {
+    router.push({
+      pathname: '/(tabs)/(main)/roster/player-profile' as any,
+      params: { playerId, ...(publicView ? { publicView: 'true' } : {}) },
+    });
+  }, [router]);
 
+  const goToMyProfile = useCallback(() => {
+    router.push({ pathname: '/(tabs)/(main)/roster/my-profile' as any });
+  }, [router]);
+
+  // ── Render: Coach View ─────────────────────────────────────────────────────
+
+  const renderCoachView = () => (
+    <ScrollView
+      onScroll={handleScroll}
+      scrollEventThrottle={16}
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={{ paddingTop: topBarH, paddingBottom: scrollPB }}
+    >
+      {/* Team Header Card */}
+      <View style={[th.card, { backgroundColor: DARK_CARD }]}>
+        {/* Row 1: Team name + GAAC badge */}
+        <View style={th.row1}>
+          <Text style={th.teamName} numberOfLines={1}>LU Oaklanders Basketball</Text>
+          <View style={th.confBadge}>
+            <Text style={th.confText}>{TEAM_INFO.conference}</Text>
+          </View>
+        </View>
+
+        {/* Row 2: Record + conf record + standing */}
+        <View style={th.row2}>
+          <Text style={th.record}>{TEAM_INFO.record}</Text>
+          <View style={th.sep} />
+          <Text style={[th.confRec, { color: '#F0E8DC99' }]}>{TEAM_INFO.conferenceRec} {TEAM_INFO.conference}</Text>
+          <View style={th.sep} />
+          <Text style={[th.standing, { color: GAIN }]}>{TEAM_INFO.confStanding}</Text>
+        </View>
+
+        {/* Row 3: Team KR + System Fit */}
+        <View style={th.row3}>
+          <View style={th.statBlock}>
+            <Text style={[th.statBig, { color: CAUTION }]}>{Math.round(TEAM_KR.overall)}</Text>
+            <Text style={th.statLbl}>TEAM KR</Text>
+          </View>
+          <View style={th.statDivider} />
+          <View style={th.statBlock}>
+            <Text style={[th.statBig, { color: GAIN }]}>94%</Text>
+            <Text style={th.statLbl}>SYS FIT</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Roster Stats Strip */}
+      <View style={[rs.strip, { backgroundColor: C.surface }]}>
+        {/* Scholarship pills */}
+        <View style={rs.pillRow}>
+          <View style={[rs.pill, { backgroundColor: C.surfacePressed }]}>
+            <Text style={[rs.pillTxt, { color: C.label }]}>{scholarship} Scholarship</Text>
+          </View>
+          <View style={[rs.pill, { backgroundColor: C.surfacePressed }]}>
+            <Text style={[rs.pillTxt, { color: C.label }]}>{walkOn} Walk-On</Text>
+          </View>
+          <View style={[rs.pill, { backgroundColor: C.surfacePressed }]}>
+            <Text style={[rs.pillTxt, { color: C.label }]}>{redshirts} Redshirt</Text>
+          </View>
+        </View>
+
+        {/* Health row */}
+        <View style={rs.healthRow}>
+          <View style={rs.healthItem}>
+            <View style={[rs.healthDot, { backgroundColor: GAIN }]} />
+            <Text style={[rs.healthTxt, { color: GAIN }]}>Available {health.available}</Text>
+          </View>
+          <View style={rs.healthItem}>
+            <View style={[rs.healthDot, { backgroundColor: CAUTION }]} />
+            <Text style={[rs.healthTxt, { color: CAUTION }]}>Limited {health.limited}</Text>
+          </View>
+          <View style={rs.healthItem}>
+            <View style={[rs.healthDot, { backgroundColor: HEAT }]} />
+            <Text style={[rs.healthTxt, { color: HEAT }]}>Out {health.out}</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Search + Sort row */}
+      <View style={ss.row}>
         {/* Search bar */}
-        <View style={[rs.searchBar, { backgroundColor: C.surface, borderColor: C.inputBorder }]}>
-          <IconSymbol name="magnifyingglass" size={16} color={C.muted} />
+        <View style={[ss.searchBar, { backgroundColor: C.surface }]}>
+          <IconSymbol name="magnifyingglass" size={15} color={C.muted} />
           <TextInput
-            style={[rs.searchInput, { color: C.label }]}
+            style={[ss.input, { color: C.label }]}
             placeholder="Search players..."
             placeholderTextColor={C.muted}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
+            value={search}
+            onChangeText={setSearch}
             returnKeyType="search"
           />
-          {searchQuery.length > 0 && (
-            <Pressable onPress={() => setSearchQuery('')} hitSlop={10}>
-              <IconSymbol name="xmark.circle.fill" size={16} color={C.muted} />
+          {search.length > 0 && (
+            <Pressable onPress={() => setSearch('')} hitSlop={10}>
+              <IconSymbol name="xmark.circle.fill" size={15} color={C.muted} />
             </Pressable>
           )}
         </View>
 
-        {/* Coach action row */}
-        {isCoachRole && (
-          <View style={rs.coachActions}>
-            <Pressable
-              style={[rs.actionBtn, { backgroundColor: NAVY }]}
-              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-            >
-              <IconSymbol name="person.badge.plus" size={15} color="#fff" />
-              <Text style={rs.actionBtnWhiteText}>Add Player</Text>
-            </Pressable>
-            <Pressable
-              style={[rs.actionBtn, { backgroundColor: C.surface, borderColor: C.separator, borderWidth: 1 }]}
-              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-            >
-              <IconSymbol name="square.and.arrow.up" size={15} color={C.label} />
-              <Text style={[rs.actionBtnText, { color: C.label }]}>Export</Text>
-            </Pressable>
-          </View>
-        )}
+        {/* Sort dropdown pill */}
+        <Pressable
+          style={[ss.sortPill, { backgroundColor: C.surface }]}
+          onPress={() => {
+            Haptics.selectionAsync();
+            // Cycle through sort keys on each tap
+            const idx  = SORT_KEYS.indexOf(sort);
+            const next = SORT_KEYS[(idx + 1) % SORT_KEYS.length];
+            setSort(next);
+          }}
+        >
+          <Text style={[ss.sortTxt, { color: C.label }]}>{sort}</Text>
+          <IconSymbol name="chevron.down" size={11} color={C.secondary} />
+        </Pressable>
+      </View>
 
-        {/* Count */}
-        <Text style={[rs.countText, { color: C.muted }]}>
-          {filteredPlayers.length} player{filteredPlayers.length !== 1 ? 's' : ''}
-          {posFilter !== 'All' ? ` · ${posFilter}` : ''}
-        </Text>
+      {/* Position filter pills */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={pf.content}
+        style={pf.scroll}
+      >
+        {POS_FILTERS.map(pos => {
+          const active = pos === posFilter;
+          return (
+            <Pressable
+              key={pos}
+              style={[
+                pf.pill,
+                active
+                  ? { backgroundColor: C.activePill }
+                  : { backgroundColor: C.surface },
+              ]}
+              onPress={() => { Haptics.selectionAsync(); setPosFilter(pos); }}
+            >
+              <Text style={[pf.txt, { color: active ? C.activePillText : C.secondary }]}>
+                {pos}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
 
-        {/* Player list */}
-        {filteredPlayers.map(player => (
-          <PlayerCard
-            key={player.id}
-            player={player}
-            role={isCoachRole ? 'Coach' : 'Fan'}
+      {/* Player cards */}
+      <View style={{ marginTop: 4 }}>
+        {sorted.map(p => (
+          <CoachPlayerCard
+            key={p.id}
+            p={p}
             C={C}
-            onPress={() => {
-              setSelectedPlayer(player);
-              setPlayerSheetOpen(true);
-            }}
+            onPress={() => goToPlayer(p.id)}
           />
         ))}
-
-        {filteredPlayers.length === 0 && (
-          <View style={rs.emptyState}>
-            <IconSymbol name="person.slash" size={36} color={C.muted} />
-            <Text style={[rs.emptyText, { color: C.muted }]}>No players found</Text>
+        {sorted.length === 0 && (
+          <View style={empty.wrap}>
+            <IconSymbol name="person.slash" size={32} color={C.muted} />
+            <Text style={[empty.txt, { color: C.muted }]}>No players found</Text>
           </View>
         )}
+      </View>
+    </ScrollView>
+  );
 
-        {/* Upcoming schedule (Coach sees it too) */}
-        <UpcomingSchedule C={C} />
-      </ScrollView>
-    );
-  };
+  // ── Render: Player View ────────────────────────────────────────────────────
 
-  // ── Render Staff Tab ───────────────────────────────────────────────────────
-
-  const renderStaffTab = () => (
+  const renderPlayerView = () => (
     <ScrollView
-      key="staff"
       onScroll={handleScroll}
       scrollEventThrottle={16}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{
-        paddingTop: contentPadTop,
-        paddingHorizontal: 16,
-        paddingBottom: 120,
-      }}
+      contentContainerStyle={{ paddingTop: topBarH, paddingBottom: scrollPB }}
     >
-      {isCoachRole && (
-        <Pressable
-          style={[rs.actionBtn, { backgroundColor: NAVY, marginBottom: 16, alignSelf: 'flex-start' }]}
-          onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-        >
-          <IconSymbol name="person.badge.plus" size={15} color="#fff" />
-          <Text style={rs.actionBtnWhiteText}>Manage Staff</Text>
-        </Pressable>
-      )}
+      {/* My Profile button */}
+      <Pressable
+        style={({ pressed }) => [
+          mp.card,
+          { backgroundColor: DARK_CARD, opacity: pressed ? 0.82 : 1 },
+        ]}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          goToMyProfile();
+        }}
+      >
+        <Text style={mp.txt}>View My Profile</Text>
+        <IconSymbol name="arrow.right" size={14} color="#F0E8DC" />
+      </Pressable>
 
-      <SectionHeader title="Coaching Staff" C={C} />
-      {coachingStaff.map(member => (
-        <StaffCard
-          key={member.id}
-          member={member}
-          C={C}
-          onPress={() => {
-            setSelectedStaff(member);
-            setStaffSheetOpen(true);
-          }}
-        />
-      ))}
+      {/* Teammates list */}
+      <Text style={[pl.sectionTitle, { color: C.secondary }]}>TEAMMATES</Text>
 
-      <SectionHeader title="Support Staff" C={C} />
-      {supportStaff.map(member => (
-        <StaffCard
-          key={member.id}
-          member={member}
+      {PLAYERS.map(p => (
+        <PublicPlayerCard
+          key={p.id}
+          p={p}
           C={C}
+          isMe={p.id === MY_PLAYER_ID}
           onPress={() => {
-            setSelectedStaff(member);
-            setStaffSheetOpen(true);
+            if (p.id === MY_PLAYER_ID) {
+              goToMyProfile();
+            } else {
+              goToPlayer(p.id, true);
+            }
           }}
         />
       ))}
     </ScrollView>
   );
-
-  // ── Render Depth Chart Tab ─────────────────────────────────────────────────
-
-  const renderDepthChartTab = () => (
-    <ScrollView
-      key="depth-chart"
-      onScroll={handleScroll}
-      scrollEventThrottle={16}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{
-        paddingTop: contentPadTop,
-        paddingHorizontal: 16,
-        paddingBottom: 120,
-      }}
-    >
-      <DepthChartSection C={C} />
-    </ScrollView>
-  );
-
-  const renderContent = () => {
-    if (activeTab === 'Players')     return renderRosterTab();
-    if (activeTab === 'Depth Chart') {
-      // Depth Chart is Coach-only — Player role sees a locked placeholder
-      if (!isCoachRole) {
-        return (
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 40, paddingTop: contentPadTop }}>
-            <IconSymbol name="lock.fill" size={36} color={C.muted} />
-            <Text style={[{ fontSize: 17, fontWeight: '700', color: C.label, marginTop: 12, textAlign: 'center' }]}>Coach View Only</Text>
-            <Text style={[{ fontSize: 14, color: C.secondary, textAlign: 'center', lineHeight: 20, marginTop: 6 }]}>
-              The depth chart is visible to coaching staff only.
-            </Text>
-          </View>
-        );
-      }
-      return renderDepthChartTab();
-    }
-    return renderStaffTab();
-  };
 
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
-      {renderContent()}
+      {/* Content */}
+      {isCoach ? renderCoachView() : renderPlayerView()}
 
-      {/* ── Fixed Top Bar ── */}
+      {/* Fixed Top Bar */}
       <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         <View style={s.topBar}>
-          {/* Left: hamburger */}
+          {/* Left: KMenuButton */}
           <View style={s.topBarSide}>
             <Pressable
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                if (isCoachRole) openSidePanel();
-              }}
+              onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }}
               hitSlop={12}
             >
               <KMenuButton />
             </Pressable>
           </View>
 
-          {/* Center: TabPill (Coach) or static pill (Player) */}
-          <View style={s.dropdownWrap}>
-            {isCoachRole ? (
-              <View style={{ flexDirection: 'row', backgroundColor: C.surface, borderRadius: 20, padding: 3, gap: 2 }}>
-                {(['Players', 'Depth Chart', 'Staff'] as const).map(tab => {
-                  const active = activeTab === tab;
-                  return (
-                    <Pressable key={tab} onPress={() => { Haptics.selectionAsync(); setActiveTab(tab as any); }}
-                      style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 17, backgroundColor: active ? C.activePill : 'transparent' }}>
-                      <Text style={{ fontSize: 13, fontWeight: '600', color: active ? C.activePillText : C.secondary }}>{tab}</Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            ) : (
-              <View style={{ backgroundColor: C.activePill, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 }}>
-                <Text style={{ fontSize: 13, fontWeight: '600', color: C.activePillText }}>Roster</Text>
-              </View>
-            )}
+          {/* Center: static "Players" pill (Coach) or "Roster" pill (Player) */}
+          <View style={s.centerWrap}>
+            <View style={[s.centerPill, { backgroundColor: C.surface, borderColor: C.separator }]}>
+              <Text style={[s.centerPillTxt, { color: C.label }]}>
+                {isCoach ? 'Players' : 'Roster'}
+              </Text>
+            </View>
           </View>
 
-          {/* Right: filter toggle + role pill */}
+          {/* Right: RolePill */}
           <View style={[s.topBarSide, s.topBarRight]}>
-            {activeTab === 'Players' && role !== 'Player' && (
-              <Pressable onPress={toggleFilter} hitSlop={12}>
-                <IconSymbol
-                  name={filterVisible || posFilter !== 'All'
-                    ? 'line.3.horizontal.decrease.circle.fill'
-                    : 'line.3.horizontal.decrease.circle'}
-                  size={22}
-                  color={filterVisible || posFilter !== 'All' ? C.accent : C.label}
-                />
-              </Pressable>
-            )}
             <RolePill
               role={role}
               onPress={cycleRole}
-              accentColor={NAVY}
-              isPrimary={isCoachRole}
+              accentColor={DARK_CARD}
+              isPrimary={isCoach}
             />
           </View>
         </View>
-
-        {/* Filter Pills (Roster tab only) */}
-        {activeTab === 'Players' && (
-          <Animated.View style={{
-            height: pillsAnim.interpolate({ inputRange: [0, 1], outputRange: [0, PILL_ROW_H] }),
-            opacity: pillsAnim,
-            overflow: 'hidden',
-          }}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={s.pillsContent}
-              style={[s.pillsRow, { borderTopColor: C.separator }]}
-            >
-              {POS_FILTERS.map(pos => {
-                const active = pos === posFilter;
-                return (
-                  <Pressable
-                    key={pos}
-                    style={[
-                      s.pill,
-                      active
-                        ? { backgroundColor: C.label }
-                        : { borderColor: C.separator },
-                    ]}
-                    onPress={() => { Haptics.selectionAsync(); setPosFilter(pos); }}
-                  >
-                    <Text style={[
-                      s.pillText,
-                      { color: active ? C.bg : C.secondary },
-                      active && { fontWeight: '700' },
-                    ]}>
-                      {pos}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
-          </Animated.View>
-        )}
       </View>
 
-      {/* ── Bottom Sheets ── */}
-      <PlayerSheet
-        player={selectedPlayer}
-        role={isCoachRole ? 'Coach' : 'Fan'}
-        visible={playerSheetOpen}
-        onClose={() => setPlayerSheetOpen(false)}
-        C={C}
-      />
-      <StaffSheet
-        member={selectedStaff}
-        visible={staffSheetOpen}
-        onClose={() => setStaffSheetOpen(false)}
-        C={C}
-      />
+      {/* FAB — Coach only */}
+      {isCoach && (
+        <Pressable
+          style={[
+            fab.btn,
+            {
+              backgroundColor: C.label,
+              bottom: insets.bottom + 64,
+            },
+          ]}
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            RNAlert.alert('Add Player', 'Add Player coming soon');
+          }}
+        >
+          <Text style={[fab.icon, { color: C.bg }]}>+</Text>
+        </Pressable>
+      )}
     </View>
   );
 }
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
-const rs = StyleSheet.create({
-  searchBar:          { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 12, paddingVertical: 10, borderRadius: 12, borderWidth: 1, marginBottom: 12 },
-  searchInput:        { flex: 1, fontSize: 14 },
-  coachActions:       { flexDirection: 'row', gap: 8, marginBottom: 12 },
-  actionBtn:          { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, paddingVertical: 9, borderRadius: 10 },
-  actionBtnText:      { fontSize: 13, fontWeight: '700' },
-  actionBtnWhiteText: { color: '#fff', fontSize: 13, fontWeight: '700' },
-  countText:          { fontSize: 12, marginBottom: 8 },
-  emptyState:         { alignItems: 'center', paddingVertical: 40, gap: 10 },
-  emptyText:          { fontSize: 15 },
-});
-
-// ── Player Role View Styles ───────────────────────────────────────────────────
-
-const pv = StyleSheet.create({
-  profileCard:    { borderRadius: 16, padding: 16, marginBottom: 16 },
-  profileHeader:  { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  numberBadge:    { width: 38, height: 38, borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  numberText:     { color: '#fff', fontSize: 13, fontWeight: '800' },
-  profileInfo:    { flex: 1, gap: 4 },
-  profileName:    { fontSize: 18, fontWeight: '800' },
-  profileDetails: { flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' },
-  profileDetail:  { fontSize: 13 },
-  badgesRow:      { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 12 },
-  badge:          { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
-  badgeText:      { fontSize: 11, fontWeight: '600' },
-  statsCard:      { borderRadius: 14, padding: 14, marginBottom: 16 },
-  krCard:         { borderRadius: 14, padding: 16, marginBottom: 16 },
-  krRow:          { flexDirection: 'row', alignItems: 'center' },
-  krItem:         { flex: 1, alignItems: 'center', gap: 4 },
-  krBig:          { fontSize: 28, fontWeight: '800' },
-  krLbl:          { fontSize: 11 },
-  krDivider:      { width: 1, height: 40 },
-  krFooter:       { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
-  krTier:         { fontSize: 12, fontWeight: '700' },
-  krTrend:        { fontSize: 12, fontWeight: '600' },
-  teammateRow:    { flexDirection: 'row', alignItems: 'center', padding: 10, gap: 10 },
-  teammateBadge:  { width: 34, height: 34, borderRadius: 8, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  teammateNum:    { fontSize: 12, fontWeight: '800' },
-  teammateInfo:   { flex: 1 },
-  teammateName:   { fontSize: 14, fontWeight: '600' },
-  teammateDetail: { fontSize: 12, marginTop: 1 },
-});
-
-const lk = StyleSheet.create({
-  card:  { borderRadius: 16, padding: 28, alignItems: 'center', gap: 12, maxWidth: 280 },
-  title: { fontSize: 17, fontWeight: '700' },
-  sub:   { fontSize: 14, textAlign: 'center', lineHeight: 20 },
-});
-
+// Screen shell
 const s = StyleSheet.create({
-  screen:            { flex: 1 },
-  topBarWrap:        { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
-  topBar:            { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
-  topBarSide:        { width: 90, justifyContent: 'center' },
-  topBarRight:       { alignItems: 'flex-end', flexDirection: 'row', gap: 8, justifyContent: 'flex-end' },
-  dropdownWrap:      { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  pillsRow:          { height: PILL_ROW_H, borderTopWidth: StyleSheet.hairlineWidth },
-  pillsContent:      { paddingHorizontal: 16, gap: 8, alignItems: 'center' },
-  pill:              { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 16, borderWidth: 1 },
-  pillText:          { fontSize: 13 },
+  screen:      { flex: 1 },
+  topBarWrap:  { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 },
+  topBar:      { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
+  topBarSide:  { width: 80, justifyContent: 'center' },
+  topBarRight: { alignItems: 'flex-end' },
+  centerWrap:  { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  centerPill:  { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, borderWidth: 1 },
+  centerPillTxt: { fontSize: 14, fontWeight: '700' },
+});
+
+// Team header card
+const th = StyleSheet.create({
+  card:       { backgroundColor: DARK_CARD, borderRadius: 16, marginHorizontal: 14, marginTop: 12, padding: 16, gap: 10 },
+  row1:       { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  teamName:   { fontSize: 16, fontWeight: '800', color: '#F0E8DC', flex: 1, marginRight: 8 },
+  confBadge:  { backgroundColor: 'rgba(255,255,255,0.12)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 7 },
+  confText:   { fontSize: 11, fontWeight: '700', color: '#F0E8DC' },
+  row2:       { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  record:     { fontSize: 22, fontWeight: '900', color: '#F0E8DC' },
+  sep:        { width: 1, height: 16, backgroundColor: 'rgba(240,232,220,0.25)' },
+  confRec:    { fontSize: 13, fontWeight: '600' },
+  standing:   { fontSize: 13, fontWeight: '700' },
+  row3:       { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
+  statBlock:  { flex: 1, alignItems: 'center', gap: 2 },
+  statBig:    { fontSize: 26, fontWeight: '900' },
+  statLbl:    { fontSize: 10, fontWeight: '700', color: 'rgba(240,232,220,0.55)', letterSpacing: 0.5 },
+  statDivider:{ width: 1, height: 36, backgroundColor: 'rgba(240,232,220,0.18)', marginHorizontal: 12 },
+});
+
+// Roster stats strip
+const rs = StyleSheet.create({
+  strip:      { borderRadius: 12, marginHorizontal: 14, marginTop: 8, padding: 12, gap: 8 },
+  pillRow:    { flexDirection: 'row', gap: 6, flexWrap: 'wrap' },
+  pill:       { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 20 },
+  pillTxt:    { fontSize: 12, fontWeight: '600' },
+  healthRow:  { flexDirection: 'row', gap: 14, marginTop: 4 },
+  healthItem: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  healthDot:  { width: 6, height: 6, borderRadius: 3 },
+  healthTxt:  { fontSize: 12, fontWeight: '600' },
+});
+
+// Search + sort row
+const ss = StyleSheet.create({
+  row:       { flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 14, marginTop: 8 },
+  searchBar: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 14, height: 36, borderRadius: 20 },
+  input:     { flex: 1, fontSize: 13 },
+  sortPill:  { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 12, height: 36, borderRadius: 20 },
+  sortTxt:   { fontSize: 13, fontWeight: '700' },
+});
+
+// Position filter pills
+const pf = StyleSheet.create({
+  scroll:   { marginTop: 8 },
+  content:  { paddingHorizontal: 14, gap: 8, paddingVertical: 2 },
+  pill:     { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20 },
+  txt:      { fontSize: 13, fontWeight: '600' },
+});
+
+// Empty state
+const empty = StyleSheet.create({
+  wrap: { alignItems: 'center', paddingVertical: 40, gap: 10 },
+  txt:  { fontSize: 15 },
+});
+
+// My profile banner (Player view)
+const mp = StyleSheet.create({
+  card: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: DARK_CARD, borderRadius: 16, marginHorizontal: 14, marginTop: 12, marginBottom: 4, paddingHorizontal: 16, paddingVertical: 14 },
+  txt:  { fontSize: 15, fontWeight: '700', color: '#F0E8DC' },
+});
+
+// Player view section label
+const pl = StyleSheet.create({
+  sectionTitle: { fontSize: 11, fontWeight: '700', letterSpacing: 0.8, marginHorizontal: 14, marginTop: 16, marginBottom: 8 },
+});
+
+// FAB
+const fab = StyleSheet.create({
+  btn:  { position: 'absolute', right: 20, width: 52, height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.18, shadowRadius: 6, elevation: 6 },
+  icon: { fontSize: 26, fontWeight: '300', lineHeight: 30 },
 });

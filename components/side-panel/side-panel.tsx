@@ -34,13 +34,20 @@ import { WalletPanel } from './wallet-panel';
 import { StudiosPanel } from './studios-panel';
 import { HubPanel } from './hub-panel';
 import { CommunityHubPanel } from './community-hub-panel';
+import { CommunitySocialPanel } from './community-social-panel';
+import { SportsSocialPanel } from './sports-social-panel';
+import { CommunityAgendaPanel } from './community-agenda-panel';
+import { CommunityKtvPanel } from './community-ktv-panel';
 import { EducationHubPanel } from './education-hub-panel';
 import { CampusPanel } from './campus-panel';
 import { CommunityMembersPanel } from './community-members-panel';
 import { CommunityOutreachPanel } from './community-outreach-panel';
 import { CommunityGivePanel } from './community-give-panel';
+import { CommunityKplayPanel } from './community-kplay-panel';
+import { CommunityKaypayPanel } from './community-kaypay-panel';
 import { EduFundPanel } from './edu-fund-panel';
 import { SportsHubPanel } from './sports-hub-panel';
+import { SportsAgendaPanel } from './sports-agenda-panel';
 import { SportsRosterPanel } from './sports-roster-panel';
 import { SportsRecruitsPanel } from './sports-recruits-panel';
 import { SportsBoosterPanel } from './sports-booster-panel';
@@ -82,7 +89,7 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
   const isWallet = pathname.includes('wallet') || pathname.includes('kaypay');
   const isStudios = pathname.includes('studios');
   const isAdmissions    = pathname.includes('/admissions');
-  const isHubCommunity  = pathname.includes('hub/community') || pathname.includes('hub/announcement-compose') || pathname.includes('hub/care-request');
+  const isHubCommunity  = pathname.includes('hub/community') || pathname.includes('hub/services') || pathname.includes('hub/groups') || pathname.includes('hub/volunteers') || pathname.includes('hub/care-requests') || pathname.includes('hub/check-in') || pathname.includes('hub/announcement-compose') || pathname.includes('hub/care-request');
   const isHubEducation  = pathname.includes('hub/education') || pathname.includes('hub/edu-announcement');
   const isCampus        = pathname.includes('hub/campus');
   const isHubSports     = pathname.includes('hub/sports');
@@ -129,15 +136,15 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
               : isNexus
                 ? <NexusPanel />
                 : isSocial
-                  ? <SocialPanel />
+                  ? (mode === 'community' ? <CommunitySocialPanel /> : mode === 'sports' ? <SportsSocialPanel /> : <SocialPanel />)
                   : isBusinessStore
                     ? <BusinessStorePanel />
                   : isStore
-                    ? (mode === 'church' ? <GivePanel /> : <StorePanel />)
+                    ? (mode === 'community' ? <GivePanel /> : <StorePanel />)
                     : isKayTV
-                      ? <KayTVPanel />
+                      ? (mode === 'community' ? <CommunityKtvPanel /> : <KayTVPanel />)
                       : isWallet
-                        ? <WalletPanel />
+                        ? (mode === 'community' ? <CommunityKaypayPanel /> : <WalletPanel />)
                         : isHubCommunity
                           ? <CommunityHubPanel />
                           : isHubEducation
@@ -159,17 +166,17 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
                           : isHub
                           ? <HubPanel />
                           : isStudios
-                          ? <StudiosPanel />
+                          ? (mode === 'community' ? <CommunityKplayPanel /> : <StudiosPanel />)
                           : isMode
                         ? <ModePanel />
                         : isAgenda
-                          ? <AgendaPanel />
+                          ? (mode === 'community' ? <CommunityAgendaPanel /> : mode === 'sports' ? <SportsAgendaPanel /> : <AgendaPanel />)
                           : isSeason
                             ? <SeasonPanel />
                             : isRoster
                               ? (mode === 'sports' ? <SportsRosterPanel /> : <RosterPanel />)
                               : isRecruits
-                                ? (mode === 'sports' ? <SportsRecruitsPanel /> : mode === 'business' ? <LeadsPanel /> : mode === 'education' ? <AdmissionsPanel /> : mode === 'church' ? <OutreachPanel /> : <ProspectsPanel />)
+                                ? (mode === 'sports' ? <SportsRecruitsPanel /> : mode === 'business' ? <LeadsPanel /> : mode === 'education' ? <AdmissionsPanel /> : mode === 'community' ? <OutreachPanel /> : <ProspectsPanel />)
                                 : isOutreach
                                   ? <CommunityOutreachPanel />
                                   : isDeals

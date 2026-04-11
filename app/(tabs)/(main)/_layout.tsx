@@ -98,16 +98,32 @@ export default function HomeLayout() {
       <Stack.Screen name="social/analytics" />
       <Stack.Screen name="social/following" />
       <Stack.Screen name="social/settings" />
+      <Stack.Screen name="social/posting-policy" />
       {/* Season */}
       <Stack.Screen name="season/index" />
       {/* Roster */}
       <Stack.Screen name="roster/index" />
+      <Stack.Screen name="roster/depth-chart" />
+      <Stack.Screen name="roster/gap-analysis" />
+      <Stack.Screen name="roster/player-profile" />
+      <Stack.Screen name="roster/my-profile" />
+      <Stack.Screen name="roster/staff" />
+      <Stack.Screen name="roster/scholarships" />
+      <Stack.Screen name="roster/medical" />
       {/* Media */}
       <Stack.Screen name="media/index" />
       {/* Recruits / Prospects / Leads / Outreach / Admissions */}
       <Stack.Screen name="recruits/index" />
       {/* Give */}
       <Stack.Screen name="give/index" />
+      <Stack.Screen name="give/giving-dashboard" />
+      <Stack.Screen name="give/campaigns" />
+      <Stack.Screen name="give/donors" />
+      <Stack.Screen name="give/history" />
+      <Stack.Screen name="give/my-history" />
+      <Stack.Screen name="give/fund-management" />
+      <Stack.Screen name="give/tax-receipts" />
+      <Stack.Screen name="give/give-settings" />
       {/* Fund */}
       <Stack.Screen name="fund/index" />
       {/* Store / Give */}
@@ -126,19 +142,38 @@ export default function HomeLayout() {
       <Stack.Screen name="kaytv/manage-videos" />
       <Stack.Screen name="kaytv/explore" />
       <Stack.Screen name="kaytv/library" />
+      <Stack.Screen name="kaytv/sermons" />
       {/* KayStudios */}
       <Stack.Screen name="kaystudios/index" />
       <Stack.Screen name="kaystudios/detail" />
       <Stack.Screen name="kaystudios/search" />
       <Stack.Screen name="kaystudios/experience" />
+      <Stack.Screen name="kaystudios/explore" />
+      <Stack.Screen name="kaystudios/library" />
+      <Stack.Screen name="kaystudios/settings" />
+      <Stack.Screen name="kaystudios/community-courses" />
+      <Stack.Screen name="kaystudios/community-learn" />
+      <Stack.Screen name="kaystudios/community-games" />
+      <Stack.Screen name="kaystudios/community-kids" />
       {/* Pulse */}
       <Stack.Screen name="pulse/index" />
       {/* Profile */}
       <Stack.Screen name="profile/index" />
       {/* Members */}
       <Stack.Screen name="members/index" />
+      <Stack.Screen name="members/households" />
+      <Stack.Screen name="members/visitors" />
+      <Stack.Screen name="members/import-export" />
+      <Stack.Screen name="members/role-definitions" />
+      <Stack.Screen name="members/attendance-policies" />
+      <Stack.Screen name="members/privacy-settings" />
       {/* Outreach */}
       <Stack.Screen name="outreach/index" />
+      <Stack.Screen name="outreach/campaigns" />
+      <Stack.Screen name="outreach/events" />
+      <Stack.Screen name="outreach/follow-up" />
+      <Stack.Screen name="outreach/source-tracking" />
+      <Stack.Screen name="outreach/invite" />
       {/* Network */}
       <Stack.Screen name="network/index" />
       <Stack.Screen name="network/moderation" />
@@ -160,6 +195,11 @@ export default function HomeLayout() {
       <Stack.Screen name="hub/group-detail" />
       <Stack.Screen name="hub/announcement-compose" />
       <Stack.Screen name="hub/care-request" />
+      <Stack.Screen name="hub/services" />
+      <Stack.Screen name="hub/groups" />
+      <Stack.Screen name="hub/volunteers" />
+      <Stack.Screen name="hub/care-requests" />
+      <Stack.Screen name="hub/check-in" />
       <Stack.Screen name="hub/education" />
       <Stack.Screen name="hub/edu-announcement" />
       <Stack.Screen name="hub/campus" />
@@ -181,6 +221,9 @@ export default function HomeLayout() {
       <Stack.Screen name="kaypay/invoices" />
       <Stack.Screen name="kaypay/tax" />
       <Stack.Screen name="kaypay/settings" />
+      <Stack.Screen name="kaypay/church-finances" />
+      <Stack.Screen name="kaypay/budget" />
+      <Stack.Screen name="kaypay/payroll" />
       {/* Booster */}
       <Stack.Screen name="booster/index" />
       {/* Admissions */}

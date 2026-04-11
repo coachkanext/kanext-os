@@ -1,122 +1,92 @@
 /**
- * Community Outreach Side Panel — admin navigation + pipeline summary.
+ * Community Outreach Side Panel — simple nav panel.
+ * Pastor: Pipeline, Campaigns, Events + MANAGE section.
+ * Member: Invite only.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useColors } from '@/hooks/use-colors';
 import { closeSidePanel } from '@/utils/global-side-panel';
-import { getStageCounts, getCampaignsByStatus } from '@/data/mock-community-outreach';
+import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { useDemoRole } from '@/utils/demo-role-store';
 
 export function CommunityOutreachPanel() {
-  const C      = useColors();
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const router = useRouter();
+  const [role, , roleCycles] = useDemoRole('community:outreach');
+  const isPastor = role === roleCycles[0];
 
-  const stageCounts     = getStageCounts();
-  const activeCampaigns = getCampaignsByStatus('active');
-  const totalProspects  = Object.values(stageCounts).reduce((a, b) => a + b, 0);
-
-  const nav = (route: string) => {
+  const go = (route: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push(route as any);
+    closeSidePanel();
+    setTimeout(() => router.push(route as any), 80);
   };
 
-  const navRow = (icon: string, label: string, detail?: string, onPress?: () => void) => (
-    <Pressable
-      key={label}
-      style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
-      onPress={onPress ?? (() => {})}
-    >
-      <IconSymbol name={icon as any} size={18} color={C.secondary} />
-      <Text style={[s.navLabel, { color: C.label }]}>{label}</Text>
-      {detail && <Text style={[s.navDetail, { color: C.muted }]}>{detail}</Text>}
-      <IconSymbol name="chevron.right" size={12} color={C.muted} />
-    </Pressable>
-  );
+  const NAV_ITEMS = isPastor ? [
+    { icon: 'arrow.right.circle.fill', label: 'Pipeline',  route: '/(tabs)/(main)/outreach' },
+    { icon: 'megaphone.fill',          label: 'Campaigns', route: '/(tabs)/(main)/outreach/campaigns' },
+    { icon: 'calendar',                label: 'Events',    route: '/(tabs)/(main)/outreach/events' },
+  ] : [
+    { icon: 'person.badge.plus', label: 'Invite', route: '/(tabs)/(main)/outreach/invite' },
+  ];
+
+  const MANAGE_ITEMS = [
+    { icon: 'list.bullet.rectangle.fill', label: 'Follow-Up Sequences', route: '/(tabs)/(main)/outreach/follow-up' },
+    { icon: 'location.fill',              label: 'Source Tracking',      route: '/(tabs)/(main)/outreach/source-tracking' },
+  ];
 
   return (
-    <View style={{ gap: 8 }}>
-      {/* ── Home ── */}
-      <Pressable
-        style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.surfacePressed }]}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          closeSidePanel();
-          router.setParams({ manage: undefined });
-        }}
-      >
-        <IconSymbol name="house.fill" size={18} color={C.secondary} />
-        <Text style={[s.navLabel, { color: C.label }]}>Home</Text>
-      </Pressable>
+    <View style={[s.root, { backgroundColor: C.surface }]}>
+      {NAV_ITEMS.map((item, idx) => (
+        <Pressable
+          key={item.label}
+          style={({ pressed }) => [
+            s.row,
+            pressed && { backgroundColor: C.bg },
+            idx < NAV_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
+          ]}
+          onPress={() => go(item.route)}
+        >
+          <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
+          <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
+        </Pressable>
+      ))}
 
-      <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: C.separator }} />
-
-      {/* Pipeline summary */}
-      <View style={{ backgroundColor: C.surface, borderRadius: 12, padding: 12, gap: 8 }}>
-        <Text style={[s.sectionHeader, { color: C.secondary }]}>Pipeline</Text>
-        <View style={{ flexDirection: 'row', gap: 6 }}>
-          {([
-            { label: '1st Visit', count: stageCounts['First Visit'], color: '#1A1714' },
-            { label: 'Returned',  count: stageCounts['Returned'],    color: '#1A1714' },
-            { label: 'Connected', count: stageCounts['Connected'],   color: '#5A8A6E' },
-            { label: 'Member',    count: stageCounts['Member'],      color: '#3D7A5A' },
-          ] as const).map(item => (
-            <View key={item.label} style={{ flex: 1, alignItems: 'center', backgroundColor: item.color + '11', borderRadius: 8, paddingVertical: 8 }}>
-              <Text style={{ fontSize: 16, fontWeight: '800', color: item.color }}>{item.count}</Text>
-              <Text style={{ fontSize: 8, color: item.color, textAlign: 'center', marginTop: 2 }}>{item.label}</Text>
-            </View>
-          ))}
-        </View>
-      </View>
-
-      {/* Active campaigns */}
-      {activeCampaigns.length > 0 && (
+      {isPastor && (
         <>
-          <Text style={[s.sectionHeader, { color: C.secondary }]}>Active Campaigns</Text>
-          <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-            {activeCampaigns.map((c, i) => (
-              <View
-                key={c.id}
-                style={{
-                  flexDirection: 'row', alignItems: 'center',
-                  paddingHorizontal: 14, paddingVertical: 12, gap: 10,
-                  borderBottomWidth: i < activeCampaigns.length - 1 ? StyleSheet.hairlineWidth : 0,
-                  borderBottomColor: C.separator,
-                }}
-              >
-                <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#5A8A6E' }} />
-                <Text style={{ flex: 1, fontSize: 13, color: C.label }} numberOfLines={1}>{c.name}</Text>
-                <Text style={{ fontSize: 11, color: C.muted }}>{c.volunteersJoined}/{c.volunteersNeeded}</Text>
-              </View>
-            ))}
-          </View>
+          <View style={[s.divider, { backgroundColor: C.separator }]} />
+          <Text style={[s.sectionLabel, { color: C.secondary }]}>Manage</Text>
+          {MANAGE_ITEMS.map((item, idx) => (
+            <Pressable
+              key={item.label}
+              style={({ pressed }) => [
+                s.row,
+                pressed && { backgroundColor: C.bg },
+                idx < MANAGE_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
+              ]}
+              onPress={() => go(item.route)}
+            >
+              <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
+              <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
+            </Pressable>
+          ))}
         </>
       )}
-
-      {/* Actions */}
-      <Text style={[s.sectionHeader, { color: C.secondary }]}>Actions</Text>
-      <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-        {navRow('person.badge.plus',    'Add Connect Card')}
-        {navRow('plus.circle.fill',     'New Campaign')}
-        {navRow('square.and.arrow.up',  'Export Prospects')}
-      </View>
-
-      {/* Settings */}
-      <Text style={[s.sectionHeader, { color: C.secondary }]}>Settings</Text>
-      <View style={{ backgroundColor: C.surface, borderRadius: 12, overflow: 'hidden' }}>
-        {navRow('gear',     'Follow-up Workflows')}
-        {navRow('map.fill', 'Territory Map')}
-      </View>
     </View>
   );
 }
 
-const s = StyleSheet.create({
-  sectionHeader: { fontSize: 11, fontWeight: '600', letterSpacing: 0.5, textTransform: 'uppercase', paddingVertical: 6 },
-  navRow:        { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 13, gap: 10 },
-  navLabel:      { flex: 1, fontSize: 14, fontWeight: '500' },
-  navDetail:     { fontSize: 12 },
-});
+function makeStyles(C: ComponentColors) {
+  return StyleSheet.create({
+    root:         { flex: 1 },
+    divider:      { height: StyleSheet.hairlineWidth, marginVertical: 12, marginHorizontal: 16 },
+    sectionLabel: { fontSize: 11, fontWeight: '600', letterSpacing: 0.6, textTransform: 'uppercase', paddingHorizontal: 16, marginBottom: 2, marginTop: 4 },
+    row:          { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingVertical: 13, borderRadius: 8 },
+    rowBorder:    { borderBottomWidth: StyleSheet.hairlineWidth },
+    rowLabel:     { flex: 1, fontSize: 15 },
+  });
+}
