@@ -1,133 +1,133 @@
 /**
  * useColors — KaNeXT Design System palette hook.
- * Spec: KaNeXT_Design_System_Colors.md (canonical).
  *
- * Philosophy: Monochrome luxury. Color only for semantic meaning.
- * Core palette: Paper / Linen / Mist / Drift / Carbon / Ember
- * Semantic only: Gain / Heat / Caution
- * No blue. No accent color. No gradients.
+ * Visual language: White & Silver — cool platinum, not warm linen.
+ * Light: crisp white cards on cool near-white bg, steel-gray type.
+ * Dark:  cool near-black, silver-tinted surfaces, platinum text.
+ *
+ * Core:    Frost / White / Steel / Slate / Ink / Ember
+ * Semantic (data values only): Gain / Heat / Caution
+ * No blue accent. Monochrome chrome.
  */
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export const LIGHT_PALETTE = {
-  // ── Core palette ──────────────────────────────────────────────
-  paper:   '#FFFFFF',          // primary background canvas
-  linen:   '#F5F0EA',          // cards, tiles, elevated containers, input fields
-  mist:    '#E0DBD4',          // borders, dividers, separators, inactive toggle tracks
-  drift:   '#9C9790',          // secondary text, timestamps, placeholders, inactive icons
-  carbon:  '#1A1714',          // primary text, active icons, buttons, tappable elements
-  ember:   '#8B2500',          // ONLY: notification badges, live indicators, critical alerts
+  // ── Core palette ──────────────────────────────────────────────────────────
+  paper:   '#EEF0F7',          // primary bg — cool near-white (was warm #FFFFFF)
+  linen:   '#FFFFFF',          // cards, tiles, elevated surfaces (was warm linen)
+  mist:    '#E2E4ED',          // borders, dividers, separators (was warm beige)
+  drift:   '#6B7080',          // secondary text, timestamps, placeholders (cooler)
+  carbon:  '#0A0C14',          // primary text, icons, buttons (cool near-black)
+  ember:   '#8B2500',          // ONLY: notification badges, live indicators
 
-  // ── Semantic — data values only ───────────────────────────────
-  gain:    '#5A8A6E',          // positive financial data, confirmed, success
-  heat:    '#B85C5C',          // negative financial data, loss, error, destructive text
-  caution: '#B8943E',          // warning, pending, approaching deadline
+  // ── Semantic — data values only ───────────────────────────────────────────
+  gain:    '#1A7A4A',          // positive data, confirmed, success — deeper on white
+  heat:    '#B83030',          // negative data, error, destructive — deeper on white
+  caution: '#B07B00',          // warning, pending — deeper amber on white
 
-  // ── Named aliases (map to core palette) ───────────────────────
-  bg:              '#FFFFFF',  // alias: paper
-  surface:         '#F5F0EA',  // alias: linen
-  surfacePressed:  'rgba(26,23,20,0.05)',
-  cardBorder:      '#E0DBD4',  // alias: mist
-  label:           '#1A1714',  // alias: carbon
-  secondary:       '#9C9790',  // alias: drift
-  muted:           '#9C9790',  // alias: drift
-  separator:       '#E0DBD4',  // alias: mist
-  divider:         '#E0DBD4',  // alias: mist
-  inputBorder:     '#E0DBD4',  // alias: mist — focus border also becomes carbon via inline style
+  // ── Named aliases ─────────────────────────────────────────────────────────
+  bg:              '#EEF0F7',  // cool near-white — alias: paper
+  surface:         '#FFFFFF',  // pure white cards — alias: linen
+  surfacePressed:  'rgba(10,12,20,0.05)',
+  cardBorder:      '#E2E4ED',  // cool separator — alias: mist
+  label:           '#0A0C14',  // cool near-black — alias: carbon
+  secondary:       '#6B7080',  // cool medium gray — alias: drift
+  muted:           '#A8AABC',  // lighter silver-gray (tertiary / decorative)
+  separator:       '#E2E4ED',  // alias: mist
+  divider:         '#E2E4ED',  // alias: mist
+  inputBorder:     '#E2E4ED',  // alias: mist
 
-  // Interactive — Carbon ONLY. No blue. No accent color.
-  accent:          '#1A1714',  // was blue; now carbon. every button/link/icon.
-  accentLight:     '#1A1714',  // was light blue; now carbon.
+  // Interactive — Ink/carbon only. No blue. No color accent.
+  accent:          '#0A0C14',
+  accentLight:     '#0A0C14',
 
-  // Active chrome
-  activePill:      '#1A1714',  // active tab/filter pill bg: Carbon
-  activePillText:  '#FFFFFF',  // active tab/filter pill text: Paper
+  // Active chrome (pills, tabs, filters)
+  activePill:      '#0A0C14',  // dark fill
+  activePillText:  '#FFFFFF',  // pure white text on dark pill
 
-  // Semantic aliases (kept for backward compat with existing code)
-  green:   '#5A8A6E',          // alias: gain
-  red:     '#B85C5C',          // alias: heat
-  gold:    '#B8943E',          // alias: caution
-  amber:   '#B8943E',          // alias: caution
+  // Semantic aliases (backward compat)
+  green:   '#1A7A4A',
+  red:     '#B83030',
+  gold:    '#B07B00',
+  amber:   '#B07B00',
 
-  // Legacy color aliases — all collapse to carbon (no colored icons)
-  blue:    '#1A1714',
-  purple:  '#1A1714',
-  cyan:    '#1A1714',
-  orange:  '#B8943E',          // → caution
-  pink:    '#B85C5C',          // → heat
-  teal:    '#5A8A6E',          // → gain
+  // Legacy color aliases — collapse to carbon or nearest semantic
+  blue:    '#0A0C14',
+  purple:  '#0A0C14',
+  cyan:    '#0A0C14',
+  orange:  '#B07B00',          // → caution
+  pink:    '#B83030',          // → heat
+  teal:    '#1A7A4A',          // → gain
 
   // UI chrome
-  dotActive:    '#1A1714',     // carbon
-  dotInactive:  'rgba(26,23,20,0.20)',
-  footer:       '#FFFFFF',     // paper
-  footerDivider:'#E0DBD4',     // mist
+  dotActive:    '#0A0C14',
+  dotInactive:  'rgba(10,12,20,0.18)',
+  footer:       '#EEF0F7',     // matches bg
+  footerDivider:'#E2E4ED',
 
   // Chat bubbles (Nexus)
-  // User (sent): Carbon bg, Paper text
-  // Nexus (received): Linen bg, Carbon text
-  bubbleSent:     '#1A1714',   // user message bg: carbon
-  bubbleReceived: '#F5F0EA',   // nexus message bg: linen
+  bubbleSent:     '#0A0C14',   // user message bg: ink
+  bubbleReceived: '#FFFFFF',   // nexus message bg: pure white
 } as const;
 
 export const DARK_PALETTE = {
-  // ── Core palette ──────────────────────────────────────────────
-  paper:   '#1C1410',          // primary background
-  linen:   '#261D17',          // cards, tiles, elevated containers
-  mist:    '#3D352E',          // borders, dividers, separators
-  drift:   '#8A837C',          // secondary text, inactive icons
-  carbon:  '#F0E8DC',          // primary text, active icons, buttons
-  ember:   '#E08B6A',          // ONLY: badges, live indicators
+  // ── Core palette ──────────────────────────────────────────────────────────
+  paper:   '#0E0F14',          // cool near-black bg (was warm brown)
+  linen:   '#15161F',          // cool dark surfaces (was warm dark brown)
+  mist:    '#252730',          // cool dark separator (was warm dark gray)
+  drift:   '#7A7E92',          // cooler secondary text (was warm gray)
+  carbon:  '#E8ECF8',          // cool near-white text (was warm cream)
+  ember:   '#E08B6A',          // badges, live indicators (unchanged)
 
-  // ── Semantic ──────────────────────────────────────────────────
-  gain:    '#6B9E80',
-  heat:    '#D47A7A',
-  caution: '#D4AE5A',
+  // ── Semantic ──────────────────────────────────────────────────────────────
+  gain:    '#4ADE80',          // vivid green on dark
+  heat:    '#EF6060',          // vivid red on dark
+  caution: '#F0A030',          // vivid amber on dark
 
-  // ── Named aliases ─────────────────────────────────────────────
-  bg:              '#1C1410',
-  surface:         '#261D17',
-  surfacePressed:  'rgba(240,232,220,0.06)',
-  cardBorder:      '#3D352E',
-  label:           '#F0E8DC',
-  secondary:       '#8A837C',
-  muted:           '#8A837C',
-  separator:       '#3D352E',
-  divider:         '#3D352E',
-  inputBorder:     '#3D352E',
+  // ── Named aliases ─────────────────────────────────────────────────────────
+  bg:              '#0E0F14',
+  surface:         '#15161F',
+  surfacePressed:  'rgba(232,236,248,0.06)',
+  cardBorder:      '#252730',
+  label:           '#E8ECF8',
+  secondary:       '#7A7E92',
+  muted:           '#55586A',  // darker muted for dark mode
+  separator:       '#252730',
+  divider:         '#252730',
+  inputBorder:     '#252730',
 
-  // Interactive — Carbon ONLY
-  accent:          '#F0E8DC',
-  accentLight:     '#F0E8DC',
+  // Interactive
+  accent:          '#E8ECF8',
+  accentLight:     '#E8ECF8',
 
   // Active chrome
-  activePill:      '#F0E8DC',
-  activePillText:  '#1C1410',
+  activePill:      '#E8ECF8',
+  activePillText:  '#0E0F14',
 
   // Semantic aliases
-  green:   '#6B9E80',
-  red:     '#D47A7A',
-  gold:    '#D4AE5A',
-  amber:   '#D4AE5A',
+  green:   '#4ADE80',
+  red:     '#EF6060',
+  gold:    '#F0A030',
+  amber:   '#F0A030',
 
   // Legacy aliases
-  blue:    '#F0E8DC',
-  purple:  '#F0E8DC',
-  cyan:    '#F0E8DC',
-  orange:  '#D4AE5A',
-  pink:    '#D47A7A',
-  teal:    '#6B9E80',
+  blue:    '#E8ECF8',
+  purple:  '#E8ECF8',
+  cyan:    '#E8ECF8',
+  orange:  '#F0A030',
+  pink:    '#EF6060',
+  teal:    '#4ADE80',
 
   // UI chrome
-  dotActive:    '#F0E8DC',
-  dotInactive:  'rgba(240,232,220,0.20)',
-  footer:       '#1C1410',
-  footerDivider:'#3D352E',
+  dotActive:    '#E8ECF8',
+  dotInactive:  'rgba(232,236,248,0.20)',
+  footer:       '#0E0F14',
+  footerDivider:'#252730',
 
   // Chat bubbles
-  bubbleSent:     '#F0E8DC',
-  bubbleReceived: '#261D17',
+  bubbleSent:     '#E8ECF8',
+  bubbleReceived: '#15161F',
 } as const;
 
 export type ComponentColors = typeof LIGHT_PALETTE;
