@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import { View, Pressable, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, Pressable, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { usePathname } from 'expo-router';
@@ -63,6 +63,14 @@ import { useMode } from '@/context/app-context';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 export const SIDE_PANEL_WIDTH = Math.min(300, SCREEN_WIDTH * 0.82);
 
+const BRAND_NAMES: Record<string, string> = {
+  personal:  'Sammy Kalejaiye',
+  business:  'KaNeXT',
+  education: 'Lincoln University',
+  community: 'ICCLA',
+  sports:    "LU Men's Basketball",
+};
+
 interface SidePanelProps {
   visible: boolean;
   onClose: () => void;
@@ -73,6 +81,7 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
   const mode = useMode();
+  const brandName = BRAND_NAMES[mode] ?? '';
 
   const isMessages = pathname.includes('messages');
   const isPhone = pathname.includes('phone');
@@ -108,9 +117,9 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
   return (
     <DrawerPanel visible={visible} onClose={onClose} width={SIDE_PANEL_WIDTH}>
       <View style={{ flex: 1, backgroundColor: C.surface }}>
-        {/* K toggle — same position as on-screen K button, taps to close */}
+        {/* K toggle + brand name — mirrors on-screen top bar */}
         <Pressable
-          style={[styles.kBtn, { top: insets.top }]}
+          style={[styles.kBtn, { top: insets.top + 14 }]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             onClose();
@@ -119,12 +128,17 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
         >
           <KMenuButton />
         </Pressable>
+        {brandName ? (
+          <View style={[styles.brandWrap, { top: insets.top + 14 }]}>
+            <Text style={[styles.brandName, { color: C.label }]} numberOfLines={1}>{brandName}</Text>
+          </View>
+        ) : null}
 
         <ScrollView
           style={styles.scroll}
           contentContainerStyle={[
             styles.scrollContent,
-            { paddingTop: insets.top + 52, paddingBottom: insets.bottom + 24 },
+            { paddingTop: insets.top + 88, paddingBottom: insets.bottom + 24 },
           ]}
           showsVerticalScrollIndicator={false}
         >
@@ -201,11 +215,24 @@ const styles = StyleSheet.create({
   kBtn: {
     position: 'absolute',
     left: 0,
-    width: 80,
+    width: 52,
     height: 44,
     justifyContent: 'center',
-    paddingLeft: 20,
+    paddingLeft: 16,
     zIndex: 10,
+  },
+  brandWrap: {
+    position: 'absolute',
+    left: 52,
+    right: 16,
+    height: 44,
+    justifyContent: 'center',
+    zIndex: 10,
+  },
+  brandName: {
+    fontSize: 15,
+    fontWeight: '600',
+    letterSpacing: -0.2,
   },
   scroll: {
     flex: 1,

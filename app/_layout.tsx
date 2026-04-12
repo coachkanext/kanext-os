@@ -17,7 +17,9 @@ import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreenModule from 'expo-splash-screen';
 import React, { useEffect, useCallback, useRef, useState } from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
+import { View, Animated, StyleSheet, Pressable, Dimensions } from 'react-native';
+
+const SCREEN_W = Dimensions.get('window').width;
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import 'react-native-reanimated';
@@ -230,18 +232,32 @@ function AppShell() {
 
   // Side panel state — DrawerPanel handles scrim + animation internally
   const [sidePanelVisible, setSidePanelVisible] = useState(false);
+  const sidePanelAnim = useRef(new Animated.Value(0)).current;
 
   const openSidePanelCb = useCallback(() => {
     setSidePanelVisible(true);
-  }, []);
+    Animated.spring(sidePanelAnim, {
+      toValue: 1, damping: 24, stiffness: 200, mass: 0.9, useNativeDriver: true,
+    }).start();
+  }, [sidePanelAnim]);
 
   const dismissSidePanelCb = useCallback(() => {
     setSidePanelVisible(false);
-  }, []);
+    Animated.spring(sidePanelAnim, {
+      toValue: 0, damping: 26, stiffness: 220, mass: 0.9, useNativeDriver: true,
+    }).start();
+  }, [sidePanelAnim]);
 
   useEffect(() => {
     registerSidePanelHandlers(openSidePanelCb, dismissSidePanelCb);
   }, [openSidePanelCb, dismissSidePanelCb]);
+
+  const PUSH_X  = Math.min(300, SCREEN_W * 0.82);
+  const contentTransform = {
+    transform: [
+      { translateX: sidePanelAnim.interpolate({ inputRange: [0, 1], outputRange: [0, PUSH_X] }) },
+    ],
+  };
 
   const router = useRouter();
 
@@ -253,11 +269,16 @@ function AppShell() {
   const containerDynamic = { flex: 1 as const, backgroundColor: colors.bg };
 
   return (
-    <View style={containerDynamic}>
-      {/* Content wrapper */}
+    <View style={[containerDynamic, sidePanelVisible && { backgroundColor: colors.surface }]}>
+      {/* Content wrapper — animates push+scale when side panel opens */}
       <View style={containerDynamic}>
-        <View style={containerDynamic}>
-          <Stack
+        <Animated.View style={[
+          containerDynamic,
+          contentTransform,
+          sidePanelVisible && styles.contentRound,
+        ]}>
+          <View style={containerDynamic}>
+            <Stack
             screenOptions={{
               headerShown: false,
               animation: shouldUseSlideAnimation() ? 'slide_from_right' : 'none',
@@ -280,7 +301,8 @@ function AppShell() {
             />
           </Stack>
         </View>
-        <UniversalFooter />
+          <UniversalFooter />
+        </Animated.View>
       </View>
 
       {/* Side panels — rendered after content so they overlay it correctly */}
@@ -434,5 +456,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  contentRound: {
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+    overflow: 'hidden',
   },
 });

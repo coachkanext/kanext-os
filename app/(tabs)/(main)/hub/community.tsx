@@ -1,466 +1,405 @@
 /**
- * Church Overview — Community Hub home screen.
- * Pastor: stat cards, trend chart, volunteer gaps, upcoming this week, recent activity.
- * Member: church info card, stat cards, upcoming events, announcements.
+ * Community Hub — ICCLA Church Overview.
+ * Matches Personal Hub profile page pattern exactly:
+ * photo cover → floating top bar → overlapping avatar → identity → metrics → sections.
+ * Senior Leader: full church view (services, ministries, leadership, giving, announcements).
+ * Member: member-focused view (next service, my groups, announcements, quick access).
+ * K button opens side panel for deeper navigation.
  */
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import {
-  View, Text, Pressable, ScrollView, Alert, StyleSheet,
+  View, Text, Pressable, ScrollView, Image, StyleSheet,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useColors, type ComponentColors } from '@/hooks/use-colors';
-import { resetFooter } from '@/utils/global-footer-hide';
-import { openSidePanel } from '@/utils/global-side-panel';
-import { KMenuButton } from '@/components/ui/k-menu-button';
 import { RolePill } from '@/components/ui/role-pill';
+import { KMenuButton } from '@/components/ui/k-menu-button';
+import { useColors } from '@/hooks/use-colors';
+import { openSidePanel } from '@/utils/global-side-panel';
+import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
 
-// ── Static mock data ──────────────────────────────────────────────────────────
+const GAIN    = '#5A8A6E';
+const HEAT    = '#B85C5C';
+const CAUTION = '#B8943E';
 
-const CHURCH_INFO = {
-  name:        'Grace Covenant Church',
-  location:    '4201 MLK Jr Way, Oakland, CA',
-  serviceTimes:['Sunday 9:00 AM', 'Sunday 11:30 AM', 'Wednesday 7:00 PM'],
-  pastor:      'Dr. Oladipo Kalejaiye',
-  founded:     2008,
+const TOP_BAR_H   = 52;
+const AVATAR_SIZE = 80;
+const AVATAR_OVR  = AVATAR_SIZE / 2;
+
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+const CHURCH = {
+  name:      'ICCLA',
+  location:  'Hawthorne, CA',
+  type:      'Interdenominational · Pentecostal',
+  members:   420,
+  ministries:10,
 };
 
-const PASTOR_STATS = {
-  memberCount:     1247,
-  memberChange:    3,
-  attendanceLast:  612,
-  attendanceTrend: 5,
-  givingMonth:     48320,
-  givingTrend:     8,
-  careOpen:        7,
-};
-
-const MEMBER_STATS = {
-  memberCount: 1247,
-  nextService: 'Sun Apr 13',
-  myGroups:    2,
-};
-
-const CHART_DATA = [
-  { label: 'W1', attendance: 581, giving: 41000, volunteers: 38 },
-  { label: 'W2', attendance: 594, giving: 44200, volunteers: 41 },
-  { label: 'W3', attendance: 568, giving: 39800, volunteers: 36 },
-  { label: 'W4', attendance: 602, giving: 46100, volunteers: 43 },
-  { label: 'W5', attendance: 579, giving: 42500, volunteers: 39 },
-  { label: 'W6', attendance: 618, giving: 47300, volunteers: 44 },
-  { label: 'W7', attendance: 596, giving: 45000, volunteers: 40 },
-  { label: 'W8', attendance: 612, giving: 48320, volunteers: 47 },
+const SERVICES = [
+  { icon: 'sun.max.fill',      name: 'Sunday Service',  time: 'Sun 10:00 AM', location: 'Main Sanctuary' },
+  { icon: 'book.fill',         name: 'Bible Study',     time: 'Wed 7:00 PM',  location: 'Fellowship Hall' },
+  { icon: 'hands.sparkles.fill',name: 'Prayer Meeting', time: 'Fri 6:30 AM',  location: 'Prayer Room'    },
 ];
 
-type ChartMetric = 'attendance' | 'giving' | 'volunteers';
-
-function getMax(metric: ChartMetric): number {
-  return Math.max(...CHART_DATA.map(d => d[metric]));
-}
-
-const VOL_GAPS = [
-  { ministry: "Children's Ministry", roles: "3 Safety Monitors, 1 Nursery Lead" },
-  { ministry: 'Media Ministry',      roles: '1 Sound Engineer, 2 Camera Operators' },
-  { ministry: 'Hospitality',         roles: '2 Parking Volunteers' },
-];
-
-const UPCOMING_EVENTS = [
-  { id: 'e1', date: 'Sun Apr 13', time: '10:00 AM', title: 'Sunday Morning Service', type: 'Service',    isPublic: true  },
-  { id: 'e2', date: 'Wed Apr 16', time: '7:00 PM',  title: 'Bible Study — Romans 9', type: 'Bible Study', isPublic: true  },
-  { id: 'e3', date: 'Sat Apr 19', time: '10:00 AM', title: 'Easter Prep Meeting',     type: 'Internal',   isPublic: false },
-  { id: 'e4', date: 'Sun Apr 20', time: '10:00 AM', title: 'Easter Sunday Service',   type: 'Service',    isPublic: true  },
-];
-
-const RECENT_ACTIVITY = [
-  { id: 'a1', icon: 'person.badge.plus',       text: '3 new members joined this week',                    time: '1d ago' },
-  { id: 'a2', icon: 'heart.text.square.fill',  text: '2 new care requests submitted',                    time: '4h ago' },
-  { id: 'a3', icon: 'dollarsign.circle.fill',  text: 'April giving milestone reached — $48K',             time: '2d ago' },
-  { id: 'a4', icon: 'person.3.fill',           text: 'Young Adults group added 4 members',               time: '3d ago' },
+const MINISTRIES = [
+  { name: 'Worship Team',        leader: 'Pastor Nony',  members: 24 },
+  { name: 'Youth Ministry',      leader: 'Tobi A.',      members: 48 },
+  { name: "Children's Church",   leader: 'Sister Ada',   members: 36 },
+  { name: "Men's Fellowship",    leader: 'Bro. Emeka',   members: 32 },
+  { name: "Women's Ministry",    leader: 'Sis. Grace',   members: 41 },
+  { name: 'Prayer Ministry',     leader: 'Deacon James', members: 28 },
+  { name: 'Evangelism',          leader: 'Elder Paul',   members: 19 },
+  { name: 'Hospitality',         leader: 'Sis. Ruth',    members: 22 },
+  { name: 'Media & Tech',        leader: 'Bro. David',   members: 12 },
+  { name: 'Missions & Outreach', leader: 'Pastor Dipo',  members: 15 },
 ];
 
 const ANNOUNCEMENTS = [
-  { id: 'n1', title: 'Easter Sunday Service', body: 'Join us April 20 for a special resurrection celebration with live worship and community breakfast.', date: '1d ago' },
-  { id: 'n2', title: 'Food Drive — Apr 12–19', body: 'Bring non-perishable items to the welcome desk. Every donation counts for our community.', date: '2d ago' },
-  { id: 'n3', title: 'Youth Summer Camp Registration', body: 'Registration for Camp Hope is now open. Limited spots available — sign up today.', date: '3d ago' },
+  { title: 'Easter Sunday Service', date: 'Apr 20', body: 'Special sunrise service at 6:00 AM + main service at 10:00 AM.' },
+  { title: "Women's Conference",    date: 'Apr 26', body: "Annual Women's Conference — register by Apr 18." },
+  { title: 'Building Fund Update',  date: 'Apr 10', body: "We've reached 65% of our $250K building renovation goal!" },
 ];
 
-// ── Constants ─────────────────────────────────────────────────────────────────
+const LEADERSHIP = [
+  { name: 'Pastor Dipo Kalejaiye', role: 'Senior Pastor'    },
+  { name: 'Pastor Nony Kalejaiye', role: 'Associate Pastor' },
+  { name: 'Elder James Thompson',  role: 'Board Chairman'   },
+];
 
-const TOP_BAR_H  = 52;
-const BAR_MAX_H  = 80;
-const GAIN       = '#5A8A6E';
-const HEAT       = '#B85C5C';
-const CAUTION    = '#B8943E';
+const GIVING = {
+  monthly: '$18,420',
+  goal:    '$22,000',
+  pct:     84,
+  campaign:'Building Fund: 65% of $250K',
+};
 
-// ── Sub-components ────────────────────────────────────────────────────────────
+const MY_GROUPS = [
+  { name: "Men's Fellowship", nextMeeting: 'Sat Apr 12, 9:00 AM' },
+  { name: 'Media & Tech',     nextMeeting: 'Mon Apr 14, 6:00 PM' },
+];
 
-function StatCard({ value, label, trend, alertColor, C }: {
-  value: string; label: string; trend?: number; alertColor?: string; C: ComponentColors;
-}) {
-  const up = (trend ?? 0) >= 0;
-  const trendColor = alertColor ?? (up ? GAIN : HEAT);
+// ─── Section Header ───────────────────────────────────────────────────────────
+
+function SH({ title, C }: { title: string; C: any }) {
   return (
-    <View style={[sc.card, { backgroundColor: C.surface }]}>
-      <Text style={[sc.value, { color: C.label }]}>{value}</Text>
-      <Text style={[sc.label, { color: C.secondary }]}>{label}</Text>
-      {trend !== undefined && trend !== 0 && (
-        <View style={[sc.badge, { backgroundColor: trendColor + '22' }]}>
-          <Text style={[sc.badgeText, { color: trendColor }]}>
-            {up ? '+' : ''}{trend}%
-          </Text>
-        </View>
-      )}
-    </View>
+    <Text style={[s.sh, { color: C.secondary }]}>{title}</Text>
   );
 }
 
-const sc = StyleSheet.create({
-  card:      { flex: 1, minWidth: 80, backgroundColor: '#F5F0EA', borderRadius: 12, padding: 12, gap: 4 },
-  value:     { fontSize: 20, fontWeight: '800' },
-  label:     { fontSize: 11 },
-  badge:     { alignSelf: 'flex-start', borderRadius: 8, paddingHorizontal: 6, paddingVertical: 2 },
-  badgeText: { fontSize: 10, fontWeight: '700' },
-});
+// ─── Main ─────────────────────────────────────────────────────────────────────
 
-function SecHeader({ title, C }: { title: string; C: ComponentColors }) {
-  return (
-    <Text style={[sh.title, { color: C.label }]}>{title}</Text>
-  );
-}
-
-const sh = StyleSheet.create({
-  title: { fontSize: 17, fontWeight: '700', marginBottom: 10, marginTop: 4 },
-});
-
-// ── Main Screen ───────────────────────────────────────────────────────────────
-
-export default function ChurchOverviewScreen() {
-  const C = useColors();
-  const s = useMemo(() => makeStyles(C), [C]);
+export default function CommunityHub() {
+  const C      = useColors();
   const insets = useSafeAreaInsets();
-  const [role, cycleRole, roleCycles] = useDemoRole('community:hub');
-  const isPastor = role === roleCycles[0];
+  const router = useRouter();
+  const [role, toggleRole, roleCycles] = useDemoRole('community:hub');
+  const isLeader = role === roleCycles[0];
 
-  const [chartMetric, setChartMetric] = useState<ChartMetric>('attendance');
+  const COVER_H = 220 + insets.top + TOP_BAR_H;
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
-  const topBarH       = insets.top + TOP_BAR_H;
-  const scrollPaddingTop = topBarH + 16;
-
-  // ── Pastor View ─────────────────────────────────────────────────────────────
-
-  const renderPastor = () => {
-    const a = PASTOR_STATS;
-    const maxVal = getMax(chartMetric);
-
-    return (
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: scrollPaddingTop, paddingHorizontal: 16, paddingBottom: insets.bottom + 40 }}
-      >
-        {/* Stat Cards */}
-        <View style={s.statRow}>
-          <StatCard
-            value={a.memberCount.toLocaleString()}
-            label="Members"
-            trend={a.memberChange}
-            C={C}
-          />
-          <StatCard
-            value={String(a.attendanceLast)}
-            label="Attendance"
-            trend={a.attendanceTrend}
-            C={C}
-          />
-          <StatCard
-            value={`$${(a.givingMonth / 1000).toFixed(0)}K`}
-            label="Giving"
-            trend={a.givingTrend}
-            alertColor={GAIN}
-            C={C}
-          />
-          <StatCard
-            value={String(a.careOpen)}
-            label="Care Reqs"
-            trend={a.careOpen > 0 ? 0 : undefined}
-            alertColor={a.careOpen > 0 ? HEAT : undefined}
-            C={C}
-          />
-        </View>
-
-        {/* Trend Chart */}
-        <SecHeader title="Trend" C={C} />
-        <View style={s.chartPillRow}>
-          {(['attendance', 'giving', 'volunteers'] as ChartMetric[]).map(m => {
-            const active = chartMetric === m;
-            return (
-              <Pressable
-                key={m}
-                style={[s.chartPill, active ? { backgroundColor: C.label } : { borderColor: C.separator, borderWidth: 1 }]}
-                onPress={() => { Haptics.selectionAsync(); setChartMetric(m); }}
-              >
-                <Text style={[s.chartPillText, { color: active ? C.bg : C.secondary }]}>
-                  {m.charAt(0).toUpperCase() + m.slice(1)}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-        <View style={[s.chartWrap, { backgroundColor: C.surface }]}>
-          <View style={s.chartBars}>
-            {CHART_DATA.map(pt => {
-              const h = maxVal > 0 ? Math.round((pt[chartMetric] / maxVal) * BAR_MAX_H) : 4;
-              const valLabel = chartMetric === 'giving'
-                ? `$${(pt[chartMetric] / 1000).toFixed(0)}K`
-                : String(pt[chartMetric]);
-              return (
-                <View key={pt.label} style={s.barCol}>
-                  <Text style={[s.barValLabel, { color: C.secondary }]}>{valLabel}</Text>
-                  <View style={s.barTrack}>
-                    <View style={[s.bar, { height: h, backgroundColor: C.label }]} />
-                  </View>
-                  <Text style={[s.barXLabel, { color: C.secondary }]}>{pt.label}</Text>
-                </View>
-              );
-            })}
-          </View>
-        </View>
-
-        {/* Volunteer Gaps */}
-        <SecHeader title="Volunteer Gaps" C={C} />
-        <View style={[s.card, { backgroundColor: C.surface }]}>
-          {VOL_GAPS.map((gap, idx) => (
-            <Pressable
-              key={gap.ministry}
-              style={[
-                s.gapRow,
-                idx < VOL_GAPS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-              ]}
-              onPress={() => Alert.alert(gap.ministry, `Open roles: ${gap.roles}`)}
-            >
-              <View style={{ flex: 1 }}>
-                <Text style={[s.gapMinistry, { color: C.label }]}>{gap.ministry}</Text>
-                <Text style={[s.gapRoles, { color: C.secondary }]}>{gap.roles}</Text>
-              </View>
-              <IconSymbol name="chevron.right" size={14} color={C.secondary} />
-            </Pressable>
-          ))}
-        </View>
-
-        {/* Upcoming This Week */}
-        <SecHeader title="Upcoming This Week" C={C} />
-        <View style={[s.card, { backgroundColor: C.surface }]}>
-          {UPCOMING_EVENTS.map((ev, idx) => (
-            <View
-              key={ev.id}
-              style={[
-                s.eventRow,
-                idx < UPCOMING_EVENTS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-              ]}
-            >
-              <View style={{ flex: 1 }}>
-                <Text style={[s.eventTitle, { color: C.label }]}>{ev.title}</Text>
-                <Text style={[s.eventMeta, { color: C.secondary }]}>{ev.date} · {ev.time}</Text>
-              </View>
-              {!ev.isPublic && (
-                <View style={[s.privateBadge, { backgroundColor: C.surfacePressed }]}>
-                  <Text style={[s.privateBadgeText, { color: C.secondary }]}>Internal</Text>
-                </View>
-              )}
-            </View>
-          ))}
-        </View>
-
-        {/* Recent Activity */}
-        <SecHeader title="Recent Activity" C={C} />
-        <View style={[s.card, { backgroundColor: C.surface }]}>
-          {RECENT_ACTIVITY.map((item, idx) => (
-            <View
-              key={item.id}
-              style={[
-                s.activityRow,
-                idx < RECENT_ACTIVITY.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-              ]}
-            >
-              <IconSymbol name={item.icon as any} size={16} color={C.secondary} />
-              <View style={{ flex: 1 }}>
-                <Text style={[s.activityText, { color: C.label }]}>{item.text}</Text>
-                <Text style={[s.activityTime, { color: C.secondary }]}>{item.time}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
-    );
+  const go = (route: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push(route as any);
   };
-
-  // ── Member View ──────────────────────────────────────────────────────────────
-
-  const renderMember = () => {
-    const ms = MEMBER_STATS;
-    return (
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: scrollPaddingTop, paddingHorizontal: 16, paddingBottom: insets.bottom + 40 }}
-      >
-        {/* Church Info Card */}
-        <View style={[s.churchCard, { backgroundColor: C.surface }]}>
-          <Text style={[s.churchName, { color: C.label }]}>{CHURCH_INFO.name}</Text>
-          <View style={s.churchRow}>
-            <IconSymbol name="mappin" size={13} color={C.secondary} />
-            <Text style={[s.churchMeta, { color: C.secondary }]}>{CHURCH_INFO.location}</Text>
-          </View>
-          <View style={[s.churchDivider, { backgroundColor: C.separator }]} />
-          {CHURCH_INFO.serviceTimes.map(t => (
-            <View key={t} style={s.churchRow}>
-              <IconSymbol name="clock.fill" size={13} color={C.secondary} />
-              <Text style={[s.churchMeta, { color: C.secondary }]}>{t}</Text>
-            </View>
-          ))}
-          <View style={[s.churchDivider, { backgroundColor: C.separator }]} />
-          <View style={s.churchRow}>
-            <IconSymbol name="person.fill" size={13} color={C.secondary} />
-            <Text style={[s.churchMeta, { color: C.secondary }]}>Pastor: {CHURCH_INFO.pastor}</Text>
-          </View>
-        </View>
-
-        {/* Stat Cards */}
-        <View style={s.statRow}>
-          <StatCard value={ms.memberCount.toLocaleString()} label="Members" C={C} />
-          <StatCard value={ms.nextService} label="Next Service" C={C} />
-          <StatCard value={String(ms.myGroups)} label="My Groups" C={C} />
-        </View>
-
-        {/* Upcoming This Week (public events only) */}
-        <SecHeader title="Upcoming This Week" C={C} />
-        <View style={[s.card, { backgroundColor: C.surface }]}>
-          {UPCOMING_EVENTS.filter(e => e.isPublic).map((ev, idx, arr) => (
-            <View
-              key={ev.id}
-              style={[
-                s.eventRow,
-                idx < arr.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-              ]}
-            >
-              <View style={{ flex: 1 }}>
-                <Text style={[s.eventTitle, { color: C.label }]}>{ev.title}</Text>
-                <Text style={[s.eventMeta, { color: C.secondary }]}>{ev.date} · {ev.time}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
-
-        {/* Announcements */}
-        <SecHeader title="Announcements" C={C} />
-        <View style={[s.card, { backgroundColor: C.surface }]}>
-          {ANNOUNCEMENTS.map((ann, idx) => (
-            <View
-              key={ann.id}
-              style={[
-                s.annRow,
-                idx < ANNOUNCEMENTS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-              ]}
-            >
-              <View style={[s.annIcon, { backgroundColor: C.surfacePressed }]}>
-                <IconSymbol name="megaphone.fill" size={14} color={C.secondary} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={[s.annTitle, { color: C.label }]}>{ann.title}</Text>
-                <Text style={[s.annBody, { color: C.secondary }]} numberOfLines={2}>{ann.body}</Text>
-                <Text style={[s.annDate, { color: C.secondary }]}>{ann.date}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
-    );
-  };
-
-  // ── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <View style={[s.screen, { backgroundColor: C.bg }]}>
-      {/* Content */}
-      {isPastor ? renderPastor() : renderMember()}
+    <View style={[s.root, { backgroundColor: C.bg }]}>
 
-      {/* Top Bar */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg, height: topBarH }]}>
-        <View style={s.topBar}>
-          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} hitSlop={12}>
-            <KMenuButton />
-          </Pressable>
-          <Text style={[s.topBarTitle, { color: C.label }]}>Church Overview</Text>
-          <RolePill role={role} onPress={cycleRole} isPrimary={isPastor} />
+      {/* ── Floating top bar ─────────────────────────────────────────────── */}
+      <View style={[s.topBar, { paddingTop: insets.top, height: insets.top + TOP_BAR_H }]}>
+        <KMenuButton onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} />
+        <View style={s.topCenter}>
+          <Text style={s.topTitle}>Hub</Text>
         </View>
+        <RolePill role={role} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); toggleRole(); }} />
       </View>
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 120 }}
+      >
+        {/* ── Cover photo + overlapping avatar ─────────────────────────── */}
+        <View style={{ position: 'relative', marginBottom: AVATAR_OVR + 12 }}>
+          <View style={{ height: COVER_H, overflow: 'hidden' }}>
+            <Image
+              source={{ uri: 'https://picsum.photos/seed/church-gathering/900/500' }}
+              style={{ width: '100%', height: '100%' }}
+              resizeMode="cover"
+            />
+            <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: insets.top + 70, backgroundColor: 'rgba(0,0,0,0.40)' }} />
+            <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 60, backgroundColor: 'rgba(0,0,0,0.20)' }} />
+          </View>
+          <View style={{ position: 'absolute', bottom: -AVATAR_OVR, left: 20 }}>
+            <View style={[s.avatar, { backgroundColor: C.surface, borderColor: C.bg }]}>
+              <Text style={s.avatarEmoji}>✝️</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* ── Identity ─────────────────────────────────────────────────── */}
+        <View style={[s.identity, { paddingHorizontal: 20 }]}>
+          <Text style={[s.name, { color: C.label }]}>{CHURCH.name}</Text>
+          <Text style={[s.handle, { color: C.secondary }]}>{CHURCH.location}</Text>
+          <Text style={[s.bio, { color: C.label }]}>{CHURCH.type}</Text>
+        </View>
+
+        {/* ── Key metrics + action row ──────────────────────────────────── */}
+        <View style={[s.metricActionRow, { paddingHorizontal: 20, borderColor: C.separator }]}>
+          <Text style={{ fontSize: 14, color: C.secondary }}>
+            <Text style={{ fontWeight: '700', color: C.label }}>{CHURCH.members}</Text>{' Members  ·  '}
+            <Text style={{ fontWeight: '700', color: C.label }}>{CHURCH.ministries}</Text>{' Min.  ·  '}
+            <Text style={{ fontWeight: '700', color: GAIN }}>{GIVING.pct}%</Text>{' Goal'}
+          </Text>
+          <Pressable
+            style={[s.editBtn, { borderColor: C.separator }]}
+            onPress={() => go('/(tabs)/(main)/give')}
+          >
+            <Text style={[s.editBtnText, { color: C.label }]}>{isLeader ? 'Dashboard' : 'Give Now'}</Text>
+          </Pressable>
+        </View>
+
+        {/* ── Upcoming event badge ──────────────────────────────────────── */}
+        <View style={[s.badgeRow, { borderTopColor: C.separator, borderBottomColor: C.separator }]}>
+          <View style={[s.badge, { backgroundColor: GAIN + '18', borderColor: GAIN + '44' }]}>
+            <Text style={[s.badgeText, { color: GAIN }]}>🌅 Easter Sunday Service · Apr 20</Text>
+          </View>
+        </View>
+
+        {isLeader ? (
+          <>
+            {/* SERVICES */}
+            <View style={s.section}>
+              <SH title="Services" C={C} />
+              {SERVICES.map((sv, i) => (
+                <View key={i} style={[s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }]}>
+                  <View style={[s.iconBox, { backgroundColor: C.separator }]}>
+                    <IconSymbol name={sv.icon as any} size={16} color={C.label} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.cardTitle, { color: C.label }]}>{sv.name}</Text>
+                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 1 }]}>{sv.time} · {sv.location}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+
+            {/* MINISTRIES */}
+            <View style={s.section}>
+              <SH title="Ministries" C={C} />
+              {MINISTRIES.map((m, i) => (
+                <Pressable
+                  key={i}
+                  style={({ pressed }) => [s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }, pressed && { opacity: 0.8 }]}
+                  onPress={() => go('/(tabs)/(main)/members')}
+                >
+                  <View style={[s.personAvatar, { backgroundColor: C.separator }]}>
+                    <Text style={[s.personInitials, { color: C.label }]}>
+                      {m.name.split(' ').slice(0, 2).map(w => w[0]).join('')}
+                    </Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.cardTitle, { color: C.label }]}>{m.name}</Text>
+                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 1 }]}>{m.leader} · {m.members} members</Text>
+                  </View>
+                  <IconSymbol name="chevron.right" size={14} color={C.muted as string} />
+                </Pressable>
+              ))}
+            </View>
+
+            {/* ANNOUNCEMENTS */}
+            <View style={s.section}>
+              <SH title="Announcements" C={C} />
+              {ANNOUNCEMENTS.map((a, i) => (
+                <View key={i} style={[s.card, { backgroundColor: C.surface, marginBottom: 8 }]}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                    <Text style={[s.cardTitle, { color: C.label, flex: 1 }]}>{a.title}</Text>
+                    <Text style={[s.cardMeta, { color: C.secondary }]}>{a.date}</Text>
+                  </View>
+                  <Text style={[s.cardMeta, { color: C.secondary, lineHeight: 18 }]}>{a.body}</Text>
+                </View>
+              ))}
+            </View>
+
+            {/* LEADERSHIP */}
+            <View style={s.section}>
+              <SH title="Leadership" C={C} />
+              {LEADERSHIP.map((l, i) => (
+                <View key={i} style={[s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }]}>
+                  <View style={[s.personAvatar, { backgroundColor: C.separator }]}>
+                    <Text style={[s.personInitials, { color: C.label }]}>
+                      {l.name.split(' ').filter(w => !['Pastor','Elder','Deacon'].includes(w)).slice(0, 2).map(w => w[0]).join('')}
+                    </Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.cardTitle, { color: C.label }]}>{l.name}</Text>
+                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 1 }]}>{l.role}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+
+            {/* GIVING */}
+            <View style={s.section}>
+              <SH title="Giving" C={C} />
+              <View style={[s.card, { backgroundColor: C.surface }]}>
+                <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6, marginBottom: 10 }}>
+                  <Text style={{ fontSize: 22, fontWeight: '800', color: C.label }}>{GIVING.monthly}</Text>
+                  <Text style={[s.cardMeta, { color: C.secondary }]}>/ {GIVING.goal} goal</Text>
+                </View>
+                <View style={[s.progressTrack, { backgroundColor: C.separator }]}>
+                  <View style={[s.progressFill, { backgroundColor: GAIN, width: `${GIVING.pct}%` }]} />
+                </View>
+                <Text style={[s.cardMeta, { color: C.secondary, marginTop: 8 }]}>{GIVING.campaign}</Text>
+              </View>
+            </View>
+          </>
+        ) : (
+          <>
+            {/* NEXT SERVICE */}
+            <View style={s.section}>
+              <SH title="Next Service" C={C} />
+              <View style={[s.card, { backgroundColor: C.surface }]}>
+                <Text style={[s.cardTitle, { color: C.label }]}>Sunday Service</Text>
+                <Text style={[s.cardMeta, { color: C.secondary, marginTop: 3 }]}>Sun Apr 13 · 10:00 AM · Main Sanctuary</Text>
+                <View style={[{ marginTop: 10, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, backgroundColor: GAIN + '22', alignSelf: 'flex-start' }]}>
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: GAIN }}>Easter Sunday Apr 20 — Special Service</Text>
+                </View>
+              </View>
+            </View>
+
+            {/* MY GROUPS */}
+            <View style={s.section}>
+              <SH title="My Groups" C={C} />
+              {MY_GROUPS.map((g, i) => (
+                <View key={i} style={[s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }]}>
+                  <View style={[s.personAvatar, { backgroundColor: C.separator }]}>
+                    <Text style={[s.personInitials, { color: C.label }]}>
+                      {g.name.split(' ').slice(0, 2).map(w => w[0]).join('')}
+                    </Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.cardTitle, { color: C.label }]}>{g.name}</Text>
+                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 1 }]}>Next: {g.nextMeeting}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+
+            {/* ANNOUNCEMENTS */}
+            <View style={s.section}>
+              <SH title="Announcements" C={C} />
+              {ANNOUNCEMENTS.slice(0, 2).map((a, i) => (
+                <View key={i} style={[s.card, { backgroundColor: C.surface, marginBottom: 8 }]}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                    <Text style={[s.cardTitle, { color: C.label, flex: 1 }]}>{a.title}</Text>
+                    <Text style={[s.cardMeta, { color: C.secondary }]}>{a.date}</Text>
+                  </View>
+                  <Text style={[s.cardMeta, { color: C.secondary, lineHeight: 18 }]}>{a.body}</Text>
+                </View>
+              ))}
+            </View>
+
+            {/* QUICK ACCESS */}
+            <View style={s.section}>
+              <SH title="Quick Access" C={C} />
+              {[
+                { icon: 'heart.fill',    label: 'Give Now',       sub: 'Tithes & offerings',           route: '/(tabs)/(main)/give'    },
+                { icon: 'calendar',      label: 'Events',         sub: 'Upcoming church events',        route: '/(tabs)/(main)/agenda'  },
+                { icon: 'person.2.fill', label: 'All Ministries', sub: `${CHURCH.ministries} active`,   route: '/(tabs)/(main)/members' },
+              ].map(item => (
+                <Pressable
+                  key={item.label}
+                  style={({ pressed }) => [s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }, pressed && { opacity: 0.8 }]}
+                  onPress={() => go(item.route)}
+                >
+                  <View style={[s.iconBox, { backgroundColor: C.separator }]}>
+                    <IconSymbol name={item.icon as any} size={16} color={C.label} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.cardTitle, { color: C.label }]}>{item.label}</Text>
+                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 1 }]}>{item.sub}</Text>
+                  </View>
+                  <IconSymbol name="chevron.right" size={14} color={C.muted as string} />
+                </Pressable>
+              ))}
+            </View>
+          </>
+        )}
+      </ScrollView>
     </View>
   );
 }
 
-// ── Styles ────────────────────────────────────────────────────────────────────
+// ─── Styles ───────────────────────────────────────────────────────────────────
 
-function makeStyles(C: ComponentColors) {
-  return StyleSheet.create({
-    screen: { flex: 1 },
+const s = StyleSheet.create({
+  root: { flex: 1 },
 
-    topBarWrap: {
-      position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100,
-    },
-    topBar: {
-      height: TOP_BAR_H,
-      flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-      paddingHorizontal: 16,
-    },
-    topBarTitle: { fontSize: 16, fontWeight: '700', flex: 1, textAlign: 'center' },
+  topBar: {
+    position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
+    flexDirection: 'row', alignItems: 'flex-end',
+    paddingHorizontal: 16, paddingBottom: 10,
+  },
+  topCenter: { flex: 1, alignItems: 'center' },
+  topTitle:  { fontSize: 17, fontWeight: '600', color: '#FFFFFF' },
 
-    statRow: { flexDirection: 'row', gap: 8, marginBottom: 20 },
+  avatar: {
+    width: AVATAR_SIZE, height: AVATAR_SIZE, borderRadius: AVATAR_SIZE / 2,
+    borderWidth: 3, alignItems: 'center', justifyContent: 'center',
+  },
+  avatarEmoji: { fontSize: 36 },
 
-    chartPillRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
-    chartPill:    { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16 },
-    chartPillText:{ fontSize: 12, fontWeight: '600' },
+  identity:  { marginBottom: 14 },
+  name:      { fontSize: 20, fontWeight: '700', marginBottom: 2 },
+  handle:    { fontSize: 14, marginBottom: 6 },
+  bio:       { fontSize: 14, lineHeight: 20, opacity: 0.85 },
 
-    chartWrap: { borderRadius: 12, padding: 14, marginBottom: 20 },
-    chartBars: { flexDirection: 'row', alignItems: 'flex-end', height: BAR_MAX_H + 40, gap: 2 },
-    barCol:    { flex: 1, alignItems: 'center', gap: 3 },
-    barValLabel: { fontSize: 8, fontWeight: '500', textAlign: 'center' },
-    barTrack:  { flex: 1, justifyContent: 'flex-end', width: '100%', alignItems: 'center' },
-    bar:       { width: '75%', borderRadius: 3, minHeight: 4 },
-    barXLabel: { fontSize: 9, fontWeight: '500' },
+  metricActionRow: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingVertical: 14, marginBottom: 0,
+    borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  editBtn:     { paddingHorizontal: 18, paddingVertical: 7, borderRadius: 20, borderWidth: 1.5 },
+  editBtnText: { fontSize: 13, fontWeight: '600' },
 
-    card:     { borderRadius: 12, marginHorizontal: 0, marginBottom: 20, overflow: 'hidden' },
-    rowBorder:{ borderBottomWidth: StyleSheet.hairlineWidth },
+  badgeRow: {
+    paddingHorizontal: 20, paddingVertical: 12,
+    borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth,
+    marginBottom: 8,
+  },
+  badge:     { borderRadius: 10, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 6, alignSelf: 'flex-start' },
+  badgeText: { fontSize: 12, fontWeight: '700' },
 
-    gapRow:      { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 14, gap: 10 },
-    gapMinistry: { fontSize: 14, fontWeight: '700', marginBottom: 2 },
-    gapRoles:    { fontSize: 12 },
+  section: { paddingHorizontal: 20, marginBottom: 28 },
 
-    eventRow:   { paddingVertical: 12, paddingHorizontal: 14, gap: 3 },
-    eventTitle: { fontSize: 14, fontWeight: '600' },
-    eventMeta:  { fontSize: 12 },
-    privateBadge:     { borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 },
-    privateBadgeText: { fontSize: 10, fontWeight: '600' },
+  sh: {
+    fontSize: 11, fontWeight: '700', letterSpacing: 0.8, textTransform: 'uppercase',
+    marginBottom: 12, marginTop: 4,
+  },
 
-    activityRow:  { flexDirection: 'row', alignItems: 'flex-start', gap: 10, paddingVertical: 11, paddingHorizontal: 14 },
-    activityText: { fontSize: 13 },
-    activityTime: { fontSize: 11, marginTop: 2 },
+  card:      { borderRadius: 12, padding: 14, marginBottom: 0 },
+  cardTitle: { fontSize: 14, fontWeight: '600' },
+  cardMeta:  { fontSize: 12 },
 
-    // Member
-    churchCard:   { borderRadius: 12, padding: 16, marginBottom: 16 },
-    churchName:   { fontSize: 20, fontWeight: '800', marginBottom: 10 },
-    churchRow:    { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 5 },
-    churchMeta:   { fontSize: 13 },
-    churchDivider:{ height: StyleSheet.hairlineWidth, marginVertical: 8 },
+  iconBox: {
+    width: 36, height: 36, borderRadius: 8,
+    alignItems: 'center', justifyContent: 'center',
+  },
 
-    annRow:  { flexDirection: 'row', alignItems: 'flex-start', gap: 10, paddingVertical: 12, paddingHorizontal: 14 },
-    annIcon: { width: 30, height: 30, borderRadius: 15, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-    annTitle:{ fontSize: 14, fontWeight: '600', marginBottom: 3 },
-    annBody: { fontSize: 12, lineHeight: 17 },
-    annDate: { fontSize: 11, marginTop: 4 },
-  });
-}
+  personAvatar: {
+    width: 36, height: 36, borderRadius: 18,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  personInitials: { fontSize: 12, fontWeight: '700' },
+
+  progressTrack: { height: 6, borderRadius: 3, overflow: 'hidden' },
+  progressFill:  { height: 6, borderRadius: 3 },
+});

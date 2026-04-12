@@ -1,981 +1,404 @@
 /**
- * Business Hub — Overview / Projects / Reports
- * KaNeXT Operations LLC
- * RBAC demo: CEO sees full revenue dashboard + kanban + HR; Client sees their project portal.
+ * Business Hub — KaNeXT Company Overview.
+ * Matches Personal Hub profile page pattern exactly:
+ * photo cover → floating top bar → overlapping avatar → identity → metrics → sections.
+ * CEO: full company view (active projects, pipeline, team, top clients).
+ * Customer: client portal (my projects, invoices, quick access).
+ * K button opens side panel for deeper navigation.
  */
 
-import React, { useState, useRef, useCallback, useMemo } from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView, Animated } from 'react-native';
+import React, { useCallback } from 'react';
+import {
+  View, Text, Pressable, ScrollView, Image, StyleSheet,
+} from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 
-import { GlassView } from '@/components/ui/glass-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useColors, type ComponentColors } from '@/hooks/use-colors';
+import { RolePill } from '@/components/ui/role-pill';
+import { KMenuButton } from '@/components/ui/k-menu-button';
+import { useColors } from '@/hooks/use-colors';
 import { openSidePanel } from '@/utils/global-side-panel';
 import { resetFooter } from '@/utils/global-footer-hide';
-import { KMenuButton } from '@/components/ui/k-menu-button';
-import {
-  PROJECTS, ACTIVITY_FEED, BIZ_DASHBOARD, REVENUE_TREND, RECENT_TRANSACTIONS, EMPLOYEES, DEPARTMENTS,
-  getEmployeeById,
-  formatCurrency, formatDate,
-  type Project, type TaskStatus,
-} from '@/data/mock-business-ops';
+import { useDemoRole } from '@/utils/demo-role-store';
 
-const TOP_BAR_H = 52;
-const PILLS_H   = 48;
+const GAIN    = '#5A8A6E';
+const HEAT    = '#B85C5C';
+const CAUTION = '#B8943E';
 
-const ACCENT_BIZ = '#1A1714';
+const TOP_BAR_H   = 52;
+const AVATAR_SIZE = 80;
+const AVATAR_OVR  = AVATAR_SIZE / 2;
 
-type BizHubTab = 'Overview' | 'Projects' | 'Reports';
-type BizRole   = 'CEO' | 'Client';
+// ─── Data ─────────────────────────────────────────────────────────────────────
 
-function pillsForTab(tab: BizHubTab, isCEO: boolean): string[] {
-  if (tab === 'Projects') return isCEO ? ['All', 'Active', 'Planning', 'On Hold', 'Completed'] : [];
-  if (tab === 'Reports' && isCEO) return ['Financial', 'Sales', 'Team'];
-  return [];
+const COMPANY = {
+  name:    'KaNeXT',
+  location:'Miami, FL',
+  bio:     'Building the OS for institutions',
+  team:    13,
+  mrr:     '$49K',
+};
+
+const ACTIVE_PROJECTS = [
+  { name: 'KaNeXT OS v2.0',        client: 'Internal',      health: 'green', progress: 78 },
+  { name: 'LU Athletics Platform', client: 'Lincoln Univ.', health: 'green', progress: 62 },
+  { name: 'ICCLA Community App',   client: 'ICCLA',         health: 'amber', progress: 44 },
+  { name: 'Player Pool Engine',    client: 'Internal',      health: 'green', progress: 15 },
+];
+
+const PIPELINE = [
+  { stage: 'Prospecting', count: 8,  value: '$124K' },
+  { stage: 'Proposal',    count: 4,  value: '$89K'  },
+  { stage: 'Negotiation', count: 2,  value: '$42K'  },
+  { stage: 'Closed Won',  count: 11, value: '$287K' },
+];
+
+const TEAM_MEMBERS = [
+  { name: 'Sammy Kalejaiye', role: 'CEO & Founder',    ood: false, oodNote: '' },
+  { name: 'Marcus Reed',     role: 'Lead Engineer',    ood: false, oodNote: '' },
+  { name: 'Laolu Kalejaiye', role: 'Product Designer', ood: false, oodNote: '' },
+  { name: 'Aisha Johnson',   role: 'Head of Sales',    ood: true,  oodNote: 'OOO until Apr 14' },
+];
+
+const TOP_CLIENTS = [
+  { name: 'Lincoln University', mrr: '$4,200', since: 'Jan 2024', health: 'green' },
+  { name: 'ICCLA Church',       mrr: '$1,800', since: 'Mar 2024', health: 'amber' },
+  { name: 'Bay Area Academy',   mrr: '$2,400', since: 'Nov 2023', health: 'green' },
+];
+
+const MY_PROJECTS = [
+  { name: 'LU Athletics Platform', due: 'May 15', progress: 62 },
+  { name: 'Recruiting Module v2',  due: 'Jun 1',  progress: 15 },
+];
+
+const MY_INVOICES = [
+  { number: 'INV-0042', amount: '$4,200', paid: true,  due: 'Apr 1' },
+  { number: 'INV-0043', amount: '$4,200', paid: false, due: 'May 1' },
+];
+
+function healthColor(h: string): string {
+  return h === 'green' ? GAIN : h === 'amber' ? CAUTION : HEAT;
+}
+function progressColor(p: number): string {
+  return p >= 70 ? GAIN : p >= 40 ? CAUTION : HEAT;
 }
 
-function taskStatusColor(status: TaskStatus, C: ComponentColors): string {
-  switch (status) {
-    case 'done':        return C.green;
-    case 'in-progress': return C.accent;
-    case 'review':      return '#1A1714';
-    default:            return C.muted as string;
-  }
+// ─── Section Header ───────────────────────────────────────────────────────────
+
+function SH({ title, C }: { title: string; C: any }) {
+  return (
+    <Text style={[s.sh, { color: C.secondary }]}>{title}</Text>
+  );
 }
 
-function projectStatusColor(status: string, C: ComponentColors): string {
-  switch (status) {
-    case 'active':    return C.accent;
-    case 'planning':  return '#1A1714';
-    case 'on-hold':   return '#1A1714';
-    case 'completed': return C.green;
-    default:          return C.muted as string;
-  }
-}
+// ─── Main ─────────────────────────────────────────────────────────────────────
 
-function activityIconColor(type: string, C: ComponentColors): string {
-  switch (type) {
-    case 'deal':     return C.accent;
-    case 'invoice':  return C.green;
-    case 'project':  return '#1A1714';
-    case 'team':     return '#1A1714';
-    case 'campaign': return '#1A1714';
-    default:         return C.secondary as string;
-  }
-}
-
-export default function BusinessHubScreen() {
+export default function BusinessHub() {
   const C      = useColors();
   const insets = useSafeAreaInsets();
-  const s      = useMemo(() => makeStyles(C), [C]);
-  const topBarH = insets.top + TOP_BAR_H;
+  const router = useRouter();
+  const [role, toggleRole, roleCycles] = useDemoRole('business:hub');
+  const isCEO = role === roleCycles[0];
 
-  const [activeTab,    setActiveTab]    = useState<BizHubTab>('Overview');
-  const [role,         setRole]         = useState<BizRole>('CEO');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [pillsVisible, setPillsVisible] = useState(false);
-  const [selectedPill, setSelectedPill] = useState('All');
-  const pillsAnim = useRef(new Animated.Value(0)).current;
-
-  const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
-  const [expandedDeptId,    setExpandedDeptId]    = useState<string | null>(null);
+  const COVER_H = 220 + insets.top + TOP_BAR_H;
+  const activeCount = ACTIVE_PROJECTS.filter(p => p.progress > 14).length;
 
   useFocusEffect(useCallback(() => { resetFooter(); }, []));
 
-  const isCEO = role === 'CEO';
-  const pills = useMemo(() => pillsForTab(activeTab, isCEO), [activeTab, isCEO]);
-
-  function togglePills() {
-    Haptics.selectionAsync();
-    const next = !pillsVisible;
-    setPillsVisible(next);
-    Animated.timing(pillsAnim, { toValue: next ? 1 : 0, duration: 200, useNativeDriver: false }).start();
-  }
-
-  function changeTab(tab: BizHubTab) {
-    Haptics.selectionAsync();
-    setDropdownOpen(false);
-    setActiveTab(tab);
-    setSelectedPill('All');
-    setExpandedProjectId(null);
-    const newPills = pillsForTab(tab, isCEO);
-    if (!newPills.length) {
-      setPillsVisible(false);
-      pillsAnim.setValue(0);
-    }
-  }
-
-  function cycleRole() {
-    Haptics.selectionAsync();
-    setRole(r => r === 'CEO' ? 'Client' : 'CEO');
-    setPillsVisible(false);
-    pillsAnim.setValue(0);
-    setActiveTab('Overview');
-  }
-
-  const contentPaddingTop = topBarH + (pillsVisible ? PILLS_H : 0) + 8;
-  const maxRevenue = useMemo(() => Math.max(...REVENUE_TREND.map(r => r.revenue)), []);
-
-  const filteredProjects = useMemo(() => {
-    const base = PROJECTS;
-    if (selectedPill === 'All') return base;
-    const map: Record<string, string> = { Active: 'active', Planning: 'planning', 'On Hold': 'on-hold', Completed: 'completed' };
-    return base.filter(p => p.status === map[selectedPill]);
-  }, [selectedPill]);
-
-  // ── CLIENT PORTAL ─────────────────────────────────────────────────────────────
-
-  function renderClientPortal() {
-    const deliverables = [
-      { name: 'Brand Identity Kit',        status: 'Delivered',  due: 'Mar 1' },
-      { name: 'Landing Page Design',       status: 'In Review',  due: 'Apr 5' },
-      { name: 'Mobile App Prototype',      status: 'In Progress',due: 'Apr 20' },
-      { name: 'Analytics Dashboard',       status: 'Pending',    due: 'May 10' },
-    ];
-    const statusColor = (st: string) => st === 'Delivered' ? C.green : st === 'In Review' ? '#1A1714' : st === 'In Progress' ? ACCENT_BIZ : C.muted as string;
-    const updates = [
-      { text: 'Mobile prototype screens completed — review link shared.', time: '2d ago' },
-      { text: 'Landing page copy approved by your team. Moving to dev.', time: '4d ago' },
-      { text: 'Brand kit delivered and signed off.', time: '1 wk ago' },
-    ];
-    return (
-      <View style={{ paddingHorizontal: 16, gap: 16, paddingBottom: 32 }}>
-        {/* My Project Status */}
-        <GlassView tier={1} style={[s.card, { backgroundColor: '#1A1714', gap: 10 }]}>
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-            <View>
-              <Text style={[s.subHeader, { color: 'rgba(255,255,255,0.55)', marginBottom: 4 }]}>Your Project</Text>
-              <Text style={[s.sectionTitle, { color: '#fff', fontSize: 17 }]}>KaNeXT Platform Build</Text>
-              <Text style={[s.bodySmall, { color: 'rgba(255,255,255,0.65)', marginTop: 2 }]}>Assigned rep: Marcus Webb</Text>
-            </View>
-            <View style={{ backgroundColor: 'rgba(29,155,240,0.25)', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 10, borderWidth: 1, borderColor: ACCENT_BIZ }}>
-              <Text style={{ fontSize: 12, fontWeight: '700', color: ACCENT_BIZ }}>In Design</Text>
-            </View>
-          </View>
-          <View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
-              <Text style={[s.bodySmall, { color: 'rgba(255,255,255,0.55)' }]}>Overall Progress</Text>
-              <Text style={[s.bodySmall, { color: ACCENT_BIZ, fontWeight: '700' }]}>42%</Text>
-            </View>
-            <View style={{ height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.12)', overflow: 'hidden' }}>
-              <View style={{ width: '42%', height: 8, borderRadius: 4, backgroundColor: ACCENT_BIZ }} />
-            </View>
-          </View>
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-              style={{ flex: 1, backgroundColor: ACCENT_BIZ, paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}>
-              <Text style={{ fontSize: 13, fontWeight: '700', color: '#fff' }}>Message Us</Text>
-            </Pressable>
-            <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-              style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.1)', paddingVertical: 10, borderRadius: 10, alignItems: 'center' }}>
-              <Text style={{ fontSize: 13, fontWeight: '700', color: 'rgba(255,255,255,0.8)' }}>View Files</Text>
-            </Pressable>
-          </View>
-        </GlassView>
-
-        {/* Deliverables */}
-        <GlassView tier={1} style={s.card}>
-          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 12 }]}>Deliverables</Text>
-          {deliverables.map((d, i) => (
-            <View key={d.name} style={[s.row, { paddingVertical: 11 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
-              <View style={{ flex: 1 }}>
-                <Text style={[s.bodyMed, { color: C.label }]}>{d.name}</Text>
-                <Text style={[s.bodySmall, { color: C.muted as string }]}>Due {d.due}</Text>
-              </View>
-              <View style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, backgroundColor: `${statusColor(d.status)}18`, borderWidth: 1, borderColor: statusColor(d.status) }}>
-                <Text style={{ fontSize: 11, fontWeight: '700', color: statusColor(d.status) }}>{d.status}</Text>
-              </View>
-            </View>
-          ))}
-        </GlassView>
-
-        {/* Recent Activity */}
-        <GlassView tier={1} style={s.card}>
-          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Recent Activity</Text>
-          {updates.map((u, i) => (
-            <View key={i} style={[s.row, { paddingVertical: 9, gap: 10 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
-              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: ACCENT_BIZ, marginTop: 3, flexShrink: 0 }} />
-              <Text style={[s.bodySmall, { color: C.label, flex: 1, lineHeight: 19 }]}>{u.text}</Text>
-              <Text style={[s.bodySmall, { color: C.muted as string }]}>{u.time}</Text>
-            </View>
-          ))}
-        </GlassView>
-
-        {/* Upcoming Meeting */}
-        <GlassView tier={1} style={s.card}>
-          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Upcoming Meeting</Text>
-          <View style={[s.row, { gap: 12 }]}>
-            <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: `${ACCENT_BIZ}20`, alignItems: 'center', justifyContent: 'center' }}>
-              <IconSymbol name="video.fill" size={20} color={ACCENT_BIZ} />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={[s.bodyMed, { color: C.label }]}>Weekly Sync Call</Text>
-              <Text style={[s.bodySmall, { color: C.secondary as string }]}>Friday, Apr 4 · 2:00 PM EST</Text>
-              <Text style={[s.bodySmall, { color: C.muted as string }]}>With Marcus Webb</Text>
-            </View>
-            <Pressable style={{ backgroundColor: ACCENT_BIZ, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 10 }}
-              onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}>
-              <Text style={{ fontSize: 12, fontWeight: '700', color: '#fff' }}>Join</Text>
-            </Pressable>
-          </View>
-        </GlassView>
-
-        {/* Invoice */}
-        <GlassView tier={1} style={s.card}>
-          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Invoice</Text>
-          {[
-            { label: 'Invoice #1042',  amount: '$4,500', status: 'Paid',    due: 'Mar 1' },
-            { label: 'Invoice #1055',  amount: '$3,200', status: 'Due Apr 15', due: 'Apr 15' },
-          ].map((inv, i) => (
-            <View key={inv.label} style={[s.row, { paddingVertical: 10 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
-              <View style={{ flex: 1 }}>
-                <Text style={[s.bodyMed, { color: C.label }]}>{inv.label}</Text>
-                <Text style={[s.bodySmall, { color: C.muted as string }]}>{inv.due}</Text>
-              </View>
-              <Text style={[s.bodyMed, { color: inv.status === 'Paid' ? C.green : C.red, marginRight: 10 }]}>{inv.amount}</Text>
-              <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, backgroundColor: inv.status === 'Paid' ? `${C.green}20` : `${C.red}20` }}>
-                <Text style={{ fontSize: 11, fontWeight: '700', color: inv.status === 'Paid' ? C.green : C.red }}>{inv.status}</Text>
-              </View>
-            </View>
-          ))}
-        </GlassView>
-      </View>
-    );
-  }
-
-  // ── OVERVIEW ─────────────────────────────────────────────────────────────────
-
-  function renderOverview() {
-    return (
-      <View style={{ paddingHorizontal: 16, gap: 16, paddingBottom: 32 }}>
-        {isCEO && (
-          <GlassView tier={1} style={[s.card, { backgroundColor: '#1A1714', gap: 6 }]}>
-            <Text style={[s.sectionTitle, { color: '#fff' }]}>KaNeXT Operations LLC</Text>
-            <Text style={[s.bodySmall, { color: 'rgba(255,255,255,0.7)' }]}>Q1 2026 · Revenue {formatCurrency(BIZ_DASHBOARD.thisMonth.revenue, true)} this month</Text>
-            <View style={[s.row, { marginTop: 8, gap: 8 }]}>
-              {[
-                { label: 'Revenue',  value: formatCurrency(BIZ_DASHBOARD.thisMonth.revenue, true), color: '#5A8A6E' },
-                { label: 'Profit',   value: formatCurrency(BIZ_DASHBOARD.thisMonth.profit, true),  color: '#1A1714' },
-                { label: 'Pipeline', value: formatCurrency(BIZ_DASHBOARD.pipeline.totalValue, true), color: C.accent },
-              ].map(m => (
-                <View key={m.label} style={[s.metricChip, { backgroundColor: 'rgba(255,255,255,0.1)', flex: 1 }]}>
-                  <Text style={[s.metricChipNum, { color: m.color }]}>{m.value}</Text>
-                  <Text style={[s.metricChipLabel, { color: 'rgba(255,255,255,0.5)' }]}>{m.label}</Text>
-                </View>
-              ))}
-            </View>
-          </GlassView>
-        )}
-
-        {/* Key metrics */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10, paddingRight: 4 }}>
-          {[
-            { label: 'MRR',        value: '$12,285',     icon: 'arrow.up.right',              color: C.green },
-            { label: 'Open Deals', value: `${BIZ_DASHBOARD.pipeline.dealCount}`,              icon: 'briefcase.fill', color: C.accent },
-            { label: 'Team',       value: `${EMPLOYEES.filter(e=>e.status!=='contractor').length}`, icon: 'person.2.fill', color: '#1A1714' },
-            { label: 'Projects',   value: `${PROJECTS.filter(p=>p.status==='active').length} active`, icon: 'checkmark.circle.fill', color: '#1A1714' },
-            { label: 'Overdue',    value: '2 invoices',  icon: 'exclamationmark.circle.fill', color: C.red },
-          ].map(m => (
-            <GlassView tier={1} key={m.label} style={[s.metricCard, { gap: 4 }]}>
-              <IconSymbol name={m.icon as any} size={18} color={m.color} />
-              <Text style={[s.metricCardNum, { color: C.label }]}>{m.value}</Text>
-              <Text style={[s.metricCardLabel, { color: C.secondary as string }]}>{m.label}</Text>
-            </GlassView>
-          ))}
-        </ScrollView>
-
-        {/* Revenue mini-chart */}
-        {isCEO && (
-          <GlassView tier={1} style={s.card}>
-            <Text style={[s.sectionTitle, { color: C.label, marginBottom: 12 }]}>Revenue (12 months)</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 4, height: 60 }}>
-              {REVENUE_TREND.map((r, i) => {
-                const h = (r.revenue / maxRevenue) * 60;
-                const isLast = i === REVENUE_TREND.length - 1;
-                return (
-                  <View key={r.month} style={{ flex: 1, alignItems: 'center', gap: 3 }}>
-                    <View style={{ width: '100%', height: h, borderRadius: 3, backgroundColor: isLast ? C.accent : C.surfacePressed as string }} />
-                    {(i === 0 || i === 5 || i === 11) && (
-                      <Text style={[s.chartLabel, { color: C.muted as string }]}>{r.month}</Text>
-                    )}
-                  </View>
-                );
-              })}
-            </View>
-            <View style={[s.row, { marginTop: 8, justifyContent: 'space-between' }]}>
-              <Text style={[s.bodySmall, { color: C.secondary as string }]}>YTD: {formatCurrency(REVENUE_TREND.slice(9).reduce((s,r)=>s+r.revenue,0), true)}</Text>
-              <Text style={[s.bodySmall, { color: C.muted as string }]}>Expenses: {formatCurrency(BIZ_DASHBOARD.thisMonth.expenses, true)}</Text>
-            </View>
-          </GlassView>
-        )}
-
-        {/* Active Projects snapshot */}
-        <GlassView tier={1} style={s.card}>
-          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Active Projects</Text>
-          {PROJECTS.filter(p => p.status === 'active').slice(0, 3).map(p => (
-            <View key={p.id} style={[s.projectRow, { borderTopColor: C.separator as string }]}>
-              <View style={{ flex: 1 }}>
-                <Text style={[s.bodyMed, { color: C.label }]} numberOfLines={1}>{p.name}</Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 }}>
-                  <View style={[s.progressBarBg, { flex: 1, backgroundColor: C.surfacePressed as string }]}>
-                    <View style={[s.progressBarFill, { width: `${p.progress}%` as any, backgroundColor: C.accent }]} />
-                  </View>
-                  <Text style={[s.bodySmall, { color: C.secondary as string, width: 32, textAlign: 'right' }]}>{p.progress}%</Text>
-                </View>
-              </View>
-              <View style={{ flexDirection: 'row', marginLeft: 8 }}>
-                {p.teamIds.slice(0, 3).map(tid => {
-                  const e = getEmployeeById(tid);
-                  if (!e) return null;
-                  return (
-                    <View key={tid} style={[s.avatar, { backgroundColor: `hsl(${e.hue},45%,28%)`, marginLeft: -6 }]}>
-                      <Text style={s.avatarText}>{e.initials}</Text>
-                    </View>
-                  );
-                })}
-              </View>
-            </View>
-          ))}
-          <Pressable onPress={() => changeTab('Projects')} style={{ marginTop: 8 }}>
-            <Text style={[s.linkText, { color: C.accent }]}>View all projects →</Text>
-          </Pressable>
-        </GlassView>
-
-        {/* Team Pulse */}
-        <GlassView tier={1} style={s.card}>
-          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Team Pulse</Text>
-          <View style={[s.row, { gap: 8 }]}>
-            {[
-              { label: 'Active',      value: BIZ_DASHBOARD.teamPulse.activeToday, color: C.green },
-              { label: 'On PTO',      value: BIZ_DASHBOARD.teamPulse.onPTO,       color: '#1A1714' },
-              { label: 'Contractors', value: BIZ_DASHBOARD.teamPulse.contractors, color: '#1A1714' },
-              { label: 'Openings',    value: BIZ_DASHBOARD.teamPulse.openings,    color: C.red },
-            ].map(item => (
-              <View key={item.label} style={[s.metricChip, { flex: 1, backgroundColor: C.surfacePressed as string }]}>
-                <Text style={[s.metricChipNum, { color: item.color }]}>{item.value}</Text>
-                <Text style={[s.metricChipLabel, { color: C.secondary as string }]}>{item.label}</Text>
-              </View>
-            ))}
-          </View>
-        </GlassView>
-
-        {/* Activity feed */}
-        <GlassView tier={1} style={s.card}>
-          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Activity</Text>
-          {ACTIVITY_FEED.slice(0, 6).map((a, i) => (
-            <View key={a.id} style={[
-              { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 8 },
-              i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string },
-            ]}>
-              <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: `${activityIconColor(a.type, C)}20`, alignItems: 'center', justifyContent: 'center' }}>
-                <IconSymbol name={a.icon as any} size={14} color={activityIconColor(a.type, C)} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={[s.bodyMed, { color: C.label }]} numberOfLines={1}>{a.title}</Text>
-                <Text style={[s.bodySmall, { color: C.secondary as string }]} numberOfLines={1}>{a.subtitle}</Text>
-              </View>
-              <Text style={[s.bodySmall, { color: C.muted as string }]}>{a.time}</Text>
-            </View>
-          ))}
-        </GlassView>
-
-        {isCEO && (
-          <GlassView tier={1} style={[s.card, { flexDirection: 'row', gap: 8 }]}>
-            {[
-              { label: 'New Deal',   icon: 'plus.circle.fill' },
-              { label: 'Invoice',    icon: 'doc.text.fill' },
-              { label: 'Add Task',   icon: 'checkmark.circle.fill' },
-            ].map(a => (
-              <Pressable key={a.label} onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-                style={[s.quickActionBtn, { flex: 1, borderColor: C.inputBorder as string }]}>
-                <IconSymbol name={a.icon as any} size={18} color={C.accent} />
-                <Text style={[s.bodySmall, { color: C.label, textAlign: 'center', marginTop: 4 }]}>{a.label}</Text>
-              </Pressable>
-            ))}
-          </GlassView>
-        )}
-      </View>
-    );
-  }
-
-  // ── PROJECTS ─────────────────────────────────────────────────────────────────
-
-  function renderProjects() {
-    return (
-      <View style={{ paddingHorizontal: 16, gap: 12, paddingBottom: 100 }}>
-        {filteredProjects.map(p => {
-          const isExpanded = expandedProjectId === p.id;
-          return (
-            <GlassView tier={1} key={p.id} style={s.card}>
-              <Pressable onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                setExpandedProjectId(isExpanded ? null : p.id);
-              }}>
-                <View style={[s.row, { marginBottom: 8 }]}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={[s.bodyMed, { color: C.label, fontSize: 15 }]}>{p.name}</Text>
-                    <Text style={[s.bodySmall, { color: C.secondary as string, marginTop: 2 }]} numberOfLines={2}>{p.description}</Text>
-                  </View>
-                  <View style={[s.statusBadge, { backgroundColor: `${projectStatusColor(p.status, C)}20`, borderColor: projectStatusColor(p.status, C) }]}>
-                    <Text style={[s.statusBadgeText, { color: projectStatusColor(p.status, C) }]}>{p.status.replace('-', ' ')}</Text>
-                  </View>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  <View style={[s.progressBarBg, { flex: 1, backgroundColor: C.surfacePressed as string }]}>
-                    <View style={[s.progressBarFill, { width: `${p.progress}%` as any, backgroundColor: projectStatusColor(p.status, C) }]} />
-                  </View>
-                  <Text style={[s.bodySmall, { color: C.secondary as string, width: 32 }]}>{p.progress}%</Text>
-                </View>
-                <View style={[s.row, { marginTop: 8 }]}>
-                  <View style={{ flexDirection: 'row' }}>
-                    {p.teamIds.slice(0, 4).map(tid => {
-                      const e = getEmployeeById(tid);
-                      if (!e) return null;
-                      return (
-                        <View key={tid} style={[s.avatar, { backgroundColor: `hsl(${e.hue},45%,28%)`, marginLeft: -6 }]}>
-                          <Text style={s.avatarText}>{e.initials}</Text>
-                        </View>
-                      );
-                    })}
-                  </View>
-                  <Text style={[s.bodySmall, { color: C.muted as string, marginLeft: 8 }]}>{formatDate(p.endDate)}</Text>
-                  <IconSymbol name={isExpanded ? 'chevron.up' : 'chevron.down'} size={12} color={C.muted as string} style={{ marginLeft: 'auto' }} />
-                </View>
-              </Pressable>
-
-              {isExpanded && (
-                <View style={{ marginTop: 12, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string, paddingTop: 12 }}>
-                  <Text style={[s.subHeader, { color: C.secondary as string, marginBottom: 8 }]}>Task Board</Text>
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{ gap: 10, paddingVertical: 4 }}>
-                    {(['todo', 'in-progress', 'review', 'done'] as TaskStatus[]).map(col => {
-                      const colLabels: Record<TaskStatus, string> = { todo: 'Todo', 'in-progress': 'In Progress', review: 'Review', done: 'Done' };
-                      const tasks = p.tasks.filter(t => t.status === col);
-                      return (
-                        <View key={col} style={[s.kanbanCol, { backgroundColor: C.surfacePressed as string }]}>
-                          <View style={[s.row, { marginBottom: 6 }]}>
-                            <View style={[s.statusDot, { backgroundColor: taskStatusColor(col, C) }]} />
-                            <Text style={[s.subHeader, { color: C.secondary as string }]}>{colLabels[col]}</Text>
-                          </View>
-                          {tasks.map(task => {
-                            const assignee = getEmployeeById(task.assigneeId);
-                            return (
-                              <View key={task.id} style={[s.taskCard, { backgroundColor: C.surface }]}>
-                                <Text style={[s.bodySmall, { color: C.label }]} numberOfLines={2}>{task.title}</Text>
-                                <View style={[s.row, { marginTop: 6 }]}>
-                                  {assignee && (
-                                    <View style={[s.avatarSm, { backgroundColor: `hsl(${assignee.hue},45%,28%)` }]}>
-                                      <Text style={s.avatarSmText}>{assignee.initials}</Text>
-                                    </View>
-                                  )}
-                                  <Text style={[s.bodySmall, { color: C.muted as string, marginLeft: 4, fontSize: 10 }]}>{formatDate(task.dueDate)}</Text>
-                                </View>
-                              </View>
-                            );
-                          })}
-                          {tasks.length === 0 && (
-                            <Text style={[s.bodySmall, { color: C.muted as string, textAlign: 'center', paddingVertical: 8, fontSize: 11 }]}>Empty</Text>
-                          )}
-                        </View>
-                      );
-                    })}
-                  </ScrollView>
-                </View>
-              )}
-            </GlassView>
-          );
-        })}
-        {filteredProjects.length === 0 && (
-          <View style={{ alignItems: 'center', paddingVertical: 40 }}>
-            <IconSymbol name="folder" size={36} color={C.muted as string} />
-            <Text style={[s.bodySmall, { color: C.muted as string, marginTop: 8 }]}>No projects found</Text>
-          </View>
-        )}
-      </View>
-    );
-  }
-
-  // ── REPORTS ──────────────────────────────────────────────────────────────────
-
-  function renderReports() {
-    const pill = selectedPill || 'Financial';
-    if (!isCEO) return (
-      <View style={{ paddingHorizontal: 16, alignItems: 'center', paddingVertical: 60 }}>
-        <IconSymbol name="lock.fill" size={32} color={C.muted as string} />
-        <Text style={[s.bodySmall, { color: C.muted as string, marginTop: 8 }]}>Reports are CEO-only</Text>
-      </View>
-    );
-
-    if (pill === 'Financial') {
-      const totalRevenue  = REVENUE_TREND.slice(9).reduce((s, r) => s + r.revenue, 0);
-      const totalExpenses = REVENUE_TREND.slice(9).reduce((s, r) => s + r.expenses, 0);
-      return (
-        <View style={{ paddingHorizontal: 16, gap: 16, paddingBottom: 32 }}>
-          <GlassView tier={1} style={s.card}>
-            <Text style={[s.sectionTitle, { color: C.label, marginBottom: 12 }]}>Revenue Chart</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 4, height: 80 }}>
-              {REVENUE_TREND.map((r, i) => {
-                const revH = (r.revenue / maxRevenue) * 80;
-                const isLast = i === REVENUE_TREND.length - 1;
-                return (
-                  <View key={r.month} style={{ flex: 1, alignItems: 'center', gap: 2 }}>
-                    <View style={{ width: '100%', height: revH, borderRadius: 3, backgroundColor: isLast ? C.accent : C.surfacePressed as string }} />
-                    <Text style={[s.chartLabel, { color: C.muted as string }]}>{r.month.slice(0,1)}</Text>
-                  </View>
-                );
-              })}
-            </View>
-          </GlassView>
-          <GlassView tier={1} style={s.card}>
-            <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Breakdown (Q1 2026)</Text>
-            {[
-              { label: 'Total Revenue',  value: formatCurrency(totalRevenue),  color: C.green },
-              { label: 'Total Expenses', value: formatCurrency(totalExpenses), color: C.red },
-              { label: 'Net Profit',     value: formatCurrency(totalRevenue - totalExpenses), color: C.accent },
-              { label: 'Profit Margin',  value: `${Math.round(((totalRevenue - totalExpenses) / totalRevenue) * 100)}%`, color: '#1A1714' },
-            ].map((item, i) => (
-              <View key={item.label} style={[s.row, { paddingVertical: 10 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
-                <Text style={[s.bodyMed, { color: C.label, flex: 1 }]}>{item.label}</Text>
-                <Text style={[s.bodyMed, { color: item.color }]}>{item.value}</Text>
-              </View>
-            ))}
-          </GlassView>
-          <GlassView tier={1} style={s.card}>
-            <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Recent Transactions</Text>
-            {RECENT_TRANSACTIONS.map((tx, i) => (
-              <View key={tx.id} style={[s.row, { paddingVertical: 10 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
-                <View style={{ flex: 1 }}>
-                  <Text style={[s.bodyMed, { color: C.label }]} numberOfLines={1}>{tx.description}</Text>
-                  <Text style={[s.bodySmall, { color: C.muted as string }]}>{formatDate(tx.date)} · {tx.category}</Text>
-                </View>
-                <Text style={[s.bodyMed, { color: tx.type === 'income' ? C.green : C.red }]}>
-                  {tx.type === 'income' ? '+' : '-'}{formatCurrency(Math.abs(tx.amount), true)}
-                </Text>
-              </View>
-            ))}
-          </GlassView>
-        </View>
-      );
-    }
-
-    if (pill === 'Sales') {
-      const stageCounts: Record<string, number> = { New: 2, Qualified: 3, Proposal: 3, Negotiation: 3, Won: 2, Lost: 2 };
-      const stageColors: Record<string, string> = { New: 'rgba(45,30,18,0.30)', Qualified: '#1A1714', Proposal: '#1A1714', Negotiation: '#1A1714', Won: '#5A8A6E', Lost: '#B85C5C' };
-      return (
-        <View style={{ paddingHorizontal: 16, gap: 16, paddingBottom: 32 }}>
-          <GlassView tier={1} style={s.card}>
-            <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Pipeline</Text>
-            {[
-              { label: 'Total Value',   value: formatCurrency(413000, true), color: C.accent },
-              { label: 'Open Deals',    value: '13',                        color: '#1A1714' },
-              { label: 'Won This Year', value: '2',                         color: C.green },
-              { label: 'Avg Deal Size', value: formatCurrency(31769, true), color: '#1A1714' },
-            ].map((item, i) => (
-              <View key={item.label} style={[s.row, { paddingVertical: 10 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
-                <Text style={[s.bodyMed, { color: C.label, flex: 1 }]}>{item.label}</Text>
-                <Text style={[s.bodyMed, { color: item.color }]}>{item.value}</Text>
-              </View>
-            ))}
-          </GlassView>
-          <GlassView tier={1} style={s.card}>
-            <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Stage Breakdown</Text>
-            {Object.entries(stageCounts).map(([stage, count], i) => (
-              <View key={stage} style={[s.row, { paddingVertical: 8 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
-                <View style={[s.statusDot, { backgroundColor: stageColors[stage] }]} />
-                <Text style={[s.bodyMed, { color: C.label, flex: 1 }]}>{stage}</Text>
-                <Text style={[s.bodySmall, { color: C.secondary as string }]}>{count} deals</Text>
-              </View>
-            ))}
-          </GlassView>
-        </View>
-      );
-    }
-
-    const totalEmp    = EMPLOYEES.length;
-    const fullTime    = EMPLOYEES.filter(e => e.status !== 'contractor').length;
-    const contractors = EMPLOYEES.filter(e => e.status === 'contractor').length;
-    const remote      = EMPLOYEES.filter(e => e.status === 'remote').length;
-    const onPto       = EMPLOYEES.filter(e => e.status === 'pto').length;
-    const totalPayroll = EMPLOYEES.reduce((acc, e) => acc + (e.salary ?? 0), 0);
-
-    const headcountHistory = [
-      { month: 'Oct', count: 8 }, { month: 'Nov', count: 9 }, { month: 'Dec', count: 10 },
-      { month: 'Jan', count: 10 }, { month: 'Feb', count: 11 }, { month: 'Mar', count: totalEmp },
-    ];
-    const maxHC = Math.max(...headcountHistory.map(h => h.count));
-
-    const openPositions = [
-      { title: 'iOS Engineer',         dept: 'Engineering', applicants: 6 },
-      { title: 'Growth Marketer',      dept: 'Growth',      applicants: 4 },
-      { title: 'Operations Analyst',   dept: 'Operations',  applicants: 2 },
-    ];
-
-    const recentChanges = [
-      { icon: 'person.badge.plus',      color: C.green,              text: 'Zara Patel joined Engineering', time: '2 days ago' },
-      { icon: 'arrow.up.circle.fill',   color: '#1A1714',            text: 'Marcus Webb promoted to Head of Product', time: 'last week' },
-      { icon: 'person.fill.xmark',      color: C.accent,             text: 'Brianna Fox on PTO until Friday', time: 'this week' },
-      { icon: 'person.badge.plus',      color: C.green,              text: 'Miles Grant joined Growth', time: '3 months ago' },
-    ];
-
-    const teamActivity = [
-      { label: 'Hours logged this week', value: '347 hrs',  icon: 'clock.fill',          color: '#1A1714' },
-      { label: 'Active projects',        value: `${PROJECTS.filter(p => p.status === 'active').length}`, icon: 'checkmark.circle.fill', color: C.accent },
-      { label: 'Meetings this week',     value: '12',       icon: 'calendar.badge.clock', color: '#1A1714' },
-      { label: 'Open tasks',             value: '18',       icon: 'square.and.pencil',    color: C.green },
-    ];
-
-    const milestones = [
-      { name: 'Aisha Brooks',    event: '3-year anniversary', date: 'Mar 20' },
-      { name: 'Kofi Mensah',     event: '3-year anniversary', date: 'Feb 1' },
-      { name: 'Jordan Lee',      event: '6-month milestone',  date: 'Nov 1' },
-    ];
-
-    const deptCompensation = DEPARTMENTS.map(d => {
-      const members = EMPLOYEES.filter(e => e.department === d.id && e.salary);
-      const total   = members.reduce((a, e) => a + (e.salary ?? 0), 0);
-      const avg     = members.length ? Math.round(total / members.length) : 0;
-      return { ...d, total, avg };
-    });
-
-    return (
-      <View style={{ paddingHorizontal: 16, gap: 16, paddingBottom: 32 }}>
-
-        {/* ── Headcount Card ── */}
-        <GlassView tier={1} style={s.card}>
-          <View style={[s.row, { marginBottom: 12 }]}>
-            <View style={{ flex: 1 }}>
-              <Text style={[s.sectionTitle, { color: C.label }]}>Headcount</Text>
-              <Text style={[s.bodySmall, { color: C.green, marginTop: 2 }]}>+2 this quarter</Text>
-            </View>
-            <Text style={{ fontSize: 40, fontWeight: '700', color: C.accent, lineHeight: 44 }}>{totalEmp}</Text>
-          </View>
-          {[
-            { label: 'Full-Time',   value: fullTime,    color: C.accent },
-            { label: 'Contractors', value: contractors, color: '#1A1714' },
-            { label: 'Remote',      value: remote,      color: '#1A1714' },
-            { label: 'On PTO',      value: onPto,       color: C.red },
-          ].map((item, i) => (
-            <View key={item.label} style={[s.row, { paddingVertical: 9 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
-              <Text style={[s.bodyMed, { color: C.label, flex: 1 }]}>{item.label}</Text>
-              <View style={{ width: 100, height: 6, backgroundColor: C.surfacePressed as string, borderRadius: 3, marginRight: 10 }}>
-                <View style={{ width: `${(item.value / totalEmp) * 100}%` as any, height: 6, borderRadius: 3, backgroundColor: item.color }} />
-              </View>
-              <Text style={[s.bodyMed, { color: item.color, width: 22, textAlign: 'right' }]}>{item.value}</Text>
-            </View>
-          ))}
-        </GlassView>
-
-        {/* ── Headcount Over Time ── */}
-        <GlassView tier={1} style={s.card}>
-          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 12 }]}>Headcount Over Time</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 6, height: 64 }}>
-            {headcountHistory.map((h, i) => {
-              const barH = (h.count / maxHC) * 64;
-              const isLast = i === headcountHistory.length - 1;
-              return (
-                <View key={h.month} style={{ flex: 1, alignItems: 'center', gap: 4 }}>
-                  <View style={{ width: '100%', height: barH, borderRadius: 4, backgroundColor: isLast ? C.accent : 'rgba(29,155,240,0.25)' }} />
-                  <Text style={[s.chartLabel, { color: C.muted as string }]}>{h.month}</Text>
-                </View>
-              );
-            })}
-          </View>
-          <View style={[s.row, { marginTop: 10, justifyContent: 'space-between' }]}>
-            <Text style={[s.bodySmall, { color: C.secondary as string }]}>Retention rate: 94%</Text>
-            <Text style={[s.bodySmall, { color: C.muted as string }]}>Avg tenure: 1.8 yrs</Text>
-          </View>
-        </GlassView>
-
-        {/* ── By Department (expandable) ── */}
-        <GlassView tier={1} style={s.card}>
-          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>By Department</Text>
-          {DEPARTMENTS.map((dept, i) => {
-            const members   = EMPLOYEES.filter(e => e.department === dept.id);
-            const isExpanded = expandedDeptId === dept.id;
-            return (
-              <View key={dept.id}>
-                <Pressable
-                  onPress={() => { Haptics.selectionAsync(); setExpandedDeptId(isExpanded ? null : dept.id); }}
-                  style={[s.row, { paddingVertical: 10 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}
-                >
-                  <View style={[s.statusDot, { backgroundColor: dept.color, width: 10, height: 10, borderRadius: 5 }]} />
-                  <Text style={[s.bodyMed, { color: C.label, flex: 1 }]}>{dept.name}</Text>
-                  <Text style={[s.bodySmall, { color: C.secondary as string, marginRight: 8 }]}>{members.length}</Text>
-                  <View style={{ width: 90, height: 8, backgroundColor: C.surfacePressed as string, borderRadius: 4, marginRight: 8 }}>
-                    <View style={{ width: `${(members.length / totalEmp) * 100}%` as any, height: 8, borderRadius: 4, backgroundColor: dept.color }} />
-                  </View>
-                  <IconSymbol name={isExpanded ? 'chevron.up' : 'chevron.down'} size={12} color={C.muted as string} />
-                </Pressable>
-                {isExpanded && (
-                  <View style={{ paddingLeft: 18, paddingBottom: 8, gap: 8 }}>
-                    {members.map(emp => (
-                      <View key={emp.id} style={[s.row, { gap: 8 }]}>
-                        <View style={[s.avatar, { backgroundColor: `hsl(${emp.hue},50%,55%)`, width: 28, height: 28, borderRadius: 14 }]}>
-                          <Text style={{ fontSize: 11, fontWeight: '700', color: '#fff' }}>{emp.initials}</Text>
-                        </View>
-                        <View style={{ flex: 1 }}>
-                          <Text style={[s.bodyMed, { color: C.label }]}>{emp.name}</Text>
-                          <Text style={[s.bodySmall, { color: C.muted as string }]}>{emp.title}</Text>
-                        </View>
-                        <View style={[s.statusDot, {
-                          backgroundColor: emp.status === 'pto' ? C.red : emp.status === 'remote' ? '#1A1714' : emp.status === 'contractor' ? '#1A1714' : C.green,
-                        }]} />
-                      </View>
-                    ))}
-                  </View>
-                )}
-              </View>
-            );
-          })}
-        </GlassView>
-
-        {/* ── Team Activity ── */}
-        <GlassView tier={1} style={s.card}>
-          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Team Activity</Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-            {teamActivity.map(a => (
-              <View key={a.label} style={[s.metricCard, { flex: 1, minWidth: '44%', gap: 4, alignItems: 'flex-start' }]}>
-                <IconSymbol name={a.icon as any} size={16} color={a.color} />
-                <Text style={[s.metricCardNum, { color: C.label, fontSize: 18 }]}>{a.value}</Text>
-                <Text style={[s.metricCardLabel, { color: C.secondary as string }]}>{a.label}</Text>
-              </View>
-            ))}
-          </View>
-        </GlassView>
-
-        {/* ── Hiring Pipeline ── */}
-        <GlassView tier={1} style={s.card}>
-          <View style={[s.row, { marginBottom: 10 }]}>
-            <Text style={[s.sectionTitle, { color: C.label, flex: 1 }]}>Hiring Pipeline</Text>
-            <Text style={[s.bodySmall, { color: C.muted as string }]}>12 applicants this month</Text>
-          </View>
-          {openPositions.map((pos, i) => (
-            <View key={pos.title} style={[s.row, { paddingVertical: 10 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
-              <View style={{ flex: 1 }}>
-                <Text style={[s.bodyMed, { color: C.label }]}>{pos.title}</Text>
-                <Text style={[s.bodySmall, { color: C.muted as string }]}>{pos.dept}</Text>
-              </View>
-              <View style={[s.statusBadge, { backgroundColor: 'rgba(29,155,240,0.12)', borderColor: '#1A1714' }]}>
-                <Text style={[s.statusBadgeText, { color: '#1A1714' }]}>{pos.applicants} applicants</Text>
-              </View>
-            </View>
-          ))}
-          <View style={[s.row, { marginTop: 10, paddingTop: 10, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
-            <Text style={[s.bodySmall, { color: C.accent, fontWeight: '600' }]}>3 open positions</Text>
-            <View style={{ flex: 1 }} />
-            <Text style={[s.bodySmall, { color: C.muted as string }]}>Avg time-to-hire: 18 days</Text>
-          </View>
-        </GlassView>
-
-        {/* ── Recent Changes ── */}
-        <GlassView tier={1} style={s.card}>
-          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 10 }]}>Recent Changes</Text>
-          {recentChanges.map((item, i) => (
-            <View key={i} style={[s.row, { paddingVertical: 10, gap: 10 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
-              <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: `${item.color}18`, alignItems: 'center', justifyContent: 'center' }}>
-                <IconSymbol name={item.icon as any} size={15} color={item.color} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={[s.bodyMed, { color: C.label }]}>{item.text}</Text>
-                <Text style={[s.bodySmall, { color: C.muted as string }]}>{item.time}</Text>
-              </View>
-            </View>
-          ))}
-        </GlassView>
-
-        {/* ── Anniversaries & Milestones ── */}
-        <GlassView tier={1} style={s.card}>
-          <View style={[s.row, { marginBottom: 10 }]}>
-            <Text style={[s.sectionTitle, { color: C.label, flex: 1 }]}>Anniversaries & Milestones</Text>
-            <IconSymbol name="gift.fill" size={16} color={C.accent} />
-          </View>
-          {milestones.map((m, i) => (
-            <View key={m.name} style={[s.row, { paddingVertical: 10, gap: 10 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.separator as string }]}>
-              <View style={{ width: 30, height: 30, borderRadius: 15, backgroundColor: `${C.accent}18`, alignItems: 'center', justifyContent: 'center' }}>
-                <IconSymbol name="star.fill" size={14} color={C.accent} />
-              </View>
-              <Text style={[s.bodyMed, { color: C.label, flex: 1 }]}>{m.name}</Text>
-              <View style={{ alignItems: 'flex-end' }}>
-                <Text style={[s.bodySmall, { color: C.accent, fontWeight: '600' }]}>{m.event}</Text>
-                <Text style={[s.bodySmall, { color: C.muted as string }]}>{m.date}</Text>
-              </View>
-            </View>
-          ))}
-        </GlassView>
-
-        {/* ── Compensation Summary (admin only) ── */}
-        <GlassView tier={1} style={[s.card, { backgroundColor: '#1A1714' }]}>
-          <Text style={[s.sectionTitle, { color: '#fff', marginBottom: 4 }]}>Compensation Summary</Text>
-          <Text style={[s.bodySmall, { color: 'rgba(255,255,255,0.6)', marginBottom: 12 }]}>Total payroll: {formatCurrency(totalPayroll)}/yr · 13 employees</Text>
-          {deptCompensation.filter(d => d.avg > 0).map((d, i) => (
-            <View key={d.id} style={[s.row, { paddingVertical: 8 }, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: 'rgba(255,255,255,0.1)' }]}>
-              <View style={[s.statusDot, { backgroundColor: d.color, width: 8, height: 8, borderRadius: 4 }]} />
-              <Text style={[s.bodyMed, { color: 'rgba(255,255,255,0.85)', flex: 1 }]}>{d.name}</Text>
-              <Text style={[s.bodySmall, { color: 'rgba(255,255,255,0.5)', marginRight: 10 }]}>avg {formatCurrency(d.avg, true)}</Text>
-              <View style={{ width: 60, height: 5, backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 3 }}>
-                <View style={{ width: `${(d.spent / d.budget) * 100}%` as any, height: 5, borderRadius: 3, backgroundColor: d.spent > d.budget * 0.9 ? C.red : C.green }} />
-              </View>
-            </View>
-          ))}
-          <View style={[s.row, { marginTop: 10, paddingTop: 10, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: 'rgba(255,255,255,0.1)' }]}>
-            <Text style={[s.bodySmall, { color: 'rgba(255,255,255,0.5)' }]}>Budget utilization</Text>
-            <View style={{ flex: 1 }} />
-            <Text style={[s.bodySmall, { color: '#5A8A6E' }]}>
-              {formatCurrency(DEPARTMENTS.reduce((a, d) => a + d.spent, 0), true)} / {formatCurrency(DEPARTMENTS.reduce((a, d) => a + d.budget, 0), true)}
-            </Text>
-          </View>
-        </GlassView>
-
-        {/* ── Quick Actions ── */}
-        <GlassView tier={1} style={s.card}>
-          <Text style={[s.sectionTitle, { color: C.label, marginBottom: 12 }]}>Quick Actions</Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-            {[
-              { label: 'Post a Job',       icon: 'person.badge.plus',         color: '#1A1714' },
-              { label: 'Run Payroll',      icon: 'dollarsign.circle.fill',    color: C.green },
-              { label: 'Schedule Review',  icon: 'calendar.badge.clock',      color: C.accent },
-              { label: 'Export Report',    icon: 'square.and.arrow.up',       color: '#1A1714' },
-            ].map(action => (
-              <Pressable key={action.label}
-                style={({ pressed }) => [{ flex: 1, minWidth: '44%', flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 12, borderRadius: 10, borderWidth: 1, borderColor: C.inputBorder as string, backgroundColor: pressed ? C.surfacePressed as string : 'transparent' }]}
-                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-              >
-                <IconSymbol name={action.icon as any} size={16} color={action.color} />
-                <Text style={[s.bodySmall, { color: C.label, fontWeight: '600' }]}>{action.label}</Text>
-              </Pressable>
-            ))}
-          </View>
-        </GlassView>
-
-      </View>
-    );
-  }
-
-  // ── RENDER ───────────────────────────────────────────────────────────────────
+  const go = (route: string) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push(route as any);
+  };
 
   return (
     <View style={[s.root, { backgroundColor: C.bg }]}>
-      <View style={[s.topBarOuter, { backgroundColor: C.bg, borderBottomColor: C.separator as string, paddingTop: insets.top }]}>
-        <View style={s.topBar}>
-          <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} style={s.iconBtn} hitSlop={8}>
-            <KMenuButton />
-          </Pressable>
-          <Pressable onPress={() => { Haptics.selectionAsync(); setDropdownOpen(v => !v); }}
-            style={[s.dropdownPill, { backgroundColor: C.surface, borderColor: C.separator as string }]}>
-            <Text style={[s.dropdownPillText, { color: C.label }]}>{activeTab}</Text>
-            <IconSymbol name={dropdownOpen ? 'chevron.up' : 'chevron.down'} size={12} color={C.secondary as string} style={{ marginLeft: 4 }} />
-          </Pressable>
-          <View style={[s.row, { gap: 8 }]}>
-            <Pressable onPress={cycleRole} style={[s.rolePill, { backgroundColor: isCEO ? C.activePill : C.surfacePressed, borderColor: isCEO ? C.activePill : C.separator as string }]}>
-              <Text style={[s.rolePillText, { color: isCEO ? C.activePillText : C.secondary as string }]}>{role}</Text>
-            </Pressable>
-            {pills.length > 0 && (
-              <Pressable onPress={togglePills} hitSlop={8} style={s.iconBtn}>
-                <IconSymbol name={pillsVisible ? 'line.3.horizontal.decrease.circle.fill' : 'line.3.horizontal.decrease.circle'} size={20} color={pillsVisible ? C.accent : C.label} />
-              </Pressable>
-            )}
-          </View>
+
+      {/* ── Floating top bar ─────────────────────────────────────────────── */}
+      <View style={[s.topBar, { paddingTop: insets.top, height: insets.top + TOP_BAR_H }]}>
+        <KMenuButton onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); openSidePanel(); }} />
+        <View style={s.topCenter}>
+          <Text style={s.topTitle}>Hub</Text>
         </View>
-        {pills.length > 0 && (
-          <Animated.View style={[s.pillsRow, {
-            height: pillsAnim.interpolate({ inputRange: [0, 1], outputRange: [0, PILLS_H] }),
-            opacity: pillsAnim, overflow: 'hidden', borderBottomColor: C.separator as string,
-          }]}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ alignItems: 'center', gap: 8, paddingHorizontal: 16 }}>
-              {pills.map(pill => {
-                const active = selectedPill === pill;
-                return (
-                  <Pressable key={pill} onPress={() => { Haptics.selectionAsync(); setSelectedPill(pill); }}
-                    style={[s.pill, { borderColor: active ? C.activePill : C.inputBorder as string, backgroundColor: active ? C.activePill : 'transparent' }]}>
-                    <Text style={[s.pillText, { color: active ? C.activePillText : C.secondary as string }]}>{pill}</Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
-          </Animated.View>
-        )}
+        <RolePill role={role} onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); toggleRole(); }} />
       </View>
 
-      {dropdownOpen && (
-        <>
-          <Pressable style={[StyleSheet.absoluteFill, { zIndex: 150 }]} onPress={() => setDropdownOpen(false)} />
-          <View style={[s.dropdown, { top: topBarH, backgroundColor: C.surface, borderColor: C.separator as string }]}>
-            {(['Overview', 'Projects', 'Reports'] as BizHubTab[]).map(tab => (
-              <Pressable key={tab} onPress={() => changeTab(tab)}
-                style={({ pressed }) => [s.dropdownItem, pressed && { backgroundColor: C.surfacePressed as string }, activeTab === tab && { backgroundColor: C.surfacePressed as string }]}>
-                <Text style={[s.dropdownItemText, { color: activeTab === tab ? C.activePill : C.label }]}>{tab}</Text>
-                {activeTab === tab && <IconSymbol name="checkmark" size={14} color={C.activePill} />}
-              </Pressable>
-            ))}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 120 }}
+      >
+        {/* ── Cover photo + overlapping avatar ─────────────────────────── */}
+        <View style={{ position: 'relative', marginBottom: AVATAR_OVR + 12 }}>
+          <View style={{ height: COVER_H, overflow: 'hidden' }}>
+            <Image
+              source={{ uri: 'https://picsum.photos/seed/modern-office/900/500' }}
+              style={{ width: '100%', height: '100%' }}
+              resizeMode="cover"
+            />
+            <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: insets.top + 70, backgroundColor: 'rgba(0,0,0,0.40)' }} />
+            <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 60, backgroundColor: 'rgba(0,0,0,0.20)' }} />
           </View>
-        </>
-      )}
+          <View style={{ position: 'absolute', bottom: -AVATAR_OVR, left: 20 }}>
+            <View style={[s.avatar, { backgroundColor: C.surface, borderColor: C.bg }]}>
+              <Text style={[s.avatarK, { color: C.label }]}>K</Text>
+            </View>
+          </View>
+        </View>
 
-      <ScrollView contentContainerStyle={{ paddingTop: contentPaddingTop }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-        {!isCEO ? renderClientPortal() : (
+        {/* ── Identity ─────────────────────────────────────────────────── */}
+        <View style={[s.identity, { paddingHorizontal: 20 }]}>
+          <Text style={[s.name, { color: C.label }]}>{COMPANY.name}</Text>
+          <Text style={[s.handle, { color: C.secondary }]}>{COMPANY.location}</Text>
+          <Text style={[s.bio, { color: C.label }]}>{COMPANY.bio}</Text>
+        </View>
+
+        {/* ── Key metrics + action row ──────────────────────────────────── */}
+        <View style={[s.metricActionRow, { paddingHorizontal: 20, borderColor: C.separator }]}>
+          <Text style={{ fontSize: 14, color: C.secondary }}>
+            <Text style={{ fontWeight: '700', color: C.label }}>{COMPANY.team}</Text>{' Team  ·  '}
+            <Text style={{ fontWeight: '700', color: GAIN }}>{COMPANY.mrr}</Text>{' MRR  ·  '}
+            <Text style={{ fontWeight: '700', color: C.label }}>{activeCount}</Text>{' Active'}
+          </Text>
+          <Pressable
+            style={[s.editBtn, { borderColor: C.separator }]}
+            onPress={() => isCEO ? go('/(tabs)/(main)/hub/reports') : go('/(tabs)/(main)/inquiries')}
+          >
+            <Text style={[s.editBtnText, { color: C.label }]}>{isCEO ? 'Reports' : 'Request'}</Text>
+          </Pressable>
+        </View>
+
+        {/* ── Status badge ─────────────────────────────────────────────── */}
+        <View style={[s.badgeRow, { borderTopColor: C.separator, borderBottomColor: C.separator }]}>
+          <View style={[s.badge, { backgroundColor: GAIN + '18', borderColor: GAIN + '44' }]}>
+            <Text style={[s.badgeText, { color: GAIN }]}>🏢 SWS Champion Tech Stack · 2024–2025</Text>
+          </View>
+        </View>
+
+        {isCEO ? (
           <>
-            {activeTab === 'Overview' && renderOverview()}
-            {activeTab === 'Projects' && renderProjects()}
-            {activeTab === 'Reports'  && renderReports()}
+            {/* ACTIVE PROJECTS */}
+            <View style={s.section}>
+              <SH title="Active Projects" C={C} />
+              {ACTIVE_PROJECTS.map((p, i) => (
+                <Pressable
+                  key={i}
+                  style={({ pressed }) => [s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'flex-start', gap: 12, marginBottom: 8 }, pressed && { opacity: 0.8 }]}
+                  onPress={() => {}}
+                >
+                  <View style={[s.healthDot, { backgroundColor: healthColor(p.health), marginTop: 4 }]} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.cardTitle, { color: C.label }]}>{p.name}</Text>
+                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 2 }]}>{p.client}</Text>
+                    <View style={[s.progressTrack, { backgroundColor: C.separator, marginTop: 8 }]}>
+                      <View style={[s.progressFill, { backgroundColor: progressColor(p.progress), width: `${p.progress}%` }]} />
+                    </View>
+                  </View>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: progressColor(p.progress), marginTop: 2 }}>{p.progress}%</Text>
+                </Pressable>
+              ))}
+            </View>
+
+            {/* PIPELINE */}
+            <View style={s.section}>
+              <SH title="Pipeline" C={C} />
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -20, paddingHorizontal: 20 }}>
+                {PIPELINE.map((pl, i) => (
+                  <View key={i} style={[s.pipelineCard, { backgroundColor: C.surface, marginRight: 8 }]}>
+                    <Text style={[s.pipelineValue, { color: C.label }]}>{pl.value}</Text>
+                    <Text style={[s.pipelineCount, { color: C.secondary }]}>{pl.count} deals</Text>
+                    <Text style={[s.pipelineStage, { color: C.secondary }]}>{pl.stage}</Text>
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+
+            {/* TEAM */}
+            <View style={s.section}>
+              <SH title="Team" C={C} />
+              {TEAM_MEMBERS.map((m, i) => (
+                <View key={i} style={[s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }]}>
+                  <View style={[s.personAvatar, { backgroundColor: C.separator }]}>
+                    <Text style={[s.personInitials, { color: C.label }]}>
+                      {m.name.split(' ').map(w => w[0]).join('')}
+                    </Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.cardTitle, { color: C.label }]}>{m.name}</Text>
+                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 1 }]}>{m.ood ? m.oodNote : m.role}</Text>
+                  </View>
+                  {m.ood && (
+                    <View style={[s.ooBadge, { backgroundColor: CAUTION + '22' }]}>
+                      <Text style={[s.ooBadgeText, { color: CAUTION }]}>OOO</Text>
+                    </View>
+                  )}
+                </View>
+              ))}
+            </View>
+
+            {/* TOP CLIENTS */}
+            <View style={s.section}>
+              <SH title="Top Clients" C={C} />
+              {TOP_CLIENTS.map((c, i) => (
+                <View key={i} style={[s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }]}>
+                  <View style={[s.healthDot, { backgroundColor: healthColor(c.health) }]} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.cardTitle, { color: C.label }]}>{c.name}</Text>
+                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 1 }]}>Since {c.since}</Text>
+                  </View>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: GAIN }}>{c.mrr}/mo</Text>
+                </View>
+              ))}
+            </View>
+          </>
+        ) : (
+          <>
+            {/* MY PROJECTS */}
+            <View style={s.section}>
+              <SH title="My Projects" C={C} />
+              {MY_PROJECTS.map((p, i) => (
+                <View key={i} style={[s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'flex-start', gap: 12, marginBottom: 8 }]}>
+                  <View style={[s.healthDot, { backgroundColor: progressColor(p.progress), marginTop: 4 }]} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.cardTitle, { color: C.label }]}>{p.name}</Text>
+                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 2 }]}>Due {p.due}</Text>
+                    <View style={[s.progressTrack, { backgroundColor: C.separator, marginTop: 8 }]}>
+                      <View style={[s.progressFill, { backgroundColor: progressColor(p.progress), width: `${p.progress}%` }]} />
+                    </View>
+                  </View>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: progressColor(p.progress), marginTop: 2 }}>{p.progress}%</Text>
+                </View>
+              ))}
+            </View>
+
+            {/* INVOICES */}
+            <View style={s.section}>
+              <SH title="Invoices" C={C} />
+              {MY_INVOICES.map((inv, i) => (
+                <View key={i} style={[s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 8 }]}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.cardTitle, { color: C.label }]}>{inv.number}</Text>
+                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 1 }]}>Due {inv.due}</Text>
+                  </View>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: C.label, marginRight: 8 }}>{inv.amount}</Text>
+                  <View style={[s.invBadge, { backgroundColor: inv.paid ? GAIN + '22' : CAUTION + '22' }]}>
+                    <Text style={[s.invBadgeText, { color: inv.paid ? GAIN : CAUTION }]}>
+                      {inv.paid ? 'Paid' : 'Due'}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+
+            {/* QUICK ACCESS */}
+            <View style={s.section}>
+              <SH title="Quick Access" C={C} />
+              {[
+                { icon: 'envelope.fill', label: 'Contact Team',    sub: 'Send us a message',  route: '/(tabs)/(main)/inquiries' },
+                { icon: 'doc.fill',      label: 'Documents',       sub: 'Contracts & files',  route: ''                         },
+                { icon: 'calendar',      label: 'Schedule a Call', sub: 'Book a meeting',      route: ''                        },
+              ].map(item => (
+                <Pressable
+                  key={item.label}
+                  style={({ pressed }) => [s.card, { backgroundColor: C.surface, flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }, pressed && { opacity: 0.8 }]}
+                  onPress={() => item.route ? go(item.route) : undefined}
+                >
+                  <View style={[s.iconBox, { backgroundColor: C.separator }]}>
+                    <IconSymbol name={item.icon as any} size={16} color={C.label} />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[s.cardTitle, { color: C.label }]}>{item.label}</Text>
+                    <Text style={[s.cardMeta, { color: C.secondary, marginTop: 1 }]}>{item.sub}</Text>
+                  </View>
+                  <IconSymbol name="chevron.right" size={14} color={C.muted as string} />
+                </Pressable>
+              ))}
+            </View>
           </>
         )}
       </ScrollView>
-
-      {activeTab === 'Projects' && isCEO && (
-        <Pressable onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
-          style={[s.fab, { backgroundColor: C.accent, bottom: insets.bottom + 88 }]}>
-          <IconSymbol name="plus" size={22} color="#fff" />
-        </Pressable>
-      )}
     </View>
   );
 }
 
-const makeStyles = (C: ComponentColors) => StyleSheet.create({
+// ─── Styles ───────────────────────────────────────────────────────────────────
+
+const s = StyleSheet.create({
   root: { flex: 1 },
-  topBarOuter: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100, borderBottomWidth: StyleSheet.hairlineWidth },
-  topBar: { height: TOP_BAR_H, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16 },
-  iconBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
-  dropdownPill: { flex: 1, marginHorizontal: 10, height: 34, borderRadius: 17, borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 14 },
-  dropdownPillText: { fontSize: 14, fontWeight: '700' },
-  rolePill: { paddingHorizontal: 12, height: 28, borderRadius: 14, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  rolePillText: { fontSize: 12, fontWeight: '700' },
-  pillsRow: { borderBottomWidth: StyleSheet.hairlineWidth },
-  pill: { height: 30, paddingHorizontal: 14, borderRadius: 15, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  pillText: { fontSize: 13, fontWeight: '600' },
-  dropdown: { position: 'absolute', left: 16, right: 16, zIndex: 200, borderRadius: 14, borderWidth: 1, overflow: 'hidden' },
-  dropdownItem: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14 },
-  dropdownItemText: { flex: 1, fontSize: 15, fontWeight: '600' },
-  row: { flexDirection: 'row', alignItems: 'center' },
-  card: { padding: 16, borderRadius: 16 },
-  sectionTitle: { fontSize: 15, fontWeight: '700' },
-  subHeader: { fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 },
-  bodyMed: { fontSize: 14, fontWeight: '600' },
-  bodySmall: { fontSize: 13 },
-  linkText: { fontSize: 13, fontWeight: '600' },
-  metricCard: { width: 110, padding: 12, borderRadius: 14, alignItems: 'center', gap: 2 },
-  metricCardNum: { fontSize: 16, fontWeight: '800' },
-  metricCardLabel: { fontSize: 11, fontWeight: '500' },
-  metricChip: { alignItems: 'center', borderRadius: 10, paddingVertical: 8 },
-  metricChipNum: { fontSize: 16, fontWeight: '800' },
-  metricChipLabel: { fontSize: 10, fontWeight: '500', marginTop: 2 },
-  progressBarBg: { height: 6, borderRadius: 3, overflow: 'hidden' },
-  progressBarFill: { height: 6, borderRadius: 3 },
-  projectRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderTopWidth: StyleSheet.hairlineWidth },
-  avatar: { width: 26, height: 26, borderRadius: 13, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#FFFFFF' },
-  avatarText: { fontSize: 9, fontWeight: '700', color: '#fff' },
-  avatarSm: { width: 20, height: 20, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
-  avatarSmText: { fontSize: 7, fontWeight: '700', color: '#fff' },
-  statusBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, borderWidth: 1, marginLeft: 8 },
-  statusBadgeText: { fontSize: 11, fontWeight: '600', textTransform: 'capitalize' },
-  statusDot: { width: 8, height: 8, borderRadius: 4, marginRight: 6 },
-  kanbanCol: { width: 160, padding: 10, borderRadius: 12, gap: 6 },
-  taskCard: { padding: 10, borderRadius: 10 },
-  chartLabel: { fontSize: 9, fontWeight: '500' },
-  quickActionBtn: { padding: 12, borderRadius: 12, borderWidth: 1, alignItems: 'center' },
-  fab: { position: 'absolute', right: 20, width: 52, height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 6, elevation: 4 },
+
+  topBar: {
+    position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
+    flexDirection: 'row', alignItems: 'flex-end',
+    paddingHorizontal: 16, paddingBottom: 10,
+  },
+  topCenter: { flex: 1, alignItems: 'center' },
+  topTitle:  { fontSize: 17, fontWeight: '600', color: '#FFFFFF' },
+
+  avatar: {
+    width: AVATAR_SIZE, height: AVATAR_SIZE, borderRadius: AVATAR_SIZE / 2,
+    borderWidth: 3, alignItems: 'center', justifyContent: 'center',
+  },
+  avatarK: { fontSize: 32, fontWeight: '900' },
+
+  identity:  { marginBottom: 14 },
+  name:      { fontSize: 20, fontWeight: '700', marginBottom: 2 },
+  handle:    { fontSize: 14, marginBottom: 6 },
+  bio:       { fontSize: 14, lineHeight: 20, opacity: 0.85 },
+
+  metricActionRow: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingVertical: 14, marginBottom: 0,
+    borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  editBtn:     { paddingHorizontal: 18, paddingVertical: 7, borderRadius: 20, borderWidth: 1.5 },
+  editBtnText: { fontSize: 13, fontWeight: '600' },
+
+  badgeRow: {
+    paddingHorizontal: 20, paddingVertical: 12,
+    borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth,
+    marginBottom: 8,
+  },
+  badge:     { borderRadius: 10, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 6, alignSelf: 'flex-start' },
+  badgeText: { fontSize: 12, fontWeight: '700' },
+
+  section: { paddingHorizontal: 20, marginBottom: 28 },
+
+  sh: {
+    fontSize: 11, fontWeight: '700', letterSpacing: 0.8, textTransform: 'uppercase',
+    marginBottom: 12, marginTop: 4,
+  },
+
+  card:      { borderRadius: 12, padding: 14, marginBottom: 0 },
+  cardTitle: { fontSize: 14, fontWeight: '600' },
+  cardMeta:  { fontSize: 12 },
+
+  iconBox: {
+    width: 36, height: 36, borderRadius: 8,
+    alignItems: 'center', justifyContent: 'center',
+  },
+
+  healthDot:  { width: 8, height: 8, borderRadius: 4 },
+
+  personAvatar: {
+    width: 36, height: 36, borderRadius: 18,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  personInitials: { fontSize: 12, fontWeight: '700' },
+
+  ooBadge:     { borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
+  ooBadgeText: { fontSize: 11, fontWeight: '700' },
+
+  pipelineCard: {
+    borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14,
+    alignItems: 'center', gap: 2, minWidth: 100,
+  },
+  pipelineValue: { fontSize: 16, fontWeight: '800' },
+  pipelineCount: { fontSize: 11 },
+  pipelineStage: { fontSize: 10, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.8 },
+
+  progressTrack: { height: 4, borderRadius: 2, overflow: 'hidden' },
+  progressFill:  { height: 4, borderRadius: 2 },
+
+  invBadge:     { borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
+  invBadgeText: { fontSize: 11, fontWeight: '700' },
 });
