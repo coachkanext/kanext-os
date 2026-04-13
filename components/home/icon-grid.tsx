@@ -123,10 +123,10 @@ function GridTile({
 
 export function IconGrid() {
   const C = useColors();
-  const styles = useMemo(() => makeStyles(C), [C]);
   const accent = useAccentColor();
   const router = useRouter();
   const mode = useMode();
+  const styles = useMemo(() => makeStyles(C), [C]);
   const { addScreen } = useMultitasking();
 
   const handlePress = useCallback((item: GridIcon) => {
@@ -180,10 +180,12 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
     alignItems: 'center',
   },
   tileWrap: {
-    width: 72,
-    height: 72,
+    width: 88,
+    height: 88,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: C.surface,
+    borderRadius: 20,
   },
 
   badge: {

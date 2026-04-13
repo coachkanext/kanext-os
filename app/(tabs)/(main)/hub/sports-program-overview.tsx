@@ -22,17 +22,6 @@ import { resetFooter } from '@/utils/global-footer-hide';
 import { useDemoRole } from '@/utils/demo-role-store';
 import { BottomSheet } from '@/components/ui/bottom-sheet';
 
-const GAIN    = '#5A8A6E';
-const HEAT    = '#B85C5C';
-const CAUTION = '#B8943E';
-const GOLD    = '#D4A843';
-
-const WIN_BG  = '#EAF3DE';
-const WIN_TXT = '#3B6D11';
-const LOSS_BG = '#FCEBEB';
-const LOSS_TXT = '#A32D2D';
-const CHAMP_BG  = '#FAEEDA';
-const CHAMP_TXT = '#854F0B';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -53,10 +42,10 @@ const TEAM = {
   defSystem: 'Pressure Man (80%) + Zone (20%)',
 };
 
-const ATTENTION = [
-  { label: 'Williams (#1)', detail: 'Knee — cleared for offseason workouts', accent: CAUTION, route: '/(tabs)/(main)/roster' },
-  { label: 'McKesey (#3)', detail: 'Eligibility ended — final season complete', accent: null as string | null, route: '/(tabs)/(main)/roster' },
-  { label: 'Transfer portal open', detail: '3 prospects match Spread PnR system (KR 72+)', accent: GAIN, route: '/(tabs)/(main)/recruits' },
+const ATTENTION: { label: string; detail: string; accent: 'gain' | 'caution' | 'heat' | null; route: string }[] = [
+  { label: 'Williams (#1)', detail: 'Knee — cleared for offseason workouts', accent: 'caution', route: '/(tabs)/(main)/roster' },
+  { label: 'McKesey (#3)', detail: 'Eligibility ended — final season complete', accent: null, route: '/(tabs)/(main)/roster' },
+  { label: 'Transfer portal open', detail: '3 prospects match Spread PnR system (KR 72+)', accent: 'gain', route: '/(tabs)/(main)/recruits' },
 ];
 
 type HealthStatus = 'available' | 'limited' | 'out';
@@ -133,16 +122,17 @@ const LEVEL_STATS: Record<PerfTab, LevelStats> = {
   },
 };
 
-function healthColor(s: HealthStatus): string {
-  return s === 'available' ? GAIN : s === 'limited' ? CAUTION : HEAT;
+function healthColor(s: HealthStatus, C: ComponentColors): string {
+  return s === 'available' ? C.gain : s === 'limited' ? C.caution : C.heat;
 }
-function krColor(kr: number): string {
-  return kr >= 90 ? GOLD : kr >= 80 ? GAIN : kr >= 70 ? '#1A1714' : kr >= 60 ? CAUTION : HEAT;
+function krColor(kr: number, C: ComponentColors): string {
+  return kr >= 80 ? C.accent : kr >= 70 ? C.label : kr >= 60 ? C.secondary : C.heat;
 }
 
 // ─── PlayerCircle ─────────────────────────────────────────────────────────────
 
-function PlayerCircle({ player, onPress, C }: { player: Player; onPress: (p: Player) => void; C: any }) {
+function PlayerCircle({ player, onPress }: { player: Player; onPress: (p: Player) => void }) {
+  const C = useColors();
   return (
     <Pressable
       style={{ alignItems: 'center', gap: 4, width: 64 }}
@@ -150,7 +140,7 @@ function PlayerCircle({ player, onPress, C }: { player: Player; onPress: (p: Pla
     >
       <View style={{
         width: 52, height: 52, borderRadius: 26, borderWidth: 2.5,
-        borderColor: healthColor(player.status), backgroundColor: C.bg,
+        borderColor: healthColor(player.status, C), backgroundColor: C.bg,
         alignItems: 'center', justifyContent: 'center',
       }}>
         <Text style={{ fontSize: 14, fontWeight: '800', color: C.label }}>{player.initials}</Text>
@@ -159,7 +149,7 @@ function PlayerCircle({ player, onPress, C }: { player: Player; onPress: (p: Pla
       <Text style={{ fontSize: 10, fontWeight: '600', color: C.label, textAlign: 'center' }} numberOfLines={1}>
         {player.name}
       </Text>
-      <Text style={{ fontSize: 9, color: GOLD, fontWeight: '700' }}>KR {player.kr}</Text>
+      <Text style={{ fontSize: 9, color: C.accent, fontWeight: '700' }}>KR {player.kr}</Text>
     </Pressable>
   );
 }
@@ -230,14 +220,14 @@ export default function SportsProgramOverview() {
             <View style={s.krCardTop}>
               {/* KR Ring */}
               <View style={s.krRingWrap}>
-                <View style={[s.krRing, { borderColor: GOLD }]}>
-                  <Text style={[s.krRingNumber, { color: GOLD }]}>{TEAM.kr}</Text>
+                <View style={[s.krRing, { borderColor: C.accent }]}>
+                  <Text style={[s.krRingNumber, { color: C.accent }]}>{TEAM.kr}</Text>
                   <Text style={[s.krRingLabel, { color: C.secondary }]}>TEAM KR</Text>
                 </View>
               </View>
               {/* Right side */}
               <View style={s.krCardRight}>
-                <Text style={[s.krTierLabel, { color: GOLD }]}>{TEAM.tier}</Text>
+                <Text style={[s.krTierLabel, { color: C.accent }]}>{TEAM.tier}</Text>
                 <Text style={[s.krSystemText, { color: C.secondary }]}>(USCAA)</Text>
               </View>
             </View>
@@ -251,7 +241,7 @@ export default function SportsProgramOverview() {
               ].map((m, i, arr) => (
                 <React.Fragment key={m.label}>
                   <View style={s.krMetricCell}>
-                    <Text style={[s.krMetricValue, { color: krColor(m.value) }]}>{m.display}</Text>
+                    <Text style={[s.krMetricValue, { color: krColor(m.value, C) }]}>{m.display}</Text>
                     <Text style={[s.krMetricLabel, { color: C.secondary }]}>{m.label}</Text>
                   </View>
                   {i < arr.length - 1 && <View style={[s.krMetricDivider, { backgroundColor: C.separator }]} />}
@@ -279,23 +269,23 @@ export default function SportsProgramOverview() {
             </View>
             {/* Final record row */}
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-              <View style={[s.recordPill, { backgroundColor: WIN_BG, borderColor: WIN_TXT + '44' }]}>
-                <Text style={[s.recordPillText, { color: WIN_TXT }]}>15-8 Final</Text>
+              <View style={[s.recordPill, { backgroundColor: C.gainBg, borderColor: C.gain + '44' }]}>
+                <Text style={[s.recordPillText, { color: C.gain }]}>15-8 Final</Text>
               </View>
-              <View style={[s.recordPill, { backgroundColor: WIN_BG, borderColor: WIN_TXT + '44' }]}>
-                <Text style={[s.recordPillText, { color: WIN_TXT }]}>15-2 Non-D1</Text>
+              <View style={[s.recordPill, { backgroundColor: C.gainBg, borderColor: C.gain + '44' }]}>
+                <Text style={[s.recordPillText, { color: C.gain }]}>15-2 Non-D1</Text>
               </View>
-              <View style={[s.recordPill, { backgroundColor: LOSS_BG, borderColor: LOSS_TXT + '44' }]}>
-                <Text style={[s.recordPillText, { color: LOSS_TXT }]}>0-6 D1</Text>
+              <View style={[s.recordPill, { backgroundColor: C.heatBg, borderColor: C.heat + '44' }]}>
+                <Text style={[s.recordPillText, { color: C.heat }]}>0-6 D1</Text>
               </View>
             </View>
             {/* Championship row */}
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
-              <View style={[s.recordPill, { backgroundColor: CHAMP_BG, borderColor: CHAMP_TXT + '44' }]}>
-                <Text style={[s.recordPillText, { color: CHAMP_TXT }]}>🏆 SWS Regular Season (Back-to-Back)</Text>
+              <View style={[s.recordPill, { backgroundColor: C.cautionBg, borderColor: C.caution + '44' }]}>
+                <Text style={[s.recordPillText, { color: C.caution }]}>🏆 SWS Regular Season (Back-to-Back)</Text>
               </View>
-              <View style={[s.recordPill, { backgroundColor: CHAMP_BG, borderColor: CHAMP_TXT + '44' }]}>
-                <Text style={[s.recordPillText, { color: CHAMP_TXT }]}>🏆 GAAC Tournament Champions</Text>
+              <View style={[s.recordPill, { backgroundColor: C.cautionBg, borderColor: C.caution + '44' }]}>
+                <Text style={[s.recordPillText, { color: C.caution }]}>🏆 GAAC Tournament Champions</Text>
               </View>
             </View>
             {/* Offseason link */}
@@ -319,12 +309,12 @@ export default function SportsProgramOverview() {
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
                 {STARTERS.map(p => (
-                  <PlayerCircle key={p.initials} player={p} onPress={setSelectedPlayer} C={C} />
+                  <PlayerCircle key={p.initials} player={p} onPress={setSelectedPlayer} />
                 ))}
                 {/* Starter / bench divider */}
                 <View style={[{ width: StyleSheet.hairlineWidth, alignSelf: 'stretch', marginHorizontal: 4, backgroundColor: C.separator }]} />
                 {BENCH.map(p => (
-                  <PlayerCircle key={p.initials} player={p} onPress={setSelectedPlayer} C={C} />
+                  <PlayerCircle key={p.initials} player={p} onPress={setSelectedPlayer} />
                 ))}
               </View>
             </ScrollView>
@@ -348,7 +338,7 @@ export default function SportsProgramOverview() {
             <BottomSheetScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }}>
               {/* Header */}
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, marginBottom: 20 }}>
-                <View style={[s.sheetAvatar, { borderColor: healthColor(selectedPlayer.status), backgroundColor: C.bg }]}>
+                <View style={[s.sheetAvatar, { borderColor: healthColor(selectedPlayer.status, C), backgroundColor: C.bg }]}>
                   <Text style={[{ fontSize: 22, fontWeight: '800', color: C.label }]}>{selectedPlayer.initials}</Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -363,8 +353,8 @@ export default function SportsProgramOverview() {
 
               {/* KR + archetype */}
               <View style={[s.sheetKrRow, { backgroundColor: C.bg, borderColor: C.separator }]}>
-                <View style={[s.sheetKrRing, { borderColor: GOLD }]}>
-                  <Text style={[{ fontSize: 22, fontWeight: '900', color: GOLD }]}>{selectedPlayer.kr}</Text>
+                <View style={[s.sheetKrRing, { borderColor: C.accent }]}>
+                  <Text style={[{ fontSize: 22, fontWeight: '900', color: C.accent }]}>{selectedPlayer.kr}</Text>
                   <Text style={[{ fontSize: 8, fontWeight: '700', color: C.secondary, letterSpacing: 0.8 }]}>KR</Text>
                 </View>
                 <View style={{ flex: 1 }}>
@@ -372,8 +362,8 @@ export default function SportsProgramOverview() {
                   <Text style={[{ fontSize: 11, color: C.secondary, marginTop: 2 }]}>Eligibility: {selectedPlayer.eligibility}</Text>
                 </View>
                 {selectedPlayer.status !== 'available' && (
-                  <View style={[{ borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3, backgroundColor: healthColor(selectedPlayer.status) + '22' }]}>
-                    <Text style={[{ fontSize: 11, fontWeight: '700', color: healthColor(selectedPlayer.status) }]}>
+                  <View style={[{ borderRadius: 10, paddingHorizontal: 8, paddingVertical: 3, backgroundColor: healthColor(selectedPlayer.status, C) + '22' }]}>
+                    <Text style={[{ fontSize: 11, fontWeight: '700', color: healthColor(selectedPlayer.status, C) }]}>
                       {selectedPlayer.status === 'limited' ? `Questionable · ${selectedPlayer.statusNote}` : 'Out'}
                     </Text>
                   </View>
@@ -430,7 +420,7 @@ export default function SportsProgramOverview() {
                 ]}
                 onPress={() => go(item.route)}
               >
-                <View style={[{ width: 6, height: 6, borderRadius: 3, backgroundColor: item.accent ?? C.secondary, marginLeft: 2 }]} />
+                <View style={[{ width: 6, height: 6, borderRadius: 3, backgroundColor: item.accent ? C[item.accent] : C.secondary, marginLeft: 2 }]} />
                 <View style={{ flex: 1 }}>
                   <Text style={[{ fontSize: 13, fontWeight: '600', color: C.label }]}>{item.label}</Text>
                   <Text style={[{ fontSize: 12, color: C.secondary, marginTop: 1 }]}>{item.detail}</Text>
@@ -469,13 +459,13 @@ export default function SportsProgramOverview() {
             {/* Level stats block */}
             {(() => {
               const ls = LEVEL_STATS[perfTab];
-              const marginColor = ls.margin.startsWith('+') ? GAIN : HEAT;
+              const marginColor = ls.margin.startsWith('+') ? C.gain : C.heat;
               return (
                 <>
                   {/* Record + margin */}
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                    <View style={[s.recordPill, { backgroundColor: ls.record.startsWith('0') ? LOSS_BG : WIN_BG, borderColor: (ls.record.startsWith('0') ? LOSS_TXT : WIN_TXT) + '44' }]}>
-                      <Text style={[s.recordPillText, { color: ls.record.startsWith('0') ? LOSS_TXT : WIN_TXT }]}>{ls.record} · {ls.gp} GP</Text>
+                    <View style={[s.recordPill, { backgroundColor: ls.record.startsWith('0') ? C.heatBg : C.gainBg, borderColor: (ls.record.startsWith('0') ? C.heat : C.gain) + '44' }]}>
+                      <Text style={[s.recordPillText, { color: ls.record.startsWith('0') ? C.heat : C.gain }]}>{ls.record} · {ls.gp} GP</Text>
                     </View>
                     <Text style={[{ fontSize: 13, fontWeight: '700', color: marginColor }]}>{ls.margin} margin</Text>
                   </View>

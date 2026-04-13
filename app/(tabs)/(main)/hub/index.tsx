@@ -826,12 +826,14 @@ export default function HubScreen() {
     { icon: 'play.rectangle.fill',      title: 'Latest KTV Video',         url: 'kanext.io/ktv'        },
   ];
 
-  const COVER_H = 220 + contentPaddingTop;   // bleeds behind status bar + top bar
+  const COVER_H = 220 + contentPaddingTop;
   const AVATAR_SIZE = 80;
   const AVATAR_OVERLAP = AVATAR_SIZE / 2;
 
   const renderOwnerProfile = (viewerIsOwner = true) => (
     <ScrollView
+      onScroll={handleScroll}
+      scrollEventThrottle={16}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingTop: 0, paddingBottom: 120 }}
     >
@@ -845,8 +847,6 @@ export default function HubScreen() {
               style={{ width: '100%', height: '100%' }}
               resizeMode="cover"
             />
-            {/* top scrim so nav items are readable over image */}
-            <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: contentPaddingTop + 20, backgroundColor: 'rgba(0,0,0,0.30)' }} />
             {/* bottom scrim for avatar area */}
             <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 60, backgroundColor: 'rgba(0,0,0,0.20)' }} />
             {viewerIsOwner && (
@@ -857,6 +857,21 @@ export default function HubScreen() {
             )}
           </View>
         </Pressable>
+        {/* Nav row — scrolls with cover */}
+        <View style={{ position: 'absolute', top: insets.top, left: 0, right: 0, height: 44, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, zIndex: 2 }}>
+          <View style={{ width: 44, justifyContent: 'center' }}>
+            <Pressable onPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); if (isOwner) openSidePanel(); }} hitSlop={12}>
+              <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.5, color: '#fff' }}>K</Text>
+            </Pressable>
+          </View>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: '#fff' }}>@sammyk</Text>
+          </View>
+          <View style={{ alignItems: 'flex-end' }}>
+            <RolePill role={role} onPress={cycleRole} isPrimary={isOwner} />
+          </View>
+        </View>
+
         {/* Profile photo — overlapping */}
         <View style={{ position: 'absolute', bottom: -AVATAR_OVERLAP, left: 20 }}>
           <Pressable disabled={!viewerIsOwner}>
@@ -1729,10 +1744,14 @@ export default function HubScreen() {
 
   return (
     <View style={[s.screen, { backgroundColor: C.bg }]}>
-      {renderContent()}
 
-      {/* ── Fixed Top Bar ── */}
-      <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: (mode === 'personal' && activeTab === 'Profile') ? 'transparent' : C.bg }]}>
+      {mode === 'personal' && activeTab === 'Profile' ? (
+        <>{renderContent()}</>
+      ) : (
+        <>
+          {renderContent()}
+          {/* ── Fixed Top Bar (all modes except personal Profile) ── */}
+          <View style={[s.topBarWrap, { paddingTop: insets.top, backgroundColor: C.bg }]}>
         <View style={s.topBar}>
 
           {/* ── Business Mode ── */}
@@ -1899,6 +1918,8 @@ export default function HubScreen() {
 
         </View>
       </View>
+        </>
+      )}
 
 
       {/* ── Content Composer ── */}

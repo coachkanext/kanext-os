@@ -16,7 +16,7 @@ import { useDemoRole } from '@/utils/demo-role-store';
 type Dot = { color: string; count?: number } | null;
 
 export function SportsHubPanel() {
-  const C      = useColors();
+  const C = useColors();
   const router = useRouter();
   const [role, , roleCycles] = useDemoRole('sports:hub');
   const isHeadCoach = role === roleCycles[0];
@@ -58,15 +58,15 @@ export function SportsHubPanel() {
   const navItems = isHeadCoach ? COACH_NAV : PLAYER_NAV;
 
   return (
-    <View style={[s.root, { backgroundColor: C.surface }]}>
+    <View style={[s.root, { backgroundColor: C.bg }]}>
 
       {navItems.map(item => (
         <Pressable
           key={item.label}
-          style={({ pressed }) => [s.row, pressed && { backgroundColor: C.surfacePressed }]}
+          style={({ pressed }) => [s.row, pressed && { backgroundColor: C.surface2 }]}
           onPress={() => go(item.route)}
         >
-          <View style={[s.iconWrap, { backgroundColor: C.bg }]}>
+          <View style={[s.iconWrap, { backgroundColor: C.surface }]}>
             <IconSymbol name={item.icon as any} size={15} color={C.label} />
           </View>
           <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
@@ -78,22 +78,22 @@ export function SportsHubPanel() {
             ) : 'dot' in item && item.dot ? (
               <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: item.dot.color }} />
             ) : null}
-            <IconSymbol name="chevron.right" size={11} color={C.muted as string} />
+            <IconSymbol name="chevron.right" size={11} color={C.secondary} />
           </View>
         </Pressable>
       ))}
 
       {isHeadCoach && (
         <>
-          <View style={[s.divider, { backgroundColor: C.mist }]} />
+          <View style={[s.divider, { backgroundColor: C.separator }]} />
           <Text style={[s.sectionLabel, { color: C.secondary }]}>MANAGE</Text>
           {COACH_MANAGE.map(item => (
             <Pressable
               key={item.label}
-              style={({ pressed }) => [s.row, pressed && { backgroundColor: C.surfacePressed }]}
+              style={({ pressed }) => [s.row, pressed && { backgroundColor: C.surface2 }]}
               onPress={() => go(item.route)}
             >
-              <View style={[s.iconWrap, { backgroundColor: C.bg }]}>
+              <View style={[s.iconWrap, { backgroundColor: C.surface }]}>
                 <IconSymbol name={item.icon as any} size={15} color={C.label} />
               </View>
               <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
@@ -105,7 +105,7 @@ export function SportsHubPanel() {
                 ) : item.dot ? (
                   <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: item.dot.color }} />
                 ) : null}
-                <IconSymbol name="chevron.right" size={11} color={C.muted as string} />
+                <IconSymbol name="chevron.right" size={11} color={C.secondary} />
               </View>
             </Pressable>
           ))}

@@ -113,100 +113,108 @@ export function SidePanel({ visible, onClose }: SidePanelProps) {
   const isOutreach = pathname.includes('outreach');
   const isGive     = pathname.includes('/give');
   const isFund     = pathname.includes('/fund');
+  const isPersonalHub = isHub && mode === 'personal';
 
   return (
-    <DrawerPanel visible={visible} onClose={onClose} width={SIDE_PANEL_WIDTH}>
-      <View style={{ flex: 1, backgroundColor: C.surface }}>
-        {/* K toggle + brand name — mirrors on-screen top bar */}
-        <Pressable
-          style={[styles.kBtn, { top: insets.top + 14 }]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            onClose();
-          }}
-          hitSlop={8}
-        >
-          <KMenuButton />
-        </Pressable>
-        {brandName ? (
-          <View style={[styles.brandWrap, { top: insets.top + 14 }]}>
-            <Text style={[styles.brandName, { color: C.label }]} numberOfLines={1}>{brandName}</Text>
-          </View>
-        ) : null}
+    <DrawerPanel visible={visible} onClose={onClose} width={SIDE_PANEL_WIDTH} backgroundColor={isPersonalHub ? C.surface : C.bg}>
+      {isPersonalHub ? (
+        /* Personal hub: full-height flex container — HubPanel owns its layout */
+        <View style={{ flex: 1, backgroundColor: C.surface, paddingTop: insets.top + 20, paddingBottom: insets.bottom }}>
+          <HubPanel />
+        </View>
+      ) : (
+        <View style={{ flex: 1, backgroundColor: C.bg }}>
+          {/* K toggle + brand name */}
+          <Pressable
+            style={[styles.kBtn, { top: insets.top + 14 }]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onClose();
+            }}
+            hitSlop={8}
+          >
+            <KMenuButton />
+          </Pressable>
+          {brandName ? (
+            <View style={[styles.brandWrap, { top: insets.top + 14 }]}>
+              <Text style={[styles.brandName, { color: C.label }]} numberOfLines={1}>{brandName}</Text>
+            </View>
+          ) : null}
 
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={[
-            styles.scrollContent,
-            { paddingTop: insets.top + 88, paddingBottom: insets.bottom + 24 },
-          ]}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Screen-specific content — no mode circles or org switcher */}
-          {isMessages
-            ? <MessagesPanel />
-            : isPhone
-              ? <PhonePanel />
-              : isNexus
-                ? <NexusPanel />
-                : isSocial
-                  ? (mode === 'community' ? <CommunitySocialPanel /> : mode === 'sports' ? <SportsSocialPanel /> : <SocialPanel />)
-                  : isBusinessStore
-                    ? <BusinessStorePanel />
-                  : isStore
-                    ? (mode === 'community' ? <GivePanel /> : <StorePanel />)
-                    : isKayTV
-                      ? (mode === 'community' ? <CommunityKtvPanel /> : <KayTVPanel />)
-                      : isWallet
-                        ? (mode === 'community' ? <CommunityKaypayPanel /> : <WalletPanel />)
-                        : isHubCommunity
-                          ? <CommunityHubPanel />
-                          : isHubEducation
-                          ? <EducationHubPanel />
-                          : isCampus
-                          ? <CampusPanel />
-                          : isHubSports
-                          ? <SportsHubPanel />
-                          : isBooster
-                          ? <SportsBoosterPanel />
-                          : isAdmissions
-                          ? <AdmissionsPanel />
-                          : isHubBusiness
-                          ? <BusinessHubPanel />
-                          : isTeam
-                          ? <TeamPanel />
-                          : isInquiries
-                          ? <InquiriesPanel />
-                          : isHub
-                          ? <HubPanel />
-                          : isStudios
-                          ? (mode === 'community' ? <CommunityKplayPanel /> : <StudiosPanel />)
-                          : isMode
-                        ? <ModePanel />
-                        : isAgenda
-                          ? (mode === 'community' ? <CommunityAgendaPanel /> : mode === 'sports' ? <SportsAgendaPanel /> : <AgendaPanel />)
-                          : isSeason
-                            ? <SeasonPanel />
-                            : isRoster
-                              ? (mode === 'sports' ? <SportsRosterPanel /> : <RosterPanel />)
-                              : isRecruits
-                                ? (mode === 'sports' ? <SportsRecruitsPanel /> : mode === 'business' ? <LeadsPanel /> : mode === 'education' ? <AdmissionsPanel /> : mode === 'community' ? <OutreachPanel /> : <ProspectsPanel />)
-                                : isOutreach
-                                  ? <CommunityOutreachPanel />
-                                  : isDeals
-                                    ? <DealsPanel />
-                                  : isNetwork
-                                    ? <NetworkPanel />
-                                    : isMembers
-                                    ? <CommunityMembersPanel />
-                                    : isGive
-                                      ? <CommunityGivePanel />
-                                      : isFund
-                                        ? <EduFundPanel />
-                                        : <DefaultPanel pathname={pathname} />
-          }
-        </ScrollView>
-      </View>
+          <ScrollView
+            style={styles.scroll}
+            contentContainerStyle={[
+              styles.scrollContent,
+              { paddingTop: insets.top + 88, paddingBottom: insets.bottom + 24 },
+            ]}
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Screen-specific content — no mode circles or org switcher */}
+            {isMessages
+              ? <MessagesPanel />
+              : isPhone
+                ? <PhonePanel />
+                : isNexus
+                  ? <NexusPanel />
+                  : isSocial
+                    ? (mode === 'community' ? <CommunitySocialPanel /> : mode === 'sports' ? <SportsSocialPanel /> : <SocialPanel />)
+                    : isBusinessStore
+                      ? <BusinessStorePanel />
+                    : isStore
+                      ? (mode === 'community' ? <GivePanel /> : <StorePanel />)
+                      : isKayTV
+                        ? (mode === 'community' ? <CommunityKtvPanel /> : <KayTVPanel />)
+                        : isWallet
+                          ? (mode === 'community' ? <CommunityKaypayPanel /> : <WalletPanel />)
+                          : isHubCommunity
+                            ? <CommunityHubPanel />
+                            : isHubEducation
+                            ? <EducationHubPanel />
+                            : isCampus
+                            ? <CampusPanel />
+                            : isHubSports
+                            ? <SportsHubPanel />
+                            : isBooster
+                            ? <SportsBoosterPanel />
+                            : isAdmissions
+                            ? <AdmissionsPanel />
+                            : isHubBusiness
+                            ? <BusinessHubPanel />
+                            : isTeam
+                            ? <TeamPanel />
+                            : isInquiries
+                            ? <InquiriesPanel />
+                            : isHub
+                            ? <HubPanel />
+                            : isStudios
+                            ? (mode === 'community' ? <CommunityKplayPanel /> : <StudiosPanel />)
+                            : isMode
+                          ? <ModePanel />
+                          : isAgenda
+                            ? (mode === 'community' ? <CommunityAgendaPanel /> : mode === 'sports' ? <SportsAgendaPanel /> : <AgendaPanel />)
+                            : isSeason
+                              ? <SeasonPanel />
+                              : isRoster
+                                ? (mode === 'sports' ? <SportsRosterPanel /> : <RosterPanel />)
+                                : isRecruits
+                                  ? (mode === 'sports' ? <SportsRecruitsPanel /> : mode === 'business' ? <LeadsPanel /> : mode === 'education' ? <AdmissionsPanel /> : mode === 'community' ? <OutreachPanel /> : <ProspectsPanel />)
+                                  : isOutreach
+                                    ? <CommunityOutreachPanel />
+                                    : isDeals
+                                      ? <DealsPanel />
+                                    : isNetwork
+                                      ? <NetworkPanel />
+                                      : isMembers
+                                      ? <CommunityMembersPanel />
+                                      : isGive
+                                        ? <CommunityGivePanel />
+                                        : isFund
+                                          ? <EduFundPanel />
+                                          : <DefaultPanel pathname={pathname} />
+            }
+          </ScrollView>
+        </View>
+      )}
     </DrawerPanel>
   );
 }

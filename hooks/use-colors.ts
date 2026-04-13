@@ -1,133 +1,167 @@
 /**
  * useColors — KaNeXT Design System palette hook.
  *
- * Visual language: Warm Linen — paper white, linen surfaces, carbon type.
- * Light: crisp white bg, warm linen cards, carbon near-black text.
- * Dark:  warm near-black, dark linen surfaces, cream text.
+ * Visual language: Blue-Grey system — clean whites, cool surfaces, blue accent.
+ * Light: white bg, cool grey surfaces, dark text, blue accent.
+ * Dark:  near-black bg, dark cool surfaces, light text, light-blue accent.
  *
- * Core:    Paper / Linen / Mist / Drift / Carbon / Ember
- * Semantic (data values only): Gain / Heat / Caution
- * No blue accent. Monochrome chrome.
+ * Core tokens: background / surface-1 / surface-2 / surface-3 / text-primary /
+ *              text-secondary / accent-primary / accent-branded
+ * Semantic: success / danger / warning (with bg variants)
+ * Border:   border-light (rgba) / border-medium (rgba)
  */
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export const LIGHT_PALETTE = {
-  // ── Core palette ──────────────────────────────────────────────────────────
-  paper:   '#FFFFFF',          // primary bg — crisp white
-  linen:   '#F5F0EA',          // cards, tiles, elevated surfaces — warm linen
-  mist:    '#E0DBD4',          // borders, dividers, separators — warm beige
-  drift:   '#9C9790',          // secondary text, timestamps, placeholders
-  carbon:  '#1A1714',          // primary text, icons, buttons — warm near-black
-  ember:   '#8B2500',          // ONLY: notification badges, live indicators
+  // ── Core surfaces ──────────────────────────────────────────────────────────
+  bg:              '#FFFFFF',          // page / screen background
+  surface:         '#F3F4F8',          // surface-1: tiles, cards, sidebar bg
+  surface2:        '#E8EAF0',          // surface-2: icon containers, inputs, secondary cards
+  surface3:        '#DDE0E8',          // surface-3: overlays, modals, dropdowns
 
-  // ── Semantic — data values only ───────────────────────────────────────────
-  gain:    '#5A8A6E',          // positive data, confirmed, success
-  heat:    '#B85C5C',          // negative data, error, destructive
-  caution: '#B8943E',          // warning, pending — warm amber
+  // ── Text ──────────────────────────────────────────────────────────────────
+  label:           '#1A1D26',          // text-primary: headings, tile labels, nav labels
+  secondary:       '#6B7085',          // text-secondary: subtitles, section headers, inactive icons
+  muted:           '#6B7085',          // alias: secondary
 
-  // ── Named aliases ─────────────────────────────────────────────────────────
-  bg:              '#FFFFFF',  // alias: paper
-  surface:         '#F5F0EA',  // warm linen cards — alias: linen
-  surfacePressed:  'rgba(26,23,20,0.05)',
-  cardBorder:      '#E0DBD4',  // warm separator — alias: mist
-  label:           '#1A1714',  // warm near-black — alias: carbon
-  secondary:       '#9C9790',  // warm medium gray — alias: drift
-  muted:           '#9C9790',  // alias: drift
-  separator:       '#E0DBD4',  // alias: mist
-  divider:         '#E0DBD4',  // alias: mist
-  inputBorder:     '#E0DBD4',  // alias: mist
+  // ── Accent ────────────────────────────────────────────────────────────────
+  accent:          '#2563EB',          // accent-primary: active icons, KR ring, links, CTAs
+  accentBranded:   '#1D4ED8',          // accent-branded: branded buttons, K logo mark
+  accentLight:     '#2563EB',
 
-  // Interactive — carbon only. No blue. No color accent.
-  accent:          '#1A1714',
-  accentLight:     '#1A1714',
+  // ── Borders / separators ──────────────────────────────────────────────────
+  borderLight:     'rgba(0,0,0,0.06)', // card borders, dividers, nav bar top border
+  borderMedium:    'rgba(0,0,0,0.12)', // pill borders, section dividers
+  separator:       'rgba(0,0,0,0.06)', // alias: borderLight
+  mist:            'rgba(0,0,0,0.06)', // alias: borderLight
+  divider:         'rgba(0,0,0,0.06)', // alias: borderLight
+  cardBorder:      'rgba(0,0,0,0.06)', // alias: borderLight
+  inputBorder:     'rgba(0,0,0,0.08)', // slightly more visible for inputs
 
-  // Active chrome (pills, tabs, filters)
-  activePill:      '#1A1714',  // dark fill
-  activePillText:  '#FFFFFF',  // white text on dark pill
+  // ── Press state ───────────────────────────────────────────────────────────
+  surfacePressed:  'rgba(0,0,0,0.05)',
 
-  // Semantic aliases (backward compat)
-  green:   '#5A8A6E',
-  red:     '#B85C5C',
-  gold:    '#B8943E',
-  amber:   '#B8943E',
+  // ── Status — semantic data values & indicators ────────────────────────────
+  gain:            '#0F6E56',          // status-success: green pills, dots, roster circles
+  gainBg:          '#E6F4EE',          // status-success-bg: green pill backgrounds
+  heat:            '#A32D2D',          // status-danger: red pills, film room badge
+  heatBg:          '#FCEBEB',          // status-danger-bg: red pill backgrounds
+  caution:         '#854F0B',          // status-warning: amber dots (roster, compliance)
+  cautionBg:       '#FFF8EB',          // status-warning-bg
 
-  // Legacy color aliases — collapse to carbon or nearest semantic
-  blue:    '#1A1714',
-  purple:  '#1A1714',
-  cyan:    '#1A1714',
-  orange:  '#B8943E',          // → caution
-  pink:    '#B85C5C',          // → heat
-  teal:    '#5A8A6E',          // → gain
+  // Convenience aliases for pill patterns
+  successBg:       '#E6F4EE',
+  dangerBg:        '#FCEBEB',
+  warningBg:       '#FFF8EB',
 
-  // UI chrome
-  dotActive:    '#1A1714',
-  dotInactive:  'rgba(26,23,20,0.20)',
-  footer:       '#FFFFFF',     // matches bg
-  footerDivider:'#E0DBD4',
+  // ── Active chrome (pills, tabs, filters) ──────────────────────────────────
+  activePill:      '#1A1D26',          // dark fill on active pill
+  activePillText:  '#FFFFFF',          // white text on active pill
 
-  // Chat bubbles (Nexus)
-  bubbleSent:     '#1A1714',   // user message bg: carbon
-  bubbleReceived: '#F5F0EA',   // nexus message bg: warm linen
+  // ── Ember (notification badges) ───────────────────────────────────────────
+  ember:           '#A32D2D',          // maps to danger for notification badges
+
+  // ── UI chrome ─────────────────────────────────────────────────────────────
+  dotActive:       '#2563EB',          // active nav indicator: accent
+  dotInactive:     'rgba(26,29,38,0.20)',
+  footer:          '#FFFFFF',
+  footerDivider:   'rgba(0,0,0,0.06)',
+
+  // ── Chat bubbles (Nexus) ──────────────────────────────────────────────────
+  bubbleSent:      '#1A1D26',          // user message bg
+  bubbleReceived:  '#F3F4F8',          // AI message bg
+
+  // ── Legacy aliases (backward compatibility) ───────────────────────────────
+  paper:           '#FFFFFF',
+  linen:           '#F3F4F8',
+  drift:           '#6B7085',
+  carbon:          '#1A1D26',
+  green:           '#0F6E56',
+  red:             '#A32D2D',
+  gold:            '#854F0B',
+  amber:           '#854F0B',
+  blue:            '#2563EB',
+  purple:          '#2563EB',
+  cyan:            '#2563EB',
+  orange:          '#854F0B',
+  pink:            '#A32D2D',
+  teal:            '#0F6E56',
 } as const;
 
 export const DARK_PALETTE = {
-  // ── Core palette ──────────────────────────────────────────────────────────
-  paper:   '#1C1410',          // warm near-black bg
-  linen:   '#261D17',          // warm dark surfaces
-  mist:    '#3D352E',          // warm dark separator
-  drift:   '#8A837C',          // warm secondary text
-  carbon:  '#F0E8DC',          // warm near-white text
-  ember:   '#E08B6A',          // badges, live indicators
+  // ── Core surfaces ──────────────────────────────────────────────────────────
+  bg:              '#0F1117',
+  surface:         '#181B24',          // surface-1
+  surface2:        '#1F2330',          // surface-2
+  surface3:        '#282D3C',          // surface-3
 
-  // ── Semantic ──────────────────────────────────────────────────────────────
-  gain:    '#6B9E80',          // muted green on dark
-  heat:    '#D47A7A',          // muted red on dark
-  caution: '#D4AE5A',          // muted amber on dark
+  // ── Text ──────────────────────────────────────────────────────────────────
+  label:           '#E2E4EA',          // text-primary
+  secondary:       '#8B8FA0',          // text-secondary
+  muted:           '#8B8FA0',
 
-  // ── Named aliases ─────────────────────────────────────────────────────────
-  bg:              '#1C1410',
-  surface:         '#261D17',
-  surfacePressed:  'rgba(240,232,220,0.06)',
-  cardBorder:      '#3D352E',
-  label:           '#F0E8DC',
-  secondary:       '#8A837C',
-  muted:           '#8A837C',
-  separator:       '#3D352E',
-  divider:         '#3D352E',
-  inputBorder:     '#3D352E',
+  // ── Accent ────────────────────────────────────────────────────────────────
+  accent:          '#4DA3FF',          // accent-primary (lighter blue for dark bg)
+  accentBranded:   '#2563EB',          // accent-branded
+  accentLight:     '#4DA3FF',
 
-  // Interactive
-  accent:          '#F0E8DC',
-  accentLight:     '#F0E8DC',
+  // ── Borders / separators ──────────────────────────────────────────────────
+  borderLight:     'rgba(255,255,255,0.06)',
+  borderMedium:    'rgba(255,255,255,0.12)',
+  separator:       'rgba(255,255,255,0.06)',
+  mist:            'rgba(255,255,255,0.06)',
+  divider:         'rgba(255,255,255,0.06)',
+  cardBorder:      'rgba(255,255,255,0.06)',
+  inputBorder:     'rgba(255,255,255,0.08)',
 
-  // Active chrome
-  activePill:      '#F0E8DC',
-  activePillText:  '#1C1410',
+  // ── Press state ───────────────────────────────────────────────────────────
+  surfacePressed:  'rgba(255,255,255,0.06)',
 
-  // Semantic aliases
-  green:   '#6B9E80',
-  red:     '#D47A7A',
-  gold:    '#D4AE5A',
-  amber:   '#D4AE5A',
+  // ── Status ────────────────────────────────────────────────────────────────
+  gain:            '#5DCAA5',
+  gainBg:          '#0D2E24',
+  heat:            '#F09595',
+  heatBg:          '#3D1717',
+  caution:         '#FAC775',
+  cautionBg:       '#3D2E0F',
 
-  // Legacy aliases
-  blue:    '#F0E8DC',
-  purple:  '#F0E8DC',
-  cyan:    '#F0E8DC',
-  orange:  '#D4AE5A',
-  pink:    '#D47A7A',
-  teal:    '#6B9E80',
+  successBg:       '#0D2E24',
+  dangerBg:        '#3D1717',
+  warningBg:       '#3D2E0F',
 
-  // UI chrome
-  dotActive:    '#F0E8DC',
-  dotInactive:  'rgba(240,232,220,0.20)',
-  footer:       '#1C1410',
-  footerDivider:'#3D352E',
+  // ── Active chrome ─────────────────────────────────────────────────────────
+  activePill:      '#E2E4EA',
+  activePillText:  '#0F1117',
 
-  // Chat bubbles
-  bubbleSent:     '#F0E8DC',
-  bubbleReceived: '#261D17',
+  // ── Ember ─────────────────────────────────────────────────────────────────
+  ember:           '#F09595',
+
+  // ── UI chrome ─────────────────────────────────────────────────────────────
+  dotActive:       '#4DA3FF',
+  dotInactive:     'rgba(226,228,234,0.20)',
+  footer:          '#0F1117',
+  footerDivider:   'rgba(255,255,255,0.06)',
+
+  // ── Chat bubbles ──────────────────────────────────────────────────────────
+  bubbleSent:      '#E2E4EA',
+  bubbleReceived:  '#181B24',
+
+  // ── Legacy aliases ────────────────────────────────────────────────────────
+  paper:           '#0F1117',
+  linen:           '#181B24',
+  drift:           '#8B8FA0',
+  carbon:          '#E2E4EA',
+  green:           '#5DCAA5',
+  red:             '#F09595',
+  gold:            '#FAC775',
+  amber:           '#FAC775',
+  blue:            '#4DA3FF',
+  purple:          '#4DA3FF',
+  cyan:            '#4DA3FF',
+  orange:          '#FAC775',
+  pink:            '#F09595',
+  teal:            '#5DCAA5',
 } as const;
 
 export type ComponentColors = typeof LIGHT_PALETTE;

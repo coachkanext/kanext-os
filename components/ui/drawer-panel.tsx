@@ -32,6 +32,8 @@ interface DrawerPanelProps {
   side?: 'left' | 'right';
   /** Panel width in px. Default: 78% of screen width. */
   width?: number;
+  /** Override the panel background color. Defaults to C.bg. */
+  backgroundColor?: string;
   children: React.ReactNode;
 }
 
@@ -40,6 +42,7 @@ export function DrawerPanel({
   onClose,
   side = 'left',
   width = Math.round(SCREEN_WIDTH * 0.78),
+  backgroundColor,
   children,
 }: DrawerPanelProps) {
   const C = useColors();
@@ -120,18 +123,14 @@ export function DrawerPanel({
 
   if (!mounted) return null;
 
-  const panelRadius =
-    side === 'left'
-      ? { borderTopRightRadius: 20, borderBottomRightRadius: 20 }
-      : { borderTopLeftRadius: 20, borderBottomLeftRadius: 20 };
+  const panelRadius = {};
 
   const panelAnchor = side === 'left' ? { left: 0 } : { right: 0 };
 
-  // Scrim sits on the exposed side, inner edge rounded to match panel corner
   const scrimAnchor =
     side === 'left'
-      ? { left: width, right: 0, borderTopLeftRadius: 20, borderBottomLeftRadius: 20 }
-      : { right: width, left: 0, borderTopRightRadius: 20, borderBottomRightRadius: 20 };
+      ? { left: width, right: 0 }
+      : { right: width, left: 0 };
 
   return (
     <View style={[StyleSheet.absoluteFill, { zIndex: 2000 }]} pointerEvents="box-none">
@@ -149,7 +148,7 @@ export function DrawerPanel({
           styles.panel,
           panelAnchor,
           panelRadius,
-          { width, backgroundColor: C.bg, transform: [{ translateX: slideAnim }] },
+          { width, backgroundColor: backgroundColor ?? C.bg, transform: [{ translateX: slideAnim }] },
         ]}
         pointerEvents={visible ? 'auto' : 'none'}
         {...panResponder.panHandlers}
