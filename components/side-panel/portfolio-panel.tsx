@@ -1,8 +1,7 @@
 /**
- * Agenda Side Panel — X/Twitter-style.
- * Identity header + bare-icon nav.
- * Owner: Calendar, Reminders, Tasks, Availability + Dipson/Settings/Help.
- * Follower: Events, Bookings + Dipson/Settings/Help.
+ * Portfolio Side Panel — Personal Mode.
+ * Sections nav (Projects, Press, Testimonials, Archive, Credentials).
+ * Both Owner and Subscriber see Dipson, Settings, Help at bottom.
  */
 
 import React, { useCallback, useMemo } from 'react';
@@ -17,59 +16,45 @@ import { useDemoRole } from '@/utils/demo-role-store';
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
-type NavItem = {
-  icon: string;
-  label: string;
-  route?: string;
-  special?: 'dipson' | 'close';
-};
+type NavItem = { icon: string; label: string; route?: string };
 
-const OWNER_NAV_ITEMS: NavItem[] = [
-  { icon: 'calendar',             label: 'Calendar',    route: '/(tabs)/(main)/agenda'              },
-  { icon: 'bell',                 label: 'Reminders',   route: '/(tabs)/(main)/agenda/reminders'    },
-  { icon: 'checkmark.circle',     label: 'Tasks',       route: '/(tabs)/(main)/agenda/tasks'        },
-  { icon: 'clock',                label: 'Availability',route: '/(tabs)/(main)/agenda/availability' },
+const SECTION_ITEMS: NavItem[] = [
+  { icon: 'briefcase.fill',      label: 'Projects',     route: '/(tabs)/(main)/portfolio'              },
+  { icon: 'newspaper.fill',      label: 'Press',        route: '/(tabs)/(main)/portfolio/press'        },
+  { icon: 'quote.bubble.fill',   label: 'Testimonials', route: '/(tabs)/(main)/portfolio/testimonials' },
+  { icon: 'doc.text.fill',       label: 'Archive',      route: '/(tabs)/(main)/portfolio/archive'      },
+  { icon: 'checkmark.seal.fill', label: 'Credentials',  route: '/(tabs)/(main)/portfolio/credentials'  },
 ];
 
-const OWNER_BOTTOM_ITEMS: NavItem[] = [
-  { icon: 'sparkles',            label: 'Dipson',   special: 'dipson'                          },
-  { icon: 'gearshape',           label: 'Settings', route: '/(tabs)/(main)/agenda/settings'    },
-  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/agenda/help'        },
-];
-
-const FOLLOWER_NAV_ITEMS: NavItem[] = [
-  { icon: 'calendar',                    label: 'Events',          special: 'close'                                      },
-  { icon: 'calendar.badge.checkmark',    label: 'Bookings',        route: '/(tabs)/(main)/agenda/booking'                },
+const BOTTOM_ITEMS: NavItem[] = [
+  { icon: 'sparkles',            label: 'Dipson',   route: '/nexus'                        },
+  { icon: 'gearshape',           label: 'Settings', route: '/(tabs)/(main)/settings'       },
+  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/settings/help'  },
 ];
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function AgendaPanel() {
+export function PortfolioPanel() {
   const C = useColors();
   const s = useMemo(() => makeStyles(C), [C]);
   const router = useRouter();
-  const [role, , roleCycles] = useDemoRole('personal:agenda');
+  const [role, , roleCycles] = useDemoRole('personal:portfolio');
   const isOwner = role === roleCycles[0];
 
   const go = useCallback((item: NavItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (item.special === 'dipson') {
+    if (item.label === 'Dipson') {
       closeSidePanel();
-      setTimeout(() => openDipsonSheet('Calendar'), 300);
+      setTimeout(() => openDipsonSheet('Portfolio'), 300);
       return;
     }
-    if (item.special === 'close') {
-      closeSidePanel();
-      return;
-    }
-    if (!item.route) return;
     closeSidePanel();
     setTimeout(() => {
-      router.navigate(item.route as any);
+      if (item.route) {
+        router.navigate(item.route as any);
+      }
     }, 80);
   }, [router]);
-
-  const navItems = isOwner ? OWNER_NAV_ITEMS : FOLLOWER_NAV_ITEMS;
 
   return (
     <View style={s.root}>
@@ -81,11 +66,16 @@ export function AgendaPanel() {
         </View>
         <Text style={[s.name, { color: C.label }]}>Sammy Kalejaiye</Text>
         <Text style={[s.handle, { color: C.secondary }]}>@sammyk</Text>
+        {isOwner && (
+          <Text style={[s.followers, { color: C.secondary }]}>
+            <Text style={{ fontWeight: '600', color: C.label }}>1,247</Text>{' Followers'}
+          </Text>
+        )}
       </View>
 
-      {/* ── Main nav ── */}
+      {/* ── Section nav ── */}
       <View style={s.nav}>
-        {navItems.map(item => (
+        {SECTION_ITEMS.map(item => (
           <Pressable
             key={item.label}
             style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.bg }]}
@@ -97,10 +87,11 @@ export function AgendaPanel() {
         ))}
       </View>
 
-      {/* ── Bottom utility: Dipson, Settings, Help — both roles ── */}
       <View style={[s.divider, { backgroundColor: C.separator }]} />
+
+      {/* ── Bottom items — both roles ── */}
       <View style={s.nav}>
-        {OWNER_BOTTOM_ITEMS.map(item => (
+        {BOTTOM_ITEMS.map(item => (
           <Pressable
             key={item.label}
             style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.bg }]}
@@ -138,6 +129,10 @@ const makeStyles = (C: ComponentColors) => StyleSheet.create({
   handle: {
     fontSize: 14, fontWeight: '400',
     marginBottom: 6,
+  },
+  followers: {
+    fontSize: 14, fontWeight: '400',
+    marginBottom: 4,
   },
 
   nav: { paddingHorizontal: 8 },

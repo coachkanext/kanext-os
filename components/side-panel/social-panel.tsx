@@ -1,99 +1,125 @@
 /**
- * Social Side Panel — role-aware.
- * Owner:    Browse (Explore) + Manage (Drafts, Scheduled)
- * Follower: (nothing)
+ * Personal Social Side Panel — X/Twitter-style.
+ * Identity header + bare-icon nav.
+ * Owner:      Feed · Channels · Drafts · Scheduled · Channel Settings
+ *             Bottom: Dipson · Settings · Help
+ * Subscriber: Feed · Channels · My Channels
+ *             Bottom: Dipson · Settings · Help
  */
 
-import React, { useMemo } from 'react';
-import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
+import React, { useCallback, useMemo } from 'react';
+import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
 import * as Haptics from 'expo-haptics';
-
 import { useRouter } from 'expo-router';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { closeSidePanel } from '@/utils/global-side-panel';
+import { openDipsonSheet } from '@/utils/global-dipson-sheet';
 import { useColors, type ComponentColors } from '@/hooks/use-colors';
 import { useDemoRole } from '@/utils/demo-role-store';
 
-// ── Nav items ─────────────────────────────────────────────────────────────────
+// ── Data ──────────────────────────────────────────────────────────────────────
 
-type NavItem = { icon: string; label: string; route: string };
+type NavItem = {
+  icon: string;
+  label: string;
+  route?: string;
+  special?: string;
+};
 
-const BROWSE_ITEMS: NavItem[] = [
-  { icon: 'magnifyingglass', label: 'Explore', route: '/(tabs)/(main)/social/explore' },
+const OWNER_NAV_ITEMS: NavItem[] = [
+  { icon: 'rectangle.stack',      label: 'Feed',             route: '/(tabs)/(main)/social'           },
+  { icon: 'number',               label: 'Channels',         route: '/(tabs)/(main)/social/channels'  },
+  { icon: 'doc.text',             label: 'Drafts',           route: '/(tabs)/(main)/social/drafts'    },
+  { icon: 'calendar.badge.clock', label: 'Scheduled',        route: '/(tabs)/(main)/social/scheduled' },
+  { icon: 'slider.horizontal.3',  label: 'Channel Settings', special: 'channel-settings'              },
 ];
 
-const MANAGE_ITEMS: NavItem[] = [
-  { icon: 'doc.text',                 label: 'Drafts',     route: '/(tabs)/(main)/social/drafts'     },
-  { icon: 'clock',                    label: 'Scheduled',  route: '/(tabs)/(main)/social/scheduled'  },
+const SUBSCRIBER_NAV_ITEMS: NavItem[] = [
+  { icon: 'rectangle.stack', label: 'Feed',        route: '/(tabs)/(main)/social' },
+  { icon: 'number',          label: 'Channels',    route: '/(tabs)/(main)/social/channels' },
+  { icon: 'bookmark.fill',   label: 'My Channels', special: 'my-channels'         },
+];
+
+const BOTTOM_ITEMS: NavItem[] = [
+  { icon: 'sparkles',            label: 'Dipson',   special: 'dipson'                        },
+  { icon: 'gearshape',           label: 'Settings', route: '/(tabs)/(main)/social/settings'  },
+  { icon: 'questionmark.circle', label: 'Help',     route: '/(tabs)/(main)/social/help'      },
 ];
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function SocialPanel() {
-  const C      = useColors();
-  const s      = useMemo(() => makeStyles(C), [C]);
+  const C = useColors();
+  const s = useMemo(() => makeStyles(C), [C]);
   const router = useRouter();
   const [role, , roleCycles] = useDemoRole('personal:social');
   const isOwner = role === roleCycles[0];
 
-  const goRoute = (route: string) => {
+  const go = useCallback((item: NavItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    switch (item.special) {
+      case 'dipson':
+        closeSidePanel();
+        setTimeout(() => openDipsonSheet('Social'), 300);
+        return;
+      case 'channel-settings':
+        Alert.alert('Channel management coming soon');
+        return;
+      case 'my-channels':
+        Alert.alert('My Channels filter coming soon');
+        return;
+      default:
+        break;
+    }
+    if (!item.route) return;
     closeSidePanel();
-    setTimeout(() => router.navigate(route as any), 80);
-  };
+    setTimeout(() => router.navigate(item.route as any), 80);
+  }, [router]);
 
-  if (!isOwner) return null;
+  const navItems = isOwner ? OWNER_NAV_ITEMS : SUBSCRIBER_NAV_ITEMS;
 
   return (
-    <View style={[s.root, { backgroundColor: C.surface }]}>
-      <ScrollView style={s.scroll} contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
+    <View style={s.root}>
 
-        {/* ── Home ── */}
-        <Pressable
-          style={({ pressed }) => [s.row, s.rowBorder, { borderBottomColor: C.separator }, pressed && { backgroundColor: C.bg }]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            closeSidePanel();
-            setTimeout(() => router.navigate('/(tabs)/(main)/social' as any), 80);
-          }}
-        >
-          <IconSymbol name="newspaper.fill" size={18} color={C.label} />
-          <Text style={[s.rowLabel, { color: C.label }]}>Feed</Text>
-        </Pressable>
+      {/* ── Identity header ── */}
+      <View style={s.header}>
+        <View style={[s.avatar, { backgroundColor: C.separator }]}>
+          <IconSymbol name="person.fill" size={20} color={C.secondary} />
+        </View>
+        <Text style={[s.name, { color: C.label }]}>Sammy Kalejaiye</Text>
+        <Text style={[s.handle, { color: C.secondary }]}>@sammyk</Text>
+      </View>
 
-        <View style={[s.divider, { backgroundColor: C.separator }]} />
-
-        <Text style={[s.sectionLabel, { color: C.secondary }]}>Browse</Text>
-        {BROWSE_ITEMS.map((item) => (
+      {/* ── Main nav ── */}
+      <View style={s.nav}>
+        {navItems.map(item => (
           <Pressable
             key={item.label}
-            style={({ pressed }) => [s.row, pressed && { backgroundColor: C.bg }]}
-            onPress={() => goRoute(item.route)}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.bg }]}
+            onPress={() => go(item)}
           >
-            <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-            <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
+            <IconSymbol name={item.icon as any} size={24} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
           </Pressable>
         ))}
+      </View>
 
-        <View style={[s.divider, { backgroundColor: C.separator }]} />
+      <View style={[s.divider, { backgroundColor: C.separator }]} />
 
-        <Text style={[s.sectionLabel, { color: C.secondary }]}>Manage</Text>
-        {MANAGE_ITEMS.map((item, idx) => (
+      {/* ── Bottom utility: Dipson, Settings, Help ── */}
+      <View style={s.nav}>
+        {BOTTOM_ITEMS.map(item => (
           <Pressable
             key={item.label}
-            style={({ pressed }) => [
-              s.row,
-              pressed && { backgroundColor: C.bg },
-              idx < MANAGE_ITEMS.length - 1 && [s.rowBorder, { borderBottomColor: C.separator }],
-            ]}
-            onPress={() => goRoute(item.route)}
+            style={({ pressed }) => [s.navRow, pressed && { backgroundColor: C.bg }]}
+            onPress={() => go(item)}
           >
-            <IconSymbol name={item.icon as any} size={18} color={C.secondary} />
-            <Text style={[s.rowLabel, { color: C.label }]}>{item.label}</Text>
+            <IconSymbol name={item.icon as any} size={24} color={C.label} />
+            <Text style={[s.navLabel, { color: C.label }]}>{item.label}</Text>
           </Pressable>
         ))}
+      </View>
 
-      </ScrollView>
     </View>
   );
 }
@@ -101,24 +127,40 @@ export function SocialPanel() {
 // ── Styles ────────────────────────────────────────────────────────────────────
 
 const makeStyles = (C: ComponentColors) => StyleSheet.create({
-  root:    { flex: 1 },
-  scroll:  { flex: 1 },
-  content: { paddingTop: 8, paddingBottom: 8 },
+  root: { flex: 1 },
 
-  divider: { height: StyleSheet.hairlineWidth, marginVertical: 12, marginHorizontal: 16 },
-
-  sectionLabel: {
-    fontSize: 11, fontWeight: '600', letterSpacing: 0.6,
-    textTransform: 'uppercase',
-    paddingHorizontal: 16,
-    marginBottom: 2, marginTop: 4,
+  header: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 20,
+  },
+  avatar: {
+    width: 40, height: 40, borderRadius: 20,
+    alignItems: 'center', justifyContent: 'center',
+    marginBottom: 10,
+  },
+  name: {
+    fontSize: 17, fontWeight: '700', letterSpacing: -0.3,
+    marginBottom: 2,
+  },
+  handle: {
+    fontSize: 14, fontWeight: '400',
+    marginBottom: 6,
   },
 
-  row: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    paddingHorizontal: 16, paddingVertical: 13,
+  nav: { paddingHorizontal: 8 },
+
+  navRow: {
+    flexDirection: 'row', alignItems: 'center',
+    height: 44, gap: 16,
+    paddingHorizontal: 12,
     borderRadius: 8,
   },
-  rowBorder: { borderBottomWidth: StyleSheet.hairlineWidth },
-  rowLabel:  { flex: 1, fontSize: 15 },
+  navLabel: { fontSize: 16, fontWeight: '500' },
+
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    marginVertical: 8,
+    marginHorizontal: 20,
+  },
 });

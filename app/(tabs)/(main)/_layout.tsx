@@ -78,6 +78,20 @@ export default function HomeLayout() {
       <Stack.Screen name="mode/index" />
       {/* Agenda */}
       <Stack.Screen name="agenda/index" />
+      <Stack.Screen name="agenda/reminders" />
+      <Stack.Screen name="agenda/tasks" />
+      <Stack.Screen name="agenda/availability" />
+      <Stack.Screen name="agenda/categories" />
+      <Stack.Screen name="agenda/reports" />
+      <Stack.Screen name="agenda/follower-events" />
+      <Stack.Screen name="agenda/sports-coach-calendar" />
+      <Stack.Screen name="agenda/sports-player-calendar" />
+      <Stack.Screen name="agenda/booking/index" />
+      <Stack.Screen name="agenda/booking/time" />
+      <Stack.Screen name="agenda/booking/confirm" />
+      <Stack.Screen name="agenda/booking/success" />
+      <Stack.Screen name="agenda/settings" />
+      <Stack.Screen name="agenda/help" />
       {/* Social */}
       <Stack.Screen name="social/index" />
       <Stack.Screen
@@ -97,7 +111,10 @@ export default function HomeLayout() {
       <Stack.Screen name="social/scheduled" />
       <Stack.Screen name="social/analytics" />
       <Stack.Screen name="social/following" />
+      <Stack.Screen name="social/channel" />
       <Stack.Screen name="social/settings" />
+      <Stack.Screen name="social/help" />
+      <Stack.Screen name="social/channels" />
       <Stack.Screen name="social/posting-policy" />
       {/* Season */}
       <Stack.Screen name="season/index" />
@@ -224,6 +241,14 @@ export default function HomeLayout() {
       <Stack.Screen name="kaypay/church-finances" />
       <Stack.Screen name="kaypay/budget" />
       <Stack.Screen name="kaypay/payroll" />
+      {/* KayPay — Personal sub-screens */}
+      <Stack.Screen name="kaypay/personal-earnings" />
+      <Stack.Screen name="kaypay/personal-activity" />
+      <Stack.Screen name="kaypay/personal-card" />
+      <Stack.Screen name="kaypay/personal-tax" />
+      <Stack.Screen name="kaypay/personal-linked-banks" />
+      <Stack.Screen name="kaypay/personal-invoices" />
+      <Stack.Screen name="kaypay/personal-savings" />
       {/* Booster */}
       <Stack.Screen name="booster/index" />
       {/* Admissions */}
@@ -233,6 +258,12 @@ export default function HomeLayout() {
       <Stack.Screen name="team/index" />
       <Stack.Screen name="inquiries/index" />
       <Stack.Screen name="business-store/index" />
+      {/* Portfolio */}
+      <Stack.Screen name="portfolio/index" />
+      <Stack.Screen name="portfolio/press" />
+      <Stack.Screen name="portfolio/testimonials" />
+      <Stack.Screen name="portfolio/archive" />
+      <Stack.Screen name="portfolio/credentials" />
       {/* Settings */}
       <Stack.Screen name="settings/index" />
       <Stack.Screen name="settings/profile" />
